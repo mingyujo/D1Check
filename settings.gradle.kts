@@ -25,3 +25,4 @@ dependencyResolutionManagement {
 rootProject.name = "D1Check"
 include(":app")
 include(":telemetry-contract")
+include(":benchmark-runner")

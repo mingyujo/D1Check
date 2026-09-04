@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         }
         val startButton = Button(this).apply {
             text = "새 run 시작"
-            setOnClickListener { startTelemetry(forceNewRun = true) }
+            setOnClickListener { startTelemetry() }
         }
         val stopButton = Button(this).apply {
             text = "수집 종료"
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(ScrollView(this).apply { addView(content) })
 
         requestNotificationPermissionIfNeeded()
-        startTelemetry(forceNewRun = false)
+        startTelemetry()
     }
 
     override fun onStart() {
@@ -76,8 +76,8 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
     }
 
-    private fun startTelemetry(forceNewRun: Boolean) {
-        TelemetryForegroundService.start(this, forceNewRun)
+    private fun startTelemetry() {
+        TelemetryForegroundService.start(this)
     }
 
     private fun requestNotificationPermissionIfNeeded() {

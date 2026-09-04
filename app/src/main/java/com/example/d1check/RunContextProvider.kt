@@ -23,9 +23,20 @@ class RunContextProvider : ContentProvider() {
             "active",
             "started_elapsed_ns",
             "started_wall_ms",
+            "boot_id",
+            "status",
         )
         val cursor = MatrixCursor(columns)
-        val run = context?.let { RunSessionStore(it).current() }
+        val run = context?.let {
+            val store = RunSessionStore(it)
+            val stored = store.current()
+            if (stored?.active == true && !TelemetryServiceLiveness.isRunning) {
+                store.markInactive(stored.runId, aborted = true)
+                store.current()
+            } else {
+                stored
+            }
+        }
         if (uri.lastPathSegment == "current" && run != null) {
             cursor.addRow(
                 arrayOf<Any?>(
@@ -34,6 +45,8 @@ class RunContextProvider : ContentProvider() {
                     if (run.active) 1 else 0,
                     run.startedElapsedNs,
                     run.startedWallMs,
+                    run.bootId,
+                    run.status,
                 )
             )
         }

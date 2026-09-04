@@ -48,19 +48,18 @@ class TelemetryForegroundService : Service() {
             return START_NOT_STICKY
         }
 
-        val forceNew = intent?.getBooleanExtra(EXTRA_FORCE_NEW_RUN, false) == true
-        val requestedRunId = intent?.getStringExtra(EXTRA_RUN_ID)
-        if (forceNew && run != null) stopRun("replaced_by_new_run")
-        if (run == null) startRun(forceNew, requestedRunId)
-        return START_STICKY
+        if (run != null) stopRun("replaced_by_new_run")
+        startRun()
+        return START_NOT_STICKY
     }
 
     override fun onDestroy() {
+        TelemetryServiceLiveness.isRunning = false
         scheduledTask?.cancel(false)
         synchronized(this) {
             if (!cleanStop) recordEvent("service_destroyed", "abnormal")
             writer?.close()
-            run?.let { sessionStore.markInactive(it.runId) }
+            run?.let { sessionStore.markInactive(it.runId, aborted = !cleanStop) }
         }
         executor.shutdown()
         super.onDestroy()
@@ -69,14 +68,18 @@ class TelemetryForegroundService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     @Synchronized
-    private fun startRun(forceNew: Boolean, requestedRunId: String?) {
+    private fun startRun() {
         cleanStop = false
         tick = 0L
         headroomNow = Float.NaN
         headroom60s = Float.NaN
-        run = sessionStore.getOrCreate(forceNew, requestedRunId)
+        run = sessionStore.startNew()
+        TelemetryServiceLiveness.isRunning = true
         writer = TelemetryLogWriter(this, requireNotNull(run).runId)
-        recordEvent("run_start", "ok", mapOf("file" to writer?.file?.absolutePath))
+        recordEvent("run_start", "ok", mapOf(
+            "file" to writer?.file?.absolutePath,
+            "boot_id" to requireNotNull(run).bootId,
+        ))
         nextSampleNs = SystemClock.elapsedRealtimeNanos()
         scheduledTask = executor.schedule({ sampleAndScheduleNext() }, 0L, TimeUnit.NANOSECONDS)
     }
@@ -90,6 +93,7 @@ class TelemetryForegroundService : Service() {
         writer?.close()
         writer = null
         run = null
+        TelemetryServiceLiveness.isRunning = false
         cleanStop = true
     }
 
@@ -168,6 +172,7 @@ class TelemetryForegroundService : Service() {
             "source" to "d1check",
             "event" to "sample",
             "run_id" to activeRun.runId,
+            "boot_id" to activeRun.bootId,
             "mono_ns" to monoNs,
             "wall_ms" to wallMs,
             "elapsed_s" to ((monoNs - activeRun.startedElapsedNs) / 1_000_000_000.0),
@@ -224,6 +229,7 @@ class TelemetryForegroundService : Service() {
             "mono_ns" to SystemClock.elapsedRealtimeNanos(),
             "wall_ms" to System.currentTimeMillis(),
             "status" to status,
+            "boot_id" to activeRun.bootId,
         )
         values.putAll(extras)
         val json = toJson(values)
@@ -268,8 +274,6 @@ class TelemetryForegroundService : Service() {
     companion object {
         const val ACTION_SAMPLE = "com.example.d1check.action.SAMPLE"
         const val EXTRA_DISPLAY_LINE = "display_line"
-        const val EXTRA_RUN_ID = "run_id"
-        const val EXTRA_FORCE_NEW_RUN = "force_new_run"
         private const val ACTION_START = "com.example.d1check.action.START"
         private const val ACTION_STOP = "com.example.d1check.action.STOP"
         private const val LEGACY_TAG = "D1CHECK"
@@ -278,11 +282,9 @@ class TelemetryForegroundService : Service() {
         private const val NOTIFICATION_ID = 4104
         private const val SAMPLE_PERIOD_NS = 1_000_000_000L
 
-        fun start(context: Context, forceNewRun: Boolean = false, runId: String? = null) {
+        fun start(context: Context) {
             val intent = Intent(context, TelemetryForegroundService::class.java)
                 .setAction(ACTION_START)
-                .putExtra(EXTRA_FORCE_NEW_RUN, forceNewRun)
-            runId?.let { intent.putExtra(EXTRA_RUN_ID, it) }
             ContextCompat.startForegroundService(context, intent)
         }
 
