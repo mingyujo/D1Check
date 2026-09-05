@@ -142,10 +142,12 @@ baseline, before warmup, before GPU load, after GPU load, and before file flush.
 `run_context_mismatch` and invalidates the experiment.
 
 The host preserves D1CHECK_EVENT, D1GPU, `tflite`, and `TfLite` lines in `raw/logcat.txt`.
-`delegate_evidence.json` records replaced/total node counts and verifies full delegation only when
-X equals Y and an explicit whole-graph/full-delegation phrase exists. Missing evidence is
-`unverified`, not proof of CPU fallback. Formal GPU data is valid only for Galaxy A24, the bundled
-model SHA-256, LiteRT 1.4.2, and verified full delegation.
+`delegate_evidence.json` verifies full delegation only when the GPU delegate was created,
+`TfLiteGpuDelegateV2` replaced X out of Y nodes with X=Y>0, at least one GPU delegate kernel was
+created, and no apply failure, restored-plan, unsupported-op, or CPU-fallback evidence exists.
+Missing evidence is `unverified`, not proof of CPU fallback. Formal GPU data is valid only for
+Galaxy A24, the bundled model SHA-256, LiteRT 1.4.2, verified full delegation, at least 95% valid
+thermal sampling coverage, and a valid thermal sample during GPU load.
 
 Warmup is capped at 10,000 operations, inference records at 250,000, lifecycle events at 20,000,
 and duration at 3,600 seconds.

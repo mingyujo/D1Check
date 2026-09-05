@@ -32,8 +32,14 @@ THERMAL_STATUS_RE = re.compile(r"Thermal Status:\s*(-?\d+)")
 DELEGATE_REPLACE_RE = re.compile(
     r"Replacing\s+(\d+)\s+out of\s+(\d+)\s+node(?:\(s\)|s)?", re.IGNORECASE
 )
-FULL_DELEGATE_RE = re.compile(
-    r"(?:whole graph|fully delegated|entire graph[^\n]*delegat|all nodes[^\n]*delegat)",
+GPU_DELEGATE_CREATED_RE = re.compile(
+    r"Created\s+TensorFlow\s+Lite\s+delegate\s+for\s+GPU", re.IGNORECASE
+)
+GPU_DELEGATE_TYPE_RE = re.compile(r"TfLiteGpuDelegateV2", re.IGNORECASE)
+GPU_KERNEL_RE = re.compile(r"Created\s+(\d+)\s+GPU\s+delegate\s+kernels?", re.IGNORECASE)
+DELEGATE_FAILURE_RE = re.compile(
+    r"(?:failed\s+to\s+apply|restored\s+original\s+execution\s+plan|unsupported\s+op|"
+    r"remaining\s+nodes?\s+run\s+on\s+CPU|fall(?:ing)?\s+back\s+to\s+CPU|CPU\s+fallback)",
     re.IGNORECASE,
 )
 PERFETTO_BUFFER_KB = 32768
@@ -85,16 +91,33 @@ def runner_session_from_filename(filename: str, run_id: str) -> str | None:
 def delegate_evidence(raw_log: str) -> dict[str, Any]:
     matches = list(DELEGATE_REPLACE_RE.finditer(raw_log))
     replacement = matches[-1] if matches else None
-    full_phrase = bool(FULL_DELEGATE_RE.search(raw_log))
+    kernel_matches = list(GPU_KERNEL_RE.finditer(raw_log))
     replaced = int(replacement.group(1)) if replacement else None
     total = int(replacement.group(2)) if replacement else None
-    verified = replacement is not None and full_phrase and replaced == total
+    kernel_count = int(kernel_matches[-1].group(1)) if kernel_matches else None
+    gpu_created = bool(GPU_DELEGATE_CREATED_RE.search(raw_log))
+    gpu_type = bool(GPU_DELEGATE_TYPE_RE.search(raw_log))
+    failure_matches = sorted({match.group(0) for match in DELEGATE_FAILURE_RE.finditer(raw_log)})
+    verified = (
+        gpu_created
+        and gpu_type
+        and replaced is not None
+        and total is not None
+        and total > 0
+        and replaced == total
+        and kernel_count is not None
+        and kernel_count > 0
+        and not failure_matches
+    )
     return {
         "replaced_nodes": replaced,
         "total_nodes": total,
+        "gpu_delegate_created": gpu_created,
+        "gpu_delegate_type": "TfLiteGpuDelegateV2" if gpu_type else None,
+        "gpu_delegate_kernel_count": kernel_count,
+        "failure_or_fallback_evidence": failure_matches,
         "full_delegate": verified,
         "verification": "verified" if verified else "unverified",
-        "full_delegate_phrase_found": full_phrase,
         "note": None if verified else (
             "No conclusive full-delegation evidence; this does not prove CPU fallback."
         ),
@@ -125,29 +148,52 @@ def clear_logcat(adb: str, serial: str | None) -> int:
     return subprocess.run(adb_base(adb, serial) + ["logcat", "-c"]).returncode
 
 
-def parse_uptime(value: str) -> int:
-    return int(float(value.strip().split()[0]) * 1_000_000_000)
+def parse_uptime(value: str, source: str = "/proc/uptime") -> int:
+    tokens = value.strip().split()
+    if len(tokens) < 2:
+        raise ValueError(
+            f"{source}: expected at least 2 uptime tokens, got {len(tokens)}; "
+            f"stdout={value[:160]!r}"
+        )
+    try:
+        uptime_seconds = float(tokens[0])
+    except ValueError as error:
+        raise ValueError(
+            f"{source}: first uptime token is not numeric: {tokens[0]!r}"
+        ) from error
+    if not math.isfinite(uptime_seconds) or uptime_seconds < 0:
+        raise ValueError(f"{source}: invalid uptime seconds: {tokens[0]!r}")
+    return int(uptime_seconds * 1_000_000_000)
 
 
-def thermal_dump(adb_command: list[str]) -> tuple[dict[str, Any], str]:
-    script = (
-        "echo __D1_UPTIME_BEFORE__; cat /proc/uptime; "
-        "echo __D1_THERMAL__; dumpsys thermalservice; "
-        "echo __D1_UPTIME_AFTER__; cat /proc/uptime"
-    )
+def adb_text(adb_command: list[str], arguments: list[str], source: str) -> str:
     result = subprocess.run(
-        adb_command + ["shell", "sh", "-c", script],
+        adb_command + arguments,
         capture_output=True,
         text=True,
         errors="replace",
         timeout=8,
     )
     if result.returncode != 0:
-        raise RuntimeError(result.stderr.strip() or "thermalservice failed")
-    before_text, remainder = result.stdout.split("__D1_THERMAL__", 1)
-    thermal_text, after_text = remainder.split("__D1_UPTIME_AFTER__", 1)
-    before_ns = parse_uptime(before_text.split("__D1_UPTIME_BEFORE__", 1)[1])
-    after_ns = parse_uptime(after_text)
+        detail = result.stderr.strip() or result.stdout.strip() or "no diagnostic output"
+        raise RuntimeError(f"{source}: adb returncode={result.returncode}; {detail}")
+    if not result.stdout.strip():
+        raise RuntimeError(f"{source}: adb returned empty stdout")
+    return result.stdout
+
+
+def thermal_dump(adb_command: list[str]) -> tuple[dict[str, Any], str]:
+    before_text = adb_text(
+        adb_command, ["exec-out", "cat", "/proc/uptime"], "uptime before thermalservice"
+    )
+    thermal_text = adb_text(
+        adb_command, ["shell", "dumpsys", "thermalservice"], "thermalservice"
+    )
+    after_text = adb_text(
+        adb_command, ["exec-out", "cat", "/proc/uptime"], "uptime after thermalservice"
+    )
+    before_ns = parse_uptime(before_text, "uptime before thermalservice")
+    after_ns = parse_uptime(after_text, "uptime after thermalservice")
     values: dict[str, Any] = parse_thermalservice(thermal_text)
     values.update(
         {
@@ -596,6 +642,34 @@ def latency_stats(values: list[float]) -> dict[str, Any]:
     }
 
 
+def thermal_coverage(
+    events: list[dict[str, Any]], load_start_ns: int, load_end_ns: int
+) -> dict[str, Any]:
+    samples = [event for event in events if event.get("event") == "sample"]
+    valid_samples = [event for event in samples if event.get("parse_status") == "ok"]
+    errors = [event for event in events if event.get("event") == "sample_error"]
+    attempt_count = len(samples) + len(errors)
+    valid_ratio = len(valid_samples) / attempt_count if attempt_count else None
+    load_valid_samples = [
+        event for event in valid_samples
+        if load_start_ns <= int(event["mono_ns"]) <= load_end_ns
+    ]
+    passes = (
+        valid_ratio is not None
+        and valid_ratio >= 0.95
+        and bool(load_valid_samples)
+    )
+    return {
+        "attempt_count": attempt_count,
+        "valid_sample_count": len(valid_samples),
+        "error_count": len(errors),
+        "invalid_sample_count": len(samples) - len(valid_samples),
+        "valid_ratio": valid_ratio,
+        "load_valid_sample_count": len(load_valid_samples),
+        "passes_formal_requirement": passes,
+    }
+
+
 def nearest_sample(
     samples: list[dict[str, Any]], times: list[int], mono_ns: int
 ) -> dict[str, Any] | None:
@@ -640,7 +714,11 @@ def analyze(run_dir: Path) -> None:
     d1 = [event for event in logcat if event.get("source") == "d1check"]
     run_start_ns, run_stop_ns, load_start_ns, load_end_ns = validate_run_envelope(d1, gpu, run_id)
     samples = [event for event in d1 if event.get("event") == "sample"]
-    thermal_samples = [event for event in thermal if event.get("event") == "sample"]
+    coverage = thermal_coverage(thermal, load_start_ns, load_end_ns)
+    thermal_samples = [
+        event for event in thermal
+        if event.get("event") == "sample" and event.get("parse_status") == "ok"
+    ]
     d1_times = [int(event["mono_ns"]) for event in samples]
     thermal_times = [int(event["mono_ns"]) for event in thermal_samples]
     inference = [event for event in gpu if event.get("event") == "inference"]
@@ -726,6 +804,7 @@ def analyze(run_dir: Path) -> None:
         and metadata_event.get("litert_version") == "1.4.2"
         and evidence["full_delegate"] is True
         and metadata_event.get("experiment_valid") is True
+        and coverage["passes_formal_requirement"] is True
     )
     if mode == "diagnostic":
         analysis_warnings.append(
@@ -745,6 +824,8 @@ def analyze(run_dir: Path) -> None:
         "runner_session_count": len(sessions),
         "telemetry_sample_count": len(samples),
         "thermalservice_sample_count": len(thermal_samples),
+        "thermalservice_error_count": coverage["error_count"],
+        "thermal_coverage": coverage,
         "load_start_mono_ns": load_start["mono_ns"],
         "load_end_mono_ns": load_end["mono_ns"],
         "run_start_mono_ns": run_start_ns,

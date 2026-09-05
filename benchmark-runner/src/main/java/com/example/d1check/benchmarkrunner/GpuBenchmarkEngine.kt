@@ -65,6 +65,7 @@ class GpuBenchmarkEngine(private val context: Context) {
 
             revalidate(telemetry, "before_warmup")
             repeat(config.warmupCount) { index ->
+                resetTensorBuffers(input, output)
                 telemetry.measured("warmup", "warmup", index.toLong(), 1) {
                     activeInterpreter.run(input, output)
                 }
@@ -87,6 +88,7 @@ class GpuBenchmarkEngine(private val context: Context) {
                     break
                 }
 
+                resetTensorBuffers(input, output)
                 val startNs = SystemClock.elapsedRealtimeNanos()
                 activeInterpreter.run(input, output)
                 val endNs = SystemClock.elapsedRealtimeNanos()

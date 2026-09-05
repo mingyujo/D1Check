@@ -2,9 +2,12 @@ import importlib.util
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
 
 MODULE_PATH = Path(__file__).with_name("d1_logger_v4.py")
+FIXTURE_PATH = Path(__file__).with_name("fixtures") / "galaxy_a24_thermalservice.txt"
 SPEC = importlib.util.spec_from_file_location("d1_logger_v4", MODULE_PATH)
 assert SPEC is not None and SPEC.loader is not None
 LOGGER = importlib.util.module_from_spec(SPEC)
@@ -12,6 +15,14 @@ SPEC.loader.exec_module(LOGGER)
 
 
 class D1LoggerV4Test(unittest.TestCase):
+    A24_GPU_LOG = """Created TensorFlow Lite delegate for GPU.
+Loaded OpenCL library with dlopen.
+Replacing 31 out of 31 node(s) with delegate (TfLiteGpuDelegateV2) node,
+yielding 1 partitions for subgraph 0.
+Initialized OpenCL-based API.
+Created 1 GPU delegate kernels.
+"""
+
     def test_existing_galaxy_a24_aliases(self):
         text = """Thermal Status: 2
 Current temperatures from HAL:
@@ -31,6 +42,46 @@ Current cooling devices from HAL:
                 "thermal_status": "2",
             },
         )
+
+    def test_galaxy_a24_thermalservice_fixture_prefers_current_hal_values(self):
+        values = LOGGER.parse_thermalservice(FIXTURE_PATH.read_text(encoding="utf-8"))
+        self.assertEqual("41.2", values["AP"])
+        self.assertEqual("32.8", values["BAT"])
+        self.assertEqual("38.7", values["PA"])
+        self.assertEqual("35.4", values["SKIN"])
+
+    def test_normal_uptime_response(self):
+        self.assertEqual(332079680000000, LOGGER.parse_uptime("332079.68 338607.19\n"))
+
+    def test_empty_uptime_response_has_explicit_error(self):
+        with self.assertRaisesRegex(ValueError, "expected at least 2 uptime tokens, got 0"):
+            LOGGER.parse_uptime("", "uptime before thermalservice")
+
+    def test_failed_adb_response_includes_returncode(self):
+        result = SimpleNamespace(returncode=7, stdout="", stderr="device offline")
+        with patch.object(LOGGER.subprocess, "run", return_value=result):
+            with self.assertRaisesRegex(RuntimeError, "returncode=7; device offline"):
+                LOGGER.adb_text(["adb"], ["exec-out", "cat", "/proc/uptime"], "uptime")
+
+    def test_successful_adb_with_empty_stdout_is_rejected(self):
+        result = SimpleNamespace(returncode=0, stdout=" \r\n", stderr="")
+        with patch.object(LOGGER.subprocess, "run", return_value=result):
+            with self.assertRaisesRegex(RuntimeError, "adb returned empty stdout"):
+                LOGGER.adb_text(["adb"], ["exec-out", "cat", "/proc/uptime"], "uptime")
+
+    def test_thermal_dump_uses_separate_checked_adb_responses(self):
+        fixture = FIXTURE_PATH.read_text(encoding="utf-8")
+        responses = [
+            SimpleNamespace(returncode=0, stdout="332079.68 338607.19\n", stderr=""),
+            SimpleNamespace(returncode=0, stdout=fixture, stderr=""),
+            SimpleNamespace(returncode=0, stdout="332080.12 338607.70\n", stderr=""),
+        ]
+        with patch.object(LOGGER.subprocess, "run", side_effect=responses) as run:
+            values, raw = LOGGER.thermal_dump(["adb"])
+        self.assertEqual(3, run.call_count)
+        self.assertEqual("ok", values["parse_status"])
+        self.assertEqual("38.7", values["PA"])
+        self.assertEqual(fixture, raw)
 
     def test_gpu_file_sequence_validation(self):
         events = [
@@ -94,18 +145,50 @@ Current cooling devices from HAL:
         with self.assertRaises(ValueError):
             LOGGER.validate_run_envelope(d1, gpu, "run-a")
 
-    def test_delegate_evidence_is_unverified_without_conclusive_phrase(self):
-        evidence = LOGGER.delegate_evidence("Replacing 10 out of 10 node(s)")
+    def test_a24_31_of_31_gpu_delegate_is_verified(self):
+        evidence = LOGGER.delegate_evidence(self.A24_GPU_LOG)
+        self.assertEqual(31, evidence["replaced_nodes"])
+        self.assertEqual(31, evidence["total_nodes"])
+        self.assertEqual(1, evidence["gpu_delegate_kernel_count"])
+        self.assertTrue(evidence["full_delegate"])
+
+    def test_partial_gpu_delegation_is_unverified(self):
+        evidence = LOGGER.delegate_evidence(self.A24_GPU_LOG.replace("31 out of 31", "30 out of 31"))
         self.assertFalse(evidence["full_delegate"])
         self.assertEqual("unverified", evidence["verification"])
 
-    def test_delegate_evidence_records_full_replacement(self):
-        evidence = LOGGER.delegate_evidence(
-            "Replacing 10 out of 10 node(s) with delegate, yielding one partition for the whole graph"
+    def test_full_node_count_with_failure_or_fallback_is_unverified(self):
+        for failure in (
+            "failed to apply delegate",
+            "restored original execution plan",
+            "remaining nodes run on CPU",
+        ):
+            with self.subTest(failure=failure):
+                evidence = LOGGER.delegate_evidence(self.A24_GPU_LOG + failure)
+                self.assertFalse(evidence["full_delegate"])
+                self.assertTrue(evidence["failure_or_fallback_evidence"])
+
+    def test_non_gpu_delegate_is_unverified(self):
+        log = self.A24_GPU_LOG.replace("GPU", "NNAPI").replace(
+            "TfLiteGpuDelegateV2", "TfLiteNnapiDelegate"
         )
-        self.assertEqual(10, evidence["replaced_nodes"])
-        self.assertEqual(10, evidence["total_nodes"])
-        self.assertTrue(evidence["full_delegate"])
+        self.assertFalse(LOGGER.delegate_evidence(log)["full_delegate"])
+
+    def test_thermal_coverage_requires_95_percent_and_load_sample(self):
+        events = [
+            {"event": "sample", "parse_status": "ok", "mono_ns": value}
+            for value in range(1, 20)
+        ] + [{"event": "sample_error", "error": "timeout"}]
+        coverage = LOGGER.thermal_coverage(events, 10, 12)
+        self.assertEqual(0.95, coverage["valid_ratio"])
+        self.assertEqual(1, coverage["error_count"])
+        self.assertTrue(coverage["passes_formal_requirement"])
+
+    def test_thermal_coverage_fails_without_valid_load_sample(self):
+        events = [{"event": "sample", "parse_status": "ok", "mono_ns": 1}]
+        self.assertFalse(
+            LOGGER.thermal_coverage(events, 10, 12)["passes_formal_requirement"]
+        )
 
     def test_current_raw_is_not_calibrated(self):
         source = MODULE_PATH.read_text(encoding="utf-8")
