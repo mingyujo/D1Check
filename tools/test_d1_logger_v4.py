@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -82,6 +83,174 @@ Current cooling devices from HAL:
         self.assertEqual("ok", values["parse_status"])
         self.assertEqual("38.7", values["PA"])
         self.assertEqual(fixture, raw)
+
+    def test_perfetto_lifecycle_replay_starts_kills_and_pulls_exactly_once(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session = LOGGER.CaptureSession(
+                "adb", None, Path(directory), 1.0, True, Path("host-config.pbtxt")
+            )
+            session.run_id = "run-a"
+            session.run_dir = Path(directory)
+            (session.run_dir / "raw").mkdir()
+            (session.run_dir / "diagnostics").mkdir()
+            success = SimpleNamespace(returncode=0, stdout="", stderr="")
+
+            def run_command(command, **_kwargs):
+                if "perfetto" in command:
+                    return SimpleNamespace(returncode=0, stdout="4321\n", stderr="")
+                if "pull" in command:
+                    Path(command[-1]).write_bytes(b"first-trace")
+                return success
+
+            events = (
+                "diagnostic_trace_start",
+                "diagnostic_trace_stop",
+                "diagnostic_trace_start",
+                "load_end",
+                "diagnostic_trace_stop",
+            )
+            with patch.object(LOGGER.subprocess, "run", side_effect=run_command) as run, \
+                    patch.object(LOGGER.time, "sleep"):
+                for event in events:
+                    session.handle_logcat_line(json.dumps({
+                        "source": "gpu", "event": event, "run_id": "run-a",
+                    }))
+                session.stop_perfetto()  # capture finally
+
+            commands = [call.args[0] for call in run.call_args_list]
+            self.assertEqual(1, sum("perfetto" in command for command in commands))
+            self.assertEqual(1, sum("kill" in command for command in commands))
+            self.assertEqual(1, sum("pull" in command for command in commands))
+            self.assertEqual(1, sum("rm" in command for command in commands))
+            self.assertEqual(
+                b"first-trace",
+                (session.run_dir / "diagnostics/d1check.perfetto-trace").read_bytes(),
+            )
+            self.assertIs(session.perfetto_state, LOGGER.PerfettoState.COMPLETED)
+            self.assertIsNone(session.perfetto_pid)
+
+            push_command = next(command for command in commands if "push" in command)
+            self.assertEqual(LOGGER.PERFETTO_DEVICE_CONFIG_PATH, push_command[-1])
+            perfetto_command = next(command for command in commands if "perfetto" in command)
+            self.assertEqual(
+                LOGGER.PERFETTO_DEVICE_CONFIG_PATH,
+                perfetto_command[perfetto_command.index("-c") + 1],
+            )
+            self.assertEqual(
+                LOGGER.PERFETTO_DEVICE_TRACE_PATH,
+                perfetto_command[perfetto_command.index("-o") + 1],
+            )
+            pull_command = next(command for command in commands if "pull" in command)
+            self.assertEqual(LOGGER.PERFETTO_DEVICE_TRACE_PATH, pull_command[-2])
+            cleanup_command = next(command for command in commands if "rm" in command)
+            self.assertIn(LOGGER.PERFETTO_DEVICE_CONFIG_PATH, cleanup_command)
+            self.assertIn(LOGGER.PERFETTO_DEVICE_TRACE_PATH, cleanup_command)
+
+    def test_perfetto_start_failure_is_preserved_in_capture_error(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session = LOGGER.CaptureSession(
+                "adb", None, Path(directory), 1.0, True, Path("host-config.pbtxt")
+            )
+            session.run_id = "run-a"
+            success = SimpleNamespace(returncode=0, stdout="", stderr="")
+            denied = SimpleNamespace(
+                returncode=13,
+                stdout="config rejected",
+                stderr="open failed: Permission denied",
+            )
+            with patch.object(
+                LOGGER.subprocess, "run",
+                side_effect=[success, denied],
+            ):
+                session.handle_logcat_line(json.dumps({
+                    "source": "gpu",
+                    "event": "diagnostic_trace_start",
+                    "run_id": "run-a",
+                }))
+            self.assertTrue(session.stop.is_set())
+            self.assertIn("returncode=13", session.capture_error)
+            self.assertIn("Permission denied", session.capture_error)
+            self.assertIn("config rejected", session.capture_error)
+            self.assertIs(session.perfetto_state, LOGGER.PerfettoState.FAILED)
+
+            with patch.object(LOGGER.subprocess, "run") as run:
+                session.start_perfetto()
+            run.assert_not_called()
+
+    def test_perfetto_exit_zero_with_warning_stderr_is_success(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session = LOGGER.CaptureSession(
+                "adb", None, Path(directory), 1.0, True, Path("host-config.pbtxt")
+            )
+            success = SimpleNamespace(returncode=0, stdout="", stderr="warning: cleanup")
+            started = SimpleNamespace(
+                returncode=0,
+                stdout="8765\n",
+                stderr="warning: ftrace event unavailable",
+            )
+            with patch.object(
+                LOGGER.subprocess, "run", side_effect=[success, started]
+            ):
+                session.start_perfetto()
+            self.assertEqual("8765", session.perfetto_pid)
+
+    def test_perfetto_pull_failure_retains_remote_trace_and_blocks_replay(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session = LOGGER.CaptureSession(
+                "adb", None, Path(directory), 1.0, True, Path("host-config.pbtxt")
+            )
+            session.run_id = "run-a"
+            session.run_dir = Path(directory)
+            (session.run_dir / "raw").mkdir()
+            (session.run_dir / "diagnostics").mkdir()
+            success = SimpleNamespace(returncode=0, stdout="", stderr="")
+            failed_pull = SimpleNamespace(
+                returncode=1, stdout="0 files pulled", stderr="remote read failed"
+            )
+
+            def run_command(command, **_kwargs):
+                if "perfetto" in command:
+                    return SimpleNamespace(returncode=0, stdout="999\n", stderr="")
+                if "pull" in command:
+                    return failed_pull
+                return success
+
+            with patch.object(LOGGER.subprocess, "run", side_effect=run_command) as run, \
+                    patch.object(LOGGER.time, "sleep"):
+                session.handle_logcat_line(json.dumps({
+                    "source": "gpu", "event": "diagnostic_trace_start", "run_id": "run-a",
+                }))
+                session.handle_logcat_line(json.dumps({
+                    "source": "gpu", "event": "diagnostic_trace_stop", "run_id": "run-a",
+                }))
+                session.handle_logcat_line(json.dumps({
+                    "source": "gpu", "event": "diagnostic_trace_start", "run_id": "run-a",
+                }))
+                session.stop_perfetto()
+
+            commands = [call.args[0] for call in run.call_args_list]
+            self.assertEqual(1, sum("perfetto" in command for command in commands))
+            self.assertEqual(1, sum("kill" in command for command in commands))
+            self.assertEqual(1, sum("pull" in command for command in commands))
+            self.assertEqual(0, sum("rm" in command for command in commands))
+            self.assertIs(session.perfetto_state, LOGGER.PerfettoState.FAILED)
+            self.assertIn(LOGGER.PERFETTO_DEVICE_TRACE_PATH, session.capture_error)
+            self.assertIn("remote trace retained", session.capture_error)
+            self.assertFalse(
+                (session.run_dir / "diagnostics/d1check.perfetto-trace.part").exists()
+            )
+
+    def test_basic_perfetto_methods_remain_no_op(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session = LOGGER.CaptureSession(
+                "adb", None, Path(directory), 1.0, False, Path("host-config.pbtxt")
+            )
+            with patch.object(LOGGER.subprocess, "run") as run:
+                session.start_perfetto()
+                session.stop_perfetto()
+                session.cleanup_perfetto()
+            run.assert_not_called()
+            self.assertIs(session.perfetto_state, LOGGER.PerfettoState.IDLE)
 
     def test_gpu_file_sequence_validation(self):
         events = [

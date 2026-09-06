@@ -133,6 +133,18 @@ immediately after load. The config uses a 32,768 KiB ring buffer and the maximum
 diagnostic duration is 3,600 seconds. Long/high-rate traces can overwrite older packets, so each
 diagnostic summary includes an explicit overwrite warning.
 
+On Galaxy A24/Android, the host pushes the config to
+`/data/misc/perfetto-configs/d1check-gpu-diagnostic.pbtxt` and writes the device trace to
+`/data/misc/perfetto-traces/d1check-diagnostic.perfetto-trace`. Both files are removed after the
+trace is pulled. `/data/local/tmp` is not used because Perfetto cannot read the config there on the
+validated device build.
+
+Perfetto capture is single-shot per logger session. Lifecycle events replayed from the runner file
+cannot restart a completed or failed capture. The host pulls to a temporary local file, verifies a
+non-empty result, atomically installs it without replacing an existing successful trace, and only
+then removes the remote config and trace. On pull failure the remote trace is retained for manual
+recovery.
+
 ## Run validity and delegation evidence
 
 D1Check never resumes a stored active run. Every Activity launch or New Run action creates a new

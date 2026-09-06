@@ -7,6 +7,7 @@ import argparse
 import bisect
 import csv
 import datetime as dt
+from enum import Enum
 import json
 import math
 import os
@@ -44,6 +45,20 @@ DELEGATE_FAILURE_RE = re.compile(
 )
 PERFETTO_BUFFER_KB = 32768
 MAX_DIAGNOSTIC_SECONDS = 3600
+PERFETTO_DEVICE_CONFIG_PATH = (
+    "/data/misc/perfetto-configs/d1check-gpu-diagnostic.pbtxt"
+)
+PERFETTO_DEVICE_TRACE_PATH = (
+    "/data/misc/perfetto-traces/d1check-diagnostic.perfetto-trace"
+)
+
+
+class PerfettoState(Enum):
+    IDLE = "idle"
+    RUNNING = "running"
+    STOPPING = "stopping"
+    COMPLETED = "completed"
+    FAILED = "failed"
 
 
 def parse_thermalservice(text: str) -> dict[str, str]:
@@ -234,7 +249,9 @@ class CaptureSession:
         self.pending_thermal: list[dict[str, Any]] = []
         self.logcat_process: subprocess.Popen[str] | None = None
         self.perfetto_pid: str | None = None
-        self.perfetto_device_path = "/data/local/tmp/d1check-diagnostic.perfetto-trace"
+        self.perfetto_state = PerfettoState.IDLE
+        self.perfetto_lock = threading.Lock()
+        self.perfetto_cleanup_done = False
         self.capture_error: str | None = None
         self.capture_warnings: list[str] = []
         self.pending_raw_log: list[str] = []
@@ -405,42 +422,144 @@ class CaptureSession:
     def start_perfetto(self) -> None:
         if not self.diagnostic_perfetto:
             return
-        config_device = "/data/local/tmp/d1check-gpu-diagnostic.pbtxt"
-        subprocess.run(
-            self.adb_command + ["push", str(self.perfetto_config), config_device], check=True
+        with self.perfetto_lock:
+            if self.perfetto_state is not PerfettoState.IDLE:
+                return
+            try:
+                push = subprocess.run(
+                    self.adb_command + [
+                        "push", str(self.perfetto_config), PERFETTO_DEVICE_CONFIG_PATH,
+                    ],
+                    capture_output=True,
+                    text=True,
+                    errors="replace",
+                )
+                if push.returncode != 0:
+                    raise RuntimeError(self._perfetto_failure("config push", push))
+                result = subprocess.run(
+                    self.adb_command + [
+                        "shell", "perfetto", "--txt",
+                        "-c", PERFETTO_DEVICE_CONFIG_PATH,
+                        "-o", PERFETTO_DEVICE_TRACE_PATH,
+                        "--background-wait",
+                    ],
+                    capture_output=True,
+                    text=True,
+                    errors="replace",
+                )
+                if result.returncode != 0:
+                    raise RuntimeError(self._perfetto_failure("start", result))
+                pid_lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+                if not pid_lines:
+                    raise RuntimeError(
+                        "Perfetto start failed: returncode=0 but stdout contained no "
+                        f"background PID; stderr={result.stderr.strip()[:500]!r}"
+                    )
+                self.perfetto_pid = pid_lines[-1]
+                self.perfetto_state = PerfettoState.RUNNING
+            except Exception as error:
+                self.perfetto_pid = None
+                self.perfetto_state = PerfettoState.FAILED
+                detail = str(error)
+                self.capture_error = (
+                    detail if detail.startswith("Perfetto ")
+                    else f"Perfetto start failed: {detail}"
+                )
+                raise RuntimeError(self.capture_error) from error
+
+    @staticmethod
+    def _perfetto_failure(operation: str, result: subprocess.CompletedProcess[str]) -> str:
+        stderr = result.stderr.strip()[:500]
+        stdout = result.stdout.strip()[:500]
+        return (
+            f"Perfetto {operation} failed: returncode={result.returncode}; "
+            f"stderr={stderr!r}; stdout={stdout!r}"
         )
-        result = subprocess.run(
-            self.adb_command
-            + [
-                "shell",
-                "perfetto",
-                "--txt",
-                "-c",
-                config_device,
-                "-o",
-                self.perfetto_device_path,
-                "--background-wait",
-            ],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-        self.perfetto_pid = result.stdout.strip().splitlines()[-1]
+
+    def cleanup_perfetto(self) -> None:
+        with self.perfetto_lock:
+            if not self.diagnostic_perfetto or self.perfetto_cleanup_done:
+                return
+            result = subprocess.run(
+                self.adb_command + [
+                    "shell", "rm", "-f",
+                    PERFETTO_DEVICE_CONFIG_PATH,
+                    PERFETTO_DEVICE_TRACE_PATH,
+                ],
+                capture_output=True,
+                text=True,
+                errors="replace",
+            )
+            self.perfetto_cleanup_done = True
+            if result.returncode != 0:
+                self.capture_warnings.append(self._perfetto_failure("cleanup", result))
 
     def stop_perfetto(self) -> None:
-        if not self.perfetto_pid:
+        if not self.diagnostic_perfetto:
             return
-        subprocess.run(self.adb_command + ["shell", "kill", "-INT", self.perfetto_pid])
-        self.perfetto_pid = None
-        time.sleep(1)
-        if self.run_dir is not None:
-            subprocess.run(
-                self.adb_command
-                + [
-                    "pull",
-                    self.perfetto_device_path,
-                    str(self.run_dir / "diagnostics/d1check.perfetto-trace"),
-                ]
+        with self.perfetto_lock:
+            if self.perfetto_state is not PerfettoState.RUNNING:
+                return
+            self.perfetto_state = PerfettoState.STOPPING
+            pid = self.perfetto_pid
+            self.perfetto_pid = None
+        temporary: Path | None = None
+        try:
+            if not pid:
+                raise RuntimeError("Perfetto stop failed: RUNNING state had no PID")
+            killed = subprocess.run(
+                self.adb_command + ["shell", "kill", "-INT", pid],
+                capture_output=True,
+                text=True,
+                errors="replace",
+            )
+            if killed.returncode != 0:
+                raise RuntimeError(self._perfetto_failure("stop", killed))
+            time.sleep(1)
+            if self.run_dir is None:
+                raise RuntimeError("Perfetto pull failed: capture run directory is unavailable")
+            destination = self.run_dir / "diagnostics/d1check.perfetto-trace"
+            if destination.is_file() and destination.stat().st_size > 0:
+                with self.perfetto_lock:
+                    self.perfetto_state = PerfettoState.COMPLETED
+                self.cleanup_perfetto()
+                return
+            temporary = destination.with_name(destination.name + ".part")
+            temporary.unlink(missing_ok=True)
+            pulled = subprocess.run(
+                self.adb_command + [
+                    "pull", PERFETTO_DEVICE_TRACE_PATH, str(temporary),
+                ],
+                capture_output=True,
+                text=True,
+                errors="replace",
+            )
+            if pulled.returncode != 0:
+                raise RuntimeError(self._perfetto_failure("pull", pulled))
+            if not temporary.is_file():
+                raise RuntimeError("Perfetto pull failed: local temporary trace was not created")
+            if temporary.stat().st_size <= 0:
+                raise RuntimeError("Perfetto pull failed: local temporary trace is empty")
+            if destination.exists():
+                raise RuntimeError(
+                    f"Perfetto pull refused to overwrite existing trace: {destination}"
+                )
+            os.replace(temporary, destination)
+            temporary = None
+            if destination.stat().st_size <= 0:
+                raise RuntimeError("Perfetto pull failed: final local trace is empty")
+            with self.perfetto_lock:
+                self.perfetto_state = PerfettoState.COMPLETED
+            self.cleanup_perfetto()
+        except Exception as error:
+            if temporary is not None:
+                temporary.unlink(missing_ok=True)
+            with self.perfetto_lock:
+                self.perfetto_state = PerfettoState.FAILED
+            detail = str(error)
+            self.capture_error = (
+                f"{detail}; remote_trace={PERFETTO_DEVICE_TRACE_PATH}; "
+                "remote trace retained for manual recovery"
             )
 
     def thermal_loop(self) -> None:
@@ -476,7 +595,11 @@ class CaptureSession:
                 try:
                     self.start_perfetto()
                 except Exception as error:
-                    self.capture_error = f"Perfetto start failed: {error}"
+                    detail = str(error)
+                    self.capture_error = (
+                        detail if detail.startswith("Perfetto ")
+                        else f"Perfetto start failed: {detail}"
+                    )
                     self.stop.set()
             if event.get("event") in ("diagnostic_trace_stop", "load_end"):
                 self.stop_perfetto()
