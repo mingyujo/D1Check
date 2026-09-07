@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var warmupInput: EditText
     private lateinit var diagnosticInput: CheckBox
     private lateinit var startButton: Button
+    private lateinit var probeNnapiButton: Button
     private lateinit var statusView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +58,10 @@ class MainActivity : AppCompatActivity() {
             text = "Start: baseline 60s, then load"
             setOnClickListener { startBenchmark() }
         }
+        probeNnapiButton = Button(this).apply {
+            text = "Probe NNAPI devices"
+            setOnClickListener { probeNnapiDevices() }
+        }
         statusView = TextView(this).apply {
             text = "Start D1Check new run and host logger before pressing Start."
             setPadding(24, 32, 24, 32)
@@ -76,6 +81,7 @@ class MainActivity : AppCompatActivity() {
             addView(warmupInput)
             addView(diagnosticInput)
             addView(startButton)
+            addView(probeNnapiButton)
             addView(statusView)
         }
         setContentView(ScrollView(this).apply { addView(layout) })
@@ -106,6 +112,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         startButton.isEnabled = false
+        probeNnapiButton.isEnabled = false
         statusView.text = "Baseline 60 seconds. No GPU load has started yet."
         executor.execute {
             val result = try {
@@ -115,6 +122,7 @@ class MainActivity : AppCompatActivity() {
             }
             runOnUiThread {
                 startButton.isEnabled = true
+                probeNnapiButton.isEnabled = true
                 statusView.text = buildString {
                     append(if (result.success) "Complete" else "Failed")
                     append("\n")
@@ -124,6 +132,29 @@ class MainActivity : AppCompatActivity() {
                         append("\nfile=").append(it.file.absolutePath)
                     }
                 }
+            }
+        }
+    }
+
+    private fun probeNnapiDevices() {
+        startButton.isEnabled = false
+        probeNnapiButton.isEnabled = false
+        statusView.text = "Probing NNAPI devices..."
+        executor.execute {
+            val message = try {
+                when (val result = NnapiDeviceProbe.probeAndLog()) {
+                    is NnapiProbeResult.Unsupported ->
+                        "NNAPI device probe is unsupported below API 29 (device API ${result.apiLevel})."
+                    is NnapiProbeResult.Success ->
+                        "NNAPI probe complete: ${result.devices.size} device(s). See D1NPU log lines."
+                }
+            } catch (error: Throwable) {
+                "NNAPI probe failed: ${error.javaClass.simpleName}: ${error.message}"
+            }
+            runOnUiThread {
+                startButton.isEnabled = true
+                probeNnapiButton.isEnabled = true
+                statusView.text = message
             }
         }
     }
