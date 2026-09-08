@@ -29,8 +29,7 @@ Use the following order for every basic experiment.
    python tools/d1_logger_v4.py analyze results/<run_id>
    ~~~
 
-Python is not installed on the current development PC, so these commands remain unverified until
-an actual interpreter is installed or its path is supplied.
+If `python` is not on `PATH`, invoke an installed Python 3.11+ executable by its full path.
 
 ## Resource behavior
 
@@ -194,8 +193,10 @@ count; the count is an output. Metadata adds `termination_reason`, `target_durat
 deadline because `Interpreter.run()` cannot be interrupted.
 
 Automated pilot starts currently enforce a pilot-only gate: Android thermal status at most LIGHT
-(1), unplugged, battery status DISCHARGING (3), battery level 30--90%, and battery temperature at
-most 35 C. Metadata explicitly records `safety_policy_scope=PILOT_START_ONLY`, while
+(1), unplugged, battery status DISCHARGING (3), battery level 30--100%, and battery temperature at
+most 35 C. SOC 91--100% is allowed for functional/safety pilots but records
+`formal_energy_eligible=false`; formal energy eligibility recommends SOC 30--90%. Metadata
+explicitly records `safety_policy_scope=PILOT_START_ONLY`, while
 `formal_safety_limits_applied=false` and `matched_start_limits_applied=false`. Manual execution is
 unchanged. Formal hard-safety monitoring and matched-start control belong to later phases.
 
@@ -206,5 +207,70 @@ Scale mismatch is never silently corrected.
 
 The later CPU/GPU accuracy preflight will use at least 32 deterministic inputs. Output SHA-256 is
 provenance only; top-k agreement, cosine similarity, and absolute/relative error are the pass
-criteria. Duty cycling, output comparison, the Python experiment orchestrator, and energy
-integration are not implemented in phase 0-3.
+criteria. Duty cycling, output comparison, and energy integration are not implemented.
+
+## Repeat experiment orchestrator MVP
+
+`d1_experiment_orchestrator.py` automates BASIC CPU/GPU duration experiments. One repeat means one
+run per selected resource. `--seed` shuffles the stored plan reproducibly; without a seed the order
+is the order supplied to `--resources`. Each slot receives a new D1Check run UUID and runner
+command UUID.
+
+Dry-run performs no ADB calls and writes no manifest:
+
+~~~powershell
+python tools/d1_experiment_orchestrator.py --dry-run --mode pilot `
+  --resources CPU GPU --duration 60 --warmup 20 --repeat 2 --seed 20260908
+~~~
+
+Galaxy A24 pilot example (wireless ADB, unplugged):
+
+~~~powershell
+python tools/d1_experiment_orchestrator.py `
+  --serial <A24-IP:PORT> --mode pilot --resources CPU GPU `
+  --cpu-threads 4 --duration 60 --warmup 20 --repeat 1 --seed 20260908 `
+  --output-dir results/A24_pilot_60s
+~~~
+
+The orchestrator verifies the selected ADB device, force-stops the runner, starts the existing v4
+logger, confirms its `capture started` marker, creates the D1Check run, starts the runner, waits for
+its footer or explicit failure, stops D1Check, analyzes the captured directory, and validates the
+result. Pilot preflight permits SOC 30--100%; formal mode requires SOC 30--90%. Both require
+unplugged, DISCHARGING, battery temperature at most 35 C, and Android thermal status at most LIGHT.
+
+Every transition and failure is atomically checkpointed in
+`<output-dir>/experiment_manifest.json`. A failed slot halts the experiment and later slots remain
+pending. After correcting the cause, resume with the same options plus `--resume`; completed slots
+are never run again:
+
+~~~powershell
+python tools/d1_experiment_orchestrator.py `
+  --serial <A24-IP:PORT> --mode pilot --resources CPU GPU `
+  --cpu-threads 4 --duration 60 --warmup 20 --repeat 1 --seed 20260908 `
+  --output-dir results/A24_pilot_60s --resume
+~~~
+
+If Activity-based STOP does not produce the matching `run_stop`, the orchestrator uses the tested
+`run-as ... start-foreground-service` recovery and records that fact. A timeout, disconnected ADB
+stream, runner failure, abnormal logger exit, failed analysis, or invalid result stops the whole
+plan. There is no automatic retry; resume is an explicit operator decision.
+
+Logcat remains the fast terminal-event path, but it is not authoritative: Android may evict the
+late `D1GPU` replay before `file_summary` reaches the host. Remote fallback starts only after the
+expected 60-second baseline plus requested load duration and a 30-second setup/warmup grace. It
+then checks the runner directory at 15-second intervals and once more immediately before the hard
+timeout. Exactly one matching `gpu-events-<run_id>-<runner_session_id>.jsonl` is required. Its tail
+must have the expected run/session IDs, GPU source, schema version, contiguous sequence, and a
+valid final `file_summary` with `status=ok`; inference-only tails remain pending. Missing files and
+ADB command failures are distinct outcomes, and multiple matching files stop the experiment as
+ambiguous. The manifest records `terminal_event_source`, `terminal_fallback_used`,
+`remote_runner_path`, and `logcat_terminal_missing`.
+
+On every failed slot, cleanup records separate manifest steps for Activity STOP, direct-service
+STOP use, matching `run_stop` confirmation, logger exit or forced termination, runner force-stop,
+and recoverable local/remote artifact paths. Cleanup errors are supplementary and never replace
+the original experiment failure.
+
+The manifest keeps `current_raw_policy=raw_unscaled_unit_unverified` and
+`energy_calculation=false`. The MVP never scales current, integrates device-battery energy, runs a
+duty cycle, or compares model accuracy.
