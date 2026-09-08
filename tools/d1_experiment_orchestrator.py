@@ -22,7 +22,7 @@ from typing import Any, Callable, Iterable
 import uuid
 
 
-VERSION = "0.2"
+VERSION = "0.3"
 D1_PACKAGE = "com.example.d1check"
 D1_ACTIVITY = f"{D1_PACKAGE}/.MainActivity"
 D1_SERVICE = f"{D1_PACKAGE}/.TelemetryForegroundService"
@@ -37,6 +37,19 @@ REMOTE_FALLBACK_GRACE_SECONDS = 30
 REMOTE_POLL_INTERVAL_SECONDS = 15
 REMOTE_TAIL_LINES = 128
 THERMAL_STATUS_RE = re.compile(r"Thermal Status:\s*(-?\d+)", re.IGNORECASE)
+HAL_TEMPERATURE_RE = re.compile(
+    r"Temperature\{(?P<body>[^}]*)\}", re.IGNORECASE
+)
+HAL_FIELD_RE = re.compile(r"(?:^|,)\s*(m[A-Za-z]+)\s*=\s*([^,}]*)")
+THERMAL_SENSOR_NAMES = ("AP", "BAT", "PA", "SKIN")
+THERMAL_SENSOR_ALIASES = {
+    "AP": "AP",
+    "BAT": "BAT",
+    "PA": "PA",
+    "PATHM": "PA",
+    "PA1THM": "PA",
+    "SKIN": "SKIN",
+}
 RUNNER_FAILURE_EVENTS = {
     "buffer_limit",
     "pilot_safety_rejected",
@@ -63,6 +76,18 @@ class RemoteRunnerAmbiguityError(OrchestratorError):
 
 class RemoteRunnerValidationError(OrchestratorError):
     pass
+
+
+class EmergencyAbort(OrchestratorError):
+    def __init__(self, source: str, stage: str, reasons: Iterable[str], sample: dict[str, Any]):
+        self.source = source
+        self.stage = stage
+        self.reasons = tuple(reasons)
+        self.sample = sample
+        super().__init__(
+            f"emergency safety abort during {stage} from {source}: "
+            + ",".join(self.reasons)
+        )
 
 
 def utc_now() -> str:
@@ -233,6 +258,278 @@ def evaluate_safety(snapshot: SafetySnapshot, mode: str) -> SafetyEvaluation:
         reasons.append("formal_battery_level")
     mode_pass = pilot_pass and (mode == "pilot" or formal_energy_eligible)
     return SafetyEvaluation(mode, pilot_pass, formal_energy_eligible, mode_pass, tuple(reasons))
+
+
+def parse_hal_temperature_vector(text: str) -> dict[str, float]:
+    """Parse exactly one AP/BAT/PA/SKIN vector from the HAL temperature section."""
+    section_match = re.search(
+        r"Current temperatures from HAL:?\s*(.*?)(?:\n\s*(?:Current cooling devices|"
+        r"Temperature static|Temperature headroom|HAL Ready|$))",
+        text,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    if section_match is None:
+        raise ValueError("thermalservice missing Current temperatures from HAL section")
+    values: dict[str, float] = {}
+    recognized_records = 0
+    for record in HAL_TEMPERATURE_RE.finditer(section_match.group(1)):
+        fields = {
+            key.lower(): value.strip()
+            for key, value in HAL_FIELD_RE.findall(record.group("body"))
+        }
+        raw_name = fields.get("mname", "").upper()
+        canonical = THERMAL_SENSOR_ALIASES.get(raw_name)
+        if canonical is None:
+            continue
+        recognized_records += 1
+        if canonical in values:
+            raise ValueError(
+                f"duplicate HAL thermal sensor {canonical}: alias={raw_name!r}"
+            )
+        raw_value = fields.get("mvalue")
+        if raw_value is None or raw_value == "":
+            raise ValueError(f"HAL thermal sensor {raw_name!r} missing mValue")
+        try:
+            value = float(raw_value)
+        except ValueError as error:
+            raise ValueError(
+                f"HAL thermal sensor {raw_name!r} malformed mValue={raw_value!r}"
+            ) from error
+        if not math.isfinite(value):
+            raise ValueError(
+                f"HAL thermal sensor {raw_name!r} non-finite mValue={raw_value!r}"
+            )
+        values[canonical] = value
+    missing = [name for name in THERMAL_SENSOR_NAMES if name not in values]
+    if missing:
+        raise ValueError(
+            "HAL thermal sensor set incomplete: "
+            f"missing={missing}, recognized_records={recognized_records}"
+        )
+    return {name: values[name] for name in THERMAL_SENSOR_NAMES}
+
+
+def _linear_slope_per_minute(points: list[tuple[float, float]]) -> float:
+    if len(points) < 2:
+        return math.inf
+    origin = points[0][0]
+    xs = [point[0] - origin for point in points]
+    ys = [point[1] for point in points]
+    mean_x = sum(xs) / len(xs)
+    mean_y = sum(ys) / len(ys)
+    denominator = sum((value - mean_x) ** 2 for value in xs)
+    if denominator <= 0:
+        return math.inf
+    slope_per_second = sum(
+        (x - mean_x) * (y - mean_y) for x, y in zip(xs, ys)
+    ) / denominator
+    return slope_per_second * 60.0
+
+
+def evaluate_thermal_stability(
+    samples: list[dict[str, Any]],
+    window_seconds: float,
+    max_range_c: float,
+    max_abs_slope_c_per_minute: float,
+) -> dict[str, Any]:
+    if not samples:
+        return {
+            "stable": False,
+            "reason": "no_samples",
+            "window_coverage_seconds": 0.0,
+            "sensor_evidence": {},
+        }
+    latest = float(samples[-1]["host_monotonic_s"])
+    cutoff = latest - window_seconds
+    first_inside = next(
+        (
+            index for index, sample in enumerate(samples)
+            if float(sample["host_monotonic_s"]) >= cutoff
+        ),
+        len(samples) - 1,
+    )
+    # Include one bracketing sample before the cutoff. Real ADB sampling has jitter;
+    # without this point a nominal 5 s cadence can retain only ~25 s forever.
+    window = samples[max(0, first_inside - 1):]
+    coverage = float(window[-1]["host_monotonic_s"]) - float(
+        window[0]["host_monotonic_s"]
+    )
+    sensor_evidence: dict[str, Any] = {}
+    for sensor in THERMAL_SENSOR_NAMES:
+        points = [
+            (float(sample["host_monotonic_s"]), float(sample["temperatures_c"][sensor]))
+            for sample in window
+        ]
+        values = [value for _, value in points]
+        value_range = max(values) - min(values)
+        slope = _linear_slope_per_minute(points)
+        sensor_evidence[sensor] = {
+            "min_c": min(values),
+            "max_c": max(values),
+            "range_c": value_range,
+            "slope_c_per_minute": slope,
+            "range_pass": value_range <= max_range_c,
+            "slope_pass": abs(slope) <= max_abs_slope_c_per_minute,
+        }
+    coverage_pass = coverage >= window_seconds
+    stable = coverage_pass and all(
+        evidence["range_pass"] and evidence["slope_pass"]
+        for evidence in sensor_evidence.values()
+    )
+    return {
+        "stable": stable,
+        "reason": "stable" if stable else "criteria_not_met",
+        "window_coverage_seconds": coverage,
+        "window_sample_count": len(window),
+        "coverage_pass": coverage_pass,
+        "limits": {
+            "window_seconds": window_seconds,
+            "max_range_c": max_range_c,
+            "max_abs_slope_c_per_minute": max_abs_slope_c_per_minute,
+        },
+        "sensor_evidence": sensor_evidence,
+    }
+
+
+def evaluate_reference_match(
+    actual: dict[str, float], reference: dict[str, float], tolerance_c: float
+) -> dict[str, Any]:
+    missing = [name for name in THERMAL_SENSOR_NAMES if name not in reference]
+    if missing:
+        raise ValueError(f"matched-start reference missing sensors: {missing}")
+    deltas = {name: actual[name] - float(reference[name]) for name in THERMAL_SENSOR_NAMES}
+    passes = {name: abs(delta) <= tolerance_c for name, delta in deltas.items()}
+    return {
+        "matched": all(passes.values()),
+        "tolerance_c": tolerance_c,
+        "reference_c": {name: float(reference[name]) for name in THERMAL_SENSOR_NAMES},
+        "actual_c": dict(actual),
+        "delta_c": deltas,
+        "sensor_pass": passes,
+        "claim": "tolerance_based_control_not_statistical_equivalence",
+    }
+
+
+def emergency_reasons(
+    sample: dict[str, Any],
+    max_battery_temperature_c: float,
+    max_android_thermal_status: int,
+    *,
+    require_all: bool,
+) -> list[str]:
+    reasons: list[str] = []
+    required = ("plugged", "battery_status", "battery_temperature_c", "thermal_status")
+    if require_all:
+        missing = [name for name in required if sample.get(name) is None]
+        if missing:
+            return ["monitor_sample_missing:" + ",".join(missing)]
+    plugged = sample.get("plugged")
+    if plugged is not None:
+        lowered = str(plugged).strip().lower()
+        try:
+            numeric_plugged = float(plugged)
+            if numeric_plugged < 0:
+                reasons.append("plugged_state_malformed")
+                is_plugged = False
+            else:
+                is_plugged = numeric_plugged > 0
+        except (TypeError, ValueError):
+            if lowered in {"true", "yes"}:
+                is_plugged = True
+            elif lowered in {"false", "no"}:
+                is_plugged = False
+            else:
+                reasons.append("plugged_state_malformed")
+                is_plugged = False
+        if is_plugged:
+            reasons.append("device_plugged")
+    battery_status = sample.get("battery_status")
+    if battery_status is not None:
+        try:
+            if int(battery_status) != 3:
+                reasons.append("not_discharging")
+        except (TypeError, ValueError):
+            reasons.append("battery_status_malformed")
+    battery_temperature = sample.get("battery_temperature_c")
+    if battery_temperature is not None:
+        try:
+            value = float(battery_temperature)
+            if not math.isfinite(value) or value > max_battery_temperature_c:
+                reasons.append("battery_temperature_emergency")
+        except (TypeError, ValueError):
+            reasons.append("battery_temperature_malformed")
+    thermal_status = sample.get("thermal_status")
+    if thermal_status is not None:
+        try:
+            parsed_status = int(thermal_status)
+            if parsed_status < 0:
+                reasons.append("android_thermal_status_malformed")
+            elif parsed_status > max_android_thermal_status:
+                reasons.append("android_thermal_status_emergency")
+        except (TypeError, ValueError):
+            reasons.append("android_thermal_status_malformed")
+    return reasons
+
+
+class RuntimeSafetyMonitor:
+    def __init__(
+        self,
+        max_battery_temperature_c: float,
+        max_android_thermal_status: int,
+        *,
+        monotonic: Callable[[], float] = time.monotonic,
+    ) -> None:
+        self.max_battery_temperature_c = max_battery_temperature_c
+        self.max_android_thermal_status = max_android_thermal_status
+        self.monotonic = monotonic
+        self.stage = "load"
+        self.observations: list[dict[str, Any]] = []
+
+    def _check(self, source: str, sample: dict[str, Any], require_all: bool) -> None:
+        record = {
+            "source": source,
+            "stage": self.stage,
+            "host_monotonic_s": self.monotonic(),
+            "sample": sample,
+        }
+        self.observations.append(record)
+        reasons = emergency_reasons(
+            sample,
+            self.max_battery_temperature_c,
+            self.max_android_thermal_status,
+            require_all=require_all,
+        )
+        record["reasons"] = reasons
+        if reasons:
+            raise EmergencyAbort(source, self.stage, reasons, sample)
+
+    def observe_event(self, event: dict[str, Any]) -> None:
+        if event.get("source") != "d1check" or event.get("event") != "sample":
+            return
+        self._check(
+            "logcat_telemetry",
+            {
+                "android_mono_ns": event.get("mono_ns"),
+                "plugged": event.get("plugged"),
+                "battery_status": event.get("battery_status"),
+                "battery_temperature_c": event.get("battery_temp_C"),
+                "thermal_status": event.get("thermal_status"),
+            },
+            False,
+        )
+
+    def check_snapshot(self, snapshot: SafetySnapshot) -> None:
+        self._check(
+            "sparse_dumpsys",
+            {
+                "android_mono_ns": None,
+                "plugged": not snapshot.unplugged,
+                "battery_status": snapshot.battery_status,
+                "battery_temperature_c": snapshot.battery_temperature_c,
+                "thermal_status": snapshot.android_thermal_status,
+            },
+            True,
+        )
 
 
 def build_plan(resources: Iterable[str], repeat: int, seed: int | None) -> list[dict[str, Any]]:
@@ -655,14 +952,26 @@ def wait_for_runner_terminal(
     *,
     sparse_poll_interval_s: float = REMOTE_POLL_INTERVAL_SECONDS,
     monotonic: Callable[[], float] = time.monotonic,
+    periodic_interval_s: float = 0.0,
+    periodic_check: Callable[[], None] | None = None,
 ) -> RunnerTerminalDetection:
     started = monotonic()
     fallback_at = started + expected_completion_delay_s
     deadline = started + hard_timeout_s
     next_probe = fallback_at
+    next_periodic = (
+        started + periodic_interval_s
+        if periodic_check is not None and periodic_interval_s > 0
+        else math.inf
+    )
     probe_count = 0
     while True:
         now = monotonic()
+        if now >= next_periodic:
+            assert periodic_check is not None
+            periodic_check()
+            next_periodic = monotonic() + periodic_interval_s
+            now = monotonic()
         if now >= deadline:
             probe_count += 1
             final_probe = probe_remote(True)
@@ -683,7 +992,7 @@ def wait_for_runner_terminal(
                 f"{final_probe.state}; path={final_probe.remote_path}; "
                 f"detail={final_probe.detail}"
             )
-        wait_until = min(deadline, next_probe)
+        wait_until = min(deadline, next_probe, next_periodic)
         if now < wait_until:
             try:
                 event = wait_for_logcat(wait_until - now)
@@ -717,6 +1026,41 @@ def wait_for_runner_terminal(
                 False,
             )
         next_probe = monotonic() + sparse_poll_interval_s
+
+
+def wait_for_idle_interval(
+    duration_s: float,
+    wait_for_log_line: Callable[[float], None],
+    *,
+    periodic_interval_s: float = 0.0,
+    periodic_check: Callable[[], None] | None = None,
+    monotonic: Callable[[], float] = time.monotonic,
+) -> dict[str, float]:
+    started = monotonic()
+    deadline = started + duration_s
+    next_periodic = (
+        started + periodic_interval_s
+        if periodic_check is not None and periodic_interval_s > 0
+        else math.inf
+    )
+    while True:
+        now = monotonic()
+        if now >= deadline:
+            return {
+                "host_start_monotonic_s": started,
+                "host_end_monotonic_s": now,
+                "actual_duration_s": now - started,
+            }
+        if now >= next_periodic:
+            assert periodic_check is not None
+            periodic_check()
+            next_periodic = monotonic() + periodic_interval_s
+            continue
+        wait_until = min(deadline, next_periodic)
+        try:
+            wait_for_log_line(wait_until - now)
+        except WaitTimeout:
+            continue
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -871,6 +1215,114 @@ class ExperimentOrchestrator:
         snapshot = parse_safety_snapshot(battery, thermal)
         return snapshot, evaluate_safety(snapshot, self.args.mode)
 
+    def thermal_conditioning(
+        self,
+        slot: dict[str, Any],
+        *,
+        monotonic: Callable[[], float] = time.monotonic,
+        sleep: Callable[[float], None] = time.sleep,
+    ) -> dict[str, Any]:
+        assert self.adb is not None
+        policy = self.args.start_policy
+        result: dict[str, Any] = {
+            "policy": policy,
+            "status": "not_required" if policy == "safety" else "sampling",
+            "clock_domain": "host_monotonic_s",
+            "android_mono_ns_available": False,
+            "raw_samples": [],
+            "evaluations": [],
+            "limits": {
+                "window_seconds": self.args.stability_window_seconds,
+                "sample_interval_seconds": self.args.stability_sample_interval_seconds,
+                "timeout_seconds": self.args.stability_timeout_seconds,
+                "max_range_c": self.args.stability_max_range_c,
+                "max_abs_slope_c_per_minute": (
+                    self.args.stability_max_slope_c_per_minute
+                ),
+                "matched_tolerance_c": self.args.matched_tolerance_c,
+            },
+        }
+        slot["thermal_conditioning"] = result
+        if policy == "safety":
+            return result
+        started = monotonic()
+        deadline = started + self.args.stability_timeout_seconds
+        while True:
+            sample_started = monotonic()
+            response = self.adb.run(
+                ["shell", "dumpsys", "thermalservice"], timeout=15
+            )
+            try:
+                vector = parse_hal_temperature_vector(response.stdout)
+            except ValueError as error:
+                result["status"] = "sensor_error"
+                result["error"] = str(error)
+                result["failed_host_monotonic_s"] = monotonic()
+                self.save()
+                raise OrchestratorError(f"thermal conditioning sensor error: {error}") from error
+            sample = {
+                "captured_utc": utc_now(),
+                "host_monotonic_s": sample_started,
+                "android_mono_ns": None,
+                "temperatures_c": vector,
+            }
+            result["raw_samples"].append(sample)
+            evaluation = evaluate_thermal_stability(
+                result["raw_samples"],
+                self.args.stability_window_seconds,
+                self.args.stability_max_range_c,
+                self.args.stability_max_slope_c_per_minute,
+            )
+            evaluation["evaluated_host_monotonic_s"] = monotonic()
+            result["evaluations"].append(evaluation)
+            if evaluation["stable"]:
+                match: dict[str, Any] | None = None
+                if policy == "matched":
+                    reference_record = self.manifest.get("thermal_conditioning_reference")
+                    reference_created = reference_record is None
+                    if reference_record is None:
+                        reference_record = {
+                            "created_utc": utc_now(),
+                            "source_slot_id": slot.get("slot_id"),
+                            "temperatures_c": dict(vector),
+                            "definition": (
+                                "first stable matched-start vector; tolerance control only"
+                            ),
+                        }
+                        self.manifest["thermal_conditioning_reference"] = reference_record
+                    match = evaluate_reference_match(
+                        vector,
+                        reference_record["temperatures_c"],
+                        self.args.matched_tolerance_c,
+                    )
+                    result["reference_evaluation"] = match
+                    if not match["matched"]:
+                        self.save()
+                    else:
+                        result["reference_created"] = reference_created
+                if policy == "stable" or (match is not None and match["matched"]):
+                    result["status"] = "passed"
+                    result["actual_start_vector_c"] = dict(vector)
+                    result["completed_host_monotonic_s"] = monotonic()
+                    self.save()
+                    return result
+            self.save()
+            now = monotonic()
+            if now >= deadline:
+                result["status"] = "timeout"
+                result["timeout_host_monotonic_s"] = now
+                result["last_evaluation"] = evaluation
+                self.save()
+                raise WaitTimeout(
+                    f"thermal conditioning {policy} timed out after "
+                    f"{self.args.stability_timeout_seconds:.1f}s"
+                )
+            sleep(min(self.args.stability_sample_interval_seconds, deadline - now))
+
+    def runtime_safety_snapshot(self) -> SafetySnapshot:
+        snapshot, _ = self.safety_check()
+        return snapshot
+
     def _wait_run_stop(
         self,
         monitor: ProcessLines,
@@ -897,6 +1349,44 @@ class ExperimentOrchestrator:
                     f"tail={list(logger.lines)[-20:]}"
                 ) from error
             raise
+
+    def _record_emergency_abort(
+        self, slot: dict[str, Any], error: EmergencyAbort
+    ) -> None:
+        assert self.adb is not None
+        slot["runtime_safety"]["abort"] = {
+            "source": error.source,
+            "stage": error.stage,
+            "reasons": list(error.reasons),
+            "sample": error.sample,
+        }
+        try:
+            emergency_stop = self.adb.run(
+                ["shell", "am", "force-stop", RUNNER_PACKAGE],
+                timeout=20,
+                check=False,
+            )
+            self.step(
+                slot,
+                "emergency_runner_force_stop",
+                status="ok" if emergency_stop.returncode == 0 else "error",
+                returncode=emergency_stop.returncode,
+                error=(
+                    None if emergency_stop.returncode == 0
+                    else _adb_failure_detail(emergency_stop)
+                ),
+            )
+        except Exception as stop_error:
+            slot["runtime_safety"]["runner_force_stop_error"] = str(stop_error)
+            try:
+                self.step(
+                    slot,
+                    "emergency_runner_force_stop",
+                    status="error",
+                    error=str(stop_error),
+                )
+            except Exception:
+                pass
 
     def _failure_cleanup(
         self,
@@ -1106,11 +1596,34 @@ class ExperimentOrchestrator:
         slot["remote_probe_count"] = 0
         slot["final_remote_probe_used"] = False
         slot["stop_recovery_used"] = None
+        slot["cooling"] = {
+            "requested_seconds": self.args.post_load_idle_seconds,
+            "status": "disabled" if self.args.post_load_idle_seconds == 0 else "pending",
+            "host_clock_domain": "host_monotonic_s",
+            "android_clock_domain": "android_elapsed_realtime_mono_ns",
+        }
+        slot["runtime_safety"] = {
+            "enabled": self.args.emergency_check_interval_seconds > 0,
+            "limits": {
+                "check_interval_seconds": self.args.emergency_check_interval_seconds,
+                "max_battery_temperature_c": (
+                    self.args.emergency_max_battery_temperature_c
+                ),
+                "max_android_thermal_status": (
+                    self.args.emergency_max_android_thermal_status
+                ),
+                "require_unplugged": True,
+                "required_battery_status": 3,
+            },
+            "telemetry_first": True,
+            "observations": [],
+        }
         self.save()
         logger: ProcessLines | None = None
         monitor: ProcessLines | None = None
         run_id: str | None = None
         run_stopped = False
+        safety_monitor: RuntimeSafetyMonitor | None = None
         try:
             self.adb.run(["shell", "am", "force-stop", RUNNER_PACKAGE], timeout=20)
             self.step(slot, "runner_force_stop", status="ok")
@@ -1144,6 +1657,26 @@ class ExperimentOrchestrator:
                 raise OrchestratorError(
                     "safety preflight rejected: " + ",".join(safety.reasons)
                 )
+
+            conditioning = self.thermal_conditioning(slot)
+            self.step(
+                slot,
+                "thermal_conditioning",
+                status=conditioning["status"],
+                policy=self.args.start_policy,
+            )
+            if self.args.start_policy != "safety":
+                snapshot, safety = self.safety_check()
+                slot["safety_after_conditioning"] = safety.to_dict(snapshot)
+                self.step(
+                    slot,
+                    "safety_after_conditioning",
+                    status="ok" if safety.mode_safety_pass else "rejected",
+                )
+                if not safety.mode_safety_pass:
+                    raise OrchestratorError(
+                        "safety after conditioning rejected: " + ",".join(safety.reasons)
+                    )
 
             self._run_host(self._logger_command("clear"), timeout=30)
             self.step(slot, "logger_clear", status="ok")
@@ -1207,6 +1740,25 @@ class ExperimentOrchestrator:
             )
             self.step(slot, "runner_auto_start_sent", status="ok", command_id=command_id)
 
+            if self.args.emergency_check_interval_seconds > 0:
+                safety_monitor = RuntimeSafetyMonitor(
+                    self.args.emergency_max_battery_temperature_c,
+                    self.args.emergency_max_android_thermal_status,
+                )
+
+            def observe_runtime_event(event: dict[str, Any]) -> None:
+                if safety_monitor is not None:
+                    safety_monitor.observe_event(event)
+
+            def periodic_runtime_check() -> None:
+                if safety_monitor is None:
+                    return
+                try:
+                    safety_monitor.check_snapshot(self.runtime_safety_snapshot())
+                finally:
+                    slot["runtime_safety"]["observations"] = safety_monitor.observations
+                    self.save()
+
             runner_timeout = self.args.duration + 180 + min(self.args.warmup * 2, 3600)
             def remote_probe(final: bool) -> RemoteRunnerProbe:
                 slot["terminal_fallback_used"] = True
@@ -1222,7 +1774,10 @@ class ExperimentOrchestrator:
             terminal = wait_for_runner_terminal(
                 run_id,
                 lambda timeout: monitor.wait_for_event(
-                    lambda event: classify_runner_terminal(event, run_id) is not None,
+                    lambda event: (
+                        observe_runtime_event(event) is None
+                        and classify_runner_terminal(event, run_id) is not None
+                    ),
                     timeout,
                     f"runner terminal event for {run_id}",
                     [logger],
@@ -1230,6 +1785,10 @@ class ExperimentOrchestrator:
                 remote_probe,
                 BASELINE_SECONDS + self.args.duration + REMOTE_FALLBACK_GRACE_SECONDS,
                 runner_timeout,
+                periodic_interval_s=self.args.emergency_check_interval_seconds,
+                periodic_check=(
+                    periodic_runtime_check if safety_monitor is not None else None
+                ),
             )
             terminal_kind = terminal.kind
             slot["runner_terminal_event"] = terminal.event
@@ -1247,6 +1806,48 @@ class ExperimentOrchestrator:
                 fallback_used=terminal.fallback_used,
                 remote_runner_path=terminal.remote_runner_path,
             )
+
+            if terminal_kind == "success" and self.args.post_load_idle_seconds > 0:
+                runner_stop = self.adb.run(
+                    ["shell", "am", "force-stop", RUNNER_PACKAGE],
+                    timeout=20,
+                    check=False,
+                )
+                if runner_stop.returncode != 0:
+                    raise OrchestratorError(
+                        "runner force-stop before cooling failed: "
+                        f"{_adb_failure_detail(runner_stop)}"
+                    )
+                self.step(slot, "runner_stopped_before_cooling", status="ok")
+                if safety_monitor is not None:
+                    safety_monitor.stage = "cooling"
+                cooling = slot["cooling"]
+                cooling["status"] = "collecting"
+                cooling["started_utc"] = utc_now()
+
+                def wait_cooling_log(timeout: float) -> None:
+                    monitor.wait_for_line(
+                        lambda line: (
+                            observe_runtime_event(extract_json(line) or {}) is not None
+                        ),
+                        timeout,
+                        "post-load cooling interval",
+                        [logger],
+                    )
+
+                cooling.update(
+                    wait_for_idle_interval(
+                        self.args.post_load_idle_seconds,
+                        wait_cooling_log,
+                        periodic_interval_s=self.args.emergency_check_interval_seconds,
+                        periodic_check=(
+                            periodic_runtime_check if safety_monitor is not None else None
+                        ),
+                    )
+                )
+                cooling["status"] = "completed"
+                cooling["completed_utc"] = utc_now()
+                self.step(slot, "post_load_cooling", status="ok")
 
             stop_result = stop_d1_run(
                 self.adb,
@@ -1297,6 +1898,19 @@ class ExperimentOrchestrator:
                 self.args.duration, self.args.warmup, run_id, command_id, self.args.mode,
             )
             slot["validation"] = validation
+            summary = validation["summary"]
+            slot["cooling"]["load_end_android_mono_ns"] = summary.get(
+                "load_end_mono_ns"
+            )
+            slot["cooling"]["run_stop_android_mono_ns"] = summary.get(
+                "run_stop_mono_ns"
+            )
+            load_end_ns = summary.get("load_end_mono_ns")
+            run_stop_ns = summary.get("run_stop_mono_ns")
+            if isinstance(load_end_ns, int) and isinstance(run_stop_ns, int):
+                slot["cooling"]["android_interval_duration_s"] = (
+                    run_stop_ns - load_end_ns
+                ) / 1e9
             if not validation["valid"]:
                 raise OrchestratorError(
                     "result validation failed: " + ",".join(validation["failed_checks"])
@@ -1305,6 +1919,10 @@ class ExperimentOrchestrator:
             slot["completed_utc"] = utc_now()
             self.save()
         except Exception as error:
+            if safety_monitor is not None:
+                slot["runtime_safety"]["observations"] = safety_monitor.observations
+            if isinstance(error, EmergencyAbort):
+                self._record_emergency_abort(slot, error)
             slot["status"] = "failed"
             slot["error"] = f"{error.__class__.__name__}: {error}"
             slot["failed_utc"] = utc_now()
@@ -1383,7 +2001,62 @@ def experiment_config(args: argparse.Namespace) -> dict[str, Any]:
         "runner_experiment_mode": "BASIC",
         "energy_calculation": False,
         "current_raw_policy": "raw_unscaled_unit_unverified",
+        "thermal_conditioning": {
+            "start_policy": args.start_policy,
+            "window_seconds": args.stability_window_seconds,
+            "sample_interval_seconds": args.stability_sample_interval_seconds,
+            "timeout_seconds": args.stability_timeout_seconds,
+            "max_range_c": args.stability_max_range_c,
+            "max_abs_slope_c_per_minute": args.stability_max_slope_c_per_minute,
+            "matched_tolerance_c": args.matched_tolerance_c,
+            "source": "dumpsys thermalservice Current temperatures from HAL",
+            "sensors": list(THERMAL_SENSOR_NAMES),
+            "matched_claim": "tolerance_based_control_not_statistical_equivalence",
+        },
+        "post_load_idle_seconds": args.post_load_idle_seconds,
+        "emergency_monitor": {
+            "enabled": args.emergency_check_interval_seconds > 0,
+            "check_interval_seconds": args.emergency_check_interval_seconds,
+            "max_battery_temperature_c": args.emergency_max_battery_temperature_c,
+            "max_android_thermal_status": args.emergency_max_android_thermal_status,
+            "require_unplugged": True,
+            "required_battery_status": 3,
+            "strategy": "logcat_telemetry_first_with_sparse_dumpsys",
+        },
     }
+
+
+def _legacy_compatible_config(config: dict[str, Any]) -> dict[str, Any]:
+    value = dict(config)
+    value.setdefault(
+        "thermal_conditioning",
+        {
+            "start_policy": "safety",
+            "window_seconds": 60.0,
+            "sample_interval_seconds": 5.0,
+            "timeout_seconds": 900.0,
+            "max_range_c": 0.5,
+            "max_abs_slope_c_per_minute": 0.2,
+            "matched_tolerance_c": 0.5,
+            "source": "dumpsys thermalservice Current temperatures from HAL",
+            "sensors": list(THERMAL_SENSOR_NAMES),
+            "matched_claim": "tolerance_based_control_not_statistical_equivalence",
+        },
+    )
+    value.setdefault("post_load_idle_seconds", 0.0)
+    value.setdefault(
+        "emergency_monitor",
+        {
+            "enabled": False,
+            "check_interval_seconds": 0.0,
+            "max_battery_temperature_c": 42.0,
+            "max_android_thermal_status": 1,
+            "require_unplugged": True,
+            "required_battery_status": 3,
+            "strategy": "logcat_telemetry_first_with_sparse_dumpsys",
+        },
+    )
+    return value
 
 
 def new_manifest(args: argparse.Namespace) -> dict[str, Any]:
@@ -1449,6 +2122,14 @@ def dry_run_payload(args: argparse.Namespace) -> dict[str, Any]:
         "config": experiment_config(args),
         "plan": plan,
         "commands": commands,
+        "thermal_conditioning": {
+            "policy": args.start_policy,
+            "note": "dry-run does not query thermalservice or wait",
+        },
+        "cooling": {
+            "post_load_idle_seconds": args.post_load_idle_seconds,
+            "runner_force_stop_before_interval": args.post_load_idle_seconds > 0,
+        },
         "performs_adb_calls": False,
         "writes_manifest": False,
     }
@@ -1467,6 +2148,29 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--warmup", type=int, default=20)
     parser.add_argument("--repeat", type=int, default=1)
     parser.add_argument("--seed", type=int)
+    parser.add_argument(
+        "--start-policy", choices=("safety", "stable", "matched"), default="safety"
+    )
+    parser.add_argument("--stability-window-seconds", type=float, default=60.0)
+    parser.add_argument(
+        "--stability-sample-interval-seconds", type=float, default=5.0
+    )
+    parser.add_argument("--stability-timeout-seconds", type=float, default=900.0)
+    parser.add_argument("--stability-max-range-c", type=float, default=0.5)
+    parser.add_argument(
+        "--stability-max-slope-c-per-minute", type=float, default=0.2
+    )
+    parser.add_argument("--matched-tolerance-c", type=float, default=0.5)
+    parser.add_argument("--post-load-idle-seconds", type=float, default=0.0)
+    parser.add_argument(
+        "--emergency-check-interval-seconds", type=float, default=0.0
+    )
+    parser.add_argument(
+        "--emergency-max-battery-temperature-c", type=float, default=42.0
+    )
+    parser.add_argument(
+        "--emergency-max-android-thermal-status", type=int, default=1
+    )
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument(
         "--logger",
@@ -1489,6 +2193,36 @@ def validate_cli(args: argparse.Namespace) -> None:
         raise OrchestratorError("--repeat must be at least 1")
     if len(set(args.resources)) != len(args.resources):
         raise OrchestratorError("--resources must not contain duplicates")
+    if args.stability_window_seconds <= 0:
+        raise OrchestratorError("--stability-window-seconds must be positive")
+    if args.stability_sample_interval_seconds <= 0:
+        raise OrchestratorError("--stability-sample-interval-seconds must be positive")
+    if args.stability_timeout_seconds < args.stability_window_seconds:
+        raise OrchestratorError(
+            "--stability-timeout-seconds must be at least the stability window"
+        )
+    if args.stability_max_range_c < 0:
+        raise OrchestratorError("--stability-max-range-c must be non-negative")
+    if args.stability_max_slope_c_per_minute < 0:
+        raise OrchestratorError(
+            "--stability-max-slope-c-per-minute must be non-negative"
+        )
+    if args.matched_tolerance_c < 0:
+        raise OrchestratorError("--matched-tolerance-c must be non-negative")
+    if args.post_load_idle_seconds < 0:
+        raise OrchestratorError("--post-load-idle-seconds must be non-negative")
+    if args.emergency_check_interval_seconds < 0:
+        raise OrchestratorError(
+            "--emergency-check-interval-seconds must be non-negative"
+        )
+    if not math.isfinite(args.emergency_max_battery_temperature_c):
+        raise OrchestratorError(
+            "--emergency-max-battery-temperature-c must be finite"
+        )
+    if not 0 <= args.emergency_max_android_thermal_status <= 6:
+        raise OrchestratorError(
+            "--emergency-max-android-thermal-status must be in 0..6"
+        )
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -1506,8 +2240,11 @@ def main(argv: list[str] | None = None) -> int:
         if not manifest_path.is_file():
             raise OrchestratorError(f"resume manifest not found: {manifest_path}")
         manifest = load_json(manifest_path)
-        if manifest.get("config") != experiment_config(args):
+        requested_config = experiment_config(args)
+        if _legacy_compatible_config(manifest.get("config", {})) != requested_config:
             raise OrchestratorError("resume options do not match experiment manifest config")
+        if manifest.get("config") != requested_config:
+            manifest["config"] = requested_config
         previous_version = manifest.get("orchestrator_version")
         if previous_version != VERSION:
             manifest.setdefault("orchestrator_upgrades", []).append(

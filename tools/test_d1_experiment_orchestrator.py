@@ -30,6 +30,17 @@ BATTERY = """Current Battery Service state:
 THERMAL = "Thermal Status: 1\nCurrent temperatures from HAL:\n"
 
 
+def hal_thermal(ap=30.0, bat=29.0, pa=31.0, skin=28.0):
+    return f"""Thermal Status: 0
+Current temperatures from HAL:
+ Temperature{{mValue={ap}, mType=0, mName=AP, mStatus=0}}
+ Temperature{{mValue={bat}, mType=2, mName=BAT, mStatus=0}}
+ Temperature{{mValue={pa}, mType=0, mName=PATHM, mStatus=0}}
+ Temperature{{mValue={skin}, mType=3, mName=SKIN, mStatus=0}}
+Current cooling devices from HAL:
+"""
+
+
 class FakeAdb:
     def __init__(self, activity_returncode=0, direct_returncode=0):
         self.calls = []
@@ -68,6 +79,21 @@ class FakeClock:
     def timeout(self, seconds):
         self.value += seconds
         raise ORCH.WaitTimeout("no Logcat terminal event")
+
+
+class ManualClock:
+    def __init__(self):
+        self.value = 0.0
+
+    def monotonic(self):
+        return self.value
+
+    def sleep(self, seconds):
+        self.value += seconds
+
+    def wait_timeout(self, seconds):
+        self.value += seconds
+        raise ORCH.WaitTimeout("interval elapsed")
 
 
 class ExitedProcess:
@@ -121,6 +147,33 @@ def remote_adb_for(events, filename="gpu-events-run-a-session-a.jsonl"):
 
 
 class OrchestratorTest(unittest.TestCase):
+    @staticmethod
+    def conditioning_args(policy="stable", **overrides):
+        values = {
+            "logger": MODULE_PATH,
+            "start_policy": policy,
+            "stability_window_seconds": 2.0,
+            "stability_sample_interval_seconds": 1.0,
+            "stability_timeout_seconds": 3.0,
+            "stability_max_range_c": 0.5,
+            "stability_max_slope_c_per_minute": 0.2,
+            "matched_tolerance_c": 0.5,
+        }
+        values.update(overrides)
+        return SimpleNamespace(**values)
+
+    def make_conditioner(self, directory, responses, policy="stable", manifest=None, **args):
+        manifest = manifest if manifest is not None else {"runs": []}
+        orchestrator = ORCH.ExperimentOrchestrator(
+            self.conditioning_args(policy, **args),
+            manifest,
+            Path(directory) / ORCH.MANIFEST_NAME,
+        )
+        orchestrator.adb = ScriptedAdb([
+            subprocess.CompletedProcess([], 0, response, "") for response in responses
+        ])
+        return orchestrator
+
     def test_selects_only_connected_device(self):
         devices = ORCH.parse_adb_devices(
             "List of devices attached\n192.0.2.1:5555 device product:a model:A24\n"
@@ -147,6 +200,177 @@ class OrchestratorTest(unittest.TestCase):
         result = ORCH.evaluate_safety(snapshot, "pilot")
         self.assertFalse(result.mode_safety_pass)
         self.assertIn("pilot_battery_level", result.reasons)
+
+    def test_hal_temperature_parser_uses_only_current_hal_section(self):
+        text = (
+            "Cached temperatures:\n"
+            " Temperature{mValue=99, mType=0, mName=AP, mStatus=0}\n"
+            + hal_thermal(30, 29, 31, 28)
+        )
+        self.assertEqual(
+            {"AP": 30.0, "BAT": 29.0, "PA": 31.0, "SKIN": 28.0},
+            ORCH.parse_hal_temperature_vector(text),
+        )
+
+    def test_hal_temperature_parser_rejects_missing_duplicate_and_malformed(self):
+        missing = hal_thermal().replace(
+            " Temperature{mValue=28.0, mType=3, mName=SKIN, mStatus=0}\n", ""
+        )
+        duplicate = hal_thermal() .replace(
+            "Current cooling devices from HAL:",
+            " Temperature{mValue=32, mType=0, mName=PA, mStatus=0}\n"
+            "Current cooling devices from HAL:",
+        )
+        malformed = hal_thermal().replace("mValue=30.0", "mValue=oops")
+        for text, detail in (
+            (missing, "incomplete"),
+            (duplicate, "duplicate"),
+            (malformed, "malformed"),
+        ):
+            with self.subTest(detail=detail):
+                with self.assertRaisesRegex(ValueError, detail):
+                    ORCH.parse_hal_temperature_vector(text)
+
+    def test_stability_range_and_slope_boundaries_are_inclusive(self):
+        samples = []
+        for second, ap in ((0.0, 30.0), (60.0, 30.2), (120.0, 30.4)):
+            samples.append({
+                "host_monotonic_s": second,
+                "temperatures_c": {"AP": ap, "BAT": 29, "PA": 31, "SKIN": 28},
+            })
+        result = ORCH.evaluate_thermal_stability(samples, 120.0, 0.4, 0.2)
+        self.assertTrue(result["stable"])
+        self.assertAlmostEqual(0.4, result["sensor_evidence"]["AP"]["range_c"])
+        self.assertAlmostEqual(
+            0.2, result["sensor_evidence"]["AP"]["slope_c_per_minute"]
+        )
+        self.assertFalse(
+            ORCH.evaluate_thermal_stability(samples, 120.0, 0.399, 0.2)["stable"]
+        )
+        self.assertFalse(
+            ORCH.evaluate_thermal_stability(samples, 120.0, 0.4, 0.199)["stable"]
+        )
+
+    def test_stability_window_tolerates_real_sampling_jitter(self):
+        samples = [
+            {
+                "host_monotonic_s": second,
+                "temperatures_c": {"AP": 30, "BAT": 29, "PA": 31, "SKIN": 28},
+            }
+            for second in (0.0, 5.1, 10.2, 15.3, 20.4, 25.5, 30.6)
+        ]
+        result = ORCH.evaluate_thermal_stability(samples, 30.0, 0.0, 0.0)
+        self.assertTrue(result["stable"])
+        self.assertGreaterEqual(result["window_coverage_seconds"], 30.0)
+
+    def test_stable_conditioning_succeeds_and_records_raw_samples(self):
+        clock = ManualClock()
+        with tempfile.TemporaryDirectory() as directory:
+            orchestrator = self.make_conditioner(
+                directory, [hal_thermal()] * 3, stability_timeout_seconds=4.0
+            )
+            slot = {"slot_id": "001", "steps": []}
+            result = orchestrator.thermal_conditioning(
+                slot, monotonic=clock.monotonic, sleep=clock.sleep
+            )
+            self.assertEqual("passed", result["status"])
+            self.assertEqual(3, len(result["raw_samples"]))
+            self.assertEqual("host_monotonic_s", result["clock_domain"])
+            self.assertFalse(result["android_mono_ns_available"])
+
+    def test_stable_conditioning_timeout_does_not_start_run(self):
+        clock = ManualClock()
+        values = [hal_thermal(ap=value) for value in (30.0, 31.0, 32.0, 33.0)]
+        with tempfile.TemporaryDirectory() as directory:
+            orchestrator = self.make_conditioner(directory, values)
+            slot = {"slot_id": "001", "steps": []}
+            with self.assertRaises(ORCH.WaitTimeout):
+                orchestrator.thermal_conditioning(
+                    slot, monotonic=clock.monotonic, sleep=clock.sleep
+                )
+            self.assertEqual("timeout", slot["thermal_conditioning"]["status"])
+
+    def test_matched_reference_is_created_once_and_preserved_on_resume(self):
+        clock = ManualClock()
+        manifest = {"runs": []}
+        with tempfile.TemporaryDirectory() as directory:
+            first = self.make_conditioner(
+                directory, [hal_thermal()] * 3, "matched", manifest,
+                stability_timeout_seconds=4.0,
+            )
+            first_slot = {"slot_id": "001", "steps": []}
+            first_result = first.thermal_conditioning(
+                first_slot, monotonic=clock.monotonic, sleep=clock.sleep
+            )
+            reference = dict(manifest["thermal_conditioning_reference"])
+            self.assertTrue(first_result["reference_created"])
+
+            clock = ManualClock()
+            second = self.make_conditioner(
+                directory, [hal_thermal(ap=30.2)] * 3, "matched", manifest,
+                stability_timeout_seconds=4.0,
+            )
+            second_slot = {"slot_id": "002", "steps": []}
+            second_result = second.thermal_conditioning(
+                second_slot, monotonic=clock.monotonic, sleep=clock.sleep
+            )
+            self.assertFalse(second_result["reference_created"])
+            self.assertEqual(reference, manifest["thermal_conditioning_reference"])
+            self.assertAlmostEqual(
+                0.2, second_result["reference_evaluation"]["delta_c"]["AP"]
+            )
+
+    def test_matched_reference_outside_tolerance_times_out(self):
+        clock = ManualClock()
+        manifest = {
+            "runs": [],
+            "thermal_conditioning_reference": {
+                "created_utc": "old",
+                "source_slot_id": "001",
+                "temperatures_c": {"AP": 30, "BAT": 29, "PA": 31, "SKIN": 28},
+            },
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            orchestrator = self.make_conditioner(
+                directory, [hal_thermal(ap=31)] * 4, "matched", manifest
+            )
+            slot = {"slot_id": "002", "steps": []}
+            with self.assertRaises(ORCH.WaitTimeout):
+                orchestrator.thermal_conditioning(
+                    slot, monotonic=clock.monotonic, sleep=clock.sleep
+                )
+            self.assertFalse(slot["thermal_conditioning"]["reference_evaluation"]["matched"])
+            self.assertEqual("old", manifest["thermal_conditioning_reference"]["created_utc"])
+
+    def test_cooling_zero_and_positive_interval(self):
+        clock = ManualClock()
+        zero = ORCH.wait_for_idle_interval(
+            0, clock.wait_timeout, monotonic=clock.monotonic
+        )
+        self.assertEqual(0, zero["actual_duration_s"])
+        positive = ORCH.wait_for_idle_interval(
+            3, clock.wait_timeout, monotonic=clock.monotonic
+        )
+        self.assertEqual(3, positive["actual_duration_s"])
+
+    def test_cooling_and_load_emergency_abort(self):
+        for stage in ("load", "cooling"):
+            with self.subTest(stage=stage):
+                monitor = ORCH.RuntimeSafetyMonitor(42.0, 1)
+                monitor.stage = stage
+                with self.assertRaises(ORCH.EmergencyAbort) as caught:
+                    monitor.observe_event({
+                        "source": "d1check",
+                        "event": "sample",
+                        "mono_ns": 123,
+                        "thermal_status": 2,
+                        "battery_temp_C": 30.0,
+                        "plugged": False,
+                    })
+                self.assertEqual(stage, caught.exception.stage)
+                self.assertIn(
+                    "android_thermal_status_emergency", caught.exception.reasons
+                )
 
     def test_plugged_hot_or_severe_thermal_is_rejected(self):
         snapshot = ORCH.SafetySnapshot(60, 3, 35.1, False, True, False, 2)
@@ -362,6 +586,38 @@ class OrchestratorTest(unittest.TestCase):
             self.assertFalse(slot["stop_recovery_used"])
             self.assertEqual([], errors)
 
+    def test_emergency_abort_force_stops_runner_before_cleanup_and_is_recorded(self):
+        with tempfile.TemporaryDirectory() as directory:
+            orchestrator = ORCH.ExperimentOrchestrator(
+                SimpleNamespace(logger=MODULE_PATH),
+                {"runs": []},
+                Path(directory) / ORCH.MANIFEST_NAME,
+            )
+            orchestrator.adb = FakeAdb()
+            orchestrator._wait_run_stop = lambda monitor, logger, run_id, timeout: {
+                "source": "d1check", "event": "run_stop", "run_id": run_id, "status": "ok"
+            }
+            slot = {
+                "steps": [],
+                "error": "EmergencyAbort: original safety failure",
+                "runtime_safety": {"observations": []},
+            }
+            error = ORCH.EmergencyAbort(
+                "logcat_telemetry", "load", ["device_plugged"], {"plugged": 1}
+            )
+            orchestrator._record_emergency_abort(slot, error)
+            orchestrator._failure_cleanup(
+                slot, "run-a", False, object(), ExitedLogger()
+            )
+            names = [step["name"] for step in slot["steps"]]
+            self.assertEqual("emergency_runner_force_stop", names[0])
+            self.assertIn("failure_cleanup_activity_stop", names)
+            self.assertIn("failure_cleanup_logger", names)
+            self.assertEqual("load", slot["runtime_safety"]["abort"]["stage"])
+            self.assertEqual(
+                "EmergencyAbort: original safety failure", slot["error"]
+            )
+
     def test_atomic_manifest_preserves_completed_checkpoint(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / ORCH.MANIFEST_NAME
@@ -376,6 +632,15 @@ class OrchestratorTest(unittest.TestCase):
             )
             self.assertEqual([], list(path.parent.glob("*.tmp")))
 
+    def test_default_options_are_resume_compatible_with_pre_conditioning_manifest(self):
+        args = ORCH.build_parser().parse_args([])
+        current = ORCH.experiment_config(args)
+        legacy = dict(current)
+        legacy.pop("thermal_conditioning")
+        legacy.pop("post_load_idle_seconds")
+        legacy.pop("emergency_monitor")
+        self.assertEqual(current, ORCH._legacy_compatible_config(legacy))
+
     def test_dry_run_performs_no_adb_and_writes_no_manifest(self):
         with tempfile.TemporaryDirectory() as directory:
             output = io.StringIO()
@@ -389,6 +654,12 @@ class OrchestratorTest(unittest.TestCase):
             self.assertEqual(0, code)
             self.assertFalse(payload["performs_adb_calls"])
             self.assertEqual(4, len(payload["plan"]))
+            self.assertEqual(
+                "safety", payload["config"]["thermal_conditioning"]["start_policy"]
+            )
+            self.assertEqual(0.0, payload["config"]["post_load_idle_seconds"])
+            self.assertFalse(payload["config"]["emergency_monitor"]["enabled"])
+            self.assertFalse(payload["cooling"]["runner_force_stop_before_interval"])
             self.assertFalse((Path(directory) / ORCH.MANIFEST_NAME).exists())
 
 

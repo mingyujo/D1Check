@@ -238,6 +238,47 @@ its footer or explicit failure, stops D1Check, analyzes the captured directory, 
 result. Pilot preflight permits SOC 30--100%; formal mode requires SOC 30--90%. Both require
 unplugged, DISCHARGING, battery temperature at most 35 C, and Android thermal status at most LIGHT.
 
+Thermal conditioning and post-load cooling are opt-in, so existing commands retain their previous
+timing. `--start-policy safety` is the default and applies only the preflight above. `stable`
+samples only the `Current temperatures from HAL` section of `dumpsys thermalservice`; every sample
+must contain exactly one AP, BAT, PA (PA/PATHM/PA1THM alias), and SKIN value. Missing, duplicate,
+malformed, or non-finite required values stop the slot. A rolling window passes only when every
+sensor's range and absolute least-squares slope are within the configured bounds:
+
+~~~powershell
+python tools/d1_experiment_orchestrator.py `
+  --serial <A24-IP:PORT> --mode pilot --resources CPU `
+  --duration 60 --warmup 20 --repeat 1 `
+  --start-policy stable --stability-window-seconds 30 `
+  --stability-sample-interval-seconds 5 --stability-timeout-seconds 300 `
+  --stability-max-range-c 0.5 --stability-max-slope-c-per-minute 0.3 `
+  --post-load-idle-seconds 30 `
+  --emergency-check-interval-seconds 30 `
+  --emergency-max-battery-temperature-c 42 `
+  --emergency-max-android-thermal-status 1 `
+  --output-dir results/A24_stable_cooling_60s
+~~~
+
+`matched` first requires the same stable condition, then stores the first passing AP/BAT/PA/SKIN
+vector as the experiment reference. Later slots must also fall within
+`--matched-tolerance-c` for every sensor. Resume reuses that stored reference and never derives a
+new one. This is tolerance-based control of observed start temperatures, not proof of statistical
+equivalence.
+
+With `--post-load-idle-seconds` greater than zero, a successful runner footer is followed by a
+runner force-stop while D1Check telemetry and the logger continue. D1Check is stopped only after
+the idle interval, leaving `load_end` through `run_stop` available as the cooling interval. The
+manifest stores both host-monotonic interval timestamps and Android elapsed-realtime `mono_ns`
+boundaries as distinct clock domains; they must not be directly subtracted from one another.
+
+Runtime emergency monitoring is disabled by default (`--emergency-check-interval-seconds 0`) to
+preserve prior measurement behavior. When enabled, D1 Logcat samples are checked first and sparse
+`dumpsys` checks fill the gaps at the requested interval. A thermal-status limit violation,
+charging connection, non-DISCHARGING battery status, or battery-temperature limit violation first
+force-stops the runner and then invokes normal D1/logger cleanup. Thresholds, observations,
+original failure, and cleanup outcomes are retained in the manifest. Choose the interval to avoid
+unnecessary ADB polling during measurement.
+
 Every transition and failure is atomically checkpointed in
 `<output-dir>/experiment_manifest.json`. A failed slot halts the experiment and later slots remain
 pending. After correcting the cause, resume with the same options plus `--resume`; completed slots
