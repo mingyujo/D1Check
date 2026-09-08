@@ -364,6 +364,20 @@ Current cooling devices from HAL:
         self.assertNotIn("current_A_calibrated", source)
         self.assertNotIn("battery_power_W_signed", source)
 
+    def test_current_and_charge_counter_use_positive_discharge_magnitude(self):
+        current_magnitude = LOGGER.current_now_discharge_magnitude_ua(-360000.0)
+        counter_magnitude = LOGGER.charge_counter_discharge_magnitude_ua(
+            3_000_000.0, 2_999_000.0, 10.0
+        )
+        self.assertEqual(360000.0, current_magnitude)
+        self.assertEqual(360000.0, counter_magnitude)
+
+    def test_charge_counter_increase_is_not_treated_as_discharge(self):
+        with self.assertRaisesRegex(ValueError, "charge counter increased"):
+            LOGGER.charge_counter_discharge_magnitude_ua(
+                2_999_000.0, 3_000_000.0, 10.0
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

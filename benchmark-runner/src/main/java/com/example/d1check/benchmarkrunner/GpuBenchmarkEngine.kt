@@ -32,16 +32,38 @@ class GpuBenchmarkEngine(private val context: Context) {
         var invalidReason: String? = null
         var loadStarted = false
         var loadEnded = false
+        var loadStartedNs: Long? = null
+        var loadEndedNs: Long? = null
+        var runTermination: RunTermination? = null
+        var terminationReason: TerminationReason? = null
+        var pilotSafety: PilotSafetyCheck? = null
 
         try {
+            config.expectedRunId?.let { expectedRunId ->
+                if (telemetry.run.runId != expectedRunId) {
+                    throw RunContextMismatchException(
+                        "run_context_mismatch checkpoint=automation_start " +
+                            "expected_run=$expectedRunId actual_run=${telemetry.run.runId}"
+                    )
+                }
+            }
+            if (config.isAutomated) {
+                pilotSafety = PilotSafetyPolicy.readAndEvaluate(context)
+                if (!checkNotNull(pilotSafety).passed) {
+                    throw PilotSafetyException(
+                        "pilot_safety_rejected: " +
+                            checkNotNull(pilotSafety).rejectionReasons.joinToString(",")
+                    )
+                }
+            }
             revalidate(telemetry, "before_baseline")
             telemetry.instant("baseline_start", "baseline")
             Thread.sleep(BASELINE_MS)
             telemetry.instant("baseline_end", "baseline")
 
             val options = Interpreter.Options()
-            when (config.resource) {
-                ResourceTarget.CPU4 -> options.setNumThreads(4)
+            when (config.normalizedResource) {
+                ResourceTarget.CPU -> options.setNumThreads(checkNotNull(config.cpuThreads))
                 ResourceTarget.GPU -> {
                     gpuDelegate = telemetry.measured("delegate_init", "setup") {
                         val compatibility = CompatibilityList()
@@ -52,6 +74,7 @@ class GpuBenchmarkEngine(private val context: Context) {
                     }
                     options.addDelegate(checkNotNull(gpuDelegate))
                 }
+                ResourceTarget.CPU4 -> error("CPU4 must be normalized before execution")
                 ResourceTarget.NPU -> error("NPU is reserved for a future version")
             }
 
@@ -78,11 +101,23 @@ class GpuBenchmarkEngine(private val context: Context) {
             telemetry.instant("load_start", "run")
             loadStarted = true
             val runStartedNs = SystemClock.elapsedRealtimeNanos()
+            loadStartedNs = runStartedNs
+            runTermination = RunTermination(config.limit, runStartedNs)
             var inferenceIndex = 0L
-            while (shouldContinue(config, inferenceIndex, runStartedNs)) {
+            while (true) {
+                val completed = checkNotNull(runTermination).completionReason(
+                    SystemClock.elapsedRealtimeNanos(),
+                    inferenceIndex,
+                )
+                if (completed != null) {
+                    terminationReason = completed
+                    break
+                }
                 if (!telemetry.hasInferenceCapacity) {
                     success = false
                     message = "buffer_limit"
+                    invalidReason = "buffer_limit"
+                    terminationReason = TerminationReason.BUFFER_LIMIT
                     telemetry.instant("buffer_limit", "run", "error",
                         "max=${GpuTelemetry.DEFAULT_MAX_INFERENCE_SPANS}")
                     break
@@ -95,6 +130,7 @@ class GpuBenchmarkEngine(private val context: Context) {
                 check(telemetry.recordInference(startNs, endNs, inferenceIndex, 1))
                 inferenceIndex++
             }
+            loadEndedNs = SystemClock.elapsedRealtimeNanos()
             telemetry.instant("load_end", "run", if (success) "ok" else "error")
             loadEnded = true
             if (config.experimentMode == ExperimentMode.DIAGNOSTIC) {
@@ -106,11 +142,19 @@ class GpuBenchmarkEngine(private val context: Context) {
             message = "${error.javaClass.simpleName}: ${error.message ?: ""}"
             if (error is RunContextMismatchException) {
                 invalidReason = "run_context_mismatch"
+                terminationReason = TerminationReason.RUN_CONTEXT_MISMATCH
                 telemetry.instant("run_context_mismatch", "validation", "error", message)
+            } else if (error is PilotSafetyException) {
+                invalidReason = "pilot_safety_rejected"
+                terminationReason = TerminationReason.PILOT_SAFETY_REJECTED
+                telemetry.instant("pilot_safety_rejected", "validation", "error", message)
             } else {
+                invalidReason = invalidReason ?: "run_error"
+                terminationReason = terminationReason ?: TerminationReason.RUN_ERROR
                 telemetry.instant("run_error", "run", "error", message)
             }
             if (loadStarted && !loadEnded) {
+                loadEndedNs = SystemClock.elapsedRealtimeNanos()
                 telemetry.instant("load_end", "run", "error")
                 loadEnded = true
                 if (config.experimentMode == ExperimentMode.DIAGNOSTIC) {
@@ -126,6 +170,8 @@ class GpuBenchmarkEngine(private val context: Context) {
             } catch (error: Throwable) {
                 success = false
                 message = "shutdown ${error.javaClass.simpleName}: ${error.message ?: ""}"
+                invalidReason = invalidReason ?: "shutdown_error"
+                terminationReason = terminationReason ?: TerminationReason.SHUTDOWN_ERROR
             }
         }
 
@@ -134,42 +180,62 @@ class GpuBenchmarkEngine(private val context: Context) {
         } catch (error: RunContextMismatchException) {
             success = false
             invalidReason = "run_context_mismatch"
+            terminationReason = TerminationReason.RUN_CONTEXT_MISMATCH
             message = "${error.javaClass.simpleName}: ${error.message ?: ""}"
             telemetry.instant("run_context_mismatch", "validation", "error", message)
         }
 
+        val requestedInferenceCount = (config.limit as? RunLimit.Count)?.inferenceCount
+        val requestedDurationSeconds = (config.limit as? RunLimit.Duration)?.durationSeconds
+        val actualLoadDurationNs = if (loadStartedNs != null && loadEndedNs != null) {
+            checkNotNull(runTermination).actualDurationNs(checkNotNull(loadEndedNs))
+        } else {
+            null
+        }
+        val outputConfig = linkedMapOf<String, Any?>(
+            "precision" to config.precision.name,
+            "limit_mode" to config.limit.modeName,
+            "requested_inference_count" to requestedInferenceCount,
+            "requested_duration_s" to requestedDurationSeconds,
+            "target_duration_ns" to runTermination?.targetDurationNs,
+            "actual_load_duration_ns" to actualLoadDurationNs,
+            "duration_overrun_ns" to loadEndedNs?.let { runTermination?.durationOverrunNs(it) },
+            "termination_reason" to (terminationReason ?: TerminationReason.RUN_ERROR).wireName,
+            "warmup_count" to config.warmupCount,
+            "baseline_s" to BASELINE_MS / 1000L,
+            "experiment_mode" to config.experimentMode.name,
+            "perfetto_requested_by_runner" to
+                (config.experimentMode == ExperimentMode.DIAGNOSTIC),
+            "completed_inference_count" to telemetry.inferenceCount,
+            "runner_session_id" to telemetry.runnerSessionId,
+            "litert_version" to LITERT_VERSION,
+            "experiment_valid" to (success && invalidReason == null),
+            "invalid_reason" to invalidReason,
+            "lifecycle_event_count" to telemetry.lifecycleCount,
+            "resource_legacy_alias" to config.legacyResourceAlias,
+            "cpu_threads" to config.cpuThreads,
+            "cpu_affinity" to "NONE",
+            "auto_start" to config.isAutomated,
+            "expected_run_id" to config.expectedRunId,
+            "command_id" to config.commandId,
+        )
+        outputConfig.putAll(
+            pilotSafety?.metadata() ?: mapOf(
+                "safety_policy_scope" to "NONE",
+                "pilot_safety_pass" to null,
+                "formal_safety_limits_applied" to false,
+                "matched_start_limits_applied" to false,
+            )
+        )
         val flush = telemetry.flushAfterRun(
             context = context,
-            resource = config.resource.name,
+            resource = config.normalizedResource.name,
             modelId = ModelLoader.MODEL_ID,
             modelSha256 = ModelLoader.MODEL_SHA256,
-            config = linkedMapOf(
-                "precision" to config.precision.name,
-                "limit_mode" to config.limitMode.name,
-                "requested_inference_count" to config.inferenceCount,
-                "requested_duration_s" to config.durationSeconds,
-                "warmup_count" to config.warmupCount,
-                "baseline_s" to BASELINE_MS / 1000L,
-                "experiment_mode" to config.experimentMode.name,
-                "perfetto_requested_by_runner" to
-                    (config.experimentMode == ExperimentMode.DIAGNOSTIC),
-                "completed_inference_count" to telemetry.inferenceCount,
-                "runner_session_id" to telemetry.runnerSessionId,
-                "litert_version" to LITERT_VERSION,
-                "experiment_valid" to (success && invalidReason == null),
-                "invalid_reason" to invalidReason,
-                "lifecycle_event_count" to telemetry.lifecycleCount,
-            ),
+            config = outputConfig,
         )
         return BenchmarkResult(success, message, flush)
     }
-
-    private fun shouldContinue(config: RunConfig, count: Long, startedNs: Long): Boolean =
-        when (config.limitMode) {
-            LimitMode.COUNT -> count < config.inferenceCount
-            LimitMode.DURATION ->
-                SystemClock.elapsedRealtimeNanos() - startedNs < config.durationSeconds * 1_000_000_000L
-        }
 
     private fun revalidate(telemetry: GpuTelemetry, checkpoint: String) {
         D1RunContextClient.revalidate(context, telemetry.run, checkpoint)

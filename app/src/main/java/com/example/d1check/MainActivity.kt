@@ -56,8 +56,16 @@ class MainActivity : AppCompatActivity() {
         }
         setContentView(ScrollView(this).apply { addView(content) })
 
-        requestNotificationPermissionIfNeeded()
-        startTelemetry()
+        if (!intent.hasExtra(AutomationCommandParser.EXTRA_COMMAND)) {
+            requestNotificationPermissionIfNeeded()
+        }
+        handleAutomationCommand(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleAutomationCommand(intent)
     }
 
     override fun onStart() {
@@ -78,6 +86,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun startTelemetry() {
         TelemetryForegroundService.start(this)
+    }
+
+    private fun handleAutomationCommand(intent: Intent) {
+        val hasAutomationCommand = intent.hasExtra(AutomationCommandParser.EXTRA_COMMAND)
+        val command = try {
+            AutomationCommandParser.parse(
+                intent.getStringExtra(AutomationCommandParser.EXTRA_COMMAND)
+            )
+        } catch (error: IllegalArgumentException) {
+            statusView.text = error.message
+            return
+        }
+        if (hasAutomationCommand) {
+            intent.removeExtra(AutomationCommandParser.EXTRA_COMMAND)
+        }
+        when (AutomationCommandRouter.route(command)) {
+            TelemetryCommandAction.START -> startTelemetry()
+            TelemetryCommandAction.STOP -> TelemetryForegroundService.stop(this)
+        }
     }
 
     private fun requestNotificationPermissionIfNeeded() {

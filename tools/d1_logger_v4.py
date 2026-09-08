@@ -181,6 +181,29 @@ def parse_uptime(value: str, source: str = "/proc/uptime") -> int:
     return int(uptime_seconds * 1_000_000_000)
 
 
+def current_now_discharge_magnitude_ua(current_raw: float) -> float:
+    """Return positive discharge magnitude using Android's negative-discharge convention."""
+    if not math.isfinite(current_raw):
+        raise ValueError("current_raw must be finite")
+    if current_raw > 0:
+        raise ValueError("current_raw indicates charging, not discharge")
+    return -current_raw
+
+
+def charge_counter_discharge_magnitude_ua(
+    start_uah: float, end_uah: float, elapsed_seconds: float
+) -> float:
+    """Return positive discharge magnitude derived from a decreasing charge counter."""
+    if not all(math.isfinite(value) for value in (start_uah, end_uah, elapsed_seconds)):
+        raise ValueError("charge-counter inputs must be finite")
+    if elapsed_seconds <= 0:
+        raise ValueError("charge-counter elapsed_seconds must be positive")
+    discharged_uah = start_uah - end_uah
+    if discharged_uah < 0:
+        raise ValueError("charge counter increased; interval is not a discharge interval")
+    return discharged_uah * 3600.0 / elapsed_seconds
+
+
 def adb_text(adb_command: list[str], arguments: list[str], source: str) -> str:
     result = subprocess.run(
         adb_command + arguments,

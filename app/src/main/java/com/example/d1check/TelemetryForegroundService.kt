@@ -33,6 +33,7 @@ class TelemetryForegroundService : Service() {
     private var headroom60s = Float.NaN
     private var cleanStop = false
     private var nextSampleNs = 0L
+    private val runStopEventGate = RunStopEventGate()
 
     override fun onCreate() {
         super.onCreate()
@@ -74,6 +75,7 @@ class TelemetryForegroundService : Service() {
         headroomNow = Float.NaN
         headroom60s = Float.NaN
         run = sessionStore.startNew()
+        runStopEventGate.markRunStarted()
         TelemetryServiceLiveness.isRunning = true
         writer = TelemetryLogWriter(this, requireNotNull(run).runId)
         recordEvent("run_start", "ok", mapOf(
@@ -86,6 +88,11 @@ class TelemetryForegroundService : Service() {
 
     @Synchronized
     private fun stopRun(reason: String) {
+        if (!runStopEventGate.consumeStop()) {
+            cleanStop = true
+            TelemetryServiceLiveness.isRunning = false
+            return
+        }
         scheduledTask?.cancel(false)
         scheduledTask = null
         recordEvent("run_stop", "ok", mapOf("reason" to reason))

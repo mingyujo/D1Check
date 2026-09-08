@@ -1,5 +1,6 @@
 package com.example.d1check.benchmarkrunner
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.ArrayAdapter
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var startButton: Button
     private lateinit var probeNnapiButton: Button
     private lateinit var statusView: TextView
+    private lateinit var commandReplayStore: CommandReplayStore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         }
         startButton = Button(this).apply {
             text = "Start: baseline 60s, then load"
-            setOnClickListener { startBenchmark() }
+            setOnClickListener { startManualBenchmark() }
         }
         probeNnapiButton = Button(this).apply {
             text = "Probe NNAPI devices"
@@ -85,6 +87,14 @@ class MainActivity : AppCompatActivity() {
             addView(statusView)
         }
         setContentView(ScrollView(this).apply { addView(layout) })
+        commandReplayStore = CommandReplayStore(this)
+        handleAutomationIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleAutomationIntent(intent)
     }
 
     override fun onDestroy() {
@@ -92,13 +102,15 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun startBenchmark() {
+    private fun startManualBenchmark() {
         val config = try {
             RunConfig(
                 resource = ResourceTarget.valueOf(resourceSpinner.selectedItem.toString()),
-                limitMode = if (countMode.isChecked) LimitMode.COUNT else LimitMode.DURATION,
-                inferenceCount = countInput.text.toString().toInt(),
-                durationSeconds = durationInput.text.toString().toLong(),
+                limit = if (countMode.isChecked) {
+                    RunLimit.Count(countInput.text.toString().toInt())
+                } else {
+                    RunLimit.Duration(durationInput.text.toString().toLong())
+                },
                 warmupCount = warmupInput.text.toString().toInt(),
                 experimentMode = if (diagnosticInput.isChecked) {
                     ExperimentMode.DIAGNOSTIC
@@ -108,6 +120,15 @@ class MainActivity : AppCompatActivity() {
             )
         } catch (error: Exception) {
             statusView.text = "Invalid configuration: ${error.message}"
+            return
+        }
+
+        startBenchmark(config)
+    }
+
+    private fun startBenchmark(config: RunConfig) {
+        if (!BenchmarkExecutionGate.tryAcquire()) {
+            statusView.text = "A benchmark is already running."
             return
         }
 
@@ -121,6 +142,7 @@ class MainActivity : AppCompatActivity() {
                 BenchmarkResult(false, "${error.javaClass.simpleName}: ${error.message}", null)
             }
             runOnUiThread {
+                BenchmarkExecutionGate.release()
                 startButton.isEnabled = true
                 probeNnapiButton.isEnabled = true
                 statusView.text = buildString {
@@ -134,6 +156,56 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun handleAutomationIntent(intent: Intent) {
+        val values = buildMap<String, Any?> {
+            if (intent.hasExtra(AutomationIntentParser.EXTRA_AUTO_START)) {
+                put(
+                    AutomationIntentParser.EXTRA_AUTO_START,
+                    intent.getBooleanExtra(AutomationIntentParser.EXTRA_AUTO_START, false),
+                )
+            }
+            listOf(
+                AutomationIntentParser.EXTRA_RESOURCE,
+                AutomationIntentParser.EXTRA_LIMIT_MODE,
+                AutomationIntentParser.EXTRA_RUN_ID,
+                AutomationIntentParser.EXTRA_COMMAND_ID,
+                AutomationIntentParser.EXTRA_EXPERIMENT_MODE,
+            ).forEach { key ->
+                if (intent.hasExtra(key)) put(key, intent.getStringExtra(key))
+            }
+            listOf(
+                AutomationIntentParser.EXTRA_CPU_THREADS,
+                AutomationIntentParser.EXTRA_INFERENCE_COUNT,
+                AutomationIntentParser.EXTRA_WARMUP_COUNT,
+            ).forEach { key ->
+                if (intent.hasExtra(key)) put(key, intent.getIntExtra(key, Int.MIN_VALUE))
+            }
+            if (intent.hasExtra(AutomationIntentParser.EXTRA_DURATION_S)) {
+                put(
+                    AutomationIntentParser.EXTRA_DURATION_S,
+                    intent.getLongExtra(AutomationIntentParser.EXTRA_DURATION_S, Long.MIN_VALUE),
+                )
+            }
+        }
+        val request = try {
+            AutomationIntentParser.parse(values)
+        } catch (error: IllegalArgumentException) {
+            statusView.text = "Invalid automation request: ${error.message}"
+            return
+        } ?: return
+
+        if (BenchmarkExecutionGate.isRunning) {
+            statusView.text = "Automation request ignored: a benchmark is already running."
+            return
+        }
+        val commandId = checkNotNull(request.config.commandId)
+        if (!commandReplayStore.claim(commandId)) {
+            statusView.text = "Automation replay ignored: command_id=$commandId"
+            return
+        }
+        startBenchmark(request.config)
     }
 
     private fun probeNnapiDevices() {

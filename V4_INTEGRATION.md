@@ -34,7 +34,9 @@ an actual interpreter is installed or its path is supplied.
 
 ## Resource behavior
 
-- CPU4 uses standalone LiteRT Interpreter with four CPU threads.
+- CPU4 remains a legacy UI/Intent alias for standalone LiteRT Interpreter CPU execution with four
+  requested threads. New runner metadata records `resource=CPU`, `cpu_threads=4`, and
+  `cpu_affinity=NONE`; it does not claim that four fixed CPU cores are pinned.
 - GPU uses standalone LiteRT Interpreter 1.4.2 with GpuDelegate.
 - GPU mode requests GpuDelegate and fails if delegate/interpreter setup fails. This alone does not
   prove that every graph node was delegated; only host-captured evidence can verify that claim.
@@ -163,3 +165,46 @@ thermal sampling coverage, and a valid thermal sample during GPU load.
 
 Warmup is capped at 10,000 operations, inference records at 250,000, lifecycle events at 20,000,
 and duration at 3,600 seconds.
+
+## Phase 0-3 automation
+
+D1Check accepts explicit Activity commands. `START_RUN` always starts a fresh UUID and `STOP_RUN`
+stops the current service without first creating another run:
+
+~~~powershell
+adb shell am start -W -n com.example.d1check/.MainActivity --es d1_automation_command START_RUN
+adb shell am start -W -n com.example.d1check/.MainActivity --es d1_automation_command STOP_RUN
+~~~
+
+Benchmark Runner accepts an automated duration request. `d1_command_id` and `d1_run_id` must be
+UUIDs, the requested run ID must match the active provider context, and replayed command IDs are
+ignored:
+
+~~~powershell
+adb shell am start -W -n com.example.d1check.benchmarkrunner/.MainActivity `
+  --ez d1_auto_start true --es d1_resource CPU4 --ei d1_cpu_threads 4 `
+  --es d1_limit_mode DURATION --el d1_duration_s 60 --ei d1_warmup_count 20 `
+  --es d1_experiment_mode BASIC --es d1_run_id <run-uuid> `
+  --es d1_command_id <command-uuid>
+~~~
+
+COUNT and DURATION are separate configuration types. A DURATION run has no requested inference
+count; the count is an output. Metadata adds `termination_reason`, `target_duration_ns`,
+`actual_load_duration_ns`, and `duration_overrun_ns`. A final inference can cross the monotonic
+deadline because `Interpreter.run()` cannot be interrupted.
+
+Automated pilot starts currently enforce a pilot-only gate: Android thermal status at most LIGHT
+(1), unplugged, battery status DISCHARGING (3), battery level 30--90%, and battery temperature at
+most 35 C. Metadata explicitly records `safety_policy_scope=PILOT_START_ONLY`, while
+`formal_safety_limits_applied=false` and `matched_start_limits_applied=false`. Manual execution is
+unchanged. Formal hard-safety monitoring and matched-start control belong to later phases.
+
+No device-battery energy is produced in phase 0-3. Future current/charge-counter scale validation
+uses one sign convention for both sources: positive discharge magnitude. Android negative
+`CURRENT_NOW` is negated, while a decreasing charge counter is `(start_uAh-end_uAh)/hours`.
+Scale mismatch is never silently corrected.
+
+The later CPU/GPU accuracy preflight will use at least 32 deterministic inputs. Output SHA-256 is
+provenance only; top-k agreement, cosine similarity, and absolute/relative error are the pass
+criteria. Duty cycling, output comparison, the Python experiment orchestrator, and energy
+integration are not implemented in phase 0-3.
