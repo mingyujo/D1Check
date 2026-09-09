@@ -29,4 +29,19 @@ class RunConfigTest {
         assertEquals(4, config.cpuThreads)
         assertEquals("CPU4", config.legacyResourceAlias)
     }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun zeroDutyCycleIsRejected() {
+        config(0).copy(dutyCyclePercent = 0)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun dutyCycleAboveHundredIsRejected() {
+        config(0).copy(dutyCyclePercent = 101)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun zeroDutyPeriodIsRejected() {
+        config(0).copy(dutyCyclePeriodSeconds = 0.0)
+    }
 }

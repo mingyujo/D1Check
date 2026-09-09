@@ -26,6 +26,8 @@ class AutomationIntentTest {
         assertEquals(4, config.cpuThreads)
         assertEquals("CPU4", config.legacyResourceAlias)
         assertEquals(RunLimit.Duration(60), config.limit)
+        assertEquals(100, config.dutyCyclePercent)
+        assertEquals(10.0, config.dutyCyclePeriodSeconds, 0.0)
     }
 
     @Test
@@ -47,6 +49,24 @@ class AutomationIntentTest {
     @Test
     fun absentAutoStartIsNotAnAutomationRequest() {
         assertNull(AutomationIntentParser.parse(emptyMap()))
+    }
+
+    @Test
+    fun dutyCycleExtrasAreParsedForDurationRun() {
+        val request = AutomationIntentParser.parse(
+            mapOf(
+                AutomationIntentParser.EXTRA_AUTO_START to true,
+                AutomationIntentParser.EXTRA_RESOURCE to "GPU",
+                AutomationIntentParser.EXTRA_DURATION_S to 60L,
+                AutomationIntentParser.EXTRA_DUTY_CYCLE_PERCENT to 25,
+                AutomationIntentParser.EXTRA_DUTY_CYCLE_PERIOD_S to 4.0f,
+                AutomationIntentParser.EXTRA_RUN_ID to runId,
+                AutomationIntentParser.EXTRA_COMMAND_ID to commandId,
+            )
+        )
+
+        assertEquals(25, requireNotNull(request).config.dutyCyclePercent)
+        assertEquals(4.0, request.config.dutyCyclePeriodSeconds, 0.0)
     }
 
     @Test(expected = IllegalArgumentException::class)

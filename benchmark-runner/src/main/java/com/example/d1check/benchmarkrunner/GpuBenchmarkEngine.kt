@@ -12,6 +12,7 @@ import org.tensorflow.lite.gpu.CompatibilityList
 import org.tensorflow.lite.gpu.GpuDelegate
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.util.concurrent.locks.LockSupport
 
 data class BenchmarkResult(
     val success: Boolean,
@@ -37,6 +38,7 @@ class GpuBenchmarkEngine(private val context: Context) {
         var runTermination: RunTermination? = null
         var terminationReason: TerminationReason? = null
         var pilotSafety: PilotSafetyCheck? = null
+        var dutyCycleTracker: DutyCycleTracker? = null
 
         try {
             config.expectedRunId?.let { expectedRunId ->
@@ -103,10 +105,19 @@ class GpuBenchmarkEngine(private val context: Context) {
             val runStartedNs = SystemClock.elapsedRealtimeNanos()
             loadStartedNs = runStartedNs
             runTermination = RunTermination(config.limit, runStartedNs)
+            if (config.limit is RunLimit.Duration) {
+                dutyCycleTracker = DutyCycleTracker(
+                    requestedPercent = config.dutyCyclePercent,
+                    periodNs = DutyCycleTracker.periodNanos(config.dutyCyclePeriodSeconds),
+                    startedNs = runStartedNs,
+                    targetDurationNs = checkNotNull(runTermination.targetDurationNs),
+                )
+            }
             var inferenceIndex = 0L
             while (true) {
+                val loopNowNs = SystemClock.elapsedRealtimeNanos()
                 val completed = checkNotNull(runTermination).completionReason(
-                    SystemClock.elapsedRealtimeNanos(),
+                    loopNowNs,
                     inferenceIndex,
                 )
                 if (completed != null) {
@@ -123,10 +134,26 @@ class GpuBenchmarkEngine(private val context: Context) {
                     break
                 }
 
+                dutyCycleTracker?.let { tracker ->
+                    val requestedIdleNs = tracker.nanosUntilActive(loopNowNs)
+                    if (requestedIdleNs > 0L) {
+                        val remainingDurationNs = (
+                            checkNotNull(runTermination.targetDurationNs) -
+                                (loopNowNs - runStartedNs)
+                            ).coerceAtLeast(0L)
+                        val idleStartedNs = SystemClock.elapsedRealtimeNanos()
+                        LockSupport.parkNanos(minOf(requestedIdleNs, remainingDurationNs))
+                        val idleEndedNs = SystemClock.elapsedRealtimeNanos()
+                        tracker.recordIdle(idleStartedNs, idleEndedNs)
+                        continue
+                    }
+                }
+
                 resetTensorBuffers(input, output)
                 val startNs = SystemClock.elapsedRealtimeNanos()
                 activeInterpreter.run(input, output)
                 val endNs = SystemClock.elapsedRealtimeNanos()
+                dutyCycleTracker?.recordInference(startNs, endNs)
                 check(telemetry.recordInference(startNs, endNs, inferenceIndex, 1))
                 inferenceIndex++
             }
@@ -192,6 +219,29 @@ class GpuBenchmarkEngine(private val context: Context) {
         } else {
             null
         }
+        val dutyMetrics = if (loadEndedNs != null) {
+            dutyCycleTracker?.metrics(checkNotNull(loadEndedNs))
+        } else {
+            null
+        }
+        val accuracyPreflight = linkedMapOf<String, Any?>(
+            "status" to "not_run",
+            "deterministic_input_count" to 0,
+            "reference_resource" to null,
+            "comparator_version" to null,
+            "tolerance" to null,
+            "mismatch_count" to null,
+            "note" to "accuracy comparator is not implemented in phase 2-A",
+        )
+        val energyMeasurement = linkedMapOf<String, Any?>(
+            "status" to "raw_unverified",
+            "current_raw_policy" to "raw_unscaled_unit_unverified",
+            "voltage_available" to null,
+            "current_unit_verified" to false,
+            "charge_counter_unit_verified" to false,
+            "calculation_performed" to false,
+            "note" to "no J or mWh result is produced before unit calibration",
+        )
         val outputConfig = linkedMapOf<String, Any?>(
             "precision" to config.precision.name,
             "limit_mode" to config.limit.modeName,
@@ -218,6 +268,19 @@ class GpuBenchmarkEngine(private val context: Context) {
             "auto_start" to config.isAutomated,
             "expected_run_id" to config.expectedRunId,
             "command_id" to config.commandId,
+            "requested_duty_cycle_percent" to config.dutyCyclePercent,
+            "duty_cycle_period_ns" to DutyCycleTracker.periodNanos(
+                config.dutyCyclePeriodSeconds
+            ),
+            "duty_cycle_applied" to (config.limit is RunLimit.Duration),
+            "target_active_duration_ns" to dutyMetrics?.targetActiveDurationNs,
+            "actual_active_duration_ns" to dutyMetrics?.actualActiveDurationNs,
+            "actual_idle_duration_ns" to dutyMetrics?.actualIdleDurationNs,
+            "achieved_duty_cycle_percent" to dutyMetrics?.achievedPercent,
+            "completed_duty_cycle_count" to dutyMetrics?.completedCycleCount,
+            "duty_cycle_active_overrun_ns" to dutyMetrics?.activeOverrunNs,
+            "accuracy_preflight" to accuracyPreflight,
+            "energy_measurement" to energyMeasurement,
         )
         outputConfig.putAll(
             pilotSafety?.metadata() ?: mapOf(

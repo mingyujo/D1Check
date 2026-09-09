@@ -95,6 +95,35 @@ def extract_json(line: str) -> dict[str, Any] | None:
     return value if isinstance(value, dict) else None
 
 
+def measurement_provenance(metadata: dict[str, Any]) -> dict[str, Any]:
+    accuracy = metadata.get("accuracy_preflight")
+    if not isinstance(accuracy, dict):
+        accuracy = {
+            "status": "not_run",
+            "deterministic_input_count": 0,
+            "reference_resource": None,
+            "comparator_version": None,
+            "tolerance": None,
+            "mismatch_count": None,
+            "note": "accuracy comparator was not run",
+        }
+    energy = metadata.get("energy_measurement")
+    if not isinstance(energy, dict):
+        energy = {
+            "status": "raw_unverified",
+            "current_raw_policy": "raw_unscaled_unit_unverified",
+            "voltage_available": None,
+            "current_unit_verified": False,
+            "charge_counter_unit_verified": False,
+            "calculation_performed": False,
+            "note": "no calibrated energy result is available",
+        }
+    return {
+        "accuracy_preflight": accuracy,
+        "energy_measurement": energy,
+    }
+
+
 def runner_session_from_filename(filename: str, run_id: str) -> str | None:
     prefix = f"gpu-events-{run_id}-"
     if not filename.startswith(prefix) or not filename.endswith(".jsonl"):
@@ -957,6 +986,7 @@ def analyze(run_dir: Path) -> None:
             f"Perfetto uses a {PERFETTO_BUFFER_KB} KiB ring buffer for up to "
             f"{MAX_DIAGNOSTIC_SECONDS}s; overwrite is possible"
         )
+    provenance = measurement_provenance(metadata_event)
     summary = {
         "schema_version": 2,
         "run_id": run_id,
@@ -981,6 +1011,23 @@ def analyze(run_dir: Path) -> None:
         "formal_gpu_valid": formal_gpu_valid if is_gpu else None,
         "analysis_warnings": analysis_warnings,
         "inference_latency": latency_stats(latencies),
+        "duty_cycle": {
+            key: metadata_event.get(key)
+            for key in (
+                "requested_duty_cycle_percent",
+                "duty_cycle_period_ns",
+                "target_active_duration_ns",
+                "actual_active_duration_ns",
+                "actual_idle_duration_ns",
+                "achieved_duty_cycle_percent",
+                "completed_duty_cycle_count",
+                "duty_cycle_active_overrun_ns",
+                "completed_inference_count",
+                "termination_reason",
+            )
+        },
+        "accuracy_preflight": provenance["accuracy_preflight"],
+        "energy_measurement": provenance["energy_measurement"],
     }
     (merged_dir / "summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"

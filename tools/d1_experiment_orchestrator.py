@@ -22,7 +22,7 @@ from typing import Any, Callable, Iterable
 import uuid
 
 
-VERSION = "0.3"
+VERSION = "0.4"
 D1_PACKAGE = "com.example.d1check"
 D1_ACTIVITY = f"{D1_PACKAGE}/.MainActivity"
 D1_SERVICE = f"{D1_PACKAGE}/.TelemetryForegroundService"
@@ -88,6 +88,10 @@ class EmergencyAbort(OrchestratorError):
             f"emergency safety abort during {stage} from {source}: "
             + ",".join(self.reasons)
         )
+
+
+class CoolingTimeout(WaitTimeout):
+    pass
 
 
 def utc_now() -> str:
@@ -573,6 +577,8 @@ def runner_intent_arguments(
     warmup: int,
     run_id: str,
     command_id: str,
+    duty_cycle_percent: int = 100,
+    duty_cycle_period_seconds: float = 10.0,
 ) -> list[str]:
     arguments = [
         "shell", "am", "start", "-W", "-n", RUNNER_ACTIVITY,
@@ -588,6 +594,8 @@ def runner_intent_arguments(
         "--es", "d1_run_id", run_id,
         "--es", "d1_command_id", command_id,
         "--es", "d1_experiment_mode", "BASIC",
+        "--ei", "d1_duty_cycle_percent", str(duty_cycle_percent),
+        "--ef", "d1_duty_cycle_period_s", str(duty_cycle_period_seconds),
     ]
     return arguments
 
@@ -1063,6 +1071,133 @@ def wait_for_idle_interval(
             continue
 
 
+def wait_for_thermal_cooling(
+    record: dict[str, Any],
+    policy: str,
+    minimum_seconds: float,
+    timeout_seconds: float,
+    sample_interval_seconds: float,
+    stability_window_seconds: float,
+    max_range_c: float,
+    max_slope_c_per_minute: float,
+    matched_tolerance_c: float,
+    reference: dict[str, float] | None,
+    get_temperature_vector: Callable[[], dict[str, float]],
+    wait_for_log_line: Callable[[float], None],
+    *,
+    periodic_interval_s: float = 0.0,
+    periodic_check: Callable[[], None] | None = None,
+    monotonic: Callable[[], float] = time.monotonic,
+    on_update: Callable[[], None] | None = None,
+) -> dict[str, Any]:
+    if policy not in {"stable", "matched"}:
+        raise ValueError(f"conditioned cooling requires stable or matched, got {policy!r}")
+    started = monotonic()
+    record.update({
+        "policy": policy,
+        "status": "collecting",
+        "completion_reason": None,
+        "started_utc": utc_now(),
+        "host_start_monotonic_s": started,
+        "raw_temperature_samples": [],
+        "stability_evaluations": [],
+        "reference_evaluation": None,
+        "emergency_result": {"status": "not_triggered"},
+    })
+    if policy == "matched" and reference is None:
+        record.update({
+            "status": "failed",
+            "completion_reason": "missing_thermal_conditioning_reference",
+            "completed_utc": utc_now(),
+            "host_end_monotonic_s": started,
+            "actual_duration_s": 0.0,
+        })
+        if on_update is not None:
+            on_update()
+        raise OrchestratorError(
+            "matched cooling requires thermal_conditioning_reference"
+        )
+    deadline = started + timeout_seconds
+    next_sample = started
+    next_periodic = (
+        started + periodic_interval_s
+        if periodic_check is not None and periodic_interval_s > 0
+        else math.inf
+    )
+
+    def complete(now: float, status: str, reason: str) -> None:
+        record.update({
+            "status": status,
+            "completion_reason": reason,
+            "completed_utc": utc_now(),
+            "host_end_monotonic_s": now,
+            "actual_duration_s": now - started,
+        })
+        if on_update is not None:
+            on_update()
+
+    while True:
+        now = monotonic()
+        if now >= next_periodic:
+            assert periodic_check is not None
+            periodic_check()
+            next_periodic = monotonic() + periodic_interval_s
+            continue
+        if now >= next_sample:
+            try:
+                vector = get_temperature_vector()
+            except Exception as error:
+                complete(monotonic(), "failed", "thermal_sensor_error")
+                record["error"] = f"{error.__class__.__name__}: {error}"
+                if on_update is not None:
+                    on_update()
+                raise
+            sample = {
+                "captured_utc": utc_now(),
+                "host_monotonic_s": now,
+                "android_mono_ns": None,
+                "temperatures_c": dict(vector),
+            }
+            record["raw_temperature_samples"].append(sample)
+            stability = evaluate_thermal_stability(
+                record["raw_temperature_samples"],
+                stability_window_seconds,
+                max_range_c,
+                max_slope_c_per_minute,
+            )
+            stability["evaluated_host_monotonic_s"] = monotonic()
+            record["stability_evaluations"].append(stability)
+            match_pass = policy == "stable"
+            if policy == "matched" and stability["stable"]:
+                match = evaluate_reference_match(
+                    vector, reference, matched_tolerance_c
+                )
+                record["reference_evaluation"] = match
+                match_pass = match["matched"]
+            evaluated_now = monotonic()
+            if (
+                evaluated_now - started >= minimum_seconds
+                and stability["stable"]
+                and match_pass
+            ):
+                complete(evaluated_now, "completed", f"{policy}_condition_met")
+                return record
+            next_sample = evaluated_now + sample_interval_seconds
+            if on_update is not None:
+                on_update()
+            now = evaluated_now
+        if now >= deadline:
+            complete(now, "timeout", "cooling_timeout")
+            raise CoolingTimeout(
+                f"{policy} cooling timed out after {timeout_seconds:.1f}s"
+            )
+        wait_until = min(deadline, next_sample, next_periodic)
+        try:
+            wait_for_log_line(max(0.0, wait_until - now))
+        except WaitTimeout:
+            continue
+
+
 def load_json(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
@@ -1090,6 +1225,8 @@ def validate_result(
     run_id: str,
     command_id: str,
     mode: str,
+    duty_cycle_percent: int = 100,
+    duty_cycle_period_seconds: float = 10.0,
 ) -> dict[str, Any]:
     summary = load_json(run_dir / "merged" / "summary.json")
     capture = load_json(run_dir / "metadata.json")
@@ -1105,6 +1242,54 @@ def validate_result(
         raise OrchestratorError("runner file lacks run_metadata or file_summary")
     coverage = summary.get("thermal_coverage")
     coverage_pass = isinstance(coverage, dict) and coverage.get("passes_formal_requirement") is True
+    actual_load_ns = metadata.get("actual_load_duration_ns")
+    actual_active_ns = metadata.get("actual_active_duration_ns")
+    actual_idle_ns = metadata.get("actual_idle_duration_ns")
+    duty_time_explained = (
+        isinstance(actual_load_ns, int)
+        and isinstance(actual_active_ns, int)
+        and isinstance(actual_idle_ns, int)
+        and actual_active_ns >= 0
+        and actual_idle_ns >= 0
+        and actual_active_ns + actual_idle_ns == actual_load_ns
+    )
+    achieved = metadata.get("achieved_duty_cycle_percent")
+    achieved_explained = (
+        duty_time_explained
+        and isinstance(achieved, (int, float))
+        and abs(
+            float(achieved) - (
+                float(actual_active_ns) * 100.0 / float(actual_load_ns)
+                if actual_load_ns else 0.0
+            )
+        ) <= 1e-9
+    )
+    accuracy = metadata.get("accuracy_preflight")
+    energy = metadata.get("energy_measurement")
+    requested_period_ns = duty_cycle_period_seconds * 1_000_000_000
+    period_value = metadata.get("duty_cycle_period_ns")
+    duty_period_matches = (
+        isinstance(period_value, int)
+        and period_value > 0
+        and abs(period_value - requested_period_ns) <= max(1.0, requested_period_ns * 1e-6)
+    )
+    expected_period_ns = period_value if duty_period_matches else max(
+        1, int(requested_period_ns + 0.5)
+    )
+    active_window_ns = (
+        expected_period_ns
+        if duty_cycle_percent == 100
+        else max(1, expected_period_ns * duty_cycle_percent // 100)
+    )
+    target_duration_ns = duration_s * 1_000_000_000
+    expected_target_active_ns = (
+        target_duration_ns
+        if duty_cycle_percent == 100
+        else (
+            (target_duration_ns // expected_period_ns) * active_window_ns
+            + min(target_duration_ns % expected_period_ns, active_window_ns)
+        )
+    )
     checks = {
         "capture_clean": capture.get("capture_error") is None,
         "run_id": metadata.get("run_id") == run_id == summary.get("run_id"),
@@ -1130,6 +1315,40 @@ def validate_result(
         "single_runner_session": summary.get("runner_session_count") == 1,
         "thermal_coverage": coverage_pass,
         "inference_present": int(metadata.get("completed_inference_count") or 0) > 0,
+        "duty_request": metadata.get("requested_duty_cycle_percent") == duty_cycle_percent,
+        "duty_period": duty_period_matches,
+        "duty_target_active": (
+            metadata.get("target_active_duration_ns") == expected_target_active_ns
+        ),
+        "duty_time_explained": duty_time_explained,
+        "duty_achieved_explained": achieved_explained,
+        "duty_footer_matches": all(
+            footer.get(key) == metadata.get(key)
+            for key in (
+                "requested_duty_cycle_percent",
+                "duty_cycle_period_ns",
+                "target_active_duration_ns",
+                "actual_active_duration_ns",
+                "actual_idle_duration_ns",
+                "achieved_duty_cycle_percent",
+                "completed_duty_cycle_count",
+                "duty_cycle_active_overrun_ns",
+                "completed_inference_count",
+                "termination_reason",
+            )
+        ),
+        "accuracy_not_misrepresented": (
+            isinstance(accuracy, dict)
+            and accuracy.get("status") == "not_run"
+            and accuracy.get("deterministic_input_count") == 0
+        ),
+        "energy_not_misrepresented": (
+            isinstance(energy, dict)
+            and energy.get("status") == "raw_unverified"
+            and energy.get("current_unit_verified") is False
+            and energy.get("charge_counter_unit_verified") is False
+            and energy.get("calculation_performed") is False
+        ),
     }
     if mode == "formal":
         checks["formal_energy_eligible"] = metadata.get("formal_energy_eligible") is True
@@ -1596,11 +1815,41 @@ class ExperimentOrchestrator:
         slot["remote_probe_count"] = 0
         slot["final_remote_probe_used"] = False
         slot["stop_recovery_used"] = None
+        cooling_minimum = (
+            self.args.post_load_idle_seconds
+            if self.args.cooling_policy == "fixed"
+            else max(self.args.post_load_idle_seconds, self.args.cooling_min_seconds)
+        )
         slot["cooling"] = {
+            "policy": self.args.cooling_policy,
             "requested_seconds": self.args.post_load_idle_seconds,
-            "status": "disabled" if self.args.post_load_idle_seconds == 0 else "pending",
+            "requested_minimum_seconds": cooling_minimum,
+            "timeout_seconds": self.args.cooling_timeout_seconds,
+            "status": (
+                "disabled"
+                if self.args.cooling_policy == "fixed" and cooling_minimum == 0
+                else "pending"
+            ),
+            "completion_reason": (
+                "fixed_zero_seconds"
+                if self.args.cooling_policy == "fixed" and cooling_minimum == 0
+                else None
+            ),
+            "started_utc": None,
+            "completed_utc": None,
+            "host_start_monotonic_s": None,
+            "host_end_monotonic_s": None,
+            "actual_duration_s": 0.0 if (
+                self.args.cooling_policy == "fixed" and cooling_minimum == 0
+            ) else None,
+            "load_end_android_mono_ns": None,
+            "run_stop_android_mono_ns": None,
             "host_clock_domain": "host_monotonic_s",
             "android_clock_domain": "android_elapsed_realtime_mono_ns",
+            "raw_temperature_samples": [],
+            "stability_evaluations": [],
+            "reference_evaluation": None,
+            "emergency_result": {"status": "not_triggered"},
         }
         slot["runtime_safety"] = {
             "enabled": self.args.emergency_check_interval_seconds > 0,
@@ -1735,6 +1984,8 @@ class ExperimentOrchestrator:
                 runner_intent_arguments(
                     slot["resource"], self.args.cpu_threads, self.args.duration,
                     self.args.warmup, run_id, command_id,
+                    self.args.duty_cycle_percent,
+                    self.args.duty_cycle_period_seconds,
                 ),
                 timeout=30,
             )
@@ -1807,7 +2058,10 @@ class ExperimentOrchestrator:
                 remote_runner_path=terminal.remote_runner_path,
             )
 
-            if terminal_kind == "success" and self.args.post_load_idle_seconds > 0:
+            cooling_required = (
+                self.args.cooling_policy != "fixed" or cooling_minimum > 0
+            )
+            if terminal_kind == "success" and cooling_required:
                 runner_stop = self.adb.run(
                     ["shell", "am", "force-stop", RUNNER_PACKAGE],
                     timeout=20,
@@ -1824,6 +2078,7 @@ class ExperimentOrchestrator:
                 cooling = slot["cooling"]
                 cooling["status"] = "collecting"
                 cooling["started_utc"] = utc_now()
+                cooling["host_start_monotonic_s"] = time.monotonic()
 
                 def wait_cooling_log(timeout: float) -> None:
                     monitor.wait_for_line(
@@ -1835,19 +2090,60 @@ class ExperimentOrchestrator:
                         [logger],
                     )
 
-                cooling.update(
-                    wait_for_idle_interval(
-                        self.args.post_load_idle_seconds,
+                if self.args.cooling_policy == "fixed":
+                    cooling.update(
+                        wait_for_idle_interval(
+                            cooling_minimum,
+                            wait_cooling_log,
+                            periodic_interval_s=self.args.emergency_check_interval_seconds,
+                            periodic_check=(
+                                periodic_runtime_check if safety_monitor is not None else None
+                            ),
+                        )
+                    )
+                    cooling["status"] = "completed"
+                    cooling["completion_reason"] = "fixed_duration_elapsed"
+                    cooling["completed_utc"] = utc_now()
+                else:
+                    reference_record = self.manifest.get("thermal_conditioning_reference")
+                    reference = (
+                        reference_record.get("temperatures_c")
+                        if isinstance(reference_record, dict)
+                        else None
+                    )
+
+                    def get_cooling_vector() -> dict[str, float]:
+                        response = self.adb.run(
+                            ["shell", "dumpsys", "thermalservice"], timeout=15
+                        )
+                        return parse_hal_temperature_vector(response.stdout)
+
+                    wait_for_thermal_cooling(
+                        cooling,
+                        self.args.cooling_policy,
+                        cooling_minimum,
+                        self.args.cooling_timeout_seconds,
+                        self.args.stability_sample_interval_seconds,
+                        self.args.stability_window_seconds,
+                        self.args.stability_max_range_c,
+                        self.args.stability_max_slope_c_per_minute,
+                        self.args.matched_tolerance_c,
+                        reference,
+                        get_cooling_vector,
                         wait_cooling_log,
                         periodic_interval_s=self.args.emergency_check_interval_seconds,
                         periodic_check=(
                             periodic_runtime_check if safety_monitor is not None else None
                         ),
+                        on_update=self.save,
                     )
+                self.step(
+                    slot,
+                    "post_load_cooling",
+                    status="ok",
+                    policy=self.args.cooling_policy,
+                    completion_reason=cooling["completion_reason"],
                 )
-                cooling["status"] = "completed"
-                cooling["completed_utc"] = utc_now()
-                self.step(slot, "post_load_cooling", status="ok")
 
             stop_result = stop_d1_run(
                 self.adb,
@@ -1896,6 +2192,7 @@ class ExperimentOrchestrator:
             validation = validate_result(
                 run_dir, slot["resource"], self.args.cpu_threads,
                 self.args.duration, self.args.warmup, run_id, command_id, self.args.mode,
+                self.args.duty_cycle_percent, self.args.duty_cycle_period_seconds,
             )
             slot["validation"] = validation
             summary = validation["summary"]
@@ -1921,8 +2218,44 @@ class ExperimentOrchestrator:
         except Exception as error:
             if safety_monitor is not None:
                 slot["runtime_safety"]["observations"] = safety_monitor.observations
+            cooling = slot.get("cooling", {})
             if isinstance(error, EmergencyAbort):
+                if cooling.get("status") == "collecting":
+                    now = time.monotonic()
+                    cooling.update({
+                        "status": "emergency_aborted",
+                        "completion_reason": "emergency_abort",
+                        "completed_utc": utc_now(),
+                        "host_end_monotonic_s": now,
+                        "actual_duration_s": (
+                            now - cooling["host_start_monotonic_s"]
+                            if isinstance(
+                                cooling.get("host_start_monotonic_s"), (int, float)
+                            ) else None
+                        ),
+                        "emergency_result": {
+                            "status": "aborted",
+                            "source": error.source,
+                            "reasons": list(error.reasons),
+                            "sample": error.sample,
+                        },
+                    })
                 self._record_emergency_abort(slot, error)
+            elif cooling.get("status") == "collecting":
+                now = time.monotonic()
+                cooling.update({
+                    "status": "failed",
+                    "completion_reason": "cooling_error",
+                    "completed_utc": utc_now(),
+                    "host_end_monotonic_s": now,
+                    "actual_duration_s": (
+                        now - cooling["host_start_monotonic_s"]
+                        if isinstance(
+                            cooling.get("host_start_monotonic_s"), (int, float)
+                        ) else None
+                    ),
+                    "error": f"{error.__class__.__name__}: {error}",
+                })
             slot["status"] = "failed"
             slot["error"] = f"{error.__class__.__name__}: {error}"
             slot["failed_utc"] = utc_now()
@@ -2001,6 +2334,26 @@ def experiment_config(args: argparse.Namespace) -> dict[str, Any]:
         "runner_experiment_mode": "BASIC",
         "energy_calculation": False,
         "current_raw_policy": "raw_unscaled_unit_unverified",
+        "duty_cycle_percent": args.duty_cycle_percent,
+        "duty_cycle_period_seconds": args.duty_cycle_period_seconds,
+        "accuracy_preflight": {
+            "status": "not_run",
+            "deterministic_input_count": 0,
+            "reference_resource": None,
+            "comparator_version": None,
+            "tolerance": None,
+            "mismatch_count": None,
+            "note": "accuracy comparator is not implemented in phase 2-A",
+        },
+        "energy_measurement": {
+            "status": "raw_unverified",
+            "current_raw_policy": "raw_unscaled_unit_unverified",
+            "voltage_available": None,
+            "current_unit_verified": False,
+            "charge_counter_unit_verified": False,
+            "calculation_performed": False,
+            "note": "no J or mWh result is produced before unit calibration",
+        },
         "thermal_conditioning": {
             "start_policy": args.start_policy,
             "window_seconds": args.stability_window_seconds,
@@ -2014,6 +2367,12 @@ def experiment_config(args: argparse.Namespace) -> dict[str, Any]:
             "matched_claim": "tolerance_based_control_not_statistical_equivalence",
         },
         "post_load_idle_seconds": args.post_load_idle_seconds,
+        "cooling_policy": {
+            "mode": args.cooling_policy,
+            "minimum_seconds": args.cooling_min_seconds,
+            "timeout_seconds": args.cooling_timeout_seconds,
+            "stable_criteria_reused": args.cooling_policy in {"stable", "matched"},
+        },
         "emergency_monitor": {
             "enabled": args.emergency_check_interval_seconds > 0,
             "check_interval_seconds": args.emergency_check_interval_seconds,
@@ -2028,6 +2387,32 @@ def experiment_config(args: argparse.Namespace) -> dict[str, Any]:
 
 def _legacy_compatible_config(config: dict[str, Any]) -> dict[str, Any]:
     value = dict(config)
+    value.setdefault("duty_cycle_percent", 100)
+    value.setdefault("duty_cycle_period_seconds", 10.0)
+    value.setdefault(
+        "accuracy_preflight",
+        {
+            "status": "not_run",
+            "deterministic_input_count": 0,
+            "reference_resource": None,
+            "comparator_version": None,
+            "tolerance": None,
+            "mismatch_count": None,
+            "note": "accuracy comparator is not implemented in phase 2-A",
+        },
+    )
+    value.setdefault(
+        "energy_measurement",
+        {
+            "status": "raw_unverified",
+            "current_raw_policy": "raw_unscaled_unit_unverified",
+            "voltage_available": None,
+            "current_unit_verified": False,
+            "charge_counter_unit_verified": False,
+            "calculation_performed": False,
+            "note": "no J or mWh result is produced before unit calibration",
+        },
+    )
     value.setdefault(
         "thermal_conditioning",
         {
@@ -2045,6 +2430,15 @@ def _legacy_compatible_config(config: dict[str, Any]) -> dict[str, Any]:
     )
     value.setdefault("post_load_idle_seconds", 0.0)
     value.setdefault(
+        "cooling_policy",
+        {
+            "mode": "fixed",
+            "minimum_seconds": 0.0,
+            "timeout_seconds": 900.0,
+            "stable_criteria_reused": False,
+        },
+    )
+    value.setdefault(
         "emergency_monitor",
         {
             "enabled": False,
@@ -2061,6 +2455,7 @@ def _legacy_compatible_config(config: dict[str, Any]) -> dict[str, Any]:
 
 def new_manifest(args: argparse.Namespace) -> dict[str, Any]:
     now = utc_now()
+    config = experiment_config(args)
     return {
         "schema_version": 1,
         "orchestrator_version": VERSION,
@@ -2068,13 +2463,17 @@ def new_manifest(args: argparse.Namespace) -> dict[str, Any]:
         "created_utc": now,
         "updated_utc": now,
         "status": "planned",
-        "config": experiment_config(args),
+        "config": config,
+        "provenance": {
+            "accuracy_preflight": dict(config["accuracy_preflight"]),
+            "energy_measurement": dict(config["energy_measurement"]),
+        },
         "device": None,
         "runs": build_plan(args.resources, args.repeat, args.seed),
         "limitations": {
             "energy_calculated": False,
             "current_raw_unit_verified": False,
-            "duty_cycle_implemented": False,
+            "duty_cycle_implemented": True,
             "accuracy_comparator_implemented": False,
         },
     }
@@ -2111,7 +2510,8 @@ def dry_run_payload(args: argparse.Namespace) -> dict[str, Any]:
                 "start_run": serial_prefix + start_run_arguments(),
                 "runner": serial_prefix + runner_intent_arguments(
                     slot["resource"], args.cpu_threads, args.duration, args.warmup,
-                    "<run-id>", "<command-id>",
+                    "<run-id>", "<command-id>", args.duty_cycle_percent,
+                    args.duty_cycle_period_seconds,
                 ),
                 "stop_run": serial_prefix + stop_run_arguments(),
                 "direct_stop_recovery": serial_prefix + direct_stop_arguments(),
@@ -2127,8 +2527,13 @@ def dry_run_payload(args: argparse.Namespace) -> dict[str, Any]:
             "note": "dry-run does not query thermalservice or wait",
         },
         "cooling": {
+            "policy": args.cooling_policy,
             "post_load_idle_seconds": args.post_load_idle_seconds,
-            "runner_force_stop_before_interval": args.post_load_idle_seconds > 0,
+            "minimum_seconds": args.cooling_min_seconds,
+            "timeout_seconds": args.cooling_timeout_seconds,
+            "runner_force_stop_before_interval": (
+                args.cooling_policy != "fixed" or args.post_load_idle_seconds > 0
+            ),
         },
         "performs_adb_calls": False,
         "writes_manifest": False,
@@ -2148,6 +2553,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--warmup", type=int, default=20)
     parser.add_argument("--repeat", type=int, default=1)
     parser.add_argument("--seed", type=int)
+    parser.add_argument("--duty-cycle-percent", type=int, default=100)
+    parser.add_argument("--duty-cycle-period-seconds", type=float, default=10.0)
     parser.add_argument(
         "--start-policy", choices=("safety", "stable", "matched"), default="safety"
     )
@@ -2162,6 +2569,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--matched-tolerance-c", type=float, default=0.5)
     parser.add_argument("--post-load-idle-seconds", type=float, default=0.0)
+    parser.add_argument(
+        "--cooling-policy", choices=("fixed", "stable", "matched"), default="fixed"
+    )
+    parser.add_argument("--cooling-timeout-seconds", type=float, default=900.0)
+    parser.add_argument("--cooling-min-seconds", type=float, default=0.0)
     parser.add_argument(
         "--emergency-check-interval-seconds", type=float, default=0.0
     )
@@ -2193,6 +2605,14 @@ def validate_cli(args: argparse.Namespace) -> None:
         raise OrchestratorError("--repeat must be at least 1")
     if len(set(args.resources)) != len(args.resources):
         raise OrchestratorError("--resources must not contain duplicates")
+    if not 1 <= args.duty_cycle_percent <= 100:
+        raise OrchestratorError("--duty-cycle-percent must be in 1..100")
+    if not math.isfinite(args.duty_cycle_period_seconds) or (
+        args.duty_cycle_period_seconds <= 0
+    ):
+        raise OrchestratorError(
+            "--duty-cycle-period-seconds must be finite and positive"
+        )
     if args.stability_window_seconds <= 0:
         raise OrchestratorError("--stability-window-seconds must be positive")
     if args.stability_sample_interval_seconds <= 0:
@@ -2211,6 +2631,20 @@ def validate_cli(args: argparse.Namespace) -> None:
         raise OrchestratorError("--matched-tolerance-c must be non-negative")
     if args.post_load_idle_seconds < 0:
         raise OrchestratorError("--post-load-idle-seconds must be non-negative")
+    if args.cooling_min_seconds < 0:
+        raise OrchestratorError("--cooling-min-seconds must be non-negative")
+    if not math.isfinite(args.cooling_timeout_seconds) or (
+        args.cooling_timeout_seconds <= 0
+    ):
+        raise OrchestratorError("--cooling-timeout-seconds must be finite and positive")
+    if args.cooling_policy != "fixed" and args.cooling_timeout_seconds < max(
+        args.cooling_min_seconds,
+        args.post_load_idle_seconds,
+        args.stability_window_seconds,
+    ):
+        raise OrchestratorError(
+            "conditioned cooling timeout must cover minimum and stability window"
+        )
     if args.emergency_check_interval_seconds < 0:
         raise OrchestratorError(
             "--emergency-check-interval-seconds must be non-negative"
@@ -2245,6 +2679,13 @@ def main(argv: list[str] | None = None) -> int:
             raise OrchestratorError("resume options do not match experiment manifest config")
         if manifest.get("config") != requested_config:
             manifest["config"] = requested_config
+        manifest.setdefault(
+            "provenance",
+            {
+                "accuracy_preflight": dict(requested_config["accuracy_preflight"]),
+                "energy_measurement": dict(requested_config["energy_measurement"]),
+            },
+        )
         previous_version = manifest.get("orchestrator_version")
         if previous_version != VERSION:
             manifest.setdefault("orchestrator_upgrades", []).append(

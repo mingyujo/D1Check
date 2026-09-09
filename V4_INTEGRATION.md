@@ -238,6 +238,19 @@ its footer or explicit failure, stops D1Check, analyzes the captured directory, 
 result. Pilot preflight permits SOC 30--100%; formal mode requires SOC 30--90%. Both require
 unplugged, DISCHARGING, battery temperature at most 35 C, and Android thermal status at most LIGHT.
 
+Duration runs accept `--duty-cycle-percent` (1--100, default 100) and
+`--duty-cycle-period-seconds` (positive, default 10). The orchestrator passes these as
+`d1_duty_cycle_percent` and `d1_duty_cycle_period_s`. The schedule is anchored to Android
+`elapsedRealtimeNanos()` at `load_start`; host wall time is never used. At 100%, inference remains
+continuous as before. Below 100%, each period begins with an active window and ends with an idle
+window. Inference starts only in an active window, but an inference already in progress may cross
+the boundary. `duty_cycle_active_overrun_ns` is the cumulative intrusion into intended idle
+windows. `actual_idle_duration_ns` is actual scheduler sleep time, and
+`actual_active_duration_ns = actual_load_duration_ns - actual_idle_duration_ns`, so active plus
+idle always explains the full measured load. `achieved_duty_cycle_percent` uses those actual
+values. The overall DURATION deadline remains elapsed load time, including idle; COUNT semantics
+are unchanged.
+
 Thermal conditioning and post-load cooling are opt-in, so existing commands retain their previous
 timing. `--start-policy safety` is the default and applies only the preflight above. `stable`
 samples only the `Current temperatures from HAL` section of `dumpsys thermalservice`; every sample
@@ -249,10 +262,12 @@ sensor's range and absolute least-squares slope are within the configured bounds
 python tools/d1_experiment_orchestrator.py `
   --serial <A24-IP:PORT> --mode pilot --resources CPU `
   --duration 60 --warmup 20 --repeat 1 `
+  --duty-cycle-percent 25 --duty-cycle-period-seconds 10 `
   --start-policy stable --stability-window-seconds 30 `
   --stability-sample-interval-seconds 5 --stability-timeout-seconds 300 `
   --stability-max-range-c 0.5 --stability-max-slope-c-per-minute 0.3 `
-  --post-load-idle-seconds 30 `
+  --cooling-policy stable --cooling-min-seconds 30 `
+  --cooling-timeout-seconds 300 `
   --emergency-check-interval-seconds 30 `
   --emergency-max-battery-temperature-c 42 `
   --emergency-max-android-thermal-status 1 `
@@ -265,11 +280,18 @@ vector as the experiment reference. Later slots must also fall within
 new one. This is tolerance-based control of observed start temperatures, not proof of statistical
 equivalence.
 
-With `--post-load-idle-seconds` greater than zero, a successful runner footer is followed by a
-runner force-stop while D1Check telemetry and the logger continue. D1Check is stopped only after
-the idle interval, leaving `load_end` through `run_stop` available as the cooling interval. The
-manifest stores both host-monotonic interval timestamps and Android elapsed-realtime `mono_ns`
-boundaries as distinct clock domains; they must not be directly subtracted from one another.
+Cooling uses `--cooling-policy fixed|stable|matched` (default `fixed`). Fixed mode preserves the
+existing `--post-load-idle-seconds` behavior exactly. Stable and matched modes always force-stop
+the runner after its successful footer while D1Check telemetry and the logger remain active.
+They wait at least the greater of `--cooling-min-seconds` and the legacy
+`--post-load-idle-seconds`, and stop no later than `--cooling-timeout-seconds`. Stable reuses the
+start-conditioning window/range/slope criteria. Matched additionally requires every sensor to be
+within `--matched-tolerance-c` of the stored `thermal_conditioning_reference`; absence of that
+reference is an explicit failure. D1Check is stopped only after the cooling policy completes,
+leaving `load_end` through `run_stop` available as the cooling interval. Raw samples, each
+stability decision, reference deltas, emergency outcome, completion reason, UTC times, and host
+monotonic times are recorded. Android `load_end_mono_ns` and `run_stop_mono_ns` remain a separate
+clock domain and must not be subtracted from host timestamps.
 
 Runtime emergency monitoring is disabled by default (`--emergency-check-interval-seconds 0`) to
 preserve prior measurement behavior. When enabled, D1 Logcat samples are checked first and sparse
@@ -312,6 +334,8 @@ STOP use, matching `run_stop` confirmation, logger exit or forced termination, r
 and recoverable local/remote artifact paths. Cleanup errors are supplementary and never replace
 the original experiment failure.
 
-The manifest keeps `current_raw_policy=raw_unscaled_unit_unverified` and
-`energy_calculation=false`. The MVP never scales current, integrates device-battery energy, runs a
-duty cycle, or compares model accuracy.
+The runner, analyzer summary, and experiment manifest carry explicit provenance placeholders.
+`accuracy_preflight.status=not_run` with zero deterministic inputs does not claim CPU/GPU output
+equivalence. `energy_measurement.status=raw_unverified`, both unit-verification flags are false,
+and `calculation_performed=false`. Current is never scaled or integrated, and no J or mWh value is
+emitted. Accuracy comparison and calibrated device-battery energy remain future work.

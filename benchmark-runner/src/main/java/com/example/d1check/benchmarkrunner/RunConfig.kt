@@ -38,6 +38,8 @@ data class RunConfig(
     val experimentMode: ExperimentMode,
     val expectedRunId: String? = null,
     val commandId: String? = null,
+    val dutyCyclePercent: Int = 100,
+    val dutyCyclePeriodSeconds: Double = 10.0,
 ) {
     init {
         require(
@@ -69,6 +71,12 @@ data class RunConfig(
         }
         require((expectedRunId == null) == (commandId == null)) {
             "expectedRunId and commandId must both be present for automation"
+        }
+        require(dutyCyclePercent in 1..100) {
+            "dutyCyclePercent must be 1..100"
+        }
+        require(dutyCyclePeriodSeconds.isFinite() && dutyCyclePeriodSeconds > 0.0) {
+            "dutyCyclePeriodSeconds must be finite and positive"
         }
     }
 

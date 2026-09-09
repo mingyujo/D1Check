@@ -179,6 +179,7 @@ class MainActivity : AppCompatActivity() {
                 AutomationIntentParser.EXTRA_CPU_THREADS,
                 AutomationIntentParser.EXTRA_INFERENCE_COUNT,
                 AutomationIntentParser.EXTRA_WARMUP_COUNT,
+                AutomationIntentParser.EXTRA_DUTY_CYCLE_PERCENT,
             ).forEach { key ->
                 if (intent.hasExtra(key)) put(key, intent.getIntExtra(key, Int.MIN_VALUE))
             }
@@ -186,6 +187,15 @@ class MainActivity : AppCompatActivity() {
                 put(
                     AutomationIntentParser.EXTRA_DURATION_S,
                     intent.getLongExtra(AutomationIntentParser.EXTRA_DURATION_S, Long.MIN_VALUE),
+                )
+            }
+            if (intent.hasExtra(AutomationIntentParser.EXTRA_DUTY_CYCLE_PERIOD_S)) {
+                put(
+                    AutomationIntentParser.EXTRA_DUTY_CYCLE_PERIOD_S,
+                    intent.getFloatExtra(
+                        AutomationIntentParser.EXTRA_DUTY_CYCLE_PERIOD_S,
+                        Float.NaN,
+                    ),
                 )
             }
         }

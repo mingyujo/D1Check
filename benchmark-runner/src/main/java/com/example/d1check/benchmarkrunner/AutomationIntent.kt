@@ -16,6 +16,8 @@ internal object AutomationIntentParser {
     const val EXTRA_RUN_ID = "d1_run_id"
     const val EXTRA_COMMAND_ID = "d1_command_id"
     const val EXTRA_EXPERIMENT_MODE = "d1_experiment_mode"
+    const val EXTRA_DUTY_CYCLE_PERCENT = "d1_duty_cycle_percent"
+    const val EXTRA_DUTY_CYCLE_PERIOD_S = "d1_duty_cycle_period_s"
 
     val knownExtras = setOf(
         EXTRA_AUTO_START,
@@ -28,6 +30,8 @@ internal object AutomationIntentParser {
         EXTRA_RUN_ID,
         EXTRA_COMMAND_ID,
         EXTRA_EXPERIMENT_MODE,
+        EXTRA_DUTY_CYCLE_PERCENT,
+        EXTRA_DUTY_CYCLE_PERIOD_S,
     )
 
     fun parse(extras: Map<String, Any?>): AutomationRequest? {
@@ -85,6 +89,9 @@ internal object AutomationIntentParser {
                 experimentMode = experimentMode,
                 expectedRunId = runId,
                 commandId = commandId,
+                dutyCyclePercent = optionalInt(extras, EXTRA_DUTY_CYCLE_PERCENT) ?: 100,
+                dutyCyclePeriodSeconds =
+                    optionalDouble(extras, EXTRA_DUTY_CYCLE_PERIOD_S) ?: 10.0,
             )
         )
     }
@@ -116,4 +123,14 @@ internal object AutomationIntentParser {
         is Int -> value.toLong()
         else -> throw IllegalArgumentException("Missing or invalid $key")
     }
+
+    private fun optionalDouble(extras: Map<String, Any?>, key: String): Double? =
+        when (val value = extras[key]) {
+            null -> null
+            is Double -> value
+            is Float -> value.toDouble()
+            is Int -> value.toDouble()
+            is Long -> value.toDouble()
+            else -> throw IllegalArgumentException("$key must be numeric")
+        }
 }

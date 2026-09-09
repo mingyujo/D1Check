@@ -16,6 +16,22 @@ SPEC.loader.exec_module(LOGGER)
 
 
 class D1LoggerV4Test(unittest.TestCase):
+    def test_unrun_accuracy_and_uncalibrated_energy_are_not_misrepresented(self):
+        provenance = LOGGER.measurement_provenance({})
+
+        self.assertEqual("not_run", provenance["accuracy_preflight"]["status"])
+        self.assertEqual(
+            "raw_unverified", provenance["energy_measurement"]["status"]
+        )
+        self.assertFalse(
+            provenance["energy_measurement"]["current_unit_verified"]
+        )
+        self.assertFalse(
+            provenance["energy_measurement"]["calculation_performed"]
+        )
+        self.assertNotIn("joules", provenance["energy_measurement"])
+        self.assertNotIn("mWh", provenance["energy_measurement"])
+
     A24_GPU_LOG = """Created TensorFlow Lite delegate for GPU.
 Loaded OpenCL library with dlopen.
 Replacing 31 out of 31 node(s) with delegate (TfLiteGpuDelegateV2) node,

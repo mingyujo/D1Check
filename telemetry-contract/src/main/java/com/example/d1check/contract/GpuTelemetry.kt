@@ -247,7 +247,7 @@ class GpuTelemetry private constructor(
                     run.startedElapsedNs
                 },
             )
-            writer.writeLine(encode(linkedMapOf(
+            val footer = linkedMapOf<String, Any?>(
                 "schema_version" to SCHEMA_VERSION,
                 "source" to "gpu",
                 "event" to "file_summary",
@@ -263,7 +263,22 @@ class GpuTelemetry private constructor(
                 "sequence_last" to sequence,
                 "inference_span_count" to buffer.inferenceCount,
                 "file_path" to file.absolutePath,
-            )))
+            )
+            listOf(
+                "requested_duty_cycle_percent",
+                "duty_cycle_period_ns",
+                "target_active_duration_ns",
+                "actual_active_duration_ns",
+                "actual_idle_duration_ns",
+                "achieved_duty_cycle_percent",
+                "completed_duty_cycle_count",
+                "duty_cycle_active_overrun_ns",
+                "completed_inference_count",
+                "termination_reason",
+                "accuracy_preflight",
+                "energy_measurement",
+            ).forEach { key -> footer[key] = config[key] }
+            writer.writeLine(encode(footer))
         }
         file.useLines { lines -> lines.forEach { Log.i(TAG, it) } }
         return GpuFlushResult(file, eventCount, sequence, runnerSessionId)
@@ -274,8 +289,19 @@ class GpuTelemetry private constructor(
 
     private fun encode(values: Map<String, Any?>): String {
         val json = JSONObject()
-        values.forEach { (key, value) -> json.put(key, value ?: JSONObject.NULL) }
+        values.forEach { (key, value) -> json.put(key, jsonValue(value)) }
         return json.toString()
+    }
+
+    private fun jsonValue(value: Any?): Any = when (value) {
+        null -> JSONObject.NULL
+        is Map<*, *> -> JSONObject().apply {
+            value.forEach { (key, nested) -> put(key.toString(), jsonValue(nested)) }
+        }
+        is Iterable<*> -> org.json.JSONArray().apply {
+            value.forEach { nested -> put(jsonValue(nested)) }
+        }
+        else -> value
     }
 
     private fun BufferedWriter.writeLine(line: String) {

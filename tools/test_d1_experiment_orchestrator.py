@@ -353,6 +353,92 @@ class OrchestratorTest(unittest.TestCase):
         )
         self.assertEqual(3, positive["actual_duration_s"])
 
+    def test_stable_cooling_completes_after_window_and_minimum(self):
+        clock = ManualClock()
+        record = {}
+        result = ORCH.wait_for_thermal_cooling(
+            record, "stable", 2.0, 5.0, 1.0, 2.0, 0.1, 0.1, 0.5,
+            None, lambda: {"AP": 30, "BAT": 29, "PA": 31, "SKIN": 28},
+            clock.wait_timeout, monotonic=clock.monotonic,
+        )
+        self.assertEqual("completed", result["status"])
+        self.assertEqual("stable_condition_met", result["completion_reason"])
+        self.assertEqual(2.0, result["actual_duration_s"])
+        self.assertEqual(3, len(result["raw_temperature_samples"]))
+
+    def test_stable_cooling_timeout_is_explicit(self):
+        clock = ManualClock()
+        values = iter((30.0, 31.0, 32.0, 33.0))
+        record = {}
+        with self.assertRaises(ORCH.CoolingTimeout):
+            ORCH.wait_for_thermal_cooling(
+                record, "stable", 0.0, 3.0, 1.0, 2.0, 0.1, 0.1, 0.5,
+                None,
+                lambda: {
+                    "AP": next(values), "BAT": 29, "PA": 31, "SKIN": 28
+                },
+                clock.wait_timeout, monotonic=clock.monotonic,
+            )
+        self.assertEqual("timeout", record["status"])
+        self.assertEqual("cooling_timeout", record["completion_reason"])
+
+    def test_matched_cooling_success_tolerance_failure_and_missing_reference(self):
+        reference = {"AP": 30.0, "BAT": 29.0, "PA": 31.0, "SKIN": 28.0}
+        clock = ManualClock()
+        success = {}
+        ORCH.wait_for_thermal_cooling(
+            success, "matched", 0.0, 3.0, 1.0, 2.0, 0.1, 0.1, 0.5,
+            reference,
+            lambda: {"AP": 30.5, "BAT": 29, "PA": 31, "SKIN": 28},
+            clock.wait_timeout, monotonic=clock.monotonic,
+        )
+        self.assertEqual("matched_condition_met", success["completion_reason"])
+        self.assertTrue(success["reference_evaluation"]["matched"])
+
+        clock = ManualClock()
+        failed = {}
+        with self.assertRaises(ORCH.CoolingTimeout):
+            ORCH.wait_for_thermal_cooling(
+                failed, "matched", 0.0, 3.0, 1.0, 2.0, 0.1, 0.1, 0.5,
+                reference,
+                lambda: {"AP": 30.6, "BAT": 29, "PA": 31, "SKIN": 28},
+                clock.wait_timeout, monotonic=clock.monotonic,
+            )
+        self.assertFalse(failed["reference_evaluation"]["matched"])
+
+        missing = {}
+        with self.assertRaisesRegex(
+            ORCH.OrchestratorError, "thermal_conditioning_reference"
+        ):
+            ORCH.wait_for_thermal_cooling(
+                missing, "matched", 0.0, 3.0, 1.0, 2.0, 0.1, 0.1, 0.5,
+                None, lambda: reference, clock.wait_timeout, monotonic=clock.monotonic,
+            )
+        self.assertEqual(
+            "missing_thermal_conditioning_reference", missing["completion_reason"]
+        )
+
+    def test_conditioned_cooling_propagates_emergency_abort(self):
+        clock = ManualClock()
+        record = {}
+        monitor = ORCH.RuntimeSafetyMonitor(42.0, 1, monotonic=clock.monotonic)
+        monitor.stage = "cooling"
+
+        def emergency_wait(seconds):
+            clock.value += min(seconds, 0.5)
+            monitor.observe_event({
+                "source": "d1check", "event": "sample", "mono_ns": 123,
+                "thermal_status": 2, "battery_temp_C": 30.0, "plugged": 0,
+            })
+
+        with self.assertRaises(ORCH.EmergencyAbort):
+            ORCH.wait_for_thermal_cooling(
+                record, "stable", 0.0, 5.0, 1.0, 2.0, 0.1, 0.1, 0.5,
+                None, lambda: {"AP": 30, "BAT": 29, "PA": 31, "SKIN": 28},
+                emergency_wait, monotonic=clock.monotonic,
+            )
+        self.assertEqual("collecting", record["status"])
+
     def test_cooling_and_load_emergency_abort(self):
         for stage in ("load", "cooling"):
             with self.subTest(stage=stage):
@@ -393,6 +479,19 @@ class OrchestratorTest(unittest.TestCase):
         self.assertIn("d1_cpu_threads", cpu)
         self.assertNotIn("d1_cpu_threads", gpu)
         self.assertIn("DURATION", cpu)
+        self.assertIn("d1_duty_cycle_percent", cpu)
+        self.assertIn("d1_duty_cycle_period_s", gpu)
+
+    def test_duty_cycle_cli_bounds_are_rejected(self):
+        for options in (
+            ["--duty-cycle-percent", "0"],
+            ["--duty-cycle-percent", "101"],
+            ["--duty-cycle-period-seconds", "0"],
+        ):
+            with self.subTest(options=options):
+                args = ORCH.build_parser().parse_args(options)
+                with self.assertRaises(ORCH.OrchestratorError):
+                    ORCH.validate_cli(args)
 
     def test_runner_terminal_classification_is_run_scoped(self):
         failure = {"source": "gpu", "event": "run_error", "run_id": "run-a"}
@@ -639,7 +738,27 @@ class OrchestratorTest(unittest.TestCase):
         legacy.pop("thermal_conditioning")
         legacy.pop("post_load_idle_seconds")
         legacy.pop("emergency_monitor")
+        legacy.pop("duty_cycle_percent")
+        legacy.pop("duty_cycle_period_seconds")
+        legacy.pop("accuracy_preflight")
+        legacy.pop("energy_measurement")
+        legacy.pop("cooling_policy")
         self.assertEqual(current, ORCH._legacy_compatible_config(legacy))
+        changed = ORCH.build_parser().parse_args(["--duty-cycle-percent", "25"])
+        self.assertNotEqual(
+            ORCH.experiment_config(changed), ORCH._legacy_compatible_config(legacy)
+        )
+
+    def test_manifest_provenance_defaults_are_explicitly_unverified(self):
+        manifest = ORCH.new_manifest(ORCH.build_parser().parse_args([]))
+        accuracy = manifest["provenance"]["accuracy_preflight"]
+        energy = manifest["provenance"]["energy_measurement"]
+
+        self.assertEqual("not_run", accuracy["status"])
+        self.assertEqual(0, accuracy["deterministic_input_count"])
+        self.assertEqual("raw_unverified", energy["status"])
+        self.assertFalse(energy["calculation_performed"])
+        self.assertFalse(energy["current_unit_verified"])
 
     def test_dry_run_performs_no_adb_and_writes_no_manifest(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -660,6 +779,9 @@ class OrchestratorTest(unittest.TestCase):
             self.assertEqual(0.0, payload["config"]["post_load_idle_seconds"])
             self.assertFalse(payload["config"]["emergency_monitor"]["enabled"])
             self.assertFalse(payload["cooling"]["runner_force_stop_before_interval"])
+            self.assertEqual(100, payload["config"]["duty_cycle_percent"])
+            self.assertEqual(10.0, payload["config"]["duty_cycle_period_seconds"])
+            self.assertEqual("fixed", payload["cooling"]["policy"])
             self.assertFalse((Path(directory) / ORCH.MANIFEST_NAME).exists())
 
 
