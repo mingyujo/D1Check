@@ -387,3 +387,58 @@ The runner, analyzer summary, and experiment manifest carry explicit provenance 
 equivalence. `energy_measurement.status=raw_unverified`, both unit-verification flags are false,
 and `calculation_performed=false`. Current is never scaled or integrated, and no J or mWh value is
 emitted. Accuracy comparison and calibrated device-battery energy remain future work.
+
+## Thermal model dataset export
+
+A successfully completed orchestrator plan automatically rebuilds `exports/` from the complete
+manifest. The same deterministic export can be run independently, including for an older or
+failed experiment:
+
+~~~powershell
+python tools/d1_thermal_dataset.py `
+  --experiment-dir "C:\Users\LG\Documents\D1Check_A24_matrix_stable_pilot_20260909_214158"
+~~~
+
+The exporter treats `experiment_manifest.json`, each available `merged/summary.json`, and
+`raw/thermalservice.jsonl` as read-only authoritative inputs. Thermal `mono_ns` and the summary's
+`run_start_mono_ns`, `load_start_mono_ns`, `load_end_mono_ns`, and `run_stop_mono_ns` all use the
+Android elapsed-realtime monotonic domain. UTC and host-monotonic timestamps are provenance only
+and are never used for alignment. Per-sample ADB uptime-bracketing uncertainty is retained.
+
+For every endpoint, only `parse_status=ok` samples with finite AP/BAT/PA/SKIN values are eligible.
+The latest sample at or before the target is selected. Only `run_start` may fall back to the first
+sample after its target when no prior sample exists. Signed and absolute offsets, selection method,
+and sampling uncertainty are exported. The default absolute-offset limit is 2,000 ms; a farther
+sample is labeled `too_far` and its temperature is left null.
+
+Timeseries phases are non-overlapping half-open Android-monotonic intervals:
+
+- baseline: `[run_start_mono_ns, load_start_mono_ns)`
+- load: `[load_start_mono_ns, load_end_mono_ns)`
+- cooling: `[load_end_mono_ns, run_stop_mono_ns)`
+
+Valid raw samples outside that run envelope are not assigned an invented phase. The dataset
+manifest separately records raw, valid-unique, phase-assigned, and outside/unassignable counts;
+the timeseries row count equals the phase-assigned valid count. This distinction matters because
+logger startup/shutdown races can produce a valid sample just outside `run_start` or `run_stop`.
+
+`exports/run_summary.csv` inventories every manifest slot, including failed and pending slots.
+`exports/phase_temperature_summary.csv` has four sensor rows per slot and contains endpoints,
+changes, extrema, peaks, peak time, and selection quality. `exports/thermal_timeseries.csv` contains
+one row per phase-assigned valid sample. `exports/dataset_manifest.json` records source-manifest
+SHA-256, row and eligibility counts, exclusion reasons, clock/selection definitions, and SHA-256
+for every CSV.
+
+Default thermal-model eligibility requires completed slot status, `validation.valid=true`, formal
+thermal coverage, a passing run envelope, all phase timestamps and endpoint selections, and
+matching resource/config validation. GPU rows additionally require the preserved
+`formal_gpu_valid=true`; CPU `formal_gpu_valid=null` is expected and is not an exclusion. No failed
+slot is silently dropped: it remains in `run_summary.csv` with `model_eligible=false` and explicit
+JSON exclusion reasons. Null values are never replaced with zero, and a pilot export does not
+establish statistical significance.
+
+All files are built and hash-checked in a staging directory before the complete `exports/`
+directory is swapped into place. Re-running replaces the export rather than appending rows. An
+export failure leaves raw/merged/manifest inputs untouched, preserves the previous successful
+export when replacement fails, records a `postprocessing` error in the experiment manifest when
+invoked by the orchestrator, and prints the independent regeneration command.

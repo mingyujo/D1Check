@@ -8,6 +8,7 @@ import sys
 import tempfile
 from types import SimpleNamespace
 import unittest
+from unittest import mock
 
 
 MODULE_PATH = Path(__file__).with_name("d1_experiment_orchestrator.py")
@@ -1098,6 +1099,37 @@ class OrchestratorTest(unittest.TestCase):
             self.assertEqual(10.0, payload["config"]["duty_cycle_period_seconds"])
             self.assertEqual("fixed", payload["cooling"]["policy"])
             self.assertFalse((Path(directory) / ORCH.MANIFEST_NAME).exists())
+            self.assertFalse((Path(directory) / "exports").exists())
+
+    def test_completed_orchestrator_exports_and_preserves_export_failure(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest_path = root / ORCH.MANIFEST_NAME
+            manifest = {"runs": [], "status": "planned"}
+            orchestrator = ORCH.ExperimentOrchestrator(
+                ORCH.build_parser().parse_args([]), manifest, manifest_path
+            )
+            orchestrator.connect = lambda: None
+            raw_marker = root / "raw-result.txt"
+            raw_marker.write_text("preserve", encoding="utf-8")
+
+            with mock.patch.object(
+                ORCH, "export_thermal_dataset", side_effect=RuntimeError("export failed")
+            ) as exporter:
+                self.assertEqual(1, orchestrator.run())
+            exporter.assert_called_once_with(root)
+            self.assertEqual("preserve", raw_marker.read_text(encoding="utf-8"))
+            self.assertEqual("failed", manifest["postprocessing"]["status"])
+            self.assertTrue(manifest["postprocessing"]["sources_preserved"])
+            self.assertIn("--experiment-dir", manifest["postprocessing"]["regeneration_command"])
+
+            with mock.patch.object(
+                ORCH, "export_thermal_dataset", return_value={}
+            ) as exporter:
+                self.assertEqual(0, orchestrator.run())
+            exporter.assert_called_once_with(root)
+            self.assertNotIn("postprocessing", manifest)
+            self.assertEqual(1, len(manifest["postprocessing_history"]))
 
 
 if __name__ == "__main__":

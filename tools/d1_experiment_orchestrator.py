@@ -7,6 +7,7 @@ import argparse
 from collections import deque
 from dataclasses import asdict, dataclass
 import datetime as dt
+import importlib.util
 import json
 import math
 import os
@@ -22,7 +23,7 @@ from typing import Any, Callable, Iterable
 import uuid
 
 
-VERSION = "0.5"
+VERSION = "0.6"
 BLOCK_DESIGN_NAME = "randomized_complete_block"
 BLOCK_DESIGN_VERSION = 1
 MATCHED_MATRIX_WARNING_CODE = "matched_global_reference_long_matrix"
@@ -65,6 +66,16 @@ RUNNER_FAILURE_EVENTS = {
 
 class OrchestratorError(RuntimeError):
     pass
+
+
+def export_thermal_dataset(experiment_dir: Path) -> dict[str, Any]:
+    module_path = Path(__file__).with_name("d1_thermal_dataset.py")
+    spec = importlib.util.spec_from_file_location("d1_thermal_dataset", module_path)
+    if spec is None or spec.loader is None:
+        raise OrchestratorError(f"cannot load thermal dataset exporter: {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.export_experiment(experiment_dir)
 
 
 class WaitTimeout(OrchestratorError):
@@ -2594,6 +2605,38 @@ class ExperimentOrchestrator:
         self.manifest["completed_utc"] = utc_now()
         self.manifest["halt_reason"] = None
         self.save()
+        previous_postprocessing = self.manifest.pop("postprocessing", None)
+        if isinstance(previous_postprocessing, dict):
+            self.manifest.setdefault("postprocessing_history", []).append(
+                previous_postprocessing
+            )
+            self.save()
+        try:
+            export_thermal_dataset(self.manifest_path.parent)
+        except Exception as error:
+            self.manifest["postprocessing"] = {
+                "kind": "thermal_dataset_export",
+                "status": "failed",
+                "failed_utc": utc_now(),
+                "error": f"{error.__class__.__name__}: {error}",
+                "sources_preserved": True,
+                "regeneration_command": [
+                    sys.executable,
+                    str(Path(__file__).with_name("d1_thermal_dataset.py")),
+                    "--experiment-dir",
+                    str(self.manifest_path.parent),
+                ],
+            }
+            self.save()
+            print(
+                "experiment completed but thermal dataset export failed; "
+                "raw results were preserved. Re-run: "
+                + subprocess.list2cmdline(
+                    self.manifest["postprocessing"]["regeneration_command"]
+                ),
+                file=sys.stderr,
+            )
+            return 1
         return 0
 
 
