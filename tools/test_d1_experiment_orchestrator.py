@@ -381,6 +381,9 @@ class OrchestratorTest(unittest.TestCase):
             )
         self.assertEqual("timeout", record["status"])
         self.assertEqual("cooling_timeout", record["completion_reason"])
+        self.assertEqual(
+            "thermal_conditioning_timeout", record["failure_classification"]
+        )
 
     def test_matched_cooling_success_tolerance_failure_and_missing_reference(self):
         reference = {"AP": 30.0, "BAT": 29.0, "PA": 31.0, "SKIN": 28.0}
@@ -405,6 +408,11 @@ class OrchestratorTest(unittest.TestCase):
                 clock.wait_timeout, monotonic=clock.monotonic,
             )
         self.assertFalse(failed["reference_evaluation"]["matched"])
+        self.assertEqual("timeout", failed["status"])
+        self.assertEqual("cooling_timeout", failed["completion_reason"])
+        self.assertEqual(
+            "thermal_conditioning_timeout", failed["failure_classification"]
+        )
 
         missing = {}
         with self.assertRaisesRegex(
@@ -472,6 +480,175 @@ class OrchestratorTest(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertEqual(3, sum(item["resource"] == "CPU" for item in first))
         self.assertEqual(3, sum(item["resource"] == "GPU" for item in first))
+
+    def test_matrix_has_sixteen_conditions_in_each_of_five_blocks(self):
+        plan = ORCH.build_plan(
+            ["CPU", "GPU"], 5, 20260909, [1, 2, 4], [25, 50, 75, 100]
+        )
+
+        self.assertEqual(80, len(plan))
+        for block_index in range(1, 6):
+            block = [slot for slot in plan if slot["block_index"] == block_index]
+            self.assertEqual(16, len(block))
+            self.assertEqual(16, len({slot["condition_id"] for slot in block}))
+
+    def test_matched_plan_warning_depends_on_condition_count_not_repetitions(self):
+        two_condition = ORCH.new_manifest(ORCH.build_parser().parse_args([
+            "--start-policy", "matched", "--resources", "CPU", "GPU",
+            "--repeat", "5",
+        ]))
+        self.assertEqual(2, two_condition["plan_summary"]["condition_count"])
+        self.assertEqual([], two_condition["methodology_warnings"])
+
+        three_condition = ORCH.new_manifest(ORCH.build_parser().parse_args([
+            "--start-policy", "matched", "--resources", "CPU", "GPU",
+            "--cpu-thread-levels", "1", "2", "--repeat", "1",
+        ]))
+        warnings = three_condition["methodology_warnings"]
+        self.assertEqual(1, len(warnings))
+        self.assertEqual(ORCH.MATCHED_MATRIX_WARNING_CODE, warnings[0]["code"])
+        self.assertFalse(warnings[0]["blocking"])
+
+    def test_stable_matrix_has_no_matched_reference_warning(self):
+        manifest = ORCH.new_manifest(ORCH.build_parser().parse_args([
+            "--start-policy", "stable", "--resources", "CPU", "GPU",
+            "--cpu-thread-levels", "1", "2", "4",
+            "--duty-cycles", "25", "50", "75", "100",
+        ]))
+        self.assertEqual(16, manifest["plan_summary"]["condition_count"])
+        self.assertEqual([], manifest["methodology_warnings"])
+
+    def test_matched_matrix_warning_does_not_fail_manifest_or_dry_run(self):
+        arguments = [
+            "--dry-run", "--start-policy", "matched",
+            "--resources", "CPU", "GPU", "--cpu-thread-levels", "1", "2",
+            "--duty-cycles", "100", "--repeat", "2",
+        ]
+        args = ORCH.build_parser().parse_args(arguments)
+        manifest = ORCH.new_manifest(args)
+        self.assertEqual(6, len(manifest["runs"]))
+        self.assertEqual(1, len(manifest["methodology_warnings"]))
+
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            self.assertEqual(0, ORCH.main(arguments))
+        payload = json.loads(output.getvalue())
+        self.assertEqual(1, len(payload["methodology_warnings"]))
+        self.assertFalse(payload["methodology_warnings"][0]["blocking"])
+
+    def test_matrix_is_reproducible_by_seed_and_only_order_changes(self):
+        arguments = (["CPU", "GPU"], 3, 20260909, [1, 2, 4], [25, 50])
+        first = ORCH.build_plan(*arguments)
+        second = ORCH.build_plan(*arguments)
+        different = ORCH.build_plan(
+            ["CPU", "GPU"], 3, 7, [1, 2, 4], [25, 50]
+        )
+
+        self.assertEqual(first, second)
+        self.assertNotEqual(
+            [slot["condition_id"] for slot in first],
+            [slot["condition_id"] for slot in different],
+        )
+        self.assertEqual(
+            sorted((slot["block_index"], slot["condition_id"]) for slot in first),
+            sorted((slot["block_index"], slot["condition_id"]) for slot in different),
+        )
+
+    def test_cpu_cartesian_product_gpu_null_threads_and_stable_ids(self):
+        plan = ORCH.build_plan(
+            ["CPU", "GPU"], 1, None, [1, 2], [25, 100]
+        )
+        cpu = [slot for slot in plan if slot["resource"] == "CPU"]
+        gpu = [slot for slot in plan if slot["resource"] == "GPU"]
+
+        self.assertEqual(
+            {(1, 25), (1, 100), (2, 25), (2, 100)},
+            {(slot["cpu_threads"], slot["duty_cycle_percent"]) for slot in cpu},
+        )
+        self.assertTrue(all(slot["cpu_threads"] is None for slot in gpu))
+        self.assertEqual("cpu-t01-d025-r001", plan[0]["slot_id"])
+        self.assertEqual("cpu-t01-d025", plan[0]["condition_id"])
+        self.assertEqual("gpu-d100-r001", gpu[-1]["slot_id"])
+
+    def test_slot_values_are_forwarded_exactly_to_runner_intent(self):
+        def extra(arguments, name):
+            return arguments[arguments.index(name) + 1]
+
+        cpu = ORCH.runner_intent_arguments(
+            "CPU", 2, 37, 11, "run-id", "command-id", 75, 4.5
+        )
+        gpu = ORCH.runner_intent_arguments(
+            "GPU", None, 37, 11, "run-id", "command-id", 25, 4.5
+        )
+        self.assertEqual("CPU", extra(cpu, "d1_resource"))
+        self.assertEqual("2", extra(cpu, "d1_cpu_threads"))
+        self.assertEqual("75", extra(cpu, "d1_duty_cycle_percent"))
+        self.assertEqual("4.5", extra(cpu, "d1_duty_cycle_period_s"))
+        self.assertEqual("37", extra(cpu, "d1_duration_s"))
+        self.assertEqual("11", extra(cpu, "d1_warmup_count"))
+        self.assertEqual("run-id", extra(cpu, "d1_run_id"))
+        self.assertEqual("command-id", extra(cpu, "d1_command_id"))
+        self.assertEqual("GPU", extra(gpu, "d1_resource"))
+        self.assertNotIn("d1_cpu_threads", gpu)
+        self.assertEqual("25", extra(gpu, "d1_duty_cycle_percent"))
+
+    def test_single_value_cli_compatibility_and_multi_value_conflicts(self):
+        single = ORCH.build_parser().parse_args([
+            "--resources", "CPU", "GPU",
+            "--cpu-threads", "4",
+            "--duty-cycle-percent", "75",
+        ])
+        ORCH.validate_cli(single)
+        config = ORCH.experiment_config(single)
+        self.assertEqual([4], config["cpu_thread_levels"])
+        self.assertEqual([75], config["duty_cycles"])
+
+        for options in (
+            ["--cpu-threads", "4", "--cpu-thread-levels", "1", "2"],
+            ["--duty-cycle-percent", "50", "--duty-cycles", "25", "50"],
+        ):
+            with self.subTest(options=options):
+                with self.assertRaises(ORCH.OrchestratorError):
+                    ORCH.validate_cli(ORCH.build_parser().parse_args(options))
+
+    def test_matrix_rejects_invalid_and_duplicate_axis_values(self):
+        for options in (
+            ["--cpu-thread-levels", "0", "2"],
+            ["--cpu-thread-levels", "1", "17"],
+            ["--duty-cycles", "0", "50"],
+            ["--duty-cycles", "50", "101"],
+            ["--cpu-thread-levels", "2", "2"],
+            ["--duty-cycles", "25", "25"],
+        ):
+            with self.subTest(options=options):
+                with self.assertRaises(ORCH.OrchestratorError):
+                    ORCH.validate_cli(ORCH.build_parser().parse_args(options))
+
+    def test_planned_metadata_mismatch_is_detected_for_each_axis(self):
+        valid = {
+            "resource": "CPU",
+            "cpu_threads": 2,
+            "requested_duty_cycle_percent": 50,
+            "duty_cycle_period_ns": 10_000_000_000,
+        }
+        self.assertTrue(all(ORCH.planned_metadata_checks(valid, "CPU", 2, 50, 10).values()))
+        for key, value in (
+            ("resource", "GPU"),
+            ("cpu_threads", 4),
+            ("requested_duty_cycle_percent", 75),
+            ("duty_cycle_period_ns", 5_000_000_000),
+        ):
+            metadata = dict(valid)
+            metadata[key] = value
+            self.assertFalse(
+                all(ORCH.planned_metadata_checks(metadata, "CPU", 2, 50, 10).values())
+            )
+        gpu = dict(valid, resource="GPU", cpu_threads=2)
+        self.assertFalse(
+            ORCH.planned_metadata_checks(gpu, "GPU", None, 50, 10)[
+                "planned_cpu_threads"
+            ]
+        )
 
     def test_cpu_intent_has_threads_but_gpu_intent_does_not(self):
         cpu = ORCH.runner_intent_arguments("CPU", 4, 60, 20, "run", "command")
@@ -731,6 +908,100 @@ class OrchestratorTest(unittest.TestCase):
             )
             self.assertEqual([], list(path.parent.glob("*.tmp")))
 
+    def test_legacy_resume_adds_axes_without_reordering_or_replacing_reference(self):
+        args = ORCH.build_parser().parse_args([
+            "--resources", "CPU", "GPU", "--repeat", "1", "--seed", "9"
+        ])
+        config = ORCH.experiment_config(args)
+        reference = {
+            "created_utc": "old",
+            "source_slot_id": "001-cpu-r001",
+            "temperatures_c": {"AP": 30, "BAT": 29, "PA": 31, "SKIN": 28},
+        }
+        manifest = {
+            "thermal_conditioning_reference": reference,
+            "runs": [
+                {
+                    "slot_id": "001-cpu-r001", "resource": "CPU",
+                    "repetition": 1, "order_index": 1, "status": "completed",
+                    "attempts": 1,
+                },
+                {
+                    "slot_id": "002-gpu-r001", "resource": "GPU",
+                    "repetition": 1, "order_index": 2, "status": "failed",
+                    "attempts": 1,
+                },
+            ],
+        }
+        original_slot_ids = [slot["slot_id"] for slot in manifest["runs"]]
+
+        self.assertTrue(ORCH.upgrade_and_validate_manifest_plan(manifest, config))
+        self.assertEqual(original_slot_ids, [slot["slot_id"] for slot in manifest["runs"]])
+        self.assertIs(reference, manifest["thermal_conditioning_reference"])
+        self.assertEqual(
+            ["002-gpu-r001"],
+            [slot["slot_id"] for slot in ORCH.runnable_slots(manifest)],
+        )
+
+    def test_new_resume_plan_and_shared_reference_are_not_mutated(self):
+        args = ORCH.build_parser().parse_args([
+            "--resources", "CPU", "GPU", "--cpu-thread-levels", "1", "2",
+            "--duty-cycles", "25", "50", "--repeat", "2", "--seed", "17",
+            "--start-policy", "matched",
+        ])
+        manifest = ORCH.new_manifest(args)
+        manifest["thermal_conditioning_reference"] = {
+            "created_utc": "fixed",
+            "source_slot_id": manifest["runs"][0]["slot_id"],
+            "temperatures_c": {"AP": 30, "BAT": 29, "PA": 31, "SKIN": 28},
+        }
+        manifest.pop("methodology_warnings")
+        before = json.loads(json.dumps(manifest))
+
+        self.assertFalse(
+            ORCH.upgrade_and_validate_manifest_plan(manifest, manifest["config"])
+        )
+        self.assertTrue(
+            ORCH.sync_matrix_methodology_warnings(
+                manifest,
+                args.start_policy,
+                manifest["plan_summary"]["condition_count"],
+            )
+        )
+        self.assertEqual(before["runs"], manifest["runs"])
+        self.assertEqual(
+            before["thermal_conditioning_reference"],
+            manifest["thermal_conditioning_reference"],
+        )
+
+    def test_missing_or_corrupt_shared_reference_is_not_silently_rebuilt(self):
+        corrupt = {
+            "thermal_conditioning_reference": {
+                "temperatures_c": {"AP": 30, "BAT": 29}
+            }
+        }
+        with self.assertRaisesRegex(ORCH.OrchestratorError, "exactly AP/BAT/PA/SKIN"):
+            ORCH.validated_reference_vector(corrupt)
+
+        clock = ManualClock()
+        manifest = {
+            "runs": [
+                {"slot_id": "earlier", "attempts": 1},
+                {"slot_id": "current", "attempts": 1},
+            ]
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            orchestrator = self.make_conditioner(
+                directory, [hal_thermal()] * 3, "matched", manifest,
+                stability_timeout_seconds=4.0,
+            )
+            with self.assertRaisesRegex(ORCH.OrchestratorError, "refusing to recreate"):
+                orchestrator.thermal_conditioning(
+                    {"slot_id": "current", "steps": []},
+                    monotonic=clock.monotonic,
+                    sleep=clock.sleep,
+                )
+
     def test_default_options_are_resume_compatible_with_pre_conditioning_manifest(self):
         args = ORCH.build_parser().parse_args([])
         current = ORCH.experiment_config(args)
@@ -743,6 +1014,10 @@ class OrchestratorTest(unittest.TestCase):
         legacy.pop("accuracy_preflight")
         legacy.pop("energy_measurement")
         legacy.pop("cooling_policy")
+        legacy.pop("cpu_thread_levels")
+        legacy.pop("duty_cycles")
+        legacy.pop("repeat")
+        legacy.pop("block_design")
         self.assertEqual(current, ORCH._legacy_compatible_config(legacy))
         changed = ORCH.build_parser().parse_args(["--duty-cycle-percent", "25"])
         self.assertNotEqual(
@@ -759,6 +1034,46 @@ class OrchestratorTest(unittest.TestCase):
         self.assertEqual("raw_unverified", energy["status"])
         self.assertFalse(energy["calculation_performed"])
         self.assertFalse(energy["current_unit_verified"])
+
+    def test_axis_or_seed_change_is_resume_config_mismatch(self):
+        base = ORCH.experiment_config(ORCH.build_parser().parse_args([
+            "--cpu-thread-levels", "1", "2", "--duty-cycles", "25", "50",
+            "--seed", "1",
+        ]))
+        changed_threads = ORCH.experiment_config(ORCH.build_parser().parse_args([
+            "--cpu-thread-levels", "1", "4", "--duty-cycles", "25", "50",
+            "--seed", "1",
+        ]))
+        changed_seed = ORCH.experiment_config(ORCH.build_parser().parse_args([
+            "--cpu-thread-levels", "1", "2", "--duty-cycles", "25", "50",
+            "--seed", "2",
+        ]))
+        self.assertNotEqual(base, changed_threads)
+        self.assertNotEqual(base, changed_seed)
+
+    def test_eighty_slot_matrix_dry_run_has_no_adb_or_manifest_write(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = io.StringIO()
+            with contextlib.redirect_stdout(output):
+                code = ORCH.main([
+                    "--dry-run", "--mode", "formal",
+                    "--resources", "CPU", "GPU",
+                    "--cpu-thread-levels", "1", "2", "4",
+                    "--duty-cycles", "25", "50", "75", "100",
+                    "--duration", "600", "--warmup", "20", "--repeat", "5",
+                    "--seed", "20260909", "--duty-cycle-period-seconds", "10",
+                    "--start-policy", "matched", "--cooling-policy", "matched",
+                    "--output-dir", directory,
+                ])
+            payload = json.loads(output.getvalue())
+            self.assertEqual(0, code)
+            self.assertEqual(80, payload["plan_summary"]["slot_count"])
+            self.assertEqual(5, payload["plan_summary"]["block_count"])
+            self.assertEqual(16, payload["plan_summary"]["condition_count"])
+            self.assertEqual([16] * 5, payload["plan_summary"]["slots_per_block"])
+            self.assertFalse(payload["performs_adb_calls"])
+            self.assertFalse(payload["writes_manifest"])
+            self.assertFalse((Path(directory) / ORCH.MANIFEST_NAME).exists())
 
     def test_dry_run_performs_no_adb_and_writes_no_manifest(self):
         with tempfile.TemporaryDirectory() as directory:

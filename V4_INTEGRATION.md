@@ -207,20 +207,41 @@ Scale mismatch is never silently corrected.
 
 The later CPU/GPU accuracy preflight will use at least 32 deterministic inputs. Output SHA-256 is
 provenance only; top-k agreement, cosine similarity, and absolute/relative error are the pass
-criteria. Duty cycling, output comparison, and energy integration are not implemented.
+criteria. Output comparison and energy integration are not implemented.
 
 ## Repeat experiment orchestrator MVP
 
-`d1_experiment_orchestrator.py` automates BASIC CPU/GPU duration experiments. One repeat means one
-run per selected resource. `--seed` shuffles the stored plan reproducibly; without a seed the order
-is the order supplied to `--resources`. Each slot receives a new D1Check run UUID and runner
-command UUID.
+`d1_experiment_orchestrator.py` automates BASIC CPU/GPU duration experiments. CPU conditions are
+the Cartesian product of selected CPU thread levels and duty cycles; GPU conditions use duty only
+and always store `cpu_threads=null`. `--repeat` defines randomized-complete-block repetitions. Each
+block contains every condition exactly once, and `--seed` shuffles only within each block. No
+global shuffle crosses block boundaries. The manifest records block design/version,
+`block_index`, stable `condition_id`, and global `order_index`. Each slot receives a new D1Check
+run UUID and runner command UUID. Blocking by repetition helps distribute time-varying ambient and
+device conditions across treatments, but does not eliminate them.
+
+The legacy `--cpu-threads` and `--duty-cycle-percent` single-value options remain available.
+Matrices use `--cpu-thread-levels` and `--duty-cycles`. Supplying a single-value and its multi-value
+form together is rejected as ambiguous. Duplicate axis values are also rejected rather than
+silently normalized. CPU threads must be 1--16 and every duty value must be 1--100.
 
 Dry-run performs no ADB calls and writes no manifest:
 
 ~~~powershell
 python tools/d1_experiment_orchestrator.py --dry-run --mode pilot `
   --resources CPU GPU --duration 60 --warmup 20 --repeat 2 --seed 20260908
+~~~
+
+The full 3-thread x 4-duty CPU matrix plus the 4 GPU-duty conditions contains 16 conditions per
+block and 80 slots over five blocks:
+
+~~~powershell
+python tools/d1_experiment_orchestrator.py --dry-run `
+  --mode formal --resources CPU GPU `
+  --cpu-thread-levels 1 2 4 --duty-cycles 25 50 75 100 `
+  --duration 600 --warmup 20 --repeat 5 --seed 20260909 `
+  --duty-cycle-period-seconds 10 `
+  --start-policy stable --cooling-policy stable
 ~~~
 
 Galaxy A24 pilot example (wireless ADB, unplugged):
@@ -274,11 +295,30 @@ python tools/d1_experiment_orchestrator.py `
   --output-dir results/A24_stable_cooling_60s
 ~~~
 
-`matched` first requires the same stable condition, then stores the first passing AP/BAT/PA/SKIN
-vector as the experiment reference. Later slots must also fall within
+For formal thermal-model data collection, `stable` is the recommended policy. The model should use
+the measured temperatures at the actual `load_start` as state variables or covariates rather than
+assuming that every slot began at one identical absolute temperature. Randomized complete blocks
+reduce systematic coupling between treatment order and time/environment drift; they do not make
+the starting thermal states identical.
+
+`matched` is intended for short, direct CPU/GPU comparisons and diagnostics. It first requires the
+same stable condition, then stores the first passing AP/BAT/PA/SKIN vector once at manifest scope.
+Every later CPU/GPU/thread/duty slot and matched cooling decision uses that same reference and must
+fall within
 `--matched-tolerance-c` for every sensor. Resume reuses that stored reference and never derives a
-new one. This is tolerance-based control of observed start temperatures, not proof of statistical
-equivalence.
+new one. A missing reference after any attempted slot, or a malformed reference, stops resume
+instead of silently replacing it. This is tolerance-based control of observed start temperatures,
+not proof of statistical equivalence. A matched-start plan with more than two conditions is allowed
+but records the non-blocking `matched_global_reference_long_matrix` methodology warning in both
+dry-run output and the manifest. Delayed heat transfer and ambient-temperature drift can make a
+return to one global reference impractical; use `stable` plus actual start-temperature covariates
+for a long formal matrix.
+
+In one Galaxy A24 pilot, a matched matrix did not return to its initial reference within 300 s after
+the first CPU 2-thread, 100% duty load: the final stable AP, PA, and SKIN readings remained +0.8 C,
++0.9 C, and +0.6 C above reference, respectively, exceeding a 0.5 C tolerance. The same six-slot
+matrix completed every slot on its first attempt with stable start/cooling policies. This is one
+device-session observation, not a general bound for Galaxy A24 devices or other environments.
 
 Cooling uses `--cooling-policy fixed|stable|matched` (default `fixed`). Fixed mode preserves the
 existing `--post-load-idle-seconds` behavior exactly. Stable and matched modes always force-stop
@@ -291,7 +331,10 @@ reference is an explicit failure. D1Check is stopped only after the cooling poli
 leaving `load_end` through `run_stop` available as the cooling interval. Raw samples, each
 stability decision, reference deltas, emergency outcome, completion reason, UTC times, and host
 monotonic times are recorded. Android `load_end_mono_ns` and `run_stop_mono_ns` remain a separate
-clock domain and must not be subtracted from host timestamps.
+clock domain and must not be subtracted from host timestamps. A matched cooling deadline records
+`status=timeout`, `completion_reason=cooling_timeout`, and
+`failure_classification=thermal_conditioning_timeout`; it is not classified as an emergency abort
+or runner failure.
 
 Runtime emergency monitoring is disabled by default (`--emergency-check-interval-seconds 0`) to
 preserve prior measurement behavior. When enabled, D1 Logcat samples are checked first and sparse
@@ -304,7 +347,8 @@ unnecessary ADB polling during measurement.
 Every transition and failure is atomically checkpointed in
 `<output-dir>/experiment_manifest.json`. A failed slot halts the experiment and later slots remain
 pending. After correcting the cause, resume with the same options plus `--resume`; completed slots
-are never run again:
+are never run again. Stored order, condition IDs, and the shared thermal reference remain
+unchanged. Changing resources, CPU-thread axis, duty axis, repeat count, or seed is rejected:
 
 ~~~powershell
 python tools/d1_experiment_orchestrator.py `
@@ -312,6 +356,10 @@ python tools/d1_experiment_orchestrator.py `
   --cpu-threads 4 --duration 60 --warmup 20 --repeat 1 --seed 20260908 `
   --output-dir results/A24_pilot_60s --resume
 ~~~
+
+Manifests created before the matrix feature remain resumable for their single CPU-thread and duty
+values. Missing axis/block fields are added while the original slot IDs and execution order are
+preserved; completed slots are not regenerated or reordered.
 
 If Activity-based STOP does not produce the matching `run_stop`, the orchestrator uses the tested
 `run-as ... start-foreground-service` recovery and records that fact. A timeout, disconnected ADB

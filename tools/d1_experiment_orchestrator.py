@@ -22,7 +22,12 @@ from typing import Any, Callable, Iterable
 import uuid
 
 
-VERSION = "0.4"
+VERSION = "0.5"
+BLOCK_DESIGN_NAME = "randomized_complete_block"
+BLOCK_DESIGN_VERSION = 1
+MATCHED_MATRIX_WARNING_CODE = "matched_global_reference_long_matrix"
+DEFAULT_CPU_THREADS = 4
+DEFAULT_DUTY_CYCLE_PERCENT = 100
 D1_PACKAGE = "com.example.d1check"
 D1_ACTIVITY = f"{D1_PACKAGE}/.MainActivity"
 D1_SERVICE = f"{D1_PACKAGE}/.TelemetryForegroundService"
@@ -414,6 +419,33 @@ def evaluate_reference_match(
     }
 
 
+def validated_reference_vector(manifest: dict[str, Any]) -> dict[str, float] | None:
+    record = manifest.get("thermal_conditioning_reference")
+    if record is None:
+        return None
+    if not isinstance(record, dict) or not isinstance(record.get("temperatures_c"), dict):
+        raise OrchestratorError("thermal_conditioning_reference is malformed")
+    temperatures = record["temperatures_c"]
+    if set(temperatures) != set(THERMAL_SENSOR_NAMES):
+        raise OrchestratorError(
+            "thermal_conditioning_reference must contain exactly AP/BAT/PA/SKIN"
+        )
+    vector: dict[str, float] = {}
+    for sensor in THERMAL_SENSOR_NAMES:
+        value = temperatures[sensor]
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise OrchestratorError(
+                f"thermal_conditioning_reference {sensor} is not numeric"
+            )
+        parsed = float(value)
+        if not math.isfinite(parsed):
+            raise OrchestratorError(
+                f"thermal_conditioning_reference {sensor} is not finite"
+            )
+        vector[sensor] = parsed
+    return vector
+
+
 def emergency_reasons(
     sample: dict[str, Any],
     max_battery_temperature_c: float,
@@ -536,32 +568,111 @@ class RuntimeSafetyMonitor:
         )
 
 
-def build_plan(resources: Iterable[str], repeat: int, seed: int | None) -> list[dict[str, Any]]:
+def normalize_axis_values(
+    single_value: int | None,
+    multiple_values: Iterable[int] | None,
+    default_value: int,
+    single_option: str,
+    multiple_option: str,
+) -> list[int]:
+    if single_value is not None and multiple_values is not None:
+        raise OrchestratorError(
+            f"{single_option} and {multiple_option} cannot be used together"
+        )
+    values = list(multiple_values) if multiple_values is not None else [
+        single_value if single_value is not None else default_value
+    ]
+    if len(set(values)) != len(values):
+        raise OrchestratorError(f"{multiple_option} contains duplicate values: {values}")
+    return values
+
+
+def normalized_axes(args: argparse.Namespace) -> tuple[list[int], list[int]]:
+    cpu_threads = normalize_axis_values(
+        args.cpu_threads,
+        args.cpu_thread_levels,
+        DEFAULT_CPU_THREADS,
+        "--cpu-threads",
+        "--cpu-thread-levels",
+    )
+    duty_cycles = normalize_axis_values(
+        args.duty_cycle_percent,
+        args.duty_cycles,
+        DEFAULT_DUTY_CYCLE_PERCENT,
+        "--duty-cycle-percent",
+        "--duty-cycles",
+    )
+    return cpu_threads, duty_cycles
+
+
+def build_conditions(
+    resources: Iterable[str],
+    cpu_thread_levels: Iterable[int],
+    duty_cycles: Iterable[int],
+) -> list[dict[str, Any]]:
     normalized = [value.upper() for value in resources]
     if not normalized or any(value not in {"CPU", "GPU"} for value in normalized):
         raise ValueError("resources must contain CPU and/or GPU")
     if len(set(normalized)) != len(normalized):
         raise ValueError("resources must not contain duplicates")
+    threads = list(cpu_thread_levels)
+    duties = list(duty_cycles)
+    conditions: list[dict[str, Any]] = []
+    for resource in normalized:
+        if resource == "CPU":
+            conditions.extend(
+                {
+                    "condition_id": f"cpu-t{threads_value:02d}-d{duty:03d}",
+                    "resource": "CPU",
+                    "cpu_threads": threads_value,
+                    "duty_cycle_percent": duty,
+                }
+                for threads_value in threads
+                for duty in duties
+            )
+        else:
+            conditions.extend(
+                {
+                    "condition_id": f"gpu-d{duty:03d}",
+                    "resource": "GPU",
+                    "cpu_threads": None,
+                    "duty_cycle_percent": duty,
+                }
+                for duty in duties
+            )
+    return conditions
+
+
+def build_plan(
+    resources: Iterable[str],
+    repeat: int,
+    seed: int | None,
+    cpu_thread_levels: Iterable[int] = (DEFAULT_CPU_THREADS,),
+    duty_cycles: Iterable[int] = (DEFAULT_DUTY_CYCLE_PERCENT,),
+) -> list[dict[str, Any]]:
     if repeat < 1:
         raise ValueError("repeat must be at least 1")
-    entries = [
-        {"resource": resource, "repetition": repetition}
-        for repetition in range(1, repeat + 1)
-        for resource in normalized
-    ]
-    if seed is not None:
-        random.Random(seed).shuffle(entries)
-    for index, entry in enumerate(entries, 1):
-        entry.update(
-            {
-                "slot_id": f"{index:03d}-{entry['resource'].lower()}-r{entry['repetition']:03d}",
-                "order_index": index,
-                "status": "pending",
-                "attempts": 0,
-                "failures": [],
-                "steps": [],
-            }
-        )
+    conditions = build_conditions(resources, cpu_thread_levels, duty_cycles)
+    randomizer = random.Random(seed) if seed is not None else None
+    entries: list[dict[str, Any]] = []
+    for repetition in range(1, repeat + 1):
+        block = [dict(condition) for condition in conditions]
+        if randomizer is not None:
+            randomizer.shuffle(block)
+        for condition in block:
+            condition.update(
+                {
+                    "slot_id": f"{condition['condition_id']}-r{repetition:03d}",
+                    "block_index": repetition,
+                    "repetition": repetition,
+                    "order_index": len(entries) + 1,
+                    "status": "pending",
+                    "attempts": 0,
+                    "failures": [],
+                    "steps": [],
+                }
+            )
+            entries.append(condition)
     return entries
 
 
@@ -570,9 +681,137 @@ def runnable_slots(manifest: dict[str, Any]) -> list[dict[str, Any]]:
     return [slot for slot in manifest["runs"] if slot.get("status") != "completed"]
 
 
+def plan_summary(plan: list[dict[str, Any]], repeat: int) -> dict[str, Any]:
+    return {
+        "design": {"name": BLOCK_DESIGN_NAME, "version": BLOCK_DESIGN_VERSION},
+        "slot_count": len(plan),
+        "block_count": repeat,
+        "condition_count": len(plan) // repeat if repeat else 0,
+        "slots_per_block": [
+            sum(slot.get("block_index") == block for slot in plan)
+            for block in range(1, repeat + 1)
+        ],
+    }
+
+
+def matrix_methodology_warnings(
+    start_policy: str, condition_count: int
+) -> list[dict[str, Any]]:
+    if start_policy != "matched" or condition_count <= 2:
+        return []
+    return [{
+        "code": MATCHED_MATRIX_WARNING_CODE,
+        "scope": "experiment_plan",
+        "condition_count": condition_count,
+        "message": (
+            "Returning a long-running matrix to one global thermal reference may be "
+            "unachievable because of ambient-temperature drift and delayed heat transfer."
+        ),
+        "recommendation": (
+            "Use start-policy=stable for formal thermal-model collection and include "
+            "the measured load_start temperatures as model state variables or covariates."
+        ),
+        "blocking": False,
+    }]
+
+
+def sync_matrix_methodology_warnings(
+    record: dict[str, Any], start_policy: str, condition_count: int
+) -> bool:
+    existing = record.get("methodology_warnings", [])
+    if not isinstance(existing, list):
+        raise OrchestratorError("manifest methodology_warnings must be a list")
+    preserved = [
+        warning for warning in existing
+        if not (
+            isinstance(warning, dict)
+            and warning.get("code") == MATCHED_MATRIX_WARNING_CODE
+        )
+    ]
+    updated = preserved + matrix_methodology_warnings(start_policy, condition_count)
+    if existing == updated:
+        return False
+    record["methodology_warnings"] = updated
+    return True
+
+
+def upgrade_and_validate_manifest_plan(
+    manifest: dict[str, Any], config: dict[str, Any]
+) -> bool:
+    runs = manifest.get("runs")
+    if not isinstance(runs, list):
+        raise OrchestratorError("manifest runs must be a list")
+    upgraded = False
+    default_threads = config["cpu_thread_levels"][0]
+    default_duty = config["duty_cycles"][0]
+    for slot in runs:
+        resource = str(slot.get("resource", "")).upper()
+        repetition = slot.get("repetition")
+        if resource not in {"CPU", "GPU"} or not isinstance(repetition, int):
+            raise OrchestratorError(f"invalid legacy plan slot: {slot}")
+        cpu_threads = default_threads if resource == "CPU" else None
+        duty = default_duty
+        expected_condition_id = (
+            f"cpu-t{cpu_threads:02d}-d{duty:03d}"
+            if resource == "CPU" else f"gpu-d{duty:03d}"
+        )
+        additions = {
+            "block_index": repetition,
+            "condition_id": expected_condition_id,
+            "cpu_threads": cpu_threads,
+            "duty_cycle_percent": duty,
+        }
+        for key, value in additions.items():
+            if key not in slot:
+                slot[key] = value
+                upgraded = True
+
+    expected = {
+        (
+            condition["condition_id"],
+            condition["resource"],
+            condition["cpu_threads"],
+            condition["duty_cycle_percent"],
+        )
+        for condition in build_conditions(
+            config["resources"], config["cpu_thread_levels"], config["duty_cycles"]
+        )
+    }
+    repeat = config["repeat"]
+    for block_index in range(1, repeat + 1):
+        block = [slot for slot in runs if slot.get("block_index") == block_index]
+        actual = {
+            (
+                slot.get("condition_id"),
+                slot.get("resource"),
+                slot.get("cpu_threads"),
+                slot.get("duty_cycle_percent"),
+            )
+            for slot in block
+        }
+        if len(block) != len(expected) or actual != expected:
+            raise OrchestratorError(
+                f"manifest block {block_index} does not match configured condition matrix"
+            )
+    if len(runs) != len(expected) * repeat:
+        raise OrchestratorError("manifest slot count does not match configured block design")
+    order = [slot.get("order_index") for slot in runs]
+    if order != list(range(1, len(runs) + 1)):
+        raise OrchestratorError("manifest order_index sequence is invalid")
+    summary = plan_summary(runs, repeat)
+    if upgraded:
+        summary["design"] = {
+            "name": "legacy_order_preserved",
+            "version": 0,
+            "target_design": BLOCK_DESIGN_NAME,
+        }
+    manifest["plan_summary"] = summary
+    return upgraded
+
+
 def runner_intent_arguments(
     resource: str,
-    cpu_threads: int,
+    cpu_threads: int | None,
     duration_s: int,
     warmup: int,
     run_id: str,
@@ -586,6 +825,8 @@ def runner_intent_arguments(
         "--es", "d1_resource", resource,
     ]
     if resource == "CPU":
+        if cpu_threads is None:
+            raise ValueError("CPU runner Intent requires cpu_threads")
         arguments += ["--ei", "d1_cpu_threads", str(cpu_threads)]
     arguments += [
         "--es", "d1_limit_mode", "DURATION",
@@ -1187,6 +1428,7 @@ def wait_for_thermal_cooling(
                 on_update()
             now = evaluated_now
         if now >= deadline:
+            record["failure_classification"] = "thermal_conditioning_timeout"
             complete(now, "timeout", "cooling_timeout")
             raise CoolingTimeout(
                 f"{policy} cooling timed out after {timeout_seconds:.1f}s"
@@ -1216,10 +1458,37 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
     return events
 
 
+def planned_metadata_checks(
+    metadata: dict[str, Any],
+    resource: str,
+    cpu_threads: int | None,
+    duty_cycle_percent: int,
+    duty_cycle_period_seconds: float,
+) -> dict[str, bool]:
+    requested_period_ns = duty_cycle_period_seconds * 1_000_000_000
+    actual_period_ns = metadata.get("duty_cycle_period_ns")
+    return {
+        "planned_resource": metadata.get("resource") == resource,
+        "planned_cpu_threads": (
+            metadata.get("cpu_threads") == cpu_threads
+            if resource == "CPU" else metadata.get("cpu_threads") is None
+        ),
+        "planned_duty_cycle": (
+            metadata.get("requested_duty_cycle_percent") == duty_cycle_percent
+        ),
+        "planned_duty_period": (
+            isinstance(actual_period_ns, int)
+            and actual_period_ns > 0
+            and abs(actual_period_ns - requested_period_ns)
+            <= max(1.0, requested_period_ns * 1e-6)
+        ),
+    }
+
+
 def validate_result(
     run_dir: Path,
     resource: str,
-    cpu_threads: int,
+    cpu_threads: int | None,
     duration_s: int,
     warmup: int,
     run_id: str,
@@ -1268,11 +1537,10 @@ def validate_result(
     energy = metadata.get("energy_measurement")
     requested_period_ns = duty_cycle_period_seconds * 1_000_000_000
     period_value = metadata.get("duty_cycle_period_ns")
-    duty_period_matches = (
-        isinstance(period_value, int)
-        and period_value > 0
-        and abs(period_value - requested_period_ns) <= max(1.0, requested_period_ns * 1e-6)
+    planned_checks = planned_metadata_checks(
+        metadata, resource, cpu_threads, duty_cycle_percent, duty_cycle_period_seconds
     )
+    duty_period_matches = planned_checks["planned_duty_period"]
     expected_period_ns = period_value if duty_period_matches else max(
         1, int(requested_period_ns + 0.5)
     )
@@ -1295,11 +1563,8 @@ def validate_result(
         "run_id": metadata.get("run_id") == run_id == summary.get("run_id"),
         "command_id": metadata.get("command_id") == command_id,
         "expected_run_id": metadata.get("expected_run_id") == run_id,
-        "resource": metadata.get("resource") == resource == summary.get("resource"),
-        "cpu_threads": (
-            metadata.get("cpu_threads") == cpu_threads
-            if resource == "CPU" else metadata.get("cpu_threads") is None
-        ),
+        "resource": planned_checks["planned_resource"] and summary.get("resource") == resource,
+        "cpu_threads": planned_checks["planned_cpu_threads"],
         "cpu_affinity_none": metadata.get("cpu_affinity") == "NONE",
         "auto_start": metadata.get("auto_start") is True,
         "basic_capture": str(metadata.get("experiment_mode", "")).upper() == "BASIC",
@@ -1315,13 +1580,18 @@ def validate_result(
         "single_runner_session": summary.get("runner_session_count") == 1,
         "thermal_coverage": coverage_pass,
         "inference_present": int(metadata.get("completed_inference_count") or 0) > 0,
-        "duty_request": metadata.get("requested_duty_cycle_percent") == duty_cycle_percent,
+        "duty_request": planned_checks["planned_duty_cycle"],
         "duty_period": duty_period_matches,
         "duty_target_active": (
             metadata.get("target_active_duration_ns") == expected_target_active_ns
         ),
         "duty_time_explained": duty_time_explained,
         "duty_achieved_explained": achieved_explained,
+        "duty_idle_semantics": (
+            actual_idle_ns == 0
+            if duty_cycle_percent == 100
+            else isinstance(actual_idle_ns, int) and actual_idle_ns > 0
+        ),
         "duty_footer_matches": all(
             footer.get(key) == metadata.get(key)
             for key in (
@@ -1497,9 +1767,19 @@ class ExperimentOrchestrator:
             if evaluation["stable"]:
                 match: dict[str, Any] | None = None
                 if policy == "matched":
-                    reference_record = self.manifest.get("thermal_conditioning_reference")
-                    reference_created = reference_record is None
-                    if reference_record is None:
+                    reference_vector = validated_reference_vector(self.manifest)
+                    reference_created = reference_vector is None
+                    if reference_vector is None:
+                        earlier_attempt_exists = any(
+                            candidate.get("slot_id") != slot.get("slot_id")
+                            and int(candidate.get("attempts") or 0) > 0
+                            for candidate in self.manifest.get("runs", [])
+                        )
+                        if earlier_attempt_exists:
+                            raise OrchestratorError(
+                                "shared thermal_conditioning_reference is missing after "
+                                "an earlier slot; refusing to recreate it"
+                            )
                         reference_record = {
                             "created_utc": utc_now(),
                             "source_slot_id": slot.get("slot_id"),
@@ -1509,9 +1789,10 @@ class ExperimentOrchestrator:
                             ),
                         }
                         self.manifest["thermal_conditioning_reference"] = reference_record
+                        reference_vector = dict(vector)
                     match = evaluate_reference_match(
                         vector,
-                        reference_record["temperatures_c"],
+                        reference_vector,
                         self.args.matched_tolerance_c,
                     )
                     result["reference_evaluation"] = match
@@ -1982,9 +2263,9 @@ class ExperimentOrchestrator:
 
             self.adb.run(
                 runner_intent_arguments(
-                    slot["resource"], self.args.cpu_threads, self.args.duration,
+                    slot["resource"], slot["cpu_threads"], self.args.duration,
                     self.args.warmup, run_id, command_id,
-                    self.args.duty_cycle_percent,
+                    slot["duty_cycle_percent"],
                     self.args.duty_cycle_period_seconds,
                 ),
                 timeout=30,
@@ -2105,12 +2386,7 @@ class ExperimentOrchestrator:
                     cooling["completion_reason"] = "fixed_duration_elapsed"
                     cooling["completed_utc"] = utc_now()
                 else:
-                    reference_record = self.manifest.get("thermal_conditioning_reference")
-                    reference = (
-                        reference_record.get("temperatures_c")
-                        if isinstance(reference_record, dict)
-                        else None
-                    )
+                    reference = validated_reference_vector(self.manifest)
 
                     def get_cooling_vector() -> dict[str, float]:
                         response = self.adb.run(
@@ -2190,9 +2466,9 @@ class ExperimentOrchestrator:
             self.step(slot, "analysis_completed", status="ok")
 
             validation = validate_result(
-                run_dir, slot["resource"], self.args.cpu_threads,
+                run_dir, slot["resource"], slot["cpu_threads"],
                 self.args.duration, self.args.warmup, run_id, command_id, self.args.mode,
-                self.args.duty_cycle_percent, self.args.duty_cycle_period_seconds,
+                slot["duty_cycle_percent"], self.args.duty_cycle_period_seconds,
             )
             slot["validation"] = validation
             summary = validation["summary"]
@@ -2322,19 +2598,29 @@ class ExperimentOrchestrator:
 
 
 def experiment_config(args: argparse.Namespace) -> dict[str, Any]:
+    cpu_thread_levels, duty_cycles = normalized_axes(args)
     return {
         "mode": args.mode,
-        "resources": list(args.resources),
-        "cpu_threads": args.cpu_threads,
+        "resources": [resource.upper() for resource in args.resources],
+        "cpu_thread_levels": cpu_thread_levels,
+        "duty_cycles": duty_cycles,
+        "cpu_threads": cpu_thread_levels[0] if len(cpu_thread_levels) == 1 else None,
         "limit_mode": "DURATION",
         "duration_s": args.duration,
         "warmup_count": args.warmup,
         "repeat_per_resource": args.repeat,
+        "repeat": args.repeat,
         "seed": args.seed,
+        "block_design": {
+            "name": BLOCK_DESIGN_NAME,
+            "version": BLOCK_DESIGN_VERSION,
+            "block_axis": "repetition",
+            "randomization": "within_block_seeded_shuffle",
+        },
         "runner_experiment_mode": "BASIC",
         "energy_calculation": False,
         "current_raw_policy": "raw_unscaled_unit_unverified",
-        "duty_cycle_percent": args.duty_cycle_percent,
+        "duty_cycle_percent": duty_cycles[0] if len(duty_cycles) == 1 else None,
         "duty_cycle_period_seconds": args.duty_cycle_period_seconds,
         "accuracy_preflight": {
             "status": "not_run",
@@ -2387,6 +2673,21 @@ def experiment_config(args: argparse.Namespace) -> dict[str, Any]:
 
 def _legacy_compatible_config(config: dict[str, Any]) -> dict[str, Any]:
     value = dict(config)
+    value.setdefault("cpu_thread_levels", [value.get("cpu_threads", DEFAULT_CPU_THREADS)])
+    value.setdefault(
+        "duty_cycles",
+        [value.get("duty_cycle_percent", DEFAULT_DUTY_CYCLE_PERCENT)],
+    )
+    value.setdefault("repeat", value.get("repeat_per_resource", 1))
+    value.setdefault(
+        "block_design",
+        {
+            "name": BLOCK_DESIGN_NAME,
+            "version": BLOCK_DESIGN_VERSION,
+            "block_axis": "repetition",
+            "randomization": "within_block_seeded_shuffle",
+        },
+    )
     value.setdefault("duty_cycle_percent", 100)
     value.setdefault("duty_cycle_period_seconds", 10.0)
     value.setdefault(
@@ -2456,6 +2757,14 @@ def _legacy_compatible_config(config: dict[str, Any]) -> dict[str, Any]:
 def new_manifest(args: argparse.Namespace) -> dict[str, Any]:
     now = utc_now()
     config = experiment_config(args)
+    runs = build_plan(
+        args.resources,
+        args.repeat,
+        args.seed,
+        config["cpu_thread_levels"],
+        config["duty_cycles"],
+    )
+    summary = plan_summary(runs, args.repeat)
     return {
         "schema_version": 1,
         "orchestrator_version": VERSION,
@@ -2469,7 +2778,11 @@ def new_manifest(args: argparse.Namespace) -> dict[str, Any]:
             "energy_measurement": dict(config["energy_measurement"]),
         },
         "device": None,
-        "runs": build_plan(args.resources, args.repeat, args.seed),
+        "runs": runs,
+        "plan_summary": summary,
+        "methodology_warnings": matrix_methodology_warnings(
+            args.start_policy, summary["condition_count"]
+        ),
         "limitations": {
             "energy_calculated": False,
             "current_raw_unit_verified": False,
@@ -2499,28 +2812,42 @@ def resolve_adb(value: str | None) -> str:
 def dry_run_payload(args: argparse.Namespace) -> dict[str, Any]:
     placeholder_adb = args.adb or "adb"
     serial_prefix = [placeholder_adb, "-s", args.serial or "<selected-serial>"]
-    plan = build_plan(args.resources, args.repeat, args.seed)
+    config = experiment_config(args)
+    plan = build_plan(
+        args.resources,
+        args.repeat,
+        args.seed,
+        config["cpu_thread_levels"],
+        config["duty_cycles"],
+    )
     commands = []
     for slot in plan:
         commands.append(
             {
                 "slot_id": slot["slot_id"],
+                "condition_id": slot["condition_id"],
+                "block_index": slot["block_index"],
                 "resource": slot["resource"],
                 "force_stop": serial_prefix + ["shell", "am", "force-stop", RUNNER_PACKAGE],
                 "start_run": serial_prefix + start_run_arguments(),
                 "runner": serial_prefix + runner_intent_arguments(
-                    slot["resource"], args.cpu_threads, args.duration, args.warmup,
-                    "<run-id>", "<command-id>", args.duty_cycle_percent,
+                    slot["resource"], slot["cpu_threads"], args.duration, args.warmup,
+                    "<run-id>", "<command-id>", slot["duty_cycle_percent"],
                     args.duty_cycle_period_seconds,
                 ),
                 "stop_run": serial_prefix + stop_run_arguments(),
                 "direct_stop_recovery": serial_prefix + direct_stop_arguments(),
             }
         )
+    summary = plan_summary(plan, args.repeat)
     return {
         "dry_run": True,
-        "config": experiment_config(args),
+        "config": config,
         "plan": plan,
+        "plan_summary": summary,
+        "methodology_warnings": matrix_methodology_warnings(
+            args.start_policy, summary["condition_count"]
+        ),
         "commands": commands,
         "thermal_conditioning": {
             "policy": args.start_policy,
@@ -2548,12 +2875,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--resources", nargs="+", choices=("CPU", "GPU"), default=["CPU", "GPU"]
     )
-    parser.add_argument("--cpu-threads", type=int, default=4)
+    parser.add_argument("--cpu-threads", type=int)
+    parser.add_argument("--cpu-thread-levels", type=int, nargs="+")
     parser.add_argument("--duration", type=int, default=600)
     parser.add_argument("--warmup", type=int, default=20)
     parser.add_argument("--repeat", type=int, default=1)
     parser.add_argument("--seed", type=int)
-    parser.add_argument("--duty-cycle-percent", type=int, default=100)
+    parser.add_argument("--duty-cycle-percent", type=int)
+    parser.add_argument("--duty-cycles", type=int, nargs="+")
     parser.add_argument("--duty-cycle-period-seconds", type=float, default=10.0)
     parser.add_argument(
         "--start-policy", choices=("safety", "stable", "matched"), default="safety"
@@ -2595,8 +2924,9 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def validate_cli(args: argparse.Namespace) -> None:
-    if not 1 <= args.cpu_threads <= 16:
-        raise OrchestratorError("--cpu-threads must be in 1..16")
+    cpu_thread_levels, duty_cycles = normalized_axes(args)
+    if any(not 1 <= value <= 16 for value in cpu_thread_levels):
+        raise OrchestratorError("CPU thread levels must each be in 1..16")
     if not 1 <= args.duration <= 3600:
         raise OrchestratorError("--duration must be in 1..3600")
     if not 0 <= args.warmup <= 10_000:
@@ -2605,8 +2935,8 @@ def validate_cli(args: argparse.Namespace) -> None:
         raise OrchestratorError("--repeat must be at least 1")
     if len(set(args.resources)) != len(args.resources):
         raise OrchestratorError("--resources must not contain duplicates")
-    if not 1 <= args.duty_cycle_percent <= 100:
-        raise OrchestratorError("--duty-cycle-percent must be in 1..100")
+    if any(not 1 <= value <= 100 for value in duty_cycles):
+        raise OrchestratorError("duty cycles must each be in 1..100")
     if not math.isfinite(args.duty_cycle_period_seconds) or (
         args.duty_cycle_period_seconds <= 0
     ):
@@ -2679,6 +3009,22 @@ def main(argv: list[str] | None = None) -> int:
             raise OrchestratorError("resume options do not match experiment manifest config")
         if manifest.get("config") != requested_config:
             manifest["config"] = requested_config
+        plan_upgraded = upgrade_and_validate_manifest_plan(manifest, requested_config)
+        warnings_updated = sync_matrix_methodology_warnings(
+            manifest,
+            args.start_policy,
+            manifest["plan_summary"]["condition_count"],
+        )
+        reference = validated_reference_vector(manifest)
+        matched_requested = (
+            args.start_policy == "matched" or args.cooling_policy == "matched"
+        )
+        attempted = any(int(slot.get("attempts") or 0) > 0 for slot in manifest["runs"])
+        if matched_requested and attempted and reference is None:
+            raise OrchestratorError(
+                "resume manifest is missing shared thermal_conditioning_reference; "
+                "refusing to recreate it"
+            )
         manifest.setdefault(
             "provenance",
             {
@@ -2692,6 +3038,14 @@ def main(argv: list[str] | None = None) -> int:
                 {"utc": utc_now(), "from": previous_version, "to": VERSION}
             )
             manifest["orchestrator_version"] = VERSION
+        if plan_upgraded:
+            manifest.setdefault("plan_migrations", []).append({
+                "utc": utc_now(),
+                "kind": "legacy_single_axis_metadata_added",
+                "order_preserved": True,
+                "slot_ids_preserved": True,
+            })
+        if previous_version != VERSION or plan_upgraded or warnings_updated:
             atomic_write_json(manifest_path, manifest)
     else:
         if manifest_path.exists():
@@ -2699,6 +3053,7 @@ def main(argv: list[str] | None = None) -> int:
                 f"manifest already exists; use --resume or a new --output-dir: {manifest_path}"
             )
         manifest = new_manifest(args)
+        upgrade_and_validate_manifest_plan(manifest, manifest["config"])
         atomic_write_json(manifest_path, manifest)
     return ExperimentOrchestrator(args, manifest, manifest_path).run()
 
