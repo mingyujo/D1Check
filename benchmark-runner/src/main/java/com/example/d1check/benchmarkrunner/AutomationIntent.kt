@@ -18,6 +18,7 @@ internal object AutomationIntentParser {
     const val EXTRA_EXPERIMENT_MODE = "d1_experiment_mode"
     const val EXTRA_DUTY_CYCLE_PERCENT = "d1_duty_cycle_percent"
     const val EXTRA_DUTY_CYCLE_PERIOD_S = "d1_duty_cycle_period_s"
+    const val EXTRA_GPU_PROFILE = "d1_gpu_profile"
 
     val knownExtras = setOf(
         EXTRA_AUTO_START,
@@ -32,6 +33,7 @@ internal object AutomationIntentParser {
         EXTRA_EXPERIMENT_MODE,
         EXTRA_DUTY_CYCLE_PERCENT,
         EXTRA_DUTY_CYCLE_PERIOD_S,
+        EXTRA_GPU_PROFILE,
     )
 
     fun parse(extras: Map<String, Any?>): AutomationRequest? {
@@ -60,6 +62,15 @@ internal object AutomationIntentParser {
                 null
             }
             ResourceTarget.NPU -> error("unreachable")
+        }
+        val gpuProfile = if (resource == ResourceTarget.GPU) {
+            (extras[EXTRA_GPU_PROFILE] as? String)?.let(GpuDelegateProfile::fromId)
+                ?: GpuDelegateProfile.DEFAULT
+        } else {
+            require(extras[EXTRA_GPU_PROFILE] == null) {
+                "d1_gpu_profile is only valid for GPU"
+            }
+            GpuDelegateProfile.DEFAULT
         }
         val limitMode = (extras[EXTRA_LIMIT_MODE] as? String)
             ?.uppercase(Locale.ROOT)
@@ -92,6 +103,7 @@ internal object AutomationIntentParser {
                 dutyCyclePercent = optionalInt(extras, EXTRA_DUTY_CYCLE_PERCENT) ?: 100,
                 dutyCyclePeriodSeconds =
                     optionalDouble(extras, EXTRA_DUTY_CYCLE_PERIOD_S) ?: 10.0,
+                gpuDelegateProfile = gpuProfile,
             )
         )
     }

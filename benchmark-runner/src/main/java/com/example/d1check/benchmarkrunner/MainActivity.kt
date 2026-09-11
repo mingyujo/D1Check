@@ -2,6 +2,7 @@ package com.example.d1check.benchmarkrunner
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -14,6 +15,7 @@ import android.widget.ScrollView
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import org.json.JSONObject
 import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
@@ -159,6 +161,59 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleAutomationIntent(intent: Intent) {
+        val accuracyValues = buildMap<String, Any?> {
+            if (intent.hasExtra(AccuracyPreflightIntentParser.EXTRA_ENABLED)) {
+                put(
+                    AccuracyPreflightIntentParser.EXTRA_ENABLED,
+                    intent.getBooleanExtra(AccuracyPreflightIntentParser.EXTRA_ENABLED, false),
+                )
+            }
+            listOf(
+                AccuracyPreflightIntentParser.EXTRA_COMMAND_ID,
+                AccuracyPreflightIntentParser.EXTRA_ATOL,
+                AccuracyPreflightIntentParser.EXTRA_RTOL,
+                AccuracyPreflightIntentParser.EXTRA_RELATIVE_EPSILON,
+                AccuracyPreflightIntentParser.EXTRA_CHECK_TYPE,
+                AccuracyPreflightIntentParser.EXTRA_TENSOR_SET_PATH,
+                AccuracyPreflightIntentParser.EXTRA_TENSOR_SET_SHA256,
+                AccuracyPreflightIntentParser.EXTRA_PREPROCESSING_SHA256,
+                AccuracyPreflightIntentParser.EXTRA_GPU_PROFILE,
+            ).forEach { key ->
+                if (intent.hasExtra(key)) put(key, intent.getStringExtra(key))
+            }
+            listOf(
+                AccuracyPreflightIntentParser.EXTRA_INPUT_COUNT,
+                AccuracyPreflightIntentParser.EXTRA_CPU_THREADS,
+            ).forEach { key ->
+                if (intent.hasExtra(key)) put(key, intent.getIntExtra(key, Int.MIN_VALUE))
+            }
+            if (intent.hasExtra(AccuracyPreflightIntentParser.EXTRA_SEED)) {
+                put(
+                    AccuracyPreflightIntentParser.EXTRA_SEED,
+                    intent.getLongExtra(AccuracyPreflightIntentParser.EXTRA_SEED, Long.MIN_VALUE),
+                )
+            }
+        }
+        val accuracyRequest = try {
+            AccuracyPreflightIntentParser.parse(accuracyValues)
+        } catch (error: IllegalArgumentException) {
+            statusView.text = "Invalid accuracy preflight request: ${error.message}"
+            return
+        }
+        if (accuracyRequest != null) {
+            if (BenchmarkExecutionGate.isRunning) {
+                statusView.text = "Accuracy preflight ignored: a benchmark is already running."
+                return
+            }
+            if (!commandReplayStore.claim(accuracyRequest.commandId)) {
+                statusView.text =
+                    "Accuracy preflight replay ignored: command_id=${accuracyRequest.commandId}"
+                return
+            }
+            startAccuracyPreflight(accuracyRequest)
+            return
+        }
+
         val values = buildMap<String, Any?> {
             if (intent.hasExtra(AutomationIntentParser.EXTRA_AUTO_START)) {
                 put(
@@ -172,6 +227,7 @@ class MainActivity : AppCompatActivity() {
                 AutomationIntentParser.EXTRA_RUN_ID,
                 AutomationIntentParser.EXTRA_COMMAND_ID,
                 AutomationIntentParser.EXTRA_EXPERIMENT_MODE,
+                AutomationIntentParser.EXTRA_GPU_PROFILE,
             ).forEach { key ->
                 if (intent.hasExtra(key)) put(key, intent.getStringExtra(key))
             }
@@ -216,6 +272,48 @@ class MainActivity : AppCompatActivity() {
             return
         }
         startBenchmark(request.config)
+    }
+
+    private fun startAccuracyPreflight(config: AccuracyPreflightConfig) {
+        if (!BenchmarkExecutionGate.tryAcquire()) {
+            statusView.text = "A benchmark is already running."
+            return
+        }
+        startButton.isEnabled = false
+        probeNnapiButton.isEnabled = false
+        statusView.text = "Running CPU-GPU numerical output equivalence preflight..."
+        executor.execute {
+            val message = try {
+                val result = AccuracyPreflightEngine(applicationContext).execute(config)
+                buildString {
+                    append(
+                        if (result.executionIntegrityPassed) {
+                            "Output-equivalence execution integrity complete"
+                        } else {
+                            "Output-equivalence execution integrity failed"
+                        }
+                    )
+                    append("\nartifact=").append(result.artifact.absolutePath)
+                    append("\nbinary=").append(result.binaryArtifact.absolutePath)
+                    append("\nFull delegation must still be verified by the host.")
+                }
+            } catch (error: Throwable) {
+                Log.e(AccuracyPreflightEngine.TAG, JSONObject().apply {
+                    put("schema_version", AccuracyPreflightEngine.SCHEMA_VERSION)
+                    put("event", "accuracy_preflight_error")
+                    put("command_id", config.commandId)
+                    put("status", "error")
+                    put("error", "${error.javaClass.simpleName}: ${error.message ?: ""}")
+                }.toString())
+                "Accuracy preflight error: ${error.javaClass.simpleName}: ${error.message}"
+            }
+            runOnUiThread {
+                BenchmarkExecutionGate.release()
+                startButton.isEnabled = true
+                probeNnapiButton.isEnabled = true
+                statusView.text = message
+            }
+        }
     }
 
     private fun probeNnapiDevices() {

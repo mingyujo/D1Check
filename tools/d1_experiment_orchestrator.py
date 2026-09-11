@@ -7,6 +7,8 @@ import argparse
 from collections import deque
 from dataclasses import asdict, dataclass
 import datetime as dt
+import functools
+import hashlib
 import importlib.util
 import json
 import math
@@ -16,6 +18,7 @@ import queue
 import random
 import re
 import subprocess
+import struct
 import sys
 import threading
 import time
@@ -23,7 +26,7 @@ from typing import Any, Callable, Iterable
 import uuid
 
 
-VERSION = "0.6"
+VERSION = "0.8"
 BLOCK_DESIGN_NAME = "randomized_complete_block"
 BLOCK_DESIGN_VERSION = 1
 MATCHED_MATRIX_WARNING_CODE = "matched_global_reference_long_matrix"
@@ -36,6 +39,29 @@ D1_STOP_ACTION = f"{D1_PACKAGE}.action.STOP"
 RUNNER_PACKAGE = "com.example.d1check.benchmarkrunner"
 RUNNER_ACTIVITY = f"{RUNNER_PACKAGE}/.MainActivity"
 REMOTE_RUNNER_DIRECTORY = f"/sdcard/Android/data/{RUNNER_PACKAGE}/files/runs"
+ACCURACY_SCHEMA_VERSION = 2
+LEGACY_ACCURACY_SCHEMA_VERSION = 1
+ACCURACY_COMPARATOR_VERSION = "output-equivalence-v3"
+ACCURACY_INPUT_SET_VERSION = "lcg-float32-unit-v1"
+ACCURACY_MODEL_ID = "mobilenet_v1_1.0_224_float"
+ACCURACY_MODEL_SHA256 = "D95B3C5EA86750CEF882FA867CA357DFE4D265D0B80B67E83277A0BDA310CFBB"
+ACCURACY_LITERT_VERSION = "1.4.2"
+DEFAULT_GPU_PROFILE = "gpu-compat-default-v1"
+GPU_PROFILE_IDS = (DEFAULT_GPU_PROFILE, "gpu-fp32-strict-v1")
+REPRESENTATIVE_POLICY_ID = "representative-equivalence-v2"
+TASK_ACCURACY_POLICY_ID = "task-accuracy-no-regression-v1"
+ACCURACY_VALIDATION_SCOPES = (
+    "thermal-only-pilot", "backend-performance-formal", "accuracy-preserving-formal",
+)
+ACCURACY_INPUT_SHAPE = [1, 224, 224, 3]
+ACCURACY_OUTPUT_SHAPE = [1, 1001]
+ACCURACY_INPUT_DTYPE = "FLOAT32"
+ACCURACY_OUTPUT_DTYPE = "FLOAT32"
+DEFAULT_ACCURACY_INPUT_COUNT = 32
+DEFAULT_ACCURACY_SEED = 0x12345678
+DEFAULT_ACCURACY_ATOL = 1e-4
+DEFAULT_ACCURACY_RTOL = 1e-3
+DEFAULT_ACCURACY_RELATIVE_EPSILON = 1e-6
 MANIFEST_NAME = "experiment_manifest.json"
 RUNNER_SCHEMA_VERSION = 2
 BASELINE_SECONDS = 60
@@ -137,6 +163,125 @@ def atomic_write_json(path: Path, value: dict[str, Any]) -> None:
         os.replace(temporary, path)
     finally:
         temporary.unlink(missing_ok=True)
+
+
+def atomic_write_text(path: Path, value: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(f".{path.name}.{uuid.uuid4()}.tmp")
+    try:
+        with temporary.open("w", encoding="utf-8", newline="\n") as stream:
+            stream.write(value)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def canonical_sha256(value: dict[str, Any]) -> str:
+    encoded = json.dumps(
+        value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+@functools.lru_cache(maxsize=8)
+def _cached_deterministic_accuracy_input_hashes(
+    seed: int, input_count: int, element_count: int
+) -> tuple[tuple[str, ...], str]:
+    state = seed & 0xFFFFFFFF
+    hashes: list[str] = []
+    complete = hashlib.sha256()
+    for _ in range(input_count):
+        digest = hashlib.sha256()
+        for _ in range(element_count):
+            state = (state * 1664525 + 1013904223) & 0xFFFFFFFF
+            encoded = struct.pack("<f", ((state >> 8) & 0xFFFFFF) / 16777215.0)
+            digest.update(encoded)
+            complete.update(encoded)
+        hashes.append(digest.hexdigest())
+    return tuple(hashes), complete.hexdigest()
+
+
+def deterministic_accuracy_input_hashes(
+    seed: int, input_count: int, element_count: int
+) -> tuple[list[str], str]:
+    hashes, complete = _cached_deterministic_accuracy_input_hashes(
+        seed, input_count, element_count
+    )
+    return list(hashes), complete
+
+
+def gpu_profile(profile_id: str) -> dict[str, Any]:
+    if profile_id not in GPU_PROFILE_IDS:
+        raise OrchestratorError(f"unsupported GPU delegate profile: {profile_id}")
+    precision_loss_allowed = profile_id == DEFAULT_GPU_PROFILE
+    canonical = "|".join((
+        f"profile_id={profile_id}",
+        f"precision_loss_allowed={str(precision_loss_allowed).lower()}",
+        "quantized_models_allowed=true",
+        "inference_preference=FAST_SINGLE_ANSWER",
+        "force_backend=UNSET",
+    ))
+    return {
+        "profile_id": profile_id,
+        "configuration_sha256": hashlib.sha256(canonical.encode("utf-8")).hexdigest(),
+        "precision_loss_allowed": precision_loss_allowed,
+        "quantized_models_allowed": True,
+        "inference_preference": "FAST_SINGLE_ANSWER",
+        "force_backend": "UNSET",
+        "actual_fp16_execution": "unknown_not_exposed_by_litert_api",
+    }
+
+
+def representative_acceptance_policy() -> dict[str, Any]:
+    return {
+        "policy_id": REPRESENTATIVE_POLICY_ID,
+        "minimum_sample_count": 40,
+        "maximum_top1_mismatch_count": 0,
+        "minimum_top5_overlap_per_input": 4,
+        "top5_boundary_tie_policy": "exclude_exact_5th_6th_ties_from_overlap_minimum",
+        "maximum_total_variation_distance": 0.02,
+        "minimum_cosine_similarity": 0.999,
+        "tie_break_rule": "score_descending_then_index_ascending",
+        "threshold_origin": "pre_registered_methodology_default_not_fitted_to_A24_observation",
+    }
+
+
+def task_accuracy_acceptance_policy() -> dict[str, Any]:
+    return {
+        "policy_id": TASK_ACCURACY_POLICY_ID,
+        "minimum_labeled_sample_count": 40,
+        "maximum_top1_accuracy_drop": 0.0,
+        "maximum_top5_accuracy_drop": 0.0,
+        "dataset_scope_required": "labeled_representative_subset",
+        "threshold_origin": "no_regression_policy_not_full_ImageNet_accuracy_claim",
+    }
+
+
+def _representative_module() -> Any:
+    module_path = Path(__file__).with_name("d1_representative_tensors.py")
+    spec = importlib.util.spec_from_file_location("d1_representative_tensors_runtime", module_path)
+    if spec is None or spec.loader is None:
+        raise OrchestratorError(f"cannot load representative tensor module: {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def validate_representative_tensor_set(path: Path) -> dict[str, Any]:
+    try:
+        return _representative_module().validate_tensor_set(path)
+    except Exception as error:
+        raise OrchestratorError(f"invalid representative tensor-set: {error}") from error
 
 
 def parse_adb_devices(text: str) -> dict[str, str]:
@@ -829,6 +974,7 @@ def runner_intent_arguments(
     command_id: str,
     duty_cycle_percent: int = 100,
     duty_cycle_period_seconds: float = 10.0,
+    gpu_profile_id: str = DEFAULT_GPU_PROFILE,
 ) -> list[str]:
     arguments = [
         "shell", "am", "start", "-W", "-n", RUNNER_ACTIVITY,
@@ -839,6 +985,8 @@ def runner_intent_arguments(
         if cpu_threads is None:
             raise ValueError("CPU runner Intent requires cpu_threads")
         arguments += ["--ei", "d1_cpu_threads", str(cpu_threads)]
+    else:
+        arguments += ["--es", "d1_gpu_profile", gpu_profile_id]
     arguments += [
         "--es", "d1_limit_mode", "DURATION",
         "--el", "d1_duration_s", str(duration_s),
@@ -850,6 +998,934 @@ def runner_intent_arguments(
         "--ef", "d1_duty_cycle_period_s", str(duty_cycle_period_seconds),
     ]
     return arguments
+
+
+def effective_accuracy_policy(args: argparse.Namespace) -> str:
+    if args.accuracy_preflight is not None:
+        return args.accuracy_preflight
+    return "required" if args.mode == "formal" else "optional"
+
+
+def effective_validation_scope(args: argparse.Namespace) -> str:
+    if getattr(args, "accuracy_validation_scope", None) is not None:
+        return args.accuracy_validation_scope
+    return "backend-performance-formal" if args.mode == "formal" else "thermal-only-pilot"
+
+
+def accuracy_preflight_intent_arguments(
+    command_id: str,
+    input_count: int,
+    seed: int,
+    cpu_threads: int,
+    atol: float,
+    rtol: float,
+    relative_epsilon: float,
+    check_type: str = "synthetic",
+    gpu_profile_id: str = DEFAULT_GPU_PROFILE,
+    tensor_set_path: str | None = None,
+    tensor_set_sha256: str | None = None,
+    preprocessing_configuration_sha256: str | None = None,
+) -> list[str]:
+    arguments = [
+        "shell", "am", "start", "-W", "-n", RUNNER_ACTIVITY,
+        "--ez", "d1_accuracy_preflight", "true",
+        "--es", "d1_command_id", command_id,
+        "--ei", "d1_accuracy_input_count", str(input_count),
+        "--el", "d1_accuracy_seed", str(seed),
+        "--ei", "d1_accuracy_cpu_threads", str(cpu_threads),
+        "--es", "d1_accuracy_atol", repr(atol),
+        "--es", "d1_accuracy_rtol", repr(rtol),
+        "--es", "d1_accuracy_relative_epsilon", repr(relative_epsilon),
+        "--es", "d1_accuracy_check_type", check_type,
+        "--es", "d1_gpu_profile", gpu_profile_id,
+    ]
+    if tensor_set_path is not None:
+        arguments += ["--es", "d1_accuracy_tensor_set_path", tensor_set_path]
+    if tensor_set_sha256 is not None:
+        arguments += ["--es", "d1_accuracy_tensor_set_sha256", tensor_set_sha256]
+    if preprocessing_configuration_sha256 is not None:
+        arguments += [
+            "--es", "d1_accuracy_preprocessing_sha256",
+            preprocessing_configuration_sha256,
+        ]
+    return arguments
+
+
+def accuracy_expected_provenance(
+    args: argparse.Namespace,
+    device_fingerprint: str,
+    check_type: str = "synthetic",
+    representative: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    value = {
+        "schema_version": ACCURACY_SCHEMA_VERSION,
+        "validation_scope": check_type,
+        "equivalence_scope": "CPU_GPU_numerical_output_equivalence_not_task_accuracy",
+        "device_fingerprint": device_fingerprint,
+        "model_id": ACCURACY_MODEL_ID,
+        "model_sha256": ACCURACY_MODEL_SHA256,
+        "litert_version": ACCURACY_LITERT_VERSION,
+        "gpu_delegate_profile": gpu_profile(getattr(args, "gpu_profile", DEFAULT_GPU_PROFILE)),
+        "delegate_configuration": "TfLiteGpuDelegateV2_CompatibilityList_bestOptions",
+        "comparator_version": ACCURACY_COMPARATOR_VERSION,
+        "input_set_version": ACCURACY_INPUT_SET_VERSION,
+        "seed": args.accuracy_seed,
+        "input_count": args.accuracy_input_count,
+        "input_shape": list(ACCURACY_INPUT_SHAPE),
+        "input_dtype": ACCURACY_INPUT_DTYPE,
+        "normalization": "synthetic_[0,1]_float32_no_additional_normalization",
+        "reference_cpu_threads": args.accuracy_cpu_threads,
+        "tolerance": {
+            "atol": args.accuracy_atol,
+            "rtol": args.accuracy_rtol,
+            "relative_error_epsilon": args.accuracy_relative_epsilon,
+        },
+    }
+    if representative is not None:
+        value.update({
+            "input_set_version": representative["header"]["format_version"],
+            "seed": representative["header"]["selection"]["seed"],
+            "input_count": representative["input_count"],
+            "normalization": "host_preprocessed_rgb_central_crop_0.875_bilinear_float32_minus1_to_1",
+            "tensor_set_sha256": representative["tensor_set_sha256"],
+            "tensor_set_container_sha256": representative["container_sha256"],
+            "label_mapping_file_sha256": representative["label_mapping_file_sha256"],
+            "preprocessing_configuration_sha256": representative[
+                "preprocessing_configuration_sha256"
+            ],
+            "representative_acceptance_policy": representative_acceptance_policy(),
+            "task_accuracy_acceptance_policy": task_accuracy_acceptance_policy(),
+        })
+    return value
+
+
+def can_reuse_accuracy_preflight(
+    result: Any, expected_provenance: dict[str, Any], experiment_dir: Path
+) -> bool:
+    if not isinstance(result, dict) or result.get("status") != "passed":
+        return False
+    if result.get("provenance") != expected_provenance:
+        return False
+    relative_path = result.get("artifact_path")
+    expected_hash = result.get("artifact_sha256")
+    if not isinstance(relative_path, str) or not isinstance(expected_hash, str):
+        return False
+    artifact = experiment_dir / Path(relative_path)
+    return artifact.is_file() and sha256_file(artifact) == expected_hash
+
+
+def can_reuse_accuracy_validation(
+    result: Any, cache_key: str, experiment_dir: Path
+) -> bool:
+    """Reuse only a completed schema-v2 result whose immutable artifacts still match."""
+    if not isinstance(result, dict) or result.get("schema_version") != ACCURACY_SCHEMA_VERSION:
+        return False
+    if result.get("status") != "passed" or result.get("cache_key_sha256") != cache_key:
+        return False
+    checks = [result.get("synthetic_numerical_check")]
+    representative = result.get("representative_input_equivalence")
+    if isinstance(representative, dict) and representative.get("status") != "not_run":
+        checks.append(representative)
+    for check in checks:
+        if not isinstance(check, dict) or check.get("status") != "passed":
+            return False
+        for path_key, hash_key in (
+            ("artifact_path", "artifact_sha256"),
+            ("runner_artifact_path", "runner_artifact_sha256"),
+            ("binary_artifact_path", "binary_artifact_sha256"),
+            ("delegate_log_path", "delegate_log_sha256"),
+        ):
+            relative_path = check.get(path_key)
+            expected_hash = check.get(hash_key)
+            if not isinstance(relative_path, str) or not isinstance(expected_hash, str):
+                return False
+            artifact = experiment_dir / Path(relative_path)
+            if not artifact.is_file() or sha256_file(artifact) != expected_hash:
+                return False
+    return True
+
+
+def accuracy_cache_provenance(
+    args: argparse.Namespace,
+    device_fingerprint: str,
+    representative: dict[str, Any] | None,
+) -> dict[str, Any]:
+    """Fields which invalidate a prior preflight when any value changes."""
+    return {
+        "schema_version": ACCURACY_SCHEMA_VERSION,
+        "validation_scope": effective_validation_scope(args),
+        "device_fingerprint": device_fingerprint,
+        "model_sha256": ACCURACY_MODEL_SHA256,
+        "litert_version": ACCURACY_LITERT_VERSION,
+        "gpu_delegate_profile": gpu_profile(args.gpu_profile),
+        "comparator_version": ACCURACY_COMPARATOR_VERSION,
+        "synthetic_input_set_version": ACCURACY_INPUT_SET_VERSION,
+        "synthetic_seed": args.accuracy_seed,
+        "synthetic_input_count": args.accuracy_input_count,
+        "tolerance": {
+            "atol": args.accuracy_atol,
+            "rtol": args.accuracy_rtol,
+            "relative_error_epsilon": args.accuracy_relative_epsilon,
+        },
+        "representative_tensor_set_sha256": (
+            representative.get("tensor_set_sha256") if representative else None
+        ),
+        "representative_container_sha256": (
+            representative.get("container_sha256") if representative else None
+        ),
+        "label_mapping_file_sha256": (
+            representative.get("label_mapping_file_sha256") if representative else None
+        ),
+        "preprocessing_configuration_sha256": (
+            representative.get("preprocessing_configuration_sha256")
+            if representative else None
+        ),
+        "representative_policy_sha256": canonical_sha256(
+            representative_acceptance_policy()
+        ),
+        "task_accuracy_policy_sha256": canonical_sha256(
+            task_accuracy_acceptance_policy()
+        ),
+    }
+
+
+def load_accuracy_runner_artifact(path: Path) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    with path.open(encoding="utf-8") as stream:
+        for line_number, line in enumerate(stream, 1):
+            try:
+                value = json.loads(line)
+            except json.JSONDecodeError as error:
+                raise OrchestratorError(
+                    f"invalid accuracy JSONL line {line_number}: {error}"
+                ) from error
+            if not isinstance(value, dict):
+                raise OrchestratorError(f"accuracy JSONL line {line_number} is not an object")
+            records.append(value)
+    if len(records) < 2:
+        raise OrchestratorError("accuracy JSONL lacks metadata or summary")
+    sequences = [record.get("sequence") for record in records]
+    if sequences != list(range(len(records))):
+        raise OrchestratorError("accuracy JSONL sequence is not contiguous")
+    schema_versions = {record.get("schema_version") for record in records}
+    if len(schema_versions) != 1 or next(iter(schema_versions)) not in {
+        LEGACY_ACCURACY_SCHEMA_VERSION, ACCURACY_SCHEMA_VERSION,
+    }:
+        raise OrchestratorError("accuracy JSONL schema version is inconsistent")
+    command_ids = {record.get("command_id") for record in records}
+    if len(command_ids) != 1 or None in command_ids:
+        raise OrchestratorError("accuracy JSONL command_id is inconsistent")
+    metadata = records[0]
+    summary = records[-1]
+    inputs = records[1:-1]
+    if metadata.get("event") != "accuracy_preflight_metadata":
+        raise OrchestratorError("accuracy JSONL first event is not metadata")
+    if summary.get("event") != "accuracy_preflight_summary":
+        raise OrchestratorError("accuracy JSONL final event is not summary")
+    if any(record.get("event") != "accuracy_preflight_input" for record in inputs):
+        raise OrchestratorError("accuracy JSONL contains an invalid per-input event")
+    if any(record.get("input_index") != index for index, record in enumerate(inputs)):
+        raise OrchestratorError("accuracy JSONL input indexes are not contiguous")
+    return {
+        "schema_version": metadata["schema_version"],
+        "metadata": metadata,
+        "inputs": inputs,
+        "summary": summary,
+    }
+
+
+def validate_accuracy_binary(
+    path: Path,
+    expected_sha256: str,
+    input_count: int,
+    output_element_count: int,
+    tolerance: dict[str, float] | None = None,
+) -> dict[str, Any]:
+    if sha256_file(path) != expected_sha256:
+        raise OrchestratorError("accuracy binary SHA-256 mismatch")
+    with path.open("rb") as stream:
+        header = stream.read(16)
+    if len(header) != 16 or header[:8] != b"D1EQV001":
+        raise OrchestratorError("accuracy binary header is invalid")
+    stored_inputs, stored_elements = struct.unpack("<II", header[8:])
+    expected_size = 16 + input_count * output_element_count * 2 * 4
+    if stored_inputs != input_count or stored_elements != output_element_count:
+        raise OrchestratorError("accuracy binary dimensions do not match JSONL")
+    if path.stat().st_size != expected_size:
+        raise OrchestratorError("accuracy binary size does not match declared dimensions")
+    result: dict[str, Any] = {
+        "format_version": "d1eq-interleaved-float32-le-v1",
+        "input_count": stored_inputs,
+        "output_element_count": stored_elements,
+        "size_bytes": expected_size,
+        "sha256": expected_sha256,
+    }
+    if tolerance is None:
+        return result
+    atol = float(tolerance["atol"])
+    rtol = float(tolerance["rtol"])
+    epsilon = float(tolerance["relative_error_epsilon"])
+    mismatch_count = 0
+    non_finite_count = 0
+    argmax_match_count = 0
+    argmax_mismatch_count = 0
+    max_absolute_error = 0.0
+    max_relative_error = 0.0
+    absolute_sum = 0.0
+    squared_sum = 0.0
+    finite_count = 0
+    reference_output_hashes: list[str] = []
+    candidate_output_hashes: list[str] = []
+    per_input: list[dict[str, Any]] = []
+    record_size = output_element_count * 4
+    unpack_format = f"<{output_element_count}f"
+    with path.open("rb") as stream:
+        stream.seek(16)
+        for _ in range(input_count):
+            reference_bytes = stream.read(record_size)
+            candidate_bytes = stream.read(record_size)
+            reference_output_hashes.append(hashlib.sha256(reference_bytes).hexdigest())
+            candidate_output_hashes.append(hashlib.sha256(candidate_bytes).hexdigest())
+            reference = struct.unpack(unpack_format, reference_bytes)
+            candidate = struct.unpack(unpack_format, candidate_bytes)
+            finite_pair = all(math.isfinite(value) for value in reference + candidate)
+            reference_top6 = sorted(
+                range(output_element_count), key=lambda index: (-reference[index], index)
+            )[:6] if finite_pair else []
+            candidate_top6 = sorted(
+                range(output_element_count), key=lambda index: (-candidate[index], index)
+            )[:6] if finite_pair else []
+            if finite_pair:
+                if max(range(output_element_count), key=reference.__getitem__) == max(
+                    range(output_element_count), key=candidate.__getitem__
+                ):
+                    argmax_match_count += 1
+                else:
+                    argmax_mismatch_count += 1
+            else:
+                argmax_mismatch_count += 1
+            input_absolute_sum = 0.0
+            dot = 0.0
+            reference_squared = 0.0
+            candidate_squared = 0.0
+            for reference_value, candidate_value in zip(reference, candidate):
+                if not math.isfinite(reference_value) or not math.isfinite(candidate_value):
+                    non_finite_count += 1
+                    mismatch_count += 1
+                    continue
+                error = abs(candidate_value - reference_value)
+                relative_error = error / max(abs(reference_value), epsilon)
+                max_absolute_error = max(max_absolute_error, error)
+                max_relative_error = max(max_relative_error, relative_error)
+                absolute_sum += error
+                input_absolute_sum += error
+                squared_sum += error * error
+                dot += reference_value * candidate_value
+                reference_squared += reference_value * reference_value
+                candidate_squared += candidate_value * candidate_value
+                finite_count += 1
+                if error > atol + rtol * abs(reference_value):
+                    mismatch_count += 1
+            denominator = math.sqrt(reference_squared) * math.sqrt(candidate_squared)
+            reference_boundary_margin = (
+                reference[reference_top6[4]] - reference[reference_top6[5]]
+                if len(reference_top6) >= 6 else None
+            )
+            candidate_boundary_margin = (
+                candidate[candidate_top6[4]] - candidate[candidate_top6[5]]
+                if len(candidate_top6) >= 6 else None
+            )
+            reference_boundary_tie = reference_boundary_margin == 0.0
+            candidate_boundary_tie = candidate_boundary_margin == 0.0
+            top5_overlap_applicable = (
+                len(reference_top6) >= 6 and len(candidate_top6) >= 6
+                and not reference_boundary_tie and not candidate_boundary_tie
+            )
+            top5_not_applicable_reason = (
+                "reference_and_candidate_top5_boundary_tie"
+                if reference_boundary_tie and candidate_boundary_tie else
+                "reference_top5_boundary_tie" if reference_boundary_tie else
+                "candidate_top5_boundary_tie" if candidate_boundary_tie else
+                "top5_ranking_unavailable" if not top5_overlap_applicable else None
+            )
+            per_input.append({
+                "input_index": len(per_input),
+                "reference_minimum": min(reference) if finite_pair else None,
+                "reference_maximum": max(reference) if finite_pair else None,
+                "reference_probability_sum": sum(reference) if finite_pair else None,
+                "candidate_minimum": min(candidate) if finite_pair else None,
+                "candidate_maximum": max(candidate) if finite_pair else None,
+                "candidate_probability_sum": sum(candidate) if finite_pair else None,
+                "cosine_similarity": dot / denominator if finite_pair and denominator > 0 else None,
+                "total_variation_distance": input_absolute_sum / 2.0 if finite_pair else None,
+                "reference_argmax": reference_top6[0] if reference_top6 else None,
+                "candidate_argmax": candidate_top6[0] if candidate_top6 else None,
+                "reference_top5": reference_top6[:5],
+                "candidate_top5": candidate_top6[:5],
+                "top5_overlap_count": len(set(reference_top6[:5]) & set(candidate_top6[:5])),
+                "top5_overlap_applicable": top5_overlap_applicable,
+                "top5_overlap_not_applicable_reason": top5_not_applicable_reason,
+                "top5_set_agreement": set(reference_top6[:5]) == set(candidate_top6[:5]),
+                "ordered_top5_agreement": reference_top6[:5] == candidate_top6[:5],
+                "reference_top1_margin": (
+                    reference[reference_top6[0]] - reference[reference_top6[1]]
+                    if len(reference_top6) >= 2 else None
+                ),
+                "candidate_top1_margin": (
+                    candidate[candidate_top6[0]] - candidate[candidate_top6[1]]
+                    if len(candidate_top6) >= 2 else None
+                ),
+                "reference_top5_boundary_margin": reference_boundary_margin,
+                "candidate_top5_boundary_margin": candidate_boundary_margin,
+            })
+    cosine_values = [item["cosine_similarity"] for item in per_input
+                     if item["cosine_similarity"] is not None]
+    tv_values = [item["total_variation_distance"] for item in per_input
+                 if item["total_variation_distance"] is not None]
+    reference_sums = [item["reference_probability_sum"] for item in per_input
+                      if item["reference_probability_sum"] is not None]
+    candidate_sums = [item["candidate_probability_sum"] for item in per_input
+                      if item["candidate_probability_sum"] is not None]
+    applicable_overlap = [
+        item["top5_overlap_count"] for item in per_input
+        if item["top5_overlap_applicable"]
+    ]
+    result["host_recomputed"] = {
+        "mismatch_count": mismatch_count,
+        "non_finite_count": non_finite_count,
+        "argmax_match_count": argmax_match_count,
+        "argmax_mismatch_count": argmax_mismatch_count,
+        "aggregate": {
+            "output_element_count": input_count * output_element_count,
+            "max_absolute_error": max_absolute_error,
+            "mean_absolute_error": absolute_sum / finite_count if finite_count else 0.0,
+            "rmse": math.sqrt(squared_sum / finite_count) if finite_count else 0.0,
+            "max_relative_error": max_relative_error,
+        },
+        "reference_output_sha256": reference_output_hashes,
+        "candidate_output_sha256": candidate_output_hashes,
+        "per_input": per_input,
+        "top5_set_match_count": sum(bool(item["top5_set_agreement"]) for item in per_input),
+        "ordered_top5_match_count": sum(
+            bool(item["ordered_top5_agreement"]) for item in per_input
+        ),
+        "minimum_top5_overlap_count": min(
+            applicable_overlap, default=None
+        ),
+        "top5_overlap_applicable_count": len(applicable_overlap),
+        "top5_overlap_not_applicable_count": len(per_input) - len(applicable_overlap),
+        "minimum_cosine_similarity": min(cosine_values, default=None),
+        "mean_cosine_similarity": (
+            sum(cosine_values) / len(cosine_values) if cosine_values else None
+        ),
+        "maximum_total_variation_distance": max(tv_values, default=None),
+        "mean_total_variation_distance": (
+            sum(tv_values) / len(tv_values) if tv_values else None
+        ),
+        "reference_probability_sum_minimum": min(reference_sums, default=None),
+        "reference_probability_sum_maximum": max(reference_sums, default=None),
+        "candidate_probability_sum_minimum": min(candidate_sums, default=None),
+        "candidate_probability_sum_maximum": max(candidate_sums, default=None),
+    }
+    return result
+
+
+def load_delegate_evidence(raw_log: str) -> dict[str, Any]:
+    module_path = Path(__file__).with_name("d1_logger_v4.py")
+    spec = importlib.util.spec_from_file_location("d1_logger_v4_delegate", module_path)
+    if spec is None or spec.loader is None:
+        raise OrchestratorError(f"cannot load delegate parser: {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.delegate_evidence(raw_log)
+
+
+def _finalize_legacy_accuracy_preflight(
+    runner: dict[str, Any],
+    delegate: dict[str, Any],
+    expected_provenance: dict[str, Any],
+    command_id: str,
+    binary_validation: dict[str, Any],
+) -> dict[str, Any]:
+    metadata = runner["metadata"]
+    inputs = runner["inputs"]
+    summary = runner["summary"]
+    failures: list[str] = []
+    expected_metadata = {
+        "command_id": command_id,
+        "equivalence_scope": expected_provenance["equivalence_scope"],
+        "comparator_version": expected_provenance["comparator_version"],
+        "model_id": expected_provenance["model_id"],
+        "model_sha256": expected_provenance["model_sha256"],
+        "litert_version": expected_provenance["litert_version"],
+        "delegate_configuration": expected_provenance["delegate_configuration"],
+        "input_set_version": expected_provenance["input_set_version"],
+        "seed": expected_provenance["seed"],
+        "input_count": expected_provenance["input_count"],
+        "input_shape": expected_provenance["input_shape"],
+        "input_dtype": expected_provenance["input_dtype"],
+        "normalization": expected_provenance["normalization"],
+        "reference_cpu_threads": expected_provenance["reference_cpu_threads"],
+        "tolerance": expected_provenance["tolerance"],
+    }
+    for key, expected in expected_metadata.items():
+        if metadata.get(key) != expected:
+            failures.append(f"provenance_mismatch:{key}")
+    if metadata.get("schema_version") != LEGACY_ACCURACY_SCHEMA_VERSION:
+        failures.append("schema_version_mismatch")
+    if metadata.get("reference_resource") != "CPU" or metadata.get("candidate_resource") != "GPU":
+        failures.append("resource_role_mismatch")
+    if metadata.get("output_tensor_count") != 1:
+        failures.append("output_tensor_count_mismatch")
+    if metadata.get("output_shape") != ACCURACY_OUTPUT_SHAPE:
+        failures.append("output_shape_mismatch")
+    if metadata.get("output_dtype") != ACCURACY_OUTPUT_DTYPE:
+        failures.append("output_dtype_mismatch")
+    if (
+        metadata.get("reference_model_sha256") != expected_provenance["model_sha256"]
+        or metadata.get("candidate_model_sha256") != expected_provenance["model_sha256"]
+    ):
+        failures.append("cpu_gpu_model_sha256_mismatch")
+    if len(inputs) != expected_provenance["input_count"]:
+        failures.append("input_count_mismatch")
+    if expected_provenance["input_count"] < 32:
+        failures.append("insufficient_input_count")
+    if any(not isinstance(record.get("input_sha256"), str) for record in inputs):
+        failures.append("input_hash_missing")
+    expected_input_hashes, expected_input_set_hash = deterministic_accuracy_input_hashes(
+        expected_provenance["seed"],
+        expected_provenance["input_count"],
+        math.prod(expected_provenance["input_shape"]),
+    )
+    if [record.get("input_sha256") for record in inputs] != expected_input_hashes:
+        failures.append("deterministic_input_hash_mismatch")
+    if metadata.get("input_set_sha256") != expected_input_set_hash:
+        failures.append("deterministic_input_set_hash_mismatch")
+    if summary.get("numeric_equivalence_passed") is not True:
+        failures.append("numeric_equivalence_failed")
+    mismatch_count = summary.get("mismatch_count")
+    non_finite_count = summary.get("non_finite_count")
+    argmax_mismatch_count = summary.get("argmax_mismatch_count")
+    if mismatch_count != 0:
+        failures.append("elementwise_mismatch")
+    if non_finite_count != 0:
+        failures.append("non_finite_output")
+    if argmax_mismatch_count != 0:
+        failures.append("argmax_mismatch")
+    if summary.get("argmax_match_count") != expected_provenance["input_count"]:
+        failures.append("argmax_match_count_mismatch")
+    host_recomputed = binary_validation.get("host_recomputed")
+    if not isinstance(host_recomputed, dict):
+        failures.append("host_binary_comparison_missing")
+    else:
+        for key in (
+            "mismatch_count", "non_finite_count", "argmax_match_count",
+            "argmax_mismatch_count",
+        ):
+            if host_recomputed.get(key) != summary.get(key):
+                failures.append(f"host_binary_{key}_mismatch")
+        if host_recomputed.get("mismatch_count") != 0:
+            failures.append("host_binary_elementwise_mismatch")
+        if host_recomputed.get("non_finite_count") != 0:
+            failures.append("host_binary_non_finite_output")
+        if host_recomputed.get("argmax_mismatch_count") != 0:
+            failures.append("host_binary_argmax_mismatch")
+        if host_recomputed.get("reference_output_sha256") != [
+            record.get("reference_output_sha256") for record in inputs
+        ]:
+            failures.append("host_binary_reference_output_hash_mismatch")
+        if host_recomputed.get("candidate_output_sha256") != [
+            record.get("candidate_output_sha256") for record in inputs
+        ]:
+            failures.append("host_binary_candidate_output_hash_mismatch")
+    if delegate.get("verification") != "verified" or delegate.get("full_delegate") is not True:
+        failures.append("gpu_full_delegation_unverified")
+    failures = list(dict.fromkeys(failures))
+    return {
+        "schema_version": LEGACY_ACCURACY_SCHEMA_VERSION,
+        "legacy_semantics_preserved": True,
+        "comparator_version": "combined-tolerance-v1",
+        "status": "passed" if not failures else "failed",
+        "reference_resource": "CPU",
+        "candidate_resource": "GPU",
+        "deterministic_input_count": expected_provenance["input_count"],
+        "tolerance": expected_provenance["tolerance"],
+        "mismatch_count": mismatch_count,
+        "non_finite_count": non_finite_count,
+        "argmax_match_count": summary.get("argmax_match_count"),
+        "argmax_mismatch_count": argmax_mismatch_count,
+        "aggregate": summary.get("aggregate"),
+        "delegate_evidence": delegate,
+        "model_input_provenance": metadata,
+        "binary_validation": binary_validation,
+        "failure_reasons": failures,
+        "provenance": expected_provenance,
+        "provenance_sha256": canonical_sha256(expected_provenance),
+        "note": "CPU-GPU numerical output equivalence; not task accuracy",
+    }
+
+
+def _task_accuracy_from_host(
+    inputs: list[dict[str, Any]], host: dict[str, Any], policy: dict[str, Any]
+) -> dict[str, Any]:
+    ground_truth: list[int] = []
+    for record in inputs:
+        value = record.get("ground_truth")
+        if not isinstance(value, dict) or not isinstance(value.get("mapped_output_index"), int):
+            return {
+                "status": "not_run",
+                "failure_reasons": [],
+                "note": "ground-truth labels are absent",
+                "acceptance_policy": policy,
+            }
+        ground_truth.append(value["mapped_output_index"])
+    per_input = host.get("per_input")
+    if not isinstance(per_input, list) or len(per_input) != len(ground_truth):
+        return {
+            "status": "error",
+            "failure_reasons": ["host_per_input_metrics_missing"],
+            "acceptance_policy": policy,
+        }
+    reference_top1 = sum(
+        item.get("reference_argmax") == target for item, target in zip(per_input, ground_truth)
+    )
+    candidate_top1 = sum(
+        item.get("candidate_argmax") == target for item, target in zip(per_input, ground_truth)
+    )
+    reference_top5 = sum(
+        target in item.get("reference_top5", []) for item, target in zip(per_input, ground_truth)
+    )
+    candidate_top5 = sum(
+        target in item.get("candidate_top5", []) for item, target in zip(per_input, ground_truth)
+    )
+    count = len(ground_truth)
+    reference_top1_accuracy = reference_top1 / count if count else 0.0
+    candidate_top1_accuracy = candidate_top1 / count if count else 0.0
+    reference_top5_accuracy = reference_top5 / count if count else 0.0
+    candidate_top5_accuracy = candidate_top5 / count if count else 0.0
+    top1_delta = candidate_top1_accuracy - reference_top1_accuracy
+    top5_delta = candidate_top5_accuracy - reference_top5_accuracy
+    failures = []
+    if count < policy["minimum_labeled_sample_count"]:
+        failures.append("insufficient_labeled_sample_count")
+    if top1_delta < -policy["maximum_top1_accuracy_drop"]:
+        failures.append("top1_accuracy_drop_exceeded")
+    if top5_delta < -policy["maximum_top5_accuracy_drop"]:
+        failures.append("top5_accuracy_drop_exceeded")
+    return {
+        "status": "passed" if not failures else "failed",
+        "labeled_input_count": count,
+        "reference_top1_correct_count": reference_top1,
+        "candidate_top1_correct_count": candidate_top1,
+        "reference_top5_correct_count": reference_top5,
+        "candidate_top5_correct_count": candidate_top5,
+        "reference_top1_accuracy": reference_top1_accuracy,
+        "candidate_top1_accuracy": candidate_top1_accuracy,
+        "reference_top5_accuracy": reference_top5_accuracy,
+        "candidate_top5_accuracy": candidate_top5_accuracy,
+        "top1_accuracy_delta": top1_delta,
+        "top5_accuracy_delta": top5_delta,
+        "acceptance_policy": policy,
+        "failure_reasons": failures,
+        "note": "ground-truth task accuracy; separate from CPU-GPU output equivalence",
+    }
+
+
+def representative_acceptance_failures(
+    host: dict[str, Any], policy: dict[str, Any]
+) -> tuple[list[str], list[str]]:
+    failures: list[str] = []
+    integrity_failures: list[str] = []
+    if host.get("argmax_mismatch_count", math.inf) > policy["maximum_top1_mismatch_count"]:
+        failures.append("representative_top1_mismatch_limit_exceeded")
+    applicable_overlap_count = host.get("top5_overlap_applicable_count")
+    minimum_overlap = host.get("minimum_top5_overlap_count")
+    if not isinstance(applicable_overlap_count, int):
+        integrity_failures.append("host_top5_applicability_missing")
+    elif applicable_overlap_count > 0 and (
+        not isinstance(minimum_overlap, int)
+        or minimum_overlap < policy["minimum_top5_overlap_per_input"]
+    ):
+        failures.append("representative_top5_overlap_below_minimum")
+    maximum_tv = host.get("maximum_total_variation_distance")
+    if maximum_tv is None or maximum_tv > policy["maximum_total_variation_distance"]:
+        failures.append("representative_total_variation_limit_exceeded")
+    minimum_cosine = host.get("minimum_cosine_similarity")
+    if minimum_cosine is None or minimum_cosine < policy["minimum_cosine_similarity"]:
+        failures.append("representative_cosine_below_minimum")
+    return failures, integrity_failures
+
+
+def finalize_accuracy_preflight(
+    runner: dict[str, Any],
+    delegate: dict[str, Any],
+    expected_provenance: dict[str, Any],
+    command_id: str,
+    binary_validation: dict[str, Any],
+) -> dict[str, Any]:
+    runner_schema = runner.get("schema_version") or runner.get("metadata", {}).get(
+        "schema_version"
+    )
+    if runner_schema == LEGACY_ACCURACY_SCHEMA_VERSION:
+        legacy_expected = dict(expected_provenance)
+        legacy_expected.update({
+            "equivalence_scope": "CPU_GPU_numerical_output_equivalence_not_task_accuracy",
+            "comparator_version": "combined-tolerance-v1",
+            "delegate_configuration": "TfLiteGpuDelegateV2_CompatibilityList_bestOptions",
+        })
+        legacy_expected.pop("schema_version", None)
+        legacy_expected.pop("validation_scope", None)
+        legacy_expected.pop("gpu_delegate_profile", None)
+        return _finalize_legacy_accuracy_preflight(
+            runner, delegate, legacy_expected, command_id, binary_validation
+        )
+
+    metadata = runner["metadata"]
+    inputs = runner["inputs"]
+    summary = runner["summary"]
+    check_type = expected_provenance["validation_scope"]
+    failures: list[str] = []
+    if metadata.get("command_id") != command_id:
+        failures.append("provenance_mismatch:command_id")
+    for key in (
+        "comparator_version", "model_id", "model_sha256", "litert_version", "input_shape",
+        "input_dtype", "reference_cpu_threads", "tolerance",
+    ):
+        if metadata.get(key) != expected_provenance.get(key):
+            failures.append(f"provenance_mismatch:{key}")
+    if metadata.get("schema_version") != ACCURACY_SCHEMA_VERSION:
+        failures.append("schema_version_mismatch")
+    if metadata.get("validation_scope") != check_type:
+        failures.append("validation_scope_mismatch")
+    if metadata.get("gpu_delegate_profile") != expected_provenance["gpu_delegate_profile"]:
+        failures.append("gpu_delegate_profile_mismatch")
+    if metadata.get("reference_model_sha256") != metadata.get("candidate_model_sha256"):
+        failures.append("cpu_gpu_model_sha256_mismatch")
+    if metadata.get("output_shape") != ACCURACY_OUTPUT_SHAPE:
+        failures.append("output_shape_mismatch")
+    if metadata.get("output_dtype") != ACCURACY_OUTPUT_DTYPE:
+        failures.append("output_dtype_mismatch")
+    if len(inputs) != expected_provenance["input_count"]:
+        failures.append("input_count_mismatch")
+    minimum_input_count = 32 if check_type == "synthetic" else int(
+        expected_provenance["representative_acceptance_policy"]["minimum_sample_count"]
+    )
+    if expected_provenance["input_count"] < minimum_input_count:
+        failures.append("insufficient_input_count")
+    if summary.get("non_finite_count") != 0:
+        failures.append("non_finite_output")
+    host = binary_validation.get("host_recomputed")
+    if not isinstance(host, dict):
+        failures.append("host_binary_comparison_missing")
+        host = {}
+    else:
+        for key in ("mismatch_count", "non_finite_count", "argmax_match_count", "argmax_mismatch_count"):
+            if host.get(key) != summary.get(key):
+                failures.append(f"host_binary_{key}_mismatch")
+        if host.get("reference_output_sha256") != [record.get("reference_output_sha256") for record in inputs]:
+            failures.append("host_binary_reference_output_hash_mismatch")
+        if host.get("candidate_output_sha256") != [record.get("candidate_output_sha256") for record in inputs]:
+            failures.append("host_binary_candidate_output_hash_mismatch")
+    if delegate.get("verification") != "verified" or delegate.get("full_delegate") is not True:
+        failures.append("gpu_full_delegation_unverified")
+
+    acceptance_failures: list[str] = []
+    if check_type == "synthetic":
+        expected_hashes, expected_set_hash = deterministic_accuracy_input_hashes(
+            expected_provenance["seed"], expected_provenance["input_count"],
+            math.prod(expected_provenance["input_shape"]),
+        )
+        if [record.get("input_sha256") for record in inputs] != expected_hashes:
+            failures.append("deterministic_input_hash_mismatch")
+        if metadata.get("input_set_sha256") != expected_set_hash:
+            failures.append("deterministic_input_set_hash_mismatch")
+    else:
+        representative = metadata.get("representative_tensor_set")
+        if not isinstance(representative, dict):
+            failures.append("representative_tensor_set_metadata_missing")
+        else:
+            for key in (
+                "tensor_set_sha256", "tensor_set_container_sha256",
+                "label_mapping_file_sha256",
+                "preprocessing_configuration_sha256",
+            ):
+                if representative.get(key) != expected_provenance.get(key):
+                    failures.append(f"representative_{key}_mismatch")
+        policy = expected_provenance["representative_acceptance_policy"]
+        acceptance, additional_integrity = representative_acceptance_failures(
+            host, policy
+        )
+        acceptance_failures.extend(acceptance)
+        failures.extend(additional_integrity)
+
+    integrity_failures = list(dict.fromkeys(failures))
+    acceptance_failures = list(dict.fromkeys(acceptance_failures))
+    failures = integrity_failures + [
+        reason for reason in acceptance_failures if reason not in integrity_failures
+    ]
+    result = {
+        "schema_version": ACCURACY_SCHEMA_VERSION,
+        "validation_scope": check_type,
+        "status": "passed" if not failures else "failed",
+        "execution_integrity_status": (
+            "passed" if not integrity_failures else "failed"
+        ),
+        "execution_integrity_failure_reasons": integrity_failures,
+        "equivalence_acceptance_status": (
+            "passed" if not failures else "failed"
+        ),
+        "equivalence_acceptance_failure_reasons": acceptance_failures,
+        "numerical_tolerance_result": (
+            "within" if summary.get("mismatch_count") == 0 else "outside"
+        ),
+        "combined_tolerance_is_diagnostic": True,
+        "tolerance": expected_provenance["tolerance"],
+        "mismatch_count": summary.get("mismatch_count"),
+        "non_finite_count": summary.get("non_finite_count"),
+        "argmax_match_count": summary.get("argmax_match_count"),
+        "argmax_mismatch_count": summary.get("argmax_mismatch_count"),
+        "aggregate": summary.get("aggregate"),
+        "host_binary_metrics": host,
+        "delegate_evidence": delegate,
+        "model_input_provenance": metadata,
+        "binary_validation": binary_validation,
+        "failure_reasons": failures,
+        "provenance": expected_provenance,
+        "provenance_sha256": canonical_sha256(expected_provenance),
+        "note": "CPU-GPU output equivalence; not automatically task accuracy",
+    }
+    if check_type == "representative":
+        result["acceptance_policy"] = expected_provenance["representative_acceptance_policy"]
+        result["task_accuracy_check"] = _task_accuracy_from_host(
+            inputs, host, expected_provenance["task_accuracy_acceptance_policy"]
+        )
+    return result
+
+
+def accuracy_policy_allows_slots(policy: str, status: str) -> bool:
+    return policy != "required" or status == "passed"
+
+
+def compose_accuracy_validation(
+    scope: str,
+    policy: str,
+    synthetic: dict[str, Any],
+    representative: dict[str, Any] | None = None,
+    task_accuracy: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    representative = representative or {
+        "status": "not_run", "failure_reasons": [],
+        "note": "no representative tensor-set was executed",
+    }
+    task_accuracy = task_accuracy or {
+        "status": "not_run", "failure_reasons": [],
+        "note": "ground-truth task accuracy was not executed",
+    }
+    gate_failures: list[str] = []
+    if scope in {"backend-performance-formal", "accuracy-preserving-formal"}:
+        if synthetic.get("status") != "passed":
+            gate_failures.append("synthetic_numerical_check_not_passed")
+    elif synthetic.get("status") in {"failed", "error"}:
+        gate_failures.append("synthetic_execution_integrity_failed")
+    if scope in {"backend-performance-formal", "accuracy-preserving-formal"} and (
+        representative.get("status") != "passed"
+    ):
+        gate_failures.append("representative_input_equivalence_not_passed")
+    if scope == "accuracy-preserving-formal" and task_accuracy.get("status") != "passed":
+        gate_failures.append("task_accuracy_check_not_passed")
+    gate_status = "passed" if not gate_failures else "failed"
+    overall_status = gate_status if policy == "required" else (
+        "passed" if synthetic.get("status") == "passed" else synthetic.get("status", "not_run")
+    )
+    return {
+        "schema_version": ACCURACY_SCHEMA_VERSION,
+        "validation_scope": scope,
+        "status": overall_status,
+        "policy": policy,
+        "synthetic_numerical_check": synthetic,
+        "representative_input_equivalence": representative,
+        "task_accuracy_check": task_accuracy,
+        "formal_gate_result": {
+            "status": gate_status,
+            "failure_reasons": gate_failures,
+            "representative_is_blocking": scope in {
+                "backend-performance-formal", "accuracy-preserving-formal",
+            },
+            "task_accuracy_is_blocking": scope == "accuracy-preserving-formal",
+        },
+        "failure_reasons": gate_failures,
+        "limitations": [
+            "synthetic numerical tolerance is diagnostic and is not task accuracy",
+            "precision_loss_allowed does not reveal actual driver FP16 execution",
+            "Imagenette is a ten-class subset and is not full ImageNet accuracy",
+        ],
+    }
+
+
+def accuracy_config(args: argparse.Namespace) -> dict[str, Any]:
+    synthetic = {
+        "status": "not_run",
+        "purpose": "runtime_tensor_delegate_and_catastrophic_numerical_smoke",
+        "numerical_tolerance_result": "not_run",
+        "deterministic_input_count": args.accuracy_input_count,
+        "input_set_version": ACCURACY_INPUT_SET_VERSION,
+        "seed": args.accuracy_seed,
+        "tolerance": {
+            "atol": args.accuracy_atol,
+            "rtol": args.accuracy_rtol,
+            "relative_error_epsilon": args.accuracy_relative_epsilon,
+        },
+        "blocking_gate": False,
+    }
+    representative = {
+        "status": "not_run",
+        "purpose": "CPU_GPU_output_equivalence_on_host_preprocessed_real_images",
+        "tensor_set_path": str(args.representative_tensor_set)
+        if getattr(args, "representative_tensor_set", None) else None,
+        "acceptance_policy": representative_acceptance_policy(),
+        "blocking_gate": effective_validation_scope(args) in {
+            "backend-performance-formal", "accuracy-preserving-formal",
+        },
+    }
+    task = {
+        "status": "not_run",
+        "purpose": "ground_truth_task_accuracy_separate_from_backend_equivalence",
+        "acceptance_policy": task_accuracy_acceptance_policy(),
+        "blocking_gate": effective_validation_scope(args) == "accuracy-preserving-formal",
+    }
+    return {
+        "schema_version": ACCURACY_SCHEMA_VERSION,
+        "validation_scope": effective_validation_scope(args),
+        "policy": effective_accuracy_policy(args),
+        "status": "not_run",
+        "equivalence_scope": "CPU_GPU_numerical_output_equivalence_not_task_accuracy",
+        "deterministic_input_count": args.accuracy_input_count,
+        "reference_resource": "CPU",
+        "candidate_resource": "GPU",
+        "reference_cpu_threads": args.accuracy_cpu_threads,
+        "comparator_version": ACCURACY_COMPARATOR_VERSION,
+        "input_set_version": ACCURACY_INPUT_SET_VERSION,
+        "seed": args.accuracy_seed,
+        "tolerance": {
+            "atol": args.accuracy_atol,
+            "rtol": args.accuracy_rtol,
+            "relative_error_epsilon": args.accuracy_relative_epsilon,
+        },
+        "timeout_seconds": args.accuracy_timeout_seconds,
+        "mismatch_count": None,
+        "gpu_delegate_profile": gpu_profile(getattr(args, "gpu_profile", DEFAULT_GPU_PROFILE)),
+        "synthetic_numerical_check": synthetic,
+        "representative_input_equivalence": representative,
+        "task_accuracy_check": task,
+        "formal_gate_result": {"status": "not_run", "failure_reasons": []},
+        "failure_reasons": [],
+        "limitations": [
+            "synthetic numerical smoke is not task accuracy",
+            "precision_loss_allowed does not prove actual FP16 execution",
+            "Imagenette covers ten ImageNet classes and not full ImageNet accuracy",
+        ],
+        "note": "three-scope CPU-GPU validation; task accuracy remains separate",
+    }
 
 
 def start_run_arguments() -> list[str]:
@@ -1475,10 +2551,11 @@ def planned_metadata_checks(
     cpu_threads: int | None,
     duty_cycle_percent: int,
     duty_cycle_period_seconds: float,
+    gpu_profile_expected: dict[str, Any] | None = None,
 ) -> dict[str, bool]:
     requested_period_ns = duty_cycle_period_seconds * 1_000_000_000
     actual_period_ns = metadata.get("duty_cycle_period_ns")
-    return {
+    checks = {
         "planned_resource": metadata.get("resource") == resource,
         "planned_cpu_threads": (
             metadata.get("cpu_threads") == cpu_threads
@@ -1494,6 +2571,11 @@ def planned_metadata_checks(
             <= max(1.0, requested_period_ns * 1e-6)
         ),
     }
+    if resource == "GPU" and gpu_profile_expected is not None:
+        checks["planned_gpu_delegate_profile"] = (
+            metadata.get("gpu_delegate_profile") == gpu_profile_expected
+        )
+    return checks
 
 
 def validate_result(
@@ -1507,6 +2589,8 @@ def validate_result(
     mode: str,
     duty_cycle_percent: int = 100,
     duty_cycle_period_seconds: float = 10.0,
+    expected_accuracy_preflight: dict[str, Any] | None = None,
+    expected_gpu_profile: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     summary = load_json(run_dir / "merged" / "summary.json")
     capture = load_json(run_dir / "metadata.json")
@@ -1549,7 +2633,8 @@ def validate_result(
     requested_period_ns = duty_cycle_period_seconds * 1_000_000_000
     period_value = metadata.get("duty_cycle_period_ns")
     planned_checks = planned_metadata_checks(
-        metadata, resource, cpu_threads, duty_cycle_percent, duty_cycle_period_seconds
+        metadata, resource, cpu_threads, duty_cycle_percent, duty_cycle_period_seconds,
+        expected_gpu_profile,
     )
     duty_period_matches = planned_checks["planned_duty_period"]
     expected_period_ns = period_value if duty_period_matches else max(
@@ -1618,10 +2703,37 @@ def validate_result(
                 "termination_reason",
             )
         ),
-        "accuracy_not_misrepresented": (
+        "runner_accuracy_not_misrepresented": (
             isinstance(accuracy, dict)
             and accuracy.get("status") == "not_run"
-            and accuracy.get("deterministic_input_count") == 0
+            and (
+                accuracy.get("validation_scope") == "timed_run_does_not_execute_preflight"
+                or accuracy.get("deterministic_input_count") == 0
+            )
+        ),
+        "experiment_accuracy_attached": (
+            summary.get("accuracy_preflight") == expected_accuracy_preflight
+            if expected_accuracy_preflight is not None else True
+        ),
+        "preflight_timed_gpu_profile_match": (
+            expected_accuracy_preflight.get("cache_provenance", {}).get(
+                "gpu_delegate_profile"
+            ) == expected_gpu_profile
+            if resource == "GPU"
+            and isinstance(expected_accuracy_preflight, dict)
+            and expected_gpu_profile is not None
+            else True
+        ),
+        "gpu_profile_consistency": (
+            isinstance(summary.get("profile_consistency_validation"), dict)
+            and summary["profile_consistency_validation"].get("valid") is True
+            if resource == "GPU"
+            else summary.get("gpu_delegate_profile") is None
+            and (
+                not isinstance(summary.get("profile_consistency_validation"), dict)
+                or summary["profile_consistency_validation"].get("status")
+                == "not_applicable"
+            )
         ),
         "energy_not_misrepresented": (
             isinstance(energy, dict)
@@ -1644,6 +2756,16 @@ def validate_result(
         "runner_file": str(runner_paths[0]),
         "summary": summary,
     }
+
+
+def attach_accuracy_to_analyzer_summary(
+    run_dir: Path, accuracy_preflight: dict[str, Any]
+) -> None:
+    summary_path = run_dir / "merged" / "summary.json"
+    summary = load_json(summary_path)
+    summary["accuracy_preflight"] = accuracy_preflight
+    summary["accuracy_scope"] = "experiment_level_preflight_not_task_accuracy"
+    atomic_write_json(summary_path, summary)
 
 
 class ExperimentOrchestrator:
@@ -1714,6 +2836,281 @@ class ExperimentOrchestrator:
         thermal = self.adb.run(["shell", "dumpsys", "thermalservice"], timeout=15).stdout
         snapshot = parse_safety_snapshot(battery, thermal)
         return snapshot, evaluate_safety(snapshot, self.args.mode)
+
+    @staticmethod
+    def _validate_accuracy_remote_path(path: Any, command_id: str, binary: bool) -> str:
+        if not isinstance(path, str):
+            raise OrchestratorError("accuracy terminal event lacks artifact path")
+        normalized = path.replace("\\", "/")
+        expected_name = (
+            f"accuracy-outputs-{command_id}-v1.bin"
+            if binary else f"accuracy-preflight-{command_id}.jsonl"
+        )
+        expected_suffix = (
+            f"/Android/data/{RUNNER_PACKAGE}/files/accuracy-preflight/{expected_name}"
+        )
+        if not normalized.endswith(expected_suffix):
+            raise OrchestratorError(f"unexpected accuracy artifact path: {path}")
+        return path
+
+    def _pull_accuracy_artifact(self, remote: str, final_path: Path) -> None:
+        assert self.adb is not None
+        if final_path.exists():
+            raise OrchestratorError(f"accuracy artifact already exists: {final_path}")
+        final_path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = final_path.with_name(f".{final_path.name}.{uuid.uuid4()}.tmp")
+        try:
+            result = self.adb.run(["pull", remote, str(temporary)], timeout=120, check=False)
+            if result.returncode != 0:
+                raise OrchestratorError(
+                    f"accuracy artifact pull failed rc={result.returncode}: "
+                    f"{_adb_failure_detail(result)}; remote={remote}"
+                )
+            if not temporary.is_file() or temporary.stat().st_size <= 0:
+                raise OrchestratorError(
+                    f"accuracy artifact pull produced no non-empty file; remote={remote}"
+                )
+            os.replace(temporary, final_path)
+        finally:
+            temporary.unlink(missing_ok=True)
+
+    def _run_accuracy_check(
+        self,
+        check_type: str,
+        representative: dict[str, Any] | None = None,
+        remote_tensor_set_path: str | None = None,
+    ) -> dict[str, Any]:
+        assert self.adb is not None
+        policy = effective_accuracy_policy(self.args)
+        device = self.manifest.get("device") or {}
+        expected = accuracy_expected_provenance(
+            self.args, str(device.get("fingerprint") or ""), check_type, representative
+        )
+        command_id = str(uuid.uuid4())
+        artifact_dir = self.manifest_path.parent / "accuracy_preflight"
+        log_path = artifact_dir / f"delegate-log-{command_id}.txt"
+        jsonl_path = artifact_dir / f"accuracy-preflight-{command_id}.jsonl"
+        binary_path = artifact_dir / f"accuracy-outputs-{command_id}-v1.bin"
+        monitor: ProcessLines | None = None
+        self.manifest["accuracy_preflight_active"] = {
+            "status": "running",
+            "validation_scope": check_type,
+            "command_id": command_id,
+            "started_utc": utc_now(),
+            "provenance": expected,
+            "provenance_sha256": canonical_sha256(expected),
+        }
+        self.save()
+        try:
+            snapshot, safety = self.safety_check()
+            self.manifest["accuracy_preflight_active"]["preflight_safety"] = {
+                "snapshot": asdict(snapshot), "evaluation": asdict(safety)
+            }
+            if not safety.pilot_safety_pass:
+                raise OrchestratorError(
+                    "accuracy preflight safety rejected: " + ",".join(safety.reasons)
+                )
+            self.adb.run(["shell", "am", "force-stop", RUNNER_PACKAGE], timeout=20)
+            if representative is not None:
+                assert remote_tensor_set_path is not None
+                self.adb.run([
+                    "shell", "mkdir", "-p",
+                    f"/sdcard/Android/data/{RUNNER_PACKAGE}/files/accuracy-preflight",
+                ], timeout=20)
+                push = self.adb.run([
+                    "push", str(Path(representative["path"])), remote_tensor_set_path,
+                ], timeout=180, check=False)
+                if push.returncode != 0:
+                    raise OrchestratorError(
+                        f"representative tensor-set push failed rc={push.returncode}: "
+                        f"{_adb_failure_detail(push)}"
+                    )
+            self.adb.run(["logcat", "-c"], timeout=15)
+            monitor = ProcessLines(
+                self.adb.popen([
+                    "logcat", "-v", "raw", "D1ACC:I", "tflite:I", "TfLite:I", "*:S"
+                ]),
+                "accuracy_preflight_logcat",
+            )
+            self.adb.run(
+                accuracy_preflight_intent_arguments(
+                    command_id,
+                    expected["input_count"],
+                    self.args.accuracy_seed,
+                    self.args.accuracy_cpu_threads,
+                    self.args.accuracy_atol,
+                    self.args.accuracy_rtol,
+                    self.args.accuracy_relative_epsilon,
+                    check_type,
+                    self.args.gpu_profile,
+                    remote_tensor_set_path,
+                    representative["container_sha256"] if representative else None,
+                    representative["preprocessing_configuration_sha256"]
+                    if representative else None,
+                ),
+                timeout=30,
+            )
+            terminal = monitor.wait_for_event(
+                lambda event: (
+                    event.get("command_id") == command_id
+                    and event.get("event") in {
+                        "accuracy_preflight_complete", "accuracy_preflight_error"
+                    }
+                ),
+                self.args.accuracy_timeout_seconds,
+                "accuracy preflight terminal event",
+            )
+            raw_log = "\n".join(monitor.lines) + "\n"
+            atomic_write_text(log_path, raw_log)
+            if terminal.get("event") == "accuracy_preflight_error":
+                raise OrchestratorError(
+                    f"runner accuracy preflight failed: {terminal.get('error') or terminal}"
+                )
+            remote_jsonl = self._validate_accuracy_remote_path(
+                terminal.get("artifact_path"), command_id, False
+            )
+            remote_binary = self._validate_accuracy_remote_path(
+                terminal.get("binary_artifact_path"), command_id, True
+            )
+            self._pull_accuracy_artifact(remote_jsonl, jsonl_path)
+            self._pull_accuracy_artifact(remote_binary, binary_path)
+            runner = load_accuracy_runner_artifact(jsonl_path)
+            binary_record = runner["metadata"].get("binary_artifact")
+            if not isinstance(binary_record, dict):
+                raise OrchestratorError("accuracy JSONL lacks binary artifact metadata")
+            binary_validation = validate_accuracy_binary(
+                binary_path,
+                str(binary_record.get("sha256") or ""),
+                expected["input_count"],
+                ACCURACY_OUTPUT_SHAPE[1],
+                expected["tolerance"],
+            )
+            result = finalize_accuracy_preflight(
+                runner, load_delegate_evidence(raw_log), expected, command_id,
+                binary_validation,
+            )
+            result.update({
+                "policy": policy,
+                "command_id": command_id,
+                "completed_utc": utc_now(),
+                "runner_artifact_path": str(jsonl_path.relative_to(self.manifest_path.parent)),
+                "runner_artifact_sha256": sha256_file(jsonl_path),
+                "binary_artifact_path": str(binary_path.relative_to(self.manifest_path.parent)),
+                "binary_artifact_sha256": sha256_file(binary_path),
+                "delegate_log_path": str(log_path.relative_to(self.manifest_path.parent)),
+                "delegate_log_sha256": sha256_file(log_path),
+                "remote_tensor_set_path": remote_tensor_set_path,
+            })
+            detail_path = artifact_dir / f"accuracy-result-{command_id}.json"
+            if detail_path.exists():
+                raise OrchestratorError(f"accuracy result already exists: {detail_path}")
+            atomic_write_json(detail_path, result)
+            result["artifact_path"] = str(detail_path.relative_to(self.manifest_path.parent))
+            result["artifact_sha256"] = sha256_file(detail_path)
+            self.manifest.pop("accuracy_preflight_active", None)
+            self.save()
+            return result
+        except Exception as error:
+            if monitor is not None and not log_path.exists():
+                atomic_write_text(log_path, "\n".join(monitor.lines) + "\n")
+            result = {
+                "validation_scope": check_type,
+                "status": "error",
+                "command_id": command_id,
+                "completed_utc": utc_now(),
+                "provenance": expected,
+                "provenance_sha256": canonical_sha256(expected),
+                "failure_reasons": [f"{error.__class__.__name__}: {error}"],
+                "delegate_log_path": (
+                    str(log_path.relative_to(self.manifest_path.parent))
+                    if log_path.exists() else None
+                ),
+            }
+            self.manifest.pop("accuracy_preflight_active", None)
+            self.save()
+            return result
+        finally:
+            if monitor is not None:
+                monitor.terminate()
+            try:
+                self.adb.run(
+                    ["shell", "am", "force-stop", RUNNER_PACKAGE],
+                    timeout=20,
+                    check=False,
+                )
+            except Exception as cleanup_error:
+                self.manifest.setdefault("accuracy_preflight_cleanup_errors", []).append({
+                    "utc": utc_now(), "error": str(cleanup_error)
+                })
+                self.save()
+
+    def ensure_accuracy_preflight(self) -> dict[str, Any]:
+        """Run/cache the three explicitly separated methodology checks."""
+        policy = effective_accuracy_policy(self.args)
+        scope = effective_validation_scope(self.args)
+        device = self.manifest.get("device") or {}
+        fingerprint = str(device.get("fingerprint") or "")
+        representative: dict[str, Any] | None = None
+        tensor_path = getattr(self.args, "representative_tensor_set", None)
+        if tensor_path is not None:
+            representative = validate_representative_tensor_set(Path(tensor_path))
+            representative["path"] = str(Path(tensor_path).resolve())
+
+        cache_provenance = accuracy_cache_provenance(
+            self.args, fingerprint, representative
+        )
+        cache_key = canonical_sha256(cache_provenance)
+        previous = self.manifest.get("accuracy_preflight")
+        if can_reuse_accuracy_validation(
+            previous, cache_key, self.manifest_path.parent
+        ):
+            reused = dict(previous)
+            reused["resume_reused"] = True
+            reused["reuse_verified_utc"] = utc_now()
+            self.manifest["accuracy_preflight"] = reused
+            self.manifest.setdefault("provenance", {})["accuracy_preflight"] = reused
+            self.save()
+            return reused
+
+        if isinstance(previous, dict) and previous.get("status") != "not_run":
+            self.manifest.setdefault("accuracy_preflight_history", []).append(previous)
+
+        not_run_synthetic = {
+            "status": "not_run",
+            "failure_reasons": [],
+            "note": "synthetic numerical check explicitly disabled",
+        }
+        if policy == "off":
+            result = compose_accuracy_validation(scope, policy, not_run_synthetic)
+        else:
+            synthetic = self._run_accuracy_check("synthetic")
+            representative_result: dict[str, Any] | None = None
+            task_result: dict[str, Any] | None = None
+            if representative is not None and synthetic.get("status") == "passed":
+                remote_path = (
+                    f"/sdcard/Android/data/{RUNNER_PACKAGE}/files/accuracy-preflight/"
+                    f"representative-{representative['container_sha256']}.d1tset"
+                )
+                representative_result = self._run_accuracy_check(
+                    "representative", representative, remote_path
+                )
+                task = representative_result.pop("task_accuracy_check", None)
+                if isinstance(task, dict):
+                    task_result = task
+            result = compose_accuracy_validation(
+                scope, policy, synthetic, representative_result, task_result
+            )
+
+        result.update({
+            "cache_key_sha256": cache_key,
+            "cache_provenance": cache_provenance,
+            "completed_utc": utc_now(),
+            "resume_reused": False,
+        })
+        self.manifest["accuracy_preflight"] = result
+        self.manifest.setdefault("provenance", {})["accuracy_preflight"] = result
+        self.save()
+        return result
 
     def thermal_conditioning(
         self,
@@ -2278,6 +3675,7 @@ class ExperimentOrchestrator:
                     self.args.warmup, run_id, command_id,
                     slot["duty_cycle_percent"],
                     self.args.duty_cycle_period_seconds,
+                    self.args.gpu_profile,
                 ),
                 timeout=30,
             )
@@ -2476,10 +3874,18 @@ class ExperimentOrchestrator:
             slot["analyze_stdout"] = analysis.stdout[-4000:]
             self.step(slot, "analysis_completed", status="ok")
 
+            experiment_accuracy = self.manifest.get("accuracy_preflight")
+            if not isinstance(experiment_accuracy, dict):
+                experiment_accuracy = dict(self.manifest["config"]["accuracy_preflight"])
+            attach_accuracy_to_analyzer_summary(run_dir, experiment_accuracy)
+            self.step(slot, "accuracy_provenance_attached", status="ok")
+
             validation = validate_result(
                 run_dir, slot["resource"], slot["cpu_threads"],
                 self.args.duration, self.args.warmup, run_id, command_id, self.args.mode,
                 slot["duty_cycle_percent"], self.args.duty_cycle_period_seconds,
+                experiment_accuracy,
+                gpu_profile(self.args.gpu_profile),
             )
             slot["validation"] = validation
             summary = validation["summary"]
@@ -2592,7 +3998,22 @@ class ExperimentOrchestrator:
         self.manifest["halt_reason"] = None
         self.manifest["started_utc"] = self.manifest.get("started_utc") or utc_now()
         self.save()
-        for slot in runnable_slots(self.manifest):
+        pending_slots = runnable_slots(self.manifest)
+        if pending_slots:
+            accuracy = self.ensure_accuracy_preflight()
+            if not accuracy_policy_allows_slots(
+                effective_accuracy_policy(self.args), str(accuracy.get("status"))
+            ):
+                self.manifest["status"] = "failed"
+                self.manifest["halt_reason"] = (
+                    "required CPU-GPU output equivalence preflight did not pass: "
+                    f"status={accuracy.get('status')} "
+                    f"reasons={accuracy.get('failure_reasons')}"
+                )
+                self.save()
+                print(f"experiment halted safely: {self.manifest['halt_reason']}", file=sys.stderr)
+                return 1
+        for slot in pending_slots:
             try:
                 self.run_slot(slot)
             except Exception as error:
@@ -2665,15 +4086,8 @@ def experiment_config(args: argparse.Namespace) -> dict[str, Any]:
         "current_raw_policy": "raw_unscaled_unit_unverified",
         "duty_cycle_percent": duty_cycles[0] if len(duty_cycles) == 1 else None,
         "duty_cycle_period_seconds": args.duty_cycle_period_seconds,
-        "accuracy_preflight": {
-            "status": "not_run",
-            "deterministic_input_count": 0,
-            "reference_resource": None,
-            "comparator_version": None,
-            "tolerance": None,
-            "mismatch_count": None,
-            "note": "accuracy comparator is not implemented in phase 2-A",
-        },
+        "gpu_delegate_profile": gpu_profile(args.gpu_profile),
+        "accuracy_preflight": accuracy_config(args),
         "energy_measurement": {
             "status": "raw_unverified",
             "current_raw_policy": "raw_unscaled_unit_unverified",
@@ -2733,18 +4147,36 @@ def _legacy_compatible_config(config: dict[str, Any]) -> dict[str, Any]:
     )
     value.setdefault("duty_cycle_percent", 100)
     value.setdefault("duty_cycle_period_seconds", 10.0)
-    value.setdefault(
-        "accuracy_preflight",
-        {
-            "status": "not_run",
-            "deterministic_input_count": 0,
-            "reference_resource": None,
-            "comparator_version": None,
-            "tolerance": None,
-            "mismatch_count": None,
-            "note": "accuracy comparator is not implemented in phase 2-A",
-        },
-    )
+    value.setdefault("gpu_delegate_profile", gpu_profile(DEFAULT_GPU_PROFILE))
+    legacy_accuracy = value.get("accuracy_preflight")
+    if (
+        not isinstance(legacy_accuracy, dict)
+        or legacy_accuracy.get("schema_version") != ACCURACY_SCHEMA_VERSION
+    ):
+        legacy_args = build_parser().parse_args(["--mode", str(value.get("mode", "pilot"))])
+        if isinstance(legacy_accuracy, dict):
+            legacy_args.accuracy_preflight = legacy_accuracy.get("policy")
+            legacy_args.accuracy_input_count = int(
+                legacy_accuracy.get("deterministic_input_count")
+                or DEFAULT_ACCURACY_INPUT_COUNT
+            )
+            legacy_args.accuracy_cpu_threads = int(
+                legacy_accuracy.get("reference_cpu_threads") or DEFAULT_CPU_THREADS
+            )
+            tolerance = legacy_accuracy.get("tolerance")
+            if isinstance(tolerance, dict):
+                legacy_args.accuracy_atol = float(
+                    tolerance.get("atol", DEFAULT_ACCURACY_ATOL)
+                )
+                legacy_args.accuracy_rtol = float(
+                    tolerance.get("rtol", DEFAULT_ACCURACY_RTOL)
+                )
+                legacy_args.accuracy_relative_epsilon = float(
+                    tolerance.get(
+                        "relative_error_epsilon", DEFAULT_ACCURACY_RELATIVE_EPSILON
+                    )
+                )
+        value["accuracy_preflight"] = accuracy_config(legacy_args)
     value.setdefault(
         "energy_measurement",
         {
@@ -2816,6 +4248,7 @@ def new_manifest(args: argparse.Namespace) -> dict[str, Any]:
         "updated_utc": now,
         "status": "planned",
         "config": config,
+        "accuracy_preflight": dict(config["accuracy_preflight"]),
         "provenance": {
             "accuracy_preflight": dict(config["accuracy_preflight"]),
             "energy_measurement": dict(config["energy_measurement"]),
@@ -2830,7 +4263,8 @@ def new_manifest(args: argparse.Namespace) -> dict[str, Any]:
             "energy_calculated": False,
             "current_raw_unit_verified": False,
             "duty_cycle_implemented": True,
-            "accuracy_comparator_implemented": False,
+            "accuracy_comparator_implemented": True,
+            "task_accuracy_measured": False,
         },
     }
 
@@ -2877,12 +4311,16 @@ def dry_run_payload(args: argparse.Namespace) -> dict[str, Any]:
                     slot["resource"], slot["cpu_threads"], args.duration, args.warmup,
                     "<run-id>", "<command-id>", slot["duty_cycle_percent"],
                     args.duty_cycle_period_seconds,
+                    args.gpu_profile,
                 ),
                 "stop_run": serial_prefix + stop_run_arguments(),
                 "direct_stop_recovery": serial_prefix + direct_stop_arguments(),
             }
         )
     summary = plan_summary(plan, args.repeat)
+    representative = None
+    if args.representative_tensor_set is not None:
+        representative = validate_representative_tensor_set(args.representative_tensor_set)
     return {
         "dry_run": True,
         "config": config,
@@ -2892,6 +4330,53 @@ def dry_run_payload(args: argparse.Namespace) -> dict[str, Any]:
             args.start_policy, summary["condition_count"]
         ),
         "commands": commands,
+        "accuracy_preflight": {
+            "policy": effective_accuracy_policy(args),
+            "validation_scope": effective_validation_scope(args),
+            "gpu_delegate_profile": gpu_profile(args.gpu_profile),
+            "runs_before_start_run_and_thermal_conditioning": True,
+            "synthetic_intent": serial_prefix + accuracy_preflight_intent_arguments(
+                "<accuracy-command-id>", args.accuracy_input_count,
+                args.accuracy_seed, args.accuracy_cpu_threads,
+                args.accuracy_atol, args.accuracy_rtol,
+                args.accuracy_relative_epsilon,
+                "synthetic",
+                args.gpu_profile,
+            ),
+            "intent": serial_prefix + accuracy_preflight_intent_arguments(
+                "<accuracy-command-id>", args.accuracy_input_count,
+                args.accuracy_seed, args.accuracy_cpu_threads,
+                args.accuracy_atol, args.accuracy_rtol,
+                args.accuracy_relative_epsilon, "synthetic", args.gpu_profile,
+            ),
+            "representative_intent": (
+                serial_prefix + accuracy_preflight_intent_arguments(
+                    "<representative-command-id>", representative["input_count"],
+                    representative["header"]["selection"]["seed"],
+                    args.accuracy_cpu_threads, args.accuracy_atol, args.accuracy_rtol,
+                    args.accuracy_relative_epsilon, "representative", args.gpu_profile,
+                    f"<remote>/{representative['container_sha256']}.d1tset",
+                    representative["container_sha256"],
+                    representative["preprocessing_configuration_sha256"],
+                ) if representative is not None else None
+            ),
+            "representative_tensor_set": (
+                {
+                    "container_sha256": representative["container_sha256"],
+                    "tensor_set_sha256": representative["tensor_set_sha256"],
+                    "input_count": representative["input_count"],
+                    "label_mapping_file_sha256": representative[
+                        "label_mapping_file_sha256"
+                    ],
+                    "preprocessing_configuration_sha256": representative[
+                        "preprocessing_configuration_sha256"
+                    ],
+                } if representative is not None else None
+            ),
+            "formal_gate_would_require_representative": effective_validation_scope(args)
+                in {"backend-performance-formal", "accuracy-preserving-formal"},
+            "note": "synthetic smoke, representative equivalence, and task accuracy are separate",
+        },
         "thermal_conditioning": {
             "policy": args.start_policy,
             "note": "dry-run does not query thermalservice or wait",
@@ -2927,6 +4412,29 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--duty-cycle-percent", type=int)
     parser.add_argument("--duty-cycles", type=int, nargs="+")
     parser.add_argument("--duty-cycle-period-seconds", type=float, default=10.0)
+    parser.add_argument(
+        "--accuracy-preflight", choices=("off", "optional", "required")
+    )
+    parser.add_argument(
+        "--accuracy-validation-scope",
+        choices=ACCURACY_VALIDATION_SCOPES,
+    )
+    parser.add_argument("--representative-tensor-set", type=Path)
+    parser.add_argument(
+        "--gpu-profile", choices=GPU_PROFILE_IDS, default=DEFAULT_GPU_PROFILE
+    )
+    parser.add_argument(
+        "--accuracy-input-count", type=int, default=DEFAULT_ACCURACY_INPUT_COUNT
+    )
+    parser.add_argument("--accuracy-seed", type=int, default=DEFAULT_ACCURACY_SEED)
+    parser.add_argument("--accuracy-cpu-threads", type=int, default=DEFAULT_CPU_THREADS)
+    parser.add_argument("--accuracy-atol", type=float, default=DEFAULT_ACCURACY_ATOL)
+    parser.add_argument("--accuracy-rtol", type=float, default=DEFAULT_ACCURACY_RTOL)
+    parser.add_argument(
+        "--accuracy-relative-epsilon", type=float,
+        default=DEFAULT_ACCURACY_RELATIVE_EPSILON,
+    )
+    parser.add_argument("--accuracy-timeout-seconds", type=float, default=600.0)
     parser.add_argument(
         "--start-policy", choices=("safety", "stable", "matched"), default="safety"
     )
@@ -2986,6 +4494,54 @@ def validate_cli(args: argparse.Namespace) -> None:
         raise OrchestratorError(
             "--duty-cycle-period-seconds must be finite and positive"
         )
+    if args.mode == "formal" and effective_accuracy_policy(args) == "off":
+        raise OrchestratorError("formal experiments require accuracy preflight")
+    if not 1 <= args.accuracy_input_count <= 256:
+        raise OrchestratorError("--accuracy-input-count must be in 1..256")
+    if (
+        effective_accuracy_policy(args) == "required"
+        and args.accuracy_input_count < 32
+    ):
+        raise OrchestratorError("required accuracy preflight needs at least 32 inputs")
+    if not 1 <= args.accuracy_cpu_threads <= 16:
+        raise OrchestratorError("--accuracy-cpu-threads must be in 1..16")
+    if not math.isfinite(args.accuracy_atol) or args.accuracy_atol < 0:
+        raise OrchestratorError("--accuracy-atol must be finite and non-negative")
+    if not math.isfinite(args.accuracy_rtol) or args.accuracy_rtol < 0:
+        raise OrchestratorError("--accuracy-rtol must be finite and non-negative")
+    if (
+        not math.isfinite(args.accuracy_relative_epsilon)
+        or args.accuracy_relative_epsilon <= 0
+    ):
+        raise OrchestratorError(
+            "--accuracy-relative-epsilon must be finite and positive"
+        )
+    if (
+        not math.isfinite(args.accuracy_timeout_seconds)
+        or args.accuracy_timeout_seconds <= 0
+    ):
+        raise OrchestratorError("--accuracy-timeout-seconds must be finite and positive")
+    scope = effective_validation_scope(args)
+    if args.mode == "formal" and scope == "thermal-only-pilot":
+        raise OrchestratorError(
+            "formal mode requires backend-performance-formal or accuracy-preserving-formal"
+        )
+    if (
+        scope in {"backend-performance-formal", "accuracy-preserving-formal"}
+        and args.representative_tensor_set is None
+        and not args.dry_run
+        and not args.resume
+    ):
+        raise OrchestratorError(
+            f"{scope} requires --representative-tensor-set; synthetic inputs are not "
+            "representative samples"
+        )
+    if args.representative_tensor_set is not None:
+        if not Path(args.representative_tensor_set).is_file():
+            raise OrchestratorError(
+                f"representative tensor-set not found: {args.representative_tensor_set}"
+            )
+        validate_representative_tensor_set(Path(args.representative_tensor_set))
     if args.stability_window_seconds <= 0:
         raise OrchestratorError("--stability-window-seconds must be positive")
     if args.stability_sample_interval_seconds <= 0:

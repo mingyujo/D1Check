@@ -205,9 +205,8 @@ uses one sign convention for both sources: positive discharge magnitude. Android
 `CURRENT_NOW` is negated, while a decreasing charge counter is `(start_uAh-end_uAh)/hours`.
 Scale mismatch is never silently corrected.
 
-The later CPU/GPU accuracy preflight will use at least 32 deterministic inputs. Output SHA-256 is
-provenance only; top-k agreement, cosine similarity, and absolute/relative error are the pass
-criteria. Output comparison and energy integration are not implemented.
+The CPU/GPU output-equivalence preflight uses at least 32 deterministic inputs. It is a numerical
+backend check, not a task-accuracy evaluation.
 
 ## Repeat experiment orchestrator MVP
 
@@ -382,25 +381,193 @@ STOP use, matching `run_stop` confirmation, logger exit or forced termination, r
 and recoverable local/remote artifact paths. Cleanup errors are supplementary and never replace
 the original experiment failure.
 
-The runner, analyzer summary, and experiment manifest carry explicit provenance placeholders.
-`accuracy_preflight.status=not_run` with zero deterministic inputs does not claim CPU/GPU output
-equivalence. `energy_measurement.status=raw_unverified`, both unit-verification flags are false,
-and `calculation_performed=false`. Current is never scaled or integrated, and no J or mWh value is
-emitted. Accuracy comparison and calibrated device-battery energy remain future work.
+### Methodology-corrected CPU-GPU validation
+
+The experiment-level schema is version 2 and separates three questions. It never relabels a
+schema-v1 artifact or its historical failed result.
+
+- `synthetic_numerical_check` is a runtime/tensor/delegate/catastrophic-numerical smoke test. Its
+  32 or more `lcg-float32-unit-v1` tensors are FLOAT32 `[1,224,224,3]` values in `[0,1]` with no
+  image normalization. Shape/dtype/model/input identity, finite output, and host-verified full GPU
+  delegation are structural gates. The combined tolerance result is retained as
+  `numerical_tolerance_result=within|outside`, but `outside` alone is not execution-integrity
+  failure and is not task accuracy. Probability sums, cosine similarity, total variation, top-1,
+  deterministic top-5, margins, and the full numeric error distribution are recorded.
+- `representative_input_equivalence` uses host-preprocessed real-image tensor bytes. CPU and GPU
+  receive the identical verified bytes. The versioned `representative-equivalence-v2` policy and
+  `output-equivalence-v3` comparator are
+  recorded rather than hidden: at least 40 class-balanced samples, zero top-1 mismatch, at least
+  4/5 top-5 overlap for every determinate sample, maximum per-sample total variation 0.02, and minimum cosine
+  similarity 0.999. These thresholds are methodology defaults registered before the next A24 run;
+  they are not auto-adjusted to the observed synthetic result. This is the blocking gate for
+  `backend-performance-formal`.
+- `task_accuracy_check` requires ground-truth WNIDs and records CPU and GPU top-1/top-5 accuracy and
+  GPU-minus-CPU deltas under `task-accuracy-no-regression-v1`. It is separate from numerical
+  equivalence and blocks only `accuracy-preserving-formal`. Without labels it remains `not_run`.
+  Imagenette covers only ten ImageNet classes and is not full ImageNet accuracy.
+
+All ranks use score descending then class index ascending. If either output has an exact tie
+between ranks 5 and 6, its top-5 set is not unique: that input records
+`top5_overlap_applicable=false` with a reason and is excluded only from the blocking minimum-overlap
+calculation. Determinate overlap failures, top-1, total variation, cosine, and non-finite gates are
+unchanged. Task-accuracy ranking retains the deterministic tie-break and is not redefined by this
+applicability flag. `execution_integrity_status` covers artifact/container/preprocessing/model/input
+identity, shape/dtype, finite outputs, full delegation, and host binary revalidation; representative
+acceptance failure alone does not change it to failed. Historical v1/v2 results are not rejudged,
+and their comparator/policy hashes prevent resume reuse. The diagnostic element rule remains
+inclusive, `abs(GPU-CPU) <= atol + rtol*abs(CPU)`, with recorded defaults `atol=1e-4`,
+`rtol=1e-3`, and relative-error epsilon `1e-6`. These values are not a task-accuracy threshold.
+The output is `[1,1001]` FLOAT32 Softmax probability: index 0 is TF-Slim background and the 1,000
+WNIDs map to output indexes 1..1000. The model's image evaluation path is RGB, EXIF normalization,
+central crop 0.875, bilinear resize to 224x224, then `(pixel/255-0.5)*2` (`[-1,1]`).
+
+Two explicit GPU profiles replace the ambiguous `CompatibilityList_bestOptions` provenance:
+
+- `gpu-compat-default-v1`: `precision_loss_allowed=true`, quantized models allowed,
+  `FAST_SINGLE_ANSWER`, backend `UNSET`.
+- `gpu-fp32-strict-v1`: identical except `precision_loss_allowed=false`.
+
+The default timed behavior remains the compatibility profile. Timed and preflight metadata must
+carry the same profile ID and configuration SHA-256. `precision_loss_allowed=true` is permission,
+not evidence that a driver actually executed FP16; LiteRT does not expose that fact here. The CPU
+reference explicitly enables XNNPACK and records its thread count; it is not described as an
+undelegated "plain CPU". GPU creation alone is not full-delegation evidence: the host still requires
+the logger's X=Y>0 `TfLiteGpuDelegateV2`, positive kernel count, and absence of fallback evidence.
+
+### Galaxy A24 representative v2 pilot observation (2026-09-10)
+
+This is a single-device, 40-image pilot on one Galaxy A24 SM-A245N. The representative set is the
+ten-class Imagenette subset, so these results are not full-ImageNet accuracy and must not be
+generalized to other datasets or devices. Both runs used the FLOAT32 MobileNet V1 model
+(`D95B3C5EA86750CEF882FA867CA357DFE4D265D0B80B67E83277A0BDA310CFBB`), a four-thread CPU
+reference, host-verified 31/31 full GPU delegation, `output-equivalence-v3`, and
+`representative-equivalence-v2`. The representative policy SHA-256 was
+`428a1c1e60623293301929c66315c8bd7603fb87c1a620b0116cf328064353c5`. Neither manifest claims
+that FP16 kernels actually executed: the LiteRT API does not expose that fact.
+
+| Result | `gpu-compat-default-v1` | `gpu-fp32-strict-v1` |
+|---|---:|---:|
+| Experiment status | `failed` | `completed` |
+| Execution integrity | `passed` | `passed` |
+| Equivalence acceptance | `failed` | `passed` |
+| Representative input count | 40 | 40 |
+| Combined-tolerance mismatches | 270 / 40,040 | 0 / 40,040 |
+| Non-finite outputs | 0 | 0 |
+| Top-1 match | 39/40 | 40/40 |
+| Top-5 set match | 34/40 | 40/40 |
+| Top-5 overlap applicability | 36 applicable, 4 boundary-tie non-applicable | 40 applicable, 0 non-applicable |
+| Minimum applicable Top-5 overlap | 4 | 5 |
+| Minimum cosine similarity | 0.9993347908387198 | 0.9999999999732401 |
+| Maximum total variation distance | 0.023043160735051908 | 0.00000381630014036766 |
+| CPU/GPU task Top-1 accuracy | 0.75 / 0.75 | 0.75 / 0.75 |
+| CPU/GPU task Top-5 accuracy | 0.95 / 0.925 | 0.95 / 0.95 |
+
+The compatibility-profile failure was not an execution error. Container, preprocessing, model,
+shape, dtype, artifact, finite-output, host binary, and full-delegation checks passed, so
+`execution_integrity_status=passed`. The required representative gate correctly blocked the
+experiment because one Top-1 result differed and the maximum total variation exceeded the fixed
+0.02 limit; those are the recorded failure reasons. The four exact rank-5/rank-6 boundary ties were
+excluded from the minimum-overlap calculation and were not failure reasons. Although task accuracy
+is nonblocking for `backend-performance-formal`, representative equivalence is blocking. The
+preflight therefore stopped this experiment before its timed slot, and no compatibility-profile
+latency may be reported from this run.
+
+The strict-profile run passed representative equivalence, execution integrity, and equivalence
+acceptance. Its timed run also recorded `validation.valid=true`, `formal_gpu_valid=true`, 76
+inferences, mean latency 131.60027836842104 ms, and p95 latency 137.1779235 ms. This supports only
+the conclusion that the strict profile met this pilot's conservative equivalence policy. It does
+not establish a general device result or a full-dataset accuracy difference. A formal performance
+comparison between compatibility and strict profiles still requires repeated runs under matched
+experimental conditions and statistical analysis. No threshold was relaxed or fitted to these
+observations.
+
+`tools/d1_representative_tensors.py` creates `d1-representative-tensor-set-v1` without downloading
+anything. The binary layout is eight-byte magic `D1TSET01`, little-endian uint32 JSON-header length,
+the canonical UTF-8 JSON header, then contiguous little-endian FLOAT32 tensor payloads. The header
+contains dataset name/version/split/scope/source/license, class-stratified selection seed and IDs,
+source-image hashes, WNIDs and background-offset output indexes, label-map hash, preprocessing
+configuration/hash, RGB/EXIF/crop/resize/normalization details, shape/dtype/endian, offsets, and
+per-tensor plus payload hashes. The complete container hash is recorded by the host validator and
+passed separately with the runner Intent. Android validates that external container hash,
+preprocessing hash, payload/per-tensor hashes, and every structural boundary before constructing either
+interpreter. JPEG decoding/resizing and raw-image storage do not occur in the APK or timed run.
+Pillow's exact version and bilinear rule are provenance; byte identity with TensorFlow's bilinear
+kernel is explicitly not claimed.
+
+For `d1-representative-tensor-set-v1`, the preprocessing configuration hash is SHA-256 of the
+configuration object after removing only its top-level `configuration_sha256` member, serialized
+as UTF-8 JSON with recursively sorted keys, no insignificant whitespace, literal non-ASCII UTF-8,
+and Python-compatible string escaping (in particular `/` is not escaped). JSON integers remain
+integers and decimal values such as `-1.0` remain decimals. Exponent-form floating values are not
+permitted by the v1 preprocessing contract. Android hashes the parsed object directly; it must not
+round-trip it through `JSONObject.toString()`, which can change number spelling and slash escaping.
+The representative Intent carries both the expected whole-container SHA-256 and the expected
+preprocessing-configuration SHA-256. A mismatch reports declared, expected, and recomputed hashes;
+neither check is bypassed. Existing correctly generated v1 containers remain valid without schema
+conversion.
+
+Prepare a local Imagenette validation tree (`val/<WNID>/*`) and an official TF-Slim-order file with
+exactly 1,000 unique WNIDs, then run (no internet download is performed):
+
+~~~powershell
+python tools/d1_representative_tensors.py `
+  --dataset-dir "C:\datasets\imagenette2-320" `
+  --label-map "C:\datasets\imagenet_lsvrc_2015_synsets.txt" `
+  --sample-count 40 --seed 305419896 `
+  --dataset-version "imagenette2-320" `
+  --dataset-license "Imagenette distribution terms; verify upstream dataset/source-image licenses" `
+  --output "C:\datasets\d1-imagenette-val40.d1tset"
+python tools/d1_representative_tensors.py --validate "C:\datasets\d1-imagenette-val40.d1tset"
+~~~
+
+`--accuracy-validation-scope` selects `thermal-only-pilot`, `backend-performance-formal`, or
+`accuracy-preserving-formal`. Pilot defaults to optional thermal-only synthetic smoke and may use
+`--accuracy-preflight off`. Formal defaults to required backend equivalence and requires
+`--representative-tensor-set`. The preflight runs before D1Check `START_RUN` and thermal
+conditioning, uses independent CPU/GPU interpreter lifecycles, force-stops the runner afterward,
+and then requires conditioning anew. It never shares buffers/interpreters with timed latency work.
+
+Resume reuses only a passed schema-v2 result when device fingerprint, model and LiteRT versions,
+GPU profile hash, comparator/input-set version, seed/tolerance, representative container/payload,
+label-map and preprocessing hashes, and both policy hashes match. Every result, JSONL, interleaved
+CPU/GPU output binary, and delegate log hash must still verify. Otherwise it reruns; legacy v1
+status is preserved and never upgraded to passed. The output binary remains
+`D1EQV001 + uint32 input_count + uint32 output_count + interleaved CPU/GPU FLOAT32 arrays`.
+
+~~~powershell
+python tools/d1_experiment_orchestrator.py `
+  --serial <A24-IP:PORT> --mode formal --resources CPU GPU `
+  --cpu-thread-levels 1 2 4 --duty-cycles 25 50 75 100 `
+  --duration 600 --warmup 20 --repeat 5 --seed 20260910 `
+  --accuracy-preflight required --accuracy-validation-scope backend-performance-formal `
+  --representative-tensor-set "C:\datasets\d1-imagenette-val40.d1tset" `
+  --gpu-profile gpu-compat-default-v1 `
+  --accuracy-input-count 32 --accuracy-seed 305419896 `
+  --accuracy-atol 0.0001 --accuracy-rtol 0.001 `
+  --start-policy stable --cooling-policy stable `
+  --output-dir results/A24_formal_equivalence
+~~~
+
+`energy_measurement.status=raw_unverified`, both unit-verification flags are false, and
+`calculation_performed=false`. Current is never scaled or integrated, and no J or mWh value is
+emitted. Calibrated device-battery energy remains future work.
 
 ## Thermal model dataset export
 
-A successfully completed orchestrator plan automatically rebuilds `exports/` from the complete
+A successfully completed orchestrator plan automatically rebuilds schema-v2 `exports-v2/` from the complete
 manifest. The same deterministic export can be run independently, including for an older or
 failed experiment:
 
 ~~~powershell
 python tools/d1_thermal_dataset.py `
-  --experiment-dir "C:\Users\LG\Documents\D1Check_A24_matrix_stable_pilot_20260909_214158"
+  --experiment-dir "C:\Users\LG\Documents\D1Check_A24_matrix_stable_pilot_20260909_214158" `
+  --output-dir "$env:TEMP\d1check-export-v2"
 ~~~
 
 The exporter treats `experiment_manifest.json`, each available `merged/summary.json`, and
-`raw/thermalservice.jsonl` as read-only authoritative inputs. Thermal `mono_ns` and the summary's
+`raw/thermalservice.jsonl` as read-only authoritative thermal inputs. For a pre-schema-v2 summary,
+it reads the matching runner `run_metadata` only to recover explicitly recorded GPU-profile
+provenance; it never infers a missing profile. Thermal `mono_ns` and the summary's
 `run_start_mono_ns`, `load_start_mono_ns`, `load_end_mono_ns`, and `run_stop_mono_ns` all use the
 Android elapsed-realtime monotonic domain. UTC and host-monotonic timestamps are provenance only
 and are never used for alignment. Per-sample ADB uptime-bracketing uncertainty is retained.
@@ -422,12 +589,27 @@ manifest separately records raw, valid-unique, phase-assigned, and outside/unass
 the timeseries row count equals the phase-assigned valid count. This distinction matters because
 logger startup/shutdown races can produce a valid sample just outside `run_start` or `run_stop`.
 
-`exports/run_summary.csv` inventories every manifest slot, including failed and pending slots.
-`exports/phase_temperature_summary.csv` has four sensor rows per slot and contains endpoints,
-changes, extrema, peaks, peak time, and selection quality. `exports/thermal_timeseries.csv` contains
-one row per phase-assigned valid sample. `exports/dataset_manifest.json` records source-manifest
+`exports-v2/run_summary.csv` inventories every manifest slot, including failed and pending slots.
+`exports-v2/phase_temperature_summary.csv` has four sensor rows per slot and contains endpoints,
+changes, extrema, peaks, peak time, and selection quality. `exports-v2/thermal_timeseries.csv` contains
+one row per phase-assigned valid sample. `exports-v2/dataset_manifest.json` records source-manifest
 SHA-256, row and eligibility counts, exclusion reasons, clock/selection definitions, and SHA-256
 for every CSV.
+Experiment-level schema-v2 validation is copied without loss to `dataset_manifest.json`.
+`run_summary.csv` has separate synthetic, representative, task-accuracy, and formal-gate status
+columns while retaining the legacy aggregate status column. Schema-v1 failures are labeled as
+legacy synthetic provenance and are not reinterpreted; older `not_run` remains `not_run`.
+
+Thermal dataset schema v2 adds execution-profile provenance to all three CSVs:
+`execution_profile_type`, profile ID/configuration SHA-256, precision-loss permission, inference
+preference, forced backend, and the separately stated actual-FP16-execution status. CPU rows use
+`cpu_not_applicable` and leave GPU-only cells empty. GPU profile identity is read from timed
+`run_metadata` and checked against experiment config and accuracy-preflight cache provenance;
+mismatches invalidate the run. A legacy GPU run with no explicit profile remains
+`gpu_legacy_missing`—the exporter never guesses the compatibility profile. The dataset manifest's
+`gpu_delegate_profile_inventory` separates each ID+hash and records per-profile run, phase-row,
+and timeseries-row counts plus legacy-missing/invalid counts. Thus compatibility and strict GPU
+runs cannot silently appear as one execution profile.
 
 Default thermal-model eligibility requires completed slot status, `validation.valid=true`, formal
 thermal coverage, a passing run envelope, all phase timestamps and endpoint selections, and
@@ -437,8 +619,10 @@ slot is silently dropped: it remains in `run_summary.csv` with `model_eligible=f
 JSON exclusion reasons. Null values are never replaced with zero, and a pilot export does not
 establish statistical significance.
 
-All files are built and hash-checked in a staging directory before the complete `exports/`
+All files are built and hash-checked in a staging directory before the complete `exports-v2/`
 directory is swapped into place. Re-running replaces the export rather than appending rows. An
+existing schema-v1 `exports/` directory is deliberately left untouched. `--output-dir` can place
+the atomic export outside the source experiment for read-only validation. An
 export failure leaves raw/merged/manifest inputs untouched, preserves the previous successful
 export when replacement fails, records a `postprocessing` error in the experiment manifest when
 invoked by the orchestrator, and prints the independent regeneration command.

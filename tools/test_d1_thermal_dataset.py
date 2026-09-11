@@ -46,12 +46,23 @@ class ThermalDatasetTest(unittest.TestCase):
         records=None,
         slot_id="cpu-t01-d100-r001",
         order=1,
+        gpu_profile=None,
     ):
         root = parent / "experiment with spaces"
         run_id = "run-1"
         run_dir = root / "runs" / run_id
         (run_dir / "merged").mkdir(parents=True)
         (run_dir / "raw").mkdir()
+        if resource == "GPU" and gpu_profile is None:
+            gpu_profile = {
+                "profile_id": "gpu-compat-default-v1",
+                "configuration_sha256": "a" * 64,
+                "precision_loss_allowed": True,
+                "quantized_models_allowed": True,
+                "inference_preference": "FAST_SINGLE_ANSWER",
+                "force_backend": "UNSET",
+                "actual_fp16_execution": "unknown_not_exposed_by_litert_api",
+            }
         summary = {
             "schema_version": 2,
             "run_id": run_id,
@@ -78,6 +89,12 @@ class ThermalDatasetTest(unittest.TestCase):
             "energy_measurement": {"status": "raw_unverified"},
             "host_monotonic_s": -999999.0,
             "wall_ms": 9999999999999,
+            "gpu_delegate_profile": gpu_profile,
+            "profile_consistency_validation": (
+                {"status": "pass", "valid": True, "failure_reasons": []}
+                if resource == "GPU" else
+                {"status": "not_applicable", "valid": True, "failure_reasons": []}
+            ),
         }
         (run_dir / "merged" / "summary.json").write_text(
             json.dumps(summary), encoding="utf-8"
@@ -95,6 +112,14 @@ class ThermalDatasetTest(unittest.TestCase):
         (run_dir / "raw" / "thermalservice.jsonl").write_text(
             "".join(json.dumps(record) + "\n" for record in records), encoding="utf-8"
         )
+        if resource == "GPU":
+            (run_dir / "gpu").mkdir()
+            (run_dir / "gpu" / f"gpu-events-{run_id}-session.jsonl").write_text(
+                json.dumps({
+                    "event": "run_metadata", "run_id": run_id,
+                    "gpu_delegate_profile": gpu_profile,
+                }) + "\n", encoding="utf-8"
+            )
         condition = "gpu-d100" if resource == "GPU" else "cpu-t01-d100"
         slot = {
             "slot_id": slot_id,
@@ -128,7 +153,7 @@ class ThermalDatasetTest(unittest.TestCase):
             "schema_version": 1,
             "experiment_id": "experiment-1",
             "status": "completed",
-            "config": {"duration_s": 2},
+            "config": {"duration_s": 2, "gpu_delegate_profile": gpu_profile},
             "provenance": {
                 "accuracy_preflight": {"status": "not_run"},
                 "energy_measurement": {"status": "raw_unverified"},
@@ -261,14 +286,14 @@ class ThermalDatasetTest(unittest.TestCase):
     def test_atomic_swap_failure_preserves_existing_export(self):
         with tempfile.TemporaryDirectory() as directory:
             root, _, _, _ = self.make_experiment(Path(directory))
-            exports = root / "exports"
+            exports = root / DATASET.EXPORT_DIRECTORY
             exports.mkdir()
             marker = exports / "known-good.txt"
             marker.write_text("preserve", encoding="utf-8")
             real_replace = DATASET.os.replace
 
             def controlled_replace(source, destination):
-                if Path(source).name.startswith(".exports.tmp-"):
+                if Path(source).name.startswith(f".{DATASET.EXPORT_DIRECTORY}.tmp-"):
                     raise OSError("injected staging swap failure")
                 return real_replace(source, destination)
 
@@ -282,15 +307,15 @@ class ThermalDatasetTest(unittest.TestCase):
             root, _, _, _ = self.make_experiment(Path(directory))
             DATASET.export_experiment(root)
             first = {
-                name: (root / "exports" / name).read_bytes()
+                name: (root / DATASET.EXPORT_DIRECTORY / name).read_bytes()
                 for name in (
                     "run_summary.csv", "phase_temperature_summary.csv",
                     "thermal_timeseries.csv",
                 )
             }
             DATASET.export_experiment(root)
-            second = {name: (root / "exports" / name).read_bytes() for name in first}
-            with (root / "exports" / "thermal_timeseries.csv").open(
+            second = {name: (root / DATASET.EXPORT_DIRECTORY / name).read_bytes() for name in first}
+            with (root / DATASET.EXPORT_DIRECTORY / "thermal_timeseries.csv").open(
                 encoding="utf-8", newline=""
             ) as stream:
                 rows = list(csv.DictReader(stream))
@@ -323,7 +348,7 @@ class ThermalDatasetTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root, _, _, _ = self.make_experiment(Path(directory))
             result = DATASET.export_experiment(root)
-            exports = root / "exports"
+            exports = root / DATASET.EXPORT_DIRECTORY
             counts = {}
             for filename in (
                 "run_summary.csv", "phase_temperature_summary.csv", "thermal_timeseries.csv"
@@ -334,6 +359,145 @@ class ThermalDatasetTest(unittest.TestCase):
         self.assertEqual(4, counts["phase_temperature_summary.csv"])
         self.assertEqual(7, counts["thermal_timeseries.csv"])
         self.assertEqual(counts["thermal_timeseries.csv"], result["row_counts"]["thermal_timeseries"])
+
+    def test_experiment_accuracy_result_is_propagated_without_changing_legacy_not_run(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, manifest, _, _ = self.make_experiment(Path(directory))
+            legacy = DATASET.build_dataset(root)
+            self.assertEqual("not_run", legacy["run_summary"][0]["accuracy_preflight_status"])
+            manifest["accuracy_preflight"] = {
+                "status": "passed",
+                "equivalence_scope": (
+                    "CPU_GPU_numerical_output_equivalence_not_task_accuracy"
+                ),
+                "artifact_sha256": "a" * 64,
+            }
+            (root / DATASET.MANIFEST_NAME).write_text(
+                json.dumps(manifest, indent=2), encoding="utf-8"
+            )
+            exported = DATASET.export_experiment(root)
+            with (root / DATASET.EXPORT_DIRECTORY / "run_summary.csv").open(
+                encoding="utf-8", newline=""
+            ) as stream:
+                row = next(csv.DictReader(stream))
+        self.assertEqual("passed", row["accuracy_preflight_status"])
+        self.assertEqual("passed", exported["accuracy_preflight"]["status"])
+        self.assertIn("task accuracy is not measured", exported["limitations"]["accuracy"])
+
+    def test_methodology_corrected_accuracy_scopes_are_losslessly_separated(self):
+        value = {
+            "schema_version": 2,
+            "status": "failed",
+            "synthetic_numerical_check": {
+                "status": "passed", "numerical_tolerance_result": "outside"
+            },
+            "representative_input_equivalence": {"status": "failed"},
+            "task_accuracy_check": {"status": "not_run"},
+            "formal_gate_result": {"status": "failed"},
+        }
+        statuses = DATASET.split_accuracy_statuses(value)
+        self.assertEqual("passed", statuses["synthetic_numerical_check_status"])
+        self.assertEqual("failed", statuses["representative_input_equivalence_status"])
+        self.assertEqual("not_run", statuses["task_accuracy_check_status"])
+        self.assertEqual("failed", statuses["formal_gate_result_status"])
+        legacy = DATASET.split_accuracy_statuses({"schema_version": 1, "status": "failed"})
+        self.assertEqual("legacy_failed", legacy["synthetic_numerical_check_status"])
+        self.assertEqual("not_run", legacy["task_accuracy_check_status"])
+
+    def test_profile_columns_cover_compat_strict_and_cpu_not_applicable(self):
+        compat = {
+            "profile_id": "gpu-compat-default-v1",
+            "configuration_sha256": "a" * 64,
+            "precision_loss_allowed": True,
+            "inference_preference": "FAST_SINGLE_ANSWER",
+            "force_backend": "UNSET",
+            "actual_fp16_execution": "unknown_not_exposed_by_litert_api",
+        }
+        strict = dict(compat, profile_id="gpu-fp32-strict-v1",
+                      configuration_sha256="b" * 64, precision_loss_allowed=False)
+        for profile in (compat, strict):
+            row = DATASET.execution_profile_columns(
+                "GPU", profile, {"status": "pass", "valid": True}
+            )
+            self.assertEqual(profile["profile_id"], row["gpu_delegate_profile_id"])
+            self.assertEqual(profile["configuration_sha256"], row[
+                "gpu_delegate_configuration_sha256"
+            ])
+        cpu = DATASET.execution_profile_columns(
+            "CPU", {}, {"status": "not_applicable", "valid": True}
+        )
+        self.assertEqual("cpu_not_applicable", cpu["execution_profile_type"])
+        self.assertIsNone(cpu["gpu_delegate_profile_id"])
+
+    def test_legacy_gpu_profile_is_not_inferred(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, manifest, summary, _ = self.make_experiment(
+                Path(directory), resource="GPU", formal_gpu_valid=True
+            )
+            summary.pop("gpu_delegate_profile")
+            summary.pop("profile_consistency_validation")
+            run_dir = next((root / "runs").iterdir())
+            for path in (run_dir / "gpu").iterdir():
+                path.unlink()
+            manifest["config"].pop("gpu_delegate_profile")
+            (run_dir / "merged" / "summary.json").write_text(
+                json.dumps(summary), encoding="utf-8"
+            )
+            (root / DATASET.MANIFEST_NAME).write_text(
+                json.dumps(manifest), encoding="utf-8"
+            )
+            dataset = DATASET.build_dataset(root)
+        row = dataset["run_summary"][0]
+        self.assertEqual("gpu_legacy_missing", row["execution_profile_type"])
+        self.assertIsNone(row["gpu_delegate_profile_id"])
+        self.assertFalse(row["model_eligible"])
+
+    def test_mixed_profile_inventory_is_separated(self):
+        def bucket():
+            return {"run_count": 0, "row_counts": {
+                "run_summary": 0, "phase_temperature_summary": 0,
+                "thermal_timeseries": 0,
+            }}
+        inventory = {
+            "by_profile": {}, "legacy_missing": bucket(), "invalid": bucket(),
+            "cpu_not_applicable": bucket(),
+        }
+        for name, digest in (("gpu-compat-default-v1", "a" * 64),
+                             ("gpu-fp32-strict-v1", "b" * 64)):
+            DATASET._add_inventory_rows(
+                inventory, "GPU", {"profile_id": name,
+                "configuration_sha256": digest}, {"status": "pass", "valid": True},
+                4, 7,
+            )
+        inventory = DATASET._finalize_profile_inventory(inventory)
+        self.assertTrue(inventory["mixed_gpu_profiles"])
+        self.assertEqual(2, inventory["distinct_gpu_profile_count"])
+        self.assertEqual(
+            {"gpu-compat-default-v1", "gpu-fp32-strict-v1"},
+            {item["profile_id"] for item in inventory["profiles"]},
+        )
+
+    def test_three_csvs_include_profile_columns_and_v1_export_is_preserved(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, _, _, _ = self.make_experiment(Path(directory))
+            legacy = root / "exports"
+            legacy.mkdir()
+            marker = legacy / "v1-marker.txt"
+            marker.write_text("unchanged", encoding="utf-8")
+            result = DATASET.export_experiment(root)
+            for filename in (
+                "run_summary.csv", "phase_temperature_summary.csv",
+                "thermal_timeseries.csv",
+            ):
+                with (root / DATASET.EXPORT_DIRECTORY / filename).open(
+                    encoding="utf-8", newline=""
+                ) as stream:
+                    columns = next(csv.reader(stream))
+                self.assertIn("gpu_delegate_profile_id", columns)
+                self.assertIn("gpu_delegate_configuration_sha256", columns)
+                self.assertIn("actual_fp16_execution", columns)
+            self.assertEqual("unchanged", marker.read_text(encoding="utf-8"))
+            self.assertEqual(2, result["dataset_version"])
 
 
 if __name__ == "__main__":

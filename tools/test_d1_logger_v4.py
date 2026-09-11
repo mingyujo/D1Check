@@ -16,6 +16,53 @@ SPEC.loader.exec_module(LOGGER)
 
 
 class D1LoggerV4Test(unittest.TestCase):
+    def gpu_profile(self, profile_id="gpu-compat-default-v1", digest="a" * 64):
+        return {
+            "profile_id": profile_id,
+            "configuration_sha256": digest,
+            "precision_loss_allowed": profile_id == "gpu-compat-default-v1",
+            "quantized_models_allowed": True,
+            "inference_preference": "FAST_SINGLE_ANSWER",
+            "force_backend": "UNSET",
+            "actual_fp16_execution": "unknown_not_exposed_by_litert_api",
+        }
+
+    def test_gpu_profile_compat_and_strict_are_preserved(self):
+        for profile in (
+            self.gpu_profile(),
+            self.gpu_profile("gpu-fp32-strict-v1", "b" * 64),
+        ):
+            result = LOGGER.validate_gpu_execution_profile(
+                "GPU", profile, profile, profile, manifest_available=True
+            )
+            self.assertTrue(result["valid"])
+            self.assertEqual("pass", result["status"])
+            self.assertEqual(profile["profile_id"], result["profile_id"])
+
+    def test_cpu_profile_is_not_applicable(self):
+        result = LOGGER.validate_gpu_execution_profile("CPU", None)
+        self.assertTrue(result["valid"])
+        self.assertEqual("not_applicable", result["status"])
+
+    def test_gpu_profile_id_and_hash_mismatch_fail(self):
+        timed = self.gpu_profile()
+        wrong_id = self.gpu_profile("gpu-fp32-strict-v1")
+        wrong_hash = self.gpu_profile(digest="b" * 64)
+        result = LOGGER.validate_gpu_execution_profile(
+            "GPU", timed, wrong_id, wrong_hash, manifest_available=True
+        )
+        self.assertFalse(result["valid"])
+        self.assertIn("config_gpu_profile_id_mismatch", result["failure_reasons"])
+        self.assertIn(
+            "accuracy_preflight_gpu_profile_hash_mismatch",
+            result["failure_reasons"],
+        )
+
+    def test_legacy_gpu_profile_is_missing_without_inference(self):
+        result = LOGGER.validate_gpu_execution_profile("GPU", None)
+        self.assertFalse(result["valid"])
+        self.assertEqual("legacy_missing", result["status"])
+
     def test_unrun_accuracy_and_uncalibrated_energy_are_not_misrepresented(self):
         provenance = LOGGER.measurement_provenance({})
 

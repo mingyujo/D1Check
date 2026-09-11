@@ -72,7 +72,7 @@ class GpuBenchmarkEngine(private val context: Context) {
                         check(compatibility.isDelegateSupportedOnThisDevice) {
                             "GPU delegate is not supported; GPU experiment cannot start"
                         }
-                        GpuDelegate(compatibility.bestOptionsForThisDevice)
+                        GpuDelegate(config.gpuDelegateProfile.options())
                     }
                     options.addDelegate(checkNotNull(gpuDelegate))
                 }
@@ -225,13 +225,14 @@ class GpuBenchmarkEngine(private val context: Context) {
             null
         }
         val accuracyPreflight = linkedMapOf<String, Any?>(
+            "schema_version" to 2,
+            "validation_scope" to "timed_run_does_not_execute_preflight",
             "status" to "not_run",
-            "deterministic_input_count" to 0,
-            "reference_resource" to null,
-            "comparator_version" to null,
-            "tolerance" to null,
-            "mismatch_count" to null,
-            "note" to "accuracy comparator is not implemented in phase 2-A",
+            "synthetic_numerical_check" to mapOf("status" to "not_run"),
+            "representative_input_equivalence" to mapOf("status" to "not_run"),
+            "task_accuracy_check" to mapOf("status" to "not_run"),
+            "formal_gate_result" to mapOf("status" to "not_run"),
+            "note" to "experiment-level preflight is attached by the host; timed loop is isolated",
         )
         val energyMeasurement = linkedMapOf<String, Any?>(
             "status" to "raw_unverified",
@@ -265,6 +266,11 @@ class GpuBenchmarkEngine(private val context: Context) {
             "resource_legacy_alias" to config.legacyResourceAlias,
             "cpu_threads" to config.cpuThreads,
             "cpu_affinity" to "NONE",
+            "gpu_delegate_profile" to if (config.normalizedResource == ResourceTarget.GPU) {
+                config.gpuDelegateProfile.metadata()
+            } else {
+                null
+            },
             "auto_start" to config.isAutomated,
             "expected_run_id" to config.expectedRunId,
             "command_id" to config.commandId,
@@ -316,14 +322,7 @@ class GpuBenchmarkEngine(private val context: Context) {
     }
 
     private fun createInput(interpreter: Interpreter): ByteBuffer {
-        val buffer = ByteBuffer.allocateDirect(interpreter.getInputTensor(0).numBytes())
-            .order(ByteOrder.nativeOrder())
-        var state = 0x12345678
-        while (buffer.remaining() >= Float.SIZE_BYTES) {
-            state = state * 1664525 + 1013904223
-            buffer.putFloat(((state ushr 8) and 0xFFFFFF) / 16777215.0f)
-        }
-        return buffer.rewind() as ByteBuffer
+        return DeterministicInputSet.legacyTimedInput(interpreter.getInputTensor(0).numBytes())
     }
 
     private fun createOutput(interpreter: Interpreter): ByteBuffer =

@@ -60,6 +60,7 @@ class AutomationIntentTest {
                 AutomationIntentParser.EXTRA_DURATION_S to 60L,
                 AutomationIntentParser.EXTRA_DUTY_CYCLE_PERCENT to 25,
                 AutomationIntentParser.EXTRA_DUTY_CYCLE_PERIOD_S to 4.0f,
+                AutomationIntentParser.EXTRA_GPU_PROFILE to "gpu-fp32-strict-v1",
                 AutomationIntentParser.EXTRA_RUN_ID to runId,
                 AutomationIntentParser.EXTRA_COMMAND_ID to commandId,
             )
@@ -67,6 +68,7 @@ class AutomationIntentTest {
 
         assertEquals(25, requireNotNull(request).config.dutyCyclePercent)
         assertEquals(4.0, request.config.dutyCyclePeriodSeconds, 0.0)
+        assertEquals(GpuDelegateProfile.FP32_STRICT, request.config.gpuDelegateProfile)
     }
 
     @Test(expected = IllegalArgumentException::class)

@@ -650,6 +650,18 @@ class OrchestratorTest(unittest.TestCase):
                 "planned_cpu_threads"
             ]
         )
+        profile = ORCH.gpu_profile("gpu-compat-default-v1")
+        gpu = dict(valid, resource="GPU", cpu_threads=None, gpu_delegate_profile=profile)
+        self.assertTrue(
+            ORCH.planned_metadata_checks(gpu, "GPU", None, 50, 10, profile)[
+                "planned_gpu_delegate_profile"
+            ]
+        )
+        self.assertFalse(
+            ORCH.planned_metadata_checks(
+                gpu, "GPU", None, 50, 10, ORCH.gpu_profile("gpu-fp32-strict-v1")
+            )["planned_gpu_delegate_profile"]
+        )
 
     def test_cpu_intent_has_threads_but_gpu_intent_does_not(self):
         cpu = ORCH.runner_intent_arguments("CPU", 4, 60, 20, "run", "command")
@@ -1031,10 +1043,378 @@ class OrchestratorTest(unittest.TestCase):
         energy = manifest["provenance"]["energy_measurement"]
 
         self.assertEqual("not_run", accuracy["status"])
-        self.assertEqual(0, accuracy["deterministic_input_count"])
+        self.assertEqual(32, accuracy["deterministic_input_count"])
+        self.assertEqual("optional", accuracy["policy"])
         self.assertEqual("raw_unverified", energy["status"])
         self.assertFalse(energy["calculation_performed"])
         self.assertFalse(energy["current_unit_verified"])
+
+    def test_accuracy_finalization_requires_numeric_and_full_delegate(self):
+        args = ORCH.build_parser().parse_args([])
+        expected = ORCH.accuracy_expected_provenance(args, "fingerprint")
+        command_id = "11111111-1111-4111-8111-111111111111"
+        metadata = {
+            "schema_version": 1,
+            "event": "accuracy_preflight_metadata",
+            "command_id": command_id,
+            "equivalence_scope": expected["equivalence_scope"],
+            "comparator_version": "combined-tolerance-v1",
+            "model_id": expected["model_id"],
+            "model_sha256": expected["model_sha256"],
+            "litert_version": expected["litert_version"],
+            "delegate_configuration": "TfLiteGpuDelegateV2_CompatibilityList_bestOptions",
+            "input_set_version": expected["input_set_version"],
+            "seed": expected["seed"],
+            "input_count": expected["input_count"],
+            "input_shape": expected["input_shape"],
+            "input_dtype": expected["input_dtype"],
+            "normalization": expected["normalization"],
+            "reference_cpu_threads": expected["reference_cpu_threads"],
+            "tolerance": expected["tolerance"],
+            "reference_resource": "CPU", "candidate_resource": "GPU",
+            "output_tensor_count": 1, "output_shape": [1, 1001],
+            "output_dtype": "FLOAT32", "input_set_sha256": "a" * 64,
+            "reference_model_sha256": expected["model_sha256"],
+            "candidate_model_sha256": expected["model_sha256"],
+        }
+        input_hashes, input_set_hash = ORCH.deterministic_accuracy_input_hashes(
+            expected["seed"], 32, 1 * 224 * 224 * 3
+        )
+        metadata["input_set_sha256"] = input_set_hash
+        inputs = [
+            {"event": "accuracy_preflight_input", "input_index": index,
+             "input_sha256": input_hashes[index],
+             "reference_output_sha256": f"r{index}",
+             "candidate_output_sha256": f"c{index}"}
+            for index in range(32)
+        ]
+        summary = {
+            "event": "accuracy_preflight_summary",
+            "numeric_equivalence_passed": True,
+            "mismatch_count": 0, "non_finite_count": 0,
+            "argmax_match_count": 32, "argmax_mismatch_count": 0,
+            "aggregate": {"max_absolute_error": 1e-5},
+        }
+        runner = {"metadata": metadata, "inputs": inputs, "summary": summary}
+        verified = {
+            "verification": "verified", "full_delegate": True,
+            "replaced_nodes": 31, "total_nodes": 31,
+        }
+        result = ORCH.finalize_accuracy_preflight(
+            runner, verified, expected, command_id, {
+                "sha256": "b" * 64,
+                "host_recomputed": {
+                    "mismatch_count": 0, "non_finite_count": 0,
+                    "argmax_match_count": 32, "argmax_mismatch_count": 0,
+                    "reference_output_sha256": [f"r{i}" for i in range(32)],
+                    "candidate_output_sha256": [f"c{i}" for i in range(32)],
+                },
+            }
+        )
+        self.assertEqual("passed", result["status"], result["failure_reasons"])
+        unverified = dict(verified, verification="unverified", full_delegate=False)
+        result = ORCH.finalize_accuracy_preflight(
+            runner, unverified, expected, command_id, {
+                "sha256": "b" * 64,
+                "host_recomputed": {
+                    "mismatch_count": 0, "non_finite_count": 0,
+                    "argmax_match_count": 32, "argmax_mismatch_count": 0,
+                    "reference_output_sha256": [f"r{i}" for i in range(32)],
+                    "candidate_output_sha256": [f"c{i}" for i in range(32)],
+                },
+            }
+        )
+        self.assertEqual("failed", result["status"])
+        self.assertIn("gpu_full_delegation_unverified", result["failure_reasons"])
+
+    def test_accuracy_31_inputs_cannot_pass_formal_minimum(self):
+        args = ORCH.build_parser().parse_args(["--accuracy-input-count", "31"])
+        expected = ORCH.accuracy_expected_provenance(args, "fingerprint")
+        command_id = "22222222-2222-4222-8222-222222222222"
+        metadata = {
+            "schema_version": 1, "event": "accuracy_preflight_metadata",
+            "command_id": command_id, "reference_resource": "CPU",
+            "candidate_resource": "GPU", "output_tensor_count": 1,
+            "output_shape": [1, 1001], "output_dtype": "FLOAT32",
+            "reference_model_sha256": expected["model_sha256"],
+            "candidate_model_sha256": expected["model_sha256"],
+            **{key: expected[key] for key in (
+                "equivalence_scope", "comparator_version", "model_id", "model_sha256",
+                "litert_version", "delegate_configuration", "input_set_version", "seed",
+                "input_count", "input_shape", "input_dtype", "normalization",
+                "reference_cpu_threads", "tolerance",
+            )},
+        }
+        input_hashes, input_set_hash = ORCH.deterministic_accuracy_input_hashes(
+            expected["seed"], 31, 1 * 224 * 224 * 3
+        )
+        metadata["input_set_sha256"] = input_set_hash
+        runner = {
+            "metadata": metadata,
+            "inputs": [
+                {"input_sha256": value, "reference_output_sha256": f"r{index}",
+                 "candidate_output_sha256": f"c{index}"}
+                for index, value in enumerate(input_hashes)
+            ],
+            "summary": {"numeric_equivalence_passed": True, "mismatch_count": 0,
+                        "non_finite_count": 0, "argmax_match_count": 31,
+                        "argmax_mismatch_count": 0},
+        }
+        result = ORCH.finalize_accuracy_preflight(
+            runner, {"verification": "verified", "full_delegate": True}, expected,
+            command_id, {"host_recomputed": {
+                "mismatch_count": 0, "non_finite_count": 0,
+                "argmax_match_count": 31, "argmax_mismatch_count": 0,
+                "reference_output_sha256": [f"r{i}" for i in range(31)],
+                "candidate_output_sha256": [f"c{i}" for i in range(31)],
+            }},
+        )
+        self.assertEqual("failed", result["status"])
+        self.assertIn("insufficient_input_count", result["failure_reasons"])
+
+    def test_accuracy_policy_formal_blocks_not_run_and_pilot_optional_does_not(self):
+        self.assertFalse(ORCH.accuracy_policy_allows_slots("required", "not_run"))
+        self.assertFalse(ORCH.accuracy_policy_allows_slots("required", "failed"))
+        self.assertTrue(ORCH.accuracy_policy_allows_slots("required", "passed"))
+        self.assertTrue(ORCH.accuracy_policy_allows_slots("optional", "failed"))
+        formal = ORCH.build_parser().parse_args(["--mode", "formal"])
+        pilot = ORCH.build_parser().parse_args(["--mode", "pilot"])
+        self.assertEqual("required", ORCH.effective_accuracy_policy(formal))
+        self.assertEqual("optional", ORCH.effective_accuracy_policy(pilot))
+
+    def test_accuracy_resume_reuses_only_exact_success_provenance(self):
+        args = ORCH.build_parser().parse_args([])
+        expected = ORCH.accuracy_expected_provenance(args, "fp")
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            artifact = root / "accuracy_preflight" / "result.json"
+            artifact.parent.mkdir()
+            artifact.write_text("{}", encoding="utf-8")
+            result = {
+                "status": "passed", "provenance": expected,
+                "artifact_path": "accuracy_preflight/result.json",
+                "artifact_sha256": ORCH.sha256_file(artifact),
+            }
+            self.assertTrue(ORCH.can_reuse_accuracy_preflight(result, expected, root))
+            changed = json.loads(json.dumps(expected))
+            changed["tolerance"]["atol"] = 0.5
+            self.assertFalse(ORCH.can_reuse_accuracy_preflight(result, changed, root))
+            legacy_version = json.loads(json.dumps(expected))
+            legacy_version["comparator_version"] = "output-equivalence-v2"
+            self.assertFalse(
+                ORCH.can_reuse_accuracy_preflight(result, legacy_version, root)
+            )
+            artifact.write_text("changed", encoding="utf-8")
+            self.assertFalse(ORCH.can_reuse_accuracy_preflight(result, expected, root))
+
+    def test_accuracy_cli_validation_and_dry_run_are_explicit(self):
+        with self.assertRaisesRegex(ORCH.OrchestratorError, "at least 32"):
+            args = ORCH.build_parser().parse_args([
+                "--mode", "formal", "--accuracy-input-count", "31"
+            ])
+            ORCH.validate_cli(args)
+        with self.assertRaisesRegex(ORCH.OrchestratorError, "require"):
+            args = ORCH.build_parser().parse_args([
+                "--mode", "formal", "--accuracy-preflight", "off"
+            ])
+            ORCH.validate_cli(args)
+        args = ORCH.build_parser().parse_args(["--dry-run"])
+        payload = ORCH.dry_run_payload(args)
+        self.assertEqual("optional", payload["accuracy_preflight"]["policy"])
+        self.assertFalse(payload["performs_adb_calls"])
+        self.assertFalse(payload["writes_manifest"])
+
+    def test_representative_intent_carries_container_and_preprocessing_hashes(self):
+        arguments = ORCH.accuracy_preflight_intent_arguments(
+            "11111111-2222-3333-4444-555555555555", 40, 7, 4,
+            1e-4, 1e-3, 1e-6, "representative",
+            "gpu-compat-default-v1", "/remote/input.d1tset", "a" * 64,
+            "b" * 64,
+        )
+        self.assertIn("d1_accuracy_tensor_set_sha256", arguments)
+        self.assertIn("a" * 64, arguments)
+        self.assertIn("d1_accuracy_preprocessing_sha256", arguments)
+        self.assertIn("b" * 64, arguments)
+
+    def test_host_deterministic_input_hashes_are_reproducible_and_seeded(self):
+        first = ORCH.deterministic_accuracy_input_hashes(7, 3, 8)
+        self.assertEqual(first, ORCH.deterministic_accuracy_input_hashes(7, 3, 8))
+        self.assertNotEqual(first, ORCH.deterministic_accuracy_input_hashes(8, 3, 8))
+
+    def test_host_recomputes_binary_tolerance_nonfinite_and_argmax(self):
+        tolerance = {"atol": 0.1, "rtol": 0.0, "relative_error_epsilon": 1e-6}
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "outputs.bin"
+            values = [
+                ([1.0, 2.0, 3.0], [1.1, 2.0, 3.0]),
+                ([3.0, 2.0, 1.0], [2.0, 4.0, float("inf")]),
+            ]
+            payload = b"D1EQV001" + __import__("struct").pack("<II", 2, 3)
+            for reference, candidate in values:
+                payload += __import__("struct").pack("<3f", *reference)
+                payload += __import__("struct").pack("<3f", *candidate)
+            path.write_bytes(payload)
+            result = ORCH.validate_accuracy_binary(
+                path, ORCH.sha256_file(path), 2, 3, tolerance
+            )["host_recomputed"]
+        self.assertGreaterEqual(result["mismatch_count"], 2)
+        self.assertEqual(1, result["non_finite_count"])
+        self.assertEqual(1, result["argmax_match_count"])
+        self.assertEqual(1, result["argmax_mismatch_count"])
+
+    def test_host_top5_boundary_ties_are_not_applicable(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "ties.bin"
+            values = [
+                ([0.0] * 6, [0.0] * 6),
+                ([0.6, 0.2, 0.1, 0.05, 0.025, 0.025],
+                 [0.6, 0.2, 0.1, 0.05, 0.03, 0.02]),
+                ([0.60, 0.15, 0.10, 0.07, 0.05, 0.03],
+                 [0.60, 0.15, 0.10, 0.03, 0.05, 0.07]),
+            ]
+            payload = b"D1EQV001" + __import__("struct").pack("<II", 3, 6)
+            for reference, candidate in values:
+                payload += __import__("struct").pack("<6f", *reference)
+                payload += __import__("struct").pack("<6f", *candidate)
+            path.write_bytes(payload)
+            host = ORCH.validate_accuracy_binary(
+                path, ORCH.sha256_file(path), 3, 6,
+                {"atol": 1e-4, "rtol": 1e-3, "relative_error_epsilon": 1e-6},
+            )["host_recomputed"]
+        self.assertFalse(host["per_input"][0]["top5_overlap_applicable"])
+        self.assertEqual(
+            "reference_and_candidate_top5_boundary_tie",
+            host["per_input"][0]["top5_overlap_not_applicable_reason"],
+        )
+        self.assertFalse(host["per_input"][1]["top5_overlap_applicable"])
+        self.assertTrue(host["per_input"][2]["top5_overlap_applicable"])
+        self.assertEqual(1, host["top5_overlap_applicable_count"])
+        self.assertEqual(2, host["top5_overlap_not_applicable_count"])
+        self.assertEqual(4, host["minimum_top5_overlap_count"])
+
+    def test_tied_overlap_is_excluded_but_determinate_overlap_failure_blocks(self):
+        policy = ORCH.representative_acceptance_policy()
+        base = {
+            "argmax_mismatch_count": 0,
+            "maximum_total_variation_distance": 0.001,
+            "minimum_cosine_similarity": 0.9999,
+        }
+        tied_failures, integrity = ORCH.representative_acceptance_failures(
+            dict(base, top5_overlap_applicable_count=0,
+                 minimum_top5_overlap_count=None), policy
+        )
+        self.assertEqual([], tied_failures)
+        self.assertEqual([], integrity)
+        determinate_failures, integrity = ORCH.representative_acceptance_failures(
+            dict(base, top5_overlap_applicable_count=39,
+                 minimum_top5_overlap_count=3), policy
+        )
+        self.assertIn(
+            "representative_top5_overlap_below_minimum", determinate_failures
+        )
+        self.assertEqual([], integrity)
+
+    def test_representative_acceptance_failure_preserves_execution_integrity(self):
+        args = ORCH.build_parser().parse_args([])
+        representative = {
+            "header": {
+                "format_version": "d1-representative-tensor-set-v1",
+                "selection": {"seed": 7},
+            },
+            "input_count": 40,
+            "tensor_set_sha256": "1" * 64,
+            "container_sha256": "2" * 64,
+            "label_mapping_file_sha256": "3" * 64,
+            "preprocessing_configuration_sha256": "4" * 64,
+        }
+        expected = ORCH.accuracy_expected_provenance(
+            args, "fingerprint", "representative", representative
+        )
+        command_id = "33333333-3333-4333-8333-333333333333"
+        metadata = {
+            "schema_version": ORCH.ACCURACY_SCHEMA_VERSION,
+            "validation_scope": "representative",
+            "command_id": command_id,
+            "comparator_version": expected["comparator_version"],
+            "model_id": expected["model_id"],
+            "model_sha256": expected["model_sha256"],
+            "litert_version": expected["litert_version"],
+            "input_shape": expected["input_shape"],
+            "input_dtype": expected["input_dtype"],
+            "reference_cpu_threads": expected["reference_cpu_threads"],
+            "tolerance": expected["tolerance"],
+            "comparator_version": expected["comparator_version"],
+            "gpu_delegate_profile": expected["gpu_delegate_profile"],
+            "reference_model_sha256": expected["model_sha256"],
+            "candidate_model_sha256": expected["model_sha256"],
+            "output_shape": ORCH.ACCURACY_OUTPUT_SHAPE,
+            "output_dtype": ORCH.ACCURACY_OUTPUT_DTYPE,
+            "representative_tensor_set": {
+                key: expected[key] for key in (
+                    "tensor_set_sha256", "tensor_set_container_sha256",
+                    "label_mapping_file_sha256",
+                    "preprocessing_configuration_sha256",
+                )
+            },
+        }
+        inputs = [
+            {"reference_output_sha256": f"r{index}",
+             "candidate_output_sha256": f"c{index}",
+             "ground_truth": {"mapped_output_index": 1}}
+            for index in range(40)
+        ]
+        summary = {
+            "mismatch_count": 10, "non_finite_count": 0,
+            "argmax_match_count": 39, "argmax_mismatch_count": 1,
+            "aggregate": {},
+        }
+        host = {
+            "mismatch_count": 10, "non_finite_count": 0,
+            "argmax_match_count": 39, "argmax_mismatch_count": 1,
+            "reference_output_sha256": [f"r{i}" for i in range(40)],
+            "candidate_output_sha256": [f"c{i}" for i in range(40)],
+            "top5_overlap_applicable_count": 40,
+            "top5_overlap_not_applicable_count": 0,
+            "minimum_top5_overlap_count": 1,
+            "maximum_total_variation_distance": 0.023043,
+            "minimum_cosine_similarity": 0.9999,
+            "per_input": [
+                {"reference_argmax": 1, "candidate_argmax": 1,
+                 "reference_top5": [1], "candidate_top5": [1]}
+                for _ in range(40)
+            ],
+        }
+        result = ORCH.finalize_accuracy_preflight(
+            {"metadata": metadata, "inputs": inputs, "summary": summary},
+            {"verification": "verified", "full_delegate": True}, expected,
+            command_id, {"sha256": "5" * 64, "host_recomputed": host},
+        )
+        self.assertEqual("failed", result["status"])
+        self.assertEqual("passed", result["execution_integrity_status"])
+        self.assertEqual("failed", result["equivalence_acceptance_status"])
+        self.assertEqual([], result["execution_integrity_failure_reasons"])
+        self.assertIn(
+            "representative_top1_mismatch_limit_exceeded",
+            result["equivalence_acceptance_failure_reasons"],
+        )
+        self.assertIn(
+            "representative_top5_overlap_below_minimum",
+            result["equivalence_acceptance_failure_reasons"],
+        )
+
+    def test_accuracy_result_is_atomically_attached_to_analyzer_summary(self):
+        with tempfile.TemporaryDirectory() as directory:
+            run_dir = Path(directory)
+            (run_dir / "merged").mkdir()
+            summary_path = run_dir / "merged" / "summary.json"
+            summary_path.write_text('{"run_id":"run-a"}', encoding="utf-8")
+            accuracy = {"status": "passed", "artifact_sha256": "a" * 64}
+            ORCH.attach_accuracy_to_analyzer_summary(run_dir, accuracy)
+            summary = json.loads(summary_path.read_text(encoding="utf-8"))
+        self.assertEqual(accuracy, summary["accuracy_preflight"])
+        self.assertEqual(
+            "experiment_level_preflight_not_task_accuracy", summary["accuracy_scope"]
+        )
 
     def test_axis_or_seed_change_is_resume_config_mismatch(self):
         base = ORCH.experiment_config(ORCH.build_parser().parse_args([
@@ -1130,6 +1510,152 @@ class OrchestratorTest(unittest.TestCase):
             exporter.assert_called_once_with(root)
             self.assertNotIn("postprocessing", manifest)
             self.assertEqual(1, len(manifest["postprocessing_history"]))
+
+    def test_gpu_profiles_are_explicit_and_have_distinct_hashes(self):
+        compatible = ORCH.gpu_profile("gpu-compat-default-v1")
+        strict = ORCH.gpu_profile("gpu-fp32-strict-v1")
+        self.assertTrue(compatible["precision_loss_allowed"])
+        self.assertFalse(strict["precision_loss_allowed"])
+        self.assertTrue(compatible["quantized_models_allowed"])
+        self.assertEqual("FAST_SINGLE_ANSWER", compatible["inference_preference"])
+        self.assertEqual("UNSET", compatible["force_backend"])
+        self.assertNotEqual(
+            compatible["configuration_sha256"], strict["configuration_sha256"]
+        )
+
+    def test_synthetic_outside_tolerance_is_not_task_or_integrity_failure(self):
+        synthetic = {
+            "status": "passed",
+            "numerical_tolerance_result": "outside",
+            "mismatch_count": 912,
+            "failure_reasons": [],
+        }
+        result = ORCH.compose_accuracy_validation(
+            "thermal-only-pilot", "required", synthetic
+        )
+        self.assertEqual("passed", result["status"])
+        self.assertEqual("outside", result["synthetic_numerical_check"]["numerical_tolerance_result"])
+        self.assertEqual("not_run", result["task_accuracy_check"]["status"])
+
+    def test_schema_v2_synthetic_outside_tolerance_passes_only_integrity(self):
+        args = ORCH.build_parser().parse_args([])
+        expected = ORCH.accuracy_expected_provenance(args, "fingerprint", "synthetic")
+        command_id = "22222222-2222-4222-8222-222222222222"
+        input_hashes, input_set_hash = ORCH.deterministic_accuracy_input_hashes(
+            expected["seed"], expected["input_count"], 1 * 224 * 224 * 3
+        )
+        inputs = [
+            {
+                "input_sha256": input_hashes[index],
+                "reference_output_sha256": f"r{index}",
+                "candidate_output_sha256": f"c{index}",
+            }
+            for index in range(32)
+        ]
+        metadata = {
+            "schema_version": 2, "command_id": command_id,
+            "validation_scope": "synthetic", "model_id": expected["model_id"],
+            "model_sha256": expected["model_sha256"],
+            "reference_model_sha256": expected["model_sha256"],
+            "candidate_model_sha256": expected["model_sha256"],
+            "litert_version": expected["litert_version"],
+            "input_shape": expected["input_shape"], "input_dtype": expected["input_dtype"],
+            "reference_cpu_threads": expected["reference_cpu_threads"],
+            "tolerance": expected["tolerance"],
+            "comparator_version": expected["comparator_version"],
+            "gpu_delegate_profile": expected["gpu_delegate_profile"],
+            "output_shape": [1, 1001], "output_dtype": "FLOAT32",
+            "input_set_sha256": input_set_hash,
+        }
+        summary = {
+            "mismatch_count": 912, "non_finite_count": 0,
+            "argmax_match_count": 32, "argmax_mismatch_count": 0,
+            "aggregate": {"max_absolute_error": 0.008},
+        }
+        host = {
+            "mismatch_count": 912, "non_finite_count": 0,
+            "argmax_match_count": 32, "argmax_mismatch_count": 0,
+            "reference_output_sha256": [f"r{i}" for i in range(32)],
+            "candidate_output_sha256": [f"c{i}" for i in range(32)],
+        }
+        result = ORCH.finalize_accuracy_preflight(
+            {"schema_version": 2, "metadata": metadata, "inputs": inputs, "summary": summary},
+            {"verification": "verified", "full_delegate": True}, expected, command_id,
+            {"host_recomputed": host},
+        )
+        self.assertEqual("passed", result["status"], result["failure_reasons"])
+        self.assertEqual("outside", result["numerical_tolerance_result"])
+        metadata["gpu_delegate_profile"] = ORCH.gpu_profile("gpu-fp32-strict-v1")
+        mismatch = ORCH.finalize_accuracy_preflight(
+            {"schema_version": 2, "metadata": metadata, "inputs": inputs, "summary": summary},
+            {"verification": "verified", "full_delegate": True}, expected, command_id,
+            {"host_recomputed": host},
+        )
+        self.assertIn("gpu_delegate_profile_mismatch", mismatch["failure_reasons"])
+
+    def test_formal_scopes_have_distinct_blocking_gates(self):
+        synthetic = {"status": "passed", "failure_reasons": []}
+        representative = {"status": "passed", "failure_reasons": []}
+        task_not_run = {"status": "not_run", "failure_reasons": []}
+        backend = ORCH.compose_accuracy_validation(
+            "backend-performance-formal", "required", synthetic,
+            representative, task_not_run,
+        )
+        accuracy = ORCH.compose_accuracy_validation(
+            "accuracy-preserving-formal", "required", synthetic,
+            representative, task_not_run,
+        )
+        self.assertEqual("passed", backend["formal_gate_result"]["status"])
+        self.assertEqual("failed", accuracy["formal_gate_result"]["status"])
+        self.assertIn(
+            "task_accuracy_check_not_passed",
+            accuracy["formal_gate_result"]["failure_reasons"],
+        )
+
+    def test_representative_not_run_blocks_backend_formal_but_not_thermal_pilot(self):
+        synthetic = {"status": "passed", "failure_reasons": []}
+        formal = ORCH.compose_accuracy_validation(
+            "backend-performance-formal", "required", synthetic
+        )
+        pilot = ORCH.compose_accuracy_validation(
+            "thermal-only-pilot", "optional", synthetic
+        )
+        self.assertEqual("failed", formal["status"])
+        self.assertEqual("passed", pilot["status"])
+
+    def test_accuracy_cache_rejects_profile_or_artifact_change(self):
+        args = ORCH.build_parser().parse_args([])
+        first = ORCH.accuracy_cache_provenance(args, "fingerprint", None)
+        strict_args = ORCH.build_parser().parse_args([
+            "--gpu-profile", "gpu-fp32-strict-v1"
+        ])
+        strict = ORCH.accuracy_cache_provenance(strict_args, "fingerprint", None)
+        self.assertNotEqual(ORCH.canonical_sha256(first), ORCH.canonical_sha256(strict))
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            paths = []
+            check = {"status": "passed"}
+            for index, (path_key, hash_key) in enumerate((
+                ("artifact_path", "artifact_sha256"),
+                ("runner_artifact_path", "runner_artifact_sha256"),
+                ("binary_artifact_path", "binary_artifact_sha256"),
+                ("delegate_log_path", "delegate_log_sha256"),
+            )):
+                path = root / f"artifact-{index}"
+                path.write_bytes(f"value-{index}".encode())
+                paths.append(path)
+                check[path_key] = path.name
+                check[hash_key] = ORCH.sha256_file(path)
+            key = ORCH.canonical_sha256(first)
+            result = {
+                "schema_version": 2, "status": "passed",
+                "cache_key_sha256": key,
+                "synthetic_numerical_check": check,
+                "representative_input_equivalence": {"status": "not_run"},
+            }
+            self.assertTrue(ORCH.can_reuse_accuracy_validation(result, key, root))
+            paths[0].write_text("changed", encoding="utf-8")
+            self.assertFalse(ORCH.can_reuse_accuracy_validation(result, key, root))
 
 
 if __name__ == "__main__":

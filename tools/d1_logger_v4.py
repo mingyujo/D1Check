@@ -124,6 +124,135 @@ def measurement_provenance(metadata: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+GPU_PROFILE_FIELDS = (
+    "profile_id",
+    "configuration_sha256",
+    "precision_loss_allowed",
+    "quantized_models_allowed",
+    "inference_preference",
+    "force_backend",
+    "actual_fp16_execution",
+)
+
+
+def _profile_from_accuracy(value: Any) -> dict[str, Any] | None:
+    if not isinstance(value, dict):
+        return None
+    cache = value.get("cache_provenance")
+    if isinstance(cache, dict) and isinstance(cache.get("gpu_delegate_profile"), dict):
+        return cache["gpu_delegate_profile"]
+    direct = value.get("gpu_delegate_profile")
+    return direct if isinstance(direct, dict) else None
+
+
+def experiment_profile_context(run_dir: Path) -> dict[str, Any]:
+    """Read optional orchestrator context without making standalone analysis impossible."""
+    manifest_path = run_dir.parent.parent / "experiment_manifest.json"
+    if not manifest_path.is_file():
+        return {"manifest_available": False, "config_profile": None, "preflight_profile": None}
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        return {
+            "manifest_available": True,
+            "manifest_error": f"{error.__class__.__name__}: {error}",
+            "config_profile": None,
+            "preflight_profile": None,
+        }
+    config = manifest.get("config") if isinstance(manifest, dict) else None
+    return {
+        "manifest_available": True,
+        "manifest_error": None,
+        "config_profile": (
+            config.get("gpu_delegate_profile") if isinstance(config, dict) else None
+        ),
+        "preflight_profile": _profile_from_accuracy(manifest.get("accuracy_preflight")),
+    }
+
+
+def validate_gpu_execution_profile(
+    resource: Any,
+    run_profile: Any,
+    config_profile: Any = None,
+    preflight_profile: Any = None,
+    *,
+    manifest_available: bool = False,
+    manifest_error: str | None = None,
+) -> dict[str, Any]:
+    """Validate explicit execution-profile provenance; never infer legacy defaults."""
+    normalized_resource = str(resource or "").upper()
+    if normalized_resource != "GPU":
+        unexpected = run_profile is not None
+        return {
+            "status": "failed" if unexpected else "not_applicable",
+            "valid": not unexpected,
+            "resource": normalized_resource,
+            "failure_reasons": ["cpu_run_has_gpu_delegate_profile"] if unexpected else [],
+            "comparisons": {"config": "not_applicable", "accuracy_preflight": "not_applicable"},
+        }
+
+    if not isinstance(run_profile, dict):
+        return {
+            "status": "legacy_missing",
+            "valid": False,
+            "resource": "GPU",
+            "failure_reasons": ["timed_run_gpu_delegate_profile_missing"],
+            "comparisons": {
+                "config": "unverified",
+                "accuracy_preflight": "unverified",
+            },
+        }
+
+    failures: list[str] = []
+    profile = {field: run_profile.get(field) for field in GPU_PROFILE_FIELDS}
+    if not isinstance(profile["profile_id"], str) or not profile["profile_id"]:
+        failures.append("timed_profile_id_invalid")
+    profile_hash = profile["configuration_sha256"]
+    if not isinstance(profile_hash, str) or re.fullmatch(r"[0-9a-fA-F]{64}", profile_hash) is None:
+        failures.append("timed_profile_hash_invalid")
+    for key in ("precision_loss_allowed", "quantized_models_allowed"):
+        if not isinstance(profile[key], bool):
+            failures.append(f"timed_{key}_invalid")
+    for key in ("inference_preference", "force_backend", "actual_fp16_execution"):
+        if not isinstance(profile[key], str) or not profile[key]:
+            failures.append(f"timed_{key}_invalid")
+
+    comparisons: dict[str, str] = {}
+    for source, candidate in (
+        ("config", config_profile), ("accuracy_preflight", preflight_profile),
+    ):
+        if candidate is None:
+            comparisons[source] = "unavailable"
+            if manifest_available and source == "config":
+                failures.append("experiment_config_gpu_delegate_profile_missing")
+            continue
+        if not isinstance(candidate, dict):
+            comparisons[source] = "invalid"
+            failures.append(f"{source}_gpu_delegate_profile_invalid")
+            continue
+        id_match = candidate.get("profile_id") == profile.get("profile_id")
+        hash_match = candidate.get("configuration_sha256") == profile.get(
+            "configuration_sha256"
+        )
+        comparisons[source] = "match" if id_match and hash_match else "mismatch"
+        if not id_match:
+            failures.append(f"{source}_gpu_profile_id_mismatch")
+        if not hash_match:
+            failures.append(f"{source}_gpu_profile_hash_mismatch")
+    if manifest_error:
+        failures.append("experiment_manifest_profile_context_invalid")
+    failures = list(dict.fromkeys(failures))
+    return {
+        "status": "pass" if not failures else "failed",
+        "valid": not failures,
+        "resource": "GPU",
+        "profile_id": profile.get("profile_id"),
+        "configuration_sha256": profile.get("configuration_sha256"),
+        "comparisons": comparisons,
+        "failure_reasons": failures,
+    }
+
+
 def runner_session_from_filename(filename: str, run_id: str) -> str | None:
     prefix = f"gpu-events-{run_id}-"
     if not filename.startswith(prefix) or not filename.endswith(".jsonl"):
@@ -969,6 +1098,20 @@ def analyze(run_dir: Path) -> None:
         json.loads(metadata_path.read_text(encoding="utf-8")) if metadata_path.exists() else {}
     )
     is_gpu = str(metadata_event.get("resource", "")).upper() == "GPU"
+    profile_context = experiment_profile_context(run_dir)
+    gpu_profile = metadata_event.get("gpu_delegate_profile")
+    profile_validation = validate_gpu_execution_profile(
+        metadata_event.get("resource"),
+        gpu_profile,
+        profile_context.get("config_profile"),
+        profile_context.get("preflight_profile"),
+        manifest_available=bool(profile_context.get("manifest_available")),
+        manifest_error=profile_context.get("manifest_error"),
+    )
+    if is_gpu and profile_validation["status"] == "legacy_missing":
+        analysis_warnings.append(
+            "legacy GPU run lacks explicit gpu_delegate_profile; no profile was inferred"
+        )
     galaxy_a24 = str(capture_metadata.get("device_model", "")).upper().startswith("SM-A245")
     formal_gpu_valid = (
         is_gpu
@@ -978,6 +1121,7 @@ def analyze(run_dir: Path) -> None:
             "D95B3C5EA86750CEF882FA867CA357DFE4D265D0B80B67E83277A0BDA310CFBB"
         and metadata_event.get("litert_version") == "1.4.2"
         and evidence["full_delegate"] is True
+        and profile_validation["valid"] is True
         and metadata_event.get("experiment_valid") is True
         and coverage["passes_formal_requirement"] is True
     )
@@ -1008,6 +1152,8 @@ def analyze(run_dir: Path) -> None:
         "run_stop_mono_ns": run_stop_ns,
         "run_envelope_validation": "pass",
         "delegate_evidence": evidence,
+        "gpu_delegate_profile": gpu_profile if is_gpu and isinstance(gpu_profile, dict) else None,
+        "profile_consistency_validation": profile_validation,
         "formal_gpu_valid": formal_gpu_valid if is_gpu else None,
         "analysis_warnings": analysis_warnings,
         "inference_latency": latency_stats(latencies),

@@ -19,9 +19,9 @@ import uuid
 
 
 DATASET_SCHEMA = "d1check_thermal_dataset"
-DATASET_VERSION = 1
+DATASET_VERSION = 2
 MANIFEST_NAME = "experiment_manifest.json"
-EXPORT_DIRECTORY = "exports"
+EXPORT_DIRECTORY = "exports-v2"
 DEFAULT_MAXIMUM_OFFSET_MS = 2_000.0
 SENSORS = ("AP", "BAT", "PA", "SKIN")
 ENDPOINTS = (
@@ -33,13 +33,18 @@ ENDPOINTS = (
 BASE_COLUMNS = [
     "experiment_id", "run_id", "slot_id", "condition_id", "block", "repetition",
     "order", "resource", "cpu_threads", "requested_duty_cycle_percent",
+    "execution_profile_type", "gpu_delegate_profile_id",
+    "gpu_delegate_configuration_sha256", "gpu_precision_loss_allowed",
+    "gpu_inference_preference", "gpu_force_backend", "actual_fp16_execution",
 ]
 RUN_SUMMARY_COLUMNS = BASE_COLUMNS + [
     "slot_status", "attempts", "slot_error", "achieved_duty_cycle_percent",
     "requested_duration_s", "actual_load_duration_s",
     "completed_inference_count", "latency_mean_ms", "latency_median_ms",
     "latency_p95_ms", "validation_status", "termination_reason", "cooling_status",
-    "accuracy_preflight_status", "energy_measurement_status", "formal_gpu_valid",
+    "accuracy_preflight_status", "synthetic_numerical_check_status",
+    "representative_input_equivalence_status", "task_accuracy_check_status",
+    "formal_gate_result_status", "energy_measurement_status", "formal_gpu_valid",
     "model_eligible", "exclusion_reasons", "thermal_raw_record_count",
     "thermal_valid_sample_count", "thermal_source_issues",
 ] + [
@@ -76,6 +81,36 @@ THERMAL_TIMESERIES_COLUMNS = BASE_COLUMNS + [
 
 class DatasetError(RuntimeError):
     pass
+
+
+def split_accuracy_statuses(value: Any) -> dict[str, Any]:
+    """Expose v2 scopes without relabeling legacy/not-run results as passed."""
+    if not isinstance(value, dict):
+        value = {}
+    schema = value.get("schema_version")
+    if schema == 2:
+        def child_status(name: str) -> str:
+            child = value.get(name)
+            return str(child.get("status", "not_run")) if isinstance(child, dict) else "not_run"
+        return {
+            "accuracy_preflight_status": value.get("status", "not_run"),
+            "synthetic_numerical_check_status": child_status("synthetic_numerical_check"),
+            "representative_input_equivalence_status": child_status(
+                "representative_input_equivalence"
+            ),
+            "task_accuracy_check_status": child_status("task_accuracy_check"),
+            "formal_gate_result_status": child_status("formal_gate_result"),
+        }
+    legacy_status = value.get("status", "not_run")
+    return {
+        "accuracy_preflight_status": legacy_status,
+        "synthetic_numerical_check_status": (
+            f"legacy_{legacy_status}" if legacy_status != "not_run" else "not_run"
+        ),
+        "representative_input_equivalence_status": "not_run",
+        "task_accuracy_check_status": "not_run",
+        "formal_gate_result_status": "not_run",
+    }
 
 
 def utc_now() -> str:
@@ -373,6 +408,173 @@ def _slot_base(experiment_id: Any, slot: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _accuracy_gpu_profile(value: Any) -> dict[str, Any] | None:
+    if not isinstance(value, dict):
+        return None
+    cache = value.get("cache_provenance")
+    if isinstance(cache, dict) and isinstance(cache.get("gpu_delegate_profile"), dict):
+        return cache["gpu_delegate_profile"]
+    profile = value.get("gpu_delegate_profile")
+    return profile if isinstance(profile, dict) else None
+
+
+def _runner_gpu_profile(run_dir: Path | None, run_id: Any) -> tuple[dict[str, Any] | None, str | None]:
+    if run_dir is None or not isinstance(run_id, str) or not run_id:
+        return None, "runner_profile_source_unavailable"
+    paths = sorted((run_dir / "gpu").glob(f"gpu-events-{run_id}-*.jsonl"))
+    if len(paths) != 1:
+        return None, f"runner_profile_file_count:{len(paths)}"
+    try:
+        with paths[0].open("r", encoding="utf-8") as stream:
+            for line in stream:
+                if not line.strip():
+                    continue
+                event = json.loads(line)
+                if event.get("event") == "run_metadata":
+                    profile = event.get("gpu_delegate_profile")
+                    return (profile if isinstance(profile, dict) else None), None
+    except (OSError, json.JSONDecodeError) as error:
+        return None, f"runner_profile_read_error:{error.__class__.__name__}"
+    return None, "runner_metadata_missing"
+
+
+def _profile_identity(profile: Any) -> tuple[Any, Any]:
+    if not isinstance(profile, dict):
+        return None, None
+    return profile.get("profile_id"), profile.get("configuration_sha256")
+
+
+def resolve_execution_profile(
+    manifest: dict[str, Any], slot: dict[str, Any], run_dir: Path | None,
+    summary: dict[str, Any],
+) -> tuple[dict[str, Any], dict[str, Any], list[str]]:
+    resource = str(slot.get("resource", summary.get("resource", ""))).upper()
+    if resource != "GPU":
+        unexpected = summary.get("gpu_delegate_profile") is not None
+        validation = summary.get("profile_consistency_validation")
+        if not isinstance(validation, dict):
+            validation = {
+                "status": "failed" if unexpected else "not_applicable",
+                "valid": not unexpected,
+                "failure_reasons": ["cpu_run_has_gpu_delegate_profile"] if unexpected else [],
+            }
+        return {}, validation, (["cpu_run_has_gpu_delegate_profile"] if unexpected else [])
+
+    issues: list[str] = []
+    profile = summary.get("gpu_delegate_profile")
+    if not isinstance(profile, dict):
+        profile, issue = _runner_gpu_profile(run_dir, slot.get("run_id"))
+        if issue:
+            issues.append(issue)
+    config = manifest.get("config")
+    config_profile = config.get("gpu_delegate_profile") if isinstance(config, dict) else None
+    preflight_profile = _accuracy_gpu_profile(manifest.get("accuracy_preflight"))
+    validation = summary.get("profile_consistency_validation")
+    if not isinstance(validation, dict):
+        failures: list[str] = []
+        if not isinstance(profile, dict):
+            status = "legacy_missing"
+            failures.append("timed_run_gpu_delegate_profile_missing")
+        else:
+            status = "pass"
+            for source, candidate in (("config", config_profile), ("accuracy_preflight", preflight_profile)):
+                if source == "accuracy_preflight" and candidate is None:
+                    continue
+                if candidate is None:
+                    failures.append(f"{source}_gpu_delegate_profile_missing")
+                    continue
+                run_id, run_hash = _profile_identity(profile)
+                source_id, source_hash = _profile_identity(candidate)
+                if source_id != run_id:
+                    failures.append(f"{source}_gpu_profile_id_mismatch")
+                if source_hash != run_hash:
+                    failures.append(f"{source}_gpu_profile_hash_mismatch")
+            if failures:
+                status = "failed"
+        validation = {
+            "status": status,
+            "valid": not failures,
+            "profile_id": _profile_identity(profile)[0],
+            "configuration_sha256": _profile_identity(profile)[1],
+            "failure_reasons": failures,
+        }
+    if validation.get("valid") is not True:
+        issues.extend(str(reason) for reason in validation.get("failure_reasons", []))
+    return profile if isinstance(profile, dict) else {}, validation, list(dict.fromkeys(issues))
+
+
+def execution_profile_columns(
+    resource: Any, profile: dict[str, Any], validation: dict[str, Any],
+) -> dict[str, Any]:
+    if str(resource or "").upper() != "GPU":
+        return {
+            "execution_profile_type": "cpu_not_applicable",
+            "gpu_delegate_profile_id": None,
+            "gpu_delegate_configuration_sha256": None,
+            "gpu_precision_loss_allowed": None,
+            "gpu_inference_preference": None,
+            "gpu_force_backend": None,
+            "actual_fp16_execution": None,
+        }
+    status = validation.get("status")
+    return {
+        "execution_profile_type": (
+            "gpu_delegate" if validation.get("valid") is True
+            else "gpu_legacy_missing" if status == "legacy_missing"
+            else "gpu_delegate_invalid"
+        ),
+        "gpu_delegate_profile_id": profile.get("profile_id"),
+        "gpu_delegate_configuration_sha256": profile.get("configuration_sha256"),
+        "gpu_precision_loss_allowed": profile.get("precision_loss_allowed"),
+        "gpu_inference_preference": profile.get("inference_preference"),
+        "gpu_force_backend": profile.get("force_backend"),
+        "actual_fp16_execution": profile.get("actual_fp16_execution"),
+    }
+
+
+def _add_inventory_rows(
+    inventory: dict[str, Any], resource: str, profile: dict[str, Any],
+    validation: dict[str, Any], phase_count: int, timeseries_count: int,
+) -> None:
+    if resource != "GPU":
+        buckets = [inventory["cpu_not_applicable"]]
+    elif not profile.get("profile_id") or not profile.get("configuration_sha256"):
+        buckets = [inventory["legacy_missing"]]
+    else:
+        key = f"{profile.get('profile_id')}@{profile.get('configuration_sha256')}"
+        bucket = inventory["by_profile"].setdefault(key, {
+            "profile_id": profile.get("profile_id"),
+            "configuration_sha256": profile.get("configuration_sha256"),
+            "run_count": 0,
+            "consistency_status_counts": {},
+            "row_counts": {"run_summary": 0, "phase_temperature_summary": 0, "thermal_timeseries": 0},
+        })
+        status = str(validation.get("status", "unknown"))
+        bucket["consistency_status_counts"][status] = (
+            bucket["consistency_status_counts"].get(status, 0) + 1
+        )
+        buckets = [bucket]
+        if validation.get("valid") is not True:
+            buckets.append(inventory["invalid"])
+    for bucket in buckets:
+        bucket["run_count"] += 1
+        bucket["row_counts"]["run_summary"] += 1
+        bucket["row_counts"]["phase_temperature_summary"] += phase_count
+        bucket["row_counts"]["thermal_timeseries"] += timeseries_count
+
+
+def _finalize_profile_inventory(inventory: dict[str, Any]) -> dict[str, Any]:
+    result = dict(inventory)
+    profile_entries = sorted(
+        result.pop("by_profile").values(),
+        key=lambda item: (str(item["profile_id"]), str(item["configuration_sha256"])),
+    )
+    result["profiles"] = profile_entries
+    result["distinct_gpu_profile_count"] = len(profile_entries)
+    result["mixed_gpu_profiles"] = len(profile_entries) > 1
+    return result
+
+
 def build_dataset(
     experiment_dir: Path, maximum_offset_ms: float = DEFAULT_MAXIMUM_OFFSET_MS
 ) -> dict[str, Any]:
@@ -397,6 +599,19 @@ def build_dataset(
     thermal_raw_record_count = 0
     thermal_valid_unique_sample_count = 0
     thermal_outside_or_unassignable_count = 0
+    empty_inventory_bucket = lambda: {
+        "run_count": 0,
+        "row_counts": {
+            "run_summary": 0, "phase_temperature_summary": 0,
+            "thermal_timeseries": 0,
+        },
+    }
+    profile_inventory: dict[str, Any] = {
+        "by_profile": {},
+        "legacy_missing": empty_inventory_bucket(),
+        "invalid": empty_inventory_bucket(),
+        "cpu_not_applicable": empty_inventory_bucket(),
+    }
 
     for slot in sorted_slots:
         base = _slot_base(experiment_id, slot)
@@ -412,6 +627,13 @@ def build_dataset(
                 source_issues.append(f"summary_invalid:{error}")
         else:
             source_issues.append("summary_missing")
+        profile, profile_validation, profile_issues = resolve_execution_profile(
+            manifest, slot, run_dir, summary
+        )
+        resource = str(slot.get("resource", summary.get("resource", ""))).upper()
+        base.update(execution_profile_columns(resource, profile, profile_validation))
+        source_issues.extend(profile_issues)
+        timeseries_start_count = len(timeseries_rows)
         if thermal_path is not None:
             samples, thermal_issues, thermal_raw_count = load_thermal_samples(
                 thermal_path, slot.get("run_id")
@@ -503,10 +725,11 @@ def build_dataset(
         required_config_checks = ("resource", "cpu_threads", "duty_request", "duty_period")
         if any(checks.get(name) is not True for name in required_config_checks):
             exclusions.append("resource_config_metadata_mismatch")
-        resource = str(slot.get("resource", "")).upper()
         formal_gpu_valid = summary.get("formal_gpu_valid")
         if resource == "GPU" and formal_gpu_valid is not True:
             exclusions.append("gpu_delegate_not_formally_valid")
+        if resource == "GPU" and profile_validation.get("valid") is not True:
+            exclusions.append("gpu_execution_profile_not_valid")
         if any(issue.startswith("duplicate_mono_ns:") for issue in thermal_issues):
             exclusions.append("duplicate_thermal_sample_mono_ns")
         exclusions = list(dict.fromkeys(exclusions))
@@ -515,12 +738,17 @@ def build_dataset(
 
         duty = summary.get("duty_cycle", {})
         latency = summary.get("inference_latency", {})
-        accuracy = summary.get("accuracy_preflight") or manifest.get("provenance", {}).get(
-            "accuracy_preflight", {}
+        experiment_accuracy = manifest.get("accuracy_preflight")
+        accuracy = (
+            experiment_accuracy
+            if isinstance(experiment_accuracy, dict)
+            else summary.get("accuracy_preflight")
+            or manifest.get("provenance", {}).get("accuracy_preflight", {})
         )
         energy = summary.get("energy_measurement") or manifest.get("provenance", {}).get(
             "energy_measurement", {}
         )
+        accuracy_statuses = split_accuracy_statuses(accuracy)
         run_row = dict(base)
         run_row.update({
             "slot_status": slot.get("status"),
@@ -546,9 +774,7 @@ def build_dataset(
                 slot.get("cooling", {}).get("status")
                 if isinstance(slot.get("cooling"), dict) else None
             ),
-            "accuracy_preflight_status": (
-                accuracy.get("status") if isinstance(accuracy, dict) else None
-            ),
+            **accuracy_statuses,
             "energy_measurement_status": (
                 energy.get("status") if isinstance(energy, dict) else None
             ),
@@ -571,6 +797,10 @@ def build_dataset(
             ):
                 run_row[f"{prefix}_{name}"] = sensor_row[name]
         run_rows.append(run_row)
+        _add_inventory_rows(
+            profile_inventory, resource, profile, profile_validation, len(per_sensor),
+            len(timeseries_rows) - timeseries_start_count,
+        )
 
     timeseries_rows.sort(key=lambda row: (
         row["order"] if isinstance(row["order"], int) else sys.maxsize,
@@ -580,6 +810,7 @@ def build_dataset(
         row["order"] if isinstance(row["order"], int) else sys.maxsize,
         SENSORS.index(row["sensor"]),
     ))
+    profile_inventory = _finalize_profile_inventory(profile_inventory)
     return {
         "root": root,
         "source_manifest_path": manifest_path,
@@ -599,7 +830,13 @@ def build_dataset(
                 thermal_outside_or_unassignable_count
             ),
         },
+        "gpu_delegate_profile_inventory": profile_inventory,
         "maximum_offset_ms": maximum_offset_ms,
+        "accuracy_preflight": (
+            manifest.get("accuracy_preflight")
+            if isinstance(manifest.get("accuracy_preflight"), dict)
+            else manifest.get("provenance", {}).get("accuracy_preflight", {})
+        ),
     }
 
 
@@ -641,12 +878,18 @@ def _replace_export_directory(staging: Path, destination: Path) -> None:
 
 
 def export_experiment(
-    experiment_dir: Path, maximum_offset_ms: float = DEFAULT_MAXIMUM_OFFSET_MS
+    experiment_dir: Path, maximum_offset_ms: float = DEFAULT_MAXIMUM_OFFSET_MS,
+    output_dir: Path | None = None,
 ) -> dict[str, Any]:
     dataset = build_dataset(experiment_dir, maximum_offset_ms)
     root: Path = dataset["root"]
-    staging = root / f".{EXPORT_DIRECTORY}.tmp-{uuid.uuid4()}"
-    destination = root / EXPORT_DIRECTORY
+    destination = (
+        output_dir.resolve() if output_dir is not None else root / EXPORT_DIRECTORY
+    )
+    if destination == root:
+        raise DatasetError("output directory must not be the experiment root")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    staging = destination.parent / f".{destination.name}.tmp-{uuid.uuid4()}"
     staging.mkdir(parents=False, exist_ok=False)
     try:
         csv_files = {
@@ -682,6 +925,10 @@ def export_experiment(
             "excluded_run_count": dataset["excluded_run_count"],
             "exclusion_reason_counts": dataset["exclusion_reason_counts"],
             "thermal_sample_inventory": dataset["thermal_sample_inventory"],
+            "gpu_delegate_profile_inventory": dataset[
+                "gpu_delegate_profile_inventory"
+            ],
+            "accuracy_preflight": dataset["accuracy_preflight"],
             "row_counts": {
                 key: len(dataset[key]) for key in (
                     "run_summary", "phase_temperature_summary", "thermal_timeseries"
@@ -706,7 +953,9 @@ def export_experiment(
             },
             "temperature_unit": "degrees_Celsius",
             "limitations": {
-                "accuracy": "accuracy_preflight provenance only; no statistical claim",
+                "accuracy": (
+                    "CPU-GPU numerical output equivalence only; task accuracy is not measured"
+                ),
                 "energy": "current units remain unverified; no J or mWh calculation",
                 "statistics": "a pilot run does not establish statistical significance",
             },
@@ -733,6 +982,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--maximum-offset-ms", type=float, default=DEFAULT_MAXIMUM_OFFSET_MS
     )
+    parser.add_argument(
+        "--output-dir", type=Path,
+        help="write the atomic v2 export here instead of <experiment>/exports-v2",
+    )
     return parser
 
 
@@ -740,7 +993,9 @@ def main(argv: Iterable[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if not math.isfinite(args.maximum_offset_ms) or args.maximum_offset_ms < 0:
         raise DatasetError("--maximum-offset-ms must be finite and non-negative")
-    result = export_experiment(args.experiment_dir, args.maximum_offset_ms)
+    result = export_experiment(
+        args.experiment_dir, args.maximum_offset_ms, args.output_dir
+    )
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
 

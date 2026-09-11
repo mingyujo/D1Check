@@ -40,6 +40,7 @@ data class RunConfig(
     val commandId: String? = null,
     val dutyCyclePercent: Int = 100,
     val dutyCyclePeriodSeconds: Double = 10.0,
+    val gpuDelegateProfile: GpuDelegateProfile = GpuDelegateProfile.DEFAULT,
 ) {
     init {
         require(
