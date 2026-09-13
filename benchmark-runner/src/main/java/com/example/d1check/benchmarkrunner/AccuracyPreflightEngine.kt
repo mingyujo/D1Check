@@ -6,8 +6,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
-import org.tensorflow.lite.gpu.CompatibilityList
 import org.tensorflow.lite.gpu.GpuDelegate
+import com.example.d1check.benchmarkrunner.s26.GpuCompatibilityPolicy
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileOutputStream
@@ -77,10 +77,8 @@ internal class AccuracyPreflightEngine(private val context: Context) {
             cpu.close()
         }
 
-        val compatibility = CompatibilityList()
-        check(compatibility.isDelegateSupportedOnThisDevice) {
-            "GPU delegate is not supported; output equivalence preflight cannot run"
-        }
+        // S26: record the compatibility-list verdict instead of aborting on it.
+        GpuCompatibilityPolicy.evaluate()
         val delegate = GpuDelegate(config.gpuDelegateProfile.options())
         val gpuOptions = Interpreter.Options().addDelegate(delegate)
         val gpu = try {
