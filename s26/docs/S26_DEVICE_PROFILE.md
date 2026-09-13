@@ -117,8 +117,8 @@ adb logcat -d -s D1NPU:I
 체크:
 - [ ] `type_name = ACCELERATOR`인 디바이스가 있는가? ← **이게 NPU 후보**
 - [ ] `nnapi-reference`(CPU 폴백)만 있는 건 아닌가?
-- [ ] `feature_level`이 몇 인가?
-- [ ] API 29 미만이면 프로브 자체가 `Unsupported` (S26은 해당 없은 것)
+- [ ] `feature_level`이 몇인가?
+- [ ] API 29 미만이면 프로브 자체가 `Unsupported` (S26은 해당 없을 것)
 
 > `npu_verification`은 현재 `"UNVERIFIED"` 하드코딩이다. 디바이스 **열거**는 실행 **증거**가 아니다.
 
@@ -131,14 +131,14 @@ adb logcat -d -s D1NPU:I
 | Vendor delegate (Qualcomm QNN / Samsung ENN) | SDK 확보 가능 여부 | |
 
 > 기존 조사 결론: LiteRT 공식 NPU 지원은 Snapdragon 8 Gen1+ / Exynos 2500·2600. 최소 기종 Galaxy S23.
-> **S26의 실제 SoC를 §1에서 확인한 랶� 이 표를 채운다.** 지원 여부가 확젔되기 전까지 실행 경로는 `미확정`으로 기록한다.
+> **S26의 실제 SoC를 §1에서 확인한 뒤 이 표를 채운다.** 지원 여부가 확정되기 전까지 실행 경로는 `미확정`으로 기록한다.
 
 ### 4.2 INT8
 
-NPU는 보통 INT8을 요구한다. 현재 코드는 `require(precision == FLOAT32)`로 INT8을 막아두다.
+NPU는 보통 INT8을 요구한다. 현재 코드는 `require(precision == FLOAT32)`로 INT8을 막아둔다.
 
 - [ ] MobileNetV1 1.0 224 **quant(INT8)** `.tflite` 확보 (SHA-256 기록)
-- [ ] 같은 계열인지 확인 (서류까지 MobileNet 한 계역 유지)
+- [ ] 같은 계열인지 확인 (서류까지 MobileNet 한 계열 유지)
 - [ ] NPU가 FP16만 지원하는지 INT8만 지원하는지 확인
 
 ---
@@ -151,7 +151,7 @@ NPU는 보통 INT8을 요구한다. 현재 코드는 `require(precision == FLOAT
 |---|---|---|---|
 | Android thermal status 상한 | ≤ 1 (LIGHT) | | |
 | 배터리 온도 상한 | ≤ 35.0 ℃ | | |
-| 배터리 잔럵 (pilot) | 30~100% | | |
+| 배터리 잔량 (pilot) | 30~100% | | |
 | 배터리 잔량 (formal 에너지) | 30~90% | | |
 | unplugged + DISCHARGING | 필수 | | |
 
@@ -162,15 +162,15 @@ NPU는 보통 INT8을 요구한다. 현재 코드는 `require(precision == FLOAT
 | 항목 | 설정 |
 |---|---|
 | 비행기 모드 | ON |
-| 와이파이 | ON (무선 adb용, 비행기 모드 켜의 들다시 켜) |
-| 무선 디버깅 | 켜고 mDNS 햭목으로 연결 |
+| 와이파이 | ON (무선 adb용, 비행기 모드 켠 뒤 다시 켬) |
+| 무선 디버깅 | 켜고 mDNS 항목으로 연결 |
 | 화면 밝기 | 고정 (값: ____) |
-| 케이스 | 제거 / 첩용 (____) |
-| 거치 | 폊폊한 면에 화면 위로 |
+| 케이스 | 제거 / 착용 (____) |
+| 거치 | 평평한 면에 화면 위로 |
 | 충전 | 분리 |
-| 주보 온도 | ____ ℃ |
+| 주변 온도 | ____ ℃ |
 
-> 두 기기를 동시에 연결하면 `adb disconnect` 후 하나씩. 세션 순서: 비행기모드 → 와이파이 → 무선디버깅 → `adb connect` → 로건.
+> 두 기기를 동시에 연결하면 `adb disconnect` 후 하나씩. 세션 순서: 비행기모드 → 와이파이 → 무선디버깅 → `adb connect` → 로거.
 
 ---
 
@@ -180,14 +180,14 @@ NPU는 보통 INT8을 요구한다. 현재 코드는 `require(precision == FLOAT
       (`com.example.d1check.permission.READ_RUN_CONTEXT`가 `protectionLevel="signature"`)
 - [ ] `minSdk 24` / `targetSdk 37` / `compileSdk 37`이 S26 Android 버전과 맞는가?
 - [ ] `/sdcard/Android/data/com.example.d1check.benchmarkrunner/files/runs/` 에 `adb shell ls`로 접근되는가?
-      (안 되면 `run-asc 폴백 경로 확인 — debuggable 빌드 필요)
+      (안 되면 `run-as` 폴백 경로 확인 — debuggable 빌드 필요)
 - [ ] `adb shell dumpsys thermalservice`가 권한 없이 실행되는가?
 
 ---
 
 ## 8. 최소 동작 확인 (smoke)
 
-기기 정보를 다 채웠으면, **코드를 고치기 전에** 기존 스택 그대로 한 번 돌렬서 어디서 깨지는지 본다.
+기기 정보를 다 채웠으면, **코드를 고치기 전에** 기존 스택 그대로 한 번 돌려서 어디서 깨지는지 본다.
 
 ```powershell
 python tools/d1_logger_v4.py --serial <S26-IP:PORT> clear
@@ -201,7 +201,7 @@ python tools/d1_logger_v4.py analyze results/S26_smoke/<run_id>
 
 | 확인 | 예상 | 실제 |
 |---|---|---|
-| `raw/thermalservice.jsonl` `parse_status` | `ok`여야 정상. `missing_sensor`멸 §2 문제 | |
+| `raw/thermalservice.jsonl` `parse_status` | `ok`여야 정상. `missing_sensor`면 §2 문제 | |
 | `merged/summary.json` `formal_gpu_valid` | CPU run이면 `null` (정상) | |
 | GPU run에서 `formal_gpu_valid` | **`false`** (기기 하드코딩 때문) | |
 | `delegate_evidence.full_delegate` | GPU run에서 `true`여야 함 | |
@@ -214,8 +214,7 @@ python tools/d1_logger_v4.py analyze results/S26_smoke/<run_id>
 
 1. 이 문서를 커밋한다 (원본 로그 포함)
 2. `A24_TO_S26_PORTING.md`의 각 항목에 S26 실제값을 채운다
-3. **9/18 단계0 회은
-**에 올릴 것:
+3. **9/18 단계0 회의**에 올릴 것:
    - S26 NPU 실행 경로 확정 여부
-   - 자원·티어 정의역 (3자원 ç 3티어 중 실제 지원되는 츸)
-   - 조민�7�님과의 분담
+   - 자원·티어 정의역 (3자원 × 3티어 중 실제 지원되는 칸)
+   - 조민규님과의 분담
