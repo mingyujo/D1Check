@@ -1,0 +1,206 @@
+===== 1. APEX modules containing "neural" =====
+ 
+===== 2. libneuralnetworks.so search =====
+-rw-r--r-- 1 system system 4823528 1970-01-01 09:00 /apex/com.android.neuralnetworks/lib64/libneuralnetworks.so
+/system/lib64/libneuralnetworks_packageinfo.so
+ 
+===== 3. public.libraries.txt entries =====
+# See https://android.googlesource.com/platform/ndk/+/main/docs/PlatformApis.md
+libAIHDR_core.camera.samsung.so
+libAIHRWrapper.camera.samsung.so
+libAIHR_ERAW_Wrapper.camera.samsung.so
+libAIISP10.camera.samsung.so
+libAIISP10Tuning.camera.samsung.so
+libAIQSolution_MPI.camera.samsung.so
+libAPPE_core.camera.samsung.so
+libBayerAIPhoto.camera.samsung.so
+libBayerAIPhotoTuning.camera.samsung.so
+libBayerSR10.camera.samsung.so
+libBayerSR10Tuning.camera.samsung.so
+libEGL.so
+libGLESv1_CM.so
+libGLESv2.so
+libGLESv3.so
+libHRSegmenter_v1.camera.samsung.so
+libLocalTM_wrapper.camera.samsung.so
+libMultiFrameProcessing30.camera.samsung.so
+libOpenCL.so
+libOpenMAXAL.so
+libOpenSLES.so
+libPersonal_capture.camera.samsung.so
+libRS.so
+libSemanticMap_v1.camera.samsung.so
+libTetraSR10.camera.samsung.so
+libTetraSR10Tuning.camera.samsung.so
+libUniversal_seg_wrapper.camera.samsung.so
+libaaudio.so
+libaisemanticsegmentation.arcsoft.so
+libamidi.so
+libandroid.so
+libbayeraiphoto_wrapper_v1.camera.samsung.so
+libbinder_ndk.so
+libc.so
+libcamera2ndk.so
+libclang_rt.hwasan-aarch64-android.so 64 nopreload
+libdigital_tele_scope.arcsoft.so
+libdigital_tele_scope_rawsr.arcsoft.so
+libdl.so
+libdtsr_wrapper_v1.camera.samsung.so
+libdualfusion.arcsoft.so
+libenn_public_api_cpp.so
+libenn_public_api_cpp_lib.so
+libenn_user.samsung_slsi.so
+libenn_user_lib.so
+libicu.so
+libicui18n.so
+libicuuc.so
+libjnigraphics.so
+liblog.so
+libm.so
+libmediandk.so
+libnativehelper.so
+libnativewindow.so
+libneuralnetworks.so nopreload
+libsecsuperresolution_wrapper_v1.camera.samsung.so
+libstdc++.so
+libsync.so
+libtetra_hybrid_mf_zoom.arcsoft.so
+libtetra_llzoom.arcsoft.so
+libtetra_super_shot.arcsoft.so
+libtetra_super_shot_er.arcsoft.so
+libtrifusion.arcsoft.so
+libvulkan.so
+libwebviewchromium_plat_support.so
+libz.so
+ 
+===== 4. vendor libs matching enn / npu / neural / litert =====
+libenn_common_utils.so
+libenn_cpu_operators.so
+libenn_engine.so
+libenn_engine_lib.so
+libenn_model.so
+libenn_public_api_cpp.so
+libenn_public_api_cpp_lib.so
+libenn_user.samsung_slsi.so
+libenn_user_driver_cpu.so
+libenn_user_driver_gpu.so
+libenn_user_driver_gpu_lib.so
+libenn_user_driver_unified.so
+libenn_user_lib.so
+libenn_wrapper.so
+libhdraid.npu.arcsoft.so
+sensors.inputvirtual.so
+vendor.samsung.hardware.sysinput-V2-ndk.so
+vendor.samsung_slsi.hardware.enn_aidl-V1-ndk.so
+android.hardware.input.common-V1-ndk.so
+android.hardware.input.processor-V1-ndk.so
+android.hardware.tv.input-V3-ndk.so
+android.hardware.tv.input@1.0.so
+com.android.server.inputflinger-ndk.so
+libenn_wrapper_system.so
+libinput.so
+libinputflinger.so
+libinputprocessor.so
+libinputreporter.so
+libinputservice.so
+libneural.snap.samsung.so
+libneuralnetworks_packageinfo.so
+libstatslog_inputflinger.so
+libuinputcommand_jni.so
+vendor.samsung_slsi.hardware.enn_aux@1.0.so
+ 
+===== 5. NPU device nodes =====
+crw-------  1 system               system                10,  85 2026-09-09 11:10 dsp_throughput
+crw-------  1 system               system                10,  84 2026-09-09 11:10 dsp_throughput_max
+drwxr-xr-x  2 root                 root                      240 2026-09-09 11:10 input
+crw-------  1 root                 root                 505,   4 2026-09-09 11:10 memlog-4-npu-fil
+crw-------  1 system               system                10,  71 2026-09-09 11:10 npu0_throughput
+crw-------  1 system               system                10,  70 2026-09-09 11:10 npu0_throughput_max
+crw-------  1 system               system                10,  69 2026-09-09 11:10 npu1_throughput
+crw-------  1 system               system                10,  68 2026-09-09 11:10 npu1_throughput_max
+crw-------  1 system               system                10, 100 2026-09-09 11:10 npu_throughput
+crw-------  1 system               system                10,  98 2026-09-09 11:10 npu_throughput_max
+crw-------  1 root                 root                  10,  55 2026-09-09 11:10 npucon_throughput
+crw-------  1 root                 root                  10,  54 2026-09-09 11:10 npucon_throughput_max
+crw-rw----  1 uhid                 uhid                  10, 223 2026-09-09 11:10 uinput
+crw-------  1 root                 root                  10,  65 2026-09-09 11:10 unpu_throughput
+crw-------  1 root                 root                  10,  64 2026-09-09 11:10 unpu_throughput_max
+ 
+===== 6. NPU related props =====
+[debug.stagefright.c2inputsurface]: [-1]
+[init.svc.sec-sysinput-aidl]: [running]
+[persist.device_config.nnapi_native.current_feature_level]: [7]
+[persist.device_config.nnapi_native.telemetry_enable]: [false]
+ 
+===== 7. HAL services matching neural / nn =====
+19	SemInputDeviceManagerService: [com.samsung.android.hardware.secinputdev.ISemInputDeviceManager]
+216	input: [android.hardware.input.IInputManager]
+217	input_method: [com.android.internal.view.IInputMethodManager]
+218	inputflinger: [android.os.IInputFlinger]
+437	vendor.samsung.hardware.sysinput.ISehSysInputDev/default: [vendor.samsung.hardware.sysinput.ISehSysInputDev]
+ 
+===== 8. Play / on-device AI packages =====
+package:com.android.companiondevicemanager
+package:com.google.android.overlay.gmsconfig.asi
+package:com.google.android.ondevicepersonalization.services
+package:com.google.android.gms.location.history
+package:com.google.android.overlay.gmsconfig.geotz
+package:com.samsung.android.app.taskedge
+package:com.google.android.gms.supervision
+package:com.google.android.gms
+package:com.android.companiondevicemanager.auto_generated_characteristics_rro
+package:com.samsung.android.inputshare
+package:com.samsung.android.bixby.ondevice.kokr
+package:com.samsung.android.aicore
+package:com.android.inputdevices
+package:com.samsung.android.bixby.ondevice.enus
+package:com.samsung.android.app.clipboardedge
+package:com.google.android.aicore
+package:com.google.android.overlay.gmsconfig.gsa
+package:com.google.android.overlay.gmsconfig.common
+ 
+===== 9. battery current sanity (still plugged) =====
+Current Battery Service state:
+  USB powered: true
+  Max charging current: 0
+ Time when the latest updated value of the Max charging current was sent via battery changed broadcast: 0
+  Max charging voltage: 0
+  Charge counter: 3334500
+  status: 2
+  level: 78
+  voltage: 4216
+ Time when the latest updated value of the voltage was sent via battery changed broadcast: 0
+ The last voltage value sent via the battery changed broadcast: 4215
+  Capacity level: -1
+  batteryCurrentEvent: 0
+  current now: 428906
+  charge counter: 3334500
+LLB CURRENT: YEAR2026M9D9
+  mSavedFullStatusDuration: [6233]
+  mSavedFullStatusDurationHigh: [1692]
+  mSavedFullStatusDurationLow: [4472]
+09-09 11:10:46.690  [SS][BattInfo]DischargeLevelData efsValue:9911    
+09-09 11:10:46.690  [SS][BattInfo]FullStatusUsageData efsValue:6181    
+09-09 11:10:46.691  [SS][BattInfo]FullStatusUsageDataHigh efsValue:1683    
+09-09 11:10:46.691  [SS][BattInfo]FullStatusUsageDataLow efsValue:4430    
+09-13 13:45:00.970  Sending ACTION_BATTERY_CHANGED: level:80, status:3, health:2, remain:0, ac:false, usb:false, wireless:false, pogo:false, misc:0x10000, charge_type:0, charger_type:0, voltage:4204, temperature:250, online:1, charging_status:0, cycle_count:0, current_avg:-25000, ps:false, hvc:false, current_event:0x40000000, mcc:0, mcv:0, cc:3428550, present:true, scale:100, technology:Li-ion, protection:0
+09-13 14:01:57.629  Sending ACTION_BATTERY_CHANGED: level:79, status:3, health:2, remain:0, ac:false, usb:false, wireless:false, pogo:false, misc:0x10000, charge_type:0, charger_type:0, voltage:4200, temperature:244, online:1, charging_status:0, cycle_count:0, current_avg:-25000, ps:false, hvc:false, current_event:0x40000000, mcc:0, mcv:0, cc:3420000, present:true, scale:100, technology:Li-ion, protection:0
+09-13 14:05:33.912  Sending ACTION_BATTERY_CHANGED: level:79, status:3, health:2, remain:0, ac:false, usb:false, wireless:false, pogo:false, misc:0x10000, charge_type:0, charger_type:0, voltage:4152, temperature:259, online:1, charging_status:0, cycle_count:0, current_avg:-628125, ps:false, hvc:false, current_event:0x40000000, mcc:0, mcv:0, cc:3407175, present:true, scale:100, technology:Li-ion, protection:0
+09-13 14:07:06.098  Sending ACTION_BATTERY_CHANGED: level:79, status:3, health:2, remain:0, ac:false, usb:false, wireless:false, pogo:false, misc:0x10000, charge_type:0, charger_type:0, voltage:4145, temperature:273, online:1, charging_status:0, cycle_count:0, current_avg:-643750, ps:false, hvc:false, current_event:0x40000000, mcc:0, mcv:0, cc:3385800, present:true, scale:100, technology:Li-ion, protection:0
+09-13 14:08:07.524  Sending ACTION_BATTERY_CHANGED: level:78, status:3, health:2, remain:0, ac:false, usb:false, wireless:false, pogo:false, misc:0x10000, charge_type:0, charger_type:0, voltage:4118, temperature:281, online:1, charging_status:0, cycle_count:0, current_avg:-673437, ps:false, hvc:false, current_event:0x40000000, mcc:0, mcv:0, cc:3377250, present:true, scale:100, technology:Li-ion, protection:0
+09-13 14:12:13.331  Sending ACTION_BATTERY_CHANGED: level:78, status:3, health:2, remain:0, ac:false, usb:false, wireless:false, pogo:false, misc:0x10000, charge_type:0, charger_type:0, voltage:4154, temperature:293, online:1, charging_status:0, cycle_count:0, current_avg:-438281, ps:false, hvc:false, current_event:0x40000000, mcc:0, mcv:0, cc:3347325, present:true, scale:100, technology:Li-ion, protection:0
+09-13 14:13:45.481  Sending ACTION_BATTERY_CHANGED: level:77, status:3, health:2, remain:0, ac:false, usb:false, wireless:false, pogo:false, misc:0x10000, charge_type:0, charger_type:0, voltage:4152, temperature:296, online:1, charging_status:0, cycle_count:0, current_avg:-410156, ps:false, hvc:false, current_event:0x40000000, mcc:0, mcv:0, cc:3334500, present:true, scale:100, technology:Li-ion, protection:0
+09-13 14:14:16.128  Sending ACTION_BATTERY_CHANGED: level:77, status:3, health:2, remain:0, ac:false, usb:false, wireless:false, pogo:false, misc:0x10000, charge_type:0, charger_type:0, voltage:4076, temperature:297, online:1, charging_status:0, cycle_count:0, current_avg:-499218, ps:false, hvc:false, current_event:0x40000000, mcc:0, mcv:0, cc:3330225, present:true, scale:100, technology:Li-ion, protection:0
+09-13 14:15:48.340  Sending ACTION_BATTERY_CHANGED: level:77, status:3, health:2, remain:0, ac:false, usb:false, wireless:false, pogo:false, misc:0x10000, charge_type:0, charger_type:0, voltage:4157, temperature:304, online:1, charging_status:0, cycle_count:0, current_avg:-467187, ps:false, hvc:false, current_event:0x40000000, mcc:0, mcv:0, cc:3321675, present:true, scale:100, technology:Li-ion, protection:0
+09-13 14:21:37.611  Sending ACTION_BATTERY_CHANGED: level:76, status:3, health:2, remain:0, ac:false, usb:false, wireless:false, pogo:false, misc:0x10000, charge_type:0, charger_type:0, voltage:4148, temperature:308, online:1, charging_status:0, cycle_count:0, current_avg:-416406, ps:false, hvc:false, current_event:0x40000000, mcc:0, mcv:0, cc:3291750, present:true, scale:100, technology:Li-ion, protection:0
+09-13 14:29:18.393  Sending ACTION_BATTERY_CHANGED: level:76, status:3, health:2, remain:0, ac:false, usb:false, wireless:false, pogo:false, misc:0x10000, charge_type:0, charger_type:0, voltage:4150, temperature:296, online:1, charging_status:0, cycle_count:0, current_avg:-129687, ps:false, hvc:false, current_event:0x40000000, mcc:0, mcv:0, cc:3257550, present:true, scale:100, technology:Li-ion, protection:0
+09-13 14:34:09.522  Sending ACTION_BATTERY_CHANGED: level:76, status:3, health:2, remain:0, ac:false, usb:false, wireless:false, pogo:false, misc:0x10000, charge_type:0, charger_type:0, voltage:4157, temperature:278, online:1, charging_status:0, cycle_count:0, current_avg:-16406, ps:false, hvc:false, current_event:0x40000000, mcc:0, mcv:0, cc:3257550, present:true, scale:100, technology:Li-ion, protection:0
+09-13 14:41:34.970  Sending ACTION_BATTERY_CHANGED: level:76, status:3, health:2, remain:0, ac:false, usb:false, wireless:false, pogo:false, misc:0x10000, charge_type:0, charger_type:0, voltage:4157, temperature:263, online:1, charging_status:0, cycle_count:0, current_avg:-105468, ps:false, hvc:false, current_event:0x40000000, mcc:0, mcv:0, cc:3253275, present:true, scale:100, technology:Li-ion, protection:0
+09-13 14:42:05.949  Sending ACTION_BATTERY_CHANGED: level:75, status:3, health:2, remain:0, ac:false, usb:false, wireless:false, pogo:false, misc:0x10000, charge_type:0, charger_type:0, voltage:4146, temperature:272, online:1, charging_status:0, cycle_count:0, current_avg:-346093, ps:false, hvc:false, current_event:0x40000000, mcc:0, mcv:0, cc:3249000, present:true, scale:100, technology:Li-ion, protection:0
+09-13 14:44:58.358  Sending ACTION_BATTERY_CHANGED: level:75, status:2, health:2, remain:7818, ac:false, usb:true, wireless:false, pogo:false, misc:0x10000, charge_type:2, charger_type:0, voltage:4143, temperature:279, online:4, charging_status:0, cycle_count:0, current_avg:-191406, ps:false, hvc:false, current_event:0x10000000, mcc:0, mcv:0, cc:3236175, present:true, scale:100, technology:Li-ion, protection:0
+09-13 14:45:10.149  Sending ACTION_BATTERY_CHANGED: level:75, status:2, health:2, remain:7818, ac:false, usb:true, wireless:false, pogo:false, misc:0x10000, charge_type:2, charger_type:0, voltage:4155, temperature:279, online:4, charging_status:0, cycle_count:0, current_avg:82812, ps:false, hvc:false, current_event:0x4, mcc:0, mcv:0, cc:3236175, present:true, scale:100, technology:Li-ion, protection:0
+09-13 14:45:20.384  Sending ACTION_BATTERY_CHANGED: level:75, status:2, health:2, remain:7818, ac:false, usb:true, wireless:false, pogo:false, misc:0x10000, charge_type:2, charger_type:0, voltage:4160, temperature:280, online:4, charging_status:0, cycle_count:0, current_avg:251562, ps:false, hvc:false, current_event:0x0, mcc:0, mcv:0, cc:3236175, present:true, scale:100, technology:Li-ion, protection:0
+09-13 14:52:51.064  Sending ACTION_BATTERY_CHANGED: level:76, status:2, health:2, remain:7724, ac:false, usb:true, wireless:false, pogo:false, misc:0x10000, charge_type:2, charger_type:0, voltage:4184, temperature:279, online:4, charging_status:0, cycle_count:0, current_avg:353906, ps:false, hvc:false, current_event:0x0, mcc:0, mcv:0, cc:3244725, present:true, scale:100, technology:Li-ion, protection:0
+09-13 14:59:20.195  Sending ACTION_BATTERY_CHANGED: level:77, status:2, health:2, remain:7404, ac:false, usb:true, wireless:false, pogo:false, misc:0x10000, charge_type:2, charger_type:0, voltage:4201, temperature:276, online:4, charging_status:0, cycle_count:0, current_avg:422656, ps:false, hvc:false, current_event:0x0, mcc:0, mcv:0, cc:3287475, present:true, scale:100, technology:Li-ion, protection:0
+09-13 15:05:28.824  Sending ACTION_BATTERY_CHANGED: level:78, status:2, health:2, remain:7083, ac:false, usb:true, wireless:false, pogo:false, misc:0x10000, charge_type:2, charger_type:0, voltage:4215, temperature:272, online:4, charging_status:0, cycle_count:0, current_avg:419531, ps:false, hvc:false, current_event:0x0, mcc:0, mcv:0, cc:3330225, present:true, scale:100, technology:Li-ion, protection:0
+  mSavedBatteryMaxCurrent: 5315625
