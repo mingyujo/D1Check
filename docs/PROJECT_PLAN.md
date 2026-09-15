@@ -174,6 +174,8 @@ B0/B1의 자원은 평가 자료와 분리된 캘리브레이션으로 사전 �
 
 ### CALIB-01. 실제 이미지 종단간 지연과 마감시간 고정
 
+- CALIB-01A: [CALIBRATION_PROTOCOL.md](CALIBRATION_PROTOCOL.md)에 현재 production 경로와 gap, 측정 event, pilot 규모, 변동성 중단, deadline·workload 사전 규칙을 정의한다.
+- CALIB-01B: 승인된 gap만 production 경로에 구현하고 host/device 검증으로 event·provenance 계약을 확인한다. 현재 tensor-only benchmark를 이미지 종단간 측정으로 재해석하지 않는다.
 - A24와 S26에서 동일한 실제 사용자 이미지 경로의 이미지 읽기, 전처리, 큐 진입·대기, `Interpreter.run()`, 후처리, 긴급 결과 제공 및 일반 결과 저장 시점을 측정한다.
 - CPU/GPU별 cold·warm 경로, 초기화·전환 비용과 output-ready 종단간 지연을 구분한다. NPU는 capability와 실제 실행 검증을 통과한 경우에만 별도 후보로 측정한다.
 - 측정 전 입력 집합, 반복 수, 화면·충전·열 초기조건, 결과 상태와 시계 기준을 고정한다. 기존 80슬롯의 순수 추론 지연과 합치지 않는다.
@@ -267,8 +269,8 @@ request_results.csv에는 도착 요청 전체를 남기며 완료·기한 초�
 
 ## 11. 지금 시작할 작업
 
-1. CALIB-01 측정 계약을 작성한다. 측정 항목은 이미지 읽기, 전처리, 큐 진입·대기, 추론, 후처리, 긴급 output-ready, 일반 결과 저장과 전체 종단간 시간이다.
-2. A24와 S26에서 소규모 calibration을 수행한 뒤 긴급·일반 절대 마감시간을 사전 고정한다.
-3. 그 뒤 FIFO·긴급 우선 큐와 요청별 로그를 구현하고 일반 작업 처리 후보를 비교한다.
+1. CALIB-01B에서 승인된 실제 이미지 경로와 request-level 계측을 구현한다.
+2. A24와 S26에서 CALIBRATION_PROTOCOL에 따른 소규모 calibration을 수행한 뒤 긴급·일반 절대 마감시간을 사전 고정한다.
+3. 그 뒤 고정 arrival trace로 FIFO·긴급 우선 및 일반 작업 처리 후보를 비교한다.
 
 현재 결론: **DEFINE-01의 공식 사용 시나리오와 KPI 계약을 기준으로 CALIB-01을 먼저 수행한다. 기존 80슬롯 결과는 자원 우열의 기기별 차이를 보여 주는 기반 자료이며 종단간 마감시간의 직접 근거로 사용하지 않는다.**

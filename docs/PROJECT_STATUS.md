@@ -1,8 +1,8 @@
 # D1Check 현재 상태
 
-- 갱신: 2026-09-15 / `DEFINE-01` 완료 및 `CALIB-01` 전환
-- 현재 작업 ID: `CALIB-01` — 실제 사용자 이미지 경로의 종단간 지연 측정과 절대 마감시간 고정
-- 현재 단계: 측정 계약 준비. 구현·측정·실기기 실행은 아직 시작하지 않음.
+- 갱신: 2026-09-15 / `CALIB-01A` 설계 완료
+- 현재 작업 ID: `CALIB-01B` — 실제 이미지 종단간 경로와 request-level 계측 구현
+- 현재 단계: 구현 승인 전. 측정·ADB·실기기 실행은 아직 시작하지 않음.
 - 기준 저장소: branch `master`, HEAD `1c9d759589e06b48a30e8f2311e3141af8ad4da6` (`Add persistent D1Check project context`)
 - upstream: 로컬 `origin/master`도 `1c9d759589e06b48a30e8f2311e3141af8ad4da6`; ahead 0, behind 0
 - 증거 원칙: 아래 경로는 이번 작업에서 존재만 직접 확인했다. 과거 보고서의 PASS를 현재 코드 검증으로 승격하지 않는다.
@@ -12,7 +12,7 @@
 - `SETUP-01` 문서 커밋: `1c9d759589e06b48a30e8f2311e3141af8ad4da6`. 정확히 `AGENTS.md`와 docs 문서 3개를 추가함.
 - push 근거: `refs/remotes/origin/master` reflog에 2026-09-15 22:04:59 +0900 `update by push`가 기록됐고 HEAD와 동일함. 현재 네트워크 제한으로 `git ls-remote` 재조회는 실패했으나 완료 당시 Git push 기록은 확인됨.
 - diagnostic protocol v2 변경: 부모 커밋 `6312a061c76e35a11b53d2d00e32d075ab64f5ab`에 커밋되어 위 HEAD와 함께 `origin/master` tracking ref에 포함됨.
-- 현재 index: staged 0개. 문서 갱신 완료 시 tracked unstaged 7개(기존 사용자 변경 4개 + docs 3개), untracked 9개.
+- 현재 index: staged 0개. 문서 갱신 완료 시 tracked unstaged 7개(기존 사용자 변경 4개 + docs 3개), untracked 10개(기존 보고서 9개 + 신규 calibration 문서 1개).
 - 기존 tracked unstaged: `.idea/deploymentTargetSelector.xml`, `.idea/gradle.xml`, `.idea/misc.xml`, `app/src/main/java/com/example/d1check/MainActivity.kt`.
 - 기존 untracked: `DIAGNOSTIC_V2_*_RESULT.txt` 9개. 이 문서 작업의 커밋 대상이 아니다.
 - 위 기존 사용자 변경, 소스, 보고서, 실험 데이터는 수정·복원·삭제하지 않는다.
@@ -37,6 +37,7 @@
 - `DIAGNOSTIC-V2-01`: completed.
 - `AUDIT-S26-01`: completed.
 - `DEFINE-01`: completed. 공식 범위·사용 시나리오·완료 시점·KPI·목적함수 우선순위·자원 범위를 문서화했다.
+- `CALIB-01A`: completed. [CALIBRATION_PROTOCOL.md](CALIBRATION_PROTOCOL.md)에 production 경로 감사와 최소 측정 protocol을 설계했다.
 
 ## DEFINE-01 공식 계약
 
@@ -58,7 +59,9 @@
 
 ## 현재 작업과 완료 조건
 
-긴급·일반 절대 마감시간 상태는 `calibration_pending`이다. `CALIB-01` 완료 조건은 A24와 S26에서 실제 사용자 이미지 경로의 종단간 구성요소를 소규모로 측정하고, 입력·시계·반복·열 조건과 함께 기록한 뒤 평가 결과를 보기 전에 절대 마감시간과 요청 도착 규칙을 사전 고정하는 것이다.
+긴급·일반 절대 마감시간 상태는 `calibration_pending`이다. `CALIB-01B`는 현재 없는 photo picker, 이미지 I/O·전처리, 요청 큐, 후처리/output-ready, 결과 저장과 request-level event를 production 흐름에 구현하고 host/device 검증까지 통과해야 완료된다. 이 구현 없이는 실기기 calibration을 시작하지 않는다.
+
+현재 재사용 가능한 경로는 run 단위 CPU/GPU 선택, 모델 mmap, Interpreter 초기화·공식 run timing, telemetry/thermal, artifact provenance다. 현재 benchmark 입력은 synthetic tensor이므로 실제 이미지 종단간 지연 근거가 아니다.
 
 ## 미확인 증거
 
@@ -70,16 +73,17 @@
 
 ## 다음 행동
 
-1. CALIB-01의 실제 이미지 입력 집합, 시계, 반복 수, cold/warm 및 열 초기조건을 고정한다.
-2. 이미지 읽기·전처리·큐 대기·추론·후처리·긴급 output-ready·일반 결과 저장 시점을 A24와 S26에서 측정한다.
-3. 측정 결과를 근거로 절대 마감시간과 요청 도착 규칙을 평가 전에 고정한다.
+1. CALIB-01B 변경 범위와 event/storage schema를 승인하고 production 이미지 경로를 구현한다.
+2. host/JVM/Robolectric 검증으로 timestamp·terminal state·provenance와 CPU/GPU 경로를 확인한다.
+3. 그 뒤 A24·S26에서 protocol pilot을 실행하고 안정 조건 충족 시 deadline과 arrival trace를 고정한다.
 
 ## 최신 검증 기록
 
 - 2026-09-15 | `SETUP-01` | `master` / `1c9d759589e06b48a30e8f2311e3141af8ad4da6`, 기존 미커밋 변경 있음 | log, commit name-status, tracking ref, reflog, ahead/behind 확인 | 문서 설치·커밋·push 완료. live 원격 재조회는 네트워크 제한으로 미확인.
 - 2026-09-15 | `DEFINE-01` | PROJECT_PLAN·PROJECT_STATUS·DECISIONS | 사용자 지시에 따라 공식 범위·시나리오·완료·KPI·사전적 목적함수·자원 계약 확정. 마감시간은 `calibration_pending`. 구현·테스트·실기기 실행 없음.
+- 2026-09-15 | `CALIB-01A` | production Kotlin/host 도구 읽기 전용 감사 | 이미지 선택·I/O·전처리·큐·후처리/output-ready·결과 저장 경로 부재 확인. CALIBRATION_PROTOCOL 설계. 구현·테스트·빌드·ADB·실기기 실행 없음.
 - 구현 완료, host 검증, 실기기 검증, 효과 입증 상태를 서로 구분한다.
 
 ## 재개 요청
 
-`PROJECT_STATUS.md의 CALIB-01 완료 조건을 확인하고 실제 이미지 종단간 지연 측정 계약을 작성해줘. 아직 구현·실기기 실행은 하지 마.`
+`CALIBRATION_PROTOCOL.md와 PROJECT_STATUS.md의 CALIB-01B 범위를 검토하고 구현 계획을 확정해줘. 승인 전에는 production 코드나 실기기를 변경하지 마.`
