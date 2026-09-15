@@ -1,0 +1,39 @@
+S26 formal 측정 완주 (80/80) + GPU 게이트 패치 2건
+
+CPU(1/2/4 스레드) x duty(25/50/75/100) + GPU x duty, 조건당 5반복 = 80런.
+런 구조 baseline 60s / load 60s / cooling 중앙 350s(stable 정책), 총 10.4시간.
+GPU 프로파일 gpu-fp32-strict-v1.
+
+전 런 completed/valid/formal_gate passed. 제외 0, GPU 20런 모두 formal_gpu_valid=true.
+정확도 preflight 3종 통과: 합성 argmax 32/32, 대표입력 argmax 40/40 mismatch 0,
+과제정확도 Top-1 75% / Top-5 95%, 델타 0.0.
+
+결과 1 — 스레드 축이 평평하다. 4스레드가 1스레드 대비 +1.4%로 오히려 미세 악화.
+A24의 0.114% 평탄성이 다른 SoC에서 재현됐다. 스레드는 제어 레버가 아니다.
+
+결과 2 — S26은 GPU가 CPU보다 1.06~1.20배 빠르다. A24에서 GPU가 3.196배
+느렸던 것과 부호가 반대다. 자원 선택의 정답이 기기마다 뒤집힌다.
+
+결과 3 — GPU는 duty에 둔감하다(25->100에서 -0.9%). CPU는 같은 구간에서
++12.1% 악화. 부하가 오를수록 GPU 이득이 커진다.
+
+결과 4 — GPU가 모든 duty에서 AP 온도 상승이 낮다. duty 75에서 +9.1 vs +14.0 C.
+지연과 열의 교환이 아니라 GPU가 양쪽을 지배한다.
+
+패치 1 (s26-compat-list-advisory-v1)
+LiteRT 1.4.2 내장 호환목록에 Exynos 2600이 없어 GPU 런이 항상 setup에서 죽었다.
+치명적 check()를 기록 후 진행으로 바꿨다. 실제 판정은 GpuDelegate() 생성자와
+delegate_evidence.full_delegate(31/31 노드)가 한다.
+
+패치 2 (s26-formal-gpu-device-list-v1)
+formal_gpu_valid의 SM-A245 하드코딩을 검증 기기 목록으로 일반화했다.
+나머지 8개 조건은 그대로다. gpu_compatibility_list_supported=false 와
+formal_gpu_compat_list_override=true 를 런마다 기록해 A24와의 비대칭을 공시한다.
+
+사전등록 임계값은 완화하지 않았다. 대표입력 동등성 실패는 GPU 프로파일을
+gpu-fp32-strict-v1 로 바꿔 해결했다.
+
+에너지는 energy_measurement_status=raw_unverified 로 J/mWh 를 산출하지 않았다.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01KkPjZSM4J56Vn9zfSfkc3h

@@ -1,0 +1,100 @@
+{
+  "schema_version": 2,
+  "run_id": "fa3a5ee8-985b-49a5-bb28-029890e4ce62",
+  "statistics_group": "basic",
+  "resource": "CPU",
+  "model_id": "mobilenet_v1_1.0_224_float",
+  "model_sha256": "D95B3C5EA86750CEF882FA867CA357DFE4D265D0B80B67E83277A0BDA310CFBB",
+  "gpu_file_validation": "pass",
+  "gpu_file_event_count": 1028,
+  "runner_session_id": "554ebea7-0701-4cd9-b55b-0aba20bcdc27",
+  "runner_session_count": 1,
+  "telemetry_sample_count": 231,
+  "thermalservice_sample_count": 229,
+  "thermalservice_error_count": 0,
+  "thermal_coverage": {
+    "attempt_count": 229,
+    "valid_sample_count": 229,
+    "error_count": 0,
+    "invalid_sample_count": 0,
+    "valid_ratio": 1.0,
+    "load_valid_sample_count": 10,
+    "passes_formal_requirement": true
+  },
+  "load_start_mono_ns": 375320716823344,
+  "load_end_mono_ns": 375330388317133,
+  "run_start_mono_ns": 375228703446781,
+  "run_stop_mono_ns": 375459008534906,
+  "run_envelope_validation": "pass",
+  "delegate_evidence": {
+    "replaced_nodes": 31,
+    "total_nodes": 31,
+    "gpu_delegate_created": false,
+    "gpu_delegate_type": null,
+    "gpu_delegate_kernel_count": null,
+    "failure_or_fallback_evidence": [],
+    "full_delegate": false,
+    "verification": "unverified",
+    "note": "No conclusive full-delegation evidence; this does not prove CPU fallback."
+  },
+  "gpu_delegate_profile": null,
+  "profile_consistency_validation": {
+    "status": "not_applicable",
+    "valid": true,
+    "resource": "CPU",
+    "failure_reasons": [],
+    "comparisons": {
+      "config": "not_applicable",
+      "accuracy_preflight": "not_applicable"
+    }
+  },
+  "formal_gpu_valid": null,
+  "analysis_warnings": [],
+  "inference_latency": {
+    "count": 1000,
+    "mean_ms": 9.65516998,
+    "median_ms": 9.6544725,
+    "p95_ms": 10.5998654,
+    "min_ms": 6.108711,
+    "max_ms": 12.320391
+  },
+  "duty_cycle": {
+    "requested_duty_cycle_percent": 100,
+    "duty_cycle_period_ns": 10000000000,
+    "target_active_duration_ns": null,
+    "actual_active_duration_ns": null,
+    "actual_idle_duration_ns": null,
+    "achieved_duty_cycle_percent": null,
+    "completed_duty_cycle_count": null,
+    "duty_cycle_active_overrun_ns": null,
+    "completed_inference_count": 1000,
+    "termination_reason": "count_complete"
+  },
+  "accuracy_preflight": {
+    "schema_version": 2,
+    "validation_scope": "timed_run_does_not_execute_preflight",
+    "status": "not_run",
+    "synthetic_numerical_check": {
+      "status": "not_run"
+    },
+    "representative_input_equivalence": {
+      "status": "not_run"
+    },
+    "task_accuracy_check": {
+      "status": "not_run"
+    },
+    "formal_gate_result": {
+      "status": "not_run"
+    },
+    "note": "experiment-level preflight is attached by the host; timed loop is isolated"
+  },
+  "energy_measurement": {
+    "status": "raw_unverified",
+    "current_raw_policy": "raw_unscaled_unit_unverified",
+    "voltage_available": null,
+    "current_unit_verified": false,
+    "charge_counter_unit_verified": false,
+    "calculation_performed": false,
+    "note": "no J or mWh result is produced before unit calibration"
+  }
+}

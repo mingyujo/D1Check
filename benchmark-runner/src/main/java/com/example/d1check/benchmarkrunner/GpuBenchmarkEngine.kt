@@ -8,8 +8,8 @@ import com.example.d1check.contract.D1RunContextClient
 import com.example.d1check.contract.RunContextMismatchException
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
-import org.tensorflow.lite.gpu.CompatibilityList
 import org.tensorflow.lite.gpu.GpuDelegate
+import com.example.d1check.benchmarkrunner.s26.GpuCompatibilityPolicy
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.concurrent.locks.LockSupport
@@ -38,6 +38,7 @@ class GpuBenchmarkEngine(private val context: Context) {
         var runTermination: RunTermination? = null
         var terminationReason: TerminationReason? = null
         var pilotSafety: PilotSafetyCheck? = null
+        var gpuCompatibility: GpuCompatibilityPolicy.Verdict? = null
         var dutyCycleTracker: DutyCycleTracker? = null
 
         try {
@@ -68,10 +69,9 @@ class GpuBenchmarkEngine(private val context: Context) {
                 ResourceTarget.CPU -> options.setNumThreads(checkNotNull(config.cpuThreads))
                 ResourceTarget.GPU -> {
                     gpuDelegate = telemetry.measured("delegate_init", "setup") {
-                        val compatibility = CompatibilityList()
-                        check(compatibility.isDelegateSupportedOnThisDevice) {
-                            "GPU delegate is not supported; GPU experiment cannot start"
-                        }
+                        // S26: LiteRT 1.4.2's compatibility list predates this SoC.
+                        // Record its verdict; let GpuDelegate() be the real test.
+                        gpuCompatibility = GpuCompatibilityPolicy.evaluate()
                         GpuDelegate(config.gpuDelegateProfile.options())
                     }
                     options.addDelegate(checkNotNull(gpuDelegate))
@@ -287,6 +287,10 @@ class GpuBenchmarkEngine(private val context: Context) {
             "duty_cycle_active_overrun_ns" to dutyMetrics?.activeOverrunNs,
             "accuracy_preflight" to accuracyPreflight,
             "energy_measurement" to energyMeasurement,
+        )
+        outputConfig.putAll(
+            gpuCompatibility?.metadata()
+                ?: GpuCompatibilityPolicy.notEvaluatedMetadata()
         )
         outputConfig.putAll(
             pilotSafety?.metadata() ?: mapOf(
