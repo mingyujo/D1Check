@@ -18,9 +18,23 @@ import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONObject
 import java.util.concurrent.Executors
 
+internal fun interface BenchmarkLauncher {
+    fun launch(config: RunConfig, completed: (BenchmarkResult) -> Unit)
+}
+
 class MainActivity : AppCompatActivity() {
     private val executor = Executors.newSingleThreadExecutor { runnable ->
         Thread(runnable, GpuBenchmarkEngine.THREAD_NAME)
+    }
+    internal var benchmarkLauncher = BenchmarkLauncher { config, completed ->
+        executor.execute {
+            val result = try {
+                GpuBenchmarkEngine(applicationContext).execute(config)
+            } catch (error: Throwable) {
+                BenchmarkResult(false, "${error.javaClass.simpleName}: ${error.message}", null)
+            }
+            completed(result)
+        }
     }
     private lateinit var resourceSpinner: Spinner
     private lateinit var countMode: RadioButton
@@ -137,12 +151,7 @@ class MainActivity : AppCompatActivity() {
         startButton.isEnabled = false
         probeNnapiButton.isEnabled = false
         statusView.text = "Baseline 60 seconds. No GPU load has started yet."
-        executor.execute {
-            val result = try {
-                GpuBenchmarkEngine(applicationContext).execute(config)
-            } catch (error: Throwable) {
-                BenchmarkResult(false, "${error.javaClass.simpleName}: ${error.message}", null)
-            }
+        benchmarkLauncher.launch(config) { result ->
             runOnUiThread {
                 BenchmarkExecutionGate.release()
                 startButton.isEnabled = true
@@ -214,49 +223,8 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val values = buildMap<String, Any?> {
-            if (intent.hasExtra(AutomationIntentParser.EXTRA_AUTO_START)) {
-                put(
-                    AutomationIntentParser.EXTRA_AUTO_START,
-                    intent.getBooleanExtra(AutomationIntentParser.EXTRA_AUTO_START, false),
-                )
-            }
-            listOf(
-                AutomationIntentParser.EXTRA_RESOURCE,
-                AutomationIntentParser.EXTRA_LIMIT_MODE,
-                AutomationIntentParser.EXTRA_RUN_ID,
-                AutomationIntentParser.EXTRA_COMMAND_ID,
-                AutomationIntentParser.EXTRA_EXPERIMENT_MODE,
-                AutomationIntentParser.EXTRA_GPU_PROFILE,
-            ).forEach { key ->
-                if (intent.hasExtra(key)) put(key, intent.getStringExtra(key))
-            }
-            listOf(
-                AutomationIntentParser.EXTRA_CPU_THREADS,
-                AutomationIntentParser.EXTRA_INFERENCE_COUNT,
-                AutomationIntentParser.EXTRA_WARMUP_COUNT,
-                AutomationIntentParser.EXTRA_DUTY_CYCLE_PERCENT,
-            ).forEach { key ->
-                if (intent.hasExtra(key)) put(key, intent.getIntExtra(key, Int.MIN_VALUE))
-            }
-            if (intent.hasExtra(AutomationIntentParser.EXTRA_DURATION_S)) {
-                put(
-                    AutomationIntentParser.EXTRA_DURATION_S,
-                    intent.getLongExtra(AutomationIntentParser.EXTRA_DURATION_S, Long.MIN_VALUE),
-                )
-            }
-            if (intent.hasExtra(AutomationIntentParser.EXTRA_DUTY_CYCLE_PERIOD_S)) {
-                put(
-                    AutomationIntentParser.EXTRA_DUTY_CYCLE_PERIOD_S,
-                    intent.getFloatExtra(
-                        AutomationIntentParser.EXTRA_DUTY_CYCLE_PERIOD_S,
-                        Float.NaN,
-                    ),
-                )
-            }
-        }
         val request = try {
-            AutomationIntentParser.parse(values)
+            AutomationIntentParser.parse(intent)
         } catch (error: IllegalArgumentException) {
             statusView.text = "Invalid automation request: ${error.message}"
             return

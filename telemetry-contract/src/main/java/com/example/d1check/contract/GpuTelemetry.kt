@@ -89,8 +89,17 @@ class GpuTelemetry private constructor(
     maxInferenceSpans: Int,
     maxLifecycleEvents: Int,
     val runnerSessionId: String,
+    private val outputDirectoryName: String,
+    private val protocolVersion: Int?,
+    private val diagnosticSessionId: String?,
+    private val requestedTraceMode: String?,
 ) {
     private val buffer = GpuEventBuffer(maxInferenceSpans, maxLifecycleEvents)
+    private val diagnosticRecordIdentity = DiagnosticRecordIdentity(
+        protocolVersion,
+        diagnosticSessionId,
+        requestedTraceMode,
+    )
 
     val inferenceCount: Int get() = buffer.inferenceCount
     val hasInferenceCapacity: Boolean get() = buffer.hasInferenceCapacity
@@ -117,7 +126,7 @@ class GpuTelemetry private constructor(
             BufferedGpuRecord(event, phase, status, monoNs, monoNs, -1L, 0, detail)
         )
         if (emitNow) {
-            Log.i(TAG, encode(linkedMapOf(
+            val liveRecord = linkedMapOf<String, Any?>(
                 "schema_version" to SCHEMA_VERSION,
                 "source" to "gpu",
                 "event" to event,
@@ -128,7 +137,9 @@ class GpuTelemetry private constructor(
                 "boot_id" to run.bootId,
                 "mono_ns" to monoNs,
                 "detail" to detail,
-            )))
+            )
+            putDiagnosticIdentity(liveRecord)
+            Log.i(TAG, encode(liveRecord))
         }
     }
 
@@ -171,10 +182,28 @@ class GpuTelemetry private constructor(
         modelSha256: String,
         config: Map<String, Any?>,
     ): GpuFlushResult {
+        validateOutputIdentity()
+        val directory = context.getExternalFilesDir(outputDirectoryName)
+            ?: File(context.filesDir, outputDirectoryName)
+        return flushAfterRunToDirectory(directory, resource, modelId, modelSha256, config)
+    }
+
+    internal fun flushAfterRunToDirectory(
+        directory: File,
+        resource: String,
+        modelId: String,
+        modelSha256: String,
+        config: Map<String, Any?>,
+    ): GpuFlushResult {
+        validateOutputIdentity()
         val lifecycle = buffer.lifecycleRecordsAfterRun()
-        val directory = context.getExternalFilesDir("runs") ?: File(context.filesDir, "runs")
         check(directory.exists() || directory.mkdirs()) { "Cannot create runner log directory" }
-        val file = createOutputFile(directory, run.runId, runnerSessionId)
+        val file = createOutputFile(
+            directory,
+            run.runId,
+            runnerSessionId,
+            requireCanonicalIds = protocolVersion == 2,
+        )
         val eventCount = lifecycle.size + buffer.inferenceCount + 2
         var sequence = 0L
 
@@ -195,10 +224,11 @@ class GpuTelemetry private constructor(
             "model_sha256" to modelSha256,
         )
         metadata.putAll(config)
+        putDiagnosticIdentity(metadata)
         BufferedWriter(OutputStreamWriter(FileOutputStream(file), StandardCharsets.UTF_8)).use { writer ->
             writer.writeLine(encode(metadata))
             for (record in lifecycle) {
-                writer.writeLine(encode(linkedMapOf(
+                val lifecycleRecord = linkedMapOf<String, Any?>(
                     "schema_version" to SCHEMA_VERSION,
                     "source" to "gpu",
                     "event" to record.event,
@@ -215,13 +245,15 @@ class GpuTelemetry private constructor(
                     "batch_size" to record.batchSize.takeIf { it > 0 },
                     "detail" to record.detail,
                     "wall_ms" to wallMs(record.endNs),
-                )))
+                )
+                putDiagnosticIdentity(lifecycleRecord)
+                writer.writeLine(encode(lifecycleRecord))
             }
             for (position in 0 until buffer.inferenceCount) {
                 val startNs = buffer.inferenceStartAt(position)
                 val endNs = buffer.inferenceEndAt(position)
                 val batchSize = buffer.inferenceBatchSizeAt(position)
-                writer.writeLine(encode(linkedMapOf(
+                val inferenceRecord = linkedMapOf<String, Any?>(
                     "schema_version" to SCHEMA_VERSION,
                     "source" to "gpu",
                     "event" to if (batchSize == 1) "inference" else "batch",
@@ -237,7 +269,9 @@ class GpuTelemetry private constructor(
                     "inference_index" to buffer.inferenceIndexAt(position),
                     "batch_size" to batchSize,
                     "wall_ms" to wallMs(endNs),
-                )))
+                )
+                putDiagnosticIdentity(inferenceRecord)
+                writer.writeLine(encode(inferenceRecord))
             }
             val lastMonoNs = maxOf(
                 lifecycle.maxOfOrNull { it.endNs } ?: run.startedElapsedNs,
@@ -278,6 +312,7 @@ class GpuTelemetry private constructor(
                 "accuracy_preflight",
                 "energy_measurement",
             ).forEach { key -> footer[key] = config[key] }
+            putDiagnosticIdentity(footer)
             writer.writeLine(encode(footer))
         }
         file.useLines { lines -> lines.forEach { Log.i(TAG, it) } }
@@ -286,6 +321,17 @@ class GpuTelemetry private constructor(
 
     private fun wallMs(monoNs: Long): Long =
         run.startedWallMs + (monoNs - run.startedElapsedNs) / 1_000_000L
+
+    private fun validateOutputIdentity() {
+        if (protocolVersion == 2) {
+            requireCanonicalUuid(run.runId, "run_id")
+            requireCanonicalUuid(runnerSessionId, "runner_session_id")
+        }
+    }
+
+    private fun putDiagnosticIdentity(record: MutableMap<String, Any?>) {
+        diagnosticRecordIdentity.applyTo(record)
+    }
 
     private fun encode(values: Map<String, Any?>): String {
         val json = JSONObject()
@@ -318,9 +364,34 @@ class GpuTelemetry private constructor(
         fun fileName(runId: String, runnerSessionId: String): String =
             "gpu-events-$runId-$runnerSessionId.jsonl"
 
-        fun createOutputFile(directory: File, runId: String, runnerSessionId: String): File {
+        internal fun requireCanonicalUuid(value: String, label: String): String {
+            val canonical = try {
+                UUID.fromString(value).toString()
+            } catch (error: IllegalArgumentException) {
+                throw IllegalArgumentException("$label must be a canonical UUID", error)
+            }
+            require(canonical == value) { "$label must be a canonical UUID" }
+            return canonical
+        }
+
+        fun createOutputFile(
+            directory: File,
+            runId: String,
+            runnerSessionId: String,
+            requireCanonicalIds: Boolean = false,
+        ): File {
+            val safeRunId = if (requireCanonicalIds) {
+                requireCanonicalUuid(runId, "run_id")
+            } else runId
+            val safeSessionId = if (requireCanonicalIds) {
+                requireCanonicalUuid(runnerSessionId, "runner_session_id")
+            } else runnerSessionId
             check(directory.exists() || directory.mkdirs()) { "Cannot create runner log directory" }
-            return File(directory, fileName(runId, runnerSessionId)).also {
+            val allowedRoot = directory.canonicalFile
+            return File(directory, fileName(safeRunId, safeSessionId)).also {
+                check(it.canonicalFile.parentFile == allowedRoot) {
+                    "runner output escaped the allowed output root"
+                }
                 check(it.createNewFile()) { "runner output already exists: ${it.absolutePath}" }
             }
         }
@@ -330,11 +401,81 @@ class GpuTelemetry private constructor(
             maxInferenceSpans: Int = DEFAULT_MAX_INFERENCE_SPANS,
             maxLifecycleEvents: Int = DEFAULT_MAX_LIFECYCLE_EVENTS,
             runnerSessionId: String = UUID.randomUUID().toString(),
-        ): GpuTelemetry = GpuTelemetry(
-            D1RunContextClient.requireActive(context),
-            maxInferenceSpans,
-            maxLifecycleEvents,
-            runnerSessionId,
-        )
+            outputDirectoryName: String = "runs",
+            protocolVersion: Int? = null,
+            diagnosticSessionId: String? = null,
+            requestedTraceMode: String? = null,
+        ): GpuTelemetry {
+            val run = D1RunContextClient.requireActive(context)
+            if (protocolVersion == 2) {
+                requireCanonicalUuid(run.runId, "run_id")
+                requireCanonicalUuid(runnerSessionId, "runner_session_id")
+            }
+            return GpuTelemetry(
+                run,
+                maxInferenceSpans,
+                maxLifecycleEvents,
+                runnerSessionId,
+                outputDirectoryName.also {
+                require(it == "runs" || it == "diagnostics-v2") {
+                    "unsupported runner output directory: $it"
+                }
+                },
+                protocolVersion,
+                diagnosticSessionId,
+                requestedTraceMode,
+            )
+        }
+
+        internal fun connectForTest(
+            run: D1RunContext,
+            runnerSessionId: String,
+            protocolVersion: Int? = null,
+            diagnosticSessionId: String? = null,
+            requestedTraceMode: String? = null,
+        ): GpuTelemetry {
+            if (protocolVersion == 2) {
+                requireCanonicalUuid(run.runId, "run_id")
+                requireCanonicalUuid(runnerSessionId, "runner_session_id")
+            }
+            return GpuTelemetry(
+                run,
+                DEFAULT_MAX_INFERENCE_SPANS,
+                DEFAULT_MAX_LIFECYCLE_EVENTS,
+                runnerSessionId,
+                if (protocolVersion == 2) "diagnostics-v2" else "runs",
+                protocolVersion,
+                diagnosticSessionId,
+                requestedTraceMode,
+            )
+        }
+    }
+}
+
+internal data class DiagnosticRecordIdentity(
+    val protocolVersion: Int?,
+    val diagnosticSessionId: String?,
+    val requestedTraceMode: String?,
+) {
+    init {
+        val enabled = protocolVersion != null || diagnosticSessionId != null ||
+            requestedTraceMode != null
+        require(!enabled || (
+            protocolVersion == 2 &&
+                diagnosticSessionId != null &&
+                requestedTraceMode in setOf("off", "on")
+        )) { "diagnostic record identity must be complete and valid" }
+        if (protocolVersion == 2) {
+            GpuTelemetry.requireCanonicalUuid(
+                checkNotNull(diagnosticSessionId), "diagnostic_session_id"
+            )
+        }
+    }
+
+    fun applyTo(record: MutableMap<String, Any?>) {
+        if (protocolVersion == null) return
+        record["protocol_version"] = protocolVersion
+        record["diagnostic_session_id"] = diagnosticSessionId
+        record["requested_trace_mode"] = requestedTraceMode
     }
 }

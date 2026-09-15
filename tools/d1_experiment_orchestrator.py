@@ -26,7 +26,44 @@ from typing import Any, Callable, Iterable
 import uuid
 
 
-VERSION = "0.8"
+VERSION = "0.10"
+RESULT_PROVENANCE_SCHEMA_VERSION = 1
+BASE_RESULT_ARTIFACT_PATHS = {
+    "capture_metadata": "metadata.json",
+    "summary": "merged/summary.json",
+    "finalized_runner_metadata": "merged/runner_metadata.json",
+}
+DIAGNOSTIC_TRACE_METADATA_KEYS = (
+    "diagnostic_perfetto_enabled",
+    "requested_trace_mode",
+    "diagnostic_perfetto_started",
+    "diagnostic_trace_filename",
+    "diagnostic_trace_session_id",
+    "diagnostic_trace_size_bytes",
+    "diagnostic_trace_sha256",
+    "diagnostic_perfetto_process_exited",
+    "diagnostic_perfetto_control_mode",
+    "diagnostic_perfetto_session_key",
+    "diagnostic_perfetto_start_pid",
+    "diagnostic_perfetto_control_results",
+    "diagnostic_perfetto_readiness_semantics",
+    "diagnostic_perfetto_pid_control",
+    "diagnostic_perfetto_config_write_into_file",
+    "diagnostic_perfetto_config_duration_ms",
+)
+DETACHED_SUCCESS_RETURN_CODES = {
+    "pre_start_is_detached": 2,
+    "config_push": 0,
+    "start": 0,
+    "ready_is_detached": 0,
+    "stop": 0,
+    "post_stop_is_detached": 2,
+    "cleanup_files": 0,
+}
+DETACHED_READINESS_SEMANTICS = (
+    "detached_session_exists_and_is_reattachable_not_all_data_sources_acknowledged"
+)
+DETACHED_PID_CONTROL = "not_applicable_detached_session"
 BLOCK_DESIGN_NAME = "randomized_complete_block"
 BLOCK_DESIGN_VERSION = 1
 MATCHED_MATRIX_WARNING_CODE = "matched_global_reference_long_matrix"
@@ -39,6 +76,9 @@ D1_STOP_ACTION = f"{D1_PACKAGE}.action.STOP"
 RUNNER_PACKAGE = "com.example.d1check.benchmarkrunner"
 RUNNER_ACTIVITY = f"{RUNNER_PACKAGE}/.MainActivity"
 REMOTE_RUNNER_DIRECTORY = f"/sdcard/Android/data/{RUNNER_PACKAGE}/files/runs"
+REMOTE_DIAGNOSTIC_V2_DIRECTORY = (
+    f"/sdcard/Android/data/{RUNNER_PACKAGE}/files/diagnostics-v2"
+)
 ACCURACY_SCHEMA_VERSION = 2
 LEGACY_ACCURACY_SCHEMA_VERSION = 1
 ACCURACY_COMPARATOR_VERSION = "output-equivalence-v3"
@@ -66,8 +106,15 @@ MANIFEST_NAME = "experiment_manifest.json"
 RUNNER_SCHEMA_VERSION = 2
 BASELINE_SECONDS = 60
 REMOTE_FALLBACK_GRACE_SECONDS = 30
+
+
+def runner_hard_timeout_seconds(duration_s: int, warmup: int) -> int:
+    return duration_s + 180 + min(warmup * 2, 3600)
+
+
 REMOTE_POLL_INTERVAL_SECONDS = 15
 REMOTE_TAIL_LINES = 128
+PROCESS_EOF_WAIT_TIMEOUT_S = 1.0
 THERMAL_STATUS_RE = re.compile(r"Thermal Status:\s*(-?\d+)", re.IGNORECASE)
 HAL_TEMPERATURE_RE = re.compile(
     r"Temperature\{(?P<body>[^}]*)\}", re.IGNORECASE
@@ -832,6 +879,27 @@ def build_plan(
     return entries
 
 
+def deterministic_slot_id(condition_id: Any, repetition: Any) -> str:
+    if not isinstance(condition_id, str) or not condition_id:
+        raise OrchestratorError("slot condition_id is missing or invalid")
+    if (
+        not isinstance(repetition, int)
+        or isinstance(repetition, bool)
+        or repetition < 1
+    ):
+        raise OrchestratorError("slot repetition is missing or invalid")
+    return f"{condition_id}-r{repetition:03d}"
+
+
+def is_canonical_uuid(value: Any) -> bool:
+    if not isinstance(value, str):
+        return False
+    try:
+        return str(uuid.UUID(value)) == value
+    except (ValueError, AttributeError):
+        return False
+
+
 def runnable_slots(manifest: dict[str, Any]) -> list[dict[str, Any]]:
     """Resume checkpoint rule: a completed slot is immutable and never scheduled again."""
     return [slot for slot in manifest["runs"] if slot.get("status") != "completed"]
@@ -922,6 +990,16 @@ def upgrade_and_validate_manifest_plan(
                 slot[key] = value
                 upgraded = True
 
+        if "diagnostic_protocol" in config:
+            expected_slot_id = deterministic_slot_id(
+                slot.get("condition_id"), slot.get("repetition")
+            )
+            if slot.get("slot_id") != expected_slot_id:
+                raise OrchestratorError(
+                    f"manifest slot_id is not deterministic: expected={expected_slot_id!r} "
+                    f"actual={slot.get('slot_id')!r}"
+                )
+
     expected = {
         (
             condition["condition_id"],
@@ -975,6 +1053,9 @@ def runner_intent_arguments(
     duty_cycle_percent: int = 100,
     duty_cycle_period_seconds: float = 10.0,
     gpu_profile_id: str = DEFAULT_GPU_PROFILE,
+    diagnostic_protocol_v2: bool = False,
+    diagnostic_session_id: str | None = None,
+    diagnostic_perfetto: str = "off",
 ) -> list[str]:
     arguments = [
         "shell", "am", "start", "-W", "-n", RUNNER_ACTIVITY,
@@ -993,10 +1074,32 @@ def runner_intent_arguments(
         "--ei", "d1_warmup_count", str(warmup),
         "--es", "d1_run_id", run_id,
         "--es", "d1_command_id", command_id,
-        "--es", "d1_experiment_mode", "BASIC",
+        "--es", "d1_experiment_mode", "DIAGNOSTIC" if diagnostic_protocol_v2 else "BASIC",
         "--ei", "d1_duty_cycle_percent", str(duty_cycle_percent),
         "--ef", "d1_duty_cycle_period_s", str(duty_cycle_period_seconds),
     ]
+    if diagnostic_protocol_v2:
+        if diagnostic_session_id is None:
+            raise ValueError("diagnostic protocol v2 requires diagnostic_session_id")
+        if diagnostic_perfetto not in {"off", "on"}:
+            raise ValueError("diagnostic_perfetto must be off or on")
+        trace_filename = (
+            f"d1check-{diagnostic_session_id}.perfetto-trace"
+            if diagnostic_perfetto == "on" else None
+        )
+        arguments += [
+            "--ei", "d1_protocol_version", "2",
+            "--es", "d1_diagnostic_session_id", diagnostic_session_id,
+            "--es", "d1_diagnostic_perfetto", diagnostic_perfetto,
+            "--ez", "d1_diagnostic_perfetto_started",
+            "true" if diagnostic_perfetto == "on" else "false",
+        ]
+        if trace_filename is not None:
+            arguments += ["--es", "d1_diagnostic_trace_filename", trace_filename]
+    elif diagnostic_session_id is not None:
+        raise ValueError("diagnostic_session_id is only valid for protocol v2")
+    elif diagnostic_perfetto != "off":
+        raise ValueError("diagnostic_perfetto=on requires protocol v2")
     return arguments
 
 
@@ -2043,6 +2146,11 @@ class ProcessLines:
                 continue
             if item is self._END:
                 code = self.process.poll()
+                if code is None:
+                    try:
+                        code = self.process.wait(timeout=PROCESS_EOF_WAIT_TIMEOUT_S)
+                    except subprocess.TimeoutExpired:
+                        code = self.process.poll()
                 raise OrchestratorError(
                     f"{self.name} stdout EOF while waiting for {description}; rc={code}; "
                     f"tail={list(self.lines)[-10:]}"
@@ -2161,9 +2269,15 @@ def _is_remote_missing(result: subprocess.CompletedProcess[str]) -> bool:
     return "no such file or directory" in detail
 
 
-def probe_remote_runner(adb: AdbClient, run_id: str) -> RemoteRunnerProbe:
+def probe_remote_runner(
+    adb: AdbClient,
+    run_id: str,
+    remote_directory: str = REMOTE_RUNNER_DIRECTORY,
+    expected_diagnostic_session_id: str | None = None,
+    expected_trace_mode: str | None = None,
+) -> RemoteRunnerProbe:
     listing = adb.run(
-        ["shell", "ls", "-1", REMOTE_RUNNER_DIRECTORY],
+        ["shell", "ls", "-1", remote_directory],
         timeout=20,
         check=False,
     )
@@ -2186,12 +2300,12 @@ def probe_remote_runner(adb: AdbClient, run_id: str) -> RemoteRunnerProbe:
     if not matches:
         return RemoteRunnerProbe("not_found")
     if len(matches) != 1:
-        paths = [f"{REMOTE_RUNNER_DIRECTORY}/{filename}" for filename, _ in matches]
+        paths = [f"{remote_directory}/{filename}" for filename, _ in matches]
         raise RemoteRunnerAmbiguityError(
             f"multiple remote runner files for run_id={run_id}: {paths}"
         )
     filename, expected_session_id = matches[0]
-    remote_path = f"{REMOTE_RUNNER_DIRECTORY}/{filename}"
+    remote_path = f"{remote_directory}/{filename}"
     tail = adb.run(
         ["shell", "tail", "-n", str(REMOTE_TAIL_LINES), remote_path],
         timeout=20,
@@ -2236,6 +2350,17 @@ def probe_remote_runner(adb: AdbClient, run_id: str) -> RemoteRunnerProbe:
             raise RemoteRunnerValidationError(
                 f"remote runner session mismatch path={remote_path}: "
                 f"{event.get('runner_session_id')!r}"
+            )
+        if expected_diagnostic_session_id is not None and (
+            event.get("protocol_version") != 2
+            or event.get("diagnostic_session_id") != expected_diagnostic_session_id
+            or event.get("requested_trace_mode") != expected_trace_mode
+        ):
+            raise RemoteRunnerValidationError(
+                f"remote runner diagnostic identity mismatch path={remote_path}: "
+                f"protocol={event.get('protocol_version')!r} "
+                f"session={event.get('diagnostic_session_id')!r} "
+                f"trace_mode={event.get('requested_trace_mode')!r}"
             )
         sequence = event.get("sequence")
         if not isinstance(sequence, int) or isinstance(sequence, bool) or sequence < 0:
@@ -2578,6 +2703,230 @@ def planned_metadata_checks(
     return checks
 
 
+def diagnostic_result_identity_checks(
+    events: list[dict[str, Any]],
+    metadata: dict[str, Any],
+    footer: dict[str, Any],
+    summary: dict[str, Any],
+    finalized_runner_metadata: dict[str, Any],
+    expected_session_id: str,
+    expected_trace_mode: str,
+) -> dict[str, bool]:
+    return {
+        "diagnostic_protocol_version": metadata.get("protocol_version") == 2,
+        "diagnostic_session_id": (
+            metadata.get("diagnostic_session_id") == expected_session_id
+        ),
+        "diagnostic_identity_footer": (
+            footer.get("protocol_version") == 2
+            and footer.get("diagnostic_session_id") == expected_session_id
+            and footer.get("requested_trace_mode") == expected_trace_mode
+        ),
+        "diagnostic_identity_all_records": bool(events) and all(
+            event.get("protocol_version") == 2
+            and event.get("diagnostic_session_id") == expected_session_id
+            and event.get("requested_trace_mode") == expected_trace_mode
+            for event in events
+        ),
+        "diagnostic_trace_mode": (
+            metadata.get("diagnostic_perfetto_enabled") == (expected_trace_mode == "on")
+            and metadata.get("requested_trace_mode") == expected_trace_mode
+            and summary.get("requested_trace_mode") == expected_trace_mode
+            and summary.get("statistics_group")
+            == f"diagnostic_v2_trace_{expected_trace_mode}"
+        ),
+        "diagnostic_trace_identity": (
+            summary.get("diagnostic_trace_session_id") == expected_session_id
+        ),
+        "diagnostic_finalized_identity": (
+            finalized_runner_metadata.get("protocol_version") == 2
+            and finalized_runner_metadata.get("diagnostic_session_id")
+            == expected_session_id
+            and finalized_runner_metadata.get("requested_trace_mode")
+            == expected_trace_mode
+        ),
+    }
+
+
+def _regular_contained_artifact(
+    run_dir: Path,
+    relative_path: str,
+    label: str,
+) -> Path:
+    root = run_dir.resolve()
+    path = run_dir / Path(relative_path)
+    if path.is_symlink() or path.parent.is_symlink():
+        raise OrchestratorError(f"{label} must not be a symlink")
+    try:
+        resolved = path.resolve(strict=True)
+    except (FileNotFoundError, OSError) as error:
+        raise OrchestratorError(f"{label} is missing: {path}") from error
+    try:
+        resolved.relative_to(root)
+    except ValueError as error:
+        raise OrchestratorError(f"{label} escaped run_dir") from error
+    if not resolved.is_file():
+        raise OrchestratorError(f"{label} is not a regular contained file")
+    if resolved.stat().st_size <= 0:
+        raise OrchestratorError(f"{label} is empty")
+    return resolved
+
+
+def validate_diagnostic_trace_artifact(
+    run_dir: Path,
+    capture: dict[str, Any],
+    summary: dict[str, Any],
+    finalized_runner_metadata: dict[str, Any],
+    expected_session_id: str,
+    expected_trace_mode: str,
+) -> dict[str, Any]:
+    trace_keys = DIAGNOSTIC_TRACE_METADATA_KEYS
+    expected_filename = (
+        f"d1check-{expected_session_id}.perfetto-trace"
+        if expected_trace_mode == "on" else None
+    )
+    expected_relative = (
+        f"diagnostics/{expected_filename}" if expected_filename is not None else None
+    )
+    control_metadata: dict[str, Any]
+    if expected_trace_mode == "off":
+        control_metadata = {
+            "diagnostic_perfetto_control_mode": None,
+            "diagnostic_perfetto_session_key": None,
+            "diagnostic_perfetto_start_pid": None,
+            "diagnostic_perfetto_control_results": {},
+            "diagnostic_perfetto_readiness_semantics": None,
+            "diagnostic_perfetto_pid_control": None,
+            "diagnostic_perfetto_config_write_into_file": None,
+            "diagnostic_perfetto_config_duration_ms": None,
+        }
+    else:
+        expected_session_key = f"d1check-{expected_session_id}"
+        if capture.get("diagnostic_perfetto_control_mode") != "detached_session":
+            raise OrchestratorError(
+                "trace-on capture lacks detached-session control mode"
+            )
+        if capture.get("diagnostic_perfetto_session_key") != expected_session_key:
+            raise OrchestratorError(
+                "Perfetto detached session key does not match diagnostic session"
+            )
+        start_pid = capture.get("diagnostic_perfetto_start_pid")
+        if start_pid is not None:
+            raise OrchestratorError(
+                "Perfetto PID must be null for detached-session control"
+            )
+        if capture.get(
+            "diagnostic_perfetto_readiness_semantics"
+        ) != DETACHED_READINESS_SEMANTICS:
+            raise OrchestratorError("Perfetto detached readiness semantics are missing")
+        if capture.get("diagnostic_perfetto_pid_control") != DETACHED_PID_CONTROL:
+            raise OrchestratorError("Perfetto detached PID control must be not_applicable")
+        if capture.get("diagnostic_perfetto_config_write_into_file") is not True:
+            raise OrchestratorError("Perfetto config write_into_file evidence is invalid")
+        config_duration_ms = capture.get("diagnostic_perfetto_config_duration_ms")
+        if (
+            isinstance(config_duration_ms, bool)
+            or not isinstance(config_duration_ms, int)
+            or config_duration_ms <= 0
+        ):
+            raise OrchestratorError("Perfetto config duration_ms evidence is invalid")
+        control_results = capture.get("diagnostic_perfetto_control_results")
+        if not isinstance(control_results, dict) or set(control_results) != set(
+            DETACHED_SUCCESS_RETURN_CODES
+        ):
+            raise OrchestratorError(
+                "Perfetto detached-session control evidence is incomplete"
+            )
+        for stage, expected_returncode in DETACHED_SUCCESS_RETURN_CODES.items():
+            result = control_results.get(stage)
+            if not isinstance(result, dict) or (
+                result.get("status") != "completed"
+                or result.get("returncode") != expected_returncode
+            ):
+                raise OrchestratorError(
+                    f"Perfetto detached-session stage failed validation: {stage}"
+                )
+        control_metadata = {
+            "diagnostic_perfetto_control_mode": "detached_session",
+            "diagnostic_perfetto_session_key": expected_session_key,
+            "diagnostic_perfetto_start_pid": start_pid,
+            "diagnostic_perfetto_control_results": control_results,
+            "diagnostic_perfetto_readiness_semantics": DETACHED_READINESS_SEMANTICS,
+            "diagnostic_perfetto_pid_control": DETACHED_PID_CONTROL,
+            "diagnostic_perfetto_config_write_into_file": True,
+            "diagnostic_perfetto_config_duration_ms": config_duration_ms,
+        }
+    expected_metadata = {
+        "diagnostic_perfetto_enabled": expected_trace_mode == "on",
+        "requested_trace_mode": expected_trace_mode,
+        "diagnostic_perfetto_started": expected_trace_mode == "on",
+        "diagnostic_trace_filename": expected_filename,
+        "diagnostic_trace_session_id": expected_session_id,
+        "diagnostic_trace_size_bytes": None,
+        "diagnostic_trace_sha256": None,
+        "diagnostic_perfetto_process_exited": (
+            True if expected_trace_mode == "on" else None
+        ),
+        **control_metadata,
+    }
+    diagnostics_dir = run_dir / "diagnostics"
+    if diagnostics_dir.is_symlink():
+        raise OrchestratorError("diagnostics directory must not be a symlink")
+    if expected_trace_mode == "off":
+        unexpected = []
+        if diagnostics_dir.exists():
+            unexpected = [
+                path for path in diagnostics_dir.iterdir()
+                if path.name.endswith(".perfetto-trace")
+                or path.name.endswith(".perfetto-trace.part")
+            ]
+        if unexpected:
+            raise OrchestratorError(
+                f"trace-off result contains unexpected trace artifact: {unexpected[0]}"
+            )
+        for source_name, source in (
+            ("capture metadata", capture),
+            ("summary", summary),
+            ("finalized runner metadata", finalized_runner_metadata),
+        ):
+            actual = {key: source.get(key) for key in trace_keys}
+            if actual != expected_metadata:
+                raise OrchestratorError(
+                    f"trace-off {source_name} contains unexpected trace metadata"
+                )
+        return {
+            "present": False,
+            "path": None,
+            "size_bytes": None,
+            "sha256": None,
+        }
+
+    assert expected_relative is not None
+    trace_path = _regular_contained_artifact(
+        run_dir, expected_relative, "Perfetto trace"
+    )
+    size_bytes = trace_path.stat().st_size
+    digest = sha256_file(trace_path)
+    expected_metadata["diagnostic_trace_size_bytes"] = size_bytes
+    expected_metadata["diagnostic_trace_sha256"] = digest
+    for source_name, source in (
+        ("capture metadata", capture),
+        ("summary", summary),
+        ("finalized runner metadata", finalized_runner_metadata),
+    ):
+        actual = {key: source.get(key) for key in trace_keys}
+        if actual != expected_metadata:
+            raise OrchestratorError(
+                f"trace-on {source_name} does not match the actual Perfetto trace"
+            )
+    return {
+        "present": True,
+        "path": expected_relative,
+        "size_bytes": size_bytes,
+        "sha256": digest,
+    }
+
+
 def validate_result(
     run_dir: Path,
     resource: str,
@@ -2591,6 +2940,9 @@ def validate_result(
     duty_cycle_period_seconds: float = 10.0,
     expected_accuracy_preflight: dict[str, Any] | None = None,
     expected_gpu_profile: dict[str, Any] | None = None,
+    diagnostic_protocol_v2: bool = False,
+    expected_diagnostic_session_id: str | None = None,
+    expected_diagnostic_perfetto: str = "off",
 ) -> dict[str, Any]:
     summary = load_json(run_dir / "merged" / "summary.json")
     capture = load_json(run_dir / "metadata.json")
@@ -2743,12 +3095,115 @@ def validate_result(
             and energy.get("calculation_performed") is False
         ),
     }
+    if diagnostic_protocol_v2:
+        checks.pop("basic_capture")
+        runner_session_id = metadata.get("runner_session_id")
+        thread_diagnostics = metadata.get("thread_diagnostics")
+        finalized_runner_metadata_path = run_dir / "merged" / "runner_metadata.json"
+        finalized_runner_metadata = (
+            load_json(finalized_runner_metadata_path)
+            if finalized_runner_metadata_path.is_file() else {}
+        )
+        snapshot_statuses = {
+            snapshot.get("status")
+            for snapshot in (
+                thread_diagnostics.get("before_load", {}),
+                thread_diagnostics.get("after_load", {}),
+            )
+            if isinstance(snapshot, dict)
+        } if isinstance(thread_diagnostics, dict) else set()
+        checks.update(diagnostic_result_identity_checks(
+            events,
+            metadata,
+            footer,
+            summary,
+            finalized_runner_metadata,
+            str(expected_diagnostic_session_id),
+            expected_diagnostic_perfetto,
+        ))
+        try:
+            trace_artifact = validate_diagnostic_trace_artifact(
+                run_dir,
+                capture,
+                summary,
+                finalized_runner_metadata,
+                str(expected_diagnostic_session_id),
+                expected_diagnostic_perfetto,
+            )
+            trace_artifact_valid = True
+        except OrchestratorError:
+            trace_artifact = None
+            trace_artifact_valid = False
+        checks.update({
+            "diagnostic_runner_session_uuid": (
+                is_canonical_uuid(runner_session_id)
+                and runner_paths[0].name
+                == f"gpu-events-{run_id}-{runner_session_id}.jsonl"
+            ),
+            "runner_experiment_mode": (
+                str(metadata.get("experiment_mode", "")).upper() == "DIAGNOSTIC"
+            ),
+            "diagnostic_thread_evidence_recorded": (
+                isinstance(thread_diagnostics, dict)
+                and thread_diagnostics.get("collection_scope")
+                == "before_and_after_load_only_not_per_inference"
+                and isinstance(thread_diagnostics.get("before_load"), dict)
+                and isinstance(thread_diagnostics.get("after_load"), dict)
+                and snapshot_statuses <= {"ok", "partial", "unavailable"}
+                and len(snapshot_statuses) >= 1
+            ),
+            "diagnostic_readback_after_timer": (
+                isinstance(metadata.get("output_readback_evidence"), dict)
+                and metadata["output_readback_evidence"].get("status") == "passed"
+                and metadata["output_readback_evidence"].get(
+                    "performed_after_latency_timer"
+                ) is True
+                and metadata["output_readback_evidence"].get(
+                    "performed_after_load_end"
+                ) is True
+            ),
+            "diagnostic_cpu_options": (
+                isinstance(metadata.get("cpu_execution_profile"), dict)
+                and metadata["cpu_execution_profile"].get("requested_num_threads")
+                == cpu_threads
+                and metadata["cpu_execution_profile"].get(
+                    "interpreter_options_set_num_threads_applied"
+                ) is True
+                and metadata["cpu_execution_profile"].get("xnnpack_requested") is True
+                if resource == "CPU"
+                else metadata.get("cpu_execution_profile") is None
+            ),
+            "diagnostic_trace_result": (
+                summary.get("diagnostic_perfetto_started") is True
+                and summary.get("diagnostic_perfetto_process_exited") is True
+                and isinstance(summary.get("diagnostic_trace_size_bytes"), int)
+                and summary["diagnostic_trace_size_bytes"] > 0
+                and isinstance(summary.get("diagnostic_trace_sha256"), str)
+                and re.fullmatch(r"[0-9a-f]{64}", summary["diagnostic_trace_sha256"])
+                is not None
+                if expected_diagnostic_perfetto == "on"
+                else (
+                    summary.get("diagnostic_perfetto_started") is False
+                    and summary.get("diagnostic_trace_filename") is None
+                    and summary.get("diagnostic_trace_size_bytes") is None
+                    and summary.get("diagnostic_trace_sha256") is None
+                )
+            ),
+            "diagnostic_finalized_runner_metadata": (
+                checks["diagnostic_finalized_identity"]
+                and finalized_runner_metadata.get("diagnostic_trace_size_bytes")
+                == summary.get("diagnostic_trace_size_bytes")
+                and finalized_runner_metadata.get("diagnostic_trace_sha256")
+                == summary.get("diagnostic_trace_sha256")
+            ),
+            "diagnostic_trace_artifact": trace_artifact_valid,
+        })
     if mode == "formal":
         checks["formal_energy_eligible"] = metadata.get("formal_energy_eligible") is True
         if resource == "GPU":
             checks["formal_gpu_valid"] = summary.get("formal_gpu_valid") is True
     failed = [name for name, passed in checks.items() if not passed]
-    return {
+    result = {
         "valid": not failed,
         "checks": checks,
         "failed_checks": failed,
@@ -2756,6 +3211,9 @@ def validate_result(
         "runner_file": str(runner_paths[0]),
         "summary": summary,
     }
+    if diagnostic_protocol_v2:
+        result["trace_artifact"] = trace_artifact
+    return result
 
 
 def attach_accuracy_to_analyzer_summary(
@@ -2785,13 +3243,36 @@ class ExperimentOrchestrator:
         slot["steps"].append({"utc": utc_now(), "name": name, **details})
         self.save()
 
-    def _logger_command(self, command: str, *extra: str) -> list[str]:
+    def _logger_command(
+        self,
+        command: str,
+        *extra: str,
+        diagnostic_session_id: str | None = None,
+    ) -> list[str]:
         assert self.adb is not None and self.adb.serial is not None
-        return [
+        arguments = [
             sys.executable, str(self.logger_path),
             "--adb", self.adb.adb, "--serial", self.adb.serial,
             command, *extra,
         ]
+        if command == "capture" and self.args.diagnostic_protocol_v2:
+            if diagnostic_session_id is None:
+                raise OrchestratorError("diagnostic capture requires a fresh session id")
+            arguments += [
+                "--protocol-version", "2",
+                "--diagnostic-session-id", diagnostic_session_id,
+                "--diagnostic-perfetto", self.args.diagnostic_perfetto,
+            ]
+            if self.args.diagnostic_perfetto == "on":
+                arguments += [
+                    "--perfetto-duration-ms",
+                    str(
+                        runner_hard_timeout_seconds(
+                            self.args.duration, self.args.warmup
+                        ) * 1000
+                    ),
+                ]
+        return arguments
 
     @staticmethod
     def _run_host(command: list[str], timeout: float) -> subprocess.CompletedProcess[str]:
@@ -2812,6 +3293,227 @@ class ExperimentOrchestrator:
                 f"host command failed rc={result.returncode}: {command}; {detail[:1200]}"
             )
         return result
+
+    @staticmethod
+    def _canonical_slot_uuid(value: Any, label: str) -> str:
+        if not isinstance(value, str):
+            raise OrchestratorError(f"completed slot {label} is not a UUID string")
+        try:
+            normalized = str(uuid.UUID(value))
+        except (ValueError, AttributeError) as error:
+            raise OrchestratorError(f"completed slot {label} is not a UUID") from error
+        if normalized != value:
+            raise OrchestratorError(f"completed slot {label} is not canonical")
+        return normalized
+
+    def _validate_slot_result(self, slot: dict[str, Any]) -> dict[str, Any]:
+        expected_slot_id = deterministic_slot_id(
+            slot.get("condition_id"), slot.get("repetition")
+        )
+        if slot.get("slot_id") != expected_slot_id:
+            raise OrchestratorError(
+                f"completed slot_id differs from deterministic plan: {expected_slot_id}"
+            )
+        run_id = self._canonical_slot_uuid(slot.get("run_id"), "run_id")
+        command_id = self._canonical_slot_uuid(slot.get("command_id"), "command_id")
+        diagnostic_session_id = None
+        if self.args.diagnostic_protocol_v2:
+            diagnostic_session_id = self._canonical_slot_uuid(
+                slot.get("diagnostic_session_id"), "diagnostic_session_id"
+            )
+        run_dir_value = slot.get("run_dir")
+        if not isinstance(run_dir_value, str) or not run_dir_value:
+            raise OrchestratorError("completed slot run_dir is missing")
+        run_dir = Path(run_dir_value).resolve()
+        expected_run_dir = (self.runs_root.resolve() / run_id).resolve()
+        if run_dir != expected_run_dir or run_dir.parent != self.runs_root.resolve():
+            raise OrchestratorError("completed slot run_dir/run_id identity mismatch")
+        experiment_accuracy = self.manifest.get("accuracy_preflight")
+        if not isinstance(experiment_accuracy, dict):
+            experiment_accuracy = dict(self.manifest["config"]["accuracy_preflight"])
+        return validate_result(
+            run_dir,
+            slot["resource"],
+            slot["cpu_threads"],
+            self.args.duration,
+            self.args.warmup,
+            run_id,
+            command_id,
+            self.args.mode,
+            slot["duty_cycle_percent"],
+            self.args.duty_cycle_period_seconds,
+            experiment_accuracy,
+            gpu_profile(self.args.gpu_profile),
+            self.args.diagnostic_protocol_v2,
+            diagnostic_session_id,
+            self.args.diagnostic_perfetto,
+        )
+
+    def _result_provenance(
+        self,
+        slot: dict[str, Any],
+        validation: dict[str, Any],
+    ) -> dict[str, Any]:
+        run_dir = Path(str(slot["run_dir"])).resolve()
+        artifact_paths = {
+            name: run_dir / relative
+            for name, relative in BASE_RESULT_ARTIFACT_PATHS.items()
+        }
+        artifact_paths["runner_jsonl"] = Path(str(validation["runner_file"])).resolve()
+        if self.args.diagnostic_perfetto == "on":
+            artifact_paths["perfetto_trace"] = run_dir / (
+                f"diagnostics/d1check-{slot.get('diagnostic_session_id')}.perfetto-trace"
+            )
+        artifacts: dict[str, Any] = {}
+        for name, path in artifact_paths.items():
+            try:
+                relative = path.relative_to(run_dir)
+            except ValueError as error:
+                raise OrchestratorError("validated result artifact escaped run_dir") from error
+            path = _regular_contained_artifact(
+                run_dir, relative.as_posix(), f"validated result artifact {name}"
+            )
+            artifacts[name] = {
+                "path": relative.as_posix(),
+                "size_bytes": path.stat().st_size,
+                "sha256": sha256_file(path),
+            }
+        if len({value["path"] for value in artifacts.values()}) != len(artifacts):
+            raise OrchestratorError("validated result provenance contains duplicate artifacts")
+        expected_trace = (
+            {
+                "present": False,
+                "path": None,
+                "size_bytes": None,
+                "sha256": None,
+            }
+            if self.args.diagnostic_perfetto == "off" else {
+                "present": True,
+                **artifacts["perfetto_trace"],
+            }
+        )
+        if validation.get("trace_artifact") != expected_trace:
+            raise OrchestratorError("validated trace artifact provenance is inconsistent")
+        return {
+            "schema_version": RESULT_PROVENANCE_SCHEMA_VERSION,
+            "slot_id": slot.get("slot_id"),
+            "run_id": slot.get("run_id"),
+            "command_id": slot.get("command_id"),
+            "protocol_version": 2,
+            "diagnostic_session_id": slot.get("diagnostic_session_id"),
+            "requested_trace_mode": self.args.diagnostic_perfetto,
+            "trace": expected_trace,
+            "artifacts": artifacts,
+        }
+
+    def validate_completed_diagnostic_slots(self) -> None:
+        if not self.args.diagnostic_protocol_v2:
+            return
+        seen_run_ids: set[str] = set()
+        seen_command_ids: set[str] = set()
+        seen_session_ids: set[str] = set()
+        seen_run_dirs: set[str] = set()
+        for slot in self.manifest["runs"]:
+            if slot.get("status") != "completed":
+                continue
+            run_id = self._canonical_slot_uuid(slot.get("run_id"), "run_id")
+            command_id = self._canonical_slot_uuid(slot.get("command_id"), "command_id")
+            session_id = self._canonical_slot_uuid(
+                slot.get("diagnostic_session_id"), "diagnostic_session_id"
+            )
+            run_dir = str(Path(str(slot.get("run_dir", ""))).resolve())
+            if (
+                run_id in seen_run_ids
+                or command_id in seen_command_ids
+                or session_id in seen_session_ids
+                or run_dir in seen_run_dirs
+            ):
+                raise OrchestratorError("completed diagnostic slot replays a prior result identity")
+            validation = self._validate_slot_result(slot)
+            if not validation.get("valid"):
+                raise OrchestratorError(
+                    "completed diagnostic slot validation failed: "
+                    + ",".join(validation.get("failed_checks", []))
+                )
+            expected_slot_trace = {
+                key: validation["summary"].get(key)
+                for key in DIAGNOSTIC_TRACE_METADATA_KEYS
+            }
+            if slot.get("diagnostic_trace") != expected_slot_trace:
+                raise OrchestratorError(
+                    "completed slot trace metadata differs from validated result"
+                )
+            stored_validation = slot.get("validation")
+            if not isinstance(stored_validation, dict) or stored_validation.get("valid") is not True:
+                raise OrchestratorError("completed slot lacks prior successful validation provenance")
+            if (
+                stored_validation.get("runner_file") != validation.get("runner_file")
+                or stored_validation.get("summary_path") != validation.get("summary_path")
+            ):
+                raise OrchestratorError("completed slot result provenance was replaced")
+            if slot.get("result_provenance") != self._result_provenance(slot, validation):
+                raise OrchestratorError("completed slot artifact hash provenance was replaced")
+            seen_run_ids.add(run_id)
+            seen_command_ids.add(command_id)
+            seen_session_ids.add(session_id)
+            seen_run_dirs.add(run_dir)
+
+    def _await_logger_capture_ready(
+        self,
+        logger: ProcessLines,
+        diagnostic_session_id: str | None,
+    ) -> dict[str, Any]:
+        trace_mode = self.args.diagnostic_perfetto
+        line = logger.wait_for_line(
+            lambda value: (
+                "capture started" in value.lower()
+                and (
+                    not self.args.diagnostic_protocol_v2
+                    or f"diagnostic_session_id={diagnostic_session_id}" in value
+                )
+                and (
+                    not self.args.diagnostic_protocol_v2
+                    or f"perfetto_ready={'true' if trace_mode == 'on' else 'false'}"
+                    in value.lower()
+                )
+            ),
+            20,
+            "d1_logger capture started",
+        )
+        return {
+            "line": line,
+            "diagnostic_session_id": diagnostic_session_id,
+            "requested_trace_mode": trace_mode,
+            "perfetto_ready": trace_mode == "on",
+        }
+
+    def _send_runner_intent_after_ready(
+        self,
+        readiness: dict[str, Any],
+        arguments: list[str],
+    ) -> subprocess.CompletedProcess[str]:
+        assert self.adb is not None
+        if self.args.diagnostic_protocol_v2:
+            def wire_value(name: str) -> str | None:
+                try:
+                    return arguments[arguments.index(name) + 1]
+                except (ValueError, IndexError):
+                    return None
+
+            if readiness.get("requested_trace_mode") != self.args.diagnostic_perfetto:
+                raise OrchestratorError("logger readiness trace mode mismatch")
+            if wire_value("d1_diagnostic_session_id") != readiness.get(
+                "diagnostic_session_id"
+            ):
+                raise OrchestratorError("runner Intent diagnostic session mismatch")
+            if wire_value("d1_diagnostic_perfetto") != self.args.diagnostic_perfetto:
+                raise OrchestratorError("runner Intent trace mode mismatch")
+            if (
+                self.args.diagnostic_perfetto == "on"
+                and readiness.get("perfetto_ready") is not True
+            ):
+                raise OrchestratorError("runner Intent refused before Perfetto PID readiness")
+        return self.adb.run(arguments, timeout=30)
 
     def connect(self) -> None:
         probe = AdbClient(self.args.adb)
@@ -3475,7 +4177,8 @@ class ExperimentOrchestrator:
             else []
         )
         remote_artifact = slot.get("remote_runner_path") or (
-            f"{REMOTE_RUNNER_DIRECTORY}/gpu-events-{run_id}-*.jsonl" if run_id else None
+            f"{(REMOTE_DIAGNOSTIC_V2_DIRECTORY if getattr(self.args, 'diagnostic_protocol_v2', False) else REMOTE_RUNNER_DIRECTORY)}/gpu-events-{run_id}-*.jsonl"
+            if run_id else None
         )
         slot["failure_artifacts"] = {
             "manifest": str(self.manifest_path),
@@ -3616,11 +4319,27 @@ class ExperimentOrchestrator:
                         "safety after conditioning rejected: " + ",".join(safety.reasons)
                     )
 
+            diagnostic_session_id = (
+                str(uuid.uuid4()) if self.args.diagnostic_protocol_v2 else None
+            )
+            if diagnostic_session_id is not None:
+                previous_session = slot.get("diagnostic_session_id")
+                if previous_session:
+                    slot.setdefault("diagnostic_session_history", []).append(previous_session)
+                slot["diagnostic_session_id"] = diagnostic_session_id
+                slot["diagnostic_perfetto_enabled"] = self.args.diagnostic_perfetto == "on"
+                slot["requested_trace_mode"] = self.args.diagnostic_perfetto
+                self.save()
+
             self._run_host(self._logger_command("clear"), timeout=30)
             self.step(slot, "logger_clear", status="ok")
 
             capture_process = subprocess.Popen(
-                self._logger_command("capture", str(self.runs_root)),
+                self._logger_command(
+                    "capture",
+                    str(self.runs_root),
+                    diagnostic_session_id=diagnostic_session_id,
+                ),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
@@ -3628,12 +4347,17 @@ class ExperimentOrchestrator:
                 errors="replace",
             )
             logger = ProcessLines(capture_process, "d1_logger")
-            logger.wait_for_line(
-                lambda line: "capture started" in line.lower(),
-                20,
-                "d1_logger capture started",
+            capture_readiness = self._await_logger_capture_ready(
+                logger, diagnostic_session_id
             )
-            self.step(slot, "logger_capture_started", status="ok")
+            self.step(
+                slot,
+                "logger_capture_started",
+                status="ok",
+                diagnostic_session_id=diagnostic_session_id,
+                requested_trace_mode=self.args.diagnostic_perfetto,
+                perfetto_ready=self.args.diagnostic_perfetto == "on",
+            )
 
             monitor = ProcessLines(
                 self.adb.popen([
@@ -3669,15 +4393,18 @@ class ExperimentOrchestrator:
             slot["run_start_event"] = run_start
             self.step(slot, "d1_run_started", status="ok", run_id=run_id)
 
-            self.adb.run(
+            self._send_runner_intent_after_ready(
+                capture_readiness,
                 runner_intent_arguments(
                     slot["resource"], slot["cpu_threads"], self.args.duration,
                     self.args.warmup, run_id, command_id,
                     slot["duty_cycle_percent"],
                     self.args.duty_cycle_period_seconds,
                     self.args.gpu_profile,
+                    self.args.diagnostic_protocol_v2,
+                    diagnostic_session_id,
+                    self.args.diagnostic_perfetto,
                 ),
-                timeout=30,
             )
             self.step(slot, "runner_auto_start_sent", status="ok", command_id=command_id)
 
@@ -3700,13 +4427,24 @@ class ExperimentOrchestrator:
                     slot["runtime_safety"]["observations"] = safety_monitor.observations
                     self.save()
 
-            runner_timeout = self.args.duration + 180 + min(self.args.warmup * 2, 3600)
+            runner_timeout = runner_hard_timeout_seconds(
+                self.args.duration, self.args.warmup
+            )
             def remote_probe(final: bool) -> RemoteRunnerProbe:
                 slot["terminal_fallback_used"] = True
                 slot["logcat_terminal_missing"] = True
                 slot["remote_probe_count"] += 1
                 slot["final_remote_probe_used"] = final
-                result = probe_remote_runner(self.adb, run_id)
+                result = probe_remote_runner(
+                    self.adb,
+                    run_id,
+                    REMOTE_DIAGNOSTIC_V2_DIRECTORY
+                    if self.args.diagnostic_protocol_v2
+                    else REMOTE_RUNNER_DIRECTORY,
+                    diagnostic_session_id,
+                    self.args.diagnostic_perfetto
+                    if self.args.diagnostic_protocol_v2 else None,
+                )
                 slot["remote_runner_path"] = result.remote_path
                 slot["last_remote_probe_state"] = result.state
                 slot["last_remote_probe_detail"] = result.detail
@@ -3718,6 +4456,14 @@ class ExperimentOrchestrator:
                     lambda event: (
                         observe_runtime_event(event) is None
                         and classify_runner_terminal(event, run_id) is not None
+                        and (
+                            not self.args.diagnostic_protocol_v2
+                            or (
+                                event.get("protocol_version") == 2
+                                and event.get("diagnostic_session_id")
+                                == diagnostic_session_id
+                            )
+                        )
                     ),
                     timeout,
                     f"runner terminal event for {run_id}",
@@ -3867,6 +4613,29 @@ class ExperimentOrchestrator:
             slot["run_dir"] = str(run_dir)
             self.step(slot, "run_directory_identified", status="ok", path=str(run_dir))
 
+            capture_metadata = load_json(run_dir / "metadata.json")
+            if self.args.diagnostic_protocol_v2:
+                if capture_metadata.get("protocol_version") != 2 or (
+                    capture_metadata.get("diagnostic_session_id") != diagnostic_session_id
+                ):
+                    raise OrchestratorError("logger metadata diagnostic identity mismatch")
+                trace = {
+                    key: capture_metadata.get(key)
+                    for key in DIAGNOSTIC_TRACE_METADATA_KEYS
+                }
+                slot["diagnostic_trace"] = trace
+                if self.args.diagnostic_perfetto == "on" and not (
+                    trace["diagnostic_perfetto_enabled"] is True
+                    and trace["diagnostic_perfetto_started"] is True
+                    and trace["diagnostic_perfetto_process_exited"] is True
+                    and isinstance(trace["diagnostic_trace_size_bytes"], int)
+                    and trace["diagnostic_trace_size_bytes"] > 0
+                    and isinstance(trace["diagnostic_trace_sha256"], str)
+                    and re.fullmatch(r"[0-9a-f]{64}", trace["diagnostic_trace_sha256"])
+                ):
+                    raise OrchestratorError("trace-on capture lacks a complete Perfetto artifact")
+                self.save()
+
             analysis = self._run_host(
                 [sys.executable, str(self.logger_path), "analyze", str(run_dir)],
                 timeout=120,
@@ -3880,13 +4649,7 @@ class ExperimentOrchestrator:
             attach_accuracy_to_analyzer_summary(run_dir, experiment_accuracy)
             self.step(slot, "accuracy_provenance_attached", status="ok")
 
-            validation = validate_result(
-                run_dir, slot["resource"], slot["cpu_threads"],
-                self.args.duration, self.args.warmup, run_id, command_id, self.args.mode,
-                slot["duty_cycle_percent"], self.args.duty_cycle_period_seconds,
-                experiment_accuracy,
-                gpu_profile(self.args.gpu_profile),
-            )
+            validation = self._validate_slot_result(slot)
             slot["validation"] = validation
             summary = validation["summary"]
             slot["cooling"]["load_end_android_mono_ns"] = summary.get(
@@ -3905,6 +4668,8 @@ class ExperimentOrchestrator:
                 raise OrchestratorError(
                     "result validation failed: " + ",".join(validation["failed_checks"])
                 )
+            if self.args.diagnostic_protocol_v2:
+                slot["result_provenance"] = self._result_provenance(slot, validation)
             slot["status"] = "completed"
             slot["completed_utc"] = utc_now()
             self.save()
@@ -3987,6 +4752,7 @@ class ExperimentOrchestrator:
 
     def run(self) -> int:
         try:
+            self.validate_completed_diagnostic_slots()
             self.connect()
         except Exception as error:
             self.manifest["status"] = "failed"
@@ -4063,7 +4829,7 @@ class ExperimentOrchestrator:
 
 def experiment_config(args: argparse.Namespace) -> dict[str, Any]:
     cpu_thread_levels, duty_cycles = normalized_axes(args)
-    return {
+    value = {
         "mode": args.mode,
         "resources": [resource.upper() for resource in args.resources],
         "cpu_thread_levels": cpu_thread_levels,
@@ -4081,7 +4847,9 @@ def experiment_config(args: argparse.Namespace) -> dict[str, Any]:
             "block_axis": "repetition",
             "randomization": "within_block_seeded_shuffle",
         },
-        "runner_experiment_mode": "BASIC",
+        "runner_experiment_mode": (
+            "DIAGNOSTIC" if args.diagnostic_protocol_v2 else "BASIC"
+        ),
         "energy_calculation": False,
         "current_raw_policy": "raw_unscaled_unit_unverified",
         "duty_cycle_percent": duty_cycles[0] if len(duty_cycles) == 1 else None,
@@ -4126,6 +4894,26 @@ def experiment_config(args: argparse.Namespace) -> dict[str, Any]:
             "strategy": "logcat_telemetry_first_with_sparse_dumpsys",
         },
     }
+    if args.diagnostic_protocol_v2:
+        value["diagnostic_protocol"] = {
+            "version": 2,
+            "opt_in": True,
+            "orchestrator_version": VERSION,
+            "remote_output_root": REMOTE_DIAGNOSTIC_V2_DIRECTORY,
+            "thread_snapshot_scope": "before_and_after_load_only",
+            "output_readback_scope": "last_completed_inference_after_load_metrics_frozen",
+            "component_timing": "unsupported",
+            "diagnostic_perfetto_enabled": args.diagnostic_perfetto == "on",
+            "requested_trace_mode": args.diagnostic_perfetto,
+            "actual_start_success": None,
+            "trace_filename": "d1check-<diagnostic-session-id>.perfetto-trace"
+                if args.diagnostic_perfetto == "on" else None,
+            "diagnostic_session_id": "per_attempt_uuid_not_reused_on_resume",
+            "trace_size_bytes": None,
+            "trace_sha256": None,
+            "result_partition": f"diagnostic_v2_trace_{args.diagnostic_perfetto}",
+        }
+    return value
 
 
 def _legacy_compatible_config(config: dict[str, Any]) -> dict[str, Any]:
@@ -4274,6 +5062,11 @@ def default_output_dir() -> Path:
     return Path("results") / f"D1Check_repeat_{stamp}"
 
 
+def default_diagnostic_output_dir(trace_mode: str = "off") -> Path:
+    stamp = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
+    return Path("results") / f"D1Check_diagnostic_v2_trace_{trace_mode}_{stamp}"
+
+
 def resolve_adb(value: str | None) -> str:
     candidates = [
         value,
@@ -4312,6 +5105,9 @@ def dry_run_payload(args: argparse.Namespace) -> dict[str, Any]:
                     "<run-id>", "<command-id>", slot["duty_cycle_percent"],
                     args.duty_cycle_period_seconds,
                     args.gpu_profile,
+                    args.diagnostic_protocol_v2,
+                    "<diagnostic-session-id>" if args.diagnostic_protocol_v2 else None,
+                    args.diagnostic_perfetto,
                 ),
                 "stop_run": serial_prefix + stop_run_arguments(),
                 "direct_stop_recovery": serial_prefix + direct_stop_arguments(),
@@ -4392,6 +5188,13 @@ def dry_run_payload(args: argparse.Namespace) -> dict[str, Any]:
         },
         "performs_adb_calls": False,
         "writes_manifest": False,
+        "diagnostic_perfetto_enabled": (
+            args.diagnostic_protocol_v2 and args.diagnostic_perfetto == "on"
+        ),
+        "requested_trace_mode": args.diagnostic_perfetto,
+        "perfetto_ready_before_runner_intent": (
+            args.diagnostic_protocol_v2 and args.diagnostic_perfetto == "on"
+        ),
     }
 
 
@@ -4422,6 +5225,17 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--representative-tensor-set", type=Path)
     parser.add_argument(
         "--gpu-profile", choices=GPU_PROFILE_IDS, default=DEFAULT_GPU_PROFILE
+    )
+    parser.add_argument(
+        "--diagnostic-protocol-v2",
+        action="store_true",
+        help="opt in to protocol v2 diagnostics and a separate runner artifact root",
+    )
+    parser.add_argument(
+        "--diagnostic-perfetto",
+        choices=("off", "on"),
+        default="off",
+        help="explicit Perfetto opt-in for diagnostic protocol v2 (default: off)",
     )
     parser.add_argument(
         "--accuracy-input-count", type=int, default=DEFAULT_ACCURACY_INPUT_COUNT
@@ -4476,6 +5290,10 @@ def build_parser() -> argparse.ArgumentParser:
 
 def validate_cli(args: argparse.Namespace) -> None:
     cpu_thread_levels, duty_cycles = normalized_axes(args)
+    if args.diagnostic_protocol_v2 and args.warmup > 20:
+        raise OrchestratorError("diagnostic protocol v2 warmup must be in 0..20")
+    if args.diagnostic_perfetto == "on" and not args.diagnostic_protocol_v2:
+        raise OrchestratorError("--diagnostic-perfetto on requires --diagnostic-protocol-v2")
     if any(not 1 <= value <= 16 for value in cpu_thread_levels):
         raise OrchestratorError("CPU thread levels must each be in 1..16")
     if not 1 <= args.duration <= 3600:
@@ -4597,7 +5415,14 @@ def main(argv: list[str] | None = None) -> int:
     args.adb = resolve_adb(args.adb)
     if not Path(args.logger).is_file():
         raise OrchestratorError(f"d1_logger_v4.py not found: {args.logger}")
-    output_dir = (args.output_dir or default_output_dir()).resolve()
+    output_dir = (
+        args.output_dir
+        or (
+            default_diagnostic_output_dir(args.diagnostic_perfetto)
+            if args.diagnostic_protocol_v2
+            else default_output_dir()
+        )
+    ).resolve()
     manifest_path = output_dir / MANIFEST_NAME
     if args.resume:
         if not manifest_path.is_file():

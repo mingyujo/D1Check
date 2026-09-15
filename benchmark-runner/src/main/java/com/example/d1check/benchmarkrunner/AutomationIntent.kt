@@ -1,5 +1,6 @@
 package com.example.d1check.benchmarkrunner
 
+import android.content.Intent
 import java.util.Locale
 import java.util.UUID
 
@@ -19,6 +20,11 @@ internal object AutomationIntentParser {
     const val EXTRA_DUTY_CYCLE_PERCENT = "d1_duty_cycle_percent"
     const val EXTRA_DUTY_CYCLE_PERIOD_S = "d1_duty_cycle_period_s"
     const val EXTRA_GPU_PROFILE = "d1_gpu_profile"
+    const val EXTRA_PROTOCOL_VERSION = "d1_protocol_version"
+    const val EXTRA_DIAGNOSTIC_SESSION_ID = "d1_diagnostic_session_id"
+    const val EXTRA_DIAGNOSTIC_PERFETTO = "d1_diagnostic_perfetto"
+    const val EXTRA_DIAGNOSTIC_PERFETTO_STARTED = "d1_diagnostic_perfetto_started"
+    const val EXTRA_DIAGNOSTIC_TRACE_FILENAME = "d1_diagnostic_trace_filename"
 
     val knownExtras = setOf(
         EXTRA_AUTO_START,
@@ -34,6 +40,27 @@ internal object AutomationIntentParser {
         EXTRA_DUTY_CYCLE_PERCENT,
         EXTRA_DUTY_CYCLE_PERIOD_S,
         EXTRA_GPU_PROFILE,
+        EXTRA_PROTOCOL_VERSION,
+        EXTRA_DIAGNOSTIC_SESSION_ID,
+        EXTRA_DIAGNOSTIC_PERFETTO,
+        EXTRA_DIAGNOSTIC_PERFETTO_STARTED,
+        EXTRA_DIAGNOSTIC_TRACE_FILENAME,
+    )
+
+    fun parseFromSource(
+        contains: (String) -> Boolean,
+        value: (String) -> Any?,
+    ): AutomationRequest? = parse(
+        buildMap {
+            knownExtras.forEach { key ->
+                if (contains(key)) put(key, value(key))
+            }
+        }
+    )
+
+    fun parse(intent: Intent): AutomationRequest? = parseFromSource(
+        intent::hasExtra,
+        { key -> intent.extras?.get(key) },
     )
 
     fun parse(extras: Map<String, Any?>): AutomationRequest? {
@@ -91,6 +118,63 @@ internal object AutomationIntentParser {
                 "Unsupported d1_experiment_mode: ${extras[EXTRA_EXPERIMENT_MODE]}"
             )
         }
+        val protocolVersion = when (optionalInt(extras, EXTRA_PROTOCOL_VERSION) ?: 1) {
+            1 -> ProtocolVersion.V1
+            2 -> ProtocolVersion.DIAGNOSTIC_V2
+            else -> throw IllegalArgumentException("d1_protocol_version must be 1 or 2")
+        }
+        val diagnosticSessionId = if (protocolVersion == ProtocolVersion.DIAGNOSTIC_V2) {
+            requiredUuid(extras, EXTRA_DIAGNOSTIC_SESSION_ID)
+        } else {
+            require(!extras.containsKey(EXTRA_DIAGNOSTIC_SESSION_ID)) {
+                "d1_diagnostic_session_id is only valid for protocol v2"
+            }
+            null
+        }
+        val diagnosticTraceMode = if (protocolVersion == ProtocolVersion.DIAGNOSTIC_V2) {
+            when (requiredString(extras, EXTRA_DIAGNOSTIC_PERFETTO).lowercase(Locale.ROOT)) {
+                "off" -> DiagnosticTraceMode.OFF
+                "on" -> DiagnosticTraceMode.ON
+                else -> throw IllegalArgumentException("d1_diagnostic_perfetto must be off or on")
+            }
+        } else {
+            require(!extras.containsKey(EXTRA_DIAGNOSTIC_PERFETTO)) {
+                "d1_diagnostic_perfetto is only valid for protocol v2"
+            }
+            DiagnosticTraceMode.OFF
+        }
+        val diagnosticPerfettoStarted = if (protocolVersion == ProtocolVersion.DIAGNOSTIC_V2) {
+            requiredBoolean(extras, EXTRA_DIAGNOSTIC_PERFETTO_STARTED)
+        } else {
+            require(!extras.containsKey(EXTRA_DIAGNOSTIC_PERFETTO_STARTED)) {
+                "d1_diagnostic_perfetto_started is only valid for protocol v2"
+            }
+            false
+        }
+        val diagnosticTraceFilename = if (protocolVersion == ProtocolVersion.DIAGNOSTIC_V2) {
+            when (diagnosticTraceMode) {
+                DiagnosticTraceMode.OFF -> {
+                    require(!extras.containsKey(EXTRA_DIAGNOSTIC_TRACE_FILENAME)) {
+                        "d1_diagnostic_trace_filename must be absent for trace-off"
+                    }
+                    require(!diagnosticPerfettoStarted) {
+                        "trace-off requires d1_diagnostic_perfetto_started=false"
+                    }
+                    null
+                }
+                DiagnosticTraceMode.ON -> {
+                    require(diagnosticPerfettoStarted) {
+                        "trace-on requires d1_diagnostic_perfetto_started=true"
+                    }
+                    requiredString(extras, EXTRA_DIAGNOSTIC_TRACE_FILENAME)
+                }
+            }
+        } else {
+            require(!extras.containsKey(EXTRA_DIAGNOSTIC_TRACE_FILENAME)) {
+                "d1_diagnostic_trace_filename is only valid for protocol v2"
+            }
+            null
+        }
         return AutomationRequest(
             RunConfig(
                 resource = resource,
@@ -104,6 +188,11 @@ internal object AutomationIntentParser {
                 dutyCyclePeriodSeconds =
                     optionalDouble(extras, EXTRA_DUTY_CYCLE_PERIOD_S) ?: 10.0,
                 gpuDelegateProfile = gpuProfile,
+                protocolVersion = protocolVersion,
+                diagnosticSessionId = diagnosticSessionId,
+                diagnosticTraceMode = diagnosticTraceMode,
+                diagnosticPerfettoStarted = diagnosticPerfettoStarted,
+                diagnosticTraceFilename = diagnosticTraceFilename,
             )
         )
     }
@@ -129,6 +218,9 @@ internal object AutomationIntentParser {
 
     private fun requiredInt(extras: Map<String, Any?>, key: String): Int =
         optionalInt(extras, key) ?: throw IllegalArgumentException("Missing $key")
+
+    private fun requiredBoolean(extras: Map<String, Any?>, key: String): Boolean =
+        extras[key] as? Boolean ?: throw IllegalArgumentException("Missing or invalid $key")
 
     private fun requiredLong(extras: Map<String, Any?>, key: String): Long = when (val value = extras[key]) {
         is Long -> value

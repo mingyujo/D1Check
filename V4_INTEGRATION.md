@@ -119,32 +119,49 @@ project share the debug key; release APKs must use the same release signing key.
 
 ## Diagnostic mode
 
-Perfetto is disabled by default. For a separate diagnostic run:
+Perfetto is disabled by default and is independent of protocol v2. Use an explicit trace mode:
 
 ~~~powershell
-python tools/d1_logger_v4.py capture results --diagnostic-perfetto
+python tools/d1_experiment_orchestrator.py --diagnostic-protocol-v2 `
+  --diagnostic-perfetto on --output-dir results/diagnostic-v2-trace-on
 ~~~
 
-Also select Diagnostic run in Benchmark Runner. Diagnostic summaries are labeled
-statistics_group=diagnostic and must not be pooled with basic-run latency statistics. GPU
+Use `--diagnostic-perfetto off` (the default) for v2 without tracing. Summaries are labeled
+`diagnostic_v2_trace_off` or `diagnostic_v2_trace_on`; the two groups must not be pooled. GPU
 frequency ftrace events are device/kernel dependent and may be absent on the Galaxy A24.
 
-Perfetto starts on the runner's control marker immediately before GPU load and stops on the marker
-immediately after load. The config uses a 32,768 KiB ring buffer and the maximum selectable
-diagnostic duration is 3,600 seconds. Long/high-rate traces can overwrite older packets, so each
-diagnostic summary includes an explicit overwrite warning.
+For protocol-v2 trace-on, the logger derives the key `d1check-<canonical diagnostic_session_id>`;
+there is no CLI or Intent input for this key. It first runs
+`perfetto --is_detached=<key>` and requires exit 2, starts with
+`perfetto --txt -c <config> -o <trace> --background-wait --detach=<key>`, and reports ready only
+after a second `--is_detached=<key>` returns exit 0. The orchestrator sends the runner Intent only
+after that acknowledgement. The background PID, when printed, is retained only as evidence and is
+never used for v2 liveness or termination. On the Galaxy A24, `kill -0 <PID>` returned Permission
+denied because the shell context was not permitted to signal the Perfetto process; this is neither
+accepted as liveness nor interpreted as process absence. The trace stops on the marker immediately
+after load. The config uses a 32,768 KiB ring buffer and the maximum selectable diagnostic duration
+is 3,600 seconds. Long/high-rate traces can overwrite older packets, so each diagnostic summary
+includes an explicit overwrite warning.
 
-On Galaxy A24/Android, the host pushes the config to
-`/data/misc/perfetto-configs/d1check-gpu-diagnostic.pbtxt` and writes the device trace to
-`/data/misc/perfetto-traces/d1check-diagnostic.perfetto-trace`. Both files are removed after the
-trace is pulled. `/data/local/tmp` is not used because Perfetto cannot read the config there on the
-validated device build.
+On Galaxy A24/Android, the remote config and trace paths include the diagnostic session UUID under
+`/data/misc/perfetto-configs` and `/data/misc/perfetto-traces`. Normal stop runs
+`perfetto --attach=<key> --stop` and then requires `--is_detached=<key>` exit 2 before pulling and
+validating the trace. Both remote files are then removed. `/data/local/tmp` is not used because
+Perfetto cannot read the config there on the validated device build.
 
 Perfetto capture is single-shot per logger session. Lifecycle events replayed from the runner file
 cannot restart a completed or failed capture. The host pulls to a temporary local file, verifies a
 non-empty result, atomically installs it without replacing an existing successful trace, and only
-then removes the remote config and trace. On pull failure the remote trace is retained for manual
-recovery.
+then removes the remote config and trace. Startup, execution, stop, or pull failure makes one
+bounded `--attach=<key> --stop` cleanup attempt when the session may exist, preserves the first
+error, records cleanup errors separately, probes once for exit 2, and never falls back silently to
+PID signals. Abrupt host/logger termination before `finally` can leave a detached session; the same
+key is rejected as stale/replay on the next preflight and must be inspected/stopped explicitly.
+
+The pre-v2 manual `DIAGNOSTIC` runner mode retains its live start/stop markers,
+`perfetto_requested_by_runner=true`, and the legacy logger form
+`capture <root> --diagnostic-perfetto`. Only protocol v2 uses the pre-start readiness handshake;
+the legacy capture remains marker-triggered.
 
 ## Run validity and delegation evidence
 
@@ -626,3 +643,92 @@ the atomic export outside the source experiment for read-only validation. An
 export failure leaves raw/merged/manifest inputs untouched, preserves the previous successful
 export when replacement fails, records a `postprocessing` error in the experiment manifest when
 invoked by the orchestrator, and prints the independent regeneration command.
+
+## Opt-in diagnostic protocol v2
+
+Protocol v2 is a small cause-diagnosis mode and is never selected by the existing manual UI or by
+an orchestrator command that omits `--diagnostic-protocol-v2`. Protocol v1 preserves its existing
+manual BASIC/DIAGNOSTIC selection, does not emit v2 fields, and writes runner JSONL under `files/runs`.
+Protocol v2 requires automation, `experiment_mode=DIAGNOSTIC`, a fresh UUID
+`d1_diagnostic_session_id`, and writes runner JSONL under the separate
+`files/diagnostics-v2` root. Warm-up is explicitly limited to 0..20 in this mode.
+Every v2 runner record, including live markers and the footer, carries the same
+`protocol_version`, `diagnostic_session_id`, and `requested_trace_mode`; capture and analysis reject
+missing or mixed identity. Resume revalidates completed-slot artifacts with the same result contract
+as a new slot. It derives `slot_id` from `condition_id` plus repetition, enforces a fixed provenance
+schema/artifact set, and re-reads every artifact. Trace-on provenance includes the fixed relative
+Perfetto path, byte count, and SHA-256; resume rejects a missing, non-regular, symlinked, escaped,
+empty, replaced, or hash-mismatched trace. Trace-off provenance explicitly records trace absence and
+rejects both trace metadata and an unexpected trace file. Completed slots may not reuse a run UUID,
+command UUID, diagnostic session UUID, or run directory.
+Run/session UUIDs and trace filenames are validated before host path creation. Protocol-v2 Perfetto
+preflight/ready probes, push, detached start, attach-stop, final probe, pull, and cleanup all have
+finite timeouts. A v2 trace becomes final only after attach-stop succeeds, the detached session is
+confirmed absent (exit 2), and a current-run temporary pull passes non-empty size and SHA-256
+verification. The older PID/SIGINT-SIGTERM-SIGKILL path remains only for the protocol-v1-compatible
+logger flow. Forced, unconfirmed, or still-detached captures and `.part` files are never successful
+provenance.
+
+This repository-local provenance detects ordinary corruption, stale results, cross-session mixing,
+replay, and partial replacement. It is not a signature or an external trust anchor. An actively
+malicious local user who rewrites the manifest and every artifact consistently is outside the current
+threat model.
+
+For CPU v2 runs, the runner calls `Interpreter.Options.setNumThreads(requested)` and explicitly
+calls `setUseXNNPACK(true)` before constructing the interpreter. This proves the requested options
+were supplied, not the number of workers actually used. Immediately before load and immediately
+after load, it reads `/proc/self/task/<tid>/stat` and records tid, thread name, cumulative user plus
+system CPU ticks, delta ticks/ns, and Linux `processor` (field 39) when exposed. Snapshot status is
+`ok`, `partial`, or `unavailable`; counts and errors preserve incomplete evidence. Before/after
+identity requires both TID and name, and name changes are flagged as possible TID reuse. No snapshot
+is taken per inference. LiteRT's public Java API does not identify XNNPACK worker tids, so worker
+classification remains `unknown`; thread names are evidence, not an asserted classification.
+
+For GPU v2 runs, the existing `gpu-compat-default-v1` and `gpu-fp32-strict-v1` profile IDs,
+configuration hashes, precision-loss setting, inference preference, and forced-backend setting are
+retained. The application-visible latency boundary remains:
+
+~~~text
+input.rewind/output.clear
+startNs = elapsedRealtimeNanos
+Interpreter.run(input, output)
+endNs = elapsedRealtimeNanos
+~~~
+
+After the official load loop ends and load duration, active/idle duration, achieved duty, and
+inference count are frozen, v2 inspects the last completed inference output through a duplicate
+buffer and records SHA-256, byte count, non-finite count, and readback timestamps. The checksum is
+only output-readiness and integrity support; it is not CPU-GPU accuracy-equivalence proof. The
+checksum, thread snapshots, JSON construction, Logcat emission, and file I/O are outside all load
+metrics. Because checksum readback occurs immediately after load, it can still add a small amount of
+work and affect the following cooldown or thermal sample; that possible post-load perturbation is not
+claimed to be zero.
+`Interpreter.run()` is synchronous at the Java call boundary because the output is readable after
+return, but this does not expose internal GPU fence completion timestamps. The public LiteRT Java
+API also does not split host-to-device, GPU execution, and device-to-host time. Those fields are
+therefore `unsupported`, never synthesized. Actual GPU-internal timing/fence behavior and actual
+FP32-versus-FP16 execution remain `unknown`/`unsupported`, just as the actual XNNPACK worker count
+remains unknown. Portable, low-perturbation GPU timestamp/fence,
+utilization, and frequency APIs are not available here; vendor sysfs may be inaccessible and
+polling it would add device-specific perturbation. Only `--diagnostic-perfetto on` enables the
+load-scoped Perfetto capture, whose config requests `power/gpu_frequency`; whether that event is
+actually exposed is device/kernel dependent and must be checked in the trace. Perfetto remains a
+separate diagnostic mechanism and does not redefine per-inference latency or expose Java-call
+component timings.
+
+Example dry-run for a short CPU1/CPU2/CPU4 plus strict-GPU diagnostic (no ADB or files are written
+by dry-run):
+
+~~~powershell
+python tools/d1_experiment_orchestrator.py --dry-run `
+  --diagnostic-protocol-v2 --diagnostic-perfetto off `
+  --mode pilot --accuracy-preflight off `
+  --resources CPU GPU --cpu-thread-levels 1 2 4 --duty-cycles 100 `
+  --duration 30 --warmup 10 --repeat 1 --seed 20260913 `
+  --gpu-profile gpu-fp32-strict-v1 --start-policy safety `
+  --output-dir "C:\Users\LG\Documents\D1Check_Diagnostics\A24_v2_strict"
+~~~
+
+Run compatibility and strict GPU profiles as separate experiment roots; profile identity is part
+of the manifest and timed runner metadata. Diagnostic v2 is intended to explain runtime behavior,
+not to replace the preserved 80-run formal dataset or to establish hardware-level kernel timing.

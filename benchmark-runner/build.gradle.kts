@@ -36,6 +36,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+    }
+
     androidResources {
         noCompress += "tflite"
     }
@@ -50,6 +54,7 @@ dependencies {
     implementation(libs.ai.edge.litert.gpu.api)
     implementation(libs.ai.edge.litert.gpu.runtime)
     testImplementation(libs.junit)
+    testImplementation("org.robolectric:robolectric:4.14.1")
 }
 
 val verifyBenchmarkModel by tasks.registering {

@@ -2,6 +2,7 @@ import contextlib
 import importlib.util
 import io
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -148,6 +149,100 @@ def remote_adb_for(events, filename="gpu-events-run-a-session-a.jsonl"):
 
 
 class OrchestratorTest(unittest.TestCase):
+    @staticmethod
+    def _ended_process_lines(process, lines=()):
+        reader = ORCH.ProcessLines.__new__(ORCH.ProcessLines)
+        reader.process = process
+        reader.name = "d1_logger"
+        reader.lines = ORCH.deque(lines, maxlen=20_000)
+        reader.queue = ORCH.queue.Queue()
+        reader.queue.put(ORCH.ProcessLines._END)
+        return reader
+
+    def test_process_lines_eof_wait_reports_final_returncode_and_tail(self):
+        process = mock.Mock()
+        process.wait.return_value = 1
+        process.poll.return_value = None
+        detail = (
+            "error: Perfetto config push failed: returncode=13; "
+            "stderr='Permission denied'; stdout=''"
+        )
+        reader = self._ended_process_lines(process, [detail])
+
+        with self.assertRaises(ORCH.OrchestratorError) as raised:
+            reader.wait_for_line(lambda _line: False, 20, "d1_logger capture started")
+
+        message = str(raised.exception)
+        self.assertIn("rc=1", message)
+        self.assertIn(detail, message)
+        process.wait.assert_called_once_with(timeout=ORCH.PROCESS_EOF_WAIT_TIMEOUT_S)
+        process.poll.assert_called_once_with()
+
+    def test_process_lines_eof_wait_timeout_is_bounded(self):
+        process = mock.Mock()
+        process.wait.side_effect = subprocess.TimeoutExpired(
+            ["logger"], ORCH.PROCESS_EOF_WAIT_TIMEOUT_S,
+        )
+        process.poll.side_effect = [None, None]
+        reader = self._ended_process_lines(process)
+
+        with self.assertRaisesRegex(ORCH.OrchestratorError, r"rc=None; tail=\[\]"):
+            reader.wait_for_line(lambda _line: False, 20, "d1_logger capture started")
+
+        process.wait.assert_called_once_with(timeout=ORCH.PROCESS_EOF_WAIT_TIMEOUT_S)
+        self.assertEqual(2, process.poll.call_count)
+
+    def test_pre_ready_logger_error_is_preserved_in_manifest_halt_reason(self):
+        with tempfile.TemporaryDirectory() as directory:
+            args = ORCH.build_parser().parse_args([
+                "--diagnostic-protocol-v2", "--diagnostic-perfetto", "on",
+                "--accuracy-preflight", "off", "--resources", "GPU",
+                "--warmup", "0", "--duration", "30",
+            ])
+            manifest = ORCH.new_manifest(args)
+            manifest_path = Path(directory) / ORCH.MANIFEST_NAME
+            orchestrator = ORCH.ExperimentOrchestrator(args, manifest, manifest_path)
+            orchestrator.connect = lambda: None
+            orchestrator.ensure_accuracy_preflight = lambda: {"status": "not_run"}
+            detail = (
+                "error: Perfetto config push failed: returncode=13; "
+                "stderr='Permission denied'; stdout=''"
+            )
+
+            def fail_before_ready(_slot):
+                process = subprocess.Popen(
+                    [
+                        sys.executable,
+                        "-c",
+                        "import sys; print(sys.argv[1], file=sys.stderr, flush=True); "
+                        "raise SystemExit(1)",
+                        detail,
+                    ],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                )
+                logger = ORCH.ProcessLines(process, "d1_logger")
+                try:
+                    orchestrator._await_logger_capture_ready(
+                        logger, "33333333-3333-4333-8333-333333333333",
+                    )
+                finally:
+                    logger.terminate()
+
+            orchestrator.run_slot = fail_before_ready
+            stderr = io.StringIO()
+            with contextlib.redirect_stderr(stderr):
+                self.assertEqual(1, orchestrator.run())
+
+            self.assertIn("rc=1", manifest["halt_reason"])
+            self.assertIn(detail, manifest["halt_reason"])
+            saved = ORCH.load_json(manifest_path)
+            self.assertEqual(manifest["halt_reason"], saved["halt_reason"])
+            self.assertIn(detail, stderr.getvalue())
+
     @staticmethod
     def conditioning_args(policy="stable", **overrides):
         values = {
@@ -672,6 +767,197 @@ class OrchestratorTest(unittest.TestCase):
         self.assertIn("d1_duty_cycle_percent", cpu)
         self.assertIn("d1_duty_cycle_period_s", gpu)
 
+    def test_protocol_v1_intent_and_config_remain_unchanged_by_default(self):
+        args = ORCH.build_parser().parse_args(["--dry-run"])
+        intent = ORCH.runner_intent_arguments("CPU", 4, 10, 0, "run", "command")
+        self.assertIn("BASIC", intent)
+        self.assertNotIn("d1_protocol_version", intent)
+        self.assertNotIn("d1_diagnostic_session_id", intent)
+        self.assertNotIn("diagnostic_protocol", ORCH.experiment_config(args))
+        self.assertNotIn("d1_diagnostic_perfetto", intent)
+
+    def test_protocol_v1_intent_golden(self):
+        self.assertEqual(
+            [
+                "shell", "am", "start", "-W", "-n", ORCH.RUNNER_ACTIVITY,
+                "--ez", "d1_auto_start", "true",
+                "--es", "d1_resource", "CPU",
+                "--ei", "d1_cpu_threads", "4",
+                "--es", "d1_limit_mode", "DURATION",
+                "--el", "d1_duration_s", "10",
+                "--ei", "d1_warmup_count", "0",
+                "--es", "d1_run_id", "run",
+                "--es", "d1_command_id", "command",
+                "--es", "d1_experiment_mode", "BASIC",
+                "--ei", "d1_duty_cycle_percent", "100",
+                "--ef", "d1_duty_cycle_period_s", "10.0",
+            ],
+            ORCH.runner_intent_arguments("CPU", 4, 10, 0, "run", "command"),
+        )
+
+    def test_diagnostic_v2_intent_is_explicit_and_uses_separate_root(self):
+        session_id = "33333333-3333-3333-3333-333333333333"
+        intent = ORCH.runner_intent_arguments(
+            "GPU", None, 10, 20, "run", "command", 100, 10.0,
+            ORCH.DEFAULT_GPU_PROFILE, True, session_id,
+        )
+        self.assertIn("DIAGNOSTIC", intent)
+        self.assertEqual("2", intent[intent.index("d1_protocol_version") + 1])
+        self.assertEqual(
+            session_id, intent[intent.index("d1_diagnostic_session_id") + 1]
+        )
+        self.assertEqual("off", intent[intent.index("d1_diagnostic_perfetto") + 1])
+        self.assertEqual(
+            "false", intent[intent.index("d1_diagnostic_perfetto_started") + 1]
+        )
+        args = ORCH.build_parser().parse_args([
+            "--dry-run", "--diagnostic-protocol-v2", "--warmup", "20"
+        ])
+        config = ORCH.experiment_config(args)
+        self.assertEqual(
+            ORCH.REMOTE_DIAGNOSTIC_V2_DIRECTORY,
+            config["diagnostic_protocol"]["remote_output_root"],
+        )
+        payload = ORCH.dry_run_payload(args)
+        self.assertFalse(payload["performs_adb_calls"])
+        self.assertFalse(payload["writes_manifest"])
+
+    def test_diagnostic_v2_rejects_warmup_above_twenty(self):
+        args = ORCH.build_parser().parse_args([
+            "--diagnostic-protocol-v2", "--warmup", "21"
+        ])
+        with self.assertRaisesRegex(ORCH.OrchestratorError, "0..20"):
+            ORCH.validate_cli(args)
+
+    def test_diagnostic_v2_does_not_enable_perfetto_without_explicit_on(self):
+        with tempfile.TemporaryDirectory() as directory:
+            for trace_mode in ("off", "on"):
+                args = ORCH.build_parser().parse_args([
+                    "--diagnostic-protocol-v2", "--diagnostic-perfetto", trace_mode,
+                ])
+                orchestrator = ORCH.ExperimentOrchestrator(
+                    args, {"runs": []}, Path(directory) / "manifest.json"
+                )
+                orchestrator.adb = SimpleNamespace(adb="adb", serial="device")
+                command = orchestrator._logger_command(
+                    "capture", "result-root",
+                    diagnostic_session_id="33333333-3333-3333-3333-333333333333",
+                )
+                self.assertEqual(
+                    trace_mode, command[command.index("--diagnostic-perfetto") + 1]
+                )
+                if trace_mode == "on":
+                    self.assertEqual(
+                        str(ORCH.runner_hard_timeout_seconds(
+                            args.duration, args.warmup
+                        ) * 1000),
+                        command[command.index("--perfetto-duration-ms") + 1],
+                    )
+                else:
+                    self.assertNotIn("--perfetto-duration-ms", command)
+
+    def test_perfetto_on_requires_diagnostic_v2(self):
+        args = ORCH.build_parser().parse_args(["--diagnostic-perfetto", "on"])
+        with self.assertRaisesRegex(ORCH.OrchestratorError, "requires"):
+            ORCH.validate_cli(args)
+
+    def test_diagnostic_dry_runs_partition_trace_off_and_on(self):
+        payloads = []
+        for trace_mode in ("off", "on"):
+            args = ORCH.build_parser().parse_args([
+                "--dry-run", "--diagnostic-protocol-v2",
+                "--diagnostic-perfetto", trace_mode,
+            ])
+            ORCH.validate_cli(args)
+            payloads.append(ORCH.dry_run_payload(args))
+        self.assertFalse(payloads[0]["diagnostic_perfetto_enabled"])
+        self.assertTrue(payloads[1]["diagnostic_perfetto_enabled"])
+        self.assertNotEqual(
+            payloads[0]["config"]["diagnostic_protocol"]["result_partition"],
+            payloads[1]["config"]["diagnostic_protocol"]["result_partition"],
+        )
+
+    def test_trace_on_runner_intent_is_sent_only_after_matching_ready_ack(self):
+        session_id = "33333333-3333-3333-3333-333333333333"
+        args = ORCH.build_parser().parse_args([
+            "--diagnostic-protocol-v2", "--diagnostic-perfetto", "on",
+        ])
+        order = []
+
+        class ReadyLogger:
+            def wait_for_line(self, predicate, _timeout, _description):
+                order.append("wait_for_ready")
+                line = (
+                    f"capture started; diagnostic_session_id={session_id}; "
+                    "perfetto_ready=true"
+                )
+                if not predicate(line):
+                    raise AssertionError("matching readiness line was rejected")
+                order.append("ready_confirmed")
+                return line
+
+        class OrderedAdb:
+            def run(self, arguments, timeout=30, check=True):
+                order.append("runner_intent")
+                return subprocess.CompletedProcess(arguments, 0, "", "")
+
+        orchestrator = ORCH.ExperimentOrchestrator(
+            args, {"runs": []}, Path("unused-manifest.json")
+        )
+        orchestrator.adb = OrderedAdb()
+        readiness = orchestrator._await_logger_capture_ready(ReadyLogger(), session_id)
+        runner_arguments = ORCH.runner_intent_arguments(
+            "GPU", None, 30, 0,
+            "11111111-1111-1111-1111-111111111111",
+            "22222222-2222-2222-2222-222222222222",
+            diagnostic_protocol_v2=True,
+            diagnostic_session_id=session_id,
+            diagnostic_perfetto="on",
+        )
+        orchestrator._send_runner_intent_after_ready(readiness, runner_arguments)
+        self.assertEqual(
+            ["wait_for_ready", "ready_confirmed", "runner_intent"], order
+        )
+
+        with self.assertRaisesRegex(ORCH.OrchestratorError, "before Perfetto PID readiness"):
+            orchestrator._send_runner_intent_after_ready(
+                readiness | {"perfetto_ready": False}, runner_arguments
+            )
+        self.assertEqual(1, order.count("runner_intent"))
+
+    def test_runner_latency_wiring_auxiliary_source_check(self):
+        engine = (
+            MODULE_PATH.parent.parent
+            / "benchmark-runner/src/main/java/com/example/d1check/benchmarkrunner/"
+            / "GpuBenchmarkEngine.kt"
+        ).read_text(encoding="utf-8")
+        reset = engine.index("resetTensorBuffers(input, output)", engine.index("while (true)"))
+        coordinator = engine.index("OfficialInferenceCoordinator.execute", reset)
+        invoke = engine.index("activeRuntime::runInference", coordinator)
+        record = engine.index("telemetry::recordInference", invoke)
+        load_end = engine.index("loadEndedNs = dependencies.monotonicNanos()", record)
+        frozen_count = engine.index("completedInferenceCount = inferenceIndex", load_end)
+        readback = engine.index("dependencies.capturePostLoad", frozen_count)
+        self.assertLess(reset, coordinator)
+        self.assertLess(coordinator, invoke)
+        self.assertLess(invoke, record)
+        self.assertLess(record, load_end)
+        self.assertLess(load_end, frozen_count)
+        self.assertLess(frozen_count, readback)
+
+    def test_engine_cleanup_wiring_auxiliary_source_check(self):
+        engine = (
+            MODULE_PATH.parent.parent
+            / "benchmark-runner/src/main/java/com/example/d1check/benchmarkrunner/"
+            / "GpuBenchmarkEngine.kt"
+        ).read_text(encoding="utf-8")
+        shutdown = engine[engine.index('telemetry.measured("shutdown"'):]
+        collaborator = shutdown.index("IndependentResourceCleanup.close")
+        close_interpreter = shutdown.index("runtime?.closeInterpreter()", collaborator)
+        close_delegate = shutdown.index("runtime?.closeDelegate()", close_interpreter)
+        self.assertLess(collaborator, close_interpreter)
+        self.assertLess(close_interpreter, close_delegate)
+
     def test_duty_cycle_cli_bounds_are_rejected(self):
         for options in (
             ["--duty-cycle-percent", "0"],
@@ -775,6 +1061,56 @@ class OrchestratorTest(unittest.TestCase):
             with self.subTest(events=events):
                 with self.assertRaises(ORCH.RemoteRunnerValidationError):
                     ORCH.probe_remote_runner(remote_adb_for(events), "run-a")
+
+    def test_remote_v2_tail_rejects_other_diagnostic_session(self):
+        expected = "33333333-3333-3333-3333-333333333333"
+        foreign = "44444444-4444-4444-4444-444444444444"
+        events = [
+            gpu_event(
+                "inference", 622, protocol_version=2,
+                diagnostic_session_id=foreign, requested_trace_mode="off",
+            ),
+            completed_footer() | {
+                "protocol_version": 2,
+                "diagnostic_session_id": foreign,
+                "requested_trace_mode": "off",
+            },
+        ]
+        with self.assertRaisesRegex(
+            ORCH.RemoteRunnerValidationError, "diagnostic identity mismatch"
+        ):
+            ORCH.probe_remote_runner(
+                remote_adb_for(events), "run-a",
+                ORCH.REMOTE_DIAGNOSTIC_V2_DIRECTORY, expected, "off",
+            )
+
+    def test_diagnostic_identity_contract_covers_every_record_and_trace_mode(self):
+        session_id = "33333333-3333-3333-3333-333333333333"
+        events = [
+            {"event": event, "protocol_version": 2,
+             "diagnostic_session_id": session_id, "requested_trace_mode": "off"}
+            for event in (
+                "run_metadata", "warmup", "load_start", "inference",
+                "diagnostic_trace_stop", "load_end", "file_summary",
+            )
+        ]
+        metadata = events[0] | {"diagnostic_perfetto_enabled": False}
+        summary = {
+            "requested_trace_mode": "off",
+            "statistics_group": "diagnostic_v2_trace_off",
+            "diagnostic_trace_session_id": session_id,
+        }
+        finalized = metadata.copy()
+        checks = ORCH.diagnostic_result_identity_checks(
+            events, metadata, events[-1], summary, finalized, session_id, "off"
+        )
+        self.assertTrue(all(checks.values()))
+
+        events[3]["requested_trace_mode"] = "on"
+        checks = ORCH.diagnostic_result_identity_checks(
+            events, metadata, events[-1], summary, finalized, session_id, "off"
+        )
+        self.assertFalse(checks["diagnostic_identity_all_records"])
 
     def test_multiple_remote_files_are_ambiguous(self):
         listing = subprocess.CompletedProcess(
@@ -920,6 +1256,366 @@ class OrchestratorTest(unittest.TestCase):
                 [slot["slot_id"] for slot in ORCH.runnable_slots(loaded)],
             )
             self.assertEqual([], list(path.parent.glob("*.tmp")))
+
+    def _diagnostic_completed_orchestrator(self, directory, session_id, trace_mode="off"):
+        args = ORCH.build_parser().parse_args([
+            "--diagnostic-protocol-v2", "--diagnostic-perfetto", trace_mode,
+            "--resources", "CPU", "--warmup", "0",
+        ])
+        run_id = "11111111-1111-1111-1111-111111111111"
+        command_id = "22222222-2222-2222-2222-222222222222"
+        runner_session_id = "55555555-5555-5555-5555-555555555555"
+        run_dir = Path(directory) / "runs" / run_id
+        (run_dir / "gpu").mkdir(parents=True)
+        (run_dir / "merged").mkdir()
+        (run_dir / "diagnostics").mkdir()
+        runner_file = str(
+            run_dir / "gpu" / f"gpu-events-{run_id}-{runner_session_id}.jsonl"
+        )
+        summary_path = str(run_dir / "merged" / "summary.json")
+        trace_filename = (
+            f"d1check-{session_id}.perfetto-trace" if trace_mode == "on" else None
+        )
+        trace_bytes = b"real-perfetto-fixture"
+        trace_size = None
+        trace_sha = None
+        if trace_filename is not None:
+            trace_path = run_dir / "diagnostics" / trace_filename
+            trace_path.write_bytes(trace_bytes)
+            trace_size = len(trace_bytes)
+            trace_sha = ORCH.hashlib.sha256(trace_bytes).hexdigest()
+        control_results = (
+            {
+                stage: {
+                    "status": "completed",
+                    "returncode": returncode,
+                    "stdout": "",
+                    "stderr": "",
+                    "timeout_seconds": 5,
+                }
+                for stage, returncode in ORCH.DETACHED_SUCCESS_RETURN_CODES.items()
+            }
+            if trace_mode == "on" else {}
+        )
+        trace_metadata = {
+            "diagnostic_perfetto_enabled": trace_mode == "on",
+            "requested_trace_mode": trace_mode,
+            "diagnostic_perfetto_started": trace_mode == "on",
+            "diagnostic_trace_filename": trace_filename,
+            "diagnostic_trace_session_id": session_id,
+            "diagnostic_trace_size_bytes": trace_size,
+            "diagnostic_trace_sha256": trace_sha,
+            "diagnostic_perfetto_process_exited": True if trace_mode == "on" else None,
+            "diagnostic_perfetto_control_mode": (
+                "detached_session" if trace_mode == "on" else None
+            ),
+            "diagnostic_perfetto_session_key": (
+                f"d1check-{session_id}" if trace_mode == "on" else None
+            ),
+            "diagnostic_perfetto_start_pid": None,
+            "diagnostic_perfetto_control_results": control_results,
+            "diagnostic_perfetto_readiness_semantics": (
+                ORCH.DETACHED_READINESS_SEMANTICS if trace_mode == "on" else None
+            ),
+            "diagnostic_perfetto_pid_control": (
+                ORCH.DETACHED_PID_CONTROL if trace_mode == "on" else None
+            ),
+            "diagnostic_perfetto_config_write_into_file": (
+                True if trace_mode == "on" else None
+            ),
+            "diagnostic_perfetto_config_duration_ms": (
+                780000 if trace_mode == "on" else None
+            ),
+        }
+        duty = {
+            "requested_duty_cycle_percent": 100,
+            "duty_cycle_period_ns": 10_000_000_000,
+            "target_active_duration_ns": 600_000_000_000,
+            "actual_active_duration_ns": 600_000_000_000,
+            "actual_idle_duration_ns": 0,
+            "achieved_duty_cycle_percent": 100.0,
+            "completed_duty_cycle_count": 60,
+            "duty_cycle_active_overrun_ns": 0,
+            "completed_inference_count": 1,
+            "termination_reason": "duration_complete",
+        }
+        identity = {
+            "protocol_version": 2,
+            "diagnostic_session_id": session_id,
+            "requested_trace_mode": trace_mode,
+        }
+        metadata = {
+            "schema_version": 2, "source": "gpu", "event": "run_metadata",
+            "phase": "setup", "status": "ok", "sequence": 0,
+            "run_id": run_id, "runner_session_id": runner_session_id,
+            "command_id": command_id, "expected_run_id": run_id,
+            "resource": "CPU", "cpu_threads": 4, "cpu_affinity": "NONE",
+            "auto_start": True, "experiment_mode": "DIAGNOSTIC",
+            "limit_mode": "DURATION", "requested_duration_s": 600,
+            "target_duration_ns": 600_000_000_000, "warmup_count": 0,
+            "actual_load_duration_ns": 600_000_000_000,
+            "experiment_valid": True, "pilot_safety_pass": True,
+            "diagnostic_perfetto_enabled": trace_mode == "on",
+            "diagnostic_perfetto_started": trace_mode == "on",
+            "diagnostic_trace_filename": trace_filename,
+            "accuracy_preflight": {
+                "status": "not_run",
+                "validation_scope": "timed_run_does_not_execute_preflight",
+            },
+            "energy_measurement": {
+                "status": "raw_unverified", "current_unit_verified": False,
+                "charge_counter_unit_verified": False, "calculation_performed": False,
+            },
+            "thread_diagnostics": {
+                "collection_scope": "before_and_after_load_only_not_per_inference",
+                "before_load": {"status": "ok"}, "after_load": {"status": "ok"},
+            },
+            "output_readback_evidence": {
+                "status": "passed", "performed_after_latency_timer": True,
+                "performed_after_load_end": True,
+            },
+            "cpu_execution_profile": {
+                "requested_num_threads": 4,
+                "interpreter_options_set_num_threads_applied": True,
+                "xnnpack_requested": True,
+            },
+            **identity, **duty,
+        }
+        footer = {
+            "schema_version": 2, "source": "gpu", "event": "file_summary",
+            "phase": "flush", "status": "ok", "sequence": 1,
+            "run_id": run_id, "runner_session_id": runner_session_id,
+            **identity, **duty,
+        }
+        Path(runner_file).write_text(
+            json.dumps(metadata) + "\n" + json.dumps(footer) + "\n",
+            encoding="utf-8",
+        )
+        config = ORCH.experiment_config(args)
+        summary = {
+            "schema_version": 2, "run_id": run_id, "resource": "CPU",
+            "run_envelope_validation": "pass", "runner_session_count": 1,
+            "thermal_coverage": {"passes_formal_requirement": True},
+            "accuracy_preflight": config["accuracy_preflight"],
+            "gpu_delegate_profile": None,
+            "profile_consistency_validation": {"status": "not_applicable"},
+            "statistics_group": f"diagnostic_v2_trace_{trace_mode}",
+            "diagnostic_session_id": session_id,
+            **trace_metadata,
+        }
+        capture = {"capture_error": None, "protocol_version": 2,
+                   "diagnostic_session_id": session_id, **trace_metadata}
+        finalized = dict(metadata)
+        finalized.update(trace_metadata)
+        Path(summary_path).write_text(json.dumps(summary) + "\n", encoding="utf-8")
+        (run_dir / "metadata.json").write_text(
+            json.dumps(capture) + "\n", encoding="utf-8"
+        )
+        (run_dir / "merged" / "runner_metadata.json").write_text(
+            json.dumps(finalized) + "\n", encoding="utf-8"
+        )
+        slot = {
+            "slot_id": "cpu-t04-d100-r001", "condition_id": "cpu-t04-d100",
+            "repetition": 1, "status": "completed",
+            "resource": "CPU", "cpu_threads": 4, "duty_cycle_percent": 100,
+            "run_id": run_id, "command_id": command_id,
+            "diagnostic_session_id": session_id, "run_dir": str(run_dir),
+            "diagnostic_trace": dict(trace_metadata),
+        }
+        manifest = {
+            "runs": [slot], "config": config,
+            "accuracy_preflight": config["accuracy_preflight"],
+        }
+        orchestrator = ORCH.ExperimentOrchestrator(
+            args, manifest, Path(directory) / ORCH.MANIFEST_NAME
+        )
+        slot["validation"] = orchestrator._validate_slot_result(slot)
+        self.assertTrue(slot["validation"]["valid"], slot["validation"]["failed_checks"])
+        slot["result_provenance"] = orchestrator._result_provenance(slot, slot["validation"])
+        return orchestrator, slot, runner_file, summary_path
+
+    def test_completed_diagnostic_resume_revalidates_same_session(self):
+        session_id = "33333333-3333-3333-3333-333333333333"
+        with tempfile.TemporaryDirectory() as directory:
+            orchestrator, slot, _runner_file, _summary_path = (
+                self._diagnostic_completed_orchestrator(directory, session_id)
+            )
+            orchestrator.validate_completed_diagnostic_slots()
+            self.assertEqual(1, len(orchestrator.manifest["runs"]))
+
+    def test_completed_diagnostic_resume_rejects_foreign_session_result(self):
+        manifest_session = "33333333-3333-3333-3333-333333333333"
+        result_session = "44444444-4444-4444-4444-444444444444"
+        with tempfile.TemporaryDirectory() as directory:
+            orchestrator, slot, _runner_file, _summary_path = (
+                self._diagnostic_completed_orchestrator(directory, manifest_session)
+            )
+            slot["diagnostic_session_id"] = result_session
+            with self.assertRaisesRegex(ORCH.OrchestratorError, "diagnostic_session_id"):
+                orchestrator.validate_completed_diagnostic_slots()
+
+    def test_completed_diagnostic_resume_rejects_different_trace_mode_result(self):
+        session_id = "33333333-3333-3333-3333-333333333333"
+        with tempfile.TemporaryDirectory() as directory:
+            orchestrator, slot, _runner_file, _summary_path = (
+                self._diagnostic_completed_orchestrator(directory, session_id)
+            )
+            capture_path = Path(directory) / "runs" / slot["run_id"] / "metadata.json"
+            capture = json.loads(capture_path.read_text(encoding="utf-8"))
+            capture["requested_trace_mode"] = "on"
+            capture_path.write_text(json.dumps(capture), encoding="utf-8")
+            with self.assertRaisesRegex(ORCH.OrchestratorError, "diagnostic_trace_artifact"):
+                orchestrator.validate_completed_diagnostic_slots()
+
+    def test_completed_diagnostic_resume_rejects_replayed_result_identity(self):
+        session_id = "33333333-3333-3333-3333-333333333333"
+        with tempfile.TemporaryDirectory() as directory:
+            orchestrator, slot, runner_file, summary_path = (
+                self._diagnostic_completed_orchestrator(directory, session_id)
+            )
+            replay = dict(slot)
+            replay["repetition"] = 2
+            replay["slot_id"] = "cpu-t04-d100-r002"
+            replay["validation"] = dict(slot["validation"])
+            orchestrator.manifest["runs"].append(replay)
+            with self.assertRaisesRegex(ORCH.OrchestratorError, "replays"):
+                orchestrator.validate_completed_diagnostic_slots()
+
+    def test_completed_diagnostic_resume_rejects_replaced_artifact_hash(self):
+        session_id = "33333333-3333-3333-3333-333333333333"
+        with tempfile.TemporaryDirectory() as directory:
+            orchestrator, slot, runner_file, summary_path = (
+                self._diagnostic_completed_orchestrator(directory, session_id)
+            )
+            summary = json.loads(Path(summary_path).read_text(encoding="utf-8"))
+            summary["fixture_replacement"] = True
+            Path(summary_path).write_text(json.dumps(summary) + "\n", encoding="utf-8")
+            with self.assertRaisesRegex(ORCH.OrchestratorError, "hash provenance"):
+                orchestrator.validate_completed_diagnostic_slots()
+
+    def test_completed_trace_on_resume_rejects_deleted_replaced_and_hash_changed_trace(self):
+        session_id = "33333333-3333-3333-3333-333333333333"
+        for mutation in ("delete", "replace", "hash"):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as directory:
+                orchestrator, slot, _runner, _summary = (
+                    self._diagnostic_completed_orchestrator(directory, session_id, "on")
+                )
+                trace = (
+                    Path(slot["run_dir"]) / "diagnostics" /
+                    f"d1check-{session_id}.perfetto-trace"
+                )
+                if mutation == "delete":
+                    trace.unlink()
+                elif mutation == "replace":
+                    replacement = trace.with_suffix(".replacement")
+                    replacement.write_bytes(b"replacement-trace")
+                    replacement.replace(trace)
+                else:
+                    trace.write_bytes(trace.read_bytes() + b"changed")
+                with self.assertRaisesRegex(
+                    ORCH.OrchestratorError, "diagnostic_trace_artifact"
+                ):
+                    orchestrator.validate_completed_diagnostic_slots()
+
+    def test_completed_trace_off_resume_rejects_unexpected_real_trace(self):
+        session_id = "33333333-3333-3333-3333-333333333333"
+        with tempfile.TemporaryDirectory() as directory:
+            orchestrator, slot, _runner, _summary = (
+                self._diagnostic_completed_orchestrator(directory, session_id, "off")
+            )
+            (Path(slot["run_dir"]) / "diagnostics" / "unexpected.perfetto-trace").write_bytes(
+                b"unexpected"
+            )
+            with self.assertRaisesRegex(
+                ORCH.OrchestratorError, "diagnostic_trace_artifact"
+            ):
+                orchestrator.validate_completed_diagnostic_slots()
+
+    def test_completed_trace_on_rejects_detached_session_key_mixing(self):
+        session_id = "33333333-3333-3333-3333-333333333333"
+        with tempfile.TemporaryDirectory() as directory:
+            orchestrator, slot, _runner, _summary = (
+                self._diagnostic_completed_orchestrator(directory, session_id, "on")
+            )
+            run_dir = Path(slot["run_dir"])
+            capture = json.loads(
+                (run_dir / "metadata.json").read_text(encoding="utf-8")
+            )
+            capture["diagnostic_perfetto_session_key"] = (
+                "d1check-44444444-4444-4444-4444-444444444444"
+            )
+            (run_dir / "metadata.json").write_text(
+                json.dumps(capture) + "\n", encoding="utf-8"
+            )
+            with self.assertRaisesRegex(
+                ORCH.OrchestratorError, "detached session key"
+            ):
+                ORCH.validate_diagnostic_trace_artifact(
+                    run_dir,
+                    capture,
+                    json.loads((run_dir / "merged" / "summary.json").read_text(
+                        encoding="utf-8"
+                    )),
+                    json.loads((run_dir / "merged" / "runner_metadata.json").read_text(
+                        encoding="utf-8"
+                    )),
+                    session_id,
+                    "on",
+                )
+
+    def test_completed_trace_on_resume_rejects_symlinked_trace(self):
+        session_id = "33333333-3333-3333-3333-333333333333"
+        with tempfile.TemporaryDirectory() as directory:
+            orchestrator, slot, _runner, _summary = (
+                self._diagnostic_completed_orchestrator(directory, session_id, "on")
+            )
+            trace = (
+                Path(slot["run_dir"]) / "diagnostics" /
+                f"d1check-{session_id}.perfetto-trace"
+            )
+            external = Path(directory) / "external-trace"
+            external.write_bytes(trace.read_bytes())
+            trace.unlink()
+            try:
+                os.symlink(external, trace)
+            except OSError as error:
+                self.skipTest(f"symlink creation unavailable: {error}")
+            with self.assertRaisesRegex(
+                ORCH.OrchestratorError, "diagnostic_trace_artifact"
+            ):
+                orchestrator.validate_completed_diagnostic_slots()
+
+    def test_completed_resume_rejects_slot_and_provenance_changed_together(self):
+        session_id = "33333333-3333-3333-3333-333333333333"
+        with tempfile.TemporaryDirectory() as directory:
+            orchestrator, slot, _runner, _summary = (
+                self._diagnostic_completed_orchestrator(directory, session_id)
+            )
+            slot["slot_id"] = "cpu-t04-d100-r009"
+            slot["result_provenance"]["slot_id"] = slot["slot_id"]
+            with self.assertRaisesRegex(ORCH.OrchestratorError, "deterministic plan"):
+                orchestrator.validate_completed_diagnostic_slots()
+
+    def test_completed_resume_provenance_artifact_contract_is_fixed(self):
+        session_id = "33333333-3333-3333-3333-333333333333"
+        mutations = (
+            lambda provenance: provenance.update({"schema_version": 99}),
+            lambda provenance: provenance["artifacts"].pop("summary"),
+            lambda provenance: provenance["artifacts"].update({
+                "extra": dict(provenance["artifacts"]["runner_jsonl"])
+            }),
+            lambda provenance: provenance["artifacts"]["summary"].update({
+                "path": "merged/renamed.json"
+            }),
+        )
+        for mutate in mutations:
+            with tempfile.TemporaryDirectory() as directory:
+                orchestrator, slot, _runner, _summary = (
+                    self._diagnostic_completed_orchestrator(directory, session_id)
+                )
+                mutate(slot["result_provenance"])
+                with self.assertRaisesRegex(ORCH.OrchestratorError, "hash provenance"):
+                    orchestrator.validate_completed_diagnostic_slots()
 
     def test_legacy_resume_adds_axes_without_reordering_or_replacing_reference(self):
         args = ORCH.build_parser().parse_args([
