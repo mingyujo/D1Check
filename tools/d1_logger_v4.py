@@ -26,6 +26,16 @@ from typing import Any, Iterable
 VERSION = "4.1"
 DEFAULT_INTERVAL_S = 1.0
 RUNNER_PACKAGE = "com.example.d1check.benchmarkrunner"
+
+# Devices whose GPU measurement path has been validated end to end: the
+# delegate is created, takes every node, leaves no fallback evidence, and
+# produces outputs numerically equivalent to CPU. Adding a prefix here is a
+# claim that this evidence exists; see s26/patches/README.md patch 2.
+#   SM-A245  Galaxy A24  the device the v4 stack was built and validated on
+#   SM-S942  Galaxy S26  validated 2026-09-13, s26/results/PILOT_RESULTS.md
+#            its LiteRT compatibility-list verdict is false, so its runs
+#            carry formal_gpu_compat_list_override=True
+FORMAL_GPU_VALIDATED_DEVICE_PREFIXES = ("SM-A245", "SM-S942")
 TEMP_RE = re.compile(
     r"mValue=(-?[\d.]+),\s*mType=\d+,\s*mName=([^,}]+)", re.IGNORECASE
 )
@@ -1112,11 +1122,14 @@ def analyze(run_dir: Path) -> None:
         analysis_warnings.append(
             "legacy GPU run lacks explicit gpu_delegate_profile; no profile was inferred"
         )
-    galaxy_a24 = str(capture_metadata.get("device_model", "")).upper().startswith("SM-A245")
+    device_model = str(capture_metadata.get("device_model", "")).upper()
+    gpu_validated_device = device_model.startswith(
+        FORMAL_GPU_VALIDATED_DEVICE_PREFIXES
+    )
     formal_gpu_valid = (
         is_gpu
         and mode == "basic"
-        and galaxy_a24
+        and gpu_validated_device
         and metadata_event.get("model_sha256") ==
             "D95B3C5EA86750CEF882FA867CA357DFE4D265D0B80B67E83277A0BDA310CFBB"
         and metadata_event.get("litert_version") == "1.4.2"
@@ -1155,6 +1168,14 @@ def analyze(run_dir: Path) -> None:
         "gpu_delegate_profile": gpu_profile if is_gpu and isinstance(gpu_profile, dict) else None,
         "profile_consistency_validation": profile_validation,
         "formal_gpu_valid": formal_gpu_valid if is_gpu else None,
+        "gpu_compatibility_list_supported": (
+            metadata_event.get("gpu_compatibility_list_supported")
+            if is_gpu else None
+        ),
+        "formal_gpu_compat_list_override": (
+            metadata_event.get("gpu_compatibility_list_supported") is False
+            if is_gpu else None
+        ),
         "analysis_warnings": analysis_warnings,
         "inference_latency": latency_stats(latencies),
         "duty_cycle": {

@@ -33,11 +33,18 @@ echo Using python : %PY%
 
 REM ---------- wireless serial ----------
 set "SER="
+set "SER_ANY="
+REM  A wireless serial is either ip:port or an mDNS transport name that
+REM  starts with "adb-". Prefer wireless; fall back to whatever single
+REM  device is attached.
 for /f "usebackq skip=1 tokens=1,2" %%a in (`"%ADB%" devices`) do (
   if "%%b"=="device" (
+    set "SER_ANY=%%a"
     echo %%a | findstr ":" >nul && set "SER=%%a"
+    echo %%a | findstr /B "adb-" >nul && set "SER=%%a"
   )
 )
+if not defined SER set "SER=%SER_ANY%"
 if not defined SER (
   echo.
   echo [X] No wireless device found. Run s26_wifi.bat first, then unplug USB.
