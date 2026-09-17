@@ -1,7 +1,7 @@
 # D1Check 두 작업 실험·평가 계약
 
 - 버전: 1.1 / 설계일: 2026-09-17 / 상태: **planned, 미구현·미실측**
-- 상위 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.1. 현재 작업은 `SCOPE-02`다.
+- 상위 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.1. [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md)의 근거 조사를 완료했고 현재 작업은 `MODEL-02A`다.
 - 예약 protocol ID: `multitask-v1`. 현재 `d1_calibration_cli.py`는 이 protocol을 처리하지 않는다. 이 문서는 존재하지 않는 실행 명령을 제시하지 않는다.
 - legacy `calibration-v1`/schema 2/image-v3, formal v1, diagnostic v2는 [CALIBRATION_PROTOCOL.md](CALIBRATION_PROTOCOL.md)와 기존 코드 계약을 유지한다.
 - 절대 deadline: `calibration_pending`. 효과·서비스·안전·최종 반복 수의 수치: `thresholds_pending`. 값이 비어 있는 formal 실행은 금지한다.

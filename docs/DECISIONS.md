@@ -122,6 +122,16 @@
 - 사용 패턴의 현실 근거는 조사하되 특정 사진 앱의 수요 인터뷰를 모든 개발의 선행 조건으로 만들지 않는다. 미확인 패턴은 합성 가정으로 공시한다.
 - 현재 작업 SCOPE-02, deadline/thresholds 미확정 상태와 개발→동결→독립 평가 원칙을 유지한다. 이 결정은 새 구현·실측 PASS가 아니다.
 
+## 2026-09-17 — SCOPE-02 근거 경계와 MODEL-02 분리
+
+- 상태: 채택 — [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md)에 확인 사실·추론·합성 가정을 분리해 기록하고 다음 작업을 `MODEL-02A`로 전환한다.
+- 기존 작업: A24/S26 80슬롯, diagnostic v2, CALIB-01B는 폐기하지 않는다. 자원 우열의 기기 의존성, 측정·provenance, production 측정 경계의 근거로 유지한다. legacy MobileNet 8장/1001행 라벨은 새 두 작업의 필수 입력에서 제외하고 재현 과제로 보류한다.
+- workload: W-burst와 W-sustain을 primary, W-low·W-peer·task/priority swap을 supporting으로 유지한다. 실제 사용자 도착 로그가 없으므로 arrival trace는 합성 조건이라고 명시하고 모델·전후처리·I/O는 A24에서 실제 실행한다.
+- 작업 후보: EfficientNet-Lite0 FLOAT32와 EfficientDet-Lite0 FLOAT32를 유지한다. 공식 안내와 label 후보 구조만 확인했으며 exact artifact/license/hash·metadata/tensor 결합·A24 지원은 승인하지 않았다. 탐지의 공식 label map은 90 index row 중 10 placeholder로 80 object class를 표현하므로 dense 80행으로 가정하지 않는다.
+- 차별성: Band·Sung et al.·Pantheon·CoDL 등 모바일 multi-DNN/이종 실행 연구가 이미 있으므로 최초성을 주장하지 않는다. A24 한 앱의 whole-request 비선점 배정, 서비스 제약, co-run 간섭, 강한 정적·단순 동적 기준정책 대비 재현 실증으로 범위를 좁힌다.
+- 중복 조사: 공개 공식 대회 목록과 접근 가능한 프로그램에서 동일 제목은 확인하지 못했으나 최근 3개년 전체 출품작 감사가 아니므로 중복 없음은 미확정이다. 제출 전 `RELATED-02`에서 다시 확인한다.
+- MODEL-02 분리: `MODEL-02A`는 host artifact/source/license/tensor/label/golden output, `MODEL-02B`는 승인 bundle의 A24 CPU/GPU·delegation·품질·메모리 smoke다. SCOPE-02 완료는 모델 승인·앱 구현·실기기 PASS나 정책 효과를 뜻하지 않는다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

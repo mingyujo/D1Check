@@ -1,12 +1,12 @@
 # D1Check 프로젝트 실행계획
 
-- 개정: 4.1 / 2026-09-17 / 혼합 요청 조건을 주평가로 명확화하고 사용 사례는 시연 후보로 분리
+- 개정: 4.1 / 2026-09-17 / 혼합 요청 조건을 주평가로 명확화하고 SCOPE-02 근거 조사를 완료
 - 기준 코드: `df8192aa61eebacf83df7a7815f0c60c8bbf4004`의 `master`. 이 개정은 문서 변경이며 새 모델·스케줄러 구현 또는 실기기 PASS가 아니다.
-- 현재 작업: `SCOPE-02` — 혼합 요청 조건의 근거·모델 후보·입력 출처를 검증한다.
+- 현재 작업: `MODEL-02A` — 후보 모델의 정확한 artifact·label·license·tensor 계약을 검증한다.
 - 새 절대 deadline은 `calibration_pending`, 서비스 하한·성공 기준·최종 반복 수는 `thresholds_pending`이다.
 - 유지: A24-only 직접 검증, 기존 80슬롯과 diagnostic v1/v2 원본, CALIB-01B PASS, 실패를 포함한 전체 도착 분모.
 - 전환: 단일 분류 모델은 기존 기준선으로 보존하고, 서로 다른 두 AI 작업의 요청 배정 문제를 새 주평가로 준비한다. 구체 모델과 마감시간은 아직 미확정이다.
-- 문서 역할: 이 문서는 목표·우선순위, [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)는 새 실험 계약, [CALIBRATION_PROTOCOL.md](CALIBRATION_PROTOCOL.md)는 구현된 단일 모델 계약, [PROJECT_STATUS.md](PROJECT_STATUS.md)는 현재 진행 상태다.
+- 문서 역할: 이 문서는 목표·우선순위, [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md)는 혼합 요청·후보·선행 연구의 근거와 한계, [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)는 새 실험 계약, [CALIBRATION_PROTOCOL.md](CALIBRATION_PROTOCOL.md)는 구현된 단일 모델 계약, [PROJECT_STATUS.md](PROJECT_STATUS.md)는 현재 진행 상태다.
 
 ## 1. 한 문장으로 설명하는 프로젝트
 
@@ -32,7 +32,7 @@
 
 사진 정리 시연을 채택한다면 누적 사진의 태그·색인은 일반 결과의 durable persistence/readback, 선택 사진의 box/label은 긴급 output-ready로 연결한다. 다른 시연을 골라도 task별 입력·출력·완료 경계를 먼저 고정하고 정책마다 같은 실제 작업을 수행한다. 시연을 늘리는 것이 연구의 필수 목표는 아니다.
 
-SCOPE-02에서는 작업이 겹칠 근거와 요청 패턴의 현실성을 조사한다. 사용 관찰·기록 또는 3~5명의 짧은 과업 인터뷰는 가능한 근거 확보 방법이며, 특정 사진 기능의 수요 인터뷰를 모든 개발의 선행 조건으로 만들지 않는다. 근거가 없으면 합성 도착 조건이라고 표시한다. 작은 인터뷰 표본으로 시장 수요·채택률·실사용 도착 분포를 추정하지 않는다.
+SCOPE-02 조사 결과는 [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md)에 기록했다. 모바일 multi-DNN·이종 프로세서 scheduling 문제와 관련 연구는 확인했지만 한 앱에서의 실제 도착 빈도·burst 분포를 입증한 사용자 로그는 확보하지 못했다. 따라서 W-burst/W-sustain의 arrival trace는 합성 실험 조건으로 공시한다. 사용 관찰·기록 또는 3~5명의 짧은 과업 인터뷰는 가능한 보조 근거지만 특정 사진 기능의 수요 인터뷰를 모든 개발의 선행 조건으로 만들지 않는다. 작은 인터뷰 표본으로 시장 수요·채택률·실사용 도착 분포를 추정하지 않는다.
 
 통역·OCR·게임·LLM은 향후 작업 유형의 예시다. 현재 두 시각 모델을 검증한 결과로 그 작업들의 성능을 주장하지 않는다. 다른 앱이나 OS 스케줄러를 제어하는 구현도 아니다. 실측 없는 작업을 `sleep()`이나 분류 반복 횟수 변경으로 흉내 내고 실제 다중 AI 검증으로 표시하지 않는다.
 
@@ -61,12 +61,12 @@ SCOPE-02에서는 작업이 겹칠 근거와 요청 패턴의 현실성을 조�
 | 역할 | 먼저 검증할 후보 | 선택 이유와 상태 |
 | --- | --- | --- |
 | 과거 비교 기준 | 기존 MobileNet V1 | 80슬롯과 CALIB-01B 재현용. 원 모델·파일·해시 보존. 1001행 라벨 출처 미확인 문제는 해결된 것으로 처리하지 않음 |
-| 새 분류 작업 | 공식 배포 EfficientNet-Lite0 FLOAT32 | 모델·라벨·metadata의 연결을 확인하기 쉬운 후보. A24/현재 LiteRT 호환성은 미검증 |
-| 새 객체탐지 작업 | 공식 배포 EfficientDet-Lite0 FLOAT32 | 기존 이미지 입출력과 결합 가능한 다른 실제 작업. 실패할 경우 SSD MobileNetV2 FLOAT32를 한 번 검토 |
+| 새 분류 작업 | EfficientNet-Lite0 FLOAT32 후보 | 공식 안내와 1001행 label 후보(0행 background)를 확인. exact artifact/license/hash·metadata·A24/현재 LiteRT 호환성은 미검증 |
+| 새 객체탐지 작업 | EfficientDet-Lite0 FLOAT32 후보 | 공식 안내와 90행 sparse label map(80 object + 10 placeholder)을 확인. exact artifact/license/hash·tensor·A24 지원은 미검증; 실패하면 SSD MobileNetV2 FLOAT32를 한 번 검토 |
 
 이는 최신 모델 경연이 아니다. 공개된 [분류 모델 안내](https://developers.google.com/edge/mediapipe/solutions/vision/image_classifier)와 [탐지 모델 안내](https://developers.google.com/edge/mediapipe/solutions/vision/object_detector)는 후보의 근거이며, 표의 다른 기기 성능을 A24 성능으로 사용하지 않는다. 파일을 확보한 뒤 실제 출력 tensor/metadata·label index를 검사해야 한다. 공식 문서가 있다는 이유만으로 특정 파일의 라이선스·1000/1001행 대응·GPU full delegation이 검증된 것은 아니다.
 
-MODEL-02는 출처/라벨, 정확도, CPU/GPU 실행 가능성, 메모리, 초기화 비용을 먼저 통과시킨다. 이때 smoke는 후보 모델을 실행하는 최소 독립 probe로 수행하고, TASK-02에서 사용자 경로와 공통 runner에 연결한다. 작업별 후보는 최대 2개까지이며 정책 P가 유리해지는 조합을 찾으려고 계속 바꾸지 않는다. 선정 기준과 제외 후보를 결과와 함께 보존한다. GPU가 항상 불리하거나 미지원이면 그 사실을 받아들이고 큐 순서·동시성 제한의 효과를 검토한다.
+MODEL-02A는 host에서 exact model/label source, license, byte count/SHA-256, metadata·tensor·index 계약과 golden output을 확인한다. MODEL-02B는 승인 bundle의 A24 CPU/GPU 실행 가능성, 실제 delegation/fallback, 품질, 메모리, 초기화 비용을 최소 독립 probe로 확인한다. TASK-02에서만 사용자 경로와 공통 runner에 연결한다. 작업별 후보는 최대 2개까지이며 정책 P가 유리해지는 조합을 찾으려고 계속 바꾸지 않는다. 선정 기준과 제외 후보를 결과와 함께 보존한다. GPU가 항상 불리하거나 미지원이면 그 사실을 받아들이고 큐 순서·동시성 제한의 효과를 검토한다.
 
 ## 5. 기존 구현과 새 구현의 경계
 
@@ -132,8 +132,8 @@ B2는 같은 장치의 모든 합법적 task별 배정 후보(두 task·두 경�
 
 | 작업 | 내부 목표 | 완료 조건 | 불충족 시 |
 | --- | --- | --- | --- |
-| SCOPE-02 | 09-17~09-19 | 혼합 요청 조건·현실 근거/합성 가정, 작업 후보의 출처·라벨·계약 조사표, 선택적 시연 후보 | 패턴 근거 미확인은 합성 가정으로 표시; 특정 앱 수요를 입증한 것으로 쓰지 않음 |
-| MODEL-02 | 09-20~09-23 | 두 모델 파일/labels/license/hash와 tensor 계약, A24 CPU·GPU 후보 smoke 및 품질·메모리 확인 | GPU 미지원은 unsupported; 모델 대체는 사전 후보 안에서만, 동적 자원 주장은 재검토 |
+| SCOPE-02 | 09-17 완료 | `completed_with_open_gates`: 혼합 조건·합성 가정, 공식 안내/label 후보, 선행 연구·대회 적합성·선택적 시연을 근거 문서에 기록 | exact artifact/license·A24 성능과 최근 대회 전체 중복 감사는 후속 gate; 특정 앱 수요를 입증한 것으로 쓰지 않음 |
+| MODEL-02A/B | 09-18~09-23 | 두 모델 파일/labels/license/hash와 tensor 계약, A24 CPU·GPU 후보 smoke 및 품질·메모리 확인 | GPU 미지원은 unsupported; 모델 대체는 사전 후보 안에서만, 동적 자원 주장은 재검토 |
 | TASK-02 | 09-24~09-28 | 두 실제 adapter, 독립 arrival, UI 결과·저장, 실패 포함 ledger와 validator 동작 테스트 | 단일 모델 pipeline을 다중 작업 완성으로 표시하지 않음 |
 | PROFILE-02 | 09-29~10-03 | 단독/전환/허용 co-run 프로파일, thermal 연결, deadline·입력·주평가 규칙 고정 | 불안정 원인 수정; 병행은 이득 없으면 금지 |
 | SCHED-02 | 10-04~10-08 | B0~B3/P 개발 비교, 구성요소 제거 비교, feasibility 판정, 평가 설정 freeze | B2/B3와 차이 없으면 복잡한 정책 확대 중단 |
@@ -174,11 +174,12 @@ B2는 같은 장치의 모든 합법적 task별 배정 후보(두 task·두 경�
 
 ## 12. 관련 근거와 주장 범위
 
-2026-09-17 확인. 아래 자료는 기능·기존 연구의 근거이며 실제 앱의 보급률이나 D1Check의 성능 우수성을 증명하지 않는다.
+2026-09-17 확인. 상세 조사와 주장 경계는 [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md)에 있다. 아래 자료는 기능·기존 연구의 근거이며 실제 앱의 보급률이나 D1Check의 성능 우수성을 증명하지 않는다.
 
-- [대회 공식 공고](https://kiie.org/board/board.asp?Action=content&B_CATE=BBS2&GotoPage=7&b_code=10308) 및 사용자 제공 `2026년_제22회_대학생프로젝트_경진대회_안내문_및_참가신청서_0727.pdf` 1~2쪽: 실무 결과·창의성·전공지식·활용성, 표지 포함 15쪽·10MB, 학생 주도와 중복 응모 제한. 이전 수상작과 유사성 검토는 SCOPE-02에서 남길 과제이며 이번에 독창성이 확정된 것은 아니다.
+- [2026년 대회 공식 페이지](https://kiie.org/Conference/ConferenceView.asp?AC=2&CODE=CI20260701&CpPage=) 및 사용자 제공 `2026년_제22회_대학생프로젝트_경진대회_안내문_및_참가신청서_0727.pdf` 1~2쪽: 실무 결과·창의성·전공지식·활용성, 표지 포함 15쪽·10MB, 학생 주도와 중복 응모 제한. 공개 공식 목록과 접근 가능한 프로그램에서 동일 제목을 확인하지 못했지만 최근 3개년 전체 출품작 감사가 아니므로 독창성이 확정된 것은 아니다.
 - [Google Acceleration Service](https://developers.google.com/edge/litert/android/acceleration_service): 모델과 기기에 맞는 가속 설정 평가가 이미 존재한다. 기기별 초기 calibration 자체를 독창성으로 주장하지 않는다.
 - [Sung et al., USENIX ATC 2023](https://www.usenix.org/conference/atc23/presentation/sung): 모바일 multi-instance DNN의 앱 수준 적응형 스케줄링 연구가 존재한다. 본 계획은 한 앱·A24·설명 가능한 요청 단위 정책의 재현 가능한 검증으로 범위를 제한한다. 해당 논문 대비 성능 우위를 주장하려면 별도 직접 비교가 필요하다.
+- [Band, MobiSys 2022](https://doi.org/10.1145/3498361.3538948), [Pantheon, MobiSys 2024](https://lixianghan.github.io/), [CoDL, MobiSys 2022](https://doi.org/10.1145/3498361.3538932): 이종 프로세서 multi-DNN 조정, GPU preemption, operator 단위 CPU/GPU co-execution이 이미 연구됐다. D1Check는 whole-request 비선점·service-level 제약·A24 실증으로 범위를 좁히며 최초성이나 직접 성능 우위를 주장하지 않는다.
 - [Android Thermal API](https://developer.android.com/games/optimize/adpf/thermal): 열 관측·부하 조절 기능과 기기별 지원 한계. thermal status 0을 스로틀링 부재의 확증으로 사용하지 않는다.
 
 ## 13. 보존하는 기존 증거와 한계
