@@ -64,6 +64,36 @@
 - workload: reference warm 일반 처리능력에 대한 0.4/0.9 utilization과 0.6 일반 + 3건 urgent burst 조건을 기기별로 생성하며 동일 기기 정책 간 arrival trace를 고정한다. 실제 사용자 로그가 없는 synthetic 조건임을 공시한다.
 - 영향: `docs/CALIBRATION_PROTOCOL.md`, PROJECT_PLAN의 CALIB-01A/01B 연결, PROJECT_STATUS의 다음 작업 CALIB-01B. production 코드·테스트·실기기와 기존 자료는 이 단계에서 변경하지 않는다.
 
+## 2026-09-16 — CALIB-01B 모듈 경계와 영구 저장 완료 의미
+
+- 상태: 채택 — CALIB-01A의 후보를 현재 production 소유권에 맞춰 최소 구현함.
+- 결정: 실제 이미지 calibration production 경로는 모델 asset, LiteRT, GPU delegate를 소유한 `benchmark-runner`에 둔다. telemetry-only app의 기존 사용자 `MainActivity`와 formal/diagnostic v1/v2 경로는 변경하지 않는다.
+- 영구 저장 완료: app-private external-files session의 임시 파일에 write/flush하고 `FileDescriptor.sync()`한 뒤 동일 디렉터리 최종 파일로 atomic rename하고 byte-for-byte readback에 성공한 시점이다. 저장장치 controller의 물리 flush 완료는 주장하지 않는다.
+- backend: CPU/GPU는 요청 전에 고정한다. backend별 Interpreter를 한 worker에서 재사용하며 GPU 실패를 CPU로 조용히 대체하지 않는다. Java API로 GPU full delegation을 증명할 수 없으면 `unverified_requires_host_delegate_log`를 기록하고 host 증거 전에는 해당 GPU cell을 정식 결과로 승인하지 않는다.
+- artifact: `calibration-v1`/schema 1을 기존 v1/v2와 분리하고 canonical session/request UUID, 고정 경로, exact artifact set, byte count와 SHA-256을 production/host 양쪽에서 fail-closed 검증한다.
+- 영향: benchmark-runner calibration production/test, 별도 host CLI/test, CALIBRATION_PROTOCOL/PLAN/STATUS. 동적 scheduler, mixed arrival generator, ADB 실행은 포함하지 않는다.
+- 마감시간: 전체 검증과 A24 pilot 전까지 `calibration_pending`을 유지한다.
+
+## 2026-09-16 — CALIB-01B-FIX2-A24 범위·deadline·thermal·EXIF 계약
+
+- 상태: 채택.
+- 직접 실기기 범위: CALIB-01C와 최종 스케줄러의 새 실기기 검증은 Galaxy A24만 수행한다. S26 formal 80슬롯은 기기별 CPU/GPU 특성 차이의 보조 자료로 유지하며 S26 end-to-end calibration·스케줄러 검증을 주장하지 않는다.
+- GPU: strict `CompatibilityList` gate와 silent CPU fallback 금지를 유지한다. S26 compatibility override나 기기 모델 우회는 구현하지 않는다. A24 GPU 진입 가능 여부는 후속 smoke에서 확인한다.
+- 완료와 deadline: output-ready 또는 durable persistence가 완료되면 늦었더라도 `terminal_status=succeeded`다. `deadline_outcome`은 `not_set`, `on_time`, `late`, `not_completed`로 분리한다. `expired`는 deadline 때문에 실제 완료되지 못한 요청에만 사용하며 failed/rejected/expired에는 결과 artifact가 없어야 한다.
+- 집계: 늦은 성공은 전체 완료율에는 포함하고 기한 내 완료율에는 포함하지 않는다. 실패·거절·만료를 전체 도착 분모에서 제외하지 않는다.
+- thermal: `baseline_pilot`, `baseline_formal`, `thermal_stress`를 분리한다. baseline 시작 thermal status는 0/1만 허용하고 formal은 사전 고정 temperature/stability policy와 hash를 요구한다. stress는 baseline에 합치지 않는다.
+- 관측 경계: 앱은 battery temperature와 Android thermal status의 monotonic 원시 시계열을 기록한다. AP/PA/SKIN은 앱에서 측정했다고 주장하지 않으며 A24 baseline 전에 host logger의 시계열·cooling/stability gate와 calibration session 자동 연결이 필요하다.
+- 입력: minSdk 24의 Android framework `ExifInterface`로 orientation 1~8을 적용한 뒤 versioned Android preprocessing 계약을 실행한다. 자체 EXIF parser는 만들지 않는다. Pillow host 검증과 Android preprocessing이 byte-identical하다고 주장하지 않는다. input bundle은 실제 파일 크기·SHA-256·magic MIME·크기·EXIF·label/APK 및 exact file set을 fail-closed 검증한다.
+
+## 2026-09-17 — CALIB-01B-FIX3 EXIF/decode/Matrix 수정
+
+- 상태: 채택. FIX2의 framework EXIF/preprocessing-v2 선택을 대체한다.
+- 근거: EXIF 없는 정상 PNG의 합성 orientation 0, Robolectric decode RuntimeException, transformed bitmap backing 부재가 재현됐다는 사용자 확인.
+- 결정: AndroidX ExifInterface 1.4.2를 사용한다. 원본 byte offset이 있는 명시 orientation은 1~8만 허용하고 태그 부재는 normal(1)로 처리한다. 명시 0/9 등은 거부한다. 자체 EXIF parser를 추가하지 않는다.
+- 전처리 계약: `android-mobilenet-v1-image-v3`, canonical SHA-256 `03e507dea1d4111681b6c1120fab7729967a19e49712ccc05d2e72e4f7762cf5`. host CLI와 Android를 함께 갱신하며 Pillow byte-identical 주장은 하지 않는다.
+- decode: RuntimeException만 cause 보존 IllegalArgumentException으로 변환한다. Error/OOM은 잡지 않는다.
+- 검증: production Matrix 좌표로 1~8/미러 의미를 검사하고 실제 EXIF JPEG reader→decoder를 유지한다. Shadow bitmap의 getPixels에 의존하지 않는다. 테스트 수 3개·기존 inference timer·v1/v2·artifact/provenance·A24-only 범위는 유지한다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

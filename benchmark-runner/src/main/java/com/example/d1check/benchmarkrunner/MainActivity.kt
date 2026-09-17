@@ -100,6 +100,12 @@ class MainActivity : AppCompatActivity() {
             addView(diagnosticInput)
             addView(startButton)
             addView(probeNnapiButton)
+            addView(Button(this@MainActivity).apply {
+                text = "Open image calibration"
+                setOnClickListener {
+                    startActivity(Intent(this@MainActivity, CalibrationActivity::class.java))
+                }
+            })
             addView(statusView)
         }
         setContentView(ScrollView(this).apply { addView(layout) })

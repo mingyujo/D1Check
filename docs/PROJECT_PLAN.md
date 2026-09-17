@@ -12,7 +12,7 @@
 
 구현 가능성은 높다. 다만 동적 자원 선택의 추가 효과는 아직 확인되지 않았다. 현재 확보한 것은 측정 기반과 기기별 성능 특성이며, 스케줄러의 우수성이나 실무적 필요성이 입증된 상태는 아니다.
 
-기기별 CPU/GPU 우열 역전은 초기 캘리브레이션의 필요성을 뒷받침한다. 이것만으로 실행 중 자원 전환이 필요하거나 이득이라는 결론을 내리지 않는다. S26에서는 GPU 고정 정책만으로 충분할 가능성도 평가한다.
+기기별 CPU/GPU 우열 역전은 초기 캘리브레이션의 필요성을 뒷받침한다. 이것만으로 실행 중 자원 전환이 필요하거나 이득이라는 결론을 내리지 않는다. S26 formal의 GPU 우세는 보조 사례로만 유지하며 새 S26 정책 평가는 수행하지 않는다.
 
 A24에서는 CPU가, S26에서는 GPU가 우세하므로 기기별 calibration 필요성을 핵심 연구 근거로 삼는다. 이 근거는 자원 선택의 필요성을 뒷받침하지만 동적 스케줄러가 강한 고정 정책보다 우수하다는 증거는 아니다.
 
@@ -122,7 +122,7 @@ OS 전체 스케줄링, 다른 앱의 작업 배치, CPU/GPU 주파수 강제 �
 - NPU는 capability detection과 실제 실행 검증에 성공한 기기에서만 활성화한다. 미지원 또는 접근 실패 시 CPU/GPU만으로 정상 동작해야 하며 NPU 지원은 프로젝트 성공의 필수조건이 아니다.
 - S26에서는 현재 NNAPI가 `nnapi-reference` CPU만 노출했다. 이를 실제 NPU 지원 증거로 사용하지 않는다.
 - 긴급·일반 요청의 절대 마감시간 상태는 `calibration_pending`이다. 임의 수치를 공식 기준으로 사용하지 않는다.
-- CALIB-01에서 A24와 S26의 실제 이미지 읽기, 전처리, 큐 대기, 추론, 결과 반환·저장을 포함한 종단간 시간을 소규모로 측정한 뒤 결과 평가 전에 절대 마감시간을 사전 고정한다.
+- CALIB-01에서 Galaxy A24의 실제 이미지 읽기, 전처리, 큐 대기, 추론, 결과 반환·저장을 포함한 종단간 시간을 소규모로 측정한 뒤 결과 평가 전에 절대 마감시간을 사전 고정한다. S26에는 새 calibration·설치·앱 실행을 하지 않고 기존 formal 80슬롯을 기기별 특성 차이의 보조 사례로만 유지한다.
 
 ## 5. 최소 구현
 
@@ -175,13 +175,14 @@ B0/B1의 자원은 평가 자료와 분리된 캘리브레이션으로 사전 �
 ### CALIB-01. 실제 이미지 종단간 지연과 마감시간 고정
 
 - CALIB-01A: [CALIBRATION_PROTOCOL.md](CALIBRATION_PROTOCOL.md)에 현재 production 경로와 gap, 측정 event, pilot 규모, 변동성 중단, deadline·workload 사전 규칙을 정의한다.
-- CALIB-01B: 승인된 gap만 production 경로에 구현하고 host/device 검증으로 event·provenance 계약을 확인한다. 현재 tensor-only benchmark를 이미지 종단간 측정으로 재해석하지 않는다.
-- A24와 S26에서 동일한 실제 사용자 이미지 경로의 이미지 읽기, 전처리, 큐 진입·대기, `Interpreter.run()`, 후처리, 긴급 결과 제공 및 일반 결과 저장 시점을 측정한다.
+- CALIB-01B: completed / `CALIB_01B_PASS`. production vertical slice, host 전체 검증과 FIX4 최종 읽기 전용 감사를 완료했다. Kotlin/JVM 119건·failure/error/skip 0, lint error 0/warning 76, Python 195건·failure/error 0/기존 skip 1, compileall·logger self-test·assembleDebug PASS다. tensor-only benchmark를 이미지 종단간 측정으로 재해석하지 않는다.
+- 현재 작업 CALIB-01C-INPUT: 대표 이미지 8개와 verified 1001-line label mapping 및 입력 provenance를 확정한다. A24 실측 전 host AP/PA/SKIN·cooling/stability gate 연결과 strict GPU smoke도 필요하다. S26 새 calibration·설치·실행은 `OUT_OF_SCOPE_NON_BLOCKING`이며 기존 formal 보조자료만 유지한다.
+- Galaxy A24에서 실제 사용자 이미지 경로의 이미지 읽기, EXIF orientation 적용, 전처리, 큐 진입·대기, `Interpreter.run()`, 후처리, 긴급 결과 제공 및 일반 결과 저장 시점을 측정한다. S26 end-to-end calibration 또는 스케줄러 실기기 검증은 이 단계의 범위가 아니다.
 - CPU/GPU별 cold·warm 경로, 초기화·전환 비용과 output-ready 종단간 지연을 구분한다. NPU는 capability와 실제 실행 검증을 통과한 경우에만 별도 후보로 측정한다.
 - 측정 전 입력 집합, 반복 수, 화면·충전·열 초기조건, 결과 상태와 시계 기준을 고정한다. 기존 80슬롯의 순수 추론 지연과 합치지 않는다.
 - calibration 결과를 근거로 긴급·일반 절대 마감시간, 요청 도착 패턴과 허용 가능한 발생기 지연을 후속 평가 전에 사전 고정한다.
 
-완료 조건: 두 기기의 종단간 구성요소와 output-ready 분포를 재현 가능하게 기록하고, 긴급·일반 절대 마감시간 상태를 `calibration_pending`에서 고정값으로 변경할 근거를 확보한다.
+완료 조건: A24의 종단간 구성요소와 output-ready 분포를 재현 가능하게 기록하고, 긴급·일반 절대 마감시간 상태를 `calibration_pending`에서 고정값으로 변경할 근거를 확보한다.
 
 ### 단계 1. 요청 큐와 측정 검증
 
@@ -214,7 +215,7 @@ B0/B1의 자원은 평가 자료와 분리된 캘리브레이션으로 사전 �
 - 새로운 요청 seed·실행 세션을 사용하고 정책 파라미터는 고정한다.
 - 탐색 결과의 세션 간 변동을 이용해 반복 수를 결정한다. 개별 추론 수가 많다는 이유로 독립 반복 수가 충분하다고 판단하지 않는다.
 - 세션별 P95, 위반율, 완료율을 계산하고 대응 세션 차이와 신뢰구간을 제시한다.
-- 두 기기를 각각 평가한다. 서로 다른 기기의 수십만 inference를 하나의 독립 표본으로 합치지 않는다.
+- 독립 스케줄러 평가는 Galaxy A24에서 수행한다. 기존 S26 formal 결과를 A24 스케줄러 평가 표본으로 합치거나 S26 실기기 스케줄러 검증으로 재해석하지 않는다.
 - 요청 수가 적은 P95는 불안정하므로 표본 수와 불확실성을 함께 보고한다.
 - 정책 비교 중 기기 열 조건이 어긋나거나 외부 중단이 생긴 세션의 처리 기준을 미리 정한다. 원기록과 제외 사유를 보존한다.
 
@@ -232,7 +233,7 @@ B0/B1의 자원은 평가 자료와 분리된 캘리브레이션으로 사전 �
 | --- | --- | --- |
 | 계속 진행 | 사전 지정 핵심 조건에서 B2 대비 긴급 P95 10% 이상 감소, 기한 위반율 악화 없음, 일반 기한 내 완료율 감소 2%p 이내, 열 안전 위반 증가 없음 | 독립 반복 및 보고서 작성 |
 | 범위 축소 | B0 대비 개선되지만 B1/B2 대비 자원 선택의 추가 이득이 작음 | 우선순위·실행 빈도 제어 중심으로 재정의 |
-| 기기별 정책 채택 | A24에서만 동적 정책이 유리하고 S26에서는 고정 정책이 우세 | 고정/동적 정책을 기기별로 선택하는 결과로 보고 |
+| A24 정책 채택 | A24에서 동적 정책보다 고정 정책이 우세하거나 이득이 없음 | A24 직접 검증 결과로 범위를 축소하거나 고정 정책을 채택. S26 스케줄러 결과를 주장하지 않음 |
 | 구현 수정 | 전환·관측 비용, 큐 발생기 오류 또는 출력 준비 지연이 이득을 상쇄 | 비용을 줄이거나 측정 계약을 수정한 뒤 재검증 |
 | 동적 자원 배정 주장 중단 | 현실적인 부하 전반에서 B2와 비슷하거나 악화, 또는 일반 요청 희생·거절 증가로만 P95 개선 | 자원 전환을 핵심 기여에서 제외 |
 | 프로젝트 재검토 | 범위 축소 후에도 실제 문제·강한 기준정책 대비 개선·재현성 모두 부족 | 다른 문제 또는 적용 작업으로 전환 |
@@ -269,8 +270,8 @@ request_results.csv에는 도착 요청 전체를 남기며 완료·기한 초�
 
 ## 11. 지금 시작할 작업
 
-1. CALIB-01B에서 승인된 실제 이미지 경로와 request-level 계측을 구현한다.
-2. A24와 S26에서 CALIBRATION_PROTOCOL에 따른 소규모 calibration을 수행한 뒤 긴급·일반 절대 마감시간을 사전 고정한다.
-3. 그 뒤 고정 arrival trace로 FIFO·긴급 우선 및 일반 작업 처리 후보를 비교한다.
+1. CALIB-01B는 completed / `CALIB_01B_PASS`다. benchmark-runner의 실제 이미지 read/decode/preprocess, bounded queue, fixed CPU/GPU runtime reuse, 긴급 output-ready, 일반 durable persistence, request JSONL과 fail-closed provenance의 production 흐름을 구현·검증·감사했다.
+2. 현재 작업은 CALIB-01C-INPUT이다. 저장소에 없는 representative image set과 verified 1001-line label mapping, image-v3 입력 manifest/provenance를 확정한다. 입력과 실기기 사전조건이 준비되기 전에는 측정을 시작하지 않는다.
+3. 그 뒤 A24에서만 CALIBRATION_PROTOCOL의 소규모 pilot을 수행해 긴급·일반 절대 마감시간을 사전 고정하고, 후속 고정 arrival trace 비교로 진행한다. 실행 전 AP/PA/SKIN host 시계열 및 cooling/stability gate 자동 연결, 대표 입력, strict GPU `CompatibilityList` smoke를 완료한다.
 
-현재 결론: **DEFINE-01의 공식 사용 시나리오와 KPI 계약을 기준으로 CALIB-01을 먼저 수행한다. 기존 80슬롯 결과는 자원 우열의 기기별 차이를 보여 주는 기반 자료이며 종단간 마감시간의 직접 근거로 사용하지 않는다.**
+현재 결론: **CALIB-01B는 FIX4까지 전체 host 검증과 최종 읽기 전용 감사를 완료해 `CALIB_01B_PASS`로 종료했다. 과거 네트워크·Robolectric·signing lock 실패는 사용자 로컬 JDK 17의 전체 성공으로 완료 대기가 해제된 resolved history이며, 현재 미완료 장애로 사용하지 않는다. 다음 작업은 CALIB-01C-INPUT이고 A24만 직접 검증한다. 대표 입력·라벨·thermal/cooling gate·strict GPU smoke 준비 및 A24 pilot 전까지 절대 마감시간은 `calibration_pending`이며 기존 A24/S26 80슬롯 결과를 종단간 마감시간의 직접 근거로 사용하지 않는다.**

@@ -1,9 +1,9 @@
 # D1Check CALIB-01A 종단간 calibration protocol
 
-- 문서 버전: 1
+- 문서 버전: 4 — CALIB-01B 종료 상태 정리; image-v3 및 측정/schema 계약은 유지
 - 작성일: 2026-09-15
-- 상태: 설계 완료, CALIB-01B 구현 전 실행 불가
-- 적용 기기: Galaxy A24, Galaxy S26
+- 상태: CALIB-01B completed / `CALIB_01B_PASS`. FIX4 최종 감사와 전체 host 검증 완료. 과거 네트워크·Robolectric·signing lock 대기는 resolved history로 분리한다. 현재 작업은 CALIB-01C-INPUT이며 대표 이미지·라벨·thermal/cooling gate·strict GPU smoke 준비 전에는 A24 실측을 시작하지 않는다.
+- 직접 실기기 적용 기기: Galaxy A24만 해당. Galaxy S26 새 calibration·설치·실행은 `OUT_OF_SCOPE_NON_BLOCKING`이며 기존 formal 80슬롯 보조자료만 유지한다.
 - 절대 마감시간 상태: `calibration_pending`
 - 목적: 실제 사용자 이미지 경로의 구성요소별 종단간 지연과 변동성을 측정해 기기별 절대 마감시간 및 혼합 워크로드 조건을 평가 전에 고정한다.
 
@@ -12,13 +12,13 @@
 - 긴급 요청은 사용자가 갤러리 사진 한 장을 선택하고 즉시 분류 결과를 요청하는 작업이다.
 - 일반 요청은 여러 갤러리 사진을 백그라운드에서 분류·색인하는 작업이며, 개별 이미지 결과 저장을 요청 완료 경계로 삼는다.
 - 1차 backend는 CPU와 GPU다. NPU는 capability와 실제 실행 proof가 있을 때만 별도 후보로 추가하며 CALIB-01의 필수조건이 아니다.
-- A24와 S26를 별도로 분석한다. 표본과 마감시간을 두 기기 사이에서 합치지 않는다.
+- A24에서만 새 종단간 calibration과 스케줄러 실기기 검증을 수행한다. 기존 S26 formal 80슬롯은 기기별 CPU/GPU 특성 차이를 보여주는 보조 사례이며 S26 종단간 검증 근거가 아니다.
 - 이 calibration은 스케줄러 우수성, 에너지 절감 또는 GPU 내부 H2D/GPU/D2H·fence 시간을 입증하지 않는다.
 - 기존 80슬롯의 tensor-only `Interpreter.run()` 지연을 이미지 종단간 지연으로 사용하지 않는다.
 
-## 2. 현재 production 경로 감사
+## 2. CALIB-01A 당시 구현 전 production 경로 감사
 
-| 필수 경로 | 현재 상태 | 직접 확인한 코드와 의미 |
+| 필수 경로 | CALIB-01A 당시 상태 | 직접 확인한 코드와 의미 |
 | --- | --- | --- |
 | 1. 사용자가 이미지 선택 | 없음 | app과 benchmark-runner의 Activity에 Photo Picker, `ACTION_OPEN_DOCUMENT`, Activity Result 경로가 없다. |
 | 2. 이미지 읽기 | 없음 | 실제 이미지 URI/bytes를 읽거나 decode하는 경로가 없다. `ModelLoader.map()`은 모델 asset mmap이며 이미지 I/O가 아니다. |
@@ -38,7 +38,7 @@
 - 기존 host orchestrator는 APK·모델·입력 artifact SHA-256, 기기 상태, manifest와 결과 provenance를 다루는 코드를 재사용할 수 있다.
 - 모델 label mapping asset은 현재 runner에 없다. 실제 분류 결과와 정확도 gate를 위해 검증된 label 파일 및 hash가 필요하다.
 
-결론: 현재 production은 tensor benchmark 경로이며 이 프로토콜의 사용자 이미지 종단간 calibration을 실행할 수 없다. CALIB-01B가 아래 gap을 production 경로에 연결하기 전에는 기존 benchmark 명령으로 대체 측정하지 않는다.
+CALIB-01A 당시 결론: 당시 production은 tensor benchmark 경로뿐이어서 사용자 이미지 종단간 calibration을 실행할 수 없었다. CALIB-01B가 별도 opt-in production 경로를 추가했지만 기존 benchmark 명령은 여전히 synthetic tensor 측정이므로 종단간 calibration으로 대체 사용하지 않는다.
 
 ## 3. 측정 경계와 event 계약
 
@@ -46,7 +46,7 @@
 
 ### 3.1 요청 수명주기
 
-각 요청은 canonical UUID `request_id`, `session_id`, `request_type`, `image_id`, `backend_requested`, `backend_actual`, `status`를 갖는다. 정상 요청은 다음 단조 증가 timestamp를 기록한다.
+각 요청은 canonical UUID `request_id`, `session_id`, `request_type`, `image_id`, `backend_requested`, `backend_actual`, `terminal_status`, `deadline_outcome`을 갖는다. 정상 요청은 다음 단조 증가 timestamp를 기록한다.
 
 1. `picker_result_received_ns` 또는 background batch의 `image_discovered_ns`
 2. `queue_enter_ns` — URI가 정해진 즉시, 이미지 I/O 전에 기록
@@ -77,20 +77,23 @@
 
 일반 결과의 `persist_commit_ns`는 app-private 영구 저장소 transaction이 성공적으로 반환되고 같은 request ID의 결과가 다시 읽을 수 있는 시점이다. 이는 저장 장치 controller의 물리적 flush 완료를 주장하지 않는다.
 
-### 3.3 terminal 상태
+### 3.3 terminal 상태와 deadline 결과
 
-- `success`: 긴급 output-ready 또는 일반 persist commit까지 완료.
+- `succeeded`: 긴급 output-ready 또는 일반 durable persist commit까지 완료. 마감 후 완료돼도 이 terminal 상태와 결과를 유지한다.
 - `failed`: I/O, decode, preprocessing, backend, inference, postprocessing 또는 저장 오류.
 - `rejected`: 큐 상한이나 정책에 의해 수락되지 않음.
-- `expired`: 절대 마감 전에 시작 또는 완료할 수 없어 만료 정책이 적용됨.
+- `expired`: deadline 때문에 실제 output-ready/persistence 완료 전에 실행되지 않은 요청에만 사용한다.
+
+deadline 결과는 terminal 상태와 분리한다. deadline 미설정은 `not_set`/null, deadline 이전 완료는 `on_time`/true, deadline 후 완료는 `late`/false, deadline이 설정됐으나 완료되지 않은 요청은 `not_completed`/false다. `failed`, `rejected`, `expired`에는 output 및 persisted result가 없어야 한다. 늦게 완료된 `succeeded` 요청은 전체 완료율 분자에는 포함하고 기한 내 완료율 분자에는 포함하지 않는다. 전체 완료율은 `succeeded / 전체 도착`, 기한 내 완료율은 `on_time / deadline 설정 도착`, 위반율은 `(late + not_completed) / deadline 설정 도착`으로 계산한다.
 
 모든 도착 요청은 정확히 하나의 terminal 상태를 갖는다. 실패·거절·만료는 전체 도착 분모에 남기고 짧은 가상 지연값을 대입하지 않는다.
 
 ## 4. 입력과 provenance
 
-- 동일한 8개 실제 이미지 pilot set을 두 기기에서 사용한다. 최소 4개 class, class당 2개 이미지를 고정하고 각 원본 bytes의 SHA-256을 기록한다.
+- A24 pilot에 사용할 8개 실제 이미지 set을 고정한다. 최소 4개 class, class당 2개 이미지를 고정하고 각 원본 bytes의 SHA-256을 기록한다. 이 입력으로 S26 종단간 검증을 주장하지 않는다.
 - 입력은 라이선스와 ground-truth를 확인한 뒤 고정한다. 이 작은 set은 pipeline·backend equivalence gate이며 일반적인 task accuracy를 주장하는 데이터셋이 아니다.
-- 중앙 crop 비율, resize algorithm, RGB channel order, FLOAT32 변환과 normalization을 canonical JSON으로 기록하고 SHA-256을 계산한다.
+- Android production preprocessing은 versioned `android-mobilenet-v1-image-v3` 계약으로 기록한다. AndroidX `ExifInterface` 1.4.2로 실제 입력 bytes에 backed된 orientation 태그를 확인한다. 태그가 없으면 normal(1), 명시된 값은 1~8만 허용한다(명시된 0도 거부). orientation 1~8(미러 포함)을 먼저 적용한 뒤 중앙 0.875 square crop, Android bilinear 224×224 resize, RGB channel order, FLOAT32 `(value / 127.5) - 1`을 수행한다. 원본·EXIF 변환 후 크기와 orientation을 기록한다.
+- Pillow host 검증은 이미지 bytes·magic MIME·원본 크기·EXIF·변환 후 크기를 검증하는 준비 gate다. Android Bitmap 전처리와 byte-identical하다고 주장하지 않는다.
 - 모델 파일·model manifest·label mapping·전처리 configuration·각 이미지·각 APK의 크기와 SHA-256을 기록한다.
 - Git HEAD, dirty diff 존재 여부와 diff hash, application ID/versionCode/versionName, device serial의 공개용 별칭, build fingerprint, OS/API, LiteRT version, boot ID를 기록한다.
 - label mapping이 없거나 hash가 다르면 calibration을 시작하지 않는다.
@@ -99,16 +102,18 @@
 
 ## 5. 환경 계약
 
-각 session마다 다음을 기록한다.
+calibration mode는 `baseline_pilot`, `baseline_formal`, `thermal_stress`로 고정하며 누락·혼입을 거부한다. 각 session마다 다음을 기록한다.
 
 - 고정된 물리적 위치와 가능한 경우 주변온도
 - 충전 연결 여부, battery status와 SOC
 - 화면 on/off, brightness와 orientation
-- 시작 battery/AP/PA/SKIN 온도 중 기기에서 제공되는 값
-- session 최고 온도와 Android thermal status 전체 시계열
+- 앱 내부에서는 시작 battery temperature와 Android thermal status, timestamp가 있는 두 값의 원시 시계열과 최고값을 기록한다. timestamp는 `elapsedRealtimeNanos`다.
+- AP/PA/SKIN은 앱 API에서 읽었다고 주장하지 않는다. A24에서는 host `dumpsys thermalservice` 수집으로 보완해야 한다.
 - 시작·종료 wall clock과 monotonic bounds
 
-같은 기기 내 비교는 충전·화면 상태를 동일하게 유지한다. 시작 Android thermal status가 1을 초과하거나 사전 고정한 시작 온도 범위를 벗어나면 측정하지 않고 cooling/retry 상태로 남긴다. A24와 S26의 센서 절대값을 직접 동등하게 취급하지 않는다.
+`baseline_pilot`과 `baseline_formal`은 시작 Android thermal status가 1을 초과하면 시작 전에 거부한다. `baseline_formal`은 사전 고정된 battery temperature/stability policy와 그 canonical SHA-256을 요구하며 시작 battery temperature 상한을 앱에서 검사한다. `thermal_stress`는 baseline 집계에 합치지 않는다. 같은 기기 내 비교는 충전·화면 상태를 동일하게 유지한다.
+
+A24 CALIB-01C 전에 host가 AP/PA/SKIN 시계열, cooling/stability window와 gate를 제공하고 app session ID/monotonic 시간과 연결해야 한다. 기존 `d1_logger_v4.py`에는 `dumpsys thermalservice`의 AP/SKIN/BAT/PA 수집과 coverage 검사가 있지만 calibration CLI/Activity와 자동 연결돼 있지 않다. 이 자동 연결과 사전 고정 policy는 실기기 baseline 실행의 외부 사전조건이며, 현재 앱 내부 battery 값으로 AP/PA/SKIN을 대체했다고 주장하지 않는다.
 
 ## 6. cold, warm과 backend 전환
 
@@ -124,7 +129,7 @@
 
 ### 7.1 최초 규모
 
-각 기기와 CPU/GPU backend 조합마다 독립 session 5개로 시작한다. session 순서는 기기별로 무작위화한다.
+A24의 CPU/GPU backend 조합마다 독립 `baseline_pilot` session 5개로 시작한다. session 순서는 무작위화한다.
 
 각 session은 다음을 포함한다.
 
@@ -173,7 +178,7 @@ reference backend `B*`의 warm 일반 per-image persist-complete median을 `N50`
 - 지속 부하: 총 평균 도착률 `0.9 × C`, 긴급 비율 20%, burst 없음.
 - 긴급 burst: 일반 평균 `0.6 × C`를 유지하면서 긴급 3건 burst를 `3 / (0.2 × C)`초마다 주입해 전체 장기 평균이 `0.8 × C`가 되게 한다.
 
-도착은 scheduler 처리속도와 독립된 monotonic schedule로 생성한다. 같은 기기에서는 모든 정책에 byte-identical arrival trace를 사용한다. 기기별 C가 다르므로 A24와 S26 trace는 별도이며 결과를 하나의 표본으로 합치지 않는다. 실제 사용자 arrival log가 없으므로 이 조건은 synthetic임을 명시한다.
+도착은 scheduler 처리속도와 독립된 monotonic schedule로 생성한다. A24의 모든 정책에 byte-identical arrival trace를 사용한다. 실제 사용자 arrival log가 없으므로 이 조건은 synthetic임을 명시한다. S26용 새 arrival trace나 종단간 결과는 만들지 않는다.
 
 혼합 실행 전에 reference backend로 짧은 admission probe를 수행한다. 낮은 부하에서 불필요한 queue 증가가 있거나 지속 부하가 즉시 안전 한계를 넘으면 workload를 실행하지 않고 capacity 계산·환경 조건을 재검토한다. 정책 결과를 본 뒤 특정 정책에 유리하게 도착률을 조정하지 않는다.
 
@@ -197,7 +202,9 @@ CALIB-01 실행 수용 기준:
 - provenance hash가 실제 artifact와 일치함.
 - deadline stability와 accuracy gate를 통과하거나 `calibration_pending` 상태를 명확히 유지함.
 
-## 11. 재사용 가능 부분과 구현 gap
+## 11. 재사용 부분과 CALIB-01B 구현 상태
+
+CALIB-01B는 2026-09-17 최종 읽기 전용 감사에서 `CALIB_01B_PASS`로 종료했다. 로컬 JDK 17의 전체 `testDebugUnitTest lintDebug assembleDebug --rerun-tasks`가 성공했고 최신 XML/SARIF 직접 집계는 Kotlin/JVM 119건·failure/error/skip 0, lint error 0/warning 76이다. Python 전체 195건·failure/error 0/기존 skip 1, compileall·logger self-test·assembleDebug도 PASS다. 이는 host 구현 검증이며 A24 이미지 calibration 또는 정확도 실측 완료를 의미하지 않는다. 최신 APK·전처리 hash와 resolved history는 [PROJECT_STATUS.md](PROJECT_STATUS.md)에 기록한다.
 
 재사용 가능:
 
@@ -208,50 +215,61 @@ CALIB-01 실행 수용 기준:
 - host orchestrator/logger: device 선택, 안전 snapshot, artifact hash, manifest/provenance, bounded process 제어.
 - accuracy preflight comparator: 동일 preprocessed tensor의 CPU/GPU 수치 동등성 검사.
 
-구현 gap:
+CALIB-01B에서 구현한 경로:
 
-1. 실제 system photo picker와 batch image URI 선택·권한 유지.
-2. URI bytes 읽기·decode와 입력 bytes SHA-256.
-3. MobileNet용 on-device crop/resize/RGB/FLOAT32 normalization 및 configuration hash.
-4. 긴급·일반 요청 model, bounded queue, terminal-state machine과 요청별 backend 결정.
-5. label mapping 기반 top-k 후처리와 긴급 output-ready callback/UI.
-6. 일반 이미지 결과 index의 transaction commit 및 readback 경계.
-7. request-level event schema, cold/warm/transition 상태와 정확도 gate.
-8. calibration 전용 host manifest, arrival trace 생성·검증과 resume/fail-closed 처리.
+1. benchmark-runner의 `CalibrationActivity`가 platform `ACTION_OPEN_DOCUMENT`로 manifest, label mapping, 긴급 단일 이미지와 일반 batch 이미지를 선택한다. 사람의 선택 시간은 표본에서 제외하고 picker callback 뒤 수락 시각부터 기록한다.
+2. `AndroidCalibrationImageReader`와 `AndroidCalibrationImageDecoder`가 URI bytes를 bounded read하고 SHA-256·magic MIME·EXIF orientation을 확인한 뒤 Android `BitmapFactory`로 decode하고 orientation 1~8 변환을 적용한다.
+3. `MobileNetCalibrationPreprocessor`가 EXIF 변환 후 중앙 0.875 crop, bilinear 224×224 resize, RGB FLOAT32 `(value / 127.5) - 1`을 수행한다. contract ID는 `android-mobilenet-v1-image-v3`, canonical configuration SHA-256은 `03e507dea1d4111681b6c1120fab7729967a19e49712ccc05d2e72e4f7762cf5`다. Kotlin/host CLI는 같은 configuration을 사용하며 이전 계약 manifest를 조용히 재해석하지 않는다.
+4. `CalibrationPipeline`이 bounded FIFO, succeeded/failed/rejected/expired terminal 상태와 분리된 deadline 결과, fixed CPU/GPU 및 전환 probe, cold/warm/warm-up 구분을 제공한다. Interpreter 한 개를 동시에 여러 thread에서 호출하지 않는다.
+5. `LiteRtCalibrationRuntimePool`이 backend별 Interpreter/delegate를 초기화하고 재사용하며 CPU와 GPU를 조용히 상호 fallback하지 않는다. GPU full-delegation 여부는 LiteRT Java API만으로 증명할 수 없어 `unverified_requires_host_delegate_log`로 명시하며, host full-delegation 증거 전에는 GPU accuracy/backend gate 통과로 간주하지 않는다.
+6. `MobileNetCalibrationPostprocessor`가 non-finite 수와 output SHA-256을 `Interpreter.run()` timer 밖에서 계산하고 verified external label mapping으로 top-5를 만든다. 긴급 결과는 callback 가능한 객체가 완성된 `output_ready_ns`에서 완료된다.
+7. 일반 결과는 app-private external-files session 아래 `results/<request UUID>.json`에 기록한다. 완료 의미는 임시 파일 write/flush, `FileDescriptor.sync()`, 동일 디렉터리 atomic rename, byte-for-byte readback 성공이다. 저장장치 controller의 물리 flush를 주장하지 않는다.
+8. `CalibrationSessionArtifacts`가 session metadata, request JSONL, raw `thermal_samples.jsonl`, summary, result files와 provenance를 생성하고 exact artifact set, canonical 상대경로, regular-file/symlink containment, byte count, SHA-256, session/mode/protocol identity, terminal/deadline count를 재검증한다.
+9. `tools/d1_calibration_cli.py`가 고정 input bundle의 실제 이미지, 1001행 label mapping, APK와 결과를 fail-closed 검증하고 side-effect 없는 `plan --dry-run`을 제공한다.
 
-## 12. CALIB-01B 변경 허용 후보
+남은 실행 gap:
 
-다음은 구현 승인 전 후보 목록이며 이 문서가 수정 권한을 부여하지 않는다.
+- 저장소에는 대표 이미지와 verified 1001-line label mapping이 없다. 임의 fixture를 대표 데이터로 승격하지 않으며 실제 A24 calibration은 이 두 입력을 별도로 확정하기 전에는 시작할 수 없다.
+- GPU 결과는 기존 logger 방식의 full-delegation/fallback 증거와 결합해야 정식 calibration cell로 사용할 수 있다.
+- A24의 strict `CompatibilityList` gate를 유지한다. GPU 진입 가능 여부는 후속 smoke test에서 확인하며 실패 시 CPU로 조용히 fallback하지 않는다. S26 compatibility override나 기기 모델 우회는 구현하지 않는다.
+- A24 baseline의 AP/PA/SKIN 시계열 및 cooling/stability gate는 기존 host logger와 calibration session의 자동 결합이 남은 사전조건이다.
+- mixed-workload arrival trace 생성·resume은 최종 scheduler 단계의 범위이며 이 vertical slice에는 포함하지 않았다.
 
-기존 파일 후보:
+## 12. CALIB-01B 실제 변경 범위
+
+기존 파일:
 
 - `benchmark-runner/src/main/java/com/example/d1check/benchmarkrunner/MainActivity.kt`
-- `benchmark-runner/src/main/java/com/example/d1check/benchmarkrunner/GpuBenchmarkEngine.kt`
-- `benchmark-runner/src/main/java/com/example/d1check/benchmarkrunner/RunConfig.kt`
 - `benchmark-runner/src/main/AndroidManifest.xml`
-- `benchmark-runner/build.gradle.kts` — 새 의존성이 실제로 필요할 때만
-- `telemetry-contract/src/main/java/com/example/d1check/contract/GpuTelemetry.kt`
-- `tools/d1_experiment_orchestrator.py` 또는 별도 calibration orchestrator와 관련 테스트
+- `docs/PROJECT_PLAN.md`, `docs/PROJECT_STATUS.md`, `docs/DECISIONS.md`, 이 문서
 
-신규 파일 후보:
+신규 production/test 파일:
 
-- `CalibrationRequest.kt`, `CalibrationRequestQueue.kt`, `CalibrationEventRecorder.kt`
-- `ImageInputLoader.kt`, `MobileNetImagePreprocessor.kt`, `ClassificationPostprocessor.kt`
-- `ClassificationResultStore.kt`, verified label mapping asset, preprocessing manifest
-- 각 production class의 JVM/Robolectric 테스트와 host Python 테스트
+- `CalibrationContract.kt`, `CalibrationPipeline.kt`, `CalibrationAndroid.kt`, `CalibrationArtifacts.kt`, `CalibrationActivity.kt`
+- `CalibrationPipelineProductionTest.kt`, `AndroidCalibrationImageIntegrationTest.kt`, `CalibrationArtifactValidatorTest.kt`, `CalibrationActivityEntryTest.kt`
+- `tools/d1_calibration_cli.py`, `tools/test_d1_calibration_cli.py`
 
-기존 `app/src/main/java/com/example/d1check/MainActivity.kt`에는 사용자 변경이 있으므로 기본 후보에서 제외한다. benchmark-runner 안에 실제 이미지 경로를 구현하고 기존 telemetry app과 provider 계약을 재사용하는 방안을 우선한다.
+기존 `app/src/main/java/com/example/d1check/MainActivity.kt`, telemetry-contract, `GpuBenchmarkEngine`, diagnostic v1/v2 parser/schema는 수정하지 않았다. FIX3은 PNG/JPEG/WebP의 EXIF 처리 및 lint 권고를 위해 runner에 `androidx.exifinterface:exifinterface:1.4.2` 의존성을 추가한다([공식 릴리스](https://developer.android.com/jetpack/androidx/releases/exifinterface)). inference timer, calibration schema 2, artifact/provenance 구조와 저장 경로는 유지한다. `BitmapFactory`의 RuntimeException은 cause를 보존한 `IllegalArgumentException("Android image decode failed", cause)`로 변환하고 null도 명확히 실패한다. decode에서 Error/OutOfMemoryError는 잡지 않는다. `applyExifOrientation()`은 production `exifOrientationMatrix()`를 사용하며 테스트는 그 Matrix의 실제 좌표 변환으로 1~8/미러 의미를 확인하고 실제 EXIF JPEG reader→decoder의 크기 검증도 유지한다.
 
-## 13. 제안 명령 상태
+## 13. 실제 host CLI와 실행 절차
 
-현재 CLI/parser에는 CALIB-01 image request 명령이 없으므로 실행 가능한 실기기 calibration 명령을 제시할 수 없다. 기존 diagnostic/benchmark 명령을 사용하면 synthetic tensor만 측정하므로 금지한다.
-
-CALIB-01B는 구현 후 실제 `--help`에 다음 의미의 명시적 인터페이스를 제공해야 한다.
+현재 구현된 parser의 입력·dry-run 명령은 다음과 같다. 이 명령은 ADB를 호출하거나 manifest/result를 쓰지 않는다.
 
 ```text
-<calibration-cli> prepare --device <alias> --input-manifest <path>
-<calibration-cli> run --device <alias> --backend <CPU|GPU> --session-manifest <path>
-<calibration-cli> validate --session-root <path>
+python tools/d1_calibration_cli.py validate-input --input-root <input-bundle> --manifest <input-bundle/input_manifest.json> --labels <input-bundle/label_mapping.txt> --apk <benchmark-runner-debug.apk>
+python tools/d1_calibration_cli.py plan --input-root <input-bundle> --manifest <input-bundle/input_manifest.json> --labels <input-bundle/label_mapping.txt> --apk <benchmark-runner-debug.apk> --dry-run
+python tools/d1_calibration_cli.py validate-result --root <pulled-session-root>
 ```
 
-위 표기는 인터페이스 제안일 뿐 현재 존재하는 명령이나 option 이름이 아니다. 실제 명령은 구현된 parser와 `--help`를 읽어 확정하며, CALIB-01A에서는 ADB·APK 설치·앱·실기기 명령을 실행하지 않는다.
+승인된 별도 설치 후에는 Benchmark Runner의 기존 launcher를 열고 `Open image calibration`을 선택한다. 이어서 검증된 manifest, 1001-line label mapping, manifest 순서의 이미지를 선택한다. 이번 구현·검증 작업에서는 ADB, 설치, 앱·실기기 실행을 하지 않았다.
+
+## 14. calibration-v1 schema와 저장 경로
+
+- protocol: `calibration-v1`, schema version: `2`, deadline state: `calibration_pending`.
+- opt-in device root: `Android/data/com.example.d1check.benchmarkrunner/files/calibration-v1/<canonical session UUID>/`.
+- 고정 session artifact: `input_manifest.json`, `label_mapping.txt`, `metadata.json`, `requests.jsonl`, `thermal_samples.jsonl`, `summary.json`, `provenance.json`.
+- 일반 결과: `results/<canonical request UUID>.json`.
+- self-hash 방지를 위해 세션 루트 상대경로 `provenance.json`만 `artifact_set`에서 제외한다. `results/provenance.json`, `nested/path/provenance.json` 등 중첩된 동명 파일은 허용되지 않은 추가 artifact로 거부하며 오류에 상대경로를 표시한다.
+- `requests.jsonl`은 요청마다 protocol/session/request/image identity, requested/actual backend, fallback 상태, warm-up/cold/warm/transition, terminal 상태, 모든 component timestamp, queue wait, scenario end-to-end, tensor/output hash, non-finite count, top-1/top-5 및 persistence 경계를 기록한다.
+- device timestamp는 모두 `SystemClock.elapsedRealtimeNanos()`다. runtime은 input rewind와 output buffer clear를 먼저 수행한 뒤 `Interpreter.run()` 직전에 start, 직후에 end를 읽는다. decode, 전처리, 후처리, checksum, telemetry와 파일 I/O는 이 timer 밖이다.
+- provenance가 생기기 전 중단된 session은 partial이며 성공 artifact로 사용하지 않는다. finalized session도 production validator와 host validator를 모두 통과해야 사용할 수 있다.

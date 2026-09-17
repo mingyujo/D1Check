@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
     implementation(libs.material)
+    implementation("androidx.exifinterface:exifinterface:1.4.2")
     implementation(libs.ai.edge.litert.runtime)
     implementation(libs.ai.edge.litert.gpu.api)
     implementation(libs.ai.edge.litert.gpu.runtime)
