@@ -1,11 +1,21 @@
 # D1Check CALIB-01A 종단간 calibration protocol
 
-- 문서 버전: 4 — CALIB-01B 종료 상태 정리; image-v3 및 측정/schema 계약은 유지
+- 문서 버전: 5 — 기존 단일 MobileNet 계약의 적용 범위 표시; image-v3 및 측정/schema 계약은 유지
 - 작성일: 2026-09-15
-- 상태: CALIB-01B completed / `CALIB_01B_PASS`. FIX4 최종 감사와 전체 host 검증 완료. 과거 네트워크·Robolectric·signing lock 대기는 resolved history로 분리한다. 현재 작업은 CALIB-01C-INPUT이며 대표 이미지·라벨·thermal/cooling gate·strict GPU smoke 준비 전에는 A24 실측을 시작하지 않는다.
+- 상태: CALIB-01B completed / `CALIB_01B_PASS`. FIX4 최종 감사와 전체 host 검증 완료. 과거 네트워크·Robolectric·signing lock 대기는 resolved history로 분리한다. 프로젝트 현재 작업은 SCOPE-02다. 이 문서의 CALIB-01C-INPUT은 legacy 단일 모델 입력 준비로 보류/재계획하며 대표 이미지·라벨·thermal/cooling gate·strict GPU smoke 미완료 상태를 보존한다.
 - 직접 실기기 적용 기기: Galaxy A24만 해당. Galaxy S26 새 calibration·설치·실행은 `OUT_OF_SCOPE_NON_BLOCKING`이며 기존 formal 80슬롯 보조자료만 유지한다.
 - 절대 마감시간 상태: `calibration_pending`
 - 목적: 실제 사용자 이미지 경로의 구성요소별 종단간 지연과 변동성을 측정해 기기별 절대 마감시간 및 혼합 워크로드 조건을 평가 전에 고정한다.
+
+## 0. 개정 4 계획과 기존 구현의 적용 경계
+
+프로젝트 목표는 [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4, 새 두 작업의 측정·평가 설계는 [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)를 따른다. **아래 1~14절은 구현된 MobileNet 단일 모델 `calibration-v1`/schema 2 계약과 이력이다. 새 두 작업에 자동 적용하지 않는다.**
+
+- CALIB-01B PASS와 기존 host 검증 결과는 보존한다. 새 모델 지원 또는 실기기 calibration 완료를 의미하지 않는다.
+- 기존 1001행 label mapping 출처 미확인, 8장 입력 미준비, AP/PA/SKIN·cooling host 연결, strict GPU smoke는 해결된 것으로 기록하지 않는다. 기존 CALIB-01C를 재개하면 원래 사전조건을 충족해야 한다.
+- 8절의 `N95 + U95`, `N95 + 3 × U95`와 9절의 단일 `C` 도착률 공식은 기존 단일 모델용이다. 서로 다른 두 작업의 사용자 deadline·workload로 전용하지 않는다.
+- 새 모델별 tensor/labels/전처리와 별도 artifact 계약은 TASK-02에서 구현한다. 기존 `d1_calibration_cli.py`에 새 입력을 전달하거나 image-v3 hash를 새 모델에 재사용하지 않는다.
+- 새 실험에서 AP/PA/SKIN을 진단 자료로 다루는 결정은 새 protocol에 한정된다. 기존 5절의 stricter gate를 완화한 PASS로 소급하지 않는다.
 
 ## 1. 범위와 비목표
 

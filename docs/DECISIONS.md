@@ -2,6 +2,8 @@
 
 이 문서는 방향 변경을 날짜순으로 기록한다. 각 항목에 제안 / 채택 / 대체됨 상태를 표시한다. 아래 초기 항목은 이전 계획에서 이관한 작업 방향이며, 개별 수치·실험 조건 확정을 의미하지 않는다. 이번 개정은 사용자 요청에 따른 문서 보강이다.
 
+> 현재 계획은 2026-09-17 개정 4 항목을 우선한다. 과거 결정은 이력으로 보존한다. 새 시나리오·모델 후보·효과 수치는 아래에 명시한 검증/미확정 상태를 유지한다.
+
 ## 2026-09-15 — 프로젝트 목표 재정의
 
 - 단일 Android 앱의 긴급·일반 AI 요청 스케줄링 문제로 범위를 고정한다.
@@ -93,6 +95,21 @@
 - 전처리 계약: `android-mobilenet-v1-image-v3`, canonical SHA-256 `03e507dea1d4111681b6c1120fab7729967a19e49712ccc05d2e72e4f7762cf5`. host CLI와 Android를 함께 갱신하며 Pillow byte-identical 주장은 하지 않는다.
 - decode: RuntimeException만 cause 보존 IllegalArgumentException으로 변환한다. Error/OOM은 잡지 않는다.
 - 검증: production Matrix 좌표로 1~8/미러 의미를 검사하고 실제 EXIF JPEG reader→decoder를 유지한다. Shadow bitmap의 getPixels에 의존하지 않는다. 테스트 수 3개·기존 inference timer·v1/v2·artifact/provenance·A24-only 범위는 유지한다.
+
+## 2026-09-17 — 대회 목표에 맞춘 두 작업·강한 비교 중심 계획 개정
+
+- 상태: 채택 — 사용자의 “우리의 계획을 수상 가능성을 높여서 더 나은 방향으로 발전” 요청에 따른 계획 개정. 코드/실기기 완료 또는 수상 가능성의 정량 입증이 아니다.
+- 유지: A24-only, 단일 앱 수준 제어, 비선점, 전체 도착 분모, 품질·일반 서비스·열/메모리 제약, 기존 80슬롯/v1/v2/calibration-v1 보존. NPU·강화학습은 선택적 확장이다.
+- 변경: 단일 분류 모델의 긴급/일반 시나리오에서 서로 다른 두 실제 AI 작업으로 주평가를 확장한다. 초기 직렬 경로 이후 실측으로 검증된 조합만 최대 두 건 병행한다. 09-15 초기 범위/DEFINE-01의 단일 모델 한정은 새 주평가에 대해 대체하며 기존 구현 계약에는 소급하지 않는다.
+- 우선 검증할 사용 가설: 오프라인 사진 정리 중 백그라운드 분류·색인과 선택 사진의 대화형 객체탐지. 현장 수요·최종 모델 선정은 SCOPE-02/MODEL-02에서 검증한다. 통역/OCR/게임은 구현 사실이나 필수 범위가 아니다.
+- 모델 후보: 분류 EfficientNet-Lite0 FLOAT32, 탐지 EfficientDet-Lite0 FLOAT32(부적합 시 SSD MobileNetV2 FLOAT32 검토). 최신성 대신 출처/labels/license·A24 호환성·품질·메모리·측정 가능성으로 선택한다. 후보는 배포 파일을 검증하기 전 승인 모델이 아니다.
+- 기존 MobileNet V1과 1001행 라벨 미확인 문제를 보존한다. CALIB-01B PASS는 유지, CALIB-01C-INPUT은 legacy 입력 준비로 보류/재계획한다. 라벨을 임의 생성하거나 새 모델 라벨을 기존 출력에 붙이지 않는다. 새 모델도 독립적인 label provenance gate를 통과해야 한다.
+- 비교: 개정 4의 B2는 task별 고정 배정·직렬/허용 병행·단순 열 대응 중 개발자료로 고른 강한 정책이다. B3(단독 프로파일 기반 EDF/earliest-finish)를 추가한다. P는 실측 간섭과 준비 비용으로 시작/대기·경로를 결정한다. 구 B2 결과는 개정 없이 재사용하지 않는다.
+- 지표: 새 주평가는 예정 도착→완료, enqueue→완료도 병기한다. 긴급 기한 내 서비스율과 조건부 P95, 일반 기한 내 완료율/aging·backlog를 함께 보고한다. 일반 하한·허용차·실질 개선 수치는 evaluation 전에 freeze한다.
+- 열: 스로틀링 유도는 필수조건이 아니다. 새 실험의 기본 안전/비교 조건은 검증 가능한 system thermal/battery·cooling policy로 집행하고 AP/PA/SKIN은 가능한 진단 자료로 결합한다. 구 calibration-v1의 AP/PA/SKIN 외부 gate를 완료 처리하거나 삭제하지 않는다. 센서 부재는 기록하며 열 인과·에너지 절감 주장을 제한한다.
+- 프로토콜: 기존 image-v3와 schema 2 유지. `multitask-v1`은 새 계획용 예약 ID이며 별도 구현·validator가 필요하다. 기존 CLI에서 새 manifest가 실행된다고 주장하지 않는다.
+- 미확정: 구체 모델 파일/hash·runtime, 실제 사용자 deadline, 일반 서비스 하한, 안전 온도/stability 값, 튜닝 예산·최종 반복 수. 상태는 `calibration_pending`/`thresholds_pending`이다.
+- 영향: AGENTS, PROJECT_PLAN/STATUS/DECISIONS, CALIBRATION_PROTOCOL의 적용 범위 표시, 신규 MULTITASK_EXPERIMENT_PROTOCOL. production·입력·APK·기존 데이터는 변경하지 않는다.
 
 ## 새 결정 작성 형식
 
