@@ -1,0 +1,83 @@
+# MODEL-02A 모델·라벨·호스트 검증 inventory
+
+- 조사일: 2026-09-17
+- 상태: **partial / BLOCKED_DETECTOR_LICENSE_PROVENANCE**
+- 상위 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.2, [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)
+- 범위: host에서 공식 배포 artifact·labels·metadata·tensor·고정 입력 출력을 검사했다. Android production, APK, A24 CPU/GPU, delegation, 실제 이미지 품질은 검사하지 않았다.
+- 저장 원칙: 모델 바이너리와 호스트 실행 산출물은 저장소/PR에 넣지 않는다. 이 문서에는 재현 가능한 URL·해시·계약·판정만 남긴다.
+
+## 1. 판정
+
+| 역할 | 후보 | MODEL-02A 판정 | 다음 단계 |
+| --- | --- | --- | --- |
+| 분류 | EfficientNet-Lite0 FLOAT32 v1 | **HOST_CONTRACT_PASS** | A24용 bundle을 별도로 고정한 뒤 MODEL-02B CPU/GPU·품질·메모리 smoke 후보 |
+| 탐지 1순위 | EfficientDet-Lite0 FLOAT32 v1 | **BLOCKED_LICENSE_PROVENANCE** | 정확한 binary의 사용·재배포 license 근거와 Tasks postprocess golden이 확보되기 전 A24 반입 금지 |
+| 탐지 사전 대안 | SSD MobileNetV2 FLOAT32 v1 | **BLOCKED_LICENSE_PROVENANCE** | 같은 license 공백으로 대체 승인하지 않음; 후보를 계속 바꾸지 않고 결정 gate로 복귀 |
+
+분류 후보의 PASS는 host 계약만 뜻한다. A24 지원, GPU full delegation, latency, memory, 실제 이미지 정확도는 미확인이다. 탐지 두 후보는 Google 공식 문서·bucket에서 내려받을 수 있고 host raw inference도 동작하지만, 정확한 binary의 metadata `license`가 비어 있다. Google Developers 문서 footer와 Apache-2.0인 sample code는 model binary license의 증거로 전용하지 않는다.
+
+## 2. 공식 출처와 byte identity
+
+`latest`는 변할 수 있으므로 실험 후보는 `/1/` URL로 고정한다. 조사 시점의 `latest`와 v1은 각 후보에서 byte-identical이었다.
+
+| 후보 | version-pinned URL | bytes | SHA-256 | latest와 동일 | Last-Modified / ETag |
+| --- | --- | ---: | --- | --- | --- |
+| EfficientNet-Lite0 FLOAT32 | `https://storage.googleapis.com/mediapipe-models/image_classifier/efficientnet_lite0/float32/1/efficientnet_lite0.tflite` | 18,582,189 | `6c7ab0a6e5dcbf38a8c33b960996a55a3b4300b36a018c4545801de3a3c8bde0` | yes | 2023-04-26 / `0edae254acef24a66c3729fca3759655` |
+| EfficientDet-Lite0 FLOAT32 | `https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/float32/1/efficientdet_lite0.tflite` | 13,836,895 | `40338edf5ec70d43e318b0a716a84d4564cd1802759a7a07170c7e43796dbf58` | yes | 2023-04-27 / `ca669b1df0ebe9a75ddcde57fe07a0d0` |
+| SSD MobileNetV2 FLOAT32 | `https://storage.googleapis.com/mediapipe-models/object_detector/ssd_mobilenet_v2/float32/1/ssd_mobilenet_v2.tflite` | 11,316,189 | `b8ccb1a25d45455ba52e85f26531948e1cb75efeb94c7c3d456d54fd4d6fbdd2` | yes | 2023-05-03 / `83567e09570f0e84897294c4f1f722db` |
+
+공식 후보 근거:
+
+- [MediaPipe Image Classifier 모델 안내](https://developers.google.com/edge/mediapipe/solutions/vision/image_classifier)는 EfficientNet-Lite0 FLOAT32를 권장 후보로 제시한다.
+- [MediaPipe Object Detector 모델 안내](https://developers.google.com/edge/mediapipe/solutions/vision/object_detector)는 EfficientDet-Lite0 FLOAT32를 권장하고 SSD MobileNetV2 FLOAT32를 더 빠르고 가벼운 대안으로 제시한다.
+- Google의 MediaPipe sample/benchmark source는 위 v1 EfficientNet/EfficientDet 객체 URL을 직접 사용한다. 이는 배포 주체·버전 경로 근거이며 별도의 binary license 증명은 아니다.
+
+## 3. 라벨·index 계약
+
+| 후보 | 모델 내 associated file | 행·의미 | 파일 SHA-256 | 외부 공식 label과 관계 |
+| --- | --- | --- | --- | --- |
+| EfficientNet-Lite0 | `labels_without_background.txt` | 1000행, output index 0..999와 직접 대응 | `e697a491aa735cc6c2aaf982f8e86e8fc7b0a1ea7750a2cc6a2bdfc1e109012f` | 외부 1001행 `labels.txt`의 1..1000행과 정확히 동일. 외부 0행 `background`는 이 모델 output에 넣지 않음 |
+| EfficientDet-Lite0 | `labels.txt` | 90행, 80 object + 10 `???`; score 마지막 축 index와 직접 대응 | `f8803ef7900160c629d570848dfda4175e21667bf7b71f73f8ece4938c9f2bf2` | 외부 공식 `labelmap.txt`와 byte-identical |
+| SSD MobileNetV2 | `labels.txt` | 91행, 0행 `background` + 위 sparse 90행 | `f25af66ef3bd4df192d007985761c9a0479a6245f693b604c70c501188907ef6` | EfficientDet용 90행 파일을 대신 쓰면 한 칸씩 어긋남 |
+
+외부 분류 `labels.txt`는 10,484 bytes, SHA-256 `536feacc519de3d418de26b2effb4d75694a8c4c0063e36499a46fa8061e2da9`다. 외부 탐지 `labelmap.txt`는 661 bytes이며 위 EfficientDet 내장 label과 같은 해시다. 기존 MobileNet V1의 1001행 라벨 blocker와 새 EfficientNet 계약은 별개다.
+
+## 4. tensor·metadata 계약
+
+| 후보 | input | normalization | raw output | metadata license |
+| --- | --- | --- | --- | --- |
+| EfficientNet-Lite0 | `images`, FLOAT32 `[1,224,224,3]` | `(RGB - 127.0) / 128.0` | `Softmax`, FLOAT32 `[1,1000]` | `Apache License. Version 2.0 ...` |
+| EfficientDet-Lite0 | `serving_default_images:0`, FLOAT32 `[1,320,320,3]` | `(RGB - 127.5) / 127.5` | score `[1,19206,90]`, location `[1,19206,4]` | **null** |
+| SSD MobileNetV2 | `serving_default_inputs:0`, FLOAT32 `[1,256,256,3]` | `(RGB - 127.5) / 127.5` | location `[1,12276,4]`, score `[1,12276,91]` | **null** |
+
+EfficientDet/SSD의 일반 LiteRT Interpreter 출력은 후처리 전 anchor score와 box encoding이다. 이를 완성된 bounding box 결과로 부르지 않는다. MediaPipe Tasks ObjectDetector가 anchor decode/NMS/canonical result를 수행하므로 TASK-02에서 API 호출 경계와 postprocess 결과를 별도 계측해야 한다.
+
+## 5. 고정 host smoke
+
+검증 환경은 Linux x86_64, Python 3.12, `ai-edge-litert==2.2.0`, FLOAT32, CPU XNNPACK, thread 1이다. 좌표 기반으로 생성한 고정 RGB pattern을 metadata 정규화한 뒤 같은 Interpreter instance에서 3회 실행했다. 실행시간은 host 배선 참고일 뿐 A24 성능 자료가 아니다.
+
+| 후보 | 결과 | 고정 output hash | host 호출시간 3회 |
+| --- | --- | --- | --- |
+| EfficientNet-Lite0 | 3회 동일, finite, 확률합 1.0 | `1631fd1c188034ac73b0589d117901bd41519631718a9adb94f7c0b0706efda2` | 17.520 / 18.630 / 11.166 ms |
+| EfficientDet-Lite0 score | 3회 동일, finite | `0344b5e19ab41f362d36a44a3fc31b54f131738a6d52693d931e092885a4cb58` | 전체 raw invoke 24.124 / 23.933 / 23.289 ms |
+| EfficientDet-Lite0 location | 3회 동일, finite | `c95e1b70982b45707eafd54499fbb496868e95895de877e921835378553d0056` | 위와 동일 |
+| SSD MobileNetV2 score | 3회 동일, finite | `3fabd167d0952bdb64b0b1c713186b8aef43705f13c4b99ba79a2c1a21f61bc6` | 전체 raw invoke 20.270 / 12.502 / 11.816 ms |
+| SSD MobileNetV2 location | 3회 동일, finite | `5e3d4383cd3de72b4f2e9e1e70cc73fe243f71c856ca500dde71f59d45a4318b` | 위와 동일 |
+
+고정 pattern은 runtime·tensor·label wiring 회귀용이며 모델 품질 표본이 아니다. MediaPipe Python Tasks 후처리 smoke는 host의 `libGLESv2.so.2` 부재로 native library load 전에 중단됐다. 이 환경 오류를 모델 실패로 보지는 않지만 decoded detector golden도 PASS로 기록하지 않는다.
+
+## 6. 라이선스 판정 근거와 한계
+
+- EfficientNet exact binary의 TFLite metadata는 저자 `MediaPipe`와 Apache License 2.0 문자열을 포함한다. 공식 bucket/version URL·내장 label과 함께 host 후보 승인 근거로 사용한다.
+- EfficientDet와 SSD exact binary는 저자 `MediaPipe`를 기록하지만 metadata license가 null이다. GCS response에도 license metadata가 없었다.
+- TensorFlow EfficientDet model family/page, MediaPipe sample code와 저장소에는 Apache-2.0 표기가 있다. 그러나 그 표기가 위 두 GCS binary에 적용된다는 exact artifact 연결 문서는 이번 조사에서 확보하지 못했다.
+- COCO 학습 데이터 license나 architecture/source-code license는 배포된 weight file의 license를 자동으로 증명하지 않는다.
+- 따라서 탐지 binary를 저장소·APK·팀 공유 bundle에 넣지 않는다. 공식 모델 카드/NOTICE/배포 페이지가 exact URL 또는 hash를 Apache-2.0 등 사용 가능한 조건에 연결하면 blocker를 해제할 수 있다.
+
+## 7. 다음 gate
+
+1. `MODEL-02A-LICENSE`: Google 공식 근거에서 EfficientDet exact version URL 또는 SHA-256과 license를 연결한다. 확보하지 못하면 두 탐지 후보를 승인하지 않고 `SCOPE-03`에서 탐지 task/model을 한 번 재결정한다.
+2. 분류 artifact도 저장소에 바로 넣지 않고, 승인 bundle manifest에 URL·bytes·SHA-256·내장 label hash·metadata license를 고정한다.
+3. 두 task가 모두 host 승인을 받은 뒤에만 `MODEL-02B`로 넘어가 A24 CPU/GPU strict delegation, decoded result quality, memory, cold/warm을 측정한다.
+
+deadline은 `calibration_pending`, 서비스·효과·안전 수치는 `thresholds_pending`을 유지한다. 이번 host ms를 deadline이나 시뮬레이션 service time으로 사용하지 않는다.

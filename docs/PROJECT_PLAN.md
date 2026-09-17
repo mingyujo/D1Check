@@ -1,12 +1,12 @@
 # D1Check 프로젝트 실행계획
 
-- 개정: 4.1 / 2026-09-17 / 혼합 요청 조건을 주평가로 명확화하고 SCOPE-02 근거 조사를 완료
+- 개정: 4.2 / 2026-09-17 / MODEL-02A host 검증 결과와 탐지 binary license blocker 반영
 - 기준 코드: `df8192aa61eebacf83df7a7815f0c60c8bbf4004`의 `master`. 이 개정은 문서 변경이며 새 모델·스케줄러 구현 또는 실기기 PASS가 아니다.
-- 현재 작업: `MODEL-02A` — 후보 모델의 정확한 artifact·label·license·tensor 계약을 검증한다.
+- 현재 작업: `MODEL-02A-LICENSE` — 탐지 exact binary의 사용·재배포 license 근거를 확보하거나 SCOPE-03 재결정을 준비한다.
 - 새 절대 deadline은 `calibration_pending`, 서비스 하한·성공 기준·최종 반복 수는 `thresholds_pending`이다.
 - 유지: A24-only 직접 검증, 기존 80슬롯과 diagnostic v1/v2 원본, CALIB-01B PASS, 실패를 포함한 전체 도착 분모.
 - 전환: 단일 분류 모델은 기존 기준선으로 보존하고, 서로 다른 두 AI 작업의 요청 배정 문제를 새 주평가로 준비한다. 구체 모델과 마감시간은 아직 미확정이다.
-- 문서 역할: 이 문서는 목표·우선순위, [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md)는 혼합 요청·후보·선행 연구의 근거와 한계, [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)는 새 실험 계약, [CALIBRATION_PROTOCOL.md](CALIBRATION_PROTOCOL.md)는 구현된 단일 모델 계약, [PROJECT_STATUS.md](PROJECT_STATUS.md)는 현재 진행 상태다.
+- 문서 역할: 이 문서는 목표·우선순위, [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md)는 혼합 요청·후보·선행 연구의 근거와 한계, [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)는 새 실험 계약, [CALIBRATION_PROTOCOL.md](CALIBRATION_PROTOCOL.md)는 구현된 단일 모델 계약, [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)는 exact model/label/hash/tensor·host 판정, [PROJECT_STATUS.md](PROJECT_STATUS.md)는 현재 진행 상태다.
 
 ## 1. 한 문장으로 설명하는 프로젝트
 
@@ -61,12 +61,12 @@ SCOPE-02 조사 결과는 [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md)에 기록
 | 역할 | 먼저 검증할 후보 | 선택 이유와 상태 |
 | --- | --- | --- |
 | 과거 비교 기준 | 기존 MobileNet V1 | 80슬롯과 CALIB-01B 재현용. 원 모델·파일·해시 보존. 1001행 라벨 출처 미확인 문제는 해결된 것으로 처리하지 않음 |
-| 새 분류 작업 | EfficientNet-Lite0 FLOAT32 후보 | 공식 안내와 1001행 label 후보(0행 background)를 확인. exact artifact/license/hash·metadata·A24/현재 LiteRT 호환성은 미검증 |
-| 새 객체탐지 작업 | EfficientDet-Lite0 FLOAT32 후보 | 공식 안내와 90행 sparse label map(80 object + 10 placeholder)을 확인. exact artifact/license/hash·tensor·A24 지원은 미검증; 실패하면 SSD MobileNetV2 FLOAT32를 한 번 검토 |
+| 새 분류 작업 | EfficientNet-Lite0 FLOAT32 v1 | host source/hash/tensor/내장 1000 labels·Apache-2.0 metadata·고정 CPU output 확인. A24 CPU/GPU·품질·메모리는 MODEL-02B 미검증 |
+| 새 객체탐지 작업 | EfficientDet-Lite0 FLOAT32 v1 / 대안 SSD MobileNetV2 FLOAT32 v1 | 두 exact artifact의 source/hash/tensor/내장 labels·raw CPU output 확인. 둘 다 metadata license가 비어 exact binary license 미입증; A24 반입 보류 |
 
 이는 최신 모델 경연이 아니다. 공개된 [분류 모델 안내](https://developers.google.com/edge/mediapipe/solutions/vision/image_classifier)와 [탐지 모델 안내](https://developers.google.com/edge/mediapipe/solutions/vision/object_detector)는 후보의 근거이며, 표의 다른 기기 성능을 A24 성능으로 사용하지 않는다. 파일을 확보한 뒤 실제 출력 tensor/metadata·label index를 검사해야 한다. 공식 문서가 있다는 이유만으로 특정 파일의 라이선스·1000/1001행 대응·GPU full delegation이 검증된 것은 아니다.
 
-MODEL-02A는 host에서 exact model/label source, license, byte count/SHA-256, metadata·tensor·index 계약과 golden output을 확인한다. MODEL-02B는 승인 bundle의 A24 CPU/GPU 실행 가능성, 실제 delegation/fallback, 품질, 메모리, 초기화 비용을 최소 독립 probe로 확인한다. TASK-02에서만 사용자 경로와 공통 runner에 연결한다. 작업별 후보는 최대 2개까지이며 정책 P가 유리해지는 조합을 찾으려고 계속 바꾸지 않는다. 선정 기준과 제외 후보를 결과와 함께 보존한다. GPU가 항상 불리하거나 미지원이면 그 사실을 받아들이고 큐 순서·동시성 제한의 효과를 검토한다.
+MODEL-02A 결과는 [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)에 기록한다. EfficientNet 분류는 host 계약을 통과했지만, EfficientDet와 사전 대안 SSD MobileNetV2는 exact binary license가 확인되지 않아 `MODEL-02A-LICENSE`에서 정지했다. 문서·sample code·architecture license를 binary license로 대신하지 않는다. MODEL-02A는 host에서 exact model/label source, license, byte count/SHA-256, metadata·tensor·index 계약과 golden output을 확인한다. MODEL-02B는 승인 bundle의 A24 CPU/GPU 실행 가능성, 실제 delegation/fallback, 품질, 메모리, 초기화 비용을 최소 독립 probe로 확인한다. TASK-02에서만 사용자 경로와 공통 runner에 연결한다. 작업별 후보는 최대 2개까지이며 정책 P가 유리해지는 조합을 찾으려고 계속 바꾸지 않는다. 선정 기준과 제외 후보를 결과와 함께 보존한다. GPU가 항상 불리하거나 미지원이면 그 사실을 받아들이고 큐 순서·동시성 제한의 효과를 검토한다.
 
 ## 5. 기존 구현과 새 구현의 경계
 
@@ -133,7 +133,7 @@ B2는 같은 장치의 모든 합법적 task별 배정 후보(두 task·두 경�
 | 작업 | 내부 목표 | 완료 조건 | 불충족 시 |
 | --- | --- | --- | --- |
 | SCOPE-02 | 09-17 완료 | `completed_with_open_gates`: 혼합 조건·합성 가정, 공식 안내/label 후보, 선행 연구·대회 적합성·선택적 시연을 근거 문서에 기록 | exact artifact/license·A24 성능과 최근 대회 전체 중복 감사는 후속 gate; 특정 앱 수요를 입증한 것으로 쓰지 않음 |
-| MODEL-02A/B | 09-18~09-23 | 두 모델 파일/labels/license/hash와 tensor 계약, A24 CPU·GPU 후보 smoke 및 품질·메모리 확인 | GPU 미지원은 unsupported; 모델 대체는 사전 후보 안에서만, 동적 자원 주장은 재검토 |
+| MODEL-02A/B | 09-18~09-23 | 분류 host 계약 PASS; 탐지 exact binary license blocker 해결 후 A24 CPU·GPU 후보 smoke 및 품질·메모리 확인 | license 미해결 시 SCOPE-03; GPU 미지원은 unsupported, 동적 자원 주장은 재검토 |
 | TASK-02 | 09-24~09-28 | 두 실제 adapter, 독립 arrival, UI 결과·저장, 실패 포함 ledger와 validator 동작 테스트 | 단일 모델 pipeline을 다중 작업 완성으로 표시하지 않음 |
 | PROFILE-02 | 09-29~10-03 | 단독/전환/허용 co-run 프로파일, thermal 연결, deadline·입력·주평가 규칙 고정 | 불안정 원인 수정; 병행은 이득 없으면 금지 |
 | SCHED-02 | 10-04~10-08 | B0~B3/P 개발 비교, 구성요소 제거 비교, feasibility 판정, 평가 설정 freeze | B2/B3와 차이 없으면 복잡한 정책 확대 중단 |

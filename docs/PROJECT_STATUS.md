@@ -1,11 +1,10 @@
 # D1Check 현재 상태
 
-- 갱신: 2026-09-17 / SCOPE-02 근거 조사 완료, MODEL-02A 전환
-- 현재 작업: `MODEL-02A` — exact model artifact·labels·license·tensor/metadata/index 계약을 host에서 검증한다. A24 실행은 MODEL-02B다.
-- 기준: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.1, [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md), [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)(설계, 미구현).
-- 코드 기준: 원격 `master`의 `df8192aa61eebacf83df7a7815f0c60c8bbf4004`, `Implement A24 calibration input and validation pipeline`. 이번에 branch/문서/관련 source를 조회했다.
-- CALIB production/test는 위 commit에 포함돼 있다. 이전 `38386b9`/CALIB 미커밋 표기는 오래된 기록이었다. 사용자 Windows 작업 트리·index·로컬 HEAD는 이번 원격 작업에서 확인하지 않았다.
-- 개정은 [초안 PR #2](https://github.com/mingyujo/D1Check/pull/2)의 문서 branch에 반영하며 master에 자동 병합하지 않는다. SCOPE-02 수정 전 head는 `93ab2ff71b8adec958a4f0e759773b64e4bbb181`이며 새 commit은 PR 기록으로 식별한다.
+- 갱신: 2026-09-17 / MODEL-02A host 검사 완료, 탐지 exact binary license blocker 확인
+- 현재 작업: `MODEL-02A-LICENSE` — EfficientDet-Lite0 exact binary의 사용·재배포 license 근거를 확보한다. 근거가 없으면 `SCOPE-03`에서 탐지 task/model을 재결정한다.
+- 기준: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.2, [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md), [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)(설계, 미구현).
+- 코드 기준: 원격 `master`의 `df8192aa61eebacf83df7a7815f0c60c8bbf4004`, `Implement A24 calibration input and validation pipeline`. production code는 이번 단계에서 변경하지 않았다.
+- 문서 작업은 [초안 PR #2](https://github.com/mingyujo/D1Check/pull/2)의 `docs/competition-plan-v4-20260917` branch에서 계속하며 master에 자동 병합하지 않는다.
 - 직접 검증은 A24만. S26은 기존 formal 보조자료이며 새 calibration·설치·실행·정책 평가는 범위 밖이다.
 - 새 절대 deadline: `calibration_pending`. 서비스 하한·안전/안정성 수치·성공 기준·최종 반복 수: `thresholds_pending`.
 
@@ -14,25 +13,24 @@
 | 작업 | 상태 | 해석 |
 | --- | --- | --- |
 | SETUP-01, AUDIT-A24-01, DIAGNOSTIC-V2-01, AUDIT-S26-01 | completed(기존 기록) | 측정 기반·기존 자료 감사 |
-| DEFINE-01, CALIB-01A | completed(기존 정의) | 단일 분류 시나리오·legacy protocol. 새 주평가는 개정 4.1로 대체 |
+| DEFINE-01, CALIB-01A | completed(기존 정의) | 단일 분류 시나리오·legacy protocol. 새 주평가는 개정 4.2로 대체 |
 | CALIB-01B | completed / CALIB_01B_PASS | MobileNet production·host 검증. 두 작업/실기기/정책 효과 PASS가 아님 |
 | CALIB-01C-INPUT | legacy 준비 보류·재계획 | 기존 모델 1001행 라벨과 이미지 입력 미확정. 완료 처리하지 않음 |
-| PLAN-REV04.1 | 문서 개정 완료 | 혼합 요청 주평가·시연·시뮬레이션 역할 정리. 코드·성능 검증이 아님 |
-| SCOPE-02 | completed_with_open_gates | 합성 workload 가정, 공식 model/label 후보, 선행 연구·대회 적합성과 주장 한계를 근거 문서에 기록 |
-| MODEL-02A | current | exact source/license/hash, metadata·tensor·label index·host golden output 승인 |
-| MODEL-02B / TASK-02 / PROFILE-02 / SCHED-02 / EVAL-02 | pending | A24 model smoke→두 adapter→간섭 측정→정책 개발→독립 평가 |
+| PLAN-REV04.2 / SCOPE-02 | 문서 개정·근거 조사 완료 | 혼합 요청 범위, 합성 workload 가정, 선행 연구와 증거 경계 확정 |
+| MODEL-02A 분류 | HOST_CONTRACT_PASS | EfficientNet-Lite0 v1 source/hash/tensor/내장 labels/license·고정 host output 확인; A24 미검증 |
+| MODEL-02A 탐지 | blocked | EfficientDet와 사전 대안 SSD MobileNetV2 exact binary의 license 필드가 비어 A24 반입 보류 |
+| MODEL-02B / TASK-02 / PROFILE-02 / SCHED-02 / EVAL-02 | pending | 두 task host 승인 후 A24 smoke→adapter→profile→정책→독립 평가 |
 
-## SCOPE-02 결과와 남은 장애
+## MODEL-02A 확인 사실과 장애
 
-- 주평가: 일반 backlog 중 긴급 burst와 지속 혼합 요청. 저부하·동일 등급 경합·task별 등급 배치 변경은 보조 조건이다. 사진 정리는 대표 시연 후보이며 연구 범위의 필수 제약이 아니다.
-- 실사용 도착 빈도·burst 분포를 입증한 사용자 로그는 없다. A24에서는 도착 시각·task·priority만 합성·재생하고 두 모델/I/O를 실제 실행한다. 별도 시뮬레이션은 실측으로 보정·독립 검증한 범위의 조건 탐색용이다. 실제/가상 표본을 합치지 않으며 실행기·모형은 아직 미구현이다.
-- 후보는 EfficientNet-Lite0 FLOAT32 + EfficientDet-Lite0 FLOAT32(탐지 대안 SSD MobileNetV2). 공식 안내와 분류 1001행 label 후보, 탐지 90행 sparse label map(80 object + 10 placeholder)을 확인했다. exact model byte·license·metadata/tensor 결합·A24/현재 runtime 지원은 미검증이다.
-- Band·Sung et al.·Pantheon·CoDL 등 관련 연구가 존재한다. 최초 모바일 multi-DNN scheduling을 주장하지 않고, A24 한 앱의 whole-request 비선점 배정·서비스 제약·강한 기준정책 대비 실증으로 범위를 제한한다.
-- 공개 공식 대회 목록과 접근 가능한 프로그램에서 동일 제목은 확인하지 못했지만 2023~2025 전체 출품작을 완전 감사한 결과는 아니다. 중복 없음·최초성은 미확정이며 제출 전 RELATED-02에서 다시 확인한다.
-- 기준 코드의 calibration은 MobileNet `[1,224,224,3] -> [1,1001]`에 고정돼 있다. 새 adapter/manifest/validator가 필요하며 기존 CLI로 두 작업을 실행할 수 없다.
-- 기존 MobileNet label provenance는 사용자 제공 조사에서 미해결이었다. 원격 STATUS에 누락됐던 장애를 복원하며 이번에 원본 모델/외부 WNID 파일을 재검사한 것은 아니다. 새 labels를 기존 출력에 대신 붙이지 않는다.
-- B2(최선 정적), B3(단순 동적), P(간섭 고려)의 우열은 미입증이다. 스로틀링은 성공 필수조건이 아니고 일반 서비스 희생만으로 긴급 P95를 낮추는 것은 성공이 아니다.
-- 기존 CALIB-01C를 재개하려면 원래 AP/PA/SKIN host 연결·cooling/stability·strict GPU smoke 조건이 필요하다. 새 thermal 계약은 별도 구현하며 구 gate 통과로 소급하지 않는다.
+- 정확한 파일·label·tensor·host output은 [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)에 기록했다. `/1/` URL을 고정했고 조사 시점의 `latest`와 byte-identical임을 확인했다.
+- EfficientNet-Lite0 FLOAT32: 18,582,189 bytes, SHA-256 `6c7ab0a6e5dcbf38a8c33b960996a55a3b4300b36a018c4545801de3a3c8bde0`; FLOAT32 `[1,224,224,3] -> [1,1000]`; 내장 labels 1000행; metadata Apache-2.0; LiteRT CPU 3회 output hash 동일.
+- EfficientDet-Lite0 FLOAT32: 13,836,895 bytes, SHA-256 `40338edf5ec70d43e318b0a716a84d4564cd1802759a7a07170c7e43796dbf58`; score `[1,19206,90]`·location `[1,19206,4]`; 내장 90행 중 10 placeholder; raw CPU 3회 동일. metadata license는 null이다.
+- 대안 SSD MobileNetV2 FLOAT32도 11,316,189 bytes, SHA-256 `b8ccb1a25d45455ba52e85f26531948e1cb75efeb94c7c3d456d54fd4d6fbdd2`, 91행 background 포함 계약과 raw CPU 실행을 확인했지만 license가 null이다.
+- Google 공식 안내·sample source와 TensorFlow model family의 Apache-2.0 표기는 확인했으나 exact GCS binary URL/hash에 license를 연결하는 근거는 확보하지 못했다. 문서/license를 binary에 자동 전용하지 않는다.
+- MediaPipe Python Tasks 후처리 smoke는 host `libGLESv2.so.2` 부재로 native load 전에 중단됐다. raw Interpreter smoke는 통과했지만 decoded detector golden과 품질 PASS가 아니다.
+- 모델 binary와 host 산출물은 저장소/PR에 추가하지 않았다. APK·ADB·A24·GPU/delegation·메모리·실제 이미지 품질도 실행하지 않았다.
+- 기존 80슬롯·diagnostic v2·CALIB-01B, MobileNet label blocker, workload/기준정책/thermal 주장 한계는 그대로 보존한다.
 
 ## 보존한 CALIB-01B 검증 기록
 
@@ -63,10 +61,10 @@
 
 ## 다음 행동 (최대 3개)
 
-1. MODEL-02A: 두 후보의 exact download/source, license, byte count/SHA-256, metadata·tensor·label index와 host golden output을 고정한 inventory를 만든다.
-2. MODEL-02B 준비: 승인 bundle만 A24 CPU/GPU strict smoke와 품질·메모리·cold/warm 측정 대상으로 넘긴다. 미지원·fallback을 성공으로 바꾸지 않는다.
-3. 두 task cell이 승인되면 TASK-02의 adapter·`multitask-v1` schema·quality/artifact validator를 구현한다. 기존 MobileNet·image-v3·미해결 label을 새 모델에 전용하지 않는다.
+1. `MODEL-02A-LICENSE`: Google 공식 model card/NOTICE/배포 자료에서 EfficientDet exact version URL 또는 SHA-256과 license를 연결한다.
+2. 근거가 확보되면 두 승인 모델의 고정 bundle manifest와 Tasks decoded golden을 완성한다. 확보되지 않으면 후보를 더 탐색하지 않고 `SCOPE-03`에서 탐지 task/model 변경 또는 범위 축소를 결정한다.
+3. 두 task host 승인 후 `MODEL-02B`에서만 A24 CPU/GPU strict delegation, 품질·메모리·cold/warm smoke를 수행한다.
 
 ## 변경·검증 범위
 
-초안 PR 전체 변경은 AGENTS, 계획/상태/결정/legacy protocol, 신규 두 작업 protocol과 SCOPE-02 근거 문서의 7개다. 이번 단계에서는 SCOPE 근거와 PLAN/STATUS/DECISIONS를 갱신한다. 내부 링크·ID/상태·whitespace·원격 base 대비 파일 집합을 확인한다. production·build·test·APK·ADB·실기기·Perfetto는 실행/변경하지 않는다. `.idea/**`, app MainActivity EOF, diagnostic 보고서, 데이터·캐시 등 사용자 로컬 변경에는 접근하지 않았다.
+이번 단계는 공식 artifact 다운로드·host 분석과 문서 갱신만 수행했다. production/test/APK와 기존 실험 데이터는 변경하지 않았다. ADB·설치·A24·Perfetto·Git master 병합은 수행하지 않았다. 초안 PR에는 모델 binary·host cache·가상환경을 포함하지 않는다.

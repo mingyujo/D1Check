@@ -132,6 +132,15 @@
 - 중복 조사: 공개 공식 대회 목록과 접근 가능한 프로그램에서 동일 제목은 확인하지 못했으나 최근 3개년 전체 출품작 감사가 아니므로 중복 없음은 미확정이다. 제출 전 `RELATED-02`에서 다시 확인한다.
 - MODEL-02 분리: `MODEL-02A`는 host artifact/source/license/tensor/label/golden output, `MODEL-02B`는 승인 bundle의 A24 CPU/GPU·delegation·품질·메모리 smoke다. SCOPE-02 완료는 모델 승인·앱 구현·실기기 PASS나 정책 효과를 뜻하지 않는다.
 
+## 2026-09-17 — MODEL-02A host 판정과 탐지 license gate
+
+- 상태: 채택 — [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)에 exact artifact·labels·metadata/tensor·고정 host output과 한계를 기록한다.
+- EfficientNet-Lite0 FLOAT32 v1은 공식 version URL, byte count/SHA-256, 내장 1000 labels, `[1,224,224,3] -> [1,1000]`, metadata의 Apache-2.0, deterministic raw CPU output을 확인해 MODEL-02B 후보로 승인한다. 이 승인은 A24/GPU/품질/성능 PASS가 아니다.
+- EfficientDet-Lite0 FLOAT32 v1은 공식 source, 90행 sparse labels, raw tensor와 host CPU 실행을 확인했으나 exact binary metadata의 license가 null이다. 안내 문서 footer나 sample source license를 binary license로 대신하지 않는다.
+- 사전 지정 대안 SSD MobileNetV2 FLOAT32 v1도 한 번 검사했다. 91행 background 포함 label과 tensor·raw CPU 실행은 확인했지만 license가 동일하게 비어 있어 대안 승인하지 않는다. 후보를 계속 바꾸지 않는다.
+- 현재 작업은 `MODEL-02A-LICENSE`다. exact binary에 연결되는 공식 license/NOTICE를 확보하면 후처리 golden과 bundle을 마치고 MODEL-02B로 간다. 확보하지 못하면 SCOPE-03에서 탐지 task/model을 재결정한다.
+- 모델 binary·golden 산출물은 이번 문서 PR에 넣지 않는다. deadline과 threshold는 계속 pending이며 host latency를 A24 수치로 사용하지 않는다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

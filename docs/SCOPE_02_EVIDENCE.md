@@ -3,7 +3,7 @@
 - 조사일: 2026-09-17
 - 상태: **completed_with_open_gates**
 - 적용 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.1
-- 다음 작업: `MODEL-02A` — 정확한 모델 artifact·label·license·tensor 계약을 확보하고 승인 여부를 판정한다.
+- 후속 상태: [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)의 host 조사를 수행했고 현재 작업은 `MODEL-02A-LICENSE`다. 분류 host 계약은 통과했으며 탐지 exact binary license가 blocker다.
 - 이번 단계에서 하지 않은 일: 모델 binary 다운로드, production 구현, APK 빌드, A24 설치·실행, 성능 측정.
 
 ## 1. 결론
