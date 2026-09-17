@@ -7,9 +7,9 @@
 - 절대 마감시간 상태: `calibration_pending`
 - 목적: 실제 사용자 이미지 경로의 구성요소별 종단간 지연과 변동성을 측정해 기기별 절대 마감시간 및 혼합 워크로드 조건을 평가 전에 고정한다.
 
-## 0. 개정 4 계획과 기존 구현의 적용 경계
+## 0. 개정 4.1 계획과 기존 구현의 적용 경계
 
-프로젝트 목표는 [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4, 새 두 작업의 측정·평가 설계는 [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)를 따른다. **아래 1~14절은 구현된 MobileNet 단일 모델 `calibration-v1`/schema 2 계약과 이력이다. 새 두 작업에 자동 적용하지 않는다.**
+프로젝트 목표는 [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.1, 새 두 작업의 측정·평가 설계는 [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)를 따른다. **아래 1~14절은 구현된 MobileNet 단일 모델 `calibration-v1`/schema 2 계약과 이력이다. 새 두 작업에 자동 적용하지 않는다.**
 
 - CALIB-01B PASS와 기존 host 검증 결과는 보존한다. 새 모델 지원 또는 실기기 calibration 완료를 의미하지 않는다.
 - 기존 1001행 label mapping 출처 미확인, 8장 입력 미준비, AP/PA/SKIN·cooling host 연결, strict GPU smoke는 해결된 것으로 기록하지 않는다. 기존 CALIB-01C를 재개하면 원래 사전조건을 충족해야 한다.

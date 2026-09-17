@@ -1,11 +1,11 @@
 # D1Check 현재 상태
 
-- 갱신: 2026-09-17 / 대회 대응 계획 개정 4
-- 현재 작업: `SCOPE-02` — 두 작업의 사용 근거·모델 후보·입력 출처 확인. 새 모델 구현·다운로드·실기기 실행은 아직 하지 않았다.
-- 기준: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4 및 [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)(설계, 미구현).
+- 갱신: 2026-09-17 / 혼합 요청 주평가를 명확히 한 계획 개정 4.1
+- 현재 작업: `SCOPE-02` — 혼합 요청 조건의 근거·모델 후보·입력 출처 확인. 새 모델 구현·다운로드·실기기 실행은 아직 하지 않았다.
+- 기준: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.1 및 [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)(설계, 미구현).
 - 코드 기준: 원격 `master`의 `df8192aa61eebacf83df7a7815f0c60c8bbf4004`, `Implement A24 calibration input and validation pipeline`. 이번에 branch/문서/관련 source를 조회했다.
 - CALIB production/test는 위 commit에 포함돼 있다. 이전 `38386b9`/CALIB 미커밋 표기는 오래된 기록이었다. 사용자 Windows 작업 트리·index·로컬 HEAD는 이번 원격 작업에서 확인하지 않았다.
-- 이번 개정은 별도 문서 branch/PR로 제출하며 master에 자동 병합하지 않는다. 개정 commit은 PR 기록으로 식별한다.
+- 개정은 [초안 PR #2](https://github.com/mingyujo/D1Check/pull/2)의 문서 branch에 반영하며 master에 자동 병합하지 않는다. 이번 추가 수정 기준은 `8116681`이고 새 commit은 PR 기록으로 식별한다.
 - 직접 검증은 A24만. S26은 기존 formal 보조자료이며 새 calibration·설치·실행·정책 평가는 범위 밖이다.
 - 새 절대 deadline: `calibration_pending`. 서비스 하한·안전/안정성 수치·성공 기준·최종 반복 수: `thresholds_pending`.
 
@@ -14,16 +14,17 @@
 | 작업 | 상태 | 해석 |
 | --- | --- | --- |
 | SETUP-01, AUDIT-A24-01, DIAGNOSTIC-V2-01, AUDIT-S26-01 | completed(기존 기록) | 측정 기반·기존 자료 감사 |
-| DEFINE-01, CALIB-01A | completed(기존 정의) | 단일 분류 시나리오·legacy protocol. 새 주평가는 개정 4로 대체 |
+| DEFINE-01, CALIB-01A | completed(기존 정의) | 단일 분류 시나리오·legacy protocol. 새 주평가는 개정 4.1로 대체 |
 | CALIB-01B | completed / CALIB_01B_PASS | MobileNet production·host 검증. 두 작업/실기기/정책 효과 PASS가 아님 |
 | CALIB-01C-INPUT | legacy 준비 보류·재계획 | 기존 모델 1001행 라벨과 이미지 입력 미확정. 완료 처리하지 않음 |
-| PLAN-REV04 | 문서 개정 완료 | 목표·비교·실험계약 정리. 코드·성능 검증이 아님 |
-| SCOPE-02 | current | 사용 가설·후보 조사·관련 연구/수상작 중복 검토 |
+| PLAN-REV04.1 | 문서 개정 완료 | 혼합 요청 주평가·시연·시뮬레이션 역할 정리. 코드·성능 검증이 아님 |
+| SCOPE-02 | current | 혼합 요청 근거·작업 후보 조사·관련 연구/수상작 중복 검토 |
 | MODEL-02 / TASK-02 / PROFILE-02 / SCHED-02 / EVAL-02 | pending | 모델 승인→두 adapter→간섭 측정→정책 개발→독립 평가 |
 
 ## 개정 방향과 남은 장애
 
-- 우선 검증 시나리오: 누적 사진 자동 분류·색인 중 선택 사진의 객체탐지. 실제 사용 수요는 아직 가설이며 소수 과업 관찰/인터뷰로 확인한다. 안전·의료 “비상” 작업이 아니다.
+- 주평가: 일반 backlog 중 긴급 burst와 지속 혼합 요청. 저부하·동일 등급 경합·task별 등급 배치 변경은 보조 조건이다. 사진 정리는 대표 시연 후보이며 연구 범위의 필수 제약이 아니다.
+- A24에서는 요청 도착을 합성·재생하고 두 모델/I/O를 실제 실행한다. 별도 시뮬레이션은 실측으로 보정·독립 검증한 범위의 조건 탐색용이다. 실제/가상 표본을 합치지 않으며 실행기·모형은 아직 미구현이다.
 - 후보는 EfficientNet-Lite0 FLOAT32 + EfficientDet-Lite0 FLOAT32(탐지 대안 SSD MobileNetV2). 원 파일·labels/license·A24/현재 runtime 지원은 미검증이다. 최신 모델 선정이나 GPU 우세를 전제하지 않는다.
 - 기준 코드의 calibration은 MobileNet `[1,224,224,3] -> [1,1001]`에 고정돼 있다. 새 adapter/manifest/validator가 필요하며 기존 CLI로 두 작업을 실행할 수 없다.
 - 기존 MobileNet label provenance는 사용자 제공 조사에서 미해결이었다. 원격 STATUS에 누락됐던 장애를 복원하며 이번에 원본 모델/외부 WNID 파일을 재검사한 것은 아니다. 새 labels를 기존 출력에 대신 붙이지 않는다.
@@ -59,7 +60,7 @@
 
 ## 다음 행동 (최대 3개)
 
-1. SCOPE-02: 두 작업 사용 가설을 과업 관찰로 확인하고 기존 연구/수상작과 주장 차이를 정리한다. 확보되지 않은 수요는 미확인으로 남긴다.
+1. SCOPE-02: 혼합 요청 조건·task/등급 비율과 현실 근거/합성 가정을 정리하고 기존 연구/수상작과 차이를 확인한다. 사용자 시연은 선택적 대표 사례로 둔다.
 2. MODEL-02 준비: 후보의 공식 model/labels/license·tensor/전처리 계약 조사표를 만든다. A24 설치·smoke는 해당 실행 요청/환경 권한 범위에서 진행한다.
 3. 후보가 통과하면 TASK-02의 adapter·새 protocol·품질/메모리 gate를 구체화한다. 기존 MobileNet·데이터를 유지하고 image-v3/1001행을 새 모델에 전용하지 않는다.
 

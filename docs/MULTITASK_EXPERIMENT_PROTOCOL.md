@@ -1,21 +1,24 @@
 # D1Check 두 작업 실험·평가 계약
 
-- 버전: 1 / 설계일: 2026-09-17 / 상태: **planned, 미구현·미실측**
-- 상위 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4. 현재 작업은 `SCOPE-02`다.
+- 버전: 1.1 / 설계일: 2026-09-17 / 상태: **planned, 미구현·미실측**
+- 상위 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.1. 현재 작업은 `SCOPE-02`다.
 - 예약 protocol ID: `multitask-v1`. 현재 `d1_calibration_cli.py`는 이 protocol을 처리하지 않는다. 이 문서는 존재하지 않는 실행 명령을 제시하지 않는다.
 - legacy `calibration-v1`/schema 2/image-v3, formal v1, diagnostic v2는 [CALIBRATION_PROTOCOL.md](CALIBRATION_PROTOCOL.md)와 기존 코드 계약을 유지한다.
 - 절대 deadline: `calibration_pending`. 효과·서비스·안전·최종 반복 수의 수치: `thresholds_pending`. 값이 비어 있는 formal 실행은 금지한다.
 
 ## 1. 측정 대상과 증거 수준
 
-한 A24 앱 안에서 두 task adapter를 실행한다. 우선 검증할 작업은 이미지 분류와 객체탐지이며 각각 자체 모델, 입력/출력 tensor, 전·후처리, label mapping, 품질 기준을 갖는다. task와 요청 등급은 독립이다. 한 요청의 실제 작업을 다른 작업의 반복 또는 임의 지연으로 대체하지 않는다.
+한 A24 앱 안에서 두 task adapter를 실행한다. 우선 검증할 작업은 이미지 분류와 객체탐지이며 각각 자체 모델, 입력/출력 tensor, 전·후처리, label mapping, 품질 기준을 갖는다. task와 요청 등급은 독립이다. 한 요청의 실제 작업을 다른 작업의 반복 또는 임의 지연으로 대체하지 않는다. 특정 사진 정리 기능은 대표 시연 후보이며 평가 조건 전체를 그 기능에 한정하지 않는다.
+
+**실험 방법:** A24 실측에서는 사전 생성한 요청 시각·등급·작업·입력 기록을 재생하고 매 요청의 실제 모델과 I/O를 실행한다. “합성 요청 도착”은 “추론을 가상으로 계산”한다는 뜻이 아니다. 별도 이산사건 시뮬레이터에서는 실측 분포로 가상 완료 시각을 계산하며, 두 결과를 별도 experiment type과 artifact 집합으로 기록한다. 시연의 수동 클릭 결과는 독립된 정량 반복 표본으로 합치지 않는다.
 
 | 단계 | 입증하는 것 | 입증하지 않는 것 |
 | --- | --- | --- |
 | Host 동작 테스트 | timestamp·queue·상태·artifact·정책 배선 | A24 지원·실제 모델 정확도·성능 |
 | 모델 smoke | 특정 파일/런타임/A24에서 실제 output | 모든 사진 정확도·정책 우수성 |
 | PROFILE-02 | 해당 입력·환경의 단독/전환/간섭·메모리 | 실사용 도착 빈도·다른 모델/기기 |
-| EVAL-02 | 고정한 부하에서 기준정책 대비 효과 | OS 전체·통역/게임/OCR 일반화 |
+| EVAL-02 실기기 재생 | 고정한 혼합 도착 조건에서 기준정책 대비 효과 | 실제 이용 빈도·OS 전체·통역/게임/OCR 일반화 |
+| 이산사건 시뮬레이션 | holdout으로 검증된 모델 범위의 조건 탐색 | 가상 실행 횟수를 실제 기기 표본 수로 계산 |
 
 ## 2. 모델·입력과 실행 경로 승인
 
@@ -85,14 +88,17 @@ legacy CALIB-01C의 AP/PA/SKIN·host 연결 필수조건은 그대로 남는다.
 
 새 두 작업에는 legacy `N95+U95`, `N95+3U95`를 자동 적용하지 않는다. `d_i = a_i + D_(task,priority)`를 사용하고 enqueue 지연으로 deadline이 늘어나지 않게 한다. 긴급/일반 D, cold first-use 처리, allowed lateness, aging/최대 대기, 큐 상한과 admission·expiry·drain horizon은 개발 뒤 평가 전에 고정한다. 실행 중 추론의 강제 중단은 없다.
 
-task별 solo reference service mean을 `s_u*`, `s_n*`라 할 때 명목 부하는 `rho_ref = lambda_u*s_u* + lambda_n*s_n*`로 기록할 수 있다. 이는 직렬 reference로 정규화한 제시 부하이고 실제 CPU/GPU 이용률 또는 동시 처리능력이 아니다. 단일 분류 속도를 모든 작업의 capacity로 사용하지 않는다.
+task k와 등급 p 조합의 solo reference service mean을 `s*_(k,p)`, 도착률을 `lambda_(k,p)`라 할 때 명목 부하는 `rho_ref = sum_k sum_p lambda_(k,p) * s*_(k,p)`로 기록한다. 모든 정책에 동일한 사전 고정 reference 구성과 시간 단위를 사용한다. 등급별 완료 경계의 저장 비용 차이도 포함하므로 task와 priority를 같은 축으로 취급하지 않는다. 이는 직렬 reference로 정규화한 제시 부하이고 실제 CPU/GPU 이용률 또는 동시 처리능력이 아니다. 단일 분류 속도를 모든 작업의 capacity로 사용하지 않는다.
 
 | 조건 | 주된 질문 | 고정할 도착 기록 |
 | --- | --- | --- |
 | W-low | 불필요한 제어 overhead가 생기는가 | 낮은 명목 부하, burst 없음 |
-| W-burst | 누적 일반 작업이 있을 때 대화형 요청을 보호하는가 | 같은 크기의 일반 backlog + 정해진 시각의 urgent burst |
-| W-sustain | 서비스 하한과 대기 누적을 지키는가 | 독립 주기의 일반/긴급 도착, 지속 혼합 부하 |
+| W-burst(primary 후보) | 누적 일반 작업이 있을 때 대화형 요청을 보호하는가 | 같은 크기의 일반 backlog + 정해진 시각의 urgent burst |
+| W-peer(보조) | 같은 등급의 여러 작업이 경합할 때 효율·공정성은 어떤가 | 두 task의 동시/근접 도착, 같은 등급·고정한 task 비율 |
+| W-sustain(primary 후보) | 서비스 하한과 대기 누적을 지키는가 | 독립 주기의 일반/긴급 도착, 지속 혼합 부하 |
 | W-stress(선택) | 관측 열 상태 변화에서 정책이 유지되는가 | 별도 승인된 지속 부하 설정, baseline과 분리 |
+
+W-peer에서는 task별 응답 분포·기한 내 완료율, 전체 완료량, 최대 대기·backlog를 보고한다. urgent가 없는 조건에 긴급 P95를 만들지 않는다. W-burst/W-sustain의 task 혼합 비율과 등급 비율은 별개로 고정하고, 사전 지정한 보조 조건에서 task별 등급 배치를 바꿔 특정 모델 효과와 우선순위 효과를 구분한다. W-peer나 시연 결과로 primary 판정을 사후 교체하지 않는다.
 
 W-low의 rho_ref 0.4, W-sustain의 0.8~0.9, urgent 3건 burst는 개발용 시작 후보이며 공식 고정값이 아니다. 사람이 그 속도로 클릭한다는 주장과 구분한다. 가능하면 실제 사용 관찰에서 얻은 낮은 빈도의 시나리오도 재생한다. stress/synthetic arrival의 현실성을 과장하지 않는다.
 
@@ -102,7 +108,7 @@ arrival generator는 worker와 분리하고 시작 전에 ID·task·priority·�
 
 개발 단계는 다섯 정책 B0/B1/B2/B3/P × 두 경합 조건 × 두 독립 block의 짧은 탐색(20세션)을 출발안으로 한다. 이 단계는 feasibility 확인용이며 수상용 통계적 우수성 증거가 아니다. B2 후보 선정과 P/B3 튜닝은 같은 개발 입력·관측 정보·사전 계산 예산을 사용한다.
 
-주평가는 개발에서 선택한 B2, B3, P × W-burst/W-sustain × 독립 block 5개(30세션)를 출발안으로 잡는다. 실제 block 수 5~9와 공통 session 길이는 개발 분산·목표 효과·시간 예산으로 평가 전에 결정한다. 최종 결과가 아슬아슬하다는 이유로 반복을 추가하거나 유리한 때 중단하지 않는다. W-low는 별도 overhead 확인으로 포함하고, B0/B1은 최소 독립 sanity block을 남긴다. 제안 개수가 통계적 충분성을 보장하지 않는다.
+주평가는 개발에서 선택한 B2, B3, P × W-burst/W-sustain × 독립 block 5개(30세션)를 출발안으로 잡는다. 실제 block 수 5~9와 공통 session 길이는 개발 분산·목표 효과·시간 예산으로 평가 전에 결정한다. 최종 결과가 아슬아슬하다는 이유로 반복을 추가하거나 유리한 때 중단하지 않는다. W-low는 overhead, W-peer와 등급 배치 변경 조건은 공정성·일반성의 보조 비교로 포함한다. 각 보조 조건의 정책·길이·독립 block 수와 총 실행 예산도 평가 전에 고정하며, 위 30세션 출발안에 포함된 것으로 세지 않는다. B0/B1은 최소 독립 sanity block을 남긴다. 제안 개수가 통계적 충분성을 보장하지 않는다.
 
 - 독립 block마다 같은 도착 trace를 정책에 재생하고 순서를 무작위화/균형화한다. 시작 온도·SOC 범위를 맞추며 cooldown은 기록한다.
 - seed와 실행 session은 개발/평가에서 분리한다. freeze 후 모델·deadline·queue·정책 parameter를 변경하면 새 실험 버전으로 개발부터 재검증한다.
@@ -115,15 +121,24 @@ arrival generator는 worker와 분리하고 시작 전에 ID·task·priority·�
 
 기한 민감도는 D의 0.8/1.0/1.2배처럼 개발 때 정한 보조 범위에서 보고할 수 있다. 1.0배 primary가 실패했는데 유리한 배수만 선택해 성공으로 바꾸지 않는다. 품질·메모리·열 안전 위반을 latency 이득으로 상쇄하지 않는다.
 
-## 9. 시뮬레이션 사용 한계
+## 9. 실측 기반 시뮬레이션의 역할과 순서
 
-이산사건 모델은 실측 task/backend별 service distribution, warm/cold 준비 비용, 측정한 co-run slowdown과 자원 제약을 사용한다. 동일 trace에 대해 calibration에 쓰지 않은 실기기 session의 지연·throughput·backlog를 예측해 오차와 coverage를 보고한다. 허용 예측오차는 검증 결과를 보기 전에 정한다.
+1. **실측 프로파일 확보:** 실제 두 task의 단독·준비/전환·승인 co-run 서비스시간과 변동성, 실패·메모리·열 상태를 측정한다. 서비스시간은 input read부터 task 완료까지이며 같은 비용을 별도 overhead와 중복 합산하지 않는다.
+2. **이산사건 모델 작성:** 요청 도착, 큐, CPU/GPU 점유, 비선점 실행, 준비/전환, 완료/거절/만료와 공통 제약을 모형화한다. 실측 상태에 맞는 분포와 간섭을 사용한다. 상관·시간 변화가 관측되면 단순 IID 샘플링 대신 블록 재생 또는 조건부 모델을 검토하고 사용 가정을 기록한다.
+3. **별도 검증:** 모형 보정에 사용하지 않은 A24 session으로 응답 분포·throughput·backlog와 정책 순위가 재현되는지 확인한다. 허용 오차는 결과를 보기 전에 고정한다. 이 검증 자료와 최종 정책 평가 자료는 구분하며 최종 평가 결과로 모형을 재보정하지 않는다.
+4. **조건 확장:** 검증된 범위의 도착 빈도·burst·task/등급 비율을 넓혀 민감도와 정책 적용 영역을 탐색한다. 검증 범위 밖은 외삽 가정으로 표시한다. 시뮬레이션에서 발견한 개선이나 설정을 채택하려면 개발 자료로 취급하고 새 독립 실기기 평가 전에 설정을 다시 고정한다.
 
-예측이 맞는 상태 범위에서 부하·burst·일반 서비스 trade-off를 탐색한다. 측정하지 않은 기기·음성·OCR·게임에는 검증 범위를 확장하지 않는다. 모델이 순위를 재현하지 못하면 시뮬레이션 결과를 채택 근거에서 제외하고 실기기 비교를 우선한다. 미래 도착을 아는 작은 offline oracle을 추가하면 현실 정책이 아니라 예측 모델 안의 참고 상한으로 표시한다.
+실기기 재생과 가상 시뮬레이션은 원본·CSV·그림에 구별해 표시한다. simulated run 수를 실기기 session 수와 합산하거나, 시뮬레이션에서만 나온 개선률을 A24 실측 개선률로 쓰지 않는다. 가상 반복의 난수 오차와 원래 실측 프로파일의 불확실성도 별개다. 반복을 늘리는 것만으로 프로파일의 작은 표본 문제가 해결되지는 않는다.
+
+열 동역학·실제 energy·장치 전체 memory를 검증하지 않았다면 가상 온도·스로틀링·전력 절감 결과를 만들지 않는다. 수집한 열 상태를 조건으로 사용하는 경우 관측된 범위로 한정한다. 미측정 OCR/통역/게임은 명시적 가정의 toy 사례로만 사용할 수 있으며 새 작업의 실제 성능·지원 근거가 아니다.
+
+모형이 정책 순위나 주요 지표를 재현하지 못하면 원인을 기록하고 시뮬레이션을 정책 채택 근거에서 제외한다. 일정이 부족하면 보조 시뮬레이션 범위를 줄이고 실제 모델을 사용하는 A24 주비교를 완료한다. 미래 도착을 아는 작은 offline oracle을 추가할 경우 현실 정책이 아니라 예측 모형 안의 참고 상한으로 표시한다.
 
 ## 10. 필수 산출물과 실행 전 gate
 
 MODEL-02: `model/input inventory`(파일명은 후속 구현에서 고정), 품질/지원/메모리 표 및 제외 이유. PROFILE-02: solo/transition/co-run 원시 event와 profile. SCHED-02: 정책 버전·parameter·decision log와 freeze 문서. EVAL-02: request_results.csv, session_summary.csv, thermal/memory 시계열, 대응 분석, 실패·제외 ledger. 모두 task/model/backend/config·입력·APK·Git·dirty diff hash로 묶는다.
+
+실기기 재생/보조 시뮬레이션/사용자 시연의 구분 필드는 TASK-02에서 schema에 명시한다. 시뮬레이션 산출물은 service profile hash·보정/검증 session 목록·도착 trace hash·policy/model version·seed·가정·검증 오차를 별도 provenance로 연결한다. 아직 해당 실행기·CLI·schema는 구현되지 않았다.
 
 TASK-02는 새 schema의 exact allowed artifact set과 root-only provenance self-exclusion, UUID·path containment·regular-file·hash·count 검증을 production/host 양쪽에 구현한다. 새 산출물을 legacy validator에 억지로 통과시키지 않는다.
 
