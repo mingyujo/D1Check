@@ -2,6 +2,8 @@
 
 이 문서는 방향 변경을 날짜순으로 기록한다. 각 항목에 제안 / 채택 / 대체됨 상태를 표시한다. 아래 초기 항목은 이전 계획에서 이관한 작업 방향이며, 개별 수치·실험 조건 확정을 의미하지 않는다. 이번 개정은 사용자 요청에 따른 문서 보강이다.
 
+> 현재 계획은 2026-09-18 개정 4.4와 추가 기기 재현 결정을 우선한다. 과거 결정은 이력으로 보존한다. 새 시나리오·모델 후보·효과 수치는 아래에 명시한 검증/미확정 상태를 유지한다.
+
 ## 2026-09-15 — 프로젝트 목표 재정의
 
 - 단일 Android 앱의 긴급·일반 AI 요청 스케줄링 문제로 범위를 고정한다.
@@ -93,6 +95,82 @@
 - 전처리 계약: `android-mobilenet-v1-image-v3`, canonical SHA-256 `03e507dea1d4111681b6c1120fab7729967a19e49712ccc05d2e72e4f7762cf5`. host CLI와 Android를 함께 갱신하며 Pillow byte-identical 주장은 하지 않는다.
 - decode: RuntimeException만 cause 보존 IllegalArgumentException으로 변환한다. Error/OOM은 잡지 않는다.
 - 검증: production Matrix 좌표로 1~8/미러 의미를 검사하고 실제 EXIF JPEG reader→decoder를 유지한다. Shadow bitmap의 getPixels에 의존하지 않는다. 테스트 수 3개·기존 inference timer·v1/v2·artifact/provenance·A24-only 범위는 유지한다.
+
+## 2026-09-17 — 대회 목표에 맞춘 두 작업·강한 비교 중심 계획 개정
+
+- 상태: 채택 — 사용자의 “우리의 계획을 수상 가능성을 높여서 더 나은 방향으로 발전” 요청에 따른 계획 개정. 코드/실기기 완료 또는 수상 가능성의 정량 입증이 아니다.
+- 유지: A24-only, 단일 앱 수준 제어, 비선점, 전체 도착 분모, 품질·일반 서비스·열/메모리 제약, 기존 80슬롯/v1/v2/calibration-v1 보존. NPU·강화학습은 선택적 확장이다.
+- 변경: 단일 분류 모델의 긴급/일반 시나리오에서 서로 다른 두 실제 AI 작업으로 주평가를 확장한다. 초기 직렬 경로 이후 실측으로 검증된 조합만 최대 두 건 병행한다. 09-15 초기 범위/DEFINE-01의 단일 모델 한정은 새 주평가에 대해 대체하며 기존 구현 계약에는 소급하지 않는다.
+- 우선 검증할 사용 가설: 오프라인 사진 정리 중 백그라운드 분류·색인과 선택 사진의 대화형 객체탐지. 현장 수요·최종 모델 선정은 SCOPE-02/MODEL-02에서 검증한다. 통역/OCR/게임은 구현 사실이나 필수 범위가 아니다.
+- 모델 후보: 분류 EfficientNet-Lite0 FLOAT32, 탐지 EfficientDet-Lite0 FLOAT32(부적합 시 SSD MobileNetV2 FLOAT32 검토). 최신성 대신 출처/labels/license·A24 호환성·품질·메모리·측정 가능성으로 선택한다. 후보는 배포 파일을 검증하기 전 승인 모델이 아니다.
+- 기존 MobileNet V1과 1001행 라벨 미확인 문제를 보존한다. CALIB-01B PASS는 유지, CALIB-01C-INPUT은 legacy 입력 준비로 보류/재계획한다. 라벨을 임의 생성하거나 새 모델 라벨을 기존 출력에 붙이지 않는다. 새 모델도 독립적인 label provenance gate를 통과해야 한다.
+- 비교: 개정 4의 B2는 task별 고정 배정·직렬/허용 병행·단순 열 대응 중 개발자료로 고른 강한 정책이다. B3(단독 프로파일 기반 EDF/earliest-finish)를 추가한다. P는 실측 간섭과 준비 비용으로 시작/대기·경로를 결정한다. 구 B2 결과는 개정 없이 재사용하지 않는다.
+- 지표: 새 주평가는 예정 도착→완료, enqueue→완료도 병기한다. 긴급 기한 내 서비스율과 조건부 P95, 일반 기한 내 완료율/aging·backlog를 함께 보고한다. 일반 하한·허용차·실질 개선 수치는 evaluation 전에 freeze한다.
+- 열: 스로틀링 유도는 필수조건이 아니다. 새 실험의 기본 안전/비교 조건은 검증 가능한 system thermal/battery·cooling policy로 집행하고 AP/PA/SKIN은 가능한 진단 자료로 결합한다. 구 calibration-v1의 AP/PA/SKIN 외부 gate를 완료 처리하거나 삭제하지 않는다. 센서 부재는 기록하며 열 인과·에너지 절감 주장을 제한한다.
+- 프로토콜: 기존 image-v3와 schema 2 유지. `multitask-v1`은 새 계획용 예약 ID이며 별도 구현·validator가 필요하다. 기존 CLI에서 새 manifest가 실행된다고 주장하지 않는다.
+- 미확정: 구체 모델 파일/hash·runtime, 실제 사용자 deadline, 일반 서비스 하한, 안전 온도/stability 값, 튜닝 예산·최종 반복 수. 상태는 `calibration_pending`/`thresholds_pending`이다.
+- 영향: AGENTS, PROJECT_PLAN/STATUS/DECISIONS, CALIBRATION_PROTOCOL의 적용 범위 표시, 신규 MULTITASK_EXPERIMENT_PROTOCOL. production·입력·APK·기존 데이터는 변경하지 않는다.
+
+## 2026-09-17 — 개정 4.1: 사용 사례와 혼합 요청 주평가 분리
+
+- 상태: 채택 — 사용자가 한 사용 상황으로 연구를 한정하지 않는 방향의 수정을 요청했다.
+- 연구 범위는 한 앱의 제한된 CPU/GPU를 공유하는 여러 AI 요청의 순서·경로·병행 결정이다. 사진 정리는 대표 시연 후보이며 필수 사용 상황이나 앱 기능으로 고정하지 않는다.
+- 두 실제 작업의 초기 후보와 A24-only, 비선점·최대 두 건 병행·기존 데이터/계약 보존은 유지한다. task ID와 요청 등급을 독립시키고 task별 등급 배치 변경을 사전 지정 보조 조건으로 검증한다.
+- 주평가는 일반 backlog 중 긴급 burst와 지속 혼합 요청이다. 저부하·동일 등급 경합은 overhead·공정성·적용 범위를 확인하는 보조 조건이며 primary 판정을 대체하지 않는다.
+- 실기기 실험은 요청 도착만 합성·재생하고 모델·전후처리·I/O는 실제로 실행한다. 별도 이산사건 시뮬레이션은 실측 서비스·준비·간섭으로 보정하고 독립 실기기 자료에서 검증한 뒤 조건을 탐색한다. 두 방법의 표본·결과·provenance를 분리한다.
+- 수동 시연·합성 도착 재생·가상 시뮬레이션을 구분한다. 모델 실행을 sleep으로 대체하거나 미측정 통역/OCR/게임의 성능을 검증했다고 주장하지 않는다. 가상 온도·에너지 효과도 검증된 모형 없이 만들지 않는다.
+- 사용 패턴의 현실 근거는 조사하되 특정 사진 앱의 수요 인터뷰를 모든 개발의 선행 조건으로 만들지 않는다. 미확인 패턴은 합성 가정으로 공시한다.
+- 현재 작업 SCOPE-02, deadline/thresholds 미확정 상태와 개발→동결→독립 평가 원칙을 유지한다. 이 결정은 새 구현·실측 PASS가 아니다.
+
+## 2026-09-17 — SCOPE-02 근거 경계와 MODEL-02 분리
+
+- 상태: 채택 — [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md)에 확인 사실·추론·합성 가정을 분리해 기록하고 다음 작업을 `MODEL-02A`로 전환한다.
+- 기존 작업: A24/S26 80슬롯, diagnostic v2, CALIB-01B는 폐기하지 않는다. 자원 우열의 기기 의존성, 측정·provenance, production 측정 경계의 근거로 유지한다. legacy MobileNet 8장/1001행 라벨은 새 두 작업의 필수 입력에서 제외하고 재현 과제로 보류한다.
+- workload: W-burst와 W-sustain을 primary, W-low·W-peer·task/priority swap을 supporting으로 유지한다. 실제 사용자 도착 로그가 없으므로 arrival trace는 합성 조건이라고 명시하고 모델·전후처리·I/O는 A24에서 실제 실행한다.
+- 작업 후보: EfficientNet-Lite0 FLOAT32와 EfficientDet-Lite0 FLOAT32를 유지한다. 공식 안내와 label 후보 구조만 확인했으며 exact artifact/license/hash·metadata/tensor 결합·A24 지원은 승인하지 않았다. 탐지의 공식 label map은 90 index row 중 10 placeholder로 80 object class를 표현하므로 dense 80행으로 가정하지 않는다.
+- 차별성: Band·Sung et al.·Pantheon·CoDL 등 모바일 multi-DNN/이종 실행 연구가 이미 있으므로 최초성을 주장하지 않는다. A24 한 앱의 whole-request 비선점 배정, 서비스 제약, co-run 간섭, 강한 정적·단순 동적 기준정책 대비 재현 실증으로 범위를 좁힌다.
+- 중복 조사: 공개 공식 대회 목록과 접근 가능한 프로그램에서 동일 제목은 확인하지 못했으나 최근 3개년 전체 출품작 감사가 아니므로 중복 없음은 미확정이다. 제출 전 `RELATED-02`에서 다시 확인한다.
+- MODEL-02 분리: `MODEL-02A`는 host artifact/source/license/tensor/label/golden output, `MODEL-02B`는 승인 bundle의 A24 CPU/GPU·delegation·품질·메모리 smoke다. SCOPE-02 완료는 모델 승인·앱 구현·실기기 PASS나 정책 효과를 뜻하지 않는다.
+
+## 2026-09-17 — MODEL-02A host 판정과 탐지 license gate
+
+- 상태: 부분 대체됨 — host 판정은 유지하고, 무조건 A24 반입 보류는 2026-09-18 조건부 결정으로 대체한다.
+- EfficientNet-Lite0 FLOAT32 v1은 공식 version URL, byte count/SHA-256, 내장 1000 labels, `[1,224,224,3] -> [1,1000]`, metadata의 Apache-2.0, deterministic raw CPU output을 확인해 MODEL-02B 후보로 승인한다. 이 승인은 A24/GPU/품질/성능 PASS가 아니다.
+- EfficientDet-Lite0 FLOAT32 v1은 공식 source, 90행 sparse labels, raw tensor와 host CPU 실행을 확인했으나 exact binary metadata의 license가 null이다. 안내 문서 footer나 sample source license를 binary license로 대신하지 않는다.
+- 사전 지정 대안 SSD MobileNetV2 FLOAT32 v1도 한 번 검사했다. 91행 background 포함 label과 tensor·raw CPU 실행은 확인했지만 license가 동일하게 비어 있어 대안 승인하지 않는다. 후보를 계속 바꾸지 않는다.
+- 당시 다음 작업은 `MODEL-02A-LICENSE`였다. exact license 연결은 확보하지 못했지만 decoded golden을 완료했고, 2026-09-18 결정에서 비배포 연구 probe만 조건부 허용했다.
+- 모델 binary·golden 산출물은 이번 문서 PR에 넣지 않는다. deadline과 threshold는 계속 pending이며 host latency를 A24 수치로 사용하지 않는다.
+
+## 2026-09-18 — EfficientDet 비배포 연구 평가 조건부 승인
+
+- 상태: 채택 — `MODEL-02A_CONDITIONAL_PASS`. 이전의 무조건 A24 반입 보류를 비배포 연구 probe에 한해 완화한다.
+- 확인 사실: Google 공식 Object Detector 안내는 EfficientDet-Lite0 FLOAT32를 권장하고 모델을 내려받아 프로젝트에 저장하도록 안내한다. 공식 Apache-2.0 sample은 exact v1 GCS URL을 직접 사용한다. 동일 exact binary는 source/hash/tensor/label/raw output과 MediaPipe Tasks decoded output이 host에서 결정적으로 확인됐다.
+- 미확인: exact GCS binary metadata와 bucket에는 license/NOTICE가 없으며, Apache-2.0인 TensorFlow/Kaggle EfficientDet TFLite variants는 byte·dtype·출력 계약이 달라 exact binary의 라이선스 증거가 아니다. 이 결정은 법률 자문이나 재배포 승인으로 해석하지 않는다.
+- 결정: version URL, byte count, SHA-256을 고정한 A24 내부 연구 평가만 허용한다. binary를 Git 저장소·PR·APK·팀 공유 ZIP·제출물에 포함하지 않는다. A24 probe는 외부 다운로드 검증 후 app-private storage로 전달하고 실험 종료 후 cleanup·provenance를 기록한다.
+- 배포 gate: 시연 APK나 재현 bundle에 모델을 넣기 전 exact license/NOTICE를 확보한다. 확보하지 못하면 명시적으로 라이선스된 artifact로 교체하고 MODEL-02A/B를 다시 통과한다.
+- 다음 작업: `MODEL-02B-PREP`. 외부 manifest와 비번들 A24 CPU/GPU 최소 probe 계약을 먼저 확정한다. host latency는 deadline·simulation service time·A24 성능으로 사용하지 않는다.
+
+## 2026-09-18 — MODEL-02B debug-only 외부 probe 구조
+
+- 상태: 채택 — [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md)의 manifest·staging·비교·cleanup·판정 계약을 구현 기준으로 사용한다.
+- 코드 감사: 현재 `ModelLoader`와 calibration runtime은 APK MobileNet asset 및 고정 tensor에 묶여 있어 새 model 파일 복사만으로 재사용할 수 없다. 기존 계약을 일반화한 것처럼 바꾸지 않는다.
+- 구현 경계: 새 loader·component·Tasks dependency는 debug source/dependency에 격리하고 release·formal v1·diagnostic v2·calibration-v1에 연결하지 않는다. model/sample bytes는 어느 variant에도 bundle하지 않는다.
+- 실행 계층: 두 모델의 raw LiteRT CPU/GPU tensor·수치 검증과 EfficientDet Tasks decoded 검증을 분리한다. Tasks API 전체 시간은 `tasks_detect_ns`이며 내부 inference 시간으로 부르지 않는다.
+- GPU 판정: delegate 생성만으로 PASS하지 않는다. full-delegation host evidence, 수치 gate, no-fallback가 모두 있어야 verified GPU cell이다.
+- 범위 판정: 두 task CPU와 두 GPU가 모두 통과하면 FULL, 두 CPU와 최소 한 GPU만 통과하면 REDUCED, 그보다 좁거나 dependency/배포 gate를 충족하지 못하면 SCOPE-03로 보낸다.
+- 현재 작업: `MODEL-02B-SEAM`. host tests와 dry-run을 통과하기 전 A24 설치·실행을 시작하지 않는다.
+
+## 2026-09-18 — A24 주평가와 추가 Android 기기 무재튜닝 재현
+
+- 상태: 채택 — 사용자의 “다른 핸드폰에도 실측해야 하는 것까지 고려” 지시를 반영한다.
+- 기기 역할: A24는 개발·full profile·정책 튜닝·주평가 기기다. A24에서 모델·입력·정책·분석을 동결한 뒤 최소 한 대의 다른 Android 기기에서 같은 runner의 축소 profile과 재현평가를 수행한다. 세 번째 기기는 일정과 접근성이 허용할 때만 추가한다.
+- 구현: MODEL-02B seam과 host 도구는 model name/serial별 코드 분기 없이 device manifest와 runtime capability로 동작해야 한다. 추가 기기의 GPU unsupported/unverified는 실패를 숨기지 않고 CPU/queue-only 축소 범위로 남긴다. compatibility override와 silent CPU fallback은 허용하지 않는다.
+- 비교: `absolute-SLA`는 같은 millisecond deadline과 byte-identical arrival trace로 실제 사용자 경험 차이를 보고, `capacity-normalized`는 기기별 사전 solo capacity로 부하를 스케일해 정책 구조의 재현성을 본다. 원시 latency를 기기 사이에서 pooling하지 않는다.
+- 무재튜닝: P/B3의 알고리즘·hyperparameter·quality/tolerance는 A24에서 고정한다. B2는 사전 정의된 기기별 profile 선택 규칙만 적용한다. 추가 기기 결과를 본 뒤 정책이나 임계값을 바꾸면 외부검증이 아니라 새 개발 버전으로 되돌린다.
+- 증거 한계: A24와 추가 기기 한 대의 일치만으로 Android 전체 모집단 일반화를 주장하지 않는다. `device × policy` 차이와 미지원 cell도 결과다. 기존 S26 80슬롯은 동기 자료이며 새 두 작업 재현평가를 대체하지 않는다. S26을 쓰려면 새 계약으로 다시 실행한다.
+- 라이선스: EfficientDet exact binary는 각 승인 기기 실행자가 고정 원 URL에서 직접 확보하고 hash 검증하는 비배포 연구 사용으로만 확장한다. binary를 기기 간 전달하거나 Git·PR·APK·팀 ZIP·제출물에 넣지 않는다.
+- 이전 결정 관계: 2026-09-16 CALIB-01B-FIX2의 A24-only는 legacy `calibration-v1`에 그대로 적용한다. 2026-09-17 개정 4/4.1의 새 주평가 A24-only 부분은 `multitask-v1`에 한해 이 결정으로 대체한다.
+- 영향: PLAN 개정 4.4, STATUS, MODEL-02 inventory/probe, SCOPE evidence, MULTITASK protocol. 현재 production 구현·실기기 PASS를 뜻하지 않는다.
 
 ## 새 결정 작성 형식
 
