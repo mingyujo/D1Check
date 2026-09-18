@@ -217,7 +217,7 @@ class ModelProbeEntryActivity : Activity() {
         is Map<*, *> -> JSONObject().apply {
             value.forEach { (key, nested) -> put(key.toString(), jsonValue(nested)) }
         }.toString()
-        else -> JSONObject.wrap(value).toString()
+        else -> jsonValue(value).toString()
     }
 
     private fun jsonValue(value: Any?): Any = when (value) {
