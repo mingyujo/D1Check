@@ -1,7 +1,7 @@
 # D1Check 두 작업 실험·평가 계약
 
-- 버전: 1.2 / 설계일: 2026-09-17 / 상태: **planned, 미구현·미실측**
-- 상위 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.2. [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md)의 근거 조사와 [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)의 host artifact 검증을 수행했고 현재 작업은 `MODEL-02A-LICENSE`다.
+- 버전: 1.3 / 설계일: 2026-09-18 / 상태: **planned, 미구현·미실측**
+- 상위 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.3. [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md)의 근거 조사와 [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)의 조건부 host artifact 검증을 수행했고 현재 작업은 `MODEL-02B-PREP`다.
 - 예약 protocol ID: `multitask-v1`. 현재 `d1_calibration_cli.py`는 이 protocol을 처리하지 않는다. 이 문서는 존재하지 않는 실행 명령을 제시하지 않는다.
 - legacy `calibration-v1`/schema 2/image-v3, formal v1, diagnostic v2는 [CALIBRATION_PROTOCOL.md](CALIBRATION_PROTOCOL.md)와 기존 코드 계약을 유지한다.
 - 절대 deadline: `calibration_pending`. 효과·서비스·안전·최종 반복 수의 수치: `thresholds_pending`. 값이 비어 있는 formal 실행은 금지한다.
@@ -23,6 +23,8 @@
 ## 2. 모델·입력과 실행 경로 승인
 
 [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)의 1차 결과처럼 MODEL-02 결과표에는 task/model ID, 원 배포 URL·버전, 라이선스 근거, 파일 byte count/SHA-256, tensor name/shape/type, labels의 실제 index·background 처리, metadata, 전처리·후처리 ID/hash, runtime/delegate version을 남긴다. URL이 `latest`이면 확보한 bytes/hash를 고정하고 자동 업데이트하지 않는다. 해시는 파일 동일성이고 출처·정확성의 독립 증명은 아니다.
+
+EfficientDet-Lite0 exact binary는 비배포 A24 연구 probe에만 조건부 승인됐다. 외부 manifest로 URL·bytes·SHA-256을 검증하고 app-private storage에 전달하며 저장소·PR·APK·팀 공유물에 포함하지 않는다. 이 조건은 exact license/NOTICE를 증명하지 않으며, 배포 단계에서는 근거 확보 또는 명시적으로 라이선스된 artifact 교체가 필요하다.
 
 기존 MobileNet의 1001행 계약을 새 모델에 강요하지 않는다. 공식 분류 안내의 1000개 class 설명과 실제 출력 차원을 동일시하지 않고, 각 바이너리와 associated labels를 검사한다. 기존 WNID 앞에 임의 background를 붙이는 방식은 계속 금지한다. verified labels가 없는 후보는 보류한다.
 

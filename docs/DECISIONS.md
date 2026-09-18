@@ -134,12 +134,21 @@
 
 ## 2026-09-17 — MODEL-02A host 판정과 탐지 license gate
 
-- 상태: 채택 — [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)에 exact artifact·labels·metadata/tensor·고정 host output과 한계를 기록한다.
+- 상태: 부분 대체됨 — host 판정은 유지하고, 무조건 A24 반입 보류는 2026-09-18 조건부 결정으로 대체한다.
 - EfficientNet-Lite0 FLOAT32 v1은 공식 version URL, byte count/SHA-256, 내장 1000 labels, `[1,224,224,3] -> [1,1000]`, metadata의 Apache-2.0, deterministic raw CPU output을 확인해 MODEL-02B 후보로 승인한다. 이 승인은 A24/GPU/품질/성능 PASS가 아니다.
 - EfficientDet-Lite0 FLOAT32 v1은 공식 source, 90행 sparse labels, raw tensor와 host CPU 실행을 확인했으나 exact binary metadata의 license가 null이다. 안내 문서 footer나 sample source license를 binary license로 대신하지 않는다.
 - 사전 지정 대안 SSD MobileNetV2 FLOAT32 v1도 한 번 검사했다. 91행 background 포함 label과 tensor·raw CPU 실행은 확인했지만 license가 동일하게 비어 있어 대안 승인하지 않는다. 후보를 계속 바꾸지 않는다.
-- 현재 작업은 `MODEL-02A-LICENSE`다. exact binary에 연결되는 공식 license/NOTICE를 확보하면 후처리 golden과 bundle을 마치고 MODEL-02B로 간다. 확보하지 못하면 SCOPE-03에서 탐지 task/model을 재결정한다.
+- 당시 다음 작업은 `MODEL-02A-LICENSE`였다. exact license 연결은 확보하지 못했지만 decoded golden을 완료했고, 2026-09-18 결정에서 비배포 연구 probe만 조건부 허용했다.
 - 모델 binary·golden 산출물은 이번 문서 PR에 넣지 않는다. deadline과 threshold는 계속 pending이며 host latency를 A24 수치로 사용하지 않는다.
+
+## 2026-09-18 — EfficientDet 비배포 연구 평가 조건부 승인
+
+- 상태: 채택 — `MODEL-02A_CONDITIONAL_PASS`. 이전의 무조건 A24 반입 보류를 비배포 연구 probe에 한해 완화한다.
+- 확인 사실: Google 공식 Object Detector 안내는 EfficientDet-Lite0 FLOAT32를 권장하고 모델을 내려받아 프로젝트에 저장하도록 안내한다. 공식 Apache-2.0 sample은 exact v1 GCS URL을 직접 사용한다. 동일 exact binary는 source/hash/tensor/label/raw output과 MediaPipe Tasks decoded output이 host에서 결정적으로 확인됐다.
+- 미확인: exact GCS binary metadata와 bucket에는 license/NOTICE가 없으며, Apache-2.0인 TensorFlow/Kaggle EfficientDet TFLite variants는 byte·dtype·출력 계약이 달라 exact binary의 라이선스 증거가 아니다. 이 결정은 법률 자문이나 재배포 승인으로 해석하지 않는다.
+- 결정: version URL, byte count, SHA-256을 고정한 A24 내부 연구 평가만 허용한다. binary를 Git 저장소·PR·APK·팀 공유 ZIP·제출물에 포함하지 않는다. A24 probe는 외부 다운로드 검증 후 app-private storage로 전달하고 실험 종료 후 cleanup·provenance를 기록한다.
+- 배포 gate: 시연 APK나 재현 bundle에 모델을 넣기 전 exact license/NOTICE를 확보한다. 확보하지 못하면 명시적으로 라이선스된 artifact로 교체하고 MODEL-02A/B를 다시 통과한다.
+- 다음 작업: `MODEL-02B-PREP`. 외부 manifest와 비번들 A24 CPU/GPU 최소 probe 계약을 먼저 확정한다. host latency는 deadline·simulation service time·A24 성능으로 사용하지 않는다.
 
 ## 새 결정 작성 형식
 

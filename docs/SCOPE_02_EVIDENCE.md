@@ -3,7 +3,7 @@
 - 조사일: 2026-09-17
 - 상태: **completed_with_open_gates**
 - 적용 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.1
-- 후속 상태: [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)의 host 조사를 수행했고 현재 작업은 `MODEL-02A-LICENSE`다. 분류 host 계약은 통과했으며 탐지 exact binary license가 blocker다.
+- 후속 상태: [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)의 host 조사를 수행했고 현재 작업은 `MODEL-02B-PREP`다. 분류는 host PASS, 탐지는 decoded golden PASS와 비배포 A24 연구 probe 조건부 PASS다. exact binary 재배포 license는 계속 미확인이다.
 - 이번 단계에서 하지 않은 일: 모델 binary 다운로드, production 구현, APK 빌드, A24 설치·실행, 성능 측정.
 
 ## 1. 결론
@@ -113,8 +113,8 @@
 
 ## 8. MODEL-02 인계 조건
 
-`MODEL-02A`는 host에서 exact artifact를 확보하고 source/license/hash/tensor/metadata/label index 표를 완성한다. 이 단계는 A24 없이 진행할 수 있다. 두 후보 중 하나라도 출처·license·tensor·label 계약이 불명확하면 다운로드 횟수를 늘려 추측하지 않고 후보를 제외하거나 사전 지정 대안을 한 번 검토한다.
+`MODEL-02A`는 host에서 exact artifact를 확보하고 source/license/hash/tensor/metadata/label index 표와 raw/decoded golden을 완성한다. 이 단계는 A24 없이 진행할 수 있다. exact license가 없는 binary는 일반 승인하지 않으며, 공식 배포·sample 사용 근거가 있고 저장소·APK·공유물에 포함하지 않는 경우에만 별도 결정으로 비배포 연구 probe를 조건부 허용한다.
 
-`MODEL-02B`는 승인된 host bundle로 A24 CPU/GPU smoke, 품질·메모리·cold/warm을 확인한다. GPU 미지원 또는 fallback은 그대로 기록한다. 두 task의 합법적 실행 cell이 없으면 동적 CPU/GPU 배정 주장을 축소하고 queue/order 문제만 남길지 `SCOPE-03`에서 재판정한다.
+`MODEL-02B`는 검증된 외부 manifest와 app-private 전달 경로로 A24 CPU/GPU smoke, 품질·메모리·cold/warm을 확인한다. GPU 미지원 또는 fallback은 그대로 기록한다. 두 task의 허용된 실행 cell이 없거나 배포 gate를 끝내 충족하지 못하면 동적 CPU/GPU 배정 주장을 축소하고 queue/order 문제만 남길지 `SCOPE-03`에서 재판정한다.
 
 SCOPE-02 완료는 모델 승인, 앱 구현, 실기기 성능 또는 정책 개선을 의미하지 않는다. 현재 deadline은 `calibration_pending`, 서비스·효과·안전 수치는 `thresholds_pending`이다.
