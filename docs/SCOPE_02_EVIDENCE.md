@@ -3,7 +3,7 @@
 - 조사일: 2026-09-17
 - 상태: **completed_with_open_gates**
 - 적용 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.1
-- 후속 상태: [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)의 host 조사를 수행했고 현재 작업은 `MODEL-02B-PREP`다. 분류는 host PASS, 탐지는 decoded golden PASS와 비배포 A24 연구 probe 조건부 PASS다. exact binary 재배포 license는 계속 미확인이다.
+- 후속 상태: [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)의 host 조사와 [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md)의 A24 probe 설계를 수행했고 현재 작업은 `MODEL-02B-SEAM`이다. 분류는 host PASS, 탐지는 decoded golden PASS와 비배포 A24 연구 probe 조건부 PASS다. exact binary 재배포 license는 계속 미확인이다.
 - 이번 단계에서 하지 않은 일: 모델 binary 다운로드, production 구현, APK 빌드, A24 설치·실행, 성능 측정.
 
 ## 1. 결론

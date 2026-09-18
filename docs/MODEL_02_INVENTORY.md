@@ -85,8 +85,8 @@ host 호출시간은 환경 준비 상태에 따라 변동했으며 A24 latency,
 
 ## 7. 다음 gate
 
-1. `MODEL-02B-PREP`: 두 모델의 URL·bytes·SHA-256·내장 label hash·metadata·runtime·golden을 외부 manifest에 고정한다. binary는 Git/APK에 넣지 않는다.
-2. ADB 또는 test harness로 app-private storage에 전달하고 hash를 재검증하는 bounded probe/cleanup/provenance 계약을 확정한다.
-3. 그 뒤 `MODEL-02B`에서 A24 CPU/GPU strict delegation, decoded result quality, memory, cold/warm을 측정한다. 배포가 필요해질 때까지 exact license 조사는 열린 제한으로 유지한다.
+1. `MODEL-02B-PREP`은 [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md)의 외부 manifest·app-private staging·비교·cleanup·판정 계약으로 완료했다.
+2. `MODEL-02B-SEAM`에서 debug-only loader, raw/decoded adapter, host validator와 no-I/O dry-run을 구현·검증한다. binary는 Git/APK에 넣지 않는다.
+3. 그 뒤 별도 승인된 `MODEL-02B` A24 pilot에서 CPU/GPU strict delegation, decoded result quality, memory, cold/warm을 측정한다. 배포가 필요해질 때까지 exact license 조사는 열린 제한으로 유지한다.
 
 deadline은 `calibration_pending`, 서비스·효과·안전 수치는 `thresholds_pending`을 유지한다. 이번 host ms를 deadline이나 시뮬레이션 service time으로 사용하지 않는다.

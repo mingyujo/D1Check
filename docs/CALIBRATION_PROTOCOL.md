@@ -2,7 +2,7 @@
 
 - 문서 버전: 5 — 기존 단일 MobileNet 계약의 적용 범위 표시; image-v3 및 측정/schema 계약은 유지
 - 작성일: 2026-09-15
-- 상태: CALIB-01B completed / `CALIB_01B_PASS`. FIX4 최종 감사와 전체 host 검증 완료. 과거 네트워크·Robolectric·signing lock 대기는 resolved history로 분리한다. SCOPE-02와 MODEL-02A 조건부 host gate를 마쳤고 프로젝트 현재 작업은 MODEL-02B-PREP다. 이 문서의 CALIB-01C-INPUT은 legacy 단일 모델 입력 준비로 보류/재계획하며 대표 이미지·라벨·thermal/cooling gate·strict GPU smoke 미완료 상태를 보존한다.
+- 상태: CALIB-01B completed / `CALIB_01B_PASS`. FIX4 최종 감사와 전체 host 검증 완료. 과거 네트워크·Robolectric·signing lock 대기는 resolved history로 분리한다. SCOPE-02와 MODEL-02A 조건부 host gate, MODEL-02B probe 설계를 마쳤고 프로젝트 현재 작업은 MODEL-02B-SEAM이다. 이 문서의 CALIB-01C-INPUT은 legacy 단일 모델 입력 준비로 보류/재계획하며 대표 이미지·라벨·thermal/cooling gate·strict GPU smoke 미완료 상태를 보존한다.
 - 직접 실기기 적용 기기: Galaxy A24만 해당. Galaxy S26 새 calibration·설치·실행은 `OUT_OF_SCOPE_NON_BLOCKING`이며 기존 formal 80슬롯 보조자료만 유지한다.
 - 절대 마감시간 상태: `calibration_pending`
 - 목적: 실제 사용자 이미지 경로의 구성요소별 종단간 지연과 변동성을 측정해 기기별 절대 마감시간 및 혼합 워크로드 조건을 평가 전에 고정한다.

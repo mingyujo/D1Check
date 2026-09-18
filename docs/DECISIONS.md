@@ -150,6 +150,16 @@
 - 배포 gate: 시연 APK나 재현 bundle에 모델을 넣기 전 exact license/NOTICE를 확보한다. 확보하지 못하면 명시적으로 라이선스된 artifact로 교체하고 MODEL-02A/B를 다시 통과한다.
 - 다음 작업: `MODEL-02B-PREP`. 외부 manifest와 비번들 A24 CPU/GPU 최소 probe 계약을 먼저 확정한다. host latency는 deadline·simulation service time·A24 성능으로 사용하지 않는다.
 
+## 2026-09-18 — MODEL-02B debug-only 외부 probe 구조
+
+- 상태: 채택 — [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md)의 manifest·staging·비교·cleanup·판정 계약을 구현 기준으로 사용한다.
+- 코드 감사: 현재 `ModelLoader`와 calibration runtime은 APK MobileNet asset 및 고정 tensor에 묶여 있어 새 model 파일 복사만으로 재사용할 수 없다. 기존 계약을 일반화한 것처럼 바꾸지 않는다.
+- 구현 경계: 새 loader·component·Tasks dependency는 debug source/dependency에 격리하고 release·formal v1·diagnostic v2·calibration-v1에 연결하지 않는다. model/sample bytes는 어느 variant에도 bundle하지 않는다.
+- 실행 계층: 두 모델의 raw LiteRT CPU/GPU tensor·수치 검증과 EfficientDet Tasks decoded 검증을 분리한다. Tasks API 전체 시간은 `tasks_detect_ns`이며 내부 inference 시간으로 부르지 않는다.
+- GPU 판정: delegate 생성만으로 PASS하지 않는다. full-delegation host evidence, 수치 gate, no-fallback가 모두 있어야 verified GPU cell이다.
+- 범위 판정: 두 task CPU와 두 GPU가 모두 통과하면 FULL, 두 CPU와 최소 한 GPU만 통과하면 REDUCED, 그보다 좁거나 dependency/배포 gate를 충족하지 못하면 SCOPE-03로 보낸다.
+- 현재 작업: `MODEL-02B-SEAM`. host tests와 dry-run을 통과하기 전 A24 설치·실행을 시작하지 않는다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

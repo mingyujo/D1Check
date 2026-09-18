@@ -1,7 +1,7 @@
 # D1Check 현재 상태
 
-- 갱신: 2026-09-18 / MODEL-02A 조건부 완료, 탐지 decoded golden과 비배포 연구 gate 확정
-- 현재 작업: `MODEL-02B-PREP` — 두 모델의 외부 고정 manifest와 A24 CPU/GPU 최소 probe 계약을 준비한다.
+- 갱신: 2026-09-18 / MODEL-02B 외부 manifest·A24 최소 probe 계약 완료
+- 현재 작업: `MODEL-02B-SEAM` — debug-only 외부 모델 loader, raw/decoded adapter와 host dry-run을 구현한다. A24 실행은 아직 승인·수행하지 않았다.
 - 기준: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.3, [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md), [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)(설계, 미구현).
 - 코드 기준: 원격 `master`의 `df8192aa61eebacf83df7a7815f0c60c8bbf4004`, `Implement A24 calibration input and validation pipeline`. production code는 이번 단계에서 변경하지 않았다.
 - 문서 작업은 [초안 PR #2](https://github.com/mingyujo/D1Check/pull/2)의 `docs/competition-plan-v4-20260917` branch에서 계속하며 master에 자동 병합하지 않는다.
@@ -19,7 +19,8 @@
 | PLAN-REV04.3 / SCOPE-02 | 문서 개정·근거 조사 완료 | 혼합 요청 범위, 합성 workload 가정, 선행 연구와 증거 경계, 비배포 모델 gate 확정 |
 | MODEL-02A 분류 | HOST_CONTRACT_PASS | EfficientNet-Lite0 v1 source/hash/tensor/내장 labels/license·고정 host output 확인; A24 미검증 |
 | MODEL-02A 탐지 | conditional pass / research-only | EfficientDet raw·decoded host golden 통과. exact binary license 귀속 미확인으로 비배포 A24 probe만 허용 |
-| MODEL-02B-PREP / MODEL-02B | in progress / pending | 외부 manifest·probe 계약 준비 후 A24 smoke; model binary의 저장소·APK·공유물 포함 금지 |
+| MODEL-02B-PREP | completed / `MODEL_02B_PREP_READY` | [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md)에 외부 manifest·staging·비교·cleanup·판정 계약 고정 |
+| MODEL-02B-SEAM / MODEL-02B device | in progress / pending | debug-only seam과 host dry-run 구현 후 별도 승인된 A24 smoke; binary 번들 금지 |
 | TASK-02 / PROFILE-02 / SCHED-02 / EVAL-02 | pending | A24 smoke 통과 후 adapter→profile→정책→독립 평가 |
 
 ## MODEL-02A 확인 사실과 남은 제한
@@ -63,10 +64,10 @@
 
 ## 다음 행동 (최대 3개)
 
-1. `MODEL-02B-PREP`: 모델별 URL·bytes·SHA-256·label hash·runtime·입력·예상 출력을 담은 외부 manifest와 다운로드/검증 절차를 고정한다.
-2. model을 APK에 넣지 않고 ADB 또는 test harness로 app-private storage에 전달하는 A24 CPU/GPU probe, cleanup, provenance 계약을 검토한다.
-3. 별도 승인 후 `MODEL-02B`에서 A24 strict delegation/fallback, decoded 품질, 메모리, cold/warm을 최소 입력으로 측정한다.
+1. `MODEL-02B-SEAM`: debug source set의 외부 file loader, raw LiteRT adapter, Tasks dependency isolation과 decoded adapter를 production 경로 테스트로 구현한다.
+2. host 도구의 manifest validator·download/hash·staging argv·artifact/delegate evidence validator와 no-I/O dry-run을 구현한다.
+3. 전체 host 검증 후 별도 승인된 `MODEL-02B` A24 pilot 한 session을 실행한다.
 
 ## 변경·검증 범위
 
-이번 단계는 공식 artifact·license 관계 조사, host decoded golden, 문서 갱신만 수행했다. production/test/APK와 기존 실험 데이터는 변경하지 않았다. ADB·설치·A24·Perfetto·Git master 병합은 수행하지 않았다. 초안 PR에는 model/sample/system-library binary, host cache, 가상환경을 포함하지 않는다.
+이번 단계는 공식 artifact·license 관계 조사, host decoded golden, 코드 감사, MODEL-02B probe 계약과 문서 갱신만 수행했다. production/test/APK와 기존 실험 데이터는 변경하지 않았다. ADB·설치·A24·Perfetto·Git master 병합은 수행하지 않았다. 초안 PR에는 model/sample/system-library binary, host cache, 가상환경을 포함하지 않는다.

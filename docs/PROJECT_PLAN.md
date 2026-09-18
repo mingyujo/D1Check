@@ -2,11 +2,11 @@
 
 - 개정: 4.3 / 2026-09-18 / 탐지 모델의 비배포 연구 gate와 decoded host golden 반영
 - 기준 코드: `df8192aa61eebacf83df7a7815f0c60c8bbf4004`의 `master`. 이 개정은 문서 변경이며 새 모델·스케줄러 구현 또는 실기기 PASS가 아니다.
-- 현재 작업: `MODEL-02B-PREP` — 승인 모델의 외부 manifest와 A24 CPU/GPU 최소 probe 계약을 준비한다.
+- 현재 작업: `MODEL-02B-SEAM` — debug-only 외부 모델 loader, raw/decoded adapter와 host dry-run을 구현한다. A24 실행은 별도 단계다.
 - 새 절대 deadline은 `calibration_pending`, 서비스 하한·성공 기준·최종 반복 수는 `thresholds_pending`이다.
 - 유지: A24-only 직접 검증, 기존 80슬롯과 diagnostic v1/v2 원본, CALIB-01B PASS, 실패를 포함한 전체 도착 분모.
 - 전환: 단일 분류 모델은 기존 기준선으로 보존하고, 서로 다른 두 AI 작업의 요청 배정 문제를 새 주평가로 준비한다. 구체 모델과 마감시간은 아직 미확정이다.
-- 문서 역할: 이 문서는 목표·우선순위, [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md)는 혼합 요청·후보·선행 연구의 근거와 한계, [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)는 새 실험 계약, [CALIBRATION_PROTOCOL.md](CALIBRATION_PROTOCOL.md)는 구현된 단일 모델 계약, [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)는 exact model/label/hash/tensor·host 판정, [PROJECT_STATUS.md](PROJECT_STATUS.md)는 현재 진행 상태다.
+- 문서 역할: 이 문서는 목표·우선순위, [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md)는 혼합 요청·후보·선행 연구의 근거와 한계, [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)는 exact model/label/hash/tensor·host 판정, [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md)는 A24 외부 모델 probe 계약, [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)는 새 실험 계약, [CALIBRATION_PROTOCOL.md](CALIBRATION_PROTOCOL.md)는 구현된 단일 모델 계약, [PROJECT_STATUS.md](PROJECT_STATUS.md)는 현재 진행 상태다.
 
 ## 1. 한 문장으로 설명하는 프로젝트
 
