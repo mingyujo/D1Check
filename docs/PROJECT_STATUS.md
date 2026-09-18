@@ -1,10 +1,10 @@
 # D1Check 현재 상태
 
-- 갱신: 2026-09-18 / MODEL-02B 기기 이식형 probe와 추가 기기 재현평가 계약 반영
-- 현재 작업: `MODEL-02B-SEAM` — 기기 모델명을 하드코딩하지 않는 debug-only 외부 모델 loader, raw/decoded adapter와 host dry-run을 구현한다. A24와 추가 기기 실행은 아직 승인·수행하지 않았다.
-- 기준: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.4, [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md), [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)(설계, 미구현).
-- 코드 기준: 원격 `master`의 `df8192aa61eebacf83df7a7815f0c60c8bbf4004`, `Implement A24 calibration input and validation pipeline`. production code는 이번 단계에서 변경하지 않았다.
-- 문서 작업은 [초안 PR #2](https://github.com/mingyujo/D1Check/pull/2)의 `docs/competition-plan-v4-20260917` branch에서 계속하며 master에 자동 병합하지 않는다.
+- 갱신: 2026-09-18 / MODEL-02B-SEAM 첫 구현 조각과 host 검증 결과 반영
+- 현재 작업: `MODEL-02B-SEAM` — 기기 모델명을 하드코딩하지 않는 debug-only 외부 모델 loader, raw/decoded adapter와 host validator·no-I/O dry-run을 구현했다. host 신규 테스트는 통과했지만 Android Gradle 컴파일·기존 회귀·APK·실기기는 아직 미검증이므로 device-ready 또는 PASS가 아니다.
+- 기준: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.4, [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md), [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md), [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)(설계, 미구현).
+- 코드 기준: [초안 PR #2](https://github.com/mingyujo/D1Check/pull/2)의 `docs/competition-plan-v4-20260917` HEAD `177a8f3e9bf2a2091f383444767b7cb49cdf8c66` 위에 별도 stacked 구현 초안으로 진행한다. master에 자동 병합하지 않는다.
+- A24와 추가 기기 실행은 아직 승인·수행하지 않았다. model/sample binary는 저장소·PR·APK에 포함하지 않았다.
 - A24는 개발·주평가 기기다. 정책 동결 뒤 최소 한 대의 다른 Android 기기에서 같은 runner로 축소 재현평가한다. 추가 기기는 아직 미선정·미실행이며, 기존 S26 formal은 새 두 작업 재현평가를 자동 대체하지 않는다.
 - 새 절대 deadline: `calibration_pending`. 서비스 하한·안전/안정성 수치·성공 기준·최종 반복 수: `thresholds_pending`.
 
@@ -20,7 +20,7 @@
 | MODEL-02A 분류 | HOST_CONTRACT_PASS | EfficientNet-Lite0 v1 source/hash/tensor/내장 labels/license·고정 host output 확인; 실기기 미검증 |
 | MODEL-02A 탐지 | conditional pass / research-only | EfficientDet raw·decoded host golden 통과. exact binary license 귀속 미확인으로 승인 기기 내부 비배포 probe만 허용 |
 | MODEL-02B-PREP | completed / `MODEL_02B_PREP_READY` | [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md)에 기기 이식형 외부 manifest·staging·비교·cleanup·기기별 판정 계약 고정 |
-| MODEL-02B-SEAM / MODEL-02B device | in progress / pending | debug-only seam과 host dry-run 구현 후 A24 smoke, 이어서 동결 계약의 추가 기기 smoke; binary 번들 금지 |
+| MODEL-02B-SEAM / MODEL-02B device | implementation draft / pending | host validator·artifact validator·no-I/O plan 테스트 통과. Android debug seam은 작성됐으나 Gradle/기기 미검증; binary 번들 금지 |
 | TASK-02 / PROFILE-02 / SCHED-02 / EVAL-02 / XDEV-02 | pending | A24 adapter→full profile→정책→독립 평가 후 최소 한 대 추가 기기 축소 재현 |
 
 ## MODEL-02A 확인 사실과 남은 제한
@@ -64,10 +64,11 @@
 
 ## 다음 행동 (최대 3개)
 
-1. `MODEL-02B-SEAM`: debug source set의 외부 file loader, raw LiteRT adapter, Tasks dependency isolation과 decoded adapter를 기기 모델명 하드코딩 없이 구현한다.
-2. host 도구의 manifest validator·download/hash·staging argv·artifact/delegate evidence validator와 no-I/O dry-run을 구현하고, 서로 다른 합성 device manifest의 identity 격리를 테스트한다.
-3. 전체 host 검증 후 별도 승인된 A24 pilot 한 session을 먼저 실행한다. 추가 기기 선정·실행은 A24 seam 통과와 정책 freeze 이후 별도 gate로 진행한다.
+1. 사용자 로컬 JDK 17에서 새 `ModelProbeContractTest`, `testDebugUnitTest`, `lintDebug`, `assembleDebug`를 실행해 Tasks Vision 1.0.0과 LiteRT 1.4.2의 compile/package 충돌 여부를 확인한다.
+2. Android PASS 후 host 실행기의 실제 subprocess·ready/artifact pull·delegate-log finalization을 구현한다. 현재 CLI는 validation과 no-I/O argv plan까지만 제공한다.
+3. 전체 회귀와 APK-source binding 후 별도 승인된 A24 pilot 한 session을 실행한다. 추가 기기는 A24 seam 통과와 정책 freeze 이후 같은 계약으로 진행한다.
 
 ## 변경·검증 범위
 
-이번 단계는 공식 artifact·license 관계 조사, host decoded golden, 코드 감사, MODEL-02B probe 계약과 문서 갱신만 수행했다. production/test/APK와 기존 실험 데이터는 변경하지 않았다. ADB·설치·A24·Perfetto·Git master 병합은 수행하지 않았다. 초안 PR에는 model/sample/system-library binary, host cache, 가상환경을 포함하지 않는다.
+이번 구현 조각은 `src/debug`의 host entry·manifest parser·외부 file verifier·LiteRT raw adapter·Tasks decoded adapter, debug-scoped Tasks Vision 1.0.0 후보 의존성, host validator/plan/artifact validator와 테스트를 추가한다. host 신규 테스트 10개 메서드는 통과했고 compileall도 통과했다. Android 코드는 이 환경에서 Gradle로 검증하지 못했으므로 통과로 기록하지 않는다. debug entry는 격리 process에서 bounded watchdog을 사용하며 성공 provenance를 만들지 않고 `seam_smoke_only_unfinalized`만 남긴다. ADB·설치·A24·추가 기기·Perfetto·Git master 병합은 수행하지 않았다. model/sample/system-library binary, host cache, 가상환경은 포함하지 않는다.
+
