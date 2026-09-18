@@ -36,6 +36,7 @@ ARTIFACT_ROOT = "files/model-probe-v1"
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
 FILENAME_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,126}\Z")
 DEVICE_ID_RE = re.compile(r"[a-z0-9][a-z0-9._-]{0,63}\Z")
+ADB_SERIAL_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,255}\Z")
 
 
 @dataclass(frozen=True)
@@ -251,8 +252,11 @@ def _validate_target(value: Any) -> dict[str, Any]:
     if target["package_name"] != PACKAGE_NAME:
         raise ProbeContractError("target.package_name is not the debug runner package")
     _sha256(target["apk_sha256"], "target.apk_sha256")
+    adb_serial = _string(target["adb_serial"], "target.adb_serial")
+    if ADB_SERIAL_RE.fullmatch(adb_serial) is None:
+        raise ProbeContractError("target.adb_serial has invalid characters")
     for key in (
-        "adb_serial", "manufacturer", "model", "soc", "abi", "android_release",
+        "manufacturer", "model", "soc", "abi", "android_release",
         "build_fingerprint", "cpu_abi", "cpu_features", "gpu_vendor",
         "gpu_renderer", "gpu_driver", "thermal_capability",
     ):
