@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Host-side contract validation and no-I/O planning for MODEL-02B.
+"""Host-side validation, planning, and bounded ADB execution for MODEL-02B.
 
-This tool deliberately does not download or redistribute model binaries.  An operator
-must download each pinned artifact from its original URL, then use this tool to verify
-the exact local bytes before any ADB command is executed.
+This tool deliberately does not download or redistribute model binaries. An operator
+must obtain each pinned artifact from its original URL. The executable path validates
+the exact local bytes before ADB, stages only a canonical UUID-scoped input directory,
+pulls the debug seam summary, and always attempts bounded input cleanup. It never
+promotes a seam result to finalized provenance or verified GPU delegation.
 """
 
 from __future__ import annotations
@@ -13,11 +15,14 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
+import time
 import uuid
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Callable, Iterable, Mapping, Sequence
 from urllib.parse import urlparse
 
 
@@ -92,6 +97,62 @@ ARTIFACT_FILES = frozenset(
 
 class ProbeContractError(ValueError):
     pass
+
+
+@dataclass(frozen=True)
+class ProcessResult:
+    returncode: int
+    stdout: bytes
+    stderr: bytes
+
+
+ProcessRunner = Callable[[Sequence[str], float, frozenset[int]], ProcessResult]
+
+
+def _output_tail(value: bytes | str | None, limit: int = 4096) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, bytes):
+        text = value.decode("utf-8", errors="replace")
+    else:
+        text = value
+    return text[-limit:]
+
+
+def _default_process_runner(
+    argv: Sequence[str],
+    timeout_seconds: float,
+    allowed_returncodes: frozenset[int],
+) -> ProcessResult:
+    command = [str(part) for part in argv]
+    if not command or timeout_seconds <= 0:
+        raise ProbeContractError("invalid subprocess command or timeout")
+    try:
+        completed = subprocess.run(
+            command,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+            shell=False,
+            timeout=timeout_seconds,
+        )
+    except subprocess.TimeoutExpired as error:
+        raise ProbeContractError(
+            "command timed out: "
+            f"argv={command!r}; stdout={_output_tail(error.stdout)!r}; "
+            f"stderr={_output_tail(error.stderr)!r}"
+        ) from error
+    except OSError as error:
+        raise ProbeContractError(f"cannot start command: argv={command!r}; error={error}") from error
+    result = ProcessResult(completed.returncode, completed.stdout, completed.stderr)
+    if result.returncode not in allowed_returncodes:
+        raise ProbeContractError(
+            "command failed: "
+            f"argv={command!r}; returncode={result.returncode}; "
+            f"stdout={_output_tail(result.stdout)!r}; stderr={_output_tail(result.stderr)!r}"
+        )
+    return result
 
 
 def _expect_object(value: Any, location: str) -> dict[str, Any]:
@@ -565,6 +626,310 @@ def build_dry_run_plan(
     }
 
 
+
+def _utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def _parse_json_bytes(raw: bytes, location: str) -> dict[str, Any]:
+    if not raw or len(raw) > 4 * 1024 * 1024:
+        raise ProbeContractError(f"{location} byte count is invalid")
+    if raw.startswith(b"\xef\xbb\xbf"):
+        raise ProbeContractError(f"{location} UTF-8 BOM is not allowed")
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise ProbeContractError(f"{location} is not UTF-8") from error
+
+    def reject_duplicates(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        result: dict[str, Any] = {}
+        for key, value in pairs:
+            if key in result:
+                raise ProbeContractError(f"duplicate JSON key in {location}: {key}")
+            result[key] = value
+        return result
+
+    try:
+        return _expect_object(
+            json.loads(text, object_pairs_hook=reject_duplicates),
+            location,
+        )
+    except json.JSONDecodeError as error:
+        raise ProbeContractError(f"invalid JSON in {location}: {error}") from error
+
+
+def _write_atomic_bytes(path: Path, payload: bytes) -> None:
+    temporary = path.with_name(path.name + ".part")
+    if path.exists() or temporary.exists():
+        raise ProbeContractError(f"refusing to replace existing output: {path}")
+    try:
+        with temporary.open("xb") as stream:
+            stream.write(payload)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+    except BaseException:
+        try:
+            temporary.unlink(missing_ok=True)
+        except OSError:
+            pass
+        raise
+
+
+def _write_atomic_json(path: Path, value: Mapping[str, Any]) -> None:
+    payload = (
+        json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2) + "\n"
+    ).encode("utf-8")
+    _write_atomic_bytes(path, payload)
+
+
+def _remote_sha256(stdout: bytes, location: str) -> str:
+    first = _output_tail(stdout).strip().split()
+    if not first or SHA256_RE.fullmatch(first[0]) is None:
+        raise ProbeContractError(f"{location} did not return a canonical SHA-256")
+    return first[0]
+
+
+def validate_unfinalized_summary(
+    summary: Mapping[str, Any],
+    manifest: Mapping[str, Any],
+) -> dict[str, Any]:
+    status = _string(summary.get("status"), "summary.status")
+    if status == "failed":
+        error_type = _string(summary.get("error_type"), "summary.error_type")
+        error = _string(summary.get("error"), "summary.error")
+        raise ProbeContractError(f"device probe failed: {error_type}: {error}")
+    expected_keys = {
+        "schema_version", "protocol_version", "session_id", "device_id", "model_id",
+        "backend", "status", "finalized", "elapsed_ns", "details",
+    }
+    _exact_keys(summary, expected_keys, "summary")
+    if summary["schema_version"] != SCHEMA_VERSION or summary["protocol_version"] != PROTOCOL_VERSION:
+        raise ProbeContractError("summary protocol/schema mismatch")
+    if summary["session_id"] != manifest["identity"]["session_id"]:
+        raise ProbeContractError("summary session identity mismatch")
+    if summary["device_id"] != manifest["target"]["device_id"]:
+        raise ProbeContractError("summary device identity mismatch")
+    if summary["model_id"] != manifest["model"]["model_id"]:
+        raise ProbeContractError("summary model identity mismatch")
+    if summary["backend"] != manifest["execution"]["backend"]:
+        raise ProbeContractError("summary backend identity mismatch")
+    if status != "seam_smoke_only_unfinalized" or summary["finalized"] is not False:
+        raise ProbeContractError("summary must remain seam_smoke_only_unfinalized")
+    _integer(summary["elapsed_ns"], "summary.elapsed_ns", minimum=0)
+    _expect_object(summary["details"], "summary.details")
+    return dict(summary)
+
+
+def execute_seam(
+    manifest: Mapping[str, Any],
+    manifest_path: Path,
+    input_root: Path,
+    adb: Path,
+    apk: Path,
+    output_root: Path,
+    serial: str,
+    *,
+    poll_interval_seconds: float = 0.25,
+    host_grace_seconds: float = 15.0,
+    process_runner: ProcessRunner = _default_process_runner,
+    monotonic: Callable[[], float] = time.monotonic,
+    sleep: Callable[[float], None] = time.sleep,
+) -> dict[str, Any]:
+    if serial != manifest["target"]["adb_serial"]:
+        raise ProbeContractError("--serial does not match target.adb_serial")
+    if poll_interval_seconds <= 0 or not 0 <= host_grace_seconds <= 60:
+        raise ProbeContractError("invalid host poll/grace interval")
+    files = validate_local_inputs(manifest, manifest_path, input_root, apk)
+    adb_root = adb.parent if str(adb.parent) else Path.cwd()
+    adb_file = _ensure_regular_file(adb, adb_root, "ADB executable")
+
+    output_base = output_root.resolve(strict=True)
+    if not output_base.is_dir() or output_root.is_symlink():
+        raise ProbeContractError("output root must be an existing non-symlink directory")
+    session = manifest["identity"]["session_id"]
+    device_id = manifest["target"]["device_id"]
+    package = manifest["target"]["package_name"]
+    session_output = output_base / session
+    if session_output.exists():
+        raise ProbeContractError("host session output already exists")
+    session_output.mkdir()
+
+    shared_root = f"{REMOTE_STAGING_ROOT}/{session}"
+    app_root = f"{APP_INPUT_ROOT}/{session}"
+    device_output_root = f"{ARTIFACT_ROOT}/{session}"
+    device_summary = f"{device_output_root}/summary.json"
+    adb_prefix = [str(adb_file), "-s", serial]
+    started_utc = _utc_now()
+    command_count = 0
+    activity_dispatched = False
+    summary_pulled = False
+    summary_sha256: str | None = None
+    cleanup_errors: list[str] = []
+    primary_error: Exception | None = None
+    result: dict[str, Any] | None = None
+
+    def run(
+        arguments: Sequence[str],
+        timeout_seconds: float,
+        allowed_returncodes: frozenset[int] = frozenset({0}),
+    ) -> ProcessResult:
+        nonlocal command_count
+        command_count += 1
+        return process_runner(
+            adb_prefix + [str(part) for part in arguments],
+            timeout_seconds,
+            allowed_returncodes,
+        )
+
+    try:
+        state = run(["get-state"], 10.0)
+        if _output_tail(state.stdout).strip() != "device":
+            raise ProbeContractError("ADB target is not in device state")
+        run(["shell", "test", "!", "-e", shared_root], 10.0)
+        run(["shell", "run-as", package, "test", "!", "-e", app_root], 10.0)
+        run(["shell", "run-as", package, "test", "!", "-e", device_output_root], 10.0)
+        run(["shell", "mkdir", "-p", shared_root], 10.0)
+        run(["shell", "run-as", package, "mkdir", "-p", app_root], 10.0)
+
+        payloads: list[tuple[Path, str]] = [
+            (files["manifest"], "model_probe_manifest.json"),
+            (files["model"], manifest["model"]["filename"]),
+        ]
+        if "input" in files:
+            payloads.append((files["input"], manifest["input"]["filename"]))
+        for host_file, filename in payloads:
+            expected_sha = sha256_file(host_file)
+            shared_part = f"{shared_root}/{filename}.part"
+            app_part = f"{app_root}/{filename}.part"
+            app_final = f"{app_root}/{filename}"
+            run(["push", str(host_file), shared_part], 120.0)
+            shared_hash = run(["shell", "sha256sum", shared_part], 15.0)
+            if _remote_sha256(shared_hash.stdout, f"shared staging {filename}") != expected_sha:
+                raise ProbeContractError(f"shared staging SHA-256 mismatch: {filename}")
+            run(["shell", "run-as", package, "cp", shared_part, app_part], 30.0)
+            app_hash = run(["shell", "run-as", package, "sha256sum", app_part], 15.0)
+            if _remote_sha256(app_hash.stdout, f"app staging {filename}") != expected_sha:
+                raise ProbeContractError(f"app staging SHA-256 mismatch: {filename}")
+            run(["shell", "run-as", package, "mv", app_part, app_final], 15.0)
+            final_hash = run(["shell", "run-as", package, "sha256sum", app_final], 15.0)
+            if _remote_sha256(final_hash.stdout, f"app final {filename}") != expected_sha:
+                raise ProbeContractError(f"app final SHA-256 mismatch: {filename}")
+            run(["shell", "rm", "-f", shared_part], 10.0)
+
+        dispatch = run(
+            [
+                "shell", "am", "start", "-W", "-n", ENTRY_COMPONENT,
+                "-a", f"{PACKAGE_NAME}.action.MODEL_PROBE",
+                "--es", "session_id", session,
+            ],
+            30.0,
+        )
+        dispatch_text = _output_tail(dispatch.stdout) + "\n" + _output_tail(dispatch.stderr)
+        if "Error:" in dispatch_text or "Status: error" in dispatch_text:
+            raise ProbeContractError(f"Activity dispatch failed: {dispatch_text.strip()}")
+        activity_dispatched = True
+
+        deadline = (
+            monotonic()
+            + manifest["execution"]["maximum_duration_ms"] / 1000.0
+            + host_grace_seconds
+        )
+        while True:
+            ready = run(
+                ["shell", "run-as", package, "test", "-s", device_summary],
+                10.0,
+                frozenset({0, 1}),
+            )
+            if ready.returncode == 0:
+                break
+            remaining = deadline - monotonic()
+            if remaining <= 0:
+                raise ProbeContractError("timed out waiting for device summary")
+            sleep(min(poll_interval_seconds, remaining))
+
+        pulled = run(
+            ["exec-out", "run-as", package, "cat", device_summary],
+            30.0,
+        )
+        summary_bytes = pulled.stdout
+        summary = _parse_json_bytes(summary_bytes, "device summary")
+        _write_atomic_bytes(session_output / "summary.json", summary_bytes)
+        summary_pulled = True
+        summary_sha256 = hashlib.sha256(summary_bytes).hexdigest()
+        validate_unfinalized_summary(summary, manifest)
+        result = {
+            "status": "completed_unfinalized",
+            "schema_version": SCHEMA_VERSION,
+            "protocol_version": PROTOCOL_VERSION,
+            "session_id": session,
+            "device_id": device_id,
+            "model_id": manifest["model"]["model_id"],
+            "backend": manifest["execution"]["backend"],
+            "finalized": False,
+            "device_summary": str(session_output / "summary.json"),
+            "device_summary_sha256": summary_sha256,
+        }
+    except Exception as error:
+        primary_error = error
+    finally:
+        cleanup_commands = [
+            (["shell", "run-as", package, "rm", "-rf", app_root], 20.0),
+            (["shell", "rm", "-rf", shared_root], 20.0),
+            (["shell", "run-as", package, "test", "!", "-e", app_root], 10.0),
+            (["shell", "test", "!", "-e", shared_root], 10.0),
+        ]
+        for arguments, timeout_seconds in cleanup_commands:
+            try:
+                run(arguments, timeout_seconds)
+            except Exception as cleanup_error:
+                cleanup_errors.append(str(cleanup_error))
+
+        host_status = (
+            "failed"
+            if primary_error is not None
+            else ("cleanup_failed" if cleanup_errors else "completed_unfinalized")
+        )
+        host_record = {
+            "schema_version": SCHEMA_VERSION,
+            "protocol_version": PROTOCOL_VERSION,
+            "session_id": session,
+            "device_id": device_id,
+            "model_id": manifest["model"]["model_id"],
+            "backend": manifest["execution"]["backend"],
+            "status": host_status,
+            "finalized": False,
+            "started_utc": started_utc,
+            "finished_utc": _utc_now(),
+            "command_count": command_count,
+            "activity_dispatched": activity_dispatched,
+            "summary_pulled": summary_pulled,
+            "device_summary_sha256": summary_sha256,
+            "input_cleanup_confirmed": not cleanup_errors,
+            "error": None if primary_error is None else str(primary_error),
+            "suppressed_cleanup_errors": cleanup_errors,
+        }
+        try:
+            _write_atomic_json(session_output / "host_execution.json", host_record)
+        except Exception as record_error:
+            if primary_error is None:
+                primary_error = record_error
+            else:
+                cleanup_errors.append(f"host record write failed: {record_error}")
+
+    if primary_error is not None:
+        suffix = (
+            f"; suppressed cleanup errors={cleanup_errors!r}" if cleanup_errors else ""
+        )
+        raise ProbeContractError(f"{primary_error}{suffix}") from primary_error
+    if cleanup_errors:
+        raise ProbeContractError(f"probe completed but cleanup failed: {cleanup_errors!r}")
+    if result is None:
+        raise ProbeContractError("probe completed without a result")
+    result["host_execution"] = str(session_output / "host_execution.json")
+    return result
+
+
 def validate_artifacts(root: Path, session_id: str, device_id: str) -> dict[str, Any]:
     session_id = _canonical_uuid(session_id, "session_id")
     if DEVICE_ID_RE.fullmatch(device_id) is None:
@@ -654,6 +1019,18 @@ def _parser() -> argparse.ArgumentParser:
     plan.add_argument("--adb", type=Path, required=True)
     plan.add_argument("--serial", required=True)
     plan.add_argument("--dry-run", action="store_true", required=True)
+    execute = sub.add_parser(
+        "execute-seam",
+        help="run one bounded ADB seam probe and preserve unfinalized host evidence",
+    )
+    execute.add_argument("--manifest", type=Path, required=True)
+    execute.add_argument("--input-root", type=Path, required=True)
+    execute.add_argument("--apk", type=Path, required=True)
+    execute.add_argument("--adb", type=Path, required=True)
+    execute.add_argument("--serial", required=True)
+    execute.add_argument("--output-root", type=Path, required=True)
+    execute.add_argument("--poll-interval-ms", type=int, default=250)
+    execute.add_argument("--host-grace-ms", type=int, default=15_000)
     artifacts = sub.add_parser("validate-artifacts", help="validate exact finalized artifact set")
     artifacts.add_argument("--root", type=Path, required=True)
     artifacts.add_argument("--session-id", required=True)
@@ -676,11 +1053,23 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "device_id": manifest["target"]["device_id"],
                     "verified_files": {key: str(value) for key, value in files.items()},
                 }
-            else:
+            elif args.command == "plan":
                 if args.serial != manifest["target"]["adb_serial"]:
                     raise ProbeContractError("--serial does not match target.adb_serial")
                 result = build_dry_run_plan(
                     manifest, args.manifest, args.input_root, args.adb, args.apk
+                )
+            else:
+                result = execute_seam(
+                    manifest,
+                    args.manifest,
+                    args.input_root,
+                    args.adb,
+                    args.apk,
+                    args.output_root,
+                    args.serial,
+                    poll_interval_seconds=args.poll_interval_ms / 1000.0,
+                    host_grace_seconds=args.host_grace_ms / 1000.0,
                 )
         print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2))
         return 0
