@@ -2,19 +2,19 @@
 
 - 조사일: 2026-09-18
 - 상태: **MODEL_02A_CONDITIONAL_PASS**
-- 상위 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.3, [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)
-- 범위: host에서 공식 배포 artifact·labels·metadata·tensor·고정 입력 출력을 검사했다. Android production, APK, A24 CPU/GPU, delegation, 실제 이미지 품질은 검사하지 않았다.
+- 상위 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.4, [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)
+- 범위: host에서 공식 배포 artifact·labels·metadata·tensor·고정 입력 출력을 검사했다. Android production, APK, 어떤 실기기의 CPU/GPU, delegation, 실제 이미지 품질은 검사하지 않았다.
 - 저장 원칙: 모델 바이너리와 호스트 실행 산출물은 저장소/PR에 넣지 않는다. 이 문서에는 재현 가능한 URL·해시·계약·판정만 남긴다.
 
 ## 1. 판정
 
 | 역할 | 후보 | MODEL-02A 판정 | 다음 단계 |
 | --- | --- | --- | --- |
-| 분류 | EfficientNet-Lite0 FLOAT32 v1 | **HOST_CONTRACT_PASS** | A24용 bundle을 별도로 고정한 뒤 MODEL-02B CPU/GPU·품질·메모리 smoke 후보 |
-| 탐지 1순위 | EfficientDet-Lite0 FLOAT32 v1 | **HOST_CONTRACT_PASS_RESEARCH_ONLY** | 외부 manifest로 검증하는 비배포 A24 probe만 허용; 저장소·APK·공유물 포함 금지 |
+| 분류 | EfficientNet-Lite0 FLOAT32 v1 | **HOST_CONTRACT_PASS** | 외부 bundle을 별도로 고정한 뒤 MODEL-02B 기기별 CPU/GPU·품질·메모리 smoke 후보 |
+| 탐지 1순위 | EfficientDet-Lite0 FLOAT32 v1 | **HOST_CONTRACT_PASS_RESEARCH_ONLY** | 외부 manifest로 검증하는 승인 기기 내부 비배포 probe만 허용; 저장소·APK·공유물 포함 금지 |
 | 탐지 사전 대안 | SSD MobileNetV2 FLOAT32 v1 | **NOT_APPROVED** | license 공백과 decoded golden 미완료. 현재 후보를 대체하지 않으며 추가 진행하지 않음 |
 
-두 PASS는 host 계약만 뜻한다. A24 지원, GPU full delegation, latency, memory, 일반적인 실제 이미지 정확도는 미확인이다. EfficientDet exact binary의 metadata `license`는 비어 있고 exact license/NOTICE 연결은 확보하지 못했다. Google 공식 안내와 Apache-2.0 sample의 exact URL 사용은 비배포 연구 probe를 조건부 허용하는 위험 판단의 근거일 뿐 binary license의 증거로 전용하지 않는다.
+두 PASS는 host 계약만 뜻한다. 각 Android 기기의 지원, GPU full delegation, latency, memory, 일반적인 실제 이미지 정확도는 미확인이다. EfficientDet exact binary의 metadata `license`는 비어 있고 exact license/NOTICE 연결은 확보하지 못했다. Google 공식 안내와 Apache-2.0 sample의 exact URL 사용은 비배포 연구 probe를 조건부 허용하는 위험 판단의 근거일 뿐 binary license의 증거로 전용하지 않는다.
 
 ## 2. 공식 출처와 byte identity
 
@@ -54,7 +54,7 @@ EfficientDet/SSD의 일반 LiteRT Interpreter 출력은 후처리 전 anchor sco
 
 ## 5. 고정 host smoke
 
-검증 환경은 Linux x86_64, Python 3.12, `ai-edge-litert==2.2.0`, FLOAT32, CPU XNNPACK, thread 1이다. 좌표 기반으로 생성한 고정 RGB pattern을 metadata 정규화한 뒤 같은 Interpreter instance에서 3회 실행했다. 실행시간은 host 배선 참고일 뿐 A24 성능 자료가 아니다.
+검증 환경은 Linux x86_64, Python 3.12, `ai-edge-litert==2.2.0`, FLOAT32, CPU XNNPACK, thread 1이다. 좌표 기반으로 생성한 고정 RGB pattern을 metadata 정규화한 뒤 같은 Interpreter instance에서 3회 실행했다. 실행시간은 host 배선 참고일 뿐 어떤 Android 기기의 성능 자료도 아니다.
 
 | 후보 | 결과 | 고정 output hash | host 호출시간 3회 |
 | --- | --- | --- | --- |
@@ -73,7 +73,7 @@ EfficientDet decoded golden은 누락된 `libGLESv2.so.2`를 저장소 밖 임�
 | cat | `0.7802969217300415` | `(72, 162, 252, 191)` |
 | dog | `0.7625645399093628` | `(303, 27, 249, 345)` |
 
-host 호출시간은 환경 준비 상태에 따라 변동했으며 A24 latency, deadline 또는 시뮬레이션 service time으로 기록하지 않는다. 이 표본은 Tasks decode/NMS/label wiring 회귀이며 일반 품질 평가가 아니다.
+host 호출시간은 환경 준비 상태에 따라 변동했으며 실기기 latency, deadline 또는 시뮬레이션 service time으로 기록하지 않는다. 이 표본은 Tasks decode/NMS/label wiring 회귀이며 일반 품질 평가가 아니다.
 
 ## 6. 라이선스 판정 근거와 한계
 
@@ -81,12 +81,12 @@ host 호출시간은 환경 준비 상태에 따라 변동했으며 A24 latency,
 - EfficientDet와 SSD exact binary는 저자 `MediaPipe`를 기록하지만 metadata license가 null이다. GCS response에도 license metadata가 없었다.
 - TensorFlow/Kaggle의 공식 EfficientDet variants와 MediaPipe sample code에는 Apache-2.0 표기가 있다. 그러나 내려받아 확인한 공식 metadata TFLite는 4,563,519 bytes, SHA-256 `2e04c53bfeac0ac2a30c057c7e2a777594ce39baaac35a92f74fb1e8c4fc4e0b`, UINT8 입력·decoded 4-output으로 현재 GCS FLOAT32 binary와 byte/계약이 다르다. exact artifact license로 전용하지 않는다.
 - COCO 학습 데이터 license나 architecture/source-code license는 배포된 weight file의 license를 자동으로 증명하지 않는다.
-- 따라서 탐지 binary를 저장소·PR·APK·팀 공유 bundle·제출물에 넣지 않는다. Google 공식 안내와 sample의 exact URL 사용을 근거로 URL·bytes·SHA-256을 고정한 A24 내부 연구 probe만 조건부 허용한다. 이는 법적·재배포 승인이 아니며, 배포 전에는 공식 model card/NOTICE가 exact URL/hash를 사용 가능한 조건에 연결하거나 명시적으로 라이선스된 artifact로 교체해야 한다.
+- 따라서 탐지 binary를 저장소·PR·APK·팀 공유 bundle·제출물에 넣지 않는다. Google 공식 안내와 sample의 exact URL 사용을 근거로 URL·bytes·SHA-256을 고정하고 각 실행자가 원 URL에서 직접 확보하는 승인 기기 내부 연구 probe만 조건부 허용한다. 이는 법적·재배포 승인이 아니며, 배포 전에는 공식 model card/NOTICE가 exact URL/hash를 사용 가능한 조건에 연결하거나 명시적으로 라이선스된 artifact로 교체해야 한다.
 
 ## 7. 다음 gate
 
 1. `MODEL-02B-PREP`은 [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md)의 외부 manifest·app-private staging·비교·cleanup·판정 계약으로 완료했다.
 2. `MODEL-02B-SEAM`에서 debug-only loader, raw/decoded adapter, host validator와 no-I/O dry-run을 구현·검증한다. binary는 Git/APK에 넣지 않는다.
-3. 그 뒤 별도 승인된 `MODEL-02B` A24 pilot에서 CPU/GPU strict delegation, decoded result quality, memory, cold/warm을 측정한다. 배포가 필요해질 때까지 exact license 조사는 열린 제한으로 유지한다.
+3. 그 뒤 별도 승인된 `MODEL-02B` A24 pilot에서 CPU/GPU strict delegation, decoded result quality, memory, cold/warm을 측정하고, seam 통과 뒤 같은 계약으로 추가 기기를 probe한다. 배포가 필요해질 때까지 exact license 조사는 열린 제한으로 유지한다.
 
 deadline은 `calibration_pending`, 서비스·효과·안전 수치는 `thresholds_pending`을 유지한다. 이번 host ms를 deadline이나 시뮬레이션 service time으로 사용하지 않는다.

@@ -1,12 +1,12 @@
 # D1Check 프로젝트 실행계획
 
-- 개정: 4.3 / 2026-09-18 / 탐지 모델의 비배포 연구 gate와 decoded host golden 반영
+- 개정: 4.4 / 2026-09-18 / A24 주평가와 추가 Android 기기 고정정책 재현평가 분리
 - 기준 코드: `df8192aa61eebacf83df7a7815f0c60c8bbf4004`의 `master`. 이 개정은 문서 변경이며 새 모델·스케줄러 구현 또는 실기기 PASS가 아니다.
-- 현재 작업: `MODEL-02B-SEAM` — debug-only 외부 모델 loader, raw/decoded adapter와 host dry-run을 구현한다. A24 실행은 별도 단계다.
+- 현재 작업: `MODEL-02B-SEAM` — 기기 모델명을 하드코딩하지 않는 debug-only 외부 모델 loader, raw/decoded adapter와 host dry-run을 구현한다. 첫 실행은 A24이며 추가 기기는 별도 gate다.
 - 새 절대 deadline은 `calibration_pending`, 서비스 하한·성공 기준·최종 반복 수는 `thresholds_pending`이다.
-- 유지: A24-only 직접 검증, 기존 80슬롯과 diagnostic v1/v2 원본, CALIB-01B PASS, 실패를 포함한 전체 도착 분모.
+- 유지: A24 개발·주평가, 기존 80슬롯과 diagnostic v1/v2 원본, CALIB-01B PASS, 실패를 포함한 전체 도착 분모. 추가: 정책 동결 후 최소 한 대의 다른 Android 기기에서 축소 재현평가.
 - 전환: 단일 분류 모델은 기존 기준선으로 보존하고, 서로 다른 두 AI 작업의 요청 배정 문제를 새 주평가로 준비한다. 구체 모델과 마감시간은 아직 미확정이다.
-- 문서 역할: 이 문서는 목표·우선순위, [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md)는 혼합 요청·후보·선행 연구의 근거와 한계, [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)는 exact model/label/hash/tensor·host 판정, [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md)는 A24 외부 모델 probe 계약, [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)는 새 실험 계약, [CALIBRATION_PROTOCOL.md](CALIBRATION_PROTOCOL.md)는 구현된 단일 모델 계약, [PROJECT_STATUS.md](PROJECT_STATUS.md)는 현재 진행 상태다.
+- 문서 역할: 이 문서는 목표·우선순위, [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md)는 혼합 요청·후보·선행 연구의 근거와 한계, [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)는 exact model/label/hash/tensor·host 판정, [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md)는 기기 이식 가능한 외부 모델 probe 계약, [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)는 새 다기기 실험 계약, [CALIBRATION_PROTOCOL.md](CALIBRATION_PROTOCOL.md)는 구현된 legacy 단일 모델 계약, [PROJECT_STATUS.md](PROJECT_STATUS.md)는 현재 진행 상태다.
 
 ## 1. 한 문장으로 설명하는 프로젝트
 
@@ -45,28 +45,30 @@ SCOPE-02 조사 결과는 [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md)에 기록
 | 제약하의 의사결정 | 메모리·열 안전·일반 최소 서비스 하에서 긴급 지연 최소화 | 제약 준수표, 강한 기준정책 대비 대응 비교 |
 | 실험계획·통계 | 같은 arrival trace, 순서 무작위화, 개발/평가 분리 | 독립 세션 효과 크기·신뢰구간, 실패·제외 기록 |
 | 이산사건 시뮬레이션 | 실측 서비스시간·간섭으로 실험 범위 확장 | 별도 실기기 holdout으로 보정 오차 검증 |
+| 외적 타당성 | A24에서 정책을 고정한 뒤 다른 Android 기기에서 무재튜닝 축소 재현 | 기기별 결과와 `device × policy` 차이, 실패·미지원 cell |
 
-가설 H1: 누적 작업 중 대화형 요청이 도착하면 단독 실행보다 지연·기한 위반이 증가한다. H2: 기한·현재 자원 점유·간섭을 고려한 정책 P가 개발 자료로 선정한 고정 정책 및 단순 동적 정책보다 서비스 제약 아래 유리한 조건이 있다. H3: 무조건 병렬 실행보다 선택적 직렬/병렬 허용이 낫다. H1부터 실측하며 H2/H3의 성립을 전제하지 않는다.
+가설 H1: 누적 작업 중 대화형 요청이 도착하면 단독 실행보다 지연·기한 위반이 증가한다. H2: 기한·현재 자원 점유·간섭을 고려한 정책 P가 개발 자료로 선정한 고정 정책 및 단순 동적 정책보다 서비스 제약 아래 유리한 조건이 있다. H3: 무조건 병렬 실행보다 선택적 직렬/병렬 허용이 낫다. H4: A24에서 고정한 정책 논리와 사전 calibration 규칙이 추가 기기에서도 코드·임계값 사후 조정 없이 안전하게 동작하며, 우세 backend가 달라도 기준정책 대비 방향 또는 적용 한계를 재현한다. H1부터 실측하며 H2~H4의 성립을 전제하지 않는다.
 
 열 스로틀링 발생은 성공의 필수조건이 아니다. 관측 가능한 열 상태가 안정적인 조건에서도 H2가 성립하면 의미가 있다. 시스템 thermal status가 0이라는 사실만으로 하드웨어 스로틀링 부재를 확정하지 않으며, 미검증 온도를 에너지 절감률로 바꾸지 않는다.
 
 ## 4. 범위와 모델 선택
 
-- 직접 기기: Galaxy A24 1대. S26 formal은 보조 사례이며 새 설치·calibration·정책 평가는 하지 않는다.
+- 기기 역할: Galaxy A24는 개발·주평가 기기다. A24에서 정책과 분석법을 동결한 뒤 최소 한 대의 다른 Android 기기를 외부검증 기기로 사용한다. 가능하면 SoC·성능 등급이 다른 두 번째 기기를 고르고, 세 번째 기기는 일정이 허용할 때만 추가한다.
+- 기존 S26 formal은 보조 사례일 뿐 새 두 작업의 외부검증을 대체하지 않는다. S26을 다시 사용할 수 있다면 다른 기기와 동일한 새 probe/profile/evaluation 계약을 통과한 결과만 재현평가로 인정한다.
 - 주평가: 두 실제 task adapter, CPU와 검증된 GPU 실행 경로, 일반/긴급 요청. 먼저 전체 한 건 실행을 완성한 후 PROFILE-02의 간섭 측정을 통과한 조합만 최대 두 건 병행한다.
 - 비선점 단위: 모델 내부 추론을 중단하지 않는다. 최초 구현은 이미지 한 건의 전·후처리와 완료 경계를 포함한 service 단위를 끝낸다. 레이어 분할·OS 주파수 제어는 제외한다.
 - 모델 품질·입력 해상도·정밀도·전처리·후처리 임계값은 정책 간 동일하게 고정한다. 모델 크기나 정확도를 낮춰 얻은 이득을 스케줄링 이득에 포함하지 않는다.
-- NPU·강화학습·새 기기 추가는 필수 범위 밖이다. 신규 런타임으로의 전면 이전도 필요성이 입증될 때만 한다.
+- NPU·강화학습은 필수 범위 밖이다. 추가 기기는 CPU/GPU 중 실제 검증된 cell만 사용하며, 기기별 지원 차이를 숨기기 위한 compatibility override나 silent fallback을 도입하지 않는다. 신규 런타임으로의 전면 이전도 필요성이 입증될 때만 한다.
 
 | 역할 | 먼저 검증할 후보 | 선택 이유와 상태 |
 | --- | --- | --- |
 | 과거 비교 기준 | 기존 MobileNet V1 | 80슬롯과 CALIB-01B 재현용. 원 모델·파일·해시 보존. 1001행 라벨 출처 미확인 문제는 해결된 것으로 처리하지 않음 |
-| 새 분류 작업 | EfficientNet-Lite0 FLOAT32 v1 | host source/hash/tensor/내장 1000 labels·Apache-2.0 metadata·고정 CPU output 확인. A24 CPU/GPU·품질·메모리는 MODEL-02B 미검증 |
-| 새 객체탐지 작업 | EfficientDet-Lite0 FLOAT32 v1 | source/hash/tensor/내장 labels·raw/decoded CPU output 확인. exact binary license 귀속은 미입증이므로 비배포 A24 연구 probe만 조건부 허용; 저장소·APK·공유 bundle 포함 금지 |
+| 새 분류 작업 | EfficientNet-Lite0 FLOAT32 v1 | host source/hash/tensor/내장 1000 labels·Apache-2.0 metadata·고정 CPU output 확인. 각 실측 기기의 CPU/GPU·품질·메모리는 MODEL-02B 미검증 |
+| 새 객체탐지 작업 | EfficientDet-Lite0 FLOAT32 v1 | source/hash/tensor/내장 labels·raw/decoded CPU output 확인. exact binary license 귀속은 미입증이므로 승인 기기 내부의 비배포 연구 probe만 조건부 허용; 저장소·APK·공유 bundle 포함 금지 |
 
 이는 최신 모델 경연이 아니다. 공개된 [분류 모델 안내](https://developers.google.com/edge/mediapipe/solutions/vision/image_classifier)와 [탐지 모델 안내](https://developers.google.com/edge/mediapipe/solutions/vision/object_detector)는 후보의 근거이며, 표의 다른 기기 성능을 A24 성능으로 사용하지 않는다. 파일을 확보한 뒤 실제 출력 tensor/metadata·label index를 검사해야 한다. 공식 문서가 있다는 이유만으로 특정 파일의 라이선스·1000/1001행 대응·GPU full delegation이 검증된 것은 아니다.
 
-MODEL-02A 결과는 [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)에 기록한다. EfficientNet 분류는 host 계약을 통과했다. EfficientDet는 exact binary license 귀속이 확인되지 않았지만 Google 공식 안내와 Apache-2.0 sample이 고정 v1 URL을 직접 내려받아 쓰는 사실, raw/decoded host golden을 확인했다. 이는 법적·재배포 승인이 아니다. URL·byte count·SHA-256을 고정하고 binary를 저장소·PR·APK·팀 공유물에 넣지 않는 **비배포 A24 연구 평가만 조건부 허용**한다. 배포가 필요해지면 exact license/NOTICE를 확보하거나 명시적으로 라이선스된 artifact로 교체한다. MODEL-02B는 외부 고정 bundle의 A24 CPU/GPU 실행 가능성, 실제 delegation/fallback, 품질, 메모리, 초기화 비용을 최소 독립 probe로 확인한다. TASK-02에서만 사용자 경로와 공통 runner에 연결한다. GPU가 항상 불리하거나 미지원이면 그 사실을 받아들이고 큐 순서·동시성 제한의 효과를 검토한다.
+MODEL-02A 결과는 [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)에 기록한다. EfficientNet 분류는 host 계약을 통과했다. EfficientDet는 exact binary license 귀속이 확인되지 않았지만 Google 공식 안내와 Apache-2.0 sample이 고정 v1 URL을 직접 내려받아 쓰는 사실, raw/decoded host golden을 확인했다. 이는 법적·재배포 승인이 아니다. URL·byte count·SHA-256을 고정하고 binary를 저장소·PR·APK·팀 공유물에 넣지 않으며 각 실행자가 원 URL에서 직접 확보하는 **승인 기기 내부 비배포 연구 평가만 조건부 허용**한다. 배포가 필요해지면 exact license/NOTICE를 확보하거나 명시적으로 라이선스된 artifact로 교체한다. MODEL-02B는 동일 외부 manifest와 probe 코드로 각 기기의 CPU/GPU 실행 가능성, 실제 delegation/fallback, 품질, 메모리, 초기화 비용을 확인한다. 첫 pilot과 full profile은 A24에서 수행하고, 추가 기기는 정책 동결 뒤 같은 계약의 축소 profile을 수행한다. TASK-02에서만 사용자 경로와 공통 runner에 연결한다. GPU가 항상 불리하거나 미지원이면 그 사실을 받아들이고 큐 순서·동시성 제한의 효과를 검토한다.
 
 ## 5. 기존 구현과 새 구현의 경계
 
@@ -108,13 +110,15 @@ B2는 같은 장치의 모든 합법적 task별 배정 후보(두 task·두 경�
 
 ## 8. 측정과 공정한 평가
 
-측정·deadline·arrival·통계 계약은 [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)를 따른다. **주평가는 A24에서 두 실제 모델을 실행하고, 요청의 도착 시각·등급·작업 비율만 합성·재생하는 실측 실험이다.** 모델 실행을 계산 모형으로 대체한 시뮬레이션과 구분한다.
+측정·deadline·arrival·통계 계약은 [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)를 따른다. **주평가는 A24에서 두 실제 모델을 실행하고, 요청의 도착 시각·등급·작업 비율만 합성·재생하는 실측 실험이다. 정책 동결 뒤 최소 한 대의 추가 Android 기기에서 같은 코드와 계약으로 축소 재현평가를 한다.** 모델 실행을 계산 모형으로 대체한 시뮬레이션과 구분한다.
 
 | 방법 | 실제로 실행/계산하는 것 | 용도 |
 | --- | --- | --- |
 | 실기기 혼합 요청 재생 | 고정 도착 기록 + 실제 read/전처리/CPU·GPU 추론/후처리·저장 | 정책 효과의 주증거 |
 | 실측 기반 이산사건 시뮬레이션 | 서비스시간·준비 비용·간섭 분포로 가상 큐와 자원 상태 계산 | 검증된 범위의 부하·burst·비율 민감도 탐색 |
 | 대표 사용자 시연 | 사용자가 버튼/입력으로 실제 요청 생성 | 이해·사용 흐름 확인; 정량 반복 실험을 대체하지 않음 |
+
+기기 간 실험은 두 묶음을 분리한다. `absolute-SLA`는 모든 기기에 같은 millisecond deadline과 같은 도착 trace를 적용해 실제 사용자 경험 차이를 본다. `capacity-normalized`는 각 기기의 동결된 단독 처리능력으로 부하를 스케일해 정책 구조의 재현성을 본다. 두 결과를 합치거나 유리한 묶음만 선택하지 않는다. 원시 latency를 기기 사이에서 단순 pooling하지 않고 기기별 효과를 먼저 보고한다.
 
 시뮬레이션은 별도 실기기 holdout에서 오차를 검증한 뒤 사용한다. 데이터가 없을 때 임의 서비스시간으로 정책 동작을 확인하는 것은 개발용 toy 검증이며 성능 증거가 아니다. 자원이 부족하면 보조 시뮬레이션 범위를 줄이고 실기기 주비교를 우선한다. 핵심 측정 원칙은 다음과 같다.
 
@@ -132,15 +136,16 @@ B2는 같은 장치의 모든 합법적 task별 배정 후보(두 task·두 경�
 
 | 작업 | 내부 목표 | 완료 조건 | 불충족 시 |
 | --- | --- | --- | --- |
-| SCOPE-02 | 09-17 완료 | `completed_with_open_gates`: 혼합 조건·합성 가정, 공식 안내/label 후보, 선행 연구·대회 적합성·선택적 시연을 근거 문서에 기록 | exact artifact/license·A24 성능과 최근 대회 전체 중복 감사는 후속 gate; 특정 앱 수요를 입증한 것으로 쓰지 않음 |
-| MODEL-02A/B | 09-18~09-23 | 분류 host PASS와 탐지 비배포 조건부 PASS; 외부 manifest를 고정한 뒤 A24 CPU·GPU 후보 smoke 및 품질·메모리 확인 | 배포 필요 시 exact license/NOTICE 또는 artifact 교체; GPU 미지원은 unsupported, 동적 자원 주장은 재검토 |
+| SCOPE-02 | 09-17 완료 | `completed_with_open_gates`: 혼합 조건·합성 가정, 공식 안내/label 후보, 선행 연구·대회 적합성·선택적 시연을 근거 문서에 기록 | exact artifact/license·실기기 성능과 최근 대회 전체 중복 감사는 후속 gate; 특정 앱 수요를 입증한 것으로 쓰지 않음 |
+| MODEL-02A/B | 09-18~09-23 | 분류 host PASS와 탐지 비배포 조건부 PASS; 기기 비종속 외부 manifest/seam을 고정한 뒤 A24 CPU·GPU 후보 smoke 및 품질·메모리 확인 | 배포 필요 시 exact license/NOTICE 또는 artifact 교체; GPU 미지원은 unsupported, 동적 자원 주장은 재검토 |
 | TASK-02 | 09-24~09-28 | 두 실제 adapter, 독립 arrival, UI 결과·저장, 실패 포함 ledger와 validator 동작 테스트 | 단일 모델 pipeline을 다중 작업 완성으로 표시하지 않음 |
-| PROFILE-02 | 09-29~10-03 | 단독/전환/허용 co-run 프로파일, thermal 연결, deadline·입력·주평가 규칙 고정 | 불안정 원인 수정; 병행은 이득 없으면 금지 |
+| PROFILE-02 | 09-29~10-03 | A24 단독/전환/허용 co-run full profile, thermal 연결, deadline·입력·주평가 규칙 고정 | 불안정 원인 수정; 병행은 이득 없으면 금지 |
 | SCHED-02 | 10-04~10-08 | B0~B3/P 개발 비교, 구성요소 제거 비교, feasibility 판정, 평가 설정 freeze | B2/B3와 차이 없으면 복잡한 정책 확대 중단 |
-| EVAL-02 | 10-09~10-15 | 실제 모델+합성 도착의 독립 세션 평가, 효과크기·불확실성·서비스 제약·실패 공시. 여력 내 실측으로 검증된 보조 시뮬레이션 | 판정 불충분 또는 고정 정책 우세로 기록; 시뮬레이션만으로 실기기 개선 주장 금지 |
+| EVAL-02 | 10-09~10-13 | A24 실제 모델+합성 도착의 독립 세션 평가, 효과크기·불확실성·서비스 제약·실패 공시 | 판정 불충분 또는 고정 정책 우세로 기록 |
+| XDEV-02 | 10-13~10-16 | 동결한 APK·모델·정책으로 추가 Android 기기 1대 이상 probe→축소 profile→`absolute-SLA`/`capacity-normalized` 재현평가 | 확보 기기·미지원 cell·실패를 그대로 보고하고 A24 결과를 모든 기기로 일반화하지 않음 |
 | SUBMIT-02 | 10-16~10-20 | 15쪽 이내/10MB 이내 익명 PDF, 재현 자료, 학생별 기여·시연 | 미확인 효과를 기대효과 수치로 대체하지 않음 |
 
-10월 8일까지 기본 비교가 불가능하면 모델·기기·강화학습을 추가하지 않는다. 남은 기간에는 동작하는 범위에서 결과와 제한을 정리한다. 역할은 사용근거·입력, Android·측정, 정책·분석, 통합·발표로 나누되 팀원 수에 맞춰 겸임하고 서로의 산출물을 교차 검토한다. AI가 제안한 설계·코드는 학생이 설명·검증할 수 있어야 한다.
+10월 8일까지 A24 기본 비교가 불가능하면 모델·NPU·강화학습을 추가하지 않는다. 추가 기기용 별도 기능을 만들지 않고 같은 runner와 host 도구의 이식성만 유지한다. A24 평가가 끝나기 전 추가 기기 결과로 정책을 튜닝하지 않는다. 남은 기간에는 동작하는 범위에서 결과와 제한을 정리한다. 역할은 사용근거·입력, Android·측정, 정책·분석, 통합·발표로 나누되 팀원 수에 맞춰 겸임하고 서로의 산출물을 교차 검토한다. AI가 제안한 설계·코드는 학생이 설명·검증할 수 있어야 한다.
 
 ## 10. 성공·축소·중단 판정
 
@@ -154,6 +159,8 @@ B2는 같은 장치의 모든 합법적 task별 배정 후보(두 task·두 경�
 | B0 대비만 개선, B2/B3 대비 추가 효과 없음 | 우선순위 또는 고정 정책을 채택; 동적 자원 선택의 우수성 주장 중단 |
 | 열 스로틀링은 관측되지 않았지만 대기·간섭 감소 | 스케줄링 결과로 유효; 열 개선 주장은 제외 |
 | CPU-only가 모든 허용 부하에서 최선 | A24의 정적 선택·동시성 제한 결과로 축소. GPU 사용률을 목표로 하지 않음 |
+| 추가 기기에서 P의 우위가 재현되지 않음 | 기기×정책 상호작용과 적용 조건을 결과로 보고하고 범용 우수성 주장 중단 |
+| 추가 기기의 GPU가 unsupported/unverified | 해당 기기는 CPU/queue 정책 축소 재현만 수행하고 GPU 결과를 추정하지 않음 |
 | 혼합 요청 문제의 근거·강한 기준 대비 개선·재현성 모두 부족 | 주제의 추가 개발 투입을 재검토 |
 
 ## 11. 대회에 보여줄 결과와 차별성
@@ -165,8 +172,8 @@ B2는 같은 장치의 모든 합법적 task별 배정 후보(두 task·두 경�
 | 실제 문제·실무 적용 | 혼합 요청에서 대기·경합이 생기는 근거, 합성 패턴의 가정과 범위, 대표 시연 |
 | 전공지식 | 자원 배정·기한·서비스 제약, 강한 기준정책, 대응 실험·불확실성 |
 | 창의성 | 자원 단독 속도만이 아니라 동시 실행 간섭을 보고 병행 여부까지 결정한 효과 |
-| 직접 구현·검증 | 동일 도착 기록의 B2/B3/P 실측, 실제 두 모델 결과, request ledger, 선택적 사용자 시연 |
-| 활용·확장 | task adapter 계약과 기기 재calibration 절차; 검증하지 않은 모델·기기 일반화 금지 |
+| 직접 구현·검증 | 동일 도착 기록의 B2/B3/P A24 실측, 실제 두 모델 결과, request ledger, 동결 정책의 추가 기기 재현 |
+| 활용·확장 | task adapter 계약과 기기별 capability probe/recalibration 절차; 검증하지 않은 모델·기기 일반화 금지 |
 
 보고서 15쪽 배분안: 1 제목·핵심 결과, 2 사용 문제, 3 실제 문제 근거, 4 기존 연구·범위, 5 의사결정 모형, 6 구현·완료 경계, 7 모델·입력·품질, 8 단독/간섭 실측, 9 정책·기준정책, 10 공정한 실험 설계, 11 긴급 결과, 12 일반 서비스·안전, 13 구성요소 제거·민감도, 14 활용·한계·학생 기여, 15 결론·참고문헌. 결과 페이지는 실제 측정값이 생긴 뒤 채운다. 소속 대학·지도교수 등 식별 표시는 제출본에서 제외한다.
 

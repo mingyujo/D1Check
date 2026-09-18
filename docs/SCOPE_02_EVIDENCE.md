@@ -2,13 +2,13 @@
 
 - 조사일: 2026-09-17
 - 상태: **completed_with_open_gates**
-- 적용 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.1
-- 후속 상태: [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)의 host 조사와 [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md)의 A24 probe 설계를 수행했고 현재 작업은 `MODEL-02B-SEAM`이다. 분류는 host PASS, 탐지는 decoded golden PASS와 비배포 A24 연구 probe 조건부 PASS다. exact binary 재배포 license는 계속 미확인이다.
+- 적용 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.4
+- 후속 상태: [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)의 host 조사와 [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md)의 기기 이식형 probe 설계를 수행했고 현재 작업은 `MODEL-02B-SEAM`이다. 분류는 host PASS, 탐지는 decoded golden PASS와 승인 기기 내부 비배포 연구 probe 조건부 PASS다. exact binary 재배포 license는 계속 미확인이다.
 - 이번 단계에서 하지 않은 일: 모델 binary 다운로드, production 구현, APK 빌드, A24 설치·실행, 성능 측정.
 
 ## 1. 결론
 
-한 앱에서 서로 다른 온디바이스 AI 요청의 순서·CPU/GPU 경로·허용 병행 여부를 정하는 문제는 연구 가치가 있다. 모바일 multi-DNN scheduling, heterogeneous processor coordination, GPU preemption 연구가 이미 존재하므로 “모바일에서 처음”이라는 주장은 할 수 없다. D1Check의 제출 가능한 차이는 **Galaxy A24 한 대에서 실제 두 작업을 끝까지 실행하고, 강한 정적·단순 동적 기준정책과 비교하여 서비스 수준·간섭·적용 한계를 재현 가능하게 밝히는 것**이다.
+한 앱에서 서로 다른 온디바이스 AI 요청의 순서·CPU/GPU 경로·허용 병행 여부를 정하는 문제는 연구 가치가 있다. 모바일 multi-DNN scheduling, heterogeneous processor coordination, GPU preemption 연구가 이미 존재하므로 “모바일에서 처음”이라는 주장은 할 수 없다. D1Check의 제출 가능한 차이는 **Galaxy A24에서 실제 두 작업을 끝까지 실행하고 강한 정적·단순 동적 기준정책과 비교한 뒤, 동결 정책을 다른 Android 기기에서 축소 재현하여 기기별 자원 우열과 적용 한계를 밝히는 것**이다.
 
 분류와 객체탐지는 첫 구현 대상으로 유지한다. 입력 형식은 비슷하지만 출력·후처리·service time이 달라 작업 이질성을 만들 수 있고, Google의 공개 Android 안내와 label 자료가 있어 계약을 조사할 수 있다. 다만 공식 안내가 있다는 사실만으로 정확한 model artifact의 라이선스, 현재 raw LiteRT 경로 호환성, A24 GPU delegation, 품질을 승인하지 않는다. 이 항목은 `MODEL-02A/B` gate로 넘긴다.
 
@@ -43,7 +43,7 @@
 
 각 trace는 실행 전에 `request_id`, `task_id`, `priority`, 입력, 예정 도착, deadline을 생성해 hash로 고정한다. 정책마다 같은 trace를 재생한다. 발생기가 늦게 enqueue해도 예정 도착 기준 KPI를 유지하며 발생기 지연을 별도로 기록한다.
 
-실기기 workload의 실제 실행 범위는 이미지 byte 읽기, decode, task별 전처리, 실제 CPU/GPU inference, 후처리, output-ready 또는 durable persistence다. `sleep()`이나 한 모델의 반복 횟수만 바꾼 요청은 두 작업의 성능 증거가 아니다. 이산사건 시뮬레이션은 실측 profile을 보정하고 별도 A24 holdout에서 정책 순위와 핵심 지표 오차를 검증한 뒤 보조 민감도 분석에만 쓴다.
+실기기 workload의 실제 실행 범위는 이미지 byte 읽기, decode, task별 전처리, 실제 CPU/GPU inference, 후처리, output-ready 또는 durable persistence다. `sleep()`이나 한 모델의 반복 횟수만 바꾼 요청은 두 작업의 성능 증거가 아니다. 이산사건 시뮬레이션은 기기별 실측 profile을 보정하고 같은 기기의 별도 holdout에서 정책 순위와 핵심 지표 오차를 검증한 뒤 보조 민감도 분석에만 쓴다.
 
 ## 4. 첫 두 작업 후보 조사
 
@@ -87,7 +87,7 @@
 | [Pantheon, MobiSys 2024](https://lixianghan.github.io/) | mobile edge GPU에서 multi-DNN preemption으로 real-time task를 보호 | inference 내부 preemption 없이 CPU/GPU whole-request 배정과 start/hold, end-to-end 완료 경계 |
 | [CoDL, MobiSys 2022](https://doi.org/10.1145/3498361.3538932) | 한 DNN의 operator를 CPU/GPU에 나눠 co-execute | operator 분할 없이 서로 다른 요청을 비선점 단위로 배정하고 일반 서비스 제약을 평가 |
 
-따라서 독창성 문구는 “첫 모바일 multi-DNN scheduler”가 아니다. 제출 시에는 **기기별 profile, 실제 두 작업의 end-to-end 완료, 전체 도착 분모, 강한 기준정책, co-run 간섭을 포함한 설명 가능한 의사결정의 A24 실증**으로 한정한다. 선행 시스템과 직접 구현 비교를 하지 않으면 성능 우위를 주장하지 않는다.
+따라서 독창성 문구는 “첫 모바일 multi-DNN scheduler”가 아니다. 제출 시에는 **기기별 profile, 실제 두 작업의 end-to-end 완료, 전체 도착 분모, 강한 기준정책, co-run 간섭을 포함한 설명 가능한 의사결정의 A24 주평가와 추가 기기 축소 재현**으로 한정한다. 선행 시스템과 직접 구현 비교를 하지 않으면 성능 우위를 주장하지 않는다.
 
 ## 6. 대회 적합성·중복 조사
 
@@ -96,7 +96,7 @@
 | 심사 관점 | 제출할 증거 |
 | --- | --- |
 | 산업공학 응용 | 대기행렬·우선순위·이종 자원 배정·서비스 제약·대응 실험 |
-| 실무 결과 | 실제 A24에서 두 모델·I/O를 실행한 요청별 ledger와 정책 비교 |
+| 실무 결과 | 실제 A24에서 두 모델·I/O를 실행한 요청별 ledger와 정책 비교, 동결 정책의 추가 기기 재현 |
 | 창의성 | 단독 최속 backend 선택을 넘어 실제 co-run 간섭과 start/hold를 고려한 설명 가능한 규칙 |
 | 활용성 | task adapter·profile·freeze·재calibration 절차와 실패/축소 조건 |
 
@@ -115,6 +115,6 @@
 
 `MODEL-02A`는 host에서 exact artifact를 확보하고 source/license/hash/tensor/metadata/label index 표와 raw/decoded golden을 완성한다. 이 단계는 A24 없이 진행할 수 있다. exact license가 없는 binary는 일반 승인하지 않으며, 공식 배포·sample 사용 근거가 있고 저장소·APK·공유물에 포함하지 않는 경우에만 별도 결정으로 비배포 연구 probe를 조건부 허용한다.
 
-`MODEL-02B`는 검증된 외부 manifest와 app-private 전달 경로로 A24 CPU/GPU smoke, 품질·메모리·cold/warm을 확인한다. GPU 미지원 또는 fallback은 그대로 기록한다. 두 task의 허용된 실행 cell이 없거나 배포 gate를 끝내 충족하지 못하면 동적 CPU/GPU 배정 주장을 축소하고 queue/order 문제만 남길지 `SCOPE-03`에서 재판정한다.
+`MODEL-02B`는 검증된 외부 manifest와 app-private 전달 경로로 먼저 A24, 이후 추가 기기의 CPU/GPU smoke, 품질·메모리·cold/warm을 확인한다. GPU 미지원 또는 fallback은 기기별로 그대로 기록한다. 두 task의 허용된 실행 cell이 없거나 배포 gate를 끝내 충족하지 못하면 해당 기기의 동적 CPU/GPU 배정 주장을 축소하고 queue/order 문제만 남길지 `SCOPE-03`에서 재판정한다.
 
 SCOPE-02 완료는 모델 승인, 앱 구현, 실기기 성능 또는 정책 개선을 의미하지 않는다. 현재 deadline은 `calibration_pending`, 서비스·효과·안전 수치는 `thresholds_pending`이다.

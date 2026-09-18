@@ -2,7 +2,7 @@
 
 이 문서는 방향 변경을 날짜순으로 기록한다. 각 항목에 제안 / 채택 / 대체됨 상태를 표시한다. 아래 초기 항목은 이전 계획에서 이관한 작업 방향이며, 개별 수치·실험 조건 확정을 의미하지 않는다. 이번 개정은 사용자 요청에 따른 문서 보강이다.
 
-> 현재 계획은 2026-09-17 개정 4.1 항목을 우선한다. 과거 결정은 이력으로 보존한다. 새 시나리오·모델 후보·효과 수치는 아래에 명시한 검증/미확정 상태를 유지한다.
+> 현재 계획은 2026-09-18 개정 4.4와 추가 기기 재현 결정을 우선한다. 과거 결정은 이력으로 보존한다. 새 시나리오·모델 후보·효과 수치는 아래에 명시한 검증/미확정 상태를 유지한다.
 
 ## 2026-09-15 — 프로젝트 목표 재정의
 
@@ -159,6 +159,18 @@
 - GPU 판정: delegate 생성만으로 PASS하지 않는다. full-delegation host evidence, 수치 gate, no-fallback가 모두 있어야 verified GPU cell이다.
 - 범위 판정: 두 task CPU와 두 GPU가 모두 통과하면 FULL, 두 CPU와 최소 한 GPU만 통과하면 REDUCED, 그보다 좁거나 dependency/배포 gate를 충족하지 못하면 SCOPE-03로 보낸다.
 - 현재 작업: `MODEL-02B-SEAM`. host tests와 dry-run을 통과하기 전 A24 설치·실행을 시작하지 않는다.
+
+## 2026-09-18 — A24 주평가와 추가 Android 기기 무재튜닝 재현
+
+- 상태: 채택 — 사용자의 “다른 핸드폰에도 실측해야 하는 것까지 고려” 지시를 반영한다.
+- 기기 역할: A24는 개발·full profile·정책 튜닝·주평가 기기다. A24에서 모델·입력·정책·분석을 동결한 뒤 최소 한 대의 다른 Android 기기에서 같은 runner의 축소 profile과 재현평가를 수행한다. 세 번째 기기는 일정과 접근성이 허용할 때만 추가한다.
+- 구현: MODEL-02B seam과 host 도구는 model name/serial별 코드 분기 없이 device manifest와 runtime capability로 동작해야 한다. 추가 기기의 GPU unsupported/unverified는 실패를 숨기지 않고 CPU/queue-only 축소 범위로 남긴다. compatibility override와 silent CPU fallback은 허용하지 않는다.
+- 비교: `absolute-SLA`는 같은 millisecond deadline과 byte-identical arrival trace로 실제 사용자 경험 차이를 보고, `capacity-normalized`는 기기별 사전 solo capacity로 부하를 스케일해 정책 구조의 재현성을 본다. 원시 latency를 기기 사이에서 pooling하지 않는다.
+- 무재튜닝: P/B3의 알고리즘·hyperparameter·quality/tolerance는 A24에서 고정한다. B2는 사전 정의된 기기별 profile 선택 규칙만 적용한다. 추가 기기 결과를 본 뒤 정책이나 임계값을 바꾸면 외부검증이 아니라 새 개발 버전으로 되돌린다.
+- 증거 한계: A24와 추가 기기 한 대의 일치만으로 Android 전체 모집단 일반화를 주장하지 않는다. `device × policy` 차이와 미지원 cell도 결과다. 기존 S26 80슬롯은 동기 자료이며 새 두 작업 재현평가를 대체하지 않는다. S26을 쓰려면 새 계약으로 다시 실행한다.
+- 라이선스: EfficientDet exact binary는 각 승인 기기 실행자가 고정 원 URL에서 직접 확보하고 hash 검증하는 비배포 연구 사용으로만 확장한다. binary를 기기 간 전달하거나 Git·PR·APK·팀 ZIP·제출물에 넣지 않는다.
+- 이전 결정 관계: 2026-09-16 CALIB-01B-FIX2의 A24-only는 legacy `calibration-v1`에 그대로 적용한다. 2026-09-17 개정 4/4.1의 새 주평가 A24-only 부분은 `multitask-v1`에 한해 이 결정으로 대체한다.
+- 영향: PLAN 개정 4.4, STATUS, MODEL-02 inventory/probe, SCOPE evidence, MULTITASK protocol. 현재 production 구현·실기기 PASS를 뜻하지 않는다.
 
 ## 새 결정 작성 형식
 

@@ -1,11 +1,11 @@
 # D1Check 현재 상태
 
-- 갱신: 2026-09-18 / MODEL-02B 외부 manifest·A24 최소 probe 계약 완료
-- 현재 작업: `MODEL-02B-SEAM` — debug-only 외부 모델 loader, raw/decoded adapter와 host dry-run을 구현한다. A24 실행은 아직 승인·수행하지 않았다.
-- 기준: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.3, [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md), [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)(설계, 미구현).
+- 갱신: 2026-09-18 / MODEL-02B 기기 이식형 probe와 추가 기기 재현평가 계약 반영
+- 현재 작업: `MODEL-02B-SEAM` — 기기 모델명을 하드코딩하지 않는 debug-only 외부 모델 loader, raw/decoded adapter와 host dry-run을 구현한다. A24와 추가 기기 실행은 아직 승인·수행하지 않았다.
+- 기준: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.4, [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md), [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)(설계, 미구현).
 - 코드 기준: 원격 `master`의 `df8192aa61eebacf83df7a7815f0c60c8bbf4004`, `Implement A24 calibration input and validation pipeline`. production code는 이번 단계에서 변경하지 않았다.
 - 문서 작업은 [초안 PR #2](https://github.com/mingyujo/D1Check/pull/2)의 `docs/competition-plan-v4-20260917` branch에서 계속하며 master에 자동 병합하지 않는다.
-- 직접 검증은 A24만. S26은 기존 formal 보조자료이며 새 calibration·설치·실행·정책 평가는 범위 밖이다.
+- A24는 개발·주평가 기기다. 정책 동결 뒤 최소 한 대의 다른 Android 기기에서 같은 runner로 축소 재현평가한다. 추가 기기는 아직 미선정·미실행이며, 기존 S26 formal은 새 두 작업 재현평가를 자동 대체하지 않는다.
 - 새 절대 deadline: `calibration_pending`. 서비스 하한·안전/안정성 수치·성공 기준·최종 반복 수: `thresholds_pending`.
 
 ## 완료와 미완료의 구분
@@ -13,15 +13,15 @@
 | 작업 | 상태 | 해석 |
 | --- | --- | --- |
 | SETUP-01, AUDIT-A24-01, DIAGNOSTIC-V2-01, AUDIT-S26-01 | completed(기존 기록) | 측정 기반·기존 자료 감사 |
-| DEFINE-01, CALIB-01A | completed(기존 정의) | 단일 분류 시나리오·legacy protocol. 새 주평가는 개정 4.3으로 대체 |
+| DEFINE-01, CALIB-01A | completed(기존 정의) | 단일 분류 시나리오·legacy protocol. 새 주평가는 개정 4.4로 대체 |
 | CALIB-01B | completed / CALIB_01B_PASS | MobileNet production·host 검증. 두 작업/실기기/정책 효과 PASS가 아님 |
 | CALIB-01C-INPUT | legacy 준비 보류·재계획 | 기존 모델 1001행 라벨과 이미지 입력 미확정. 완료 처리하지 않음 |
-| PLAN-REV04.3 / SCOPE-02 | 문서 개정·근거 조사 완료 | 혼합 요청 범위, 합성 workload 가정, 선행 연구와 증거 경계, 비배포 모델 gate 확정 |
-| MODEL-02A 분류 | HOST_CONTRACT_PASS | EfficientNet-Lite0 v1 source/hash/tensor/내장 labels/license·고정 host output 확인; A24 미검증 |
-| MODEL-02A 탐지 | conditional pass / research-only | EfficientDet raw·decoded host golden 통과. exact binary license 귀속 미확인으로 비배포 A24 probe만 허용 |
-| MODEL-02B-PREP | completed / `MODEL_02B_PREP_READY` | [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md)에 외부 manifest·staging·비교·cleanup·판정 계약 고정 |
-| MODEL-02B-SEAM / MODEL-02B device | in progress / pending | debug-only seam과 host dry-run 구현 후 별도 승인된 A24 smoke; binary 번들 금지 |
-| TASK-02 / PROFILE-02 / SCHED-02 / EVAL-02 | pending | A24 smoke 통과 후 adapter→profile→정책→독립 평가 |
+| PLAN-REV04.4 / SCOPE-02 | 문서 개정·근거 조사 완료 | 혼합 요청 범위, 합성 workload 가정, 선행 연구와 증거 경계, A24 주평가+추가 기기 무재튜닝 재현 계약 확정 |
+| MODEL-02A 분류 | HOST_CONTRACT_PASS | EfficientNet-Lite0 v1 source/hash/tensor/내장 labels/license·고정 host output 확인; 실기기 미검증 |
+| MODEL-02A 탐지 | conditional pass / research-only | EfficientDet raw·decoded host golden 통과. exact binary license 귀속 미확인으로 승인 기기 내부 비배포 probe만 허용 |
+| MODEL-02B-PREP | completed / `MODEL_02B_PREP_READY` | [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md)에 기기 이식형 외부 manifest·staging·비교·cleanup·기기별 판정 계약 고정 |
+| MODEL-02B-SEAM / MODEL-02B device | in progress / pending | debug-only seam과 host dry-run 구현 후 A24 smoke, 이어서 동결 계약의 추가 기기 smoke; binary 번들 금지 |
+| TASK-02 / PROFILE-02 / SCHED-02 / EVAL-02 / XDEV-02 | pending | A24 adapter→full profile→정책→독립 평가 후 최소 한 대 추가 기기 축소 재현 |
 
 ## MODEL-02A 확인 사실과 남은 제한
 
@@ -64,9 +64,9 @@
 
 ## 다음 행동 (최대 3개)
 
-1. `MODEL-02B-SEAM`: debug source set의 외부 file loader, raw LiteRT adapter, Tasks dependency isolation과 decoded adapter를 production 경로 테스트로 구현한다.
-2. host 도구의 manifest validator·download/hash·staging argv·artifact/delegate evidence validator와 no-I/O dry-run을 구현한다.
-3. 전체 host 검증 후 별도 승인된 `MODEL-02B` A24 pilot 한 session을 실행한다.
+1. `MODEL-02B-SEAM`: debug source set의 외부 file loader, raw LiteRT adapter, Tasks dependency isolation과 decoded adapter를 기기 모델명 하드코딩 없이 구현한다.
+2. host 도구의 manifest validator·download/hash·staging argv·artifact/delegate evidence validator와 no-I/O dry-run을 구현하고, 서로 다른 합성 device manifest의 identity 격리를 테스트한다.
+3. 전체 host 검증 후 별도 승인된 A24 pilot 한 session을 먼저 실행한다. 추가 기기 선정·실행은 A24 seam 통과와 정책 freeze 이후 별도 gate로 진행한다.
 
 ## 변경·검증 범위
 

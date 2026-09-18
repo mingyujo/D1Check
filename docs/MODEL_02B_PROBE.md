@@ -1,15 +1,15 @@
-# MODEL-02B A24 모델 probe 계약
+# MODEL-02B 기기 이식형 모델 probe 계약
 
-- 문서 버전: 1 / 2026-09-18
+- 문서 버전: 2 / 2026-09-18
 - 상태: **MODEL_02B_PREP_READY / 미구현·미실행**
-- 상위 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.3
+- 상위 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.4
 - 입력 판정: [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)의 EfficientNet-Lite0 host PASS와 EfficientDet-Lite0 비배포 연구용 조건부 PASS
-- 대상: Galaxy A24 `SM-A245N` 한 대. S26 새 실행은 범위 밖이다.
+- 대상: Galaxy A24 `SM-A245N`을 첫 pilot·주평가 기기로 사용하고, 같은 seam과 manifest로 최소 한 대의 추가 Android 기기를 후속 probe한다. 추가 기기 모델은 아직 미선정이다.
 - protocol/schema 예약값: `model-probe-v1` / `1`. 현재 코드·CLI에는 존재하지 않는다.
 
 ## 1. 목적과 현재 코드 경계
 
-이 단계는 두 모델이 A24의 CPU와 GPU 후보 경로에서 실제로 초기화·실행되는지, 출력 계약과 최소 품질이 유지되는지, 메모리·cold/warm 비용이 어느 정도인지 확인하는 **실행 가능성 probe**다. deadline 선정, 혼합 요청 성능, scheduler 효과, 일반 정확도 평가는 아직 하지 않는다.
+이 단계는 두 모델이 각 승인 기기의 CPU와 GPU 후보 경로에서 실제로 초기화·실행되는지, 출력 계약과 최소 품질이 유지되는지, 메모리·cold/warm 비용이 어느 정도인지 확인하는 **실행 가능성 probe**다. 첫 구현·pilot은 A24에서 하되 loader·manifest·artifact schema와 host 도구에 `SM-A245N`을 하드코딩하지 않는다. deadline 선정, 혼합 요청 성능, scheduler 효과, 일반 정확도 평가는 아직 하지 않는다.
 
 현재 `ModelLoader`는 APK asset의 MobileNet V1만 mmap하고, `LiteRtCalibrationRuntimePool`은 FLOAT32 `[1,224,224,3] -> [1,1001]`을 하드코딩한다. 따라서 새 파일을 기기에 복사하는 것만으로는 실행할 수 없다. 기존 loader/calibration 의미를 바꾸지 않고 debug 전용 probe seam을 추가해야 한다.
 
@@ -20,7 +20,7 @@
 EfficientDet exact binary의 license 귀속은 미확인이다. 다음 경계를 강제한다.
 
 - model/sample binary를 Git, PR, APK, AAB, 팀 공유 ZIP, 제출 재현 bundle에 넣지 않는다.
-- 각 실행자는 version-pinned URL에서 직접 내려받고 host에서 byte count와 SHA-256을 검증한다.
+- 각 기기 실행자는 version-pinned URL에서 직접 내려받고 host에서 byte count와 SHA-256을 검증한다. 팀원이 내려받은 model/sample binary를 다른 기기 실행자에게 전달하지 않는다.
 - app에는 `INTERNET` 권한이나 model downloader를 추가하지 않는다.
 - host staging 위치와 기기 입력 위치는 결과 artifact 위치와 분리한다.
 - 기기 임시 입력은 실행 종료·실패 cleanup에서 삭제하고 삭제 확인을 기록한다.
@@ -36,7 +36,7 @@ EfficientDet exact binary의 license 귀속은 미확인이다. 다음 경계를
 | 영역 | 필수 필드 |
 | --- | --- |
 | identity | `schema_version=1`, `protocol_version=model-probe-v1`, UUID `session_id`, `created_utc` |
-| target | package, APK SHA-256, device serial, manufacturer/model, Android release/API, ABI |
+| target | 공개용 `device_id`, package, APK SHA-256, 로컬 serial, manufacturer/model, SoC/ABI, RAM, Android release/API/build fingerprint, CPU ABI/features, GPU vendor/renderer/driver 식별값, thermal capability |
 | model | `task_id`, `model_id`, version-pinned HTTPS URL, filename, bytes, SHA-256, distribution policy, metadata license 상태, associated label filename/rows/SHA-256 |
 | tensor | input/output count·name·shape·dtype·quantization, normalization, raw output 의미 |
 | runtime | LiteRT version, CPU thread 수·XNNPACK, GPU profile/config hash, Tasks Vision exact version 또는 `not_used` |
@@ -87,12 +87,13 @@ Android decoded 경로는 MediaPipe Tasks ObjectDetector의 정확한 API 호출
 4. decoded adapter는 Tasks Vision dependency를 debug scope에만 추가하고 검증된 read-only direct/mapped buffer를 `BaseOptions.setModelAssetBuffer()`로 전달한다. CPU/GPU delegate, threshold, max results를 명시하고 초기화·호출·close는 같은 전용 worker thread에서 수행한다.
 5. timeout은 host와 device 양쪽에서 bounded로 집행하고 최초 오류를 보존한다. cleanup 오류는 suppressed로 기록한다.
 6. host 도구는 download→hash→stage→launch→log/artifact pull→validate→input cleanup 확인을 담당한다. 임의 shell 문자열을 조립하지 않고 고정 argv와 검증된 UUID/filename만 사용한다.
+7. 기기별 capability와 결과는 `device_id`로 분리한다. serial·model 문자열로 코드 분기하거나 특정 모델명을 allowlist하여 통과시키지 않는다. 지원 여부는 실제 runtime 초기화·tensor/quality·delegate evidence로 판정한다.
 
 Tasks Vision dependency가 기존 LiteRT native library와 충돌하면 기존 runner 의존성을 억지로 교체하지 않는다. 별도 debug probe module을 만들거나 decoded A24 cell을 보류하고 `SCOPE-03`에서 범위를 재판정한다.
 
 ## 6. 실행 순서와 반복
 
-실기기 실행은 별도 승인 후 다음 순서로 한 session만 pilot한다.
+실기기 실행은 별도 승인 후 먼저 A24에서 다음 순서로 한 session만 pilot한다.
 
 1. ADB serial·package/APK hash·기기 정보·battery·charging·screen·thermal status를 기록한다. thermal status 2 이상이면 시작하지 않는다.
 2. shared/app-private stale input과 이전 probe process가 없음을 확인한다.
@@ -104,18 +105,23 @@ Tasks Vision dependency가 기존 LiteRT native library와 충돌하면 기존 r
 
 성능 순서 무작위화와 thermal cooling/stability는 `PROFILE-02`에서 별도로 강화한다. 이 smoke의 시간으로 deadline이나 simulator service distribution을 정하지 않는다.
 
+A24에서 seam과 cleanup까지 통과한 뒤 추가 기기는 같은 APK·model/input hash·manifest schema·comparator/tolerance로 별도 session을 실행한다. 기기 identity와 capability 값만 달라질 수 있다. 첫 추가 기기 결과를 본 뒤 tolerance·모델·runtime·GPU gate를 완화하지 않는다. GPU가 unsupported/unverified여도 CPU probe는 계속할 수 있으며, 해당 기기의 허용 cell 축소를 결과로 남긴다.
+
 ## 7. 결과 artifact와 판정
 
-결과 root의 고정 집합은 `metadata.json`, `events.jsonl`, `raw_equivalence.json`, `decoded_results.json`, `memory.json`, `delegate_evidence.json`, `summary.json`, `provenance.json`이다. 실패 session도 가능한 범위에서 오류·cleanup 상태를 남기되 성공 provenance로 위장하지 않는다. model/sample bytes, `.part`, 추가 파일은 허용하지 않는다.
+결과 root의 고정 집합은 `metadata.json`, `events.jsonl`, `raw_equivalence.json`, `decoded_results.json`, `memory.json`, `delegate_evidence.json`, `summary.json`, `provenance.json`이다. 모든 파일은 같은 `device_id`, session ID, APK/model/input/config hash를 가져야 한다. 실패 session도 가능한 범위에서 오류·cleanup 상태를 남기되 성공 provenance로 위장하지 않는다. model/sample bytes, `.part`, 추가 파일은 허용하지 않는다.
 
 cell 상태는 `passed`, `failed`, `unsupported`, `unverified` 중 하나다.
 
 | 전체 판정 | 조건 | 다음 단계 |
 | --- | --- | --- |
-| `MODEL_02B_FULL_PASS` | 두 task의 CPU와 verified GPU cell, raw equivalence, detector decoded gate 모두 통과 | TASK-02에서 두 task·두 backend adapter 구현 |
-| `MODEL_02B_REDUCED_PASS` | 두 task CPU 통과, 최소 한 task의 verified GPU 통과 | 가능한 cell만 scheduler 후보로 사용하고 task별 자유 routing 주장을 축소 |
-| `MODEL_02B_FIX_REQUIRED` | 실행·artifact·cleanup의 수정 가능한 production 결함 | 결함 수정·회귀 검증 후 같은 manifest로 재실행 |
-| `MODEL_02B_SCOPE_REVIEW` | task CPU 실패, 모든 GPU cell unsupported/unverified, Tasks 충돌 또는 배포 gate 충족 불가 | SCOPE-03에서 작업쌍·runtime·queue-only 범위 재판정 |
+| `MODEL_02B_FULL_PASS(device_id)` | 해당 기기에서 두 task의 CPU와 verified GPU cell, raw equivalence, detector decoded gate 모두 통과 | 해당 기기의 두 task·두 backend profile 허용 |
+| `MODEL_02B_REDUCED_PASS(device_id)` | 해당 기기에서 두 task CPU 통과, 최소 한 task의 verified GPU 통과 | 가능한 cell만 scheduler 후보로 사용하고 task별 자유 routing 주장을 축소 |
+| `MODEL_02B_CPU_ONLY(device_id)` | 두 task CPU 통과, GPU는 모두 unsupported/unverified | queue/order 중심 축소 재현만 허용; GPU 효과 추정 금지 |
+| `MODEL_02B_FIX_REQUIRED(device_id)` | 실행·artifact·cleanup의 수정 가능한 production 결함 | 결함 수정·회귀 검증 후 같은 manifest로 재실행 |
+| `MODEL_02B_SCOPE_REVIEW(device_id)` | task CPU 실패, Tasks 충돌 또는 연구 gate 충족 불가 | 해당 기기 제외 또는 SCOPE-03에서 작업쌍·runtime 재판정 |
+
+프로젝트는 A24가 `FULL` 또는 `REDUCED`여야 CPU/GPU 배정 주평가로 진행한다. 추가 기기는 `CPU_ONLY`도 축소 재현으로 유효하지만 A24 결과의 GPU 일반화 근거가 아니다. 기기별 판정을 합쳐 하나의 PASS로 만들지 않는다.
 
 ## 8. 구현 전 검증 목록
 
@@ -125,6 +131,7 @@ cell 상태는 `passed`, `failed`, `unsupported`, `unverified` 중 하나다.
 - model tensor mismatch, CPU/GPU init failure, timeout, close failure, missing delegate evidence 테스트.
 - raw comparator와 decoded canonicalization/tolerance 테스트.
 - host dry-run에서 network·ADB·manifest write 0회 확인.
+- A24와 다른 합성 device manifest를 사용한 host 테스트에서 path·argv·artifact identity가 섞이지 않고 model 문자열 하드코딩 없이 분리되는지 확인.
 - 기존 119 JVM, Python, lint, assemble과 v1/v2/calibration 회귀 검증.
 
 이 문서의 경로·protocol·명령은 구현 계약이다. 실제 파일·CLI가 생기기 전 존재하는 기능처럼 사용하지 않는다.
