@@ -1,7 +1,7 @@
 # D1Check 현재 상태
 
-- 갱신: 2026-09-18 / MODEL-02B-SEAM 첫 구현 조각과 host 검증 결과 반영
-- 현재 작업: `MODEL-02B-SEAM` — 기기 모델명을 하드코딩하지 않는 debug-only 외부 모델 loader, raw/decoded adapter와 host validator·no-I/O dry-run을 구현했다. host 신규 테스트는 통과했지만 Android Gradle 컴파일·기존 회귀·APK·실기기는 아직 미검증이므로 device-ready 또는 PASS가 아니다.
+- 갱신: 2026-09-18 / MODEL-02B-SEAM 구현과 사용자 로컬 Android·Python 전체 검증 결과 반영
+- 현재 작업: `MODEL-02B-HOST-EXEC` — `MODEL-02B-SEAM`의 debug-only 외부 모델 loader, raw/decoded adapter, host validator·no-I/O dry-run은 사용자 로컬 JDK 17에서 전체 Gradle과 Python 회귀를 통과했다. 다음 gate는 실제 subprocess·ADB ready/wait/pull/cleanup·delegate-log finalization이며, A24 실기기 PASS는 아직 아니다.
 - 기준: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.4, [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md), [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md), [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)(설계, 미구현).
 - 코드 기준: [초안 PR #2](https://github.com/mingyujo/D1Check/pull/2)의 `docs/competition-plan-v4-20260917` HEAD `177a8f3e9bf2a2091f383444767b7cb49cdf8c66` 위에 별도 stacked 구현 초안으로 진행한다. master에 자동 병합하지 않는다.
 - A24와 추가 기기 실행은 아직 승인·수행하지 않았다. model/sample binary는 저장소·PR·APK에 포함하지 않았다.
@@ -20,7 +20,7 @@
 | MODEL-02A 분류 | HOST_CONTRACT_PASS | EfficientNet-Lite0 v1 source/hash/tensor/내장 labels/license·고정 host output 확인; 실기기 미검증 |
 | MODEL-02A 탐지 | conditional pass / research-only | EfficientDet raw·decoded host golden 통과. exact binary license 귀속 미확인으로 승인 기기 내부 비배포 probe만 허용 |
 | MODEL-02B-PREP | completed / `MODEL_02B_PREP_READY` | [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md)에 기기 이식형 외부 manifest·staging·비교·cleanup·기기별 판정 계약 고정 |
-| MODEL-02B-SEAM / MODEL-02B device | implementation draft / pending | host validator·artifact validator·no-I/O plan 테스트 통과. Android debug seam은 작성됐으나 Gradle/기기 미검증; binary 번들 금지 |
+| MODEL-02B-SEAM / MODEL-02B device | code validation PASS / device pending | 전체 Gradle·Python 회귀 통과. Android debug seam의 compile/test/lint/assemble은 확인했으나 실제 A24·추가 기기·delegate 증거는 미실행; binary 번들 금지 |
 | TASK-02 / PROFILE-02 / SCHED-02 / EVAL-02 / XDEV-02 | pending | A24 adapter→full profile→정책→독립 평가 후 최소 한 대 추가 기기 축소 재현 |
 
 ## MODEL-02A 확인 사실과 남은 제한
@@ -64,11 +64,11 @@
 
 ## 다음 행동 (최대 3개)
 
-1. 사용자 로컬 JDK 17에서 새 `ModelProbeContractTest`, `testDebugUnitTest`, `lintDebug`, `assembleDebug`를 실행해 Tasks Vision 1.0.0과 LiteRT 1.4.2의 compile/package 충돌 여부를 확인한다.
-2. Android PASS 후 host 실행기의 실제 subprocess·ready/artifact pull·delegate-log finalization을 구현한다. 현재 CLI는 validation과 no-I/O argv plan까지만 제공한다.
-3. 전체 회귀와 APK-source binding 후 별도 승인된 A24 pilot 한 session을 실행한다. 추가 기기는 A24 seam 통과와 정책 freeze 이후 같은 계약으로 진행한다.
+1. host 실행기의 실제 subprocess·bounded ready/wait·artifact pull·cleanup·delegate-log finalization을 구현한다. 현재 CLI는 validation과 no-I/O argv plan까지만 제공한다.
+2. 실제 모델·sample을 저장소 밖 고정 입력 bundle로 준비하고 APK-source binding·manifest·SHA-256을 검증한 뒤 A24 CPU/GPU seam pilot 한 session을 실행한다.
+3. A24 seam 통과와 정책 freeze 이후 같은 manifest/runner로 최소 한 대의 다른 Android 기기에서 축소 재현한다.
 
 ## 변경·검증 범위
 
-이번 구현 조각은 `src/debug`의 host entry·manifest parser·외부 file verifier·LiteRT raw adapter·Tasks decoded adapter, debug-scoped Tasks Vision 1.0.0 후보 의존성, host validator/plan/artifact validator와 테스트를 추가한다. host 신규 테스트 10개 메서드는 통과했고 compileall도 통과했다. Android 코드는 이 환경에서 Gradle로 검증하지 못했으므로 통과로 기록하지 않는다. debug entry는 격리 process에서 bounded watchdog을 사용하며 성공 provenance를 만들지 않고 `seam_smoke_only_unfinalized`만 남긴다. ADB·설치·A24·추가 기기·Perfetto·Git master 병합은 수행하지 않았다. model/sample/system-library binary, host cache, 가상환경은 포함하지 않는다.
+이번 구현 조각은 `src/debug`의 host entry·manifest parser·외부 file verifier·LiteRT raw adapter·Tasks decoded adapter, debug-scoped Tasks Vision 1.0.0 후보 의존성, host validator/plan/artifact validator와 테스트를 추가한다. 사용자 로컬 JDK 17에서 targeted `ModelProbeContractTest`와 루트 `testDebugUnitTest lintDebug assembleDebug --rerun-tasks`가 `BUILD SUCCESSFUL`이었고, Python 전체 205건은 failure/error 0·Windows symlink 권한에 따른 skip 2로 통과했다. compileall과 logger self-test도 동일 production 코드에서 통과했다. Windows checkout의 canonical fixture CRLF를 LF와 동등하게 처리하도록 Kotlin·Python 회귀 검증을 보강했다. debug entry는 격리 process에서 bounded watchdog을 사용하며 성공 provenance를 만들지 않고 `seam_smoke_only_unfinalized`만 남긴다. ADB·설치·A24·추가 기기·Perfetto·Git master 병합은 수행하지 않았다. model/sample/system-library binary, host cache, 가상환경은 포함하지 않는다.
 
