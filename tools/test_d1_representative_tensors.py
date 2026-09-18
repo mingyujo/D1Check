@@ -113,7 +113,11 @@ class RepresentativeTensorSetTest(unittest.TestCase):
         fixture = (
             Path(__file__).with_name("fixtures") /
             "mobilenet_preprocessing_configuration_v1.canonical.json"
-        ).read_bytes().rstrip(b"\n")
+        ).read_bytes()
+        if fixture.endswith(b"\r\n"):
+            fixture = fixture[:-2]
+        elif fixture.endswith(b"\n"):
+            fixture = fixture[:-1]
         configuration = TENSORS.preprocessing_configuration("12.0.0")
         canonical = TENSORS.preprocessing_canonical_bytes(configuration)
         self.assertEqual(fixture, canonical)
