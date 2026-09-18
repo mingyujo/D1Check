@@ -190,7 +190,7 @@ internal object ModelProbeManifestParser {
             "manufacturer", "model", "soc", "abi", "android_release", "build_fingerprint",
             "cpu_abi", "cpu_features", "gpu_vendor", "gpu_renderer", "gpu_driver",
             "thermal_capability",
-        ).associateWith(value::nonEmptyString)
+        ).associateWith { key -> value.nonEmptyString(key) }
         val ramBytes = value.getLong("ram_bytes")
         val apiLevel = value.getInt("api_level")
         require(ramBytes > 0L) { "target.ram_bytes must be positive" }
