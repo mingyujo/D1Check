@@ -291,6 +291,190 @@ class FileAndPlanTest(unittest.TestCase):
             verify.assert_not_called()
 
 
+
+
+class HostExecutorTest(unittest.TestCase):
+    def _fixture(self, base: Path):
+        input_root = base / "input"
+        output_root = base / "output"
+        input_root.mkdir()
+        output_root.mkdir()
+        model_bytes = b"model-fixture"
+        apk_bytes = b"apk-fixture"
+        pinned = probe.PinnedFile(
+            "efficientnet-lite0-float32-v1",
+            probe.PINNED_MODELS["efficientnet-lite0-float32-v1"].url,
+            "efficientnet_lite0.tflite",
+            len(model_bytes),
+            sha256(model_bytes),
+        )
+        value = manifest()
+        value["model"].update(byte_count=pinned.byte_count, sha256=pinned.sha256)
+        value["target"]["apk_sha256"] = sha256(apk_bytes)
+        manifest_path = input_root / "model_probe_manifest.json"
+        model_path = input_root / pinned.filename
+        apk = base / "runner.apk"
+        adb = base / "adb.exe"
+        manifest_path.write_text(json.dumps(value), encoding="utf-8")
+        model_path.write_bytes(model_bytes)
+        apk.write_bytes(apk_bytes)
+        adb.write_bytes(b"adb")
+        return value, pinned, manifest_path, input_root, output_root, apk, adb
+
+    def test_execute_seam_stages_waits_pulls_and_cleans_without_finalizing(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            value, pinned, manifest_path, input_root, output_root, apk, adb = (
+                self._fixture(base)
+            )
+            session = value["identity"]["session_id"]
+            device_id = value["target"]["device_id"]
+            summary = {
+                "schema_version": 1,
+                "protocol_version": "model-probe-v1",
+                "session_id": session,
+                "device_id": device_id,
+                "model_id": value["model"]["model_id"],
+                "backend": value["execution"]["backend"],
+                "status": "seam_smoke_only_unfinalized",
+                "finalized": False,
+                "elapsed_ns": 123,
+                "details": {},
+            }
+            summary_bytes = json.dumps(summary).encode("utf-8")
+            calls = []
+            poll_count = 0
+
+            def runner(argv, timeout_seconds, allowed_returncodes):
+                nonlocal poll_count
+                command = list(argv)
+                calls.append((command, timeout_seconds, allowed_returncodes))
+                tail = command[3:]
+                if tail == ["get-state"]:
+                    return probe.ProcessResult(0, b"device\n", b"")
+                if "sha256sum" in tail:
+                    remote = tail[-1]
+                    name = Path(remote).name
+                    if name.endswith(".part"):
+                        name = name[:-5]
+                    local = (
+                        manifest_path
+                        if name == "model_probe_manifest.json"
+                        else input_root / name
+                    )
+                    digest = probe.sha256_file(local)
+                    return probe.ProcessResult(
+                        0, f"{digest}  {remote}\n".encode("utf-8"), b""
+                    )
+                if tail[:2] == ["shell", "am"]:
+                    return probe.ProcessResult(0, b"Status: ok\n", b"")
+                if "test" in tail and "-s" in tail:
+                    poll_count += 1
+                    return probe.ProcessResult(1 if poll_count == 1 else 0, b"", b"")
+                if tail[:3] == ["exec-out", "run-as", probe.PACKAGE_NAME]:
+                    return probe.ProcessResult(0, summary_bytes, b"")
+                return probe.ProcessResult(0, b"", b"")
+
+            with mock.patch.dict(probe.PINNED_MODELS, {pinned.identifier: pinned}):
+                result = probe.execute_seam(
+                    value,
+                    manifest_path,
+                    input_root,
+                    adb,
+                    apk,
+                    output_root,
+                    value["target"]["adb_serial"],
+                    poll_interval_seconds=0.001,
+                    process_runner=runner,
+                    sleep=lambda _: None,
+                )
+
+            self.assertEqual(result["status"], "completed_unfinalized")
+            self.assertFalse(result["finalized"])
+            session_output = output_root / session
+            self.assertEqual(
+                json.loads((session_output / "summary.json").read_text("utf-8")),
+                summary,
+            )
+            host = json.loads(
+                (session_output / "host_execution.json").read_text("utf-8")
+            )
+            self.assertEqual(host["status"], "completed_unfinalized")
+            self.assertTrue(host["activity_dispatched"])
+            self.assertTrue(host["summary_pulled"])
+            self.assertTrue(host["input_cleanup_confirmed"])
+            flattened = [part for command, _, _ in calls for part in command]
+            self.assertNotIn("uninstall", flattened)
+            self.assertNotIn("clear", flattened)
+            self.assertGreaterEqual(poll_count, 2)
+            self.assertTrue(
+                any(
+                    command[3:8]
+                    == ["shell", "run-as", probe.PACKAGE_NAME, "rm", "-rf"]
+                    for command, _, _ in calls
+                )
+            )
+
+    def test_execute_seam_hash_mismatch_fails_closed_and_still_cleans(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            value, pinned, manifest_path, input_root, output_root, apk, adb = (
+                self._fixture(base)
+            )
+            calls = []
+
+            def runner(argv, timeout_seconds, allowed_returncodes):
+                command = list(argv)
+                calls.append(command)
+                tail = command[3:]
+                if tail == ["get-state"]:
+                    return probe.ProcessResult(0, b"device\n", b"")
+                if "sha256sum" in tail:
+                    return probe.ProcessResult(
+                        0, f"{'0' * 64}  {tail[-1]}\n".encode("utf-8"), b""
+                    )
+                return probe.ProcessResult(0, b"", b"")
+
+            with mock.patch.dict(probe.PINNED_MODELS, {pinned.identifier: pinned}):
+                with self.assertRaisesRegex(
+                    probe.ProbeContractError, "shared staging SHA-256 mismatch"
+                ):
+                    probe.execute_seam(
+                        value,
+                        manifest_path,
+                        input_root,
+                        adb,
+                        apk,
+                        output_root,
+                        value["target"]["adb_serial"],
+                        process_runner=runner,
+                    )
+
+            session_output = output_root / value["identity"]["session_id"]
+            host = json.loads(
+                (session_output / "host_execution.json").read_text("utf-8")
+            )
+            self.assertEqual(host["status"], "failed")
+            self.assertFalse(host["activity_dispatched"])
+            self.assertFalse(host["summary_pulled"])
+            flattened = [part for command in calls for part in command]
+            self.assertIn("rm", flattened)
+
+    def test_default_process_runner_uses_fixed_argv_without_shell(self):
+        completed = mock.Mock(returncode=0, stdout=b"ok", stderr=b"")
+        with mock.patch.object(probe.subprocess, "run", return_value=completed) as run:
+            result = probe._default_process_runner(
+                ["adb.exe", "-s", "serial", "get-state"],
+                5.0,
+                frozenset({0}),
+            )
+        self.assertEqual(result.stdout, b"ok")
+        kwargs = run.call_args.kwargs
+        self.assertIs(kwargs["shell"], False)
+        self.assertIs(kwargs["stdin"], probe.subprocess.DEVNULL)
+        self.assertEqual(kwargs["timeout"], 5.0)
+
+
 class ArtifactValidationTest(unittest.TestCase):
     def _write_artifacts(self, root: Path, session_id: str, device_id: str):
         identity = {"session_id": session_id, "device_id": device_id}
