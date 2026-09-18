@@ -1,10 +1,10 @@
 # D1Check 현재 상태
 
-- 갱신: 2026-09-18 / MODEL-02B 기기 이식형 probe와 추가 기기 재현평가 계약 반영
-- 현재 작업: `MODEL-02B-SEAM` — 기기 모델명을 하드코딩하지 않는 debug-only 외부 모델 loader, raw/decoded adapter와 host dry-run을 구현한다. A24와 추가 기기 실행은 아직 승인·수행하지 않았다.
-- 기준: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.4, [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md), [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)(설계, 미구현).
-- 코드 기준: 원격 `master`의 `df8192aa61eebacf83df7a7815f0c60c8bbf4004`, `Implement A24 calibration input and validation pipeline`. production code는 이번 단계에서 변경하지 않았다.
-- 문서 작업은 [초안 PR #2](https://github.com/mingyujo/D1Check/pull/2)의 `docs/competition-plan-v4-20260917` branch에서 계속하며 master에 자동 병합하지 않는다.
+- 갱신: 2026-09-18 / MODEL-02B host executor 구현·격리 회귀검증 반영
+- 현재 작업: `MODEL-02B-HOST-EXEC-VERIFY` — 실제 subprocess·atomic ADB staging·SHA readback·Activity dispatch·bounded summary wait/pull·실패 포함 입력 cleanup을 구현했고 mock 회귀 14건과 compileall이 통과했다. 다음 gate는 사용자 로컬 전체 Python 회귀와 실제 A24 1회 실행이며, delegate-log finalization과 A24 PASS는 아직 아니다.
+- 기준: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.4, [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md), [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md), [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)(설계, 미구현).
+- 코드 기준: [초안 PR #2](https://github.com/mingyujo/D1Check/pull/2)의 `docs/competition-plan-v4-20260917` HEAD `177a8f3e9bf2a2091f383444767b7cb49cdf8c66` 위에 별도 stacked 구현 초안으로 진행한다. master에 자동 병합하지 않는다.
+- A24와 추가 기기 실행은 아직 승인·수행하지 않았다. model/sample binary는 저장소·PR·APK에 포함하지 않았다.
 - A24는 개발·주평가 기기다. 정책 동결 뒤 최소 한 대의 다른 Android 기기에서 같은 runner로 축소 재현평가한다. 추가 기기는 아직 미선정·미실행이며, 기존 S26 formal은 새 두 작업 재현평가를 자동 대체하지 않는다.
 - 새 절대 deadline: `calibration_pending`. 서비스 하한·안전/안정성 수치·성공 기준·최종 반복 수: `thresholds_pending`.
 
@@ -20,7 +20,7 @@
 | MODEL-02A 분류 | HOST_CONTRACT_PASS | EfficientNet-Lite0 v1 source/hash/tensor/내장 labels/license·고정 host output 확인; 실기기 미검증 |
 | MODEL-02A 탐지 | conditional pass / research-only | EfficientDet raw·decoded host golden 통과. exact binary license 귀속 미확인으로 승인 기기 내부 비배포 probe만 허용 |
 | MODEL-02B-PREP | completed / `MODEL_02B_PREP_READY` | [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md)에 기기 이식형 외부 manifest·staging·비교·cleanup·기기별 판정 계약 고정 |
-| MODEL-02B-SEAM / MODEL-02B device | in progress / pending | debug-only seam과 host dry-run 구현 후 A24 smoke, 이어서 동결 계약의 추가 기기 smoke; binary 번들 금지 |
+| MODEL-02B-SEAM / HOST-EXEC / device | seam PASS, host code PASS / device pending | 기존 전체 Gradle·Python 회귀 통과 후 bounded host executor를 추가하고 mock 14건·compileall 통과. 실제 A24·추가 기기·delegate 증거는 미실행; binary 번들 금지 |
 | TASK-02 / PROFILE-02 / SCHED-02 / EVAL-02 / XDEV-02 | pending | A24 adapter→full profile→정책→독립 평가 후 최소 한 대 추가 기기 축소 재현 |
 
 ## MODEL-02A 확인 사실과 남은 제한
@@ -64,10 +64,11 @@
 
 ## 다음 행동 (최대 3개)
 
-1. `MODEL-02B-SEAM`: debug source set의 외부 file loader, raw LiteRT adapter, Tasks dependency isolation과 decoded adapter를 기기 모델명 하드코딩 없이 구현한다.
-2. host 도구의 manifest validator·download/hash·staging argv·artifact/delegate evidence validator와 no-I/O dry-run을 구현하고, 서로 다른 합성 device manifest의 identity 격리를 테스트한다.
-3. 전체 host 검증 후 별도 승인된 A24 pilot 한 session을 먼저 실행한다. 추가 기기 선정·실행은 A24 seam 통과와 정책 freeze 이후 별도 gate로 진행한다.
+1. 사용자 로컬에서 최신 feature branch의 `tools.test_d1_model_probe`, 전체 Python 회귀와 compileall을 실행해 host executor 변경을 재검증한다.
+2. 실제 모델·sample을 저장소 밖 고정 입력 bundle로 준비하고 APK-source binding·manifest·SHA-256을 검증한 뒤 `execute-seam`으로 A24 CPU/GPU seam pilot 한 session을 실행한다.
+3. A24 seam 통과와 delegate-log 판정·정책 freeze 이후 같은 manifest/runner로 최소 한 대의 다른 Android 기기에서 축소 재현한다.
 
 ## 변경·검증 범위
 
-이번 단계는 공식 artifact·license 관계 조사, host decoded golden, 코드 감사, MODEL-02B probe 계약과 문서 갱신만 수행했다. production/test/APK와 기존 실험 데이터는 변경하지 않았다. ADB·설치·A24·Perfetto·Git master 병합은 수행하지 않았다. 초안 PR에는 model/sample/system-library binary, host cache, 가상환경을 포함하지 않는다.
+이번 구현 조각은 `src/debug`의 host entry·manifest parser·외부 file verifier·LiteRT raw adapter·Tasks decoded adapter, debug-scoped Tasks Vision 1.0.0 후보 의존성, host validator/plan/artifact validator와 테스트를 추가했다. 후속 host executor는 실제 subprocess를 `shell=False` fixed argv로 실행하고 UUID-scoped staging·SHA readback·bounded summary wait/pull·입력 cleanup·host 실행 기록을 추가한다. 사용자 로컬 JDK 17에서 targeted `ModelProbeContractTest`와 루트 `testDebugUnitTest lintDebug assembleDebug --rerun-tasks`가 `BUILD SUCCESSFUL`이었고, Python 전체 205건은 failure/error 0·Windows symlink 권한에 따른 skip 2로 통과했다. compileall과 logger self-test도 동일 production 코드에서 통과했다. Windows checkout의 canonical fixture CRLF를 LF와 동등하게 처리하도록 Kotlin·Python 회귀 검증을 보강했다. debug entry는 격리 process에서 bounded watchdog을 사용하며 성공 provenance를 만들지 않고 `seam_smoke_only_unfinalized`만 남긴다. host executor 변경은 격리된 Python mock 14건과 compileall에서 통과했다. 이 변경 이후 전체 저장소 Python 회귀는 아직 재실행하지 않았다. ADB·설치·A24·추가 기기·Perfetto·Git master 병합은 수행하지 않았다. model/sample/system-library binary, host cache, 가상환경은 포함하지 않는다.
+

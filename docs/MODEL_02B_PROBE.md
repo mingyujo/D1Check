@@ -1,11 +1,11 @@
 # MODEL-02B 기기 이식형 모델 probe 계약
 
 - 문서 버전: 2 / 2026-09-18
-- 상태: **MODEL_02B_PREP_READY / 미구현·미실행**
+- 상태: **MODEL_02B_HOST_EXEC_CODE_PASS / host mock 동작 검증, 실제 ADB·Android 실기기 미검증**
 - 상위 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.4
 - 입력 판정: [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)의 EfficientNet-Lite0 host PASS와 EfficientDet-Lite0 비배포 연구용 조건부 PASS
 - 대상: Galaxy A24 `SM-A245N`을 첫 pilot·주평가 기기로 사용하고, 같은 seam과 manifest로 최소 한 대의 추가 Android 기기를 후속 probe한다. 추가 기기 모델은 아직 미선정이다.
-- protocol/schema 예약값: `model-probe-v1` / `1`. 현재 코드·CLI에는 존재하지 않는다.
+- protocol/schema: `model-probe-v1` / `1`. debug source set과 `tools/d1_model_probe.py execute-seam`에 bounded host 실행기가 구현됐지만 실제 기기 PASS와 finalized 실행기는 아니며 기존 v1/v2/calibration과 분리한다.
 
 ## 1. 목적과 현재 코드 경계
 
@@ -31,7 +31,7 @@ EfficientDet exact binary의 license 귀속은 미확인이다. 다음 경계를
 
 ## 3. 외부 manifest 계약
 
-실행별 `model_probe_manifest.json`은 저장소 밖에서 만들고 그 파일 자체의 SHA-256을 실험 manifest에 기록한다. 알 수 없는 key, 절대경로, 경로 구분자가 든 filename, 중복 ID/hash, `latest` URL, 대문자 또는 64자리 아닌 SHA-256을 거부한다.
+실행별 `model_probe_manifest.json`은 저장소 밖에서 만들고 그 파일 자체의 SHA-256을 실험 manifest에 기록한다. 최상위 key는 정확히 `identity`, `target`, `model`, `tensor`, `runtime`, `input`, `comparator`, `execution` 객체 8개다. 알 수 없는 key, 절대경로, 경로 구분자가 든 filename, 중복 ID/hash, `latest` URL, 대문자 또는 64자리 아닌 SHA-256을 거부한다.
 
 | 영역 | 필수 필드 |
 | --- | --- |
@@ -75,7 +75,7 @@ Tasks API 배선은 공식 `cat_and_dog.jpg` 69,041 bytes, SHA-256 `cfa90c34bb93
 
 CPU 기준과 GPU 후보를 score 내림차순, label, box 순으로 canonicalize한다. detection count와 label 순서는 같아야 하고, 각 pixel box 좌표의 절대 차이는 2 이하, score 절대 차이는 `1e-3` 이하, non-finite는 0이어야 한다. 이 engineering smoke 기준은 첫 A24 결과를 본 뒤 완화하지 않는다. host의 cat/dog 두 detection은 배선 golden일 뿐 일반 정확도 기준이 아니다.
 
-Android decoded 경로는 MediaPipe Tasks ObjectDetector의 정확한 API 호출 전체를 `tasks_detect_ns`로 측정한다. 내부 inference만 분리되지 않으면 이를 `Interpreter.run_ns`라고 부르지 않는다. [공식 Android sample](https://github.com/google-ai-edge/mediapipe-samples/blob/main/examples/object_detection/android/app/build.gradle)은 Tasks Vision `1.0.0`과 CPU/GPU delegate 선택을 보여주지만, D1Check에 넣을 exact dependency는 기존 LiteRT `1.4.2`와의 native dependency 충돌·APK 크기·A24 로딩을 별도 build test로 확인한 뒤 고정한다. `latest.release`는 금지한다.
+Android decoded 경로는 MediaPipe Tasks ObjectDetector의 정확한 API 호출 전체를 `tasks_detect_ns`로 측정한다. 내부 inference만 분리되지 않으면 이를 `Interpreter.run_ns`라고 부르지 않는다. [공식 Android sample](https://github.com/google-ai-edge/mediapipe-samples/blob/main/examples/object_detection/android/app/build.gradle)이 사용하는 Tasks Vision `1.0.0`을 debug-scoped **build 후보**로 고정했다. 기존 LiteRT `1.4.2`와의 native dependency 충돌·APK 크기·A24 로딩 검증 전에는 승인 runtime으로 승격하지 않는다. `latest.release`는 금지한다.
 
 ## 5. debug 전용 구현 seam
 
@@ -90,6 +90,9 @@ Android decoded 경로는 MediaPipe Tasks ObjectDetector의 정확한 API 호출
 7. 기기별 capability와 결과는 `device_id`로 분리한다. serial·model 문자열로 코드 분기하거나 특정 모델명을 allowlist하여 통과시키지 않는다. 지원 여부는 실제 runtime 초기화·tensor/quality·delegate evidence로 판정한다.
 
 Tasks Vision dependency가 기존 LiteRT native library와 충돌하면 기존 runner 의존성을 억지로 교체하지 않는다. 별도 debug probe module을 만들거나 decoded A24 cell을 보류하고 `SCOPE-03`에서 범위를 재판정한다.
+
+
+현재 첫 구현은 manifest/file fail-closed, raw adapter, decoded adapter, 격리 debug entry와 host validation·argv plan까지만 제공한다. debug entry 결과는 `seam_smoke_only_unfinalized`이며 성공 provenance를 만들지 않는다. 실제 download/subprocess/ready/pull/delegate-log finalization과 고정 artifact 전체 생성은 다음 구현 gate다.
 
 ## 6. 실행 순서와 반복
 
@@ -135,3 +138,35 @@ cell 상태는 `passed`, `failed`, `unsupported`, `unverified` 중 하나다.
 - 기존 119 JVM, Python, lint, assemble과 v1/v2/calibration 회귀 검증.
 
 이 문서의 경로·protocol·명령은 구현 계약이다. 실제 파일·CLI가 생기기 전 존재하는 기능처럼 사용하지 않는다.
+
+
+
+## 10. Host 실행기 구현 상태
+
+`tools/d1_model_probe.py execute-seam`은 다음 단계만 실제로 수행한다.
+
+1. manifest·model·sample·APK의 고정 파일 집합과 SHA-256을 ADB 호출 전에 검증한다.
+2. manifest의 `adb_serial`과 CLI `--serial`을 일치시키고 허용된 serial 문자만 받는다.
+3. canonical session UUID 아래의 shared/app-private 입력 경로가 기존에 없음을 확인한다.
+4. 각 입력을 `.part`로 push/copy하고 shared·app-private 양쪽 SHA-256을 확인한 뒤 atomic rename한다.
+5. `am start -W` 성공을 Activity dispatch acknowledgement로만 기록한다. 이를 모델 ready로 해석하지 않는다.
+6. app-private `summary.json`의 non-empty 상태를 device maximum duration과 최대 60초 host grace 안에서 polling한다.
+7. summary를 `exec-out run-as ... cat`으로 pull하고 protocol/session/device/model/backend identity와 `seam_smoke_only_unfinalized` 상태를 검증한다.
+8. 성공·실패·timeout 모두 exact session 입력 경로만 bounded cleanup하고 부재를 확인한다.
+9. host에는 `<output-root>/<session>/summary.json`과 `host_execution.json`을 남긴다. 두 파일은 실행·실패 관측 증거이며 finalized 8-file provenance를 대신하지 않는다.
+
+실행 형식:
+
+```powershell
+& $python -B tools/d1_model_probe.py execute-seam `
+  --manifest $manifest `
+  --input-root $inputRoot `
+  --apk $runnerApk `
+  --adb $adb `
+  --serial $serial `
+  --output-root $outputRoot
+```
+
+host 실행기는 APK를 설치·삭제하거나 `pm clear`를 실행하지 않는다. 설치 APK hash는 device Activity가 manifest와 대조한다. 서명이 다르거나 APK가 설치되지 않았거나 `run-as`가 불가능하면 fail-closed다. GPU 결과는 device summary가 성공해도 delegate log finalization 전까지 `unfinalized`다.
+
+2026-09-18 격리 검증에서는 `tools.test_d1_model_probe` 14건과 `compileall`이 통과했다. 성공 경로, shared SHA 불일치, bounded summary timeout, cleanup, fixed argv/`shell=False`를 mock subprocess로 관찰했다. 전체 저장소 Python 회귀와 실제 ADB·A24·추가 Android 기기는 이 변경 이후 아직 실행하지 않았다.

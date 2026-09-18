@@ -38,9 +38,7 @@ class RepresentativeTensorSetCanonicalTest {
         val fixture = sequenceOf(
             File("tools/fixtures/mobilenet_preprocessing_configuration_v1.canonical.json"),
             File("../tools/fixtures/mobilenet_preprocessing_configuration_v1.canonical.json"),
-        ).first(File::isFile).readBytes().let { bytes ->
-            if (bytes.lastOrNull() == '\n'.code.toByte()) bytes.dropLast(1).toByteArray() else bytes
-        }
+        ).first(File::isFile).readBytes().let(::withoutTerminalLineEnding)
         assertArrayEquals(fixture, actual)
         assertEquals(
             "ad6f76b120f8ccf0f64a260ee388f7af2b002dc722436f8b19552dcb6f702260",
@@ -86,6 +84,14 @@ class RepresentativeTensorSetCanonicalTest {
         }.exceptionOrNull() as IllegalArgumentException
         assertTrue(containerMismatch.message!!.contains("expected=${"2".repeat(64)}"))
         assertTrue(containerMismatch.message!!.contains("recomputed=${"3".repeat(64)}"))
+    }
+
+    private fun withoutTerminalLineEnding(bytes: ByteArray): ByteArray = when {
+        bytes.size >= 2 &&
+            bytes[bytes.lastIndex - 1] == '\r'.code.toByte() &&
+            bytes[bytes.lastIndex] == '\n'.code.toByte() -> bytes.dropLast(2).toByteArray()
+        bytes.lastOrNull() == '\n'.code.toByte() -> bytes.dropLast(1).toByteArray()
+        else -> bytes
     }
 
     private fun sha256(value: ByteArray): String = MessageDigest.getInstance("SHA-256")

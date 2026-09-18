@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.ai.edge.litert.runtime)
     implementation(libs.ai.edge.litert.gpu.api)
     implementation(libs.ai.edge.litert.gpu.runtime)
+    debugImplementation("com.google.mediapipe:tasks-vision:1.0.0")
     testImplementation(libs.junit)
     testImplementation("org.robolectric:robolectric:4.14.1")
 }
