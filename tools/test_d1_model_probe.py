@@ -170,6 +170,9 @@ class ManifestContractTest(unittest.TestCase):
         bad_uuid = manifest()
         bad_uuid["identity"]["session_id"] = str(uuid.uuid4()).upper()
         cases.append(bad_uuid)
+        bad_serial = manifest()
+        bad_serial["target"]["adb_serial"] = "--transport-id"
+        cases.append(bad_serial)
         for case in cases:
             with self.subTest(case=case):
                 with self.assertRaises(probe.ProbeContractError):
@@ -459,6 +462,79 @@ class HostExecutorTest(unittest.TestCase):
             self.assertFalse(host["summary_pulled"])
             flattened = [part for command in calls for part in command]
             self.assertIn("rm", flattened)
+
+    def test_execute_seam_summary_timeout_is_bounded_and_cleans(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            value, pinned, manifest_path, input_root, output_root, apk, adb = (
+                self._fixture(base)
+            )
+            value["execution"]["maximum_duration_ms"] = 1
+            manifest_path.write_text(json.dumps(value), encoding="utf-8")
+            calls = []
+
+            def runner(argv, timeout_seconds, allowed_returncodes):
+                command = list(argv)
+                calls.append((command, timeout_seconds))
+                tail = command[3:]
+                if tail == ["get-state"]:
+                    return probe.ProcessResult(0, b"device\n", b"")
+                if "sha256sum" in tail:
+                    remote = tail[-1]
+                    name = Path(remote).name
+                    if name.endswith(".part"):
+                        name = name[:-5]
+                    local = (
+                        manifest_path
+                        if name == "model_probe_manifest.json"
+                        else input_root / name
+                    )
+                    digest = probe.sha256_file(local)
+                    return probe.ProcessResult(
+                        0, f"{digest}  {remote}\n".encode("utf-8"), b""
+                    )
+                if tail[:2] == ["shell", "am"]:
+                    return probe.ProcessResult(0, b"Status: ok\n", b"")
+                if "test" in tail and "-s" in tail:
+                    return probe.ProcessResult(1, b"", b"")
+                return probe.ProcessResult(0, b"", b"")
+
+            ticks = iter([0.0, 1.0])
+            with mock.patch.dict(probe.PINNED_MODELS, {pinned.identifier: pinned}):
+                with self.assertRaisesRegex(
+                    probe.ProbeContractError, "timed out waiting for device summary"
+                ):
+                    probe.execute_seam(
+                        value,
+                        manifest_path,
+                        input_root,
+                        adb,
+                        apk,
+                        output_root,
+                        value["target"]["adb_serial"],
+                        host_grace_seconds=0.0,
+                        process_runner=runner,
+                        monotonic=lambda: next(ticks),
+                        sleep=lambda _: None,
+                    )
+
+            host = json.loads(
+                (
+                    output_root
+                    / value["identity"]["session_id"]
+                    / "host_execution.json"
+                ).read_text("utf-8")
+            )
+            self.assertEqual(host["status"], "failed")
+            self.assertTrue(host["activity_dispatched"])
+            self.assertFalse(host["summary_pulled"])
+            self.assertTrue(
+                any(
+                    command[3:8]
+                    == ["shell", "run-as", probe.PACKAGE_NAME, "rm", "-rf"]
+                    for command, _ in calls
+                )
+            )
 
     def test_default_process_runner_uses_fixed_argv_without_shell(self):
         completed = mock.Mock(returncode=0, stdout=b"ok", stderr=b"")
