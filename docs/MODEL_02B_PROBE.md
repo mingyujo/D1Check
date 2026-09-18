@@ -1,11 +1,11 @@
 # MODEL-02B 기기 이식형 모델 probe 계약
 
 - 문서 버전: 2 / 2026-09-18
-- 상태: **MODEL_02B_SEAM_DRAFT / host validation·no-I/O plan 검증, Android build·실기기 미검증**
+- 상태: **MODEL_02B_HOST_EXEC_CODE_PASS / host mock 동작 검증, 실제 ADB·Android 실기기 미검증**
 - 상위 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.4
 - 입력 판정: [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)의 EfficientNet-Lite0 host PASS와 EfficientDet-Lite0 비배포 연구용 조건부 PASS
 - 대상: Galaxy A24 `SM-A245N`을 첫 pilot·주평가 기기로 사용하고, 같은 seam과 manifest로 최소 한 대의 추가 Android 기기를 후속 probe한다. 추가 기기 모델은 아직 미선정이다.
-- protocol/schema: `model-probe-v1` / `1`. debug source set과 `tools/d1_model_probe.py`에 첫 구현이 생겼지만 finalized 실행기는 아직 아니며 기존 v1/v2/calibration과 분리한다.
+- protocol/schema: `model-probe-v1` / `1`. debug source set과 `tools/d1_model_probe.py execute-seam`에 bounded host 실행기가 구현됐지만 실제 기기 PASS와 finalized 실행기는 아니며 기존 v1/v2/calibration과 분리한다.
 
 ## 1. 목적과 현재 코드 경계
 
@@ -139,3 +139,34 @@ cell 상태는 `passed`, `failed`, `unsupported`, `unverified` 중 하나다.
 
 이 문서의 경로·protocol·명령은 구현 계약이다. 실제 파일·CLI가 생기기 전 존재하는 기능처럼 사용하지 않는다.
 
+
+
+## 10. Host 실행기 구현 상태
+
+`tools/d1_model_probe.py execute-seam`은 다음 단계만 실제로 수행한다.
+
+1. manifest·model·sample·APK의 고정 파일 집합과 SHA-256을 ADB 호출 전에 검증한다.
+2. manifest의 `adb_serial`과 CLI `--serial`을 일치시키고 허용된 serial 문자만 받는다.
+3. canonical session UUID 아래의 shared/app-private 입력 경로가 기존에 없음을 확인한다.
+4. 각 입력을 `.part`로 push/copy하고 shared·app-private 양쪽 SHA-256을 확인한 뒤 atomic rename한다.
+5. `am start -W` 성공을 Activity dispatch acknowledgement로만 기록한다. 이를 모델 ready로 해석하지 않는다.
+6. app-private `summary.json`의 non-empty 상태를 device maximum duration과 최대 60초 host grace 안에서 polling한다.
+7. summary를 `exec-out run-as ... cat`으로 pull하고 protocol/session/device/model/backend identity와 `seam_smoke_only_unfinalized` 상태를 검증한다.
+8. 성공·실패·timeout 모두 exact session 입력 경로만 bounded cleanup하고 부재를 확인한다.
+9. host에는 `<output-root>/<session>/summary.json`과 `host_execution.json`을 남긴다. 두 파일은 실행·실패 관측 증거이며 finalized 8-file provenance를 대신하지 않는다.
+
+실행 형식:
+
+```powershell
+& $python -B tools/d1_model_probe.py execute-seam `
+  --manifest $manifest `
+  --input-root $inputRoot `
+  --apk $runnerApk `
+  --adb $adb `
+  --serial $serial `
+  --output-root $outputRoot
+```
+
+host 실행기는 APK를 설치·삭제하거나 `pm clear`를 실행하지 않는다. 설치 APK hash는 device Activity가 manifest와 대조한다. 서명이 다르거나 APK가 설치되지 않았거나 `run-as`가 불가능하면 fail-closed다. GPU 결과는 device summary가 성공해도 delegate log finalization 전까지 `unfinalized`다.
+
+2026-09-18 격리 검증에서는 `tools.test_d1_model_probe` 14건과 `compileall`이 통과했다. 성공 경로, shared SHA 불일치, bounded summary timeout, cleanup, fixed argv/`shell=False`를 mock subprocess로 관찰했다. 전체 저장소 Python 회귀와 실제 ADB·A24·추가 Android 기기는 이 변경 이후 아직 실행하지 않았다.
