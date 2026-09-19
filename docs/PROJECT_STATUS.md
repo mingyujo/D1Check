@@ -54,3 +54,8 @@
 1. `MODEL-02B-GPU-DIAG`: 단계별 monotonic 진행 기록으로 탐지 GPU timeout 위치를 확인하고, 기존 bounded gate 안에서 원인을 수정한다.
 2. raw CPU/GPU 수치·decoded golden·품질/메모리 gate를 완료하고, 검증된 backend만 TASK-02 실제 완료 경계에 연결한다.
 3. PROFILE-02 실측·독립 holdout과 deadline/seed/반복 동결, simulation 전용 schema/validator/no-op를 준비한 뒤 SIM-01을 재판정한다. 본 실험은 실행하지 않는다.
+
+## 2026-09-20 GPU ?? ?????
+
+- ?? ??: `C:/Users/LG/Documents/D1Check_GPU_Diag/run_20260920/`. `06_gpu_diag.json`, `gpu_progress_validation.json`: 115? monotonic ?? event, ??? phase 0, artifact 8?/cleanup PASS. GPU ?? PID 16876?? 263/263 delegation ? kernel ?? 4?; ?? PASS? ?? ??.
+- probe ?? ?? `model-probe-progress-v1/<session>.jsonl`? ? event fsync??. ?? timer? ?? 8-file ?? ??. JVM targeted 13?/Python 3? PASS; APK `7054a8068729abf5854e44ca8f36d704b741a164486b1bb0e454915b1ef10167`. ??? ?? HEAD + dirty source(context? hashes).

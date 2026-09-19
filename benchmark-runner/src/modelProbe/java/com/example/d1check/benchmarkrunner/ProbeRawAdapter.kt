@@ -26,6 +26,7 @@ internal class ProbeRawSession private constructor(
     private val manifest: ModelProbeManifest,
     private val interpreter: Interpreter,
     private val gpuDelegate: GpuDelegate?,
+    private val progress: ProbeProgress?,
 ) : AutoCloseable {
     private var closed = false
 
@@ -39,9 +40,12 @@ internal class ProbeRawSession private constructor(
         }.toMutableMap<Int, Any>()
         input.rewind()
         outputBuffers.values.forEach { (it as ByteBuffer).clear() }
+        progress?.mark("measured_invocation", "start")
         val startedNs = SystemClock.elapsedRealtimeNanos()
         interpreter.runForMultipleInputsOutputs(arrayOf(input), outputBuffers)
         val finishedNs = SystemClock.elapsedRealtimeNanos()
+        progress?.mark("measured_invocation", "finish")
+        progress?.mark("output_readback", "start")
         val outputs = manifest.tensor.outputs.map { spec ->
             val buffer = outputBuffers.getValue(spec.index) as ByteBuffer
             buffer.rewind()
@@ -49,6 +53,7 @@ internal class ProbeRawSession private constructor(
                 buffer.asFloatBuffer().get(it)
             }
         }
+        progress?.mark("output_readback", "finish")
         check(outputs.all { output -> output.all { it.isFinite() } }) {
             "Probe raw output contains non-finite values"
         }
@@ -72,12 +77,16 @@ internal class ProbeRawSession private constructor(
         closed = true
         var first: Throwable? = null
         try {
+            progress?.mark("runtime_close", "start")
             interpreter.close()
+            progress?.mark("runtime_close", "finish")
         } catch (error: Throwable) {
             first = error
         }
         try {
+            progress?.mark("delegate_close", "start")
             gpuDelegate?.close()
+            progress?.mark("delegate_close", "finish")
         } catch (error: Throwable) {
             if (first == null) first = error else first.addSuppressed(error)
         }
@@ -85,7 +94,7 @@ internal class ProbeRawSession private constructor(
     }
 
     companion object {
-        fun create(manifest: ModelProbeManifest, model: VerifiedProbeFile): ProbeRawSession {
+        fun create(manifest: ModelProbeManifest, model: VerifiedProbeFile, progress: ProbeProgress? = null): ProbeRawSession {
             require(model.sha256 == manifest.model.sha256) { "Verified model identity mismatch" }
             val options = Interpreter.Options()
             var delegate: GpuDelegate? = null
@@ -105,19 +114,29 @@ internal class ProbeRawSession private constructor(
                                 "GPU delegate is unsupported by the strict compatibility list"
                             )
                         }
+                        progress?.mark("gpu_delegate_construction", "start")
                         delegate = GpuDelegate(profile.options())
+                        progress?.mark("gpu_delegate_construction", "finish")
+                        progress?.mark("gpu_delegate_attachment", "start")
                         options.addDelegate(delegate)
+                        progress?.mark("gpu_delegate_attachment", "finish")
                     }
                 }
                 val buffer = model.readOnlyBuffer.duplicate().apply { rewind() }
+                progress?.mark("interpreter_construction", "start")
                 val interpreter = Interpreter(buffer, options)
+                progress?.mark("interpreter_construction", "finish")
                 try {
+                    progress?.mark("tensor_allocation", "start")
                     interpreter.allocateTensors()
+                    progress?.mark("tensor_allocation", "finish")
                     validateTensors(interpreter, manifest.tensor)
-                    return ProbeRawSession(manifest, interpreter, delegate)
+                    return ProbeRawSession(manifest, interpreter, delegate, progress)
                 } catch (error: Throwable) {
                     try {
+                        progress?.mark("runtime_close", "start")
                         interpreter.close()
+                        progress?.mark("runtime_close", "finish")
                     } catch (cleanup: Throwable) {
                         error.addSuppressed(cleanup)
                     }

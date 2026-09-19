@@ -55,7 +55,11 @@ class ModelProbeEntryActivity : Activity() {
             "session_id must be canonical lowercase UUID"
         }
         activeSessionId = sessionId
+        progress = ProbeProgress(filesDir, sessionId)
+        progress?.mark("request_validation", "start")
+        progress?.mark("output_root_validation", "start")
         val outputRoot = canonicalProbeOutputRoot(filesDir, OUTPUT_ROOT, sessionId)
+        progress?.mark("output_root_validation", "finish")
         activeOutputRoot = outputRoot
         failureOutputAllowed = true
         val canonicalInputRoot = canonicalProbeInputRoot(filesDir, INPUT_ROOT, sessionId)
@@ -68,13 +72,17 @@ class ModelProbeEntryActivity : Activity() {
         }
         val manifest = ModelProbeManifestParser.parse(manifestFile)
         activeManifestSha256 = ProbeModelFile.sha256(manifestFile)
+        progress?.bind(requireNotNull(activeManifestSha256))
         activeManifest = manifest
         activeDeviceId = manifest.target.deviceId
         require(manifest.identity.sessionId == sessionId) { "Intent/manifest session mismatch" }
         require(manifest.target.packageName == packageName) { "Manifest package mismatch" }
         scheduleWatchdog(manifest.execution.maximumDurationMs)
         verifyTarget(manifest.target)
+        progress?.mark("request_validation", "finish")
+        progress?.mark("model_open_load", "start")
         val model = ProbeModelFile.open(canonicalInputRoot, manifest.model)
+        progress?.mark("model_open_load", "finish")
         val startedNs = SystemClock.elapsedRealtimeNanos()
         val startEnvironment = environmentSnapshot(startedNs)
         check(Build.VERSION.SDK_INT >= 29 &&
@@ -168,6 +176,7 @@ class ModelProbeEntryActivity : Activity() {
             "backend_switch_cost_ns" to null,
             "backend_switch_cost_status" to "not_measured_in_single_backend_probe",
         )
+        progress?.mark("artifact_finalization", "start")
         ModelProbeArtifacts.writeFinalized(
             root = outputRoot,
             identity = identity,
@@ -179,6 +188,7 @@ class ModelProbeEntryActivity : Activity() {
             delegateEvidence = delegateEvidence,
             summary = summary,
         )
+        progress?.mark("artifact_finalization", "finish")
         Log.i(TAG, "session_finalized=$sessionId artifacts=8 status=succeeded")
     }
 
@@ -195,7 +205,7 @@ class ModelProbeEntryActivity : Activity() {
         repeat(manifest.execution.coldRepetitions) { repetition ->
             val e2eStart = SystemClock.elapsedRealtimeNanos()
             val prepareStart = e2eStart
-            ProbeRawSession.create(manifest, model).use { session ->
+            ProbeRawSession.create(manifest, model, progress).use { session ->
             val prepareNs = SystemClock.elapsedRealtimeNanos() - prepareStart
             val invocation = session.invoke(seed)
             val closeStart = SystemClock.elapsedRealtimeNanos()
@@ -213,9 +223,11 @@ class ModelProbeEntryActivity : Activity() {
             }
         }
         val warmPrepareStart = SystemClock.elapsedRealtimeNanos()
-        ProbeRawSession.create(manifest, model).use { warmSession ->
+        ProbeRawSession.create(manifest, model, progress).use { warmSession ->
         prepare += SystemClock.elapsedRealtimeNanos() - warmPrepareStart
+        progress?.mark("warmup_invocation", "start")
         val warmup = warmSession.invoke(seed)
+        progress?.mark("warmup_invocation", "finish")
         events += event(manifest, "warmup", 0, 0L, warmup.invokeNs, warmup.invokeNs, warmup.outputSha256)
         val warmInvoke = mutableListOf<Long>()
         val warmE2e = mutableListOf<Long>()
@@ -273,7 +285,7 @@ class ModelProbeEntryActivity : Activity() {
         repeat(manifest.execution.coldRepetitions) { repetition ->
             val e2eStart = SystemClock.elapsedRealtimeNanos()
             val prepareStart = e2eStart
-            ProbeDecodedSession.create(this, manifest, model, input).use { session ->
+            ProbeDecodedSession.create(this, manifest, model, input, progress).use { session ->
             val prepareNs = SystemClock.elapsedRealtimeNanos() - prepareStart
             val invocation = session.invoke()
             val hash = decodedHash(invocation)
@@ -291,10 +303,12 @@ class ModelProbeEntryActivity : Activity() {
             }
         }
         val warmPrepareStart = SystemClock.elapsedRealtimeNanos()
-        ProbeDecodedSession.create(this, manifest, model, input).use { warmSession ->
+        ProbeDecodedSession.create(this, manifest, model, input, progress).use { warmSession ->
         prepare += SystemClock.elapsedRealtimeNanos() - warmPrepareStart
+        progress?.mark("warmup_invocation", "start")
         val warmup = warmSession.invoke()
         val warmupHash = decodedHash(warmup)
+        progress?.mark("warmup_invocation", "finish")
         events += event(manifest, "warmup", 0, 0L, warmup.tasksDetectNs, warmup.tasksDetectNs, listOf(warmupHash))
         val warmInvoke = mutableListOf<Long>()
         val warmE2e = mutableListOf<Long>()
@@ -497,6 +511,7 @@ class ModelProbeEntryActivity : Activity() {
         val decodedResults: Map<String, Any?>,
     )
 
+    private var progress: ProbeProgress? = null
     private var activeSessionId: String? = null
     private var activeOutputRoot: File? = null
     private var failureOutputAllowed = false

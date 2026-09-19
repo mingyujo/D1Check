@@ -34,14 +34,18 @@ internal class ProbeDecodedSession private constructor(
     private val image: MPImage,
     private val originalBitmap: Bitmap,
     private val argbBitmap: Bitmap,
+    private val progress: ProbeProgress?,
 ) : AutoCloseable {
     private var closed = false
 
     fun invoke(): ProbeDecodedResult {
         check(!closed) { "Decoded probe session is closed" }
+        progress?.mark("tasks_detect", "start")
         val startedNs = SystemClock.elapsedRealtimeNanos()
         val result = detector.detect(image)
         val finishedNs = SystemClock.elapsedRealtimeNanos()
+        progress?.mark("tasks_detect", "finish")
+        progress?.mark("detection_postprocessing", "start")
         val detections = result.detections().mapNotNull { detection ->
             val category = detection.categories().maxByOrNull { it.score() }
                 ?: return@mapNotNull null
@@ -67,6 +71,7 @@ internal class ProbeDecodedSession private constructor(
                 detection.left.isFinite() && detection.top.isFinite() &&
                 detection.width.isFinite() && detection.height.isFinite()
         }) { "Decoded detector returned invalid values" }
+        progress?.mark("detection_postprocessing", "finish")
         return ProbeDecodedResult(
             detections = detections,
             tasksDetectNs = finishedNs - startedNs,
@@ -84,7 +89,7 @@ internal class ProbeDecodedSession private constructor(
         closed = true
         var first: Throwable? = null
         listOf<() -> Unit>(
-            { detector.close() },
+            { progress?.mark("runtime_close", "start"); detector.close(); progress?.mark("runtime_close", "finish") },
             { image.close() },
             { if (argbBitmap !== originalBitmap) argbBitmap.recycle() },
             { originalBitmap.recycle() },
@@ -104,6 +109,7 @@ internal class ProbeDecodedSession private constructor(
             manifest: ModelProbeManifest,
             model: VerifiedProbeFile,
             input: VerifiedProbeFile,
+            progress: ProbeProgress? = null,
         ): ProbeDecodedSession {
             require(manifest.model.task == ProbeTask.DETECTION) {
                 "Decoded adapter requires detection task"
@@ -137,9 +143,11 @@ internal class ProbeDecodedSession private constructor(
                     .setRunningMode(RunningMode.IMAGE)
                     .setScoreThreshold(ProbeDecodedDetector.SCORE_THRESHOLD)
                     .build()
+                progress?.mark("tasks_runtime_construction", "start")
                 detector = ObjectDetector.createFromOptions(context, options)
+                progress?.mark("tasks_runtime_construction", "finish")
                 return ProbeDecodedSession(
-                    manifest.execution.backend, detector, image, bitmap, argb
+                    manifest.execution.backend, detector, image, bitmap, argb, progress
                 )
             } catch (error: Throwable) {
                 try { detector?.close() } catch (cleanup: Throwable) { error.addSuppressed(cleanup) }
