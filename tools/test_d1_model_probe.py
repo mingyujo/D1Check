@@ -432,7 +432,7 @@ class HostExecutorTest(unittest.TestCase):
                     poll_count += 1
                     return probe.ProcessResult(1 if poll_count == 1 else 0, b"", b"")
                 if "ls" in tail:
-                    return probe.ProcessResult(0, "\n".join(sorted(probe.ARTIFACT_FILES)).encode(), b"")
+                    return probe.ProcessResult(0, "\r\r\n".join(sorted(probe.ARTIFACT_FILES)).encode(), b"")
                 if tail[:3] == ["exec-out", "run-as", probe.PACKAGE_NAME]:
                     return probe.ProcessResult(0, (remote_root / Path(tail[-1]).name).read_bytes(), b"")
                 return probe.ProcessResult(0, b"", b"")

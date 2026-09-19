@@ -992,7 +992,8 @@ def execute_seam(
         device_output.mkdir()
         def verify_remote_set() -> None:
             listing = run(["shell", "run-as", package, "ls", "-1", "-A", device_output_root], 10.0)
-            names = listing.stdout.decode("utf-8").splitlines()
+            # Windows ADB may emit CRCRLF for shell output; empty path names cannot exist.
+            names = [line for line in listing.stdout.decode("utf-8").splitlines() if line]
             if set(names) != ARTIFACT_FILES or len(names) != len(ARTIFACT_FILES):
                 raise ProbeContractError("remote artifact fixed set mismatch")
 
