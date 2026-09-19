@@ -2,7 +2,7 @@
 
 - 개정: 4.4 / 2026-09-18 / A24 주평가와 추가 Android 기기 고정정책 재현평가 분리
 - 기준 코드: `df8192aa61eebacf83df7a7815f0c60c8bbf4004`의 `master`. 이 개정은 문서 변경이며 새 모델·스케줄러 구현 또는 실기기 PASS가 아니다.
-- 현재 작업: `MODEL-02B-SEAM` — 기기 모델명을 하드코딩하지 않는 debug-only 외부 모델 loader, raw/decoded adapter와 host dry-run을 구현한다. 첫 실행은 A24이며 추가 기기는 별도 gate다.
+- 현재 작업: `MODEL-02B-RECOVERY` / `MODEL-02B-HOST-EXEC-VERIFY` — 비정상 종료된 opt-in modelProbe 격리·host 결과 계약을 보존하며 복구한다. 현재 검증 범위와 실기기 결과는 STATUS를 따른다.
 - 새 절대 deadline은 `calibration_pending`, 서비스 하한·성공 기준·최종 반복 수는 `thresholds_pending`이다.
 - 유지: A24 개발·주평가, 기존 80슬롯과 diagnostic v1/v2 원본, CALIB-01B PASS, 실패를 포함한 전체 도착 분모. 추가: 정책 동결 후 최소 한 대의 다른 Android 기기에서 축소 재현평가.
 - 전환: 단일 분류 모델은 기존 기준선으로 보존하고, 서로 다른 두 AI 작업의 요청 배정 문제를 새 주평가로 준비한다. 구체 모델과 마감시간은 아직 미확정이다.
@@ -146,6 +146,10 @@ B2는 같은 장치의 모든 합법적 task별 배정 후보(두 task·두 경�
 | SUBMIT-02 | 10-16~10-20 | 15쪽 이내/10MB 이내 익명 PDF, 재현 자료, 학생별 기여·시연 | 미확인 효과를 기대효과 수치로 대체하지 않음 |
 
 10월 8일까지 A24 기본 비교가 불가능하면 모델·NPU·강화학습을 추가하지 않는다. 추가 기기용 별도 기능을 만들지 않고 같은 runner와 host 도구의 이식성만 유지한다. A24 평가가 끝나기 전 추가 기기 결과로 정책을 튜닝하지 않는다. 남은 기간에는 동작하는 범위에서 결과와 제한을 정리한다. 역할은 사용근거·입력, Android·측정, 정책·분석, 통합·발표로 나누되 팀원 수에 맞춰 겸임하고 서로의 산출물을 교차 검토한다. AI가 제안한 설계·코드는 학생이 설명·검증할 수 있어야 한다.
+
+### SIM-01 준비 gate (2026-09-19 사용자 요청)
+
+이번 실행에서 시뮬레이션 본 실험은 금지한다. `SIM_01_READY`는 MODEL-02B 기기/품질/artifact gate와 TASK-02 실제 완료 경계, PROFILE-02의 기기별 service·transition·thermal·capability 근거를 확보한 뒤 선언한다. 추가로 독립 device profile schema, workload/request class, arrival/service/deadline/thermal 입력, B0~B3/P 결정·목적·제약, seed/반복/KPI, manifest/schema/validator, no-op 검증, 저장/provenance·실행 명령이 있어야 한다. 어느 하나라도 없으면 INCOMPLETE 또는 구체 장애로 BLOCKED다. 기존 smoke 시간을 service profile로 바꾸거나 pending deadline을 임의 숫자로 채우지 않는다. 보조 simulation은 위 8절과 MULTITASK 9절의 실측 보정·holdout 조건을 유지한다.
 
 ## 10. 성공·축소·중단 판정
 

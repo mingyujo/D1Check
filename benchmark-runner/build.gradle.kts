@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+val modelProbeEnabled = providers.gradleProperty("enableModelProbe").orNull == "true"
+
 android {
     namespace = "com.example.d1check.benchmarkrunner"
     compileSdk {
@@ -21,6 +23,17 @@ android {
         externalNativeBuild {
             cmake {
                 cppFlags += "-std=c++17"
+            }
+        }
+    }
+
+    buildTypes {
+        if (modelProbeEnabled) {
+            create("modelProbe") {
+                initWith(getByName("debug"))
+                applicationIdSuffix = ".modelprobe"
+                isDebuggable = true
+                matchingFallbacks += listOf("debug")
             }
         }
     }
@@ -45,6 +58,12 @@ android {
     }
 }
 
+androidComponents {
+    beforeVariants(selector().withBuildType("modelProbe")) { variant ->
+        variant.hostTests[com.android.build.api.variant.HostTestBuilder.UNIT_TEST_TYPE]?.enable = true
+    }
+}
+
 dependencies {
     implementation(project(":telemetry-contract"))
     implementation(libs.androidx.appcompat)
@@ -54,7 +73,9 @@ dependencies {
     implementation(libs.ai.edge.litert.runtime)
     implementation(libs.ai.edge.litert.gpu.api)
     implementation(libs.ai.edge.litert.gpu.runtime)
-    debugImplementation("com.google.mediapipe:tasks-vision:1.0.0")
+    if (modelProbeEnabled) {
+        add("modelProbeImplementation", "com.google.mediapipe:tasks-vision:1.0.0")
+    }
     testImplementation(libs.junit)
     testImplementation("org.robolectric:robolectric:4.14.1")
 }

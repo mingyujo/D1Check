@@ -183,9 +183,14 @@ internal object ModelProbeManifestParser {
         val deviceId = value.nonEmptyString("device_id")
         require(deviceIdRegex.matches(deviceId)) { "Invalid target.device_id" }
         val packageName = value.nonEmptyString("package_name")
-        require(packageName == "com.example.d1check.benchmarkrunner") { "Unexpected target package" }
+        require(packageName == "com.example.d1check.benchmarkrunner.modelprobe") {
+            "Unexpected target package"
+        }
         val apkSha256 = value.sha256("apk_sha256")
         val adbSerial = value.nonEmptyString("adb_serial")
+        require(Regex("[A-Za-z0-9][A-Za-z0-9._:-]{0,255}").matches(adbSerial)) {
+            "Invalid target.adb_serial"
+        }
         val textValues = listOf(
             "manufacturer", "model", "soc", "abi", "android_release", "build_fingerprint",
             "cpu_abi", "cpu_features", "gpu_vendor", "gpu_renderer", "gpu_driver",
@@ -464,9 +469,9 @@ internal enum class ApprovedProbeInput(
     val sha256: String,
 ) {
     CAT_AND_DOG(
-        "https://storage.googleapis.com/mediapipe-assets/cat_and_dog.jpg",
-        "cat_and_dog.jpg",
-        69_041L,
-        "cfa90c34bb93021165e48bd22cfc20dbbb0440ff638a54878939bf30d362e824",
+        "https://storage.googleapis.com/download/storage/v1/b/mediapipe-assets/o/cat_and_dog_2.jpg?generation=1669228153863445&alt=media",
+        "cat_and_dog_2.jpg",
+        145_626L,
+        "85eb9ad2c6b0c397aa873faf97befc4a871d987cea822d9854617415778b6c8c",
     ),
 }

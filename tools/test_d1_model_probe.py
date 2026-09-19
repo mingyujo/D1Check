@@ -324,7 +324,7 @@ class HostExecutorTest(unittest.TestCase):
         adb.write_bytes(b"adb")
         return value, pinned, manifest_path, input_root, output_root, apk, adb
 
-    def test_execute_seam_stages_waits_pulls_and_cleans_without_finalizing(self):
+    def test_execute_seam_pulls_validates_and_cleans_finalized_artifacts(self):
         with tempfile.TemporaryDirectory() as temporary:
             base = Path(temporary)
             value, pinned, manifest_path, input_root, output_root, apk, adb = (
@@ -339,12 +339,67 @@ class HostExecutorTest(unittest.TestCase):
                 "device_id": device_id,
                 "model_id": value["model"]["model_id"],
                 "backend": value["execution"]["backend"],
-                "status": "seam_smoke_only_unfinalized",
-                "finalized": False,
+                "task_id": "classification",
+                "adapter": "litert_raw",
+                "status": "succeeded",
+                "finalized": True,
+                "started_mono_ns": 1,
+                "finished_mono_ns": 124,
                 "elapsed_ns": 123,
-                "details": {},
+                "cold_repetitions": 3,
+                "warmup_repetitions": 1,
+                "warm_repetitions": 10,
+                "prepare_ns": [1, 1, 1, 1],
+                "invoke_ns_cold": [1, 1, 1],
+                "invoke_ns_warmup": 1,
+                "invoke_ns_warm": [1] * 10,
+                "end_to_end_ns_cold": [2, 2, 2],
+                "end_to_end_ns_warm": [1] * 10,
+                "close_ns": [1, 1, 1, 1],
+                "output_hashes": ["0" * 64],
+                "output_element_counts": [1000],
+                "non_finite_count": 0,
+                "success_count": 14,
+                "failure_count": 0,
+                "timeout_count": 0,
+                "delegation_status": "not_applicable_cpu",
+                "accuracy_evaluated": False,
+                "backend_switch_cost_ns": None,
+                "backend_switch_cost_status": "not_measured_in_single_backend_probe",
             }
             summary_bytes = json.dumps(summary).encode("utf-8")
+            remote_root = base / "remote"
+            remote_root.mkdir()
+            identity = {
+                "schema_version": 1, "protocol_version": "model-probe-v1",
+                "session_id": session, "device_id": device_id,
+                "artifact_contract_version": 2,
+                "manifest_sha256": probe.sha256_file(manifest_path),
+                "apk_sha256": value["target"]["apk_sha256"],
+                "model_sha256": value["model"]["sha256"],
+                "model_id": value["model"]["model_id"],
+                "task_id": value["model"]["task_id"], "backend": "CPU",
+            }
+            summary.update(identity)
+            summary_bytes = json.dumps(summary).encode("utf-8")
+            for filename in probe.ARTIFACT_FILES - {"provenance.json", "events.jsonl", "summary.json"}:
+                (remote_root / filename).write_text(json.dumps(identity), encoding="utf-8")
+            (remote_root / "summary.json").write_bytes(summary_bytes)
+            (remote_root / "events.jsonl").write_text(json.dumps(identity) + "\n", encoding="utf-8")
+            artifact_set = []
+            for filename in sorted(probe.ARTIFACT_FILES - {"provenance.json"}):
+                path = remote_root / filename
+                artifact_set.append({
+                    "path": filename,
+                    "byte_count": path.stat().st_size,
+                    "sha256": probe.sha256_file(path),
+                })
+            (remote_root / "provenance.json").write_text(json.dumps({
+                "schema_version": 1,
+                "protocol_version": "model-probe-v1",
+                **identity,
+                "artifact_set": artifact_set,
+            }), encoding="utf-8")
             calls = []
             poll_count = 0
 
@@ -353,6 +408,8 @@ class HostExecutorTest(unittest.TestCase):
                 command = list(argv)
                 calls.append((command, timeout_seconds, allowed_returncodes))
                 tail = command[3:]
+                if tail == ["devices", "-l"]:
+                    return probe.ProcessResult(0, f"List of devices attached\n{value['target']['adb_serial']} device\n".encode(), b"")
                 if tail == ["get-state"]:
                     return probe.ProcessResult(0, b"device\n", b"")
                 if "sha256sum" in tail:
@@ -374,8 +431,10 @@ class HostExecutorTest(unittest.TestCase):
                 if "test" in tail and "-s" in tail:
                     poll_count += 1
                     return probe.ProcessResult(1 if poll_count == 1 else 0, b"", b"")
+                if "ls" in tail:
+                    return probe.ProcessResult(0, "\n".join(sorted(probe.ARTIFACT_FILES)).encode(), b"")
                 if tail[:3] == ["exec-out", "run-as", probe.PACKAGE_NAME]:
-                    return probe.ProcessResult(0, summary_bytes, b"")
+                    return probe.ProcessResult(0, (remote_root / Path(tail[-1]).name).read_bytes(), b"")
                 return probe.ProcessResult(0, b"", b"")
 
             with mock.patch.dict(probe.PINNED_MODELS, {pinned.identifier: pinned}):
@@ -392,20 +451,29 @@ class HostExecutorTest(unittest.TestCase):
                     sleep=lambda _: None,
                 )
 
-            self.assertEqual(result["status"], "completed_unfinalized")
-            self.assertFalse(result["finalized"])
+            self.assertEqual(result["status"], "completed_finalized")
+            self.assertTrue(result["finalized"])
             session_output = output_root / session
             self.assertEqual(
-                json.loads((session_output / "summary.json").read_text("utf-8")),
+                json.loads((session_output / "device" / "summary.json").read_text("utf-8")),
                 summary,
             )
             host = json.loads(
                 (session_output / "host_execution.json").read_text("utf-8")
             )
-            self.assertEqual(host["status"], "completed_unfinalized")
+            self.assertEqual(host["status"], "completed_finalized")
             self.assertTrue(host["activity_dispatched"])
             self.assertTrue(host["summary_pulled"])
+            self.assertTrue(host["artifacts_pulled"])
             self.assertTrue(host["input_cleanup_confirmed"])
+            for key, invalid in {
+                "apk_sha256": "0" * 64, "model_sha256": "0" * 64,
+                "finished_mono_ns": 1, "cold_repetitions": 4,
+                "success_count": True, "invoke_ns_warm": [1],
+                "output_hashes": ["invalid"], "accuracy_evaluated": True,
+            }.items():
+                with self.subTest(field=key), self.assertRaises(probe.ProbeContractError):
+                    probe.validate_finalized_summary({**summary, key: invalid}, value)
             flattened = [part for command, _, _ in calls for part in command]
             self.assertNotIn("uninstall", flattened)
             self.assertNotIn("clear", flattened)
@@ -417,6 +485,96 @@ class HostExecutorTest(unittest.TestCase):
                     for command, _, _ in calls
                 )
             )
+
+            # Each invocation owns a fresh host directory; remote faults must never finalize.
+            for fault in ("extra_part", "changed_summary", "cleanup", "dispatch_cleanup", "unsupported"):
+                with self.subTest(fault=fault):
+                    fault_output = base / fault
+                    fault_output.mkdir()
+                    summary_reads = 0
+                    def faulty_runner(argv, timeout, allowed):
+                        nonlocal summary_reads
+                        tail = list(argv)[3:]
+                        if fault == "extra_part" and "ls" in tail:
+                            return probe.ProcessResult(0, ("\n".join(sorted(probe.ARTIFACT_FILES)) + "\nextra.part").encode(), b"")
+                        if fault == "dispatch_cleanup" and "start" in tail:
+                            raise probe.ProbeProcessError("dispatch interrupted", probe.ProcessResult(9, b"dispatch-out", b"dispatch-err"))
+                        if fault in ("cleanup", "dispatch_cleanup") and "rm" in tail and "-rf" in tail:
+                            raise probe.ProbeProcessError("cleanup denied", probe.ProcessResult(8, b"cleanup-out", b"cleanup-err"))
+                        if tail[:3] == ["exec-out", "run-as", probe.PACKAGE_NAME] and tail[-1].endswith("/summary.json"):
+                            summary_reads += 1
+                            if fault == "unsupported":
+                                return probe.ProcessResult(0, json.dumps({**identity, "status": "unsupported", "error_type": "Unsupported", "error": "strict GPU gate", "finalized": False}).encode(), b"")
+                            if fault == "changed_summary" and summary_reads == 2:
+                                return probe.ProcessResult(0, summary_bytes + b" ", b"")
+                        return runner(argv, timeout, allowed)
+                    with mock.patch.dict(probe.PINNED_MODELS, {pinned.identifier: pinned}), self.assertRaises(probe.ProbeContractError):
+                        probe.execute_seam(value, manifest_path, input_root, adb, apk, fault_output,
+                                           value["target"]["adb_serial"], process_runner=faulty_runner,
+                                           sleep=lambda _: None)
+                    record = json.loads((fault_output / session / "host_execution.json").read_text())
+                    self.assertFalse(record["finalized"])
+                    self.assertTrue(all(command["argv"][1:3] == ["-s", value["target"]["adb_serial"]] for command in record["commands"]))
+                    if fault == "cleanup":
+                        self.assertEqual(record["status"], "cleanup_failed")
+                        self.assertIsNone(record["error"])
+                    else:
+                        self.assertTrue(record["process_force_stopped"])
+                    if fault == "dispatch_cleanup":
+                        self.assertIn("dispatch interrupted", record["error"])
+                        self.assertTrue(record["suppressed_cleanup_errors"])
+                        self.assertTrue(any(c.get("returncode") == 9 and c.get("stderr") == "dispatch-err" for c in record["commands"]))
+
+    def test_unfinalized_summary_is_rejected(self):
+        value = manifest()
+        summary = {
+            "schema_version": 1,
+            "protocol_version": "model-probe-v1",
+            "session_id": value["identity"]["session_id"],
+            "device_id": value["target"]["device_id"],
+            "model_id": value["model"]["model_id"],
+            "backend": value["execution"]["backend"],
+            "status": "seam_smoke_only_unfinalized",
+            "finalized": False,
+            "apk_sha256": value["target"]["apk_sha256"],
+            "model_sha256": value["model"]["sha256"],
+        }
+        with self.assertRaisesRegex(probe.ProbeContractError, "missing finalized fields"):
+            probe.validate_finalized_summary(summary, value)
+
+    def test_device_inventory_requires_one_exact_online_serial(self):
+        probe.validate_adb_inventory(b"List of devices attached\nserial-a24 device product:a24\n", "serial-a24")
+        for payload in (b"", b"serial-a24 offline\n", b"other device\n",
+                        b"serial-a24 device\nother device\n"):
+            with self.subTest(payload=payload), self.assertRaises(probe.ProbeContractError):
+                probe.validate_adb_inventory(payload, "serial-a24")
+
+    def test_stale_remote_session_is_rejected_without_deleting_its_inputs(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            value, pinned, manifest_path, input_root, output_root, apk, adb = self._fixture(Path(temporary))
+            calls = []
+
+            def runner(argv, timeout_seconds, allowed_returncodes):
+                tail = list(argv)[3:]
+                calls.append(tail)
+                if tail == ["devices", "-l"]:
+                    return probe.ProcessResult(0, f"{value['target']['adb_serial']} device\n".encode(), b"")
+                if tail == ["get-state"]:
+                    return probe.ProcessResult(0, b"device\n", b"")
+                return probe.ProcessResult(1, b"stale", b"do not remove")
+
+            with mock.patch.dict(probe.PINNED_MODELS, {pinned.identifier: pinned}):
+                with self.assertRaises(probe.ProbeContractError):
+                    probe.execute_seam(value, manifest_path, input_root, adb, apk, output_root,
+                                       value["target"]["adb_serial"], process_runner=runner)
+            self.assertFalse(any("rm" in command or "push" in command for command in calls))
+            record = json.loads((output_root / value["identity"]["session_id"] / "host_execution.json").read_text())
+            self.assertFalse(record["owned_app_input_root"])
+            self.assertEqual(record["commands"][-1]["stderr"], "do not remove")
+            with mock.patch.dict(probe.PINNED_MODELS, {pinned.identifier: pinned}):
+                with self.assertRaisesRegex(probe.ProbeContractError, "host session output already exists"):
+                    probe.execute_seam(value, manifest_path, input_root, adb, apk, output_root,
+                                       value["target"]["adb_serial"], process_runner=runner)
 
     def test_execute_seam_hash_mismatch_fails_closed_and_still_cleans(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -430,6 +588,8 @@ class HostExecutorTest(unittest.TestCase):
                 command = list(argv)
                 calls.append(command)
                 tail = command[3:]
+                if tail == ["devices", "-l"]:
+                    return probe.ProcessResult(0, f"List of devices attached\n{value['target']['adb_serial']} device\n".encode(), b"")
                 if tail == ["get-state"]:
                     return probe.ProcessResult(0, b"device\n", b"")
                 if "sha256sum" in tail:
@@ -477,6 +637,8 @@ class HostExecutorTest(unittest.TestCase):
                 command = list(argv)
                 calls.append((command, timeout_seconds))
                 tail = command[3:]
+                if tail == ["devices", "-l"]:
+                    return probe.ProcessResult(0, f"List of devices attached\n{value['target']['adb_serial']} device\n".encode(), b"")
                 if tail == ["get-state"]:
                     return probe.ProcessResult(0, b"device\n", b"")
                 if "sha256sum" in tail:
@@ -528,6 +690,10 @@ class HostExecutorTest(unittest.TestCase):
             self.assertEqual(host["status"], "failed")
             self.assertTrue(host["activity_dispatched"])
             self.assertFalse(host["summary_pulled"])
+            self.assertTrue(host["process_force_stopped"])
+            self.assertTrue(
+                any("force-stop" in command for command, _ in calls)
+            )
             self.assertTrue(
                 any(
                     command[3:8]
@@ -553,7 +719,13 @@ class HostExecutorTest(unittest.TestCase):
 
 class ArtifactValidationTest(unittest.TestCase):
     def _write_artifacts(self, root: Path, session_id: str, device_id: str):
-        identity = {"session_id": session_id, "device_id": device_id}
+        identity = {
+            "schema_version": 1, "protocol_version": "model-probe-v1",
+            "session_id": session_id, "device_id": device_id,
+            "artifact_contract_version": 2, "manifest_sha256": "a" * 64,
+            "apk_sha256": "b" * 64, "model_sha256": "c" * 64,
+            "model_id": "fixture", "task_id": "classification", "backend": "CPU",
+        }
         for filename in probe.ARTIFACT_FILES - {"provenance.json", "events.jsonl"}:
             (root / filename).write_text(json.dumps(identity), encoding="utf-8")
         (root / "events.jsonl").write_text(
@@ -584,6 +756,24 @@ class ArtifactValidationTest(unittest.TestCase):
             self._write_artifacts(root, session, "a24-primary")
             result = probe.validate_artifacts(root, session, "a24-primary")
             self.assertEqual(result["file_count"], 8)
+
+    def test_rehashed_artifact_with_mismatched_binding_is_rejected(self):
+        session = "71d5f7df-356f-4b3e-9ea7-a4be9d887801"
+        for key in ("model_id", "model_sha256", "apk_sha256", "manifest_sha256", "backend"):
+            with self.subTest(key=key), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                self._write_artifacts(root, session, "a24-primary")
+                path = root / "metadata.json"
+                value = json.loads(path.read_text())
+                value[key] = "wrong"
+                path.write_text(json.dumps(value))
+                provenance_path = root / "provenance.json"
+                provenance = json.loads(provenance_path.read_text())
+                entry = next(e for e in provenance["artifact_set"] if e["path"] == path.name)
+                entry.update(byte_count=path.stat().st_size, sha256=probe.sha256_file(path))
+                provenance_path.write_text(json.dumps(provenance))
+                with self.assertRaisesRegex(probe.ProbeContractError, "binding mismatch"):
+                    probe.validate_artifacts(root, session, "a24-primary")
 
     def test_nested_provenance_replaced_artifact_and_event_identity_fail_closed(self):
         session = "71d5f7df-356f-4b3e-9ea7-a4be9d887801"

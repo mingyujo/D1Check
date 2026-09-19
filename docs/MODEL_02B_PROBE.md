@@ -1,11 +1,37 @@
 # MODEL-02B 기기 이식형 모델 probe 계약
 
-- 문서 버전: 2 / 2026-09-18
-- 상태: **MODEL_02B_HOST_EXEC_CODE_PASS / host mock 동작 검증, 실제 ADB·Android 실기기 미검증**
+- 문서 버전: 4 / 2026-09-20
+- 상태: **MODEL-02B-RECOVERY / INCOMPLETE** — 이전 A24 부분 실행을 발견했으며 현재 버전 전체 gate를 재검증한다.
 - 상위 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.4
 - 입력 판정: [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)의 EfficientNet-Lite0 host PASS와 EfficientDet-Lite0 비배포 연구용 조건부 PASS
 - 대상: Galaxy A24 `SM-A245N`을 첫 pilot·주평가 기기로 사용하고, 같은 seam과 manifest로 최소 한 대의 추가 Android 기기를 후속 probe한다. 추가 기기 모델은 아직 미선정이다.
-- protocol/schema: `model-probe-v1` / `1`. debug source set과 `tools/d1_model_probe.py execute-seam`에 bounded host 실행기가 구현됐지만 실제 기기 PASS와 finalized 실행기는 아니며 기존 v1/v2/calibration과 분리한다.
+- protocol/schema: `model-probe-v1` / `1`, artifact contract `2`. opt-in `modelProbe` source set과 bounded host 실행기는 artifact 저장·회수·cleanup을 검증한다. 이는 모델 품질·GPU 승인·service profile PASS와 구분하며 기존 v1/v2/calibration과 분리한다.
+
+## 2026-09-19 복구 개정 (아래 2026-09-18 seam 설명보다 우선)
+
+- 현재 구현은 `-PenableModelProbe=true`에서만 생성되는 `modelProbe` build type이다. `src/modelProbe`와 Tasks Vision dependency는 이 variant에만 포함한다. 전용 JVM 테스트는 `src/testModelProbe`에 있다. 일반 debug/release에는 probe Activity·코드·Tasks dependency를 넣지 않는다.
+- APK application ID는 `com.example.d1check.benchmarkrunner.modelprobe`, Activity는 `com.example.d1check.benchmarkrunner.ModelProbeEntryActivity`, action은 `com.example.d1check.benchmarkrunner.action.MODEL_PROBE`다. probe Activity는 ADB 진입을 위해 exported이며 `:model_probe` process를 사용한다. 전용 APK의 명시적 연구 진입점이며 production 앱 entry가 아니다. 상속된 기존 launcher와 구분한다. Tasks 전이 의존성의 `INTERNET` 권한은 manifest merge에서 명시적으로 제거한다.
+- manifest의 `model-probe-v1`/schema 1은 유지한다. 결과에는 별도 **artifact_contract_version=2**를 요구한다. 모든 JSON/event/provenance에 session/device/task/model/backend 및 model/APK/원본 manifest SHA-256을 결합한다. 원본 manifest hash가 runtime/input/comparator/execution 설정을 함께 고정한다. 이전 결과를 새 버전으로 재작성하지 않는다.
+- `finalized=true`는 8개 artifact의 영구 저장·hash 집합 완료만 의미한다. raw 수치 비교·decoded 품질·GPU delegation·MODEL-02B PASS·PROFILE-02 완료를 뜻하지 않는다. GPU observed backend는 증거 전 `unverified`다. memory는 시작/종료 snapshot이며 peak가 아니다. probe의 `end_to_end_ns_*`는 해당 probe 호출 경계이며 사용자 요청 read→output/persist service가 아니다.
+- executor는 정확히 한 online device와 고정 serial을 요구하고 새 session 경로만 staging한다. stale/replay 거부 시 기존 입력을 삭제하지 않는다. dispatch 이후 실패하면 전용 package를 bounded force-stop한 뒤 이번 실행이 소유한 입력만 정리한다. command argv/timeout/returncode/stdout/stderr·수신 summary·실패 기록은 host output에 남긴다.
+- decoded sample의 미커밋 교체를 확인했다. 현재 파일은 `cat_and_dog_2.jpg`, GCS generation `1669228153863445`, 145,626 bytes, SHA-256 `85eb9ad2c6b0c397aa873faf97befc4a871d987cea822d9854617415778b6c8c`다. 2026-09-19 고정 원 URL을 직접 읽어 HTTP 200·generation·bytes/hash를 재확인했다. **아래 기존 cat_and_dog.jpg golden은 이 sample에 전용하지 않는다. 새 decoded golden/품질 gate는 INCOMPLETE다.**
+- Tasks ObjectDetector의 CPU thread 수는 현재 API에서 설정·관측하지 못하므로 요청값과 `not_exposed_by_tasks_api`를 분리 기록한다. 고정 CPU thread가 집행된 profile로 사용하지 않는다.
+- 현재 raw artifact에는 수치 배열 대신 output hash만 있어 CPU/GPU tolerance 검증은 pending이다. NPU probe, peak memory, request service profile, scheduler, simulation manifest/validator는 구현되지 않았다. 미지원/실패를 CPU 성공으로 대체하지 않는다.
+- 2026-09-20 보강: Android는 저장된 8개 artifact의 identity·size/hash·모든 event를 다시 읽고 검증한다. stale output root는 실행 전에 거부한다. host는 pull 전후 원격 exact set과 각 regular non-symlink file을 확인하며 `.part`·추가 파일을 거부한다. 실패 summary도 session/device/model/backend/APK/model/manifest hash로 검증한다. dispatch/cleanup 오류를 fault 주입으로 분리 검증했다.
+
+검증/빌드 명령:
+
+```powershell
+.\gradlew.bat --no-daemon -g .gradle-user :benchmark-runner:compileDebugKotlin
+.\gradlew.bat --no-daemon -g .gradle-user -PenableModelProbe=true :benchmark-runner:testModelProbeUnitTest --tests '*ModelProbe*'
+.\gradlew.bat --no-daemon -g .gradle-user testDebugUnitTest lintDebug assembleDebug
+.\gradlew.bat --no-daemon -g .gradle-user -PenableModelProbe=true :benchmark-runner:assembleModelProbe
+python -B -m unittest tools.test_d1_model_probe -v
+```
+
+APK는 `benchmark-runner/build/outputs/apk/modelProbe/output-metadata.json`의 applicationId·단일 output file과 실제 APK manifest/hash를 대조해 선택한다. `execute-seam`은 설치하지 않는다. 서명·기기·열 gate 확인 후 명시적 APK 설치를 별도로 수행한다. host result root는 `<output-root>/<session>/device/`이며 `host_execution.json`과 `received_summary.json`은 별도 host 관측 파일이다. 완료 artifact와 실패·부분 artifact를 합치지 않는다.
+
+이전 외부 시도는 `D1Check_Data/SIM-01_READY_20260919`에 원본 그대로 보존한다. 해당 폴더 이름은 준비 판정이 아니다. 복구 검사·실제 실행 결과는 [PROJECT_STATUS.md](PROJECT_STATUS.md)를 따른다.
 
 ## 1. 목적과 현재 코드 경계
 
@@ -77,14 +103,14 @@ CPU 기준과 GPU 후보를 score 내림차순, label, box 순으로 canonicaliz
 
 Android decoded 경로는 MediaPipe Tasks ObjectDetector의 정확한 API 호출 전체를 `tasks_detect_ns`로 측정한다. 내부 inference만 분리되지 않으면 이를 `Interpreter.run_ns`라고 부르지 않는다. [공식 Android sample](https://github.com/google-ai-edge/mediapipe-samples/blob/main/examples/object_detection/android/app/build.gradle)이 사용하는 Tasks Vision `1.0.0`을 debug-scoped **build 후보**로 고정했다. 기존 LiteRT `1.4.2`와의 native dependency 충돌·APK 크기·A24 로딩 검증 전에는 승인 runtime으로 승격하지 않는다. `latest.release`는 금지한다.
 
-## 5. debug 전용 구현 seam
+## 5. 전용 구현 seam (현재 경로는 상단 복구 개정 적용)
 
 `MODEL-02B-SEAM`은 다음 최소 단위로 구현한다.
 
-1. `src/debug`의 unexported probe component와 debug-only host entry를 사용한다. release variant와 기존 calibration/formal/diagnostic entry에는 연결하지 않는다.
+1. `src/modelProbe`의 opt-in 전용 APK·exported ADB entry를 사용한다. 일반 debug/release 및 기존 calibration/formal/diagnostic entry에는 연결하지 않는다.
 2. `ProbeModelFile`은 app-private session root 아래 regular non-symlink file만 허용하고 canonical containment·filename·bytes·SHA-256을 확인한 뒤 read-only mmap한다. 기존 `ModelLoader`는 변경하지 않는다.
 3. raw adapter는 manifest tensor 계약과 실제 Interpreter tensor를 대조하고 CPU/GPU 사이에 silent fallback하지 않는다.
-4. decoded adapter는 Tasks Vision dependency를 debug scope에만 추가하고 검증된 read-only direct/mapped buffer를 `BaseOptions.setModelAssetBuffer()`로 전달한다. CPU/GPU delegate, threshold, max results를 명시하고 초기화·호출·close는 같은 전용 worker thread에서 수행한다.
+4. decoded adapter는 Tasks Vision dependency를 modelProbe scope에만 추가하고 검증된 read-only direct/mapped buffer를 `BaseOptions.setModelAssetBuffer()`로 전달한다. CPU/GPU delegate, threshold, max results를 명시하고 초기화·호출·close는 같은 전용 worker thread에서 수행한다.
 5. timeout은 host와 device 양쪽에서 bounded로 집행하고 최초 오류를 보존한다. cleanup 오류는 suppressed로 기록한다.
 6. host 도구는 download→hash→stage→launch→log/artifact pull→validate→input cleanup 확인을 담당한다. 임의 shell 문자열을 조립하지 않고 고정 argv와 검증된 UUID/filename만 사용한다.
 7. 기기별 capability와 결과는 `device_id`로 분리한다. serial·model 문자열로 코드 분기하거나 특정 모델명을 allowlist하여 통과시키지 않는다. 지원 여부는 실제 runtime 초기화·tensor/quality·delegate evidence로 판정한다.
@@ -92,7 +118,7 @@ Android decoded 경로는 MediaPipe Tasks ObjectDetector의 정확한 API 호출
 Tasks Vision dependency가 기존 LiteRT native library와 충돌하면 기존 runner 의존성을 억지로 교체하지 않는다. 별도 debug probe module을 만들거나 decoded A24 cell을 보류하고 `SCOPE-03`에서 범위를 재판정한다.
 
 
-현재 첫 구현은 manifest/file fail-closed, raw adapter, decoded adapter, 격리 debug entry와 host validation·argv plan까지만 제공한다. debug entry 결과는 `seam_smoke_only_unfinalized`이며 성공 provenance를 만들지 않는다. 실제 download/subprocess/ready/pull/delegate-log finalization과 고정 artifact 전체 생성은 다음 구현 gate다.
+현재 구현은 manifest/file fail-closed, raw/decoded adapter, 격리 entry, 8-file 저장·재검증과 bounded host staging/pull/cleanup을 제공한다. 이전 `seam_smoke_only_unfinalized` 결과는 새 validator가 거부하며 원본을 보존한다. 다운로드는 실행자가 원 URL에서 별도로 수행한다. 수치 비교·decoded 품질·delegate 승인·peak memory는 후속 gate다.
 
 ## 6. 실행 순서와 반복
 
@@ -151,9 +177,9 @@ cell 상태는 `passed`, `failed`, `unsupported`, `unverified` 중 하나다.
 4. 각 입력을 `.part`로 push/copy하고 shared·app-private 양쪽 SHA-256을 확인한 뒤 atomic rename한다.
 5. `am start -W` 성공을 Activity dispatch acknowledgement로만 기록한다. 이를 모델 ready로 해석하지 않는다.
 6. app-private `summary.json`의 non-empty 상태를 device maximum duration과 최대 60초 host grace 안에서 polling한다.
-7. summary를 `exec-out run-as ... cat`으로 pull하고 protocol/session/device/model/backend identity와 `seam_smoke_only_unfinalized` 상태를 검증한다.
+7. summary를 `exec-out run-as ... cat`으로 pull하고 protocol/session/device/task/model/backend/APK/model/manifest hash 및 완료 횟수·단조 시간 계약을 검증한다. `seam_smoke_only_unfinalized`는 거부한다.
 8. 성공·실패·timeout 모두 exact session 입력 경로만 bounded cleanup하고 부재를 확인한다.
-9. host에는 `<output-root>/<session>/summary.json`과 `host_execution.json`을 남긴다. 두 파일은 실행·실패 관측 증거이며 finalized 8-file provenance를 대신하지 않는다.
+9. host에는 `<output-root>/<session>/received_summary.json`, `host_execution.json`, `device/`의 8개 artifact를 남긴다. 원격 exact set·regular file, provenance hash, 전체 identity 및 두 번 받은 summary의 byte 일치를 검증한다. cleanup 실패이면 host finalized 성공을 반환하지 않는다. artifact 완료는 모델 품질·실제 GPU 승인과 별개다.
 
 실행 형식:
 
@@ -169,4 +195,4 @@ cell 상태는 `passed`, `failed`, `unsupported`, `unverified` 중 하나다.
 
 host 실행기는 APK를 설치·삭제하거나 `pm clear`를 실행하지 않는다. 설치 APK hash는 device Activity가 manifest와 대조한다. 서명이 다르거나 APK가 설치되지 않았거나 `run-as`가 불가능하면 fail-closed다. GPU 결과는 device summary가 성공해도 delegate log finalization 전까지 `unfinalized`다.
 
-2026-09-18 격리 검증에서는 `tools.test_d1_model_probe` 14건과 `compileall`이 통과했다. 성공 경로, shared SHA 불일치, bounded summary timeout, cleanup, fixed argv/`shell=False`를 mock subprocess로 관찰했다. 전체 저장소 Python 회귀와 실제 ADB·A24·추가 Android 기기는 이 변경 이후 아직 실행하지 않았다.
+2026-09-18의 mock 14건 기록은 이력이다. 2026-09-20 현재 버전의 명령·return code·JUnit/SARIF·APK·실기기 gate는 [PROJECT_STATUS.md](PROJECT_STATUS.md)와 연결된 복구 보고서를 따른다. 과거 실행을 현재 device PASS로 전용하지 않는다.

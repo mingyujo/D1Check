@@ -10,6 +10,8 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.security.MessageDigest
 
+internal class ProbeUnsupportedBackendException(message: String) : IllegalStateException(message)
+
 internal data class ProbeRawInvocation(
     val seed: Int,
     val inputSha256: String,
@@ -98,8 +100,10 @@ internal class ProbeRawSession private constructor(
                             "GPU configuration SHA-256 mismatch"
                         }
                         val compatibility = CompatibilityList()
-                        require(compatibility.isDelegateSupportedOnThisDevice) {
-                            "GPU delegate is unsupported by the strict compatibility list"
+                        if (!compatibility.isDelegateSupportedOnThisDevice) {
+                            throw ProbeUnsupportedBackendException(
+                                "GPU delegate is unsupported by the strict compatibility list"
+                            )
                         }
                         delegate = GpuDelegate(profile.options())
                         options.addDelegate(delegate)

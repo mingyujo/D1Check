@@ -172,6 +172,14 @@
 - 이전 결정 관계: 2026-09-16 CALIB-01B-FIX2의 A24-only는 legacy `calibration-v1`에 그대로 적용한다. 2026-09-17 개정 4/4.1의 새 주평가 A24-only 부분은 `multitask-v1`에 한해 이 결정으로 대체한다.
 - 영향: PLAN 개정 4.4, STATUS, MODEL-02 inventory/probe, SCOPE evidence, MULTITASK protocol. 현재 production 구현·실기기 PASS를 뜻하지 않는다.
 
+## 2026-09-19 — 비정상 종료 복구와 probe APK 격리
+
+- 상태: 채택 — 사용자가 feature/pre-simulation-ready-20260919의 미커밋 작업 보존·복구 및 최소 A24 smoke를 명시적으로 요청했다. push/PR/merge는 하지 않는다.
+- 결정: 09-18 debug 전용 seam을 opt-in modelProbe variant와 별도 applicationId로 좁힌다. 일반 debug/release와 legacy production 경로를 보존한다. 전용 테스트만 testModelProbe에 둔다.
+- 결과 저장 완료와 모델/기기 PASS를 분리한다. manifest schema 1과 legacy v1/v2/calibration은 유지하고, 결과 binding 강화는 artifact_contract_version=2로 명시한다. 과거 artifact는 보존하고 새 계약을 소급 적용해 수정하지 않는다.
+- 미커밋 sample 교체는 bytes/source 확인만 완료했다. 새 sample에 기존 golden·정확도 판정을 전용하지 않는다. 새 decoded golden과 raw CPU/GPU 수치 gate는 미완료다.
+- SIM-01 준비는 MODEL-02B 및 TASK-02/PROFILE-02의 실제 완료 경계를 충족해야 한다. probe 호출시간을 사용자 요청 service distribution으로 승격하지 않는다. deadline/threshold/repetition pending은 그대로 유지한다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

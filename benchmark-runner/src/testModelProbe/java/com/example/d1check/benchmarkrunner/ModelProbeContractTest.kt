@@ -18,6 +18,68 @@ import java.security.MessageDigest
 @Config(sdk = [35])
 class ModelProbeContractTest {
     @Test
+    fun artifactsBindEveryRecordAndRejectExistingSession() {
+        val parent = Files.createTempDirectory("probe-artifact").toFile()
+        try {
+            val root = File(parent, "session")
+            val identity = mapOf<String, Any?>(
+                "schema_version" to 1, "protocol_version" to "model-probe-v1",
+                "session_id" to "00000000-0000-0000-0000-000000000001",
+                "device_id" to "test-device", "artifact_contract_version" to 2,
+                "manifest_sha256" to "a".repeat(64), "apk_sha256" to "b".repeat(64),
+                "model_sha256" to "c".repeat(64), "model_id" to "fixture",
+                "task_id" to "classification", "backend" to "CPU",
+            )
+            fun write() = ModelProbeArtifacts.writeFinalized(
+                root, identity, identity, listOf(identity), identity, identity,
+                identity, identity, identity,
+            )
+            write()
+            val provenance = JSONObject(File(root, "provenance.json").readText())
+            identity.forEach { (key, value) -> assertEquals(value, provenance.get(key)) }
+            val entries = provenance.getJSONArray("artifact_set")
+            assertEquals(7, entries.length())
+            repeat(entries.length()) { index ->
+                val entry = entries.getJSONObject(index)
+                val file = File(root, entry.getString("path"))
+                assertEquals(file.length(), entry.getLong("byte_count"))
+                assertEquals(sha256(file.readBytes()), entry.getString("sha256"))
+            }
+            assertThrows(IllegalArgumentException::class.java) { write() }
+            assertEquals(8, root.listFiles()!!.size)
+            File(root, "extra.part").writeText("partial")
+            assertThrows(IllegalArgumentException::class.java) { ModelProbeArtifacts.validate(root, identity) }
+            File(root, "extra.part").delete()
+            val metadata = File(root, "metadata.json")
+            metadata.writeText(JSONObject(metadata.readText()).put("device_id", "wrong-device").toString())
+            assertThrows(IllegalArgumentException::class.java) { ModelProbeArtifacts.validate(root, identity) }
+            repeat(entries.length()) { index ->
+                val entry = entries.getJSONObject(index)
+                if (entry.getString("path") == metadata.name) {
+                    entry.put("byte_count", metadata.length()).put("sha256", sha256(metadata.readBytes()))
+                }
+            }
+            File(root, "provenance.json").writeText(provenance.toString())
+            assertThrows(IllegalArgumentException::class.java) { ModelProbeArtifacts.validate(root, identity) }
+        } finally {
+            parent.deleteRecursively()
+        }
+    }
+
+    @Test
+    fun appPrivateInputRootAcceptsCanonicalFilesDirHierarchyOnly() {
+        val filesDir = Files.createTempDirectory("model-probe-files").toFile()
+        val session = "00000000-0000-0000-0000-000000000001"
+        val expected = File(filesDir, "model-probe-inputs/$session")
+        assertEquals(true, expected.mkdirs())
+
+        assertEquals(expected.canonicalFile, canonicalProbeInputRoot(filesDir, "model-probe-inputs", session))
+        assertThrows(IllegalArgumentException::class.java) {
+            canonicalProbeInputRoot(filesDir, "../outside", session)
+        }
+    }
+
+    @Test
     fun manifestIsDeviceDrivenAndRejectsContractDrift() {
         val first = ModelProbeManifestParser.parse(validManifest("a24-primary", "serial-a24"))
         val second = ModelProbeManifestParser.parse(
@@ -100,7 +162,7 @@ class ModelProbeContractTest {
         })
         put("target", JSONObject().apply {
             put("device_id", deviceId)
-            put("package_name", "com.example.d1check.benchmarkrunner")
+            put("package_name", "com.example.d1check.benchmarkrunner.modelprobe")
             put("apk_sha256", "a".repeat(64))
             put("adb_serial", serial)
             put("manufacturer", "vendor")
