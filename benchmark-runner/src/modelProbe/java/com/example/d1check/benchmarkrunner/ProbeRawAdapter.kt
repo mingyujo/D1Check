@@ -69,7 +69,7 @@ internal class ProbeRawSession private constructor(
             } else {
                 "not_applicable_cpu"
             },
-        )
+        ).also { progress?.captureRaw(it) }
     }
 
     override fun close() {
@@ -77,16 +77,12 @@ internal class ProbeRawSession private constructor(
         closed = true
         var first: Throwable? = null
         try {
-            progress?.mark("runtime_close", "start")
-            interpreter.close()
-            progress?.mark("runtime_close", "finish")
+            closeProbeResource(progress, "runtime_close") { interpreter.close() }
         } catch (error: Throwable) {
             first = error
         }
         try {
-            progress?.mark("delegate_close", "start")
-            gpuDelegate?.close()
-            progress?.mark("delegate_close", "finish")
+            closeProbeResource(progress, "delegate_close") { gpuDelegate?.close() }
         } catch (error: Throwable) {
             if (first == null) first = error else first.addSuppressed(error)
         }
@@ -125,8 +121,8 @@ internal class ProbeRawSession private constructor(
                 val buffer = model.readOnlyBuffer.duplicate().apply { rewind() }
                 progress?.mark("interpreter_construction", "start")
                 val interpreter = Interpreter(buffer, options)
-                progress?.mark("interpreter_construction", "finish")
                 try {
+                    progress?.mark("interpreter_construction", "finish")
                     progress?.mark("tensor_allocation", "start")
                     interpreter.allocateTensors()
                     progress?.mark("tensor_allocation", "finish")
@@ -134,9 +130,7 @@ internal class ProbeRawSession private constructor(
                     return ProbeRawSession(manifest, interpreter, delegate, progress)
                 } catch (error: Throwable) {
                     try {
-                        progress?.mark("runtime_close", "start")
-                        interpreter.close()
-                        progress?.mark("runtime_close", "finish")
+                        closeProbeResource(progress, "runtime_close") { interpreter.close() }
                     } catch (cleanup: Throwable) {
                         error.addSuppressed(cleanup)
                     }
@@ -144,7 +138,7 @@ internal class ProbeRawSession private constructor(
                 }
             } catch (error: Throwable) {
                 try {
-                    delegate?.close()
+                    closeProbeResource(progress, "delegate_close") { delegate?.close() }
                 } catch (cleanup: Throwable) {
                     error.addSuppressed(cleanup)
                 }

@@ -197,10 +197,12 @@ host 실행기는 APK를 설치·삭제하거나 `pm clear`를 실행하지 않�
 
 2026-09-18의 mock 14건 기록은 이력이다. 2026-09-20 현재 버전의 명령·return code·JUnit/SARIF·APK·실기기 gate는 [PROJECT_STATUS.md](PROJECT_STATUS.md)와 연결된 복구 보고서를 따른다. 과거 실행을 현재 device PASS로 전용하지 않는다.
 
-## 2026-09-20 ??? ?? ??
+## 2026-09-20 단계별 진단 추가
 
-`ProbeProgress`? ?? ?? root? ??? files/model-probe-progress-v1/<UUID>.jsonl? ???elapsedRealtimeNanos?thread?manifest hash?phase edge? append/fsync??. ?? request/output root ??? manifest ?? ? ?? ???? binding ?? ?? manifest hash? ????. ?? UUID ??? ??? ???? ?? ????. host? force-stop ??? run-as cat?? ?? ????. `tools/d1_probe_progress.py`? session/hash/??/????/phase ?? ????. partial journal? ?? ??? ? finalized?????? PASS? ???.
+`ProbeProgress`는 기존 결과 root와 별개인 `files/model-probe-progress-v1/<UUID>.jsonl`에 순서·elapsedRealtimeNanos·thread·manifest hash·phase edge를 append/fsync한다. 초기 request/output-root 검사는 manifest 결합 전 임시 증거이며 binding 이후 같은 manifest hash만 허용한다. 기존 UUID 파일이 있으면 덮어쓰지 않고 거부한다. host는 force-stop 뒤에도 run-as cat으로 회수 가능하다. `tools/d1_probe_progress.py`가 session/hash/순서/단조시계/phase 짝을 검증한다. partial journal은 진단 자료이며 finalized·성능·품질 PASS가 아니다.
 
-?? raw/API invocation ??? ???? ?? I/O? ??. prepare/end-to-end ??? ?? ??? ???? ? ??? PROFILE-02? ???? ???. Tasks ?? delegate/allocate/readback? ?? API ??? tasks_runtime_construction/tasks_detect ???? ????.
+공식 raw/API invocation 타이머 사이에는 진단 I/O가 없다. prepare/end-to-end 값에는 계측 비용이 있으므로 이 진단을 PROFILE-02로 전용하지 않는다. Tasks 내부 delegate/allocate/readback은 공개 API 밖이라 tasks_runtime_construction/tasks_detect 경계로만 관측한다.
 
-? ?? GPU session e086578d-00f6-410d-becb-8715c6151ede? ?? ??? ????. ?? fb8a750f timeout? ????? exact phase/native ??? ??? unknown??. ??? ?? ?? 120? ??????backend? ??? ???.
+첫 진단 GPU session e086578d-00f6-410d-becb-8715c6151ede는 전체 경계를 완료했다. 이전 fb8a750f timeout은 미재현이며 exact phase/native 원인은 여전히 unknown이다. 성공을 얻기 위해 120초 제한·모델·backend를 바꾸지 않았다.
+
+추가 raw 수치 자료는 `files/model-probe-raw-v1/<UUID>/`의 capture.json과 output_N.f32le이다. 첫 실제 invocation의 output만 little-endian FLOAT32로 보존하고 manifest/session/input/output hashes를 기존 finalized artifact와 대조한다. 기존 8-file 결과 계약은 바꾸지 않는다. 이 sidecar에는 모델·sample bytes가 없다. `tools/d1_probe_compare.py`는 exact set/size/hash/provenance와 PID/session으로 한정한 GPU full delegation을 검사한 뒤 기존 tolerance를 적용한다.

@@ -1,7 +1,7 @@
 # D1Check 현재 상태
 
 - 갱신: 2026-09-20 / 강제 종료 복구 완료, MODEL-02B 후속 gate 미완료.
-- 현재 작업: `MODEL-02B-GPU-DIAG` — A24 탐지 raw GPU의 bounded timeout 원인 규명. `SIM-01 INCOMPLETE`; 시뮬레이션 본 실험·장시간 formal은 실행하지 않았다.
+- 현재 작업: `MODEL-02B-GPU-DIAG` — A24 탐지 raw GPU의 bounded timeout 진단과 수치/decoded gate 진행. 새 진단은 성공했고 과거 원인은 미확정. `SIM-01 INCOMPLETE`; 시뮬레이션 본 실험·장시간 formal은 실행하지 않았다.
 - 브랜치: `feature/pre-simulation-ready-20260919`. 최종 검증 코드 HEAD `3e5b685ad2888c50cb09b9be0ebfd8bf3ef6ca10`; 이후 변경은 문서다. master 수정·push·PR·merge 없음.
 - 기준: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.4, [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md), [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md).
 - 상세 판정·명령·수치·커밋·재개: [PRE_SIMULATION_RECOVERY_20260920.md](PRE_SIMULATION_RECOVERY_20260920.md).
@@ -55,7 +55,9 @@
 2. raw CPU/GPU 수치·decoded golden·품질/메모리 gate를 완료하고, 검증된 backend만 TASK-02 실제 완료 경계에 연결한다.
 3. PROFILE-02 실측·독립 holdout과 deadline/seed/반복 동결, simulation 전용 schema/validator/no-op를 준비한 뒤 SIM-01을 재판정한다. 본 실험은 실행하지 않는다.
 
-## 2026-09-20 GPU ?? ?????
+## 2026-09-20 GPU 진단 체크포인트
 
-- ?? ??: `C:/Users/LG/Documents/D1Check_GPU_Diag/run_20260920/`. `06_gpu_diag.json`, `gpu_progress_validation.json`: 115? monotonic ?? event, ??? phase 0, artifact 8?/cleanup PASS. GPU ?? PID 16876?? 263/263 delegation ? kernel ?? 4?; ?? PASS? ?? ??.
-- probe ?? ?? `model-probe-progress-v1/<session>.jsonl`? ? event fsync??. ?? timer? ?? 8-file ?? ??. JVM targeted 13?/Python 3? PASS; APK `7054a8068729abf5854e44ca8f36d704b741a164486b1bb0e454915b1ef10167`. ??? ?? HEAD + dirty source(context? hashes).
+- 외부 증거: `C:/Users/LG/Documents/D1Check_GPU_Diag/run_20260920/`. 첫 진단 e086578d는 진행 기록 115개·미종료 phase 0·artifact 8개/cleanup PASS, 약 31초에 완료했다. 과거 timeout은 미재현이며 exact phase/원인은 unknown이다.
+- raw 출력 보존과 고정 CPU/GPU comparator를 추가했다. 현재 seed 0/1/2 탐지, seed 0/1 분류가 수치 gate를 통과했으며 남은 분류 seed 2를 실행 중이다. 현재 APK `879f7c18b628bbc8a0fe5cff37ad61b629dd3f4a78ab9a435dde3e759a58b8ea`.
+- JVM targeted 15건, progress/비교 Python 6건, simulation 준비 계약 Python 8건 PASS. 최종 전체 검증은 아직 실행 전이다.
+- host 새 sample golden은 MediaPipe 1.0.1 CPU 3회 동일(cat/horse)이며 실제 정답 데이터가 아니다. 품질/전체 service profile/deadline은 미완료다.

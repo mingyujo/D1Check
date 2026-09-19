@@ -89,7 +89,7 @@ internal class ProbeDecodedSession private constructor(
         closed = true
         var first: Throwable? = null
         listOf<() -> Unit>(
-            { progress?.mark("runtime_close", "start"); detector.close(); progress?.mark("runtime_close", "finish") },
+            { closeProbeResource(progress, "runtime_close") { detector.close() } },
             { image.close() },
             { if (argbBitmap !== originalBitmap) argbBitmap.recycle() },
             { originalBitmap.recycle() },

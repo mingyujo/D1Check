@@ -5,6 +5,8 @@ import android.util.Log
 import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 /** Separate diagnostic journal, never a finalized probe artifact or official timing sample. */
 internal class ProbeProgress(
@@ -17,6 +19,8 @@ internal class ProbeProgress(
     private var sequence = 0
     private var previous = -1L
     private var manifestHash: String? = null
+    private val rawRoot = File(filesDir.canonicalFile, "model-probe-raw-v1/$sessionId")
+    private var captured = false
 
     init {
         require(UUID.fromString(sessionId).toString() == sessionId)
@@ -32,6 +36,28 @@ internal class ProbeProgress(
         require(manifestHash == null && hash.matches(Regex("[a-f0-9]{64}")))
         manifestHash = hash
         mark("manifest_binding", "finish")
+    }
+
+    /** First invocation only; hashes are also present in the finalized 8-file probe result. */
+    fun captureRaw(value: ProbeRawInvocation) {
+        if (captured) return
+        check(manifestHash != null)
+        require(rawRoot.absoluteFile == rawRoot.canonicalFile && !rawRoot.exists() && rawRoot.mkdirs())
+        val outputs = value.outputs.mapIndexed { index, values ->
+            val file = File(rawRoot, "output_$index.f32le")
+            val bytes = ByteBuffer.allocate(values.size * 4).order(ByteOrder.LITTLE_ENDIAN)
+                .apply { values.forEach { putFloat(it) } }.array()
+            FileOutputStream(file).use { it.write(bytes); it.fd.sync() }
+            require(ProbeModelFile.sha256(file) == value.outputSha256[index])
+            mapOf("filename" to file.name, "bytes" to bytes.size, "sha256" to value.outputSha256[index])
+        }
+        val descriptor = mapOf("protocol" to "model-probe-raw-v1", "session_id" to sessionId,
+            "manifest_sha256" to manifestHash, "seed" to value.seed, "backend" to value.backend.name,
+            "input_sha256" to value.inputSha256, "outputs" to outputs)
+        FileOutputStream(File(rawRoot, "capture.json")).use {
+            it.write(ModelProbeArtifacts.json(descriptor).toByteArray(Charsets.UTF_8)); it.fd.sync()
+        }
+        captured = true
     }
 
     @Synchronized
@@ -54,4 +80,16 @@ internal class ProbeProgress(
         sequence++
         mirror(line)
     }
+}
+
+/** Diagnostic storage failure must never prevent native resource cleanup. */
+internal fun closeProbeResource(progress: ProbeProgress?, phase: String, close: () -> Unit) {
+    var first: Throwable? = null
+    listOf<() -> Unit>({ progress?.mark(phase, "start") }, close,
+        { progress?.mark(phase, "finish") }).forEach { operation ->
+        try { operation() } catch (error: Throwable) {
+            if (first == null) first = error else first?.addSuppressed(error)
+        }
+    }
+    first?.let { throw it }
 }

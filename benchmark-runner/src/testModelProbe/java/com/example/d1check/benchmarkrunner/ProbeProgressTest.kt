@@ -14,6 +14,41 @@ import java.nio.file.Files
 class ProbeProgressTest {
     private val session = "00000000-0000-0000-0000-000000000001"
 
+    @Test fun cleanupStillRunsWhenDiagnosticClockFails() {
+        val root = Files.createTempDirectory("progress").toFile()
+        try {
+            var clock = 2L
+            val p = ProbeProgress(root, session, { clock }, {})
+            p.mark("request_validation", "start")
+            clock = 1
+            var closed = false
+            assertThrows(IllegalStateException::class.java) {
+                closeProbeResource(p, "runtime_close") { closed = true }
+            }
+            assertTrue(closed)
+        } finally { root.deleteRecursively() }
+    }
+
+    @Test fun rawCapturePersistsOnlyFirstInvocationWithExactHash() {
+        val root = Files.createTempDirectory("capture").toFile()
+        try {
+            val p = ProbeProgress(root, session, { 1L }, {})
+            p.bind("a".repeat(64))
+            // IEEE float32 little endian 1.0.
+            val bytes = byteArrayOf(0, 0, -128, 63)
+            val digest = java.security.MessageDigest.getInstance("SHA-256").digest(bytes)
+                .joinToString("") { "%02x".format(it) }
+            val value = ProbeRawInvocation(0, "b".repeat(64), listOf(digest),
+                listOf(floatArrayOf(1f)), 1L, ProbeBackend.CPU, "not_applicable_cpu")
+            p.captureRaw(value)
+            p.captureRaw(value)
+            val capture = File(root, "model-probe-raw-v1/$session")
+            assertArrayEquals(bytes, File(capture, "output_0.f32le").readBytes())
+            assertEquals(2, capture.listFiles()!!.size)
+            assertEquals(session, JSONObject(File(capture, "capture.json").readText()).getString("session_id"))
+        } finally { root.deleteRecursively() }
+    }
+
     @Test fun journalIsImmediatelyReadableBoundAndReplaySafe() {
         val root = Files.createTempDirectory("progress").toFile()
         try {
