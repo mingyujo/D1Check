@@ -1,7 +1,7 @@
 # MODEL-02B 기기 이식형 모델 probe 계약
 
 - 문서 버전: 4 / 2026-09-20
-- 상태: **MODEL-02B-RECOVERY / INCOMPLETE** — 이전 A24 부분 실행을 발견했으며 현재 버전 전체 gate를 재검증한다.
+- 상태: **복구·host 검증 완료 / MODEL-02B FIX_REQUIRED / SIM-01 INCOMPLETE** — 2026-09-20 A24 분류 raw CPU는 artifact/cleanup 통과, 탐지 raw GPU는 bounded timeout. raw 수치·decoded 품질·full profile은 미완료다. [복구 보고서](PRE_SIMULATION_RECOVERY_20260920.md)에 실패를 포함한 현재 증거를 기록한다.
 - 상위 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.4
 - 입력 판정: [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)의 EfficientNet-Lite0 host PASS와 EfficientDet-Lite0 비배포 연구용 조건부 PASS
 - 대상: Galaxy A24 `SM-A245N`을 첫 pilot·주평가 기기로 사용하고, 같은 seam과 manifest로 최소 한 대의 추가 Android 기기를 후속 probe한다. 추가 기기 모델은 아직 미선정이다.

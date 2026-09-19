@@ -2,7 +2,7 @@
 
 - 개정: 4.4 / 2026-09-18 / A24 주평가와 추가 Android 기기 고정정책 재현평가 분리
 - 기준 코드: `df8192aa61eebacf83df7a7815f0c60c8bbf4004`의 `master`. 이 개정은 문서 변경이며 새 모델·스케줄러 구현 또는 실기기 PASS가 아니다.
-- 현재 작업: `MODEL-02B-RECOVERY` / `MODEL-02B-HOST-EXEC-VERIFY` — 비정상 종료된 opt-in modelProbe 격리·host 결과 계약을 보존하며 복구한다. 현재 검증 범위와 실기기 결과는 STATUS를 따른다.
+- 현재 작업: `MODEL-02B-GPU-DIAG` — source-set/host 복구·검증은 완료했다. A24 분류 CPU raw smoke는 artifact/cleanup까지 통과했지만 탐지 GPU는 bounded timeout으로 실패했다. 품질·service profile·SIM-01은 미완료이며 [복구 보고서](PRE_SIMULATION_RECOVERY_20260920.md)와 STATUS의 증거 경계를 따른다.
 - 새 절대 deadline은 `calibration_pending`, 서비스 하한·성공 기준·최종 반복 수는 `thresholds_pending`이다.
 - 유지: A24 개발·주평가, 기존 80슬롯과 diagnostic v1/v2 원본, CALIB-01B PASS, 실패를 포함한 전체 도착 분모. 추가: 정책 동결 후 최소 한 대의 다른 Android 기기에서 축소 재현평가.
 - 전환: 단일 분류 모델은 기존 기준선으로 보존하고, 서로 다른 두 AI 작업의 요청 배정 문제를 새 주평가로 준비한다. 구체 모델과 마감시간은 아직 미확정이다.

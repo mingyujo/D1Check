@@ -1,74 +1,56 @@
 # D1Check 현재 상태
 
-- 갱신: 2026-09-18 / MODEL-02B host executor 구현·격리 회귀검증 반영
-- 현재 작업: `MODEL-02B-HOST-EXEC-VERIFY` — 실제 subprocess·atomic ADB staging·SHA readback·Activity dispatch·bounded summary wait/pull·실패 포함 입력 cleanup을 구현했고 mock 회귀 14건과 compileall이 통과했다. 다음 gate는 사용자 로컬 전체 Python 회귀와 실제 A24 1회 실행이며, delegate-log finalization과 A24 PASS는 아직 아니다.
-- 기준: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.4, [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md), [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md), [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)(설계, 미구현).
-- 코드 기준: [초안 PR #2](https://github.com/mingyujo/D1Check/pull/2)의 `docs/competition-plan-v4-20260917` HEAD `177a8f3e9bf2a2091f383444767b7cb49cdf8c66` 위에 별도 stacked 구현 초안으로 진행한다. master에 자동 병합하지 않는다.
-- A24와 추가 기기 실행은 아직 승인·수행하지 않았다. model/sample binary는 저장소·PR·APK에 포함하지 않았다.
-- A24는 개발·주평가 기기다. 정책 동결 뒤 최소 한 대의 다른 Android 기기에서 같은 runner로 축소 재현평가한다. 추가 기기는 아직 미선정·미실행이며, 기존 S26 formal은 새 두 작업 재현평가를 자동 대체하지 않는다.
-- 새 절대 deadline: `calibration_pending`. 서비스 하한·안전/안정성 수치·성공 기준·최종 반복 수: `thresholds_pending`.
+- 갱신: 2026-09-20 / 강제 종료 복구 완료, MODEL-02B 후속 gate 미완료.
+- 현재 작업: `MODEL-02B-GPU-DIAG` — A24 탐지 raw GPU의 bounded timeout 원인 규명. `SIM-01 INCOMPLETE`; 시뮬레이션 본 실험·장시간 formal은 실행하지 않았다.
+- 브랜치: `feature/pre-simulation-ready-20260919`. 최종 검증 코드 HEAD `3e5b685ad2888c50cb09b9be0ebfd8bf3ef6ca10`; 이후 변경은 문서다. master 수정·push·PR·merge 없음.
+- 기준: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.4, [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md), [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md).
+- 상세 판정·명령·수치·커밋·재개: [PRE_SIMULATION_RECOVERY_20260920.md](PRE_SIMULATION_RECOVERY_20260920.md).
+- 외부 증거 E: `C:/Users/LG/Documents/D1Check_Recovery/resume_20260920_020615/`. 최초 diff/index/파일 복사, 명령별 JSON/stdout/stderr, XML/SARIF, source hashes, APK 감사, device context/artifact/cleanup/replay/보존 검증을 남겼다. 이전 상태 원문도 E의 `worktree/docs/PROJECT_STATUS.md`에 보존했다.
 
-## 완료와 미완료의 구분
+## 복구·검증 사실
 
-| 작업 | 상태 | 해석 |
+- 최초 HEAD `f4a7f2a`의 미커밋 이동 7/7 대응. UTF-8/NUL 검사와 컴파일에서 부분 기록·절단 증거 없음. probe 중복·누락 없음.
+- opt-in modelProbe/testModelProbe 격리·별도 applicationId·전용 Tasks 의존성을 복구했다. Android 저장 artifact 재검증, host 원격 fixed set/regular file·실패 identity·cleanup fault, CRCRLF 처리, Android filesDir 정규화를 보강했다.
+- debug/release APK에는 probe·MediaPipe가 없고 modelProbe에만 있다. 모든 APK에 외부 두 모델/sample은 없으며 기존 MobileNet은 보존. 전이 INTERNET 권한은 제거·APK에서 부재 확인.
+- JUnit 최종 probe targeted 1 suite/6 tests, debug 전체 26/119, failure/error/skip 모두 0. runner 97건은 rerun, 루트의 변경 없는 일부 task는 Gradle UP-TO-DATE이며 상세 보고서에서 구분한다.
+- Python targeted 18건(skip 1), 전체 213건(skip 2), failure/error 0. skip은 Windows symlink 권한 제한. compileall·logger self-test exit 0.
+- lintDebug error 0/warning 76. debug/modelProbe compile, debug/release/modelProbe assemble, APK 감사, host dry-run, diff check 통과. 정확한 검증 대상은 E의 `verified_source_files_final.json` 124파일과 명령별 HEAD/dirty로 특정한다.
+- 코드 체크포인트: `aa1b9f0`(격리·artifact 복구), `852ff24`(ADB CRCRLF), `3e5b685`(Android output root 정규화). APK/keystore/cache/개인환경/실험 원본은 커밋하지 않았다.
+
+## A24 직접 실행과 장애
+
+- device ID `a24-sm-a245n-primary`, SM-A245N / Android 16 / API 36 / MT6789 / arm64-v8a. 고정 serial·fingerprint·RAM·ABI·배터리/충전·thermal·화면·저장공간·stale process·원격 기존 artifact를 사전 확인했다.
+- 설치본 인증서와 프로젝트 `.android-user/debug.keystore`가 일치했다. 전역 키 충돌을 해소하고 기존 데이터 백업 뒤 uninstall/clear 없이 업데이트했다.
+- 최종 smoke APK SHA-256: `1edd2fb16bd06473b46494adebbf20cf81c46df14800b5421025d2743c0d4547`.
+- 최초 CPU session `ed8c1147-e91c-43dd-90e1-f3bcab54b54f`: output-root 검사 결함으로 추론 전 실패, host exit 2/timeout. 수정 전 실패 원본·cleanup 성공 기록 보존.
+- 수정 후 CPU session `8f7258a7-ee6c-41d6-a510-28bd4ab1331c`: EfficientNet raw CPU 3 cold+1 warmup+10 warm 완료, 8-file/identity/hash/cleanup PASS, exit 0. CPU thread 설정 4, XNNPACK, 배터리 77%/30.7→30.7°C, thermal 0→0, 화면 off.
+- GPU session `fb8a750f-9b3d-4d03-8df9-e8c1410a4180`: EfficientDet raw GPU host bounded timeout/exit 2. 263/263 GPU delegation·kernel 생성 로그는 있지만 완료 output 없음. GPU PASS·성능·CPU fallback으로 표시하지 않는다. 29.7→29.7°C, thermal 0→0. force-stop·입력 cleanup 성공, suppressed cleanup error 0.
+- timeout의 정확한 native 호출 단계/원인은 미확정이다. 결과는 `MODEL_02B_FIX_REQUIRED(A24)`. 한계를 늘려 성공 처리하지 않았다.
+- 실제 CPU session replay는 dispatch·ownership·삭제 전에 거부, 기존 summary 불변. 세 신규 시도 입력 부재·probe process 부재를 최종 확인했다. 결과 artifact는 E의 `new_probe_results/<session>/`에 있다.
+
+## 작업 상태·시뮬레이션 gate
+
+| 작업 | 상태 | 의미 |
 | --- | --- | --- |
-| SETUP-01, AUDIT-A24-01, DIAGNOSTIC-V2-01, AUDIT-S26-01 | completed(기존 기록) | 측정 기반·기존 자료 감사 |
-| DEFINE-01, CALIB-01A | completed(기존 정의) | 단일 분류 시나리오·legacy protocol. 새 주평가는 개정 4.4로 대체 |
-| CALIB-01B | completed / CALIB_01B_PASS | MobileNet production·host 검증. 두 작업/실기기/정책 효과 PASS가 아님 |
-| CALIB-01C-INPUT | legacy 준비 보류·재계획 | 기존 모델 1001행 라벨과 이미지 입력 미확정. 완료 처리하지 않음 |
-| PLAN-REV04.4 / SCOPE-02 | 문서 개정·근거 조사 완료 | 혼합 요청 범위, 합성 workload 가정, 선행 연구와 증거 경계, A24 주평가+추가 기기 무재튜닝 재현 계약 확정 |
-| MODEL-02A 분류 | HOST_CONTRACT_PASS | EfficientNet-Lite0 v1 source/hash/tensor/내장 labels/license·고정 host output 확인; 실기기 미검증 |
-| MODEL-02A 탐지 | conditional pass / research-only | EfficientDet raw·decoded host golden 통과. exact binary license 귀속 미확인으로 승인 기기 내부 비배포 probe만 허용 |
-| MODEL-02B-PREP | completed / `MODEL_02B_PREP_READY` | [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md)에 기기 이식형 외부 manifest·staging·비교·cleanup·기기별 판정 계약 고정 |
-| MODEL-02B-SEAM / HOST-EXEC / device | seam PASS, host code PASS / device pending | 기존 전체 Gradle·Python 회귀 통과 후 bounded host executor를 추가하고 mock 14건·compileall 통과. 실제 A24·추가 기기·delegate 증거는 미실행; binary 번들 금지 |
-| TASK-02 / PROFILE-02 / SCHED-02 / EVAL-02 / XDEV-02 | pending | A24 adapter→full profile→정책→독립 평가 후 최소 한 대 추가 기기 축소 재현 |
+| SETUP-01 / AUDIT-A24-01 / DIAGNOSTIC-V2-01 / AUDIT-S26-01 | completed(기존) | 기존 측정·감사이며 새 작업 PASS로 전용하지 않음 |
+| DEFINE-01 / CALIB-01A / CALIB-01B | completed(기존) | legacy 단일 모델 설계·host PASS; A24 이미지 calibration 완료 아님 |
+| CALIB-01C-INPUT | 보류·재계획 | 기존 1001행 label·8이미지·host thermal gate 미완료 |
+| SCOPE-02 / MODEL-02A / MODEL-02B-PREP | 기존 판정 유지 | 분류 host PASS, 탐지 비배포 연구용 conditional, 외부 probe 계약 |
+| MODEL-02B-RECOVERY / HOST-EXEC-VERIFY | completed | 소스·host·APK·실제 CPU artifact/cleanup·실패/replay 검증 |
+| MODEL-02B-DEVICE / 품질 | partial / FIX_REQUIRED | 탐지 GPU timeout, raw 수치 비교·새 decoded sample golden·peak memory 미완료 |
+| TASK-02 / PROFILE-02 | pending, 선행 gate 부족 | 실제 사용자 완료/ledger 및 solo/transition/co-run full service·thermal profile 없음 |
+| SCHED-02 / EVAL-02 / XDEV-02 | pending | 정책 동결·독립 A24 평가·추가 기기 재현 미실행 |
+| SIM-01 | INCOMPLETE | simulation schema/validator/no-op·실측 profile·seed/반복/절대 deadline 미준비 |
 
-## MODEL-02A 확인 사실과 남은 제한
+- 새 deadline은 `calibration_pending`, 서비스 하한·안전/안정성·성공 기준·최종 반복 수는 `thresholds_pending`. probe 시간을 request service distribution으로 승격하지 않는다.
+- B0/B1/B2/B3/P, task와 독립인 긴급/일반 등급, W-burst/W-sustain 등은 계획 정의이며 정책 구현·효과 입증이 아니다. 완료 P95와 전체 도착 기준 서비스율을 함께 평가한다.
+- A24는 개발·주평가 기기. 정책 동결 후 최소 한 대의 추가 Android 기기에서 같은 계약으로 별도 profile·축소 재현한다. 성능/thermal 값은 기기별 재측정하며 S26 기존 자료로 대체하지 않는다.
+- 모델 exact hash/labels/host golden은 [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md). EfficientDet exact binary license는 미확인; 실행자 원 URL 직접 확보·비배포 연구 probe만 허용, Git/APK/공유물 번들 금지.
 
-- 정확한 파일·label·tensor·host output은 [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)에 기록했다. `/1/` URL을 고정했고 조사 시점의 `latest`와 byte-identical임을 확인했다.
-- EfficientNet-Lite0 FLOAT32: 18,582,189 bytes, SHA-256 `6c7ab0a6e5dcbf38a8c33b960996a55a3b4300b36a018c4545801de3a3c8bde0`; FLOAT32 `[1,224,224,3] -> [1,1000]`; 내장 labels 1000행; metadata Apache-2.0; LiteRT CPU 3회 output hash 동일.
-- EfficientDet-Lite0 FLOAT32: 13,836,895 bytes, SHA-256 `40338edf5ec70d43e318b0a716a84d4564cd1802759a7a07170c7e43796dbf58`; score `[1,19206,90]`·location `[1,19206,4]`; 내장 90행 중 10 placeholder; raw CPU 3회 동일. metadata license는 null이다.
-- 대안 SSD MobileNetV2 FLOAT32도 11,316,189 bytes, SHA-256 `b8ccb1a25d45455ba52e85f26531948e1cb75efeb94c7c3d456d54fd4d6fbdd2`, 91행 background 포함 계약과 raw CPU 실행을 확인했지만 license가 null이다.
-- Google 공식 안내는 EfficientDet-Lite0 FLOAT32를 내려받아 프로젝트에 저장하도록 안내하고 공식 Apache-2.0 sample은 위 고정 v1 URL을 직접 사용한다. TensorFlow/Kaggle EfficientDet variants도 Apache-2.0이지만 내려받은 공식 metadata TFLite는 SHA-256·dtype·출력 계약이 달라 exact GCS binary의 license 증거로 전용하지 않는다.
-- exact GCS binary 주변 bucket에는 LICENSE/NOTICE가 없고 metadata license도 null이다. 따라서 법적·재배포 승인이 아니라 **비배포 연구 평가에 대한 프로젝트 위험 수용**으로만 조건부 통과시켰다. binary는 저장소·PR·APK·팀 ZIP에 넣지 않으며 배포 전에는 exact license/NOTICE 또는 모델 교체가 필요하다.
-- host `libGLESv2.so.2`는 임시 외부 system library로 해결했다. MediaPipe Tasks 1.0.1 CPU XNNPACK, score threshold 0.5, 공식 `cat_and_dog.jpg`(69,041 bytes, SHA-256 `cfa90c34bb93021165e48bd22cfc20dbbb0440ff638a54878939bf30d362e824`)를 같은 detector에서 3회 실행해 decoded canonical hash `83de431de773572d37ad8849bbca261ae92995fa6208f950823ccfbd40d60413`과 cat/dog 2개 결과가 동일함을 확인했다. host 시간은 A24 수치로 사용하지 않는다.
-- 모델 binary와 host 산출물은 저장소/PR에 추가하지 않았다. APK·ADB·A24·GPU/delegation·메모리·실제 이미지 품질도 실행하지 않았다.
-- 기존 80슬롯·diagnostic v2·CALIB-01B, MobileNet label blocker, workload/기준정책/thermal 주장 한계는 그대로 보존한다.
+## 보존과 다음 행동
 
-## 보존한 CALIB-01B 검증 기록
-
-아래는 2026-09-17 기존 사용자 로컬 Temurin 17.0.20.1+1 실행과 최종 감사 기록이다. 이번에는 재실행하지 않았다. 당시 `gradlew.bat --no-daemon testDebugUnitTest lintDebug assembleDebug --rerun-tasks`는 exit 0 / 161 tasks executed였다.
-
-| 모듈 | Suite/Test | Failure/Error/Skip | lint Error/Warning |
-| --- | --- | --- | --- |
-| app | 3/9 | 0/0/0 | 0/20 |
-| benchmark-runner | 18/97 | 0/0/0 | 0/54 |
-| telemetry-contract | 5/13 | 0/0/0 | 0/2 |
-| 합계 | 26/119 | 0/0/0 | 0/76 |
-
-- artifact 8/8, 이미지 3/3, pipeline 6/6, Activity 1/1. Python 195건·실패/오류 0·기존 Windows symlink skip 1; CALIB targeted 7/7. compileall·logger self-test·assemble PASS.
-- 증거: 모듈별 `build/test-results/testDebugUnitTest/TEST-*.xml`, `build/reports/lint-results-debug.sarif`, `.gradle-user/daemon/9.5.0/daemon-24276.out.log`(사용자 로컬). 이번 원격 조회에서 build 산출물을 읽은 것은 아니다.
-- 당시 runner APK: 55,735,474 bytes, SHA-256 `9c5f0c8c939371311abe2cecdc9198f5935697d5e178b01a232940079ee5a04b`.
-- 당시 app APK: 5,652,356 bytes, SHA-256 `9796c828e9720e28e88a788d1dc3c0dfb4f591fe425f8ba78d4e7bede33dc8a6`.
-- image-v3 hash: `03e507dea1d4111681b6c1120fab7729967a19e49712ccc05d2e72e4f7762cf5`. 기존 schema 2·EXIF·root-only provenance·SUCCEEDED/LATE 계약 유지.
-- 과거 Maven/Robolectric/signing-lock 실패는 위 성공으로 검증 대기가 해제된 이력이다. 새 task의 PASS로 전용하거나 완료한 감사를 반복하지 않는다.
-
-## 기존 자료 위치·범위
-
-- A24 formal 보정 분석: `C:\Users\LG\Documents\D1Check_Analysis\D1Check_A24_analysis_corrected_20260912_233544\CORRECTED_ANALYSIS_RESULT.txt`.
-- A24 diagnostic off/on: `C:\Users\LG\Documents\D1Check_Diagnostics\A24_v2_smoke_off_20260915_013906`, 같은 부모 폴더의 `A24_v2_smoke_on_retry3_20260915_123235`.
-- trace: on 루트의 `runs\a04ef424-1cac-4177-aa89-4cd7f35fb2c4\diagnostics\d1check-630699bd-98c0-4e8f-9c3e-b7273bad2005.perfetto-trace`, 기록상 3,381,748 bytes.
-- S26: `C:\Users\LG\Documents\카카오톡 받은 파일\S26_formal_strict_results.zip`. compatibility-list false/override true와 측정 계약 차이를 공시한다.
-- trace 감사 보고서는 사용자 기록상 별도 외부 경로였으며 이번에 재확인하지 않았다. 과거 Documents 검색 실패를 보고서 부재로 단정하지 않는다.
-- A24 위치 변경·주변온도, APK-source binding, FP32/FP16·GPU 내부 timing·에너지 단위 한계는 PLAN 13절에 보존했다. raw·파생자료를 이번에 재분석하지 않았다.
-
-## 다음 행동 (최대 3개)
-
-1. 사용자 로컬에서 최신 feature branch의 `tools.test_d1_model_probe`, 전체 Python 회귀와 compileall을 실행해 host executor 변경을 재검증한다.
-2. 실제 모델·sample을 저장소 밖 고정 입력 bundle로 준비하고 APK-source binding·manifest·SHA-256을 검증한 뒤 `execute-seam`으로 A24 CPU/GPU seam pilot 한 session을 실행한다.
-3. A24 seam 통과와 delegate-log 판정·정책 freeze 이후 같은 manifest/runner로 최소 한 대의 다른 Android 기기에서 축소 재현한다.
-
-## 변경·검증 범위
-
-이번 구현 조각은 `src/debug`의 host entry·manifest parser·외부 file verifier·LiteRT raw adapter·Tasks decoded adapter, debug-scoped Tasks Vision 1.0.0 후보 의존성, host validator/plan/artifact validator와 테스트를 추가했다. 후속 host executor는 실제 subprocess를 `shell=False` fixed argv로 실행하고 UUID-scoped staging·SHA readback·bounded summary wait/pull·입력 cleanup·host 실행 기록을 추가한다. 사용자 로컬 JDK 17에서 targeted `ModelProbeContractTest`와 루트 `testDebugUnitTest lintDebug assembleDebug --rerun-tasks`가 `BUILD SUCCESSFUL`이었고, Python 전체 205건은 failure/error 0·Windows symlink 권한에 따른 skip 2로 통과했다. compileall과 logger self-test도 동일 production 코드에서 통과했다. Windows checkout의 canonical fixture CRLF를 LF와 동등하게 처리하도록 Kotlin·Python 회귀 검증을 보강했다. debug entry는 격리 process에서 bounded watchdog을 사용하며 성공 provenance를 만들지 않고 `seam_smoke_only_unfinalized`만 남긴다. host executor 변경은 격리된 Python mock 14건과 compileall에서 통과했다. 이 변경 이후 전체 저장소 Python 회귀는 아직 재실행하지 않았다. ADB·설치·A24·추가 기기·Perfetto·Git master 병합은 수행하지 않았다. model/sample/system-library binary, host cache, 가상환경은 포함하지 않는다.
-
+- E의 `preservation_result.json`: A24 formal 834파일(기존 80-slot manifest hash 일치), 분석·diagnostic 40파일, S26 ZIP, 이전 probe 91파일, 기존 기기 artifact 33파일 불변 확인. 기존 v1/v2/calibration/image-v3/timer/main production 경로를 유지했다.
+- 이전 `D1Check_Data/SIM-01_READY_20260919`의 이름은 READY 증거가 아니다. 그 원본과 이전 복구 E `resume_20260919_102344`는 보존했다. 당시 남았던 staging은 이번 사전 검사에서 부재였다.
+1. `MODEL-02B-GPU-DIAG`: 단계별 monotonic 진행 기록으로 탐지 GPU timeout 위치를 확인하고, 기존 bounded gate 안에서 원인을 수정한다.
+2. raw CPU/GPU 수치·decoded golden·품질/메모리 gate를 완료하고, 검증된 backend만 TASK-02 실제 완료 경계에 연결한다.
+3. PROFILE-02 실측·독립 holdout과 deadline/seed/반복 동결, simulation 전용 schema/validator/no-op를 준비한 뒤 SIM-01을 재판정한다. 본 실험은 실행하지 않는다.
