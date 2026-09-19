@@ -18,6 +18,29 @@ import java.security.MessageDigest
 @Config(sdk = [35])
 class ModelProbeContractTest {
     @Test
+    fun outputRootNormalizesFrameworkFilesDirButRejectsStaleAndTraversal() {
+        val files = Files.createTempDirectory("probe-output-root").toFile()
+        try {
+            val session = "00000000-0000-0000-0000-000000000001"
+            val alias = File(files, "../${files.name}")
+            val root = canonicalProbeOutputRoot(alias, "model-probe-v1", session)
+            assertEquals(File(files.canonicalFile, "model-probe-v1/$session"), root)
+            assertThrows(IllegalArgumentException::class.java) {
+                canonicalProbeOutputRoot(alias, "../outside", session)
+            }
+            assertThrows(IllegalArgumentException::class.java) {
+                canonicalProbeOutputRoot(alias, "model-probe-v1", "../escape")
+            }
+            root.mkdirs()
+            File(root, "prior.json").writeText("preserve")
+            assertThrows(IllegalArgumentException::class.java) {
+                canonicalProbeOutputRoot(alias, "model-probe-v1", session)
+            }
+            assertEquals("preserve", File(root, "prior.json").readText())
+        } finally { files.deleteRecursively() }
+    }
+
+    @Test
     fun artifactsBindEveryRecordAndRejectExistingSession() {
         val parent = Files.createTempDirectory("probe-artifact").toFile()
         try {

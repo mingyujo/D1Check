@@ -55,10 +55,8 @@ class ModelProbeEntryActivity : Activity() {
             "session_id must be canonical lowercase UUID"
         }
         activeSessionId = sessionId
-        val outputRoot = File(filesDir, "$OUTPUT_ROOT/$sessionId")
-        require(outputRoot.absoluteFile == outputRoot.canonicalFile && !outputRoot.exists()) {
-            "Stale or invalid probe output root"
-        }
+        val outputRoot = canonicalProbeOutputRoot(filesDir, OUTPUT_ROOT, sessionId)
+        activeOutputRoot = outputRoot
         failureOutputAllowed = true
         val canonicalInputRoot = canonicalProbeInputRoot(filesDir, INPUT_ROOT, sessionId)
         require(canonicalInputRoot.listFiles()?.none { it.name.endsWith(".part") } == true) {
@@ -440,7 +438,7 @@ class ModelProbeEntryActivity : Activity() {
     private fun writeFailureSummary(error: Throwable) {
         if (!failureOutputAllowed) return
         val session = activeSessionId ?: return
-        val root = File(filesDir, "$OUTPUT_ROOT/$session")
+        val root = activeOutputRoot ?: return
         if (!root.exists() && !root.mkdirs()) return
         val summary = File(root, "summary.json")
         if (summary.exists()) return
@@ -500,6 +498,7 @@ class ModelProbeEntryActivity : Activity() {
     )
 
     private var activeSessionId: String? = null
+    private var activeOutputRoot: File? = null
     private var failureOutputAllowed = false
     private var activeDeviceId: String? = null
     private var activeManifestSha256: String? = null
@@ -515,6 +514,20 @@ class ModelProbeEntryActivity : Activity() {
         const val INPUT_ROOT = "model-probe-inputs"
         const val OUTPUT_ROOT = "model-probe-v1"
     }
+}
+
+internal fun canonicalProbeOutputRoot(filesDir: File, rootName: String, sessionId: String): File {
+    require(UUID.fromString(sessionId).toString() == sessionId) { "Invalid output session UUID" }
+    // Android may expose filesDir through /data/user/0 -> /data/data. Normalize that
+    // trusted framework root first, then reject links/traversal below it.
+    val canonicalFilesDir = filesDir.canonicalFile
+    val parent = File(canonicalFilesDir, rootName)
+    val root = File(parent, sessionId)
+    require(parent.absoluteFile == parent.canonicalFile && parent.parentFile == canonicalFilesDir &&
+        root.absoluteFile == root.canonicalFile && root.parentFile == parent && !root.exists()) {
+        "Stale or invalid probe output root"
+    }
+    return root
 }
 
 internal fun canonicalProbeInputRoot(filesDir: File, rootName: String, sessionId: String): File {
