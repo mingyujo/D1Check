@@ -85,8 +85,9 @@ internal class ProbeProgress(
 /** Diagnostic storage failure must never prevent native resource cleanup. */
 internal fun closeProbeResource(progress: ProbeProgress?, phase: String, close: () -> Unit) {
     var first: Throwable? = null
-    listOf<() -> Unit>({ progress?.mark(phase, "start") }, close,
-        { progress?.mark(phase, "finish") }).forEach { operation ->
+    var closeSucceeded = false
+    listOf<() -> Unit>({ progress?.mark(phase, "start") }, { close(); closeSucceeded = true },
+        { progress?.mark(phase, if (closeSucceeded) "finish" else "failed") }).forEach { operation ->
         try { operation() } catch (error: Throwable) {
             if (first == null) first = error else first?.addSuppressed(error)
         }

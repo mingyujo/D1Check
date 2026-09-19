@@ -1,0 +1,496 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "schema_version",
+    "plan_revision",
+    "device_id",
+    "tasks",
+    "capabilities",
+    "workloads",
+    "seed",
+    "deadline",
+    "constraints",
+    "policies",
+    "evidence"
+  ],
+  "properties": {
+    "protocol": {
+      "const": "sim-input-preparation-v1"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "plan_revision": {
+      "const": "4.4"
+    },
+    "device_id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,99}$"
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "task_id",
+          "model_id",
+          "model_sha256",
+          "preprocessing_id",
+          "adapter_status"
+        ],
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,99}$"
+          },
+          "model_id": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,99}$"
+          },
+          "model_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "preprocessing_id": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,99}$"
+          },
+          "adapter_status": {
+            "enum": [
+              "pending",
+              "verified"
+            ]
+          }
+        }
+      },
+      "minItems": 2
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "task_id",
+          "backend",
+          "status",
+          "evidence_sha256"
+        ],
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,99}$"
+          },
+          "backend": {
+            "enum": [
+              "CPU",
+              "GPU"
+            ]
+          },
+          "status": {
+            "enum": [
+              "passed",
+              "failed",
+              "unsupported",
+              "unverified"
+            ]
+          },
+          "evidence_sha256": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "minItems": 4
+    },
+    "workloads": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "workload_id",
+          "arrival_source",
+          "mix"
+        ],
+        "properties": {
+          "workload_id": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,99}$"
+          },
+          "arrival_source": {
+            "const": "synthetic_assumption"
+          },
+          "mix": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "task_id",
+                "priority",
+                "fraction"
+              ],
+              "properties": {
+                "task_id": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,99}$"
+                },
+                "priority": {
+                  "enum": [
+                    "urgent",
+                    "normal"
+                  ]
+                },
+                "fraction": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              }
+            },
+            "minItems": 1
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "seed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract",
+        "master_seed",
+        "repetitions_state"
+      ],
+      "properties": {
+        "contract": {
+          "const": "d1-seed-sha256-v1"
+        },
+        "master_seed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 18446744073709551615
+        },
+        "repetitions_state": {
+          "const": "thresholds_pending"
+        }
+      }
+    },
+    "deadline": {
+      "const": {
+        "state": "calibration_pending",
+        "values_ns": null
+      }
+    },
+    "constraints": {
+      "const": {
+        "state": "thresholds_pending",
+        "max_in_flight": 1,
+        "allowed_corun": []
+      }
+    },
+    "policies": {
+      "const": {
+        "4.4/B0": "task-fixed backend; FIFO; serial",
+        "4.4/B1": "same task-fixed backend; urgent/EDF with common aging; serial",
+        "4.4/B2": "development-selected legal static mapping and concurrency; common thermal pacing",
+        "4.4/B3": "common priority/aging; solo service plus preparation earliest-finish; legal concurrency",
+        "4.4/P": "common priority/aging; measured interference plus preparation; compare start versus wait"
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_adapters",
+        "quality",
+        "solo_service",
+        "backend_transition",
+        "concurrency",
+        "thermal_memory",
+        "independent_holdout",
+        "evaluation_freeze"
+      ],
+      "properties": {
+        "task_adapters": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "path",
+                "sha256",
+                "status"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "status": {
+                  "enum": [
+                    "pending",
+                    "failed",
+                    "verified"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "quality": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "path",
+                "sha256",
+                "status"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "status": {
+                  "enum": [
+                    "pending",
+                    "failed",
+                    "verified"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "solo_service": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "path",
+                "sha256",
+                "status"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "status": {
+                  "enum": [
+                    "pending",
+                    "failed",
+                    "verified"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "backend_transition": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "path",
+                "sha256",
+                "status"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "status": {
+                  "enum": [
+                    "pending",
+                    "failed",
+                    "verified"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "concurrency": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "path",
+                "sha256",
+                "status"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "status": {
+                  "enum": [
+                    "pending",
+                    "failed",
+                    "verified"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "thermal_memory": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "path",
+                "sha256",
+                "status"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "status": {
+                  "enum": [
+                    "pending",
+                    "failed",
+                    "verified"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "independent_holdout": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "path",
+                "sha256",
+                "status"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "status": {
+                  "enum": [
+                    "pending",
+                    "failed",
+                    "verified"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evaluation_freeze": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "path",
+                "sha256",
+                "status"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "status": {
+                  "enum": [
+                    "pending",
+                    "failed",
+                    "verified"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "D1Check simulation preparation draft v1",
+  "description": "Structure only; tools.d1_sim_prepare performs semantic and local evidence validation. Cannot declare SIM-01_READY."
+}

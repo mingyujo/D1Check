@@ -180,6 +180,16 @@
 - 미커밋 sample 교체는 bytes/source 확인만 완료했다. 새 sample에 기존 golden·정확도 판정을 전용하지 않는다. 새 decoded golden과 raw CPU/GPU 수치 gate는 미완료다.
 - SIM-01 준비는 MODEL-02B 및 TASK-02/PROFILE-02의 실제 완료 경계를 충족해야 한다. probe 호출시간을 사용자 요청 service distribution으로 승격하지 않는다. deadline/threshold/repetition pending은 그대로 유지한다.
 
+## 2026-09-20 — GPU 진행 증거·raw 수치와 실제 task 승인 분리
+
+- 상태: 채택 — 사용자의 GPU 진단부터 SIM-01 준비까지 자율 진행 지시를 반영했다. 본 simulation·formal·push/merge는 실행하지 않았다.
+- 결정: 기존 8-file probe와 공식 timer를 유지하고 UUID/manifest/monotonic 순서에 묶인 별도 durable progress와 raw f32 sidecar를 사용한다. cleanup 실패는 진단 저장 오류와 구분한다. 세부 실패를 성공으로 바꾸지 않는다.
+- 증거: 첫 GPU 진단과 raw 12세션이 120초 이내 완료됐고 두 task×CPU/GPU는 seed 0/1/2의 raw 수치 gate를 통과했다. 이전 timeout의 exact phase는 미확정이다. 새 성공으로 과거 원인이 수정됐다고 선언하지 않는다.
+- 제한: Tasks decoded GPU는 완료했지만 Android CPU와 고정 label/box/score gate가 실패했고 actual delegate 이름은 unknown이다. host 새 golden과 Android CPU도 한 score 기준이 실패했다. raw full GPU 증거를 Tasks wrapper에 전용하지 않는다.
+- 다음 판단: 탐지 GPU를 현재의 실제 task/profile 후보에서 제외한다. 탐지 CPU와 분류 GPU 조합은 과학적으로 가능한 축소 후보이나 탐지 CPU golden/품질·adapter 검증 전에는 REDUCED_PASS로 채택하지 않는다. tolerance 완화·CPU fallback·모델 교체는 결정하지 않았다.
+- 준비 범위: 별도 draft simulation schema·validator·seed·no-op·정책 인터페이스·host KPI 계약을 구현하되 TASK-02 production 완성이나 PROFILE-02 실측으로 표시하지 않는다. 실제 service/transition/co-run·품질 입력·holdout·deadline/반복은 열린 gate다.
+- 근거: `C:/Users/LG/Documents/D1Check_GPU_Diag/run_20260920/device_evidence_summary.json`, `decoded_comparison.json`, [SIM_01_PREPARATION.md](SIM_01_PREPARATION.md).
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

@@ -14,6 +14,18 @@ import java.nio.file.Files
 class ProbeProgressTest {
     private val session = "00000000-0000-0000-0000-000000000001"
 
+    @Test fun failedNativeCloseIsNeverRecordedAsFinished() {
+        val root = Files.createTempDirectory("close-failure").toFile()
+        try {
+            val p = ProbeProgress(root, session, { 1L }, {})
+            assertThrows(IllegalStateException::class.java) {
+                closeProbeResource(p, "runtime_close") { error("native close failure") }
+            }
+            val rows = File(root, "model-probe-progress-v1/$session.jsonl").readLines().map(::JSONObject)
+            assertEquals("failed", rows.last().getString("edge"))
+        } finally { root.deleteRecursively() }
+    }
+
     @Test fun cleanupStillRunsWhenDiagnosticClockFails() {
         val root = Files.createTempDirectory("progress").toFile()
         try {

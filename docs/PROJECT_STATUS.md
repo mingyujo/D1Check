@@ -1,63 +1,57 @@
 # D1Check 현재 상태
 
-- 갱신: 2026-09-20 / 강제 종료 복구 완료, MODEL-02B 후속 gate 미완료.
-- 현재 작업: `MODEL-02B-GPU-DIAG` — A24 탐지 raw GPU의 bounded timeout 진단과 수치/decoded gate 진행. 새 진단은 성공했고 과거 원인은 미확정. `SIM-01 INCOMPLETE`; 시뮬레이션 본 실험·장시간 formal은 실행하지 않았다.
-- 브랜치: `feature/pre-simulation-ready-20260919`. 최종 검증 코드 HEAD `3e5b685ad2888c50cb09b9be0ebfd8bf3ef6ca10`; 이후 변경은 문서다. master 수정·push·PR·merge 없음.
-- 기준: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.4, [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md), [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md).
-- 상세 판정·명령·수치·커밋·재개: [PRE_SIMULATION_RECOVERY_20260920.md](PRE_SIMULATION_RECOVERY_20260920.md).
-- 외부 증거 E: `C:/Users/LG/Documents/D1Check_Recovery/resume_20260920_020615/`. 최초 diff/index/파일 복사, 명령별 JSON/stdout/stderr, XML/SARIF, source hashes, APK 감사, device context/artifact/cleanup/replay/보존 검증을 남겼다. 이전 상태 원문도 E의 `worktree/docs/PROJECT_STATUS.md`에 보존했다.
+- 갱신: 2026-09-20 / GPU 진단·raw 수치·decoded gate 판정과 simulation 독립 준비 완료.
+- 현재 작업: `MODEL-02B-DECODED-GATE`. **SIM-01_INCOMPLETE**. 실제 simulation·formal workload 미실행.
+- 브랜치: `feature/pre-simulation-ready-20260919`; 시작 HEAD `10e2a4b67e0cae59108217627993485a5388811b`. master 수정·push·PR·merge 없음.
+- 상위 기준: PLAN 개정 4.4. [준비 계약·PROFILE 절차](SIM_01_PREPARATION.md), [probe 계약](MODEL_02B_PROBE.md), [두 작업 계약](MULTITASK_EXPERIMENT_PROTOCOL.md).
+- 외부 증거 E: `C:/Users/LG/Documents/D1Check_GPU_Diag/run_20260920/`. 최종 상세 보고서 `FINAL_REPORT.md`, 실기기 집계 `device_evidence_summary.json`, decoded 판정 `decoded_comparison.json`.
+- 이전 복구·원본 보존 이력은 [PRE_SIMULATION_RECOVERY_20260920.md](PRE_SIMULATION_RECOVERY_20260920.md)와 `C:/Users/LG/Documents/D1Check_Recovery/resume_20260920_020615/`에 그대로 있다.
 
-## 복구·검증 사실
+## GPU 진단과 지원 경계
 
-- 최초 HEAD `f4a7f2a`의 미커밋 이동 7/7 대응. UTF-8/NUL 검사와 컴파일에서 부분 기록·절단 증거 없음. probe 중복·누락 없음.
-- opt-in modelProbe/testModelProbe 격리·별도 applicationId·전용 Tasks 의존성을 복구했다. Android 저장 artifact 재검증, host 원격 fixed set/regular file·실패 identity·cleanup fault, CRCRLF 처리, Android filesDir 정규화를 보강했다.
-- debug/release APK에는 probe·MediaPipe가 없고 modelProbe에만 있다. 모든 APK에 외부 두 모델/sample은 없으며 기존 MobileNet은 보존. 전이 INTERNET 권한은 제거·APK에서 부재 확인.
-- JUnit 최종 probe targeted 1 suite/6 tests, debug 전체 26/119, failure/error/skip 모두 0. runner 97건은 rerun, 루트의 변경 없는 일부 task는 Gradle UP-TO-DATE이며 상세 보고서에서 구분한다.
-- Python targeted 18건(skip 1), 전체 213건(skip 2), failure/error 0. skip은 Windows symlink 권한 제한. compileall·logger self-test exit 0.
-- lintDebug error 0/warning 76. debug/modelProbe compile, debug/release/modelProbe assemble, APK 감사, host dry-run, diff check 통과. 정확한 검증 대상은 E의 `verified_source_files_final.json` 124파일과 명령별 HEAD/dirty로 특정한다.
-- 코드 체크포인트: `aa1b9f0`(격리·artifact 복구), `852ff24`(ADB CRCRLF), `3e5b685`(Android output root 정규화). APK/keystore/cache/개인환경/실험 원본은 커밋하지 않았다.
+- 기존 raw GPU timeout `fb8a750f-9b3d-4d03-8df9-e8c1410a4180`은 **미재현 / exact phase·원인 unknown**이다. 수정 완료·미지원·native hang으로 단정하지 않는다.
+- 신규 단계별 진단 `e086578d-00f6-410d-becb-8715c6151ede`: 약 31초 안에 진행 event 115개·모든 phase 종료·artifact 8개·cleanup PASS. 263/263 GPU delegation/kernel 4회. 한계 120초 유지.
+- UUID/manifest hash/elapsedRealtimeNanos/순서를 별도 journal에 매 event fsync한다. host 종료·force-stop 뒤에도 회수 가능하며 stale/replay/잘린 기록·시계 역행을 거부한다.
+- raw 출력은 별도 f32le sidecar로 보존하고 기존 finalized artifact의 input/output hash와 대조한다. formal v1/diagnostic v2/calibration-v1/image-v3·공식 timer·8-file artifact 계약은 유지한다.
 
-## A24 직접 실행과 장애
+| 모델·경로 | CPU | GPU | 승인 범위 |
+| --- | --- | --- | --- |
+| EfficientNet raw | seed 0/1/2 수치 PASS | 동일 입력·full delegation·수치 PASS | raw 배선만; 이미지 task 품질·service 아님 |
+| EfficientDet raw | seed 0/1/2 수치 PASS | 263/263·no fallback·수치 PASS | raw 배선만; decoded task 아님 |
+| EfficientDet Tasks decoded | 실행·artifact 완료; host golden score 1건 실패 | 실행 완료; CPU 대비 label/box/score 실패; actual delegate unverified | 실제 task/profile GPU 후보에서 제외 |
 
-- device ID `a24-sm-a245n-primary`, SM-A245N / Android 16 / API 36 / MT6789 / arm64-v8a. 고정 serial·fingerprint·RAM·ABI·배터리/충전·thermal·화면·저장공간·stale process·원격 기존 artifact를 사전 확인했다.
-- 설치본 인증서와 프로젝트 `.android-user/debug.keystore`가 일치했다. 전역 키 충돌을 해소하고 기존 데이터 백업 뒤 uninstall/clear 없이 업데이트했다.
-- 최종 smoke APK SHA-256: `1edd2fb16bd06473b46494adebbf20cf81c46df14800b5421025d2743c0d4547`.
-- 최초 CPU session `ed8c1147-e91c-43dd-90e1-f3bcab54b54f`: output-root 검사 결함으로 추론 전 실패, host exit 2/timeout. 수정 전 실패 원본·cleanup 성공 기록 보존.
-- 수정 후 CPU session `8f7258a7-ee6c-41d6-a510-28bd4ab1331c`: EfficientNet raw CPU 3 cold+1 warmup+10 warm 완료, 8-file/identity/hash/cleanup PASS, exit 0. CPU thread 설정 4, XNNPACK, 배터리 77%/30.7→30.7°C, thermal 0→0, 화면 off.
-- GPU session `fb8a750f-9b3d-4d03-8df9-e8c1410a4180`: EfficientDet raw GPU host bounded timeout/exit 2. 263/263 GPU delegation·kernel 생성 로그는 있지만 완료 output 없음. GPU PASS·성능·CPU fallback으로 표시하지 않는다. 29.7→29.7°C, thermal 0→0. force-stop·입력 cleanup 성공, suppressed cleanup error 0.
-- timeout의 정확한 native 호출 단계/원인은 미확정이다. 결과는 `MODEL_02B_FIX_REQUIRED(A24)`. 한계를 늘려 성공 처리하지 않았다.
-- 실제 CPU session replay는 dispatch·ownership·삭제 전에 거부, 기존 summary 불변. 세 신규 시도 입력 부재·probe process 부재를 최종 확인했다. 결과 artifact는 E의 `new_probe_results/<session>/`에 있다.
+- raw 6쌍에서 분류 3,000개·탐지 5,416,092개 원소의 tolerance 위반 0. 최대 절대오차 각각 6.10948e-7 / 9.41753e-6.
+- 새 sample `cat_and_dog_2.jpg` SHA `85eb9ad2c6b0c397aa873faf97befc4a871d987cea822d9854617415778b6c8c`: host MediaPipe 1.0.1 CPU 3회 동일 cat/horse. Android CPU와 한 score 차이 0.0017070865 > 0.001. Android GPU는 horse/cat 순서와 box·score도 불일치.
+- decoded GPU는 hang/timeout이 아니라 102.6초 probe 완료였다. 4회 runtime 생성은 각각 약 23~24.5초. Tasks 내부 옵션·decode·정밀도 차이는 원인 후보이며 raw GPU configuration 적용·full GPU를 주장하지 않는다.
+- 일반 정확도는 미평가. 유효한 ground truth·품질 입력과 exact EfficientDet license/NOTICE는 아직 없다. 모델은 실행자가 원 URL에서 직접 확보하는 비배포 probe만 허용한다.
+- 탐지 CPU + 분류 GPU는 가능한 축소 후보지만 탐지 CPU golden/품질과 adapter 승인 전에는 REDUCED_PASS가 아니다. tolerance·모델·runtime 변경은 자동 채택하지 않았다.
 
-## 작업 상태·시뮬레이션 gate
+## 직접 실행·검증 버전
 
-| 작업 | 상태 | 의미 |
-| --- | --- | --- |
-| SETUP-01 / AUDIT-A24-01 / DIAGNOSTIC-V2-01 / AUDIT-S26-01 | completed(기존) | 기존 측정·감사이며 새 작업 PASS로 전용하지 않음 |
-| DEFINE-01 / CALIB-01A / CALIB-01B | completed(기존) | legacy 단일 모델 설계·host PASS; A24 이미지 calibration 완료 아님 |
-| CALIB-01C-INPUT | 보류·재계획 | 기존 1001행 label·8이미지·host thermal gate 미완료 |
-| SCOPE-02 / MODEL-02A / MODEL-02B-PREP | 기존 판정 유지 | 분류 host PASS, 탐지 비배포 연구용 conditional, 외부 probe 계약 |
-| MODEL-02B-RECOVERY / HOST-EXEC-VERIFY | completed | 소스·host·APK·실제 CPU artifact/cleanup·실패/replay 검증 |
-| MODEL-02B-DEVICE / 품질 | partial / FIX_REQUIRED | 탐지 GPU timeout, raw 수치 비교·새 decoded sample golden·peak memory 미완료 |
-| TASK-02 / PROFILE-02 | pending, 선행 gate 부족 | 실제 사용자 완료/ledger 및 solo/transition/co-run full service·thermal profile 없음 |
-| SCHED-02 / EVAL-02 / XDEV-02 | pending | 정책 동결·독립 A24 평가·추가 기기 재현 미실행 |
-| SIM-01 | INCOMPLETE | simulation schema/validator/no-op·실측 profile·seed/반복/절대 deadline 미준비 |
+- A24 SM-A245N / Android 16 API 36 / MT6789 / arm64-v8a, 기존 고정 serial 한 대만 사용.
+- 직접 실행 총 15세션 = GPU 진단 1 + raw 12 + decoded 2. 모두 3 cold + 1 warmup + 10 warm, host artifact/cleanup 완료. decoded 의미 gate 실패를 실행 성공과 구분한다.
+- 원격 기존 artifact 41파일 hash 불변, 신규 15세션 입력 부재·probe process 부재 확인. 이전 formal/분석/S26 데이터는 건드리지 않았다.
+- sampled per-process peak PSS 최대 263,978 kB. 약 2초 간격 표본이며 연속 true peak·장치 전체 memory·에너지가 아니다. 시작/끝 thermal 0, 배터리 29.6~30.8°C; service/thermal profile로 전용 금지.
+- 실기기 최종 실행 APK `879f7c18b628bbc8a0fe5cff37ad61b629dd3f4a78ab9a435dde3e759a58b8ea`; exact source는 E/`compiled_source_879f7c18/`. 한 host context의 미빌드 source 관측 차이는 원본 보존 후 `source_binding_correction.json`으로 분리했다.
+- 최종 host 검증 APK `454bac9b49f995a78adac7fec5a860f8aaa789b783ab2a07a21d24e6ce07e98f`는 실제 close 실패를 finish 대신 failed로 기록하는 후속 진단 보강 포함. 이 최종 APK의 새 실기기 PASS는 주장하지 않는다.
+- 최종 전체 검증: debug JVM 26 suites/119건, modelProbe JVM 20 suites/108건, 각각 failure/error/skip 0. 두 variant의 중복 테스트를 고유 테스트 수로 합산하지 않는다.
+- Python 229건, failure/error 0, Windows symlink 권한 skip 2. lintDebug error 0/warning 76. compileall/logger self-test/diff check PASS.
+- Gradle `--rerun-tasks` 295/295 실제 실행: debug/modelProbe unit·lintDebug·assembleDebug/modelProbe/release PASS. APK DEX/manifest/model 격리·hash PASS. debug/release에 probe/MediaPipe/외부 모델 없음.
+- 검증 코드 기준은 `375a585` + close-failure 보강·simulation 준비 코드이며 E/`final_checks/verified_source_files.json`으로 특정한다. 명령별 JSON에 UTC·HEAD·dirty·exit를 기록했다.
 
-- 새 deadline은 `calibration_pending`, 서비스 하한·안전/안정성·성공 기준·최종 반복 수는 `thresholds_pending`. probe 시간을 request service distribution으로 승격하지 않는다.
-- B0/B1/B2/B3/P, task와 독립인 긴급/일반 등급, W-burst/W-sustain 등은 계획 정의이며 정책 구현·효과 입증이 아니다. 완료 P95와 전체 도착 기준 서비스율을 함께 평가한다.
-- A24는 개발·주평가 기기. 정책 동결 후 최소 한 대의 추가 Android 기기에서 같은 계약으로 별도 profile·축소 재현한다. 성능/thermal 값은 기기별 재측정하며 S26 기존 자료로 대체하지 않는다.
-- 모델 exact hash/labels/host golden은 [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md). EfficientDet exact binary license는 미확인; 실행자 원 URL 직접 확보·비배포 연구 probe만 허용, Git/APK/공유물 번들 금지.
+## 작업 상태·다음 행동
 
-## 보존과 다음 행동
+| 작업 | 현재 상태 |
+| --- | --- |
+| 기존 SETUP/AUDIT/DIAGNOSTIC/DEFINE/CALIB-01A/B | 기존 완료 판정 유지; 새 모델 실측에 전용하지 않음 |
+| CALIB-01C-INPUT | legacy 1001행 라벨/입력·열 gate 보류 |
+| SCOPE-02 / MODEL-02A / RECOVERY | 기존 근거·조건부 승인·복구 완료 유지 |
+| MODEL-02B | raw 통과, decoded/품질 미완료; 전체 FULL/REDUCED PASS 아님 |
+| TASK-02 / PROFILE-02 | 실제 두 adapter·UI/영구 저장 ledger·service/전환/간섭/holdout 미구현·미실측 |
+| SIM-01 준비 | draft JSON schema/validator·seed·정책 인터페이스·host KPI·deterministic no-op PASS; frozen service-profile schema 및 필수 실측 없음 |
+| SCHED/EVAL/XDEV | 미실행; A24 정책 동결 후 최소 추가 Android 1대 원칙 유지 |
 
-- E의 `preservation_result.json`: A24 formal 834파일(기존 80-slot manifest hash 일치), 분석·diagnostic 40파일, S26 ZIP, 이전 probe 91파일, 기존 기기 artifact 33파일 불변 확인. 기존 v1/v2/calibration/image-v3/timer/main production 경로를 유지했다.
-- 이전 `D1Check_Data/SIM-01_READY_20260919`의 이름은 READY 증거가 아니다. 그 원본과 이전 복구 E `resume_20260919_102344`는 보존했다. 당시 남았던 staging은 이번 사전 검사에서 부재였다.
-1. `MODEL-02B-GPU-DIAG`: 단계별 monotonic 진행 기록으로 탐지 GPU timeout 위치를 확인하고, 기존 bounded gate 안에서 원인을 수정한다.
-2. raw CPU/GPU 수치·decoded golden·품질/메모리 gate를 완료하고, 검증된 backend만 TASK-02 실제 완료 경계에 연결한다.
-3. PROFILE-02 실측·독립 holdout과 deadline/seed/반복 동결, simulation 전용 schema/validator/no-op를 준비한 뒤 SIM-01을 재판정한다. 본 실험은 실행하지 않는다.
-
-## 2026-09-20 GPU 진단 체크포인트
-
-- 외부 증거: `C:/Users/LG/Documents/D1Check_GPU_Diag/run_20260920/`. 첫 진단 e086578d는 진행 기록 115개·미종료 phase 0·artifact 8개/cleanup PASS, 약 31초에 완료했다. 과거 timeout은 미재현이며 exact phase/원인은 unknown이다.
-- raw 출력 보존과 고정 CPU/GPU comparator를 추가했다. 현재 seed 0/1/2 탐지, seed 0/1 분류가 수치 gate를 통과했으며 남은 분류 seed 2를 실행 중이다. 현재 APK `879f7c18b628bbc8a0fe5cff37ad61b629dd3f4a78ab9a435dde3e759a58b8ea`.
-- JVM targeted 15건, progress/비교 Python 6건, simulation 준비 계약 Python 8건 PASS. 최종 전체 검증은 아직 실행 전이다.
-- host 새 sample golden은 MediaPipe 1.0.1 CPU 3회 동일(cat/horse)이며 실제 정답 데이터가 아니다. 품질/전체 service profile/deadline은 미완료다.
+- deadline=`calibration_pending`, 안전/서비스/반복=`thresholds_pending`. no-op는 dispatch 0·가상 완료 0·비교 결과 null, 결과 INCOMPLETE다.
+1. 기존 tolerance를 유지하며 탐지 decoded의 host/Android 및 CPU/GPU 전처리·runtime 옵션 동등성을 규명한다. 유효한 ground truth와 입력 출처를 확보해 CPU golden/품질 기준을 확정한다.
+2. 검증된 탐지 CPU + 분류 GPU 축소 후보 또는 계약을 집행하는 decoded adapter를 근거로 결정한 뒤 TASK-02 실제 한 요청 완료부터 연결한다.
+3. [PROFILE 절차](SIM_01_PREPARATION.md)에 따라 service/전환/허용 간섭·안전/holdout을 확보하고 frozen 입력·deadline을 검증한 뒤 SIM-01을 재판정한다.

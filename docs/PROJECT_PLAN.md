@@ -2,7 +2,7 @@
 
 - 개정: 4.4 / 2026-09-18 / A24 주평가와 추가 Android 기기 고정정책 재현평가 분리
 - 기준 코드: `df8192aa61eebacf83df7a7815f0c60c8bbf4004`의 `master`. 이 개정은 문서 변경이며 새 모델·스케줄러 구현 또는 실기기 PASS가 아니다.
-- 현재 작업: `MODEL-02B-GPU-DIAG` — source-set/host 복구·검증은 완료했다. A24 분류 CPU raw smoke는 artifact/cleanup까지 통과했지만 탐지 GPU는 bounded timeout으로 실패했다. 품질·service profile·SIM-01은 미완료이며 [복구 보고서](PRE_SIMULATION_RECOVERY_20260920.md)와 STATUS의 증거 경계를 따른다.
+- 현재 작업: `MODEL-02B-DECODED-GATE` — 단계별 GPU 진단과 두 모델 raw CPU/GPU seed 0/1/2 검증을 완료했다. 과거 raw timeout은 미재현/원인 미확정이며, 새 decoded 탐지는 CPU/GPU 수치·label/box 검증 실패로 task 승인 전이다. 품질·TASK-02·service profile·SIM-01은 미완료다. [준비 계약](SIM_01_PREPARATION.md)과 STATUS의 증거 경계를 따른다.
 - 새 절대 deadline은 `calibration_pending`, 서비스 하한·성공 기준·최종 반복 수는 `thresholds_pending`이다.
 - 유지: A24 개발·주평가, 기존 80슬롯과 diagnostic v1/v2 원본, CALIB-01B PASS, 실패를 포함한 전체 도착 분모. 추가: 정책 동결 후 최소 한 대의 다른 Android 기기에서 축소 재현평가.
 - 전환: 단일 분류 모델은 기존 기준선으로 보존하고, 서로 다른 두 AI 작업의 요청 배정 문제를 새 주평가로 준비한다. 구체 모델과 마감시간은 아직 미확정이다.
@@ -150,6 +150,8 @@ B2는 같은 장치의 모든 합법적 task별 배정 후보(두 task·두 경�
 ### SIM-01 준비 gate (2026-09-19 사용자 요청)
 
 이번 실행에서 시뮬레이션 본 실험은 금지한다. `SIM_01_READY`는 MODEL-02B 기기/품질/artifact gate와 TASK-02 실제 완료 경계, PROFILE-02의 기기별 service·transition·thermal·capability 근거를 확보한 뒤 선언한다. 추가로 독립 device profile schema, workload/request class, arrival/service/deadline/thermal 입력, B0~B3/P 결정·목적·제약, seed/반복/KPI, manifest/schema/validator, no-op 검증, 저장/provenance·실행 명령이 있어야 한다. 어느 하나라도 없으면 INCOMPLETE 또는 구체 장애로 BLOCKED다. 기존 smoke 시간을 service profile로 바꾸거나 pending deadline을 임의 숫자로 채우지 않는다. 보조 simulation은 위 8절과 MULTITASK 9절의 실측 보정·holdout 조건을 유지한다.
+
+2026-09-20: draft simulation schema/semantic validator/no-op, seed namespace, B0~B3/P 의미·인터페이스와 host KPI 계약 테스트를 구현했다. 이는 실제 scheduler·Android 두 task 완료 경로·동결 service-profile schema 구현이 아니다. decoded gate가 실패한 현재에는 draft를 INCOMPLETE로만 반환한다. [SIM_01_PREPARATION.md](SIM_01_PREPARATION.md)에 실행 명령, bounded PROFILE-02 절차, 미확정 계약과 최소 다음 행동을 기록한다.
 
 ## 10. 성공·축소·중단 판정
 
