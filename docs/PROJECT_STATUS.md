@@ -1,14 +1,18 @@
 # D1Check 현재 상태
 
-- 갱신: 2026-09-21 KST. **BOUNDED_EMPIRICAL_PLAN_READY** (계획만). 시작 `956bd29`/지정branch/clean. [30세션 계약](BOUNDED_EMPIRICAL_PROTOCOL.md), 새schema/manifest/validator/실행명령·jointblock·CRN·freeze/no-op 구현. ADB·실측·simulation/formal 실행0.
-- Solo4cell×5=20, resident CPU serial/co-run5쌍=10, 총30session/480호출. Runtime은사전생성/상주만 허용, 동적unload/reload 제외. 실기기retry0·대체0, 실패시원자료보존·중단·데이터INCOMPLETE. 새coldP95/prediction90%/독립holdout gate 없음.
-- 이전160/280계획 미채택. 이전coverage80.38%실패·consumed holdout·51session559요청·v4 smoke·formal자료 그대로보존. A24/현모델/thermal0/관측support의기술적비교에만한정. CI/LOSO는descriptive이며GPU보편우월성주장없음.
-- 검증: 새26 PASS, 전체423(421 PASS·기존skip2), compileall/diff-check PASS. 두root동일freeze, native30/paired5/inputhash/실행기compile PASS. 기존근거2213파일·이전보고서/provenance·Android/APK불변.
-- 보고서/동결/검증: `C:/Users/LG/Documents/D1Check_Bounded_Empirical_Plan/plan_20260921_v1/FINAL_REPORT.md`. 데이터아직0회, deadline=calibration_pending, SIM-01_INCOMPLETE 유지. 이전실행/계약을수정하지않았다.
+- 갱신: 2026-09-21 KST. **SIM-01_READY (bounded descriptive/resident-only/A24/thermal0)**. 시작 `3b4472b` clean, atomic journal checkpoint `86040fd`. 정확30session/480호출 completed, failed/retry/대체/추가0. 본simulation/formal 실행0.
+- 새 [bounded 결과](BOUNDED_EMPIRICAL_RESULTS_20260921.md): solo4cell×5, resident5pair 완전. 실제11,155event·output equivalence480·memory admission550 통과, setup/active/worker-release/close·cleanup 검증. Warm은ordinal관측이며 populationP95/PI보장 아님.
+- Paired 관측: corun−CPU urgentP95 평균−2,838.11ms, makespan+2,178.00ms, throughput−0.880req/s. 5쌍의 제한된 방향·bootstrap 근거이며 GPU보편우월성/인과일반화 없음. Low/central/high/cold-stress도같은상충방향.
+- Sampled peak PSS311,353KiB(기존326,254KiB보존), true maximum/headroom보장 아님. Thermal0만승인. Deadline은사전공식의공통복수engineering scenario로계산·동결했고 사용자SLA는미확정이다.
+- Joint input SHA `4eeae6f6f8e9954d153b010767ba5a84307e5b8d0a971e7a478b0255413c0fc5`. 두root동일재생성/원본재검증/field mixing거절/no-op PASS. 전체Python436(434 PASS·skip2)+복구overlay4 PASS, compileall/diff-check PASS. Android/APK·기존근거2213파일·이전보고서hash불변.
+- 보고서·atomic manifest·raw·분포/LOSO/bootstrap/paired/deadline/provenance: `C:/Users/LG/Documents/D1Check_Bounded_Empirical_Run/run_20260921_atomic_v1/`. 최초실행흔적없음을확인후새root에서시작했고실제context중단복구는불필요했다. 복구경로는host mock검증, 30완료후실행기재호출금지.
+
+## 이전 단계 기록 — 아래 판정과 pending은 당시 상태이며 현재 판정을 대체하지 않음
+
 - [v4 계약](TELEMETRY_V4_GATE.md): 실제531 event의 setup/active/runtime/worker-release·memory·resident CPU serial/co-run·paired/joint 및 출력 동등성 모두 PASS. 각 session force-stop 성공, 최종 project process 부재 확인. 보고서: `C:/Users/LG/Documents/D1Check_Telemetry_V4/resume_20260920T160724Z/FINAL_REPORT.md`.
 - 재개 targeted Python29 PASS, 실제 artifact4 schema/validator 및 consumed/replay 거절 PASS. 검증 소스/APK hash 불변으로 기존 debug JVM119/modelProbe JVM126/Python370(368 PASS·skip2)/lint/build는 반복하지 않았다. 기존 근거2213파일 및 이전 보고서101파일 불변.
 - Memory admission28회 admit, lowMemory 거절 mock PASS; thermal0에 한정. sampled peak PSS326,254KiB는 절대 최대나 안전 상한이 아니다. APK SHA `68e55aefdceb91e569e0d55ff0a18af0658163106589852325cb9ad5626fa62e`. Warm 안정화·서비스모델 승인·deadline은 pending, SIM-01_INCOMPLETE 유지.
-- 최신: [V2 결과](SERVICE_MODEL_V2_RESULTS_20260920.md), [설계](SERVICE_MODEL_V2_DESIGN.md), `C:/Users/LG/Documents/D1Check_Service_Model_V2_Design/run_20260920T140424Z/FINAL_REPORT.md`. 구현 checkpoint `1cbdd1e`; 종료 commit/clean은 외부 git_final.json 참조.
+- 이전 V2: [V2 결과](SERVICE_MODEL_V2_RESULTS_20260920.md), [설계](SERVICE_MODEL_V2_DESIGN.md), `C:/Users/LG/Documents/D1Check_Service_Model_V2_Design/run_20260920T140424Z/FINAL_REPORT.md`. 구현 checkpoint `1cbdd1e`; 종료 commit/clean은 외부 git_final.json 참조.
 - V2: 기존52 profile session 전부 consumed. 검증51세션559요청+host실패9요청 보존. C+E setup/active joint empirical 개발모델 WAPE4.311%/MAE29.447ms는 승인holdout 결과가 아니다. Warm K·worker-release·runtime span·MemoryInfo·공정resident CPU대조 부족으로 승인 동결 불가.
 - V2검증: 새unit30/관련targeted83 PASS, 전체341(339 PASS·기존skip2), compileall/diff-check PASS. 두root 재생성hash 동일, no-op/dry-run device명령/dispatch/가상완료0. Android source/APK3종 불변. 계약 SHA `635087906dde3ff3c50fc034b350689207109d54970c721bf21a24bb432f0719`는 설계hash이고 승인simulation input은 없다.
 
@@ -61,6 +65,6 @@
 
 ## 정확한 다음 행동
 
-1. 별도 실기기 실행 승인 후 보고서의 d1_bounded_empirical execute 명령으로 frozen30계획을 한 번 실행한다. 기존 smoke/160세션 실행기는 실행하지 않는다.
-2. 실패하면 즉시중단·artifact/claim보존, 재실행0. 모두성공하면5개solo/cell·완전5pair·품질/경계/memory/thermal/cleanup으로 descriptive completeness를검증한다.
-3. 실제joint block의관측요약·LOSO·bootstrap·deadline복수scenario를계산한뒤별도simulation계획을검증한다. 본simulation/formal을자동실행하지않는다.
+1. 동결된 joint input과 동일CRN·deadline scenario를 사용하는 resident-only scheduling simulation 계획을 별도승인한다. 이번에는본simulation/formal을실행하지않았다.
+2. 허용범위는현A24/모델/입력/thermal0/관측resident·overlap이다. 미측정4runtime·2GPUresident·dynamic reload·다른thermal/기기일반화금지.
+3. 완료30session을재실행하지않는다. 결과재현은외부analyze_completed.py의host-only generation/validation으로수행한다. 기존prediction실패/consumed자료는계속보존한다.

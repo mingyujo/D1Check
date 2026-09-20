@@ -287,6 +287,15 @@
 - 정확30=solo4×5+resident5pair×2. device retry0/대체0/총시작≤30; 실패시자료보존·중단·incomplete. 독립holdout없이completeness/quality/safety·sessionbootstrap/LOSO·wholeblock sensitivity/CRN을사용한다. 통계적보편우월성주장금지.
 - [계약](BOUNDED_EMPIRICAL_PROTOCOL.md), 외부 `C:/Users/LG/Documents/D1Check_Bounded_Empirical_Plan/plan_20260921_v1/FINAL_REPORT.md`. 다음실행명령을제공하되이번에는ADB/측정/simulation/formal을호출하지않았다. Deadline pending·SIM-01_INCOMPLETE유지.
 
+### 2026-09-21 — 30세션 descriptive empirical 입력 동결
+
+- 상태: SIM-01_READY(현재사용자기준의resident-only/A24/thermal0/관측입력범위). 본simulation/formal은실행하지않음.
+- 정확30/480 completed, 추가/retry/대체/실패0. Nativemanifest·순서·seed·480호출·criterion·memory/thermal·deadline공식은동결계획과동일하다. Atomic fsync/rename journal·exclusivehostlock·completed 재실행금지·완전artifact만복구하는별도관리계층을추가했다.
+- Joint input SHA `4eeae6f6f8e9954d153b010767ba5a84307e5b8d0a971e7a478b0255413c0fc5`, `C:/Users/LG/Documents/D1Check_Bounded_Empirical_Run/run_20260921_atomic_v1/FINAL_REPORT.md`.
+- 5pair의GPUcorun은urgentP95 개선과makespan/throughput 악화가동시에관측됐다. 5쌍bootstrap·wholeblock sensitivity로방향과불확실성만보고하고보편우월성/인과일반화는주장하지않는다.
+- 기존coverage80.38%예측실패/consumedholdout/51session559요청/v4smoke/formal80원본은보존한다. 새READY는이전prediction모델의PASS전환이아니며coldP95/요청90%예측/다기기·다른thermal보장이아니다.
+- 다음은동일input/CRN/복수deadline을쓰는별도승인simulation단계이며새실기기재실행은없다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

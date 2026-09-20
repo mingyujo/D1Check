@@ -2,8 +2,8 @@
 
 - 개정: 4.4 / 2026-09-18 / A24 주평가와 추가 Android 기기 고정정책 재현평가 분리
 - 기준 코드: `df8192aa61eebacf83df7a7815f0c60c8bbf4004`의 `master`. 이 개정은 문서 변경이며 새 모델·스케줄러 구현 또는 실기기 PASS가 아니다.
-- 현재 작업: `BOUNDED-EMPIRICAL-PLAN`: **BOUNDED_EMPIRICAL_PLAN_READY** (실측미실행). [30세션 descriptive 계약](BOUNDED_EMPIRICAL_PROTOCOL.md): solo20+resident5pair10, retry0, transition제외, cold population P95/PI 보장 없음. 이전160/280설계는미채택·원본보존. A24/현모델/thermal0/관측경험분포상대비교만허용. SIM-01_INCOMPLETE.
-- 새 절대 deadline은 `calibration_pending`, 서비스 하한·성공 기준·최종 반복 수는 `thresholds_pending`이다.
+- 현재 작업: `BOUNDED-EMPIRICAL-CALIBRATION` 완료, **SIM-01_READY** (제한된 descriptive resident-only 입력 준비). 정확30session/480calls·5pair·artifact/quality/memory/thermal·jointblock·bootstrap/LOSO/sensitivity/deadline/CRN/no-op 검증 및 hash동결. [결과](BOUNDED_EMPIRICAL_RESULTS_20260921.md). 본simulation/formal은미실행이며 별도승인 대상이다.
+- 현재 bounded simulation의 deadline은 사전 quantile/multiplier 규칙으로 계산한 공통 복수 engineering scenario다. 사용자 절대 SLA나 정책 우월성 기준을 승인한 것은 아니다. 이전 calibration_pending 기록은 역사적 근거로 보존한다.
 - 유지: A24 개발·주평가, 기존 80슬롯과 diagnostic v1/v2 원본, CALIB-01B PASS, 실패를 포함한 전체 도착 분모. 추가: 정책 동결 후 최소 한 대의 다른 Android 기기에서 축소 재현평가.
 - 전환: 단일 분류 모델은 기존 기준선으로 보존하고, 서로 다른 두 AI 작업의 요청 배정 문제를 새 주평가로 준비한다. 구체 모델과 마감시간은 아직 미확정이다.
 - 문서 역할: 이 문서는 목표·우선순위, [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md)는 혼합 요청·후보·선행 연구의 근거와 한계, [MODEL_02_INVENTORY.md](MODEL_02_INVENTORY.md)는 exact model/label/hash/tensor·host 판정, [MODEL_02B_PROBE.md](MODEL_02B_PROBE.md)는 기기 이식 가능한 외부 모델 probe 계약, [MULTITASK_EXPERIMENT_PROTOCOL.md](MULTITASK_EXPERIMENT_PROTOCOL.md)는 새 다기기 실험 계약, [CALIBRATION_PROTOCOL.md](CALIBRATION_PROTOCOL.md)는 구현된 legacy 단일 모델 계약, [PROJECT_STATUS.md](PROJECT_STATUS.md)는 현재 진행 상태다.
