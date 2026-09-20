@@ -47,6 +47,7 @@
 - host 최종 전체 Python258건, 실패/오류0·기존 skip2. targeted17건, compileall, JSON Schema2개, artifact/입력/hash278파일, no-op, diff check PASS.
 - Android source/APK 불변: 기존 debug JVM119/modelProbe115, lint0error76warning, debug/modelProbe/release build·logger self-test·isolation PASS에 hash로 연결. 이번 재실행으로 기록하지 않는다.
 - 설치 APK8b805d3...ce2489 원격 hash 확인. 마지막 프로젝트 process 없음, 모든 own input/shared staging 없음, 기존 probe161파일 hash 불변.
+- 이전 설치 host 임시 part00~04는 APK와 byte 일치 확인 후 E/prior_owned_install_chunks.zip에 hash 검증 보존하고 원래 임시 파일만 정리했다.
 - host ADB daemon 사전조회1회 실패는 bounded 복구 후 새 UUID. co-run start 응답 중 연결 단절은 재실행 없이32.24초 완료 artifact 회수·검증·정리. 명령 실패/복구 기록 보존.
 - formal v1/diagnostic v2/calibration-v1/image-v3/공식 timer/A24 80슬롯/S26/이전 보고서 보존.
 
