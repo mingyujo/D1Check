@@ -248,6 +248,15 @@
 - CPU/GPU co-run의 긴급 응답 개선 관측은 CPU직렬 runtime 재생성과2개 warm runtime 유지의 비대칭을 포함한 n2 진단이다. GPU 자체의 우월성·전체 완료율 개선을 주장하지 않는다. Memory admission 미검증·deadline pending도 유지한다.
 - Host 실패2건을 보존했다. 첫 시도는 새UUID로 대체, 다른 한 건은 이미 완료된 기기 artifact 전송만 복구했으며 Activity 재실행·실패상태 수정 없음. 본 simulation/formal·push/merge/rebase 없음.
 
+### 2026-09-20 — SERVICE-MODEL-V2 개발 재설계와 telemetry blocker
+
+- 상태: 채택(개발 설계); 서비스 모델 승인/실기기 실행은 아님.
+- 사용자 SERVICE-MODEL-V2-DESIGN 지시에 따라 기존 calibration 및 consumed holdout 모두 개발 근거로 전환한다. 기존 실패·74.57%오차·cold774.244ms를 보존하며 새 독립 holdout으로 재사용하지 않는다.
+- C setup/active 분리+E joint session empirical를 최소 구조로 선택하고, origin/cell/co-run/완료경계를 유지한다. D full sequence matrix·G pooled multiplier는 추가 복잡도/오차 근거상 선택하지 않는다. F session-conformal은90%를 유지하되 exchangeability/유한표본 한계와 분포 목적을 분리한다.
+- warm3회차 자동 승인 금지. lifecycle/worker-release·MemoryInfo·두 resident CPU runtime 직렬 대조가 없어 BLOCKED_MISSING_TELEMETRY다. Android 변경/새 ADB/본 simulation/formal은 이번에 수행하지 않는다.
+- [V2 설계](SERVICE_MODEL_V2_DESIGN.md)의 sample-size 계산은 계획 bound이며 수천세션 실행 승인이 아니다. 목표 precision/분포margin·공정한 paired variance가 미확정이므로 새 calibration 이후, 새 holdout 이전에 정확 프로토콜을 동결한다.
+- 이전 transition_mean frozen artifact/hash/평가기 코드는 수정하지 않는다. V2 host 도구는 새 파일로 분리한다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["protocol", "status", "seed", "simulation_approved", "device_execution_allowed", "consumed_sessions", "selected_structure", "parameter_status", "coverage_required", "deadline", "thermal_status_allowed", "fallback", "required_missing", "artifacts", "sources", "analysis_sources"],
+  "additionalProperties": false,
+  "properties": {
+    "protocol": {"const": "service-model-v2-design-v1"},
+    "status": {"const": "BLOCKED_MISSING_TELEMETRY"},
+    "seed": {"const": 20260921},
+    "simulation_approved": {"const": false},
+    "device_execution_allowed": {"const": false},
+    "consumed_sessions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "selected_structure": {"type": "string"},
+    "parameter_status": {"const": "development only; new telemetry calibration required"},
+    "coverage_required": {"const": 0.9},
+    "deadline": {"const": "calibration_pending"},
+    "thermal_status_allowed": {"const": [0]},
+    "fallback": {"const": "forbidden"},
+    "required_missing": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "artifacts": {"$ref": "#/$defs/hashes"},
+    "sources": {"$ref": "#/$defs/hashes"},
+    "analysis_sources": {"$ref": "#/$defs/hashes"}
+  },
+  "$defs": {"hashes": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}}
+}
