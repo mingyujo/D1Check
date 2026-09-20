@@ -48,7 +48,7 @@ def validate(root, delegate_log=None):
     manifest = read(_file(root, 'manifest.json'))
     summary = read(_file(root, 'summary.json'))
     session = manifest['session_id']
-    if str(uuid.UUID(session)) != session or manifest['protocol'] != 'task-profile-v1':
+    if str(uuid.UUID(session)) != session or manifest['protocol'] not in ('task-profile-v1', 'task-profile-v2'):
         raise ValueError('invalid profile identity')
     if manifest['maximum_duration_ms'] != 120000 or manifest['purpose'] not in ('correctness', 'solo', 'transition', 'corun', 'holdout'):
         raise ValueError('not an authorized bounded calibration recipe')
@@ -84,6 +84,11 @@ def validate(root, delegate_log=None):
     expected = {'manifest.json', 'events.jsonl', 'environment.json', 'summary.json'}
     success = 0
     for event in events:
+        if manifest['protocol'] == 'task-profile-v2':
+            journal_name = event['request_id'] + '.event.json'
+            if read(_file(root, journal_name)) != event:
+                raise ValueError('durable request journal mismatch')
+            expected.add(journal_name)
         req = requests[event['request_id']]
         spec = manifest['models'][req['model_key']]
         if event['session_id'] != session or any(event[k] != req[k] for k in ('sample_id', 'priority', 'role', 'worker')):

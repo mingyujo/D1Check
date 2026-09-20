@@ -15,7 +15,7 @@ class ProfileEvidenceTest(unittest.TestCase):
         spec = manifest()
         self.session = spec['identity']['session_id']
         self.request = str(uuid.uuid4())
-        self.m = dict(protocol='task-profile-v1', session_id=self.session,
+        self.m = dict(protocol='task-profile-v2', session_id=self.session,
                       apk_sha256=spec['target']['apk_sha256'], device_fingerprint=spec['target']['build_fingerprint'],
                       maximum_duration_ms=120000, purpose='solo', allowed_concurrency=1,
                       models={'classification_CPU': spec}, images=[dict(sample_id='sample', sha256='b'*64)],
@@ -38,9 +38,10 @@ class ProfileEvidenceTest(unittest.TestCase):
         save(self.event['result_file'], self.result)
         self.event['result_sha256'] = p.digest(self.root/self.event['result_file'])
         save('events.jsonl', self.event)
+        save(self.request+'.event.json', self.event)
         save('environment.json', [dict(mono_ns=10, total_pss_kb=123, thermal_status=0)])
-        save('summary.json', dict(protocol='task-profile-v1', session_id=self.session, request_count=1, succeeded=1, failed=0))
-        save('provenance.json', dict(protocol='task-profile-v1', session_id=self.session,
+        save('summary.json', dict(protocol='task-profile-v2', session_id=self.session, request_count=1, succeeded=1, failed=0))
+        save('provenance.json', dict(protocol='task-profile-v2', session_id=self.session,
              apk_sha256=self.m['apk_sha256'], manifest_sha256=p.digest(self.root/'manifest.json'),
              files=[dict(name=f.name, bytes=f.stat().st_size, sha256=p.digest(f)) for f in self.root.iterdir() if f.name != 'provenance.json']))
 
@@ -84,6 +85,19 @@ class ProfileEvidenceTest(unittest.TestCase):
     def test_nonfinite_decoded_value_rejected(self):
         self.result['results'][0]['score'] = float('nan')
         self.write()
+        with self.assertRaises(ValueError):
+            p.validate(self.root)
+
+    def test_rehashed_journal_divergence_rejected(self):
+        self.write()
+        path = self.root/(self.request+'.event.json')
+        row = p.read(path);row['terminal_ns'] += 1
+        path.write_text(json.dumps(row))
+        provenance = p.read(self.root/'provenance.json')
+        for entry in provenance['files']:
+            if entry['name'] == path.name:
+                entry.update(bytes=path.stat().st_size, sha256=p.digest(path))
+        (self.root/'provenance.json').write_text(json.dumps(provenance))
         with self.assertRaises(ValueError):
             p.validate(self.root)
 

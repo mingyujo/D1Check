@@ -1,0 +1,218 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "service-observations-v1.schema.json",
+  "title": "Bounded actual-task diagnostic service observations (not frozen simulation input)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "status",
+    "unit",
+    "sessions",
+    "deadline",
+    "independent_prediction_validation",
+    "scope",
+    "limitation"
+  ],
+  "properties": {
+    "protocol": {
+      "const": "service-observations-v1"
+    },
+    "status": {
+      "const": "diagnostic_not_frozen"
+    },
+    "unit": {
+      "const": "ns"
+    },
+    "deadline": {
+      "const": "calibration_pending"
+    },
+    "independent_prediction_validation": {
+      "const": "pending"
+    },
+    "scope": {
+      "type": "string"
+    },
+    "limitation": {
+      "type": "string"
+    },
+    "sessions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "session_id",
+          "purpose",
+          "manifest_sha256",
+          "provenance_sha256",
+          "apk_sha256",
+          "device_fingerprint",
+          "groups",
+          "actual_gpu_evidence",
+          "sampled_peak_pss_kb",
+          "max_thermal_status"
+        ],
+        "properties": {
+          "groups": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "arrivals",
+                "succeeded",
+                "failed",
+                "service",
+                "response",
+                "prepare",
+                "service_success_rate"
+              ],
+              "properties": {
+                "service": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "n",
+                    "mean_ns",
+                    "p95_ns",
+                    "min_ns",
+                    "max_ns"
+                  ],
+                  "properties": {
+                    "n": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "mean_ns": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "p95_ns": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "min_ns": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "max_ns": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    }
+                  }
+                },
+                "response": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "n",
+                    "mean_ns",
+                    "p95_ns",
+                    "min_ns",
+                    "max_ns"
+                  ],
+                  "properties": {
+                    "n": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "mean_ns": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "p95_ns": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "min_ns": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "max_ns": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    }
+                  }
+                },
+                "prepare": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "n",
+                    "mean_ns",
+                    "p95_ns",
+                    "min_ns",
+                    "max_ns"
+                  ],
+                  "properties": {
+                    "n": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "mean_ns": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "p95_ns": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "min_ns": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "max_ns": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    }
+                  }
+                },
+                "service_success_rate": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
