@@ -54,3 +54,9 @@ Invocation1=cold_first,2=early_after_cold,이후 warm이라는 ordinal label을 
 Host 최종 검증: targeted Python29 PASS, 전체370(368 PASS·기존skip2), targeted V4 JVM11 PASS, debug JVM119 PASS, modelProbe JVM126 PASS, lintDebug/assembleDebug/modelProbe/release build/compileall/logger self-test/diff-check PASS. Debug/release에 v4 class·외부 EfficientNet/Det binary가 없음을 검사했다. 기존 APK는 `legacy_apks`에 hash 동일한 복사본으로 보존한다. 이전 보고서/원자료/동결 계약은 수정하지 않는다. 현재 build-output APK 경로가 새 APK로 바뀐 사실과 archive mapping은 legacy_preservation.json에 기록한다.
 
 최종 smoke/판정/commit은 외부 FINAL_REPORT 및 Git 종료 기록을 따른다. 이 단계가 통과해도 SERVICE-MODEL-V2/SIM-01_READY를 뜻하지 않는다. 다음은 별도 승인된 bounded instrumentation calibration 계획을 새 UUID/seed/workload/quality/memory/thermal 계약으로 동결하는 일이다. 새 holdout·본 simulation/formal은 이번 범위 밖이다.
+
+### 현재 종료 상태
+
+**BLOCKED_DEVICE_CONNECTION**. 구현 checkpoint `60bd398`. 2026-09-20T15:50:26Z ADB devices 목록과15:50:59Z mDNS 서비스 목록이 모두 비었다. 확인되지 않은IP로접속하거나 다른기기에실행하지 않았다. 설치/Activity/실제smoke0회이므로 실제v4경계·memory API/admission·두runtime residency가통과했다고 주장하지 않는다. CPU/GPU lifecycle·residentCPUserial/co-run의4개 미실행계획은 `smoke_plan_v2/plan.json`에보존했다. 처음 host계획UTC표기실패는 `host_attempt1/failure.json`에남겼고 기기실패session은없다.
+
+재개 명령(승인A24 한대연결 후): `python C:\Users\LG\Documents\D1Check_Telemetry_V4\run_20260920T144315Z\smoke_device.py`. 실행기는host gate/source/APK/manifest/input hash, SM-A245N/hardware serial/fingerprint/thermal0를 재검사한다. 네smoke만수행하며 기한·성공률 정책비교를 하지 않는다. 아직 Activity를시작하지않은UUID만 사용한다. 측정실패가발생하면 이전성공/실패출력을보존하고 실패UUID로재실행하지말아야한다.

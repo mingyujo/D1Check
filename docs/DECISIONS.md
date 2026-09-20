@@ -259,7 +259,7 @@
 
 ### 2026-09-21 — Telemetry v4와 resident control의 별도 실행경로
 
-- 상태: 구현·host 검증 완료, 기기 smoke gate 대기. 사용자는 새 calibration/holdout/formal/simulation을 금지하고 최소4개 lifecycle/resident smoke만 승인했다.
+- 상태: 구현·host 검증 완료, **BLOCKED_DEVICE_CONNECTION**. 사용자는 새 calibration/holdout/formal/simulation을 금지하고 최소4개 lifecycle/resident smoke만 승인했다. ADB devices와mDNS 모두비어 설치/Activity/smoke는0회이며 READY_FOR_CALIBRATION을선언하지않는다.
 - task-profile-v4/schema1을 modelProbe 전용 Activity/adapter로 분리해 기존 v3/공식 timer/decoder/legacy artifact를 보존한다. 캡처한 invocation timestamp를 호출 종료 후 기록하고 내부 logger 시간을 inference에 넣지 않는다.
 - 두 CPU runtime을 같은 lane에 상주시켜 serial control의 runtime 재생성 혼입을 제거한다. Co-run도 같은 사전생성/warmup 원칙을 사용한다. Paired 비교는 같은 workload hash와 두 성공 receipt가 필요하다.
 - 고정 headroom 대신 android-low-memory-resident-v1의 system threshold+관측 PSS reserve를 적용한다. sampled peak나 baseline guard를 실제 최대/안전보장으로 주장하지 않는다. [세부 계약](TELEMETRY_V4_GATE.md).
