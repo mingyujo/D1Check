@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "schema_version", "seed", "sizes", "status", "device_execution_allowed", "blockers", "pins", "registry_sha256", "criteria", "state_definition", "deadline", "entries"],
+  "properties": {
+    "protocol": {"const": "empirical-calibration-plan-v1"},
+    "schema_version": {"const": 1},
+    "seed": {"type": "integer", "minimum": 0},
+    "sizes": {"type": "object"},
+    "status": {"const": "EMPIRICAL_CALIBRATION_PLAN_INCOMPLETE"},
+    "device_execution_allowed": {"const": false},
+    "blockers": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "pins": {"type": "object"},
+    "registry_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "criteria": {"type": "object"},
+    "state_definition": {"type": "object"},
+    "deadline": {"type": "object", "required": ["status"], "properties": {"status": {"const": "calibration_pending"}}},
+    "entries": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["session_id", "phase", "family", "replicate", "reserve", "output_root", "seed", "pair_id", "pair_order", "task_mix", "states", "thermal_gate", "memory_contract", "warmup_per_runtime", "invocations_per_runtime", "arrivals_ms", "priorities", "input_schedule", "deadline_ns", "setup_outside_active", "runtime_lifecycle", "execution_supported", "telemetry", "maximum_duration_ms"],
+        "properties": {
+          "session_id": {"type": "string", "pattern": "^[a-f0-9-]{36}$"},
+          "phase": {"enum": ["calibration", "validation"]},
+          "family": {"type": "string"},
+          "replicate": {"type": "integer", "minimum": 0},
+          "reserve": {"type": "boolean"},
+          "output_root": {"type": "string", "pattern": "^sessions/[a-f0-9-]{36}$"},
+          "seed": {"type": "integer", "minimum": 0},
+          "pair_id": {"type": ["string", "null"]},
+          "pair_order": {"enum": ["AB", "BA", null]},
+          "task_mix": {"type": "array", "minItems": 1, "maxItems": 2},
+          "states": {"const": ["cold_first", "early_after_cold", "stabilization", "warm_candidate"]},
+          "thermal_gate": {"const": 0},
+          "memory_contract": {"const": "android-low-memory-resident-v1"},
+          "warmup_per_runtime": {"const": 6},
+          "invocations_per_runtime": {"const": 12},
+          "arrivals_ms": {"type": "array", "minItems": 6, "maxItems": 12, "items": {"const": 0}},
+          "priorities": {"type": "string"},
+          "input_schedule": {"type": "string"},
+          "deadline_ns": {"type": "null"},
+          "setup_outside_active": {"const": true},
+          "runtime_lifecycle": {"type": "string"},
+          "execution_supported": {"type": "boolean"},
+          "telemetry": {"const": "task-profile-v4"},
+          "maximum_duration_ms": {"const": 120000}
+        }
+      }
+    }
+  }
+}
