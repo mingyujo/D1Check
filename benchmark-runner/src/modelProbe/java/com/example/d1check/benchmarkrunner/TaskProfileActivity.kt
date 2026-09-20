@@ -49,7 +49,7 @@ class TaskProfileActivity : Activity() {
             require(manifestFile.length() in 1..1_048_576)
             val manifest = JSONObject(manifestFile.readText())
             require(manifest.keys().asSequence().toSet() == setOf("protocol", "session_id", "apk_sha256", "device_fingerprint", "models", "images", "requests", "maximum_duration_ms", "purpose", "allowed_concurrency"))
-            require(manifest.getString("protocol") == "task-profile-v2" && manifest.getString("session_id") == id)
+            require(manifest.getString("protocol") == "task-profile-v3" && manifest.getString("session_id") == id)
             require(manifest.getString("purpose") in setOf("correctness", "solo", "transition", "corun", "holdout"))
             require(manifest.getString("device_fingerprint") == Build.FINGERPRINT)
             require(manifest.getString("apk_sha256") == ProbeModelFile.sha256(File(applicationInfo.sourceDir)))
@@ -88,7 +88,7 @@ class TaskProfileActivity : Activity() {
                 previousOffset = offset
                 require(q.getInt("worker") in 0 until concurrency)
             }
-            output = canonicalProbeOutputRoot(filesDir, "task-profile-v2", id)
+            output = canonicalProbeOutputRoot(filesDir, "task-profile-v3", id)
             require(output.mkdirs())
             val root = output
             require(getSystemService(PowerManager::class.java).currentThermalStatus <= 1)
@@ -176,7 +176,7 @@ class TaskProfileActivity : Activity() {
             save(root, "events.jsonl", sorted.joinToString("\n", postfix = "\n") { ModelProbeArtifacts.json(it) }.toByteArray())
             save(root, "environment.json", ModelProbeArtifacts.json(environment.toList()).toByteArray())
             save(root, "manifest.json", manifestFile.readBytes())
-            val summary = mapOf("protocol" to "task-profile-v2", "session_id" to id,
+            val summary = mapOf("protocol" to "task-profile-v3", "session_id" to id,
                 "status" to if (events.all { it["terminal_status"] == "succeeded" }) "completed" else "completed_with_failures",
                 "request_count" to events.size, "succeeded" to events.count { it["terminal_status"] == "succeeded" },
                 "failed" to events.count { it["terminal_status"] == "failed" }, "started_ns" to start,
@@ -184,7 +184,7 @@ class TaskProfileActivity : Activity() {
                 "deadline_status" to "calibration_pending", "peak_memory_scope" to "500ms sampled process PSS; not continuous peak",
                 "model_verification_scope" to "session setup excluded from request service; runtime construction included when cold")
             save(root, "summary.json", ModelProbeArtifacts.json(summary).toByteArray())
-            val provenance = mapOf("protocol" to "task-profile-v2", "session_id" to id,
+            val provenance = mapOf("protocol" to "task-profile-v3", "session_id" to id,
                 "manifest_sha256" to ProbeModelFile.sha256(manifestFile), "apk_sha256" to manifest.getString("apk_sha256"),
                 "files" to root.listFiles()!!.map { mapOf("name" to it.name, "bytes" to it.length(), "sha256" to ProbeModelFile.sha256(it)) })
             save(root, "provenance.json", ModelProbeArtifacts.json(provenance).toByteArray())

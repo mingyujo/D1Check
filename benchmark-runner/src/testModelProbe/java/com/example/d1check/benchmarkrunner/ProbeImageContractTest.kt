@@ -5,6 +5,23 @@ import org.junit.Test
 import java.nio.ByteOrder
 
 class ProbeImageContractTest {
+    private fun png(extra: Boolean = false): ByteArray {
+        val stream = java.io.ByteArrayOutputStream()
+        val out = java.io.DataOutputStream(stream)
+        out.write(byteArrayOf(-119,80,78,71,13,10,26,10))
+        fun chunk(name: String, bytes: ByteArray) { out.writeInt(bytes.size);out.writeBytes(name);out.write(bytes);out.writeInt(0) }
+        val header = java.nio.ByteBuffer.allocate(13).putInt(1).putInt(1).put(8).put(2).put(0).put(0).put(0).array()
+        chunk("IHDR",header)
+        if (extra) chunk("iCCP",byteArrayOf(1))
+        chunk("IDAT",byteArrayOf(1));chunk("IEND",byteArrayOf())
+        return stream.toByteArray()
+    }
+    @Test fun canonicalChunkContractRejectsColorMetadataAndTruncation() {
+        ProbeImageContract.requireCanonicalPng(png())
+        for (bytes in listOf(png(true), png().dropLast(1).toByteArray())) {
+            try { ProbeImageContract.requireCanonicalPng(bytes);fail("invalid PNG contract accepted") } catch (_: RuntimeException) { }
+        }
+    }
     @Test fun identityAndClampedSinglePixel() {
         val input = ByteArray(12) { it.toByte() }
         assertArrayEquals(input, ProbeImageContract.resize(input, 2, 2, 2))

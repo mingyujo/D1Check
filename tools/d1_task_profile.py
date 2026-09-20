@@ -48,7 +48,7 @@ def validate(root, delegate_log=None):
     manifest = read(_file(root, 'manifest.json'))
     summary = read(_file(root, 'summary.json'))
     session = manifest['session_id']
-    if str(uuid.UUID(session)) != session or manifest['protocol'] not in ('task-profile-v1', 'task-profile-v2'):
+    if str(uuid.UUID(session)) != session or manifest['protocol'] not in ('task-profile-v1', 'task-profile-v2', 'task-profile-v3'):
         raise ValueError('invalid profile identity')
     if manifest['maximum_duration_ms'] != 120000 or manifest['purpose'] not in ('correctness', 'solo', 'transition', 'corun', 'holdout'):
         raise ValueError('not an authorized bounded calibration recipe')
@@ -84,7 +84,7 @@ def validate(root, delegate_log=None):
     expected = {'manifest.json', 'events.jsonl', 'environment.json', 'summary.json'}
     success = 0
     for event in events:
-        if manifest['protocol'] == 'task-profile-v2':
+        if manifest['protocol'] in ('task-profile-v2', 'task-profile-v3'):
             journal_name = event['request_id'] + '.event.json'
             if read(_file(root, journal_name)) != event:
                 raise ValueError('durable request journal mismatch')
@@ -115,6 +115,8 @@ def validate(root, delegate_log=None):
                 raise ValueError('result binding mismatch')
             expected.add(name)
             result = read(root / name)
+            if manifest['protocol'] == 'task-profile-v3' and (result.get('adapter_contract'), result.get('canonical_input_contract')) != ('explicit-image-task-v2', 'canonical-srgb-png-v2'):
+                raise ValueError('v3 canonical color contract missing')
             image = next(i for i in manifest['images'] if i['sample_id'] == event['sample_id'])
             if result['image_sha256'] != image['sha256'] or result['model_sha256'] != spec['model']['sha256'] or result['input_tensor_sha256'] != event['input_tensor_sha256']:
                 raise ValueError('result input/model binding mismatch')

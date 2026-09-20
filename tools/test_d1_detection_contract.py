@@ -1,8 +1,17 @@
 import unittest
-from tools.d1_detection_contract import decode, resize_rgb, iou
+import struct
+from tools.d1_detection_contract import decode, resize_rgb, iou, require_canonical_png
 
 
 class DetectionContractTest(unittest.TestCase):
+    def test_embedded_color_metadata_rejected_before_inference(self):
+        chunk = lambda kind, data: struct.pack('>I',len(data))+kind+data+b'\0'*4
+        prefix = b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',b'\0'*13)
+        suffix = chunk(b'IDAT',b'x')+chunk(b'IEND',b'')
+        require_canonical_png(prefix+suffix)
+        for data in (prefix+chunk(b'iCCP',b'profile')+suffix, (prefix+suffix)[:-1]):
+            with self.assertRaises(ValueError):
+                require_canonical_png(data)
     def test_resize_identity_and_single_pixel(self):
         rgb = bytes(range(12))
         self.assertEqual(resize_rgb(rgb, 2, 2, 2), rgb)

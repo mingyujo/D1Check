@@ -11,12 +11,13 @@ import json
 import math
 from pathlib import Path
 import sys
+import struct
 import zipfile
 
 MODEL_SHA256 = '40338edf5ec70d43e318b0a716a84d4564cd1802759a7a07170c7e43796dbf58'
 LABEL_SHA256 = 'f8803ef7900160c629d570848dfda4175e21667bf7b71f73f8ece4938c9f2bf2'
-PREPROCESSING = {'id': 'rgb8-bilinear-q16-stretch-v1', 'size': [320, 320],
-                 'channels': 'RGB', 'source': 'lossless RGB8 PNG; EXIF already applied',
+PREPROCESSING = {'id': 'canonical-srgb-q16-stretch-v2', 'size': [320, 320],
+                 'channels': 'RGB', 'source': 'canonical-srgb-png-v2; RGB8; only IHDR/IDAT/IEND; color/orientation applied externally',
                  'sampling': 'half-pixel centers; clamp edges; Q16 floor weights; round half up',
                  'crop': 'none', 'padding': 'none', 'normalization': '(float32(RGB)-127.5)/127.5'}
 DECODER = {'id': 'efficientdet-metadata-yxhw-nms-v1', 'score_threshold': 0.5,
@@ -120,12 +121,29 @@ def model_contract(path):
     return anchors, label_bytes.decode().splitlines()
 
 
+def require_canonical_png(data):
+    if data[:8] != b'\x89PNG\r\n\x1a\n':
+        raise ValueError('not canonical PNG')
+    offset, kinds = 8, []
+    while offset + 12 <= len(data):
+        size = struct.unpack('>I', data[offset:offset+4])[0]
+        kind = data[offset+4:offset+8]
+        if kind not in (b'IHDR', b'IDAT', b'IEND') or offset+12+size > len(data):
+            raise ValueError('color/orientation/ancillary or malformed PNG chunk')
+        kinds.append(kind);offset += 12+size
+        if kind == b'IEND':
+            break
+    if not kinds or kinds[0] != b'IHDR' or kinds[-1] != b'IEND' or b'IDAT' not in kinds or offset != len(data):
+        raise ValueError('incomplete canonical PNG')
+
+
 def generate(model, image, output, tensor_path=None):
     import numpy as np
     from PIL import Image
     from ai_edge_litert.interpreter import Interpreter
     anchors, labels = model_contract(model)
     image_bytes = image.read_bytes()
+    require_canonical_png(image_bytes)
     with Image.open(image) as im:
         if im.format != 'PNG' or im.mode != 'RGB' or im.getexif().get(274, 1) != 1:
             raise ValueError('reference requires lossless RGB PNG with applied orientation')

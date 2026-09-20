@@ -39,8 +39,7 @@ internal class ProbeTaskAdapter(
     fun execute(image: File, imageSha256: String): Map<String, Any?> {
         // Integrity/read/decode are part of each service, not a cached synthetic tensor.
         require(ProbeModelFile.sha256(image) == imageSha256)
-        val header = image.inputStream().use { input -> ByteArray(8).also { require(input.read(it) == 8) } }
-        require(header.contentEquals(byteArrayOf(-119, 80, 78, 71, 13, 10, 26, 10))) { "Canonical input must be PNG" }
+        ProbeImageContract.requireCanonicalPng(image.readBytes())
         val bitmap = requireNotNull(BitmapFactory.decodeFile(image.absolutePath))
         try {
             val width = bitmap.width
@@ -67,7 +66,7 @@ internal class ProbeTaskAdapter(
                 "raw_output_sha256" to raw.outputSha256, "results" to results, "inference_ns" to raw.invokeNs,
                 "requested_backend" to manifest.execution.backend.name,
                 "actual_backend" to if (manifest.execution.backend == ProbeBackend.CPU) "CPU" else "unverified_requires_host_delegate_log",
-                "adapter_contract" to "explicit-image-task-v1")
+                "adapter_contract" to "explicit-image-task-v2", "canonical_input_contract" to "canonical-srgb-png-v2")
         } finally { bitmap.recycle() }
     }
 

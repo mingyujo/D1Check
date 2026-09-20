@@ -7,6 +7,30 @@ import java.nio.ByteOrder
 internal object ProbeImageContract {
     const val ID = "rgb8-bilinear-q16-stretch-v1"
 
+    fun requireCanonicalPng(bytes: ByteArray) {
+        require(bytes.size >= 33 && bytes.take(8).toByteArray().contentEquals(byteArrayOf(-119,80,78,71,13,10,26,10)))
+        val buffer = ByteBuffer.wrap(bytes).order(ByteOrder.BIG_ENDIAN).apply { position(8) }
+        var header = false; var data = false; var end = false
+        while (buffer.remaining() >= 12 && !end) {
+            val length = buffer.int
+            val kind = ByteArray(4).also { buffer.get(it) }.toString(Charsets.US_ASCII)
+            require(length >= 0 && length.toLong() + 4 <= buffer.remaining())
+            when (kind) {
+                "IHDR" -> {
+                    require(!header && length == 13 && buffer.position() == 16)
+                    require(buffer.getInt(buffer.position()) in 1..4096 && buffer.getInt(buffer.position()+4) in 1..4096)
+                    require(buffer.get(buffer.position()+8).toInt() == 8 && buffer.get(buffer.position()+9).toInt() == 2)
+                    header = true
+                }
+                "IDAT" -> { require(header); data = true }
+                "IEND" -> { require(header && data && length == 0); end = true }
+                else -> error("Canonical RGB PNG must not contain color/orientation/ancillary chunks: $kind")
+            }
+            buffer.position(buffer.position() + length + 4)
+        }
+        require(end && buffer.remaining() == 0)
+    }
+
     fun resize(rgb: ByteArray, width: Int, height: Int, size: Int = 320): ByteArray {
         require(width > 0 && height > 0 && size > 0 && rgb.size.toLong() == width.toLong() * height * 3)
         fun axis(length: Int) = List(size) { i ->
