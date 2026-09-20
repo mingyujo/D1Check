@@ -1,0 +1,110 @@
+{
+  "status": "BOUNDED_EMPIRICAL_PLAN_READY",
+  "frozen_utc": "2026-09-20T17:29:08.333096+00:00",
+  "freeze_sha256": "5a87574686f4645d84d23b1d4bc1150d7030e63003eeafe9cf08575fb78619b5",
+  "plan_sha256": "9a4542d73bb847021e71842960230c414a26b0eece7c8ff05be7cb37784432f3",
+  "seed": 2026092102,
+  "sessions": 30,
+  "requests": 480,
+  "retry_cap": 0,
+  "pairs": 5,
+  "device_execution_this_stage": false,
+  "artifact_root": "C:\\Users\\LG\\Documents\\D1Check_Bounded_Empirical_Plan\\plan_20260921_v1\\frozen",
+  "code": {
+    "C:\\Users\\LG\\AndroidStudioProjects\\D1Check-model02b\\tools\\d1_bounded_empirical.py": "010432ea9968831cff63e2deaab62cbf30bbbcf811b6eec1046cc9802c331d85",
+    "C:\\Users\\LG\\AndroidStudioProjects\\D1Check-model02b\\tools\\d1_empirical_plan.py": "827e9d6f22d93260e70fbda6a7c734533d31d61eeee198cf4fc5af8cccf9fabb",
+    "C:\\Users\\LG\\AndroidStudioProjects\\D1Check-model02b\\tools\\d1_telemetry_v4.py": "0ffe71eefc6e8a1c034d2e318c1c48d2c6e2ee35ad76d28cd0e03038bedb2a58",
+    "C:\\Users\\LG\\AndroidStudioProjects\\D1Check-model02b\\tools\\schemas\\bounded-empirical-plan-v1.schema.json": "96b9b4d8df60627c845e79d64836f89ed96df5e8bf651fb4d98ce217a270b99d",
+    "C:\\Users\\LG\\AndroidStudioProjects\\D1Check-model02b\\tools\\schemas\\task-profile-v4-event.schema.json": "61d482d4e05898874de6761de357881392e00c7e0eb134b3f1f1a811bb1215f4",
+    "C:\\Users\\LG\\AndroidStudioProjects\\D1Check-model02b\\tools\\schemas\\joint-empirical-session-v1.schema.json": "9311c90dad278575ae3f8824e25cf6fdaaf0a7daa42b338a9826f9fa8bfdd047"
+  },
+  "contract": {
+    "baselines": [
+      "FIFO_CPU",
+      "EDF_CPU",
+      "fixed_feasible_backend",
+      "static_task_backend",
+      "adaptive"
+    ],
+    "bootstrap": {
+      "confidence": 0.95,
+      "gate_on_width": false,
+      "replicates": 2000,
+      "unit": "session; paired contrast uses pair"
+    },
+    "completeness": 1,
+    "crn": "draw key excludes policy; same scenario/replicate family-rank ticket; pair sampled jointly",
+    "deadline": {
+      "D_cpu": "sum of fixed CPU solo central empirical service demands for the common task sequence",
+      "H": "last planned arrival minus first planned arrival",
+      "cold_and_warm": "separate scenarios; cold service plus setup once",
+      "normal_formula": "relative deadline=max(0,H-arrival)+multiplier*D_cpu",
+      "normal_multipliers": [
+        0.75,
+        1.0,
+        1.5
+      ],
+      "policy_invariant": true,
+      "report_all": true,
+      "status": "calibration_pending",
+      "urgent_multipliers": [
+        0.75,
+        1.0,
+        1.5
+      ],
+      "urgent_quantiles": [
+        0.5,
+        0.9
+      ]
+    },
+    "failed_attempt": "preserve and stop; incomplete; no successful-sample substitution",
+    "fallback": false,
+    "independent_holdout": 0,
+    "loso": "descriptive sensitivity only, never independent holdout",
+    "max_device_attempts": 30,
+    "memory": "android-low-memory-resident-v1",
+    "output_equivalence": 1,
+    "pairs": 5,
+    "performance_claim": "direction, observed magnitude, bootstrap uncertainty; otherwise inconclusive",
+    "population_cold_p95_gate": false,
+    "replacement_sessions": 0,
+    "request_PI_gate": false,
+    "reruns_per_session": 0,
+    "runtime_transition": false,
+    "scope": "A24/current classification-detection models/thermal0/v4/resident-only",
+    "sensitivity": {
+      "central": "whole block with median total worker occupancy",
+      "cold_stress": "whole block with maximum first+second active service; no synthetic field inflation",
+      "high": "whole block with maximum total worker occupancy",
+      "low": "whole block with minimum total worker occupancy"
+    },
+    "sessions": 30,
+    "solo_per_cell": 5,
+    "states": {
+      "cold_first": [
+        1
+      ],
+      "early_after_cold": [
+        2
+      ],
+      "settling": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "warm_observed": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    "thermal": [
+      0
+    ],
+    "warm_claim": "ordinal observed after fixed six calls, no stationary-population guarantee"
+  }
+}

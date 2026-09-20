@@ -280,6 +280,13 @@
 - [계약](EMPIRICAL_CALIBRATION_PROTOCOL.md)에 최소160/권장280 탐색세션·사전 criteria·deadline 계산 규칙을 고정했다. n8로 cold P95 정밀도를 보장하지 않으며 fair paired variance도 없다. 같은-session 전환경로가 현재 APK에 없으므로 전체 계획의 A24 실행 명령을 발행하지 않는다.
 - 이번 ADB·실측·calibration·holdout·simulation/formal 없음. Android/APK 불변. 최신 외부 증거는 C:/Users/LG/Documents/D1Check_Empirical_Calibration_Plan/plan_20260921_v1/FINAL_REPORT.md.
 
+### 2026-09-21 — 최대30세션 descriptive resident-only protocol 채택
+
+- 상태: 계획채택, 측정미실행. 사용자 BOUNDED-EMPIRICAL-PLAN의고정수량·제한된주장을우선한다. 160/280계획은실행하지않고이전동결artifact/실패결과를보존한다.
+- A24/현분류탐지/thermal0/v4의관측경험분포로정책상대비교한다. dynamic unload/reload transition과cold populationP95 precision은simulation v1필수gate에서제외한다. Setup/queue/dispatch는남긴다.
+- 정확30=solo4×5+resident5pair×2. device retry0/대체0/총시작≤30; 실패시자료보존·중단·incomplete. 독립holdout없이completeness/quality/safety·sessionbootstrap/LOSO·wholeblock sensitivity/CRN을사용한다. 통계적보편우월성주장금지.
+- [계약](BOUNDED_EMPIRICAL_PROTOCOL.md), 외부 `C:/Users/LG/Documents/D1Check_Bounded_Empirical_Plan/plan_20260921_v1/FINAL_REPORT.md`. 다음실행명령을제공하되이번에는ADB/측정/simulation/formal을호출하지않았다. Deadline pending·SIM-01_INCOMPLETE유지.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

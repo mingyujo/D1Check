@@ -1,10 +1,10 @@
 # D1Check 현재 상태
 
-- 갱신: 2026-09-21 KST. **EMPIRICAL_CALIBRATION_PLAN_INCOMPLETE**. 시작 `78f57df`/지정 branch/clean. [Empirical amendment](EMPIRICAL_CALIBRATION_PROTOCOL.md) 및 host generator/schema/validator/consumed registry/freeze/no-op 구현. ADB·새 측정·calibration·validation·simulation·formal 실행 없음.
-- 목적: PI를 사용하지 않는 정책용 joint session empirical 입력으로 변경. 새 protocol에서 request PI90% gate 제거, 기존 transition_mean coverage80.38% 실패·동결 기준·consumed holdout은 불변. 신규 v4 자료만 승인 가능.
-- 최소 탐색 설계: calibration80+validation80(10family×8/phase), 권장140+140. n8은 P95 충분성 보장이 아니다. 같은-session transition 실행경로 부재·cold P95 정밀도·fair pair variance 미확정으로 실행 승격 보류. native 지원6family manifest는 host 검증하며 transition4family는 fail-closed다.
-- 검증: 새27 PASS, 전체397(395 PASS·기존skip2), compileall/diff-check PASS. 두root 결정적freeze 동일, no-op 실행0. Android/APK 및 기존근거2213파일 불변.
-- 외부 보고서·동결 hash·검증: `C:/Users/LG/Documents/D1Check_Empirical_Calibration_Plan/plan_20260921_v1/FINAL_REPORT.md`. Telemetry v4 smoke 통과 자체는 유지한다.
+- 갱신: 2026-09-21 KST. **BOUNDED_EMPIRICAL_PLAN_READY** (계획만). 시작 `956bd29`/지정branch/clean. [30세션 계약](BOUNDED_EMPIRICAL_PROTOCOL.md), 새schema/manifest/validator/실행명령·jointblock·CRN·freeze/no-op 구현. ADB·실측·simulation/formal 실행0.
+- Solo4cell×5=20, resident CPU serial/co-run5쌍=10, 총30session/480호출. Runtime은사전생성/상주만 허용, 동적unload/reload 제외. 실기기retry0·대체0, 실패시원자료보존·중단·데이터INCOMPLETE. 새coldP95/prediction90%/독립holdout gate 없음.
+- 이전160/280계획 미채택. 이전coverage80.38%실패·consumed holdout·51session559요청·v4 smoke·formal자료 그대로보존. A24/현모델/thermal0/관측support의기술적비교에만한정. CI/LOSO는descriptive이며GPU보편우월성주장없음.
+- 검증: 새26 PASS, 전체423(421 PASS·기존skip2), compileall/diff-check PASS. 두root동일freeze, native30/paired5/inputhash/실행기compile PASS. 기존근거2213파일·이전보고서/provenance·Android/APK불변.
+- 보고서/동결/검증: `C:/Users/LG/Documents/D1Check_Bounded_Empirical_Plan/plan_20260921_v1/FINAL_REPORT.md`. 데이터아직0회, deadline=calibration_pending, SIM-01_INCOMPLETE 유지. 이전실행/계약을수정하지않았다.
 - [v4 계약](TELEMETRY_V4_GATE.md): 실제531 event의 setup/active/runtime/worker-release·memory·resident CPU serial/co-run·paired/joint 및 출력 동등성 모두 PASS. 각 session force-stop 성공, 최종 project process 부재 확인. 보고서: `C:/Users/LG/Documents/D1Check_Telemetry_V4/resume_20260920T160724Z/FINAL_REPORT.md`.
 - 재개 targeted Python29 PASS, 실제 artifact4 schema/validator 및 consumed/replay 거절 PASS. 검증 소스/APK hash 불변으로 기존 debug JVM119/modelProbe JVM126/Python370(368 PASS·skip2)/lint/build는 반복하지 않았다. 기존 근거2213파일 및 이전 보고서101파일 불변.
 - Memory admission28회 admit, lowMemory 거절 mock PASS; thermal0에 한정. sampled peak PSS326,254KiB는 절대 최대나 안전 상한이 아니다. APK SHA `68e55aefdceb91e569e0d55ff0a18af0658163106589852325cb9ad5626fa62e`. Warm 안정화·서비스모델 승인·deadline은 pending, SIM-01_INCOMPLETE 유지.
@@ -61,6 +61,6 @@
 
 ## 정확한 다음 행동
 
-1. 동일 session source-close→target-create 전환경로 및 ingestion/phase·reserve ledger를 구현·host 검증하고 새 APK/계약 hash를 신규 자료 전에 동결한다.
-2. Cold P95 주장 범위와 fair pair 정밀도 부족을 해소할 계획을 사전 확정한다. 이번 bounded160회를 승인 충분조건으로 표시하지 않는다.
-3. 이후 별도 승인된 bounded smoke/calibration만 실행한다. 현재 유효한 A24 calibration 명령은 없으며 host dry-run만 제공한다. Deadline pending, SIM-01_INCOMPLETE 유지.
+1. 별도 실기기 실행 승인 후 보고서의 d1_bounded_empirical execute 명령으로 frozen30계획을 한 번 실행한다. 기존 smoke/160세션 실행기는 실행하지 않는다.
+2. 실패하면 즉시중단·artifact/claim보존, 재실행0. 모두성공하면5개solo/cell·완전5pair·품질/경계/memory/thermal/cleanup으로 descriptive completeness를검증한다.
+3. 실제joint block의관측요약·LOSO·bootstrap·deadline복수scenario를계산한뒤별도simulation계획을검증한다. 본simulation/formal을자동실행하지않는다.

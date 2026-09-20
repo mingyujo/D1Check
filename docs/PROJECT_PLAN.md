@@ -2,7 +2,7 @@
 
 - 개정: 4.4 / 2026-09-18 / A24 주평가와 추가 Android 기기 고정정책 재현평가 분리
 - 기준 코드: `df8192aa61eebacf83df7a7815f0c60c8bbf4004`의 `master`. 이 개정은 문서 변경이며 새 모델·스케줄러 구현 또는 실기기 PASS가 아니다.
-- 현재 작업: `EMPIRICAL-CALIBRATION-PLAN`: **EMPIRICAL_CALIBRATION_PLAN_INCOMPLETE**. [새 protocol](EMPIRICAL_CALIBRATION_PROTOCOL.md)의 session joint empirical 설계·동결·host 검증. 기존 v4 smoke READY는 유지하나 same-session transition 실행·cold P95 정밀도는 미완료. ADB/측정/simulation/formal 없음.
+- 현재 작업: `BOUNDED-EMPIRICAL-PLAN`: **BOUNDED_EMPIRICAL_PLAN_READY** (실측미실행). [30세션 descriptive 계약](BOUNDED_EMPIRICAL_PROTOCOL.md): solo20+resident5pair10, retry0, transition제외, cold population P95/PI 보장 없음. 이전160/280설계는미채택·원본보존. A24/현모델/thermal0/관측경험분포상대비교만허용. SIM-01_INCOMPLETE.
 - 새 절대 deadline은 `calibration_pending`, 서비스 하한·성공 기준·최종 반복 수는 `thresholds_pending`이다.
 - 유지: A24 개발·주평가, 기존 80슬롯과 diagnostic v1/v2 원본, CALIB-01B PASS, 실패를 포함한 전체 도착 분모. 추가: 정책 동결 후 최소 한 대의 다른 Android 기기에서 축소 재현평가.
 - 전환: 단일 분류 모델은 기존 기준선으로 보존하고, 서로 다른 두 AI 작업의 요청 배정 문제를 새 주평가로 준비한다. 구체 모델과 마감시간은 아직 미확정이다.
@@ -146,6 +146,10 @@ B2는 같은 장치의 모든 합법적 task별 배정 후보(두 task·두 경�
 | SUBMIT-02 | 10-16~10-20 | 15쪽 이내/10MB 이내 익명 PDF, 재현 자료, 학생별 기여·시연 | 미확인 효과를 기대효과 수치로 대체하지 않음 |
 
 10월 8일까지 A24 기본 비교가 불가능하면 모델·NPU·강화학습을 추가하지 않는다. 추가 기기용 별도 기능을 만들지 않고 같은 runner와 host 도구의 이식성만 유지한다. A24 평가가 끝나기 전 추가 기기 결과로 정책을 튜닝하지 않는다. 남은 기간에는 동작하는 범위에서 결과와 제한을 정리한다. 역할은 사용근거·입력, Android·측정, 정책·분석, 통합·발표로 나누되 팀원 수에 맞춰 겸임하고 서로의 산출물을 교차 검토한다. AI가 제안한 설계·코드는 학생이 설명·검증할 수 있어야 한다.
+
+### 2026-09-21 bounded descriptive amendment (현재 적용)
+
+사용자지시에따라 정확30세션계획을채택한다. 아래이전160/280설계는역사적기록이며실행하지않는다. Simulation v1은workload전setup·admit된resident runtime·관측dispatch/queue만허용하고dynamic unload/reload transition필수gate를제거한다. 정확cold populationP95·request90%PI·독립holdout80을요구하지않고, 실측cold/early/warm jointblock·complete5session/cell/5pair·quality/memory/thermal·관측요약/bootstrap/LOSO/sensitivity로제한한다. 성능보증을낮춰기존실패를통과시킨것이아니라주장범위를제한한새descriptive protocol이다. 이전holdout80.38%실패및원자료불변. 현재단계의추가기기일반화는주장하지않고기존연구전체의후속외부재현계획과구분한다.
 
 ### 2026-09-21 empirical protocol amendment
 
