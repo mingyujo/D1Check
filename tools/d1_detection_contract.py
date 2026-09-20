@@ -4,6 +4,7 @@ Optional runtime dependencies are imported only by the CLI. All model/image/outp
 bytes live outside the repository. Existing model-probe-v1 artifacts are immutable.
 """
 import argparse
+import datetime
 import hashlib
 import importlib.metadata
 import json
@@ -138,6 +139,8 @@ def generate(model, image, output, tensor_path=None):
     interpreter = Interpreter(model_path=str(model), num_threads=1)
     interpreter.allocate_tensors()
     inp, outs = interpreter.get_input_details(), interpreter.get_output_details()
+    if len(inp) != 1 or len(outs) != 2 or inp[0]['shape'].tolist() != [1, 320, 320, 3] or [t['shape'].tolist() for t in outs] != [[1, 19206, 90], [1, 19206, 4]] or any(t['dtype'] != np.float32 or t['quantization'] != (0.0, 0) for t in [*inp, *outs]):
+        raise ValueError('runtime tensor metadata does not match pinned contract')
     interpreter.set_tensor(inp[0]['index'], tensor)
     hashes = []
     for _ in range(3):
@@ -153,7 +156,8 @@ def generate(model, image, output, tensor_path=None):
     def metadata(t):
         return {'index': int(t['index']), 'name': t['name'], 'shape': t['shape'].tolist(),
                 'dtype': str(t['dtype']), 'quantization': t['quantization']}
-    record = {'status': 'engineering_reference_not_ground_truth', 'model_sha256': sha(model.read_bytes()),
+    record = {'status': 'engineering_reference_not_ground_truth', 'generated_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              'generator_sha256': sha(Path(__file__).read_bytes()), 'model_sha256': sha(model.read_bytes()),
               'image_sha256': sha(image_bytes), 'image_size': [width, height], 'preprocessing': PREPROCESSING,
               'preprocessing_sha256': sha(canonical(PREPROCESSING)), 'input_tensor_sha256': sha(tensor.astype('<f4').tobytes()),
               'input_override': str(tensor_path) if tensor_path else None, 'runtime': 'ai-edge-litert',

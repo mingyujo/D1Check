@@ -223,3 +223,5 @@ B2는 같은 장치의 모든 합법적 task별 배정 후보(두 task·두 경�
 - 기존 formal 데이터, diagnostic v2 trace-off, trace-on, 새 스케줄러 실험을 서로 구분한다. 프로토콜 변경 자료를 동일 반복으로 합치지 않는다.
 
 CALIB-01B는 FIX4까지 구현·host 검증·감사를 완료했다. 기록상 Kotlin/JVM 119건·실패/오류/skip 0, Python 195건·실패/오류 0·기존 skip 1, lint error 0/warning 76, compileall·logger self-test·assembleDebug PASS다. 기존 모델의 실기기 이미지 calibration, 새 두 모델 지원, 동적 정책 개선은 각각 미완료이며 별도로 검증한다.
+
+2026-09-20 ?? ??: [DECODE_RESOLUTION_20260920.md](DECODE_RESOLUTION_20260920.md)? ??? image task ???host generator??? validation subset?bounded task-profile ??? ????. B0/B1 ?? ??? ?? ?????? ? simulation? ?? ??? ?????. PLAN 4.4? ???profile?holdout??? ?? ??? ???? ???.

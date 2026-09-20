@@ -29,6 +29,8 @@ class DecodeDiagnosticActivity : Activity() {
             var root: File? = null
             try {
                 require(intent.action == "com.example.d1check.benchmarkrunner.action.DECODE_DIAGNOSTIC")
+                val runtime = requireNotNull(intent.getStringExtra("diagnostic_runtime"))
+                require(runtime in setOf("raw", "tasks")) { "Isolate native runtimes in separate processes" }
                 val id = requireNotNull(intent.getStringExtra("session_id"))
                 require(UUID.fromString(id).toString() == id)
                 root = canonicalProbeOutputRoot(filesDir, "decode-diagnostic-v1", id)
@@ -55,15 +57,16 @@ class DecodeDiagnosticActivity : Activity() {
                     val tensor = ProbeImageContract.tensor(resized)
                     save(root, "input.f32le", ByteArray(tensor.capacity()).also { tensor.duplicate().get(it) })
                     Log.i("D1DECODE", "session_start=$id backend=${m.execution.backend}")
-                    val invocation = ProbeRawSession.create(m, model).use { it.invokePrepared(tensor) }
-                    invocation.outputs.forEachIndexed { i, values ->
+                    val invocation = if (runtime == "raw") ProbeRawSession.create(m, model).use { it.invokePrepared(tensor) } else null
+                    invocation?.outputs?.forEachIndexed { i, values ->
                         save(root, "output_$i.f32le", ByteBuffer.allocate(values.size * 4).order(ByteOrder.LITTLE_ENDIAN).apply { values.forEach { putFloat(it) } }.array())
                     }
+                    val taskResults = linkedMapOf<String, Any?>()
+                    if (runtime == "tasks") {
                     val base = BaseOptions.builder().setModelAssetBuffer(model.readOnlyBuffer.duplicate().apply { rewind() })
                         .setDelegate(if (m.execution.backend == ProbeBackend.GPU) Delegate.GPU else Delegate.CPU).build()
                     val options = ObjectDetector.ObjectDetectorOptions.builder().setBaseOptions(base)
                         .setRunningMode(RunningMode.IMAGE).setScoreThreshold(0.5f).build()
-                    val taskResults = linkedMapOf<String, Any?>()
                     ObjectDetector.createFromOptions(this, options).use { detector ->
                         val scaledPixels = IntArray(320 * 320) { i ->
                             (255 shl 24) or ((resized[i * 3].toInt() and 255) shl 16) or
@@ -85,12 +88,14 @@ class DecodeDiagnosticActivity : Activity() {
                             }
                         } finally { scaled.recycle() }
                     }
+                    }
                     val record = mapOf("protocol" to "decode-diagnostic-v1", "session_id" to id,
+                        "diagnostic_runtime" to runtime,
                         "manifest_sha256" to ProbeModelFile.sha256(manifestFile), "apk_sha256" to m.target.apkSha256,
                         "model_sha256" to model.sha256, "image_sha256" to input.sha256,
                         "image_size" to listOf(bitmap.width, bitmap.height), "preprocessing_id" to ProbeImageContract.ID,
                         "requested_backend" to m.execution.backend.name, "actual_backend" to if (m.execution.backend == ProbeBackend.CPU) "CPU" else "unverified_requires_host_log",
-                        "raw_output_sha256" to invocation.outputSha256, "input_tensor_sha256" to invocation.inputSha256,
+                        "raw_output_sha256" to invocation?.outputSha256, "input_tensor_sha256" to ProbeModelFile.sha256(File(root, "input.f32le")),
                         "tasks" to taskResults, "status" to "completed_diagnostic_not_quality_or_service",
                         "files" to root.listFiles()!!.associate { it.name to ProbeModelFile.sha256(it) })
                     save(root, "diagnostic.json", ModelProbeArtifacts.json(record).toByteArray())

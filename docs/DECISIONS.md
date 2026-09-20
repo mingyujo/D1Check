@@ -190,6 +190,15 @@
 - 준비 범위: 별도 draft simulation schema·validator·seed·no-op·정책 인터페이스·host KPI 계약을 구현하되 TASK-02 production 완성이나 PROFILE-02 실측으로 표시하지 않는다. 실제 service/transition/co-run·품질 입력·holdout·deadline/반복은 열린 gate다.
 - 근거: `C:/Users/LG/Documents/D1Check_GPU_Diag/run_20260920/device_evidence_summary.json`, `decoded_comparison.json`, [SIM_01_PREPARATION.md](SIM_01_PREPARATION.md).
 
+## 2026-09-20 — 명시적 image task 계약과 증거 경계
+
+- 상태: 채택 — 사용자의 decoded 원인 조사·adapter 구현·bounded 실측 승인 범위.
+- 결정: 같은 원본의 RGB PNG와 Q16 resize를 입력 계약으로 고정하고 `explicit-image-task-v1`에서 LiteRT raw 출력과 metadata 기반 decoder를 직접 연결한다. 기존 모델 ID와 기존 Tasks artifact는 유지하며 새 task-profile-v1 결과를 별도 root에 저장한다.
+- 근거: host/A24 CPU JPEG decode 차이를 같은 RGB ablation으로 확인했다. 같은 tensor에서는 CPU/GPU raw 및 decoded가 기존 tolerance를 통과했다. Tasks GPU는 추가 2회 timeout으로 실제 task/profile 후보에서 제외한다. [상세 근거](DECODE_RESOLUTION_20260920.md).
+- 모델: exact float32 license/NOTICE는 아직 미확인이다. 기존 실행자 직접 확보·비배포 연구 probe 한정으로 유지한다. 확보한 공식 uint8 대안은 다른 모델이며 결과를 섞거나 교체 완료로 기록하지 않는다. 배포 전 라이선스 입증/교체 gate를 유지한다.
+- 품질: Open Images 공식 주석 20장으로 실제 탐지 품질을 관측하되 host equivalence와 분리한다. 낮은/불확실한 품질 관측을 감추거나 gate 통과를 위해 threshold/tolerance를 바꾸지 않는다.
+- 준비: B0/B1 순수 결정 함수를 추가한다. 고정 mapping·aging 값은 caller가 명시해야 하며 아직 평가용 동결값은 없다. 호출 테스트는 simulation·정책 비교가 아니다. 절대 deadline과 holdout 오차 허용값은 pending을 유지한다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

@@ -188,6 +188,9 @@ internal class ProbeRawSession private constructor(
             require(actual.dataType() == DataType.FLOAT32 && expected.dtype == "FLOAT32") {
                 "$area tensor dtype mismatch at ${expected.index}"
             }
+            require(actual.quantizationParams().scale == 0f && actual.quantizationParams().zeroPoint == 0) {
+                "$area tensor quantization mismatch at ${expected.index}"
+            }
         }
 
         private fun sha256(buffer: ByteBuffer): String {
