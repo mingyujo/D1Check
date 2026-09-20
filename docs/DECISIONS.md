@@ -207,6 +207,14 @@
 - 제한: 최종 APK 전송 중 A24 offline. 네 cell은 최종 계약에서 unverified이며 기존 raw 성공을 task 승인으로 전용하지 않는다. 본 simulation·formal은 미실행.
 - 판정: BLOCKED_EXTERNAL_INPUT. STATUS와 외부 FINAL_REPORT에 재연결·정리 대상 UUID·최종 APK hash를 기록한다. 임의 deadline·품질 하한·holdout 오차를 채우지 않는다.
 
+## 2026-09-20 — A24 최종 색상 계약 네 cell 검증
+
+- 상태: 채택 — 사용자 재연결·bounded 최종 검증 지시. 최신 APK 원격 hash 확인 후 새 UUID 8 session을 실행했다.
+- 결정: explicit-image-task-v2의 classification/detection CPU/GPU 네 cell을 20-image backend equivalence 범위에서 PASS_EQ로 인정한다. 기존 Tasks 실패에 따른 GPU 제외를 새 명시적 adapter에 적용하지 않는다. 품질 승인 또는 formal 안정성으로 확대하지 않는다.
+- 근거: [재개 검증](A24_RESUME_20260920.md). host와 같은 tensor, decoded 및 CPU↔GPU 직접 비교 40쌍 통과. session/PID full GPU 확인. tolerance/fallback 변경 없음.
+- 추가 수정: 이전 외부 분류 golden의 manifest/파일 경로 혼용을 검출했다. 실제 bytes/hash 결합 generator와 회귀 테스트를 추가하고 잘못된 golden/실패 판정을 보존했다.
+- 다음: 통과 cell의 bounded solo/transition/co-run/holdout을 관측한다. deadline·품질·안정성·오차 수용값은 근거 없이 동결하지 않는다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

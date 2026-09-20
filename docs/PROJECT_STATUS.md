@@ -2,7 +2,8 @@
 
 - 갱신: 2026-09-20 재개 진행 중. A24 연결 복구·최종 APK 설치 확인; SIM-01 준비는 INCOMPLETE.
 - 재개 E: C:/Users/LG/Documents/D1Check_Decode_Resolution/resume_20260920T090545Z/. 시작 adb5c38, clean. 이전 FINAL_REPORT.md와 모든 기존 결과 보존.
-- 현재: 새 canonical 계약 탐지 CPU/GPU 각 20장 동등성 PASS. 분류 최종 cell 검증·bounded profile 진행 중. 본 simulation/formal 미실행.
+- 현재: 새 canonical 계약 네 cell 각각 20장 동등성 PASS, CPU↔GPU 직접 비교 40쌍 PASS. 8 session/80요청 완료. bounded profile 진행 중. 본 simulation/formal 미실행.
+- [재개 상세](A24_RESUME_20260920.md). 탐지 CPU/GPU 공식 부분 주석 15/28 bbox 일치. 품질 승인과 동등성은 별도다.
 - 신규 발견: 이전 외부 classification_reference_v2.py가 v2 manifest와 이전 PNG bytes를 혼용하고 선언 hash를 복사했다. 새 tools/d1_classification_reference.py는 실제 bytes/hash를 강제 연결하고 raw·tensor metadata·3회 재현성을 기록한다. 이전 잘못된 golden/실패 판정 보존.
 - 검증: 신규 host generator targeted 11건 및 전체 Python 254건 PASS(기존 skip 2). Android 코드 변경 없음; 검증된 APK 8b805d3 그대로 설치·원격 hash 확인.
 - 이전 전송 UUID 86bea279-338f-4e8d-b2b2-f35d5efbd986의 잔존 조각 4개 소유/hash 확인 후 해당 device staging만 정리. host 조각은 실패 증거로 보존.
