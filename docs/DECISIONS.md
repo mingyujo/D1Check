@@ -233,6 +233,13 @@
 - 공통 경계: fallback 금지·thermal0·serial만 준비 승인, co-run/메모리 limit·deadline은 독립 검증 전 pending. GPU는 solo에서 느리지만 CPU-only 직렬 대조가 없으므로 모든 조건에서 지배당한다고 단정하거나 제외하지 않는다.
 - 상태: SIM-01_INCOMPLETE 유지. 작은 추가 calibration과 새 holdout/control 설계를 명시했으며 본 simulation/formal을 실행하지 않았다. 기존 정책 ID·증거 의미는 변경하지 않는다.
 
+## 2026-09-20 — FINAL-CALIB 사전 동결
+
+- 상태: 채택 — 사용자 승인 A4 calibration/B16 독립 holdout/C2 CPU-only bounded 대조. 본 simulation/formal 금지 유지.
+- calibration24+신규4만으로 전환을 cold와 분리한 `transition_mean`을 독립 평가 후보로 고정했다. 기존 PI Q05..Q95, coverage90%, MAE432.808616ms/WAPE43.191436% 기준을 완화하지 않았다. calibration coverage80.65% 미달도 보존한다. 후보 고정은 SIM-01 승인과 다르다.
+- 2026-09-20T13:11:32.713690Z 고정 hash는 [receipt](SERVICE_MODEL_FINAL_FREEZE_20260920.json), 원자료/상세는 `C:/Users/LG/Documents/D1Check_Service_Model_Final/run_20260920T130139Z`. B16은 이 시각/commit 이후 새 UUID로 실행하고 모델을 read-only 평가한다.
+- 첫 host 종료기록 변수 오류 시도는 진단 원자료로 보존하고 새 UUID로 대체했다. CPU-only 직렬 대조는 기존 단일-worker runtime 교체 비용이 포함돼 warm 두 모델 상주 대조가 아니다. sampled memory/미확정 deadline을 임의 승인하지 않는다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

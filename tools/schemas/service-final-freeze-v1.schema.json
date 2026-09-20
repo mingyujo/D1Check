@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["protocol", "frozen_utc", "status", "model", "model_sha256", "criteria", "criteria_sha256", "simulation_input", "simulation_input_sha256", "plan", "plan_sha256", "calibration_sessions", "previously_seen", "source_files", "generator_sources", "no_scheduling_simulation"],
+  "properties": {
+    "protocol": {"const": "service-final-freeze-v1"},
+    "status": {"const": "frozen_for_independent_evaluation_not_approved"},
+    "frozen_utc": {"type": "string", "format": "date-time"},
+    "model_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "criteria_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "simulation_input_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "plan_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "no_scheduling_simulation": {"const": true},
+    "criteria": {"type": "object", "required": ["required_empirical_coverage", "mae_ns_max", "wape_max"], "properties": {"required_empirical_coverage": {"const": 0.9}}},
+    "calibration_sessions": {"type": "array", "minItems": 28, "maxItems": 28, "uniqueItems": true, "items": {"type": "string", "format": "uuid"}},
+    "plan": {"type": "object", "required": ["sessions", "seed"], "properties": {"seed": {"const": 20260920}, "sessions": {"type": "array", "minItems": 22, "maxItems": 22}}},
+    "model": {"type": "object"},
+    "simulation_input": {"type": "object"},
+    "source_files": {"type": "array"},
+    "generator_sources": {"type": "object"}
+  }
+}
