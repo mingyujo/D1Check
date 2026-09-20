@@ -1,0 +1,38 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"urn:d1check:service-model-preparation-v1",
+  "title":"Non-executable service-model preparation contract",
+  "type":"object", "additionalProperties":false,
+  "required":["protocol","status","model_sha256","criteria_sha256","split_sha256","source_apk_sha256","device_fingerprint","capabilities","service","constraints","quality","terminal_states","deadline","readiness_blockers","no_scheduling_simulation"],
+  "$defs":{"hash":{"type":"string","pattern":"^[a-f0-9]{64}$"}},
+  "properties":{
+    "protocol":{"const":"service-model-preparation-v1"},
+    "status":{"const":"SIM-01_INCOMPLETE"},
+    "model_sha256":{"$ref":"#/$defs/hash"}, "criteria_sha256":{"$ref":"#/$defs/hash"},
+    "split_sha256":{"$ref":"#/$defs/hash"}, "source_apk_sha256":{"$ref":"#/$defs/hash"},
+    "device_fingerprint":{"type":"string","minLength":1},
+    "capabilities":{"type":"array","minItems":4,"maxItems":4,"uniqueItems":true,"items":{
+      "type":"object","additionalProperties":false,
+      "required":["task","backend","numerical_equivalence","decoded_equivalence","enabled_for_validation"],
+      "properties":{"task":{"enum":["classification","detection"]},"backend":{"enum":["CPU","GPU"]},
+        "numerical_equivalence":{"const":"passed_on_recorded_raw_scope"},
+        "decoded_equivalence":{"const":"20_images_passed"},"enabled_for_validation":{"const":true}}}},
+    "service":{"type":"object","additionalProperties":false,"required":["status","cold","transitions","interference"],
+      "properties":{"status":{"const":"candidate_not_frozen"},"cold":{"type":"string"},"transitions":{"type":"string"},"interference":{"type":"string"}}},
+    "constraints":{"type":"object","additionalProperties":false,"required":["fallback","thermal_status_allowed","memory","max_in_flight","allowed_corun","observed_corun_pairs"],
+      "properties":{"fallback":{"const":"forbidden"},"thermal_status_allowed":{"const":[0]},"max_in_flight":{"const":1},"allowed_corun":{"const":[]},
+        "observed_corun_pairs":{"type":"array","items":{"type":"string"}},
+        "memory":{"type":"object","additionalProperties":false,
+          "required":["status","sampled_peak_pss_kb","proposed_limit_kb","proposed_headroom_kb","rule","missing"],
+          "properties":{"status":{"const":"candidate_guard_pending_independent_validation"},
+            "sampled_peak_pss_kb":{"type":"integer","minimum":1},"proposed_limit_kb":{"type":"integer","minimum":1},
+            "proposed_headroom_kb":{"type":"integer","minimum":0},"rule":{"type":"string"},"missing":{"type":"string","minLength":1}}}}},
+    "quality":{"type":"object","additionalProperties":false,"required":["backend_numerical","decoded","task_accuracy","scheduling_preservation"],
+      "properties":{"backend_numerical":{"type":"string"},"decoded":{"type":"string"},"task_accuracy":{"type":"string"},"scheduling_preservation":{"type":"string"}}},
+    "terminal_states":{"const":["succeeded","failed","rejected","expired","cancelled","unfinished"]},
+    "deadline":{"type":"object","additionalProperties":false,"required":["state","values_ns","candidate_rule","missing"],
+      "properties":{"state":{"const":"calibration_pending"},"values_ns":{"type":"null"},"candidate_rule":{"type":"string"},"missing":{"type":"string","minLength":1}}},
+    "readiness_blockers":{"type":"array","minItems":1,"items":{"type":"string","minLength":1}},
+    "no_scheduling_simulation":{"const":true}
+  }
+}
