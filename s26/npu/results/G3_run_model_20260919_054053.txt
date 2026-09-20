@@ -1,0 +1,41 @@
+===== G3 run_model 20260919_054053  iterations=100 =====
+List of devices attached
+<IP:PORT>	device
+
+samsung/m1sksx/m1s:16/BP4A.251205.006/S942NKSS4AZHA_OKR4AZHA:user/release-keys
+80500
+C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\measure\s26\npu\artifacts\litert_samsung_arm64\libLiteRtClGlAccelerator.so: 1 file pushed, 0 skipped. 25.1 MB/s (3156728 bytes in 0.120s)
+C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\measure\s26\npu\artifacts\litert_samsung_arm64\libLiteRtDispatch_Samsung.so: 1 file pushed, 0 skipped. 211.5 MB/s (559960 bytes in 0.003s)
+C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\measure\s26\npu\artifacts\litert_samsung_arm64\README.md: 1 file pushed, 0 skipped. 3.5 MB/s (699 bytes in 0.000s)
+C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\measure\s26\npu\artifacts\litert_samsung_arm64\run_model: 1 file pushed, 0 skipped. 41.5 MB/s (10396184 bytes in 0.239s)
+C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\measure\s26\npu\artifacts\compiled_e9965\mobilenet_v1_1.0_224_Samsung_E9965.tflite: 1 file pushed, 0 skipped. 11.6 MB/s (8901712 bytes in 0.732s)
+C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\measure\s26\npu\artifacts\compiled_e9965\mobilenet_v1_1.0_224_quant_Samsung_E9965.tflite: 1 file pushed, 0 skipped. 21.5 MB/s (4605104 bytes in 0.204s)
+total 27008
+-rw-rw-rw- 1 shell shell      699 2026-09-19 05:33 README.md
+-rw-rw-rw- 1 shell shell  3156728 2026-09-19 05:33 libLiteRtClGlAccelerator.so
+-rw-rw-rw- 1 shell shell   559960 2026-09-19 05:34 libLiteRtDispatch_Samsung.so
+-rw-rw-rw- 1 shell shell  8901712 2026-09-19 01:25 mobilenet_v1_1.0_224_Samsung_E9965.tflite
+-rw-rw-rw- 1 shell shell  4605104 2026-09-19 01:25 mobilenet_v1_1.0_224_quant_Samsung_E9965.tflite
+-rwxr-xr-x 1 shell shell 10396184 2026-09-19 05:34 run_model
+6a98900a84166a93ca7b9db8b600ccce  /data/local/tmp/npu/README.md
+8b9515295cb390885f18aeb14ed0c51b  /data/local/tmp/npu/libLiteRtClGlAccelerator.so
+e9e1ee3be975ce456948d37b1582ce80  /data/local/tmp/npu/libLiteRtDispatch_Samsung.so
+7a58e69ee8a43a8508143140afc8c383  /data/local/tmp/npu/mobilenet_v1_1.0_224_Samsung_E9965.tflite
+c2308148ed73e5bf72662b27c68b4178  /data/local/tmp/npu/mobilenet_v1_1.0_224_quant_Samsung_E9965.tflite
+e6a70ff7814feacf1a9fcc94afa884b7  /data/local/tmp/npu/run_model
+ 
+===== NPU fp32 (mobilenet_v1_1.0_224_Samsung_E9965.tflite) =====
+CANNOT LINK EXECUTABLE "./run_model": cannot locate symbol "_ZN7android4base10MappedFile6CreateEilmi" referenced by "/system/lib64/libandroidfw.so"...
+ 
+===== NPU int8 (mobilenet_v1_1.0_224_quant_Samsung_E9965.tflite) =====
+CANNOT LINK EXECUTABLE "./run_model": cannot locate symbol "_ZN7android4base10MappedFile6CreateEilmi" referenced by "/system/lib64/libandroidfw.so"...
+ 
+===== CPU control (mobilenet_v1_1.0_224.tflite) =====
+SKIPPED - original model not pushed
+ 
+===== logcat (LiteRt / ENN / npu lines since start) =====
+09-19 05:40:56.389 23820 23820 I adbd    : adbd service requested 'shell,v2,raw:cd /data/local/tmp/npu && LD_LIBRARY_PATH=/data/local/tmp/npu:/vendor/lib64:/vendor/lib64/egl ./run_model --dispatch_library_dir=/data/local/tmp/npu --iterations=100 --print_tensors --sample_size=5 --graph=/data/local/tmp/npu/mobilenet_v1_1.0_224_Samsung_E9965.tflite --accelerator=npu'
+09-19 05:40:56.501 20595 20595 F linker  : CANNOT LINK EXECUTABLE "./run_model": cannot locate symbol "_ZN7android4base10MappedFile6CreateEilmi" referenced by "/system/lib64/libandroidfw.so"...
+09-19 05:40:56.576 23820 23820 I adbd    : adbd service requested 'shell,v2,raw:cd /data/local/tmp/npu && LD_LIBRARY_PATH=/data/local/tmp/npu:/vendor/lib64:/vendor/lib64/egl ./run_model --dispatch_library_dir=/data/local/tmp/npu --iterations=100 --print_tensors --sample_size=5 --graph=/data/local/tmp/npu/mobilenet_v1_1.0_224_quant_Samsung_E9965.tflite --accelerator=npu'
+09-19 05:40:56.642 20598 20598 F linker  : CANNOT LINK EXECUTABLE "./run_model": cannot locate symbol "_ZN7android4base10MappedFile6CreateEilmi" referenced by "/system/lib64/libandroidfw.so"...
+09-19 05:40:56.728 23820 23820 I adbd    : adbd service requested 'shell,v2,raw:if [ -f /data/local/tmp/npu/mobilenet_v1_1.0_224.tflite ]; then cd /data/local/tmp/npu && LD_LIBRARY_PATH=/data/local/tmp/npu:/vendor/lib64:/vendor/lib64/egl ./run_model --dispatch_library_dir=/data/local/tmp/npu --iterations=100 --print_tensors --sample_size=5 --graph=/data/local/tmp/npu/mobilenet_v1_1.0_224.tflite --accelerator=cpu; else echo SKIPPED - original model not pushed; fi'

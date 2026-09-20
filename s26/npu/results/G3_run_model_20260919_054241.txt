@@ -1,0 +1,860 @@
+===== G3 run_model 20260919_054241  iterations=100 =====
+List of devices attached
+<IP:PORT>	device
+
+samsung/m1sksx/m1s:16/BP4A.251205.006/S942NKSS4AZHA_OKR4AZHA:user/release-keys
+80500
+C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\measure\s26\npu\artifacts\litert_samsung_arm64\libLiteRtClGlAccelerator.so: 1 file pushed, 0 skipped. 25.9 MB/s (3156728 bytes in 0.116s)
+C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\measure\s26\npu\artifacts\litert_samsung_arm64\libLiteRtDispatch_Samsung.so: 1 file pushed, 0 skipped. 202.2 MB/s (559960 bytes in 0.003s)
+C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\measure\s26\npu\artifacts\litert_samsung_arm64\README.md: 1 file pushed, 0 skipped. 2.8 MB/s (699 bytes in 0.000s)
+C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\measure\s26\npu\artifacts\litert_samsung_arm64\run_model: 1 file pushed, 0 skipped. 44.4 MB/s (10396184 bytes in 0.223s)
+C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\measure\s26\npu\artifacts\compiled_e9965\mobilenet_v1_1.0_224_Samsung_E9965.tflite: 1 file pushed, 0 skipped. 19.2 MB/s (8901712 bytes in 0.443s)
+C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\measure\s26\npu\artifacts\compiled_e9965\mobilenet_v1_1.0_224_quant_Samsung_E9965.tflite: 1 file pushed, 0 skipped. 22.4 MB/s (4605104 bytes in 0.196s)
+total 27008
+-rw-rw-rw- 1 shell shell      699 2026-09-19 05:33 README.md
+-rw-rw-rw- 1 shell shell  3156728 2026-09-19 05:33 libLiteRtClGlAccelerator.so
+-rw-rw-rw- 1 shell shell   559960 2026-09-19 05:34 libLiteRtDispatch_Samsung.so
+-rw-rw-rw- 1 shell shell  8901712 2026-09-19 01:25 mobilenet_v1_1.0_224_Samsung_E9965.tflite
+-rw-rw-rw- 1 shell shell  4605104 2026-09-19 01:25 mobilenet_v1_1.0_224_quant_Samsung_E9965.tflite
+-rwxr-xr-x 1 shell shell 10396184 2026-09-19 05:34 run_model
+6a98900a84166a93ca7b9db8b600ccce  /data/local/tmp/npu/README.md
+8b9515295cb390885f18aeb14ed0c51b  /data/local/tmp/npu/libLiteRtClGlAccelerator.so
+e9e1ee3be975ce456948d37b1582ce80  /data/local/tmp/npu/libLiteRtDispatch_Samsung.so
+7a58e69ee8a43a8508143140afc8c383  /data/local/tmp/npu/mobilenet_v1_1.0_224_Samsung_E9965.tflite
+c2308148ed73e5bf72662b27c68b4178  /data/local/tmp/npu/mobilenet_v1_1.0_224_quant_Samsung_E9965.tflite
+e6a70ff7814feacf1a9fcc94afa884b7  /data/local/tmp/npu/run_model
+cp: bad '/vendor/lib64/vendor.samsung_slsi.hardware.enn_aux@1.0.so': No such file or directory
+COPY FAILED vendor.samsung_slsi.hardware.enn_aux@1.0.so
+-rw-r--r-- 1 shell shell 302168 2026-09-19 05:42 /data/local/tmp/npu/libenn_common_utils.so
+-rw-r--r-- 1 shell shell  67704 2026-09-19 05:42 /data/local/tmp/npu/libenn_public_api_cpp.so
+-rw-r--r-- 1 shell shell 436344 2026-09-19 05:42 /data/local/tmp/npu/libenn_user.samsung_slsi.so
+-rw-r--r-- 1 shell shell 118848 2026-09-19 05:42 /data/local/tmp/npu/vendor.samsung_slsi.hardware.enn_aidl-V1-ndk.so
+ 
+===== NPU fp32 (mobilenet_v1_1.0_224_Samsung_E9965.tflite) =====
+INFO: [environment.cc:36] Creating LiteRT environment with options
+INFO: [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xb400007488604890, name=NpuAccelerator
+INFO: [npu_registry.cc:30] NPU accelerator registered.
+INFO: [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xb4000074886051c0, name=CpuAccelerator
+INFO: [cpu_registry.cc:75] XNNPACK CPU accelerator registered.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1789764164.130479   20709 run_model.cc:429] Model: /data/local/tmp/npu/mobilenet_v1_1.0_224_Samsung_E9965.tflite
+INFO: [compiled_model.cc:829] Flatbuffer model initialized directly from incoming litert model.
+INFO: Initialized TensorFlow Lite runtime.
+INFO: [dispatch_delegate.cc:98] DispatchDelegate::DispatchDelegate
+INFO: [dispatch_accelerator.cc:139] Dispatch delegate getting hooks.
+INFO: [dispatch_delegate.cc:187] Lazy initializing Dispatch API for GetHooks.
+INFO: [litert_dispatch.cc:186] Loading shared library: /data/local/tmp/npu/libLiteRtDispatch_Samsung.so
+INFO: [enn_manager.cc:79] Loading from: libenn_public_api_cpp.so
+INFO: [dispatch_api.cc:84] Failed to initialize: Fail to load enn runtime.
+ERROR: [compiled_model.cc:1063] Failed to get hooks from accelerator: 3
+INFO: [dispatch_delegate.cc:128] DispatchDelegate::Initialize 
+INFO: [litert_dispatch.cc:186] Loading shared library: /data/local/tmp/npu/libLiteRtDispatch_Samsung.so
+INFO: [enn_manager.cc:79] Loading from: libenn_public_api_cpp.so
+INFO: [dispatch_api.cc:84] Failed to initialize: Fail to load enn runtime.
+ERROR: [dispatch_delegate.cc:131] Failed to initialize Dispatch API: ERROR: [litert/runtime/dispatch/dispatch_delegate.cc:201]
+VERBOSE: Replacing 1 out of 1 node(s) with delegate (DispatchDelegate) node, yielding 1 partitions for subgraph 0 ().
+ERROR: [dispatch_delegate.cc:146] Failed to create a dispatch delegate kernel: No usable Dispatch runtime found
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+I0000 00:00:1789764165.159840   20709 run_model.cc:435] Signature index: 0
+I0000 00:00:1789764165.159954   20709 run_model.cc:437] Prepare input buffers
+WARNING: [compiled_model.cc:1497] Failed to get buffer requirements for tensor `input`.
+
+I0000 00:00:1789764165.164599   20709 run_model.cc:366] Input buffer 0:
+I0000 00:00:1789764165.164788   20709 run_model.cc:367]   Size: 602112 bytes
+I0000 00:00:1789764165.164983   20709 run_model.cc:368]   ElementType: 1
+I0000 00:00:1789764165.165086   20709 run_model.cc:369]   BufferType: 1
+I0000 00:00:1789764165.165105   20709 run_model.cc:375]   Dimensions: [
+I0000 00:00:1789764165.165114   20709 run_model.cc:377]     1
+I0000 00:00:1789764165.165125   20709 run_model.cc:377]     224
+I0000 00:00:1789764165.165135   20709 run_model.cc:377]     224
+I0000 00:00:1789764165.165145   20709 run_model.cc:377]     3
+I0000 00:00:1789764165.165175   20709 run_model.cc:380]   ]
+I0000 00:00:1789764165.165191   20709 run_model.cc:381]   Total logical elements: 150528
+I0000 00:00:1789764165.165209   20709 run_model.cc:473] Prepare output buffers
+WARNING: [compiled_model.cc:1497] Failed to get buffer requirements for tensor `MobilenetV1/Predictions/Reshape_1`.
+
+I0000 00:00:1789764165.165285   20709 run_model.cc:484] Run model for 100 times
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+I0000 00:00:1789764165.169456   20709 run_model.cc:493] First run took 90 microseconds
+I0000 00:00:1789764165.169479   20709 run_model.cc:494] Slowest run took 222 microseconds
+I0000 00:00:1789764165.169490   20709 run_model.cc:497] Fastest run took 23 microseconds
+I0000 00:00:1789764165.169502   20709 run_model.cc:500] All runs took average 40 microseconds
+I0000 00:00:1789764165.169513   20709 run_model.cc:366] Output buffer 0:
+I0000 00:00:1789764165.169522   20709 run_model.cc:367]   Size: 4004 bytes
+I0000 00:00:1789764165.169533   20709 run_model.cc:368]   ElementType: 1
+I0000 00:00:1789764165.169542   20709 run_model.cc:369]   BufferType: 1
+I0000 00:00:1789764165.169552   20709 run_model.cc:375]   Dimensions: [
+I0000 00:00:1789764165.169561   20709 run_model.cc:377]     1
+I0000 00:00:1789764165.169574   20709 run_model.cc:377]     1001
+I0000 00:00:1789764165.169583   20709 run_model.cc:380]   ]
+I0000 00:00:1789764165.169592   20709 run_model.cc:381]   Total logical elements: 1001
+I0000 00:00:1789764165.169606   20709 run_model.cc:520] Model run completed
+INFO: [accelerator_registry.cc:43] DestroyAccelerator: ptr=0xb4000074886051c0, name=CpuAccelerator
+INFO: [accelerator_registry.cc:43] DestroyAccelerator: ptr=0xb400007488604890, name=NpuAccelerator
+E0000 00:00:1789764165.170025   20709 run_model.cc:540] Failed to invoke the compiled model
+└ Failed to allocate tensors
+ 
+===== NPU int8 (mobilenet_v1_1.0_224_quant_Samsung_E9965.tflite) =====
+INFO: [environment.cc:36] Creating LiteRT environment with options
+INFO: [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xb4000075afa11740, name=NpuAccelerator
+INFO: [npu_registry.cc:30] NPU accelerator registered.
+INFO: [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xb4000075afa116d0, name=CpuAccelerator
+INFO: [cpu_registry.cc:75] XNNPACK CPU accelerator registered.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1789764165.372751   20718 run_model.cc:429] Model: /data/local/tmp/npu/mobilenet_v1_1.0_224_quant_Samsung_E9965.tflite
+INFO: [compiled_model.cc:829] Flatbuffer model initialized directly from incoming litert model.
+INFO: Initialized TensorFlow Lite runtime.
+INFO: [dispatch_delegate.cc:98] DispatchDelegate::DispatchDelegate
+INFO: [dispatch_accelerator.cc:139] Dispatch delegate getting hooks.
+INFO: [dispatch_delegate.cc:187] Lazy initializing Dispatch API for GetHooks.
+INFO: [litert_dispatch.cc:186] Loading shared library: /data/local/tmp/npu/libLiteRtDispatch_Samsung.so
+INFO: [enn_manager.cc:79] Loading from: libenn_public_api_cpp.so
+INFO: [dispatch_api.cc:84] Failed to initialize: Fail to load enn runtime.
+ERROR: [compiled_model.cc:1063] Failed to get hooks from accelerator: 3
+INFO: [dispatch_delegate.cc:128] DispatchDelegate::Initialize 
+INFO: [litert_dispatch.cc:186] Loading shared library: /data/local/tmp/npu/libLiteRtDispatch_Samsung.so
+INFO: [enn_manager.cc:79] Loading from: libenn_public_api_cpp.so
+INFO: [dispatch_api.cc:84] Failed to initialize: Fail to load enn runtime.
+ERROR: [dispatch_delegate.cc:131] Failed to initialize Dispatch API: ERROR: [litert/runtime/dispatch/dispatch_delegate.cc:201]
+VERBOSE: Replacing 1 out of 1 node(s) with delegate (DispatchDelegate) node, yielding 1 partitions for subgraph 0 ().
+ERROR: [dispatch_delegate.cc:146] Failed to create a dispatch delegate kernel: No usable Dispatch runtime found
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+I0000 00:00:1789764165.380617   20718 run_model.cc:435] Signature index: 0
+I0000 00:00:1789764165.380637   20718 run_model.cc:437] Prepare input buffers
+WARNING: [compiled_model.cc:1497] Failed to get buffer requirements for tensor `input`.
+
+I0000 00:00:1789764165.380936   20718 run_model.cc:366] Input buffer 0:
+I0000 00:00:1789764165.381025   20718 run_model.cc:367]   Size: 150528 bytes
+I0000 00:00:1789764165.381036   20718 run_model.cc:368]   ElementType: 3
+I0000 00:00:1789764165.381048   20718 run_model.cc:369]   BufferType: 1
+I0000 00:00:1789764165.381059   20718 run_model.cc:375]   Dimensions: [
+I0000 00:00:1789764165.381071   20718 run_model.cc:377]     1
+I0000 00:00:1789764165.381082   20718 run_model.cc:377]     224
+I0000 00:00:1789764165.381092   20718 run_model.cc:377]     224
+I0000 00:00:1789764165.381103   20718 run_model.cc:377]     3
+I0000 00:00:1789764165.381115   20718 run_model.cc:380]   ]
+I0000 00:00:1789764165.381125   20718 run_model.cc:381]   Total logical elements: 150528
+I0000 00:00:1789764165.381137   20718 run_model.cc:473] Prepare output buffers
+WARNING: [compiled_model.cc:1497] Failed to get buffer requirements for tensor `MobilenetV1/Predictions/Reshape_1`.
+
+I0000 00:00:1789764165.381185   20718 run_model.cc:484] Run model for 100 times
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+ERROR: Node number 1 (DELEGATE) failed to prepare.
+ERROR: [litert_compiled_model.cc:164] Failed to allocate tensors
+I0000 00:00:1789764165.385442   20718 run_model.cc:493] First run took 89 microseconds
+I0000 00:00:1789764165.385447   20718 run_model.cc:494] Slowest run took 99 microseconds
+I0000 00:00:1789764165.385450   20718 run_model.cc:497] Fastest run took 9 microseconds
+I0000 00:00:1789764165.385453   20718 run_model.cc:500] All runs took average 42 microseconds
+I0000 00:00:1789764165.385457   20718 run_model.cc:366] Output buffer 0:
+I0000 00:00:1789764165.385460   20718 run_model.cc:367]   Size: 1001 bytes
+I0000 00:00:1789764165.385464   20718 run_model.cc:368]   ElementType: 3
+I0000 00:00:1789764165.385467   20718 run_model.cc:369]   BufferType: 1
+I0000 00:00:1789764165.385470   20718 run_model.cc:375]   Dimensions: [
+I0000 00:00:1789764165.385474   20718 run_model.cc:377]     1
+I0000 00:00:1789764165.385477   20718 run_model.cc:377]     1001
+I0000 00:00:1789764165.385480   20718 run_model.cc:380]   ]
+I0000 00:00:1789764165.385483   20718 run_model.cc:381]   Total logical elements: 1001
+I0000 00:00:1789764165.385486   20718 run_model.cc:520] Model run completed
+INFO: [accelerator_registry.cc:43] DestroyAccelerator: ptr=0xb4000075afa116d0, name=CpuAccelerator
+INFO: [accelerator_registry.cc:43] DestroyAccelerator: ptr=0xb4000075afa11740, name=NpuAccelerator
+E0000 00:00:1789764165.385550   20718 run_model.cc:540] Failed to invoke the compiled model
+└ Failed to allocate tensors
+ 
+===== CPU control (mobilenet_v1_1.0_224.tflite) =====
+SKIPPED - original model not pushed
+ 
+===== logcat (LiteRt / ENN / npu lines since start) =====
+09-19 05:42:43.865 23820 23820 I adbd    : adbd service requested 'shell,v2,raw:for f in libenn_public_api_cpp.so libenn_user.samsung_slsi.so libenn_common_utils.so vendor.samsung_slsi.hardware.enn_aidl-V1-ndk.so vendor.samsung_slsi.hardware.enn_aux@1.0.so; do cp /vendor/lib64/$f /data/local/tmp/npu/ 2>&1 || echo COPY FAILED $f; done; ls -l /data/local/tmp/npu/*enn*'
+09-19 05:42:44.024 23820 23820 I adbd    : adbd service requested 'shell,v2,raw:cd /data/local/tmp/npu && LD_LIBRARY_PATH=/data/local/tmp/npu ./run_model --dispatch_library_dir=/data/local/tmp/npu --iterations=100 --print_tensors --sample_size=5 --graph=/data/local/tmp/npu/mobilenet_v1_1.0_224_Samsung_E9965.tflite --accelerator=npu'
+09-19 05:42:44.129 20709 20709 I litert  : [environment.cc:36] Creating LiteRT environment with options
+09-19 05:42:44.130 20709 20709 I litert  : [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xb400007488604890, name=NpuAccelerator
+09-19 05:42:44.130 20709 20709 I litert  : [npu_registry.cc:30] NPU accelerator registered.
+09-19 05:42:44.130 20709 20709 I litert  : [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xb4000074886051c0, name=CpuAccelerator
+09-19 05:42:44.130 20709 20709 I litert  : [cpu_registry.cc:75] XNNPACK CPU accelerator registered.
+09-19 05:42:44.130 20709 20709 I native  : I0000 00:00:1789764164.130479   20709 run_model.cc:429] Model: /data/local/tmp/npu/mobilenet_v1_1.0_224_Samsung_E9965.tflite
+09-19 05:42:44.131 20709 20709 I litert  : [compiled_model.cc:829] Flatbuffer model initialized directly from incoming litert model.
+09-19 05:42:44.132 20709 20709 I litert  : [dispatch_delegate.cc:98] DispatchDelegate::DispatchDelegate
+09-19 05:42:44.132 20709 20709 I litert  : [dispatch_accelerator.cc:139] Dispatch delegate getting hooks.
+09-19 05:42:44.132 20709 20709 I litert  : [dispatch_delegate.cc:187] Lazy initializing Dispatch API for GetHooks.
+09-19 05:42:44.132 20709 20709 I litert  : [litert_dispatch.cc:186] Loading shared library: /data/local/tmp/npu/libLiteRtDispatch_Samsung.so
+09-19 05:42:44.133 20709 20709 I litert  : [enn_manager.cc:79] Loading from: libenn_public_api_cpp.so
+09-19 05:42:44.133 20709 20709 W libc    : Access denied finding property "vendor.property.for.exynos.nn.trace.on"
+09-19 05:42:44.133 20709 20709 W libc    : Access denied finding property "vendor.property.for.exynos.nn"
+09-19 05:42:44.133 20709 20709 I ENN_FRAMEWORK: 2.4.20: * ENN Trace OFF
+09-19 05:42:44.200 20712 20712 I libbinder.AidlLazyServiceRegistrar: Registering service vendor.samsung_slsi.hardware.enn_aidl.IEnnInterfaceAidl/default
+09-19 05:42:44.202 20712 20712 I libbinder.AidlLazyServiceRegistrar: Process has 1 (of 1 available) client(s) in use after notification vendor.samsung_slsi.hardware.enn_aidl.IEnnInterfaceAidl/default has clients: 1
+09-19 05:42:45.135 20709 20709 W libbinder.ServiceManagerCppClient: Waited one second for vendor.samsung_slsi.hardware.enn_aidl.IEnnInterfaceAidl/default (is service started? Number of threads started in the threadpool: 0. Are binder threads started and available?)
+09-19 05:42:45.138 20709 20709 W libbinder.BpBinder: Linking to death on vendor.samsung_slsi.hardware.enn_aidl.IEnnInterfaceAidl but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+09-19 05:42:45.139 20709 20709 E ENN_FRAMEWORK: 2.4.20:   Initialize Error: MediumInterface initialization failed
+09-19 05:42:45.139 20709 20709 E ENN_FRAMEWORK: 2.4.20:   Error from context initialize
+09-19 05:42:45.140 20709 20709 E ENN_FRAMEWORK: 2.4.20:   Context is not initialized
+09-19 05:42:45.142 20709 20709 I libbinder.BpBinder: onLastStrongRef automatically unlinking death recipients for descriptor: 'vendor.samsung_slsi.hardware.enn_aidl.IEnnInterfaceAidl'
+09-19 05:42:45.144 20709 20709 I litert  : [dispatch_api.cc:84] Failed to initialize: Fail to load enn runtime.
+09-19 05:42:45.145 20709 20709 E litert  : [compiled_model.cc:1063] Failed to get hooks from accelerator: 3
+09-19 05:42:45.145 20709 20709 I litert  : [dispatch_delegate.cc:128] DispatchDelegate::Initialize 
+09-19 05:42:45.146 20709 20709 I litert  : [litert_dispatch.cc:186] Loading shared library: /data/local/tmp/npu/libLiteRtDispatch_Samsung.so
+09-19 05:42:45.154 20709 20709 I litert  : [enn_manager.cc:79] Loading from: libenn_public_api_cpp.so
+09-19 05:42:45.154 20709 20709 W libc    : Access denied finding property "vendor.property.for.exynos.nn.trace.on"
+09-19 05:42:45.154 20709 20709 W libc    : Access denied finding property "vendor.property.for.exynos.nn"
+09-19 05:42:45.154 20709 20709 I ENN_FRAMEWORK: 2.4.20: * ENN Trace OFF
+09-19 05:42:45.155 20709 20709 W libbinder.BpBinder: Linking to death on vendor.samsung_slsi.hardware.enn_aidl.IEnnInterfaceAidl but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+09-19 05:42:45.155 20709 20709 E ENN_FRAMEWORK: 2.4.20:   Initialize Error: MediumInterface initialization failed
+09-19 05:42:45.155 20709 20709 E ENN_FRAMEWORK: 2.4.20:   Error from context initialize
+09-19 05:42:45.155 20709 20709 E ENN_FRAMEWORK: 2.4.20:   Context is not initialized
+09-19 05:42:45.155 20709 20709 I libbinder.BpBinder: onLastStrongRef automatically unlinking death recipients for descriptor: 'vendor.samsung_slsi.hardware.enn_aidl.IEnnInterfaceAidl'
+09-19 05:42:45.156 20709 20709 I litert  : [dispatch_api.cc:84] Failed to initialize: Fail to load enn runtime.
+09-19 05:42:45.156 20709 20709 E litert  : [dispatch_delegate.cc:131] Failed to initialize Dispatch API: ERROR: [litert/runtime/dispatch/dispatch_delegate.cc:201]
+09-19 05:42:45.156 20709 20709 I tflite  : Replacing 1 out of 1 node(s) with delegate (DispatchDelegate) node, yielding 1 partitions for subgraph 0 ().
+09-19 05:42:45.157 20709 20709 E litert  : [dispatch_delegate.cc:146] Failed to create a dispatch delegate kernel: No usable Dispatch runtime found
+09-19 05:42:45.157 20709 20709 W libc    : Access denied finding property "ro.mediatek.platform"
+09-19 05:42:45.157 20709 20709 W libc    : Access denied finding property "ro.chipname"
+09-19 05:42:45.159 20709 20709 I native  : I0000 00:00:1789764165.159954   20709 run_model.cc:437] Prepare input buffers
+09-19 05:42:45.160 20709 20709 W litert  : [compiled_model.cc:1497] Failed to get buffer requirements for tensor `input`.
+09-19 05:42:45.164 20709 20709 I native  : I0000 00:00:1789764165.164599   20709 run_model.cc:366] Input buffer 0:
+09-19 05:42:45.165 20709 20709 W litert  : [compiled_model.cc:1497] Failed to get buffer requirements for tensor `MobilenetV1/Predictions/Reshape_1`.
+09-19 05:42:45.165 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.165 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.165 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.165 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.165 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.165 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.165 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.165 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.165 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.166 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.167 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.168 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.169 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.169 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.169 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.169 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.169 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.169 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.169 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.169 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.169 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.169 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.169 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.169 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.169 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.169 20709 20709 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.169 20709 20709 I litert  : [accelerator_registry.cc:43] DestroyAccelerator: ptr=0xb4000074886051c0, name=CpuAccelerator
+09-19 05:42:45.170 20709 20709 I litert  : [accelerator_registry.cc:43] DestroyAccelerator: ptr=0xb400007488604890, name=NpuAccelerator
+09-19 05:42:45.270 23820 23820 I adbd    : adbd service requested 'shell,v2,raw:cd /data/local/tmp/npu && LD_LIBRARY_PATH=/data/local/tmp/npu ./run_model --dispatch_library_dir=/data/local/tmp/npu --iterations=100 --print_tensors --sample_size=5 --graph=/data/local/tmp/npu/mobilenet_v1_1.0_224_quant_Samsung_E9965.tflite --accelerator=npu'
+09-19 05:42:45.372 20718 20718 I litert  : [environment.cc:36] Creating LiteRT environment with options
+09-19 05:42:45.372 20718 20718 I litert  : [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xb4000075afa11740, name=NpuAccelerator
+09-19 05:42:45.372 20718 20718 I litert  : [npu_registry.cc:30] NPU accelerator registered.
+09-19 05:42:45.372 20718 20718 I litert  : [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xb4000075afa116d0, name=CpuAccelerator
+09-19 05:42:45.372 20718 20718 I litert  : [cpu_registry.cc:75] XNNPACK CPU accelerator registered.
+09-19 05:42:45.372 20718 20718 I native  : I0000 00:00:1789764165.372751   20718 run_model.cc:429] Model: /data/local/tmp/npu/mobilenet_v1_1.0_224_quant_Samsung_E9965.tflite
+09-19 05:42:45.372 20718 20718 I litert  : [compiled_model.cc:829] Flatbuffer model initialized directly from incoming litert model.
+09-19 05:42:45.373 20718 20718 I litert  : [dispatch_delegate.cc:98] DispatchDelegate::DispatchDelegate
+09-19 05:42:45.373 20718 20718 I litert  : [dispatch_accelerator.cc:139] Dispatch delegate getting hooks.
+09-19 05:42:45.373 20718 20718 I litert  : [dispatch_delegate.cc:187] Lazy initializing Dispatch API for GetHooks.
+09-19 05:42:45.373 20718 20718 I litert  : [litert_dispatch.cc:186] Loading shared library: /data/local/tmp/npu/libLiteRtDispatch_Samsung.so
+09-19 05:42:45.374 20718 20718 I litert  : [enn_manager.cc:79] Loading from: libenn_public_api_cpp.so
+09-19 05:42:45.374 20718 20718 W libc    : Access denied finding property "vendor.property.for.exynos.nn.trace.on"
+09-19 05:42:45.374 20718 20718 W libc    : Access denied finding property "vendor.property.for.exynos.nn"
+09-19 05:42:45.374 20718 20718 I ENN_FRAMEWORK: 2.4.20: * ENN Trace OFF
+09-19 05:42:45.376 20718 20718 W libbinder.BpBinder: Linking to death on vendor.samsung_slsi.hardware.enn_aidl.IEnnInterfaceAidl but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+09-19 05:42:45.377 20718 20718 E ENN_FRAMEWORK: 2.4.20:   Initialize Error: MediumInterface initialization failed
+09-19 05:42:45.377 20718 20718 E ENN_FRAMEWORK: 2.4.20:   Error from context initialize
+09-19 05:42:45.377 20718 20718 E ENN_FRAMEWORK: 2.4.20:   Context is not initialized
+09-19 05:42:45.377 20718 20718 I libbinder.BpBinder: onLastStrongRef automatically unlinking death recipients for descriptor: 'vendor.samsung_slsi.hardware.enn_aidl.IEnnInterfaceAidl'
+09-19 05:42:45.377 20718 20718 I litert  : [dispatch_api.cc:84] Failed to initialize: Fail to load enn runtime.
+09-19 05:42:45.377 20718 20718 E litert  : [compiled_model.cc:1063] Failed to get hooks from accelerator: 3
+09-19 05:42:45.377 20718 20718 I litert  : [dispatch_delegate.cc:128] DispatchDelegate::Initialize 
+09-19 05:42:45.377 20718 20718 I litert  : [litert_dispatch.cc:186] Loading shared library: /data/local/tmp/npu/libLiteRtDispatch_Samsung.so
+09-19 05:42:45.378 20718 20718 I litert  : [enn_manager.cc:79] Loading from: libenn_public_api_cpp.so
+09-19 05:42:45.379 20718 20718 W libc    : Access denied finding property "vendor.property.for.exynos.nn.trace.on"
+09-19 05:42:45.379 20718 20718 W libc    : Access denied finding property "vendor.property.for.exynos.nn"
+09-19 05:42:45.379 20718 20718 I ENN_FRAMEWORK: 2.4.20: * ENN Trace OFF
+09-19 05:42:45.379 20718 20718 W libbinder.BpBinder: Linking to death on vendor.samsung_slsi.hardware.enn_aidl.IEnnInterfaceAidl but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+09-19 05:42:45.379 20718 20718 E ENN_FRAMEWORK: 2.4.20:   Initialize Error: MediumInterface initialization failed
+09-19 05:42:45.379 20718 20718 E ENN_FRAMEWORK: 2.4.20:   Error from context initialize
+09-19 05:42:45.379 20718 20718 E ENN_FRAMEWORK: 2.4.20:   Context is not initialized
+09-19 05:42:45.379 20718 20718 I libbinder.BpBinder: onLastStrongRef automatically unlinking death recipients for descriptor: 'vendor.samsung_slsi.hardware.enn_aidl.IEnnInterfaceAidl'
+09-19 05:42:45.379 20718 20718 I litert  : [dispatch_api.cc:84] Failed to initialize: Fail to load enn runtime.
+09-19 05:42:45.379 20718 20718 E litert  : [dispatch_delegate.cc:131] Failed to initialize Dispatch API: ERROR: [litert/runtime/dispatch/dispatch_delegate.cc:201]
+09-19 05:42:45.379 20718 20718 I tflite  : Replacing 1 out of 1 node(s) with delegate (DispatchDelegate) node, yielding 1 partitions for subgraph 0 ().
+09-19 05:42:45.379 20718 20718 E litert  : [dispatch_delegate.cc:146] Failed to create a dispatch delegate kernel: No usable Dispatch runtime found
+09-19 05:42:45.380 20718 20718 W libc    : Access denied finding property "ro.mediatek.platform"
+09-19 05:42:45.380 20718 20718 W libc    : Access denied finding property "ro.chipname"
+09-19 05:42:45.380 20718 20718 I native  : I0000 00:00:1789764165.380637   20718 run_model.cc:437] Prepare input buffers
+09-19 05:42:45.380 20718 20718 W litert  : [compiled_model.cc:1497] Failed to get buffer requirements for tensor `input`.
+09-19 05:42:45.381 20718 20718 I native  : I0000 00:00:1789764165.380936   20718 run_model.cc:366] Input buffer 0:
+09-19 05:42:45.381 20718 20718 W litert  : [compiled_model.cc:1497] Failed to get buffer requirements for tensor `MobilenetV1/Predictions/Reshape_1`.
+09-19 05:42:45.381 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.381 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.381 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.381 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.381 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.381 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.381 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.381 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.381 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.381 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.381 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.381 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.382 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.382 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.382 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.382 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.382 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.382 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.382 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.382 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.382 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.382 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.382 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.382 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.382 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.382 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.382 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.382 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.382 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.383 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.383 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.383 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.383 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.383 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.383 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.383 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.383 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.383 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.383 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.383 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.383 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.383 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.383 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.383 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.383 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.383 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.384 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.384 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.384 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.384 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.384 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.384 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.384 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.384 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.384 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.384 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.384 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.384 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.384 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.384 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.384 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.384 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 E litert  : [litert_compiled_model.cc:164] Failed to allocate tensors
+09-19 05:42:45.385 20718 20718 I litert  : [accelerator_registry.cc:43] DestroyAccelerator: ptr=0xb4000075afa116d0, name=CpuAccelerator
+09-19 05:42:45.385 20718 20718 I litert  : [accelerator_registry.cc:43] DestroyAccelerator: ptr=0xb4000075afa11740, name=NpuAccelerator
+09-19 05:42:45.470 23820 23820 I adbd    : adbd service requested 'shell,v2,raw:if [ -f /data/local/tmp/npu/mobilenet_v1_1.0_224.tflite ]; then cd /data/local/tmp/npu && LD_LIBRARY_PATH=/data/local/tmp/npu ./run_model --dispatch_library_dir=/data/local/tmp/npu --iterations=100 --print_tensors --sample_size=5 --graph=/data/local/tmp/npu/mobilenet_v1_1.0_224.tflite --accelerator=cpu; else echo SKIPPED - original model not pushed; fi'
+09-19 05:42:45.516 20712 20715 I libbinder.AidlLazyServiceRegistrar: Process has 0 (of 1 available) client(s) in use after notification vendor.samsung_slsi.hardware.enn_aidl.IEnnInterfaceAidl/default has clients: 0

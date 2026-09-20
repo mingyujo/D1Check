@@ -1,0 +1,15 @@
+s26/npu: S26 NPU access path — G0 PASS, G1 AOT PASS, G2 dispatch built, G3 shell smoke to HAL init
+
+- Plan + gates: NPU_ACCESS_PLAN_0916.md (7 approaches, G0-G5, same-protocol measurement design)
+- G0 precheck (tools/s26_npu_precheck.bat, s26_npu_symbols.py): ENN 2.4.20 app-accessible,
+  LiteRT dispatch symbols 15+5 all present in libenn_user.samsung_slsi.so; NNAPI = reference CPU only
+- External reference: Geekbench AI 1.7 Samsung ENN backend runs NPU on this firmware (results/)
+- G1: MobileNetV1 FP32/INT8 AOT-compiled for E9965, 31/31 ops on NPU (artifacts/compiled_e9965)
+  * works around nightly packaging bug (flatbuffers::ClassicLocale::instance_) via LD_PRELOAD shim
+- G2: libLiteRtDispatch_Samsung.so + run_model built from LiteRT main 9380426b (Bazel 7.7, NDK r27c);
+  binaries not committed, SHA + provenance in artifacts/litert_samsung_arm64/README.md
+- G3 (adb shell): dispatch -> ENN -> AIDL HAL start OK; init fails for lack of a binder thread pool
+  in a plain binary (not an issue inside an app). tools/binderpool_shim.c prepared as last shell try
+- runner/NPU_RUNNER_SPEC.md: npu-runner module spec (LiteRT 2.2.0, separate from 1.4.2 runner)
+
+Firmware: SM-S942N One UI 8.5 BP4A.251205.006.S942NKSS4AZHA (One UI 9 update deferred on purpose)

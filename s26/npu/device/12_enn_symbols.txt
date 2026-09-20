@@ -1,0 +1,148 @@
+file: enn.so  (67,704 B)  ENN version: ENN_VERSION_2.4.20
+  defined dynamic symbols: 85 | plain C Enn*: 0 | C++ enn::api::Enn*: 84
+  NEEDED: libenn_user.samsung_slsi.so, libc.so, libm.so, libdl.so
+file: enn_user.so  (436,344 B)  ENN version: ENN_VERSION_2.4.20
+  defined dynamic symbols: 239 | plain C Enn*: 111 | C++ enn::api::Enn*: 0
+  NEEDED: vendor.samsung_slsi.hardware.enn_aidl-V1-ndk.so, libbinder_ndk.so, liblog.so, libcutils.so, libutils.so, libdmabufheap.so, libenn_common_utils.so, libc++.so, libc.so, libm.so, libdl.so
+combined view (dlsym searches the dependency tree):
+
+REQUIRED by LiteRT Samsung dispatch (15)   [C]=bindable  [C++]=exists but not bindable  [-]=absent
+  [  C] EnnInitialize
+  [  C] EnnCreateBufferFromFdWithOffset
+  [  C] EnnCreateBufferCache
+  [  C] EnnBufferCommit
+  [  C] EnnGetBuffersInfo
+  [  C] EnnSetBufferByIndex
+  [  C] EnnReleaseBuffer
+  [  C] EnnExecuteModel
+  [  C] EnnBufferUncommit
+  [  C] EnnUnsetBuffers
+  [  C] EnnCloseModel
+  [  C] EnnDeinitialize
+  [  C] EnnAllocateAllBuffers
+  [  C] EnnSetPreferencePerfMode
+  [  C] EnnSetPreferencePerfConfigId
+OPTIONAL (need at least one bindable)
+  [  C] EnnOpenModelFromMemory
+  [  C] EnnOpenModelFromMemoryWithWeight
+  [  C] EnnOpenModelFromFdWithWeight
+  [  C] EnnOpenModelWithFileOpenFdWeight
+  [  C] EnnOpenModelWithFileOpenFd
+
+all Enn* functions exported (combined):
+  [  C] EnnActivateSpotPref
+  [  C] EnnAllocateAllBuffers
+  [  C] EnnAllocateAllBuffersWithSessionId
+  [  C] EnnAllocateAllBuffersWithoutCommit
+  [  C] EnnBufferCommit
+  [  C] EnnBufferCommitWithSessionId
+  [  C] EnnBufferCommitWithSessionIdCacheFlag
+  [  C] EnnBufferCommitWithSessionIdWithoutLock
+  [  C] EnnBufferUncommit
+  [  C] EnnBufferUncommitWithSessionId
+  [  C] EnnCloseModel
+  [  C] EnnCreateBuffer
+  [  C] EnnCreateBufferCache
+  [  C] EnnCreateBufferCacheWithFlag
+  [  C] EnnCreateBufferFromFd
+  [  C] EnnCreateBufferFromFdWithFlag
+  [  C] EnnCreateBufferFromFdWithOffset
+  [  C] EnnCreateBufferWithFlag
+  [  C] EnnDeactivateSpotPref
+  [  C] EnnDeinitialize
+  [  C] EnnDspGetSessionId
+  [  C] EnnExecuteCommand
+  [  C] EnnExecuteModel
+  [  C] EnnExecuteModelAsync
+  [  C] EnnExecuteModelBatch
+  [  C] EnnExecuteModelCancel
+  [  C] EnnExecuteModelCancelWithSessionId
+  [  C] EnnExecuteModelExtended
+  [  C] EnnExecuteModelFastIpc
+  [  C] EnnExecuteModelWait
+  [C++] EnnExecuteModelWithFlag
+  [  C] EnnExecuteModelWithSessionBatch
+  [  C] EnnExecuteModelWithSessionBatchCancel
+  [  C] EnnExecuteModelWithSessionId
+  [  C] EnnExecuteModelWithSessionIdAndFlag
+  [  C] EnnExecuteModelWithSessionIdAsync
+  [  C] EnnExecuteModelWithSessionIdWait
+  [  C] EnnExplicitMapModelBuf
+  [  C] EnnExplicitUnmapModelBuf
+  [  C] EnnGenerateBufferSpace
+  [  C] EnnGenerateBufferSpaceDev
+  [  C] EnnGetBufferInfoByIndex
+  [  C] EnnGetBufferInfoByLabel
+  [  C] EnnGetBufferMetaByIndex
+  [  C] EnnGetBufferMetaByLabel
+  [  C] EnnGetBuffersInfo
+  [  C] EnnGetFileDescriptorFromEnnBuffer
+  [  C] EnnGetMetaInfo
+  [  C] EnnGetPreferenceCoreAffinity
+  [  C] EnnGetPreferenceCustom_0
+  [  C] EnnGetPreferencePerfConfigId
+  [  C] EnnGetPreferencePerfMode
+  [  C] EnnGetPreferencePresetId
+  [  C] EnnGetPreferencePriority
+  [  C] EnnGetPreferenceTargetLatency
+  [  C] EnnGetPreferenceTileNum
+  [  C] EnnGetPreferenceTimeOut
+  [  C] EnnGetPreferenceTriggerMode
+  [  C] EnnInitialize
+  [  C] EnnOpenModel
+  [  C] EnnOpenModelExtension
+  [  C] EnnOpenModelFromFd
+  [  C] EnnOpenModelFromFdWithWeight
+  [  C] EnnOpenModelFromMemory
+  [  C] EnnOpenModelFromMemoryWithWeight
+  [  C] EnnOpenModelWithFileOpenFd
+  [  C] EnnOpenModelWithFileOpenFdWeight
+  [  C] EnnOpenModelWithWeight
+  [  C] EnnPrepareBatch
+  [  C] EnnProfileAppExecEnd
+  [  C] EnnProfileAppExecStart
+  [  C] EnnReleaseBuffer
+  [  C] EnnReleaseBuffers
+  [  C] EnnResetPreferenceAsDefault
+  [  C] EnnSecureClose
+  [  C] EnnSecureOpen
+  [  C] EnnSetBufferByIndex
+  [  C] EnnSetBufferByIndexWithSessionId
+  [  C] EnnSetBufferByIndexWithStep
+  [  C] EnnSetBufferByLabel
+  [  C] EnnSetBufferByLabelWithSessionId
+  [  C] EnnSetBufferByLabelWithStep
+  [  C] EnnSetBuffers
+  [  C] EnnSetBuffersWithSessionId
+  [  C] EnnSetDebugProp
+  [  C] EnnSetExecMsgAlwaysOff
+  [  C] EnnSetExecMsgAlwaysOn
+  [  C] EnnSetExecMsgRate
+  [  C] EnnSetExecuteOffsetByIndex
+  [  C] EnnSetExecuteOffsetByLabel
+  [  C] EnnSetFastIpc
+  [  C] EnnSetPreferenceCoreAffinity
+  [  C] EnnSetPreferenceCustom_0
+  [  C] EnnSetPreferencePerfConfigId
+  [  C] EnnSetPreferencePerfMode
+  [  C] EnnSetPreferencePresetId
+  [  C] EnnSetPreferencePriority
+  [  C] EnnSetPreferenceTargetLatency
+  [  C] EnnSetPreferenceTileNum
+  [  C] EnnSetPreferenceTimeOut
+  [  C] EnnSetPreferenceTriggerMode
+  [  C] EnnSetProfileProp
+  [  C] EnnUnsetBuffers
+  [  C] EnnUnsetBuffersWithSessionId
+  [  C] EnnUnsetFastIpc
+  [  C] EnnUpdateBatchInfo
+  [  C] EnnUpdateBuffer
+  [  C] EnnUpdateBufferInfoByIndex
+  [  C] EnnUpdateBufferInfoByIndexWithSessionId
+  [  C] EnnUpdateBufferInfoByLabel
+  [  C] EnnUpdateBufferInfoByLabelWithSessionId
+  [  C] EnnUpdateBufferWithSessionId
+
+VERDICT: PASS  (required: C=15, C++only=0, absent=0; optional bindable=5)
+  -> LiteRT libLiteRtDispatch_Samsung.so can dlsym everything it needs on this firmware.
+json: /mnt/user-data/outputs/D1_ondevice/measure/s26/npu/device/12_enn_symbols.json

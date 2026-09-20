@@ -1,0 +1,16 @@
+# vendor binaries pulled from the phone (Samsung proprietary) — never commit
+device/*.so
+# Samsung ENN Delegate archive (license agreement required to extract)
+artifacts/ENNDelegate_*.zip
+artifacts/ENNDelegate_*/
+# built LiteRT binaries (10 MB+, reproducible with tools/build_litert_samsung.sh; SHA in README.md)
+artifacts/litert_samsung_arm64/*
+!artifacts/litert_samsung_arm64/README.md
+# AOT intermediates / built shim
+artifacts/compiled_e9965/*_apply_plugin.tflite
+artifacts/compiled_e9965/*.so
+# original model copy used only for the CPU control run (already in benchmark-runner assets)
+artifacts/mobilenet_v1_1.0_224.tflite
+__pycache__/
+!results/
+!results/**
