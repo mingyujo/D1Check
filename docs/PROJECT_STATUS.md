@@ -1,54 +1,54 @@
 # D1Check 현재 상태
 
-- 갱신: 2026-09-20. **SIM-01_INCOMPLETE** 유지. `SERVICE-MODEL-FINAL-CALIB`: Phase A4세션/42요청 PASS_EQ·thermal0 완료. 별도 첫 host 종료기록 실패1시도/9요청 원자료 보존, 새 UUID 대체이며 성공으로 재사용하지 않음. 시작 `4230160` clean·승인 A24 1대·설치 APK SHA 일치. 본 simulation/formal 금지.
-- 현재 실행 root: `C:/Users/LG/Documents/D1Check_Service_Model_Final/run_20260920T130139Z`; `measurement_plan.json`에 seed20260920·새 UUID22개·recipe·원본 확장 이유 기록. planner8 tests PASS. 기존 30초/500ms co-run 도착을 유지하고 early2개만 추가, transition은 단계별 early/warm 추가, solo22요청이다. CPU-only control은 동일 probe의 단일 runtime 교체 비용을 포함하는 제한이 있다. 메모리/배터리 관측을 추가하며 승인 상한은 아직 없다.
-- Holdout 전 2026-09-20T13:11:32.713690Z에 `transition_mean`(cold/초기 직후/warm/전환 분리) 후보를 고정했다. 기존cal24+새4만 사용, 기존 MAE432.808616ms/WAPE43.191436%/coverage90%·Q05..Q95 구간 유지. calibration LOSO MAE36.97ms/WAPE5.07%/coverage80.65%로 미달이며 독립 승인 아님. `measurement_plan_v2.json`은 첫 host 실패의 대체 UUID만 반영한다. 고정 hash는 [freeze receipt](SERVICE_MODEL_FINAL_FREEZE_20260920.json). targeted74/전체311(309 PASS·skip2)/compileall PASS 후 B16/C2를 진행한다. 모델·기준·구간은 이후 변경 금지.
-- 브랜치 `feature/pre-simulation-ready-20260919`. 최초 분석 시작 `c507f40`, 이번 재개 시작은 후속 분석까지 커밋된 `b6ae6a1` clean이다. 코드 checkpoint `a4460ea`, `80a1adf`. push/merge/rebase/master 전환 없음.
-- 본 scheduling simulation·formal·정책 비교 미실행. 이번 새 실기기 session0. 기존31 session/233 profile 요청을 보존·재분석했다.
-- 최신 재개 검증: `C:/Users/LG/Documents/D1Check_Decode_Resolution/service_model_recheck_20260920T125231Z/FINAL_REPORT.md`. 분석 원본: `C:/Users/LG/Documents/D1Check_Decode_Resolution/service_model_freeze_20260920T100651Z/FINAL_REPORT.md`.
-- 저장소 요약: [SERVICE-MODEL-FREEZE](SERVICE_MODEL_FREEZE_20260920.md). 이전 [재개 결과](A24_RESUME_20260920.md), [decoded 수정](DECODE_RESOLUTION_20260920.md), 외부 기존 보고서는 그대로 보존한다.
+- 갱신: 2026-09-20. **SERVICE-MODEL-FINAL-CALIB 실행 완료, SIM-01_INCOMPLETE**. 본 scheduling simulation·장시간 formal·기존80슬롯 재실행 없음.
+- 브랜치 `feature/pre-simulation-ready-20260919`, 시작 `4230160` clean. 계획 checkpoint `5544995`, holdout 전 후보 동결 `b5928e8`. 종료 문서 checkpoint/clean 여부는 외부 `git_final.json` 참조. push/merge/rebase/master 전환 없음.
+- 최신 상세: `C:/Users/LG/Documents/D1Check_Service_Model_Final/run_20260920T130139Z/FINAL_REPORT.md`. 보고서·JSON·명령/시각/HEAD/실패 로그·모든 session 원자료를 같은 root에 보존했다.
+- 저장소 요약: [FINAL-CALIB](SERVICE_MODEL_FINAL_CALIB_20260920.md), [사전 동결 hash](SERVICE_MODEL_FINAL_FREEZE_20260920.json). 이전 [FREEZE](SERVICE_MODEL_FREEZE_20260920.md)·[A24 재개](A24_RESUME_20260920.md)·[decoded 수정](DECODE_RESOLUTION_20260920.md)·기존233요청/31session 원자료 보존.
 
-## 모델·품질·capability
+## 신규 실측과 실패 보존
 
-| Cell | 실제 backend/decoded | 기존 solo warm 평균 |
+- Phase A: 새 calibration4세션/42요청 PASS_EQ. 기존 calibration24세션/206요청과 합쳐28세션/248요청만 fitting. 과거 holdout4/사후진단1은 fitting 제외·원본 보존.
+- Phase B: 동결 후 새 holdout16세션/260요청 완료·PASS_EQ. 같은20개 검증image 재사용이며 unseen-image accuracy 검증 아님. 독립 단위는 session이다.
+- Phase C: CPU-only 직렬2세션/24요청 완료·PASS_EQ. 계획22세션326/326기기요청 완료. 별도 첫 host 실패 시도의9개 기기완료까지 실제23시도/335요청을 보존한다.
+- Host 실패2건: 첫 calibration 종료기록 변수 오류는 원시9요청·오류·원래 SHA와 일치하는 코드 archive 보존 후 새 UUID 대체. B 탐지CPU1세션은 기기 완료 뒤 ADB 전송 실패, 재연결1회·force-stop 후 누락 파일만 native provenance SHA로 회수했다. Activity 재실행·실패 상태 덮어쓰기 없음. attempt_ledger/recovery_receipt 참조.
+- 새 UUID·출력 root, 최대48요청/120초 bounded profile. 시작/종료 thermal·memory·시계열 회수, 마지막 project force-stop 확인. staging/과거 데이터 삭제·uninstall/pm clear/reboot/다른 앱 접근 없음.
+
+## 사전 동결과 독립 평가
+
+- 2026-09-20T13:11:32.713690Z, commit `b5928e8`에 `transition_mean`을 독립평가용 고정. cold_first/initial_followup/warm_steady/방향별전환16개 cell-state 그룹. co-run은 평가 층으로 분리하나 모델 파라미터는 solo와 pooling한다.
+- 기존 acceptance 유지: MAE≤432.808616ms, WAPE/분포 상대오차≤43.191436%, coverage≥90%, 지원율100%, calibration상태≥2세션/holdout cell≥2세션/warm≥20관측. PI=calibration Q05..Q95. Holdout 이후 파라미터·상태·interval·threshold 변경 없음.
+- calibration LOSO MAE36.97ms/WAPE5.07%/coverage80.65% 미달을 사전 기록. 기존6후보를 support·단순성 기준으로 비교했다.
+- **독립 holdout:** MAE39.070581ms/WAPE6.102956%/coverage80.384615%. 전체 MAE/WAPE는 기준 이내지만 PI·session/상태별·분포 기준 실패. 세션 평균 WAPE8.740222%/coverage77.383207%.
+- 분류CPU cold/early-after-cold coverage50%/50%, warm96.15%. early-after-transition 중앙103.262ms를 cold직후 중앙494.315ms와 같은 initial_followup으로 묶어 전환 직후 WAPE250.07%. 사후 원인 관찰이며 이번 모델은 재학습하지 않았다.
+- 기존74.57% 오차의 두 번째381.316923ms와 cold774.244ms 보존. 신규cal 첫768.65/두 번째525.46/세 번째103.39ms도 삭제하지 않았다. JIT/GC 인과 미확정.
+- UUID/seed20260920: measurement_plan_v2/split_manifest/frozen_contract. 요청별예측=request_predictions, 세션·분포평가=holdout_evaluation.json.
+
+## Capability·품질·co-run
+
+| Cell | Backend/decoded | 새 solo warm 평균 |
 | --- | --- | ---: |
-| classification CPU | PASS_EQ / actual CPU | 94.90ms |
-| classification GPU | PASS_EQ / full GPU | 235.33ms |
-| detection CPU | PASS_EQ / actual CPU | 554.97ms |
-| detection GPU | PASS_EQ / full GPU | 1,068.72ms |
+| classification CPU | PASS_EQ / actual CPU | 97.36ms |
+| classification GPU | PASS_EQ / full GPU | 249.89ms |
+| detection CPU | PASS_EQ / actual CPU | 558.01ms |
+| detection GPU | PASS_EQ / full GPU | 1,063.06ms |
 
-- canonical-srgb-png-v2 / canonical-srgb-q16-stretch-v2 / explicit-image-task-v2 / task-profile-v3. 20-image/cell, CPU↔GPU 직접40쌍 PASS_EQ. JPEG diagnostic 동일 tensor raw 비교는 별도1-image 범위다.
-- JPEG decode·resize·PNG color 처리 및 외부 분류 golden 경로 혼용 수정은 이전 단계에서 완료했다. 이번 Android/decoder/모델 변경 없음.
-- numerical/decoded 동등성, 실제 accuracy, scheduling quality preservation을 구분한다. 부분 GT15/28은 mAP/일반 품질 승인이 아니다. simulation accuracy를 임의 생성하지 않고 동일 모델/입력/전처리/decoder의 승인 cell만 허용한다.
-- EfficientDet SHA40338edf...dbf58 유지. exact license/NOTICE 미확인, 기존 직접 확보·비배포 연구 probe 한정. 저장소/APK에 모델 없음. 기존 provenance와 host golden 계약 보존.
-- A24는 관측한 solo에서 CPU 우세. CPU-only matched serial control이 없어 GPU 전체 지배 또는 긴급 응답/완료율 개선은 미입증. GPU cell은 제외하지 않는다.
+- A24 CPU-solo-dominant 유지. CPU urgent+GPU normal의 urgent P95는 두 관측1,869/2,096ms, CPU-only직렬2,737/2,919ms. 두 구성 모두 완료율100%. n2 진단이며 GPU 우월성 확정 아님.
+- 대조 제한: CPU직렬 probe는 runtime1개를 작업 변경 때 재생성, co-run은2개 유지. arrival/sample/priority/seed/thermal0·29.2°C는 같지만 warm runtime 상주 조건이 다르다. GPU 자체 인과효과·강한 CPU-only 기준 대비 우월성을 주장하지 않는다.
+- Numerical/decoded 동등성·실제 accuracy·scheduling quality preservation 분리. 기존20장/직접40쌍 및 별도 JPEG1장 raw 범위 유지. 부분GT15/28은 mAP 아님. 임의 accuracy 생성 없음. 같은 모델/input/preprocessing/decoder·기존 허용오차·fallback 금지 유지.
+- EfficientDet exact license/NOTICE 미확인·직접 확보 비배포 연구 한정, 저장소/APK/공유물에 모델 추가 없음. formal v1/v2·calibration-v1/image-v3·공식 timer·A24 80슬롯·S26 자료 보존.
 
-## SERVICE-MODEL-FREEZE 결과
+## 환경·입력·검증
 
-- 기존 실제31 session = profile29 + raw진단2. profile233/233 완료. 별도 host preflight 실패10계획을 포함한 시도 기준233/243=95.88%도 보존한다.
-- calibration24 session/206요청, 과거 holdout4/20, 사후 warmup 진단1/7. 새 독립 holdout0. seed20260920과 전체 UUID를 `service_model_v1/split.json`에 기록했다.
-- 6후보 비교의 임시 선택 `initial_state_mean`: cell별 cold 첫 호출/초기 직후/warm 분리. calibration LOSO MAE54.59ms/WAPE7.61%/interval coverage82.52%. 기준90% 실패. 과거 holdout WAPE3.71%/coverage90%는 독립 승인으로 사용할 수 없다.
-- acceptance v1: calibration session 간 변동 Q95×2로 WAPE/분포 상대오차43.1914%, MAE432.808616ms; coverage≥90%, 지원율100%, 독립 반복/상태별 평가 필수. 넓은 engineering 기준이며 연구 정밀도 보장은 아니다. 과거 holdout에 소급 PASS를 주지 않는다.
-- 기존74.57% 오차의 분류 CPU 두 번째381.316923ms를 보존한다. 첫 cold774.244ms와 별개다. 사후 두 번째195.28ms도 있어 안정성 미확정. JIT/GC 인과 미확인.
-- 전환 prepare 분류CPU→GPU517.66/GPU→CPU24.63ms, 탐지1,135.42/504.23ms 각각1건. 이미 service에 포함, 중복 가산 금지.
-- co-run/solo service비: 분류GPU0.905+탐지CPU0.992, 분류CPU1.022+탐지GPU0.988. 각각1 session, 동일 backend contention 미측정.
-- thermal0에서만674표본, battery29.9~32.0°C, sampled peak PSS314,184kB. 후보 guard340,066kB/headroom25,882kB는 실제 최대나 승인 memory limit가 아니다.
-- 준비 제약: fallback 금지, thermal0, 최대 in-flight1, 승인 co-run 없음. 품질 유지·전체 terminal states·다섯 baseline 인터페이스 동일 input hash. 기존 workload/seed/KPI/adapter 경계 유지.
-- deadline=`calibration_pending`/null. service/response Q50/Q95 후보를 matched control과 공통 목표로 검증해야 한다. 모든 요청이 성공하도록 임의 deadline을 만들지 않는다.
-- candidate model/hash·preparation input/hash·schema·validator·provenance·split·no-op 구현. **frozen service model은 발행하지 않았다.** no-op dispatch0/가상완료0/비교null.
+- 신규 전체 sampled peak PSS318,364kB. 기존314,184kB 보존, true peak 아님. 후보 guard340,066kB/headroom25,882kB 사후 상향 없음. 새 peak와guard차21,702kB는 승인 headroom 아님. B/C host 최소 sampled MemAvailable1,198,500kB.
+- Memory blocker: 순간 peak·압력 조건·실행 중 admission/stop 강제 미검증. Thermal status0만 검증, 다른 상태/장시간/에너지로 일반화 금지.
+- Deadline=calibration_pending/null, 위반 개수도null. matched control runtime 비대칭·공통 목표 미고정으로 임의 deadline 동결 없음.
+- 독립평가용 model SHA `c29691f6fac993cd97054667e861e19232277009243c1e41c199fa6d33e6bd30`; input 후보 SHA `dfe3fa15b0ff84165bb8570ea0d19d39b5cd6757d5b618453da6acfc30acad19`. 최종 승인 input 없음. 기존 split hash는 원자료24/4/1분할로 보존, 신규28/16은 frozen envelope에 명시한다.
+- 다섯 baseline interface 동일 후보 input·품질/thermal/terminal/fallback 제약. no-op dispatch0/가상완료0/비교null. 정책 dispatch·본 simulation 미실행.
+- targeted74 PASS, 전체 Python311(309 PASS·기존skip2), compileall PASS. 실제 schema/validator·committed hash·holdout 누수/stale/replay·seed·frozen bytes 변조 거부·no-op PASS. final_validation.json에 B16의 동결 commit 이후 시작·22세션 artifact·이전 source bundle 불변 확인.
+- Android source는4230160 대비 diff 없음, debug/modelProbe/release APK SHA 불변·원격 APK 동일. JVM/build/lint 반복 없음. modelProbe APK SHA `8b805d3acfcede25fe6e4bcd17075d172c5ef66b425ff40ff29e2317ffce2489`.
 
-## 검증·보존
+## 정확한 다음 행동
 
-- 재개 검증(2026-09-20 12:52 UTC 시작): `b6ae6a1` clean에서 targeted47/전체295건(293 PASS·기존 skip2), compileall·실제 schema·validator·no-op PASS. 모델/input hash 동일, Android source diff 없음·3개 APK SHA 불변. 새 Python/Android 변경 없이 문서의 재개 기준과 검증 연결만 갱신했다. 명령·시각·HEAD·source hash는 최신 외부 `receipts.json`/`audit.json` 참조.
-- 새 targeted47건 PASS(서비스 모델37 + 관련10), 전체 Python295건(293 PASS/기존 skip2), compileall·schema·validator·no-op·실제 재생성 결정론 PASS. 대상은 `80a1adf` 코드 + 문서 변경, 명령/시각/source hash는 외부 receipt에 있다.
-- 준비 input SHA `3840b437d8b2b8c704187b52f43f93e8c5c18aeade0a056ce743fad344bfdec6`, 후보 model SHA `300be49c35a191018ddb09479ba7c389ae6aeea3fcf39f3026b93dd16ba78f34`. 독립 승인/frozen hash가 아니다.
-- source closure981파일과 이전 hash audit278파일 PASS. 재사용/누수/stale/실행 여부 불명 receipt 누락/fake no-op/입력 drift 거부 테스트를 포함한다.
-- Android source/APK 불변을 이전278파일 hash audit와 연결한다. 기존 debug JVM119/modelProbe115, lint/build/logger/isolation PASS를 이번 재실행으로 기록하지 않는다.
-- modelProbe APK SHA `8b805d3acfcede25fe6e4bcd17075d172c5ef66b425ff40ff29e2317ffce2489` 유지.
-- formal v1/diagnostic v2/calibration-v1/image-v3/공식 timer/A24 80슬롯/S26/이전 raw·보고서 보존. 이번 기기 접근·임시 파일 삭제 없음.
-
-## 다음 행동
-
-1. 최소 calibration4 session: task별 전환1씩·co-run pair별1씩 보강. 간격/직후 호출·메모리 admission 부족 조건을 함께 관측하고 모델/기준/recipe v2를 새 holdout 전에 잠근다.
-2. untouched holdout16 session(네 solo cell×2, 두 task 전환×2, 두 co-run pair×2) + CPU-only matched serial control2. 상세 최소22 session 설계와 반복 한계는 요약 문서 참조. 동일 backend 병행은 계속 금지한다.
-3. 새 독립 오차·포함률·memory·deadline 판별력·품질 유지 계약을 충족할 때만 SIM-01 gate 재판정. 본 simulation/formal은 여전히 실행하지 않는다.
+1. 이번 후보 실패를 보존하고 새 버전의 calibration 설계를 먼저 고정한다. cold직후/전환직후 origin·co-run 층과 PI 추정법을 개발자료로 검토한다. 이번16세션을 다시 독립 holdout으로 쓰지 않는다.
+2. Memory admission/안전 여유와 두 warm runtime을 유지하는 CPU-only 직렬 대조에 필요한 최소 probe 변경·관련 Android 검증을 계획한다. 기존 비대칭 대조를 GPU 자체 효과로 해석하지 않는다.
+3. 새 모델/제약/deadline 후보 규칙을 사전 고정한 뒤 새 untouched holdout으로 재검증한다. 현재 SIM-01_INCOMPLETE이며 본 simulation/formal은 시작하지 않는다.

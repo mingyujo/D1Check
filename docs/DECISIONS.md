@@ -240,6 +240,14 @@
 - 2026-09-20T13:11:32.713690Z 고정 hash는 [receipt](SERVICE_MODEL_FINAL_FREEZE_20260920.json), 원자료/상세는 `C:/Users/LG/Documents/D1Check_Service_Model_Final/run_20260920T130139Z`. B16은 이 시각/commit 이후 새 UUID로 실행하고 모델을 read-only 평가한다.
 - 첫 host 종료기록 변수 오류 시도는 진단 원자료로 보존하고 새 UUID로 대체했다. CPU-only 직렬 대조는 기존 단일-worker runtime 교체 비용이 포함돼 warm 두 모델 상주 대조가 아니다. sampled memory/미확정 deadline을 임의 승인하지 않는다.
 
+## 2026-09-20 — FINAL-CALIB 독립 holdout 실패 보존
+
+- 상태: 확정 — A4/B16/C2 실행과 동결 모델 read-only 평가 완료. Holdout coverage80.384615%<90%, 상태/분포 기준 실패로 SIM-01_INCOMPLETE다. 전체 MAE39.07ms/WAPE6.10%만으로 승인하지 않는다.
+- 근거: [최종 calibration](SERVICE_MODEL_FINAL_CALIB_20260920.md), 외부 frozen contract/260개 request 예측/16개 session 평가/두 CPU 대조 및 memory·thermal 원자료.
+- 모델·PI·기준을 holdout 이후 변경하지 않는다. Cold직후와 전환직후 pooling 실패는 새 버전의 calibration 설계 근거로만 사용하며 이번16개를 독립 holdout으로 재사용하지 않는다.
+- CPU/GPU co-run의 긴급 응답 개선 관측은 CPU직렬 runtime 재생성과2개 warm runtime 유지의 비대칭을 포함한 n2 진단이다. GPU 자체의 우월성·전체 완료율 개선을 주장하지 않는다. Memory admission 미검증·deadline pending도 유지한다.
+- Host 실패2건을 보존했다. 첫 시도는 새UUID로 대체, 다른 한 건은 이미 완료된 기기 artifact 전송만 복구했으며 Activity 재실행·실패상태 수정 없음. 본 simulation/formal·push/merge/rebase 없음.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목
