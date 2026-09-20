@@ -224,6 +224,15 @@
 - 판정: SIM-01_INCOMPLETE. 측정값과 준비 입력을 provenance로 연결하고 no-op만 실행한다. 품질 수용·초기 호출 서비스 모델·안정성·holdout 오차·공통 제약/반복/평가 freeze 없이 READY나 절대 deadline을 만들지 않는다.
 - 연결 복구 시 완료 artifact 회수는 재실행과 구분한다. host 명령 실패를 보존하고 device monotonic 실행 bound·hash·decoded·delegate를 검증한 경우에만 완료로 인정한다.
 
+## 2026-09-20 — SERVICE-MODEL-FREEZE의 독립성·품질 보존 계약
+
+- 상태: 채택 — 사용자의 기존233요청/31 session 분석·6후보 비교·누수 방지·no-op 지시.
+- 결정: 이미 결과를 확인한4개 holdout과 사후1개 진단은 retrospective로만 유지한다. calibration24개 LOSO로 선택한 초기 상태 분리 모델은 임시 후보이며, 포함률82.52%<90% 및 untouched holdout 부재로 동결하지 않는다. 과거74.57% 오차를 제거하거나 새로운 진단으로 덮어쓰지 않는다.
+- 근거: [SERVICE-MODEL-FREEZE](SERVICE_MODEL_FREEZE_20260920.md), 외부 최종 bundle의 split/acceptance/model comparison/source hash closure. 새 기준은 calibration 변동성으로 산출한 prospective engineering 기준이며 과거 holdout을 사전 승인으로 소급하지 않는다.
+- 품질: numerical/decoded 동등성과 실제 task accuracy를 분리한다. 정확도를 임의 생성하지 않고 검증 cell·동일 모델/입력/전처리/decoder·기존 허용오차를 정책 공통 quality-preservation 제약으로 사용한다. 이는 모델 배포 라이선스 승인이나 실제 정확도 개선 주장이 아니다.
+- 공통 경계: fallback 금지·thermal0·serial만 준비 승인, co-run/메모리 limit·deadline은 독립 검증 전 pending. GPU는 solo에서 느리지만 CPU-only 직렬 대조가 없으므로 모든 조건에서 지배당한다고 단정하거나 제외하지 않는다.
+- 상태: SIM-01_INCOMPLETE 유지. 작은 추가 calibration과 새 holdout/control 설계를 명시했으며 본 simulation/formal을 실행하지 않았다. 기존 정책 ID·증거 의미는 변경하지 않는다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

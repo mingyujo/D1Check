@@ -2,7 +2,7 @@
 
 - 개정: 4.4 / 2026-09-18 / A24 주평가와 추가 Android 기기 고정정책 재현평가 분리
 - 기준 코드: `df8192aa61eebacf83df7a7815f0c60c8bbf4004`의 `master`. 이 개정은 문서 변경이며 새 모델·스케줄러 구현 또는 실기기 PASS가 아니다.
-- 현재 작업: `PROFILE-02 → SIM-01 준비` — A24 최종 canonical 계약 네 cell 각각20장 및 CPU↔GPU 직접40쌍 PASS_EQ. 실제 adapter/완료 경계와 bounded solo/전환/co-run/holdout 관측을 완료했다. 품질 수용·초기 호출 상태의 서비스 모델·독립 오차 기준/평가 동결은 미완료여서 SIM-01_INCOMPLETE다. [재개 결과](A24_RESUME_20260920.md)와 STATUS의 증거 경계를 따른다.
+- 현재 작업: `SERVICE-MODEL-FREEZE → SIM-01 준비` — 네 cell PASS_EQ와 기존233요청/31 session을 보존하고 6개 서비스 모델을 session 단위로 비교했다. 초기 상태 분리 후보의 calibration interval coverage82.52%, 새 독립 holdout0이므로 SIM-01_INCOMPLETE다. [동결 검토](SERVICE_MODEL_FREEZE_20260920.md)의 최소 추가 측정·quality preservation·deadline/memory pending 경계를 따른다. 본 simulation/formal은 실행하지 않는다.
 - 새 절대 deadline은 `calibration_pending`, 서비스 하한·성공 기준·최종 반복 수는 `thresholds_pending`이다.
 - 유지: A24 개발·주평가, 기존 80슬롯과 diagnostic v1/v2 원본, CALIB-01B PASS, 실패를 포함한 전체 도착 분모. 추가: 정책 동결 후 최소 한 대의 다른 Android 기기에서 축소 재현평가.
 - 전환: 단일 분류 모델은 기존 기준선으로 보존하고, 서로 다른 두 AI 작업의 요청 배정 문제를 새 주평가로 준비한다. 구체 모델과 마감시간은 아직 미확정이다.
@@ -225,3 +225,5 @@ B2는 같은 장치의 모든 합법적 task별 배정 후보(두 task·두 경�
 CALIB-01B는 FIX4까지 구현·host 검증·감사를 완료했다. 기록상 Kotlin/JVM 119건·실패/오류/skip 0, Python 195건·실패/오류 0·기존 skip 1, lint error 0/warning 76, compileall·logger self-test·assembleDebug PASS다. 기존 모델의 실기기 이미지 calibration, 새 두 모델 지원, 동적 정책 개선은 각각 미완료이며 별도로 검증한다.
 
 2026-09-20 후속: [DECODE_RESOLUTION_20260920.md](DECODE_RESOLUTION_20260920.md)의 최초 종료는 연결 단절로 BLOCKED_EXTERNAL_INPUT이었다. 이후 [재개 결과](A24_RESUME_20260920.md)에서 최종 APK 설치·네 cell·bounded PROFILE-02를 실제 검증했다. 31개 실기기 session과 별도 host preflight 실패1건을 보존한다. 두 작업 모두 solo CPU가 빠르며, 분류 CPU 초기 호출의 큰 서비스 오차를 cold boolean만으로 설명할 수 없어 frozen profile로 승격하지 않았다. 개정4.4의 품질/profile/holdout/동결 완료 조건은 유지하고 SIM-01_INCOMPLETE다. 본 simulation·formal·정책 비교는 미실행이다.
+
+2026-09-20 SERVICE-MODEL-FREEZE: [후속 분석](SERVICE_MODEL_FREEZE_20260920.md)에서 calibration24/과거 holdout4/사후 진단1 session을 분리하고 seed20260920, 새 prospective acceptance, 6후보와 공통 입력 준비 schema/validator/no-op을 기록했다. 이미 본 자료를 독립 holdout으로 재사용하지 않는다. backend equivalence와 절대 accuracy는 분리하며, 최신 사용자 지시대로 실제 정확도를 임의 생성하지 않고 검증된 cell의 출력 품질 보존을 scheduling 제약으로 사용한다. A24 solo CPU 우세를 반영하되 GPU 전체 지배는 미입증이다. 미검증 co-run/thermal/memory/deadline을 동결한 것으로 취급하지 않는다. 새 독립 검증이 없고 coverage도 미달이므로 frozen model은 발행하지 않았다.
