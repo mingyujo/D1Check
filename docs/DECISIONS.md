@@ -272,6 +272,14 @@
 - 결정: TELEMETRY_V4_READY_FOR_CALIBRATION. 서비스모델 승인이나 GPU 우월성 증거로 승격하지 않는다. Ordinal warm은 qualified=false, deadline pending, 기존 holdout consumed 유지.
 - 다음: 별도 승인된 calibration 계획 동결. 이번 단계에서는 추가 calibration/holdout/simulation/formal 없음. 이전 BLOCKED_DEVICE_CONNECTION은 이번 gate에 한해 해소됐다.
 
+### 2026-09-21 — Prediction gate에서 joint empirical 입력 검증으로 protocol amendment
+
+- 상태: 새 방법 채택, 실행 계획은 INCOMPLETE. 사용자 EMPIRICAL-CALIBRATION-PLAN 지시를 따른다.
+- PI를 scheduler가 사용하지 않으므로 새 protocol의 request PI90% 필수 gate를 제거한다. 이는 운영 성과 비교 목적과 입력 모델의 정렬이며 기존 threshold 사후 완화가 아니다. transition_mean80.38% 실패와 이전 hash/원자료는 불변이다.
+- 기존52 profile 및 smoke4는 consumed development, 승인 입력은 신규 v4 자료에 한정한다. setup/active/memory/thermal/interference는 session block으로 결합하고 임의 field 재조합을 거부한다.
+- [계약](EMPIRICAL_CALIBRATION_PROTOCOL.md)에 최소160/권장280 탐색세션·사전 criteria·deadline 계산 규칙을 고정했다. n8로 cold P95 정밀도를 보장하지 않으며 fair paired variance도 없다. 같은-session 전환경로가 현재 APK에 없으므로 전체 계획의 A24 실행 명령을 발행하지 않는다.
+- 이번 ADB·실측·calibration·holdout·simulation/formal 없음. Android/APK 불변. 최신 외부 증거는 C:/Users/LG/Documents/D1Check_Empirical_Calibration_Plan/plan_20260921_v1/FINAL_REPORT.md.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

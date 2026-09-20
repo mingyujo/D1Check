@@ -1,0 +1,56 @@
+{
+  "protocol": "empirical-plan-freeze-receipt-v1",
+  "frozen_utc": "2026-09-20T17:14:29.133646+00:00",
+  "status": "EMPIRICAL_CALIBRATION_PLAN_INCOMPLETE",
+  "execution_allowed": false,
+  "freeze_sha256": "13921016598411f0efb533f75575fa5ae21e58d810d16065ed575992404a9998",
+  "plan_sha256": "1dc19b86dacc63d0e23d0b53f07139f199b8365fa91ea27b8ccd6dc27edf16ad",
+  "analysis_sha256": "827e9d6f22d93260e70fbda6a7c734533d31d61eeee198cf4fc5af8cccf9fabb",
+  "seed": 2026092101,
+  "sizes": {
+    "attempt_cap_per_family_phase": 11,
+    "dropout_proxy": 0.2492487498202596,
+    "host_overhead_budget_seconds": 30,
+    "maximum_device_seconds": 120,
+    "mean_precision_proxy": [
+      0.35,
+      0.25
+    ],
+    "minimum_per_family_phase": 8,
+    "minimum_total": 160,
+    "p95_one_sided_rank_minimum": 59,
+    "paired_power": "unknown: old controls confounded; one v4 pair has no variance",
+    "rationale": "bounded exploratory acquisition; approval precision not guaranteed",
+    "recommended_per_family_phase": 14,
+    "recommended_total": 280,
+    "retry": "no automatic retries; failed attempt retained, unused reserve UUID only",
+    "selected_per_family_phase": 8,
+    "worst_session_cv": 0.45648826656937674
+  },
+  "criteria": {
+    "artifact_completeness": 1,
+    "bootstrap_confidence": 0.95,
+    "bootstrap_replicates": 2000,
+    "bootstrap_unit": "session within family; pair for paired contrast",
+    "deadline_CDF_difference_max": 0.05,
+    "effect_claim": "only paired independent validation CI excluding zero; exploratory multiplicity disclosed",
+    "median_relative_drift_max": 0.1,
+    "median_relative_full_CI_width_max": 0.2,
+    "missing_or_underpowered": "INCOMPLETE; no threshold widening or optional stopping",
+    "normalized_wasserstein_max": 0.1,
+    "output_equivalence": 1,
+    "p95_relative_drift_max": 0.2,
+    "p95_relative_full_CI_width_max": 0.4,
+    "paired_completeness": 1,
+    "request_PI_required": false,
+    "scheduler_uses_PI": false,
+    "simultaneous_inference": false,
+    "state_cell_coverage": 1
+  },
+  "artifact_root": "C:\\Users\\LG\\Documents\\D1Check_Empirical_Calibration_Plan\\plan_20260921_v1\\frozen",
+  "blockers": [
+    "within-session transition path absent in pinned v4 APK",
+    "cold-state population P95 precision not established by bounded design",
+    "fair paired variance/effect size unavailable; no superiority power claim"
+  ]
+}

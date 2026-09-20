@@ -2,7 +2,7 @@
 
 - 개정: 4.4 / 2026-09-18 / A24 주평가와 추가 Android 기기 고정정책 재현평가 분리
 - 기준 코드: `df8192aa61eebacf83df7a7815f0c60c8bbf4004`의 `master`. 이 개정은 문서 변경이며 새 모델·스케줄러 구현 또는 실기기 PASS가 아니다.
-- 현재 작업: `TELEMETRY-V4-GATE` 실제 A24 smoke4/18요청·artifact 검증 완료, **TELEMETRY_V4_READY_FOR_CALIBRATION**. [v4 계약](TELEMETRY_V4_GATE.md)의 setup/active·memory·resident serial/co-run·paired/joint 경계를 확인했다. 소스/APK 변경 없이 재개했고 다음은 별도 승인된 instrumentation calibration 계획 동결이다. 이번에 calibration/holdout/simulation/formal은 실행하지 않았다. 기존 MAE39.07ms/WAPE6.10%/coverage80.38% 실패 및 consumed 자료 경계를 유지하며 SIM-01_INCOMPLETE다.
+- 현재 작업: `EMPIRICAL-CALIBRATION-PLAN`: **EMPIRICAL_CALIBRATION_PLAN_INCOMPLETE**. [새 protocol](EMPIRICAL_CALIBRATION_PROTOCOL.md)의 session joint empirical 설계·동결·host 검증. 기존 v4 smoke READY는 유지하나 same-session transition 실행·cold P95 정밀도는 미완료. ADB/측정/simulation/formal 없음.
 - 새 절대 deadline은 `calibration_pending`, 서비스 하한·성공 기준·최종 반복 수는 `thresholds_pending`이다.
 - 유지: A24 개발·주평가, 기존 80슬롯과 diagnostic v1/v2 원본, CALIB-01B PASS, 실패를 포함한 전체 도착 분모. 추가: 정책 동결 후 최소 한 대의 다른 Android 기기에서 축소 재현평가.
 - 전환: 단일 분류 모델은 기존 기준선으로 보존하고, 서로 다른 두 AI 작업의 요청 배정 문제를 새 주평가로 준비한다. 구체 모델과 마감시간은 아직 미확정이다.
@@ -146,6 +146,10 @@ B2는 같은 장치의 모든 합법적 task별 배정 후보(두 task·두 경�
 | SUBMIT-02 | 10-16~10-20 | 15쪽 이내/10MB 이내 익명 PDF, 재현 자료, 학생별 기여·시연 | 미확인 효과를 기대효과 수치로 대체하지 않음 |
 
 10월 8일까지 A24 기본 비교가 불가능하면 모델·NPU·강화학습을 추가하지 않는다. 추가 기기용 별도 기능을 만들지 않고 같은 runner와 host 도구의 이식성만 유지한다. A24 평가가 끝나기 전 추가 기기 결과로 정책을 튜닝하지 않는다. 남은 기간에는 동작하는 범위에서 결과와 제한을 정리한다. 역할은 사용근거·입력, Android·측정, 정책·분석, 통합·발표로 나누되 팀원 수에 맞춰 겸임하고 서로의 산출물을 교차 검토한다. AI가 제안한 설계·코드는 학생이 설명·검증할 수 있어야 한다.
+
+### 2026-09-21 empirical protocol amendment
+
+새 protocol의 scheduler는 PI를 사용하지 않으므로 request-level PI coverage90%를 새 SIM-01 필수 gate에서 제거한다. 기존 prediction model의 독립 holdout80.38% 실패를 취소하거나 재평가하지 않는다. 기존 holdout 및 v4 smoke는 consumed development다. 신규 v4 session joint block의 provenance·cell/state·독립 분포 drift/정밀도·paired completeness·품질·memory/thermal·deterministic replay로 대체하며 승인 기준은 신규 자료 전에 hash로 고정한다. [정확한 수치·표본수·한계](EMPIRICAL_CALIBRATION_PROTOCOL.md). 본 정책 운영성과 검증·deadline·미지원 전환 범위는 계속 gate이며 현재 SIM-01_INCOMPLETE다.
 
 ### SIM-01 준비 gate (2026-09-19 사용자 요청)
 
