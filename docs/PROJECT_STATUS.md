@@ -1,6 +1,7 @@
 # D1Check 현재 상태
 
-- 갱신: 2026-09-20. 최종 **SIM-01_INCOMPLETE**. 현재 작업 `SERVICE-MODEL-FREEZE`의 후보 비교·검증/사전 기준·준비 입력은 구현했으나 독립 holdout과 제약 동결은 미완료다.
+- 갱신: 2026-09-20. **SIM-01_INCOMPLETE** 유지. 현재 `SERVICE-MODEL-FINAL-CALIB`: 시작 `4230160` clean·승인 A24 1대·설치 APK SHA·기존 source bundle 검증·thermal0 확인. 신규 A4/B16/C2 bounded session 계획을 만들었으며 Phase A부터 진행한다. 본 simulation/formal 금지.
+- 현재 실행 root: `C:/Users/LG/Documents/D1Check_Service_Model_Final/run_20260920T130139Z`; `measurement_plan.json`에 seed20260920·새 UUID22개·recipe·원본 확장 이유 기록. planner8 tests PASS. 기존 30초/500ms co-run 도착을 유지하고 early2개만 추가, transition은 단계별 early/warm 추가, solo22요청이다. CPU-only control은 동일 probe의 단일 runtime 교체 비용을 포함하는 제한이 있다. 메모리/배터리 관측을 추가하며 승인 상한은 아직 없다.
 - 브랜치 `feature/pre-simulation-ready-20260919`. 최초 분석 시작 `c507f40`, 이번 재개 시작은 후속 분석까지 커밋된 `b6ae6a1` clean이다. 코드 checkpoint `a4460ea`, `80a1adf`. push/merge/rebase/master 전환 없음.
 - 본 scheduling simulation·formal·정책 비교 미실행. 이번 새 실기기 session0. 기존31 session/233 profile 요청을 보존·재분석했다.
 - 최신 재개 검증: `C:/Users/LG/Documents/D1Check_Decode_Resolution/service_model_recheck_20260920T125231Z/FINAL_REPORT.md`. 분석 원본: `C:/Users/LG/Documents/D1Check_Decode_Resolution/service_model_freeze_20260920T100651Z/FINAL_REPORT.md`.
