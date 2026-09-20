@@ -1,0 +1,20 @@
+{
+ "$schema":"https://json-schema.org/draft/2020-12/schema",
+ "type":"object","additionalProperties":false,
+ "required":["protocol","schema_version","seed","contract","registry_sha256","entries","manifests"],
+ "properties":{
+  "protocol":{"const":"bounded-descriptive-empirical-v1"},"schema_version":{"const":1},
+  "seed":{"type":"integer","minimum":0},"registry_sha256":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+  "contract":{"type":"object","required":["sessions","pairs","runtime_transition","memory","max_device_attempts","reruns_per_session"],
+    "properties":{"sessions":{"const":30},"pairs":{"const":5},"runtime_transition":{"const":false},"memory":{"const":"android-low-memory-resident-v1"},"max_device_attempts":{"const":30},"reruns_per_session":{"const":0}}},
+  "entries":{"type":"array","minItems":30,"maxItems":30,"items":{
+    "type":"object","additionalProperties":false,
+    "required":["session_id","family","replicate","seed","output_root","pair_id","pair_order","execution_supported"],
+    "properties":{
+      "session_id":{"type":"string"},"family":{"enum":["solo/classification/CPU","solo/classification/GPU","solo/detection/CPU","solo/detection/GPU","resident_cpu_serial","resident_corun"]},
+      "replicate":{"type":"integer","minimum":0,"maximum":4},"seed":{"type":"integer"},"output_root":{"type":"string"},
+      "pair_id":{"type":["string","null"]},"pair_order":{"enum":["AB","BA",null]},"execution_supported":{"const":true}
+    }}},
+  "manifests":{"type":"object","minProperties":30,"maxProperties":30}
+ }
+}
