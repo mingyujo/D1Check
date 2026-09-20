@@ -265,6 +265,13 @@
 - 고정 headroom 대신 android-low-memory-resident-v1의 system threshold+관측 PSS reserve를 적용한다. sampled peak나 baseline guard를 실제 최대/안전보장으로 주장하지 않는다. [세부 계약](TELEMETRY_V4_GATE.md).
 - v4 warm label은 ordinal이고 qualified=false다. 이번 smoke는 서비스모델 calibration/holdout으로 승격하지 않는다. 기존 consumed registry와 PI 실패를 유지한다.
 
+### 2026-09-21 — Telemetry v4 실기기 smoke gate 통과
+
+- 상태: 채택. 사용자의 연결 복구 후 smoke 재개 지시 범위에서만 실행했다.
+- 근거: `C:/Users/LG/Documents/D1Check_Telemetry_V4/resume_20260920T160724Z/FINAL_REPORT.md`, smoke_ledger/post_validation/paired_smoke_contract. 새4세션18요청, schema/semantic validator·출력 동등성·memory admission·runtime/worker release 모두 PASS. 기존 소스/APK/원자료 불변.
+- 결정: TELEMETRY_V4_READY_FOR_CALIBRATION. 서비스모델 승인이나 GPU 우월성 증거로 승격하지 않는다. Ordinal warm은 qualified=false, deadline pending, 기존 holdout consumed 유지.
+- 다음: 별도 승인된 calibration 계획 동결. 이번 단계에서는 추가 calibration/holdout/simulation/formal 없음. 이전 BLOCKED_DEVICE_CONNECTION은 이번 gate에 한해 해소됐다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

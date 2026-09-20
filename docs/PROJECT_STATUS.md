@@ -1,8 +1,9 @@
 # D1Check 현재 상태
 
-- 갱신: 2026-09-21 KST. **TELEMETRY-V4-GATE: BLOCKED_DEVICE_CONNECTION**. 시작 `d939c56`/지정 feature branch/clean, 구현 checkpoint `60bd398`. 새 calibration/holdout/simulation/formal 없음.
-- [v4 구현 계약](TELEMETRY_V4_GATE.md): 별도 modelProbe Activity/adapter, 공식 inference timer 불변, runtime/worker-release/memory gate·resident CPU serial/co-run·paired/joint schema/validator 구현. Python370(368 PASS·skip2), debug JVM119/modelProbe JVM126, lint/build/logger/no-op 통과. 상세 `C:/Users/LG/Documents/D1Check_Telemetry_V4/run_20260920T144315Z/`.
-- ADB devices와mDNS 목록 모두 비어 설치/Activity/smoke0회. 최종보고서=`위 root/FINAL_REPORT.md`, source/APK/계획검증=`host_gate.json`, 안전재개=`smoke_device.py`. 실제 v4 artifact/기기 memory gate는 미검증이며 READY_FOR_CALIBRATION 아님. 새APK SHA `68e55aefdceb91e569e0d55ff0a18af0658163106589852325cb9ad5626fa62e`; 기존APK archive·2213근거파일 불변 확인.
+- 갱신: 2026-09-21 KST. **TELEMETRY_V4_READY_FOR_CALIBRATION**. 시작 `706e28a`/지정 feature branch/clean. 기존 실행기를 그대로 복사해 새 UUID의 bounded smoke4세션/18요청(워밍업12+active6)을 완료했다. 새 calibration/holdout/simulation/formal 없음.
+- [v4 계약](TELEMETRY_V4_GATE.md): 실제531 event의 setup/active/runtime/worker-release·memory·resident CPU serial/co-run·paired/joint 및 출력 동등성 모두 PASS. 각 session force-stop 성공, 최종 project process 부재 확인. 보고서: `C:/Users/LG/Documents/D1Check_Telemetry_V4/resume_20260920T160724Z/FINAL_REPORT.md`.
+- 재개 targeted Python29 PASS, 실제 artifact4 schema/validator 및 consumed/replay 거절 PASS. 검증 소스/APK hash 불변으로 기존 debug JVM119/modelProbe JVM126/Python370(368 PASS·skip2)/lint/build는 반복하지 않았다. 기존 근거2213파일 및 이전 보고서101파일 불변.
+- Memory admission28회 admit, lowMemory 거절 mock PASS; thermal0에 한정. sampled peak PSS326,254KiB는 절대 최대나 안전 상한이 아니다. APK SHA `68e55aefdceb91e569e0d55ff0a18af0658163106589852325cb9ad5626fa62e`. Warm 안정화·서비스모델 승인·deadline은 pending, SIM-01_INCOMPLETE 유지.
 - 최신: [V2 결과](SERVICE_MODEL_V2_RESULTS_20260920.md), [설계](SERVICE_MODEL_V2_DESIGN.md), `C:/Users/LG/Documents/D1Check_Service_Model_V2_Design/run_20260920T140424Z/FINAL_REPORT.md`. 구현 checkpoint `1cbdd1e`; 종료 commit/clean은 외부 git_final.json 참조.
 - V2: 기존52 profile session 전부 consumed. 검증51세션559요청+host실패9요청 보존. C+E setup/active joint empirical 개발모델 WAPE4.311%/MAE29.447ms는 승인holdout 결과가 아니다. Warm K·worker-release·runtime span·MemoryInfo·공정resident CPU대조 부족으로 승인 동결 불가.
 - V2검증: 새unit30/관련targeted83 PASS, 전체341(339 PASS·기존skip2), compileall/diff-check PASS. 두root 재생성hash 동일, no-op/dry-run device명령/dispatch/가상완료0. Android source/APK3종 불변. 계약 SHA `635087906dde3ff3c50fc034b350689207109d54970c721bf21a24bb432f0719`는 설계hash이고 승인simulation input은 없다.
@@ -56,6 +57,6 @@
 
 ## 정확한 다음 행동
 
-1. 승인된A24 무선ADB를 연결한 뒤 저장된smoke_device.py를 실행한다. 아직 사용하지 않은4UUID/새output의최소smoke만 실행하고 source/APK/hash·thermal0·한대연결을 재확인한다.
-2. 실제 lifecycle/worker release/residency/memory·출력동등성4smoke가 모두 통과해야 TELEMETRY_V4_READY_FOR_CALIBRATION으로 변경한다. 실패session 재사용금지. 현재 기기실행0회다.
-3. 그뒤 새bounded calibration 계획을 별도동결한다. Warm K/memory/model/정확holdout수/deadline은pending,52consumed자료/기존PI80.38%실패보존. SIM-01_INCOMPLETE이며 본simulation/formal은금지한다.
+1. 별도 승인된 bounded instrumentation calibration 계획을 작성·동결한다. setup/active joint identity, stabilization K, transition, memory/thermal0, paired AB/BA와 출력 품질 계약을 포함한다.
+2. 신규 calibration 후 모델·수용 기준·새 독립 holdout 계획을 결과 확인 전에 동결한다. 기존 consumed 자료와 이번 smoke를 승인용 holdout으로 재사용하지 않는다.
+3. 별도 승인 전 새 측정·holdout·본 simulation/formal은 실행하지 않는다. Deadline=calibration_pending, SIM-01_INCOMPLETE 유지.

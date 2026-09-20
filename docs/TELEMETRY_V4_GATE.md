@@ -55,8 +55,16 @@ Host 최종 검증: targeted Python29 PASS, 전체370(368 PASS·기존skip2), ta
 
 최종 smoke/판정/commit은 외부 FINAL_REPORT 및 Git 종료 기록을 따른다. 이 단계가 통과해도 SERVICE-MODEL-V2/SIM-01_READY를 뜻하지 않는다. 다음은 별도 승인된 bounded instrumentation calibration 계획을 새 UUID/seed/workload/quality/memory/thermal 계약으로 동결하는 일이다. 새 holdout·본 simulation/formal은 이번 범위 밖이다.
 
-### 현재 종료 상태
+### 이전 종료 상태 (706e28a)
 
 **BLOCKED_DEVICE_CONNECTION**. 구현 checkpoint `60bd398`. 2026-09-20T15:50:26Z ADB devices 목록과15:50:59Z mDNS 서비스 목록이 모두 비었다. 확인되지 않은IP로접속하거나 다른기기에실행하지 않았다. 설치/Activity/실제smoke0회이므로 실제v4경계·memory API/admission·두runtime residency가통과했다고 주장하지 않는다. CPU/GPU lifecycle·residentCPUserial/co-run의4개 미실행계획은 `smoke_plan_v2/plan.json`에보존했다. 처음 host계획UTC표기실패는 `host_attempt1/failure.json`에남겼고 기기실패session은없다.
 
 재개 명령(승인A24 한대연결 후): `python C:\Users\LG\Documents\D1Check_Telemetry_V4\run_20260920T144315Z\smoke_device.py`. 실행기는host gate/source/APK/manifest/input hash, SM-A245N/hardware serial/fingerprint/thermal0를 재검사한다. 네smoke만수행하며 기한·성공률 정책비교를 하지 않는다. 아직 Activity를시작하지않은UUID만 사용한다. 측정실패가발생하면 이전성공/실패출력을보존하고 실패UUID로재실행하지말아야한다.
+
+### 재개 결과 (2026-09-21 KST)
+
+**TELEMETRY_V4_READY_FOR_CALIBRATION**. `C:/Users/LG/Documents/D1Check_Telemetry_V4/resume_20260920T160724Z/FINAL_REPORT.md`. 기존 실행기를 byte-identical 복사하고 새 plan/UUID를 생성했다. CPU/GPU lifecycle 각3요청, resident CPU serial/co-run 각6요청(모두 warmup 포함)이 PASS했다. 실제531 event에서 setup/active 분리·close·worker release, 28 memory admission, GPU full-delegation PID 로그, 출력 동등성, matched AB 계약 및 joint session provenance를 검증했다. 소스/APK 변경과 bounded 재실행은 없었다.
+
+Resident 2개 직후 PSS는 CPU serial245,031KiB/co-run326,162KiB, 각 sampled peak248,066/326,254KiB였다. Android threshold226,492,416bytes, 관측 thermal0 및 lowMemory=false 범위에서 기존 동적 gate를 통과했다. 관측 peak를 최대 보장으로 해석하지 않는다. 안전 mock lowMemory rejection은 workload_start 없이 실패를 보존했다.
+
+각 session force-stop 반환 성공 및 마지막 앱/worker process 부재를 확인했다. 이전 근거2213파일/보고서101파일 불변. 이번 targeted29 PASS; 기존 전체 검증은 tested source/APK hash 불변으로 반복하지 않았다. 다음 단계는 별도 승인 계획에 따른 calibration이며 이 완료 판정 자체가 새 측정 승인이나 SIM-01_READY는 아니다. 위 이전 재개 명령의 UUID를 다시 실행하지 않는다.

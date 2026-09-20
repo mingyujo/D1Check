@@ -2,7 +2,7 @@
 
 - 개정: 4.4 / 2026-09-18 / A24 주평가와 추가 Android 기기 고정정책 재현평가 분리
 - 기준 코드: `df8192aa61eebacf83df7a7815f0c60c8bbf4004`의 `master`. 이 개정은 문서 변경이며 새 모델·스케줄러 구현 또는 실기기 PASS가 아니다.
-- 현재 작업: `TELEMETRY-V4-GATE` 구현·host/JVM/lint/build 검증 완료, **BLOCKED_DEVICE_CONNECTION**. [v4 계약](TELEMETRY_V4_GATE.md)에 별도실행경로·공식timer보존·memory/resident control/paired/joint validator를 기록했다. 연결기기·mDNS가없어 설치/Activity/smoke0회다. 다음은 승인A24 연결 후 이미준비된최소4smoke이며 새calibration/holdout/simulation/formal은 이번에 실행하지 않는다. [V2 설계](SERVICE_MODEL_V2_DESIGN.md)와 [이전 실패](SERVICE_MODEL_FINAL_CALIB_20260920.md)의 MAE39.07ms/WAPE6.10%/coverage80.38% 및consumed자료 경계는 유지한다.
+- 현재 작업: `TELEMETRY-V4-GATE` 실제 A24 smoke4/18요청·artifact 검증 완료, **TELEMETRY_V4_READY_FOR_CALIBRATION**. [v4 계약](TELEMETRY_V4_GATE.md)의 setup/active·memory·resident serial/co-run·paired/joint 경계를 확인했다. 소스/APK 변경 없이 재개했고 다음은 별도 승인된 instrumentation calibration 계획 동결이다. 이번에 calibration/holdout/simulation/formal은 실행하지 않았다. 기존 MAE39.07ms/WAPE6.10%/coverage80.38% 실패 및 consumed 자료 경계를 유지하며 SIM-01_INCOMPLETE다.
 - 새 절대 deadline은 `calibration_pending`, 서비스 하한·성공 기준·최종 반복 수는 `thresholds_pending`이다.
 - 유지: A24 개발·주평가, 기존 80슬롯과 diagnostic v1/v2 원본, CALIB-01B PASS, 실패를 포함한 전체 도착 분모. 추가: 정책 동결 후 최소 한 대의 다른 Android 기기에서 축소 재현평가.
 - 전환: 단일 분류 모델은 기존 기준선으로 보존하고, 서로 다른 두 AI 작업의 요청 배정 문제를 새 주평가로 준비한다. 구체 모델과 마감시간은 아직 미확정이다.
