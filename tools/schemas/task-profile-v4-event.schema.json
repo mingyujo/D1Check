@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object", "additionalProperties": false,
+  "required": ["protocol","schema_version","session_id","request_id","runtime_id","worker_id","task","requested_backend","actual_backend","clock_domain","mono_ns","sequence","event","terminal_state","data"],
+  "properties": {
+    "protocol": {"const":"task-profile-v4"}, "schema_version":{"const":1},
+    "session_id":{"type":"string","pattern":"^[a-f0-9-]{36}$"},
+    "request_id":{"type":["string","null"]}, "runtime_id":{"type":["string","null"]},
+    "worker_id":{"enum":[null,0,1]}, "task":{"enum":["not_applicable","classification","detection"]},
+    "requested_backend":{"enum":["not_applicable","CPU","GPU"]}, "actual_backend":{"enum":["not_applicable","CPU","GPU_unverified"]},
+    "clock_domain":{"const":"elapsedRealtimeNanos"}, "mono_ns":{"type":"integer","minimum":0},
+    "sequence":{"type":"integer","minimum":0}, "event":{"type":"string","pattern":"^[a-z_]+$"},
+    "terminal_state":{"enum":["running","succeeded","failed","rejected"]}, "data":{"type":"object"}
+  }
+}

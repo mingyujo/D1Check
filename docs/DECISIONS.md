@@ -257,6 +257,14 @@
 - [V2 설계](SERVICE_MODEL_V2_DESIGN.md)의 sample-size 계산은 계획 bound이며 수천세션 실행 승인이 아니다. 목표 precision/분포margin·공정한 paired variance가 미확정이므로 새 calibration 이후, 새 holdout 이전에 정확 프로토콜을 동결한다.
 - 이전 transition_mean frozen artifact/hash/평가기 코드는 수정하지 않는다. V2 host 도구는 새 파일로 분리한다.
 
+### 2026-09-21 — Telemetry v4와 resident control의 별도 실행경로
+
+- 상태: 구현·host 검증 완료, 기기 smoke gate 대기. 사용자는 새 calibration/holdout/formal/simulation을 금지하고 최소4개 lifecycle/resident smoke만 승인했다.
+- task-profile-v4/schema1을 modelProbe 전용 Activity/adapter로 분리해 기존 v3/공식 timer/decoder/legacy artifact를 보존한다. 캡처한 invocation timestamp를 호출 종료 후 기록하고 내부 logger 시간을 inference에 넣지 않는다.
+- 두 CPU runtime을 같은 lane에 상주시켜 serial control의 runtime 재생성 혼입을 제거한다. Co-run도 같은 사전생성/warmup 원칙을 사용한다. Paired 비교는 같은 workload hash와 두 성공 receipt가 필요하다.
+- 고정 headroom 대신 android-low-memory-resident-v1의 system threshold+관측 PSS reserve를 적용한다. sampled peak나 baseline guard를 실제 최대/안전보장으로 주장하지 않는다. [세부 계약](TELEMETRY_V4_GATE.md).
+- v4 warm label은 ordinal이고 qualified=false다. 이번 smoke는 서비스모델 calibration/holdout으로 승격하지 않는다. 기존 consumed registry와 PI 실패를 유지한다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

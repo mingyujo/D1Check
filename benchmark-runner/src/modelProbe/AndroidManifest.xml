@@ -4,6 +4,8 @@
     <!-- Tasks' transitive transport must not grant network access to this offline probe. -->
     <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
     <application>
+        <activity android:name=".TelemetryV4Activity" android:excludeFromRecents="true"
+            android:exported="true" android:noHistory="true" android:process=":model_probe" />
         <activity android:name=".TaskProfileActivity" android:excludeFromRecents="true"
             android:exported="true" android:noHistory="true" android:process=":model_probe" />
         <activity android:name=".DecodeDiagnosticActivity" android:excludeFromRecents="true"

@@ -1,6 +1,7 @@
 # D1Check 현재 상태
 
-- 갱신: 2026-09-20. **SERVICE-MODEL-V2-DESIGN host 분석/검증 완료, BLOCKED_MISSING_TELEMETRY**. 시작 `2faeb8e`/지정 feature branch/clean 확인. 새 ADB·simulation·formal 실행 없음.
+- 갱신: 2026-09-21 KST. **TELEMETRY-V4-GATE 구현·host 검증 완료, 최소 A24 smoke 대기**. 시작 `d939c56`/지정 feature branch/clean 확인. 새 calibration/holdout/simulation/formal 없음.
+- [v4 구현 계약](TELEMETRY_V4_GATE.md): 별도 modelProbe Activity/adapter, 공식 inference timer 불변, runtime/worker-release/memory gate·resident CPU serial/co-run·paired/joint schema/validator 구현. Python370(368 PASS·skip2), debug JVM119/modelProbe JVM126, lint/build/logger/no-op 통과. 상세 `C:/Users/LG/Documents/D1Check_Telemetry_V4/run_20260920T144315Z/`.
 - 최신: [V2 결과](SERVICE_MODEL_V2_RESULTS_20260920.md), [설계](SERVICE_MODEL_V2_DESIGN.md), `C:/Users/LG/Documents/D1Check_Service_Model_V2_Design/run_20260920T140424Z/FINAL_REPORT.md`. 구현 checkpoint `1cbdd1e`; 종료 commit/clean은 외부 git_final.json 참조.
 - V2: 기존52 profile session 전부 consumed. 검증51세션559요청+host실패9요청 보존. C+E setup/active joint empirical 개발모델 WAPE4.311%/MAE29.447ms는 승인holdout 결과가 아니다. Warm K·worker-release·runtime span·MemoryInfo·공정resident CPU대조 부족으로 승인 동결 불가.
 - V2검증: 새unit30/관련targeted83 PASS, 전체341(339 PASS·기존skip2), compileall/diff-check PASS. 두root 재생성hash 동일, no-op/dry-run device명령/dispatch/가상완료0. Android source/APK3종 불변. 계약 SHA `635087906dde3ff3c50fc034b350689207109d54970c721bf21a24bb432f0719`는 설계hash이고 승인simulation input은 없다.
