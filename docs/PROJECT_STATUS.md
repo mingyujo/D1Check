@@ -6,6 +6,8 @@
 - [재개 상세](A24_RESUME_20260920.md). 탐지 CPU/GPU 공식 부분 주석 15/28 bbox 일치. 품질 승인과 동등성은 별도다.
 - 신규 발견: 이전 외부 classification_reference_v2.py가 v2 manifest와 이전 PNG bytes를 혼용하고 선언 hash를 복사했다. 새 tools/d1_classification_reference.py는 실제 bytes/hash를 강제 연결하고 raw·tensor metadata·3회 재현성을 기록한다. 이전 잘못된 golden/실패 판정 보존.
 - 검증: 신규 host generator targeted 11건 및 전체 Python 254건 PASS(기존 skip 2). Android 코드 변경 없음; 검증된 APK 8b805d3 그대로 설치·원격 hash 확인.
+- 후속 validator: v3 raw hash 개수/형식·task/timing/geometry·cold 전환을 재검증한다. targeted 17건/전체 Python 258건 PASS(기존 skip 2). rehashed false warm 표기로 GPU 증거 검사를 우회하지 못하게 했다.
+- 진행: solo 네 cell 각 2 session 완료, CPU↔GPU 전환 완료. matched solo/co-run/holdout 진행. host ADB daemon 조회 1회 실패는 Activity 시작 전이며 bounded start-server 1회 복구 후 새 UUID 사용.
 - 이전 전송 UUID 86bea279-338f-4e8d-b2b2-f35d5efbd986의 잔존 조각 4개 소유/hash 확인 후 해당 device staging만 정리. host 조각은 실패 증거로 보존.
 - 아래는 이전 종료 기록이다. 재개 결과가 확정되면 capability/profile/다음 행동을 갱신한다.
 - 브랜치 feature/pre-simulation-ready-20260919, 시작 15e244c, 코드 checkpoint 9f68568. push/merge/rebase/master 전환 없음.

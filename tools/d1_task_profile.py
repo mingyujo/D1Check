@@ -81,6 +81,15 @@ def validate(root, delegate_log=None):
         raise ValueError('request bounds')
     if len(requests) != len(manifest['requests']) or len(events) != len(requests) or len({r['request_id'] for r in events}) != len(events):
         raise ValueError('missing/duplicate arrival terminal')
+    if manifest['protocol'] == 'task-profile-v3' and all(e['terminal_status'] == 'succeeded' for e in events):
+        # A rehashed false cold flag must not suppress the GPU delegate evidence gate.
+        worker_models = {}
+        for event in sorted(events, key=lambda e: e['execution_start_ns']):
+            request = requests[event['request_id']]
+            worker, model = request['worker'], request['model_key']
+            if type(event.get('cold')) is not bool or event['cold'] != (worker_models.get(worker) != model):
+                raise ValueError('cold runtime transition mismatch')
+            worker_models[worker] = model
     expected = {'manifest.json', 'events.jsonl', 'environment.json', 'summary.json'}
     success = 0
     for event in events:
@@ -118,6 +127,14 @@ def validate(root, delegate_log=None):
             if manifest['protocol'] == 'task-profile-v3' and (result.get('adapter_contract'), result.get('canonical_input_contract')) != ('explicit-image-task-v2', 'canonical-srgb-png-v2'):
                 raise ValueError('v3 canonical color contract missing')
             image = next(i for i in manifest['images'] if i['sample_id'] == event['sample_id'])
+            if manifest['protocol'] == 'task-profile-v3':
+                hashes = result.get('raw_output_sha256')
+                if not isinstance(hashes, list) or len(hashes) != len(spec['tensor']['outputs']) or any(
+                        not isinstance(h, str) or not re.fullmatch('[a-f0-9]{64}', h) for h in hashes):
+                    raise ValueError('raw output hash contract mismatch')
+                if (result.get('task_id'), result.get('model_id'), result.get('inference_ns'), result.get('image_size')) != (
+                        event['task_id'], event['model_id'], event['inference_ns'], [image['width'], image['height']]):
+                    raise ValueError('result task/timing/geometry mismatch')
             if result['image_sha256'] != image['sha256'] or result['model_sha256'] != spec['model']['sha256'] or result['input_tensor_sha256'] != event['input_tensor_sha256']:
                 raise ValueError('result input/model binding mismatch')
             if result['requested_backend'] != event['requested_backend'] or result['actual_backend'] != actual:
@@ -145,6 +162,8 @@ def validate(root, delegate_log=None):
     if success == len(events) and any(row['thermal_status'] > 1 for row in environment):
         raise ValueError('baseline thermal violation')
     gpu_count = sum(r.get('cold', False) and r['requested_backend'] == 'GPU' for r in events)
+    if any(e['requested_backend'] == 'GPU' and e['terminal_status'] == 'succeeded' for e in events) and gpu_count == 0:
+        raise ValueError('GPU success lacks runtime creation evidence')
     gpu = {'status': 'not_requested'}
     if gpu_count:
         gpu = {'status': 'unverified'}

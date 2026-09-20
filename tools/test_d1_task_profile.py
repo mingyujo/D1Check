@@ -40,8 +40,8 @@ class ProfileEvidenceTest(unittest.TestCase):
         save('events.jsonl', self.event)
         save(self.request+'.event.json', self.event)
         save('environment.json', [dict(mono_ns=10, total_pss_kb=123, thermal_status=0)])
-        save('summary.json', dict(protocol='task-profile-v2', session_id=self.session, request_count=1, succeeded=1, failed=0))
-        save('provenance.json', dict(protocol='task-profile-v2', session_id=self.session,
+        save('summary.json', dict(protocol=self.m['protocol'], session_id=self.session, request_count=1, succeeded=1, failed=0))
+        save('provenance.json', dict(protocol=self.m['protocol'], session_id=self.session,
              apk_sha256=self.m['apk_sha256'], manifest_sha256=p.digest(self.root/'manifest.json'),
              files=[dict(name=f.name, bytes=f.stat().st_size, sha256=p.digest(f)) for f in self.root.iterdir() if f.name != 'provenance.json']))
 
@@ -99,6 +99,44 @@ class ProfileEvidenceTest(unittest.TestCase):
                 entry.update(bytes=path.stat().st_size, sha256=p.digest(path))
         (self.root/'provenance.json').write_text(json.dumps(provenance))
         with self.assertRaises(ValueError):
+            p.validate(self.root)
+
+    def v3(self):
+        self.m['protocol'] = 'task-profile-v3'
+        self.m['images'][0].update(width=2, height=3)
+        self.result.update(adapter_contract='explicit-image-task-v2', canonical_input_contract='canonical-srgb-png-v2',
+                           task_id=self.event['task_id'], model_id=self.event['model_id'],
+                           inference_ns=self.event['inference_ns'], image_size=[2, 3], raw_output_sha256=['e'*64])
+
+    def test_v3_hash_and_result_contract(self):
+        self.v3()
+        self.write()
+        self.assertEqual(p.validate(self.root)['succeeded'], 1)
+
+    def test_v3_rehashed_raw_hash_tampering_rejected(self):
+        self.v3()
+        for bad in (None, [], ['e'*63], ['e'*64, 'f'*64], [42]):
+            self.result['raw_output_sha256'] = bad
+            self.write()
+            with self.assertRaisesRegex(ValueError, 'raw output hash'):
+                p.validate(self.root)
+
+    def test_v3_rehashed_result_identity_timing_geometry_rejected(self):
+        self.v3()
+        for key, bad in [('task_id', 'detection'), ('model_id', 'wrong'), ('inference_ns', 4), ('image_size', [3, 2])]:
+            with self.subTest(key=key):
+                previous = self.result[key]
+                self.result[key] = bad
+                self.write()
+                with self.assertRaisesRegex(ValueError, 'result task/timing/geometry'):
+                    p.validate(self.root)
+                self.result[key] = previous
+
+    def test_v3_first_runtime_cannot_be_marked_warm(self):
+        self.v3()
+        self.event['cold'] = False
+        self.write()
+        with self.assertRaisesRegex(ValueError, 'cold runtime transition'):
             p.validate(self.root)
 
 
