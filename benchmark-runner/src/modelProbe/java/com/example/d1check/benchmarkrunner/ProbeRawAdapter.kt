@@ -34,6 +34,13 @@ internal class ProbeRawSession private constructor(
         check(!closed) { "Probe raw session is closed" }
         require(seed in 0..2) { "Probe raw seed must be 0, 1, or 2" }
         val input = deterministicInput(manifest.model.task, seed)
+        return invokePrepared(input, seed).also { progress?.captureRaw(it) }
+    }
+
+    /** Diagnostic same-tensor replay; never written as a synthetic-seed capture. */
+    fun invokePrepared(input: ByteBuffer, seed: Int = 0): ProbeRawInvocation {
+        check(!closed) { "Probe raw session is closed" }
+        require(input.capacity() == interpreter.getInputTensor(0).numBytes()) { "Prepared input size mismatch" }
         val outputBuffers = manifest.tensor.outputs.associate { spec ->
             spec.index to ByteBuffer.allocateDirect(interpreter.getOutputTensor(spec.index).numBytes())
                 .order(ByteOrder.nativeOrder())
@@ -69,7 +76,7 @@ internal class ProbeRawSession private constructor(
             } else {
                 "not_applicable_cpu"
             },
-        ).also { progress?.captureRaw(it) }
+        )
     }
 
     override fun close() {

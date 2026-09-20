@@ -1,6 +1,7 @@
 # D1Check 현재 상태
 
-- 갱신: 2026-09-20 / GPU 진단·raw 수치·decoded gate 판정과 simulation 독립 준비 완료.
+- 갱신: 2026-09-20 / decoded 원인 분리 조사 진행 중. 시작 HEAD `15e244c`, clean 확인; A24 연결 정상.
+- 현재 추가 증거: `C:/Users/LG/Documents/D1Check_Decode_Resolution/`. exact 모델 metadata·공식 MediaPipe 소스 확인, 동일 RGB/전처리 raw 재생 진단과 host generator 구현·검증 중. 새 task/backend PASS는 아직 없음.
 - 현재 작업: `MODEL-02B-DECODED-GATE`. **SIM-01_INCOMPLETE**. 실제 simulation·formal workload 미실행.
 - 브랜치: `feature/pre-simulation-ready-20260919`; 시작 HEAD `10e2a4b67e0cae59108217627993485a5388811b`. master 수정·push·PR·merge 없음.
 - 상위 기준: PLAN 개정 4.4. [준비 계약·PROFILE 절차](SIM_01_PREPARATION.md), [probe 계약](MODEL_02B_PROBE.md), [두 작업 계약](MULTITASK_EXPERIMENT_PROTOCOL.md).
