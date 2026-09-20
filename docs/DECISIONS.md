@@ -215,6 +215,15 @@
 - 추가 수정: 이전 외부 분류 golden의 manifest/파일 경로 혼용을 검출했다. 실제 bytes/hash 결합 generator와 회귀 테스트를 추가하고 잘못된 golden/실패 판정을 보존했다.
 - 다음: 통과 cell의 bounded solo/transition/co-run/holdout을 관측한다. deadline·품질·안정성·오차 수용값은 근거 없이 동결하지 않는다.
 
+## 2026-09-20 — bounded profile 관측과 SIM-01 동결 보류
+
+- 상태: 채택 — 사용자의 본 simulation/formal 제외 및 시뮬레이션 직전 준비 지시.
+- 결정: 네 cell을 실제 지원하는 것으로 유지하되, 현재 두 작업 모두 solo CPU가 빠르다는 관측을 받아들인다. heterogeneous 배정 이득을 전제하거나 GPU를 유리하게 보이도록 기준을 바꾸지 않는다.
+- 근거: 새31개 실기기 session, bounded solo/전환/두 co-run/별도 holdout, thermal/PSS·모든 requested/actual backend 검증. [상세 결과](A24_RESUME_20260920.md).
+- 제한: 분류 CPU의 첫 non-cold 요청381ms와 warm 예측 오차74.57%를 보존한다. 추가 warmup 진단은 초기 호출 상태 영향의 근거지만 기존 holdout을 대체하는 confirmatory 결과가 아니다. cold boolean만으로 안정적인 warm service를 가정하지 않는다.
+- 판정: SIM-01_INCOMPLETE. 측정값과 준비 입력을 provenance로 연결하고 no-op만 실행한다. 품질 수용·초기 호출 서비스 모델·안정성·holdout 오차·공통 제약/반복/평가 freeze 없이 READY나 절대 deadline을 만들지 않는다.
+- 연결 복구 시 완료 artifact 회수는 재실행과 구분한다. host 명령 실패를 보존하고 device monotonic 실행 bound·hash·decoded·delegate를 검증한 경우에만 완료로 인정한다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

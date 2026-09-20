@@ -2,7 +2,7 @@
 
 - 개정: 4.4 / 2026-09-18 / A24 주평가와 추가 Android 기기 고정정책 재현평가 분리
 - 기준 코드: `df8192aa61eebacf83df7a7815f0c60c8bbf4004`의 `master`. 이 개정은 문서 변경이며 새 모델·스케줄러 구현 또는 실기기 PASS가 아니다.
-- 현재 작업: `MODEL-02B-DECODED-GATE` — 단계별 GPU 진단과 두 모델 raw CPU/GPU seed 0/1/2 검증을 완료했다. 과거 raw timeout은 미재현/원인 미확정이며, 새 decoded 탐지는 CPU/GPU 수치·label/box 검증 실패로 task 승인 전이다. 품질·TASK-02·service profile·SIM-01은 미완료다. [준비 계약](SIM_01_PREPARATION.md)과 STATUS의 증거 경계를 따른다.
+- 현재 작업: `PROFILE-02 → SIM-01 준비` — A24 최종 canonical 계약 네 cell 각각20장 및 CPU↔GPU 직접40쌍 PASS_EQ. 실제 adapter/완료 경계와 bounded solo/전환/co-run/holdout 관측을 완료했다. 품질 수용·초기 호출 상태의 서비스 모델·독립 오차 기준/평가 동결은 미완료여서 SIM-01_INCOMPLETE다. [재개 결과](A24_RESUME_20260920.md)와 STATUS의 증거 경계를 따른다.
 - 새 절대 deadline은 `calibration_pending`, 서비스 하한·성공 기준·최종 반복 수는 `thresholds_pending`이다.
 - 유지: A24 개발·주평가, 기존 80슬롯과 diagnostic v1/v2 원본, CALIB-01B PASS, 실패를 포함한 전체 도착 분모. 추가: 정책 동결 후 최소 한 대의 다른 Android 기기에서 축소 재현평가.
 - 전환: 단일 분류 모델은 기존 기준선으로 보존하고, 서로 다른 두 AI 작업의 요청 배정 문제를 새 주평가로 준비한다. 구체 모델과 마감시간은 아직 미확정이다.
@@ -63,7 +63,7 @@ SCOPE-02 조사 결과는 [SCOPE_02_EVIDENCE.md](SCOPE_02_EVIDENCE.md)에 기록
 | 역할 | 먼저 검증할 후보 | 선택 이유와 상태 |
 | --- | --- | --- |
 | 과거 비교 기준 | 기존 MobileNet V1 | 80슬롯과 CALIB-01B 재현용. 원 모델·파일·해시 보존. 1001행 라벨 출처 미확인 문제는 해결된 것으로 처리하지 않음 |
-| 새 분류 작업 | EfficientNet-Lite0 FLOAT32 v1 | host source/hash/tensor/내장 1000 labels·Apache-2.0 metadata·고정 CPU output 확인. 각 실측 기기의 CPU/GPU·품질·메모리는 MODEL-02B 미검증 |
+| 새 분류 작업 | EfficientNet-Lite0 FLOAT32 v1 | host source/hash/tensor/내장 1000 labels·Apache-2.0 metadata 확인. A24 CPU/GPU canonical 계약 동등성 및 bounded profile 확인; 품질 수용·추가 기기 검증은 pending |
 | 새 객체탐지 작업 | EfficientDet-Lite0 FLOAT32 v1 | source/hash/tensor/내장 labels·raw/decoded CPU output 확인. exact binary license 귀속은 미입증이므로 승인 기기 내부의 비배포 연구 probe만 조건부 허용; 저장소·APK·공유 bundle 포함 금지 |
 
 이는 최신 모델 경연이 아니다. 공개된 [분류 모델 안내](https://developers.google.com/edge/mediapipe/solutions/vision/image_classifier)와 [탐지 모델 안내](https://developers.google.com/edge/mediapipe/solutions/vision/object_detector)는 후보의 근거이며, 표의 다른 기기 성능을 A24 성능으로 사용하지 않는다. 파일을 확보한 뒤 실제 출력 tensor/metadata·label index를 검사해야 한다. 공식 문서가 있다는 이유만으로 특정 파일의 라이선스·1000/1001행 대응·GPU full delegation이 검증된 것은 아니다.
@@ -224,4 +224,4 @@ B2는 같은 장치의 모든 합법적 task별 배정 후보(두 task·두 경�
 
 CALIB-01B는 FIX4까지 구현·host 검증·감사를 완료했다. 기록상 Kotlin/JVM 119건·실패/오류/skip 0, Python 195건·실패/오류 0·기존 skip 1, lint error 0/warning 76, compileall·logger self-test·assembleDebug PASS다. 기존 모델의 실기기 이미지 calibration, 새 두 모델 지원, 동적 정책 개선은 각각 미완료이며 별도로 검증한다.
 
-2026-09-20 후속: [DECODE_RESOLUTION_20260920.md](DECODE_RESOLUTION_20260920.md)에 명시적 adapter·canonical 색상 계약·공식 주석·bounded profile 경로·B0/B1 결정 함수와 검증을 기록했다. A24 연결 단절로 최종 APK 설치·네 cell/PROFILE-02 실측은 보류하여 BLOCKED_EXTERNAL_INPUT이다. 재연결 순서는 STATUS를 따른다. 개정 4.4 목표와 SIM-01 품질/profile/holdout/동결 완료 조건은 유지하며 본 simulation·formal·정책 비교는 미실행이다.
+2026-09-20 후속: [DECODE_RESOLUTION_20260920.md](DECODE_RESOLUTION_20260920.md)의 최초 종료는 연결 단절로 BLOCKED_EXTERNAL_INPUT이었다. 이후 [재개 결과](A24_RESUME_20260920.md)에서 최종 APK 설치·네 cell·bounded PROFILE-02를 실제 검증했다. 31개 실기기 session과 별도 host preflight 실패1건을 보존한다. 두 작업 모두 solo CPU가 빠르며, 분류 CPU 초기 호출의 큰 서비스 오차를 cold boolean만으로 설명할 수 없어 frozen profile로 승격하지 않았다. 개정4.4의 품질/profile/holdout/동결 완료 조건은 유지하고 SIM-01_INCOMPLETE다. 본 simulation·formal·정책 비교는 미실행이다.
