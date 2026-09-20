@@ -1,7 +1,11 @@
 # D1Check 현재 상태
 
-- 갱신: 2026-09-20. **SERVICE-MODEL-V2-DESIGN host 분석/검증 중, BLOCKED_MISSING_TELEMETRY**. 시작 `2faeb8e`/지정 feature branch/clean 확인. 새 ADB·simulation·formal 실행 없음.
-- V2: [설계·최소 계측·독립검증 계획](SERVICE_MODEL_V2_DESIGN.md). 기존 holdout 전부 consumed development. 51개 검증 profile/559요청+별도 host실패9요청 보존. v2 state/setup/span/paired/memory/schema·누수·불변·seed·no-op targeted30 PASS. 최종 전체검증·보고서는 `C:/Users/LG/Documents/D1Check_Service_Model_V2_Design/run_20260920T140424Z/`에 생성 예정.
+- 갱신: 2026-09-20. **SERVICE-MODEL-V2-DESIGN host 분석/검증 완료, BLOCKED_MISSING_TELEMETRY**. 시작 `2faeb8e`/지정 feature branch/clean 확인. 새 ADB·simulation·formal 실행 없음.
+- 최신: [V2 결과](SERVICE_MODEL_V2_RESULTS_20260920.md), [설계](SERVICE_MODEL_V2_DESIGN.md), `C:/Users/LG/Documents/D1Check_Service_Model_V2_Design/run_20260920T140424Z/FINAL_REPORT.md`. 구현 checkpoint `1cbdd1e`; 종료 commit/clean은 외부 git_final.json 참조.
+- V2: 기존52 profile session 전부 consumed. 검증51세션559요청+host실패9요청 보존. C+E setup/active joint empirical 개발모델 WAPE4.311%/MAE29.447ms는 승인holdout 결과가 아니다. Warm K·worker-release·runtime span·MemoryInfo·공정resident CPU대조 부족으로 승인 동결 불가.
+- V2검증: 새unit30/관련targeted83 PASS, 전체341(339 PASS·기존skip2), compileall/diff-check PASS. 두root 재생성hash 동일, no-op/dry-run device명령/dispatch/가상완료0. Android source/APK3종 불변. 계약 SHA `635087906dde3ff3c50fc034b350689207109d54970c721bf21a24bb432f0719`는 설계hash이고 승인simulation input은 없다.
+
+## 이전 FINAL-CALIB 근거 보존
 - 브랜치 `feature/pre-simulation-ready-20260919`, 시작 `4230160` clean. 계획 checkpoint `5544995`, holdout 전 후보 동결 `b5928e8`. 종료 문서 checkpoint/clean 여부는 외부 `git_final.json` 참조. push/merge/rebase/master 전환 없음.
 - 최신 상세: `C:/Users/LG/Documents/D1Check_Service_Model_Final/run_20260920T130139Z/FINAL_REPORT.md`. 보고서·JSON·명령/시각/HEAD/실패 로그·모든 session 원자료를 같은 root에 보존했다.
 - 저장소 요약: [FINAL-CALIB](SERVICE_MODEL_FINAL_CALIB_20260920.md), [사전 동결 hash](SERVICE_MODEL_FINAL_FREEZE_20260920.json). 이전 [FREEZE](SERVICE_MODEL_FREEZE_20260920.md)·[A24 재개](A24_RESUME_20260920.md)·[decoded 수정](DECODE_RESOLUTION_20260920.md)·기존233요청/31session 원자료 보존.
@@ -50,6 +54,6 @@
 
 ## 정확한 다음 행동
 
-1. V2 host 분석·전체검증을 마무리한다. 기존 PI80.38% 실패는 유지하며 개발 재분석을 승인 holdout으로 바꾸지 않는다.
-2. 다음 단계에서 v4 최소 runtime lifecycle/worker-release/MemoryInfo 계측과 두 resident CPU runtime+직렬 gate를 구현·Android 검증한다. 현재 기기 실행 명령은 발급 불가다.
-3. 새 calibration에서 warm K·메모리 bounds·서비스 목표/분포 margin·정확 sample size/paired count를 결정하고 새 holdout 전에 재동결한다. 현재 SIM-01_INCOMPLETE, 본 simulation/formal 금지.
+1. v4 최소 runtime lifecycle/worker-release/MemoryInfo 계측과 두 resident CPU runtime+직렬 gate를 구현·Android 검증한다. 현재 기기 실행 명령은 발급 불가다.
+2. 새 bounded instrumentation calibration 계획을 먼저 확정한다. 기존 PI80.38% 실패와52 consumed session을 보존하고 새 승인holdout에 재사용하지 않는다.
+3. 새 calibration에서 warm K·memory bounds·서비스 목표/분포 margin·정확 sample size/paired count를 결정하고 새 holdout 전에 재동결한다. 엄격한분포무관 sample bound9232는 실행승인/최소요구가 아니다. SIM-01_INCOMPLETE, 본 simulation/formal 금지.

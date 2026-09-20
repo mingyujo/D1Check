@@ -2,7 +2,7 @@
 
 - 개정: 4.4 / 2026-09-18 / A24 주평가와 추가 Android 기기 고정정책 재현평가 분리
 - 기준 코드: `df8192aa61eebacf83df7a7815f0c60c8bbf4004`의 `master`. 이 개정은 문서 변경이며 새 모델·스케줄러 구현 또는 실기기 PASS가 아니다.
-- 현재 작업: `SERVICE-MODEL-V2-DESIGN`, BLOCKED_MISSING_TELEMETRY. [V2 설계](SERVICE_MODEL_V2_DESIGN.md)의 host-only 분석·schema/validator를 작성하며 기존 모든 holdout을 consumed 개발자료로 전환한다. [이전 실패](SERVICE_MODEL_FINAL_CALIB_20260920.md)의 MAE39.07ms/WAPE6.10%/coverage80.38%는 유지한다. setup/service joint empirical 구조를 검토하되 lifecycle/worker-release·memory·공정한 resident CPU 대조 계측 전 승인 동결은 불가하다. 새 ADB·simulation/formal은 실행하지 않는다.
+- 현재 작업: `SERVICE-MODEL-V2-DESIGN` host 분석·schema/validator·검증 완료, BLOCKED_MISSING_TELEMETRY. [V2 결과](SERVICE_MODEL_V2_RESULTS_20260920.md)와 [설계](SERVICE_MODEL_V2_DESIGN.md)에 기존 holdout의 consumed 개발자료 전환을 기록했다. [이전 실패](SERVICE_MODEL_FINAL_CALIB_20260920.md)의 MAE39.07ms/WAPE6.10%/coverage80.38%는 유지한다. setup/service joint empirical 구조를 선택하되 lifecycle/worker-release·memory·공정한 resident CPU 대조 계측 전 승인 동결은 불가하다. 새 ADB·simulation/formal은 실행하지 않았다.
 - 새 절대 deadline은 `calibration_pending`, 서비스 하한·성공 기준·최종 반복 수는 `thresholds_pending`이다.
 - 유지: A24 개발·주평가, 기존 80슬롯과 diagnostic v1/v2 원본, CALIB-01B PASS, 실패를 포함한 전체 도착 분모. 추가: 정책 동결 후 최소 한 대의 다른 Android 기기에서 축소 재현평가.
 - 전환: 단일 분류 모델은 기존 기준선으로 보존하고, 서로 다른 두 AI 작업의 요청 배정 문제를 새 주평가로 준비한다. 구체 모델과 마감시간은 아직 미확정이다.
