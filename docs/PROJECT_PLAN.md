@@ -224,4 +224,4 @@ B2는 같은 장치의 모든 합법적 task별 배정 후보(두 task·두 경�
 
 CALIB-01B는 FIX4까지 구현·host 검증·감사를 완료했다. 기록상 Kotlin/JVM 119건·실패/오류/skip 0, Python 195건·실패/오류 0·기존 skip 1, lint error 0/warning 76, compileall·logger self-test·assembleDebug PASS다. 기존 모델의 실기기 이미지 calibration, 새 두 모델 지원, 동적 정책 개선은 각각 미완료이며 별도로 검증한다.
 
-2026-09-20 ?? ??: [DECODE_RESOLUTION_20260920.md](DECODE_RESOLUTION_20260920.md)? ??? image task ???host generator??? validation subset?bounded task-profile ??? ????. B0/B1 ?? ??? ?? ?????? ? simulation? ?? ??? ?????. PLAN 4.4? ???profile?holdout??? ?? ??? ???? ???.
+2026-09-20 후속: [DECODE_RESOLUTION_20260920.md](DECODE_RESOLUTION_20260920.md)에 명시적 adapter·canonical 색상 계약·공식 주석·bounded profile 경로·B0/B1 결정 함수와 검증을 기록했다. A24 연결 단절로 최종 APK 설치·네 cell/PROFILE-02 실측은 보류하여 BLOCKED_EXTERNAL_INPUT이다. 재연결 순서는 STATUS를 따른다. 개정 4.4 목표와 SIM-01 품질/profile/holdout/동결 완료 조건은 유지하며 본 simulation·formal·정책 비교는 미실행이다.

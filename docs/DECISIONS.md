@@ -199,6 +199,14 @@
 - 품질: Open Images 공식 주석 20장으로 실제 탐지 품질을 관측하되 host equivalence와 분리한다. 낮은/불확실한 품질 관측을 감추거나 gate 통과를 위해 threshold/tolerance를 바꾸지 않는다.
 - 준비: B0/B1 순수 결정 함수를 추가한다. 고정 mapping·aging 값은 caller가 명시해야 하며 아직 평가용 동결값은 없다. 호출 테스트는 simulation·정책 비교가 아니다. 절대 deadline과 holdout 오차 허용값은 pending을 유지한다.
 
+## 2026-09-20 — 색상 canonical 계약과 외부 연결 장애
+
+- 상태: 채택(구현/host 검증), 기기 최종 검증 보류.
+- 근거: 실제 10-image 실행의 한 PNG에서 iCCP에 따른 input tensor 차이가 확인됐다. host ICC→sRGB 변환 후 metadata 없는 RGB PNG를 고정한다. 모델/resize/decoder threshold/tolerance는 유지한다.
+- 최종 버전: canonical-srgb-q16-stretch-v2, explicit-image-task-v2, task-profile-v3. 기존 입력과 v1/v2 결과는 보존한다. 요청 journal과 bounded Activity 가시성을 보강했다.
+- 제한: 최종 APK 전송 중 A24 offline. 네 cell은 최종 계약에서 unverified이며 기존 raw 성공을 task 승인으로 전용하지 않는다. 본 simulation·formal은 미실행.
+- 판정: BLOCKED_EXTERNAL_INPUT. STATUS와 외부 FINAL_REPORT에 재연결·정리 대상 UUID·최종 APK hash를 기록한다. 임의 deadline·품질 하한·holdout 오차를 채우지 않는다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목
