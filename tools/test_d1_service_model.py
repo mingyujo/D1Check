@@ -107,6 +107,17 @@ class ServiceModelTest(unittest.TestCase):
         split['prospective_holdout'].append(split['retrospective_holdout'].pop())
         with self.assertRaisesRegex(ValueError,'previously'):sm.validate_split(split)
 
+    def test_missing_executed_session_receipt_cannot_be_dropped(self):
+        folder=self.root/'profiles/session';folder.mkdir(parents=True)
+        (folder/'context.json').write_bytes(canonical(dict(status='completed')))
+        with self.assertRaisesRegex(ValueError,'possibly executed'):sm.load_sessions(self.root)
+
+    def test_preflight_exclusion_rejects_started_session(self):
+        folder=self.root/'profiles/session';folder.mkdir(parents=True)
+        (folder/'context.json').write_bytes(canonical(dict(
+            status='preflight_failed_before_staging_or_activity',started_utc='2026-09-21T00:00:00Z')))
+        with self.assertRaisesRegex(ValueError,'possibly executed'):sm.load_sessions(self.root)
+
     def test_seed_is_stable_and_bounded(self):
         self.assertEqual(sm.ordered(['b','a','c'],123),sm.ordered(['c','b','a'],123))
         for seed in (True,-1,2**64,1.5):

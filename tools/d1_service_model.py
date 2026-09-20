@@ -41,8 +41,12 @@ def load_sessions(root):
     for folder in sorted((Path(root)/'profiles').iterdir()):
         context = read(folder/'context.json')
         if not (folder/'receipt.json').exists():
+            if context.get('status') != 'preflight_failed_before_staging_or_activity' or context.get('started_utc'):
+                raise ValueError('missing receipt for possibly executed session')
             excluded.append(dict(session_id=folder.name, status=context['status'],
-                                 planned_requests=len(context['recipe']['requests'])))
+                                 planned_requests=len(context['recipe']['requests']),
+                                 context_path=str((folder/'context.json').resolve()),
+                                 context_sha256=digest(folder/'context.json')))
             continue
         receipt = validate(folder/'artifacts', (folder/'delegate_log.txt').read_text())
         m = read(folder/'artifacts/manifest.json')

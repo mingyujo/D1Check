@@ -154,6 +154,8 @@ def generate(source, output, seed):
                         legal_cells_only=True,contract_version='4.4/service-model-preparation-v1') for name in names]))
     source_files=[]
     for s in sessions:source_files.extend(s['files'])
+    for item in excluded:
+        source_files.append(dict(path=item['context_path'],sha256=item['context_sha256']))
     for name in ('FINAL_REPORT.md','capability_matrix.json','raw_comparison.json','hash_audit.json'):
         source_files.append(dict(path=str((source/name).resolve()),sha256=digest(source/name)))
     audit=read(source/'hash_audit.json')
