@@ -151,7 +151,7 @@ B2는 같은 장치의 모든 합법적 task별 배정 후보(두 task·두 경�
 
 이번 실행에서 시뮬레이션 본 실험은 금지한다. `SIM_01_READY`는 MODEL-02B 기기/품질/artifact gate와 TASK-02 실제 완료 경계, PROFILE-02의 기기별 service·transition·thermal·capability 근거를 확보한 뒤 선언한다. 추가로 독립 device profile schema, workload/request class, arrival/service/deadline/thermal 입력, B0~B3/P 결정·목적·제약, seed/반복/KPI, manifest/schema/validator, no-op 검증, 저장/provenance·실행 명령이 있어야 한다. 어느 하나라도 없으면 INCOMPLETE 또는 구체 장애로 BLOCKED다. 기존 smoke 시간을 service profile로 바꾸거나 pending deadline을 임의 숫자로 채우지 않는다. 보조 simulation은 위 8절과 MULTITASK 9절의 실측 보정·holdout 조건을 유지한다.
 
-2026-09-20: draft simulation schema/semantic validator/no-op, seed namespace, B0~B3/P 의미·인터페이스와 host KPI 계약 테스트를 구현했다. 이는 실제 scheduler·Android 두 task 완료 경로·동결 service-profile schema 구현이 아니다. decoded gate가 실패한 현재에는 draft를 INCOMPLETE로만 반환한다. [SIM_01_PREPARATION.md](SIM_01_PREPARATION.md)에 실행 명령, bounded PROFILE-02 절차, 미확정 계약과 최소 다음 행동을 기록한다.
+2026-09-20 초기 준비 기록: draft simulation schema/semantic validator/no-op, seed namespace, B0~B3/P 의미·인터페이스와 host KPI 계약 테스트를 구현했다. 당시에는 decoded gate 실패로 draft를 INCOMPLETE로만 반환했다. 이후 네 cell의 decoded gate는 통과했지만, 독립 holdout·서비스 모델·deadline/메모리 계약이 미동결이므로 현재도 INCOMPLETE다. 실제 scheduler나 frozen service-profile 구현 완료를 뜻하지 않는다. 초기 절차는 [SIM_01_PREPARATION.md](SIM_01_PREPARATION.md), 현재 근거와 최소 다음 행동은 [SERVICE_MODEL_FREEZE_20260920.md](SERVICE_MODEL_FREEZE_20260920.md)를 따른다.
 
 ## 10. 성공·축소·중단 판정
 

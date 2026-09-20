@@ -4,6 +4,8 @@
 
 상세 보고서와 모든 수치/명령/해시: `C:/Users/LG/Documents/D1Check_Decode_Resolution/service_model_freeze_20260920T100651Z/FINAL_REPORT.md`. 최종 bundle은 같은 디렉터리의 `service_model_v1/`이다. `model_bundle*` 디렉터리들은 구현 중 생성물을 보존한 것이며 최종 계약으로 사용하지 않는다.
 
+재개 확인(2026-09-20): 사용자 지정 `c507f40` 이후의 실제 HEAD `b6ae6a1`에서 기존 구현·산출물을 확인했다. 새 측정 없이 INCOMPLETE를 유지한다. 현재 HEAD에서 targeted47/전체 Python295건(293 PASS·기존 skip2), compileall·실제 schema·validator·no-op 및 Android/APK 불변을 확인했다. 후보/input hash와 acceptance는 변경하지 않았다. 재개 명령·시각·source hash·최종 Git 기록은 `C:/Users/LG/Documents/D1Check_Decode_Resolution/service_model_recheck_20260920T125231Z/FINAL_REPORT.md`에 있다.
+
 ## 모델과 독립성
 
 - 전체 평균, task/backend 평균, 초기 상태 분리, 전환 포함, co-run 상태 포함, session block empirical resampling의 6개 후보를 비교했다. 임시 선택은 `initial_state_mean`: cell별 cold 첫 호출 / 초기 직후 / warm 분리. 최종 승인 모델은 **없다**.

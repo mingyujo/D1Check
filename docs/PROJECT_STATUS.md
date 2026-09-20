@@ -1,9 +1,9 @@
 # D1Check 현재 상태
 
 - 갱신: 2026-09-20. 최종 **SIM-01_INCOMPLETE**. 현재 작업 `SERVICE-MODEL-FREEZE`의 후보 비교·검증/사전 기준·준비 입력은 구현했으나 독립 holdout과 제약 동결은 미완료다.
-- 브랜치 `feature/pre-simulation-ready-20260919`, 이번 시작 `c507f40` clean. 코드 checkpoint `a4460ea`, `80a1adf`. push/merge/rebase/master 전환 없음.
+- 브랜치 `feature/pre-simulation-ready-20260919`. 최초 분석 시작 `c507f40`, 이번 재개 시작은 후속 분석까지 커밋된 `b6ae6a1` clean이다. 코드 checkpoint `a4460ea`, `80a1adf`. push/merge/rebase/master 전환 없음.
 - 본 scheduling simulation·formal·정책 비교 미실행. 이번 새 실기기 session0. 기존31 session/233 profile 요청을 보존·재분석했다.
-- 최신 상세: `C:/Users/LG/Documents/D1Check_Decode_Resolution/service_model_freeze_20260920T100651Z/FINAL_REPORT.md`.
+- 최신 재개 검증: `C:/Users/LG/Documents/D1Check_Decode_Resolution/service_model_recheck_20260920T125231Z/FINAL_REPORT.md`. 분석 원본: `C:/Users/LG/Documents/D1Check_Decode_Resolution/service_model_freeze_20260920T100651Z/FINAL_REPORT.md`.
 - 저장소 요약: [SERVICE-MODEL-FREEZE](SERVICE_MODEL_FREEZE_20260920.md). 이전 [재개 결과](A24_RESUME_20260920.md), [decoded 수정](DECODE_RESOLUTION_20260920.md), 외부 기존 보고서는 그대로 보존한다.
 
 ## 모델·품질·capability
@@ -37,6 +37,7 @@
 
 ## 검증·보존
 
+- 재개 검증(2026-09-20 12:52 UTC 시작): `b6ae6a1` clean에서 targeted47/전체295건(293 PASS·기존 skip2), compileall·실제 schema·validator·no-op PASS. 모델/input hash 동일, Android source diff 없음·3개 APK SHA 불변. 새 Python/Android 변경 없이 문서의 재개 기준과 검증 연결만 갱신했다. 명령·시각·HEAD·source hash는 최신 외부 `receipts.json`/`audit.json` 참조.
 - 새 targeted47건 PASS(서비스 모델37 + 관련10), 전체 Python295건(293 PASS/기존 skip2), compileall·schema·validator·no-op·실제 재생성 결정론 PASS. 대상은 `80a1adf` 코드 + 문서 변경, 명령/시각/source hash는 외부 receipt에 있다.
 - 준비 input SHA `3840b437d8b2b8c704187b52f43f93e8c5c18aeade0a056ce743fad344bfdec6`, 후보 model SHA `300be49c35a191018ddb09479ba7c389ae6aeea3fcf39f3026b93dd16ba78f34`. 독립 승인/frozen hash가 아니다.
 - source closure981파일과 이전 hash audit278파일 PASS. 재사용/누수/stale/실행 여부 불명 receipt 누락/fake no-op/입력 drift 거부 테스트를 포함한다.
