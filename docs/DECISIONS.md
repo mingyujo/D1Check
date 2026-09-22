@@ -296,6 +296,15 @@
 - 기존coverage80.38%예측실패/consumedholdout/51session559요청/v4smoke/formal80원본은보존한다. 새READY는이전prediction모델의PASS전환이아니며coldP95/요청90%예측/다기기·다른thermal보장이아니다.
 - 다음은동일input/CRN/복수deadline을쓰는별도승인simulation단계이며새실기기재실행은없다.
 
+### 2026-09-22 — PC 계획의 입력 READY와 정책 READY 분리
+
+- 상태: 채택 — 사용자의 동결 A24 입력만 사용하는 PC 계획 확정 요청. 본 simulation·추가 실기기 금지.
+- 결정: 연구 질문·calibration 역할·선행연구와 비신규성을 [PC 계약](SIMULATION_PROTOCOL.md)과 [문헌 비교](RELATED_WORK_GAP.md)에 명시한다. 새 SP1 policy namespace, epsilon-constraint/lexicographic 구조, seed2026092201 및 부분 계약 hash를 사용한다. 기존 정책/telemetry/원본 의미를 바꾸지 않는다.
+- 확인: 고정 offset0·분류 urgent6/탐지 normal6 co-run과 CPU 교대 serial만 측정돼 있다. 요청 순서와 overlap을 바꾸는 서비스 모형이 없는데 전체block resampling만으로 동적 정책 성능을 계산할 수 있다고 가정하지 않는다.
+- 판정: SIMULATION_PLAN_INCOMPLETE. adaptive estimator·합법 action, 서비스 모형 지원, 실질효과/일반 허용 손실, workload·replication/drain, simulator version/hash는 null로 보존한다. 과거10%/2%p를 승인값으로 승격하지 않는다. 기존 SIM-01_READY는 입력 준비 판정으로 유효하다.
+- 동결: 계획/schema/validator·원본 hash/consumed registry·no-op과 문서. validator PASS는 연구 READY가 아니다. 새 원자료·새 simulation 결과 생성 없이 별도 외부 root에 저장한다.
+- 다음: SIM-PLAN-02-SUPPORT-DECISION에서 반사실적 모형의 가정과 기존 외삽 금지의 관계를 결정한다. 가정 미합의 시 고정 trace 기술 분석으로 연구 질문을 명시적으로 축소하는 대안을 제시하며 임의 변경하지 않는다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

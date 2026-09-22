@@ -2,7 +2,7 @@
 
 - 개정: 4.4 / 2026-09-18 / A24 주평가와 추가 Android 기기 고정정책 재현평가 분리
 - 기준 코드: `df8192aa61eebacf83df7a7815f0c60c8bbf4004`의 `master`. 이 개정은 문서 변경이며 새 모델·스케줄러 구현 또는 실기기 PASS가 아니다.
-- 현재 작업: `BOUNDED-EMPIRICAL-CALIBRATION` 완료, **SIM-01_READY** (제한된 descriptive resident-only 입력 준비). 정확30session/480calls·5pair·artifact/quality/memory/thermal·jointblock·bootstrap/LOSO/sensitivity/deadline/CRN/no-op 검증 및 hash동결. [결과](BOUNDED_EMPIRICAL_RESULTS_20260921.md). 본simulation/formal은미실행이며 별도승인 대상이다.
+- 현재 작업: `SIM-PLAN-01` PC 계획 동결 감사. **SIMULATION_PLAN_INCOMPLETE**: 동결 입력의 READY와 정책 평가계획 READY를 구분한다. [현재 계약](SIMULATION_PROTOCOL.md), [선행연구 비교](RELATED_WORK_GAP.md). 기존 30세션/480호출·5쌍 입력의 **SIM-01_READY**와 [실측 결과](BOUNDED_EMPIRICAL_RESULTS_20260921.md)는 그대로 유지한다. 본 simulation/formal·추가 실기기는 이번에 실행하지 않는다.
 - 현재 bounded simulation의 deadline은 사전 quantile/multiplier 규칙으로 계산한 공통 복수 engineering scenario다. 사용자 절대 SLA나 정책 우월성 기준을 승인한 것은 아니다. 이전 calibration_pending 기록은 역사적 근거로 보존한다.
 - 유지: A24 개발·주평가, 기존 80슬롯과 diagnostic v1/v2 원본, CALIB-01B PASS, 실패를 포함한 전체 도착 분모. 추가: 정책 동결 후 최소 한 대의 다른 Android 기기에서 축소 재현평가.
 - 전환: 단일 분류 모델은 기존 기준선으로 보존하고, 서로 다른 두 AI 작업의 요청 배정 문제를 새 주평가로 준비한다. 구체 모델과 마감시간은 아직 미확정이다.
@@ -147,7 +147,15 @@ B2는 같은 장치의 모든 합법적 task별 배정 후보(두 task·두 경�
 
 10월 8일까지 A24 기본 비교가 불가능하면 모델·NPU·강화학습을 추가하지 않는다. 추가 기기용 별도 기능을 만들지 않고 같은 runner와 host 도구의 이식성만 유지한다. A24 평가가 끝나기 전 추가 기기 결과로 정책을 튜닝하지 않는다. 남은 기간에는 동작하는 범위에서 결과와 제한을 정리한다. 역할은 사용근거·입력, Android·측정, 정책·분석, 통합·발표로 나누되 팀원 수에 맞춰 겸임하고 서로의 산출물을 교차 검토한다. AI가 제안한 설계·코드는 학생이 설명·검증할 수 있어야 한다.
 
-### 2026-09-21 bounded descriptive amendment (현재 적용)
+### 2026-09-22 PC 계획 감사 amendment (현재 적용)
+
+연구 질문은 A24 joint empirical 분포 아래 상태 기반 앱 요청 배정이 CPU-only·정적 정책보다 긴급 응답/deadline을 개선하면서 일반 완료율·makespan·throughput·메모리/열 손실을 사전 범위에 유지할 수 있는가다. 상충관계 자체는 비신규이며 현재 실측은 calibration이다. 기존 4.4 B0~B3/P는 보존하고 PC 계약은 별도 SP1 namespace를 사용한다.
+
+목적은 epsilon-constraint 후 사전적 urgent miss/P95 순위다. 현재 offset0·분류 urgent6/탐지 normal6·고정 순서 trace는 재정렬·staggered overlap·선택적 co-run의 반사실적 서비스 모형을 제공하지 않는다. 미측정 overlap/4runtime/dynamic reload 금지를 유지하며 FIFO/urgent CPU/정적/항상 co-run/적응형을 비교할 지원 모형, adaptive estimator, 실질효과·허용 손실, workload/반복/drain, simulator hash는 미해결이다. 임의 null 해제나 과거 10%/2%p 자동 채택은 금지한다.
+
+이번 master seed2026092201·정책과 계획의 부분 명세·원본 hash·consumed registry·host validator/no-op을 동결한다. 사용자 절대 SLA는 calibration_pending이고 기존 복수 engineering deadline의 전 후보를 보존한다. 현재 작업 완료는 audit/부분 계약 동결이며 사용자가 요청한 SIMULATION_PLAN_READY 달성은 아니다. 다음 ID는 SIM-PLAN-02-SUPPORT-DECISION: 새 측정 없이 반사실적 모형의 허용 가정/범위를 먼저 결정한다. 이후 정책 효과 실기기 확인·최소 추가 Android 한 대 재현이라는 전체 연구 계획은 남긴다.
+
+### 2026-09-21 bounded descriptive amendment (입력 범위 유지)
 
 사용자지시에따라 정확30세션계획을채택한다. 아래이전160/280설계는역사적기록이며실행하지않는다. Simulation v1은workload전setup·admit된resident runtime·관측dispatch/queue만허용하고dynamic unload/reload transition필수gate를제거한다. 정확cold populationP95·request90%PI·독립holdout80을요구하지않고, 실측cold/early/warm jointblock·complete5session/cell/5pair·quality/memory/thermal·관측요약/bootstrap/LOSO/sensitivity로제한한다. 성능보증을낮춰기존실패를통과시킨것이아니라주장범위를제한한새descriptive protocol이다. 이전holdout80.38%실패및원자료불변. 현재단계의추가기기일반화는주장하지않고기존연구전체의후속외부재현계획과구분한다.
 
