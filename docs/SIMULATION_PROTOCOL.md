@@ -1,5 +1,7 @@
 # PC 본 시뮬레이션 사전 계약
 
+> 후속: 사용자의 제한 모형 채택에 따라 현재 계약은 [SUPPORT_SIMULATION_PROTOCOL.md](SUPPORT_SIMULATION_PROTOCOL.md)다. 아래는 11d1e89 당시 부분 계약이며 새 판정을 대체하지 않는다.
+
 2026-09-22 / `pc-simulation-plan-v1` / 현재 작업 `SIM-PLAN-01` / **SIMULATION_PLAN_INCOMPLETE**.
 
 이 버전은 확정된 범위와 필수 미해결 항목을 재현 가능하게 동결한다. 본 실험 실행 가능한 READY 계약이 아니다. 실측 입력의 `SIM-01_READY` 판정은 유지한다. 기존 formal v1, diagnostic v2, calibration, modelProbe, Telemetry v4, 이전 실험 원본·보고서·hash는 변경하지 않는다.

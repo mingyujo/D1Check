@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "지원 한정 유한 배치 시뮬레이션 계획",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "status", "configuration", "configuration_sha256", "catalog_sha256", "scenarios", "static_mapping", "paired_keys", "replications", "crn", "seed_derivation", "execution_order", "bootstrap_draws", "simulation_executed"],
+  "properties": {
+    "protocol": {"const": "support-constrained-simulation-v1"},
+    "status": {"const": "SIMULATION_PLAN_READY"},
+    "configuration": {"type": "object", "required": ["version", "seed", "scope", "assumption", "actions", "policies", "precision"], "properties": {"version": {"const": "support-constrained-simulation-v1"}, "seed": {"const": 2026092202}}},
+    "configuration_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "catalog_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "scenarios": {"type": "array", "minItems": 54, "maxItems": 54},
+    "static_mapping": {"const": {"classification": "CPU", "detection": "CPU"}},
+    "paired_keys": {"type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": {"type": "string"}},
+    "replications": {"const": 5},
+    "crn": {"type": "string"},
+    "seed_derivation": {"type": "string"},
+    "execution_order": {"type": "array", "minItems": 7, "maxItems": 7, "uniqueItems": true},
+    "bootstrap_draws": {"const": 3125},
+    "simulation_executed": {"const": false}
+  }
+}

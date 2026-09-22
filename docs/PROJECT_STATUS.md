@@ -1,6 +1,16 @@
 # D1Check 현재 상태
 
-## 2026-09-22 PC 계획 동결 감사
+## 2026-09-22 지원 범위 한정 계획 — 현재 작업
+
+- `SIM-PLAN-02-SUPPORT`, 시작 `11d1e89`, 브랜치 `feature/pre-simulation-ready-20260919`. 사용자가 warm 교환가능성 가정·support-constrained 범위를 명시적으로 채택했다. 아래 SIM-PLAN-01의 INCOMPLETE는 이전 상태다.
+- 구현·[계약](SUPPORT_SIMULATION_PROTOCOL.md): 12개 offset0/6+6, thermal0/resident/non-preemptive, 측정된 전체 paired co-run과 warm CPU 재배열만 허용. 미지원 action/scenario는 OUT_OF_SUPPORT. STATIC=CPU FIFO alias, adaptive는 배치 시작 전 선택으로 제한한다.
+- 54deadline budget, 5pair 전수, seed2026092202, exact bootstrap3125·low/central/high·5LOSO. Pareto 주 결과와 epsilon0/0.5/1 sensitivity, 임의 허용손실 없음. 절대 SLA calibration_pending은 유지한다.
+- **SIMULATION_PLAN_READY**. 신규 synthetic17 PASS, 전체Python468=466 PASS+기존symlink권한skip2. compileall/diff-check·실제 raw validator·두root byte-identical·잘못된hash/schema/seed/path/replay/consumed거절·엔진/RNG/외부process/write 차단 dry-run PASS. 검증 명령·시각·HEAD+source hash는 외부 로그에 기록했다.
+- 원본1250파일+APK3 SHA 불변, Android production diff 없음. Gradle 반복 없음. 본 simulation/formal·ADB·실기기·push/PR/merge0. 절대 SLA·다기기·새 overlap은 READY 범위가 아니며 Band 원문 상세 external_verification_pending은 유지한다.
+- 근거: `C:/Users/LG/Documents/D1Check_Simulation_Plan/run_20260922_support_v1/FINAL_REPORT.md`, [동결 receipt](SUPPORT_SIMULATION_FREEZE_20260922.json). Freeze SHA `32968a7f66f58f4d1b74087d2dcfafd21c729ba20b8f6705bc9d3521f8b6d9bc`. 종료 HEAD·commit·clean은 외부 git_final.json에 기록한다.
+- 다음: 별도 승인·실행 프롬프트로 `SIM-RUN-01-SUPPORT`. 선택 정책의 A24 소규모 확인은 후속 `SIM-DEVICE-CONFIRM-01`이다.
+
+## 이전 2026-09-22 PC 계획 동결 감사
 
 - 현재 `SIM-PLAN-01` 감사·부분 계약 동결 완료. **SIMULATION_PLAN_INCOMPLETE**, 목표 READY는 미달성. 시작 `6654cb7`, 예상 브랜치·HEAD 일치 및 clean/index empty 확인. 기존 실측 입력의 SIM-01_READY는 유지한다.
 - 원본 재검증: 30세션/480호출/11,155event/550 admission/480 출력 동등성/cleanup/5pair PASS. 실패·retry·대체·추가0. 평균 co-run−CPU urgentP95 −2,838.110815ms, makespan +2,178.003769ms, throughput −0.879968req/s로 기존값 일치.

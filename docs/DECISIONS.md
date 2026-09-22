@@ -305,6 +305,15 @@
 - 동결: 계획/schema/validator·원본 hash/consumed registry·no-op과 문서. validator PASS는 연구 READY가 아니다. 새 원자료·새 simulation 결과 생성 없이 별도 외부 root에 저장한다.
 - 다음: SIM-PLAN-02-SUPPORT-DECISION에서 반사실적 모형의 가정과 기존 외삽 금지의 관계를 결정한다. 가정 미합의 시 고정 trace 기술 분석으로 연구 질문을 명시적으로 축소하는 대안을 제시하며 임의 변경하지 않는다.
 
+### 2026-09-22 — 사용자 승인 support-constrained 모델 채택
+
+- 상태: 채택. 최신 사용자 지시의 warm 교환가능성·허용 action·Pareto·epsilon 제한을 반영한다. 새 실측과 본 simulation은 금지한다.
+- 결정: A24 thermal0/resident/non-preemptive, 같은 task/backend/state joint tuple의 제한 가정으로 CPU urgent 재배열을 허용한다. 전체 paired co-run 외의 overlap/transition은 OUT_OF_SUPPORT. 기존 empirical/v4 계약을 수정하지 않고 새 simulator namespace에서 가정과 관측을 분리한다.
+- 최소 설계: 고정12요청/54budget/5pair 전수/seed2026092202. conditional MC 오차0이므로 임의 복제 수를 도입하지 않는다. 모집단 오차는 남으며 exact bootstrap3125·wholepair rank sensitivity·5LOSO deletion으로 기술한다.
+- 정책·평가: FIFO/urgent/static/always-corun/adaptive, STATIC은 FIFO alias. adaptive는 시작 전 기대값의 epsilon 제약 후 miss/P95/makespan 사전식 선택, epsilon0 primary와0.5/1 sensitivity. 주 결과 Pareto, 보편승자·실질가치 threshold 없음. 상세 알고리즘과 적용 한계는 SUPPORT_SIMULATION_PROTOCOL.md에 고정한다.
+- 대체: 이전 SIM-PLAN-01의 필수 null은 이 축소 계약에서 해결한다. 과거 부분 계획·hash·실패 모델은 보존한다. absolute user SLA calibration_pending은 복수 budget과 구분한다. 현재 교환가능성은 검증된 사실이 아니다.
+- 다음: 검증 후 checkpoint, 별도 실행 승인 전에는 본 simulation/기기 작업0. 실행 후 선택 정책의 소규모 A24 확인은 후속 단계다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목
