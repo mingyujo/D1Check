@@ -6,8 +6,9 @@
 - [새 계약·pilot](ARRIVAL_SCHEDULING_EXTENSION_20260923.md): 실제 분류/탐지 비동시 도착, CPU FIFO/긴급 우선/조건부 CPU-GPU(고정 분리 코드는 보조), 동일 4 resident runtime·CPU thread1·최대 동시2. 기존 v3/v4와 공식 inference timer는 변경하지 않음. 네 runtime 동시 상주의 A24 admission은 **미검증**.
 - pilot manifest `C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_plan_v2/pilot_plan.json` SHA `a3ba8ca0cf33c695d089b9ae548c851c8eea1adc6c9b8ca20900496f5746664e`: smoke1+paired18=19세션/130평가요청/152warmup, 전체 시도≤19·retry0. 원본 모델/이미지는 이전 검증 입력 경로에서 SHA 확인만 하고 재배포·커밋 안 함. 최종 새 APK SHA `1a8448abe1c78432870f1848676de61faefa83f64c9a6a3732d79f7a121f3612`, 첫 개발 draft v1 SHA `ace10ad4abb3f1f91a05e3639f39d005b3c615873e30555ba788f6b8399473d4` 미실행 보존, 기존 APK SHA `68e55aefdceb91e569e0d55ff0a18af0658163106589852325cb9ad5626fa62e` 별도 보관.
 - PC 검증(2026-09-23 KST, 시작 HEAD `f2f559c` + checkpoint 전 미커밋 소스, checkpoint `50fa967454d526011d5fa4f9ea91182b24a3ccf8`): `:benchmark-runner:compileModelProbeKotlin` PASS, `:benchmark-runner:testModelProbeUnitTest` PASS, 최종 v2 `:benchmark-runner:assembleModelProbe` PASS, 신규 Python unit3 PASS, compileall·diff-check PASS, 실제 v2 19 manifest 생성/dry-run PASS(ADB0·모델호출0), A24 read-only preflight 지문 일치. 빌드 첫 시도는 SDK 경로 미설정으로 실패했고 환경변수 설정 후 통과했다. 코드 빌드와 실기기 검증을 구분한다.
-- **판정:** 설계·PC 구현/빌드 완료, 실기기 smoke·pilot 미실행, 독립 평가·새 본 시뮬레이션 미실행. blocker는 신규 확장 pilot **19세션 예산 승인**과 A24 네 runtime admission/실제 GPU 로그 확인이다. 이전 실측 예산은 신규 확장에 전용하지 않는다.
-- 다음 행동(최대 3): (1) 19세션 pilot 예산 승인 후 첫 smoke gate와 최대18 paired session, (2) pilot paired 변동성으로 평가값·세션 수 동결안을 만들고 별도 평가 승인을 요청, (3) 새 본 시뮬레이션은 별도 실행 계획과 승인 후에만 수행.
+- **판정:** 설계·PC 구현/빌드 완료. 사용자가 2026-09-23 KST에 정확19세션·평가130·warmup152·총시도≤19·retry0 예산을 승인했다. 실행 직전 plan/APK hash·output 부재·dry-run을 재확인했으나 ADB inventory와 mDNS가 모두 비어 preflight에서 중단했다. 설치·Activity·실기기 요청 시작은 0이며 `pilot_run_v2`도 생성되지 않았다. 실기기 smoke·pilot, 독립 평가·새 본 시뮬레이션은 미실행이다.
+- 장애: `BLOCKED_DEVICE_CONNECTION`. A24가 다시 online이면 같은 frozen plan과 예산으로 추가 승인 없이 재개한다. 첫 smoke에서 네 runtime admission/실제 GPU 로그를 확인하고 실패하면 이후18세션을 시작하지 않는다.
+- 다음 행동(최대 3): (1) A24 ADB online 확인 후 고정 run 명령 재개, (2) 완료 시 read-only 분석과 paired 변동성 기반 평가값·세션 수 동결안 작성, (3) 독립 평가·새 본 시뮬레이션은 별도 승인 후 수행.
 
 ## 2026-09-22 지원 범위 한정 계획 — 현재 작업
 
