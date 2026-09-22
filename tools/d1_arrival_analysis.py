@@ -10,6 +10,13 @@ from pathlib import Path
 from tools import d1_arrival_plan as p
 
 
+CONTRASTS = (
+    ("CPU_FIFO", "CPU_URGENT"),
+    ("CPU_URGENT", "CONDITIONAL"),
+    ("CPU_FIFO", "CONDITIONAL"),
+)
+
+
 def nearest_p95(values):
     ordered = sorted(values)
     return ordered[math.ceil(0.95 * len(ordered)) - 1] if ordered else None
@@ -95,6 +102,72 @@ def gantt_svg(requests, title):
     return "".join(parts)
 
 
+def primary_kpi_svg(metrics):
+    rows = [m for m in metrics if m.get("kind") == "burst" and
+            m.get("urgent_task") == "classification"]
+    groups = {policy: [m for m in rows if m["policy"] == policy] for policy in p.POLICIES}
+    if any(not values for values in groups.values()):
+        return ""
+    panels = (("urgent P95 (ms)", "urgent_p95_ms"),
+              ("normal mean response (ms)", "normal_mean_response_ms"),
+              ("makespan (s)", "makespan_s"))
+    colors = {"CPU_FIFO": "#7570b3", "CPU_URGENT": "#d95f02", "CONDITIONAL": "#1b9e77"}
+    parts = ['<svg xmlns="http://www.w3.org/2000/svg" width="960" height="360">',
+             '<rect width="100%" height="100%" fill="white"/>',
+             '<text x="20" y="26" font-size="17">Primary classification-urgent burst: session means</text>']
+    for panel_index, (title, key) in enumerate(panels):
+        x0 = 25 + panel_index * 310
+        values = {policy: sum(row[key] for row in group) / len(group)
+                  for policy, group in groups.items()}
+        maximum = max(values.values()) or 1
+        parts.append(f'<text x="{x0}" y="57" font-size="14">{title}</text>')
+        for index, policy in enumerate(p.POLICIES):
+            value = values[policy]
+            height = 210 * value / maximum
+            x = x0 + 15 + index * 90
+            y = 290 - height
+            parts.append(f'<rect x="{x}" y="{y:.2f}" width="58" height="{height:.2f}" fill="{colors[policy]}"/>')
+            parts.append(f'<text x="{x + 29}" y="{y - 6:.2f}" text-anchor="middle" font-size="12">{value:.1f}</text>')
+            parts.append(f'<text x="{x + 29}" y="310" text-anchor="middle" font-size="10">{policy}</text>')
+    parts.append('</svg>')
+    return "".join(parts)
+
+
+def paired_metrics(metrics):
+    paired = []
+    pair_ids = sorted({m.get("pair_id") for m in metrics
+                       if m.get("pair_id") and m.get("kind") != "smoke"})
+    for pair_id in pair_ids:
+        group = {m["policy"]: m for m in metrics if m.get("pair_id") == pair_id}
+        for baseline, policy in CONTRASTS:
+            contrast = f"{policy}-{baseline}"
+            if (baseline not in group or policy not in group or
+                    group[baseline]["status"] != "completed" or
+                    group[policy]["status"] != "completed"):
+                paired.append(dict(pair_id=pair_id, baseline=baseline, policy=policy,
+                                   contrast=contrast, status="incomplete_pair"))
+                continue
+            base, current = group[baseline], group[policy]
+            paired.append(dict(
+                pair_id=pair_id, baseline=baseline, policy=policy, contrast=contrast,
+                kind=current["kind"], urgent_task=current["urgent_task"],
+                replicate=current["replicate"], status="paired",
+                urgent_p95_delta_ms=current["urgent_p95_ms"] - base["urgent_p95_ms"],
+                urgent_miss_delta=(current["urgent_deadline_miss_rate"] -
+                                   base["urgent_deadline_miss_rate"]),
+                normal_mean_response_delta_ms=(current["normal_mean_response_ms"] -
+                                               base["normal_mean_response_ms"]),
+                normal_p95_delta_ms=current["normal_p95_ms"] - base["normal_p95_ms"],
+                normal_on_time_delta=current["normal_on_time_rate"] - base["normal_on_time_rate"],
+                completion_rate_delta=current["completion_rate"] - base["completion_rate"],
+                makespan_delta_s=current["makespan_s"] - base["makespan_s"],
+                throughput_delta_per_s=(current["throughput_per_s"] -
+                                        base["throughput_per_s"]),
+                policy_compute_total_delta_ms=(current["policy_compute_total_ms"] -
+                                               base["policy_compute_total_ms"])))
+    return paired
+
+
 def analyze(plan_file, results, output):
     plan_file, results, output = Path(plan_file), Path(results), Path(output)
     plan = p.read(plan_file)
@@ -112,26 +185,13 @@ def analyze(plan_file, results, output):
                 (output / f"gantt_{entry['policy']}.svg").write_text(
                     gantt_svg(p.read(path), entry["policy"]), encoding="utf-8")
     (output / "session_kpi.json").write_bytes(p.canonical(metrics))
+    (output / "primary_kpi_comparison.svg").write_text(primary_kpi_svg(metrics), encoding="utf-8")
     with (output / "session_kpi.csv").open("w", newline="", encoding="utf-8") as stream:
         fields = [key for key in metrics[0] if key != "terminal_counts"]
         writer = csv.DictWriter(stream, fieldnames=fields, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(metrics)
-    paired = []
-    for pair_id in sorted({m.get("pair_id") for m in metrics if m.get("pair_id") and m.get("kind") != "smoke"}):
-        group = {m["policy"]: m for m in metrics if m.get("pair_id") == pair_id}
-        if set(group) != set(p.POLICIES) or any(m["status"] != "completed" for m in group.values()):
-            paired.append(dict(pair_id=pair_id, status="incomplete_pair"))
-            continue
-        base = group["CPU_FIFO"]
-        for policy in ("CPU_URGENT", "CONDITIONAL"):
-            current = group[policy]
-            paired.append(dict(pair_id=pair_id, policy=policy, status="paired",
-                               urgent_p95_delta_ms=current["urgent_p95_ms"] - base["urgent_p95_ms"],
-                               urgent_miss_delta=current["urgent_deadline_miss_rate"] - base["urgent_deadline_miss_rate"],
-                               normal_on_time_delta=current["normal_on_time_rate"] - base["normal_on_time_rate"],
-                               makespan_delta_s=current["makespan_s"] - base["makespan_s"],
-                               throughput_delta_per_s=current["throughput_per_s"] - base["throughput_per_s"]))
+    paired = paired_metrics(metrics)
     (output / "paired_kpi.json").write_bytes(p.canonical(paired))
     return dict(sessions=len(metrics), complete=sum(m["status"] == "completed" for m in metrics),
                 paired_comparisons=sum(x["status"] == "paired" for x in paired))

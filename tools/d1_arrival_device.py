@@ -76,11 +76,11 @@ def recover(device, sid, folder):
 def run(plan_file, apk, adb, serial, output, approved_cap, expected_plan_sha256):
     plan_file, apk, output = Path(plan_file), Path(apk), Path(output)
     if p.digest(plan_file) != expected_plan_sha256:
-        raise RuntimeError("frozen pilot plan SHA-256 mismatch")
+        raise RuntimeError("frozen arrival plan SHA-256 mismatch")
     plan = p.read(plan_file)
     p.validate(plan, plan_file.parent)
-    if approved_cap != 19 or plan["session_cap"] != approved_cap:
-        raise RuntimeError("the exact 19-session pilot budget must be approved before device execution")
+    if plan["session_cap"] != approved_cap:
+        raise RuntimeError("approved session cap does not match the frozen plan")
     if p.digest(apk) != plan["apk_sha256"]:
         raise RuntimeError("APK changed after plan freeze")
     device = Device(adb, serial)

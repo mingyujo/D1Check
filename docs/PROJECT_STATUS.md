@@ -2,13 +2,14 @@
 
 ## 2026-09-23 비동시 도착 확장 — 현재 작업
 
-- `ARRIVAL-EXT-01`, 시작 HEAD `f2f559c03cd4146818dda232bf548d26afbe2af2` clean, 별도 브랜치 `feature/arrival-scheduling-20260923`. 기존 `SIMULATION_PLAN_READY`/freeze·30세션 원본·formal v1/v2는 보존. 이전 support 보고서는 본 simulation 실행 0을 기록하며 새 본 실행 결과는 확인되지 않았다.
-- [새 계약·pilot](ARRIVAL_SCHEDULING_EXTENSION_20260923.md): 실제 분류/탐지 비동시 도착, CPU FIFO/긴급 우선/조건부 CPU-GPU(고정 분리 코드는 보조), 동일 4 resident runtime·CPU thread1·최대 동시2. 기존 v3/v4와 공식 inference timer는 변경하지 않음. 네 runtime 동시 상주의 A24 admission은 **미검증**.
-- pilot manifest `C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_plan_v2/pilot_plan.json` SHA `a3ba8ca0cf33c695d089b9ae548c851c8eea1adc6c9b8ca20900496f5746664e`: smoke1+paired18=19세션/130평가요청/152warmup, 전체 시도≤19·retry0. 원본 모델/이미지는 이전 검증 입력 경로에서 SHA 확인만 하고 재배포·커밋 안 함. 최종 새 APK SHA `1a8448abe1c78432870f1848676de61faefa83f64c9a6a3732d79f7a121f3612`, 첫 개발 draft v1 SHA `ace10ad4abb3f1f91a05e3639f39d005b3c615873e30555ba788f6b8399473d4` 미실행 보존, 기존 APK SHA `68e55aefdceb91e569e0d55ff0a18af0658163106589852325cb9ad5626fa62e` 별도 보관.
-- PC 검증(2026-09-23 KST, 시작 HEAD `f2f559c` + checkpoint 전 미커밋 소스, checkpoint `50fa967454d526011d5fa4f9ea91182b24a3ccf8`): `:benchmark-runner:compileModelProbeKotlin` PASS, `:benchmark-runner:testModelProbeUnitTest` PASS, 최종 v2 `:benchmark-runner:assembleModelProbe` PASS, 신규 Python unit3 PASS, compileall·diff-check PASS, 실제 v2 19 manifest 생성/dry-run PASS(ADB0·모델호출0), A24 read-only preflight 지문 일치. 빌드 첫 시도는 SDK 경로 미설정으로 실패했고 환경변수 설정 후 통과했다. 코드 빌드와 실기기 검증을 구분한다.
-- **판정:** 설계·PC 구현/빌드 완료. 사용자가 2026-09-23 KST에 정확19세션·평가130·warmup152·총시도≤19·retry0 예산을 승인했다. 실행 직전 plan/APK hash·output 부재·dry-run을 재확인했으나 ADB inventory와 mDNS가 모두 비어 preflight에서 중단했다. 설치·Activity·실기기 요청 시작은 0이며 `pilot_run_v2`도 생성되지 않았다. 실기기 smoke·pilot, 독립 평가·새 본 시뮬레이션은 미실행이다.
-- 장애: `BLOCKED_DEVICE_CONNECTION`. A24가 다시 online이면 같은 frozen plan과 예산으로 추가 승인 없이 재개한다. 첫 smoke에서 네 runtime admission/실제 GPU 로그를 확인하고 실패하면 이후18세션을 시작하지 않는다.
-- 다음 행동(최대 3): (1) A24 ADB online 확인 후 고정 run 명령 재개, (2) 완료 시 read-only 분석과 paired 변동성 기반 평가값·세션 수 동결안 작성, (3) 독립 평가·새 본 시뮬레이션은 별도 승인 후 수행.
+- `ARRIVAL-EXT-01`, 시작 HEAD `f2f559c03cd4146818dda232bf548d26afbe2af2`, 브랜치 `feature/arrival-scheduling-20260923`. 기존 `SIMULATION_PLAN_READY`/freeze·30세션 원본·formal v1/v2·과거 APK는 변경하지 않았다.
+- [계약](ARRIVAL_SCHEDULING_EXTENSION_20260923.md)의 설계·최소 구현·PC 검증과 **A24 개발용 pilot을 완료**했다. 독립 평가와 새 본 시뮬레이션은 미실행이다.
+- 고정 pilot plan SHA `a3ba8ca0cf33c695d089b9ae548c851c8eea1adc6c9b8ca20900496f5746664e`, APK SHA `1a8448abe1c78432870f1848676de61faefa83f64c9a6a3732d79f7a121f3612`. `SM-A245N`/고정 fingerprint 확인 후 2026-09-23 KST 02:33~03:17, 19/19세션·평가130/130·warmup152를 실행했다. 총 시도19, retry0, 오류0; 성공130, 실패·거절·만료·미완료·늦은 성공0이다.
+- gate: 최대 arrival lag 5.252ms(<100ms), 모든 시작·종료 및 앱 시계열 thermal status0, paired 시작온도 최대 차0.7°C, memory admission225/225 admit, sampled peak PSS 최대437.6MiB. 전 세션 GPU 2 instance `verified_full`, cleanup 완료, 종료 후 앱 프로세스 부재를 확인했다. PSS는 이 workload의 관측값이지 일반 안전 상한이 아니다.
+- 주 classification-urgent burst 3 paired block: `CPU_URGENT−CPU_FIFO` urgent P95 -1217.5±15.8ms, normal 평균응답 +104.1±5.4ms, makespan +0.010s. `CONDITIONAL−CPU_URGENT` urgent P95 -11.2±6.7ms, normal 평균응답 -630.4±27.9ms, makespan -1.245s. deadline 위반0·normal on-time100%라 2초/8초 scenario는 정책 구분력이 없었다. pilot은 개발·변동성 자료이며 우수성 근거가 아니다.
+- 원시 결과 `C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_run_v2`, read-only 분석·간트·KPI SVG·보고서 `C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_analysis_v3/FINAL_REPORT.md`. 원시470파일의 별도 hash inventory를 보존했다.
+- 독립 평가 **제안(미승인)**: 주 burst6+역할반전1+low1+queue1=9 paired block/27세션/198평가요청/216warmup/retry0, 예상65분·예약120분. 제안 plan `C:/Users/LG/Documents/D1Check_Arrival_Extension/independent_evaluation_plan_v1_proposal/evaluation_plan.json`, SHA `9e826188a25ecc9ca33404995cc1e45238f00f539fbb3c41eabfcdb8295cf3c3`; dry-run PASS, device 실행0.
+- 다음 행동(최대 3): (1) 최소효과·normal 손실·2초/8초 scenario 유지와 27세션 예산을 한 번에 승인/수정, (2) 승인 시 독립 평가 실행·동결 분석, (3) 그 결과와 별도 예측을 비교할 확장 시뮬레이션 계획은 별도 승인 후 실행.
 
 ## 2026-09-22 지원 범위 한정 계획 — 현재 작업
 

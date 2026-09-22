@@ -2,7 +2,7 @@
 
 - 개정: 4.4 / 2026-09-18 / A24 주평가와 추가 Android 기기 고정정책 재현평가 분리
 - 기준 코드: `df8192aa61eebacf83df7a7815f0c60c8bbf4004`의 `master`. 이 개정은 문서 변경이며 새 모델·스케줄러 구현 또는 실기기 PASS가 아니다.
-- 현재 작업: `ARRIVAL-EXT-01` — 기존 support-constrained 계획 동결을 보존하고, 별도 [비동시 도착 앱 내부 스케줄링 계약](ARRIVAL_SCHEDULING_EXTENSION_20260923.md)의 개발용 실측 경로를 준비한다. 이전 `SIM-PLAN-02-SUPPORT`는 [동결 계약](SUPPORT_SIMULATION_PROTOCOL.md)과 receipt `SUPPORT_SIMULATION_FREEZE_20260922.json`에서 `SIMULATION_PLAN_READY` 상태를 유지한다. 새 확장의 실기기 smoke·pilot은 예산 승인 전 미실행이며 독립 평가·새 본 simulation도 미실행이다.
+- 현재 작업: `ARRIVAL-EXT-01` — 기존 support-constrained 계획 동결을 보존하고, 별도 [비동시 도착 앱 내부 스케줄링 계약](ARRIVAL_SCHEDULING_EXTENSION_20260923.md)의 개발용 실측 경로를 평가한다. 이전 `SIM-PLAN-02-SUPPORT`는 [동결 계약](SUPPORT_SIMULATION_PROTOCOL.md)과 receipt `SUPPORT_SIMULATION_FREEZE_20260922.json`에서 `SIMULATION_PLAN_READY` 상태를 유지한다. 새 확장의 A24 smoke·개발 pilot 19세션은 완료됐고 독립 평가·새 본 simulation은 미실행이다.
 - 현재 bounded simulation의 deadline은 사전 quantile/multiplier 규칙으로 계산한 공통 복수 engineering scenario다. 사용자 절대 SLA나 정책 우월성 기준을 승인한 것은 아니다. 이전 calibration_pending 기록은 역사적 근거로 보존한다.
 - 유지: A24 개발·주평가, 기존 80슬롯과 diagnostic v1/v2 원본, CALIB-01B PASS, 실패를 포함한 전체 도착 분모. 추가: 정책 동결 후 최소 한 대의 다른 Android 기기에서 축소 재현평가.
 - 전환: 단일 분류 모델은 기존 기준선으로 보존하고, 서로 다른 두 AI 작업의 요청 배정 문제를 새 주평가로 준비한다. 구체 모델과 마감시간은 아직 미확정이다.
@@ -10,7 +10,7 @@
 
 ## 현재 PC 단계의 명시적 축소 범위
 
-2026-09-23 추가 작업은 위 2026-09-22 support-constrained PC 계약의 결과·가정을 바꾸지 않는다. 새 protocol `arrival-scheduler-v1`은 A24에서 독립 도착·실제 두 모델·resident runtime·비선점 queue 배정의 실측 확장이다. 개발 pilot 최대19세션을 먼저 준비하고, pilot 분산으로 독립 평가 반복을 정한 뒤 평가·새 본 시뮬레이션을 별도 승인받는다. 새 실측 이전에는 비동시 도착에서의 정책 효과를 주장하지 않는다.
+2026-09-23 추가 작업은 위 2026-09-22 support-constrained PC 계약의 결과·가정을 바꾸지 않는다. 새 protocol `arrival-scheduler-v1`은 A24에서 독립 도착·실제 두 모델·resident runtime·비선점 queue 배정의 실측 확장이다. 개발 pilot 19세션을 완료했고 paired 분산과 순서 균형으로 독립 평가 27세션 제안 plan을 만들었다. 평가·새 본 시뮬레이션은 별도 승인받는다. pilot만으로 정책 우월성을 주장하지 않는다.
 
 2026-09-22 사용자 지시를 채택했다. 아래 장기 개정4.4의 다중 도착률·등급 반전·추가 기기 목표는 현재 PC 계약의 완료 조건이 아니다. 현재 모델은 구현·gate를 통과한 exact 분류/탐지이며 A24 thermal0/resident/non-preemptive, warm 교환가능성 가정과 측정된 전체 co-run만 허용한다. 12개 offset0·분류 urgent6/탐지 normal6 배치와 54개 복수 deadline budget, 5paired atom 전수 평가로 제한한다. CPU FIFO/urgent/정적/항상 허용 co-run/시작 전 adaptive를 비교하며 STATIC=CPU FIFO alias를 숨기지 않는다.
 

@@ -1,10 +1,10 @@
 # 비동시 도착 앱 내부 스케줄링 확장
 
 - 작업 ID: `ARRIVAL-EXT-01`, protocol `arrival-scheduler-v1`, 개발 pilot `arrival-development-pilot-v1`.
-- 2026-09-23 기준: 설계·PC 구현·빌드 검증 단계. A24 smoke·pilot, 독립 평가, 새 본 시뮬레이션 결과는 아직 없다.
+- 2026-09-23 기준: 설계·PC 구현·빌드 검증과 A24 smoke·개발용 pilot 완료. 독립 평가와 새 본 시뮬레이션은 아직 실행하지 않았다.
 - 기준 HEAD `f2f559c03cd4146818dda232bf548d26afbe2af2`, 당시 작업 트리 clean, 새 브랜치 `feature/arrival-scheduling-20260923`.
 - 기존 `support-constrained-simulation-v1`의 `SIMULATION_PLAN_READY`와 동결 receipt `32968a7f66f58f4d1b74087d2dcfafd21c729ba20b8f6705bc9d3521f8b6d9bc`를 변경하지 않는다. 기존 PC 결과는 고정 offset 0의 제한 모형이며 이번 도착 실험의 결과가 아니다. 이전 `C:/Users/LG/Documents/D1Check_Simulation_Plan/run_20260922_support_v1/FINAL_REPORT.md`에는 본 시뮬레이션 실행 0으로 기록되어 있고 현재 별도 본 실행 산출물은 확인되지 않았다.
-- 실제 pilot 계획: `C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_plan_v2/pilot_plan.json`, SHA-256 `a3ba8ca0cf33c695d089b9ae548c851c8eea1adc6c9b8ca20900496f5746664e`. 새 APK `benchmark-runner-modelProbe-arrival-v2.apk` SHA-256 `1a8448abe1c78432870f1848676de61faefa83f64c9a6a3732d79f7a121f3612`; 설치·실행 전 상태다. 첫 v1 APK/plan은 미실행 개발 draft로 별도 보관하고 v2 표본과 합치지 않는다.
+- 실제 pilot 계획: `C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_plan_v2/pilot_plan.json`, SHA-256 `a3ba8ca0cf33c695d089b9ae548c851c8eea1adc6c9b8ca20900496f5746664e`. 새 APK `benchmark-runner-modelProbe-arrival-v2.apk` SHA-256 `1a8448abe1c78432870f1848676de61faefa83f64c9a6a3732d79f7a121f3612`; 고정 pilot에서만 설치·실행했다. 첫 v1 APK/plan은 미실행 개발 draft로 별도 보관하고 v2 표본과 합치지 않는다.
 
 ## 연구 질문과 증거 경계
 
@@ -41,6 +41,18 @@
 
 앱 데이터 삭제·패키지 제거는 계획에 없다. 새 APK는 기존 APK SHA `68e55aefdceb91e569e0d55ff0a18af0658163106589852325cb9ad5626fa62e`를 `C:/Users/LG/Documents/D1Check_Arrival_Extension/legacy_apk/benchmark-runner-modelProbe-68e55aefdceb.apk`에 보관한 후 별도 이름으로 고정한다. 설치는 `adb install -r`이며 앱 데이터 유지가 불가능하다는 사실이 발견되면 자동 진행하지 않는다. 기기 출력과 실패·시도 ledger는 새 `arrival-scheduler-v1` 경로에만 둔다. 연결 해제 시 기존 attempt와 기기 출력부터 회수하고 같은 session ID를 재실행하지 않는다.
 
+## A24 개발용 pilot 결과
+
+고정 plan/APK hash와 `SM-A245N` fingerprint를 확인하고 2026-09-23 KST 02:33~03:17에 19/19세션을 실행했다. 평가130/130건과 warmup152건, 총시도19/retry0이며 세션 오류와 실패·거절·만료·미완료·늦은 성공은 모두 0이다. 최대 arrival lag 5.252ms, thermal status 전 구간0, paired 시작온도 최대차0.7°C, memory admission225/225 admit, sampled peak PSS 최대437.6MiB였다. 모든 세션에서 GPU 2 instance full delegation과 cleanup을 검증했고 종료 후 앱 프로세스 부재를 확인했다.
+
+주 classification-urgent burst 3블록에서 CPU 긴급 우선은 FIFO 대비 urgent P95를 `-1217.5±15.8ms` 줄이는 대신 normal 평균 응답을 `+104.1±5.4ms` 늘렸다. 조건부 정책은 CPU 긴급 우선 대비 urgent P95 `-11.2±6.7ms`, normal 평균 응답 `-630.4±27.9ms`, makespan `-1.245±0.024s`였다. 주 조건의 GPU 배정은 normal 탐지 7건이고 urgent 분류는 CPU였으므로 큰 urgent 개선은 우선순위 효과, 일반 지연·makespan 개선은 GPU 보조 병행 효과로 해석한다. 모든 deadline 지표는 포화(urgent miss0%, normal on-time100%)여서 정책 구분 근거가 아니다.
+
+상세 원시 경로는 `C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_run_v2`, 분석·간트·KPI SVG·hash inventory·보고서는 `C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_analysis_v3/FINAL_REPORT.md`다. 이는 기능과 paired 변동성 개발 자료이며 독립 평가·우수성·다른 기기 일반화의 증거가 아니다.
+
+pilot SD와 종전 10% 참고 최소효과를 계획식에 적용하면 계산 반복 수는 두 대비 모두 1이어서 계약 하한 5가 지배한다. 정책 순서 균형을 위해 주 burst 6블록과 보조 3블록, 총9 paired block/27세션을 권장한다. 제안 plan은 `C:/Users/LG/Documents/D1Check_Arrival_Extension/independent_evaluation_plan_v1_proposal/evaluation_plan.json`, SHA-256 `9e826188a25ecc9ca33404995cc1e45238f00f539fbb3c41eabfcdb8295cf3c3`, 평가198/warmup216/retry0, 예상65분·예약120분이다. 상태는 `proposed_not_approved`이고 실행하지 않았다.
+
+후속 simulation 검증은 pilot만 개발 입력으로 사용하고 독립 평가 원시 결과를 열기 전에 평가 9블록의 요청별 시간·정책 순위·paired KPI 차이 예측을 별도 hash로 동결한다. 실측 후 개별 시간 오차와 함께 정책 순위 일치 여부, `CPU_URGENT−CPU_FIFO` 및 `CONDITIONAL−CPU_URGENT` paired 개선량 오차를 보고한다. 독립 평가를 simulator 재보정에 사용하지 않는다. 이 simulation 생성·실행도 별도 승인 대상이다.
+
 ## 분석과 후속 독립 평가
 
 pilot 보고: urgent 예정 도착 기준 완료 P95(nearest rank)와 전체 urgent 도착 기준 위반율, normal 완료 평균 응답과 전체 normal 도착 기준 기한 내 완료율, 전체 완료율·makespan·throughput, arrival lag, 정책 계산비용, terminal 수, sampled thermal/memory. n=2 긴급/세션 P95는 사실상 최댓값에 가깝고 모집단 tail의 안정적 추정이 아니다. burst의 독립 대응 block은 3개뿐이므로 pilot은 기능·변동성 추정이며 우수성 판정 자료가 아니다. 누락/실패 세션을 숨기지 않고 incomplete pair로 보존한다. 간트·KPI 그래프는 원자료 read-only 후처리로 생성한다.
@@ -61,5 +73,9 @@ python -B -m tools.d1_arrival_device preflight --plan "C:/Users/LG/Documents/D1C
 
 ```powershell
 python -B -m tools.d1_arrival_device run --plan "C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_plan_v2/pilot_plan.json" --expected-plan-sha256 a3ba8ca0cf33c695d089b9ae548c851c8eea1adc6c9b8ca20900496f5746664e --apk "C:/Users/LG/Documents/D1Check_Arrival_Extension/new_apk/benchmark-runner-modelProbe-arrival-v2.apk" --adb "C:/Users/LG/AppData/Local/Android/Sdk/platform-tools/adb.exe" --output "C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_run_v2" --approved-cap 19
-python -B -m tools.d1_arrival_analysis --plan "C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_plan_v2/pilot_plan.json" --results "C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_run_v2" --output "C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_analysis_v2"
+python -B -m tools.d1_arrival_analysis --plan "C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_plan_v2/pilot_plan.json" --results "C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_run_v2" --output "C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_analysis_reproduction"
 ```
+
+## 현재 재개 경계
+
+완료된 `pilot_run_v2`에 run 명령을 다시 사용하지 않는다. read-only 확인은 `python -B -m tools.d1_arrival_plan dry-run --plan "C:/Users/LG/Documents/D1Check_Arrival_Extension/independent_evaluation_plan_v1_proposal/evaluation_plan.json"`로 재개한다. 독립 평가 run 명령은 외부 최종 보고서에 고정했지만 27세션 예산과 판정값 별도 승인 전 실행하지 않는다.

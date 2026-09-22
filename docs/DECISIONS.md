@@ -323,6 +323,15 @@
 - 미확정: UX SLA, 최소 의미 효과·일반 허용손실·독립 평가 최대 예산. 개발 결과를 본 뒤 과거 10%/2%p 참고값을 자동 승인값으로 만들지 않는다.
 - 영향을 받는 범위: 새 modelProbe Activity·host 계획/실행/분석 도구와 PLAN/STATUS. formal v1/v2, task-profile-v3/v4, support-constrained freeze, 과거 APK/원본은 변경하지 않는다.
 
+### 2026-09-23 — ARRIVAL-EXT-01 개발 pilot 완료와 독립 평가 제안
+
+- 상태: **pilot 증거 채택 / 독립 평가 제안 미승인**.
+- 실행: 고정 SHA plan/APK로 A24 19/19세션·평가130·warmup152, 총시도19/retry0. 오류·실패·거절·만료·미완료·늦은 성공0, arrival/thermal/paired온도/memory/GPU delegation/cleanup gate 통과.
+- 관측: 주 3 paired block에서 `CPU_URGENT−CPU_FIFO` urgent P95 `-1217.5±15.8ms`, normal 평균응답 `+104.1±5.4ms`; `CONDITIONAL−CPU_URGENT` urgent P95 `-11.2±6.7ms`, normal 평균응답 `-630.4±27.9ms`, makespan `-1.245±0.024s`. 개발용 소표본으로 우수성을 선언하지 않는다.
+- 제안: 순서 균형 주6블록+보조3블록, 27세션/198평가/216warmup/retry0, 예상65분·예약120분. 종전 참고값인 urgent P95 10% 최소효과, normal 평균응답 10% 손실 및 on-time·완료율 2%p 손실을 결과 전 동결하는 안이다. 2초/8초 deadline은 UX SLA가 아닌 설명 지표로 유지한다.
+- 근거: `C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_analysis_v3/FINAL_REPORT.md`; 제안 plan SHA `9e826188a25ecc9ca33404995cc1e45238f00f539fbb3c41eabfcdb8295cf3c3`.
+- 영향: 기존 formal v1/v2, support-constrained simulation freeze와 과거 원본·APK를 변경하지 않는다. 독립 평가·새 본 시뮬레이션은 별도 승인 전 실행하지 않는다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

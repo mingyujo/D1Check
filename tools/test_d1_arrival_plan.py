@@ -22,6 +22,14 @@ class ArrivalPlanTest(unittest.TestCase):
         self.assertEqual([x[2] for x in forward], [x[2] for x in reversed_role])
         self.assertNotEqual([x[1] for x in forward], [x[1] for x in reversed_role])
 
+    def test_evaluation_has_six_primary_and_three_supporting_blocks(self):
+        recipes = p.evaluation_recipes()
+        self.assertEqual(len(recipes), 9)
+        self.assertEqual(recipes[:6], [("burst", "classification", i) for i in range(6)])
+        self.assertEqual(recipes[6:], [("burst", "detection", 0),
+                                      ("low", "classification", 0),
+                                      ("queue", "classification", 0)])
+
 
 if __name__ == "__main__":
     unittest.main()
