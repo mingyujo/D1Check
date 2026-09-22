@@ -3,7 +3,8 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from tools.d1_arrival_analysis import paired_metrics, primary_kpi_svg, session_metrics
+from tools.d1_arrival_analysis import (evaluation_summary, paired_metrics, primary_kpi_svg,
+                                       session_metrics)
 
 
 class ArrivalAnalysisTest(unittest.TestCase):
@@ -62,6 +63,27 @@ class ArrivalAnalysisTest(unittest.TestCase):
         svg = primary_kpi_svg(rows)
         self.assertTrue(svg.startswith("<svg"))
         self.assertTrue(all(policy in svg for policy in ("CPU_FIFO", "CPU_URGENT", "CONDITIONAL")))
+
+    def test_evaluation_summary_applies_frozen_minimum_effect(self):
+        metrics = []
+        for block in range(6):
+            for policy, urgent, normal, makespan in (
+                    ("CPU_FIFO", 1000, 500, 4.0),
+                    ("CPU_URGENT", 400, 525, 4.0),
+                    ("CONDITIONAL", 380, 350, 3.0)):
+                metrics.append(dict(pair_id=f"p{block}", kind="burst",
+                                    urgent_task="classification", replicate=block,
+                                    policy=policy, status="completed", urgent_p95_ms=urgent,
+                                    urgent_deadline_miss_rate=0.0,
+                                    normal_mean_response_ms=normal, normal_p95_ms=normal + 10,
+                                    normal_on_time_rate=1.0, completion_rate=1.0,
+                                    makespan_s=makespan, throughput_per_s=8 / makespan,
+                                    policy_compute_total_ms=5.0))
+        paired = paired_metrics(metrics)
+        result = evaluation_summary(metrics, paired)
+        self.assertFalse(result["frozen_decision"]["conditional_urgent_minimum_effect_pass"])
+        self.assertTrue(result["frozen_decision"]["conditional_normal_loss_pass"])
+        self.assertTrue(result["frozen_decision"]["priority_urgent_minimum_effect_pass"])
 
 
 if __name__ == "__main__":

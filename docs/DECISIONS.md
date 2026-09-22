@@ -332,6 +332,16 @@
 - 근거: `C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_analysis_v3/FINAL_REPORT.md`; 제안 plan SHA `9e826188a25ecc9ca33404995cc1e45238f00f539fbb3c41eabfcdb8295cf3c3`.
 - 영향: 기존 formal v1/v2, support-constrained simulation freeze와 과거 원본·APK를 변경하지 않는다. 독립 평가·새 본 시뮬레이션은 별도 승인 전 실행하지 않는다.
 
+### 2026-09-23 — ARRIVAL-EXT-01 독립 평가 완료와 동결 판정 유지
+
+- 상태: 채택. 사용자가 정확27세션·평가198·warmup216·retry/대체/추가0 예산과 사전 gate를 승인했다.
+- 실행: plan SHA `9e826188a25ecc9ca33404995cc1e45238f00f539fbb3c41eabfcdb8295cf3c3`, 고정 APK SHA `1a8448abe1c78432870f1848676de61faefa83f64c9a6a3732d79f7a121f3612`, 동일 A24 fingerprint로 27/27세션을 완료했다. 성공198, 실패·거절·만료·미완료·늦은 성공0, retry·대체·추가0이다.
+- 결정: `CPU_URGENT−CPU_FIFO`는 urgent 10% 최소효과와 normal 10% 손실 기준을 통과했다. `CONDITIONAL−CPU_URGENT`는 normal 기준을 통과했지만 urgent 상대개선 `-3.48%`, 95% CI `[-5.02%,-1.95%]`로 10% 최소효과를 실패했다. 결과를 본 뒤 threshold를 완화하지 않으며 조건부 정책의 주 결합 판정은 `FAIL`로 유지한다.
+- 해석: CPU 긴급 우선 대비 FIFO 차이는 우선순위 효과다. 조건부 정책의 normal 응답·makespan·throughput 개선은 주로 GPU 보조 병행 효과이며 긴급 추가 개선은 작다. deadline 2초/8초는 포화된 설명 지표이며 UX SLA 또는 2%p 비열등성 입증으로 승격하지 않는다.
+- 증거: `C:/Users/LG/Documents/D1Check_Arrival_Extension/independent_evaluation_run_v1`, `C:/Users/LG/Documents/D1Check_Arrival_Extension/independent_evaluation_analysis_v2/FINAL_REPORT.md`. 독립 block n=6, 세션당 urgent2, A24 thermal0·단일 canonical 입력 범위다.
+- 미완료: 새 staggered workload의 simulation 예측을 평가 전에 동결하지 않았으므로 simulation 정책 순위·paired 개선량 일치 검증은 하지 못했다. 이번 평가로 simulator를 보정한 뒤 같은 평가로 검증하지 않는다. 추가 simulation·holdout·다기기는 별도 계획과 승인 대상이다.
+- 영향: 기존 formal v1/v2, support-constrained simulation freeze, pilot·과거 APK·원본을 변경하지 않는다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

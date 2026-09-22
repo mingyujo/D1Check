@@ -2,14 +2,14 @@
 
 ## 2026-09-23 비동시 도착 확장 — 현재 작업
 
-- `ARRIVAL-EXT-01`, 시작 HEAD `f2f559c03cd4146818dda232bf548d26afbe2af2`, 브랜치 `feature/arrival-scheduling-20260923`. 기존 `SIMULATION_PLAN_READY`/freeze·30세션 원본·formal v1/v2·과거 APK는 변경하지 않았다.
-- [계약](ARRIVAL_SCHEDULING_EXTENSION_20260923.md)의 설계·최소 구현·PC 검증과 **A24 개발용 pilot을 완료**했다. 독립 평가와 새 본 시뮬레이션은 미실행이다.
-- 고정 pilot plan SHA `a3ba8ca0cf33c695d089b9ae548c851c8eea1adc6c9b8ca20900496f5746664e`, APK SHA `1a8448abe1c78432870f1848676de61faefa83f64c9a6a3732d79f7a121f3612`. `SM-A245N`/고정 fingerprint 확인 후 2026-09-23 KST 02:33~03:17, 19/19세션·평가130/130·warmup152를 실행했다. 총 시도19, retry0, 오류0; 성공130, 실패·거절·만료·미완료·늦은 성공0이다.
-- gate: 최대 arrival lag 5.252ms(<100ms), 모든 시작·종료 및 앱 시계열 thermal status0, paired 시작온도 최대 차0.7°C, memory admission225/225 admit, sampled peak PSS 최대437.6MiB. 전 세션 GPU 2 instance `verified_full`, cleanup 완료, 종료 후 앱 프로세스 부재를 확인했다. PSS는 이 workload의 관측값이지 일반 안전 상한이 아니다.
-- 주 classification-urgent burst 3 paired block: `CPU_URGENT−CPU_FIFO` urgent P95 -1217.5±15.8ms, normal 평균응답 +104.1±5.4ms, makespan +0.010s. `CONDITIONAL−CPU_URGENT` urgent P95 -11.2±6.7ms, normal 평균응답 -630.4±27.9ms, makespan -1.245s. deadline 위반0·normal on-time100%라 2초/8초 scenario는 정책 구분력이 없었다. pilot은 개발·변동성 자료이며 우수성 근거가 아니다.
-- 원시 결과 `C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_run_v2`, read-only 분석·간트·KPI SVG·보고서 `C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_analysis_v3/FINAL_REPORT.md`. 원시470파일의 별도 hash inventory를 보존했다.
-- 독립 평가 **제안(미승인)**: 주 burst6+역할반전1+low1+queue1=9 paired block/27세션/198평가요청/216warmup/retry0, 예상65분·예약120분. 제안 plan `C:/Users/LG/Documents/D1Check_Arrival_Extension/independent_evaluation_plan_v1_proposal/evaluation_plan.json`, SHA `9e826188a25ecc9ca33404995cc1e45238f00f539fbb3c41eabfcdb8295cf3c3`; dry-run PASS, device 실행0.
-- 다음 행동(최대 3): (1) 최소효과·normal 손실·2초/8초 scenario 유지와 27세션 예산을 한 번에 승인/수정, (2) 승인 시 독립 평가 실행·동결 분석, (3) 그 결과와 별도 예측을 비교할 확장 시뮬레이션 계획은 별도 승인 후 실행.
+- `ARRIVAL-EXT-01`, 브랜치 `feature/arrival-scheduling-20260923`. 기존 `SIMULATION_PLAN_READY`/freeze·30세션 원본·formal v1/v2·과거 APK는 변경하지 않았다. 설계·최소 구현·PC 검증·A24 개발 pilot과 **독립 평가를 완료**했다.
+- 독립 평가 plan SHA `9e826188a25ecc9ca33404995cc1e45238f00f539fbb3c41eabfcdb8295cf3c3`, APK SHA `1a8448abe1c78432870f1848676de61faefa83f64c9a6a3732d79f7a121f3612`. `SM-A245N`, fingerprint `samsung/a24ks/a24:16/BP2A.250605.031.A3/A245NKSS9EZB5:user/release-keys`와 모든 실행 전 gate를 확인한 뒤 KST 07:19~08:23에 27/27세션·평가198/198·warmup216을 실행했다. 총 시도27, retry·대체·추가0, 성공198, 실패·거절·만료·미완료·늦은 성공0이다.
+- 평가 품질: 최대 arrival lag 9.799ms(<100ms), thermal status 전 구간0, paired 시작온도 최대 차0.2°C, memory admission333/333 admit, sampled PSS 평균419.6MiB/최대437.8MiB, 전 세션 GPU 2 instance `verified_full`, 종료 cleanup·앱 프로세스 부재 확인. 원본694파일은 hash inventory와 전수 일치했다.
+- 주 6 paired block 평균: urgent P95는 FIFO 1634.2ms, CPU 긴급 우선 406.1ms, 조건부 391.9ms다. normal 평균응답은 각각 1869.4/1957.5/1352.0ms, makespan은 3.961/3.949/2.747s, throughput은 2.020/2.026/2.912req/s다. 모든 완료율·normal on-time은100%, urgent miss는0%이며 2초/8초 deadline은 설명용 engineering scenario라 정책 구분력이 없었다.
+- 동결 판정: `CPU_URGENT−CPU_FIFO` urgent 상대차의 95% CI `[-75.67%,-74.63%]`, normal 상대손실 상한 `5.53%`로 우선순위 대비는 10% 최소효과와 10% normal 손실 기준을 모두 통과했다. `CONDITIONAL−CPU_URGENT` urgent 상대차 `-3.48%`, 95% CI `[-5.02%,-1.95%]`로 10% 최소효과를 실패했고 normal 상대차는 `-30.93%`로 손실 기준을 통과했다. 따라서 조건부 정책의 주 결합 기준은 **FAIL**이다.
+- 해석: 큰 urgent 개선은 CPU 내 우선순위 효과다. 조건부 정책은 주 조건에서 normal 탐지를 GPU로 보조 실행해 normal 응답·makespan·throughput을 개선했지만 CPU 긴급 우선보다 긴급 P95를 최소10% 더 줄이지 못했다. 주 urgent·normal 순위는 6/6 block에서 안정적이나 독립 block n=6, 긴급2건/세션이라 tail 일반화는 제한된다.
+- 원본 `C:/Users/LG/Documents/D1Check_Arrival_Extension/independent_evaluation_run_v1`, 분석·보고서 `C:/Users/LG/Documents/D1Check_Arrival_Extension/independent_evaluation_analysis_v2/FINAL_REPORT.md`. pilot과 평가의 순위·paired 방향은 일치했지만, 평가 전에 동결한 확장 simulation 예측이 없어 정책 순위·paired 개선량의 simulation 검증은 **미완료**다.
+- 다음 행동(최대 3): (1) 이번 독립 평가를 최종 실측 근거로 채택할지 결정, (2) simulation 검증이 필요하면 pilot만으로 모델·예측을 동결하고 별도 untouched holdout/추가 기기 예산을 승인, (3) 추가 기기에서 고정 정책의 축소 재현평가 계획 수립. 평가 자료로 simulator를 맞춘 뒤 같은 자료를 검증으로 재사용하지 않는다.
 
 ## 2026-09-22 지원 범위 한정 계획 — 현재 작업
 

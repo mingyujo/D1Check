@@ -5,6 +5,7 @@ import argparse
 import csv
 import json
 import math
+import statistics
 from pathlib import Path
 
 from tools import d1_arrival_plan as p
@@ -15,6 +16,7 @@ CONTRASTS = (
     ("CPU_URGENT", "CONDITIONAL"),
     ("CPU_FIFO", "CONDITIONAL"),
 )
+T95_DF5 = 2.570581835636305
 
 
 def nearest_p95(values):
@@ -168,6 +170,71 @@ def paired_metrics(metrics):
     return paired
 
 
+def mean_ci95(values):
+    if len(values) != 6:
+        raise ValueError("frozen evaluation CI requires six paired primary blocks")
+    mean = statistics.mean(values)
+    sd = statistics.stdev(values)
+    half = T95_DF5 * sd / math.sqrt(len(values))
+    return dict(n=len(values), mean=mean, sd=sd, low=mean - half, high=mean + half)
+
+
+def evaluation_summary(metrics, paired):
+    primary = [m for m in metrics if m.get("kind") == "burst" and
+               m.get("urgent_task") == "classification"]
+    groups = {}
+    for row in primary:
+        groups.setdefault(row["pair_id"], {})[row["policy"]] = row
+    if len(groups) != 6 or any(set(group) != set(p.POLICIES) for group in groups.values()):
+        raise ValueError("six complete primary policy triples required")
+    policy = {}
+    fields = ("urgent_p95_ms", "urgent_deadline_miss_rate", "normal_mean_response_ms",
+              "normal_p95_ms", "normal_on_time_rate", "completion_rate", "makespan_s",
+              "throughput_per_s", "policy_compute_total_ms")
+    for name in p.POLICIES:
+        rows = [m for m in primary if m["policy"] == name]
+        policy[name] = {field: mean_ci95([row[field] for row in rows]) for field in fields}
+    contrasts = {}
+    for baseline, current in (("CPU_FIFO", "CPU_URGENT"),
+                              ("CPU_URGENT", "CONDITIONAL"),
+                              ("CPU_FIFO", "CONDITIONAL")):
+        name = f"{current}-{baseline}"
+        absolute = [row for row in paired if row.get("contrast") == name and
+                    row.get("kind") == "burst" and row.get("urgent_task") == "classification"]
+        relative_urgent = [(group[current]["urgent_p95_ms"] - group[baseline]["urgent_p95_ms"]) /
+                           group[baseline]["urgent_p95_ms"] for group in groups.values()]
+        relative_normal = [(group[current]["normal_mean_response_ms"] -
+                            group[baseline]["normal_mean_response_ms"]) /
+                           group[baseline]["normal_mean_response_ms"] for group in groups.values()]
+        contrasts[name] = dict(
+            urgent_p95_delta_ms=mean_ci95([row["urgent_p95_delta_ms"] for row in absolute]),
+            normal_mean_response_delta_ms=mean_ci95(
+                [row["normal_mean_response_delta_ms"] for row in absolute]),
+            makespan_delta_s=mean_ci95([row["makespan_delta_s"] for row in absolute]),
+            throughput_delta_per_s=mean_ci95([row["throughput_delta_per_s"] for row in absolute]),
+            urgent_relative=mean_ci95(relative_urgent), normal_relative=mean_ci95(relative_normal))
+    rankings = []
+    for pair_id, group in groups.items():
+        rankings.append(dict(
+            pair_id=pair_id,
+            urgent=sorted(p.POLICIES, key=lambda name: group[name]["urgent_p95_ms"]),
+            normal=sorted(p.POLICIES, key=lambda name: group[name]["normal_mean_response_ms"]),
+            makespan=sorted(p.POLICIES, key=lambda name: group[name]["makespan_s"])))
+    main = contrasts["CONDITIONAL-CPU_URGENT"]
+    mechanism = contrasts["CPU_URGENT-CPU_FIFO"]
+    return dict(
+        paired_unit="workload_block", primary_blocks=6, policy=policy, contrasts=contrasts,
+        rankings=rankings,
+        frozen_decision=dict(
+            conditional_urgent_minimum_effect_pass=main["urgent_relative"]["high"] <= -0.10,
+            conditional_normal_loss_pass=main["normal_relative"]["high"] <= 0.10,
+            conditional_joint_primary_pass=(main["urgent_relative"]["high"] <= -0.10 and
+                                            main["normal_relative"]["high"] <= 0.10),
+            priority_urgent_minimum_effect_pass=mechanism["urgent_relative"]["high"] <= -0.10,
+            priority_normal_loss_pass=mechanism["normal_relative"]["high"] <= 0.10,
+            deadline_rates_descriptive_only=True))
+
+
 def analyze(plan_file, results, output):
     plan_file, results, output = Path(plan_file), Path(results), Path(output)
     plan = p.read(plan_file)
@@ -193,6 +260,9 @@ def analyze(plan_file, results, output):
         writer.writerows(metrics)
     paired = paired_metrics(metrics)
     (output / "paired_kpi.json").write_bytes(p.canonical(paired))
+    if plan["protocol"] == "arrival-independent-evaluation-v1":
+        (output / "evaluation_summary.json").write_bytes(
+            p.canonical(evaluation_summary(metrics, paired)))
     return dict(sessions=len(metrics), complete=sum(m["status"] == "completed" for m in metrics),
                 paired_comparisons=sum(x["status"] == "paired" for x in paired))
 
