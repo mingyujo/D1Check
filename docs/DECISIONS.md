@@ -314,6 +314,15 @@
 - 대체: 이전 SIM-PLAN-01의 필수 null은 이 축소 계약에서 해결한다. 과거 부분 계획·hash·실패 모델은 보존한다. absolute user SLA calibration_pending은 복수 budget과 구분한다. 현재 교환가능성은 검증된 사실이 아니다.
 - 다음: 검증 후 checkpoint, 별도 실행 승인 전에는 본 simulation/기기 작업0. 실행 후 선택 정책의 소규모 A24 확인은 후속 단계다.
 
+### 2026-09-23 — 동결 시뮬레이션과 분리된 비동시 도착 확장
+
+- 상태: 채택(연구 방향·개발 pilot 설계), 실기기 pilot 예산은 미승인.
+- 사용자 지시: A24의 검증된 분류/탐지·resident·non-preemptive를 재사용하고 완료 독립 도착, CPU FIFO/긴급 우선/조건부 CPU-GPU를 같은 workload로 비교한다. 기존 동결·원본·실패 기록을 보존한다.
+- 결정: `ARRIVAL-EXT-01`/`arrival-scheduler-v1` 별도 Activity·manifest·출력 root. 네 runtime을 전 정책에 상주시켜 시작 조건을 맞추고 CPU thread1·동시2로 제한한다. 19세션/130평가요청·retry0 개발 계획과 100ms 도착 지연·120초 drain·thermal0/paired 시작온도 1°C 조건은 [확장 계약](ARRIVAL_SCHEDULING_EXTENSION_20260923.md)에 기록한다.
+- 이유·근거: 기존 offset0 12요청 제한 시뮬레이션에는 staggered arrival의 실제 정책 순위/paired 효과 검증이 없다. 새 결과를 기존 동결 결과로 소급 해석하지 않는다. 네 runtime memory admission·실제 GPU delegation과 성능 이득은 아직 실기기 미검증이다.
+- 미확정: 19세션 pilot 예산, UX SLA, 최소 의미 효과·일반 허용손실·독립 평가 최대 예산. 개발 결과를 본 뒤 과거 10%/2%p 참고값을 자동 승인값으로 만들지 않는다.
+- 영향을 받는 범위: 새 modelProbe Activity·host 계획/실행/분석 도구와 PLAN/STATUS. formal v1/v2, task-profile-v3/v4, support-constrained freeze, 과거 APK/원본은 변경하지 않는다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

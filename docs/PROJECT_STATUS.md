@@ -1,5 +1,14 @@
 # D1Check 현재 상태
 
+## 2026-09-23 비동시 도착 확장 — 현재 작업
+
+- `ARRIVAL-EXT-01`, 시작 HEAD `f2f559c03cd4146818dda232bf548d26afbe2af2` clean, 별도 브랜치 `feature/arrival-scheduling-20260923`. 기존 `SIMULATION_PLAN_READY`/freeze·30세션 원본·formal v1/v2는 보존. 이전 support 보고서는 본 simulation 실행 0을 기록하며 새 본 실행 결과는 확인되지 않았다.
+- [새 계약·pilot](ARRIVAL_SCHEDULING_EXTENSION_20260923.md): 실제 분류/탐지 비동시 도착, CPU FIFO/긴급 우선/조건부 CPU-GPU(고정 분리 코드는 보조), 동일 4 resident runtime·CPU thread1·최대 동시2. 기존 v3/v4와 공식 inference timer는 변경하지 않음. 네 runtime 동시 상주의 A24 admission은 **미검증**.
+- pilot manifest `C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_plan_v2/pilot_plan.json` SHA `a3ba8ca0cf33c695d089b9ae548c851c8eea1adc6c9b8ca20900496f5746664e`: smoke1+paired18=19세션/130평가요청/152warmup, 전체 시도≤19·retry0. 원본 모델/이미지는 이전 검증 입력 경로에서 SHA 확인만 하고 재배포·커밋 안 함. 최종 새 APK SHA `1a8448abe1c78432870f1848676de61faefa83f64c9a6a3732d79f7a121f3612`, 첫 개발 draft v1 SHA `ace10ad4abb3f1f91a05e3639f39d005b3c615873e30555ba788f6b8399473d4` 미실행 보존, 기존 APK SHA `68e55aefdceb91e569e0d55ff0a18af0658163106589852325cb9ad5626fa62e` 별도 보관.
+- PC 검증(2026-09-23 KST, 시작 HEAD `f2f559c` + 이 단계 미커밋 소스): `:benchmark-runner:compileModelProbeKotlin` PASS, `:benchmark-runner:testModelProbeUnitTest` PASS, 최종 v2 `:benchmark-runner:assembleModelProbe` PASS, 신규 Python unit3 PASS, compileall PASS, 실제 v2 19 manifest 생성/dry-run PASS(ADB0·모델호출0), A24 read-only preflight 지문 일치. 빌드 첫 시도는 SDK 경로 미설정으로 실패했고 환경변수 설정 후 통과했다. 종료 전 최종 diff-check·v2 dry-run 재확인 대상.
+- **판정:** 설계·PC 구현/빌드 완료, 실기기 smoke·pilot 미실행, 독립 평가·새 본 시뮬레이션 미실행. blocker는 신규 확장 pilot **19세션 예산 승인**과 A24 네 runtime admission/실제 GPU 로그 확인이다. 이전 실측 예산은 신규 확장에 전용하지 않는다.
+- 다음 행동(최대 3): (1) 최종 회귀·선택적 소스/문서 checkpoint commit, (2) 19세션 pilot 예산 승인 후 첫 smoke gate와 최대18 paired session, (3) pilot paired 변동성으로 평가값·세션 수 동결안을 만들고 별도 평가 승인을 요청.
+
 ## 2026-09-22 지원 범위 한정 계획 — 현재 작업
 
 - `SIM-PLAN-02-SUPPORT`, 시작 `11d1e89`, 브랜치 `feature/pre-simulation-ready-20260919`. 사용자가 warm 교환가능성 가정·support-constrained 범위를 명시적으로 채택했다. 아래 SIM-PLAN-01의 INCOMPLETE는 이전 상태다.

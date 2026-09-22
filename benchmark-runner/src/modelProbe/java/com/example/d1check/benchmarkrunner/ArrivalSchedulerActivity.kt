@@ -1,0 +1,307 @@
+package com.example.d1check.benchmarkrunner
+
+import android.app.Activity
+import android.app.ActivityManager
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.*
+import android.util.Log
+import android.widget.TextView
+import org.json.JSONObject
+import java.io.File
+import java.io.FileOutputStream
+import java.util.UUID
+import java.util.concurrent.*
+import java.util.concurrent.atomic.AtomicLong
+
+/** Isolated development experiment. It does not change task-profile-v3/v4 or formal timing. */
+class ArrivalSchedulerActivity : Activity() {
+    private val setup = Executors.newSingleThreadExecutor()
+    private val dispatch = Executors.newSingleThreadExecutor()
+    private val cpu = Executors.newSingleThreadExecutor()
+    private val gpu = Executors.newSingleThreadExecutor()
+    private val arrivals = Executors.newSingleThreadScheduledExecutor()
+    private val sampler = Executors.newSingleThreadScheduledExecutor()
+    private val handler = Handler(Looper.getMainLooper())
+    private val peakPss = AtomicLong(0)
+    private val environment = java.util.Collections.synchronizedList(mutableListOf<Map<String, Any?>>())
+    private val rows = ConcurrentHashMap<String, MutableMap<String, Any?>>()
+    private var root: File? = null
+    private val watchdog = Runnable {
+        root?.let { try { save(it, "watchdog.json", mapOf("reason" to "120_second_bound", "mono_ns" to now())) } catch (_: Throwable) {} }
+        android.os.Process.killProcess(android.os.Process.myPid())
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(TextView(this).apply { text = "도착 스케줄링 개발 실험"; textSize = 20f })
+        window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        handler.postDelayed(watchdog, 120_000)
+        setup.execute { runSession() }
+    }
+
+    private fun runSession() {
+        val adapters = mutableMapOf<String, ProbeTaskAdapter>()
+        var failure: String? = null
+        var started = false
+        try {
+            require(intent.action == "com.example.d1check.benchmarkrunner.action.ARRIVAL_SCHEDULER")
+            val sid = requireNotNull(intent.getStringExtra("session_id"))
+            require(UUID.fromString(sid).toString() == sid)
+            val inputs = canonicalProbeInputRoot(filesDir, "arrival-scheduler-inputs", sid)
+            val manifestFile = File(inputs, "manifest.json")
+            require(manifestFile.length() in 1..1_048_576)
+            val m = JSONObject(manifestFile.readText())
+            require(m.getString("protocol") == "arrival-scheduler-v1" && m.getString("session_id") == sid)
+            require(m.getString("apk_sha256") == ProbeModelFile.sha256(File(applicationInfo.sourceDir)))
+            require(m.getString("device_fingerprint") == Build.FINGERPRINT)
+            require(m.getLong("maximum_duration_ms") == 120_000L)
+            require(m.getInt("cpu_threads") == 1 && m.getInt("maximum_concurrency") == 2)
+            require(m.getString("memory_contract") == V4Gate.CONTRACT && m.getInt("thermal_gate") == 0)
+            val policy = m.getString("policy")
+            require(policy in setOf(ArrivalPolicy.FIFO, ArrivalPolicy.URGENT, ArrivalPolicy.CONDITIONAL, ArrivalPolicy.FIXED))
+            require(m.getLong("arrival_lag_limit_ms") in 1..1000)
+            val estimatesObject = m.getJSONObject("estimated_service_ms")
+            val expectedKeys = setOf("classification_CPU", "classification_GPU", "detection_CPU", "detection_GPU")
+            require(estimatesObject.keys().asSequence().toSet() == expectedKeys)
+            val estimates = expectedKeys.associateWith { estimatesObject.getLong(it).also { value -> require(value in 1..20_000) } }
+            val modelsObject = m.getJSONObject("models")
+            require(modelsObject.keys().asSequence().toSet() == expectedKeys)
+            val specs = expectedKeys.associateWith { key -> ModelProbeManifestParser.parse(modelsObject.getJSONObject(key)).also { spec ->
+                require(spec.identity.sessionId == sid && spec.target.apkSha256 == m.getString("apk_sha256"))
+                require(spec.runtime.cpuThreads == 1 && spec.runtime.xnnpack && spec.runtime.litertVersion == "1.4.2")
+                require(key == "${spec.model.task.wireName}_${spec.execution.backend.name}")
+            } }
+            val imagesJson = m.getJSONArray("images")
+            require(imagesJson.length() in 1..24)
+            val images = (0 until imagesJson.length()).associate { i ->
+                val image = imagesJson.getJSONObject(i)
+                val file = contained(inputs, image.getString("filename"), image.getLong("bytes"), image.getString("sha256"))
+                image.getString("sample_id") to Pair(file, image.getString("sha256"))
+            }
+            require(images.size == imagesJson.length())
+            val anchors = contained(inputs, "anchors.json", File(inputs, "anchors.json").length(), ProbeTaskAdapter.ANCHORS_SHA256)
+            val requestsJson = m.getJSONArray("requests")
+            val warmupsJson = m.getJSONArray("warmup_requests")
+            require(requestsJson.length() in 1..24 && warmupsJson.length() == 8)
+            val requests = (0 until requestsJson.length()).map { requestsJson.getJSONObject(it) }
+            val warmups = (0 until warmupsJson.length()).map { warmupsJson.getJSONObject(it) }
+            val ids = mutableSetOf<String>()
+            var lastOffset = -1L
+            for ((ordinal, q) in requests.withIndex()) {
+                val id = q.getString("request_id")
+                require(UUID.fromString(id).toString() == id && ids.add(id))
+                require(q.getString("task_id") in setOf("classification", "detection"))
+                require(q.getString("sample_id") in images && q.getString("priority") in setOf("urgent", "normal"))
+                val offset = q.getLong("offset_ms")
+                require(offset in lastOffset..60_000 && q.getLong("deadline_ms") in 1..60_000)
+                require(q.getInt("ordinal") == ordinal)
+                lastOffset = offset
+            }
+            for (q in warmups) {
+                require(q.getString("model_key") in expectedKeys && q.getString("sample_id") in images)
+                val id = q.getString("request_id")
+                require(UUID.fromString(id).toString() == id && ids.add(id))
+            }
+            require(expectedKeys.all { key -> warmups.count { it.getString("model_key") == key } == 2 })
+            val output = canonicalProbeOutputRoot(filesDir, "arrival-scheduler-v1", sid)
+            require(!output.exists() && output.mkdirs())
+            root = output
+            save(output, "manifest.json", manifestFile.readBytes())
+            Log.i("D1ARRIVAL", "session_start=$sid")
+            sampler.scheduleAtFixedRate({ try { environment.add(snapshot()) } catch (e: Throwable) {
+                environment.add(mapOf("mono_ns" to now(), "error" to e.toString()))
+            } }, 0, 500, TimeUnit.MILLISECONDS)
+            for (key in expectedKeys.sorted()) {
+                val lane = if (key.endsWith("_CPU")) cpu else gpu
+                lane.submit {
+                    check(admission("before_runtime_creation", key) == "admit")
+                    adapters[key] = ProbeTaskAdapter(specs.getValue(key), ProbeModelFile.open(inputs, specs.getValue(key).model), anchors)
+                }.get(30, TimeUnit.SECONDS)
+            }
+            for (q in warmups) {
+                val key = q.getString("model_key")
+                val lane = if (key.endsWith("_CPU")) cpu else gpu
+                lane.submit {
+                    val image = images.getValue(q.getString("sample_id"))
+                    adapters.getValue(key).execute(image.first, image.second)
+                }.get(30, TimeUnit.SECONDS)
+            }
+            require(admission("before_workload", null) == "admit")
+            val workloadStart = now()
+            started = true
+            val waiting = mutableListOf<ArrivalPolicy.Ticket>() // dispatch thread only
+            val busy = mutableMapOf("CPU" to false, "GPU" to false)
+            val activeCpu = LongArray(1)
+            val activeCpuEstimate = LongArray(1)
+            val done = CountDownLatch(requests.size)
+            lateinit var pump: () -> Unit
+            pump = {
+                while (true) {
+                    val remainingMs = if (busy.getValue("CPU"))
+                        maxOf(0, (activeCpu[0] + activeCpuEstimate[0] - now()) / 1_000_000) else 0
+                    val begin = now()
+                    val choice = ArrivalPolicy.choose(policy, waiting, !busy.getValue("CPU"), !busy.getValue("GPU"), remainingMs, estimates)
+                    val decisionEnd = now()
+                    if (choice == null) break
+                    val ticket = choice.ticket
+                    waiting.remove(ticket)
+                    busy[choice.backend] = true
+                    val row = rows.getValue(ticket.id)
+                    row["selected_backend"] = choice.backend
+                    row["decision_reason"] = choice.reason
+                    row["policy_compute_ns"] = decisionEnd - begin
+                    row["dispatch_ns"] = decisionEnd
+                    if (choice.backend == "CPU") {
+                        activeCpu[0] = decisionEnd
+                        activeCpuEstimate[0] = estimates.getValue("${ticket.task}_CPU") * 1_000_000
+                    }
+                    val lane = if (choice.backend == "CPU") cpu else gpu
+                    lane.execute {
+                        try {
+                            val reason = admission("before_invocation", "${ticket.task}_${choice.backend}")
+                            if (reason != "admit") {
+                                row["terminal_status"] = "rejected"; row["reason"] = reason
+                            } else {
+                                val image = images.getValue(row.getValue("sample_id") as String)
+                                row["execution_start_ns"] = now()
+                                val result = adapters.getValue("${ticket.task}_${choice.backend}").execute(image.first, image.second)
+                                val payload = ModelProbeArtifacts.json(result).toByteArray(Charsets.UTF_8)
+                                val ready = now()
+                                row["output_ready_ns"] = ready
+                                row["inference_ns"] = result["inference_ns"]
+                                row["actual_backend"] = result["actual_backend"]
+                                row["input_tensor_sha256"] = result["input_tensor_sha256"]
+                                row["result_sha256"] = ProbeTaskAdapter.digest(payload)
+                                // Urgent response is ready before durable persistence, as in the existing contract.
+                                row["completion_ns"] = if (ticket.priority == "urgent") ready else null
+                                save(output, "${ticket.id}.result.json", payload)
+                                row["persist_complete_ns"] = now()
+                                if (ticket.priority == "normal") row["completion_ns"] = row["persist_complete_ns"]
+                                row["late_success"] = (row["completion_ns"] as Long) > (row["deadline_ns"] as Long)
+                                row["queue_wait_ns"] = (row["execution_start_ns"] as Long) - (row["queue_entry_ns"] as Long)
+                                row["response_ns"] = (row["completion_ns"] as Long) - (row["scheduled_arrival_ns"] as Long)
+                                row["actual_arrival_response_ns"] = (row["completion_ns"] as Long) - (row["actual_arrival_ns"] as Long)
+                                row["terminal_status"] = "succeeded"
+                            }
+                        } catch (e: Throwable) {
+                            row["terminal_status"] = "failed"; row["reason"] = e.toString()
+                        } finally {
+                            row["terminal_ns"] = now()
+                            row["worker_release_ns"] = now()
+                            try { save(output, "${ticket.id}.event.json", ModelProbeArtifacts.json(row).toByteArray()) }
+                            catch (e: Throwable) { Log.e("D1ARRIVAL", "event write failed", e) }
+                            done.countDown()
+                            dispatch.execute { busy[choice.backend] = false; pump() }
+                        }
+                    }
+                }
+            }
+            for (q in requests) {
+                val offset = q.getLong("offset_ms")
+                val target = workloadStart + offset * 1_000_000
+                arrivals.schedule({
+                    val actual = now()
+                    val id = q.getString("request_id")
+                    val row = linkedMapOf<String, Any?>(
+                        "protocol" to "arrival-scheduler-v1", "session_id" to sid, "request_id" to id,
+                        "ordinal" to q.getInt("ordinal"), "task_id" to q.getString("task_id"),
+                        "priority" to q.getString("priority"), "sample_id" to q.getString("sample_id"),
+                        "scheduled_arrival_ns" to target, "actual_arrival_ns" to actual,
+                        "arrival_lag_ns" to actual - target,
+                        "deadline_ns" to target + q.getLong("deadline_ms") * 1_000_000)
+                    rows[id] = row
+                    dispatch.execute {
+                        row["queue_entry_ns"] = now()
+                        waiting.add(ArrivalPolicy.Ticket(id, q.getString("task_id"), q.getString("priority"), q.getInt("ordinal")))
+                        pump()
+                    }
+                }, maxOf(0, target - now()), TimeUnit.NANOSECONDS)
+            }
+            val drained = done.await(100, TimeUnit.SECONDS)
+            val end = now()
+            if (!drained) failure = "bounded_drain_timeout"
+            dispatch.submit {}.get(2, TimeUnit.SECONDS)
+            val all = requests.map { q ->
+                val id = q.getString("request_id")
+                if (File(output, "$id.event.json").isFile) rows[id]!!.toMap() else mapOf(
+                    "request_id" to id, "task_id" to q.getString("task_id"),
+                    "priority" to q.getString("priority"), "sample_id" to q.getString("sample_id"),
+                    "scheduled_arrival_ns" to workloadStart + q.getLong("offset_ms") * 1_000_000,
+                    "deadline_ns" to workloadStart + (q.getLong("offset_ms") + q.getLong("deadline_ms")) * 1_000_000,
+                    "terminal_status" to "unfinished", "reason" to "event_not_committed")
+            }
+            save(output, "requests.json", all)
+            save(output, "environment.json", environment.toList())
+            val lagLimit = m.getLong("arrival_lag_limit_ms") * 1_000_000
+            val lateArrivals = all.count { (it["arrival_lag_ns"] as? Long ?: Long.MAX_VALUE) > lagLimit }
+            save(output, "summary.json", mapOf("protocol" to "arrival-scheduler-v1", "session_id" to sid,
+                "policy" to policy, "workload_start_ns" to workloadStart, "drain_end_ns" to end,
+                "request_count" to requests.size, "terminal_count" to all.count { it["terminal_status"] in setOf("succeeded", "failed", "rejected", "expired") },
+                "arrival_lag_limit_ns" to lagLimit, "arrival_lag_exceeded" to lateArrivals,
+                "status" to if (failure == null && lateArrivals == 0 && all.all { it["terminal_status"] == "succeeded" }) "completed" else "incomplete",
+                "failure" to failure, "sampled_peak_pss_bytes" to peakPss.get()))
+            Log.i("D1ARRIVAL", "session_finalized=$sid")
+        } catch (e: Throwable) {
+            failure = e.toString()
+            Log.e("D1ARRIVAL", "session failed", e)
+        } finally {
+            arrivals.shutdownNow(); sampler.shutdownNow()
+            for (lane in listOf(cpu, gpu)) {
+                try { lane.submit { adapters.filterKeys { it.endsWith(if (lane === cpu) "_CPU" else "_GPU") }.values.forEach { it.close() } }
+                    .get(5, TimeUnit.SECONDS) } catch (e: Throwable) { failure = "$failure; close: $e" }
+            }
+            root?.let { if (failure != null) try { save(it, "failure.json", mapOf("reason" to failure, "started" to started, "mono_ns" to now())) } catch (_: Throwable) {} }
+            root?.let { try { save(it, "cleanup.json", mapOf("status" to if (failure == null) "completed" else "failed",
+                "mono_ns" to now(), "error" to failure)) } catch (e: Throwable) { Log.e("D1ARRIVAL", "cleanup receipt failed", e) } }
+            cpu.shutdownNow(); gpu.shutdownNow(); dispatch.shutdownNow(); setup.shutdown()
+            handler.removeCallbacks(watchdog)
+            if (!cpu.awaitTermination(1, TimeUnit.SECONDS) || !gpu.awaitTermination(1, TimeUnit.SECONDS))
+                android.os.Process.killProcess(android.os.Process.myPid())
+            runOnUiThread { finish() }
+        }
+    }
+
+    private fun now() = SystemClock.elapsedRealtimeNanos()
+
+    private fun snapshot(): Map<String, Any?> {
+        val am = getSystemService(ActivityManager::class.java)
+        val info = ActivityManager.MemoryInfo(); am.getMemoryInfo(info)
+        val memory = Debug.MemoryInfo(); Debug.getMemoryInfo(memory)
+        val pss = memory.totalPss.toLong() * 1024
+        peakPss.updateAndGet { maxOf(it, pss) }
+        val battery = registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        return mapOf("mono_ns" to now(), "avail_bytes" to info.availMem, "threshold_bytes" to info.threshold,
+            "low_memory" to info.lowMemory, "pss_bytes" to pss, "observed_peak_pss_bytes" to peakPss.get(),
+            "thermal_status" to getSystemService(PowerManager::class.java).currentThermalStatus,
+            "battery_temperature_deci_c" to battery?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1),
+            "battery_level" to battery?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1))
+    }
+
+    private fun admission(stage: String, key: String?): String {
+        val state = snapshot()
+        val reason = V4Gate.reason(state["avail_bytes"] as Long, state["threshold_bytes"] as Long,
+            state["low_memory"] as Boolean, state["observed_peak_pss_bytes"] as Long,
+            state["thermal_status"] as Int)
+        environment.add(state + mapOf("stage" to stage, "model_key" to key, "admission_reason" to reason))
+        return reason
+    }
+
+    private fun contained(base: File, name: String, length: Long, sha: String): File {
+        require(name.matches(Regex("[A-Za-z0-9][A-Za-z0-9._-]{0,126}")) && sha.matches(Regex("[a-f0-9]{64}")))
+        val file = File(base, name)
+        require(file.canonicalFile.parentFile == base.canonicalFile && file.isFile)
+        require(file.length() == length && ProbeModelFile.sha256(file) == sha)
+        return file
+    }
+
+    private fun save(base: File, name: String, value: Any) = save(base, name, ModelProbeArtifacts.json(value).toByteArray(Charsets.UTF_8))
+    private fun save(base: File, name: String, bytes: ByteArray) {
+        val file = File(base, name); val part = File(base, "$name.part")
+        require(!file.exists() && part.createNewFile())
+        FileOutputStream(part).use { it.write(bytes); it.fd.sync() }
+        require(part.renameTo(file) && file.readBytes().contentEquals(bytes))
+    }
+
+    override fun onDestroy() { setup.shutdown(); super.onDestroy() }
+}
