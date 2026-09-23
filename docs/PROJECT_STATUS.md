@@ -2,14 +2,16 @@
 
 ## 2026-09-23 고정 CPU/GPU 대조군 준비 — 현재 작업
 
-- `ARRIVAL-FIXED-01`, branch `feature/arrival-scheduling-20260923`, 시작 HEAD `5736876a`, 시작 clean. **계획·최소 구현·PC 검증·manifest dry-run 완료 / 새 실측 0 / 예산 승인 대기**.
+- `ARRIVAL-FIXED-01`, branch `feature/arrival-scheduling-20260923`. 준비 checkpoint `4fdfd5c`, 재개 시 clean. **최소안27세션 승인 완료 / 0/27 사용 / BLOCKED_PRELAUNCH_BATTERY**. 계획·구현·PC 검증 완료이며 실측은 아직 시작하지 않았다.
 - [새 계약·실행 절차](ARRIVAL_FIXED_SPLIT_COMPARISON_20260923.md). 같은 새 paired block에서 CPU_URGENT, FIXED_SPLIT(urgent CPU/normal GPU, lane 변경 없음), 기존 CONDITIONAL을 비교한다. 앱 정책·APK·개발 추정값 불변. 기존27세션 `conditional_joint_primary_pass=false`와 10% 기준을 보존한다.
-- 권장 최소안: burst/low/queue 각3 block, 총27세션·162평가요청·216warmup, urgent45/normal117, 예상65~80분(상한150분+cleanup45초). 정밀안: 각6 block, 54세션·324요청·432warmup, 예상130~160분(상한300분+cleanup45초). 두 안은 대안이며 retry/대체/추가0. 과거27세션 예산은 소진, 신규 승인은 아직 없음.
+- 승인된 최소안: burst/low/queue 각3 block, 총27세션·162평가요청·216warmup, urgent45/normal117, 예상65~80분(상한150분+cleanup45초), retry/대체/추가0. 사용자 “승인할게”에 따라 새 예산 승인 기록 완료. 정밀54세션안은 미승인. 실행 plan SHA `9812ce6ec8d04c43e9a072bf15d712a222304ca96e2a0033d564748decaa213f` 불변.
 - 주 비교 burst C−F의 urgent 세션 최댓값·normal 평균 상대차에 Bonferroni 양측97.5% CI. 효과 추정 연구이며 동등성/비열등성 margin·새 PASS 기준 없음. fixed split 변동성은 미측정이라 정밀도/검정력 보장 없음.
 - 기존 plan/runner 재사용: 새 protocol·manifest 생성과 hash/예산/순서 검증, single-use 출력·회수 전용 복구, host wall/battery/환경 gate 추가. 품질 gate 전 validated 기록·cleanup 오류 후 계속 진행 결함 수정. Android production·기존 분석 계약 변경 없음.
 - Python 관련16 PASS, 정책 JVM7 PASS(SDK 환경 첫 실패 후 프로세스 환경 지정으로 성공). 기존198 request event/ledger·환경 호환성 읽기 전용 PASS. 두 plan dry-run PASS(ADB/추론0). 실기기 gate 충족 여부는 미확인.
 - 근거: `C:/Users/LG/Documents/D1Check_Arrival_Extension/fixed_split_preparation_v1/FINAL_REPORT.md`, `verification.json`; 두 plan은 `fixed_split_comparison_minimum_v2` / `fixed_split_comparison_precise_v2`. 원본/기존 분석·그림/plan/APK758파일 전후 hash 보존 receipt 포함.
-- 다음 행동(최대3): (1) 사용자에게 권장27세션 또는54세션 중 새 예산 승인 한 번 요청, (2) 승인 후 보고서의 해당 RUN_*_AFTER_APPROVAL.ps1로 gate 확인·고정 실행, (3) 위 사전 규칙에 맞는 별도 분석 분기를 기존 session_metrics 재사용으로 구현·검증. 중단 시 회수만 하고 자동 재실행 금지.
+- 실행 전 확인(2026-09-23 12:42 KST): SM-A245N/serial R59W802RW5F 및 fingerprint 일치, thermal0, 배터리28.8°C·39%, 충전 없음, 실험 앱 프로세스 없음. 같은 기기의 중복 IP ADB 연결만 해제하고 mDNS 연결 유지. **배터리55% 시작 gate 미달**로 설치/Activity/세션 시도0. runtime memory admission은 미실행이며 단순 가용 메모리 확인으로 PASS 전용하지 않는다.
+- 근거 추가: 외부 준비 root의 `minimum_approval.json`, `prelaunch_gate_20260923.json`, `RESUME_GATE.md`. 실측 output root와 실행 console log는 생성하지 않아 같은 승인·명령으로 시작 가능하다. 동결 host/app/plan 변경 없음.
+- 다음 행동(최대3): (1) A24를55% 이상 충전한 뒤 충전선을 분리, (2) 배터리/연결/thermal gate를 다시 확인하고 기존 RUN_MINIMUM_AFTER_APPROVAL.ps1로 시작(재승인 불필요, 초기120초 cooling 포함), (3) 완료 후 고정 분석 규칙으로 별도 분석. 실제 실행 중 실패 시 회수만 하고 자동 재실행 금지.
 
 ## 2026-09-23 비동시 도착 확장 — 현재 작업
 

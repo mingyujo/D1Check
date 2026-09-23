@@ -371,3 +371,9 @@
 - PC 준비 완료: 새 plan protocol과 기존 runner 확장, 품질 gate/cleanup 중단 결함 수정, 새 고유 manifest와16 Python/7 JVM 관련 테스트·두 안 dry-run. 기존 앱 inference 경계/정책/공식 v1/v2 변경 없음.
 - 제안/승인 대기: 최소27 또는 정밀54세션 중 하나, 추가/retry/대체0. 주 비교 burst C−F urgent 세션 max·normal 평균의 상대차 Bonferroni CI. 동등성/비열등성 margin 없는 추정안 권장; 새 PASS 기준이나 실측 예산 승인으로 승격하지 않는다.
 - 근거·실제 명령: [별도 계약](ARRIVAL_FIXED_SPLIT_COMPARISON_20260923.md), 외부 `fixed_split_preparation_v1/FINAL_REPORT.md`. 본 simulation/추가 모델·기기·역할반전·열부하 실행은 이번 범위 밖이다.
+
+## 2026-09-23 — ARRIVAL-FIXED-01 최소안 실행 승인 및 시작 전 gate
+
+- 확정: 사용자가 권장 최소안을 “승인할게”로 승인했다. 27세션/162평가요청/216warmup, retry·대체·추가0, host150분+cleanup45초 상한. plan SHA `9812ce6ec8d04c43e9a072bf15d712a222304ca96e2a0033d564748decaa213f`; 정밀54세션안은 미승인이다. 승인 receipt는 외부 `minimum_approval.json`에 보존한다.
+- gate: 동일 A24 serial/fingerprint, thermal0·28.8°C·충전 없음·프로세스 부재를 확인했으나 배터리39%로 동결 시작55% 기준에 미달했다. 기준을 완화하지 않고 설치·측정 시작 전 중단했다. session attempt0/27, 평가0, warmup0이며 예산 재승인은 필요 없다.
+- 동일 기기의 IP/mDNS 중복 연결은 serial/fingerprint를 먼저 대조한 후 IP 연결만 해제했다. 앱/기기 설정·원본 변경 없음. 충전 후 분리·cooling 및 gate 재확인으로 같은 승인된 명령을 시작한다. 원래 실제 실행 중 실패의 retry0 규칙은 그대로 유지한다.
