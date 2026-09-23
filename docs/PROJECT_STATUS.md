@@ -1,5 +1,16 @@
 # D1Check 현재 상태
 
+## 2026-09-23 고정 CPU/GPU 대조군 준비 — 현재 작업
+
+- `ARRIVAL-FIXED-01`, branch `feature/arrival-scheduling-20260923`, 시작 HEAD `5736876a`, 시작 clean. **계획·최소 구현·PC 검증·manifest dry-run 완료 / 새 실측 0 / 예산 승인 대기**.
+- [새 계약·실행 절차](ARRIVAL_FIXED_SPLIT_COMPARISON_20260923.md). 같은 새 paired block에서 CPU_URGENT, FIXED_SPLIT(urgent CPU/normal GPU, lane 변경 없음), 기존 CONDITIONAL을 비교한다. 앱 정책·APK·개발 추정값 불변. 기존27세션 `conditional_joint_primary_pass=false`와 10% 기준을 보존한다.
+- 권장 최소안: burst/low/queue 각3 block, 총27세션·162평가요청·216warmup, urgent45/normal117, 예상65~80분(상한150분+cleanup45초). 정밀안: 각6 block, 54세션·324요청·432warmup, 예상130~160분(상한300분+cleanup45초). 두 안은 대안이며 retry/대체/추가0. 과거27세션 예산은 소진, 신규 승인은 아직 없음.
+- 주 비교 burst C−F의 urgent 세션 최댓값·normal 평균 상대차에 Bonferroni 양측97.5% CI. 효과 추정 연구이며 동등성/비열등성 margin·새 PASS 기준 없음. fixed split 변동성은 미측정이라 정밀도/검정력 보장 없음.
+- 기존 plan/runner 재사용: 새 protocol·manifest 생성과 hash/예산/순서 검증, single-use 출력·회수 전용 복구, host wall/battery/환경 gate 추가. 품질 gate 전 validated 기록·cleanup 오류 후 계속 진행 결함 수정. Android production·기존 분석 계약 변경 없음.
+- Python 관련16 PASS, 정책 JVM7 PASS(SDK 환경 첫 실패 후 프로세스 환경 지정으로 성공). 기존198 request event/ledger·환경 호환성 읽기 전용 PASS. 두 plan dry-run PASS(ADB/추론0). 실기기 gate 충족 여부는 미확인.
+- 근거: `C:/Users/LG/Documents/D1Check_Arrival_Extension/fixed_split_preparation_v1/FINAL_REPORT.md`, `verification.json`; 두 plan은 `fixed_split_comparison_minimum_v2` / `fixed_split_comparison_precise_v2`. 원본/기존 분석·그림/plan/APK758파일 전후 hash 보존 receipt 포함.
+- 다음 행동(최대3): (1) 사용자에게 권장27세션 또는54세션 중 새 예산 승인 한 번 요청, (2) 승인 후 보고서의 해당 RUN_*_AFTER_APPROVAL.ps1로 gate 확인·고정 실행, (3) 위 사전 규칙에 맞는 별도 분석 분기를 기존 session_metrics 재사용으로 구현·검증. 중단 시 회수만 하고 자동 재실행 금지.
+
 ## 2026-09-23 비동시 도착 확장 — 현재 작업
 
 - `ARRIVAL-EXT-01`, 브랜치 `feature/arrival-scheduling-20260923`. 기존 `SIMULATION_PLAN_READY`/freeze·30세션 원본·formal v1/v2·과거 APK는 변경하지 않았다. 설계·최소 구현·PC 검증·A24 개발 pilot과 **독립 평가를 완료**했다.

@@ -253,3 +253,10 @@ CALIB-01B는 FIX4까지 구현·host 검증·감사를 완료했다. 기록상 K
 2026-09-20 후속: [DECODE_RESOLUTION_20260920.md](DECODE_RESOLUTION_20260920.md)의 최초 종료는 연결 단절로 BLOCKED_EXTERNAL_INPUT이었다. 이후 [재개 결과](A24_RESUME_20260920.md)에서 최종 APK 설치·네 cell·bounded PROFILE-02를 실제 검증했다. 31개 실기기 session과 별도 host preflight 실패1건을 보존한다. 두 작업 모두 solo CPU가 빠르며, 분류 CPU 초기 호출의 큰 서비스 오차를 cold boolean만으로 설명할 수 없어 frozen profile로 승격하지 않았다. 개정4.4의 품질/profile/holdout/동결 완료 조건은 유지하고 SIM-01_INCOMPLETE다. 본 simulation·formal·정책 비교는 미실행이다.
 
 2026-09-20 SERVICE-MODEL-FREEZE: [후속 분석](SERVICE_MODEL_FREEZE_20260920.md)에서 calibration24/과거 holdout4/사후 진단1 session을 분리하고 seed20260920, 새 prospective acceptance, 6후보와 공통 입력 준비 schema/validator/no-op을 기록했다. 이미 본 자료를 독립 holdout으로 재사용하지 않는다. backend equivalence와 절대 accuracy는 분리하며, 최신 사용자 지시대로 실제 정확도를 임의 생성하지 않고 검증된 cell의 출력 품질 보존을 scheduling 제약으로 사용한다. A24 solo CPU 우세를 반영하되 GPU 전체 지배는 미입증이다. 미검증 co-run/thermal/memory/deadline을 동결한 것으로 취급하지 않는다. 새 독립 검증이 없고 coverage도 미달이므로 frozen model은 발행하지 않았다.
+
+
+## 2026-09-23 추가 작업: ARRIVAL-FIXED-01
+
+현재 후속 질문은 같은 신규 paired workload에서 조건부 선택이 **기존 고정 분리(urgent CPU/normal GPU)**보다 어떤 조건·지표에 유리한지이다. [별도 설계](ARRIVAL_FIXED_SPLIT_COMPARISON_20260923.md)에 따라 CPU_URGENT/FIXED_SPLIT/CONDITIONAL을 burst·low·queue에서 함께 측정한다. 기존 주 평가 FAIL·10% 최소효과·동결 simulation/formal 계약은 그대로다.
+PC 준비 완료, 새 실측 미실행. 각 조건3 block/27세션·162요청·216warmup 최소안 권장; 각6 block/54세션·324요청·432warmup 정밀안은 대안이다. retry/대체/추가0, 새 예산 별도 승인 전 ADB/설치/측정 금지. margin 없는 효과 추정 연구이며 고정 대비 분산·검정력·동등성은 아직 미확인이다. 주 비교·지표·CI/누락/중단 규칙과 실제 명령은 새 계약을 따른다.
+완료 조건: 정확한 정책 감사, 동일 runtime/도착·seed·순서·예산의 새 manifest, PC 테스트/dry-run, 보존 검증, 실행 가능한 승인안·재개 문서. 위 PC 조건은 완료, 실기기 검증은 다음 승인 단계다.

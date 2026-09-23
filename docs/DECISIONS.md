@@ -362,3 +362,12 @@
 - 이유와 근거:
 - 영향을 받는 계획·코드·실험:
 - 폐기하거나 대체한 이전 결정:
+
+
+## 2026-09-23 — ARRIVAL-FIXED-01 고정 분리 대조군 준비
+
+- 확정(사용자 작업 범위): 기존27세션 주 결합 FAIL과 모든 동결 계약/결과를 보존한다. 새 같은 기간 paired 측정 후보는 CPU_URGENT/FIXED_SPLIT/CONDITIONAL, 기존 burst·low·queue와 모델/입력/앱 정책/APK를 재사용한다. 과거 conditional과 새 fixed만을 주 비교하지 않는다.
+- 구현 감사: fixed는 priority 기준 urgent CPU/normal GPU, 해당 lane busy이면 대체 배정 없음. 조건부는 기존 개발 추정97/250/558/1063ms와 도착한 큐만 사용한다. 네 runtime resident 및 각2warmup은 세 정책에서 동일하다.
+- PC 준비 완료: 새 plan protocol과 기존 runner 확장, 품질 gate/cleanup 중단 결함 수정, 새 고유 manifest와16 Python/7 JVM 관련 테스트·두 안 dry-run. 기존 앱 inference 경계/정책/공식 v1/v2 변경 없음.
+- 제안/승인 대기: 최소27 또는 정밀54세션 중 하나, 추가/retry/대체0. 주 비교 burst C−F urgent 세션 max·normal 평균의 상대차 Bonferroni CI. 동등성/비열등성 margin 없는 추정안 권장; 새 PASS 기준이나 실측 예산 승인으로 승격하지 않는다.
+- 근거·실제 명령: [별도 계약](ARRIVAL_FIXED_SPLIT_COMPARISON_20260923.md), 외부 `fixed_split_preparation_v1/FINAL_REPORT.md`. 본 simulation/추가 모델·기기·역할반전·열부하 실행은 이번 범위 밖이다.

@@ -29,6 +29,128 @@ EVALUATION_ANALYSIS = dict(
     stopping_rule="run all 27 planned sessions unless a frozen safety/quality gate stops the run",
 )
 
+FIXED_PROTOCOL = "arrival-fixed-split-comparison-v1"
+FIXED_POLICIES = ("CPU_URGENT", "FIXED_SPLIT", "CONDITIONAL")
+FIXED_SEED = 2026092303
+FIXED_SOURCE_SHA = "9e826188a25ecc9ca33404995cc1e45238f00f539fbb3c41eabfcdb8295cf3c3"
+FIXED_ANALYSIS = dict(
+    purpose="prospective estimation; no joint pass, equivalence or noninferiority claim",
+    primary_condition="burst/classification-urgent",
+    primary_contrast="CONDITIONAL-FIXED_SPLIT",
+    primary_metrics=["urgent_session_max_ms", "normal_mean_response_ms"],
+    primary_ci="relative differences only: paired t 97.5% two-sided per endpoint; Bonferroni family 95%",
+    effects="mean block absolute difference and mean block relative difference (C-F)/F",
+    supporting="absolute differences and all three contrasts in each condition; pointwise 95% paired t; exploratory",
+    statistical_unit="independent paired block, never request; no pooling conditions",
+    missing="all planned denominators reported; no imputation or replacement; incomplete pairs described separately",
+    margin=None,
+    stopping="fixed cap or first technical/safety/quality failure; never outcome-driven",
+    prior_verdict="conditional_joint_primary_pass=false unchanged",
+    urgent_metric="nearest-rank P95 of successful urgent responses equals session max with 2 (burst/low) or 1 (queue) arrivals; not population P95",
+    response="scheduled arrival to output_ready for urgent; to persist_complete for normal; includes dispatch cost",
+    efficiency="session makespan workload_start to last recorded worker_release; throughput successes/makespan; equal session weights",
+    denominators="report all planned, attempted, arrived, terminal and unobserved counts separately; no missing=success",
+    incomplete="success-only latency labeled conditional; no primary CI if any endpoint pair incomplete; retain descriptive complete-pair effects",
+    timing="100s workload drain wait starts after scheduling all arrivals; device watchdog120s; host poll125s",
+    overhead="sum recorded successful-selection policy_compute_ns only; null decisions not separately logged",
+)
+
+
+def fixed_layout(design):
+    repeats = {"minimum": 3, "precise": 6}[design]
+    # Seed pins the rotation; all six orders, cyclic orders first.
+    orders = ((0, 1, 2), (1, 2, 0), (2, 0, 1), (0, 2, 1), (2, 1, 0), (1, 0, 2))
+    kinds = ("burst", "low", "queue")
+    result = []
+    for replicate in range(repeats):
+        for position in range(3):
+            k = (position + replicate + FIXED_SEED % 3) % 3
+            kind = kinds[k]
+            # Each condition has each period once per three blocks.
+            o = orders[(replicate // 3) * 3 + (replicate + k) % 3]
+            result.append((kind, replicate, [FIXED_POLICIES[i] for i in o]))
+    return result
+
+
+def fixed_spec(source_evaluation, design):
+    """Reuse exact old workloads/resources, with disjoint prospective identities."""
+    source_evaluation = Path(source_evaluation).resolve()
+    if digest(source_evaluation) != FIXED_SOURCE_SHA:
+        raise ValueError("fixed comparison reference evaluation changed")
+    old = read(source_evaluation)
+    validate(old, source_evaluation.parent)
+    templates = {}
+    for entry in old["entries"]:
+        if entry["urgent_task"] == "classification":
+            templates.setdefault(entry["kind"], read(source_evaluation.parent / entry["manifest"]))
+    manifests, entries = {}, []
+    for kind, replicate, order in fixed_layout(design):
+        pair = str(uuid.uuid5(uuid.NAMESPACE_URL,
+                             f"{FIXED_PROTOCOL}/{design}/{FIXED_SEED}/{kind}/{replicate}"))
+        for policy in order:
+            sid = str(uuid.uuid5(uuid.NAMESPACE_URL, f"{pair}/{policy}"))
+            m = copy.deepcopy(templates[kind])
+            m.update(session_id=sid, pair_id=pair, policy=policy,
+                     evaluation_phase=FIXED_PROTOCOL, development_only=False)
+            for ordinal, request in enumerate(m["requests"]):
+                request["request_id"] = str(uuid.uuid5(uuid.NAMESPACE_URL, f"{pair}/{ordinal}"))
+            for i, warmup in enumerate(m["warmup_requests"]):
+                warmup["request_id"] = str(uuid.uuid5(uuid.NAMESPACE_URL, f"{sid}/warm/{i}"))
+            for spec in m["models"].values():
+                spec["identity"]["session_id"] = sid
+            name = f"manifests/{sid}.json"
+            manifests[name] = m
+            entries.append(dict(index=len(entries), kind=kind, urgent_task="classification",
+                                replicate=replicate, pair_id=pair, policy=policy, session_id=sid,
+                                request_count=len(m["requests"]), manifest=name,
+                                manifest_sha256=hashlib.sha256(canonical(m)).hexdigest()))
+    root = Path(__file__).resolve().parents[1]
+    code_paths = ["tools/d1_arrival_plan.py", "tools/d1_arrival_device.py",
+                  "benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/ArrivalPolicy.kt",
+                  "benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/ArrivalSchedulerActivity.kt"]
+    plan = dict(protocol=FIXED_PROTOCOL, status="proposed_not_approved", design=design,
+                source_evaluation=str(source_evaluation), source_evaluation_sha256=FIXED_SOURCE_SHA,
+                source_files=old["source_files"], apk_path=old["apk_path"], apk_sha256=old["apk_sha256"],
+                device_fingerprint=old["device_fingerprint"], session_cap=len(entries),
+                device_retry_cap=0, replacement_cap=0, additional_session_cap=0,
+                seed=FIXED_SEED, cool_down_seconds=120, initial_cool_seconds=120,
+                maximum_duration_seconds=120, host_wall_seconds=9000 if design == "minimum" else 18000,
+                battery_start_percent=55 if design == "minimum" else 80,
+                battery_min_percent=30, battery_max_temperature_tenths_c=350,
+                require_unplugged=True, resume_mode="recover_only_after_interruption",
+                analysis_contract=FIXED_ANALYSIS,
+                source_code={name: digest(root / name) for name in code_paths}, entries=entries)
+    return plan, manifests
+
+
+def validate_fixed(plan, base):
+    expected, manifests = fixed_spec(plan["source_evaluation"], plan["design"])
+    if plan != expected:
+        raise ValueError("fixed comparison plan/order/budget/code contract changed")
+    if digest(plan["apk_path"]) != plan["apk_sha256"]:
+        raise ValueError("fixed comparison APK changed")
+    for name, manifest in manifests.items():
+        if (Path(base) / name).read_bytes() != canonical(manifest):
+            raise ValueError("fixed comparison workload/resource/identity changed")
+    requests = [q for m in manifests.values() for q in m["requests"]]
+    return dict(status="dry_run_pass", phase=FIXED_PROTOCOL, sessions=len(manifests),
+                requests=len(requests), warmup_calls=8 * len(manifests),
+                urgent=sum(q["priority"] == "urgent" for q in requests),
+                normal=sum(q["priority"] == "normal" for q in requests),
+                paired_groups=len(manifests) // 3, adb_calls=0, model_invocations=0)
+
+
+def generate_fixed(source_evaluation, design, output):
+    output = Path(output)
+    if output.exists():
+        raise FileExistsError(output)
+    plan, manifests = fixed_spec(source_evaluation, design)
+    (output / "manifests").mkdir(parents=True)
+    for name, m in manifests.items():
+        (output / name).write_bytes(canonical(m))
+    (output / "comparison_plan.json").write_bytes(canonical(plan))
+    return validate_fixed(plan, output)
+
 
 def canonical(value):
     return (json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False) + "\n").encode()
@@ -113,6 +235,8 @@ def source_catalog(source_plan):
 
 def validate(plan, base):
     phase = plan["protocol"]
+    if phase == FIXED_PROTOCOL:
+        return validate_fixed(plan, base)
     if phase == "arrival-development-pilot-v1":
         expected_sessions, expected_groups = 19, 6
     elif phase == "arrival-independent-evaluation-v1":
@@ -288,6 +412,10 @@ def main():
     evaluation.add_argument("--source-plan", type=Path, required=True)
     evaluation.add_argument("--apk", type=Path, required=True)
     evaluation.add_argument("--output", type=Path, required=True)
+    fixed = sub.add_parser("generate-fixed-comparison")
+    fixed.add_argument("--source-evaluation", type=Path, required=True)
+    fixed.add_argument("--design", choices=("minimum", "precise"), required=True)
+    fixed.add_argument("--output", type=Path, required=True)
     check = sub.add_parser("dry-run")
     check.add_argument("--plan", type=Path, required=True)
     args = parser.parse_args()
@@ -295,6 +423,8 @@ def main():
         result = generate(args.source_plan, args.apk, args.output)
     elif args.command == "generate-evaluation":
         result = generate_evaluation(args.source_plan, args.apk, args.output)
+    elif args.command == "generate-fixed-comparison":
+        result = generate_fixed(args.source_evaluation, args.design, args.output)
     else:
         result = validate(read(args.plan), args.plan.parent)
     print(json.dumps(result, indent=2, ensure_ascii=False))

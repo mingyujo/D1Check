@@ -30,8 +30,14 @@ def write_new(path, value):
 class Device:
     def __init__(self, adb, serial):
         self.adb, self.serial = str(adb), serial
+        self.deadline = None
 
     def call(self, *args, timeout=30, check=True):
+        if self.deadline is not None:
+            remaining = self.deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError("frozen host wall limit reached")
+            timeout = min(timeout, remaining)
         cmd = [self.adb] + (["-s", self.serial] if self.serial else []) + list(map(str, args))
         completed = subprocess.run(cmd, capture_output=True, timeout=timeout)
         if check and completed.returncode:
@@ -73,6 +79,76 @@ def recover(device, sid, folder):
     return dict(status="recovered", files=copied)
 
 
+def output_gate(plan, output):
+    """Check before any device access. New comparison runs are single-use."""
+    if plan["protocol"] == p.FIXED_PROTOCOL and output.exists():
+        raise RuntimeError("comparison output already exists; recover only, never rerun")
+    for entry in plan["entries"]:
+        folder = output / f"{entry['index']:02d}_{entry['session_id']}"
+        failed = any((folder / name).exists() for name in
+                     ("error.json", "cleanup_error.txt", "recovery_error.txt"))
+        if folder.exists() and (failed or not (folder / "validated.json").exists()):
+            raise RuntimeError(f"prior attempt requires recovery, no automatic retry: {folder}")
+
+
+def battery_gate(plan, battery, first):
+    def value(name):
+        match = re.search(rf"(?m)^\s*{name}:\s*(\d+)\s*$", battery)
+        if not match:
+            raise RuntimeError(f"battery {name} unavailable")
+        return int(match.group(1))
+    minimum = plan["battery_start_percent"] if first else plan["battery_min_percent"]
+    if value("level") < minimum or value("scale") != 100:
+        raise RuntimeError("battery level gate failed")
+    if value("temperature") > plan["battery_max_temperature_tenths_c"]:
+        raise RuntimeError("battery temperature gate failed")
+    if plan["require_unplugged"]:
+        for supply in ("AC", "USB", "Wireless"):
+            if not re.search(rf"{supply} powered:\s*false\b", battery, re.I):
+                raise RuntimeError("unplugged power gate failed")
+
+
+def quality_gate(summary, rows, environment=None):
+    if summary["status"] != "completed" or summary["arrival_lag_exceeded"]:
+        raise RuntimeError("quality or completion gate failed; preserve and stop")
+    if environment is not None:
+        if not environment or any("error" in e or e.get("thermal_status") != 0 or
+                                  e.get("low_memory") is not False or
+                                  e.get("admission_reason", "admit") != "admit" for e in environment):
+            raise RuntimeError("environment/admission gate failed")
+        if any(r["terminal_status"] != "succeeded" for r in rows):
+            raise RuntimeError("failed/rejected/expired/unfinished request; preserve and stop")
+
+
+def bounded_cool(device, seconds):
+    if device.deadline is not None and time.monotonic() + seconds >= device.deadline:
+        raise TimeoutError("insufficient frozen host time for cooling")
+    time.sleep(seconds)
+
+
+def allocation_gate(manifest, rows):
+    for row in rows:
+        if row["terminal_status"] != "succeeded":
+            continue
+        expected = None
+        if manifest["policy"] == "CPU_URGENT":
+            expected = "CPU"
+        elif manifest["policy"] == "FIXED_SPLIT":
+            expected = "CPU" if row["priority"] == "urgent" else "GPU"
+        if expected and row["selected_backend"] != expected:
+            raise RuntimeError("observed allocation violates frozen policy")
+
+
+def require_stopped(device):
+    # pidof's nonzero result cannot distinguish absent process from ADB loss.
+    listing = device.call("shell", "ps", "-A", timeout=15).stdout.decode(errors="replace")
+    if not listing.strip() or "PID" not in listing.splitlines()[0]:
+        raise RuntimeError("process inventory unavailable")
+    names = [line.split()[-1] for line in listing.splitlines()[1:] if line.strip()]
+    if any(name == PACKAGE or name.startswith(PACKAGE + ":") for name in names):
+        raise RuntimeError("app process survived force-stop")
+
+
 def run(plan_file, apk, adb, serial, output, approved_cap, expected_plan_sha256):
     plan_file, apk, output = Path(plan_file), Path(apk), Path(output)
     if p.digest(plan_file) != expected_plan_sha256:
@@ -83,13 +159,16 @@ def run(plan_file, apk, adb, serial, output, approved_cap, expected_plan_sha256)
         raise RuntimeError("approved session cap does not match the frozen plan")
     if p.digest(apk) != plan["apk_sha256"]:
         raise RuntimeError("APK changed after plan freeze")
+    output_gate(plan, output)
+    fixed = plan["protocol"] == p.FIXED_PROTOCOL
     device = Device(adb, serial)
+    if fixed:
+        device.deadline = time.monotonic() + plan["host_wall_seconds"]
     identity = device.identify(plan["device_fingerprint"])
-    output.mkdir(parents=True, exist_ok=True)
-    for entry in plan["entries"]:
-        folder = output / f"{entry['index']:02d}_{entry['session_id']}"
-        if folder.exists() and not (folder / "validated.json").exists():
-            raise RuntimeError(f"prior attempt requires recovery, no automatic retry: {folder}")
+    output.mkdir(parents=True, exist_ok=not fixed)
+    if fixed:
+        write_new(output / "run_attempt.json", dict(utc=utc(), plan_sha256=expected_plan_sha256,
+                                                   session_cap=approved_cap))
     installed = device.call("shell", "pm", "path", PACKAGE, check=False)
     if installed.returncode == 0 and installed.stdout.strip():
         # -r retains app data. This runner never clears data or uninstalls.
@@ -101,6 +180,8 @@ def run(plan_file, apk, adb, serial, output, approved_cap, expected_plan_sha256)
             raise RuntimeError("resume device identity changed")
     else:
         write_new(identity_path, identity)
+    if fixed:
+        bounded_cool(device, plan["initial_cool_seconds"])
     block_temperatures = {}
     for prior in plan["entries"]:
         prior_folder = output / f"{prior['index']:02d}_{prior['session_id']}"
@@ -129,6 +210,8 @@ def run(plan_file, apk, adb, serial, output, approved_cap, expected_plan_sha256)
                 raise RuntimeError("thermal gate outside zero")
             battery = device.call("shell", "dumpsys", "battery").stdout.decode(errors="replace")
             (folder / "before_battery.txt").write_text(battery, encoding="utf-8")
+            if fixed:
+                battery_gate(plan, battery, entry["index"] == 0)
             match = re.search(r"temperature:\s*(\d+)", battery)
             if not match:
                 raise RuntimeError("battery temperature unavailable")
@@ -137,6 +220,8 @@ def run(plan_file, apk, adb, serial, output, approved_cap, expected_plan_sha256)
             if abs(temperature - reference) > 10:
                 raise RuntimeError("paired block start temperature differs by more than 1 C")
             device.call("shell", "am", "force-stop", PACKAGE)
+            if fixed:
+                require_stopped(device)
             for path, prefix in ((remote_input, ("run-as", PACKAGE)),
                                  (remote_output, ("run-as", PACKAGE)), (shared, ())):
                 if device.call("shell", *prefix, "test", "-e", path, check=False).returncode == 0:
@@ -188,10 +273,14 @@ def run(plan_file, apk, adb, serial, output, approved_cap, expected_plan_sha256)
             rows = p.read(folder / "artifacts" / "requests.json")
             if len(rows) != entry["request_count"] or p.digest(folder / "artifacts" / "manifest.json") != entry["manifest_sha256"]:
                 raise RuntimeError("artifact count or manifest mismatch")
+            if {r["request_id"] for r in rows} != {r["request_id"] for r in manifest_data["requests"]}:
+                raise RuntimeError("request identity mismatch")
             for row in rows:
                 event_file = folder / "artifacts" / (row["request_id"] + ".event.json")
                 if not event_file.exists() or p.read(event_file)["request_id"] != row["request_id"]:
                     raise RuntimeError("request event missing or mismatched")
+                if fixed and p.read(event_file) != row:
+                    raise RuntimeError("request event/ledger content mismatch")
                 if row["terminal_status"] == "succeeded":
                     payload = folder / "artifacts" / (row["request_id"] + ".result.json")
                     if not payload.exists() or p.digest(payload) != row["result_sha256"]:
@@ -200,10 +289,11 @@ def run(plan_file, apk, adb, serial, output, approved_cap, expected_plan_sha256)
                               "-s", "D1ARRIVAL:I", "tflite:I").stdout.decode(errors="replace")
             (folder / "delegate_log.txt").write_text(log, encoding="utf-8")
             gpu = delegate_proof(manifest_data, log)
+            quality_gate(summary, rows, p.read(folder / "artifacts" / "environment.json") if fixed else None)
+            if fixed:
+                allocation_gate(manifest_data, rows)
             write_new(folder / "validated.json", dict(utc=utc(), summary=summary, recovery=result,
                                                       gpu=gpu))
-            if summary["status"] != "completed" or summary["arrival_lag_exceeded"]:
-                raise RuntimeError("quality or completion gate failed; preserve and stop")
         except BaseException as error:
             (folder / "error.json").write_bytes(p.canonical(dict(utc=utc(), error=repr(error))))
             try:
@@ -212,14 +302,28 @@ def run(plan_file, apk, adb, serial, output, approved_cap, expected_plan_sha256)
                 (folder / "recovery_error.txt").write_text(repr(recovery_error), encoding="utf-8")
             raise
         finally:
+            deadline = device.deadline
+            device.deadline = None  # Bounded cleanup remains available after the run deadline.
             try:
-                device.call("shell", "am", "force-stop", PACKAGE)
+                device.call("shell", "am", "force-stop", PACKAGE, timeout=15)
+                after = device.call("shell", "dumpsys", "thermalservice", timeout=15).stdout
                 (folder / "after_thermal.txt").write_bytes(
-                    device.call("shell", "dumpsys", "thermalservice").stdout)
+                    after)
+                if fixed:
+                    if not re.search(rb"Thermal Status:\s*0\b", after):
+                        raise RuntimeError("post-session thermal gate failed")
+                    require_stopped(device)
+                write_new(folder / "host_cleanup.json", dict(utc=utc(), status="completed"))
             except BaseException as cleanup_error:
                 (folder / "cleanup_error.txt").write_text(repr(cleanup_error), encoding="utf-8")
+                raise
+            finally:
+                device.deadline = deadline
         if entry["index"] < len(plan["entries"]) - 1:
-            time.sleep(plan["cool_down_seconds"])
+            bounded_cool(device, plan["cool_down_seconds"])
+    if fixed:
+        write_new(output / "run_complete.json", dict(utc=utc(), sessions=len(plan["entries"]),
+                                                     status="completed", plan_sha256=expected_plan_sha256))
 
 
 def main():
@@ -246,8 +350,16 @@ def main():
         p.validate(plan, args.plan.parent)
         print(json.dumps(Device(args.adb, args.serial).identify(plan["device_fingerprint"]), indent=2))
     elif args.command == "run":
-        run(args.plan, args.apk, args.adb, args.serial, args.output,
-            args.approved_cap, args.expected_plan_sha256)
+        existed = args.output.exists()
+        try:
+            run(args.plan, args.apk, args.adb, args.serial, args.output,
+                args.approved_cap, args.expected_plan_sha256)
+        except BaseException as error:
+            if not existed and args.output.exists():
+                write_new(args.output / "run_error.json", dict(utc=utc(), error=repr(error),
+                    consumed_attempts=len(list(args.output.glob("*/attempt.json"))),
+                    rule="no automatic retry, replacement or restart; recovery only"))
+            raise
     else:
         print(json.dumps(recover(Device(args.adb, args.serial), args.session_id, args.output), indent=2))
 

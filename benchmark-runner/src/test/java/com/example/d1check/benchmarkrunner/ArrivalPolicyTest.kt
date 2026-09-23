@@ -30,4 +30,30 @@ class ArrivalPolicyTest {
         assertEquals("GPU", ArrivalPolicy.choose(ArrivalPolicy.FIXED, listOf(normal), true, true, 0, estimates)?.backend)
         assertEquals("CPU", ArrivalPolicy.choose(ArrivalPolicy.FIXED, listOf(normal, urgent), true, true, 0, estimates)?.backend)
     }
+
+    @Test fun fixedSplitNeverStealsIdleOtherLane() {
+        assertNull(ArrivalPolicy.choose(ArrivalPolicy.FIXED, listOf(normal), true, false, 0, estimates))
+        assertNull(ArrivalPolicy.choose(ArrivalPolicy.FIXED, listOf(urgent), false, true, 400, estimates))
+        val choice = ArrivalPolicy.choose(ArrivalPolicy.FIXED, listOf(normal, urgent), false, true, 400, estimates)
+        assertEquals(normal, choice?.ticket)
+        assertEquals("GPU", choice?.backend)
+        val reversedTask = urgent.copy(task = "detection")
+        assertEquals("CPU", ArrivalPolicy.choose(ArrivalPolicy.FIXED, listOf(reversedTask), true, true, 0, estimates)?.backend)
+    }
+
+    @Test fun decisionsOnlySeeProvidedArrivalsAndDoNotMutateQueue() {
+        val arrived = mutableListOf(normal)
+        for (policy in listOf(ArrivalPolicy.URGENT, ArrivalPolicy.FIXED, ArrivalPolicy.CONDITIONAL)) {
+            val choice = ArrivalPolicy.choose(policy, arrived, true, true, 0, estimates)
+            assertEquals(normal, choice?.ticket)
+            assertEquals(listOf(normal), arrived)
+            assertNull(ArrivalPolicy.choose(policy, emptyList(), true, true, 0, estimates))
+        }
+    }
+
+    @Test fun conditionalTieUsesCpuAndCannotPreemptBusyLanes() {
+        val tie = estimates + ("classification_GPU" to 100L)
+        assertEquals("CPU", ArrivalPolicy.choose(ArrivalPolicy.CONDITIONAL, listOf(urgent), true, true, 0, tie)?.backend)
+        assertNull(ArrivalPolicy.choose(ArrivalPolicy.CONDITIONAL, listOf(normal, urgent), false, false, 400, estimates))
+    }
 }
