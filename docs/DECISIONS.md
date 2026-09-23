@@ -385,3 +385,12 @@
 - 확정된 규칙 적용: 사용자 재연결은 retry0·첫 기술 실패 종료 규칙을 변경하지 않는다. 남은3세션을 이어 실행하거나 실패 FIXED_SPLIT을 대체하지 않는다. 별도 복구 receipt를 남기며 원래 오류를 보존한다.
 - 해석: burst 완전2pair와 low2pair는 계획n3 미달로 주/해당 CI 미산출. queue3pair의 사전 보조95% CI는 탐색으로만 표시한다. C−F는 관측된 모든 완전pair에서 urgent 비용과 normal 이득이 함께 나타났다. 전체 평가 완료·전면 우월성·동등성·비열등성을 주장하지 않고 기존 FAIL 유지.
 - 산출물: [결과·재현 명령](ARRIVAL_FIXED_SPLIT_RESULTS_20260923.md), 외부 analysis_v3/FINAL_REPORT.md와 recovery_v1/recovery_receipt.json. 새 raw566파일·기존758파일 보존. 추가 측정은 별도 전향적 계획/예산 판단 대상이며 이번 작업에서 실행하지 않는다.
+
+## 2026-09-24 — ARRIVAL-TIMING-DEV-01 시간 계약 보완
+
+- 상태: 채택(사용자 승인 설계·코드·PC 범위). 기존 CONDITIONAL의 dispatch 기준 잔여 소진·누락 snapshot 문제를 시간 경계/재현 보완으로 다룬다. 간섭 보정 P의 우수성 근거로 확대하지 않는다.
+- 새 protocol `arrival-timing-dev-v1` / ID `CONDITIONAL_TIMING_DEV_1`에만 phase 추정·판단 기록을 적용한다. 기존 ArrivalPolicy/old protocol/원자료·분석·198요청 FAIL·fixed-split 부분 결과·동결 simulation은 의미와 재현 경로를 유지한다.
+- 판단→dispatch, dispatch→execution, execution→output, output→persist, persist→실제 scheduler callback의 5구간을 분리한다. worker_release는 기존 event 저장 전 경계를 유지하고 lane_available을 별도로 기록한다. host inference는 API 호출 구간이며 kernel 계측으로 부르지 않는다.
+- 추정 소진/필수값 미정은 UNKNOWN으로 기록하고 busy를 가용으로 전환하지 않는다. 미확정 비교는 CPU idle 진단 fallback/CPU busy 대기다. 20값 모두 null인 출처 포함 설정을 제공하며 과거 단독 수치를 새 경계에 전용하지 않는다. 실험 READY 승격·새 성공 기준·실측 예산 확정 없음.
+- 모든 선택/대기 호출·phase를512개 bounded RAM snapshot으로 저장하고 종료 때 flush한다. overflow는 이후 배정 중지·trace 무효이며 강제 종료의 기록 소실은 성공으로 취급하지 않는다. 새 PC 검증은 당시 입력 재생·경계/분모/누락 검사이고 전체 GPU/품질 gate가 아니다.
+- 근거·검증·한계·후속 질문: [별도 계약](ARRIVAL_TIMING_DEV_20260924.md). 구현/관련 PC 통과와 실기기 미검증을 구분한다. 폐기한 기존 결정 없음; 완료·중단 실측을 재개하지 않는다.

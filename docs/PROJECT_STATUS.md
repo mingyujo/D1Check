@@ -1,6 +1,16 @@
 # D1Check 현재 상태
 
-## 2026-09-23 고정 CPU/GPU 비교 — 현재 작업
+## 2026-09-24 시간 경계·판단 재현 — 현재 작업
+
+- `ARRIVAL-TIMING-DEV-01`, branch `feature/arrival-scheduling-20260923`, 시작/현재 HEAD `d95a25f9095d4470a612128d7b79890b0d4732a8`. 시작 clean, 현재 이번 소스·문서 변경 미커밋. **설계·최소 코드·PC 검증 완료 / 실기기 미검증 / 실험 준비 미완료**. [시간·추정 계약과 검증 기록](ARRIVAL_TIMING_DEV_20260924.md).
+- 새 `arrival-timing-dev-v1` / `CONDITIONAL_TIMING_DEV_1`은 기존 정책 ID/동작을 보존하는 별도 개발 버전이다. 판단→배정→실행→host inference→output→persist→worker release→scheduler lane available을 구분한다. snapshot·null 결정·후보 예측/이유와 버전·출처를 bounded RAM trace로 기록한다.
+- 잔여 소진은 `UNKNOWN_OVERRUN`, 미확정은 `UNKNOWN_MISSING_BUDGET`; busy를 0/가용으로 바꾸지 않는다. 불확실 시 CPU idle에서만 긴급 우선 진단 fallback, busy면 대기. callback에서만 실제 lane 재사용. 완전한 B3/P·간섭 보정·개선 증거로 부르지 않는다.
+- 2026-09-24 KST, `d95a25f`+미커밋 변경 대상: 관련 modelProbe 소스 컴파일 및 Kotlin20(신규13/기존7), Python9 PASS. 설정 dry-run은 네 cell×5구간 **20 null / experiment_ready=false**. 실기기·ADB·APK assemble/설치·본 simulation 미실행. 기존 감사/전체 분석/전체 테스트 반복 없음.
+- 기존 198요청 FAIL 및 아래 fixed-split 중단/분모/재시도0·재개 금지 보존. 원본·모델·APK·frozen 계약 수정 없음. commit/push/merge 없음.
+- 미확정: 새 경계에 맞는 추정값, 초과 잔여 근거, 계측 비용·callback 실기기 확인, 고정 backend 진단 수집 경로/새 예산. 기존 device CLI는 새 protocol을 실행하지 않는다.
+- 다음 행동(최대3): (1) 별도 시간 경계 보정 계획에 질문·입출력·고정 backend 수집 경로 정의, (2) 그 근거로 필요한 최소 실측 예산 제안·승인, (3) 승인 뒤에만 새 버전 기기 검증. 간섭 인과 식별/독립 평가와 분리한다.
+
+## 2026-09-23 고정 CPU/GPU 비교 — 종료 기록
 
 - `ARRIVAL-FIXED-01`, branch `feature/arrival-scheduling-20260923`, 시작 HEAD `97225b1` clean. **STOPPED_TECHNICAL_CONNECTION_NO_RETRY / 전체 평가 미완료 / 부분 실측·복구·분석 완료**. [결과 보고서](ARRIVAL_FIXED_SPLIT_RESULTS_20260923.md), [동결 설계](ARRIVAL_FIXED_SPLIT_COMPARISON_20260923.md).
 - 사용자 승인 최소안27세션·162평가요청·216warmup, retry/대체/추가0. plan SHA `9812ce6ec8d04c43e9a072bf15d712a222304ca96e2a0033d564748decaa213f`, 앱/APK/정책/threshold/순서 변경 없음. 기존27세션 `conditional_joint_primary_pass=false`와 원본은 그대로다.

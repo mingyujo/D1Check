@@ -263,3 +263,9 @@ PC 준비 완료, 새 실측 미실행. 각 조건3 block/27세션·162요청·2
 
 
 2026-09-23 실행 후 갱신: 최소27세션안 승인 후24시도/23완료에서 무선 ADB 연결이 단절되어 동결 규칙대로 종료했다. 실패는24번째 FIXED_SPLIT burst 세션의 Activity 실행 전 thermal 확인이다. retry/대체/추가0, 재연결 후 cleanup만 완료했다. 142평가요청·184warmup 실행, 계획162/216 중 미실행분 보존. [부분 결과](ARRIVAL_FIXED_SPLIT_RESULTS_20260923.md)는 burst C−F 완전2pair의 urgent +72.27%/normal−61.69% 상충을 기술하되 주 CI/전체 평가 완료를 주장하지 않는다. 새 정책/성공 기준 변경 없음. 추가 실측은 별도 계획·승인 필요이며 남은 예산으로 이번 run을 자동 재개하지 않는다.
+
+## 2026-09-24 추가 작업: ARRIVAL-TIMING-DEV-01
+
+현재 목표는 CONDITIONAL의 시간 경계·잔여 추정·판단 재현 보완이다. [별도 개발 계약](ARRIVAL_TIMING_DEV_20260924.md)의 새 protocol/ID로만 구현하고 기존 B3/P 정의·기존 정책·동결 결과를 소급 변경하지 않는다. 이번 산출물은 완전한 B3/P나 성능 개선 검증이 아니다. 간섭·EDF/aging·Band 이식은 범위 밖이다.
+
+완료 조건: dispatch/실행/host inference/output/persist/worker release/실제 scheduler availability 구분, 관측 당시 입력과 null 결정을 포함한 bounded trace, phase별 추정/UNKNOWN 처리, 위험 시나리오의 관련 PC 테스트, 후속 질문과 미확정 설정 공개. 설계·최소 구현·PC 검증은 완료했다. 네 cell×5구간 budget은 null이며 실기기 검증/실험 READY는 미완료다. 이후 별도 시간 경계 보정 계획·예산 판단부터 진행하며 기존 중단 run을 이어 실행하지 않는다.

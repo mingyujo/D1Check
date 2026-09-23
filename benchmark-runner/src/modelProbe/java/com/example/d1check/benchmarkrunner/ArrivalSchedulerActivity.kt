@@ -44,6 +44,8 @@ class ArrivalSchedulerActivity : Activity() {
         val adapters = mutableMapOf<String, ProbeTaskAdapter>()
         var failure: String? = null
         var started = false
+        var timing: ArrivalTimingDev.Recorder? = null
+        var timingComplete = false
         try {
             require(intent.action == "com.example.d1check.benchmarkrunner.action.ARRIVAL_SCHEDULER")
             val sid = requireNotNull(intent.getStringExtra("session_id"))
@@ -52,19 +54,46 @@ class ArrivalSchedulerActivity : Activity() {
             val manifestFile = File(inputs, "manifest.json")
             require(manifestFile.length() in 1..1_048_576)
             val m = JSONObject(manifestFile.readText())
-            require(m.getString("protocol") == "arrival-scheduler-v1" && m.getString("session_id") == sid)
+            val protocol = m.getString("protocol")
+            val timingDev = protocol == ArrivalTimingDev.PROTOCOL
+            require(protocol in setOf("arrival-scheduler-v1", ArrivalTimingDev.PROTOCOL) && m.getString("session_id") == sid)
             require(m.getString("apk_sha256") == ProbeModelFile.sha256(File(applicationInfo.sourceDir)))
             require(m.getString("device_fingerprint") == Build.FINGERPRINT)
             require(m.getLong("maximum_duration_ms") == 120_000L)
             require(m.getInt("cpu_threads") == 1 && m.getInt("maximum_concurrency") == 2)
             require(m.getString("memory_contract") == V4Gate.CONTRACT && m.getInt("thermal_gate") == 0)
             val policy = m.getString("policy")
-            require(policy in setOf(ArrivalPolicy.FIFO, ArrivalPolicy.URGENT, ArrivalPolicy.CONDITIONAL, ArrivalPolicy.FIXED))
+            require(if (timingDev) policy == ArrivalTimingDev.POLICY else
+                policy in setOf(ArrivalPolicy.FIFO, ArrivalPolicy.URGENT, ArrivalPolicy.CONDITIONAL, ArrivalPolicy.FIXED))
             require(m.getLong("arrival_lag_limit_ms") in 1..1000)
-            val estimatesObject = m.getJSONObject("estimated_service_ms")
             val expectedKeys = setOf("classification_CPU", "classification_GPU", "detection_CPU", "detection_GPU")
-            require(estimatesObject.keys().asSequence().toSet() == expectedKeys)
-            val estimates = expectedKeys.associateWith { estimatesObject.getLong(it).also { value -> require(value in 1..20_000) } }
+            val estimates = if (!timingDev) {
+                val estimatesObject = m.getJSONObject("estimated_service_ms")
+                require(estimatesObject.keys().asSequence().toSet() == expectedKeys)
+                expectedKeys.associateWith { estimatesObject.getLong(it).also { value -> require(value in 1..20_000) } }
+            } else emptyMap()
+            if (timingDev) {
+                require(m.getBoolean("development_only") && !m.getBoolean("experiment_ready"))
+                val config = m.getJSONObject("timing_estimates")
+                require(config.getString("contract") == ArrivalTimingDev.ESTIMATE_CONTRACT)
+                val budgets = config.getJSONObject("budgets")
+                require(budgets.keys().asSequence().toSet() == expectedKeys)
+                val parsed = expectedKeys.associateWith { key ->
+                    val b = budgets.getJSONObject(key)
+                    require(b.keys().asSequence().toSet() == setOf("decision_to_dispatch_ns", "dispatch_to_start_ns", "start_to_output_ready_ns",
+                        "output_ready_to_persist_ns", "persist_to_lane_available_ns"))
+                    fun field(name: String): Long? {
+                        require(b.has(name))
+                        if (b.isNull(name)) return null
+                        require(b.get(name) is Int || b.get(name) is Long)
+                        return b.getLong(name)
+                    }
+                    ArrivalTimingDev.Budget(field("dispatch_to_start_ns"), field("start_to_output_ready_ns"),
+                        field("output_ready_to_persist_ns"), field("persist_to_lane_available_ns"), field("decision_to_dispatch_ns"))
+                }
+                timing = ArrivalTimingDev.Recorder(::now, parsed, config.getString("version"), config.getString("provenance"))
+            }
+            val recorder = timing
             val modelsObject = m.getJSONObject("models")
             require(modelsObject.keys().asSequence().toSet() == expectedKeys)
             val specs = expectedKeys.associateWith { key -> ModelProbeManifestParser.parse(modelsObject.getJSONObject(key)).also { spec ->
@@ -104,7 +133,7 @@ class ArrivalSchedulerActivity : Activity() {
                 require(UUID.fromString(id).toString() == id && ids.add(id))
             }
             require(expectedKeys.all { key -> warmups.count { it.getString("model_key") == key } == 2 })
-            val output = canonicalProbeOutputRoot(filesDir, "arrival-scheduler-v1", sid)
+            val output = canonicalProbeOutputRoot(filesDir, protocol, sid)
             require(!output.exists() && output.mkdirs())
             root = output
             save(output, "manifest.json", manifestFile.readBytes())
@@ -141,7 +170,9 @@ class ArrivalSchedulerActivity : Activity() {
                     val remainingMs = if (busy.getValue("CPU"))
                         maxOf(0, (activeCpu[0] + activeCpuEstimate[0] - now()) / 1_000_000) else 0
                     val begin = now()
-                    val choice = ArrivalPolicy.choose(policy, waiting, !busy.getValue("CPU"), !busy.getValue("GPU"), remainingMs, estimates)
+                    val devDecision = recorder?.choose(waiting)
+                    val choice = if (devDecision != null) devDecision.first.choice else
+                        ArrivalPolicy.choose(policy, waiting, !busy.getValue("CPU"), !busy.getValue("GPU"), remainingMs, estimates)
                     val decisionEnd = now()
                     if (choice == null) break
                     val ticket = choice.ticket
@@ -151,8 +182,9 @@ class ArrivalSchedulerActivity : Activity() {
                     row["selected_backend"] = choice.backend
                     row["decision_reason"] = choice.reason
                     row["policy_compute_ns"] = decisionEnd - begin
-                    row["dispatch_ns"] = decisionEnd
-                    if (choice.backend == "CPU") {
+                    devDecision?.let { row["policy_evaluation_ns"] = it.second }
+                    row["dispatch_ns"] = recorder?.mark(choice.backend, ticket, ArrivalTimingDev.Phase.ASSIGNED) ?: decisionEnd
+                    if (choice.backend == "CPU" && recorder == null) {
                         activeCpu[0] = decisionEnd
                         activeCpuEstimate[0] = estimates.getValue("${ticket.task}_CPU") * 1_000_000
                     }
@@ -164,10 +196,13 @@ class ArrivalSchedulerActivity : Activity() {
                                 row["terminal_status"] = "rejected"; row["reason"] = reason
                             } else {
                                 val image = images.getValue(row.getValue("sample_id") as String)
-                                row["execution_start_ns"] = now()
-                                val result = adapters.getValue("${ticket.task}_${choice.backend}").execute(image.first, image.second)
+                                row["execution_start_ns"] = recorder?.mark(choice.backend, ticket, ArrivalTimingDev.Phase.EXECUTING) ?: now()
+                                val observer: ((Long, Long) -> Unit)? = if (recorder == null) null else { start, end ->
+                                    row["inference_start_ns"] = start; row["inference_end_ns"] = end
+                                }
+                                val result = adapters.getValue("${ticket.task}_${choice.backend}").execute(image.first, image.second, observer)
                                 val payload = ModelProbeArtifacts.json(result).toByteArray(Charsets.UTF_8)
-                                val ready = now()
+                                val ready = recorder?.mark(choice.backend, ticket, ArrivalTimingDev.Phase.OUTPUT_READY) ?: now()
                                 row["output_ready_ns"] = ready
                                 row["inference_ns"] = result["inference_ns"]
                                 row["actual_backend"] = result["actual_backend"]
@@ -176,7 +211,7 @@ class ArrivalSchedulerActivity : Activity() {
                                 // Urgent response is ready before durable persistence, as in the existing contract.
                                 row["completion_ns"] = if (ticket.priority == "urgent") ready else null
                                 save(output, "${ticket.id}.result.json", payload)
-                                row["persist_complete_ns"] = now()
+                                row["persist_complete_ns"] = recorder?.mark(choice.backend, ticket, ArrivalTimingDev.Phase.PERSISTED) ?: now()
                                 if (ticket.priority == "normal") row["completion_ns"] = row["persist_complete_ns"]
                                 row["late_success"] = (row["completion_ns"] as Long) > (row["deadline_ns"] as Long)
                                 row["queue_wait_ns"] = (row["execution_start_ns"] as Long) - (row["queue_entry_ns"] as Long)
@@ -188,11 +223,19 @@ class ArrivalSchedulerActivity : Activity() {
                             row["terminal_status"] = "failed"; row["reason"] = e.toString()
                         } finally {
                             row["terminal_ns"] = now()
-                            row["worker_release_ns"] = now()
+                            row["worker_release_ns"] = recorder?.mark(choice.backend, ticket, ArrivalTimingDev.Phase.WORKER_RELEASED) ?: now()
                             try { save(output, "${ticket.id}.event.json", ModelProbeArtifacts.json(row).toByteArray()) }
                             catch (e: Throwable) { Log.e("D1ARRIVAL", "event write failed", e) }
-                            done.countDown()
-                            dispatch.execute { busy[choice.backend] = false; pump() }
+                            if (recorder == null) {
+                                done.countDown()
+                                dispatch.execute { busy[choice.backend] = false; pump() }
+                            } else {
+                                dispatch.execute {
+                                    row["lane_available_ns"] = recorder.mark(choice.backend, ticket, ArrivalTimingDev.Phase.AVAILABLE)
+                                    busy[choice.backend] = false
+                                    try { pump() } finally { done.countDown() }
+                                }
+                            }
                         }
                     }
                 }
@@ -204,7 +247,7 @@ class ArrivalSchedulerActivity : Activity() {
                     val actual = now()
                     val id = q.getString("request_id")
                     val row = linkedMapOf<String, Any?>(
-                        "protocol" to "arrival-scheduler-v1", "session_id" to sid, "request_id" to id,
+                        "protocol" to protocol, "session_id" to sid, "request_id" to id,
                         "ordinal" to q.getInt("ordinal"), "task_id" to q.getString("task_id"),
                         "priority" to q.getString("priority"), "sample_id" to q.getString("sample_id"),
                         "scheduled_arrival_ns" to target, "actual_arrival_ns" to actual,
@@ -222,6 +265,8 @@ class ArrivalSchedulerActivity : Activity() {
             val end = now()
             if (!drained) failure = "bounded_drain_timeout"
             dispatch.submit {}.get(2, TimeUnit.SECONDS)
+            if (recorder?.overflow == true) failure = "decision_trace_overflow"
+            timingComplete = drained && failure == null
             val all = requests.map { q ->
                 val id = q.getString("request_id")
                 if (File(output, "$id.event.json").isFile) rows[id]!!.toMap() else mapOf(
@@ -235,7 +280,7 @@ class ArrivalSchedulerActivity : Activity() {
             save(output, "environment.json", environment.toList())
             val lagLimit = m.getLong("arrival_lag_limit_ms") * 1_000_000
             val lateArrivals = all.count { (it["arrival_lag_ns"] as? Long ?: Long.MAX_VALUE) > lagLimit }
-            save(output, "summary.json", mapOf("protocol" to "arrival-scheduler-v1", "session_id" to sid,
+            save(output, "summary.json", mapOf("protocol" to protocol, "session_id" to sid,
                 "policy" to policy, "workload_start_ns" to workloadStart, "drain_end_ns" to end,
                 "request_count" to requests.size, "terminal_count" to all.count { it["terminal_status"] in setOf("succeeded", "failed", "rejected", "expired") },
                 "arrival_lag_limit_ns" to lagLimit, "arrival_lag_exceeded" to lateArrivals,
@@ -251,6 +296,10 @@ class ArrivalSchedulerActivity : Activity() {
                 try { lane.submit { adapters.filterKeys { it.endsWith(if (lane === cpu) "_CPU" else "_GPU") }.values.forEach { it.close() } }
                     .get(5, TimeUnit.SECONDS) } catch (e: Throwable) { failure = "$failure; close: $e" }
             }
+            // Bounded in-memory trace: flush outside dispatch/worker critical paths, including failed runs.
+            timing?.let { trace -> root?.let { output -> try {
+                save(output, "decision_trace.json", trace.artifact(timingComplete))
+            } catch (e: Throwable) { failure = "$failure; trace_flush: $e" } } }
             root?.let { if (failure != null) try { save(it, "failure.json", mapOf("reason" to failure, "started" to started, "mono_ns" to now())) } catch (_: Throwable) {} }
             root?.let { try { save(it, "cleanup.json", mapOf("status" to if (failure == null) "completed" else "failed",
                 "mono_ns" to now(), "error" to failure)) } catch (e: Throwable) { Log.e("D1ARRIVAL", "cleanup receipt failed", e) } }

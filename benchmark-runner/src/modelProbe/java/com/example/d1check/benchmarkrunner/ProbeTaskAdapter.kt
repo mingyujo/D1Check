@@ -36,7 +36,7 @@ internal class ProbeTaskAdapter(
         session = ProbeRawSession.create(manifest, model)
     }
 
-    fun execute(image: File, imageSha256: String): Map<String, Any?> {
+    fun execute(image: File, imageSha256: String, invocationObserver: ((Long, Long) -> Unit)? = null): Map<String, Any?> {
         // Integrity/read/decode are part of each service, not a cached synthetic tensor.
         require(ProbeModelFile.sha256(image) == imageSha256)
         ProbeImageContract.requireCanonicalPng(image.readBytes())
@@ -54,7 +54,7 @@ internal class ProbeTaskAdapter(
             val tensor = if (classification) java.nio.ByteBuffer.allocateDirect(resized.size * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN).apply {
                 resized.forEach { putFloat(((it.toInt() and 255) - 127f) / 128f) }; rewind()
             } else ProbeImageContract.tensor(resized)
-            val raw = session.invokePrepared(tensor)
+            val raw = session.invokePrepared(tensor, invocationObserver = invocationObserver)
             val results: List<Map<String, Any?>> = if (classification) {
                 raw.outputs.single().indices.sortedWith(compareByDescending<Int> { raw.outputs[0][it] }.thenBy { it }).take(5).map { i ->
                     mapOf("label" to labels[i], "class_index" to i, "score" to raw.outputs[0][i])
