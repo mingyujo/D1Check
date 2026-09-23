@@ -1,8 +1,10 @@
 # D1Check 프로젝트 실행계획
 
+- 2026-09-24 현재 추가 작업: `ARRIVAL-TIMING-CAL-01`. [단독 시간 경계 진단](ARRIVAL_TIMING_CALIBRATION_20260924.md)의 코드·PC 준비를 완료하고, 별도16세션 개발/확인 예산은 승인 대기한다. 아래 개정4.4 목표·기존 평가 FAIL·동결 simulation 의미는 유지한다.
+
 - 개정: 4.4 / 2026-09-18 / A24 주평가와 추가 Android 기기 고정정책 재현평가 분리
 - 기준 코드: `df8192aa61eebacf83df7a7815f0c60c8bbf4004`의 `master`. 이 개정은 문서 변경이며 새 모델·스케줄러 구현 또는 실기기 PASS가 아니다.
-- 현재 작업: `ARRIVAL-EXT-01` — 기존 support-constrained 계획 동결을 보존하고, 별도 [비동시 도착 앱 내부 스케줄링 계약](ARRIVAL_SCHEDULING_EXTENSION_20260923.md)의 실측 경로를 평가한다. 이전 `SIM-PLAN-02-SUPPORT`는 [동결 계약](SUPPORT_SIMULATION_PROTOCOL.md)과 receipt `SUPPORT_SIMULATION_FREEZE_20260922.json`에서 `SIMULATION_PLAN_READY` 상태를 유지한다. 새 확장의 A24 smoke·개발 pilot 19세션과 독립 평가 27세션을 완료했고 새 본 simulation은 미실행이다.
+- 이전 확장 작업: `ARRIVAL-EXT-01` — 기존 support-constrained 계획 동결을 보존하고, 별도 [비동시 도착 앱 내부 스케줄링 계약](ARRIVAL_SCHEDULING_EXTENSION_20260923.md)의 실측 경로를 평가한다. 이전 `SIM-PLAN-02-SUPPORT`는 [동결 계약](SUPPORT_SIMULATION_PROTOCOL.md)과 receipt `SUPPORT_SIMULATION_FREEZE_20260922.json`에서 `SIMULATION_PLAN_READY` 상태를 유지한다. 새 확장의 A24 smoke·개발 pilot 19세션과 독립 평가 27세션을 완료했고 새 본 simulation은 미실행이다.
 - 현재 bounded simulation의 deadline은 사전 quantile/multiplier 규칙으로 계산한 공통 복수 engineering scenario다. 사용자 절대 SLA나 정책 우월성 기준을 승인한 것은 아니다. 이전 calibration_pending 기록은 역사적 근거로 보존한다.
 - 유지: A24 개발·주평가, 기존 80슬롯과 diagnostic v1/v2 원본, CALIB-01B PASS, 실패를 포함한 전체 도착 분모. 추가: 정책 동결 후 최소 한 대의 다른 Android 기기에서 축소 재현평가.
 - 전환: 단일 분류 모델은 기존 기준선으로 보존하고, 서로 다른 두 AI 작업의 요청 배정 문제를 새 주평가로 준비한다. 구체 모델과 마감시간은 아직 미확정이다.
@@ -269,3 +271,9 @@ PC 준비 완료, 새 실측 미실행. 각 조건3 block/27세션·162요청·2
 현재 목표는 CONDITIONAL의 시간 경계·잔여 추정·판단 재현 보완이다. [별도 개발 계약](ARRIVAL_TIMING_DEV_20260924.md)의 새 protocol/ID로만 구현하고 기존 B3/P 정의·기존 정책·동결 결과를 소급 변경하지 않는다. 이번 산출물은 완전한 B3/P나 성능 개선 검증이 아니다. 간섭·EDF/aging·Band 이식은 범위 밖이다.
 
 완료 조건: dispatch/실행/host inference/output/persist/worker release/실제 scheduler availability 구분, 관측 당시 입력과 null 결정을 포함한 bounded trace, phase별 추정/UNKNOWN 처리, 위험 시나리오의 관련 PC 테스트, 후속 질문과 미확정 설정 공개. 설계·최소 구현·PC 검증은 완료했다. 네 cell×5구간 budget은 null이며 실기기 검증/실험 READY는 미완료다. 이후 별도 시간 경계 보정 계획·예산 판단부터 진행하며 기존 중단 run을 이어 실행하지 않는다.
+
+## 2026-09-24 추가 작업: ARRIVAL-TIMING-CAL-01
+
+실제 시간 경계 보정의 첫 단계로 **추정값 없는 고정 backend 단독 진단**을 분리한다. task/backend/priority8조건, persist_all, 네 runtime resident·각2warmup·CPU thread1을 유지한다. 기존20 budget을 사후 의미 변경하지 않고 별도 관측 v2의40슬롯과 응답/lane 목적별 N/A를 기록한다. 고정 진단의 판단 비용은 적응형 판단 비용의 대체가 아니며 null/UNKNOWN·실험 준비 미완료는 유지한다.
+
+PC 완료 조건은 calibration 전용 경로, 기존 정책/자료 호환, 성공·실패·null 호출/worker release·실제 callback 계측, 소비/중단/재시도 차단, APK 격리 패키징·새 plan/manifest·dry-run·문서다. 제안은 개발8+확인8세션·64진단요청·128warmup, retry/대체/추가0이다. fit은 한 개발 session/조건의 중앙값·범위만 기술하고 freeze 후 새 확인 session의 오차를 보고한다. 이 작은 예산으로 정밀도/검정력/tail·P 우수성을 주장하지 않는다. 이번에 기기 실행하지 않으며 기존 fixed-split 미시도분과 합치지 않는다.

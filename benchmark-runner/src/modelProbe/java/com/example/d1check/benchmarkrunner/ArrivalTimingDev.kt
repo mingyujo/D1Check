@@ -5,6 +5,25 @@ internal object ArrivalTimingDev {
     const val PROTOCOL = "arrival-timing-dev-v1"
     const val POLICY = "CONDITIONAL_TIMING_DEV_1"
     const val ESTIMATE_CONTRACT = "arrival-phase-budgets-v1"
+    const val CALIBRATION_PROTOCOL = "arrival-timing-calibration-v1"
+    const val CALIBRATION_POLICY = "CALIBRATION_FIXED_BACKEND_1"
+    fun unfinishedWithArrival(planned: Map<String, Any?>, arrival: Map<String, Any?>?): Map<String, Any?> {
+        // Arrival facts were copied before worker execution; never promote missing event evidence to success.
+        require(planned["terminal_status"] == "unfinished")
+        require(arrival == null || arrival["request_id"] == planned["request_id"])
+        return arrival.orEmpty() + planned
+    }
+    fun calibrationChoice(queue: List<ArrivalPolicy.Ticket>, lanes: Map<String, Lane>, backend: String): Decision {
+        require(backend in setOf("CPU", "GPU"))
+        val ticket = ordered(queue).firstOrNull()
+        val reason = when {
+            ticket == null -> "wait_empty"
+            lanes.values.any { it.phase != Phase.AVAILABLE } -> "wait_calibration_solo_busy"
+            else -> "calibration_fixed_backend"
+        }
+        return Decision(if (reason == "calibration_fixed_backend") ArrivalPolicy.Choice(ticket!!, backend, reason) else null,
+            reason, emptyList()) // No duration forecasts or adaptive comparisons in calibration.
+    }
     /** Host API interval, including an exceptional return; observer work is outside that interval. */
     fun observeInvocation(clock: () -> Long, observer: (Long, Long) -> Unit, invoke: () -> Unit): Pair<Long, Long> {
         val start = clock()
@@ -80,13 +99,20 @@ internal object ArrivalTimingDev {
 
     /** One short monitor serializes worker observations and immutable decision inputs. No disk IO here. */
     class Recorder(private val clock: () -> Long, budgets: Map<String, Budget>, val version: String,
-                   val provenance: String, private val capacity: Int = 512) {
+                   val provenance: String, private val capacity: Int = 512, private val calibrationBackend: String? = null) {
         val budgets = budgets.toMap()
         private val lanes = mutableMapOf("CPU" to Lane("CPU"), "GPU" to Lane("GPU"))
         private val records = mutableListOf<Map<String, Any?>>()
         @Volatile var overflow = false; private set
         private var dropped = 0
-        init { require(capacity > 0 && version.isNotBlank() && provenance.isNotBlank()) }
+        init {
+            require(capacity > 0 && version.isNotBlank() && provenance.isNotBlank())
+            require(calibrationBackend == null || calibrationBackend in setOf("CPU", "GPU") &&
+                budgets.values.all { it.values().all { value -> value == null } && it.decisionToDispatch == null })
+        }
+        @Synchronized fun isIdle(observedAt: Long? = null) = lanes.values.all {
+            it.phase == Phase.AVAILABLE && (observedAt == null || it.phaseSince <= observedAt)
+        }
         private fun append(value: Map<String, Any?>) {
             if (records.size >= capacity) { overflow = true; dropped++; return }
             records.add(value + ("seq" to records.size))
@@ -110,7 +136,9 @@ internal object ArrivalTimingDev {
             val time = clock()
             val snapshot = lanes.toMap()
             val ordered = ordered(queue).toList()
-            val decision = if (overflow) Decision(null, "trace_overflow_stop", emptyList()) else decide(ordered, snapshot, time, budgets)
+            val decision = if (overflow) Decision(null, "trace_overflow_stop", emptyList())
+                else if (calibrationBackend != null) calibrationChoice(ordered, snapshot, calibrationBackend)
+                else decide(ordered, snapshot, time, budgets)
             val end = clock()
             append(mapOf("kind" to "decision", "mono_ns" to time, "decision_end_ns" to end,
                 "queue" to ordered.map(::ticketWire), "estimate_version" to version,
@@ -125,11 +153,12 @@ internal object ArrivalTimingDev {
             return Pair(if (overflow) Decision(null, "trace_overflow_stop", emptyList()) else decision, end - time)
         }
         @Synchronized fun artifact(complete: Boolean): Map<String, Any?> = mapOf(
-            "protocol" to PROTOCOL, "policy" to POLICY, "estimate_contract" to ESTIMATE_CONTRACT,
+            "protocol" to if (calibrationBackend == null) PROTOCOL else CALIBRATION_PROTOCOL,
+            "policy" to if (calibrationBackend == null) POLICY else CALIBRATION_POLICY, "estimate_contract" to ESTIMATE_CONTRACT,
             "estimate_version" to version, "estimate_provenance" to provenance,
             "budgets" to budgets.mapValues { it.value.wire() }, "capacity" to capacity,
             "clock" to "elapsedRealtimeNanos", "overflow" to overflow, "dropped_records" to dropped,
             "complete" to (complete && !overflow), "records" to records.toList(),
-            "experiment_ready" to false)
+            "experiment_ready" to false) + (calibrationBackend?.let { mapOf("calibration_backend" to it) } ?: emptyMap())
     }
 }

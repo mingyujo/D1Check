@@ -13,6 +13,7 @@ import java.io.FileOutputStream
 import java.util.UUID
 import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.atomic.AtomicReference
 
 /** Isolated development experiment. It does not change task-profile-v3/v4 or formal timing. */
 class ArrivalSchedulerActivity : Activity() {
@@ -46,6 +47,8 @@ class ArrivalSchedulerActivity : Activity() {
         var started = false
         var timing: ArrivalTimingDev.Recorder? = null
         var timingComplete = false
+        var calibrationRun = false
+        val warmupTrace = java.util.Collections.synchronizedList(mutableListOf<Map<String, Any?>>())
         try {
             require(intent.action == "com.example.d1check.benchmarkrunner.action.ARRIVAL_SCHEDULER")
             val sid = requireNotNull(intent.getStringExtra("session_id"))
@@ -55,15 +58,17 @@ class ArrivalSchedulerActivity : Activity() {
             require(manifestFile.length() in 1..1_048_576)
             val m = JSONObject(manifestFile.readText())
             val protocol = m.getString("protocol")
-            val timingDev = protocol == ArrivalTimingDev.PROTOCOL
-            require(protocol in setOf("arrival-scheduler-v1", ArrivalTimingDev.PROTOCOL) && m.getString("session_id") == sid)
+            val calibration = protocol == ArrivalTimingDev.CALIBRATION_PROTOCOL
+            calibrationRun = calibration
+            val timingDev = protocol == ArrivalTimingDev.PROTOCOL || calibration
+            require(protocol in setOf("arrival-scheduler-v1", ArrivalTimingDev.PROTOCOL, ArrivalTimingDev.CALIBRATION_PROTOCOL) && m.getString("session_id") == sid)
             require(m.getString("apk_sha256") == ProbeModelFile.sha256(File(applicationInfo.sourceDir)))
             require(m.getString("device_fingerprint") == Build.FINGERPRINT)
             require(m.getLong("maximum_duration_ms") == 120_000L)
-            require(m.getInt("cpu_threads") == 1 && m.getInt("maximum_concurrency") == 2)
+            require(m.getInt("cpu_threads") == 1 && m.getInt("maximum_concurrency") == if (calibration) 1 else 2)
             require(m.getString("memory_contract") == V4Gate.CONTRACT && m.getInt("thermal_gate") == 0)
             val policy = m.getString("policy")
-            require(if (timingDev) policy == ArrivalTimingDev.POLICY else
+            require(if (calibration) policy == ArrivalTimingDev.CALIBRATION_POLICY else if (timingDev) policy == ArrivalTimingDev.POLICY else
                 policy in setOf(ArrivalPolicy.FIFO, ArrivalPolicy.URGENT, ArrivalPolicy.CONDITIONAL, ArrivalPolicy.FIXED))
             require(m.getLong("arrival_lag_limit_ms") in 1..1000)
             val expectedKeys = setOf("classification_CPU", "classification_GPU", "detection_CPU", "detection_GPU")
@@ -91,7 +96,11 @@ class ArrivalSchedulerActivity : Activity() {
                     ArrivalTimingDev.Budget(field("dispatch_to_start_ns"), field("start_to_output_ready_ns"),
                         field("output_ready_to_persist_ns"), field("persist_to_lane_available_ns"), field("decision_to_dispatch_ns"))
                 }
-                timing = ArrivalTimingDev.Recorder(::now, parsed, config.getString("version"), config.getString("provenance"))
+                val backend = if (calibration) m.getString("calibration_backend") else null
+                if (calibration) require(m.getString("execution_purpose") == "boundary_calibration_only" &&
+                    m.getString("storage_mode") == "persist_all" && m.getString("observation_contract") == "arrival-phase-observations-v2")
+                timing = ArrivalTimingDev.Recorder(::now, parsed, config.getString("version"), config.getString("provenance"),
+                    calibrationBackend = backend)
             }
             val recorder = timing
             val modelsObject = m.getJSONObject("models")
@@ -133,6 +142,12 @@ class ArrivalSchedulerActivity : Activity() {
                 require(UUID.fromString(id).toString() == id && ids.add(id))
             }
             require(expectedKeys.all { key -> warmups.count { it.getString("model_key") == key } == 2 })
+            if (calibration) {
+                require(requests.size == 4 && requests.map { it.getLong("offset_ms") } == listOf(0L, 5000L, 10000L, 15000L))
+                require(requests.map { it.getString("task_id") }.toSet().size == 1 &&
+                    requests.map { it.getString("priority") }.toSet().size == 1 &&
+                    requests.map { it.getString("sample_id") }.toSet().size == 1)
+            }
             val output = canonicalProbeOutputRoot(filesDir, protocol, sid)
             require(!output.exists() && output.mkdirs())
             root = output
@@ -153,7 +168,13 @@ class ArrivalSchedulerActivity : Activity() {
                 val lane = if (key.endsWith("_CPU")) cpu else gpu
                 lane.submit {
                     val image = images.getValue(q.getString("sample_id"))
-                    adapters.getValue(key).execute(image.first, image.second)
+                    if (!calibration) adapters.getValue(key).execute(image.first, image.second) else {
+                        val base = mapOf("request_id" to q.getString("request_id"), "model_key" to key)
+                        warmupTrace.add(base + mapOf("kind" to "start", "mono_ns" to now()))
+                        var status = "failed"
+                        try { adapters.getValue(key).execute(image.first, image.second); status = "succeeded" }
+                        finally { warmupTrace.add(base + mapOf("kind" to "end", "mono_ns" to now(), "status" to status)) }
+                    }
                 }.get(30, TimeUnit.SECONDS)
             }
             require(admission("before_workload", null) == "admit")
@@ -164,9 +185,11 @@ class ArrivalSchedulerActivity : Activity() {
             val activeCpu = LongArray(1)
             val activeCpuEstimate = LongArray(1)
             val done = CountDownLatch(requests.size)
+            val calibrationFailure = AtomicReference<String?>(null)
+            val calibrationArrivals = ConcurrentHashMap<String, Map<String, Any?>>()
             lateinit var pump: () -> Unit
             pump = {
-                while (true) {
+                while (!calibration || calibrationFailure.get() == null) {
                     val remainingMs = if (busy.getValue("CPU"))
                         maxOf(0, (activeCpu[0] + activeCpuEstimate[0] - now()) / 1_000_000) else 0
                     val begin = now()
@@ -194,6 +217,7 @@ class ArrivalSchedulerActivity : Activity() {
                             val reason = admission("before_invocation", "${ticket.task}_${choice.backend}")
                             if (reason != "admit") {
                                 row["terminal_status"] = "rejected"; row["reason"] = reason
+                                if (calibration) calibrationFailure.compareAndSet(null, "admission_rejected: $reason")
                             } else {
                                 val image = images.getValue(row.getValue("sample_id") as String)
                                 row["execution_start_ns"] = recorder?.mark(choice.backend, ticket, ArrivalTimingDev.Phase.EXECUTING) ?: now()
@@ -221,11 +245,15 @@ class ArrivalSchedulerActivity : Activity() {
                             }
                         } catch (e: Throwable) {
                             row["terminal_status"] = "failed"; row["reason"] = e.toString()
+                            if (calibration) calibrationFailure.compareAndSet(null, "invocation_failed: $e")
                         } finally {
                             row["terminal_ns"] = now()
                             row["worker_release_ns"] = recorder?.mark(choice.backend, ticket, ArrivalTimingDev.Phase.WORKER_RELEASED) ?: now()
                             try { save(output, "${ticket.id}.event.json", ModelProbeArtifacts.json(row).toByteArray()) }
-                            catch (e: Throwable) { Log.e("D1ARRIVAL", "event write failed", e) }
+                            catch (e: Throwable) {
+                                Log.e("D1ARRIVAL", "event write failed", e)
+                                if (calibration) calibrationFailure.compareAndSet(null, "event_write_failed: $e")
+                            }
                             if (recorder == null) {
                                 done.countDown()
                                 dispatch.execute { busy[choice.backend] = false; pump() }
@@ -254,8 +282,12 @@ class ArrivalSchedulerActivity : Activity() {
                         "arrival_lag_ns" to actual - target,
                         "deadline_ns" to target + q.getLong("deadline_ms") * 1_000_000)
                     rows[id] = row
+                    if (calibration) calibrationArrivals[id] = row.toMap() // Immutable arrival facts before dispatch.
                     dispatch.execute {
                         row["queue_entry_ns"] = now()
+                        if (calibration) calibrationArrivals.computeIfPresent(id) { _, facts -> facts + ("queue_entry_ns" to row["queue_entry_ns"]) }
+                        if (calibration && !recorder!!.isIdle(actual))
+                            calibrationFailure.compareAndSet(null, "solo_arrival_while_lane_busy")
                         waiting.add(ArrivalPolicy.Ticket(id, q.getString("task_id"), q.getString("priority"), q.getInt("ordinal")))
                         pump()
                     }
@@ -264,6 +296,7 @@ class ArrivalSchedulerActivity : Activity() {
             val drained = done.await(100, TimeUnit.SECONDS)
             val end = now()
             if (!drained) failure = "bounded_drain_timeout"
+            calibrationFailure.get()?.let { failure = it }
             dispatch.submit {}.get(2, TimeUnit.SECONDS)
             if (recorder?.overflow == true) failure = "decision_trace_overflow"
             timingComplete = drained && failure == null
@@ -274,7 +307,9 @@ class ArrivalSchedulerActivity : Activity() {
                     "priority" to q.getString("priority"), "sample_id" to q.getString("sample_id"),
                     "scheduled_arrival_ns" to workloadStart + q.getLong("offset_ms") * 1_000_000,
                     "deadline_ns" to workloadStart + (q.getLong("offset_ms") + q.getLong("deadline_ms")) * 1_000_000,
-                    "terminal_status" to "unfinished", "reason" to "event_not_committed")
+                    "terminal_status" to "unfinished", "reason" to "event_not_committed").let { planned ->
+                        if (calibration) ArrivalTimingDev.unfinishedWithArrival(planned, calibrationArrivals[id]) else planned
+                    }
             }
             save(output, "requests.json", all)
             save(output, "environment.json", environment.toList())
@@ -297,6 +332,9 @@ class ArrivalSchedulerActivity : Activity() {
                     .get(5, TimeUnit.SECONDS) } catch (e: Throwable) { failure = "$failure; close: $e" }
             }
             // Bounded in-memory trace: flush outside dispatch/worker critical paths, including failed runs.
+            if (calibrationRun) root?.let { output -> try {
+                save(output, "warmup_trace.json", synchronized(warmupTrace) { warmupTrace.toList() })
+            } catch (e: Throwable) { failure = "$failure; warmup_trace_flush: $e" } }
             timing?.let { trace -> root?.let { output -> try {
                 save(output, "decision_trace.json", trace.artifact(timingComplete))
             } catch (e: Throwable) { failure = "$failure; trace_flush: $e" } } }

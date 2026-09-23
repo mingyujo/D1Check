@@ -1,0 +1,9 @@
+// Opt-in packaging only: never replace an existing project APK/build output.
+def destination = System.getenv('D1_TIMING_BUILD_ROOT')
+if (!destination) throw new GradleException('D1_TIMING_BUILD_ROOT required')
+gradle.beforeProject { project ->
+    project.layout.buildDirectory.set(new File(destination, project.path.replace(':', '_')))
+    project.tasks.register('timingCalibrationBuildRoot') {
+        doLast { println('D1_TIMING_BUILD_DIRECTORY=' + project.layout.buildDirectory.get().asFile) }
+    }
+}

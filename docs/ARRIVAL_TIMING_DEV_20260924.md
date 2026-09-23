@@ -1,5 +1,7 @@
 # ARRIVAL-TIMING-DEV-01 — 시간 경계·판단 재현 개발 계약
 
+후속(2026-09-24): 이12개 변경은 `2904165`에 checkpoint했다. [ARRIVAL-TIMING-CAL-01](ARRIVAL_TIMING_CALIBRATION_20260924.md)이 별도 calibration 수집 경로를 추가한다. 아래20 null과 dev-v1의 정책/추정 의미는 보존하며, 후속 진단을 이 문서의 실기기 PASS로 바꾸지 않는다.
+
 2026-09-24. 시작 `feature/arrival-scheduling-20260923` / `d95a25f9095d4470a612128d7b79890b0d4732a8`, clean. 사용자 승인 범위는 설계·최소 구현·PC 검증·문서이며 ADB/설치/실측/본 simulation은 실행하지 않는다. 새 작업은 시간 계약 보완이며 완성된 PLAN B3나 제안정책 P, 성능 개선 입증으로 부르지 않는다.
 
 ## 근거와 보존

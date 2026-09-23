@@ -1,6 +1,16 @@
 # D1Check 현재 상태
 
-## 2026-09-24 시간 경계·판단 재현 — 현재 작업
+## 2026-09-24 시간 경계 단독 진단 준비 — 현재 작업
+
+- `ARRIVAL-TIMING-CAL-01`, branch `feature/arrival-scheduling-20260923`. 직전 d95a25f의12개 미커밋 변경·기록된8개 hash를 대조한 뒤 **2904165**로 먼저 보존했다. 이번 후속은 별도 [진단 계약·실행 명령](ARRIVAL_TIMING_CALIBRATION_20260924.md)이며 코드/PC 준비와 실기기 검증을 분리한다.
+- 새 calibration 전용 protocol/ID는 null 추정값으로 고정 CPU/GPU를 지정하고 두 lane 중 하나라도 busy면 실행하지 않는다. 4요청의 독립 예정 도착에서 단독성이 깨지면 중단한다. warmup 시작/종료 및 실제 도착·큐 진입 사실을 실패 때도 보존한다. 일반 적응형 실험의 `experiment_ready=false`를 우회하지 않는다.
+- 기존20 null은 그대로다. priority·persist_all·정책 범위를 구분한 새 관측 v2는8조건×5구간40슬롯. urgent 응답의 저장/해제는 N/A지만 실제 관측·lane에는 필요하며, missing과0을 구분한다. 고정 진단의 판단 비용을 CONDITIONAL의 비용으로 전용하지 않는다.
+- **제안/미승인:** 개발8+동결 후 확인8=최대16세션·진단64요청·warmup128호출, retry/대체/추가0. 예상45~60분, 두 phase host+cleanup 합상한121.5분(중간 검토/충전 별도). n=1개발+1확인 session/조건의 초기 보정이며 tail/성능 우수성 검증이 아니다. 현재 소비0/16.
+- PC 완료: Kotlin27/Python22·관련 컴파일·격리 APK v2 build·새 manifest16개 dry-run PASS. 현행 `timing_calibration_bound_v2/calibration_plan.json` SHA `a340a6c61e4eb4a85591ce226965495627ebd6751c3db4075b7b558a9d0553a2`, APK SHA `7bf84ce9997ed1fc0866ed89c38c84a78f37d5589a04eedef28ff65f16ae11e5`. write-once 소비 registry/fit 분리 구현. 상세·종료checkpoint는 위 계약과 외부 `timing_calibration_pc_verification_v1/GIT_FINAL.json`. ADB/설치/추론/본 simulation 미실행, 구형 전체 감사/분석 반복 없음.
+- 기존198요청 FAIL·fixed-split 부분 결과·원자료·동결 APK/계획 보존. 중단 run 재개 금지. 이번 소스·문서만 checkpoint하며 데이터/APK/cache 제외, push/merge 없음.
+- 다음 행동(최대3): (1) 제안16세션 예산 승인, (2) 승인 후에만 동일 A24/fingerprint·배터리/thermal/memory·연결·초기 상태 gate 및 개발8세션, (3) 개발 완전성 검증·fit 동결 후 별도 확인8세션. 하나라도 실패하면 회수만 하고 재실행하지 않는다.
+
+## 2026-09-24 시간 경계·판단 재현 — 이전 PC checkpoint
 
 - `ARRIVAL-TIMING-DEV-01`, branch `feature/arrival-scheduling-20260923`, 시작/현재 HEAD `d95a25f9095d4470a612128d7b79890b0d4732a8`. 시작 clean, 현재 이번 소스·문서 변경 미커밋. **설계·최소 코드·PC 검증 완료 / 실기기 미검증 / 실험 준비 미완료**. [시간·추정 계약과 검증 기록](ARRIVAL_TIMING_DEV_20260924.md).
 - 새 `arrival-timing-dev-v1` / `CONDITIONAL_TIMING_DEV_1`은 기존 정책 ID/동작을 보존하는 별도 개발 버전이다. 판단→배정→실행→host inference→output→persist→worker release→scheduler lane available을 구분한다. snapshot·null 결정·후보 예측/이유와 버전·출처를 bounded RAM trace로 기록한다.

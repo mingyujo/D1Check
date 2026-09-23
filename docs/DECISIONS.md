@@ -394,3 +394,13 @@
 - 추정 소진/필수값 미정은 UNKNOWN으로 기록하고 busy를 가용으로 전환하지 않는다. 미확정 비교는 CPU idle 진단 fallback/CPU busy 대기다. 20값 모두 null인 출처 포함 설정을 제공하며 과거 단독 수치를 새 경계에 전용하지 않는다. 실험 READY 승격·새 성공 기준·실측 예산 확정 없음.
 - 모든 선택/대기 호출·phase를512개 bounded RAM snapshot으로 저장하고 종료 때 flush한다. overflow는 이후 배정 중지·trace 무효이며 강제 종료의 기록 소실은 성공으로 취급하지 않는다. 새 PC 검증은 당시 입력 재생·경계/분모/누락 검사이고 전체 GPU/품질 gate가 아니다.
 - 근거·검증·한계·후속 질문: [별도 계약](ARRIVAL_TIMING_DEV_20260924.md). 구현/관련 PC 통과와 실기기 미검증을 구분한다. 폐기한 기존 결정 없음; 완료·중단 실측을 재개하지 않는다.
+
+## 2026-09-24 — ARRIVAL-TIMING-CAL-01 단독 진단 준비
+
+- 상태: 설계·코드·PC 준비 채택 / **16세션 실기기 예산은 제안·미승인**. 직전12개 변경은 사용자 지시대로2904165에 선택적으로 checkpoint했다.
+- 채택: 기존 실행기를 재사용하는 별도 `arrival-timing-calibration-v1`/`CALIBRATION_FIXED_BACKEND_1`, 지정 backend·global concurrency1·독립0/5/10/15초 도착. 모든 추정값 null이며 일반 experiment_ready gate의 예외를 만들지 않는다. 도착 시 아직 busy인 경우와 환경/계측 실패에 새 배정을 중단한다.
+- 계약: 기존20 budget/조건부 ID 의미 유지. 새 `arrival-phase-observations-v2`는 task/backend/priority8조건×5구간을 구분한다. urgent도 저장하므로 저장이 응답 예측에 N/A인 것과 lane 점유 및 실제 관측은 다르다. 미측정을0/N/A로 대체하지 않는다. 단독 고정 정책 판단 비용은 적응형 비용으로 전용하지 않는다.
+- 보존: worker event가 미완료일 때도 calibration의 실제 도착/queue 사실을 immutable snapshot으로 남기되 status는 unfinished다. warmup start/end를 별도 기록한다. 기존 arrival-v1·timing-dev-v1의 실패 해석/출력은 조용히 바꾸지 않는다.
+- 제안 근거: 조건당 개발1+확인1의16세션·64요청·128warmup은 최소 수집 가능성/초기 중앙값 확인용이다. 동결 뒤 확인 자료로 재적합하지 않는다. 정밀도·검정력·안정된 tail 보장 없음. 예상45~60분·host/cleanup 상한121.5분, retry/대체/추가0. 과거27세션 잔여 예산과 독립이다.
+- 구현: 별도 build root에 APK를 보존하고 APK Android/Gradle 입력 및 host plan/tool hash를 분리해 결합한다. phase 소비 registry는 출력 경로를 바꾼 재실행도 막고, 중단 뒤 회수/cleanup만 허용한다. 모델/원본/APK/동결 계약 덮어쓰기·ADB·실측·simulation·push/merge 없음.
+- 근거·실제 명령·판정 경계: [진단 준비 계약](ARRIVAL_TIMING_CALIBRATION_20260924.md). 기존 FAIL과 부분 결과를 대체하는 결정은 없다.

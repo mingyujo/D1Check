@@ -8,6 +8,8 @@ from pathlib import Path
 PROTOCOL = "arrival-timing-dev-v1"
 POLICY = "CONDITIONAL_TIMING_DEV_1"
 CONTRACT = "arrival-phase-budgets-v1"
+CAL_PROTOCOL = "arrival-timing-calibration-v1"
+CAL_POLICY = "CALIBRATION_FIXED_BACKEND_1"
 FIELDS = ("dispatch_to_start_ns", "start_to_output_ready_ns", "output_ready_to_persist_ns",
           "persist_to_lane_available_ns")
 DECISION_FIELD = "decision_to_dispatch_ns"
@@ -61,9 +63,14 @@ def remaining(lane, now, budgets, backend):
     return total, "UNKNOWN_MISSING_BUDGET" if total is None else "ESTIMATED"
 
 
-def replay(queue, lanes, now, budgets):
+def replay(queue, lanes, now, budgets, calibration_backend=None):
     """Inputs contain observations and development budgets only, never actual future outcomes."""
     free_cpu, free_gpu = (lanes[b]["phase"] == "AVAILABLE" for b in ("CPU", "GPU"))
+    if calibration_backend is not None:
+        require(calibration_backend in ("CPU", "GPU"), "calibration backend")
+        reason = "wait_empty" if not queue else "wait_calibration_solo_busy" if not (free_cpu and free_gpu) else "calibration_fixed_backend"
+        return {"selected": {"request_id": queue[0]["id"], "backend": calibration_backend} if reason == "calibration_fixed_backend" else None,
+                "reason": reason, "candidates": []}
     residual = remaining(lanes["CPU"], now, budgets, "CPU")[0]
     ahead, selected, selected_reason, candidates = 0, None, None, []
     for ticket in queue:
@@ -91,9 +98,13 @@ def replay(queue, lanes, now, budgets):
 
 
 def validate_trace(trace):
+    calibration = trace["protocol"] == CAL_PROTOCOL
+    extra = {"calibration_backend"} if calibration else set()
     require(set(trace) == {"protocol", "policy", "estimate_contract", "estimate_version", "estimate_provenance",
-                          "budgets", "capacity", "clock", "overflow", "dropped_records", "complete", "records", "experiment_ready"}, "trace fields")
-    require(trace["protocol"] == PROTOCOL and trace["policy"] == POLICY, "not timing-dev; retain legacy validator for v1")
+                          "budgets", "capacity", "clock", "overflow", "dropped_records", "complete", "records", "experiment_ready"} | extra, "trace fields")
+    require((trace["protocol"], trace["policy"]) in ((PROTOCOL, POLICY), (CAL_PROTOCOL, CAL_POLICY)), "not timing-dev; retain legacy validator for v1")
+    if calibration:
+        require(trace["calibration_backend"] in ("CPU", "GPU") and all(x is None for b in trace["budgets"].values() for x in b.values()), "calibration must not use estimates")
     require(trace["clock"] == "elapsedRealtimeNanos" and trace["experiment_ready"] is False, "clock/readiness contract")
     check_estimates({"contract": trace["estimate_contract"], "version": trace["estimate_version"],
                      "provenance": trace["estimate_provenance"], "budgets": trace["budgets"]})
@@ -143,7 +154,7 @@ def validate_trace(trace):
             for backend, lane in lanes.items():
                 residual, state = remaining(lane, time, trace["budgets"], backend)
                 require(record["lanes"][backend] == dict(lane, remaining_ns=residual, remaining_state=state), "lane snapshot/residual mismatch")
-            expected = replay(queue, lanes, time, trace["budgets"])
+            expected = replay(queue, lanes, time, trace["budgets"], trace.get("calibration_backend"))
             require(all(record[k] == v for k, v in expected.items()), "decision replay mismatch")
             pending = expected["selected"]
             if pending is not None:
@@ -164,8 +175,12 @@ def validate_artifacts(root):
     root = Path(root)
     trace, manifest, rows = (read(root / name) for name in ("decision_trace.json", "manifest.json", "requests.json"))
     result = validate_trace(trace)
-    require(manifest["protocol"] == PROTOCOL and manifest["policy"] == POLICY and manifest["development_only"] is True
+    require(manifest["protocol"] == trace["protocol"] and manifest["policy"] == trace["policy"] and manifest["development_only"] is True
             and manifest["experiment_ready"] is False, "manifest namespace")
+    if trace["protocol"] == CAL_PROTOCOL:
+        require(manifest["calibration_backend"] == trace["calibration_backend"] and manifest["maximum_concurrency"] == 1
+                and manifest["execution_purpose"] == "boundary_calibration_only" and manifest["storage_mode"] == "persist_all"
+                and manifest["observation_contract"] == "arrival-phase-observations-v2", "calibration mode")
     config = manifest["timing_estimates"]
     check_estimates(config)
     require(config == {"contract": trace["estimate_contract"], "version": trace["estimate_version"],
@@ -182,7 +197,7 @@ def validate_artifacts(root):
         rid = row["request_id"]
         q = planned[rid]
         require(result["tickets"][rid] == {"id": rid, "task": q["task_id"], "priority": q["priority"], "ordinal": q["ordinal"]}, "planned ticket identity")
-        require(row["protocol"] == PROTOCOL and row["session_id"] == manifest["session_id"], "ledger namespace")
+        require(row["protocol"] == trace["protocol"] and row["session_id"] == manifest["session_id"], "ledger namespace")
         require(row["selected_backend"] == result["assignments"][rid], "selected lane identity")
         decision = result["selections"][rid]
         evaluation_ns = decision["decision_end_ns"] - decision["mono_ns"]
@@ -219,7 +234,7 @@ def validate_artifacts(root):
             if rid in observed:
                 require(row["queue_entry_ns"] <= now <= row["dispatch_ns"], "future/already dispatched request")
     summary, cleanup = (read(root / name) for name in ("summary.json", "cleanup.json"))
-    require(summary["protocol"] == PROTOCOL and summary["session_id"] == manifest["session_id"]
+    require(summary["protocol"] == trace["protocol"] and summary["session_id"] == manifest["session_id"]
             and summary["request_count"] == len(rows) and summary["terminal_count"] == len(rows), "summary denominator")
     return {k: result[k] for k in ("decisions", "no_selection", "dispatched")} | {
         "trace_replay": "PASS", "terminal_counts": counts, "session_status": summary["status"],

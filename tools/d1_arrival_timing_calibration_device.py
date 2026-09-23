@@ -1,0 +1,216 @@
+"""Explicit opt-in device operations for calibration; never imported by prepare/check."""
+from __future__ import annotations
+
+import os
+from pathlib import Path
+import re
+import subprocess
+import time
+
+from tools import d1_arrival_device as legacy
+from tools import d1_arrival_timing_calibration as c
+from tools import d1_arrival_timing_dev as v
+from tools import d1_arrival_plan as p
+
+
+def package(output):
+    output = Path(output).resolve()
+    v.require(not output.exists(), "isolated build root must be new")
+    output.mkdir(parents=True)
+    before = c.code_identity()
+    env = dict(os.environ, D1_TIMING_BUILD_ROOT=str(output / "build"))
+    command = [str(c.ROOT / "gradlew.bat"), "--no-configuration-cache", "--init-script",
+               str(c.ROOT / "tools/arrival_timing_isolated_build.gradle"),
+               ":benchmark-runner:assembleModelProbe", "-PenableModelProbe=true", "--console=plain"]
+    c.write_new(output / "build_attempt.json", dict(utc=legacy.utc(), command=command, source_code=before))
+    with (output / "build.log").open("xb") as log:
+        subprocess.run(command, cwd=c.ROOT, env=env, stdout=log, stderr=subprocess.STDOUT, check=True, timeout=1800)
+    v.require(c.code_identity() == before, "source changed during build")
+    apks = list((output / "build").glob("*/outputs/apk/modelProbe/*.apk"))
+    v.require(len(apks) == 1, "one isolated modelProbe APK required")
+    receipt = dict(status="built_not_device_verified", utc=legacy.utc(), source_code=before,
+                   apk_path=str(apks[0]), apk_sha256=p.digest(apks[0]), command=command)
+    c.write_new(output / "build_receipt.json", receipt)
+    return receipt
+
+
+def pull(device, sid, output):
+    remote = f"files/{v.CAL_PROTOCOL}/{sid}"
+    listing = device.call("shell", "run-as", legacy.PACKAGE, "ls", remote, check=False)
+    if listing.returncode:
+        return {"status": "output_missing", "files": []}
+    output.mkdir(parents=True, exist_ok=True)
+    files = []
+    for name in listing.stdout.decode().splitlines():
+        v.require(re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,126}", name), "unsafe remote filename")
+        data = device.call("exec-out", "run-as", legacy.PACKAGE, "cat", remote + "/" + name, timeout=45).stdout
+        target = output / name
+        if target.exists():
+            v.require(target.read_bytes() == data, "recovery conflict; preserve both by using a new recovery root")
+        else:
+            with target.open("xb") as stream:
+                stream.write(data)
+        files.append({"name": name, "sha256": p.digest(target), "bytes": len(data)})
+    return {"status": "recovered", "files": files}
+
+
+def cleanup(device):
+    previous = device.deadline
+    device.deadline = time.monotonic() + 45
+    try:
+        device.call("shell", "am", "force-stop", legacy.PACKAGE, timeout=15)
+        legacy.require_stopped(device)
+        thermal = device.call("shell", "dumpsys", "thermalservice", timeout=15).stdout
+        v.require(re.search(rb"Thermal Status:\s*0\b", thermal), "post-session thermal gate")
+        return {"status": "completed", "utc": legacy.utc(), "thermal": thermal.decode(errors="replace")}
+    finally:
+        device.deadline = previous
+
+
+def stage_inputs(device, sid, manifest, sources):
+    remote_input = f"files/arrival-scheduler-inputs/{sid}"
+    remote_output = f"files/{v.CAL_PROTOCOL}/{sid}"
+    shared = f"/data/local/tmp/d1check-timing-calibration/{sid}"
+    for path, prefix in ((remote_input, ("run-as", legacy.PACKAGE)), (remote_output, ("run-as", legacy.PACKAGE)), (shared, ())):
+        probe = device.call("shell", *prefix, "test", "-e", path, check=False)
+        v.require(probe.returncode == 1 and not probe.stderr.strip() and not probe.stdout.strip(), "stale path or unavailable ADB; no reuse")
+    device.call("shell", "mkdir", "-p", shared)
+    device.call("shell", "run-as", legacy.PACKAGE, "mkdir", "-p", remote_input)
+    for name, path in dict(sources, **{"manifest.json": manifest}).items():
+        v.require(re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,126}", name), "unsafe source filename")
+        device.call("push", path, shared + "/" + name + ".part", timeout=90)
+        target = remote_input + "/" + name
+        device.call("shell", "run-as", legacy.PACKAGE, "cp", shared + "/" + name + ".part", target + ".part")
+        actual = device.call("shell", "run-as", legacy.PACKAGE, "sha256sum", target + ".part").stdout.decode().split()[0]
+        v.require(actual == p.digest(path), "staged input hash")
+        device.call("shell", "run-as", legacy.PACKAGE, "mv", target + ".part", target)
+    return remote_output
+
+
+def backend_gate(row, backend):
+    # Preserve the adapter's raw GPU "unverified" value. delegate_proof below supplies separate proof.
+    expected = "CPU" if backend == "CPU" else "unverified_requires_host_delegate_log"
+    v.require(row["selected_backend"] == backend and row["actual_backend"] == expected, "raw backend identity")
+
+
+def run(plan_file, phase, output, adb, serial, approved_total_cap, expected_sha, freeze=None):
+    v.require(approved_total_cap == 16 and p.digest(plan_file) == expected_sha, "explicit approved total cap/plan hash required")
+    c.check(plan_file, for_execution=True)  # Rejects adaptive experiment and unbound APK before Device construction.
+    plan, output = p.read(plan_file), Path(output).resolve()
+    if phase == "confirmation":
+        v.require(freeze is not None and p.read(freeze)["plan_sha256"] == expected_sha, "freeze plan mismatch")
+        frozen = p.read(freeze)
+        for path, sha in frozen["input_hashes"].items():
+            v.require(p.digest(path) == sha, "development artifacts changed")
+    c.claim(plan, phase, output, freeze)
+    registry = Path(plan["registry"])
+    device = legacy.Device(adb, serial)
+    device.deadline = time.monotonic() + plan["host_phase_wall_seconds"]
+    identified, completed = False, 0
+    c.write_new(output / "phase_attempt.json", dict(utc=legacy.utc(), phase=phase, plan_sha256=expected_sha, session_cap=8))
+    try:
+        identity = device.identify(plan["device_fingerprint"])
+        identified = True
+        c.write_new(output / "device_identity.json", identity)
+        device.call("install", "-r", plan["apk_path"], timeout=120)  # No clear/uninstall fallback.
+        legacy.bounded_cool(device, plan["initial_cool_seconds"])
+        entries = [e for e in plan["entries"] if e["phase"] == phase]
+        for position, entry in enumerate(entries):
+            sid = entry["session_id"]
+            folder = output / f"{entry['index']:02d}_{sid}"
+            folder.mkdir()
+            c.write_new(folder / "attempt.json", dict(utc=legacy.utc(), entry=entry, device=identity, plan_sha256=expected_sha))
+            try:
+                thermal = device.call("shell", "dumpsys", "thermalservice").stdout
+                (folder / "before_thermal.txt").write_bytes(thermal)
+                v.require(re.search(rb"Thermal Status:\s*0\b", thermal), "thermal gate")
+                battery = device.call("shell", "dumpsys", "battery").stdout.decode()
+                (folder / "before_battery.txt").write_text(battery, encoding="utf-8")
+                legacy.battery_gate(plan, battery, position == 0)
+                device.call("shell", "am", "force-stop", legacy.PACKAGE)
+                legacy.require_stopped(device)
+                manifest_file = Path(plan_file).parent / entry["manifest"]
+                remote = stage_inputs(device, sid, manifest_file, {k: info["path"] for k, info in plan["source_files"].items()})
+                c.write_new(folder / "launch_attempt.json", dict(utc=legacy.utc(), session_id=sid))
+                launch = device.call("shell", "am", "start", "-W", "-n", legacy.PACKAGE + "/" + legacy.ACTIVITY,
+                                     "-a", legacy.ACTION, "--es", "session_id", sid)
+                (folder / "launch_stdout.txt").write_bytes(launch.stdout)
+                pid = device.call("shell", "pidof", legacy.PACKAGE + ":model_probe").stdout.decode().strip()
+                v.require(re.fullmatch(r"\d+", pid), "model probe PID missing")
+                end = time.monotonic() + 125
+                while time.monotonic() < end:
+                    probe = device.call("shell", "run-as", legacy.PACKAGE, "test", "-s", remote + "/cleanup.json", check=False)
+                    v.require(not probe.stderr.strip() and not probe.stdout.strip(), "ADB poll unavailable")
+                    if probe.returncode == 0:
+                        break
+                    v.require(probe.returncode == 1, "ADB poll failure")
+                    time.sleep(1)
+                recovery = pull(device, sid, folder / "artifacts")
+                artifacts = folder / "artifacts"
+                v.require(p.digest(artifacts / "manifest.json") == entry["manifest_sha256"], "device manifest changed")
+                samples = c.observations(artifacts)
+                summary, rows, env = (p.read(artifacts / f"{name}.json") for name in ("summary", "requests", "environment"))
+                legacy.quality_gate(summary, rows, env)
+                for row in rows:
+                    backend_gate(row, entry["backend"])
+                    v.require(p.digest(artifacts / f"{row['request_id']}.result.json") == row["result_sha256"], "result payload changed")
+                log_bytes = device.call("logcat", "-d", "-v", "threadtime", "--pid=" + pid, "-s", "D1ARRIVAL:I", "tflite:I").stdout
+                (folder / "delegate_log.txt").write_bytes(log_bytes)
+                gpu = legacy.delegate_proof(p.read(manifest_file), log_bytes.decode(errors="replace"))
+                c.write_new(folder / "validated.json", dict(utc=legacy.utc(), request_count=len(samples), warmup_calls=8,
+                             timing=v.validate_artifacts(artifacts), gpu=gpu, recovery=recovery))
+            except BaseException as error:
+                c.write_new(folder / "error.json", dict(utc=legacy.utc(), error=repr(error)))
+                try:
+                    c.write_new(folder / "recovery.json", pull(device, sid, folder / "partial"))
+                except BaseException as recovery_error:
+                    c.write_new(folder / "recovery_error.json", dict(error=repr(recovery_error)))
+                raise
+            finally:
+                try:
+                    c.write_new(folder / "host_cleanup.json", cleanup(device))
+                except BaseException as cleanup_error:
+                    c.write_new(folder / "cleanup_error.json", dict(error=repr(cleanup_error)))
+                    raise
+            completed += 1
+            if position < 7:
+                legacy.bounded_cool(device, plan["cool_down_seconds"])
+        receipt = dict(status="completed", utc=legacy.utc(), phase=phase, plan_sha256=expected_sha,
+                       sessions=completed, diagnostic_requests=completed * 4, warmup_calls=completed * 8)
+        c.write_new(output / "complete.json", receipt)
+        c.write_new(registry / f"{phase}_complete.json", receipt)
+        return receipt
+    except BaseException as error:
+        stopped = dict(status="stopped_no_retry", utc=legacy.utc(), error=repr(error), completed=completed,
+                       attempts=len(list(output.glob("*/attempt.json"))), plan_sha256=expected_sha,
+                       rule="no restart/replacement/additional sessions; recovery only")
+        c.write_new(output / "stopped.json", stopped)
+        c.write_new(registry / f"{phase}_stopped.json", stopped)
+        if identified and not list(output.glob("*/host_cleanup.json")) and not list(output.glob("*/cleanup_error.json")):
+            try:
+                c.write_new(output / "early_cleanup.json", cleanup(device))
+            except BaseException as cleanup_error:
+                c.write_new(output / "early_cleanup_error.json", dict(error=repr(cleanup_error)))
+        raise
+
+
+def recover(plan_file, adb, serial, sid, output):
+    plan = p.read(plan_file)
+    v.require(plan["protocol"] == c.PROTOCOL, "calibration plan required")
+    entry = next(e for e in plan["entries"] if e["session_id"] == sid)
+    registry = Path(plan["registry"])
+    claim = p.read(registry / f"{entry['phase']}_consumed.json")
+    prior = Path(claim["output"]) / f"{entry['index']:02d}_{sid}" / "attempt.json"
+    v.require(prior.is_file() and p.read(prior)["plan_sha256"] == p.digest(plan_file), "no matching prior attempt")
+    output = Path(output)
+    v.require(not output.exists(), "new recovery root required")
+    device = legacy.Device(adb, serial)
+    device.deadline = time.monotonic() + 300
+    device.identify(plan["device_fingerprint"])
+    output.mkdir(parents=True)
+    try:
+        result = pull(device, sid, output / "artifacts")
+        c.write_new(output / "recovery.json", result)
+        return result
+    finally:
+        c.write_new(output / "cleanup.json", cleanup(device))
