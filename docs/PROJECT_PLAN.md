@@ -260,3 +260,6 @@ CALIB-01B는 FIX4까지 구현·host 검증·감사를 완료했다. 기록상 K
 현재 후속 질문은 같은 신규 paired workload에서 조건부 선택이 **기존 고정 분리(urgent CPU/normal GPU)**보다 어떤 조건·지표에 유리한지이다. [별도 설계](ARRIVAL_FIXED_SPLIT_COMPARISON_20260923.md)에 따라 CPU_URGENT/FIXED_SPLIT/CONDITIONAL을 burst·low·queue에서 함께 측정한다. 기존 주 평가 FAIL·10% 최소효과·동결 simulation/formal 계약은 그대로다.
 PC 준비 완료, 새 실측 미실행. 각 조건3 block/27세션·162요청·216warmup 최소안 권장; 각6 block/54세션·324요청·432warmup 정밀안은 대안이다. retry/대체/추가0, 새 예산 별도 승인 전 ADB/설치/측정 금지. margin 없는 효과 추정 연구이며 고정 대비 분산·검정력·동등성은 아직 미확인이다. 주 비교·지표·CI/누락/중단 규칙과 실제 명령은 새 계약을 따른다.
 완료 조건: 정확한 정책 감사, 동일 runtime/도착·seed·순서·예산의 새 manifest, PC 테스트/dry-run, 보존 검증, 실행 가능한 승인안·재개 문서. 위 PC 조건은 완료, 실기기 검증은 다음 승인 단계다.
+
+
+2026-09-23 실행 후 갱신: 최소27세션안 승인 후24시도/23완료에서 무선 ADB 연결이 단절되어 동결 규칙대로 종료했다. 실패는24번째 FIXED_SPLIT burst 세션의 Activity 실행 전 thermal 확인이다. retry/대체/추가0, 재연결 후 cleanup만 완료했다. 142평가요청·184warmup 실행, 계획162/216 중 미실행분 보존. [부분 결과](ARRIVAL_FIXED_SPLIT_RESULTS_20260923.md)는 burst C−F 완전2pair의 urgent +72.27%/normal−61.69% 상충을 기술하되 주 CI/전체 평가 완료를 주장하지 않는다. 새 정책/성공 기준 변경 없음. 추가 실측은 별도 계획·승인 필요이며 남은 예산으로 이번 run을 자동 재개하지 않는다.

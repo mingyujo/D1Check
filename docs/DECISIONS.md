@@ -377,3 +377,11 @@
 - 확정: 사용자가 권장 최소안을 “승인할게”로 승인했다. 27세션/162평가요청/216warmup, retry·대체·추가0, host150분+cleanup45초 상한. plan SHA `9812ce6ec8d04c43e9a072bf15d712a222304ca96e2a0033d564748decaa213f`; 정밀54세션안은 미승인이다. 승인 receipt는 외부 `minimum_approval.json`에 보존한다.
 - gate: 동일 A24 serial/fingerprint, thermal0·28.8°C·충전 없음·프로세스 부재를 확인했으나 배터리39%로 동결 시작55% 기준에 미달했다. 기준을 완화하지 않고 설치·측정 시작 전 중단했다. session attempt0/27, 평가0, warmup0이며 예산 재승인은 필요 없다.
 - 동일 기기의 IP/mDNS 중복 연결은 serial/fingerprint를 먼저 대조한 후 IP 연결만 해제했다. 앱/기기 설정·원본 변경 없음. 충전 후 분리·cooling 및 gate 재확인으로 같은 승인된 명령을 시작한다. 원래 실제 실행 중 실패의 retry0 규칙은 그대로 유지한다.
+
+
+## 2026-09-23 — ARRIVAL-FIXED-01 기술적 중단 및 부분 결과 보존
+
+- 사실: 동일 기기와 승인 gate 확인 후 한 번 실행해23세션 완료. 24번째 시도의 실행 전 thermal 확인에서 ADB 연결 단절, cleanup도 첫 시도 실패. 24/27시도·142/162평가요청·184/216warmup; retry/대체/추가0. 재연결 후 원본 확인·cleanup만 수행했다.
+- 확정된 규칙 적용: 사용자 재연결은 retry0·첫 기술 실패 종료 규칙을 변경하지 않는다. 남은3세션을 이어 실행하거나 실패 FIXED_SPLIT을 대체하지 않는다. 별도 복구 receipt를 남기며 원래 오류를 보존한다.
+- 해석: burst 완전2pair와 low2pair는 계획n3 미달로 주/해당 CI 미산출. queue3pair의 사전 보조95% CI는 탐색으로만 표시한다. C−F는 관측된 모든 완전pair에서 urgent 비용과 normal 이득이 함께 나타났다. 전체 평가 완료·전면 우월성·동등성·비열등성을 주장하지 않고 기존 FAIL 유지.
+- 산출물: [결과·재현 명령](ARRIVAL_FIXED_SPLIT_RESULTS_20260923.md), 외부 analysis_v3/FINAL_REPORT.md와 recovery_v1/recovery_receipt.json. 새 raw566파일·기존758파일 보존. 추가 측정은 별도 전향적 계획/예산 판단 대상이며 이번 작업에서 실행하지 않는다.
