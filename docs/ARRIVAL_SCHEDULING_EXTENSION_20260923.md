@@ -79,6 +79,14 @@ pilot과 평가의 urgent·normal 순위 및 paired 방향은 일치했다. 우�
 
 원본은 `C:/Users/LG/Documents/D1Check_Arrival_Extension/independent_evaluation_run_v1`, 분석·간트·KPI·보고서는 `C:/Users/LG/Documents/D1Check_Arrival_Extension/independent_evaluation_analysis_v2/FINAL_REPORT.md`에 있다. 원본694파일은 `raw_inventory.json`과 전수 hash 일치하며 pilot 출력과 경로·session/pair ID가 분리됐다.
 
+## 독립 평가 PC 재현·시각화
+
+별도 [PC 후처리 계약](ARRIVAL_EXTENSION_POST_ANALYSIS_20260923.md)에서 기존 분석을 새 root로 재현했다. 원본694 hash, 27세션·198평가·216warmup, urgent51/normal147, 정책별66과 condition별 paired block을 다시 확인했고 v2의 세 JSON과 semantic equality를 통과했다. 동결 joint primary `FAIL`은 유지된다.
+
+주 urgent 지표는 세션당2건의 nearest-rank P95, 즉 세션 최댓값을 6개 block에서 집계한다. 주 조건 12건 pooled P95와 전체17건 pooled P95는 별도 탐색 지표이며 주 판정에 대입하지 않는다. makespan은 workload start부터 마지막 worker release, throughput은 성공수/makespan이다. CI는 요청 재표집이 아니라 paired block 6개에 대한 t interval이다.
+
+새 그림은 긴급·효율 KPI, 6개 paired block, primary/low/queue 차이, 사전 규칙의 representative gantt를 PNG+SVG와 CSV로 보존한다. 확장 시뮬레이션은 plan-only이며 본 실행0이다. 기존 support-constrained simulator를 변경하지 않고 post-unblinding exploratory fit으로 분리한다.
+
 ## 실제 CLI와 재개
 
 저장소 cwd `C:/Users/LG/AndroidStudioProjects/D1Check-model02b`. 고정 계획은 이미 생성됐으며 같은 경로에 대한 generate 재실행은 거부된다. 아래 첫 명령은 별도 경로 재현용이다. dry-run과 read-only preflight는 pilot 예산 승인 전에 가능하다.

@@ -8,8 +8,10 @@
 - 주 6 paired block 평균: urgent P95는 FIFO 1634.2ms, CPU 긴급 우선 406.1ms, 조건부 391.9ms다. normal 평균응답은 각각 1869.4/1957.5/1352.0ms, makespan은 3.961/3.949/2.747s, throughput은 2.020/2.026/2.912req/s다. 모든 완료율·normal on-time은100%, urgent miss는0%이며 2초/8초 deadline은 설명용 engineering scenario라 정책 구분력이 없었다.
 - 동결 판정: `CPU_URGENT−CPU_FIFO` urgent 상대차의 95% CI `[-75.67%,-74.63%]`, normal 상대손실 상한 `5.53%`로 우선순위 대비는 10% 최소효과와 10% normal 손실 기준을 모두 통과했다. `CONDITIONAL−CPU_URGENT` urgent 상대차 `-3.48%`, 95% CI `[-5.02%,-1.95%]`로 10% 최소효과를 실패했고 normal 상대차는 `-30.93%`로 손실 기준을 통과했다. 따라서 조건부 정책의 주 결합 기준은 **FAIL**이다.
 - 해석: 큰 urgent 개선은 CPU 내 우선순위 효과다. 조건부 정책은 주 조건에서 normal 탐지를 GPU로 보조 실행해 normal 응답·makespan·throughput을 개선했지만 CPU 긴급 우선보다 긴급 P95를 최소10% 더 줄이지 못했다. 주 urgent·normal 순위는 6/6 block에서 안정적이나 독립 block n=6, 긴급2건/세션이라 tail 일반화는 제한된다.
-- 원본 `C:/Users/LG/Documents/D1Check_Arrival_Extension/independent_evaluation_run_v1`, 분석·보고서 `C:/Users/LG/Documents/D1Check_Arrival_Extension/independent_evaluation_analysis_v2/FINAL_REPORT.md`. pilot과 평가의 순위·paired 방향은 일치했지만, 평가 전에 동결한 확장 simulation 예측이 없어 정책 순위·paired 개선량의 simulation 검증은 **미완료**다.
-- 다음 행동(최대 3): (1) 이번 독립 평가를 최종 실측 근거로 채택할지 결정, (2) simulation 검증이 필요하면 pilot만으로 모델·예측을 동결하고 별도 untouched holdout/추가 기기 예산을 승인, (3) 추가 기기에서 고정 정책의 축소 재현평가 계획 수립. 평가 자료로 simulator를 맞춘 뒤 같은 자료를 검증으로 재사용하지 않는다.
+- PC 후처리 `ARRIVAL-EXT-01-POST` 완료: 새 root에서 기존 분석을 재현했고 session/paired/evaluation JSON이 v2와 semantic-equal, 원본694 hash와 27세션·198평가·216warmup·urgent51/normal147·정책별66을 재확인했다. 세션 urgent2건의 nearest-rank P95와 pooled P95를 분리했으며 동결 FAIL은 변하지 않았다.
+- 새 그림5종 PNG+SVG, 그래프 CSV·팀 요약·재현 보고서: `C:/Users/LG/Documents/D1Check_Arrival_Extension/independent_evaluation_post_analysis_v2`. 대표 간트는 결과 무관 규칙인 첫 primary block replicate0의 세 정책 전부다.
+- 확장 시뮬레이션은 별도 `arrival-extension-exploratory-simulation-plan-v1`의 plan-only/dry-run PASS, 실행0이다. classification/GPU 관측0, detection/GPU15건 전부 overlap·정책선택 표본이라 fixed split/간섭 인과 모델은 미지원이다. [적합성 계약](ARRIVAL_EXTENSION_POST_ANALYSIS_20260923.md)을 따른다.
+- 다음 행동(최대 3): (1) PC 후처리 결과를 팀 공유 근거로 채택, (2) 본 시뮬레이션이 필요하면 post-unblinding 탐색임을 유지한 별도 실행·성공기준 승인, (3) 독립 검증 주장을 원하면 fixed split·matched overlap·untouched holdout의 최소 추가 측정 예산 결정.
 
 ## 2026-09-22 지원 범위 한정 계획 — 현재 작업
 

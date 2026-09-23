@@ -342,6 +342,16 @@
 - 미완료: 새 staggered workload의 simulation 예측을 평가 전에 동결하지 않았으므로 simulation 정책 순위·paired 개선량 일치 검증은 하지 못했다. 이번 평가로 simulator를 보정한 뒤 같은 평가로 검증하지 않는다. 추가 simulation·holdout·다기기는 별도 계획과 승인 대상이다.
 - 영향: 기존 formal v1/v2, support-constrained simulation freeze, pilot·과거 APK·원본을 변경하지 않는다.
 
+### 2026-09-23 — 독립 평가 PC 재현과 확장 시뮬레이션 plan-only 경계
+
+- 상태: 채택. 사용자 지시에 따라 추가 실측 없이 기존 원본·판정의 재현 검증, 시각화와 탐색적 simulation 적합성만 수행한다.
+- 재현 결정: 세션당 urgent2건 nearest-rank P95의 평균과 모든 요청 pooled P95를 별도 추정량으로 유지한다. paired t CI 단위는 6개 workload block이며 요청 수를 독립 표본 수로 쓰지 않는다. 기존 JSON과 semantic equality, 원본694 hash를 통과했고 joint primary `FAIL`은 변하지 않았다.
+- 시각화 결정: 첫 primary paired block `replicate=0`의 세 정책 전부를 대표 간트로 사용한다. metric 기반 선택을 금지하고 PNG+SVG와 그래프 CSV를 함께 보존한다.
+- simulation 결정: `arrival-extension-exploratory-simulation-plan-v1`은 기존 support-constrained freeze와 별도다. 응답시간을 서비스시간으로 쓰지 않고 execution-start→worker-release 점유, completion 경계, queue wait, residual, overlap, policy cost를 분리한다. 이번에는 plan 생성과 dry-run만 허용하고 성공 기준·본 실행은 없다.
+- 한계: classification/GPU arrival cell0, detection/GPU15 전부 overlap·조건부 선택 표본이다. fixed split 우월성, overlap 인과 penalty, 임의 부하·순서, 독립 simulator 검증은 현재 자료로 지지하지 않는다. 평가 공개 후 fit은 적합도 확인이다.
+- 근거: [PC 후처리 계약](ARRIVAL_EXTENSION_POST_ANALYSIS_20260923.md), 외부 `independent_evaluation_post_analysis_v2`, `arrival_extension_simulation_plan_v2`.
+- 영향: formal v1/v2, support-constrained simulation freeze, pilot·독립 평가 원본·기존 분석은 변경하지 않는다.
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목

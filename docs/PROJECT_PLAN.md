@@ -10,7 +10,7 @@
 
 ## 현재 PC 단계의 명시적 축소 범위
 
-2026-09-23 추가 작업은 위 2026-09-22 support-constrained PC 계약의 결과·가정을 바꾸지 않는다. 새 protocol `arrival-scheduler-v1`은 A24에서 독립 도착·실제 두 모델·resident runtime·비선점 queue 배정의 실측 확장이다. 개발 pilot 19세션으로 정책·분석 규칙을 고정한 뒤 독립 평가 27세션을 완료했다. 조건부 정책은 normal 처리효율을 개선했지만 CPU 긴급 우선 대비 urgent P95 10% 최소효과를 충족하지 못해 주 결합 기준은 실패했다. 새 본 시뮬레이션과 추가 holdout은 별도 계획·승인 대상이며, 평가 자료를 보정과 검증에 함께 쓰지 않는다.
+2026-09-23 추가 작업은 위 2026-09-22 support-constrained PC 계약의 결과·가정을 바꾸지 않는다. 새 protocol `arrival-scheduler-v1`은 A24에서 독립 도착·실제 두 모델·resident runtime·비선점 queue 배정의 실측 확장이다. 개발 pilot 19세션으로 정책·분석 규칙을 고정한 뒤 독립 평가 27세션을 완료했다. 조건부 정책은 normal 처리효율을 개선했지만 CPU 긴급 우선 대비 urgent P95 10% 최소효과를 충족하지 못해 주 결합 기준은 실패했다. [PC 후처리와 적합성 계획](ARRIVAL_EXTENSION_POST_ANALYSIS_20260923.md)은 이 판정을 재현하고 확장 simulator의 지원·미지원 경계를 분리한다. 새 본 시뮬레이션과 추가 holdout은 별도 계획·승인 대상이며, 평가 자료를 보정과 검증에 함께 쓰지 않는다.
 
 2026-09-22 사용자 지시를 채택했다. 아래 장기 개정4.4의 다중 도착률·등급 반전·추가 기기 목표는 현재 PC 계약의 완료 조건이 아니다. 현재 모델은 구현·gate를 통과한 exact 분류/탐지이며 A24 thermal0/resident/non-preemptive, warm 교환가능성 가정과 측정된 전체 co-run만 허용한다. 12개 offset0·분류 urgent6/탐지 normal6 배치와 54개 복수 deadline budget, 5paired atom 전수 평가로 제한한다. CPU FIFO/urgent/정적/항상 허용 co-run/시작 전 adaptive를 비교하며 STATIC=CPU FIFO alias를 숨기지 않는다.
 
