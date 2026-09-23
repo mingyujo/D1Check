@@ -1,0 +1,76 @@
+{
+  "generated_at": "2026-09-18T15:52:13+0000",
+  "host": "Linux-6.6.122+-x86_64-with-glibc2.39",
+  "ai_edge_litert": "2.3.0.dev20260917",
+  "ai_edge_litert_sdk_samsung": "2.3.0.dev20260917",
+  "sdk_libs": [
+    "libcdi_9955.so",
+    "libcdi_9965.so",
+    "libcdi_wrapper.so",
+    "libcommon.so",
+    "libcompiler_api_lib.so",
+    "libgraph_wrapper.so",
+    "libgraphgen.so",
+    "libgraphgen_api.so",
+    "libir.so",
+    "libisa.so",
+    "libncp_wrapper_lib.so",
+    "libnpu_compiler.so",
+    "libodt.so",
+    "libsait_npu_compiler_lib.so",
+    "libsnc_api.so",
+    "libveriben_lib.so"
+  ],
+  "flatbuffers_shim_preloaded": true,
+  "target": "Samsung_E9965",
+  "models": [
+    {
+      "input": "mobilenet_v1_1.0_224.tflite",
+      "input_sha256": "d95b3c5ea86750cef882fa867ca357dfe4d265d0b80b67e83277a0bda310cfbb",
+      "input_size": 16901128,
+      "compile_seconds": 3.3,
+      "failed_backends": [],
+      "outputs": [
+        {
+          "file": "compiled_e9965/mobilenet_v1_1.0_224_Samsung_E9965.tflite",
+          "size": 8901712,
+          "sha256": "1415b2c87d01b67a9380b8f912e2b4ef4561502105b06f313332c97c1c8cb5cf",
+          "operators": {
+            "DISPATCH_OP": 1
+          },
+          "dispatch_ops": 1,
+          "non_dispatch_ops": 0,
+          "metadata": [
+            "LiteRtStamp"
+          ],
+          "method": "flatbuffer",
+          "verdict": "PASS"
+        }
+      ]
+    },
+    {
+      "input": "mobilenet_v1_1.0_224_quant.tflite",
+      "input_sha256": "ecc3a67c47c5a609ec35f6a58a7d97532834e43df4cb7d3f1204a8164b7d20dd",
+      "input_size": 4276352,
+      "compile_seconds": 2.9,
+      "failed_backends": [],
+      "outputs": [
+        {
+          "file": "compiled_e9965/mobilenet_v1_1.0_224_quant_Samsung_E9965.tflite",
+          "size": 4605104,
+          "sha256": "36c75e6acdb711628f2486c7880a9c84fe1dc94c986d4f8dc53eb94ee773e5fa",
+          "operators": {
+            "DISPATCH_OP": 1
+          },
+          "dispatch_ops": 1,
+          "non_dispatch_ops": 0,
+          "metadata": [
+            "LiteRtStamp"
+          ],
+          "method": "flatbuffer",
+          "verdict": "PASS"
+        }
+      ]
+    }
+  ]
+}

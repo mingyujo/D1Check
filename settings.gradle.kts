@@ -26,3 +26,6 @@ rootProject.name = "D1Check"
 include(":app")
 include(":telemetry-contract")
 include(":benchmark-runner")
+// S26 NPU 전용 실행기 (LiteRT Next CompiledModel). benchmark-runner 와 엔진이 달라 모듈을 분리한다.
+// 근거: measure/s26/npu/runner/NPU_RUNNER_SPEC.md
+include(":npu-runner")

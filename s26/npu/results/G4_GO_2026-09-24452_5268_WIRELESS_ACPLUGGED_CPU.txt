@@ -1,0 +1,162 @@
+================= D1 NPU G4 one-shot =================
+when        : 2026-09-24  4:52:52.68
+accelerator : CPU  dtype: float  iterations: 10
+connect     : 
+run_id      : g4go_CPU_float_2026-09-24452_5268
+
+----- [0] JDK -----
+JAVA_HOME=C:\Program Files\Java\jdk-25
+java version "25" 2025-09-16 LTS
+Java(TM) SE Runtime Environment (build 25+37-LTS-3491)
+Java HotSpot(TM) 64-Bit Server VM (build 25+37-LTS-3491, mixed mode, sharing)
+
+----- [1] com.google.ai.edge.litert:litert published versions -----
+saved: C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\measure\s26\npu\tools\..\results\litert_maven_metadata_2026-09-24452_5268.xml
+      <version>0.1.0</version>
+      <version>1.0.0</version>
+      <version>1.0.1</version>
+      <version>1.1.0</version>
+      <version>1.1.1</version>
+      <version>1.1.2</version>
+      <version>1.2.0</version>
+      <version>1.3.0</version>
+      <version>1.4.0</version>
+      <version>1.4.1</version>
+      <version>1.4.2</version>
+      <version>2.0.0-alpha</version>
+      <version>2.0.0-alpha.1</version>
+      <version>2.0.1-alpha</version>
+      <version>2.0.2a1</version>
+      <version>2.0.2</version>
+      <version>2.0.3</version>
+      <version>2.1.0rc1</version>
+      <version>2.1.0</version>
+      <version>2.1.1</version>
+      <version>2.1.3</version>
+      <version>2.1.4</version>
+      <version>2.1.5</version>
+      <version>2.1.6</version>
+      <version>2.2.0</version>
+    <release>2.2.0</release>
+
+----- [2] device -----
+List of devices attached
+adb-<SERIAL>-x8V6ki._adb-tls-connect._tcp device product:m1sksx model:SM_S942N device:m1s transport_id:1
+
+serial      : adb-<SERIAL>-x8V6ki._adb-tls-connect._tcp
+device count: 1
+SM-S942N
+80500
+erd9965
+
+----- [3] gradlew :npu-runner:installDebug -----
+Reusing configuration cache.
+> Task :npu-runner:generateDebugAssets UP-TO-DATE
+> Task :npu-runner:preBuild UP-TO-DATE
+> Task :npu-runner:preDebugBuild UP-TO-DATE
+> Task :npu-runner:javaPreCompileDebug UP-TO-DATE
+> Task :npu-runner:desugarDebugFileDependencies UP-TO-DATE
+> Task :npu-runner:mapDebugSourceSetPaths UP-TO-DATE
+> Task :npu-runner:mergeDebugJniLibFolders UP-TO-DATE
+> Task :npu-runner:extractDeepLinksDebug UP-TO-DATE
+> Task :npu-runner:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :npu-runner:generateDebugResources UP-TO-DATE
+> Task :npu-runner:generateDebugGlobalSynthetics UP-TO-DATE
+> Task :npu-runner:validateSigningDebug UP-TO-DATE
+> Task :npu-runner:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :npu-runner:writeDebugAppMetadata UP-TO-DATE
+> Task :npu-runner:packageDebugResources UP-TO-DATE
+> Task :npu-runner:mergeDebugAssets UP-TO-DATE
+> Task :npu-runner:checkDebugAarMetadata UP-TO-DATE
+> Task :npu-runner:compressDebugAssets UP-TO-DATE
+> Task :npu-runner:processDebugNavigationResources UP-TO-DATE
+> Task :npu-runner:parseDebugLocalResources UP-TO-DATE
+> Task :npu-runner:generateDebugRFile UP-TO-DATE
+> Task :npu-runner:compileDebugNavigationResources UP-TO-DATE
+> Task :npu-runner:mergeDebugNativeLibs UP-TO-DATE
+> Task :npu-runner:stripDebugDebugSymbols UP-TO-DATE
+> Task :npu-runner:checkDebugDuplicateClasses UP-TO-DATE
+> Task :npu-runner:mergeDebugResources UP-TO-DATE
+> Task :npu-runner:mergeLibDexDebug UP-TO-DATE
+> Task :npu-runner:processDebugMainManifest UP-TO-DATE
+> Task :npu-runner:processDebugManifest UP-TO-DATE
+> Task :npu-runner:processDebugManifestForPackage UP-TO-DATE
+> Task :npu-runner:mergeExtDexDebug UP-TO-DATE
+> Task :npu-runner:compileDebugKotlin UP-TO-DATE
+> Task :npu-runner:compileDebugJavaWithJavac NO-SOURCE
+> Task :npu-runner:processDebugJavaRes UP-TO-DATE
+> Task :npu-runner:processDebugResources UP-TO-DATE
+> Task :npu-runner:dexBuilderDebug UP-TO-DATE
+> Task :npu-runner:mergeDebugJavaResource UP-TO-DATE
+> Task :npu-runner:mergeProjectDexDebug UP-TO-DATE
+> Task :npu-runner:packageDebug UP-TO-DATE
+> Task :npu-runner:createDebugApkListingFileRedirect UP-TO-DATE
+
+> Task :npu-runner:installDebug
+Installing APK 'npu-runner-debug.apk' on 'SM-S942N - 16' for :npu-runner:debug
+Installed on 1 device.
+
+BUILD SUCCESSFUL in 28s
+37 actionable tasks: 1 executed, 36 up-to-date
+Configuration cache entry reused.
+gradle exit code = 0
+
+----- [4] launch -----
+package:/data/app/~~XwMKP9c2HfsSwec2_qGn0w==/com.example.d1check.npurunner-ZQNGV1o8GV371VEDj3wm3w==/base.apk
+model extra : --es model_asset models/mobilenet_v1_1.0_224.tflite
+Starting: Intent { cmp=com.example.d1check.npurunner/.NpuRunnerActivity (has extras) }
+waiting for result, up to 150 s
+
+----- [5] logcat D1NPU -----
+--------- beginning of main
+09-24 04:53:24.034 11384 11384 I D1NPU   : D1 NPU Runner
+09-24 04:53:24.034 11384 11384 I D1NPU   : accelerator=CPU dtype=float iterations=10 warmup=5 model=models/mobilenet_v1_1.0_224.tflite run_id=g4go_CPU_float_2026-09-24452_5268
+09-24 04:53:24.034 11384 11384 I D1NPU   : 
+09-24 04:53:24.034 11384 11384 I D1NPU   : running...
+09-24 04:53:24.035 11384 11420 I D1NPU   : creating Environment / CompiledModel...
+09-24 04:53:24.088 11384 11420 I D1NPU   : init OK
+09-24 04:53:24.088 11384 11420 I D1NPU   :   available = [NPU,GPU,CPU]
+09-24 04:53:24.088 11384 11420 I D1NPU   :   env    6.798 ms
+09-24 04:53:24.088 11384 11420 I D1NPU   :   model  44.289 ms   <- idle->CPU switch cost
+09-24 04:53:24.088 11384 11420 I D1NPU   :   buffer 0.642 ms
+09-24 04:53:24.088 11384 11420 I D1NPU   :   nativeLibDir = /data/app/~~XwMKP9c2HfsSwec2_qGn0w==/com.example.d1check.npurunner-ZQNGV1o8GV371VEDj3wm3w==/lib/arm64
+09-24 04:53:24.088 11384 11420 I D1NPU   :   libs = [libLiteRt.so, libLiteRtClGlAccelerator.so, libLiteRtDispatch_Samsung.so, liblitert_jni.so]
+09-24 04:53:24.088 11384 11420 I D1NPU   :   dispatch .so present = true
+09-24 04:53:24.502 11384 11420 I D1NPU   : first inference OK: 6.003 ms
+09-24 04:53:24.577 11384 11420 I D1NPU   : result
+09-24 04:53:24.577 11384 11420 I D1NPU   :   latency  median 6.5055 ms  p95 7.651 ms
+09-24 04:53:24.577 11384 11420 I D1NPU   :   run() only median 6.415 ms
+09-24 04:53:24.577 11384 11420 I D1NPU   :   argmax   112
+09-24 04:53:24.577 11384 11420 I D1NPU   :   top5     112(0.3177), 611(0.0446), 79(0.0421), 814(0.0262), 550(0.0195)
+09-24 04:53:24.577 11384 11420 I D1NPU   : === OK ===
+09-24 04:53:24.585 11384 11420 I D1NPU   : SUMMARY_BEGIN chunks=1 bytes=1467
+09-24 04:53:24.585 11384 11420 I D1NPU   : SUMMARY[0/1] {"schema":"npu-runner-smoke-v1","run_id":"g4go_CPU_float_2026-09-24452_5268","engine":"litert-compiled-model","accelerator_requested":"CPU","model":"models/mobilenet_v1_1.0_224.tflite","dtype":"float","input_generator":"lcg-float32-unit-v1","input_normalization":"synthetic_[0,1]_float32_no_additional_normalization","iterations":10,"warmup":5,"device_model":"SM-S942N","android_sdk":36,"build_fingerprint":"samsung/m1sksx/m1s:16/BP4A.251205.006/S942NKSS4AZHA_OKR4AZHA:user/release-keys","available_accelerators":"NPU,GPU,CPU","env_init_ms":6.798,"model_init_ms":44.289,"buffer_init_ms":0.642,"input_buffers":1,"output_buffers":1,"native_lib_dir":"/data/app/~~XwMKP9c2HfsSwec2_qGn0w==/com.example.d1check.npurunner-ZQNGV1o8GV371VEDj3wm3w==/lib/arm64","native_lib_files":"libLiteRt.so,libLiteRtClGlAccelerator.so,libLiteRtDispatch_Samsung.so,liblitert_jni.so","dispatch_so_present":true,"input_sha256":"5dc1cb09d712429fa580bdb7976c01d3933956d77002a8c8ab3c82c40f3899f3","latency_ms":{"count":10,"mean":6.518,"median":6.506,"p95":7.651,"min":5.867,"max":7.651},"run_only_ms":{"count":10,"mean":6.442,"median":6.415,"p95":7.572,"min":5.807,"max":7.572},"output_length":1001,"output_sha256":"0ef50910750f92c819f8b3c428650ed116d43b721be250ec27f4febcdfdbd833","argmax":112,"top5":[{"index":112,"score":0.31770724},{"index":611,"score":0.044621333},{"index":79,"score":0.04214689},{"index":814,"score":0.026232354},{"index":550,"score":0.019539189}],"status":"OK","error":""}
+09-24 04:53:24.585 11384 11420 I D1NPU   : SUMMARY_END
+
+----- [5b] logcat litert / tflite / ENN / linker -----
+--------- beginning of main
+09-24 04:53:24.040 11384 11420 I litert  : [litert_runtime_builtin.cc:63] Loaded runtime library and found kLiteRtRuntimeBuiltin.
+09-24 04:53:24.041 11384 11420 I litert  : [environment.cc:36] Creating LiteRT environment with options
+09-24 04:53:24.041 11384 11420 I litert  : [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xb400007e1d42a990, name=NpuAccelerator
+09-24 04:53:24.041 11384 11420 I litert  : [npu_registry.cc:30] NPU accelerator registered.
+09-24 04:53:24.041 11384 11420 I litert  : [gpu_registry.cc:101] Attempting to load GPU accelerator(libLiteRtGpuAccelerator.so).
+09-24 04:53:24.041 11384 11420 I litert  : [gpu_registry.cc:101] Attempting to load GPU accelerator(libLiteRtClGlAccelerator.so).
+09-24 04:53:24.042 11384 11420 I litert  : [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xb400007e1d42acf0, name=LiteRT GPU
+09-24 04:53:24.042 11384 11420 I litert  : [gpu_registry.cc:109] Dynamically loaded GPU accelerator(libLiteRtClGlAccelerator.so) registered.
+09-24 04:53:24.042 11384 11420 I litert  : [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xb400007e1d42a5d0, name=CpuAccelerator
+09-24 04:53:24.042 11384 11420 I litert  : [cpu_registry.cc:75] XNNPACK CPU accelerator registered.
+09-24 04:53:24.067 11384 11420 I litert  : [compiled_model.cc:754] NPU JIT compilation caching enabled with cache dir: /data/user/0/com.example.d1check.npurunner/cache
+09-24 04:53:24.070 11384 11420 I litert  : [compiled_model.cc:833] Flatbuffer model initialized directly from incoming litert model.
+09-24 04:53:24.071 11384 11420 I tflite  : Initialized TensorFlow Lite runtime.
+09-24 04:53:24.072 11384 11420 I litert  : [litert_dispatch.cc:159] Loading shared library: /data/app/~~XwMKP9c2HfsSwec2_qGn0w==/com.example.d1check.npurunner-ZQNGV1o8GV371VEDj3wm3w==/lib/arm64/libLiteRtDispatch_Samsung.so
+09-24 04:53:24.073 11384 11420 I litert  : [enn_manager.cc:79] Loading from: libenn_public_api_cpp.so
+09-24 04:53:24.073 11384 11420 I litert  : [enn_manager.cc:81] Failed to load enn runtime.
+09-24 04:53:24.073 11384 11420 I litert  : [dispatch_api.cc:84] Failed to initialize: Fail to load enn runtime.
+09-24 04:53:24.073 11384 11420 E litert  : [dispatch_delegate.cc:116] Failed to initialize Dispatch API: ERROR: [third_party/odml/litert/litert/runtime/dispatch/dispatch_delegate.cc:176]
+09-24 04:53:24.075 11384 11420 I tflite  : Created TensorFlow Lite XNNPACK delegate for CPU.
+09-24 04:53:24.075 11384 11420 I tflite  : Replacing 31 out of 31 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 1 partitions for subgraph 0 ().
+09-24 04:53:24.582 11384 11420 I litert  : [accelerator_registry.cc:43] DestroyAccelerator: ptr=0xb400007e1d42a5d0, name=CpuAccelerator
+09-24 04:53:24.582 11384 11420 I litert  : [accelerator_registry.cc:43] DestroyAccelerator: ptr=0xb400007e1d42acf0, name=LiteRT GPU
+09-24 04:53:24.582 11384 11420 I litert  : [accelerator_registry.cc:43] DestroyAccelerator: ptr=0xb400007e1d42a990, name=NpuAccelerator
+
+----- [5c] crash buffer -----

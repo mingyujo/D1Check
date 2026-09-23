@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Android 17 대비. Android 16(SDK 36)에서는 무해하게 무시된다. -->
+    <uses-feature
+        android:name="android.hardware.npu"
+        android:required="false" />
+
+    <application
+        android:allowBackup="false"
+        android:label="D1 NPU Runner"
+        android:supportsRtl="true">
+        <!-- ★ targetSdk 31+ 앱은 /vendor/etc/public.libraries.txt 에 있는 벤더 라이브러리도
+             여기 선언하지 않으면 앱 네임스페이스에서 보이지 않는다 (Android 12 동작 변경).
+             dispatch .so 가 libenn_public_api_cpp.so 를 dlopen 하다 실패하면
+             "Failed to load enn runtime" -> "Failed to allocate tensors" 가 난다.
+             2026-09-24 실측 (results/G4_DIAG_NPU_2026-09-24455_1519.txt) -->
+        <uses-native-library
+            android:name="libenn_public_api_cpp.so"
+            android:required="false" />
+        <activity
+            android:name="com.example.d1check.npurunner.NpuRunnerActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

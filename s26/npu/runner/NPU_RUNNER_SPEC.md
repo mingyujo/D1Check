@@ -37,6 +37,10 @@ python3 ../tools/s26_npu_symbols.py bazel-bin/litert/vendors/samsung/dispatch/li
 ```
 
 - v2.2.0 태그에서 `litert/vendors/samsung` 이 빌드되지 않으면 `main` 으로 (그 경우 런타임 AAR 2.2.0 과 dispatch ABI 가 어긋날 수 있음 — G3 에서 "model/dispatch version" 류 오류가 나면 이 원인부터 의심).
+- **2026-09-24 G4 실측**: `main`@9380426b dispatch + AAR 2.2.0 조합은 **동작한다**. 버전 거부 시 런타임은
+  `Found Dispatch API with an unsupported version` 을 찍는데 한 번도 나오지 않았다. 대신 앱 매니페스트에
+  `<uses-native-library android:name="libenn_public_api_cpp.so" android:required="false"/>` 가 **필수**다
+  (targetSdk 31+ 앱은 선언하지 않은 벤더 공개 라이브러리를 못 연다). `results/G4_VERDICT_0924.md`
 - Samsung compiler plugin 은 `@exynos_ai_litecore` (LiteCore v1.2.0 tarball, 공개 URL) 를 Bazel 이 자동으로 받는다. 프록시 환경이면 `EXYNOS_AI_LITECORE_ROOT` 로 수동 지정.
 - 산출물은 `../artifacts/` 에 **SHA-256 + 빌드 커밋 + NDK/Bazel 버전**을 적은 README 와 함께 보관. GitHub 에는 .so 를 올리지 말고(용량·라이선스) SHA 만.
 

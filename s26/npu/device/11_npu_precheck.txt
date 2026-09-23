@@ -1,0 +1,114 @@
+===== 0. adb devices =====
+List of devices attached
+<IP:PORT>	device
+
+ 
+===== 1. build / OS identity =====
+SM-S942N
+s5e9965
+s5e9965
+16
+36
+80500
+BP4A.251205.006.S942NKSS4AZHA
+samsung/m1sksx/m1s:16/BP4A.251205.006/S942NKSS4AZHA_OKR4AZHA:user/release-keys
+ 
+===== 2. android.hardware.npu feature (API 37 / Android 17 only) =====
+feature:android.software.input_methods
+(empty above = feature not declared on this build)
+ 
+===== 3. AIDL services (service list) matching enn / neural / npu =====
+--- HIDL (lshal) ---
+--- init services ---
+[init.svc.sec-sysinput-aidl]: [running]
+ 
+===== 4. ENN public libraries (app-loadable) =====
+-rw-r--r-- 1 root root  67704 2022-01-01 09:00 /vendor/lib64/libenn_public_api_cpp.so
+-rw-r--r-- 1 root root  67704 2022-01-01 09:00 /vendor/lib64/libenn_public_api_cpp_lib.so
+-rw-r--r-- 1 root root 436344 2022-01-01 09:00 /vendor/lib64/libenn_user.samsung_slsi.so
+-rw-r--r-- 1 root root 419080 2022-01-01 09:00 /vendor/lib64/libenn_user_lib.so
+--- which public.libraries file lists them ---
+/vendor/etc/public.libraries.txt:libenn_public_api_cpp.so
+/vendor/etc/public.libraries.txt:libenn_public_api_cpp_lib.so
+/vendor/etc/public.libraries.txt:libenn_user.samsung_slsi.so
+/vendor/etc/public.libraries.txt:libenn_user_lib.so
+ 
+===== 5. all enn / npu libs in vendor + system (reference) =====
+-rw-r--r-- 1 root root     302168 2022-01-01 09:00 libenn_common_utils.so
+-rw-r--r-- 1 root root    8473736 2022-01-01 09:00 libenn_cpu_operators.so
+-rw-r--r-- 1 root root    1244184 2022-01-01 09:00 libenn_engine.so
+-rw-r--r-- 1 root root    1244256 2022-01-01 09:00 libenn_engine_lib.so
+-rw-r--r-- 1 root root     469808 2022-01-01 09:00 libenn_model.so
+-rw-r--r-- 1 root root      67704 2022-01-01 09:00 libenn_public_api_cpp.so
+-rw-r--r-- 1 root root      67704 2022-01-01 09:00 libenn_public_api_cpp_lib.so
+-rw-r--r-- 1 root root     436344 2022-01-01 09:00 libenn_user.samsung_slsi.so
+-rw-r--r-- 1 root root      86208 2022-01-01 09:00 libenn_user_driver_cpu.so
+-rw-r--r-- 1 root root   15891160 2022-01-01 09:00 libenn_user_driver_gpu.so
+-rw-r--r-- 1 root root   15891160 2022-01-01 09:00 libenn_user_driver_gpu_lib.so
+-rw-r--r-- 1 root root     519136 2022-01-01 09:00 libenn_user_driver_unified.so
+-rw-r--r-- 1 root root     419080 2022-01-01 09:00 libenn_user_lib.so
+-rw-r--r-- 1 root root    1168152 2022-01-01 09:00 libenn_wrapper.so
+-rw-r--r-- 1 root root    8100680 2022-01-01 09:00 libhdraid.npu.arcsoft.so
+-rw-r--r-- 1 root root    2348552 2022-01-01 09:00 libtflitecore.so
+-rw-r--r-- 1 root root     118848 2022-01-01 09:00 vendor.samsung_slsi.hardware.enn_aidl-V1-ndk.so
+-rw-r--r-- 1 root root   1129280 2022-01-01 09:00 libenn_wrapper_system.so
+-rw-r--r-- 1 root root     35352 2022-01-01 09:00 libneural.snap.samsung.so
+-rw-r--r-- 1 root root     35832 2022-01-01 09:00 libneuralnetworks_packageinfo.so
+-rw-r--r-- 1 root root     85664 2022-01-01 09:00 vendor.samsung_slsi.hardware.enn_aux@1.0.so
+ 
+===== 6. any LiteRT NPU libs shipped by the platform? (expect none) =====
+(empty above = app must bundle libLiteRtDispatch_Samsung.so itself)
+ 
+===== 7. ENN / NPU related packages and versions =====
+package:com.android.companiondevicemanager
+package:com.google.android.ondevicepersonalization.services
+package:com.android.companiondevicemanager.auto_generated_characteristics_rro
+package:com.samsung.android.inputshare
+package:com.samsung.android.bixby.ondevice.kokr
+package:com.samsung.android.aicore
+package:com.android.inputdevices
+package:com.samsung.android.bixby.ondevice.enus
+package:com.google.android.aicore
+    versionCode=494423 minSdk=34 targetSdk=35
+    versionName=0.release.samsungslsi.prod_aicore_20260723.00_RC11.964081323
+    versionCode=210955320 minSdk=33 targetSdk=35
+    versionName=2.1.09.55
+ 
+===== 8. ENN / NPU related props =====
+[persist.device_config.nnapi_native.current_feature_level]: [7]
+[persist.device_config.nnapi_native.telemetry_enable]: [false]
+ 
+===== 9. vendor test binaries (EnnTest etc.) =====
+ 
+===== 10. thermal sensors mentioning NPU (expect none) =====
+ 
+===== 11. NNAPI probe result from benchmark-runner (D1NPU logcat) =====
+D1NPU logcat bytes captured: 520  - see 13_nnapi_probe_logcat.txt. 0 bytes = press the Probe button first, then rerun 
+ 
+===== 12. pull libenn_public_api_cpp.so and check exported ENN symbols =====
+/vendor/lib64/libenn_public_api_cpp.so: 1 file pulled, 0 skipped. 2.6 MB/s (67704 bytes in 0.025s)
+파일: C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\measure\s26\npu\tools\..\device\libenn_public_api_cpp.so  (67,704 B)
+정의된 동적 심볼: 85개, 그중 Enn*: 0개
+
+REQUIRED (LiteRT dispatch 필수 15개)
+  [X] EnnInitialize
+  [X] EnnCreateBufferFromFdWithOffset
+  [X] EnnCreateBufferCache
+  [X] EnnBufferCommit
+  [X] EnnGetBuffersInfo
+  [X] EnnSetBufferByIndex
+  [X] EnnReleaseBuffer
+  [X] EnnExecuteModel
+  [X] EnnBufferUncommit
+  [X] EnnUnsetBuffers
+  [X] EnnCloseModel
+  [X] EnnDeinitialize
+  [X] EnnAllocateAllBuffers
+  [X] EnnSetPreferencePerfMode
+  [X] EnnSetPreferencePerfConfigId
+Traceback (most recent call last):
+  File "C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\measure\s26\npu\tools\s26_npu_symbols.py", line 132, in <module>
+    sys.exit(main(sys.argv))
+  File "C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\measure\s26\npu\tools\s26_npu_symbols.py", line 107, in main
+    print("OPTIONAL (모델 열기 방식 \u2014 하나 이상 있어야 함)")
+UnicodeEncodeError: 'cp949' codec can't encode character '\u2014' in position 19: illegal multibyte sequence
