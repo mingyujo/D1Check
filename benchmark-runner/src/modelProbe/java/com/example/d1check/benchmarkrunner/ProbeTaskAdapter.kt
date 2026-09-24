@@ -39,8 +39,10 @@ internal class ProbeTaskAdapter(
         session = ProbeRawSession.create(manifest, model, initializationMark = initializationMark)
     }
 
-    fun execute(image: File, imageSha256: String, invocationObserver: ((Long, Long) -> Unit)? = null): Map<String, Any?> {
+    fun execute(image: File, imageSha256: String, invocationObserver: ((Long, Long) -> Unit)? = null,
+                diagnosticMark: ((String, String) -> Unit)? = null): Map<String, Any?> {
         // Integrity/read/decode are part of each service, not a cached synthetic tensor.
+        diagnosticMark?.invoke("input_preparation", "start")
         require(ProbeModelFile.sha256(image) == imageSha256)
         ProbeImageContract.requireCanonicalPng(image.readBytes())
         val bitmap = requireNotNull(BitmapFactory.decodeFile(image.absolutePath))
@@ -57,12 +59,15 @@ internal class ProbeTaskAdapter(
             val tensor = if (classification) java.nio.ByteBuffer.allocateDirect(resized.size * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN).apply {
                 resized.forEach { putFloat(((it.toInt() and 255) - 127f) / 128f) }; rewind()
             } else ProbeImageContract.tensor(resized)
-            val raw = session.invokePrepared(tensor, invocationObserver = invocationObserver)
+            diagnosticMark?.invoke("input_preparation", "succeeded")
+            val raw = session.invokePrepared(tensor, invocationObserver = invocationObserver, diagnosticMark = diagnosticMark)
+            diagnosticMark?.invoke("output_decode", "start")
             val results: List<Map<String, Any?>> = if (classification) {
                 raw.outputs.single().indices.sortedWith(compareByDescending<Int> { raw.outputs[0][it] }.thenBy { it }).take(5).map { i ->
                     mapOf("label" to labels[i], "class_index" to i, "score" to raw.outputs[0][i])
                 }
             } else ExplicitDetectionDecoder.decode(raw.outputs[0], raw.outputs[1], anchors, labels, width, height)
+            diagnosticMark?.invoke("output_decode", "succeeded")
             return mapOf("task_id" to manifest.model.task.wireName, "model_id" to manifest.model.modelId,
                 "model_sha256" to manifest.model.sha256, "image_sha256" to imageSha256,
                 "image_size" to listOf(width, height), "input_tensor_sha256" to raw.inputSha256,

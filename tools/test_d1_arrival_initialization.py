@@ -17,7 +17,7 @@ class InitializationTest(unittest.TestCase):
 
     def test_prepare_and_dry_run_zero_device_and_zero_calls(self):
         candidate=self.root/'candidate.apk';candidate.write_bytes(b'PC test fixture')
-        manifest=dict(session_id='parent',requests=[{'request_id':'old'}],warmup_requests=[{'request_id':'warm'}],
+        manifest=dict(session_id='parent',requests=[{'request_id':'old'}],warmup_requests=[{'request_id':'warm','model_key':'classification_CPU'}],
                       models={k:dict(identity={},target={}) for k in n.ORDER})
         n.c.write_new(self.root/'old.json',manifest)
         tool=self.root/'tool';tool.write_bytes(b'fake')
@@ -35,11 +35,21 @@ class InitializationTest(unittest.TestCase):
             self.assertEqual(planned['requests'],[]);self.assertEqual(planned['warmup_requests'],[])
             self.assertEqual(planned['failure_diagnostic_scope'],'setup_only')
             self.assertFalse((self.root/'runtime_initialization_run_v1').exists());device.assert_not_called()
+            extra=n.prepare(self.root/'parent.json',candidate,self.root/'receipt.json',self.root/'first-plan',scope='first_warmup')
+            first_plan=n.p.read(self.root/'first-plan/initialization_plan.json')
+            first_manifest=n.p.read(self.root/'first-plan/manifest.json')
+            self.assertEqual(extra['budget']['warmup_calls'],1)
+            self.assertEqual(extra['budget']['inference_calls'],1)
+            self.assertEqual(first_manifest['requests'],[])
+            self.assertEqual([q['model_key'] for q in first_manifest['warmup_requests']],['classification_CPU'])
+            self.assertNotEqual(first_plan['registry'],n.p.read(self.root/'plan/initialization_plan.json')['registry'])
+            self.assertFalse((self.root/'first_warmup_run_v1').exists())
+            device.assert_not_called()
             planned['warmup_requests']=[{}];(self.root/'plan/manifest.json').write_bytes(n.p.canonical(planned))
             with self.assertRaisesRegex(ValueError,'manifest changed'):n.check(self.root/'plan/initialization_plan.json')
 
     def test_single_use_claim_even_if_output_changed(self):
-        plan=dict(output_root=str(self.root/'run'),registry=str(self.root/'registry'))
+        plan=dict(experiment_id=n.EXPERIMENT,budget=n.BUDGET,output_root=str(self.root/'run'),registry=str(self.root/'registry'))
         path=self.root/'plan.json';n.c.write_new(path,plan)
         n.claim(plan,path)
         plan['output_root']=str(self.root/'other')
@@ -95,7 +105,7 @@ class InitializationTest(unittest.TestCase):
         self.assertEqual(proc.call_count,1);self.assertEqual(proc.call_args.kwargs['timeout'],2)
 
     def test_host_timeout_recovery_error_and_cleanup_remain_distinct(self):
-        plan=dict(output_root=str(self.root/'run'),registry=str(self.root/'registry'),session_id='s',manifest='m.json',
+        plan=dict(experiment_id=n.EXPERIMENT,budget=n.BUDGET,output_root=str(self.root/'run'),registry=str(self.root/'registry'),session_id='s',manifest='m.json',
                   manifest_sha256='a'*64,apk_path='fake.apk',apk_sha256='b'*64,source_files={},apk_preflight=dict(candidate={}))
         path=self.root/'plan.json';n.c.write_new(path,plan)
         clock=[0.0];dev=Mock();dev.call.return_value=SimpleNamespace(stdout=b'42',stderr=b'',returncode=0)
@@ -114,7 +124,7 @@ class InitializationTest(unittest.TestCase):
         self.assertEqual(n.p.read(self.root/'run/host_error.json')['host_stage'],'completion_poll')
 
     def test_preflight_failure_has_zero_install_session_and_blocks_rerun(self):
-        plan=dict(output_root=str(self.root/'run'),registry=str(self.root/'registry'))
+        plan=dict(experiment_id=n.EXPERIMENT,budget=n.BUDGET,output_root=str(self.root/'run'),registry=str(self.root/'registry'))
         path=self.root/'plan.json';n.c.write_new(path,plan);dev=Mock()
         with patch.object(n,'check'),patch.object(n.legacy,'Device',return_value=dev),patch.object(n.apk,'preflight',side_effect=ValueError('incompatible')),patch.object(d,'cleanup') as cleanup:
             report=n.run(path,'unused','unused',n.p.digest(path),n.EXPERIMENT)
@@ -122,6 +132,42 @@ class InitializationTest(unittest.TestCase):
             self.assertEqual(report['runtime_actual_attempt_bounds'],[0,0]);cleanup.assert_not_called()
             with self.assertRaisesRegex(ValueError,'consumed'):n.run(path,'unused','unused',n.p.digest(path),n.EXPERIMENT)
         dev.call.assert_not_called()
+
+    def test_first_warmup_artifact_requires_real_return_and_order(self):
+        folder,sha=self.artifacts()
+        manifest=n.p.read(folder/'manifest.json')
+        manifest.update(failure_diagnostic_scope='first_warmup',warmup_requests=[dict(request_id='w',model_key='classification_CPU')])
+        (folder/'manifest.json').write_bytes(n.p.canonical(manifest));sha=n.p.digest(folder/'manifest.json')
+        rows=[json.loads(line) for line in (folder/'failure_progress.jsonl').read_bytes().splitlines()]
+        rows=rows[:-2]
+        def add(stage,edge):
+            rows.append(dict(rows[-1],stage=stage,edge=edge,model_key='classification_CPU',request_id='w',thread_id=1))
+        add('warmup_wait','start');add('warmup','start')
+        for stage in ('input_preparation','host_inference','output_readback','output_decode'):
+            add(stage,'start');add(stage,'succeeded')
+        add('warmup','succeeded');add('warmup_wait','succeeded');add('first_warmup','succeeded');add('cleanup','succeeded')
+        def write():
+            for i,row in enumerate(rows):row.update(sequence=i,mono_ns=i,manifest_sha256=sha)
+            (folder/'failure_progress.jsonl').write_bytes(b''.join(n.p.canonical(x) for x in rows))
+        write();report=n.inspect_artifacts(folder,sha)
+        self.assertEqual(report['status'],'FIRST_WARMUP_COMPLETED_NOT_CAUSE_RESOLVED')
+        self.assertEqual(report['host_inference_returned'],1)
+        self.assertEqual(report['warmup']['adapter_returned'],1)
+        rows[:]=[x for x in rows if not (x['stage']=='host_inference' and x['edge']=='succeeded')]
+        write();self.assertEqual(n.inspect_artifacts(folder,sha)['status'],'INCOMPLETE_OR_FAILED')
+
+
+    def test_first_warmup_host_timeout_preserves_unknown_call_range(self):
+        plan=dict(experiment_id=n.WARMUP_EXPERIMENT,budget=dict(n.BUDGET,warmup_calls=1,inference_calls=1),
+                  output_root=str(self.root/'run'),registry=str(self.root/'registry'),session_id='s',manifest='m.json',
+                  manifest_sha256='a'*64,apk_path='fake.apk',apk_sha256='b'*64,source_files={},apk_preflight=dict(candidate={}))
+        path=self.root/'plan.json';n.c.write_new(path,plan)
+        dev=Mock();dev.call.return_value=SimpleNamespace(stdout=b'42',stderr=b'',returncode=0)
+        with patch.object(n,'check'),patch.object(n.legacy,'Device',return_value=dev),patch.object(n.apk,'preflight',return_value={'installed':{}}),patch.object(n,'environment_gate'),patch.object(n.legacy,'bounded_cool'),patch.object(d,'stage_inputs',return_value='remote'),patch.object(d,'wait_for_cleanup',side_effect=TimeoutError('stop')),patch.object(d,'failed_attempt_evidence'),patch.object(n,'inspect_artifacts',side_effect=FileNotFoundError()),patch.object(d,'cleanup',return_value={'status':'completed'}):
+            result=n.run(path,'unused','unused',n.p.digest(path),n.WARMUP_EXPERIMENT)
+        self.assertIsNone(result['counts']['warmup_calls']);self.assertIsNone(result['counts']['inference_calls'])
+        self.assertEqual(result['warmup_call_bounds'],[0,1]);self.assertEqual(result['inference_call_bounds'],[0,1])
+        self.assertTrue(result['no_resume'])
 
 
 if __name__=='__main__':unittest.main()

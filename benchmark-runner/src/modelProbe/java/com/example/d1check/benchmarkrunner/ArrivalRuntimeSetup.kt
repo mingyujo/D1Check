@@ -13,6 +13,23 @@ internal object ArrivalRuntimeSetup {
         return setupOnly
     }
 
+    fun firstWarmupOnly(scope: String?, keys: List<String>, requests: Int): Boolean {
+        if (scope != "first_warmup") return false
+        require(keys == listOf("classification_CPU") && requests == 0) { "first-warmup cap/order" }
+        return true
+    }
+
+    fun runFirstWarmup(lane: ExecutorService, journal: ArrivalFailureJournal, id: String,
+                       timeout: Long = 30, unit: TimeUnit = TimeUnit.SECONDS, call: () -> Unit) {
+        val key = "classification_CPU"
+        arrivalDiagnosticOperation(journal, "warmup_wait", key, id) {
+            lane.submit {
+                arrivalDiagnosticOperation(journal, "warmup", key, id, call)
+            }.get(timeout, unit)
+        }
+        journal.mark("first_warmup", "succeeded")
+    }
+
     fun closeLane(lane: ExecutorService, timeout: Long = 5, unit: TimeUnit = TimeUnit.SECONDS,
                   close: () -> Unit) {
         // A stuck constructor cannot make the caller wait indefinitely for the queued close.

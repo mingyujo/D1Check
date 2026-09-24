@@ -1,5 +1,14 @@
 # D1Check 현재 상태
 
+## 2026-09-24 ARRIVAL-WARMUP-DIAG-01 — PC 비교·후속 준비
+
+- 시작 `67e6b10d4a8ae7f2b67ec54012311b42dac2a131` / feature/arrival-scheduling-20260923 / clean. [실행 경로 비교·후속 계약](ARRIVAL_WARMUP_DIAGNOSTIC_20260924.md). CAL-02 정지 원인은 미확정이며 추측성 runtime 수정 없음.
+- 생성 순서/worker/Future30초 유지 확인. setup_only 성공은 첫warmup 이전return이므로 CAL-02 첫classification_CPU warmup 이후를 검증하지 않았다. host209.047초와 앱 네runtime wait span17.409608초를 분리했다. RawAdapter의 과거Git blob과원working-tree hash의exact byte 대응은 미확인으로 기록; Activity/TaskAdapter와보존APK identity는 대조했다.
+- 새first_warmup scope: 네runtime후CPU첫warmup1회만, 평가요청0, 앱명시적inference총1(warmup에포함), 단계별durable mark와Future30초, 즉시return. 기존calibration/setup_only 의미 보존·20null/experiment_ready=false·보정제외. 원인치료/품질/성능PASS 아님.
+- 제안: claim/설치/session각1·runtime≤4·warmup≤1·retry/대체/추가0·총600초(545/10/45), 동일기기/환경gate·cooling120·앱120/host125 유지. **새 실행 승인 전 금지**, 이번ADB/설치/실기기0. 과거 소비계획 재개 없음.
+- PC Kotlin16·Python10·관련컴파일/격리assemble·서명·dry-run PASS. 초기테스트fixture/runner 오류후최종통과, 로그보존. APK8c6d41…3b75/plan e6f996…ad61, 새run/registry부재. 후보/근거는 관련문서와외부 `warmup_transition_pc_v1/FINAL_RECEIPT.json`. 관련소스·문서만commit/push, 원본/키/APK/모델제외.
+- 다음: (1) 새1세션 후보의 별도 실행 승인, (2) 승인 시에만 최신서명/기기/미소비gate후실행, (3) 원인과장없이prefix/실제호출수·종료판독. 기존FAIL/부분결과/CAL-02불확실소비량/NPU경계 유지.
+
 ## 2026-09-24 ARRIVAL-INIT-DIAG-01 — 승인 실행 완료·원인 미확정
 
 - 시작 `72b3264a77325f1370048665cbfdde86823eebab` / feature/arrival-scheduling-20260923 / clean. 사용자 승인과 동결 계획·소스/APK/manifest 동일성, 미소비 확인 후 준비된 script1회 실행. [결과·근거·한계](ARRIVAL_INITIALIZATION_DIAGNOSTIC_20260924.md). 아래 승인 대기 문구는 당시 이력이다.

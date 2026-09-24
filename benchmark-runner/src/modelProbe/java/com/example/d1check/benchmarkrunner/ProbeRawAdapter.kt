@@ -38,7 +38,8 @@ internal class ProbeRawSession private constructor(
     }
 
     /** Diagnostic same-tensor replay; never written as a synthetic-seed capture. */
-    fun invokePrepared(input: ByteBuffer, seed: Int = 0, invocationObserver: ((Long, Long) -> Unit)? = null): ProbeRawInvocation {
+    fun invokePrepared(input: ByteBuffer, seed: Int = 0, invocationObserver: ((Long, Long) -> Unit)? = null,
+                       diagnosticMark: ((String, String) -> Unit)? = null): ProbeRawInvocation {
         check(!closed) { "Probe raw session is closed" }
         require(input.capacity() == interpreter.getInputTensor(0).numBytes()) { "Prepared input size mismatch" }
         val outputBuffers = manifest.tensor.outputs.associate { spec ->
@@ -47,6 +48,7 @@ internal class ProbeRawSession private constructor(
         }.toMutableMap<Int, Any>()
         input.rewind()
         outputBuffers.values.forEach { (it as ByteBuffer).clear() }
+        diagnosticMark?.invoke("host_inference", "start")
         progress?.mark("measured_invocation", "start")
         val startedNs: Long
         val finishedNs: Long
@@ -62,6 +64,8 @@ internal class ProbeRawSession private constructor(
             }
             startedNs = bounds.first; finishedNs = bounds.second
         }
+        diagnosticMark?.invoke("host_inference", "succeeded")
+        diagnosticMark?.invoke("output_readback", "start")
         progress?.mark("measured_invocation", "finish")
         progress?.mark("output_readback", "start")
         val outputs = manifest.tensor.outputs.map { spec ->
@@ -75,6 +79,7 @@ internal class ProbeRawSession private constructor(
         check(outputs.all { output -> output.all { it.isFinite() } }) {
             "Probe raw output contains non-finite values"
         }
+        diagnosticMark?.invoke("output_readback", "succeeded")
         return ProbeRawInvocation(
             seed = seed,
             inputSha256 = sha256(input),

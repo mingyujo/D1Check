@@ -23,6 +23,8 @@ manifest의 빈warmup/requests·setup_only 반환·warmup_trace=[]·호출event/
 
 다음 최소 행동은 PC에서 CAL-02와 이번 setup_only의 단계 경계를 대조해 남은 가설과 필요한 별도 진단 범위를 정리하는 것이다. 추가 실측/기존계획 재개는 자동 수행하지 않는다.
 
+후속 PC 비교와 첫warmup 전용 후보는 [ARRIVAL-WARMUP-DIAG-01](ARRIVAL_WARMUP_DIAGNOSTIC_20260924.md)에 기록한다. 이 성공 계획은 계속 소비·종료 상태다.
+
 ## 이하: 실행 전 준비 계약과 검증 이력
 
 아래 미승인/출력 없음 등의 표기는 준비 당시 기록이다. 위 승인 실행 결과가 현재 상태이며 원 계획·준비 receipt를 소급 수정하지 않았다.

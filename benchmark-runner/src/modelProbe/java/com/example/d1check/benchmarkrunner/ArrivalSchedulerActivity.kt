@@ -75,11 +75,12 @@ class ArrivalSchedulerActivity : Activity() {
             val timingDev = protocol == ArrivalTimingDev.PROTOCOL || calibration
             require(protocol in setOf("arrival-scheduler-v1", ArrivalTimingDev.PROTOCOL, ArrivalTimingDev.CALIBRATION_PROTOCOL) && m.getString("session_id") == sid)
             val diagnostic = m.optString("failure_diagnostic_contract", "").isNotEmpty()
+            val firstWarmup = diagnostic && m.optString("failure_diagnostic_scope") == "first_warmup"
             val setupOnly = diagnostic && m.optString("failure_diagnostic_scope") == "setup_only"
             if (diagnostic) {
                 require(calibration && m.getString("failure_diagnostic_contract") == ArrivalFailureJournal.CONTRACT &&
                     m.getBoolean("performance_excluded") && !m.getBoolean("experiment_ready") &&
-                    m.getString("failure_diagnostic_scope") in setOf("setup_only", "calls"))
+                    m.getString("failure_diagnostic_scope") in setOf("setup_only", "calls", "first_warmup"))
                 val early = canonicalProbeOutputRoot(filesDir, protocol, sid)
                 require(!early.exists() && early.mkdirs()); root = early
                 save(early, "manifest.json", manifestFile.readBytes())
@@ -148,6 +149,7 @@ class ArrivalSchedulerActivity : Activity() {
             val requestsJson = m.getJSONArray("requests")
             val warmupsJson = m.getJSONArray("warmup_requests")
             require(if (setupOnly) requestsJson.length() == 0 && warmupsJson.length() == 0
+                else if (firstWarmup) requestsJson.length() == 0 && warmupsJson.length() == 1
                 else requestsJson.length() in 1..24 && warmupsJson.length() == 8)
             val requests = (0 until requestsJson.length()).map { requestsJson.getJSONObject(it) }
             val warmups = (0 until warmupsJson.length()).map { warmupsJson.getJSONObject(it) }
@@ -168,8 +170,10 @@ class ArrivalSchedulerActivity : Activity() {
                 val id = q.getString("request_id")
                 require(UUID.fromString(id).toString() == id && ids.add(id))
             }
-            require(setupOnly || expectedKeys.all { key -> warmups.count { it.getString("model_key") == key } == 2 })
-            if (calibration && !setupOnly) {
+            ArrivalRuntimeSetup.firstWarmupOnly(if (firstWarmup) "first_warmup" else null,
+                warmups.map { it.getString("model_key") }, requests.size)
+            require(setupOnly || firstWarmup || expectedKeys.all { key -> warmups.count { it.getString("model_key") == key } == 2 })
+            if (calibration && !setupOnly && !firstWarmup) {
                 require(requests.size == 4 && requests.map { it.getLong("offset_ms") } == listOf(0L, 5000L, 10000L, 15000L))
                 require(requests.map { it.getString("task_id") }.toSet().size == 1 &&
                     requests.map { it.getString("priority") }.toSet().size == 1 &&
@@ -200,6 +204,16 @@ class ArrivalSchedulerActivity : Activity() {
             if (initializationOnly) {
                 failureJournal!!.mark("setup_only", "succeeded")
                 return // Explicitly zero warmup/inference requests, never a calibration result.
+            }
+            if (firstWarmup) {
+                val q = warmups.single()
+                val image = images.getValue(q.getString("sample_id"))
+                val journal = requireNotNull(failureJournal)
+                ArrivalRuntimeSetup.runFirstWarmup(cpu, journal, q.getString("request_id")) {
+                    adapters.getValue("classification_CPU").execute(image.first, image.second,
+                        diagnosticMark = { stage, edge -> journal.mark(stage, edge, "classification_CPU", q.getString("request_id")) })
+                }
+                return // No second warmup, arrivals, requests, policy decisions, or persistence workload.
             }
             for (q in warmups) {
                 val key = q.getString("model_key")

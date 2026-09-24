@@ -474,3 +474,9 @@
 - 새로운 execution claim은 preflight 전에 소비하고 재진입을 막는다. install/session attempt는 각각 명령 직전에 별도 기록한다. runtime start 의도와 반환 증거/미확인 범위를 구분한다. preflight/설치 실패는 session0일 수 있으나 claim 이후 같은 계획 재실행은 금지한다. 기존 소비/중단 상태는 불변이다.
 - 프로젝트 기존 인증서로 격리 APK를 빌드하고 PC 검증했다. 새plan/source/manifest/APK identity를 묶고 runtime_initialization 전용 root/registry를 쓴다. 동기 기록이 포함되어 성능 보정/평가에 사용하지 않는다. 결과가 완전해도 `complete_not_cause_resolved`; 불완전하면 마지막 확인 단계/회수 오류와 앱 실패를 구분하고 원인을 추측하지 않는다.
 - 검증: 관련Kotlin5/Python15·compile/assemble·dry-run PASS, 실제ADB/설치/기기생성0. 새1회 실행 승인과 실제 설치본·기기/환경 gate가 남았다. 기존FAIL·부분 결과·20null/experiment_ready=false 및 S26 협업 결정은 유지한다. [후보 경로·실제 명령·한계](ARRIVAL_INITIALIZATION_DIAGNOSTIC_20260924.md).
+
+## 2026-09-24 — ARRIVAL-WARMUP-DIAG-01 준비 범위
+
+- 채택은 PC 준비 범위다. 네 생성 성공 뒤 아직 관측하지 않은 첫 classification_CPU warmup 전이를1회만 확인하는 새 scope를 추가한다. 원래 CAL-02 순서/worker를 유지하고 나머지7warmup/4요청은 시작하지 않는다. setup_only 단순 반복·16세션 보정 재개 대신 미관측구간을최소확장한다. 과거원인을고친다는추측성수정은하지않는다.
+- 앱명시적inference 상한1은warmup1에포함되며추가호출이아니다. 입력준비/host API/출력단계와Future대기를기록하되성능보정에는쓰지않는다. 공식inference timer 내부경계는유지한다. 새실행예산은1세션/600초제안·미승인, timeout/gate는기존값유지.
+- 과거RawAdapter의Git blob과원working-tree byte hash 대응미확인은별도공시한다. 새후보source/build/APK/plan mandatory검사에는예외를두지않는다. 기존FAIL·부분결과·두종료계획·20null/experiment_ready=false 불변. [비교와판독기준](ARRIVAL_WARMUP_DIAGNOSTIC_20260924.md).
