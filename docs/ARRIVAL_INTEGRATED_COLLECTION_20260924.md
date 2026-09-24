@@ -1,5 +1,19 @@
 # ARRIVAL-COLLECT-01 — 판단 비용·큐 전환·한정 병행 수집 준비
 
+## 2026-09-24 승인 실행 종료: 설치 timeout·세션 미시작
+
+HEAD `0338433`·clean에서 아래 plan v2의 12세션 예산을 승인받아 준비된 스크립트를 1회 호출했다. 계획·소스·APK·manifest 일치와 기존 출력/registry 부재를 확인했다. **설치 시도1회가120초 timeout으로 중단됐고, 개발0/6·확인0/6 세션 시도, 진단0/48·warmup0/96·총명시적추론0/144, retry·대체·추가0이다.** 미시도12세션을 실패 세션이나 성공으로 계산하지 않는다. 기술적 실패1은 세션 전 설치 단계다. 개발 claim 및 전체 stopped registry가 생성되어 **종료 계획 재개 금지**다. 아래 준비·미승인 표현과 실행 명령은 당시 이력이며 현재 실행 지시가 아니다.
+
+- 단일 SM-A245N·동일 fingerprint·기존/후보 signer와package/version1 일치. 배터리55%·31.1°C·비충전, thermal0, Awake/interactive·밝기81/수동/기존5시간timeout, 앱 프로세스 부재를 확인했다. 화면 설정 변경/복구 없음. 앱 내부 runtime memory admission은 실행에 도달하지 못해 미실시다.
+- 설치 명령이 반환하지 않았다는 사실만 확인했다. 후보 `d8db6963…34bc`와 설치 전 APK `9019b85d…2c0`의 인증서는 동일하다. 종료 후10초 상한의 읽기 전용 조회(실제0.593초)에서 설치본은 이전 APK 해시 그대로였다. 서명 불일치·GPU 실패·CAL-02와 같은 원인으로 해석하지 않는다. 전송/무선/패키지 처리 원인은 미확정이다.
+- host UTC claim→설치75.180초, 설치→중단120.026초, 중단→cleanup receipt0.687초, claim→cleanup195.893초. 마지막 조회까지283.200초(중간 PC 대기 포함), 최초 기기조회가 포함된 tool wall0.699초를 별도 합산해도283.899초다. 냉각·세션0초, 확인 미시작. 승인5490초 이내이며 회수·cleanup 시간을 밖으로 빼지 않았다. cleanup 단독 정밀 타이머 대신 receipt 간격을 명시한다.
+- host force-stop·프로세스 부재·thermal0 확인. 앱 cleanup은 세션 미시작으로N/A다. Activity launch0/설치 단계 종료의 host 제어 흐름이 진단·warmup0의 근거이며 단순 로그 부재로 판정하지 않았다. 원 stopped.json의 일반 `requests_actual=unknown`은 보존하고 별도 receipt에서 근거를 붙였다. preflight helper의 `phase_consumed=false`는 helper 자체 상태이며 실제 소비 판정은 앞서 생성된 registry claim을 따른다.
+- 새 비용 표본0, 동결/확인/오차 판정 미실시, 새 PC 연결 없음. 현재 엄격 CPU fallback·전체직렬과 병행 차단을 유지한다. 기존40값/20null/FAIL/부분결과/종료계획·experiment_ready=false 불변. 빌드·완료된 테스트는 반복하지 않았다.
+
+외부 root의 `integrated_collection_execution_v1/FINAL_REPORT.md`, `FINAL_RECEIPT.json`, `REPRODUCE.py`(PC 읽기 전용), `post_stop_observation.json`; 실행 원본은 `integrated_collection_run_v1/development/`, 소비는 `collection_execution_registry/ARRIVAL-COLLECT-01/`에 보존한다. 원본/회수 APK는 Git에 포함하지 않는다.
+
+다음 최소 행동은 **새 설치 진단의 PC 준비**다. timeout 예외의 부분 stdout/stderr와 단계 시간을 보존해 전송/패키지 처리 구간을 구분할 수 있어야 한다. 이번 예외에는 명령·120초만 남아 원인을 좁힐 수 없다. timeout 연장이나 같은 계획 재실행을 하지 않으며, 후속 기기 작업은 별도 승인 대상이다. 수집 성공 뒤에만 개발자료 기반 강한B2 선정·B3/P 결정 차이·공통 목적/제약 동결과 독립 평가를 준비한다. 지금 정책 비교를 추가할 근거는 없다.
+
 2026-09-24, 시작 `0eae7c01f68e3604f0e331a3f5657ac4fd075e32`, 작업 브랜치 `feature/arrival-scheduling-20260923`. **구현·관련 PC 검증·서명 APK·계획 준비 완료. 새 실측 미승인·미실행, experiment_ready=false.** 사용자 요청으로 잠시 중단 후 같은 변경에서 재개했다. 이 문서는 새 개발 수집 계약이며 기존 CAL-03 확인 자료·동결40값·20null·198요청 FAIL·fixed-split 부분 결과·종료 계획을 변경하지 않는다.
 
 ## 현재 가능한 비교와 부족한 근거

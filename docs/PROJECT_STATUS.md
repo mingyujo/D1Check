@@ -1,5 +1,14 @@
 # D1Check 현재 상태
 
+## 2026-09-24 ARRIVAL-COLLECT-01 — 승인 실행 중단·설치 timeout
+
+- 시작 `0338433`/clean. [실행 결과·중단 근거](ARRIVAL_INTEGRATED_COLLECTION_20260924.md). planv2 동일성·미소비·A24/서명/설치 전 환경gate 확인 후 승인 스크립트1회 실행. **설치1회가120초 timeout, 세션0/12·진단0/48·warmup0/96·총명시적추론0/144.** 개발6·확인6 모두 미시도, 세션 전 기술적 실패1. retry·대체·추가0.
+- host cleanup·프로세스 부재 확인, 앱 cleanup은 미시작N/A. 설치 후 읽기 전용 조회에서 이전 APK9019b85d…2c0 유지, 후보d8db6963…34bc 설치 성공 없음. signer 일치이며 전송/무선/패키지 처리 원인 미확정. 화면/시스템 설정 변경 없음.
+- claim→cleanup195.893초, 마지막 추가조회까지283.200초(PC대기 포함); 최초 기기조회 tool wall0.699초를 합해도283.899초. 냉각·세션0, 승인5490초 이내. 원본 stopped의 일반 unknown은 보존하고 launch0 근거를 별도 receipt에 명시했다.
+- 개발 claim+전체 stopped로 **종료·재개 금지**. 새 표본/동결/확인/PC연결 없음, experiment_ready=false·40값/20null/FAIL/부분결과/과거 원인 미확정 유지. 관련 코드 변경/재빌드/테스트 반복 없음.
+- 외부 root `C:/Users/LG/Documents/D1Check_Arrival_Extension/`: `integrated_collection_run_v1/development`(원본), `collection_execution_registry/ARRIVAL-COLLECT-01`(소비/중단), `integrated_collection_execution_v1`(FINAL_REPORT/FINAL_RECEIPT/REPRODUCE.py/GIT_FINAL). Git에는 문서만 반영한다.
+- 다음: (1) 부분 설치 출력·단계 시간을 보존하는 새 설치 진단 PC 준비, (2) 별도 승인 후 기기 진단, (3) 설치 문제와 수집 gate 해결 뒤 새 수집/독립 평가 준비. 현 계획/미시도분 자동 재개 금지. 아래 준비 상태는 이전 이력이다.
+
 ## 2026-09-24 ARRIVAL-COLLECT-01 — 통합 수집 PC 준비 완료·새 실측 미승인
 
 - 시작 `0eae7c0`, 작업 브랜치 유지. 사용자 일시 중단 후 같은 변경에서 재개했다. [수집 계약·코드·예산·명령](ARRIVAL_INTEGRATED_COLLECTION_20260924.md). 기존40값/20null/FAIL/부분결과/종료계획 불변.
