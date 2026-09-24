@@ -505,3 +505,11 @@
 - 진단1회성공: runtime4/warmup8/정규1,209.390초, 앱/hostcleanup. Dozing/top-sleeping과isFrozen=false를한시점관측했으나전체실행은성공했다. 원인해결·반복안정성·성능보정을선언하지않는다. stack권한거부와native_gpu_verified=false보존.
 - 확정개발변경: 새CAL-03 provenance/unique ID·registry·sync journal없음·awake/interactive read-only 시작gate·host poll125절대deadline 지원. 이는sleep환경을보정지원조건에서분리하는새수집조건이며과거gate를소급변경하지않는다. 화면조작없음.
 - 제안/미승인: [CAL-03](ARRIVAL_TIMING_CAL03_PREPARATION_20260924.md)의16세션·64진단·128warmup/121.5분. 기존규칙으로개발8→동결→확인8, 관련PC15건과dry-run통과. 실행승인과측정품질PASS는아니다. 기존20null과experiment_ready=false유지.
+
+
+## 2026-09-24 CAL-03 실행·동결·확인 판정
+
+- 사용자 승인16세션/64진단/128warmup·retry/대체/추가0·합121.5분 범위를 유지했다. 결과 열람 전에 화면상태10초 host 관측, settings 전후 확인, 작업deadline의 회수10초 예약을 보완해 v3 source/계획을 고정했다. v1/v2는 미실행 보존, APK/모델/순서/통계량 변경 없음. [사전 규칙과 결과](ARRIVAL_CAL03_EXECUTION_20260924.md).
+- 개발8개 모두 적격한 뒤40슬롯 median/min/max·원자료/환경 hash를 동결하고 확인8을 수집했다. 설치2·진단64·warmup128, 실패·미시도·대체·retry0, 앱/host cleanup16/16. 화면96표본/후속lane재사용48쌍 확인. 약43.43분의 이번 자료로 과거 정지 원인을 확정하지 않는다.
+- 자료 적격성은 통과했으나 수치 정확도 허용폭은 원 계약에 없으며 performance_pass=null을 유지한다. 확인 자료로 재보정하지 않았다. S→O 최대 절대오차32.270ms, 탐지/GPU/긴급의 중앙값 초과4/4를 포함한 모든 오차를 보존한다. median은 상한/초과 잔여시간 분포가 아니다.
+- 확정 범위: A24·고정 입력·resident4·CPUthread1·단독·관측된 awake/thermal 조건의 초기 구간 관측. 40슬롯을 기존20개 설정에 자동 복사하지 않는다. adaptive D→A·priority별 적용·UNKNOWN_OVERRUN·병행 부하 미검증을 유지하고 experiment_ready=false다. 다음은 해당 경계를 정리하는 PC 작업이며 새 정책 실측이나 추가 기기 진단 승인이 아니다.

@@ -1,6 +1,6 @@
 # D1Check 프로젝트 실행계획
 
-> 현재 작업(2026-09-24): [ARRIVAL-STALL-OBS-DIAG-01](ARRIVAL_STALL_OBSERVATION_DIAGNOSTIC_20260924.md). 앱 변경 없는 새host 관측 진단1회가 완료됐다(runtime4/warmup8/정규1). 원인은 여전히 미확정이다. [CAL-03](ARRIVAL_TIMING_CAL03_PREPARATION_20260924.md)의 동기journal 없는 보정 후보16세션은PC준비만완료·별도승인대기다. 이전 통합 실패/CAL/초기화 진단을 재개하지 않는다. 결과는STATUS를 우선하며 성능보정/정책평가와구분한다.
+> 현재 작업(2026-09-24): [ARRIVAL-STALL-OBS-DIAG-01](ARRIVAL_STALL_OBSERVATION_DIAGNOSTIC_20260924.md). 앱 변경 없는 새host 관측 진단1회가 완료됐다(runtime4/warmup8/정규1). 원인은 여전히 미확정이다. [CAL-03](ARRIVAL_TIMING_CAL03_PREPARATION_20260924.md)는 이후 승인받아 개발8→동결→확인8을 완료했다. [실행 결과](ARRIVAL_CAL03_EXECUTION_20260924.md)를 따른다. 초기 단독 추정40슬롯을 산출했으나 experiment_ready=false와 기존20null을 유지한다. 이전 통합 실패/CAL/초기화 진단을 재개하지 않는다. 결과는STATUS를 우선하며 성능보정/정책평가와구분한다.
 
 - 2026-09-24 현재 후속: [ARRIVAL-WARMUP-REQUEST-DIAG-01](ARRIVAL_WARMUP_REQUEST_DIAGNOSTIC_20260924.md) 승인1회 실행 후 host125초 timeout으로 종료. 설치1성공/세션1실패, runtime반환1·마지막GPU분류Interpreter start, warmup/정규호출수미확인. 총311.344/600초·회수/host cleanup완료·retry0. 보정준비완료가 아니며 다음은PC의lifecycle/Future/watchdog무기록조건검토다. 소비계획재실행금지, 기존20null·FAIL·부분결과불변.
 

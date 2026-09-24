@@ -100,15 +100,22 @@ def backend_gate(row, backend):
     v.require(row["selected_backend"] == backend and row["actual_backend"] == expected, "raw backend identity")
 
 
-def wait_for_cleanup(device, remote, seconds=125):
-    end = time.monotonic() + seconds
+def wait_for_cleanup(device, remote, seconds=125, screen_contract=None, folder=None):
+    end = min(device.deadline, time.monotonic() + seconds) if device.deadline is not None else time.monotonic()+seconds
+    next_screen = time.monotonic()
+    index = 0
     while time.monotonic() < end:
+        if screen_contract and time.monotonic() >= next_screen:
+            screen_snapshot(device, folder, f'poll_{index:02d}', screen_contract)
+            index += 1
+            next_screen = time.monotonic()+screen_contract['poll_interval_seconds']
         probe = device.call('shell', 'run-as', legacy.PACKAGE, 'test', '-s', remote + '/cleanup.json', check=False)
         v.require(not probe.stderr.strip() and not probe.stdout.strip(), 'ADB poll unavailable')
         if probe.returncode == 0:
+            if screen_contract:screen_snapshot(device, folder, 'poll_complete', screen_contract)
             return
         v.require(probe.returncode == 1, 'ADB poll failure')
-        time.sleep(1)
+        time.sleep(max(0,min(1,end-time.monotonic())))
     raise TimeoutError('host completion poll exhausted; app outcome unknown')
 
 
@@ -128,8 +135,38 @@ def failed_attempt_evidence(device, sid, folder, pid):
         device.deadline = previous
 
 
+def screen_snapshot(device, folder, label, contract, settings=False):
+    """Read-only host observation. Sparse samples are not proof of continuous wakefulness."""
+    folder=Path(folder)/'screen_observations'
+    folder.mkdir(exist_ok=True)
+    start=time.monotonic()
+    result=dict(utc=legacy.utc(),host_start=start,status='unconfirmed',label=label)
+    try:
+        power=device.call('shell','dumpsys','power',timeout=2).stdout
+        (folder/(label+'_power.txt')).write_bytes(power)
+        result.update(awake=bool(re.search(rb'^\s*mWakefulness=Awake\s*$',power,re.M)),
+                      interactive=bool(re.search(rb'^\s*mHalInteractiveModeEnabled=true\s*$',power,re.M)))
+        v.require(result['awake'] and result['interactive'],'screen state left awake/interactive; stop without wake/retry')
+        if settings:
+            for key in ('screen_brightness','screen_brightness_mode','screen_off_timeout'):
+                value=device.call('shell','settings','get','system',key,timeout=2).stdout.decode().strip()
+                result[key]=value
+                v.require(value==str(contract[key]),'screen setting changed: '+key)
+        result['status']='sample_pass'
+        return result
+    except Exception as exc:
+        result.update(status='sample_failed',error=repr(exc))
+        raise
+    finally:
+        result['host_end']=time.monotonic()
+        c.write_new(folder/(label+'.json'),result)
+
+
 def awake_gate(device, plan, folder):
     """New CAL-03 only: observe, never wake/unlock/change settings."""
+    if plan.get('screen_contract'):
+        screen_snapshot(device,folder,'before_launch',plan['screen_contract'],settings=True)
+        return
     if not plan.get('require_awake_interactive'):
         return
     power = device.call('shell','dumpsys','power',timeout=2).stdout
@@ -169,7 +206,7 @@ def run(plan_file, phase, output, adb, serial, approved_total_cap, expected_sha,
     c.claim(plan, phase, output, freeze)
     registry = Path(plan["registry"])
     device = legacy.Device(adb, serial)
-    device.deadline = phase_deadline
+    device.deadline = phase_deadline-10 if plan.get("screen_contract") else phase_deadline
     identified, completed = False, 0
     c.write_new(output / "phase_attempt.json", dict(utc=legacy.utc(), phase=phase, plan_sha256=expected_sha, session_cap=8))
     try:
@@ -200,8 +237,12 @@ def run(plan_file, phase, output, adb, serial, approved_total_cap, expected_sha,
                 awake_gate(device, plan, folder)
                 device.call("shell", "am", "force-stop", legacy.PACKAGE)
                 legacy.require_stopped(device)
+                if plan.get('screen_contract'):
+                    v.require(device.deadline-time.monotonic()>=165,'insufficient launch30/poll125/evidence10; do not stage/launch')
                 manifest_file = Path(plan_file).parent / entry["manifest"]
                 remote = stage_inputs(device, sid, manifest_file, {k: info["path"] for k, info in plan["source_files"].items()})
+                if plan.get('screen_contract'):
+                    v.require(device.deadline-time.monotonic()>=165,'insufficient launch30/poll125/evidence10 after staging')
                 c.write_new(folder / "launch_attempt.json", dict(utc=legacy.utc(), session_id=sid))
                 stage = 'activity_launch'
                 launch = device.call("shell", "am", "start", "-W", "-n", legacy.PACKAGE + "/" + legacy.ACTIVITY,
@@ -213,12 +254,14 @@ def run(plan_file, phase, output, adb, serial, approved_total_cap, expected_sha,
                 if plan.get('followup'):
                     previous_deadline = device.deadline
                     device.deadline = min(previous_deadline, time.monotonic()+125)
-                    try:wait_for_cleanup(device, remote)
+                    try:wait_for_cleanup(device, remote,screen_contract=plan.get('screen_contract'),folder=folder)
                     finally:device.deadline = previous_deadline
                 else:
                     wait_for_cleanup(device, remote)
                 stage = 'artifact_recovery'
                 recovery = pull(device, sid, folder / "artifacts")
+                if plan.get('screen_contract'):
+                    screen_snapshot(device,folder,'after_recovery',plan['screen_contract'],settings=True)
                 stage = 'artifact_validation'
                 artifacts = folder / "artifacts"
                 v.require(p.digest(artifacts / "manifest.json") == entry["manifest_sha256"], "device manifest changed")
@@ -236,11 +279,14 @@ def run(plan_file, phase, output, adb, serial, approved_total_cap, expected_sha,
             except BaseException as error:
                 c.write_new(folder / "error.json", dict(utc=legacy.utc(), error=repr(error), host_stage=stage,
                             application_failure='unknown_unless_app_artifact_confirms'))
+                if plan.get('screen_contract'):
+                    device.deadline=min(phase_deadline,time.monotonic()+10)
                 failed_attempt_evidence(device, sid, folder, pid)
                 raise
             finally:
                 try:
-                    c.write_new(folder / "host_cleanup.json", cleanup(device))
+                    c.write_new(folder / "host_cleanup.json", cleanup(device,hard_deadline=phase_deadline+45) if plan.get("screen_contract") else cleanup(device))
+                    device.deadline=phase_deadline-10 if plan.get("screen_contract") else phase_deadline
                 except BaseException as cleanup_error:
                     c.write_new(folder / "cleanup_error.json", dict(error=repr(cleanup_error)))
                     raise

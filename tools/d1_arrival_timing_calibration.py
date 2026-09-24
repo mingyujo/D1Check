@@ -145,6 +145,11 @@ def specification(source_file, apk=None, build_receipt=None, recovery=None, foll
         plan['followup'] = followup
         plan['apk_preflight'] = followup['apk_preflight']
         plan['require_awake_interactive'] = True
+        if 'execution_contract' in followup:
+            execution_contract=followup['execution_contract']
+            v.require(execution_contract['version']=='cal03-screen-and-freeze-v1', 'unknown execution contract')
+            v.require(execution_contract['poll_interval_seconds']==10, 'screen poll interval fixed')
+            plan['screen_contract']=execution_contract
         plan['collection_logging'] = 'no_failure_diagnostic_journal; in_memory_timing_trace_then_final_flush'
     return plan, manifests
 
@@ -307,6 +312,16 @@ def phase_inputs(plan_file, phase, run):
         v.require(p.read(folder / "host_cleanup.json")["status"] == "completed", "host cleanup failed")
         artifacts = folder / "artifacts"
         v.require(p.digest(artifacts / "manifest.json") == e["manifest_sha256"], "collected manifest mismatch")
+        if plan.get('screen_contract'):
+            screen=folder/'screen_observations'
+            samples=sorted(screen.glob('*.json'))
+            v.require((screen/'before_launch.json').is_file() and (screen/'poll_complete.json').is_file()
+                      and (screen/'after_recovery.json').is_file() and (screen/'poll_00.json').is_file(), 'screen evidence missing')
+            v.require(all(p.read(f)['status']=='sample_pass' for f in samples), 'screen evidence failed')
+            for source in sorted(screen.iterdir()):
+                if source.is_file():inputs[str(source)]=p.digest(source)
+            inputs[str(folder/'validated.json')]=p.digest(folder/'validated.json')
+            inputs[str(folder/'host_cleanup.json')]=p.digest(folder/'host_cleanup.json')
         cells[f"{e['task']}_{e['backend']}_{e['priority']}"] = observations(artifacts)
         for source in sorted(artifacts.iterdir()):
             if source.is_file():

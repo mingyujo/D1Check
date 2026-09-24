@@ -1,5 +1,7 @@
 # 팀 안내 — 2026-09-24 현재
 
+> 최신 CAL-03: [개발8→동결→확인8 완료](../ARRIVAL_CAL03_EXECUTION_20260924.md). 진단64·warmup128, 실패/재시도0, 단독 lane 재사용48쌍 확인. 초기40구간 관측을 얻었지만 정확도·정책 우수성 PASS는 아니며 기존20null/experiment_ready=false와 과거 FAIL·미확정 원인은 유지한다. 원본은 로컬 전용이며 [STATUS](../PROJECT_STATUS.md)를 우선한다.
+
 > 최신(2026-09-24): [독립host 관측 통합진단](../ARRIVAL_STALL_OBSERVATION_DIAGNOSTIC_20260924.md) 1회완료(runtime4/warmup8/정규1,209.390초). CAL-02/직전실패원인은미확정이다. [동기journal없는CAL-03 후보](../ARRIVAL_TIMING_CAL03_PREPARATION_20260924.md)는PC준비만완료·별도승인대기. 현재판정은[STATUS](../PROJECT_STATUS.md)를우선하며아래과거실패기록은보존한다.
 
 최신 공유 브랜치는 `feature/arrival-scheduling-20260923`이다. **master에는 이 진행상황이 아직 반영되지 않았다.** 이 안내는 `72b3264`에서 승인 실행한 초기화 진단 결과와 S26·NPU 협업 결정을 정리한다. 아래 상대 링크는 같은 브랜치의 추적 문서다. 문서의 옛 일정/미구현 문구는 당시 이력이며 현재 상태는 이 안내와 STATUS의 최신 절을 먼저 본다.

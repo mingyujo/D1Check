@@ -1,5 +1,15 @@
 # D1Check 현재 상태
 
+## 2026-09-24 CAL-03 — 개발·동결·확인 완료
+
+- 시작8fdb90d/clean/원격일치. 승인 예산 내 **개발8·확인8 완료, 설치2, 진단64·warmup128·명시적추론192**. 실패·미시도·retry·대체·추가0. [실행 계약·40슬롯 결과 근거](ARRIVAL_CAL03_EXECUTION_20260924.md).
+- 화면 관측·회수10초 예약을 반영한 v3만 실행(plan9f7224e…8400). v1/v2 미실행 보존, APK·모델·요청 순서·추정 규칙·총예산 불변. 실행/cleanup은 host UTC 기준 약43.43분/상한121.5분. 앱/host cleanup 및 프로세스 부재16/16 확인, registry 소비 완료·재실행 금지.
+- 개발 적격성 확인 후40개 구간값을 확인 전에 동결(fitf4f55b65…4106fb), 확인 claim/종료 hash 불변. 조건당 개발1·확인1 독립세션, 각4상관요청. 확인 자료로 재보정하지 않았다. 자료 적격성 PASS, 정확도/정책성능 PASS는 없음(performance_pass=null).
+- S→O 최대 절대오차32.270ms. 탐지/GPU/긴급은 확인4/4가 개발중앙값 초과: 중앙값을 상한으로 사용 불가. 전체40슬롯의 값·오차는 외부 timing_cal03_analysis_v1/FINAL_REPORT.md 및 fit/confirmation JSON에 보존.
+- 후속 lane 재사용48쌍·화면96표본 통과. 밝기81/수동/5시간 유지 조회, 설정·화면조작0. host snapshot 누적43.310초는 관측 비용이며 서비스시간에서 빼지 않음. 표본 사이 상태·병행 부하·다른 입력/기기·tail·과거 정지 원인은 미검증.
+- PC20건+예약보완 후6건 회귀 PASS, 빌드/이전 진단 반복 없음. 원자료 등571파일 hash 확인·동기 journal16/16 없음. source/규칙/PC기록은 외부 timing_cal03_execution_preflight_v1, 원본/receipt는 timing_cal03_run_v1. 기존20null/UNKNOWN_OVERRUN/experiment_ready=false 및 기존FAIL·부분결과·종료계획·과거 미확인 소비량 보존.
+- 다음: PC에서priority별 관측의 적용 범위와 적응형 D→A 미측정·초과 잔여시간 요건 정리. 추가 실측/정책 평가 자동 실행 없음. 관련 소스·문서만 commit·현재 브랜치 정상 push하며 최종 Git 상태는 외부 GIT_FINAL.json.
+
 ## 2026-09-24 ARRIVAL-STALL-OBS-DIAG-01 — 승인 진단 완료·CAL-03 PC 후보 준비
 
 - 시작29b8543/원격일치/clean. [진단 계약·결과](ARRIVAL_STALL_OBSERVATION_DIAGNOSTIC_20260924.md). 앱수정/빌드없이 host독립관측·phase clock만추가해승인1회실행. **설치1성공·세션1완료/실패0·runtime4반환·warmup8·정규1·총추론9, 평가/retry/대체/추가0,209.390/600초**. 종료registry/no_resume.
