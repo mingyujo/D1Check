@@ -1,5 +1,7 @@
 # D1Check 프로젝트 실행계획
 
+- 2026-09-24 현재 후속: [ARRIVAL-WARMUP-REQUEST-DIAG-01](ARRIVAL_WARMUP_REQUEST_DIAGNOSTIC_20260924.md) 통합1세션 PC 준비 완료·실행 승인 대기. runtime4+전체warmup8+첫 정규GPU요청1(추론총9·평가0), 기존600초/timeout/gate 유지·재시도0. 성공해도 원인 해결/보정 완료가 아니며 동기 기록 없는 새 보정 계획의 준비 조건만 검토한다. 기존20null·FAIL·부분결과·모든 종료계획 불변.
+
 - 2026-09-24 `ARRIVAL-WARMUP-DIAG-01`: [첫 CPU warmup 진단 결과](ARRIVAL_WARMUP_DIAGNOSTIC_20260924.md) 승인 실행 완료. 설치1·세션1·runtime4반환·첫CPU warmup1/명시적inference총1·평가요청0, 181.0/600초·retry/대체/추가0·회수/cleanup 완료. CAL-02 원인미확정·동기 자료 보정/정책평가 제외·20null/experiment_ready=false 유지. 계획 종료/재실행 금지. 다음은 PC 미관측 warmup/요청 경계 정리이며 후속 실측은 별도 계획·승인 대상.
 - 2026-09-24 A24 후속 `ARRIVAL-INIT-DIAG-01`: [초기화 단일 진단 결과](ARRIVAL_INITIALIZATION_DIAGNOSTIC_20260924.md) 승인 실행 완료. 설치1·세션1·runtime4반환·warmup/명시적추론0·209.047초/600초·retry/대체/추가0, 회수와cleanup 완료. CAL-02 실패는 미재현·원인 미확정이며 보정 완료가 아니다. 소비 계획은 종료/재실행 금지, 다음은 PC 단계 경계·잔여 가설 정리다. CAL-02 재개·후속 실측 자동 실행 없음.
 - 2026-09-24 협업 결정 `S26-NPU-COLLAB-01` **채택/검증 대기**: S26을 XDEV-02 기기로 선정하고 별도 npu-runner/CompiledModel NPU 개발을 A24와 병행한다. 정확한 기기 identity·모델별 실행 장치/품질은 아직 확인 대상이다. 계약 모델 EfficientNet-Lite0 / EfficientDet-Lite0의 NPU 지원·품질·성능은 미검증이며 MobileNet 팀원 보고를 전용하지 않는다. [팀 안내](team/README.md), [채택 범위·판정 기준](DECISIONS.md#s26-npu-20260924)을 먼저 읽는다. CPU/GPU 재현과 NPU 확장은 별도 평가이며 A24 런타임 교체·기존 정책의3자원 지원 완료를 뜻하지 않는다.

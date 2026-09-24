@@ -1,5 +1,15 @@
 # D1Check 현재 상태
 
+## 2026-09-24 ARRIVAL-WARMUP-REQUEST-DIAG-01 — 통합 진단 PC 준비 완료
+
+- 시작 `3130f0199f99c319ee80e30e5b2307f477302d42` / `feature/arrival-scheduling-20260923` / clean. [통합 warmup→정규요청 계약](ARRIVAL_WARMUP_REQUEST_DIAGNOSTIC_20260924.md). CAL-02 원인 미확정, 과거 ProbeRawAdapter hash 대응 미확인 유지. 아래 진단 완료/승인 이력과 새 후보를 구분한다.
+- 원 CAL-02는 C_CPU2→C_GPU2→D_CPU2→D_GPU2, warmup8 뒤 C/urgent/GPU4요청이었다. 새 후보는 runtime4·전체warmup8·동일 첫 정규요청1(평가0), 총 명시적추론9. 설치/세션1, retry/대체/추가0, 600초(545/10/45), 기존timeout/gate 유지. **기기 실행 미승인·미실행**.
+- 새scope만 제출/worker/input/API/output/persist/event저장/lane callback durable 기록을 연결하고 journal256 상한을 적용했다. 기존scope128/정책/공식 inference 경계 보존. worker_release는 event저장전 표식, lane_available는 scheduler busy해제이며 물리적 thread idle과 구분한다. 부분회수는 manifest/journal 우선.
+- PC Kotlin19/Python24·관련compile/격리assemble·프로젝트서명·manifest/dry-run·script구문 PASS. 초기SDK환경/overload/tuple 오류와 최종결과 보존. 기존 두 진단 판독 호환 확인. 새 실행/registry 없음, ADB/설치/앱/추론0. mock 성공을 native/GPU 실기기 검증으로 해석하지 않는다.
+- 외부 PC root `C:/Users/LG/Documents/D1Check_Arrival_Extension/`: `warmup_request_plan_v1`(plan/manifest/명령), `warmup_request_apk_v1`(APK/source snapshot), `warmup_request_pc_v1`(보고서/receipt/검증로그/Git상태). plan0100c50…853d, APK9019b85…f2c0. 기존FAIL·부분결과·종료계획·20null/experiment_ready=false 불변, 소스/문서만commit·작업브랜치 정상push.
+- 다음: (1) 새1세션/9추론 진단 예산 별도 승인, (2) 승인 시 최신 identity/기기/환경/미소비gate, (3) 성공하면 동기 기록 없는 보정 계획을 준비하고 남은8조건/개발-동결-확인 요건 검토. 실패면 마지막단계·확인된반환/미확인범위를 판독. 자동 재실행/보정 실측 없음.
+
+
 ## 2026-09-24 ARRIVAL-WARMUP-DIAG-01 — 승인 실행 완료
 
 - 시작 `38556fe53aa315b002af309885ceabe46ccaf2a9` / `feature/arrival-scheduling-20260923` / clean. 사용자 승인과 미소비·source/APK/plan/manifest·동일 A24/서명·환경 gate 확인 후 준비된 script를 1회 실행했다. [결과와 한계](ARRIVAL_WARMUP_DIAGNOSTIC_20260924.md). 아래 PC 준비/승인 대기는 당시 이력이다.

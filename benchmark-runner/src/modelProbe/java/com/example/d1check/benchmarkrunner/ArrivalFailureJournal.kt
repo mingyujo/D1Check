@@ -20,12 +20,14 @@ internal class ArrivalFailureJournal(
     companion object {
         const val CONTRACT = "arrival-failure-journal-v1"
         fun open(output: File, sid: String, hash: String, clock: () -> Long,
-                 mirror: (String) -> Unit): ArrivalFailureJournal {
+                 mirror: (String) -> Unit): ArrivalFailureJournal = open(output, sid, hash, clock, 128, mirror)
+        fun open(output: File, sid: String, hash: String, clock: () -> Long,
+                 capacity: Int, mirror: (String) -> Unit): ArrivalFailureJournal {
             val file = File(output, "failure_progress.jsonl")
             check(file.createNewFile()) { "progress already exists" }
             return ArrivalFailureJournal(sid, hash, clock, { bytes ->
                 FileOutputStream(file, true).use { it.write(bytes); it.fd.sync() }
-            }, mirror)
+            }, mirror, capacity)
         }
     }
     private val lock = ReentrantLock()

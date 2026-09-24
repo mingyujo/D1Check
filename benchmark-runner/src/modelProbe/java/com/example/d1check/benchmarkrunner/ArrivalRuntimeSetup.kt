@@ -30,6 +30,19 @@ internal object ArrivalRuntimeSetup {
         journal.mark("first_warmup", "succeeded")
     }
 
+    fun integratedCalls(scope: String?, keys: List<String>, requests: Int) {
+        if (scope != "warmup_and_request") return
+        require(keys == listOf("classification_CPU", "classification_CPU", "classification_GPU", "classification_GPU",
+            "detection_CPU", "detection_CPU", "detection_GPU", "detection_GPU") && requests == 1)
+    }
+
+    fun runWarmup(lane: ExecutorService, journal: ArrivalFailureJournal?, key: String, id: String,
+                  timeout: Long = 30, unit: TimeUnit = TimeUnit.SECONDS, call: () -> Unit) {
+        arrivalDiagnosticOperation(journal, "warmup_wait", key, id) {
+            lane.submit { arrivalDiagnosticOperation(journal, "warmup", key, id, call) }.get(timeout, unit)
+        }
+    }
+
     fun closeLane(lane: ExecutorService, timeout: Long = 5, unit: TimeUnit = TimeUnit.SECONDS,
                   close: () -> Unit) {
         // A stuck constructor cannot make the caller wait indefinitely for the queued close.

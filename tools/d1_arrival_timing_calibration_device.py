@@ -45,7 +45,10 @@ def pull(device, sid, output):
         raise RuntimeError('artifact listing unavailable; not proof that app output is missing')
     output.mkdir(parents=True, exist_ok=True)
     files = []
-    for name in listing.stdout.decode().splitlines():
+    names = listing.stdout.decode().splitlines()
+    # Preserve the identity/progress prefix first if a bounded failure pull is cut short.
+    priority = {"manifest.json": 0, "failure_progress.jsonl": 1, "cleanup.json": 2}
+    for name in sorted(names, key=lambda name: (priority.get(name, 3), name)):
         v.require(re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,126}", name), "unsafe remote filename")
         data = device.call("exec-out", "run-as", legacy.PACKAGE, "cat", remote + "/" + name, timeout=45).stdout
         target = output / name

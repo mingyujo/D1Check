@@ -480,3 +480,10 @@
 - 채택은 PC 준비 범위다. 네 생성 성공 뒤 아직 관측하지 않은 첫 classification_CPU warmup 전이를1회만 확인하는 새 scope를 추가한다. 원래 CAL-02 순서/worker를 유지하고 나머지7warmup/4요청은 시작하지 않는다. setup_only 단순 반복·16세션 보정 재개 대신 미관측구간을최소확장한다. 과거원인을고친다는추측성수정은하지않는다.
 - 앱명시적inference 상한1은warmup1에포함되며추가호출이아니다. 입력준비/host API/출력단계와Future대기를기록하되성능보정에는쓰지않는다. 공식inference timer 내부경계는유지한다. 새실행예산은1세션/600초제안·미승인, timeout/gate는기존값유지.
 - 과거RawAdapter의Git blob과원working-tree byte hash 대응미확인은별도공시한다. 새후보source/build/APK/plan mandatory검사에는예외를두지않는다. 기존FAIL·부분결과·두종료계획·20null/experiment_ready=false 불변. [비교와판독기준](ARRIVAL_WARMUP_DIAGNOSTIC_20260924.md).
+
+## 2026-09-24 — ARRIVAL-WARMUP-REQUEST-DIAG-01 통합 준비 채택
+
+- 첫 warmup 성공 후 두 번째 호출만 확인하는 진단을 반복하는 대신, 원 순서8warmup과 첫 정규 classification/urgent/GPU1건의 전이를 한 세션에 관측하는 PC 준비를 채택했다. 정규1건은 dispatcher·저장·lane callback 경계 확인용이며 평가가 아니다. 설치/세션1·생성4·warmup8+요청1=명시적추론9·600초·retry/대체/추가0은 **제안 예산/미승인**이다.
+- 구체적 공백인 전체 warmup의 제출/내부 단계, 정규 요청의 durable 저장/callback 기록을 새scope에서 보완한다. journal 정상 예상약191개에 근거해 새scope만256, 기존scope128 유지. 기존 worker_release 의미를 물리적 lane 해제로 바꾸지 않고 event저장과 scheduler AVAILABLE을 별도 기록한다. 환경/timeout 완화나 간섭 정책은 추가하지 않는다.
+- 동기 기록의 성능자료 제외,20null/experiment_ready=false,과거FAIL/부분결과/소비registry와RawAdapter 대응미확인 유지. 성공은 보정 준비로 넘어갈 조건이며 과거원인치료·8조건 보정·반복안정성의 검증이 아니다. 후속 조건은 새 보정 개발/확인 계획에서 함께 다루고 구체적 장애 없이 작은 진단을 계속 증설하지 않는다.
+- PC Kotlin19/Python24·컴파일/서명/계획검사 통과와 실기기미검증을 구분한다. [근거·파일·판독·남은검증](ARRIVAL_WARMUP_REQUEST_DIAGNOSTIC_20260924.md).

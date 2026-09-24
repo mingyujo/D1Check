@@ -100,4 +100,55 @@ class ArrivalRuntimeSetupTest {
             assertFalse(records.any { it.contains("first_warmup") })
         } finally { release.countDown();lane.shutdownNow();lane.awaitTermination(1,TimeUnit.SECONDS) }
     }
+
+    @Test fun integratedOrderCapAndEveryFailureStopsLaterCalls() {
+        val order=keys.sorted().flatMap { listOf(it,it) }
+        ArrivalRuntimeSetup.integratedCalls("warmup_and_request",order,1)
+        assertThrows(IllegalArgumentException::class.java) { ArrivalRuntimeSetup.integratedCalls("warmup_and_request",order.reversed(),1) }
+        assertThrows(IllegalArgumentException::class.java) { ArrivalRuntimeSetup.integratedCalls("warmup_and_request",order,2) }
+        for (failAt in 0..7) {
+            val cpu=Executors.newSingleThreadExecutor(); val gpu=Executors.newSingleThreadExecutor()
+            val records=mutableListOf<String>();val invoked=mutableListOf<Int>()
+            val journal=ArrivalFailureJournal("00000000-0000-4000-8000-000000000001","a".repeat(64),System::nanoTime,{ records += it.toString(Charsets.UTF_8) }, capacity=256)
+            try {
+                assertThrows(ExecutionException::class.java) {
+                    order.forEachIndexed { i,key ->
+                        ArrivalRuntimeSetup.runWarmup(if(key.endsWith("CPU")) cpu else gpu,journal,key,"w$i") {
+                            invoked += i; if(i==failAt) error("injected $key")
+                        }
+                    }
+                }
+                assertEquals((0..failAt).toList(),invoked)
+                assertTrue(records.last().contains("warmup_wait") && records.last().contains("failed"))
+            } finally { cpu.shutdownNow();gpu.shutdownNow() }
+        }
+    }
+
+    @Test fun integratedJournalCapacityAndStickyWriteFailure() {
+        val records=mutableListOf<String>()
+        val journal=ArrivalFailureJournal("00000000-0000-4000-8000-000000000001","a".repeat(64),System::nanoTime,{ records += it.toString(Charsets.UTF_8) },capacity=256)
+        repeat(256) { journal.mark("fixture","observed") }
+        assertThrows(IllegalStateException::class.java) { journal.mark("fixture","observed") }
+        assertEquals(256,records.size)
+        var called=false
+        assertThrows(CancellationException::class.java) { journal.operation("diagnostic","classification_GPU","r") { called=true } }
+        assertFalse(called)
+    }
+
+    @Test fun integratedWaitTimeoutStopsNextWarmupAndCloseIsBounded() {
+        val lane=Executors.newSingleThreadExecutor();val release=CountDownLatch(1)
+        val records=java.util.Collections.synchronizedList(mutableListOf<String>())
+        val journal=ArrivalFailureJournal("00000000-0000-4000-8000-000000000001","a".repeat(64),System::nanoTime,{ records += it.toString(Charsets.UTF_8) },capacity=256)
+        try {
+            assertThrows(TimeoutException::class.java) {
+                ArrivalRuntimeSetup.runWarmup(lane,journal,"detection_GPU","w",50,TimeUnit.MILLISECONDS) { release.await() }
+            }
+            assertThrows(CancellationException::class.java) {
+                ArrivalRuntimeSetup.runWarmup(lane,journal,"detection_GPU","next") { error("must not enter") }
+            }
+            assertThrows(TimeoutException::class.java) { ArrivalRuntimeSetup.closeLane(lane,1,TimeUnit.MILLISECONDS) {} }
+            assertTrue(records.any { it.contains("timeout") })
+            assertFalse(records.any { it.contains("next") })
+        } finally { release.countDown();lane.shutdownNow();lane.awaitTermination(1,TimeUnit.SECONDS) }
+    }
 }

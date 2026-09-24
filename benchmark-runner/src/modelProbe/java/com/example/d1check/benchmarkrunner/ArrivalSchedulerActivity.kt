@@ -75,16 +75,17 @@ class ArrivalSchedulerActivity : Activity() {
             val timingDev = protocol == ArrivalTimingDev.PROTOCOL || calibration
             require(protocol in setOf("arrival-scheduler-v1", ArrivalTimingDev.PROTOCOL, ArrivalTimingDev.CALIBRATION_PROTOCOL) && m.getString("session_id") == sid)
             val diagnostic = m.optString("failure_diagnostic_contract", "").isNotEmpty()
+            val integrated = diagnostic && m.optString("failure_diagnostic_scope") == "warmup_and_request"
             val firstWarmup = diagnostic && m.optString("failure_diagnostic_scope") == "first_warmup"
             val setupOnly = diagnostic && m.optString("failure_diagnostic_scope") == "setup_only"
             if (diagnostic) {
                 require(calibration && m.getString("failure_diagnostic_contract") == ArrivalFailureJournal.CONTRACT &&
                     m.getBoolean("performance_excluded") && !m.getBoolean("experiment_ready") &&
-                    m.getString("failure_diagnostic_scope") in setOf("setup_only", "calls", "first_warmup"))
+                    m.getString("failure_diagnostic_scope") in setOf("setup_only", "calls", "first_warmup", "warmup_and_request"))
                 val early = canonicalProbeOutputRoot(filesDir, protocol, sid)
                 require(!early.exists() && early.mkdirs()); root = early
                 save(early, "manifest.json", manifestFile.readBytes())
-                failureJournal = ArrivalFailureJournal.open(early, sid, ProbeModelFile.sha256(manifestFile), ::now) {
+                failureJournal = ArrivalFailureJournal.open(early, sid, ProbeModelFile.sha256(manifestFile), ::now, if (integrated) 256 else 128) {
                     Log.e("D1ARRIVAL", it)
                 }
                 failureJournal!!.mark("session", "start", detail = "scope=${m.getString("failure_diagnostic_scope")}")
@@ -173,7 +174,15 @@ class ArrivalSchedulerActivity : Activity() {
             ArrivalRuntimeSetup.firstWarmupOnly(if (firstWarmup) "first_warmup" else null,
                 warmups.map { it.getString("model_key") }, requests.size)
             require(setupOnly || firstWarmup || expectedKeys.all { key -> warmups.count { it.getString("model_key") == key } == 2 })
-            if (calibration && !setupOnly && !firstWarmup) {
+            ArrivalRuntimeSetup.integratedCalls(if (integrated) "warmup_and_request" else null,
+                warmups.map { it.getString("model_key") }, requests.size)
+            if (integrated) {
+                require(m.getString("calibration_backend") == "GPU")
+                val q = requests.single()
+                require(q.getString("task_id") == "classification" && q.getString("priority") == "urgent" &&
+                    q.getLong("offset_ms") == 0L && q.getLong("deadline_ms") == 5000L)
+            }
+            if (calibration && !setupOnly && !firstWarmup && !integrated) {
                 require(requests.size == 4 && requests.map { it.getLong("offset_ms") } == listOf(0L, 5000L, 10000L, 15000L))
                 require(requests.map { it.getString("task_id") }.toSet().size == 1 &&
                     requests.map { it.getString("priority") }.toSet().size == 1 &&
@@ -218,22 +227,31 @@ class ArrivalSchedulerActivity : Activity() {
             for (q in warmups) {
                 val key = q.getString("model_key")
                 val lane = if (key.endsWith("_CPU")) cpu else gpu
-                lane.submit {
+                val id = q.getString("request_id")
+                ArrivalRuntimeSetup.runWarmup(lane, if (integrated) failureJournal else null, key, id) {
                     val image = images.getValue(q.getString("sample_id"))
                     if (!calibration) adapters.getValue(key).execute(image.first, image.second) else {
-                        val base = mapOf("request_id" to q.getString("request_id"), "model_key" to key)
+                        val base = mapOf("request_id" to id, "model_key" to key)
                         warmupTrace.add(base + mapOf("kind" to "start", "mono_ns" to now()))
                         var status = "failed"
                         try {
-                            arrivalDiagnosticOperation(failureJournal, "warmup", key, q.getString("request_id")) {
-                                adapters.getValue(key).execute(image.first, image.second)
+                            val call = {
+                                adapters.getValue(key).execute(image.first, image.second,
+                                    diagnosticMark = if (!integrated) null else { stage, edge ->
+                                        failureJournal!!.mark(stage, edge, key, id)
+                                    })
                             }
+                            // Integrated helper already records the worker call; never double count it.
+                            if (integrated) call() else arrivalDiagnosticOperation(failureJournal, "warmup", key, id, call)
                             status = "succeeded"
-                        }
-                        finally { warmupTrace.add(base + mapOf("kind" to "end", "mono_ns" to now(), "status" to status)) }
+                        } finally { warmupTrace.add(base + mapOf("kind" to "end", "mono_ns" to now(), "status" to status)) }
                     }
-                }.get(30, TimeUnit.SECONDS)
+                }
             }
+            fun mark(stage: String, edge: String, key: String? = null, id: String? = null) {
+                if (integrated) failureJournal!!.mark(stage, edge, key, id)
+            }
+            mark("warmups_complete", "observed")
             require(admission("before_workload", null) == "admit")
             val workloadStart = now()
             started = true
@@ -254,7 +272,7 @@ class ArrivalSchedulerActivity : Activity() {
                     val choice = if (devDecision != null) devDecision.first.choice else
                         ArrivalPolicy.choose(policy, waiting, !busy.getValue("CPU"), !busy.getValue("GPU"), remainingMs, estimates)
                     val decisionEnd = now()
-                    if (choice == null) break
+                    if (choice == null) { mark("decision_wait", "observed"); break }
                     val ticket = choice.ticket
                     waiting.remove(ticket)
                     busy[choice.backend] = true
@@ -269,8 +287,11 @@ class ArrivalSchedulerActivity : Activity() {
                         activeCpuEstimate[0] = estimates.getValue("${ticket.task}_CPU") * 1_000_000
                     }
                     val lane = if (choice.backend == "CPU") cpu else gpu
+                    val diagnosticKey = "${ticket.task}_${choice.backend}"
+                    mark("request_submit", "start", diagnosticKey, ticket.id)
                     lane.execute {
                         try {
+                            mark("request_worker", "start", diagnosticKey, ticket.id)
                             val reason = admission("before_invocation", "${ticket.task}_${choice.backend}")
                             if (reason != "admit") {
                                 row["terminal_status"] = "rejected"; row["reason"] = reason
@@ -282,19 +303,25 @@ class ArrivalSchedulerActivity : Activity() {
                                     row["inference_start_ns"] = start; row["inference_end_ns"] = end
                                 }
                                 val result = arrivalDiagnosticOperation(failureJournal, "diagnostic", "${ticket.task}_${choice.backend}", ticket.id) {
-                                    adapters.getValue("${ticket.task}_${choice.backend}").execute(image.first, image.second, observer)
+                                    adapters.getValue("${ticket.task}_${choice.backend}").execute(image.first, image.second, observer,
+                                        diagnosticMark = if (!integrated) null else { stage, edge ->
+                                            failureJournal!!.mark(stage, edge, diagnosticKey, ticket.id)
+                                        })
                                 }
                                 val payload = ModelProbeArtifacts.json(result).toByteArray(Charsets.UTF_8)
                                 val ready = recorder?.mark(choice.backend, ticket, ArrivalTimingDev.Phase.OUTPUT_READY) ?: now()
                                 row["output_ready_ns"] = ready
+                                mark("output_ready", "observed", diagnosticKey, ticket.id)
                                 row["inference_ns"] = result["inference_ns"]
                                 row["actual_backend"] = result["actual_backend"]
                                 row["input_tensor_sha256"] = result["input_tensor_sha256"]
                                 row["result_sha256"] = ProbeTaskAdapter.digest(payload)
                                 // Urgent response is ready before durable persistence, as in the existing contract.
                                 row["completion_ns"] = if (ticket.priority == "urgent") ready else null
+                                mark("persist", "start", diagnosticKey, ticket.id)
                                 save(output, "${ticket.id}.result.json", payload)
                                 row["persist_complete_ns"] = recorder?.mark(choice.backend, ticket, ArrivalTimingDev.Phase.PERSISTED) ?: now()
+                                mark("persist", "succeeded", diagnosticKey, ticket.id)
                                 if (ticket.priority == "normal") row["completion_ns"] = row["persist_complete_ns"]
                                 row["late_success"] = (row["completion_ns"] as Long) > (row["deadline_ns"] as Long)
                                 row["queue_wait_ns"] = (row["execution_start_ns"] as Long) - (row["queue_entry_ns"] as Long)
@@ -306,9 +333,21 @@ class ArrivalSchedulerActivity : Activity() {
                             row["terminal_status"] = "failed"; row["reason"] = e.toString()
                             if (calibration) calibrationFailure.compareAndSet(null, "invocation_failed: $e")
                         } finally {
+                            // Failure in recording must not bypass bounded resource cleanup.
+                            fun terminalMark(stage: String, edge: String) {
+                                try { mark(stage, edge, diagnosticKey, ticket.id) } catch (e: Throwable) {
+                                    calibrationFailure.compareAndSet(null, "journal_failed: $e")
+                                }
+                            }
+                            terminalMark("request_worker", if (row["terminal_status"] == "succeeded") "succeeded" else "failed")
                             row["terminal_ns"] = now()
                             row["worker_release_ns"] = recorder?.mark(choice.backend, ticket, ArrivalTimingDev.Phase.WORKER_RELEASED) ?: now()
-                            try { save(output, "${ticket.id}.event.json", ModelProbeArtifacts.json(row).toByteArray()) }
+                            terminalMark("worker_release", "observed")
+                            try {
+                                terminalMark("event_commit", "start")
+                                save(output, "${ticket.id}.event.json", ModelProbeArtifacts.json(row).toByteArray())
+                                terminalMark("event_commit", "succeeded")
+                            }
                             catch (e: Throwable) {
                                 Log.e("D1ARRIVAL", "event write failed", e)
                                 if (calibration) calibrationFailure.compareAndSet(null, "event_write_failed: $e")
@@ -320,6 +359,7 @@ class ArrivalSchedulerActivity : Activity() {
                                 dispatch.execute {
                                     row["lane_available_ns"] = recorder.mark(choice.backend, ticket, ArrivalTimingDev.Phase.AVAILABLE)
                                     busy[choice.backend] = false
+                                    terminalMark("lane_available", "observed")
                                     try { pump() } finally { done.countDown() }
                                 }
                             }
@@ -340,9 +380,11 @@ class ArrivalSchedulerActivity : Activity() {
                         "scheduled_arrival_ns" to target, "actual_arrival_ns" to actual,
                         "arrival_lag_ns" to actual - target,
                         "deadline_ns" to target + q.getLong("deadline_ms") * 1_000_000)
+                    mark("request_arrival", "observed", "${q.getString("task_id")}_${m.optString("calibration_backend")}", id)
                     rows[id] = row
                     if (calibration) calibrationArrivals[id] = row.toMap() // Immutable arrival facts before dispatch.
                     dispatch.execute {
+                        mark("request_queue", "observed", "${q.getString("task_id")}_${m.optString("calibration_backend")}", id)
                         row["queue_entry_ns"] = now()
                         if (calibration) calibrationArrivals.computeIfPresent(id) { _, facts -> facts + ("queue_entry_ns" to row["queue_entry_ns"]) }
                         if (calibration && !recorder!!.isIdle(actual))
@@ -380,6 +422,8 @@ class ArrivalSchedulerActivity : Activity() {
                 "arrival_lag_limit_ns" to lagLimit, "arrival_lag_exceeded" to lateArrivals,
                 "status" to if (failure == null && lateArrivals == 0 && all.all { it["terminal_status"] == "succeeded" }) "completed" else "incomplete",
                 "failure" to failure, "sampled_peak_pss_bytes" to peakPss.get()))
+            if (integrated && failure == null && lateArrivals == 0 && all.all { it["terminal_status"] == "succeeded" })
+                mark("warmup_and_request", "succeeded")
             Log.i("D1ARRIVAL", "session_finalized=$sid")
         } catch (e: Throwable) {
             failure = e.toString()

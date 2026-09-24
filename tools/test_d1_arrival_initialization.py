@@ -17,7 +17,8 @@ class InitializationTest(unittest.TestCase):
 
     def test_prepare_and_dry_run_zero_device_and_zero_calls(self):
         candidate=self.root/'candidate.apk';candidate.write_bytes(b'PC test fixture')
-        manifest=dict(session_id='parent',requests=[{'request_id':'old'}],warmup_requests=[{'request_id':'warm','model_key':'classification_CPU'}],
+        manifest=dict(session_id='parent',calibration_backend='GPU',requests=[dict(request_id='old',task_id='classification',priority='urgent',offset_ms=0)],
+                      warmup_requests=[dict(request_id='warm'+str(i),model_key=k) for i,k in enumerate([k for k in n.ORDER for _ in range(2)])],
                       models={k:dict(identity={},target={}) for k in n.ORDER})
         n.c.write_new(self.root/'old.json',manifest)
         tool=self.root/'tool';tool.write_bytes(b'fake')
@@ -45,6 +46,10 @@ class InitializationTest(unittest.TestCase):
             self.assertNotEqual(first_plan['registry'],n.p.read(self.root/'plan/initialization_plan.json')['registry'])
             self.assertFalse((self.root/'first_warmup_run_v1').exists())
             device.assert_not_called()
+            combined=n.prepare(self.root/'parent.json',candidate,self.root/'receipt.json',self.root/'integrated-plan',scope='warmup_and_request')
+            self.assertEqual((combined['budget']['warmup_calls'],combined['budget']['diagnostic_requests'],combined['budget']['inference_calls']),(8,1,9))
+            self.assertEqual(combined['generated_measurements'],0);device.assert_not_called()
+            self.assertFalse((self.root/'warmup_request_run_v1').exists())
             planned['warmup_requests']=[{}];(self.root/'plan/manifest.json').write_bytes(n.p.canonical(planned))
             with self.assertRaisesRegex(ValueError,'manifest changed'):n.check(self.root/'plan/initialization_plan.json')
 
@@ -168,6 +173,96 @@ class InitializationTest(unittest.TestCase):
         self.assertIsNone(result['counts']['warmup_calls']);self.assertIsNone(result['counts']['inference_calls'])
         self.assertEqual(result['warmup_call_bounds'],[0,1]);self.assertEqual(result['inference_call_bounds'],[0,1])
         self.assertTrue(result['no_resume'])
+
+
+class IntegratedTest(unittest.TestCase):
+    setUp = InitializationTest.setUp
+    artifacts = InitializationTest.artifacts
+    def integrated(self):
+        folder,sha=self.artifacts()
+        m=n.p.read(folder/'manifest.json')
+        m.update(failure_diagnostic_scope='warmup_and_request',calibration_backend='GPU',
+                 warmup_requests=[dict(request_id='w'+str(i),model_key=k) for i,k in enumerate([k for k in n.ORDER for _ in range(2)])],
+                 requests=[dict(request_id='r',task_id='classification',priority='urgent',offset_ms=0)])
+        (folder/'manifest.json').write_bytes(n.p.canonical(m));sha=n.p.digest(folder/'manifest.json')
+        rows=[json.loads(x) for x in (folder/'failure_progress.jsonl').read_bytes().splitlines()][:-2]
+        def add(stage,edge,key=None,rid=None,thread=3,detail=None):
+            rows.append(dict(rows[0],stage=stage,edge=edge,model_key=key,request_id=rid,thread_id=thread,detail=detail))
+        phases=('input_preparation','host_inference','output_readback','output_decode')
+        for q in m['warmup_requests']:
+            key=q['model_key'];rid=q['request_id'];thread=1 if key.endswith('CPU') else 2
+            add('warmup_wait','start',key,rid);add('warmup','start',key,rid,thread)
+            for stage in phases:
+                for edge in ('start','succeeded'):add(stage,edge,key,rid,thread)
+            add('warmup','succeeded',key,rid,thread);add('warmup_wait','succeeded',key,rid)
+        add('warmups_complete','observed');add('admission','observed',detail='before_workload/admit: {}')
+        key='classification_GPU';rid='r'
+        for stage,edge in [('request_arrival','observed'),('request_queue','observed'),('request_submit','start')]:add(stage,edge,key,rid)
+        add('request_worker','start',key,rid,2);add('admission','observed',key,thread=2,detail='before_invocation/admit: {}');add('diagnostic','start',key,rid,2)
+        for stage in phases:
+            for edge in ('start','succeeded'):add(stage,edge,key,rid,2)
+        for stage,edge in [('diagnostic','succeeded'),('output_ready','observed'),('persist','start'),('persist','succeeded'),('request_worker','succeeded'),('worker_release','observed'),('event_commit','start'),('event_commit','succeeded')]:add(stage,edge,key,rid,2)
+        add('lane_available','observed',key,rid);add('decision_wait','observed');add('warmup_and_request','succeeded');add('cleanup','succeeded')
+        from tools.test_d1_arrival_timing_calibration import artifacts
+        fixture=artifacts(backend='GPU',priority='urgent',task='classification')
+        trace=fixture['decision_trace.json']; trace['records']=trace['records'][:9]
+        trace=json.loads(json.dumps(trace).replace('q0','r'))
+        row=fixture['requests.json'][0];row['request_id']='r';row['result_sha256']=hashlib.sha256(n.p.canonical({})).hexdigest()
+        event={k:v for k,v in row.items() if k!='lane_available_ns'}
+        for name,value in [('summary.json',dict(status='completed')),('requests.json',[row]),('r.result.json',{}),('r.event.json',event),('decision_trace.json',trace)]:n.c.write_new(folder/name,value)
+        def write(rows_to_write=None):
+            target=rows if rows_to_write is None else rows_to_write
+            for i,row in enumerate(target):row.update(sequence=i,mono_ns=i,manifest_sha256=sha)
+            (folder/'failure_progress.jsonl').write_bytes(b''.join(n.p.canonical(x) for x in target))
+        write();return folder,sha,rows,write
+
+    def test_all_calls_and_partial_prefix_are_separate(self):
+        folder,sha,rows,write=self.integrated();report=n.inspect_artifacts(folder,sha)
+        self.assertEqual(report['status'],'WARMUP_REQUEST_COMPLETED_NOT_CAUSE_RESOLVED')
+        self.assertEqual(report['warmup']['adapter_returned'],8);self.assertEqual(report['diagnostic']['adapter_returned'],1)
+        self.assertEqual(report['host_inference_returned'],9)
+        # Cut at every stage: no partial prefix can masquerade as complete.
+        for end in range(len(rows)):
+            write(rows[:end]);self.assertEqual(n.inspect_artifacts(folder,sha)['status'],'INCOMPLETE_OR_FAILED',end)
+        write()
+        for stage in ['lane_available','persist','host_inference','event_commit']:
+            write([r for r in rows if not(r['stage']==stage and r.get('request_id')=='r')])
+            self.assertEqual(n.inspect_artifacts(folder,sha)['status'],'INCOMPLETE_OR_FAILED',stage)
+
+    def test_integrated_rejects_wrong_thread_or_extra_inference(self):
+        folder,sha,rows,write=self.integrated()
+        r=next(r for r in rows if r['stage']=='host_inference' and r.get('request_id')=='r');r['thread_id']=1;write()
+        self.assertEqual(n.inspect_artifacts(folder,sha)['status'],'INCOMPLETE_OR_FAILED')
+        r['thread_id']=2;rows.insert(-2,dict(r,request_id='unplanned'));write()
+        self.assertEqual(n.inspect_artifacts(folder,sha)['status'],'INCOMPLETE_OR_FAILED')
+
+
+    def test_integrated_host_consumption_complete_and_unknown(self):
+        for complete in (True,False):
+            root=self.root/str(complete);root.mkdir()
+            plan=dict(experiment_id=n.INTEGRATED_EXPERIMENT,budget=dict(n.BUDGET,warmup_calls=8,inference_calls=9,diagnostic_requests=1),
+                      output_root=str(root/'run'),registry=str(root/'registry'),session_id='s',manifest='m.json',
+                      manifest_sha256='a'*64,apk_path='fake.apk',apk_sha256='b'*64,source_files={},apk_preflight=dict(candidate={}))
+            path=root/'plan.json';n.c.write_new(path,plan)
+            dev=Mock();dev.call.return_value=SimpleNamespace(stdout=b'42',stderr=b'',returncode=0)
+            result=dict(status='WARMUP_REQUEST_COMPLETED_NOT_CAUSE_RESOLVED',runtime_actual_attempt_bounds=[4,4],runtime_returned=4,
+                        warmup=dict(adapter_returned=8),diagnostic=dict(adapter_returned=1),host_inference_returned=9)
+            with patch.object(n,'check'),patch.object(n.legacy,'Device',return_value=dev),patch.object(n.apk,'preflight',return_value={'installed':{}}),patch.object(n,'environment_gate'),patch.object(n.legacy,'bounded_cool'),patch.object(d,'stage_inputs',return_value='remote'),patch.object(d,'wait_for_cleanup',side_effect=None if complete else TimeoutError('stop')),patch.object(d,'failed_attempt_evidence'),patch.object(n,'inspect_artifacts',return_value=result,side_effect=None if complete else FileNotFoundError()),patch.object(d,'cleanup',return_value={'status':'completed'}):
+                receipt=n.run(path,'unused','unused',n.p.digest(path),n.INTEGRATED_EXPERIMENT)
+            self.assertEqual(receipt['counts']['diagnostic_requests'],1 if complete else None)
+            self.assertEqual(receipt['warmup_call_bounds'],[8,8] if complete else [0,8])
+            self.assertEqual(receipt['inference_call_bounds'],[9,9] if complete else [0,9])
+            self.assertEqual(receipt['diagnostic_call_bounds'],[1,1] if complete else [0,1])
+            self.assertTrue((root/'registry/closed.json').exists())
+
+    def test_partial_pull_prioritizes_identity_and_journal(self):
+        device=Mock();seen=[]
+        def call(*args,**kwargs):
+            if args[-2]=='ls':return SimpleNamespace(returncode=0,stdout=b'cleanup.json\nfailure_progress.jsonl\nmanifest.json\nrequests.json\n',stderr=b'')
+            seen.append(args[-1].split('/')[-1]);return SimpleNamespace(returncode=0,stdout=b'{}',stderr=b'')
+        device.call.side_effect=call
+        d.pull(device,'s',self.root/'partial')
+        self.assertEqual(seen,['manifest.json','failure_progress.jsonl','cleanup.json','requests.json'])
 
 
 if __name__=='__main__':unittest.main()
