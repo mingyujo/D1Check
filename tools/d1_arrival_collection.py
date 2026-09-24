@@ -27,7 +27,8 @@ CONDITIONS = [
 
 def identity():
     extra = ['tools/d1_arrival_collection.py', 'tools/d1_arrival_collection_device.py',
-             'tools/d1_cal03_connection.py', 'tools/d1_collection_recovery.py', 'tools/d1_recorded_process.py']
+             'tools/d1_cal03_connection.py', 'tools/d1_collection_recovery.py', 'tools/d1_recorded_process.py',
+             'tools/d1_adb_observed_client.py', 'tools/d1_collection_followup.py']
     return cal.code_identity() | {name: p.digest(cal.ROOT/name) for name in extra}
 
 
@@ -168,12 +169,16 @@ def prepare(parent_path, config_path, build_path, output):
 def check(plan_path):
     plan_path=Path(plan_path);plan=p.read(plan_path)
     recovered = plan.get('installation_contract') == 'recovery-verified-only-v1'
-    v.require(plan['protocol']=='arrival-collection-plan-v1' and plan['experiment_id'] in (('ARRIVAL-COLLECT-02','ARRIVAL-COLLECT-03') if recovered else (EXPERIMENT,)) and
+    followup = plan.get('installation_contract') == 'followup-exact-installed-v1'
+    namespace=('ARRIVAL-CONFIRM-FOLLOWUP-01',) if followup else ('ARRIVAL-COLLECT-02','ARRIVAL-COLLECT-03') if recovered else (EXPERIMENT,)
+    v.require(plan['protocol']=='arrival-collection-plan-v1' and plan['experiment_id'] in namespace and
               not plan['experiment_ready'] and plan['source_code']==identity(), 'plan/source identity')
-    v.require((plan['session_cap'],plan['request_cap'],plan['warmup_cap'],plan['install_cap'],plan['maximum_active_seconds'])==(12,48,96,0 if recovered else 2,5490), 'budget')
+    budget=(3,12,24,0,1800) if followup else (12,48,96,0 if recovered else 2,5490)
+    v.require((plan['session_cap'],plan['request_cap'],plan['warmup_cap'],plan['install_cap'],plan['maximum_active_seconds'])==budget, 'budget')
     v.require(all(plan[k]==0 for k in ('retry_cap','replacement_cap','additional_cap')), 'no retries')
-    v.require((plan['host_phase_wall_seconds'],plan['cleanup_seconds'])==(2700,45), 'time allocation')
+    v.require((plan['host_phase_wall_seconds'],plan['cleanup_seconds'])==((1755,45) if followup else (2700,45)), 'time allocation')
     expected_order=[('development',c[0]) for c in CONDITIONS]+[('confirmation',c[0]) for c in list(reversed(CONDITIONS[:-1]))+[CONDITIONS[-1]]]
+    if followup:expected_order=[('confirmation',name) for name in ('shadow_cpu_sparse','active_cpu_sparse','shadow_split_queue_lanes')]
     v.require([(e['phase'],e['condition']) for e in plan['entries']]==expected_order, 'paired order/parallel gate')
     build=p.read(plan['build_receipt'])
     v.require(p.digest(plan['build_receipt'])==plan['build_receipt_sha256'] and
@@ -206,8 +211,8 @@ def check(plan_path):
             v.require(q['request_id'] not in request_ids and q['sample_id']==m['images'][0]['sample_id'], 'request identity/input')
             request_ids.add(q['request_id'])
         requests+=len(m['requests']);warmups+=len(m['warmup_requests'])
-    v.require((len(ids),requests,warmups)==(12,48,96), 'aggregate count')
-    return dict(status='PC_DRY_RUN_PASS_NOT_DEVICE_READY',plan_sha256=p.digest(plan_path),sessions=12,requests=48,warmup=96,
+    v.require((len(ids),requests,warmups)==((3,12,24) if followup else (12,48,96)), 'aggregate count')
+    return dict(status='PC_DRY_RUN_PASS_NOT_DEVICE_READY',plan_sha256=p.digest(plan_path),sessions=len(ids),requests=requests,warmup=warmups,
                 adb_calls=0,install_attempts=0,session_attempts=0,experiment_ready=False)
 
 

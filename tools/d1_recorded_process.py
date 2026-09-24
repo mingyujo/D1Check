@@ -17,7 +17,7 @@ def write(path, value):
         json.dump(value, stream, ensure_ascii=False, indent=2)
 
 
-def run(command, output, timeout, display, cleanup_seconds=5):
+def run(command, output, timeout, display, cleanup_seconds=5, root_only=False):
     """display is caller-supplied non-secret argv. Output may end mid-line on failure.
 
     Timeout kills only the launched client tree, never an existing ADB server.
@@ -27,7 +27,9 @@ def run(command, output, timeout, display, cleanup_seconds=5):
     output=Path(output);output.mkdir(parents=True, exist_ok=False)
     start=time.monotonic()
     receipt=dict(command=display,utc_start=utc(),monotonic_start=start,timeout_seconds=timeout,
-                 cleanup_seconds=cleanup_seconds,status='starting',returncode=None)
+                 cleanup_seconds=cleanup_seconds,status='starting',returncode=None,
+                 termination_scope='launched_client_only' if root_only else 'launched_process_tree',
+                 executable=str(command[0]))
     write(output/'start.json',receipt)
     proc=None
     try:
@@ -44,7 +46,9 @@ def run(command, output, timeout, display, cleanup_seconds=5):
                 end=time.monotonic()+cleanup_seconds
                 receipt['termination_start_utc']=utc()
                 try:
-                    if os.name=='nt':
+                    if root_only:
+                        proc.kill();receipt['tree_termination']='not_attempted_shared_daemon_not_owned'
+                    elif os.name=='nt':
                         killed=subprocess.run(['taskkill.exe','/PID',str(proc.pid),'/T','/F'],capture_output=True,
                                               timeout=max(.01,min(3,end-time.monotonic())))
                         (output/'termination_stdout.bin').write_bytes(killed.stdout)

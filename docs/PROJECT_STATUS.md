@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-09-25 CONFIRM-FOLLOWUP-01 PC 준비 완료 — 실행 미승인
+
+- 시작 `fefe913`/clean. [ADB 분석·확인 전용 계약](ARRIVAL_CONFIRMATION_FOLLOWUP_20260925.md). 실패는PC127.0.0.1:5037 접속오류이며daemon내부원인미확정. 과거수집경로에는server종료/taskkill없고복구경로timeout도없었다. 현재PATH의ADB1경로/SDK37.0.1·PID2388/listener를OS조회했으나과거상태로전용하지않는다. adb.log는실패시각을포함하지않는다.
+- 새host는기존server smart socket 준비조회·raw stdout/stderr/명령intent/clientPID/종료대상·OS실패snapshot을기록한다. timeout은해당client만종료, explicitserver재시작/retry없음. client내부race가능성과계측부담을명시했다. 공용수집runner에별도후속branch만추가하고기존Android/APK는보존·재빌드없음.
+- **제안3세션(B 고정CPU단독→A activeCPU단독→F 병행), 진단12/warmup24/runtime12/총추론36/설치0/retry·대체·추가0, 예상9~15분·상한30분(작업1755+cleanup45초, 냉각6분포함).** 기존개발6/동결e4cb73aa…83023과이전확인E/D/C의3세션을그대로보존한다. 새계획은별도선택적후속확인, 원계획완주·동일날짜paired비교로합치지않는다.
+- 신규13건+직접관련기존7건PC통과/최종script Check·APK서명·manifest·불변동결검사통과. ADB명령/서버접속/기기실행/설치/추론0, 원본변경0. 외부 `confirmation_followup_plan_v3`(plan SHA3de26b4e…e4bb3/manifest3/실행script), `confirmation_followup_pc_v1`(원인증거/최종source/VERIFICATION_FINAL/tests_v3/regression/보고서). v1/v2는미실행초안이다. 새출력/registry미생성.
+- 다음: (1) 새확인전용예산승인, (2) 승인후정확한설치본·현재server/device/environment gate, (3) 통과시누락3조건만실행·동결대비오차기술. 기존계획/실패분모재개·삭제없음. 성공해도임의병행허용·정책PASS·experiment_ready=true로자동전환하지않는다. 기존FAIL/부분결과/40값/20null유지.
+
 ## 2026-09-25 RECOVERY-02 / COLLECT-03 종료 — 설치 성공·확인 중 ADB daemon 오류
 
 - 시작 `3a88ca8`/clean. 별도 승인 v2 준비·PC14건/dry-run 후1회 실행. [새 계약·종료 결과](ARRIVAL_INSTALL_RECOVERY_20260924.md). APK/설계/기준/timeout 불변, host namespace·v1 종료 증거 hash 연결만 변경. 재빌드 없음. 전송1/설치1 성공·정확한 후보설치본 확인·복구cleanup 완료(79.453초). 이 설치 계보 누적2시도(COLLECT-01 timeout1+RECOVERY-01 0+이번1).

@@ -15,10 +15,15 @@ def claim(plan_path, phase, freeze):
     plan=c.p.read(plan_path);registry=Path(plan['registry']);out=Path(plan['output_root'])/phase
     c.v.require(not (registry/'stopped.json').exists() and not (registry/f'{phase}_consumed.json').exists() and not out.exists(), 'consumed/stopped; no resume')
     if phase=='confirmation':
-        c.v.require(freeze is not None and (registry/'development_complete.json').is_file(),'development and freeze required')
+        followup=plan.get('installation_contract')=='followup-exact-installed-v1'
+        c.v.require(freeze is not None and (followup or (registry/'development_complete.json').is_file()),'development and freeze required')
         f=c.p.read(freeze)
         # Re-derive the descriptive freeze from immutable development only; a made-up acceptance or confirmation refit cannot unlock.
-        c.v.require(f==c.summarize(plan_path,'development'),'freeze rules/data mismatch')
+        if followup:
+            from tools.d1_collection_followup import evidence_gate
+            evidence_gate(plan)
+            c.v.require(str(Path(freeze).resolve())==str(Path(plan['frozen_development']).resolve()),'wrong frozen development')
+        else:c.v.require(f==c.summarize(plan_path,'development'),'freeze rules/data mismatch')
         for name,digest in f['input_hashes'].items():c.v.require(c.p.digest(name)==digest,'development changed')
     registry.mkdir(parents=True,exist_ok=True)
     c.cal.write_new(registry/f'{phase}_consumed.json',dict(plan_sha256=c.p.digest(plan_path),output=str(out),
@@ -28,9 +33,11 @@ def claim(plan_path, phase, freeze):
 
 
 def run(plan_path,phase,adb,serial,approved_cap,expected_sha,freeze=None,overall_deadline=None):
-    c.v.require(phase in ('development','confirmation') and approved_cap==12 and c.p.digest(plan_path)==expected_sha,'explicit approval budget/plan')
-    c.check(plan_path)
     prepared=c.p.read(plan_path)
+    followup=prepared.get('installation_contract')=='followup-exact-installed-v1'
+    c.v.require(phase in ('development','confirmation') and approved_cap==(3 if followup else 12) and c.p.digest(plan_path)==expected_sha,'explicit approval budget/plan')
+    if followup:c.v.require(phase=='confirmation','followup cannot run development')
+    c.check(plan_path)
     recovery_only=prepared.get('installation_contract')=='recovery-verified-only-v1'
     if recovery_only:
         c.v.require(overall_deadline is not None and
@@ -43,7 +50,11 @@ def run(plan_path,phase,adb,serial,approved_cap,expected_sha,freeze=None,overall
     started=time.monotonic();work_end=started+plan['host_phase_wall_seconds'];hard_end=work_end+45
     if overall_deadline is not None:
         hard_end=min(hard_end,overall_deadline);work_end=min(work_end,hard_end-45)
-    device=legacy.Device(adb,serial);device.deadline=work_end-10
+    if followup:
+        from tools.d1_adb_observed_client import ObservedDevice
+        device=ObservedDevice(adb,serial,out/'host_commands')
+    else:device=legacy.Device(adb,serial)
+    device.deadline=work_end-10
     completed=0;identified=False;current=None;pid=None;stage='signature_preflight'
     try:
         pre=apk.preflight(device,dict(plan,_plan_file=str(plan_path)),out/'preflight')
@@ -58,10 +69,10 @@ def run(plan_path,phase,adb,serial,approved_cap,expected_sha,freeze=None,overall
         c.v.require(re.search(rb'Thermal Status:\s*0\b',thermal),'thermal pre-install')
         shared.screen_snapshot(device,out,'before_install',plan['screen_contract'],settings=True)
         c.v.require(device.deadline-time.monotonic()>=120+120+165,'insufficient install/cool/launch/poll/recovery budget')
-        if recovery_only:
+        if recovery_only or followup:
             c.v.require(pre['installed']==pre['candidate'],'exact installed APK gate; collection cannot install')
             c.cal.write_new(out/'installation_gate.json',dict(status='exact_installed_no_install',
-                recovery_receipt_sha256=c.p.digest(plan['recovery_receipt']),identity=pre['installed']))
+                recovery_receipt_sha256=c.p.digest(plan['recovery_receipt']) if recovery_only else None,identity=pre['installed']))
         else:
             stage='install';c.cal.write_new(out/'install_attempt.json',dict(utc=legacy.utc(),apk_sha256=plan['apk_sha256']))
             installed=device.call('install','-r',plan['apk_path'],timeout=120)
@@ -70,10 +81,16 @@ def run(plan_path,phase,adb,serial,approved_cap,expected_sha,freeze=None,overall
         shared.legacy.bounded_cool(device,plan['initial_cool_seconds'])
         entries=[e for e in plan['entries'] if e['phase']==phase]
         for position,e in enumerate(entries):
+            if followup:
+                # Before consuming a session intent: existing server + unique device + stopped app.
+                current=None;pid=None;stage='session_readiness'
+                device.identify(plan['device_fingerprint']);legacy.require_stopped(device)
             current=out/f"{e['index']:02d}_{e['session_id']}";current.mkdir();pid=None;stage='gate'
             c.cal.write_new(current/'attempt.json',dict(entry=e,utc=legacy.utc(),plan_sha256=expected_sha,device=identity))
             if e['condition'].endswith('lanes'):
-                c.v.require(completed==5 and all((out/f"{a['index']:02d}_{a['session_id']}"/'validated.json').is_file() for a in entries[:5]), 'parallel stage prerequisites')
+                needed=2 if followup else 5
+                c.v.require(completed==needed and all((out/f"{a['index']:02d}_{a['session_id']}"/'validated.json').is_file() and
+                    (not followup or c.p.read(out/f"{a['index']:02d}_{a['session_id']}"/'host_cleanup.json')['status']=='completed') for a in entries[:needed]), 'parallel stage prerequisites')
             device.identify(plan['device_fingerprint']);legacy.require_stopped(device)
             battery=device.call('shell','dumpsys','battery').stdout.decode();(current/'before_battery.txt').write_text(battery,encoding='utf-8')
             legacy.battery_gate(plan,battery,position==0)
@@ -83,7 +100,10 @@ def run(plan_path,phase,adb,serial,approved_cap,expected_sha,freeze=None,overall
             shared.awake_gate(device,plan,current)
             c.v.require(device.deadline-time.monotonic()>=165,'reserve launch30/poll125/recovery10')
             manifest=Path(plan_path).parent/e['manifest'];stage='stage_inputs'
-            remote=shared.stage_inputs(device,e['session_id'],manifest,{k:v['path'] for k,v in plan['source_files'].items()},c.PROTOCOL)
+            previous=device.deadline
+            if followup:device.deadline=min(previous,time.monotonic()+150)
+            try:remote=shared.stage_inputs(device,e['session_id'],manifest,{k:v['path'] for k,v in plan['source_files'].items()},c.PROTOCOL)
+            finally:device.deadline=previous
             c.v.require(device.deadline-time.monotonic()>=165,'post-staging launch reserve')
             stage='launch';c.cal.write_new(current/'launch_attempt.json',dict(utc=legacy.utc(),session_id=e['session_id']))
             launch=device.call('shell','am','start','-W','-n',legacy.PACKAGE+'/'+legacy.ACTIVITY,'-a',legacy.ACTION,'--es','session_id',e['session_id'],timeout=30)
