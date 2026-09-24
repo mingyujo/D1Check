@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-09-25 지정 v1 실행 재요청 — 중복 실행 gate로 미진입
+
+- 실제 시작 HEAD `6f8d950`/로컬·원격일치/clean. 요청의 `bceec84` 이후 변경은 이전 배터리 gate 종료 문서 commit이다. 새101.5분 예산 승인 요청은 확인했으나 지정된 `collection_recovery_plan_v1/RUN_AFTER_APPROVAL.ps1`은 이미 소비된 복구/workflow를 가리킨다.
+- 원 workflow claim과 `stopped_no_resume`, recovery `failed/preflight/battery level gate failed`를 직접 확인했다. 수집registry 부재/0세션은 통합 계획 재실행 허가가 아니다. `d1_collection_recovery.run`의 `bundle already used` 조건 및 사용자 지시의 종료 계획 재개 금지를 그대로 적용했다.
+- **이번 호출은 스크립트/ADB/기기조회/전송/설치/세션/추론 모두0**, 새 소비 기록 없음. 현재 배터리·연결·화면 상태는 조회하지 않아 미확인이다. 이전 원본/소비량/계획 hash와 experiment_ready=false 유지. 테스트/빌드 반복 없음.
+- 근거: 외부 `C:/Users/LG/Documents/D1Check_Arrival_Extension/collection_recovery_reentry_check_20260925/REPORT.json`. 기존 종료 보고서는 바로 아래 경로를 따른다.
+- 다음은 승인된 범위와 기존 종료 기록을 분리하는 **새 식별자·출력·소비 경로의 실행 계획 재발행**이다. 이번에는 지정 계획 충돌 시 실행하지 말라는 조건에 따라 실행을 보류했으며, 과거 소비 상태를 초기화하거나 새 계획으로 임의 전환하지 않았다.
+
 ## 2026-09-24 INSTALL-RECOVERY-01 / COLLECT-02 — 승인 실행·배터리 gate 종료
 
 - 시작 `bceec84`/clean. [종료 결과](ARRIVAL_INSTALL_RECOVERY_20260924.md). 계획/소스/APK/manifest·미소비 확인 후 스크립트1회. **배터리50%<시작55%로복구preflight중단. 후보전송0·설치0·세션0/12·진단0/48·warmup0/96·명시적추론0/144**, retry/대체/추가0. 개발/확인각6미시도, 실패세션0/복구실패1.
