@@ -27,11 +27,22 @@ def claim(plan_path, phase, freeze):
     return plan,registry,out
 
 
-def run(plan_path,phase,adb,serial,approved_cap,expected_sha,freeze=None):
+def run(plan_path,phase,adb,serial,approved_cap,expected_sha,freeze=None,overall_deadline=None):
     c.v.require(phase in ('development','confirmation') and approved_cap==12 and c.p.digest(plan_path)==expected_sha,'explicit approval budget/plan')
     c.check(plan_path)
+    prepared=c.p.read(plan_path)
+    recovery_only=prepared.get('installation_contract')=='recovery-verified-only-v1'
+    if recovery_only:
+        c.v.require(overall_deadline is not None and
+                    (Path(prepared['workflow_root'])/'claim.json').is_file() and
+                    not (Path(prepared['workflow_root'])/'stopped.json').exists(),
+                    'recovery collection requires active bounded bundle; direct phase run prohibited')
+        from tools.d1_collection_recovery import require_receipt
+        require_receipt(prepared,expected_sha)
     plan,registry,out=claim(plan_path,phase,freeze)
     started=time.monotonic();work_end=started+plan['host_phase_wall_seconds'];hard_end=work_end+45
+    if overall_deadline is not None:
+        hard_end=min(hard_end,overall_deadline);work_end=min(work_end,hard_end-45)
     device=legacy.Device(adb,serial);device.deadline=work_end-10
     completed=0;identified=False;current=None;pid=None;stage='signature_preflight'
     try:
@@ -47,10 +58,15 @@ def run(plan_path,phase,adb,serial,approved_cap,expected_sha,freeze=None):
         c.v.require(re.search(rb'Thermal Status:\s*0\b',thermal),'thermal pre-install')
         shared.screen_snapshot(device,out,'before_install',plan['screen_contract'],settings=True)
         c.v.require(device.deadline-time.monotonic()>=120+120+165,'insufficient install/cool/launch/poll/recovery budget')
-        stage='install';c.cal.write_new(out/'install_attempt.json',dict(utc=legacy.utc(),apk_sha256=plan['apk_sha256']))
-        installed=device.call('install','-r',plan['apk_path'],timeout=120)
-        c.cal.write_new(out/'install_result.json',dict(status='installed',stdout=installed.stdout.decode(errors='replace')))
-        apk.preflight(device,dict(plan,_plan_file=str(plan_path)),out/'post_install_identity')
+        if recovery_only:
+            c.v.require(pre['installed']==pre['candidate'],'exact installed APK gate; collection cannot install')
+            c.cal.write_new(out/'installation_gate.json',dict(status='exact_installed_no_install',
+                recovery_receipt_sha256=c.p.digest(plan['recovery_receipt']),identity=pre['installed']))
+        else:
+            stage='install';c.cal.write_new(out/'install_attempt.json',dict(utc=legacy.utc(),apk_sha256=plan['apk_sha256']))
+            installed=device.call('install','-r',plan['apk_path'],timeout=120)
+            c.cal.write_new(out/'install_result.json',dict(status='installed',stdout=installed.stdout.decode(errors='replace')))
+            apk.preflight(device,dict(plan,_plan_file=str(plan_path)),out/'post_install_identity')
         shared.legacy.bounded_cool(device,plan['initial_cool_seconds'])
         entries=[e for e in plan['entries'] if e['phase']==phase]
         for position,e in enumerate(entries):

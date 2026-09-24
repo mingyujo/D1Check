@@ -535,3 +535,10 @@
 - 승인12세션/48진단/96warmup·2설치·retry/대체/추가0·91.5분 범위에서planv2를변경없이1회호출했다. 설치전identity/서명/환경gate통과 뒤 install-r가120초timeout. 설치1·세션0·명시적추론0, 미시도12다. 원래중단규칙대로전체종료, 미소비세션을재개/대체하지않는다.
 - hostcleanup/프로세스부재확인, 이후비파괴조회에서이전설치APK해시유지. 서명불일치가아니며전송/패키지처리원인은미확정. 앱실행전실패이므로GPU/CAL-02원인에새결론을부여하지않는다. 화면설정변경없음.
 - 새적격자료가없어동결/확인/PC연결은수행하지않는다. 기존설정과experiment_ready=false유지. 다음은설치timeout부분출력·단계시간보존을갖춘새진단의PC준비이며지금추가기기작업을승인하거나실행하지않는다. [원본·소비량·판독](ARRIVAL_INTEGRATED_COLLECTION_20260924.md).
+
+## 2026-09-24 — 설치 복구와 COLLECT-02 분리 준비
+
+- 채택/PC구현: 새 복구 전용 host 기록으로 명령 시작/종료·부분 stdout/stderr·timeout·client tree 종료·설치 후 조회 실패를 남긴다. 기존install-r 스트리밍 추정 대신 명시적 push/hash→pm install-r로 분리한다. 방식·추가 staging 비용이 달라지며 이전 방법과 동일 실험이라고 하지 않는다. 설치timeout120초 유지, 기존증거의전송/패키지처리원인은미확정.
+- 복구와 수집의 namespace/소비/출력을 분리한다. exact APK/package/version/signer 확인 시 재설치생략 가능, 아니면 복구단계만 설치최대1. 성공receipt·증거hash·cleanup 확인 후 새 수집, 각 단계 설치본 재검사, 수집내설치0. 기존중단계획·미시도분재사용금지.
+- 미승인예산: 복구600초+기존설계수집5490초=6090초, 개발6→동결→확인6/48진단/96warmup/명시적144, retry·대체·추가0. 한 번의 향후 승인으로 gate 충족 시 자동 진행하는 스크립트 준비. 이번에는 기기 작업0.
+- PC28건·서명/해시/manifest/dry-run 확인. Android/APK변경없어재빌드없음. 기존40값/20null/FAIL/부분결과/experiment_ready=false 보존. [상세 근거·예산·명령](ARRIVAL_INSTALL_RECOVERY_20260924.md).

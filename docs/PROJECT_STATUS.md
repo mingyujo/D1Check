@@ -1,5 +1,14 @@
 # D1Check 현재 상태
 
+## 2026-09-24 ARRIVAL-INSTALL-RECOVERY-01 / COLLECT-02 — PC 준비 완료
+
+- 시작 `b4c6e23`/clean, 기존 COLLECT-01의 install120초 timeout·세션0·종료 기록 보존. [복구 원인 분석·새 실행 계약](ARRIVAL_INSTALL_RECOVERY_20260924.md). 이전 성공/실패 APK 차이16,384bytes, 같은install-r/120초이며 크기·GPU·전송 원인 확정 근거 없음. timeout 부분 stdout/stderr 미보존을 확인했다.
+- 새 host 명령 기록: 부분 bytes·시작/종료/timeout/exit·client tree 종료·조회 실패 보존. staged push→원격hash→pm install-r→설치본hash로 명령 단계를 분리. 설치timeout120초 유지. exact APK이면 설치생략, 새 수집에서는 재설치 금지·동일설치본 필수gate.
+- PC28건(복구15+collection13) 통과, 실제 PC 자식트리 timeout 포함. APK/서명/Android source 대응·새manifest12·dry-run 확인. APK 재빌드/ADB/설치/실측 없음. experiment_ready=false 및40값/20null/FAIL/부분결과 불변.
+- **미승인 제안**: 복구설치최대1/전송1·600초 + 새수집개발6→동결→확인6/48진단/96warmup·5490초, 합6090초=101.5분. 예상35~50분·냉각24분 포함, retry/대체/추가0. 기존 승인/미시도분 재사용 아님.
+- 외부 root `C:/Users/LG/Documents/D1Check_Arrival_Extension/`: `collection_recovery_plan_v1`(recovery_plan/collection_plan/manifests/RUN_AFTER_APPROVAL.ps1), `install_recovery_pc_v1`(FINAL_REPORT/VERIFICATION/tests/재현명령/GIT_FINAL). 후보APK는기존integrated_collection_apk_v1그대로. 새출력/registry미생성.
+- 다음: (1) 새 통합예산 승인, (2) 당일gate→복구verified/cleanup→새수집동결/확인, (3) 적격자료에한해PC연결/정책비교요건검토. 이번에는 PC 준비만 수행했다. 원격에는 관련host소스/테스트/문서만 반영한다.
+
 ## 2026-09-24 ARRIVAL-COLLECT-01 — 승인 실행 중단·설치 timeout
 
 - 시작 `0338433`/clean. [실행 결과·중단 근거](ARRIVAL_INTEGRATED_COLLECTION_20260924.md). planv2 동일성·미소비·A24/서명/설치 전 환경gate 확인 후 승인 스크립트1회 실행. **설치1회가120초 timeout, 세션0/12·진단0/48·warmup0/96·총명시적추론0/144.** 개발6·확인6 모두 미시도, 세션 전 기술적 실패1. retry·대체·추가0.

@@ -1,5 +1,7 @@
 # D1Check 프로젝트 실행계획
 
+> 최신 PC 준비(2026-09-24): [설치 복구→COLLECT-02](ARRIVAL_INSTALL_RECOVERY_20260924.md) 실행안 완료·미승인. 부분 출력/timeout/host종료/identity 증거를 보존하는 별도 staging 설치를 준비했다. 복구600초+수집5490초=101.5분, 설치최대1·개발6→동결→확인6/48진단/96warmup, retry/대체/추가0 제안이다. 복구 verified/cleanup과 매 단계 exact설치본gate 후에만 수집하며 기존종료계획은재개하지않는다. Android/APK·추정값불변, PC28건통과, 실기기미실행·experiment_ready=false.
+
 > 최신 실행(2026-09-24): [ARRIVAL-COLLECT-01 결과](ARRIVAL_INTEGRATED_COLLECTION_20260924.md). 12세션 승인 후 설치1회가120초 timeout으로 중단됐다. 세션0/12·진단0/48·warmup0/96, host cleanup/프로세스부재 및 이전설치APK 유지 확인. 계획은 claim/stopped로종료·재개금지, 새동결/확인/PC연결없음. 먼저 설치 단계 증거 보존을 갖춘 새 진단 PC 준비가 필요하며 추가 기기 실행은 별도승인이다. experiment_ready=false와 B2/B3/P·기존FAIL을 유지한다. 아래 준비/미승인 상태는 당시 이력이다.
 
 > 최신 준비(2026-09-24): [ARRIVAL-COLLECT-01](ARRIVAL_INTEGRATED_COLLECTION_20260924.md)의 별도 Android active/shadow 계측·PC 대응·APK/계획 준비 완료, 실측 미승인·미실행. 엄격 CPU fallback은 전체 직렬이며 GPU 적응 배정 성능을 뜻하지 않는다. 판단 비용·큐 부하 전이·한정 병행을 분리하는6조건×개발/확인2단계(제안12세션/48진단/96warmup/설치2·91.5분)로 좁혔다. 성공해도 완전한B3/P·최선B2·정책성능/정확도PASS가 아니며 experiment_ready=false. 아래 날짜별 최신/현재 표현은 당시 이력이다.
