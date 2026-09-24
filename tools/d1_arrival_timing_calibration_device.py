@@ -58,9 +58,9 @@ def pull(device, sid, output):
     return {"status": "recovered", "files": files}
 
 
-def cleanup(device):
+def cleanup(device, hard_deadline=None):
     previous = device.deadline
-    device.deadline = time.monotonic() + 45
+    device.deadline = min(time.monotonic() + 45, hard_deadline if hard_deadline is not None else float('inf'))
     try:
         device.call("shell", "am", "force-stop", legacy.PACKAGE, timeout=15)
         legacy.require_stopped(device)

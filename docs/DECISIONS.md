@@ -465,3 +465,11 @@
 - EfficientDet exact binary의 비배포 경계는 유지한다. 원본뿐 아니라 이를 포함/파생한 AOT artifact도 배포 권한을 별도 확인하기 전 저장소·PR·APK·팀 공유 bundle에 넣지 않는다. 승인된 실행자가 고정 원 URL에서 직접 확보하는 기존 절차를 따른다.
 - 이 결정은 **NPU 개발 채택**이다. NPU 품질·속도·에너지 절감·정책 이식성 검증 완료가 아니다. 새 기기 실행 예산/명령, 모델별 품질 수치, 지원 경로/병행 조합 freeze는 별도 근거가 필요하다.
 - 팀 전달 최소 자료와 읽는 순서는 [팀 안내](team/README.md)에 있다. 이번 작업은 문서 diff/상대 링크/추적 파일·push 대상 점검만 하고 기존 테스트·빌드·실측을 반복하지 않는다. 작업 브랜치만 origin에 정상 push하며 master/타인 브랜치를 변경하지 않는다.
+
+## 2026-09-24 — ARRIVAL-INIT-DIAG-01 단일 초기화 후보
+
+- 채택/PC 준비: 사용자 요청에 따라 별도1세션·생성≤4·warmup/명시적추론0·retry/대체/추가0·전체600초의 실행 후보를 준비한다. 실행은 아직 미승인이다. 기존 CAL-02의source/입력/순서/CPU·GPU worker 소유권/대기 구조를 유지하고, 단계 기록과0호출 차단/검증만 보완했다. 생성자의 앱 추론 호출은 없으나 library prepare 내부 연산까지0이라고 주장하지 않는다.
+- 단일 host monotonic T0+600 deadline에서 work cutoff545·회수10·cleanup45초를 예약한다. runtime30초/앱120초/host125초·cooling120초·환경 gate 유지. close는 같은worker에 제출하되5초까지만 기다린다. signature subprocess·host cleanup도 절대 deadline을 넘겨 새 예산을 시작하지 않는다. gate/여유 미달이면 Activity를 시작하지 않는다.
+- 새로운 execution claim은 preflight 전에 소비하고 재진입을 막는다. install/session attempt는 각각 명령 직전에 별도 기록한다. runtime start 의도와 반환 증거/미확인 범위를 구분한다. preflight/설치 실패는 session0일 수 있으나 claim 이후 같은 계획 재실행은 금지한다. 기존 소비/중단 상태는 불변이다.
+- 프로젝트 기존 인증서로 격리 APK를 빌드하고 PC 검증했다. 새plan/source/manifest/APK identity를 묶고 runtime_initialization 전용 root/registry를 쓴다. 동기 기록이 포함되어 성능 보정/평가에 사용하지 않는다. 결과가 완전해도 `complete_not_cause_resolved`; 불완전하면 마지막 확인 단계/회수 오류와 앱 실패를 구분하고 원인을 추측하지 않는다.
+- 검증: 관련Kotlin5/Python15·compile/assemble·dry-run PASS, 실제ADB/설치/기기생성0. 새1회 실행 승인과 실제 설치본·기기/환경 gate가 남았다. 기존FAIL·부분 결과·20null/experiment_ready=false 및 S26 협업 결정은 유지한다. [후보 경로·실제 명령·한계](ARRIVAL_INITIALIZATION_DIAGNOSTIC_20260924.md).

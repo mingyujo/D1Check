@@ -3,17 +3,23 @@ from pathlib import Path
 import json
 import re
 import subprocess
+import time
 
 from tools import d1_arrival_plan as p
 
 
-def inspect(apk, toolchain):
+def inspect(apk, toolchain, deadline=None):
     apk = Path(apk)
+    def limit(seconds):
+        remaining = seconds if deadline is None else min(seconds, deadline-time.monotonic())
+        if remaining <= 0:
+            raise TimeoutError('APK inspection deadline exhausted')
+        return remaining
     cert = subprocess.run([toolchain['java'], '-jar', toolchain['apksigner'],
                            'verify', '--verbose', '--print-certs', str(apk)],
-                          capture_output=True, text=True, check=True, timeout=60).stdout
+                          capture_output=True, text=True, check=True, timeout=limit(60)).stdout
     badging = subprocess.run([toolchain['aapt2'], 'dump', 'badging', str(apk)],
-                            capture_output=True, text=True, check=True, timeout=30).stdout
+                            capture_output=True, text=True, check=True, timeout=limit(30)).stdout
     package = re.search(r"^package: name='([^']+)' versionCode='(\d+)'", badging, re.M)
     signers = re.findall(r'Signer #\d+ certificate SHA-256 digest: ([0-9a-fA-F]{64})', cert)
     count = re.search(r'Number of signers: (\d+)', cert)
@@ -46,7 +52,7 @@ def preflight(device, plan, output):
         for name, digest in plan['apk_preflight']['tool_sha256'].items():
             if p.digest(tools[name]) != digest:
                 raise ValueError('APK inspection tool identity changed: ' + name)
-        candidate = inspect(plan['apk_path'], tools)
+        candidate = inspect(plan['apk_path'], tools, deadline=device.deadline)
         result['candidate'] = candidate
         response = device.call('shell', 'pm', 'path', candidate['package'])
         paths = response.stdout.decode().splitlines()
@@ -55,7 +61,7 @@ def preflight(device, plan, output):
             raise ValueError('installed base APK unavailable or unsupported split layout')
         remote = paths[0].strip()[len('package:'):]
         device.call('pull', remote, str(output / 'installed-base.apk'), timeout=180)
-        installed = inspect(output / 'installed-base.apk', tools)
+        installed = inspect(output / 'installed-base.apk', tools, deadline=device.deadline)
         result['installed'] = installed
         compatible(candidate, installed, plan['apk_preflight']['candidate'])
         result['status'] = 'PREFLIGHT_COMPATIBLE_NOT_INSTALLED'

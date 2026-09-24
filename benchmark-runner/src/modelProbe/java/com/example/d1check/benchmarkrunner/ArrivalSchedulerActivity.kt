@@ -183,18 +183,21 @@ class ArrivalSchedulerActivity : Activity() {
             sampler.scheduleAtFixedRate({ try { environment.add(snapshot()) } catch (e: Throwable) {
                 environment.add(mapOf("mono_ns" to now(), "error" to e.toString()))
             } }, 0, 500, TimeUnit.MILLISECONDS)
-            for (key in expectedKeys.sorted()) {
+            val initializationOnly = ArrivalRuntimeSetup.initialize(expectedKeys, setupOnly, warmups.size, requests.size) { key ->
                 val lane = if (key.endsWith("_CPU")) cpu else gpu
                 arrivalDiagnosticOperation(failureJournal, "runtime_wait", key) {
                     lane.submit {
                         check(admission("before_runtime_creation", key) == "admit")
                         arrivalDiagnosticOperation(failureJournal, "runtime_create", key) {
-                            adapters[key] = ProbeTaskAdapter(specs.getValue(key), ProbeModelFile.open(inputs, specs.getValue(key).model), anchors)
+                            val mark: ((String, String) -> Unit)? = failureJournal?.let { journal ->
+                                { stage, edge -> journal.mark(stage, edge, key) }
+                            }
+                            adapters[key] = ProbeTaskAdapter(specs.getValue(key), ProbeModelFile.open(inputs, specs.getValue(key).model), anchors, mark)
                         }
                     }.get(30, TimeUnit.SECONDS)
                 }
             }
-            if (setupOnly) {
+            if (initializationOnly) {
                 failureJournal!!.mark("setup_only", "succeeded")
                 return // Explicitly zero warmup/inference requests, never a calibration result.
             }
@@ -372,8 +375,9 @@ class ArrivalSchedulerActivity : Activity() {
             arrivals.shutdownNow(); sampler.shutdownNow()
             failureJournal?.bestEffort("cleanup", "start", failure)
             for (lane in listOf(cpu, gpu)) {
-                try { lane.submit { adapters.filterKeys { it.endsWith(if (lane === cpu) "_CPU" else "_GPU") }.values.forEach { it.close() } }
-                    .get(5, TimeUnit.SECONDS) } catch (e: Throwable) {
+                try { ArrivalRuntimeSetup.closeLane(lane) {
+                    adapters.filterKeys { it.endsWith(if (lane === cpu) "_CPU" else "_GPU") }.values.forEach { it.close() }
+                } } catch (e: Throwable) {
                     failure = "$failure; close: $e"
                     failureJournal?.bestEffort("runtime_close", "failed", e.toString())
                 }

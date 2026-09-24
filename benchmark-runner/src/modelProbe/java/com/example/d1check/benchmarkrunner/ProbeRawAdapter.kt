@@ -108,7 +108,12 @@ internal class ProbeRawSession private constructor(
     }
 
     companion object {
-        fun create(manifest: ModelProbeManifest, model: VerifiedProbeFile, progress: ProbeProgress? = null): ProbeRawSession {
+        fun create(manifest: ModelProbeManifest, model: VerifiedProbeFile, progress: ProbeProgress? = null,
+                   initializationMark: ((String, String) -> Unit)? = null): ProbeRawSession {
+            fun mark(stage: String, edge: String) {
+                progress?.mark(stage, edge)
+                initializationMark?.invoke(stage, if (edge == "finish") "succeeded" else edge)
+            }
             require(model.sha256 == manifest.model.sha256) { "Verified model identity mismatch" }
             val options = Interpreter.Options()
             var delegate: GpuDelegate? = null
@@ -122,29 +127,33 @@ internal class ProbeRawSession private constructor(
                         require(profile.configurationSha256 == manifest.runtime.gpuConfigurationSha256) {
                             "GPU configuration SHA-256 mismatch"
                         }
+                        initializationMark?.invoke("gpu_compatibility", "start")
                         val compatibility = CompatibilityList()
                         if (!compatibility.isDelegateSupportedOnThisDevice) {
                             throw ProbeUnsupportedBackendException(
                                 "GPU delegate is unsupported by the strict compatibility list"
                             )
                         }
-                        progress?.mark("gpu_delegate_construction", "start")
+                        initializationMark?.invoke("gpu_compatibility", "succeeded")
+                        mark("gpu_delegate_construction", "start")
                         delegate = GpuDelegate(profile.options())
-                        progress?.mark("gpu_delegate_construction", "finish")
-                        progress?.mark("gpu_delegate_attachment", "start")
+                        mark("gpu_delegate_construction", "finish")
+                        mark("gpu_delegate_attachment", "start")
                         options.addDelegate(delegate)
-                        progress?.mark("gpu_delegate_attachment", "finish")
+                        mark("gpu_delegate_attachment", "finish")
                     }
                 }
                 val buffer = model.readOnlyBuffer.duplicate().apply { rewind() }
-                progress?.mark("interpreter_construction", "start")
+                mark("interpreter_construction", "start")
                 val interpreter = Interpreter(buffer, options)
                 try {
-                    progress?.mark("interpreter_construction", "finish")
-                    progress?.mark("tensor_allocation", "start")
+                    mark("interpreter_construction", "finish")
+                    mark("tensor_allocation", "start")
                     interpreter.allocateTensors()
-                    progress?.mark("tensor_allocation", "finish")
+                    mark("tensor_allocation", "finish")
+                    initializationMark?.invoke("tensor_validation", "start")
                     validateTensors(interpreter, manifest.tensor)
+                    initializationMark?.invoke("tensor_validation", "succeeded")
                     return ProbeRawSession(manifest, interpreter, delegate, progress)
                 } catch (error: Throwable) {
                     try {

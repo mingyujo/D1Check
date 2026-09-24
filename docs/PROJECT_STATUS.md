@@ -1,5 +1,15 @@
 # D1Check 현재 상태
 
+## 2026-09-24 ARRIVAL-INIT-DIAG-01 — 실행 후보 준비 완료
+
+- 시작 `6a63e39`/`feature/arrival-scheduling-20260923` clean.744cd75의 기록 보완과 이후 S26 협업 문서를 보존했다. **별도 초기화1세션의 APK·plan·manifest·실행 CLI·PC 검증 완료 / 실행 승인 대기 / 실기기 미검증.** [계약·명령·판독 기준](ARRIVAL_INITIALIZATION_DIAGNOSTIC_20260924.md).
+- 생성 순서와 CPU/GPU별 worker·Future.get30초·close5초 구조 유지. 생성자에서 명시적 추론 호출 없음 확인, 라이브러리 내부 준비 연산은 미검증. setup_only는 빈warmup/requests와 생성 후return으로 차단. 생성 내부 단계·thread/시각 기록을 추가했으며 sync 비용이 있어 성능 보정에서는 제외한다.
+- 예산은 실행claim1·설치≤1·session≤1·생성≤4·warmup/추론0·retry/대체/추가0. 단일600초 wall에서 작업545초·회수10초·cleanup45초, 앱120초/host125초 timeout 및 기존 gate 유지. 실패/claim 후 재실행 금지, CAL-02 미시도15와 별개다.
+- 후보 plan SHA `bbb2d6428056af88abc7f0a88fda461c01fea045f8ccb9db55a78919cdcbaf78`, APK SHA `9af4f9ba89236702330ea57763066827116112a73353b4bb7ff668bc7631431c`. PC apksigner: 기존 보존 설치본과 같은b253…7565/package/version1. 실제 현재 설치본은 실행 직전 재확인 대상이다. 원 APK/plan/원자료 불변.
+- 관련 Kotlin5·Python15·컴파일/격리 APK assemble·plan dry-run PASS(`6a63e39`+이번 변경; 파일hash/명령/시점은 외부 receipt). 기존 조사/전체 테스트 반복 없음. 실행root/registry 없음, 실제 ADB/설치/앱 실행/추론0. 일반 experiment_ready=false·20null·기존FAIL/부분 결과/미확인 소비량 유지.
+- 외부 root `C:/Users/LG/Documents/D1Check_Arrival_Extension/`: `runtime_initialization_plan_v1`(plan/manifest/PC_CHECK/RUN_AFTER_APPROVAL), `runtime_initialization_apk_v1`, `runtime_initialization_pc_v1`(FINAL_REPORT/FINAL_RECEIPT/GIT_FINAL). 소스·문서만 로컬commit; 이번 push/merge 없음.
+- 다음: (1) 별도1세션 실행 승인, (2) 승인 후 실제 동일A24/서명·환경·미소비 gate 확인과 단일 진단, (3) prefix/OS증거·정상 해제와host 종료를 분리 판독. 생성 성공 한 번을 원인 해결로 선언하거나16세션 보정으로 확대하지 않는다. S26 NPU 개발은 이전 협업 경계대로 병행한다.
+
 ## 2026-09-24 S26-NPU-COLLAB-01 — 최신 협업 지침
 
 - 시작 `feature/arrival-scheduling-20260923` / `744cd75183189c237ddac98611aa2906ae3389b2` / clean. [팀 안내](team/README.md)와 [S26·NPU 채택 범위](DECISIONS.md#s26-npu-20260924)를 현재 지침으로 추가했다. 아래 날짜별 기록은 당시 상태이며 현재 미구현/승인 대기 목록으로 읽지 않는다.

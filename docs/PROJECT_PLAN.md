@@ -1,5 +1,6 @@
 # D1Check 프로젝트 실행계획
 
+- 2026-09-24 A24 후속 `ARRIVAL-INIT-DIAG-01`: [초기화 단일 진단 실행 후보](ARRIVAL_INITIALIZATION_DIAGNOSTIC_20260924.md) 준비 완료.1세션·runtime생성≤4·warmup/추론0·단일600초·retry/대체/추가0, 별도 실행 승인 대기. 기존 CAL-02는 재개하지 않으며 성능 보정·간섭·정책 비교가 아니다.
 - 2026-09-24 협업 결정 `S26-NPU-COLLAB-01` **채택/검증 대기**: S26을 XDEV-02 기기로 선정하고 별도 npu-runner/CompiledModel NPU 개발을 A24와 병행한다. 정확한 기기 identity·모델별 실행 장치/품질은 아직 확인 대상이다. [팀 안내](team/README.md), [채택 범위·판정 기준](DECISIONS.md#s26-npu-20260924)을 먼저 읽는다. CPU/GPU 재현과 NPU 확장은 별도 평가이며 A24 런타임 교체·기존 정책의3자원 지원 완료를 뜻하지 않는다.
 - 2026-09-24 현재 추가 작업: `ARRIVAL-FAILURE-DIAG-PC-01`. CAL-02는 설치 성공 후 첫 세션 기록 누락으로 종료했다. [실패 진단 보완](ARRIVAL_FAILURE_DIAGNOSIS_20260924.md)의 코드·PC 검증을 완료했으며 정지 원인은 미확정이다. 추가 기기 진단은 별도 준비/승인 대상이고 중단16세션 계획은 재개하지 않는다. 아래 개정4.4 목표·기존 평가 FAIL·동결 simulation 의미는 유지한다.
 

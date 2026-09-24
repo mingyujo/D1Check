@@ -15,6 +15,8 @@ D1Check는 한 Android 앱에 비동시에 도착하는 분류·탐지 요청을
 | CAL-02 | 업데이트 설치 성공 후 첫 세션 필수 기록 누락. 시도1/16·완료0·실패1·미시도15, cleanup 완료 | 호출 수 확정 불가: 진단0~4/warmup0~8 미확인. 추정 동결/확인 단계 미실행 |
 | 초기화 실패 진단 | `744cd75`에서 단계별 기록 보존/host 회수 보완, 관련 Kotlin14·Python12 통과 | 실기기 검증·원인 규명. 새 setup_only1회(생성≤4, 추론/warmup0, 상한600초)는 **제안**이며 APK/실행 plan/승인은 아직 없음 |
 
+2026-09-24 후속: [ARRIVAL-INIT-DIAG-01](../ARRIVAL_INITIALIZATION_DIAGNOSTIC_20260924.md)의 새 APK·단일 plan/manifest·CLI와 PC 검증(Kotlin5/Python15)은 준비 완료했다. 위744cd75 당시 미준비 상태의 후속이며 **기기 실행은 계속 미승인·미실행**이다. 생성 순서/worker를 유지하고 warmup/추론을0으로 차단한다.600초 전체 예산과 기존timeout/gate를 적용하며 중단 CAL-02의 재개가 아니다.
+
 ## S26·NPU 협업 결정
 
 - **S26을 XDEV-02 추가 검증 기기로 선정**, 정확한 모델명·SoC·fingerprint는 새 device manifest로 확인한다. 확인 전에는 팀원 보고다.

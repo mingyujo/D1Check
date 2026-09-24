@@ -11,12 +11,14 @@ internal class ProbeTaskAdapter(
     private val manifest: ModelProbeManifest,
     model: VerifiedProbeFile,
     anchorsFile: File?,
+    initializationMark: ((String, String) -> Unit)? = null,
 ) : AutoCloseable {
     private val labels: List<String>
     private val anchors: List<DoubleArray>
     private val session: ProbeRawSession
 
     init {
+        initializationMark?.invoke("labels_anchors", "start")
         // Android ZipFile rejects the TFLite prefix before appended associated files.
         // The host extracts the original associated file; its pinned hash is authoritative.
         val inputRoot = requireNotNull(anchorsFile).canonicalFile.parentFile
@@ -33,7 +35,8 @@ internal class ProbeTaskAdapter(
             require(rows.length() == 19206)
             List(rows.length()) { i -> val row = rows.getJSONArray(i); require(row.length() == 4); DoubleArray(4) { row.getDouble(it) } }
         } else emptyList()
-        session = ProbeRawSession.create(manifest, model)
+        initializationMark?.invoke("labels_anchors", "succeeded")
+        session = ProbeRawSession.create(manifest, model, initializationMark = initializationMark)
     }
 
     fun execute(image: File, imageSha256: String, invocationObserver: ((Long, Long) -> Unit)? = null): Map<String, Any?> {
