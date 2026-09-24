@@ -1,6 +1,6 @@
 # D1Check 프로젝트 실행계획
 
-- 2026-09-24 현재 후속: [ARRIVAL-WARMUP-REQUEST-DIAG-01](ARRIVAL_WARMUP_REQUEST_DIAGNOSTIC_20260924.md) 통합1세션 PC 준비 완료·실행 승인 대기. runtime4+전체warmup8+첫 정규GPU요청1(추론총9·평가0), 기존600초/timeout/gate 유지·재시도0. 성공해도 원인 해결/보정 완료가 아니며 동기 기록 없는 새 보정 계획의 준비 조건만 검토한다. 기존20null·FAIL·부분결과·모든 종료계획 불변.
+- 2026-09-24 현재 후속: [ARRIVAL-WARMUP-REQUEST-DIAG-01](ARRIVAL_WARMUP_REQUEST_DIAGNOSTIC_20260924.md) 승인1회 실행 후 host125초 timeout으로 종료. 설치1성공/세션1실패, runtime반환1·마지막GPU분류Interpreter start, warmup/정규호출수미확인. 총311.344/600초·회수/host cleanup완료·retry0. 보정준비완료가 아니며 다음은PC의lifecycle/Future/watchdog무기록조건검토다. 소비계획재실행금지, 기존20null·FAIL·부분결과불변.
 
 - 2026-09-24 `ARRIVAL-WARMUP-DIAG-01`: [첫 CPU warmup 진단 결과](ARRIVAL_WARMUP_DIAGNOSTIC_20260924.md) 승인 실행 완료. 설치1·세션1·runtime4반환·첫CPU warmup1/명시적inference총1·평가요청0, 181.0/600초·retry/대체/추가0·회수/cleanup 완료. CAL-02 원인미확정·동기 자료 보정/정책평가 제외·20null/experiment_ready=false 유지. 계획 종료/재실행 금지. 다음은 PC 미관측 warmup/요청 경계 정리이며 후속 실측은 별도 계획·승인 대상.
 - 2026-09-24 A24 후속 `ARRIVAL-INIT-DIAG-01`: [초기화 단일 진단 결과](ARRIVAL_INITIALIZATION_DIAGNOSTIC_20260924.md) 승인 실행 완료. 설치1·세션1·runtime4반환·warmup/명시적추론0·209.047초/600초·retry/대체/추가0, 회수와cleanup 완료. CAL-02 실패는 미재현·원인 미확정이며 보정 완료가 아니다. 소비 계획은 종료/재실행 금지, 다음은 PC 단계 경계·잔여 가설 정리다. CAL-02 재개·후속 실측 자동 실행 없음.

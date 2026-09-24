@@ -19,7 +19,7 @@ D1Check는 한 Android 앱에 비동시에 도착하는 분류·탐지 요청을
 
 [첫 CPU warmup 전이 진단](../ARRIVAL_WARMUP_DIAGNOSTIC_20260924.md)도 승인 후 **실행 완료**했다. 설치1·세션1·runtime4반환·첫 CPU warmup1(명시적 추론총1에 포함)·평가요청0·181.0초/600초·회수/cleanup 완료, 재시도0이다. CAL-02 원인은 미확정이며 나머지 warmup/정규요청과 성능 보정은 미완료다. 20null/experiment_ready=false 및 기존 FAIL을 유지한다. 다음은 PC에서 미관측 경계를 정리하는 작업이고, 종료한 진단 재실행·후속 실측 자동 실행은 금지한다.
 
-현재 후속은 [전체 warmup→정규 요청 통합 진단 준비](../ARRIVAL_WARMUP_REQUEST_DIAGNOSTIC_20260924.md)다. PC 구현/검증/APK/계획은 완료했고 **새1세션 실행 승인은 대기**한다. 생성4·warmup8·첫GPU정규요청1(총추론9),600초/재시도0 후보이며 기기 실행은 하지 않았다. 성공 시에도 시간 보정값은 별도 수집·동결·확인이 필요하다.
+[통합 warmup→정규 요청 진단](../ARRIVAL_WARMUP_REQUEST_DIAGNOSTIC_20260924.md)은 승인 후1회 실행했으나 host125초 timeout으로 **중단**됐다. 설치1성공/세션1실패·runtime반환1, 마지막기록은GPU분류 Interpreter 생성시작이다. warmup0~8·정규0~1·총추론0~9는미확인, 총311.344초/600초·원본회수/host cleanup완료·retry0이다. 보정준비완료나CAL-02원인해결이아니다. 다음은PC에서앱대기/watchdog/lifecycle무기록조건검토이며, 소비계획재실행·추가실측은자동진행하지않는다.
 
 ## S26·NPU 협업 결정
 

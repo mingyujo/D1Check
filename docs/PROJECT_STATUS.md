@@ -1,5 +1,15 @@
 # D1Check 현재 상태
 
+## 2026-09-24 ARRIVAL-WARMUP-REQUEST-DIAG-01 — 승인 실행 중단·재시도 금지
+
+- 시작 `adb7c01ca9ee34156952223b2dbfa1ec79d54274` / `feature/arrival-scheduling-20260923` / clean. 미소비·계획/APK/source·동일A24/서명·환경gate 후 script1회 실행. [실패 판독·다음 행동](ARRIVAL_WARMUP_REQUEST_DIAGNOSTIC_20260924.md). 아래 준비/미승인 상태는 당시 이력이다.
+- **업데이트설치1성공·세션1시도/완료0/기술적실패1/미시도0.** host poll125초 소진, 전체311.344/600초. runtime시작의도2/반환1(실제범위1~4); warmup0~8·정규0~1·총추론0~9 미확인. 기록0을실제0으로대체하지 않는다. 평가0/retry/대체/추가0. no_resume/closed 유지.
+- 마지막seq25: classification_GPU interpreter_construction/start, GPU Java106. CPU분류반환확인, 이후생성/모든warmup/정규요청/앱cleanup미관측. 앱Future30·watchdog120종료기록도없고회수시PID25426생존. native/VM/lifecycle/기록정지 구분에필요한stack은없으며 GPU/CAL-02동일원인확정불가.
+- journal유효26/256·잘린suffix/overflow증거없음; 회수2파일크기/hash일치·OS증거5명령확보. 앱산출물불완전이며회수오류는없음. host cleanup·프로세스부재/thermal0확인, 앱정상close와구분. 정상계측/보정준비완료아님.
+- 외부 `C:/Users/LG/Documents/D1Check_Arrival_Extension/warmup_request_run_v1/`: 원본receipt/journal/OS증거, FINAL_REPORT·POST_RUN_VERIFICATION·Git최종상태. 이번소스변경/빌드/기존PC시험반복없음. 기존FAIL/부분결과/종료계획/20null/experiment_ready=false/과거RawAdapter대응미확인보존.
+- 다음: (1) PC에서lifecycle·Future30·watchdog120무기록조건검토, (2) 구체적위험과수집가능성이확인될때만별도최소진단계획검토. 같은진단/보정실측자동재개금지. 관련문서만commit·현재브랜치정상push.
+
+
 ## 2026-09-24 ARRIVAL-WARMUP-REQUEST-DIAG-01 — 통합 진단 PC 준비 완료
 
 - 시작 `3130f0199f99c319ee80e30e5b2307f477302d42` / `feature/arrival-scheduling-20260923` / clean. [통합 warmup→정규요청 계약](ARRIVAL_WARMUP_REQUEST_DIAGNOSTIC_20260924.md). CAL-02 원인 미확정, 과거 ProbeRawAdapter hash 대응 미확인 유지. 아래 진단 완료/승인 이력과 새 후보를 구분한다.

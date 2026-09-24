@@ -1,5 +1,31 @@
 # ARRIVAL-WARMUP-REQUEST-DIAG-01 — 전체 warmup에서 정규 요청까지의 단일 진단
 
+## 2026-09-24 승인 실행 종료 — host timeout, 재시도 금지
+
+실행 HEAD `adb7c01ca9ee34156952223b2dbfa1ec79d54274`, 작업 브랜치 clean. 승인된 스크립트를1회 실행했다. **설치1성공·세션1시도/완료0/기술적실패1/미시도0**, host completion poll125초 소진으로 종료했다. 총311.344/600초, 증거 회수와host cleanup/프로세스 부재 확인 완료. 앱 정상 cleanup은 미확인이다. retry/대체/추가0, 종료registry/no_resume 유지. 아래 미승인 후보 문구는 준비 당시 이력이며 현재 계획은 소비·종료됐다.
+
+| 항목 | 이번 직접 확인 | 미확정/한계 |
+|---|---|---|
+| runtime | CPU분류 start/return, GPU분류 start·delegate 준비 반환 | GPU분류 interpreter 반환 및 탐지CPU/GPU 미관측. 시작의도2/반환1, receipt 실제 생성 범위1~4 유지 |
+| 마지막 진행 | seq25 classification_GPU/interpreter_construction/start, Java thread106 | 생성자 내부 또는 반환후 기록·VM/실행정지 구분 불가 |
+| warmup8 | 제출/worker/API/출력/반환 기록0 | 실제 호출0~8 미확인, 0회로 확정하지 않음 |
+| 정규1·총추론9 | 요청 도착/배정/실행/output_ready/persist/event/lane 기록0 | 실제 정규0~1·총추론0~9 미확인. 평가요청0 |
+| journal | 유효prefix26/256, sequence/identity/시각 정상, 잘린suffix 없음 | overflow 증거 없음. 마지막 이후 누락/기록정지는 배제 불가 |
+| 회수/종료 | manifest·journal2파일 hash일치, OS증거5명령 회수, host cleanup완료 | 앱 timeout/cleanup 기록 없음. 회수 오류와 앱 산출물 불완전을 구분 |
+
+동일A24/fingerprint·설치전후인증서/후보APK·환경gate 통과. launch전 battery70%·29.4°C·충전분리·thermal0, 두 생성전memory admission 통과. 현재PID25426은 증거회수 시 살아 있었고 thread목록에는 main/setup/CPU/GPU가 S 상태로 남았다. stack/lock 정보는 없다. crash 버퍼의9월19일 다른PID 오류와 직전진단 exit_info를 이번crash로 오인하지 않는다.
+
+소스에는 setup Future30초와 main watchdog120초가 있으나 해당 종료/실패 기록도 관측되지 않았다. **CAL-02와 동일원인 또는 GPU 결함으로 확정하지 않는다.** 이번 자료는 처음CPU생성 반환 뒤 GPU Interpreter 구성/반환기록 부근으로 마지막 확인 구간을 좁힌 증거다. 기존 두 성공도 간헐적 문제를 배제하지 않는다.
+
+urgent 응답/이후저장/lane재사용가능 상태 모두 이번에는 미검증이며, 후속요청의 실제 lane 재사용은 원래1요청 설계로도 검증할 수 없다. 동기진단값은 보정에 쓰지 않고20null/experiment_ready=false·기존FAIL/부분결과·모든 종료계획을 유지한다. 과거RawAdapter hash대응 미확인도 그대로다.
+
+외부 PC 전용 `warmup_request_run_v1/`에 원본 `FINAL_RECEIPT.json`, `partial/`, `pre_cleanup_evidence/`, 새 `FINAL_REPORT.md`·`POST_RUN_VERIFICATION.json`을 보존했다. 마지막journal과host오류, 단계별8warmup ID/미확인범위는 보고서에 있다. 이 실행의 script/plan 재실행은 금지한다.
+
+다음 최소 행동은 **PC에서 lifecycle·Future30·watchdog120이 무기록으로 남을 조건을 함께 검토하는 것**이다. 필요성이 구체화될 때만 별도시간예산 내 thread stack/실행상태 수집 계획을 검토한다. 같은진단 반복이나보정16세션 자동재개는 하지 않는다. 이번에는 결과판독·문서만 변경했고 코드수정/빌드/기존PC테스트 반복은 없다.
+
+## 이하: 준비 당시 설계·PC 검증 이력
+
+
 2026-09-24. 시작 `3130f0199f99c319ee80e30e5b2307f477302d42`, `feature/arrival-scheduling-20260923`, clean. **PC 준비 작업이며 기기 실행은 별도 승인 전 금지**다. 초기화/첫 CPU warmup의 성공은 CAL-02 원인 해결이 아니다. [첫 warmup 결과와 과거 코드 차이](ARRIVAL_WARMUP_DIAGNOSTIC_20260924.md), [초기화 성공](ARRIVAL_INITIALIZATION_DIAGNOSTIC_20260924.md), [CAL-02 실패](ARRIVAL_TIMING_CAL02_RESULTS_20260924.md)를 보존한다.
 
 ## 확인한 순서와 이번 최소 범위

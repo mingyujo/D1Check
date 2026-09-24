@@ -487,3 +487,7 @@
 - 구체적 공백인 전체 warmup의 제출/내부 단계, 정규 요청의 durable 저장/callback 기록을 새scope에서 보완한다. journal 정상 예상약191개에 근거해 새scope만256, 기존scope128 유지. 기존 worker_release 의미를 물리적 lane 해제로 바꾸지 않고 event저장과 scheduler AVAILABLE을 별도 기록한다. 환경/timeout 완화나 간섭 정책은 추가하지 않는다.
 - 동기 기록의 성능자료 제외,20null/experiment_ready=false,과거FAIL/부분결과/소비registry와RawAdapter 대응미확인 유지. 성공은 보정 준비로 넘어갈 조건이며 과거원인치료·8조건 보정·반복안정성의 검증이 아니다. 후속 조건은 새 보정 개발/확인 계획에서 함께 다루고 구체적 장애 없이 작은 진단을 계속 증설하지 않는다.
 - PC Kotlin19/Python24·컴파일/서명/계획검사 통과와 실기기미검증을 구분한다. [근거·파일·판독·남은검증](ARRIVAL_WARMUP_REQUEST_DIAGNOSTIC_20260924.md).
+
+### 2026-09-24 실행 결과 반영
+
+위 제안은 이후 사용자가 같은예산으로 승인했고1회실행후중단됐다. 설치1성공/세션1실패·311.344초, CPU분류runtime1반환과GPU분류Interpreter시작만확인, 이후호출수미확인이다. 회수·host cleanup완료, 앱정상close미확인. 같은계획재시도는하지않는다. 이번결과로보정준비/과거원인해결을선언하지않고PC에서Future30/main watchdog120의무기록조건을검토한다. 상세는 [실행결과](ARRIVAL_WARMUP_REQUEST_DIAGNOSTIC_20260924.md)와외부원본을따른다. 새실측예산이나timeout완화결정은없다.
