@@ -1,5 +1,14 @@
 # D1Check 현재 상태
 
+## 2026-09-24 ARRIVAL-WARMUP-DIAG-01 — 승인 실행 완료
+
+- 시작 `38556fe53aa315b002af309885ceabe46ccaf2a9` / `feature/arrival-scheduling-20260923` / clean. 사용자 승인과 미소비·source/APK/plan/manifest·동일 A24/서명·환경 gate 확인 후 준비된 script를 1회 실행했다. [결과와 한계](ARRIVAL_WARMUP_DIAGNOSTIC_20260924.md). 아래 PC 준비/승인 대기는 당시 이력이다.
+- **업데이트 설치1 성공·세션1 완료/실패0/미시도0·runtime4 시작/4반환·첫 classification_CPU warmup1 반환·명시적 inference1(그 warmup에 포함)·평가요청0·retry/대체/추가0. 총181.0/600초.** 입력 준비→host API→출력 처리→반환 및 앱/host cleanup 완료. 종료 registry/no_resume 유지, 재실행 금지.
+- journal80개·회수5파일 크기/hash·단계/시각/identity 검증, OS증거5명령 회수 완료. 마지막 seq79는 setup Java thread98의 cleanup succeeded. 이번 PID23909의 crash/timeout 증거 없음; crash 버퍼의9월19일 다른PID 오류와 구분했다. CAL-02 원인은 여전히 미확정이며 나머지7warmup/정규요청은 이번에 미관측이다.
+- 외부 PC 전용 `C:/Users/LG/Documents/D1Check_Arrival_Extension/first_warmup_run_v1/`: 원본 `FINAL_RECEIPT.json`, `partial/`, OS증거와 새 `FINAL_REPORT.md`, `POST_RUN_VERIFICATION.json`. 현재 후보 source103개 일치와 과거 ProbeRawAdapter hash 대응 미확인을 구분했다. 동기 진단시간은 보정에 쓰지 않는다.
+- 기존 FAIL·fixed-split 부분결과/분모·종료 CAL 계획·20null/experiment_ready=false 보존. 이번 검증(2026-09-24, 시작 HEAD+문서4개 변경): diff check·상대 링크77개/추적 대상·원본26파일 불변 확인 PASS. 소스 변경/빌드/기존 PC 테스트 반복 없음. 문서만 commit/push하며 최종 Git 상태는 종료 보고와 외부 `GIT_FINAL.json`에 기록한다.
+- 다음: (1) PC에서 두 번째 CPU warmup/이후 GPU warmup 등 미관측 경계를 정리, (2) 필요할 때만 별도 최소 진단 계획·승인. 후속 실측과 중단 계획 재개는 자동 실행하지 않는다.
+
 ## 2026-09-24 ARRIVAL-WARMUP-DIAG-01 — PC 비교·후속 준비
 
 - 시작 `67e6b10d4a8ae7f2b67ec54012311b42dac2a131` / feature/arrival-scheduling-20260923 / clean. [실행 경로 비교·후속 계약](ARRIVAL_WARMUP_DIAGNOSTIC_20260924.md). CAL-02 정지 원인은 미확정이며 추측성 runtime 수정 없음.

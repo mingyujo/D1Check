@@ -1,5 +1,30 @@
 # ARRIVAL-WARMUP-DIAG-01 — 생성 완료에서 첫 warmup으로의 전이 진단
 
+## 2026-09-24 승인 실행 결과 — 완료, 과거 원인 미확정
+
+실행 HEAD `38556fe53aa315b002af309885ceabe46ccaf2a9`, 작업 브랜치 clean에서 시작했다. 아래 PC 비교·미승인 후보 문구는 준비 당시 이력이며, 현재 이 계획은 **1회 소비 후 종료/no_resume**다. 실행전 mandatory identity 검사와 동일 A24·설치본 서명·환경 gate를 통과했고 준비된 script를 한 번 실행했다.
+
+| 항목 | 실제 결과 |
+|---|---|
+| 설치/세션 | 업데이트 설치1 성공, 세션1 완료·실패0·미시도0 |
+| runtime | classification_CPU → classification_GPU → detection_CPU → detection_GPU, 각각 start/return; 4/4 |
+| 첫 warmup | classification_CPU1회, CPU Java thread106. 제출 직전 의도→worker 진입→입력 준비→host API 반환→output readback/decode→호출 반환 모두 기록 |
+| 추론/평가 | 명시적 추론1은 위 warmup에 포함. 평가요청0, retry/대체/추가0 |
+| 시간/종료 | host 전체181.0/600초, 기존545/10/45·wait30·watchdog120·host125 유지. 앱 cleanup과 host 종료/프로세스 부재 확인 완료 |
+| 기록 | journal80개, partial5파일 크기/hash 일치, OS증거5명령 회수. 마지막 seq79 cleanup succeeded, setup Java thread98 |
+
+현재 PID23909에서 crash/timeout/취소 증거는 없다. crash 버퍼 FATAL은9월19일 PID27217, 최신 exit_info는 직전 PID22563의 force-stop이며 이번 실패가 아니다. 회수 실패와 앱 실패도 관측되지 않았다. warmup_trace=[]은 특수 경로의 기록 방식이며 warmup0을 뜻하지 않는다. 실제 호출1은 journal start/return으로 확인했다.
+
+Android 같은 monotonic clock의 session→cleanup journal 간격은3.425916308초이고 host181초와 다른 경계다. 동기 기록을 포함한 host_inference journal 간격37.068692ms도 공식 inference timer/성능 보정값 또는 GPU kernel 시간이 아니다. 과거 실행과 성능 개선률을 계산하지 않는다. GPU runtime 생성은 GPU 추론 검증이 아니며 출력 처리 반환은 품질 PASS가 아니다.
+
+**CAL-02 원인 해결은 미입증**이다. 간헐적 초기화 문제를 기각하지 않으며 나머지7warmup/정규요청·dispatch/persist는 이번에 실행하지 않았다. 과거 ProbeRawAdapter Git blob↔working-tree hash 대응 미확인은 유지한다. 이번 후보 source103개 일치는 별도의 현재 identity 검증이다. 기존 FAIL·부분결과·종료계획·20null/experiment_ready=false 불변.
+
+외부 root 아래 `first_warmup_run_v1/FINAL_REPORT.md`에 단계별 sequence/thread/시간·gate·판독을, `POST_RUN_VERIFICATION.json`에 검증 대상/hash를 기록했다. 원본은 같은 root의 `FINAL_RECEIPT.json`, `partial/`, `pre_cleanup_evidence/`와 registry closed에 있다. 로컬 외부 자료는 GitHub에 포함하지 않는다. 실행전 check/실행 script는 아래 명령과 같으며 **종료 계획 재실행용으로 사용하면 안 된다**.
+
+다음 최소 행동은 PC에서 CAL-02의 두 번째 CPU warmup과 이후 GPU warmup의 미관측 경계를 정리하고, 필요한 경우 별도 최소 진단을 설계하는 것이다. 후속 기기 실행과16세션 보정 재개는 이번 결과에서 자동 승인되지 않는다.
+
+## 이하: PC 준비 당시 비교·동결 계약
+
 2026-09-24. 시작 `67e6b10d4a8ae7f2b67ec54012311b42dac2a131`, feature/arrival-scheduling-20260923, clean. **PC 비교·후속 실행 준비이며 실기기 실행은 미승인·미실행.** CAL-02 정지 원인 수정 완료가 아니다. [이전 성공 결과](ARRIVAL_INITIALIZATION_DIAGNOSTIC_20260924.md), [CAL-02 실패](ARRIVAL_TIMING_CAL02_RESULTS_20260924.md), [기록 보완](ARRIVAL_FAILURE_DIAGNOSIS_20260924.md)을 보존한다.
 
 ## 실행 버전과 직접 증거

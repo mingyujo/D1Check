@@ -17,7 +17,7 @@ D1Check는 한 Android 앱에 비동시에 도착하는 분류·탐지 요청을
 
 2026-09-24 후속: [ARRIVAL-INIT-DIAG-01](../ARRIVAL_INITIALIZATION_DIAGNOSTIC_20260924.md)은 별도 승인으로1회 실행·종료했다. 기존 생성 순서/worker와timeout/gate를 유지했고 journal68개와원본을 보존했다. **다음은 PC에서 단계 경계·잔여 가설 정리**이며 추가 실측은 별도 계획/승인 대상이다. 중단 CAL-02 재개나20개 추정값 보정은 하지 않았다.
 
-현재 PC 후속은 [첫CPU warmup 전이 진단 준비](../ARRIVAL_WARMUP_DIAGNOSTIC_20260924.md)다. 새1세션·warmup1회(명시적inference총1 포함)·평가요청0 후보이며 **실행은 별도 승인 대기**다. 초기화 성공과 CAL-02 원인미확정은 유지한다.
+[첫 CPU warmup 전이 진단](../ARRIVAL_WARMUP_DIAGNOSTIC_20260924.md)도 승인 후 **실행 완료**했다. 설치1·세션1·runtime4반환·첫 CPU warmup1(명시적 추론총1에 포함)·평가요청0·181.0초/600초·회수/cleanup 완료, 재시도0이다. CAL-02 원인은 미확정이며 나머지 warmup/정규요청과 성능 보정은 미완료다. 20null/experiment_ready=false 및 기존 FAIL을 유지한다. 다음은 PC에서 미관측 경계를 정리하는 작업이고, 종료한 진단 재실행·후속 실측 자동 실행은 금지한다.
 
 ## S26·NPU 협업 결정
 
