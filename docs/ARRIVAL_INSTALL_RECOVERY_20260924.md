@@ -1,5 +1,35 @@
 # 설치 증거 보존·ARRIVAL-COLLECT-02 준비
 
+## 2026-09-25 RECOVERY-02 / COLLECT-03 종료 결과
+
+새 예산 승인 아래 아래의v2를1회 실행했다. 후보전송1·설치1 성공, 설치본SHA `d8db6963…34bc`·서명/identity·복구cleanup 확인. 복구79.453초다. 이 설치 계보 누적은 COLLECT-01 timeout1 + RECOVERY-01 설치0 + 이번성공1 =2시도이며 이전 CAL/진단 설치는 별도 이력으로 보존한다.
+
+개발6/6·진단24/warmup48을 적격 수집하고 기술통계/원자료hash를 동결했다(`e4cb73aa1045f4b6ff5a17aa500862799c6f55bb07de5ab36e2fba580b683023`). 확인은3세션/진단12/warmup24 완료 뒤4번째 `shadow_cpu_sparse`의 labels staging에서 host ADB daemon `127.0.0.1:5037` 연결 실패(Windows10060)로 중단됐다. 이 시도는 launch marker 이전이며 코드상 앱 미실행이다. daemon의 내부 원인, 개발자 옵션 재활성화 또는 과거 GPU/CAL-02 실패와의 관계는 미확인이다.
+
+**전체10시도/9완료/실행전기술실패1/미시도2, 진단36/48·warmup72/96·총명시적108/144, retry/대체/추가0**. 실제 arrived36/36성공, 실패/거절/만료/late0; 미도착12를 성공으로 처리하지 않는다. 정상앱/hostcleanup9/9와 실패시도hostcleanup/프로세스부재, 부분회수output_missing·프로세스/crash/exit 증거를 확인했다. 최종script exit1, 종료후ADB0. workflow1675.625초, 실행직전marker→cleanup1677.534초(27.959분)에 냉각20분이 포함된다. 설정변경0이다.
+
+현재 gate는 재조회했다. 시작58%/33.0°C/비충전, 같은 무선A24/fingerprint/signer·화면설정 확인; 실행9세션 환경393행 thermal0/low_memory=false/admission기록admit, 화면52표본통과. 기기/앱관측을 과거 수치나 미실행분에 전용하지 않는다.
+
+조건당독립세션1, task/backend/priority당상관요청2다. 완료조건의 판단계산중앙값0.804~1.017ms/메모리기록0.108~0.190ms/판단→dispatch3.126~4.358ms. 개발 병행−직렬의 S→O는 탐지GPU+76.520ms/분류CPU−0.152ms, 실제hostAPI overlap2쌍이다. 순서/큐/시작차이와 분리된 인과간섭 효과가 아니다. 완료된 확인3조건의 오차를 전부 보존했으며 탐지GPU S→O는 단독+38.632ms/큐직렬+79.972ms다. **전체확인미완료·active/병행확인미실행·정확도허용폭없음**, 재튜닝/정책PASS/PC새값연결/병행차단해제는 하지 않는다.
+
+원본/동결/선행증거hash와 PC분석 재현 일치. 외부 `collection_recovery_execution_v2/FINAL_REPORT.md`, FINAL_RECEIPT.json, ANALYSIS.json, REPRODUCE_ANALYSIS.py에 전체분모·상세대조·시간과한계를 보존한다. 원본 `install_recovery_run_v2`, `integrated_collection_run_v3`, 동결/종료 `collection_recovery_workflow_v2`, registry `ARRIVAL-COLLECT-03`. **소비·종료/재개금지; 아래 Run명령은 실행 당시 기록이며 재실행하지 않는다.** 다음은 PC daemon/staging 증거 점검이며 자동 추가계획·실측은 없다. 기존40값/20null/FAIL/부분결과/experiment_ready=false 유지.
+
+## 2026-09-25 새 승인 실행 준비 — RECOVERY-02 / COLLECT-03
+
+사용자가 v1과 별개의 새 실행을 명시적으로 승인했다. v1의 배터리50%<55% 실패, 복구시도1/후보전송0/설치0/세션0 및 `stopped_no_resume`를 그대로 보존한다. 개발자 옵션 재활성화는 사용자 보고이며 이전 실패 원인으로 단정하지 않는다. 직전 연결 점검값은 현재 gate로 재사용하지 않는다.
+
+- 새 `collection_recovery_plan_v2`는 RECOVERY-02/COLLECT-03, 새 UUID12개, `install_recovery_run_v2`, `collection_recovery_workflow_v2`, `integrated_collection_run_v3`, registry `ARRIVAL-COLLECT-03`를 사용한다. v1 계획/receipt/stopped/수집계획4파일 hash를 연결하고 변경 시 거부한다. v1 경로를 초기화하지 않는다.
+- 새 예산은 전송1/설치1·600초 + 개발6→동결→확인6/진단48/warmup96/총명시적144·5490초, 합6090초. 냉각24분·조회·회수·cleanup 포함, 수집설치0, 이번 계획 내 retry/대체/추가0. 다시 실패해도 자동 새 계획 발행 없음.
+- APK `d8db6963…34bc`, 프로젝트 서명, 모델/입력·조건순서·seed·분석/동결 규칙·환경 gate·Future30/watchdog120/poll125/설치120초를 유지한다. 변경은 host namespace/종료 증거 연결/manifest identity 검사뿐이며 APK 재빌드 없음.
+- recovery plan SHA `5774734dc67b5ff5c7da588f497da9c87dbf5e5f533265f12ab874025f6fc06f`, collection plan SHA `e05de4c88024b82fc23783b806541a0cf3fe1a7a84f6b46424d0017bd8509610`. PC14건(기존 관련12+새 경로/종료 증거2), dry-run 및 source/APK/서명/manifest 일치 확인. PC 확인에서 ADB0. 외부 `install_recovery_pc_v2`에 명령·결과·source snapshot 보존.
+- 모든 기기 명령은 명시한 무선 serial에 한정한다. 실제 실행 시 서명/설치본/동일기기·배터리·thermal·화면·앱 정지 gate를 새로 읽고, 세션 시작 전 host memory 기록 및 앱 내부 admission을 적용한다. 이전58%/33.9°C 관측은 재사용하지 않는다. 시스템 설정/연결방식 변경 없음.
+
+```powershell
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/collection_recovery_plan_v2/RUN_AFTER_APPROVAL.ps1' -Action Run -Approved -Serial 'adb-R59W802RW5F-yZ5QCN._adb-tls-connect._tcp'
+```
+
+준비 당시 미소비 확인. 실행 결과는 새 receipt/workflow를 우선한다. 수집 적격성·확인 기술통계만으로 정책 성능 PASS/정확도 허용폭을 만들지 않으며 experiment_ready=false와 기존40값/20null을 보존한다.
+
 ## 2026-09-24 승인 실행 결과 — 배터리 gate 중단
 
 `bceec84`/clean에서 미소비·해시·예산 확인 후 승인 스크립트를1회 호출했다. **배터리50%가 시작 기준55%보다 낮아 복구 preflight에서 종료됐다.** 복구시도1/verified0, 후보push0·install0, 수집phase claim0·개발0/6·확인0/6·진단0/48·warmup0/96·명시적추론0/144, retry/대체/추가0. 총12세션 미시도이며 실패세션1로 계산하지 않는다. 정확한APK 동일성에 따른 설치생략이 아니라 gate실패로 미진입한 것이다.

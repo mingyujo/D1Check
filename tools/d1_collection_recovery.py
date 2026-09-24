@@ -18,58 +18,83 @@ COLLECTION='ARRIVAL-COLLECT-02'
 TOTAL=6090  # recovery600 + development2745 + confirmation2745; PC freeze also inside wall.
 
 
-def prepare(old_path, output):
+def prepare(old_path, output, revision=1, prior_recovery=None):
     old_path=Path(old_path);output=Path(output)
     c.v.require(not output.exists(),'new output required')
+    c.v.require(revision in (1,2), 'only explicitly supported recovery revisions')
+    recovery_id,collection_id=RECOVERY,COLLECTION
+    lineage=None
+    if revision==2:
+        c.v.require(prior_recovery is not None,'closed predecessor required')
+        prior_path=Path(prior_recovery);prior=c.p.read(prior_path)
+        c.v.require(prior['experiment_id']==RECOVERY,'wrong predecessor')
+        receipt=Path(prior['output_root'])/'receipt.json'
+        stopped=Path(prior['workflow_root'])/'stopped.json'
+        c.v.require(c.p.read(receipt)['status']=='failed' and c.p.read(stopped)['status']=='stopped_no_resume','predecessor not closed')
+        lineage={str(f.resolve()):c.p.digest(f) for f in (prior_path,receipt,stopped,Path(prior['collection_plan']))}
+        recovery_id,collection_id='ARRIVAL-INSTALL-RECOVERY-02','ARRIVAL-COLLECT-03'
     old=c.p.read(old_path)
     c.v.require(old['experiment_id']==c.EXPERIMENT,'wrong parent')
     c.v.require(c.cal.apk_sources(c.p.read(old['build_receipt'])['source_code'])==c.cal.apk_sources(c.identity()),'APK source changed; rebuild separately')
     c.v.require(c.p.digest(old['apk_path'])==old['apk_sha256'],'APK bytes changed')
     output.mkdir(parents=True);(output/'manifests').mkdir()
     plan=copy.deepcopy(old)
-    plan.update(experiment_id=COLLECTION,source_code=c.identity(),install_cap=0,
+    plan.update(experiment_id=collection_id,source_code=c.identity(),install_cap=0,
         installation_contract='recovery-verified-only-v1',supersedes_plan_sha256=c.p.digest(old_path),
-        registry=str(output.parent/'collection_execution_registry'/COLLECTION),
-        output_root=str(output.parent/'integrated_collection_run_v2'),
-        workflow_root=str(output.parent/'collection_recovery_workflow_v1'),
-        recovery_receipt=str(output.parent/'install_recovery_run_v1/receipt.json'))
+        registry=str(output.parent/'collection_execution_registry'/collection_id),
+        output_root=str(output.parent/f'integrated_collection_run_v{revision+1}'),
+        workflow_root=str(output.parent/f'collection_recovery_workflow_v{revision}'),
+        recovery_receipt=str(output.parent/f'install_recovery_run_v{revision}/receipt.json'))
     for e in plan['entries']:
         m=c.p.read(old_path.parent/e['manifest'])
-        sid=str(uuid.uuid5(uuid.NAMESPACE_URL,f"{COLLECTION}/{plan['seed']}/{e['phase']}/{e['condition']}"))
-        m.update(session_id=sid,experiment_id=COLLECTION)
+        sid=str(uuid.uuid5(uuid.NAMESPACE_URL,f"{collection_id}/{plan['seed']}/{e['phase']}/{e['condition']}"))
+        m.update(session_id=sid,experiment_id=collection_id)
         for spec in m['models'].values():spec['identity']['session_id']=sid
         for key in ('requests','warmup_requests'):
             for i,q in enumerate(m[key]):q['request_id']=str(uuid.uuid5(uuid.UUID(sid),f'{key}/{i}'))
         f=output/'manifests'/f'{sid}.json';c.cal.write_new(f,m)
         e.update(session_id=sid,manifest='manifests/'+f.name,manifest_sha256=c.p.digest(f))
     cf=output/'collection_plan.json';c.cal.write_new(cf,plan)
-    recovery=dict(protocol='collection-install-recovery-v1',experiment_id=RECOVERY,status='PREPARED_NOT_APPROVED',
+    recovery=dict(protocol='collection-install-recovery-v1',experiment_id=recovery_id,status='PREPARED_NOT_APPROVED',
         collection_plan=str(cf.resolve()),collection_plan_sha256=c.p.digest(cf),
         parent_terminated_plan=str(old_path.resolve()),parent_terminated_plan_sha256=c.p.digest(old_path),
-        output_root=str(output.parent/'install_recovery_run_v1'),
-        workflow_root=str(output.parent/'collection_recovery_workflow_v1'),source_code=c.identity(),
+        output_root=str(output.parent/f'install_recovery_run_v{revision}'),
+        workflow_root=str(output.parent/f'collection_recovery_workflow_v{revision}'),source_code=c.identity(),
         recovery_seconds=600,total_seconds=TOTAL,install_cap=1,transfer_cap=1,retry_cap=0,replacement_cap=0,additional_cap=0,
         session_cap=12,request_cap=48,warmup_cap=96,explicit_inference_cap=144,
         recovery_budgets=dict(preflight=200,transfer_and_remote_hash=150,package_install_and_client_reap=125,
                               post_identity=60,cleanup=45,administrative_reserve=20),
         method='adb push; remote sha256; adb shell pm install -r; installed APK hash; no streaming retry',
         skip_rule='only exact candidate APK/package/version/signer proven by preflight plus post SHA gate',
-        remote_apk=f'/data/local/tmp/d1check-{RECOVERY.lower()}/candidate.apk',
+        remote_apk=f'/data/local/tmp/d1check-{recovery_id.lower()}/candidate.apk',
         experiment_ready=False)
+    if lineage:recovery['closed_predecessor_evidence']=lineage
     c.cal.write_new(output/'recovery_plan.json',recovery)
     return check(output/'recovery_plan.json')
 
 
 def check(path):
     r=c.p.read(path)
-    c.v.require(r['protocol']=='collection-install-recovery-v1' and r['experiment_id']==RECOVERY,'namespace')
+    pairs={RECOVERY:COLLECTION,'ARRIVAL-INSTALL-RECOVERY-02':'ARRIVAL-COLLECT-03'}
+    c.v.require(r['protocol']=='collection-install-recovery-v1' and r['experiment_id'] in pairs,'namespace')
+    if r['experiment_id']=='ARRIVAL-INSTALL-RECOVERY-02':
+        c.v.require(len(r.get('closed_predecessor_evidence',{}))==4,'predecessor evidence missing')
+        for name,sha in r['closed_predecessor_evidence'].items():c.v.require(c.p.digest(name)==sha,'predecessor evidence changed')
     c.v.require(r['source_code']==c.identity() and c.p.digest(r['collection_plan'])==r['collection_plan_sha256'],'identity')
     c.v.require((r['recovery_seconds'],r['total_seconds'],r['install_cap'],r['transfer_cap'],r['session_cap'],r['request_cap'],r['warmup_cap'],r['explicit_inference_cap'])==(600,TOTAL,1,1,12,48,96,144),'budget')
     c.v.require(all(r[k]==0 for k in ('retry_cap','replacement_cap','additional_cap')),'no retries')
     c.v.require(r['recovery_budgets']==dict(preflight=200,transfer_and_remote_hash=150,package_install_and_client_reap=125,post_identity=60,cleanup=45,administrative_reserve=20),'time allocation')
-    c.v.require(r['remote_apk']==f'/data/local/tmp/d1check-{RECOVERY.lower()}/candidate.apk','remote scope')
+    c.v.require(r['remote_apk']==f"/data/local/tmp/d1check-{r['experiment_id'].lower()}/candidate.apk",'remote scope')
     pc=c.check(r['collection_plan']);plan=c.p.read(r['collection_plan'])
-    c.v.require(plan['experiment_id']==COLLECTION and plan['recovery_receipt']==str(Path(r['output_root'])/'receipt.json'),'collection binding')
+    c.v.require(plan['experiment_id']==pairs[r['experiment_id']] and plan['recovery_receipt']==str(Path(r['output_root'])/'receipt.json'),'collection binding')
+    c.v.require(plan['workflow_root']==r['workflow_root'],'workflow binding')
+    if r['experiment_id']=='ARRIVAL-INSTALL-RECOVERY-02':
+        base=Path(path).resolve().parent.parent
+        for value,expected in ((r['output_root'],base/'install_recovery_run_v2'),
+            (r['workflow_root'],base/'collection_recovery_workflow_v2'),
+            (plan['output_root'],base/'integrated_collection_run_v3'),
+            (plan['registry'],base/'collection_execution_registry/ARRIVAL-COLLECT-03')):
+            c.v.require(Path(value).resolve()==expected,'new plan output/registry scope')
     from tools import d1_apk_identity as apk
     for key,digest in plan['apk_preflight']['tool_sha256'].items():
         c.v.require(c.p.digest(plan['apk_preflight']['toolchain'][key])==digest,'signature tool changed')
@@ -218,13 +243,14 @@ def run(path, adb, serial, approved, expected_hash):
 def main():
     parser=argparse.ArgumentParser(description=__doc__);sub=parser.add_subparsers(dest='command',required=True)
     prep=sub.add_parser('prepare');prep.add_argument('--parent',required=True);prep.add_argument('--output',required=True)
+    prep.add_argument('--revision',type=int,choices=(1,2),default=1);prep.add_argument('--prior-recovery')
     for name in ('check','run'):
         s=sub.add_parser(name);s.add_argument('--plan',required=True)
         if name=='run':
             for flag in ('adb','serial','expected-plan-sha256'):s.add_argument('--'+flag,required=True)
             s.add_argument('--approved',action='store_true')
     a=parser.parse_args()
-    if a.command=='prepare':result=prepare(a.parent,a.output)
+    if a.command=='prepare':result=prepare(a.parent,a.output,a.revision,a.prior_recovery)
     elif a.command=='check':result=check(a.plan)
     else:result=run(a.plan,a.adb,a.serial,a.approved,a.expected_plan_sha256)
     print(json.dumps(result,ensure_ascii=False,indent=2))

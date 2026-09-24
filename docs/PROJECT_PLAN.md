@@ -1,5 +1,7 @@
 # D1Check 프로젝트 실행계획
 
+> 최신 실행(2026-09-25): [RECOVERY-02/COLLECT-03](ARRIVAL_INSTALL_RECOVERY_20260924.md). 새 승인으로 설치1 성공, 개발6 완료·동결 후 확인3 완료/4번째 staging ADB daemon5037 오류로 종료했다. 전체10시도/9완료/실행전실패1/미시도2, 진단36/48·warmup72/96, retry0. 27.959분·cleanup 확인. active/병행 확인은 미실행이므로 PC 정책값 연결/병행허용 확대 없음. 먼저 PC host daemon과 staging 증거를 점검하며 종료계획은 재개하지 않는다. 기존40값/20null/FAIL·B2/B3/P 비교 계약·experiment_ready=false 보존. 아래 기록은 각 당시 이력이다.
+
 > 최신 실행(2026-09-24): [INSTALL-RECOVERY-01/COLLECT-02 결과](ARRIVAL_INSTALL_RECOVERY_20260924.md). 승인 스크립트1회가배터리50%<시작55% gate로종료됐다. 전송/설치/세션/추론0, hostcleanup확인·복구91.156초/workflow92.297초. 전체계획소비·재개금지, 새표본/PC연결없음. 먼저충전/비충전준비후새실행계획이필요하다. 기존값/FAIL/병행차단/experiment_ready=false유지. 아래미승인·준비상태는당시이력이다.
 
 > 최신 PC 준비(2026-09-24): [설치 복구→COLLECT-02](ARRIVAL_INSTALL_RECOVERY_20260924.md) 실행안 완료·미승인. 부분 출력/timeout/host종료/identity 증거를 보존하는 별도 staging 설치를 준비했다. 복구600초+수집5490초=101.5분, 설치최대1·개발6→동결→확인6/48진단/96warmup, retry/대체/추가0 제안이다. 복구 verified/cleanup과 매 단계 exact설치본gate 후에만 수집하며 기존종료계획은재개하지않는다. Android/APK·추정값불변, PC28건통과, 실기기미실행·experiment_ready=false.

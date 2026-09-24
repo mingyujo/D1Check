@@ -1,5 +1,14 @@
 # D1Check 현재 상태
 
+## 2026-09-25 RECOVERY-02 / COLLECT-03 종료 — 설치 성공·확인 중 ADB daemon 오류
+
+- 시작 `3a88ca8`/clean. 별도 승인 v2 준비·PC14건/dry-run 후1회 실행. [새 계약·종료 결과](ARRIVAL_INSTALL_RECOVERY_20260924.md). APK/설계/기준/timeout 불변, host namespace·v1 종료 증거 hash 연결만 변경. 재빌드 없음. 전송1/설치1 성공·정확한 후보설치본 확인·복구cleanup 완료(79.453초). 이 설치 계보 누적2시도(COLLECT-01 timeout1+RECOVERY-01 0+이번1).
+- **개발6/6 완료→동결, 확인4시도/3완료/앱실행전실패1/미시도2. 전체10시도·9완료, 진단36/48·warmup72/96·명시적108/144, retry/대체/추가0.** 실패는 확인index9 labels staging push의 PC ADB daemon `127.0.0.1:5037` 접속 실패/Windows10060. Activity 미진입이므로 해당 호출0; 과거 불명 호출수는 변경하지 않는다. 원인·개발자옵션과의 관계는 미확정.
+- 정상9세션 앱/hostcleanup 확인, 실패시도 부분회수 output_missing·host증거 회수·cleanup/프로세스부재 확인. workflow1675.625초, 실행직전 marker→cleanup1677.534초(27.959분), 냉각20분 포함/상한101.5분 이내. 설정변경0, 종료후ADB0, `stopped_no_resume` 유지·재개금지.
+- 개발동결SHA `e4cb73aa…83023`을 확인claim에 고정, 재보정 없음. 확인3/6만 확보; 탐지GPU S→O 중앙값 오차는 완료2조건에서+38.632/+79.972ms. 개발병행의 탐지GPU S→O 차이+76.520ms는 인과간섭 계수가 아니다. active/병행 확인 미실행·수치정확도 기준없음 때문에 PC설정 연결/병행해제 없음. 기존40값/20null/FAIL/부분결과·experiment_ready=false 유지.
+- 외부 `collection_recovery_execution_v2/FINAL_REPORT.md`, FINAL_RECEIPT/ANALYSIS/REPRODUCE_ANALYSIS.py에 전체분모·부분통계·명령/시간·한계, `install_recovery_pc_v2`에14검증/source snapshot을 보존. 원본은 `install_recovery_run_v2`, `integrated_collection_run_v3`, `collection_recovery_workflow_v2`. 원본/동결/선행hash 및PC분석 재현 일치.
+- 다음: PC에서5037 daemon 실패와 staging 증거 보존을 점검한다. 새 기기 실행/종료계획 재개 없음. B2 사전선정 목적·제약, B3/P 실제결정차이와 독립평가 요건은 여전히 남는다. 관련 소스/문서만commit·정상push하며 최종Git은 외부GIT_FINAL.json을 따른다.
+
 ## 2026-09-25 개발자 옵션 재활성화 후 읽기 전용 gate 확인
 
 - 시작 `3e57107`/clean. 개발자 옵션 재활성화는 사용자 보고이며 정확한 변경 시각은 미확인이다. 현재 `development_settings_enabled=1`, `adb_wifi_enabled=1`과 단일 온라인 A24(`R59W802RW5F`, SM-A245N), 계약 fingerprint 일치를 직접 확인했다. 과거 timeout 원인 해결로 해석하지 않는다.

@@ -168,7 +168,7 @@ def prepare(parent_path, config_path, build_path, output):
 def check(plan_path):
     plan_path=Path(plan_path);plan=p.read(plan_path)
     recovered = plan.get('installation_contract') == 'recovery-verified-only-v1'
-    v.require(plan['protocol']=='arrival-collection-plan-v1' and plan['experiment_id']==('ARRIVAL-COLLECT-02' if recovered else EXPERIMENT) and
+    v.require(plan['protocol']=='arrival-collection-plan-v1' and plan['experiment_id'] in (('ARRIVAL-COLLECT-02','ARRIVAL-COLLECT-03') if recovered else (EXPERIMENT,)) and
               not plan['experiment_ready'] and plan['source_code']==identity(), 'plan/source identity')
     v.require((plan['session_cap'],plan['request_cap'],plan['warmup_cap'],plan['install_cap'],plan['maximum_active_seconds'])==(12,48,96,0 if recovered else 2,5490), 'budget')
     v.require(all(plan[k]==0 for k in ('retry_cap','replacement_cap','additional_cap')), 'no retries')
@@ -185,7 +185,7 @@ def check(plan_path):
     ids=set();request_ids=set();requests=warmups=0
     for e in plan['entries']:
         file=plan_path.parent/e['manifest'];m=p.read(file)
-        v.require(p.digest(file)==e['manifest_sha256'] and m['protocol']==PROTOCOL and m['session_id']==e['session_id'] and
+        v.require(p.digest(file)==e['manifest_sha256'] and m['protocol']==PROTOCOL and m['session_id']==e['session_id'] and m['experiment_id']==plan['experiment_id'] and
                   m['apk_sha256']==plan['apk_sha256'] and not m['experiment_ready'], 'manifest identity')
         v.require(e['session_id'] not in ids,'duplicate session');ids.add(e['session_id'])
         condition=next(c for c in CONDITIONS if c[0]==e['condition'])

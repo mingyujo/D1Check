@@ -59,6 +59,31 @@ class ProcessTest(unittest.TestCase):
 
 
 class RecoveryTest(unittest.TestCase):
+    def test_revision_two_requires_closed_predecessor_before_writes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            with self.assertRaises(ValueError):r.prepare('unused',root/'out',2)
+            self.assertFalse((root/'out').exists())
+            receipt=root/'receipt.json';stopped=root/'stopped.json';prior=root/'prior.json'
+            c.cal.write_new(receipt,dict(status='verified'))
+            c.cal.write_new(stopped,dict(status='stopped_no_resume'))
+            c.cal.write_new(prior,dict(experiment_id=r.RECOVERY,output_root=str(root),workflow_root=str(root)))
+            with self.assertRaises(ValueError):r.prepare('unused',root/'out',2,prior)
+            self.assertFalse((root/'out').exists())
+
+    def test_revision_two_has_disjoint_ids_and_preserves_closed_evidence(self):
+        file=os.environ.get('D1_RECOVERY_PLAN')
+        if not file:self.skipTest('prepared plan not supplied')
+        bundle=c.p.read(file)
+        if bundle['experiment_id']!='ARRIVAL-INSTALL-RECOVERY-02':self.skipTest('revision two only')
+        new=c.p.read(bundle['collection_plan'])
+        predecessor=next(c.p.read(name) for name in bundle['closed_predecessor_evidence'] if Path(name).name=='collection_plan.json')
+        self.assertFalse(set(e['session_id'] for e in new['entries']) & set(e['session_id'] for e in predecessor['entries']))
+        for key in ('output_root','registry','workflow_root','recovery_receipt'):self.assertNotEqual(new[key],predecessor[key])
+        for name,sha in bundle['closed_predecessor_evidence'].items():self.assertEqual(c.p.digest(name),sha)
+        self.assertEqual(new['apk_sha256'],predecessor['apk_sha256'])
+        for key in ('freeze_rule','analysis_contract','parallel_gate','screen_contract','seed'):self.assertEqual(new[key],predecessor[key])
+
     def test_bundle_orders_recovery_freeze_confirmation_and_stops_on_failure(self):
         for fail in (False,True):
             with self.subTest(fail=fail),tempfile.TemporaryDirectory() as tmp,ExitStack() as stack:
