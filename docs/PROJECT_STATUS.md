@@ -1,5 +1,15 @@
 # D1Check 현재 상태
 
+## 2026-09-25 CONFIRM-FOLLOWUP-01 완료·PC 탐색 비교 완료
+
+- 시작 `983d3b2`/clean. [결과·재현 명령](ARRIVAL_FOLLOWUP_AND_EXPLORATION_20260925.md). 승인된 새 확인1계획을 1회 실행했다. 사용자 후속 지시로 배터리 하한20%만 실행 전 v4에 고정; 나머지 조건 불변. 현재 동일 A24/정확한 설치 APK·서명, 시작52%/32.5°C/비충전·thermal0·화면·memory gate 통과. 설치/서버 재시작/재연결/설정 변경0.
+- **3시도/3완료/실패0·미시도0, 진단12/warmup24/명시적36, retry·대체·추가0.** runner492.687초/사전 연결 확인→cleanup561.360초(냉각360초 포함). 앱·host cleanup3/3, 프로세스 부재 확인. 원래 부분 계획은 계속 종료 상태이며 이번 자료로 완주 처리하지 않는다. 조건당 독립1세션; F host API overlap2쌍·후속 lane 재사용8쌍 확인.
+- 완료 후 PC 요약의 기존6조건 검사 오류를 발견해 후속3조건만 분리 수정했다. 원 완료 receipt/로그 보존·실측 재실행 없음. 새 관측 bridge는 정확한 기록 재생/조건별 비용 조회만 연결하며 임의 병행·새 adaptive GPU는 차단한다.
+- PC 엔진/8정책·개발B2선정/별도 평가 시나리오/미래정보 분리/UNKNOWN_OVERRUN/실제 lane 해제 구현. 관련21테스트 통과. 최종 탐색은 개발126+평가960실행(23,040가상요청), 실기기 세션과 별개. [공유 숫자 입력·CSV·PNG/SVG](results/arrival_explore_20260925/README.md). v1/v2 결함·결과 보존 후 v3 정정; 새 독립 기기 검증 아님.
+- 기본 큐 가정에서 P−B3 paired 긴급−4.11%/일반+3.14%; P−B2 긴급+138.03%. 간섭없음/urgent비중증가에서는 긴급+45.85/+40.58% 손해. P 우월성 근거 없음. strict B3/P는 동일 CPU fallback이고 explore B2의 분류GPU+탐지CPU 병행은 실측 미지원이다. 기존FAIL·40값/20null·experiment_ready=false 유지.
+- 외부 root: `confirmation_followup_execution_v1`(receipt/분석/검증), `confirmation_followup_run_v1`(원본), `confirmation_followup_bridge_v1`, `arrival_explore_batch_v3`, `policy_evaluation_pc_preparation_v1`. 마지막 것은 PC gate 준비이며 기기 실행 명령/승인 예산이 아니다.
+- 다음 최대3개: (1) 일반 서비스 목적·허용손실을 정하고 강한 정적 기준 검토, (2) 필요성이 확인될 때만 Android B3/P와 미측정 병행 조합 개발 gate 해소, (3) 그 이후 별도 독립 평가 설계·예산 승인. 추가 실측/소비 계획 재개 없음. 아래 기록은 당시 이력이다.
+
 ## 2026-09-25 CONFIRM-FOLLOWUP-01 PC 준비 완료 — 실행 미승인
 
 - 시작 `fefe913`/clean. [ADB 분석·확인 전용 계약](ARRIVAL_CONFIRMATION_FOLLOWUP_20260925.md). 실패는PC127.0.0.1:5037 접속오류이며daemon내부원인미확정. 과거수집경로에는server종료/taskkill없고복구경로timeout도없었다. 현재PATH의ADB1경로/SDK37.0.1·PID2388/listener를OS조회했으나과거상태로전용하지않는다. adb.log는실패시각을포함하지않는다.

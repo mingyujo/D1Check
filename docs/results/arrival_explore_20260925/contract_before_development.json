@@ -1,0 +1,130 @@
+{
+  "P": "fixed assumed pair factor 1.5; no search/tuning; ablation factor1 equals B3; no-parallel ablation",
+  "b2_rule": "all 4 task maps x serial/parallel (strict serial only); complete and per-scenario mean normal response <= CPU_URGENT and normal timely >= CPU_URGENT; then mean urgent miss, urgent P95, normal mean, makespan, canonical candidate ID",
+  "code_hashes": {
+    "d1_arrival_explore.py": "7462f5fea1552be96b78162744e93036013b5179f002bbc5038d7b4bc7fc8fcc",
+    "d1_arrival_explore_batch.py": "e3bde5906a1974d3e3b3a5c7f4e22875cd2a6c77af32e8ac39226868c78a6a10"
+  },
+  "development_seed": [
+    101,
+    102,
+    103
+  ],
+  "development_workloads": [
+    "low",
+    "queue",
+    "burst"
+  ],
+  "evaluation_seed": [
+    201,
+    202,
+    203,
+    204,
+    205
+  ],
+  "experiment_ready": false,
+  "horizon_ns": 120000000000,
+  "limitations": [
+    "not independent device prediction",
+    "queue/order transfer assumed",
+    "new priorities mix assumed",
+    "success-only realizations; failures not estimated",
+    "no thermal/energy model"
+  ],
+  "margins": "zero relative developmental normal loss is a PC selection convention, not project noninferiority/success threshold",
+  "maximum_runs": 1200,
+  "policies": [
+    "CPU_FIFO",
+    "CPU_URGENT",
+    "FIXED_SPLIT",
+    "B2_PC",
+    "B3_SOLO_EFT_PC",
+    "P_PAIR_COST_PC",
+    "P_NO_PARALLEL_PC",
+    "P_NO_PAIR_COST_PC"
+  ],
+  "scenarios": [
+    {
+      "changes": {},
+      "id": "low",
+      "workload": "low"
+    },
+    {
+      "changes": {},
+      "id": "queue",
+      "workload": "queue"
+    },
+    {
+      "changes": {},
+      "id": "burst",
+      "workload": "burst"
+    },
+    {
+      "changes": {},
+      "id": "urgent_heavy",
+      "workload": "urgent_heavy"
+    },
+    {
+      "changes": {},
+      "id": "classification_mix",
+      "workload": "classification_mix"
+    },
+    {
+      "changes": {},
+      "id": "reverse",
+      "workload": "reverse"
+    },
+    {
+      "changes": {
+        "interference": 1.0
+      },
+      "id": "queue_interference_1.0",
+      "workload": "queue"
+    },
+    {
+      "changes": {
+        "interference": 2.0
+      },
+      "id": "queue_interference_2.0",
+      "workload": "queue"
+    },
+    {
+      "changes": {
+        "estimate_factor": 0.75
+      },
+      "id": "queue_estimate_0.75",
+      "workload": "queue"
+    },
+    {
+      "changes": {
+        "estimate_factor": 1.25
+      },
+      "id": "queue_estimate_1.25",
+      "workload": "queue"
+    },
+    {
+      "changes": {
+        "load_callback_factor": 2.0,
+        "load_prepare_factor": 2.0
+      },
+      "id": "queue_load_x2",
+      "workload": "queue"
+    },
+    {
+      "changes": {
+        "decision_ns": 1000000,
+        "dispatch_ns": 1000000,
+        "record_ns": 1000000
+      },
+      "id": "queue_hostcost_x10",
+      "workload": "queue"
+    }
+  ],
+  "scope": "post-unblinding exploratory model; separate scenario evaluation conditional on same small calibration bundle",
+  "source_hashes": {
+    "estimates.json": "5eff8b590ecfb08bb3cb1f2887cbfa57c08e1b13d476af0e0c30d12ebf5d4af7",
+    "realizations.json": "55d929efbdc3a0b67d36d8b39fd55a7a168a73e75994ec30d7e653635cb44361"
+  },
+  "version": "arrival-explore-pc-v3",
+  "wall_cap_seconds": 600
+}

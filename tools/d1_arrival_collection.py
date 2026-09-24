@@ -252,7 +252,10 @@ def summarize(plan_path, phase):
         results[e['condition']]=dict(independent_sessions=1,requests=4,metrics={k:dict(median=statistics.median(vs),min=min(vs),max=max(vs),n=len(vs)) for k,vs in values.items()})
         for f in folder.rglob('*'):
             if f.is_file():hashes[str(f.resolve())]=p.digest(f)
-    v.require(len(results)==6,'six complete conditions required')
+    expected={e['condition'] for e in plan['entries'] if e['phase']==phase}
+    followup=plan.get('installation_contract')=='followup-exact-installed-v1'
+    v.require(len(expected)==(3 if followup else 6) and set(results)==expected,
+              'all plan-specific conditions required; no partial completion')
     return dict(protocol='arrival-collection-descriptive-freeze-v1',plan_sha256=p.digest(plan_path),phase=phase,
                 conditions=results,input_hashes=hashes,experiment_ready=False,performance_pass=None,
                 scope='condition-specific diagnostic summaries, not replacement for CAL03 estimates or causal kernel interference')

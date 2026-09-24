@@ -1,5 +1,7 @@
 # ADB host 분석 및 확인 전용 후속 계획
 
+> 2026-09-25 후속: 별도 승인 후 배터리 하한20% 변경을 실행 전 v4에 고정하여3세션 모두 완료했다. 설치/재시도0·cleanup 확인. 아래 미승인/미실행은 준비 당시 기록이다. [실행 결과·PC 연결·탐색 비교](ARRIVAL_FOLLOWUP_AND_EXPLORATION_20260925.md)를 따른다. 기존 부분 계획은 재개하지 않았다.
+
 2026-09-25, 시작 `fefe913`/작업 브랜치 clean. **PC 조사·최소 host 보완·검증·실행 준비 완료, 실기기 실행 미승인·미실행**. 새 작업 ID `ARRIVAL-CONFIRM-FOLLOWUP-01`. 기존 [RECOVERY-02/COLLECT-03 종료 결과](ARRIVAL_INSTALL_RECOVERY_20260924.md)를 재개하지 않는다.
 
 ## 확인한 사실과 원인 한계

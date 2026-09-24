@@ -1,5 +1,7 @@
 # D1Check 프로젝트 실행계획
 
+> 최신(2026-09-25): [확인 실측·PC 탐색 결과](ARRIVAL_FOLLOWUP_AND_EXPLORATION_20260925.md). 별도 승인 후속3세션/진단12/warmup24 완료·cleanup 확인, 기존개발/동결 불변. PC 시뮬레이터·B2선정·B3/P 후보/제거 비교를 실행했으나 P 우월성을 뒷받침하지 못했고 여러 조건에서 손해였다. 순수 관측 재생, strict 단독 가정 모드, 미검증 병행 탐색을 분리했다. 다음은 일반 서비스 제약과 강한 정적 기준의 검토이며 실험 확대를 자동 진행하지 않는다. PC 독립평가 준비 gate는 목적/허용손실·Android active 정책·한정 예측 정확도·새 paired 변동성 부족으로 BLOCKED, experiment_ready=false다. 아래 계획/미승인 문구는 각 당시 기록이다.
+
 > 최신 PC 준비(2026-09-25): [CONFIRM-FOLLOWUP-01](ARRIVAL_CONFIRMATION_FOLLOWUP_20260925.md). 완료된개발6/동결은재사용하고누락B/A/F만새3세션/진단12/warmup24/설치0·상한30분으로제안했다. 기존확인E/D/C와는계획·날짜·host계측차이를구분하는조건별기술통계만허용한다. PC20건관련검증·서명/manifest/dry-run완료, 실기기미승인·미실행. ADB원인은5037접속실패범위를넘어미확정이며server재시작/기기명령없이관측경로를보완했다. 기존원계획부분종료·FAIL·40값/20null·experiment_ready=false를유지한다.
 
 > 최신 실행(2026-09-25): [RECOVERY-02/COLLECT-03](ARRIVAL_INSTALL_RECOVERY_20260924.md). 새 승인으로 설치1 성공, 개발6 완료·동결 후 확인3 완료/4번째 staging ADB daemon5037 오류로 종료했다. 전체10시도/9완료/실행전실패1/미시도2, 진단36/48·warmup72/96, retry0. 27.959분·cleanup 확인. active/병행 확인은 미실행이므로 PC 정책값 연결/병행허용 확대 없음. 먼저 PC host daemon과 staging 증거를 점검하며 종료계획은 재개하지 않는다. 기존40값/20null/FAIL·B2/B3/P 비교 계약·experiment_ready=false 보존. 아래 기록은 각 당시 이력이다.

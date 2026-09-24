@@ -1,0 +1,268 @@
+{
+  "device_fingerprint": "samsung/a24ks/a24:16/BP2A.250605.031.A3/A245NKSS9EZB5:user/release-keys",
+  "models": {
+    "classification_CPU": {
+      "model": {
+        "byte_count": 18582189,
+        "distribution_policy": "external_verified_apache_2_0",
+        "filename": "efficientnet_lite0.tflite",
+        "label_filename": "labels_without_background.txt",
+        "label_rows": 1000,
+        "label_sha256": "e697a491aa735cc6c2aaf982f8e86e8fc7b0a1ea7750a2cc6a2bdfc1e109012f",
+        "metadata_license_status": "embedded_apache_2_0",
+        "model_id": "efficientnet-lite0-float32-v1",
+        "sha256": "6c7ab0a6e5dcbf38a8c33b960996a55a3b4300b36a018c4545801de3a3c8bde0",
+        "task_id": "classification",
+        "url": "https://storage.googleapis.com/mediapipe-models/image_classifier/efficientnet_lite0/float32/1/efficientnet_lite0.tflite"
+      },
+      "runtime": {
+        "cpu_threads": 1,
+        "gpu_configuration_sha256": "58ee1a9dad76bb62d85dedae9204790863eacc7d8c3c0da404505616ca098068",
+        "gpu_profile_id": "gpu-fp32-strict-v1",
+        "litert_version": "1.4.2",
+        "tasks_vision_version": "not_used",
+        "xnnpack": true
+      },
+      "tensor": {
+        "input_count": 1,
+        "inputs": [
+          {
+            "dtype": "FLOAT32",
+            "index": 0,
+            "name": "images",
+            "quantization": "none",
+            "shape": [
+              1,
+              224,
+              224,
+              3
+            ]
+          }
+        ],
+        "normalization": "(RGB-127.0)/128.0",
+        "output_count": 1,
+        "outputs": [
+          {
+            "dtype": "FLOAT32",
+            "index": 0,
+            "name": "Softmax",
+            "quantization": "none",
+            "shape": [
+              1,
+              1000
+            ]
+          }
+        ],
+        "raw_output_semantics": "imagenet_class_probabilities_1000"
+      }
+    },
+    "classification_GPU": {
+      "model": {
+        "byte_count": 18582189,
+        "distribution_policy": "external_verified_apache_2_0",
+        "filename": "efficientnet_lite0.tflite",
+        "label_filename": "labels_without_background.txt",
+        "label_rows": 1000,
+        "label_sha256": "e697a491aa735cc6c2aaf982f8e86e8fc7b0a1ea7750a2cc6a2bdfc1e109012f",
+        "metadata_license_status": "embedded_apache_2_0",
+        "model_id": "efficientnet-lite0-float32-v1",
+        "sha256": "6c7ab0a6e5dcbf38a8c33b960996a55a3b4300b36a018c4545801de3a3c8bde0",
+        "task_id": "classification",
+        "url": "https://storage.googleapis.com/mediapipe-models/image_classifier/efficientnet_lite0/float32/1/efficientnet_lite0.tflite"
+      },
+      "runtime": {
+        "cpu_threads": 1,
+        "gpu_configuration_sha256": "58ee1a9dad76bb62d85dedae9204790863eacc7d8c3c0da404505616ca098068",
+        "gpu_profile_id": "gpu-fp32-strict-v1",
+        "litert_version": "1.4.2",
+        "tasks_vision_version": "not_used",
+        "xnnpack": true
+      },
+      "tensor": {
+        "input_count": 1,
+        "inputs": [
+          {
+            "dtype": "FLOAT32",
+            "index": 0,
+            "name": "images",
+            "quantization": "none",
+            "shape": [
+              1,
+              224,
+              224,
+              3
+            ]
+          }
+        ],
+        "normalization": "(RGB-127.0)/128.0",
+        "output_count": 1,
+        "outputs": [
+          {
+            "dtype": "FLOAT32",
+            "index": 0,
+            "name": "Softmax",
+            "quantization": "none",
+            "shape": [
+              1,
+              1000
+            ]
+          }
+        ],
+        "raw_output_semantics": "imagenet_class_probabilities_1000"
+      }
+    },
+    "detection_CPU": {
+      "model": {
+        "byte_count": 13836895,
+        "distribution_policy": "external_research_only_no_redistribution",
+        "filename": "efficientdet_lite0.tflite",
+        "label_filename": "labels.txt",
+        "label_rows": 90,
+        "label_sha256": "f8803ef7900160c629d570848dfda4175e21667bf7b71f73f8ece4938c9f2bf2",
+        "metadata_license_status": "null_unverified_risk_accepted_nonredistribution",
+        "model_id": "efficientdet-lite0-float32-v1",
+        "sha256": "40338edf5ec70d43e318b0a716a84d4564cd1802759a7a07170c7e43796dbf58",
+        "task_id": "detection",
+        "url": "https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/float32/1/efficientdet_lite0.tflite"
+      },
+      "runtime": {
+        "cpu_threads": 1,
+        "gpu_configuration_sha256": "58ee1a9dad76bb62d85dedae9204790863eacc7d8c3c0da404505616ca098068",
+        "gpu_profile_id": "gpu-fp32-strict-v1",
+        "litert_version": "1.4.2",
+        "tasks_vision_version": "1.0.0",
+        "xnnpack": true
+      },
+      "tensor": {
+        "input_count": 1,
+        "inputs": [
+          {
+            "dtype": "FLOAT32",
+            "index": 0,
+            "name": "serving_default_images:0",
+            "quantization": "none",
+            "shape": [
+              1,
+              320,
+              320,
+              3
+            ]
+          }
+        ],
+        "normalization": "(RGB-127.5)/127.5",
+        "output_count": 2,
+        "outputs": [
+          {
+            "dtype": "FLOAT32",
+            "index": 0,
+            "name": "StatefulPartitionedCall:1",
+            "quantization": "none",
+            "shape": [
+              1,
+              19206,
+              90
+            ]
+          },
+          {
+            "dtype": "FLOAT32",
+            "index": 1,
+            "name": "StatefulPartitionedCall:0",
+            "quantization": "none",
+            "shape": [
+              1,
+              19206,
+              4
+            ]
+          }
+        ],
+        "raw_output_semantics": "anchor_scores_then_box_encodings"
+      }
+    },
+    "detection_GPU": {
+      "model": {
+        "byte_count": 13836895,
+        "distribution_policy": "external_research_only_no_redistribution",
+        "filename": "efficientdet_lite0.tflite",
+        "label_filename": "labels.txt",
+        "label_rows": 90,
+        "label_sha256": "f8803ef7900160c629d570848dfda4175e21667bf7b71f73f8ece4938c9f2bf2",
+        "metadata_license_status": "null_unverified_risk_accepted_nonredistribution",
+        "model_id": "efficientdet-lite0-float32-v1",
+        "sha256": "40338edf5ec70d43e318b0a716a84d4564cd1802759a7a07170c7e43796dbf58",
+        "task_id": "detection",
+        "url": "https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/float32/1/efficientdet_lite0.tflite"
+      },
+      "runtime": {
+        "cpu_threads": 1,
+        "gpu_configuration_sha256": "58ee1a9dad76bb62d85dedae9204790863eacc7d8c3c0da404505616ca098068",
+        "gpu_profile_id": "gpu-fp32-strict-v1",
+        "litert_version": "1.4.2",
+        "tasks_vision_version": "1.0.0",
+        "xnnpack": true
+      },
+      "tensor": {
+        "input_count": 1,
+        "inputs": [
+          {
+            "dtype": "FLOAT32",
+            "index": 0,
+            "name": "serving_default_images:0",
+            "quantization": "none",
+            "shape": [
+              1,
+              320,
+              320,
+              3
+            ]
+          }
+        ],
+        "normalization": "(RGB-127.5)/127.5",
+        "output_count": 2,
+        "outputs": [
+          {
+            "dtype": "FLOAT32",
+            "index": 0,
+            "name": "StatefulPartitionedCall:1",
+            "quantization": "none",
+            "shape": [
+              1,
+              19206,
+              90
+            ]
+          },
+          {
+            "dtype": "FLOAT32",
+            "index": 1,
+            "name": "StatefulPartitionedCall:0",
+            "quantization": "none",
+            "shape": [
+              1,
+              19206,
+              4
+            ]
+          }
+        ],
+        "raw_output_semantics": "anchor_scores_then_box_encodings"
+      }
+    }
+  },
+  "images": [
+    {
+      "annotation_sha256": "cb993fb034ff803abcce84b2d3798da30a84332cd7ff5c7241f9a468213b7205",
+      "bytes": 937799,
+      "canonical_input_contract": "canonical-srgb-png-v2",
+      "filename": "00575b9132bb3746.png",
+      "height": 683,
+      "icc_sha256": null,
+      "littlecms_version": "2.19",
+      "original_sha256": "ef667f3f27d9a3d1faa7a84c8c54587faef0845a7a6e620aa0fd5fcfaf0a005f",
+      "pillow_version": "12.3.0",
+      "rgb_sha256": "ca6c2e2bf77bfd8c9240404f516a17eb21c24ba34159ce2e3722bf8aaf225455",
+      "sample_id": "00575b9132bb3746",
+      "sha256": "3e8b925feafbfe5fdd4efb9d7911f445a3212100fa73744f6fd855cf6160f1ab",
+      "transformation": "Pillow JPEG decode; embedded ICC -> sRGB using LittleCMS perceptual intent 0 if present, otherwise assume sRGB; strip all metadata; no geometry change",
+      "width": 1024
+    }
+  ],
+  "scope": "Identifiers only; no model binaries, images or original device logs distributed"
+}
