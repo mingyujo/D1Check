@@ -1,5 +1,14 @@
 # D1Check 현재 상태
 
+## 2026-09-24 INSTALL-RECOVERY-01 / COLLECT-02 — 승인 실행·배터리 gate 종료
+
+- 시작 `bceec84`/clean. [종료 결과](ARRIVAL_INSTALL_RECOVERY_20260924.md). 계획/소스/APK/manifest·미소비 확인 후 스크립트1회. **배터리50%<시작55%로복구preflight중단. 후보전송0·설치0·세션0/12·진단0/48·warmup0/96·명시적추론0/144**, retry/대체/추가0. 개발/확인각6미시도, 실패세션0/복구실패1.
+- 기기/fingerprint/서명확인·기존설치APK회수1회86.390초. 후보push와구분. 명령12개정상반환, 출력/시점/exit보존. hostcleanup/프로세스부재·thermal0확인, 앱cleanup N/A. 기존APK9019b85d…2c0유지. 설정변경없음, awake/앱memorygate는미진입.
+- 복구91.156초·workflow92.297초, 최초조회tool wall상한포함92.792초. 냉각/수집0. 복구와workflow소비·종료/재개금지. 수집registry는미생성이지만통합계획재실행불가.
+- 새표본/동결/확인/PC연결없음. experiment_ready=false·병행차단·40값/20null/FAIL/부분결과/과거원인미확정보존. 완료된PC검증·빌드반복없음.
+- 외부 `C:/Users/LG/Documents/D1Check_Arrival_Extension/collection_recovery_execution_v1`의FINAL_REPORT/FINAL_RECEIPT/REPRODUCE.py/GIT_FINAL, `install_recovery_run_v1`의원본/receipt와`collection_recovery_workflow_v1`의claim/stopped를보존. 문서만commit/push.
+- 다음: (1) 배터리시작55%이상여유충전후비충전상태준비, (2) 새실행계획PC준비, (3) 별도승인/gate후복구·수집. 기존종료계획은초기화/재개하지않는다. 아래는준비당시이력이다.
+
 ## 2026-09-24 ARRIVAL-INSTALL-RECOVERY-01 / COLLECT-02 — PC 준비 완료
 
 - 시작 `b4c6e23`/clean, 기존 COLLECT-01의 install120초 timeout·세션0·종료 기록 보존. [복구 원인 분석·새 실행 계약](ARRIVAL_INSTALL_RECOVERY_20260924.md). 이전 성공/실패 APK 차이16,384bytes, 같은install-r/120초이며 크기·GPU·전송 원인 확정 근거 없음. timeout 부분 stdout/stderr 미보존을 확인했다.

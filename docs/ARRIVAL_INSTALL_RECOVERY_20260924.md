@@ -1,5 +1,20 @@
 # 설치 증거 보존·ARRIVAL-COLLECT-02 준비
 
+## 2026-09-24 승인 실행 결과 — 배터리 gate 중단
+
+`bceec84`/clean에서 미소비·해시·예산 확인 후 승인 스크립트를1회 호출했다. **배터리50%가 시작 기준55%보다 낮아 복구 preflight에서 종료됐다.** 복구시도1/verified0, 후보push0·install0, 수집phase claim0·개발0/6·확인0/6·진단0/48·warmup0/96·명시적추론0/144, retry/대체/추가0. 총12세션 미시도이며 실패세션1로 계산하지 않는다. 정확한APK 동일성에 따른 설치생략이 아니라 gate실패로 미진입한 것이다.
+
+- 단일SM-A245N·동일fingerprint·설치본/후보의package/version1/signer일치 확인. 읽기 전용 기존APK 회수1회86.390초는 후보push 예산과 구분한다. 배터리50%/31.3°C/비충전. 배터리 이후 설치 전thermal/awake/설정gate와 앱memory admission은 미실시다.
+- 명령12개 모두정상반환, 부분stdout/stderr·시간·exit를보존했다. 새timeout없음. 실패후hash조회에서기존설치APK9019b85d…2c0유지. 이것은과거설치timeout원인해결증거가아니다.
+- hostcleanup/프로세스부재/cleanup thermal0확인. 앱session cleanup은미시작N/A. 화면/시스템설정변경없음. 복구91.156초, workflow92.297초(회수·조회·cleanup 포함), 최초기기조회tool wall상한0.495초를합쳐도92.792초. cooling/수집0, 승인600/6090초이내.
+- 동결/확인/비용표본/PC연결없음. 병행차단·experiment_ready=false·기존40값/20null/FAIL/부분결과·과거원인미확정보존. PC시험/빌드반복없음.
+
+복구 `install_recovery_run_v1/receipt.json`과통합 `collection_recovery_workflow_v1/stopped.json`으로 **소비·종료, 재개금지**다. 수집registry가없어도이통합계획을다시실행하지않는다. 아래명령과미승인표시는준비당시이력이다.
+
+외부root의 `collection_recovery_execution_v1/FINAL_REPORT.md`, `FINAL_RECEIPT.json`, `REPRODUCE.py`(PC읽기전용), `GIT_FINAL.json`에종료보고·전체분모·명령별시간·원본hash를보존한다. 원본은 `install_recovery_run_v1/commands/000..011`과preflight/receipt, workflow claim/stopped다. Git에는문서만반영한다.
+
+다음최소행동: **충전해시작55%이상에여유를확보하고비충전상태를준비**한뒤새식별자/출력/소비계획을PC에서준비한다. 현계획reset/재실행·자동추가설치/수집은하지않는다. 새자료가확보되기전B2/B3/P·독립평가의근거는늘지않았다.
+
 2026-09-24, 시작 `b4c6e23`/feature/arrival-scheduling-20260923/clean. **PC 구현·검증·실행안 준비 완료. 새 기기 작업 미승인·미실행.** 복구 ID `ARRIVAL-INSTALL-RECOVERY-01`, 수집 ID `ARRIVAL-COLLECT-02`. 이전 [COLLECT-01](ARRIVAL_INTEGRATED_COLLECTION_20260924.md)은 설치1회 timeout·세션0·종료 상태 그대로이며 재개하지 않는다.
 
 ## 확인한 사실과 원인 한계
