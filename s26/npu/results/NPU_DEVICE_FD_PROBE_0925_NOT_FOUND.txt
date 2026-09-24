@@ -1,0 +1,735 @@
+NPU device-fd probe, 2026-09-25 00:01 (stage 2). RESULT: /dev/npu*, /dev/unpu*, /dev/dsp* NOT FOUND in app process fds.
+Device <IP:PORT> (wireless adb, unplugged, battery 86%). App com.example.d1check.npurunner pid 25206.
+Run: smoke path NPU float, model_asset models/mobilenet_v1_1.0_224_Samsung_E9965.tflite, iterations 40000, warmup 5.
+Timing (device logcat D1NPU): first inference 00:01:07.001, === OK === 00:01:39.307. Snapshot 1 at host 00:01:06 (may precede loop), snapshot 2 at host 00:01:11 (inside loop).
+Commands: adb shell run-as <pkg> ls -l /proc/<pid>/fd ; adb shell run-as <pkg> cat /proc/<pid>/maps | grep -i -E '/dev/|enn|npu|dsp|dispatch' ; plain 'adb shell ls -l /proc/<pid>/fd' -> Permission denied
+Latency of this run (smoke, write+run+read span): count 40000 mean 0.8 median 0.74 p95 1.035 min 0.541 max 9.977 ms
+
+===== ENN service / NPU kernel threads (adb shell ps -A) =====
+  695 root         [kworker/R-npu_exynos]
+  696 root         [kworker/R-npu_exynos]
+  698 root         [kworker/R-npu_exynos]
+16265 system       vendor.samsung_slsi.hardware.enn_aidl-service
+25206 u0_a507      com.example.d1check.npurunner
+
+===== NPU devfreq nodes (shell uid) =====
+/sys/class/devfreq/17000030.devfreq_npu0
+cat: /sys/class/devfreq/17000030.devfreq_npu0/cur_freq: Permission denied
+/sys/class/devfreq/17000040.devfreq_npu1
+cat: /sys/class/devfreq/17000040.devfreq_npu1/cur_freq: Permission denied
+/sys/class/devfreq/17000110.devfreq_npucon
+cat: /sys/class/devfreq/17000110.devfreq_npucon/cur_freq: Permission denied
+/sys/class/devfreq/170000f0.devfreq_npe
+cat: /sys/class/devfreq/170000f0.devfreq_npe/cur_freq: Permission denied
+
+===== RAW (fd listings + maps filter) =====
+2026-09-25 00:01:04
+  AC powered: false
+  USB powered: false
+  level: 86
+  temperature: 294
+	Temperature{mValue=31.3, mType=3, mName=SKIN, mStatus=0}
+Starting: Intent { cmp=com.example.d1check.npurunner/.NpuRunnerActivity (has extras) }
+pid=25206
+09-25 00:01:07.001 25206 25242 I D1NPU   : first inference OK: 4.849 ms
+=== snapshot 1 00:01:06 run-as ls -l /proc/25206/fd ===
+total 0
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 0 -> /dev/null
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 1 -> /dev/null
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 10 -> /apex/com.android.art/javalib/okhttp.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 100 -> socket:[53129665]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 101 -> anon_inode:[eventpoll]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 102 -> /dev/ashmem38ff9afc-df90-4536-8aef-8b01a5e51cb5
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 103 -> /data/data/com.example.d1check.npurunner/no_backup/androidx.work.workdb
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 104 -> socket:[53133397]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 105 -> socket:[53133398]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 106 -> /data/data/com.example.d1check.npurunner/no_backup/androidx.work.workdb-wal
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 107 -> /data/data/com.example.d1check.npurunner/no_backup/androidx.work.workdb-shm
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 108 -> /dev/ashmem38ff9afc-df90-4536-8aef-8b01a5e51cb5
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 109 -> /dev/dri/renderD128
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 11 -> /apex/com.android.art/javalib/bouncycastle.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 110 -> /dev/ashmem38ff9afc-df90-4536-8aef-8b01a5e51cb5
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 111 -> /dev/dri/renderD128
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 112 -> /data/data/com.example.d1check.npurunner/no_backup/androidx.work.workdb
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 113 -> socket:[53112043]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 114 -> anon_inode:[eventfd]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 115 -> anon_inode:[eventpoll]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 116 -> anon_inode:[eventfd]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 117 -> /dev/ashmem38ff9afc-df90-4536-8aef-8b01a5e51cb5
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 118 -> /dev/ashmem38ff9afc-df90-4536-8aef-8b01a5e51cb5
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 119 -> socket:[53126302]
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 12 -> /apex/com.android.art/javalib/apache-xml.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 120 -> /dev/ashmem38ff9afc-df90-4536-8aef-8b01a5e51cb5
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 121 -> anon_inode:[eventfd]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 122 -> socket:[53112047]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 123 -> anon_inode:[eventpoll]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 124 -> socket:[53112048]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 125 -> socket:[53112049]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 126 -> anon_inode:[eventpoll]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 127 -> anon_inode:[eventfd]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 128 -> anon_inode:[eventfd]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 129 -> anon_inode:[eventpoll]
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 13 -> /system/framework/framework.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 130 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 131 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 132 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 133 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 134 -> anon_inode:25206
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 135 -> anon_inode:sync_file
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 136 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 137 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 138 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 139 -> /dev/ashmem38ff9afc-df90-4536-8aef-8b01a5e51cb5
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 14 -> /system/framework/framework-graphics.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 140 -> /dmabuf:
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 141 -> /dev/dma_heap/system
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 142 -> /dev/dma_heap/system-uncached
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 143 -> /dev/dma_heap/system
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 144 -> /dmabuf:system
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 145 -> anon_inode:sync_file
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 146 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 147 -> /dmabuf:
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 148 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 149 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 15 -> /system/framework/framework-location.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 150 -> socket:[53126313]
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 151 -> anon_inode:sync_file
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 152 -> /dmabuf:
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 153 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 154 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 155 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 156 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 157 -> anon_inode:sync_file
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 158 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 159 -> /dmabuf:
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 16 -> /system/framework/ext.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 160 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 161 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 162 -> anon_inode:sync_file
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 163 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 164 -> /dmabuf:system
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 165 -> /dmabuf:system
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 168 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 169 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 17 -> /system/framework/telephony-common.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 18 -> /system/framework/voip-common.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 19 -> /system/framework/ims-common.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 2 -> /dev/null
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 20 -> /system/framework/knoxsdk.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 21 -> /system/framework/framework-platformcrashrecovery.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 22 -> /system/framework/framework-ondeviceintelligence-platform.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 23 -> /system/framework/framework-nfc.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 24 -> /system/framework/esecomm.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 25 -> /apex/com.android.i18n/javalib/core-icu4j.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 26 -> /apex/com.android.adservices/javalib/framework-adservices.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 27 -> /dev/null
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 28 -> /dev/null
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 29 -> /apex/com.android.adservices/javalib/framework-sdksandbox.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 3 -> socket:[53119567]
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 30 -> /apex/com.android.appsearch/javalib/framework-appsearch.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 31 -> /apex/com.android.bt/javalib/framework-bluetooth.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 32 -> /apex/com.android.configinfrastructure/javalib/framework-configinfrastructure.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 33 -> /apex/com.android.conscrypt/javalib/conscrypt.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 34 -> /apex/com.android.devicelock/javalib/framework-devicelock.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 35 -> /apex/com.android.healthfitness/javalib/framework-healthfitness.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 36 -> /apex/com.android.ipsec/javalib/android.net.ipsec.ike.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 37 -> /apex/com.android.media/javalib/updatable-media.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 38 -> /apex/com.android.mediaprovider/javalib/framework-mediaprovider.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 39 -> /apex/com.android.mediaprovider/javalib/framework-pdf.jar
+l-wx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 4 -> /dev/pmsg0
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 40 -> /apex/com.android.mediaprovider/javalib/framework-pdf-v.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 41 -> /apex/com.android.mediaprovider/javalib/framework-photopicker.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 42 -> /apex/com.android.ondevicepersonalization/javalib/framework-ondevicepersonalization.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 43 -> /apex/com.android.os.statsd/javalib/framework-statsd.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 44 -> /apex/com.android.permission/javalib/framework-permission.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 45 -> /apex/com.android.permission/javalib/framework-permission-s.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 46 -> /apex/com.android.profiling/javalib/framework-profiling.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 47 -> /apex/com.android.scheduling/javalib/framework-scheduling.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 48 -> /apex/com.android.sdkext/javalib/framework-sdkextensions.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 49 -> /apex/com.android.telephonycore/javalib/framework-telephony.jar
+l-wx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 5 -> /sys/kernel/tracing/trace_marker
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 50 -> /apex/com.android.tethering/javalib/framework-connectivity.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 51 -> /apex/com.android.tethering/javalib/framework-connectivity-b.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 52 -> /apex/com.android.tethering/javalib/framework-connectivity-t.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 53 -> /apex/com.android.tethering/javalib/framework-tethering.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 54 -> /apex/com.android.uwb/javalib/framework-ranging.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 55 -> /apex/com.android.uwb/javalib/framework-uwb.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 56 -> /apex/com.android.virt/javalib/framework-virtualization.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 57 -> /apex/com.android.wifi/javalib/framework-wifi.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 58 -> /apex/com.samsung.android.lifeguard/javalib/framework-lifeguard.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 59 -> /apex/com.samsung.android.shell/javalib/framework-samsung-shell.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 6 -> /dev/null
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 60 -> /dev/null
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 61 -> /system/framework/framework-res.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 62 -> /vendor/overlay/framework-res__m1sksx__auto_generated_rro_vendor.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 63 -> /vendor/overlay/DsNumPhysicalSlotsOverlay/DsNumPhysicalSlotsOverlay.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 64 -> /product/overlay/CaptivePortalLoginFrameworkOverlay.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 65 -> /product/overlay/DefaultContextualSearchOverlay.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 66 -> /product/overlay/GmsConfigOverlayASI.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 67 -> /product/overlay/GmsConfigOverlayCommon.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 68 -> /product/overlay/GmsConfigOverlayGSA.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 69 -> /product/overlay/GmsConfigOverlayGeotz.apk
+l-wx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 7 -> /sys/kernel/tracing/trace_marker
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 70 -> /product/overlay/GoogleExtServicesConfigOverlay.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 71 -> /product/overlay/GoogleHealthFitnessFrameworkOverlay.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 72 -> /product/overlay/GooglePermissionControllerFrameworkOverlay.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 73 -> /product/overlay/ModuleMetadataGoogleOverlay.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 74 -> /product/overlay/GmsConfigOverlayADVerifier.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 75 -> /product/overlay/framework-res__m1sksx__auto_generated_rro_product.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 76 -> /system_ext/overlay/smartfaceservice_overlay.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 77 -> /dev/urandom
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 78 -> /dev/null
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 79 -> /dev/null
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 8 -> /apex/com.android.art/javalib/core-oj.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 80 -> /dev/null
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 81 -> /dev/null
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 82 -> anon_inode:[userfaultfd]
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 83 -> pipe:[53112032]
+l-wx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 84 -> pipe:[53112032]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 85 -> anon_inode:[eventfd]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 86 -> anon_inode:[eventfd]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 87 -> socket:[53112033]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 88 -> socket:[53112034]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 89 -> socket:[53113159]
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 9 -> /apex/com.android.art/javalib/core-libart.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 90 -> /dev/binderfs/binder
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 91 -> anon_inode:[eventfd]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 92 -> anon_inode:[eventpoll]
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 93 -> /data/app/~~t5qpCtfwySvCSpqb5YvfbA==/com.example.d1check.npurunner-KyZAt5ZrgnJFf9sDeAky4w==/base.apk
+l--------- 1 u0_a507 u0_a507 64 2026-09-25 00:01 94 -> /data/resource-cache/data@resource-cache@com.android.systemui-dynamic-gg3R.frro@idmap
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 95 -> /dev/ashmem38ff9afc-df90-4536-8aef-8b01a5e51cb5
+l--------- 1 u0_a507 u0_a507 64 2026-09-25 00:01 96 -> /data/resource-cache/data@resource-cache@android-SemWT_G_MonetPalette-CXoF.frro@idmap
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 97 -> /data/data/com.example.d1check.npurunner/no_backup/androidx.work.workdb-wal
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 98 -> anon_inode:[eventfd]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 99 -> socket:[53129664]
+=== snapshot 1 run-as maps (dev/ enn npu dsp) ===
+      7 /data/app/~~t5qpCtfwySvCSpqb5YvfbA==/com.example.d1check.npurunner-KyZAt5ZrgnJFf9sDeAky4w==/base.apk
+      3 /data/app/~~t5qpCtfwySvCSpqb5YvfbA==/com.example.d1check.npurunner-KyZAt5ZrgnJFf9sDeAky4w==/lib/arm64/libLiteRt.so
+      3 /data/app/~~t5qpCtfwySvCSpqb5YvfbA==/com.example.d1check.npurunner-KyZAt5ZrgnJFf9sDeAky4w==/lib/arm64/libLiteRtClGlAccelerator.so
+      3 /data/app/~~t5qpCtfwySvCSpqb5YvfbA==/com.example.d1check.npurunner-KyZAt5ZrgnJFf9sDeAky4w==/lib/arm64/libLiteRtDispatch_Samsung.so
+      3 /data/app/~~t5qpCtfwySvCSpqb5YvfbA==/com.example.d1check.npurunner-KyZAt5ZrgnJFf9sDeAky4w==/lib/arm64/liblitert_jni.so
+      1 /data/data/com.example.d1check.npurunner/no_backup/androidx.work.workdb-shm
+      2 /dev/__properties__/properties_serial
+      2 /dev/__properties__/property_info
+      1 /dev/__properties__/u:object_r:aaudio_config_prop:s0
+      1 /dev/__properties__/u:object_r:adbd_config_prop:s0
+      1 /dev/__properties__/u:object_r:apex_ready_prop:s0
+      1 /dev/__properties__/u:object_r:apexd_select_prop:s0
+      1 /dev/__properties__/u:object_r:apm_prop:s0
+      1 /dev/__properties__/u:object_r:arm64_memtag_bootctl_prop:s0
+      2 /dev/__properties__/u:object_r:arm64_memtag_prop:s0
+      1 /dev/__properties__/u:object_r:audio_prop:s0
+      1 /dev/__properties__/u:object_r:binder_cache_bluetooth_server_prop:s0
+      1 /dev/__properties__/u:object_r:binder_cache_system_server_prop:s0
+      1 /dev/__properties__/u:object_r:binder_cache_telephony_server_prop:s0
+      1 /dev/__properties__/u:object_r:bionic_linker_16kb_app_compat_prop:s0
+      1 /dev/__properties__/u:object_r:bluetooth_config_prop:s0
+      1 /dev/__properties__/u:object_r:bluetooth_leaudio_prop:s0
+      1 /dev/__properties__/u:object_r:boot_status_prop:s0
+      1 /dev/__properties__/u:object_r:bootanim_config_prop:s0
+      1 /dev/__properties__/u:object_r:bootloader_prop:s0
+      1 /dev/__properties__/u:object_r:bq_config_prop:s0
+      1 /dev/__properties__/u:object_r:build_bootimage_prop:s0
+      1 /dev/__properties__/u:object_r:build_odm_prop:s0
+      1 /dev/__properties__/u:object_r:build_prop:s0
+      1 /dev/__properties__/u:object_r:build_vendor_prop:s0
+      1 /dev/__properties__/u:object_r:camera2_extensions_prop:s0
+      1 /dev/__properties__/u:object_r:camera_calibration_prop:s0
+      1 /dev/__properties__/u:object_r:camera_config_prop:s0
+      1 /dev/__properties__/u:object_r:camerax_extensions_prop:s0
+      1 /dev/__properties__/u:object_r:chipname_prop:s0
+      1 /dev/__properties__/u:object_r:codec2_config_prop:s0
+      1 /dev/__properties__/u:object_r:config_prop:s0
+      1 /dev/__properties__/u:object_r:cppreopt_prop:s0
+      1 /dev/__properties__/u:object_r:csc_prop:s0
+      1 /dev/__properties__/u:object_r:dalvik_config_prop:s0
+      1 /dev/__properties__/u:object_r:dalvik_dynamic_config_prop:s0
+      1 /dev/__properties__/u:object_r:dalvik_prop:s0
+      1 /dev/__properties__/u:object_r:dalvik_runtime_prop:s0
+      1 /dev/__properties__/u:object_r:dck_prop:s0
+      1 /dev/__properties__/u:object_r:debug_level_prop:s0
+      2 /dev/__properties__/u:object_r:debug_prop:s0
+      1 /dev/__properties__/u:object_r:debuggerd_prop:s0
+      1 /dev/__properties__/u:object_r:default_prop:s0
+      1 /dev/__properties__/u:object_r:device_config_aconfig_flags_prop:s0
+      1 /dev/__properties__/u:object_r:device_config_media_native_prop:s0
+      1 /dev/__properties__/u:object_r:device_config_memory_safety_native_boot_prop:s0
+      2 /dev/__properties__/u:object_r:device_config_memory_safety_native_prop:s0
+      1 /dev/__properties__/u:object_r:device_config_nnapi_native_prop:s0
+      1 /dev/__properties__/u:object_r:device_config_runtime_native_boot_prop:s0
+      1 /dev/__properties__/u:object_r:device_config_runtime_native_prop:s0
+      1 /dev/__properties__/u:object_r:dhcp_prop:s0
+      1 /dev/__properties__/u:object_r:domain_read_prop:s0
+      1 /dev/__properties__/u:object_r:dumpstate_prop:s0
+      1 /dev/__properties__/u:object_r:em_version_prop:s0
+      1 /dev/__properties__/u:object_r:exported3_system_prop:s0
+      1 /dev/__properties__/u:object_r:exported_config_prop:s0
+      1 /dev/__properties__/u:object_r:exported_default_prop:s0
+      1 /dev/__properties__/u:object_r:exported_dumpstate_prop:s0
+      1 /dev/__properties__/u:object_r:exported_pm_prop:s0
+      1 /dev/__properties__/u:object_r:exported_radio_prop:s0
+      1 /dev/__properties__/u:object_r:exported_system_prop:s0
+      1 /dev/__properties__/u:object_r:ffs_config_prop:s0
+      1 /dev/__properties__/u:object_r:fingerprint_prop:s0
+      1 /dev/__properties__/u:object_r:framework_status_prop:s0
+      1 /dev/__properties__/u:object_r:graphics_config_prop:s0
+      1 /dev/__properties__/u:object_r:graphics_config_writable_prop:s0
+      1 /dev/__properties__/u:object_r:gwp_asan_prop:s0
+      1 /dev/__properties__/u:object_r:hal_instrumentation_prop:s0
+      1 /dev/__properties__/u:object_r:hdmi_config_prop:s0
+      1 /dev/__properties__/u:object_r:heapprofd_prop:s0
+      1 /dev/__properties__/u:object_r:high_barometer_quality_prop:s0
+      1 /dev/__properties__/u:object_r:hw_timeout_multiplier_prop:s0
+      1 /dev/__properties__/u:object_r:hwservicemanager_prop:s0
+      1 /dev/__properties__/u:object_r:hypervisor_prop:s0
+      1 /dev/__properties__/u:object_r:ina_status_prop:s0
+      1 /dev/__properties__/u:object_r:init_mnt_ns_prop:s0
+      1 /dev/__properties__/u:object_r:init_service_status_private_prop:s0
+      1 /dev/__properties__/u:object_r:init_service_status_prop:s0
+      1 /dev/__properties__/u:object_r:kumiho_prop:s0
+      1 /dev/__properties__/u:object_r:libc_debug_prop:s0
+      1 /dev/__properties__/u:object_r:lmkd_config_prop:s0
+      1 /dev/__properties__/u:object_r:locale_prop:s0
+      1 /dev/__properties__/u:object_r:localization_prop:s0
+      1 /dev/__properties__/u:object_r:log_file_logger_prop:s0
+      1 /dev/__properties__/u:object_r:log_prop:s0
+      1 /dev/__properties__/u:object_r:log_tag_prop:s0
+      1 /dev/__properties__/u:object_r:logd_prop:s0
+      1 /dev/__properties__/u:object_r:media_config_prop:s0
+      1 /dev/__properties__/u:object_r:media_variant_prop:s0
+      1 /dev/__properties__/u:object_r:mediadrm_config_prop:s0
+      1 /dev/__properties__/u:object_r:module_sdkextensions_prop:s0
+      1 /dev/__properties__/u:object_r:native_binder_stats_prop:s0
+      1 /dev/__properties__/u:object_r:net_radio_prop:s0
+      1 /dev/__properties__/u:object_r:netflix_bsp_rev_prop:s0
+      1 /dev/__properties__/u:object_r:nfc_prop:s0
+      1 /dev/__properties__/u:object_r:nnapi_ext_deny_product_prop:s0
+      1 /dev/__properties__/u:object_r:ota_prop:s0
+      1 /dev/__properties__/u:object_r:packagemanager_config_prop:s0
+      1 /dev/__properties__/u:object_r:pan_result_prop:s0
+      1 /dev/__properties__/u:object_r:permissive_mte_prop:s0
+      1 /dev/__properties__/u:object_r:persist_debug_prop:s0
+      1 /dev/__properties__/u:object_r:persist_sysui_builder_extras_prop:s0
+      1 /dev/__properties__/u:object_r:persist_sysui_ranking_update_prop:s0
+      1 /dev/__properties__/u:object_r:persist_wm_debug_prop:s0
+      1 /dev/__properties__/u:object_r:pm_prop:s0
+      1 /dev/__properties__/u:object_r:powerctl_prop:s0
+      1 /dev/__properties__/u:object_r:product_ship_prop:s0
+      1 /dev/__properties__/u:object_r:property_service_version_prop:s0
+      1 /dev/__properties__/u:object_r:radio_control_prop:s0
+      1 /dev/__properties__/u:object_r:radio_prop:s0
+      1 /dev/__properties__/u:object_r:restorecon_prop:s0
+      1 /dev/__properties__/u:object_r:rfkilldisabled_prop:s0
+      1 /dev/__properties__/u:object_r:rollback_test_prop:s0
+      1 /dev/__properties__/u:object_r:sendbug_config_prop:s0
+      1 /dev/__properties__/u:object_r:service_sf_present_timestamp_prop:s0
+      1 /dev/__properties__/u:object_r:servicemanager_prop:s0
+      1 /dev/__properties__/u:object_r:setupwizard_mode_prop:s0
+      1 /dev/__properties__/u:object_r:setupwizard_prop:s0
+      1 /dev/__properties__/u:object_r:shell_prop:s0
+      1 /dev/__properties__/u:object_r:soc_prop:s0
+      1 /dev/__properties__/u:object_r:socket_hook_prop:s0
+      1 /dev/__properties__/u:object_r:sqlite_log_prop:s0
+      1 /dev/__properties__/u:object_r:statsd_atoms_list_version_prop:s0
+      1 /dev/__properties__/u:object_r:storagemanager_config_prop:s0
+      1 /dev/__properties__/u:object_r:surfaceflinger_color_prop:s0
+      1 /dev/__properties__/u:object_r:surfaceflinger_prop:s0
+      1 /dev/__properties__/u:object_r:system_prop:s0
+      1 /dev/__properties__/u:object_r:system_sensor_prop:s0
+      1 /dev/__properties__/u:object_r:systemsound_config_prop:s0
+      1 /dev/__properties__/u:object_r:telephony_config_prop:s0
+      1 /dev/__properties__/u:object_r:telephony_prop:s0
+      1 /dev/__properties__/u:object_r:telephony_status_prop:s0
+      1 /dev/__properties__/u:object_r:test_harness_prop:s0
+      1 /dev/__properties__/u:object_r:timezone_prop:s0
+      1 /dev/__properties__/u:object_r:traced_oome_heap_session_count_prop:s0
+      1 /dev/__properties__/u:object_r:usb_config_prop:s0
+      1 /dev/__properties__/u:object_r:usb_control_prop:s0
+      1 /dev/__properties__/u:object_r:usb_prop:s0
+      1 /dev/__properties__/u:object_r:use_memfd_prop:s0
+      1 /dev/__properties__/u:object_r:userspace_reboot_config_prop:s0
+      1 /dev/__properties__/u:object_r:userspace_reboot_exported_prop:s0
+      1 /dev/__properties__/u:object_r:userspace_reboot_log_prop:s0
+      1 /dev/__properties__/u:object_r:userspace_reboot_test_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_camera_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_debug_egl_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_hdm_public_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_hdm_restricted_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_performance_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_radio_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_securehw_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_securenvm_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_security_securehw_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_socket_hook_prop:s0
+      2 /dev/__properties__/u:object_r:vndk_prop:s0
+      1 /dev/__properties__/u:object_r:vold_config_prop:s0
+      1 /dev/__properties__/u:object_r:vold_prop:s0
+      1 /dev/__properties__/u:object_r:vold_status_prop:s0
+      1 /dev/__properties__/u:object_r:vts_config_prop:s0
+      1 /dev/__properties__/u:object_r:vts_status_prop:s0
+      1 /dev/__properties__/u:object_r:wifi_log_prop:s0
+      1 /dev/__properties__/u:object_r:zygote_config_prop:s0
+      1 /dev/__properties__/u:object_r:zygote_wrap_prop:s0
+      3 /dev/ashmem/2dedc504-3861-42c9-83f9-ec52e8a5e878
+      4 /dev/ashmem/928399ef-152b-461f-b1d4-b2db0e44a900
+      1 /dev/ashmem/ApplicationSharedMemory
+      1 /dev/ashmem/GFXStats-25206
+      1 /dev/ashmem/fontMap
+      1 /dev/binderfs/binder
+     11 /dev/dri/renderD128
+      4 /system/lib64/libinput.so
+      4 /vendor/lib64/libenn_common_utils.so
+      4 /vendor/lib64/libenn_public_api_cpp.so
+      4 /vendor/lib64/libenn_user.samsung_slsi.so
+      4 /vendor/lib64/vendor.samsung_slsi.hardware.enn_aidl-V1-ndk.so
+=== snapshot 2 00:01:11 run-as ls -l /proc/25206/fd ===
+total 0
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 0 -> /dev/null
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 1 -> /dev/null
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 10 -> /apex/com.android.art/javalib/okhttp.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 100 -> socket:[53129665]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 101 -> anon_inode:[eventpoll]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 102 -> /dev/ashmem38ff9afc-df90-4536-8aef-8b01a5e51cb5
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 103 -> /data/data/com.example.d1check.npurunner/no_backup/androidx.work.workdb
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 104 -> socket:[53133397]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 105 -> socket:[53133398]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 106 -> /data/data/com.example.d1check.npurunner/no_backup/androidx.work.workdb-wal
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 107 -> /data/data/com.example.d1check.npurunner/no_backup/androidx.work.workdb-shm
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 108 -> /dev/ashmem38ff9afc-df90-4536-8aef-8b01a5e51cb5
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 109 -> /dev/dri/renderD128
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 11 -> /apex/com.android.art/javalib/bouncycastle.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 110 -> /dev/ashmem38ff9afc-df90-4536-8aef-8b01a5e51cb5
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 111 -> /dev/dri/renderD128
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 112 -> /data/data/com.example.d1check.npurunner/no_backup/androidx.work.workdb
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 113 -> socket:[53112043]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 114 -> anon_inode:[eventfd]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 115 -> anon_inode:[eventpoll]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 116 -> anon_inode:[eventfd]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 117 -> /dev/ashmem38ff9afc-df90-4536-8aef-8b01a5e51cb5
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 118 -> /dev/ashmem38ff9afc-df90-4536-8aef-8b01a5e51cb5
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 119 -> socket:[53126302]
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 12 -> /apex/com.android.art/javalib/apache-xml.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 120 -> /dev/ashmem38ff9afc-df90-4536-8aef-8b01a5e51cb5
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 121 -> anon_inode:[eventfd]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 122 -> socket:[53112047]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 123 -> anon_inode:[eventpoll]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 124 -> socket:[53112048]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 125 -> socket:[53112049]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 126 -> anon_inode:[eventpoll]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 127 -> anon_inode:[eventfd]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 128 -> anon_inode:[eventfd]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 129 -> anon_inode:[eventpoll]
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 13 -> /system/framework/framework.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 130 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 131 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 132 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 133 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 134 -> anon_inode:25206
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 135 -> anon_inode:sync_file
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 136 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 137 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 138 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 139 -> /dev/ashmem38ff9afc-df90-4536-8aef-8b01a5e51cb5
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 14 -> /system/framework/framework-graphics.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 140 -> /dmabuf:
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 141 -> /dev/dma_heap/system
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 142 -> /dev/dma_heap/system-uncached
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 143 -> /dev/dma_heap/system
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 144 -> /dmabuf:system
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 145 -> anon_inode:sync_file
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 146 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 147 -> /dmabuf:
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 148 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 149 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 15 -> /system/framework/framework-location.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 150 -> socket:[53126313]
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 151 -> anon_inode:sync_file
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 152 -> /dmabuf:
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 153 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 154 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 155 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 156 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 157 -> anon_inode:sync_file
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 158 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 159 -> /dmabuf:
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 16 -> /system/framework/ext.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 160 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 161 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 162 -> anon_inode:sync_file
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 163 -> /dmabuf:
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 164 -> /dmabuf:system
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 165 -> /dmabuf:system
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 168 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 169 -> anon_inode:sync_file
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 17 -> /system/framework/telephony-common.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 18 -> /system/framework/voip-common.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 19 -> /system/framework/ims-common.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 2 -> /dev/null
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 20 -> /system/framework/knoxsdk.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 21 -> /system/framework/framework-platformcrashrecovery.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 22 -> /system/framework/framework-ondeviceintelligence-platform.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 23 -> /system/framework/framework-nfc.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 24 -> /system/framework/esecomm.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 25 -> /apex/com.android.i18n/javalib/core-icu4j.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 26 -> /apex/com.android.adservices/javalib/framework-adservices.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 27 -> /dev/null
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 28 -> /dev/null
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 29 -> /apex/com.android.adservices/javalib/framework-sdksandbox.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 3 -> socket:[53119567]
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 30 -> /apex/com.android.appsearch/javalib/framework-appsearch.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 31 -> /apex/com.android.bt/javalib/framework-bluetooth.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 32 -> /apex/com.android.configinfrastructure/javalib/framework-configinfrastructure.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 33 -> /apex/com.android.conscrypt/javalib/conscrypt.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 34 -> /apex/com.android.devicelock/javalib/framework-devicelock.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 35 -> /apex/com.android.healthfitness/javalib/framework-healthfitness.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 36 -> /apex/com.android.ipsec/javalib/android.net.ipsec.ike.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 37 -> /apex/com.android.media/javalib/updatable-media.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 38 -> /apex/com.android.mediaprovider/javalib/framework-mediaprovider.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 39 -> /apex/com.android.mediaprovider/javalib/framework-pdf.jar
+l-wx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 4 -> /dev/pmsg0
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 40 -> /apex/com.android.mediaprovider/javalib/framework-pdf-v.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 41 -> /apex/com.android.mediaprovider/javalib/framework-photopicker.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 42 -> /apex/com.android.ondevicepersonalization/javalib/framework-ondevicepersonalization.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 43 -> /apex/com.android.os.statsd/javalib/framework-statsd.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 44 -> /apex/com.android.permission/javalib/framework-permission.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 45 -> /apex/com.android.permission/javalib/framework-permission-s.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 46 -> /apex/com.android.profiling/javalib/framework-profiling.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 47 -> /apex/com.android.scheduling/javalib/framework-scheduling.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 48 -> /apex/com.android.sdkext/javalib/framework-sdkextensions.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 49 -> /apex/com.android.telephonycore/javalib/framework-telephony.jar
+l-wx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 5 -> /sys/kernel/tracing/trace_marker
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 50 -> /apex/com.android.tethering/javalib/framework-connectivity.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 51 -> /apex/com.android.tethering/javalib/framework-connectivity-b.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 52 -> /apex/com.android.tethering/javalib/framework-connectivity-t.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 53 -> /apex/com.android.tethering/javalib/framework-tethering.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 54 -> /apex/com.android.uwb/javalib/framework-ranging.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 55 -> /apex/com.android.uwb/javalib/framework-uwb.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 56 -> /apex/com.android.virt/javalib/framework-virtualization.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 57 -> /apex/com.android.wifi/javalib/framework-wifi.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 58 -> /apex/com.samsung.android.lifeguard/javalib/framework-lifeguard.jar
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 59 -> /apex/com.samsung.android.shell/javalib/framework-samsung-shell.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 60 -> /dev/null
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 61 -> /system/framework/framework-res.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 62 -> /vendor/overlay/framework-res__m1sksx__auto_generated_rro_vendor.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 63 -> /vendor/overlay/DsNumPhysicalSlotsOverlay/DsNumPhysicalSlotsOverlay.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 64 -> /product/overlay/CaptivePortalLoginFrameworkOverlay.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 65 -> /product/overlay/DefaultContextualSearchOverlay.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 66 -> /product/overlay/GmsConfigOverlayASI.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 67 -> /product/overlay/GmsConfigOverlayCommon.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 68 -> /product/overlay/GmsConfigOverlayGSA.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 69 -> /product/overlay/GmsConfigOverlayGeotz.apk
+l-wx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 7 -> /sys/kernel/tracing/trace_marker
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 70 -> /product/overlay/GoogleExtServicesConfigOverlay.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 71 -> /product/overlay/GoogleHealthFitnessFrameworkOverlay.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 72 -> /product/overlay/GooglePermissionControllerFrameworkOverlay.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 73 -> /product/overlay/ModuleMetadataGoogleOverlay.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 74 -> /product/overlay/GmsConfigOverlayADVerifier.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 75 -> /product/overlay/framework-res__m1sksx__auto_generated_rro_product.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 76 -> /system_ext/overlay/smartfaceservice_overlay.apk
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 77 -> /dev/urandom
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 78 -> /dev/null
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 79 -> /dev/null
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 8 -> /apex/com.android.art/javalib/core-oj.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 80 -> /dev/null
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 81 -> /dev/null
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 82 -> anon_inode:[userfaultfd]
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 83 -> pipe:[53112032]
+l-wx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 84 -> pipe:[53112032]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 85 -> anon_inode:[eventfd]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 86 -> anon_inode:[eventfd]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 87 -> socket:[53112033]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 88 -> socket:[53112034]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 89 -> socket:[53113159]
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 9 -> /apex/com.android.art/javalib/core-libart.jar
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 90 -> /dev/binderfs/binder
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 91 -> anon_inode:[eventfd]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 92 -> anon_inode:[eventpoll]
+lr-x------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 93 -> /data/app/~~t5qpCtfwySvCSpqb5YvfbA==/com.example.d1check.npurunner-KyZAt5ZrgnJFf9sDeAky4w==/base.apk
+l--------- 1 u0_a507 u0_a507 64 2026-09-25 00:01 94 -> /data/resource-cache/data@resource-cache@com.android.systemui-dynamic-gg3R.frro@idmap
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 95 -> /dev/ashmem38ff9afc-df90-4536-8aef-8b01a5e51cb5
+l--------- 1 u0_a507 u0_a507 64 2026-09-25 00:01 96 -> /data/resource-cache/data@resource-cache@android-SemWT_G_MonetPalette-CXoF.frro@idmap
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 97 -> /data/data/com.example.d1check.npurunner/no_backup/androidx.work.workdb-wal
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 98 -> anon_inode:[eventfd]
+lrwx------ 1 u0_a507 u0_a507 64 2026-09-25 00:01 99 -> socket:[53129664]
+=== snapshot 2 run-as maps (dev/ enn npu dsp) ===
+      7 /data/app/~~t5qpCtfwySvCSpqb5YvfbA==/com.example.d1check.npurunner-KyZAt5ZrgnJFf9sDeAky4w==/base.apk
+      3 /data/app/~~t5qpCtfwySvCSpqb5YvfbA==/com.example.d1check.npurunner-KyZAt5ZrgnJFf9sDeAky4w==/lib/arm64/libLiteRt.so
+      3 /data/app/~~t5qpCtfwySvCSpqb5YvfbA==/com.example.d1check.npurunner-KyZAt5ZrgnJFf9sDeAky4w==/lib/arm64/libLiteRtClGlAccelerator.so
+      3 /data/app/~~t5qpCtfwySvCSpqb5YvfbA==/com.example.d1check.npurunner-KyZAt5ZrgnJFf9sDeAky4w==/lib/arm64/libLiteRtDispatch_Samsung.so
+      3 /data/app/~~t5qpCtfwySvCSpqb5YvfbA==/com.example.d1check.npurunner-KyZAt5ZrgnJFf9sDeAky4w==/lib/arm64/liblitert_jni.so
+      1 /data/data/com.example.d1check.npurunner/no_backup/androidx.work.workdb-shm
+      2 /dev/__properties__/properties_serial
+      2 /dev/__properties__/property_info
+      1 /dev/__properties__/u:object_r:aaudio_config_prop:s0
+      1 /dev/__properties__/u:object_r:adbd_config_prop:s0
+      1 /dev/__properties__/u:object_r:apex_ready_prop:s0
+      1 /dev/__properties__/u:object_r:apexd_select_prop:s0
+      1 /dev/__properties__/u:object_r:apm_prop:s0
+      1 /dev/__properties__/u:object_r:arm64_memtag_bootctl_prop:s0
+      2 /dev/__properties__/u:object_r:arm64_memtag_prop:s0
+      1 /dev/__properties__/u:object_r:audio_prop:s0
+      1 /dev/__properties__/u:object_r:binder_cache_bluetooth_server_prop:s0
+      1 /dev/__properties__/u:object_r:binder_cache_system_server_prop:s0
+      1 /dev/__properties__/u:object_r:binder_cache_telephony_server_prop:s0
+      1 /dev/__properties__/u:object_r:bionic_linker_16kb_app_compat_prop:s0
+      1 /dev/__properties__/u:object_r:bluetooth_config_prop:s0
+      1 /dev/__properties__/u:object_r:bluetooth_leaudio_prop:s0
+      1 /dev/__properties__/u:object_r:boot_status_prop:s0
+      1 /dev/__properties__/u:object_r:bootanim_config_prop:s0
+      1 /dev/__properties__/u:object_r:bootloader_prop:s0
+      1 /dev/__properties__/u:object_r:bq_config_prop:s0
+      1 /dev/__properties__/u:object_r:build_bootimage_prop:s0
+      1 /dev/__properties__/u:object_r:build_odm_prop:s0
+      1 /dev/__properties__/u:object_r:build_prop:s0
+      1 /dev/__properties__/u:object_r:build_vendor_prop:s0
+      1 /dev/__properties__/u:object_r:camera2_extensions_prop:s0
+      1 /dev/__properties__/u:object_r:camera_calibration_prop:s0
+      1 /dev/__properties__/u:object_r:camera_config_prop:s0
+      1 /dev/__properties__/u:object_r:camerax_extensions_prop:s0
+      1 /dev/__properties__/u:object_r:chipname_prop:s0
+      1 /dev/__properties__/u:object_r:codec2_config_prop:s0
+      1 /dev/__properties__/u:object_r:config_prop:s0
+      1 /dev/__properties__/u:object_r:cppreopt_prop:s0
+      1 /dev/__properties__/u:object_r:csc_prop:s0
+      1 /dev/__properties__/u:object_r:dalvik_config_prop:s0
+      1 /dev/__properties__/u:object_r:dalvik_dynamic_config_prop:s0
+      1 /dev/__properties__/u:object_r:dalvik_prop:s0
+      1 /dev/__properties__/u:object_r:dalvik_runtime_prop:s0
+      1 /dev/__properties__/u:object_r:dck_prop:s0
+      1 /dev/__properties__/u:object_r:debug_level_prop:s0
+      2 /dev/__properties__/u:object_r:debug_prop:s0
+      1 /dev/__properties__/u:object_r:debuggerd_prop:s0
+      1 /dev/__properties__/u:object_r:default_prop:s0
+      1 /dev/__properties__/u:object_r:device_config_aconfig_flags_prop:s0
+      1 /dev/__properties__/u:object_r:device_config_media_native_prop:s0
+      1 /dev/__properties__/u:object_r:device_config_memory_safety_native_boot_prop:s0
+      2 /dev/__properties__/u:object_r:device_config_memory_safety_native_prop:s0
+      1 /dev/__properties__/u:object_r:device_config_nnapi_native_prop:s0
+      1 /dev/__properties__/u:object_r:device_config_runtime_native_boot_prop:s0
+      1 /dev/__properties__/u:object_r:device_config_runtime_native_prop:s0
+      1 /dev/__properties__/u:object_r:dhcp_prop:s0
+      1 /dev/__properties__/u:object_r:domain_read_prop:s0
+      1 /dev/__properties__/u:object_r:dumpstate_prop:s0
+      1 /dev/__properties__/u:object_r:em_version_prop:s0
+      1 /dev/__properties__/u:object_r:exported3_system_prop:s0
+      1 /dev/__properties__/u:object_r:exported_config_prop:s0
+      1 /dev/__properties__/u:object_r:exported_default_prop:s0
+      1 /dev/__properties__/u:object_r:exported_dumpstate_prop:s0
+      1 /dev/__properties__/u:object_r:exported_pm_prop:s0
+      1 /dev/__properties__/u:object_r:exported_radio_prop:s0
+      1 /dev/__properties__/u:object_r:exported_system_prop:s0
+      1 /dev/__properties__/u:object_r:ffs_config_prop:s0
+      1 /dev/__properties__/u:object_r:fingerprint_prop:s0
+      1 /dev/__properties__/u:object_r:framework_status_prop:s0
+      1 /dev/__properties__/u:object_r:graphics_config_prop:s0
+      1 /dev/__properties__/u:object_r:graphics_config_writable_prop:s0
+      1 /dev/__properties__/u:object_r:gwp_asan_prop:s0
+      1 /dev/__properties__/u:object_r:hal_instrumentation_prop:s0
+      1 /dev/__properties__/u:object_r:hdmi_config_prop:s0
+      1 /dev/__properties__/u:object_r:heapprofd_prop:s0
+      1 /dev/__properties__/u:object_r:high_barometer_quality_prop:s0
+      1 /dev/__properties__/u:object_r:hw_timeout_multiplier_prop:s0
+      1 /dev/__properties__/u:object_r:hwservicemanager_prop:s0
+      1 /dev/__properties__/u:object_r:hypervisor_prop:s0
+      1 /dev/__properties__/u:object_r:ina_status_prop:s0
+      1 /dev/__properties__/u:object_r:init_mnt_ns_prop:s0
+      1 /dev/__properties__/u:object_r:init_service_status_private_prop:s0
+      1 /dev/__properties__/u:object_r:init_service_status_prop:s0
+      1 /dev/__properties__/u:object_r:kumiho_prop:s0
+      1 /dev/__properties__/u:object_r:libc_debug_prop:s0
+      1 /dev/__properties__/u:object_r:lmkd_config_prop:s0
+      1 /dev/__properties__/u:object_r:locale_prop:s0
+      1 /dev/__properties__/u:object_r:localization_prop:s0
+      1 /dev/__properties__/u:object_r:log_file_logger_prop:s0
+      1 /dev/__properties__/u:object_r:log_prop:s0
+      1 /dev/__properties__/u:object_r:log_tag_prop:s0
+      1 /dev/__properties__/u:object_r:logd_prop:s0
+      1 /dev/__properties__/u:object_r:media_config_prop:s0
+      1 /dev/__properties__/u:object_r:media_variant_prop:s0
+      1 /dev/__properties__/u:object_r:mediadrm_config_prop:s0
+      1 /dev/__properties__/u:object_r:module_sdkextensions_prop:s0
+      1 /dev/__properties__/u:object_r:native_binder_stats_prop:s0
+      1 /dev/__properties__/u:object_r:net_radio_prop:s0
+      1 /dev/__properties__/u:object_r:netflix_bsp_rev_prop:s0
+      1 /dev/__properties__/u:object_r:nfc_prop:s0
+      1 /dev/__properties__/u:object_r:nnapi_ext_deny_product_prop:s0
+      1 /dev/__properties__/u:object_r:ota_prop:s0
+      1 /dev/__properties__/u:object_r:packagemanager_config_prop:s0
+      1 /dev/__properties__/u:object_r:pan_result_prop:s0
+      1 /dev/__properties__/u:object_r:permissive_mte_prop:s0
+      1 /dev/__properties__/u:object_r:persist_debug_prop:s0
+      1 /dev/__properties__/u:object_r:persist_sysui_builder_extras_prop:s0
+      1 /dev/__properties__/u:object_r:persist_sysui_ranking_update_prop:s0
+      1 /dev/__properties__/u:object_r:persist_wm_debug_prop:s0
+      1 /dev/__properties__/u:object_r:pm_prop:s0
+      1 /dev/__properties__/u:object_r:powerctl_prop:s0
+      1 /dev/__properties__/u:object_r:product_ship_prop:s0
+      1 /dev/__properties__/u:object_r:property_service_version_prop:s0
+      1 /dev/__properties__/u:object_r:radio_control_prop:s0
+      1 /dev/__properties__/u:object_r:radio_prop:s0
+      1 /dev/__properties__/u:object_r:restorecon_prop:s0
+      1 /dev/__properties__/u:object_r:rfkilldisabled_prop:s0
+      1 /dev/__properties__/u:object_r:rollback_test_prop:s0
+      1 /dev/__properties__/u:object_r:sendbug_config_prop:s0
+      1 /dev/__properties__/u:object_r:service_sf_present_timestamp_prop:s0
+      1 /dev/__properties__/u:object_r:servicemanager_prop:s0
+      1 /dev/__properties__/u:object_r:setupwizard_mode_prop:s0
+      1 /dev/__properties__/u:object_r:setupwizard_prop:s0
+      1 /dev/__properties__/u:object_r:shell_prop:s0
+      1 /dev/__properties__/u:object_r:soc_prop:s0
+      1 /dev/__properties__/u:object_r:socket_hook_prop:s0
+      1 /dev/__properties__/u:object_r:sqlite_log_prop:s0
+      1 /dev/__properties__/u:object_r:statsd_atoms_list_version_prop:s0
+      1 /dev/__properties__/u:object_r:storagemanager_config_prop:s0
+      1 /dev/__properties__/u:object_r:surfaceflinger_color_prop:s0
+      1 /dev/__properties__/u:object_r:surfaceflinger_prop:s0
+      1 /dev/__properties__/u:object_r:system_prop:s0
+      1 /dev/__properties__/u:object_r:system_sensor_prop:s0
+      1 /dev/__properties__/u:object_r:systemsound_config_prop:s0
+      1 /dev/__properties__/u:object_r:telephony_config_prop:s0
+      1 /dev/__properties__/u:object_r:telephony_prop:s0
+      1 /dev/__properties__/u:object_r:telephony_status_prop:s0
+      1 /dev/__properties__/u:object_r:test_harness_prop:s0
+      1 /dev/__properties__/u:object_r:timezone_prop:s0
+      1 /dev/__properties__/u:object_r:traced_oome_heap_session_count_prop:s0
+      1 /dev/__properties__/u:object_r:usb_config_prop:s0
+      1 /dev/__properties__/u:object_r:usb_control_prop:s0
+      1 /dev/__properties__/u:object_r:usb_prop:s0
+      1 /dev/__properties__/u:object_r:use_memfd_prop:s0
+      1 /dev/__properties__/u:object_r:userspace_reboot_config_prop:s0
+      1 /dev/__properties__/u:object_r:userspace_reboot_exported_prop:s0
+      1 /dev/__properties__/u:object_r:userspace_reboot_log_prop:s0
+      1 /dev/__properties__/u:object_r:userspace_reboot_test_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_camera_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_debug_egl_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_hdm_public_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_hdm_restricted_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_performance_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_radio_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_securehw_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_securenvm_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_security_securehw_prop:s0
+      1 /dev/__properties__/u:object_r:vendor_socket_hook_prop:s0
+      2 /dev/__properties__/u:object_r:vndk_prop:s0
+      1 /dev/__properties__/u:object_r:vold_config_prop:s0
+      1 /dev/__properties__/u:object_r:vold_prop:s0
+      1 /dev/__properties__/u:object_r:vold_status_prop:s0
+      1 /dev/__properties__/u:object_r:vts_config_prop:s0
+      1 /dev/__properties__/u:object_r:vts_status_prop:s0
+      1 /dev/__properties__/u:object_r:wifi_log_prop:s0
+      1 /dev/__properties__/u:object_r:zygote_config_prop:s0
+      1 /dev/__properties__/u:object_r:zygote_wrap_prop:s0
+      3 /dev/ashmem/2dedc504-3861-42c9-83f9-ec52e8a5e878
+      4 /dev/ashmem/928399ef-152b-461f-b1d4-b2db0e44a900
+      1 /dev/ashmem/ApplicationSharedMemory
+      1 /dev/ashmem/GFXStats-25206
+      1 /dev/ashmem/fontMap
+      1 /dev/binderfs/binder
+     11 /dev/dri/renderD128
+      4 /system/lib64/libinput.so
+      4 /vendor/lib64/libenn_common_utils.so
+      4 /vendor/lib64/libenn_public_api_cpp.so
+      4 /vendor/lib64/libenn_user.samsung_slsi.so
+      4 /vendor/lib64/vendor.samsung_slsi.hardware.enn_aidl-V1-ndk.so
+=== fallback: plain shell ls -l /proc/25206/fd ===
+ls: /proc/25206/fd: Permission denied

@@ -1,0 +1,61 @@
+== smoke cpu_engine60_r1  run_id cpu_engine60_r1_20260925_002436  host 2026-09-25 00:24:36
+== extras: --es accelerator CPU --es dtype float --ei iterations 11000 --ei warmup 20 --es model_asset models/mobilenet_v1_1.0_224.tflite
+ AC powered: false; USB powered: false; Wireless powered: false; status: 3; level: 83; temperature: 315;
+	Temperature{mValue=31.9, mType=0, mName=AP, mStatus=0}
+	Temperature{mValue=31.4, mType=2, mName=BAT, mStatus=0}
+	Temperature{mValue=32.9, mType=3, mName=SKIN, mStatus=0}
+Starting: Intent { cmp=com.example.d1check.npurunner/.NpuRunnerActivity (has extras) }
+Status: ok
+LaunchState: COLD
+Activity: com.example.d1check.npurunner/.NpuRunnerActivity
+TotalTime: 172
+WaitTime: 173
+Complete
+== summary_found=1 after ~47s  host 2026-09-25 00:25:37
+----- logcat D1NPU / litert / tflite -----
+--------- beginning of main
+09-25 00:24:38.309  2361  2361 I D1NPU   : D1 NPU Runner
+09-25 00:24:38.309  2361  2361 I D1NPU   : accelerator=CPU dtype=float iterations=11000 warmup=20 model=models/mobilenet_v1_1.0_224.tflite run_id=cpu_engine60_r1_20260925_002436 quality_n=0 input_spec=lcg-unit
+09-25 00:24:38.309  2361  2361 I D1NPU   : 
+09-25 00:24:38.309  2361  2361 I D1NPU   : running...
+09-25 00:24:38.311  2361  2396 I D1NPU   : creating Environment / CompiledModel...
+09-25 00:24:38.320  2361  2396 I litert  : [litert_runtime_builtin.cc:63] Loaded runtime library and found kLiteRtRuntimeBuiltin.
+09-25 00:24:38.320  2361  2396 I litert  : [environment.cc:36] Creating LiteRT environment with options
+09-25 00:24:38.320  2361  2396 I litert  : [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xb400007e1d425050, name=NpuAccelerator
+09-25 00:24:38.320  2361  2396 I litert  : [npu_registry.cc:30] NPU accelerator registered.
+09-25 00:24:38.321  2361  2396 I litert  : [gpu_registry.cc:101] Attempting to load GPU accelerator(libLiteRtGpuAccelerator.so).
+09-25 00:24:38.321  2361  2396 I litert  : [gpu_registry.cc:101] Attempting to load GPU accelerator(libLiteRtClGlAccelerator.so).
+09-25 00:24:38.322  2361  2396 I litert  : [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xb400007e1d42ab10, name=LiteRT GPU
+09-25 00:24:38.322  2361  2396 I litert  : [gpu_registry.cc:109] Dynamically loaded GPU accelerator(libLiteRtClGlAccelerator.so) registered.
+09-25 00:24:38.322  2361  2396 I litert  : [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xb400007e1d42aed0, name=CpuAccelerator
+09-25 00:24:38.322  2361  2396 I litert  : [cpu_registry.cc:75] XNNPACK CPU accelerator registered.
+09-25 00:24:38.335  2361  2396 I litert  : [compiled_model.cc:754] NPU JIT compilation caching enabled with cache dir: /data/user/0/com.example.d1check.npurunner/cache
+09-25 00:24:38.337  2361  2396 I litert  : [compiled_model.cc:833] Flatbuffer model initialized directly from incoming litert model.
+09-25 00:24:38.345  2361  2396 I tflite  : Initialized TensorFlow Lite runtime.
+09-25 00:24:38.345  2361  2396 I litert  : [litert_dispatch.cc:159] Loading shared library: /data/app/~~t5qpCtfwySvCSpqb5YvfbA==/com.example.d1check.npurunner-KyZAt5ZrgnJFf9sDeAky4w==/lib/arm64/libLiteRtDispatch_Samsung.so
+09-25 00:24:38.349  2361  2396 I litert  : [enn_manager.cc:79] Loading from: libenn_public_api_cpp.so
+09-25 00:24:38.352  2361  2396 I litert  : [enn_manager.cc:124] SetGenAiPerfConfigFromSoc: SOC=s5e9965, mode=7, configId=0
+09-25 00:24:38.354  2361  2396 I tflite  : Created TensorFlow Lite XNNPACK delegate for CPU.
+09-25 00:24:38.354  2361  2396 I tflite  : Replacing 31 out of 31 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 1 partitions for subgraph 0 ().
+09-25 00:24:38.376  2361  2396 I D1NPU   : init OK
+09-25 00:24:38.376  2361  2396 I D1NPU   :   available = [NPU,GPU,CPU]
+09-25 00:24:38.376  2361  2396 I D1NPU   :   env    10.883 ms
+09-25 00:24:38.376  2361  2396 I D1NPU   :   model  41.304 ms   <- idle->CPU switch cost
+09-25 00:24:38.376  2361  2396 I D1NPU   :   buffer 0.382 ms
+09-25 00:24:38.376  2361  2396 I D1NPU   :   nativeLibDir = /data/app/~~t5qpCtfwySvCSpqb5YvfbA==/com.example.d1check.npurunner-KyZAt5ZrgnJFf9sDeAky4w==/lib/arm64
+09-25 00:24:38.376  2361  2396 I D1NPU   :   libs = [libLiteRt.so, libLiteRtClGlAccelerator.so, libLiteRtDispatch_Samsung.so, liblitert_jni.so]
+09-25 00:24:38.376  2361  2396 I D1NPU   :   dispatch .so present = true
+09-25 00:24:38.694  2361  2396 I D1NPU   : first inference OK: 3.873 ms
+09-25 00:25:37.441  2361  2396 I D1NPU   : result
+09-25 00:25:37.441  2361  2396 I D1NPU   :   latency  median 5.525 ms  p95 5.886 ms
+09-25 00:25:37.441  2361  2396 I D1NPU   :   run() only median 5.489 ms
+09-25 00:25:37.441  2361  2396 I D1NPU   :   argmax   112
+09-25 00:25:37.441  2361  2396 I D1NPU   :   top5     112(0.3177), 611(0.0446), 79(0.0421), 814(0.0262), 550(0.0195)
+09-25 00:25:37.442  2361  2396 I D1NPU   : === OK ===
+09-25 00:25:37.447  2361  2396 I litert  : [accelerator_registry.cc:43] DestroyAccelerator: ptr=0xb400007e1d42aed0, name=CpuAccelerator
+09-25 00:25:37.447  2361  2396 I litert  : [accelerator_registry.cc:43] DestroyAccelerator: ptr=0xb400007e1d42ab10, name=LiteRT GPU
+09-25 00:25:37.447  2361  2396 I litert  : [accelerator_registry.cc:43] DestroyAccelerator: ptr=0xb400007e1d425050, name=NpuAccelerator
+09-25 00:25:37.448  2361  2396 I D1NPU   : SUMMARY_BEGIN chunks=1 bytes=1608
+09-25 00:25:37.448  2361  2396 I D1NPU   : SUMMARY[0/1] {"schema":"npu-runner-smoke-v1","run_id":"cpu_engine60_r1_20260925_002436","engine":"litert-compiled-model","accelerator_requested":"CPU","model":"models/mobilenet_v1_1.0_224.tflite","dtype":"float","input_generator":"lcg-float32-unit-v1","input_normalization":"synthetic_[0,1]_float32_no_additional_normalization","input_spec":"lcg-unit","iterations":11000,"warmup":20,"device_model":"SM-S942N","android_sdk":36,"build_fingerprint":"samsung/m1sksx/m1s:16/BP4A.251205.006/S942NKSS4AZHA_OKR4AZHA:user/release-keys","available_accelerators":"NPU,GPU,CPU","env_init_ms":10.883,"model_init_ms":41.304,"buffer_init_ms":0.382,"input_buffers":1,"output_buffers":1,"native_lib_dir":"/data/app/~~t5qpCtfwySvCSpqb5YvfbA==/com.example.d1check.npurunner-KyZAt5ZrgnJFf9sDeAky4w==/lib/arm64","native_lib_files":"libLiteRt.so,libLiteRtClGlAccelerator.so,libLiteRtDispatch_Samsung.so,liblitert_jni.so","dispatch_so_present":true,"model_sha256":"d95b3c5ea86750cef882fa867ca357dfe4d265d0b80b67e83277a0bda310cfbb","input_elements":150528,"input_sha256":"5dc1cb09d712429fa580bdb7976c01d3933956d77002a8c8ab3c82c40f3899f3","latency_ms":{"count":11000,"mean":5.335,"median":5.525,"p95":5.886,"min":3.806,"max":12.265},"run_only_ms":{"count":11000,"mean":5.301,"median":5.489,"p95":5.847,"min":3.785,"max":12.224},"output_length":1001,"output_sha256":"0ef50910750f92c819f8b3c428650ed116d43b721be250ec27f4febcdfdbd833","argmax":112,"top5":[{"index":112,"score":0.31770724},{"index":611,"score":0.044621333},{"index":79,"score":0.04214689},{"index":814,"score":0.026232354},{"index":550,"score":0.019539189}],"status":"OK","error":""}
+09-25 00:25:37.448  2361  2396 I D1NPU   : SUMMARY_END
+----- crash buffer -----

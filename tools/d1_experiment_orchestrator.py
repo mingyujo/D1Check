@@ -58,6 +58,12 @@ NPU_QUALITY_TIMEOUT_SECONDS = 180
 NPU_QUALITY_POLL_SECONDS = 3.0
 NPU_LITERT_RUNTIME_VERSION = "2.2.0"
 NPU_DISPATCH_LIB_SHA256 = "f08656a642c46e7b06b64fbe1e0800de9e73b0b69c1641b87995562b4a16840f"
+# How long run_slot waits for d1_logger to exit after run_stop. The runner flushes every buffered
+# D1GPU event to logcat at run end, and d1_logger drains that burst line by line. NPU is ~6x faster
+# than CPU4, so one 60 s duty-100 NPU slot is ~75k events / 28 MB (S26 09-25 00:06: 75,646 events,
+# drained at ~1.5k lines/s, so the 30 s CPU/GPU wait expired at sequence 67,412). CPU/GPU keep 30 s.
+LOGGER_EXIT_TIMEOUT_SECONDS = 30
+NPU_LOGGER_EXIT_TIMEOUT_SECONDS = 300
 ACCURACY_SCHEMA_VERSION = 2
 LEGACY_ACCURACY_SCHEMA_VERSION = 1
 ACCURACY_COMPARATOR_VERSION = "output-equivalence-v3"
@@ -1045,6 +1051,13 @@ def remote_runner_directory_for(resource: Any) -> str:
         NPU_REMOTE_RUNNER_DIRECTORY if str(resource or "").upper() == "NPU"
         else REMOTE_RUNNER_DIRECTORY
     )
+
+
+def logger_exit_timeout_seconds(resource: Any) -> int:
+    """Wait for d1_logger to exit after run_stop; longer for NPU's larger end-of-run logcat burst."""
+    if str(resource or "").upper() == "NPU":
+        return NPU_LOGGER_EXIT_TIMEOUT_SECONDS
+    return LOGGER_EXIT_TIMEOUT_SECONDS
 
 
 def npu_logger_capture_arguments(resource: Any) -> list[str]:
@@ -4086,7 +4099,9 @@ class ExperimentOrchestrator:
             )
 
             try:
-                logger_code = logger.process.wait(timeout=30)
+                logger_code = logger.process.wait(
+                    timeout=logger_exit_timeout_seconds(slot["resource"])
+                )
             except subprocess.TimeoutExpired as error:
                 raise OrchestratorError("d1_logger did not exit after run_stop") from error
             if logger_code != 0:

@@ -137,6 +137,8 @@ class NpuIntentTest(unittest.TestCase):
             self.assertEqual(ORCH.REMOTE_RUNNER_DIRECTORY, ORCH.remote_runner_directory_for(resource))
             self.assertEqual([], ORCH.npu_logger_capture_arguments(resource))
             self.assertEqual({}, ORCH.npu_runner_intent_kwargs(resource, SimpleNamespace()))
+            self.assertEqual(30, ORCH.logger_exit_timeout_seconds(resource))
+        self.assertEqual(300, ORCH.logger_exit_timeout_seconds("NPU"))
         self.assertEqual(ORCH.NPU_RUNNER_PACKAGE, ORCH.runner_package_for("NPU"))
         self.assertEqual(ORCH.NPU_REMOTE_RUNNER_DIRECTORY, ORCH.remote_runner_directory_for("NPU"))
         self.assertEqual(
