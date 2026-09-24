@@ -1,0 +1,25 @@
+mode,scenario,two_latency_metrics,with_deadline_rates,B2_normal_misses,P_normal_misses,normal_n,support,B2_dominant_replicates,P_dominant_replicates,tradeoff_replicates,equal_replicates
+strict,low,equal,equal,0,0,90,global_serial_queue_transfer_assumed,0,0,0,5
+strict,queue,equal,equal,26,26,90,global_serial_queue_transfer_assumed,0,0,0,5
+strict,burst,equal,equal,15,15,90,global_serial_queue_transfer_assumed,0,0,0,5
+strict,urgent_heavy,equal,equal,0,0,60,global_serial_queue_transfer_assumed,0,0,0,5
+strict,classification_mix,equal,equal,0,0,90,global_serial_queue_transfer_assumed,0,0,0,5
+strict,reverse,equal,equal,0,0,90,global_serial_queue_transfer_assumed,0,0,0,5
+strict,queue_interference_1.0,equal,equal,26,26,90,global_serial_queue_transfer_assumed,0,0,0,5
+strict,queue_interference_2.0,equal,equal,26,26,90,global_serial_queue_transfer_assumed,0,0,0,5
+strict,queue_estimate_0.75,equal,equal,26,26,90,global_serial_queue_transfer_assumed,0,0,0,5
+strict,queue_estimate_1.25,equal,equal,26,26,90,global_serial_queue_transfer_assumed,0,0,0,5
+strict,queue_load_x2,equal,equal,40,40,90,global_serial_queue_transfer_assumed,0,0,0,5
+strict,queue_hostcost_x10,equal,equal,28,28,90,global_serial_queue_transfer_assumed,0,0,0,5
+explore,low,P_weakly_dominates,P_weakly_dominates,0,0,90,model_only; arbitrary_overlap_not_device_validated,0,5,0,0
+explore,queue,B2_weakly_dominates,tradeoff,20,17,90,model_only; arbitrary_overlap_not_device_validated,2,0,3,0
+explore,burst,B2_weakly_dominates,B2_weakly_dominates,13,14,90,model_only; arbitrary_overlap_not_device_validated,4,0,1,0
+explore,urgent_heavy,B2_weakly_dominates,B2_weakly_dominates,0,0,60,model_only; arbitrary_overlap_not_device_validated,5,0,0,0
+explore,classification_mix,tradeoff,tradeoff,0,0,90,model_only; arbitrary_overlap_not_device_validated,0,0,5,0
+explore,reverse,B2_weakly_dominates,B2_weakly_dominates,0,0,90,model_only; arbitrary_overlap_not_device_validated,2,0,3,0
+explore,queue_interference_1.0,tradeoff,tradeoff,11,0,90,model_only; arbitrary_overlap_not_device_validated,0,0,5,0
+explore,queue_interference_2.0,B2_weakly_dominates,B2_weakly_dominates,30,48,90,model_only; arbitrary_overlap_not_device_validated,5,0,0,0
+explore,queue_estimate_0.75,B2_weakly_dominates,B2_weakly_dominates,20,27,90,model_only; arbitrary_overlap_not_device_validated,5,0,0,0
+explore,queue_estimate_1.25,B2_weakly_dominates,tradeoff,20,16,90,model_only; arbitrary_overlap_not_device_validated,5,0,0,0
+explore,queue_load_x2,tradeoff,tradeoff,30,29,90,model_only; arbitrary_overlap_not_device_validated,0,0,5,0
+explore,queue_hostcost_x10,B2_weakly_dominates,tradeoff,20,19,90,model_only; arbitrary_overlap_not_device_validated,3,0,2,0

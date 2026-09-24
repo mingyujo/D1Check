@@ -1,0 +1,590 @@
+{
+  "queue": [
+    {
+      "at_ns": 200000000.0,
+      "observed_P": {
+        "candidates": [
+          {
+            "assumed_pair_cost_ns": 0,
+            "available": false,
+            "backend": "CPU",
+            "reply_ns": 154716576.5,
+            "request_id": "evaluation/queue/1",
+            "score_ns": 582434615.0,
+            "wait_ns": 427718038.5
+          },
+          {
+            "assumed_pair_cost_ns": 332691865.25,
+            "available": true,
+            "backend": "GPU",
+            "reply_ns": 295764423.0,
+            "request_id": "evaluation/queue/1",
+            "score_ns": 628456288.25,
+            "wait_ns": 0
+          }
+        ],
+        "lanes": {
+          "CPU": {
+            "dispatch": 300000.0,
+            "phase": "EXECUTING",
+            "request": {
+              "arrival_ns": 0,
+              "deadline_offset_ns": 6000000000,
+              "id": "evaluation/queue/0",
+              "ordinal": 0,
+              "priority": "normal",
+              "task": "detection"
+            },
+            "since": 58577307.0
+          },
+          "GPU": {
+            "dispatch": null,
+            "phase": "AVAILABLE",
+            "request": null,
+            "since": 200000000.0
+          }
+        },
+        "now_ns": 200000000.0,
+        "queue": [
+          {
+            "arrival_ns": 200000000,
+            "deadline_offset_ns": 1500000000,
+            "id": "evaluation/queue/1",
+            "ordinal": 1,
+            "priority": "urgent",
+            "task": "classification"
+          }
+        ],
+        "reason": "busy_or_preferred_lane",
+        "residuals": {
+          "CPU": {
+            "ns": 427718038.5,
+            "state": "ESTIMATED_POINT"
+          },
+          "GPU": {
+            "ns": 0,
+            "state": "AVAILABLE"
+          }
+        },
+        "selected": null
+      },
+      "B3_same_state": {
+        "now_ns": 200000000.0,
+        "queue": [
+          {
+            "arrival_ns": 200000000,
+            "deadline_offset_ns": 1500000000,
+            "id": "evaluation/queue/1",
+            "ordinal": 1,
+            "priority": "urgent",
+            "task": "classification"
+          }
+        ],
+        "lanes": {
+          "CPU": {
+            "dispatch": 300000.0,
+            "phase": "EXECUTING",
+            "request": {
+              "arrival_ns": 0,
+              "deadline_offset_ns": 6000000000,
+              "id": "evaluation/queue/0",
+              "ordinal": 0,
+              "priority": "normal",
+              "task": "detection"
+            },
+            "since": 58577307.0
+          },
+          "GPU": {
+            "dispatch": null,
+            "phase": "AVAILABLE",
+            "request": null,
+            "since": 200000000.0
+          }
+        },
+        "residuals": {
+          "CPU": {
+            "state": "ESTIMATED_POINT",
+            "ns": 427718038.5
+          },
+          "GPU": {
+            "state": "AVAILABLE",
+            "ns": 0
+          }
+        },
+        "candidates": [
+          {
+            "request_id": "evaluation/queue/1",
+            "backend": "CPU",
+            "score_ns": 582434615.0,
+            "reply_ns": 154716576.5,
+            "wait_ns": 427718038.5,
+            "assumed_pair_cost_ns": 0,
+            "available": false
+          },
+          {
+            "request_id": "evaluation/queue/1",
+            "backend": "GPU",
+            "score_ns": 295764423.0,
+            "reply_ns": 295764423.0,
+            "wait_ns": 0,
+            "assumed_pair_cost_ns": 0.0,
+            "available": true
+          }
+        ],
+        "selected": {
+          "request_id": "evaluation/queue/1",
+          "backend": "GPU"
+        },
+        "reason": "minimum_predicted_cost"
+      }
+    },
+    {
+      "at_ns": 400000000.0,
+      "observed_P": {
+        "candidates": [
+          {
+            "assumed_pair_cost_ns": 0,
+            "available": false,
+            "backend": "CPU",
+            "reply_ns": 154716576.5,
+            "request_id": "evaluation/queue/1",
+            "score_ns": 382434615.0,
+            "wait_ns": 227718038.5
+          },
+          {
+            "assumed_pair_cost_ns": 232691865.25,
+            "available": true,
+            "backend": "GPU",
+            "reply_ns": 295764423.0,
+            "request_id": "evaluation/queue/1",
+            "score_ns": 528456288.25,
+            "wait_ns": 0
+          }
+        ],
+        "lanes": {
+          "CPU": {
+            "dispatch": 300000.0,
+            "phase": "EXECUTING",
+            "request": {
+              "arrival_ns": 0,
+              "deadline_offset_ns": 6000000000,
+              "id": "evaluation/queue/0",
+              "ordinal": 0,
+              "priority": "normal",
+              "task": "detection"
+            },
+            "since": 58577307.0
+          },
+          "GPU": {
+            "dispatch": null,
+            "phase": "AVAILABLE",
+            "request": null,
+            "since": 400000000.0
+          }
+        },
+        "now_ns": 400000000.0,
+        "queue": [
+          {
+            "arrival_ns": 200000000,
+            "deadline_offset_ns": 1500000000,
+            "id": "evaluation/queue/1",
+            "ordinal": 1,
+            "priority": "urgent",
+            "task": "classification"
+          },
+          {
+            "arrival_ns": 400000000,
+            "deadline_offset_ns": 6000000000,
+            "id": "evaluation/queue/2",
+            "ordinal": 2,
+            "priority": "normal",
+            "task": "detection"
+          }
+        ],
+        "reason": "busy_or_preferred_lane",
+        "residuals": {
+          "CPU": {
+            "ns": 227718038.5,
+            "state": "ESTIMATED_POINT"
+          },
+          "GPU": {
+            "ns": 0,
+            "state": "AVAILABLE"
+          }
+        },
+        "selected": null
+      },
+      "B3_same_state": {
+        "now_ns": 400000000.0,
+        "queue": [
+          {
+            "arrival_ns": 200000000,
+            "deadline_offset_ns": 1500000000,
+            "id": "evaluation/queue/1",
+            "ordinal": 1,
+            "priority": "urgent",
+            "task": "classification"
+          },
+          {
+            "arrival_ns": 400000000,
+            "deadline_offset_ns": 6000000000,
+            "id": "evaluation/queue/2",
+            "ordinal": 2,
+            "priority": "normal",
+            "task": "detection"
+          }
+        ],
+        "lanes": {
+          "CPU": {
+            "dispatch": 300000.0,
+            "phase": "EXECUTING",
+            "request": {
+              "arrival_ns": 0,
+              "deadline_offset_ns": 6000000000,
+              "id": "evaluation/queue/0",
+              "ordinal": 0,
+              "priority": "normal",
+              "task": "detection"
+            },
+            "since": 58577307.0
+          },
+          "GPU": {
+            "dispatch": null,
+            "phase": "AVAILABLE",
+            "request": null,
+            "since": 400000000.0
+          }
+        },
+        "residuals": {
+          "CPU": {
+            "state": "ESTIMATED_POINT",
+            "ns": 227718038.5
+          },
+          "GPU": {
+            "state": "AVAILABLE",
+            "ns": 0
+          }
+        },
+        "candidates": [
+          {
+            "request_id": "evaluation/queue/1",
+            "backend": "CPU",
+            "score_ns": 382434615.0,
+            "reply_ns": 154716576.5,
+            "wait_ns": 227718038.5,
+            "assumed_pair_cost_ns": 0,
+            "available": false
+          },
+          {
+            "request_id": "evaluation/queue/1",
+            "backend": "GPU",
+            "score_ns": 295764423.0,
+            "reply_ns": 295764423.0,
+            "wait_ns": 0,
+            "assumed_pair_cost_ns": 0.0,
+            "available": true
+          }
+        ],
+        "selected": {
+          "request_id": "evaluation/queue/1",
+          "backend": "GPU"
+        },
+        "reason": "minimum_predicted_cost"
+      }
+    }
+  ],
+  "queue_interference_1.0": [
+    {
+      "at_ns": 200000000.0,
+      "observed_P": {
+        "now_ns": 200000000.0,
+        "queue": [
+          {
+            "id": "evaluation/queue/1",
+            "task": "classification",
+            "priority": "urgent",
+            "ordinal": 1,
+            "arrival_ns": 200000000,
+            "deadline_offset_ns": 1500000000
+          }
+        ],
+        "lanes": {
+          "CPU": {
+            "request": {
+              "id": "evaluation/queue/0",
+              "task": "detection",
+              "priority": "normal",
+              "ordinal": 0,
+              "arrival_ns": 0,
+              "deadline_offset_ns": 6000000000
+            },
+            "phase": "EXECUTING",
+            "since": 58577307.0,
+            "dispatch": 300000.0
+          },
+          "GPU": {
+            "request": null,
+            "phase": "AVAILABLE",
+            "since": 200000000.0,
+            "dispatch": null
+          }
+        },
+        "residuals": {
+          "CPU": {
+            "state": "ESTIMATED_POINT",
+            "ns": 427718038.5
+          },
+          "GPU": {
+            "state": "AVAILABLE",
+            "ns": 0
+          }
+        },
+        "candidates": [
+          {
+            "request_id": "evaluation/queue/1",
+            "backend": "CPU",
+            "score_ns": 582434615.0,
+            "reply_ns": 154716576.5,
+            "wait_ns": 427718038.5,
+            "assumed_pair_cost_ns": 0,
+            "available": false
+          },
+          {
+            "request_id": "evaluation/queue/1",
+            "backend": "GPU",
+            "score_ns": 628456288.25,
+            "reply_ns": 295764423.0,
+            "wait_ns": 0,
+            "assumed_pair_cost_ns": 332691865.25,
+            "available": true
+          }
+        ],
+        "selected": null,
+        "reason": "busy_or_preferred_lane"
+      },
+      "B3_same_state": {
+        "now_ns": 200000000.0,
+        "queue": [
+          {
+            "id": "evaluation/queue/1",
+            "task": "classification",
+            "priority": "urgent",
+            "ordinal": 1,
+            "arrival_ns": 200000000,
+            "deadline_offset_ns": 1500000000
+          }
+        ],
+        "lanes": {
+          "CPU": {
+            "request": {
+              "id": "evaluation/queue/0",
+              "task": "detection",
+              "priority": "normal",
+              "ordinal": 0,
+              "arrival_ns": 0,
+              "deadline_offset_ns": 6000000000
+            },
+            "phase": "EXECUTING",
+            "since": 58577307.0,
+            "dispatch": 300000.0
+          },
+          "GPU": {
+            "request": null,
+            "phase": "AVAILABLE",
+            "since": 200000000.0,
+            "dispatch": null
+          }
+        },
+        "residuals": {
+          "CPU": {
+            "state": "ESTIMATED_POINT",
+            "ns": 427718038.5
+          },
+          "GPU": {
+            "state": "AVAILABLE",
+            "ns": 0
+          }
+        },
+        "candidates": [
+          {
+            "request_id": "evaluation/queue/1",
+            "backend": "CPU",
+            "score_ns": 582434615.0,
+            "reply_ns": 154716576.5,
+            "wait_ns": 427718038.5,
+            "assumed_pair_cost_ns": 0,
+            "available": false
+          },
+          {
+            "request_id": "evaluation/queue/1",
+            "backend": "GPU",
+            "score_ns": 295764423.0,
+            "reply_ns": 295764423.0,
+            "wait_ns": 0,
+            "assumed_pair_cost_ns": 0.0,
+            "available": true
+          }
+        ],
+        "selected": {
+          "request_id": "evaluation/queue/1",
+          "backend": "GPU"
+        },
+        "reason": "minimum_predicted_cost"
+      }
+    },
+    {
+      "at_ns": 400000000.0,
+      "observed_P": {
+        "now_ns": 400000000.0,
+        "queue": [
+          {
+            "id": "evaluation/queue/1",
+            "task": "classification",
+            "priority": "urgent",
+            "ordinal": 1,
+            "arrival_ns": 200000000,
+            "deadline_offset_ns": 1500000000
+          },
+          {
+            "id": "evaluation/queue/2",
+            "task": "detection",
+            "priority": "normal",
+            "ordinal": 2,
+            "arrival_ns": 400000000,
+            "deadline_offset_ns": 6000000000
+          }
+        ],
+        "lanes": {
+          "CPU": {
+            "request": {
+              "id": "evaluation/queue/0",
+              "task": "detection",
+              "priority": "normal",
+              "ordinal": 0,
+              "arrival_ns": 0,
+              "deadline_offset_ns": 6000000000
+            },
+            "phase": "EXECUTING",
+            "since": 58577307.0,
+            "dispatch": 300000.0
+          },
+          "GPU": {
+            "request": null,
+            "phase": "AVAILABLE",
+            "since": 400000000.0,
+            "dispatch": null
+          }
+        },
+        "residuals": {
+          "CPU": {
+            "state": "ESTIMATED_POINT",
+            "ns": 227718038.5
+          },
+          "GPU": {
+            "state": "AVAILABLE",
+            "ns": 0
+          }
+        },
+        "candidates": [
+          {
+            "request_id": "evaluation/queue/1",
+            "backend": "CPU",
+            "score_ns": 382434615.0,
+            "reply_ns": 154716576.5,
+            "wait_ns": 227718038.5,
+            "assumed_pair_cost_ns": 0,
+            "available": false
+          },
+          {
+            "request_id": "evaluation/queue/1",
+            "backend": "GPU",
+            "score_ns": 528456288.25,
+            "reply_ns": 295764423.0,
+            "wait_ns": 0,
+            "assumed_pair_cost_ns": 232691865.25,
+            "available": true
+          }
+        ],
+        "selected": null,
+        "reason": "busy_or_preferred_lane"
+      },
+      "B3_same_state": {
+        "now_ns": 400000000.0,
+        "queue": [
+          {
+            "id": "evaluation/queue/1",
+            "task": "classification",
+            "priority": "urgent",
+            "ordinal": 1,
+            "arrival_ns": 200000000,
+            "deadline_offset_ns": 1500000000
+          },
+          {
+            "id": "evaluation/queue/2",
+            "task": "detection",
+            "priority": "normal",
+            "ordinal": 2,
+            "arrival_ns": 400000000,
+            "deadline_offset_ns": 6000000000
+          }
+        ],
+        "lanes": {
+          "CPU": {
+            "request": {
+              "id": "evaluation/queue/0",
+              "task": "detection",
+              "priority": "normal",
+              "ordinal": 0,
+              "arrival_ns": 0,
+              "deadline_offset_ns": 6000000000
+            },
+            "phase": "EXECUTING",
+            "since": 58577307.0,
+            "dispatch": 300000.0
+          },
+          "GPU": {
+            "request": null,
+            "phase": "AVAILABLE",
+            "since": 400000000.0,
+            "dispatch": null
+          }
+        },
+        "residuals": {
+          "CPU": {
+            "state": "ESTIMATED_POINT",
+            "ns": 227718038.5
+          },
+          "GPU": {
+            "state": "AVAILABLE",
+            "ns": 0
+          }
+        },
+        "candidates": [
+          {
+            "request_id": "evaluation/queue/1",
+            "backend": "CPU",
+            "score_ns": 382434615.0,
+            "reply_ns": 154716576.5,
+            "wait_ns": 227718038.5,
+            "assumed_pair_cost_ns": 0,
+            "available": false
+          },
+          {
+            "request_id": "evaluation/queue/1",
+            "backend": "GPU",
+            "score_ns": 295764423.0,
+            "reply_ns": 295764423.0,
+            "wait_ns": 0,
+            "assumed_pair_cost_ns": 0.0,
+            "available": true
+          }
+        ],
+        "selected": {
+          "request_id": "evaluation/queue/1",
+          "backend": "GPU"
+        },
+        "reason": "minimum_predicted_cost"
+      }
+    }
+  ]
+}
