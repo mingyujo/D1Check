@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-09-25 개발자 옵션 재활성화 후 읽기 전용 gate 확인
+
+- 시작 `3e57107`/clean. 개발자 옵션 재활성화는 사용자 보고이며 정확한 변경 시각은 미확인이다. 현재 `development_settings_enabled=1`, `adb_wifi_enabled=1`과 단일 온라인 A24(`R59W802RW5F`, SM-A245N), 계약 fingerprint 일치를 직접 확인했다. 과거 timeout 원인 해결로 해석하지 않는다.
+- 01:52~01:54 KST 조회: 배터리58%/33.9°C/비충전, thermal0, Awake/interactive, 밝기81/수동/timeout18,000,000ms 일치. 앱 프로세스 없음. host 메모리 normal/Free RAM1,217,575KiB이며 **앱 내부 low_memory/runtime admission은 앱 미실행으로 미검증**이다. 시점 관측이므로 지속 유지 또는 실행 직전 gate를 대체하지 않는다.
+- 설치본 SHA `9019b85d…2c0`는 이전 apksigner 검증 APK bytes와 같고 후보 `d8db6963…34bc`와 다르다. 현재 해시를 보존된 서명 근거에 연결했으며 새 APK 회수/서명 검사를 반복하지 않았다.
+- COLLECT-01의 plan v1/v2는 같은 소비 registry로 종료 상태다. INSTALL-RECOVERY-01/workflow도 `stopped_no_resume`; COLLECT-02는 12세션 미시도지만 필수 recovery receipt가 failed이므로 실행 불가다. 별도 미시작 실행 가능 bundle은 없다. **ADB 읽기 전용16명령, 새 claim/전송/설치/세션/warmup/추론0**, 설정 변경/force-stop/계획 재개 없음. 기존 원본·소비량·experiment_ready=false 보존.
+- 근거: 외부 `C:/Users/LG/Documents/D1Check_Arrival_Extension/developer_options_gate_check_20260925_015243/`의 context/plan_inventory/identity/query_index/commands/FINAL_RECEIPT. 다음은 종료 계획과 분리된 새 실행 계획 준비이며, 실행 전 환경·서명·미소비 gate를 다시 적용한다.
+
 ## 2026-09-25 지정 v1 실행 재요청 — 중복 실행 gate로 미진입
 
 - 실제 시작 HEAD `6f8d950`/로컬·원격일치/clean. 요청의 `bceec84` 이후 변경은 이전 배터리 gate 종료 문서 commit이다. 새101.5분 예산 승인 요청은 확인했으나 지정된 `collection_recovery_plan_v1/RUN_AFTER_APPROVAL.ps1`은 이미 소비된 복구/workflow를 가리킨다.
