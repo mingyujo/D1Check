@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- timed run 이 D1Check 의 현재 run(content://com.example.d1check.run/current)을 읽는다.
+         benchmark-runner 매니페스트와 같은 권한 한 줄 (telemetry-contract D1RunContextClient). -->
+    <uses-permission android:name="com.example.d1check.permission.READ_RUN_CONTEXT" />
+
     <!-- Android 17 대비. Android 16(SDK 36)에서는 무해하게 무시된다. -->
     <uses-feature
         android:name="android.hardware.npu"

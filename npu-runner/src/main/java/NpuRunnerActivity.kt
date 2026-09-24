@@ -46,6 +46,10 @@ class NpuRunnerActivity : Activity() {
         }
         setContentView(ScrollView(this).apply { addView(text) })
         window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        commandReplayStore = CommandReplayStore(this)
+
+        // d1_auto_start 가 있으면 orchestrator 의 timed run. 없으면 아래 스모크/게이트 경로 (G4 그대로).
+        if (handleAutomationIntent(intent)) return
 
         val cfg = Config.from(intent)
         append("D1 NPU Runner\n$cfg\n\nrunning...\n")
@@ -54,9 +58,102 @@ class NpuRunnerActivity : Activity() {
         Handler(worker!!.looper).post { runAll(cfg) }
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleAutomationIntent(intent)
+    }
+
     override fun onDestroy() {
         worker?.quitSafely()
+        timedExecutor.shutdownNow()
         super.onDestroy()
+    }
+
+    // ------------------------------------------------------------- timed run
+
+    private lateinit var commandReplayStore: CommandReplayStore
+    private val timedExecutor = java.util.concurrent.Executors.newSingleThreadExecutor { runnable ->
+        Thread(runnable, NpuTimedRunEngine.THREAD_NAME)
+    }
+
+    /**
+     * benchmark-runner MainActivity.handleAutomationIntent 미러 (accuracy preflight 분기는 없다 —
+     * NPU 품질 게이트는 스모크 경로의 quality_n 으로 돈다). d1 요청이면 true.
+     */
+    private fun handleAutomationIntent(intent: Intent): Boolean {
+        val values = buildMap<String, Any?> {
+            if (intent.hasExtra(NpuAutomationIntentParser.EXTRA_AUTO_START)) {
+                put(
+                    NpuAutomationIntentParser.EXTRA_AUTO_START,
+                    intent.getBooleanExtra(NpuAutomationIntentParser.EXTRA_AUTO_START, false),
+                )
+            }
+            NpuAutomationIntentParser.stringExtras.forEach { key ->
+                if (intent.hasExtra(key)) put(key, intent.getStringExtra(key))
+            }
+            NpuAutomationIntentParser.intExtras.forEach { key ->
+                if (intent.hasExtra(key)) put(key, intent.getIntExtra(key, Int.MIN_VALUE))
+            }
+            if (intent.hasExtra(NpuAutomationIntentParser.EXTRA_DURATION_S)) {
+                put(
+                    NpuAutomationIntentParser.EXTRA_DURATION_S,
+                    intent.getLongExtra(NpuAutomationIntentParser.EXTRA_DURATION_S, Long.MIN_VALUE),
+                )
+            }
+            if (intent.hasExtra(NpuAutomationIntentParser.EXTRA_DUTY_CYCLE_PERIOD_S)) {
+                put(
+                    NpuAutomationIntentParser.EXTRA_DUTY_CYCLE_PERIOD_S,
+                    intent.getFloatExtra(NpuAutomationIntentParser.EXTRA_DUTY_CYCLE_PERIOD_S, Float.NaN),
+                )
+            }
+        }
+        if (values[NpuAutomationIntentParser.EXTRA_AUTO_START] != true) return false
+        val config = try {
+            NpuAutomationIntentParser.parse(values)
+        } catch (error: IllegalArgumentException) {
+            append("Invalid automation request: ${error.message}\n")
+            return true
+        } ?: return false
+
+        if (NpuExecutionGate.isRunning) {
+            append("Automation request ignored: a benchmark is already running.\n")
+            return true
+        }
+        val commandId = checkNotNull(config.commandId)
+        if (!commandReplayStore.claim(commandId)) {
+            append("Automation replay ignored: command_id=$commandId\n")
+            return true
+        }
+        startTimedRun(config)
+        return true
+    }
+
+    private fun startTimedRun(config: NpuRunConfig) {
+        if (!NpuExecutionGate.tryAcquire()) {
+            append("A benchmark is already running.\n")
+            return
+        }
+        append("D1 NPU timed run\n$config\nBaseline 60 seconds. No NPU load has started yet.\n")
+        timedExecutor.execute {
+            val result = try {
+                NpuTimedRunEngine(applicationContext).execute(config)
+            } catch (error: Throwable) {
+                NpuTimedRunResult(false, "${error.javaClass.simpleName}: ${error.message}", null)
+            }
+            NpuExecutionGate.release()
+            append(
+                buildString {
+                    append(if (result.success) "Complete" else "Failed")
+                    append("\n").append(result.message)
+                    result.flushResult?.let {
+                        append("\nevents=").append(it.eventCount)
+                        append("\nfile=").append(it.file.absolutePath)
+                    }
+                    append("\n")
+                },
+            )
+        }
     }
 
     // ------------------------------------------------------------------ config

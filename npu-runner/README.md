@@ -79,6 +79,32 @@ adb shell am start -n com.example.d1check.npurunner/.NpuRunnerActivity ^
 `measure/s26/npu/tools/s26_npu_go.bat` 이 연결 → 빌드·설치 → logcat 초기화 → 실행 → 결과 회수까지 한다.
 NPU float 실행에는 `quality_n 32` 를 자동으로 붙인다.
 
+## timed run (pilot · formal) — `d1_auto_start`
+
+orchestrator(`tools/d1_experiment_orchestrator.py --resources NPU`)가 보내는 Intent 는 benchmark-runner 와 같은
+`d1_*` extra 다. `d1_auto_start=true` 면 스모크 경로 대신 `NpuTimedRunEngine` 이 돈다
+(없으면 위의 스모크/게이트 경로 그대로 — G4 재현용).
+
+| 단계 | 내용 (benchmark-runner `GpuBenchmarkEngine` 과 같다) |
+|---|---|
+| 1 | D1Check run context 확인 (`d1_run_id` 일치) → pilot safety (충전 중·과열·잔량 부족이면 거부) |
+| 2 | baseline 60 s → 모델·dispatch SHA 계산 → `compiled_model_init` (CompiledModel, NPU 단독) → warmup |
+| 3 | `load_start` → DURATION·duty 루프 (1회 = write+run+read) → `load_end` → `shutdown` |
+| 4 | `GpuTelemetry.flushAfterRun` → `files/runs/gpu-events-<run>-<session>.jsonl` + logcat `D1GPU` |
+
+| NPU extra | 기본값 | 뜻 |
+|---|---|---|
+| `d1_npu_model_asset` | MobileNet V1 AOT | orchestrator `--npu-model-asset` |
+| `d1_npu_model_path` | — | APK 에 못 넣는 모델(EfficientDet)을 기기 파일에서 연다 |
+| `d1_npu_input_spec` | `lcg-unit` | 위 `input_spec` 표 |
+
+`run_metadata` 는 benchmark-runner 키를 같은 순서로 쓰고(`NpuRunMetadataTest` 가 고정), 뒤에 NPU 필드
+(`engine`, `npu_dispatch_lib_sha256`, `npu_model_partition`, `npu_input_*` …)를 붙인다. `litert_version` 은 `2.2.0`.
+
+**폰 없이 계약 확인**: `gradlew :npu-runner:testDebugUnitTest` 가 Robolectric 으로 실제 엔진+실제 직렬화를
+돌려 `build/npu-roundtrip/` 에 JSONL 을 떨구고, `py -m unittest tools.test_npu_runner_roundtrip` 이 그것을
+`d1_logger_v4.analyze` → `validate_result(formal)` 에 넣는다. JDK 25 에서는 테스트 classpath 의 ASM 9.10.1 이 필요하다.
+
 ## 모델 슬롯 — `aot_manifest.json` 스키마
 
 `src/main/assets/models/aot_manifest.json` 은 **두 컴파일 배치의 병합본**이다 (`schema: npu-runner-aot-manifest-merged-v1`).

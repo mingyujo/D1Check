@@ -53,6 +53,13 @@ android {
             assets.srcDirs("src/main/assets", "../benchmark-runner/src/main/assets")
         }
     }
+
+    testOptions {
+        unitTests {
+            // Robolectric 라운드트립 테스트(NpuTimedRunRoundTripTest)용. APK 에는 영향 없다.
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -64,6 +71,17 @@ dependencies {
     //   - NPU 가 있는데 create 실패 → ENN 쪽 문제 (G0 판정 문서 참조)
     implementation(libs.ai.edge.litert.next)
 
+    // timed-run JSONL 계약. benchmark-runner 와 같은 GpuTelemetry 를 수정 없이 재사용한다 (SPEC §2.1).
+    // telemetry-contract 는 LiteRT 에 의존하지 않아 1.4.2 가 이 모듈 classpath 로 들어오지 않는다.
+    implementation(project(":telemetry-contract"))
+
     // JVM 단위 테스트 전용 (APK 에 안 들어간다). 입력 생성기·품질 게이트의 순수 로직 고정용
     testImplementation(libs.junit)
+    // 라운드트립: GpuTelemetry 의 실제 직렬화를 JVM 에서 돌린다 (조민규 master 의 telemetry-contract 테스트와 같은 버전)
+    testImplementation("org.robolectric:robolectric:4.14.1")
+    // 이 PC 의 JDK 는 25 (class file 69) 뿐인데 Robolectric 4.14.1 이 가져오는 ASM 9.7.1 은 그걸 못 읽는다
+    // ("Unsupported class file major version 69"). 테스트 classpath 의 ASM 만 올린다.
+    listOf("asm", "asm-analysis", "asm-commons", "asm-tree", "asm-util").forEach {
+        testImplementation("org.ow2.asm:$it:9.10.1")
+    }
 }
