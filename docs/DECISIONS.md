@@ -404,3 +404,19 @@
 - 제안 근거: 조건당 개발1+확인1의16세션·64요청·128warmup은 최소 수집 가능성/초기 중앙값 확인용이다. 동결 뒤 확인 자료로 재적합하지 않는다. 정밀도·검정력·안정된 tail 보장 없음. 예상45~60분·host/cleanup 상한121.5분, retry/대체/추가0. 과거27세션 잔여 예산과 독립이다.
 - 구현: 별도 build root에 APK를 보존하고 APK Android/Gradle 입력 및 host plan/tool hash를 분리해 결합한다. phase 소비 registry는 출력 경로를 바꾼 재실행도 막고, 중단 뒤 회수/cleanup만 허용한다. 모델/원본/APK/동결 계약 덮어쓰기·ADB·실측·simulation·push/merge 없음.
 - 근거·실제 명령·판정 경계: [진단 준비 계약](ARRIVAL_TIMING_CALIBRATION_20260924.md). 기존 FAIL과 부분 결과를 대체하는 결정은 없다.
+
+## 2026-09-24 — APK 서명 복구 및 CAL-02 후보
+
+- 채택: 현재 설치본/성공 보관본은 프로젝트 기존 debug 키b253…7565, 실패 APK는 전역 debug 키35ce…18f3임을 apksigner로 확인했다. 격리 출력 경로 자체가 키를 생성한 것으로 단정하지 않는다. 패키징 경로가 기존 ANDROID_USER_HOME 조건을 보장하지 않았고 설치 전 signer gate도 없었다.
+- 기존 APK 정확한 바이너리를 기존 프로젝트 키로 새 경로에 재서명했다. ZIP909개 중 서명3개 외 동일, Android source/의존성/variant/manifest 불변. 키/비밀번호/개인 설정은 저장소에 추가하지 않는다. 앱 삭제·데이터 초기화·applicationId 변경·설치 재시도 없음.
+- 새 CAL-02에만 parent 중단/hash 연결·새 UUID/registry·서명 preflight를 결합한다. 설치본 읽기 검사 실패는 phase/install/session0인 별도 receipt, 설치 실패는 claim 이후이므로 소비·중단이다. CAL-01 소비 상태를 소급 변경하지 않는다.
+- PC10 및 실제 읽기 전용 A24 서명 비교 통과는 설치/추론 성공과 다르다. 후보16/64/128·retry/대체/추가0·개발8→동결→확인8·121.5분은 **승인 대기**이며 이번에 실행하지 않는다. [전체 근거·명령](APK_SIGNING_RECOVERY_20260924.md).
+
+## 2026-09-24 — ARRIVAL-TIMING-CAL-01 bound_v2 실행 승인
+
+- 사용자 명시 승인 채택: 개발8→기록 검토·추정값/규칙/지원 범위 동결→확인8, 총16시도·64진단요청·128warmup, retry/대체/추가0, 실행+cleanup 합상한7290초. 별도 smoke/과거 fixed-split 잔여 실행 없음.
+- 승인 대상은 plan SHA `a340a6c61e4eb4a85591ce226965495627ebd6751c3db4075b7b558a9d0553a2`, APK SHA `7bf84ce9997ed1fc0866ed89c38c84a78f37d5589a04eedef28ff65f16ae11e5`, HEAD `660532f`. 동결 plan의 역사적 proposed 상태를 고치지 않고 별도 승인 receipt에 결합했다.
+- 최초 preflight의 동일 기기/연결·배터리·thermal·초기 상태 확인 후 승인된 개발 명령을 한 번 시작했다. 원자료/receipt: 외부 `timing_calibration_execution_20260924T105336` 및 `timing_calibration_development_run_v1`.
+- 필수 기록 불완전·추정 근거 부족이면 확인 예산을 소모하지 않는다. 확인 자료 재적합·tail/간섭/정책 우수성 주장·일반 experiment_ready 승격은 승인에 포함하지 않는다.
+
+- 실행 결과/동결 중단 규칙 적용: 개발 phase의 `install -r`에서 기존 설치본과 새 APK의 서명 불일치로 실패했다. session attempt0이어도 phase 소비/실패이므로 같은 실험 ID의 재실행과 확인 단계는 금지한다. 설치 시도1, Activity0, 세션0/16, 진단0/64, warmup0/128; 자동 uninstall/clear/재서명/재설치 없음. cleanup 완료·해당 앱 전체 프로세스 부재·thermal0. 상세: 외부 `timing_calibration_execution_20260924T105336/FINAL_REPORT.md`.

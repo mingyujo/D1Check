@@ -1,5 +1,25 @@
 # D1Check 현재 상태
 
+## 2026-09-24 APK 서명 복구 준비 — 현재 작업
+
+- 시작660532f/`feature/arrival-scheduling-20260923`, 직전 종료 문서3개 변경 보존. **ARRIVAL-TIMING-CAL-02 PC 준비 완료·새 실행 승인 대기**, 설치/추론/simulation0. [원인·인증서·계획·명령](APK_SIGNING_RECOVERY_20260924.md).
+- 실패 APK는 전역 debug 인증서35ce…18f3, 설치본/성공 보관본은 프로젝트 기존 키b253…7565. 보관본과 설치본 APK SHA1a8448…3612 일치. 기존 키로 동일 APK 재서명; 코드·resource·AndroidManifest entry 불변(909중 서명3개만 변경).
+- 새 APK SHA `85c5fd0ab578d48e8af3e2abdda4c836939c5a330631d39dc4df61bd6d3e7ff6`, plan SHA `31558f9c1d3c62b8d1d4e9f0b8713274bee6a1700e4a8c59c2c4ae5aabc5a7a6`. 외부 `timing_calibration_resigned_apk_v1`, `timing_calibration_recovery_plan_v1`. CAL-01 중단/소비 유지, 새 registry/세션UUID/출력 분리.
+- preflight는 설치본 읽기/서명 검증을 설치·phase소비 전에 수행한다. unknown/mismatch/package/version 하향은0소비 차단, install_attempt와session_attempt 구분. 실제 A24 읽기 전용 preflight 호환 PASS(설치 성공 판정 아님), PC10 PASS·plan/16manifest dry-run PASS. Android 소스/의존성 변경·전체 빌드/테스트 반복 없음.
+- 후보 예산 개발8→검토·동결→확인8,16세션/64진단/128warmup·retry/대체/추가0·121.5분, **미승인/미실행**. 기존20null·experiment_ready=false·198요청 FAIL·fixed-split 부분 결과 보존. 키/원자료/APK/캐시 Git 제외.
+- 근거: 외부 `C:/Users/LG/Documents/D1Check_Arrival_Extension/timing_signature_recovery_v1/FINAL_REPORT.md` 및 FINAL_RECEIPT.json. 관련 코드/문서만 로컬 checkpoint, 정확한 commit/worktree는 같은 root GIT_FINAL.json.
+- 다음: (1) 새 CAL-02 실행 승인, (2) 승인 후 동일기기/최신 환경 gate 재확인·개발8, (3) 품질·추정 가능성 검토/fit 동결 후 확인8. CAL-01/과거 fixed-split 재개 금지.
+
+## 2026-09-24 ARRIVAL-TIMING-CAL-01 승인 실행 — 설치 실패로 종료
+
+- 시작 HEAD `660532fc8a8634a2fffd3d142f11194d8f8db0c9`, branch `feature/arrival-scheduling-20260923`, 시작 clean. 사용자 승인: bound_v2 개발8→검토·동결→확인8, 총16시도/진단64/warmup128, retry·대체·추가0, 실행+cleanup 합상한121.5분. 아래 준비 단계의 미승인 표시는 과거 상태다.
+- plan SHA `a340a6c61e4eb4a85591ce226965495627ebd6751c3db4075b7b558a9d0553a2`, APK SHA `7bf84ce9997ed1fc0866ed89c38c84a78f37d5589a04eedef28ff65f16ae11e5`, 현재 코드·manifest16·입력·build receipt 동일성 PASS. 변경 없는 PC 테스트/빌드 반복 없음.
+- 실행 전 동일 SM-A245N/fingerprint, 단일 무선 ADB 연결, 배터리77%/충전 분리/30.0°C/thermal0, 시스템 RAM normal·메인 앱 PID 부재 확인. runtime memory admission은 설치 실패 때문에 미검증이다.
+- 10:54 KST `install -r`가 `INSTALL_FAILED_UPDATE_INCOMPATIBLE`(기존 패키지와 새 APK 서명 불일치)로 실패했다. 개발 phase 소비1/실패1, **세션 시도0·완료0·세션 실패0·미시도16**, 진단0/64·warmup0/128. Activity 실행0, retry/대체/추가0. phase 설치 시작부터 cleanup까지49.44초. 16세션이 남았다고 같은 run을 재실행할 수 없다.
+- `development_stopped.json`으로 영구 중단, 확인 phase 미소비. bounded cleanup 완료·전체 해당 앱 프로세스 부재·thermal0 확인. 앱 삭제/데이터 초기화/재설치 없음. fit 동결·확인 결과 없음; 기존20 null/experiment_ready=false 유지.
+- 승인·preflight·종료 보고: 외부 root `C:/Users/LG/Documents/D1Check_Arrival_Extension/timing_calibration_execution_20260924T105336/FINAL_REPORT.md`, `FINAL_RECEIPT.json`. 원래 오류·cleanup: `timing_calibration_development_run_v1`; 소비/중단: `timing_calibration_execution_registry/ARRIVAL-TIMING-CAL-01`. 코드/APK/plan 변경·테스트 반복 없음, 문서만 갱신. 기존 FAIL·fixed-split 종료 상태 보존.
+- 다음: (1) 기존 설치본의 서명과 동일하게 빌드할 수 있는 키/빌드 출처를 PC에서 확인, (2) 해결 가능한 경우 새 APK·새 계획/실험 ID 및 별도 실행 승인을 준비. 기존 앱 삭제를 우회책으로 자동 진행하지 않으며 이번 중단 run/확인 phase는 재개하지 않는다.
+
 ## 2026-09-24 시간 경계 단독 진단 준비 — 현재 작업
 
 - `ARRIVAL-TIMING-CAL-01`, branch `feature/arrival-scheduling-20260923`. 직전 d95a25f의12개 미커밋 변경·기록된8개 hash를 대조한 뒤 **2904165**로 먼저 보존했다. 이번 후속은 별도 [진단 계약·실행 명령](ARRIVAL_TIMING_CALIBRATION_20260924.md)이며 코드/PC 준비와 실기기 검증을 분리한다.

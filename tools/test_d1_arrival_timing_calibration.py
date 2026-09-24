@@ -179,7 +179,7 @@ class CalibrationTest(unittest.TestCase):
             factory.return_value.identify.side_effect = RuntimeError("synthetic connection failure")
             with self.assertRaisesRegex(RuntimeError, "connection"):
                 device.run(path, "development", self.root / "run", "unused", "unused", 16, c.p.digest(path))
-            with self.assertRaisesRegex(ValueError, "previous failure"):
+            with self.assertRaisesRegex(ValueError, "previous failure|consumed/stopped phase"):
                 device.run(path, "development", self.root / "retry", "unused", "unused", 16, c.p.digest(path))
             self.assertEqual(factory.call_count, 1)
             factory.return_value.call.assert_not_called()

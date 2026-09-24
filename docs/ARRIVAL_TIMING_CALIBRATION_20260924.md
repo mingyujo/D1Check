@@ -1,5 +1,9 @@
 # ARRIVAL-TIMING-CAL-01 — 단독 시간 경계 진단 준비
 
+> 서명 원인 확인과 기존 키 재서명 후보는 [CAL-02 복구 준비](APK_SIGNING_RECOVERY_20260924.md)를 따른다. CAL-01은 중단 상태로 보존하며 새 후보는 별도 승인 대기다.
+
+> **후속 실행 상태(2026-09-24): STOPPED_INSTALL_SIGNATURE_MISMATCH_NO_RETRY.** 사용자가 bound_v2의16세션/64진단/128warmup·retry/대체/추가0·121.5분을 승인했다. HEAD660532f와 동결 plan/APK/manifest 동일성 및 기기 preflight를 확인하고 개발 명령을 한 번 실행했으나 `install -r`의 `INSTALL_FAILED_UPDATE_INCOMPATIBLE`로 종료했다. 개발 phase 소비1·설치 실패1, 세션 시도0/완료0/실패0/미시도16, Activity0·진단0·warmup0. cleanup 완료. fit/확인 미실행, 같은 plan/실험 ID의 재실행 금지. 아래 제안·미승인 문구는 준비 시점 기록이며 동결 plan 자체는 수정하지 않았다. 원래 오류·승인·보고서: `C:/Users/LG/Documents/D1Check_Arrival_Extension/timing_calibration_execution_20260924T105336/FINAL_REPORT.md`; run/registry 경로는 STATUS 참조.
+
 2026-09-24. **PC 준비 작업 / 실기기 예산 제안 / 기기 실행 승인 전 실행 금지**.
 직전 12개 변경과 8개 코드·설정 해시가 검증 기록과 일치하여, 기존 테스트를 먼저 반복하지 않고 `2904165`에 선택적으로 checkpoint했다. 시작 branch는 `feature/arrival-scheduling-20260923`, 이전 HEAD `d95a25f9095d4470a612128d7b79890b0d4732a8`였다. 이번 변경은 그 checkpoint의 후속이다.
 

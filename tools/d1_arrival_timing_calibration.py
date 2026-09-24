@@ -23,6 +23,7 @@ CONDITIONS = [(t, b, priority) for t in ("classification", "detection") for b in
               for priority in ("urgent", "normal")]
 SOURCE_SHA = "9e826188a25ecc9ca33404995cc1e45238f00f539fbb3c41eabfcdb8295cf3c3"
 CODE = ["tools/d1_arrival_timing_calibration.py", "tools/d1_arrival_timing_calibration_device.py",
+        "tools/d1_apk_identity.py",
         "tools/d1_arrival_timing_dev.py", "tools/d1_arrival_plan.py", "tools/d1_arrival_device.py", "tools/d1_telemetry_v4.py",
         "tools/arrival_timing_isolated_build.gradle"] + [
     f"benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/{name}.kt"
@@ -67,14 +68,14 @@ def layout():
     return [(stage, *cell) for stage in STAGES for cell in (order if stage == "development" else list(reversed(order)))]
 
 
-def make_manifest(template, index, apk_sha):
+def make_manifest(template, index, apk_sha, experiment=EXPERIMENT):
     stage, task, backend, priority = layout()[index]
-    sid = str(uuid.uuid5(uuid.NAMESPACE_URL, f"{EXPERIMENT}/{SEED}/{stage}/{task}/{backend}/{priority}"))
+    sid = str(uuid.uuid5(uuid.NAMESPACE_URL, f"{experiment}/{SEED}/{stage}/{task}/{backend}/{priority}"))
     m = copy.deepcopy(template)
     for field in ("estimated_service_ms", "pair_id", "evaluation_phase"):
         m.pop(field, None)
     m.update(protocol=v.CAL_PROTOCOL, policy=v.CAL_POLICY, session_id=sid, apk_sha256=apk_sha,
-             experiment_id=EXPERIMENT, collection_phase=stage, execution_purpose="boundary_calibration_only",
+             experiment_id=experiment, collection_phase=stage, execution_purpose="boundary_calibration_only",
              development_only=True, experiment_ready=False, calibration_backend=backend,
              storage_mode="persist_all", observation_contract=OBSERVATION, maximum_concurrency=1,
              timing_estimates=pending(), cpu_threads=1, thermal_gate=0, maximum_duration_ms=120000,
@@ -91,7 +92,7 @@ def make_manifest(template, index, apk_sha):
     return m
 
 
-def specification(source_file, apk=None, build_receipt=None):
+def specification(source_file, apk=None, build_receipt=None, recovery=None):
     source_file = Path(source_file).resolve()
     v.require(p.digest(source_file) == SOURCE_SHA, "reference plan identity changed")
     old = p.read(source_file)
@@ -101,21 +102,22 @@ def specification(source_file, apk=None, build_receipt=None):
     apk_sha = p.digest(apk) if apk is not None else None
     if apk is not None:
         v.require(apk_sha != old["apk_sha256"], "old frozen APK cannot implement calibration")
+    experiment = EXPERIMENT if recovery is None else "ARRIVAL-TIMING-CAL-02"
     manifests, entries = {}, []
     for i, (stage, task, backend, priority) in enumerate(layout()):
-        m = make_manifest(template, i, apk_sha)
+        m = make_manifest(template, i, apk_sha, experiment)
         name = f"manifests/{m['session_id']}.json"
         manifests[name] = m
         entries.append(dict(index=i, phase=stage, task=task, backend=backend, priority=priority,
                             session_id=m["session_id"], manifest=name, manifest_sha256=hashlib.sha256(p.canonical(m)).hexdigest(),
                             diagnostic_requests=4, warmup_calls=8))
-    plan = dict(protocol=PROTOCOL, experiment_id=EXPERIMENT, seed=SEED, source_plan=str(source_file),
+    plan = dict(protocol=PROTOCOL, experiment_id=experiment, seed=SEED, source_plan=str(source_file),
                 source_plan_sha256=SOURCE_SHA, source_files=old["source_files"], device_fingerprint=old["device_fingerprint"],
                 apk_path=str(Path(apk).resolve()) if apk else None, apk_sha256=apk_sha,
                 build_receipt=str(Path(build_receipt).resolve()) if build_receipt else None,
                 build_receipt_sha256=p.digest(build_receipt) if build_receipt else None,
                 status="proposed_budget_not_approved", experiment_ready=False,
-                registry=str(source_file.parent.parent / "timing_calibration_execution_registry" / EXPERIMENT),
+                registry=str(source_file.parent.parent / "timing_calibration_execution_registry" / experiment),
                 session_cap=16, diagnostic_request_cap=64, warmup_call_cap=128,
                 device_retry_cap=0, replacement_cap=0, additional_session_cap=0,
                 cool_down_seconds=120, initial_cool_seconds=120, host_phase_wall_seconds=3600,
@@ -124,13 +126,25 @@ def specification(source_file, apk=None, build_receipt=None):
                 estimated_active_minutes=[45, 60], maximum_active_seconds=7290,
                 analysis_contract="one independent development session and one subsequent confirmation session per cell; four correlated requests/session; median/range only; no tail or superiority claim",
                 source_code=code_identity(), entries=entries)
+    if recovery is not None:
+        parent_path = Path(recovery['parent_plan'])
+        v.require(p.digest(parent_path) == recovery['parent_plan_sha256'], 'recovery parent identity')
+        parent = p.read(parent_path)
+        v.require(parent['experiment_id'] == EXPERIMENT and parent['apk_sha256'] != apk_sha,
+                  'new APK and stopped parent required')
+        stopped = Path(parent['registry']) / 'development_stopped.json'
+        v.require(p.digest(stopped) == recovery['parent_stopped_sha256']
+                  and p.read(stopped)['plan_sha256'] == recovery['parent_plan_sha256'], 'parent stop identity')
+        plan['recovery'] = recovery
+        plan['apk_preflight'] = recovery['apk_preflight']
+        v.require(plan['apk_preflight']['candidate']['apk_sha256'] == apk_sha, 'candidate APK binding')
     return plan, manifests
 
 
-def prepare(source, output, apk=None, build_receipt=None):
+def prepare(source, output, apk=None, build_receipt=None, recovery=None):
     output = Path(output)
     v.require(not output.exists(), "new preparation path required")
-    plan, manifests = specification(source, apk, build_receipt)
+    plan, manifests = specification(source, apk, build_receipt, recovery)
     if apk is not None:
         v.require(build_receipt is not None, "isolated build receipt required")
         receipt = p.read(build_receipt)
@@ -147,7 +161,7 @@ def check(plan_file, for_execution=False):
     plan_file = Path(plan_file)
     plan = p.read(plan_file)
     v.require(plan["protocol"] == PROTOCOL and plan["experiment_ready"] is False, "calibration-only plan required")
-    expected, manifests = specification(plan["source_plan"], plan["apk_path"], plan["build_receipt"])
+    expected, manifests = specification(plan["source_plan"], plan["apk_path"], plan["build_receipt"], plan.get('recovery'))
     v.require(plan == expected, "plan/code/budget/order changed")
     for name, manifest in manifests.items():
         v.require((plan_file.parent / name).read_bytes() == p.canonical(manifest), "manifest changed")
@@ -158,6 +172,13 @@ def check(plan_file, for_execution=False):
         receipt = p.read(plan["build_receipt"])
         v.require(receipt["status"] == "built_not_device_verified" and apk_sources(receipt["source_code"]) == apk_sources(plan["source_code"])
                   and receipt["apk_sha256"] == plan["apk_sha256"], "APK/source receipt mismatch")
+    if 'apk_preflight' in plan:
+        from tools import d1_apk_identity as apk_identity
+        gate = plan['apk_preflight']
+        for name, digest in gate['tool_sha256'].items():
+            v.require(p.digest(gate['toolchain'][name]) == digest, 'signature tool changed')
+        v.require(apk_identity.inspect(plan['apk_path'], gate['toolchain']) == gate['candidate'],
+                  'candidate signature identity changed')
     if for_execution:
         v.require(plan["apk_path"] is not None, "unbound APK; proposal cannot execute")
     return dict(status="PC_PLAN_VALID_NOT_MEASURED", sessions=16, diagnostic_requests=64, warmup_calls=128,
@@ -167,7 +188,7 @@ def check(plan_file, for_execution=False):
 
 
 def claim(plan, phase, output, freeze=None):
-    """Atomic single-use phase claim BEFORE device access; changing output cannot allow retry."""
+    """Atomic phase claim before install. Recovery v2 does read-only signature preflight first."""
     v.require(plan["protocol"] == PROTOCOL and phase in STAGES, "calibration phase only")
     output = Path(output).resolve()
     v.require(not output.exists(), "existing output; recovery only")
@@ -309,6 +330,7 @@ def main():
     make.add_argument("--output", type=Path, required=True)
     make.add_argument("--apk", type=Path)
     make.add_argument("--build-receipt", type=Path)
+    make.add_argument("--recovery-binding", type=Path, help="PC-created immutable parent/signature binding")
     inspect = sub.add_parser("check")
     inspect.add_argument("--plan", type=Path, required=True)
     build = sub.add_parser("package")
@@ -334,7 +356,8 @@ def main():
     recovery.add_argument("--session-id", required=True)
     args = parser.parse_args()
     if args.command == "prepare":
-        result = prepare(args.source_plan, args.output, args.apk, args.build_receipt)
+        result = prepare(args.source_plan, args.output, args.apk, args.build_receipt,
+                         p.read(args.recovery_binding) if args.recovery_binding else None)
     elif args.command == "check":
         result = check(args.plan)
     elif args.command == "fit":

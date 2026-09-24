@@ -6,6 +6,7 @@ from pathlib import Path
 import re
 import subprocess
 import time
+import uuid
 
 from tools import d1_arrival_device as legacy
 from tools import d1_arrival_timing_calibration as c
@@ -97,22 +98,45 @@ def run(plan_file, phase, output, adb, serial, approved_total_cap, expected_sha,
     v.require(approved_total_cap == 16 and p.digest(plan_file) == expected_sha, "explicit approved total cap/plan hash required")
     c.check(plan_file, for_execution=True)  # Rejects adaptive experiment and unbound APK before Device construction.
     plan, output = p.read(plan_file), Path(output).resolve()
+    phase_deadline = time.monotonic() + plan['host_phase_wall_seconds']
+    # Reject prior consumption before even a read-only device inspection.
+    registry = Path(plan['registry'])
+    v.require(not any(registry.glob('*_stopped.json')) and not (registry / f'{phase}_consumed.json').exists()
+              and not output.exists(), 'consumed/stopped phase; no restart')
     if phase == "confirmation":
         v.require(freeze is not None and p.read(freeze)["plan_sha256"] == expected_sha, "freeze plan mismatch")
         frozen = p.read(freeze)
         for path, sha in frozen["input_hashes"].items():
             v.require(p.digest(path) == sha, "development artifacts changed")
+    if 'apk_preflight' in plan:
+        from tools import d1_apk_identity as apk_identity
+        # Separate receipt root: signature failure is NOT an install or session attempt.
+        preflight_root = output.parent / (output.name + '_preflight_' + uuid.uuid4().hex)
+        inspection_plan = dict(plan, _plan_file=str(plan_file))
+        inspection_device = legacy.Device(adb, serial)
+        inspection_device.deadline = phase_deadline
+        try:
+            apk_identity.preflight(inspection_device, inspection_plan, preflight_root)
+        except Exception as error:
+            raise RuntimeError(f'preflight failed; phase/install/session not consumed; evidence: {preflight_root}') from error
+    else:
+        v.require(plan['experiment_id'] == c.EXPERIMENT, 'new plans require signature preflight')
     c.claim(plan, phase, output, freeze)
     registry = Path(plan["registry"])
     device = legacy.Device(adb, serial)
-    device.deadline = time.monotonic() + plan["host_phase_wall_seconds"]
+    device.deadline = phase_deadline
     identified, completed = False, 0
     c.write_new(output / "phase_attempt.json", dict(utc=legacy.utc(), phase=phase, plan_sha256=expected_sha, session_cap=8))
     try:
         identity = device.identify(plan["device_fingerprint"])
         identified = True
         c.write_new(output / "device_identity.json", identity)
-        device.call("install", "-r", plan["apk_path"], timeout=120)  # No clear/uninstall fallback.
+        v.require(p.digest(plan['apk_path']) == plan['apk_sha256'], 'APK changed after preflight')
+        c.write_new(output / 'install_attempt.json', dict(utc=legacy.utc(), apk_sha256=plan['apk_sha256'],
+                    preflight_root=str(preflight_root) if 'apk_preflight' in plan else None, session_attempts=0))
+        installed = device.call("install", "-r", plan["apk_path"], timeout=120)  # No clear/uninstall fallback.
+        c.write_new(output / 'install_result.json', dict(utc=legacy.utc(), status='installed',
+                    stdout=installed.stdout.decode(errors='replace')))
         legacy.bounded_cool(device, plan["initial_cool_seconds"])
         entries = [e for e in plan["entries"] if e["phase"] == phase]
         for position, entry in enumerate(entries):
