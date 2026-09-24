@@ -1,4 +1,31 @@
-# ARRIVAL-INIT-DIAG-01 — runtime 초기화 단일 진단 실행 후보
+# ARRIVAL-INIT-DIAG-01 — runtime 초기화 단일 진단
+
+## 2026-09-24 승인 실행 종료 — complete_not_cause_resolved
+
+- 사용자 승인으로 `72b3264a77325f1370048665cbfdde86823eebab` clean에서 동결 RUN_AFTER_APPROVAL.ps1을1회 실행했다. d8dfec3 이후 문서4개만 변경됐고 source/plan/manifest/APK/서명 검사가 일치했다. 기존 PC 시험/빌드는 반복하지 않았다.
+- **claim1·설치1성공·세션1완료·실패0·미시도0·runtime4시작/4반환·warmup0·명시적추론0·retry/대체/추가0.** 전체209.047초/600초, 예산·timeout·gate 변경 없음. 이 계획은 소비·종료되어 아래 명령의 재실행은 금지한다.
+- 동일SM-A245N/fingerprint·서명 확인, 설치 후 정확한 후보 APK/package/version1 확인. 배터리73%·충전분리·30.3°C·thermal0·프로세스 부재 gate, 네 생성 직전 memory admission 모두 통과. 앱 삭제/데이터 초기화 없음.
+
+| runtime(고정 순서) | Java worker thread | journal start→return sequence | 생성 구간 초 | 상태 |
+|---|---:|---|---:|---|
+| classification_CPU | 107 | 3→12 | 0.384480 | 반환 확인 |
+| classification_GPU | 108 | 16→31 | 2.706603 | 반환 확인 |
+| detection_CPU | 107 | 35→44 | 4.144036 | 반환 확인 |
+| detection_GPU | 108 | 48→63 | 9.608260 | 반환 확인 |
+
+동기 I/O 포함 진단 구간이며 서비스시간·보정값으로 사용하지 않는다. setup thread99의 마지막 이벤트는seq67 cleanup succeeded다. journal68개 완전 기록, 앱 파일5개 회수/hash 대조, OS 증거5명령 회수 성공. timeout·취소·회수실패 없음. 앱 cleanup completed/error=null과 별도 host force-stop/프로세스 부재/thermal0을 확인했다. awaitTermination 개별 완료시각은 기록되지 않았다.
+
+manifest의 빈warmup/requests·setup_only 반환·warmup_trace=[]·호출event/result0으로 앱 명시적 호출0을 확인한다. 라이브러리 내부 compile/prepare 연산0 또는 실제GPU kernel 추론 검증은 아니다. decision_trace records=[]/complete=false는 비평가 경로의 상태이며20null/experiment_ready=false 유지.
+
+현재 PID22563의 준비 로그와 journal이 부합하며 수집 범위에서 이번 native/Java crash 증거는 없다. crash buffer는09-19 PID27217의 과거 오류다. 현재 libEGL context/선택적gms_client 미로드 메시지는 보존하되 뒤이어 생성이 반환됐으므로 과거 실패 원인으로 단정하지 않는다. **CAL-02의125초 대기 소진은 재현되지 않았고 원인은 미확정**이다. 단일 성공은 원인 해결·반복 안정성·시간 보정 완료가 아니다.
+
+로컬 전용 근거: `C:/Users/LG/Documents/D1Check_Arrival_Extension/runtime_initialization_run_v1/`의 `FINAL_REPORT.md`, 원본 `FINAL_RECEIPT.json`, `POST_RUN_VERIFICATION.json`, `artifact_assessment.json`, `partial/`, `pre_cleanup_evidence/`, `host_cleanup.json`. registry `runtime_initialization_registry/ARRIVAL-INIT-DIAG-01/closed.json` 보존. 기존FAIL·fixed-split 부분 결과·CAL 중단/불확실 소비량 불변.
+
+다음 최소 행동은 PC에서 CAL-02와 이번 setup_only의 단계 경계를 대조해 남은 가설과 필요한 별도 진단 범위를 정리하는 것이다. 추가 실측/기존계획 재개는 자동 수행하지 않는다.
+
+## 이하: 실행 전 준비 계약과 검증 이력
+
+아래 미승인/출력 없음 등의 표기는 준비 당시 기록이다. 위 승인 실행 결과가 현재 상태이며 원 계획·준비 receipt를 소급 수정하지 않았다.
 
 2026-09-24. **APK·계획·manifest·실행 CLI·PC 검증 완료 / 실행 승인 대기 / 실기기 미검증.** 시작은 `feature/arrival-scheduling-20260923` / `6a63e39b6dbdedf13f4b3899a9137311a3f40b0d` / clean이었다. 요청에 언급된744cd75 이후의 S26 협업 문서를 유지했다. [기존 PC 원인 조사](ARRIVAL_FAILURE_DIAGNOSIS_20260924.md)를 반복하지 않고 실행 준비에 필요한 코드만 확인/보완했다.
 

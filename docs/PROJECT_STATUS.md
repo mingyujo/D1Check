@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-09-24 ARRIVAL-INIT-DIAG-01 — 승인 실행 완료·원인 미확정
+
+- 시작 `72b3264a77325f1370048665cbfdde86823eebab` / feature/arrival-scheduling-20260923 / clean. 사용자 승인과 동결 계획·소스/APK/manifest 동일성, 미소비 확인 후 준비된 script1회 실행. [결과·근거·한계](ARRIVAL_INITIALIZATION_DIAGNOSTIC_20260924.md). 아래 승인 대기 문구는 당시 이력이다.
+- **설치1성공·세션1완료/실패0/미시도0·runtime4시작/4반환·warmup0·명시적추론0·retry/대체/추가0.** 전체209.047초/600초. 동일A24/fingerprint·서명·환경·네memory admission 통과, 앱cleanup과host 종료/프로세스부재/thermal0 확인. 삭제/초기화/timeout 연장 없음.
+- journal68개·앱파일5개/hash·OS증거5명령 회수 확인. CPU thread107/GPU108, 마지막seq67 setup thread99 cleanup succeeded. 이번timeout/native·Java crash 증거 없음; CAL-02의125초 대기 소진은 미재현·원인 미확정. 라이브러리 준비 연산과 앱 추론0 구분, 동기 진단 자료는 성능 보정 제외.
+- 외부 `C:/Users/LG/Documents/D1Check_Arrival_Extension/runtime_initialization_run_v1/`: 원본 FINAL_RECEIPT/partial/OS증거, FINAL_REPORT·POST_RUN_VERIFICATION. registry closed·no_resume=true. 기존FAIL/부분결과/CAL 중단·20null/experiment_ready=false 유지. 관련 문서만commit·작업브랜치push; 기존PC시험/빌드 반복 없음.
+- 다음: (1) PC에서 이전 실패와 이번 setup_only의 단계 경계·잔여 가설 정리, (2) 필요할 때 별도 진단 계획/승인. 이번 소비 계획과 CAL/fixed-split 재개·후속 실측 자동 실행 금지. S26/NPU 협업 경계 유지.
+
 ## 2026-09-24 TEAM-SYNC-02 — GitHub·팀 안내 동기화
 
 - 시작 `feature/arrival-scheduling-20260923` / `d8dfec32215c7fa832595cdec83d145f9d25614b` / clean. 원격 동일 브랜치 `6a63e39`보다 1커밋 앞섬을 확인했다. 아래 초기화 후보는 **준비 완료·실제 실행 미실시·별도 실행 승인 대기**다. 이번 요청은 문서·commit·작업 브랜치 push만 승인하며 기기 실행 승인이 아니다.
