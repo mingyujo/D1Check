@@ -93,7 +93,7 @@ def make_manifest(template, index, apk_sha, experiment=EXPERIMENT):
     return m
 
 
-def specification(source_file, apk=None, build_receipt=None, recovery=None):
+def specification(source_file, apk=None, build_receipt=None, recovery=None, followup=None):
     source_file = Path(source_file).resolve()
     v.require(p.digest(source_file) == SOURCE_SHA, "reference plan identity changed")
     old = p.read(source_file)
@@ -103,7 +103,8 @@ def specification(source_file, apk=None, build_receipt=None, recovery=None):
     apk_sha = p.digest(apk) if apk is not None else None
     if apk is not None:
         v.require(apk_sha != old["apk_sha256"], "old frozen APK cannot implement calibration")
-    experiment = EXPERIMENT if recovery is None else "ARRIVAL-TIMING-CAL-02"
+    v.require(not (recovery and followup), "recovery and followup are exclusive")
+    experiment = "ARRIVAL-TIMING-CAL-03" if followup is not None else EXPERIMENT if recovery is None else "ARRIVAL-TIMING-CAL-02"
     manifests, entries = {}, []
     for i, (stage, task, backend, priority) in enumerate(layout()):
         m = make_manifest(template, i, apk_sha, experiment)
@@ -139,13 +140,42 @@ def specification(source_file, apk=None, build_receipt=None, recovery=None):
         plan['recovery'] = recovery
         plan['apk_preflight'] = recovery['apk_preflight']
         v.require(plan['apk_preflight']['candidate']['apk_sha256'] == apk_sha, 'candidate APK binding')
+    if followup is not None:
+        validate_followup(followup, apk_sha)
+        plan['followup'] = followup
+        plan['apk_preflight'] = followup['apk_preflight']
+        plan['require_awake_interactive'] = True
+        plan['collection_logging'] = 'no_failure_diagnostic_journal; in_memory_timing_trace_then_final_flush'
     return plan, manifests
 
 
-def prepare(source, output, apk=None, build_receipt=None, recovery=None):
+def validate_followup(binding, apk_sha):
+    """Provenance gate only; successful synchronous diagnosis is never calibration input."""
+    required = ('parent_plan', 'parent_stopped', 'diagnostic_plan', 'diagnostic_receipt', 'diagnostic_verification')
+    for key in required:
+        v.require(p.digest(binding[key]) == binding[key+'_sha256'], 'followup identity: '+key)
+    parent = p.read(binding['parent_plan'])
+    stopped = p.read(binding['parent_stopped'])
+    diagnostic = p.read(binding['diagnostic_plan'])
+    receipt = p.read(binding['diagnostic_receipt'])
+    verification = p.read(binding['diagnostic_verification'])
+    v.require(parent['experiment_id'] == 'ARRIVAL-TIMING-CAL-02' and stopped['status'] == 'stopped_no_retry'
+              and stopped['plan_sha256'] == binding['parent_plan_sha256'], 'closed CAL-02 provenance')
+    v.require(diagnostic['experiment_id'] == 'ARRIVAL-STALL-OBS-DIAG-01' and diagnostic['apk_sha256'] == apk_sha
+              and verification['plan_sha256'] == binding['diagnostic_plan_sha256']
+              and verification['status'] == 'PASS_DIAGNOSTIC_ONLY', 'diagnostic provenance')
+    v.require(receipt['status'] == 'complete_not_cause_resolved' and receipt['no_resume'] is True
+              and receipt['runtime_returned'] == 4 and receipt['performance_eligible'] is False
+              and all(receipt['counts'][k] == count for k,count in
+                      [('session_attempts',1),('warmup_calls',8),('diagnostic_requests',1),('inference_calls',9)]),
+              'complete integrated diagnosis required; not performance calibration')
+    v.require(binding['apk_preflight']['candidate']['apk_sha256'] == apk_sha, 'followup APK binding')
+
+
+def prepare(source, output, apk=None, build_receipt=None, recovery=None, followup=None):
     output = Path(output)
     v.require(not output.exists(), "new preparation path required")
-    plan, manifests = specification(source, apk, build_receipt, recovery)
+    plan, manifests = specification(source, apk, build_receipt, recovery, followup)
     if apk is not None:
         v.require(build_receipt is not None, "isolated build receipt required")
         receipt = p.read(build_receipt)
@@ -162,7 +192,7 @@ def check(plan_file, for_execution=False):
     plan_file = Path(plan_file)
     plan = p.read(plan_file)
     v.require(plan["protocol"] == PROTOCOL and plan["experiment_ready"] is False, "calibration-only plan required")
-    expected, manifests = specification(plan["source_plan"], plan["apk_path"], plan["build_receipt"], plan.get('recovery'))
+    expected, manifests = specification(plan["source_plan"], plan["apk_path"], plan["build_receipt"], plan.get('recovery'), plan.get('followup'))
     v.require(plan == expected, "plan/code/budget/order changed")
     for name, manifest in manifests.items():
         v.require((plan_file.parent / name).read_bytes() == p.canonical(manifest), "manifest changed")
@@ -336,6 +366,7 @@ def main():
     make.add_argument("--apk", type=Path)
     make.add_argument("--build-receipt", type=Path)
     make.add_argument("--recovery-binding", type=Path, help="PC-created immutable parent/signature binding")
+    make.add_argument("--followup-binding", type=Path, help="PC-only CAL-03 provenance after integrated diagnosis")
     inspect = sub.add_parser("check")
     inspect.add_argument("--plan", type=Path, required=True)
     build = sub.add_parser("package")
@@ -362,7 +393,8 @@ def main():
     args = parser.parse_args()
     if args.command == "prepare":
         result = prepare(args.source_plan, args.output, args.apk, args.build_receipt,
-                         p.read(args.recovery_binding) if args.recovery_binding else None)
+                         p.read(args.recovery_binding) if args.recovery_binding else None,
+                         p.read(args.followup_binding) if args.followup_binding else None)
     elif args.command == "check":
         result = check(args.plan)
     elif args.command == "fit":

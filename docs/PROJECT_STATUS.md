@@ -1,5 +1,14 @@
 # D1Check 현재 상태
 
+## 2026-09-24 ARRIVAL-STALL-OBS-DIAG-01 — 승인 진단 완료·CAL-03 PC 후보 준비
+
+- 시작29b8543/원격일치/clean. [진단 계약·결과](ARRIVAL_STALL_OBSERVATION_DIAGNOSTIC_20260924.md). 앱수정/빌드없이 host독립관측·phase clock만추가해승인1회실행. **설치1성공·세션1완료/실패0·runtime4반환·warmup8·정규1·총추론9, 평가/retry/대체/추가0,209.390/600초**. 종료registry/no_resume.
+- journal191/256·회수10파일hash/단계/trace검증, 앱cleanup/hostcleanup·프로세스부재확인. 마지막seq190 cleanup/succeeded Java99. 요청1개이므로실제후속lane재사용미검증. sync시간은보정에사용금지.
+- 새host5초관측: Dozing/top-sleeping/isFrozen=false, kernel stack권한거부. 전체호출은완료됐으므로과거정지원인으로단정불가. CAL-02/이전통합실패원인미확정, 기존미확인호출수보존. 35/105초관측은정상완료로생략.
+- PC: host20건·후속calibration15건 PASS, signature/manifest/dry-run·문서검사완료. 기존Kotlin/전체build반복없음. 실행source snapshot과후속PC수정source를별도보존. 외부root `C:/Users/LG/Documents/D1Check_Arrival_Extension/`의`stall_observation_run_v1`(FINAL_REPORT/RECEIPT/POST_RUN_VERIFICATION), `stall_observation_pc_v1`(실행host), `timing_cal03_pc_v1`(후속host).
+- [CAL-03 후보](ARRIVAL_TIMING_CAL03_PREPARATION_20260924.md): 새16세션/64진단/128warmup, 개발8→동결→확인8, retry/대체/추가0,45~60분/상한121.5분. 같은APK·sync journal없음·awake/interactive시작gate 추가. **미승인·미실행**, `timing_cal03_plan_v1/calibration_plan.json`, hash b184dea…d635. 이번진단승인으로실행하지않음.
+- 기존198요청FAIL/fixed-split부분결과/종료계획/20null/experiment_ready=false/과거RawAdapter대응미확인유지. 다음: (1) CAL-03새예산·화면켜짐조건검토/승인, (2) 승인후identity/미소비/환경gate, (3) 개발품질검토·동결후확인. 추가진단자동실행없음. 관련소스·문서commit/정상push, 최종Git상태는외부GIT_FINAL.json.
+
 ## 2026-09-24 ARRIVAL-WARMUP-REQUEST-DIAG-01 — 승인 실행 중단·재시도 금지
 
 - 시작 `adb7c01ca9ee34156952223b2dbfa1ec79d54274` / `feature/arrival-scheduling-20260923` / clean. 미소비·계획/APK/source·동일A24/서명·환경gate 후 script1회 실행. [실패 판독·다음 행동](ARRIVAL_WARMUP_REQUEST_DIAGNOSTIC_20260924.md). 아래 준비/미승인 상태는 당시 이력이다.

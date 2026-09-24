@@ -128,6 +128,17 @@ def failed_attempt_evidence(device, sid, folder, pid):
         device.deadline = previous
 
 
+def awake_gate(device, plan, folder):
+    """New CAL-03 only: observe, never wake/unlock/change settings."""
+    if not plan.get('require_awake_interactive'):
+        return
+    power = device.call('shell','dumpsys','power',timeout=2).stdout
+    (Path(folder)/'before_power.txt').write_bytes(power)
+    v.require(re.search(rb'^\s*mWakefulness=Awake\s*$', power, re.M)
+              and re.search(rb'^\s*mHalInteractiveModeEnabled=true\s*$', power, re.M),
+              'awake/interactive gate failed; user must prepare screen; no automatic wake or retry')
+
+
 def run(plan_file, phase, output, adb, serial, approved_total_cap, expected_sha, freeze=None):
     v.require(approved_total_cap == 16 and p.digest(plan_file) == expected_sha, "explicit approved total cap/plan hash required")
     c.check(plan_file, for_execution=True)  # Rejects adaptive experiment and unbound APK before Device construction.
@@ -186,6 +197,7 @@ def run(plan_file, phase, output, adb, serial, approved_total_cap, expected_sha,
                 battery = device.call("shell", "dumpsys", "battery").stdout.decode()
                 (folder / "before_battery.txt").write_text(battery, encoding="utf-8")
                 legacy.battery_gate(plan, battery, position == 0)
+                awake_gate(device, plan, folder)
                 device.call("shell", "am", "force-stop", legacy.PACKAGE)
                 legacy.require_stopped(device)
                 manifest_file = Path(plan_file).parent / entry["manifest"]
@@ -198,7 +210,13 @@ def run(plan_file, phase, output, adb, serial, approved_total_cap, expected_sha,
                 pid = device.call("shell", "pidof", legacy.PACKAGE + ":model_probe").stdout.decode().strip()
                 v.require(re.fullmatch(r"\d+", pid), "model probe PID missing")
                 stage = 'completion_poll'
-                wait_for_cleanup(device, remote)
+                if plan.get('followup'):
+                    previous_deadline = device.deadline
+                    device.deadline = min(previous_deadline, time.monotonic()+125)
+                    try:wait_for_cleanup(device, remote)
+                    finally:device.deadline = previous_deadline
+                else:
+                    wait_for_cleanup(device, remote)
                 stage = 'artifact_recovery'
                 recovery = pull(device, sid, folder / "artifacts")
                 stage = 'artifact_validation'

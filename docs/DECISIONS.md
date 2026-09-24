@@ -491,3 +491,17 @@
 ### 2026-09-24 실행 결과 반영
 
 위 제안은 이후 사용자가 같은예산으로 승인했고1회실행후중단됐다. 설치1성공/세션1실패·311.344초, CPU분류runtime1반환과GPU분류Interpreter시작만확인, 이후호출수미확인이다. 회수·host cleanup완료, 앱정상close미확인. 같은계획재시도는하지않는다. 이번결과로보정준비/과거원인해결을선언하지않고PC에서Future30/main watchdog120의무기록조건을검토한다. 상세는 [실행결과](ARRIVAL_WARMUP_REQUEST_DIAGNOSTIC_20260924.md)와외부원본을따른다. 새실측예산이나timeout완화결정은없다.
+
+
+## 2026-09-24 ARRIVAL-STALL-OBS-DIAG-01: host 독립 관측 채택
+
+- 확정: GPU worker/setup Future/main watchdog 구조는 유지한다. 원인이 확인되지 않은 앱/런타임 수정 대신 기존 통합 APK 재사용과 host125초 안5/35/105초 read-only snapshot을 추가한다. 앱/API source identity 동일성을 PC검사하고 새 host source·계획·session·registry를 고정한다. [근거·계약](ARRIVAL_STALL_OBSERVATION_DIAGNOSTIC_20260924.md).
+- 증거: 통합 실패는 CPU반환/GPU interpreter 시작 이후 무기록, Future30/watchdog120도 무기록이다. journal fd.sync 지연과 OS/VM/scheduling 정지는 가능한 가설이나 현재 확정 원인은 아니다. invisible은 성공setup에도 있었으므로 단독 인과근거가 아니다. Handler uptime과host125초를 같은clock으로 취급하지 않는다.
+- 범위: 사용자 승인1계획/1설치/1세션/runtime4/warmup8/정규1/추론9, 평가0/retry0,600초(545/10/45). 신규observer는 각8초·명령2초, signal/debugger/root 없음. 접근불가stack은미확인. PC검증20건은 native복구 입증이 아니다. 종료계획/기존FAIL/미확인소비량/20null/experiment_ready=false 유지.
+
+
+### 2026-09-24 실행 판독 및 CAL-03 제안 분리
+
+- 진단1회성공: runtime4/warmup8/정규1,209.390초, 앱/hostcleanup. Dozing/top-sleeping과isFrozen=false를한시점관측했으나전체실행은성공했다. 원인해결·반복안정성·성능보정을선언하지않는다. stack권한거부와native_gpu_verified=false보존.
+- 확정개발변경: 새CAL-03 provenance/unique ID·registry·sync journal없음·awake/interactive read-only 시작gate·host poll125절대deadline 지원. 이는sleep환경을보정지원조건에서분리하는새수집조건이며과거gate를소급변경하지않는다. 화면조작없음.
+- 제안/미승인: [CAL-03](ARRIVAL_TIMING_CAL03_PREPARATION_20260924.md)의16세션·64진단·128warmup/121.5분. 기존규칙으로개발8→동결→확인8, 관련PC15건과dry-run통과. 실행승인과측정품질PASS는아니다. 기존20null과experiment_ready=false유지.

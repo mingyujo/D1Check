@@ -100,6 +100,56 @@ class CalibrationTest(unittest.TestCase):
             c.prepare(self.source, output)
         return output / "calibration_plan.json"
 
+    def test_followup_is_new_unsigned_budget_not_resume_and_no_sync_journal(self):
+        from tools import d1_apk_identity as apk_identity
+        from unittest.mock import Mock
+        old_path=self.prepare(bound=True)
+        old=c.p.read(old_path);parent=dict(old,experiment_id='ARRIVAL-TIMING-CAL-02')
+        parent_path=self.root/'cal02.json';c.write_new(parent_path,parent)
+        stopped=self.root/'stopped.json';c.write_new(stopped,dict(status='stopped_no_retry',plan_sha256=c.p.digest(parent_path)))
+        diag=self.root/'diagnostic_plan.json'
+        c.write_new(diag,dict(experiment_id='ARRIVAL-STALL-OBS-DIAG-01',apk_sha256=old['apk_sha256']))
+        receipt=self.root/'diagnostic_receipt.json'
+        c.write_new(receipt,dict(status='complete_not_cause_resolved',no_resume=True,runtime_returned=4,performance_eligible=False,
+            counts=dict(session_attempts=1,warmup_calls=8,diagnostic_requests=1,inference_calls=9)))
+        verified=self.root/'verified.json';c.write_new(verified,dict(status='PASS_DIAGNOSTIC_ONLY',plan_sha256=c.p.digest(diag)))
+        files=dict(parent_plan=parent_path,parent_stopped=stopped,diagnostic_plan=diag,diagnostic_receipt=receipt,diagnostic_verification=verified)
+        binding={k:str(f) for k,f in files.items()}
+        binding.update({k+'_sha256':c.p.digest(f) for k,f in files.items()})
+        candidate=dict(apk_sha256=old['apk_sha256'])
+        binding['apk_preflight']=dict(candidate=candidate,toolchain={},tool_sha256={})
+        with patch.object(device.legacy,'Device',side_effect=AssertionError('no ADB')) as calls,patch.object(apk_identity,'inspect',return_value=candidate):
+            result=c.prepare(self.source,self.root/'followup',old['apk_path'],old['build_receipt'],followup=binding)
+            calls.assert_not_called()
+        plan=c.p.read(self.root/'followup/calibration_plan.json')
+        self.assertEqual(plan['experiment_id'],'ARRIVAL-TIMING-CAL-03')
+        self.assertNotEqual(plan['registry'],parent['registry'])
+        self.assertTrue(plan['require_awake_interactive'])
+        self.assertFalse(plan['experiment_ready']);self.assertEqual(result['generated_measurements'],0)
+        self.assertEqual((plan['session_cap'],plan['diagnostic_request_cap'],plan['warmup_call_cap']),(16,64,128))
+        self.assertEqual(len({x['session_id'] for x in plan['entries']}),16)
+        for entry in plan['entries']:
+            manifest=c.p.read(self.root/'followup'/entry['manifest'])
+            self.assertNotIn('failure_diagnostic_contract',manifest)
+            self.assertFalse(manifest.get('performance_excluded',False))
+            self.assertTrue(all(x is None for fields in manifest['timing_estimates']['budgets'].values() for x in fields.values()))
+        bad=c.p.read(receipt);bad['counts']['warmup_calls']=7;receipt.write_bytes(c.p.canonical(bad))
+        with self.assertRaisesRegex(ValueError,'followup identity'):c.validate_followup(binding,old['apk_sha256'])
+        binding['diagnostic_receipt_sha256']=c.p.digest(receipt)
+        with self.assertRaisesRegex(ValueError,'complete integrated'):c.validate_followup(binding,old['apk_sha256'])
+
+    def test_awake_gate_is_observation_only_and_does_not_change_old_plans(self):
+        from unittest.mock import Mock
+        from types import SimpleNamespace
+        dev=Mock()
+        device.awake_gate(dev,{},self.root);dev.call.assert_not_called()
+        for state,interactive,accepted in [('Dozing','false',False),('Awake','false',False),('Awake','true',True)]:
+            dev.call.return_value=SimpleNamespace(stdout=f'  mWakefulness={state}\r\n  mHalInteractiveModeEnabled={interactive}\r\n'.encode())
+            if accepted:device.awake_gate(dev,{'require_awake_interactive':True},self.root)
+            else:
+                with self.assertRaisesRegex(ValueError,'awake/interactive'):device.awake_gate(dev,{'require_awake_interactive':True},self.root)
+        self.assertTrue(all(call.args==('shell','dumpsys','power') and call.kwargs['timeout']==2 for call in dev.call.call_args_list))
+
     def test_plan_and_dry_run_never_touch_device_or_create_measurements(self):
         with patch.object(device.legacy, "Device", side_effect=AssertionError("ADB forbidden")), patch.object(device.subprocess, "run", side_effect=AssertionError("process forbidden")):
             path = self.prepare()

@@ -15,10 +15,12 @@ from tools import d1_arrival_timing_dev as v
 from tools import d1_arrival_device as legacy
 from tools import d1_apk_identity as apk
 from tools import d1_arrival_failure_evidence as evidence
+from tools import d1_arrival_host_observation as observation
 
 EXPERIMENT = 'ARRIVAL-INIT-DIAG-01'
 WARMUP_EXPERIMENT = 'ARRIVAL-WARMUP-DIAG-01'
 INTEGRATED_EXPERIMENT = 'ARRIVAL-WARMUP-REQUEST-DIAG-01'
+OBSERVED_EXPERIMENT = 'ARRIVAL-STALL-OBS-DIAG-01'
 PROTOCOL = 'arrival-initialization-plan-v1'
 PARENT_SHA = '31558f9c1d3c62b8d1d4e9f0b8713274bee6a1700e4a8c59c2c4ae5aabc5a7a6'
 ORDER = ['classification_CPU','classification_GPU','detection_CPU','detection_GPU']
@@ -30,14 +32,16 @@ BUDGET = dict(execution_attempts=1,install_attempts=1,session_attempts=1,runtime
 
 
 def code_identity():
-    return dict(c.code_identity(), **{'tools/d1_arrival_initialization.py':p.digest(__file__)})
+    return dict(c.code_identity(), **{'tools/d1_arrival_initialization.py':p.digest(__file__),
+        'tools/d1_arrival_host_observation.py':p.digest(observation.__file__)})
 
 
 def specification(parent_file, apk_file, build_receipt, output, scope="setup_only"):
-    v.require(scope in ("setup_only", "first_warmup", "warmup_and_request"), "unsupported diagnostic scope")
+    v.require(scope in ("setup_only", "first_warmup", "warmup_and_request", "observed_warmup_request"), "unsupported diagnostic scope")
     first = scope == "first_warmup"
-    integrated = scope == "warmup_and_request"
-    experiment = INTEGRATED_EXPERIMENT if integrated else WARMUP_EXPERIMENT if first else EXPERIMENT
+    observed = scope == "observed_warmup_request"
+    integrated = scope == "warmup_and_request" or observed
+    experiment = OBSERVED_EXPERIMENT if observed else INTEGRATED_EXPERIMENT if integrated else WARMUP_EXPERIMENT if first else EXPERIMENT
     budget = dict(BUDGET, warmup_calls=1, inference_calls=1, diagnostic_requests=0) if first else BUDGET
     if integrated:
         budget = dict(BUDGET, warmup_calls=8, inference_calls=9, diagnostic_requests=1)
@@ -68,7 +72,7 @@ def specification(parent_file, apk_file, build_receipt, output, scope="setup_onl
         warmups[0]["request_id"] = str(uuid.uuid5(uuid.UUID(sid), "first-warmup"))
     manifest.update(session_id=sid,experiment_id=experiment,collection_phase='initialization_diagnosis',
                     apk_sha256=sha,requests=requests,warmup_requests=warmups,failure_diagnostic_contract=evidence.CONTRACT,
-                    failure_diagnostic_scope=scope,performance_excluded=True,experiment_ready=False)
+                    failure_diagnostic_scope="warmup_and_request" if observed else scope,performance_excluded=True,experiment_ready=False)
     for spec in manifest['models'].values():
         spec['identity']['session_id']=sid;spec['target']['apk_sha256']=sha
     gate=copy.deepcopy(parent['apk_preflight'])
@@ -80,7 +84,7 @@ def specification(parent_file, apk_file, build_receipt, output, scope="setup_onl
               apk_preflight=gate,source_code=code_identity(),source_files=parent['source_files'],
               device_fingerprint=parent['device_fingerprint'],runtime_order=ORDER,budget=budget,
               manifest='manifest.json',manifest_sha256=hashlib.sha256(p.canonical(manifest)).hexdigest(),
-              session_id=sid,output_root=str(output.parent/('warmup_request_run_v1' if integrated else 'first_warmup_run_v1' if first else 'runtime_initialization_run_v1')),
+              session_id=sid,output_root=str(output.parent/('stall_observation_run_v1' if observed else 'warmup_request_run_v1' if integrated else 'first_warmup_run_v1' if first else 'runtime_initialization_run_v1')),
               registry=str(output.parent/'runtime_initialization_registry'/experiment),
               consumption='claim before device preflight; install before install-r; session before am-start; runtime start intent is not completion; no re-entry after claim')
     if first or integrated:
@@ -89,6 +93,9 @@ def specification(parent_file, apk_file, build_receipt, output, scope="setup_onl
     if integrated:
         plan['warmup_predecessor'] = 'ARRIVAL-WARMUP-DIAG-01: complete_not_cause_resolved; never resume'
         plan['journal_capacity'] = 256
+    if observed:
+        plan['host_observation'] = copy.deepcopy(observation.CONTRACT)
+        plan['failed_predecessor'] = 'ARRIVAL-WARMUP-REQUEST-DIAG-01: stopped_no_retry; no resume'
     for field in ('battery_start_percent','battery_min_percent','battery_max_temperature_tenths_c','require_unplugged'):
         plan[field]=parent[field]
     return plan,manifest
@@ -285,12 +292,18 @@ def environment_gate(device,plan,output,label):
 def run(path,adb,serial,expected_sha,approved):
     from tools import d1_arrival_timing_calibration_device as device_tools
     started=time.monotonic(); hard=started+600;work_end=hard-55
-    v.require(approved in (EXPERIMENT,WARMUP_EXPERIMENT,INTEGRATED_EXPERIMENT) and approved==p.read(path)['experiment_id'] and p.digest(path)==expected_sha,'explicit single-session approval/hash required')
+    v.require(approved in (EXPERIMENT,WARMUP_EXPERIMENT,INTEGRATED_EXPERIMENT,OBSERVED_EXPERIMENT) and approved==p.read(path)['experiment_id'] and p.digest(path)==expected_sha,'explicit single-session approval/hash required')
     check(path,signature=False) # No device access; time spent here counts against this invocation.
     plan=p.read(path); output=claim(plan,path);device=legacy.Device(adb,serial);device.deadline=work_end
     counts=dict(execution_attempts=1,install_attempts=0,session_attempts=0,warmup_calls=0,inference_calls=0)
     pid=None; stage='preflight'; cleanup_needed=False; result=None; error=None
     def save(name,data):c.write_new(output/name,data)
+    phase_errors=[]
+    def phase(name):
+        if plan.get('host_observation'):
+            try:save('phase_'+name+'.json', dict(utc=legacy.utc(),host_monotonic=time.monotonic(),stage=name))
+            except OSError as exc:phase_errors.append(dict(stage=name,error=repr(exc))) # Never skip safety cleanup for telemetry.
+    phase('preflight')
     try:
         v.require(time.monotonic()<work_end,'budget exhausted before preflight')
         save('budget_start.json',dict(utc=legacy.utc(),host_monotonic_start=started,hard_deadline=hard,
@@ -298,20 +311,22 @@ def run(path,adb,serial,expected_sha,approved):
         inspection=dict(plan,_plan_file=str(path))
         apk.preflight(device,inspection,output/'signature_preflight')
         environment_gate(device,plan,output,'before_install')
-        stage='install';counts['install_attempts']=1;cleanup_needed=True
+        stage='install';phase(stage);counts['install_attempts']=1;cleanup_needed=True
         save('install_attempt.json',dict(utc=legacy.utc(),apk_sha256=plan['apk_sha256']))
         response=device.call('install','-r',plan['apk_path'],timeout=120)
         save('install_result.json',dict(utc=legacy.utc(),returncode=response.returncode,stdout=response.stdout.decode(errors='replace')))
         stage='post_install_identity'
+        phase(stage)
         identity=apk.preflight(device,inspection,output/'installed_identity')
         v.require(identity['installed']==plan['apk_preflight']['candidate'],'installed APK not exact candidate')
-        stage='cooling';legacy.bounded_cool(device,120)
+        stage='cooling';phase(stage);legacy.bounded_cool(device,120)
         environment_gate(device,plan,output,'before_launch')
         stage='staging'
+        phase(stage)
         remote=device_tools.stage_inputs(device,plan['session_id'],Path(path).parent/plan['manifest'],
                                          {k:x['path'] for k,x in plan['source_files'].items()})
         v.require(work_end-time.monotonic()>=155,'insufficient reserved launch30 + poll125; do not launch')
-        stage='activity_launch';counts['session_attempts']=1
+        stage='activity_launch';phase(stage);counts['session_attempts']=1
         if plan['budget']['warmup_calls']:
             counts.update(warmup_calls=None,inference_calls=None) # Unknown until durable return, never planned=completed.
         save('session_attempt.json',dict(utc=legacy.utc(),session_id=plan['session_id'],runtime_creation_cap=4))
@@ -319,14 +334,19 @@ def run(path,adb,serial,expected_sha,approved):
                              '-a',legacy.ACTION,'--es','session_id',plan['session_id'],timeout=30)
         (output/'launch_stdout.txt').write_bytes(response.stdout)
         stage='completion_poll';device.deadline=min(work_end,time.monotonic()+125)
+        phase(stage)
         pid=device.call('shell','pidof',legacy.PACKAGE+':model_probe',check=False).stdout.decode().strip()
-        device_tools.wait_for_cleanup(device,remote)
+        if plan.get('host_observation'):
+            observation.wait_for_cleanup(device,remote,output/'host_observations',pid)
+        else:
+            device_tools.wait_for_cleanup(device,remote)
     except BaseException as exc:
         error=repr(exc)
         save('host_error.json',dict(utc=legacy.utc(),host_stage=stage,error=error,
                                    application_failure='unknown_until_app_evidence'))
     finally:
         try:
+            phase('evidence')
             if counts['session_attempts']:
                 device.deadline=min(hard-45,time.monotonic()+10)
                 device_tools.failed_attempt_evidence(device,plan['session_id'],output,pid)
@@ -336,9 +356,11 @@ def run(path,adb,serial,expected_sha,approved):
                 except Exception as exc:
                     save('assessment_error.json',dict(error=repr(exc)))
         finally:
+            phase('cleanup')
             if cleanup_needed:
                 try:save('host_cleanup.json',device_tools.cleanup(device,hard_deadline=hard))
                 except BaseException as exc:save('host_cleanup_error.json',dict(error=repr(exc)))
+    phase('finished')
     complete=(error is None and result is not None and result['status'] in ('SETUP_COMPLETED_NOT_CAUSE_RESOLVED','FIRST_WARMUP_COMPLETED_NOT_CAUSE_RESOLVED','WARMUP_REQUEST_COMPLETED_NOT_CAUSE_RESOLVED')
               and (output/'host_cleanup.json').exists() and time.monotonic()<=hard)
     if result is not None and plan['budget']['warmup_calls']:
@@ -358,6 +380,8 @@ def run(path,adb,serial,expected_sha,approved):
                  no_resume=True,utc=legacy.utc())
     if request_cap:
         receipt['diagnostic_call_bounds'] = [counts['diagnostic_requests']]*2 if counts['diagnostic_requests'] is not None else [result['diagnostic']['adapter_returned'] if result else 0,request_cap]
+    if plan.get('host_observation'):
+        receipt['phase_record_errors']=phase_errors
     save('FINAL_RECEIPT.json',receipt)
     c.write_new(Path(plan['registry'])/'closed.json',receipt)
     return receipt
@@ -367,7 +391,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__);sub=parser.add_subparsers(dest='command',required=True)
     prep=sub.add_parser('prepare')
     for name in ('parent','apk','build-receipt','output'):prep.add_argument('--'+name,required=True)
-    prep.add_argument('--scope',choices=('setup_only','first_warmup','warmup_and_request'),default='setup_only')
+    prep.add_argument('--scope',choices=('setup_only','first_warmup','warmup_and_request','observed_warmup_request'),default='setup_only')
     verify=sub.add_parser('check');verify.add_argument('--plan',required=True)
     execute=sub.add_parser('run')
     for name in ('plan','adb','serial','expected-plan-sha256','approved-experiment'):execute.add_argument('--'+name,required=True)
