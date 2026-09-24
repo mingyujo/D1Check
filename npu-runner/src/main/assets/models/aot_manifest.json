@@ -1,28 +1,49 @@
 {
-  "generated_at": "2026-09-18T15:52:13+0000",
-  "host": "Linux-6.6.122+-x86_64-with-glibc2.39",
-  "ai_edge_litert": "2.3.0.dev20260917",
-  "ai_edge_litert_sdk_samsung": "2.3.0.dev20260917",
-  "sdk_libs": [
-    "libcdi_9955.so",
-    "libcdi_9965.so",
-    "libcdi_wrapper.so",
-    "libcommon.so",
-    "libcompiler_api_lib.so",
-    "libgraph_wrapper.so",
-    "libgraphgen.so",
-    "libgraphgen_api.so",
-    "libir.so",
-    "libisa.so",
-    "libncp_wrapper_lib.so",
-    "libnpu_compiler.so",
-    "libodt.so",
-    "libsait_npu_compiler_lib.so",
-    "libsnc_api.so",
-    "libveriben_lib.so"
-  ],
-  "flatbuffers_shim_preloaded": true,
+  "schema": "npu-runner-aot-manifest-merged-v1",
+  "note": "Merged for npu-runner. Per-model SDK fields added because batches differ (SDK skew): G1 MobileNet = 2.3.0.dev20260917, G1-B EfficientNet/EfficientDet = 2.3.0.dev20260922. Original manifests are unchanged: G1 = s26/npu/artifacts/compiled_e9965/aot_manifest.json, G1-B = s26/npu/results/G1B_aot_manifest_20260924.json. Match models by outputs[].sha256, not by file.",
   "target": "Samsung_E9965",
+  "sources": [
+    {
+      "compile_batch": "G1",
+      "original_manifest": "s26/npu/artifacts/compiled_e9965/aot_manifest.json",
+      "original_manifest_sha256": "0217eb774a2fbed274cb0761c0ca91adfc8a22f3e1b668c91d365911d23a1c3c",
+      "generated_at": "2026-09-18T15:52:13+0000",
+      "host": "Linux-6.6.122+-x86_64-with-glibc2.39",
+      "ai_edge_litert": "2.3.0.dev20260917",
+      "ai_edge_litert_sdk_samsung": "2.3.0.dev20260917",
+      "sdk_libs": [
+        "libcdi_9955.so",
+        "libcdi_9965.so",
+        "libcdi_wrapper.so",
+        "libcommon.so",
+        "libcompiler_api_lib.so",
+        "libgraph_wrapper.so",
+        "libgraphgen.so",
+        "libgraphgen_api.so",
+        "libir.so",
+        "libisa.so",
+        "libncp_wrapper_lib.so",
+        "libnpu_compiler.so",
+        "libodt.so",
+        "libsait_npu_compiler_lib.so",
+        "libsnc_api.so",
+        "libveriben_lib.so"
+      ],
+      "flatbuffers_shim_preloaded": true,
+      "target": "Samsung_E9965"
+    },
+    {
+      "compile_batch": "G1-B",
+      "original_manifest": "s26/npu/results/G1B_aot_manifest_20260924.json",
+      "original_manifest_sha256": "0111603796cd4e2dd75b368bc95a162a22dcbed8fa7295516c83b5c5e7ad3cdc",
+      "generated_at": "2026-09-24T03:20:14+0000",
+      "purpose": "G1-B: 개정 4.4 새 모델 2종의 E9965 NPU 파티션 판정",
+      "host": "Linux-6.6.122+-x86_64-with-glibc2.39",
+      "ai_edge_litert": "2.3.0.dev20260922",
+      "ai_edge_litert_sdk_samsung": "2.3.0.dev20260922",
+      "target": "Samsung_E9965"
+    }
+  ],
   "models": [
     {
       "input": "mobilenet_v1_1.0_224.tflite",
@@ -46,7 +67,13 @@
           "method": "flatbuffer",
           "verdict": "PASS"
         }
-      ]
+      ],
+      "compile_batch": "G1",
+      "ai_edge_litert": "2.3.0.dev20260917",
+      "ai_edge_litert_sdk_samsung": "2.3.0.dev20260917",
+      "compiled_at": "2026-09-18T15:52:13+0000",
+      "in_apk_assets": true,
+      "placement_note": "src/main/assets/models (committed 8f64581)"
     },
     {
       "input": "mobilenet_v1_1.0_224_quant.tflite",
@@ -70,7 +97,65 @@
           "method": "flatbuffer",
           "verdict": "PASS"
         }
-      ]
+      ],
+      "compile_batch": "G1",
+      "ai_edge_litert": "2.3.0.dev20260917",
+      "ai_edge_litert_sdk_samsung": "2.3.0.dev20260917",
+      "compiled_at": "2026-09-18T15:52:13+0000",
+      "in_apk_assets": true,
+      "placement_note": "src/main/assets/models (committed 8f64581)"
+    },
+    {
+      "input": "efficientnet_lite0.tflite",
+      "input_sha256": "6c7ab0a6e5dcbf38a8c33b960996a55a3b4300b36a018c4545801de3a3c8bde0",
+      "input_size": 18582189,
+      "compile_seconds": 2.3,
+      "failed_backends": [],
+      "outputs": [
+        {
+          "file": "efficientnet_lite0_Samsung_E9965.tflite",
+          "size": 10033376,
+          "sha256": "311e4aac8fa1d8def4e13359c731ddc1c92f4c9ff7074e0d3860b036df8b2a31",
+          "operators": {
+            "DISPATCH_OP": 1
+          },
+          "dispatch_ops": 1,
+          "non_dispatch_ops": 0,
+          "verdict": "PASS"
+        }
+      ],
+      "compile_batch": "G1-B",
+      "ai_edge_litert": "2.3.0.dev20260922",
+      "ai_edge_litert_sdk_samsung": "2.3.0.dev20260922",
+      "compiled_at": "2026-09-24T03:20:14+0000",
+      "in_apk_assets": true,
+      "placement_note": "src/main/assets/models (gitignored, local build only)"
+    },
+    {
+      "input": "efficientdet_lite0.tflite",
+      "input_sha256": "40338edf5ec70d43e318b0a716a84d4564cd1802759a7a07170c7e43796dbf58",
+      "input_size": 13836895,
+      "compile_seconds": 4.0,
+      "failed_backends": [],
+      "outputs": [
+        {
+          "file": "efficientdet_lite0_Samsung_E9965.tflite",
+          "size": 8799008,
+          "sha256": "f51d082dbf68bef94092f9d2e262920ebb0fe6149df314453a767d50f8c9bc7a",
+          "operators": {
+            "DISPATCH_OP": 1
+          },
+          "dispatch_ops": 1,
+          "non_dispatch_ops": 0,
+          "verdict": "PASS"
+        }
+      ],
+      "compile_batch": "G1-B",
+      "ai_edge_litert": "2.3.0.dev20260922",
+      "ai_edge_litert_sdk_samsung": "2.3.0.dev20260922",
+      "compiled_at": "2026-09-24T03:20:14+0000",
+      "in_apk_assets": false,
+      "placement_note": "npu-runner/local_models (gitignored). License attribution unverified: never in repo/APK/ZIP. adb push + --es model_path"
     }
   ]
 }

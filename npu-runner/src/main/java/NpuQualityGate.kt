@@ -13,7 +13,8 @@ import kotlin.math.sqrt
  *   3. cosine_min >= 0.99
  *
  * bit_identical_to_cpu 는 **보수적으로** 정의한다: n 개 중 하나라도 출력 전체가 비트 단위로
- * CPU 와 같으면 true. FP16 가중치로 1001 개 점수가 전부 같은 비트가 나올 수는 없다.
+ * CPU 와 같으면 true. FP16 가중치로 출력 점수(MobileNet 1001 / EfficientNet 1000)가 전부 같은 비트가
+ * 나올 수는 없다. 출력 길이는 하드코딩하지 않는다 — 두 출력 배열의 길이가 같기만 하면 된다.
  *
  * argmax 동점 처리와 cosine 공식은 benchmark-runner OutputEquivalenceComparator 와 같다
  * (점수 내림차순, 동점이면 인덱스 오름차순 / double 누적 dot / (|ref| |cand|)).

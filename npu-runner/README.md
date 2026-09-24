@@ -62,9 +62,57 @@ adb shell am start -n com.example.d1check.npurunner/.NpuRunnerActivity ^
 | `autofinish` | `false` | 끝나면 Activity 종료 (배치 실행용) |
 | `quality_n` | `0` (끔) | 품질 게이트 샘플 수. NPU 판정은 `32`. 타이밍 루프가 끝난 뒤에 돈다 |
 | `ref_model_asset` | `models/mobilenet_v1_1.0_224.tflite` | 품질 게이트의 CPU 기준 모델 |
+| `input_spec` | `lcg-unit` | 입력 생성·정규화. 아래 표. **기본값은 9/24 G4 게이트 입력 그대로** |
+| `elements` | 입력 텐서에서 읽음 | 주면 텐서 원소 수와 대조만 한다 (다르면 FAILED) |
+
+| `input_spec` | 생성 | 정규화 | 대상 |
+|---|---|---|---|
+| `lcg-unit` (기본) | LCG 연속 스트림 | 없음 `[0,1]` | MobileNet V1 (9/24 G4, `input_sha256 5dc1cb09…`) |
+| `lcg-rgb-127-128` | 같은 LCG 의 상위 8 bit = RGB | `(RGB-127.0)/128.0` | EfficientNet-Lite0, 품질 게이트 n=32 |
+| `lcg-rgb-127.5-127.5` | 〃 | `(RGB-127.5)/127.5` | EfficientDet-Lite0 (게이트는 미구현 — `NPU_DETECTOR_GATE_NOTE.md`) |
+| `coordinate-rgb-classification` | 조민규 `coordinate-rgb-v1`, 표본 i = seed i (≤ 3개) | `(RGB-127.0)/128.0` | 팀 probe 입력과 비트 동일 대조용 |
+| `coordinate-rgb-detection` | 〃 (320×320) | `(RGB-127.5)/127.5` | 〃 |
+
+정규화 값은 조민규 `MODEL_02_INVENTORY.md` §4. 출력 길이(1001 / 1000)는 하드코딩하지 않는다.
+출력이 2개 이상인 모델(검출)은 품질 게이트가 `NOT_APPLICABLE` 로 막는다 — `outputs[0]` 만 보고 PASS 시키지 않기 위함.
 
 `measure/s26/npu/tools/s26_npu_go.bat` 이 연결 → 빌드·설치 → logcat 초기화 → 실행 → 결과 회수까지 한다.
 NPU float 실행에는 `quality_n 32` 를 자동으로 붙인다.
+
+## 모델 슬롯 — `aot_manifest.json` 스키마
+
+`src/main/assets/models/aot_manifest.json` 은 **두 컴파일 배치의 병합본**이다 (`schema: npu-runner-aot-manifest-merged-v1`).
+원본 manifest 두 개는 무변경으로 따로 있다 — G1 = `s26/npu/artifacts/compiled_e9965/aot_manifest.json`,
+G1-B = `s26/npu/results/G1B_aot_manifest_20260924.json`. 병합하면서 모델마다 SDK 필드를 붙였다:
+**배치마다 컴파일러가 다르기 때문이다 (SDK skew).**
+
+| 슬롯 | 모델 | 배치 / SDK | 출력 SHA (앞 16) | 파티션 | 파일 위치 | APK |
+|---|---|---|---|---|---|---|
+| 1 | MobileNet V1 FP32 | G1 / `2.3.0.dev20260917` | `1415b2c87d01b67a` | 1/1 PASS | assets (커밋됨) | ✅ |
+| 2 | MobileNet V1 INT8 | G1 / `2.3.0.dev20260917` | `36c75e6acdb71162` | 1/1 PASS | assets (커밋됨) | ✅ |
+| 3 | EfficientNet-Lite0 FP32 | G1-B / `2.3.0.dev20260922` | `311e4aac8fa1d8de` | 62 ops → 1, PASS | assets (git 제외) | ✅ (Apache-2.0) |
+| 4 | EfficientDet-Lite0 FP32 | G1-B / `2.3.0.dev20260922` | `f51d082dbf68bef9` | 263 ops → 1, PASS | **`local_models/`** (git 제외) | ❌ 라이선스 미확인 → `adb push` + `--es model_path` |
+
+모델 항목 스키마 (`models[]`):
+
+```jsonc
+{
+  "input": "efficientnet_lite0.tflite", "input_sha256": "6c7ab0a6…", "input_size": 18582189,
+  "compile_seconds": 2.3, "failed_backends": [],
+  "outputs": [ { "file": "efficientnet_lite0_Samsung_E9965.tflite",   // G1 은 "compiled_e9965/…" 접두어 → 파일명 말고 SHA 로 대조
+                 "size": 10033376, "sha256": "311e4aac…",
+                 "operators": { "DISPATCH_OP": 1 }, "dispatch_ops": 1, "non_dispatch_ops": 0, "verdict": "PASS" } ],
+  // ↓ 병합 때 추가한 필드
+  "compile_batch": "G1-B", "ai_edge_litert": "2.3.0.dev20260922", "ai_edge_litert_sdk_samsung": "2.3.0.dev20260922",
+  "compiled_at": "2026-09-24T03:20:14+0000", "in_apk_assets": true, "placement_note": "…"
+}
+```
+
+| 키 | `formal_npu_valid` 에서 쓰는 곳 |
+|---|---|
+| `outputs[].sha256` | 조건 4 — 실행한 모델 SHA 가 알려진 AOT 산출물이어야 한다 |
+| `outputs[].dispatch_ops` / `non_dispatch_ops` | 조건 6 — logcat `Replacing X out of Y (DispatchDelegate)` 와 대조, `npu_partial_delegation` |
+| `ai_edge_litert` | 기록만. dev20260922 산출물은 **기기 미검증** (`results/G1B_NEWMODELS_VERDICT_0924.md`) |
 
 ## 결과 읽는 법
 

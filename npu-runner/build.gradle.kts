@@ -63,4 +63,7 @@ dependencies {
     //   - NPU 가 목록에 없다 → 런타임/dispatch 짝이 안 맞음 → litertNext 버전을 올리거나 dispatch 재빌드
     //   - NPU 가 있는데 create 실패 → ENN 쪽 문제 (G0 판정 문서 참조)
     implementation(libs.ai.edge.litert.next)
+
+    // JVM 단위 테스트 전용 (APK 에 안 들어간다). 입력 생성기·품질 게이트의 순수 로직 고정용
+    testImplementation(libs.junit)
 }

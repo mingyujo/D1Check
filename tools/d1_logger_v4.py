@@ -53,6 +53,54 @@ DELEGATE_FAILURE_RE = re.compile(
     r"remaining\s+nodes?\s+run\s+on\s+CPU|fall(?:ing)?\s+back\s+to\s+CPU|CPU\s+fallback)",
     re.IGNORECASE,
 )
+# NPU (npu-runner, LiteRT Next CompiledModel + Samsung dispatch). Mirrors the GPU constants above:
+# adding a device prefix, runtime pairing or model hash here is a claim that on-device evidence exists.
+#   SM-S942  Galaxy S26  G4 passed 2026-09-24, s26/npu/results/G4_VERDICT_0924.md
+NPU_RUNNER_PACKAGE = "com.example.d1check.npurunner"
+FORMAL_NPU_VALIDATED_DEVICE_PREFIXES = ("SM-S942",)
+# The one runtime pairing verified on device: AAR litert 2.2.0 + dispatch built from LiteRT main@9380426b.
+NPU_LITERT_RUNTIME_VERSION = "2.2.0"
+NPU_DISPATCH_LIB_SHA256 = "f08656a642c46e7b06b64fbe1e0800de9e73b0b69c1641b87995562b4a16840f"
+# AOT outputs from npu-runner/src/main/assets/models/aot_manifest.json (merged G1 + G1-B), keyed by
+# output SHA-256. dispatch/non_dispatch op counts are the static partition the runtime log must match.
+FORMAL_NPU_AOT_MODELS = {
+    "1415b2c87d01b67a9380b8f912e2b4ef4561502105b06f313332c97c1c8cb5cf": {
+        "model": "mobilenet_v1_1.0_224_Samsung_E9965.tflite", "compile_batch": "G1",
+        "ai_edge_litert": "2.3.0.dev20260917", "dispatch_ops": 1, "non_dispatch_ops": 0,
+    },
+    "36c75e6acdb711628f2486c7880a9c84fe1dc94c986d4f8dc53eb94ee773e5fa": {
+        "model": "mobilenet_v1_1.0_224_quant_Samsung_E9965.tflite", "compile_batch": "G1",
+        "ai_edge_litert": "2.3.0.dev20260917", "dispatch_ops": 1, "non_dispatch_ops": 0,
+    },
+    # G1-B (2026-09-24) — compiled by a newer SDK and not yet run on device. Listed so the
+    # partition check can run; formal validity still needs every other condition.
+    "311e4aac8fa1d8def4e13359c731ddc1c92f4c9ff7074e0d3860b036df8b2a31": {
+        "model": "efficientnet_lite0_Samsung_E9965.tflite", "compile_batch": "G1-B",
+        "ai_edge_litert": "2.3.0.dev20260922", "dispatch_ops": 1, "non_dispatch_ops": 0,
+    },
+    "f51d082dbf68bef94092f9d2e262920ebb0fe6149df314453a767d50f8c9bc7a": {
+        "model": "efficientdet_lite0_Samsung_E9965.tflite", "compile_batch": "G1-B",
+        "ai_edge_litert": "2.3.0.dev20260922", "dispatch_ops": 1, "non_dispatch_ops": 0,
+    },
+}
+NPU_QUALITY_GATE_N = 32
+NPU_QUALITY_COSINE_MIN = 0.99
+# "Replacing 1 out of 1 node(s) with delegate (DispatchDelegate) node, yielding 1 partitions" (tag tflite).
+# This line is printed even when the dispatch runtime then fails, so it is never sufficient alone.
+NPU_DISPATCH_REPLACE_RE = re.compile(
+    r"Replacing\s+(\d+)\s+out of\s+(\d+)\s+node(?:\(s\)|s)?\s+with\s+delegate\s+"
+    r"\(DispatchDelegate\)(?:\s+node,\s+yielding\s+(\d+)\s+partitions?)?",
+    re.IGNORECASE,
+)
+# "[enn_manager.cc:124] SetGenAiPerfConfigFromSoc: SOC=s5e9965, mode=7" (tag litert): ENN actually loaded.
+NPU_ENN_LOADED_RE = re.compile(r"SetGenAiPerfConfigFromSoc:\s*SOC=([A-Za-z0-9_]+)", re.IGNORECASE)
+NPU_DISPATCH_FAILURE_RE = re.compile(
+    r"(?:No\s+dispatch\s+library\s+found|Failed\s+to\s+initialize\s+Dispatch\s+API|"
+    r"No\s+usable\s+Dispatch\s+runtime\s+found|Failed\s+to\s+create\s+a\s+dispatch\s+delegate\s+kernel|"
+    r"Failed\s+to\s+load\s+enn\s+runtime|Found\s+Dispatch\s+API\s+with\s+an\s+unsupported\s+version|"
+    r"Failed\s+to\s+allocate\s+tensors|\(DELEGATE\)\s+failed\s+to\s+prepare)",
+    re.IGNORECASE,
+)
 PERFETTO_BUFFER_KB = 32768
 MAX_DIAGNOSTIC_SECONDS = 3600
 PERFETTO_DEVICE_CONFIG_PATH = (
@@ -307,6 +355,88 @@ def delegate_evidence(raw_log: str) -> dict[str, Any]:
     }
 
 
+def npu_delegate_evidence(raw_log: str, model_sha256: Any) -> dict[str, Any]:
+    """NPU counterpart of delegate_evidence(). Verified only when the dispatch delegate took the
+    nodes the AOT manifest says it should, ENN was actually loaded, and no dispatch failure line exists."""
+    matches = list(NPU_DISPATCH_REPLACE_RE.finditer(raw_log))
+    replacement = matches[-1] if matches else None
+    replaced = int(replacement.group(1)) if replacement else None
+    total = int(replacement.group(2)) if replacement else None
+    partitions = (
+        int(replacement.group(3)) if replacement and replacement.group(3) else None
+    )
+    enn_soc = [match.group(1) for match in NPU_ENN_LOADED_RE.finditer(raw_log)]
+    failure_matches = sorted({match.group(0) for match in NPU_DISPATCH_FAILURE_RE.finditer(raw_log)})
+    partition = FORMAL_NPU_AOT_MODELS.get(str(model_sha256 or "").lower())
+    partition_match = (
+        partition is not None
+        and replaced == partition["dispatch_ops"]
+        and total == partition["dispatch_ops"] + partition["non_dispatch_ops"]
+    )
+    verified = (
+        replaced is not None
+        and total is not None
+        and 0 < replaced <= total
+        and bool(enn_soc)
+        and not failure_matches
+        and partition_match
+    )
+    return {
+        "dispatch_replaced_nodes": replaced,
+        "dispatch_total_nodes": total,
+        "dispatch_partitions": partitions,
+        "enn_soc": enn_soc[-1] if enn_soc else None,
+        "failure_or_fallback_evidence": failure_matches,
+        "aot_partition": partition,
+        "partition_matches_aot_manifest": partition_match,
+        "npu_full": verified and replaced == total,
+        "npu_partial_delegation": (
+            partition["non_dispatch_ops"] > 0 if partition is not None else None
+        ),
+        "verification": "verified" if verified else "unverified",
+        "note": None if verified else (
+            "No conclusive NPU dispatch evidence (needs DispatchDelegate X/Y matching the AOT "
+            "manifest, an ENN load line, and no dispatch failure line)."
+        ),
+    }
+
+
+def experiment_npu_quality_context(run_dir: Path) -> dict[str, Any] | None:
+    """NPU quality preflight recorded by the orchestrator (npu-runner quality gate, n=32)."""
+    manifest_path = run_dir.parent.parent / "experiment_manifest.json"
+    if not manifest_path.is_file():
+        return None
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    value = manifest.get("npu_quality_preflight") if isinstance(manifest, dict) else None
+    return value if isinstance(value, dict) else None
+
+
+def npu_quality_gate_passes(preflight: Any, model_sha256: Any) -> bool:
+    """Criteria fixed before results (CLAUDE.md §5): bit_identical_to_cpu is False (True means it ran
+    on CPU), argmax 32/32, cosine_min >= 0.99 — and the preflight must be for the same model file."""
+    if not isinstance(preflight, dict) or preflight.get("status") != "passed":
+        return False
+    gate = preflight.get("quality_gate")
+    if not isinstance(gate, dict):
+        return False
+    n = gate.get("n")
+    cosine_min = gate.get("cosine_min")
+    return (
+        str(preflight.get("candidate_model_sha256") or "").lower()
+        == str(model_sha256 or "").lower() != ""
+        and gate.get("verdict") == "PASS"
+        and gate.get("bit_identical_to_cpu") is False
+        and n == NPU_QUALITY_GATE_N
+        and gate.get("argmax_agreement") == f"{n}/{n}"
+        and isinstance(cosine_min, (int, float))
+        and not isinstance(cosine_min, bool)
+        and cosine_min >= NPU_QUALITY_COSINE_MIN
+    )
+
+
 def resolve_adb(cli_value: str | None) -> str:
     candidates = [
         cli_value,
@@ -427,8 +557,13 @@ class CaptureSession:
         interval_s: float,
         diagnostic_perfetto: bool,
         perfetto_config: Path,
+        runner_package: str = RUNNER_PACKAGE,
+        extra_logcat_tags: Iterable[str] = (),
     ) -> None:
         self.adb_command = adb_base(adb, serial)
+        # NPU runs pass npu-runner's package and "litert:I"; CPU/GPU use the defaults unchanged.
+        self.runner_package = runner_package
+        self.extra_logcat_tags = list(extra_logcat_tags)
         self.output_root = output_root
         self.interval_s = interval_s
         self.diagnostic_perfetto = diagnostic_perfetto
@@ -556,7 +691,7 @@ class CaptureSession:
             + [
                 "exec-out",
                 "run-as",
-                RUNNER_PACKAGE,
+                self.runner_package,
                 "cat",
                 f"files/runs/{filename}",
             ],
@@ -575,7 +710,7 @@ class CaptureSession:
         if not self.run_id or not re.fullmatch(r"[A-Za-z0-9-]+", self.run_id):
             return []
         pattern = (
-            f"/storage/emulated/0/Android/data/{RUNNER_PACKAGE}/files/runs/"
+            f"/storage/emulated/0/Android/data/{self.runner_package}/files/runs/"
             f"gpu-events-{self.run_id}-*.jsonl"
         )
         result = subprocess.run(
@@ -587,7 +722,7 @@ class CaptureSession:
         ]
         internal = subprocess.run(
             self.adb_command + [
-                "exec-out", "run-as", RUNNER_PACKAGE, "ls",
+                "exec-out", "run-as", self.runner_package, "ls",
                 f"files/runs/gpu-events-{self.run_id}-*.jsonl",
             ],
             capture_output=True,
@@ -823,7 +958,7 @@ class CaptureSession:
             self.adb_command
             + [
                 "logcat", "-v", "threadtime", "D1CHECK_EVENT:I", "D1GPU:I",
-                "tflite:I", "TfLite:I", "*:S",
+                "tflite:I", "TfLite:I", *self.extra_logcat_tags, "*:S",
             ],
             stdout=subprocess.PIPE,
             stderr=sys.stderr,
@@ -1138,6 +1273,48 @@ def analyze(run_dir: Path) -> None:
         and metadata_event.get("experiment_valid") is True
         and coverage["passes_formal_requirement"] is True
     )
+    is_npu = str(metadata_event.get("resource", "")).upper() == "NPU"
+    npu_summary: dict[str, Any] = {}
+    if is_npu:
+        # Mirrors formal_gpu_valid's nine conditions. The GPU-only ones (TfLiteGpuDelegateV2 log
+        # evidence, GPU delegate profile) are replaced by NPU dispatch evidence and the NPU quality gate.
+        npu_model_sha = str(metadata_event.get("model_sha256") or "").lower()
+        npu_evidence = npu_delegate_evidence(
+            raw_log_path.read_text(encoding="utf-8", errors="replace")
+            if raw_log_path.exists() else "",
+            npu_model_sha,
+        )
+        (merged_dir / "npu_delegate_evidence.json").write_text(
+            json.dumps(npu_evidence, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
+        npu_quality = experiment_npu_quality_context(run_dir)
+        npu_conditions = {
+            "resource_npu": True,
+            "basic_mode": mode == "basic",
+            "validated_device": device_model.startswith(FORMAL_NPU_VALIDATED_DEVICE_PREFIXES),
+            "known_aot_model": npu_model_sha in FORMAL_NPU_AOT_MODELS,
+            "validated_runtime_pairing": (
+                metadata_event.get("litert_version") == NPU_LITERT_RUNTIME_VERSION
+                and str(metadata_event.get("npu_dispatch_lib_sha256") or "").lower()
+                == NPU_DISPATCH_LIB_SHA256
+            ),
+            "dispatch_evidence_verified": npu_evidence["verification"] == "verified",
+            "quality_gate_pass": npu_quality_gate_passes(npu_quality, npu_model_sha),
+            "runner_experiment_valid": metadata_event.get("experiment_valid") is True,
+            "thermal_coverage": coverage["passes_formal_requirement"] is True,
+        }
+        if npu_quality is None:
+            analysis_warnings.append(
+                "no npu_quality_preflight in experiment manifest; formal_npu_valid is false"
+            )
+        npu_summary = {
+            "engine": metadata_event.get("engine"),
+            "npu_delegate_evidence": npu_evidence,
+            "npu_partial_delegation": npu_evidence["npu_partial_delegation"],
+            "npu_quality_preflight": npu_quality,
+            "formal_npu_conditions": npu_conditions,
+            "formal_npu_valid": all(npu_conditions.values()),
+        }
     if mode == "diagnostic":
         analysis_warnings.append(
             f"Perfetto uses a {PERFETTO_BUFFER_KB} KiB ring buffer for up to "
@@ -1196,6 +1373,8 @@ def analyze(run_dir: Path) -> None:
         "accuracy_preflight": provenance["accuracy_preflight"],
         "energy_measurement": provenance["energy_measurement"],
     }
+    # NPU keys only on NPU runs, so CPU/GPU summaries stay byte-for-byte what they were.
+    summary.update(npu_summary)
     (merged_dir / "summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
@@ -1233,6 +1412,15 @@ def build_parser() -> argparse.ArgumentParser:
     capture_parser.add_argument("--interval", type=float, default=DEFAULT_INTERVAL_S)
     capture_parser.add_argument("--diagnostic-perfetto", action="store_true")
     capture_parser.add_argument(
+        "--runner-package", default=RUNNER_PACKAGE,
+        choices=(RUNNER_PACKAGE, NPU_RUNNER_PACKAGE),
+        help="package whose files/runs holds the runner JSONL (npu-runner for NPU runs)",
+    )
+    capture_parser.add_argument(
+        "--extra-logcat-tag", action="append", default=[],
+        help="additional logcat filterspec such as litert:I (NPU dispatch/ENN evidence)",
+    )
+    capture_parser.add_argument(
         "--perfetto-config",
         type=Path,
         default=Path(__file__).with_name("perfetto") / "gpu_diagnostic.pbtxt",
@@ -1256,9 +1444,13 @@ def main() -> int:
         return clear_logcat(adb, args.serial)
     if args.interval < 0.5:
         raise ValueError("--interval must be at least 0.5 seconds")
+    for tag in args.extra_logcat_tag:
+        if re.fullmatch(r"[A-Za-z0-9_.-]+:[VDIWEF]", tag) is None:
+            raise ValueError(f"invalid --extra-logcat-tag: {tag!r}")
     return CaptureSession(
         adb, args.serial, args.output_root, args.interval,
         args.diagnostic_perfetto, args.perfetto_config,
+        args.runner_package, args.extra_logcat_tag,
     ).run()
 
 

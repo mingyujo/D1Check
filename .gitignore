@@ -21,3 +21,10 @@
 __pycache__/
 results/
 local.properties
+# S26 NPU (2026-09-24): AOT-compiled models and EfficientDet binaries stay out of the repo.
+#   EfficientDet-Lite0 license attribution is unverified -> original and compiled never committed.
+#   MobileNet V1 *_Samsung_E9965.tflite committed in 8f64581 stay tracked (ignore does not untrack).
+*_Samsung_E9965.tflite
+*_apply_plugin.tflite
+*efficientdet*.tflite
+npu-runner/local_models/

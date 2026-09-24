@@ -1,0 +1,50 @@
+{
+  "generated_at": "2026-09-24T03:20:14+0000",
+  "purpose": "G1-B: 개정 4.4 새 모델 2종의 E9965 NPU 파티션 판정",
+  "host": "Linux-6.6.122+-x86_64-with-glibc2.39",
+  "ai_edge_litert": "2.3.0.dev20260922",
+  "ai_edge_litert_sdk_samsung": "2.3.0.dev20260922",
+  "target": "Samsung_E9965",
+  "models": [
+    {
+      "input": "efficientnet_lite0.tflite",
+      "input_sha256": "6c7ab0a6e5dcbf38a8c33b960996a55a3b4300b36a018c4545801de3a3c8bde0",
+      "input_size": 18582189,
+      "compile_seconds": 2.3,
+      "failed_backends": [],
+      "outputs": [
+        {
+          "file": "efficientnet_lite0_Samsung_E9965.tflite",
+          "size": 10033376,
+          "sha256": "311e4aac8fa1d8def4e13359c731ddc1c92f4c9ff7074e0d3860b036df8b2a31",
+          "operators": {
+            "DISPATCH_OP": 1
+          },
+          "dispatch_ops": 1,
+          "non_dispatch_ops": 0,
+          "verdict": "PASS"
+        }
+      ]
+    },
+    {
+      "input": "efficientdet_lite0.tflite",
+      "input_sha256": "40338edf5ec70d43e318b0a716a84d4564cd1802759a7a07170c7e43796dbf58",
+      "input_size": 13836895,
+      "compile_seconds": 4.0,
+      "failed_backends": [],
+      "outputs": [
+        {
+          "file": "efficientdet_lite0_Samsung_E9965.tflite",
+          "size": 8799008,
+          "sha256": "f51d082dbf68bef94092f9d2e262920ebb0fe6149df314453a767d50f8c9bc7a",
+          "operators": {
+            "DISPATCH_OP": 1
+          },
+          "dispatch_ops": 1,
+          "non_dispatch_ops": 0,
+          "verdict": "PASS"
+        }
+      ]
+    }
+  ]
+}

@@ -75,6 +75,8 @@ class NpuRunnerActivity : Activity() {
         val qualityN: Int,
         /** 품질 게이트의 CPU 기준 모델 (원본 FP32, benchmark-runner assets 공유). */
         val referenceAsset: String,
+        /** `--es input_spec`. null = 기본 lcg-unit (MobileNet, 9/24 G4 게이트와 같은 입력). */
+        val inputSpecName: String?,
     ) {
         companion object {
             const val DEFAULT_ASSET_FP32 = "models/mobilenet_v1_1.0_224_Samsung_E9965.tflite"
@@ -98,18 +100,21 @@ class NpuRunnerActivity : Activity() {
                     dtype = (i.getStringExtra("dtype") ?: "float").lowercase(),
                     iterations = i.getIntExtra("iterations", 50).coerceIn(1, 250_000),
                     warmup = i.getIntExtra("warmup", 5).coerceIn(0, 10_000),
-                    elements = i.getIntExtra("elements", NpuDeterministicInput.DEFAULT_ELEMENT_COUNT),
+                    // 0 이하 = 입력 텐서에서 읽는다. 주면 텐서와 일치해야 한다 (불일치면 FAILED)
+                    elements = i.getIntExtra("elements", 0),
                     runId = i.getStringExtra("run_id") ?: "manual-${System.currentTimeMillis()}",
                     autofinish = i.getBooleanExtra("autofinish", false),
                     qualityN = i.getIntExtra("quality_n", 0).coerceIn(0, 256),
                     referenceAsset = i.getStringExtra("ref_model_asset") ?: DEFAULT_REFERENCE_ASSET,
+                    inputSpecName = i.getStringExtra("input_spec"),
                 )
             }
         }
 
         override fun toString(): String =
             "accelerator=$accelerator dtype=$dtype iterations=$iterations warmup=$warmup " +
-                "model=${modelPath ?: modelAsset} run_id=$runId quality_n=$qualityN"
+                "model=${modelPath ?: modelAsset} run_id=$runId quality_n=$qualityN " +
+                "input_spec=${inputSpecName ?: "lcg-unit"}"
     }
 
     // ------------------------------------------------------------------- run
@@ -123,8 +128,10 @@ class NpuRunnerActivity : Activity() {
         j.append(kv("accelerator_requested", cfg.accelerator.name)).append(",")
         j.append(kv("model", cfg.modelPath ?: cfg.modelAsset ?: "")).append(",")
         j.append(kv("dtype", cfg.dtype)).append(",")
-        j.append(kv("input_generator", NpuDeterministicInput.VERSION)).append(",")
-        j.append(kv("input_normalization", NpuDeterministicInput.NORMALIZATION)).append(",")
+        val spec = NpuDeterministicInput.InputSpec.fromWire(cfg.inputSpecName)
+        j.append(kv("input_generator", spec?.generator ?: "unknown")).append(",")
+        j.append(kv("input_normalization", spec?.normalization ?: "unknown")).append(",")
+        j.append(kv("input_spec", spec?.wireName ?: cfg.inputSpecName.orEmpty())).append(",")
         j.append("\"iterations\":${cfg.iterations},\"warmup\":${cfg.warmup},")
         j.append("\"device_model\":\"${android.os.Build.MODEL}\",")
         j.append("\"android_sdk\":${android.os.Build.VERSION.SDK_INT},")
@@ -151,6 +158,9 @@ class NpuRunnerActivity : Activity() {
             j.append(kv("native_lib_files", spans.nativeLibFiles.joinToString(","))).append(",")
             val hasDispatch = spans.nativeLibFiles.any { it.startsWith("libLiteRtDispatch") }
             j.append("\"dispatch_so_present\":$hasDispatch,")
+            // 실행한 모델 파일의 SHA-256 — orchestrator 품질 preflight 와 d1_logger_v4 formal_npu_valid 가
+            // aot_manifest.json 의 출력 SHA 와 대조한다. 타이밍 루프 밖에서 한 번만 읽는다.
+            j.append(kv("model_sha256", modelSha256(cfg))).append(",")
 
             append(
                 "init OK\n" +
@@ -164,8 +174,18 @@ class NpuRunnerActivity : Activity() {
             )
 
             val useFloat = cfg.dtype != "uint8" && cfg.dtype != "int8"
-            val inputF = if (useFloat) NpuDeterministicInput.floats(cfg.elements) else FloatArray(0)
-            val inputB = if (useFloat) ByteArray(0) else NpuDeterministicInput.uint8Bytes(cfg.elements)
+            requireNotNull(spec) { "unknown input_spec: ${cfg.inputSpecName}" }
+            require(useFloat || spec == NpuDeterministicInput.InputSpec.LCG_UNIT) {
+                "input_spec ${spec.wireName} is float-only (uint8 smoke uses lcg-unit)"
+            }
+            // 입력 원소 수는 모델마다 다르다 → 텐서에서 읽는다. --ei elements 를 주면 대조만 한다
+            val elements = engine.inputElementCount(useFloat)
+            require(cfg.elements <= 0 || cfg.elements == elements) {
+                "--ei elements ${cfg.elements} != input tensor $elements"
+            }
+            j.append("\"input_elements\":$elements,")
+            val inputF = if (useFloat) NpuDeterministicInput.inputSet(spec, 1, elements)[0] else FloatArray(0)
+            val inputB = if (useFloat) ByteArray(0) else NpuDeterministicInput.uint8Bytes(elements)
             j.append(
                 kv(
                     "input_sha256",
@@ -226,7 +246,7 @@ class NpuRunnerActivity : Activity() {
 
             // 품질 게이트 — 타이밍 루프가 끝난 뒤에 돌리므로 latency 에 섞이지 않는다
             if (cfg.qualityN > 0) {
-                j.append(runQualityGate(cfg, engine, useFloat)).append(",")
+                j.append(runQualityGate(cfg, engine, useFloat, spec, elements, spans.outputCount)).append(",")
             }
 
             j.append(kv("status", "OK")).append(",").append(kv("error", ""))
@@ -257,15 +277,30 @@ class NpuRunnerActivity : Activity() {
      * 같은 n 개 입력을 후보(설정된 가속기·모델)와 CPU 기준(원본 FP32 모델)에 넣고 NpuQualityGate 로 판정.
      * CPU 기준도 같은 엔진(CompiledModel)이다. 판정 기준은 NpuQualityGate 에 고정돼 있다.
      */
-    private fun runQualityGate(cfg: Config, candidate: NpuBenchmarkEngine, useFloat: Boolean): String {
+    private fun runQualityGate(
+        cfg: Config,
+        candidate: NpuBenchmarkEngine,
+        useFloat: Boolean,
+        spec: NpuDeterministicInput.InputSpec,
+        elements: Int,
+        outputCount: Int,
+    ): String {
         if (!useFloat) {
             // uint8 AOT 모델과 짝이 맞는 CPU 기준(원본 quant 모델)이 assets 에 없다
             append("quality gate: NOT_APPLICABLE (uint8)\n")
             return "\"quality_gate\":{\"version\":\"${NpuQualityGate.VERSION}\"," +
                 "\"verdict\":\"NOT_APPLICABLE\",\"reason\":\"uint8 has no matching CPU reference model\"}"
         }
-        append("quality gate: n=${cfg.qualityN} candidate=${cfg.accelerator} reference=CPU\n")
-        val inputs = NpuDeterministicInput.floatSet(cfg.qualityN, cfg.elements)
+        if (outputCount != 1) {
+            // 이 게이트는 단일 출력 벡터(분류) 전제다. 검출 모델(출력 2개 이상)을 outputs[0] 만으로
+            // PASS 시키지 않도록 막는다. 검출 게이트 설계: measure/s26/npu/runner/NPU_DETECTOR_GATE_NOTE.md
+            append("quality gate: NOT_APPLICABLE (outputs=$outputCount)\n")
+            return "\"quality_gate\":{\"version\":\"${NpuQualityGate.VERSION}\"," +
+                "\"verdict\":\"NOT_APPLICABLE\",\"reason\":\"multi-output model ($outputCount); " +
+                "detector gate not implemented\"}"
+        }
+        append("quality gate: n=${cfg.qualityN} candidate=${cfg.accelerator} reference=CPU input=${spec.wireName}\n")
+        val inputs = NpuDeterministicInput.inputSet(spec, cfg.qualityN, elements)
         val candidateOut = inputs.map { candidate.runFloat(it).second }
         val referenceOut = NpuBenchmarkEngine(
             context = this,
@@ -286,6 +321,21 @@ class NpuRunnerActivity : Activity() {
     }
 
     // --------------------------------------------------------------- helpers
+
+    private fun modelSha256(cfg: Config): String {
+        val digest = java.security.MessageDigest.getInstance("SHA-256")
+        val stream = cfg.modelPath?.let { File(it).inputStream() }
+            ?: assets.open(requireNotNull(cfg.modelAsset))
+        stream.use { input ->
+            val buffer = ByteArray(1 shl 16)
+            while (true) {
+                val n = input.read(buffer)
+                if (n < 0) break
+                digest.update(buffer, 0, n)
+            }
+        }
+        return digest.digest().joinToString("") { "%02x".format(it) }
+    }
 
     private fun writeSummary(runId: String, json: String) {
         try {

@@ -730,6 +730,9 @@ def build_dataset(
             exclusions.append("gpu_delegate_not_formally_valid")
         if resource == "GPU" and profile_validation.get("valid") is not True:
             exclusions.append("gpu_execution_profile_not_valid")
+        # NPU mirror of the GPU rule: dispatch evidence + quality gate + runtime pairing (d1_logger_v4)
+        if resource == "NPU" and summary.get("formal_npu_valid") is not True:
+            exclusions.append("npu_dispatch_not_formally_valid")
         if any(issue.startswith("duplicate_mono_ns:") for issue in thermal_issues):
             exclusions.append("duplicate_thermal_sample_mono_ns")
         exclusions = list(dict.fromkeys(exclusions))

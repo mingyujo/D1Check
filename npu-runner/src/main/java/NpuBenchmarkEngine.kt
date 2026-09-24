@@ -108,6 +108,16 @@ class NpuBenchmarkEngine(
         )
     }
 
+    /**
+     * 입력 텐서의 원소 수를 텐서에서 읽는다 (MobileNet/EfficientNet 224, EfficientDet 320 으로 모델마다 다르다).
+     * 2.2.0 Kotlin API 에는 텐서 이름 없이 shape 를 묻는 함수가 없어서, 만들어 둔 입력 버퍼를 한 번 읽어 잰다.
+     * init() 직후 타이밍 루프 밖에서만 부를 것. uint8 텐서를 readFloat 로 읽으면 안 된다 (runInt8 주석 참조).
+     */
+    fun inputElementCount(useFloat: Boolean): Int {
+        check(inputs.isNotEmpty()) { "call init() first" }
+        return if (useFloat) inputs[0].readFloat().size else inputs[0].readInt8().size
+    }
+
     /** FLOAT32 입력 1회 추론. */
     fun runFloat(input: FloatArray): Pair<RunSpans, FloatArray> {
         val m = model ?: error("call init() first")

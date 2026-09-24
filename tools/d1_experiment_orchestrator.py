@@ -39,6 +39,25 @@ D1_STOP_ACTION = f"{D1_PACKAGE}.action.STOP"
 RUNNER_PACKAGE = "com.example.d1check.benchmarkrunner"
 RUNNER_ACTIVITY = f"{RUNNER_PACKAGE}/.MainActivity"
 REMOTE_RUNNER_DIRECTORY = f"/sdcard/Android/data/{RUNNER_PACKAGE}/files/runs"
+# npu-runner (S26 NPU, LiteRT Next CompiledModel) is a separate app. CPU/GPU slots never touch it;
+# NPU slots never touch benchmark-runner. Spec: s26/npu/runner/NPU_RUNNER_SPEC.md §5.
+NPU_RUNNER_PACKAGE = "com.example.d1check.npurunner"
+NPU_RUNNER_ACTIVITY = f"{NPU_RUNNER_PACKAGE}/.NpuRunnerActivity"
+NPU_REMOTE_RUNNER_DIRECTORY = f"/sdcard/Android/data/{NPU_RUNNER_PACKAGE}/files/runs"
+# litert (lowercase) carries the dispatch/ENN evidence d1_logger_v4 needs for formal_npu_valid.
+NPU_LOGGER_EXTRA_LOGCAT_TAGS = ("litert:I",)
+RESOURCE_CHOICES = ("CPU", "GPU", "NPU")
+DEFAULT_NPU_MODEL_ASSET = "models/mobilenet_v1_1.0_224_Samsung_E9965.tflite"
+DEFAULT_NPU_REFERENCE_ASSET = "models/mobilenet_v1_1.0_224.tflite"
+DEFAULT_NPU_INPUT_SPEC = "lcg-unit"
+NPU_INPUT_SPECS = ("lcg-unit", "lcg-rgb-127-128", "lcg-rgb-127.5-127.5")
+NPU_QUALITY_GATE_VERSION = "npu-quality-gate-v1"
+NPU_QUALITY_GATE_N = 32
+NPU_QUALITY_COSINE_MIN = 0.99
+NPU_QUALITY_TIMEOUT_SECONDS = 180
+NPU_QUALITY_POLL_SECONDS = 3.0
+NPU_LITERT_RUNTIME_VERSION = "2.2.0"
+NPU_DISPATCH_LIB_SHA256 = "f08656a642c46e7b06b64fbe1e0800de9e73b0b69c1641b87995562b4a16840f"
 ACCURACY_SCHEMA_VERSION = 2
 LEGACY_ACCURACY_SCHEMA_VERSION = 1
 ACCURACY_COMPARATOR_VERSION = "output-equivalence-v3"
@@ -767,8 +786,8 @@ def build_conditions(
     duty_cycles: Iterable[int],
 ) -> list[dict[str, Any]]:
     normalized = [value.upper() for value in resources]
-    if not normalized or any(value not in {"CPU", "GPU"} for value in normalized):
-        raise ValueError("resources must contain CPU and/or GPU")
+    if not normalized or any(value not in RESOURCE_CHOICES for value in normalized):
+        raise ValueError("resources must contain CPU, GPU and/or NPU")
     if len(set(normalized)) != len(normalized):
         raise ValueError("resources must not contain duplicates")
     threads = list(cpu_thread_levels)
@@ -784,6 +803,16 @@ def build_conditions(
                     "duty_cycle_percent": duty,
                 }
                 for threads_value in threads
+                for duty in duties
+            )
+        elif resource == "NPU":
+            conditions.extend(
+                {
+                    "condition_id": f"npu-d{duty:03d}",
+                    "resource": "NPU",
+                    "cpu_threads": None,
+                    "duty_cycle_percent": duty,
+                }
                 for duty in duties
             )
         else:
@@ -903,13 +932,15 @@ def upgrade_and_validate_manifest_plan(
     for slot in runs:
         resource = str(slot.get("resource", "")).upper()
         repetition = slot.get("repetition")
-        if resource not in {"CPU", "GPU"} or not isinstance(repetition, int):
+        if resource not in RESOURCE_CHOICES or not isinstance(repetition, int):
             raise OrchestratorError(f"invalid legacy plan slot: {slot}")
         cpu_threads = default_threads if resource == "CPU" else None
         duty = default_duty
         expected_condition_id = (
             f"cpu-t{cpu_threads:02d}-d{duty:03d}"
-            if resource == "CPU" else f"gpu-d{duty:03d}"
+            if resource == "CPU"
+            else f"npu-d{duty:03d}" if resource == "NPU"
+            else f"gpu-d{duty:03d}"
         )
         additions = {
             "block_index": repetition,
@@ -975,9 +1006,12 @@ def runner_intent_arguments(
     duty_cycle_percent: int = 100,
     duty_cycle_period_seconds: float = 10.0,
     gpu_profile_id: str = DEFAULT_GPU_PROFILE,
+    npu_model_asset: str = DEFAULT_NPU_MODEL_ASSET,
 ) -> list[str]:
+    # NPU goes to npu-runner with the same d1_* timed-run extras; CPU/GPU are unchanged.
+    activity = NPU_RUNNER_ACTIVITY if resource == "NPU" else RUNNER_ACTIVITY
     arguments = [
-        "shell", "am", "start", "-W", "-n", RUNNER_ACTIVITY,
+        "shell", "am", "start", "-W", "-n", activity,
         "--ez", "d1_auto_start", "true",
         "--es", "d1_resource", resource,
     ]
@@ -985,6 +1019,8 @@ def runner_intent_arguments(
         if cpu_threads is None:
             raise ValueError("CPU runner Intent requires cpu_threads")
         arguments += ["--ei", "d1_cpu_threads", str(cpu_threads)]
+    elif resource == "NPU":
+        arguments += ["--es", "d1_npu_model_asset", npu_model_asset]
     else:
         arguments += ["--es", "d1_gpu_profile", gpu_profile_id]
     arguments += [
@@ -998,6 +1034,135 @@ def runner_intent_arguments(
         "--ef", "d1_duty_cycle_period_s", str(duty_cycle_period_seconds),
     ]
     return arguments
+
+
+def runner_package_for(resource: Any) -> str:
+    return NPU_RUNNER_PACKAGE if str(resource or "").upper() == "NPU" else RUNNER_PACKAGE
+
+
+def remote_runner_directory_for(resource: Any) -> str:
+    return (
+        NPU_REMOTE_RUNNER_DIRECTORY if str(resource or "").upper() == "NPU"
+        else REMOTE_RUNNER_DIRECTORY
+    )
+
+
+def npu_logger_capture_arguments(resource: Any) -> list[str]:
+    """Extra d1_logger_v4 capture flags for NPU slots; empty for CPU/GPU (command unchanged)."""
+    if str(resource or "").upper() != "NPU":
+        return []
+    arguments = ["--runner-package", NPU_RUNNER_PACKAGE]
+    for tag in NPU_LOGGER_EXTRA_LOGCAT_TAGS:
+        arguments += ["--extra-logcat-tag", tag]
+    return arguments
+
+
+def npu_runner_intent_kwargs(resource: Any, args: argparse.Namespace) -> dict[str, Any]:
+    if str(resource or "").upper() != "NPU":
+        return {}
+    return {"npu_model_asset": getattr(args, "npu_model_asset", DEFAULT_NPU_MODEL_ASSET)}
+
+
+def npu_config(args: argparse.Namespace) -> dict[str, Any]:
+    return {
+        "runner_package": NPU_RUNNER_PACKAGE,
+        "engine": "litert-compiled-model",
+        "litert_runtime_version": NPU_LITERT_RUNTIME_VERSION,
+        "dispatch_lib_sha256": NPU_DISPATCH_LIB_SHA256,
+        "model_asset": getattr(args, "npu_model_asset", DEFAULT_NPU_MODEL_ASSET),
+        "quality_gate": {
+            "version": NPU_QUALITY_GATE_VERSION,
+            "n": NPU_QUALITY_GATE_N,
+            "reference": "CPU:" + getattr(args, "npu_reference_asset", DEFAULT_NPU_REFERENCE_ASSET),
+            "input_spec": getattr(args, "npu_input_spec", DEFAULT_NPU_INPUT_SPEC),
+            "criteria": "bit_identical_to_cpu==false && argmax_agreement==n/n && cosine_min>=0.99",
+        },
+    }
+
+
+def npu_quality_intent_arguments(
+    run_id: str, model_asset: str, reference_asset: str, input_spec: str,
+    count: int = NPU_QUALITY_GATE_N,
+) -> list[str]:
+    """npu-runner smoke/gate Intent (s26_npu_go.bat protocol): 1 timed inference, then the gate."""
+    return [
+        "shell", "am", "start", "-W", "-n", NPU_RUNNER_ACTIVITY,
+        "--es", "accelerator", "NPU",
+        "--es", "dtype", "float",
+        "--ei", "iterations", "1",
+        "--ei", "warmup", "0",
+        "--ei", "quality_n", str(count),
+        "--es", "model_asset", model_asset,
+        "--es", "ref_model_asset", reference_asset,
+        "--es", "input_spec", input_spec,
+        "--es", "run_id", run_id,
+        "--ez", "autofinish", "true",
+    ]
+
+
+def npu_quality_summary_arguments(run_id: str) -> list[str]:
+    return [
+        "exec-out", "run-as", NPU_RUNNER_PACKAGE, "cat",
+        f"files/npu-runner-v1/summary-{run_id}.json",
+    ]
+
+
+def evaluate_npu_quality_summary(
+    summary: Any, run_id: str, model_asset: str, count: int = NPU_QUALITY_GATE_N,
+) -> dict[str, Any]:
+    """Apply the fixed NPU criteria (CLAUDE.md §5) to an npu-runner summary. bit_identical_to_cpu
+    True means the candidate ran on CPU, so it fails even if argmax and cosine pass."""
+    failures: list[str] = []
+    summary = summary if isinstance(summary, dict) else {}
+    gate = summary.get("quality_gate")
+    gate = gate if isinstance(gate, dict) else {}
+    model_sha = str(summary.get("model_sha256") or "").lower()
+    if summary.get("schema") != "npu-runner-smoke-v1":
+        failures.append("schema_mismatch")
+    if summary.get("run_id") != run_id:
+        failures.append("run_id_mismatch")
+    if summary.get("status") != "OK":
+        failures.append("runner_status_not_ok")
+    if summary.get("accelerator_requested") != "NPU":
+        failures.append("accelerator_not_npu")
+    if summary.get("model") != model_asset:
+        failures.append("model_asset_mismatch")
+    if re.fullmatch(r"[0-9a-f]{64}", model_sha) is None:
+        failures.append("model_sha256_missing")
+    if not gate:
+        failures.append("quality_gate_missing")
+    else:
+        cosine_min = gate.get("cosine_min")
+        if gate.get("version") != NPU_QUALITY_GATE_VERSION:
+            failures.append("quality_gate_version_mismatch")
+        if gate.get("n") != count:
+            failures.append("quality_gate_n_mismatch")
+        if gate.get("bit_identical_to_cpu") is not False:
+            failures.append("bit_identical_to_cpu")
+        if gate.get("argmax_agreement") != f"{count}/{count}":
+            failures.append("argmax_disagreement")
+        if (
+            not isinstance(cosine_min, (int, float)) or isinstance(cosine_min, bool)
+            or cosine_min < NPU_QUALITY_COSINE_MIN
+        ):
+            failures.append("cosine_below_threshold")
+        if gate.get("verdict") != "PASS":
+            failures.append("runner_verdict_not_pass")
+    return {
+        "status": "passed" if not failures else "failed",
+        "failure_reasons": failures,
+        "run_id": run_id,
+        "candidate_model": model_asset,
+        "candidate_model_sha256": model_sha or None,
+        "input_spec": summary.get("input_spec"),
+        "input_generator": summary.get("input_generator"),
+        "input_normalization": summary.get("input_normalization"),
+        "device_model": summary.get("device_model"),
+        "build_fingerprint": summary.get("build_fingerprint"),
+        "engine": summary.get("engine"),
+        "quality_gate": gate or None,
+        "evaluated_utc": utc_now(),
+    }
 
 
 def effective_accuracy_policy(args: argparse.Namespace) -> str:
@@ -2161,9 +2326,11 @@ def _is_remote_missing(result: subprocess.CompletedProcess[str]) -> bool:
     return "no such file or directory" in detail
 
 
-def probe_remote_runner(adb: AdbClient, run_id: str) -> RemoteRunnerProbe:
+def probe_remote_runner(
+    adb: AdbClient, run_id: str, remote_directory: str = REMOTE_RUNNER_DIRECTORY
+) -> RemoteRunnerProbe:
     listing = adb.run(
-        ["shell", "ls", "-1", REMOTE_RUNNER_DIRECTORY],
+        ["shell", "ls", "-1", remote_directory],
         timeout=20,
         check=False,
     )
@@ -2186,12 +2353,12 @@ def probe_remote_runner(adb: AdbClient, run_id: str) -> RemoteRunnerProbe:
     if not matches:
         return RemoteRunnerProbe("not_found")
     if len(matches) != 1:
-        paths = [f"{REMOTE_RUNNER_DIRECTORY}/{filename}" for filename, _ in matches]
+        paths = [f"{remote_directory}/{filename}" for filename, _ in matches]
         raise RemoteRunnerAmbiguityError(
             f"multiple remote runner files for run_id={run_id}: {paths}"
         )
     filename, expected_session_id = matches[0]
-    remote_path = f"{REMOTE_RUNNER_DIRECTORY}/{filename}"
+    remote_path = f"{remote_directory}/{filename}"
     tail = adb.run(
         ["shell", "tail", "-n", str(REMOTE_TAIL_LINES), remote_path],
         timeout=20,
@@ -2747,6 +2914,8 @@ def validate_result(
         checks["formal_energy_eligible"] = metadata.get("formal_energy_eligible") is True
         if resource == "GPU":
             checks["formal_gpu_valid"] = summary.get("formal_gpu_valid") is True
+        if resource == "NPU":
+            checks["formal_npu_valid"] = summary.get("formal_npu_valid") is True
     failed = [name for name, passed in checks.items() if not passed]
     return {
         "valid": not failed,
@@ -3112,6 +3281,64 @@ class ExperimentOrchestrator:
         self.save()
         return result
 
+    def ensure_npu_quality_preflight(self) -> dict[str, Any]:
+        """Run the npu-runner quality gate once per experiment (mirror of ensure_accuracy_preflight)."""
+        config = self.manifest["config"].get("npu") or npu_config(self.args)
+        gate_config = config["quality_gate"]
+        existing = self.manifest.get("npu_quality_preflight")
+        if (
+            isinstance(existing, dict)
+            and existing.get("status") == "passed"
+            and existing.get("candidate_model") == config["model_asset"]
+            and existing.get("input_spec") == gate_config["input_spec"]
+        ):
+            return existing
+        policy = effective_accuracy_policy(self.args)
+        if policy == "off":
+            result = {"status": "not_run", "policy": "off", "failure_reasons": []}
+            self.manifest["npu_quality_preflight"] = result
+            self.save()
+            return result
+        assert self.adb is not None
+        run_id = f"npuq-{uuid.uuid4()}"
+        reference_asset = gate_config["reference"].split(":", 1)[1]
+        self.adb.run(["shell", "am", "force-stop", NPU_RUNNER_PACKAGE], timeout=20, check=False)
+        self.adb.run(
+            npu_quality_intent_arguments(
+                run_id, config["model_asset"], reference_asset, gate_config["input_spec"],
+                gate_config["n"],
+            ),
+            timeout=30,
+        )
+        summary: dict[str, Any] | None = None
+        deadline = time.monotonic() + NPU_QUALITY_TIMEOUT_SECONDS
+        while summary is None and time.monotonic() < deadline:
+            time.sleep(NPU_QUALITY_POLL_SECONDS)
+            fetched = self.adb.run(
+                npu_quality_summary_arguments(run_id), timeout=20, check=False
+            )
+            if fetched.returncode == 0 and fetched.stdout.strip():
+                try:
+                    value = json.loads(fetched.stdout)
+                except json.JSONDecodeError:
+                    continue
+                summary = value if isinstance(value, dict) else None
+        self.adb.run(["shell", "am", "force-stop", NPU_RUNNER_PACKAGE], timeout=20, check=False)
+        if summary is None:
+            result = {
+                "status": "failed", "failure_reasons": ["summary_timeout"], "run_id": run_id,
+                "candidate_model": config["model_asset"], "input_spec": gate_config["input_spec"],
+                "evaluated_utc": utc_now(),
+            }
+        else:
+            result = evaluate_npu_quality_summary(
+                summary, run_id, config["model_asset"], gate_config["n"],
+            )
+        result["policy"] = policy
+        self.manifest["npu_quality_preflight"] = result
+        self.save()
+        return result
+
     def thermal_conditioning(
         self,
         slot: dict[str, Any],
@@ -3447,7 +3674,8 @@ class ExperimentOrchestrator:
 
         try:
             runner_stop = self.adb.run(
-                ["shell", "am", "force-stop", RUNNER_PACKAGE], timeout=20, check=False
+                ["shell", "am", "force-stop", runner_package_for(slot.get("resource"))],
+                timeout=20, check=False,
             )
             if runner_stop.returncode != 0:
                 cleanup_errors.append(
@@ -3475,7 +3703,8 @@ class ExperimentOrchestrator:
             else []
         )
         remote_artifact = slot.get("remote_runner_path") or (
-            f"{REMOTE_RUNNER_DIRECTORY}/gpu-events-{run_id}-*.jsonl" if run_id else None
+            f"{remote_runner_directory_for(slot.get('resource'))}/gpu-events-{run_id}-*.jsonl"
+            if run_id else None
         )
         slot["failure_artifacts"] = {
             "manifest": str(self.manifest_path),
@@ -3563,7 +3792,9 @@ class ExperimentOrchestrator:
         run_stopped = False
         safety_monitor: RuntimeSafetyMonitor | None = None
         try:
-            self.adb.run(["shell", "am", "force-stop", RUNNER_PACKAGE], timeout=20)
+            self.adb.run(
+                ["shell", "am", "force-stop", runner_package_for(slot["resource"])], timeout=20
+            )
             self.step(slot, "runner_force_stop", status="ok")
 
             initial_activity_stop = self.adb.run(
@@ -3620,7 +3851,10 @@ class ExperimentOrchestrator:
             self.step(slot, "logger_clear", status="ok")
 
             capture_process = subprocess.Popen(
-                self._logger_command("capture", str(self.runs_root)),
+                self._logger_command(
+                    "capture", str(self.runs_root),
+                    *npu_logger_capture_arguments(slot["resource"]),
+                ),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
@@ -3676,6 +3910,7 @@ class ExperimentOrchestrator:
                     slot["duty_cycle_percent"],
                     self.args.duty_cycle_period_seconds,
                     self.args.gpu_profile,
+                    **npu_runner_intent_kwargs(slot["resource"], self.args),
                 ),
                 timeout=30,
             )
@@ -3706,7 +3941,11 @@ class ExperimentOrchestrator:
                 slot["logcat_terminal_missing"] = True
                 slot["remote_probe_count"] += 1
                 slot["final_remote_probe_used"] = final
-                result = probe_remote_runner(self.adb, run_id)
+                result = (
+                    probe_remote_runner(self.adb, run_id)
+                    if slot["resource"] != "NPU"
+                    else probe_remote_runner(self.adb, run_id, NPU_REMOTE_RUNNER_DIRECTORY)
+                )
                 slot["remote_runner_path"] = result.remote_path
                 slot["last_remote_probe_state"] = result.state
                 slot["last_remote_probe_detail"] = result.detail
@@ -3753,7 +3992,7 @@ class ExperimentOrchestrator:
             )
             if terminal_kind == "success" and cooling_required:
                 runner_stop = self.adb.run(
-                    ["shell", "am", "force-stop", RUNNER_PACKAGE],
+                    ["shell", "am", "force-stop", runner_package_for(slot["resource"])],
                     timeout=20,
                     check=False,
                 )
@@ -4013,6 +4252,20 @@ class ExperimentOrchestrator:
                 self.save()
                 print(f"experiment halted safely: {self.manifest['halt_reason']}", file=sys.stderr)
                 return 1
+        if any(str(slot.get("resource", "")).upper() == "NPU" for slot in pending_slots):
+            npu_quality = self.ensure_npu_quality_preflight()
+            if not accuracy_policy_allows_slots(
+                effective_accuracy_policy(self.args), str(npu_quality.get("status"))
+            ):
+                self.manifest["status"] = "failed"
+                self.manifest["halt_reason"] = (
+                    "required NPU quality preflight did not pass: "
+                    f"status={npu_quality.get('status')} "
+                    f"reasons={npu_quality.get('failure_reasons')}"
+                )
+                self.save()
+                print(f"experiment halted safely: {self.manifest['halt_reason']}", file=sys.stderr)
+                return 1
         for slot in pending_slots:
             try:
                 self.run_slot(slot)
@@ -4063,7 +4316,7 @@ class ExperimentOrchestrator:
 
 def experiment_config(args: argparse.Namespace) -> dict[str, Any]:
     cpu_thread_levels, duty_cycles = normalized_axes(args)
-    return {
+    config = {
         "mode": args.mode,
         "resources": [resource.upper() for resource in args.resources],
         "cpu_thread_levels": cpu_thread_levels,
@@ -4126,6 +4379,10 @@ def experiment_config(args: argparse.Namespace) -> dict[str, Any]:
             "strategy": "logcat_telemetry_first_with_sparse_dumpsys",
         },
     }
+    # Only NPU experiments carry the NPU block, so CPU/GPU configs (and resume checks) are unchanged.
+    if "NPU" in config["resources"]:
+        config["npu"] = npu_config(args)
+    return config
 
 
 def _legacy_compatible_config(config: dict[str, Any]) -> dict[str, Any]:
@@ -4305,13 +4562,20 @@ def dry_run_payload(args: argparse.Namespace) -> dict[str, Any]:
                 "condition_id": slot["condition_id"],
                 "block_index": slot["block_index"],
                 "resource": slot["resource"],
-                "force_stop": serial_prefix + ["shell", "am", "force-stop", RUNNER_PACKAGE],
+                "force_stop": serial_prefix + [
+                    "shell", "am", "force-stop", runner_package_for(slot["resource"]),
+                ],
                 "start_run": serial_prefix + start_run_arguments(),
                 "runner": serial_prefix + runner_intent_arguments(
                     slot["resource"], slot["cpu_threads"], args.duration, args.warmup,
                     "<run-id>", "<command-id>", slot["duty_cycle_percent"],
                     args.duty_cycle_period_seconds,
                     args.gpu_profile,
+                    **npu_runner_intent_kwargs(slot["resource"], args),
+                ),
+                **(
+                    {"logger_capture_extra": npu_logger_capture_arguments(slot["resource"])}
+                    if slot["resource"] == "NPU" else {}
                 ),
                 "stop_run": serial_prefix + stop_run_arguments(),
                 "direct_stop_recovery": serial_prefix + direct_stop_arguments(),
@@ -4401,7 +4665,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--serial")
     parser.add_argument("--mode", choices=("pilot", "formal"), default="pilot")
     parser.add_argument(
-        "--resources", nargs="+", choices=("CPU", "GPU"), default=["CPU", "GPU"]
+        "--resources", nargs="+", choices=RESOURCE_CHOICES, default=["CPU", "GPU"]
     )
     parser.add_argument("--cpu-threads", type=int)
     parser.add_argument("--cpu-thread-levels", type=int, nargs="+")
@@ -4422,6 +4686,18 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--representative-tensor-set", type=Path)
     parser.add_argument(
         "--gpu-profile", choices=GPU_PROFILE_IDS, default=DEFAULT_GPU_PROFILE
+    )
+    parser.add_argument(
+        "--npu-model-asset", default=DEFAULT_NPU_MODEL_ASSET,
+        help="npu-runner asset for NPU slots (AOT-compiled *_Samsung_E9965.tflite)",
+    )
+    parser.add_argument(
+        "--npu-reference-asset", default=DEFAULT_NPU_REFERENCE_ASSET,
+        help="CPU reference model for the NPU quality gate",
+    )
+    parser.add_argument(
+        "--npu-input-spec", choices=NPU_INPUT_SPECS, default=DEFAULT_NPU_INPUT_SPEC,
+        help="npu-runner input_spec for the NPU quality gate (32 inputs)",
     )
     parser.add_argument(
         "--accuracy-input-count", type=int, default=DEFAULT_ACCURACY_INPUT_COUNT
