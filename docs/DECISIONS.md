@@ -448,10 +448,10 @@
 
 | 항목 | 채택한 원칙 | 확보할 증거/미확정 사항 |
 |---|---|---|
-| 경로 이름 | `npu_full`/`npu_partial`은 후보 이름이며 자동 PASS가 아니다 | 원 모델 연산/partition→변환/AOT graph→컴파일 매핑, CPU 잔여 연산과 실패 시 fallback(거절/명시적 CPU 재시도/엔진 내부 대체)의 실제 의미·로그. silent fallback을 NPU 성공으로 세지 않음 |
+| 경로 이름 | `npu_full`/`npu_partial`은 후보 이름이며 자동 PASS가 아니다. 모델별 위임·실행 근거로 구분하며 근거 부족 시 미확정 | 원 모델 연산/partition→변환/AOT graph→컴파일 매핑, CPU 잔여 연산과 실패 시 fallback(거절/명시적 CPU 재시도/엔진 내부 대체)의 실제 의미·로그. silent fallback을 NPU 성공으로 세지 않음 |
 | 식별 | engine, runtime와 compiler 버전, 원본 모델 SHA-256과 AOT 모델 SHA-256을 별도 기록 | 정밀도·변환 옵션·컴파일 target·device manifest·입출력 dtype/shape/layout·전후처리/labels/threshold. 같은 이름의 모델을 동일 artifact로 가정하지 않음 |
 | DispatchDelegate | `1/1`이 변환 후 graph의 노드 집계인지 먼저 확인 | 원 모델 partition/compile mapping과 실제 실행 근거 없이 원 모델 전체 NPU 실행으로 확정하지 않음 |
-| 장치와 품질 | 실행 장치 검증과 출력 품질 검증을 독립 gate로 둠 | `bit_identical_to_cpu`는 관찰값. true/false 어느 쪽도 NPU 실행 또는 품질의 PASS/FAIL 조건이 아님 |
+| 장치와 품질 | 실행 장치 검증과 출력 품질 검증을 독립 gate로 둠 | `bit_identical_to_cpu`는 관찰값. true/false 어느 쪽도 NPU 실행 또는 품질의 PASS/FAIL 조건이 아님. 비트 비동일은 NPU 실행 증명이 아니며 비트 동일도 실패 조건이 아님 |
 | FP16 등 변환 | 기존 FP32 경로와 동일 산출물 비교라고 부르지 않음 | 엔진·정밀도 변경 효과 공개, 공통 task 품질 요구를 사전에 고정. 속도 차이를 전부 배정 정책 효과로 해석하지 않음 |
 | 분류 품질 | 대표 이미지와 적절한 출력/품질 기준으로 확인 | 입력 출처/hash·전처리·label 대응·출력 허용오차 및 task 품질 기준/표본을 결과 열람 전에 고정. 숫자는 이번 문서에서 임의 확정하지 않음 |
 | 탐지 품질 | box/class/score와 필요한 task 품질 기준을 분리해 확인 | 좌표계·NMS/score threshold·매칭 규칙·적절한 task 품질 지표/하한을 결과 전에 고정. tensor 유사성만으로 정확도 PASS를 선언하지 않음 |
@@ -460,6 +460,7 @@
 
 ### 현재 근거와 보존
 
+- **계약 모델 미검증:** EfficientNet-Lite0 / EfficientDet-Lite0의 NPU 지원·품질·성능은 확인 전까지 미검증이다. 아래 MobileNet 보고로 대체하지 않는다. 이 명시는 2026-09-24 팀 공유 동기화에서 기존 채택/검증 구분을 명확히 한 것이며 새 검증 결과가 아니다.
 - **팀원 보고/미검토:** MobileNet V1 NPU 성공, 합성 입력32개 결과, manifest 수정 원인. 현재 전달 내용만 기록한다. 원본·해당 commit·변경 diff·사전 기준을 확인하지 않아 프로젝트의 독립 검증 완료로 표시하지 않는다. 특히 manifest 수정의 구체 원인·타당성을 여기서 추정하지 않는다.
 - A24 두 모델 실측·198요청 독립 평가의 `conditional_joint_primary_pass=false`, fixed-split24시도/23완료 부분 종료, CAL-02 실패/미확인 소비량, 원본·동결 APK/계획·중단 registry는 그대로다. NPU 채택으로 기존 FAIL을 대체하지 않는다.
 - EfficientDet exact binary의 비배포 경계는 유지한다. 원본뿐 아니라 이를 포함/파생한 AOT artifact도 배포 권한을 별도 확인하기 전 저장소·PR·APK·팀 공유 bundle에 넣지 않는다. 승인된 실행자가 고정 원 URL에서 직접 확보하는 기존 절차를 따른다.

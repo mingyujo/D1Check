@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-09-24 TEAM-SYNC-02 — GitHub·팀 안내 동기화
+
+- 시작 `feature/arrival-scheduling-20260923` / `d8dfec32215c7fa832595cdec83d145f9d25614b` / clean. 원격 동일 브랜치 `6a63e39`보다 1커밋 앞섬을 확인했다. 아래 초기화 후보는 **준비 완료·실제 실행 미실시·별도 실행 승인 대기**다. 이번 요청은 문서·commit·작업 브랜치 push만 승인하며 기기 실행 승인이 아니다.
+- [팀 안내](team/README.md)의 과거 미준비 표기를 현재 상태로 갱신하고 최신 진단 계약 링크를 연결했다. S26 선정/NPU 개발 채택은 유지하며 계약 두 모델의 NPU 지원·품질·성능 미검증, 모델별 위임 근거와 비트 동일성의 판정 한계를 PLAN/DECISIONS와 명확히 맞췄다. 기존 FAIL·부분 결과·중단 계획 불변.
+- 문서 검증(2026-09-24, `d8dfec3`+문서4개 변경): `git diff --check` PASS, PC 상대 링크95개(팀 안내14개) 모두 추적 파일, 채택 anchor 확인. `rev-list --objects`/`cat-file`로 원격 미반영14개 blob 확인: 소스/문서만, 최대78,859bytes, 신규 모델/APK/키/대용량 원자료 없음·개인키/토큰/비밀값 패턴 미검출. 이번 문서 변경도 같은 검사 통과. 완료된 테스트/빌드/감사 반복, ADB·설치·실기기 실행 없음. push 결과·최종 commit·원격 일치는 종료 보고로 확인한다.
+- 다음: (1) 팀원 최신 commit·모델/AOT·위임/실행·사전 품질 기준과 원본 판정 자료 검토, (2) A24 단일 초기화 후보는 별도 실행 승인 후 gate 확인. GitHub에서는 master가 아닌 위 작업 브랜치를 읽는다.
+
 ## 2026-09-24 ARRIVAL-INIT-DIAG-01 — 실행 후보 준비 완료
 
 - 시작 `6a63e39`/`feature/arrival-scheduling-20260923` clean.744cd75의 기록 보완과 이후 S26 협업 문서를 보존했다. **별도 초기화1세션의 APK·plan·manifest·실행 CLI·PC 검증 완료 / 실행 승인 대기 / 실기기 미검증.** [계약·명령·판독 기준](ARRIVAL_INITIALIZATION_DIAGNOSTIC_20260924.md).

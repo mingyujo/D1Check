@@ -1,6 +1,6 @@
 # 팀 안내 — 2026-09-24 현재
 
-최신 공유 브랜치는 `feature/arrival-scheduling-20260923`이다. **master에는 이 진행상황이 아직 반영되지 않았다.** 이 안내는 로컬 진단 checkpoint `744cd75`와 그 이후 S26·NPU 협업 결정을 정리한다. 아래 상대 링크는 같은 브랜치의 추적 문서다. 문서의 옛 일정/미구현 문구는 당시 이력이며 현재 상태는 이 안내와 STATUS의 최신 절을 먼저 본다.
+최신 공유 브랜치는 `feature/arrival-scheduling-20260923`이다. **master에는 이 진행상황이 아직 반영되지 않았다.** 이 안내는 초기화 진단 준비 checkpoint `d8dfec3`와 S26·NPU 협업 결정을 정리한다. 아래 상대 링크는 같은 브랜치의 추적 문서다. 문서의 옛 일정/미구현 문구는 당시 이력이며 현재 상태는 이 안내와 STATUS의 최신 절을 먼저 본다.
 
 D1Check는 한 Android 앱에 비동시에 도착하는 분류·탐지 요청을 CPU/GPU에 배정하여 긴급 응답과 일반 서비스의 상충을 평가한다. A24가 개발·주평가 기기다. 단순 기준정책 대비 추가 기여와 기기 이식성은 검증할 질문이며 성공을 전제하지 않는다. 통역·OCR·OS 전체 스케줄링 검증 프로젝트는 아니다.
 
@@ -13,9 +13,9 @@ D1Check는 한 Android 앱에 비동시에 도착하는 분류·탐지 요청을
 | fixed-split 비교 | 24/27시도·23완료·실행 전 연결 실패1·미시도3, 평가142/162·warmup184/216, retry/대체0으로 종료 | 전체 평가 완료/주 CI/우월성 입증. 남은 세션 재개 금지 |
 | 시간 경계 보완 | 별도 CONDITIONAL_TIMING_DEV_1, dispatch/실행/API 호출/output/persist/실제 lane release 구분, PC 검증 | 완전한 B3/P·간섭 보정·개선 입증.20추정값 null, experiment_ready=false |
 | CAL-02 | 업데이트 설치 성공 후 첫 세션 필수 기록 누락. 시도1/16·완료0·실패1·미시도15, cleanup 완료 | 호출 수 확정 불가: 진단0~4/warmup0~8 미확인. 추정 동결/확인 단계 미실행 |
-| 초기화 실패 진단 | `744cd75`에서 단계별 기록 보존/host 회수 보완, 관련 Kotlin14·Python12 통과 | 실기기 검증·원인 규명. 새 setup_only1회(생성≤4, 추론/warmup0, 상한600초)는 **제안**이며 APK/실행 plan/승인은 아직 없음 |
+| 초기화 진단 준비 | `744cd75`의 기록 보존 보완 후 `d8dfec3`에서 새 APK·plan/manifest·실행 CLI·관련 PC 검증 완료 | **실제 실행 미실시·별도 실행 승인 대기**, 실기기 검증·원인 규명 미완료. setup_only1회(생성≤4, 추론/warmup0, 상한600초) 후보 |
 
-2026-09-24 후속: [ARRIVAL-INIT-DIAG-01](../ARRIVAL_INITIALIZATION_DIAGNOSTIC_20260924.md)의 새 APK·단일 plan/manifest·CLI와 PC 검증(Kotlin5/Python15)은 준비 완료했다. 위744cd75 당시 미준비 상태의 후속이며 **기기 실행은 계속 미승인·미실행**이다. 생성 순서/worker를 유지하고 warmup/추론을0으로 차단한다.600초 전체 예산과 기존timeout/gate를 적용하며 중단 CAL-02의 재개가 아니다.
+2026-09-24 후속: [ARRIVAL-INIT-DIAG-01](../ARRIVAL_INITIALIZATION_DIAGNOSTIC_20260924.md)의 새 APK·단일 plan/manifest·CLI와 PC 검증(Kotlin5/Python15)은 준비 완료했다. 744cd75 당시 미준비 상태에서 진행한 후속이며 **기기 실행은 계속 미승인·미실행**이다. 생성 순서/worker를 유지하고 warmup/추론을0으로 차단한다.600초 전체 예산과 기존timeout/gate를 적용하며 중단 CAL-02의 재개가 아니다.
 
 ## S26·NPU 협업 결정
 
@@ -23,10 +23,10 @@ D1Check는 한 Android 앱에 비동시에 도착하는 분류·탐지 요청을
 - 팀원이 **별도 npu-runner + CompiledModel**로 NPU 확장을 개발한다. A24 초기화 진단과 병행하며 기존 A24 benchmark-runner 런타임을 바꾸지 않는다. 이 브랜치에는 npu-runner가 아직 포함되지 않았고 팀원 최신 구현은 검토 대기다.
 - **S26 CPU/GPU probe와 동결 정책 축소 재현(XDEV-02)**, **NPU 경로 개발·평가**를 분리한다. 과거 S26 80런 또는 model-probe-v1 통과만으로 XDEV-02를 완료 처리하지 않는다.
 - 모델별 실행 장치와 품질을 각각 통과한 경로만 후보로 허용한다. 한 모델만 지원하면 그 모델로 제한한다. 기기별 지원 경로를 정책 입력으로 사용하는 구조는 개발 후 동결·평가한다. 현재 정책은3자원 지원 완료가 아니며, 개별 지원만으로 CPU/GPU/NPU3건 병행을 허용하지 않는다.
-- `npu_full`/`npu_partial`은 이름일 뿐이다. CPU 잔여 연산과 fallback 의미를 밝혀야 한다. DispatchDelegate1/1은 변환 graph 기준인지 확인하고 원 모델 partition/컴파일 매핑·실행 증거와 연결한다. `bit_identical_to_cpu`는 관찰값이며 장치/품질 PASS·FAIL 조건에서 제외한다.
+- `npu_full`/`npu_partial`은 후보 경로 이름이며 자동 검증 결과가 아니다. 모델별 위임·실행 근거로 구분하고, CPU 잔여 연산과 fallback 의미를 밝혀야 한다. 근거가 부족하면 구분도 미확정으로 둔다. DispatchDelegate1/1은 변환 graph 기준인지 확인하고 원 모델 partition/컴파일 매핑·실행 증거와 연결한다. `bit_identical_to_cpu`는 관찰값이며 장치/품질 PASS·FAIL 조건에서 제외한다. 비트 비동일은 NPU 실행 증명이 아니고 비트 동일은 실패 조건이 아니다.
 - FP16 등 변환과 엔진 차이를 공개하고 공통 품질 요구를 결과 열람 전에 고정한다. 분류는 대표 이미지·출력/품질, 탐지는 box/class/score·task 품질을 확인한다. 합성 입력32개를 대표 이미지 품질 증거로 승격하지 않는다. 기존 열 상수·전환비용도 새 경로에 전용하지 않는다.
 
-MobileNet V1 NPU 성공·합성 입력32개·manifest 수정 원인은 **팀원 보고이며 원본/코드/사전 기준 미검토**다. NPU 채택은 품질·속도·에너지 절감·정책 이식성 검증 완료 선언이 아니다. 상세 판정은 아래 DECISIONS가 기준이다.
+MobileNet V1 NPU 성공·합성 입력32개·manifest 수정 원인은 **팀원 보고이며 원본/코드/사전 기준 미검토**다. **계약 모델 EfficientNet-Lite0 / EfficientDet-Lite0의 NPU 지원·품질·성능은 미검증**이며 MobileNet 보고를 전용하지 않는다. NPU 채택은 품질·속도·에너지 절감·정책 이식성 검증 완료 선언이 아니다. 상세 판정은 아래 DECISIONS가 기준이다.
 
 ## 읽는 순서
 
@@ -34,7 +34,7 @@ MobileNet V1 NPU 성공·합성 입력32개·manifest 수정 원인은 **팀원 
 2. [S26·NPU 채택/판정 기준](../DECISIONS.md#s26-npu-20260924) → [PLAN](../PROJECT_PLAN.md): 이번 범위와 B2/B3/P 목표, 과거 일정과의 우선순위.
 3. [모델 inventory](../MODEL_02_INVENTORY.md) → [model-probe 계약](../MODEL_02B_PROBE.md) → [다기기 프로토콜](../MULTITASK_EXPERIMENT_PROTOCOL.md): exact artifact·실행/품질·재현평가 경계. NPU 결과를 기존 CPU/GPU probe schema에 조용히 끼워 넣지 않는다.
 4. [arrival 계약](../ARRIVAL_SCHEDULING_EXTENSION_20260923.md) → [독립 평가 후처리](../ARRIVAL_EXTENSION_POST_ANALYSIS_20260923.md) → [fixed-split 부분 결과](../ARRIVAL_FIXED_SPLIT_RESULTS_20260923.md): 이미 진행한 측정과 FAIL/부분 결과의 한계.
-5. [시간 경계 개발](../ARRIVAL_TIMING_DEV_20260924.md) → [CAL-02 종료](../ARRIVAL_TIMING_CAL02_RESULTS_20260924.md) → [초기화 진단 보완](../ARRIVAL_FAILURE_DIAGNOSIS_20260924.md): 현재 A24 재개 위치. 종료된 실험 명령은 실행하지 않는다.
+5. [시간 경계 개발](../ARRIVAL_TIMING_DEV_20260924.md) → [CAL-02 종료](../ARRIVAL_TIMING_CAL02_RESULTS_20260924.md) → [초기화 진단 보완](../ARRIVAL_FAILURE_DIAGNOSIS_20260924.md) → [단일 초기화 진단 실행 후보](../ARRIVAL_INITIALIZATION_DIAGNOSTIC_20260924.md): 현재 A24 준비 상태와 별도 승인 후 실행 경로. 종료된 실험 명령은 실행하지 않는다.
 
 ## NPU 담당자가 제공할 최소 자료
 
