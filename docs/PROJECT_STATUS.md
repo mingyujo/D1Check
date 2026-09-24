@@ -1,5 +1,15 @@
 # D1Check 현재 상태
 
+## 2026-09-24 ARRIVAL-FAILURE-DIAG-PC-01 — 현재 작업
+
+- 시작 `feature/arrival-scheduling-20260923` / `63f46581347eedf10d4e5f75b6df87e451486790` / clean. **PC 조사·실패 기록 보완·관련 검증 완료, 정지 원인 미확정, 실기기 미검증.** [진단·구현·검증·다음 최소 제안](ARRIVAL_FAILURE_DIAGNOSIS_20260924.md).
+- CAL-02의125초 host poll 소진과 RAM/finally 의존 기록 구조를 확인했다. 마지막 GPU 로그는 원인 증명이 아니다. 실제 원격/회수본 모두 manifest만 있어 경로 오류만으로 설명되지 않는다. 현재 PID의 native/Java crash 증거와 정지 전 thread 상태는 부족하다.
+- `arrival-failure-journal-v1` opt-in 진단에만 fsync prefix·runtime/warmup/요청 start/terminal·stop/부분 cleanup 기록을 추가했다. setup_only는4runtime·warmup0·추론0. 기록 오류/overflow는 후속 호출 차단; native crash/finally·마지막 이벤트 내구성 보장 없음. 동기 I/O 진단 자료는 calibration fit에서 거절한다. 기존 정책/manifest 경로는 opt-out으로 유지한다.
+- host는 명시적 timeout/실행 단계와 회수 실패를 분리하고 cleanup 전 증거5초+partial5초를 기존 phase 예산 안에서 회수한다. cleanup은 finally에서 수행한다. PC Kotlin14·Python12 PASS 및 관련 컴파일 PASS; native GPU/실기기 복구 PASS가 아니다. 검증 대상은 시작 HEAD+이번 변경, hash/명령/결과는 외부 receipt에 기록한다.
+- CAL-02 **시도1/16·완료0·기술적 실패1·미시도15**, 진단0~4/warmup0~8 미확인·완료 증거0, 나머지60/120 미실행 유지. 동결/확인 미실행·20 null/experiment_ready=false. 기존 FAIL·fixed-split 부분 결과·중단 registry·원본·APK·plan 불변.
+- 외부 `C:/Users/LG/Documents/D1Check_Arrival_Extension/timing_failure_diagnosis_pc_v1/`: starting_evidence, old_session_consumption, Kotlin/Python 로그, FINAL_REPORT/FINAL_RECEIPT/GIT_FINAL. 소스/문서만 로컬 commit; ADB·설치·앱 실행·실측·APK assemble·simulation·push/merge0.
+- 다음: (1) 제안된 setup_only1회·runtime생성≤4·warmup/진단0·총600초 상한의 단일시도 실행 준비, (2) 새 APK/manifest/runner 및 별도 승인 후에만 기기 진단. 새16세션 계획 준비나 CAL-02/과거 중단 run 재개는 하지 않는다.
+
 ## 2026-09-24 CAL-02 승인 실행 — 첫 세션 기록 불완전으로 종료
 
 - `ARRIVAL-TIMING-CAL-02`, 시작 `b4cc659`/feature/arrival-scheduling-20260923 clean. 사용자 승인: 개발8→검토·추정/규칙 동결→확인8,16세션/64진단/128warmup, retry/대체/추가0·cleanup 포함121.5분. 과거 CAL-01 중단과 별도다.

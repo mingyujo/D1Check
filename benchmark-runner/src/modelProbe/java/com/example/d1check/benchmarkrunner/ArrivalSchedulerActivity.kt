@@ -28,7 +28,18 @@ class ArrivalSchedulerActivity : Activity() {
     private val environment = java.util.Collections.synchronizedList(mutableListOf<Map<String, Any?>>())
     private val rows = ConcurrentHashMap<String, MutableMap<String, Any?>>()
     private var root: File? = null
+    @Volatile private var failureJournal: ArrivalFailureJournal? = null
+    @Volatile private var diagnosticFinished = false
+    @Volatile private var setupThread: Thread? = null
     private val watchdog = Runnable {
+        failureJournal?.let { journal ->
+            journal.requestStop()
+            // Never wait for diagnostic fsync on the kill path. Host timeout is still mandatory.
+            Thread { journal.bestEffort("watchdog", "timeout") }.apply { isDaemon = true; start() }
+            Log.e("D1ARRIVAL", "diagnostic_watchdog_kill; journal may be incomplete")
+            android.os.Process.killProcess(android.os.Process.myPid())
+            return@Runnable
+        }
         root?.let { try { save(it, "watchdog.json", mapOf("reason" to "120_second_bound", "mono_ns" to now())) } catch (_: Throwable) {} }
         android.os.Process.killProcess(android.os.Process.myPid())
     }
@@ -42,6 +53,7 @@ class ArrivalSchedulerActivity : Activity() {
     }
 
     private fun runSession() {
+        setupThread = Thread.currentThread()
         val adapters = mutableMapOf<String, ProbeTaskAdapter>()
         var failure: String? = null
         var started = false
@@ -62,6 +74,20 @@ class ArrivalSchedulerActivity : Activity() {
             calibrationRun = calibration
             val timingDev = protocol == ArrivalTimingDev.PROTOCOL || calibration
             require(protocol in setOf("arrival-scheduler-v1", ArrivalTimingDev.PROTOCOL, ArrivalTimingDev.CALIBRATION_PROTOCOL) && m.getString("session_id") == sid)
+            val diagnostic = m.optString("failure_diagnostic_contract", "").isNotEmpty()
+            val setupOnly = diagnostic && m.optString("failure_diagnostic_scope") == "setup_only"
+            if (diagnostic) {
+                require(calibration && m.getString("failure_diagnostic_contract") == ArrivalFailureJournal.CONTRACT &&
+                    m.getBoolean("performance_excluded") && !m.getBoolean("experiment_ready") &&
+                    m.getString("failure_diagnostic_scope") in setOf("setup_only", "calls"))
+                val early = canonicalProbeOutputRoot(filesDir, protocol, sid)
+                require(!early.exists() && early.mkdirs()); root = early
+                save(early, "manifest.json", manifestFile.readBytes())
+                failureJournal = ArrivalFailureJournal.open(early, sid, ProbeModelFile.sha256(manifestFile), ::now) {
+                    Log.e("D1ARRIVAL", it)
+                }
+                failureJournal!!.mark("session", "start", detail = "scope=${m.getString("failure_diagnostic_scope")}")
+            }
             require(m.getString("apk_sha256") == ProbeModelFile.sha256(File(applicationInfo.sourceDir)))
             require(m.getString("device_fingerprint") == Build.FINGERPRINT)
             require(m.getLong("maximum_duration_ms") == 120_000L)
@@ -121,7 +147,8 @@ class ArrivalSchedulerActivity : Activity() {
             val anchors = contained(inputs, "anchors.json", File(inputs, "anchors.json").length(), ProbeTaskAdapter.ANCHORS_SHA256)
             val requestsJson = m.getJSONArray("requests")
             val warmupsJson = m.getJSONArray("warmup_requests")
-            require(requestsJson.length() in 1..24 && warmupsJson.length() == 8)
+            require(if (setupOnly) requestsJson.length() == 0 && warmupsJson.length() == 0
+                else requestsJson.length() in 1..24 && warmupsJson.length() == 8)
             val requests = (0 until requestsJson.length()).map { requestsJson.getJSONObject(it) }
             val warmups = (0 until warmupsJson.length()).map { warmupsJson.getJSONObject(it) }
             val ids = mutableSetOf<String>()
@@ -141,27 +168,35 @@ class ArrivalSchedulerActivity : Activity() {
                 val id = q.getString("request_id")
                 require(UUID.fromString(id).toString() == id && ids.add(id))
             }
-            require(expectedKeys.all { key -> warmups.count { it.getString("model_key") == key } == 2 })
-            if (calibration) {
+            require(setupOnly || expectedKeys.all { key -> warmups.count { it.getString("model_key") == key } == 2 })
+            if (calibration && !setupOnly) {
                 require(requests.size == 4 && requests.map { it.getLong("offset_ms") } == listOf(0L, 5000L, 10000L, 15000L))
                 require(requests.map { it.getString("task_id") }.toSet().size == 1 &&
                     requests.map { it.getString("priority") }.toSet().size == 1 &&
                     requests.map { it.getString("sample_id") }.toSet().size == 1)
             }
-            val output = canonicalProbeOutputRoot(filesDir, protocol, sid)
-            require(!output.exists() && output.mkdirs())
+            val output = root ?: canonicalProbeOutputRoot(filesDir, protocol, sid)
+            if (!diagnostic) require(!output.exists() && output.mkdirs())
             root = output
-            save(output, "manifest.json", manifestFile.readBytes())
+            if (!diagnostic) save(output, "manifest.json", manifestFile.readBytes())
             Log.i("D1ARRIVAL", "session_start=$sid")
             sampler.scheduleAtFixedRate({ try { environment.add(snapshot()) } catch (e: Throwable) {
                 environment.add(mapOf("mono_ns" to now(), "error" to e.toString()))
             } }, 0, 500, TimeUnit.MILLISECONDS)
             for (key in expectedKeys.sorted()) {
                 val lane = if (key.endsWith("_CPU")) cpu else gpu
-                lane.submit {
-                    check(admission("before_runtime_creation", key) == "admit")
-                    adapters[key] = ProbeTaskAdapter(specs.getValue(key), ProbeModelFile.open(inputs, specs.getValue(key).model), anchors)
-                }.get(30, TimeUnit.SECONDS)
+                arrivalDiagnosticOperation(failureJournal, "runtime_wait", key) {
+                    lane.submit {
+                        check(admission("before_runtime_creation", key) == "admit")
+                        arrivalDiagnosticOperation(failureJournal, "runtime_create", key) {
+                            adapters[key] = ProbeTaskAdapter(specs.getValue(key), ProbeModelFile.open(inputs, specs.getValue(key).model), anchors)
+                        }
+                    }.get(30, TimeUnit.SECONDS)
+                }
+            }
+            if (setupOnly) {
+                failureJournal!!.mark("setup_only", "succeeded")
+                return // Explicitly zero warmup/inference requests, never a calibration result.
             }
             for (q in warmups) {
                 val key = q.getString("model_key")
@@ -172,7 +207,12 @@ class ArrivalSchedulerActivity : Activity() {
                         val base = mapOf("request_id" to q.getString("request_id"), "model_key" to key)
                         warmupTrace.add(base + mapOf("kind" to "start", "mono_ns" to now()))
                         var status = "failed"
-                        try { adapters.getValue(key).execute(image.first, image.second); status = "succeeded" }
+                        try {
+                            arrivalDiagnosticOperation(failureJournal, "warmup", key, q.getString("request_id")) {
+                                adapters.getValue(key).execute(image.first, image.second)
+                            }
+                            status = "succeeded"
+                        }
                         finally { warmupTrace.add(base + mapOf("kind" to "end", "mono_ns" to now(), "status" to status)) }
                     }
                 }.get(30, TimeUnit.SECONDS)
@@ -224,7 +264,9 @@ class ArrivalSchedulerActivity : Activity() {
                                 val observer: ((Long, Long) -> Unit)? = if (recorder == null) null else { start, end ->
                                     row["inference_start_ns"] = start; row["inference_end_ns"] = end
                                 }
-                                val result = adapters.getValue("${ticket.task}_${choice.backend}").execute(image.first, image.second, observer)
+                                val result = arrivalDiagnosticOperation(failureJournal, "diagnostic", "${ticket.task}_${choice.backend}", ticket.id) {
+                                    adapters.getValue("${ticket.task}_${choice.backend}").execute(image.first, image.second, observer)
+                                }
                                 val payload = ModelProbeArtifacts.json(result).toByteArray(Charsets.UTF_8)
                                 val ready = recorder?.mark(choice.backend, ticket, ArrivalTimingDev.Phase.OUTPUT_READY) ?: now()
                                 row["output_ready_ns"] = ready
@@ -324,13 +366,20 @@ class ArrivalSchedulerActivity : Activity() {
             Log.i("D1ARRIVAL", "session_finalized=$sid")
         } catch (e: Throwable) {
             failure = e.toString()
+            failureJournal?.stop("setup_or_session_failure: $e") // Before resource close, which may block.
             Log.e("D1ARRIVAL", "session failed", e)
         } finally {
             arrivals.shutdownNow(); sampler.shutdownNow()
+            failureJournal?.bestEffort("cleanup", "start", failure)
             for (lane in listOf(cpu, gpu)) {
                 try { lane.submit { adapters.filterKeys { it.endsWith(if (lane === cpu) "_CPU" else "_GPU") }.values.forEach { it.close() } }
-                    .get(5, TimeUnit.SECONDS) } catch (e: Throwable) { failure = "$failure; close: $e" }
+                    .get(5, TimeUnit.SECONDS) } catch (e: Throwable) {
+                    failure = "$failure; close: $e"
+                    failureJournal?.bestEffort("runtime_close", "failed", e.toString())
+                }
             }
+            failureJournal?.bestEffort("cleanup", if (failure == null) "succeeded" else "failed", failure)
+            diagnosticFinished = true
             // Bounded in-memory trace: flush outside dispatch/worker critical paths, including failed runs.
             if (calibrationRun) root?.let { output -> try {
                 save(output, "warmup_trace.json", synchronized(warmupTrace) { warmupTrace.toList() })
@@ -371,6 +420,7 @@ class ArrivalSchedulerActivity : Activity() {
             state["low_memory"] as Boolean, state["observed_peak_pss_bytes"] as Long,
             state["thermal_status"] as Int)
         environment.add(state + mapOf("stage" to stage, "model_key" to key, "admission_reason" to reason))
+        failureJournal?.mark("admission", "observed", key, detail = "$stage/$reason: ${ModelProbeArtifacts.json(state)}")
         return reason
     }
 
@@ -390,5 +440,13 @@ class ArrivalSchedulerActivity : Activity() {
         require(part.renameTo(file) && file.readBytes().contentEquals(bytes))
     }
 
-    override fun onDestroy() { setup.shutdown(); super.onDestroy() }
+    override fun onDestroy() {
+        failureJournal?.let { journal ->
+            if (diagnosticFinished) return@let
+            journal.requestStop()
+            setupThread?.interrupt()
+            Thread { journal.bestEffort("lifecycle", "cancelled", "onDestroy") }.apply { isDaemon = true; start() }
+        }
+        setup.shutdown(); super.onDestroy()
+    }
 }

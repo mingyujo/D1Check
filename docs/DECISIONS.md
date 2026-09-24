@@ -414,6 +414,13 @@
 - 새 CAL-02에만 parent 중단/hash 연결·새 UUID/registry·서명 preflight를 결합한다. 설치본 읽기 검사 실패는 phase/install/session0인 별도 receipt, 설치 실패는 claim 이후이므로 소비·중단이다. CAL-01 소비 상태를 소급 변경하지 않는다.
 - PC10 및 실제 읽기 전용 A24 서명 비교 통과는 설치/추론 성공과 다르다. 후보16/64/128·retry/대체/추가0·개발8→동결→확인8·121.5분은 **승인 대기**이며 이번에 실행하지 않는다. [전체 근거·명령](APK_SIGNING_RECOVERY_20260924.md).
 
+## 2026-09-24 — ARRIVAL-FAILURE-DIAG-PC-01 기록 보존 보완
+
+- 채택: runtime 정지 원인과 기록 누락을 분리한다. CAL-02 마지막 GPU 로그/과거 crash를 원인으로 확정하지 않는다.125초 host poll 소진·finally/RAM 의존 기록 구조는 코드와 원본으로 확인했다. 진단0~4/warmup0~8 미확인 및 세션1/16 중단을 유지한다.
+- 명시적 `arrival-failure-journal-v1`/performance_excluded 진단에만 session·runtime·호출 의도/반환·timeout/cancel/부분 cleanup을 append+fsync로 보존한다. 비용이 계측을 바꾸므로 calibration fit 입력을 차단한다. setup_only는 동일4runtime 생성·warmup/추론0이며 기존 정책/manifest 의미를 바꾸지 않는다. 저장 오류/128record 한도 초과 시 후속 호출 차단, native crash/강제 종료의 finally나 마지막 저장은 보장하지 않는다.
+- host 실패 단계·회수 실패를 앱 실패와 분리하고 기존 phase 예산 안에서 pre-cleanup 증거5초+partial5초 후 기존 bounded cleanup을 수행한다. 기존 계획 hash/consumed를 갱신하지 않는다. PC 검증 완료는 실기기 GPU 초기화 복구 증명이 아니다.
+- 제안(미승인): 새로운 setup_only 최대1시도·생성4·warmup/추론0·retry/대체/추가0·총600초. 기존30/120/125초 timeout 및 환경 gate는 유지한다. 새 실행 준비/승인이 필요하며 이번에 APK/실행 plan을 생성하거나 실측하지 않았다.16세션 보정·간섭·정책 비교로 확대하지 않는다. [근거·검증·한계](ARRIVAL_FAILURE_DIAGNOSIS_20260924.md).
+
 ## 2026-09-24 — ARRIVAL-TIMING-CAL-01 bound_v2 실행 승인
 
 - 사용자 명시 승인 채택: 개발8→기록 검토·추정값/규칙/지원 범위 동결→확인8, 총16시도·64진단요청·128warmup, retry/대체/추가0, 실행+cleanup 합상한7290초. 별도 smoke/과거 fixed-split 잔여 실행 없음.

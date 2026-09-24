@@ -24,6 +24,7 @@ CONDITIONS = [(t, b, priority) for t in ("classification", "detection") for b in
 SOURCE_SHA = "9e826188a25ecc9ca33404995cc1e45238f00f539fbb3c41eabfcdb8295cf3c3"
 CODE = ["tools/d1_arrival_timing_calibration.py", "tools/d1_arrival_timing_calibration_device.py",
         "tools/d1_apk_identity.py",
+        "tools/d1_arrival_failure_evidence.py",
         "tools/d1_arrival_timing_dev.py", "tools/d1_arrival_plan.py", "tools/d1_arrival_device.py", "tools/d1_telemetry_v4.py",
         "tools/arrival_timing_isolated_build.gradle"] + [
     f"benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/{name}.kt"
@@ -220,6 +221,10 @@ def usage(priority, field, purpose):
 def observations(artifacts):
     """Only actual complete calibration artifacts; never synthesizes durations."""
     artifacts = Path(artifacts)
+    diagnostic_manifest = p.read(artifacts / 'manifest.json')
+    v.require(not diagnostic_manifest.get('failure_diagnostic_contract')
+              and not diagnostic_manifest.get('performance_excluded', False),
+              'failure diagnosis is not calibration/performance data')
     result = v.validate_artifacts(artifacts)
     manifest, trace, rows = (p.read(artifacts / name) for name in ("manifest.json", "decision_trace.json", "requests.json"))
     summary = p.read(artifacts / "summary.json")

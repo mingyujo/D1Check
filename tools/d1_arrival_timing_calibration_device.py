@@ -12,6 +12,7 @@ from tools import d1_arrival_device as legacy
 from tools import d1_arrival_timing_calibration as c
 from tools import d1_arrival_timing_dev as v
 from tools import d1_arrival_plan as p
+from tools import d1_arrival_failure_evidence as failure_evidence
 
 
 def package(output):
@@ -39,7 +40,9 @@ def pull(device, sid, output):
     remote = f"files/{v.CAL_PROTOCOL}/{sid}"
     listing = device.call("shell", "run-as", legacy.PACKAGE, "ls", remote, check=False)
     if listing.returncode:
-        return {"status": "output_missing", "files": []}
+        if b'No such file or directory' in listing.stderr + listing.stdout:
+            return {"status": "output_missing", "files": []}
+        raise RuntimeError('artifact listing unavailable; not proof that app output is missing')
     output.mkdir(parents=True, exist_ok=True)
     files = []
     for name in listing.stdout.decode().splitlines():
@@ -94,6 +97,34 @@ def backend_gate(row, backend):
     v.require(row["selected_backend"] == backend and row["actual_backend"] == expected, "raw backend identity")
 
 
+def wait_for_cleanup(device, remote, seconds=125):
+    end = time.monotonic() + seconds
+    while time.monotonic() < end:
+        probe = device.call('shell', 'run-as', legacy.PACKAGE, 'test', '-s', remote + '/cleanup.json', check=False)
+        v.require(not probe.stderr.strip() and not probe.stdout.strip(), 'ADB poll unavailable')
+        if probe.returncode == 0:
+            return
+        v.require(probe.returncode == 1, 'ADB poll failure')
+        time.sleep(1)
+    raise TimeoutError('host completion poll exhausted; app outcome unknown')
+
+
+def failed_attempt_evidence(device, sid, folder, pid):
+    """At most5s evidence +5s partial pull within the phase budget; caller always cleans up."""
+    try:
+        failure_evidence.collect_failure(device, folder / 'pre_cleanup_evidence', pid)
+    except Exception as error:
+        c.write_new(folder / 'evidence_capture_error.json', dict(error=repr(error)))
+    previous = device.deadline
+    device.deadline = min(previous if previous is not None else float('inf'), time.monotonic()+5)
+    try:
+        c.write_new(folder / 'recovery.json', pull(device, sid, folder / 'partial'))
+    except Exception as error:
+        c.write_new(folder / 'recovery_error.json', dict(error=repr(error)))
+    finally:
+        device.deadline = previous
+
+
 def run(plan_file, phase, output, adb, serial, approved_total_cap, expected_sha, freeze=None):
     v.require(approved_total_cap == 16 and p.digest(plan_file) == expected_sha, "explicit approved total cap/plan hash required")
     c.check(plan_file, for_execution=True)  # Rejects adaptive experiment and unbound APK before Device construction.
@@ -144,6 +175,7 @@ def run(plan_file, phase, output, adb, serial, approved_total_cap, expected_sha,
             folder = output / f"{entry['index']:02d}_{sid}"
             folder.mkdir()
             c.write_new(folder / "attempt.json", dict(utc=legacy.utc(), entry=entry, device=identity, plan_sha256=expected_sha))
+            pid, stage = None, 'environment_gate'
             try:
                 thermal = device.call("shell", "dumpsys", "thermalservice").stdout
                 (folder / "before_thermal.txt").write_bytes(thermal)
@@ -156,20 +188,17 @@ def run(plan_file, phase, output, adb, serial, approved_total_cap, expected_sha,
                 manifest_file = Path(plan_file).parent / entry["manifest"]
                 remote = stage_inputs(device, sid, manifest_file, {k: info["path"] for k, info in plan["source_files"].items()})
                 c.write_new(folder / "launch_attempt.json", dict(utc=legacy.utc(), session_id=sid))
+                stage = 'activity_launch'
                 launch = device.call("shell", "am", "start", "-W", "-n", legacy.PACKAGE + "/" + legacy.ACTIVITY,
                                      "-a", legacy.ACTION, "--es", "session_id", sid)
                 (folder / "launch_stdout.txt").write_bytes(launch.stdout)
                 pid = device.call("shell", "pidof", legacy.PACKAGE + ":model_probe").stdout.decode().strip()
                 v.require(re.fullmatch(r"\d+", pid), "model probe PID missing")
-                end = time.monotonic() + 125
-                while time.monotonic() < end:
-                    probe = device.call("shell", "run-as", legacy.PACKAGE, "test", "-s", remote + "/cleanup.json", check=False)
-                    v.require(not probe.stderr.strip() and not probe.stdout.strip(), "ADB poll unavailable")
-                    if probe.returncode == 0:
-                        break
-                    v.require(probe.returncode == 1, "ADB poll failure")
-                    time.sleep(1)
+                stage = 'completion_poll'
+                wait_for_cleanup(device, remote)
+                stage = 'artifact_recovery'
                 recovery = pull(device, sid, folder / "artifacts")
+                stage = 'artifact_validation'
                 artifacts = folder / "artifacts"
                 v.require(p.digest(artifacts / "manifest.json") == entry["manifest_sha256"], "device manifest changed")
                 samples = c.observations(artifacts)
@@ -184,11 +213,9 @@ def run(plan_file, phase, output, adb, serial, approved_total_cap, expected_sha,
                 c.write_new(folder / "validated.json", dict(utc=legacy.utc(), request_count=len(samples), warmup_calls=8,
                              timing=v.validate_artifacts(artifacts), gpu=gpu, recovery=recovery))
             except BaseException as error:
-                c.write_new(folder / "error.json", dict(utc=legacy.utc(), error=repr(error)))
-                try:
-                    c.write_new(folder / "recovery.json", pull(device, sid, folder / "partial"))
-                except BaseException as recovery_error:
-                    c.write_new(folder / "recovery_error.json", dict(error=repr(recovery_error)))
+                c.write_new(folder / "error.json", dict(utc=legacy.utc(), error=repr(error), host_stage=stage,
+                            application_failure='unknown_unless_app_artifact_confirms'))
+                failed_attempt_evidence(device, sid, folder, pid)
                 raise
             finally:
                 try:
