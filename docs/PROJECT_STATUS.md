@@ -1,5 +1,15 @@
 # D1Check 현재 상태
 
+
+## 2026-09-24 ARRIVAL-CAL03-CONNECT-01 — PC 추정 연결·실행 모델 완료
+
+- 시작46b6c20/로컬·원격일치/clean. [새 계약·검증·재현 명령](ARRIVAL_CAL03_CONNECTION_20260924.md). 기존 CAL-03을 반복하지 않고 개발8세션32요청에서 priority별 공동 구간 통계를 별도 산출했다. 동결40값·확인 자료·기존20null 불변, 확인 자료 재튜닝 없음.
+- 새 PC 정책 `CAL03_SOLO_CONDITIONAL_PC_DEV_1`에 후보 응답/점유·phase 잔여 예측 연결. adaptive D→A 미측정은null, 엄격CPU fallback/명시적 가정 모드 분리. UNKNOWN_OVERRUN·실제AVAILABLE까지busy 유지. Android Activity/기존 정책/APK는 변경하지 않음.
+- 새 단독 이벤트 엔진: 완료와 독립된 도착, 응답O/P·worker_release·lane해제 구분, 예상/실현 분리, 전체 planned/arrived/미완료 분모. concurrency>1 차단. 8요청 PC 점검(판단1ms/도착지연0 가정) 완료이며 실측·본simulation·정책성능 검증 아님.
+- PC21테스트 및 개발자료32요청 경계 호환 재생 통과. 초기 fixture 오류3건 수정 후 통과. Kotlin/전체build/기존감사/실기기 반복 없음. 외부 `cal03_connection_pc_v1`에 새 설정·벡터·재생·엔진점검·VERIFICATION/보고서/명령 보존.
+- **experiment_ready=false**: adaptive D→A·부하 의존 준비/저장/callback·간섭·정확도 허용폭·새 앱 정책 검증 미충족. 완전한B3/P·정책 우월성 주장 없음. 기존FAIL/부분결과/종료계획/과거원인미확정 유지.
+- 다음: (1) 새 정책 D→A/큐 부하 전이의 최소 개발 수집 설계, (2) 병행이 필요할 때만 별도 overlap 대조 설계, (3) B2/B3 차별성·독립 평가 요건 검토. 추가 실측 자동 실행 없음. 관련 새 소스/문서만commit·현재브랜치 정상push; 최종Git은 외부 GIT_FINAL.json.
+
 ## 2026-09-24 CAL-03 — 개발·동결·확인 완료
 
 - 시작8fdb90d/clean/원격일치. 승인 예산 내 **개발8·확인8 완료, 설치2, 진단64·warmup128·명시적추론192**. 실패·미시도·retry·대체·추가0. [실행 계약·40슬롯 결과 근거](ARRIVAL_CAL03_EXECUTION_20260924.md).

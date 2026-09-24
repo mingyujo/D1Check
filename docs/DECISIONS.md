@@ -513,3 +513,11 @@
 - 개발8개 모두 적격한 뒤40슬롯 median/min/max·원자료/환경 hash를 동결하고 확인8을 수집했다. 설치2·진단64·warmup128, 실패·미시도·대체·retry0, 앱/host cleanup16/16. 화면96표본/후속lane재사용48쌍 확인. 약43.43분의 이번 자료로 과거 정지 원인을 확정하지 않는다.
 - 자료 적격성은 통과했으나 수치 정확도 허용폭은 원 계약에 없으며 performance_pass=null을 유지한다. 확인 자료로 재보정하지 않았다. S→O 최대 절대오차32.270ms, 탐지/GPU/긴급의 중앙값 초과4/4를 포함한 모든 오차를 보존한다. median은 상한/초과 잔여시간 분포가 아니다.
 - 확정 범위: A24·고정 입력·resident4·CPUthread1·단독·관측된 awake/thermal 조건의 초기 구간 관측. 40슬롯을 기존20개 설정에 자동 복사하지 않는다. adaptive D→A·priority별 적용·UNKNOWN_OVERRUN·병행 부하 미검증을 유지하고 experiment_ready=false다. 다음은 해당 경계를 정리하는 PC 작업이며 새 정책 실측이나 추가 기기 진단 승인이 아니다.
+
+
+## 2026-09-24 — ARRIVAL-CAL03-CONNECT-01: priority·공동 구간 PC 연결
+
+- 채택/PC 검증 완료: 동결40값을 task×backend×priority로 보존하는 새 설정과 PC 개발 정책을 사용한다. 기존20필드/정책ID/Android 경로에 대입하지 않는다. 개발자료에서 각 요청의 A→응답/A·S·O·P→L 차를 먼저 계산한 중앙값을 파생 설정에 두며, phase 중앙값의 합을 전체 구간 중앙값이라고 해석하지 않는다. 확인 자료는 변환/튜닝에 사용하지 않는다.
+- 고정 경로 D→A는 적응형 비용이 아니므로 missing/null 유지. 엄격 모드는 CPU fallback/단독busy 대기, 공통 비용을 명시한 PC 가정 모드에서만 후보 최소 응답 선택. 이는 보수적 개발 제한이며 성능 보장·새 P 기여가 아니다. UNKNOWN_OVERRUN 유지·실제L callback 전busy, W에서 P→L 시계 재시작 금지.
+- 새 이벤트 엔진은 기존 동결 simulator/옛 탐색 계획과 분리한다. CPU/GPU overlap은 미지원으로 차단하고, 다른 도착/순서에 단독 벡터를 쓰는 전이는 미검증 가정으로 표시한다. policy 예상과 engine 실현을 분리하며 예정도착·전체분모·미완료를 보존한다. PC21시험/8요청 엔진 점검은 기기 검증·독립 예측 검증이 아니다.
+- experiment_ready=false: adaptive 비용/부하 의존 지연/병행 간섭/정확도 기준/새 앱 연결·독립평가가 미충족이다. 기존10% 판정·FAIL/부분결과·CAL-03 performance_pass=null·동결값·종료계획 불변. 상한/허용폭/실측 예산을 새로 확정하지 않는다. [범위·구현·검증·다음 조건](ARRIVAL_CAL03_CONNECTION_20260924.md).
