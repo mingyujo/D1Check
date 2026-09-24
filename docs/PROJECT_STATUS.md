@@ -1,5 +1,15 @@
 # D1Check 현재 상태
 
+## 2026-09-24 CAL-02 승인 실행 — 첫 세션 기록 불완전으로 종료
+
+- `ARRIVAL-TIMING-CAL-02`, 시작 `b4cc659`/feature/arrival-scheduling-20260923 clean. 사용자 승인: 개발8→검토·추정/규칙 동결→확인8,16세션/64진단/128warmup, retry/대체/추가0·cleanup 포함121.5분. 과거 CAL-01 중단과 별도다.
+- 계획 SHA31558f…5a7a6, APK SHA85c5fd…7ff6와 코드·16manifest 동일성 확인. 변경 없는 PC 테스트/서명 원인 조사는 반복하지 않았다. 동일 A24/fingerprint·배터리76%/충전 분리/29.0°C/thermal0·프로세스 부재 확인, 앱 runtime memory admission은 실행 gate에서 확인한다.
+- 근거 root `C:/Users/LG/Documents/D1Check_Arrival_Extension/timing_cal02_execution_v1`. 동결 runner를 그대로 호출하는 외부 approved_phase.py는 설치 성공 직후 기기 APK SHA/package/version을 확인하는 읽기 전용 gate만 추가한다. 후보의 apksigner 검증과 byte identity로 설치본 인증서를 확인하고 불일치 시 runner의 중단·cleanup으로 전파한다. 앱/정책/측정 코드 수정 없음.
+- **종료:** preflight1 PASS·업데이트 설치1 성공·설치후 SHA/package/version/signer 확인. 세션1/16시도·완료0·기술실패1·미시도15, Activity1, retry/대체/추가0. 첫 classification/GPU/urgent 출력이manifest뿐이고 decision_trace 등 필수 기록이 없어 host125초 poll 뒤 중단했다. cleanup 완료·프로세스 부재·thermal0.
+- 진단64 중 성공 증거0, 실패 세션4건의 실제 호출 미확인(0~4), 나머지60 미실행. warmup128 중 완료 증거0, 실패 세션8회 실제 호출 미확인(0~8), 나머지120 미실행. 호출0으로 단정하지 않는다. fit 미동결·확인8 미소비·조건별 오차 계산 불가, 기존20null/experiment_ready=false 유지.
+- [종료 보고](ARRIVAL_TIMING_CAL02_RESULTS_20260924.md). 마지막 runtime 생성 로그 이후 원인 미확정; 과거09-19 crash와 혼동 금지. phase claim→cleanup315.995초, 서명 preflight 포함약6분. 기기 기존 결과 directory69개 존재, 앱 삭제/초기화 없음. 원래 FAIL/부분결과·CAL-01 중단 보존.
+- 다음: (1) PC에서 초기화/실패 종료 기록 유실 원인 진단, (2) 필요 시 별도 코드/계측 버전과 검증 준비. CAL-02/과거 중단 계획은 재실행하지 않으며 다음 실측은 별도 판단 대상이다.
+
 ## 2026-09-24 APK 서명 복구 준비 — 현재 작업
 
 - 시작660532f/`feature/arrival-scheduling-20260923`, 직전 종료 문서3개 변경 보존. **ARRIVAL-TIMING-CAL-02 PC 준비 완료·새 실행 승인 대기**, 설치/추론/simulation0. [원인·인증서·계획·명령](APK_SIGNING_RECOVERY_20260924.md).

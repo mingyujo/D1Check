@@ -407,6 +407,8 @@
 
 ## 2026-09-24 — APK 서명 복구 및 CAL-02 후보
 
+후속 승인/종료: 사용자가16/64/128·retry/대체/추가0·121.5분을 승인했다. 동일성/기기 gate·서명 preflight 후 설치1회 성공, 실제 package/version/APK hash·서명을 확인했다. 첫 세션(index0)의 필수 trace/ledger/warmup/environment가 없어서 동결 중단 규칙을 적용했다. 세션시도1·완료0·실패1·미시도15, 확인 phase 미소비, fit 없음. 실제 진단/warmup 호출 수는 누락 기록 때문에 미확인(해당 세션 상한4/8)으로 남기며0이나성공으로 대체하지 않는다. cleanup 완료. 이는 서명 문제 해결과 별개의 계측/초기화 실패이며 GPU hang 등 원인은 미확정이다. [CAL-02 종료 보고](ARRIVAL_TIMING_CAL02_RESULTS_20260924.md). 남은 세션 자동 재개·재시도·새 측정 없음.
+
 - 채택: 현재 설치본/성공 보관본은 프로젝트 기존 debug 키b253…7565, 실패 APK는 전역 debug 키35ce…18f3임을 apksigner로 확인했다. 격리 출력 경로 자체가 키를 생성한 것으로 단정하지 않는다. 패키징 경로가 기존 ANDROID_USER_HOME 조건을 보장하지 않았고 설치 전 signer gate도 없었다.
 - 기존 APK 정확한 바이너리를 기존 프로젝트 키로 새 경로에 재서명했다. ZIP909개 중 서명3개 외 동일, Android source/의존성/variant/manifest 불변. 키/비밀번호/개인 설정은 저장소에 추가하지 않는다. 앱 삭제·데이터 초기화·applicationId 변경·설치 재시도 없음.
 - 새 CAL-02에만 parent 중단/hash 연결·새 UUID/registry·서명 preflight를 결합한다. 설치본 읽기 검사 실패는 phase/install/session0인 별도 receipt, 설치 실패는 claim 이후이므로 소비·중단이다. CAL-01 소비 상태를 소급 변경하지 않는다.
