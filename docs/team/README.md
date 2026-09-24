@@ -1,0 +1,53 @@
+# 팀 안내 — 2026-09-24 현재
+
+최신 공유 브랜치는 `feature/arrival-scheduling-20260923`이다. **master에는 이 진행상황이 아직 반영되지 않았다.** 이 안내는 로컬 진단 checkpoint `744cd75`와 그 이후 S26·NPU 협업 결정을 정리한다. 아래 상대 링크는 같은 브랜치의 추적 문서다. 문서의 옛 일정/미구현 문구는 당시 이력이며 현재 상태는 이 안내와 STATUS의 최신 절을 먼저 본다.
+
+D1Check는 한 Android 앱에 비동시에 도착하는 분류·탐지 요청을 CPU/GPU에 배정하여 긴급 응답과 일반 서비스의 상충을 평가한다. A24가 개발·주평가 기기다. 단순 기준정책 대비 추가 기여와 기기 이식성은 검증할 질문이며 성공을 전제하지 않는다. 통역·OCR·OS 전체 스케줄링 검증 프로젝트는 아니다.
+
+## 이미 한 작업과 남은 작업
+
+| 구분 | 현재 확인된 상태 | 아직 아닌 것 |
+|---|---|---|
+| A24 두 모델 | EfficientNet-Lite0 분류·EfficientDet-Lite0 탐지 adapter, CPU/GPU 실행·독립 도착/resident/비선점 계측, 두 모델 실측 진행 완료 | 모든 이미지/기기/부하의 품질·성능 보장 |
+| arrival 독립 평가 | pilot19세션 후 독립27세션·198요청·216warmup 완료. 주 결합 판정 **FAIL** (`conditional_joint_primary_pass=false`) 보존 | 일반 처리효율 개선으로 긴급10% 최소효과 실패를 대체하지 않음 |
+| fixed-split 비교 | 24/27시도·23완료·실행 전 연결 실패1·미시도3, 평가142/162·warmup184/216, retry/대체0으로 종료 | 전체 평가 완료/주 CI/우월성 입증. 남은 세션 재개 금지 |
+| 시간 경계 보완 | 별도 CONDITIONAL_TIMING_DEV_1, dispatch/실행/API 호출/output/persist/실제 lane release 구분, PC 검증 | 완전한 B3/P·간섭 보정·개선 입증.20추정값 null, experiment_ready=false |
+| CAL-02 | 업데이트 설치 성공 후 첫 세션 필수 기록 누락. 시도1/16·완료0·실패1·미시도15, cleanup 완료 | 호출 수 확정 불가: 진단0~4/warmup0~8 미확인. 추정 동결/확인 단계 미실행 |
+| 초기화 실패 진단 | `744cd75`에서 단계별 기록 보존/host 회수 보완, 관련 Kotlin14·Python12 통과 | 실기기 검증·원인 규명. 새 setup_only1회(생성≤4, 추론/warmup0, 상한600초)는 **제안**이며 APK/실행 plan/승인은 아직 없음 |
+
+## S26·NPU 협업 결정
+
+- **S26을 XDEV-02 추가 검증 기기로 선정**, 정확한 모델명·SoC·fingerprint는 새 device manifest로 확인한다. 확인 전에는 팀원 보고다.
+- 팀원이 **별도 npu-runner + CompiledModel**로 NPU 확장을 개발한다. A24 초기화 진단과 병행하며 기존 A24 benchmark-runner 런타임을 바꾸지 않는다. 이 브랜치에는 npu-runner가 아직 포함되지 않았고 팀원 최신 구현은 검토 대기다.
+- **S26 CPU/GPU probe와 동결 정책 축소 재현(XDEV-02)**, **NPU 경로 개발·평가**를 분리한다. 과거 S26 80런 또는 model-probe-v1 통과만으로 XDEV-02를 완료 처리하지 않는다.
+- 모델별 실행 장치와 품질을 각각 통과한 경로만 후보로 허용한다. 한 모델만 지원하면 그 모델로 제한한다. 기기별 지원 경로를 정책 입력으로 사용하는 구조는 개발 후 동결·평가한다. 현재 정책은3자원 지원 완료가 아니며, 개별 지원만으로 CPU/GPU/NPU3건 병행을 허용하지 않는다.
+- `npu_full`/`npu_partial`은 이름일 뿐이다. CPU 잔여 연산과 fallback 의미를 밝혀야 한다. DispatchDelegate1/1은 변환 graph 기준인지 확인하고 원 모델 partition/컴파일 매핑·실행 증거와 연결한다. `bit_identical_to_cpu`는 관찰값이며 장치/품질 PASS·FAIL 조건에서 제외한다.
+- FP16 등 변환과 엔진 차이를 공개하고 공통 품질 요구를 결과 열람 전에 고정한다. 분류는 대표 이미지·출력/품질, 탐지는 box/class/score·task 품질을 확인한다. 합성 입력32개를 대표 이미지 품질 증거로 승격하지 않는다. 기존 열 상수·전환비용도 새 경로에 전용하지 않는다.
+
+MobileNet V1 NPU 성공·합성 입력32개·manifest 수정 원인은 **팀원 보고이며 원본/코드/사전 기준 미검토**다. NPU 채택은 품질·속도·에너지 절감·정책 이식성 검증 완료 선언이 아니다. 상세 판정은 아래 DECISIONS가 기준이다.
+
+## 읽는 순서
+
+1. [STATUS 최신 절](../PROJECT_STATUS.md): 현재 작업·장애·다음 행동. 아래 옛 상태는 이력.
+2. [S26·NPU 채택/판정 기준](../DECISIONS.md#s26-npu-20260924) → [PLAN](../PROJECT_PLAN.md): 이번 범위와 B2/B3/P 목표, 과거 일정과의 우선순위.
+3. [모델 inventory](../MODEL_02_INVENTORY.md) → [model-probe 계약](../MODEL_02B_PROBE.md) → [다기기 프로토콜](../MULTITASK_EXPERIMENT_PROTOCOL.md): exact artifact·실행/품질·재현평가 경계. NPU 결과를 기존 CPU/GPU probe schema에 조용히 끼워 넣지 않는다.
+4. [arrival 계약](../ARRIVAL_SCHEDULING_EXTENSION_20260923.md) → [독립 평가 후처리](../ARRIVAL_EXTENSION_POST_ANALYSIS_20260923.md) → [fixed-split 부분 결과](../ARRIVAL_FIXED_SPLIT_RESULTS_20260923.md): 이미 진행한 측정과 FAIL/부분 결과의 한계.
+5. [시간 경계 개발](../ARRIVAL_TIMING_DEV_20260924.md) → [CAL-02 종료](../ARRIVAL_TIMING_CAL02_RESULTS_20260924.md) → [초기화 진단 보완](../ARRIVAL_FAILURE_DIAGNOSIS_20260924.md): 현재 A24 재개 위치. 종료된 실험 명령은 실행하지 않는다.
+
+## NPU 담당자가 제공할 최소 자료
+
+| 자료 | 반드시 구분할 내용 |
+|---|---|
+| 소스/재현 | 최신 branch·commit, 관련 diff(특히 manifest 수정 전후/이유), 모듈·variant, 빌드/컴파일/실행 명령과 도구 버전. 키·비밀번호 제외 |
+| 기기/실행 | 정확한 모델명·SoC·fingerprint, engine/runtime/compiler 버전, CPU thread·resident/warmup·메모리/thermal 조건, 장치 실행 근거·CPU 잔여/fallback·partition/compile mapping |
+| 모델/입출력 | 원본/AOT 각각의 SHA-256·출처·target·정밀도·변환 옵션, dtype/shape/layout·전후처리·label·탐지 threshold. 배포 제한 binary는 첨부하지 않음 |
+| 사전 품질 계약 | 기준을 정한 시점/버전/hash, 대표 입력 목록·출처/hash, 모델별 공통 품질 요구·수용 기준·분모. 이미 본32개 결과는 개발 자료로 표시하고 향후 독립 확인과 분리 |
+| 원본/판정 | session/request ID·명령/시각·원본 로그/manifest·출력·실행 장치 판정과 품질 판정을 별도 제공. 실패/미지원/미완료·시도/재시도/전체 분모 포함. 민감정보 제거한 전달 방법과 checksum 목록을 먼저 공유 |
+
+자료를 받으면 먼저 식별정보·장치 실행·품질 기준을 검토한다. 부족한 항목은 미확인으로 유지하며, 성능 비교나3자원 정책 실측으로 자동 확대하지 않는다.
+
+## 공유 경계
+
+GitHub에는 소스·검증 도구·계약·요약 문서를 공유한다. 모델/컴파일 binary, APK, 키·토큰·개인 설정, 외부 raw 전체·캐시는 새로 넣지 않는다. **기존 legacy MobileNet asset은 이미 추적된 과거 파일**이며 이번에 추가한 모델이 아니다. EfficientDet exact binary와 배포 권한 미확인 파생 AOT는 저장소·PR·APK·팀 bundle에 포함하지 않는다. 승인 실행자가 고정 원 URL에서 직접 확보하는 비배포 경계를 유지한다.
+
+기존 상세 보고서의 `C:/Users/LG/Documents/...`는 담당자 PC의 **로컬 전용 위치**다. GitHub나 팀원 PC에서 열리는 링크가 아니다. 기존 원본은 담당자가 보존하고 필요한 경우 공유 가능 범위를 검토한 뒤 별도 checksum/산출물 목록으로 전달한다. 이 안내의 상대 링크는 저장소 문서만 가리킨다. master merge·타인 브랜치 변경·실기기 실행은 이번 문서 공유에 포함하지 않는다.

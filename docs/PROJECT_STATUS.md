@@ -1,5 +1,16 @@
 # D1Check 현재 상태
 
+## 2026-09-24 S26-NPU-COLLAB-01 — 최신 협업 지침
+
+- 시작 `feature/arrival-scheduling-20260923` / `744cd75183189c237ddac98611aa2906ae3389b2` / clean. [팀 안내](team/README.md)와 [S26·NPU 채택 범위](DECISIONS.md#s26-npu-20260924)를 현재 지침으로 추가했다. 아래 날짜별 기록은 당시 상태이며 현재 미구현/승인 대기 목록으로 읽지 않는다.
+- **S26을 XDEV-02 기기로 선정하고 별도 npu-runner/CompiledModel NPU 개발을 채택**, A24와 병행한다. 정확한 모델명·SoC·fingerprint는 팀원 보고/manifest 확인 대기. 이 로컬 브랜치의 NPU 모듈·3자원 정책 구현은 미완료이며 A24 benchmark-runner를 교체하지 않는다.
+- S26 CPU/GPU 동결 정책 재현과 NPU 확장을 분리한다. 모델별 실행 장치·품질을 모두 통과한 경로와 검증된 병행 조합만 허용한다. npu_full/partial·DispatchDelegate1/1·bit_identical 값만으로 NPU 전체 실행/품질 PASS를 부여하지 않는다. FP16/엔진 변경 공개·사전 품질 기준이 필요하다.
+- 팀원 MobileNet V1 NPU 성공·합성32입력·manifest 수정 원인은 보고만 접수했으며 원본/최신 commit/사전 기준 미검토다. 기존 S26 80런은 보조 자료이고 probe 통과도 XDEV-02 완료가 아니다. NPU 속도·에너지·이식성 미검증, EfficientDet 비배포 경계 유지.
+- A24는 두 모델 실측·27세션198요청 독립 평가 완료/주 FAIL, fixed-split24시도23완료 부분 종료, CAL-02 시도1/16 실패/호출 수 미확인 상태를 보존한다. `744cd75` 초기화 기록 보완은 PC 검증 완료·실기기 미검증,20 null/experiment_ready=false. 새 setup_only1회는 실행 준비/별도 승인 필요, 중단 run 재개 금지.
+- 이번 범위는 문서/상대 링크·Git 공유 대상 확인과 관련 commit·작업 브랜치 정상 push다. 원격 origin에는 시작 시 이 브랜치가 없었고 master는 `df8192a`였다. 모델/키/원자료 추가, master merge·타인 브랜치 변경·실기기 실행·무관한 테스트/빌드 없음. 최종 push/원격 HEAD는 종료 보고에서 확인한다.
+- 문서 검증(2026-09-24, `744cd75`+이번 문서5개 변경): `git diff --cached --check` PASS, PC 상대 링크 검사90개(팀 안내12개) 모두 실제 추적 파일/채택 anchor 확인. `git ls-tree`/`rev-list --objects`/`cat-file` 공유 대상 검사에서 신규 모델/APK/키·5MiB 초과 blob 없음, 개인키/토큰 패턴 미검출. 기존16.9MB MobileNet은 origin/master와 같은 blob이다. 이 검사는 소스/데이터 품질 재감사가 아니다.
+- 다음: (1) 팀원 최신 commit·재현 명령·모델/컴파일 identity·사전 품질 기준·원본/판정 자료 검토, (2) A24 단일 초기화 진단의 새 APK/manifest/runner 준비와 별도 승인, (3) 검증된 기기별 지원 경로 구조 개발 후 freeze/평가 계획 수립. 추가 측정 예산은 이번에 확정하지 않는다.
+
 ## 2026-09-24 ARRIVAL-FAILURE-DIAG-PC-01 — 현재 작업
 
 - 시작 `feature/arrival-scheduling-20260923` / `63f46581347eedf10d4e5f75b6df87e451486790` / clean. **PC 조사·실패 기록 보완·관련 검증 완료, 정지 원인 미확정, 실기기 미검증.** [진단·구현·검증·다음 최소 제안](ARRIVAL_FAILURE_DIAGNOSIS_20260924.md).
