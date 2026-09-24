@@ -36,8 +36,8 @@ def package(output):
     return receipt
 
 
-def pull(device, sid, output):
-    remote = f"files/{v.CAL_PROTOCOL}/{sid}"
+def pull(device, sid, output, protocol=v.CAL_PROTOCOL):
+    remote = f"files/{protocol}/{sid}"
     listing = device.call("shell", "run-as", legacy.PACKAGE, "ls", remote, check=False)
     if listing.returncode:
         if b'No such file or directory' in listing.stderr + listing.stdout:
@@ -74,9 +74,9 @@ def cleanup(device, hard_deadline=None):
         device.deadline = previous
 
 
-def stage_inputs(device, sid, manifest, sources):
+def stage_inputs(device, sid, manifest, sources, protocol=v.CAL_PROTOCOL):
     remote_input = f"files/arrival-scheduler-inputs/{sid}"
-    remote_output = f"files/{v.CAL_PROTOCOL}/{sid}"
+    remote_output = f"files/{protocol}/{sid}"
     shared = f"/data/local/tmp/d1check-timing-calibration/{sid}"
     for path, prefix in ((remote_input, ("run-as", legacy.PACKAGE)), (remote_output, ("run-as", legacy.PACKAGE)), (shared, ())):
         probe = device.call("shell", *prefix, "test", "-e", path, check=False)

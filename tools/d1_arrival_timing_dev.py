@@ -97,12 +97,12 @@ def replay(queue, lanes, now, budgets, calibration_backend=None):
             "candidates": candidates}
 
 
-def validate_trace(trace):
+def validate_trace(trace, extension=None):
     calibration = trace["protocol"] == CAL_PROTOCOL
     extra = {"calibration_backend"} if calibration else set()
     require(set(trace) == {"protocol", "policy", "estimate_contract", "estimate_version", "estimate_provenance",
                           "budgets", "capacity", "clock", "overflow", "dropped_records", "complete", "records", "experiment_ready"} | extra, "trace fields")
-    require((trace["protocol"], trace["policy"]) in ((PROTOCOL, POLICY), (CAL_PROTOCOL, CAL_POLICY)), "not timing-dev; retain legacy validator for v1")
+    require((trace["protocol"], trace["policy"]) in ((PROTOCOL, POLICY), (CAL_PROTOCOL, CAL_POLICY)) + (() if extension is None else (extension[:2],)), "not timing-dev; retain legacy validator for v1")
     if calibration:
         require(trace["calibration_backend"] in ("CPU", "GPU") and all(x is None for b in trace["budgets"].values() for x in b.values()), "calibration must not use estimates")
     require(trace["clock"] == "elapsedRealtimeNanos" and trace["experiment_ready"] is False, "clock/readiness contract")
@@ -154,7 +154,8 @@ def validate_trace(trace):
             for backend, lane in lanes.items():
                 residual, state = remaining(lane, time, trace["budgets"], backend)
                 require(record["lanes"][backend] == dict(lane, remaining_ns=residual, remaining_state=state), "lane snapshot/residual mismatch")
-            expected = replay(queue, lanes, time, trace["budgets"], trace.get("calibration_backend"))
+            expected = (extension[2](queue, lanes, time) if extension is not None else
+                        replay(queue, lanes, time, trace["budgets"], trace.get("calibration_backend")))
             require(all(record[k] == v for k, v in expected.items()), "decision replay mismatch")
             pending = expected["selected"]
             if pending is not None:
@@ -171,10 +172,10 @@ def read(path):
     return json.loads(Path(path).read_text(encoding="utf-8-sig"))
 
 
-def validate_artifacts(root):
+def validate_artifacts(root, extension=None):
     root = Path(root)
     trace, manifest, rows = (read(root / name) for name in ("decision_trace.json", "manifest.json", "requests.json"))
-    result = validate_trace(trace)
+    result = validate_trace(trace, extension)
     require(manifest["protocol"] == trace["protocol"] and manifest["policy"] == trace["policy"] and manifest["development_only"] is True
             and manifest["experiment_ready"] is False, "manifest namespace")
     if trace["protocol"] == CAL_PROTOCOL:

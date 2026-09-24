@@ -1,5 +1,7 @@
 # D1Check 프로젝트 실행계획
 
+> 최신 준비(2026-09-24): [ARRIVAL-COLLECT-01](ARRIVAL_INTEGRATED_COLLECTION_20260924.md)의 별도 Android active/shadow 계측·PC 대응·APK/계획 준비 완료, 실측 미승인·미실행. 엄격 CPU fallback은 전체 직렬이며 GPU 적응 배정 성능을 뜻하지 않는다. 판단 비용·큐 부하 전이·한정 병행을 분리하는6조건×개발/확인2단계(제안12세션/48진단/96warmup/설치2·91.5분)로 좁혔다. 성공해도 완전한B3/P·최선B2·정책성능/정확도PASS가 아니며 experiment_ready=false. 아래 날짜별 최신/현재 표현은 당시 이력이다.
+
 
 > 최신 PC 작업(2026-09-24): [ARRIVAL-CAL03-CONNECT-01](ARRIVAL_CAL03_CONNECTION_20260924.md) 완료. CAL-03 priority별40관측과 개발자료의 공동 구간 통계를 별도 PC 정책·단독 이벤트 엔진에 연결했다. 기존 Android 정책/20null/동결fit/확인 판정은 불변이다. adaptive D→A와 부하·병행 전이 미검증 때문에 experiment_ready=false이며 완전한 B3/P 또는 정책 성능 PASS가 아니다. 새 앱 연결·실측·본simulation은 실행하지 않았다. 아래 현재/다음 표기는 각 당시 이력이며 최신 우선순위는 STATUS를 따른다.
 

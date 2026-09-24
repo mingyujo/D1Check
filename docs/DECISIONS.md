@@ -521,3 +521,11 @@
 - 고정 경로 D→A는 적응형 비용이 아니므로 missing/null 유지. 엄격 모드는 CPU fallback/단독busy 대기, 공통 비용을 명시한 PC 가정 모드에서만 후보 최소 응답 선택. 이는 보수적 개발 제한이며 성능 보장·새 P 기여가 아니다. UNKNOWN_OVERRUN 유지·실제L callback 전busy, W에서 P→L 시계 재시작 금지.
 - 새 이벤트 엔진은 기존 동결 simulator/옛 탐색 계획과 분리한다. CPU/GPU overlap은 미지원으로 차단하고, 다른 도착/순서에 단독 벡터를 쓰는 전이는 미검증 가정으로 표시한다. policy 예상과 engine 실현을 분리하며 예정도착·전체분모·미완료를 보존한다. PC21시험/8요청 엔진 점검은 기기 검증·독립 예측 검증이 아니다.
 - experiment_ready=false: adaptive 비용/부하 의존 지연/병행 간섭/정확도 기준/새 앱 연결·독립평가가 미충족이다. 기존10% 판정·FAIL/부분결과·CAL-03 performance_pass=null·동결값·종료계획 불변. 상한/허용폭/실측 예산을 새로 확정하지 않는다. [범위·구현·검증·다음 조건](ARRIVAL_CAL03_CONNECTION_20260924.md).
+
+## 2026-09-24 — ARRIVAL-COLLECT-01: 통합 개발 수집 경로 준비
+
+- 채택/PC 구현: 기존 정책을 바꾸지 않고 새 collection namespace에서 PC 엄격 정책의 실제 배정과 고정 배정+shadow를 분리한다. strict는 현재 CPU fallback·전체직렬이고, fixed는 urgentCPU/normalGPU이며 global1과per-lane2를 구분한다. snapshot/후보/초과잔여/선택없음·계산/메모리기록/dispatch 시간 경계를 보존한다. 동기 journal 없이 버퍼를 종료 시 저장하며 유실을0호출로 바꾸지 않는다.
+- 근거: 공통 판단비용은 backend 순위에서 상쇄된다. 이번 목적은 완전한P 개발이 아니라 실제 목표 경로의 절대시간과큐/병행 지원 범위를 식별할 최소 자료다. 한정 병행은 탐지normalGPU+분류urgentCPU만, 단계별앞5조건검증/cleanup 뒤 허용한다. F를마지막에두는 안전조건의순서교란, overlap과큐전이혼재, 조건당독립세션1개의한계를명시한다.
+- 제안/실측 미승인: 개발6→회수hash재검사/조건별기술통계동결→확인6,12세션/48진단/96warmup/설치2·retry/대체/추가0·상한91.5분. 새로운 실측 승인 전에는 실행하지 않는다. 단계claim/preflight/설치/세션/Activity소비를 분리하고 어떤실패든전체계획종료·재개금지. 확인자료재보정·CI/tail/정확도/우월성PASS없음.
+- 검증: Kotlin28/기존timing Python9·최종collection Python13/실제Kotlin-PC snapshot12, APK빌드/PC서명/dry-run통과. 실기기병행·환경·성능 미검증. host동결검사보완으로planv2, 기존v1/APK보존. [상세 계약·실제 명령](ARRIVAL_INTEGRATED_COLLECTION_20260924.md).
+- 유지: 기존40값/20null/FAIL/부분결과/종료계획·experiment_ready=false. 강한B2/B3/P·기존시스템 비교와 축소 기준은불변. 이수집성공만으로최종비교완료/새성공기준을부여하지않는다.

@@ -99,7 +99,8 @@ internal object ArrivalTimingDev {
 
     /** One short monitor serializes worker observations and immutable decision inputs. No disk IO here. */
     class Recorder(private val clock: () -> Long, budgets: Map<String, Budget>, val version: String,
-                   val provenance: String, private val capacity: Int = 512, private val calibrationBackend: String? = null) {
+                   val provenance: String, private val capacity: Int = 512, private val calibrationBackend: String? = null,
+                   private val collection: ArrivalCollectionDev? = null) {
         val budgets = budgets.toMap()
         private val lanes = mutableMapOf("CPU" to Lane("CPU"), "GPU" to Lane("GPU"))
         private val records = mutableListOf<Map<String, Any?>>()
@@ -137,6 +138,7 @@ internal object ArrivalTimingDev {
             val snapshot = lanes.toMap()
             val ordered = ordered(queue).toList()
             val decision = if (overflow) Decision(null, "trace_overflow_stop", emptyList())
+                else if (collection != null) collection.choose(ordered, snapshot, time)
                 else if (calibrationBackend != null) calibrationChoice(ordered, snapshot, calibrationBackend)
                 else decide(ordered, snapshot, time, budgets)
             val end = clock()
@@ -153,8 +155,8 @@ internal object ArrivalTimingDev {
             return Pair(if (overflow) Decision(null, "trace_overflow_stop", emptyList()) else decision, end - time)
         }
         @Synchronized fun artifact(complete: Boolean): Map<String, Any?> = mapOf(
-            "protocol" to if (calibrationBackend == null) PROTOCOL else CALIBRATION_PROTOCOL,
-            "policy" to if (calibrationBackend == null) POLICY else CALIBRATION_POLICY, "estimate_contract" to ESTIMATE_CONTRACT,
+            "protocol" to if (collection != null) ArrivalCollectionDev.PROTOCOL else if (calibrationBackend == null) PROTOCOL else CALIBRATION_PROTOCOL,
+            "policy" to if (collection != null) ArrivalCollectionDev.POLICY else if (calibrationBackend == null) POLICY else CALIBRATION_POLICY, "estimate_contract" to ESTIMATE_CONTRACT,
             "estimate_version" to version, "estimate_provenance" to provenance,
             "budgets" to budgets.mapValues { it.value.wire() }, "capacity" to capacity,
             "clock" to "elapsedRealtimeNanos", "overflow" to overflow, "dropped_records" to dropped,

@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-09-24 ARRIVAL-COLLECT-01 — 통합 수집 PC 준비 완료·새 실측 미승인
+
+- 시작 `0eae7c0`, 작업 브랜치 유지. 사용자 일시 중단 후 같은 변경에서 재개했다. [수집 계약·코드·예산·명령](ARRIVAL_INTEGRATED_COLLECTION_20260924.md). 기존40값/20null/FAIL/부분결과/종료계획 불변.
+- 새 Android `COLLECTION_DISPATCH_DEV_1`: 엄격 PC 정책 active(CPU fallback·전체직렬)와 고정 배정+shadow 분리. 판단/기록/D→A·priority별후보/선택없음·실제lane해제 기록. 별도 namespace, 기존 정책 의미 유지. 이것은 완전한 B3/P가 아니다.
+- Kotlin28·기존 Python timing9 통과본 유지, 최종 Python collection13/13(skip0)·Kotlin-PC snapshot12 일치. APK 빌드·PC 서명·입력/manifest·실행 스크립트 check 통과. 재개 후 host 동결 전 회수 hash 검사만 보완해 후보plan v2. Android 빌드 반복 없음.
+- **실기기/ADB/설치/추론/본simulation 미실행, experiment_ready=false**. 새 예산 제안: 개발6→기술통계동결→확인6,12세션/48진단/96warmup/설치2, retry·대체·추가0, 예상32~45분·상한91.5분. 이전 승인 예산 재사용 금지.
+- 외부 root `C:/Users/LG/Documents/D1Check_Arrival_Extension/`: `integrated_collection_plan_v2`(계획SHA914a43ce…0566·manifest12·RUN_AFTER_APPROVAL.ps1), `integrated_collection_apk_v1`, `integrated_collection_pc_v1`(FINAL_REPORT/VERIFICATION/재현명령). 출력/registry 미생성 확인, v1후보 보존. 원격 공유에는 코드/문서만 포함한다.
+- 다음: (1) 새 예산 승인, (2) 당일identity·서명·환경gate 후 계획대로 개발/동결/확인, (3) 지원범위/B2/B3/P 차별성과 독립평가 요건 검토. 추가 실측 자동 실행 없음. 최종 commit·원격일치·worktree는 외부 GIT_FINAL.json에 기록한다.
 
 ## 2026-09-24 ARRIVAL-CAL03-CONNECT-01 — PC 추정 연결·실행 모델 완료
 
