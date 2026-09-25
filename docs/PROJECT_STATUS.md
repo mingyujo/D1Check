@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-26 ENERGY-THERMAL-COLLECT-05 — 준비 온도 gate 중단·재개 금지
+
+- 승인된 plan_v9 SHA `3f794c9a…5bfc2` 1회 실행. [종료 판독](ENERGY_THERMAL_COLLECT05_RESULTS_20260926.md), 원본 `C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_collection_run_v5/FINAL_RECEIPT.json`·`FINAL_REPORT.md`. 동일 A24·서명/환경 gate 통과, APK 전송·설치 각1. 전체1,389.359/16,080초, retry0, registry `stopped_no_resume`.
+- 개발2시도: CC_DG 직렬1적격 완료, 병행1은 runtime4/warmup8/적격성2 뒤 AP 준비351.176초에서 중단. AP 126표본32.3~33.5°C, 직렬 anchor31.5°C의 사전 허용31.25~31.75°C 미도달. 공식 병행 baseline/load 없음; 개발2·확인4 미시도, 동결 없음. 완료 근거 runtime8·warmup16·진단874·추론890. 둘째 앱 cleanup 미확인, host 종료·프로세스 부재·thermal0 확인.
+- 직렬 단일세션 조건부 에너지·발열 수치만 가능하고 paired 비교/절감 판정 불가. 다음: (1) 현재 AP 경로와 준비 비용으로 동일 anchor의 실현 가능성 PC 검토, (2) 그 결과 전까지 새 전체 수집·gate 완화·정책 PASS 보류. 기존 FAIL·부분 결과·40값/20null·종료 계획·`experiment_ready=false` 유지. 아래는 과거 이력이다.
+
 ## 2026-09-26 ENERGY-THERMAL-COLLECT-05 — 온도 준비 PC 설계·기기 미실행
 
 - [COLLECT-04 온도 분석·새 후보 계약](ENERGY_THERMAL_TEMPERATURE_PREP_20260926.md): 공식 AP baseline 31.5°C/32.3°C 차이 +0.8°C 재현. 첫 직렬 냉각 마지막32.3°C→다음 세션 전31.4°C, 이후 runtime/warmup/적격성 경과 후 baseline 첫 표본33.8°C. 준비 단계 재가열은 관측되지만 잔열·주변 원인은 미식별이며 고정 180초 냉각 부족이라고 단정하지 않는다.
