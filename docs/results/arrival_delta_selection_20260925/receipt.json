@@ -1,0 +1,29 @@
+{
+  "version": "arrival-delta-selection-v1",
+  "input": "docs/results/arrival_service_review_20260925/absolute.csv",
+  "input_sha256": "063e9d33232f286d8a8601639939c25df543c1507914828fdce7f00b054348e6",
+  "code_sha256": "bb03612d20712b5be50abeeeeffaa15f213e1c4004f7f26f61c153bf9a815051",
+  "source_checkpoint": "b7a4695d3f1241e8a184290ad9a95ff49e314cd7",
+  "policies": [
+    "CPU_URGENT",
+    "FIXED_SPLIT",
+    "B2_PC",
+    "B3_SOLO_EFT_PC",
+    "P_PAIR_COST_PC"
+  ],
+  "mode": "explore",
+  "objective": "minimum mean of per-replicate urgent nearest-rank P95",
+  "constraint": "planned normal non-timely rate <= CPU_URGENT rate + delta pp",
+  "exact_thresholds": "Fraction integer miss/planned counts",
+  "ties": "all equal exported Decimal urgent means; no secondary objective",
+  "additional_requirement": "fully completed preserved dataset; incomparable if completion/ledger missing",
+  "old_mean_loss_constraint": false,
+  "old_urgent_miss_first_ordering": false,
+  "scenario_weights": null,
+  "posthoc": true,
+  "simulations": 0,
+  "device_calls": 0,
+  "B2_reselection": false,
+  "P_tuning": false,
+  "experiment_ready": false
+}

@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-09-25 ARRIVAL-DELTA-SELECTION-01 완료 — 기존 CSV만 사용
+
+- 시작 `b7a4695`/clean. [일반 서비스 허용폭에 따른 정책 선택](ARRIVAL_DELTA_SELECTION_20260925.md), [정확 경계·CSV·계단형 그림](results/arrival_delta_selection_20260925/README.md). CPU 긴급우선 대비 일반 위반 증가δ 제약 아래 긴급P95만 최소화했다. 이전 일반평균 제약/긴급위반 우선순위는 적용하지 않는다. 사후 oracle 참고이며 배포 정책/새 평가가 아니다.
+- δ0에서 B2 단독9조건·CPU 단독2조건·low 4자 동률. P는 어느δ에서도 단독 선택되지 않는다. 전체조건 고정 적용은 δ<40/9%p에서CPU만 적격; 이후B2, 140/9부터B3, 220/9부터P, 50부터고정분리 진입. 최악 긴급값은CPU830.361ms가 최저이나 minimax 목적/시나리오 가중치를 채택하지 않았다.
+- 신규PC4테스트(정확경계·동률·미완료분모·δ0) 통과, PNG/링크/diff 확인. 입력·설정·코드hash와시점은결과폴더VERIFICATION/receipt. 기존원본·동결값·FAIL·부분결과·종료계획·experiment_ready=false 유지. ADB/실측/P튜닝/B2재선정/시뮬레이션 재생/전체 배치 모두0.
+- 다음: (1) 실제 일반 위반 증가 허용폭과 모든 조건 동일 적용 여부 결정, (2) 그 목적 아래 강한 정적 기준/CPU 중심으로 정리. 현재 P는 재현·제거 비교용 보존을 권고하며 추가개발 근거는 부족하다. δ0도 최종 서비스 기준으로 채택하지 않는다. 아래는 당시 이력이다.
+
 ## 2026-09-25 ARRIVAL-SERVICE-REVIEW-01 완료 — 추가 실측 없음
 
 - 시작 `7402a0a`/clean·원격 일치. [한국어 서비스 비교·권고](ARRIVAL_SERVICE_COMPARISON_20260925.md), [조건별 표·CSV·그림](results/arrival_service_review_20260925/README.md). 기존960행 재집계와 누락된 대표 trace3개만 PC 재생했고 원 지표와 일치했다. B2 평가별 재선정·P 튜닝·전체 배치·ADB·추가 실측 없음.
