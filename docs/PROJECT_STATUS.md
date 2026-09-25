@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-25 ENERGY-THERMAL-COLLECT-04 — paired AP baseline gate 중단·재개 금지
+
+- 시작 `16ce73e`/clean, 승인된 plan_v7 SHA `a1399e2f…96719` 단일 실행. [종료 판독](ENERGY_THERMAL_COLLECT04_RESULTS_20260925.md), 외부 `energy_collection_run_v4/FINAL_RECEIPT.json`·`energy_collection_analysis_v4/FINAL_REPORT.md`. 동일 A24와 설치본·서명·환경 gate 통과, 전송/설치0. 실행·cleanup 1,024.188초/220분, 재시도0, registry `stopped_no_resume`.
+- 개발2시도: CC_DG 직렬1완료, 병행1은 시작 AP baseline 32.3°C 대 직렬31.5°C(+0.8°C, 허용 ±0.5°C)로 부하 전 중단. 개발2·확인4 미시도. runtime8/8, warmup16/16, 진단874건 lane 해제 확인, 명시적 추론890건 완료 근거. 둘째 앱 cleanup 미확인, host 강제종료·프로세스 부재 확인. 동결/확인 없음, 병행·에너지 절감 비교 불가.
+- 첫 직렬870건의 완료까지 327.208초·기기 전체 540.675J는 A24 전류 mA 가설의 조건부 단일세션 값이며 절대 정확도/우월성 PASS가 아니다. 기존 FAIL·부분 결과·40값·20null·종료 계획·`experiment_ready=false` 보존. 다음: (1) PC에서 고정 냉각과 paired AP gate의 양립성 검토, (2) 별도 결정 전 새 실측·기준 변경 없음. 아래는 과거 이력이다.
+
 ## 2026-09-25 ENERGY-THERMAL-COLLECT-04 — 수정본 정식8세션 PC 준비 완료·기기 미실행
 
 - 시작 `919f908`/clean. [새 계약·예산·명령](ENERGY_THERMAL_COLLECTION_REPREP_04_20260925.md), 외부 `energy_collection_plan_v7`/`energy_collection_reprep_pc_v2`. 종료된 COLLECT-03와 완료 진단의 plan/receipt/registry hash를 계보로 묶고 표본은 제외한다. 수정 APK SHA `2874a97f…0931`/같은 signer 재사용, Android 변경·재빌드 없음. 새 run_v4/registry COLLECT-04 미생성.
