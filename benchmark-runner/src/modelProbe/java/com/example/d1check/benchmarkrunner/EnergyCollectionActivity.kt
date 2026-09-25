@@ -28,16 +28,20 @@ class EnergyCollectionActivity : Activity() {
     private lateinit var root: File
     private lateinit var sid: String
     private var seq = 0L
-    @Volatile private var phase = "setup"
+    private val observed = EnergyObservedState<ProbeTaskAdapter> { now() }
+    private var phase: String
+        get() = observed.phase
+        set(value) { observed.phase = value }
     @Volatile private var done = false
-    private val active = ConcurrentHashMap<String, String>()
-    private val runtimes = ConcurrentHashMap<String, ProbeTaskAdapter>()
+    private val sampler = EnergySamplerGuard(stop,
+        { error -> EnergyFailureEvidence.capture(error, sid, phase, "sampler_snapshot_or_event", now()) },
+        { evidence -> save("sampler_failure.json", evidence) })
     private val watchdog = Runnable { android.os.Process.killProcess(android.os.Process.myPid()) }
     private fun now() = SystemClock.elapsedRealtimeNanos()
     private fun lane(key: String) = if (key.endsWith("_CPU")) cpu else gpu
     @Synchronized private fun event(kind: String, data: Map<String, Any?> = emptyMap()) {
         progress?.add(ModelProbeArtifacts.json(data + mapOf("kind" to kind, "mono_ns" to now(), "sequence" to seq++,
-            "session_id" to sid, "phase" to phase, "thread_id" to Thread.currentThread().id,
+            "session_id" to sid, "phase" to (data["phase"] ?: phase), "thread_id" to Thread.currentThread().id,
             "thread_name" to Thread.currentThread().name)))
     }
     private fun save(name: String, value: Any) {
@@ -52,6 +56,7 @@ class EnergyCollectionActivity : Activity() {
         }
     }
     private fun snapshot(): Map<String, Any?> {
+        val snapshotStart = now()
         val am = getSystemService(ActivityManager::class.java); val mem = ActivityManager.MemoryInfo(); am.getMemoryInfo(mem)
         val debug = Debug.MemoryInfo(); Debug.getMemoryInfo(debug); peak.updateAndGet { maxOf(it, debug.totalPss.toLong() * 1024) }
         val b = registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
@@ -59,20 +64,21 @@ class EnergyCollectionActivity : Activity() {
         val current = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
         val charge = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
         val thermal = pm.currentThermalStatus
-        val reason = V4Gate.reason(mem.availMem, mem.threshold, mem.lowMemory, peak.get(), thermal)
+        val peakBytes = peak.get(); val interactive = pm.isInteractive
+        val reason = V4Gate.reason(mem.availMem, mem.threshold, mem.lowMemory, peakBytes, thermal)
         val plugged = b?.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
         val temp = b?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1)
         val level = b?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
         val scale = b?.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
         if (reason != "admit" || plugged != 0 || temp == null || temp !in 0..350 ||
-            level == null || level < 20 || scale != 100 || !pm.isInteractive) stop.compareAndSet(null, "environment/$reason")
+            level == null || level < 20 || scale != 100 || !interactive) stop.compareAndSet(null, "environment/$reason")
         return mapOf("current_raw" to current, "current_valid" to (current != Int.MIN_VALUE),
             "current_nominal_unit" to "uA_API_unverified_device_scale", "voltage_mV" to b?.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1),
             "charge_counter_raw" to charge, "charge_valid" to (charge != Int.MIN_VALUE), "charge_nominal_unit" to "uAh",
             "plugged" to plugged, "battery_temperature_deci_c" to temp, "battery_level" to level, "thermal_status" to thermal,
-            "interactive" to pm.isInteractive, "avail_bytes" to mem.availMem, "threshold_bytes" to mem.threshold,
-            "low_memory" to mem.lowMemory, "peak_pss_bytes" to peak.get(), "admission_reason" to reason,
-            "active" to active.toMap(), "resident_keys" to runtimes.keys.toList().sorted())
+            "interactive" to interactive, "avail_bytes" to mem.availMem, "threshold_bytes" to mem.threshold,
+            "low_memory" to mem.lowMemory, "peak_pss_bytes" to peakBytes, "admission_reason" to reason,
+            "snapshot_start_ns" to snapshotStart, "sensor_read_end_ns" to now()) + observed.snapshot()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,7 +123,7 @@ class EnergyCollectionActivity : Activity() {
             val imageSpec = images.getJSONObject(0); val image = File(inputs, imageSpec.getString("filename"))
             val imageHash = imageSpec.getString("sha256"); check(ProbeModelFile.sha256(image) == imageHash)
             val anchors = File(inputs, "anchors.json")
-            samples.scheduleAtFixedRate({ try { event("power_sample", snapshot()) } catch(e: Throwable) { stop.compareAndSet(null,"sample: $e") } },0,1,TimeUnit.SECONDS)
+            samples.scheduleAtFixedRate({ sampler.tick { event("power_sample", snapshot()) } },0,1,TimeUnit.SECONDS)
             val setupStart = now()
             ArrivalRuntimeSetup.initialize(EnergyCollectionCore.KEYS, false, 8, 872) { key ->
                 healthy(); EnergyCollectionCore.requireTime(now(),setupStart,150_000_000_000)
@@ -126,7 +132,8 @@ class EnergyCollectionActivity : Activity() {
                     event("runtime_start",mapOf("key" to key)); event("admission", snapshot()); healthy()
                     val spec = ModelProbeManifestParser.parse(m.getJSONObject("models").getJSONObject(key))
                     check(spec.identity.sessionId == sid && spec.target.apkSha256 == m.getString("apk_sha256") && spec.runtime.cpuThreads == 1)
-                    runtimes[key] = ProbeTaskAdapter(spec, ProbeModelFile.open(inputs,spec.model),anchors)
+                    val runtime = ProbeTaskAdapter(spec, ProbeModelFile.open(inputs,spec.model),anchors)
+                    observed.addRuntime(key, runtime)
                     event("runtime_return",mapOf("key" to key))
                 }.get(EnergyCollectionCore.remainingCall(now(),setupStart,150_000_000_000),TimeUnit.NANOSECONDS)
             }
@@ -138,7 +145,7 @@ class EnergyCollectionActivity : Activity() {
                 val result = lane(key).submit<Map<String,Any?>> {
                     event("warmup_start",mapOf("id" to "$key-$i","key" to key))
                     event("admission",snapshot()); healthy()
-                    runtimes.getValue(key).execute(image,imageHash, diagnosticMark={stage,edge ->
+                    observed.runtime(key).execute(image,imageHash, diagnosticMark={stage,edge ->
                         event("call_stage",mapOf("id" to "$key-$i","key" to key,"stage" to stage,"edge" to edge))
                     }).also { event("warmup_return",mapOf("id" to "$key-$i","key" to key)) }
                 }.get(EnergyCollectionCore.remainingCall(now(),setupStart,150_000_000_000),TimeUnit.NANOSECONDS)
@@ -158,15 +165,18 @@ class EnergyCollectionActivity : Activity() {
             save("summary.json",mapOf("status" to "completed","requests" to 870,"probe" to 2,"warmup" to 8,"mono_ns" to now()))
         } catch(e: Throwable) {
             failure = e.toString(); stop.compareAndSet(null,failure)
+            try { save("session_failure.json", EnergyFailureEvidence.capture(e,sid,phase,"session",now())) }
+            catch(recordError: Throwable) { failure = "$failure; failure_record: $recordError" }
             try { event("session_failed",mapOf("error" to failure)) } catch(_: Throwable) {}
         } finally {
             phase = "cleanup"; samples.shutdownNow()
             for ((executor,suffix) in listOf(cpu to "_CPU",gpu to "_GPU")) {
-                try { ArrivalRuntimeSetup.closeLane(executor) { runtimes.filterKeys { it.endsWith(suffix) }.values.forEach { it.close() } } }
+                try { ArrivalRuntimeSetup.closeLane(executor) { observed.laneRuntimes(suffix).forEach { it.close() } } }
                 catch(e: Throwable) { failure = "$failure; cleanup: $e" }
             }
             try { event("app_cleanup",mapOf("error" to failure)); progress?.close() } catch(e: Throwable) { failure = "$failure; flush: $e" }
-            if (::root.isInitialized) try { save("cleanup.json",mapOf("status" to if(failure==null) "completed" else "failed","error" to failure,"mono_ns" to now())) } catch(_: Throwable) {}
+            if (::root.isInitialized) try { save("cleanup.json",mapOf("status" to if(failure==null) "completed" else "failed","error" to failure,"mono_ns" to now(),
+                "sampler_failure" to sampler.failure.get(), "sampler_failure_recording_error" to sampler.recordingFailure.get())) } catch(_: Throwable) {}
             done = true; cpu.shutdownNow(); gpu.shutdownNow(); setup.shutdown(); handler.removeCallbacks(watchdog)
             if (!cpu.awaitTermination(1,TimeUnit.SECONDS) || !gpu.awaitTermination(1,TimeUnit.SECONDS)) android.os.Process.killProcess(android.os.Process.myPid())
             runOnUiThread { finish() }
@@ -184,17 +194,17 @@ class EnergyCollectionActivity : Activity() {
                 if (f.isDone) {
                     val row = f.get(); val available = now()
                     val full = row + mapOf("lane_available_ns" to available)
-                    event("lane_available",full); completed.add(full); inflight.remove(i); active.remove(keys[i])
+                    event("lane_available",full); completed.add(full); inflight.remove(i); observed.release(keys[i])
                 } else EnergyCollectionCore.requireTime(now(),submitted,EnergyCollectionCore.CALL_NS)
             }
             for (i in EnergyCollectionCore.selectable(remaining,inflight.keys,parallel)) {
                 val key = keys[i]; val n = next[i]++; remaining[i]--; val id = "$label-$i-$n"
-                val dispatch = now(); active[key]=id
+                val dispatch = now(); observed.dispatch(key,id)
                 event("dispatch",mapOf("id" to id,"key" to key,"scheduled_arrival_ns" to start,"dispatch_ns" to dispatch))
                 val future = lane(key).submit<Map<String,Any?>> {
                     val execution = now(); event("request_start",mapOf("id" to id,"key" to key)); event("admission",snapshot()); healthy()
                     var a = 0L; var b = 0L
-                    val result = runtimes.getValue(key).execute(image,imageHash,invocationObserver={x,y-> a=x;b=y},
+                    val result = observed.runtime(key).execute(image,imageHash,invocationObserver={x,y-> a=x;b=y},
                         diagnosticMark={stage,edge -> event("call_stage",mapOf("id" to id,"key" to key,"stage" to stage,"edge" to edge)) })
                     val ready = now(); event("output_ready",mapOf("id" to id,"key" to key))
                     save("$id.result.json",result); val persisted = now()

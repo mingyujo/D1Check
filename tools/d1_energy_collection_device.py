@@ -159,7 +159,7 @@ def installation(d,plan,plan_file,root,hard):
         gates(d,plan,root,'install_gate')
         if pre['installed']!=pre['candidate']:
             c.require(end-time.monotonic()>=330,'transfer/install/identity/cleanup reserve')
-            remote='/data/local/tmp/d1check-'+c.EXPERIMENT.lower()+'.apk'
+            remote='/data/local/tmp/d1check-'+plan.get('experiment_id',c.EXPERIMENT).lower()+'.apk'
             probe=d.call('shell','test','-e',remote,check=False,timeout=3)
             c.require(probe.returncode==1 and not probe.stderr.strip(),'remote install output already exists')
             state['apk_transfer_attempts']=1;save(root/'apk_transfer_attempt.json',dict(utc=legacy.utc()))
@@ -185,15 +185,16 @@ def run(plan_file,adb,serial,expected_sha,approved):
     c.check(plan_file);plan=c.p.read(plan_file);root=Path(plan['output_root']);registry=Path(plan['registry'])
     # Single-use claim BEFORE any preflight/transfer. A failed gate does not allow silent resume.
     registry.mkdir(parents=True,exist_ok=False);root.mkdir(parents=True,exist_ok=False)
-    start=time.monotonic();hard=start+c.BUDGET['total_seconds']
-    save(registry/'claimed.json',dict(plan_sha256=expected_sha,utc=legacy.utc(),budget=c.BUDGET))
+    budget=plan['budget']
+    start=time.monotonic();hard=start+budget['total_seconds']
+    save(registry/'claimed.json',dict(plan_sha256=expected_sha,utc=legacy.utc(),budget=budget))
     d=ObservedDevice(adb,serial,root/'host_commands');d.deadline=hard
     results=[];current=None;remote=None;identified=False;install_result=None
     try:
         install_root=root/'installation';install_root.mkdir();install_result=installation(d,plan,plan_file,install_root,hard);identified=True
         frozen=None
         for e in plan['entries']:
-            if e['index']==4:
+            if e['index']==4 and not plan.get('diagnostic_only'):
                 freeze_start=time.monotonic();frozen={r['condition']:r for r in results}
                 c.require(len(frozen)==4 and all(r['status']=='eligible_descriptive_only' for r in results),'development freeze eligibility')
                 save(root/'development_freeze.json',dict(plan_sha256=expected_sha,conditions=frozen,source='development_only',accuracy_pass=None))
@@ -230,7 +231,8 @@ def run(plan_file,adb,serial,expected_sha,approved):
                     ap_end_c=values['ap_end_c']-fr['phases'][phase]['ap_end_c']) for phase,values in stats['phases'].items()}
                 c.require(c.p.digest(root/'development_freeze.json')==c.p.read(root/'freeze_receipt.json')['sha256'],'freeze changed')
             save(current/'validated.json',stats);results.append(stats)
-        result=dict(status='completed_descriptive_only',sessions=8,diagnostic_requests=6976,warmup=64,explicit_inference=7040,
+        result=dict(status='completed_diagnostic_only' if plan.get('diagnostic_only') else 'completed_descriptive_only',
+            sessions=len(results),diagnostic_requests=budget['diagnostic_requests'],warmup=budget['warmup'],explicit_inference=budget['explicit_inference'],
             installation=install_result,elapsed_seconds=time.monotonic()-start,accuracy_pass=None,experiment_ready=False)
         save(root/'FINAL_RECEIPT.json',result);save(registry/'completed.json',result);return result
     except BaseException as exc:
@@ -241,7 +243,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
         if identified and remote and current:
             d.deadline=min(hard-45,time.monotonic()+15)
             prefix=current/'failure_prefix'
-            for name in ('manifest.json','progress.jsonl','cleanup.json'):
+            for name in ('manifest.json','progress.jsonl','cleanup.json','sampler_failure.json','session_failure.json'):
                 try:pull_file(d,remote,name,prefix)
                 except BaseException as err:save(current/(name+'.recovery_error.json'),dict(error=repr(err)))
         if identified:
@@ -250,5 +252,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
         prefix=current/'failure_prefix/progress.jsonl' if current else None
         failure['last_session_progress']=c.progress_consumption(prefix.read_bytes() if prefix and prefix.is_file() else b'',
             bool(current and (current/'launch_attempt.json').exists()))
+        failure['failure_detected_elapsed_seconds']=failure['elapsed_seconds']
+        failure['elapsed_seconds']=time.monotonic()-start
         save(root/'FINAL_RECEIPT.json',failure);save(registry/'stopped.json',failure)
         raise

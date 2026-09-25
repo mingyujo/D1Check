@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-09-25 ENERGY-SAMPLER-PC-01 — snapshot 결함 PC 재현·수정, 기기 미실행
+
+- 시작bb38b1d/clean. [원인 수준·수정·후속 후보](ENERGY_SAMPLER_PC_20260925.md). 실제 옛 toMap 표현의 size1→마지막 항목 삭제 경쟁으로 NoSuchElementException을 PC 재현했다. 과거 COLLECT-03 stack 부재로 동일 원인 확정은 하지 않는다.
+- active/resident/phase를 짧은 lock 아래 detached 복사, 센서·추론·I/O/close는 밖에 둠. 실패 stack/thread/phase/시간을 독립 sidecar와 cleanup에 보존하고 증거 게시→stop 순서를 검증. 단위/작업량/timeout/환경 gate/retry0 불변. 기존 원본·소비량/불확실성·FAIL/부분에너지/40값/20null/experiment_ready=false 유지.
+- 새 프로젝트 서명 APK와 진단 전용1세션 후보를 별도 계보로 준비. CC_DG 직렬870작업+2적격성·8warmup=880추론, runtime4·staging1/7파일·전송/설치≤1·35분 상한. 정식 개발/확인 표본 전용 금지, 전체8세션 자동재수집 없음. ADB/설치/실측0.
+- 다음: (1) PC 검증·plan_v2 결과 검토, (2) 별도 승인 후 현재기기 gate/단1세션 진단, (3) 결과에 따라 정식 수집 준비 여부 판단. 상세 검증 대상/결과는 보고서·verification.json. 아래는 과거 이력이다.
+
+
 ## 2026-09-25 ENERGY-THERMAL-COLLECT-03 — sampler 예외로 중단·재개 금지
 
 - 시작ffe2d32/clean, 승인된 plan_v5 실행1회. [결과·재현](ENERGY_THERMAL_COLLECT03_RESULTS_20260925.md). 동일설치본 확인으로 전송/설치0. 개발1시도/0완료/1실패/3미시도, 확인4미시도. runtime4/warmup8/적격성2·작업645시작644해제, host inference654시작/성공 기록. 원 receipt 보수적 불확실성 상한 보존.

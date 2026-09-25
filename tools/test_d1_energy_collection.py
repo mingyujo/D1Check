@@ -16,6 +16,54 @@ def row(i,key,start,end):
         worker_release_ns=end,lane_available_ns=end+1,terminal_status='succeeded')
 
 class EnergyCollectionTest(unittest.TestCase):
+    def test_sampler_diagnostic_has_one_unchanged_workload_and_no_freeze(self):
+        experiment,budget,order,output=c.plan_profile(True)
+        self.assertEqual(experiment,'ENERGY-SAMPLER-LOAD-DIAG-01')
+        self.assertEqual(order,[('diagnostic','CC_DG','serial')])
+        self.assertEqual(budget['diagnostic_requests'],678+192+2)
+        self.assertEqual(budget['explicit_inference'],880)
+        self.assertEqual((budget['development'],budget['confirmation'],budget['freeze_seconds']),(0,0,0))
+        self.assertEqual(budget['total_seconds'],600+1500)
+        self.assertNotEqual(output,c.plan_profile(False)[3])
+        for key in ['session_seconds','host_poll_seconds','stage_gate_seconds','recovery_seconds','cleanup_seconds',
+                    'baseline_seconds','common_work_seconds','cooling_seconds','retry','replacement','additional']:
+            self.assertEqual(budget[key],c.BUDGET[key])
+    def test_diagnostic_budget_or_identity_tampering_fails_before_apk_inspection(self):
+        from tools import d1_apk_identity
+        with tempfile.TemporaryDirectory() as t:
+            file=Path(t)/'plan.json'
+            plan=dict(protocol=c.PROTOCOL,experiment_id=c.DIAG_EXPERIMENT,diagnostic_only=True,
+                      budget=dict(c.DIAG_BUDGET,sessions=2),experiment_ready=False)
+            file.write_text(json.dumps(plan))
+            with patch.object(d1_apk_identity,'inspect') as inspect:
+                with self.assertRaises(ValueError):c.check(file)
+                inspect.assert_not_called()
+                plan['budget']=c.DIAG_BUDGET;plan['diagnostic_only']=False;file.write_text(json.dumps(plan))
+                with self.assertRaises(ValueError):c.check(file)
+                inspect.assert_not_called()
+    def test_diagnostic_runner_ends_after_one_session_without_freeze(self):
+        calls=[]
+        class Fake:
+            def __init__(self,*args):self.deadline=None
+            def call(self,*args,**kwargs):calls.append(args)
+        with tempfile.TemporaryDirectory() as t:
+            root=Path(t);manifest=root/'manifest.json';manifest.write_text('{}')
+            plan=dict(output_root=str(root/'run'),registry=str(root/'registry'),budget=c.DIAG_BUDGET,
+                diagnostic_only=True,apk_preflight={'candidate':{}},apk_sha256='hash',source_files={},
+                entries=[dict(index=0,phase='diagnostic',pair='CC_DG',mode='serial',session_id='sid',manifest=manifest.name)])
+            file=root/'plan.json';file.write_text(json.dumps(plan))
+            with (patch.object(c,'check'),patch.object(d,'ObservedDevice',Fake),
+                patch.object(d,'installation',return_value={'status':'verified'}),patch.object(d,'gates'),
+                patch.object(d.install,'installed_hash',return_value='hash'),
+                patch.object(d.shared,'stage_inputs',return_value='remote'),patch.object(d,'poll'),
+                patch.object(d,'recover',return_value={'status':'recovered'}),
+                patch.object(d.shared,'cleanup',return_value={'status':'completed'}),
+                patch.object(c,'summarize_session',return_value={'status':'eligible_descriptive_only','condition':'CC_DG_serial'})):
+                result=d.run(file,'not-an-adb','fixture',c.p.digest(file),True)
+            self.assertEqual(result['status'],'completed_diagnostic_only')
+            self.assertEqual((result['sessions'],result['diagnostic_requests'],result['explicit_inference']),(1,872,880))
+            self.assertEqual(len(calls),1)
+            self.assertFalse((root/'run/development_freeze.json').exists())
     def test_budget_exact_no_silent_old_reuse(self):
         b=c.BUDGET
         self.assertEqual(b['diagnostic_requests'],8*(678+192+2))

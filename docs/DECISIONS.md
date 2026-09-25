@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-09-25 — 공유 상태 snapshot 일관성과 실패 증거 보존
+
+[ENERGY-SAMPLER-PC-01](ENERGY_SAMPLER_PC_20260925.md)에서 toMap size/순회 경쟁을 PC 재현했다. phase/active/resident metadata의 동일 lock 복사와 예외 detached 증거 게시→stop→sidecar 저장을 채택한다. 센서 전체의 동시성이나 과거 발생 행을 확정하지 않는다. 계측 비용이 바뀌므로 새 APK 계보를 사용하고 기존 부분 표본과 합치지 않는다. 정식8세션 전에 원래 실패 구간을 포함하는1세션 부하 진단 후보만 준비하며, 실행은 미승인이다. 실기기 안정성/에너지 절감/experiment_ready PASS를 부여하지 않는다.
+
+
 ## 2026-09-25 — COLLECT-03 계약상 중단과 부분 자료 보존
 
 사용자가 plan_v5 8세션/6976진단/64warmup/7040추론/220분을 승인했다. 실제 설치 생략·첫 개발 세션 sampler 예외로 stopped_no_resume 종료. [결과](ENERGY_THERMAL_COLLECT03_RESULTS_20260925.md). 개발 적격0이므로 동결/확인 및 병행 비교를 수행하지 않았다. 원 receipt·미확인 범위·기존 증거와 experiment_ready=false를 유지하며, 추가 실측 대신 PC 예외 경로 확인을 권고한다.

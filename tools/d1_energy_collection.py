@@ -27,6 +27,14 @@ BUDGET=dict(sessions=8,development=4,confirmation=4,work_requests=6960,eligibili
     total_seconds=13200,installation_seconds=600,freeze_seconds=600,session_seconds=1500,
     stage_gate_seconds=120,host_poll_seconds=1220,recovery_seconds=60,cleanup_seconds=45,
     baseline_seconds=120,common_work_seconds=480,cooling_seconds=180)
+DIAG_EXPERIMENT='ENERGY-SAMPLER-LOAD-DIAG-01'
+DIAG_BUDGET=dict(BUDGET,sessions=1,development=0,confirmation=0,work_requests=870,eligibility_requests=2,
+    diagnostic_requests=872,warmup=8,explicit_inference=880,runtime_creations=4,total_seconds=2100,freeze_seconds=0)
+
+def plan_profile(diagnostic=False):
+    return (DIAG_EXPERIMENT,DIAG_BUDGET,[('diagnostic','CC_DG','serial')],'energy_sampler_load_run_v1') if diagnostic else (
+        EXPERIMENT,BUDGET,layout(),'energy_collection_run_v3')
+
 HOST_FILES=['tools/d1_energy_collection.py','tools/d1_energy_collection_device.py',
     'tools/d1_energy_screen.py',
     'tools/d1_adb_observed_client.py','tools/d1_recorded_process.py','tools/d1_collection_recovery.py',
@@ -40,11 +48,12 @@ def layout():
     return [(phase,*c) for phase in ('development','confirmation') for c in
             (CONDITIONS if phase=='development' else CONDITIONS[2:]+CONDITIONS[:2])]
 
-def prepare(source, build, references, output):
+def prepare(source, build, references, output, diagnostic=False):
     from tools import d1_apk_identity as apk
     source=Path(source);build=Path(build);output=Path(output)
     require(not output.exists(),'new output only')
     old=p.read(source);receipt=p.read(build)
+    experiment,budget,order,run_name=plan_profile(diagnostic)
     require(cal.apk_sources(receipt['source_code'])==cal.apk_sources(identity()),'APK source mismatch')
     require(p.digest(receipt['apk_path'])==receipt['apk_sha256'],'APK changed')
     template=p.read(source.parent/old['entries'][0]['manifest'])
@@ -57,12 +66,12 @@ def prepare(source, build, references, output):
     output.mkdir(parents=True);(output/'manifests').mkdir()
     candidate=apk.inspect(receipt['apk_path'],old['apk_preflight']['toolchain'])
     require(candidate['signer_sha256']==old['apk_preflight']['candidate']['signer_sha256'],'project signer mismatch')
-    plan=dict(protocol=PROTOCOL,experiment_id=EXPERIMENT,status='PREPARED_NOT_APPROVED',experiment_ready=False,
-        budget=BUDGET,seed=2026092502,source_code=identity(),build_receipt=str(build.resolve()),build_receipt_sha256=p.digest(build),
+    plan=dict(protocol=PROTOCOL,experiment_id=experiment,status='PREPARED_NOT_APPROVED',experiment_ready=False,
+        budget=budget,seed=2026092502,source_code=identity(),build_receipt=str(build.resolve()),build_receipt_sha256=p.digest(build),
         apk_path=receipt['apk_path'],apk_sha256=receipt['apk_sha256'],
         apk_preflight=dict(old['apk_preflight'],candidate=candidate),device_fingerprint=old['device_fingerprint'],
         device_hardware_serial='R59W802RW5F',source_plan=dict(path=str(source.resolve()),sha256=p.digest(source)),
-        output_root=str(output.parent/'energy_collection_run_v3'),registry=str(output.parent/'energy_collection_registry'/EXPERIMENT),
+        output_root=str(output.parent/run_name),registry=str(output.parent/'energy_collection_registry'/experiment),
         battery_start_percent=20,battery_min_percent=20,battery_max_temperature_tenths_c=350,require_unplugged=True,
         screen_observation=OBSERVATION,screen_contract=old['screen_contract'],source_files={k:v for k,v in old['source_files'].items() if k!='collection_estimates.json'},
         references=refs,entries=[],acceptance=dict(power_coverage=.95,max_gap_seconds=2.5,thermal_max_gap_seconds=10,
@@ -74,9 +83,12 @@ def prepare(source, build, references, output):
             freeze='condition phase mean whole-device power and empirical AP endpoints; development only',
             confirmation='report signed/absolute errors without retuning; no invented tolerance',
             unsupported=['arbitrary stagger','request pacing','all duty','repeated batch cooling prediction','new policy superiority']))
-    for i,(phase,pair,mode) in enumerate(layout()):
-        sid=str(uuid.uuid5(uuid.NAMESPACE_URL,f'{EXPERIMENT}/{phase}/{pair}/{mode}'))
-        m=dict(protocol=PROTOCOL,experiment_id=EXPERIMENT,session_id=sid,phase=phase,pair=pair,mode=mode,
+    if diagnostic:
+        plan['diagnostic_only']=True
+        plan['success_scope']='one unchanged CC_DG serial load; no fit/freeze/confirmation/energy evaluation reuse'
+    for i,(phase,pair,mode) in enumerate(order):
+        sid=str(uuid.uuid5(uuid.NAMESPACE_URL,f'{experiment}/{phase}/{pair}/{mode}'))
+        m=dict(protocol=PROTOCOL,experiment_id=experiment,session_id=sid,phase=phase,pair=pair,mode=mode,
             models=copy.deepcopy(template['models']),images=template['images'],cpu_threads=1,experiment_ready=False,
             apk_sha256=plan['apk_sha256'],device_fingerprint=plan['device_fingerprint'],maximum_duration_ms=1200000,
             baseline_seconds=120,common_work_seconds=480,cooling_seconds=180,
@@ -105,8 +117,10 @@ if ($LASTEXITCODE -ne 0) {{ throw 'Failed; no automatic retry/resume' }}
 def check(file):
     from tools import d1_apk_identity as apk
     file=Path(file);plan=p.read(file)
-    require(plan['protocol']==PROTOCOL and plan['experiment_id']==EXPERIMENT,'namespace')
-    require(plan['budget']==BUDGET and not plan['experiment_ready'],'budget/readiness')
+    diagnostic=plan.get('diagnostic_only',False)
+    experiment,budget,order,run_name=plan_profile(diagnostic)
+    require(plan['protocol']==PROTOCOL and plan['experiment_id']==experiment,'namespace')
+    require(plan['budget']==budget and not plan['experiment_ready'],'budget/readiness')
     require(plan['screen_observation']==OBSERVATION,'screen observation contract')
     require(plan['source_code']==identity(),'source changed; regenerate a NEW plan')
     require(p.digest(plan['build_receipt'])==plan['build_receipt_sha256'],'build receipt')
@@ -116,10 +130,10 @@ def check(file):
     require(apk.inspect(plan['apk_path'],plan['apk_preflight']['toolchain'])==plan['apk_preflight']['candidate'],'signed candidate')
     for v in list(plan['source_files'].values())+list(plan['references'].values())+[plan['source_plan']]:
         require(p.digest(v['path'])==v['sha256'],'input/reference changed')
-    require(len(plan['entries'])==8 and len({e['session_id'] for e in plan['entries']})==8,'session budget')
+    require(len(plan['entries'])==budget['sessions'] and len({e['session_id'] for e in plan['entries']})==budget['sessions'],'session budget')
     for i,e in enumerate(plan['entries']):
         m=p.read(file.parent/e['manifest']);require(p.digest(file.parent/e['manifest'])==e['manifest_sha256'],'manifest hash')
-        require((e['phase'],e['pair'],e['mode'])==layout()[i] and e['index']==i,'order')
+        require((e['phase'],e['pair'],e['mode'])==order[i] and e['index']==i,'order')
         require(all(m[k]==e[k] for k in ['phase','pair','mode','session_id']),'entry binding')
         require(m['counts']=={'classification':678,'detection':192} and m['warmup_count']==8 and
             m['probe_counts']=={'classification':1,'detection':1},'call cap')
@@ -131,7 +145,7 @@ def check(file):
             require(s['identity']['session_id']==e['session_id'] and s['target']['apk_sha256']==plan['apk_sha256'] and
                 s['runtime']['cpu_threads']==1 and k==s['model']['task_id']+'_'+s['execution']['backend'],'model binding')
     require(not Path(plan['registry']).exists() and not Path(plan['output_root']).exists(),'consumed/existing output: no resume')
-    return dict(status='PC_READY_DEVICE_UNVERIFIED',plan_sha256=p.digest(file),budget=BUDGET,device_commands=0)
+    return dict(status='PC_READY_DEVICE_UNVERIFIED',plan_sha256=p.digest(file),budget=budget,device_commands=0)
 
 def progress_prefix(raw):
     """Only newline-terminated, contiguous JSON records are confirmed."""
@@ -264,6 +278,13 @@ def summarize_session(folder,manifest,plan):
     for kind,n in [('runtime_start',4),('runtime_return',4),('warmup_start',8),('warmup_return',8),('request_start',872),('lane_available',872)]:
         require(sum(r['kind']==kind for r in events)==n,'event consumption '+kind)
     samples=[r for r in events if r['kind']=='power_sample']
+    if plan.get('diagnostic_only'):
+        require(not (root/'sampler_failure.json').exists() and not (root/'session_failure.json').exists(),'diagnostic failure evidence')
+        for row in (e for e in events if e['kind'] in ('power_sample','admission')):
+            require(row.get('observation_version')=='energy-state-snapshot-v1','snapshot version')
+            require(row['snapshot_start_ns']<=row['sensor_read_end_ns']<=row['state_snapshot_ns']<=row['mono_ns'],'snapshot interval')
+            require(set(row['active'])<=set(row['resident_keys']),'active runtime identity')
+            require(row['state_version']>=0,'state version')
     require(all(r['plugged']==0 and r['thermal_status']==0 and r['admission_reason']=='admit' and r['interactive'] for r in samples),'environment failure')
     thermal=[json.loads(x) for x in (root.parent/'thermal.jsonl').read_text(encoding='utf-8').splitlines()]
     phases={}
@@ -311,12 +332,13 @@ def main():
     cli=argparse.ArgumentParser();sub=cli.add_subparsers(dest='action',required=True)
     q=sub.add_parser('prepare')
     for arg in ('source','build','references','output'):q.add_argument('--'+arg,required=True)
+    q.add_argument('--diagnostic',action='store_true')
     q=sub.add_parser('check');q.add_argument('--plan',required=True)
     q=sub.add_parser('run')
     for arg in ('plan','adb','serial','expected-sha'):q.add_argument('--'+arg,required=True)
     q.add_argument('--approved',action='store_true')
     a=cli.parse_args()
-    if a.action=='prepare':result=prepare(a.source,a.build,a.references,a.output)
+    if a.action=='prepare':result=prepare(a.source,a.build,a.references,a.output,a.diagnostic)
     elif a.action=='check':result=check(a.plan)
     else:
         from tools.d1_energy_collection_device import run
