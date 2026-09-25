@@ -35,10 +35,14 @@ def run(command, output, timeout, display, cleanup_seconds=5, root_only=False):
     try:
         with (output/'stdout.bin').open('xb',buffering=0) as stdout, (output/'stderr.bin').open('xb',buffering=0) as stderr:
             options=dict(start_new_session=True) if os.name!='nt' else dict(creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
+            receipt['spawn_start_monotonic']=time.monotonic()
             proc=subprocess.Popen(command,stdout=stdout,stderr=stderr,stdin=subprocess.DEVNULL,**options)
+            receipt['spawn_return_monotonic']=time.monotonic()
             receipt['pid']=proc.pid
             try:
+                receipt['wait_start_monotonic']=time.monotonic()
                 proc.wait(timeout=max(.01,timeout-(time.monotonic()-start)))
+                receipt['wait_return_monotonic']=time.monotonic()
                 receipt['status']='returned' if proc.returncode==0 else 'nonzero_exit'
             except BaseException as error:
                 receipt.update(status='timeout' if isinstance(error,subprocess.TimeoutExpired) else 'host_interrupted',

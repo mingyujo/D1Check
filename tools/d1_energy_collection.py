@@ -25,6 +25,7 @@ BUDGET=dict(sessions=8,development=4,confirmation=4,work_requests=6960,eligibili
     stage_gate_seconds=120,host_poll_seconds=1220,recovery_seconds=60,cleanup_seconds=45,
     baseline_seconds=120,common_work_seconds=480,cooling_seconds=180)
 HOST_FILES=['tools/d1_energy_collection.py','tools/d1_energy_collection_device.py',
+    'tools/d1_energy_screen.py',
     'tools/d1_adb_observed_client.py','tools/d1_recorded_process.py','tools/d1_collection_recovery.py',
     'tools/d1_logger_v4.py','tools/d1_probe_compare.py','tools/d1_energy_thermal.py']
 

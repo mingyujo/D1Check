@@ -13,6 +13,7 @@ from tools import d1_apk_identity as apk
 from tools import d1_collection_recovery as install
 from tools import d1_logger_v4 as logger
 from tools.d1_adb_observed_client import ObservedDevice
+from tools import d1_energy_screen as screen
 
 ACTIVITY='com.example.d1check.benchmarkrunner.EnergyCollectionActivity'
 ACTION='com.example.d1check.benchmarkrunner.action.ENERGY_COLLECTION'
@@ -24,6 +25,11 @@ def pull_file(d,remote,name,folder):
     result=d.call('exec-out','run-as',legacy.PACKAGE,'cat',remote+'/'+name,timeout=10)
     folder=Path(folder);folder.mkdir(parents=True,exist_ok=True)
     target=folder/name
+    if name.endswith('.json'):
+        try:json.loads(result.stdout)
+        except (ValueError,UnicodeError):
+            (folder/(name+'.invalid.bin')).write_bytes(result.stdout)
+            raise ValueError('artifact retrieval returned non-JSON: '+name)
     if target.exists():c.require(target.read_bytes()==result.stdout,'output conflict')
     else:target.write_bytes(result.stdout)
     return target
@@ -83,7 +89,7 @@ def poll(d,remote,folder,m,plan,baseline_anchor=None):
         if now-last_thermal>=2:
             last_sensor=thermal(d,folder,index);index+=1;last_thermal=time.monotonic()
         if now-last_screen>=10:
-            shared.screen_snapshot(d,folder,f'poll_{index:04d}',plan['screen_contract']);last_screen=time.monotonic()
+            screen.snapshot(d,folder,f'poll_{index:04d}',plan['screen_contract']);last_screen=time.monotonic()
         listing=d.call('shell','run-as',legacy.PACKAGE,'ls',remote,timeout=3).stdout.decode().splitlines()
         if 'cleanup.json' in listing:return
         if time.monotonic()-start>15 and index%5==0 and index!=heartbeat_index:
@@ -138,7 +144,7 @@ def gates(d,plan,folder,label):
     battery=d.call('shell','dumpsys','battery',timeout=5).stdout.decode()
     (Path(folder)/(label+'_battery.txt')).write_text(battery,encoding='utf-8');legacy.battery_gate(plan,battery,True)
     thermal(d,folder,0)
-    shared.screen_snapshot(d,folder,label,plan['screen_contract'],settings=True)
+    screen.snapshot(d,folder,label,plan['screen_contract'],settings=True)
     (Path(folder)/(label+'_memory.txt')).write_bytes(d.call('shell','cat','/proc/meminfo',timeout=3).stdout)
     save(Path(folder)/(label+'_identity.json'),identity)
     return identity

@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-09-25 ENERGY-SCREEN-DIAG-PC-01 — PC 진단·최소 수정 완료
+
+- 시작eed0852/clean. [원인·수정·후속 후보](ENERGY_SCREEN_DIAGNOSIS_PC_20260925.md). 화면조회32회 중31완료(중앙0.422초/최대0.687초),1timeout2.016초. 전체덤프 중앙547581bytes, 자체client overlap0. 기기/통신/디스크 지연 중 원인은 미구분, 화면꺼짐/GPU결함으로 단정하지 않는다.
+- 새 에너지 전용 필터는 상태2행+producer종료표시만 전송, timeout2초/cadence/미확인중단 유지. spawn/wait 단계기록·JSON회수 오류 구분 보완. 관련PC24건/기존31완료 덤프 재생 통과. ADB·기기조회·실측·빌드0, 실기기 검증 아님. 기존 run_v2/registry stopped_no_resume, 호출범위/조건부125.4J·314.2J/40값/20null/FAIL·experiment_ready=false 보존.
+- 다음 최대3개: (1) 무추론32조회·8분상한 후보 검토/별도 승인, (2) 승인 시 별도 스크립트/새 식별자 고정, (3) 한 번의 동작 확인 후 남은 부하 위험 판단. 전체8세션 재수집은 자동 제안/실행하지 않는다. 아래는 이전 이력이다.
+
+
 ## 2026-09-25 ENERGY-THERMAL-COLLECT-02 — 승인 실행 후 첫 개발 세션 중단, 재개 금지
 
 - 시작6b1a743/clean. 시간 표현을 **timeout 합산 예약206분40초**로 정정(고정104/상한220분 불변). 사용자 승인 후 plan_v4 hash/서명/환경 gate 확인, 전송1·설치1 성공. [실행 보고서](ENERGY_THERMAL_COLLECTION_EXECUTION_20260925.md), [작은 공유 요약](results/energy_thermal_collection_execution_02/README.md).
