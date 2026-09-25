@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-25 ENERGY-THERMAL-COLLECT-04 — 수정본 정식8세션 PC 준비 완료·기기 미실행
+
+- 시작 `919f908`/clean. [새 계약·예산·명령](ENERGY_THERMAL_COLLECTION_REPREP_04_20260925.md), 외부 `energy_collection_plan_v7`/`energy_collection_reprep_pc_v2`. 종료된 COLLECT-03와 완료 진단의 plan/receipt/registry hash를 계보로 묶고 표본은 제외한다. 수정 APK SHA `2874a97f…0931`/같은 signer 재사용, Android 변경·재빌드 없음. 새 run_v4/registry COLLECT-04 미생성.
+- 동일 축소 화면 조회/두 pair의 직렬→병행 gate·비교 순서·작업량·timeout·개발 동결/확인 비재보정 유지. 신규 관련 Python3건 및 최종 plan/manifest/서명/입력 Check 통과(`PC_READY_DEVICE_UNVERIFIED`, 기기 명령0). 직렬 진단1회는 병행/반복 안정성 증거가 아니다. 고정104분·timeout 예약206분40초·hard220분, 진단6976/warmup64/추론7040/runtime32, 전송/설치≤1·retry0. 정상 평균시간/배터리 완주 미확인.
+- 다음: (1) 새 계획의 별도 실행 승인 판단, (2) 승인 시 현재 A24·설치본·환경/병행 gate 확인 후 계약대로 단일 사용. 이번에는 ADB/실측0. 기존 FAIL·부분 결과·40값·20null·종료 계획·`experiment_ready=false` 유지. 아래는 과거 이력이다.
+
 ## 2026-09-25 ENERGY-SAMPLER-LOAD-DIAG-01 — 수정 sampler 직렬 부하 1세션 완료
 
 - 시작 `55a143b`/clean. [종료 판독](ENERGY_SAMPLER_LOAD_DIAG_RESULTS_20260925.md), 외부 원본 `C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_sampler_load_run_v1/FINAL_REPORT.md`. 계획 v2 단일 실행 완료·registry consumed. 동일 A24·환경 gate 통과, APK 전송/설치 각1, staging1/7파일, runtime4, warmup8, 적격성2·작업870의 명시적 추론880 모두 확인. retry·대체·추가0, 전체902.5/2100초.

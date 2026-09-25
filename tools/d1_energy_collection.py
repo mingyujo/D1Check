@@ -14,7 +14,7 @@ from tools import d1_arrival_timing_calibration as cal
 from tools.d1_energy_thermal import require, integrate
 
 PROTOCOL='energy-thermal-collection-v2'
-EXPERIMENT='ENERGY-THERMAL-COLLECT-03'
+EXPERIMENT='ENERGY-THERMAL-COLLECT-04'
 OBSERVATION=dict(version='energy-screen-filter-v1',timeout_seconds=2,retry=0,
     poll_minimum_after_previous_end_seconds=10,all_development_and_confirmation=True,
     previous_partial_sessions_excluded=True,internal_dumpsys_cost_reduction_claim=False)
@@ -33,7 +33,29 @@ DIAG_BUDGET=dict(BUDGET,sessions=1,development=0,confirmation=0,work_requests=87
 
 def plan_profile(diagnostic=False):
     return (DIAG_EXPERIMENT,DIAG_BUDGET,[('diagnostic','CC_DG','serial')],'energy_sampler_load_run_v1') if diagnostic else (
-        EXPERIMENT,BUDGET,layout(),'energy_collection_run_v3')
+        EXPERIMENT,BUDGET,layout(),'energy_collection_run_v4')
+
+
+def formal_lineage(source, build, root):
+    """Bind the stopped predecessor and completed load diagnostic as history, never samples."""
+    old=p.read(source);receipt=p.read(build)
+    require(old['experiment_id']=='ENERGY-THERMAL-COLLECT-03','formal predecessor ID')
+    diagnostic_plan=Path(root)/'energy_sampler_load_plan_v2/collection_plan.json'
+    diagnostic_receipt=Path(root)/'energy_sampler_load_run_v1/FINAL_RECEIPT.json'
+    diagnostic_registry=Path(root)/'energy_collection_registry'/DIAG_EXPERIMENT
+    stopped_receipt=Path(old['registry'])/'stopped.json'
+    diag=p.read(diagnostic_plan)
+    require(diag['diagnostic_only'] and diag['experiment_id']==DIAG_EXPERIMENT and
+            diag['apk_sha256']==receipt['apk_sha256'],'diagnostic APK lineage')
+    require(p.read(diagnostic_receipt)['status']=='completed_diagnostic_only' and
+            p.read(stopped_receipt)['status']=='stopped_no_resume','predecessor consumption')
+    require(p.read(diagnostic_registry/'claimed.json')['plan_sha256']==p.digest(diagnostic_plan) and
+            p.digest(diagnostic_registry/'completed.json')==p.digest(diagnostic_receipt),
+            'completed diagnostic registry identity')
+    return dict(previous_stopped_receipt=dict(path=str(stopped_receipt.resolve()),sha256=p.digest(stopped_receipt)),
+        completed_diagnostic_plan=dict(path=str(diagnostic_plan.resolve()),sha256=p.digest(diagnostic_plan)),
+        completed_diagnostic_receipt=dict(path=str(diagnostic_receipt.resolve()),sha256=p.digest(diagnostic_receipt)),
+        prior_and_diagnostic_samples_excluded=True)
 
 HOST_FILES=['tools/d1_energy_collection.py','tools/d1_energy_collection_device.py',
     'tools/d1_energy_screen.py',
@@ -86,6 +108,8 @@ def prepare(source, build, references, output, diagnostic=False):
     if diagnostic:
         plan['diagnostic_only']=True
         plan['success_scope']='one unchanged CC_DG serial load; no fit/freeze/confirmation/energy evaluation reuse'
+    else:
+        plan['lineage']=formal_lineage(source,build,output.parent)
     for i,(phase,pair,mode) in enumerate(order):
         sid=str(uuid.uuid5(uuid.NAMESPACE_URL,f'{experiment}/{phase}/{pair}/{mode}'))
         m=dict(protocol=PROTOCOL,experiment_id=experiment,session_id=sid,phase=phase,pair=pair,mode=mode,
@@ -121,6 +145,9 @@ def check(file):
     experiment,budget,order,run_name=plan_profile(diagnostic)
     require(plan['protocol']==PROTOCOL and plan['experiment_id']==experiment,'namespace')
     require(plan['budget']==budget and not plan['experiment_ready'],'budget/readiness')
+    if not diagnostic:
+        require(plan.get('lineage')==formal_lineage(plan['source_plan']['path'],plan['build_receipt'],file.parent.parent),
+                'formal lineage changed or prior samples reused')
     require(plan['screen_observation']==OBSERVATION,'screen observation contract')
     require(plan['source_code']==identity(),'source changed; regenerate a NEW plan')
     require(p.digest(plan['build_receipt'])==plan['build_receipt_sha256'],'build receipt')

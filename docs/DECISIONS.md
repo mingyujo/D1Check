@@ -1,5 +1,9 @@
 # D1Check 결정 기록
 
+## 2026-09-25 — 수정 sampler 정식 수집의 별도 계보·PC 준비
+
+채택/PC 준비: [COLLECT-04 계약](ENERGY_THERMAL_COLLECTION_REPREP_04_20260925.md)에 따라 새 ID·run/registry를 사용하고 종료된 COLLECT-03와 성공한 직렬 진단을 입력 해시로 **연결하되 표본으로 합치지 않는다**. 수정 APK/프로젝트 서명과 동일 화면 필터를 개발·확인 전체에 쓰며 기존 두 직렬 대조·두 병행 배정, 개발4→동결→확인4, 220분 hard 상한·재시도0·환경/품질/병행 gate를 유지한다. PC 관련3건과 plan_v7 Check 통과; 실기기 병행/반복 안정성·에너지 절감·정책 우월성은 미검증이다. 이번 결정은 새 수집 **실행 승인이나 experiment_ready PASS가 아니다**. 기존 판정과 원자료를 보존한다.
+
 ## 2026-09-25 — 공유 상태 snapshot 일관성과 실패 증거 보존
 
 [ENERGY-SAMPLER-PC-01](ENERGY_SAMPLER_PC_20260925.md)에서 toMap size/순회 경쟁을 PC 재현했다. phase/active/resident metadata의 동일 lock 복사와 예외 detached 증거 게시→stop→sidecar 저장을 채택한다. 센서 전체의 동시성이나 과거 발생 행을 확정하지 않는다. 계측 비용이 바뀌므로 새 APK 계보를 사용하고 기존 부분 표본과 합치지 않는다. 정식8세션 전에 원래 실패 구간을 포함하는1세션 부하 진단 후보만 준비하며, 실행은 미승인이다. 실기기 안정성/에너지 절감/experiment_ready PASS를 부여하지 않는다.

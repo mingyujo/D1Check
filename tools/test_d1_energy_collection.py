@@ -16,6 +16,25 @@ def row(i,key,start,end):
         worker_release_ns=end,lane_available_ns=end+1,terminal_status='succeeded')
 
 class EnergyCollectionTest(unittest.TestCase):
+    def test_new_formal_lineage_excludes_stopped_and_diagnostic_samples(self):
+        with tempfile.TemporaryDirectory() as t:
+            root=Path(t); registry=root/'old_registry';registry.mkdir()
+            old=root/'old_plan.json';old.write_text(json.dumps(dict(experiment_id='ENERGY-THERMAL-COLLECT-03',registry=str(registry))))
+            build=root/'build.json';build.write_text(json.dumps(dict(apk_sha256='a'*64)))
+            (registry/'stopped.json').write_text(json.dumps(dict(status='stopped_no_resume')))
+            dp=root/'energy_sampler_load_plan_v2/collection_plan.json';dp.parent.mkdir()
+            dp.write_text(json.dumps(dict(experiment_id=c.DIAG_EXPERIMENT,diagnostic_only=True,apk_sha256='a'*64)))
+            dr=root/'energy_sampler_load_run_v1/FINAL_RECEIPT.json';dr.parent.mkdir()
+            dr.write_text(json.dumps(dict(status='completed_diagnostic_only')))
+            registry=root/'energy_collection_registry'/c.DIAG_EXPERIMENT;registry.mkdir(parents=True)
+            (registry/'claimed.json').write_text(json.dumps(dict(plan_sha256=c.p.digest(dp))))
+            (registry/'completed.json').write_bytes(dr.read_bytes())
+            lineage=c.formal_lineage(old,build,root)
+            self.assertTrue(lineage['prior_and_diagnostic_samples_excluded'])
+            self.assertEqual(c.p.digest(dr),lineage['completed_diagnostic_receipt']['sha256'])
+            dr.write_text(json.dumps(dict(status='stopped_no_resume')))
+            with self.assertRaises(ValueError):c.formal_lineage(old,build,root)
+
     def test_sampler_diagnostic_has_one_unchanged_workload_and_no_freeze(self):
         experiment,budget,order,output=c.plan_profile(True)
         self.assertEqual(experiment,'ENERGY-SAMPLER-LOAD-DIAG-01')
@@ -64,6 +83,27 @@ class EnergyCollectionTest(unittest.TestCase):
             self.assertEqual((result['sessions'],result['diagnostic_requests'],result['explicit_inference']),(1,872,880))
             self.assertEqual(len(calls),1)
             self.assertFalse((root/'run/development_freeze.json').exists())
+
+    def test_parallel_session_requires_same_stage_serial_before_staging(self):
+        class Fake:
+            def __init__(self,*args):self.deadline=None
+        with tempfile.TemporaryDirectory() as t:
+            root=Path(t)
+            plan=dict(output_root=str(root/'new_run'),registry=str(root/'new_registry'),budget=c.BUDGET,
+                apk_preflight={'candidate':{}},apk_sha256='hash',source_files={},
+                entries=[dict(index=0,phase='development',pair='CG_DC',mode='parallel',session_id='sid')])
+            file=root/'plan.json';file.write_text(json.dumps(plan))
+            with (patch.object(c,'check'),patch.object(d,'ObservedDevice',Fake),
+                  patch.object(d,'installation',return_value={'status':'verified'}),patch.object(d,'gates'),
+                  patch.object(d.install,'installed_hash',return_value='hash'),
+                  patch.object(d.shared,'stage_inputs') as stage,
+                  patch.object(d.shared,'cleanup',return_value={'status':'completed'})):
+                with self.assertRaisesRegex(ValueError,'same-stage serial prerequisite'):
+                    d.run(file,'not-an-adb','fixture',c.p.digest(file),True)
+                stage.assert_not_called()
+            stopped=json.loads((root/'new_registry/stopped.json').read_text())
+            self.assertEqual(stopped['session_attempts'],0)
+            self.assertEqual(stopped['status'],'stopped_no_resume')
     def test_budget_exact_no_silent_old_reuse(self):
         b=c.BUDGET
         self.assertEqual(b['diagnostic_requests'],8*(678+192+2))
@@ -79,6 +119,14 @@ class EnergyCollectionTest(unittest.TestCase):
         out=c.validate_rows(r,'CC_DG','parallel',[1,1]);self.assertEqual(out['host_api_overlap_ns'],5)
         self.assertFalse(out['kernel_overlap_verified'])
         with self.assertRaises(ValueError):c.validate_rows(r,'CC_DG','serial',[1,1])
+
+    def test_both_parallel_pairs_keep_distinct_lanes_and_reject_failed_completion(self):
+        for pair,keys in c.PAIRS.items():
+            self.assertEqual({key.rsplit('_',1)[1] for key in keys},{'CPU','GPU'})
+            rows=[row(0,keys[0],0,10),row(1,keys[1],0,20)]
+            self.assertGreater(c.validate_rows(rows,pair,'parallel',[1,1])['host_api_overlap_ns'],0)
+            rows[1]['terminal_status']='failed'
+            with self.assertRaises(ValueError):c.validate_rows(rows,pair,'parallel',[1,1])
     def test_serial_and_late_release(self):
         r=[row(0,'classification_CPU',0,10),row(1,'detection_GPU',11,30)]
         self.assertEqual(c.validate_rows(r,'CC_DG','serial',[1,1])['host_api_overlap_ns'],0)

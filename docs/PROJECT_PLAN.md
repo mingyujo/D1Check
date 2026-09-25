@@ -1,5 +1,7 @@
 # D1Check 프로젝트 실행계획
 
+> 2026-09-25 [COLLECT-04 PC 재준비](ENERGY_THERMAL_COLLECTION_REPREP_04_20260925.md) 완료. 수정 sampler APK와 같은 축소 관측 경로를 개발4→동결→확인4의 새 계보에 연결했다. 종료된 COLLECT-03/진단 표본은 분리하고 비교군·조건·중단 규칙을 유지한다. plan_v7/manifest/dry-run 통과, **기기 실행·새 예산 승인 없음**. 고정104분, timeout 예약206분40초, hard220분; 정상시간/배터리 완주 미확인. 기존 FAIL·부분 결과·experiment_ready=false와 발열·배터리 필수 목표 유지. 아래 문구는 당시 이력이다.
+
 > 2026-09-25 [sampler PC 재현·수정](ENERGY_SAMPLER_PC_20260925.md). 과거 원인 확정 없이 실제 toMap 경쟁 결함과 실패 증거 게시를 보완했다. 다음 후보는 같은 실패 경로의 진단1세션(35분 상한, 미승인)이며 전체8세션이 아니다. 진단 자료를 정식 개발/확인 표본으로 전용하지 않고 관측 버전/새 APK 계보를 분리한다. 기존 목표·판정·experiment_ready=false 유지.
 
 > 2026-09-25 [COLLECT-03 결과](ENERGY_THERMAL_COLLECT03_RESULTS_20260925.md): 승인 실행 후 첫 개발 세션 sampler NoSuchElementException으로 중단했다. 화면조회23회 성공과 부하중 장기 안정성은 구분한다. 동결/확인/직렬병행 비교 미완료, 새 실측 없이 PC snapshot 실패경로 검토가 다음 단계다. 기존 모든 판정·experiment_ready=false 유지.
