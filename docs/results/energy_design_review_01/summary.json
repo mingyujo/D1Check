@@ -1,0 +1,308 @@
+{
+  "task": "ENERGY-DESIGN-REVIEW-PC-01",
+  "utc": "2026-09-25T17:11:47.905292+00:00",
+  "base_head": "3773f26ef463730b46eeee6930de8962bd510ebd",
+  "tested_worktree": "related changes uncommitted",
+  "tests": {
+    "python": 40,
+    "kotlin": 7,
+    "failures": 0,
+    "device_commands": 0
+  },
+  "plan_sha256": "4d0bd250029f8fb46c7f989775f63cf75714c4e681522a6c056e58ef0f900ed5",
+  "apk_sha256": "86d3fac6504104214fbd4d6b43533a0ec420a051920c2d29ae74ed90c8373e3f",
+  "signer_sha256": "b253dbb951d85d1a79ea7f2ca2d1ff76a9fa34dc6c793b1df9b5249f3fcc7565",
+  "legacy_apk_asset_preserved": [
+    "assets/models/mobilenet_v1_1.0_224.tflite"
+  ],
+  "current_two_model_binaries_embedded": false,
+  "plan_budget": {
+    "additional": 0,
+    "apk_transfers": 1,
+    "baseline_seconds": 120,
+    "cleanup_seconds": 45,
+    "common_work_seconds": 480,
+    "confirmation": 2,
+    "cooling_seconds": 180,
+    "development": 2,
+    "diagnostic_requests": 3496,
+    "eligibility_requests": 16,
+    "explicit_inference": 3528,
+    "freeze_seconds": 600,
+    "host_poll_seconds": 1580,
+    "installation_seconds": 600,
+    "installs": 1,
+    "launch_seconds": 20,
+    "preparation_max_wait_seconds": 360,
+    "recovery_seconds": 60,
+    "replacement": 0,
+    "retry": 0,
+    "runtime_creations": 16,
+    "session_seconds": 1860,
+    "sessions": 4,
+    "stage_gate_seconds": 120,
+    "total_seconds": 8640,
+    "validation_slack_seconds": 35,
+    "warmup": 32,
+    "work_requests": 3480
+  },
+  "time_reservation": {
+    "fixed_observation_seconds": 3600,
+    "nested_timeout_reservation_seconds": 8500,
+    "hard_seconds": 8640,
+    "normal_duration_seconds": null,
+    "battery_completion_guaranteed": false
+  },
+  "run_or_registry_created": false,
+  "experiment_ready": false,
+  "old_receipts": {
+    "energy_collection_run_v4": {
+      "sha256": "677adca65734843f8a3603e0aa63bf8a69805f991eff15db7ab636292cf5c8e6",
+      "status": "stopped_no_resume"
+    },
+    "energy_collection_run_v5": {
+      "sha256": "b5b27c1bb7bf6b8e57ba66b560de4f968540a76aa906ea89adc914721cca12a0",
+      "status": "stopped_no_resume"
+    },
+    "energy_sampler_load_run_v1": {
+      "sha256": "978ce2d214d28c3ce1fe512e9835b4c3ed58015447495b59e8e1b8e6435c0335",
+      "status": "completed_diagnostic_only"
+    }
+  },
+  "sessions": [
+    {
+      "run": "energy_collection_run_v4",
+      "session": "00_a854c52b-8f4a-52d3-a1a7-c3c8b41eb282",
+      "progress_sha256": "9c5979a3fec0bad103390a207cfc4b2472cdebc24f3f69ac6baae1c446387bff",
+      "thermal_sha256": "c9eeaca2127600e28f6b49a0652ce79dde37778e6acd8f0b84ee7f95fd8c7fa8",
+      "old_gate_reasons": {},
+      "parser_samples": 281,
+      "windows": {
+        "observed_session_prefix": {
+          "covered_energy_j": 1082.5596364017956,
+          "duration_s": 795.184526201,
+          "covered_s": 794.0013206630003,
+          "missing_s": 1.1832055379996973,
+          "dropped_gap_s": 0.0,
+          "full_energy_j": null,
+          "mean_power_w": 1.3634229669767373,
+          "duplicates": 0,
+          "unit_hypothesis_ua_per_raw": 1000
+        },
+        "work_to_persist_complete": {
+          "covered_energy_j": 540.6747138919766,
+          "duration_s": 327.207852251,
+          "covered_s": 327.20785225100036,
+          "missing_s": 0.0,
+          "dropped_gap_s": 0.0,
+          "full_energy_j": 540.6747138919766,
+          "mean_power_w": 1.6523891776204267,
+          "duplicates": 0,
+          "unit_hypothesis_ua_per_raw": 1000
+        },
+        "session_to_work_complete": {
+          "covered_energy_j": 702.7841410778084,
+          "duration_s": 462.256469259,
+          "covered_s": 462.0389901050003,
+          "missing_s": 0.21747915399970452,
+          "dropped_gap_s": 0.0,
+          "full_energy_j": null,
+          "mean_power_w": 1.5210494268418726,
+          "duplicates": 0,
+          "unit_hypothesis_ua_per_raw": 1000
+        },
+        "common_work_window": {
+          "covered_energy_j": 716.1627720250641,
+          "duration_s": 480.098115106,
+          "covered_s": 480.0981151060003,
+          "missing_s": 0.0,
+          "dropped_gap_s": 0.0,
+          "full_energy_j": 716.1627720250641,
+          "mean_power_w": 1.491700861743528,
+          "duplicates": 0,
+          "unit_hypothesis_ua_per_raw": 1000
+        }
+      },
+      "full_operation_energy_j": null,
+      "app_cleanup_observed": true
+    },
+    {
+      "run": "energy_collection_run_v4",
+      "session": "01_d46c925f-d221-53a1-ac3e-99409499aa36",
+      "progress_sha256": "b53ead4c3e36495247a9185774c0bbafa1ce0cebd7674fe51776d59e15d3f08e",
+      "thermal_sha256": "76f4c65b7587c6854fbf61f10acddf14a5f2077f74b8de93fe806cc3b583c54c",
+      "old_gate_reasons": {},
+      "parser_samples": 48,
+      "windows": {
+        "observed_session_prefix": {
+          "covered_energy_j": 162.75503249134636,
+          "duration_s": 136.264068315,
+          "covered_s": 136.01234700799998,
+          "missing_s": 0.25172130700002526,
+          "dropped_gap_s": 0.0,
+          "full_energy_j": null,
+          "mean_power_w": 1.1966195427961657,
+          "duplicates": 0,
+          "unit_hypothesis_ua_per_raw": 1000
+        }
+      },
+      "full_operation_energy_j": null,
+      "app_cleanup_observed": false
+    },
+    {
+      "run": "energy_collection_run_v5",
+      "session": "00_5024f4a0-fd25-5f17-a9d4-0a67e8534d95",
+      "progress_sha256": "1df4ea69b459a7dff25e4b69719c777381539fcc35fb457023c84397ab1b5f26",
+      "thermal_sha256": "f42e0d6bcb42fcb6d74c12a9d930b2c9eca6f5844a58d9be0be6aa2570e4ae02",
+      "old_gate_reasons": {},
+      "parser_samples": 329,
+      "windows": {
+        "observed_session_prefix": {
+          "covered_energy_j": 1229.3691252985534,
+          "duration_s": 899.794860054,
+          "covered_s": 898.968905823,
+          "missing_s": 0.8259542309999688,
+          "dropped_gap_s": 0.0,
+          "full_energy_j": null,
+          "mean_power_w": 1.3675324222399818,
+          "duplicates": 0,
+          "unit_hypothesis_ua_per_raw": 1000
+        },
+        "work_to_persist_complete": {
+          "covered_energy_j": 557.8438011996503,
+          "duration_s": 328.424384942,
+          "covered_s": 328.4243849419999,
+          "missing_s": 1.1368683772161603e-13,
+          "dropped_gap_s": 0.0,
+          "full_energy_j": 557.8438011996503,
+          "mean_power_w": 1.698545621995048,
+          "duplicates": 0,
+          "unit_hypothesis_ua_per_raw": 1000
+        },
+        "session_to_work_complete": {
+          "covered_energy_j": 845.8998338414553,
+          "duration_s": 568.068948341,
+          "covered_s": 567.822202726,
+          "missing_s": 0.2467456150000089,
+          "dropped_gap_s": 0.0,
+          "full_energy_j": null,
+          "mean_power_w": 1.48972659008482,
+          "duplicates": 0,
+          "unit_hypothesis_ua_per_raw": 1000
+        },
+        "common_work_window": {
+          "covered_energy_j": 730.9570278953893,
+          "duration_s": 480.090935721,
+          "covered_s": 480.09093572100016,
+          "missing_s": 0.0,
+          "dropped_gap_s": 0.0,
+          "full_energy_j": 730.9570278953893,
+          "mean_power_w": 1.5225386973774846,
+          "duplicates": 0,
+          "unit_hypothesis_ua_per_raw": 1000
+        }
+      },
+      "full_operation_energy_j": null,
+      "app_cleanup_observed": true
+    },
+    {
+      "run": "energy_collection_run_v5",
+      "session": "01_f704073a-01ac-503d-b6d1-154e36603534",
+      "progress_sha256": "18b553ef8359b2618c0054d5065ff4fbba8d2052bf6f7d4523251ea6a9ce88f8",
+      "thermal_sha256": "0b4a7ba3c96aa3f4d8c67c939378fec7e9512f4ab67f3b77b4266bd18a64107f",
+      "old_gate_reasons": {
+        "insufficient_window": 21,
+        "unstable": 7,
+        "off_anchor": 98
+      },
+      "parser_samples": 131,
+      "windows": {
+        "observed_session_prefix": {
+          "covered_energy_j": 420.04626240808886,
+          "duration_s": 363.251022483,
+          "covered_s": 362.95962532900023,
+          "missing_s": 0.2913971539997533,
+          "dropped_gap_s": 0.0,
+          "full_energy_j": null,
+          "mean_power_w": 1.157280956600457,
+          "duplicates": 0,
+          "unit_hypothesis_ua_per_raw": 1000
+        }
+      },
+      "full_operation_energy_j": null,
+      "app_cleanup_observed": false
+    },
+    {
+      "run": "energy_sampler_load_run_v1",
+      "session": "00_806b55b0-1e94-58f3-82ec-fd95270f304f",
+      "progress_sha256": "c76aa49e5b640d35b2b0a92075abb677f68cfccb7d3c74c572e3886605f382ef",
+      "thermal_sha256": "e5cdf6d417c3b4e2f7f6e2cf611dfff5b1f35d984b4008190c2cef08745fb9f8",
+      "old_gate_reasons": {},
+      "parser_samples": 275,
+      "windows": {
+        "observed_session_prefix": {
+          "covered_energy_j": 1090.9611153944934,
+          "duration_s": 794.013340355,
+          "covered_s": 792.9901961239989,
+          "missing_s": 1.0231442310010834,
+          "dropped_gap_s": 0.0,
+          "full_energy_j": null,
+          "mean_power_w": 1.3757561199708719,
+          "duplicates": 0,
+          "unit_hypothesis_ua_per_raw": 1000
+        },
+        "work_to_persist_complete": {
+          "covered_energy_j": 548.3587587597724,
+          "duration_s": 327.196212327,
+          "covered_s": 327.19621232700007,
+          "missing_s": 0.0,
+          "dropped_gap_s": 0.0,
+          "full_energy_j": 548.3587587597724,
+          "mean_power_w": 1.6759324775182372,
+          "duplicates": 0,
+          "unit_hypothesis_ua_per_raw": 1000
+        },
+        "session_to_work_complete": {
+          "covered_energy_j": 714.8425454960862,
+          "duration_s": 461.082725489,
+          "covered_s": 460.85445418099994,
+          "missing_s": 0.22827130800004625,
+          "dropped_gap_s": 0.0,
+          "full_energy_j": null,
+          "mean_power_w": 1.551124306190025,
+          "duplicates": 0,
+          "unit_hypothesis_ua_per_raw": 1000
+        },
+        "common_work_window": {
+          "covered_energy_j": 719.8196825222767,
+          "duration_s": 480.069516028,
+          "covered_s": 480.06951602800007,
+          "missing_s": 0.0,
+          "dropped_gap_s": 0.0,
+          "full_energy_j": 719.8196825222767,
+          "mean_power_w": 1.4994071868547747,
+          "duplicates": 0,
+          "unit_hypothesis_ua_per_raw": 1000
+        }
+      },
+      "full_operation_energy_j": null,
+      "app_cleanup_observed": true
+    }
+  ],
+  "tested_source_sha256": {
+    "tools/d1_energy_operational.py": "04ffadedbd923e0e0896c13bfb971a4e92d2ca68f9133fc8ea5446acba2a3137",
+    "tools/d1_energy_trace_account.py": "6092dcaa6d098d3aab556053f8fed9e39a3b46421227ac75f9ecbc96da8fd0c2",
+    "tools/d1_energy_replan_review.py": "76148e9ec365d21e290d9c42a55aa616228c508f9e80bdb6995b54a7efcc638f",
+    "tools/test_d1_energy_operational.py": "eb7410b26037ba0bcdda6c134e422c1eeef0118e4746fa98c117c21608abef9b",
+    "tools/d1_energy_collection.py": "2471facc7dd6a0109f3599537fe8e1cc5b716c78df58a9231bca32e9da30eac4",
+    "tools/d1_energy_collection_device.py": "6efe89add706bcf71a165ae70bafa03d068d08e31c43115e22e709f86a2b96de",
+    "benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/EnergyCollectionActivity.kt": "6fcdc3e117ae6314b5a484e906cdb75c42f25d9f9814f1c943d06cb400f41a02",
+    "benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/EnergyCollectionCore.kt": "549193d635793460ebe6893242f24d143a0169b8474b4beff8027a7467a25228"
+  },
+  "preparation_history": [
+    "plan_v1: before service P95 accounting; unexecuted, source identity stale",
+    "plan_v2: before explicit launch reservation; unexecuted, source identity stale",
+    "plan_v3: final PC check"
+  ],
+  "final_focused_replay": "anchor read from failure receipt; reasons 21/7/98 unchanged"
+}

@@ -35,13 +35,20 @@ def pull_file(d,remote,name,folder):
     else:target.write_bytes(result.stdout)
     return target
 
-def recover(d,remote,folder):
+def recover(d,remote,folder,best_effort_prefix=False):
     """Identity/progress first, then one bounded archive command; no per-file870-call loop."""
     folder=Path(folder);folder.mkdir(parents=True,exist_ok=True)
     # Partial progress can change until shutdown: preserve this snapshot separately.
     prefix=folder.parent/'recovery_prefix';prefix.mkdir(exist_ok=True)
+    prefix_errors=[]
     for name in ('manifest.json','progress.jsonl','cleanup.json'):
-        pull_file(d,remote,name,prefix)
+        try:pull_file(d,remote,name,prefix)
+        except Exception as exc:
+            if not best_effort_prefix:raise
+            error=dict(file=name,error=repr(exc),role='recovery_failure_not_app_completion')
+            save(prefix/(name+'.recovery_error.json'),error);prefix_errors.append(error)
+    # The ObservedDevice deadline still bounds the entire recovery. Missing cleanup
+    # must not suppress the single archive attempt; it never implies app success.
     raw=d.call('exec-out','run-as',legacy.PACKAGE,'tar','-cf','-','-C',remote,'.',timeout=35).stdout
     (folder.parent/'artifacts.tar').write_bytes(raw)
     with tarfile.open(fileobj=io.BytesIO(raw)) as archive:
@@ -52,7 +59,8 @@ def recover(d,remote,folder):
             c.require(item.size<=(64_000_000 if name=='progress.jsonl' else 4_000_000),'artifact size bound')
             data=archive.extractfile(item).read();target=folder/name
             c.require(not target.exists(),'duplicate archive member');target.write_bytes(data)
-    return dict(status='recovered',files=len(list(folder.iterdir())),archive_sha256=c.p.digest(folder.parent/'artifacts.tar'))
+    return dict(status='recovered_with_prefix_errors' if prefix_errors else 'recovered',
+                prefix_errors=prefix_errors,files=len(list(folder.iterdir())),archive_sha256=c.p.digest(folder.parent/'artifacts.tar'))
 
 def thermal(d,folder,index):
     before=logger.parse_uptime(d.call('exec-out','cat','/proc/uptime',timeout=2).stdout.decode())
@@ -92,6 +100,7 @@ def same_stage_serial_anchor(results, phase, pair, mode):
 
 def poll(d,remote,folder,m,plan,baseline_anchor=None):
     conditioned=plan.get('temperature_preparation') is not None
+    operational=plan.get('operational_only',False)
     start=time.monotonic();end=min(d.deadline,start+plan['budget']['host_poll_seconds'])
     armed=set();index=0;last_thermal=last_screen=0;last_sensor=None;heartbeat_index=-1
     observations=[];probe_ready=None;probe_verified=False
@@ -109,7 +118,7 @@ def poll(d,remote,folder,m,plan,baseline_anchor=None):
             save(Path(folder)/f'heartbeat_{index:04d}.json',heartbeat)
             heartbeat_index=index
             c.require(heartbeat['session_id']==m['session_id'] and last_sensor['after_ns']-heartbeat['mono_ns']<15e9,'progress heartbeat stale; stop, no retry')
-        for gate in ('warmup','probe','baseline'):
+        for gate in (('warmup','serial_probe','probe','baseline') if operational else ('warmup','probe','baseline')):
             if gate in armed or gate+'.ready.json' not in listing:continue
             target=Path(folder)/('gate_'+gate)
             ready=(probe_ready if gate=='probe' and probe_verified else
@@ -123,18 +132,24 @@ def poll(d,remote,folder,m,plan,baseline_anchor=None):
                 c.require(re.fullmatch(r'\d+',pid),'single process')
                 logs=d.call('logcat','-d','-v','threadtime','--pid='+pid,'-s','D1ENERGY:I','tflite:I',timeout=5).stdout
                 (target/'delegate_log.txt').write_bytes(logs);save(target/'gpu.json',gpu_proof(logs.decode(errors='replace'),m['session_id']))
-            elif gate=='probe':
+            elif gate in ('serial_probe','probe'):
                 c.require('warmup' in armed,'probe before warmup gate')
+                if operational and gate=='probe':c.require('serial_probe' in armed,'parallel before serial technical evidence')
                 if not probe_verified:
-                    rows=c.p.read(pull_file(d,remote,'eligibility_probe.requests.json',target))
-                    c.validate_rows(rows,m['pair'],m['mode'],[1,1])
+                    rows=[]
+                    specs=([('eligibility_serial_probe','serial')] if gate=='serial_probe' else
+                           c.operational_rules.probe_specs(operational,m['mode']))
+                    for label,mode in specs:
+                        rr=c.p.read(pull_file(d,remote,label+'.requests.json',target))
+                        c.validate_rows(rr,m['pair'],mode,[1,1]);rows.extend(rr)
                     for row in rows:
                         result=c.p.read(pull_file(d,remote,row['id']+'.result.json',target))
                         c.quality(c.p.read(plan['references'][row['key']]['path']),result)
-                    probe_verified=True;probe_ready=ready
-                if conditioned:
+                    if gate=='probe':probe_verified=True;probe_ready=ready
+                if conditioned and gate=='probe':
                     contract=plan['temperature_preparation']
-                    assessment=temperature.assess(observations,ready['mono_ns'],baseline_anchor,contract)
+                    assessment=(c.operational_rules.assess(observations,ready['mono_ns'],contract) if operational else
+                                temperature.assess(observations,ready['mono_ns'],baseline_anchor,contract))
                     waited_s=(last_sensor['mono_ns']-ready['mono_ns'])/1e9
                     if not assessment['ready']:
                         if assessment['reason']=='invalid_sensor_or_thermal':
@@ -161,7 +176,9 @@ def poll(d,remote,folder,m,plan,baseline_anchor=None):
                 c.require(len(values)>=20,'baseline AP not observed')
                 median=statistics.median(values)
                 if baseline_anchor is not None:c.require(abs(median-baseline_anchor)<=.5,'paired baseline AP mismatch; no extra cooling/retry')
-                save(target/'baseline.json',dict(ap_median_c=median,anchor_c=baseline_anchor,tolerance_c=.5,unit='degC',role='environment matching not effect margin'))
+                save(target/'baseline.json',dict(ap_median_c=median,anchor_c=baseline_anchor,
+                    tolerance_c=None if operational else .5,unit='degC',
+                    role='recorded initial covariate; no thermal equivalence claim' if operational else 'environment matching not effect margin'))
             arm(d,'files/arrival-scheduler-inputs/'+m['session_id'],gate,ready['manifest_sha256'])
             save(target/'arm_receipt.json',dict(gate=gate,utc=legacy.utc(),manifest_sha256=ready['manifest_sha256']))
             armed.add(gate)
@@ -226,9 +243,9 @@ def run(plan_file,adb,serial,expected_sha,approved):
         install_root=root/'installation';install_root.mkdir();install_result=installation(d,plan,plan_file,install_root,hard);identified=True
         frozen=None
         for e in plan['entries']:
-            if e['index']==4 and not plan.get('diagnostic_only'):
+            if e['index']==budget['development'] and not plan.get('diagnostic_only'):
                 freeze_start=time.monotonic();frozen={r['condition']:r for r in results}
-                c.require(len(frozen)==4 and all(r['status']=='eligible_descriptive_only' for r in results),'development freeze eligibility')
+                c.require(len(frozen)==budget['development'] and all(r['status']=='eligible_descriptive_only' for r in results),'development freeze eligibility')
                 save(root/'development_freeze.json',dict(plan_sha256=expected_sha,conditions=frozen,source='development_only',accuracy_pass=None))
                 save(root/'freeze_receipt.json',dict(sha256=c.p.digest(root/'development_freeze.json'),utc=legacy.utc()))
                 c.require(time.monotonic()-freeze_start<600,'freeze time exceeded')
@@ -237,7 +254,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
             session_start=time.monotonic();session_end=min(session_start+budget['session_seconds'],hard);d.deadline=min(session_start+120,session_end-105)
             gates(d,plan,current,'before_session')
             c.require(install.installed_hash(d,plan['apk_preflight']['candidate'])==plan['apk_sha256'],'installed APK changed')
-            if e['mode']=='parallel':
+            if e['mode']=='parallel' and not plan.get('operational_only'):
                 serial_key=e['pair']+'_serial'
                 c.require(any(r['condition']==serial_key and r['status']=='eligible_descriptive_only' for r in results if r['phase']==e['phase']),'same-stage serial prerequisite')
             save(current/'attempt.json',dict(entry=e,utc=legacy.utc(),plan_sha256=expected_sha))
@@ -248,10 +265,10 @@ def run(plan_file,adb,serial,expected_sha,approved):
             d.deadline=session_end-105
             save(current/'launch_attempt.json',dict(utc=legacy.utc()))
             d.call('shell','am','start','-W','-n',legacy.PACKAGE+'/'+ACTIVITY,'-a',ACTION,'--es','session_id',e['session_id'],timeout=20)
-            anchor=same_stage_serial_anchor(results,e['phase'],e['pair'],e['mode'])
+            anchor=None if plan.get('operational_only') else same_stage_serial_anchor(results,e['phase'],e['pair'],e['mode'])
             poll(d,remote,current,m,plan,anchor)
             d.deadline=min(time.monotonic()+60,session_end-45)
-            save(current/'recovery.json',recover(d,remote,current/'artifacts'))
+            save(current/'recovery.json',recover(d,remote,current/'artifacts',plan.get('operational_only',False)))
             # Cleanup is reserved BEFORE PC validation; validation cannot prolong active device work.
             save(current/'host_cleanup.json',shared.cleanup(d,session_end))
             stats=c.summarize_session(current/'artifacts',manifest,plan);stats['phase']=e['phase']
@@ -283,7 +300,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
             except BaseException as err:failure['host_cleanup_error']=repr(err)
         prefix=current/'failure_prefix/progress.jsonl' if current else None
         failure['last_session_progress']=c.progress_consumption(prefix.read_bytes() if prefix and prefix.is_file() else b'',
-            bool(current and (current/'launch_attempt.json').exists()))
+            bool(current and (current/'launch_attempt.json').exists()),plan.get('operational_only',False))
         failure['failure_detected_elapsed_seconds']=failure['elapsed_seconds']
         failure['elapsed_seconds']=time.monotonic()-start
         save(root/'FINAL_RECEIPT.json',failure);save(registry/'stopped.json',failure)

@@ -6,6 +6,13 @@ import java.io.File
 import java.nio.file.Files
 
 class EnergyCollectionCoreTest {
+    @Test fun preparationDoesNotDependOnComparisonArm() {
+        assertEquals(EnergyCollectionCore.probes(true,false), EnergyCollectionCore.probes(true,true))
+        assertEquals(listOf("eligibility_serial_probe" to false,"eligibility_parallel_probe" to true),
+            EnergyCollectionCore.probes(true,false))
+        assertEquals(listOf("eligibility_probe" to false),EnergyCollectionCore.probes(false,false))
+        assertEquals(listOf("eligibility_probe" to true),EnergyCollectionCore.probes(false,true))
+    }
     @Test fun serialCannotReuseBeforeActualRelease() {
         assertEquals(emptyList<Int>(), EnergyCollectionCore.selectable(listOf(0,192),setOf(0),false))
         assertEquals(listOf(1),EnergyCollectionCore.selectable(listOf(0,192),emptySet(),false))

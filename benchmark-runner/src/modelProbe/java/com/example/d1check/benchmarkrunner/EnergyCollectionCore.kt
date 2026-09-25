@@ -22,6 +22,9 @@ internal object EnergyCollectionCore {
         else -> error("unsupported pair")
     }
     fun counts() = mapOf("classification" to 678, "detection" to 192)
+    fun probes(operational: Boolean, parallel: Boolean): List<Pair<String,Boolean>> =
+        if (operational) listOf("eligibility_serial_probe" to false, "eligibility_parallel_probe" to true)
+        else listOf("eligibility_probe" to parallel)
     fun selectable(remaining: List<Int>, busy: Set<Int>, parallel: Boolean): List<Int> {
         require(remaining.size == 2 && remaining.all { it >= 0 } && busy.all { it in 0..1 })
         if (!parallel && busy.isNotEmpty()) return emptyList()

@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-09-26 ENERGY-DESIGN-REVIEW-PC-01 — 중단 분석·별도 운영 후보 PC 준비
+
+- 시작3773f26/clean. [종합 보고서·선택지·예산·명령](ENERGY_DESIGN_REVIEW_20260926.md). COLLECT-04/05와 sampler5시도·온도 원문1064개를 제한 재생했다. 온도31.5/32.3°C 재현, COLLECT-05의98개 off-anchor 창·준비의 비대칭 확인. 주변/잔열 원인·평형·병행 본 부하 효과는 미확정. 구 계획은 모두 보존·재개 금지.
+- 완료: 새 운영 전용 경로(동일 직렬+병행 기술 probe→고정 resident120초→baseline1회), 초기화/gate를 포함하는 비중복 관측에너지 ledger, 부분 회수 오류 보존. 기존 에너지값 재생 일치, Python40·Kotlin core7·새 서명APK/plan Check 검증. 기기 실행0. [검증 대상·산출물](results/energy_design_review_01/README.md).
+- **권고 후보, 실행 미승인:** ENERGY-OPERATIONAL-PAIR-01 / `energy_operational_plan_v3`. CC_DG 개발 직렬→병행, 확인 병행→직렬의4세션. 진단3496/warmup32/추론3528/runtime16/staging4·28파일/전송·설치≤1/retry0. 고정60분·timeout 예약141분40초·hard144분. 동일 초기 열 상태의 인과효과가 아닌 제한된 운영 비교이며 AP matching은 새 estimand에서 N/A다. 안전 gate는 유지한다.
+- 다음≤3: (1) 이 제한된 운영 질문의 새4세션 실행 여부 결정, (2) 승인 후에만 현재 기기/설치본/환경·기술 probe gate 확인, (3) 완료/실패 후 사전 분석·무재보정 종료. 기존 FAIL·부분 결과·40값/20null·`experiment_ready=false`·S26/NPU 별도 협업 불변. 아래는 당시 이력이다.
+
 ## 2026-09-26 ENERGY-THERMAL-COLLECT-05 — 준비 온도 gate 중단·재개 금지
 
 - 승인된 plan_v9 SHA `3f794c9a…5bfc2` 1회 실행. [종료 판독](ENERGY_THERMAL_COLLECT05_RESULTS_20260926.md), 원본 `C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_collection_run_v5/FINAL_RECEIPT.json`·`FINAL_REPORT.md`. 동일 A24·서명/환경 gate 통과, APK 전송·설치 각1. 전체1,389.359/16,080초, retry0, registry `stopped_no_resume`.

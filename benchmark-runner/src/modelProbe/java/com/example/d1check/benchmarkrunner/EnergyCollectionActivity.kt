@@ -118,7 +118,8 @@ class EnergyCollectionActivity : Activity() {
             check(m.getString("apk_sha256") == ProbeModelFile.sha256(File(applicationInfo.sourceDir)) && m.getString("device_fingerprint") == Build.FINGERPRINT)
             check(m.getInt("cpu_threads") == 1 && m.getInt("baseline_seconds") == 120 && m.getInt("cooling_seconds") == 180)
             val preparation = m.optJSONObject("temperature_preparation")
-            check(preparation?.getString("version") == "resident-ap-preparation-v1" &&
+            val operational = m.optBoolean("operational_only", false)
+            check(preparation?.getString("version") == (if (operational) "resident-fixed-preparation-v1" else "resident-ap-preparation-v1") &&
                 preparation.getInt("max_wait_seconds") == 360)
             val keys = EnergyCollectionCore.keys(m.getString("pair")); val parallel = m.getString("mode") == "parallel"
             check(m.getString("mode") in setOf("serial", "parallel"))
@@ -128,7 +129,7 @@ class EnergyCollectionActivity : Activity() {
             val anchors = File(inputs, "anchors.json")
             samples.scheduleAtFixedRate({ sampler.tick { event("power_sample", snapshot()) } },0,1,TimeUnit.SECONDS)
             val setupStart = now()
-            ArrivalRuntimeSetup.initialize(EnergyCollectionCore.KEYS, false, 8, 872) { key ->
+            ArrivalRuntimeSetup.initialize(EnergyCollectionCore.KEYS, false, 8, if (operational) 874 else 872) { key ->
                 healthy(); EnergyCollectionCore.requireTime(now(),setupStart,150_000_000_000)
                 event("runtime_submit",mapOf("key" to key))
                 lane(key).submit {
@@ -155,7 +156,11 @@ class EnergyCollectionActivity : Activity() {
                 warm.add(mapOf("key" to key,"result" to result))
             }
             save("warmup.json",warm); phase = "warmup_gate"; gate(inputs,"warmup",hash)
-            phase = "eligibility_probe"; workload(keys, parallel, listOf(1,1),image,imageHash,30_000_000_000)
+            // Identical technical preparation in BOTH operational arms, independent of sample order.
+            for ((label, concurrent) in EnergyCollectionCore.probes(operational, parallel)) {
+                phase = label; workload(keys, concurrent, listOf(1,1),image,imageHash,30_000_000_000)
+                if (operational && !concurrent) { phase = "serial_probe_gate"; gate(inputs,"serial_probe",hash) }
+            }
             phase = "temperature_preparation"; event("phase_start")
             gate(inputs,"probe",hash,preparation.getLong("max_wait_seconds")*1_000_000_000)
             event("phase_end") // Host quality and AP readiness precede the only official baseline.
@@ -167,7 +172,7 @@ class EnergyCollectionActivity : Activity() {
             while (now()-commonStart < EnergyCollectionCore.LOAD_NS) { healthy(); Thread.sleep(100) }
             event("phase_end")
             idle("resident_cooling",180)
-            save("summary.json",mapOf("status" to "completed","requests" to 870,"probe" to 2,"warmup" to 8,"mono_ns" to now()))
+            save("summary.json",mapOf("status" to "completed","requests" to 870,"probe" to (if (operational) 4 else 2),"warmup" to 8,"mono_ns" to now()))
         } catch(e: Throwable) {
             failure = e.toString(); stop.compareAndSet(null,failure)
             try { save("session_failure.json", EnergyFailureEvidence.capture(e,sid,phase,"session",now())) }

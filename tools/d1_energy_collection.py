@@ -13,6 +13,7 @@ from tools import d1_arrival_plan as p
 from tools import d1_arrival_timing_calibration as cal
 from tools.d1_energy_thermal import require, integrate
 from tools import d1_energy_temperature as temperature
+from tools import d1_energy_operational as operational_rules
 
 PROTOCOL='energy-thermal-collection-v2'
 EXPERIMENT='ENERGY-THERMAL-COLLECT-04'
@@ -35,14 +36,16 @@ DIAG_EXPERIMENT='ENERGY-SAMPLER-LOAD-DIAG-01'
 DIAG_BUDGET=dict(BUDGET,sessions=1,development=0,confirmation=0,work_requests=870,eligibility_requests=2,
     diagnostic_requests=872,warmup=8,explicit_inference=880,runtime_creations=4,total_seconds=2100,freeze_seconds=0)
 
-def plan_profile(diagnostic=False,conditioned=False):
+def plan_profile(diagnostic=False,conditioned=False,operational=False):
+    require(not operational or not (diagnostic or conditioned), "separate operational namespace")
+    if operational:return operational_rules.EXPERIMENT,operational_rules.budget(CONDITIONED_BUDGET),operational_rules.ORDER,"energy_operational_run_v1"
     require(not (diagnostic and conditioned),'diagnostic and conditioned are separate lineages')
     if conditioned:return CONDITIONED_EXPERIMENT,CONDITIONED_BUDGET,layout(),'energy_collection_run_v5'
     return (DIAG_EXPERIMENT,DIAG_BUDGET,[('diagnostic','CC_DG','serial')],'energy_sampler_load_run_v1') if diagnostic else (
         EXPERIMENT,BUDGET,layout(),'energy_collection_run_v4')
 
 def conditioned_lineage(source):
-    old=p.read(source);require(old['experiment_id']==EXPERIMENT,'conditioned predecessor ID')
+    old=p.read(source);require(old['experiment_id'] in (EXPERIMENT,CONDITIONED_EXPERIMENT),'conditioned predecessor ID')
     stopped=Path(old['registry'])/'stopped.json';raw=Path(old['output_root'])/'FINAL_RECEIPT.json'
     require(p.read(stopped)['status']=='stopped_no_resume' and p.digest(stopped)==p.digest(raw),'predecessor stopped identity')
     return dict(previous_plan=dict(path=str(Path(source).resolve()),sha256=p.digest(source)),
@@ -72,7 +75,7 @@ def formal_lineage(source, build, root):
         prior_and_diagnostic_samples_excluded=True)
 
 HOST_FILES=['tools/d1_energy_collection.py','tools/d1_energy_collection_device.py',
-    'tools/d1_energy_temperature.py',
+    'tools/d1_energy_temperature.py','tools/d1_energy_operational.py','tools/d1_energy_trace_account.py',
     'tools/d1_energy_screen.py',
     'tools/d1_adb_observed_client.py','tools/d1_recorded_process.py','tools/d1_collection_recovery.py',
     'tools/d1_logger_v4.py','tools/d1_probe_compare.py','tools/d1_energy_thermal.py']
@@ -85,17 +88,17 @@ def layout():
     return [(phase,*c) for phase in ('development','confirmation') for c in
             (CONDITIONS if phase=='development' else CONDITIONS[2:]+CONDITIONS[:2])]
 
-def prepare(source, build, references, output, diagnostic=False,conditioned=False):
+def prepare(source, build, references, output, diagnostic=False,conditioned=False,operational=False):
     from tools import d1_apk_identity as apk
     source=Path(source);build=Path(build);output=Path(output)
     require(not output.exists(),'new output only')
     old=p.read(source);receipt=p.read(build)
-    experiment,budget,order,run_name=plan_profile(diagnostic,conditioned)
+    experiment,budget,order,run_name=plan_profile(diagnostic,conditioned,operational)
     require(cal.apk_sources(receipt['source_code'])==cal.apk_sources(identity()),'APK source mismatch')
     require(p.digest(receipt['apk_path'])==receipt['apk_sha256'],'APK changed')
     template=p.read(source.parent/old['entries'][0]['manifest'])
-    refs=copy.deepcopy(old['references']) if conditioned else {}
-    if not conditioned:
+    refs=copy.deepcopy(old['references']) if (conditioned or operational) else {}
+    if not (conditioned or operational):
         for f in sorted(Path(references).rglob('*.result.json')):
             r=p.read(f);k=r['task_id']+'_'+r['requested_backend']
             if k not in refs and r['image_sha256']==template['images'][0]['sha256']:
@@ -121,7 +124,15 @@ def prepare(source, build, references, output, diagnostic=False,conditioned=Fals
             freeze='condition phase mean whole-device power and empirical AP endpoints; development only',
             confirmation='report signed/absolute errors without retuning; no invented tolerance',
             unsupported=['arbitrary stagger','request pacing','all duty','repeated batch cooling prediction','new policy superiority']))
-    if conditioned:
+    if operational:
+        plan['operational_only']=True
+        plan['temperature_preparation']=operational_rules.PREPARATION
+        plan['lineage']=conditioned_lineage(source)
+        plan['acceptance']['paired_baseline_ap_tolerance_c']=None
+        plan['acceptance']['ap_signal_min_c']=None
+        plan['analysis']['estimand']='operational finite-work outcomes with fixed preparation; not equal initial thermal state'
+        plan['analysis']['initial_temperature_adjustment']='none; report raw starts and both block contrasts, no small-sample regression'
+    elif conditioned:
         plan['temperature_preparation']=temperature.PREPARATION
         plan['lineage']=conditioned_lineage(source)
     elif diagnostic:
@@ -134,11 +145,15 @@ def prepare(source, build, references, output, diagnostic=False,conditioned=Fals
         m=dict(protocol=PROTOCOL,experiment_id=experiment,session_id=sid,phase=phase,pair=pair,mode=mode,
             models=copy.deepcopy(template['models']),images=template['images'],cpu_threads=1,experiment_ready=False,
             apk_sha256=plan['apk_sha256'],device_fingerprint=plan['device_fingerprint'],
-            maximum_duration_ms=1560000 if conditioned else 1200000,
+            maximum_duration_ms=1560000 if (conditioned or operational) else 1200000,
             baseline_seconds=120,common_work_seconds=480,cooling_seconds=180,
             counts={'classification':678,'detection':192},probe_counts={'classification':1,'detection':1},warmup_count=8,
             memory_contract='android-low-memory-resident-v1',thermal_gate=0)
-        if conditioned:m['temperature_preparation']=temperature.PREPARATION
+        if operational:
+            m['operational_only']=True
+            m['temperature_preparation']=operational_rules.PREPARATION
+            m['probe_counts']={'classification':2,'detection':2}
+        elif conditioned:m['temperature_preparation']=temperature.PREPARATION
         for spec in m['models'].values():
             spec['identity']['session_id']=sid;spec['target']['apk_sha256']=plan['apk_sha256']
         f=output/'manifests'/f'{sid}.json';cal.write_new(f,m)
@@ -162,11 +177,18 @@ if ($LASTEXITCODE -ne 0) {{ throw 'Failed; no automatic retry/resume' }}
 def check(file):
     from tools import d1_apk_identity as apk
     file=Path(file);plan=p.read(file)
-    diagnostic=plan.get('diagnostic_only',False);conditioned=plan.get('temperature_preparation') is not None
-    experiment,budget,order,run_name=plan_profile(diagnostic,conditioned)
+    diagnostic=plan.get('diagnostic_only',False);operational=plan.get('operational_only',False)
+    conditioned=plan.get('temperature_preparation') is not None and not operational
+    experiment,budget,order,run_name=plan_profile(diagnostic,conditioned,operational)
     require(plan['protocol']==PROTOCOL and plan['experiment_id']==experiment,'namespace')
     require(plan['budget']==budget and not plan['experiment_ready'],'budget/readiness')
-    if conditioned:
+    if operational:
+        require(plan['temperature_preparation']==operational_rules.PREPARATION and
+                plan['lineage']==conditioned_lineage(plan['source_plan']['path']) and
+                plan['acceptance']['paired_baseline_ap_tolerance_c'] is None and
+                plan['acceptance']['ap_signal_min_c'] is None,'operational contract')
+        operational_rules.reserve_summary(budget)
+    elif conditioned:
         require(plan['temperature_preparation']==temperature.PREPARATION and
                 plan.get('lineage')==conditioned_lineage(plan['source_plan']['path']),
                 'conditioned lineage/temperature contract changed')
@@ -188,10 +210,10 @@ def check(file):
         require((e['phase'],e['pair'],e['mode'])==order[i] and e['index']==i,'order')
         require(all(m[k]==e[k] for k in ['phase','pair','mode','session_id']),'entry binding')
         require(m['counts']=={'classification':678,'detection':192} and m['warmup_count']==8 and
-            m['probe_counts']=={'classification':1,'detection':1},'call cap')
+            m['probe_counts']=={'classification':2 if operational else 1,'detection':2 if operational else 1} and m.get('operational_only',False)==operational,'call cap')
         require(m['apk_sha256']==plan['apk_sha256'] and m['device_fingerprint']==plan['device_fingerprint'] and
-            m['maximum_duration_ms']==(1560000 if conditioned else 1200000) and
-            m.get('temperature_preparation')==(temperature.PREPARATION if conditioned else None) and
+            m['maximum_duration_ms']==(1560000 if (conditioned or operational) else 1200000) and
+            m.get('temperature_preparation')==(operational_rules.PREPARATION if operational else temperature.PREPARATION if conditioned else None) and
             not m['experiment_ready'],'APK/device/timeout/preparation')
         require((m['baseline_seconds'],m['common_work_seconds'],m['cooling_seconds'],m['cpu_threads'])==(120,480,180,1),'time/thread contract')
         require(set(m['models'])==set(KEYS) and len(m['images'])==1,'resident/input')
@@ -210,16 +232,17 @@ def progress_prefix(raw):
         except (ValueError,UnicodeError):return records,len(lines)-index
     return records,0
 
-def progress_consumption(raw,launched):
+def progress_consumption(raw,launched,operational=False):
     records,partial_lines=progress_prefix(raw)
-    limits={'runtime':4,'warmup':8,'eligibility':2,'load':870};out={}
+    limits={'runtime':4,'warmup':8,'eligibility':4 if operational else 2,'load':870};out={}
     for name,cap in limits.items():
         if name=='runtime':starts=[r for r in records if r.get('kind')=='runtime_start'];ends=[r for r in records if r.get('kind')=='runtime_return']
         elif name=='warmup':starts=[r for r in records if r.get('kind')=='warmup_start'];ends=[r for r in records if r.get('kind')=='warmup_return']
         else:
-            phase='eligibility_probe' if name=='eligibility' else 'load'
-            starts=[r for r in records if r.get('kind')=='request_start' and r.get('phase')==phase]
-            ends=[r for r in records if r.get('kind')=='lane_available' and r.get('phase')==phase]
+            phases=({x[0] for x in operational_rules.probe_specs(operational,'serial')}
+                    if name=='eligibility' else {'load'})
+            starts=[r for r in records if r.get('kind')=='request_start' and r.get('phase') in phases]
+            ends=[r for r in records if r.get('kind')=='lane_available' and r.get('phase') in phases]
         key=lambda r:r.get('id',r.get('key'))
         lower=len({key(r) for r in starts}|{key(r) for r in ends});returned=len({key(r) for r in ends})
         require(lower<=cap and returned<=cap,'progress exceeds budget')
@@ -323,16 +346,19 @@ def summarize_session(folder,manifest,plan):
     root=Path(folder);m=p.read(manifest)
     require(p.digest(root/'manifest.json')==p.digest(manifest),'output manifest')
     require(p.read(root/'cleanup.json')['status']=='completed' and p.read(root/'summary.json')['status']=='completed','app cleanup/completion')
-    rows=p.read(root/'load.requests.json');probe=p.read(root/'eligibility_probe.requests.json')
-    validation=validate_rows(rows,m['pair'],m['mode'],[678,192]);validate_rows(probe,m['pair'],m['mode'],[1,1])
+    operational=plan.get('operational_only',False)
+    rows=p.read(root/'load.requests.json');probe=[]
+    validation=validate_rows(rows,m['pair'],m['mode'],[678,192])
+    for label,mode in operational_rules.probe_specs(operational,m['mode']):
+        rr=p.read(root/(label+'.requests.json'));validate_rows(rr,m['pair'],mode,[1,1]);probe.extend(rr)
     for r in rows+probe:quality(p.read(plan['references'][r['key']]['path']),p.read(root/(r['id']+'.result.json')))
     events=[json.loads(x) for x in (root/'progress.jsonl').read_text(encoding='utf-8').splitlines()]
     require([r['sequence'] for r in events]==list(range(len(events))) and all(r['session_id']==m['session_id'] for r in events),'journal loss/identity')
     require(all(a['mono_ns']<=b['mono_ns'] for a,b in zip(events,events[1:])),'event clock')
-    for kind,n in [('runtime_start',4),('runtime_return',4),('warmup_start',8),('warmup_return',8),('request_start',872),('lane_available',872)]:
+    for kind,n in [('runtime_start',4),('runtime_return',4),('warmup_start',8),('warmup_return',8),('request_start',874 if operational else 872),('lane_available',874 if operational else 872)]:
         require(sum(r['kind']==kind for r in events)==n,'event consumption '+kind)
     samples=[r for r in events if r['kind']=='power_sample']
-    if plan.get('diagnostic_only'):
+    if plan.get('diagnostic_only') or operational:
         require(not (root/'sampler_failure.json').exists() and not (root/'session_failure.json').exists(),'diagnostic failure evidence')
         for row in (e for e in events if e['kind'] in ('power_sample','admission')):
             require(row.get('observation_version')=='energy-state-snapshot-v1','snapshot version')
@@ -364,7 +390,10 @@ def summarize_session(folder,manifest,plan):
         require(max([tt[0]['mono_ns']-start,end-tt[-1]['mono_ns']]+[b['mono_ns']-a['mono_ns'] for a,b in zip(tt,tt[1:])])<=10e9,'thermal gaps')
         phases[phase]=dict(start_ns=start,end_ns=end,energy=integ,ap_start_c=ap[0],ap_end_c=ap[-1],ap_peak_c=max(ap),ap_median_c=statistics.median(ap))
     base=phases['resident_baseline']['ap_median_c']
-    require(max(t['ap_peak_c'] for t in phases.values())-base>=.3,'AP signal insufficient for thermal freeze')
+    # Operational comparison reports small/flat thermal signals too. It does not fit
+    # a time constant or assert equal initial state; legacy eligibility is unchanged.
+    if not operational:
+        require(max(t['ap_peak_c'] for t in phases.values())-base>=.3,'AP signal insufficient for thermal freeze')
     load_start=phases['load']['start_ns'];common_end=phases['post_work_wait']['end_ns'];cool_end=phases['resident_cooling']['end_ns']
     require(479<= (common_end-load_start)/1e9 <=481,'common window')
     completion=max(r['persist_complete_ns'] for r in rows)
@@ -392,9 +421,13 @@ def summarize_session(folder,manifest,plan):
     metrics['counter']=dict(first=counters[0]['charge_counter_raw'] if counters else None,last=counters[-1]['charge_counter_raw'] if counters else None,
         distinct_values=len({s['charge_counter_raw'] for s in counters}),unit='nominal uAh, not external ground truth')
     metrics['unit_diagnostics']=counter_windows(samples,load_start,cool_end)
+    if operational:
+        from tools.d1_energy_trace_account import replay, service_summary
+        metrics['operational_accounting']=replay(events,rows)
+        metrics['operational_service']=service_summary(rows,{'normal':678,'urgent':192})
     return dict(status='eligible_descriptive_only',condition=m['pair']+'_'+m['mode'],validation=validation,phases=phases,
         metrics=metrics,
-        warmup=8,eligibility_requests=2,work_requests=870,unit_hypothesis_ua_per_raw=1000,absolute_accuracy_certified=False,
+        warmup=8,eligibility_requests=4 if operational else 2,work_requests=870,unit_hypothesis_ua_per_raw=1000,absolute_accuracy_certified=False,
         independent_sessions=1,accuracy_pass=None,experiment_ready=False,
         input_hashes={str(f.resolve()):p.digest(f) for f in root.glob('*') if f.is_file()})
 
@@ -404,12 +437,13 @@ def main():
     for arg in ('source','build','references','output'):q.add_argument('--'+arg,required=True)
     q.add_argument('--diagnostic',action='store_true')
     q.add_argument('--conditioned',action='store_true')
+    q.add_argument('--operational',action='store_true')
     q=sub.add_parser('check');q.add_argument('--plan',required=True)
     q=sub.add_parser('run')
     for arg in ('plan','adb','serial','expected-sha'):q.add_argument('--'+arg,required=True)
     q.add_argument('--approved',action='store_true')
     a=cli.parse_args()
-    if a.action=='prepare':result=prepare(a.source,a.build,a.references,a.output,a.diagnostic,a.conditioned)
+    if a.action=='prepare':result=prepare(a.source,a.build,a.references,a.output,a.diagnostic,a.conditioned,a.operational)
     elif a.action=='check':result=check(a.plan)
     else:
         from tools.d1_energy_collection_device import run
