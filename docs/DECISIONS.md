@@ -1,5 +1,12 @@
 # D1Check 결정 기록
 
+## 2026-09-25 — ENERGY-THERMAL-COLLECTION-PREP-02: 실제 직렬 대조와 두 병행 조건
+
+- **채택 범위:** 사용자 지시에 따른 PC 실행 준비. [계약](ENERGY_THERMAL_COLLECTION_PREP_02_20260925.md)의 두 배정×직렬/병행4조건을 개발/확인 각1세션으로 구성한다. 실제 동일 작업 묶음678분류+192탐지를 사용하고, 단독합을 직렬 실측으로 대체하지 않는다. 단독4경로는 직렬 구간에서 관측하되 잔열/순서 한계를 공개한다.
+- **구현 결정:** 기존 정책/timeout과 분리한 신규 Activity·protocol, runtime4 resident, 실소유 worker/lane 해제, 연속 raw telemetry와 bounded 비동기 journal. short probe·출력 회귀·GPU 위임/실제 overlap·baseline AP matching 후 긴 부하를 허용한다. 공통480초 및 resident cooling180초로 대기 에너지 누락을 막는다. 새 임의 offset/duty는 추가하지 않는다.
+- **검증 상태:** Python17/Kotlin6·관련 compile/서명/dry-run 완료, 실기기0. 요청6976/warmup64/총추론7040·상한220분은 권고 예산이며 실행 승인 미포함. 설치본·두 병행 적격성은 실제 단계 gate가 필요하다. 조건당 독립세션1/단계라 정확도·절감·정책 우월성 PASS를 약속하지 않는다.
+- **보존:** 옛 후보/빌드/계획도 덮어쓰지 않는다. 기존 FAIL·부분 결과·40값·20null·종료 계획·experiment_ready=false 유지. S26/NPU 별도 협업 및 기기간 계수 전용 금지 유지.
+
 ## 2026-09-25 — ENERGY-THERMAL-PC-01: 필수 에너지·발열 목표와 제한된 PC 보정
 
 - **채택:** 사용자 명시 요구에 따라 발열·배터리 최적화를 필수 목표로 기록한다. 동일 작업량/품질/서비스 제약 아래 평가하며 단순 안전 gate로 축소하지 않는다. 일시정지 중심 Android 작업은 현재 보류한다. 과거 FAIL이나 목적을 소급 대체하지 않는다.

@@ -1,13 +1,13 @@
 # 팀 안내 — 2026-09-25 현재
 
-## 최신 우선 안내: ENERGY-THERMAL-PC-01
+## 최신 우선 안내: ENERGY-THERMAL-COLLECTION-PREP-02
 
-작업 브랜치 **`feature/arrival-scheduling-20260923`**에서 [STATUS](../PROJECT_STATUS.md) → [에너지·열 PC 결과](../ENERGY_THERMAL_PC_01_20260925.md) → [공유 CSV/그림](../results/energy_thermal_pc_01/README.md) → [수집 후보](../ENERGY_THERMAL_COLLECTION_PROPOSAL_20260925.md)를 읽는다. master의 상태를 뜻하지 않는다.
+작업 브랜치 **`feature/arrival-scheduling-20260923`**에서 [STATUS](../PROJECT_STATUS.md) → [두 병행 조합 수집 계약](../ENERGY_THERMAL_COLLECTION_PREP_02_20260925.md) → [준비 파일·명령·검증](../results/energy_thermal_collection_prep_02/README.md) → [PLAN](../PROJECT_PLAN.md)·[DECISIONS](../DECISIONS.md)를 읽는다. master가 아니다.
 
-- **발열·배터리 최적화는 필수 목표**다. 기존 A24/S26 MobileNet160세션으로 조건부 에너지·센서별 열모형·PC 회계를 만들었다. 현재 두 모델의 에너지 절감이나 실기기 정책 성능을 검증한 것은 아니다. 단위/센서/기기 범위와 큰 오차·미식별 계수도 보고한다.
-- 일시정지 Android 연결은 보류하고, 현재 두 모델의 resident idle→같은 작업량→냉각을 연결할 최소 수집 준비를 우선한다. 8세션 후보는 미승인이며 기기 실행 CLI는 아직 없다. 이번에는 ADB/설치/실측을 하지 않았다.
-- S26/NPU 기존 별도 협업·모델별 실행/품질 증거 요구는 유지한다. A24에 S26 계수를 옮기지 않는다. 기존 FAIL·부분 결과·40값/20null·experiment_ready=false는 불변이다.
-- 상세 원자료/산출물 `Documents/D1Check_Arrival_Extension/energy_thermal_pc_v2`는 해당 PC에만 있다. 아래 이전 안내의 ‘다음 Android 연결’은 당시 이력이며 현재 우선순위는 이 절을 따른다.
+- **발열·배터리 최적화는 필수 목표**다. 기존 MobileNet 에너지·열 PC 보정은 완료했고, 현재 두 모델의 실제 직렬/병행 동일 작업량 수집 경로를 새로 준비했다. 독립 개발4/확인4, 진단6976/warmup64, 상한220분은 새 승인 대기이며 **기기 실행0**이다.
+- Kotlin6/Python17·관련 APK/서명/PC dry-run 완료와 실기기 미검증을 구분한다. 기기 gate·분류GPU+탐지CPU 병행 적격성·현재 두 모델의 에너지/열 정확도 및 절감은 아직 미확인이다. 일시정지 Android 연결/P 튜닝은 보류한다.
+- S26/NPU 기존 별도 협업·모델별 실행/품질 근거 요구를 유지한다. 계수를 A24로 전용하지 않는다. 기존 FAIL·부분 결과·40값/20null·experiment_ready=false는 유지한다.
+- 외부 원본/계획/APK/상세 보고서 `Documents/D1Check_Arrival_Extension/energy_collection_pc_v2` 등은 해당 PC에만 있고 GitHub에 포함되지 않는다. 저장소에는 코드·계약·작은 요약만 있다. 아래 진행상황은 각 당시 이력이다.
 
 ## 현재 우선 안내: REPLAN-PC-01
 

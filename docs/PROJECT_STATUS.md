@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-09-25 ENERGY-THERMAL-COLLECTION-PREP-02 — 병행 포함 PC 준비 완료, 미실행
+
+- 시작 `ff03641`/clean. [새 계약](ENERGY_THERMAL_COLLECTION_PREP_02_20260925.md), [계획·APK·명령·검증](results/energy_thermal_collection_prep_02/README.md). 두 배정(CC_DG/CG_DC)의 실제 동일 작업량 직렬/병행4조건, 개발4→동결→확인4로 재설계했다. 기존 단독8세션 후보는 미실행 이력으로 보존한다.
+- 신규 긴 세션 Activity·연속 raw 전력/온도·실제 lane 해제·단계 arm/quality/memory/GPU gate·bounded 회수/cleanup·단일소비 registry 구현. Python17/Kotlin6·관련 compile/APK 서명·최종 plan_v4 dry-run 통과. 최종 build_v5, 상세 외부 `energy_collection_pc_v2/FINAL_REPORT.md`. ADB/설치/실측0. 현재 설치본·새 병행 지원은 기기 gate 미확인이다.
+- **새 미승인 예산:** 8세션/진단6976(작업6960+적격성16)/warmup64/총추론7040/runtime32, APK전송·설치 각≤1, retry/대체/추가0. 고정관측104분, 예약 소요 추정약207분, 회수·cleanup 포함 상한220분. 실행 root/registry 미생성. 기존20null·40값·FAIL·부분 결과·종료 계획·experiment_ready=false 보존, S26/NPU 별도 유지.
+- 다음 최대3개: (1) 새220분 예산 실행 승인, (2) 현재 A24/설치본/환경과 단계별 병행 적격성 gate, (3) 승인 범위 개발→동결→확인 후 적격성과 오차 판독. 임의 offset/duty·정책 우월성·절대 에너지 정확도는 이 준비로 검증되지 않는다. 아래는 과거 시점 기록이다.
+
 ## 2026-09-25 ENERGY-THERMAL-PC-01 — 기존 자료 보정·PC 구현 완료
 
 - 시작 `38d5959`/clean, 원격 일치. **발열·배터리 최적화는 필수 목표**이며 동일 작업량·품질·응답/완료 제약을 함께 평가한다. 일시정지 Android 연결은 현재 우선순위에서 보류한다. [결과·계약](ENERGY_THERMAL_PC_01_20260925.md), [공유 CSV/그림/검증](results/energy_thermal_pc_01/README.md).
