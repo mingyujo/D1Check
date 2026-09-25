@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-09-25 — ENERGY-SCREEN-OBSERVE-02 제한된 기기 동작 확인
+
+새 승인으로 실제저장ADB원문 parser 재생 후 무추론32조회 완료했다. [보고서](ENERGY_SCREEN_OBSERVE_02_20260925.md). 각76bytes로 전송량은 줄었으나 중앙0.578초로 이전부하31회0.422초보다 짧지 않았다. 조건불일치이므로 인과속도/에너지효과를 주장하지 않는다. 부하중안정성·과거원인해결·전체수집적격성은 미확인, 기존 stopped계획과 experiment_ready=false 보존. 추가실측은 실행하지 않는다.
+
+
 ## 2026-09-25 — ENERGY-SCREEN-OBSERVE-01 조회 전 host gate 오류
 
 32조회/480초 사용자 승인으로 새진단1회를 시작했으나 battery bytes/str 경계결함으로 화면조회0에서 중단했다. [결과](ENERGY_SCREEN_OBSERVE_20260925.md). decode를 PC에서 수정하고 실제parser 테스트를 추가했으며 재실행하지 않았다. 종료계획·원소스hash·기존 미확인값 보존, 필터 기기PASS나 timeout원인해결로 해석하지 않는다.

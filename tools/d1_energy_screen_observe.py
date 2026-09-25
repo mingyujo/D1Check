@@ -11,7 +11,7 @@ from tools import d1_arrival_device as legacy
 from tools.d1_adb_observed_client import ObservedDevice
 
 ROOT=Path(__file__).resolve().parents[1]
-ID='ENERGY-SCREEN-OBSERVE-01'
+ID='ENERGY-SCREEN-OBSERVE-02'
 FILES=['tools/d1_energy_screen_observe.py','tools/d1_energy_screen.py','tools/d1_recorded_process.py',
        'tools/d1_adb_observed_client.py','tools/d1_arrival_device.py']
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -25,7 +25,7 @@ def prepare(source,output):
         source_hashes=identity(),source_plan_sha256=sha(source),device_fingerprint=old['device_fingerprint'],
         hardware_serial=old['device_hardware_serial'],screen_contract=old['screen_contract'],
         battery_start_percent=20,battery_min_percent=20,require_unplugged=True,battery_max_temperature_tenths_c=350,
-        output_root=str(out.parent/'energy_screen_observe_run_v1'),registry=str(out.parent/'energy_screen_observe_registry'/ID))
+        output_root=str(out.parent/'energy_screen_observe_run_v2'),registry=str(out.parent/'energy_screen_observe_registry'/ID))
     rp.write(out/'plan.json',p)
     (out/'RUN_AFTER_APPROVAL.ps1').write_text(f'''param([ValidateSet("Check","Run")][string]$Action="Check",[switch]$Approved,[string]$Serial)
 $ErrorActionPreference="Stop"

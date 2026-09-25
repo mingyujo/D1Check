@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-09-25 ENERGY-SCREEN-OBSERVE-02 — 무추론32조회 완료
+
+- 시작4c08a79/clean. 사용자 새승인·새ID/plan_v2, 실제기록 bytes→실제환경parser PC 재생 후 실행. [결과](ENERGY_SCREEN_OBSERVE_02_20260925.md).32/32성공·335.297초/480초, 중앙0.578초/최대0.828초·각76bytes·exit0/marker0/두상태확인. 설치/앱/추론/설정변경/재시도0, client정리 확인.
+- 동일A24·비충전88~89%·29.1~29.2°C/thermal0·첫마지막화면설정일치. 기존10테스트 재실행 없이 실기록parser경계·새plan/source/Check 검증. 무추론필터동작만 확인, 부하안정성·과거원인해결·내부dumpsys비용감소/에너지보정 아님. 기존종료계획/FAIL/부분에너지/40값/20null/experiment_ready=false 보존.
+- 다음: (1) 에너지 수집 재준비의 PC 검토, (2) 관측방식 변경/부하중미검증/자료결합 제한과 새 예산 검토. 추가 실측·전체8세션 자동실행 없음. 아래는 이전 기록이다.
+
+
 ## 2026-09-25 ENERGY-SCREEN-OBSERVE-01 — gate 코드 오류로 조회 전 종료
 
 - 시작603db8e/clean. [계획·결과·수정](ENERGY_SCREEN_OBSERVE_20260925.md). 사용자 승인 별도1진단 claim, 동일A24/앱부재 확인 후 배터리 bytes→문자열 parser 형식오류로 중단. 화면조회0/32, 설치/앱/추론/설정변경/재시도0,3.141초/480초. 배터리원문90%/비충전29.2°C, thermal/화면gate 미확인. client 정리 확인, 계획stopped_no_resume.
