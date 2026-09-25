@@ -82,3 +82,7 @@ python -B -m unittest tools.test_d1_energy_collection
 기존 FAIL·부분 결과·40값·20null·종료계획·원본·experiment_ready=false와 S26/NPU 별도 협업을 유지한다.
 
 최종 계획 SHA-256 `2fae1bf99d59ccade283e8ff2f8022cf2a025b9b7fe8b1c23d9f925c44e7fa84`, APK SHA-256 `2874a97f93c21816fea683bd6403326443dd9c15e682919c4087788d22670931`. 프로젝트 signer `b253dbb951d85d1a79ea7f2ca2d1ff76a9fa34dc6c793b1df9b5249f3fcc7565`, package/versionCode 유지. Kotlin14/Python20 및 최종 Check 통과, 새 run/claim 없음.
+
+## 승인 후 실행 기록
+
+2026-09-25 사용자 승인으로 위 최종 v2 계획을 1회 실행했다. 위의 “미실행/미생성/승인 대기” 문구는 **준비 시점 기록**이며 현재 상태가 아니다. [실제 결과와 판독](ENERGY_SAMPLER_LOAD_DIAG_RESULTS_20260925.md)을 따른다. `energy_sampler_load_run_v1` 및 소비 registry는 완료 상태이고 재실행하지 않는다. 진단 성공으로 과거 실패 원인이나 정식 직렬·병행 비교 적격성을 확정하지 않았다.

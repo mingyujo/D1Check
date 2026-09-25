@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-25 ENERGY-SAMPLER-LOAD-DIAG-01 — 수정 sampler 직렬 부하 1세션 완료
+
+- 시작 `55a143b`/clean. [종료 판독](ENERGY_SAMPLER_LOAD_DIAG_RESULTS_20260925.md), 외부 원본 `C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_sampler_load_run_v1/FINAL_REPORT.md`. 계획 v2 단일 실행 완료·registry consumed. 동일 A24·환경 gate 통과, APK 전송/설치 각1, staging1/7파일, runtime4, warmup8, 적격성2·작업870의 명시적 추론880 모두 확인. retry·대체·추가0, 전체902.5/2100초.
+- 872요청의 dispatch/start/output_ready/release/lane_available 각872, sampler snapshot1678개 시간·상태 정합, 화면조회71/71, 앱/host cleanup·프로세스 부재 확인. 실패 sidecar 없음. **진단 1세션의 직렬 경로 확인**만 가능; 과거 COLLECT-03 원인·병행/반복 안정성·에너지 절감/정식 보정 PASS 미확인. 기존 FAIL·부분 에너지/결과·40값·20null·종료계획·`experiment_ready=false` 유지.
+- 다음: (1) 별도 정식 수집 재준비 시 동일 수정 APK/관측 경로를 개발·확인에 적용하는 계약 차이 검토, (2) 직렬·병행 적격성과 독립 확인 예산을 새 승인 전에 고정. 이번 계획 재실행·추가 실측 없음. 아래는 과거 이력이다.
+
 ## 2026-09-25 ENERGY-SAMPLER-PC-01 — snapshot 결함 PC 재현·수정, 기기 미실행
 
 - 시작bb38b1d/clean. [원인 수준·수정·후속 후보](ENERGY_SAMPLER_PC_20260925.md). 실제 옛 toMap 표현의 size1→마지막 항목 삭제 경쟁으로 NoSuchElementException을 PC 재현했다. 과거 COLLECT-03 stack 부재로 동일 원인 확정은 하지 않는다.
