@@ -159,7 +159,7 @@ def installation(d,plan,plan_file,root,hard):
         gates(d,plan,root,'install_gate')
         if pre['installed']!=pre['candidate']:
             c.require(end-time.monotonic()>=330,'transfer/install/identity/cleanup reserve')
-            remote='/data/local/tmp/d1check-energy-thermal-collect-02.apk'
+            remote='/data/local/tmp/d1check-'+c.EXPERIMENT.lower()+'.apk'
             probe=d.call('shell','test','-e',remote,check=False,timeout=3)
             c.require(probe.returncode==1 and not probe.stderr.strip(),'remote install output already exists')
             state['apk_transfer_attempts']=1;save(root/'apk_transfer_attempt.json',dict(utc=legacy.utc()))

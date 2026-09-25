@@ -14,7 +14,10 @@ from tools import d1_arrival_timing_calibration as cal
 from tools.d1_energy_thermal import require, integrate
 
 PROTOCOL='energy-thermal-collection-v2'
-EXPERIMENT='ENERGY-THERMAL-COLLECT-02'
+EXPERIMENT='ENERGY-THERMAL-COLLECT-03'
+OBSERVATION=dict(version='energy-screen-filter-v1',timeout_seconds=2,retry=0,
+    poll_minimum_after_previous_end_seconds=10,all_development_and_confirmation=True,
+    previous_partial_sessions_excluded=True,internal_dumpsys_cost_reduction_claim=False)
 KEYS=('classification_CPU','classification_GPU','detection_CPU','detection_GPU')
 PAIRS={'CC_DG':('classification_CPU','detection_GPU'),'CG_DC':('classification_GPU','detection_CPU')}
 CONDITIONS=[('CC_DG','serial'),('CC_DG','parallel'),('CG_DC','serial'),('CG_DC','parallel')]
@@ -59,9 +62,9 @@ def prepare(source, build, references, output):
         apk_path=receipt['apk_path'],apk_sha256=receipt['apk_sha256'],
         apk_preflight=dict(old['apk_preflight'],candidate=candidate),device_fingerprint=old['device_fingerprint'],
         device_hardware_serial='R59W802RW5F',source_plan=dict(path=str(source.resolve()),sha256=p.digest(source)),
-        output_root=str(output.parent/'energy_collection_run_v2'),registry=str(output.parent/'energy_collection_registry'/EXPERIMENT),
+        output_root=str(output.parent/'energy_collection_run_v3'),registry=str(output.parent/'energy_collection_registry'/EXPERIMENT),
         battery_start_percent=20,battery_min_percent=20,battery_max_temperature_tenths_c=350,require_unplugged=True,
-        screen_contract=old['screen_contract'],source_files={k:v for k,v in old['source_files'].items() if k!='collection_estimates.json'},
+        screen_observation=OBSERVATION,screen_contract=old['screen_contract'],source_files={k:v for k,v in old['source_files'].items() if k!='collection_estimates.json'},
         references=refs,entries=[],acceptance=dict(power_coverage=.95,max_gap_seconds=2.5,thermal_max_gap_seconds=10,
             thermal_min_coverage=.95,clock_bracket_max_seconds=2,ap_signal_min_c=.3,paired_baseline_ap_tolerance_c=.5,
             classification_score_tolerance=.001,detection_score_tolerance=.001,detection_box_px=2,
@@ -104,6 +107,7 @@ def check(file):
     file=Path(file);plan=p.read(file)
     require(plan['protocol']==PROTOCOL and plan['experiment_id']==EXPERIMENT,'namespace')
     require(plan['budget']==BUDGET and not plan['experiment_ready'],'budget/readiness')
+    require(plan['screen_observation']==OBSERVATION,'screen observation contract')
     require(plan['source_code']==identity(),'source changed; regenerate a NEW plan')
     require(p.digest(plan['build_receipt'])==plan['build_receipt_sha256'],'build receipt')
     require(cal.apk_sources(p.read(plan['build_receipt'])['source_code'])==cal.apk_sources(identity()),'APK sources')

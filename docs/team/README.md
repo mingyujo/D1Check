@@ -1,5 +1,7 @@
 # 팀 안내 — 2026-09-25 현재
 
+> 최신 PC 준비: [새 에너지 직렬/병행 COLLECT-03](../ENERGY_THERMAL_COLLECTION_REPREP_20260925.md). 실제 수집 gate 원문 재생·새 plan_v5/서명/Check 완료, 실행은 별도 승인 대기다. 무추론 화면32조회 성공은 부하 안정성 증거가 아니다. 옛 중단자료 제외, 새 개발/확인 모두 같은 관측 방식. ADB/실측0·experiment_ready=false·S26/NPU 별도 협업 유지. 아래는 당시 상태 기록이다.
+
 > 최신 실행: [에너지·열 수집 첫 세션 중단](../ENERGY_THERMAL_COLLECTION_EXECUTION_20260925.md). 설치 성공 후 화면 상태 조회timeout으로8세션 중1시도/0완료, host cleanup 확인. 동결·확인 미실행, 종료계획 재개 금지. 아래 준비 당시 승인대기/실행0 문구는 과거 상태이며 현재는 PC 원인 검토 단계다. S26/NPU 별도 협업은 유지한다.
 
 ## 최신 우선 안내: ENERGY-THERMAL-COLLECTION-PREP-02

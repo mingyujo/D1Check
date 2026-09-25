@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-09-25 ENERGY-THERMAL-COLLECTION-REPREP-03 — PC 준비 완료·실행 승인 대기
+
+- 시작bfd8594/clean. [새 계약·명령](ENERGY_THERMAL_COLLECTION_REPREP_20260925.md). 실제 수집기와 진단의 공통 화면필터 연결/bytes 경계 확인. 실제 원문 fixture6사례와 관련24테스트·서명APK 재사용·새 plan_v5/Check 통과. Android/빌드/ADB/실측/설정변경0.
+- 새 COLLECT-03/run_v3/registry·UUID 분리, 구 계획과 비교군/작업량/순서/기준/timeout 동일. 개발4→동결→확인4, 진단6976·warmup64·추론7040·runtime32, staging8/56파일, 전송/설치≤1·retry0. 고정104분/timeout 합산예약206분40초/hard220분. 정상시간·배터리완주 미확인.
+- 새 개발/확인 모두 필터 관측, 옛547KB 부분세션과 결합 금지. 무추론76B/32회 성공은 부하안정성/과거원인해결/내부생성비용감소 근거 아님. 기존 stopped/FAIL/부분에너지 한계/40값/20null/experiment_ready=false 유지.
+- 다음: (1) 새 후보 실행 승인, (2) 실행 직전 동일기기·설치본·환경 gate, (3) 통과 시 계약대로1계획 수행·실패 시 회수/cleanup 후 중단. 현재 run/claim 없음. 아래는 과거 이력이다.
+
+
 ## 2026-09-25 ENERGY-SCREEN-OBSERVE-02 — 무추론32조회 완료
 
 - 시작4c08a79/clean. 사용자 새승인·새ID/plan_v2, 실제기록 bytes→실제환경parser PC 재생 후 실행. [결과](ENERGY_SCREEN_OBSERVE_02_20260925.md).32/32성공·335.297초/480초, 중앙0.578초/최대0.828초·각76bytes·exit0/marker0/두상태확인. 설치/앱/추론/설정변경/재시도0, client정리 확인.
