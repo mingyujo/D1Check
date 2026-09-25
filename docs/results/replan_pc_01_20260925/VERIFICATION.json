@@ -1,0 +1,47 @@
+{
+  "work_id": "REPLAN-PC-01",
+  "version": "arrival-interaction-pc-v1",
+  "timestamp": "2026-09-25T13:19:08.398597+09:00",
+  "base_head": "c0524cb5b9d90ac9425125a79977412a14943237",
+  "source_dirty": true,
+  "command": "python -X utf8 -m unittest tools.test_d1_arrival_interaction tools.test_d1_arrival_explore -v",
+  "tests": 38,
+  "new_tests": 23,
+  "regression_tests": 15,
+  "result": "PASS",
+  "preserved_head_toy_output_comparison": {
+    "head": "c0524cb",
+    "policies": [
+      "CPU_URGENT",
+      "B2_PC",
+      "P_PAIR_COST_PC"
+    ],
+    "complete_output_equal": true
+  },
+  "source_hashes": {
+    "tools/d1_arrival_explore.py": {
+      "working_bytes_sha256": "4cdc0555173187197bd18fdc0873fb68a10852947165773ed9caf12f7bffa623",
+      "lf_sha256": "4cdc0555173187197bd18fdc0873fb68a10852947165773ed9caf12f7bffa623"
+    },
+    "tools/d1_arrival_interaction.py": {
+      "working_bytes_sha256": "2c62127444fb561113f8c95a28e2ea7864b956a9b8f110343307a5fa00c834fd",
+      "lf_sha256": "2c62127444fb561113f8c95a28e2ea7864b956a9b8f110343307a5fa00c834fd"
+    },
+    "tools/test_d1_arrival_interaction.py": {
+      "working_bytes_sha256": "bccafc28fa55d4d035e4680748ed39f849450d389d41000d127db566b12e86b4",
+      "lf_sha256": "bccafc28fa55d4d035e4680748ed39f849450d389d41000d127db566b12e86b4"
+    },
+    "tools/test_d1_cal03_connection.py": {
+      "working_bytes_sha256": "36bcf53f26713f638f0cbac099197acb63820a5571195d09a27f47e11e055fe4",
+      "lf_sha256": "36bcf53f26713f638f0cbac099197acb63820a5571195d09a27f47e11e055fe4"
+    }
+  },
+  "demo_sha256": "07f85cedeed92be6a7f91b0d2b82cbb3ddc7ef6590aee455f0a1131f05770c79",
+  "demo_traces": 3,
+  "hand_calculation_match": true,
+  "evidence": "PC functionality only; no policy ranking, original batch rerun, device calls or performance PASS",
+  "experiment_ready": false,
+  "initial_test_correction": "Two hand expectations omitted unfinished no-selection computation; corrected to117/120ns after trace inspection. Scheduler costs were not removed.",
+  "final_test_log": "replan_pc_01_v1/tests_final_v2.txt",
+  "additional_check": "No-interaction equality between new permission arms includes zero and nonzero scheduler costs."
+}

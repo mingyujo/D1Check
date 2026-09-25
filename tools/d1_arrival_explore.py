@@ -93,7 +93,9 @@ def choose(config, queue, lanes, now, policy, settings):
     return result
 
 
-def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=120_000_000_000):
+def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=120_000_000_000,
+             admission=None):
+    # Optional REPLAN-PC-01 event hook. None preserves the frozen v3 execution path.
     base.validate_config(config)
     base.require(policy in POLICIES and settings['mode'] in ('strict', 'explore'), 'policy/mode')
     base.require(0 < len(requests) <= 128 and 0 < horizon_ns <= 600_000_000_000, 'bounded scenario')
@@ -105,7 +107,7 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
     arrivals = sorted(requests, key=lambda r: (r['arrival_ns'], r['ordinal'], r['id']))
     queue, decisions, transitions = [], [], []
     lanes = {b: None for b in ('CPU', 'GPU')}
-    now = 0.0; ai = 0; pending = None; count = 0
+    now = 0.0; ai = 0; pending = None; count = 0; review_needed = True
     def public():
         return {b: dict(request=x['ticket'] if x else None, phase=PHASES[x['stage']] if x else 'AVAILABLE',
                         since=x['since'] if x else now, dispatch=x['dispatch'] if x else None) for b,x in lanes.items()}
@@ -119,6 +121,7 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
         for b in ('CPU', 'GPU'):
             x=lanes[b]
             while x and x['left'] <= 0.0001:
+                review_needed = True
                 row=ledger[x['ticket']['id']];stage=x['stage'];row[FIELDS[stage]]=round(now)
                 transitions.append(dict(at_ns=round(now), request_id=row['id'], backend=b, event=FIELDS[stage]))
                 if (stage==1 and row['priority']=='urgent') or (stage==2 and row['priority']=='normal'):
@@ -128,10 +131,20 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
                     row['status']='succeeded';lanes[b]=None;x=None
                 else:
                     x['stage']+=1;x['since']=now;x['left']=x['durations'][x['stage']]
+        if admission is not None:
+            review_needed |= admission.interactions_at(now)
         while ai<len(arrivals) and arrivals[ai]['arrival_ns']<=now:
             q=arrivals[ai];queue.append(dict(q));ledger[q['id']].update(status='queued',queue_entry_ns=q['arrival_ns']);ai+=1
+            review_needed = True
+        if admission is not None:
+            review_needed |= admission.expiries_at(now)
         if pending and pending['end']<=now:
             selected=pending['selected']
+            if selected and admission is not None:
+                q=next(q for q in queue if q['id']==selected['request_id'])
+                if not admission.check_dispatch(q, now, pending):
+                    selected=None  # Ticket never left queue; no lane/vector was acquired.
+                review_needed = True
             if selected:
                 rid,b=selected['request_id'],selected['backend'];q=next(q for q in queue if q['id']==rid)
                 queue.remove(q);base.require(lanes[b] is None,'busy lane early release')
@@ -148,8 +161,14 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
         if now >= horizon_ns: break
         # Zero-duration dispatch stages must transition before judging again.
         if any(x and x['left']<=0.0001 for x in lanes.values()): continue
-        if pending is None and queue:
-            d=choose(config,queue,public(),now,policy,settings);decisions.append(d)
+        if pending is None and queue and (admission is None or review_needed):
+            eligible=queue if admission is None else admission.eligible(queue, now)
+            d=choose(config,eligible,public(),now,policy,settings)
+            if admission is not None:
+                d['admission']=admission.snapshot(queue, now)
+                if not eligible: d['reason']='background_start_blocked'
+            decisions.append(d)
+            review_needed=False
             cost=settings['decision_ns']+settings['record_ns']+(settings['dispatch_ns'] if d['selected'] else 0)
             if d['selected']:
                 pending=dict(start=now,end=now+cost,selected=d['selected'])
@@ -157,8 +176,11 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
             elif cost>0:
                 # A no-selection call consumes scheduler time but does not spin forever.
                 pending=dict(start=now,end=now+cost,selected=None)
-        if ai==len(arrivals) and not queue and not any(lanes.values()) and pending is None: break
+        if ai==len(arrivals) and not queue and not any(lanes.values()) and pending is None:
+            if admission is None or admission.next_event() is None: break
         candidates=[]
+        if admission is not None and admission.next_event() is not None:
+            candidates.append(float(admission.next_event()))
         if ai<len(arrivals):candidates.append(float(arrivals[ai]['arrival_ns']))
         if pending:candidates.append(pending['end'])
         for b,x in lanes.items():
@@ -166,7 +188,7 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
         if not candidates:break
         target=min(min(candidates),float(horizon_ns))
         # No-selection completion must not trigger a new busy-poll decision every cost ns.
-        if pending and not pending['selected'] and pending['end']==target:
+        if admission is None and pending and not pending['selected'] and pending['end']==target:
             pending=None
             others=[v for v in candidates if v>target]
             target=min(min(others),float(horizon_ns)) if others else float(horizon_ns)

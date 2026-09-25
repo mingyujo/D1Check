@@ -1,4 +1,16 @@
-# 팀 안내 — 2026-09-24 현재
+# 팀 안내 — 2026-09-25 현재
+
+## 현재 우선 안내: REPLAN-PC-01
+
+읽을 브랜치는 **`feature/arrival-scheduling-20260923`**이며 master가 아니다. [STATUS](../PROJECT_STATUS.md) → [새 후속 계약·PC 재현](../REPLAN_PC_01_20260925.md) → [PLAN](../PROJECT_PLAN.md)·[DECISIONS](../DECISIONS.md) 순으로 읽는다. 아래 09-24 진단 기록의 “현재/다음”은 당시 이력이다.
+
+- A24 두 모델 요청 실측·27세션 독립 평가가 완료됐고 주 결합 **FAIL**을 보존한다. fixed-split은 부분 종료다. CAL-03은 개발8/확인8·40초기값을 확보했고, 통합 수집의 부분 종료 후 별도 확인3세션도 완료했다. [확인·PC 탐색](../ARRIVAL_FOLLOWUP_AND_EXPLORATION_20260925.md), [서비스 비교](../ARRIVAL_SERVICE_COMPARISON_20260925.md), [허용폭 분석](../ARRIVAL_DELTA_SELECTION_20260925.md)이 최신 근거다.
+- 기존 P의 단독 최선 구간은 확보하지 못했다. 이를 지우거나 계수를 튜닝하지 않고, **조작에 따른 배경 시작 제한과 우선순위·정적 배정 효과를 구분하는 별도 후속 개발**을 시작했다. PC 조작/timer/dispatch gate·배경 persist 완료·공통 drain을 구현하고 기능 검증했다. 성능 비교 또는 Android 구현 완료는 아니다.
+- 다음은 기존 arrival worker·계측에 새 의미를 연결할 최소 Android 개발과, 양 기준에 공정한 정적 후보/측정 예산의 준비다. 합성 조작은 UI 성능 자료가 아니며 새 실측은 아직 승인·실행되지 않았다. `experiment_ready=false`다.
+- S26 선정과 별도 npu-runner/CompiledModel 개발은 유지한다. 최신 팀원 commit·모델/AOT/위임·품질 근거는 아래 제출 목록을 따른다. 이 브랜치의 계약 모델 NPU 지원·품질·성능은 여전히 미검증이며 A24 후속의 필수조건으로 확대하지 않는다.
+- 이번 코드·계약·작은 기능 검증 요약은 GitHub에서 읽을 수 있다. 외부 `C:/Users/LG/Documents/D1Check_Arrival_Extension/...` 원본과 상세 실행 산출물은 담당자 PC 전용이다. GitHub에 모델·키·APK·외부 원자료 전체를 올리지 않는다.
+
+## 이전 진단과 협업 기록
 
 > 최신 CAL-03: [개발8→동결→확인8 완료](../ARRIVAL_CAL03_EXECUTION_20260924.md). 진단64·warmup128, 실패/재시도0, 단독 lane 재사용48쌍 확인. 초기40구간 관측을 얻었지만 정확도·정책 우수성 PASS는 아니며 기존20null/experiment_ready=false와 과거 FAIL·미확정 원인은 유지한다. 원본은 로컬 전용이며 [STATUS](../PROJECT_STATUS.md)를 우선한다.
 

@@ -1,0 +1,171 @@
+{
+  "purpose": "three hand-calculated functionality traces; not a policy ranking",
+  "synthetic": true,
+  "scenarios": {
+    "none": {
+      "expected_seconds": {
+        "background": [
+          0,
+          3,
+          6,
+          7
+        ],
+        "interactive": [
+          7,
+          10,
+          13,
+          14
+        ]
+      },
+      "actual_seconds": {
+        "background": [
+          0.0,
+          3.0,
+          6.0,
+          7.0
+        ],
+        "interactive": [
+          7.0,
+          10.0,
+          13.0,
+          14.0
+        ]
+      },
+      "background_metrics": {
+        "observation_end_ns": 20000000000,
+        "horizon_ns": 40000000000,
+        "planned": 2,
+        "not_dispatched": 0,
+        "status_counts": {
+          "succeeded": 2,
+          "failed": 0,
+          "rejected": 0,
+          "expired": 0,
+          "unfinished": 0,
+          "not_arrived": 0
+        },
+        "background_planned": 1,
+        "interactive_planned": 1,
+        "background_persisted_at_observation_end": 1,
+        "background_persisted_at_horizon": 1,
+        "background_unfinished_at_horizon": 0,
+        "background_all_persisted_at_ns": 6000000000,
+        "background_completion_time_ns": 6000000000,
+        "interactive_output_ready": 1,
+        "all_lanes_released_at_ns": 14000000000,
+        "cleanup": "not_modelled",
+        "failure_model": "unsupported; no device reliability inference"
+      }
+    },
+    "intermittent": {
+      "expected_seconds": {
+        "background": [
+          15,
+          18,
+          21,
+          22
+        ],
+        "interactive": [
+          1,
+          4,
+          7,
+          8
+        ]
+      },
+      "actual_seconds": {
+        "background": [
+          15.0,
+          18.0,
+          21.0,
+          22.0
+        ],
+        "interactive": [
+          1.0,
+          4.0,
+          7.0,
+          8.0
+        ]
+      },
+      "background_metrics": {
+        "observation_end_ns": 20000000000,
+        "horizon_ns": 40000000000,
+        "planned": 2,
+        "not_dispatched": 0,
+        "status_counts": {
+          "succeeded": 2,
+          "failed": 0,
+          "rejected": 0,
+          "expired": 0,
+          "unfinished": 0,
+          "not_arrived": 0
+        },
+        "background_planned": 1,
+        "interactive_planned": 1,
+        "background_persisted_at_observation_end": 0,
+        "background_persisted_at_horizon": 1,
+        "background_unfinished_at_horizon": 0,
+        "background_all_persisted_at_ns": 21000000000,
+        "background_completion_time_ns": 21000000000,
+        "interactive_output_ready": 1,
+        "all_lanes_released_at_ns": 22000000000,
+        "cleanup": "not_modelled",
+        "failure_model": "unsupported; no device reliability inference"
+      }
+    },
+    "finite_burst": {
+      "expected_seconds": {
+        "background": [
+          17,
+          20,
+          23,
+          24
+        ],
+        "interactive": [
+          1,
+          4,
+          7,
+          8
+        ]
+      },
+      "actual_seconds": {
+        "background": [
+          17.0,
+          20.0,
+          23.0,
+          24.0
+        ],
+        "interactive": [
+          1.0,
+          4.0,
+          7.0,
+          8.0
+        ]
+      },
+      "background_metrics": {
+        "observation_end_ns": 20000000000,
+        "horizon_ns": 40000000000,
+        "planned": 2,
+        "not_dispatched": 0,
+        "status_counts": {
+          "succeeded": 2,
+          "failed": 0,
+          "rejected": 0,
+          "expired": 0,
+          "unfinished": 0,
+          "not_arrived": 0
+        },
+        "background_planned": 1,
+        "interactive_planned": 1,
+        "background_persisted_at_observation_end": 0,
+        "background_persisted_at_horizon": 1,
+        "background_unfinished_at_horizon": 0,
+        "background_all_persisted_at_ns": 23000000000,
+        "background_completion_time_ns": 23000000000,
+        "interactive_output_ready": 1,
+        "all_lanes_released_at_ns": 24000000000,
+        "cleanup": "not_modelled",
+        "failure_model": "unsupported; no device reliability inference"
+      }
+    }
+  }
+}
