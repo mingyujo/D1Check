@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-09-25 — ENERGY-SCREEN-OBSERVE-01 조회 전 host gate 오류
+
+32조회/480초 사용자 승인으로 새진단1회를 시작했으나 battery bytes/str 경계결함으로 화면조회0에서 중단했다. [결과](ENERGY_SCREEN_OBSERVE_20260925.md). decode를 PC에서 수정하고 실제parser 테스트를 추가했으며 재실행하지 않았다. 종료계획·원소스hash·기존 미확인값 보존, 필터 기기PASS나 timeout원인해결로 해석하지 않는다.
+
+
 ## 2026-09-25 — ENERGY-SCREEN-DIAG-PC-01 관측량 축소·중단 의미 보존
 
 기존32화면조회 중 timeout1의 내부 원인은 미확정이다. [PC 진단](ENERGY_SCREEN_DIAGNOSIS_PC_20260925.md)에 따라 에너지 host 경로만 필수상태+producer종료 marker를 전송한다.2초/cadence/재시도0/조회불가중단은 유지하며 기기 생성비용 감소나 재발 해결을 주장하지 않는다. PC24건·보존로그31건 재생 완료, 기기확인은 미실행이다. 새 관측 방식의 에너지를 옛 부분값과 동일 조건으로 합치지 않는다. 종료 plan_v4는 원소스/원hash 그대로 보존하고 자동 재개하지 않는다.

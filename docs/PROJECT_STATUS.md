@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-09-25 ENERGY-SCREEN-OBSERVE-01 — gate 코드 오류로 조회 전 종료
+
+- 시작603db8e/clean. [계획·결과·수정](ENERGY_SCREEN_OBSERVE_20260925.md). 사용자 승인 별도1진단 claim, 동일A24/앱부재 확인 후 배터리 bytes→문자열 parser 형식오류로 중단. 화면조회0/32, 설치/앱/추론/설정변경/재시도0,3.141초/480초. 배터리원문90%/비충전29.2°C, thermal/화면gate 미확인. client 정리 확인, 계획stopped_no_resume.
+- 원실행 runner/hash 보존, decode 한 줄 수정·실제parser 경계 회귀 포함PC10건 통과. 수정후 기기 재실행0. 초기PC9건의 환경mock이 오류를 놓쳤음을 기록. 필터 기기검증·지연통계·과거원인해결 근거는 확보하지 못했다.
+- 다음: (1) 결과/수정본 검토, (2) 별도 승인 시 같은 무추론 진단의 새ID 고정. 이번/기존 종료계획 재개금지. 기존FAIL/부분에너지/동결값/experiment_ready=false 유지. 아래는 과거 이력이다.
+
+
 ## 2026-09-25 ENERGY-SCREEN-DIAG-PC-01 — PC 진단·최소 수정 완료
 
 - 시작eed0852/clean. [원인·수정·후속 후보](ENERGY_SCREEN_DIAGNOSIS_PC_20260925.md). 화면조회32회 중31완료(중앙0.422초/최대0.687초),1timeout2.016초. 전체덤프 중앙547581bytes, 자체client overlap0. 기기/통신/디스크 지연 중 원인은 미구분, 화면꺼짐/GPU결함으로 단정하지 않는다.
