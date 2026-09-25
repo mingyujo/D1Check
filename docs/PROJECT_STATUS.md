@@ -1,10 +1,18 @@
 # D1Check 현재 상태
 
+## 2026-09-25 ENERGY-THERMAL-COLLECT-02 — 승인 실행 후 첫 개발 세션 중단, 재개 금지
+
+- 시작6b1a743/clean. 시간 표현을 **timeout 합산 예약206분40초**로 정정(고정104/상한220분 불변). 사용자 승인 후 plan_v4 hash/서명/환경 gate 확인, 전송1·설치1 성공. [실행 보고서](ENERGY_THERMAL_COLLECTION_EXECUTION_20260925.md), [작은 공유 요약](results/energy_thermal_collection_execution_02/README.md).
+- 개발1시도/0완료/실패1/미시도3, 확인4미시도. runtime4·warmup8·적격성2 반환, 작업745 lane해제/최소746시작. 진단 시작748~872/6976·총추론 시작756~880/7040, 미확인 구간 보존. 화면 dumpsys power2초timeout으로 중단, 재시도0. claim→cleanup463.109초. 앱cleanup 미확인/host 종료·프로세스부재 확인. 계획·registry stopped_no_resume.
+- baseline125.427J/부분부하314.168J(조건부 mA 가설), 동일작업량 완료·공통480초·냉각·병행 비교 불가. 동결/확인/PC연결 없음. 기존 FAIL·부분 결과·40값/20null·experiment_ready=false 보존. 원본 energy_collection_run_v2, 분석 energy_collection_analysis_v1.
+- 다음 최대3개: (1) 기존 host 화면 조회 시간/출력량 PC 분석, (2) 관측 경로 최소 보완 필요성 판단, (3) 필요시 별도 실행 계획/승인. 종료된 이번 계획은 자동 재개하지 않는다. 아래는 당시 준비 이력이다.
+
+
 ## 2026-09-25 ENERGY-THERMAL-COLLECTION-PREP-02 — 병행 포함 PC 준비 완료, 미실행
 
 - 시작 `ff03641`/clean. [새 계약](ENERGY_THERMAL_COLLECTION_PREP_02_20260925.md), [계획·APK·명령·검증](results/energy_thermal_collection_prep_02/README.md). 두 배정(CC_DG/CG_DC)의 실제 동일 작업량 직렬/병행4조건, 개발4→동결→확인4로 재설계했다. 기존 단독8세션 후보는 미실행 이력으로 보존한다.
 - 신규 긴 세션 Activity·연속 raw 전력/온도·실제 lane 해제·단계 arm/quality/memory/GPU gate·bounded 회수/cleanup·단일소비 registry 구현. Python17/Kotlin6·관련 compile/APK 서명·최종 plan_v4 dry-run 통과. 최종 build_v5, 상세 외부 `energy_collection_pc_v2/FINAL_REPORT.md`. ADB/설치/실측0. 현재 설치본·새 병행 지원은 기기 gate 미확인이다.
-- **새 미승인 예산:** 8세션/진단6976(작업6960+적격성16)/warmup64/총추론7040/runtime32, APK전송·설치 각≤1, retry/대체/추가0. 고정관측104분, 예약 소요 추정약207분, 회수·cleanup 포함 상한220분. 실행 root/registry 미생성. 기존20null·40값·FAIL·부분 결과·종료 계획·experiment_ready=false 보존, S26/NPU 별도 유지.
+- **새 미승인 예산:** 8세션/진단6976(작업6960+적격성16)/warmup64/총추론7040/runtime32, APK전송·설치 각≤1, retry/대체/추가0. 고정관측104분, timeout 합산 예약시간206분40초, 회수·cleanup 포함 상한220분. 실행 root/registry 미생성. 기존20null·40값·FAIL·부분 결과·종료 계획·experiment_ready=false 보존, S26/NPU 별도 유지.
 - 다음 최대3개: (1) 새220분 예산 실행 승인, (2) 현재 A24/설치본/환경과 단계별 병행 적격성 gate, (3) 승인 범위 개발→동결→확인 후 적격성과 오차 판독. 임의 offset/duty·정책 우월성·절대 에너지 정확도는 이 준비로 검증되지 않는다. 아래는 과거 시점 기록이다.
 
 ## 2026-09-25 ENERGY-THERMAL-PC-01 — 기존 자료 보정·PC 구현 완료

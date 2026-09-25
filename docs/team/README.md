@@ -1,5 +1,7 @@
 # 팀 안내 — 2026-09-25 현재
 
+> 최신 실행: [에너지·열 수집 첫 세션 중단](../ENERGY_THERMAL_COLLECTION_EXECUTION_20260925.md). 설치 성공 후 화면 상태 조회timeout으로8세션 중1시도/0완료, host cleanup 확인. 동결·확인 미실행, 종료계획 재개 금지. 아래 준비 당시 승인대기/실행0 문구는 과거 상태이며 현재는 PC 원인 검토 단계다. S26/NPU 별도 협업은 유지한다.
+
 ## 최신 우선 안내: ENERGY-THERMAL-COLLECTION-PREP-02
 
 작업 브랜치 **`feature/arrival-scheduling-20260923`**에서 [STATUS](../PROJECT_STATUS.md) → [두 병행 조합 수집 계약](../ENERGY_THERMAL_COLLECTION_PREP_02_20260925.md) → [준비 파일·명령·검증](../results/energy_thermal_collection_prep_02/README.md) → [PLAN](../PROJECT_PLAN.md)·[DECISIONS](../DECISIONS.md)를 읽는다. master가 아니다.

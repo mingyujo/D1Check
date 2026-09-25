@@ -3,7 +3,7 @@
 PC 준비 완료, **실기기 미실행·새 예산 승인 필요**. 작업 브랜치 `feature/arrival-scheduling-20260923`용이며 기본 브랜치 상태가 아니다. [전체 계약](../../ENERGY_THERMAL_COLLECTION_PREP_02_20260925.md), [조건표](conditions.csv), [예산](budget.json), [검증 대상](verification.json).
 
 - 새 `EnergyCollectionActivity`/`energy-thermal-collection-v2`: resident4·thread1, 두 배정 각각 실제 직렬 묶음과 병행 묶음. 고정 요청870/세션, 적격성2, warmup8.
-- 개발4→동결→확인4, 진단6976·warmup64·총추론7040·runtime32. APK전송/설치 각≤1(동일 설치본 생략), retry/대체/추가0. 고정관측104분, 단계 예약 소요 추정 약207분, **회수/cleanup 포함 상한220분**.
+- 개발4→동결→확인4, 진단6976·warmup64·총추론7040·runtime32. APK전송/설치 각≤1(동일 설치본 생략), retry/대체/추가0. 고정관측104분, timeout 합산 예약시간206분40초, **회수/cleanup 포함 상한220분**.
 - Python17 및 Kotlin6 관련 테스트, 최종 APK 컴파일·서명·manifest/입력/source 결합·PowerShell Check 통과. mock 통과는 native/GPU/실기기 적격성 검증이 아니다.
 - 기존 정책/결과·40동결/20null·experiment_ready=false 유지. 임의 offset/duty/다른 입력/priority·고온 효과는 미지원이다.
 
