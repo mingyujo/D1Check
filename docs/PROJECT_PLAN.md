@@ -1,5 +1,7 @@
 # D1Check 프로젝트 실행계획
 
+> 2026-09-26 [COLLECT-04 온도 경로 분석과 COLLECT-05 PC 후보](ENERGY_THERMAL_TEMPERATURE_PREP_20260926.md): 공식 AP baseline +0.8°C 중단을 재현하고 준비 단계 재가열을 확인했다. 기존 ±0.5°C 최종 gate·직렬/병행·개발4→동결→확인4는 유지한 채 모든 세션의 resident 사전 관측 대기 최대360초를 새 계보에만 추가했다. 확인 병행 anchor 조회 결함을 수정하고 공식 baseline 재선택은 금지한다. 새 plan_v9의 268분 hard 상한/동일7040 추론 Check 통과, **기기 실행·새 예산 승인은 없음**. 시작 온도 준비 비용은 에너지·시간에 별도 포함하고 운영 냉각 비용과 구분한다. 기존 COLLECT-04는 재개하지 않는다. 아래 계획은 당시 이력이다.
+
 > 2026-09-25 [COLLECT-04 PC 재준비](ENERGY_THERMAL_COLLECTION_REPREP_04_20260925.md) 완료. 수정 sampler APK와 같은 축소 관측 경로를 개발4→동결→확인4의 새 계보에 연결했다. 종료된 COLLECT-03/진단 표본은 분리하고 비교군·조건·중단 규칙을 유지한다. plan_v7/manifest/dry-run 통과, **기기 실행·새 예산 승인 없음**. 고정104분, timeout 예약206분40초, hard220분; 정상시간/배터리 완주 미확인. 기존 FAIL·부분 결과·experiment_ready=false와 발열·배터리 필수 목표 유지. 아래 문구는 당시 이력이다.
 
 > 2026-09-25 [sampler PC 재현·수정](ENERGY_SAMPLER_PC_20260925.md). 과거 원인 확정 없이 실제 toMap 경쟁 결함과 실패 증거 게시를 보완했다. 다음 후보는 같은 실패 경로의 진단1세션(35분 상한, 미승인)이며 전체8세션이 아니다. 진단 자료를 정식 개발/확인 표본으로 전용하지 않고 관측 버전/새 APK 계보를 분리한다. 기존 목표·판정·experiment_ready=false 유지.

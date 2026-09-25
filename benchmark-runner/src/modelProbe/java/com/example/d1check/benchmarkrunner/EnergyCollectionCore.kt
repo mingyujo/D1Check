@@ -10,7 +10,8 @@ import java.util.concurrent.atomic.AtomicLong
 /** New bounded workload contract. Never changes arrival policies or their timeouts. */
 internal object EnergyCollectionCore {
     const val PROTOCOL = "energy-thermal-collection-v2"
-    const val WATCHDOG_MS = 1_200_000L
+    // COLLECT-05 may wait in resident state before the one official baseline.
+    const val WATCHDOG_MS = 1_560_000L
     const val LOAD_NS = 480_000_000_000L
     const val CALL_NS = 30_000_000_000L
     val KEYS = setOf("classification_CPU", "classification_GPU", "detection_CPU", "detection_GPU")

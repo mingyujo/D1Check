@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-09-26 — COLLECT-05 사전 AP 준비의 PC 후보, 실기기 미승인
+
+- **채택 범위:** 종료된 COLLECT-04의 +0.8°C paired AP gate 실패에 대해 공식 baseline 이전 resident 상태에서 제한된 온도 관측을 하는 **별도 개발 후보**를 준비한다. 60초/20표본/범위0.3°C, paired anchor ±0.25°C, 대기 최대360초는 prospective 설계값이며 기기 검증 전 안정성 기준 PASS가 아니다. 확인 병행 anchor는 같은 단계·같은 pair의 직렬 세션에서만 취한다. 최종 ±0.5°C paired gate, 원래 비교군·순서·분모·개발 동결/확인 분리, retry0은 유지한다. [근거·한계·예산](ENERGY_THERMAL_TEMPERATURE_PREP_20260926.md).
+- 준비 대기 시간·에너지를 따로 기록하고 전체 비용에서 숨기지 않는다. PC 테스트·서명·계획 Check만 통과했으며 실기기 gate/병행/장기 안전성·에너지 절감은 미검증이다. COLLECT-04 완료 직렬 및 중단 표본을 새 개발/확인에 합치지 않는다. 새 계획 실행 승인이나 `experiment_ready=true` 결정이 아니다.
+
 ## 2026-09-25 — 수정 sampler 정식 수집의 별도 계보·PC 준비
 
 채택/PC 준비: [COLLECT-04 계약](ENERGY_THERMAL_COLLECTION_REPREP_04_20260925.md)에 따라 새 ID·run/registry를 사용하고 종료된 COLLECT-03와 성공한 직렬 진단을 입력 해시로 **연결하되 표본으로 합치지 않는다**. 수정 APK/프로젝트 서명과 동일 화면 필터를 개발·확인 전체에 쓰며 기존 두 직렬 대조·두 병행 배정, 개발4→동결→확인4, 220분 hard 상한·재시도0·환경/품질/병행 gate를 유지한다. PC 관련3건과 plan_v7 Check 통과; 실기기 병행/반복 안정성·에너지 절감·정책 우월성은 미검증이다. 이번 결정은 새 수집 **실행 승인이나 experiment_ready PASS가 아니다**. 기존 판정과 원자료를 보존한다.

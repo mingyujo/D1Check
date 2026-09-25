@@ -12,9 +12,11 @@ from pathlib import Path
 from tools import d1_arrival_plan as p
 from tools import d1_arrival_timing_calibration as cal
 from tools.d1_energy_thermal import require, integrate
+from tools import d1_energy_temperature as temperature
 
 PROTOCOL='energy-thermal-collection-v2'
 EXPERIMENT='ENERGY-THERMAL-COLLECT-04'
+CONDITIONED_EXPERIMENT='ENERGY-THERMAL-COLLECT-05'
 OBSERVATION=dict(version='energy-screen-filter-v1',timeout_seconds=2,retry=0,
     poll_minimum_after_previous_end_seconds=10,all_development_and_confirmation=True,
     previous_partial_sessions_excluded=True,internal_dumpsys_cost_reduction_claim=False)
@@ -27,13 +29,25 @@ BUDGET=dict(sessions=8,development=4,confirmation=4,work_requests=6960,eligibili
     total_seconds=13200,installation_seconds=600,freeze_seconds=600,session_seconds=1500,
     stage_gate_seconds=120,host_poll_seconds=1220,recovery_seconds=60,cleanup_seconds=45,
     baseline_seconds=120,common_work_seconds=480,cooling_seconds=180)
+CONDITIONED_BUDGET=dict(BUDGET,total_seconds=16080,session_seconds=1860,host_poll_seconds=1580,
+    preparation_max_wait_seconds=360)
 DIAG_EXPERIMENT='ENERGY-SAMPLER-LOAD-DIAG-01'
 DIAG_BUDGET=dict(BUDGET,sessions=1,development=0,confirmation=0,work_requests=870,eligibility_requests=2,
     diagnostic_requests=872,warmup=8,explicit_inference=880,runtime_creations=4,total_seconds=2100,freeze_seconds=0)
 
-def plan_profile(diagnostic=False):
+def plan_profile(diagnostic=False,conditioned=False):
+    require(not (diagnostic and conditioned),'diagnostic and conditioned are separate lineages')
+    if conditioned:return CONDITIONED_EXPERIMENT,CONDITIONED_BUDGET,layout(),'energy_collection_run_v5'
     return (DIAG_EXPERIMENT,DIAG_BUDGET,[('diagnostic','CC_DG','serial')],'energy_sampler_load_run_v1') if diagnostic else (
         EXPERIMENT,BUDGET,layout(),'energy_collection_run_v4')
+
+def conditioned_lineage(source):
+    old=p.read(source);require(old['experiment_id']==EXPERIMENT,'conditioned predecessor ID')
+    stopped=Path(old['registry'])/'stopped.json';raw=Path(old['output_root'])/'FINAL_RECEIPT.json'
+    require(p.read(stopped)['status']=='stopped_no_resume' and p.digest(stopped)==p.digest(raw),'predecessor stopped identity')
+    return dict(previous_plan=dict(path=str(Path(source).resolve()),sha256=p.digest(source)),
+        previous_stopped_receipt=dict(path=str(stopped.resolve()),sha256=p.digest(stopped)),
+        previous_completed_serial_excluded=True,previous_failed_parallel_excluded=True)
 
 
 def formal_lineage(source, build, root):
@@ -58,6 +72,7 @@ def formal_lineage(source, build, root):
         prior_and_diagnostic_samples_excluded=True)
 
 HOST_FILES=['tools/d1_energy_collection.py','tools/d1_energy_collection_device.py',
+    'tools/d1_energy_temperature.py',
     'tools/d1_energy_screen.py',
     'tools/d1_adb_observed_client.py','tools/d1_recorded_process.py','tools/d1_collection_recovery.py',
     'tools/d1_logger_v4.py','tools/d1_probe_compare.py','tools/d1_energy_thermal.py']
@@ -70,20 +85,21 @@ def layout():
     return [(phase,*c) for phase in ('development','confirmation') for c in
             (CONDITIONS if phase=='development' else CONDITIONS[2:]+CONDITIONS[:2])]
 
-def prepare(source, build, references, output, diagnostic=False):
+def prepare(source, build, references, output, diagnostic=False,conditioned=False):
     from tools import d1_apk_identity as apk
     source=Path(source);build=Path(build);output=Path(output)
     require(not output.exists(),'new output only')
     old=p.read(source);receipt=p.read(build)
-    experiment,budget,order,run_name=plan_profile(diagnostic)
+    experiment,budget,order,run_name=plan_profile(diagnostic,conditioned)
     require(cal.apk_sources(receipt['source_code'])==cal.apk_sources(identity()),'APK source mismatch')
     require(p.digest(receipt['apk_path'])==receipt['apk_sha256'],'APK changed')
     template=p.read(source.parent/old['entries'][0]['manifest'])
-    refs={}
-    for f in sorted(Path(references).rglob('*.result.json')):
-        r=p.read(f);k=r['task_id']+'_'+r['requested_backend']
-        if k not in refs and r['image_sha256']==template['images'][0]['sha256']:
-            refs[k]=dict(path=str(f.resolve()),sha256=p.digest(f))
+    refs=copy.deepcopy(old['references']) if conditioned else {}
+    if not conditioned:
+        for f in sorted(Path(references).rglob('*.result.json')):
+            r=p.read(f);k=r['task_id']+'_'+r['requested_backend']
+            if k not in refs and r['image_sha256']==template['images'][0]['sha256']:
+                refs[k]=dict(path=str(f.resolve()),sha256=p.digest(f))
     require(set(refs)==set(KEYS),'four same-input development output references required')
     output.mkdir(parents=True);(output/'manifests').mkdir()
     candidate=apk.inspect(receipt['apk_path'],old['apk_preflight']['toolchain'])
@@ -105,7 +121,10 @@ def prepare(source, build, references, output, diagnostic=False):
             freeze='condition phase mean whole-device power and empirical AP endpoints; development only',
             confirmation='report signed/absolute errors without retuning; no invented tolerance',
             unsupported=['arbitrary stagger','request pacing','all duty','repeated batch cooling prediction','new policy superiority']))
-    if diagnostic:
+    if conditioned:
+        plan['temperature_preparation']=temperature.PREPARATION
+        plan['lineage']=conditioned_lineage(source)
+    elif diagnostic:
         plan['diagnostic_only']=True
         plan['success_scope']='one unchanged CC_DG serial load; no fit/freeze/confirmation/energy evaluation reuse'
     else:
@@ -114,10 +133,12 @@ def prepare(source, build, references, output, diagnostic=False):
         sid=str(uuid.uuid5(uuid.NAMESPACE_URL,f'{experiment}/{phase}/{pair}/{mode}'))
         m=dict(protocol=PROTOCOL,experiment_id=experiment,session_id=sid,phase=phase,pair=pair,mode=mode,
             models=copy.deepcopy(template['models']),images=template['images'],cpu_threads=1,experiment_ready=False,
-            apk_sha256=plan['apk_sha256'],device_fingerprint=plan['device_fingerprint'],maximum_duration_ms=1200000,
+            apk_sha256=plan['apk_sha256'],device_fingerprint=plan['device_fingerprint'],
+            maximum_duration_ms=1560000 if conditioned else 1200000,
             baseline_seconds=120,common_work_seconds=480,cooling_seconds=180,
             counts={'classification':678,'detection':192},probe_counts={'classification':1,'detection':1},warmup_count=8,
             memory_contract='android-low-memory-resident-v1',thermal_gate=0)
+        if conditioned:m['temperature_preparation']=temperature.PREPARATION
         for spec in m['models'].values():
             spec['identity']['session_id']=sid;spec['target']['apk_sha256']=plan['apk_sha256']
         f=output/'manifests'/f'{sid}.json';cal.write_new(f,m)
@@ -141,11 +162,15 @@ if ($LASTEXITCODE -ne 0) {{ throw 'Failed; no automatic retry/resume' }}
 def check(file):
     from tools import d1_apk_identity as apk
     file=Path(file);plan=p.read(file)
-    diagnostic=plan.get('diagnostic_only',False)
-    experiment,budget,order,run_name=plan_profile(diagnostic)
+    diagnostic=plan.get('diagnostic_only',False);conditioned=plan.get('temperature_preparation') is not None
+    experiment,budget,order,run_name=plan_profile(diagnostic,conditioned)
     require(plan['protocol']==PROTOCOL and plan['experiment_id']==experiment,'namespace')
     require(plan['budget']==budget and not plan['experiment_ready'],'budget/readiness')
-    if not diagnostic:
+    if conditioned:
+        require(plan['temperature_preparation']==temperature.PREPARATION and
+                plan.get('lineage')==conditioned_lineage(plan['source_plan']['path']),
+                'conditioned lineage/temperature contract changed')
+    elif not diagnostic:
         require(plan.get('lineage')==formal_lineage(plan['source_plan']['path'],plan['build_receipt'],file.parent.parent),
                 'formal lineage changed or prior samples reused')
     require(plan['screen_observation']==OBSERVATION,'screen observation contract')
@@ -165,7 +190,9 @@ def check(file):
         require(m['counts']=={'classification':678,'detection':192} and m['warmup_count']==8 and
             m['probe_counts']=={'classification':1,'detection':1},'call cap')
         require(m['apk_sha256']==plan['apk_sha256'] and m['device_fingerprint']==plan['device_fingerprint'] and
-            m['maximum_duration_ms']==1200000 and not m['experiment_ready'],'APK/device/timeout')
+            m['maximum_duration_ms']==(1560000 if conditioned else 1200000) and
+            m.get('temperature_preparation')==(temperature.PREPARATION if conditioned else None) and
+            not m['experiment_ready'],'APK/device/timeout/preparation')
         require((m['baseline_seconds'],m['common_work_seconds'],m['cooling_seconds'],m['cpu_threads'])==(120,480,180,1),'time/thread contract')
         require(set(m['models'])==set(KEYS) and len(m['images'])==1,'resident/input')
         for k,s in m['models'].items():
@@ -314,8 +341,16 @@ def summarize_session(folder,manifest,plan):
             require(row['state_version']>=0,'state version')
     require(all(r['plugged']==0 and r['thermal_status']==0 and r['admission_reason']=='admit' and r['interactive'] for r in samples),'environment failure')
     thermal=[json.loads(x) for x in (root.parent/'thermal.jsonl').read_text(encoding='utf-8').splitlines()]
+    conditioned=plan.get('temperature_preparation') is not None
+    if conditioned:
+        prep_gate=p.read(root.parent/'gate_probe/temperature_preparation.json')
+        require(prep_gate['status']=='ready_before_one_official_baseline' and
+                prep_gate['assessment']['ready'] and
+                prep_gate['waited_seconds']<=plan['temperature_preparation']['max_wait_seconds'],
+                'preparation evidence')
     phases={}
-    for phase in ('resident_baseline','load','post_work_wait','resident_cooling'):
+    for phase in (('temperature_preparation',) if conditioned else ()) + (
+            'resident_baseline','load','post_work_wait','resident_cooling'):
         starts=[r['mono_ns'] for r in events if r['phase']==phase and r['kind']=='phase_start']
         ends=[r['mono_ns'] for r in events if r['phase']==phase and r['kind']=='phase_end']
         require(len(starts)==len(ends)==1,'phase boundary')
@@ -340,6 +375,14 @@ def summarize_session(folder,manifest,plan):
         x=integrate(samples,load_start,end,1000);x['increment_above_resident_idle_j']=x['covered_energy_j']-idle_w*x['covered_s']
         x['completed_work']=870;x['unfinished']=0;x['thermal_burden']=thermal_burden(thermal,load_start,end,base)
         metrics[label]=x
+    if conditioned:
+        prep_start=phases['temperature_preparation']['start_ns']
+        x=integrate(samples,prep_start,cool_end,1000)
+        x['increment_above_resident_idle_j']=x['covered_energy_j']-idle_w*x['covered_s']
+        x['completed_work']=870;x['unfinished']=0
+        x['thermal_burden']=thermal_burden(thermal,prep_start,cool_end,base)
+        x['meaning']='post-warmup preparation, official baseline, load, common wait, cooling; initialization/warmup excluded'
+        metrics['including_preparation']=x
     metrics['occupancy_states']=power_by_state(samples,spans)
     metrics['service']={priority:dict(count=len(rr),mean_response_ns=statistics.mean(
         r['output_ready_ns' if priority=='urgent' else 'persist_complete_ns']-r['scheduled_arrival_ns'] for r in rr),
@@ -360,12 +403,13 @@ def main():
     q=sub.add_parser('prepare')
     for arg in ('source','build','references','output'):q.add_argument('--'+arg,required=True)
     q.add_argument('--diagnostic',action='store_true')
+    q.add_argument('--conditioned',action='store_true')
     q=sub.add_parser('check');q.add_argument('--plan',required=True)
     q=sub.add_parser('run')
     for arg in ('plan','adb','serial','expected-sha'):q.add_argument('--'+arg,required=True)
     q.add_argument('--approved',action='store_true')
     a=cli.parse_args()
-    if a.action=='prepare':result=prepare(a.source,a.build,a.references,a.output,a.diagnostic)
+    if a.action=='prepare':result=prepare(a.source,a.build,a.references,a.output,a.diagnostic,a.conditioned)
     elif a.action=='check':result=check(a.plan)
     else:
         from tools.d1_energy_collection_device import run

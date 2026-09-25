@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-26 ENERGY-THERMAL-COLLECT-05 — 온도 준비 PC 설계·기기 미실행
+
+- [COLLECT-04 온도 분석·새 후보 계약](ENERGY_THERMAL_TEMPERATURE_PREP_20260926.md): 공식 AP baseline 31.5°C/32.3°C 차이 +0.8°C 재현. 첫 직렬 냉각 마지막32.3°C→다음 세션 전31.4°C, 이후 runtime/warmup/적격성 경과 후 baseline 첫 표본33.8°C. 준비 단계 재가열은 관측되지만 잔열·주변 원인은 미식별이며 고정 180초 냉각 부족이라고 단정하지 않는다.
+- 별도 COLLECT-05/plan_v9에 resident AP 준비 창 최대360초를 모든 8세션에 동일 적용하고 공식 baseline은 한 번만 수집한다. 확인 병행 anchor가 같은 단계 직렬 세션을 쓰도록 host 결함도 수정했다. 기존 ±0.5°C paired gate·비교군·작업량·동결 규칙 불변. 새 hard 상한268분, 진단6976/warmup64/추론7040, retry0. 관련 Python26건·Kotlin 핵심 테스트·격리 APK/프로젝트 서명·plan Check 통과. **실기기 미검증·실행 미승인**; 새 run/registry 미생성.
+- 다음: (1) 새 계획 별도 승인 여부 판단, (2) 승인 시 현재 A24/설치본/환경·병행 gate 확인 후 한 번만 실행, (3) 실패 또는 완료 후 대기 비용과 본 비교 결과를 구분해 판독. 기존 COLLECT-04 `stopped_no_resume`·부분 에너지/불확실성·FAIL·40값/20null·`experiment_ready=false` 유지. 아래는 과거 이력이다.
+
 ## 2026-09-25 ENERGY-THERMAL-COLLECT-04 — paired AP baseline gate 중단·재개 금지
 
 - 시작 `16ce73e`/clean, 승인된 plan_v7 SHA `a1399e2f…96719` 단일 실행. [종료 판독](ENERGY_THERMAL_COLLECT04_RESULTS_20260925.md), 외부 `energy_collection_run_v4/FINAL_RECEIPT.json`·`energy_collection_analysis_v4/FINAL_REPORT.md`. 동일 A24와 설치본·서명·환경 gate 통과, 전송/설치0. 실행·cleanup 1,024.188초/220분, 재시도0, registry `stopped_no_resume`.

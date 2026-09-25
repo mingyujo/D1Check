@@ -87,12 +87,12 @@ class EnergyCollectionActivity : Activity() {
         handler.postDelayed(watchdog, EnergyCollectionCore.WATCHDOG_MS)
         setup.execute { run() }
     }
-    private fun gate(inputs: File, name: String, manifestHash: String) {
+    private fun gate(inputs: File, name: String, manifestHash: String, waitNs: Long = 60_000_000_000) {
         progress!!.flushBeforeGate() // Outside measured load; ready never precedes durable gate evidence.
         save("$name.ready.json", mapOf("manifest_sha256" to manifestHash, "mono_ns" to now()))
         val start = now()
         while (!File(inputs, "$name.arm").exists()) {
-            healthy(); EnergyCollectionCore.requireTime(now(), start, 60_000_000_000); Thread.sleep(50)
+            healthy(); EnergyCollectionCore.requireTime(now(), start, waitNs); Thread.sleep(50)
         }
         check(File(inputs, "$name.arm").readText().trim() == manifestHash)
         event("host_gate_accepted", mapOf("gate" to name))
@@ -117,6 +117,9 @@ class EnergyCollectionActivity : Activity() {
             check(m.getLong("maximum_duration_ms") == EnergyCollectionCore.WATCHDOG_MS && !m.getBoolean("experiment_ready"))
             check(m.getString("apk_sha256") == ProbeModelFile.sha256(File(applicationInfo.sourceDir)) && m.getString("device_fingerprint") == Build.FINGERPRINT)
             check(m.getInt("cpu_threads") == 1 && m.getInt("baseline_seconds") == 120 && m.getInt("cooling_seconds") == 180)
+            val preparation = m.optJSONObject("temperature_preparation")
+            check(preparation?.getString("version") == "resident-ap-preparation-v1" &&
+                preparation.getInt("max_wait_seconds") == 360)
             val keys = EnergyCollectionCore.keys(m.getString("pair")); val parallel = m.getString("mode") == "parallel"
             check(m.getString("mode") in setOf("serial", "parallel"))
             val images = m.getJSONArray("images"); check(images.length() == 1)
@@ -153,7 +156,9 @@ class EnergyCollectionActivity : Activity() {
             }
             save("warmup.json",warm); phase = "warmup_gate"; gate(inputs,"warmup",hash)
             phase = "eligibility_probe"; workload(keys, parallel, listOf(1,1),image,imageHash,30_000_000_000)
-            gate(inputs,"probe",hash) // Host quality/memory/overlap check BEFORE the long workload.
+            phase = "temperature_preparation"; event("phase_start")
+            gate(inputs,"probe",hash,preparation.getLong("max_wait_seconds")*1_000_000_000)
+            event("phase_end") // Host quality and AP readiness precede the only official baseline.
             idle("resident_baseline",120)
             phase = "baseline_gate"; gate(inputs,"baseline",hash)
             phase = "load"; val commonStart = now()

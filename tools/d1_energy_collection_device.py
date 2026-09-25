@@ -14,6 +14,7 @@ from tools import d1_collection_recovery as install
 from tools import d1_logger_v4 as logger
 from tools.d1_adb_observed_client import ObservedDevice
 from tools import d1_energy_screen as screen
+from tools import d1_energy_temperature as temperature
 
 ACTIVITY='com.example.d1check.benchmarkrunner.EnergyCollectionActivity'
 ACTION='com.example.d1check.benchmarkrunner.action.ENERGY_COLLECTION'
@@ -82,12 +83,22 @@ def arm(d,remote_input,name,sha):
     c.require(re.fullmatch('[a-f0-9]{64}',sha),'arm hash')
     d.call('shell','run-as',legacy.PACKAGE,'sh','-c',f'"echo {sha} > {remote_input}/{name}.arm"',timeout=5)
 
+def same_stage_serial_anchor(results, phase, pair, mode):
+    if mode=='serial':return None
+    matches=[r for r in results if r['phase']==phase and r['condition']==pair+'_serial' and
+             r['status']=='eligible_descriptive_only']
+    c.require(len(matches)==1,'one eligible same-stage serial anchor required')
+    return matches[0]['phases']['resident_baseline']['ap_median_c']
+
 def poll(d,remote,folder,m,plan,baseline_anchor=None):
-    start=time.monotonic();end=min(d.deadline,start+1220);armed=set();index=0;last_thermal=last_screen=0;last_sensor=None;heartbeat_index=-1
+    conditioned=plan.get('temperature_preparation') is not None
+    start=time.monotonic();end=min(d.deadline,start+plan['budget']['host_poll_seconds'])
+    armed=set();index=0;last_thermal=last_screen=0;last_sensor=None;heartbeat_index=-1
+    observations=[];probe_ready=None;probe_verified=False
     while time.monotonic()<end:
         now=time.monotonic()
         if now-last_thermal>=2:
-            last_sensor=thermal(d,folder,index);index+=1;last_thermal=time.monotonic()
+            last_sensor=thermal(d,folder,index);observations.append(last_sensor);index+=1;last_thermal=time.monotonic()
         if now-last_screen>=10:
             screen.snapshot(d,folder,f'poll_{index:04d}',plan['screen_contract']);last_screen=time.monotonic()
         listing=d.call('shell','run-as',legacy.PACKAGE,'ls',remote,timeout=3).stdout.decode().splitlines()
@@ -101,7 +112,8 @@ def poll(d,remote,folder,m,plan,baseline_anchor=None):
         for gate in ('warmup','probe','baseline'):
             if gate in armed or gate+'.ready.json' not in listing:continue
             target=Path(folder)/('gate_'+gate)
-            ready=c.p.read(pull_file(d,remote,gate+'.ready.json',target))
+            ready=(probe_ready if gate=='probe' and probe_verified else
+                   c.p.read(pull_file(d,remote,gate+'.ready.json',target)))
             c.require(ready['manifest_sha256']==c.p.digest(Path(folder)/'input_manifest.json'),'gate manifest')
             if gate=='warmup':
                 rows=c.p.read(pull_file(d,remote,'warmup.json',target));c.require(len(rows)==8,'warmup budget')
@@ -113,11 +125,31 @@ def poll(d,remote,folder,m,plan,baseline_anchor=None):
                 (target/'delegate_log.txt').write_bytes(logs);save(target/'gpu.json',gpu_proof(logs.decode(errors='replace'),m['session_id']))
             elif gate=='probe':
                 c.require('warmup' in armed,'probe before warmup gate')
-                rows=c.p.read(pull_file(d,remote,'eligibility_probe.requests.json',target))
-                c.validate_rows(rows,m['pair'],m['mode'],[1,1])
-                for row in rows:
-                    result=c.p.read(pull_file(d,remote,row['id']+'.result.json',target))
-                    c.quality(c.p.read(plan['references'][row['key']]['path']),result)
+                if not probe_verified:
+                    rows=c.p.read(pull_file(d,remote,'eligibility_probe.requests.json',target))
+                    c.validate_rows(rows,m['pair'],m['mode'],[1,1])
+                    for row in rows:
+                        result=c.p.read(pull_file(d,remote,row['id']+'.result.json',target))
+                        c.quality(c.p.read(plan['references'][row['key']]['path']),result)
+                    probe_verified=True;probe_ready=ready
+                if conditioned:
+                    contract=plan['temperature_preparation']
+                    assessment=temperature.assess(observations,ready['mono_ns'],baseline_anchor,contract)
+                    waited_s=(last_sensor['mono_ns']-ready['mono_ns'])/1e9
+                    if not assessment['ready']:
+                        if assessment['reason']=='invalid_sensor_or_thermal':
+                            save(target/'temperature_preparation_failure.json',dict(
+                                status='invalid_sensor_before_official_baseline',waited_seconds=waited_s,
+                                assessment=assessment,anchor_c=baseline_anchor))
+                            raise ValueError('resident AP observation invalid; no baseline or load arm')
+                        if temperature.expired(last_sensor['mono_ns'],ready['mono_ns'],contract):
+                            save(target/'temperature_preparation_failure.json',dict(
+                                status='timed_out_before_official_baseline',waited_seconds=waited_s,
+                                assessment=assessment,anchor_c=baseline_anchor))
+                            raise TimeoutError('resident AP preparation timeout; no baseline or load arm')
+                        continue
+                    save(target/'temperature_preparation.json',dict(status='ready_before_one_official_baseline',
+                        waited_seconds=waited_s,assessment=assessment,anchor_c=baseline_anchor))
             else:
                 c.require('probe' in armed,'baseline before eligibility gate')
                 progress=pull_file(d,remote,'progress.jsonl',target)
@@ -200,9 +232,9 @@ def run(plan_file,adb,serial,expected_sha,approved):
                 save(root/'development_freeze.json',dict(plan_sha256=expected_sha,conditions=frozen,source='development_only',accuracy_pass=None))
                 save(root/'freeze_receipt.json',dict(sha256=c.p.digest(root/'development_freeze.json'),utc=legacy.utc()))
                 c.require(time.monotonic()-freeze_start<600,'freeze time exceeded')
-            c.require(hard-time.monotonic()>=1500,'insufficient whole session reserve; stop')
+            c.require(hard-time.monotonic()>=budget['session_seconds'],'insufficient whole session reserve; stop')
             current=root/f"{e['index']:02d}_{e['session_id']}";current.mkdir();remote=None
-            session_start=time.monotonic();session_end=min(session_start+1500,hard);d.deadline=min(session_start+120,session_end-105)
+            session_start=time.monotonic();session_end=min(session_start+budget['session_seconds'],hard);d.deadline=min(session_start+120,session_end-105)
             gates(d,plan,current,'before_session')
             c.require(install.installed_hash(d,plan['apk_preflight']['candidate'])==plan['apk_sha256'],'installed APK changed')
             if e['mode']=='parallel':
@@ -212,11 +244,11 @@ def run(plan_file,adb,serial,expected_sha,approved):
             manifest=Path(plan_file).parent/e['manifest'];m=c.p.read(manifest)
             (current/'input_manifest.json').write_bytes(manifest.read_bytes())
             remote=shared.stage_inputs(d,e['session_id'],manifest,{k:v['path'] for k,v in plan['source_files'].items()},c.PROTOCOL)
-            c.require(session_end-time.monotonic()>=1220+105,'launch reserve')
+            c.require(session_end-time.monotonic()>=budget['host_poll_seconds']+105,'launch reserve')
             d.deadline=session_end-105
             save(current/'launch_attempt.json',dict(utc=legacy.utc()))
             d.call('shell','am','start','-W','-n',legacy.PACKAGE+'/'+ACTIVITY,'-a',ACTION,'--es','session_id',e['session_id'],timeout=20)
-            anchor=next((r['phases']['resident_baseline']['ap_median_c'] for r in results if r['condition']==e['pair']+'_serial'),None)
+            anchor=same_stage_serial_anchor(results,e['phase'],e['pair'],e['mode'])
             poll(d,remote,current,m,plan,anchor)
             d.deadline=min(time.monotonic()+60,session_end-45)
             save(current/'recovery.json',recover(d,remote,current/'artifacts'))

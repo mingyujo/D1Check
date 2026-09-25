@@ -9,6 +9,7 @@ import unittest
 from unittest.mock import patch
 from tools import d1_energy_collection as c
 from tools import d1_energy_collection_device as d
+from tools import d1_energy_temperature as temp
 
 def row(i,key,start,end):
     return dict(id=str(i),key=key,scheduled_arrival_ns=0,dispatch_ns=start,execution_start_ns=start+1,
@@ -16,6 +17,29 @@ def row(i,key,start,end):
         worker_release_ns=end,lane_available_ns=end+1,terminal_status='succeeded')
 
 class EnergyCollectionTest(unittest.TestCase):
+    def test_resident_preparation_requires_full_stable_window_and_anchor(self):
+        sample=lambda i,c: dict(mono_ns=i*2_000_000_000,AP=str(c),thermal_status='0',sampling_uncertainty_ns=100_000_000)
+        readings=[sample(i,31.5) for i in range(31)]
+        self.assertEqual(temp.assess(readings[:-1],0,31.5)['reason'],'insufficient_window')
+        self.assertTrue(temp.assess(readings,0,31.5)['ready'])
+        self.assertEqual(temp.assess(readings,0,31.9)['reason'],'off_anchor')
+        self.assertEqual(temp.assess(readings[:20]+[sample(20,32.0)]+readings[21:],0,None)['reason'],'unstable')
+        self.assertEqual(temp.assess(readings[:11]+readings[18:],0,None)['reason'],'sample_gap')
+        self.assertEqual(temp.assess([readings[-1]],0,None)['reason'],'insufficient_window')
+        self.assertFalse(temp.expired(349_999_999_999,0))
+        self.assertTrue(temp.expired(350_000_000_000,0))
+
+    def test_conditioned_profile_separates_old_plan_and_reserves_preparation(self):
+        name,budget,order,run=c.plan_profile(conditioned=True)
+        self.assertEqual((name,run),('ENERGY-THERMAL-COLLECT-05','energy_collection_run_v5'))
+        self.assertEqual(order,c.layout())
+        self.assertEqual(budget['total_seconds'],600+8*1860+600)
+        self.assertEqual(budget['diagnostic_requests'],c.BUDGET['diagnostic_requests'])
+        self.assertEqual(budget['explicit_inference'],c.BUDGET['explicit_inference'])
+        self.assertLessEqual(budget['stage_gate_seconds']+budget['host_poll_seconds']+
+            budget['recovery_seconds']+budget['cleanup_seconds'],budget['session_seconds'])
+        with self.assertRaises(ValueError):c.plan_profile(diagnostic=True,conditioned=True)
+
     def test_new_formal_lineage_excludes_stopped_and_diagnostic_samples(self):
         with tempfile.TemporaryDirectory() as t:
             root=Path(t); registry=root/'old_registry';registry.mkdir()
@@ -133,6 +157,14 @@ class EnergyCollectionTest(unittest.TestCase):
         with self.assertRaises(ValueError):c.validate_rows(r,'CC_DG','parallel',[1,1])
         r[1]['dispatch_ns']=9
         with self.assertRaises(ValueError):c.validate_rows(r,'CC_DG','serial',[1,1])
+    def test_paired_anchor_uses_same_stage_serial_only(self):
+        rows=[dict(phase=phase,condition='CC_DG_serial',status='eligible_descriptive_only',
+                   phases={'resident_baseline':{'ap_median_c':temp}})
+              for phase,temp in [('development',31.5),('confirmation',32.4)]]
+        self.assertIsNone(d.same_stage_serial_anchor(rows,'confirmation','CC_DG','serial'))
+        self.assertEqual(d.same_stage_serial_anchor(rows,'development','CC_DG','parallel'),31.5)
+        self.assertEqual(d.same_stage_serial_anchor(rows,'confirmation','CC_DG','parallel'),32.4)
+        with self.assertRaises(ValueError):d.same_stage_serial_anchor(rows,'confirmation','CG_DC','parallel')
     def test_missing_and_failed_denominator(self):
         r=[row(0,'classification_CPU',0,10)]
         with self.assertRaises(ValueError):c.validate_rows(r,'CC_DG','serial',[1,1])
