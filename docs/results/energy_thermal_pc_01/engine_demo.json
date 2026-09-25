@@ -1,0 +1,706 @@
+{
+  "engine_result": {
+    "version": "arrival-explore-pc-v3",
+    "policy": "CPU_URGENT",
+    "settings": {
+      "mode": "explore",
+      "decision_ns": 0,
+      "record_ns": 0,
+      "dispatch_ns": 0,
+      "aging_ns": 1000,
+      "interference": 1.0,
+      "predicted_interference": 1.5,
+      "estimate_factor": 1.0,
+      "static_parallel": true,
+      "static_map": {
+        "classification": "CPU",
+        "detection": "GPU"
+      }
+    },
+    "seed": 7,
+    "metrics": {
+      "urgent_p95_ms": 6.9e-05,
+      "urgent_deadline_violation": 0.0,
+      "normal_mean_ms": 6e-05,
+      "normal_timely": 1.0,
+      "completion": 1.0,
+      "makespan_s": 1.4e-07,
+      "throughput": 14285714.285714285,
+      "planned": 2,
+      "arrived": 2,
+      "urgent_n": 1,
+      "normal_n": 1,
+      "response_ready": 2,
+      "unfinished": 0,
+      "not_arrived": 0,
+      "late_success": 0
+    },
+    "ledger": [
+      {
+        "id": "a",
+        "task": "classification",
+        "priority": "normal",
+        "ordinal": 0,
+        "arrival_ns": 0,
+        "deadline_offset_ns": 1000,
+        "status": "succeeded",
+        "queue_entry_ns": 0,
+        "backend": "CPU",
+        "decision_start_ns": 0.0,
+        "decision_end_ns": 0.0,
+        "record_end_ns": 0.0,
+        "dispatch_ns": 0,
+        "source_request_id": "classification_CPU_normal-2",
+        "execution_start_ns": 10,
+        "output_ready_ns": 30,
+        "persist_complete_ns": 60,
+        "response_ns": 60,
+        "late_success": false,
+        "worker_release_ns": 64,
+        "lane_available_ns": 70
+      },
+      {
+        "id": "u",
+        "task": "classification",
+        "priority": "urgent",
+        "ordinal": 1,
+        "arrival_ns": 31,
+        "deadline_offset_ns": 1000,
+        "status": "succeeded",
+        "queue_entry_ns": 31,
+        "backend": "CPU",
+        "decision_start_ns": 70.0,
+        "decision_end_ns": 70.0,
+        "record_end_ns": 70.0,
+        "dispatch_ns": 70,
+        "source_request_id": "classification_CPU_urgent-3",
+        "execution_start_ns": 80,
+        "output_ready_ns": 100,
+        "response_ns": 69,
+        "late_success": false,
+        "persist_complete_ns": 130,
+        "worker_release_ns": 134,
+        "lane_available_ns": 140
+      }
+    ],
+    "decisions": [
+      {
+        "now_ns": 0.0,
+        "queue": [
+          {
+            "id": "a",
+            "task": "classification",
+            "priority": "normal",
+            "ordinal": 0,
+            "arrival_ns": 0,
+            "deadline_offset_ns": 1000
+          }
+        ],
+        "lanes": {
+          "CPU": {
+            "request": null,
+            "phase": "AVAILABLE",
+            "since": 0.0,
+            "dispatch": null
+          },
+          "GPU": {
+            "request": null,
+            "phase": "AVAILABLE",
+            "since": 0.0,
+            "dispatch": null
+          }
+        },
+        "residuals": {
+          "CPU": {
+            "state": "AVAILABLE",
+            "ns": 0
+          },
+          "GPU": {
+            "state": "AVAILABLE",
+            "ns": 0
+          }
+        },
+        "candidates": [
+          {
+            "request_id": "a",
+            "backend": "CPU",
+            "score_ns": 60.0,
+            "reply_ns": 60.0,
+            "wait_ns": 0,
+            "assumed_pair_cost_ns": 0,
+            "available": true
+          }
+        ],
+        "selected": {
+          "request_id": "a",
+          "backend": "CPU"
+        },
+        "reason": "minimum_predicted_cost"
+      },
+      {
+        "now_ns": 31.0,
+        "queue": [
+          {
+            "id": "u",
+            "task": "classification",
+            "priority": "urgent",
+            "ordinal": 1,
+            "arrival_ns": 31,
+            "deadline_offset_ns": 1000
+          }
+        ],
+        "lanes": {
+          "CPU": {
+            "request": {
+              "id": "a",
+              "task": "classification",
+              "priority": "normal",
+              "ordinal": 0,
+              "arrival_ns": 0,
+              "deadline_offset_ns": 1000
+            },
+            "phase": "OUTPUT_READY",
+            "since": 30.0,
+            "dispatch": 0.0
+          },
+          "GPU": {
+            "request": null,
+            "phase": "AVAILABLE",
+            "since": 31.0,
+            "dispatch": null
+          }
+        },
+        "residuals": {
+          "CPU": {
+            "state": "ESTIMATED_POINT",
+            "ns": 39.0
+          },
+          "GPU": {
+            "state": "AVAILABLE",
+            "ns": 0
+          }
+        },
+        "candidates": [],
+        "selected": null,
+        "reason": "busy_or_preferred_lane"
+      },
+      {
+        "now_ns": 60.0,
+        "queue": [
+          {
+            "id": "u",
+            "task": "classification",
+            "priority": "urgent",
+            "ordinal": 1,
+            "arrival_ns": 31,
+            "deadline_offset_ns": 1000
+          }
+        ],
+        "lanes": {
+          "CPU": {
+            "request": {
+              "id": "a",
+              "task": "classification",
+              "priority": "normal",
+              "ordinal": 0,
+              "arrival_ns": 0,
+              "deadline_offset_ns": 1000
+            },
+            "phase": "PERSISTED",
+            "since": 60.0,
+            "dispatch": 0.0
+          },
+          "GPU": {
+            "request": null,
+            "phase": "AVAILABLE",
+            "since": 60.0,
+            "dispatch": null
+          }
+        },
+        "residuals": {
+          "CPU": {
+            "state": "ESTIMATED_POINT",
+            "ns": 10.0
+          },
+          "GPU": {
+            "state": "AVAILABLE",
+            "ns": 0
+          }
+        },
+        "candidates": [],
+        "selected": null,
+        "reason": "busy_or_preferred_lane"
+      },
+      {
+        "now_ns": 64.0,
+        "queue": [
+          {
+            "id": "u",
+            "task": "classification",
+            "priority": "urgent",
+            "ordinal": 1,
+            "arrival_ns": 31,
+            "deadline_offset_ns": 1000
+          }
+        ],
+        "lanes": {
+          "CPU": {
+            "request": {
+              "id": "a",
+              "task": "classification",
+              "priority": "normal",
+              "ordinal": 0,
+              "arrival_ns": 0,
+              "deadline_offset_ns": 1000
+            },
+            "phase": "WORKER_RELEASED",
+            "since": 64.0,
+            "dispatch": 0.0
+          },
+          "GPU": {
+            "request": null,
+            "phase": "AVAILABLE",
+            "since": 64.0,
+            "dispatch": null
+          }
+        },
+        "residuals": {
+          "CPU": {
+            "state": "ESTIMATED_POINT",
+            "ns": 6.0
+          },
+          "GPU": {
+            "state": "AVAILABLE",
+            "ns": 0
+          }
+        },
+        "candidates": [],
+        "selected": null,
+        "reason": "busy_or_preferred_lane"
+      },
+      {
+        "now_ns": 70.0,
+        "queue": [
+          {
+            "id": "u",
+            "task": "classification",
+            "priority": "urgent",
+            "ordinal": 1,
+            "arrival_ns": 31,
+            "deadline_offset_ns": 1000
+          }
+        ],
+        "lanes": {
+          "CPU": {
+            "request": null,
+            "phase": "AVAILABLE",
+            "since": 70.0,
+            "dispatch": null
+          },
+          "GPU": {
+            "request": null,
+            "phase": "AVAILABLE",
+            "since": 70.0,
+            "dispatch": null
+          }
+        },
+        "residuals": {
+          "CPU": {
+            "state": "AVAILABLE",
+            "ns": 0
+          },
+          "GPU": {
+            "state": "AVAILABLE",
+            "ns": 0
+          }
+        },
+        "candidates": [
+          {
+            "request_id": "u",
+            "backend": "CPU",
+            "score_ns": 30.0,
+            "reply_ns": 30.0,
+            "wait_ns": 0,
+            "assumed_pair_cost_ns": 0,
+            "available": true
+          }
+        ],
+        "selected": {
+          "request_id": "u",
+          "backend": "CPU"
+        },
+        "reason": "minimum_predicted_cost"
+      }
+    ],
+    "transitions": [
+      {
+        "at_ns": 10,
+        "request_id": "a",
+        "backend": "CPU",
+        "event": "execution_start_ns"
+      },
+      {
+        "at_ns": 30,
+        "request_id": "a",
+        "backend": "CPU",
+        "event": "output_ready_ns"
+      },
+      {
+        "at_ns": 60,
+        "request_id": "a",
+        "backend": "CPU",
+        "event": "persist_complete_ns"
+      },
+      {
+        "at_ns": 64,
+        "request_id": "a",
+        "backend": "CPU",
+        "event": "worker_release_ns"
+      },
+      {
+        "at_ns": 70,
+        "request_id": "a",
+        "backend": "CPU",
+        "event": "lane_available_ns"
+      },
+      {
+        "at_ns": 80,
+        "request_id": "u",
+        "backend": "CPU",
+        "event": "execution_start_ns"
+      },
+      {
+        "at_ns": 100,
+        "request_id": "u",
+        "backend": "CPU",
+        "event": "output_ready_ns"
+      },
+      {
+        "at_ns": 130,
+        "request_id": "u",
+        "backend": "CPU",
+        "event": "persist_complete_ns"
+      },
+      {
+        "at_ns": 134,
+        "request_id": "u",
+        "backend": "CPU",
+        "event": "worker_release_ns"
+      },
+      {
+        "at_ns": 140,
+        "request_id": "u",
+        "backend": "CPU",
+        "event": "lane_available_ns"
+      }
+    ],
+    "experiment_ready": false,
+    "evidence": "model-conditional exploration; no device performance PASS",
+    "unsupported": [
+      "stochastic failures/rejection/expiry",
+      "thermal/energy",
+      "unmeasured overlap causal model"
+    ],
+    "policy_information": "arrived tickets, observable phases, fixed development point estimates only"
+  },
+  "energy_thermal": {
+    "version": "energy-thermal-pc-v1",
+    "mode": "assumption_exploration",
+    "source": "hand-check fixture; not empirical coefficients",
+    "unit_status": "synthetic W",
+    "energy_j": 8.2e-07,
+    "temperature": {
+      "SKIN": 20.000000279999995
+    },
+    "peak_temperature": {
+      "SKIN": 20.000000280000002
+    },
+    "common_window_s": 4e-07,
+    "planned": 2,
+    "completed": 2,
+    "reference_temperature": {
+      "SKIN": 20
+    },
+    "degree_seconds_above_reference": {
+      "SKIN": 3.5516645279027954e-14
+    },
+    "unfinished": 0,
+    "eligible_for_equal_work_comparison": false,
+    "optimization_pass": false,
+    "experiment_ready": false,
+    "trace": [
+      {
+        "start_s": 0.0,
+        "end_s": 1e-08,
+        "state": "classification:CPU:normal:prepare",
+        "waiting": 0,
+        "temperature_start": {
+          "SKIN": 20
+        },
+        "temperature_end": {
+          "SKIN": 20.000000019999998
+        },
+        "cumulative_energy_j": 4e-08
+      },
+      {
+        "start_s": 1e-08,
+        "end_s": 3e-08,
+        "state": "classification:CPU:normal:execute",
+        "waiting": 0,
+        "temperature_start": {
+          "SKIN": 20.000000019999998
+        },
+        "temperature_end": {
+          "SKIN": 20.000000059999998
+        },
+        "cumulative_energy_j": 1.2e-07
+      },
+      {
+        "start_s": 3e-08,
+        "end_s": 3.1e-08,
+        "state": "classification:CPU:normal:store",
+        "waiting": 0,
+        "temperature_start": {
+          "SKIN": 20.000000059999998
+        },
+        "temperature_end": {
+          "SKIN": 20.000000061999998
+        },
+        "cumulative_energy_j": 1.24e-07
+      },
+      {
+        "start_s": 3.1e-08,
+        "end_s": 6e-08,
+        "state": "classification:CPU:normal:store",
+        "waiting": 1,
+        "temperature_start": {
+          "SKIN": 20.000000061999998
+        },
+        "temperature_end": {
+          "SKIN": 20.00000012
+        },
+        "cumulative_energy_j": 2.4e-07
+      },
+      {
+        "start_s": 6e-08,
+        "end_s": 6.4e-08,
+        "state": "classification:CPU:normal:worker_release",
+        "waiting": 1,
+        "temperature_start": {
+          "SKIN": 20.00000012
+        },
+        "temperature_end": {
+          "SKIN": 20.000000128
+        },
+        "cumulative_energy_j": 2.56e-07
+      },
+      {
+        "start_s": 6.4e-08,
+        "end_s": 7e-08,
+        "state": "classification:CPU:normal:callback",
+        "waiting": 1,
+        "temperature_start": {
+          "SKIN": 20.000000128
+        },
+        "temperature_end": {
+          "SKIN": 20.00000014
+        },
+        "cumulative_energy_j": 2.8e-07
+      },
+      {
+        "start_s": 7e-08,
+        "end_s": 8e-08,
+        "state": "classification:CPU:urgent:prepare",
+        "waiting": 0,
+        "temperature_start": {
+          "SKIN": 20.00000014
+        },
+        "temperature_end": {
+          "SKIN": 20.00000016
+        },
+        "cumulative_energy_j": 3.2e-07
+      },
+      {
+        "start_s": 8e-08,
+        "end_s": 1e-07,
+        "state": "classification:CPU:urgent:execute",
+        "waiting": 0,
+        "temperature_start": {
+          "SKIN": 20.00000016
+        },
+        "temperature_end": {
+          "SKIN": 20.0000002
+        },
+        "cumulative_energy_j": 4e-07
+      },
+      {
+        "start_s": 1e-07,
+        "end_s": 1.3e-07,
+        "state": "classification:CPU:urgent:store",
+        "waiting": 0,
+        "temperature_start": {
+          "SKIN": 20.0000002
+        },
+        "temperature_end": {
+          "SKIN": 20.00000026
+        },
+        "cumulative_energy_j": 5.2e-07
+      },
+      {
+        "start_s": 1.3e-07,
+        "end_s": 1.34e-07,
+        "state": "classification:CPU:urgent:worker_release",
+        "waiting": 0,
+        "temperature_start": {
+          "SKIN": 20.00000026
+        },
+        "temperature_end": {
+          "SKIN": 20.000000268
+        },
+        "cumulative_energy_j": 5.36e-07
+      },
+      {
+        "start_s": 1.34e-07,
+        "end_s": 1.4e-07,
+        "state": "classification:CPU:urgent:callback",
+        "waiting": 0,
+        "temperature_start": {
+          "SKIN": 20.000000268
+        },
+        "temperature_end": {
+          "SKIN": 20.000000280000002
+        },
+        "cumulative_energy_j": 5.6e-07
+      },
+      {
+        "start_s": 1.4e-07,
+        "end_s": 4e-07,
+        "state": "idle",
+        "waiting": 0,
+        "temperature_start": {
+          "SKIN": 20.000000280000002
+        },
+        "temperature_end": {
+          "SKIN": 20.000000279999995
+        },
+        "cumulative_energy_j": 8.2e-07
+      }
+    ],
+    "thermal_driver": "state-based; energy scale uncertainty does not numerically drive this model",
+    "evidence": "explicit_assumptions"
+  },
+  "hand_expected_energy_j": 8.2e-07,
+  "assumptions": {
+    "version": "energy-thermal-pc-v1",
+    "device": "synthetic",
+    "model": "synthetic-two-model",
+    "sensors": [
+      "SKIN"
+    ],
+    "evidence": "explicit_assumptions",
+    "unit_status": "synthetic W",
+    "states": {
+      "classification:CPU:normal:prepare": {
+        "power_w": 4,
+        "thermal": {
+          "SKIN": {
+            "equilibrium_c": 40,
+            "tau_s": 10
+          }
+        }
+      },
+      "classification:CPU:normal:execute": {
+        "power_w": 4,
+        "thermal": {
+          "SKIN": {
+            "equilibrium_c": 40,
+            "tau_s": 10
+          }
+        }
+      },
+      "classification:CPU:normal:store": {
+        "power_w": 4,
+        "thermal": {
+          "SKIN": {
+            "equilibrium_c": 40,
+            "tau_s": 10
+          }
+        }
+      },
+      "classification:CPU:normal:worker_release": {
+        "power_w": 4,
+        "thermal": {
+          "SKIN": {
+            "equilibrium_c": 40,
+            "tau_s": 10
+          }
+        }
+      },
+      "classification:CPU:normal:callback": {
+        "power_w": 4,
+        "thermal": {
+          "SKIN": {
+            "equilibrium_c": 40,
+            "tau_s": 10
+          }
+        }
+      },
+      "classification:CPU:urgent:prepare": {
+        "power_w": 4,
+        "thermal": {
+          "SKIN": {
+            "equilibrium_c": 40,
+            "tau_s": 10
+          }
+        }
+      },
+      "classification:CPU:urgent:execute": {
+        "power_w": 4,
+        "thermal": {
+          "SKIN": {
+            "equilibrium_c": 40,
+            "tau_s": 10
+          }
+        }
+      },
+      "classification:CPU:urgent:store": {
+        "power_w": 4,
+        "thermal": {
+          "SKIN": {
+            "equilibrium_c": 40,
+            "tau_s": 10
+          }
+        }
+      },
+      "classification:CPU:urgent:worker_release": {
+        "power_w": 4,
+        "thermal": {
+          "SKIN": {
+            "equilibrium_c": 40,
+            "tau_s": 10
+          }
+        }
+      },
+      "classification:CPU:urgent:callback": {
+        "power_w": 4,
+        "thermal": {
+          "SKIN": {
+            "equilibrium_c": 40,
+            "tau_s": 10
+          }
+        }
+      },
+      "idle": {
+        "power_w": 1,
+        "thermal": {
+          "SKIN": {
+            "equilibrium_c": 20,
+            "tau_s": 10
+          }
+        }
+      }
+    },
+    "source": "hand-check fixture; not empirical coefficients"
+  },
+  "legacy_output_unchanged": true
+}
