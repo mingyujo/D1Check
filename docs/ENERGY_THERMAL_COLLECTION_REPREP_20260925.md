@@ -1,5 +1,7 @@
 # ENERGY-THERMAL-COLLECTION-REPREP-03 — 직렬/병행 수집 재준비
 
+> 이후 실행 결과: 사용자 승인 후 [COLLECT-03 첫 세션 sampler 예외 중단](ENERGY_THERMAL_COLLECT03_RESULTS_20260925.md). plan_v5/run_v3는 소비·종료 상태다. 아래 미승인/미실행 문구는 준비 당시 이력이며 실행 스크립트 재사용 금지.
+
 2026-09-25, 시작 `bfd8594988cad107c50a6cb9ed0d58c5249d7047`, 작업 브랜치 `feature/arrival-scheduling-20260923`, 시작 clean. 기존 수집 프로세스 없음과 COLLECT-02 registry의 stopped 상태를 확인했다. 이번 작업은 PC 준비만이며 **새 계획은 미승인·미실행**이다. 기존 계획을 재개하지 않는다.
 
 ## 확인·변경

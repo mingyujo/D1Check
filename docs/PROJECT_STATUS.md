@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-09-25 ENERGY-THERMAL-COLLECT-03 — sampler 예외로 중단·재개 금지
+
+- 시작ffe2d32/clean, 승인된 plan_v5 실행1회. [결과·재현](ENERGY_THERMAL_COLLECT03_RESULTS_20260925.md). 동일설치본 확인으로 전송/설치0. 개발1시도/0완료/1실패/3미시도, 확인4미시도. runtime4/warmup8/적격성2·작업645시작644해제, host inference654시작/성공 기록. 원 receipt 보수적 불확실성 상한 보존.
+- 앱 sampler `NoSuchElementException`→stop. 화면23/23성공(최대0.719초), 화면timeout 아님. ConcurrentHashMap snapshot 변환 경쟁은 코드상 후보이며 stack 부재로 정확한 행 미확정. app_cleanup 기록은 있으나 failed, hostcleanup/프로세스부재 확인. claim→마지막cleanup279.631초, retry0/stopped_no_resume.
+- 부분 baseline139.089J/부하prefix191.764J(추가74.340J)는 조건부mA·미완료 관측. 동일작업량/480초/냉각/병행 비교 불가, 동결/확인 없음. 기존 FAIL/원본/40값/20null/experiment_ready=false 유지.
+- 다음: (1) PC snapshot 경쟁 재현·stack 보존 검토, (2) 근거 있는 최소 수정·관련 검증. 추가 실측/새 계획 자동실행 없음. 근거 외부 run_v3·analysis_v3·registry stopped. 아래는 이전 이력이다.
+
 ## 2026-09-25 ENERGY-THERMAL-COLLECTION-REPREP-03 — PC 준비 완료·실행 승인 대기
 
 - 시작bfd8594/clean. [새 계약·명령](ENERGY_THERMAL_COLLECTION_REPREP_20260925.md). 실제 수집기와 진단의 공통 화면필터 연결/bytes 경계 확인. 실제 원문 fixture6사례와 관련24테스트·서명APK 재사용·새 plan_v5/Check 통과. Android/빌드/ADB/실측/설정변경0.

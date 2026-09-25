@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-09-25 — COLLECT-03 계약상 중단과 부분 자료 보존
+
+사용자가 plan_v5 8세션/6976진단/64warmup/7040추론/220분을 승인했다. 실제 설치 생략·첫 개발 세션 sampler 예외로 stopped_no_resume 종료. [결과](ENERGY_THERMAL_COLLECT03_RESULTS_20260925.md). 개발 적격0이므로 동결/확인 및 병행 비교를 수행하지 않았다. 원 receipt·미확인 범위·기존 증거와 experiment_ready=false를 유지하며, 추가 실측 대신 PC 예외 경로 확인을 권고한다.
+
+
 ## 2026-09-25 — 에너지 수집 재준비의 관측 일관성
 
 사용자 승인 범위는 PC 재준비·Git 공유다. [COLLECT-03 후보](ENERGY_THERMAL_COLLECTION_REPREP_20260925.md)에 새 식별자/출력/registry와 모든 새 개발·확인의 동일 필터 관측을 고정했다. 기존 APK·비교 설계·동결/판독 기준·timeout/중단 규칙은 유지한다. 옛 중단자료는 새 표본에서 제외한다. 무추론32조회 이후 관행적인 추가 진단을 만들지 않되 부하 중 안정성을 선언하지 않는다. 새 수집은 별도 실행 승인과 현재 gate가 필요하며 experiment_ready=false다.

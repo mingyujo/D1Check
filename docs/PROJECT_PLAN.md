@@ -1,5 +1,7 @@
 # D1Check 프로젝트 실행계획
 
+> 2026-09-25 [COLLECT-03 결과](ENERGY_THERMAL_COLLECT03_RESULTS_20260925.md): 승인 실행 후 첫 개발 세션 sampler NoSuchElementException으로 중단했다. 화면조회23회 성공과 부하중 장기 안정성은 구분한다. 동결/확인/직렬병행 비교 미완료, 새 실측 없이 PC snapshot 실패경로 검토가 다음 단계다. 기존 모든 판정·experiment_ready=false 유지.
+
 > 2026-09-25 [에너지 직렬/병행 수집 재준비](ENERGY_THERMAL_COLLECTION_REPREP_20260925.md) PC 완료. 새 COLLECT-03 후보만 준비했고 실행 미승인이다. 개발/확인 모두 같은 축소 관측 경로, 기존 중단자료 제외, 비교군·작업량·기준·220분 상한 불변. 현재 기기 gate/부하 안정성 미확인. 발열·배터리 필수 목표와 experiment_ready=false 및 모든 과거 증거를 유지한다.
 
 > 2026-09-25 [무추론 화면진단02](ENERGY_SCREEN_OBSERVE_02_20260925.md)32회 성공. 필터기기동작만 확인했으며 부하중안정성·에너지/열보정은 미검증이다. 다음은 새로운 관측방식으로 에너지수집을 재준비할 조건의 PC 검토이고 전체8세션 자동실행은 없다. 기존 목적·증거·experiment_ready=false 유지.
