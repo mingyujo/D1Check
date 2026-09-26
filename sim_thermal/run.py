@@ -55,6 +55,7 @@ class Jo:
         from tools import d1_arrival_timing_dev as legacy
         self.engine, self.batch, self.thermal = engine, batch, thermal
         self.config, self.vectors = synthetic_bundle.build(c, legacy)
+        self.bundle_modules = (c, legacy)
 
 
 def select_b2(jo):

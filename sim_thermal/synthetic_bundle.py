@@ -36,13 +36,16 @@ def ns(ms):
     return int(round(ms * MS))
 
 
-def build(c, legacy):
-    """c = his d1_cal03_connection, legacy = his d1_arrival_timing_dev."""
-    a = ARBITRARY_MS
+def build(c, legacy, scale=1.0):
+    """c = his d1_cal03_connection, legacy = his d1_arrival_timing_dev.
+
+    scale multiplies every interval (sensitivity of load duration to the arbitrary values); 1.0 = as before.
+    """
+    a = {k: v * scale for k, v in ARBITRARY_MS.items()}
     cells, vectors = {}, {}
     for key in sorted(c.CELLS):
         priority = key.rsplit('_', 1)[1]
-        so = S_TO_O_MS[key]
+        so = S_TO_O_MS[key] * scale
         pl = a['persist_to_worker'] + a['worker_to_lane']
         phase_ms = dict(zip(legacy.ALL_FIELDS, (a['decision_to_dispatch'], a['dispatch_to_start'], so,
                                                  a['output_ready_to_persist'], pl)))

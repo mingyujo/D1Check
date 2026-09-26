@@ -85,14 +85,14 @@ def exceedance(trace, states, sensor, limit):
     return above, entries
 
 
-def evaluate(result, requests, p, thermal_module, limits):
+def evaluate(result, requests, p, thermal_module, limits, horizon_ns=HORIZON_NS):
     """His KPIs pass through unchanged; thermal/energy added, or None when the ledger is incomplete."""
     out = dict(metrics=result['metrics'])
     ledger = result['ledger']
     if any(r.get('status') != 'succeeded' for r in ledger):
         out.update(thermal=None, reason='incomplete ledger: open occupancy is not idle (his rule)')
         return out
-    segments = thermal_module.ledger_segments(result, HORIZON_NS)
+    segments = thermal_module.ledger_segments(result, horizon_ns)
     prof = profile(segments, p, thermal_module)
     acc = thermal_module.account(segments, prof, device='SYNTHETIC', model='SYNTHETIC',
                                  mode='assumption_exploration', initial_temperature=dict(p['t_init']),
