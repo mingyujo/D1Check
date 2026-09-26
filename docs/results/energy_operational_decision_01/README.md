@@ -18,6 +18,6 @@ python -m tools.d1_energy_operational_decision decompose --profile $profile --ev
 python -m tools.d1_energy_operational_decision decide --profile $profile --evaluation $evaluation --query $query --output "$out/decision_no_service_limits.json"
 ```
 
-새 서비스 한도를 검토하려면 예시 query를 **복사한 뒤** `max_work_completion_s`, `max_load_ap_peak_c`를 해당 실제 요구에 맞춰 기입한다. 두 확인 arm에 공통으로 기록된 초기 AP 29.1°C만 허용하며 새 온라인 상황의 자동 선택은 아니다. 부하 시작 기준 완료·AP 센서·공통480초 조건부 J 이외의 지표는 지원하지 않는다. 단일 확인오차 민감도는 통계적 보장이 아니다.
+새 서비스 한도를 검토하려면 예시 query를 **복사한 뒤** `max_work_completion_s`, `max_load_ap_peak_c`를 해당 실제 요구에 맞춰 기입한다. 두 **확인** arm에 공통으로 기록된 초기 AP 29.1°C만 허용한다. 이는 확인 오차를 적용하는 **사후 예시 조건**이지 개발 기준, 사용자 시나리오, 물리적 지원 온도 범위 또는 새 온라인 상황의 자동 선택이 아니다. 개발 arm의 시작 AP는 29.4/29.2°C였으며 AP 경로의 시작값 평행 이동은 미검증 가정이다. 부하 시작 기준 완료·AP 센서·공통480초 조건부 J 이외의 지표는 지원하지 않는다. 단일 확인오차 민감도는 통계적 보장이 아니다. [후속 연구 질문·기준 검토](../../ENERGY_THERMAL_RESEARCH_SCOPE_20260926.md).
 
 2026-09-26 KST PC 검증 대상: 출발 HEAD `3106425755107a0a4781522cc5255574750d3642` + 새 코드 미커밋 변경. 새 unit 4건 통과, 저장된 확인 2세션에서 분해 항등식·40.774J 차이 대조 통과, 제약·범위 상태 분기 확인. 원본 실측·전체 배치·ADB·추론 재실행 0. 실기기 검증/PASS 없음.
