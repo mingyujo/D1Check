@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-09-26 ENERGY-OPERATIONAL-PAIR-01 — 4세션 운영 비교 완료
+
+- 출발 `9e9668b`/clean, 승인된 plan_v3 SHA `4d0bd250…0ed5` 1회 실행. [결과·한계·재현 명령](ENERGY_OPERATIONAL_PAIR_01_RESULTS_20260926.md), 공유 [세션 CSV](results/energy_operational_pair_01/sessions.csv), 외부 원본 `C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_operational_run_v1/FINAL_RECEIPT.json`. 동일 A24·서명/환경 gate 통과, APK 전송·설치 각1. registry `completed`, 재실행 금지.
+- 개발 직렬→병행2/2 완료, 개발 설정 SHA `1dc5766a…2881` 동결 후 확인 병행→직렬2/2 완료. 작업3,480·적격성16=진단3,496, warmup32, 총 명시적 추론3,528, runtime16, staging4·28파일. 실패/미완료0, 재시도0, 앱·host cleanup/프로세스 부재 확인. 전체3,847.922/8,640초.
+- 두 block에서 병행은 같은870건 완료가 약122~126초 빠르고 완료시점까지의 조건부 기기 전체 에너지는 낮았다. AP 최고온도는 +1.2/+1.9°C, 480초 공통창 에너지 방향은 개발 -36.255J/확인 +4.559J로 다르다. 조건당 개발1·확인1세션, 시작 열 상태·순서 교란, 전류 단위/절대 정확도와 전체 운영 에너지 공백 때문에 에너지 절감·정책 우월성·시뮬레이터 PASS는 아님. 확인값으로 재보정하지 않음.
+- 다음≤3: (1) 이 제한된 상충을 보고서에 반영하고 CC_DG 관측 trace만 조건부 PC 입력으로 사용, (2) 실제 서비스 제약·다른 병행/부하까지 주장하려면 별도 사전 계약과 독립 근거 판단, (3) 추가 실측/정책 튜닝은 새 승인 전 중단. 기존 FAIL·부분 결과·40값/20null·종료 계획·`experiment_ready=false`·S26/NPU 별도 협업 유지. 아래는 당시 이력이다.
+
 ## 2026-09-26 ENERGY-DESIGN-REVIEW-PC-01 — 중단 분석·별도 운영 후보 PC 준비
 
 - 시작3773f26/clean. [종합 보고서·선택지·예산·명령](ENERGY_DESIGN_REVIEW_20260926.md). COLLECT-04/05와 sampler5시도·온도 원문1064개를 제한 재생했다. 온도31.5/32.3°C 재현, COLLECT-05의98개 off-anchor 창·준비의 비대칭 확인. 주변/잔열 원인·평형·병행 본 부하 효과는 미확정. 구 계획은 모두 보존·재개 금지.
