@@ -1,0 +1,24 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>D1Check 정책 후보 선별 · PC 탐색</title>
+<style>
+:root{font-family:"Malgun Gothic",sans-serif;color:#183247;background:#edf3f7}*{box-sizing:border-box}body{margin:0}header{background:#17344b;color:white;padding:22px max(18px,calc((100% - 1200px)/2))}h1{margin:0 0 5px}header p{margin:0;color:#d4e8f1}main{max-width:1200px;margin:auto;padding:18px;display:grid;gap:15px}.panel{background:white;border:1px solid #d2dfe8;border-radius:10px;padding:17px}h2{margin:0 0 10px;font-size:19px}.note{background:#fff1d9;border-left:4px solid #c38a23;padding:10px;line-height:1.55}.filters{display:flex;gap:14px}label{display:grid;gap:4px}select{font:inherit;padding:7px;min-width:130px}.scroll{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{border-bottom:1px solid #dce6ed;padding:7px 8px;text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}th{background:#edf4f8}tr.frontier{background:#eaf7ec}small,.small{font-size:12px;line-height:1.55;color:#4a6070}a{color:#185d91}header a{color:#d4e8f1}
+</style></head><body>
+<header><h1>D1Check 정책 후보 선별</h1><p>기존 합성 도착 PC 결과의 사후 비지배 분석 · 실기기 정책 평가 아님</p><nav><a href="../arrival_diagnostic_02/diagnostic.html">간섭·에너지·AP 진단</a> · <a href="../arrival_visualization_01/dashboard.html">기존 시각화</a></nav></header>
+<main>
+<section class="panel"><div class="filters"><label>시나리오<select id="scenario"><option>low</option><option selected>queue</option><option>burst</option></select></label><label>실현 간섭 가정<select id="realized"><option>1</option><option selected>1.5</option><option>2</option></select></label></div><p class="note">각 행은 같은 trace·seed 201–205·실현 간섭·공통 모델 비용의 비교입니다. P 예상 간섭은 기존 1.5로 고정했습니다. 녹색은 다섯 응답·완료 지표의 <b>5 seed 평균 비지배</b>이며 배포 정책 선정이나 모든 seed 우세를 뜻하지 않습니다. 기한 1.5/6초는 연구용 요청별 설정입니다.</p><p id="summary"></p></section>
+<section class="panel"><h2>시나리오별 정책 비교</h2><div id="table" class="scroll"></div><p class="small">긴급 P95는 완료 긴급 6건의 seed별 nearest-rank를 먼저 구한 뒤 5 seed 평균입니다. 일반 응답도 seed별 완료 18건의 평균을 먼저 구했습니다. 기한 위반은 예정 긴급 30건·일반 90건, 미완료는 예정 전체 120건 분모입니다. 실패·거절 경로는 이 PC vector에 없습니다. 응답 수치의 최소~최대는 seed별 값이며 통계적 신뢰구간이 아닙니다.</p></section>
+<section class="panel"><h2>후보 선정 근거</h2><div id="rationale"></div><p class="small">전체 시나리오에 정책 하나를 사후 선택하지 않습니다. B2는 개발 단계에 고정한 분류 GPU＋탐지 CPU 배정이며 여기서 재선정하지 않았습니다. FIXED_SPLIT은 긴급 응답 극단의 대조로 유지하지만 일반 서비스 손실이 큽니다. 현재 P는 전력·AP를 결정식에 사용하지 않으며 재현용으로 보존합니다. 일부 비지배 조건만으로 P 튜닝·실기기 우월성을 정당화하지 않습니다.</p></section>
+<section class="panel"><h2>에너지·AP의 별도 근거</h2><p>같은 120초 창의 <a href="../arrival_diagnostic_02/energy_boundaries.csv">전력 가정별 P 대 기준 정책의 J 차이·역전 경계</a>는 미측정 idle·단독·병행 전력에 좌우됩니다. <a href="../arrival_diagnostic_02/ap_sensitivity.csv">AP 가정 민감도</a>는 P 대 B3만 계산했습니다. 다른 정책 쌍의 AP 우열, 배터리 온도, 실기기 절감은 계산 불가입니다. 고정 870건 CC_DG 측정값은 이 합성 도착의 상태별 계수가 아닙니다.</p><p><a href="../arrival_diagnostic_02/energy_power_lines.png">P−B3 에너지 가정 그림</a> · <a href="../arrival_diagnostic_02/ap_stress.png">P−B3 AP 가정 그림</a> · <a href="policy_screen.csv">이 표의 CSV</a> · <a href="SOURCE_HASHES.json">입력 SHA-256</a></p></section>
+</main><script>/*__ROWS__*/</script><script>
+const $=id=>document.getElementById(id);
+const N={CPU_URGENT:'CPU 긴급우선',FIXED_SPLIT:'고정 분리',B2_PC:'B2',B3_SOLO_EFT_PC:'B3',P_PAIR_COST_PC:'P'};
+function render(){const s=$('scenario').value,r=Number($('realized').value),rows=ROWS.filter(x=>x.scenario===s&&x.realized===r);
+const f=(x,d=1)=>Number(x).toFixed(d),names=rows.filter(x=>x.mean_frontier).map(x=>N[x.policy]);
+$('summary').textContent=`${s} / 실현 간섭 ${r} · 비지배 평균: ${names.join(', ')}. 완료·실패 분모 및 seed별 차이는 아래에 표시합니다.`;
+let html='<table><thead><tr><th>정책</th><th>긴급 P95 평균 [seed 범위] ms</th><th>긴급 위반/30</th><th>일반 평균응답 [seed 범위] ms</th><th>일반 위반/90</th><th>미완료/120</th><th>비지배 seed/5</th><th>평균 지배 정책</th></tr></thead><tbody>';
+for(const x of rows){html+=`<tr class="${x.mean_frontier?'frontier':''}"><td>${N[x.policy]}</td><td>${f(x.urgent_p95_mean_ms)} [${f(x.urgent_p95_min_ms)}, ${f(x.urgent_p95_max_ms)}]</td><td>${x.urgent_miss_count}/30</td><td>${f(x.normal_mean_response_ms)} [${f(x.normal_response_min_ms)}, ${f(x.normal_response_max_ms)}]</td><td>${x.normal_miss_count}/90</td><td>${x.unfinished}/120</td><td>${x.nondominated_seeds}/5</td><td>${x.dominated_by?x.dominated_by.split(';').map(p=>N[p]).join(', '):'—'}</td></tr>`}
+$('table').innerHTML=html+'</tbody></table>';
+$('rationale').textContent=s==='low'?'low는 CPU 긴급우선·B3·P가 응답 지표에서 동률입니다. 이 동률을 정책 효과로 해석할 수 없습니다.':s==='queue'&&r===1.5?'queue/1.5에서는 B2·B3·고정 분리·P가 서로 다른 긴급/일반 상충을 보입니다. P는 일부 긴급 이득과 일반 손실이 함께 있으므로 단독 승자가 아닙니다.':r===2?'높은 간섭에서는 B2·CPU 긴급우선·고정 분리가 평균 비지배입니다. P는 서비스 측면에서 지배되지만 전력·AP 미측정 때문에 모든 목적에서 열등하다는 뜻은 아닙니다.':'B2·B3·고정 분리가 서로 다른 긴급/일반 상충을 보입니다. P는 응답 지표에서 B3에 지배됩니다.';
+}
+for(const id of ['scenario','realized'])$(id).addEventListener('change',render);render();
+</script></body></html>

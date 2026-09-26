@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ARRIVAL-POLICY-SCREEN-PC-01 — 기존 결과의 후보 선별
+
+- [한국어 판독·지원 범위·다음 행동](ARRIVAL_POLICY_CANDIDATE_SCREEN_20260927.md), [오프라인 정책 비교표·45행 CSV](results/arrival_policy_screen_01/README.md). 기존 low/queue/burst × 평가 seed 5 × 실현 간섭 3의 동일 입력만 재집계했다. 핵심 후속 비교는 B2·B3·CPU 긴급우선, 고정 분리는 긴급 응답 극단 대조로 유지한다. 현재 P는 queue/1.5의 평균 비지배가 seed 2/5에만 유지되어 재현용으로 보존하고 튜닝·확대를 우선하지 않는다. 미보정 에너지/AP는 별도 가정 층이며 실기기 우열은 미판정이다. `python -m unittest tools.test_d1_arrival_policy_screen -v` 3건 통과; ADB·실측·기존 전체 배치 0.
+- 다음≤3: (1) B2·B3·CPU의 실제 선택을 바꿀 idle·단독·B2 방향 병행의 기기 전체 전력/AP 관측 필요성을 공통창·지원 조합 기준으로 좁히기, (2) Android active 배정/독립 확인은 별도 승인된 계획에서만 검증. 기존 FAIL·원자료·동결값·종료 계획·`experiment_ready=false` 유지.
+
 ## 2026-09-27 ARRIVAL-INTERFERENCE-ENERGY-DIAG-PC-02 — 예상/실현 간섭·에너지/AP 경계
 
 - [한국어 판독·가정·다음 조건](ARRIVAL_INTERFERENCE_ENERGY_DIAGNOSTIC_20260927.md), [오프라인 진단 탭·CSV/PNG/SVG·재현](results/arrival_diagnostic_02/README.md). 기존 동결 엔진/seed·B2를 유지하고 low/queue/burst의 explore PC 315조합만 별도 실행했다. 실현 간섭2.0에 P 예상도2.0으로 맞춰도 queue 긴급 P95 평균 +150.36ms/일반 +443.00ms, burst +2213.56/+661.57ms(B3 대비) 손실이 남는다. queue 대표 trace에서 비어 있는 GPU 대신 바쁜 CPU를 우선해 기다린다. 간섭1.0 일치에서는 P/B3 동일; 완벽 정보는 진단 가정이다.
