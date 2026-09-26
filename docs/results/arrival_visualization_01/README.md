@@ -2,6 +2,8 @@
 
 [대시보드](dashboard.html)는 파일을 바로 열면 된다. 서버·CDN·네트워크 요청이 없다. 기본 화면은 사전 대표 `queue / explore / CPU_URGENT`다. low·queue·burst, 8정책, strict·explore profile을 바꿔 볼 수 있다. 여기서 `profile`은 **PC 시간/병행 가정**이며 임의 도착의 측정된 전력·열 profile이 아니다.
 
+[별도 진단 탭](../arrival_diagnostic_02/diagnostic.html)은 예상/실현 간섭의 교차와 seed별 에너지/AP 경계를 보여준다. 기존 대시보드의 지표·동결 결과는 그대로다.
+
 **2026-09-27 확장:** 에너지·열 스트레스 가정 선택을 추가했다. 기본값은 여전히 `계산 불가`이고, 선택한 경우만 대표 seed201 일정의 사후 가정 회계를 표시한다. [판독·계수 적용 위치·한계](../../ARRIVAL_ENERGY_SENSITIVITY_PC_20260927.md). 기존 시간 CSV와 고정 870건 실측/모형 그림은 보존한다.
 
 | 그림 | PNG / SVG | 숫자 CSV | 근거 경계 |

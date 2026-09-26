@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ARRIVAL-INTERFERENCE-ENERGY-DIAG-PC-02 — 예상/실현 간섭·에너지/AP 경계
+
+- [한국어 판독·가정·다음 조건](ARRIVAL_INTERFERENCE_ENERGY_DIAGNOSTIC_20260927.md), [오프라인 진단 탭·CSV/PNG/SVG·재현](results/arrival_diagnostic_02/README.md). 기존 동결 엔진/seed·B2를 유지하고 low/queue/burst의 explore PC 315조합만 별도 실행했다. 실현 간섭2.0에 P 예상도2.0으로 맞춰도 queue 긴급 P95 평균 +150.36ms/일반 +443.00ms, burst +2213.56/+661.57ms(B3 대비) 손실이 남는다. queue 대표 trace에서 비어 있는 GPU 대신 바쁜 CPU를 우선해 기다린다. 간섭1.0 일치에서는 P/B3 동일; 완벽 정보는 진단 가정이다.
+- 사후 공통120초 에너지는 상태별 전력의 선형식이며 queue/실현1.5의 P−B3 병행 전력 동률점은 seed별2.151–3.479W(임의 스트레스 값; 물리 범위 아님). AP 최고 차이도 가정 pair 평형30/42°C에 따라 방향이 바뀐다. 일부 차이는 1% 미만이고 seed 방향도 달라 절감·열 제약·정책 PASS 없음. 기존 고정870건·MobileNet 계수 미전용, 열 피드백/실기기 표본0. 관련 PC/Chrome 검증 통과.
+- 다음≤3: (1) 연구용 응답/기한 제약과 공통창 에너지의 선택 규칙을 명시하여 P/B3가 실제 경쟁 후보인지 판단, (2) 그때 에너지 부호가 선택을 바꾸면 idle·단독·병행 기기 전체 전력의 최소 계측 여부 결정, (3) AP 한도를 선택에 쓰는 경우에만 AP 시간 응답 근거 추가. 기존 FAIL·동결값·원자료·종료 계획·`experiment_ready=false` 유지.
+
 ## 2026-09-27 ARRIVAL-ENERGY-SENSITIVITY-PC-01 — strict 경로 확인·에너지/AP 사후 탐색
 
 - [계수/실행 경로·가정 한계 판독](ARRIVAL_ENERGY_SENSITIVITY_PC_20260927.md), [오프라인 대시보드·CSV/그림·재현](results/arrival_visualization_01/README.md). strict 대표 low/queue/burst seed201에서 P와 B3의 24요청별 backend·dispatch·응답·lane 해제가 동일함을 대조했다. `global_serial`과 적응형 CPU fallback으로 pair 비용이 작동하지 않으며 원 strict 쌍차 0을 설명한다. 탐색 간섭의 예상 1.5와 실현 1.0은 별개다.

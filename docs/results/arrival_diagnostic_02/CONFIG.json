@@ -1,0 +1,26 @@
+{
+  "id": "ARRIVAL-INTERFERENCE-ENERGY-DIAG-PC-02",
+  "source_head": "4fd018aa12f8f96467cdc00dc212e2ef0c23de03",
+  "scope": "explore PC model only; post-hoc diagnosis of existing low/queue/burst, no device validation or policy tuning",
+  "scenarios": ["low", "queue", "burst"],
+  "seeds": [201, 202, 203, 204, 205],
+  "realized_interference": [1.0, 1.5, 2.0],
+  "p_predicted_interference": [1.0, 1.5, 2.0],
+  "baseline_policies": ["CPU_URGENT", "FIXED_SPLIT", "B2_PC", "B3_SOLO_EFT_PC"],
+  "common_window_s": 120,
+  "energy_stress_w": {
+    "idle": [0.8, 1.0, 1.2],
+    "single_active": [1.8, 2.0, 2.2],
+    "pair": [2.0, 3.0]
+  },
+  "energy_idle_single_pairing": "three indexed idle/single pairs, crossed with both pair values; not a full factorial or measured range",
+  "ap_stress": {
+    "initial_c": [29.0, 31.0],
+    "idle_equilibrium_c": 29.0,
+    "single_equilibrium_c": 34.0,
+    "pair_equilibrium_c": [30.0, 42.0],
+    "tau_s": 60.0
+  },
+  "prespecified_comparisons": "P at predicted 1.5 versus B3 per realized coefficient; matched P is an oracle for the interference coefficient only, not future durations or exact pair harm, and diagnoses residual rule loss; over/under are other 3x3 cells. Energy/AP main contrasts hold predicted P=1.5 and compare B3 on the same realized coefficient. No coefficient is a measured interval.",
+  "provenance": "Frozen CAL-03 development settings, existing evaluation arrivals/vector seeds; all power and AP coefficients are researcher stress values only. Grid fixed before generating diagnostic results."
+}
