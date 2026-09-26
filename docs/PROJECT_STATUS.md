@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-26 ENERGY-OPERATIONAL-DECISION-PC-01 — 제한된 의사결정 탐색 완료
+
+- [한국어 판단·오차 분해·지원 범위](ENERGY_OPERATIONAL_DECISION_PC_20260926.md), [작은 CSV/입출력·재현 명령](results/energy_operational_decision_01/README.md). 출발 `3106425`/clean. 기존 profile/확인 자료를 보존하고 확인 2세션의 공통480초 에너지 예측−관측 차이를 단계별 산술로 분해했다. 병행−직렬 오차 −40.774J 중 부하 평균전력항 −43.448J가 가장 크나 원인·인과효과 식별은 불가. 계측/경계 결함은 발견되지 않아 동결 모형 재보정 없음.
+- 별도 PC 탐색 입력에서 고정870건 CC_DG의 사용자 지정 작업 완료기한·AP 최고 제한·공통창 조건부 기기 에너지 경계를 검사한다. 출력은 모형상 단일 후보/상충/판단 불가/지원 밖이며 기본 정책·Android 실행·임의 도착 엔진은 불변. 기준 미설정 예시는 `TRADEOFF`, 확인1세션 오차는 사후 민감도일 뿐 보장/CI 아님. 새 unit 4건·분해 항등식과 원본 지표 대조 통과, ADB·추론 0.
+- 다음≤3: (1) 고정 기술 비교와 실제 서비스 최적화 중 보고서 주장 범위를 결정, (2) 후자를 원할 때만 완료기한/AP 기술 제한 및 에너지 경계를 사용자 요구로 정한 뒤 필요한 독립 근거를 계약, (3) 추가 실측·P 튜닝·동적 지원 확대는 별도 결정 전 중단. 기존 FAIL·부분 결과·40값/20null·동결 profile·종료 계획·`experiment_ready=false`·S26/NPU 별도 개발 유지. 아래는 이력이다.
+
 ## 2026-09-26 ENERGY-OPERATIONAL-SIM-PC-01 — 4세션의 제한된 시간·에너지·AP 연결 완료
 
 - [한국어 결과·오차·한계](ENERGY_OPERATIONAL_SIM_CONNECTION_20260926.md), [profile/CSV/그림·재현 명령](results/energy_operational_sim_01/README.md). 출발 `cf7aa263`/clean, 기존 4/4 raw 재생 일치. 개발 직렬1·병행1만 고정 episode 템플릿에 넣고 profile SHA `b58c2ca3…0772`와 평가 명세 SHA `383a50c5…d763`를 별도 동결했다. 확인 직렬1·병행1은 재보정 없이 오차만 계산했다. 확인 요약을 이미 본 뒤의 연결이므로 완전한 사전등록 독립 검증은 아니다.
