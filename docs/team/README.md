@@ -1,5 +1,7 @@
 # 팀 안내 — 2026-09-26 현재
 
+> **PC 결과 시각화:** 작업 브랜치에서 [오프라인 HTML 대시보드](../results/arrival_visualization_01/dashboard.html)와 [그림·CSV·재현 안내](../results/arrival_visualization_01/README.md)를 열 수 있다. low/queue/burst의 응답은 합성 PC 탐색이고, 에너지·AP는 도착 상태별 계수 미측정으로 `계산 불가`다. 별도 고정870건 참고 그래프를 합성 도착 정책의 에너지 결과로 읽지 않는다. Android 합성 도착 수집은 아직 미실행이다.
+
 > **현재 우선:** 작업 브랜치 `feature/arrival-scheduling-20260923`에서 [STATUS](../PROJECT_STATUS.md) → [합성 도착 Android 수집 후보](../ARRIVAL_ENERGY_ANDROID_PREP_20260926.md) → [검증·명령](../results/arrival_energy_android_prep_01/README.md) 순으로 읽는다. CPU 긴급우선/고정 분리의 24요청×3조건 재생·기기 전체 전류/AP 계측을 PC 준비했으나 기기 실행과 에너지 절감 검증은 하지 않았다. 목적 B의 상태별 모형·강한 B2 비교도 미완료다. 기존 FAIL·부분 결과·`experiment_ready=false`와 별도 S26/NPU 협업을 유지한다. 아래의 “현재/최신” 문구는 각 당시 이력이다. 외부 계획/APK/원본은 로컬 PC 전용으로 GitHub 링크가 아니다.
 
 > 현재: [반복 온도 중단 검토와4세션 운영 후보](../ENERGY_DESIGN_REVIEW_20260926.md)를 먼저 읽는다. sampler 직렬 진단은 성공했으나 COLLECT-04/05는 온도 gate에서 종료돼 긴 병행 효과는 미판정이다. 새 동일 기술준비·고정노출·AB/BA 운영 경로와 에너지 ledger를 PC 검증하고 실행 후보만 준비했다. 실측0, 실행 미승인, 동일 초기 열 상태/절감 PASS 아님. 필수 발열·배터리 목표·S26/NPU 별도 협업·experiment_ready=false 유지. 아래의 “최신/현재” 문구는 각 날짜의 이력이다.

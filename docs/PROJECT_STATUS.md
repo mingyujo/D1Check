@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-26 ARRIVAL-VISUALIZATION-PC-01 — 기존 PC 결과의 오프라인 시각화
+
+- [로컬 한국어 대시보드·PNG/SVG/CSV·재현 안내](results/arrival_visualization_01/README.md). 기존 960평가/126개발 배치는 반복하지 않았다. 저장된 queue/explore 대표 trace 8개와 나머지 seed201 대표 trace 40개 최소 재생을 합쳐 low/queue/burst×strict/explore×8정책 타임라인을 만들고, 저장된 평가 지표 7개와 대조했다. Chrome 로컬 파일 렌더·low/strict/B2 및 burst/explore/P 필터 전환, 관련 PC 테스트 3건 통과.
+- 합성 도착의 응답은 **PC 모형 탐색**이고 에너지/AP는 상태별 계수 부재로 `계산 불가`다. 대시보드의 에너지·AP 경로와 상충 산점도는 **별도 고정 870건 CC_DG**의 실측 재생/사후 동결 모형 예시이며 합성 도착 정책 결과가 아니다. 절대 J 단위 조건부, BAT 미지원, 실기기 합성 도착 수집0/`experiment_ready=false` 유지.
+- 다음≤3: (1) 별도 승인 시 Android 합성 도착 수집 후보의 현재 기기 gate 재확인, (2) 실제 원본이 생기면 동일 회계 경계로 시각화 입력 확장, (3) 임의 도착 에너지/AP 계수 적격성 전에는 정책 절감 판정 금지. 기존 FAIL·동결 설정·종료 계획 불변.
+
 ## 2026-09-26 ARRIVAL-ENERGY-SYNTHETIC-COLLECT-01 — Android 재생·계측 PC 준비
 
 - [Android 재생·에너지/AP 후보 계약](ARRIVAL_ENERGY_ANDROID_PREP_20260926.md), [검증·로컬 산출물·명령](results/arrival_energy_android_prep_01/README.md). 기존 low/queue/burst 각24예정 도착을 별도 Activity에서 `CPU_URGENT`와 `FIXED_SPLIT`으로 재생하고, 1초 앱 전류/전압·2초 host AP를 동일 120초 공통창에 연결하도록 구현했다. 4-runtime owner thread·warmup8·큐/응답/저장/lane 해제·snapshot 예외/부분 회수 경계를 보존한다. 기존 Android arrival·고정 에너지 경로와 P/B2는 변경하지 않았다.
