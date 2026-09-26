@@ -9,6 +9,7 @@ internal class EnergyObservedState<T>(private val clock: () -> Long) {
     private val lock = Any()
     private var currentPhase = "setup"
     private var version = 0L
+    private var waiting: Int? = null
     private val active = linkedMapOf<String, String>()
     private val runtimes = linkedMapOf<String, T>()
     var phase: String
@@ -21,10 +22,13 @@ internal class EnergyObservedState<T>(private val clock: () -> Long) {
     }
     fun dispatch(key: String, id: String) = synchronized(lock) { active[key] = id; version++ }
     fun release(key: String) = synchronized(lock) { active.remove(key); version++ }
+    /** Only the new arrival collector sets this; legacy fixed-work samples are unchanged. */
+    fun setWaiting(count: Int) = synchronized(lock) { require(count >= 0); waiting = count; version++ }
     fun snapshot(): Map<String, Any?> = synchronized(lock) {
         mapOf("phase" to currentPhase, "active" to LinkedHashMap(active),
             "resident_keys" to runtimes.keys.sorted(), "state_version" to version,
-            "state_snapshot_ns" to clock(), "observation_version" to "energy-state-snapshot-v1")
+            "state_snapshot_ns" to clock(), "observation_version" to "energy-state-snapshot-v1") +
+            (waiting?.let { mapOf("waiting_requests" to it) } ?: emptyMap())
     }
 }
 

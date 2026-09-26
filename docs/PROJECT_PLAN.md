@@ -1,5 +1,9 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-09-26 합성 도착 Android 관측 후보 — 실행 미승인
+
+[새 별도 계약](ARRIVAL_ENERGY_ANDROID_PREP_20260926.md)은 기존 합성 연구 선택을 바꾸지 않고, `CPU_URGENT`와 `FIXED_SPLIT`의 low/queue/burst 각24요청을 Android에서 직접 재생하는 경로를 PC 준비했다. 동일 정책의 120초 공통창 기기 에너지·AP와 긴급/일반 응답·미완료 분모를 함께 관측하는 목적 A가 첫 단계다. 기존 강한 B2·B3/P 최종 비교나 임의 도착 상태별 전력·열 보정 B는 이번 2-arm/짧은 표본으로 대체하지 않는다. 개발6→규칙 동결→확인6 후보, runtime48/warmup96/요청288/총추론384, hard 177분은 **아직 미승인·미실행**이다. 기기/서명/환경·센서 coverage는 실행 직전 gate이며, 새 결과가 없으므로 `experiment_ready=false`와 과거 판정은 그대로다. 상세 재현은 [PC 검증](results/arrival_energy_android_prep_01/README.md)을 따른다. 아래는 이전 상태/계획이다.
+
 ## 2026-09-26 채택한 합성 연구 경로와 PC 경계
 
 사용자는 **실측으로 보정한 모형과 출처를 밝힌 합성 조건**의 연구를 선택했다. [최소 시나리오·회계·지원 표](ARRIVAL_ENERGY_SYNTHETIC_RESEARCH_20260926.md)는 기존 low/queue/burst 24요청 trace와 연구용 1.5/6초 기한을 재사용한다. 실사용 SLA·배터리 절감은 주장하지 않고, 원래 긴급 응답/일반 완료와 기기 에너지/AP 목표를 유지한다. 새 PC 경로는 공통120초의 분모/응답 경계를 집계하지만 임의 도착의 기기 전력·AP 계수는 없으므로 실측 기반 에너지/열 정책 비교를 차단한다. 다음은 Android active 재생과 상태별 계측의 **PC 계약·샘플링/벽시계 타당성**을 확인해 최소 보정·독립 확인 예산을 동결하는 것이다. B2/P를 이번 결과로 재선정하거나 종료된 실측을 재개하지 않는다. `experiment_ready=false`와 기존 동결 profile/FAIL·S26/NPU 별도 범위는 유지한다. 아래 서비스 근거 또는 synthetic 선택 관련 문구는 이 결정 전 이력이다.

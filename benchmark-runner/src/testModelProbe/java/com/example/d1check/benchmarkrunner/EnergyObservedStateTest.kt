@@ -9,6 +9,13 @@ import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicReference
 
 class EnergyObservedStateTest {
+    @Test fun waitingIsOnlyPresentWhenNewArrivalPathSetsIt() {
+        val state=EnergyObservedState<String> { 10L }
+        assertFalse(state.snapshot().containsKey("waiting_requests"))
+        state.setWaiting(2);val snapshot=state.snapshot();state.setWaiting(0)
+        assertEquals(2,snapshot["waiting_requests"])
+        assertEquals(0,state.snapshot()["waiting_requests"])
+    }
     @Test fun originalSnapshotConversionThrowsAfterLastEntryRemoval() {
         val sized = CountDownLatch(1); val removed = CountDownLatch(1)
         val original = object : ConcurrentHashMap<String, String>() {

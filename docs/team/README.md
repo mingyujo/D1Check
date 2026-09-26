@@ -1,5 +1,7 @@
 # 팀 안내 — 2026-09-26 현재
 
+> **현재 우선:** 작업 브랜치 `feature/arrival-scheduling-20260923`에서 [STATUS](../PROJECT_STATUS.md) → [합성 도착 Android 수집 후보](../ARRIVAL_ENERGY_ANDROID_PREP_20260926.md) → [검증·명령](../results/arrival_energy_android_prep_01/README.md) 순으로 읽는다. CPU 긴급우선/고정 분리의 24요청×3조건 재생·기기 전체 전류/AP 계측을 PC 준비했으나 기기 실행과 에너지 절감 검증은 하지 않았다. 목적 B의 상태별 모형·강한 B2 비교도 미완료다. 기존 FAIL·부분 결과·`experiment_ready=false`와 별도 S26/NPU 협업을 유지한다. 아래의 “현재/최신” 문구는 각 당시 이력이다. 외부 계획/APK/원본은 로컬 PC 전용으로 GitHub 링크가 아니다.
+
 > 현재: [반복 온도 중단 검토와4세션 운영 후보](../ENERGY_DESIGN_REVIEW_20260926.md)를 먼저 읽는다. sampler 직렬 진단은 성공했으나 COLLECT-04/05는 온도 gate에서 종료돼 긴 병행 효과는 미판정이다. 새 동일 기술준비·고정노출·AB/BA 운영 경로와 에너지 ledger를 PC 검증하고 실행 후보만 준비했다. 실측0, 실행 미승인, 동일 초기 열 상태/절감 PASS 아님. 필수 발열·배터리 목표·S26/NPU 별도 협업·experiment_ready=false 유지. 아래의 “최신/현재” 문구는 각 날짜의 이력이다.
 
 > 최신 PC 수정: [sampler snapshot 결함 재현·보완](../ENERGY_SAMPLER_PC_20260925.md). 과거 발생 행은 stack 부재로 미확정이지만 실제 toMap 경쟁을 재현해 수정했다. 새 APK·진단1세션(880추론/35분 상한) 후보만 준비, 기기 실행0·별도 승인 필요. 기존 FAIL/부분 기록/experiment_ready=false와 S26/NPU 별도 협업 유지.

@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-26 ARRIVAL-ENERGY-SYNTHETIC-COLLECT-01 — Android 재생·계측 PC 준비
+
+- [Android 재생·에너지/AP 후보 계약](ARRIVAL_ENERGY_ANDROID_PREP_20260926.md), [검증·로컬 산출물·명령](results/arrival_energy_android_prep_01/README.md). 기존 low/queue/burst 각24예정 도착을 별도 Activity에서 `CPU_URGENT`와 `FIXED_SPLIT`으로 재생하고, 1초 앱 전류/전압·2초 host AP를 동일 120초 공통창에 연결하도록 구현했다. 4-runtime owner thread·warmup8·큐/응답/저장/lane 해제·snapshot 예외/부분 회수 경계를 보존한다. 기존 Android arrival·고정 에너지 경로와 P/B2는 변경하지 않았다.
+- 프로젝트 서명 APK SHA `1f2bec87…b659`, 새 계획 v4 SHA `64b2a9a8…2dc0`, 12 manifest/스크립트 `Check`·관련 Kotlin/Python 테스트 통과. **ADB·설치·앱 실행·추론/실측 0, output/registry 없음; 실행 미승인·기기 적격성 미확인.** 목적 A(고정 trace별 전체 결과)는 향후 관측 가능하나, 목적 B(다른 trace용 상태별 전력/열 보정)는 짧은 요청·느린 센서 갱신으로 이번 표본만으로 보장되지 않는다. 공통창 관측 시간24분, hard 상한177분은 정상 예상이 아니다.
+- 다음≤3: (1) 별도 승인 후에만 현재 A24·설치본·환경/품질 gate로 새 계획 단일 실행 여부 결정, (2) 실행된다면 개발6 적격→고정 규칙 동결→확인6/부분 결과 판독, (3) 상태별 모형 B는 실제 dwell/coverage가 식별될 때만 별도 설계. 기존 FAIL·부분 결과·40값/20null·원자료·종료 계획·`experiment_ready=false`와 S26/NPU 별도 범위 유지. 아래는 이력이다.
+
 ## 2026-09-26 ARRIVAL-ENERGY-SYNTHETIC-PC-01 — 합성 연구 범위 채택·최소 PC 계약
 
 - 사용자 결정은 **실측 보정 모형+출처 명시 합성 조건**이며 실제 서비스 SLA/실사용 배터리 절감 주장 아님. 발열·배터리·응답 원래 목표와 고정870건 중간 질문은 유지. [3조건·공통창·근거/가정 경계](ARRIVAL_ENERGY_SYNTHETIC_RESEARCH_20260926.md), [재현·manifest](results/arrival_energy_research_01/README.md). 기존 low/queue/burst 각24건·연구용 1.5/6초, 예정 전체 분모·긴급 O/일반 P·lane L·120초 공통창을 별도 PC adapter로 검증했다. 임의 도착의 전력/AP는 profile 부재로 `null`, 명시적 가정만 탐색; 새 정책 성능 순위·Android/ADB·실측 없음.
