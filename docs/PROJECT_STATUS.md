@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-26 ENERGY-OPERATIONAL-SIM-PC-01 — 4세션의 제한된 시간·에너지·AP 연결 완료
+
+- [한국어 결과·오차·한계](ENERGY_OPERATIONAL_SIM_CONNECTION_20260926.md), [profile/CSV/그림·재현 명령](results/energy_operational_sim_01/README.md). 출발 `cf7aa263`/clean, 기존 4/4 raw 재생 일치. 개발 직렬1·병행1만 고정 episode 템플릿에 넣고 profile SHA `b58c2ca3…0772`와 평가 명세 SHA `383a50c5…d763`를 별도 동결했다. 확인 직렬1·병행1은 재보정 없이 오차만 계산했다. 확인 요약을 이미 본 뒤의 연결이므로 완전한 사전등록 독립 검증은 아니다.
+- 확인 병행−직렬은 완료 −126.319초·완료시점 조건부 에너지 −143.341J·공통480초 에너지 +4.559J·부하 AP 최고 +1.9°C. 동결 템플릿은 앞 두 방향과 AP 최고 방향은 재현하나 공통창 에너지 방향은 **−36.216J로 실패**. 조건별 1세션, 열 상태·순서·유휴 소비 교란, 전류 raw=mA 조건부 해석, 미계측 단계 공백으로 인과/전체 운영 에너지/정책 PASS는 불가. BAT·다른 병행/도착/작업량은 미지원. PC unit 6건 통과, 원본/기존 정책 불변, ADB·추론 0.
+- 다음≤3: (1) 이 고정 CC_DG 기술 비교의 시간·에너지·발열 상충을 조건부 결과로 사용, (2) 다른 배정/도착·실서비스 최적화를 주장할 경우에만 해당 조건과 평가 기준을 사전 계약, (3) 추가 실측·정책 튜닝은 별도 결정 전 수행하지 않음. 기존 FAIL·부분 결과·40값/20null·종료 계획·`experiment_ready=false`·S26/NPU 별도 개발 유지. 아래는 이력이다.
+
 ## 2026-09-26 ENERGY-OPERATIONAL-PAIR-01 — 4세션 운영 비교 완료
 
 - 출발 `9e9668b`/clean, 승인된 plan_v3 SHA `4d0bd250…0ed5` 1회 실행. [결과·한계·재현 명령](ENERGY_OPERATIONAL_PAIR_01_RESULTS_20260926.md), 공유 [세션 CSV](results/energy_operational_pair_01/sessions.csv), 외부 원본 `C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_operational_run_v1/FINAL_RECEIPT.json`. 동일 A24·서명/환경 gate 통과, APK 전송·설치 각1. registry `completed`, 재실행 금지.
