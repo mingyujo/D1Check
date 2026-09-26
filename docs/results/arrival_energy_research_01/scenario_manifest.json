@@ -1,0 +1,31 @@
+{
+  "version": "arrival-energy-research-pc-v1",
+  "scenarios": {
+    "low": {
+      "requests": 24,
+      "urgent": 6,
+      "normal": 18,
+      "last_arrival_ns": 27600000000,
+      "sha256": "5113045479688500d8b9e11390e3579f842f2660176c88dabc3d790012f66051"
+    },
+    "queue": {
+      "requests": 24,
+      "urgent": 6,
+      "normal": 18,
+      "last_arrival_ns": 4600000000,
+      "sha256": "b102258b64eb6347a53356a55141b59416d0a2b625a7171d52e65064d392e8fe"
+    },
+    "burst": {
+      "requests": 24,
+      "urgent": 6,
+      "normal": 18,
+      "last_arrival_ns": 4840000000,
+      "sha256": "84a59b036804daa3ac87ed1c65c15bb9e733b1f4aacf7471a6fa6b3dad383e44"
+    }
+  },
+  "horizon_ns": 120000000000,
+  "deadline_origin": "existing PC exploratory 1.5s urgent / 6s normal; research assumptions, not SLA",
+  "comparison_window": "0..120s common horizon from first scheduled arrival; no 870-job block deadline",
+  "energy_scope": "unsupported for arbitrary arrivals without an explicit state profile",
+  "experiment_ready": false
+}

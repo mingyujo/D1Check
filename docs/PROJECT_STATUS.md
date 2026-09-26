@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-26 ARRIVAL-ENERGY-SYNTHETIC-PC-01 — 합성 연구 범위 채택·최소 PC 계약
+
+- 사용자 결정은 **실측 보정 모형+출처 명시 합성 조건**이며 실제 서비스 SLA/실사용 배터리 절감 주장 아님. 발열·배터리·응답 원래 목표와 고정870건 중간 질문은 유지. [3조건·공통창·근거/가정 경계](ARRIVAL_ENERGY_SYNTHETIC_RESEARCH_20260926.md), [재현·manifest](results/arrival_energy_research_01/README.md). 기존 low/queue/burst 각24건·연구용 1.5/6초, 예정 전체 분모·긴급 O/일반 P·lane L·120초 공통창을 별도 PC adapter로 검증했다. 임의 도착의 전력/AP는 profile 부재로 `null`, 명시적 가정만 탐색; 새 정책 성능 순위·Android/ADB·실측 없음.
+- 다음≤3: (1) Android active 재생·상태별 전력/AP 계측의 PC 계약 및 실제 샘플링/세션시간 타당성 점검, (2) 지원 정책·상태를 제한한 개발 보정/독립 확인 예산·중단 기준 동결, (3) 별도 승인 전 실측·독립 정책 평가 금지. 기존 FAIL·부분 결과·40값/20null·원자료·종료 계획·`experiment_ready=false`·S26/NPU 별도 범위 유지. 아래는 이력이다.
+
 ## 2026-09-26 ENERGY-THERMAL-BRIDGE-PC-01 — 중간 질문 채택·원래 목표 실행안
 
 - 사용자 채택: 고정870건 CC_DG 직렬/병행은 **중간 질문**, 원래 혼합 도착·발열/배터리 최적화 목표는 유지. [근거·최소 부족 항목·단계/중단 기준](ENERGY_THERMAL_TO_ORIGINAL_GOAL_PLAN_20260926.md). 기존 요청별 2/8초 및 PC 1.5/6초는 engineering 시나리오이며 묶음 완료기한/실사용 SLA가 아니다. 480초는 고정 기술 경계, AP는 관측 지표다. 공통창 에너지 방향 역전과 조건당 한 세션 때문에 절감/정책 PASS 없음.
