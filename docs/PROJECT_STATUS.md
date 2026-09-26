@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ARRIVAL-INTEGRATED-EXPLORER-PC-01 — 통합 PC 탐색 완료
+
+- [단일 오프라인 대시보드](results/arrival_policy_screen_01/dashboard.html)와 [사용·상대 경로 재현 안내](results/arrival_policy_screen_01/README.md), [한국어 판독](ARRIVAL_INTEGRATED_EXPLORER_20260927.md). 착수 HEAD `b15526a`, 선택 135일정의 저장 응답 지표 검증 재생으로 task×backend 점유를 얻었다. B2 CG_DC·B3 탐지 CPU＋GPU 등 기기 전체 전력을 독립 탐색 입력으로 분리하고 δ(%p)·seed·간섭·AP 가정을 한 화면에 연결했다. 기존 공통 병행 전력 결과·원본 유지. PC 관련 6테스트와 로컬 Chrome 기본 화면 렌더 통과; Android 계측·정책 튜닝·실측 0.
+- 시간은 CAL-03 기반 조건부 PC 결과, 전력·열은 미계측 사후 가정이다. 열 피드백/실기기 정책 우위·BAT·절대 에너지 정확도는 미검증. 다음 행동≤3: (1) 팀은 대시보드에서 응답 제약·독립 병행 전력 가정에 따른 상충을 탐색, (2) 실제 에너지 절감 주장은 별도 근거가 생길 때만 판단. 기존 FAIL·동결값·20 null·원본·종료 계획·`experiment_ready=false` 유지.
+
 ## 2026-09-27 ARRIVAL-COST-BOUNDARIES-PC-01 — B2·B3·CPU 미측정 비용 경계
 
 - [한국어 판독·상태 근거·역전 경계](ARRIVAL_COST_BOUNDARIES_PC_20260927.md), [오프라인 대시보드·재현 CSV](results/arrival_cost_boundaries_01/README.md). 기존 45개 같은 trace/seed/실현 간섭에서 idle·단독·병행 시간을 복원하고 seed201 저장 timeline과 대조했다. queue/간섭1.5 B2−B3의 가정 전력 역전점은 idle1W/단독2W에서 2.070–2.100W/5 seed이나 실기기 가능 범위는 미확인이다. B2는 CG_DC, B3는 탐지 CPU＋GPU 점유가 커서 기존 반대 방향 CC_DG 값을 전용할 수 없다. 대표 AP 부호도 미보정 병행 열 가정에 따라 바뀐다. PC 관련 테스트 2건 통과, 이벤트 배치·ADB·실측 0.

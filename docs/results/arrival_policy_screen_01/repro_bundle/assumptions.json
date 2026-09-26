@@ -1,0 +1,62 @@
+{
+  "version": "arrival-integrated-exploration-v1",
+  "source_head": "b15526a71557ba0ea7e8fc783120fcd95642e689",
+  "horizon_s": 120,
+  "seeds": [
+    201,
+    202,
+    203,
+    204,
+    205
+  ],
+  "policies": [
+    "CPU_URGENT",
+    "B2_PC",
+    "B3_SOLO_EFT_PC"
+  ],
+  "all_policies": [
+    "CPU_URGENT",
+    "FIXED_SPLIT",
+    "B2_PC",
+    "B3_SOLO_EFT_PC",
+    "P_PAIR_COST_PC"
+  ],
+  "states": [
+    "classification:CPU",
+    "classification:CPU+classification:GPU",
+    "classification:CPU+detection:GPU",
+    "classification:GPU",
+    "classification:GPU+detection:CPU",
+    "detection:CPU",
+    "detection:CPU+detection:GPU",
+    "detection:GPU",
+    "idle"
+  ],
+  "power_w": {
+    "classification:CPU": 2.0,
+    "classification:CPU+classification:GPU": 2.0,
+    "classification:CPU+detection:GPU": 2.0,
+    "classification:GPU": 2.0,
+    "classification:GPU+detection:CPU": 2.0,
+    "detection:CPU": 2.0,
+    "detection:CPU+detection:GPU": 2.0,
+    "detection:GPU": 2.0,
+    "idle": 1.0
+  },
+  "ap_equilibrium_c": {
+    "classification:CPU": 34.0,
+    "classification:CPU+classification:GPU": 30.0,
+    "classification:CPU+detection:GPU": 30.0,
+    "classification:GPU": 34.0,
+    "classification:GPU+detection:CPU": 30.0,
+    "detection:CPU": 34.0,
+    "detection:CPU+detection:GPU": 30.0,
+    "detection:GPU": 34.0,
+    "idle": 29.0
+  },
+  "initial_ap_c": 29.0,
+  "tau_s": 60.0,
+  "provenance": "PC replay of frozen CAL-03 schedules; power/AP coefficients are unmeasured researcher stress assumptions, whole-device absolute W, not device calibration",
+  "deadlines": "request-wise research deadlines: urgent 1.5 s, normal 6 s; not a service SLA",
+  "limitation": "post-hoc accounting, no power/temperature feedback, no BAT model or absolute energy certification"
+}
