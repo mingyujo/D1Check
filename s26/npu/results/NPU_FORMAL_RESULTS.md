@@ -91,6 +91,12 @@ Android thermal status 는 전 구간 0 이지만 거친 지표이고 NPU devfre
 | GPU | Interpreter 1.4.2, `gpu-fp32-strict-v1` | 3.669 | 3.660 | 3.641 | 3.636 | [D] 같은 곳 |
 | **NPU** | **CompiledModel 2.2.0** | **0.749** | **0.746** | **0.746** | **0.743** | [P] 이 문서 |
 
+> **표기 규칙 (2026-09-26 사후 증거 감사)**: 판정·기준·수치를 바꾼 곳은 `~~이전 판: 원문~~` → `[2026-09-26 사후 증거 감사] 새 판 (근거)` 형식이다.
+> 표를 통째로 바꾼 곳은 이전 표 원문을 **취소 표시된 코드 블록**으로 남겼다 (표 안 취소선은 렌더가 깨지므로). 이 감사는 수집 당시의 사전 기준이 아니며 기존 판정을 대체하지 않는다.
+
+~~이전 판 (e27f907, 2026-09-26 1차): 정밀도 2열 표 (저장 / 연산)~~ — 원문 그대로:
+
+```text
 **정밀도 — 모델 저장 정밀도와 실제 연산 정밀도를 따로 적는다** (2026-09-26 추가. 조민규 지적: 저장 형식이 연산 형식을 보증하지 않는다)
 
 | 자원 | 모델 파일 | 크기 · SHA | 저장 정밀도 | 연산 정밀도 |
@@ -101,6 +107,23 @@ Android thermal status 는 전 구간 0 이지만 거친 지표이고 NPU devfre
 
 → **CPU·GPU 는 FP32 모델, NPU 는 FP16 가중치 모델이다. 같은 모델의 자원 비교가 아니다.**
 A24 에서 GPU fp16 허용만으로 25 % 빨라진 실측이 있다 (`A24_S26_COMPARISON.md`:200-205) — 정밀도 하나만으로도 배율에 들어갈 크기다.
+```
+
+→ [2026-09-26 사후 증거 감사] 정밀도를 **4항목**으로 나눈다 (조민규 지적: FP16 가중치나 출력 dtype 만으로 내부 연산·누산 정밀도를 확정하지 않는다).
+(근거: 텐서 dtype 은 flatbuffer 를 직접 읽은 스크래치 계산 [P], 설정은 코드 [D], 로그는 NPU 20런 캡처 `litert`/`tflite` 줄 [P])
+
+| 자원 | ① 모델 저장 정밀도 | ② 입출력 dtype | ③ 설정한 실행 옵션 | ④ 확인된 내부 연산·누산 정밀도 + 근거 |
+|---|---|---|---|---|
+| CPU 4 스레드 | FP32 [P] — `mobilenet_v1_1.0_224.tflite` 16,901,128 B `d95b3c5e…`, 텐서 89개 중 FLOAT32 88 · INT32 1 (flatbuffer 직접 읽음) | 입력 FLOAT32 `[1,224,224,3]` / 출력 FLOAT32 `[1,1001]` [P 파일] · 러너가 실행 전 `DataType.FLOAT32` 검사 [D `GpuBenchmarkEngine.kt`:318-324] | LiteRT Interpreter 1.4.2, 스레드 4 (`cpu_threads=4`), XNNPACK delegate (캡처 로그 `Replacing N out of N … (TfLiteXNNPackDelegate)` [P]). FP16 허용 옵션 설정 코드 없음 [D] | **unknown** — XNNPACK 은 커널 정밀도를 로그·API 로 내놓지 않는다. 캡처 `tflite` 3줄에 정밀도 정보 없음 |
+| GPU | CPU 와 같은 파일 — FP32 [P] | CPU 와 같음 [P 파일, D 검사] | TfLiteGpuDelegateV2, `gpu-fp32-strict-v1`: `precision_loss_allowed=false`, `FAST_SINGLE_ANSWER`, backend UNSET [D `GpuDelegateProfile.kt`] | **unknown** — 러너 스스로 `actual_fp16_execution = unknown_not_exposed_by_litert_api` 를 기록한다 [D]. 캡처 `tflite` 6줄(OpenCL 로드·커널 1개 생성)에 정밀도 정보 없음. 간접: A24 에서 CPU 대비 최대 총변동 3.8e-6 (`A24_S26_COMPARISON.md`:202 — **S26 아님**) |
+| NPU | **FP16 [E] 추정** — AOT `mobilenet_v1_1.0_224_Samsung_E9965.tflite` 8,901,712 B `1415b2c8…` 의 flatbuffer 텐서는 입출력 2개뿐이고 가중치는 벤더 bytecode(8,900,608 B, `litert` 로그)에 들어 있어 **형식을 읽을 수 없다**. 근거는 원본 대비 1/1.90 크기뿐 | 입력 FLOAT32 `[1,224,224,3]` / 출력 FLOAT32 `[1,1001]` [P, AOT flatbuffer 직접 읽음] · 러너는 `writeFloat`/`readFloat` [D] | LiteRT CompiledModel 2.2.0 `Accelerator.NPU` 단독 [D]. AOT 컴파일러 `ai_edge_litert 2.3.0.dev20260917` + `sdk_samsung` 같은 버전, 컴파일 옵션 기록 없음 [D `aot_manifest.json`]. ENN `SetGenAiPerfConfigFromSoc: mode=7, configId=0` [P 로그 — 성능 모드 값이며 정밀도 표기 아님] | **unknown** — AOT 매니페스트·컴파일 보고·ENN `litert` 24줄 어디에도 연산·누산 정밀도 필드가 없다. 단서만 있다: 9/24 G4 스모크에서 NPU top5 점수 5개가 전부 FP16 으로 정확히 표현되는 값 [D `G4_VERDICT_0924.md`:42] → **출력 경로 어딘가에 FP16 반올림이 있다**는 흔적이지 내부 누산 정밀도의 증거는 아니다 |
+
+- **`npu_precision = fp16(compiler-default)` 는 러너가 적는 가정값이다** (`NpuRunMetadata.kt`:135 상수. `NPU_ACCESS_PLAN_0916.md`:115-117 이 사전에 FP16 으로 정했다). 측정된 값이 아니다
+- 같은 방식으로 EfficientNet AOT (`311e4aac…`) 도 입출력 FLOAT32 `[1,224,224,3]`/`[1,1000]`, 텐서 2개 [P]
+
+~~이전 판: → **CPU·GPU 는 FP32 모델, NPU 는 FP16 가중치 모델이다. 같은 모델의 자원 비교가 아니다.**~~
+→ [2026-09-26 사후 증거 감사] **CPU·GPU 는 FP32 저장 모델, NPU 는 저장 정밀도가 FP16 으로 추정되는 AOT 산출물이다. 연산 정밀도는 세 자원 모두 확인되지 않았다. 같은 모델 바이트의 자원 비교가 아니다.** (근거: 위 4항목 표)
+A24 에서 GPU fp16 허용만으로 25 % 빨라진 실측이 있다 (`A24_S26_COMPARISON.md`:200-205) — 정밀도 설정 하나만으로도 배율에 들어갈 크기다.
 
 **각주 (반드시)**
 1. **엔진이 다르다.** 같은 CompiledModel 로 CPU 를 돌리면 Interpreter CPU4 보다 **21.4 % 느리다** (npu-runner CPU `run()` span 3런 중앙 5.303 ms vs 4.370 ms,
@@ -108,12 +131,16 @@ A24 에서 GPU fp16 허용만으로 25 % 빨라진 실측이 있다 (`A24_S26_CO
    (세션 로그 기준 98~264 s — 스모크 로그에는 시작 직전 스냅샷 하나만 있다). 스레드 수는 LiteRT 기본값(미확인).
    근거 `SMOKE_cpu_engine60_r{1,2,3}_20260925_*.json`
 2. **span 이 다르다.** Interpreter = `interpreter.run()` 만 (`MEASUREMENT_DEFINITION.md`:57-62), NPU = write+run+read. NPU 쪽이 불리하게 잰 것
-3. **정밀도가 다르다** (위 정밀도 표). CPU·GPU = FP32 모델, NPU = FP16 가중치 AOT 산출물
-4. 배율 [E] — **전부 "해당 구성에서 관측된 복합 성능 차이"이다. 어느 한 요소(자원)의 효과도, 다른 효과의 상한도 아니다.**
-   - Interpreter CPU4 대비 duty 100 에서 **5.9×** (4.370/0.743), GPU 대비 **4.9×** — 섞인 요소: **자원 + 엔진 + span + 정밀도** (+ 날짜·배터리·밝기, 각주 5)
+3. ~~이전 판 (e27f907): **정밀도가 다르다** (위 정밀도 표). CPU·GPU = FP32 모델, NPU = FP16 가중치 AOT 산출물~~
+   → [2026-09-26 사후 증거 감사] **저장 정밀도가 다르고, 연산 정밀도는 확인되지 않았다.** CPU·GPU = FP32 저장, NPU = FP16 저장 [E 추정] (근거: 4항목 표)
+4. ~~이전 판 (3521b9b, 9/25 원문): 3. 배율 [E]: Interpreter CPU4 대비 duty 100 에서 **5.9×** (4.370/0.743), GPU 대비 **4.9×**.
+   **같은 엔진·같은 span** 비교: CompiledModel CPU write+run+read 3런 중앙 **5.339 ms** (5.525 · 5.339 · 5.276) vs NPU 0.743 ms → **7.2×**
+   (단 CPU 쪽은 스모크 경로 연속 실행, NPU 는 timed run duty 100 — 프로토콜이 다르다)~~
+   ~~이전 판 (e27f907, 1차 감사): 섞인 요소 "자원 + 엔진 + span + 정밀도" / 7.2× "자원 + 정밀도(… NPU 는 FP16 AOT) + 프로토콜"~~
+   → [2026-09-26 사후 증거 감사] 배율 [E] — **전부 "해당 구성에서 관측된 복합 성능 차이"이다. 어느 한 요소(자원)의 효과도, 다른 효과의 상한도 아니다.** (근거: 엔진 대조 CPU 스모크 3런 `model_sha256 = d95b3c5e…` [P], 4항목 표)
+   - Interpreter CPU4 대비 duty 100 에서 **5.9×** (4.370/0.743), GPU 대비 **4.9×** — 섞인 요소: **자원 + 엔진 + span + 저장 정밀도** (+ 날짜·배터리·밝기, 각주 5)
    - CompiledModel CPU write+run+read 3런 중앙 **5.339 ms** (5.525 · 5.339 · 5.276) vs NPU 0.743 ms → **7.2×** — 엔진·span 은 같지만
-     섞인 요소: **자원 + 정밀도(CPU 쪽은 원본 FP32 `d95b3c5e…`, NPU 는 FP16 AOT) + 프로토콜**(CPU 는 스모크 경로 연속 실행, NPU 는 timed run duty 100)
-   - (2026-09-26 정정) 이전 판은 7.2× 를 "같은 엔진·같은 span 비교"로만 적어 정밀도 차이를 빠뜨렸다
+     섞인 요소: **자원 + 저장 정밀도(CPU 쪽은 원본 FP32 `d95b3c5e…`, NPU 는 FP16 추정 AOT) + 프로토콜**(CPU 는 스모크 경로 연속 실행, NPU 는 timed run duty 100). 연산 정밀도 차이 여부는 unknown
 5. 날짜·배터리 구간·화면 밝기가 다르다 — CPU/GPU 는 **KST 9/14 00:38 → 9/15 07:44** (UTC 9/13~14), 시작 90 % 부근 → 30 % 게이트 중단 → 85 % 에서 재개.
    밝기는 `s26\device\13_display_state.txt` 의 원시값 91 (0~255, 9/14 00:26 KST 한 번 기록 — 80런 전체 기록 아님) [D]
 
@@ -139,8 +166,9 @@ A24 에서 GPU fp16 허용만으로 25 % 빨라진 실측이 있다 (`A24_S26_CO
 
 기존 표(`A24_S26_COMPARISON.md` §3.3)를 만든 스크립트를 찾지 못해 **재구현**했다 (τ 상한 3000 s, load 구간 가열 `T0+ΔT(1−e^(−t/τ))`, cooling 구간 냉각 `T∞+ΔT·e^(−t/τ)`).
 재구현을 CPU/GPU 80런에 돌리면 SKIN 가열 13~40 s(문서 17~48), SKIN 냉각 60~118 s(문서 50~116), AP 가열 3~19 s(문서 4~20), AP 냉각 29~61 s(문서 31~80) —
-범위 끝에서 **−25~+20 %** 어긋난다 (2026-09-26 정정: 이전 판은 "17~24 % 낮게"라고 적었으나 SKIN 냉각 하단은 60 vs 50 s 로 오히려 **높다**).
-또 CPU 의 AP 가열 피팅은 조건별 R² 중앙이 0.21~0.81 로 나쁘다 (2026-09-26: 이 재구현을 `s26\tools\s26_thermal_fit.py` 로 커밋 — 이 절의 NPU τ 를 그대로 재현함. R² 는 이 스크립트 값으로 단일화). **같은 방법이라고 볼 수 없다.**
+~~이전 판 (3521b9b): 범위 끝에서 **17~24 % 낮게** 나오고, CPU 의 AP 가열 피팅은 조건별 R² 중앙이 0.21~0.81 로 나쁘다. **같은 방법이라고 볼 수 없다.**~~
+→ [2026-09-26 사후 증거 감사] 범위 끝에서 **−25~+20 %** 어긋난다 (SKIN 냉각 하단은 60 vs 50 s 로 오히려 높다). CPU 의 AP 가열 피팅은 조건별 R² 중앙이 0.21~0.81 로 나쁘다. **같은 방법이라고 볼 수 없다.**
+  (근거: 재구현 범위와 문서 범위의 끝값 비 — SKIN 가열 13/17·40/48, SKIN 냉각 60/50·118/116, AP 가열 3/4·19/20, AP 냉각 29/31·61/80. 재구현은 `s26\tools\s26_thermal_fit.py` 로 커밋되어 이 절의 NPU τ 를 그대로 재현함)
 이 표의 NPU τ 는 기존 A24/S26 τ 표와 **직접 비교하지 말고**, 같은 재구현으로 CPU/GPU 를 다시 낸 값(위 범위)과만 비교할 것.
 
 | 센서 | duty 25 | duty 50 | duty 75 | duty 100 | R² 범위 |
@@ -152,7 +180,9 @@ A24 에서 GPU fp16 허용만으로 25 % 빨라진 실측이 있다 (`A24_S26_CO
 | BAT 가열 τ | 상한(3000) 4/5 | 455 s | 상한 4/5 | 2345 s | — — 60 s 안에 포화가 안 보임 → **식별 불가** |
 | BAT 냉각 τ | 147 s | 139 s | 144 s | 165 s | 0.97~0.99 |
 
-### 4.2 load 60 s 끝의 정상상태 점검 — 2026-09-26 (NPU 20 + CPU/GPU 80) [P]
+### 4.2 load 60 s 끝의 정상상태 점검 — 2026-09-26 (100런 = CPU/GPU 80 + NPU 20) [P]
+
+> **이 절은 2026-09-26 사후 증거 감사다. 수집 당시의 사전 기준이 아니며, 기존 판정을 대체하지 않는다. 새 기준의 사전 동결은 이후 수집부터 적용한다.**
 
 기준은 계산 전에 고정했다 (`D1_ondevice\작업결과_0926_대기중.md` 7단계, 18:41 KST): load_relative_s 40~60 s 의 OLS 기울기 조건 5런 중앙 |·| ≤ **0.2 ℃/min**
 (orchestrator `stable` 의 기존 기울기 한도) **그리고** 가열 피팅 60 s 도달률 1−e^(−60/τ) ≥ 0.95. 스크립트 `s26\tools\s26_thermal_fit.py`.
@@ -175,6 +205,8 @@ A24 에서 GPU fp16 허용만으로 25 % 빨라진 실측이 있다 (`A24_S26_CO
 
 ## 5. 에너지 — 잠정치 (논문에 쓰지 말 것) [E]
 
+> **이 절의 2026-09-26 추가분(판정 인용·idle 정정·⁽ⁱ⁾·분모 대조)은 2026-09-26 사후 증거 감사다. 수집 당시의 사전 기준이 아니며, 기존 판정을 대체하지 않는다. 새 기준의 사전 동결은 이후 수집부터 적용한다.**
+
 `s26\tools\s26_energy.py` (추적 안 됨, `_if_uA` 가정) — **단위 검증 허용오차가 사전에 문서화돼 있지 않아 잠정**이다.
 
 > **2026-09-26 판정 (사후 등록 — 사전 등록 아님, `docs\MEASUREMENT_DEFINITION.md` §10)**:
@@ -195,9 +227,11 @@ A24 에서 GPU fp16 허용만으로 25 % 빨라진 실측이 있다 (`A24_S26_CO
 | GPU | 100 | 6.457 | 0.436 | 21.88 |
 
 - [E] 잠정치 기준 NPU 는 추론당 CPU4 의 약 1/8, GPU 의 약 1/6. **허용오차를 먼저 정하고** 이 표를 판정할 것.
-  이 배율도 §3.1 과 같이 **자원 + 엔진 + 정밀도(FP16 vs FP32) + 세션 복합**이다
+  ~~이전 판 (e27f907): 이 배율도 §3.1 과 같이 **자원 + 엔진 + 정밀도(FP16 vs FP32) + 세션 복합**이다~~
+  → [2026-09-26 사후 증거 감사] 이 배율도 §3.1 과 같이 **자원 + 엔진 + 저장 정밀도(FP16 추정 vs FP32) + 세션 복합**이다. 연산 정밀도는 확인되지 않았다 (근거: §3.1 4항목 표)
 - load W 는 전체 기기 전력(화면 포함)이다. NPU 단독 전력이 아니다
-- ~~idle W 비교는 화면 밝기 차이(NPU 세션 0 [관찰] vs CPU/GPU 91 [D])로 오염돼 있다~~ **[2026-09-26 정정]** 이 설명은 데이터와 맞지 않는다.
+- ~~이전 판 (3521b9b): load W 는 전체 기기 전력(화면 포함)이다. NPU 단독 전력이 아니다. idle W 비교는 화면 밝기 차이(NPU 세션 0 [관찰] vs CPU/GPU 91 [D])로 오염돼 있다~~
+  → [2026-09-26 사후 증거 감사] 이 설명은 데이터와 맞지 않는다.
   d100 idle W 는 NPU 0.563 > CPU4 0.537 > GPU 0.436 으로 **밝기 0 인 NPU 세션이 오히려 높고**, 같은 세션 안 CPU4↔GPU 도 0.10 W 다르다.
   런별 idle W 는 세션마다 0.38~0.89 W 로 흩어지고 세션 중앙은 NPU 0.562 · CPU 0.593 · GPU 0.587 W 로 거의 같다 [P, 이번 재계산].
   → **idle 기준선은 세션 간 비교 불가 — 원인 미확인.** (런 사이 변동이 세션 차이보다 크다. 밝기 가설은 방향이 반대라 근거로 쓰지 않는다)
@@ -216,12 +250,60 @@ A24 에서 GPU fp16 허용만으로 25 % 빨라진 실측이 있다 (`A24_S26_CO
 
 | 증거 | 종류 | 결과 |
 |---|---|---|
-| `Replacing 1 out of 1 … (DispatchDelegate) … 1 partitions` | 간접 (실패해도 찍힘) | 20/20 |
-| ENN `SetGenAiPerfConfigFromSoc: SOC=s5e9965` + 실패 문구 0 | 간접 (런타임 로드) | 20/20 |
+| `Replacing 1 out of 1 … (DispatchDelegate) … 1 partitions` | 간접 (실패해도 찍힘) | ~~이전 판: 20/20~~ → [2026-09-26 사후 증거 감사] **수집된 캡처 범위 안에서** 20/20. 캡처 필터(`D1CHECK_EVENT:I D1GPU:I tflite:I TfLite:I litert:I *:S`) 밖과 사본 결손 구간은 판단 불가 (§6.1) |
+| ENN `SetGenAiPerfConfigFromSoc: SOC=s5e9965` + 실패 문구 0 | 간접 (런타임 로드) | ~~이전 판: 20/20~~ → [2026-09-26 사후 증거 감사] 로드 줄 20/20, 실패 문구는 **수집된 캡처 범위 안에서 0** — "실패 문구" = 로거 목록 `NPU_DISPATCH_FAILURE_RE` 8종 기준. 일반 grep(fail/error 등)으로는 런마다 `Header verification failed - using old format` 1줄이 있다 (G4 성공 런에도 있던 줄, 영향 미확인 [E]). 캡처 필터 밖·`litert` V/D 레벨·사본 결손 구간은 판단 불가 (§6.1) |
 | dispatch·ENN 줄과 D1GPU 이벤트가 같은 PID (= timed run 프로세스) | 간접 | **formal 20/20** (캡처된 logcat 줄 기준) |
 | 비트 비동일 + cosine 0.9997 | 간접 (CPU 가 아님) | preflight PASS [P]. "top5 가 FP16 표현값" 은 9/24 G4 스모크 관찰 [D] — 이번 preflight 기록엔 top5 가 없다 |
 | 지연 0.743 ms vs 같은 엔진·같은 span CPU 5.339 ms, GPU 3.636 ms | 간접 (성능 격차) | [P]/[D] |
 | 앱 프로세스의 `/dev/npu*` fd | 직접 | **없음** — 00:01 스모크(40,000회) 중 조사, formal 중에는 조사 안 함. 앱에 `vendor.samsung_slsi.hardware.enn_aidl-V1-ndk.so` 가 로드돼 있고 HAL 서비스가 존재하므로 ENN 이 AIDL HAL 을 거친다고 **추정** [E]. HAL 프로세스 fd 는 루트 필요 → **미확인** (`NPU_DEVICE_FD_PROBE_0925_NOT_FOUND.txt`) |
+
+### 6.1 실행 증거 3분법 — 런별 (NPU 20런)
+
+> **이 절은 2026-09-26 사후 증거 감사다. 수집 당시의 사전 기준이 아니며, 기존 판정을 대체하지 않는다. 새 기준의 사전 동결은 이후 수집부터 적용한다.**
+
+판정 기준은 계산 전에 고정했다 (`D1_ondevice\작업결과_0926_2차.md` 첫 절, 20:56 KST). 요지:
+- **① 실행 성공·유효 출력** — logcat 과 무관. `slot_status completed` · `validation valid` · `termination duration_complete` · 추론 수 > 0 이고 러너 JSONL 과 같음 · 세션 `npu_quality_preflight passed`
+- **② 자원·fallback 증거 충분** — `npu_delegate_evidence.verification = verified`(DispatchDelegate 1/1 = AOT manifest, ENN 로드 줄, `NPU_DISPATCH_FAILURE_RE` 0) **그리고** 증거 줄 PID = D1GPU PID
+- ① PASS + ② 불충분 이면 "실행은 성공, 자원 판정은 증거 부족" (실패·부적격 아님)
+
+**D1GPU 보존율의 정의** [P, 1-1 재계산]: 분자 = 캡처 `raw\logcat.txt` 의 D1GPU 태그 줄 수, 분모 = 러너 `gpu\*.jsonl` 줄 수(모든 이벤트).
+이 정의로 `§8` 의 77.9~99.9 % · 전체 98.8 % 가 재현된다 (inference 이벤트만 세도 같은 값). 100 % 미만 런 수는 13 (문서의 11 은 재현 안 됨).
+**`tflite`·`litert` 태그에는 분모가 없다** — "몇 줄이 나왔어야 하는지"의 기준 기록이 없다. 런마다 `tflite` 3줄·`litert` 24줄로 일정하지만 이것은 완전성의 정황일 뿐이다 [E].
+**따라서 이 두 태그에 대한 "실패 문구 0" 은 캡처된 줄 안의 주장이지 전체 구간 주장이 아니다.**
+
+| 런 | ① 실행·출력 | ② 자원 증거 | D1GPU 보존율 |
+|---|---|---|---|
+| npu-d025-r001 | PASS | 충분 | 98.5 % |
+| npu-d025-r002 | PASS | 충분 | 93.7 % |
+| npu-d025-r003 | PASS | 충분 | 100.0 % |
+| npu-d025-r004 | PASS | 충분 | 97.8 % |
+| npu-d025-r005 | PASS | 충분 | 77.9 % |
+| npu-d050-r001 | PASS | 충분 | 94.8 % |
+| npu-d050-r002 | PASS | 충분 | 99.7 % |
+| npu-d050-r003 | PASS | 충분 | 96.3 % |
+| npu-d050-r004 | PASS | 충분 | 99.9 % |
+| npu-d050-r005 | PASS | 충분 | 99.9 % |
+| npu-d075-r001 | PASS | 충분 | 100.0 % |
+| npu-d075-r002 | PASS | 충분 | 100.0 % |
+| npu-d075-r003 | PASS | 충분 | 99.5 % |
+| npu-d075-r004 | PASS | 충분 | 99.9 % |
+| npu-d075-r005 | PASS | 충분 | 98.0 % |
+| npu-d100-r001 | PASS | 충분 | 100.0 % |
+| npu-d100-r002 | PASS | 충분 | 100.0 % |
+| npu-d100-r003 | PASS | 충분 | 100.0 % |
+| npu-d100-r004 | PASS | 충분 | 99.2 % |
+| npu-d100-r005 | PASS | 충분 | 100.0 % |
+
+**요약 — NPU: ① 20/20 · ② 충분 20/20.** (D1GPU 결손 런 13개도 ①② 모두 통과 — ①은 러너 JSONL 경로, ②의 PID 대조는 남은 D1GPU 줄로 충분)
+
+**③ 로그 범위가 불완전해 판단 불가한 것 (목록)**
+- 캡처 필터 `D1CHECK_EVENT:I D1GPU:I tflite:I TfLite:I litert:I *:S` 밖의 태그 — ENN 벤더 태그, NPU 드라이버·커널 로그, ENN AIDL HAL 프로세스 로그
+- `tflite`·`litert` 의 V/D 레벨 (I 이상만 캡처)
+- `tflite`·`litert` 태그의 보존율 — 분모가 없어 산출 불가 → 이 태그의 "실패 문구 0" 은 캡처 범위 한정
+- D1GPU 사본 결손 구간 (13/20 런, 최대 22.1 % 결손) — 그 구간에 다른 태그 줄도 빠졌는지 판단 불가
+- load 루프 **도중**의 자원 전환 — dispatch·ENN 증거는 초기화 시점 줄뿐이고 추론별 backend 로그는 없다
+- `Header verification failed - using old format` (런마다 1줄) 의 의미 — 실행 성공과 공존하지만 영향 미확인
+- NPU 코어 실행의 직접 증거 (`/dev/npu*` fd) — 앱 프로세스엔 없음, HAL 프로세스는 루트 필요 (§6 마지막 행)
 
 ---
 
@@ -231,6 +313,8 @@ A24 에서 GPU fp16 허용만으로 25 % 빨라진 실측이 있다 (`A24_S26_CO
 - MobileNet V1 만. 계약 모델(EfficientNet-Lite0 / EfficientDet-Lite0)은 **스모크(실행)만** 확인 — timed run 경로 미연결
 - S26 은 일상 사용 폰 — 백그라운드 경합은 통제하지 않았다 (비행기 모드로 줄였을 뿐)
 - 화면 밝기 0 — CPU/GPU 80런의 밝기(9/14 기록 91)와 다르다 → **idle W 비교에 주의** (지연·열 상승 비교에는 영향 작음 [E])
+  ([2026-09-26 사후 증거 감사] idle W 차이의 원인을 밝기로 볼 근거는 없다 — §5. 원문은 유지)
+- [2026-09-26 사후 증거 감사 추가] 정밀도: CPU·GPU 는 FP32 저장, NPU 는 FP16 저장 추정. **연산 정밀도는 세 자원 모두 unknown** (§3.1)
 - 에너지 잠정, τ 방법 재구현
 
 ---
@@ -251,7 +335,9 @@ exports-v2 점검 [P] — **무결성·복사 정합성 검사이지 독립 교�
 - `run_summary.csv` 20행 × 6필드(지연 median·p95, slot_id, duty, termination, resource) vs 각 런 `merged\summary.json`·manifest: 120 필드 불일치 0
   → 내보내기가 입력을 옮기는 과정에서 틀리지 않았다는 뜻 (summary.json 이 exporter 의 입력이므로)
 - 독립 재계산 (읽기 전용 검토 에이전트, 05:0x): 이 문서의 모든 숫자를 원시 JSONL·summary·exports 에서 다시 계산 — **숫자 오류 0**, 표기 불일치 9건은 이 판에서 고침
-- 캡처된 logcat 의 D1GPU 사본은 11/20 런에서 일부 빠졌다 (77.9~99.9 %, 전체 98.8 %). 지연·추론 수는 **러너 JSONL(완전)** 에서 나오므로 영향 없음
+- ~~이전 판 (3521b9b): 캡처된 logcat 의 D1GPU 사본은 11/20 런에서 일부 빠졌다 (77.9~99.9 %, 전체 98.8 %).~~
+  → [2026-09-26 사후 증거 감사] 캡처 `raw\logcat.txt` 의 D1GPU 태그 줄 수 ÷ 러너 JSONL(`gpu\*.jsonl`) 줄 수 = 런별 77.9~100 %, 전체 **98.8 %** (재현됨), 100 % 미만은 **13/20 런** (11/20 은 재현 안 됨). 정의·세부는 §6.1 (근거: 원시 20런 재계산 [P]).
+  원문 이어짐: 지연·추론 수는 **러너 JSONL(완전)** 에서 나오므로 영향 없음
 
 exports-v2 의 알려진 표기 문제: `formal_npu_valid` 열 없음(`model_eligible` 로만 반영), NPU 행 `execution_profile_type cpu_not_applicable`.
 

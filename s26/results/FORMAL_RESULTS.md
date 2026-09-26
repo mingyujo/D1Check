@@ -25,6 +25,8 @@ Galaxy S26 (SM-S942N, Exynos 2600) · `--mode formal` · 2026-09-13 ~ 09-14
 
 ### 1.1 실행 조건 — 2026-09-26 사후 재추출 [P]
 
+> **이 절은 2026-09-26 사후 증거 감사다. 수집 당시의 사전 기준이 아니며, 기존 판정을 대체하지 않는다. 새 기준의 사전 동결은 이후 수집부터 적용한다.**
+
 이전 판에는 충전·화면·시작온도·비행기모드 기록이 0건이었다. 원시 `results\S26_formal_strict\runs\<run>\merged\events.jsonl` 에서 다시 뽑았다
 (방법은 `npu\results\NPU_FORMAL_RESULTS.md` 의 CPU4 d100 사후 재계산과 같음. 스크립트는 읽기 전용, 원시 폴더에 쓰지 않음).
 
@@ -49,16 +51,86 @@ Galaxy S26 (SM-S942N, Exynos 2600) · `--mode formal` · 2026-09-13 ~ 09-14
 **충전 브레이크**: 시간순 53번째 런(9/14 10:34 KST, 시작 30 %) 뒤 30 % 게이트로 멈췄고, 충전 후 9/15 01:58 KST 에 85 % 에서 재개했다 (약 15.4 시간 공백).
 재개 후 27런도 전부 `plugged 0` — 충전 케이블을 뽑고 재개했다. 다만 반복 블록 r004 가 공백을 가로질러 나뉜다.
 load 시작 중앙값은 공백 전 53런 BAT 28.1 · SKIN 30.2 ℃, 공백 후 27런 BAT 28.7 · SKIN 30.7 ℃ (+0.5~0.6 ℃) → **세션 효과를 공변량으로 볼 것** [E].
+재현 (`D1Check_v4` 루트에서): `py s26\tools\s26_run_conditions.py results\S26_formal_strict <출력.json>` (런별 JSON 은 커밋하지 않음).
+
 ### 1.2 GPU delegate 증거 재점검 — 2026-09-26 [P]
+
+> **이 절은 2026-09-26 사후 증거 감사다. 수집 당시의 사전 기준이 아니며, 기존 판정을 대체하지 않는다. 새 기준의 사전 동결은 이후 수집부터 적용한다.**
 
 NPU 에서 `Replacing … (DispatchDelegate)` 줄이 **dispatch 실패 때도 찍힌** 반례(9/24 04:55 진단 로그 766행)가 있어, 같은 함정이 GPU 20런에 있는지 봤다.
 - 20/20 런의 캡처 logcat `tflite` 줄이 모두 같은 6줄: `Initialized TensorFlow Lite runtime` → `Loaded OpenCL library` → `Initialized OpenCL-based API` → `Created TensorFlow Lite delegate for GPU` → **`Replacing 31 out of 31 node(s) with delegate (TfLiteGpuDelegateV2) node, yielding 1 partitions`** → **`Created 1 GPU delegate kernels`**
-- D1GPU JSON 을 뺀 모든 캡처 줄에서 fail/error/unable/cannot/fallback/not supported/abort 패턴 **0건**. `delegate_evidence.json` 20/20 `verified`, 31/31, `failure_or_fallback_evidence = []`
-- → **GPU 20런에는 NPU 식 함정의 흔적이 없다.** 교체 줄 뒤에 커널 생성 성공 줄이 오며, NPU 실패 사례에서는 그 자리에 실패 줄이 왔다
+- ~~이전 판 (e27f907): D1GPU JSON 을 뺀 모든 캡처 줄에서 fail/error/unable/cannot/fallback/not supported/abort 패턴 **0건**.~~
+  → [2026-09-26 사후 증거 감사] **수집된 캡처 범위(`D1CHECK_EVENT:I D1GPU:I tflite:I TfLite:I *:S`) 안에서** D1GPU JSON 을 뺀 모든 줄의 fail/error/unable/cannot/fallback/not supported/abort 패턴 **0건**. 필터 밖 태그·V/D 레벨·D1GPU 사본 결손 구간(6/20 런)은 판단 불가 (근거: §1.3). `delegate_evidence.json` 20/20 `verified`, 31/31, `failure_or_fallback_evidence = []`
+- ~~이전 판 (e27f907): → **GPU 20런에는 NPU 식 함정의 흔적이 없다.** 교체 줄 뒤에 커널 생성 성공 줄이 오며, NPU 실패 사례에서는 그 자리에 실패 줄이 왔다~~
+  → [2026-09-26 사후 증거 감사] **수집된 캡처 범위 안에서는** GPU 20런에 NPU 식 함정의 흔적이 없다. 교체 줄 뒤에 커널 생성 성공 줄이 오며, NPU 실패 사례에서는 그 자리에 실패 줄이 왔다. 캡처 범위 밖은 판단 불가 (근거: 아래 한계 줄, §1.3)
 - 한계: 캡처 필터가 `D1CHECK_EVENT:I D1GPU:I tflite:I TfLite:I *:S` 라 벤더 OpenCL/드라이버 태그와 `tflite` V/D 레벨은 없다. 이 범위 밖의 실패는 이 점검으로 못 본다
 - ⚠️ 별개 사항: 이 GPU 런들은 `s26-compat-list-advisory-v1`(CompatibilityList 부정 판정을 기록만 하고 진행)로 돌았다. 조민규 새 protocol(MULTITASK §2)은 이 override 를 금지한다 → 합의 필요
 
-재현 (`D1Check_v4` 루트에서): `py s26\tools\s26_run_conditions.py results\S26_formal_strict <출력.json>` (런별 JSON 은 커밋하지 않음).
+### 1.3 실행 증거 3분법 — 런별 (CPU 60런 · GPU 20런)
+
+> **이 절은 2026-09-26 사후 증거 감사다. 수집 당시의 사전 기준이 아니며, 기존 판정을 대체하지 않는다. 새 기준의 사전 동결은 이후 수집부터 적용한다.**
+
+판정 기준은 계산 전에 고정했다 (`D1_ondevice\작업결과_0926_2차.md` 첫 절, 20:56 KST):
+- **① 실행 성공·유효 출력** — logcat 과 무관. `slot_status completed` · `validation valid` · `termination duration_complete` · 추론 수 > 0 이고 러너 JSONL 과 같음 · `accuracy_preflight_status passed`
+- **② 자원·fallback 증거 충분** — GPU: `delegate_evidence.verification = verified`(TfLiteGpuDelegateV2 31/31, `Created 1 GPU delegate kernels`, `failure_or_fallback_evidence []`) + 증거 줄 PID = D1GPU PID.
+  CPU: `Replacing 31 out of 31 … (TfLiteXNNPackDelegate)` 있음 + GPU/Dispatch delegate 줄 없음 + PID 일치. (호스트 `delegate_evidence.json` 은 CPU 런에 `unverified` 를 적는다 — GPU 전용 판정기라서이며, 그 값으로 CPU 를 불충분 처리하지 않는다)
+- ① PASS + ② 불충분 이면 "실행은 성공, 자원 판정은 증거 부족" (실패·부적격 아님)
+
+D1GPU 보존율 = 캡처 `raw\logcat.txt` D1GPU 줄 수 ÷ 러너 `gpu\*.jsonl` 줄 수 [P]. 80런 전체 99.6 %, 100 % 미만 11/80 (CPU 5 · GPU 6), 최저 85.7 %.
+`tflite` 태그는 분모가 없다 (CPU 런마다 3줄, GPU 런마다 6줄로 일정 — 완전성의 정황일 뿐 [E]) → 이 태그의 "실패 0" 은 캡처 범위 한정.
+
+**GPU 20런**
+
+| 런 | ① 실행·출력 | ② 자원 증거 | D1GPU 보존율 |
+|---|---|---|---|
+| gpu-d025-r001 | PASS | 충분 | 100.0 % |
+| gpu-d025-r002 | PASS | 충분 | 100.0 % |
+| gpu-d025-r003 | PASS | 충분 | 100.0 % |
+| gpu-d025-r004 | PASS | 충분 | 98.3 % |
+| gpu-d025-r005 | PASS | 충분 | 100.0 % |
+| gpu-d050-r001 | PASS | 충분 | 100.0 % |
+| gpu-d050-r002 | PASS | 충분 | 100.0 % |
+| gpu-d050-r003 | PASS | 충분 | 100.0 % |
+| gpu-d050-r004 | PASS | 충분 | 100.0 % |
+| gpu-d050-r005 | PASS | 충분 | 100.0 % |
+| gpu-d075-r001 | PASS | 충분 | 100.0 % |
+| gpu-d075-r002 | PASS | 충분 | 100.0 % |
+| gpu-d075-r003 | PASS | 충분 | 99.0 % |
+| gpu-d075-r004 | PASS | 충분 | 100.0 % |
+| gpu-d075-r005 | PASS | 충분 | 97.5 % |
+| gpu-d100-r001 | PASS | 충분 | 100.0 % |
+| gpu-d100-r002 | PASS | 충분 | 98.1 % |
+| gpu-d100-r003 | PASS | 충분 | 100.0 % |
+| gpu-d100-r004 | PASS | 충분 | 99.2 % |
+| gpu-d100-r005 | PASS | 충분 | 98.7 % |
+
+**CPU 60런** (조건별 요약 — ①·② 불통과 런이 없어 개별 표기 대상 없음. 보존율 100 % 미만 런만 개별 표기)
+
+| 조건 | ① | ② 충분 | D1GPU 보존율 100 % 미만 런 |
+|---|---|---|---|
+| cpu-t01-d025 | 5/5 | 5/5 | 전부 100 % |
+| cpu-t01-d050 | 5/5 | 5/5 | r001 99.7 %, r004 97.9 %, r005 85.7 % |
+| cpu-t01-d075 | 5/5 | 5/5 | 전부 100 % |
+| cpu-t01-d100 | 5/5 | 5/5 | 전부 100 % |
+| cpu-t02-d025 | 5/5 | 5/5 | 전부 100 % |
+| cpu-t02-d050 | 5/5 | 5/5 | r002 96.7 % |
+| cpu-t02-d075 | 5/5 | 5/5 | 전부 100 % |
+| cpu-t02-d100 | 5/5 | 5/5 | 전부 100 % |
+| cpu-t04-d025 | 5/5 | 5/5 | 전부 100 % |
+| cpu-t04-d050 | 5/5 | 5/5 | r001 97.2 % |
+| cpu-t04-d075 | 5/5 | 5/5 | 전부 100 % |
+| cpu-t04-d100 | 5/5 | 5/5 | 전부 100 % |
+
+**요약 — GPU: ① 20/20 · ② 충분 20/20 / CPU: ① 60/60 · ② 충분 60/60.**
+
+**③ 로그 범위가 불완전해 판단 불가한 것 (목록)**
+- 캡처 필터 `D1CHECK_EVENT:I D1GPU:I tflite:I TfLite:I *:S` 밖의 태그 — GPU 벤더 OpenCL·드라이버 로그, 커널 로그 (CPU/GPU 세션은 `litert` 태그도 캡처 안 함 — Interpreter 1.4.2 는 `tflite` 태그를 쓴다 [D])
+- `tflite` 의 V/D 레벨
+- `tflite` 태그의 보존율 — 분모 없음 → "실패 문구 0" 은 캡처 범위 한정
+- D1GPU 사본 결손 구간 (CPU 5 · GPU 6 런) — 그 구간에 다른 태그 줄도 빠졌는지 판단 불가
+- load 루프 **도중**의 자원 전환 — delegate 증거는 초기화 시점 줄뿐
+- GPU CompatibilityList 판정: 기록만 하고 강제 안 함(`s26-compat-list-advisory-v1`) — 목록 판정이 "지원 안 됨"이었다는 사실 자체는 이 증거와 별개로 남는다
+- CPU 스레드가 실제로 몇 개 코어에 올라갔는지 — 설정값(1/2/4)만 있고 스케줄링 기록 없음
 
 명령줄은 [`../tools/s26_formal.bat`](../tools/s26_formal.bat)에 그대로 들어 있다.
 
@@ -119,8 +191,8 @@ CPU 런 60건을 스레드별로 묶은 중앙값:
 조건별 CV 중앙값 0.74 %를 감안하면 유의미하다고 주장할 수 있는 크기는 아니지만,
 적어도 "이득 없음"은 확실하다.
 
-A24에서 조민규가 관측한 값(1/2/4 = 41.178 / 41.210 / 41.224 ms, 총 편차 0.11 % — 감사본 `A24_S26_COMPARISON.md`:58-60 기준.
-2026-09-26 정정: 이전 판의 41.190 / 41.252 / 41.303 ms · 0.114 % 는 출처 불명 값이라 교체)과
+~~이전 판: A24에서 조민규가 관측한 값(1/2/4 = 41.190 / 41.252 / 41.303 ms, 총 편차 0.114 %)과~~
+→ [2026-09-26 사후 증거 감사] A24에서 조민규가 관측한 값(1/2/4 = 41.178 / 41.210 / 41.224 ms, 총 편차 0.11 %)과 (근거: 감사본 `A24_S26_COMPARISON.md`:58-60. 이전 판 값의 출처는 확인하지 못했다 — 미확인)
 **같은 현상이 서로 다른 SoC에서 재현됐다.** 모델이 작아 XNNPACK이 스레드 분할로
 얻는 이득보다 동기화 비용이 크기 때문으로 보인다.
 
@@ -180,7 +252,9 @@ load 구간 온도 상승분의 조건별 중앙값 (℃):
 (+14.00 vs +9.10, 4.9 ℃ 차이).
 
 즉 S26의 GPU는 **더 빠르면서 동시에 더 시원하다.** 지연/열 사이의 교환이 아니라
-한쪽이 다른 쪽을 지배하는(dominate) 구조다. 냉각(중앙 350 s, §1 — 2026-09-26 정정: 이전 판 "115초" 는 A24 값 오기) 후에도 AP 잔열이
+한쪽이 다른 쪽을 지배하는(dominate) 구조다. ~~이전 판: 115초 냉각 후에도 AP 잔열이~~
+→ [2026-09-26 사후 증거 감사] 냉각(중앙 350 s) 후에도 AP 잔열이 (근거: 이 문서 §1 런 구조 줄 "cooling 중앙 350 s". 115 s 는 A24 값으로 보임 [E])
+
 +0.5~1.5 ℃ 남아 있어, 연속 실험 설계에서 냉각 시간은 계속 필요하다.
 
 ---
