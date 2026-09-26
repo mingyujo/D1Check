@@ -14,6 +14,7 @@ from pathlib import Path
 
 from tools import d1_arrival_explore as engine
 from tools import d1_arrival_explore_batch as batch
+from tools import d1_arrival_energy_sensitivity as energy_stress
 from tools import d1_arrival_plan as io
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -54,7 +55,10 @@ def build(metrics_path=DEFAULT_METRICS, output=DEFAULT_OUTPUT):
     template_path = ROOT / 'tools/assets/d1_arrival_dashboard.html'
     sources = [metrics_path, summary_path, sensitivity_path, freeze_path,
                operational_path, evaluation_path, template_path,
-               bundle / 'estimates.json', bundle / 'realizations.json']
+               bundle / 'estimates.json', bundle / 'realizations.json',
+               ROOT / 'tools/d1_arrival_energy_sensitivity.py',
+               ROOT / 'tools/d1_arrival_visualize.py',
+               ROOT / 'tools/d1_arrival_explore.py']
     sources.extend(sorted((metrics_path.parent / 'representative').glob('*.json')))
     for path in sources:
         if not path.is_file():
@@ -172,8 +176,12 @@ def build(metrics_path=DEFAULT_METRICS, output=DEFAULT_OUTPUT):
     write_csv(output / 'sensitivity.csv', effects)
     write_csv(output / 'fixed_870_comparison.csv', fixed_rows)
     write_csv(output / 'fixed_870_model_curve.csv', curves)
+    stress_rows, stress_paths, stress_contrasts, stress_break_even = energy_stress.build(
+        output / 'timeline.csv', output)
     payload = dict(service=service, timeline=trace_rows, sensitivity=effects,
-        fixed=fixed_rows, curves=curves,
+        fixed=fixed_rows, curves=curves, energyRows=stress_rows,
+        energyPaths=stress_paths, energyContrasts=stress_contrasts,
+        energyBreakEven=stress_break_even,
         provenance={str(p.relative_to(metrics_path.parent)) if p.is_relative_to(metrics_path.parent)
                     else str(p.relative_to(ROOT)): sha(p) for p in sources},
         labels=dict(arrival='합성 PC 탐색·모형 결과 (실기기 표본 0)',
@@ -214,18 +222,25 @@ def plot_figures(output, service, effects, fixed, curves):
     plt.close(fig)
     fig, axes = plt.subplots(1, 2, figsize=(15, 6))
     scenario_ids = [s['id'] for s in batch.scenarios()]
-    for mode in MODES:
+    for mode_index, mode in enumerate(MODES):
         group = [r for r in effects if r['mode']==mode]
-        x = [sum(float(r['urgent_relative_pct']) for r in group if r['scenario']==s)/5 for s in scenario_ids]
-        y = [sum(float(r['normal_relative_pct']) for r in group if r['scenario']==s)/5 for s in scenario_ids]
-        axes[0].plot(scenario_ids, x, marker='o', label=mode)
-        axes[1].plot(scenario_ids, y, marker='o', label=mode)
+        for i, scenario in enumerate(scenario_ids):
+            cells = [r for r in group if r['scenario']==scenario]
+            for ax, field in zip(axes, ('urgent_relative_pct','normal_relative_pct')):
+                values = [float(r[field]) for r in cells]
+                x = i+(-.12 if mode_index==0 else .12)
+                ax.scatter([x]*len(values), values, alpha=.25, s=15,
+                           color='#3975ac' if mode_index==0 else '#ce7844')
+                ax.scatter(x, sum(values)/len(values), marker='_', s=150,
+                           color='#3975ac' if mode_index==0 else '#ce7844',
+                           label=mode if i==0 else None)
     for ax, title in zip(axes, ('긴급 P95', '일반 평균 응답')):
         ax.axhline(0, color='black', lw=.8); ax.set_title(title + ' · P 대비 B3 (%)')
         ax.set_ylabel('음수는 P의 낮은 지연'); ax.grid(alpha=.2); ax.legend()
+        ax.set_xticks(range(len(scenario_ids)),scenario_ids)
         ax.tick_params(axis='x', labelrotation=55)
         for tick in ax.get_xticklabels(): tick.set_ha('right')
-    fig.suptitle('합성 PC 민감도 · 기본 3조건과 간섭/추정/부하/host 가정 변경 · 5쌍 평균, 신뢰구간 아님')
+    fig.suptitle('합성 PC 민감도 · 범주별 seed 5점(연함)과 평균(가로선), 연결선 없음 · 신뢰구간 아님')
     fig.tight_layout()
     for suffix in ('png', 'svg'): fig.savefig(output / f'sensitivity.{suffix}', dpi=160)
     plt.close(fig)

@@ -1,0 +1,3883 @@
+{
+  "version": "arrival-energy-stress-pc-v1",
+  "source_timeline": "timeline.csv",
+  "evidence": "explicit_assumptions_only",
+  "device_sessions": 0,
+  "simulation_seed": 201,
+  "horizon_s": 120,
+  "initial_ap_c_assumed": 29.0,
+  "power_w_assumed": {
+    "idle": 1.0,
+    "single_active": 2.0,
+    "pair": [
+      2.0,
+      3.0
+    ]
+  },
+  "thermal_assumed": {
+    "idle_equilibrium_c": 29.0,
+    "single_equilibrium_c": 34.0,
+    "pair_equilibrium_c": [
+      30.0,
+      42.0
+    ],
+    "tau_s": 60.0
+  },
+  "rationale": "stress axes bracket a post-hoc queue P-B3 energy break-even; no measured physical range or calibration",
+  "queue_power_assumption": "queued state uses same whole-device power as corresponding unqueued state, not zero or additive",
+  "scope": "current two models, frozen synthetic 24-request seed-201 schedules only",
+  "no_feedback": "energy/AP accounted after simulation; policy and execution durations unchanged",
+  "unsupported": [
+    "BAT model",
+    "arrival state power/AP calibration",
+    "temperature-to-runtime feedback",
+    "energy-based policy selection",
+    "device accuracy or absolute battery saving"
+  ],
+  "states_by_profile": {
+    "P2_T30": {
+      "version": "energy-thermal-pc-v1",
+      "evidence": "explicit_assumptions",
+      "device": "hypothetical-A24-like",
+      "model": "two-model hypothetical arrival states",
+      "source": "researcher stress grid; no arrival power/AP calibration",
+      "unit_status": "assumed whole-device W and AP degrees C; not measured A24 units",
+      "sensors": [
+        "AP"
+      ],
+      "reference_temperature": {
+        "AP": 29.0
+      },
+      "states": {
+        "classification:CPU:urgent:callback": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:callback+detection:GPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:callback+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:callback+detection:GPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:prepare": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:prepare+detection:GPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:prepare+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store+detection:GPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store+detection:GPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store+detection:GPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release+detection:GPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release+detection:GPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:store": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:store+detection:CPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:store+detection:CPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:store+detection:CPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:worker_release": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:worker_release+detection:CPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:worker_release+detection:CPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:worker_release+detection:CPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback+detection:GPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback+detection:GPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:callback": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:store": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:worker_release": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:prepare": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store+detection:GPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store+detection:GPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release+detection:GPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release+detection:GPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:callback": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:prepare": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:store": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:worker_release": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "idle": {
+          "power_w": 1.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 29.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "idle|queued": {
+          "power_w": 1.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 29.0,
+              "tau_s": 60.0
+            }
+          }
+        }
+      }
+    },
+    "P2_T42": {
+      "version": "energy-thermal-pc-v1",
+      "evidence": "explicit_assumptions",
+      "device": "hypothetical-A24-like",
+      "model": "two-model hypothetical arrival states",
+      "source": "researcher stress grid; no arrival power/AP calibration",
+      "unit_status": "assumed whole-device W and AP degrees C; not measured A24 units",
+      "sensors": [
+        "AP"
+      ],
+      "reference_temperature": {
+        "AP": 29.0
+      },
+      "states": {
+        "classification:CPU:urgent:callback": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:callback+detection:GPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:callback+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:callback+detection:GPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:prepare": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:prepare+detection:GPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:prepare+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store+detection:GPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store+detection:GPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store+detection:GPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release+detection:GPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release+detection:GPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:store": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:store+detection:CPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:store+detection:CPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:store+detection:CPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:worker_release": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:worker_release+detection:CPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:worker_release+detection:CPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:worker_release+detection:CPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback+detection:GPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback+detection:GPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:callback": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:store": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:worker_release": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:prepare": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store+detection:GPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store+detection:GPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release+detection:GPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release+detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release+detection:GPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:callback": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:prepare": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:store": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:worker_release": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "idle": {
+          "power_w": 1.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 29.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "idle|queued": {
+          "power_w": 1.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 29.0,
+              "tau_s": 60.0
+            }
+          }
+        }
+      }
+    },
+    "P3_T30": {
+      "version": "energy-thermal-pc-v1",
+      "evidence": "explicit_assumptions",
+      "device": "hypothetical-A24-like",
+      "model": "two-model hypothetical arrival states",
+      "source": "researcher stress grid; no arrival power/AP calibration",
+      "unit_status": "assumed whole-device W and AP degrees C; not measured A24 units",
+      "sensors": [
+        "AP"
+      ],
+      "reference_temperature": {
+        "AP": 29.0
+      },
+      "states": {
+        "classification:CPU:urgent:callback": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:callback+detection:GPU:normal:callback|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:callback+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:callback+detection:GPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:callback|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:execute": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:worker_release|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:prepare": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:prepare+detection:GPU:normal:execute": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:prepare+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store+detection:GPU:normal:callback|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store+detection:GPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store+detection:GPU:normal:worker_release|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release+detection:GPU:normal:callback|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release+detection:GPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:callback|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:worker_release|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:callback|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:execute": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:worker_release|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:callback|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:execute": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:worker_release|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:store": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:store+detection:CPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:store+detection:CPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:store+detection:CPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:worker_release": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:worker_release+detection:CPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:worker_release+detection:CPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:worker_release+detection:CPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback+detection:GPU:normal:execute": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback+detection:GPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:callback": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:callback|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:execute": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:store": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:worker_release": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:worker_release|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:callback|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:execute": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:prepare": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:worker_release|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store+detection:GPU:normal:execute": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store+detection:GPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release+detection:GPU:normal:execute": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release+detection:GPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 30.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:callback": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:prepare": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:store": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:worker_release": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "idle": {
+          "power_w": 1.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 29.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "idle|queued": {
+          "power_w": 1.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 29.0,
+              "tau_s": 60.0
+            }
+          }
+        }
+      }
+    },
+    "P3_T42": {
+      "version": "energy-thermal-pc-v1",
+      "evidence": "explicit_assumptions",
+      "device": "hypothetical-A24-like",
+      "model": "two-model hypothetical arrival states",
+      "source": "researcher stress grid; no arrival power/AP calibration",
+      "unit_status": "assumed whole-device W and AP degrees C; not measured A24 units",
+      "sensors": [
+        "AP"
+      ],
+      "reference_temperature": {
+        "AP": 29.0
+      },
+      "states": {
+        "classification:CPU:urgent:callback": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:callback+detection:GPU:normal:callback|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:callback+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:callback+detection:GPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:callback|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:execute": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute+detection:GPU:normal:worker_release|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:prepare": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:prepare+detection:GPU:normal:execute": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:prepare+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store+detection:GPU:normal:callback|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store+detection:GPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store+detection:GPU:normal:worker_release|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release+detection:GPU:normal:callback|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release+detection:GPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:CPU:urgent:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:callback|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:callback+detection:CPU:normal:worker_release|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:callback|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:execute": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute+detection:CPU:normal:worker_release|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:callback|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:execute": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare+detection:CPU:normal:worker_release|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:store": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:store+detection:CPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:store+detection:CPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:store+detection:CPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:worker_release": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:worker_release+detection:CPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:worker_release+detection:CPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "classification:GPU:urgent:worker_release+detection:CPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback+detection:GPU:normal:execute": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback+detection:GPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:callback": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:callback|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:execute": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:store": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:worker_release": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute+detection:GPU:normal:worker_release|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:callback|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:execute": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:prepare": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:store|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare+detection:GPU:normal:worker_release|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store+detection:GPU:normal:execute": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store+detection:GPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release+detection:GPU:normal:execute": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release+detection:GPU:normal:execute|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release+detection:GPU:normal:prepare|queued": {
+          "power_w": 3.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 42.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:CPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:callback": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:callback|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:execute": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:execute|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:prepare": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:prepare|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:store": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:store|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:worker_release": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "detection:GPU:normal:worker_release|queued": {
+          "power_w": 2.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 34.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "idle": {
+          "power_w": 1.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 29.0,
+              "tau_s": 60.0
+            }
+          }
+        },
+        "idle|queued": {
+          "power_w": 1.0,
+          "thermal": {
+            "AP": {
+              "equilibrium_c": 29.0,
+              "tau_s": 60.0
+            }
+          }
+        }
+      }
+    }
+  }
+}

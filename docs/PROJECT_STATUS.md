@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ARRIVAL-ENERGY-SENSITIVITY-PC-01 — strict 경로 확인·에너지/AP 사후 탐색
+
+- [계수/실행 경로·가정 한계 판독](ARRIVAL_ENERGY_SENSITIVITY_PC_20260927.md), [오프라인 대시보드·CSV/그림·재현](results/arrival_visualization_01/README.md). strict 대표 low/queue/burst seed201에서 P와 B3의 24요청별 backend·dispatch·응답·lane 해제가 동일함을 대조했다. `global_serial`과 적응형 CPU fallback으로 pair 비용이 작동하지 않으며 원 strict 쌍차 0을 설명한다. 탐색 간섭의 예상 1.5와 실현 1.0은 별개다.
+- 기존 도착 일정에 5정책·4개의 **미보정 스트레스 가정**을 사후 회계했다. queue/explore seed201 P−B3 공통창 에너지 방향은 병행 전력 가정 2W/3W에 따라 +0.301/−1.693J, AP 최고 방향은 병행 평형30/42°C에 따라 +0.137/−0.212°C로 바뀐다. 열 피드백·도착별 실측 보정 없음. 기존 고정870건·MobileNet 계수 미전용, BAT·절대 절감·정책 PASS 미지원. 관련 PC/browser 7건 통과, ADB/실측 0.
+- 다음≤3: (1) 실제 절감 판단이 필요하면 도착 idle·단독·CC_DG 겹침의 기기 전체 전력/대응 AP를 별도 승인된 계측으로 식별, (2) 그 전에는 스트레스 민감도만 탐색으로 인용, (3) 기존 합성 도착 수집 후보는 현재 승인 없이 실행하지 않음. FAIL·동결값·종료 계획·`experiment_ready=false` 유지.
+
 ## 2026-09-26 ARRIVAL-VISUALIZATION-PC-01 — 기존 PC 결과의 오프라인 시각화
 
 - [로컬 한국어 대시보드·PNG/SVG/CSV·재현 안내](results/arrival_visualization_01/README.md). 기존 960평가/126개발 배치는 반복하지 않았다. 저장된 queue/explore 대표 trace 8개와 나머지 seed201 대표 trace 40개 최소 재생을 합쳐 low/queue/burst×strict/explore×8정책 타임라인을 만들고, 저장된 평가 지표 7개와 대조했다. Chrome 로컬 파일 렌더·low/strict/B2 및 burst/explore/P 필터 전환, 관련 PC 테스트 3건 통과.

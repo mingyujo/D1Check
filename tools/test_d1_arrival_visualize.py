@@ -69,6 +69,16 @@ class VisualizationTest(unittest.TestCase):
         }
         document.body.setAttribute('data-qa-low', verify('low','strict','B2_PC'));
         document.body.setAttribute('data-qa-burst', verify('burst','explore','P_PAIR_COST_PC'));
+        scenario.value='queue'; mode.value='explore'; energyProfile.value='P2_T30';
+        energyProfile.dispatchEvent(new Event('change'));
+        document.body.setAttribute('data-qa-energy',
+          document.querySelectorAll('#arrival-energy-curve polyline').length===10
+          && document.querySelectorAll('#arrival-energy-table tbody tr').length===5
+          && document.getElementById('arrival-energy').textContent.includes('가정 기반 탐색'));
+        energyProfile.value='';energyProfile.dispatchEvent(new Event('change'));
+        document.body.setAttribute('data-qa-unsupported',
+          document.querySelectorAll('#arrival-energy-curve polyline').length===0
+          && document.getElementById('arrival-energy').textContent.includes('계산 불가'));
         </script>"""
         html = html.replace('</body>', check + '</body>')
         with tempfile.TemporaryDirectory(prefix='d1_viz_') as directory:
@@ -83,6 +93,8 @@ class VisualizationTest(unittest.TestCase):
             rendered = proc.stdout.decode('utf-8', errors='replace')
             self.assertRegex(rendered, r'data-qa-low="true"')
             self.assertRegex(rendered, r'data-qa-burst="true"')
+            self.assertRegex(rendered, r'data-qa-energy="true"')
+            self.assertRegex(rendered, r'data-qa-unsupported="true"')
 
 
 if __name__ == '__main__':
