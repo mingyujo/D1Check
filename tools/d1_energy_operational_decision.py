@@ -15,6 +15,7 @@ from tools.d1_energy_operational_sim import (
 )
 
 VERSION = "energy-operational-ccdg-decision-pc-v1"
+DECISION_VERSION = "energy-operational-ccdg-decision-preview-v2"
 METRICS = ("work_completion_s", "common_window_energy_j_conditional", "load_ap_peak_c")
 SEGMENTS = ("load", "post_work_wait")
 
@@ -144,7 +145,7 @@ def write_decomposition_csv(decomposition, path):
 
 
 def query_from_recorded_profile(profile, initial_ap_c):
-    """A no-threshold demo; its AP start must be an already observed episode value."""
+    """Build an archived no-threshold example; this cannot certify a live AP start."""
     return dict(profile_sha256=None, fingerprint=profile["fingerprint"],
         model_sha256=profile["model_sha256"], input_sha256=profile["input_sha256"],
         work_counts=profile["work_counts"], resident_runtimes=4,
@@ -166,19 +167,19 @@ def decide(profile_path, evaluation_path, query):
     try:
         profile, evaluation = check_lineage(profile_path, evaluation_path)
     except ValueError as exc:
-        return dict(version=VERSION, status="OUT_OF_SUPPORT", reason=str(exc))
+        return dict(version=DECISION_VERSION, status="OUT_OF_SUPPORT", reason=str(exc))
     if not isinstance(query, dict):
-        return dict(version=VERSION, status="OUT_OF_SUPPORT", reason="query must be an object")
+        return dict(version=DECISION_VERSION, status="OUT_OF_SUPPORT", reason="query must be an object")
     required = ("profile_sha256", "fingerprint", "model_sha256", "input_sha256",
                 "work_counts", "resident_runtimes", "cpu_threads", "sensor", "pair",
                 "initial_ap_c", "initial_ap_source", "work_completion_boundary",
                 "energy_metric", "max_work_completion_s", "max_load_ap_peak_c")
     missing = [key for key in required if key not in query]
     if missing:
-        return dict(version=VERSION, status="OUT_OF_SUPPORT", reason=f"missing input: {missing}")
+        return dict(version=DECISION_VERSION, status="OUT_OF_SUPPORT", reason=f"missing input: {missing}")
     extra = sorted(set(query) - set(required))
     if extra:
-        return dict(version=VERSION, status="OUT_OF_SUPPORT",
+        return dict(version=DECISION_VERSION, status="OUT_OF_SUPPORT",
                     reason=f"unrecognized condition or requested metric: {extra}")
     expected = dict(profile_sha256=digest(profile_path),
         fingerprint=profile["fingerprint"], model_sha256=profile["model_sha256"],
@@ -189,7 +190,7 @@ def decide(profile_path, evaluation_path, query):
         energy_metric="common_480s_whole_device_conditional_j")
     mismatch = [key for key, value in expected.items() if query[key] != value]
     if mismatch:
-        return dict(version=VERSION, status="OUT_OF_SUPPORT",
+        return dict(version=DECISION_VERSION, status="OUT_OF_SUPPORT",
                     reason=f"unsupported identity/boundary: {mismatch}")
     try:
         deadline = _optional_cap(query["max_work_completion_s"], "deadline")
@@ -197,9 +198,9 @@ def decide(profile_path, evaluation_path, query):
         require(type(query["initial_ap_c"]) in (float, int) and
                 math.isfinite(query["initial_ap_c"]), "invalid initial AP")
         require(all(math.isclose(query["initial_ap_c"],
-                    evaluation["outcomes"][mode]["initial_ap_c"], abs_tol=1e-9)
+                    evaluation["outcomes"][mode]["initial_ap_c"], rel_tol=0, abs_tol=1e-9)
                     for mode in ("serial", "parallel")),
-                "OUT_OF_SUPPORT: no matched confirmation AP start for both arms")
+                "OUT_OF_SUPPORT: no matched archived confirmation AP start for both arms; this is not a physical temperature support range")
         nominal = {mode: predict(profile, mode=mode,
                      initial_ap_c=query["initial_ap_c"],
                      initial_ap_source=query["initial_ap_source"],
@@ -211,7 +212,7 @@ def decide(profile_path, evaluation_path, query):
                      cpu_threads=query["cpu_threads"], sensor="AP")
                    for mode in ("serial", "parallel")}
     except (ValueError, KeyError) as exc:
-        return dict(version=VERSION, status="OUT_OF_SUPPORT", reason=str(exc))
+        return dict(version=DECISION_VERSION, status="OUT_OF_SUPPORT", reason=str(exc))
     # One confirmation session per arm supplies only a retrospective sensitivity
     # scenario. These differences are neither bounds nor confidence intervals.
     records = {}
@@ -235,21 +236,28 @@ def decide(profile_path, evaluation_path, query):
     else:
         eligible = [mode for mode in records if feasibility[mode]["nominal"]]
         if len(eligible) == 1:
-            status, candidate, reason = ("MODEL_CANDIDATE", eligible[0],
-                "only this arm satisfies the supplied work/AP limits in both descriptive scenarios")
+            status, candidate, reason = ("RETROSPECTIVE_MODEL_CANDIDATE", eligible[0],
+                "only this arm satisfies the supplied work/AP limits in two retrospective descriptive scenarios; not a validated deployment choice")
         elif not eligible:
             status, candidate, reason = ("INDETERMINATE", None,
                 "neither arm satisfies the supplied limits in these descriptive scenarios")
         else:
             status, candidate, reason = ("TRADEOFF", None,
                 "both arms meet supplied limits; parallel is faster but hotter and common-energy ranking changes")
-    return dict(version=VERSION, status=status, model_candidate=candidate,
+    return dict(version=DECISION_VERSION, status=status, model_candidate=candidate,
         reason=reason, profile_sha256=digest(profile_path),
         evaluation_sha256=digest(evaluation_path),
         constraints=dict(max_work_completion_s=deadline, max_load_ap_peak_c=ap_cap),
         fixed_energy_metric="common_480s_whole_device_conditional_j",
         measurements_not_guarantees=True, nominal_and_sensitivity=records,
         feasibility=feasibility, policy_or_device_validation=False,
+        analysis_scope="archived_matched_confirmation_start_only_not_online_or_temperature_range",
+        initial_ap_evidence=dict(value_c=query["initial_ap_c"],
+            source="posthoc_observed_confirmation_two_arms",
+            development_starts_c={mode: profile["conditions"][mode]["observed_initial_ap_c"]
+                                  for mode in ("serial", "parallel")},
+            temperature_template="development_AP_increments_translated_to_confirmation_start_unvalidated"),
+        ap_limit_is_safety_threshold=False, candidate_is_deployable=False,
         note="one confirmation error per arm is a retrospective scenario, not a bound or confidence interval")
 
 

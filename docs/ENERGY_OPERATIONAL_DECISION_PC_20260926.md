@@ -32,7 +32,7 @@
 
 입력에는 profile SHA/기기 fingerprint·모델/입력 hash·동일 작업량·CPU thread/resident 수·AP 시작 관측 출처를 고정한다. 유효한 에너지 지표는 **부하 시작부터 명목 480초까지의 조건부 기기 전체 J** 하나다. `max_work_completion_s`는 부하 시작부터 870건 완료까지이며 대화형 개별 요청의 종단 간 응답시간이 아니다. `max_load_ap_peak_c`는 부하 중 AP 최고 관측값에 대한 **사용자 지정 기술 제한**이다. 두 제한 모두 `null`이면 미설정이며 프로젝트 기본값을 만들지 않는다. 완료시점까지 J를 공통창 J와 바꿔 넣거나, 준비·초기화·cleanup까지의 미계측 전체 에너지를 목적함수로 선택하는 입력은 `OUT_OF_SUPPORT`다.
 
-출력은 `MODEL_CANDIDATE`(입력 제약 아래 한 arm만 두 기술 시나리오에서 충족), `TRADEOFF`(둘 다 충족하지만 빠른 병행은 AP가 높고 에너지 순위가 뒤집힘), `INDETERMINATE`(제약 충족이 단일 확인오차 시나리오에서 뒤집히거나 둘 다 미충족), `OUT_OF_SUPPORT` 중 하나다. 확인 arm당 **1세션의 부호 있는 오차**를 동결값에 적용한 값은 사후 민감도 시나리오일 뿐 신뢰구간·안전 여유·보장 상한이 아니다. `MODEL_CANDIDATE`도 모형상 단일 후보이며 실기기에서 제약 충족을 보장하지 않는다. 사용자 지정 제한이 없으면 [예시 결과](results/energy_operational_decision_01/decision_no_service_limits.json)는 `TRADEOFF`이고 자동 최적 정책을 고르지 않는다. 두 확인 arm의 첫 준비 AP가 모두 29.1°C였으므로 **현재 판단 경로는 그 회고적 시작조건만** 허용한다. 새 온라인 관측이나 가상 시작 온도 스윕은 지원하지 않는다.
+기존 v1 출력은 `MODEL_CANDIDATE`(입력 제약 아래 한 arm만 두 기술 시나리오에서 충족), `TRADEOFF`(둘 다 충족하지만 빠른 병행은 AP가 높고 에너지 순위가 뒤집힘), `INDETERMINATE`(제약 충족이 단일 확인오차 시나리오에서 뒤집히거나 둘 다 미충족), `OUT_OF_SUPPORT` 중 하나였다. 확인 arm당 **1세션의 부호 있는 오차**를 동결값에 적용한 값은 사후 민감도 시나리오일 뿐 신뢰구간·안전 여유·보장 상한이 아니다. v1 [예시 결과](results/energy_operational_decision_01/decision_no_service_limits.json)는 보존한다. 후속 `decision-preview-v2`는 단일 후보를 `RETROSPECTIVE_MODEL_CANDIDATE`로 표기하고 29.1°C의 사후 확인 출처·개발 시작값·AP 평행 이동 가정·배포 불가를 출력에 명시한다. [v2 예시](results/energy_operational_decision_01/decision_no_service_limits_v2.json)도 제한 미설정 상태에서 `TRADEOFF`이며 자동 정책을 고르지 않는다. 두 확인 arm의 첫 준비 AP가 모두 29.1°C였으므로 이 숫자 검사는 **회고적 오차 적용 경계**일 뿐 물리적 지원 온도 범위가 아니다. 새 온라인 관측이나 가상 시작 온도 스윕은 지원하지 않는다. [채택된 중간 질문과 원래 목표 경로](ENERGY_THERMAL_TO_ORIGINAL_GOAL_PLAN_20260926.md).
 
 ## 대회 보고서 범위와 다음 결정
 

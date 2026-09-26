@@ -30,6 +30,12 @@ class BoundedDecisionTests(unittest.TestCase):
             values["serial"]["one_confirmation_error_scenario"][
                 "common_window_energy_j_conditional"])
         self.assertFalse(result["policy_or_device_validation"])
+        self.assertFalse(result["candidate_is_deployable"])
+        self.assertEqual(result["initial_ap_evidence"]["source"],
+                         "posthoc_observed_confirmation_two_arms")
+        self.assertEqual(result["initial_ap_evidence"]["development_starts_c"],
+                         {"serial": 29.4, "parallel": 29.2})
+        self.assertIn("unvalidated", result["initial_ap_evidence"]["temperature_template"])
 
     def test_only_parallel_or_serial_feasible_under_hypothetical_caps(self):
         fast = query()
@@ -37,13 +43,14 @@ class BoundedDecisionTests(unittest.TestCase):
         fast["max_load_ap_peak_c"] = 35.0
         result = decide(PROFILE, EVALUATION, fast)
         self.assertEqual((result["status"], result["model_candidate"]),
-                         ("MODEL_CANDIDATE", "parallel"))
+                         ("RETROSPECTIVE_MODEL_CANDIDATE", "parallel"))
+        self.assertFalse(result["candidate_is_deployable"])
         cool = query()
         cool["max_work_completion_s"] = 400.0
         cool["max_load_ap_peak_c"] = 32.0
         result = decide(PROFILE, EVALUATION, cool)
         self.assertEqual((result["status"], result["model_candidate"]),
-                         ("MODEL_CANDIDATE", "serial"))
+                         ("RETROSPECTIVE_MODEL_CANDIDATE", "serial"))
 
     def test_threshold_crossing_and_no_feasible_arm_are_not_success(self):
         crossing = query()
@@ -68,6 +75,10 @@ class BoundedDecisionTests(unittest.TestCase):
             item[field] = changed
             self.assertEqual(decide(PROFILE, EVALUATION, item)["status"],
                              "OUT_OF_SUPPORT", field)
+        warm = query()
+        warm["initial_ap_c"] = 29.2
+        self.assertIn("not a physical temperature support range",
+                      decide(PROFILE, EVALUATION, warm)["reason"])
         item = query()
         item["max_battery_temperature_c"] = 34
         self.assertEqual(decide(PROFILE, EVALUATION, item)["status"],
