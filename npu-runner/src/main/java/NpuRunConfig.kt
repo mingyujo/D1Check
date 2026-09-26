@@ -24,6 +24,21 @@ internal sealed interface RunLimit {
     }
 }
 
+/**
+ * timed run 이 CompiledModel 에 넘기는 **단 하나의** 가속기. 폴백 목록이 아니다 —
+ * CPU 는 "NPU 실패 시 CPU 로 떨어지는 경로"가 아니라 처음부터 CPU 만 지정하는 별도 런이다 (엔진 대조 C5).
+ * 기본값 NPU = 기존 동작 그대로.
+ */
+internal enum class TimedAccelerator(val wireName: String, val resourceLabel: String) {
+    NPU("NPU", "npu"),
+    CPU("CPU", "cpu_compiled_model");
+
+    companion object {
+        fun fromWire(value: String?): TimedAccelerator? =
+            if (value == null) NPU else entries.firstOrNull { it.wireName == value.uppercase(Locale.ROOT) }
+    }
+}
+
 internal enum class ExperimentMode {
     BASIC,
     DIAGNOSTIC,
@@ -42,6 +57,10 @@ internal data class NpuRunConfig(
     val modelPath: String? = null,
     /** timed 입력 규칙. 기본값은 benchmark-runner legacyTimedInput 과 비트 동일한 lcg-unit. */
     val inputSpec: NpuDeterministicInput.InputSpec = NpuDeterministicInput.InputSpec.LCG_UNIT,
+    /** CompiledModel 에 넘기는 유일한 가속기. 기본 NPU (기존과 같음). */
+    val accelerator: TimedAccelerator = TimedAccelerator.NPU,
+    /** true 면 load 구간 run() 전용 시간 요약을 run_only_summary 이벤트로 남긴다 (opt-in, 기본 false). */
+    val recordRunOnly: Boolean = false,
 ) {
     init {
         when (limit) {
@@ -105,11 +124,16 @@ internal object NpuAutomationIntentParser {
     const val EXTRA_NPU_MODEL_ASSET = "d1_npu_model_asset"
     const val EXTRA_NPU_MODEL_PATH = "d1_npu_model_path"
     const val EXTRA_NPU_INPUT_SPEC = "d1_npu_input_spec"
+    // 2026-09-26 추가 (둘 다 없으면 기존과 같은 동작)
+    const val EXTRA_NPU_ACCELERATOR = "d1_npu_accelerator"
+    const val EXTRA_NPU_RUN_ONLY_SPAN = "d1_npu_run_only_span"
 
     val stringExtras = listOf(
         EXTRA_RESOURCE, EXTRA_LIMIT_MODE, EXTRA_RUN_ID, EXTRA_COMMAND_ID, EXTRA_EXPERIMENT_MODE,
         EXTRA_GPU_PROFILE, EXTRA_NPU_MODEL_ASSET, EXTRA_NPU_MODEL_PATH, EXTRA_NPU_INPUT_SPEC,
+        EXTRA_NPU_ACCELERATOR,
     )
+    val booleanExtras = listOf(EXTRA_NPU_RUN_ONLY_SPAN)
     val intExtras = listOf(
         EXTRA_CPU_THREADS, EXTRA_INFERENCE_COUNT, EXTRA_WARMUP_COUNT, EXTRA_DUTY_CYCLE_PERCENT,
     )
@@ -146,6 +170,15 @@ internal object NpuAutomationIntentParser {
         val inputSpec = requireNotNull(NpuDeterministicInput.InputSpec.fromWire(inputSpecName)) {
             "Unsupported d1_npu_input_spec: $inputSpecName"
         }
+        val acceleratorName = extras[EXTRA_NPU_ACCELERATOR] as? String
+        val accelerator = requireNotNull(TimedAccelerator.fromWire(acceleratorName)) {
+            "Unsupported d1_npu_accelerator: $acceleratorName (NPU or CPU, one accelerator only)"
+        }
+        val recordRunOnly = when (val value = extras[EXTRA_NPU_RUN_ONLY_SPAN]) {
+            null -> false
+            is Boolean -> value
+            else -> throw IllegalArgumentException("$EXTRA_NPU_RUN_ONLY_SPAN must be a Boolean")
+        }
         return NpuRunConfig(
             limit = limit,
             warmupCount = optionalInt(extras, EXTRA_WARMUP_COUNT) ?: 20,
@@ -158,6 +191,8 @@ internal object NpuAutomationIntentParser {
                 ?: NpuRunConfig.DEFAULT_MODEL_ASSET,
             modelPath = (extras[EXTRA_NPU_MODEL_PATH] as? String)?.takeIf { it.isNotBlank() },
             inputSpec = inputSpec,
+            accelerator = accelerator,
+            recordRunOnly = recordRunOnly,
         )
     }
 

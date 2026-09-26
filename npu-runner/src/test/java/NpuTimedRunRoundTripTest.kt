@@ -58,13 +58,17 @@ class NpuTimedRunRoundTripTest {
         }
     }
 
-    private class FakeBackend(private val latencyNs: Long) : NpuTimedBackend {
+    private class FakeBackend(
+        private val latencyNs: Long,
+        private val runOnlyNs: Long? = null,
+    ) : NpuTimedBackend {
         var closed = false
         override fun init() = NpuBackendInit(4_806_000L, 10_930_000L, 270_000L, "NPU,GPU,CPU")
         override fun inputElementCount() = 224 * 224 * 3
         override fun infer(input: FloatArray) {
             ShadowSystemClock.advanceBy(Duration.ofNanos(latencyNs))
         }
+        override fun lastRunOnlyNs(): Long? = runOnlyNs
         override fun close() {
             closed = true
         }
@@ -99,11 +103,14 @@ class NpuTimedRunRoundTripTest {
         periodSeconds: Double,
         safety: PilotSafetyCheck,
         expectValid: Boolean,
+        accelerator: TimedAccelerator = TimedAccelerator.NPU,
+        recordRunOnly: Boolean = false,
+        expectFormalNpuValid: Boolean = expectValid,
     ): NpuTimedRunResult {
         FakeRunProvider.runId = runId
         FakeRunProvider.startedElapsedNs = SystemClock.elapsedRealtimeNanos()
         ShadowSystemClock.advanceBy(Duration.ofMillis(1))
-        val backend = FakeBackend(latencyNs = 2_000_000L)
+        val backend = FakeBackend(latencyNs = 2_000_000L, runOnlyNs = if (recordRunOnly) 1_500_000L else null)
         val config = NpuRunConfig(
             limit = RunLimit.Duration(DURATION_S),
             warmupCount = WARMUP,
@@ -112,6 +119,8 @@ class NpuTimedRunRoundTripTest {
             commandId = commandId,
             dutyCyclePercent = dutyPercent,
             dutyCyclePeriodSeconds = periodSeconds,
+            accelerator = accelerator,
+            recordRunOnly = recordRunOnly,
         )
         val engine = NpuTimedRunEngine(
             context = RuntimeEnvironment.getApplication(),
@@ -153,6 +162,8 @@ class NpuTimedRunRoundTripTest {
                 .put("duty_cycle_percent", dutyPercent)
                 .put("duty_cycle_period_s", periodSeconds)
                 .put("expect_valid", expectValid)
+                .put("expect_formal_npu_valid", expectFormalNpuValid)
+                .put("timed_accelerator", accelerator.wireName)
                 .toString(2)
         )
         return done
@@ -186,6 +197,44 @@ class NpuTimedRunRoundTripTest {
         assertEquals(metadata.getInt("completed_inference_count"), inferences)
         assertTrue(inferences > 0)
         assertEquals(WARMUP, records.count { it.getString("event") == "warmup" })
+        // 기본 설정 = 2026-09-26 이전과 같은 출력: 새 키·새 이벤트가 없다
+        assertEquals("NPU", metadata.getString("npu_accelerator_requested"))
+        for (key in listOf("npu_timed_resource_label", "npu_run_only_span", "npu_model_size_bytes")) {
+            assertFalse(key, metadata.has(key))
+        }
+        assertEquals(0, records.count { it.getString("event") == "run_only_summary" })
+    }
+
+    @Test
+    fun runOnlySpanIsOptInAndSummarisesTheLoad() {
+        val result = runCase(
+            "npu-d100-runonly", "12121212-1111-4111-8111-111111111111", "34343434-2222-4222-8222-222222222222",
+            100, 10.0, PASSING_SAFETY, expectValid = true, recordRunOnly = true,
+        )
+        val records = records(result)
+        val metadata = records.first()
+        val summaries = records.filter { it.getString("event") == "run_only_summary" }
+        assertEquals(1, summaries.size)
+        val detail = JSONObject(summaries.single().getString("detail"))
+        val inferences = records.count { it.getString("event") == "inference" }
+        assertEquals(inferences, detail.getInt("count"))
+        assertEquals(0, detail.getInt("missing"))
+        assertEquals(1_500_000L, detail.getLong("median_ns"))
+        // 기존 inference latency 의미(write+run+read)는 그대로다
+        assertEquals("writeFloat+run+readFloat", metadata.getString("npu_latency_boundary"))
+        assertTrue(metadata.has("npu_run_only_span"))
+    }
+
+    @Test
+    fun cpuOnlyCompiledModelRunIsLabelledAndNeverAnNpuRun() {
+        val result = runCase(
+            "cpu-compiled-d100", "56565656-1111-4111-8111-111111111111", "78787878-2222-4222-8222-222222222222",
+            100, 10.0, PASSING_SAFETY, expectValid = true, accelerator = TimedAccelerator.CPU,
+            expectFormalNpuValid = false,
+        )
+        val metadata = records(result).first()
+        assertEquals("CPU", metadata.getString("npu_accelerator_requested"))
+        assertEquals("cpu_compiled_model", metadata.getString("npu_timed_resource_label"))
     }
 
     @Test

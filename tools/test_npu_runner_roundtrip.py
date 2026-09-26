@@ -52,6 +52,12 @@ G4_DEVICE_LOG = "\n".join([
     "(DispatchDelegate) node, yielding 1 partitions for subgraph 0 ().",
 ])
 
+# CPU-only CompiledModel run (C5): a real device log has an XNNPACK line and no dispatch/ENN evidence.
+CPU_ONLY_DEVICE_LOG = (
+    "09-26 21:00:00.000 12719 12756 I tflite  : Replacing 31 out of 31 node(s) with delegate "
+    "(TfLiteXNNPackDelegate) node, yielding 1 partitions for subgraph 0."
+)
+
 
 def cases() -> list[Path]:
     return sorted(path.parent for path in ARTIFACTS.glob("*/roundtrip.json"))
@@ -88,7 +94,8 @@ def build_host_run(root: Path, case_dir: Path) -> tuple[Path, dict, list[dict]]:
     ]
     (run_dir / "raw/thermalservice.jsonl").write_text(
         "".join(json.dumps(e) + "\n" for e in thermal), "utf-8")
-    (run_dir / "raw/logcat.txt").write_text(G4_DEVICE_LOG + "\n", "utf-8")
+    device_log = CPU_ONLY_DEVICE_LOG if info.get("timed_accelerator", "NPU") == "CPU" else G4_DEVICE_LOG
+    (run_dir / "raw/logcat.txt").write_text(device_log + "\n", "utf-8")
     (run_dir / "metadata.json").write_text(
         json.dumps({"device_model": "SM-S942N", "capture_error": None}), "utf-8")
 
@@ -126,8 +133,10 @@ def failure_table(validation: dict) -> str:
 @unittest.skipUnless(cases(), "run `gradlew :npu-runner:testDebugUnitTest` to produce npu-runner/build/npu-roundtrip")
 class NpuRunnerRoundTripTest(unittest.TestCase):
     def test_valid_cases_pass_formal_validation(self):
+        def formal_npu(info):
+            return info["expect_valid"] and info.get("expect_formal_npu_valid", info["expect_valid"])
         valid = [case for case in cases()
-                 if json.loads((case / "roundtrip.json").read_text("utf-8"))["expect_valid"]]
+                 if formal_npu(json.loads((case / "roundtrip.json").read_text("utf-8")))]
         self.assertTrue(valid)
         for case in valid:
             with self.subTest(case=case.name), tempfile.TemporaryDirectory() as directory:
@@ -138,6 +147,26 @@ class NpuRunnerRoundTripTest(unittest.TestCase):
                 summary = validation["summary"]
                 self.assertTrue(all(summary["formal_npu_conditions"].values()))
                 self.assertEqual("verified", summary["npu_delegate_evidence"]["verification"])
+
+    def test_cpu_only_run_is_never_accepted_as_npu(self):
+        """C5 CPU-only CompiledModel runs must fail formal_npu_valid (no dispatch evidence)."""
+        case = next((c for c in cases() if c.name == "cpu-compiled-d100"), None)
+        self.assertIsNotNone(case)
+        with tempfile.TemporaryDirectory() as directory:
+            run_dir, info, events = build_host_run(Path(directory), case)
+            self.assertEqual("CPU", events[0]["npu_accelerator_requested"])
+            validation = analyze_and_validate(run_dir, info)
+            self.assertIs(False, validation["checks"]["formal_npu_valid"])
+            self.assertFalse(validation["valid"])
+
+    def test_run_only_summary_event_is_tolerated_by_formal_validation(self):
+        case = next((c for c in cases() if c.name == "npu-d100-runonly"), None)
+        self.assertIsNotNone(case)
+        with tempfile.TemporaryDirectory() as directory:
+            run_dir, info, events = build_host_run(Path(directory), case)
+            self.assertEqual(1, sum(e.get("event") == "run_only_summary" for e in events))
+            validation = analyze_and_validate(run_dir, info)
+            self.assertTrue(validation["valid"], "failed checks:\n" + failure_table(validation))
 
     def test_host_catches_a_broken_runner_file(self):
         """The round trip is not vacuous: corrupting one runner field fails the matching check."""
@@ -211,10 +240,10 @@ class NpuIntentContractTest(unittest.TestCase):
             body = re.search(rf"val {name} = listOf\((.*?)\)", source, re.S).group(1)
             return {constants[item.strip()] for item in body.split(",") if item.strip()}
 
-        return constants, listed("stringExtras"), listed("intExtras")
+        return constants, listed("stringExtras"), listed("intExtras"), listed("booleanExtras")
 
     def test_orchestrator_npu_intent_matches_npu_runner_parser(self):
-        constants, strings, ints = self.kotlin_extras()
+        constants, strings, ints, booleans = self.kotlin_extras()
         arguments = ORCH.runner_intent_arguments(
             "NPU", None, 600, 20, "run", "command", 50, 10.0, ORCH.DEFAULT_GPU_PROFILE,
             npu_model_asset=ORCH.DEFAULT_NPU_MODEL_ASSET,
@@ -231,7 +260,7 @@ class NpuIntentContractTest(unittest.TestCase):
                     "--ei": key in ints,
                     "--el": key == constants["EXTRA_DURATION_S"],
                     "--ef": key == constants["EXTRA_DUTY_CYCLE_PERIOD_S"],
-                    "--ez": key == constants["EXTRA_AUTO_START"],
+                    "--ez": key == constants["EXTRA_AUTO_START"] or key in booleans,
                 }[flag]
                 self.assertTrue(expected, f"{flag} {key} is not read with that type by npu-runner")
 

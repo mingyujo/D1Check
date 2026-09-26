@@ -95,6 +95,9 @@ class NpuRunnerActivity : Activity() {
             NpuAutomationIntentParser.intExtras.forEach { key ->
                 if (intent.hasExtra(key)) put(key, intent.getIntExtra(key, Int.MIN_VALUE))
             }
+            NpuAutomationIntentParser.booleanExtras.forEach { key ->
+                if (intent.hasExtra(key)) put(key, intent.getBooleanExtra(key, false))
+            }
             if (intent.hasExtra(NpuAutomationIntentParser.EXTRA_DURATION_S)) {
                 put(
                     NpuAutomationIntentParser.EXTRA_DURATION_S,
@@ -172,6 +175,11 @@ class NpuRunnerActivity : Activity() {
         val qualityN: Int,
         /** 품질 게이트의 CPU 기준 모델 (원본 FP32, benchmark-runner assets 공유). */
         val referenceAsset: String,
+        /**
+         * `--es ref_model_path` (2026-09-26 추가). 주면 CPU 기준 모델을 기기 파일에서 연다 —
+         * APK 에 없는 원본(EfficientNet-Lite0 FP32 `6c7ab0a6…`)용. 없으면 referenceAsset (기존과 같음).
+         */
+        val referencePath: String? = null,
         /** `--es input_spec`. null = 기본 lcg-unit (MobileNet, 9/24 G4 게이트와 같은 입력). */
         val inputSpecName: String?,
     ) {
@@ -203,6 +211,7 @@ class NpuRunnerActivity : Activity() {
                     autofinish = i.getBooleanExtra("autofinish", false),
                     qualityN = i.getIntExtra("quality_n", 0).coerceIn(0, 256),
                     referenceAsset = i.getStringExtra("ref_model_asset") ?: DEFAULT_REFERENCE_ASSET,
+                    referencePath = i.getStringExtra("ref_model_path")?.takeIf { it.isNotBlank() },
                     inputSpecName = i.getStringExtra("input_spec"),
                 )
             }
@@ -402,8 +411,8 @@ class NpuRunnerActivity : Activity() {
         val referenceOut = NpuBenchmarkEngine(
             context = this,
             accelerator = Accelerator.CPU,
-            modelAssetPath = cfg.referenceAsset,
-            modelFilePath = null,
+            modelAssetPath = cfg.referenceAsset.takeIf { cfg.referencePath == null },
+            modelFilePath = cfg.referencePath,
         ).use { cpu ->
             cpu.init()
             inputs.map { cpu.runFloat(it).second }
@@ -414,10 +423,28 @@ class NpuRunnerActivity : Activity() {
                 "bit_identical_to_cpu=${result.bitIdenticalToCpu} (${result.bitIdenticalCount}/${result.n})  " +
                 "argmax=${result.argmaxAgreement}/${result.n}  cosine_min=${result.cosineMin}\n",
         )
-        return result.toJson(cfg.referenceAsset, "${cfg.accelerator}:${cfg.modelPath ?: cfg.modelAsset}")
+        val referenceName = cfg.referencePath ?: cfg.referenceAsset
+        val json = result.toJson(referenceName, "${cfg.accelerator}:${cfg.modelPath ?: cfg.modelAsset}")
+        // 파일 기준일 때만 기준 모델 SHA 를 덧붙인다 (asset 기준 출력은 기존과 바이트 동일)
+        return cfg.referencePath?.let { path ->
+            json.removeSuffix("}") + ",\"reference_model_sha256\":\"${fileSha256(File(path))}\"}"
+        } ?: json
     }
 
     // --------------------------------------------------------------- helpers
+
+    private fun fileSha256(file: File): String {
+        val digest = java.security.MessageDigest.getInstance("SHA-256")
+        file.inputStream().use { input ->
+            val buffer = ByteArray(1 shl 16)
+            while (true) {
+                val n = input.read(buffer)
+                if (n < 0) break
+                digest.update(buffer, 0, n)
+            }
+        }
+        return digest.digest().joinToString("") { "%02x".format(it) }
+    }
 
     private fun modelSha256(cfg: Config): String {
         val digest = java.security.MessageDigest.getInstance("SHA-256")

@@ -31,6 +31,7 @@ internal object NpuRunMetadata {
         val inputSpec: NpuDeterministicInput.InputSpec,
         val inputElements: Int?,
         val inputSha256: String?,
+        val modelSizeBytes: Long? = null,
     )
 
     data class LoadOutcome(
@@ -127,7 +128,7 @@ internal object NpuRunMetadata {
         // ---- NPU 전용 (NPU_RUNNER_SPEC §4). CPU/GPU 파일에는 없는 키다.
         values.putAll(linkedMapOf(
             "engine" to ENGINE,
-            "npu_accelerator_requested" to "NPU",
+            "npu_accelerator_requested" to config.accelerator.wireName,
             "npu_available_accelerators" to facts?.availableAccelerators,
             "npu_model_source" to (facts?.modelSource ?: config.modelSource),
             "npu_model_partition" to facts?.aotPartition,
@@ -146,6 +147,16 @@ internal object NpuRunMetadata {
             // latency_ms 는 write + run + read (Interpreter.run() 의 복사 포함 의미와 맞춘다, SPEC §4)
             "npu_latency_boundary" to "writeFloat+run+readFloat",
         ))
+        // 2026-09-26 추가 키 — 기본 설정(기본 모델·NPU·run-only 기록 안 함)에서는 붙지 않아 기존 출력과 같다
+        if (config.accelerator != TimedAccelerator.NPU) {
+            values["npu_timed_resource_label"] = config.accelerator.resourceLabel
+        }
+        if (config.recordRunOnly) {
+            values["npu_run_only_span"] = "run_only_summary event (CompiledModel.run() only)"
+        }
+        if (config.modelPath != null || config.modelAsset != NpuRunConfig.DEFAULT_MODEL_ASSET) {
+            values["npu_model_size_bytes"] = facts?.modelSizeBytes
+        }
         return values
     }
 }

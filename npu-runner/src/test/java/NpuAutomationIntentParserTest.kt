@@ -98,4 +98,40 @@ class NpuAutomationIntentParserTest {
             }
         }
     }
+
+    @Test
+    fun acceleratorAndRunOnlyDefaultToThePreviousBehaviour() {
+        val config = checkNotNull(NpuAutomationIntentParser.parse(orchestratorExtras()))
+        assertEquals(TimedAccelerator.NPU, config.accelerator)
+        assertEquals(false, config.recordRunOnly)
+    }
+
+    @Test
+    fun cpuIsASoleAcceleratorNotAFallbackList() {
+        val cpu = checkNotNull(
+            NpuAutomationIntentParser.parse(
+                orchestratorExtras().apply {
+                    put("d1_npu_accelerator", "cpu")
+                    put("d1_npu_run_only_span", true)
+                }
+            )
+        )
+        assertEquals(TimedAccelerator.CPU, cpu.accelerator)
+        assertEquals("cpu_compiled_model", cpu.accelerator.resourceLabel)
+        assertTrue(cpu.recordRunOnly)
+        for (bad in listOf("NPU,CPU", "GPU", "NPU|CPU", "")) {
+            try {
+                NpuAutomationIntentParser.parse(orchestratorExtras().apply { put("d1_npu_accelerator", bad) })
+                throw AssertionError("accepted accelerator: $bad")
+            } catch (expected: IllegalArgumentException) {
+                // one accelerator only; GPU is not a timed-run option here
+            }
+        }
+        try {
+            NpuAutomationIntentParser.parse(orchestratorExtras().apply { put("d1_npu_run_only_span", "true") })
+            throw AssertionError("accepted a string run-only flag")
+        } catch (expected: IllegalArgumentException) {
+            // boolean extra only
+        }
+    }
 }

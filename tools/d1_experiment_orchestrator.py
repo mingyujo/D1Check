@@ -46,6 +46,8 @@ NPU_RUNNER_ACTIVITY = f"{NPU_RUNNER_PACKAGE}/.NpuRunnerActivity"
 NPU_REMOTE_RUNNER_DIRECTORY = f"/sdcard/Android/data/{NPU_RUNNER_PACKAGE}/files/runs"
 # litert (lowercase) carries the dispatch/ENN evidence d1_logger_v4 needs for formal_npu_valid.
 NPU_LOGGER_EXTRA_LOGCAT_TAGS = ("litert:I",)
+# Opt-in diagnostic capture (--npu-diagnostic-logcat); the default NPU filter above is unchanged.
+NPU_DIAGNOSTIC_LOGCAT_TAGS = ("litert:V", "tflite:V", "TfLite:V")
 RESOURCE_CHOICES = ("CPU", "GPU", "NPU")
 DEFAULT_NPU_MODEL_ASSET = "models/mobilenet_v1_1.0_224_Samsung_E9965.tflite"
 DEFAULT_NPU_REFERENCE_ASSET = "models/mobilenet_v1_1.0_224.tflite"
@@ -1013,6 +1015,10 @@ def runner_intent_arguments(
     duty_cycle_period_seconds: float = 10.0,
     gpu_profile_id: str = DEFAULT_GPU_PROFILE,
     npu_model_asset: str = DEFAULT_NPU_MODEL_ASSET,
+    npu_model_path: str | None = None,
+    npu_input_spec: str | None = None,
+    npu_accelerator: str | None = None,
+    npu_run_only_span: bool = False,
 ) -> list[str]:
     # NPU goes to npu-runner with the same d1_* timed-run extras; CPU/GPU are unchanged.
     activity = NPU_RUNNER_ACTIVITY if resource == "NPU" else RUNNER_ACTIVITY
@@ -1027,6 +1033,15 @@ def runner_intent_arguments(
         arguments += ["--ei", "d1_cpu_threads", str(cpu_threads)]
     elif resource == "NPU":
         arguments += ["--es", "d1_npu_model_asset", npu_model_asset]
+        # Optional extras are sent only when set, so the default NPU Intent is unchanged.
+        if npu_model_path:
+            arguments += ["--es", "d1_npu_model_path", npu_model_path]
+        if npu_input_spec:
+            arguments += ["--es", "d1_npu_input_spec", npu_input_spec]
+        if npu_accelerator:
+            arguments += ["--es", "d1_npu_accelerator", npu_accelerator]
+        if npu_run_only_span:
+            arguments += ["--ez", "d1_npu_run_only_span", "true"]
     else:
         arguments += ["--es", "d1_gpu_profile", gpu_profile_id]
     arguments += [
@@ -1060,12 +1075,12 @@ def logger_exit_timeout_seconds(resource: Any) -> int:
     return LOGGER_EXIT_TIMEOUT_SECONDS
 
 
-def npu_logger_capture_arguments(resource: Any) -> list[str]:
+def npu_logger_capture_arguments(resource: Any, diagnostic: bool = False) -> list[str]:
     """Extra d1_logger_v4 capture flags for NPU slots; empty for CPU/GPU (command unchanged)."""
     if str(resource or "").upper() != "NPU":
         return []
     arguments = ["--runner-package", NPU_RUNNER_PACKAGE]
-    for tag in NPU_LOGGER_EXTRA_LOGCAT_TAGS:
+    for tag in NPU_LOGGER_EXTRA_LOGCAT_TAGS + (NPU_DIAGNOSTIC_LOGCAT_TAGS if diagnostic else ()):
         arguments += ["--extra-logcat-tag", tag]
     return arguments
 
@@ -1073,11 +1088,34 @@ def npu_logger_capture_arguments(resource: Any) -> list[str]:
 def npu_runner_intent_kwargs(resource: Any, args: argparse.Namespace) -> dict[str, Any]:
     if str(resource or "").upper() != "NPU":
         return {}
-    return {"npu_model_asset": getattr(args, "npu_model_asset", DEFAULT_NPU_MODEL_ASSET)}
+    kwargs: dict[str, Any] = {
+        "npu_model_asset": getattr(args, "npu_model_asset", DEFAULT_NPU_MODEL_ASSET),
+    }
+    # Non-default options only; with none of the new flags the Intent is byte-identical.
+    if getattr(args, "npu_model_path", None):
+        kwargs["npu_model_path"] = args.npu_model_path
+    if getattr(args, "npu_timed_input_spec", None):
+        kwargs["npu_input_spec"] = args.npu_timed_input_spec
+    if getattr(args, "npu_accelerator", "NPU") != "NPU":
+        kwargs["npu_accelerator"] = args.npu_accelerator
+    if getattr(args, "npu_run_only_span", False):
+        kwargs["npu_run_only_span"] = True
+    return kwargs
+
+
+def local_npu_asset_facts(asset: str) -> dict[str, Any] | None:
+    """SHA-256 and size of an npu-runner asset from this checkout (the APK packs the same bytes)."""
+    repo = Path(__file__).resolve().parent.parent
+    for root in (repo / "npu-runner" / "src" / "main" / "assets",
+                 repo / "benchmark-runner" / "src" / "main" / "assets"):
+        path = root / asset
+        if path.is_file():
+            return {"sha256": hashlib.sha256(path.read_bytes()).hexdigest(), "size_bytes": path.stat().st_size}
+    return None
 
 
 def npu_config(args: argparse.Namespace) -> dict[str, Any]:
-    return {
+    config = {
         "runner_package": NPU_RUNNER_PACKAGE,
         "engine": "litert-compiled-model",
         "litert_runtime_version": NPU_LITERT_RUNTIME_VERSION,
@@ -1091,14 +1129,40 @@ def npu_config(args: argparse.Namespace) -> dict[str, Any]:
             "criteria": "bit_identical_to_cpu==false && argmax_agreement==n/n && cosine_min>=0.99",
         },
     }
+    # Keys below appear only for non-default runs, so default manifests stay byte-identical.
+    model_asset = config["model_asset"]
+    model_path = getattr(args, "npu_model_path", None)
+    if model_path:
+        config["model_path"] = model_path
+        config["model_expected"] = {
+            "sha256": getattr(args, "npu_model_sha256", None),
+            "size_bytes": getattr(args, "npu_model_size", None),
+            "source": "operator-declared (device file; host cannot read it)",
+        }
+    elif model_asset != DEFAULT_NPU_MODEL_ASSET:
+        config["model_expected"] = dict(local_npu_asset_facts(model_asset) or {},
+                                        source="this checkout's asset bytes")
+    if getattr(args, "npu_timed_input_spec", None):
+        config["timed_input_spec"] = args.npu_timed_input_spec
+    if getattr(args, "npu_reference_path", None):
+        config["quality_gate"]["reference_path"] = args.npu_reference_path
+    if getattr(args, "npu_accelerator", "NPU") != "NPU":
+        config["timed_accelerator"] = args.npu_accelerator
+        config["timed_resource_label"] = "cpu_compiled_model"
+        config["timed_accelerator_note"] = "sole accelerator, not a fallback; formal_npu_valid is expected False"
+    if getattr(args, "npu_run_only_span", False):
+        config["run_only_span"] = "run_only_summary event (CompiledModel.run() only)"
+    if getattr(args, "npu_diagnostic_logcat", False):
+        config["diagnostic_logcat_tags"] = list(NPU_DIAGNOSTIC_LOGCAT_TAGS)
+    return config
 
 
 def npu_quality_intent_arguments(
     run_id: str, model_asset: str, reference_asset: str, input_spec: str,
-    count: int = NPU_QUALITY_GATE_N,
+    count: int = NPU_QUALITY_GATE_N, model_path: str | None = None, reference_path: str | None = None,
 ) -> list[str]:
     """npu-runner smoke/gate Intent (s26_npu_go.bat protocol): 1 timed inference, then the gate."""
-    return [
+    arguments = [
         "shell", "am", "start", "-W", "-n", NPU_RUNNER_ACTIVITY,
         "--es", "accelerator", "NPU",
         "--es", "dtype", "float",
@@ -1108,6 +1172,13 @@ def npu_quality_intent_arguments(
         "--es", "model_asset", model_asset,
         "--es", "ref_model_asset", reference_asset,
         "--es", "input_spec", input_spec,
+    ]
+    # File-based candidate/reference (npu-runner: a path wins over the asset); default Intent unchanged.
+    if model_path:
+        arguments += ["--es", "model_path", model_path]
+    if reference_path:
+        arguments += ["--es", "ref_model_path", reference_path]
+    return arguments + [
         "--es", "run_id", run_id,
         "--ez", "autofinish", "true",
     ]
@@ -3298,11 +3369,12 @@ class ExperimentOrchestrator:
         """Run the npu-runner quality gate once per experiment (mirror of ensure_accuracy_preflight)."""
         config = self.manifest["config"].get("npu") or npu_config(self.args)
         gate_config = config["quality_gate"]
+        candidate = config.get("model_path") or config["model_asset"]  # npu-runner reports path over asset
         existing = self.manifest.get("npu_quality_preflight")
         if (
             isinstance(existing, dict)
             and existing.get("status") == "passed"
-            and existing.get("candidate_model") == config["model_asset"]
+            and existing.get("candidate_model") == candidate
             and existing.get("input_spec") == gate_config["input_spec"]
         ):
             return existing
@@ -3319,7 +3391,7 @@ class ExperimentOrchestrator:
         self.adb.run(
             npu_quality_intent_arguments(
                 run_id, config["model_asset"], reference_asset, gate_config["input_spec"],
-                gate_config["n"],
+                gate_config["n"], config.get("model_path"), gate_config.get("reference_path"),
             ),
             timeout=30,
         )
@@ -3340,12 +3412,12 @@ class ExperimentOrchestrator:
         if summary is None:
             result = {
                 "status": "failed", "failure_reasons": ["summary_timeout"], "run_id": run_id,
-                "candidate_model": config["model_asset"], "input_spec": gate_config["input_spec"],
+                "candidate_model": candidate, "input_spec": gate_config["input_spec"],
                 "evaluated_utc": utc_now(),
             }
         else:
             result = evaluate_npu_quality_summary(
-                summary, run_id, config["model_asset"], gate_config["n"],
+                summary, run_id, candidate, gate_config["n"],
             )
         result["policy"] = policy
         self.manifest["npu_quality_preflight"] = result
@@ -3866,7 +3938,8 @@ class ExperimentOrchestrator:
             capture_process = subprocess.Popen(
                 self._logger_command(
                     "capture", str(self.runs_root),
-                    *npu_logger_capture_arguments(slot["resource"]),
+                    *npu_logger_capture_arguments(
+                        slot["resource"], getattr(self.args, "npu_diagnostic_logcat", False)),
                 ),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
@@ -4589,7 +4662,8 @@ def dry_run_payload(args: argparse.Namespace) -> dict[str, Any]:
                     **npu_runner_intent_kwargs(slot["resource"], args),
                 ),
                 **(
-                    {"logger_capture_extra": npu_logger_capture_arguments(slot["resource"])}
+                    {"logger_capture_extra": npu_logger_capture_arguments(
+                        slot["resource"], getattr(args, "npu_diagnostic_logcat", False))}
                     if slot["resource"] == "NPU" else {}
                 ),
                 "stop_run": serial_prefix + stop_run_arguments(),
@@ -4762,10 +4836,29 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
+    # 2026-09-26 NPU-slot options (npu-runner only). Defaults reproduce the previous behaviour exactly;
+    # --npu-input-spec keeps its old gate-only meaning, the timed run has its own flag.
+    parser.add_argument("--npu-model-path", help="device file path (e.g. EfficientDet, not in the APK)")
+    parser.add_argument("--npu-model-sha256", help="expected SHA-256 of --npu-model-path (recorded)")
+    parser.add_argument("--npu-model-size", type=int, help="expected bytes of --npu-model-path (recorded)")
+    parser.add_argument("--npu-timed-input-spec", choices=NPU_INPUT_SPECS,
+                        help="timed-run input_spec (d1_npu_input_spec); omitted = runner default lcg-unit")
+    parser.add_argument("--npu-reference-path", help="device file path of the CPU reference model")
+    parser.add_argument("--npu-accelerator", default="NPU", choices=("NPU", "CPU"),
+                        help="the single CompiledModel accelerator for NPU slots; CPU is not a fallback")
+    parser.add_argument("--npu-run-only-span", action="store_true",
+                        help="npu-runner records a run_only_summary event (CompiledModel.run() only)")
+    parser.add_argument("--npu-diagnostic-logcat", action="store_true",
+                        help="add litert:V tflite:V TfLite:V to the NPU capture (diagnostic smoke only)")
     return parser
 
 
 def validate_cli(args: argparse.Namespace) -> None:
+    if getattr(args, "npu_model_path", None) and (
+        not re.fullmatch(r"[0-9a-f]{64}", str(getattr(args, "npu_model_sha256", "") or ""))
+        or not getattr(args, "npu_model_size", None)
+    ):
+        raise ValueError("--npu-model-path needs --npu-model-sha256 (64 hex) and --npu-model-size")
     cpu_thread_levels, duty_cycles = normalized_axes(args)
     if any(not 1 <= value <= 16 for value in cpu_thread_levels):
         raise OrchestratorError("CPU thread levels must each be in 1..16")

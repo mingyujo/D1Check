@@ -331,5 +331,79 @@ class NpuQualityPreflightTest(unittest.TestCase):
             self.assertEqual("not_run", orchestrator.ensure_npu_quality_preflight()["status"])
 
 
+EFFICIENTNET_AOT_SHA = "311e4aac8fa1d8def4e13359c731ddc1c92f4c9ff7074e0d3860b036df8b2a31"
+
+
+class NpuUnlockOptionsTest(unittest.TestCase):
+    """2026-09-26 additive NPU options: absent = old Intent/config, present = new extras only."""
+
+    def parse(self, *extra):
+        return ORCH.build_parser().parse_args(["--resources", "NPU", "--dry-run", *extra])
+
+    def intent(self, args):
+        return ORCH.runner_intent_arguments(
+            "NPU", None, 60, 20, "run", "cmd", 100, 10.0, args.gpu_profile,
+            **ORCH.npu_runner_intent_kwargs("NPU", args),
+        )
+
+    def test_defaults_send_no_new_extras_and_add_no_config_keys(self):
+        args = self.parse()
+        sent = self.intent(args)
+        for key in ("d1_npu_model_path", "d1_npu_input_spec", "d1_npu_accelerator", "d1_npu_run_only_span"):
+            self.assertNotIn(key, sent)
+        config = ORCH.npu_config(args)
+        for key in ("model_path", "model_expected", "timed_input_spec", "timed_accelerator",
+                    "run_only_span", "diagnostic_logcat_tags"):
+            self.assertNotIn(key, config)
+        self.assertNotIn("reference_path", config["quality_gate"])
+        self.assertEqual(["--runner-package", ORCH.NPU_RUNNER_PACKAGE, "--extra-logcat-tag", "litert:I"],
+                         ORCH.npu_logger_capture_arguments("NPU"))
+
+    def test_efficientnet_timed_run_sends_asset_and_input_spec_and_records_sha(self):
+        args = self.parse("--npu-model-asset", "models/efficientnet_lite0_Samsung_E9965.tflite",
+                          "--npu-timed-input-spec", "lcg-rgb-127-128", "--npu-input-spec", "lcg-rgb-127-128")
+        sent = self.intent(args)
+        self.assertEqual("models/efficientnet_lite0_Samsung_E9965.tflite",
+                         sent[sent.index("d1_npu_model_asset") + 1])
+        self.assertEqual("lcg-rgb-127-128", sent[sent.index("d1_npu_input_spec") + 1])
+        config = ORCH.npu_config(args)
+        self.assertEqual(EFFICIENTNET_AOT_SHA, config["model_expected"]["sha256"])
+        self.assertEqual(10_033_376, config["model_expected"]["size_bytes"])
+        self.assertEqual("lcg-rgb-127-128", config["quality_gate"]["input_spec"])
+
+    def test_device_model_path_requires_declared_sha_and_size(self):
+        with self.assertRaises(ValueError):
+            ORCH.validate_cli(self.parse("--npu-model-path", "/data/local/tmp/m.tflite"))
+        args = self.parse("--npu-model-path", "/data/local/tmp/m.tflite",
+                          "--npu-model-sha256", "a" * 64, "--npu-model-size", "123")
+        sent = self.intent(args)
+        self.assertEqual("/data/local/tmp/m.tflite", sent[sent.index("d1_npu_model_path") + 1])
+        self.assertEqual("a" * 64, ORCH.npu_config(args)["model_expected"]["sha256"])
+
+    def test_cpu_is_a_single_labelled_accelerator(self):
+        with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()):
+            self.parse("--npu-accelerator", "NPU,CPU")
+        args = self.parse("--npu-accelerator", "CPU", "--npu-run-only-span")
+        sent = self.intent(args)
+        self.assertEqual("CPU", sent[sent.index("d1_npu_accelerator") + 1])
+        index = sent.index("d1_npu_run_only_span")
+        self.assertEqual(("--ez", "true"), (sent[index - 1], sent[index + 1]))
+        config = ORCH.npu_config(args)
+        self.assertEqual("cpu_compiled_model", config["timed_resource_label"])
+
+    def test_diagnostic_capture_and_file_reference_are_opt_in(self):
+        self.assertEqual(
+            ["litert:I", "litert:V", "tflite:V", "TfLite:V"],
+            [a for a in ORCH.npu_logger_capture_arguments("NPU", True) if ":" in a],
+        )
+        self.assertEqual([], ORCH.npu_logger_capture_arguments("CPU", True))
+        old = ORCH.npu_quality_intent_arguments("r", "m.tflite", "ref.tflite", "lcg-unit")
+        new = ORCH.npu_quality_intent_arguments("r", "m.tflite", "ref.tflite", "lcg-unit",
+                                                reference_path="/data/local/tmp/ref.tflite")
+        self.assertNotIn("ref_model_path", old)
+        self.assertEqual("/data/local/tmp/ref.tflite", new[new.index("ref_model_path") + 1])
+        self.assertEqual(old[-4:], new[-4:])
+
+
 if __name__ == "__main__":
     unittest.main()

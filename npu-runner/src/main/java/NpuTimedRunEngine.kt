@@ -32,6 +32,12 @@ internal interface NpuTimedBackend : AutoCloseable {
 
     /** 1회 추론 = write + run + read. 이 호출 전체가 inference span 이다. */
     fun infer(input: FloatArray)
+
+    /**
+     * 직전 infer() 안의 CompiledModel.run() 만의 ns (write/read 제외). 모르면 null.
+     * 2026-09-26 추가 — 기본 구현이 null 이라 기존 백엔드·테스트 가짜는 그대로 컴파일된다.
+     */
+    fun lastRunOnlyNs(): Long? = null
 }
 
 internal data class NpuBackendInit(
@@ -41,14 +47,21 @@ internal data class NpuBackendInit(
     val availableAccelerators: String,
 )
 
-/** 운영 백엔드: NpuBenchmarkEngine(CompiledModel.Options(Accelerator.NPU)) 한 겹. */
+/**
+ * 운영 백엔드: NpuBenchmarkEngine(CompiledModel.Options(<가속기 하나>)) 한 겹.
+ * 가속기는 config.accelerator 하나뿐이다 — 기본 NPU. CPU 는 폴백이 아니라 처음부터 CPU 단독인 별도 런 (C5).
+ */
 internal class NpuCompiledModelBackend(
     context: Context,
     config: NpuRunConfig,
 ) : NpuTimedBackend {
+    private var runOnlyNs: Long? = null
     private val engine = NpuBenchmarkEngine(
         context = context,
-        accelerator = Accelerator.NPU,
+        accelerator = when (config.accelerator) {
+            TimedAccelerator.NPU -> Accelerator.NPU
+            TimedAccelerator.CPU -> Accelerator.CPU
+        },
         modelAssetPath = config.modelAsset.takeIf { config.modelPath == null },
         modelFilePath = config.modelPath,
     )
@@ -66,8 +79,10 @@ internal class NpuCompiledModelBackend(
     override fun inputElementCount(): Int = engine.inputElementCount(useFloat = true)
 
     override fun infer(input: FloatArray) {
-        engine.runFloat(input)
+        runOnlyNs = engine.runFloat(input).first.runOnlyNs
     }
+
+    override fun lastRunOnlyNs(): Long? = runOnlyNs
 
     override fun close() = engine.close()
 }
@@ -167,6 +182,8 @@ internal class NpuTimedRunEngine(
                 )
             }
             var inferenceIndex = 0L
+            // opt-in: run() 전용 시간. 측정 창(startNs..endNs) 밖에서 저장만 한다
+            val runOnly = if (config.recordRunOnly) RunOnlyRecorder() else null
             while (true) {
                 val loopNowNs = SystemClock.elapsedRealtimeNanos()
                 val completed = checkNotNull(runTermination).completionReason(
@@ -207,11 +224,13 @@ internal class NpuTimedRunEngine(
                 val endNs = SystemClock.elapsedRealtimeNanos()
                 dutyCycleTracker?.recordInference(startNs, endNs)
                 check(telemetry.recordInference(startNs, endNs, inferenceIndex, 1))
+                runOnly?.add(activeBackend.lastRunOnlyNs())
                 inferenceIndex++
             }
             loadEndedNs = SystemClock.elapsedRealtimeNanos()
             telemetry.instant("load_end", "run", if (success) "ok" else "error")
             loadEnded = true
+            runOnly?.let { telemetry.instant("run_only_summary", "run", "ok", it.detailJson()) }
             if (config.experimentMode == ExperimentMode.DIAGNOSTIC) {
                 telemetry.liveInstant("diagnostic_trace_stop", "diagnostic")
             }
@@ -296,6 +315,7 @@ internal class NpuTimedRunEngine(
                 inputSpec = config.inputSpec,
                 inputElements = inputElements,
                 inputSha256 = inputSha256,
+                modelSizeBytes = facts?.modelSizeBytes,
             ),
         )
         val flush = telemetry.flushAfterRun(
@@ -321,12 +341,43 @@ internal class NpuTimedRunEngine(
     }
 }
 
+/**
+ * load 구간 run()-only ns 요약 (C4). 기존 inference 이벤트의 latency 는 그대로 write+run+read 다.
+ * telemetry-contract 의 inference 레코드에는 추가 필드를 넣을 수 없어 요약 1개 이벤트로 남긴다.
+ */
+internal class RunOnlyRecorder {
+    private var values = LongArray(1024)
+    private var size = 0
+    private var missing = 0L
+
+    fun add(value: Long?) {
+        if (value == null) {
+            missing++
+            return
+        }
+        if (size == values.size) values = values.copyOf(values.size * 2)
+        values[size++] = value
+    }
+
+    fun detailJson(): String {
+        val sorted = values.copyOf(size).also { it.sort() }
+        fun rank(q: Double): Long? =
+            if (size == 0) null else sorted[(Math.ceil(q * size).toInt() - 1).coerceIn(0, size - 1)]
+        val mean = if (size == 0) null else sorted.sum().toDouble() / size
+        return "{\"span\":\"CompiledModel.run() only (excludes writeFloat/readFloat)\"," +
+            "\"count\":$size,\"missing\":$missing,\"median_ns\":${rank(0.5)},\"p95_ns\":${rank(0.95)}," +
+            "\"min_ns\":${sorted.firstOrNull()},\"max_ns\":${sorted.lastOrNull()},\"mean_ns\":$mean}"
+    }
+}
+
 /** 실행한 모델·dispatch 의 SHA 와 AOT 파티션. formal_npu_valid 4·5·6번이 이 값을 대조한다. */
 internal data class NpuArtifacts(
     val modelId: String,
     val modelSha256: String,
     val dispatchLibSha256: String?,
     val aotPartition: Map<String, Any?>?,
+    /** 모델 파일 바이트 수 (2026-09-26 추가, 기본값 null 이라 기존 생성 코드는 그대로). */
+    val modelSizeBytes: Long? = null,
 ) {
     companion object {
         const val AOT_MANIFEST_ASSET = "models/aot_manifest.json"
@@ -334,6 +385,17 @@ internal data class NpuArtifacts(
         fun read(context: Context, config: NpuRunConfig): NpuArtifacts {
             val modelSha = (config.modelPath?.let { File(it).inputStream() }
                 ?: context.assets.open(config.modelAsset)).use(::sha256)
+            val modelSize = (config.modelPath?.let { File(it).inputStream() }
+                ?: context.assets.open(config.modelAsset)).use { input ->
+                val buffer = ByteArray(1 shl 16)
+                var total = 0L
+                while (true) {
+                    val n = input.read(buffer)
+                    if (n < 0) break
+                    total += n
+                }
+                total
+            }
             val dispatch = File(context.applicationInfo.nativeLibraryDir, NpuRunMetadata.DISPATCH_LIB_FILE)
             val manifest = runCatching {
                 context.assets.open(AOT_MANIFEST_ASSET).bufferedReader().use { it.readText() }
@@ -343,6 +405,7 @@ internal data class NpuArtifacts(
                 modelSha256 = modelSha,
                 dispatchLibSha256 = dispatch.takeIf { it.isFile }?.inputStream()?.use(::sha256),
                 aotPartition = manifest?.let { aotPartitionFor(it, modelSha) },
+                modelSizeBytes = modelSize,
             )
         }
 
