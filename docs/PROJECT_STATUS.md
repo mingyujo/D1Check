@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ARRIVAL-COST-BOUNDARIES-PC-01 — B2·B3·CPU 미측정 비용 경계
+
+- [한국어 판독·상태 근거·역전 경계](ARRIVAL_COST_BOUNDARIES_PC_20260927.md), [오프라인 대시보드·재현 CSV](results/arrival_cost_boundaries_01/README.md). 기존 45개 같은 trace/seed/실현 간섭에서 idle·단독·병행 시간을 복원하고 seed201 저장 timeline과 대조했다. queue/간섭1.5 B2−B3의 가정 전력 역전점은 idle1W/단독2W에서 2.070–2.100W/5 seed이나 실기기 가능 범위는 미확인이다. B2는 CG_DC, B3는 탐지 CPU＋GPU 점유가 커서 기존 반대 방향 CC_DG 값을 전용할 수 없다. 대표 AP 부호도 미보정 병행 열 가정에 따라 바뀐다. PC 관련 테스트 2건 통과, 이벤트 배치·ADB·실측 0.
+- 다음≤3: (1) B2−B3 queue/burst의 공통창 기기 전체 전력·AP를 식별할 단일 측정 목적과 Android active 지원·센서 dwell 적격성을 별도로 확정. 서비스 선호 미정이므로 측정만으로 단일 정책을 채택하지 않는다. 기존 FAIL·원본·동결값·종료 계획·`experiment_ready=false` 유지.
+
 ## 2026-09-27 ARRIVAL-POLICY-SCREEN-PC-01 — 기존 결과의 후보 선별
 
 - [한국어 판독·지원 범위·다음 행동](ARRIVAL_POLICY_CANDIDATE_SCREEN_20260927.md), [오프라인 정책 비교표·45행 CSV](results/arrival_policy_screen_01/README.md). 기존 low/queue/burst × 평가 seed 5 × 실현 간섭 3의 동일 입력만 재집계했다. 핵심 후속 비교는 B2·B3·CPU 긴급우선, 고정 분리는 긴급 응답 극단 대조로 유지한다. 현재 P는 queue/1.5의 평균 비지배가 seed 2/5에만 유지되어 재현용으로 보존하고 튜닝·확대를 우선하지 않는다. 미보정 에너지/AP는 별도 가정 층이며 실기기 우열은 미판정이다. `python -m unittest tools.test_d1_arrival_policy_screen -v` 3건 통과; ADB·실측·기존 전체 배치 0.
