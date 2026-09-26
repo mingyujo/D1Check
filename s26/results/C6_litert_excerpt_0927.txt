@@ -1,0 +1,28 @@
+﻿# C6 (results\S26_C6_diag_0927, run 5593ce21) litert/tflite lines only. Filtered: -NotMatch 'iccid|Euicc|imsi|msisdn|phone'. raw logcat.txt NOT shared.
+09-27 02:27:00.929 11773 11823 I litert  : [litert_runtime_builtin.cc:63] Loaded runtime library and found kLiteRtRuntimeBuiltin.
+09-27 02:27:00.929 11773 11823 I litert  : [environment.cc:36] Creating LiteRT environment with options
+09-27 02:27:00.929 11773 11823 I litert  : [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xb400007e1d42af30, name=NpuAccelerator
+09-27 02:27:00.929 11773 11823 I litert  : [npu_registry.cc:30] NPU accelerator registered.
+09-27 02:27:00.929 11773 11823 I litert  : [gpu_registry.cc:101] Attempting to load GPU accelerator(libLiteRtGpuAccelerator.so).
+09-27 02:27:00.933 11773 11823 I litert  : [gpu_registry.cc:101] Attempting to load GPU accelerator(libLiteRtClGlAccelerator.so).
+09-27 02:27:00.935 11773 11823 I litert  : [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xb400007e1d42af90, name=LiteRT GPU
+09-27 02:27:00.935 11773 11823 I litert  : [gpu_registry.cc:109] Dynamically loaded GPU accelerator(libLiteRtClGlAccelerator.so) registered.
+09-27 02:27:00.935 11773 11823 I litert  : [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xb400007e1d4365d0, name=CpuAccelerator
+09-27 02:27:00.935 11773 11823 I litert  : [cpu_registry.cc:75] XNNPACK CPU accelerator registered.
+09-27 02:27:00.942 11773 11823 W litert  : [compiled_model.cc:819] Compiler plugin path is provided in the environment, but the model is pre-compiled. Plugins won't be applied.
+09-27 02:27:00.942 11773 11823 I litert  : [compiled_model.cc:833] Flatbuffer model initialized directly from incoming litert model.
+09-27 02:27:00.942 11773 11823 I tflite  : Initialized TensorFlow Lite runtime.
+09-27 02:27:00.943 11773 11823 I litert  : [litert_dispatch.cc:159] Loading shared library: /data/app/~~Q_nqokufhMO1wORvhoUuvg==/com.example.d1check.npurunner-_QVLMqdqiIcCFvLLs0YK5Q==/lib/arm64/libLiteRtDispatch_Samsung.so
+09-27 02:27:00.947 11773 11823 I litert  : [enn_manager.cc:79] Loading from: libenn_public_api_cpp.so
+09-27 02:27:01.022 11773 11823 I litert  : [enn_manager.cc:124] SetGenAiPerfConfigFromSoc: SOC=s5e9965, mode=7, configId=0
+09-27 02:27:01.022 11773 11823 I tflite  : Replacing 1 out of 1 node(s) with delegate (DispatchDelegate) node, yielding 1 partitions for subgraph 0 ().
+09-27 02:27:01.022 11773 11823 I litert  : [litert_dispatch_invocation_context.cc:106] Bytecode buffer: base_addr=0xb400007c56929bb0, offset=1104, size=8900608
+09-27 02:27:01.022 11773 11823 I litert  : [litert_dispatch_invocation_context.cc:108] Calculated bytecode ptr: 0xb400007c5692a000, size: 8900608
+09-27 02:27:01.022 11773 11823 I litert  : [litert_dispatch_invocation_context.cc:132] Header verification failed - using old format
+09-27 02:27:01.022 11773 11823 I litert  : [litert_dispatch_invocation_context.cc:338] Loading model from memory
+09-27 02:27:01.022 11773 11823 F litert  : [litert_dispatch_invocation_context.cc:346] Model addr: 0xb400007c5692a000, Model size: 8900608
+09-27 02:27:01.039 11773 11823 I litert  : [litert_dispatch_invocation_context.cc:365] Buffer info - inputs: 1, outputs: 1
+09-27 02:27:01.040 11773 11823 I tflite  : Created TensorFlow Lite XNNPACK delegate for CPU.
+09-27 02:28:01.232 11773 11823 I litert  : [accelerator_registry.cc:43] DestroyAccelerator: ptr=0xb400007e1d4365d0, name=CpuAccelerator
+09-27 02:28:01.232 11773 11823 I litert  : [accelerator_registry.cc:43] DestroyAccelerator: ptr=0xb400007e1d42af90, name=LiteRT GPU
+09-27 02:28:01.232 11773 11823 I litert  : [accelerator_registry.cc:43] DestroyAccelerator: ptr=0xb400007e1d42af30, name=NpuAccelerator
