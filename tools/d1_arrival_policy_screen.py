@@ -293,6 +293,20 @@ def render_bundle(bundle, output, template):
         fragment=(bundle/'offline_fragment.html').read_text(encoding='utf-8').replace(
             '/*__OFFLINE__*/','const OFFLINE='+json.dumps(offline,ensure_ascii=False,separators=(',',':')).replace('</','<\\/')+';')
         html=html.replace('</main>',fragment+'</main>')
+    information_names=('information_branch_metrics.csv','information_branch_deltas.csv',
+        'information_decisions.csv','information_first_snapshots.json',
+        'information_prior_offline_reference.csv','information_CONFIG.json',
+        'information_fragment.html')
+    if all((bundle/name).exists() for name in information_names):
+        information=dict(metrics=read_csv(bundle/'information_branch_metrics.csv'),
+            deltas=read_csv(bundle/'information_branch_deltas.csv'),
+            decisions=read_csv(bundle/'information_decisions.csv'),
+            snapshots=json.loads((bundle/'information_first_snapshots.json').read_text(encoding='utf-8')),
+            prior=read_csv(bundle/'information_prior_offline_reference.csv'),
+            config=json.loads((bundle/'information_CONFIG.json').read_text(encoding='utf-8')))
+        fragment=(bundle/'information_fragment.html').read_text(encoding='utf-8').replace(
+            '/*__INFORMATION__*/','const INFORMATION='+json.dumps(information,ensure_ascii=False,separators=(',',':')).replace('</','<\\/')+';')
+        html=html.replace('</main>',fragment+'</main>')
     (output / 'dashboard.html').write_text(html, encoding='utf-8')
 
 
@@ -341,6 +355,8 @@ def main():
                         help='attach frozen thermal candidate results without replaying old schedules')
     parser.add_argument('--attach-offline', action='store_true',
                         help='attach bounded offline small-case search without replaying prior batches')
+    parser.add_argument('--attach-information', action='store_true',
+                        help='attach frozen same-past/different-future first-action replay')
     args = parser.parse_args()
     if args.bundle:
         render_bundle(args.bundle, args.output, args.template or args.bundle/'dashboard_template.html')
@@ -391,6 +407,25 @@ def main():
         (bundle/'SOURCE_HASHES.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
         render_bundle(bundle,args.output,bundle/'dashboard_template.html')
         print(f'offline search attached -> {args.output / "dashboard.html"}')
+        return
+    if args.attach_information:
+        bundle=args.output/'repro_bundle'
+        new=ROOT/'docs/results/arrival_information_check_01/run_v2'
+        names=('branch_metrics.csv','branch_deltas.csv','decisions.csv','first_snapshots.json',
+               'posthoc_first_realization.csv','prior_offline_reference.csv','branch_deltas.svg')
+        for name in names:shutil.copyfile(new/name,bundle/('information_'+name))
+        shutil.copyfile(ROOT/'docs/results/arrival_information_check_01/CONFIG.json',bundle/'information_CONFIG.json')
+        shutil.copyfile(ROOT/'tools/assets/d1_arrival_information_fragment.html',bundle/'information_fragment.html')
+        shutil.copyfile(Path(__file__),bundle/'reproduce.py')
+        manifest=json.loads((bundle/'SOURCE_HASHES.json').read_text(encoding='utf-8'))
+        for name in (*('information_'+n for n in names),'information_CONFIG.json','information_fragment.html','reproduce.py'):
+            manifest['bundle_files'][name]=digest_text(bundle/name)
+        manifest['information_source_files']={str(p.relative_to(ROOT)):digest_text(p) for p in
+            (ROOT/'tools/d1_arrival_information_check.py',
+             ROOT/'docs/results/arrival_information_check_01/CONFIG.json')}
+        (bundle/'SOURCE_HASHES.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
+        render_bundle(bundle,args.output,bundle/'dashboard_template.html')
+        print(f'first-action information check attached -> {args.output / "dashboard.html"}')
         return
     rows = screen(read_csv(args.source / 'interference_metrics.csv'))
     save(rows, args.output, args.source)

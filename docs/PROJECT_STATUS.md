@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ARRIVAL-INFORMATION-CHECK-PC-01 완료 — 새 온라인 규칙 보류
+
+- [첫 선택 정보 경계 보고서](ARRIVAL_INFORMATION_CHECK_PC_20260927.md), [동결 분기·CSV·재현](results/arrival_information_check_01/README.md), [통합 대시보드](results/arrival_policy_screen_01/dashboard.html). queue/burst offline 발견 일정의 첫 CPU와 기존 V1 첫 GPU를 같은 시각0 snapshot에서 비교했다. 2사례×6미래 분기×2행동=24 PC 재생, 관련 테스트 5건 통과, 기기 실행 0. 사전 비악화 gate 실패: queue 에너지 차이는 +0.655~−0.057J, burst는 −1.943~+0.278J로 미래에 따라 방향이 바뀌며 요청별 응답/AP 상충이 있다. 기존 완전 offline 개선은 첫 선택만의 효과가 아니다.
+- 현재 작업 종료. 다음 행동은 **현재 정보만으로 정당화되는 새 규칙 개발을 보류하고 이 한계를 연구 결과에 명시**하는 것이다. 기존 P/V1·동결값·FAIL·부분 자료·종료 계획 보존, `experiment_ready=false`. 새 seed/24요청 조건부 확인은 규칙 미구현으로 실시하지 않았다.
+
 ## 2026-09-27 ARRIVAL-OFFLINE-SCHEDULE-PC-01 — 작은 사례 제한 탐색 완료
 
 - [질문·결과·한계](ARRIVAL_OFFLINE_SCHEDULE_PC_20260927.md), [설정·CSV·재현](results/arrival_offline_search_01/README.md), [통합 대시보드](results/arrival_policy_screen_01/dashboard.html). 기존 low/queue/burst의 시간순 첫 2/3요청과 seed301·미측정 전력/AP profile을 탐색 전 고정했다. 68/258/301노드, 완료 일정 41/114/127개를 제한된 큐 선두·CPU/GPU·250ms/최대500ms 대기 공간에서 완전 열거했다. 기존 열·에너지 후보 대비 요청별 응답 손실0에는 에너지/AP 개선 일정이 없고, 연구용 손실500ms에는 queue −0.127J, burst −2.004J/−0.080°C가 있으나 응답 손실과 offline 미래 정보가 따른다. 각 일정은 기존 이벤트 엔진으로 재생·회계 일치 확인; 기기 실행0.

@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-09-27 첫 offline 행동을 온라인 규칙으로 승격하지 않음
+
+- 상태: 이번 PC 진단의 구현 판단. 프로젝트 목표나 서비스 기준 변경 아님.
+- 근거: [ARRIVAL-INFORMATION-CHECK-PC-01](ARRIVAL_INFORMATION_CHECK_PC_20260927.md)의 사전 고정 2사례×6미래 분기에서 동일 첫 관측 snapshot임에도 CPU/GPU 첫 배정의 에너지·AP·요청별 응답 손익이 뒤집혔다. 수치 허용오차 이내 전 분기 비악화 gate 실패.
+- 결정: 기존 `THERMAL_ENERGY_PC_V1`과 완전 offline 결과를 보존하고 이번에는 새 온라인 후보를 구현하지 않는다. 미래·실현비용을 아는 offline 개선을 배포 가능 성능으로 승격하지 않는다. 조건부 별도 확인은 실행하지 않았고 `experiment_ready=false`를 유지한다.
+
 ## 2026-09-27 — 작은 합성 사례의 제한된 offline 일정 기준
 
 - **채택한 PC 범위:** [탐색 계약·결과](ARRIVAL_OFFLINE_SCHEDULE_PC_20260927.md)의 사전 고정 2/3요청·3사례·seed301·전력/AP 스트레스 profile·0/250/500ms 연구용 응답 손실만 기존 이벤트 엔진의 opt-in 일정 provider로 열거한다. 미래 도착/실현 비용을 이용하는 offline 참고값이며 현재 Android/온라인 정책, B2 개발 선정, CAL-03 동결 계수, 기존 192회 결과는 변경하지 않는다.

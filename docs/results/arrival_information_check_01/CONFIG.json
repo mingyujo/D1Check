@@ -1,0 +1,25 @@
+{
+  "id": "ARRIVAL-INFORMATION-CHECK-PC-01",
+  "status": "frozen_before_branch_evaluation",
+  "source": "arrival_offline_search_01/run_v1 and arrival_thermal_feedback_01 frozen inputs",
+  "cases": [
+    {"scenario": "queue", "profile": "energy_shift", "seed": 301, "first_request_count": 3, "offline_first_action": "CPU", "online_first_action": "GPU"},
+    {"scenario": "burst", "profile": "thermal_cap", "seed": 301, "first_request_count": 3, "offline_first_action": "CPU", "online_first_action": "GPU"}
+  ],
+  "branches": [
+    {"id": "no_more", "request_indices": [0], "realization": "frozen"},
+    {"id": "urgent_next", "request_indices": [0, 1], "realization": "frozen"},
+    {"id": "normal_next", "request_indices": [0, 2], "move_second_to_original_index_1_time": true, "realization": "frozen"},
+    {"id": "original_three", "request_indices": [0, 1, 2], "realization": "frozen"},
+    {"id": "cpu_slow_1p25", "request_indices": [0, 1, 2], "realization": "detection_CPU_x1.25"},
+    {"id": "gpu_slow_1p25", "request_indices": [0, 1, 2], "realization": "detection_GPU_x1.25"}
+  ],
+  "comparison": "change only the first dispatch backend for the first arrived request; all later decisions use unchanged THERMAL_ENERGY_PC_V1",
+  "common_window_ns": 120000000000,
+  "numeric_tolerance": {"response_ms": 0.000001, "energy_j": 0.000001, "ap_c": 0.000001, "ap_exceed_s": 0.000001},
+  "rule_gate_before_results": "Implement one new online rule only if CPU first is no worse than GPU first in every branch for every planned request response, deadline misses, unfinished, common-window energy, AP peak and exceed time within numerical tolerance, and strictly improves energy or AP in at least one branch. This is a deliberately conservative development gate, not a service SLA or meaningful-effect threshold.",
+  "confirmation_if_gate_passes": {"seed": 401, "small_scenarios": ["queue", "burst"], "full_24_scenarios": ["low", "queue", "burst"], "policies": ["CPU_URGENT", "B2_PC", "B3_SOLO_EFT_PC", "THERMAL_ENERGY_PC_V1", "one_new_rule"]},
+  "max_simulations": 24,
+  "wall_seconds": 60,
+  "interpretation": "Same observed past but synthetic different future; branches have no probability weights. Frozen keyed realization is not perfect prediction. Multipliers are unmeasured stress assumptions, not sampled distributions. No device validation."
+}

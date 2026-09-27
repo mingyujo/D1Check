@@ -1,0 +1,39 @@
+<section class="card" id="information-panel">
+  <h2>같은 과거, 다른 미래: 첫 배정 진단</h2>
+  <p class="warn">기존 24요청 평가와 분리된 1~3요청 합성 분기입니다. 첫 배정만 CPU/GPU로 바꾸고 이후는 수정하지 않은 THERMAL_ENERGY_PC_V1로 실행했습니다. Offline 일정은 미래 도착과 실현 비용을 아는 참고값이며 배포 가능한 정책이 아닙니다. 에너지·AP는 실측 계수가 아닌 기기 전체 W·AP 탐색 가정입니다.</p>
+  <div class="controls"><label>개발 사례 <select id="ic-case"></select></label><label>결정 기록 분기 <select id="ic-branch"></select></label></div>
+  <p id="ic-snapshot" class="small"></p>
+  <div id="ic-candidates" class="scroll"></div>
+  <h3>미래 분기별 결과</h3>
+  <div id="ic-branches" class="scroll"></div>
+  <h3>선택한 분기의 이후 배정·대기</h3>
+  <div id="ic-decisions" class="scroll"></div>
+  <p id="ic-conclusion" class="small"></p>
+  <p class="small"><a href="repro_bundle/information_branch_metrics.csv">행동별 절대값 CSV</a> · <a href="repro_bundle/information_branch_deltas.csv">CPU−GPU 차이 CSV</a> · <a href="repro_bundle/information_decisions.csv">이후 결정 기록</a> · <a href="repro_bundle/information_branch_deltas.svg">분기 그림 SVG</a> · <a href="../arrival_information_check_01/README.md">계약·재현 안내</a>. 수치 허용오차는 절감의 실질 기준이 아닙니다. 분기 확률·BAT 온도·절대 에너지 정확도는 미확인입니다.</p>
+</section>
+<script>/*__INFORMATION__*/
+(()=>{
+  const D=INFORMATION,$=id=>document.getElementById(id),F=(x,d=3)=>Number(x).toFixed(d);
+  const cases=Object.keys(D.snapshots);const sel=$('ic-case');
+  cases.forEach(c=>{let o=document.createElement('option');o.value=c;o.textContent=c;sel.append(o)});
+  function table(headers,rows){const t=document.createElement('table'),h=document.createElement('tr');headers.forEach(v=>{let c=document.createElement('th');c.textContent=v;h.append(c)});t.append(h);rows.forEach(row=>{let tr=document.createElement('tr');row.forEach(v=>{let c=document.createElement('td');c.textContent=v;tr.append(c)});t.append(tr)});return t}
+  function render(){
+    const c=sel.value,s=D.snapshots[c],rows=D.deltas.filter(r=>r.case===c),m=D.metrics.filter(r=>r.case===c);
+    const branchSel=$('ic-branch'),previous=branchSel.value;branchSel.replaceChildren();rows.forEach(r=>{const o=document.createElement('option');o.value=r.branch;o.textContent=r.branch;branchSel.append(o)});if(rows.some(r=>r.branch===previous))branchSel.value=previous;else branchSel.value='original_three';
+    const q=s.arrived_queue.map(x=>`${x.id} ${x.priority} 잔여 ${F(s.remaining_deadline_ns[x.id]/1e6,0)}ms`).join(', ');
+    $('ic-snapshot').textContent=`t=${F(s.now_ns/1e6,1)}ms · 지금까지 도착: ${q} · CPU/GPU lane 모두 ${s.lanes.CPU.phase}/${s.lanes.GPU.phase} · 모형 AP ${F(s.current_modeled_ap_c)}°C · 기존 온라인 선택 ${s.online_selected.backend} (${s.online_reason}). 이후 도착과 keyed 실현시간은 이 snapshot에 없습니다.`;
+    $('ic-candidates').replaceChildren(table(['첫 배정','예상 응답 중앙값 ms','예상 lane 점유 중앙값 ms','예상 단독 기기 전체 W*','예상 AP 평형 °C*'],['CPU','GPU'].map(b=>{const x=s.estimated_costs[b];return [b,F(x.response_median_ns/1e6),F(x.lane_median_ns/1e6),F(x.predicted_single_power_w),F(x.predicted_single_ap_equilibrium_c)]})));
+    const branchRows=[];
+    rows.forEach(r=>{const cpu=m.find(x=>x.branch===r.branch&&x.first_action==='CPU'),gpu=m.find(x=>x.branch===r.branch&&x.first_action==='GPU');
+      const cr=JSON.parse(cpu.responses_ms),gr=JSON.parse(gpu.responses_ms),dr=JSON.parse(r.delta_responses_ms);
+      branchRows.push([r.branch,`${cpu.complete}/${cpu.planned} / ${gpu.complete}/${gpu.planned}`,`${cpu.urgent_miss}/${cpu.urgent_n} / ${gpu.urgent_miss}/${gpu.urgent_n}`,`${cpu.normal_miss}/${cpu.normal_n} / ${gpu.normal_miss}/${gpu.normal_n}`,Object.values(dr).map(x=>F(x,1)).join(', '),`${F(cpu.energy_j)} / ${F(gpu.energy_j)} (${F(r.delta_energy_j)})`,`${F(cpu.ap_peak_c)} / ${F(gpu.ap_peak_c)} (${F(r.delta_ap_peak_c)})`,`${F(cpu.ap_exceed_s)} / ${F(gpu.ap_exceed_s)}`]);
+    });
+    $('ic-branches').replaceChildren(table(['후속 분기','완료 CPU/GPU','긴급 위반 CPU/GPU','일반 위반 CPU/GPU','요청별 응답 Δms','공통120초 J CPU/GPU (Δ)','AP 최고 °C CPU/GPU (Δ)','AP 한도 초과 s CPU/GPU'],branchRows));
+    const actions=D.decisions.filter(d=>d.case===c&&d.branch===branchSel.value);
+    $('ic-decisions').replaceChildren(table(['첫 행동','시각 ms','행동','요청','이유'],actions.map(d=>[d.first_action,F(d.now_ms,1),d.action,d.request_id,d.reason])));
+    const energy=rows.map(r=>Number(r.delta_energy_j)),response=rows.map(r=>Object.values(JSON.parse(r.delta_responses_ms)).some(x=>x>0));
+    const ref=D.prior.find(r=>r.case.startsWith(c+'_')||r.case===c+'_n3');
+    $('ic-conclusion').textContent=`CPU−GPU 공통창 에너지 차이 범위 ${F(Math.min(...energy))}~${F(Math.max(...energy))} J. 응답 손실이 있는 분기 ${response.filter(Boolean).length}/${rows.length}; CPU가 전 분기 비악화라는 사전 조건은 ${rows.every(r=>r.cpu_no_worse_all==='True')?'통과':'실패'}. ${ref?'기존 완전 offline 일정은 같은 3요청에서 '+F(Number(ref.witness_energy_j)-Number(ref.baseline_energy_j))+' J이지만 이후 행동도 바꿉니다.':''} 분기 확률이 없으므로 평균 우승자를 정하지 않습니다.`;
+  }
+  sel.addEventListener('change',render);$('ic-branch').addEventListener('change',render);render();
+})();</script>
