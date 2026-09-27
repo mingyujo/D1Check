@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ENERGY-AP-PUSH-OBSERVE-01 승인 후 실행 전 보류
+
+- [PC preflight와 차단 근거](ENERGY_AP_PUSH_OBSERVE_PREFLIGHT_20260927.md). 승인된 관측 계획 SHA `423ee55d98c6ef8ed5bea9ea3b1f5357a3d4806fb66c398dded922deff138f9a`의 `Check`는 통과했고 출력·소비 claim은 없다. 그러나 이번 지시의 현재 설치본 확인·환경 gate와 생략 규칙이 동결된 6명령 preflight/코드에 없다. 별도 조회 뒤 실행하면 최대 17명령 상한을 넘을 수 있어 기기 명령 전 중단했다. 이번 ADB·push·pull·설치·추론 0, 현재 기기 상태 미확인. 외부 `energy_ap_push_observed_preflight_v1/PREFLIGHT_RECEIPT.json` 보존.
+- 다음 행동: 설치본·환경 gate와 생략을 포함한 별도 계획을 PC에서 동결·예산 검증한 뒤 승인 범위를 다시 정한다. 기존 계획은 미소비·미실행이며 COLLECT-03 등 종료 계획, FAIL·원자료·`experiment_ready=false`를 유지한다.
+
 ## 2026-09-27 ENERGY-AP-PUSH-DIAGNOSIS-01 완료 — 재전송 없이 원격 상태 확인
 
 - [두 timeout·읽기 전용 조회·후속 후보](ENERGY_AP_PUSH_DIAGNOSIS_20260927.md). 착수 HEAD `d99ad84` clean/upstream 동일. 두 120초 push의 동시 진행 기록은 없어 원인 미확정이다. 현재 동일 A24에서 두 정확한 원격 경로는 모두 파일 부재였다(읽기 전용 7/9명령·0.891초). 이 사실은 과거 0바이트 전송이나 무선 결함의 증거가 아니다. 새 push/pull/install/앱/추론 0회.
