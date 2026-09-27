@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ENERGY-AP-MODEL-BRIDGE-PC-02 — 실측 보정·예측 오차 우선
+
+- [한국어 범위·오차·최소 수집 후보](ENERGY_AP_MODEL_BRIDGE_PC_20260927.md), [실측/예측 경로와 지원 상태](results/energy_model_bridge_02/dashboard.html). 기존 A24 고정 CC_DG 개발2/확인2와 동결 v1을 보존한 채 개발 점유 상태의 기기 전체 평균전력 네 값과 확인 실제 일정 조건부 J를 사후 진단했다. 합성 도착 엔진은 이 profile로 미지원 전력/AP를 계산하지 않고 joint 상태와 `UNSUPPORTED_STATE_COSTS`를 반환한다. 기존 가정 탐색은 별도 유지한다.
+- 확인 고정480초 J 오차(예측−관측) 병행 −8.468J·직렬 +32.306J, 병행−직렬 차이 방향 실패. AP 공통창 MAE 병행 0.425°C·직렬 0.245°C; 상태별 AP 동역학/임의 도착 예측은 미식별. 확인 요약을 본 뒤의 사후 지표이므로 독립 검증 아님. 전류 절대 단위 미인증, BAT/다른 배정 미지원. `experiment_ready=false`, 기존 FAIL·부분 결과·동결값·원자료·종료 계획 보존. ADB/실측 0.
+- **현재 우선순위:** 실측에 근거한 에너지·AP 모형의 상태/전환 지원과 별도 자료 예측 오차 확인. 새 정책·강화학습 개발 보류. 다음 행동은 (1) 보고서의 4세션 *미승인* 식별/전환 확인 후보에서 PC 실행 경로와 상태별 장구간 성립·시간 상한을 계산한 뒤 실행 여부 판단, (2) 독립 자료 없이는 합성 도착 에너지/AP를 가정 탐색으로만 표시. 배터리 잔량/사용시간은 소비 J와 다른 목표다.
+
 ## 2026-09-27 ARRIVAL-BASELINE-REVIEW-01 완료 — 비교군의 실제 출처 분리
 
 - [기준선 검토 보고서](ARRIVAL_BASELINE_REVIEW_20260927.md)와 [작은 비교표](results/arrival_baseline_review_01/baseline_matrix.csv). HEAD `4368032`의 앱 본체는 계측 UI이고, 정책 도입 전 benchmark는 반복 추론 도구였다. `CPU_FIFO`·`CPU_URGENT`는 격리된 arrival 실험의 자체 기준이며 실사용 기본 정책이 아니다. Ente는 공개 앱의 조작 기반 시작 제한, MediaPipe는 task 예제, Band는 연구 프레임워크로 구분했다. 권고는 **기존 합성 동일 엔진 비교(C)를 유지**하고 CPU_FIFO를 단순 대리 anchor, 개발 고정 B2와 B3를 강한 연구 기준으로 명시하는 것이다. 외부 앱/프레임워크 직접 실행·A24 포팅·새 정책·기기 실측 0회. 기존 P의 불리한 결과·FAIL·동결값·원자료·종료 계획과 `experiment_ready=false`는 불변.

@@ -103,6 +103,9 @@ def aggregate(requests, result, *, horizon_ns=HORIZON_NS, profile=None, initial_
         energy = dict(status='UNSUPPORTED_MISSING_ARRIVAL_STATE_PROFILE',
                       whole_device_energy_j=None, ap_peak_c=None,
                       reason='fixed 870-job profile does not identify request-level, idle, queue or arbitrary overlap costs')
+    elif profile.get('evidence') == 'development_episode_template':
+        from tools import d1_energy_model_bridge_v2 as measured_bridge
+        energy = measured_bridge.engine_support(result, horizon_ns)
     else:
         if (profile.get('evidence') != 'explicit_assumptions' or initial_ap_c is None
                 or not isinstance(profile.get('source'), str) or not profile['source'].strip()
