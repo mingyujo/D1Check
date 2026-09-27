@@ -34,14 +34,16 @@ def atomic_new(path, value):
 
 
 class Checkpoints:
-    def __init__(self,root,plan_sha256):
+    def __init__(self,root,plan_sha256,host_run_id=None,host_identity=None):
         self.root=Path(root);self.root.mkdir(exist_ok=False)
         self.plan_sha256=plan_sha256;self.sequence=0
+        self.host_run_id=host_run_id;self.host_identity=host_identity
 
     def mark(self,stage,**details):
         record=dict(sequence=self.sequence,stage=stage,utc=utc(),monotonic=time.monotonic(),
                     host_pid=os.getpid(),host_parent_pid=os.getppid(),
-                    plan_sha256=self.plan_sha256,**details)
+                    plan_sha256=self.plan_sha256,host_run_id=self.host_run_id,
+                    host_identity=self.host_identity if self.sequence==0 else None,**details)
         atomic_new(self.root/f'{self.sequence:04d}.json',record)
         self.sequence+=1
         return record

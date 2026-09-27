@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-28 host 종료 소유권·단일 복구 PC 연결 — 최소 진단 미승인
+
+- [구현·PC 장애 주입·진단 계약](ENERGY_AP_HOST_LIFECYCLE_PC_20260928.md): 향후 PowerShell/Python 실행 ID와 parent/child 생성시각·명령 신원을 묶고, 활성/미확인 host에는 기기 복구를 차단한다. 별도 단일 claim 복구는 작은 증거→host cleanup 예약→archive 순서이며 원래 오류와 후속 오류를 분리한다. COLLECT-04 실제 종료 원인은 미확정, 기존 `stopped_no_resume`·원본·FAIL·동결값 보존.
+- 동일 APK의 준비 단계 1세션 진단 plan_v7 SHA `a6c65b0d...b20decf`, runtime4/warmup8/적격성4·추론 최대12·전체25분/ADB3,000 상한을 PC Check했다. **미승인·미소비·기기 미검증**이며 공식 baseline/부하 0. 현재 APK는 준비 전 앱 정상 종료가 불가해 host 요청 stop/회수까지만 확인 가능하다. PC 관련 27건 중 26 통과·1 옛 fixture 건너뜀, ADB/설치/추론0. `experiment_ready=false`.
+- **다음 행동:** 별도 승인 시 현재 A24/설치본/환경 gate를 확인하고 이 진단 1회만 실행하여 host 종료·회수·cleanup을 판독한다. 앱 자체 정상 완료를 요구하면 진단 전용 APK/설치가 별도 필요하다.
+
 ## 2026-09-28 COLLECT-04 host 종료 PC 진단·기록 경로 수정
 
 - [계층별 사실·재현 결함·PC 검증](ENERGY_AP_HOST_TERMINATION_PC_20260928.md). 마지막 원본 ADB client는 정상 반환했으나 Python/PowerShell 종료 이유는 원본 PID·exit/stderr 부재로 미확정. 별도 PC 주입에서 실패 처리의 2차 progress 파싱 오류가 원래 예외와 종료 receipt를 잃게 하는 결함을 재현했다. 향후 host checkpoint·원래 stack·독립 회수/cleanup 오류·receipt fallback 및 PowerShell child exit/stdout/stderr 기록을 보완했다. Android/APK·gate·호출 상한 변경 없음.

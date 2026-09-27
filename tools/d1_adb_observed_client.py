@@ -62,6 +62,8 @@ class ObservedDevice(legacy.Device):
         return host_snapshot(remaining) if remaining>0 else dict(status='skipped_no_remaining_time')
 
     def call(self,*args,timeout=30,check=True):
+        if getattr(self,'command_limit',None) is not None and self.sequence>=self.command_limit:
+            raise RuntimeError('frozen ADB command slot cap reached; no client launched')
         if not self.serial and (not self.allow_select or args!=('devices','-l')):
             raise ValueError('select exactly one current transport before a serial command')
         if self.forbid_apk_deploy and (args[0]=='install' or args[:3]==('shell','pm','install') or

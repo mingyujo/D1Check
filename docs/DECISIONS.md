@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-09-28 — host 복구는 종료 확인 후 단일 owner, 기기 진단은 별도 승인
+
+- **확정:** 사용자 승인 범위의 PC 설계로 향후 수집의 `host_run_id`·parent/child 생성시각/명령 신원을 보존하고, active/unknown 상태의 회수·force-stop을 금지한다. receipt 누락은 성공이 아니며 stale heartbeat나 PID 단독으로 강제 종료하지 않는다. 복구는 별도 output의 1회 claim, 원 계획의 남은 시간 안에서 원자료 회수·cleanup만 수행하고 추론/세션 재개를 하지 않는다. [근거·검증](ENERGY_AP_HOST_LIFECYCLE_PC_20260928.md).
+- **준비만 완료:** 동일 APK의 `ENERGY-AP-HOST-DIAG-01`은 1세션·12명시 추론·25분 상한의 PC 후보이며 아직 미승인·미소비다. 앱 준비 중 정상 완료를 지원하지 않아 host 요청 stop은 앱 cleanup 성공 증거가 아니다. Android 변경/APK 재설치나 진단 실행은 이번 결정에 포함되지 않는다.
+- **보존:** COLLECT-04 원인 미확정·`stopped_no_resume`, 기존 FAIL·부분 자료·동결값 및 `experiment_ready=false`. 에너지·AP 모형 지원 확대·6세션 재수집·정책 개발은 채택하지 않는다.
+
 ## 2026-09-28 — 설치 검증 APK 재사용 수집 승인분의 중단 판정
 
 - **승인·실행:** 사용자가 기존 측정 설계의 새 설치 없는 수집을 개발3→동결→확인3, 추론 최대10,152·전체 최대230분·재시도0으로 승인했다. plan_v4는 설치본 확인 host pull 최대1, APK push/설치0, 계획 전체225분 상한으로 고정했다. [결과](ENERGY_AP_STATE_COLLECT04_RESULTS_20260928.md)의 `Run` 1회에서 첫 개발 세션만 시도했다.

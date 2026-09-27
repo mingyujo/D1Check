@@ -79,6 +79,8 @@ HOST_FILES=['tools/d1_energy_collection.py','tools/d1_energy_collection_device.p
     'tools/d1_energy_screen.py',
     'tools/d1_adb_observed_client.py','tools/d1_recorded_process.py','tools/d1_collection_recovery.py',
     'tools/d1_energy_host_checkpoints.py',
+    'tools/d1_energy_host_lifecycle.py',
+    'tools/d1_energy_host_recovery.py',
     'tools/d1_logger_v4.py','tools/d1_probe_compare.py','tools/d1_energy_thermal.py']
 
 def identity():

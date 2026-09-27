@@ -164,10 +164,13 @@ else {{
   if (!$Approved) {{ throw 'Explicit new plan approval required' }}
   $entry=Join-Path $PSScriptRoot ('host_entry_' + [DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfffZ') + '_' + [guid]::NewGuid().ToString('N'))
   New-Item -ItemType Directory -Path $entry -ErrorAction Stop | Out-Null
-  @{{utc=[DateTime]::UtcNow.ToString('o');powershell_pid=$PID;plan_sha256='{plan_sha256}';action='Run'}} |
+  $runId=[guid]::NewGuid().ToString('N')
+  @{{utc=[DateTime]::UtcNow.ToString('o');powershell_pid=$PID;host_run_id=$runId;plan_sha256='{plan_sha256}';action='Run'}} |
     ConvertTo-Json -Compress | Set-Content -LiteralPath (Join-Path $entry 'start.json') -Encoding UTF8
   $exitCode=$null
   $priorErrorAction=$ErrorActionPreference
+  $priorRunId=$env:D1_ENERGY_HOST_RUN_ID
+  $env:D1_ENERGY_HOST_RUN_ID=$runId
   try {{
     # Windows PowerShell promotes redirected native stderr to NativeCommandError
     # under Stop; use the process exit code and retain the stderr file instead.
@@ -176,7 +179,8 @@ else {{
     $exitCode=$LASTEXITCODE
   }} finally {{
     $ErrorActionPreference=$priorErrorAction
-    @{{utc=[DateTime]::UtcNow.ToString('o');powershell_pid=$PID;python_exit_code=$exitCode;normal_wrapper_return=($null -ne $exitCode)}} |
+    $env:D1_ENERGY_HOST_RUN_ID=$priorRunId
+    @{{utc=[DateTime]::UtcNow.ToString('o');powershell_pid=$PID;host_run_id=$runId;python_exit_code=$exitCode;wrapper_exit_code=$(if ($exitCode -eq 0) {{ 0 }} else {{ 1 }});normal_wrapper_return=($null -ne $exitCode)}} |
       ConvertTo-Json -Compress | Set-Content -LiteralPath (Join-Path $entry 'end.json') -Encoding UTF8
   }}
   if ($exitCode -ne 0) {{ throw 'Failed; no automatic retry/resume; inspect host_entry and host_checkpoints' }}

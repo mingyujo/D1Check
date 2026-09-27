@@ -2,6 +2,7 @@
 from pathlib import Path
 import io
 import json
+import os
 import re
 import statistics
 import tarfile
@@ -16,6 +17,7 @@ from tools import d1_collection_recovery as install
 from tools import d1_logger_v4 as logger
 from tools.d1_adb_observed_client import ObservedDevice
 from tools import d1_energy_host_checkpoints as checkpoints
+from tools import d1_energy_host_lifecycle as lifecycle
 from tools import d1_energy_screen as screen
 from tools import d1_energy_temperature as temperature
 
@@ -101,7 +103,8 @@ def same_stage_serial_anchor(results, phase, pair, mode):
     c.require(len(matches)==1,'one eligible same-stage serial anchor required')
     return matches[0]['phases']['resident_baseline']['ap_median_c']
 
-def poll(d,remote,folder,m,plan,baseline_anchor=None,checkpoint=None):
+def poll(d,remote,folder,m,plan,baseline_anchor=None,checkpoint=None,
+         diagnostic_stop_after_preparation=False):
     conditioned=plan.get('temperature_preparation') is not None
     operational=plan.get('operational_only',False)
     start=time.monotonic();end=min(d.deadline,start+plan['budget']['host_poll_seconds'])
@@ -175,6 +178,12 @@ def poll(d,remote,folder,m,plan,baseline_anchor=None,checkpoint=None):
                     save(target/'temperature_preparation.json',dict(status='ready_before_one_official_baseline',
                         waited_seconds=waited_s,assessment=assessment,anchor_c=baseline_anchor))
                     if checkpoint:checkpoint('temperature_preparation_ready',session_id=m['session_id'])
+                    if diagnostic_stop_after_preparation:
+                        # The installed APK has no normal pre-baseline exit command.
+                        # Leave probe unarmed; caller performs one host stop. Never
+                        # claim app cleanup or a completed collection session.
+                        return dict(status='preparation_observed_host_stop_required',
+                                    assessment=assessment,probe_armed=False)
             else:
                 c.require('probe' in armed,'baseline before eligibility gate')
                 progress=pull_file(d,remote,'progress.jsonl',target)
@@ -193,7 +202,7 @@ def poll(d,remote,folder,m,plan,baseline_anchor=None,checkpoint=None):
             save(target/'arm_receipt.json',dict(gate=gate,utc=legacy.utc(),manifest_sha256=ready['manifest_sha256']))
             armed.add(gate)
             if checkpoint:checkpoint('gate_armed',session_id=m['session_id'],gate=gate)
-        time.sleep(.25)
+        time.sleep(1 if diagnostic_stop_after_preparation else .25)
     raise TimeoutError('host completion bound; do not infer zero calls')
 
 def gates(d,plan,folder,label):
@@ -280,14 +289,17 @@ def run(plan_file,adb,serial,expected_sha,approved):
     registry.mkdir(parents=True,exist_ok=False);root.mkdir(parents=True,exist_ok=False)
     budget=plan['budget']
     start=time.monotonic();hard=start+budget['total_seconds']
-    save(registry/'claimed.json',dict(plan_sha256=expected_sha,utc=legacy.utc(),budget=budget))
     state_model=bool(plan.get('state_model_calibration'))
+    host_run_id=os.environ.get('D1_ENERGY_HOST_RUN_ID') or __import__('uuid').uuid4().hex
+    host_identity=lifecycle.host_identity() if state_model else None
+    save(registry/'claimed.json',dict(plan_sha256=expected_sha,utc=legacy.utc(),budget=budget,
+                                      host_run_id=host_run_id,host_identity=host_identity))
     results=[];current=None;remote=None;identified=False;install_result=None;d=None;journal=None
     def mark(stage,**details):
         if journal:journal.mark(stage,**details)
     try:
         if state_model:
-            journal=checkpoints.Checkpoints(root/'host_checkpoints',expected_sha)
+            journal=checkpoints.Checkpoints(root/'host_checkpoints',expected_sha,host_run_id,host_identity)
             mark('claimed')
         d=(ObservedDevice(adb,serial,root/'host_commands',allow_select=True,forbid_apk_deploy=True)
            if state_model else ObservedDevice(adb,serial,root/'host_commands'))
