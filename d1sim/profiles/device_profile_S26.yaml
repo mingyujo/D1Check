@@ -1,0 +1,53 @@
+# D1 simulator v0 — Galaxy S26 (SM-S942N, Exynos 2600) device profile
+# Every leaf is {value, status, source}. status: measured | measured-fit | placeholder | unsupported.
+# value null -> the simulator MASKS that combination (never 0). Numbers are copied from the cited files;
+# see 산공학회\D1_ondevice\sim\스로틀모형_v0.md and 작업결과_0927_시뮬v0.md for context.
+device: S26
+profile_version: v0-2026-09-27
+model: mobilenet_v1_1.0_224
+
+latency_ms:   # per inference, MobileNet V1 FP32 input. 60 s runs = BEFORE throttle (C1-probe: GPU throttles from ~55 s)
+  note: "60 s formal runs = pre-throttle interval only. Engines differ: CPU4/GPU Interpreter 1.4.2, NPU CompiledModel 2.2.0 (engine footnote required, +21.4 % engine gap on CPU). NPU span = write+run+read. Storage precision CPU/GPU FP32, NPU FP16 [E]."
+  CPU4:
+    median: {value: {25: 3.897, 50: 3.904, 75: 4.096, 100: 4.370}, status: measured, source: "results/S26_formal_strict exports-v2/run_summary.csv, cpu_threads=4, 5-run median (FORMAL_RESULTS.md §3)"}
+    p95:    {value: {25: 4.049, 50: 4.088, 75: 4.376, 100: 4.929}, status: measured, source: "same file, latency_p95_ms 5-run median (d1sim step-3 recompute)"}
+  GPU:
+    median: {value: {25: 3.669, 50: 3.660, 75: 3.641, 100: 3.636}, status: measured, source: "results/S26_formal_strict run_summary.csv gpu-fp32-strict-v1, 5-run median"}
+    p95:    {value: {25: 4.034, 50: 4.013, 75: 3.963, 100: 3.980}, status: measured, source: "same, latency_p95_ms 5-run median"}
+  NPU:
+    median: {value: {25: 0.749, 50: 0.746, 75: 0.746, 100: 0.743}, status: measured, source: "results/S26_NPU_formal_0925b run_summary.csv, 5-run median (NPU_FORMAL_RESULTS.md §3)"}
+    p95:    {value: {25: 1.083, 50: 1.023, 75: 1.009, 100: 0.989}, status: measured, source: "same, p95 5-run median"}
+  sim_uses: {value: "median at duty 100 as unthrottled L0 per inference", status: placeholder, source: "0912 §9-4 proposal: v0 median"}
+
+power_w:      # whole-device battery power. ENERGY ABSOLUTE ACCURACY UNCERTIFIED (MEASUREMENT_DEFINITION.md §10)
+  load_d100:
+    CPU4: {value: 7.259, status: measured, source: "NPU_FORMAL_RESULTS.md §5 table (CPU/GPU 80-run session, internal consistency FAIL -7.2 %)"}
+    GPU:  {value: 6.457, status: measured, source: "same table"}
+    NPU:  {value: 5.120, status: measured, source: "same table (NPU 20-run session, internal consistency PASS)"}
+  idle: {value: 0.581, status: measured, source: "NPU_FORMAL_RESULTS.md:239 100-run joint idle median; per-run 0.38~0.89 W, cause unknown"}
+  switch: {value: idle, status: placeholder, source: "power during model init not measured -> idle power assumed"}
+
+throttle:     # d1sim/throttle.py form M-A2 (SKIN-driven 2-node). 스로틀모형_v0.md
+  GPU:
+    params: {value: file:throttle_v0_GPU.json, status: measured-fit, source: "fit on C1-probe r1 (run 1f953a1e), frozen commit 402acab2ed068b459f922898c621c97093ec396d; r2 half-holdout"}
+  NPU:
+    params: {value: null, status: placeholder, source: "tonight NPU 600 s. Variant npu_cpu_throttle: a=none, b=GPU form driven by NPU power (P0=5.120)"}
+  CPU4:
+    params: {value: null, status: placeholder, source: "tonight CPU(CompiledModel) 600 s. Same variants, P0=7.259"}
+  t_start_c: {value: 30.3, status: measured, source: "평가층_사전등록_v1.md:50 CPU/GPU 80-run load-start SKIN median; treated as ambient (assumption)"}
+
+switch_cost_s:  # time to (re)load a model on a resource before executing
+  idle->CPU4: {value: 0.031, status: measured, source: "measure/s26/results/NEXT_3WEEKS.md:193"}
+  idle->GPU:  {value: 0.273, status: measured, source: "NEXT_3WEEKS.md:192 (interpreter 238 ms + delegate 35 ms)"}
+  idle->NPU:  {value: 0.111, status: measured, source: "d1sim/out/npu_init_span.json: compiled_model_init span, 9/25 formal 20 runs median 110.7 ms (100.8~127.9); 0927 C4 5 runs median 94.8 ms (92.8~98.3). 0 excluded (all completed/valid, plugged 0)"}
+  cross:      {value: target_init, status: placeholder, source: "resource->resource switch not measured (M2 needs chained mode). Assume = target idle->r init; sensitivity x0.5 / x2"}
+  same:       {value: 0.0, status: placeholder, source: "model stays loaded on same resource (assumption)"}
+
+limits:
+  hal_skin_thresholds_c: {value: {LIGHT: 38.0, MODERATE: 40.0, SEVERE: 42.0, CRITICAL: 45.0}, status: measured, source: "측정완료_판정_0927.md §2-15 (S26_DEVICE_PROFILE §2, 0927 C6 probe). RECORD ONLY - not a throttle trigger (GPU entered at SKIN ~37, status stayed 0)"}
+  battery_budget_j: {value: null, status: placeholder, source: "no budget -> constraint off"}
+  t_ambient_c: {value: 25.0, status: placeholder, source: "not recorded (판정서 §2-17). Not used by v0 dynamics (t_start is the reference)"}
+
+quality:
+  FP32: {value: {top1_imagenette: 0.75, top5: 0.95}, status: measured, source: "FORMAL_RESULTS.md §8 (CPU/GPU). NPU FP16 cosine 0.9997, argmax 32/32 (G4)"}
+  INT8: {value: null, status: placeholder, source: "not measured - masked (영훈 결정 대기, KS-D)"}
