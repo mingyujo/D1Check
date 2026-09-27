@@ -13,7 +13,7 @@ queue·burst의 발견 일정은 모두 시각 0에서 첫 일반 탐지를 CPU�
 | queue | 0ms, 탐지 #0만 도착 | 일반, 6000ms | 29.0°C | 624.052/1132.109ms | 627.418/1135.267ms | 3.0/1.5W, 34/34°C | GPU / CPU |
 | burst | 0ms, 탐지 #0만 도착 | 일반, 6000ms | 30.0°C | 624.052/1132.109ms | 627.418/1135.267ms | 1.5/3.0W, 34/29°C | GPU / CPU |
 
-응답·lane 값은 동결 자료의 조건부 중앙값이지 실현값이나 보장 상한이 아니다. W와 AP 평형값 및 연구용 AP 한도(queue 100°C, burst 30.03°C)는 **미측정 탐색 가정**이다. 정책 판단·기록·dispatch 비용은 기존 0.5/0.1/0.1ms 가정으로 양쪽에 동일하게 적용했다. 실제 keyed 단계 시간은 [`posthoc_first_realization.csv`](results/arrival_information_check_01/run_v2/posthoc_first_realization.csv)에 사후 정보로만 두었다. 첫 선택 callback에는 후속 요청 목록과 실현 벡터를 전달하지 않았다. 완전 offline 일정은 이 정보를 검색에 사용하므로 온라인과 정보 조건이 다르다.
+응답·lane 값은 동결 자료의 조건부 중앙값이지 실현값이나 보장 상한이 아니다. W와 AP 평형값 및 연구용 AP 한도(queue 100°C, burst 30.03°C)는 **미측정 탐색 가정**이다. 두 기본 profile은 예상 W/AP와 실현 W/AP를 같게 둔 이상적 진단 조건이지만, 동결 처리시간 중앙값과 keyed 실현시간은 다르다. 정책 판단·기록·dispatch 비용은 기존 0.5/0.1/0.1ms 가정으로 양쪽에 동일하게 적용했다. 실제 keyed 단계 시간은 [`posthoc_first_realization.csv`](results/arrival_information_check_01/run_v2/posthoc_first_realization.csv)에 사후 정보로만 두었다. 첫 선택 callback에는 후속 요청 목록과 실현 벡터를 전달하지 않았다. 완전 offline 일정은 이 정보를 검색에 사용하므로 온라인과 정보 조건이 다르다.
 
 미래 분기는 추가 도착 없음, 기존 시각의 긴급 1건, 같은 시각의 일반 1건, 원래 3건, 원래 3건에 탐지 CPU 또는 GPU의 실현 단계시간만 1.25배 한 오차 stress로 고정했다. 1.25는 확률분포나 측정된 오차 범위가 아니다. 같은 사례의 모든 분기는 시각 0의 `first_snapshots.json`이 정확히 일치한다. 분기 확률은 없어 평균 정책 가치를 계산하지 않았다.
 
