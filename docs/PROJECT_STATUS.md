@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-28 HOST-DIAG-01 실행 전 3,000명령·동일 APK 범위 재검토 — 미실행
+
+- [실행 코드 산식·소유권·판독 범위](ENERGY_AP_HOST_LIFECYCLE_PC_20260928.md): plan_v7 정상 예시는 과거 준비 전 약 84초와 resident 120초를 조건부 합쳐 **약 650 ADB명령**이며 정상 평균은 미측정. 900초 poll 최악 보수 상계는 **2,530/3,000명령**, cleanup 전 **2,523/2,900명령**이다. 기존 0.25초 `ls` 대기는 진단에서 1초이며 필수 상태 조회의 중복은 발견되지 않아 코드·계획 해시는 그대로다.
+- 동일 APK로 준비 중 host 지속·기록, 소유자 요청 force-stop, 부분/전체 회수와 앱 프로세스 부재를 판독할 수 있다. 앱 자체 정상 종료·cleanup과 COLLECT-04 우발 종료 원인은 확인할 수 없다. 원 실행기의 통제 종료는 활성 host를 막는 **외부 orphan 복구기**와 별개다. 관련 PC 3건과 plan_v7 `Check` 통과, 기기 명령·추론 0. 계획/registry 미소비, 기기 gate 미검증, `experiment_ready=false` 유지.
+- **다음 행동:** 별도 실행 승인 시 현재 A24·설치본·환경 gate 확인 후 이 한정된 진단 1회만 실행한다. 이번 검토에서는 실행하지 않는다.
+
 ## 2026-09-28 host 종료 소유권·단일 복구 PC 연결 — 최소 진단 미승인
 
 - [구현·PC 장애 주입·진단 계약](ENERGY_AP_HOST_LIFECYCLE_PC_20260928.md): 향후 PowerShell/Python 실행 ID와 parent/child 생성시각·명령 신원을 묶고, 활성/미확인 host에는 기기 복구를 차단한다. 별도 단일 claim 복구는 작은 증거→host cleanup 예약→archive 순서이며 원래 오류와 후속 오류를 분리한다. COLLECT-04 실제 종료 원인은 미확정, 기존 `stopped_no_resume`·원본·FAIL·동결값 보존.

@@ -27,6 +27,41 @@
 | 시간 | preflight 최대 300초 + 세션 최대 1,200초 = **전체 1,500초(25분) hard cap**. host poll 최대 900초, 회수 최대 60초(작은 prefix 포함), cleanup 예약 45초. 정상 예상시간과 완주 배터리는 미확인 |
 | 명령·중단 | ADB 최대 3,000 slots, cleanup 전 최대 2,900. 재시도·대체·추가 0. 온도 준비 미충족, 환경/품질/시간/계측/회수 오류는 중단·부분 증거 보존 |
 
+### 2026-09-28 실행 전 명령 예산 재검토
+
+`tools/d1_energy_host_diagnostic.py`의 실제 호출 경로를 기준으로 **3,000은 정상 예상치가 아닌 hard cap**이다. `ObservedDevice.sequence`는 client 시도마다 1 증가하며, 2,900에 도달하면 cleanup 전 새 client를 시작하지 않는다. 아래 계산은 각 주기에서 첫 조회를 하나 더 허용한 보수적 상계다. 조건 불충족으로 조기 중단하면 해당 단계 이후 명령은 쓰지 않는다.
+
+| 단계·명령 종류 | 정상 완주 시 산식 | 900초 poll 최악 상계 |
+|---|---:|---:|
+| 설치본 preflight: 기기 식별 3, `pm path` 1, host pull 1, 환경 gate 14, 설치본 `pm path`/SHA 2 | 21 | 21 |
+| 세션 전 환경 gate 14, 설치본 경로/SHA 2 | 16 | 16 |
+| staging: 경로 부재 검사 3, 디렉터리 생성 2, 7파일 × (push·복사·SHA·이동 4) | 33 | 33 |
+| Activity 시작 | 1 | 1 |
+| poll: `ls`로 준비 파일/예상 밖 cleanup 감지, 루프 끝 1초 대기 | 실제 poll 길이에 따름 | 901 |
+| poll: AP/thermal 한 표본 = uptime 앞·thermalservice·uptime 뒤 3명령, 최소 2초 간격 | 3 × 표본 수 | 3 × 451 = 1,353 |
+| poll: 화면 `dumpsys power`, 최소 10초 간격 | 실제 표본 수 | 91 |
+| poll: progress 마지막 줄, 시작 후 15초 및 thermal 표본 index 5의 배수에서 최대 1회 | 실제 heartbeat 수 | 90 |
+| gate: warmup ready/결과/PID/logcat/arm 5, 직렬 적격성 ready/목록/결과 2/arm 5, 병행 적격성 ready/목록/결과 2(준비 성공 시 arm 안 함) 4 | 14 | 14 |
+| 통제된 종료 전 작은 파일 3, host `force-stop`/프로세스 부재/thermal 3, 종료 후 작은 파일 3/단일 archive 1 | 최대 10 | 10 |
+| **합계** | **poll 약 204초라는 예시에서 약 650명령** | **2,530명령** |
+
+정상 예시의 poll 약 204초는 **과거 중단 기록에서 준비 gate 직전까지 약 84초를 관측한 뒤 이번 고정 resident 120초를 더한 조건부 계산**이다. 완주 실측이 없어 정상 평균이나 명령 수 분포는 모른다. 이 길이에서 `ls` 약 205회, thermal 최대 103표본/309명령, 화면 약 21회, heartbeat 약 20회, gate 14회, poll 밖 최대 81회를 더해 약 650회다. 900초 상계의 cleanup 전 2,523회는 2,900회보다 377회 적고, 전체 2,530회는 3,000회보다 470회 적다. 시간/명령 상한은 서로 독립이며 여유가 실행 성공을 보장하지 않는다.
+
+원래 정식 수집기는 같은 `poll`에서 루프 끝 **0.25초** 대기를 사용했다. COLLECT-04 첫 세션의 보존된 host 명령 기록에서는 `ls` 177회가 약 83.8초 동안 기록됐고 간격 중앙값은 약 0.375초였다. 이번 진단은 **1초** 대기로 최대 약 1회/초이며, thermal 2초·화면 10초·heartbeat 약 10초 이상 간격은 원래 경로와 같다. `ls`는 gate 파일과 예상 밖 `cleanup.json`을, heartbeat는 진행 시각을, thermal/화면은 서로 다른 환경 상태를 확인한다. 같은 값을 반복 수집하는 중복 조회는 확인되지 않았다. resident 대기 중 `ls`가 thermal보다 잦지만 앱의 예기치 않은 종료를 즉시 구별하는 계약상 관측이므로 단지 명령 수를 줄이기 위해 없애지 않았다. 시간 창·조회 경로·소스 해시를 바꾸지 않아 plan_v7을 재생성할 필요도 없다.
+
+### 동일 APK 진단의 판독 범위와 종료 소유권
+
+| 판독 항목 | 이번 계획의 증거·판정 |
+|---|---|
+| 준비 중 host 지속·기록 | PowerShell 시작/종료, Python 첫 checkpoint·30초 `poll_alive`, ADB client별 시각/exit, 앱 `progress.jsonl`·AP/화면 관측으로 확인 가능. 상위 host가 갑자기 사라지는 상황의 재현이나 장시간 안정성 증명은 아님 |
+| 소유자에 의한 host 요청 종료 | `runner.poll`이 120초 준비 적격성을 반환하면 `probe`를 **arm하지 않고** 같은 Python `run`의 `finally`에서 `shared.cleanup`을 한 번 호출한다. `force-stop` 명령/반환을 확인할 수 있음. 앱의 자발적 종료와 다름 |
+| 증거 회수·앱 프로세스 부재 | 종료 전 작은 prefix와 종료 후 작은 prefix/단일 archive를 별도로 기록. `shared.cleanup`의 `require_stopped`가 앱 관련 프로세스 부재를 조회한다. 회수 실패·조회 실패는 별도 오류/미확인으로 남음 |
+| 앱 자체 정상 종료·cleanup | **확인 불가.** 현재 APK는 준비 단계의 자발적 정상 종료가 없고 진단은 공식 baseline 전에 host가 멈춘다. `cleanup.json`이 없으면 `unconfirmed`이며 host cleanup 성공으로 대체하지 않음 |
+
+활성 parent 또는 child 차단은 **외부 orphan 복구기** `d1_energy_host_recovery.check/run`에만 적용된다. 원 실행기의 소유자 통제 종료는 이 검사에 종속되지 않고 직접 `finally`에서 시행한다. 외부 복구는 실행 ID와 PID·생성시각·실행 파일·명령줄을 대조하고 parent/child 둘 다 종료된 것이 확인된 뒤에만 별도 단일 claim을 만든다. 살아 있는 원 실행기의 느린 준비를 orphan으로 간주하지 않는다. 따라서 동일 APK 진단만으로도 COLLECT-04의 공백 중 **host가 준비 중 계속 기록하는지, 요청한 종료·회수·부재 확인이 이어지는지**를 좁혀 확인할 수 있다. 앱 자체 cleanup과 우발적인 상위 프로세스 종료 원인은 남는다. 이 범위를 위해 새 APK는 필요하지 않다.
+
+관련 PC 재확인: 착수 HEAD `b1ff42805a2a118b280f159efd9c0c0ce11777aa` clean/upstream 동일 상태에서 `python -B -m unittest tools.test_d1_energy_host_lifecycle.LifecycleTest.test_diagnostic_session_stops_before_baseline_and_consumes_once tools.test_d1_energy_host_lifecycle.LifecycleTest.test_active_run_blocks_device_and_claim tools.test_d1_energy_host_lifecycle.LifecycleTest.test_exact_process_identity_and_parent_child_independence -q`는 3/3 통과했다. plan_v7 `RUN_AFTER_APPROVAL.ps1 -Action Check`는 기존 해시 `a6c65b0d...b20decf`, 미소비 상태·기기 명령 0회를 확인했다. **판정: 이 한정된 host 지속·통제 종료·회수 진단은 PC 준비 완료, 현재 기기 gate는 미검증이며 실행은 아직 승인되지 않았다.**
+
 앱은 `probe` arm 직후 바로 공식 baseline으로 들어간다. **동일 APK로 준비 단계에서 앱 스스로 정상 완료하는 경로는 없다.** 진단 host는 준비 120초 적격성이 확인되면 `probe`를 arm하지 않고 한 번 host cleanup/force-stop과 회수를 수행한다. 따라서 이 후보는 *host의 정상 종료·회수 경로와 앱 준비 단계*를 검증하지만 앱 자체 정상 cleanup의 성공까지 검증하지 않는다. 앱 cleanup이 없으면 `unconfirmed`으로 기록한다. 앱 정상 완료까지 요구한다면 진단 전용 Android 종료 경로와 새 서명 APK·설치 예산이 별도로 필요하며, 이번에는 APK를 바꾸거나 설치를 승인하지 않았다. 이는 준비 가능 범위의 명시적 제한이다. 준비 gate가 360초에 가까워져도 유리한 온도 창을 다시 고르지 않는다.
 
 승인 전 PC Check(기기 명령 0회):
