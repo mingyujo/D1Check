@@ -112,7 +112,7 @@ def require_receipt(plan, collection_hash):
     for path,sha in r['evidence_hashes'].items():c.v.require(c.p.digest(path)==sha,'recovery evidence changed')
 
 
-def device_class():
+def device_class(root_only=False):
     # Lazy import keeps PC prepare/check off the device path.
     from tools.d1_arrival_device import Device
     class RecordedDevice(Device):
@@ -127,7 +127,7 @@ def device_class():
             # Only fixed experiment arguments enter this API. No keystore/password argv.
             command=[self.adb,'-s',self.serial]+list(map(str,args))
             display=['adb','-s','<approved-A24>']+list(map(str,args))
-            result=rp.run(command,folder,min(timeout,remaining-5),display)
+            result=rp.run(command,folder,min(timeout,remaining-5),display,root_only=root_only)
             stdout=(folder/'stdout.bin').read_bytes() if (folder/'stdout.bin').exists() else b''
             stderr=(folder/'stderr.bin').read_bytes() if (folder/'stderr.bin').exists() else b''
             if result['status'] in ('timeout','host_interrupted','host_command_error'):
@@ -147,7 +147,7 @@ def installed_hash(device, expected):
     return tokens[0]
 
 
-def recover(path, adb, serial, overall_deadline):
+def recover(path, adb, serial, overall_deadline, root_only=False, require_hardware_serial=False):
     from tools import d1_arrival_device as legacy
     from tools import d1_arrival_timing_calibration_device as shared
     from tools import d1_apk_identity as apk
@@ -155,11 +155,14 @@ def recover(path, adb, serial, overall_deadline):
     c.v.require(not out.exists(),'recovery consumed; no retry')
     out.mkdir();start=time.monotonic();hard=min(start+600,overall_deadline)
     c.cal.write_new(out/'claim.json',dict(utc=rp.utc(),mono=start,recovery_plan_sha256=c.p.digest(path)))
-    device=device_class()(adb,serial,out/'commands');device.deadline=min(start+200,hard-45)
+    device=device_class(root_only=root_only)(adb,serial,out/'commands');device.deadline=min(start+200,hard-45)
     result=dict(status='failed',stage='preflight',utc_start=rp.utc(),install_attempts=0,transfer_attempts=0,
                 collection_plan_sha256=r['collection_plan_sha256'],installed_apk_sha256=None)
     try:
         pre=apk.preflight(device,dict(plan,_plan_file=r['collection_plan']),out/'preflight')
+        if require_hardware_serial:
+            hardware=device.call('shell','getprop','ro.serialno',timeout=3).stdout.decode().strip()
+            c.v.require(hardware==plan['device_hardware_serial'],'hardware serial mismatch')
         legacy.require_stopped(device)
         battery=device.call('shell','dumpsys','battery').stdout.decode();legacy.battery_gate(plan,battery,True)
         thermal=device.call('shell','dumpsys','thermalservice').stdout

@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ENERGY-AP-DEPLOY-RECOVERY-01 PC 준비 — 기기 미실행
+
+- [전송 실패 진단·분리 배포안](ENERGY_AP_DEPLOY_RECOVERY_PC_20260927.md). COLLECT-03 push 120초 timeout은 확인됐으나 원격 전송량·실패 당시 transport 상태·지연 원인은 미확정이다. 기존 106,092,116-byte APK/서명·원본·`stopped_no_resume`·소비 registry를 보존한다.
+- 기존 단계형 복구기의 push→원격 해시→설치→설치본 해시와 부분 출력/cleanup을 재사용하는 새 전용 ID·계획을 PC에서 준비했다. 외부 `energy_ap_deploy_recovery_plan_v1/recovery_plan.json` SHA `8b9fb528ea75139d208b3b458072a6f8787bcd10564f12bd62cd1daf718c17c8`; 전송/설치 각 최대1·재시도0·세션/추론0·전체600초. `Check`·관련 PC 테스트 통과, ADB/설치/기기 조회0. 상태 `PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED`, `experiment_ready=false`.
+- 다음 행동: 별도 배포 승인 시 현재 동일 A24 transport와 환경 gate를 새로 확인하고 배포 복구만 1회 실행한다. 성공해도 COLLECT-03을 재개하지 않으며, 수집에는 새 계획·소비 기록·별도 승인이 필요하다.
+
 ## 2026-09-27 ENERGY-AP-STATE-COLLECT-03 종료 — APK 전송 timeout
 
 - [실행 결과·소비·cleanup](ENERGY_AP_STATE_COLLECT03_RESULTS_20260927.md). 승인 plan_v3 SHA 일치, 연결된 A24·실행 직전 환경 gate 통과 후 `Run` 1회. 이전 APK와 후보 APK의 signer는 같으나 해시가 달라 전송 1회 시도했고 `adb push` 120초 timeout. 원격 해시·설치·앱 시작 전 중단, `stopped_no_resume`, 전체 235.125초. 개발/확인 0/6·추론 0/10,152·전송 1/1 시도(완료 미확인)·설치 0/1. 출력/소비 registry 보존, 자동 재개 금지.

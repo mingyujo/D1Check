@@ -396,4 +396,4 @@ PC 완료 조건은 calibration 전용 경로, 기존 정책/자료 호환, 성�
 
 2026-09-27 후속: 위 예산의 plan_v3 실행은 사용자가 승인했으나 [실행 전 gate](ENERGY_AP_STATE_COLLECTION_PREFLIGHT_20260927.md)에서 `adb devices -l`의 연결 기기가 0대였다. serial/fingerprint를 확인할 수 없어 `Run`을 시작하지 않았다. 이 착수 시도에서 세션·추론·설치 소비는 0이며 동결·확인도 없다. 과거의 “미승인 후보” 기록은 준비 당시 상태로 보존한다. 같은 턴에서 자동 재연결·재실행하지 않고 A24 연결 및 현재 gate 확인을 기다린다.
 
-연결 복구 뒤 같은 plan_v3의 실행은 승인 범위에서 한 번 시작했으나 [결과 보고](ENERGY_AP_STATE_COLLECT03_RESULTS_20260927.md)와 같이 APK 전송 client 120초 timeout으로 `stopped_no_resume`가 됐다. 전송 1회 시도, 설치·세션·추론·동결·확인 0이다. 다음 계획을 자동 생성하거나 기존 소비 registry를 초기화하지 않는다. 현재 우선순위는 보존된 PC 전송 실패 증거의 원인 범위 진단이며, 에너지·AP 모형 계수와 검증 상태는 이전 그대로다.
+연결 복구 뒤 같은 plan_v3의 실행은 승인 범위에서 한 번 시작했으나 [결과 보고](ENERGY_AP_STATE_COLLECT03_RESULTS_20260927.md)와 같이 APK 전송 client 120초 timeout으로 `stopped_no_resume`가 됐다. 전송 1회 시도, 설치·세션·추론·동결·확인 0이다. 기존 소비 registry를 초기화하지 않는다. [PC 전송 진단·별도 배포 복구안](ENERGY_AP_DEPLOY_RECOVERY_PC_20260927.md)은 이전 복구기의 단계형 전송/해시/설치를 재사용하며 새 ID·600초 상한·전송/설치 각 최대1회로 **준비만** 했다. 배포 성공 시에도 동일 계획을 재개하지 않고 새 수집 계획과 별도 승인으로 이어간다. 에너지·AP 모형 계수와 검증 상태는 이전 그대로다.
