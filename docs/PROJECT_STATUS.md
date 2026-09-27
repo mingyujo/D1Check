@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ARRIVAL-BASELINE-REVIEW-01 완료 — 비교군의 실제 출처 분리
+
+- [기준선 검토 보고서](ARRIVAL_BASELINE_REVIEW_20260927.md)와 [작은 비교표](results/arrival_baseline_review_01/baseline_matrix.csv). HEAD `4368032`의 앱 본체는 계측 UI이고, 정책 도입 전 benchmark는 반복 추론 도구였다. `CPU_FIFO`·`CPU_URGENT`는 격리된 arrival 실험의 자체 기준이며 실사용 기본 정책이 아니다. Ente는 공개 앱의 조작 기반 시작 제한, MediaPipe는 task 예제, Band는 연구 프레임워크로 구분했다. 권고는 **기존 합성 동일 엔진 비교(C)를 유지**하고 CPU_FIFO를 단순 대리 anchor, 개발 고정 B2와 B3를 강한 연구 기준으로 명시하는 것이다. 외부 앱/프레임워크 직접 실행·A24 포팅·새 정책·기기 실측 0회. 기존 P의 불리한 결과·FAIL·동결값·원자료·종료 계획과 `experiment_ready=false`는 불변.
+- 현재 작업 완료. 다음 행동은 (1) 연구 보고서의 기준군 명칭을 위 근거대로 한 번 정리하고, (2) 외부 정책 재구현을 별도 채택할 경우에만 Band 원 코드와 작은 결정 trace의 의미 일치를 먼저 검증하는 것이다. 이번 검토는 외부 구현 비교 채택이나 새 실측 승인으로 기록하지 않는다.
+
 ## 2026-09-27 ARRIVAL-INFORMATION-CHECK-PC-01 완료 — 새 온라인 규칙 보류
 
 - [첫 선택 정보 경계 보고서](ARRIVAL_INFORMATION_CHECK_PC_20260927.md), [동결 분기·CSV·재현](results/arrival_information_check_01/README.md), [통합 대시보드](results/arrival_policy_screen_01/dashboard.html). queue/burst offline 발견 일정의 첫 CPU와 기존 V1 첫 GPU를 같은 시각0 snapshot에서 비교했다. 2사례×6미래 분기×2행동=24 PC 재생, 관련 테스트 5건 통과, 기기 실행 0. 사전 비악화 gate 실패: queue 에너지 차이는 +0.655~−0.057J, burst는 −1.943~+0.278J로 미래에 따라 방향이 바뀌며 요청별 응답/AP 상충이 있다. 기존 완전 offline 개선은 첫 선택만의 효과가 아니다.
