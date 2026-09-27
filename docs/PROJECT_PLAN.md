@@ -1,5 +1,9 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-09-28 상태 모형 정식 수집의 부분 종료
+
+성공한 host lifecycle 진단의 신원·checkpoint·실패 회수 경로를 새 `ENERGY-AP-STATE-COLLECT-05`에 연결하고 [결과](ENERGY_AP_STATE_COLLECT05_RESULTS_20260928.md)에 따라 한 번 실행했다. 기존 측정 설계와 APK를 유지하며 개발3세션을 완료·동결했고, 확인 DC_DG 1세션에서만 예측 오차를 얻었다. 다음 확인 세션의 ADB 조회 timeout으로 전체 6세션 계획은 `stopped_no_resume`; 동결 모형은 부분 진단으로 보존하며 정책 시뮬레이터 지원/정확도 범위로 자동 승격하지 않는다. 후속은 동일 계획 재실행이 아니라 timeout 명령 기록의 PC 대조다. 새 정책·강화학습 개발 보류와 에너지/AP 모델 독립 확인 우선, `experiment_ready=false`는 유지한다.
+
 ## 2026-09-28 host 종료·복구 경로 구현과 다음 최소 확인
 
 [PC 구현/검증 계약](ENERGY_AP_HOST_LIFECYCLE_PC_20260928.md)에 따라 향후 수집의 parent/child 신원과 실행 ID, 단일 회수 owner를 연결했다. 살아 있는 child/parent나 신원 미확인에서는 복구 기기 명령을 막고, 종료 확인 후 남은 원 예산에서만 별도 1회 회수·cleanup을 허용한다. 같은 APK의 1세션 준비 관측 진단을 PC 준비했으나 **실행 승인은 아님**. 이 진단은 host 요청 종료까지 확인하며 앱의 준비 단계 정상 cleanup은 기존 APK의 별도 종료 경로가 없어 범위 밖이다. 다음은 새 진단 승인·실행 시 실제 host 수명/회수 경계를 관측하는 일 하나이며 기존 6세션 계획 재개는 아니다. 에너지·AP 모형·새 정책 개발/판정, `experiment_ready=false`는 그대로다.

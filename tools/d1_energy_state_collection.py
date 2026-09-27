@@ -20,7 +20,7 @@ from tools import d1_energy_thermal as energy
 from tools.d1_energy_thermal import require
 
 PROTOCOL = 'energy-ap-state-collection-v1'
-EXPERIMENT = 'ENERGY-AP-STATE-COLLECT-04'
+EXPERIMENT = 'ENERGY-AP-STATE-COLLECT-05'
 PAIRS = ('CC_DG', 'CG_DC', 'DC_DG')
 PAIR_KEYS = dict(old.PAIRS, DC_DG=('detection_CPU','detection_GPU'))
 ORDER = [(phase, pair) for phase in ('development', 'confirmation')
@@ -42,7 +42,8 @@ BUDGET = dict(sessions=6, development=3, confirmation=3, work_requests=10080,
               stage_gate_seconds=120, host_poll_seconds=1800, recovery_seconds=60,
               cleanup_seconds=45, validation_slack_seconds=35, launch_seconds=20,
               session_seconds=2100, installed_preflight_seconds=300, freeze_seconds=600,
-              total_seconds=13500)
+              total_seconds=13500, adb_command_slots=62500,
+              pre_cleanup_command_slots=62400)
 HOST_FILES = old.HOST_FILES + ['tools/d1_energy_state_collection.py']
 
 
@@ -76,6 +77,16 @@ def budget_check(b=BUDGET):
     require(b['session_seconds'] >= b['stage_gate_seconds'] + b['host_poll_seconds'] +
             b['recovery_seconds'] + b['cleanup_seconds'] + b['validation_slack_seconds'] +
             b['launch_seconds'], 'nested reservation')
+    # One client for each readiness listing, three for a bracketed AP sample,
+    # one for screen, and one heartbeat per five AP samples. Gate files are
+    # fetched once. The 100-slot tail is reserved for failure evidence/cleanup.
+    h=b['host_poll_seconds']
+    poll_upper=(int(h/.25)+1)+3*(int(h/2)+1)+(int(h/10)+1)+int((int(h/2)+1)/5)+18
+    session_fixed=14+2+33+1+4+3  # environment, installed hash, staging, launch, recovery, cleanup
+    normal_upper=21+b['sessions']*(poll_upper+session_fixed)
+    require(normal_upper==62061 and normal_upper<b['pre_cleanup_command_slots'] and
+            b['adb_command_slots']-b['pre_cleanup_command_slots']>=100,
+            'ADB client cap and cleanup reserve')
 
 
 def prepare(source, build, output):
@@ -108,7 +119,7 @@ def prepare(source, build, output):
         apk_preflight=dict(old_plan['apk_preflight'], candidate=candidate),
         device_fingerprint=old_plan['device_fingerprint'], device_hardware_serial=old_plan['device_hardware_serial'],
         source_plan=dict(path=str(source.resolve()), sha256=p.digest(source)),
-        output_root=str(root / 'energy_ap_state_run_v4'),
+        output_root=str(root / 'energy_ap_state_run_v5'),
         registry=str(root / 'energy_collection_registry' / EXPERIMENT),
         battery_start_percent=20, battery_min_percent=20, battery_max_temperature_tenths_c=350,
         require_unplugged=True, screen_observation=old.OBSERVATION,
@@ -195,7 +206,7 @@ def check(file):
             plan['status'] == 'PC_READY_DEVICE_UNVERIFIED' and
             plan['state_model_calibration'] and plan['experiment_ready'] is False, 'plan status/identity')
     require(Path(plan['plan_file']) == file.resolve() and
-            Path(plan['output_root']) == file.parent.parent/'energy_ap_state_run_v4' and
+            Path(plan['output_root']) == file.parent.parent/'energy_ap_state_run_v5' and
             Path(plan['registry']) == file.parent.parent/'energy_collection_registry'/EXPERIMENT,
             'output/registry namespace')
     installed = p.read(plan['installed_receipt']['path'])

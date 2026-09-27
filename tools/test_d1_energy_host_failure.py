@@ -20,7 +20,7 @@ from tools import d1_recorded_process as process
 
 
 class FakeDevice:
-    def __init__(self,*args,**kwargs):self.deadline=None
+    def __init__(self,*args,**kwargs):self.deadline=None;self.sequence=0;self.command_limit=None
     def call(self,*args,**kwargs):return None
 
 

@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-28 ENERGY-AP-STATE-COLLECT-05 종료 — 개발3 동결·확인1 후 ADB 조회 timeout
+
+- [정식 실행 결과·원본/부분 그림](ENERGY_AP_STATE_COLLECT05_RESULTS_20260928.md), [공유 요약](results/energy_ap_state_collect05/README.md). 새 plan_v5 SHA `4616c2ea...cd1d`를 Check한 뒤 동일 A24·설치본/환경 gate를 통과해 한 번 실행했다. 개발3 적격 완료→계수 동결→확인 DC_DG 1 적격 완료. 다음 CG_DC 준비 중 `run-as ls` 3초 timeout으로 **5시도·4완료/6**, 마지막 확인 미시도; `stopped_no_resume`, 재시도0.
+- 작업 lane 해제 확인3,174, 적격성16·warmup40 반환, runtime20·staging5/35파일, ADB14,394/62,500, 설치본 pull1, push/설치0, 전체4,342.422/13,500초. 중단 세션의 회수 prefix 이후 호출은 확정0으로 두지 않는다. host force-stop과 프로세스 부재 확인; 앱 cleanup은 중단 세션에서 미확인이다.
+- 동결 상태별 기기 전체 전력/AP 모형은 부분 자료로 보존한다. 유일한 확인 DC_DG는 조건부 공통창 에너지 오차 +4.550J, AP 경로 MAE 0.645°C·최대 1.531°C. CG_DC/CC_DG 확인과 조건 간 방향·임의 도착 적용은 미검증. 전류 절대 정확도 미인증, 기존 FAIL/동결값/원자료/종료 계획 및 `experiment_ready=false` 유지. **다음 행동:** 이번 `run-as ls` timeout의 host client 기록과 앞선 정상 조회를 PC에서 대조해 반복 위험을 좁힌다. 이 계획은 재개하지 않는다.
+
 ## 2026-09-28 ENERGY-AP-HOST-DIAG-01 완료 — 통제된 host 종료·회수 확인
 
 - [실행 결과·증거 경계](ENERGY_AP_HOST_DIAG_RESULTS_20260928.md), [작은 요약](results/energy_ap_host_diag_01/summary.json). 승인 plan_v7 SHA `a6c65b0d...b20decf`를 현재 동일 A24/설치본/환경 gate 확인 후 한 번 실행했다. runtime4·warmup8·적격성4 전부 반환, resident 관측120.275초·AP 43표본 후 `probe` arm 없이 host 통제 종료. 공식 baseline/load0, 추가 실행0.

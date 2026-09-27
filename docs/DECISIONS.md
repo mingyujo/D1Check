@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-09-28 — COLLECT-05 부분 동결 모형의 지원 범위 승격 보류
+
+- **실행 상태:** 별도 승인된 새 정식 계획을 한 번 실행했으며 개발3→동결→확인1 뒤 다음 확인 준비의 ADB `run-as ls` timeout으로 `stopped_no_resume`다. [원본 경계·오차](ENERGY_AP_STATE_COLLECT05_RESULTS_20260928.md)를 따른다.
+- **판정:** 동결 계수와 유일한 확인 오차는 보존하되, 누락된 CG_DC/CC_DG 확인과 조건 간 방향·짧은 임의 도착 예측을 완료한 검증으로 취급하지 않는다. 기존 동결값/FAIL·원자료를 변경하지 않고 `experiment_ready=false`를 유지한다. 재시도·동일 계획 재개·확인 자료 재보정은 채택하지 않았다.
+- **다음 근거:** timeout 발생 client와 직전 정상 조회의 PC 기록 비교가 후속 실행 신뢰성 판단에 필요하다. 새 실측 예산이나 timeout 변경은 이번에 확정하지 않는다.
+
 ## 2026-09-28 — host 복구는 종료 확인 후 단일 owner, 기기 진단은 별도 승인
 
 - **확정:** 사용자 승인 범위의 PC 설계로 향후 수집의 `host_run_id`·parent/child 생성시각/명령 신원을 보존하고, active/unknown 상태의 회수·force-stop을 금지한다. receipt 누락은 성공이 아니며 stale heartbeat나 PID 단독으로 강제 종료하지 않는다. 복구는 별도 output의 1회 claim, 원 계획의 남은 시간 안에서 원자료 회수·cleanup만 수행하고 추론/세션 재개를 하지 않는다. [근거·검증](ENERGY_AP_HOST_LIFECYCLE_PC_20260928.md).

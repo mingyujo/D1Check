@@ -35,6 +35,8 @@ class StateCollectionTest(unittest.TestCase):
         self.assertEqual((state.BUDGET['apk_transfers'],state.BUDGET['installs'],
                           state.BUDGET['installed_host_pulls']),(0,0,1))
         self.assertEqual(state.BUDGET['fixed_observation_seconds'], 102*60)
+        self.assertEqual((state.BUDGET['pre_cleanup_command_slots'],
+                          state.BUDGET['adb_command_slots']),(62400,62500))
         self.assertEqual(state.probe_counts('CC_DG'),{'classification':2,'detection':2})
         self.assertEqual(state.probe_counts('DC_DG'),{'classification':0,'detection':4})
 
@@ -93,7 +95,7 @@ class StateCollectionTest(unittest.TestCase):
 
     def test_shared_runner_freezes_before_confirmation_and_uses_new_namespace(self):
         class Device:
-            def __init__(self,*args,**kwargs):self.deadline=None
+            def __init__(self,*args,**kwargs):self.deadline=None;self.sequence=0;self.command_limit=None
             def call(self,*args,**kwargs):pass
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp);entries=[]
@@ -117,7 +119,7 @@ class StateCollectionTest(unittest.TestCase):
                   patch.object(device,'installed_preflight',return_value={'status':'verified'}),
                   patch.object(device,'gates'),patch.object(device.install,'installed_hash',return_value='hash'),
                   patch.object(device.shared,'stage_inputs',return_value='remote') as stage,
-                  patch.object(device,'poll'),patch.object(device,'recover',return_value={'status':'recovered'}),
+                  patch.object(device,'poll') as poll,patch.object(device,'recover',return_value={'status':'recovered'}),
                   patch.object(device.shared,'cleanup',return_value={'status':'completed'}),
                   patch.object(state,'summarize_session',side_effect=summarize),
                   patch.object(state,'freeze',return_value={'version':'frozen_development_only'}) as freeze,
@@ -127,6 +129,9 @@ class StateCollectionTest(unittest.TestCase):
             self.assertEqual(result['explicit_inference'],6*(100+4+8))
             self.assertEqual(freeze.call_count,1)
             self.assertEqual(evaluate.call_count,3)
+            self.assertEqual(poll.call_count,6)
+            self.assertTrue(all('diagnostic_stop_after_preparation' not in call.kwargs
+                                for call in poll.call_args_list))
             self.assertTrue(all(call.args[-1]==state.PROTOCOL for call in stage.call_args_list))
             self.assertFalse(result['experiment_ready'])
             self.assertTrue((root/'run/FINAL_RECEIPT.json').is_file())

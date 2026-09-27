@@ -303,6 +303,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
             mark('claimed')
         d=(ObservedDevice(adb,serial,root/'host_commands',allow_select=True,forbid_apk_deploy=True)
            if state_model else ObservedDevice(adb,serial,root/'host_commands'))
+        if state_model:d.command_limit=budget['pre_cleanup_command_slots']
         d.deadline=hard
         install_root=root/('installed_preflight' if state_model else 'installation');install_root.mkdir()
         mark('installed_preflight_start')
@@ -374,7 +375,8 @@ def run(plan_file,adb,serial,expected_sha,approved):
             explicit_inference=(sum(r['work_calls']+r['eligibility_calls']+r['warmup_calls'] for r in results) if state else budget['explicit_inference']),
             installation=install_result if not state_model else None,
             installed_preflight=install_result if state_model else None,
-            elapsed_seconds=time.monotonic()-start,accuracy_pass=None,experiment_ready=False)
+            elapsed_seconds=time.monotonic()-start,adb_command_slots=d.sequence,
+            accuracy_pass=None,experiment_ready=False)
         mark('completion_receipt_intent')
         checkpoints.atomic_new(root/'FINAL_RECEIPT.json',result)
         checkpoints.atomic_new(registry/'completed.json',result)
@@ -384,6 +386,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
         except BaseException:pass
         return result
     except BaseException as exc:
+        if state_model and d is not None:d.command_limit=budget['adb_command_slots']
         failure=dict(status='stopped_no_resume',error=repr(exc),completed_sessions=len(results),
             exception_type=type(exc).__name__,exception_stack=traceback.format_exc(),
             exception_thread=threading.current_thread().name,utc_failure=legacy.utc(),
@@ -415,6 +418,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
         except BaseException as err:failure['progress_summary_error']=repr(err)
         failure['failure_detected_elapsed_seconds']=failure['elapsed_seconds']
         failure['elapsed_seconds']=time.monotonic()-start
+        failure['adb_command_slots']=d.sequence if d is not None else 0
         try:mark('failure_receipt_intent',session_id=current.name if current else None)
         except BaseException as err:failure['receipt_checkpoint_error']=repr(err)
         try:checkpoints.atomic_new(root/'FINAL_RECEIPT.json',failure)
