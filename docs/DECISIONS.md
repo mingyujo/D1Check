@@ -4,6 +4,7 @@
 
 - **채택된 범위:** 기존 `stopped_no_resume` 수집을 보존하고, [별도 배포 복구](ENERGY_AP_DEPLOY_RECOVERY_PC_20260927.md)를 PC에서 준비한다. 기존 단계형 push/원격 SHA-256/설치/설치본 SHA-256을 재사용하며 Android·APK·수집 설계를 변경하지 않는다. 이 준비는 배포 실기기 실행이나 후속 수집 승인이 아니다.
 - **근거·한계:** 101.18MiB 후보의 `adb push` client가 120초 timeout; 원격 byte 수와 전송 지연 원인은 미확정. 새 배포 ID의 상한은 600초·전송/설치 각1·재시도0·수집0이다. 정확한 APK 설치 검증 후에도 새로운 수집 ID·계획·환경 gate·별도 승인 없이는 세션을 시작하지 않는다. 기존 FAIL·동결값·`experiment_ready=false` 유지.
+- **후속 실행:** 사용자가 무선 ADB 단일 복구를 별도 승인했다. [결과](ENERGY_AP_DEPLOY_RECOVERY_RESULTS_20260927.md)는 기존 설치본 pull 1회 완료·후보 push 1회 120초 timeout·설치/수집0, `stopped_no_resume`다. 동일 계획의 재실행은 금지한다. 무선 자체 원인·원격 전송량은 미확정이며, 실패 결과를 원래 수집의 설치/개발 표본에 합치지 않는다.
 
 ## 2026-09-27 — 모형 지원 범위와 독립 확인을 정책 개발보다 우선
 

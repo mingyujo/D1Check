@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ENERGY-AP-DEPLOY-RECOVERY-01 종료 — 무선 push timeout
+
+- [단일 실행 결과·원본 경계](ENERGY_AP_DEPLOY_RECOVERY_RESULTS_20260927.md). 승인된 별도 600초 계획을 현재 동일 A24·비충전/배터리 94%/29.9°C/thermal 0/화면 gate 확인 후 한 번 실행했다. 기존 설치본 pull 1회 완료(85.032초), 후보 push 1회가 120.032초 timeout; 원격 hash·설치0, 수집·warmup·추론0. 전체 213.563초. 실패 후 설치본은 여전히 이전 APK 해시, 원격 전송량·무선 내부 원인 미확정.
+- 전용 출력/registry는 `stopped_no_resume`로 보존. host force-stop 정상 반환·앱 프로세스 부재·thermal 0 확인, 앱 내부 cleanup 해당 없음. 재시도·재연결·새 계획 자동 실행 없음. 기존 COLLECT-03·FAIL·동결값·원자료와 `experiment_ready=false` 유지.
+- 다음 행동: 동일 무선 push timeout에서 원격 진행량이 없는 공백을 대상으로 **별도 배포 진단 계약을 PC에서 설계**한다. 이번 소비 ID를 재사용하거나 후속 수집을 시작하지 않는다.
+
 ## 2026-09-27 ENERGY-AP-DEPLOY-RECOVERY-01 PC 준비 — 기기 미실행
 
 - [전송 실패 진단·분리 배포안](ENERGY_AP_DEPLOY_RECOVERY_PC_20260927.md). COLLECT-03 push 120초 timeout은 확인됐으나 원격 전송량·실패 당시 transport 상태·지연 원인은 미확정이다. 기존 106,092,116-byte APK/서명·원본·`stopped_no_resume`·소비 registry를 보존한다.
