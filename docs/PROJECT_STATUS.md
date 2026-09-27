@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ENERGY-AP-PUSH-OBSERVE-01 완료 — 이번 원격 파일 SHA 일치
+
+- [관측용 push 결과·소비·원본 경계](ENERGY_AP_PUSH_OBSERVE_RESULTS_20260927.md). 사용자가 설치본·추가 환경 gate 요구를 이번 전송 진단에서 철회하여 기존 plan SHA `423ee55d98c6ef8ed5bea9ea3b1f5357a3d4806fb66c398dded922deff138f9a`를 수정 없이 실행했다. 현재 동일 A24·새 원격 대상 부재·공간 gate 통과. 9/17 ADB명령, push 1/1 정상 반환 13.469초, 전체 14.422/420초. 첫 20초 전에 완료돼 중간 크기 조회 0/8; 최종 106,092,116 byte·SHA `b273f74...a114cf` 일치. 설치·앱·warmup·추론·재시도 0. 외부 `energy_ap_push_observed_run_v1/receipt.json`과 claim 보존.
+- 이번 원격 파일은 재전송 없이 별도 설치 단계의 후보로 사용할 수 있다. 과거 두 timeout 원인은 미확정이며 전송 안정성·기기 정책/모형 적격성을 주장하지 않는다. 다음 행동: 별도 설치 전용 계획에서 현재 원격 SHA·설치본 동일성을 확인한다. 기존 stopped 계획·FAIL·원자료·동결값·`experiment_ready=false` 유지.
+
 ## 2026-09-27 ENERGY-AP-PUSH-OBSERVE-01 승인 후 실행 전 보류
 
 - [PC preflight와 차단 근거](ENERGY_AP_PUSH_OBSERVE_PREFLIGHT_20260927.md). 승인된 관측 계획 SHA `423ee55d98c6ef8ed5bea9ea3b1f5357a3d4806fb66c398dded922deff138f9a`의 `Check`는 통과했고 출력·소비 claim은 없다. 그러나 이번 지시의 현재 설치본 확인·환경 gate와 생략 규칙이 동결된 6명령 preflight/코드에 없다. 별도 조회 뒤 실행하면 최대 17명령 상한을 넘을 수 있어 기기 명령 전 중단했다. 이번 ADB·push·pull·설치·추론 0, 현재 기기 상태 미확인. 외부 `energy_ap_push_observed_preflight_v1/PREFLIGHT_RECEIPT.json` 보존.
