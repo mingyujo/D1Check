@@ -1,7 +1,8 @@
 """Extract 1 s load-relative traces from raw run folders. READ-ONLY on results/.
 
 Usage (D1Check_v4 root): py d1sim/tools/extract_traces.py
-Writes d1sim/data/trace_<tag>.csv (1 s) and trace10_<tag>.csv (10 s: exact median over inferences) with columns:
+Writes d1sim/data/trace_<tag>.csv (1 s) and trace10_<tag>.csv (10 s: exact median over inferences;
+  row t_s=-1 = exact first-30 s reference: all-inference median and mean power) with columns:
   t_s (bin start, load-relative), n_inf, lat_med_ms, power_w, SKIN, AP, BAT, PA, status, headroom_now, headroom_60s
 Sources per run:
   latency  : runs/<id>/gpu/*.jsonl  event=inference, start_mono_ns - load_start.mono_ns
@@ -59,6 +60,9 @@ def extract(res, rid):
     rows10 = [dict(t_s=k * 10, n_inf=len(v), lat_med_ms=round(st.median(v), 5),
                    power_w=round(st.mean([x for j in range(k * 10, k * 10 + 10) for x in pw.get(j, [])]), 4))
               for k, v in sorted(lat10.items()) if len(v) > 0]
+    first30 = sorted(x for k, v in lat.items() if k < 30 for x in v)
+    rows10.insert(0, dict(t_s=-1, n_inf=len(first30), lat_med_ms=round(st.median(first30), 5),
+                          power_w=round(st.mean([x for j in range(30) for x in pw.get(j, [])]), 4)))
     return rows, rows10
 
 
