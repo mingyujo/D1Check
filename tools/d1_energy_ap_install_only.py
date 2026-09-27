@@ -17,7 +17,7 @@ from tools import d1_collection_recovery as recovery
 from tools import d1_recorded_process as rp
 
 
-ID = 'ENERGY-AP-INSTALL-ONLY-01'
+ID = 'ENERGY-AP-INSTALL-ONLY-02'
 REMOTE = '/data/local/tmp/d1check-energy-ap-push-observe-01.apk'
 APK_SHA = 'b273f74b9b4eb91227db1ec2f7ef260d3d0f2c813790eaf4aedf30af98a114cf'
 SOURCE = ('tools/d1_energy_ap_install_only.py', 'tools/d1_apk_identity.py',
@@ -70,7 +70,7 @@ def prepare(bundle, observed_receipt, observed_plan, parent_plan):
     require(p.digest(parent['apk_path']) == APK_SHA and
             p.digest(earlier['adb']) == earlier['adb_sha256'], 'local executable changed')
     root = Path(__file__).resolve().parent.parent
-    plan = dict(protocol='energy-ap-install-only-v1', experiment_id=ID,
+    plan = dict(protocol='energy-ap-install-only-v2', experiment_id=ID,
         status='PC_READY_DEVICE_UNVERIFIED',
         observed_receipt=str(observed_receipt.resolve()),
         observed_receipt_sha256=p.digest(observed_receipt),
@@ -89,7 +89,7 @@ def prepare(bundle, observed_receipt, observed_plan, parent_plan):
         adb=earlier['adb'], adb_sha256=earlier['adb_sha256'],
         remote_apk=REMOTE, candidate=parent['apk_preflight']['candidate'],
         source_sha256={name:p.digest(root/name) for name in SOURCE},
-        output_root=str((bundle.parent/'energy_ap_install_only_run_v1').resolve()),
+        output_root=str((bundle.parent/'energy_ap_install_only_run_v2').resolve()),
         registry=str((bundle.parent/'energy_ap_install_only_registry'/ID).resolve()),
         total_seconds=TOTAL_SECONDS, stage_budgets=BUDGET, adb_cap=ADB_CAP,
         pull_cap=1, push_cap=0, install_cap=1, install_timeout_seconds=120,
@@ -115,7 +115,7 @@ def prepare(bundle, observed_receipt, observed_plan, parent_plan):
 
 def check(path):
     path = Path(path); q = p.read(path)
-    require(q['protocol'] == 'energy-ap-install-only-v1' and q['experiment_id'] == ID and
+    require(q['protocol'] == 'energy-ap-install-only-v2' and q['experiment_id'] == ID and
             q['status'] == 'PC_READY_DEVICE_UNVERIFIED', 'install namespace/status')
     require(q['remote_apk'] == REMOTE and q['apk_sha256'] == APK_SHA, 'APK/remote changed')
     require(q['total_seconds'] == TOTAL_SECONDS and q['stage_budgets'] == BUDGET and
@@ -126,7 +126,7 @@ def check(path):
              q['replacement_cap'],q['additional_cap']) == (1,0,1,120,0,0,0,0,0,0),
              'operation budget changed')
     base = path.resolve().parent.parent
-    require(Path(q['output_root']).resolve() == base/'energy_ap_install_only_run_v1' and
+    require(Path(q['output_root']).resolve() == base/'energy_ap_install_only_run_v2' and
             Path(q['registry']).resolve() == base/'energy_ap_install_only_registry'/ID and
             not Path(q['output_root']).exists() and not Path(q['registry']).exists(),
             'install-only plan consumed/output changed')
@@ -185,6 +185,20 @@ def recorded_device():
                 require(self.installs == 0, 'second install forbidden'); self.installs += 1
             return super().call(*args, timeout=timeout, check=check)
     return InstallDevice
+
+
+def install_only_cleanup(device, hard):
+    """No app was launched; verify absence without sending a force-stop command."""
+    previous=device.deadline
+    device.deadline=min(time.monotonic()+BUDGET['cleanup'],hard)
+    try:
+        legacy.require_stopped(device)
+        thermal=device.call('shell','dumpsys','thermalservice',timeout=15).stdout
+        require(re.search(rb'Thermal Status:\s*0\b',thermal),'post-install thermal gate')
+        return dict(status='completed',app_cleanup='not_applicable_no_app_launch',
+                    host_client_cleanup='recorded_per_command',utc=rp.utc())
+    finally:
+        device.deadline=previous
 
 
 def run(path, expected_sha, approved):
@@ -248,7 +262,7 @@ def run(path, expected_sha, approved):
             except Exception as query_error:result['post_failure_query_error']=repr(query_error)
     finally:
         if device.last_identity:
-            try:result['cleanup']=shared.cleanup(device,hard)
+            try:result['cleanup']=install_only_cleanup(device,hard)
             except Exception as error:result.update(status='failed',cleanup=dict(status='unconfirmed',error=repr(error)))
         else:result['cleanup']=dict(status='not_attempted_unidentified_device')
         result.update(utc_end=rp.utc(),elapsed_seconds=time.monotonic()-start,

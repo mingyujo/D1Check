@@ -88,7 +88,7 @@ class InstallOnlyTest(unittest.TestCase):
                      patch.object(d.legacy,'require_stopped'), \
                      patch.object(d.legacy,'battery_gate'), \
                      patch.object(d.shared,'screen_snapshot'), \
-                     patch.object(d.shared,'cleanup',return_value=dict(status='completed')), \
+                     patch.object(d,'install_only_cleanup',return_value=dict(status='completed')), \
                      patch.object(d.recovery,'installed_hash',return_value=d.APK_SHA), \
                      patch.object(d,'remote_hash',return_value=remote_digest):
                     if expected_install:
@@ -102,6 +102,70 @@ class InstallOnlyTest(unittest.TestCase):
                     self.assertEqual(result['install_attempts'],expected_install)
                     self.assertEqual(result['push_attempts'],0)
                     self.assertEqual(result['cleanup']['status'],'completed')
+
+    def test_run_entry_identifies_then_pins_transport_before_install(self):
+        """Exercise run -> real preflight/identify -> recorded argv, not just call()."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);plan=root/'plan.json'
+            serial='adb-example._adb-tls-connect._tcp'
+            package='com.example.d1check.benchmarkrunner.modelprobe'
+            installed_path='/data/app/example/base.apk'
+            candidate=dict(package=package,version_code=1,signer_sha256='signer',apk_sha256=d.APK_SHA)
+            old=dict(candidate,apk_sha256='old')
+            contract=dict(screen_brightness=81,screen_brightness_mode=0,screen_off_timeout=18000000)
+            q=dict(output_root=str(root/'output'),registry=str(root/'registry'/'id'),
+                   adb='adb',apk_path=str(root/'candidate.apk'),
+                   apk_preflight=dict(candidate=candidate,toolchain={},tool_sha256={}),
+                   device_fingerprint='fingerprint',device_hardware_serial='hardware',
+                   screen_contract=contract,battery_start_percent=20,battery_min_percent=20,
+                   battery_max_temperature_tenths_c=350,require_unplugged=True,
+                   candidate=candidate)
+            plan.write_text(json.dumps(q),encoding='utf-8')
+            commands=[]
+            def fake_run(command,folder,timeout,display,root_only):
+                commands.append(command)
+                folder.mkdir(parents=True)
+                args=command[1:]
+                if args[:2]==['-s',serial]:args=args[2:]
+                outputs={
+                    ('devices','-l'):('List of devices attached\n'+serial+' device\n').encode(),
+                    ('shell','getprop','ro.product.model'):b'SM-A245N\n',
+                    ('shell','getprop','ro.build.fingerprint'):b'fingerprint\n',
+                    ('shell','getprop','ro.serialno'):b'hardware\n',
+                    ('shell','pm','path',package):('package:'+installed_path+'\n').encode(),
+                    ('shell','ps','-A'):b'USER PID NAME\nroot 1 init\n',
+                    ('shell','dumpsys','battery'):(b'level: 80\nscale: 100\ntemperature: 300\n'
+                        b'AC powered: false\nUSB powered: false\nWireless powered: false\n'),
+                    ('shell','dumpsys','thermalservice'):b'Thermal Status: 0\n',
+                    ('shell','dumpsys','power'):b'mWakefulness=Awake\nmHalInteractiveModeEnabled=true\n',
+                    ('shell','settings','get','system','screen_brightness'):b'81\n',
+                    ('shell','settings','get','system','screen_brightness_mode'):b'0\n',
+                    ('shell','settings','get','system','screen_off_timeout'):b'18000000\n',
+                    ('shell','sha256sum',d.REMOTE):(d.APK_SHA+'  '+d.REMOTE+'\n').encode(),
+                    ('shell','pm','install','-r',d.REMOTE):b'Success\n',
+                    ('shell','sha256sum',installed_path):(d.APK_SHA+'  '+installed_path+'\n').encode(),
+                }
+                if args[0]=='pull':
+                    Path(args[2]).write_bytes(b'old-apk')
+                    payload=b'1 file pulled\n'
+                else:payload=outputs[tuple(args)]
+                (folder/'stdout.bin').write_bytes(payload)
+                (folder/'stderr.bin').write_bytes(b'')
+                return dict(status='returned',returncode=0)
+            def inspect(path,tools,deadline=None):
+                return old if Path(path).name=='installed-base.apk' else candidate
+            with patch.object(d,'check'),patch.object(d.p,'digest',return_value='plan-sha'), \
+                 patch.object(d.rp,'run',side_effect=fake_run), \
+                 patch.object(d.apk,'inspect',side_effect=inspect):
+                result=d.run(plan,'plan-sha',True)
+            self.assertEqual(result['status'],'verified')
+            self.assertEqual(result['installed_apk_sha256'],d.APK_SHA)
+            self.assertEqual(result['install_attempts'],1)
+            self.assertEqual(result['cleanup']['app_cleanup'],'not_applicable_no_app_launch')
+            self.assertEqual(commands[0],['adb','devices','-l'])
+            self.assertTrue(all(command[1:3]==['-s',serial] for command in commands[1:]))
+            self.assertEqual(sum('push' in command for command in commands),0)
+            self.assertEqual(sum('install' in command for command in commands),1)
 
     def test_pc_check_does_not_reach_adb(self):
         path=os.environ.get('D1_INSTALL_ONLY_PLAN')

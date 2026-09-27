@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-28 ENERGY-AP-INSTALL-ONLY-02 완료 — 원격 APK 재사용 설치
+
+- [새 계획·PC 검증·실기기 설치 결과](ENERGY_AP_INSTALL_ONLY_02_RESULTS_20260928.md). 새 ID/plan SHA `1176c4d94aa263feddcf9e4690a1ead79cd3c30e34cd3c61327a5840704e761b`를 Check 후 1회 실행. 현재 동일 A24·환경 gate, 원격 APK와 설치 후 base APK의 SHA `b273f74…114cf` 일치. 기존 설치본 해시가 달라 `pm install -r` 1회 성공. 실제 ADB19/22·pull1/1·push0·설치1/1·앱/추론/실측0, 전체45.687/600초. host·종료 확인 완료; 원본 외부 `energy_ap_install_only_run_v2/receipt.json` 및 별도 complete registry 보존.
+- 수정 최초 조회 경로의 실제 `run→preflight→identify` PC fixture 포함 테스트 6건 통과. 설치는 GPU·센서·병행·모형 검증이 아니다. 다음 행동: 종료된 COLLECT-03은 재개하지 않고, 별도 수집 계획과 승인·현재 기기/앱 적격성 gate를 준비한다. 기존 FAIL·원자료·동결값과 `experiment_ready=false` 유지.
+
 ## 2026-09-27 ENERGY-AP-INSTALL-ONLY-01 중단 — 기기 명령 전 host 오류
 
 - [설치 전용 계획·실제 소비·수정 범위](ENERGY_AP_INSTALL_ONLY_RESULTS_20260927.md). 관측된 원격 APK를 재전송 없이 설치하는 별도 plan SHA `f76c4ef3e44bc256944650330ca0e8f4297071a6dac1d99a923de4a838139fba`를 PC 준비·Check 후 한 번 실행했다. 0.016초에 첫 `devices -l` 기록 래퍼가 미선택 serial `None`으로 `TypeError`를 내고 프로세스 생성 전 종료. claim/registry 소비, 실제 ADB client·기기 조회·pull·원격 SHA·설치·앱·추론 0. 앱 cleanup은 기기 미식별로 해당 없음. 원본 외부 `energy_ap_install_only_run_v1/receipt.json`, 상태 `stopped_no_resume`.
