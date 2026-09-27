@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ENERGY-AP-INSTALL-ONLY-01 중단 — 기기 명령 전 host 오류
+
+- [설치 전용 계획·실제 소비·수정 범위](ENERGY_AP_INSTALL_ONLY_RESULTS_20260927.md). 관측된 원격 APK를 재전송 없이 설치하는 별도 plan SHA `f76c4ef3e44bc256944650330ca0e8f4297071a6dac1d99a923de4a838139fba`를 PC 준비·Check 후 한 번 실행했다. 0.016초에 첫 `devices -l` 기록 래퍼가 미선택 serial `None`으로 `TypeError`를 내고 프로세스 생성 전 종료. claim/registry 소비, 실제 ADB client·기기 조회·pull·원격 SHA·설치·앱·추론 0. 앱 cleanup은 기기 미식별로 해당 없음. 원본 외부 `energy_ap_install_only_run_v1/receipt.json`, 상태 `stopped_no_resume`.
+- 원인 코드 수정 후 현재 transport 최초 조회의 `-s` 생략과 이후 선택된 serial 사용을 PC fixture로 검증했다(관련 5건 통과). 소비 계획의 소스 동일성이 달라져 재실행하지 않았다. 다음 행동: **새 ID의 설치 전용 계획만** 별도 PC 동결·승인 후 현재 A24·원격 SHA를 확인한다. 기존 COLLECT-03·복구 종료 계획과 FAIL·원자료·동결값·`experiment_ready=false` 유지.
+
 ## 2026-09-27 ENERGY-AP-PUSH-OBSERVE-01 완료 — 이번 원격 파일 SHA 일치
 
 - [관측용 push 결과·소비·원본 경계](ENERGY_AP_PUSH_OBSERVE_RESULTS_20260927.md). 사용자가 설치본·추가 환경 gate 요구를 이번 전송 진단에서 철회하여 기존 plan SHA `423ee55d98c6ef8ed5bea9ea3b1f5357a3d4806fb66c398dded922deff138f9a`를 수정 없이 실행했다. 현재 동일 A24·새 원격 대상 부재·공간 gate 통과. 9/17 ADB명령, push 1/1 정상 반환 13.469초, 전체 14.422/420초. 첫 20초 전에 완료돼 중간 크기 조회 0/8; 최종 106,092,116 byte·SHA `b273f74...a114cf` 일치. 설치·앱·warmup·추론·재시도 0. 외부 `energy_ap_push_observed_run_v1/receipt.json`과 claim 보존.
