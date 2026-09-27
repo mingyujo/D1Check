@@ -1,5 +1,9 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-09-28 COLLECT-04 host 기록 결함 보완 — 재수집 승인 아님
+
+[PC 종료 진단](ENERGY_AP_HOST_TERMINATION_PC_20260928.md)에서 기존 125초 제한은 이 수집 경로와 무관하고, 원래 host 종료 원인은 미확정으로 남았다. 실패 처리의 2차 예외가 정상 종료 receipt를 막는 재현 결함을 수정하고 향후 실행의 단계별 checkpoint·Python exit/표준출력·오류 보존을 추가했다. 이는 미래 별도 계획의 증거성을 높이는 host 수정이며 기존 `COLLECT-04`의 실행 의미·결과를 변경하거나 새 APK/실측 계획을 승인하지 않는다. 다음은 PC/실행 도구 수명 경계를 판단하고, 새 실측은 별도 목적·예산 없이는 시작하지 않는다. 상태별 에너지·AP 계수 미식별, 새 정책 보류, `experiment_ready=false` 유지.
+
 ## 2026-09-28 상태 모형 수집의 부분 중단과 후속 경계
 
 설치 검증 APK를 재사용한 별도 `ENERGY-AP-STATE-COLLECT-04`는 [실제 결과](ENERGY_AP_STATE_COLLECT04_RESULTS_20260928.md)에 따라 첫 개발 `CC_DG` 세션의 공식 baseline·부하 이전 온도 준비에서 중단됐다. 계획은 PC 검증·동결됐고 현재 A24/설치본/환경 gate는 통과했지만 host 정상 종료 receipt가 없다. 완료0/6, 계수 동결·확인·오차 평가0으로서 상태 전력/AP 모형 지원 범위는 확대되지 않았다. 기존 계획·원본과 별도로 `stopped_no_resume`를 유지한다. 다음은 재수집이 아니라 host 종료·증거 회수 경계를 PC에서 진단한다. 새 정책·강화학습 보류, 원래 에너지·AP/응답 목표 및 `experiment_ready=false` 유지.

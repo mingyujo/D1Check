@@ -6,6 +6,8 @@ import re
 import statistics
 import tarfile
 import time
+import traceback
+import threading
 from tools import d1_energy_collection as c
 from tools import d1_arrival_device as legacy
 from tools import d1_arrival_timing_calibration_device as shared
@@ -13,6 +15,7 @@ from tools import d1_apk_identity as apk
 from tools import d1_collection_recovery as install
 from tools import d1_logger_v4 as logger
 from tools.d1_adb_observed_client import ObservedDevice
+from tools import d1_energy_host_checkpoints as checkpoints
 from tools import d1_energy_screen as screen
 from tools import d1_energy_temperature as temperature
 
@@ -98,14 +101,17 @@ def same_stage_serial_anchor(results, phase, pair, mode):
     c.require(len(matches)==1,'one eligible same-stage serial anchor required')
     return matches[0]['phases']['resident_baseline']['ap_median_c']
 
-def poll(d,remote,folder,m,plan,baseline_anchor=None):
+def poll(d,remote,folder,m,plan,baseline_anchor=None,checkpoint=None):
     conditioned=plan.get('temperature_preparation') is not None
     operational=plan.get('operational_only',False)
     start=time.monotonic();end=min(d.deadline,start+plan['budget']['host_poll_seconds'])
     armed=set();index=0;last_thermal=last_screen=0;last_sensor=None;heartbeat_index=-1
-    observations=[];probe_ready=None;probe_verified=False
+    observations=[];probe_ready=None;probe_verified=False;last_checkpoint=start;preparation_marked=False
     while time.monotonic()<end:
         now=time.monotonic()
+        if checkpoint and now-last_checkpoint>=30:
+            checkpoint('poll_alive',session_id=m['session_id'],armed=sorted(armed))
+            last_checkpoint=now
         if now-last_thermal>=2:
             last_sensor=thermal(d,folder,index);observations.append(last_sensor);index+=1;last_thermal=time.monotonic()
         if now-last_screen>=10:
@@ -147,6 +153,9 @@ def poll(d,remote,folder,m,plan,baseline_anchor=None):
                         c.quality(c.p.read(plan['references'][row['key']]['path']),result)
                     if gate=='probe':probe_verified=True;probe_ready=ready
                 if conditioned and gate=='probe':
+                    if checkpoint and not preparation_marked:
+                        checkpoint('temperature_preparation_waiting',session_id=m['session_id'])
+                        preparation_marked=True
                     contract=plan['temperature_preparation']
                     assessment=(c.operational_rules.assess(observations,ready['mono_ns'],contract) if operational else
                                 temperature.assess(observations,ready['mono_ns'],baseline_anchor,contract))
@@ -165,6 +174,7 @@ def poll(d,remote,folder,m,plan,baseline_anchor=None):
                         continue
                     save(target/'temperature_preparation.json',dict(status='ready_before_one_official_baseline',
                         waited_seconds=waited_s,assessment=assessment,anchor_c=baseline_anchor))
+                    if checkpoint:checkpoint('temperature_preparation_ready',session_id=m['session_id'])
             else:
                 c.require('probe' in armed,'baseline before eligibility gate')
                 progress=pull_file(d,remote,'progress.jsonl',target)
@@ -182,6 +192,7 @@ def poll(d,remote,folder,m,plan,baseline_anchor=None):
             arm(d,'files/arrival-scheduler-inputs/'+m['session_id'],gate,ready['manifest_sha256'])
             save(target/'arm_receipt.json',dict(gate=gate,utc=legacy.utc(),manifest_sha256=ready['manifest_sha256']))
             armed.add(gate)
+            if checkpoint:checkpoint('gate_armed',session_id=m['session_id'],gate=gate)
         time.sleep(.25)
     raise TimeoutError('host completion bound; do not infer zero calls')
 
@@ -271,17 +282,25 @@ def run(plan_file,adb,serial,expected_sha,approved):
     start=time.monotonic();hard=start+budget['total_seconds']
     save(registry/'claimed.json',dict(plan_sha256=expected_sha,utc=legacy.utc(),budget=budget))
     state_model=bool(plan.get('state_model_calibration'))
-    d=(ObservedDevice(adb,serial,root/'host_commands',allow_select=True,forbid_apk_deploy=True)
-       if state_model else ObservedDevice(adb,serial,root/'host_commands'))
-    d.deadline=hard
-    results=[];current=None;remote=None;identified=False;install_result=None
+    results=[];current=None;remote=None;identified=False;install_result=None;d=None;journal=None
+    def mark(stage,**details):
+        if journal:journal.mark(stage,**details)
     try:
+        if state_model:
+            journal=checkpoints.Checkpoints(root/'host_checkpoints',expected_sha)
+            mark('claimed')
+        d=(ObservedDevice(adb,serial,root/'host_commands',allow_select=True,forbid_apk_deploy=True)
+           if state_model else ObservedDevice(adb,serial,root/'host_commands'))
+        d.deadline=hard
         install_root=root/('installed_preflight' if state_model else 'installation');install_root.mkdir()
+        mark('installed_preflight_start')
         install_result=(installed_preflight(d,plan,plan_file,install_root,hard) if state_model else
                         installation(d,plan,plan_file,install_root,hard));identified=True
+        mark('installed_preflight_verified')
         frozen=None
         for e in plan['entries']:
             if e['index']==budget['development'] and not plan.get('diagnostic_only'):
+                mark('development_freeze_start')
                 freeze_start=time.monotonic();frozen={r['condition']:r for r in results}
                 expected_status='eligible_regimen_only' if state else 'eligible_descriptive_only'
                 c.require(len(frozen)==budget['development'] and all(r['status']==expected_status for r in results),'development freeze eligibility')
@@ -293,11 +312,14 @@ def run(plan_file,adb,serial,expected_sha,approved):
                 save(root/'development_freeze.json',artifact)
                 save(root/'freeze_receipt.json',dict(sha256=c.p.digest(root/'development_freeze.json'),utc=legacy.utc()))
                 c.require(time.monotonic()-freeze_start<600,'freeze time exceeded')
+                mark('development_frozen')
             c.require(hard-time.monotonic()>=budget['session_seconds'],'insufficient whole session reserve; stop')
             current=root/f"{e['index']:02d}_{e['session_id']}";current.mkdir();remote=None
+            mark('session_reserved',session_index=e['index'],session_id=e['session_id'],phase=e['phase'])
             session_start=time.monotonic();session_end=min(session_start+budget['session_seconds'],hard);d.deadline=min(session_start+120,session_end-105)
             gates(d,plan,current,'before_session')
             c.require(install.installed_hash(d,plan['apk_preflight']['candidate'])==plan['apk_sha256'],'installed APK changed')
+            mark('session_gate_passed',session_index=e['index'],session_id=e['session_id'])
             if e['mode']=='parallel' and not plan.get('operational_only'):
                 serial_key=e['pair']+'_serial'
                 c.require(any(r['condition']==serial_key and r['status']=='eligible_descriptive_only' for r in results if r['phase']==e['phase']),'same-stage serial prerequisite')
@@ -305,16 +327,23 @@ def run(plan_file,adb,serial,expected_sha,approved):
             manifest=Path(plan_file).parent/e['manifest'];m=c.p.read(manifest)
             (current/'input_manifest.json').write_bytes(manifest.read_bytes())
             remote=shared.stage_inputs(d,e['session_id'],manifest,{k:v['path'] for k,v in plan['source_files'].items()},plan.get('protocol',c.PROTOCOL))
+            mark('inputs_staged',session_index=e['index'],session_id=e['session_id'])
             c.require(session_end-time.monotonic()>=budget['host_poll_seconds']+105,'launch reserve')
             d.deadline=session_end-105
             save(current/'launch_attempt.json',dict(utc=legacy.utc()))
+            mark('launch_intent',session_index=e['index'],session_id=e['session_id'])
             d.call('shell','am','start','-W','-n',legacy.PACKAGE+'/'+ACTIVITY,'-a',ACTION,'--es','session_id',e['session_id'],timeout=20)
+            mark('launch_returned',session_index=e['index'],session_id=e['session_id'])
             anchor=None if state or plan.get('operational_only') else same_stage_serial_anchor(results,e['phase'],e['pair'],e['mode'])
-            poll(d,remote,current,m,plan,anchor)
+            poll(d,remote,current,m,plan,anchor,checkpoint=mark if state_model else None)
+            mark('poll_completed',session_index=e['index'],session_id=e['session_id'])
             d.deadline=min(time.monotonic()+60,session_end-45)
+            mark('recovery_start',session_index=e['index'],session_id=e['session_id'])
             save(current/'recovery.json',recover(d,remote,current/'artifacts',plan.get('operational_only',False)))
             # Cleanup is reserved BEFORE PC validation; validation cannot prolong active device work.
+            mark('host_cleanup_start',session_index=e['index'],session_id=e['session_id'])
             save(current/'host_cleanup.json',shared.cleanup(d,session_end))
+            mark('host_cleanup_returned',session_index=e['index'],session_id=e['session_id'])
             stats=(state.summarize_session if state else c.summarize_session)(current/'artifacts',manifest,plan);stats['phase']=e['phase']
             c.require(time.monotonic()<=session_end,'session PC validation exhausted reservation; no next session')
             stats['elapsed_seconds']=time.monotonic()-session_start
@@ -326,6 +355,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
                         ap_end_c=values['ap_end_c']-fr['phases'][phase]['ap_end_c']) for phase,values in stats['phases'].items()}
                 c.require(c.p.digest(root/'development_freeze.json')==c.p.read(root/'freeze_receipt.json')['sha256'],'freeze changed')
             save(current/'validated.json',stats);results.append(stats)
+            mark('session_validated',session_index=e['index'],session_id=e['session_id'])
         result=dict(status='completed_regimen_diagnostic_only' if state else 'completed_diagnostic_only' if plan.get('diagnostic_only') else 'completed_descriptive_only',
             sessions=len(results),diagnostic_requests=(sum(r['work_calls']+r['eligibility_calls'] for r in results) if state else budget['diagnostic_requests']),
             warmup=(sum(r['warmup_calls'] for r in results) if state else budget['warmup']),
@@ -333,29 +363,55 @@ def run(plan_file,adb,serial,expected_sha,approved):
             installation=install_result if not state_model else None,
             installed_preflight=install_result if state_model else None,
             elapsed_seconds=time.monotonic()-start,accuracy_pass=None,experiment_ready=False)
-        save(root/'FINAL_RECEIPT.json',result);save(registry/'completed.json',result);return result
+        mark('completion_receipt_intent')
+        checkpoints.atomic_new(root/'FINAL_RECEIPT.json',result)
+        checkpoints.atomic_new(registry/'completed.json',result)
+        # Publication is already complete; a final checkpoint failure cannot
+        # turn a completed run into a stopped run with conflicting receipts.
+        try:mark('completed')
+        except BaseException:pass
+        return result
     except BaseException as exc:
         failure=dict(status='stopped_no_resume',error=repr(exc),completed_sessions=len(results),
+            exception_type=type(exc).__name__,exception_stack=traceback.format_exc(),
+            exception_thread=threading.current_thread().name,utc_failure=legacy.utc(),
             session_attempts=len(list(root.glob('*/attempt.json'))),launch_attempts=len(list(root.glob('*/launch_attempt.json'))),
             consumption='only durable start/return pairs confirm counts; absent logs remain unknown',elapsed_seconds=time.monotonic()-start,
             installation=install_result if not state_model else None,
             installed_preflight=install_result if state_model else None,
             experiment_ready=False)
-        if identified and remote and current:
+        try:mark('failure_detected',error_type=type(exc).__name__,session_id=current.name if current else None)
+        except BaseException as err:failure['failure_checkpoint_error']=repr(err)
+        if identified and remote and current and d is not None:
             d.deadline=min(hard-45,time.monotonic()+15)
             prefix=current/'failure_prefix'
             for name in ('manifest.json','progress.jsonl','cleanup.json','sampler_failure.json','session_failure.json'):
                 try:pull_file(d,remote,name,prefix)
-                except BaseException as err:save(current/(name+'.recovery_error.json'),dict(error=repr(err)))
-        if identified:
+                except BaseException as err:
+                    failure.setdefault('recovery_errors',{})[name]=repr(err)
+                    try:save(current/(name+'.recovery_error.json'),dict(error=repr(err)))
+                    except BaseException as write_error:failure.setdefault('recovery_record_errors',{})[name]=repr(write_error)
+        if identified and d is not None:
             try:save((current or root)/'failure_host_cleanup.json',shared.cleanup(d,hard))
             except BaseException as err:failure['host_cleanup_error']=repr(err)
         prefix=current/'failure_prefix/progress.jsonl' if current else None
-        failure['last_session_progress']=(state.progress_consumption(prefix.read_bytes() if prefix and prefix.is_file() else b'',
-            bool(current and (current/'launch_attempt.json').exists())) if state else
-            c.progress_consumption(prefix.read_bytes() if prefix and prefix.is_file() else b'',
-            bool(current and (current/'launch_attempt.json').exists()),plan.get('operational_only',False)))
+        try:
+            failure['last_session_progress']=(state.progress_consumption(prefix.read_bytes() if prefix and prefix.is_file() else b'',
+                bool(current and (current/'launch_attempt.json').exists())) if state else
+                c.progress_consumption(prefix.read_bytes() if prefix and prefix.is_file() else b'',
+                bool(current and (current/'launch_attempt.json').exists()),plan.get('operational_only',False)))
+        except BaseException as err:failure['progress_summary_error']=repr(err)
         failure['failure_detected_elapsed_seconds']=failure['elapsed_seconds']
         failure['elapsed_seconds']=time.monotonic()-start
-        save(root/'FINAL_RECEIPT.json',failure);save(registry/'stopped.json',failure)
+        try:mark('failure_receipt_intent',session_id=current.name if current else None)
+        except BaseException as err:failure['receipt_checkpoint_error']=repr(err)
+        try:checkpoints.atomic_new(root/'FINAL_RECEIPT.json',failure)
+        except BaseException as err:
+            failure['final_receipt_write_error']=repr(err)
+            try:checkpoints.atomic_new(root/'FAILURE_RECEIPT_FALLBACK.json',failure)
+            except BaseException as fallback_error:failure['fallback_receipt_write_error']=repr(fallback_error)
+        try:checkpoints.atomic_new(registry/'stopped.json',failure)
+        except BaseException as err:failure['registry_stop_write_error']=repr(err)
+        try:mark('stopped',session_id=current.name if current else None)
+        except BaseException:pass
         raise

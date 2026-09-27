@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-28 COLLECT-04 host 종료 PC 진단·기록 경로 수정
+
+- [계층별 사실·재현 결함·PC 검증](ENERGY_AP_HOST_TERMINATION_PC_20260928.md). 마지막 원본 ADB client는 정상 반환했으나 Python/PowerShell 종료 이유는 원본 PID·exit/stderr 부재로 미확정. 별도 PC 주입에서 실패 처리의 2차 progress 파싱 오류가 원래 예외와 종료 receipt를 잃게 하는 결함을 재현했다. 향후 host checkpoint·원래 stack·독립 회수/cleanup 오류·receipt fallback 및 PowerShell child exit/stdout/stderr 기록을 보완했다. Android/APK·gate·호출 상한 변경 없음.
+- `COLLECT-04`와 원본·소비 registry는 그대로 `stopped_no_resume`, 완료0/6·동결/확인 없음. 기기 없는 140.516초 child 정상 종료와 parent 단독 종료 뒤 bounded child 생존을 PC에서 관측했으나 과거 종료 원인은 미확정. 이번 기기 명령0, `experiment_ready=false` 유지. **다음 행동 1개:** 새 기기 실행 전에 host 소유권 종료·orphan 감지·수동 회수 절차의 PC 계약을 확정한다. 자동 재수집 없음.
+
 ## 2026-09-28 ENERGY-AP-STATE-COLLECT-04 중단 — 첫 개발 세션 온도 준비 단계
 
 - [결과·소비·증거 경계](ENERGY_AP_STATE_COLLECT04_RESULTS_20260928.md), [작은 요약](results/energy_ap_state_collect04/summary.json). 설치 검증 APK를 재사용하는 별도 plan_v4 SHA `cc8f8cfd...7054f7`를 PC 검증·Check 후 1회 실행했다. 현재 A24/설치본 SHA/환경 gate 통과, APK push·설치0, host pull1. 첫 개발 `CC_DG` 세션은 runtime4·warmup8·적격성4까지 확인됐으나 공식 baseline/부하 이전 온도 준비에서 host가 정상 종료 receipt 없이 끝났다. 세션 1시도·0완료, 개발 동결/확인/예측 오차 없음. 나머지5 미시도; 새 계획 `stopped_no_resume`.

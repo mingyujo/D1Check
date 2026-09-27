@@ -145,19 +145,43 @@ def prepare(source, build, output):
         plan['entries'].append(dict(index=index, phase=phase, pair=pair, mode='calibration',
             session_id=sid, manifest='manifests/' + file.name, manifest_sha256=p.digest(file)))
     file = output / 'collection_plan.json'; cal.write_new(file, plan)
-    script = f'''param([ValidateSet("Check","Run")][string]$Action="Check",[switch]$Approved,[string]$Serial)
+    script = render_run_script(p.digest(file))
+    (output / 'RUN_AFTER_APPROVAL.ps1').write_text(script, encoding='utf-8-sig')
+    return check(file)
+
+
+def render_run_script(plan_sha256):
+    """Render future entry scripts; never mutate an already frozen/consumed plan."""
+    return f'''param([ValidateSet("Check","Run")][string]$Action="Check",[switch]$Approved,[string]$Serial)
 $ErrorActionPreference="Stop"
 Set-Location '{cal.ROOT.as_posix()}'
 $plan=Join-Path $PSScriptRoot 'collection_plan.json'
-if ($Action -eq 'Check') {{ python -B -m tools.d1_energy_state_collection check --plan $plan }}
+if ($Action -eq 'Check') {{
+  python -B -m tools.d1_energy_state_collection check --plan $plan
+  if ($LASTEXITCODE -ne 0) {{ throw 'Check failed; no device execution' }}
+}}
 else {{
   if (!$Approved) {{ throw 'Explicit new plan approval required' }}
-  python -B -m tools.d1_energy_state_collection run --plan $plan --expected-sha {p.digest(file)} --approved --adb 'C:/Users/LG/AppData/Local/Android/Sdk/platform-tools/adb.exe'
+  $entry=Join-Path $PSScriptRoot ('host_entry_' + [DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfffZ') + '_' + [guid]::NewGuid().ToString('N'))
+  New-Item -ItemType Directory -Path $entry -ErrorAction Stop | Out-Null
+  @{{utc=[DateTime]::UtcNow.ToString('o');powershell_pid=$PID;plan_sha256='{plan_sha256}';action='Run'}} |
+    ConvertTo-Json -Compress | Set-Content -LiteralPath (Join-Path $entry 'start.json') -Encoding UTF8
+  $exitCode=$null
+  $priorErrorAction=$ErrorActionPreference
+  try {{
+    # Windows PowerShell promotes redirected native stderr to NativeCommandError
+    # under Stop; use the process exit code and retain the stderr file instead.
+    $ErrorActionPreference='Continue'
+    python -B -m tools.d1_energy_state_collection run --plan $plan --expected-sha {plan_sha256} --approved --adb 'C:/Users/LG/AppData/Local/Android/Sdk/platform-tools/adb.exe' 1> (Join-Path $entry 'stdout.txt') 2> (Join-Path $entry 'stderr.txt')
+    $exitCode=$LASTEXITCODE
+  }} finally {{
+    $ErrorActionPreference=$priorErrorAction
+    @{{utc=[DateTime]::UtcNow.ToString('o');powershell_pid=$PID;python_exit_code=$exitCode;normal_wrapper_return=($null -ne $exitCode)}} |
+      ConvertTo-Json -Compress | Set-Content -LiteralPath (Join-Path $entry 'end.json') -Encoding UTF8
+  }}
+  if ($exitCode -ne 0) {{ throw 'Failed; no automatic retry/resume; inspect host_entry and host_checkpoints' }}
 }}
-if ($LASTEXITCODE -ne 0) {{ throw 'Failed; no automatic retry/resume' }}
 '''
-    (output / 'RUN_AFTER_APPROVAL.ps1').write_text(script, encoding='utf-8-sig')
-    return check(file)
 
 
 def check(file):

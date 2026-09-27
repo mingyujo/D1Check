@@ -129,6 +129,10 @@ class StateCollectionTest(unittest.TestCase):
             self.assertEqual(evaluate.call_count,3)
             self.assertTrue(all(call.args[-1]==state.PROTOCOL for call in stage.call_args_list))
             self.assertFalse(result['experiment_ready'])
+            self.assertTrue((root/'run/FINAL_RECEIPT.json').is_file())
+            self.assertTrue((root/'registry/completed.json').is_file())
+            checkpoints=[json.loads(p.read_text())['stage'] for p in sorted((root/'run/host_checkpoints').glob('*.json'))]
+            self.assertEqual(checkpoints[-1],'completed')
 
     def test_current_transport_selection_and_apk_deploy_block(self):
         with tempfile.TemporaryDirectory() as temp:
