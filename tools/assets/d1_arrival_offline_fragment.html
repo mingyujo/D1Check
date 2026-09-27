@@ -1,0 +1,76 @@
+<section class="card" id="offline-panel">
+  <h2>작은 합성 사례의 offline 일정 탐색</h2>
+  <p class="warn">이 구역은 24요청 결과와 별도인 <b>2·3요청 축소 사례</b>입니다. Offline 탐색기는 미래 도착과 실현 비용을 사용하며 운영 정책이 아닙니다. 전력·AP 값은 A24 실측 계수가 아닌 명시적 스트레스 가정입니다. 완료 표시는 표시된 이산 행동 공간에서만 유효합니다.</p>
+  <div class="controls">
+    <label>사례<select id="of-case"></select></label>
+    <label>비교 정책<select id="of-baseline"></select></label>
+    <label>연구용 요청별 최대 응답 손실<select id="of-delta"></select></label>
+    <label>탐색 지표<select id="of-objective"><option value="energy">공통창 에너지</option><option value="ap">AP 최고온도</option></select></label>
+    <label>시간축<select id="of-window"><option value="8">처음 8초</option><option value="120">공통 120초</option></select></label>
+  </div>
+  <p id="of-scope" class="small"></p>
+  <div id="of-table" class="scroll"></div>
+  <div id="of-delta-table" class="scroll"></div>
+  <p id="of-answer" class="small"></p>
+  <div id="of-pareto" class="scroll"></div>
+  <h3>배정·대기와 실제 lane 해제</h3>
+  <div id="of-timeline"></div>
+  <div id="of-actions" class="scroll"></div>
+  <h3>같은 시간축의 누적 에너지와 AP</h3>
+  <div id="of-path"></div>
+  <p class="small">긴급 응답 경계는 output_ready, 일반은 persist_complete입니다. 직사각형은 dispatch→lane_available의 자원 점유를 나타냅니다. AP 경로는 구간 끝점 표시이며 센서 실측이 아닙니다. 요청 수가 1명 긴급인 사례의 P95를 모집단 tail로 해석하지 않습니다. BAT 온도·물리적 전력 정확도·발열에 따른 속도 저하는 미지원입니다. <a href="repro_bundle/offline_witnesses.csv">허용폭별 결과 CSV</a> · <a href="repro_bundle/offline_comparisons.csv">정책 비교 CSV</a> · <a href="repro_bundle/offline_comparison.svg">대표 비교 SVG</a> · <a href="../arrival_offline_search_01/README.md">재현 안내</a></p>
+</section>
+<script>/*__OFFLINE__*/
+(()=>{
+  const D=OFFLINE,$=id=>document.getElementById(id),N=x=>Number(x),F=(x,d=3)=>x===''||x===null||x===undefined?'계산 불가':Number(x).toFixed(d);
+  const names={CPU_URGENT:'CPU 긴급우선',B2_PC:'고정 B2',B3_SOLO_EFT_PC:'조건부 B3',THERMAL_ENERGY_PC_V1:'열·에너지 후보',OFFLINE_ORACLE:'offline 발견 일정'};
+  function options(id,items){const e=$(id);e.replaceChildren();items.forEach(([value,label])=>{let o=document.createElement('option');o.value=value;o.textContent=label;e.append(o)})}
+  options('of-case',D.config.cases.map(c=>[`${c.scenario}_${c.profile}_${c.seed}_n${c.request_count}`,`${c.scenario} / ${c.profile} / seed ${c.seed} / ${c.request_count}요청`]));
+  options('of-baseline',D.config.online_comparators.map(p=>[p,names[p]||p]));
+  $('of-baseline').value='THERMAL_ENERGY_PC_V1';
+  options('of-delta',D.config.question_b_max_per_request_response_loss_ms.map(x=>[String(x),`${x} ms${x?' (탐색 가정)':' (응답 악화 없음)'}`]));
+  function table(headers,rows){const t=document.createElement('table'),h=document.createElement('tr');headers.forEach(v=>{let c=document.createElement('th');c.textContent=v;h.append(c)});t.append(h);rows.forEach(row=>{let tr=document.createElement('tr');row.forEach(v=>{let c=document.createElement('td');c.textContent=v;tr.append(c)});t.append(tr)});return t}
+  function chart(rows,field,limit,title,baseName,witnessName){
+    const width=960,height=165,pad=42;const subset=rows.filter(r=>N(r.time_s)<=limit+1e-9 && [baseName,witnessName].includes(r.name));
+    const values=subset.map(r=>N(r[field]));const lo=Math.min(...values),hi=Math.max(...values),span=hi-lo||1;
+    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox',`0 0 ${width} ${height}`);svg.style.width='100%';svg.style.maxWidth='960px';
+    function node(tag,attrs,content){const e=document.createElementNS(svg.namespaceURI,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));if(content)e.textContent=content;svg.append(e)}
+    node('text',{x:pad,y:20,'font-size':15},title);node('line',{x1:pad,y1:height-25,x2:width-pad,y2:height-25,stroke:'#777'});
+    [[baseName,'#2563eb'],[witnessName,'#059669']].forEach(([name,color])=>{
+      const points=subset.filter(r=>r.name===name).map(r=>`${pad+(width-2*pad)*N(r.time_s)/limit},${height-30-(height-65)*(N(r[field])-lo)/span}`).join(' ');
+      if(points)node('polyline',{points,fill:'none',stroke:color,'stroke-width':2});
+    });
+    node('text',{x:pad,y:height-5,'font-size':12},`0–${limit}초 / ${names[baseName]} 파랑, 선택 일정 초록 / 범위 ${F(lo)}–${F(hi)}`);
+    return svg;
+  }
+  function timeline(rows,baseline,witness,caseId,limit){
+    const picked=rows.filter(r=>r.case===caseId && [baseline,witness].includes(r.name));const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 960 220');svg.style.width='100%';svg.style.maxWidth='960px';
+    function node(tag,attrs,content){const e=document.createElementNS(svg.namespaceURI,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));if(content)e.textContent=content;svg.append(e)}
+    const max=Math.max(1,...picked.map(r=>N(r.lane_available_ms)/1000));const axis=Math.min(limit,Math.ceil(max+0.2));
+    [[baseline,0],[witness,1]].forEach(([name,i])=>{node('text',{x:10,y:44+i*91,'font-size':12},i?'선택 일정':names[name]);picked.filter(r=>r.name===name).forEach((r,j)=>{
+      const yy=55+i*91+j*23,x=t=>120+810*Math.min(N(t)/1000,axis)/axis;
+      node('line',{x1:x(r.arrival_ms),y1:yy+7,x2:x(r.dispatch_ms),y2:yy+7,stroke:'#999','stroke-dasharray':'3,3'});
+      node('rect',{x:x(r.dispatch_ms),y:yy,width:Math.max(1,x(r.lane_available_ms)-x(r.dispatch_ms)),height:13,fill:r.backend==='GPU'?'#7c3aed':'#0891b2'});
+      node('circle',{cx:x(r.priority==='urgent'?r.output_ready_ms:r.persist_complete_ms),cy:yy+7,r:3,fill:r.late==='True'?'#dc2626':'#111827'});
+      node('text',{x:3,y:yy+11,'font-size':10},`${r.request_id.split('/').pop()} ${r.priority==='urgent'?'긴급':'일반'}`);
+    })});node('text',{x:120,y:211,'font-size':11},`0–${axis}초 · 점선 대기 · 청록 CPU / 보라 GPU · 점 응답(빨강 기한 위반) · 막대 끝 lane 해제`);return svg;
+  }
+  function render(){
+    const c=$('of-case').value,b=$('of-baseline').value,d=$('of-delta').value,o=$('of-objective').value,win=N($('of-window').value);
+    const all=D.comparisons.filter(r=>r.case===c),w=D.witnesses.find(r=>r.case===c&&r.baseline===b&&r.delta_ms===d&&r.objective===o),id=`${c}|${b}|${d}|${o}`;
+    const spec=D.config.cases.find(x=>c===`${x.scenario}_${x.profile}_${x.seed}_n${x.request_count}`);
+    const frontier=D.pareto.filter(r=>r.case===c);
+    $('of-scope').textContent=`${c}: ${spec.request_count}요청 · 공통 120초 · ${w.search_status} · ${w.nodes}노드 / ${w.leaves}완료 일정 / 미탐색 prefix ${w.unexplored} · 비지배 일정 ${frontier.length}개. 응답 손실은 요청별 최대 ${d}ms이며 기한 위반·미완료 증가 불허. 에너지·AP 개선은 수치 오차 10⁻⁶ 초과만 표시합니다. 의미 있는 절감 기준은 미정입니다.`;
+    $('of-table').replaceChildren(table(['정책/일정','완료/전체','긴급 위반','일반 위반','긴급 응답 ms','일반 응답 ms','공통창 J*','AP 최고 °C*','AP 한도 초과 s*'],all.map(r=>[names[r.name]||r.name,`${r.complete}/${r.planned}`,`${r.urgent_miss}/${r.urgent_n}`,`${r.normal_miss}/${r.normal_n}`,r.urgent_responses_ms,r.normal_responses_ms,F(r.energy_j),F(r.ap_peak_c),F(r.ap_exceed_s)])));
+    $('of-delta-table').replaceChildren(table(['허용 손실 ms','적격 일정','선택 에너지 J*','선택 AP 최고 °C*','기준 대비 Δ에너지 J*','최대 요청별 손실 ms'],D.witnesses.filter(x=>x.case===c&&x.baseline===b&&x.objective===o).map(x=>[x.delta_ms,x.feasible_leaves,F(x.witness_energy_j),F(x.witness_ap_peak_c),x.witness_energy_j===''?'계산 불가':F(N(x.witness_energy_j)-N(x.baseline_energy_j)),F(x.max_request_response_loss_ms)])));
+    $('of-pareto').replaceChildren(table(['비지배 일정(앞 8개)','공통창 J*','AP 최고 °C*','AP 초과 s*','긴급/일반 위반'],frontier.slice(0,8).map(r=>[r.actions,F(r.energy_j),F(r.ap_peak_c),F(r.ap_exceed_s),`${r.urgent_miss}/${r.normal_miss}`])));
+    if(!w.witness_actions){$('of-answer').textContent=`해당 허용폭에서 발견한 적격 일정이 없습니다. ${w.search_status==='complete'?'표시된 이산 행동 공간 안에서만 해당합니다.':'예산 소진으로 불가능을 뜻하지 않습니다.'}`;$('of-timeline').replaceChildren();$('of-path').replaceChildren();$('of-actions').replaceChildren();return}
+    $('of-answer').textContent=`${o==='energy'?'에너지':'AP'} 최저 발견 적격 일정: ${F(w.witness_energy_j)} J / ${F(w.witness_ap_peak_c)} °C / AP 한도 초과 ${F(w.witness_ap_exceed_s)}초. ${names[b]} 대비 Δ에너지 ${F(N(w.witness_energy_j)-N(w.baseline_energy_j))} J, ΔAP ${F(N(w.witness_ap_peak_c)-N(w.baseline_ap_peak_c))} °C, 요청별 최대 응답 손실 ${F(w.max_request_response_loss_ms)}ms. 긴급 응답 ${w.witness_urgent_responses_ms}ms, 일반 응답 ${w.witness_normal_responses_ms}ms. ${w.optimality_proven==='True'?'이산 공간 완전 탐색':'예산 내 발견'}이며 미래 정보 사용. 이 수치는 실기기 우월성 근거가 아닙니다.`;
+    $('of-timeline').replaceChildren(timeline(D.requests.concat(D.selected_requests),b,id,c,win));
+    const chosen=D.selected_thermal_paths.filter(r=>r.name===id),baseline=D.thermal_paths.filter(r=>r.case===c&&r.name===b),series=baseline.concat(chosen);
+    const container=document.createElement('div');container.append(chart(series,'cumulative_energy_j',win,'누적 기기 전체 에너지 J*',b,id));container.append(chart(series,'ap_c',win,'모형 AP 온도 °C*',b,id));$('of-path').replaceChildren(container);
+    const acts=D.selected_actions.filter(r=>r.name===id);$('of-actions').replaceChildren(table(['시각 ms','큐 선두','행동','사유'],acts.map(r=>[F(r.at_ms,1),r.queue_head,r.action,r.reason])));
+  }
+  for(const id of ['of-case','of-baseline','of-delta','of-objective','of-window'])$(id).addEventListener('change',render);
+  render();
+})();</script>

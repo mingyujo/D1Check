@@ -98,7 +98,7 @@ def choose(config, queue, lanes, now, policy, settings, *, thermal_model=None, c
 
 
 def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=120_000_000_000,
-             admission=None, thermal_model=None):
+             admission=None, thermal_model=None, decision_provider=None):
     # Optional REPLAN-PC-01 event hook. None preserves the frozen v3 execution path.
     base.validate_config(config)
     base.require((policy in POLICIES or policy == 'THERMAL_ENERGY_PC_V1')
@@ -106,6 +106,9 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
     if policy == 'THERMAL_ENERGY_PC_V1':
         base.require(admission is None and settings['mode']=='explore', 'thermal policy explore-only')
         base.require(thermal_model is not None, 'thermal policy requires explicit model')
+    if decision_provider is not None:
+        base.require(policy=='THERMAL_ENERGY_PC_V1' and admission is None and thermal_model is not None,
+                     'scripted decisions are isolated to modeled offline exploration')
     if thermal_model is not None:
         from tools import d1_arrival_thermal_feedback as feedback
         from tools import d1_energy_thermal as thermal
@@ -183,8 +186,10 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
         if any(x and x['left']<=0.0001 for x in lanes.values()): continue
         if pending is None and queue and (admission is None or review_needed):
             eligible=queue if admission is None else admission.eligible(queue, now)
-            d=choose(config,eligible,public(),now,policy,settings,
-                     thermal_model=thermal_model,current_ap=current_ap)
+            d=(decision_provider(config, eligible, public(), now, settings, thermal_model, current_ap)
+               if decision_provider is not None else
+               choose(config,eligible,public(),now,policy,settings,
+                      thermal_model=thermal_model,current_ap=current_ap))
             if admission is not None:
                 d['admission']=admission.snapshot(queue, now)
                 if not eligible: d['reason']='background_start_blocked'

@@ -1,5 +1,7 @@
 # 통합 PC 탐색: 한 파일에서 응답·에너지·AP 확인
 
+최신 추가: 같은 HTML 아래쪽의 **작은 사례 offline 일정 탐색**에서 사례·정책·요청별 연구용 응답 손실 0/250/500ms·에너지/AP 지표·시간축을 고를 수 있다. 이는 [별도 계약과 결과](../../ARRIVAL_OFFLINE_SCHEDULE_PC_20260927.md)의 첫 2/3요청에 한정되며 기존 24요청 결과와 섞지 않는다. 0손실에서는 열·에너지 후보보다 나은 일정이 없고, 손실을 허용할 때만 일부 차이가 나타난다. 발견 일정은 미래 정보·미측정 상태 W/AP 가정을 사용하므로 실제 배포 가능 정책으로 읽지 않는다. [작은 결과·재현](../arrival_offline_search_01/README.md)과 [대표 SVG](repro_bundle/offline_comparison.svg)를 함께 본다.
+
 [대시보드](dashboard.html)를 로컬 브라우저에서 직접 연다. 서버·CDN은 필요 없다. `low/queue/burst`, 실현 간섭, seed, 일반 기한 위반 허용 증가폭 δ(%p)를 선택한 다음 아래 상태별 **기기 전체 절대 전력 W**와 AP 평형온도를 바꾸면 표와 B2−B3 동률선이 즉시 갱신된다. δ는 연구용 입력이며 합의된 SLA가 아니다. 과거 화면은 [보존본](dashboard_legacy.html), 과거 5정책 [응답 CSV](policy_screen.csv)로 남겼다.
 
 자료는 기존 24요청 동결 PC 결과 45조건의 B2·B3·CPU 135개 비용 일정이다. 기존 응답 지표와 대조한 제한 재생에서 작업×backend 공동 점유를 추출했다. FIXED_SPLIT·P는 같은 화면에 응답만 표시하고 에너지·AP는 계산 불가로 둔다. [독립 상태 일정 CSV](repro_bundle/occupancy_segments.csv)는 120초 공통창을 빠짐없이 분할한다. [5정책 응답 CSV](repro_bundle/service_metrics.csv), [가정 JSON](repro_bundle/assumptions.json), [출처·해시](repro_bundle/SOURCE_HASHES.json)를 함께 사용한다. 자세한 판독은 [한국어 보고서](../../ARRIVAL_INTEGRATED_EXPLORER_20260927.md), 기본 가정의 [대표 3조건 CSV](representative_comparisons.csv), [동률선 계수 CSV](pair_plane_examples.csv)를 참고한다.

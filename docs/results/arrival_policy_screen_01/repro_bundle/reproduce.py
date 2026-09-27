@@ -275,6 +275,24 @@ def render_bundle(bundle, output, template):
         fragment = fragment.replace('/*__THERMAL__*/',
             'const THERMAL='+json.dumps(feedback,ensure_ascii=False,separators=(',',':')).replace('</','<\\/')+';')
         html = html.replace('</main>',fragment+'</main>')
+    offline_names=('offline_comparisons.csv','offline_witnesses.csv','offline_pareto.csv','offline_actions.csv',
+                   'offline_requests.csv','offline_thermal_paths.csv','offline_selected_requests.csv',
+                   'offline_selected_thermal_paths.csv','offline_selected_actions.csv',
+                   'offline_CONFIG.json','offline_fragment.html')
+    if all((bundle/name).exists() for name in offline_names):
+        offline=dict(comparisons=read_csv(bundle/'offline_comparisons.csv'),
+                     witnesses=read_csv(bundle/'offline_witnesses.csv'),
+                     pareto=read_csv(bundle/'offline_pareto.csv'),
+                     actions=read_csv(bundle/'offline_actions.csv'),
+                     requests=read_csv(bundle/'offline_requests.csv'),
+                     thermal_paths=read_csv(bundle/'offline_thermal_paths.csv'),
+                     selected_requests=read_csv(bundle/'offline_selected_requests.csv'),
+                     selected_thermal_paths=read_csv(bundle/'offline_selected_thermal_paths.csv'),
+                     selected_actions=read_csv(bundle/'offline_selected_actions.csv'),
+                     config=json.loads((bundle/'offline_CONFIG.json').read_text(encoding='utf-8')))
+        fragment=(bundle/'offline_fragment.html').read_text(encoding='utf-8').replace(
+            '/*__OFFLINE__*/','const OFFLINE='+json.dumps(offline,ensure_ascii=False,separators=(',',':')).replace('</','<\\/')+';')
+        html=html.replace('</main>',fragment+'</main>')
     (output / 'dashboard.html').write_text(html, encoding='utf-8')
 
 
@@ -321,6 +339,8 @@ def main():
     parser.add_argument('--template', type=Path)
     parser.add_argument('--attach-thermal', action='store_true',
                         help='attach frozen thermal candidate results without replaying old schedules')
+    parser.add_argument('--attach-offline', action='store_true',
+                        help='attach bounded offline small-case search without replaying prior batches')
     args = parser.parse_args()
     if args.bundle:
         render_bundle(args.bundle, args.output, args.template or args.bundle/'dashboard_template.html')
@@ -351,6 +371,26 @@ def main():
         (bundle/'SOURCE_HASHES.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
         render_bundle(bundle,args.output,bundle/'dashboard_template.html')
         print(f'frozen feedback comparison attached -> {args.output / "dashboard.html"}')
+        return
+    if args.attach_offline:
+        bundle=args.output/'repro_bundle'
+        new=ROOT/'docs/results/arrival_offline_search_01/run_v1'
+        names=('comparisons.csv','witnesses.csv','pareto.csv','actions.csv','requests.csv',
+               'thermal_paths.csv','selected_requests.csv','selected_thermal_paths.csv',
+               'selected_actions.csv','comparison.svg')
+        for name in names:shutil.copyfile(new/name,bundle/('offline_'+name))
+        shutil.copyfile(ROOT/'docs/results/arrival_offline_search_01/CONFIG.json',bundle/'offline_CONFIG.json')
+        shutil.copyfile(ROOT/'tools/assets/d1_arrival_offline_fragment.html',bundle/'offline_fragment.html')
+        shutil.copyfile(Path(__file__),bundle/'reproduce.py')
+        manifest=json.loads((bundle/'SOURCE_HASHES.json').read_text(encoding='utf-8'))
+        for name in (*('offline_'+n for n in names),'offline_CONFIG.json','offline_fragment.html','reproduce.py'):
+            manifest['bundle_files'][name]=digest_text(bundle/name)
+        manifest['offline_source_files']={str(p.relative_to(ROOT)):digest_text(p) for p in
+            (ROOT/'tools/d1_arrival_explore.py',ROOT/'tools/d1_arrival_offline_search.py',
+             ROOT/'docs/results/arrival_offline_search_01/CONFIG.json')}
+        (bundle/'SOURCE_HASHES.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
+        render_bundle(bundle,args.output,bundle/'dashboard_template.html')
+        print(f'offline search attached -> {args.output / "dashboard.html"}')
         return
     rows = screen(read_csv(args.source / 'interference_metrics.csv'))
     save(rows, args.output, args.source)

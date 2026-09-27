@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ARRIVAL-OFFLINE-SCHEDULE-PC-01 — 작은 사례 제한 탐색 완료
+
+- [질문·결과·한계](ARRIVAL_OFFLINE_SCHEDULE_PC_20260927.md), [설정·CSV·재현](results/arrival_offline_search_01/README.md), [통합 대시보드](results/arrival_policy_screen_01/dashboard.html). 기존 low/queue/burst의 시간순 첫 2/3요청과 seed301·미측정 전력/AP profile을 탐색 전 고정했다. 68/258/301노드, 완료 일정 41/114/127개를 제한된 큐 선두·CPU/GPU·250ms/최대500ms 대기 공간에서 완전 열거했다. 기존 열·에너지 후보 대비 요청별 응답 손실0에는 에너지/AP 개선 일정이 없고, 연구용 손실500ms에는 queue −0.127J, burst −2.004J/−0.080°C가 있으나 응답 손실과 offline 미래 정보가 따른다. 각 일정은 기존 이벤트 엔진으로 재생·회계 일치 확인; 기기 실행0.
+- 현재 작업 종료. 다음 행동 1개: 발견 일정의 첫 배정·대기를 당시 관측 정보만으로 구별할 수 있는지 trace에서 판정한다. 기존 192실행/72 확인 짝 비교·P·동결 계수·FAIL·부분 결과·종료 계획은 보존했다. 실기기 절감·열 안전·온라인 달성 가능성은 미입증이며 `experiment_ready=false` 유지.
+
 ## 2026-09-27 ARRIVAL-THERMAL-FEEDBACK-PC-01 — 온라인 에너지·AP 후보 PC 탐색 완료
 
 - [정책·한계·비교 보고서](ARRIVAL_THERMAL_FEEDBACK_PC_20260927.md), [단일 대시보드](results/arrival_policy_screen_01/dashboard.html), [설정·CSV·재현](results/arrival_thermal_feedback_01/README.md). 별도 `THERMAL_ENERGY_PC_V1`을 기존 이벤트 엔진에 opt-in으로 연결했다. 미측정 기기 전체 전력/AP 가정 아래 개발 96·새 seed PC 확인 96 실행, 실기기 0. 확인 24 matched 비교 중 응답·완료 손실 없이 에너지까지 개선한 정책 쌍은 0; 일부 energy/AP 이득은 응답·일반 위반 또는 다른 지표 악화를 동반한다. 엄격 모드 미지원, Android 정책 미구현, BAT/실제 절감·열 안전 미검증이다.

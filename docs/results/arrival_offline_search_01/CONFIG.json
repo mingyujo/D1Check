@@ -1,0 +1,23 @@
+{
+  "id": "ARRIVAL-OFFLINE-SCHEDULE-PC-01",
+  "scope": "retrospective small-prefix explore, A24 assumed whole-device W/AP, no device validation",
+  "source_config": "../arrival_thermal_feedback_01/CONFIG.json",
+  "cases": [
+    {"scenario": "low", "request_count": 2, "profile": "loose_cpu", "seed": 301, "max_nodes": 3000, "wall_seconds": 20},
+    {"scenario": "queue", "request_count": 3, "profile": "energy_shift", "seed": 301, "max_nodes": 1500, "wall_seconds": 20},
+    {"scenario": "burst", "request_count": 3, "profile": "thermal_cap", "seed": 301, "max_nodes": 1500, "wall_seconds": 20}
+  ],
+  "selection": "first chronological 2/3 tickets of the frozen 24-ticket evaluation trace, not favorable requests; three load regimes and pre-existing distinct power/AP stress profiles",
+  "online_comparators": ["CPU_URGENT", "B2_PC", "B3_SOLO_EFT_PC", "THERMAL_ENERGY_PC_V1"],
+  "queue_rule": "existing THERMAL_ENERGY_PC_V1 aged EDF head; no request reordering by oracle",
+  "actions": "available CPU/GPU for head or WAIT 250ms while head age <500ms and before deadline; actual arrivals and lane releases remain continuous-time events",
+  "wait_step_ns": 250000000,
+  "max_offline_wait_ns": 500000000,
+  "common_window_ns": 120000000000,
+  "question_a": "every planned request response no worse than comparator, no extra miss/failure/unfinished; lower common-window J or AP peak",
+  "question_b_max_per_request_response_loss_ms": [0, 250, 500],
+  "question_b": "same completion and no additional deadline miss; per-request response loss bounded by research-only delta",
+  "numeric_tolerance": {"response_ms": 0.000001, "energy_j": 0.000001, "ap_c": 0.000001},
+  "meaningful_effect_threshold": null,
+  "interpretation": "offline planner uses future arrivals and realized costs, unlike online policies; complete is only over listed discrete actions and cases"
+}
