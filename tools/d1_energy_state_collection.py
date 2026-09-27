@@ -20,7 +20,7 @@ from tools import d1_energy_thermal as energy
 from tools.d1_energy_thermal import require
 
 PROTOCOL = 'energy-ap-state-collection-v1'
-EXPERIMENT = 'ENERGY-AP-STATE-COLLECT-03'
+EXPERIMENT = 'ENERGY-AP-STATE-COLLECT-04'
 PAIRS = ('CC_DG', 'CG_DC', 'DC_DG')
 PAIR_KEYS = dict(old.PAIRS, DC_DG=('detection_CPU','detection_GPU'))
 ORDER = [(phase, pair) for phase in ('development', 'confirmation')
@@ -35,13 +35,14 @@ WORK_CAP = 1680
 BUDGET = dict(sessions=6, development=3, confirmation=3, work_requests=10080,
               eligibility_requests=24, diagnostic_requests=10104, warmup=48,
               explicit_inference=10152, runtime_creations=24, staging=6, staged_files=42,
-              apk_transfers=1, installs=1, retry=0, replacement=0, additional=0,
+              apk_transfers=0, installs=0, installed_host_pulls=1,
+              retry=0, replacement=0, additional=0,
               fixed_observation_seconds=6120, preparation_max_wait_seconds=360,
               baseline_seconds=120, common_work_seconds=600, cooling_seconds=180,
               stage_gate_seconds=120, host_poll_seconds=1800, recovery_seconds=60,
               cleanup_seconds=45, validation_slack_seconds=35, launch_seconds=20,
-              session_seconds=2100, installation_seconds=600, freeze_seconds=600,
-              total_seconds=13800)
+              session_seconds=2100, installed_preflight_seconds=300, freeze_seconds=600,
+              total_seconds=13500)
 HOST_FILES = old.HOST_FILES + ['tools/d1_energy_state_collection.py']
 
 
@@ -67,7 +68,9 @@ def budget_check(b=BUDGET):
     require(all(sum(s for _, _, s in blocks) == 480 for blocks in BLOCKS.values()), 'block time')
     require(b['diagnostic_requests'] == b['work_requests'] + b['eligibility_requests'] and
             b['explicit_inference'] == b['diagnostic_requests'] + b['warmup'], 'inference denominator')
-    require(b['total_seconds'] == b['installation_seconds'] + b['sessions'] * b['session_seconds'] +
+    require(b['apk_transfers'] == b['installs'] == 0 and b['installed_host_pulls'] == 1,
+            'installed-only budget')
+    require(b['total_seconds'] == b['installed_preflight_seconds'] + b['sessions'] * b['session_seconds'] +
             b['freeze_seconds'], 'hard time')
     require(b['fixed_observation_seconds'] == b['sessions'] * (120 + 120 + 600 + 180), 'fixed time')
     require(b['session_seconds'] >= b['stage_gate_seconds'] + b['host_poll_seconds'] +
@@ -91,14 +94,21 @@ def prepare(source, build, output):
     budget_check()
     output.mkdir(parents=True); (output / 'manifests').mkdir()
     root = output.parent
-    plan = dict(protocol=PROTOCOL, experiment_id=EXPERIMENT, status='PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED',
+    installed_receipt = root / 'energy_ap_install_only_run_v2' / 'receipt.json'
+    installed = p.read(installed_receipt)
+    require(installed['status'] == 'verified' and installed['candidate'] == candidate and
+            installed['installed_apk_sha256'] == candidate['apk_sha256'],
+            'verified installation lineage required')
+    plan = dict(protocol=PROTOCOL, experiment_id=EXPERIMENT, status='PC_READY_DEVICE_UNVERIFIED',
         state_model_calibration=True, experiment_ready=False, budget=BUDGET, source_code=identity(),
+        plan_file=str((output/'collection_plan.json').resolve()),
+        installed_receipt=dict(path=str(installed_receipt.resolve()),sha256=p.digest(installed_receipt)),
         build_receipt=str(build.resolve()), build_receipt_sha256=p.digest(build),
         apk_path=receipt['apk_path'], apk_sha256=receipt['apk_sha256'],
         apk_preflight=dict(old_plan['apk_preflight'], candidate=candidate),
         device_fingerprint=old_plan['device_fingerprint'], device_hardware_serial=old_plan['device_hardware_serial'],
         source_plan=dict(path=str(source.resolve()), sha256=p.digest(source)),
-        output_root=str(root / 'energy_ap_state_run_v3'),
+        output_root=str(root / 'energy_ap_state_run_v4'),
         registry=str(root / 'energy_collection_registry' / EXPERIMENT),
         battery_start_percent=20, battery_min_percent=20, battery_max_temperature_tenths_c=350,
         require_unplugged=True, screen_observation=old.OBSERVATION,
@@ -141,8 +151,8 @@ Set-Location '{cal.ROOT.as_posix()}'
 $plan=Join-Path $PSScriptRoot 'collection_plan.json'
 if ($Action -eq 'Check') {{ python -B -m tools.d1_energy_state_collection check --plan $plan }}
 else {{
-  if (!$Approved -or !$Serial) {{ throw 'Explicit new plan approval and confirmed A24 serial required' }}
-  python -B -m tools.d1_energy_state_collection run --plan $plan --expected-sha {p.digest(file)} --approved --serial $Serial --adb 'C:/Users/LG/AppData/Local/Android/Sdk/platform-tools/adb.exe'
+  if (!$Approved) {{ throw 'Explicit new plan approval required' }}
+  python -B -m tools.d1_energy_state_collection run --plan $plan --expected-sha {p.digest(file)} --approved --adb 'C:/Users/LG/AppData/Local/Android/Sdk/platform-tools/adb.exe'
 }}
 if ($LASTEXITCODE -ne 0) {{ throw 'Failed; no automatic retry/resume' }}
 '''
@@ -154,11 +164,17 @@ def check(file):
     from tools import d1_apk_identity as apk
     file = Path(file); plan = p.read(file); budget_check(plan['budget'])
     require(plan['protocol'] == PROTOCOL and plan['experiment_id'] == EXPERIMENT and
-            plan['status'] == 'PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED' and
+            plan['status'] == 'PC_READY_DEVICE_UNVERIFIED' and
             plan['state_model_calibration'] and plan['experiment_ready'] is False, 'plan status/identity')
-    require(Path(plan['output_root']) == file.parent.parent/'energy_ap_state_run_v3' and
+    require(Path(plan['plan_file']) == file.resolve() and
+            Path(plan['output_root']) == file.parent.parent/'energy_ap_state_run_v4' and
             Path(plan['registry']) == file.parent.parent/'energy_collection_registry'/EXPERIMENT,
             'output/registry namespace')
+    installed = p.read(plan['installed_receipt']['path'])
+    require(p.digest(plan['installed_receipt']['path']) == plan['installed_receipt']['sha256'] and
+            installed['status'] == 'verified' and installed['candidate'] == plan['apk_preflight']['candidate'] and
+            installed['installed_apk_sha256'] == plan['apk_sha256'],
+            'installed APK lineage changed')
     require(p.read(plan['build_receipt'])['status'] == 'built_not_device_verified', 'build receipt status')
     require(plan['source_code'] == identity() and p.digest(plan['build_receipt']) == plan['build_receipt_sha256'],
             'source/build receipt changed')
@@ -354,7 +370,7 @@ def freeze(results, plan, root):
     power = {s:totals[s][0]/totals[s][1] for s in states}
     require(all(math.isfinite(v) and v>0 for v in power.values()), 'power coefficient invalid')
     return dict(version='energy-ap-state-regimen-fit-v1',source='development_only_post_prior_results',
-        plan_sha256=p.digest(Path(root).parent/'energy_ap_state_plan_v3/collection_plan.json'),
+        plan_sha256=p.digest(plan['plan_file']),
         analysis_code_sha256=p.digest(__file__), source_code=plan['source_code'],
         input_conversion=plan['analysis']['current_unit'],
         input_hashes={r['condition']:r.get('input_hashes') for r in results},
@@ -448,7 +464,8 @@ def main():
     for x in ('source','build','output'):q.add_argument('--'+x,required=True)
     q=sub.add_parser('check');q.add_argument('--plan',required=True)
     q=sub.add_parser('run')
-    for x in ('plan','adb','serial','expected-sha'):q.add_argument('--'+x,required=True)
+    for x in ('plan','adb','expected-sha'):q.add_argument('--'+x,required=True)
+    q.add_argument('--serial')
     q.add_argument('--approved',action='store_true')
     args=parser.parse_args()
     if args.action=='prepare': result=prepare(args.source,args.build,args.output)

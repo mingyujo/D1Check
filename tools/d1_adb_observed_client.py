@@ -52,15 +52,21 @@ def server_probe(timeout=1):
         return dict(address='127.0.0.1',port=5037,protocol_version=version)
 
 class ObservedDevice(legacy.Device):
-    def __init__(self,adb,serial,root):
-        if not serial:raise ValueError('explicit approved serial required')
+    def __init__(self,adb,serial,root,allow_select=False,forbid_apk_deploy=False):
+        if not serial and not allow_select:raise ValueError('explicit approved serial required')
         super().__init__(adb,serial);self.root=Path(root);self.sequence=0
+        self.allow_select=allow_select;self.forbid_apk_deploy=forbid_apk_deploy
 
     def failure_snapshot(self):
         remaining=min(2,self.deadline-time.monotonic()) if self.deadline else 2
         return host_snapshot(remaining) if remaining>0 else dict(status='skipped_no_remaining_time')
 
     def call(self,*args,timeout=30,check=True):
+        if not self.serial and (not self.allow_select or args!=('devices','-l')):
+            raise ValueError('select exactly one current transport before a serial command')
+        if self.forbid_apk_deploy and (args[0]=='install' or args[:3]==('shell','pm','install') or
+            (args[0]=='push' and (str(args[1]).lower().endswith('.apk') or str(args[2]).lower().endswith('.apk')))):
+            raise ValueError('APK push/install forbidden by installed-only plan')
         remaining=self.deadline-time.monotonic() if self.deadline else timeout+6
         if remaining<=6:raise TimeoutError('insufficient server/client/reap budget')
         folder=self.root/f'{self.sequence:04d}';self.sequence+=1;folder.mkdir(parents=True,exist_ok=False)
@@ -77,7 +83,7 @@ class ObservedDevice(legacy.Device):
             context.update(status='client_budget_exhausted',client_launch_intent=False);rp.write(folder/'context.json',context)
             raise TimeoutError('no remaining client/reap budget')
         context.update(status='server_precheck_pass',client_launch_intent=True);rp.write(folder/'context.json',context)
-        command=[self.adb,'-s',self.serial,*map(str,args)]
+        command=[self.adb]+(['-s',self.serial] if self.serial else [])+list(map(str,args))
         result=rp.run(command,folder/'client',min(timeout,max(.01,self.deadline-time.monotonic()-5)) if self.deadline else timeout,
                       command,root_only=True)
         stdout=(folder/'client/stdout.bin').read_bytes();stderr=(folder/'client/stderr.bin').read_bytes()

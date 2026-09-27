@@ -229,6 +229,29 @@ def installation(d,plan,plan_file,root,hard):
     c.require(state['status']=='verified','installation failed; no sessions')
     return state
 
+def installed_preflight(d,plan,plan_file,root,hard):
+    """Read the current installed APK once; never transfer or install an APK."""
+    start=time.monotonic();end=min(start+plan['budget']['installed_preflight_seconds'],hard)
+    d.deadline=end-45
+    state=dict(status='failed',apk_transfer_attempts=0,install_attempts=0,
+               installed_host_pull_limit=1,app_launch_attempts=0)
+    try:
+        pre=apk.preflight(d,dict(plan,_plan_file=str(plan_file)),root/'preflight')
+        c.require(pre['installed']==pre['candidate'],'installed APK differs; no deploy fallback')
+        gates(d,plan,root,'installed_gate')
+        state['installed_sha256']=install.installed_hash(d,pre['candidate'])
+        c.require(state['installed_sha256']==plan['apk_sha256'],'installed APK hash changed')
+        state['status']='verified'
+    except BaseException as exc:
+        state['error']=repr(exc)
+        raise
+    finally:
+        state['elapsed_seconds']=time.monotonic()-start
+        state['cleanup']=dict(status='not_applicable_no_app_launch',
+                              host_clients='recorded_per_command')
+        save(root/'installed_preflight_receipt.json',state)
+    return state
+
 def run(plan_file,adb,serial,expected_sha,approved):
     c.require(approved and c.p.digest(plan_file)==expected_sha,'new explicit approval/hash required')
     try:plan=c.p.read(plan_file)
@@ -238,6 +261,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
     if plan.get('state_model_calibration'):
         from tools import d1_energy_state_collection as state
         state.check(plan_file)
+        c.require(serial is None,'new state plan selects the current transport itself')
     else:
         state=None;c.check(plan_file)
     root=Path(plan['output_root']);registry=Path(plan['registry'])
@@ -246,10 +270,15 @@ def run(plan_file,adb,serial,expected_sha,approved):
     budget=plan['budget']
     start=time.monotonic();hard=start+budget['total_seconds']
     save(registry/'claimed.json',dict(plan_sha256=expected_sha,utc=legacy.utc(),budget=budget))
-    d=ObservedDevice(adb,serial,root/'host_commands');d.deadline=hard
+    state_model=bool(plan.get('state_model_calibration'))
+    d=(ObservedDevice(adb,serial,root/'host_commands',allow_select=True,forbid_apk_deploy=True)
+       if state_model else ObservedDevice(adb,serial,root/'host_commands'))
+    d.deadline=hard
     results=[];current=None;remote=None;identified=False;install_result=None
     try:
-        install_root=root/'installation';install_root.mkdir();install_result=installation(d,plan,plan_file,install_root,hard);identified=True
+        install_root=root/('installed_preflight' if state_model else 'installation');install_root.mkdir()
+        install_result=(installed_preflight(d,plan,plan_file,install_root,hard) if state_model else
+                        installation(d,plan,plan_file,install_root,hard));identified=True
         frozen=None
         for e in plan['entries']:
             if e['index']==budget['development'] and not plan.get('diagnostic_only'):
@@ -301,13 +330,17 @@ def run(plan_file,adb,serial,expected_sha,approved):
             sessions=len(results),diagnostic_requests=(sum(r['work_calls']+r['eligibility_calls'] for r in results) if state else budget['diagnostic_requests']),
             warmup=(sum(r['warmup_calls'] for r in results) if state else budget['warmup']),
             explicit_inference=(sum(r['work_calls']+r['eligibility_calls']+r['warmup_calls'] for r in results) if state else budget['explicit_inference']),
-            installation=install_result,elapsed_seconds=time.monotonic()-start,accuracy_pass=None,experiment_ready=False)
+            installation=install_result if not state_model else None,
+            installed_preflight=install_result if state_model else None,
+            elapsed_seconds=time.monotonic()-start,accuracy_pass=None,experiment_ready=False)
         save(root/'FINAL_RECEIPT.json',result);save(registry/'completed.json',result);return result
     except BaseException as exc:
         failure=dict(status='stopped_no_resume',error=repr(exc),completed_sessions=len(results),
             session_attempts=len(list(root.glob('*/attempt.json'))),launch_attempts=len(list(root.glob('*/launch_attempt.json'))),
             consumption='only durable start/return pairs confirm counts; absent logs remain unknown',elapsed_seconds=time.monotonic()-start,
-            installation=install_result,experiment_ready=False)
+            installation=install_result if not state_model else None,
+            installed_preflight=install_result if state_model else None,
+            experiment_ready=False)
         if identified and remote and current:
             d.deadline=min(hard-45,time.monotonic()+15)
             prefix=current/'failure_prefix'

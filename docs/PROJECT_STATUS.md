@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-28 ENERGY-AP-STATE-COLLECT-04 중단 — 첫 개발 세션 온도 준비 단계
+
+- [결과·소비·증거 경계](ENERGY_AP_STATE_COLLECT04_RESULTS_20260928.md), [작은 요약](results/energy_ap_state_collect04/summary.json). 설치 검증 APK를 재사용하는 별도 plan_v4 SHA `cc8f8cfd...7054f7`를 PC 검증·Check 후 1회 실행했다. 현재 A24/설치본 SHA/환경 gate 통과, APK push·설치0, host pull1. 첫 개발 `CC_DG` 세션은 runtime4·warmup8·적격성4까지 확인됐으나 공식 baseline/부하 이전 온도 준비에서 host가 정상 종료 receipt 없이 끝났다. 세션 1시도·0완료, 개발 동결/확인/예측 오차 없음. 나머지5 미시도; 새 계획 `stopped_no_resume`.
+- 앱 journal·부분 원본은 별도 회수했고 host force-stop/프로세스 부재 확인. 앱 내부 cleanup은 미확인. 원인 미확정이며 기존 원본·FAIL·동결값·종료 계획과 `experiment_ready=false` 유지. **다음 행동 1개:** host 정상 종료 receipt 부재와 실패 시 회수/cleanup 경계를 PC에서 진단한다. 동일 계획 재개·새 실측 자동 실행 금지.
+
 ## 2026-09-28 ENERGY-AP-INSTALL-ONLY-02 완료 — 원격 APK 재사용 설치
 
 - [새 계획·PC 검증·실기기 설치 결과](ENERGY_AP_INSTALL_ONLY_02_RESULTS_20260928.md). 새 ID/plan SHA `1176c4d94aa263feddcf9e4690a1ead79cd3c30e34cd3c61327a5840704e761b`를 Check 후 1회 실행. 현재 동일 A24·환경 gate, 원격 APK와 설치 후 base APK의 SHA `b273f74…114cf` 일치. 기존 설치본 해시가 달라 `pm install -r` 1회 성공. 실제 ADB19/22·pull1/1·push0·설치1/1·앱/추론/실측0, 전체45.687/600초. host·종료 확인 완료; 원본 외부 `energy_ap_install_only_run_v2/receipt.json` 및 별도 complete registry 보존.
