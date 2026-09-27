@@ -725,3 +725,8 @@
 
 - 사용자가 plan_v3의 6세션·추론 최대 10,152회·230분 실행을 승인했다. 계획 해시와 `Check`는 일치했으나 `adb devices -l`에 기기가 0대여서 A24 동일성과 환경을 검증하지 못했다. 따라서 `Run` 미호출, 계획·출력·소비 registry 미생성, 세션·설치·추론 0이다. [착수 기록](ENERGY_AP_STATE_COLLECTION_PREFLIGHT_20260927.md).
 - 미채택: 연결·서명·환경 gate 생략, daemon 재시작/강제 재연결, 이전 값 전용, 이번 실패 뒤 자동 재실행. 기존 수집 종료 계획·FAIL·원본·동결값과 `experiment_ready=false` 유지. 새 모형 계수·확인 오차 및 정책 개선 주장은 아직 없다.
+
+## 2026-09-27 ENERGY-AP-STATE-COLLECT-03 — 전송 중단 후 종료
+
+- 동일 A24와 현재 gate가 확인되어 승인 plan_v3를 한 번 호출했다. 이전 설치본이 정확한 후보 APK와 달라 전송 1회가 시작됐으나, 120초 timeout으로 원격 해시 전 경계에서 실패했다. 설치·앱·세션·추론 0, 개발/동결/확인 미실시. `stopped_no_resume`와 소비 registry를 보존한다. [원본 경계·cleanup 보고](ENERGY_AP_STATE_COLLECT03_RESULTS_20260927.md).
+- 재시도·대체·추가와 기존 계획 재개는 채택하지 않는다. 전송 원인과 원격 부분 파일 상태는 미확정이고 이번 결과는 전력/AP 계수나 정책 효과의 증거가 아니다. `experiment_ready=false` 유지.

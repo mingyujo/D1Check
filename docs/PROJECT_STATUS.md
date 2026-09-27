@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ENERGY-AP-STATE-COLLECT-03 종료 — APK 전송 timeout
+
+- [실행 결과·소비·cleanup](ENERGY_AP_STATE_COLLECT03_RESULTS_20260927.md). 승인 plan_v3 SHA 일치, 연결된 A24·실행 직전 환경 gate 통과 후 `Run` 1회. 이전 APK와 후보 APK의 signer는 같으나 해시가 달라 전송 1회 시도했고 `adb push` 120초 timeout. 원격 해시·설치·앱 시작 전 중단, `stopped_no_resume`, 전체 235.125초. 개발/확인 0/6·추론 0/10,152·전송 1/1 시도(완료 미확인)·설치 0/1. 출력/소비 registry 보존, 자동 재개 금지.
+- 앱 cleanup 해당 없음(앱 미시작). host force-stop 성공·`ps -A` 프로세스 부재 확인·종료 thermal 0, host cleanup `completed`. 원격 부분 APK 여부·전송 지연 원인 미확정, 앱 내부 memory/GPU/병행·계수 동결/오차 미확인. 기존 FAIL·원자료·동결값·종료 계획과 `experiment_ready=false` 유지.
+- 다음 행동: 보존된 전송 command·ADB host 기록에서 timeout 범위를 PC에서 진단한다. 추가 기기 명령·새 계획·재실측은 자동 실행하지 않는다.
+
 ## 2026-09-27 ENERGY-AP-STATE-COLLECT-03 승인 후 착수 보류 — A24 미연결
 
 - [실행 전 gate 결과](ENERGY_AP_STATE_COLLECTION_PREFLIGHT_20260927.md), 외부 `energy_ap_state_preflight_20260927/PREFLIGHT_RECEIPT.json`. 승인된 plan_v3 해시·예산·`Check` 통과, 브랜치 HEAD `8a7a4d0` clean/원격 일치. `adb devices -l` 기기 0대여서 serial·fingerprint와 현재 환경을 확인할 수 없었다. `Run` 미호출, 세션 0/6·추론/전송/설치/설정 변경 0, 동결·확인 미실시. 새 출력·소비 registry 없음.
