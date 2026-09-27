@@ -51,3 +51,5 @@ python -X utf8 -m tools.d1_arrival_policy_screen --attach-information
 ```
 
 기존 24요청·offline 전체 배치와 기기 실행은 수행하지 않는다. [CSV·SVG·설정·해시·대시보드 안내](results/arrival_information_check_01/README.md)를 함께 본다.
+
+검증 기록: 2026-09-27 14:59 KST. 착수 HEAD `b6312857e8ef8d0ba52b748e60c231ff96110a17`의 clean worktree에서 작업을 시작했고, 아래 검증 시점에는 이번 코드·문서가 미커밋 상태였다. 위 도구를 새 임시 출력에 재생해 `branch_deltas.csv` SHA-256 일치·24재생·규칙 gate 실패를 확인했다. 위 `unittest` 5건 통과, `python -X utf8 reproduce.py --bundle . --output .`를 임시 위치로 복사한 소형 번들에서 실행해 대시보드 SHA-256 일치, 로컬 Chrome headless DOM에서 queue/no_more 필터와 결정표 갱신을 확인했다. `git diff --cached --check` 통과. 이 검증은 PC 의미·재현 검사이며 실기기 안정성이나 물리 모형 정확도 검증이 아니다.
