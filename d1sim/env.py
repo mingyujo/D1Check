@@ -16,7 +16,6 @@ Policies see an immutable snapshot and a pure predictor; they never get a refere
 """
 from __future__ import annotations
 
-import copy
 import math
 from types import MappingProxyType
 
@@ -91,7 +90,8 @@ class Thermal:
 
     def advance(self, h, running, executing):
         """Exact exponential over h with the drive held constant (power at step start)."""
-        s_before = {r: self.s(r) for r in RESOURCES}
+        slow = self.v['recovery'] == 'slow'
+        s_before = {r: self.s(r) for r in RESOURCES} if slow else None
         dP = self.power(running, executing) - self.P_idle
         for k, H in self.H.items():
             heating = executing and running is not None and self.key(running) == k
@@ -101,12 +101,17 @@ class Thermal:
             tf, ts = p['tau_f'] * (1 if heating else cool), p['tau_s'] * (1 if heating else cool)
             H[0] = p['G_f'] * drive + (H[0] - p['G_f'] * drive) * math.exp(-h / tf)
             H[1] = p['G_s'] * drive + (H[1] - p['G_s'] * drive) * math.exp(-h / ts)
-        if self.v['recovery'] == 'slow':
+        if slow:
             for r in RESOURCES:
                 self.s_hold[r] = min(1.0, s_before[r] + RECOVER_RATE * h)
 
     def clone(self):
-        return copy.deepcopy(self)
+        """Copy of the mutable state only; parameters (self.p, hal) are shared and never mutated."""
+        c = object.__new__(Thermal)
+        c.__dict__.update(self.__dict__)
+        c.H = {k: list(v) for k, v in self.H.items()}
+        c.s_hold = dict(self.s_hold)
+        return c
 
 
 class Record:
