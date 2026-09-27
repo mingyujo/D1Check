@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ENERGY-AP-PUSH-DIAGNOSIS-01 완료 — 재전송 없이 원격 상태 확인
+
+- [두 timeout·읽기 전용 조회·후속 후보](ENERGY_AP_PUSH_DIAGNOSIS_20260927.md). 착수 HEAD `d99ad84` clean/upstream 동일. 두 120초 push의 동시 진행 기록은 없어 원인 미확정이다. 현재 동일 A24에서 두 정확한 원격 경로는 모두 파일 부재였다(읽기 전용 7/9명령·0.891초). 이 사실은 과거 0바이트 전송이나 무선 결함의 증거가 아니다. 새 push/pull/install/앱/추론 0회.
+- 별도 `ENERGY-AP-PUSH-OBSERVE-01`은 크기 관측+최종 SHA 경계의 PC 후보로 준비했다. 외부 계획 SHA `423ee55d98c6ef8ed5bea9ea3b1f5357a3d4806fb66c398dded922deff138f9a`, 최대 17 ADB명령·push 1/180초·전체 420초, 설치/재시도 0. **미승인·기기 미검증·미소비**이며 기존 stopped 계획을 재개하지 않는다. 관련 PC 테스트 8건과 새 계획 `check` 통과. 기존 FAIL·원자료·동결값·`experiment_ready=false` 유지.
+- 다음 행동: 별도 승인 시에만 현재 A24/파일/환경을 새로 확인하고 관측용 전송 진단 1회를 실행한다. 그 결과 전에는 수집을 재개하지 않는다.
+
 ## 2026-09-27 ENERGY-AP-DEPLOY-RECOVERY-01 종료 — 무선 push timeout
 
 - [단일 실행 결과·원본 경계](ENERGY_AP_DEPLOY_RECOVERY_RESULTS_20260927.md). 승인된 별도 600초 계획을 현재 동일 A24·비충전/배터리 94%/29.9°C/thermal 0/화면 gate 확인 후 한 번 실행했다. 기존 설치본 pull 1회 완료(85.032초), 후보 push 1회가 120.032초 timeout; 원격 hash·설치0, 수집·warmup·추론0. 전체 213.563초. 실패 후 설치본은 여전히 이전 APK 해시, 원격 전송량·무선 내부 원인 미확정.
