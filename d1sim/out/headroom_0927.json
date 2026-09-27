@@ -1,0 +1,200 @@
+{
+ "rule": "Step 2: does getThermalHeadroom predict the operational throttle entry? (PC analysis only)\n\nRule fixed before computing r2 (sim/headroom_분석_0927.md §1, 18:18 KST):\n  signals  : headroom_now, headroom_60s, SKIN, AP  (1 s trace, d1sim/data/trace_<tag>.csv)\n  entry    : operational onset (d1sim/throttle.py:onset_time_ref) on 10 s bins\n  threshold: theta = r1 value of the signal at t = entry_r1 - LEAD_TARGET (20 s)  -- chosen on r1 only\n  alarm    : first t (s) with signal >= theta ; lead = entry - alarm\n  report   : r1 lead (by construction ~20 s for monotone signals), r2 lead, 9/14 60 s runs alarm time (entry not\n             reached in 60 s there), linear fit headroom_now ~ SKIN (R^2) on r1 as a descriptive check.\n",
+ "entry": {
+  "c1p_r1": 60,
+  "c1p_r2": 60,
+  "f914_gpu_d100_r001": null,
+  "f914_gpu_d100_r002": null,
+  "f914_gpu_d100_r003": null,
+  "f914_gpu_d100_r004": null,
+  "f914_gpu_d100_r005": null
+ },
+ "signals": {
+  "headroom_now": {
+   "theta": 0.68000007,
+   "c1p_r1": {
+    "alarm_s": 39,
+    "lead_s": 21,
+    "max": 0.79,
+    "value_at_entry": 0.71999997
+   },
+   "c1p_r2": {
+    "alarm_s": 33,
+    "lead_s": 27,
+    "max": 0.7933333,
+    "value_at_entry": 0.73333335
+   },
+   "f914_gpu_d100_r001": {
+    "alarm_s": 37,
+    "lead_s": null,
+    "max": 0.7266666,
+    "value_at_entry": null
+   },
+   "f914_gpu_d100_r002": {
+    "alarm_s": null,
+    "lead_s": null,
+    "max": 0.66999996,
+    "value_at_entry": null
+   },
+   "f914_gpu_d100_r003": {
+    "alarm_s": null,
+    "lead_s": null,
+    "max": 0.6766666,
+    "value_at_entry": null
+   },
+   "f914_gpu_d100_r004": {
+    "alarm_s": 53,
+    "lead_s": null,
+    "max": 0.69,
+    "value_at_entry": null
+   },
+   "f914_gpu_d100_r005": {
+    "alarm_s": 54,
+    "lead_s": null,
+    "max": 0.6866666,
+    "value_at_entry": null
+   }
+  },
+  "headroom_60s": {
+   "theta": 0.871604,
+   "c1p_r1": {
+    "alarm_s": 22,
+    "lead_s": 38,
+    "max": 0.935245,
+    "value_at_entry": 0.8452254
+   },
+   "c1p_r2": {
+    "alarm_s": 20,
+    "lead_s": 40,
+    "max": 0.9532787,
+    "value_at_entry": 0.8548125
+   },
+   "f914_gpu_d100_r001": {
+    "alarm_s": 22,
+    "lead_s": null,
+    "max": 0.9272728,
+    "value_at_entry": null
+   },
+   "f914_gpu_d100_r002": {
+    "alarm_s": 25,
+    "lead_s": null,
+    "max": 0.88846844,
+    "value_at_entry": null
+   },
+   "f914_gpu_d100_r003": {
+    "alarm_s": 26,
+    "lead_s": null,
+    "max": 0.8881643,
+    "value_at_entry": null
+   },
+   "f914_gpu_d100_r004": {
+    "alarm_s": 26,
+    "lead_s": null,
+    "max": 0.8943367,
+    "value_at_entry": null
+   },
+   "f914_gpu_d100_r005": {
+    "alarm_s": 25,
+    "lead_s": null,
+    "max": 0.9007334,
+    "value_at_entry": null
+   }
+  },
+  "SKIN": {
+   "theta": 35.6,
+   "c1p_r1": {
+    "alarm_s": 39,
+    "lead_s": 21,
+    "max": 38.7,
+    "value_at_entry": 36.7
+   },
+   "c1p_r2": {
+    "alarm_s": 34,
+    "lead_s": 26,
+    "max": 38.8,
+    "value_at_entry": 37.1
+   },
+   "f914_gpu_d100_r001": {
+    "alarm_s": 39,
+    "lead_s": null,
+    "max": 36.8,
+    "value_at_entry": null
+   },
+   "f914_gpu_d100_r002": {
+    "alarm_s": null,
+    "lead_s": null,
+    "max": 35.3,
+    "value_at_entry": null
+   },
+   "f914_gpu_d100_r003": {
+    "alarm_s": null,
+    "lead_s": null,
+    "max": 35.3,
+    "value_at_entry": null
+   },
+   "f914_gpu_d100_r004": {
+    "alarm_s": 56,
+    "lead_s": null,
+    "max": 35.7,
+    "value_at_entry": null
+   },
+   "f914_gpu_d100_r005": {
+    "alarm_s": 56,
+    "lead_s": null,
+    "max": 35.7,
+    "value_at_entry": null
+   }
+  },
+  "AP": {
+   "theta": 40.4,
+   "c1p_r1": {
+    "alarm_s": 39,
+    "lead_s": 21,
+    "max": 42.4,
+    "value_at_entry": 41.9
+   },
+   "c1p_r2": {
+    "alarm_s": 34,
+    "lead_s": 26,
+    "max": 42.3,
+    "value_at_entry": 42.0
+   },
+   "f914_gpu_d100_r001": {
+    "alarm_s": 39,
+    "lead_s": null,
+    "max": 42.1,
+    "value_at_entry": null
+   },
+   "f914_gpu_d100_r002": {
+    "alarm_s": null,
+    "lead_s": null,
+    "max": 40.1,
+    "value_at_entry": null
+   },
+   "f914_gpu_d100_r003": {
+    "alarm_s": null,
+    "lead_s": null,
+    "max": 40.2,
+    "value_at_entry": null
+   },
+   "f914_gpu_d100_r004": {
+    "alarm_s": 54,
+    "lead_s": null,
+    "max": 40.7,
+    "value_at_entry": null
+   },
+   "f914_gpu_d100_r005": {
+    "alarm_s": 50,
+    "lead_s": null,
+    "max": 41.0,
+    "value_at_entry": null
+   }
+  }
+ },
+ "headroom_now_vs_SKIN_r1": {
+  "slope_per_C": 0.03421368598335625,
+  "intercept": -0.5338268614166471,
+  "R2": 0.9964150484696491,
+  "n": 600
+ }
+}
