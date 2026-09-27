@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-28 ENERGY-AP-HOST-DIAG-01 완료 — 통제된 host 종료·회수 확인
+
+- [실행 결과·증거 경계](ENERGY_AP_HOST_DIAG_RESULTS_20260928.md), [작은 요약](results/energy_ap_host_diag_01/summary.json). 승인 plan_v7 SHA `a6c65b0d...b20decf`를 현재 동일 A24/설치본/환경 gate 확인 후 한 번 실행했다. runtime4·warmup8·적격성4 전부 반환, resident 관측120.275초·AP 43표본 후 `probe` arm 없이 host 통제 종료. 공식 baseline/load0, 추가 실행0.
+- ADB359/3,000, host pull1, staging1/7파일, APK push/설치0, Python254.843/1,500초(전체 진입 약256.243초). parent/child 시작·종료 기록, `poll_alive` 4회, host force-stop·앱 프로세스 부재, archive12파일/완전한 progress311기록 확인. 앱 `cleanup.json`은 없어 **앱 자체 cleanup 미확인**. COLLECT-04 우발 종료 원인·장시간 안정성·에너지/AP 예측은 미검증. 출력/registry는 소비되어 `stopped_no_resume`; 기존 종료 계획·FAIL·원자료·동결값 및 `experiment_ready=false` 유지.
+- **다음 행동:** 이번 host 경로를 유지하는 새 정식 수집 계획을 별도 PC 준비·검증한다. 실측 자동 실행은 하지 않는다.
+
 ## 2026-09-28 HOST-DIAG-01 실행 전 3,000명령·동일 APK 범위 재검토 — 미실행
 
 - [실행 코드 산식·소유권·판독 범위](ENERGY_AP_HOST_LIFECYCLE_PC_20260928.md): plan_v7 정상 예시는 과거 준비 전 약 84초와 resident 120초를 조건부 합쳐 **약 650 ADB명령**이며 정상 평균은 미측정. 900초 poll 최악 보수 상계는 **2,530/3,000명령**, cleanup 전 **2,523/2,900명령**이다. 기존 0.25초 `ls` 대기는 진단에서 1초이며 필수 상태 조회의 중복은 발견되지 않아 코드·계획 해시는 그대로다.

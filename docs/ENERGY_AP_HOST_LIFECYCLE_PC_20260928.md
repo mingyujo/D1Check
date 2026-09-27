@@ -1,5 +1,7 @@
 # ENERGY-AP-HOST-LIFECYCLE-PC-01 — 종료 소유권과 1회 복구
 
+> **실행 후 상태(2026-09-28):** 아래는 동결된 plan_v7의 실행 전 계약·명령을 보존한 기록이다. 승인된 1회 진단은 완료됐으며 계획은 소비·`stopped_no_resume`다. 재실행하지 않는다. 실제 결과와 앱 cleanup 미확인 범위는 [진단 결과](ENERGY_AP_HOST_DIAG_RESULTS_20260928.md)를 따른다.
+
 **판정:** COLLECT-04에서 Python/PowerShell이 왜 끝났는지는 여전히 미확정이다. 마지막 ADB client의 정상 반환 뒤 최상위 receipt가 없는 원본만으로 상위 도구 종료, Python crash, 취소, 전원·절전 문제를 구분할 수 없다. 이번 변경은 향후 실행의 종료 식별과 1회 회수 경로를 PC에서 구현·검증한 것이며 원래 실패를 재현하거나 해결했다고 주장하지 않는다. 기존 `ENERGY-AP-STATE-COLLECT-04`의 원본·registry·`stopped_no_resume`와 `experiment_ready=false`는 불변이다.
 
 ## 실제 소유 구조와 기록
