@@ -109,27 +109,38 @@ class EnergyCollectionActivity : Activity() {
             sid = requireNotNull(intent.getStringExtra("session_id")); check(UUID.fromString(sid).toString() == sid)
             val inputs = canonicalProbeInputRoot(filesDir, "arrival-scheduler-inputs", sid)
             val mf = File(inputs, "manifest.json"); val m = JSONObject(mf.readText()); val hash = ProbeModelFile.sha256(mf)
-            root = canonicalProbeOutputRoot(filesDir, EnergyCollectionCore.PROTOCOL, sid); check(!root.exists() && root.mkdirs())
+            val calibration = m.optBoolean("state_model_calibration", false)
+            val protocol = if (calibration) EnergyStateCalibration.PROTOCOL else EnergyCollectionCore.PROTOCOL
+            if (calibration) {
+                handler.removeCallbacks(watchdog); handler.postDelayed(watchdog, EnergyStateCalibration.WATCHDOG_MS)
+            }
+            root = canonicalProbeOutputRoot(filesDir, protocol, sid); check(!root.exists() && root.mkdirs())
             FileOutputStream(File(root, "manifest.json")).use { it.write(mf.readBytes()); it.fd.sync() }
             progress = EnergyProgress(File(root, "progress.jsonl")); event("session_start", mapOf("manifest_sha256" to hash))
             Log.i("D1ENERGY", "runtime_scope_start=$sid")
-            check(m.getString("protocol") == EnergyCollectionCore.PROTOCOL && m.getString("session_id") == sid)
-            check(m.getLong("maximum_duration_ms") == EnergyCollectionCore.WATCHDOG_MS && !m.getBoolean("experiment_ready"))
+            check(m.getString("protocol") == protocol && m.getString("session_id") == sid)
+            check(m.getLong("maximum_duration_ms") == (if (calibration) EnergyStateCalibration.WATCHDOG_MS else EnergyCollectionCore.WATCHDOG_MS) && !m.getBoolean("experiment_ready"))
             check(m.getString("apk_sha256") == ProbeModelFile.sha256(File(applicationInfo.sourceDir)) && m.getString("device_fingerprint") == Build.FINGERPRINT)
             check(m.getInt("cpu_threads") == 1 && m.getInt("baseline_seconds") == 120 && m.getInt("cooling_seconds") == 180)
             val preparation = m.optJSONObject("temperature_preparation")
             val operational = m.optBoolean("operational_only", false)
+            if (calibration) {
+                check(operational && m.getString("calibration_version") == "state-regimen-v1")
+                check(m.getInt("common_work_seconds") == 600 && m.getInt("work_call_cap") == EnergyStateCalibration.MAX_WORK_CALLS)
+                check(m.getInt("cadence_ms") == 250 && m.getString("mode") == "calibration")
+                EnergyStateCalibration.validate(EnergyStateCalibration.blocks(m.getString("phase") == "confirmation"))
+            }
             check(preparation?.getString("version") == (if (operational) "resident-fixed-preparation-v1" else "resident-ap-preparation-v1") &&
                 preparation.getInt("max_wait_seconds") == 360)
             val keys = EnergyCollectionCore.keys(m.getString("pair")); val parallel = m.getString("mode") == "parallel"
-            check(m.getString("mode") in setOf("serial", "parallel"))
+            check(calibration || m.getString("mode") in setOf("serial", "parallel"))
             val images = m.getJSONArray("images"); check(images.length() == 1)
             val imageSpec = images.getJSONObject(0); val image = File(inputs, imageSpec.getString("filename"))
             val imageHash = imageSpec.getString("sha256"); check(ProbeModelFile.sha256(image) == imageHash)
             val anchors = File(inputs, "anchors.json")
             samples.scheduleAtFixedRate({ sampler.tick { event("power_sample", snapshot()) } },0,1,TimeUnit.SECONDS)
             val setupStart = now()
-            ArrivalRuntimeSetup.initialize(EnergyCollectionCore.KEYS, false, 8, if (operational) 874 else 872) { key ->
+            ArrivalRuntimeSetup.initialize(EnergyCollectionCore.KEYS, false, 8, if (calibration) EnergyStateCalibration.MAX_WORK_CALLS + 4 else if (operational) 874 else 872) { key ->
                 healthy(); EnergyCollectionCore.requireTime(now(),setupStart,150_000_000_000)
                 event("runtime_submit",mapOf("key" to key))
                 lane(key).submit {
@@ -167,12 +178,14 @@ class EnergyCollectionActivity : Activity() {
             idle("resident_baseline",120)
             phase = "baseline_gate"; gate(inputs,"baseline",hash)
             phase = "load"; val commonStart = now()
-            workload(keys,parallel,listOf(678,192),image,imageHash,EnergyCollectionCore.LOAD_NS)
+            if (calibration) calibrationWorkload(keys,image,imageHash,m.getString("phase") == "confirmation",commonStart)
+            else workload(keys,parallel,listOf(678,192),image,imageHash,EnergyCollectionCore.LOAD_NS)
             phase = "post_work_wait"; event("phase_start")
-            while (now()-commonStart < EnergyCollectionCore.LOAD_NS) { healthy(); Thread.sleep(100) }
+            val commonNs = if (calibration) EnergyStateCalibration.COMMON_NS else EnergyCollectionCore.LOAD_NS
+            while (now()-commonStart < commonNs) { healthy(); Thread.sleep(100) }
             event("phase_end")
             idle("resident_cooling",180)
-            save("summary.json",mapOf("status" to "completed","requests" to 870,"probe" to (if (operational) 4 else 2),"warmup" to 8,"mono_ns" to now()))
+            save("summary.json",mapOf("status" to "completed","requests" to (if (calibration) "bounded_by_journal" else 870),"probe" to (if (operational) 4 else 2),"warmup" to 8,"mono_ns" to now()))
         } catch(e: Throwable) {
             failure = e.toString(); stop.compareAndSet(null,failure)
             try { save("session_failure.json", EnergyFailureEvidence.capture(e,sid,phase,"session",now())) }
@@ -191,6 +204,80 @@ class EnergyCollectionActivity : Activity() {
             if (!cpu.awaitTermination(1,TimeUnit.SECONDS) || !gpu.awaitTermination(1,TimeUnit.SECONDS)) android.os.Process.killProcess(android.os.Process.myPid())
             runOnUiThread { finish() }
         }
+    }
+    private fun calibrationWorkload(keys: List<String>, image: File, imageHash: String,
+                                    confirmation: Boolean, commonStart: Long) {
+        val blocks = EnergyStateCalibration.blocks(confirmation)
+        EnergyStateCalibration.validate(blocks)
+        event("phase_start", mapOf("calibration_version" to "state-regimen-v1"))
+        var nominalOffset = 0L
+        for (block in blocks) {
+            healthy(); EnergyCollectionCore.requireTime(now(), commonStart, EnergyStateCalibration.COMMON_NS)
+            val start = now(); val end = start + block.seconds * 1_000_000_000L
+            event("block_start", mapOf("block" to block.id, "keys" to block.lanes.map { keys[it] },
+                "nominal_offset_ns" to nominalOffset, "target_seconds" to block.seconds,
+                "cadence_ns" to EnergyStateCalibration.CADENCE_NS,
+                "max_calls_per_lane" to EnergyStateCalibration.MAX_PER_LANE_PER_BLOCK))
+            if (block.lanes.isEmpty()) {
+                while (now() < end) { healthy(); Thread.sleep(100) }
+            } else {
+                val workers = block.lanes.map { index ->
+                    val key = keys[index]
+                    val activeStart = AtomicLong(0)
+                    val future = lane(key).submit<Int> {
+                        var count = 0
+                        while (now() < end) {
+                            healthy()
+                            check(count < EnergyStateCalibration.MAX_PER_LANE_PER_BLOCK) { "calibration call cap" }
+                            val id = "cal-${block.id}-$index-$count"
+                            val dispatch = now(); activeStart.set(dispatch); observed.dispatch(key,id)
+                            event("dispatch",mapOf("id" to id,"key" to key,"block" to block.id,
+                                "scheduled_arrival_ns" to dispatch,"dispatch_ns" to dispatch))
+                            val execution = now(); event("request_start",mapOf("id" to id,"key" to key,"block" to block.id))
+                            event("admission",snapshot()); healthy()
+                            var a = 0L; var b = 0L
+                            val result = observed.runtime(key).execute(image,imageHash,
+                                invocationObserver={x,y-> a=x;b=y},
+                                diagnosticMark={stage,edge -> event("call_stage",mapOf("id" to id,"key" to key,
+                                    "block" to block.id,"stage" to stage,"edge" to edge)) })
+                            val ready = now(); event("output_ready",mapOf("id" to id,"key" to key,"block" to block.id))
+                            save("$id.result.json",result); val persisted = now(); val release = now()
+                            val row = mapOf("id" to id,"key" to key,"block" to block.id,
+                                "scheduled_arrival_ns" to dispatch,"dispatch_ns" to dispatch,
+                                "execution_start_ns" to execution,"invocation_start_ns" to a,
+                                "invocation_end_ns" to b,"output_ready_ns" to ready,
+                                "persist_complete_ns" to persisted,"worker_release_ns" to release,
+                                "terminal_status" to "succeeded")
+                            event("worker_release",row)
+                            observed.release(key)
+                            val available = now(); event("lane_available",row + mapOf("lane_available_ns" to available))
+                            activeStart.set(0)
+                            count++
+                            val next = start + count * EnergyStateCalibration.CADENCE_NS
+                            if (next > now()) Thread.sleep((next-now()+999_999L)/1_000_000L)
+                        }
+                        count
+                    }
+                    future to activeStart
+                }
+                while (workers.any { !it.first.isDone }) {
+                    healthy()
+                    for ((_,activeStart) in workers) {
+                        val started = activeStart.get()
+                        if (started != 0L) EnergyCollectionCore.requireTime(now(),started,EnergyCollectionCore.CALL_NS)
+                    }
+                    check(now()-start < (block.seconds+30L)*1_000_000_000L) { "calibration block timeout" }
+                    Thread.sleep(10)
+                }
+                val counts = workers.map { it.first.get() }
+                check(counts.all { it > 0 }) { "empty calibration state" }
+                event("block_counts",mapOf("block" to block.id,"counts" to counts))
+            }
+            event("block_end",mapOf("block" to block.id,"actual_duration_ns" to now()-start))
+            nominalOffset += block.seconds * 1_000_000_000L
+        }
+        check(now()-commonStart < EnergyStateCalibration.COMMON_NS) { "no common-window tail reserve" }
+        event("phase_end")
     }
     private fun workload(keys: List<String>, parallel: Boolean, counts: List<Int>, image: File, imageHash: String, budget: Long) {
         val start = now(); val label = phase; event("phase_start")

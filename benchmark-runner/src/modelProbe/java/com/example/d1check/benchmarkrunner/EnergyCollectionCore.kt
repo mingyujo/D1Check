@@ -19,6 +19,7 @@ internal object EnergyCollectionCore {
         "CG_DG" -> error("same GPU is not a two-lane pair")
         "CC_DG" -> listOf("classification_CPU", "detection_GPU")
         "CG_DC" -> listOf("classification_GPU", "detection_CPU")
+        "DC_DG" -> listOf("detection_CPU", "detection_GPU")
         else -> error("unsupported pair")
     }
     fun counts() = mapOf("classification" to 678, "detection" to 192)

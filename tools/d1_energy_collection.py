@@ -272,7 +272,9 @@ def validate_rows(rows, pair, mode, counts):
     for r in rows:
         ts=[r[k] for k in fields];require(all(type(t)==int and t>=0 for t in ts) and ts==sorted(ts),'clock/boundary order')
         require(r['terminal_status']=='succeeded','failed/unfinished')
-    for key,n in zip(PAIRS[pair],counts):
+    pair_keys=PAIRS[pair] if pair in PAIRS else ('detection_CPU','detection_GPU') if pair=='DC_DG' else None
+    require(pair_keys is not None,'unsupported pair')
+    for key,n in zip(pair_keys,counts):
         rr=sorted((r for r in rows if r['key']==key),key=lambda r:r['dispatch_ns'])
         require(len(rr)==n,'task/backend denominator')
         require(all(a['lane_available_ns']<=b['dispatch_ns'] for a,b in zip(rr,rr[1:])),'early lane reuse')
@@ -280,7 +282,7 @@ def validate_rows(rows, pair, mode, counts):
     busy=0
     for _,delta in spans:
         busy+=delta;require(0<=busy<=(1 if mode=='serial' else 2),'concurrency')
-    aa=[r for r in rows if r['key']==PAIRS[pair][0]];bb=[r for r in rows if r['key']==PAIRS[pair][1]]
+    aa=[r for r in rows if r['key']==pair_keys[0]];bb=[r for r in rows if r['key']==pair_keys[1]]
     overlap=sum(max(0,min(a['invocation_end_ns'],b['invocation_end_ns'])-max(a['invocation_start_ns'],b['invocation_start_ns'])) for a in aa for b in bb)
     if mode=='parallel':require(overlap>0,'no host API overlap observed; parallel unsupported')
     return dict(requests=len(rows),host_api_overlap_ns=overlap,kernel_overlap_verified=False)

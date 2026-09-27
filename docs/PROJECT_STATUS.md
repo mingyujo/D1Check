@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ENERGY-AP-STATE-COLLECT-03 PC 준비 완료 — 실기기 미승인
+
+- [수집·분석 계약](ENERGY_AP_STATE_COLLECTION_PREP_20260927.md), [공유 요약](results/energy_ap_state_collection_03/README.md). 기존 4세션/144분 후보는 세 병행 상태와 다른 전환 순서의 확인을 모두 제공하지 못한다. 새 개발3→동결→확인3, 고정 관측 102분·전체 예약 상한 230분, 명시적 추론 최대 10,152회로 별도 plan_v3를 PC에서 준비했다.
+- Android 반복 구간·host 단일 사용/부분 회수/동결/확인 분석, 프로젝트 서명 APK와 manifest·계획 해시·`Check`를 확인했다. 관련 Python 46건·JVM 관련 1건·APK 빌드 통과. ADB·설치·추론 0, 새 출력/소비 registry 없음. 요청 순간 W·동적 AP 계수 식별과 기기 완주는 미확인이다. 상태 `PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED`, `experiment_ready=false`.
+- 다음 행동: 별도 230분·10,152회 상한의 실행 여부를 결정하고, 승인 시 현재 A24·서명·환경·병행 적격성 gate를 새로 확인한다. 기존 FAIL·부분 원본·동결값·종료 계획과 S26/NPU 별도 범위는 보존한다.
+
 ## 2026-09-27 ENERGY-AP-MODEL-BRIDGE-PC-02 — 실측 보정·예측 오차 우선
 
 - [한국어 범위·오차·최소 수집 후보](ENERGY_AP_MODEL_BRIDGE_PC_20260927.md), [실측/예측 경로와 지원 상태](results/energy_model_bridge_02/dashboard.html). 기존 A24 고정 CC_DG 개발2/확인2와 동결 v1을 보존한 채 개발 점유 상태의 기기 전체 평균전력 네 값과 확인 실제 일정 조건부 J를 사후 진단했다. 합성 도착 엔진은 이 profile로 미지원 전력/AP를 계산하지 않고 joint 상태와 `UNSUPPORTED_STATE_COSTS`를 반환한다. 기존 가정 탐색은 별도 유지한다.

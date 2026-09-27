@@ -231,7 +231,16 @@ def installation(d,plan,plan_file,root,hard):
 
 def run(plan_file,adb,serial,expected_sha,approved):
     c.require(approved and c.p.digest(plan_file)==expected_sha,'new explicit approval/hash required')
-    c.check(plan_file);plan=c.p.read(plan_file);root=Path(plan['output_root']);registry=Path(plan['registry'])
+    try:plan=c.p.read(plan_file)
+    except FileNotFoundError:
+        c.check(plan_file)
+        raise
+    if plan.get('state_model_calibration'):
+        from tools import d1_energy_state_collection as state
+        state.check(plan_file)
+    else:
+        state=None;c.check(plan_file)
+    root=Path(plan['output_root']);registry=Path(plan['registry'])
     # Single-use claim BEFORE any preflight/transfer. A failed gate does not allow silent resume.
     registry.mkdir(parents=True,exist_ok=False);root.mkdir(parents=True,exist_ok=False)
     budget=plan['budget']
@@ -245,8 +254,14 @@ def run(plan_file,adb,serial,expected_sha,approved):
         for e in plan['entries']:
             if e['index']==budget['development'] and not plan.get('diagnostic_only'):
                 freeze_start=time.monotonic();frozen={r['condition']:r for r in results}
-                c.require(len(frozen)==budget['development'] and all(r['status']=='eligible_descriptive_only' for r in results),'development freeze eligibility')
-                save(root/'development_freeze.json',dict(plan_sha256=expected_sha,conditions=frozen,source='development_only',accuracy_pass=None))
+                expected_status='eligible_regimen_only' if state else 'eligible_descriptive_only'
+                c.require(len(frozen)==budget['development'] and all(r['status']==expected_status for r in results),'development freeze eligibility')
+                if state:
+                    frozen=state.freeze(results,plan,root)
+                    artifact=frozen
+                else:
+                    artifact=dict(plan_sha256=expected_sha,conditions=frozen,source='development_only',accuracy_pass=None)
+                save(root/'development_freeze.json',artifact)
                 save(root/'freeze_receipt.json',dict(sha256=c.p.digest(root/'development_freeze.json'),utc=legacy.utc()))
                 c.require(time.monotonic()-freeze_start<600,'freeze time exceeded')
             c.require(hard-time.monotonic()>=budget['session_seconds'],'insufficient whole session reserve; stop')
@@ -260,28 +275,32 @@ def run(plan_file,adb,serial,expected_sha,approved):
             save(current/'attempt.json',dict(entry=e,utc=legacy.utc(),plan_sha256=expected_sha))
             manifest=Path(plan_file).parent/e['manifest'];m=c.p.read(manifest)
             (current/'input_manifest.json').write_bytes(manifest.read_bytes())
-            remote=shared.stage_inputs(d,e['session_id'],manifest,{k:v['path'] for k,v in plan['source_files'].items()},c.PROTOCOL)
+            remote=shared.stage_inputs(d,e['session_id'],manifest,{k:v['path'] for k,v in plan['source_files'].items()},plan.get('protocol',c.PROTOCOL))
             c.require(session_end-time.monotonic()>=budget['host_poll_seconds']+105,'launch reserve')
             d.deadline=session_end-105
             save(current/'launch_attempt.json',dict(utc=legacy.utc()))
             d.call('shell','am','start','-W','-n',legacy.PACKAGE+'/'+ACTIVITY,'-a',ACTION,'--es','session_id',e['session_id'],timeout=20)
-            anchor=None if plan.get('operational_only') else same_stage_serial_anchor(results,e['phase'],e['pair'],e['mode'])
+            anchor=None if state or plan.get('operational_only') else same_stage_serial_anchor(results,e['phase'],e['pair'],e['mode'])
             poll(d,remote,current,m,plan,anchor)
             d.deadline=min(time.monotonic()+60,session_end-45)
             save(current/'recovery.json',recover(d,remote,current/'artifacts',plan.get('operational_only',False)))
             # Cleanup is reserved BEFORE PC validation; validation cannot prolong active device work.
             save(current/'host_cleanup.json',shared.cleanup(d,session_end))
-            stats=c.summarize_session(current/'artifacts',manifest,plan);stats['phase']=e['phase']
+            stats=(state.summarize_session if state else c.summarize_session)(current/'artifacts',manifest,plan);stats['phase']=e['phase']
             c.require(time.monotonic()<=session_end,'session PC validation exhausted reservation; no next session')
             stats['elapsed_seconds']=time.monotonic()-session_start
             if frozen is not None:
-                fr=frozen[stats['condition']]
-                stats['confirmation_errors']={phase:dict(power_w=values['energy']['mean_power_w']-fr['phases'][phase]['energy']['mean_power_w'],
-                    ap_end_c=values['ap_end_c']-fr['phases'][phase]['ap_end_c']) for phase,values in stats['phases'].items()}
+                if state: stats['confirmation_errors']=state.evaluate(stats,frozen,plan)
+                else:
+                    fr=frozen[stats['condition']]
+                    stats['confirmation_errors']={phase:dict(power_w=values['energy']['mean_power_w']-fr['phases'][phase]['energy']['mean_power_w'],
+                        ap_end_c=values['ap_end_c']-fr['phases'][phase]['ap_end_c']) for phase,values in stats['phases'].items()}
                 c.require(c.p.digest(root/'development_freeze.json')==c.p.read(root/'freeze_receipt.json')['sha256'],'freeze changed')
             save(current/'validated.json',stats);results.append(stats)
-        result=dict(status='completed_diagnostic_only' if plan.get('diagnostic_only') else 'completed_descriptive_only',
-            sessions=len(results),diagnostic_requests=budget['diagnostic_requests'],warmup=budget['warmup'],explicit_inference=budget['explicit_inference'],
+        result=dict(status='completed_regimen_diagnostic_only' if state else 'completed_diagnostic_only' if plan.get('diagnostic_only') else 'completed_descriptive_only',
+            sessions=len(results),diagnostic_requests=(sum(r['work_calls']+r['eligibility_calls'] for r in results) if state else budget['diagnostic_requests']),
+            warmup=(sum(r['warmup_calls'] for r in results) if state else budget['warmup']),
+            explicit_inference=(sum(r['work_calls']+r['eligibility_calls']+r['warmup_calls'] for r in results) if state else budget['explicit_inference']),
             installation=install_result,elapsed_seconds=time.monotonic()-start,accuracy_pass=None,experiment_ready=False)
         save(root/'FINAL_RECEIPT.json',result);save(registry/'completed.json',result);return result
     except BaseException as exc:
@@ -299,8 +318,10 @@ def run(plan_file,adb,serial,expected_sha,approved):
             try:save((current or root)/'failure_host_cleanup.json',shared.cleanup(d,hard))
             except BaseException as err:failure['host_cleanup_error']=repr(err)
         prefix=current/'failure_prefix/progress.jsonl' if current else None
-        failure['last_session_progress']=c.progress_consumption(prefix.read_bytes() if prefix and prefix.is_file() else b'',
-            bool(current and (current/'launch_attempt.json').exists()),plan.get('operational_only',False))
+        failure['last_session_progress']=(state.progress_consumption(prefix.read_bytes() if prefix and prefix.is_file() else b'',
+            bool(current and (current/'launch_attempt.json').exists())) if state else
+            c.progress_consumption(prefix.read_bytes() if prefix and prefix.is_file() else b'',
+            bool(current and (current/'launch_attempt.json').exists()),plan.get('operational_only',False)))
         failure['failure_detected_elapsed_seconds']=failure['elapsed_seconds']
         failure['elapsed_seconds']=time.monotonic()-start
         save(root/'FINAL_RECEIPT.json',failure);save(registry/'stopped.json',failure)

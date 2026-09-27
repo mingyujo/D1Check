@@ -389,3 +389,7 @@ CAL-02 후속: 승인 후 업데이트 설치는 성공했으나 첫 세션 필�
 실제 시간 경계 보정의 첫 단계로 **추정값 없는 고정 backend 단독 진단**을 분리한다. task/backend/priority8조건, persist_all, 네 runtime resident·각2warmup·CPU thread1을 유지한다. 기존20 budget을 사후 의미 변경하지 않고 별도 관측 v2의40슬롯과 응답/lane 목적별 N/A를 기록한다. 고정 진단의 판단 비용은 적응형 판단 비용의 대체가 아니며 null/UNKNOWN·실험 준비 미완료는 유지한다.
 
 PC 완료 조건은 calibration 전용 경로, 기존 정책/자료 호환, 성공·실패·null 호출/worker release·실제 callback 계측, 소비/중단/재시도 차단, APK 격리 패키징·새 plan/manifest·dry-run·문서다. 제안은 개발8+확인8세션·64진단요청·128warmup, retry/대체/추가0이다. fit은 한 개발 session/조건의 중앙값·범위만 기술하고 freeze 후 새 확인 session의 오차를 보고한다. 이 작은 예산으로 정밀도/검정력/tail·P 우수성을 주장하지 않는다. 이번에 기기 실행하지 않으며 기존 fixed-split 미시도분과 합치지 않는다.
+
+## 2026-09-27 ENERGY-AP-STATE-COLLECT-03 — 별도 미승인 모형 수집 후보
+
+발열·배터리·응답이라는 최종 목표는 유지한다. 새 정책/강화학습은 보류하고 A24 현재 두 모델의 기기 전체 J와 AP 경로를 먼저 보정·확인한다. [별도 계약](ENERGY_AP_STATE_COLLECTION_PREP_20260927.md)에 따라 기존 4세션/144분 산술 후보 대신 CC_DG·CG_DC·탐지 CPU＋GPU의 개발3→동결→확인3을 PC에서 준비했다. 동일 250ms 반복 구간의 전력·AP 전환까지만 식별하며 임의 도착·요청별 순간 비용·정책 절감은 미검증이다. 전체 상한 230분/추론 최대 10,152회는 **제안 예산**이며 실행 승인이 아니다. Android/host/분석/계획/서명 APK/PC dry-run 준비 완료, ADB·설치·실측 0. 이후 기기 gate와 독립 확인 오차가 실제로 확보되기 전 `experiment_ready=false`와 과거 FAIL/동결값을 유지한다.

@@ -54,7 +54,8 @@ def apk_sources(identity):
     """Host Python is bound by the plan, not compiled into the APK. Keep build receipts immutable."""
     return {name: sha for name, sha in identity.items()
             if (not name.startswith("tools/") or name.endswith(".gradle"))
-            and "/src/test/" not in name and "/src/androidTest/" not in name}
+            and "/src/test/" not in name and "/src/testModelProbe/" not in name
+            and "/src/androidTest/" not in name}
 
 
 def pending():
