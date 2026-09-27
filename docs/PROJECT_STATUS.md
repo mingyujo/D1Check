@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ENERGY-AP-STATE-COLLECT-03 승인 후 착수 보류 — A24 미연결
+
+- [실행 전 gate 결과](ENERGY_AP_STATE_COLLECTION_PREFLIGHT_20260927.md), 외부 `energy_ap_state_preflight_20260927/PREFLIGHT_RECEIPT.json`. 승인된 plan_v3 해시·예산·`Check` 통과, 브랜치 HEAD `8a7a4d0` clean/원격 일치. `adb devices -l` 기기 0대여서 serial·fingerprint와 현재 환경을 확인할 수 없었다. `Run` 미호출, 세션 0/6·추론/전송/설치/설정 변경 0, 동결·확인 미실시. 새 출력·소비 registry 없음.
+- 현재 장애: 승인 대상 A24가 ADB에 표시되지 않음. 배터리·비충전·BAT/thermal·화면·memory·설치본·GPU/병행 적격성은 미확인. 이 착수 시도는 재연결·daemon 재시작·자동 재실행 없이 종료한다. 기존 계획/원본/FAIL/동결값과 `experiment_ready=false` 유지.
+- 다음 행동: A24를 연결하고 필요한 USB 디버깅 승인을 완료한 뒤, 현재 serial과 모든 실행 gate를 새로 확인한다. 별도 실행 지시 없이 이 실패 직후 자동 재개하지 않는다.
+
 ## 2026-09-27 ENERGY-AP-STATE-COLLECT-03 PC 준비 완료 — 실기기 미승인
 
 - [수집·분석 계약](ENERGY_AP_STATE_COLLECTION_PREP_20260927.md), [공유 요약](results/energy_ap_state_collection_03/README.md). 기존 4세션/144분 후보는 세 병행 상태와 다른 전환 순서의 확인을 모두 제공하지 못한다. 새 개발3→동결→확인3, 고정 관측 102분·전체 예약 상한 230분, 명시적 추론 최대 10,152회로 별도 plan_v3를 PC에서 준비했다.
