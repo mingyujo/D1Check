@@ -1,5 +1,9 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-09-27 온라인 에너지·AP 후보의 PC 탐색 범위
+
+[ARRIVAL-THERMAL-FEEDBACK-PC-01](ARRIVAL_THERMAL_FEEDBACK_PC_20260927.md)은 기존 B2/B3/CPU_URGENT와 별도로 열·에너지 가정을 **실제 배정 판단**에 넣는 PC 후보를 구현·비교했다. 기존 P, Android 정책, CAL-03 동결값, 실기기 평가 계약은 변경하지 않는다. low/queue/burst 연구용 요청 기한 1.5/6초와 공통120초에서 응답·완료·기기 전체 에너지·AP 최고/한도 초과 시간을 함께 본다. 4개 사전 가정×기존 seed 2×새 PC seed 2의 결과는 모두 탐색이며 실제 절감/열 제약 검증이 아니다. 에너지 유리 profile에서도 응답/일반 서비스 손실이 남아 최종 우월성은 미입증이다. 다음은 새 실측을 자동 확대하지 않고, 대시보드의 상충과 미측정 joint 전력·AP·판단 비용이 실제 선택을 바꿀지 판단한다. `experiment_ready=false`를 유지한다.
+
 ## 2026-09-26 합성 도착 Android 관측 후보 — 실행 미승인
 
 [새 별도 계약](ARRIVAL_ENERGY_ANDROID_PREP_20260926.md)은 기존 합성 연구 선택을 바꾸지 않고, `CPU_URGENT`와 `FIXED_SPLIT`의 low/queue/burst 각24요청을 Android에서 직접 재생하는 경로를 PC 준비했다. 동일 정책의 120초 공통창 기기 에너지·AP와 긴급/일반 응답·미완료 분모를 함께 관측하는 목적 A가 첫 단계다. 기존 강한 B2·B3/P 최종 비교나 임의 도착 상태별 전력·열 보정 B는 이번 2-arm/짧은 표본으로 대체하지 않는다. 개발6→규칙 동결→확인6 후보, runtime48/warmup96/요청288/총추론384, hard 177분은 **아직 미승인·미실행**이다. 기기/서명/환경·센서 coverage는 실행 직전 gate이며, 새 결과가 없으므로 `experiment_ready=false`와 과거 판정은 그대로다. 상세 재현은 [PC 검증](results/arrival_energy_android_prep_01/README.md)을 따른다. 아래는 이전 상태/계획이다.

@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-27 ARRIVAL-THERMAL-FEEDBACK-PC-01 — 온라인 에너지·AP 후보 PC 탐색 완료
+
+- [정책·한계·비교 보고서](ARRIVAL_THERMAL_FEEDBACK_PC_20260927.md), [단일 대시보드](results/arrival_policy_screen_01/dashboard.html), [설정·CSV·재현](results/arrival_thermal_feedback_01/README.md). 별도 `THERMAL_ENERGY_PC_V1`을 기존 이벤트 엔진에 opt-in으로 연결했다. 미측정 기기 전체 전력/AP 가정 아래 개발 96·새 seed PC 확인 96 실행, 실기기 0. 확인 24 matched 비교 중 응답·완료 손실 없이 에너지까지 개선한 정책 쌍은 0; 일부 energy/AP 이득은 응답·일반 위반 또는 다른 지표 악화를 동반한다. 엄격 모드 미지원, Android 정책 미구현, BAT/실제 절감·열 안전 미검증이다.
+- 현재 작업 종료. 다음 행동: (1) 대시보드에서 조건별 상충을 검토해 이 후보의 연구 가치 판단, (2) 실제 선택/절감 주장으로 진행할 때에만 joint 상태 전력·AP 경로·판단 비용의 별도 측정 목적 확정. 기존 P·동결값·FAIL·부분 결과·종료 계획·`experiment_ready=false` 보존.
+
 ## 2026-09-27 ARRIVAL-INTEGRATED-EXPLORER-PC-01 — 통합 PC 탐색 완료
 
 - [단일 오프라인 대시보드](results/arrival_policy_screen_01/dashboard.html)와 [사용·상대 경로 재현 안내](results/arrival_policy_screen_01/README.md), [한국어 판독](ARRIVAL_INTEGRATED_EXPLORER_20260927.md). 착수 HEAD `b15526a`, 선택 135일정의 저장 응답 지표 검증 재생으로 task×backend 점유를 얻었다. B2 CG_DC·B3 탐지 CPU＋GPU 등 기기 전체 전력을 독립 탐색 입력으로 분리하고 δ(%p)·seed·간섭·AP 가정을 한 화면에 연결했다. 기존 공통 병행 전력 결과·원본 유지. PC 관련 6테스트와 로컬 Chrome 기본 화면 렌더 통과; Android 계측·정책 튜닝·실측 0.

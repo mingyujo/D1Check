@@ -264,6 +264,17 @@ def render_bundle(bundle, output, template):
                          ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     output.mkdir(parents=True, exist_ok=True)
     html = template.read_text(encoding='utf-8').replace('/*__DATA__*/', f'const DATA={payload};')
+    extra = ('thermal_metrics.csv','thermal_assignments.csv','thermal_decisions.csv',
+             'thermal_CONFIG.json','thermal_fragment.html')
+    if all((bundle/name).exists() for name in extra):
+        feedback = dict(metrics=read_csv(bundle/'thermal_metrics.csv'),
+                        assignments=read_csv(bundle/'thermal_assignments.csv'),
+                        decisions=read_csv(bundle/'thermal_decisions.csv'),
+                        config=json.loads((bundle/'thermal_CONFIG.json').read_text(encoding='utf-8')))
+        fragment = (bundle/'thermal_fragment.html').read_text(encoding='utf-8')
+        fragment = fragment.replace('/*__THERMAL__*/',
+            'const THERMAL='+json.dumps(feedback,ensure_ascii=False,separators=(',',':')).replace('</','<\\/')+';')
+        html = html.replace('</main>',fragment+'</main>')
     (output / 'dashboard.html').write_text(html, encoding='utf-8')
 
 
@@ -308,10 +319,38 @@ def main():
     parser.add_argument('--output', type=Path, default=OUTPUT)
     parser.add_argument('--bundle', type=Path, help='standalone relative-path reproduction from copied small bundle')
     parser.add_argument('--template', type=Path)
+    parser.add_argument('--attach-thermal', action='store_true',
+                        help='attach frozen thermal candidate results without replaying old schedules')
     args = parser.parse_args()
     if args.bundle:
         render_bundle(args.bundle, args.output, args.template or args.bundle/'dashboard_template.html')
         print(f'bundle dashboard -> {args.output / "dashboard.html"}')
+        return
+    if args.attach_thermal:
+        bundle=args.output/'repro_bundle'
+        new=ROOT/'docs/results/arrival_thermal_feedback_01/run_v1'
+        names={'metrics.csv':'thermal_metrics.csv',
+               'assignment_differences.csv':'thermal_assignments.csv',
+               'decision_trace.csv':'thermal_decisions.csv',
+               'summary.csv':'thermal_summary.csv',
+               'paired_differences.csv':'thermal_paired_differences.csv',
+               'decision_cost_stress.csv':'thermal_decision_cost_stress.csv',
+               'comparison.svg':'thermal_comparison.svg'}
+        for original, renamed in names.items():shutil.copyfile(new/original,bundle/renamed)
+        shutil.copyfile(ROOT/'docs/results/arrival_thermal_feedback_01/CONFIG.json',bundle/'thermal_CONFIG.json')
+        shutil.copyfile(ROOT/'tools/assets/d1_arrival_thermal_fragment.html',bundle/'thermal_fragment.html')
+        shutil.copyfile(Path(__file__),bundle/'reproduce.py')
+        manifest=json.loads((bundle/'SOURCE_HASHES.json').read_text(encoding='utf-8'))
+        for name in (*names.values(),'thermal_CONFIG.json','thermal_fragment.html','reproduce.py'):
+            manifest['bundle_files'][name]=digest_text(bundle/name)
+        manifest['thermal_source_files']={str(p.relative_to(ROOT)):digest_text(p) for p in
+            (ROOT/'tools/d1_arrival_explore.py',ROOT/'tools/d1_arrival_thermal_feedback.py',
+             ROOT/'tools/d1_arrival_thermal_feedback_batch.py',
+             ROOT/'tools/d1_arrival_thermal_feedback_analysis.py',
+             ROOT/'docs/results/arrival_thermal_feedback_01/CONFIG.json')}
+        (bundle/'SOURCE_HASHES.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
+        render_bundle(bundle,args.output,bundle/'dashboard_template.html')
+        print(f'frozen feedback comparison attached -> {args.output / "dashboard.html"}')
         return
     rows = screen(read_csv(args.source / 'interference_metrics.csv'))
     save(rows, args.output, args.source)

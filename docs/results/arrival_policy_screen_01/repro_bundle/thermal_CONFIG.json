@@ -1,0 +1,61 @@
+{
+  "id": "ARRIVAL-THERMAL-FEEDBACK-PC-01",
+  "policy": "THERMAL_ENERGY_PC_V1",
+  "scope": "A24 two-model resident explore PC only; all whole-device power/AP coefficients are unmeasured stress assumptions",
+  "scenario": ["low", "queue", "burst"],
+  "development_seeds_seen_before": [201, 202],
+  "pc_confirmation_seeds_not_used_for_policy_design": [301, 302],
+  "realized_interference": 1.5,
+  "predicted_interference": 1.5,
+  "research_request_deadline_ms": {"urgent": 1500, "normal": 6000},
+  "common_window_s": 120,
+  "compared_policies": ["CPU_URGENT", "B2_PC", "B3_SOLO_EFT_PC", "THERMAL_ENERGY_PC_V1"],
+  "baseline_decision_ns": 100000,
+  "candidate_decision_ns_assumed": 500000,
+  "candidate_decision_ns_stress": 5000000,
+  "record_ns_assumed": 100000,
+  "dispatch_ns_assumed": 100000,
+  "max_voluntary_wait_ns": 2000000000,
+  "wait_step_ns": 250000000,
+  "prediction_min_horizon_ns": 8000000000,
+  "prediction_max_horizon_ns": 30000000000,
+  "representative_svg_before_results": {"scenario": "queue", "profile": "thermal_cap", "seed": 301},
+  "tie_rule": "feasible: common-horizon energy, immediate before wait, CPU before GPU; otherwise immediate: lateness, AP exceedance, energy, CPU",
+  "fallback": "no feasible candidate -> immediate minimum predicted violation; no free lane -> real lane release event; unknown busy residual after bounded wait -> fastest standalone point estimate with pair-cost forecast explicitly unsupported",
+  "profiles": [
+    {
+      "id": "loose_cpu",
+      "purpose": "loose cap and CPU-favoring assumed device power; test behavior near simple CPU choice",
+      "initial_ap_c": 29.0, "ap_limit_c_research": 100.0, "tau_s_assumed": 60.0,
+      "predicted": {"idle_w": 1.0, "cpu_single_w": 1.5, "gpu_single_w": 3.0, "pair_w": 3.5,
+                    "idle_equilibrium_c": 29.0, "cpu_equilibrium_c": 32.0, "gpu_equilibrium_c": 33.0, "pair_equilibrium_c": 35.0},
+      "realized": "same_as_predicted"
+    },
+    {
+      "id": "thermal_cap",
+      "purpose": "research AP cap changes backend/wait; not a physical safety limit",
+      "initial_ap_c": 30.0, "ap_limit_c_research": 30.03, "tau_s_assumed": 60.0,
+      "predicted": {"idle_w": 1.0, "cpu_single_w": 1.5, "gpu_single_w": 3.0, "pair_w": 3.5,
+                    "idle_equilibrium_c": 29.0, "cpu_equilibrium_c": 34.0, "gpu_equilibrium_c": 29.0, "pair_equilibrium_c": 42.0},
+      "realized": "same_as_predicted"
+    },
+    {
+      "id": "energy_shift",
+      "purpose": "power ordering reversed under loose AP cap; no measured range implied",
+      "initial_ap_c": 29.0, "ap_limit_c_research": 100.0, "tau_s_assumed": 60.0,
+      "predicted": {"idle_w": 1.0, "cpu_single_w": 3.0, "gpu_single_w": 1.5, "pair_w": 2.5,
+                    "idle_equilibrium_c": 29.0, "cpu_equilibrium_c": 34.0, "gpu_equilibrium_c": 34.0, "pair_equilibrium_c": 37.0},
+      "realized": "same_as_predicted"
+    },
+    {
+      "id": "cost_miss",
+      "purpose": "same predicted GPU-cheap coefficients as energy_shift, but GPU/pair device cost is higher",
+      "initial_ap_c": 29.0, "ap_limit_c_research": 100.0, "tau_s_assumed": 60.0,
+      "predicted": {"idle_w": 1.0, "cpu_single_w": 3.0, "gpu_single_w": 1.5, "pair_w": 2.5,
+                    "idle_equilibrium_c": 29.0, "cpu_equilibrium_c": 34.0, "gpu_equilibrium_c": 34.0, "pair_equilibrium_c": 37.0},
+      "realized": {"idle_w": 1.0, "cpu_single_w": 1.7, "gpu_single_w": 3.5, "pair_w": 4.0,
+                   "idle_equilibrium_c": 29.0, "cpu_equilibrium_c": 34.0, "gpu_equilibrium_c": 42.0, "pair_equilibrium_c": 44.0}
+    }
+  ],
+  "interpretation": "fixed before the new PC comparison; existing 201-205 data are retrospective, 301-302 are new PC seeds from the same realization vector source, not independent device validation; no tuning after confirmation"
+}

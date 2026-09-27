@@ -23,13 +23,17 @@ def keyed_index(seed, request_id, backend):
     return int.from_bytes(hashlib.sha256(f'{seed}/{request_id}/{backend}'.encode()).digest()[:8], 'big') % 4
 
 
-def choose(config, queue, lanes, now, policy, settings):
+def choose(config, queue, lanes, now, policy, settings, *, thermal_model=None, current_ap=None):
     """No engine work-left, realizations, future arrivals or future completion input."""
     allowed = {'id', 'task', 'priority', 'ordinal', 'arrival_ns', 'deadline_offset_ns'}
     for q in queue:
         base.require(set(q) == allowed and q['arrival_ns'] <= now, 'noncausal ticket')
     for lane in lanes.values():
         base.require(set(lane) == {'request', 'phase', 'since', 'dispatch'}, 'noncausal lane')
+    if policy == 'THERMAL_ENERGY_PC_V1':
+        from tools import d1_arrival_thermal_feedback as feedback
+        base.require(thermal_model is not None and current_ap is not None, 'explicit thermal policy inputs')
+        return feedback.choose(config, queue, lanes, now, settings, thermal_model, current_ap)
     aging = settings['aging_ns']
     def order(q):
         if policy == 'CPU_FIFO': return (0, q['ordinal'], q['id'])
@@ -94,10 +98,20 @@ def choose(config, queue, lanes, now, policy, settings):
 
 
 def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=120_000_000_000,
-             admission=None):
+             admission=None, thermal_model=None):
     # Optional REPLAN-PC-01 event hook. None preserves the frozen v3 execution path.
     base.validate_config(config)
-    base.require(policy in POLICIES and settings['mode'] in ('strict', 'explore'), 'policy/mode')
+    base.require((policy in POLICIES or policy == 'THERMAL_ENERGY_PC_V1')
+                 and settings['mode'] in ('strict', 'explore'), 'policy/mode')
+    if policy == 'THERMAL_ENERGY_PC_V1':
+        base.require(admission is None and settings['mode']=='explore', 'thermal policy explore-only')
+        base.require(thermal_model is not None, 'thermal policy requires explicit model')
+    if thermal_model is not None:
+        from tools import d1_arrival_thermal_feedback as feedback
+        from tools import d1_energy_thermal as thermal
+        base.require(settings['mode']=='explore', 'unmeasured power/AP model is explore-only')
+        feedback.validate(thermal_model)
+        base.require(horizon_ns == 120_000_000_000, 'thermal common window')
     base.require(0 < len(requests) <= 128 and 0 < horizon_ns <= 600_000_000_000, 'bounded scenario')
     for name in ('decision_ns', 'record_ns', 'dispatch_ns'):
         base.require(type(settings[name]) is int and settings[name] >= 0, 'explicit overhead assumption')
@@ -108,6 +122,9 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
     queue, decisions, transitions = [], [], []
     lanes = {b: None for b in ('CPU', 'GPU')}
     now = 0.0; ai = 0; pending = None; count = 0; review_needed = True
+    wake_at = None
+    current_ap = thermal_model['initial_ap_c'] if thermal_model is not None else None
+    online_energy = 0.
     def public():
         return {b: dict(request=x['ticket'] if x else None, phase=PHASES[x['stage']] if x else 'AVAILABLE',
                         since=x['since'] if x else now, dispatch=x['dispatch'] if x else None) for b,x in lanes.items()}
@@ -138,6 +155,9 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
             review_needed = True
         if admission is not None:
             review_needed |= admission.expiries_at(now)
+        if wake_at is not None and wake_at <= now:
+            wake_at = None
+            review_needed = True
         if pending and pending['end']<=now:
             selected=pending['selected']
             if selected and admission is not None:
@@ -163,12 +183,15 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
         if any(x and x['left']<=0.0001 for x in lanes.values()): continue
         if pending is None and queue and (admission is None or review_needed):
             eligible=queue if admission is None else admission.eligible(queue, now)
-            d=choose(config,eligible,public(),now,policy,settings)
+            d=choose(config,eligible,public(),now,policy,settings,
+                     thermal_model=thermal_model,current_ap=current_ap)
             if admission is not None:
                 d['admission']=admission.snapshot(queue, now)
                 if not eligible: d['reason']='background_start_blocked'
             decisions.append(d)
             review_needed=False
+            if policy == 'THERMAL_ENERGY_PC_V1':
+                wake_at = d.get('wait_until_ns') if d['selected'] is None else None
             cost=settings['decision_ns']+settings['record_ns']+(settings['dispatch_ns'] if d['selected'] else 0)
             if d['selected']:
                 pending=dict(start=now,end=now+cost,selected=d['selected'])
@@ -181,6 +204,7 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
         candidates=[]
         if admission is not None and admission.next_event() is not None:
             candidates.append(float(admission.next_event()))
+        if wake_at is not None:candidates.append(float(wake_at))
         if ai<len(arrivals):candidates.append(float(arrivals[ai]['arrival_ns']))
         if pending:candidates.append(pending['end'])
         for b,x in lanes.items():
@@ -193,6 +217,13 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
             others=[v for v in candidates if v>target]
             target=min(min(others),float(horizon_ns)) if others else float(horizon_ns)
         delta=target-now
+        if thermal_model is not None and delta>0:
+            state=feedback.state_for(lanes)
+            realized=thermal_model['realized']
+            elapsed_s=delta/1e9
+            online_energy+=realized['power_w'][state]*elapsed_s
+            current_ap=thermal.transition(current_ap,realized['ap_equilibrium_c'][state],
+                                          thermal_model['tau_s'],elapsed_s)
         for b,x in lanes.items():
             if x:x['left']-=delta*rate(b)
         now=target
@@ -212,8 +243,26 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
         urgent_n=len(urgent),normal_n=len(normal),response_ready=sum('response_ns' in r for r in rows),
         unfinished=sum(r['status']=='unfinished' for r in rows),not_arrived=sum(r['status']=='not_arrived' for r in rows),
         late_success=sum(r.get('late_success',False) for r in rows))
-    return dict(version=VERSION,policy=policy,settings=settings,seed=seed,metrics=metrics,ledger=rows,
+    result=dict(version=VERSION,policy=policy,settings=settings,seed=seed,metrics=metrics,ledger=rows,
         decisions=decisions,transitions=transitions,experiment_ready=False,
         evidence='model-conditional exploration; no device performance PASS',
         unsupported=['stochastic failures/rejection/expiry','thermal/energy','unmeasured overlap causal model'],
         policy_information='arrived tickets, observable phases, fixed development point estimates only')
+    if thermal_model is not None:
+        if now < horizon_ns:
+            dt=(horizon_ns-now)/1e9
+            online_energy+=thermal_model['realized']['power_w']['idle']*dt
+            current_ap=thermal.transition(current_ap,thermal_model['realized']['ap_equilibrium_c']['idle'],
+                                          thermal_model['tau_s'],dt)
+        result['thermal']=feedback.account_result(result,thermal_model,horizon_ns)
+        base.require(math.isclose(result['thermal']['energy_j'],online_energy,abs_tol=1e-6),
+                     'online/offline energy mismatch')
+        result['thermal']['online_energy_j']=online_energy
+        base.require(math.isclose(result['thermal']['ap_final_c'],current_ap,abs_tol=1e-6),
+                     'online/offline AP mismatch')
+        result['thermal']['online_final_ap_c']=current_ap
+        result['unsupported']=['physical power/AP calibration','BAT/surface temperature',
+                               'thermal throttling','unmeasured overlap causal model']
+        if policy == 'THERMAL_ENERGY_PC_V1':
+            result['policy_information']='arrived tickets, observable lanes, current modeled AP, frozen time and assumed power/AP estimates'
+    return result

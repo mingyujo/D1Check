@@ -1,0 +1,45 @@
+<section class="card" id="thermal-feedback-panel">
+  <h2>온라인 에너지·AP 피드백 후보 — 별도 PC 탐색</h2>
+  <p class="warn">아래 값은 고정된 합성 요청과 미측정 기기 전체 전력·AP 평형 가정으로 <b>정책을 다시 실행한</b> 결과입니다. 위쪽 전력 입력은 저장된 옛 일정의 사후 회계만 바꾸며 아래 새 후보를 재실행하지 않습니다. 이 표는 실기기 절감·온도 한도 준수의 증거가 아닙니다.</p>
+  <div class="controls">
+    <label>단계<select id="tf-phase"><option value="retrospective_development">기존 seed 회고 개발</option><option value="pc_confirmation" selected>새 seed PC 확인</option></select></label>
+    <label>시나리오<select id="tf-scenario"></select></label>
+    <label>가정 profile<select id="tf-profile"></select></label>
+    <label>seed<select id="tf-seed"></select></label>
+  </div>
+  <p id="tf-scope" class="small"></p>
+  <div id="tf-table" class="scroll"></div>
+  <div id="tf-plot"></div>
+  <h3>배정·대기가 달라진 지점</h3>
+  <p class="small">아래는 선택한 조건에서 새 후보와 기존 정책의 backend·dispatch 시각이 다른 요청입니다. 표의 사유는 결정 당시 예상에 근거합니다.</p>
+  <div id="tf-actions" class="scroll"></div>
+  <p class="small">긴급 P95는 각 seed의 완료 응답 6건 nearest-rank 값입니다. 기한 위반 분모는 긴급 6건·일반 18건이며 미완료는 위반에 포함합니다. AP 한도는 연구용 입력이고 BAT/표면 온도나 안전 한도가 아닙니다. 전력과 AP 평형은 독립 가정이며 열이 실현 처리시간이나 스로틀링에 피드백되지는 않습니다. <a href="repro_bundle/thermal_comparison.svg">사전 지정 대표 비교 SVG</a> · <a href="repro_bundle/thermal_metrics.csv">전체 비교 CSV</a> · <a href="repro_bundle/thermal_summary.csv">요약 CSV</a> · <a href="repro_bundle/thermal_paired_differences.csv">짝 비교 CSV</a> · <a href="repro_bundle/thermal_decision_cost_stress.csv">판단 비용 스트레스 CSV</a> · <a href="repro_bundle/thermal_decisions.csv">결정 로그</a></p>
+</section>
+<script>/*__THERMAL__*/
+(function(){
+  const $=id=>document.getElementById(id), F=x=>Number.isFinite(Number(x))?Number(x).toFixed(2):'계산 불가';
+  const M=THERMAL.metrics,C=THERMAL.config;
+  function values(id,items){const node=$(id);node.innerHTML='';for(const item of items){const o=document.createElement('option');o.value=item;o.textContent=item;node.append(o)}}
+  values('tf-scenario',C.scenario);values('tf-profile',C.profiles.map(x=>x.id));
+  $('tf-scenario').value='queue';$('tf-profile').value='thermal_cap';
+  function seeds(){const p=$('tf-phase').value;values('tf-seed',[...new Set(M.filter(x=>x.phase===p).map(x=>x.seed))]);$('tf-seed').value=p==='pc_confirmation'?'301':'201'}
+  function render(){
+    const phase=$('tf-phase').value,scenario=$('tf-scenario').value,profile=$('tf-profile').value,seed=$('tf-seed').value;
+    const rows=M.filter(x=>x.phase===phase&&x.scenario===scenario&&x.profile===profile&&x.seed===seed), spec=C.profiles.find(x=>x.id===profile);
+    $('tf-scope').textContent=`${phase} / ${scenario} / ${profile} / seed ${seed}. 연구용 AP 한도 ${F(spec.ap_limit_c_research)} °C, 시작 ${F(spec.initial_ap_c)} °C, 공통 120초. 전력은 기기 전체 절대 W 가정, AP는 독립 1차 모형. 요청 24건, 실제 기기 독립 세션 0건.`;
+    if(rows.length!==4){$('tf-table').textContent='계산 불가: 해당 조합의 네 정책 결과가 없습니다.';return}
+    const th=['정책','긴급 P95 ms','긴급 위반','일반 평균 ms','일반 위반','미완료/전체','공통120초 J*','AP 최고 °C*','AP 초과 초*','대기 결정','fallback'];
+    const cells=r=>[r.policy,F(r.urgent_p95_ms),`${r.urgent_miss_count}/${r.urgent_planned}`,F(r.normal_mean_ms),`${r.normal_miss_count}/${r.normal_planned}`,`${r.unfinished}/${r.planned}`,F(r.energy_120s_j_assumed),F(r.ap_peak_c_assumed),F(r.ap_over_limit_s_assumed),r.voluntary_wait_decisions,r.fallback_decisions];
+    const table=document.createElement('table'),head=document.createElement('tr');th.forEach(x=>{let e=document.createElement('th');e.textContent=x;head.append(e)});table.append(head);
+    rows.forEach(r=>{let tr=document.createElement('tr');cells(r).forEach(x=>{let e=document.createElement('td');e.textContent=x;tr.append(e)});table.append(tr)});$('tf-table').replaceChildren(table);
+    const base=rows.find(x=>x.policy==='CPU_URGENT'),candidate=rows.find(x=>x.policy===C.policy);
+    const de=Number(candidate.energy_120s_j_assumed)-Number(base.energy_120s_j_assumed),da=Number(candidate.ap_peak_c_assumed)-Number(base.ap_peak_c_assumed),du=Number(candidate.urgent_p95_ms)-Number(base.urgent_p95_ms),dn=Number(candidate.normal_mean_ms)-Number(base.normal_mean_ms);
+    $('tf-plot').textContent=`새 후보 − CPU_URGENT: 공통창 에너지 ${F(de)} J, AP 최고 ${F(da)} °C, 긴급 P95 ${F(du)} ms, 일반 평균 ${F(dn)} ms. 부호별 상충을 그대로 읽어야 하며 종합 1위는 정하지 않습니다.`;
+    const changed=THERMAL.assignments.filter(x=>x.phase===phase&&x.scenario===scenario&&x.profile===profile&&x.seed===seed);
+    const decisions=THERMAL.decisions.filter(x=>x.phase===phase&&x.scenario===scenario&&x.profile===profile&&x.seed===seed);
+    const action=document.createElement('table'),ah=document.createElement('tr');['요청','우선순위','새 backend','B2','B3','CPU','새 dispatch ms','결정 사유'].forEach(x=>{let e=document.createElement('th');e.textContent=x;ah.append(e)});action.append(ah);
+    changed.slice(0,25).forEach(r=>{let tr=document.createElement('tr');[r.request_id,r.priority,r.new_backend,r.b2_backend,r.b3_backend,r.cpu_backend,F(r.new_dispatch_ms),r.new_reason].forEach(x=>{let e=document.createElement('td');e.textContent=x;tr.append(e)});action.append(tr)});
+    $('tf-actions').replaceChildren(action,document.createTextNode(`총 ${changed.length}건의 배정/dispatch 차이. 결정 로그 ${decisions.length}건 중 보류 ${decisions.filter(x=>x.reason.startsWith('wait_for_')).length}건. 전체 행은 연결된 CSV에서 확인.`));
+  }
+  $('tf-phase').addEventListener('change',()=>{seeds();render()});for(const id of ['tf-scenario','tf-profile','tf-seed'])$(id).addEventListener('change',render);seeds();render();
+})();</script>
