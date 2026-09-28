@@ -294,7 +294,12 @@ def run(plan_file,adb,serial,expected_sha,approved):
     except FileNotFoundError:
         c.check(plan_file)
         raise
-    if plan.get('autonomous_diagnostic_only'):
+    if plan.get('short_transition_diagnostic_only'):
+        from tools import d1_energy_ap_short_transition as short_transition
+        from tools import d1_energy_state_collection as state
+        short_transition.check(plan_file)
+        c.require(serial is None,'short transition selects the current transport itself')
+    elif plan.get('autonomous_diagnostic_only'):
         from tools import d1_energy_ap_autonomous_diag as autonomous
         from tools import d1_energy_state_collection as state
         autonomous.check(plan_file)
@@ -341,7 +346,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
                         installation(d,plan,plan_file,install_root,hard));identified=True
         mark('installed_preflight_verified')
         frozen=None
-        if plan.get('state_model_followup'):
+        if plan.get('state_model_followup') or plan.get('short_transition_diagnostic_only'):
             # Preserve the exact development artifact. No re-fit, no confirmation-derived edits.
             source=Path(plan['prior_freeze']['path'])
             c.require(c.p.digest(source)==plan['prior_freeze']['sha256'],'prior freeze changed')
@@ -404,11 +409,19 @@ def run(plan_file,adb,serial,expected_sha,approved):
             stats=(state.summarize_session if state else c.summarize_session)(current/'artifacts',manifest,plan);stats['phase']=e['phase']
             if plan.get('autonomous_diagnostic_only'):
                 stats['formal_confirmation']=False
-                stats['diagnostic_scope']='device_segment_normal_completion_and_host_observation_coverage_only'
+                stats['diagnostic_scope']=('short_transition_schedule_conditional_protocol_transfer_only'
+                    if plan.get('short_transition_diagnostic_only') else
+                    'device_segment_normal_completion_and_host_observation_coverage_only')
             c.require(time.monotonic()<=session_end,'session PC validation exhausted reservation; no next session')
             stats['elapsed_seconds']=time.monotonic()-session_start
             if frozen is not None:
-                if state: stats['confirmation_errors']=state.evaluate(stats,frozen,plan)
+                if state:
+                    errors=state.evaluate(stats,frozen,plan)
+                    if plan.get('short_transition_diagnostic_only'):
+                        errors['meaning']='short-transition diagnostic on changed APK/protocol; not formal confirmation or arrival-policy validation'
+                        errors['accuracy_pass']=None
+                        stats['transition_errors']=errors
+                    else: stats['confirmation_errors']=errors
                 else:
                     fr=frozen[stats['condition']]
                     stats['confirmation_errors']={phase:dict(power_w=values['energy']['mean_power_w']-fr['phases'][phase]['energy']['mean_power_w'],
@@ -416,7 +429,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
                 c.require(c.p.digest(root/'development_freeze.json')==c.p.read(root/'freeze_receipt.json')['sha256'],'freeze changed')
             save(current/'validated.json',stats);results.append(stats)
             mark('session_validated',session_index=e['index'],session_id=e['session_id'])
-        result=dict(status='completed_followup_confirmation_only' if plan.get('state_model_followup') else 'completed_regimen_diagnostic_only' if state else 'completed_diagnostic_only' if plan.get('diagnostic_only') else 'completed_descriptive_only',
+        result=dict(status='completed_short_transition_protocol_diagnostic_only' if plan.get('short_transition_diagnostic_only') else 'completed_followup_confirmation_only' if plan.get('state_model_followup') else 'completed_regimen_diagnostic_only' if state else 'completed_diagnostic_only' if plan.get('diagnostic_only') else 'completed_descriptive_only',
             sessions=len(results),diagnostic_requests=(sum(r['work_calls']+r['eligibility_calls'] for r in results) if state else budget['diagnostic_requests']),
             warmup=(sum(r['warmup_calls'] for r in results) if state else budget['warmup']),
             explicit_inference=(sum(r['work_calls']+r['eligibility_calls']+r['warmup_calls'] for r in results) if state else budget['explicit_inference']),

@@ -181,11 +181,30 @@ class EnergyCollectionActivity : Activity() {
             }
             val preparation = m.optJSONObject("temperature_preparation")
             val operational = m.optBoolean("operational_only", false)
+            val shortTransition = m.optBoolean("short_transition_diagnostic_only", false)
+            check(!shortTransition || calibration)
+            val calibrationBlocks = if (shortTransition) EnergyStateCalibration.shortTransitionBlocks()
+                else EnergyStateCalibration.blocks(m.getString("phase") == "confirmation")
             if (calibration) {
-                check(operational && m.getString("calibration_version") == "state-regimen-v1")
+                check(operational && m.getString("calibration_version") ==
+                    (if (shortTransition) "short-transition-diagnostic-v1" else "state-regimen-v1"))
                 check(m.getInt("common_work_seconds") == 600 && m.getInt("work_call_cap") == EnergyStateCalibration.MAX_WORK_CALLS)
                 check(m.getInt("cadence_ms") == 250 && m.getString("mode") == "calibration")
-                EnergyStateCalibration.validate(EnergyStateCalibration.blocks(m.getString("phase") == "confirmation"))
+                EnergyStateCalibration.validate(calibrationBlocks)
+                if (shortTransition) {
+                    check(sessionControl == EnergySessionControl.DEVICE_AFTER_PROBE &&
+                        m.optBoolean("autonomous_diagnostic_only") && m.getString("pair") == "CC_DG" &&
+                        m.getString("phase") == "confirmation")
+                    val specified = m.getJSONArray("blocks")
+                    check(specified.length() == calibrationBlocks.size &&
+                        calibrationBlocks.indices.all { i ->
+                            val row = specified.getJSONObject(i)
+                            val lanes = row.getJSONArray("lane_indices")
+                            row.getString("id") == calibrationBlocks[i].id &&
+                                row.getInt("seconds") == calibrationBlocks[i].seconds &&
+                                (0 until lanes.length()).map(lanes::getInt) == calibrationBlocks[i].lanes
+                        })
+                }
             }
             check(preparation?.getString("version") == (if (operational) "resident-fixed-preparation-v1" else "resident-ap-preparation-v1") &&
                 preparation.getInt("max_wait_seconds") == 360)
@@ -235,7 +254,8 @@ class EnergyCollectionActivity : Activity() {
             idle("resident_baseline",120)
             phase = "baseline_gate"; gate(inputs,"baseline",hash)
             phase = "load"; val commonStart = now()
-            if (calibration) calibrationWorkload(keys,image,imageHash,m.getString("phase") == "confirmation",commonStart)
+            if (calibration) calibrationWorkload(keys,image,imageHash,calibrationBlocks,
+                m.getString("calibration_version"),commonStart)
             else workload(keys,parallel,listOf(678,192),image,imageHash,EnergyCollectionCore.LOAD_NS)
             phase = "post_work_wait"; event("phase_start")
             val commonNs = if (calibration) EnergyStateCalibration.COMMON_NS else EnergyCollectionCore.LOAD_NS
@@ -272,10 +292,9 @@ class EnergyCollectionActivity : Activity() {
         }
     }
     private fun calibrationWorkload(keys: List<String>, image: File, imageHash: String,
-                                    confirmation: Boolean, commonStart: Long) {
-        val blocks = EnergyStateCalibration.blocks(confirmation)
+                                    blocks: List<EnergyStateCalibration.Block>, version: String, commonStart: Long) {
         EnergyStateCalibration.validate(blocks)
-        event("phase_start", mapOf("calibration_version" to "state-regimen-v1"))
+        event("phase_start", mapOf("calibration_version" to version))
         var nominalOffset = 0L
         for (block in blocks) {
             healthy(); EnergyCollectionCore.requireTime(now(), commonStart, EnergyStateCalibration.COMMON_NS)

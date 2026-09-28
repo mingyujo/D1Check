@@ -288,6 +288,14 @@ def _bounds(events, start_kind, end_kind, name):
 
 def summarize_session(folder, manifest, plan):
     folder = Path(folder); m = p.read(manifest)
+    short_transition = bool(plan.get('short_transition_diagnostic_only'))
+    if short_transition:
+        from tools.d1_energy_ap_short_transition import SHORT_BLOCKS
+        require(m.get('short_transition_diagnostic_only') is True and
+                m.get('calibration_version') == 'short-transition-diagnostic-v1' and
+                m.get('blocks') == [dict(id=n, lane_indices=list(l), seconds=s)
+                                    for n,l,s in SHORT_BLOCKS], 'short transition manifest')
+    block_spec = SHORT_BLOCKS if short_transition else BLOCKS[m['phase']]
     require(p.digest(folder/'manifest.json') == p.digest(manifest) and
             p.read(folder/'cleanup.json')['status'] == 'completed' and
             p.read(folder/'summary.json')['status'] == 'completed', 'app completion/identity')
@@ -327,7 +335,7 @@ def summarize_session(folder, manifest, plan):
     require(len(starts) == len(ends) == 1 and 599 <= (ends[0]-starts[0])/1e9 <= 601,
             'common window')
     blocks = []; pair = PAIR_KEYS[m['pair']]
-    for name, lanes, target in BLOCKS[m['phase']]:
+    for name, lanes, target in block_spec:
         a,b = _bounds(events,'block_start','block_end',name)
         require(starts[0] <= a < b <= ends[0] and
                 target-1 <= (b-a)/1e9 <= target+15, 'block duration')
@@ -344,16 +352,18 @@ def summarize_session(folder, manifest, plan):
                 'power coverage')
         tt = [t for t in thermal if a <= t['mono_ns'] <= b]
         ap = [float(t['AP']) for t in tt if t.get('AP') not in ('',None)]
-        require(len(ap) >= (20 if target >= 90 else 6) and len(ap) >= .95*len(tt) and
+        min_ap = (max(2, (target+4)//5) if short_transition else (20 if target >= 90 else 6))
+        require(len(ap) >= min_ap and len(ap) >= .95*len(tt) and
                 all(t['sampling_uncertainty_ns'] <= 2e9 for t in tt), 'AP coverage/clock')
         require(max([tt[0]['mono_ns']-a,b-tt[-1]['mono_ns']]+[y['mono_ns']-x['mono_ns']
                     for x,y in zip(tt,tt[1:])]) <= 10e9, 'AP gap')
         occupancy = old.state_intervals(rows,a,b)
         joint_ns = sum(x['end_ns']-x['start_ns'] for x in occupancy if x['state'] ==
                        '+'.join(sorted(pair)))
-        if name == 'pair':require(joint_ns >= plan['acceptance']['joint_lane_occupancy_min_seconds']*1e9,
+        if len(lanes) == 2:require(joint_ns >= plan['acceptance']['joint_lane_occupancy_min_seconds']*1e9,
                                   'pair had insufficient real lane overlap')
-        blocks.append(dict(name=name,state=block_state(m['pair'],name),start_ns=a,end_ns=b,
+        state_name = '+'.join(sorted(pair[i] for i in lanes)) if lanes else 'resident_idle'
+        blocks.append(dict(name=name,state=state_name,start_ns=a,end_ns=b,
             calls=len(rows),joint_lane_occupancy_s=joint_ns/1e9, power=power,
             ap_path=[dict(mono_ns=t['mono_ns'],ap_c=float(t['AP'])) for t in tt],
             ap_start_c=ap[0], ap_end_c=ap[-1], ap_peak_c=max(ap)))

@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-29 CC_DG 짧은 전환 진단 1회 완료 — 동결 예측은 범위 밖
+
+- [실행·지원 판정](ENERGY_AP_SHORT_TRANSITION_DIAG01_20260929.md), [별도 오프라인 대시보드](results/energy_ap_short_transition_01/dashboard.html). 새 opt-in 36블록 단일 세션을 PC 검증 후 한 번 실행했다. 앱 정상 완료·회수·host 정리 확인; 작업1,039·적격성4·warmup8, 총1,051/1,692명시 추론, ADB3,634/11,000, 전체1,129.172/2,700초. 6개 병행 블록의 실제 공동 lane 점유는 각각12.908~13.352초였다. 기존 계획·원본·동결값은 보존한다.
+- 관측 공통창600.094초·903.842J, AP 시작32.3/최고36.6°C. **시작 AP가 개발 동결 모형의 관측 하한32.5°C 밖**이라 확인 예측 오차는 미산출/unsupported다. 동결식에 실제 블록을 대입한 +23.280J와 AP 경로 차이는 범위 밖 탐색 외삽으로만 표시했다. 동결 모형 SHA `35ed6987…34c54` 불변, 후보 재적합 없음. 임의 도착 strict는 계속 `UNSUPPORTED_ARRIVAL_STATE_TRANSITIONS`; CG_DC·CC_DG 정식 동일 프로토콜 확인 미완료, `experiment_ready=false`.
+- **다음 행동 하나:** 이번 자료의 상태 시간 척도와 센서 분해능을 바탕으로 정책 선택에 필요한 최소 도착/전환 확인 입력을 PC에서 고정한다. 이번 0.2°C 범위 이탈을 이유로 즉석 재측정하거나 기존 6/12세션을 반복하지 않는다.
+
 ## 2026-09-29 짧은 도착 입력의 계측 가능성 PC 감사
 
 - [전이 보고서의 후속 감사](ENERGY_AP_REGIMEN_TRANSFER_PC_20260929.md)와 [대시보드·CSV/SVG](results/energy_ap_transition_01/README.md). 기존 queue/seed201/strict 24요청 PC 일정에서 CPU_URGENT·FIXED_SPLIT의 lane/inference 구간을 추출했다. FIXED_SPLIT의 분류 CPU＋탐지 GPU 동시 점유는 **이 일정에서 0초**이며 각 단독 연속 구간 최대 1.145초다. 1초 전류·약2.65초 AP로 병행 계수/짧은 잔열을 식별할 수 있는 입력이 아니다. Android 실측 결과가 아닌 PC 상태 길이 감사다.

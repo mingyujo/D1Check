@@ -125,7 +125,7 @@ def write_dashboard(output, summary, blocks):
 <p><b>계산 불가:</b> 임의 도착·짧은 병행·큐/callback 전력·다른 초기 AP·CC_DG 새 프로토콜 확인·배터리 온도/잔량·throttling. 기존 합성 정책 화면의 에너지/AP 수치는 별도 탐색 가정이다. 새 동결 profile을 그 엔진에 넣으면 수치 대신 UNSUPPORTED_ARRIVAL_STATE_TRANSITIONS를 반환한다.</p>
 {arrival_audit}
 <p>J는 A24 raw=mA 조건부 기기 전체 소비이며 절대 정확도 미인증입니다. AP는 mType=0 센서이며 BAT·표면 온도·안전 한도가 아닙니다. 30°C 초과시간은 기존 연구용 지표로, 양쪽 유효 AP 구간 {f(errors['ap_threshold_observed_exceedance_s'])}초에서 오차 {f(errors['ap_threshold_exceedance_error_s'])}초입니다. 전체 600초의 한도 준수 증명이 아닙니다.</p>
-<p><a href="../energy_model_bridge_02/dashboard.html">기존 고정870건 모형</a> · <a href="../arrival_policy_screen_01/dashboard.html">통합 정책 탐색</a></p></html>'''
+<p><a href="../energy_ap_short_transition_01/dashboard.html">CC_DG 짧은 전환 진단(시작 AP 지원 범위 밖 외삽)</a> · <a href="../energy_model_bridge_02/dashboard.html">기존 고정870건 모형</a> · <a href="../arrival_policy_screen_01/dashboard.html">통합 정책 탐색</a></p></html>'''
     (output/'dashboard.html').write_text(page,encoding='utf-8')
 
 

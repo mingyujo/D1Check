@@ -2,6 +2,8 @@
 
 [오프라인 대시보드](dashboard.html) · [에너지/AP·잔차 SVG](paths.svg) ([PNG](paths.png)) · [요약·지원 경계](summary.json) · [구간별 잔차](blocks.csv) · [누적 에너지](energy_path.csv) · [AP 경로](ap_path.csv)
 
+[별도 CC_DG 10~20초 상태 전환 진단](../energy_ap_short_transition_01/dashboard.html)은 실제 관측 1세션이지만 시작 AP가 동결 모형 지원 범위 밖이다. 동결식 대입 곡선은 정확도 검증이 아닌 외삽으로 표시한다.
+
 이 결과는 개발3세션에서 동결한 `energy-ap-state-regimen-fit-v1`의 **실제 CG_DC 블록 일정 조건부 사후 예측**이다. 새 APK DIAG-04 1세션은 프로토콜 전이 자료이며 정식 확인 block이 아니다. 24요청 합성 도착의 종단간 예측이나 정책 선택의 검증 자료가 아니다. AP 시작32.6°C를 입력하고 이후 관측 전류·온도는 예측에 사용하지 않았다. 실제 상태/전환 시각은 사후 입력이므로 예측 대상에서 빠진다.
 
 공유 파일만 있으면 대시보드·곡선·숫자를 열고 확인할 수 있다. 원본에서 다시 적분하려면 이 PC의 다음 **외부 원본**이 필요하다. Git에는 APK·모델·원시 sampler/journal·동결 원본을 넣지 않는다.

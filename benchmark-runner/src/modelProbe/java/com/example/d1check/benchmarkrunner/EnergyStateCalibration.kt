@@ -16,6 +16,18 @@ internal object EnergyStateCalibration {
         Block("solo_a", listOf(0), 90), Block("idle_1", emptyList(), 30),
         Block("solo_b", listOf(1), 90), Block("idle_2", emptyList(), 30),
         Block("pair", listOf(0, 1), 120), Block("idle_tail", emptyList(), 120))
+    /** Diagnostic only: six fixed 80 s cycles, same aggregate 480 s and 1680-call cap.
+     * A 20 s pair/15 s solo is observable at the existing AP cadence, unlike a
+     * sub-second individual arrival. It is not an arbitrary-arrival validation.
+     */
+    fun shortTransitionBlocks(): List<Block> = (0 until 6).flatMap { cycle ->
+        listOf(Block("cycle${cycle}_pair", listOf(0, 1), 20),
+            Block("cycle${cycle}_idle_after_pair", emptyList(), 10),
+            Block("cycle${cycle}_solo_b", listOf(1), 15),
+            Block("cycle${cycle}_idle_after_b", emptyList(), 10),
+            Block("cycle${cycle}_solo_a", listOf(0), 15),
+            Block("cycle${cycle}_idle_after_a", emptyList(), 10))
+    }
     fun validate(blocks: List<Block>) {
         require(blocks.sumOf { it.seconds } == 480)
         require(blocks.sumOf { b -> b.lanes.size * (b.seconds * 4) } == MAX_WORK_CALLS)
