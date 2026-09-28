@@ -74,6 +74,15 @@ class ArrivalEnergyResearchTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             research.aggregate([request(arrival_ns=3)], result([row]), horizon_ns=2)
 
+    def test_frozen_regimen_is_not_arbitrary_arrival_cost(self):
+        row = dict(request(), status='unfinished')
+        frozen = {'evidence':'energy_ap_state_regimen_fit_v1',
+                  'frozen_sha256':'35ed6987b1fc09789284018f8502107eaf4e3125373651a01e3a08d427034c54'}
+        gate = research.aggregate([request()], result([row]), horizon_ns=2_000_000_000, profile=frozen)
+        self.assertEqual(gate['energy_ap']['status'], 'UNSUPPORTED_ARRIVAL_STATE_TRANSITIONS')
+        self.assertIsNone(gate['energy_ap']['whole_device_energy_j'])
+        self.assertIsNone(gate['energy_ap']['ap_peak_c'])
+
     def test_existing_engine_ledger_adapter(self):
         # Actual event engine boundary, not a hand-built ledger.
         from tools.test_d1_cal03_connection import request as engine_request

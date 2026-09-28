@@ -106,6 +106,12 @@ def aggregate(requests, result, *, horizon_ns=HORIZON_NS, profile=None, initial_
     elif profile.get('evidence') == 'development_episode_template':
         from tools import d1_energy_model_bridge_v2 as measured_bridge
         energy = measured_bridge.engine_support(result, horizon_ns)
+    elif profile.get('evidence') == 'energy_ap_state_regimen_fit_v1':
+        energy = dict(status='UNSUPPORTED_ARRIVAL_STATE_TRANSITIONS',
+                      whole_device_energy_j=None, ap_peak_c=None,
+                      reason='A24 frozen regimen coefficients were assessed on recorded 600s blocks; arbitrary arrivals, short overlaps, queue and callback costs are not validated',
+                      supported_interface='tools.d1_energy_ap_regimen_transition.calculate: observed CG_DC regimen schedule only',
+                      frozen_sha256=profile.get('frozen_sha256'))
     else:
         if (profile.get('evidence') != 'explicit_assumptions' or initial_ap_c is None
                 or not isinstance(profile.get('source'), str) or not profile['source'].strip()

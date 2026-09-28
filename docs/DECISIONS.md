@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-09-29 — 상태 동결 모형은 실제 블록 일정 전이 진단까지만 연결
+
+- [전이 평가](ENERGY_AP_REGIMEN_TRANSFER_PC_20260929.md)의 **확정 경계:** DIAG-04 CG_DC는 개발 시작 AP 범위·exact 모델/입력/runtime을 충족하지만 새 APK·host 계측 방식의 별도 프로토콜이다. 동결 파일은 유지하고 실제 상태 일정 조건부 오차만 표시한다. 전체창과 상태 매핑 구간의 0.008초 차이는 분리한다.
+- [도착 엔진](../tools/d1_arrival_energy_research.py)에 이 동결 profile을 지정해도 임의 도착·짧은 전환은 unsupported/null이다. 한 프로토콜 전이 세션의 잔차로 새 계수를 적합하거나 정책 절감·AP 한도 준수를 인증하지 않는다. 독립 짧은 전환 확인 목적은 남아 있지만 현재 실행기·예산 근거가 없어 새 계획은 미승인·미소비다. `experiment_ready=false` 유지.
+
 ## 2026-09-29 — DIAG-04 완료의 주장 범위
 
 - 사용자 “알아서 실측까지 계속 진행해” 승인으로 새 ID의 기존 CG_DC 단일 진단을 1회 수행했다. [정상 완료·소비](ENERGY_AP_DEVICE_SEGMENT_DIAG04_RESULTS_20260929.md). 앱 cleanup·finish 요청과 host 사후 cleanup1회가 확인됐지만, 연결 소실이 없었으므로 단절 내성이나 과거 onDestroy 원인 해결은 미입증이다.

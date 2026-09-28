@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-29 A24 상태 모형의 새 APK 전이 오차 PC 판독
+
+- [동결 계보·오차·지원 판정](ENERGY_AP_REGIMEN_TRANSFER_PC_20260929.md), [오프라인 대시보드](results/energy_ap_transition_01/dashboard.html). 개발3세션 동결 SHA `35ed6987…34c54`를 변경 없이 DIAG-04 CG_DC 실제600초 블록 일정에 적용했다. 매핑600.090초의 관측953.055J·예측966.176J, **+13.121J (+1.377%)**. AP 경로 MAE0.834°C·최대2.278°C, 최고 예측39.212/관측37.600°C. pair 구간 +8.320J·AP MAE1.777°C 등 잔차 부호가 섞인다. 전체 공통창600.098초 가운데 상태 미매핑0.008초를 0으로 채우지 않았다.
+- 실제 상태·전환 시각과 관측 초기 AP를 입력한 **사후 프로토콜 전이 1세션 진단**이다. 별도 후보 적합 없음, 기존 동일 조건 확인·임의 도착 종단간 예측·정책 선택 PASS 아님. 도착 엔진에 동결 profile을 전달하면 unsupported/null을 반환한다. 기존 개발3·DC_DG 확인, CG_DC/CC_DG 정식 미완료, 원본·FAIL·동결값·`experiment_ready=false` 유지. **다음 PC 작업:** 짧은 상태 전환을 가진 한 개 도착 입력의 점유/센서 해상도와 실행 상한을 검토해 독립 확인 계획의 예산 가능성을 판단한다. 이번 작업의 기기 명령0.
+
 ## 2026-09-29 DEVICE-SEGMENT-DIAG-04 새 lifecycle APK 승인 실행
 
 - [실행 결과·원본·재현](ENERGY_AP_DEVICE_SEGMENT_DIAG04_RESULTS_20260929.md): CG_DC 진단1세션 정상 완료. 새 프로젝트 서명 APK 설치1, runtime4·warmup8·적격성4·작업1,073·총추론1,085, ADB3,345, 전체1,148.453초. 앱 cleanup·finish 요청·자료 회수·세션 host cleanup1회 및 프로세스 부재 확인. 연결 소실/timeout0, 과거 종료 원인 해결·단절 내성 증명 아님.
