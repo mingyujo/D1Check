@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-09-28 — CONFIRM-06 중단 자료의 모형 확인 판정
+
+- **판정:** [별도 확인 실행 결과](ENERGY_AP_CONFIRM06_RESULTS_20260928.md)는 첫 `CG_DC`에서 host transport 소실과 후속 앱 `baseline_gate` 실패로 끝났다. 전체 앱 journal에서 본 작업 호출0·완료 세션0을 확인했으므로 CG_DC/CC_DG 예측 오차나 모형 지원 범위를 추가하지 않는다.
+- **보존:** 개발3 동결 byte·기존 DC_DG 단일 확인 결과, 기존 COLLECT-05/CONFIRM-06 종료 상태와 원본을 유지한다. CONFIRM-06·소비된 단일 회수 claim을 재실행하지 않으며 `experiment_ready=false`다. 다음 PC 작업은 원본 ADB transport 소실 경계 진단이며 새 실측/정책 개발을 자동 채택하지 않는다.
+
 ## 2026-09-28 — 동결 계수 유지, 별도 2조건 확인 후보만 PC 준비
 
 - **근거:** [COLLECT-05 PC 감사](ENERGY_AP_CONFIRM_FOLLOWUP_PC_20260928.md)의 단일 `run-as ls` timeout은 중단 원인이나 내부 지연 원인은 미확정이다. 조회 중복·동시 client 증거가 없어 계측 주기/timeout을 사후 변경하지 않는다.

@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-28 CONFIRM-06 중단 — ADB transport 소실, 새 확인 결과 없음
+
+- [실행·회수·미확인 범위](ENERGY_AP_CONFIRM06_RESULTS_20260928.md), [작은 요약](results/energy_ap_state_confirm06/summary.json). 별도 계획 SHA `d13e1612…89301` Check 후 현재 온라인 동일 A24/설치본·환경 gate를 통과해 `Run` 1회. 첫 `CG_DC`에서 resident 준비·baseline 일부 후 slot0608 `exec-out cat /proc/uptime`가 `error: closed`/exit -1; 후속 transport `device not found`. **1시도·0완료/2**, `CC_DG` 미시도, `stopped_no_resume`, 재시도0.
+- 원 실행 ADB615/21,000·308.484/4,500초, staging1/7파일·host pull1, APK push/설치0. 최초 단일 회수는 온라인 기기0대로 1명령 후 종료. 사용자 연결 복구 후 동일 A24에서 목록1＋기록형17=18개 읽기 전용 명령으로 원본15파일 회수(전체 기기 명령634): runtime4·warmup8·적격성4 반환, **본 작업0**. 앱은 `baseline_gate` 시간 상한 실패와 실패 cleanup을 기록했다. host parent/child 종료, host force-stop 실패·앱 프로세스 존재; 다른 세션 소유권 미확인으로 재강제종료하지 않았다. 동결 SHA·기존 DC_DG 결과 보존, 새 에너지/AP 오차 계산 불가, `experiment_ready=false`.
+- **다음 행동:** 원본 ADB client·server/transport 기록으로 연결 소실 경계를 PC에서 진단한다. 앱 `baseline_gate`는 host가 arm하지 못한 뒤 60초 상한에 도달한 것으로 확인. 종료된 수집·단일 회수 claim을 재호출하지 않는다.
+
 ## 2026-09-28 CONFIRM-06 승인 후 착수 보류 — 우선 A24 transport offline
 
 - [계획 Check·현재 연결·소비 경계](ENERGY_AP_CONFIRM_FOLLOWUP_PREFLIGHT_20260928.md). 승인 계획 SHA 일치·Check 통과, 실행 출력/registry 없음. `adb devices -l` 1회에서 지정된 `10.80.3.177:45677`이 offline, 온라인 0대여서 fingerprint·설치본·환경 gate 미확인. `Run`·세션·추론·설치/전송 0회, cleanup 해당 없음. 동결 모형·기존 DC_DG·COLLECT-05 `stopped_no_resume`·`experiment_ready=false` 유지.
