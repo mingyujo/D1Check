@@ -4,7 +4,7 @@
 
 - [읽기 전용 확인과 PC 진단](ENERGY_AP_CONFIRM06_TRANSPORT_PC_20260928.md): 현재 동일 A24는 재연결된 IP endpoint 한 건으로 확인. 앱 PID는 있으나 Android 분류 `cached=true, empty=true`, 해당 수집 Activity 없음, 세션 journal 500행/마지막 `app_cleanup`은 회수본과 동일. 이전 실험이 계속 작업 중이라는 증거는 없지만 다른 작업 부재는 보장할 수 없어 force-stop하지 않았다. 이번 추가 ADB 읽기 전용 9명령, 새 추론·실측 0.
 - 원 실행은 mDNS `transport_id:89`에 고정됐고 slot0608 `error: closed` 뒤 선택 경로가 `device not found`; 복구 뒤 `transport_id:91`은 같은 A24의 다른 endpoint다. 실패 순간 두 번째 경로 상태와 `closed`의 내부 원인은 미확인. host의 실시간 AP/poll/gate arm 의존 때문에 `baseline.arm` 부재 후 앱 gate가 종료됐다. 개발3·동결값·DC_DG는 유지, CG_DC/CC_DG 미완료, `stopped_no_resume`, `experiment_ready=false`.
-- 같은 시각 host 원본에는 ADB server PID 일부만 남고 server 진단 로그/Windows 앱 오류 기록은 발견되지 않아 `closed` 내부 위치와 두 번째 경로의 당시 상태는 미확인이다. **다음 행동:** 다른 앱 작업이 없음을 확인한 뒤 대상 패키지만 종료할지 명시적으로 결정한다. 새 측정은 보류한다.
+- 같은 시각 host 원본에는 ADB server PID 일부만 남고 server 진단 로그/Windows 앱 오류 기록은 발견되지 않아 `closed` 내부 위치와 두 번째 경로의 당시 상태는 미확인이다. **03:34 UTC 사용자 승인 종료:** 현재 동일 A24·정확한 패키지를 재확인한 뒤 대상 앱만 force-stop 1회, 패키지 본체와 `:model_probe` 프로세스 부재 확인. 별도 읽기/종료/확인 ADB 9명령, 재측정0. [receipt와 구분](ENERGY_AP_CONFIRM06_TRANSPORT_PC_20260928.md). 다음 행동은 새 실측이 아닌 연결 소실 시 host arm/관측 의존의 설계 검토다.
 
 ## 2026-09-28 CONFIRM-06 중단 — ADB transport 소실, 새 확인 결과 없음
 

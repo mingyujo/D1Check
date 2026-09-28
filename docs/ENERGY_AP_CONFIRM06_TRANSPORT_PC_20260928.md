@@ -35,3 +35,11 @@
 **다음 행동:** 앱의 다른 작업이 없음을 사용자가 확인한 뒤, 필요하면 **대상 벤치마크 패키지만** 종료하도록 명시적으로 승인한다. 연결 소실의 내부 원인과 실패 순간 다른 경로 상태는 현재 기록으로 미확인이며 새 측정은 보류한다. 향후 수집 설계를 검토할 때에는 실시간 ADB arm/센서 조회 의존을 계측 프로토콜 변경으로 다룬다.
 
 근거: `energy_ap_state_confirm_run_v1/host_commands/0000,0607–0614/client/`, `energy_ap_state_confirm_recovery_v1/RECOVERY_RECEIPT.json`, `energy_ap_state_confirm_postfailure_audit_v1/artifacts/progress.jsonl`, 위 `process_check_v1/`, [CONFIRM-06 결과](ENERGY_AP_CONFIRM06_RESULTS_20260928.md), `tools/d1_energy_collection_device.py:69–205`, `EnergyCollectionActivity.kt:90–97,169–185`.
+
+## 2026-09-28 03:34 UTC 사용자 승인에 따른 대상 앱 종료
+
+사용자가 해당 벤치마크 앱에서 다른 작업을 시작하지 않았다고 확인하고 **이 패키지만 force-stop 1회**를 명시적으로 승인했다. 새 `adb devices -l`에서 온라인 transport는 `172.20.10.2:37337` 한 건이었고, 이 경로의 현재 fingerprint·하드웨어 serial·모델 `SM-A245N`이 계획의 동일 A24와 일치했다. `pm path`로 코드 상수의 정확한 패키지 `com.example.d1check.benchmarkrunner.modelprobe` 설치를 확인하고, `pidof ...:model_probe`에서 기존 PID 4888을 확인했다.
+
+`adb -s <현재 확인한 transport> shell am force-stop com.example.d1check.benchmarkrunner.modelprobe`를 **한 번** 호출해 exit 0을 받았다. 이어서 같은 transport의 `pidof` 조회에서 패키지 본체와 `:model_probe`가 모두 exit 1·출력 없음으로 **프로세스 부재를 확인**했다. 현재 조회·종료·사후 확인은 총 ADB 9명령, 03:34:21.953–03:34:25.251 UTC 약3.30초였다. 이는 과거 앱 자체 cleanup 성공을 소급 확인하는 결과가 아니라, 현재 사용자가 승인한 host 종료와 사후 프로세스 부재다. 다른 앱·ADB daemon·기기 설정은 변경하지 않았고 설치·추론·실측·계획 재개는 0회다.
+
+명령별 stdout/stderr·exit·시간과 단일 종료 claim은 기존 외부 진단 경로 `C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_confirm06_process_check_v1/authorized_force_stop_01/`의 `RECEIPT.json` 및 `commands/`에 보존했다. 이 종료로 앞 절의 transport 원인 미확정이나 CG_DC/CC_DG 확인 미완료 상태는 바뀌지 않는다.
