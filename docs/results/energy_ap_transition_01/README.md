@@ -20,3 +20,16 @@ python -m unittest tools.test_d1_energy_ap_regimen_transition tools.test_d1_arri
 새 빈 출력 폴더에 재현해 기존 공유물을 덮어쓰지 않는다. 원본 해시·동결 SHA·상태 순서·모델/입력/runtime·개발 시작 AP 범위를 검사한다. 동일한 폴더에 HTML·CSV·SVG/PNG가 생성된다. `summary.json`은 계수의 작은 공유 사본을 포함하지만 분석은 위 byte 동결 파일을 요구한다. 전류 raw=mA는 조건부 해석이며 절대 J 정확도 미인증. AP는 Android `Current temperatures from HAL`의 `mName=AP,mType=0`이고 BAT·표면·공식 안전온도가 아니다.
 
 [기술 판단·후속 측정 범위](../../ENERGY_AP_REGIMEN_TRANSFER_PC_20260929.md) · [기존 COLLECT-05 개발/확인 자료](../energy_ap_state_collect05/README.md) · [통합 정책 탐색](../arrival_policy_screen_01/dashboard.html)
+
+## 저장된 도착 일정의 짧은 상태 감사
+
+[점유 CSV](short_transition_occupancy.csv) · [SVG](short_transition_occupancy.svg) · [입력 해시·가정](short_transition_audit.json). 기존 PC `timeline.csv`의 사전 고정 queue/seed201/strict 24요청과 Android 경로의 두 정책을 읽어 lane 점유와 추론 invocation을 따로 집계한다. **기기 실측이나 동결 모형 예측이 아니다.** 이 입력에서는 `FIXED_SPLIT`의 분류 CPU＋탐지 GPU 병행 구간이 없고, 각 단독 점유도 AP 약2.65초 갱신보다 짧다. 기존 동결 모형을 임의 도착에 적용하는 지원 근거가 생긴 것은 아니다.
+
+저장소 루트에서 Git에 포함된 작은 입력만으로 PC 재현(기기 명령0):
+
+```powershell
+python -B -m tools.d1_energy_ap_arrival_observability --output docs/results/energy_ap_transition_01
+python -B -m unittest tools.test_d1_energy_ap_arrival_observability -v
+```
+
+전력 약1초·AP 약2.65초는 과거 A24 측정 해상도이며 `2주기 이상`은 실제 센서 표본 두 개의 보장이 아니다. 결과가 긴 유휴에 민감하므로 절대 에너지 정확도나 정책 우열을 주장하지 않는다.

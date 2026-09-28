@@ -13,5 +13,9 @@
 <h2>시뮬레이터 지원 경계</h2>
 <p><b>계산 가능:</b> 동일 A24·두 exact 모델/입력·네 resident runtime·CPU 1 thread에서 이 CG_DC의 실제 600초 블록 일정과 개발 시작 AP 범위 32.5–34.0°C가 주어진 조건부 사후 진단. 계산된 오차는 프로토콜 변경의 한 세션 사례다.</p>
 <p><b>계산 불가:</b> 임의 도착·짧은 병행·큐/callback 전력·다른 초기 AP·CC_DG 새 프로토콜 확인·배터리 온도/잔량·throttling. 기존 합성 정책 화면의 에너지/AP 수치는 별도 탐색 가정이다. 새 동결 profile을 그 엔진에 넣으면 수치 대신 UNSUPPORTED_ARRIVAL_STATE_TRANSITIONS를 반환한다.</p>
+<h2>짧은 도착 상태의 표본 해상도 감사 (별도 PC 일정)</h2>
+<p>사전 고정한 queue·seed 201·strict 24요청의 CPU_URGENT/FIXED_SPLIT 일정입니다. 실기기 수집이 아니며 에너지·AP 예측값을 생성하지 않습니다. <a href="short_transition_occupancy.csv">상태별 초·구간 수 CSV</a> · <a href="short_transition_audit.json">입력 해시·가정</a>.</p>
+<img src="short_transition_occupancy.svg" alt="PC 일정의 단독 lane 점유시간; 병행 구간은 없음">
+<p>이 일정에서 FIXED_SPLIT의 분류 CPU＋탐지 GPU 병행 구간은 없었습니다. 짧은 단독 실행은 1초 전류·약 2.65초 AP 표본에서 상태별 계수를 분리할 근거가 아닙니다. 기존 120초 공통창에는 긴 완료 후 유휴가 포함됩니다. 동결 모형의 임의 도착 지원은 계속 불가입니다.</p>
 <p>J는 A24 raw=mA 조건부 기기 전체 소비이며 절대 정확도 미인증입니다. AP는 mType=0 센서이며 BAT·표면 온도·안전 한도가 아닙니다. 30°C 초과시간은 기존 연구용 지표로, 양쪽 유효 AP 구간 596.690초에서 오차 0.000초입니다. 전체 600초의 한도 준수 증명이 아닙니다.</p>
 <p><a href="../energy_model_bridge_02/dashboard.html">기존 고정870건 모형</a> · <a href="../arrival_policy_screen_01/dashboard.html">통합 정책 탐색</a></p></html>

@@ -51,9 +51,30 @@
 
 ## 추가 측정 필요성: 하나의 목적만 남김
 
+### 짧은 도착 1입력의 PC 계측 가능성 감사 (후속, 2026-09-29)
+
+결과를 보기 전에 기존 생성 규칙의 **queue·seed 201·strict·24요청**을 하나의 기계적 감사 입력으로 고정하고, 저장된 `timeline.csv`의 `CPU_URGENT`와 Android 도착 활동이 실제 지원하는 `FIXED_SPLIT`만 읽었다. 재시뮬레이션·기기 명령·계수 적합은 0회다. `dispatch→lane_available` 점유와 `execution_start→output_ready` 추론 구간을 따로 sweep했으며 120초 공통창 전체를 idle 포함으로 분할했다. [CSV](results/energy_ap_transition_01/short_transition_occupancy.csv)·[SVG](results/energy_ap_transition_01/short_transition_occupancy.svg)·[입력 SHA/가정](results/energy_ap_transition_01/short_transition_audit.json)을 보존한다. 기존 `CPU_URGENT`의 상태별 점유 합계는 별도 보존된 occupancy ledger와 1µs 안에서 일치한다. **모두 PC 모형 일정이며 Android 실측 점유가 아니다.**
+
+| 고정 입력의 lane 상태 | 전체 점유 | 연속 구간·최대 | 2회 전류 주기(2초) 이상 | 2회 AP 주기(약5.3초) 이상 |
+|---|---:|---:|---:|---:|
+| CPU_URGENT 분류 CPU | 1.073초 | 6·0.183초 | 0 | 0 |
+| CPU_URGENT 탐지 CPU | 11.329초 | 18·0.633초 | 0 | 0 |
+| FIXED_SPLIT 분류 CPU | 1.073초 | 6·0.183초 | 0 | 0 |
+| FIXED_SPLIT 탐지 GPU | 20.472초 | 18·1.145초 | 0 | 0 |
+| FIXED_SPLIT 분류 CPU＋탐지 GPU | **0초** | **0** | 0 | 0 |
+| 완료 후 긴 유휴 | CPU 107.591초 / split 98.448초 | 각1구간 | 각1 | 각1 |
+
+`FIXED_SPLIT`은 이 **한 PC seed에서** 실제 배정은 CPU/GPU로 갈렸지만 병행 점유가 생기지 않았다. 추론 invocation 구간도 병행0이며 탐지 GPU 합계19.023초다. 병행 0은 다른 seed나 Android의 결과가 0이라는 뜻이 아니다. 현재 약1초 전류·DIAG-04에서 확인한 약2.65초 AP 갱신의 서로 다른 phase/불규칙 간격을 감안하면, 위 2주기 길이 검사는 보수적인 *가능성 화면*이지 표본 확보 보장이 아니다. 요청 24건을 독립 전력·열 표본 24개로 세지 않는다. 긴 idle이 120초 전체 J를 지배하므로 이 입력은 상태별 **병행** 계수나 짧은 전환 AP 잔열을 식별하는 수집안이 될 수 없다. 동결 모형의 `UNSUPPORTED_ARRIVAL_STATE_TRANSITIONS` 차단은 유지한다.
+
+Android의 [`ArrivalEnergyActivity`](../benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/ArrivalEnergyActivity.kt)는 같은 low/queue/burst·24요청·2정책을 검증하고 `warmup.arm`을 host로부터 받아야 baseline에 진입한다. 전류 1초·host AP 2초 조회, resident baseline30초·공통120초·drain 최대30초·냉각60초, runtime4·warmup8·작업24/세션이 현재 **코드상 산술**이다. 실제 병행 보장은 없고, host 조회가 끊기면 AP 경로가 결측된다. 이전 12세션 계획 v4의 PC `Check`는 현재 소스에 대해 `source changed`로 실패한다. 이전 APK/host 계측 계약과 최신 DIAG-04 lifecycle APK를 동일한 새 확인 경로로 자동 전용할 수 없다.
+
+따라서 후속 실측은 **목적상 필요하지만 현재 실행 계획은 미준비·미승인·미소비**다. 권고하는 *다음 작업 하나*는 PC에서 별도 opt-in 단일 세션에 분류 CPU＋탐지 GPU의 **실제 공동 점유**와 단독↔pair↔idle 전환을 확인할 수 있는 입력/기록/적격성 경로를 먼저 구현·검증하는 것이다. 연속 상태마다 실제 AP 표본 수·최대 gap을 검사하고 실패 시 계수 식별 불가로 남겨야 한다. 이때 앱 종료·host 회수, 설치 APK 동일성, 장치 내부/host gate, ADB 명령·시간 상한을 새 코드에 맞춰 산정한다. 지금 24요청 경로의 4 runtime·8 warmup·24작업 및 옛 세션700초를 새 패턴의 예산으로 **확정하지 않는다**. 지속 병행을 위한 반복 호출 수와 실제 전환·센서 coverage가 미정이라 정확한 실행 상한/Check·해시 계획을 동결할 근거가 없다. 그 전에는 새 실측을 시작하지 않는다. 기술 적격성 1세션과 추후 독립 예측 확인은 구분하고, 기존 확인 결과를 새 후보 개발에 재사용하지 않는다.
+
+이 후속은 clean HEAD `b8b646e44653a4d2f65ea4850bf09230058001c0`에서 미커밋 새 감사 코드·문서를 대상으로 수행했다. `python -B -m unittest tools.test_d1_energy_ap_arrival_observability -v` 4건 통과, 저장된 CPU occupancy ledger와 120초 전력 회계 경계 일치, SVG XML/CSV/HTML 링크 검사 및 로컬 Edge headless 화면 시각 검사를 완료했다. 기존 v4 `Check`는 `source changed`로 실패했으며 이는 새 경로의 Check 통과를 뜻하지 않는다. 동결 파일 SHA `35ed6987…34c54` 유지, ADB·추론·실측 0회. 과거의 11건 회귀/전이 평가·전체 빌드는 반복하지 않았다.
+
 정식 `CG_DC·CC_DG` 완료를 위한 반복 전체 재수집은 현재 모형의 임의 도착 적격성을 해결하지 못한다. 기존 자료는 긴 상태 regimen 전력/AP와 DC_DG 한 번의 동일 프로토콜 확인, CG_DC 한 번의 새 프로토콜 전이 잔차까지만 제공한다. **합성 도착 정책의 에너지·열 우열을 실측 기반으로 주장하려면** 독립된 새 프로토콜에서 짧은 단독↔pair↔유휴 전환과 큐 대기/완료 후 유휴가 실제로 나타나는 제한된 도착 패턴을 측정해야 한다. 이는 **확인용** 자료이며 이번 CG_DC 결과로 후보를 적합한 개발 자료로 돌리지 않는다. 최소 질문은 “동결 상태 모형의 일정 조건부 J/AP 경로 오차가 짧은 전환에서도 정책 간 차이보다 작은가?”다.
 
-현재 Android 진단은 고정120/90초 블록 실행기이며 짧은 전환 패턴을 재생하는 별도 APK/호출 경계와 적격성·시간 상한이 동결되지 않았다. 기존 [`ArrivalEnergyActivity`](../benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/ArrivalEnergyActivity.kt)는 24요청 합성 도착과 lane/전류 표본을 기록하지만 `warmup.arm` 등 host gate와 별도 정책 비교 계획에 묶여 있다. 그 **이전 앱 경로를 새 진단 APK의 자율 세션·동결 모형 확인으로 그대로 전용할 수 없다**. 따라서 세션·작업·runtime·ADB·설치·총시간 숫자를 근거 없이 확정한 실행 계획은 만들지 않았다. **실행 준비 상태: 미준비·미승인·소비0**. 다음 PC 작업은 기존 Android 합성 도착 재생기의 *한 개 사전 고정 짧은 전환 입력*에서 상태 점유와 센서 해상도·호출 상한을 확인하고, 정확한 앱/host 경계 변경과 식별 가능성이 드러날 때만 제한 확인 계획/예산을 동결하는 것이다. 그 결과 없이 12세션안이나 또 다른 6세션 수집을 자동 제안하지 않는다. 실기기 전체·BAT/잔량/수명·throttling은 계속 미지원이다.
+현재 Android 진단은 고정120/90초 블록 실행기이며 짧은 전환 패턴을 재생하는 별도 APK/호출 경계와 적격성·시간 상한이 동결되지 않았다. 기존 [`ArrivalEnergyActivity`](../benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/ArrivalEnergyActivity.kt)는 24요청 합성 도착과 lane/전류 표본을 기록하지만 `warmup.arm` 등 host gate와 별도 정책 비교 계획에 묶여 있다. 그 **이전 앱 경로를 새 진단 APK의 자율 세션·동결 모형 확인으로 그대로 전용할 수 없다**. 위 단일 입력 감사에서도 병행 상태가 없음을 확인했다. 따라서 세션·작업·runtime·ADB·설치·총시간 숫자를 근거 없이 확정한 실행 계획은 만들지 않았다. **실행 준비 상태: 미준비·미승인·소비0**. 전환 입력과 센서 coverage·호출 상한을 PC에서 검증할 때만 제한 확인 계획/예산을 동결한다. 그 결과 없이 12세션안이나 또 다른 6세션 수집을 자동 제안하지 않는다. 실기기 전체·BAT/잔량/수명·throttling은 계속 미지원이다.
 
 ## 검증·재현
 

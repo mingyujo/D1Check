@@ -1,9 +1,15 @@
 # D1Check 현재 상태
 
+## 2026-09-29 짧은 도착 입력의 계측 가능성 PC 감사
+
+- [전이 보고서의 후속 감사](ENERGY_AP_REGIMEN_TRANSFER_PC_20260929.md)와 [대시보드·CSV/SVG](results/energy_ap_transition_01/README.md). 기존 queue/seed201/strict 24요청 PC 일정에서 CPU_URGENT·FIXED_SPLIT의 lane/inference 구간을 추출했다. FIXED_SPLIT의 분류 CPU＋탐지 GPU 동시 점유는 **이 일정에서 0초**이며 각 단독 연속 구간 최대 1.145초다. 1초 전류·약2.65초 AP로 병행 계수/짧은 잔열을 식별할 수 있는 입력이 아니다. Android 실측 결과가 아닌 PC 상태 길이 감사다.
+- 옛 12세션 arrival 계획의 `Check`는 현재 소스 해시 변경으로 실패하며, host `warmup.arm`·AP 조회를 요구하는 기존 경로를 새 lifecycle APK 확인에 곧바로 사용할 수 없다. 따라서 새 수집 계획은 **미준비·미승인·미소비**, 정확한 예산/Check 없음. 동결 모형·기존 오차·도착 unsupported·CG_DC/CC_DG 정식 미완료·`experiment_ready=false` 유지. 이번에는 단일 입력 감사 테스트3건 통과·기기 명령0.
+- **다음 행동 하나:** opt-in 단일 세션의 짧은 단독↔실제 병행↔유휴 전환을 재생·기록하고 실제 센서 coverage로 적격성을 가르는 PC 실행 경로를 구현·검증한 뒤에만 새 예산을 산정한다. 기존 6/12세션을 자동 재사용하지 않는다.
+
 ## 2026-09-29 A24 상태 모형의 새 APK 전이 오차 PC 판독
 
 - [동결 계보·오차·지원 판정](ENERGY_AP_REGIMEN_TRANSFER_PC_20260929.md), [오프라인 대시보드](results/energy_ap_transition_01/dashboard.html). 개발3세션 동결 SHA `35ed6987…34c54`를 변경 없이 DIAG-04 CG_DC 실제600초 블록 일정에 적용했다. 매핑600.090초의 관측953.055J·예측966.176J, **+13.121J (+1.377%)**. AP 경로 MAE0.834°C·최대2.278°C, 최고 예측39.212/관측37.600°C. pair 구간 +8.320J·AP MAE1.777°C 등 잔차 부호가 섞인다. 전체 공통창600.098초 가운데 상태 미매핑0.008초를 0으로 채우지 않았다.
-- 실제 상태·전환 시각과 관측 초기 AP를 입력한 **사후 프로토콜 전이 1세션 진단**이다. 별도 후보 적합 없음, 기존 동일 조건 확인·임의 도착 종단간 예측·정책 선택 PASS 아님. 도착 엔진에 동결 profile을 전달하면 unsupported/null을 반환한다. 기존 개발3·DC_DG 확인, CG_DC/CC_DG 정식 미완료, 원본·FAIL·동결값·`experiment_ready=false` 유지. **다음 PC 작업:** 짧은 상태 전환을 가진 한 개 도착 입력의 점유/센서 해상도와 실행 상한을 검토해 독립 확인 계획의 예산 가능성을 판단한다. 이번 작업의 기기 명령0.
+- 실제 상태·전환 시각과 관측 초기 AP를 입력한 **사후 프로토콜 전이 1세션 진단**이다. 별도 후보 적합 없음, 기존 동일 조건 확인·임의 도착 종단간 예측·정책 선택 PASS 아님. 도착 엔진에 동결 profile을 전달하면 unsupported/null을 반환한다. 기존 개발3·DC_DG 확인, CG_DC/CC_DG 정식 미완료, 원본·FAIL·동결값·`experiment_ready=false` 유지. 그때 남긴 단일 도착 입력 감사는 위 후속 절에서 완료했다. 기기 명령0.
 
 ## 2026-09-29 DEVICE-SEGMENT-DIAG-04 새 lifecycle APK 승인 실행
 
