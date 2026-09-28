@@ -222,7 +222,18 @@ class ChainConservationTest(unittest.TestCase):
         even = list(range(load0, load1, 100_000_000))
         self.assertTrue(CHAIN.check_chain(events, spec, sha, even)["checks"]["telemetry_no_gap_in_load"])
         gap = [t for t in even if not load0 + 1_000_000_000 <= t < load0 + 2_000_000_000]
-        self.assertFalse(CHAIN.check_chain(events, spec, sha, gap)["checks"]["telemetry_no_gap_in_load"])
+        report = CHAIN.check_chain(events, spec, sha, gap)
+        self.assertFalse(report["checks"]["telemetry_no_gap_in_load"])
+        # a timing-tolerance miss is a flag; the structure still holds
+        self.assertEqual(["telemetry_no_gap_in_load"], report["timing_flags"])
+        self.assertTrue(report["structure_passed"])
+
+    def test_structural_failures_are_not_mere_flags(self):
+        events, spec, sha = self._m2()
+        first = next(i for i, e in enumerate(events) if e["event"] == "inference")
+        report = CHAIN.check_chain(events[:first] + events[first + 1:], spec, sha)
+        self.assertFalse(report["structure_passed"])
+        self.assertNotIn("inference_conservation", report["timing_flags"])
 
 
 if __name__ == "__main__":

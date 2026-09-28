@@ -50,6 +50,13 @@ TRANSITION_EXPLAINED_TOLERANCE_NS = 50_000_000
 # Telemetry samples (d1check / thermalservice) inside the load window: no gap > 3x the median interval,
 # the same rule as sim/스로틀곡선_사전등록_0928.md 1-6 #3.
 TELEMETRY_GAP_FACTOR = 3.0
+# The tolerances above are pre-device guesses [E], so the checks that use them are reported as
+# "보존 불일치" flags (the 0928 rule: flag, still judge, never delete) and do not invalidate the slot.
+# Structural checks (spec, order, counts, inferences inside their segment, no overlap) do.
+TIMING_CHECKS = (
+    "boundary_gaps_within_tolerance", "time_conservation", "metadata_time_totals",
+    "transitions_explained", "telemetry_no_gap_in_load",
+)
 
 
 class ChainSpecError(ValueError):
@@ -347,6 +354,8 @@ def check_chain(
     failed = [name for name, value in checks.items() if not value]
     return {
         "passed": not failed,
+        "structure_passed": not [name for name in failed if name not in TIMING_CHECKS],
+        "timing_flags": [name for name in failed if name in TIMING_CHECKS],
         "checks": checks,
         "failed_checks": failed,
         "notes": notes,

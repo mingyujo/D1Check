@@ -347,7 +347,24 @@ class ChainAndGpuSlotsThroughTheHostTest(unittest.TestCase):
                 info["duty_cycle_period_s"], {"spec": spec, "sha256": info["chain_sha256"]}, accuracy,
             )
             self.assertFalse(validation["valid"])
-            self.assertIn("chain_conservation", validation["failed_checks"])
+            self.assertIn("chain_structure", validation["failed_checks"])
+
+    def test_timing_tolerance_misses_are_flagged_not_fatal(self):
+        """Pre-device tolerances [E]: a telemetry gap is a conservation flag, the slot stays valid."""
+        case = next(c for c in roundtrip_cases("chain-") if c.name == "chain-m2-per-segment")
+        with tempfile.TemporaryDirectory() as directory:
+            run_dir, info, events = self.RT.build_host_run(Path(directory), case)
+            thermal = run_dir / "raw" / "thermalservice.jsonl"
+            samples = thermal.read_text("utf-8").splitlines()
+            thermal.write_text("\n".join([samples[0]] + samples[3:]) + "\n", "utf-8")   # drop two in a row
+            accuracy = self.analyze(run_dir, info)
+            validation = ORCH.validate_chain_result(
+                run_dir, info["duration_s"], info["warmup"], info["run_id"], info["command_id"],
+                info["duty_cycle_period_s"], {"spec": json.loads(info["chain_json"]), "sha256": info["chain_sha256"]},
+                accuracy,
+            )
+            self.assertEqual(["telemetry_no_gap_in_load"], validation["chain_conservation_flags"])
+            self.assertNotIn("chain_structure", validation["failed_checks"])
 
     def test_gpu_slot_is_a_valid_pilot_and_never_formal_npu(self):
         case = next(c for c in roundtrip_cases("gpu-") if c.name == "gpu-compiled-d100")

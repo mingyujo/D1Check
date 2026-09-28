@@ -3139,9 +3139,12 @@ def validate_chain_result(
     checks = {name: value for name, value in base["checks"].items() if name not in SINGLE_SEGMENT_DUTY_CHECKS}
     checks["duty_request"] = report["checks"].get("segment_duty_request") is True
     checks["segment_duty_identities"] = report["checks"].get("segment_duty_identities") is True
-    checks["chain_conservation"] = report["passed"]
+    # Structural conservation invalidates the slot; timing-tolerance misses are recorded as
+    # conservation flags (pre-device tolerances [E]) — flagged, still judged, never deleted.
+    checks["chain_structure"] = report["structure_passed"]
     failed = [name for name, passed in checks.items() if not passed]
-    return {**base, "valid": not failed, "checks": checks, "failed_checks": failed, "chain_check": report}
+    return {**base, "valid": not failed, "checks": checks, "failed_checks": failed, "chain_check": report,
+            "chain_conservation_flags": report["timing_flags"]}
 
 
 def attach_accuracy_to_analyzer_summary(
