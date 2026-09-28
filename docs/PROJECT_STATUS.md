@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-28 CONFIRM-06 승인 후 착수 보류 — 우선 A24 transport offline
+
+- [계획 Check·현재 연결·소비 경계](ENERGY_AP_CONFIRM_FOLLOWUP_PREFLIGHT_20260928.md). 승인 계획 SHA 일치·Check 통과, 실행 출력/registry 없음. `adb devices -l` 1회에서 지정된 `10.80.3.177:45677`이 offline, 온라인 0대여서 fingerprint·설치본·환경 gate 미확인. `Run`·세션·추론·설치/전송 0회, cleanup 해당 없음. 동결 모형·기존 DC_DG·COLLECT-05 `stopped_no_resume`·`experiment_ready=false` 유지.
+- **다음 행동:** 우선 transport가 온라인인 시점에 현재 동일 A24를 확인한다. 두 transport가 온라인이면 현재 실행기의 단일 온라인 기기 선택 계약과 사용자 우선 지정의 차이를 해소하기 전에는 소비 claim을 만들지 않는다.
+
 ## 2026-09-28 COLLECT-05 ADB timeout PC 감사·별도 확인2 준비 — 기기 미실행
 
 - [원인 경계·ADB 용도/지연·동결 확인 계약](ENERGY_AP_CONFIRM_FOLLOWUP_PC_20260928.md). slot14385 `run-as ls`는 server 사전검사 통과 뒤 client 3.000초 timeout; 직전 동일 조회0.109초·이후 회수 명령 반환. 14,394명령 중 listing8,528·timeout1·인접 client overlap0. 내부 지연 원인 미확정. poll/timeout·센서·APK 변경0, 기존 동결 계수/원본·COLLECT-05 `stopped_no_resume` 보존.
