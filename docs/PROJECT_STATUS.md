@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-28 세션 내부 ADB 의존성 축소 — 진단 전용 PC 준비
+
+- [구현·계측 차이·후속 한도](ENERGY_AP_DEVICE_SEGMENT_PC_20260928.md), [계획·재현 안내](results/energy_ap_device_segment_01/README.md). 기존 CONFIRM-06의 `baseline.arm` 미전달과 앱 gate 종료를 구분했다. 연결 소실의 내부 원인은 미확정이다. 별도 `device-after-probe-diagnostic-v1`은 host가 runtime/warmup/품질·AP 준비를 승인한 뒤 앱이 baseline→부하→냉각을 한 세션 안에서 진행한다. 기존 정식 모드·동결 계수·원본은 그대로다.
+- 새 APK SHA `7589b96f…2e9c00d`, 별도 DIAG-03 plan SHA `5ec12e31…ca09068`은 프로젝트 서명 빌드·PC 경계 테스트·`Check` 통과. **미승인·미소비, 기기 명령/설치/추론 0회**. 앱 자체 종료와 host 상태 미확인을 분리하고, 원 host 종료 확인 뒤 같은 session ID terminal 자료만 읽는 제한 회수 경로를 준비했다. host AP 결측/계측 부하 변경 때문에 기존 동결 모형의 동일 조건 확인으로 취급하지 않는다. `experiment_ready=false`.
+- **다음 행동:** 별도 승인 전에는 실기기 실행 없음. 준비된 한 세션 진단의 기기 gate와 앱 정상 종료·관측 범위를 확인할지 결정한다. 종료된 CONFIRM-06과 미완료 CG_DC/CC_DG를 재개하지 않는다.
+
 ## 2026-09-28 CONFIRM-06 재연결 뒤 잔류 프로세스·transport 경계 확인
 
 - [읽기 전용 확인과 PC 진단](ENERGY_AP_CONFIRM06_TRANSPORT_PC_20260928.md): 현재 동일 A24는 재연결된 IP endpoint 한 건으로 확인. 앱 PID는 있으나 Android 분류 `cached=true, empty=true`, 해당 수집 Activity 없음, 세션 journal 500행/마지막 `app_cleanup`은 회수본과 동일. 이전 실험이 계속 작업 중이라는 증거는 없지만 다른 작업 부재는 보장할 수 없어 force-stop하지 않았다. 이번 추가 ADB 읽기 전용 9명령, 새 추론·실측 0.

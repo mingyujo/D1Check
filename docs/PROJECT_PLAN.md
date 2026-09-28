@@ -1,5 +1,9 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-09-28 ADB 연결 소실 뒤 세션 내부 진행 — 별도 진단 후보
+
+[PC 구현·계측 계약](ENERGY_AP_DEVICE_SEGMENT_PC_20260928.md)에 따라 새 진단 모드는 host 준비·품질·AP probe 승인을 유지하고, 그 뒤 한 세션의 공식 baseline·부하·냉각만 앱이 진행한다. 앱에 없는 numeric AP gate를 통과한 것으로 간주하지 않는다. 실측 기반 에너지/AP 모형의 지원 범위와 기존 개발 동결값은 유지하고, 새 APK/조회 경로 결과는 프로토콜 전이 진단으로 따로 판정한다. DIAG-03 1세션 후보는 PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED, 기기 실행0이며 별도 승인 전에는 소비하지 않는다. 다음 정식 수집·정책 개발·강화학습은 이 진단의 PC 통과만으로 착수하지 않는다.
+
 ## 2026-09-28 별도 확인2 실행 중단 — 모형 확인 확대 보류
 
 [CONFIRM-06 결과](ENERGY_AP_CONFIRM06_RESULTS_20260928.md): 승인된 `CG_DC→CC_DG` 두 조건 계획을 한 번 실행했으나 첫 `CG_DC`의 baseline 중 ADB transport가 소실됐다. 앱은 host가 `baseline.arm`을 줄 수 없었던 뒤 60초 gate 상한에서 실패했고, 사용자 연결 복구 후 회수한 전체 journal에서 runtime4·warmup8·적격성4·**본 작업0**을 확인했다. 완료0/2, `CC_DG` 미시도, 새 예측 오차 없음. 동결 모형·기존 DC_DG 확인1을 유지하며 새 자료로 지원 범위/정확도를 승격하지 않는다. 이 계획과 단일 회수 claim은 종료됐고 재개하지 않는다. 다음은 새 수집이 아니라 ADB transport 소실 경계의 PC 진단이다. 새 정책·강화학습 보류와 `experiment_ready=false` 유지.

@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-09-28 — host arm 제거 범위를 진단 세션 내부로 제한
+
+- **결정:** [ADB 의존성·계측 비교](ENERGY_AP_DEVICE_SEGMENT_PC_20260928.md)에 따라 `baseline.arm` 생략은 별도 opt-in 진단에서만 허용한다. host의 warmup/GPU·품질, probe/AP 준비 승인은 보존한다. 앱이 읽지 못하는 AP numeric 적격성은 새 모드의 결측으로 남긴다. 기존 정식 모드·개발 동결 모형과 CONFIRM-06 실패 결과는 변경하지 않는다.
+- **회수/전이:** host가 관측을 잃으면 앱 실패와 분리해 미확인으로 기록하고, 원 host 종료·동일 session ID·앱 terminal 근거 뒤 읽기 전용 회수한다. 새 APK와 host 조회/앱 screen 관측 변경은 기존 계수의 **동일 조건 확인**이 아닌 전이 진단이다. `experiment_ready=false`, DIAG-03 미승인·미소비다.
+
 ## 2026-09-28 — CONFIRM-06 중단 자료의 모형 확인 판정
 
 - **판정:** [별도 확인 실행 결과](ENERGY_AP_CONFIRM06_RESULTS_20260928.md)는 첫 `CG_DC`에서 host transport 소실과 후속 앱 `baseline_gate` 실패로 끝났다. 전체 앱 journal에서 본 작업 호출0·완료 세션0을 확인했으므로 CG_DC/CC_DG 예측 오차나 모형 지원 범위를 추가하지 않는다.

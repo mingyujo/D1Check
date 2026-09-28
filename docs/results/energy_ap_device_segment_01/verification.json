@@ -1,0 +1,26 @@
+{
+  "date_utc": "2026-09-28T04:04:20Z",
+  "base_head": "5788bfb9390ac8a367bf8f8d4c36a607ad2eac46",
+  "worktree_at_verification": "related uncommitted Android, host, test, and documentation changes",
+  "scope": "PC-only diagnostic protocol and unapproved plan; not physical Android validation",
+  "android": {
+    "unit_command": ".\\gradlew.bat --no-configuration-cache --init-script tools/arrival_timing_isolated_build.gradle :benchmark-runner:testModelProbeUnitTest --tests com.example.d1check.benchmarkrunner.EnergySessionControlTest -PenableModelProbe=true --console=plain",
+    "unit_result": "BUILD SUCCESSFUL",
+    "build_command": ".\\gradlew.bat --no-configuration-cache --init-script tools/arrival_timing_isolated_build.gradle :benchmark-runner:assembleModelProbe -PenableModelProbe=true --console=plain",
+    "build_result": "BUILD SUCCESSFUL, existing project signer",
+    "apk_sha256": "7589b96f18076c4bf7d178f3ae58c45c4e88348ef7f797ec5de60699d2e9c00d",
+    "signer_sha256": "b253dbb951d85d1a79ea7f2ca2d1ff76a9fa34dc6c793b1df9b5249f3fcc7565"
+  },
+  "host": {
+    "command": "python -B -m unittest tools.test_d1_energy_ap_autonomous_diag tools.test_d1_energy_ap_followup tools.test_d1_energy_state_collection -v",
+    "result": "15 tests: 14 passed, 1 existing skip (frozen installed-only plan fixture absent)",
+    "check_command": "& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_device_segment_diag_plan_v3/RUN_AFTER_APPROVAL.ps1' -Action Check",
+    "check_result": "PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED; device commands 0",
+    "plan_sha256": "5ec12e31b90a17f6f56fdd38d077f0b244e4a19c2bf2ba99635343570ca09068",
+    "output_root_exists": false,
+    "registry_exists": false
+  },
+  "device_commands": 0,
+  "installation": 0,
+  "inference": 0
+}
