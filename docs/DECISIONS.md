@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-09-29 — DIAG-04 완료의 주장 범위
+
+- 사용자 “알아서 실측까지 계속 진행해” 승인으로 새 ID의 기존 CG_DC 단일 진단을 1회 수행했다. [정상 완료·소비](ENERGY_AP_DEVICE_SEGMENT_DIAG04_RESULTS_20260929.md). 앱 cleanup·finish 요청과 host 사후 cleanup1회가 확인됐지만, 연결 소실이 없었으므로 단절 내성이나 과거 onDestroy 원인 해결은 미입증이다.
+- 새 APK/프로토콜 자료를 기존 동일 조건 확인에 합치지 않는다. lane 공동 점유120.037초와 host invocation 겹침9.062초를 구분하며 지속 병행 상태의 전력 계수로 자동 전용하지 않는다. 동결 모형·기존 FAIL·정식 미완료 상태·`experiment_ready=false`를 유지한다.
+
 ## 2026-09-29 — host cleanup은 같은 종료 처리에서 한 번만 시도
 
 - **확정된 코드 경계:** [DIAG-03 PC 조사](ENERGY_AP_DEVICE_SEGMENT_LIFECYCLE_PC_20260929.md)에서 앱 실패·회수·첫 host cleanup 뒤 요약 거절로 예외 cleanup이 반복되는 결함을 확인했다. 향후 실행기는 첫 cleanup의 성공/부분 실패/미확인을 보존하고 동일 종료 처리에서 두 번째 force-stop을 자동 시도하지 않는다. 원래 앱 stack과 host 요약 오류는 별도로 보존한다.

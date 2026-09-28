@@ -21,10 +21,10 @@ from tools import d1_energy_host_checkpoints as checkpoints
 from tools import d1_apk_identity as apk
 from tools.d1_energy_thermal import require
 
-EXPERIMENT = 'ENERGY-AP-DEVICE-SEGMENT-DIAG-03'
+EXPERIMENT = 'ENERGY-AP-DEVICE-SEGMENT-DIAG-04'
 CONTROL = 'device-after-probe-diagnostic-v1'
-PLAN_FOLDER = 'energy_ap_device_segment_diag_plan_v3'
-RUN_FOLDER = 'energy_ap_device_segment_diag_run_v3'
+PLAN_FOLDER = 'energy_ap_device_segment_diag_plan_v4'
+RUN_FOLDER = 'energy_ap_device_segment_diag_run_v4'
 BUDGET = dict(state.BUDGET, sessions=1, development=0, confirmation=0, diagnostic=1,
     work_requests=1680, eligibility_requests=4, diagnostic_requests=1684,
     warmup=8, explicit_inference=1692, runtime_creations=4,

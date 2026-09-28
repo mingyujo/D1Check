@@ -1,5 +1,9 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-09-29 DIAG-04 정상 완료 — 정식 확인과 분리
+
+사용자 자율 실측 승인으로 새 lifecycle APK의 기존 CG_DC 한 세션 진단을 완료했다. [결과](ENERGY_AP_DEVICE_SEGMENT_DIAG04_RESULTS_20260929.md): 앱 정상 cleanup·host 단일 사후 정리·회수 확인, 연결 소실 미관측. 이전 종료 원인은 여전히 미확정이다. 이후 PC 작업은 기존 동결 모형의 프로토콜 전이 적용 범위/오차 확인이며 추가 실측·재보정·정책 개발을 자동 시작하지 않는다. CG_DC/CC_DG 정식 확인 미완료와 `experiment_ready=false` 유지.
+
 ## 2026-09-29 DIAG-03 이후 lifecycle 증거와 host 정리 경계
 
 [PC 조사·수정](ENERGY_AP_DEVICE_SEGMENT_LIFECYCLE_PC_20260929.md): host의 회수 후 요약 거절로 발생한 두 번째 force-stop을 단일 cleanup 시도 기록으로 막고, 회수된 앱 원래 오류와 host 후처리 오류를 함께 남긴다. 앱은 기존 `onDestroy` 취소를 보존하면서 Activity callback·instance/finish 상태만 추가 기록한다. 무선 디버깅 스위치 OFF→ON은 사용자 관측이며 시각·주체·`onDestroy` 인과 관계는 미확정이다. 새 소스는 기존 설치 APK/계획과 동일하다고 보지 않는다. PC host 7건·Robolectric callback 2건 통과, 프로젝트 인증서로 새 APK를 빌드·검증했다. 기기 전송·설치·실행은 없었고 실제 lifecycle 원인도 미확정이다. 다음은 **별도 승인과 현재 기기 gate 아래 새 APK로 제한된 lifecycle 관찰을 할지 결정**하는 일이며 종료된 DIAG-03·미완료 CG_DC/CC_DG를 자동 실행하지 않는다. 동결 모형 재보정·정책 개발은 보류, `experiment_ready=false` 유지.

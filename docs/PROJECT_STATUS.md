@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-29 DEVICE-SEGMENT-DIAG-04 새 lifecycle APK 승인 실행
+
+- [실행 결과·원본·재현](ENERGY_AP_DEVICE_SEGMENT_DIAG04_RESULTS_20260929.md): CG_DC 진단1세션 정상 완료. 새 프로젝트 서명 APK 설치1, runtime4·warmup8·적격성4·작업1,073·총추론1,085, ADB3,345, 전체1,148.453초. 앱 cleanup·finish 요청·자료 회수·세션 host cleanup1회 및 프로세스 부재 확인. 연결 소실/timeout0, 과거 종료 원인 해결·단절 내성 증명 아님.
+- 공통600.098초 기기 전체953.069J, AP 시작32.6/최고37.6°C. lane 공동 점유120.037초와 host invocation 겹침9.062초를 구분. raw=mA 조건부·절대 정확도 미인증. 기존 개발3·동결 모형·DC_DG 유지, CG_DC/CC_DG 정식 확인 미완료, `experiment_ready=false`. 다음은 추가 실측 없이 기존 동결 모형의 새 프로토콜 적용 범위와 전이 오차를 PC에서 확인하는 일이다.
+
 ## 2026-09-29 DEVICE-SEGMENT-DIAG-03 lifecycle·중복 host cleanup PC 조사
 
 - [시간축·원인 경계·수정·검증](ENERGY_AP_DEVICE_SEGMENT_LIFECYCLE_PC_20260929.md). 원본의 앱 `lifecycle_cancelled`는 `onDestroy()` 경로이나 파괴 trigger는 미확정이다. 앱 terminal/회수/첫 host force-stop 뒤 PC 요약 거절이 예외 처리에서 두 번째 cleanup을 호출한 것은 코드 결함으로 확인해 단일 시도로 수정했다. 앱 Activity lifecycle·finish 사유 기록을 새 소스에 추가했지만 기존 설치 APK에는 없다. 사용자 관측 “무선 디버깅” 스위치 OFF→ON은 시각·주체 미확정의 별도 사실이며 ADB 명령 실패0과 동일시하거나 `onDestroy` 원인으로 확정하지 않는다. 실행 경로에서 무선 디버깅 설정 변경 코드는 발견되지 않았다.
