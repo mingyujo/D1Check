@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-09-29 — host cleanup은 같은 종료 처리에서 한 번만 시도
+
+- **확정된 코드 경계:** [DIAG-03 PC 조사](ENERGY_AP_DEVICE_SEGMENT_LIFECYCLE_PC_20260929.md)에서 앱 실패·회수·첫 host cleanup 뒤 요약 거절로 예외 cleanup이 반복되는 결함을 확인했다. 향후 실행기는 첫 cleanup의 성공/부분 실패/미확인을 보존하고 동일 종료 처리에서 두 번째 force-stop을 자동 시도하지 않는다. 원래 앱 stack과 host 요약 오류는 별도로 보존한다.
+- **미확정:** DIAG-03의 실제 `onDestroy` trigger와 사용자가 본 무선 디버깅 OFF→ON의 전환 시각·주체·인과 관계. 새 Android 기록은 종료 의미를 바꾸지 않는 관측 보완이며 기존 APK·동결 모형의 동일 조건 검증이 아니다. 기기 진단·설치·수집 승인 또는 새 실측 계획은 이번 결정에 포함하지 않는다. `experiment_ready=false` 유지.
+
 ## 2026-09-28 — host arm 제거 범위를 진단 세션 내부로 제한
 
 - **결정:** [ADB 의존성·계측 비교](ENERGY_AP_DEVICE_SEGMENT_PC_20260928.md)에 따라 `baseline.arm` 생략은 별도 opt-in 진단에서만 허용한다. host의 warmup/GPU·품질, probe/AP 준비 승인은 보존한다. 앱이 읽지 못하는 AP numeric 적격성은 새 모드의 결측으로 남긴다. 기존 정식 모드·개발 동결 모형과 CONFIRM-06 실패 결과는 변경하지 않는다.

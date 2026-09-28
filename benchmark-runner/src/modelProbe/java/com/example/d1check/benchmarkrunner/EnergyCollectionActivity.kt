@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 /** Fixed-work energy collection only. No policy optimization, no simulated inference. */
 class EnergyCollectionActivity : Activity() {
+    private val activityInstanceId = UUID.randomUUID().toString()
     private val cpu = Executors.newSingleThreadExecutor()
     private val gpu = Executors.newSingleThreadExecutor()
     private val setup = Executors.newSingleThreadExecutor()
@@ -37,11 +38,28 @@ class EnergyCollectionActivity : Activity() {
         get() = observed.phase
         set(value) { observed.phase = value }
     @Volatile private var done = false
+    @Volatile private var finishRequested = false
+    private var createdFromSavedState = false
     private val sampler = EnergySamplerGuard(stop,
         { error -> EnergyFailureEvidence.capture(error, sid, phase, "sampler_snapshot_or_event", now()) },
         { evidence -> save("sampler_failure.json", evidence) })
     private val watchdog = Runnable { android.os.Process.killProcess(android.os.Process.myPid()) }
     private fun now() = SystemClock.elapsedRealtimeNanos()
+    private fun lifecycle(callback: String) {
+        if (sessionControl != EnergySessionControl.DEVICE_AFTER_PROBE || progress == null || done) return
+        try {
+            event("activity_lifecycle", mapOf("callback" to callback,
+                "activity_instance_id" to activityInstanceId,
+                "is_finishing" to isFinishing,
+                "is_changing_configurations" to isChangingConfigurations,
+                "finish_requested_by_session" to finishRequested,
+                "created_from_saved_state" to createdFromSavedState,
+                "stop_reason" to stop.get()))
+        } catch (error: Throwable) {
+            // A journal failure must not replace the first cancellation cause.
+            Log.w("D1ENERGY", "lifecycle journal unavailable: $callback", error)
+        }
+    }
     private fun lane(key: String) = if (key.endsWith("_CPU")) cpu else gpu
     @Synchronized private fun event(kind: String, data: Map<String, Any?> = emptyMap()) {
         progress?.add(ModelProbeArtifacts.json(data + mapOf("kind" to kind, "mono_ns" to now(), "sequence" to seq++,
@@ -96,6 +114,7 @@ class EnergyCollectionActivity : Activity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        createdFromSavedState = savedInstanceState != null
         setContentView(TextView(this).apply { text = "에너지·열 고정 작업량 수집" })
         window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         handler.postDelayed(watchdog, EnergyCollectionCore.WATCHDOG_MS)
@@ -141,6 +160,12 @@ class EnergyCollectionActivity : Activity() {
             outputOwned = true
             FileOutputStream(File(root, "manifest.json")).use { it.write(mf.readBytes()); it.fd.sync() }
             progress = EnergyProgress(File(root, "progress.jsonl")); event("session_start", mapOf("manifest_sha256" to hash))
+            if (sessionControl == EnergySessionControl.DEVICE_AFTER_PROBE) {
+                event("activity_lifecycle", mapOf("callback" to "onCreate",
+                    "activity_instance_id" to activityInstanceId,
+                    "created_from_saved_state" to createdFromSavedState,
+                    "intent_flags" to intent.flags))
+            }
             Log.i("D1ENERGY", "runtime_scope_start=$sid")
             check(m.getString("protocol") == protocol && m.getString("session_id") == sid)
             check(m.getLong("maximum_duration_ms") == (if (calibration) EnergyStateCalibration.WATCHDOG_MS else EnergyCollectionCore.WATCHDOG_MS) && !m.getBoolean("experiment_ready"))
@@ -230,7 +255,15 @@ class EnergyCollectionActivity : Activity() {
                 try { ArrivalRuntimeSetup.closeLane(executor) { observed.laneRuntimes(suffix).forEach { it.close() } } }
                 catch(e: Throwable) { failure = "$failure; cleanup: $e" }
             }
-            try { event("app_cleanup",mapOf("error" to failure)); progress?.close() } catch(e: Throwable) { failure = "$failure; flush: $e" }
+            finishRequested = true
+            try {
+                event("app_cleanup",mapOf("error" to failure))
+                if (sessionControl == EnergySessionControl.DEVICE_AFTER_PROBE) {
+                    event("activity_lifecycle",mapOf("callback" to "finish_requested",
+                        "activity_instance_id" to activityInstanceId,"stop_reason" to stop.get()))
+                }
+                progress?.close()
+            } catch(e: Throwable) { failure = "$failure; flush: $e" }
             if (outputOwned) try { save("cleanup.json",mapOf("status" to if(failure==null) "completed" else "failed","error" to failure,"mono_ns" to now(),
                 "sampler_failure" to sampler.failure.get(), "sampler_failure_recording_error" to sampler.recordingFailure.get())) } catch(_: Throwable) {}
             done = true; cpu.shutdownNow(); gpu.shutdownNow(); setup.shutdown(); handler.removeCallbacks(watchdog)
@@ -350,5 +383,14 @@ class EnergyCollectionActivity : Activity() {
         }
         save("$label.requests.json",completed); event("phase_end")
     }
-    override fun onDestroy() { if(!done) stop.compareAndSet(null,"lifecycle_cancelled"); super.onDestroy() }
+    override fun onStart() { super.onStart(); lifecycle("onStart") }
+    override fun onResume() { super.onResume(); lifecycle("onResume") }
+    override fun onPause() { lifecycle("onPause"); super.onPause() }
+    override fun onStop() { lifecycle("onStop"); super.onStop() }
+    override fun onNewIntent(intent: Intent) { super.onNewIntent(intent); lifecycle("onNewIntent") }
+    override fun onDestroy() {
+        if (!done) stop.compareAndSet(null,"lifecycle_cancelled")
+        lifecycle("onDestroy")
+        super.onDestroy()
+    }
 }

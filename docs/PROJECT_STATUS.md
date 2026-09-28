@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-29 DEVICE-SEGMENT-DIAG-03 lifecycle·중복 host cleanup PC 조사
+
+- [시간축·원인 경계·수정·검증](ENERGY_AP_DEVICE_SEGMENT_LIFECYCLE_PC_20260929.md). 원본의 앱 `lifecycle_cancelled`는 `onDestroy()` 경로이나 파괴 trigger는 미확정이다. 앱 terminal/회수/첫 host force-stop 뒤 PC 요약 거절이 예외 처리에서 두 번째 cleanup을 호출한 것은 코드 결함으로 확인해 단일 시도로 수정했다. 앱 Activity lifecycle·finish 사유 기록을 새 소스에 추가했지만 기존 설치 APK에는 없다. 사용자 관측 “무선 디버깅” 스위치 OFF→ON은 시각·주체 미확정의 별도 사실이며 ADB 명령 실패0과 동일시하거나 `onDestroy` 원인으로 확정하지 않는다. 실행 경로에서 무선 디버깅 설정 변경 코드는 발견되지 않았다.
+- PC host 진입 7건·Android Kotlin 컴파일에 이어, 권한 조정 후 Robolectric lifecycle callback **2건 실행·PASS** 및 동일 프로젝트 인증서의 modelProbe APK 빌드·서명 검증 완료. 새 APK SHA-256 `933d202e…d831f7`, 기존 APK와 signer·패키지·버전 일치; 기기 전송·설치·실행 0. 이전 Git index/NDK/네트워크 제한은 해소됐고 실제 원격 브랜치 HEAD를 확인했다. 기존 DIAG-03 `stopped_no_resume`, 개발3·동결 모형·DC_DG 확인, CG_DC/CC_DG 미완료, 원본·FAIL·`experiment_ready=false` 유지. **다음 행동:** 별도 기기 승인과 현재 gate가 있을 때 새 APK로 제한된 lifecycle 관찰 필요성을 결정한다. 기존 진단이나 6세션 수집을 자동 재실행하지 않는다.
+
 ## 2026-09-28 DEVICE-SEGMENT-DIAG-03 중단 — 준비 중 앱 lifecycle 취소
 
 - [진단 결과·소비·원본 경계](ENERGY_AP_DEVICE_SEGMENT_DIAG03_RESULTS_20260928.md), [작은 요약](results/energy_ap_device_segment_01/diag03_summary.json). plan SHA `5ec12e31…ca09068`을 `Check` 후 1회 실행. 새 APK 전송·설치 각1 및 현재 A24/환경 gate 통과. CG_DC 1시도·0완료; runtime4·warmup8·적격성4, **본 작업0/1,680**, 공식 baseline·냉각 없음. resident AP 준비 중 앱 `onDestroy` 경로의 `lifecycle_cancelled` 실패; 외부 trigger 미확정. ADB 연결 소실·timeout 0, host AP46표본, 앱 표본119개. host 회수14파일·force-stop 후 프로세스 부재 확인, 실패 후 cleanup 중복 호출 기록. ADB513/11,000, 전체193.094/2,700초, 조건부 사후 회수0. registry `stopped_no_resume`, 재실행 금지.

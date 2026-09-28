@@ -1,5 +1,9 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-09-29 DIAG-03 이후 lifecycle 증거와 host 정리 경계
+
+[PC 조사·수정](ENERGY_AP_DEVICE_SEGMENT_LIFECYCLE_PC_20260929.md): host의 회수 후 요약 거절로 발생한 두 번째 force-stop을 단일 cleanup 시도 기록으로 막고, 회수된 앱 원래 오류와 host 후처리 오류를 함께 남긴다. 앱은 기존 `onDestroy` 취소를 보존하면서 Activity callback·instance/finish 상태만 추가 기록한다. 무선 디버깅 스위치 OFF→ON은 사용자 관측이며 시각·주체·`onDestroy` 인과 관계는 미확정이다. 새 소스는 기존 설치 APK/계획과 동일하다고 보지 않는다. PC host 7건·Robolectric callback 2건 통과, 프로젝트 인증서로 새 APK를 빌드·검증했다. 기기 전송·설치·실행은 없었고 실제 lifecycle 원인도 미확정이다. 다음은 **별도 승인과 현재 기기 gate 아래 새 APK로 제한된 lifecycle 관찰을 할지 결정**하는 일이며 종료된 DIAG-03·미완료 CG_DC/CC_DG를 자동 실행하지 않는다. 동결 모형 재보정·정책 개발은 보류, `experiment_ready=false` 유지.
+
 ## 2026-09-28 진단1회 종료 — 연결 내성·모형 전이 미판정
 
 [DIAG-03 실행 결과](ENERGY_AP_DEVICE_SEGMENT_DIAG03_RESULTS_20260928.md): 설치와 현재 gate·warmup/적격성은 통과했으나 앱이 `probe.arm` 전 온도 준비 중 `lifecycle_cancelled`로 실패했다. 연결 소실이 없었으므로 연결 소실 내성을 판정하지 않는다. 공식 baseline·본 부하·냉각 0, 진단 계획은 소비·종료됐고 추가 세션/사후 회수를 시작하지 않았다. 기존 동결값과 확인 범위를 승격하지 않는다. 다음 PC 작업은 앱 lifecycle 종료 증거와 요약 실패 후 중복 host cleanup 경계를 조사하는 것이며, 같은 계획 재실행·새 수집 자동 준비는 하지 않는다.

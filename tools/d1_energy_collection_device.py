@@ -321,6 +321,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
     save(registry/'claimed.json',dict(plan_sha256=expected_sha,utc=legacy.utc(),budget=budget,
                                       host_run_id=host_run_id,host_identity=host_identity))
     results=[];current=None;remote=None;identified=False;install_result=None;d=None;journal=None
+    cleanup_attempted=False;cleanup_result=None
     def mark(stage,**details):
         if journal:journal.mark(stage,**details)
     try:
@@ -366,6 +367,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
                 mark('development_frozen')
             c.require(hard-time.monotonic()>=budget['session_seconds'],'insufficient whole session reserve; stop')
             current=root/f"{e['index']:02d}_{e['session_id']}";current.mkdir();remote=None
+            cleanup_attempted=False;cleanup_result=None
             mark('session_reserved',session_index=e['index'],session_id=e['session_id'],phase=e['phase'])
             session_start=time.monotonic();session_end=min(session_start+budget['session_seconds'],hard);d.deadline=min(session_start+120,session_end-105)
             gates(d,plan,current,'before_session')
@@ -395,7 +397,9 @@ def run(plan_file,adb,serial,expected_sha,approved):
             save(current/'recovery.json',recover(d,remote,current/'artifacts',plan.get('operational_only',False)))
             # Cleanup is reserved BEFORE PC validation; validation cannot prolong active device work.
             mark('host_cleanup_start',session_index=e['index'],session_id=e['session_id'])
-            save(current/'host_cleanup.json',shared.cleanup(d,session_end))
+            cleanup_attempted=True
+            cleanup_result=shared.cleanup(d,session_end)
+            save(current/'host_cleanup.json',cleanup_result)
             mark('host_cleanup_returned',session_index=e['index'],session_id=e['session_id'])
             stats=(state.summarize_session if state else c.summarize_session)(current/'artifacts',manifest,plan);stats['phase']=e['phase']
             if plan.get('autonomous_diagnostic_only'):
@@ -449,15 +453,34 @@ def run(plan_file,adb,serial,expected_sha,approved):
                     failure.setdefault('recovery_errors',{})[name]=repr(err)
                     try:save(current/(name+'.recovery_error.json'),dict(error=repr(err)))
                     except BaseException as write_error:failure.setdefault('recovery_record_errors',{})[name]=repr(write_error)
+        if current:
+            for name in ('cleanup.json','session_failure.json'):
+                artifact=current/'artifacts'/name
+                if not artifact.is_file():artifact=current/'failure_prefix'/name
+                if artifact.is_file():
+                    try:failure.setdefault('app_terminal_evidence',{})[name]=c.p.read(artifact)
+                    except BaseException as err:failure.setdefault('app_terminal_read_errors',{})[name]=repr(err)
         autonomous_may_be_active=bool(plan.get('autonomous_diagnostic_only') and current and
             (current/'autonomous_segment_arm_intent.json').exists())
         if identified and d is not None:
-            if autonomous_may_be_active:
+            if cleanup_attempted:
+                # Validation or receipt failure after cleanup must not issue a
+                # second force-stop. A raised cleanup has an unknown partial
+                # outcome; retrying it would also exceed the single attempt.
+                failure['host_cleanup']=(cleanup_result if cleanup_result is not None else
+                    dict(status='attempted_outcome_unknown_no_retry'))
+            elif autonomous_may_be_active:
                 failure['host_cleanup']=dict(status='deferred_device_segment_may_be_active',
                     reason='probe arm delivery or app completion unconfirmed; no automatic transport switch/force-stop')
             else:
-                try:save((current or root)/'failure_host_cleanup.json',shared.cleanup(d,hard))
-                except BaseException as err:failure['host_cleanup_error']=repr(err)
+                cleanup_attempted=True
+                try:
+                    cleanup_result=shared.cleanup(d,hard)
+                    save((current or root)/'failure_host_cleanup.json',cleanup_result)
+                    failure['host_cleanup']=cleanup_result
+                except BaseException as err:
+                    failure['host_cleanup']=cleanup_result or dict(status='attempted_outcome_unknown_no_retry')
+                    failure['host_cleanup_error']=repr(err)
         prefix=current/'failure_prefix/progress.jsonl' if current else None
         try:
             failure['last_session_progress']=(state.progress_consumption(prefix.read_bytes() if prefix and prefix.is_file() else b'',
