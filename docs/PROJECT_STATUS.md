@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-28 DEVICE-SEGMENT-DIAG-03 중단 — 준비 중 앱 lifecycle 취소
+
+- [진단 결과·소비·원본 경계](ENERGY_AP_DEVICE_SEGMENT_DIAG03_RESULTS_20260928.md), [작은 요약](results/energy_ap_device_segment_01/diag03_summary.json). plan SHA `5ec12e31…ca09068`을 `Check` 후 1회 실행. 새 APK 전송·설치 각1 및 현재 A24/환경 gate 통과. CG_DC 1시도·0완료; runtime4·warmup8·적격성4, **본 작업0/1,680**, 공식 baseline·냉각 없음. resident AP 준비 중 앱 `onDestroy` 경로의 `lifecycle_cancelled` 실패; 외부 trigger 미확정. ADB 연결 소실·timeout 0, host AP46표본, 앱 표본119개. host 회수14파일·force-stop 후 프로세스 부재 확인, 실패 후 cleanup 중복 호출 기록. ADB513/11,000, 전체193.094/2,700초, 조건부 사후 회수0. registry `stopped_no_resume`, 재실행 금지.
+- 기존 개발3·동결 모형·DC_DG 확인, CG_DC/CC_DG 미완료·FAIL·원본·`experiment_ready=false` 유지. numeric AP의 진행 중 별도 온도 중단 한도는 없지만 AP 경로 결측은 분석 부적격이며 이번에는 baseline/부하가 없어 전이 예측 오차도 없다. **다음 행동:** 추가 실측 없이 `onDestroy` 발생 경계와 host 후속 cleanup 중복 호출을 PC에서 조사한다.
+
 ## 2026-09-28 세션 내부 ADB 의존성 축소 — 진단 전용 PC 준비
 
 - [구현·계측 차이·후속 한도](ENERGY_AP_DEVICE_SEGMENT_PC_20260928.md), [계획·재현 안내](results/energy_ap_device_segment_01/README.md). 기존 CONFIRM-06의 `baseline.arm` 미전달과 앱 gate 종료를 구분했다. 연결 소실의 내부 원인은 미확정이다. 별도 `device-after-probe-diagnostic-v1`은 host가 runtime/warmup/품질·AP 준비를 승인한 뒤 앱이 baseline→부하→냉각을 한 세션 안에서 진행한다. 기존 정식 모드·동결 계수·원본은 그대로다.

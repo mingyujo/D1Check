@@ -1,5 +1,9 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-09-28 진단1회 종료 — 연결 내성·모형 전이 미판정
+
+[DIAG-03 실행 결과](ENERGY_AP_DEVICE_SEGMENT_DIAG03_RESULTS_20260928.md): 설치와 현재 gate·warmup/적격성은 통과했으나 앱이 `probe.arm` 전 온도 준비 중 `lifecycle_cancelled`로 실패했다. 연결 소실이 없었으므로 연결 소실 내성을 판정하지 않는다. 공식 baseline·본 부하·냉각 0, 진단 계획은 소비·종료됐고 추가 세션/사후 회수를 시작하지 않았다. 기존 동결값과 확인 범위를 승격하지 않는다. 다음 PC 작업은 앱 lifecycle 종료 증거와 요약 실패 후 중복 host cleanup 경계를 조사하는 것이며, 같은 계획 재실행·새 수집 자동 준비는 하지 않는다.
+
 ## 2026-09-28 ADB 연결 소실 뒤 세션 내부 진행 — 별도 진단 후보
 
 [PC 구현·계측 계약](ENERGY_AP_DEVICE_SEGMENT_PC_20260928.md)에 따라 새 진단 모드는 host 준비·품질·AP probe 승인을 유지하고, 그 뒤 한 세션의 공식 baseline·부하·냉각만 앱이 진행한다. 앱에 없는 numeric AP gate를 통과한 것으로 간주하지 않는다. 실측 기반 에너지/AP 모형의 지원 범위와 기존 개발 동결값은 유지하고, 새 APK/조회 경로 결과는 프로토콜 전이 진단으로 따로 판정한다. DIAG-03 1세션 후보는 PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED, 기기 실행0이며 별도 승인 전에는 소비하지 않는다. 다음 정식 수집·정책 개발·강화학습은 이 진단의 PC 통과만으로 착수하지 않는다.

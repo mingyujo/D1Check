@@ -1,5 +1,7 @@
 # ENERGY-AP 세션 내부 ADB 의존성 축소: PC 준비 결과 (2026-09-28)
 
+> 2026-09-28 후속: 승인된 DIAG-03 계획은 1회 소비되어 `stopped_no_resume`다. 연결 소실은 없었고 앱이 `probe.arm` 전 온도 준비에서 `lifecycle_cancelled`로 실패했다. 설치·적격성까지의 소비, 원본·회수·한계는 [실행 결과](ENERGY_AP_DEVICE_SEGMENT_DIAG03_RESULTS_20260928.md)를 따른다. 아래 미승인·미소비 표기는 실행 **이전** 준비 시점의 기록이다.
+
 **판정:** opt-in `device-after-probe-diagnostic-v1`의 구현·PC 검증은 완료했다. 새 진단은 `PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED`이며 기기 명령·설치·추론·실측은 0회다. CONFIRM-06의 연결 소실 원인, 새 APK의 실기기 동작, 동결 모형의 새 계측 프로토콜 전이 정확도는 확인하지 못했다. 기존 개발 3세션·동결 계수·DC_DG 확인과 CG_DC/CC_DG 미완료, `experiment_ready=false`는 유지한다.
 
 ## 실시간 의존성의 실제 경계
