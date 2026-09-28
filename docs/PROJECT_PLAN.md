@@ -1,5 +1,9 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-09-28 동결 상태 모형의 남은 확인2 — 별도 미승인 후보
+
+[COLLECT-05 PC 감사와 계획](ENERGY_AP_CONFIRM_FOLLOWUP_PC_20260928.md)에 따라 3초 ADB 조회 timeout의 내부 원인은 미확정이다. 0.25초 listing·2초 AP·10초 화면 등 관측 경로를 변경하면 기존 계측 부담 비교가 흐려져 이번에는 바꾸지 않았다. 개발3·확인 DC_DG1과 동결 모형을 보존하고, `CG_DC→CC_DG`만 새 ID/manifest로 평가하는 `ENERGY-AP-STATE-CONFIRM-06`을 PC 준비했다. 확인 중 fit 재호출은 금지하고 기존 동결 byte·분석 코드 해시를 검사한다. 새 block은 COLLECT-05의 재개/완주가 아니며 실행 승인·기기 gate는 별도다. 2세션 상한3,384추론·75분, 재시도0. 새 정책/강화학습 보류와 `experiment_ready=false` 유지.
+
 ## 2026-09-28 상태 모형 정식 수집의 부분 종료
 
 성공한 host lifecycle 진단의 신원·checkpoint·실패 회수 경로를 새 `ENERGY-AP-STATE-COLLECT-05`에 연결하고 [결과](ENERGY_AP_STATE_COLLECT05_RESULTS_20260928.md)에 따라 한 번 실행했다. 기존 측정 설계와 APK를 유지하며 개발3세션을 완료·동결했고, 확인 DC_DG 1세션에서만 예측 오차를 얻었다. 다음 확인 세션의 ADB 조회 timeout으로 전체 6세션 계획은 `stopped_no_resume`; 동결 모형은 부분 진단으로 보존하며 정책 시뮬레이터 지원/정확도 범위로 자동 승격하지 않는다. 후속은 동일 계획 재실행이 아니라 timeout 명령 기록의 PC 대조다. 새 정책·강화학습 개발 보류와 에너지/AP 모델 독립 확인 우선, `experiment_ready=false`는 유지한다.

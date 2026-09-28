@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-28 COLLECT-05 ADB timeout PC 감사·별도 확인2 준비 — 기기 미실행
+
+- [원인 경계·ADB 용도/지연·동결 확인 계약](ENERGY_AP_CONFIRM_FOLLOWUP_PC_20260928.md). slot14385 `run-as ls`는 server 사전검사 통과 뒤 client 3.000초 timeout; 직전 동일 조회0.109초·이후 회수 명령 반환. 14,394명령 중 listing8,528·timeout1·인접 client overlap0. 내부 지연 원인 미확정. poll/timeout·센서·APK 변경0, 기존 동결 계수/원본·COLLECT-05 `stopped_no_resume` 보존.
+- `ENERGY-AP-STATE-CONFIRM-06`은 확인 `CG_DC→CC_DG` **2세션만** 별도 미승인·미소비 PC 준비. 동결 SHA `35ed6987...034c54`를 재보정 없이 로드하는 경로/manifest/Check 통과, 기기 명령0. 외부 plan SHA `d13e1612...89301`, 추론 최대3,384·전체75분·ADB21,000/cleanup 전20,900, APK push/설치0. 새 output/registry claim 없음. 기존 확인 DC_DG +4.550J/+0.474%·AP MAE0.645°C는 독립1세션 한계 유지. `experiment_ready=false`.
+- **다음 행동:** 별도 실기기 승인 전 현재 A24/설치본/환경 gate를 적용할 수 있는 날 이 신규 2조건 계획의 실행 여부를 판단한다. 이번에는 실행하지 않는다.
+
 ## 2026-09-28 ENERGY-AP-STATE-COLLECT-05 종료 — 개발3 동결·확인1 후 ADB 조회 timeout
 
 - [정식 실행 결과·원본/부분 그림](ENERGY_AP_STATE_COLLECT05_RESULTS_20260928.md), [공유 요약](results/energy_ap_state_collect05/README.md). 새 plan_v5 SHA `4616c2ea...cd1d`를 Check한 뒤 동일 A24·설치본/환경 gate를 통과해 한 번 실행했다. 개발3 적격 완료→계수 동결→확인 DC_DG 1 적격 완료. 다음 CG_DC 준비 중 `run-as ls` 3초 timeout으로 **5시도·4완료/6**, 마지막 확인 미시도; `stopped_no_resume`, 재시도0.

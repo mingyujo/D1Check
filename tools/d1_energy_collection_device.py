@@ -278,7 +278,12 @@ def run(plan_file,adb,serial,expected_sha,approved):
     except FileNotFoundError:
         c.check(plan_file)
         raise
-    if plan.get('state_model_calibration'):
+    if plan.get('state_model_followup'):
+        from tools import d1_energy_state_collection as state
+        from tools import d1_energy_ap_followup as followup
+        followup.check(plan_file)
+        c.require(serial is None,'new state followup selects the current transport itself')
+    elif plan.get('state_model_calibration'):
         from tools import d1_energy_state_collection as state
         state.check(plan_file)
         c.require(serial is None,'new state plan selects the current transport itself')
@@ -311,8 +316,17 @@ def run(plan_file,adb,serial,expected_sha,approved):
                         installation(d,plan,plan_file,install_root,hard));identified=True
         mark('installed_preflight_verified')
         frozen=None
+        if plan.get('state_model_followup'):
+            # Preserve the exact development artifact. No re-fit, no confirmation-derived edits.
+            source=Path(plan['prior_freeze']['path'])
+            c.require(c.p.digest(source)==plan['prior_freeze']['sha256'],'prior freeze changed')
+            (root/'development_freeze.json').write_bytes(source.read_bytes())
+            save(root/'freeze_receipt.json',dict(sha256=plan['prior_freeze']['sha256'],
+                source='COLLECT-05 development only',utc=legacy.utc()))
+            frozen=c.p.read(root/'development_freeze.json')
+            mark('prior_development_freeze_loaded',sha256=plan['prior_freeze']['sha256'])
         for e in plan['entries']:
-            if e['index']==budget['development'] and not plan.get('diagnostic_only'):
+            if e['index']==budget['development'] and not plan.get('diagnostic_only') and not plan.get('state_model_followup'):
                 mark('development_freeze_start')
                 freeze_start=time.monotonic();frozen={r['condition']:r for r in results}
                 expected_status='eligible_regimen_only' if state else 'eligible_descriptive_only'
@@ -369,7 +383,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
                 c.require(c.p.digest(root/'development_freeze.json')==c.p.read(root/'freeze_receipt.json')['sha256'],'freeze changed')
             save(current/'validated.json',stats);results.append(stats)
             mark('session_validated',session_index=e['index'],session_id=e['session_id'])
-        result=dict(status='completed_regimen_diagnostic_only' if state else 'completed_diagnostic_only' if plan.get('diagnostic_only') else 'completed_descriptive_only',
+        result=dict(status='completed_followup_confirmation_only' if plan.get('state_model_followup') else 'completed_regimen_diagnostic_only' if state else 'completed_diagnostic_only' if plan.get('diagnostic_only') else 'completed_descriptive_only',
             sessions=len(results),diagnostic_requests=(sum(r['work_calls']+r['eligibility_calls'] for r in results) if state else budget['diagnostic_requests']),
             warmup=(sum(r['warmup_calls'] for r in results) if state else budget['warmup']),
             explicit_inference=(sum(r['work_calls']+r['eligibility_calls']+r['warmup_calls'] for r in results) if state else budget['explicit_inference']),

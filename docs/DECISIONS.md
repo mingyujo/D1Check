@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-09-28 — 동결 계수 유지, 별도 2조건 확인 후보만 PC 준비
+
+- **근거:** [COLLECT-05 PC 감사](ENERGY_AP_CONFIRM_FOLLOWUP_PC_20260928.md)의 단일 `run-as ls` timeout은 중단 원인이나 내부 지연 원인은 미확정이다. 조회 중복·동시 client 증거가 없어 계측 주기/timeout을 사후 변경하지 않는다.
+- **범위:** 기존 개발3·완료 확인 DC_DG1·중단 prefix와 동결 계수를 보존하고 CG_DC/CC_DG만 별도 미승인 계획으로 준비했다. 기존 6세션 분모를 완료로 고치거나 확인 결과로 재보정하지 않는다. 다른 날짜/환경의 후속 확인은 별도 lineage로 판독한다.
+- **상태:** PC Check/fixture 검증만 완료, 실기기 명령0·실행 claim0. 새 2세션 후보의 별도 실행 승인과 현재 A24 gate가 남으며 기존 FAIL·종료 계획·`experiment_ready=false`는 유지한다.
+
 ## 2026-09-28 — COLLECT-05 부분 동결 모형의 지원 범위 승격 보류
 
 - **실행 상태:** 별도 승인된 새 정식 계획을 한 번 실행했으며 개발3→동결→확인1 뒤 다음 확인 준비의 ADB `run-as ls` timeout으로 `stopped_no_resume`다. [원본 경계·오차](ENERGY_AP_STATE_COLLECT05_RESULTS_20260928.md)를 따른다.
