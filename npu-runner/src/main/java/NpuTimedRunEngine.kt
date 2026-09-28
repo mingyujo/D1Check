@@ -7,6 +7,7 @@ import com.example.d1check.contract.GpuFlushResult
 import com.example.d1check.contract.GpuTelemetry
 import com.example.d1check.contract.RunContextMismatchException
 import com.google.ai.edge.litert.Accelerator
+import com.google.ai.edge.litert.CompiledModel
 import org.json.JSONObject
 import java.io.File
 import java.io.InputStream
@@ -53,17 +54,31 @@ internal data class NpuBackendInit(
  */
 internal class NpuCompiledModelBackend(
     context: Context,
-    config: NpuRunConfig,
+    accelerator: TimedAccelerator,
+    modelAsset: String?,
+    modelPath: String?,
+    gpuPrecision: String? = null,
 ) : NpuTimedBackend {
+    /** 기존 단일 구간 timed run 경로 (기본값이면 2026-09-26 판과 같은 엔진 인자). */
+    constructor(context: Context, config: NpuRunConfig) : this(
+        context = context,
+        accelerator = config.accelerator,
+        modelAsset = config.modelAsset.takeIf { config.modelPath == null },
+        modelPath = config.modelPath,
+        gpuPrecision = config.gpuPrecision,
+    )
+
     private var runOnlyNs: Long? = null
     private val engine = NpuBenchmarkEngine(
         context = context,
-        accelerator = when (config.accelerator) {
+        accelerator = when (accelerator) {
             TimedAccelerator.NPU -> Accelerator.NPU
             TimedAccelerator.CPU -> Accelerator.CPU
+            TimedAccelerator.GPU -> Accelerator.GPU
         },
-        modelAssetPath = config.modelAsset.takeIf { config.modelPath == null },
-        modelFilePath = config.modelPath,
+        modelAssetPath = modelAsset,
+        modelFilePath = modelPath,
+        gpuPrecision = gpuPrecision?.let { CompiledModel.GpuOptions.Precision.valueOf(it) },
     )
 
     override fun init(): NpuBackendInit {
@@ -106,7 +121,8 @@ internal class NpuTimedRunEngine(
         check(Thread.currentThread().name == THREAD_NAME) {
             "Benchmark must run on the dedicated $THREAD_NAME thread"
         }
-        val telemetry = GpuTelemetry.connect(context)
+        // maxInferenceSpans 기본값 = GpuTelemetry.DEFAULT_MAX_INFERENCE_SPANS (기존 connect(context) 와 같음)
+        val telemetry = GpuTelemetry.connect(context, config.maxInferenceSpans)
         var backend: NpuTimedBackend? = null
         var success = true
         var message = "ok"
@@ -200,7 +216,7 @@ internal class NpuTimedRunEngine(
                     invalidReason = "buffer_limit"
                     terminationReason = TerminationReason.BUFFER_LIMIT
                     telemetry.instant("buffer_limit", "run", "error",
-                        "max=${GpuTelemetry.DEFAULT_MAX_INFERENCE_SPANS}")
+                        "max=${config.maxInferenceSpans}")
                     break
                 }
 
@@ -316,6 +332,7 @@ internal class NpuTimedRunEngine(
                 inputElements = inputElements,
                 inputSha256 = inputSha256,
                 modelSizeBytes = facts?.modelSizeBytes,
+                jvmMaxMemoryBytes = Runtime.getRuntime().maxMemory(),
             ),
         )
         val flush = telemetry.flushAfterRun(

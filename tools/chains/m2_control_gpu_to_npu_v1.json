@@ -1,0 +1,24 @@
+{
+  "schema": "d1-npu-chain-v1",
+  "chain_id": "m2_control_gpu_to_npu_v1",
+  "model_prepare": "per_segment",
+  "segments": [
+    {
+      "accelerator": "GPU",
+      "model": "models/mobilenet_v1_1.0_224.tflite",
+      "input_spec": "lcg-unit",
+      "duty": 100,
+      "duration_s": 30,
+      "gpu_precision": "FP32",
+      "label": "control_d100"
+    },
+    {
+      "accelerator": "NPU",
+      "model": "models/mobilenet_v1_1.0_224_Samsung_E9965.tflite",
+      "input_spec": "lcg-unit",
+      "duty": 100,
+      "duration_s": 60,
+      "label": "victim_npu"
+    }
+  ]
+}

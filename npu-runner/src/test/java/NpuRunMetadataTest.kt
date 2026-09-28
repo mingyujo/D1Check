@@ -117,4 +117,57 @@ class NpuRunMetadataTest {
         assertNull(m["npu_dispatch_lib_sha256"])
         assertEquals(NpuRunConfig.DEFAULT_MODEL_ASSET, m["npu_model_source"])
     }
+
+    // ---- 2026-09-28 (GPU 가속기 · 추론 수 상한)
+
+    private val newKeys = listOf(
+        "compiled_model_options", "precision_record", "max_inference_spans",
+        "max_inference_spans_buffer_bytes", "jvm_max_memory_bytes",
+    )
+
+    @Test
+    fun defaultNpuAndCpuRunsCarryNoNewKeysAndTheSameValues() {
+        for (cfg in listOf(config, config.copy(accelerator = TimedAccelerator.CPU))) {
+            val m = NpuRunMetadata.build(cfg, outcome, pilot, facts.copy(jvmMaxMemoryBytes = 1L))
+            for (key in newKeys) assertFalse(key, m.containsKey(key))
+            assertEquals("aot", m["npu_compile_mode"])
+            assertEquals("fp16(compiler-default)", m["npu_precision"])
+        }
+    }
+
+    @Test
+    fun gpuRunRecordsOptionsAndPrecisionFourItems() {
+        val gpu = config.copy(accelerator = TimedAccelerator.GPU, modelAsset = "models/mobilenet_v1_1.0_224.tflite")
+        val m = NpuRunMetadata.build(gpu, outcome, pilot, facts)
+        assertEquals("GPU", m["npu_accelerator_requested"])
+        assertEquals("gpu_compiled_model", m["npu_timed_resource_label"])
+        val options = m["compiled_model_options"] as Map<*, *>
+        assertEquals(listOf("GPU"), options["accelerators_passed_to_native"])
+        assertEquals("not_set (LiteRT default)", options["gpu_options"])
+        val record = m["precision_record"] as Map<*, *>
+        assertEquals(listOf("schema", "storage", "io_dtype", "options", "internal_compute"), record.keys.toList())
+        assertEquals("unknown", (record["internal_compute"] as Map<*, *>)["value"])
+        // 키 자리는 benchmark-runner 순서 그대로
+        assertEquals(benchmarkOutputConfigKeys, m.keys.toList().take(benchmarkOutputConfigKeys.size))
+        val fp32 = NpuRunMetadata.build(gpu.copy(gpuPrecision = "FP32"), outcome, pilot, facts)
+        assertEquals(mapOf("precision" to "FP32"), (fp32["compiled_model_options"] as Map<*, *>)["gpu_options"])
+    }
+
+    @Test
+    fun nativeAcceleratorSetFollowsTheLiteRtKotlinLayer() {
+        // litert-api 2.2.0 javap: 원소 하나인 {NPU} 만 {NPU, CPU} 로 바뀐다
+        assertEquals(listOf("NPU", "CPU"), CompiledModelFacts.nativeAccelerators(TimedAccelerator.NPU))
+        assertEquals(listOf("GPU"), CompiledModelFacts.nativeAccelerators(TimedAccelerator.GPU))
+        assertEquals(listOf("CPU"), CompiledModelFacts.nativeAccelerators(TimedAccelerator.CPU))
+    }
+
+    @Test
+    fun raisedSpanCapIsRecordedWithTheHeap() {
+        val m = NpuRunMetadata.build(
+            config.copy(maxInferenceSpans = 2_000_000), outcome, pilot, facts.copy(jvmMaxMemoryBytes = 536_870_912L),
+        )
+        assertEquals(2_000_000, m["max_inference_spans"])
+        assertEquals(56_000_000L, m["max_inference_spans_buffer_bytes"])
+        assertEquals(536_870_912L, m["jvm_max_memory_bytes"])
+    }
 }

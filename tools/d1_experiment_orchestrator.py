@@ -48,6 +48,11 @@ NPU_REMOTE_RUNNER_DIRECTORY = f"/sdcard/Android/data/{NPU_RUNNER_PACKAGE}/files/
 NPU_LOGGER_EXTRA_LOGCAT_TAGS = ("litert:I",)
 # Opt-in diagnostic capture (--npu-diagnostic-logcat); the default NPU filter above is unchanged.
 NPU_DIAGNOSTIC_LOGCAT_TAGS = ("litert:V", "tflite:V", "TfLite:V")
+# 2026-09-28 P2 options (all opt-in; without them every Intent, config and timeout is unchanged).
+NPU_TIMED_ACCELERATORS = ("NPU", "CPU", "GPU")
+NPU_TIMED_RESOURCE_LABELS = {"CPU": "cpu_compiled_model", "GPU": "gpu_compiled_model"}
+NPU_GPU_PRECISIONS = ("DEFAULT", "FP16", "FP32", "FP16_WITH_FP32_ACCUM")
+NPU_MAX_INFERENCE_SPANS_LIMIT = 3_000_000
 RESOURCE_CHOICES = ("CPU", "GPU", "NPU")
 DEFAULT_NPU_MODEL_ASSET = "models/mobilenet_v1_1.0_224_Samsung_E9965.tflite"
 DEFAULT_NPU_REFERENCE_ASSET = "models/mobilenet_v1_1.0_224.tflite"
@@ -119,6 +124,37 @@ RUNNER_FAILURE_EVENTS = {
 
 class OrchestratorError(RuntimeError):
     pass
+
+
+def npu_chain_module() -> Any:
+    """tools/npu_chain.py (chain-spec validation + conservation check), loaded like the exporter below."""
+    module_path = Path(__file__).with_name("npu_chain.py")
+    spec = importlib.util.spec_from_file_location("npu_chain_runtime", module_path)
+    if spec is None or spec.loader is None:
+        raise OrchestratorError(f"cannot load chain module: {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def npu_chain_for(args: argparse.Namespace) -> dict[str, Any] | None:
+    """Loaded --npu-chain file (canonical JSON, SHA-256, Base64), or None when chain mode is off."""
+    path = getattr(args, "npu_chain", None)
+    return None if path is None else npu_chain_module().load_chain(Path(path))
+
+
+def runner_timeout_seconds(args: argparse.Namespace) -> float:
+    """Hard deadline for the runner terminal event. The default is the previous fixed formula."""
+    override = getattr(args, "runner_timeout_seconds", None)
+    if override is not None:
+        return override
+    return args.duration + 180 + min(args.warmup * 2, 3600)
+
+
+def analyze_timeout_seconds(args: argparse.Namespace) -> float:
+    """d1_logger analyze deadline; default the previous fixed 120 s (201k NPU spans took 16.8 s here)."""
+    override = getattr(args, "analyze_timeout_seconds", None)
+    return 120 if override is None else override
 
 
 def export_thermal_dataset(experiment_dir: Path) -> dict[str, Any]:
@@ -1019,6 +1055,10 @@ def runner_intent_arguments(
     npu_input_spec: str | None = None,
     npu_accelerator: str | None = None,
     npu_run_only_span: bool = False,
+    npu_gpu_precision: str | None = None,
+    npu_max_inference_spans: int | None = None,
+    npu_chain_b64: str | None = None,
+    npu_chain_sha256: str | None = None,
 ) -> list[str]:
     # NPU goes to npu-runner with the same d1_* timed-run extras; CPU/GPU are unchanged.
     activity = NPU_RUNNER_ACTIVITY if resource == "NPU" else RUNNER_ACTIVITY
@@ -1042,6 +1082,14 @@ def runner_intent_arguments(
             arguments += ["--es", "d1_npu_accelerator", npu_accelerator]
         if npu_run_only_span:
             arguments += ["--ez", "d1_npu_run_only_span", "true"]
+        if npu_gpu_precision:
+            arguments += ["--es", "d1_npu_gpu_precision", npu_gpu_precision]
+        if npu_max_inference_spans is not None:
+            arguments += ["--ei", "d1_max_inference_spans", str(npu_max_inference_spans)]
+        if npu_chain_b64:
+            # Base64 of the canonical chain JSON: shell-safe through `adb shell am start`
+            arguments += ["--es", "d1_npu_chain_b64", npu_chain_b64,
+                          "--es", "d1_npu_chain_sha256", str(npu_chain_sha256)]
     else:
         arguments += ["--es", "d1_gpu_profile", gpu_profile_id]
     arguments += [
@@ -1075,6 +1123,12 @@ def logger_exit_timeout_seconds(resource: Any) -> int:
     return LOGGER_EXIT_TIMEOUT_SECONDS
 
 
+def logger_exit_timeout_for(args: argparse.Namespace, resource: Any) -> float:
+    """--logger-exit-timeout-seconds when given (long runs: bigger end-of-run burst), else the fixed value."""
+    override = getattr(args, "logger_exit_timeout_seconds", None)
+    return logger_exit_timeout_seconds(resource) if override is None else override
+
+
 def npu_logger_capture_arguments(resource: Any, diagnostic: bool = False) -> list[str]:
     """Extra d1_logger_v4 capture flags for NPU slots; empty for CPU/GPU (command unchanged)."""
     if str(resource or "").upper() != "NPU":
@@ -1100,6 +1154,14 @@ def npu_runner_intent_kwargs(resource: Any, args: argparse.Namespace) -> dict[st
         kwargs["npu_accelerator"] = args.npu_accelerator
     if getattr(args, "npu_run_only_span", False):
         kwargs["npu_run_only_span"] = True
+    if getattr(args, "npu_gpu_precision", None):
+        kwargs["npu_gpu_precision"] = args.npu_gpu_precision
+    if getattr(args, "npu_max_inference_spans", None) is not None:
+        kwargs["npu_max_inference_spans"] = args.npu_max_inference_spans
+    chain = npu_chain_for(args)
+    if chain is not None:
+        kwargs["npu_chain_b64"] = chain["b64"]
+        kwargs["npu_chain_sha256"] = chain["sha256"]
     return kwargs
 
 
@@ -1148,23 +1210,45 @@ def npu_config(args: argparse.Namespace) -> dict[str, Any]:
         config["quality_gate"]["reference_path"] = args.npu_reference_path
     if getattr(args, "npu_accelerator", "NPU") != "NPU":
         config["timed_accelerator"] = args.npu_accelerator
-        config["timed_resource_label"] = "cpu_compiled_model"
+        config["timed_resource_label"] = NPU_TIMED_RESOURCE_LABELS[args.npu_accelerator]
         config["timed_accelerator_note"] = "sole accelerator, not a fallback; formal_npu_valid is expected False"
     if getattr(args, "npu_run_only_span", False):
         config["run_only_span"] = "run_only_summary event (CompiledModel.run() only)"
     if getattr(args, "npu_diagnostic_logcat", False):
         config["diagnostic_logcat_tags"] = list(NPU_DIAGNOSTIC_LOGCAT_TAGS)
+    # 2026-09-28 P2 keys: present only when the option is used (default manifests stay byte-identical)
+    if getattr(args, "npu_gpu_precision", None):
+        config["timed_gpu_precision"] = args.npu_gpu_precision
+    if getattr(args, "npu_max_inference_spans", None) is not None:
+        config["max_inference_spans"] = args.npu_max_inference_spans
+    chain = npu_chain_for(args)
+    if chain is not None:
+        config["chain"] = {
+            key: chain[key] for key in (
+                "schema", "chain_id", "model_prepare", "segment_count", "total_duration_s", "sha256",
+                "source_file", "source_file_sha256", "spec",
+            )
+        }
+        config["chain"]["segment_models"] = [
+            dict(local_npu_asset_facts(segment["model"]) or {}, model=segment["model"])
+            if "model" in segment else {"model_path": segment["model_path"], "source": "device file"}
+            for segment in chain["spec"]["segments"]
+        ]
+        config["chain"]["note"] = "pilot-only chain slot; formal_npu_valid is expected False"
     return config
 
 
 def npu_quality_intent_arguments(
     run_id: str, model_asset: str, reference_asset: str, input_spec: str,
     count: int = NPU_QUALITY_GATE_N, model_path: str | None = None, reference_path: str | None = None,
+    accelerator: str = "NPU", gpu_precision: str | None = None,
 ) -> list[str]:
-    """npu-runner smoke/gate Intent (s26_npu_go.bat protocol): 1 timed inference, then the gate."""
+    """npu-runner smoke/gate Intent (s26_npu_go.bat protocol): 1 timed inference, then the gate.
+    accelerator: GPU only for --npu-accelerator GPU slots (2026-09-28); every other slot keeps NPU.
+    gpu_precision: the timed run's --npu-gpu-precision, so the gate runs the same GPU configuration."""
     arguments = [
         "shell", "am", "start", "-W", "-n", NPU_RUNNER_ACTIVITY,
-        "--es", "accelerator", "NPU",
+        "--es", "accelerator", accelerator,
         "--es", "dtype", "float",
         "--ei", "iterations", "1",
         "--ei", "warmup", "0",
@@ -1178,6 +1262,8 @@ def npu_quality_intent_arguments(
         arguments += ["--es", "model_path", model_path]
     if reference_path:
         arguments += ["--es", "ref_model_path", reference_path]
+    if gpu_precision:
+        arguments += ["--es", "gpu_precision", gpu_precision]
     return arguments + [
         "--es", "run_id", run_id,
         "--ez", "autofinish", "true",
@@ -1193,6 +1279,7 @@ def npu_quality_summary_arguments(run_id: str) -> list[str]:
 
 def evaluate_npu_quality_summary(
     summary: Any, run_id: str, model_asset: str, count: int = NPU_QUALITY_GATE_N,
+    accelerator: str = "NPU", gpu_precision: str | None = None,
 ) -> dict[str, Any]:
     """Apply the fixed NPU criteria (CLAUDE.md §5) to an npu-runner summary. bit_identical_to_cpu
     True means the candidate ran on CPU, so it fails even if argmax and cosine pass."""
@@ -1207,8 +1294,10 @@ def evaluate_npu_quality_summary(
         failures.append("run_id_mismatch")
     if summary.get("status") != "OK":
         failures.append("runner_status_not_ok")
-    if summary.get("accelerator_requested") != "NPU":
-        failures.append("accelerator_not_npu")
+    if summary.get("accelerator_requested") != accelerator:
+        failures.append("accelerator_not_npu" if accelerator == "NPU" else f"accelerator_not_{accelerator.lower()}")
+    if gpu_precision is not None and summary.get("gpu_precision") != gpu_precision:
+        failures.append("gpu_precision_mismatch")
     if summary.get("model") != model_asset:
         failures.append("model_asset_mismatch")
     if re.fullmatch(r"[0-9a-f]{64}", model_sha) is None:
@@ -1232,7 +1321,11 @@ def evaluate_npu_quality_summary(
             failures.append("cosine_below_threshold")
         if gate.get("verdict") != "PASS":
             failures.append("runner_verdict_not_pass")
+    extra = {} if accelerator == "NPU" else {"candidate_accelerator": accelerator}
+    if gpu_precision is not None:
+        extra["candidate_gpu_precision"] = gpu_precision
     return {
+        **extra,
         "status": "passed" if not failures else "failed",
         "failure_reasons": failures,
         "run_id": run_id,
@@ -3011,6 +3104,46 @@ def validate_result(
     }
 
 
+# validate_result() checks that assume ONE duty over the whole load window. A chain slot has one duty per
+# segment and transitions inside the window, so these are replaced by per-segment checks (tools/npu_chain.py).
+SINGLE_SEGMENT_DUTY_CHECKS = (
+    "duty_request", "duty_target_active", "duty_time_explained", "duty_achieved_explained",
+    "duty_idle_semantics",
+)
+
+
+def validate_chain_result(
+    run_dir: Path,
+    duration_s: int,
+    warmup: int,
+    run_id: str,
+    command_id: str,
+    duty_cycle_period_seconds: float,
+    chain: dict[str, Any],
+    expected_accuracy_preflight: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Chain-mode (pilot only, 2026-09-28) counterpart of validate_result(): the same identity, envelope,
+    capture and provenance checks, the single-duty checks replaced per segment, plus the chain
+    conservation check. There are no formal checks: a chain slot never counts toward formal_npu_valid."""
+    base = validate_result(
+        run_dir, "NPU", None, duration_s, warmup, run_id, command_id, "pilot",
+        100, duty_cycle_period_seconds, expected_accuracy_preflight, None,
+    )
+    events = load_jsonl(Path(base["runner_file"]))
+    thermal_path = run_dir / "raw" / "thermalservice.jsonl"
+    telemetry = [
+        int(sample["mono_ns"]) for sample in (load_jsonl(thermal_path) if thermal_path.is_file() else [])
+        if sample.get("parse_status") == "ok" and isinstance(sample.get("mono_ns"), int)
+    ]
+    report = npu_chain_module().check_chain(events, chain["spec"], chain["sha256"], telemetry)
+    checks = {name: value for name, value in base["checks"].items() if name not in SINGLE_SEGMENT_DUTY_CHECKS}
+    checks["duty_request"] = report["checks"].get("segment_duty_request") is True
+    checks["segment_duty_identities"] = report["checks"].get("segment_duty_identities") is True
+    checks["chain_conservation"] = report["passed"]
+    failed = [name for name, passed in checks.items() if not passed]
+    return {**base, "valid": not failed, "checks": checks, "failed_checks": failed, "chain_check": report}
+
+
 def attach_accuracy_to_analyzer_summary(
     run_dir: Path, accuracy_preflight: dict[str, Any]
 ) -> None:
@@ -3387,11 +3520,15 @@ class ExperimentOrchestrator:
         assert self.adb is not None
         run_id = f"npuq-{uuid.uuid4()}"
         reference_asset = gate_config["reference"].split(":", 1)[1]
+        # GPU slots gate the GPU candidate; every other slot keeps the NPU gate exactly as before
+        gate_accelerator = "GPU" if config.get("timed_accelerator") == "GPU" else "NPU"
+        gate_precision = config.get("timed_gpu_precision") if gate_accelerator == "GPU" else None
         self.adb.run(["shell", "am", "force-stop", NPU_RUNNER_PACKAGE], timeout=20, check=False)
         self.adb.run(
             npu_quality_intent_arguments(
                 run_id, config["model_asset"], reference_asset, gate_config["input_spec"],
                 gate_config["n"], config.get("model_path"), gate_config.get("reference_path"),
+                gate_accelerator, gate_precision,
             ),
             timeout=30,
         )
@@ -3417,7 +3554,7 @@ class ExperimentOrchestrator:
             }
         else:
             result = evaluate_npu_quality_summary(
-                summary, run_id, candidate, gate_config["n"],
+                summary, run_id, candidate, gate_config["n"], gate_accelerator, gate_precision,
             )
         result["policy"] = policy
         self.manifest["npu_quality_preflight"] = result
@@ -3581,8 +3718,10 @@ class ExperimentOrchestrator:
             "sample": error.sample,
         }
         try:
+            # 2026-09-28: stop the runner that is actually running (npu-runner for NPU slots). Before this
+            # it always stopped benchmark-runner, so an NPU slot kept loading until failure cleanup.
             emergency_stop = self.adb.run(
-                ["shell", "am", "force-stop", RUNNER_PACKAGE],
+                ["shell", "am", "force-stop", runner_package_for(slot.get("resource"))],
                 timeout=20,
                 check=False,
             )
@@ -3940,6 +4079,7 @@ class ExperimentOrchestrator:
                     "capture", str(self.runs_root),
                     *npu_logger_capture_arguments(
                         slot["resource"], getattr(self.args, "npu_diagnostic_logcat", False)),
+                    *(["--keep-files-open"] if getattr(self.args, "logger_keep_files_open", False) else []),
                 ),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
@@ -4021,7 +4161,7 @@ class ExperimentOrchestrator:
                     slot["runtime_safety"]["observations"] = safety_monitor.observations
                     self.save()
 
-            runner_timeout = self.args.duration + 180 + min(self.args.warmup * 2, 3600)
+            runner_timeout = runner_timeout_seconds(self.args)
             def remote_probe(final: bool) -> RemoteRunnerProbe:
                 slot["terminal_fallback_used"] = True
                 slot["logcat_terminal_missing"] = True
@@ -4173,7 +4313,7 @@ class ExperimentOrchestrator:
 
             try:
                 logger_code = logger.process.wait(
-                    timeout=logger_exit_timeout_seconds(slot["resource"])
+                    timeout=logger_exit_timeout_for(self.args, slot["resource"])
                 )
             except subprocess.TimeoutExpired as error:
                 raise OrchestratorError("d1_logger did not exit after run_stop") from error
@@ -4196,7 +4336,7 @@ class ExperimentOrchestrator:
 
             analysis = self._run_host(
                 [sys.executable, str(self.logger_path), "analyze", str(run_dir)],
-                timeout=120,
+                timeout=analyze_timeout_seconds(self.args),
             )
             slot["analyze_stdout"] = analysis.stdout[-4000:]
             self.step(slot, "analysis_completed", status="ok")
@@ -4207,12 +4347,16 @@ class ExperimentOrchestrator:
             attach_accuracy_to_analyzer_summary(run_dir, experiment_accuracy)
             self.step(slot, "accuracy_provenance_attached", status="ok")
 
+            chain = npu_chain_for(self.args)
             validation = validate_result(
                 run_dir, slot["resource"], slot["cpu_threads"],
                 self.args.duration, self.args.warmup, run_id, command_id, self.args.mode,
                 slot["duty_cycle_percent"], self.args.duty_cycle_period_seconds,
                 experiment_accuracy,
                 gpu_profile(self.args.gpu_profile),
+            ) if chain is None else validate_chain_result(
+                run_dir, self.args.duration, self.args.warmup, run_id, command_id,
+                self.args.duty_cycle_period_seconds, chain, experiment_accuracy,
             )
             slot["validation"] = validation
             summary = validation["summary"]
@@ -4470,6 +4614,12 @@ def experiment_config(args: argparse.Namespace) -> dict[str, Any]:
     # Only NPU experiments carry the NPU block, so CPU/GPU configs (and resume checks) are unchanged.
     if "NPU" in config["resources"]:
         config["npu"] = npu_config(args)
+    # 2026-09-28: timeout overrides are recorded only when given (default configs stay byte-identical)
+    for name in ("runner_timeout_seconds", "logger_exit_timeout_seconds", "analyze_timeout_seconds"):
+        if getattr(args, name, None) is not None:
+            config[name] = getattr(args, name)
+    if getattr(args, "logger_keep_files_open", False):
+        config["logger_keep_files_open"] = True
     return config
 
 
@@ -4844,13 +4994,76 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--npu-timed-input-spec", choices=NPU_INPUT_SPECS,
                         help="timed-run input_spec (d1_npu_input_spec); omitted = runner default lcg-unit")
     parser.add_argument("--npu-reference-path", help="device file path of the CPU reference model")
-    parser.add_argument("--npu-accelerator", default="NPU", choices=("NPU", "CPU"),
-                        help="the single CompiledModel accelerator for NPU slots; CPU is not a fallback")
+    parser.add_argument("--npu-accelerator", default="NPU", choices=NPU_TIMED_ACCELERATORS,
+                        help="the single CompiledModel accelerator for NPU slots; CPU/GPU are not fallbacks")
     parser.add_argument("--npu-run-only-span", action="store_true",
                         help="npu-runner records a run_only_summary event (CompiledModel.run() only)")
     parser.add_argument("--npu-diagnostic-logcat", action="store_true",
                         help="add litert:V tflite:V TfLite:V to the NPU capture (diagnostic smoke only)")
+    # 2026-09-28 P2 options (opt-in; omitted = every Intent, config and timeout exactly as before)
+    parser.add_argument("--npu-gpu-precision", choices=NPU_GPU_PRECISIONS,
+                        help="CompiledModel GpuOptions.precision for --npu-accelerator GPU (omitted = not set)")
+    parser.add_argument("--npu-max-inference-spans", type=int,
+                        help="npu-runner GpuTelemetry.connect(maxInferenceSpans) (omitted = 250000)")
+    parser.add_argument("--npu-chain", type=Path,
+                        help="chain JSON (d1-npu-chain-v1): segments run back to back in one pilot NPU slot")
+    parser.add_argument("--runner-timeout-seconds", type=float,
+                        help="runner terminal-event deadline (omitted = duration+180+min(2*warmup,3600))")
+    parser.add_argument("--logger-exit-timeout-seconds", type=float,
+                        help="wait for d1_logger after run_stop (omitted = 30 CPU/GPU, 300 NPU)")
+    parser.add_argument("--logger-keep-files-open", action="store_true",
+                        help="d1_logger capture --keep-files-open (same bytes, faster end-of-run drain)")
+    parser.add_argument("--analyze-timeout-seconds", type=float,
+                        help="d1_logger analyze deadline (omitted = 120)")
     return parser
+
+
+def validate_p2_cli(args: argparse.Namespace) -> None:
+    """Rules for the 2026-09-28 options. With none of them given this function does nothing."""
+    accelerator = getattr(args, "npu_accelerator", "NPU")
+    resources = [str(resource).upper() for resource in args.resources]
+    model = str(getattr(args, "npu_model_path", None) or getattr(args, "npu_model_asset", ""))
+    if accelerator == "GPU" and "_Samsung_E9965" in model:
+        raise OrchestratorError(
+            "--npu-accelerator GPU needs the original model (AOT *_Samsung_E9965 is NPU-only), "
+            "e.g. --npu-model-asset models/mobilenet_v1_1.0_224.tflite"
+        )
+    if getattr(args, "npu_gpu_precision", None) and accelerator != "GPU":
+        raise OrchestratorError("--npu-gpu-precision needs --npu-accelerator GPU")
+    spans = getattr(args, "npu_max_inference_spans", None)
+    if spans is not None and not 1 <= spans <= NPU_MAX_INFERENCE_SPANS_LIMIT:
+        raise OrchestratorError(f"--npu-max-inference-spans must be in 1..{NPU_MAX_INFERENCE_SPANS_LIMIT}")
+    if (spans is not None or getattr(args, "npu_gpu_precision", None)) and "NPU" not in resources:
+        raise OrchestratorError("--npu-max-inference-spans / --npu-gpu-precision apply to NPU slots only")
+    for name in ("runner_timeout_seconds", "logger_exit_timeout_seconds", "analyze_timeout_seconds"):
+        value = getattr(args, name, None)
+        if value is not None and (not math.isfinite(value) or value <= 0):
+            raise OrchestratorError(f"--{name.replace('_', '-')} must be finite and positive")
+    if getattr(args, "npu_chain", None) is None:
+        return
+    try:
+        chain = npu_chain_module().load_chain(Path(args.npu_chain))
+    except (OSError, ValueError) as error:
+        raise OrchestratorError(f"--npu-chain: {error}") from error
+    if resources != ["NPU"]:
+        raise OrchestratorError("--npu-chain needs --resources NPU only")
+    if args.mode != "pilot":
+        raise OrchestratorError("chain slots are pilot-only; they never enter formal validation")
+    if effective_accuracy_policy(args) != "off":
+        raise OrchestratorError("--npu-chain needs --accuracy-preflight off")
+    if normalized_axes(args)[1] != [100]:
+        raise OrchestratorError("--npu-chain sets duty per segment; leave --duty-cycles at 100")
+    if args.duration != chain["total_duration_s"]:
+        raise OrchestratorError(
+            f"--duration must equal the chain total ({chain['total_duration_s']} s) so every timeout scales"
+        )
+    if (
+        accelerator != "NPU" or getattr(args, "npu_model_path", None)
+        or getattr(args, "npu_timed_input_spec", None) or getattr(args, "npu_run_only_span", False)
+        or getattr(args, "npu_gpu_precision", None)
+        or getattr(args, "npu_model_asset", DEFAULT_NPU_MODEL_ASSET) != DEFAULT_NPU_MODEL_ASSET
+    ):
+        raise OrchestratorError("chain segments set accelerator, model, input spec and GPU precision")
 
 
 def validate_cli(args: argparse.Namespace) -> None:
@@ -4859,6 +5072,7 @@ def validate_cli(args: argparse.Namespace) -> None:
         or not getattr(args, "npu_model_size", None)
     ):
         raise ValueError("--npu-model-path needs --npu-model-sha256 (64 hex) and --npu-model-size")
+    validate_p2_cli(args)
     cpu_thread_levels, duty_cycles = normalized_axes(args)
     if any(not 1 <= value <= 16 for value in cpu_thread_levels):
         raise OrchestratorError("CPU thread levels must each be in 1..16")

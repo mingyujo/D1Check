@@ -559,6 +559,7 @@ class CaptureSession:
         perfetto_config: Path,
         runner_package: str = RUNNER_PACKAGE,
         extra_logcat_tags: Iterable[str] = (),
+        keep_files_open: bool = False,
     ) -> None:
         self.adb_command = adb_base(adb, serial)
         # NPU runs pass npu-runner's package and "litert:I"; CPU/GPU use the defaults unchanged.
@@ -582,6 +583,9 @@ class CaptureSession:
         self.capture_warnings: list[str] = []
         self.pending_raw_log: list[str] = []
         self.recovered_runner_files: set[str] = set()
+        # 2026-09-28 opt-in (capture --keep-files-open): see _stream(). Default = open/append/close per line.
+        self.keep_files_open = keep_files_open
+        self._open_streams: dict[Path, Any] = {}
 
     def activate_run(self, run_id: str, run_start_mono_ns: int) -> None:
         with self.lock:
@@ -618,9 +622,28 @@ class CaptureSession:
         )
         return result.stdout.strip() if result.returncode == 0 else ""
 
+    def _stream(self, path: Path) -> Any:
+        # --keep-files-open: one line-buffered handle per file instead of open/append/close per line.
+        # Same bytes (every write ends with "\n" and is flushed there); the end-of-run D1GPU burst drains
+        # ~12x faster (60,077-line synthetic stream, this PC: 843 -> 10,587 lines/s). Closed in run().
+        stream = self._open_streams.get(path)
+        if stream is None:
+            stream = path.open("a", encoding="utf-8", newline="\n", buffering=1)
+            self._open_streams[path] = stream
+        return stream
+
+    def close_capture_files(self) -> None:
+        with self.lock:
+            for stream in self._open_streams.values():
+                stream.close()
+            self._open_streams.clear()
+
     def _append_raw_log(self, line: str) -> None:
         if self.run_dir is None:
             self.pending_raw_log.append(line)
+            return
+        if self.keep_files_open:
+            self._stream(self.run_dir / "raw/logcat.txt").write(line.rstrip("\r\n") + "\n")
             return
         with (self.run_dir / "raw/logcat.txt").open(
             "a", encoding="utf-8", newline="\n"
@@ -631,6 +654,9 @@ class CaptureSession:
         if self.run_dir is None:
             return
         path = self.run_dir / relative
+        if self.keep_files_open:
+            self._stream(path).write(json.dumps(event, ensure_ascii=False, separators=(",", ":")) + "\n")
+            return
         with path.open("a", encoding="utf-8", newline="\n") as stream:
             stream.write(json.dumps(event, ensure_ascii=False, separators=(",", ":")) + "\n")
 
@@ -995,6 +1021,8 @@ class CaptureSession:
             finally:
                 # A started PID is always killed, even if no run directory was ever created.
                 self.stop_perfetto()
+            if self.keep_files_open:
+                self.close_capture_files()
             if self.run_dir is not None:
                 metadata_path = self.run_dir / "metadata.json"
                 metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
@@ -1303,6 +1331,10 @@ def analyze(run_dir: Path) -> None:
             "runner_experiment_valid": metadata_event.get("experiment_valid") is True,
             "thermal_coverage": coverage["passes_formal_requirement"] is True,
         }
+        # 2026-09-28: chain-mode runs (npu-runner --npu-chain) are pilot-only and never formal.
+        # The key exists only for chain runs, so ordinary NPU summaries are unchanged.
+        if metadata_event.get("chain_mode") is True:
+            npu_conditions["not_chain_run"] = False
         if npu_quality is None:
             analysis_warnings.append(
                 "no npu_quality_preflight in experiment manifest; formal_npu_valid is false"
@@ -1425,6 +1457,10 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         default=Path(__file__).with_name("perfetto") / "gpu_diagnostic.pbtxt",
     )
+    capture_parser.add_argument(
+        "--keep-files-open", action="store_true",
+        help="2026-09-28: one line-buffered handle per capture file (same bytes, faster burst drain)",
+    )
     analyze_parser = subparsers.add_parser("analyze")
     analyze_parser.add_argument("run_dir", type=Path)
     subparsers.add_parser("self-test")
@@ -1451,6 +1487,7 @@ def main() -> int:
         adb, args.serial, args.output_root, args.interval,
         args.diagnostic_perfetto, args.perfetto_config,
         args.runner_package, args.extra_logcat_tag,
+        keep_files_open=args.keep_files_open,
     ).run()
 
 

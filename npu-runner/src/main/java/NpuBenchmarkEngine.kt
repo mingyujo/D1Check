@@ -29,6 +29,12 @@ class NpuBenchmarkEngine(
     private val modelAssetPath: String?,
     /** 파일 경로로 열 때 사용. 리빌드 없이 모델을 바꿔 끼우는 용도. */
     private val modelFilePath: String?,
+    /**
+     * 2026-09-28 추가. GPU 일 때만 쓰는 CompiledModel.GpuOptions.precision. null = GpuOptions 를 설정하지 않는다
+     * (기존과 같음). API 근거: litert-api 2.2.0 classes.jar javap — Options.setGpuOptions(GpuOptions),
+     * GpuOptions(…, precision: Precision?, …) 기본값 전부 null, toMap() 은 null 이 아닌 항목만 넘긴다.
+     */
+    private val gpuPrecision: CompiledModel.GpuOptions.Precision? = null,
 ) : AutoCloseable {
 
     data class InitSpans(
@@ -83,6 +89,10 @@ class NpuBenchmarkEngine(
         }
 
         val options = CompiledModel.Options(accelerator)
+        if (gpuPrecision != null) {
+            check(accelerator == Accelerator.GPU) { "gpuPrecision is only valid with Accelerator.GPU" }
+            options.gpuOptions = CompiledModel.GpuOptions(precision = gpuPrecision)
+        }
         val compiled = when {
             modelFilePath != null -> CompiledModel.create(modelFilePath, options, environment)
             modelAssetPath != null ->

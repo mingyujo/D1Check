@@ -1,0 +1,34 @@
+{
+  "schema": "d1-npu-chain-v1",
+  "chain_id": "m1_recovery_gpu_v1",
+  "model_prepare": "per_segment",
+  "segments": [
+    {
+      "accelerator": "GPU",
+      "model": "models/mobilenet_v1_1.0_224.tflite",
+      "input_spec": "lcg-unit",
+      "duty": 10,
+      "duration_s": 60,
+      "gpu_precision": "FP32",
+      "label": "cold_ref_d10"
+    },
+    {
+      "accelerator": "GPU",
+      "model": "models/mobilenet_v1_1.0_224.tflite",
+      "input_spec": "lcg-unit",
+      "duty": 100,
+      "duration_s": 1200,
+      "gpu_precision": "FP32",
+      "label": "heat_d100"
+    },
+    {
+      "accelerator": "GPU",
+      "model": "models/mobilenet_v1_1.0_224.tflite",
+      "input_spec": "lcg-unit",
+      "duty": 10,
+      "duration_s": 300,
+      "gpu_precision": "FP32",
+      "label": "probe_d10"
+    }
+  ]
+}

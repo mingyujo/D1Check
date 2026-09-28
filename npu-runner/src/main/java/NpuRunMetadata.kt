@@ -32,6 +32,8 @@ internal object NpuRunMetadata {
         val inputElements: Int?,
         val inputSha256: String?,
         val modelSizeBytes: Long? = null,
+        /** Runtime.maxMemory() (2026-09-28 추가). 상한 옵션을 쓴 런에만 기록한다. */
+        val jvmMaxMemoryBytes: Long? = null,
     )
 
     data class LoadOutcome(
@@ -156,6 +158,19 @@ internal object NpuRunMetadata {
         }
         if (config.modelPath != null || config.modelAsset != NpuRunConfig.DEFAULT_MODEL_ASSET) {
             values["npu_model_size_bytes"] = facts?.modelSizeBytes
+        }
+        // 2026-09-28 추가 키 — GPU 가속기·상한 옵션일 때만 붙는다 (기본 NPU·CPU 런 출력은 그대로)
+        if (config.accelerator == TimedAccelerator.GPU) {
+            // 아래 두 키는 NPU AOT 전제의 값이라 GPU 런에서는 사실대로 바꿔 적는다 (자리는 그대로)
+            values["npu_compile_mode"] = "not_aot (original model, compiled on device by the GPU accelerator)"
+            values["npu_precision"] = "not_applicable (GPU run; see precision_record)"
+            values["compiled_model_options"] = CompiledModelFacts.optionsRecord(config.accelerator, config.gpuPrecision)
+            values["precision_record"] = CompiledModelFacts.precisionRecord(config.accelerator, config.gpuPrecision)
+        }
+        if (config.maxInferenceSpans != NpuRunConfig.DEFAULT_MAX_INFERENCE_SPANS) {
+            values["max_inference_spans"] = config.maxInferenceSpans
+            values["max_inference_spans_buffer_bytes"] = config.maxInferenceSpans * NpuRunConfig.SPAN_BUFFER_BYTES
+            values["jvm_max_memory_bytes"] = facts?.jvmMaxMemoryBytes
         }
         return values
     }

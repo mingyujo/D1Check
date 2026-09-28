@@ -31,7 +31,9 @@ internal sealed interface RunLimit {
  */
 internal enum class TimedAccelerator(val wireName: String, val resourceLabel: String) {
     NPU("NPU", "npu"),
-    CPU("CPU", "cpu_compiled_model");
+    CPU("CPU", "cpu_compiled_model"),
+    // 2026-09-28 추가: CompiledModel GPU 단독 (원본 FP32 모델). NPU 폴백이 아니다
+    GPU("GPU", "gpu_compiled_model");
 
     companion object {
         fun fromWire(value: String?): TimedAccelerator? =
@@ -61,6 +63,13 @@ internal data class NpuRunConfig(
     val accelerator: TimedAccelerator = TimedAccelerator.NPU,
     /** true 면 load 구간 run() 전용 시간 요약을 run_only_summary 이벤트로 남긴다 (opt-in, 기본 false). */
     val recordRunOnly: Boolean = false,
+    // ---- 2026-09-28 추가 (셋 다 기본값이면 기존과 같은 동작)
+    /** GPU 가속기의 CompiledModel.GpuOptions.precision 이름. null = GpuOptions 를 설정하지 않음 (LiteRT 기본). */
+    val gpuPrecision: String? = null,
+    /** GpuTelemetry.connect(maxInferenceSpans). 기본 = telemetry-contract 기본값 250,000. */
+    val maxInferenceSpans: Int = DEFAULT_MAX_INFERENCE_SPANS,
+    /** 연쇄 모드 구간 목록. null = 기존 단일 구간 timed run. */
+    val chain: NpuChainSpec? = null,
 ) {
     init {
         when (limit) {
@@ -84,6 +93,27 @@ internal data class NpuRunConfig(
             "dutyCyclePeriodSeconds must be finite and positive"
         }
         require(modelAsset.isNotBlank() || modelPath != null) { "a model asset or path is required" }
+        require(gpuPrecision == null || accelerator == TimedAccelerator.GPU) {
+            "gpuPrecision is only valid with the GPU accelerator"
+        }
+        require(gpuPrecision == null || gpuPrecision in GPU_PRECISIONS) {
+            "gpuPrecision must be one of $GPU_PRECISIONS"
+        }
+        require(maxInferenceSpans in 1..MAX_INFERENCE_SPANS_LIMIT) {
+            "maxInferenceSpans must be 1..$MAX_INFERENCE_SPANS_LIMIT"
+        }
+        if (chain != null) {
+            // 연쇄 모드는 구간이 가속기·모델·입력·duty·길이를 정한다. 단일 구간 옵션과 섞지 않는다 (fail closed)
+            require(limit is RunLimit.Duration && limit.durationSeconds == chain.totalDurationSeconds) {
+                "chain requires DURATION equal to the sum of segment durations (${chain.totalDurationSeconds} s)"
+            }
+            require(dutyCyclePercent == 100) { "chain sets duty per segment; d1_duty_cycle_percent must be 100" }
+            require(accelerator == TimedAccelerator.NPU && gpuPrecision == null && modelPath == null) {
+                "chain sets accelerator, model and GPU precision per segment"
+            }
+            require(inputSpec == NpuDeterministicInput.InputSpec.LCG_UNIT) { "chain sets input_spec per segment" }
+            require(!recordRunOnly) { "run-only span is not supported in chain mode" }
+        }
     }
 
     /** benchmark-runner 의 resource 자리. NPU 만 받는다. */
@@ -102,6 +132,20 @@ internal data class NpuRunConfig(
         const val MAX_WARMUP_COUNT = 10_000
         const val MAX_INFERENCE_COUNT = 250_000
         const val MAX_DURATION_SECONDS = 3_600L
+        /** telemetry-contract GpuTelemetry.DEFAULT_MAX_INFERENCE_SPANS 와 같은 값 (테스트로 고정). */
+        const val DEFAULT_MAX_INFERENCE_SPANS = 250_000
+        /**
+         * 상한 옵션의 최대값. GpuEventBuffer 가 span 마다 LongArray 3 + IntArray 1 = 28 B 를 미리 잡는다
+         * (telemetry-contract GpuEventBuffer.kt:19-22) → 3,000,000 × 28 B = 84 MB. 실제 허용은 기기 힙으로 한 번 더 막는다.
+         */
+        const val MAX_INFERENCE_SPANS_LIMIT = 3_000_000
+        const val SPAN_BUFFER_BYTES = 28L
+        /** CompiledModel.GpuOptions.Precision 이름 (litert-api 2.2.0 javap: DEFAULT, FP16, FP32, FP16_WITH_FP32_ACCUM). */
+        val GPU_PRECISIONS = listOf("DEFAULT", "FP16", "FP32", "FP16_WITH_FP32_ACCUM")
+
+        /** 미리 잡는 span 버퍼가 JVM 최대 힙의 40 % 를 넘으면 거부한다 (부하 중 OOM 대신 시작 전에 막는다). */
+        fun spanBufferFits(maxInferenceSpans: Int, jvmMaxMemoryBytes: Long): Boolean =
+            maxInferenceSpans.toLong() * SPAN_BUFFER_BYTES <= jvmMaxMemoryBytes * 4 / 10
     }
 }
 
@@ -127,18 +171,30 @@ internal object NpuAutomationIntentParser {
     // 2026-09-26 추가 (둘 다 없으면 기존과 같은 동작)
     const val EXTRA_NPU_ACCELERATOR = "d1_npu_accelerator"
     const val EXTRA_NPU_RUN_ONLY_SPAN = "d1_npu_run_only_span"
+    // 2026-09-28 추가 (없으면 기존과 같은 동작)
+    const val EXTRA_NPU_GPU_PRECISION = "d1_npu_gpu_precision"
+    const val EXTRA_MAX_INFERENCE_SPANS = "d1_max_inference_spans"
+    const val EXTRA_NPU_CHAIN_B64 = "d1_npu_chain_b64"
+    const val EXTRA_NPU_CHAIN_SHA256 = "d1_npu_chain_sha256"
 
     val stringExtras = listOf(
         EXTRA_RESOURCE, EXTRA_LIMIT_MODE, EXTRA_RUN_ID, EXTRA_COMMAND_ID, EXTRA_EXPERIMENT_MODE,
         EXTRA_GPU_PROFILE, EXTRA_NPU_MODEL_ASSET, EXTRA_NPU_MODEL_PATH, EXTRA_NPU_INPUT_SPEC,
-        EXTRA_NPU_ACCELERATOR,
+        EXTRA_NPU_ACCELERATOR, EXTRA_NPU_GPU_PRECISION, EXTRA_NPU_CHAIN_B64, EXTRA_NPU_CHAIN_SHA256,
     )
     val booleanExtras = listOf(EXTRA_NPU_RUN_ONLY_SPAN)
     val intExtras = listOf(
         EXTRA_CPU_THREADS, EXTRA_INFERENCE_COUNT, EXTRA_WARMUP_COUNT, EXTRA_DUTY_CYCLE_PERCENT,
+        EXTRA_MAX_INFERENCE_SPANS,
     )
 
-    fun parse(extras: Map<String, Any?>): NpuRunConfig? {
+    /**
+     * @param jvmMaxMemoryBytes 상한 옵션 검사용 (기본 = 이 프로세스의 Runtime.maxMemory()). 테스트가 바꿔 끼운다.
+     */
+    fun parse(
+        extras: Map<String, Any?>,
+        jvmMaxMemoryBytes: Long = Runtime.getRuntime().maxMemory(),
+    ): NpuRunConfig? {
         if (extras[EXTRA_AUTO_START] != true) return null
 
         val resourceValue = requiredString(extras, EXTRA_RESOURCE).uppercase(Locale.ROOT)
@@ -172,13 +228,29 @@ internal object NpuAutomationIntentParser {
         }
         val acceleratorName = extras[EXTRA_NPU_ACCELERATOR] as? String
         val accelerator = requireNotNull(TimedAccelerator.fromWire(acceleratorName)) {
-            "Unsupported d1_npu_accelerator: $acceleratorName (NPU or CPU, one accelerator only)"
+            "Unsupported d1_npu_accelerator: $acceleratorName (NPU, CPU or GPU, one accelerator only)"
         }
         val recordRunOnly = when (val value = extras[EXTRA_NPU_RUN_ONLY_SPAN]) {
             null -> false
             is Boolean -> value
             else -> throw IllegalArgumentException("$EXTRA_NPU_RUN_ONLY_SPAN must be a Boolean")
         }
+        val gpuPrecision = (extras[EXTRA_NPU_GPU_PRECISION] as? String)?.uppercase(Locale.ROOT)
+        val maxInferenceSpans = optionalInt(extras, EXTRA_MAX_INFERENCE_SPANS)
+            ?: NpuRunConfig.DEFAULT_MAX_INFERENCE_SPANS
+        require(
+            extras[EXTRA_MAX_INFERENCE_SPANS] == null ||
+                NpuRunConfig.spanBufferFits(maxInferenceSpans, jvmMaxMemoryBytes)
+        ) {
+            "d1_max_inference_spans $maxInferenceSpans x ${NpuRunConfig.SPAN_BUFFER_BYTES} B exceeds 40 % of " +
+                "the JVM max heap ($jvmMaxMemoryBytes B)"
+        }
+        val chainB64 = extras[EXTRA_NPU_CHAIN_B64] as? String
+        val chainSha = extras[EXTRA_NPU_CHAIN_SHA256] as? String
+        require((chainB64 == null) == (chainSha == null)) {
+            "$EXTRA_NPU_CHAIN_B64 and $EXTRA_NPU_CHAIN_SHA256 must be sent together"
+        }
+        val chain = chainB64?.let { NpuChainSpec.decode(it, checkNotNull(chainSha)) }
         return NpuRunConfig(
             limit = limit,
             warmupCount = optionalInt(extras, EXTRA_WARMUP_COUNT) ?: 20,
@@ -193,6 +265,9 @@ internal object NpuAutomationIntentParser {
             inputSpec = inputSpec,
             accelerator = accelerator,
             recordRunOnly = recordRunOnly,
+            gpuPrecision = gpuPrecision,
+            maxInferenceSpans = maxInferenceSpans,
+            chain = chain,
         )
     }
 

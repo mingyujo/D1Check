@@ -119,12 +119,13 @@ class NpuAutomationIntentParserTest {
         assertEquals(TimedAccelerator.CPU, cpu.accelerator)
         assertEquals("cpu_compiled_model", cpu.accelerator.resourceLabel)
         assertTrue(cpu.recordRunOnly)
-        for (bad in listOf("NPU,CPU", "GPU", "NPU|CPU", "")) {
+        // 2026-09-28: "GPU" 는 이제 단독 가속기로 받는다 (gpuIsASoleAccelerator… 테스트). 목록·구분자는 여전히 거부
+        for (bad in listOf("NPU,CPU", "GPU,CPU", "NPU|CPU", "", "TPU")) {
             try {
                 NpuAutomationIntentParser.parse(orchestratorExtras().apply { put("d1_npu_accelerator", bad) })
                 throw AssertionError("accepted accelerator: $bad")
             } catch (expected: IllegalArgumentException) {
-                // one accelerator only; GPU is not a timed-run option here
+                // one accelerator only
             }
         }
         try {
@@ -133,5 +134,68 @@ class NpuAutomationIntentParserTest {
         } catch (expected: IllegalArgumentException) {
             // boolean extra only
         }
+    }
+
+    private fun rejected(extras: Map<String, Any?>, maxMemory: Long = 512L shl 20): Boolean = try {
+        NpuAutomationIntentParser.parse(extras, maxMemory)
+        false
+    } catch (expected: IllegalArgumentException) {
+        true
+    }
+
+    @Test
+    fun newOptionsDefaultToThePreviousBehaviour() {
+        val config = checkNotNull(NpuAutomationIntentParser.parse(orchestratorExtras()))
+        assertNull(config.gpuPrecision)
+        assertEquals(250_000, config.maxInferenceSpans)
+        assertNull(config.chain)
+        // 러너 기본값이 telemetry-contract 기본값과 같아야 connect(context, max) 가 기존 connect(context) 와 같다
+        assertEquals(com.example.d1check.contract.GpuTelemetry.DEFAULT_MAX_INFERENCE_SPANS,
+            NpuRunConfig.DEFAULT_MAX_INFERENCE_SPANS)
+    }
+
+    @Test
+    fun gpuIsASoleAcceleratorWithOptionalPrecision() {
+        val gpu = checkNotNull(
+            NpuAutomationIntentParser.parse(orchestratorExtras().apply { put("d1_npu_accelerator", "GPU") })
+        )
+        assertEquals(TimedAccelerator.GPU, gpu.accelerator)
+        assertEquals("gpu_compiled_model", gpu.accelerator.resourceLabel)
+        assertNull(gpu.gpuPrecision)
+        val fp32 = checkNotNull(
+            NpuAutomationIntentParser.parse(orchestratorExtras().apply {
+                put("d1_npu_accelerator", "GPU"); put("d1_npu_gpu_precision", "fp32")
+            })
+        )
+        assertEquals("FP32", fp32.gpuPrecision)
+        // 정밀도는 GPU 전용이고 LiteRT 2.2.0 이름만
+        assertTrue(rejected(orchestratorExtras().apply { put("d1_npu_gpu_precision", "FP32") }))
+        assertTrue(rejected(orchestratorExtras().apply {
+            put("d1_npu_accelerator", "CPU"); put("d1_npu_gpu_precision", "FP32")
+        }))
+        assertTrue(rejected(orchestratorExtras().apply {
+            put("d1_npu_accelerator", "GPU"); put("d1_npu_gpu_precision", "FP64")
+        }))
+    }
+
+    @Test
+    fun inferenceSpanCapIsOptInAndBoundedByTheHeap() {
+        val raised = checkNotNull(
+            NpuAutomationIntentParser.parse(
+                orchestratorExtras().apply { put("d1_max_inference_spans", 2_000_000) }, 512L shl 20,
+            )
+        )
+        assertEquals(2_000_000, raised.maxInferenceSpans)
+        // 2,000,000 × 28 B = 56 MB > 40 % of 128 MB → 거부
+        assertTrue(rejected(orchestratorExtras().apply { put("d1_max_inference_spans", 2_000_000) }, 128L shl 20))
+        assertTrue(rejected(orchestratorExtras().apply { put("d1_max_inference_spans", 3_000_001) }))
+        assertTrue(rejected(orchestratorExtras().apply { put("d1_max_inference_spans", 0) }))
+        assertTrue(rejected(orchestratorExtras().apply { put("d1_max_inference_spans", "2000000") }))
+    }
+
+    @Test
+    fun chainExtrasMustComeTogether() {
+        assertTrue(rejected(orchestratorExtras().apply { put("d1_npu_chain_sha256", "0".repeat(64)) }))
+        assertTrue(rejected(orchestratorExtras().apply { put("d1_npu_chain_b64", "e30=") }))
     }
 }

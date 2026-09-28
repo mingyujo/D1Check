@@ -12,6 +12,7 @@ import android.view.Gravity
 import android.widget.ScrollView
 import android.widget.TextView
 import com.google.ai.edge.litert.Accelerator
+import com.google.ai.edge.litert.CompiledModel
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -140,7 +141,9 @@ class NpuRunnerActivity : Activity() {
         append("D1 NPU timed run\n$config\nBaseline 60 seconds. No NPU load has started yet.\n")
         timedExecutor.execute {
             val result = try {
-                NpuTimedRunEngine(applicationContext).execute(config)
+                // 연쇄 모드(d1_npu_chain_b64)만 별도 실행기로 간다. 그 밖에는 기존 실행기 그대로
+                if (config.chain != null) NpuChainRunEngine(applicationContext).execute(config)
+                else NpuTimedRunEngine(applicationContext).execute(config)
             } catch (error: Throwable) {
                 NpuTimedRunResult(false, "${error.javaClass.simpleName}: ${error.message}", null)
             }
@@ -182,6 +185,11 @@ class NpuRunnerActivity : Activity() {
         val referencePath: String? = null,
         /** `--es input_spec`. null = 기본 lcg-unit (MobileNet, 9/24 G4 게이트와 같은 입력). */
         val inputSpecName: String?,
+        /**
+         * `--es gpu_precision` (2026-09-28 추가). GPU 후보의 CompiledModel.GpuOptions.precision — timed run 의
+         * d1_npu_gpu_precision 과 같은 설정으로 품질 게이트를 돌리기 위함. 없으면 설정 안 함 (기존과 같음).
+         */
+        val gpuPrecision: String? = null,
     ) {
         companion object {
             const val DEFAULT_ASSET_FP32 = "models/mobilenet_v1_1.0_224_Samsung_E9965.tflite"
@@ -213,6 +221,7 @@ class NpuRunnerActivity : Activity() {
                     referenceAsset = i.getStringExtra("ref_model_asset") ?: DEFAULT_REFERENCE_ASSET,
                     referencePath = i.getStringExtra("ref_model_path")?.takeIf { it.isNotBlank() },
                     inputSpecName = i.getStringExtra("input_spec"),
+                    gpuPrecision = i.getStringExtra("gpu_precision")?.uppercase(),
                 )
             }
         }
@@ -232,6 +241,8 @@ class NpuRunnerActivity : Activity() {
         j.append(kv("run_id", cfg.runId)).append(",")
         j.append(kv("engine", "litert-compiled-model")).append(",")
         j.append(kv("accelerator_requested", cfg.accelerator.name)).append(",")
+        // 설정했을 때만 적는다 (기본 요약 JSON 은 기존과 바이트 동일)
+        cfg.gpuPrecision?.let { j.append(kv("gpu_precision", it)).append(",") }
         j.append(kv("model", cfg.modelPath ?: cfg.modelAsset ?: "")).append(",")
         j.append(kv("dtype", cfg.dtype)).append(",")
         val spec = NpuDeterministicInput.InputSpec.fromWire(cfg.inputSpecName)
@@ -245,11 +256,18 @@ class NpuRunnerActivity : Activity() {
 
         var engine: NpuBenchmarkEngine? = null
         try {
+            val gpuPrecision = cfg.gpuPrecision?.let {
+                require(cfg.accelerator == Accelerator.GPU && it in NpuRunConfig.GPU_PRECISIONS) {
+                    "gpu_precision $it needs accelerator GPU and one of ${NpuRunConfig.GPU_PRECISIONS}"
+                }
+                CompiledModel.GpuOptions.Precision.valueOf(it)
+            }
             engine = NpuBenchmarkEngine(
                 context = this,
                 accelerator = cfg.accelerator,
                 modelAssetPath = cfg.modelAsset,
                 modelFilePath = cfg.modelPath,
+                gpuPrecision = gpuPrecision,
             )
 
             append("creating Environment / CompiledModel...\n")
