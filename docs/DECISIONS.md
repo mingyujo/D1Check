@@ -796,3 +796,7 @@
 
 - 동일 A24와 현재 gate가 확인되어 승인 plan_v3를 한 번 호출했다. 이전 설치본이 정확한 후보 APK와 달라 전송 1회가 시작됐으나, 120초 timeout으로 원격 해시 전 경계에서 실패했다. 설치·앱·세션·추론 0, 개발/동결/확인 미실시. `stopped_no_resume`와 소비 registry를 보존한다. [원본 경계·cleanup 보고](ENERGY_AP_STATE_COLLECT03_RESULTS_20260927.md).
 - 재시도·대체·추가와 기존 계획 재개는 채택하지 않는다. 전송 원인과 원격 부분 파일 상태는 미확정이고 이번 결과는 전력/AP 계수나 정책 효과의 증거가 아니다. `experiment_ready=false` 유지.
+## 2026-09-29 — 최소 도착 입력은 고정, 시작 AP gate 미충족으로 실행 차단
+
+- 결정: 기존 queue 24요청/FIXED_SPLIT/120초를 첫 확인 입력으로 고정하고, 32.5–34.0°C 개발 **시작** AP 범위를 사전 gate 계약으로 사용한다. 32.5–39.5°C 세션 경로 범위나 32.3°C의 범위 밖 결과로 하한을 바꾸지 않는다. 1초 전류·약2.63초 AP 대비 짧은 요청과 병행 점유0초 때문에 이 입력은 공통창/전환 확인 질문에만 쓴다.
+- 실행 판정: 현 앱/host는 실제 load 시작의 numeric AP를 집행하지 못한다. 새 실시간 handshake를 즉석에 넣거나 thermal status로 대신하지 않고 `PC_INPUT_FIXED_RUN_BLOCKED`로 둔다. [`근거·입력·Check`](ENERGY_AP_ARRIVAL_CONFIRMATION_PC_20260929.md). 동결 계수·과거 결과·strict unsupported·`experiment_ready=false` 유지; 실행 계획이나 실측 승인을 만든 결정이 아니다.

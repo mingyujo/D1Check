@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-29 최소 도착 확인 입력·시작 AP gate PC 판정
+
+- [고정 입력·센서 해상도·차단 근거](ENERGY_AP_ARRIVAL_CONFIRMATION_PC_20260929.md), [공유 입력/Check](results/energy_ap_arrival_confirmation_01/README.md). queue 24요청/FIXED_SPLIT/공통120초를 결과 선택 없이 고정했다. 단기 전환 공통창 전류 중앙 간격1.000초·AP2.630초, 요청 lane 점유 중앙0.163초; 기존 PC 일정의 병행 점유0초이므로 개별/병행 비용 검증 입력으로 확대하지 않는다.
+- 동결 시작 AP 개발 범위는 **32.5–34.0°C**(전체 경로 범위32.5–39.5°C와 별개). 직전 32.3°C는 unsupported, +23.280J는 매핑 구간의 범위 밖 탐색 외삽이다. 사후 AP 판독 코드를 검증했으나 기존 앱은 실제 load 시작 numeric AP를 읽거나 차단하지 못한다. `Check`는 `PC_INPUT_FIXED_RUN_BLOCKED`/기기명령0을 반환, Run/registry/실측 예산 없음. 다음은 **실제 시작 경계의 AP 차단 가능성을 PC에서 해결하고 계측·APK 영향 검증 후 별도 계획 발행**. 동결값·원본·FAIL·`experiment_ready=false` 유지.
+
 ## 2026-09-29 CC_DG 짧은 전환 진단 1회 완료 — 동결 예측은 범위 밖
 
 - [실행·지원 판정](ENERGY_AP_SHORT_TRANSITION_DIAG01_20260929.md), [별도 오프라인 대시보드](results/energy_ap_short_transition_01/dashboard.html). 새 opt-in 36블록 단일 세션을 PC 검증 후 한 번 실행했다. 앱 정상 완료·회수·host 정리 확인; 작업1,039·적격성4·warmup8, 총1,051/1,692명시 추론, ADB3,634/11,000, 전체1,129.172/2,700초. 6개 병행 블록의 실제 공동 lane 점유는 각각12.908~13.352초였다. 기존 계획·원본·동결값은 보존한다.
