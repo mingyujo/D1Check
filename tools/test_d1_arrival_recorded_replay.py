@@ -10,6 +10,28 @@ from tools import d1_arrival_energy_collection_device as runner
 
 
 class RecordedReplayTest(unittest.TestCase):
+    def test_inrange_followup_has_new_identity_but_same_recorded_work(self):
+        import json
+        with tempfile.TemporaryDirectory() as temp:
+            folder=Path(temp)
+            template=dict(models={key:dict(identity={},target={}) for key in
+                                  ('classification','detection')},images={})
+            (folder/'template.json').write_text(json.dumps(template),encoding='utf-8')
+            (folder/'source.json').write_text(json.dumps({'entries':[{'manifest':'template.json'}]}),
+                                              encoding='utf-8')
+            source=dict(source_plan={'path':str(folder/'source.json')},device_fingerprint='fixture')
+            old=replay.expected_manifest(source,'apk')
+            new=replay.expected_manifest(dict(source,experiment_id=replay.CONFIRM_EXPERIMENT),'apk')
+            self.assertNotEqual(old['session_id'],new['session_id'])
+            self.assertEqual(old['start_ap_gate'],'numeric-ap-observe-v2')
+            self.assertEqual(new['start_ap_gate'],'numeric-ap-once-v1')
+            for field in ('requests','common_window_seconds','resident_baseline_seconds',
+                          'cooling_seconds','maximum_duration_ms','cpu_threads','thermal_gate'):
+                self.assertEqual(old[field],new[field])
+            self.assertEqual(new['models']['classification']['identity']['session_id'],new['session_id'])
+            with self.assertRaisesRegex(ValueError,'unknown replay'):
+                replay.configuration('unregistered-auto-retry')
+
     def test_exact_saved_schedule_and_support_states(self):
         source=replay.source_check()
         self.assertEqual(len(source['requests']),24)

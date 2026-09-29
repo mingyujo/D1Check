@@ -33,6 +33,22 @@ MEASUREMENT_CHANGE = ('numeric-ap-observe-v2 separates fresh HAL AP/execution ad
                       'frozen-model development support; same recorded workload and environmental gates; '
                       'new signed APK and protocol, not a completed same-protocol comparison')
 
+CONFIRM_EXPERIMENT = 'ENERGY-AP-RECORDED-B2-INRANGE-01'
+CONFIRM_FOLDER = 'energy_ap_recorded_b2_inrange_plan_v1'
+CONFIRM_RUN_FOLDER = 'energy_ap_recorded_b2_inrange_run_v1'
+CONFIRM_CONTRACT = ROOT/'docs/results/energy_ap_recorded_b2_01/analysis_contract.json'
+CONFIRM_CHANGE = ('same signed observe-v2-capable APK and saved B2 input; select its existing '
+                  'numeric-ap-once-v1 start admission at 32.5..34 C for a new held-out session; '
+                  'no heating, refit, online-policy claim or automatic strict promotion')
+
+
+def configuration(experiment=EXPERIMENT):
+    if experiment == EXPERIMENT:
+        return FOLDER, RUN_FOLDER, CONTRACT, MEASUREMENT_CHANGE, 'numeric-ap-observe-v2'
+    old.require(experiment == CONFIRM_EXPERIMENT, 'unknown replay experiment')
+    return (CONFIRM_FOLDER, CONFIRM_RUN_FOLDER, CONFIRM_CONTRACT,
+            CONFIRM_CHANGE, 'numeric-ap-once-v1')
+
 # Same one-session runner bounds, derived from its four stages and 24+8 calls.
 REQUESTS, WARMUP, RUNTIMES, STAGED = 24, 8, 4, 7
 STAGE_GATE, POLL, RECOVERY, CLEANUP, INSTALLATION = 120, 485, 50, 45, 600
@@ -108,23 +124,26 @@ def source_check():
     return b
 
 
-def identity():
+def identity(experiment=EXPERIMENT):
+    contract=configuration(experiment)[2]
     return old.identity() | {
         'tools/d1_arrival_recorded_replay.py':p.digest(__file__),
         'tools/d1_arrival_recorded_replay_analysis.py':p.digest(ROOT/'tools/d1_arrival_recorded_replay_analysis.py'),
         'docs/results/energy_ap_recorded_b2_01/source_schedule.json':p.digest(BUNDLE),
-        'docs/results/energy_ap_recorded_b2_01/analysis_contract.json':p.digest(CONTRACT)}
+        contract.relative_to(ROOT).as_posix():p.digest(contract)}
 
 
 def expected_manifest(source, candidate_sha):
+    experiment=source.get('experiment_id',EXPERIMENT)
+    mode=configuration(experiment)[4]
     b=source_check()
     previous=p.read(source['source_plan']['path'])
     template=p.read(Path(source['source_plan']['path']).parent/previous['entries'][0]['manifest'])
-    sid=str(uuid.uuid5(uuid.NAMESPACE_URL, EXPERIMENT+'/queue/B2_PC'))
+    sid=str(uuid.uuid5(uuid.NAMESPACE_URL, experiment+'/queue/B2_PC'))
     requests=[{k:v for k,v in q.items() if k not in ('pc_execution_start_ns','pc_output_ready_ns',
         'pc_persist_complete_ns','pc_worker_release_ns','pc_lane_available_ns')}
         for q in b['requests']]
-    m=dict(protocol=old.PROTOCOL,experiment_id=EXPERIMENT,session_id=sid,
+    m=dict(protocol=old.PROTOCOL,experiment_id=experiment,session_id=sid,
            phase='recorded_dispatch_transition_confirmation',scenario='queue',policy=POLICY,
            replay_version=b['version'],replay_source_sha256=p.digest(BUNDLE),
            source_policy='B2_PC',source_mode='explore',source_seed=201,
@@ -134,7 +153,7 @@ def expected_manifest(source, candidate_sha):
            device_fingerprint=source['device_fingerprint'],maximum_duration_ms=480000,
            maximum_concurrency=2,memory_contract='android-low-memory-resident-v1',
            thermal_gate=0,common_window_seconds=120,resident_baseline_seconds=30,
-           cooling_seconds=60,start_ap_gate='numeric-ap-observe-v2',requests=requests)
+           cooling_seconds=60,start_ap_gate=mode,requests=requests)
     for spec in m['models'].values():
         spec['identity']['session_id']=sid
         spec['target']['apk_sha256']=candidate_sha
@@ -148,7 +167,9 @@ def script_text():
 
 def prepare(source_file,build_file,frozen_file,output):
     source_file,build_file,frozen_file,output=map(Path,(source_file,build_file,frozen_file,output))
-    old.require(not output.exists() and output.name==FOLDER,'fresh replay plan folder only')
+    experiment=CONFIRM_EXPERIMENT if output.name==CONFIRM_FOLDER else EXPERIMENT
+    folder,run_folder,contract,change,mode=configuration(experiment)
+    old.require(not output.exists() and output.name==folder,'fresh replay plan folder only')
     source=p.read(source_file);build=p.read(build_file);source_check()
     old.require(p.digest(frozen_file)==FROZEN_SHA,'frozen model changed')
     old.require(old.apk_sources(build['source_code'])==old.apk_sources(cal.code_identity()) and
@@ -159,28 +180,28 @@ def prepare(source_file,build_file,frozen_file,output):
     old.require(len(source['source_files'])==6 and len(source['references'])==4,
                 'four runtimes, six staging sources')
     output.mkdir();(output/'manifests').mkdir()
-    plan=dict(protocol=old.PROTOCOL,experiment_id=EXPERIMENT,
+    plan=dict(protocol=old.PROTOCOL,experiment_id=experiment,
         status='PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED',approval='not_approved',
         experiment_ready=False,recorded_replay_confirmation=True,budget=BUDGET,
-        source_code=identity(),build_receipt=str(build_file.resolve()),
+        source_code=identity(experiment),build_receipt=str(build_file.resolve()),
         build_receipt_sha256=p.digest(build_file),
         source_plan=dict(path=str(source_file.resolve()),sha256=p.digest(source_file)),
         input_bundle=dict(path=str(BUNDLE.resolve()),sha256=p.digest(BUNDLE)),
-        analysis_contract=dict(path=str(CONTRACT.resolve()),sha256=p.digest(CONTRACT)),
+        analysis_contract=dict(path=str(contract.resolve()),sha256=p.digest(contract)),
         frozen_model=dict(path=str(frozen_file.resolve()),sha256=FROZEN_SHA),
         apk_path=build['apk_path'],apk_sha256=build['apk_sha256'],
         apk_preflight=dict(source['apk_preflight'],candidate=candidate),
         device_fingerprint=source['device_fingerprint'],
         device_hardware_serial=source['device_hardware_serial'],
-        output_root=str(output.parent/RUN_FOLDER),
-        registry=str(output.parent/'arrival_recorded_b2_registry'/EXPERIMENT),
+        output_root=str(output.parent/run_folder),
+        registry=str(output.parent/'arrival_recorded_b2_registry'/experiment),
         battery_start_percent=source['battery_start_percent'],
         battery_min_percent=source['battery_min_percent'],
         battery_max_temperature_tenths_c=source['battery_max_temperature_tenths_c'],
         require_unplugged=source['require_unplugged'],screen_contract=source['screen_contract'],
         source_files=source['source_files'],references=source['references'],
         selection='prespecified saved queue/seed201/B2_PC/realized1.5; one recorded dispatch gate',
-        measurement_protocol_change=MEASUREMENT_CHANGE,
+        measurement_protocol_change=change,
         analysis_scope='observed schedule/current/AP; out-of-range model arithmetic only as extrapolation diagnostic; not online B2 or strict arrival support',
         entries=[])
     m=expected_manifest(plan,build['apk_sha256'])
@@ -196,22 +217,25 @@ def prepare(source_file,build_file,frozen_file,output):
 
 def check(file):
     file=Path(file);plan=p.read(file);source_check()
-    old.require(file.name=='collection_plan.json' and file.parent.name==FOLDER and
-                plan['protocol']==old.PROTOCOL and plan['experiment_id']==EXPERIMENT and
+    experiment=plan['experiment_id']
+    folder,run_folder,contract,change,mode=configuration(experiment)
+    old.require(file.name=='collection_plan.json' and file.parent.name==folder and
+                plan['protocol']==old.PROTOCOL and
                 plan['status']=='PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED' and
                 plan['approval']=='not_approved' and not plan['experiment_ready'] and
                 plan['recorded_replay_confirmation'] and len(plan['entries'])==1 and
-                plan['measurement_protocol_change']==MEASUREMENT_CHANGE and
+                plan['measurement_protocol_change']==change and
                 plan['budget']==BUDGET,'plan identity/budget')
-    old.require(Path(plan['output_root'])==file.parent.parent/RUN_FOLDER and
-                Path(plan['registry'])==file.parent.parent/'arrival_recorded_b2_registry'/EXPERIMENT and
+    old.require(Path(plan['output_root'])==file.parent.parent/run_folder and
+                Path(plan['registry'])==file.parent.parent/'arrival_recorded_b2_registry'/experiment and
                 not Path(plan['registry']).exists() and not Path(plan['output_root']).exists(),
                 'fresh output/consumption registry')
-    old.require(plan['source_code']==identity() and
+    old.require(plan['source_code']==identity(experiment) and
                 p.digest(file.parent/'RUN_AFTER_APPROVAL.ps1')==plan['run_script_sha256'] and
                 p.digest(plan['build_receipt'])==plan['build_receipt_sha256'] and
                 p.digest(plan['source_plan']['path'])==plan['source_plan']['sha256'] and
                 p.digest(plan['input_bundle']['path'])==plan['input_bundle']['sha256'] and
+                Path(plan['analysis_contract']['path'])==contract.resolve() and
                 p.digest(plan['analysis_contract']['path'])==plan['analysis_contract']['sha256'] and
                 p.digest(plan['frozen_model']['path'])==FROZEN_SHA,'source/frozen identity')
     build=p.read(plan['build_receipt'])
