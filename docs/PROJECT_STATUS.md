@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-29 B2 시작 AP 관측 진단 v2 — PC 준비 완료·실행 미승인
+
+- [실행 gate와 모형 지원 분리·검증·계획](ARRIVAL_RECORDED_B2_AP_OBSERVE_PC_20260929.md). 32.5–34.0°C는 동결 개발 **시작 AP 관측 범위**이며 별도 안전 하한 근거가 없다. 기존 `numeric-ap-once-v1`은 유지하고 `numeric-ap-observe-v2`에서 기존 환경·품질 gate와 신선한 HAL AP를 요구하되 개발 범위 밖 값을 원자료로 관측할 수 있게 했다. 밖의 계산은 외삽 진단, 짧은 전환 strict 미지원·정확도 PASS 없음. plan_v4 AP28.8°C 중단은 당시 계약 결과 그대로다.
+- 프로젝트 서명 APK SHA `747ce77e…43f6180`와 별도 plan_v6 SHA `38c9eb2f…00ced`를 외부 경로에 보존. 1세션·runtime4·warmup8·작업24·총32·staging7·APK push/설치 각≤1·ADB≤3,200·전체≤1,300초, 재시도0. Python13건/JVM 대상 테스트·서명 검사·PowerShell Check PASS/기기명령0. 상태 `PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED`; run/registry 미생성. plan_v5는 AP 경로 판독 보완 전의 미소비 초안이며 실행 대상이 아니다. 기존 동결·FAIL·원자료·queue24 미소비 계획·`experiment_ready=false` 유지. **다음 행동 하나:** 이 별도 단일세션 진단의 실행 여부를 현재 기기·환경 및 승인 예산으로 결정한다.
+
 ## 2026-09-29 새 lifecycle APK의 B2 기록 재생 — 시작 AP gate 중단
 
 - [별도 plan_v4 실행·원본·gate 판독](ARRIVAL_RECORDED_B2_REPLAY_RUN02_20260929.md), [소형 소비 요약](results/energy_ap_recorded_b2_01/run02_summary.json), [통합 화면](results/arrival_policy_screen_01/dashboard.html). 새 계획 SHA `19ef883a…99a507` 1회 claim·실행, `stopped_no_resume`. 설치본 SHA `120ee894…1d50f5` 확인(이번 APK push·설치 각1). runtime4·warmup8 반환 뒤 시작 직전 HAL AP **28.8°C**가 고정 32.5–34.0°C 밖이라 arm 미발행; 본 요청 시작 기록0·120초 공식창 미진입·완료0/시도1. 실행기 ADB234+transport 선택1/3,200, 95.906/1,300초; host force-stop·프로세스 부재 확인, 앱 자체 cleanup 기록 없음. lifecycle은 `onCreate`만 있고 이번에는 `lifecycle_cancelled`가 아니다. J/AP 오차·실제 병행·정책 성능은 미산출. plan_v3·v4 모두 소비·종료, 동결 모형·strict 범위·기존 FAIL·queue24 미소비 계획·`experiment_ready=false` 유지. **다음 행동 하나:** 기존 사전 AP 기록으로 고정 시작 범위의 현재 비충전 환경 적용 가능성을 PC에서 판독한다(실측 자동 실행 아님).

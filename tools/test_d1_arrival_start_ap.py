@@ -6,7 +6,7 @@ from unittest.mock import Mock,patch
 from tools import d1_arrival_start_ap as g
 
 class StartApTest(unittest.TestCase):
-    def exercise(self,ap):
+    def exercise(self,ap,mode=g.VERSION):
         with tempfile.TemporaryDirectory() as td:
             f=Path(td);(f/'input_manifest.json').write_text('{}')
             (f/'start_ap_gate').mkdir(); ready=f/'ready.json'
@@ -14,7 +14,7 @@ class StartApTest(unittest.TestCase):
             d=Mock()
             with patch.object(g.device,'pull_file',return_value=ready),patch.object(g.device,'thermal',return_value=dict(
                 AP=ap,thermal_status='0',before_ns=200,after_ns=300)):
-                try:g.approve(d,'remote',f,dict(session_id='00000000-0000-0000-0000-000000000001'))
+                try:g.approve(d,'remote',f,dict(session_id='00000000-0000-0000-0000-000000000001',start_ap_gate=mode))
                 except ValueError:
                     self.assertEqual(d.call.call_count,0);return False
             self.assertEqual(d.call.call_count,1)
@@ -25,6 +25,13 @@ class StartApTest(unittest.TestCase):
     def test_invalid_never_arms(self):
         for ap in ('','32.3','34.1','nan'):
             self.assertFalse(self.exercise(ap))
+    def test_diagnostic_separates_observation_from_frozen_support(self):
+        self.assertTrue(self.exercise('28.8',g.DIAGNOSTIC_VERSION))
+        self.assertTrue(self.exercise('32.5',g.DIAGNOSTIC_VERSION))
+        self.assertTrue(self.exercise('34.0',g.DIAGNOSTIC_VERSION))
+        for ap in ('','nan','inf'):
+            self.assertFalse(self.exercise(ap,g.DIAGNOSTIC_VERSION))
+        self.assertFalse(self.exercise('28.8',g.VERSION))
     def test_real_poll_routes_warmup_then_single_start_approval(self):
         from tools import d1_arrival_energy_collection_device as runner
         from contextlib import ExitStack
@@ -49,5 +56,32 @@ class StartApTest(unittest.TestCase):
             runner.poll(d,'remote',folder,dict(session_id='fixture',start_ap_gate=g.VERSION),
                         dict(screen_contract={},references={k:dict(path=str(reference),sha256=g.p.digest(reference)) for k in runner.c.old.KEYS}))
             self.assertEqual(approve.call_count,1)
+    def test_real_poll_routes_diagnostic_approval_once(self):
+        from tools import d1_arrival_energy_collection_device as runner
+        import time
+        with tempfile.TemporaryDirectory() as td:
+            folder=Path(td);(folder/'input_manifest.json').write_text('{}')
+            ready=folder/'ready.json';ready.write_text(json.dumps(dict(manifest_sha256=g.p.digest(folder/'input_manifest.json'))))
+            warm=folder/'warm.json';warm.write_text(json.dumps([dict(key=k,result={}) for k in runner.c.old.KEYS for _ in range(2)]))
+            reference=folder/'reference.json';reference.write_text('{}')
+            listings=iter([b'warmup.ready.json',b'start_ap.ready.json',b'start_ap.ready.json',b'cleanup.json'])
+            d=Mock(deadline=time.monotonic()+10)
+            def call(*args,**kwargs):
+                if 'ls' in args:return Mock(stdout=next(listings))
+                if 'pidof' in args:return Mock(stdout=b'123')
+                return Mock(stdout=b'')
+            d.call.side_effect=call
+            with patch.object(runner.energy_device,'thermal',return_value={}),\
+                 patch.object(runner.screen,'snapshot'),\
+                 patch.object(runner.energy_device,'pull_file',side_effect=lambda d,r,n,f: ready if n.endswith('ready.json') else warm),\
+                 patch.object(runner.energy_device,'arm'),\
+                 patch.object(runner.energy_device,'gpu_proof',return_value={}),\
+                 patch.object(runner.c.old,'quality'),\
+                 patch.object(g,'approve') as approval,\
+                 patch.object(runner.time,'sleep'):
+                runner.poll(d,'remote',folder,dict(session_id='fixture',start_ap_gate=g.DIAGNOSTIC_VERSION),
+                            dict(screen_contract={},budget=dict(host_poll_seconds=10,adb_commands=100),
+                                 references={k:dict(path=str(reference),sha256=g.p.digest(reference)) for k in runner.c.old.KEYS}))
+            approval.assert_called_once()
 
 if __name__=='__main__':unittest.main()

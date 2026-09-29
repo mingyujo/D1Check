@@ -1,0 +1,14 @@
+{
+  "version": "recorded-b2-ap-observe-diagnostic-v2",
+  "input": "saved queue/seed201/B2_PC/realized1.5; 24 recorded backend and release gates, no device slowdown",
+  "execution_eligibility": "Existing A24, package/signature, unplugged battery, BAT temperature, thermal status 0, screen, memory and warmup-quality gates remain. HAL AP type 0 must be finite, identity-matched and fresh: sample bracket and sample-start-to-common-start each <=3 seconds. No 32.5 C execution floor is asserted.",
+  "model_applicability": "Frozen development initial AP 32.5-34.0 C, path 32.5-39.5 C and supported state keys are reported separately from execution eligibility. Short transitions remain outside strict regimen support even if initial AP is in range.",
+  "out_of_range": "Retain actual schedule/current/voltage/AP as observed data. If all frozen coefficients and full state mapping exist, compute only labelled extrapolation diagnostics. Missing coefficients yield null predictions. Do not expand strict support, refit coefficients, shift AP curve, or set accuracy PASS.",
+  "prediction_input": ["observed initial AP", "actual dispatch-to-lane-available task/backend occupancy", "frozen whole-device state power and AP coefficients"],
+  "forbidden_prediction_input": ["later observed current", "later observed AP", "PC realized runtime as device runtime", "future dispatch as an online decision"],
+  "common_window_seconds": 120,
+  "completion": "All 24 planned requests remain in denominator. Full J requires complete current/voltage integration and full state mapping; AP path metrics require AP coverage. Report execution, observation, energy calculation and AP calculation as separate statuses; missing or partial is null, not zero.",
+  "accuracy_pass": null,
+  "policy_selection_pass": null,
+  "limits": ["one replay is not an online B2 comparison", "short transitions and alternative initial temperatures lack independent predictive validation", "conditional A24 raw-current=mA interpretation has no absolute accuracy certification"]
+}

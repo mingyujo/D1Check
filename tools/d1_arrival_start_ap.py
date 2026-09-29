@@ -8,6 +8,7 @@ from tools import d1_arrival_device as legacy
 from tools import d1_arrival_plan as p
 
 VERSION = 'numeric-ap-once-v1'
+DIAGNOSTIC_VERSION = 'numeric-ap-observe-v2'
 
 def approve(d, remote, folder, manifest):
     folder=Path(folder)
@@ -17,7 +18,10 @@ def approve(d, remote, folder, manifest):
         raise ValueError('start AP manifest mismatch')
     sample=device.thermal(d,folder,-1)
     ap=float(sample.get('AP') or 'nan')
-    if not (math.isfinite(ap) and 32.5 <= ap <= 34.0 and sample['thermal_status']=='0' and
+    mode=manifest.get('start_ap_gate',VERSION)
+    if mode not in (VERSION,DIAGNOSTIC_VERSION):
+        raise ValueError('unknown start AP mode')
+    if not (math.isfinite(ap) and (mode==DIAGNOSTIC_VERSION or 32.5 <= ap <= 34.0) and sample['thermal_status']=='0' and
             ready['mono_ns'] <= sample['before_ns'] <= sample['after_ns'] and
             sample['after_ns']-sample['before_ns'] <= 3_000_000_000):
         raise ValueError('start AP invalid; no arm, no retry')
@@ -32,5 +36,6 @@ def approve(d, remote, folder, manifest):
            f'"echo {payload} > {target}.tmp && mv {target}.tmp {target}"',timeout=5)
     returned=time.monotonic()
     device.save(folder/'start_ap_gate/host_approval.json',dict(sample=sample,manifest_sha256=digest,
+                mode=mode,initial_ap_in_frozen_development_range=(32.5<=ap<=34.0),
                 approval_submit_host_monotonic=submitted,approval_return_host_monotonic=returned,
                 meaning='approval sent; app must still validate age at actual common start'))

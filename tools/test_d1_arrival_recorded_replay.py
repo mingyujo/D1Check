@@ -36,6 +36,8 @@ class RecordedReplayTest(unittest.TestCase):
             analysis.forecast([dict(segments[0],end_s=.9),*segments[1:]],frozen,33.,[])
         with self.assertRaisesRegex(ValueError,'initial AP'):
             analysis.forecast(segments,frozen,32.3,[])
+        extrapolated=analysis.forecast(segments,frozen,28.8,[],diagnostic_extrapolation=True)
+        self.assertAlmostEqual(extrapolated[-1]['predicted_energy_j'],122.)
         with self.assertRaisesRegex(ValueError,'unsupported frozen state'):
             analysis.forecast([dict(segments[0],state='classification:CPU+classification:GPU'),
                                *segments[1:]],frozen,33.,[])
@@ -157,6 +159,21 @@ class RecordedReplayTest(unittest.TestCase):
             with patch.object(runner.c.old,'quality'),\
                  patch.object(runner.energy,'integrate',return_value={'full_energy_j':1}):
                 self.assertEqual(runner.validate(folder,manifest,plan)['terminal_completed'],24)
+                manifest['start_ap_gate']='numeric-ap-observe-v2'
+                for target in (artifact/'manifest.json',folder/'input_manifest.json'):
+                    target.write_text(json.dumps(manifest),encoding='utf-8')
+                accepted={'common_start_ns':origin,'ap_c':28.8,'gate_mode':'numeric-ap-observe-v2',
+                          'read_before_ns':origin-1_000_000,'read_after_ns':origin-500_000}
+                (artifact/'start_ap.accepted.json').write_text(json.dumps(accepted),encoding='utf-8')
+                self.assertEqual(runner.validate(folder,manifest,plan)['terminal_completed'],24)
+                manifest['start_ap_gate']='numeric-ap-once-v1'
+                for target in (artifact/'manifest.json',folder/'input_manifest.json'):
+                    target.write_text(json.dumps(manifest),encoding='utf-8')
+                with self.assertRaisesRegex(ValueError,'AP approval'):
+                    runner.validate(folder,manifest,plan)
+                manifest['start_ap_gate']='numeric-ap-observe-v2'
+                for target in (artifact/'manifest.json',folder/'input_manifest.json'):
+                    target.write_text(json.dumps(manifest),encoding='utf-8')
                 source[0]['release_offset_ns']+=1_000_000_000
                 with self.assertRaisesRegex(ValueError,'recorded replay allocation/release'):
                     runner.validate(folder,manifest,plan)

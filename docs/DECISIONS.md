@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-09-29 — 개발 시작 AP 범위와 실행 적격성 분리
+
+- **채택한 PC 프로토콜 변경, 실측 승인 아님:** [근거·계약](ARRIVAL_RECORDED_B2_AP_OBSERVE_PC_20260929.md)에 따라 32.5–34.0°C는 개발 세션에서 본 시작 AP 범위로 취급한다. 독립적인 실행 안전 하한은 확인되지 않았다. 새 `numeric-ap-observe-v2`는 기존 안전·환경·품질 gate와 numeric AP 유효성·신선도는 유지하면서 이 범위 밖의 관측을 허용한다. 과거 v1 gate 중단은 소급 변경하지 않는다.
+- 범위 밖 동결식 계산은 별도 외삽 진단이며 에너지/AP 경험적 지원·short-transition strict·정책 우월성을 확장하지 않는다. 새 plan_v6는 미승인·미소비, 실행 출력/claim 없음. v5 PC 초안은 현재 코드 Check 불일치로 실행 대상이 아니다. 기존 동결 계수·FAIL·원본·queue24 미소비 계획과 `experiment_ready=false` 유지.
+
 ## 2026-09-29 — 새 B2 재생의 AP gate 중단 판정
 
 - [승인된 plan_v4 1회](ARRIVAL_RECORDED_B2_REPLAY_RUN02_20260929.md)에서 시작 직전 HAL AP 28.8°C가 사전 범위 32.5–34.0°C 미달이므로 host가 arm을 보내지 않았다. 이는 자료 적격성 중단이지 동결 J/AP 예측 실패나 lifecycle 수정의 성공/실패 판정이 아니다. 공식창·실제 병행이 없어 정확도·정책 우월성은 계속 미판정이다.

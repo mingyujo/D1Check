@@ -19,4 +19,17 @@ class ArrivalStartApGateTest {
             catch (_: IllegalArgumentException) {}
         }
     }
+    @Test fun diagnosticAcceptsFiniteFreshApButLegacyStillBlocksBelowRange() {
+        val payload = "hash 100 100 200 28.8 0"
+        val reading = ArrivalStartApGate.parse(payload, "hash", 100, ArrivalStartApGate.DIAGNOSTIC_VERSION)
+        assertEquals(28.8, reading.ap, 0.0)
+        ArrivalStartApGate.atStart(reading, 3_000_000_100L)
+        try { ArrivalStartApGate.parse(payload, "hash", 100); fail("legacy range changed") }
+        catch (_: IllegalArgumentException) {}
+        for (invalid in listOf("NaN", "Infinity")) {
+            try { ArrivalStartApGate.parse("hash 100 100 200 $invalid 0", "hash", 100,
+                ArrivalStartApGate.DIAGNOSTIC_VERSION); fail("nonfinite admitted") }
+            catch (_: IllegalArgumentException) {}
+        }
+    }
 }

@@ -20,17 +20,18 @@ from tools import d1_apk_identity as apk
 from tools import d1_arrival_policy_screen as screen
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPERIMENT = 'ENERGY-AP-RECORDED-B2-02'
-FOLDER = 'energy_ap_recorded_b2_plan_v4'
-RUN_FOLDER = 'energy_ap_recorded_b2_run_v4'
+EXPERIMENT = 'ENERGY-AP-RECORDED-B2-DIAG-04'
+FOLDER = 'energy_ap_recorded_b2_diag_plan_v6'
+RUN_FOLDER = 'energy_ap_recorded_b2_diag_run_v6'
 BUNDLE = ROOT/'docs/results/energy_ap_recorded_b2_01/source_schedule.json'
-CONTRACT = ROOT/'docs/results/energy_ap_recorded_b2_01/analysis_contract.json'
+CONTRACT = ROOT/'docs/results/energy_ap_recorded_b2_01/diagnostic_analysis_contract_v2.json'
 TIMELINE = ROOT/'docs/results/arrival_visualization_01/timeline.csv'
 OCCUPANCY = ROOT/'docs/results/arrival_policy_screen_01/repro_bundle/occupancy_segments.csv'
 FROZEN_SHA = prior.FROZEN_SHA
 POLICY = 'RECORDED_B2_REPLAY_V1'
-MEASUREMENT_CHANGE = ('arrival lifecycle instance/callback/finish journal added to signed APK; '
-                      'previous failed replay is not a completed same-protocol comparison')
+MEASUREMENT_CHANGE = ('numeric-ap-observe-v2 separates fresh HAL AP/execution admission from '
+                      'frozen-model development support; same recorded workload and environmental gates; '
+                      'new signed APK and protocol, not a completed same-protocol comparison')
 
 # Same one-session runner bounds, derived from its four stages and 24+8 calls.
 REQUESTS, WARMUP, RUNTIMES, STAGED = 24, 8, 4, 7
@@ -133,7 +134,7 @@ def expected_manifest(source, candidate_sha):
            device_fingerprint=source['device_fingerprint'],maximum_duration_ms=480000,
            maximum_concurrency=2,memory_contract='android-low-memory-resident-v1',
            thermal_gate=0,common_window_seconds=120,resident_baseline_seconds=30,
-           cooling_seconds=60,start_ap_gate='numeric-ap-once-v1',requests=requests)
+           cooling_seconds=60,start_ap_gate='numeric-ap-observe-v2',requests=requests)
     for spec in m['models'].values():
         spec['identity']['session_id']=sid
         spec['target']['apk_sha256']=candidate_sha
@@ -180,7 +181,7 @@ def prepare(source_file,build_file,frozen_file,output):
         source_files=source['source_files'],references=source['references'],
         selection='prespecified saved queue/seed201/B2_PC/realized1.5; one recorded dispatch gate',
         measurement_protocol_change=MEASUREMENT_CHANGE,
-        analysis_scope='conditional frozen-model transition diagnostic only; not online B2 or strict arrival support',
+        analysis_scope='observed schedule/current/AP; out-of-range model arithmetic only as extrapolation diagnostic; not online B2 or strict arrival support',
         entries=[])
     m=expected_manifest(plan,build['apk_sha256'])
     rel=f"manifests/{m['session_id']}.json";cal.write_new(output/rel,m)

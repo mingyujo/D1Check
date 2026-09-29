@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 import time
 from pathlib import Path
@@ -15,6 +16,7 @@ from tools import d1_collection_recovery as install
 from tools.d1_adb_observed_client import ObservedDevice
 from tools import d1_energy_screen as screen
 from tools import d1_energy_thermal as energy
+from tools import d1_arrival_start_ap
 
 ACTIVITY='com.example.d1check.benchmarkrunner.ArrivalEnergyActivity'
 ACTION='com.example.d1check.benchmarkrunner.action.ARRIVAL_ENERGY'
@@ -36,9 +38,8 @@ def poll(d,remote,folder,manifest,plan):
             screen.snapshot(d,folder,f'poll_{index:04d}',plan['screen_contract']);last_screen=time.monotonic()
         listing=d.call('shell','run-as',legacy.PACKAGE,'ls',remote,timeout=3).stdout.decode().splitlines()
         if 'cleanup.json' in listing:return
-        if manifest.get('start_ap_gate') == 'numeric-ap-once-v1' and not start_ap_sent and 'start_ap.ready.json' in listing:
+        if manifest.get('start_ap_gate') in (d1_arrival_start_ap.VERSION,d1_arrival_start_ap.DIAGNOSTIC_VERSION) and not start_ap_sent and 'start_ap.ready.json' in listing:
             c.require(armed, 'start AP before warmup approval')
-            from tools import d1_arrival_start_ap
             d1_arrival_start_ap.approve(d,remote,folder,manifest)
             start_ap_sent=True
             last_thermal=time.monotonic()
@@ -76,10 +77,13 @@ def validate(folder,manifest,plan):
     summary=p.read(artifacts/'summary.json')
     c.require(cleanup['status']=='completed' and summary['status']=='completed','app completion')
     boundary=p.read(artifacts/'common_boundary.json');rows=p.read(artifacts/'requests.json')
-    if manifest.get('start_ap_gate') == 'numeric-ap-once-v1':
+    if manifest.get('start_ap_gate') in (d1_arrival_start_ap.VERSION,d1_arrival_start_ap.DIAGNOSTIC_VERSION):
         approval=p.read(artifacts/'start_ap.accepted.json')
         c.require(approval['common_start_ns']==boundary['start_ns'] and
-                  32.5 <= approval['ap_c'] <= 34.0 and
+                  (manifest['start_ap_gate']!=d1_arrival_start_ap.DIAGNOSTIC_VERSION or
+                   approval.get('gate_mode')==d1_arrival_start_ap.DIAGNOSTIC_VERSION) and
+                  (manifest['start_ap_gate']==d1_arrival_start_ap.DIAGNOSTIC_VERSION or 32.5 <= approval['ap_c'] <= 34.0) and
+                  math.isfinite(float(approval['ap_c'])) and
                   approval['read_before_ns'] <= approval['read_after_ns'] <= boundary['start_ns'] and
                   boundary['start_ns']-approval['read_before_ns'] <= 3_000_000_000,
                   'missing/invalid AP approval at actual start')

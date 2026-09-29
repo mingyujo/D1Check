@@ -1,5 +1,9 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-09-29 — B2 시작 AP 관측과 모형 범위 분리
+
+[별도 PC 계약](ARRIVAL_RECORDED_B2_AP_OBSERVE_PC_20260929.md)에 따라 개발 시작 범위 32.5–34.0°C를 기기 안전 gate로 사용하지 않는 opt-in `numeric-ap-observe-v2`를 준비했다. 기존 배터리·비충전·BAT·thermal·화면·메모리·앱 품질·numeric AP 신선도는 유지한다. 저장 B2 24요청·실제 release/배정·120초 공통창은 그대로며 범위 밖 관측은 외삽 진단으로만 판독한다. 새 서명 APK와 미승인 단일세션 plan_v6는 PC Check까지 완료했지만 현재 기기·실측은 미검증이고 승인/claim 없음. v5는 미소비 PC 초안·현재 코드 Check 불일치로 실행 대상이 아니다. 다음 결정은 별도 1회 실행 여부이며 기존 소비 plan_v3/v4는 재개하지 않는다. strict·동결·`experiment_ready=false` 불변.
+
 ## 2026-09-29 — 새 APK B2 기록 재생의 gate 종료
 
 [plan_v4 1회 결과](ARRIVAL_RECORDED_B2_REPLAY_RUN02_20260929.md)는 APK 설치·환경/품질 준비와 runtime4·warmup8까지 도달했으나 시작 AP 28.8°C가 동결 개발 시작 범위 32.5–34.0°C 밖이라 host가 arm을 보내지 않고 실패 정리했다. 1시도·0완료, 공식창·본 요청0, lifecycle 취소 미관측이다. 모형 오차·짧은 전환 지원·B2 우열은 계속 미판정. 두 재생 계획 모두 `stopped_no_resume`이며 재실행하지 않는다. **다음은 기존 초기 AP 관측과 고정 gate의 적용 가능성만 PC에서 판독**한다. 온도를 맞추기 위한 즉석 가열·gate 완화·새 실측 자동 실행은 계획에 없다. 동결 모형·strict 지원·`experiment_ready=false` 유지.

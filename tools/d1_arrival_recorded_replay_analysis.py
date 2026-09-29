@@ -36,10 +36,11 @@ def observed_segments(rows, origin):
     return screen.occupancy({'ledger':ledger},'queue',1.5,201,replay.POLICY)
 
 
-def forecast(segments, frozen, initial_ap, times_s):
+def forecast(segments, frozen, initial_ap, times_s, *, diagnostic_extrapolation=False):
     """Exact piecewise constant power and continuous first-order AP; no later sensor input."""
     lo,hi=frozen['initial_ap_development_range_c']
-    if not lo<=initial_ap<=hi:raise ValueError('unsupported initial AP')
+    if not math.isfinite(initial_ap):raise ValueError('invalid initial AP')
+    if not diagnostic_extrapolation and not lo<=initial_ap<=hi:raise ValueError('unsupported initial AP')
     beta=frozen['ap_cooling_rate_per_s'];ref=frozen['ap_reference_c']
     power=frozen['whole_device_power_w'];slope=frozen['ap_slope_at_30_c_per_s']
     if not beta>0 or any(state_key(x['state']) not in power or state_key(x['state']) not in slope for x in segments):
@@ -60,7 +61,7 @@ def forecast(segments, frozen, initial_ap, times_s):
             position=end
         out.append(dict(elapsed_s=target,predicted_energy_j=j,predicted_ap_c=t))
         observed_range=frozen.get('ap_development_observed_range_c')
-        if observed_range and not observed_range[0]<=t<=observed_range[1]:
+        if observed_range and not diagnostic_extrapolation and not observed_range[0]<=t<=observed_range[1]:
             raise ValueError('predicted AP exits development path range')
     return out
 
@@ -80,6 +81,8 @@ def analyze(session, frozen_file, output):
     if end-origin!=120_000_000_000 or len(rows)!=24:raise ValueError('common denominator/window')
     initial=p.read(artifact/'start_ap.accepted.json')
     if initial['common_start_ns']!=origin:raise ValueError('initial AP origin')
+    if manifest.get('start_ap_gate')=='numeric-ap-observe-v2' and initial.get('gate_mode')!='numeric-ap-observe-v2':
+        raise ValueError('diagnostic gate evidence mismatch')
     segments=observed_segments(rows,origin)
     if any(state_key(s['state']) not in frozen['states'] for s in segments):
         raise ValueError('actual unsupported state')
@@ -91,15 +94,18 @@ def analyze(session, frozen_file, output):
     if len(ap)<2 or max([ap[0][0]-origin,end-ap[-1][0]]+
                         [b[0]-a[0] for a,b in zip(ap,ap[1:])])>10_000_000_000:
         raise ValueError('incomplete AP path')
+    diagnostic=manifest.get('start_ap_gate')=='numeric-ap-observe-v2'
     ap_range=frozen['ap_development_observed_range_c']
-    if any(not ap_range[0]<=value<=ap_range[1] for _,value in ap):
+    if not diagnostic and any(not ap_range[0]<=value<=ap_range[1] for _,value in ap):
         raise ValueError('observed AP exits development path range')
     observed=energy.integrate(samples,origin,end,1000)
     if observed['full_energy_j'] is None:raise ValueError('incomplete common current/voltage; no full J')
     query=[(t-origin)/1e9 for t,_ in ap]
     for s in samples:
         if origin<=s['mono_ns']<=end:query.append((s['mono_ns']-origin)/1e9)
-    path=forecast(segments,frozen,float(initial['ap_c']),query)
+    start_supported=(frozen['initial_ap_development_range_c'][0]<=float(initial['ap_c'])<=
+                     frozen['initial_ap_development_range_c'][1])
+    path=forecast(segments,frozen,float(initial['ap_c']),query,diagnostic_extrapolation=diagnostic)
     bytime={round(x['elapsed_s'],9):x for x in path}
     ap_rows=[]
     for t,value in ap:
@@ -145,7 +151,21 @@ def analyze(session, frozen_file, output):
     state_seconds={key:sum(s['end_s']-s['start_s'] for s in segments if s['state']==key)
                    for key in sorted({s['state'] for s in segments})}
     full_pred=path[-1]['predicted_energy_j'];ap_error=[abs(x['signed_error_c']) for x in ap_rows]
-    summary=dict(status='conditional_diagnostic_not_strict_support',planned=24,
+    observed_ap_within_path=all(ap_range[0]<=value<=ap_range[1] for _,value in ap)
+    predicted_ap_within_path=all(ap_range[0]<=x['predicted_ap_c']<=ap_range[1] for x in path)
+    ap_limit=('short_transition_unverified'+
+              ('_and_initial_outside_development' if not start_supported else '')+
+              ('_and_path_outside_development' if not (observed_ap_within_path and predicted_ap_within_path) else ''))
+    summary=dict(status=('initial_ap_extrapolation_diagnostic_not_strict_support'
+                         if diagnostic and not start_supported else 'conditional_diagnostic_not_strict_support'),planned=24,
+        execution_eligibility='passed_prior_gates',observation_eligibility='full_common_window',
+        initial_ap_in_frozen_development_range=start_supported,
+        observed_ap_within_development_path=observed_ap_within_path,
+        predicted_ap_within_development_path=predicted_ap_within_path,
+        energy_arithmetic='available',ap_arithmetic='available',
+        energy_support='short_transition_unverified'+('_and_initial_outside_development' if not start_supported else ''),
+        ap_support=ap_limit,
+        strict_support=False,
         terminal_completed=sum(x['terminal_status']=='succeeded' for x in rows),
         failed=sum(x['terminal_status']=='failed' for x in rows),
         unfinished_at_120s=sum(x.get('persist_complete_ns',10**30)>end for x in rows),
