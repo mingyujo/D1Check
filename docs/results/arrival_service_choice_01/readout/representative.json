@@ -1,0 +1,133 @@
+{
+  "version": "arrival-service-choice-v1",
+  "evidence": "saved PC schedules and responses",
+  "deadlines": "research inputs: urgent 1.5 s, normal 6 s; no adopted service SLA",
+  "input_sha256": {
+    "service_metrics": "fb62413e1ee80cf02e9329ecaba5a47d674a0c85776baff44e466a5bcc37d9be",
+    "support_status": "74faae5c14767c4fff8180d526c59a705930d1932fa012e84f19c6029dac1d0a"
+  },
+  "case_count": 135,
+  "representative": "queue/seed201/realized1.5",
+  "representative_service": [
+    {
+      "scenario": "queue",
+      "realized": "1.5",
+      "seed": "201",
+      "policy": "CPU_URGENT",
+      "planned": 24,
+      "urgent_planned": 6,
+      "normal_planned": 18,
+      "unfinished": 0,
+      "urgent_p95_ms": 641.346305,
+      "normal_mean_ms": 4515.764720166667,
+      "urgent_not_timely": 0,
+      "normal_not_timely": 6,
+      "timely_all_planned": 18,
+      "timely_share_all_planned": 0.75,
+      "energy_j": null,
+      "ap_peak_c": null
+    },
+    {
+      "scenario": "queue",
+      "realized": "1.5",
+      "seed": "201",
+      "policy": "B2_PC",
+      "planned": 24,
+      "urgent_planned": 6,
+      "normal_planned": 18,
+      "unfinished": 0,
+      "urgent_p95_ms": 424.754924,
+      "normal_mean_ms": 4188.832740611111,
+      "urgent_not_timely": 0,
+      "normal_not_timely": 4,
+      "timely_all_planned": 20,
+      "timely_share_all_planned": 0.8333333333333334,
+      "energy_j": null,
+      "ap_peak_c": null
+    },
+    {
+      "scenario": "queue",
+      "realized": "1.5",
+      "seed": "201",
+      "policy": "B3_SOLO_EFT_PC",
+      "planned": 24,
+      "urgent_planned": 6,
+      "normal_planned": 18,
+      "unfinished": 0,
+      "urgent_p95_ms": 1014.997885,
+      "normal_mean_ms": 4044.4327156111112,
+      "urgent_not_timely": 0,
+      "normal_not_timely": 4,
+      "timely_all_planned": 20,
+      "timely_share_all_planned": 0.8333333333333334,
+      "energy_j": null,
+      "ap_peak_c": null
+    }
+  ],
+  "representative_support": {
+    "CPU_URGENT": {
+      "states_used": [
+        "classification:CPU",
+        "detection:CPU",
+        "idle"
+      ],
+      "state_durations_s": {
+        "classification:CPU": 1.0728976899999998,
+        "detection:CPU": 11.328774461000004,
+        "idle": 107.598327849
+      },
+      "transition_count": 48,
+      "first_transition": "idle -> detection:CPU",
+      "first_transition_s": 0.0003,
+      "energy": "UNSUPPORTED_ARRIVAL_STATE_TRANSITIONS",
+      "ap": "UNSUPPORTED_INITIAL_AP_AND_ARRIVAL_TRANSITIONS"
+    },
+    "B2_PC": {
+      "states_used": [
+        "classification:GPU",
+        "classification:GPU+detection:CPU",
+        "detection:CPU",
+        "idle"
+      ],
+      "state_durations_s": {
+        "classification:GPU": 0.0009000000000001229,
+        "classification:GPU+detection:CPU": 2.531360211,
+        "detection:CPU": 9.416370001,
+        "idle": 108.05136978799999
+      },
+      "transition_count": 48,
+      "first_transition": "idle -> detection:CPU",
+      "first_transition_s": 0.0003,
+      "energy": "UNSUPPORTED_ARRIVAL_STATE_TRANSITIONS",
+      "ap": "UNSUPPORTED_INITIAL_AP_AND_ARRIVAL_TRANSITIONS"
+    },
+    "B3_SOLO_EFT_PC": {
+      "states_used": [
+        "classification:CPU+detection:GPU",
+        "classification:GPU",
+        "classification:GPU+detection:CPU",
+        "detection:CPU",
+        "detection:CPU+detection:GPU",
+        "detection:GPU",
+        "idle"
+      ],
+      "state_durations_s": {
+        "classification:CPU+detection:GPU": 0.6876081920000003,
+        "classification:GPU": 0.000300000000000189,
+        "classification:GPU+detection:CPU": 1.3237105759999996,
+        "detection:CPU": 0.662320537999999,
+        "detection:CPU+detection:GPU": 8.326435078000003,
+        "detection:GPU": 0.38068284699999844,
+        "idle": 108.618942769
+      },
+      "transition_count": 48,
+      "first_transition": "idle -> detection:CPU",
+      "first_transition_s": 0.0003,
+      "energy": "UNSUPPORTED_ARRIVAL_STATE_TRANSITIONS",
+      "ap": "UNSUPPORTED_INITIAL_AP_AND_ARRIVAL_TRANSITIONS"
+    }
+  },
+  "measured_energy_ap_complete_cases": 0,
+  "policy_energy_ap_rank": null,
+  "experiment_ready": false
+}
