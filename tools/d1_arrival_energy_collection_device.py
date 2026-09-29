@@ -67,7 +67,13 @@ def poll(d,remote,folder,manifest,plan):
 def validate(folder,manifest,plan):
     artifacts=Path(folder)/'artifacts'
     c.require(p.digest(artifacts/'manifest.json')==p.digest(folder/'input_manifest.json'),'output manifest')
-    cleanup=p.read(artifacts/'cleanup.json');summary=p.read(artifacts/'summary.json')
+    cleanup=p.read(artifacts/'cleanup.json')
+    if cleanup['status']!='completed':
+        failure_file=artifacts/'session_failure.json'
+        failure=p.read(failure_file) if failure_file.is_file() else {}
+        raise RuntimeError('app did not complete: '+str(failure.get('message') or cleanup.get('error') or
+                                               cleanup['status']))
+    summary=p.read(artifacts/'summary.json')
     c.require(cleanup['status']=='completed' and summary['status']=='completed','app completion')
     boundary=p.read(artifacts/'common_boundary.json');rows=p.read(artifacts/'requests.json')
     if manifest.get('start_ap_gate') == 'numeric-ap-once-v1':

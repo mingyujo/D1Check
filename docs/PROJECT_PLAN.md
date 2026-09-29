@@ -2,7 +2,7 @@
 
 ## 2026-09-29 — 저장 B2 상태 전환 조건부 확인 경로
 
-[단일 재생 계약](ARRIVAL_RECORDED_B2_REPLAY_PC_20260929.md)의 queue/seed201/실현 간섭1.5 B2_PC 한 일정만 대상으로 `RECORDED_B2_REPLAY_V1` 입력·Android 배정 gate·원본 대비 실제 경계·동결 모델 조건부 판독을 PC 구현했다. PC 49구간/120초 원본 일치, 관련 Python·JVM 테스트와 프로젝트 서명 APK 빌드·plan_v3 `Check`를 완료했다. 기기 명령·실측·소비 claim은 0이다. 짧은 CG_DC 포함 전환의 공통창 J/AP 오차가 이 한 세션의 질문이며 계획은 **미승인·기기 미검증**이다. 자료가 부적격이면 오차 미판정, 적격이면 부호·절대·상대 J 오차와 AP 경로/최고오차를 산출한다. 정확도 PASS·다른 정책/상태 지원·종단간 일정 예측은 승격하지 않는다. 동결 파일과 기존 queue24 계획, strict 지원 제한, `experiment_ready=false` 유지. 다음 행동은 별도 승인 범위에서 plan_v3의 현재 기기 gate를 거쳐 한 세션을 판독하는 것이다.
+[단일 재생 계약](ARRIVAL_RECORDED_B2_REPLAY_PC_20260929.md)의 queue/seed201/실현 간섭1.5 B2_PC 한 일정만 대상으로 `RECORDED_B2_REPLAY_V1` 입력·Android 배정 gate·동결 모델 조건부 판독을 PC 구현하고 계획을 동결했다. [승인 실행 결과](ARRIVAL_RECORDED_B2_REPLAY_RUN01_20260929.md)는 runtime4·warmup8 완료 뒤 resident baseline 중 `lifecycle_cancelled`로 1시도·0완료, 본 작업·시작 AP gate·공식120초 창 미도달이다. plan_v3은 소비·종료되어 재실행하지 않는다. 앱 실패와 host 최상위 summary 누락 오류를 구분해 PC 판독을 수정했으나 과거 종료 trigger는 미확정이다. J/AP 오차·짧은 전환 지원·정책 성능 PASS는 미판정이다. 동결 파일과 기존 queue24 미소비 계획, strict 지원 제한, `experiment_ready=false` 유지. 다음 행동은 **회수된 lifecycle와 host 화면 기록의 PC 시간축 대조**로 한정하며 새 기기 실행은 이 계획에 포함하지 않는다.
 
 ## 2026-09-29 — 저장된 정책 일정의 실측 지원 마스크 적용
 

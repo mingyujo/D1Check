@@ -1,6 +1,6 @@
 # 통합 PC 탐색: 한 파일에서 응답·에너지·AP 확인
 
-2026-09-29 재생 준비: 화면 맨 위에 저장 queue/seed201/B2의 **원본 PC 일정·예정 기기 재생 입력**과 [조건부 판독 계약](../energy_ap_recorded_b2_01/README.md)을 연결했다. 관측 일정·J·AP·오차는 실측 전이므로 공란이며 기존 가정 기반 순위와 섞지 않는다.
+2026-09-29 기록 재생 1회 중단: 화면 맨 위에 저장 queue/seed201/B2의 **원본 PC 일정·예정 기기 재생 입력**과 [중단 결과·조건부 판독 계약](../energy_ap_recorded_b2_01/README.md)을 연결했다. runtime4·warmup8 뒤 resident baseline에서 앱이 취소되어 실제 작업 일정·120초 J/AP 오차는 공란이다. 기존 가정 기반 순위와 섞지 않는다.
 
 2026-09-29 실측 기반 지원 검사: 저장된 CPU_URGENT·B2·B3의 135개 일정 중 **전체 120초 J/AP를 동결 A24 모형으로 지원하는 사례는 0개**다. [정책·입력별 판정](measured_support_01/support_status.csv), [첫 차단](measured_support_01/first_blockers.csv), [전체 차단](measured_support_01/all_blockers.csv), [대표 일정](measured_support_01/representative_schedule.svg), [해제 조건](../../ARRIVAL_MEASURED_SUPPORT_BOUNDARY_20260929.md)을 함께 본다. 저장 일정·응답은 PC 결과, 화면에서 조작하는 비용은 탐색 가정, 동결 모형의 도착 예측 검증은 미완료다. 아래 기존 번들 재현 명령은 가정 기반 화면을 만들며 이 실측 지원 판정은 별도 읽기 전용 명령으로 재현한다.
 

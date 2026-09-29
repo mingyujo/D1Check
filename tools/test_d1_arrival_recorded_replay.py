@@ -101,6 +101,19 @@ class RecordedReplayTest(unittest.TestCase):
             self.assertIn('original validation failure',receipt['error'])
             self.assertEqual(receipt['host_cleanup']['status'],'completed')
 
+    def test_app_failure_is_reported_before_absent_success_summary(self):
+        import json
+        with tempfile.TemporaryDirectory() as temp:
+            folder=Path(temp);artifacts=folder/'artifacts';artifacts.mkdir()
+            manifest={'session_id':'recorded-test'}
+            (folder/'input_manifest.json').write_text(json.dumps(manifest),encoding='utf-8')
+            (artifacts/'manifest.json').write_text(json.dumps(manifest),encoding='utf-8')
+            (artifacts/'cleanup.json').write_text(json.dumps({'status':'failed'}),encoding='utf-8')
+            (artifacts/'session_failure.json').write_text(json.dumps({
+                'message':'stopped: lifecycle_cancelled/null'}),encoding='utf-8')
+            with self.assertRaisesRegex(RuntimeError,'lifecycle_cancelled'):
+                runner.validate(folder,manifest,{})
+
     def test_actual_recovery_parser_accepts_recorded_gate_and_rejects_early_dispatch(self):
         from tools import d1_arrival_plan as p
         import json

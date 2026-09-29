@@ -1,9 +1,9 @@
 # D1Check 결정 기록
 
-## 2026-09-29 — 짧은 전환 확인용 기록 일정 선택 (PC 확정, 기기 실행 미승인)
+## 2026-09-29 — 짧은 전환 확인용 기록 일정 선택과 1회 결과
 
 - **PC 확인 범위 확정:** [B2 원본·49구간 교차검사](ARRIVAL_RECORDED_B2_REPLAY_PC_20260929.md)에 따라 queue/seed201/실현 간섭1.5의 B2_PC 24요청을 첫 조건부 모형 전이 질문으로 고정했다. 이는 유휴·탐지 CPU·분류 GPU·CG_DC를 포함하는 최소 상태 묶음이고 반대 병행 방향은 포함하지 않는다. 저장 dispatch는 실행 허용 *하한*일 뿐 기기 완료시간이나 실제 병행을 강제하지 않는다. 별도 기록 재생 모드와 기존 정책/strict 지원은 구분한다.
-- **실행·판정은 미채택:** plan_v2와 서명 APK는 PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED이다. 단일 세션의 적격 자료가 있어야 동결 모형의 조건부 J/AP 오차만 산출하고, 정확도·정책 우월성 PASS는 미정이다. 신규 실측 승인·기존 queue24 계획 소비·동결 계수 보정·`experiment_ready=true`를 결정하지 않았다.
+- **승인 실행의 한계:** 서명 APK와 plan_v3을 별도 승인으로 [한 번 실행](ARRIVAL_RECORDED_B2_REPLAY_RUN01_20260929.md)했으나 resident baseline에서 앱 lifecycle 취소로 `stopped_no_resume`가 됐다. 공식창이 없어 동결 모형 조건부 J/AP 오차는 산출할 수 없으며, 정확도·정책 우월성 PASS는 미정이다. 소비 계획 재실행·기존 queue24 계획 소비·동결 계수 보정·`experiment_ready=true`를 결정하지 않았다. 오류의 최초 기록을 다음 판독에서 먼저 보존하도록 host 검증 경로만 보완했다.
 
 ## 2026-09-29 — 실측 기반 정책 우열의 현 지원 판정
 
