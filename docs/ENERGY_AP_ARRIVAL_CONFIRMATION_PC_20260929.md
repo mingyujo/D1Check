@@ -47,3 +47,54 @@ python -B -m unittest tools.test_d1_arrival_start_ap -v
 ```
 
 착수 HEAD `cfea8d366bc087e6b546950edd79d0ec27369532`와 이번 미커밋 소스 대상. Python3건/JVM4건, skipped0·실패0. 최초 Gradle은 SDK 환경변수 부재로 구성 단계에서 실패했고 기존 SDK 경로를 설정한 뒤 실제 본문/테스트 컴파일과 테스트를 완료했다. SDK/NDK/의존성 버전 변경0. 실제 도착 실행에서 예상 밖 병행이 나타나면 그 구간과 일정 오차를 보존하고 사후 제외하지 않는다. 해당 전환의 모형 적용 여부를 별도로 표시하며 PC의 병행0 가정을 실측 사실로 바꾸지 않는다.
+
+## 2026-09-29 — 시작 AP gate APK·단일세션 계획 후속 준비
+
+위의 `PC_INPUT_FIXED_RUN_BLOCKED`는 **당시 입력 판정 이력**이다. 별도 `ENERGY-AP-ARRIVAL-CONFIRM-01`은 동일 queue24/FIXED_SPLIT/120초를 새 APK와 `numeric-ap-once-v1`로 실행하기 위한 미승인 계획이다. 기존 12세션 계획·동결 모형·과거 결과를 재사용/재실행하지 않는다. 분석 판독은 [고정 JSON](results/energy_ap_arrival_confirmation_01/analysis_contract.json)으로 실행 전에 정했다.
+
+| 확인 경계 | 코드상 사실 | 한계 |
+|---|---|---|
+| AP 값 | host `d1_energy_thermal.thermal()`이 `/proc/uptime` 앞뒤와 `dumpsys thermalservice`의 HAL `mName=AP,mType=0`을 읽고 status0·32.5–34.0°C 검사 | 질의 시계 구간은 알지만 HAL 센서 내부 최신 갱신 시각은 없다. 반복된 같은 숫자도 갱신 증거가 아니다. |
+| 승인 | 앱 baseline30초 종료 뒤 `ready`의 manifest SHA/기기 monotonic 시각을 게시. host가 그 뒤 1회 읽고 원자적 arm 전송. host 전송 전·반환 후 시각과 앱 `accepted`를 따로 기록 | host와 기기 wall clock은 직접 빼지 않는다. 중복 session/output 파일은 새 ID·미소비 경로 검사로 차단한다. |
+| 실제 시작 | 앱이 `arm`의 hash·ready nonce·AP·status·읽기 구간을 다시 검사하고, `common_start_ns−read_before_ns≤3초`일 때만 시작 | 3초는 **ADB 질의 시작→앱 origin** 상한이지 센서 물리적 갱신 나이 보증이 아니다. 결측·범위 밖·전달 지연·30초 gate 만료면 본 작업0회, 재시도0. |
+| 비용 경계 | AP 질의/승인과 30초 resident baseline은 공통120초 **전**. 120초 뒤 미완료는 전체24요청 분모에 남기고 drain30초·cooling60초·cleanup은 별도 | AP 조회가 시작을 늦추고 잔열에 영향을 줄 수 있으며 그 물리적 비용은 미계측. 과거 동결 계수에서 빼거나 같은 프로토콜 확인으로 합치지 않는다. |
+
+예정 도착은 앱의 **실제** `common_start_ns` + 고정 offset(0–4.6초)으로 각각 예약한다. 지연된 dispatch가 뒤의 예정 도착을 밀지 않는다. `scheduled_arrival`, actual arrival/queue, dispatch, execution, urgent `output_ready`, normal `persist_complete`, worker release, lane available을 구분한다. 공통창 종료 뒤 작업이 이어지면 창 내부 J에 이후 소비를 섞지 않으며, 실패·미완료를 제외해 서비스 분모를 줄이지 않는다. 실행된 상태에 병행이 나타나면 PC 예상 병행0초와의 차이로 기록하고 그 모형 지원을 따로 판정한다.
+
+**A와 B의 판독:** A는 회수한 실제 상태·전환 시각과 origin의 관측 AP를 넣은 **조건부** 기기 전체 J/AP 경로 오차다. 상태 매핑이나 전류/AP coverage가 없으면 해당 지표는 `unsupported`; 누락을 0으로 메우지 않는다. B는 예정 도착·FIXED_SPLIT·실행 **전 동결** 처리시간 모델만으로 일정·응답을 예측하는 종단간 질문이다. 실제 미래 완료·전류·AP·상태 일정은 B 입력이 아니다. 기존 PC schedule의 병행0은 미래 실기기 병행0을 보장하지 않는다. 동결 에너지 strict의 임의 도착 전환은 여전히 `UNSUPPORTED_ARRIVAL_STATE_TRANSITIONS`여서 B의 에너지/AP는 지원 확인 전에는 계산 불가다. A 수치가 나와도 B 검증으로 승격하지 않는다.
+
+| 원래 목표의 고리 | 현재 근거 | 이 1세션의 완료 범위 |
+|---|---|---|
+| 상태→기기 전체 전력 | 개발3세션에서 상태별 계수 동결, 짧은 임의 요청 전이는 미검증 | 실제 상태 일정 조건부 공통창·구간 잔차 확인만 가능. 요청별 전력이나 병행 계수의 독립 확인은 불가. |
+| 상태·잔열→AP | 동결 1차 AP 경로, 초기 AP 개발 범위32.5–34.0°C | 관측 origin과 상태 전환에서 경로/최고/한도시간 오차 확인. 새로운 초기 범위·다른 APK 전이의 정확도 PASS 아님. |
+| AP→처리시간/throttling | 검증된 함수 없음 | 확인 불가; 감속식을 만들지 않는다. |
+| 도착·정책→일정·응답·J·AP | 연구용 24요청 생성기와 PC 엔진, 임의 전환 strict 미지원 | 일정·응답 진단과 A 지원 판정. 전체 동적 열 피드백 정책 비교 완료 아님. |
+
+정확도 허용폭은 외부 근거가 없어 숫자 PASS를 만들지 않는다. 자료 적격성(시계·AP·전류·상태·완료/실패)과 오차 크기·부호·구간 상쇄·정책 간 예상 차이보다 큰지 여부를 따로 보고한다. A24 raw 전류=mA 해석은 조건부이고 절대 에너지 정확도는 인증되지 않았다. BAT/표면온도·배터리 잔량·실사용 절감은 대상 밖이다.
+
+### PC 결과와 미승인 실행 예산
+
+새 프로젝트 서명 APK는 `C:/Users/LG/Documents/D1Check_Arrival_Extension/arrival_ap_gate_build_v1/build/_benchmark-runner/outputs/apk/modelProbe/benchmark-runner-modelProbe.apk` (106,092,116 bytes), SHA-256 `d2af6d0a2ba8e995cf2a1b8682d50ac306d174a507eb6959377364e1780ea771`이다. `modelProbe`의 `com.example.d1check.benchmarkrunner.modelprobe`, versionCode 1이며 기존 프로젝트 인증서 SHA-256 `b253dbb951d85d1a79ea7f2ca2d1ff76a9fa34dc6c793b1df9b5249f3fcc7565`와 같다. 격리 빌드 receipt `C:/Users/LG/Documents/D1Check_Arrival_Extension/arrival_ap_gate_build_v1/build_receipt.json`의 Android 소스 SHA에는 `ArrivalEnergyActivity`와 `ArrivalStartApGate`가 들어 있다. `assembleModelProbe` 성공은 기기 설치·실행 적격성 증거가 아니다. APK/키/모델은 Git에 넣지 않는다.
+
+새 계획 `C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_arrival_confirm_plan_v1/collection_plan.json`, SHA-256 `5dfc940d8fb67c3f2fe91399c670965b48493db50a4d4f47184c53eedffa641c`, 상태 `PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED`. 별도 ID·output·registry이며 둘 다 미생성이다. 이전 차단 manifest·12세션 종료/준비 계획을 재개하지 않는다. 현재 설치본은 **조회하지 않았고**, 실행 전 동일 A24·fingerprint·프로젝트 서명·현재 설치본·배터리/비충전/온도/thermal/화면/메모리/품질/GPU gate를 새로 확인해야 한다. 서로 다른 APK이면 계획 내 push·설치 각 최대1회만 허용하되 이 턴에서는 0회다.
+
+| 단계 | 상한과 근거 |
+|---|---|
+| 설치/동일성·환경 preflight | 600초. 기존 `installation`의 현재 설치본 host pull 최대1, 필요 시 APK push 최대1(120초 timeout)·설치 최대1(120초 timeout), 원격/설치본 해시와 cleanup 포함. 동일 설치본이면 push/설치 생략. |
+| 세션 stage/gate | 120초. 여섯 외부 입력 + manifest 총7파일 stage 1회, 현재 환경·설치본 재확인. |
+| 앱·host 관측 | 485초. 앱 watchdog480초, host warmup 품질 승인과 시작 AP 1회 조회/승인, baseline30초, 공통120초, drain 최대30초, cooling60초 포함. 시작 AP arm 대기 최대30초; 실패 시 본 작업0·재시도0. |
+| 회수·cleanup | 50초 + 45초. 원본 prefix/archive와 앱 cleanup·host force-stop·프로세스 부재를 구분. 실패 뒤 남은 예약을 회수/cleanup에 우선 사용. |
+| 전체 | 위 설치600 + 세션(120+485+50+45)=**1,300초(21분40초) 상한**, 정상 예상시간/완주 보장 아님. 앱 runtime 최대4, warmup 최대8, 적격성 추론0, 본 작업 최대24, 명시적 추론 최대32. 추가·대체·재시도0. |
+
+ADB hard cap **3,000명령**은 `ObservedDevice.command_limit`로 집행한다. 최대 poll485초의 250ms 간격 목록 조회는 이론상1,940회, 2초 thermal(3명령) 최대243×3=729회, 10초 screen 최대49회로 관측 루프 상한2,718회다. 설치/환경·staging(7×4+5=33)·warmup/AP 각 최대5·회수·cleanup·실패 prefix를 합친 나머지는 282명령 이내로 예약하며, poll은 cap 20명령 전에 중단해 회수·종료 슬롯을 남긴다. 실제 명령 수는 클라이언트 지연과 단계 조기 종료에 따라 달라지며, host 관측 주기와 전력 기여는 과거 동결 모형의 조건과 동일하다고 가정하지 않는다. 모든 `Check`는 APK와 외부 입력을 읽을 뿐 ADB를 호출하지 않는다.
+
+PC 검증: 착수 HEAD `405b73f98b7bb730b0efabe96737e5ec448a546b`, 작업트리 clean·실제 원격 HEAD 동일. 기존 Kotlin 시작 AP gate/24요청 테스트4건은 직전 변경에서 통과했고 Android 소스는 이번에 변경하지 않았다. 이번 host 진입·예산 테스트7건과 기존 입력 회귀2건 통과(단일세션 실제 runner 진입의 preflight 실패 receipt 포함), 격리 `assembleModelProbe` 성공(63 tasks), `RUN_AFTER_APPROVAL.ps1 -Action Check`에서 계획 해시/소스/서명/입력/동결 SHA 대조와 `device_commands=0` 확인. 승인 없는 `Run`은 registry 생성 전 거절했다. PC 검증은 AP 센서 내부 갱신·실기기 설치/시작 지연·연결 안정성이나 예측 정확도를 입증하지 않는다.
+
+재현(PC, 기기 명령0):
+
+```powershell
+python -B -m unittest tools.test_d1_arrival_ap_confirmation tools.test_d1_arrival_start_ap -q
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_arrival_confirm_plan_v1/RUN_AFTER_APPROVAL.ps1' -Action Check
+```
+
+나중에 **별도 승인과 현재 transport 확인을 받은 경우에만** 계획의 Run을 한 번 사용한다. 이번 턴에는 실행 승인·기기 조회·APK 전송·설치·실측이 없으며 `experiment_ready=false`를 유지한다. 현 단계의 완료는 *실행 가능한 단일세션 입력/게이트/예산의 PC 준비*다. 본 확인을 통과하더라도 병행 계수·짧은 개별 요청 비용·임의 부하 전체·열→시간 피드백·정책 간 절감 비교는 여전히 필요 범위 밖이다.

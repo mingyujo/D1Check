@@ -24,9 +24,11 @@ def write(path,value):c.cal.write_new(path,value)
 
 
 def poll(d,remote,folder,manifest,plan):
-    start=time.monotonic();end=min(d.deadline,start+c.BUDGET['host_poll_seconds'])
+    start=time.monotonic();end=min(d.deadline,start+plan.get('budget',c.BUDGET)['host_poll_seconds'])
     last_thermal=last_screen=0;armed=False;index=0;start_ap_sent=False
     while time.monotonic()<end:
+        if plan.get('single_arrival_confirmation') and d.sequence>=plan['budget']['adb_commands']-20:
+            raise RuntimeError('ADB observation cap reserve reached; preserve recovery/cleanup slots')
         now=time.monotonic()
         if now-last_thermal>=2:
             energy_device.thermal(d,folder,index);index+=1;last_thermal=time.monotonic()
@@ -116,18 +118,25 @@ def validate(folder,manifest,plan):
 
 def run(plan_file,adb,serial,expected_sha,approved):
     c.require(approved and p.digest(plan_file)==expected_sha,'explicit later approval and exact plan hash required')
-    c.check(plan_file);plan=p.read(plan_file)
+    plan=p.read(plan_file)
+    single=plan.get('single_arrival_confirmation',False)
+    if single:
+        from tools import d1_arrival_ap_confirmation as confirmation
+        confirmation.check(plan_file)
+    else:c.check(plan_file)
+    budget=plan['budget']
     root=Path(plan['output_root']);registry=Path(plan['registry'])
     registry.mkdir(parents=True,exist_ok=False);root.mkdir(parents=True,exist_ok=False)
-    start=time.monotonic();hard=start+c.BUDGET['total_seconds']
-    write(registry/'claimed.json',dict(utc=legacy.utc(),plan_sha256=expected_sha,budget=c.BUDGET))
+    start=time.monotonic();hard=start+budget['total_seconds']
+    write(registry/'claimed.json',dict(utc=legacy.utc(),plan_sha256=expected_sha,budget=budget))
     d=ObservedDevice(adb,serial,root/'host_commands');d.deadline=hard
+    if single:d.command_limit=budget['adb_commands']
     complete=[];current=None;remote=None;identified=False;installation=None
     try:
         (root/'installation').mkdir()
         installation=energy_device.installation(d,plan,plan_file,root/'installation',hard);identified=True
         for entry in plan['entries']:
-            if entry['index']==6:
+            if not single and entry['index']==6:
                 freeze_start=time.monotonic()
                 c.require(len(complete)==6 and all(x['status']=='eligible_descriptive_only' for x in complete),'development eligibility')
                 write(root/'development_freeze.json',dict(plan_sha256=expected_sha,
@@ -135,15 +144,15 @@ def run(plan_file,adb,serial,expected_sha,approved):
                                       session_sha256=p.digest(root/f"{i:02d}_{plan['entries'][i]['session_id']}"/'validated.json')) for i,x in enumerate(complete)],
                     policy_selection='none',model_fit='none',analysis_rule=plan['confirmation_rule']))
                 write(root/'freeze_receipt.json',dict(sha256=p.digest(root/'development_freeze.json'),utc=legacy.utc()))
-                c.require(time.monotonic()-freeze_start<=c.BUDGET['freeze_seconds'],'freeze time')
+                c.require(time.monotonic()-freeze_start<=budget['freeze_seconds'],'freeze time')
             if entry['index']:
-                c.require(hard-time.monotonic()>=c.BUDGET['intersession_cooling_seconds']+c.BUDGET['session_seconds'],'cooldown/session reserve')
-                until=time.monotonic()+c.BUDGET['intersession_cooling_seconds']
+                c.require(hard-time.monotonic()>=budget['intersession_cooling_seconds']+budget['session_seconds'],'cooldown/session reserve')
+                until=time.monotonic()+budget['intersession_cooling_seconds']
                 while time.monotonic()<until:time.sleep(min(1,until-time.monotonic()))
-            c.require(hard-time.monotonic()>=c.BUDGET['session_seconds'],'whole session reserve')
+            c.require(hard-time.monotonic()>=budget['session_seconds'],'whole session reserve')
             current=root/f"{entry['index']:02d}_{entry['session_id']}";current.mkdir();remote=None
-            session_start=time.monotonic();session_end=min(hard,session_start+c.BUDGET['session_seconds'])
-            d.deadline=min(session_start+c.BUDGET['stage_gate_seconds'],session_end-580)
+            session_start=time.monotonic();session_end=min(hard,session_start+budget['session_seconds'])
+            d.deadline=min(session_start+budget['stage_gate_seconds'],session_end-580)
             energy_device.gates(d,plan,current,'before_session')
             c.require(install.installed_hash(d,plan['apk_preflight']['candidate'])==plan['apk_sha256'],'installed APK changed')
             write(current/'attempt.json',dict(entry=entry,utc=legacy.utc(),plan_sha256=expected_sha))
@@ -157,16 +166,16 @@ def run(plan_file,adb,serial,expected_sha,approved):
             d.call('shell','am','start','-W','-n',legacy.PACKAGE+'/'+ACTIVITY,'-a',ACTION,
                    '--es','session_id',entry['session_id'],timeout=20)
             poll(d,remote,current,manifest,plan)
-            d.deadline=min(session_end-45,time.monotonic()+c.BUDGET['recovery_seconds'])
+            d.deadline=min(session_end-45,time.monotonic()+budget['recovery_seconds'])
             write(current/'recovery.json',energy_device.recover(d,remote,current/'artifacts'))
             write(current/'host_cleanup.json',shared.cleanup(d,session_end))
             stats=validate(current,manifest,plan)
             c.require(time.monotonic()<=session_end,'session exceeded reserve; no next session')
             stats['elapsed_seconds']=time.monotonic()-session_start
             write(current/'validated.json',stats);complete.append(stats)
-        c.require(p.digest(root/'development_freeze.json')==p.read(root/'freeze_receipt.json')['sha256'],'freeze changed')
-        outcome=dict(status='completed_descriptive_only',sessions=len(complete),requests=288,warmup=96,
-                     runtime_creations=48,elapsed_seconds=time.monotonic()-start,
+        if not single:c.require(p.digest(root/'development_freeze.json')==p.read(root/'freeze_receipt.json')['sha256'],'freeze changed')
+        outcome=dict(status='completed_descriptive_only',sessions=len(complete),requests=24*len(complete),warmup=8*len(complete),
+                     runtime_creations=4*len(complete),adb_commands=d.sequence,elapsed_seconds=time.monotonic()-start,
                      installation=installation,experiment_ready=False)
         write(root/'FINAL_RECEIPT.json',outcome);write(registry/'completed.json',outcome);return outcome
     except BaseException as exc:

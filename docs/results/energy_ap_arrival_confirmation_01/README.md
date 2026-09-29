@@ -1,5 +1,7 @@
 # 최소 도착 확인 입력: PC 고정, 실행 차단
 
+2026-09-29 후속: 아래 `PC_INPUT_FIXED_RUN_BLOCKED`는 **처음 설계 입력의 이력**이다. 시작 AP gate가 들어간 프로젝트 서명 APK와 **별도 미승인** 단일세션 계획은 [후속 절](../../ENERGY_AP_ARRIVAL_CONFIRMATION_PC_20260929.md#2026-09-29--시작-ap-gate-apk단일세션-계획-후속-준비)에 기록했다. 계획 SHA `5dfc940d8fb67c3f2fe91399c670965b48493db50a4d4f47184c53eedffa641c`, APK SHA `d2af6d0a2ba8e995cf2a1b8682d50ac306d174a507eb6959377364e1780ea771`, 기기 명령·실측0회. [실행 전 판독 계약](analysis_contract.json)은 A(관측 일정 조건부)와 B(예정 도착 종단간)를 분리한다. 이 입력의 PC 예상 병행 점유는0초이며 병행 계수나 정책 절감 확인으로 확대하지 않는다.
+
 [`input_manifest.json`](input_manifest.json) · [24요청 CSV](requests.csv) · [센서 해상도 요약](sensor_screen.json) · [판정 보고서](../../ENERGY_AP_ARRIVAL_CONFIRMATION_PC_20260929.md)
 
 기존 Android `queue` 생성 규칙으로 예정 도착 0–4.6초(200ms 간격), 긴급 분류6·일반 탐지18, 연구용 요청별 기한1.5/6초를 고정했다. 정책은 `FIXED_SPLIT`, 공통창은120초, 분모는 예정24요청 전체다. 도착은 앞 요청의 완료와 독립적이다. seed201은 기존 PC 상태 길이 화면에만 적용되고 Android 도착 난수는 없다. 이 하나의 입력은 짧은 단독/대기/유휴 전환의 전체창 예측 질문을 위한 것이며, 기존 PC 일정의 병행 점유가 0초라 병행 계수는 확인하지 못한다.

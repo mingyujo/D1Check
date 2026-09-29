@@ -804,3 +804,8 @@
 
 - 사용자 후속 구현 지시에 따라 `numeric-ap-once-v1`을 별도 opt-in으로 구현했다. host 준비 온도를 재사용하지 않고 baseline 뒤 새 HAL AP를1회 조회해 앱이 origin 직전 범위/표본 나이를 확인한다. 사전 최대5명령/앱 대기30초, 실패 시 본 작업0·재시도0; 부하 중 새 handshake 없음. 이전 차단 판단과 동결값을 보존한다.
 - 이 입력의 완료는24요청 조건부/종단간 오차 보고까지이며 병행 계수·짧은 요청 J·임의 부하 정확도 PASS로 확대하지 않는다. 계측 변경은 프로토콜 전이로 표시한다. [실제 코드·검증·한계](ENERGY_AP_ARRIVAL_CONFIRMATION_PC_20260929.md). 실측 승인/실행 계획 발행 아님.
+
+## 2026-09-29 — 시작 AP 단일세션 계획은 미승인 PC 준비로 분리
+
+- queue24/FIXED_SPLIT/공통120초의 [별도 실행 계약](ENERGY_AP_ARRIVAL_CONFIRMATION_PC_20260929.md)을 고정했다. 프로젝트 서명 APK·AP gate·새 session/output/registry·1,300초/ADB3,000/총 추론32 상한을 PC Check했으나 현재 기기 조건과 예측 정확도는 미검증이고 실측 승인은 없다. 처음 `PC_INPUT_FIXED_RUN_BLOCKED` 입력 기록은 이력으로 보존한다.
+- 이번 확인의 종료 범위는 한 입력의 A(실제 일정 조건부 J/AP)·B(예정 도착 종단간 일정/응답/비용)의 자료 적격성 및 오차 보고다. 병행0인 PC 일정만으로 병행 계수, 열→시간 피드백, 동적 정책 우월성을 채택하지 않는다. 동결 계수와 `experiment_ready=false` 유지.

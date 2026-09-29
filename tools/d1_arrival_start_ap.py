@@ -1,6 +1,7 @@
 """One fresh HAL observation after baseline; no retry or temperature waiting."""
 import math
 import re
+import time
 from pathlib import Path
 from tools import d1_energy_collection_device as device
 from tools import d1_arrival_device as legacy
@@ -26,7 +27,10 @@ def approve(d, remote, folder, manifest):
     # Numeric/hash-only payload; atomic publish prevents app reading partial bytes.
     payload=f"{digest} {int(ready['mono_ns'])} {int(sample['before_ns'])} {int(sample['after_ns'])} {ap:.17g} 0"
     target=f'files/arrival-scheduler-inputs/{sid}/start_ap.arm'
+    submitted=time.monotonic()
     d.call('shell','run-as',legacy.PACKAGE,'sh','-c',
            f'"echo {payload} > {target}.tmp && mv {target}.tmp {target}"',timeout=5)
+    returned=time.monotonic()
     device.save(folder/'start_ap_gate/host_approval.json',dict(sample=sample,manifest_sha256=digest,
+                approval_submit_host_monotonic=submitted,approval_return_host_monotonic=returned,
                 meaning='approval sent; app must still validate age at actual common start'))

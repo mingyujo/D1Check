@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-29 시작 AP 단일세션 PC 준비 완료 — 미승인·기기 미검증
+
+- [실행/판독 경계·정확한 예산](ENERGY_AP_ARRIVAL_CONFIRMATION_PC_20260929.md), [24요청·분석 계약](results/energy_ap_arrival_confirmation_01/README.md). `numeric-ap-once-v1` 프로젝트 서명 APK SHA `d2af6d0a…ea771`, 별도 계획 `ENERGY-AP-ARRIVAL-CONFIRM-01` SHA `5dfc940d…a641c`, 상태 `PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED`; Check 기기명령0·출력/registry 미생성. 1세션·runtime4·warmup8·작업24·총 추론32, stage7파일, push/설치 최대 각1, ADB3,000, 총1,300초, 재시도0. 실제 설치본·환경·센서 내부 AP 갱신·실행은 아직 미확인이다.
+- 이 입력은 queue24/FIXED_SPLIT/120초의 A(관측 일정 조건부 에너지/AP)와 B(예정 도착 종단간 일정/응답/비용)를 **별도** 판독하기 위한 것이다. PC 예상 병행0초, frozen strict 임의 전환 unsupported라 병행 비용·동적 열 피드백·정책 우열 검증 완료가 아니다. 개발 동결 SHA `35ed6987…34c54`, 과거32.3°C 범위 밖/FAIL/원본과 `experiment_ready=false` 유지. **다음 행동:** 별도 승인 전제의 현재 A24·설치본·환경 확인 후 이 한 세션을 실행할지 판단; 이번 턴 기기명령0.
+
 ## 2026-09-29 시작 직전 numeric AP opt-in 구현·PC 검증
 
 - [후속 구현·계측 경계·완료 정의](ENERGY_AP_ARRIVAL_CONFIRMATION_PC_20260929.md): `numeric-ap-once-v1`은 baseline 뒤 AP를 한 번 확인하고 앱이 실제 common origin에서32.5–34.0°C·읽기 시작부터3초 이내를 재검사한다.30초 대기 만료/결측/범위 밖/전달 지연이면 본 작업0, 자동 대기 반복·재시도 없음. host 조회 최대5명령이 시작 전에 추가되며 부하 중 새 handshake는 없다.
