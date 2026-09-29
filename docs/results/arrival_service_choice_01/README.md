@@ -10,3 +10,5 @@ python -X utf8 -B -m unittest tools.test_d1_arrival_service_choice -v
 ```
 
 연구용 긴급1.5초/일반6초는 실제 SLA가 아니다. 기존 B2/B3 정책·A24 동결 계수·측정 범위는 변경하지 않았다.
+
+같은 저장 결과에 적용한 보수적 서비스 비교 규칙과 사후 판독은 [별도 readout](../arrival_service_guard_01/README.md)에 있다. 이 규칙도 J·AP 지원이나 실제 서비스 SLA를 만들지 않는다.

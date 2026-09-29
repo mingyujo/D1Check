@@ -1,0 +1,23 @@
+{
+  "id": "ARRIVAL-SERVICE-GUARD-01",
+  "version": 1,
+  "reference_policy": "CPU_URGENT",
+  "candidate_policies": ["B2_PC", "B3_SOLO_EFT_PC"],
+  "scope": "same scenario, realized interference, seed, 24 scheduled PC requests",
+  "research_deadlines_ms": {"urgent": 1500, "normal": 6000},
+  "archived_service_cases_sha256": "d36dd3072de9f0071d483f80cc1c5201d2a60a6b6ec3c2e340f24a240b82c694",
+  "require_full_completion": true,
+  "max_urgent_not_timely_delta_count": 0,
+  "max_normal_not_timely_delta_count": 0,
+  "max_urgent_p95_delta_ms": "0",
+  "conditions": [
+    "all 24 planned requests completed in both policy and reference",
+    "urgent not-timely count no greater than reference",
+    "normal not-timely count no greater than reference (delta=0 percentage points)",
+    "completed urgent response P95 no greater than reference"
+  ],
+  "normal_mean_response": "report_only",
+  "energy_ap_rule": "unsupported values remain null; service eligibility alone cannot rank energy or AP",
+  "archived_data_status": "posthoc descriptive readout; source results were already seen",
+  "future_use": "fixed comparison rule for a new independent evaluation; not an adopted UX SLA or accuracy threshold"
+}
