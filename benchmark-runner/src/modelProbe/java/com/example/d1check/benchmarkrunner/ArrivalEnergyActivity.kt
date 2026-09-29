@@ -134,7 +134,7 @@ class ArrivalEnergyActivity : Activity() {
             val policy = m.getString("policy")
             val apMode = m.optString("start_ap_gate", "")
             check(apMode == "" || apMode == ArrivalStartApGate.VERSION) { "unknown start AP gate" }
-            check(policy in setOf(ArrivalPolicy.URGENT, ArrivalPolicy.FIXED))
+            check(policy in setOf(ArrivalPolicy.URGENT, ArrivalPolicy.FIXED, ArrivalRecordedReplay.POLICY))
             val imageSpec = m.getJSONArray("images").also { check(it.length() == 1) }.getJSONObject(0)
             val image = File(inputs, imageSpec.getString("filename")); val imageHash = imageSpec.getString("sha256")
             check(ProbeModelFile.sha256(image) == imageHash)
@@ -147,6 +147,15 @@ class ArrivalEnergyActivity : Activity() {
             } }
             ArrivalEnergyContract.validate(m.getString("scenario"), requests)
             requests.forEach { check(UUID.fromString(it.id).toString() == it.id) }
+            val replay = if (policy == ArrivalRecordedReplay.POLICY) {
+                check(m.getString("replay_version") == ArrivalRecordedReplay.VERSION)
+                requestJson.let { arr -> (0 until arr.length()).map { i -> arr.getJSONObject(i).let { q ->
+                    ArrivalRecordedReplay.Entry(q.getString("request_id"), q.getInt("ordinal"),
+                        q.getString("task_id"), q.getLong("offset_ms") * 1_000_000L,
+                        q.getLong("release_offset_ns"), q.getString("recorded_backend"),
+                        q.getString("source_request_id"))
+                } } }.also { ArrivalRecordedReplay.validate(it, requests) }.associateBy { it.id }
+            } else emptyMap()
             samples.scheduleAtFixedRate({ sampler.tick { event("power_sample", snapshot()) } }, 0, 1, TimeUnit.SECONDS)
             val setupStart = now()
             Log.i("D1ENERGY", "runtime_scope_start=$sid")
@@ -209,7 +218,10 @@ class ArrivalEnergyActivity : Activity() {
             pump = {
                 while (stop.get() == null) {
                     val begin = now()
-                    val choice = ArrivalPolicy.choose(policy, waiting, !busy.getValue("CPU"), !busy.getValue("GPU"), 0, emptyMap())
+                    val choice = if (policy == ArrivalRecordedReplay.POLICY)
+                        ArrivalRecordedReplay.choose(waiting, replay, maxOf(0L, begin-start),
+                            !busy.getValue("CPU"), !busy.getValue("GPU"))
+                    else ArrivalPolicy.choose(policy, waiting, !busy.getValue("CPU"), !busy.getValue("GPU"), 0, emptyMap())
                     event("decision", mapOf("policy" to policy, "waiting" to waiting.size,
                         "selected" to choice?.ticket?.id, "backend" to choice?.backend,
                         "decision_start_ns" to begin, "decision_end_ns" to now()))
@@ -219,14 +231,19 @@ class ArrivalEnergyActivity : Activity() {
                     val row = rows.getValue(choice.ticket.id); val key = "${choice.ticket.task}_${choice.backend}"
                     val dispatched = now(); observed.dispatch(key, choice.ticket.id)
                     update(row, mapOf("selected_backend" to choice.backend, "decision_reason" to choice.reason,
-                        "dispatch_ns" to dispatched))
+                        "dispatch_ns" to dispatched, "recorded_release_ns" to replay[choice.ticket.id]?.let { start+it.releaseNs },
+                        "release_gate_delay_ns" to replay[choice.ticket.id]?.let { dispatched-(start+it.releaseNs) }))
                     event("dispatch", mapOf("id" to choice.ticket.id, "key" to key, "dispatch_ns" to dispatched))
                     lane(key).execute {
                         try {
                             val execution = now(); update(row, mapOf("execution_start_ns" to execution))
                             event("request_start", mapOf("id" to choice.ticket.id, "key" to key))
                             event("admission", snapshot()); healthy()
+                            val inferenceStart = now(); update(row, mapOf("host_inference_start_ns" to inferenceStart))
+                            event("host_inference_start", mapOf("id" to choice.ticket.id, "key" to key))
                             val outcome = observed.runtime(key).execute(image, imageHash)
+                            val inferenceReturn = now(); update(row, mapOf("host_inference_return_ns" to inferenceReturn))
+                            event("host_inference_return", mapOf("id" to choice.ticket.id, "key" to key))
                             val ready = now(); update(row, mapOf("output_ready_ns" to ready))
                             event("output_ready", mapOf("id" to choice.ticket.id, "key" to key))
                             save("${choice.ticket.id}.result.json", outcome)
@@ -259,6 +276,7 @@ class ArrivalEnergyActivity : Activity() {
                     val actual = now()
                     val row = linkedMapOf<String, Any?>("request_id" to q.id, "ordinal" to q.ordinal,
                         "task_id" to q.task, "priority" to q.priority,
+                        "source_request_id" to replay[q.id]?.sourceId,
                         "scheduled_arrival_ns" to target, "actual_arrival_ns" to actual,
                         "deadline_ns" to target + q.deadlineMs * 1_000_000,
                         "terminal_status" to "unfinished")
@@ -272,6 +290,15 @@ class ArrivalEnergyActivity : Activity() {
                         event("queue_entry", mapOf("id" to q.id)); pump()
                     }
                 }, maxOf(0, target - now()), TimeUnit.NANOSECONDS)
+            }
+            if (policy == ArrivalRecordedReplay.POLICY) for (entry in replay.values) {
+                val target = start + entry.releaseNs
+                arrivals.schedule({ dispatch.execute {
+                    event("recorded_release_gate", mapOf("id" to entry.id,
+                        "source_request_id" to entry.sourceId, "scheduled_ns" to target,
+                        "actual_ns" to now()))
+                    pump()
+                } }, maxOf(0, target-now()), TimeUnit.NANOSECONDS)
             }
             while (now()-start < ArrivalEnergyContract.COMMON_NS) { healthy(); Thread.sleep(100) }
             val commonEnd = now(); event("common_end", mapOf("common_end_ns" to commonEnd))

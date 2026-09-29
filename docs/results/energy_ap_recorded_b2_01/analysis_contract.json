@@ -1,0 +1,24 @@
+{
+  "version": "recorded-b2-conditional-readout-v1",
+  "scope": "one A24 queue/seed201/B2_PC/realized-interference1.5 recorded-dispatch replay; not online B2 or strict arbitrary-arrival support",
+  "source": "source_schedule.json; saved PC timeline and occupancy SHA verified before plan Check",
+  "origin": "device common_start after numeric AP approval",
+  "requests": 24,
+  "common_window_seconds": 120,
+  "model": "COLLECT-05 development_freeze.json SHA-256 35ed6987b1fc09789284018f8502107eaf4e3125373651a01e3a08d427034c54; no refit",
+  "starting_ap": "single numeric AP HAL reading, 32.5-34.0 C, host query start to device origin <=3 s; internal sensor freshness unknown",
+  "conditional_prediction_inputs": ["observed initial AP", "actual dispatch-to-lane-available task/backend occupancy", "frozen whole-device state power and AP coefficients"],
+  "forbidden_prediction_inputs": ["later observed current", "later observed AP", "actual future execution duration as an online decision"],
+  "eligibility": {
+    "start_ap_outside_or_missing": "zero work, unsupported",
+    "unmapped_state_or_noncontiguous_120s": "unsupported, no total J/AP",
+    "missing_current_or_voltage": "no full observed J; partial covered intervals only",
+    "missing_ap_path": "no path MAE or peak comparison",
+    "failed_or_unfinished": "retain all 24 in denominator; report separate from cost eligibility",
+    "protocol_change": "new signed replay APK and recorded gate; separate transfer evidence from frozen development and DC_DG"
+  },
+  "outputs": ["planned/completed/failed/unfinished", "recorded versus actual dispatch and lane release", "state occupancy and overlap", "120s whole-device J and cumulative path", "AP path MAE, max error and peak error", "eligibility and non-evaluable intervals"],
+  "accuracy_pass": null,
+  "policy_selection_pass": null,
+  "limits": ["single session does not estimate variability", "request-level joules not identified", "CPU/GPU rail energy not measured", "physical throttling and actual policy savings not validated", "whole-device current raw=mA remains conditional and absolute accuracy uncertified"]
+}

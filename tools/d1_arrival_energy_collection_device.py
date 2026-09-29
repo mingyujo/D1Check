@@ -27,7 +27,7 @@ def poll(d,remote,folder,manifest,plan):
     start=time.monotonic();end=min(d.deadline,start+plan.get('budget',c.BUDGET)['host_poll_seconds'])
     last_thermal=last_screen=0;armed=False;index=0;start_ap_sent=False
     while time.monotonic()<end:
-        if plan.get('single_arrival_confirmation') and d.sequence>=plan['budget']['adb_commands']-20:
+        if (plan.get('single_arrival_confirmation') or plan.get('recorded_replay_confirmation')) and d.sequence>=plan['budget']['adb_commands']-20:
             raise RuntimeError('ADB observation cap reserve reached; preserve recovery/cleanup slots')
         now=time.monotonic()
         if now-last_thermal>=2:
@@ -81,16 +81,36 @@ def validate(folder,manifest,plan):
     c.require({r['request_id'] for r in rows}=={r['request_id'] for r in manifest['requests']},'request identity')
     c.require(boundary['end_ns']-boundary['start_ns']>=120_000_000_000,'common window incomplete')
     for r in rows:
-        c.require(r['terminal_status']=='succeeded' and all(r.get(field) is not None for field in
-                  ('actual_arrival_ns','dispatch_ns','execution_start_ns','output_ready_ns',
-                   'persist_complete_ns','worker_release_ns','lane_available_ns')),'unfinished/request boundary')
+        fields=('actual_arrival_ns','dispatch_ns','execution_start_ns','output_ready_ns',
+                'persist_complete_ns','worker_release_ns','lane_available_ns')
+        if plan.get('recorded_replay_confirmation'):
+            fields+=('host_inference_start_ns','host_inference_return_ns')
+        c.require(r['terminal_status']=='succeeded' and all(r.get(field) is not None for field in fields),
+                  'unfinished/request boundary')
         c.require(r['scheduled_arrival_ns']<=r['actual_arrival_ns']<=r['dispatch_ns']<=
                   r['execution_start_ns']<=r['output_ready_ns']<=r['persist_complete_ns']<=
                   r['worker_release_ns']<=r['lane_available_ns'],'time order')
+        if plan.get('recorded_replay_confirmation'):
+            c.require(r['execution_start_ns']<=r['host_inference_start_ns']<=
+                      r['host_inference_return_ns']<=r['output_ready_ns'], 'host inference bracket')
         key=r['task_id']+'_'+r['selected_backend']
-        c.require(r['selected_backend']==('CPU' if manifest['policy']=='CPU_URGENT' or r['priority']=='urgent' else 'GPU'),'policy allocation')
+        if plan.get('recorded_replay_confirmation'):
+            source=next(q for q in manifest['requests'] if q['request_id']==r['request_id'])
+            c.require(r['selected_backend']==source['recorded_backend'] and
+                      r['source_request_id']==source['source_request_id'] and
+                      r['dispatch_ns']>=boundary['start_ns']+source['release_offset_ns'] and
+                      r['recorded_release_ns']==boundary['start_ns']+source['release_offset_ns'],
+                      'recorded replay allocation/release gate')
+        else:
+            c.require(r['selected_backend']==('CPU' if manifest['policy']=='CPU_URGENT' or r['priority']=='urgent' else 'GPU'),'policy allocation')
         result=p.read(artifacts/(r['request_id']+'.result.json'))
         c.old.quality(p.read(plan['references'][key]['path']),result)
+    if plan.get('recorded_replay_confirmation'):
+        for backend in ('CPU','GPU'):
+            ordered=sorted((r for r in rows if r['selected_backend']==backend),
+                           key=lambda r:r['dispatch_ns'])
+            c.require(all(a['lane_available_ns']<=b['dispatch_ns'] for a,b in zip(ordered,ordered[1:])),
+                      'busy lane overwritten before actual callback')
     events,partial=c.old.progress_prefix((artifacts/'progress.jsonl').read_bytes())
     c.require(partial==0 and sum(e.get('kind')=='warmup_return' for e in events)==8 and
               sum(e.get('kind')=='runtime_return' for e in events)==4 and
@@ -119,8 +139,11 @@ def validate(folder,manifest,plan):
 def run(plan_file,adb,serial,expected_sha,approved):
     c.require(approved and p.digest(plan_file)==expected_sha,'explicit later approval and exact plan hash required')
     plan=p.read(plan_file)
-    single=plan.get('single_arrival_confirmation',False)
-    if single:
+    single=plan.get('single_arrival_confirmation',False) or plan.get('recorded_replay_confirmation',False)
+    if plan.get('recorded_replay_confirmation'):
+        from tools import d1_arrival_recorded_replay as confirmation
+        confirmation.check(plan_file)
+    elif single:
         from tools import d1_arrival_ap_confirmation as confirmation
         confirmation.check(plan_file)
     else:c.check(plan_file)
@@ -132,6 +155,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
     d=ObservedDevice(adb,serial,root/'host_commands');d.deadline=hard
     if single:d.command_limit=budget['adb_commands']
     complete=[];current=None;remote=None;identified=False;installation=None
+    cleanup_attempted=False;cleanup_result=None
     try:
         (root/'installation').mkdir()
         installation=energy_device.installation(d,plan,plan_file,root/'installation',hard);identified=True
@@ -151,6 +175,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
                 while time.monotonic()<until:time.sleep(min(1,until-time.monotonic()))
             c.require(hard-time.monotonic()>=budget['session_seconds'],'whole session reserve')
             current=root/f"{entry['index']:02d}_{entry['session_id']}";current.mkdir();remote=None
+            cleanup_attempted=False;cleanup_result=None
             session_start=time.monotonic();session_end=min(hard,session_start+budget['session_seconds'])
             d.deadline=min(session_start+budget['stage_gate_seconds'],session_end-580)
             energy_device.gates(d,plan,current,'before_session')
@@ -168,7 +193,16 @@ def run(plan_file,adb,serial,expected_sha,approved):
             poll(d,remote,current,manifest,plan)
             d.deadline=min(session_end-45,time.monotonic()+budget['recovery_seconds'])
             write(current/'recovery.json',energy_device.recover(d,remote,current/'artifacts'))
-            write(current/'host_cleanup.json',shared.cleanup(d,session_end))
+            cleanup_attempted=True
+            try:
+                cleanup_result=shared.cleanup(d,session_end)
+            except BaseException as error:
+                cleanup_result=dict(error=repr(error),status='failed_or_unknown')
+                try:write(current/'host_cleanup_error.json',cleanup_result)
+                except BaseException as recording_error:
+                    cleanup_result['recording_error']=repr(recording_error)
+                raise
+            write(current/'host_cleanup.json',cleanup_result)
             stats=validate(current,manifest,plan)
             c.require(time.monotonic()<=session_end,'session exceeded reserve; no next session')
             stats['elapsed_seconds']=time.monotonic()-session_start
@@ -190,8 +224,14 @@ def run(plan_file,adb,serial,expected_sha,approved):
                 try:energy_device.pull_file(d,remote,name,current/'failure_prefix')
                 except BaseException as error:write(current/(name+'.recovery_error.json'),dict(error=repr(error)))
         if identified:
-            try:write((current or root)/'failure_host_cleanup.json',shared.cleanup(d,hard))
-            except BaseException as error:failure['host_cleanup_error']=repr(error)
+            if cleanup_attempted:
+                failure['host_cleanup']=cleanup_result or dict(status='unknown_after_attempt')
+            else:
+                cleanup_attempted=True
+                try:
+                    cleanup_result=shared.cleanup(d,hard)
+                    write((current or root)/'failure_host_cleanup.json',cleanup_result)
+                except BaseException as error:failure['host_cleanup_error']=repr(error)
         prefix=current/'failure_prefix/progress.jsonl' if current else None
         records,partial=c.old.progress_prefix(prefix.read_bytes() if prefix and prefix.is_file() else b'')
         failure['last_session_progress']=dict(valid_records=len(records),partial_lines=partial,

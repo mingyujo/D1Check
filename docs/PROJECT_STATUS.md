@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-29 저장 B2 짧은 전환의 단일 기기 재생 — PC 준비 완료·미승인
+
+- [원본·구현·판독·예산](ARRIVAL_RECORDED_B2_REPLAY_PC_20260929.md), [공유 입력](results/energy_ap_recorded_b2_01/README.md), [통합 화면](results/arrival_policy_screen_01/dashboard.html). queue/seed201/B2_PC/실현 간섭1.5의 원본 24요청과 49개 점유 구간을 교차검사했다. 별도 `RECORDED_B2_REPLAY_V1`은 원본 backend/dispatch 허용 하한을 따르되 실제 추론·lane 해제를 연장하지 않는다. 동결식 적용은 실제 일정·시작 AP를 받는 **조건부 진단**이고 strict 임의 도착 지원·온라인 B2·정책 절감 판정이 아니다.
+- 프로젝트 서명 APK SHA `2af45f68…5b544`와 외부 단일세션 plan_v3 SHA `52b0a21b…30d5c`을 PC에서 검증했다. 계획 상태 `PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED`, 세션1·추론 최대32·runtime4·staging7파일·조건부 push/설치 각1·ADB3,200·전체1,300초·재시도0. `Check` 기기 명령0, output/registry·claim 없음. 실제 기기 적격성, 120초 J/AP 오차, 짧은 전환 지원은 미확인이다. 이 턴의 v1/v2 PC 초안은 소스 변경 뒤 실행 대상이 아니며 기존 queue24 계획·FAIL·원본·동결 모형·`experiment_ready=false` 유지. **다음 행동 하나:** 별도 실행 승인 시 plan_v3의 현재 A24·설치본·환경 gate를 확인하고 이 한 세션의 조건부 오차를 판독한다.
+
 ## 2026-09-29 저장된 정책 일정의 실측 모형 지원 경계 — PC 판정 완료
 
 - [135개 일정의 지원·차단 구간과 최소 해결 명세](ARRIVAL_MEASURED_SUPPORT_BOUNDARY_20260929.md), [CSV/SVG와 통합 화면](results/arrival_policy_screen_01/dashboard.html). low/queue/burst × 실현 간섭1/1.5/2 × seed201–205 × CPU_URGENT/B2/B3의 저장 120초 일정 중 **실측 기반 J/AP 전체창 지원 0개**. 임의 짧은 전환이 동결 regimen 지원 밖이고 저장 초기 AP29°C는 미측정·개발 시작 범위 밖이다. burst/B3의 9사례는 분류 CPU＋분류 GPU 계수도 없다. 저장 PC 일정·응답과 가정 비용은 그대로, 미지원 J/AP는 계산하지 않았다.
