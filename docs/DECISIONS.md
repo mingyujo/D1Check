@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-09-29 — B2 재생의 Activity 소유권은 유지, 종료 증거만 보강
+
+- [PC 시간축·코드 판독](ARRIVAL_RECORDED_B2_LIFECYCLE_PC_20260929.md)에서 `onDestroy` 취소 뒤 앱 실패 기록, 이후 host force-stop을 확인했다. 최초 `onDestroy` trigger는 구 APK에 callback/instance 로그가 없어 미확정이다. Activity의 작업 소유권·미완료 취소를 삭제하거나 Service로 전환하지 않는다. 별도 journal 기록은 다음 사건의 구분을 위한 변경이며 원인 해결·기기 검증 결정이 아니다.
+- 중단 plan_v3 재실행과 새 실측 자동 시작은 채택하지 않았다. 새 APK의 추가 계측 비용은 미확인이고 기존 동결 모델·FAIL·미소비 queue24·`experiment_ready=false`는 그대로 둔다. 다음 실행은 새 계획과 별도 승인/현재 gate를 필요로 한다.
+
 ## 2026-09-29 — 짧은 전환 확인용 기록 일정 선택과 1회 결과
 
 - **PC 확인 범위 확정:** [B2 원본·49구간 교차검사](ARRIVAL_RECORDED_B2_REPLAY_PC_20260929.md)에 따라 queue/seed201/실현 간섭1.5의 B2_PC 24요청을 첫 조건부 모형 전이 질문으로 고정했다. 이는 유휴·탐지 CPU·분류 GPU·CG_DC를 포함하는 최소 상태 묶음이고 반대 병행 방향은 포함하지 않는다. 저장 dispatch는 실행 허용 *하한*일 뿐 기기 완료시간이나 실제 병행을 강제하지 않는다. 별도 기록 재생 모드와 기존 정책/strict 지원은 구분한다.

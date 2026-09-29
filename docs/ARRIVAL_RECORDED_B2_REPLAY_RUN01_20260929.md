@@ -1,5 +1,7 @@
 # 저장 B2 일정 재생 1회: 공식창 전 앱 종료
 
+후속 [Activity lifecycle·소유권 PC 판독](ARRIVAL_RECORDED_B2_LIFECYCLE_PC_20260929.md)에서 앱 실패와 host force-stop의 선후를 대조했다. 최초 `onDestroy` trigger는 구 APK 기록만으로 미확정이며 원본·소비 상태는 변경하지 않았다.
+
 **판정: `stopped_no_resume`, 1세션 시도·0세션 완료.** 승인된 `energy_ap_recorded_b2_plan_v3`(SHA-256 `52b0a21be884722b41a80b54ca0a874558a3a38aed3aeb85e89e247c7a830d5c`)를 `Check` 후 한 번 실행했다. 앱은 4개 runtime 생성과 8회 warmup을 모두 반환하고 host의 warmup arm을 수신했으나, resident baseline 시작 약 21.82초 뒤 `lifecycle_cancelled/null`을 기록했다. 공식 baseline 30초, 시작 직전 numeric AP gate, 24개 본 요청, 공통 120초 창에 도달하지 못했다. **에너지·AP 오차, 실제 병행, 정책 성능은 미산출**이며 해당 계획은 재실행하지 않는다.
 
 ## 소비와 종료

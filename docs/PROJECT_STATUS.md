@@ -1,9 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-09-29 저장 B2 재생의 lifecycle·소유권 PC 판독 완료
+
+- [시간축·소유권·수정·검증](ARRIVAL_RECORDED_B2_LIFECYCLE_PC_20260929.md). 앱 baseline 중 `onDestroy` 취소와 그 뒤의 host force-stop은 구분했다. 구 APK에 callback/instance 기록이 없어 `onDestroy` trigger(사용자 조작·재생성·시스템 처리 등)는 **미확정**이다. Activity가 worker/runtime/journal을 소유하고 `onDestroy`에서 안전 취소하는 현 계약은 유지한다. 두 번째 Activity의 기존 출력 덮어쓰기는 이미 root guard가 차단한다. 부족했던 lifecycle·finish 의도만 bounded journal에 추가했고 Robolectric callback 3건 및 관련 4건 PASS, 별도 프로젝트 서명 APK SHA `120ee894…1d50f5` 생성·검증(미설치)했다. 새 journal 비용은 미계측이므로 구 APK 자료와 동일 프로토콜로 합치지 않는다. 기기 명령0; plan_v3 `stopped_no_resume`, 동결 모형·FAIL·queue24 미소비 계획·`experiment_ready=false` 유지. **다음 행동 하나:** 별도 새 실행을 논의할 때 먼저 lifecycle 계측 APK와 계획 동일성·현재 기기 gate를 확인한다. 이번 PC 작업에서는 실측하지 않는다.
+
 ## 2026-09-29 저장 B2 짧은 전환 재생 — 1회 중단·재실행 금지
 
 - [원본·구현·판독·예산](ARRIVAL_RECORDED_B2_REPLAY_PC_20260929.md), [공유 입력](results/energy_ap_recorded_b2_01/README.md), [통합 화면](results/arrival_policy_screen_01/dashboard.html). queue/seed201/B2_PC/실현 간섭1.5의 원본 24요청과 49개 점유 구간을 교차검사했다. 별도 `RECORDED_B2_REPLAY_V1`은 원본 backend/dispatch 허용 하한을 따르되 실제 추론·lane 해제를 연장하지 않는다. 동결식 적용은 실제 일정·시작 AP를 받는 **조건부 진단**이고 strict 임의 도착 지원·온라인 B2·정책 절감 판정이 아니다.
-- [승인 1회 결과·원본·소비](ARRIVAL_RECORDED_B2_REPLAY_RUN01_20260929.md): plan_v3 SHA `52b0a21b…30d5c`는 `stopped_no_resume`. APK push/설치 각1·staging7·runtime4·warmup8 뒤 resident baseline 중 앱 `lifecycle_cancelled`; 본 요청 시작 기록0, 시작 AP gate·120초 공식창 미도달, 완료0/시도1. 실행기 ADB207+transport 선택1/3,200, 전체93.547/1,300초. 앱 실패 파일 회수 뒤 대상 host force-stop·프로세스 부재 확인. `summary.json` 누락이 원본 host receipt의 최상위 오류로 올라온 판독 경로를 PC에서 보완·8테스트 통과했으며 소모 계획을 다시 실행하지 않는다. J/AP 오차·실제 병행·정책 성능 미판정. 기존 queue24 미승인 계획·원본·동결 모형·FAIL·`experiment_ready=false` 유지. **다음 행동 하나:** 회수된 lifecycle과 host 화면 시각을 PC에서 대조해 `onDestroy()` trigger 식별 가능 여부를 판정한다.
+- [승인 1회 결과·원본·소비](ARRIVAL_RECORDED_B2_REPLAY_RUN01_20260929.md): plan_v3 SHA `52b0a21b…30d5c`는 `stopped_no_resume`. APK push/설치 각1·staging7·runtime4·warmup8 뒤 resident baseline 중 앱 `lifecycle_cancelled`; 본 요청 시작 기록0, 시작 AP gate·120초 공식창 미도달, 완료0/시도1. 실행기 ADB207+transport 선택1/3,200, 전체93.547/1,300초. 앱 실패 파일 회수 뒤 대상 host force-stop·프로세스 부재 확인. `summary.json` 누락이 원본 host receipt의 최상위 오류로 올라온 판독 경로를 PC에서 보완·8테스트 통과했으며 소모 계획을 다시 실행하지 않는다. J/AP 오차·실제 병행·정책 성능 미판정. 기존 queue24 미승인 계획·원본·동결 모형·FAIL·`experiment_ready=false` 유지. 뒤이은 PC 시간축 판독은 위 최신 항목을 따른다.
 
 ## 2026-09-29 저장된 정책 일정의 실측 모형 지원 경계 — PC 판정 완료
 

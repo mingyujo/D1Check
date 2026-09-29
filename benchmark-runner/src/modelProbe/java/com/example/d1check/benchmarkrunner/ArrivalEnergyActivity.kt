@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 /** Isolated, measured 24-arrival path; old ArrivalSchedulerActivity remains unchanged. */
 class ArrivalEnergyActivity : Activity() {
+    private val activityInstanceId = UUID.randomUUID().toString()
     private val setup = Executors.newSingleThreadExecutor()
     private val dispatch = Executors.newSingleThreadExecutor()
     private val cpu = Executors.newSingleThreadExecutor()
@@ -31,8 +32,11 @@ class ArrivalEnergyActivity : Activity() {
     private var progress: EnergyProgress? = null
     private lateinit var root: File
     private lateinit var sid: String
+    private var createdFromSavedState = false
+    private var activityCreatedNs = 0L
     private var sequence = 0L
     @Volatile private var finished = false
+    @Volatile private var finishRequested = false
     private var phase: String
         get() = observed.phase
         set(value) { observed.phase = value }
@@ -42,6 +46,23 @@ class ArrivalEnergyActivity : Activity() {
     private val watchdog = Runnable { android.os.Process.killProcess(android.os.Process.myPid()) }
     private fun now() = SystemClock.elapsedRealtimeNanos()
     private fun lane(key: String) = if (key.endsWith("_CPU")) cpu else gpu
+
+    private fun lifecycle(callback: String) {
+        if (progress == null) return
+        try {
+            event("activity_lifecycle", mapOf("callback" to callback,
+                "activity_instance_id" to activityInstanceId,
+                "activity_created_ns" to activityCreatedNs,
+                "is_finishing" to isFinishing,
+                "is_changing_configurations" to isChangingConfigurations,
+                "created_from_saved_state" to createdFromSavedState,
+                "finish_requested_by_session" to finishRequested,
+                "stop_reason" to stop.get()))
+        } catch (error: Throwable) {
+            // A journal failure cannot replace the first cancellation or session error.
+            Log.w("D1ARRIVALENERGY", "lifecycle journal unavailable: $callback", error)
+        }
+    }
 
     @Synchronized private fun event(kind: String, data: Map<String, Any?> = emptyMap()) {
         progress?.add(ModelProbeArtifacts.json(data + mapOf("kind" to kind, "mono_ns" to now(),
@@ -94,6 +115,8 @@ class ArrivalEnergyActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activityCreatedNs = now()
+        createdFromSavedState = savedInstanceState != null
         setContentView(TextView(this).apply { text = "합성 도착 에너지·AP 계측" })
         window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         handler.postDelayed(watchdog, ArrivalEnergyContract.WATCHDOG_MS)
@@ -123,7 +146,9 @@ class ArrivalEnergyActivity : Activity() {
             root = canonicalProbeOutputRoot(filesDir, ArrivalEnergyContract.PROTOCOL, sid)
             check(!root.exists() && root.mkdirs())
             FileOutputStream(File(root, "manifest.json")).use { it.write(mf.readBytes()); it.fd.sync() }
-            progress = EnergyProgress(File(root, "progress.jsonl")); event("session_start", mapOf("manifest_sha256" to hash))
+            progress = EnergyProgress(File(root, "progress.jsonl"))
+            event("session_start", mapOf("manifest_sha256" to hash))
+            lifecycle("onCreate")
             check(m.getString("protocol") == ArrivalEnergyContract.PROTOCOL && m.getString("session_id") == sid)
             check(!m.getBoolean("experiment_ready") && m.getLong("maximum_duration_ms") == ArrivalEnergyContract.WATCHDOG_MS)
             check(m.getString("apk_sha256") == ProbeModelFile.sha256(File(applicationInfo.sourceDir)) &&
@@ -330,7 +355,12 @@ class ArrivalEnergyActivity : Activity() {
                 try { ArrivalRuntimeSetup.closeLane(executor) { observed.laneRuntimes(suffix).forEach { it.close() } } }
                 catch(e: Throwable) { failure = "$failure; cleanup: $e" }
             }
-            try { event("app_cleanup", mapOf("error" to failure)); progress?.close() }
+            try {
+                event("app_cleanup", mapOf("error" to failure))
+                finishRequested = true
+                lifecycle("finish_requested")
+                progress?.close()
+            }
             catch(e: Throwable) { failure = "$failure; flush: $e" }
             if (::root.isInitialized) try { save("cleanup.json", mapOf("status" to if(failure==null) "completed" else "failed",
                 "error" to failure, "mono_ns" to now(), "sampler_failure" to sampler.failure.get(),
@@ -342,5 +372,14 @@ class ArrivalEnergyActivity : Activity() {
             runOnUiThread { finish() }
         }
     }
-    override fun onDestroy() { if (!finished) stop.compareAndSet(null,"lifecycle_cancelled"); super.onDestroy() }
+    override fun onStart() { super.onStart(); lifecycle("onStart") }
+    override fun onResume() { super.onResume(); lifecycle("onResume") }
+    override fun onPause() { lifecycle("onPause"); super.onPause() }
+    override fun onStop() { lifecycle("onStop"); super.onStop() }
+    override fun onNewIntent(intent: Intent) { super.onNewIntent(intent); lifecycle("onNewIntent") }
+    override fun onDestroy() {
+        if (!finished) stop.compareAndSet(null,"lifecycle_cancelled")
+        lifecycle("onDestroy")
+        super.onDestroy()
+    }
 }

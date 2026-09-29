@@ -1,8 +1,12 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-09-29 — 저장 B2 재생 종료 PC 판독
+
+[최신 lifecycle 판독](ARRIVAL_RECORDED_B2_LIFECYCLE_PC_20260929.md)에서 baseline 실패 파일보다 host의 세션 종료 force-stop이 뒤라는 것을 확인했다. Activity 종료의 최초 외부 원인은 구 APK 기록으로 특정할 수 없다. Activity가 실행 자원을 소유하고 `onDestroy`에서 미완료 세션을 취소하는 구조를 유지하며, 부족했던 instance/callback/finish 사유 journal만 추가했다. 관련 실제 callback PC 테스트 7건과 별도 프로젝트 서명 APK 빌드·신원 검증을 완료했으나 새 APK는 미설치·기기 미확인이고 추가 기록 비용도 미계측이다. 다음 실행은 새 계획·별도 승인·현재 gate가 필요하며 이번에는 준비/실행하지 않는다. 소모 plan_v3 재실행 금지, 동결 J/AP 모형·미완료 확인·strict 지원·`experiment_ready=false` 유지.
+
 ## 2026-09-29 — 저장 B2 상태 전환 조건부 확인 경로
 
-[단일 재생 계약](ARRIVAL_RECORDED_B2_REPLAY_PC_20260929.md)의 queue/seed201/실현 간섭1.5 B2_PC 한 일정만 대상으로 `RECORDED_B2_REPLAY_V1` 입력·Android 배정 gate·동결 모델 조건부 판독을 PC 구현하고 계획을 동결했다. [승인 실행 결과](ARRIVAL_RECORDED_B2_REPLAY_RUN01_20260929.md)는 runtime4·warmup8 완료 뒤 resident baseline 중 `lifecycle_cancelled`로 1시도·0완료, 본 작업·시작 AP gate·공식120초 창 미도달이다. plan_v3은 소비·종료되어 재실행하지 않는다. 앱 실패와 host 최상위 summary 누락 오류를 구분해 PC 판독을 수정했으나 과거 종료 trigger는 미확정이다. J/AP 오차·짧은 전환 지원·정책 성능 PASS는 미판정이다. 동결 파일과 기존 queue24 미소비 계획, strict 지원 제한, `experiment_ready=false` 유지. 다음 행동은 **회수된 lifecycle와 host 화면 기록의 PC 시간축 대조**로 한정하며 새 기기 실행은 이 계획에 포함하지 않는다.
+[단일 재생 계약](ARRIVAL_RECORDED_B2_REPLAY_PC_20260929.md)의 queue/seed201/실현 간섭1.5 B2_PC 한 일정만 대상으로 `RECORDED_B2_REPLAY_V1` 입력·Android 배정 gate·동결 모델 조건부 판독을 PC 구현하고 계획을 동결했다. [승인 실행 결과](ARRIVAL_RECORDED_B2_REPLAY_RUN01_20260929.md)는 runtime4·warmup8 완료 뒤 resident baseline 중 `lifecycle_cancelled`로 1시도·0완료, 본 작업·시작 AP gate·공식120초 창 미도달이다. plan_v3은 소비·종료되어 재실행하지 않는다. 앱 실패와 host 최상위 summary 누락 오류를 구분해 PC 판독을 수정했으나 과거 종료 trigger는 미확정이다. J/AP 오차·짧은 전환 지원·정책 성능 PASS는 미판정이다. 동결 파일과 기존 queue24 미소비 계획, strict 지원 제한, `experiment_ready=false` 유지. 시간축 대조는 위 최신 항목에서 완료했다.
 
 ## 2026-09-29 — 저장된 정책 일정의 실측 지원 마스크 적용
 
