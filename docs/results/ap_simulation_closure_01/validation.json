@@ -1,0 +1,43 @@
+{
+  "timestamp_utc": "2026-09-29T16:02:10.688858+00:00",
+  "source_head": "c79a44a0b7a59b3ff124b9d3d4bb92e148b5fe9b",
+  "uncommitted_task_changes": true,
+  "distinct_targeted_tests": 20,
+  "test_failures": 0,
+  "test_skips": 0,
+  "raw_extraction_byte_equal": true,
+  "reproduced_byte_equal": {
+    "ap_idle_windows.csv": true,
+    "energy_accounting.csv": true,
+    "idle_observation.png": true,
+    "idle_observation.svg": true,
+    "index.html": true,
+    "policy_support.csv": true,
+    "sensor_cadence.csv": true,
+    "summary.json": true
+  },
+  "source_and_output_sha256": {
+    "tools/d1_ap_simulation_closure.py": "ac34b395a5a9b54c88e4553c2d6416f024e562fd91442af0de54a2b0d4507ff0",
+    "tools/test_d1_ap_simulation_closure.py": "3f0757fed07b6371d59b420f92d52f6ad0ec5191f1dfe4fbabd8a75545c02acf",
+    "docs/results/ap_simulation_closure_01/inputs.json": "c31212bd833df44cd4f5aae7c87d5c4621af98d31e1b16d31a7f6c5923f09896",
+    "docs/results/ap_simulation_closure_01/readout/ap_idle_windows.csv": "3ed724e9787036dbb08c26bf3c47ee97b6f2e93f68f1c3a7b845197eb1ebbbe6",
+    "docs/results/ap_simulation_closure_01/readout/energy_accounting.csv": "a3dfc0bd7af8faf7d0c67ada269a9ba2c2bd0533f6046fb6868ef65f36fda690",
+    "docs/results/ap_simulation_closure_01/readout/idle_observation.png": "193dbcd1dc39b20f64761d32f6f7c9e710e26a35e701ffb812478350d882464f",
+    "docs/results/ap_simulation_closure_01/readout/idle_observation.svg": "4dbb7f72e2253164c39613e7256dab75a7880339a86bee0dd1f3e8510e307176",
+    "docs/results/ap_simulation_closure_01/readout/index.html": "6a3fe0c327c4492b73765a0e0b8f6e999c09a118e56f0779c20983236cc8e92c",
+    "docs/results/ap_simulation_closure_01/readout/policy_support.csv": "4e19ca6a6da4ec59547ffc1c1f47967d63990c5499015c1c1bd847cb033768a4",
+    "docs/results/ap_simulation_closure_01/readout/sensor_cadence.csv": "36b5fea22c99421fbe1482f88f6f741f2b5e89156a5648594004da26b58d7dec",
+    "docs/results/ap_simulation_closure_01/readout/summary.json": "94eaea03abb8622f46b0203bf5610525bce75cda2096f3f65afd0a0c261e092c"
+  },
+  "device_commands": 0,
+  "new_model_fits": 0,
+  "new_simulation_batches": 0,
+  "new_device_plans": 0,
+  "experiment_ready": false,
+  "commands": [
+    "python -X utf8 -B -m unittest tools.test_d1_ap_simulation_closure tools.test_d1_ap_idle_response tools.test_d1_energy_operational_decision -v",
+    "python -X utf8 -B -m unittest tools.test_d1_arrival_energy_research.ArrivalEnergyResearchTest.test_frozen_regimen_is_not_arbitrary_arrival_cost -v"
+  ],
+  "limits": "PC and archived data only; no new device or independent model validation",
+  "reporting_script_note": "Initial validation-manifest write had mixed relative/absolute path error; fixed path normalization. Analysis/tests and raw source unaffected."
+}

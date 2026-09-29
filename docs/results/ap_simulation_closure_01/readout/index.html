@@ -1,0 +1,13 @@
+<!doctype html><html lang="ko"><meta charset="utf-8">
+<title>D1Check AP·에너지 판정</title><style>body{font-family:system-ui,sans-serif;margin:36px auto;max-width:1050px;padding:0 18px;line-height:1.7;color:#203040}table{border-collapse:collapse;width:100%}td,th{padding:8px;border-bottom:1px solid #ccd7df;text-align:left}.note{background:#fff2da;padding:16px}img{width:100%}a{color:#1265a3}</style>
+<h1>AP 판정·에너지 연결·제한 비교</h1><p class="note">새 실측 없음 · 후보 재보정 없음 · experiment_ready=false<br>고정 CC_DG 회고 비교는 사용 가능. 동적 정책 전체창 실측 J/AP 지원은 0개이며 정확도 PASS·정책 우열은 미판정.</p>
+<p><a href="../../../AP_SIMULATION_CLOSURE_PC_20260930.md">판정 보고서</a> · <a href="../README.md">재현·입력·CSV</a></p>
+<h2>AP: 관측 형태 한계와 센서 지연의 미확정</h2><p>기존8세션 유휴19구간 중 한 확인 세션의2구간에서 상승 후 하강. 단일 AP 상태의 고정 유휴 평형식으로는 이 관측 형태를 표현할 수 없습니다. 센서 내부 갱신시각과 실제 열 지연은 분리 식별되지 않았습니다. 후보 확인 MAE0.418°C는 기본 채택 또는 정책 비교 합격이 아닙니다.</p>
+<img src="idle_observation.svg" alt="실제 lane 해제 전후의 기존 HAL AP 표본과 조회 bracket">
+<h2>에너지: 같은120초, 실제 일정 조건부 외삽 진단</h2><p>원래 동결 W 재사용. 이후 관측 전류/AP는 예측 입력이 아닙니다. AP 후보는 W를 변경하지 않습니다. 기기 전체 raw=mA 조건부 J이며 절대 정확도 미인증.</p>
+<table><tr><th>기록</th><th>관측 J</th><th>동결식 J</th><th>차이 J</th><th>상대차이</th></tr><tr><td>idle_00</td><td>135.618</td><td>155.708</td><td>+20.090</td><td>+14.814%</td></tr><tr><td>idle_01</td><td>144.565</td><td>155.870</td><td>+11.305</td><td>+7.820%</td></tr><tr><td>b2_00</td><td>154.696</td><td>155.758</td><td>+1.062</td><td>+0.686%</td></tr></table>
+<p>B2의 작은 전체차이를 보편 오차 한도로 사용하지 않습니다. 구간 상쇄·혼합표본은 <a href="energy_accounting.csv">CSV</a>에 보존했습니다. 세 기록의 총량 차이는 정책 절감량이 아닙니다.</p>
+<h2>지금 가능한 비교: 고정870건 CC_DG 직렬/병행</h2><p>공통480초·개발 템플릿·저장 확인자료의 회고 비교. 다른 작업량/도착/시작AP는 미지원. 결과는 TRADEOFF, 정책 선택값=null. 확인 결과를 이미 본 뒤 작성한 템플릿의 사후 holdout입니다.</p>
+<table><tr><th>병행−직렬</th><th>템플릿 예측</th><th>저장 확인 관측</th></tr><tr><td>work_completion_s</td><td>-122.456</td><td>-126.319</td></tr><tr><td>common_window_energy_j_conditional</td><td>-36.216</td><td>+4.559</td></tr><tr><td>load_ap_peak_c</td><td>+1.500</td><td>+1.900</td></tr></table>
+<h2>동적 목표의 남은 항목</h2><p>기존 CPU_URGENT/B2/B3의 저장 일정·응답은 활용할 수 있습니다. 전체창 실측 기반 J/AP 순위는 아직 계산 불가입니다. B2/B3가 쓰는 짧은 CG_DC/DC_DG→유휴 전이에서 비용·AP 반응·일정 오차와 정책 간 차이를 구분할 근거가 필요합니다. 센서 지연과 숨은 열을 근거 없이 계수로 채우거나 새 실행을 자동 시작하지 않습니다.</p>
+<p><a href="policy_support.csv">대표3개 지원 결과</a> · <a href="summary.json">기계 판독 결과·출처 해시</a></p></html>
