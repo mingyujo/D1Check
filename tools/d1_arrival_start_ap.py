@@ -10,6 +10,11 @@ from tools import d1_arrival_plan as p
 VERSION = 'numeric-ap-once-v1'
 DIAGNOSTIC_VERSION = 'numeric-ap-observe-v2'
 
+def study_start_ap_eligible(manifest, ap):
+    """One-shot low-start study stratum; other protocols keep their old gate."""
+    return (manifest.get('ap_idle_response_version')!='ap-preload-idle-reference-diagnostic-v1'
+            or math.isfinite(ap) and ap < 32.5)
+
 def approve(d, remote, folder, manifest):
     folder=Path(folder)
     ready=p.read(device.pull_file(d,remote,'start_ap.ready.json',folder/'start_ap_gate'))
@@ -21,7 +26,11 @@ def approve(d, remote, folder, manifest):
     mode=manifest.get('start_ap_gate',VERSION)
     if mode not in (VERSION,DIAGNOSTIC_VERSION):
         raise ValueError('unknown start AP mode')
-    if not (math.isfinite(ap) and (mode==DIAGNOSTIC_VERSION or 32.5 <= ap <= 34.0) and sample['thermal_status']=='0' and
+    # This separate AP response study requires a cold-start stratum.  It is a
+    # one-shot study-eligibility check, not a safety bound or a request to heat
+    # or wait for a favorable value.  Older diagnostic contracts are unchanged.
+    if not (math.isfinite(ap) and (mode==DIAGNOSTIC_VERSION or 32.5 <= ap <= 34.0) and
+            study_start_ap_eligible(manifest,ap) and sample['thermal_status']=='0' and
             ready['mono_ns'] <= sample['before_ns'] <= sample['after_ns'] and
             sample['after_ns']-sample['before_ns'] <= 3_000_000_000):
         raise ValueError('start AP invalid; no arm, no retry')

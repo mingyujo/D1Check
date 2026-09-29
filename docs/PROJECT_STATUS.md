@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-29 저온 resident AP 반응 — 별도 2세션 계획 PC 준비·미승인
+
+- [유휴 AP 방향 오류의 식별 설계·계획·예산](ENERGY_AP_IDLE_RESPONSE_PLAN_PC_20260929.md), [분석 계약/재현](results/energy_ap_idle_response_01/README.md). 동결 idle 평형34.380°C 항이 B2 저온29.9°C에서 가열 방향을 만들었다. 기존 B2 부하 전 유휴는32.072초·AP13표본으로 부하 전 유효 기준을 식별하기 부족하다. 기존 β/상태별 유휴 대비 기울기를 고정하고 **부하 전 AP로만** 세션별 유효 기준을 산출하는 별도 진단 구조를 구현했다. 주변온도·숨은 잔열은 미식별, 기존 단순 시작값 기준 후보는 미채택 유지.
+- 같은 서명 APK/모델/관측 경로의 새 `ENERGY-AP-IDLE-RESPONSE-01`: 저온 시작·한 묶음 개발1 → 구조/코드 동결 → 두 묶음 확인1, 총 작업48·warmup16·명시추론64·runtime8·staging2/14파일·APK push/설치 각≤1·ADB≤6,600·전체≤2,120초, 재시도0. 외부 별도 plan/manifest/Check 준비, **Run·ADB·claim 0**. PC 관련 테스트/Check 결과는 보고서를 따른다. `PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED`; 동결/strict/기본 simulator/원본/FAIL/`experiment_ready=false` 불변. **다음 행동 하나:** 별도 예산 승인과 현재 A24 환경 gate를 결정한다.
+
 ## 2026-09-29 B2 잔차·AP 전이 PC 판독 완료 — 후보는 사후 진단, 기본 미채택
 
 - [120초 센서 구간·AP 형태·후보 비교](ARRIVAL_RECORDED_B2_RESIDUAL_MODEL_PC_20260929.md), [작은 CSV/SVG](results/energy_ap_recorded_b2_01/residual_pc_v1/README.md). 원본/동결 SHA와 재현 수치 일치, 적분·시계·상태 매핑 결함 없음. 원래 에너지 +1.062J는 마지막 lane 해제까지 **+1.687J**, 이후 resident idle **−0.625J**가 상쇄. 실제 표본 구간 13개·12.285초가 혼합 상태라 1.683초 병행 W 독립 재추정 불가. 이전 그림의 120초 관측 끝점 누락은 새 누적 CSV/그림에서 표시하되 원본 분석은 보존했다.

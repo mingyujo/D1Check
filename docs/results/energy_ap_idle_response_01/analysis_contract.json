@@ -1,0 +1,18 @@
+{
+  "version": "ap-preload-idle-reference-diagnostic-v1",
+  "device": "A24 only",
+  "purpose": "Pre-load resident-idle AP trace as an observed initial condition; predict later short CG_DC and recovery without post-load AP input",
+  "one_shot_study_start_ap": "fresh finite HAL AP below 32.5 C in both sessions; study stratum, not a device safety threshold; no temperature waiting or extra warming",
+  "development_role": "one pulse after 35 s release shift; technical identifiability and post-hoc method development, not independent accuracy",
+  "confirmation_role": "two separated half-pulses after 35 s and 60 s release shifts; same method frozen before this session",
+  "candidate_formula": "dT/dt = frozen_beta * (effective_idle_reference - T) + frozen_state_slope - frozen_idle_slope",
+  "estimated_per_session": ["effective_idle_reference_from_preload_AP_only"],
+  "fixed": ["frozen_beta", "frozen_state_minus_idle_slopes", "APK", "resident_configuration", "120_second_common_window"],
+  "not_identified": ["ambient_temperature", "hidden_heat_state", "new_beta", "short_pair_power_watts"],
+  "development_stop": ["missing_or_irregular_preload_AP", "preload_duration_less_than_55_seconds", "nonfinite_reference", "fewer_than_2_work_AP_samples", "incomplete_requests_or_sensor_window", "host_or_app_cleanup_failure"],
+  "confirmation_metrics": ["idle_and_work_direction", "absolute_AP_path_MAE_C", "change_from_preload_AP_MAE_C", "maximum_absolute_error_C", "peak_error_C", "idle_and_work_residuals"],
+  "accuracy_pass": null,
+  "policy_selection_pass": null,
+  "post_load_AP_used_as_prediction_input": false,
+  "experiment_ready": false
+}

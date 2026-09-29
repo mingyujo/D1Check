@@ -29,7 +29,9 @@ def poll(d,remote,folder,manifest,plan):
     start=time.monotonic();end=min(d.deadline,start+plan.get('budget',c.BUDGET)['host_poll_seconds'])
     last_thermal=last_screen=0;armed=False;index=0;start_ap_sent=False
     while time.monotonic()<end:
-        if (plan.get('single_arrival_confirmation') or plan.get('recorded_replay_confirmation')) and d.sequence>=plan['budget']['adb_commands']-20:
+        command_ceiling=(3200 if plan.get('ap_idle_pulse_followup') and
+                         manifest.get('phase')=='development' else plan['budget']['adb_commands'])
+        if (plan.get('single_arrival_confirmation') or plan.get('recorded_replay_confirmation')) and d.sequence>=command_ceiling-plan['budget'].get('adb_recovery_cleanup_reserve',20):
             raise RuntimeError('ADB observation cap reserve reached; preserve recovery/cleanup slots')
         now=time.monotonic()
         if now-last_thermal>=2:
@@ -80,6 +82,7 @@ def validate(folder,manifest,plan):
     if manifest.get('start_ap_gate') in (d1_arrival_start_ap.VERSION,d1_arrival_start_ap.DIAGNOSTIC_VERSION):
         approval=p.read(artifacts/'start_ap.accepted.json')
         c.require(approval['common_start_ns']==boundary['start_ns'] and
+                  (not plan.get('ap_idle_pulse_followup') or approval['ap_c'] < 32.5) and
                   (manifest['start_ap_gate']!=d1_arrival_start_ap.DIAGNOSTIC_VERSION or
                    approval.get('gate_mode')==d1_arrival_start_ap.DIAGNOSTIC_VERSION) and
                   (manifest['start_ap_gate']==d1_arrival_start_ap.DIAGNOSTIC_VERSION or 32.5 <= approval['ap_c'] <= 34.0) and
@@ -149,8 +152,12 @@ def validate(folder,manifest,plan):
 def run(plan_file,adb,serial,expected_sha,approved):
     c.require(approved and p.digest(plan_file)==expected_sha,'explicit later approval and exact plan hash required')
     plan=p.read(plan_file)
+    idle_response=plan.get('ap_idle_pulse_followup',False)
     single=plan.get('single_arrival_confirmation',False) or plan.get('recorded_replay_confirmation',False)
-    if plan.get('recorded_replay_confirmation'):
+    if idle_response:
+        from tools import d1_ap_idle_response_plan as confirmation
+        confirmation.check(plan_file)
+    elif plan.get('recorded_replay_confirmation'):
         from tools import d1_arrival_recorded_replay as confirmation
         confirmation.check(plan_file)
     elif single:
@@ -166,10 +173,34 @@ def run(plan_file,adb,serial,expected_sha,approved):
     if single:d.command_limit=budget['adb_commands']
     complete=[];current=None;remote=None;identified=False;installation=None
     cleanup_attempted=False;cleanup_result=None
+    candidate_freeze_sha=None
     try:
         (root/'installation').mkdir()
         installation=energy_device.installation(d,plan,plan_file,root/'installation',hard);identified=True
         for entry in plan['entries']:
+            if idle_response and entry['index']==1:
+                from tools import d1_ap_idle_response_plan as ap_plan
+                freeze_start=time.monotonic()
+                c.require(len(complete)==1 and complete[0]['status']=='eligible_descriptive_only',
+                          'AP development session not eligible')
+                c.require(hard-freeze_start>=budget['development_freeze_seconds']+
+                          budget['intersession_observation_seconds']+budget['session_seconds'],
+                          'freeze/intersession/confirmation reserve')
+                development=root/f"00_{plan['entries'][0]['session_id']}"
+                evidence=ap_plan.development_evidence(development,plan['frozen_model']['path'])
+                freeze=dict(version='ap-preload-idle-reference-diagnostic-v1',
+                    original_frozen_sha256=plan['frozen_model']['sha256'],
+                    structure_sha256=plan['analysis_contract']['sha256'],
+                    analysis_code_sha256=p.digest(ap_plan.model.__file__),
+                    development_session_id=plan['entries'][0]['session_id'],
+                    development_validated_sha256=p.digest(development/'validated.json'),
+                    development_preload=evidence,
+                    meaning='fixed structure; confirmation fits its own pre-load reference only')
+                write(root/'ap_model_freeze.json',freeze)
+                candidate_freeze_sha=p.digest(root/'ap_model_freeze.json')
+                write(root/'ap_model_freeze_receipt.json',dict(sha256=candidate_freeze_sha,utc=legacy.utc()))
+                c.require(time.monotonic()-freeze_start<=budget['development_freeze_seconds'],
+                          'development freeze time')
             if not single and entry['index']==6:
                 freeze_start=time.monotonic()
                 c.require(len(complete)==6 and all(x['status']=='eligible_descriptive_only' for x in complete),'development eligibility')
@@ -180,9 +211,12 @@ def run(plan_file,adb,serial,expected_sha,approved):
                 write(root/'freeze_receipt.json',dict(sha256=p.digest(root/'development_freeze.json'),utc=legacy.utc()))
                 c.require(time.monotonic()-freeze_start<=budget['freeze_seconds'],'freeze time')
             if entry['index']:
-                c.require(hard-time.monotonic()>=budget['intersession_cooling_seconds']+budget['session_seconds'],'cooldown/session reserve')
-                until=time.monotonic()+budget['intersession_cooling_seconds']
+                pause=budget['intersession_observation_seconds'] if idle_response else budget['intersession_cooling_seconds']
+                c.require(hard-time.monotonic()>=pause+budget['session_seconds'],'cooldown/session reserve')
+                until=time.monotonic()+pause
                 while time.monotonic()<until:time.sleep(min(1,until-time.monotonic()))
+                if idle_response:c.require(p.digest(root/'ap_model_freeze.json')==candidate_freeze_sha,
+                                           'AP structure changed before confirmation')
             c.require(hard-time.monotonic()>=budget['session_seconds'],'whole session reserve')
             current=root/f"{entry['index']:02d}_{entry['session_id']}";current.mkdir();remote=None
             cleanup_attempted=False;cleanup_result=None
@@ -214,10 +248,24 @@ def run(plan_file,adb,serial,expected_sha,approved):
                 raise
             write(current/'host_cleanup.json',cleanup_result)
             stats=validate(current,manifest,plan)
+            if idle_response:
+                from tools import d1_ap_idle_response_plan as ap_plan
+                stats['preload_ap']=ap_plan.development_evidence(current,plan['frozen_model']['path'])
+                stats['ap_candidate_freeze_sha256']=candidate_freeze_sha
             c.require(time.monotonic()<=session_end,'session exceeded reserve; no next session')
             stats['elapsed_seconds']=time.monotonic()-session_start
-            write(current/'validated.json',stats);complete.append(stats)
+            write(current/'validated.json',stats)
+            if idle_response:
+                result=ap_plan.model.analyze_session(current,plan['frozen_model']['path'],
+                                                     current/'ap_analysis')
+                write(current/'ap_analysis_receipt.json',dict(
+                    analysis_sha256=p.digest(current/'ap_analysis'/'summary.json'),
+                    ap_samples=result['ap_samples'],accuracy_pass=None))
+            complete.append(stats)
         if not single:c.require(p.digest(root/'development_freeze.json')==p.read(root/'freeze_receipt.json')['sha256'],'freeze changed')
+        if idle_response:c.require(candidate_freeze_sha is not None and
+                    p.digest(root/'ap_model_freeze.json')==candidate_freeze_sha,
+                    'AP candidate not frozen throughout confirmation')
         outcome=dict(status='completed_descriptive_only',sessions=len(complete),requests=24*len(complete),warmup=8*len(complete),
                      runtime_creations=4*len(complete),adb_commands=d.sequence,elapsed_seconds=time.monotonic()-start,
                      installation=installation,experiment_ready=False)
