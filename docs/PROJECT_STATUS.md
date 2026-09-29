@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-29 B2 numeric AP 관측 진단 v2 — 승인 1회 완료, 외삽 판독
+
+- [plan_v6 단일세션 원본·소비·120초 판독](ARRIVAL_RECORDED_B2_AP_OBSERVE_RUN01_20260929.md)과 [공유 CSV/SVG](results/energy_ap_recorded_b2_01/diag_v6/README.md). 현재 A24·설치본·환경/품질 gate를 통과해 runtime4·warmup8·본 요청24/24를 마쳤다. 실제 CG_DC 병행 1.683초, 시작 AP **29.9°C**는 동결 개발 시작 범위 32.5–34.0°C 밖. 관측 154.696J, 동결식 외삽 계산 155.758J(+1.062J), AP MAE3.555°C·최고값 차이+2.770°C다. **자료 전체창 적격과 수치 계산은 완료했으나 strict 지원·독립 정확도 PASS·정책 우열은 미완료**다.
+- plan_v6 SHA `38c9eb2f…00ced`는 소비·완료, 재실행하지 않는다. APK push/설치 각1, 설치본 pull1, 실행기 ADB812+사전 선택1, 경과285.594초, 회수58파일·앱 자체 cleanup·host force-stop/프로세스 부재 확인. 이전 종료 계획, 미소비 plan_v5 초안·queue24, 동결 모형·FAIL·원본·`experiment_ready=false` 보존. **다음 PC 작업 하나:** AP 외삽 잔차와 짧은 구간의 J 오차 상쇄를 기존 개발·확인 자료의 초기조건/상태별 잔차와 대조한다.
+
 ## 2026-09-29 B2 시작 AP 관측 진단 v2 — PC 준비 완료·실행 미승인
 
 - [실행 gate와 모형 지원 분리·검증·계획](ARRIVAL_RECORDED_B2_AP_OBSERVE_PC_20260929.md). 32.5–34.0°C는 동결 개발 **시작 AP 관측 범위**이며 별도 안전 하한 근거가 없다. 기존 `numeric-ap-once-v1`은 유지하고 `numeric-ap-observe-v2`에서 기존 환경·품질 gate와 신선한 HAL AP를 요구하되 개발 범위 밖 값을 원자료로 관측할 수 있게 했다. 밖의 계산은 외삽 진단, 짧은 전환 strict 미지원·정확도 PASS 없음. plan_v4 AP28.8°C 중단은 당시 계약 결과 그대로다.

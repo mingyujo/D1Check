@@ -1,5 +1,9 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-09-29 — B2 AP 관측 진단 v2 결과와 다음 PC 판독
+
+[별도 승인 plan_v6의 1회 완료](ARRIVAL_RECORDED_B2_AP_OBSERVE_RUN01_20260929.md)로 저장 B2 24요청과 실제 CG_DC 1.683초, 공통120초 J/AP를 확보했다. 초기 AP29.9°C와 짧은 전환은 동결 strict 밖이므로 계산은 외삽 진단이다. 실제 lane 일정 조건부 계산과 온라인 정책/도착부터의 종단간 예측을 구분하며 동결식·지원 범위·`experiment_ready=false`를 바꾸지 않는다. 다음은 기존 개발·확인 자료에 대해 AP 외삽 잔차와 J 상태구간 상쇄를 **PC에서만** 비교한다. 실측 추가·정책 튜닝·정확도 PASS는 결정하지 않았다. 아래 PC 준비 항목은 실행 전 당시 상태의 역사 기록이다.
+
 ## 2026-09-29 — B2 시작 AP 관측과 모형 범위 분리
 
 [별도 PC 계약](ARRIVAL_RECORDED_B2_AP_OBSERVE_PC_20260929.md)에 따라 개발 시작 범위 32.5–34.0°C를 기기 안전 gate로 사용하지 않는 opt-in `numeric-ap-observe-v2`를 준비했다. 기존 배터리·비충전·BAT·thermal·화면·메모리·앱 품질·numeric AP 신선도는 유지한다. 저장 B2 24요청·실제 release/배정·120초 공통창은 그대로며 범위 밖 관측은 외삽 진단으로만 판독한다. 새 서명 APK와 미승인 단일세션 plan_v6는 PC Check까지 완료했지만 현재 기기·실측은 미검증이고 승인/claim 없음. v5는 미소비 PC 초안·현재 코드 Check 불일치로 실행 대상이 아니다. 다음 결정은 별도 1회 실행 여부이며 기존 소비 plan_v3/v4는 재개하지 않는다. strict·동결·`experiment_ready=false` 불변.

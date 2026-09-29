@@ -1,5 +1,7 @@
 # queue/201/B2 저장 dispatch 재생 입력
 
+**최신 결과:** [numeric AP 관측 plan_v6 승인 1회 결과](../../ARRIVAL_RECORDED_B2_AP_OBSERVE_RUN01_20260929.md)는 24요청과 공통120초를 완료했다. [작은 CSV·그림](diag_v6/README.md)의 동결식 J/AP 계산은 시작 AP29.9°C와 짧은 전환 때문에 **외삽 진단**이다. 아래 PC 준비와 v3/v4 중단 설명은 그 당시 계약·상태 기록으로 남긴다.
+
 [AP 관측 진단 v2의 PC 계약·새 미승인 계획](../../ARRIVAL_RECORDED_B2_AP_OBSERVE_PC_20260929.md)은 개발 시작 범위와 실행 적격성을 분리한다. [v2 판독 계약](diagnostic_analysis_contract_v2.json)은 범위 밖 수치가 계산돼도 외삽 진단으로만 표시한다. 기기 실행 결과는 아직 없다. 아래 v3/v4 중단과 기존 분석 계약은 보존한다.
 
 별도 [새 lifecycle APK 재생 plan_v4의 결과](../../ARRIVAL_RECORDED_B2_REPLAY_RUN02_20260929.md)는 시작 AP **28.8°C**가 고정 범위 32.5–34.0°C 밖이라 본 요청 전 gate 중단이다. [작은 요약](run02_summary.json)의 J/AP `null`은 공통창 미진입을 뜻한다. plan_v3의 lifecycle 중단과 합치지 않으며 두 계획 모두 소비·종료됐다.
