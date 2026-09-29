@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-09-29 — 새 B2 재생의 AP gate 중단 판정
+
+- [승인된 plan_v4 1회](ARRIVAL_RECORDED_B2_REPLAY_RUN02_20260929.md)에서 시작 직전 HAL AP 28.8°C가 사전 범위 32.5–34.0°C 미달이므로 host가 arm을 보내지 않았다. 이는 자료 적격성 중단이지 동결 J/AP 예측 실패나 lifecycle 수정의 성공/실패 판정이 아니다. 공식창·실제 병행이 없어 정확도·정책 우월성은 계속 미판정이다.
+- 소비 계획 재실행, 즉석 가열·시작 범위 완화·동결 계수 변경·새 실측 자동 생성은 채택하지 않는다. 이전 plan_v3·원본/FAIL, 미소비 queue24 계획, strict 지원과 `experiment_ready=false`를 보존한다. 다음 PC 판독은 이미 있는 초기 AP 관측으로 gate의 적용 가능성을 판단하는 범위다.
+
 ## 2026-09-29 — B2 재생의 Activity 소유권은 유지, 종료 증거만 보강
 
 - [PC 시간축·코드 판독](ARRIVAL_RECORDED_B2_LIFECYCLE_PC_20260929.md)에서 `onDestroy` 취소 뒤 앱 실패 기록, 이후 host force-stop을 확인했다. 최초 `onDestroy` trigger는 구 APK에 callback/instance 로그가 없어 미확정이다. Activity의 작업 소유권·미완료 취소를 삭제하거나 Service로 전환하지 않는다. 별도 journal 기록은 다음 사건의 구분을 위한 변경이며 원인 해결·기기 검증 결정이 아니다.

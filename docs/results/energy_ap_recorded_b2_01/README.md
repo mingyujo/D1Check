@@ -1,5 +1,7 @@
 # queue/201/B2 저장 dispatch 재생 입력
 
+별도 [새 lifecycle APK 재생 plan_v4의 결과](../../ARRIVAL_RECORDED_B2_REPLAY_RUN02_20260929.md)는 시작 AP **28.8°C**가 고정 범위 32.5–34.0°C 밖이라 본 요청 전 gate 중단이다. [작은 요약](run02_summary.json)의 J/AP `null`은 공통창 미진입을 뜻한다. plan_v3의 lifecycle 중단과 합치지 않으며 두 계획 모두 소비·종료됐다.
+
 이 폴더는 **PC에서 고정한 실행 입력과 판독 계약**이다. [준비 계약](../../ARRIVAL_RECORDED_B2_REPLAY_PC_20260929.md), [승인 1회 중단 결과](../../ARRIVAL_RECORDED_B2_REPLAY_RUN01_20260929.md), [통합 대시보드](../arrival_policy_screen_01/dashboard.html)를 구분해 읽는다.
 
 `run01_summary.json`은 외부 원본 receipt·진단 archive에서 만든 작은 파생 요약이다. runtime4·warmup8 뒤 resident baseline에서 lifecycle 취소됐고 공식 120초 창은 열리지 않았다. 실제 B2 일정·J·AP 오차는 **없음/null**이다. 원본 계획은 소비·종료됐으며 아래 `Check`는 더는 성공하는 재실행 절차가 아니다.

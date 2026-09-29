@@ -20,15 +20,17 @@ from tools import d1_apk_identity as apk
 from tools import d1_arrival_policy_screen as screen
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPERIMENT = 'ENERGY-AP-RECORDED-B2-01'
-FOLDER = 'energy_ap_recorded_b2_plan_v3'
-RUN_FOLDER = 'energy_ap_recorded_b2_run_v3'
+EXPERIMENT = 'ENERGY-AP-RECORDED-B2-02'
+FOLDER = 'energy_ap_recorded_b2_plan_v4'
+RUN_FOLDER = 'energy_ap_recorded_b2_run_v4'
 BUNDLE = ROOT/'docs/results/energy_ap_recorded_b2_01/source_schedule.json'
 CONTRACT = ROOT/'docs/results/energy_ap_recorded_b2_01/analysis_contract.json'
 TIMELINE = ROOT/'docs/results/arrival_visualization_01/timeline.csv'
 OCCUPANCY = ROOT/'docs/results/arrival_policy_screen_01/repro_bundle/occupancy_segments.csv'
 FROZEN_SHA = prior.FROZEN_SHA
 POLICY = 'RECORDED_B2_REPLAY_V1'
+MEASUREMENT_CHANGE = ('arrival lifecycle instance/callback/finish journal added to signed APK; '
+                      'previous failed replay is not a completed same-protocol comparison')
 
 # Same one-session runner bounds, derived from its four stages and 24+8 calls.
 REQUESTS, WARMUP, RUNTIMES, STAGED = 24, 8, 4, 7
@@ -177,6 +179,7 @@ def prepare(source_file,build_file,frozen_file,output):
         require_unplugged=source['require_unplugged'],screen_contract=source['screen_contract'],
         source_files=source['source_files'],references=source['references'],
         selection='prespecified saved queue/seed201/B2_PC/realized1.5; one recorded dispatch gate',
+        measurement_protocol_change=MEASUREMENT_CHANGE,
         analysis_scope='conditional frozen-model transition diagnostic only; not online B2 or strict arrival support',
         entries=[])
     m=expected_manifest(plan,build['apk_sha256'])
@@ -197,6 +200,7 @@ def check(file):
                 plan['status']=='PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED' and
                 plan['approval']=='not_approved' and not plan['experiment_ready'] and
                 plan['recorded_replay_confirmation'] and len(plan['entries'])==1 and
+                plan['measurement_protocol_change']==MEASUREMENT_CHANGE and
                 plan['budget']==BUDGET,'plan identity/budget')
     old.require(Path(plan['output_root'])==file.parent.parent/RUN_FOLDER and
                 Path(plan['registry'])==file.parent.parent/'arrival_recorded_b2_registry'/EXPERIMENT and

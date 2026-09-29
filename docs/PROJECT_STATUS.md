@@ -1,5 +1,9 @@
 # D1Check 현재 상태
 
+## 2026-09-29 새 lifecycle APK의 B2 기록 재생 — 시작 AP gate 중단
+
+- [별도 plan_v4 실행·원본·gate 판독](ARRIVAL_RECORDED_B2_REPLAY_RUN02_20260929.md), [소형 소비 요약](results/energy_ap_recorded_b2_01/run02_summary.json), [통합 화면](results/arrival_policy_screen_01/dashboard.html). 새 계획 SHA `19ef883a…99a507` 1회 claim·실행, `stopped_no_resume`. 설치본 SHA `120ee894…1d50f5` 확인(이번 APK push·설치 각1). runtime4·warmup8 반환 뒤 시작 직전 HAL AP **28.8°C**가 고정 32.5–34.0°C 밖이라 arm 미발행; 본 요청 시작 기록0·120초 공식창 미진입·완료0/시도1. 실행기 ADB234+transport 선택1/3,200, 95.906/1,300초; host force-stop·프로세스 부재 확인, 앱 자체 cleanup 기록 없음. lifecycle은 `onCreate`만 있고 이번에는 `lifecycle_cancelled`가 아니다. J/AP 오차·실제 병행·정책 성능은 미산출. plan_v3·v4 모두 소비·종료, 동결 모형·strict 범위·기존 FAIL·queue24 미소비 계획·`experiment_ready=false` 유지. **다음 행동 하나:** 기존 사전 AP 기록으로 고정 시작 범위의 현재 비충전 환경 적용 가능성을 PC에서 판독한다(실측 자동 실행 아님).
+
 ## 2026-09-29 저장 B2 재생의 lifecycle·소유권 PC 판독 완료
 
 - [시간축·소유권·수정·검증](ARRIVAL_RECORDED_B2_LIFECYCLE_PC_20260929.md). 앱 baseline 중 `onDestroy` 취소와 그 뒤의 host force-stop은 구분했다. 구 APK에 callback/instance 기록이 없어 `onDestroy` trigger(사용자 조작·재생성·시스템 처리 등)는 **미확정**이다. Activity가 worker/runtime/journal을 소유하고 `onDestroy`에서 안전 취소하는 현 계약은 유지한다. 두 번째 Activity의 기존 출력 덮어쓰기는 이미 root guard가 차단한다. 부족했던 lifecycle·finish 의도만 bounded journal에 추가했고 Robolectric callback 3건 및 관련 4건 PASS, 별도 프로젝트 서명 APK SHA `120ee894…1d50f5` 생성·검증(미설치)했다. 새 journal 비용은 미계측이므로 구 APK 자료와 동일 프로토콜로 합치지 않는다. 기기 명령0; plan_v3 `stopped_no_resume`, 동결 모형·FAIL·queue24 미소비 계획·`experiment_ready=false` 유지. **다음 행동 하나:** 별도 새 실행을 논의할 때 먼저 lifecycle 계측 APK와 계획 동일성·현재 기기 gate를 확인한다. 이번 PC 작업에서는 실측하지 않는다.

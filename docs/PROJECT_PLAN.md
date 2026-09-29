@@ -1,5 +1,9 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-09-29 — 새 APK B2 기록 재생의 gate 종료
+
+[plan_v4 1회 결과](ARRIVAL_RECORDED_B2_REPLAY_RUN02_20260929.md)는 APK 설치·환경/품질 준비와 runtime4·warmup8까지 도달했으나 시작 AP 28.8°C가 동결 개발 시작 범위 32.5–34.0°C 밖이라 host가 arm을 보내지 않고 실패 정리했다. 1시도·0완료, 공식창·본 요청0, lifecycle 취소 미관측이다. 모형 오차·짧은 전환 지원·B2 우열은 계속 미판정. 두 재생 계획 모두 `stopped_no_resume`이며 재실행하지 않는다. **다음은 기존 초기 AP 관측과 고정 gate의 적용 가능성만 PC에서 판독**한다. 온도를 맞추기 위한 즉석 가열·gate 완화·새 실측 자동 실행은 계획에 없다. 동결 모형·strict 지원·`experiment_ready=false` 유지.
+
 ## 2026-09-29 — 저장 B2 재생 종료 PC 판독
 
 [최신 lifecycle 판독](ARRIVAL_RECORDED_B2_LIFECYCLE_PC_20260929.md)에서 baseline 실패 파일보다 host의 세션 종료 force-stop이 뒤라는 것을 확인했다. Activity 종료의 최초 외부 원인은 구 APK 기록으로 특정할 수 없다. Activity가 실행 자원을 소유하고 `onDestroy`에서 미완료 세션을 취소하는 구조를 유지하며, 부족했던 instance/callback/finish 사유 journal만 추가했다. 관련 실제 callback PC 테스트 7건과 별도 프로젝트 서명 APK 빌드·신원 검증을 완료했으나 새 APK는 미설치·기기 미확인이고 추가 기록 비용도 미계측이다. 다음 실행은 새 계획·별도 승인·현재 gate가 필요하며 이번에는 준비/실행하지 않는다. 소모 plan_v3 재실행 금지, 동결 J/AP 모형·미완료 확인·strict 지원·`experiment_ready=false` 유지.
