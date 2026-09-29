@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-29 에너지·AP 정책 실험 측정 필요성 감사 — PC 범위 확정
+
+- [원본·모형·정책 지원 근거표와 종료 기준](ENERGY_AP_POLICY_MEASUREMENT_AUDIT_20260929.md). A24 개발3 동결 SHA `35ed6987…34c54`·DC_DG 확인1(+4.550J, AP MAE0.645°C)·새 프로토콜 CG_DC 사후 전이(+13.121J/매핑600.090초, AP 최고+1.612°C)·시작32.3°C의 짧은 CC_DG 범위 밖 결과를 구분했다. 고정 CC_DG 4세션은 에너지 차이 방향 실패. S26 공유 MobileNet 자료는 두 모델의 계수가 아니다.
+- **판정:** 제한된 PC 응답/상충·명시적 가정 민감도 탐색은 지금 가능. 실측 기반 임의 도착 정책 우열은 최소 독립 확인이 필요하지만 세션/예산은 아직 근거 부족. queue24/FIXED_SPLIT은 좁은 A/B 진단용 **B**로서 핵심 병행 비용의 필수 선행은 아니며 이번 실행 **보류**. `energy_ap_arrival_confirm_plan_v1`은 기존 SHA·미승인·미소비 그대로, 실행 실패/`stopped_no_resume` 아님. 새 계획·claim·기기 명령0, 동결 계수·FAIL·원자료·`experiment_ready=false` 유지. **다음 행동 하나:** 기존 B2/B3/CPU 결과의 지원 마스크와 가정 경계를 사용한 제한 PC 정책 비교를 시작한다.
+
 ## 2026-09-29 시작 AP 단일세션 PC 준비 완료 — 미승인·기기 미검증
 
 - [실행/판독 경계·정확한 예산](ENERGY_AP_ARRIVAL_CONFIRMATION_PC_20260929.md), [24요청·분석 계약](results/energy_ap_arrival_confirmation_01/README.md). `numeric-ap-once-v1` 프로젝트 서명 APK SHA `d2af6d0a…ea771`, 별도 계획 `ENERGY-AP-ARRIVAL-CONFIRM-01` SHA `5dfc940d…a641c`, 상태 `PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED`; Check 기기명령0·출력/registry 미생성. 1세션·runtime4·warmup8·작업24·총 추론32, stage7파일, push/설치 최대 각1, ADB3,000, 총1,300초, 재시도0. 실제 설치본·환경·센서 내부 AP 갱신·실행은 아직 미확인이다.
