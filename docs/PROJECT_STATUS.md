@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-29 시작 직전 numeric AP opt-in 구현·PC 검증
+
+- [후속 구현·계측 경계·완료 정의](ENERGY_AP_ARRIVAL_CONFIRMATION_PC_20260929.md): `numeric-ap-once-v1`은 baseline 뒤 AP를 한 번 확인하고 앱이 실제 common origin에서32.5–34.0°C·읽기 시작부터3초 이내를 재검사한다.30초 대기 만료/결측/범위 밖/전달 지연이면 본 작업0, 자동 대기 반복·재시도 없음. host 조회 최대5명령이 시작 전에 추가되며 부하 중 새 handshake는 없다.
+- host 실제 poll 포함3테스트·Android gate/기존24요청 계약4테스트 및 Kotlin 컴파일 통과. 기기명령0; APK 패키징·설치·새 실행계획/claim 없음. 확인 목적은 이번24요청의 A조건부/B종단간 오차이며 병행 계수·개별요청 J·임의 부하 전체 검증이 아니다. 기존 동결값·FAIL·`experiment_ready=false` 유지. 다음은 수정 소스의 서명 APK와 단일세션 계획 준비다.
+
 ## 2026-09-29 최소 도착 확인 입력·시작 AP gate PC 판정
 
 - [고정 입력·센서 해상도·차단 근거](ENERGY_AP_ARRIVAL_CONFIRMATION_PC_20260929.md), [공유 입력/Check](results/energy_ap_arrival_confirmation_01/README.md). queue 24요청/FIXED_SPLIT/공통120초를 결과 선택 없이 고정했다. 단기 전환 공통창 전류 중앙 간격1.000초·AP2.630초, 요청 lane 점유 중앙0.163초; 기존 PC 일정의 병행 점유0초이므로 개별/병행 비용 검증 입력으로 확대하지 않는다.

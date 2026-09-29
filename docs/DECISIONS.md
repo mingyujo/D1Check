@@ -800,3 +800,7 @@
 
 - 결정: 기존 queue 24요청/FIXED_SPLIT/120초를 첫 확인 입력으로 고정하고, 32.5–34.0°C 개발 **시작** AP 범위를 사전 gate 계약으로 사용한다. 32.5–39.5°C 세션 경로 범위나 32.3°C의 범위 밖 결과로 하한을 바꾸지 않는다. 1초 전류·약2.63초 AP 대비 짧은 요청과 병행 점유0초 때문에 이 입력은 공통창/전환 확인 질문에만 쓴다.
 - 실행 판정: 현 앱/host는 실제 load 시작의 numeric AP를 집행하지 못한다. 새 실시간 handshake를 즉석에 넣거나 thermal status로 대신하지 않고 `PC_INPUT_FIXED_RUN_BLOCKED`로 둔다. [`근거·입력·Check`](ENERGY_AP_ARRIVAL_CONFIRMATION_PC_20260929.md). 동결 계수·과거 결과·strict unsupported·`experiment_ready=false` 유지; 실행 계획이나 실측 승인을 만든 결정이 아니다.
+## 2026-09-29 — 시작 AP는 baseline 뒤 1회 조회와 앱 최종 검사로 집행
+
+- 사용자 후속 구현 지시에 따라 `numeric-ap-once-v1`을 별도 opt-in으로 구현했다. host 준비 온도를 재사용하지 않고 baseline 뒤 새 HAL AP를1회 조회해 앱이 origin 직전 범위/표본 나이를 확인한다. 사전 최대5명령/앱 대기30초, 실패 시 본 작업0·재시도0; 부하 중 새 handshake 없음. 이전 차단 판단과 동결값을 보존한다.
+- 이 입력의 완료는24요청 조건부/종단간 오차 보고까지이며 병행 계수·짧은 요청 J·임의 부하 정확도 PASS로 확대하지 않는다. 계측 변경은 프로토콜 전이로 표시한다. [실제 코드·검증·한계](ENERGY_AP_ARRIVAL_CONFIRMATION_PC_20260929.md). 실측 승인/실행 계획 발행 아님.

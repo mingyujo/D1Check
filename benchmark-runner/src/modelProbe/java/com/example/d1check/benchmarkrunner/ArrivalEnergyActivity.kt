@@ -132,6 +132,8 @@ class ArrivalEnergyActivity : Activity() {
                 m.getInt("resident_baseline_seconds").toLong() == ArrivalEnergyContract.BASELINE_SECONDS)
             check(m.getInt("maximum_concurrency") == 2 && m.getString("memory_contract") == V4Gate.CONTRACT && m.getInt("thermal_gate") == 0)
             val policy = m.getString("policy")
+            val apMode = m.optString("start_ap_gate", "")
+            check(apMode == "" || apMode == ArrivalStartApGate.VERSION) { "unknown start AP gate" }
             check(policy in setOf(ArrivalPolicy.URGENT, ArrivalPolicy.FIXED))
             val imageSpec = m.getJSONArray("images").also { check(it.length() == 1) }.getJSONObject(0)
             val image = File(inputs, imageSpec.getString("filename")); val imageHash = imageSpec.getString("sha256")
@@ -176,7 +178,29 @@ class ArrivalEnergyActivity : Activity() {
             val baselineStart = now()
             while (now()-baselineStart < ArrivalEnergyContract.BASELINE_SECONDS*1_000_000_000) { healthy(); Thread.sleep(100) }
             event("phase_end")
+            var startReading: ArrivalStartApGate.Reading? = null
+            if (apMode == ArrivalStartApGate.VERSION) {
+                phase = "start_ap_gate"
+                val ready = now()
+                progress!!.flushBeforeGate()
+                save("start_ap.ready.json", mapOf("manifest_sha256" to hash, "mono_ns" to ready))
+                val approval = File(inputs, "start_ap.arm")
+                while (!approval.exists()) {
+                    healthy()
+                    check(now() - ready < ArrivalStartApGate.WAIT_NS) { "start AP gate timeout; no load" }
+                    Thread.sleep(25)
+                }
+                healthy()
+                check(now() - ready < ArrivalStartApGate.WAIT_NS && approval.length() in 1..512) { "late/oversized AP approval" }
+                startReading = ArrivalStartApGate.parse(approval.readText(), hash, ready)
+            }
             phase = "common_window"; val start = now()
+            startReading?.let {
+                ArrivalStartApGate.atStart(it, start)
+                save("start_ap.accepted.json", mapOf("ap_c" to it.ap, "read_before_ns" to it.before,
+                    "read_after_ns" to it.after, "common_start_ns" to start,
+                    "read_to_start_ns" to start-it.after, "max_age_ns" to ArrivalStartApGate.MAX_AGE_NS))
+            }
             event("common_start", mapOf("scheduled_origin_ns" to start, "window_ns" to ArrivalEnergyContract.COMMON_NS))
             val waiting = mutableListOf<ArrivalPolicy.Ticket>() // dispatch executor only
             val busy = mutableMapOf("CPU" to false, "GPU" to false)

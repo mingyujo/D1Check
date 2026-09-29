@@ -25,7 +25,7 @@ def write(path,value):c.cal.write_new(path,value)
 
 def poll(d,remote,folder,manifest,plan):
     start=time.monotonic();end=min(d.deadline,start+c.BUDGET['host_poll_seconds'])
-    last_thermal=last_screen=0;armed=False;index=0
+    last_thermal=last_screen=0;armed=False;index=0;start_ap_sent=False
     while time.monotonic()<end:
         now=time.monotonic()
         if now-last_thermal>=2:
@@ -34,6 +34,12 @@ def poll(d,remote,folder,manifest,plan):
             screen.snapshot(d,folder,f'poll_{index:04d}',plan['screen_contract']);last_screen=time.monotonic()
         listing=d.call('shell','run-as',legacy.PACKAGE,'ls',remote,timeout=3).stdout.decode().splitlines()
         if 'cleanup.json' in listing:return
+        if manifest.get('start_ap_gate') == 'numeric-ap-once-v1' and not start_ap_sent and 'start_ap.ready.json' in listing:
+            c.require(armed, 'start AP before warmup approval')
+            from tools import d1_arrival_start_ap
+            d1_arrival_start_ap.approve(d,remote,folder,manifest)
+            start_ap_sent=True
+            last_thermal=time.monotonic()
         if not armed and 'warmup.ready.json' in listing:
             gate=Path(folder)/'warmup_gate';gate.mkdir()
             ready=p.read(energy_device.pull_file(d,remote,'warmup.ready.json',gate))
@@ -62,6 +68,13 @@ def validate(folder,manifest,plan):
     cleanup=p.read(artifacts/'cleanup.json');summary=p.read(artifacts/'summary.json')
     c.require(cleanup['status']=='completed' and summary['status']=='completed','app completion')
     boundary=p.read(artifacts/'common_boundary.json');rows=p.read(artifacts/'requests.json')
+    if manifest.get('start_ap_gate') == 'numeric-ap-once-v1':
+        approval=p.read(artifacts/'start_ap.accepted.json')
+        c.require(approval['common_start_ns']==boundary['start_ns'] and
+                  32.5 <= approval['ap_c'] <= 34.0 and
+                  approval['read_before_ns'] <= approval['read_after_ns'] <= boundary['start_ns'] and
+                  boundary['start_ns']-approval['read_before_ns'] <= 3_000_000_000,
+                  'missing/invalid AP approval at actual start')
     c.require(len(rows)==len(boundary['rows'])==24 and summary['planned']==24,'request denominator')
     c.require({r['request_id'] for r in rows}=={r['request_id'] for r in manifest['requests']},'request identity')
     c.require(boundary['end_ns']-boundary['start_ns']>=120_000_000_000,'common window incomplete')

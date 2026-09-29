@@ -452,3 +452,6 @@ PC 완료 조건은 calibration 전용 경로, 기존 정책/자료 호환, 성�
 ## 2026-09-29 최소 도착 확인의 실행 전 gate
 
 [PC 설계·차단 판정](ENERGY_AP_ARRIVAL_CONFIRMATION_PC_20260929.md)에 따라 기존 queue 24요청/FIXED_SPLIT과 공통120초를 하나의 후보 입력으로 고정했다. 시작 AP 개발 범위32.5–34.0°C, 실제 공통창 시작과의 시각 일치가 필수다. 현 Android arrival 앱은 numeric AP를 읽지 못하고 resident baseline 후 즉시 작업을 시작한다. 준비 중 host 온도 gate나 사후 신선 표본을 실행 gate로 대체하지 않는다. 현재 입력은 `PC_INPUT_FIXED_RUN_BLOCKED`이며 별도 실측 ID·예산·승인 후 Run은 아직 없다. 먼저 실제 시작 경계에서 작업0회 중단을 보장하는 최소 경로와 계측 프로토콜 영향을 PC에서 해결한다. 기존 동결 모형의 임의 도착 strict 지원은 확대하지 않고 A(관측 일정 조건부 비용)와 B(예정 도착부터의 종단간 일정/비용)를 분리해 후속 평가한다.
+## 2026-09-29 시작 AP 기능 후속 구현 완료
+
+사용자 후속 범위에 따라 실제 arrival 경로에 opt-in 1회 시작 승인/앱 최종 freshness 검사/30초 실패 종료를 구현했다. [계측 비용과24요청 완료 기준](ENERGY_AP_ARRIVAL_CONFIRMATION_PC_20260929.md)을 고정했다. 시작 전 최대5 ADB 명령 의존을 명시하며 부하 중 handshake는 추가하지 않았다. 서명 APK·실기기·새 계획 예산은 미완료로 남기고 과거 차단 계획을 실행하지 않는다.

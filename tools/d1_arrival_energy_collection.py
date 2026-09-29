@@ -22,6 +22,7 @@ SCENARIOS = ('low', 'queue', 'burst')
 POLICIES = ('CPU_URGENT', 'FIXED_SPLIT')
 TRACE = ROOT/'docs/results/arrival_energy_research_01/scenario_manifest.json'
 HOST = ('tools/d1_arrival_energy_collection.py', 'tools/d1_arrival_energy_collection_device.py',
+        'tools/d1_arrival_start_ap.py',
         'tools/d1_arrival_energy_analysis.py',
         'tools/d1_adb_observed_client.py', 'tools/d1_energy_collection_device.py',
         'tools/d1_energy_collection.py', 'tools/d1_energy_screen.py',
