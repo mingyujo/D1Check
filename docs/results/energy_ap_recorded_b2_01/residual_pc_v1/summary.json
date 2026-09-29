@@ -1,0 +1,69 @@
+{
+  "version": "recorded-b2-residual-pc-v1",
+  "frozen_sha256": "35ed6987b1fc09789284018f8502107eaf4e3125373651a01e3a08d427034c54",
+  "source_receipt_sha256": "4d5708d6cab1fff52db38357848951b7e9d958d26308966b8601fd97db1b3e4a",
+  "data_role": "posthoc_reanalysis_of_one_seen_extrapolation_session",
+  "base_integrator_or_clock_defect_found": false,
+  "clock_and_sensor": {
+    "common_window_s": 120.0,
+    "power_timestamp": "Android monotonic midpoint of app snapshot bracket",
+    "ap_timestamp": "Android uptime midpoint of host HAL bracket; not host monotonic",
+    "ap_sensor": "HAL AP name, type 0, Celsius; not cached AP or BAT",
+    "power_snapshot_max_bracket_s": 0.124849846,
+    "ap_max_uncertainty_s": 0.675,
+    "energy_covered_s": 120.0,
+    "energy_missing_s": 0.0,
+    "current_unit": "raw=mA conditional; absolute J accuracy uncertified"
+  },
+  "initial_ap_c": 29.9,
+  "first_ap_sample_s": 2.45722377,
+  "frozen_idle_equilibrium_c": 34.379778329144536,
+  "last_active_s": 12.01349377,
+  "energy_120s": {
+    "observed_j": 154.69640424498286,
+    "frozen_j": 155.7583575597695,
+    "signed_error_j": 1.0619533147866491
+  },
+  "phases": {
+    "through_last_lane_release": {
+      "duration_s": 12.01349377,
+      "observed_j": 21.74141965453379,
+      "predicted_j": 23.42808381070728,
+      "signed_error_j": 1.6866641561734923
+    },
+    "post_work_idle": {
+      "duration_s": 107.98650623,
+      "observed_j": 132.95498459044904,
+      "predicted_j": 132.33027374906223,
+      "signed_error_j": -0.6247108413868148
+    }
+  },
+  "sensor_intervals": {
+    "count": 121,
+    "duplicates": 0,
+    "mixed_count": 13,
+    "mixed_seconds": 12.284732539,
+    "positive_error_j": 13.367293580495161,
+    "negative_error_j": -12.305340265708484
+  },
+  "ap": {
+    "frozen_mae_c": 3.5550725018619262,
+    "candidate_mae_c": 0.1822004394547508,
+    "first_sample_signed_error_c": 0.0877471963001426,
+    "first_sample_aligned_mae_c": 3.4673253055617836,
+    "post_idle_first_observed_c": 31.6,
+    "post_idle_last_observed_c": 29.9,
+    "post_idle_first_frozen_c": 33.0079829565245,
+    "post_idle_last_frozen_c": 34.36956866169921
+  },
+  "candidate": {
+    "id": "energy-ap-start-referenced-idle-diagnostic-v1",
+    "formula": "equilibrium(state) = initial_AP + (frozen_slope(state)-frozen_slope(resident_idle))/frozen_beta",
+    "new_fitted_parameters": 0,
+    "initial_ap_is_ambient": false,
+    "status": "posthoc_exploratory_not_registered_or_independently_confirmed"
+  },
+  "accuracy_pass": null,
+  "policy_selection_pass": null,
+  "experiment_ready": false
+}

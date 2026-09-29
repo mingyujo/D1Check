@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-29 B2 잔차·AP 전이 PC 판독 완료 — 후보는 사후 진단, 기본 미채택
+
+- [120초 센서 구간·AP 형태·후보 비교](ARRIVAL_RECORDED_B2_RESIDUAL_MODEL_PC_20260929.md), [작은 CSV/SVG](results/energy_ap_recorded_b2_01/residual_pc_v1/README.md). 원본/동결 SHA와 재현 수치 일치, 적분·시계·상태 매핑 결함 없음. 원래 에너지 +1.062J는 마지막 lane 해제까지 **+1.687J**, 이후 resident idle **−0.625J**가 상쇄. 실제 표본 구간 13개·12.285초가 혼합 상태라 1.683초 병행 W 독립 재추정 불가. 이전 그림의 120초 관측 끝점 누락은 새 누적 CSV/그림에서 표시하되 원본 분석은 보존했다.
+- 시작 AP29.9°C는 동결식 초기 상태로 입력됐다. frozen idle 평형34.380°C로 올라가는 예측과 31.6→29.9°C로 내려가는 관측은 형태가 다르다. 사후 AP 후보 `energy-ap-start-referenced-idle-diagnostic-v1`은 B2 MAE3.555→0.182°C이나 개발3·이미 본 DC_DG·DIAG-04 모두 악화해 simulator 기본/strict에 등록하지 않았다. 저온 AP 독립 예측·정책 차이 판정 미완료, 동결·FAIL·원본·`experiment_ready=false` 보존. **다음 행동 하나:** 별도 승인 전 실행하지 않는 같은 프로토콜 저온 시작의 긴 유휴→짧은 CG_DC→유휴 독립 확인 한 조건을 검토한다.
+
 ## 2026-09-29 B2 numeric AP 관측 진단 v2 — 승인 1회 완료, 외삽 판독
 
 - [plan_v6 단일세션 원본·소비·120초 판독](ARRIVAL_RECORDED_B2_AP_OBSERVE_RUN01_20260929.md)과 [공유 CSV/SVG](results/energy_ap_recorded_b2_01/diag_v6/README.md). 현재 A24·설치본·환경/품질 gate를 통과해 runtime4·warmup8·본 요청24/24를 마쳤다. 실제 CG_DC 병행 1.683초, 시작 AP **29.9°C**는 동결 개발 시작 범위 32.5–34.0°C 밖. 관측 154.696J, 동결식 외삽 계산 155.758J(+1.062J), AP MAE3.555°C·최고값 차이+2.770°C다. **자료 전체창 적격과 수치 계산은 완료했으나 strict 지원·독립 정확도 PASS·정책 우열은 미완료**다.
