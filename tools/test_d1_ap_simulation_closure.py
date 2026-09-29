@@ -72,6 +72,14 @@ class ClosureTests(unittest.TestCase):
             self.assertEqual(result['observed_nonmonotonic_idle_windows'],2)
             self.assertEqual(result['fixed_episode']['status'],'TRADEOFF')
             self.assertIsNone(result['fixed_episode']['model_candidate'])
+            self.assertEqual([(row['block'], row['mode']) for row in result['fixed_observations']],
+                [('development','serial'),('development','parallel'),
+                 ('confirmation','parallel'),('confirmation','serial')])
+            self.assertAlmostEqual(result['fixed_observations'][2]['common_window_energy_j_conditional']-
+                result['fixed_observations'][3]['common_window_energy_j_conditional'], 4.5585121168)
+            dashboard = (output/'index.html').read_text(encoding='utf-8')
+            self.assertIn('개발 -36.255J에서 확인 +4.559J', dashboard)
+            self.assertIn('완료시점 J', dashboard)
             self.assertEqual(result['complete_dynamic_energy_ap_policy_cases'],0)
             self.assertFalse(result['experiment_ready'])
             for item in result['dynamic_representatives']:

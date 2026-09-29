@@ -236,6 +236,19 @@ def evaluate(input_file, output):
     fixed_result = decision.decide(profile, evaluation, query)
     if fixed_result['status'] != 'TRADEOFF' or fixed_result['model_candidate'] is not None:
         raise ValueError('archived decision unexpectedly changed')
+    comparison_file = fixed/'comparison.csv'
+    with comparison_file.open(encoding='utf-8-sig', newline='') as stream:
+        comparison = list(csv.DictReader(stream))
+    if [(row['block'], row['mode']) for row in comparison] != [
+        ('development', 'serial'), ('development', 'parallel'),
+        ('confirmation', 'parallel'), ('confirmation', 'serial')
+    ] or any(row['work_requests'] != '870' for row in comparison):
+        raise ValueError('archived fixed comparison changed; review required')
+    fixed_observations = [dict(block=row['block'], mode=row['mode'],
+        work_completion_s=float(row['work_completion_s']),
+        work_energy_j_conditional=float(row['work_energy_j_conditional']),
+        common_window_energy_j_conditional=float(row['common_window_energy_j_conditional']),
+        load_ap_peak_c=float(row['load_ap_peak_c'])) for row in comparison]
     support_file = ROOT/'docs/results/arrival_policy_screen_01/measured_support_01/support_status.csv'
     with support_file.open(encoding='utf-8-sig', newline='') as stream:
         saved = list(csv.DictReader(stream))
@@ -247,13 +260,15 @@ def evaluate(input_file, output):
         new_evidence='B2 actual schedule only; low-temperature AP candidate conditional, not general transition support')
         for r in saved if r['scenario']=='queue' and r['seed']=='201' and r['realized']=='1.5']
     report = dict(version='ap-simulation-closure-v1', input_sha256=sha(input_file),
-        source_sha256={'fixed_profile':sha(profile),'fixed_evaluation':sha(evaluation),'saved_support':sha(support_file)},
+        source_sha256={'fixed_profile':sha(profile),'fixed_evaluation':sha(evaluation),
+            'fixed_comparison_csv':sha(comparison_file),'saved_support':sha(support_file)},
         candidate_decision='conditional_diagnostic_only_not_default', new_fitted_parameters=0,
         physical_sensor_delay_identified=False, hidden_thermal_state_identified=False,
         evidence_sessions=len(bundle['sessions']), idle_windows=len(probes),
         observed_nonmonotonic_idle_windows=sum(p.get('interior_rise_then_fall') is True for p in probes),
         archived_fixed_episode_case_count=1, complete_dynamic_energy_ap_policy_cases=0,
-        fixed_episode=fixed_result, dynamic_representatives=representative,
+        fixed_episode=fixed_result, fixed_observations=fixed_observations,
+        dynamic_representatives=representative,
         experiment_ready=False, accuracy_pass=None, policy_selection_pass=None)
     output.mkdir(parents=True)
     write(output/'summary.json', report)
@@ -279,6 +294,16 @@ def page(report, energy, output):
         actual = (fixed['parallel']['one_confirmation_error_scenario'][metric]-
                   fixed['serial']['one_confirmation_error_scenario'][metric])
         contrasts.append(f'<tr><td>{escape(metric)}</td><td>{predicted:+.3f}</td><td>{actual:+.3f}</td></tr>')
+    observations = ''.join('<tr><td>{}</td><td>{}</td><td>{:.3f}</td><td>{:.3f}</td>'
+        '<td>{:.3f}</td><td>{:.1f}</td></tr>'.format(
+            escape(row['block']), escape(row['mode']), row['work_completion_s'],
+            row['work_energy_j_conditional'], row['common_window_energy_j_conditional'],
+            row['load_ap_peak_c']) for row in report['fixed_observations'])
+    fixed_rows = {(r['block'], r['mode']): r for r in report['fixed_observations']}
+    development_j = (fixed_rows['development', 'parallel']['common_window_energy_j_conditional']-
+                     fixed_rows['development', 'serial']['common_window_energy_j_conditional'])
+    confirmation_j = (fixed_rows['confirmation', 'parallel']['common_window_energy_j_conditional']-
+                      fixed_rows['confirmation', 'serial']['common_window_energy_j_conditional'])
     html = '''<!doctype html><html lang="ko"><meta charset="utf-8">
 <title>D1Check AP·에너지 판정</title><style>body{font-family:system-ui,sans-serif;margin:36px auto;max-width:1050px;padding:0 18px;line-height:1.7;color:#203040}table{border-collapse:collapse;width:100%}td,th{padding:8px;border-bottom:1px solid #ccd7df;text-align:left}.note{background:#fff2da;padding:16px}img{width:100%}a{color:#1265a3}</style>
 <h1>AP 판정·에너지 연결·제한 비교</h1><p class="note">새 실측 없음 · 후보 재보정 없음 · experiment_ready=false<br>고정 CC_DG 회고 비교는 사용 가능. 동적 정책 전체창 실측 J/AP 지원은 0개이며 정확도 PASS·정책 우열은 미판정.</p>
@@ -288,7 +313,10 @@ def page(report, energy, output):
 <h2>에너지: 같은120초, 실제 일정 조건부 외삽 진단</h2><p>원래 동결 W 재사용. 이후 관측 전류/AP는 예측 입력이 아닙니다. AP 후보는 W를 변경하지 않습니다. 기기 전체 raw=mA 조건부 J이며 절대 정확도 미인증.</p>
 <table><tr><th>기록</th><th>관측 J</th><th>동결식 J</th><th>차이 J</th><th>상대차이</th></tr>'''+table+'''</table>
 <p>B2의 작은 전체차이를 보편 오차 한도로 사용하지 않습니다. 구간 상쇄·혼합표본은 <a href="energy_accounting.csv">CSV</a>에 보존했습니다. 세 기록의 총량 차이는 정책 절감량이 아닙니다.</p>
-<h2>지금 가능한 비교: 고정870건 CC_DG 직렬/병행</h2><p>공통480초·개발 템플릿·저장 확인자료의 회고 비교. 다른 작업량/도착/시작AP는 미지원. 결과는 TRADEOFF, 정책 선택값=null. 확인 결과를 이미 본 뒤 작성한 템플릿의 사후 holdout입니다.</p>
+<h2>지금 가능한 비교: 고정870건 CC_DG 직렬/병행</h2><p>같은870건(분류 CPU678·탐지 GPU192), 4개 resident runtime, 공통480초의 저장 관측입니다. 개발/확인 각 방식 1세션씩이며 독립 변동성은 모릅니다. 완료시점까지 J와 공통창 J는 서로 다른 경계입니다. 모든 J는 기기 전체 raw=mA 조건부 값입니다.</p>
+<table><tr><th>자료 역할</th><th>방식</th><th>완료 초</th><th>완료시점 J</th><th>공통480초 J</th><th>부하 AP 최고 °C</th></tr>'''+observations+'''</table>
+<p>병행−직렬의 공통창 J는 개발 '''+f'{development_j:+.3f}J'+'''에서 확인 '''+f'{confirmation_j:+.3f}J'+'''로 방향이 뒤집혔습니다. 완료시간 이득만으로 공통창 에너지 절감을 주장할 수 없습니다. <a href="../../energy_operational_sim_01/tradeoff.png">4세션 관측 그림</a> · <a href="../../../ENERGY_OPERATIONAL_DECISION_PC_20260926.md">연구 결과 본문·오차 분해</a>.</p>
+<p>아래는 공통480초·개발 템플릿·저장 확인자료의 회고 예측 비교입니다. 다른 작업량/도착/시작AP는 미지원. 결과는 TRADEOFF, 정책 선택값=null. 확인 결과를 이미 본 뒤 작성한 템플릿의 사후 holdout입니다.</p>
 <table><tr><th>병행−직렬</th><th>템플릿 예측</th><th>저장 확인 관측</th></tr>'''+''.join(contrasts)+'''</table>
 <h2>동적 목표의 남은 항목</h2><p>기존 CPU_URGENT/B2/B3의 저장 일정·응답은 활용할 수 있습니다. 전체창 실측 기반 J/AP 순위는 아직 계산 불가입니다. B2/B3가 쓰는 짧은 CG_DC/DC_DG→유휴 전이에서 비용·AP 반응·일정 오차와 정책 간 차이를 구분할 근거가 필요합니다. 센서 지연과 숨은 열을 근거 없이 계수로 채우거나 새 실행을 자동 시작하지 않습니다.</p>
 <p><a href="policy_support.csv">대표3개 지원 결과</a> · <a href="summary.json">기계 판독 결과·출처 해시</a></p></html>'''

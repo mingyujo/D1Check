@@ -7,6 +7,7 @@
 - [에너지 CSV](readout/energy_accounting.csv): 원래120초 전체와 마지막 release 분할의 오차; raw=mA 조건부 J.
 - [정책별 지원 CSV](readout/policy_support.csv): 저장된 queue/201/1.5 3정책. 지원 밖 J/AP·rank=null.
 - [기존 고정 CC_DG 선택 결과](readout/summary.json): 같은870건, 480초의 회고적 `TRADEOFF`. 동적 정책이나 독립 정확도 PASS가 아님.
+- [제한 연구 결과 본문](../../ENERGY_OPERATIONAL_DECISION_PC_20260926.md)과 [관측 4세션 그림](../energy_operational_sim_01/tradeoff.png): 개발·확인의 완료시간·완료시점 J·공통480초 J·부하 AP 최고를 함께 판독한다. [화면](readout/index.html)의 네 관측행은 저장 `energy_operational_sim_01/comparison.csv`에서 생성하며 `summary.json`에 출처 SHA를 남긴다. 확인 공통창 에너지의 병행−직렬 방향은 템플릿 예측과 반대다.
 - [관측 SVG](readout/idle_observation.svg) / [PNG](readout/idle_observation.png): 기존 AP 표본만 표시. 선은 표본 연결이며 실제 내부 센서 보간을 뜻하지 않음.
 
 `inputs.json`은 AP 값·Android 상대시각·조회 bracket·lane-free 구간·적분 요약만 포함한다. 원문이나 하드웨어 식별자는 공유하지 않는다. 각 세션의 원본 validated/thermal/progress/requests 해시를 보존한다. role과 data_role을 구분하고 CG_DC 전이 자료는 정식 confirmation이 아닌 `protocol_transfer_posthoc`다. 원래 개발3 동결과 확인 전 후보절차 동결 SHA도 들어 있다.
