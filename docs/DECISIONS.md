@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-09-30 — 저온 AP 후보의 조건부 진단 인터페이스만 채택
+
+- **PC 구현 채택:** [실현 lane 일정·부하 전 AP 조건부 경로](AP_SIMULATION_CLOSURE_PC_20260930.md#6-저온-ap-출력의-pc-연결-2026-09-30)만 opt-in 계산한다. 정보 cutoff 이전 구간 출력, 부족한 pre-load·다른 APK/구성·미지원 상태를 차단한다. 기존 두 세션의 수치 재현은 사후 scope readout이고 기존 확인 역할을 새 독립 검증으로 늘리지 않는다.
+- **채택하지 않은 범위:** AP 최고/한도 초과/기기 J/정책 순위/미래 일정 비용의 후보 지원. 실제 arrival 집계는 후보 profile을 명시적 unsupported/null로 반환한다. 작은 MAE를 정책 판별력으로 승격하지 않고 기존 β/기울기/동결/후보절차/strict·`experiment_ready=false`를 유지한다. 이번 PC 작업은 완료; ADB·새 실측·APK·실행계획/claim0.
+
 ## 2026-09-30 — 승인 B2 범위 내 확인 중단 보존, 온도 gate 반복 금지
 
 - 사용자의 계획준비·실측·기술오류 수리 후 진행 승인으로 [새 계획1회](ARRIVAL_B2_INRANGE_RUN01_20260930.md)를 실행했다. 기존 APK의 v1 gate를 선택한 별도 ID이며 과거 v2 진단을 수정하지 않는다. 동일 설치본/환경이 확인되고 warmup8 반환 뒤 AP30.0°C로 arm을 거절했다. 공통창·본 요청0, host 종료/프로세스 부재 확인, `stopped_no_resume`다.

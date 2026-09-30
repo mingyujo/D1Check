@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-09-30 저온 AP 조건부 진단 연결 완료 — 최고/한도/J/정책 순위 차단
+
+- [이번 출력 경계와 구현](AP_SIMULATION_CLOSURE_PC_20260930.md#6-저온-ap-출력의-pc-연결-2026-09-30), [휴대용 입력·CSV·재현](results/energy_ap_idle_response_01/low_temperature_scope_v1/README.md). 기존 두 세션의 실제 일정/부하 전 AP로만 후보 경로를 재현(개발 MAE0.487518°C·확인0.417521°C). 정보 시점은 첫 dispatch 직전35.007초이며 그 이전을 사전 예측으로 출력하지 않는다. 같은 APK·resident·입력·프로토콜/충분한 pre-load만 진단 계산 허용, 경험적 일반화/PASS 아님.
+- 실제 arrival 집계기에 후보가 들어오면 전체 J·AP 최고·한도 초과·순위를 null로 차단한다. 관련12검사 PASS, 원래 동결·후보 절차 SHA 불변; 재적합/새 실측/ADB/APK/계획/claim0. **PC 연결은 이 범위에서 완료**, `experiment_ready=false` 유지. 다음 결정은 동적 J/AP 순위를 현재 미검증으로 보고하고 지원된 고정 CC_DG 상충 결과를 활용하는 것이다. 아래 AP30.0°C 중단은 그대로 보존한다.
+
 ## 2026-09-30 B2 범위 내 확인 — AP30.0°C로 본 작업 전 중단
 
 - [원본 receipt·작은 요약·실제 소비](ARRIVAL_B2_INRANGE_RUN01_20260930.md). 새 `ENERGY-AP-RECORDED-B2-INRANGE-01`을 승인으로1회 실행했고 `stopped_no_resume`. 현재 동일A24·설치본·환경 확인, 배터리68%·비충전·thermal0. runtime4/warmup8 이후 시작 AP30.0°C(조회 bracket0.210초)가 연구 범위32.5–34.0°C 밖이라 arm을 보내지 않았다. 본 작업0·공식창0, J/AP 새 오차 없음. 설치본pull1·staging7·APK push/설치0, ADB232/3,201, 활성시간76.207/1,315초. 세션 host정리 completed·프로세스 부재, 앱 자체 cleanup은 미회수로 미확인.
