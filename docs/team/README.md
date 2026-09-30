@@ -1,4 +1,82 @@
-# 팀 안내 — 2026-09-26 현재
+# D1Check 팀 안내 — 2026-09-30 최신 체크포인트
+
+읽을 브랜치는 **`feature/arrival-scheduling-20260923`**이다. 본 안내는 결과·계약·코드의 공유 위치이며 기기 실행 승인을 부여하지 않는다. 현재 연구 상태는 **`experiment_ready=false`**다. 아래 접힌 이력의 “현재/최신/다음”은 당시 상태이며 이 첫 화면과 [STATUS](../PROJECT_STATUS.md)의 최신 절을 우선한다.
+
+## 먼저 읽을 자료
+
+1. [현재 연구 결과·논의 초안](../ENERGY_AP_RESULTS_DISCUSSION_DRAFT_20260930.md): 확보한 근거와 주장 가능한 범위를 한 번에 읽는다.
+2. [에너지·AP 통합 결과 화면](../results/ap_simulation_closure_01/readout/index.html): 저장소를 내려받아 HTML을 브라우저에서 열면 기존 관측·모형·지원 범위를 볼 수 있다. GitHub 파일 화면 자체는 대시보드를 실행하지 않는다.
+3. [응답·완료 정책 비교](../ARRIVAL_SERVICE_CHOICE_PC_20260930.md) 및 [입력별 서비스 선별](../results/arrival_service_guard_01/README.md): PC 일정의 응답 결과와 미지원 J/AP를 구분한다.
+4. [미실행 CG_DC 전이 확인 계획의 목적·예산·명령](../AP_CGDC_TRANSFER_PREP_20260930.md), [공유 입력·분석 계약·PC 검증](../results/energy_ap_cgdc_transfer_01/README.md): 다음 한 세션이 확인하는 질문과 종료 기준이다.
+
+## 지금까지 완료한 것과 남은 것
+
+| 작업 | 확보한 결과 | 해석과 근거 |
+|---|---|---|
+| A24 두 작업·CPU/GPU 요청 계측 | adapter·출력/품질·도착/resident·실제 lane 경계 구현 및 실측. 기존 독립 평가의 주 결합 FAIL과 fixed-split 부분 종료 보존 | [모델 inventory](../MODEL_02_INVENTORY.md), [기존 평가](../ARRIVAL_EXTENSION_POST_ANALYSIS_20260923.md), [부분 결과](../ARRIVAL_FIXED_SPLIT_RESULTS_20260923.md) |
+| 고정 CC_DG 직렬·병행4세션 | 같은870건에서 병행이 빠르고 AP가 높음. 공통480초 에너지 차이 방향은 개발과 확인에서 뒤집힘 | [실측 상충·제한 모형](../ENERGY_OPERATIONAL_DECISION_PC_20260926.md). 온라인 정책의 절감 입증은 아님 |
+| 상태별 개발3→동결→DC_DG 확인1 | 전력/AP 식과 개발·확인 자료 연결 보존. CG_DC·CC_DG의 원래 동일조건 확인은 미완료 | [COLLECT-05 결과](../ENERGY_AP_STATE_COLLECT05_RESULTS_20260928.md). 중단 계획은 재개하지 않음 |
+| 다른 프로토콜의 CG_DC 진단 | 실제 lane/센서와 동결식의 전이 오차 확보 | [DIAG-04 전이 분석](../ENERGY_AP_REGIMEN_TRANSFER_PC_20260929.md). 원래 확인 block과 합치지 않음 |
+| B2의24요청 기록 일정 재생 | 공통120초·실제 CG_DC1.683초. 관측154.696J 대 동결식155.758J(+1.062J), AP MAE3.555°C | [에너지 상쇄·AP 형태·사후 후보](../ARRIVAL_RECORDED_B2_RESIDUAL_MODEL_PC_20260929.md). 시작 AP29.9°C/짧은 전환은 외삽 진단 |
+| 유휴 AP 반응 개발1→절차 동결→확인1 | 부하 전 AP 조건부 후보의 확인 MAE0.418°C(원래식5.461°C). 확인 유휴에서 상승→하강 형태 한계도 남음 | [실행·확인](../ENERGY_AP_IDLE_RESPONSE_RUN01_20260929.md), [현재 출력 제한](../AP_SIMULATION_CLOSURE_PC_20260930.md). AP 최고/한도·정책 순위 지원으로 확대하지 않음 |
+| 저장 low/queue/burst 정책135사례 | 응답·완료와 연구용 선별 규칙 판독. B2 적격21/45·B3 적격22/45·둘 다7/45 | [서비스 결과](../ARRIVAL_SERVICE_CHOICE_PC_20260930.md). 독립 기기135세션이 아니며 동적 전체창 J/AP 지원0 |
+| 실행·종료·회수·관측 보완 | host 소유권/checkpoint·단일 cleanup, Activity lifecycle 기록, 앱 세션 내부 진행, 실행 적격성과 AP 모형 범위 분리 | [host 계약](../ENERGY_AP_HOST_LIFECYCLE_PC_20260928.md), [기기 내부 세션](../ENERGY_AP_DEVICE_SEGMENT_PC_20260928.md), [lifecycle PC 검토](../ARRIVAL_RECORDED_B2_LIFECYCLE_PC_20260929.md). 과거 host/onDestroy 외부 원인은 미확정 |
+| PC 시뮬레이터·판독·보고 | 고정 묶음 회고 비교, 제한된 조건부 AP, 미지원 비용/순위 null 차단, CSV/그림/HTML 판독 자동화, 결과·논의 본문 | [지원 경계](../AP_SIMULATION_CLOSURE_PC_20260930.md), [판독 자동화](../AP_CGDC_TRANSFER_PREP_20260930.md#실측-후-pc-판독과-그림-자동화-2026-09-30). PC 통과와 실기기 예측 확인은 별개 |
+
+실측 전류 raw=mA 해석은 조건부이며 절대 에너지 정확도는 미인증이다. AP를 BAT·표면온도·SOC·사용 가능 시간으로 바꾸어 표현하지 않는다. 기존 FAIL·원자료·동결 계수·소비된 종료 계획을 보존한다. 무선 디버깅 스위치 OFF→ON이라는 사용자 관측과 실행 로그는 별도 근거이며, 로그상 단절 미관측을 스위치 유지의 증거로 해석하지 않는다. 원인 미확정과 구현·기록 개선은 구분한다.
+
+## 현재 준비된 실측과 팀원 담당 경계
+
+| 대상 | 현재 해야 할 일 | 실행 상태 |
+|---|---|---|
+| A24 | 기존 후보/동결 W를 다른 짧은 CG_DC 일정에 적용하는 **전이 확인1**. 저장 burst/201/B2의 원래 도착을 유지하고 release만+35초 | `ENERGY-AP-CGDC-TRANSFER-02`/plan_v2, **미승인·미소비**. 담당자 PC의 실행 묶음·현재 기기 gate·승인이 필요 |
+| S26 CPU/GPU | 이미 보유한 두 모델의 기기·runtime·품질·요청·센서 근거를 먼저 제출. 그 근거를 보고 기기별 지원/실측 공백을 판단 | 공통 [다기기 계약](../MULTITASK_EXPERIMENT_PROTOCOL.md)은 있으나 최신 S26 두 모델의 확정 실행 계획/예산은 이 브랜치에 없음 |
+| S26 NPU | 별도 npu-runner/CompiledModel 소스·변환/실행 장치·대표 입력 품질을 먼저 제출 | MobileNet 보고나 과거 합성32입력을 EfficientNet/EfficientDet NPU 검증으로 전용하지 않음. A24 준비 계획을 S26에 실행하지 않음 |
+
+A24 권고 계획의 상한은 **확인1·runtime4·warmup8·본작업24·명시적추론32·staging1/7파일·설치본pull≤1·선택적APK push/설치 각≤1·전체1,300초·ADB≤3,200·재시도/대체/추가0**이다. 정상 소요시간이나 배터리 완주 보장이 아니다. 계수 재적합·기본/strict 지원 확대·온라인 B2 정책 검증은 포함하지 않는다. 이 한 세션이 성공해도 DC_DG 짧은 전이·AP 최고/한도·정책 간 J/AP 차이 판별은 미완료다.
+
+기기 실행 전에는 현재 동일 A24·유일 transport·설치본/서명·환경·품질·memory gate를 계약대로 확인한다. 중복 연결을 자동 해제하거나 연결 소실 후 다른 transport로 전환하지 않는다. 개발 시작 AP32.5–34.0°C는 모형 범위 표시이며 numeric-ap-observe-v2의 별도 실행 하한으로 적용하지 않는다. 유효 AP/신선도 및 기존 BAT/thermal/비충전 등 실행 조건은 유지한다. 과거 계획/plan_v1 초안/queue24를 현재 실행 대상으로 사용하지 않는다.
+
+## GitHub에 있는 것과 별도 확보할 것
+
+| 항목 | 확보 경로 |
+|---|---|
+| 코드·테스트·문서·작은 CSV/그림·결과·분석 계약 | 이 작업 브랜치. 최신 수정본의 검사 버전은 각 보고서/verification JSON에 있음 |
+| 다음 입력 | [schedule.json](../results/energy_ap_cgdc_transfer_01/schedule.json), [analysis_contract.json](../results/energy_ap_cgdc_transfer_01/analysis_contract.json). 미래 입력이며 새 실측 결과가 아님 |
+| 동결된 실제 실행 묶음 | 담당자 PC의 `energy_ap_cgdc_transfer_plan_v2/collection_plan.json`·`manifests/`·`RUN_AFTER_APPROVAL.ps1`. GitHub에는 생성/검사 코드와 계약이 있고 실제 로컬 묶음은 없음 |
+| 서명 APK·빌드 receipt·검증 도구 | 담당자 PC에 보존. 서명 키/비밀번호를 공유 저장소에 넣지 않음. 개인 debug 키로 대체해 같은 APK라고 하지 않음 |
+| 원래 개발3 freeze·유휴 후보 절차 freeze | 담당자 PC의 `energy_ap_state_run_v5/development_freeze.json`, `energy_ap_idle_response_run_v1/ap_model_freeze.json`. GitHub에 휴대용 일부 진단 입력은 있지만 현재 실제 Check에 필요한 전체 외부 파일은 별도 |
+| 모델/입력6파일·참조 출력4파일 | 정확한 경로·SHA는 실제 계획의 source_files/references에 있음. 모델은 고정된 출처에서 실행자가 확보. EfficientDet exact binary의 배포 권한 미확인 경계를 유지 |
+| 대용량 원자료·receipt·상세 client 기록 | 담당자가 원본 보존. 공유 가능한 파일 목록/체크섬을 먼저 정하고 별도 전달. 기존 문서의 `C:/Users/LG/Documents/...`는 팀원 PC나 GitHub에서 열리는 주소가 아님 |
+
+현재 준비본의 동일성:
+
+| 대상 | SHA-256 |
+|---|---|
+| 계획v2 | `e18268538174f49e98789dcf191318dbf5b57cdbc2a7f2cb1b4aaa4c449f3234` |
+| 재사용 APK | `747ce77e07c7c79f7c7d912d0ff749cf230e0c0483f4a160784fe549043f6180` |
+| 원래 개발3 모형 | `35ed6987b1fc09789284018f8502107eaf4e3125373651a01e3a08d427034c54` |
+| 유휴 후보 절차 freeze | `8507adc10485940c36853786ba39a4f42439a9fbd3d71a5da1c7d55e2cbc7ec5` |
+
+위 식별값만으로 설치/실측이 승인되는 것은 아니다. 다른 PC로 옮긴 경로·서명·파일 대응과 Check를 다시 확인해야 한다. 소비 registry를 복사해 초기화하거나 종료 계획을 재개하지 않는다.
+
+## S26/NPU 담당자가 먼저 제공할 최소 자료
+
+- 최신 branch/commit·모듈/variant·재현 명령·runtime/compiler 버전. 정확한 기기/SoC·fingerprint는 민감정보를 제거한 전달 방식으로 제공한다.
+- exact 모델/입력·원본/AOT SHA·출처·정밀도·변환 옵션·전후처리와 대표 입력의 사전 품질 계약. 두 모델별 위임·partition·CPU 잔여/fallback·실행 장치 근거를 구분한다.
+- session manifest·전체 시도/실패/미지원 분모·runtime/resident/warmup·환경/memory/thermal 조건·원본 receipt/체크섬.
+- 요청 dispatch/execution/output/persist/worker_release/lane_available 및 monotonic 기준 전류·전압·AP 원문. 개발/확인/이미 본 자료의 역할을 명시한다.
+
+이미 자료가 있으면 먼저 재사용한다. 자료 접근 부족을 곧바로 추가 실측 필요로 판정하지 않는다. S26 에너지·온도·스로틀 계수를 A24에 적용하지 않으며, 개별 NPU 실행 지원만으로3건 병행이나3자원 정책 완료를 허용하지 않는다. 과거 [S26 MobileNet 요약](../ENERGY_THERMAL_PC_01_20260925.md)은 방법 참고이며 현재 두 모델/NPU의 근거가 아니다.
+
+## 팀원에게 전달할 요약
+
+> 최신 진행 상황은 `feature/arrival-scheduling-20260923`의 `docs/team/README.md`에 정리했습니다. A24 고정 실측·B2 재생·유휴 AP 후보 확인·저장 정책 서비스 비교·판독 자동화·결과 초안까지 반영돼 있습니다. 동적 정책의 에너지/열 우월성은 아직 미입증입니다. 다음 A24 CG_DC 전이 확인1은 PC 준비만 완료했고 미승인·미소비입니다. 실행에는 별도 로컬 APK/계획/모형/입력 묶음과 현재 gate 확인이 필요합니다. S26/NPU 담당자는 보유한 두 모델의 소스/장치·품질·요청·센서 원본 근거를 위 목록대로 먼저 제출해 주세요.
+
+<details>
+<summary>2026-09-26 이전 안내·협업 이력 (현재 실행 지시가 아님)</summary>
+
+## 이전 팀 안내 — 2026-09-26 당시 상태
 
 > **PC 결과 시각화:** 작업 브랜치에서 [오프라인 HTML 대시보드](../results/arrival_visualization_01/dashboard.html)와 [그림·CSV·재현 안내](../results/arrival_visualization_01/README.md)를 열 수 있다. low/queue/burst의 응답은 합성 PC 탐색이고, 에너지·AP는 도착 상태별 계수 미측정으로 `계산 불가`다. 별도 고정870건 참고 그래프를 합성 도착 정책의 에너지 결과로 읽지 않는다. Android 합성 도착 수집은 아직 미실행이다.
 
@@ -96,3 +174,5 @@ MobileNet V1 NPU 성공·합성 입력32개·manifest 수정 원인은 **팀원 
 GitHub에는 소스·검증 도구·계약·요약 문서를 공유한다. 모델/컴파일 binary, APK, 키·토큰·개인 설정, 외부 raw 전체·캐시는 새로 넣지 않는다. **기존 legacy MobileNet asset은 이미 추적된 과거 파일**이며 이번에 추가한 모델이 아니다. EfficientDet exact binary와 배포 권한 미확인 파생 AOT는 저장소·PR·APK·팀 bundle에 포함하지 않는다. 승인 실행자가 고정 원 URL에서 직접 확보하는 비배포 경계를 유지한다.
 
 기존 상세 보고서의 `C:/Users/LG/Documents/...`는 담당자 PC의 **로컬 전용 위치**다. GitHub나 팀원 PC에서 열리는 링크가 아니다. 기존 원본은 담당자가 보존하고 필요한 경우 공유 가능 범위를 검토한 뒤 별도 checksum/산출물 목록으로 전달한다. 이 안내의 상대 링크는 저장소 문서만 가리킨다. master merge·타인 브랜치 변경·실기기 실행은 이번 문서 공유에 포함하지 않는다.
+
+</details>
