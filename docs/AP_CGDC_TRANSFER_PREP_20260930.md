@@ -68,3 +68,31 @@ ADB 계산은 기존 주기를 유지한다. poll 상한485초에 listing `floor
 [검증 요약·공유 입력](results/energy_ap_cgdc_transfer_01/README.md): Python 신규6＋변경 경계의 기존3검사＝**9건 PASS**, 실제 Android ArrivalEnergyContract.validate→ArrivalRecordedReplay.validate/choose JVM 검사 **1건 PASS**. 실제 runner 진입에서 새 Check 선택·한 session/단일 회수/cleanup·개발 재동결과 조기 종료의 부재, 소비 계획 재실행 거절, bracket/표본/cutoff/unsupported 차단, 전체120초 적분과 구간합 보존, 부하 후 AP 변경 시 예측 불변을 검사했다. 초안의 도착 이동 결함을 발견한 뒤 JVM 검사에서 원래 burst 도착＋지연 release는 통과하고, 도착+35초는 거절됨을 실행 확인했다. Activity 전체 callback/기기 동작 검사가 아니라 실제 순수 contract/선택 함수 경계다. Android 본문 compile은 UP-TO-DATE, 테스트 소스만 추가했다. PowerShell→Python→실제Check도 PASS. fake/축약 PC 검사이며 실기기/장시간/연결 안정성 증명이 아니다. 전체 배치·과거 분석·APK 빌드를 반복하지 않았다.
 
 **다음 행동 하나:** 이 한 세션의 별도 실측 예산 승인 여부를 결정한다. 이번 요청에서는 준비까지만 완료했으므로 ADB·Run·설치·추론은 시작하지 않는다. 후보가 맞더라도 DC_DG/최고온도 제약/정책 순위의 공백은 남고, 맞지 않으면 그 한정 진단 결과로 종료한다.
+
+## 실측 후 PC 판독과 그림 자동화 (2026-09-30)
+
+착수 HEAD `db039458b4962524d9e55381c2f8dad0e026a905`, clean worktree 및 실제 원격 HEAD 일치에서 이어갔다. 실행 전 계약·계획·APK·Android·고정 readout 소스는 바꾸지 않고 `tools/d1_ap_transfer_report.py`를 별도 PC 어댑터로 추가했다. 관련 테스트7건은 **이번 미커밋 두 Python 파일**을 대상으로 실행했다. [소스 SHA·검증 요약](results/energy_ap_cgdc_transfer_01/report_automation_verification.json).
+
+적격 원자료가 생긴 뒤 저장소 루트에서 아래 명령 한 번으로 판독과 대시보드를 만든다. 명령에 ADB/실행 API가 없으며 기기 작업을 시작하지 않는다. output은 기존 실행/계획/registry와 분리된 **새 PC 경로**여야 한다.
+
+```powershell
+& 'C:/Users/LG/anaconda3/python.exe' -X utf8 -B -m tools.d1_ap_transfer_report --plan 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_cgdc_transfer_plan_v2/collection_plan.json' --output 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_cgdc_transfer_readout_v1'
+```
+
+정상 출력: `report.json`(점수·해시·진단 상태), `timing.csv`(24건 예정 도착/release·PC 경계·실제 dispatch/output/persist/worker/lane), `data/*.csv`, `lanes/energy/ap.png` 및 SVG, `index.html`, `inventory.json`(단일 실행의 원본 파일 크기·SHA). HTML은 상대 링크로 CSV·그림·분모를 연결한다. 공유할 때 raw inventory의 세션 경로와 오류 파일의 개인 절대경로는 별도 검토해야 한다. 원자료/키/APK는 이 HTML에 넣지 않는다.
+
+자료가 부적격하거나 없으면 `not_evaluable`, 점수null·사유·error stack·inventory만 남고 비교 그림0개다. CLI는 종료코드2를 반환한다(현재 PowerShell 도구에서 native nonzero가1로 표시될 수 있음). 처리 코드의 예상 밖 오류는 `processing_error`; 그림 실패는 `rendering_failed`로 별도 기록하며 수치 판독과 혼동하지 않는다. 재실행·회수·cleanup·소비 claim을 하지 않고 기존 실패 receipt를 그대로 둔다. 기존 output을 덮어쓰지 않는다. 기록 없음은 호출0/앱 실패 확정이 아니다. data CSV 생성 뒤 후속 검사가 실패하면 data는 검토용 중간 산출물이며 최상위 report 상태가 우선한다.
+
+경계 검증: CSV의120초 J·상태구간 적분·부하 전/부하/유휴 합계·AP residual/MAE/max가 요약과 일치해야 한다. 원래 forecast는0/120초를 이미 포함하므로 전체 J 요약 오류는 확인되지 않았다. 마지막 센서 midpoint가119.5초인 fixture에서는 유효한119.5–120.5초 표본 bracket으로 관측120초 적분이 가능했다. 누적 경로에120초 끝점을 추가하되 원래 `frozen_reader_energy_path.csv`와 `endpoint_completion.json`을 보존하고 요약 점수/창/계수는 바꾸지 않는다. 센서 gap을0으로 채우거나 유리한 시각으로 창을 이동하지 않는다. 누적 적분의0초 J=0은 초기 적분 조건이며 결측 센서 대체값이 아니다.
+
+AP 그림/점수는 첫dispatch 이후~실제 냉각 끝, J는 정확한 공통120초다. preload AP는 후보의 유효 유휴 기준 입력이며 주변온도 실측값이 아니다. 초기 AP 범위 안/밖, 짧은 전환 strict 미지원, raw=mA 조건부/절대 정확도 미인증을 표시한다. 후보·원래식 차이는 진단이며 accuracy_pass/정책순위=null, 최고/한도/정책 비용 지원은 승격하지 않는다.
+
+검증 명령:
+
+```powershell
+& 'C:/Users/LG/anaconda3/python.exe' -X utf8 -B -m unittest tools.test_d1_ap_transfer_report -v
+```
+
+7건 PASS: 실제 CLI→고정readout→CSV/SVG/PNG/HTML·원본 불변, 실패receipt/중복output 차단, 전류gap/AP누락 null, 시간/분모/backend/CSV 점수 불일치 차단, 보호 경로·예상 밖 코드 오류, 렌더링 오류 별도 receipt, 불규칙 창 끝120초 적분 보존. 실제 ADB 클래스는 AssertionError로 격리했다. 그림 미리보기는 외부 `ap_transfer_report_pc_v1/fixture/preview`에 **PC TEST FIXTURE - NOT MEASURED**로만 보존했고 AP/lane PNG를 육안 확인했다. 미래 실측 그림을 공유 대시보드에 게시하지 않았다. 전체 과거 테스트/Android 빌드/배치는 반복하지 않았다.
+
+현재 미실행 실제계획으로 CLI를 검증한 결과 `FINAL_RECEIPT.json` 부재로 예상한 not_evaluable·null·그림0이었다. 이는 실행 실패가 아니며 **실제 run output/registry는 여전히 없음**이다. 별도 PC 결과는 `ap_transfer_report_pc_v1/unexecuted_plan_readout`에 보존했다. 실제 PowerShell Check PASS, 계획 SHA `e18268538174f49e98789dcf191318dbf5b57cdbc2a7f2cb1b4aaa4c449f3234`, 개발3 freeze/후보 freeze 그대로. 기기 명령·Run·설치·추론·APK 빌드0. 이 자동화는 실측 후 수작업을 줄였으며 아직 새 전이 정확도를 확인한 것은 아니다.

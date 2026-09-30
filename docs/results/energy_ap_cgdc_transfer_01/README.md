@@ -17,3 +17,5 @@
 분석 CSV는 적격한 미래 자료가 있을 때만 새 PC output에 생성한다. 자료가 부족하면 readout은 오류를 내며 원자료를 고치거나 전체 J/AP를0으로 채우지 않는다. 관측·원래식 외삽·후보 조건부 재구성·검증되지 않은 정책 출력을 구분한다. 전체120초 잔차와 부하후 AP 점수의 시간 분모는 서로 다르다.
 
 Android 실제 contract 경계1건: 기존 격리 Gradle 환경에서 :benchmark-runner:testModelProbeUnitTest --tests com.example.d1check.benchmarkrunner.ArrivalRecordedReplayTest.delayedBurstReleasePassesActualContractsButShiftedArrivalFails --offline --no-daemon --no-configuration-cache 통과. 앱 본문 compile은 UP-TO-DATE, APK assemble/ADB는 호출하지 않는다.
+
+실측 후 PC 자동 판독: [명령·CSV/그림/HTML·실패 출력](../../../docs/AP_CGDC_TRANSFER_PREP_20260930.md#실측-후-pc-판독과-그림-자동화-2026-09-30), [관련7검증·소스 SHA](report_automation_verification.json). 별도 `tools.d1_ap_transfer_report`는 고정 readout을 호출하며 실행기를 변경하지 않는다. 실패/미회수는 null·완성 그림0, 조건부 진단과 정책 검증을 구분한다. 현재 새 실측 결과는 없고 계획/동결본/미소비 상태는 불변이다.

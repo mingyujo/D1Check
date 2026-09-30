@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-30 실측 후 판독·그림 자동화 완료 — 실행 계획 불변
+
+- [PC 판독 명령·성공/실패 출력](AP_CGDC_TRANSFER_PREP_20260930.md#실측-후-pc-판독과-그림-자동화-2026-09-30): 별도 `d1_ap_transfer_report`가 고정 readout을 연결해 예정/실제 lane·120초 누적 J/잔차·부하후 AP/잔차·CSV·단일 HTML을 만든다. 실패/부분 회수/센서 누락은 null·사유·inventory, 완성 비교 그림0; 렌더링 실패는 적격성 실패와 분리한다. 부하후 AP 재적합/새 후보0, 원자료/strict/기본 simulator 불변.
+- 관련 PC7검사 통과, fixture 그림은 외부 `ap_transfer_report_pc_v1/fixture/preview`에 **NOT MEASURED**로만 보존. 미실행 실제계획 판독은 예상한 not_evaluable이며 계획 실행 실패가 아님. 계획v2 SHA `e1826853…9f3234`/Check·원본/후보 freeze 불변, output/registry 없음·미승인/미소비 유지. ADB/Run/APK/설치/추론0, `experiment_ready=false`.
+- 현재 PC 자동화 완료. 다음 행동 하나: 기기 사용이 가능할 때 기존 별도 CG_DC 전이 확인1의 실행 승인 여부 결정. 이번 도구가 새 실측/정책 정확도 근거를 만들지는 않는다.
+
 ## 2026-09-30 실측 전 준비 완료 — 다른 CG_DC 일정의 고정 절차 전이 확인
 
 - [단일 확인 계획·실행 전 조건·판독 종료점](AP_CGDC_TRANSFER_PREP_20260930.md), [입력·분석 계약·검증 요약](results/energy_ap_cgdc_transfer_01/README.md). 저장 burst/201/B2 일정에서 도착0–4.840초는 APK contract 그대로, release만+35초로 부하 전 유휴 약65초 확보. 새 개발/계수 재적합0; 기존 동결 W와 기존 유휴 후보의 전이 진단이며 B2 서비스·정책 순위 확인 아님. CG_DC만 관측하며 DC_DG 공백은 남는다.
