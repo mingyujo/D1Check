@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-09-30 실측 전 준비 완료 — 다른 CG_DC 일정의 고정 절차 전이 확인
+
+- [단일 확인 계획·실행 전 조건·판독 종료점](AP_CGDC_TRANSFER_PREP_20260930.md), [입력·분석 계약·검증 요약](results/energy_ap_cgdc_transfer_01/README.md). 저장 burst/201/B2 일정에서 도착0–4.840초는 APK contract 그대로, release만+35초로 부하 전 유휴 약65초 확보. 새 개발/계수 재적합0; 기존 동결 W와 기존 유휴 후보의 전이 진단이며 B2 서비스·정책 순위 확인 아님. CG_DC만 관측하며 DC_DG 공백은 남는다.
+- 유일 권고 `ENERGY-AP-CGDC-TRANSFER-02`/`energy_ap_cgdc_transfer_plan_v2`, SHA `e1826853…9f3234`: 확인1·runtime4·warmup8·본작업24·명시적추론32·staging7·pull/선택적 APK push/설치 각≤1·1,300초·ADB≤3,200·재시도0. **미승인·미소비**, output/registry 미생성. 이번 PC v1 초안은 도착 이동이 실제 앱 contract에 어긋나 발견 후 실행불가 초안으로 보존; 기기 실패/소비로 처리하지 않음. 기존 queue24와 종료 계획은 보존.
+- Python9＋실제 Android contract/선택 경계 JVM1 및 PowerShell Check PASS, APK 본문/계수/strict 불변·재빌드0. **기기명령·Run·설치·추론0**, `experiment_ready=false`. 준비 작업 완료; **다음 행동 하나:** 이 별도 한 세션의 실측 예산 승인 여부 결정. 실행 전 동일A24·유일 transport·설치본/서명·기존 환경/품질 gate는 현재 미검증. 장시간/연결 안정성·정책 비용 지원을 PC PASS로 승격하지 않음.
+
 ## 2026-09-30 저온 AP 조건부 진단 연결 완료 — 최고/한도/J/정책 순위 차단
 
 - [이번 출력 경계와 구현](AP_SIMULATION_CLOSURE_PC_20260930.md#6-저온-ap-출력의-pc-연결-2026-09-30), [휴대용 입력·CSV·재현](results/energy_ap_idle_response_01/low_temperature_scope_v1/README.md). 기존 두 세션의 실제 일정/부하 전 AP로만 후보 경로를 재현(개발 MAE0.487518°C·확인0.417521°C). 정보 시점은 첫 dispatch 직전35.007초이며 그 이전을 사전 예측으로 출력하지 않는다. 같은 APK·resident·입력·프로토콜/충분한 pre-load만 진단 계산 허용, 경험적 일반화/PASS 아님.

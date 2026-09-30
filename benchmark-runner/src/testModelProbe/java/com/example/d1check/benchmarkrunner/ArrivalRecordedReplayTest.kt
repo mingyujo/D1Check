@@ -4,6 +4,30 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class ArrivalRecordedReplayTest {
+    @Test fun delayedBurstReleasePassesActualContractsButShiftedArrivalFails() {
+        val req = (0 until 24).map { i ->
+            val urgent = i % 4 == 1
+            ArrivalEnergyContract.Request("burst-$i", i,
+                if (urgent) "classification" else "detection",
+                if (urgent) "urgent" else "normal",
+                ArrivalEnergyContract.offset("burst", i), if (urgent) 1500L else 6000L)
+        }
+        val entries = req.map { r -> ArrivalRecordedReplay.Entry(r.id, r.ordinal,
+            r.task, r.offsetMs * 1_000_000L, 35_000_300_000L + r.offsetMs * 1_000_000L,
+            if (r.task == "classification") "GPU" else "CPU", "source/${r.ordinal}") }
+        ArrivalEnergyContract.validate("burst", req)
+        ArrivalRecordedReplay.validate(entries, req)
+        val waiting = req.map { ArrivalPolicy.Ticket(it.id, it.task, it.priority, it.ordinal) }
+        assertNull(ArrivalRecordedReplay.choose(waiting, entries.associateBy { it.id },
+            35_000_299_999L, true, true))
+        assertEquals("burst-0", ArrivalRecordedReplay.choose(waiting, entries.associateBy { it.id },
+            35_000_300_000L, true, true)!!.ticket.id)
+        try {
+            ArrivalEnergyContract.validate("burst", req.map { it.copy(offsetMs = it.offsetMs + 35_000L) })
+            fail("unsupported shifted arrival grid accepted")
+        } catch (_: IllegalArgumentException) {}
+    }
+
     private fun requests() = (0 until 24).map { i ->
         val urgent = i % 4 == 1
         ArrivalEnergyContract.Request("id-$i", i,

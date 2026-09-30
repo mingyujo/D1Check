@@ -154,7 +154,10 @@ def run(plan_file,adb,serial,expected_sha,approved):
     plan=p.read(plan_file)
     idle_response=plan.get('ap_idle_pulse_followup',False)
     single=plan.get('single_arrival_confirmation',False) or plan.get('recorded_replay_confirmation',False)
-    if idle_response:
+    if plan.get('ap_transfer_confirmation'):
+        from tools import d1_ap_transfer_confirmation as confirmation
+        confirmation.check(plan_file)
+    elif idle_response:
         from tools import d1_ap_idle_response_plan as confirmation
         confirmation.check(plan_file)
     elif plan.get('recorded_replay_confirmation'):
