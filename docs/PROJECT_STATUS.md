@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-01 무부하 대조 구현·서명 APK·실행 계획 준비 완료
+
+- [최종 해시·예산·Check/승인 후 명령](RESIDENT_CONTROL_MEASUREMENT_PLAN_20261001.md#실행-준비-완료-2026-10-01): 새 opt-in C0/L24를 동일4runtime/8warmup·baseline30/common120/cooling60·정상 cleanup으로 연결했다. host0/24 분모·합계·실패시 다음 세션 차단·실제 transport 자동 선택(온라인1개)을 검증했다. 기존24건 경로 보존.
+- `ENERGY-AP-RESIDENT-CONTROL-01`/plan_v1 SHA `7c200ab7…58e135`, 프로젝트 서명 APK `3d8ea871…4e94c2`. **PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED**, output/registry 없음. 두 세션/40추론/runtime8/staging14·pull/push/설치 각≤1·고정420초/전체2,090초·ADB6,600·재시도0.
+- Python18＋Android9(실제callback3 포함) 통과·서명 빌드/실제PS Check 완료. native/장시간/환경은 기기 미검증. ADB·Run·설치·추론0, strict/default/동결/experiment_ready=false 유지. 다음 행동 하나: 이 단일 계획의 별도 실측 승인 여부 결정. 아래 실행 차단은 구현 전 이력이다.
+
 ## 2026-10-01 무부하 대조 설계 확정 — 실행 경로 차단
 
 - [필요성·두 세션 설계·차단 조건](RESIDENT_CONTROL_MEASUREMENT_PLAN_20261001.md), [계획/입력/PC Check](results/resident_control_design_01/README.md). 동적 에너지 보완에는 같은 준비 후 C무부하1→L짧은 CG_DC1 대조가 필요하다. 기존 고정 일정 설명에는 추가 실측이 필수 아님. 구조 판별용 개발이며 독립 확인/인과/정책 PASS가 아니다.

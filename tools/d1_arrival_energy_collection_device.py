@@ -68,6 +68,10 @@ def poll(d,remote,folder,manifest,plan):
 
 
 def validate(folder,manifest,plan):
+    expected=24
+    if plan.get('resident_control_pair'):
+        from tools import d1_resident_control_plan as control
+        expected=control.request_count(manifest)
     artifacts=Path(folder)/'artifacts'
     c.require(p.digest(artifacts/'manifest.json')==p.digest(folder/'input_manifest.json'),'output manifest')
     cleanup=p.read(artifacts/'cleanup.json')
@@ -90,7 +94,9 @@ def validate(folder,manifest,plan):
                   approval['read_before_ns'] <= approval['read_after_ns'] <= boundary['start_ns'] and
                   boundary['start_ns']-approval['read_before_ns'] <= 3_000_000_000,
                   'missing/invalid AP approval at actual start')
-    c.require(len(rows)==len(boundary['rows'])==24 and summary['planned']==24,'request denominator')
+    c.require(len(rows)==len(boundary['rows'])==expected and summary['planned']==expected,'request denominator')
+    if plan.get('resident_control_pair'):
+        c.require(summary.get('terminal')==expected and boundary.get('planned')==expected,'control denominator')
     c.require({r['request_id'] for r in rows}=={r['request_id'] for r in manifest['requests']},'request identity')
     c.require(boundary['end_ns']-boundary['start_ns']>=120_000_000_000,'common window incomplete')
     for r in rows:
@@ -127,7 +133,12 @@ def validate(folder,manifest,plan):
     events,partial=c.old.progress_prefix((artifacts/'progress.jsonl').read_bytes())
     c.require(partial==0 and sum(e.get('kind')=='warmup_return' for e in events)==8 and
               sum(e.get('kind')=='runtime_return' for e in events)==4 and
-              sum(e.get('kind')=='lane_available' for e in events)==24,'progress count')
+              sum(e.get('kind')=='lane_available' for e in events)==expected,'progress count')
+    if expected==0:
+        c.require(not any(e.get('kind') in ('arrival','dispatch','request_start','request_return','lane_available')
+                          for e in events), 'control unexpectedly ran work')
+        c.require(all(not e.get('active') for e in events if e.get('kind')=='power_sample'),
+                  'control active snapshot')
     thermal=[json.loads(x) for x in (Path(folder)/'thermal.jsonl').read_text(encoding='utf-8').splitlines()]
     c.require(len(thermal)>=30 and all(t['thermal_status']=='0' for t in thermal),'AP/thermal coverage')
     samples=[]
@@ -137,15 +148,19 @@ def validate(folder,manifest,plan):
                   e['sensor_read_end_ns']-e['snapshot_start_ns']<=2e9,'sensor clock bracket')
         s=dict(e);s['mono_ns']=(e['snapshot_start_ns']+e['sensor_read_end_ns'])//2;samples.append(s)
     begin=boundary['start_ns'];end=boundary['planned_end_ns']
+    if plan.get('resident_control_pair'):
+        common_samples=[s for s in samples if begin<=s['mono_ns']<=end]
+        c.require(bool(common_samples) and all(set(s.get('resident_keys',[]))==set(c.old.KEYS)
+                                               for s in common_samples),'resident control snapshot coverage')
     c.require(energy.integrate(samples,begin,end,1000)['full_energy_j'] is not None,'common energy coverage')
     ap=[t for t in thermal if begin<=t['mono_ns']<=end and t['AP']!='']
     c.require(len(ap)>=2 and max([ap[0]['mono_ns']-begin,end-ap[-1]['mono_ns']]+[
         b['mono_ns']-a['mono_ns'] for a,b in zip(ap,ap[1:])])<=10e9,'common AP coverage')
     return dict(status='eligible_descriptive_only',phase=manifest['phase'],policy=manifest['policy'],
-                scenario=manifest['scenario'],requests=24,warmup=8,runtimes=4,
+                scenario=manifest['scenario'],requests=expected,warmup=8,runtimes=4,
                 common_start_ns=boundary['start_ns'],common_end_ns=boundary['end_ns'],
                 common_unfinished=sum(r.get('terminal_status')!='succeeded' or r.get('persist_complete_ns',10**30)>boundary['end_ns'] for r in boundary['rows']),
-                terminal_completed=24,device_thermal_samples=len(thermal),
+                terminal_completed=expected,device_thermal_samples=len(thermal),
                 scope='observed fixed trace; no energy saving/thermal model/independent policy PASS')
 
 
@@ -154,7 +169,10 @@ def run(plan_file,adb,serial,expected_sha,approved):
     plan=p.read(plan_file)
     idle_response=plan.get('ap_idle_pulse_followup',False)
     single=plan.get('single_arrival_confirmation',False) or plan.get('recorded_replay_confirmation',False)
-    if plan.get('ap_transfer_confirmation'):
+    if plan.get('resident_control_pair'):
+        from tools import d1_resident_control_plan as confirmation
+        confirmation.check(plan_file)
+    elif plan.get('ap_transfer_confirmation'):
         from tools import d1_ap_transfer_confirmation as confirmation
         confirmation.check(plan_file)
     elif idle_response:
@@ -172,7 +190,9 @@ def run(plan_file,adb,serial,expected_sha,approved):
     registry.mkdir(parents=True,exist_ok=False);root.mkdir(parents=True,exist_ok=False)
     start=time.monotonic();hard=start+budget['total_seconds']
     write(registry/'claimed.json',dict(utc=legacy.utc(),plan_sha256=expected_sha,budget=budget))
-    d=ObservedDevice(adb,serial,root/'host_commands');d.deadline=hard
+    d=(ObservedDevice(adb,serial,root/'host_commands',allow_select=True)
+       if plan.get('resident_control_pair') else ObservedDevice(adb,serial,root/'host_commands'))
+    d.deadline=hard
     if single:d.command_limit=budget['adb_commands']
     complete=[];current=None;remote=None;identified=False;installation=None
     cleanup_attempted=False;cleanup_result=None
@@ -269,7 +289,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
         if idle_response:c.require(candidate_freeze_sha is not None and
                     p.digest(root/'ap_model_freeze.json')==candidate_freeze_sha,
                     'AP candidate not frozen throughout confirmation')
-        outcome=dict(status='completed_descriptive_only',sessions=len(complete),requests=24*len(complete),warmup=8*len(complete),
+        outcome=dict(status='completed_descriptive_only',sessions=len(complete),requests=sum(x['requests'] for x in complete),warmup=8*len(complete),
                      runtime_creations=4*len(complete),adb_commands=d.sequence,elapsed_seconds=time.monotonic()-start,
                      installation=installation,experiment_ready=False)
         write(root/'FINAL_RECEIPT.json',outcome);write(registry/'completed.json',outcome);return outcome

@@ -1,0 +1,47 @@
+{
+  "version": "resident-control-pair-v1",
+  "roles": [
+    "no_load_control",
+    "registered_load"
+  ],
+  "analysis": {
+    "power_max_gap_seconds": 2.5,
+    "ap_max_gap_seconds": 10,
+    "load_required_lane_release_before_seconds": 90,
+    "missing": "null; do not shift windows or substitute intervals",
+    "outputs": [
+      "control pre-to-late power/AP drift",
+      "load pre-to-late power/AP drift",
+      "difference of these changes, descriptive only",
+      "whole 120 s observed energy and original frozen diagnostic difference",
+      "actual lane occupancy and all request denominators"
+    ],
+    "decision": "Stop after the pair/readout. No automatic candidate fit, repeat, support promotion, or PASS threshold."
+  },
+  "fixed_windows_seconds": {
+    "pre": [
+      5,
+      30
+    ],
+    "late_common": [
+      90,
+      120
+    ],
+    "late_cooling": [
+      150,
+      180
+    ],
+    "common": [
+      0,
+      120
+    ]
+  },
+  "new_model_fit": false,
+  "independent_validation": false,
+  "experiment_ready": false,
+  "execution_rule": "same4resident, warmup8 each; control0/load24; baseline30/common120/cool60; numeric AP observe v2; all original safety gates",
+  "stop": "first failure ends pair; no retry; recovery50/cleanup45 reserved; one current online A24 only",
+  "recording": "existing1s sampler and existing host polling; no extra monitoring",
+  "comparison": "fixed-order pair, n=1 per condition; descriptive drift difference, no causal or accuracy PASS",
+  "original_frozen_sha256": "35ed6987b1fc09789284018f8502107eaf4e3125373651a01e3a08d427034c54"
+}

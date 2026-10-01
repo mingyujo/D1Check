@@ -1,5 +1,7 @@
 # 추가 실측 필요성 및 무부하 대조 최소 설계
 
+> **최신: 구현·서명 APK·실행 계획 PC 준비 완료.** 아래 설계 당시 차단은 opt-in0요청/host0·24 판독으로 해소했다. 현재 상태는 `PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED`이며 기기 작업은0이다. [최종 실행 준비](#실행-준비-완료-2026-10-01)의 해시·명령을 사용한다. 이전 design_plan.json은 수정하지 않은 당시 증거로 보존하며 현재 실행 계획이 아니다.
+
 **동적 일정의 에너지 예측을 보완하려면 추가 대조 자료가 필요하다. 기존 고정 일정 재생·상충 설명을 계속하는 데에는 새 실측이 필요하지 않다.** 권고는 동일한 준비 후 무부하1＋짧은 CG_DC 부하1의 두 세션이다. 같은 B2 반복이나 미채택 후보의 확인 실험이 아니다.
 
 착수 `aa9afffc5861915c1d3c8080f6520b158cc7680f`, clean·실제 원격 일치. 기기 작업 없음. [설계 JSON](results/resident_control_design_01/design_plan.json)과 [고정 부하 입력](results/resident_control_design_01/load_input.json)을 보존했다. 상태는 **DESIGN_CHECKED_EXECUTION_BLOCKED**다. 설계 산술 Check와 실행 가능 Check를 구분한다. 현재 APK로 실행 가능한 계획이라고 표시하지 않는다.
@@ -68,8 +70,51 @@ warmup/setup150초·앱480초 watchdog·AP 승인 대기30초·drain30초는 pol
 
 현재 작업은 필요성 판정과 계획 설계다. Android/host 수집 코드를 임의 완화하거나 형식적 실행기를 만들지 않았다. 실행 계획으로 끝났다고 과장하지 않으며, 필요한 다음 구현은 위0요청 opt-in과0/24 집계 한 경계뿐이다. 이전 APK 자료는 프로토콜 이력 비교에 사용하고 새 쌍과 동일 block으로 합치지 않는다.
 
+위 문단까지의 실행 차단/미구현 설명은 설계 당시 이력이다. 아래 후속 구현이 완료됐다.
+
 ## PC 검증 및 보존
 
 `python -B -m tools.d1_resident_control_design check`는 고정 입력/근거 소스 SHA·예산·분모·차단 상태를 읽기 전용 검사한다. **실행용 Check가 아니며 Run 기능이 없다.** 관련5테스트는 실제 PC CLI, run 인자 거절, 예산/분모 변조, 실행준비 승격, 근거 drift 차단을 검사한다. 처음 산식 검증에서 floor/ceil 표기 불일치를 발견해 보수적인 ceil+초기조회 방식으로 정정했다. 실제 소요/명령 수 측정이나 기기 검증은 아니다.
 
 계획·부하 입력·검증 기록은 [공유 폴더](results/resident_control_design_01/README.md)에 있다. 이번 실행 출력·소비 claim·ADB·APK 빌드·설치·추론0. 기존 동결본·후보·원자료·종료 계획은 그대로다. 다음 행동 하나: **기존 수집기에 0요청 대조 opt-in과0/24 host 판독을 연결해 동일 새 APK의 두 세션 실행 묶음을 완성한다.** 추가 포괄 감사나 동일 B2 재측정부터 시작하지 않는다.
+
+## 실행 준비 완료 — 2026-10-01
+
+사용자의 “구현 검증하고 계획 완성”에 따라 `9376003` clean에서 시작했다. `resident-control-pair-v1`을 명시한 manifest만 C0/L24를 허용한다. 기존 모드는 계속 정확히24건이다. Activity의 기존4runtime/8warmup·품질 승인·resident baseline30초·numeric AP observe-v2·공통120초·냉각60초·정상 cleanup 경로를 사용한다. 0요청이어도 공통창을 생략하지 않는다. lifecycle 취소/worker/sampler/관측 주기는 변경하지 않았다.
+
+host는 같은 단일소비 실행기를 사용하며 두 manifest의 분모를 각각0/24로 검증하고 실제 완료 합계를 기록한다. C에서 dispatch/요청/lane 해제가 발견되면 실패다. 공통창4resident snapshot·에너지/AP 자료 적격성은 C에도 적용한다. 첫 세션 실패 시 두 번째 미시도, 원래 오류/부분 회수/cleanup 결과 보존·중복 cleanup 방지는 기존 경로다. 신규 runner가 최초 `devices -l`부터 선택·기기 식별을 수행하므로 외부 조회 없이 예산에 포함한다. **온라인 transport가 정확히 하나여야 하며** 복수/없음이면 실패한다. 다른 연결을 해제하지 않는다.
+
+### 동결한 실행 묶음
+
+- ID `ENERGY-AP-RESIDENT-CONTROL-01`
+- 계획 `C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_resident_control_plan_v1/collection_plan.json`
+- 계획 SHA-256 `7c200ab73b0f3868d9dc6088cf66a626300fead4937f4d92d7f8374e2f58e135`
+- APK `C:/Users/LG/Documents/D1Check_Arrival_Extension/resident_control_build_v1/build/_benchmark-runner/outputs/apk/modelProbe/benchmark-runner-modelProbe.apk`
+- APK SHA-256 `3d8ea871103c1350fb74e444c310be02ba8b3999cd6537691e75b457de4e94c2`
+- package `com.example.d1check.benchmarkrunner.modelprobe`, versionCode1, 프로젝트 서명 SHA-256 `b253dbb951d85d1a79ea7f2ca2d1ff76a9fa34dc6c793b1df9b5249f3fcc7565` 확인. 이전 설치 APK와 다르므로 실행 시 동일성 확인 후 필요한 경우에만 데이터 보존 업데이트1회.
+- source95파일·입력·분석 계약·두 manifest·build receipt·서명/원래 freeze를 Check에서 확인한다. 원래 freeze `35ed6987…034c54` 불변. 예전 AP 후보도 재적합하지 않았다.
+- 출력 예정 `energy_ap_resident_control_run_v1`, registry 예정 `resident_control_registry/ENERGY-AP-RESIDENT-CONTROL-01`: **모두 미생성**, 미승인·미소비.
+
+예산은 위 제안과 동일하게 확정했다: 세션2, C본0/L본24, warmup16, 별도 적격성 추론0(기존 warmup 출력 품질 확인), 명시적추론40, runtime8, staging2/14파일, 설치본pull/APKpush/설치 각≤1, 고정420초, 전체2,090초, ADB≤6,600, 재시도·대체·추가0. 설치/식별600＋세션700×2＋세션간90초이며 통신/설치/장시간 완주 보장은 아니다. 기존0.25/2/10초 polling과50초 회수/45초 정리 예약, 명령100개 최종 정리 reserve를 유지한다. 전체 counter가6,600에 도달하면 추가 client를 시작하지 않는다. 회수조차 불가능한 연결 소실이면 자료/종료 상태 미확인으로 남기고 자동 복구·새 실행을 하지 않는다.
+
+```powershell
+# PC Check: 이번에 실행 완료, 기기 명령0
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_resident_control_plan_v1/RUN_AFTER_APPROVAL.ps1' -Action Check
+
+# 별도 실측 승인 후에만 사용. 현재 transport는 실행기가 선택한다.
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_resident_control_plan_v1/RUN_AFTER_APPROVAL.ps1' -Action Run -Approved -ExpectedPlanSha256 '7c200ab73b0f3868d9dc6088cf66a626300fead4937f4d92d7f8374e2f58e135'
+
+# 실행 종료 후 PC 고정창 판독, 새 출력 폴더만 허용
+python -B -m tools.d1_resident_control_readout --plan 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_resident_control_plan_v1/collection_plan.json' --output '<새 분석 출력 폴더>'
+```
+
+판독기는 고정5–30/90–120/150–180초의 W/AP와 두 세션 전후 W 변화 차이·전체120초 관측J/원래식 진단을 산출한다. 센서 끝 bracket가 없거나 해당 유휴창에 부하가 남으면 null이며 창을 이동하지 않는다. 첫 dispatch가 없는 C에 기존 AP 후보 입력을 조작해 만들지 않는다. AP 후보/전체 모형의 독립 정확도 판정을 수행하는 실행이 아니다.
+
+### 검증과 한계
+
+- Python 변경 경계/기존 재생13건＋설계 이력 보존5건 통과. 실제 run 함수의 두 세션 합계·첫 timeout 후 다음 세션 차단·부분 회수·단일 cleanup·실제0건 parser/적분/결측 판독을 fake device와 임시 폴더로 확인했다. 설계 당시 해시는 새 구현과 달라 기존 설계 Check가 drift를 거절하는 것이 정상이며 실행 Check는 별도다.
+- Android contract3＋실제 Robolectric lifecycle callback3＋기존 replay3＝9건, 실패/skip0. source/테스트 compile 및 격리 assembleModelProbe 성공. APK 서명·패키지·버전·source hash 확인. callback 테스트는 native inference를 실행하지 않는다. 새0요청210초 경로 전체의 실기기 정상 완료·센서·환경 안정성은 미검증이다.
+- 실제 PowerShell→Python Check 성공, 기기 명령0. Run은 호출하지 않았다. APK/키/모델/원자료는 commit하지 않는다. 새 모드의 코드 분기 비용은 실측하지 않았으므로 같은 APK의 두 arm끼리 비교하며 기존 APK 실측과 프로토콜 차이를 표시한다.
+- 독립 확인·후보 재보정·정책 순위는 추가하지 않았다. 기본 simulator·strict·experiment_ready=false 유지.
+
+**현재 다음 행동 하나:** 위 단일 계획의 실측 예산 승인 여부를 결정한다. 승인되면 현재 기기/설치본/환경 gate를 실행기 안에서 확인하고 C→L을 한 번 수행한다.

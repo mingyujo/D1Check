@@ -14,10 +14,16 @@ class DesignTests(unittest.TestCase):
         result = subprocess.run([sys.executable, '-B', '-m',
             'tools.d1_resident_control_design', 'check'], cwd=d.ROOT,
             capture_output=True, text=True, encoding='utf-8', timeout=20)
-        self.assertEqual(result.returncode, 0, result.stderr)
-        payload = json.loads(result.stdout)
-        self.assertFalse(payload['execution_ready'])
-        self.assertEqual(payload['device_commands'], 0)
+        drift = any(d.digest(d.ROOT/f)!=sha for f,sha in self.plan['evidence_sha256'].items())
+        if drift:
+            # Archived pre-implementation design remains immutable, not silently rebound.
+            self.assertNotEqual(result.returncode,0)
+            self.assertIn('evidence changed',result.stderr)
+        else:
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertFalse(payload['execution_ready'])
+            self.assertEqual(payload['device_commands'], 0)
 
     def test_no_run_action(self):
         result = subprocess.run([sys.executable, '-B', '-m',

@@ -173,7 +173,11 @@ class ArrivalEnergyActivity : Activity() {
                 ArrivalEnergyContract.Request(q.getString("request_id"), q.getInt("ordinal"), q.getString("task_id"),
                     q.getString("priority"), q.getLong("offset_ms"), q.getLong("deadline_ms"))
             } }
-            ArrivalEnergyContract.validate(m.getString("scenario"), requests)
+            val controlVersion = m.optString("resident_control_version", "")
+            val controlRole = m.optString("resident_control_role", "")
+            ArrivalEnergyContract.validateSession(m.getString("scenario"), requests, controlVersion, controlRole)
+            if (controlVersion.isNotEmpty()) check(policy == ArrivalRecordedReplay.POLICY &&
+                apMode == ArrivalStartApGate.DIAGNOSTIC_VERSION) { "resident control requires recorded observe-v2" }
             requests.forEach { check(UUID.fromString(it.id).toString() == it.id) }
             val replay = if (policy == ArrivalRecordedReplay.POLICY) {
                 check(m.getString("replay_version") == ArrivalRecordedReplay.VERSION)
