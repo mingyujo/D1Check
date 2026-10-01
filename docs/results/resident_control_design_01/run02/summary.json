@@ -1,0 +1,140 @@
+{
+  "status": "stopped_no_resume",
+  "cases": [
+    {
+      "role": "no_load_control",
+      "status": "not_evaluable",
+      "error": "No validated session; common window/cooling incomplete",
+      "windows": null
+    },
+    {
+      "role": "registered_load",
+      "status": "not_evaluable",
+      "error": "No validated session; common window/cooling incomplete",
+      "windows": null
+    }
+  ],
+  "power_pre_to_late_changes_w": [
+    null,
+    null
+  ],
+  "difference_of_changes_w": null,
+  "independent_validation": false,
+  "causal_claim": false,
+  "model_fit": false,
+  "experiment_ready": false,
+  "completed_sessions": 0,
+  "session_attempts": 0,
+  "elapsed_seconds": 8.35999999998603,
+  "adb_commands": 5,
+  "failure": "Stopped; inspect original receipt and bounded command results. No retry.",
+  "plan_sha256": "5073b2b95bf772db5ca89b8977f819b2403a797f739bc52d151ee9751352fde7",
+  "apk_sha256": "3d8ea871103c1350fb74e444c310be02ba8b3999cd6537691e75b457de4e94c2",
+  "budget": {
+    "adb_commands": 6600,
+    "adb_recovery_cleanup_reserve": 100,
+    "additional": 0,
+    "apk_push_timeout_seconds": 120,
+    "apk_transfers": 1,
+    "app_cooling_seconds": 60,
+    "app_drain_seconds": 30,
+    "cleanup_seconds": 45,
+    "common_window_seconds": 120,
+    "eligibility_inferences": 0,
+    "explicit_inference": 40,
+    "host_poll_seconds": 485,
+    "installation_seconds": 600,
+    "installed_host_pulls": 1,
+    "installs": 1,
+    "intersession_cooling_seconds": 90,
+    "recovery_seconds": 50,
+    "replacement": 0,
+    "requests": 24,
+    "resident_baseline_seconds": 30,
+    "retry": 0,
+    "runtime_creations": 8,
+    "session_seconds": 700,
+    "sessions": 2,
+    "stage_gate_seconds": 120,
+    "staging": 2,
+    "staging_files": 14,
+    "start_ap_wait_seconds": 30,
+    "total_seconds": 2090,
+    "warmup": 16
+  },
+  "sessions": [
+    {
+      "role": "no_load_control",
+      "confirmed_counts": null,
+      "status": "not_attempted",
+      "app_cleanup": "not_applicable_no_launch",
+      "host_cleanup": "not_applicable_no_launch"
+    },
+    {
+      "role": "registered_load",
+      "confirmed_counts": null,
+      "status": "not_attempted",
+      "app_cleanup": "not_applicable_no_launch",
+      "host_cleanup": "not_applicable_no_launch"
+    }
+  ],
+  "source_sha256": {
+    "FINAL_RECEIPT.json": "29b72a318e108dd859623ee435990d67e85cd22bdef556ba8277af1223ece1a5",
+    "installation_receipt.json": "140ec02b12e09d2d5ce0a16e02941f4760502cde29bac3cb233ac3ef2edc9fb6"
+  },
+  "missing_not_zero": true,
+  "installation": {
+    "apk_transfer_attempts": 0,
+    "elapsed_seconds": 8.35999999998603,
+    "install_attempts": 0,
+    "status": "failed"
+  },
+  "observed_consumption": {
+    "installed_host_pulls": 1,
+    "staging_files": 0,
+    "sessions_attempted": 0,
+    "sessions_completed": 0,
+    "runtime_starts": 0,
+    "warmup_starts": 0,
+    "work_starts": 0,
+    "explicit_starts": 0,
+    "meaning": "confirmed durable event counts only; absent records are not actual zero"
+  },
+  "execution_stage": "installed_apk_host_pull_before_session",
+  "failure_evidence": {
+    "command_ordinal": 4,
+    "status": "nonzero_exit",
+    "exit_code": 1,
+    "elapsed_seconds": 2.2820000000065193,
+    "timeout": false,
+    "local_error": "cannot write installed-base.apk: Input/output error",
+    "host_disk_free_bytes_at_failure": 0,
+    "partial_local_bytes": 28966912,
+    "partial_local_sha256": "8d46b36d42ef236bef45f581f64b950b5d010898cc5cdfd3440f15c7daf5f40b",
+    "cause_boundary": "local write failed with no free C: space; prior screen timeout internal cause unresolved"
+  },
+  "verified_consumption": {
+    "sessions_attempted": 0,
+    "sessions_completed": 0,
+    "app_launches": 0,
+    "runtime": 0,
+    "warmup": 0,
+    "work": 0,
+    "explicit_inference": 0,
+    "staging": 0,
+    "staging_files": 0,
+    "installed_host_pull_attempts": 1,
+    "apk_push": 0,
+    "install": 0,
+    "adb_commands": 5,
+    "retries": 0,
+    "basis": "complete bounded command inventory has no app launch; preflight stopped before sessions"
+  },
+  "termination": {
+    "app_cleanup": "not_applicable_no_launch",
+    "host_force_stop": "not_applicable_no_launch",
+    "current_app_process_absence": "not_queried",
+    "client": "nonzero_exit",
+    "plan": "stopped_no_resume"
+  }
+}

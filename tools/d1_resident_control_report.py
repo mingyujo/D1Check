@@ -15,17 +15,33 @@ def report(plan_file, output):
         if case.get('status')=='not_evaluable':case['error']='No validated session; common window/cooling incomplete'
     receipt=c.p.read(root/'FINAL_RECEIPT.json')
     frozen_idle_w=c.p.read(plan['frozen_model']['path'])['whole_device_power_w']['resident_idle']
-    result.update(status=receipt['status'],completed_sessions=receipt['completed_sessions'],
-        session_attempts=receipt['session_attempts'],elapsed_seconds=receipt['elapsed_seconds'],
+    completed=receipt.get('completed_sessions',receipt.get('sessions',0))
+    attempted=receipt.get('session_attempts',len(list(root.glob('*/attempt.json'))))
+    result.update(status=receipt['status'],completed_sessions=completed,
+        session_attempts=attempted,elapsed_seconds=receipt['elapsed_seconds'],
         adb_commands=len(list((root/'host_commands').glob('[0-9]*'))),
-        failure='screen observation command 1229 timed out at 2 seconds; no retry',
+        failure=None if receipt['status']=='completed_descriptive_only' else
+            'Stopped; inspect original receipt and bounded command results. No retry.',
         plan_sha256=c.p.digest(plan_file),apk_sha256=plan['apk_sha256'],budget=plan['budget'])
     paths=[];lanes=[];evidence={};sessions=[]
     for entry in plan['entries']:
         folder=root/f"{entry['index']:02d}_{entry['session_id']}"
         a=folder/('artifacts' if (folder/'validated.json').exists() else 'failure_prefix')
+        kinds=('runtime_start','runtime_return','warmup_start','warmup_return','request_start',
+               'output_ready','persist_complete','worker_release','lane_available')
+        if not (a/'progress.jsonl').exists():
+            no_launch=not (folder/'launch_attempt.json').exists() and not folder.exists()
+            sessions.append(dict(role=entry['phase'],confirmed_counts=None,
+                status='not_attempted' if no_launch else 'unknown',
+                app_cleanup='not_applicable_no_launch' if no_launch else 'unconfirmed',
+                host_cleanup='not_applicable_no_launch' if no_launch else 'unconfirmed'))
+            continue
         events=[json.loads(line) for line in (a/'progress.jsonl').read_text(encoding='utf-8').splitlines()]
-        origin=next(e['scheduled_origin_ns'] for e in events if e['kind']=='common_start')
+        origin=next((e['scheduled_origin_ns'] for e in events if e['kind']=='common_start'),None)
+        if origin is None:
+            sessions.append(dict(role=entry['phase'],confirmed_counts={k:sum(e['kind']==k for e in events) for k in kinds},
+                                 app_cleanup='unconfirmed',host_cleanup='unconfirmed',common_start_observed=False))
+            continue
         powers=[dict(e,mono_ns=(e['snapshot_start_ns']+e['sensor_read_end_ns'])//2)
                 for e in events if e['kind']=='power_sample']
         thermals=[json.loads(line) for line in (folder/'thermal.jsonl').read_text(encoding='utf-8').splitlines()]
@@ -56,7 +72,8 @@ def report(plan_file, output):
             ('runtime_start','runtime_return','warmup_start','warmup_return','request_start','output_ready','persist_complete','worker_release','lane_available')},
             recovered_power_end_s=max((e['mono_ns']-origin)/1e9 for e in powers),
             app_cleanup=c.p.read(a/'cleanup.json')['status'] if (a/'cleanup.json').exists() else 'unconfirmed',
-            host_cleanup=c.p.read(folder/('host_cleanup.json' if entry['index']==0 else 'failure_host_cleanup.json'))['status']))
+            host_cleanup=c.p.read(next((f for f in (folder/'host_cleanup.json',folder/'failure_host_cleanup.json')
+                                       if f.exists())))['status']))
         approval=c.p.read(folder/'start_ap_gate'/'host_approval.json')
         sessions[-1]['host_start_ap_c']=float(approval['sample']['AP'])
         sessions[-1]['host_initial_ap_in_development_range']=approval['initial_ap_in_frozen_development_range']
@@ -65,21 +82,27 @@ def report(plan_file, output):
             if (a/name).exists():evidence[role+'/'+name]=c.p.digest(a/name)
         evidence[role+'/thermal.jsonl']=c.p.digest(folder/'thermal.jsonl')
     result['sessions']=sessions;result['source_sha256']=evidence
-    result['installation']=dict((k,receipt['installation'][k]) for k in
+    result['missing_not_zero']=True
+    result['installation']=(dict((k,receipt['installation'].get(k)) for k in
         ('status','apk_transfer_attempts','install_attempts','elapsed_seconds','installed_sha256'))
+        if receipt.get('installation') else None)
     commands=[c.p.read(p) for p in sorted((root/'host_commands').glob('*/client/result.json'))]
     result['observed_consumption']=dict(
         installed_host_pulls=sum('pull' in d['command'] for d in commands),
         staging_files=sum('push' in d['command'] and not d['command'][-1].endswith('.apk') for d in commands),
-        sessions_attempted=receipt['session_attempts'],sessions_completed=receipt['completed_sessions'],
-        runtime_starts=sum(s['confirmed_counts']['runtime_start'] for s in sessions),
-        warmup_starts=sum(s['confirmed_counts']['warmup_start'] for s in sessions),
-        work_starts=sum(s['confirmed_counts']['request_start'] for s in sessions),
-        explicit_starts=sum(s['confirmed_counts']['warmup_start']+s['confirmed_counts']['request_start'] for s in sessions))
+        sessions_attempted=attempted,sessions_completed=completed,
+        runtime_starts=sum(s['confirmed_counts']['runtime_start'] for s in sessions if s['confirmed_counts'] is not None),
+        warmup_starts=sum(s['confirmed_counts']['warmup_start'] for s in sessions if s['confirmed_counts'] is not None),
+        work_starts=sum(s['confirmed_counts']['request_start'] for s in sessions if s['confirmed_counts'] is not None),
+        explicit_starts=sum(s['confirmed_counts']['warmup_start']+s['confirmed_counts']['request_start'] for s in sessions if s['confirmed_counts'] is not None),
+        meaning='confirmed durable event counts only; absent records are not actual zero')
     for name,rows in [('paths.csv',paths),('partial_load_lanes.csv',lanes)]:
         with (output/name).open('w',encoding='utf-8',newline='') as f:
-            writer=csv.DictWriter(f,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
+            fields=list(rows[0]) if rows else (['role','kind','time_s','power_w','ap_c','cumulative_observed_j','cumulative_frozen_j']
+                if name=='paths.csv' else ['ordinal','task','backend','start_s','end_s'])
+            writer=csv.DictWriter(f,fieldnames=fields);writer.writeheader();writer.writerows(rows)
     (output/'summary.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
+    if not paths:return result
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
@@ -89,7 +112,7 @@ def report(plan_file, output):
     power=[r for r in control if r['kind']=='power'];ap=[r for r in control if r['kind']=='AP']
     axes[0,0].plot([r['time_s'] for r in power],[r['power_w'] for r in power],label='Observed sensor W')
     axes[0,0].axhline(frozen_idle_w,color='orange',label='Frozen resident idle W (diagnostic)')
-    axes[0,0].set_title('C: completed no-load control');axes[0,0].set_ylabel('Whole device W')
+    axes[0,0].set_title('C: observed no-load control');axes[0,0].set_ylabel('Whole device W')
     axes[0,1].plot([r['time_s'] for r in ap],[r['ap_c'] for r in ap],label='C observed AP')
     axes[0,1].set_ylabel('AP Celsius');axes[0,1].set_title('C: no AP prediction/accuracy PASS')
     j=[r for r in power if r['cumulative_observed_j'] is not None]
@@ -97,11 +120,12 @@ def report(plan_file, output):
     axes[1,0].plot([r['time_s'] for r in j],[r['cumulative_frozen_j'] for r in j],label='Frozen diagnostic J')
     axes[1,0].set_ylabel('Cumulative J');axes[1,0].set_title('C only: exact whole120 metrics in summary')
     ap=[r for r in load if r['kind']=='AP']
-    axes[1,1].plot([r['time_s'] for r in ap],[r['ap_c'] for r in ap],label='L partial AP only')
-    axes[1,1].axvspan(max(r['time_s'] for r in ap),180,color='gray',alpha=.2,label='Unobserved / aborted')
-    axes[1,1].set_ylabel('AP Celsius');axes[1,1].set_title('L: incomplete window, no whole120 comparison')
+    axes[1,1].plot([r['time_s'] for r in ap],[r['ap_c'] for r in ap],label='L observed AP')
+    if ap and result['cases'][1].get('status')=='not_evaluable':
+        axes[1,1].axvspan(max(r['time_s'] for r in ap),180,color='gray',alpha=.2,label='Unobserved / aborted')
+    axes[1,1].set_ylabel('AP Celsius');axes[1,1].set_title('L: observed path; eligibility in summary')
     for ax in axes.flat:ax.set_xlabel('Seconds from actual common origin');ax.legend(fontsize=8);ax.grid(alpha=.2)
-    fig.suptitle('Stopped pair: no causal attribution, no fit, current raw=mA conditional')
+    fig.suptitle(result['status']+': no causal attribution, no fit, current raw=mA conditional')
     fig.tight_layout();fig.savefig(output/'observed.png',dpi=160);fig.savefig(output/'observed.svg');plt.close(fig)
     svg=output/'observed.svg'
     svg.write_text('\n'.join(line.rstrip() for line in svg.read_text(encoding='utf-8').splitlines())+'\n',encoding='utf-8')

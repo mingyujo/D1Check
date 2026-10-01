@@ -26,6 +26,19 @@ BUDGET = dict(replay.BUDGET, sessions=2, requests=24, warmup=16,
     adb_recovery_cleanup_reserve=100)
 
 
+def configure(folder):
+    """Separate approved invocation IDs; never reset an occupied registry."""
+    global EXPERIMENT,FOLDER,RUN
+    editions={'energy_ap_resident_control_plan_v1':1,
+              'energy_ap_resident_control_plan_v2':2}
+    name=Path(folder).name
+    old.require(name in editions,'dedicated plan edition')
+    edition=editions[name]
+    EXPERIMENT=f'ENERGY-AP-RESIDENT-CONTROL-{edition:02d}'
+    FOLDER=name
+    RUN=f'energy_ap_resident_control_run_v{edition}'
+
+
 def identity():
     return old.identity() | {f.relative_to(ROOT).as_posix():p.digest(f) for f in
         (Path(__file__), Path(replay.__file__), Path(prior.__file__),
@@ -112,6 +125,7 @@ def script_text():
 
 def prepare(source,build,output):
     output=Path(output)
+    configure(output)
     old.require(output.name==FOLDER and not output.exists(),'fresh dedicated plan')
     plan,ms=specification(source,build,output)
     old.require(not Path(plan['registry']).exists() and not Path(plan['output_root']).exists(),'occupied execution')
@@ -125,6 +139,7 @@ def prepare(source,build,output):
 
 def check(file):
     file=Path(file);plan=p.read(file)
+    configure(file.parent)
     old.require(file.name=='collection_plan.json' and file.parent.name==FOLDER,'plan path')
     old.require(not Path(plan['output_root']).exists() and not Path(plan['registry']).exists(),'consumed/occupied plan; no resume')
     expected,ms=specification(plan['source_plan']['path'],plan['build_receipt'],file.parent)

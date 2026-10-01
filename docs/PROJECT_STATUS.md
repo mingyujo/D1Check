@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-01 resident 대조02 preflight 중단·PC 마무리 완료
+
+- [실행·진단·검증](RESIDENT_CONTROL_RUN02_20261001.md), [작은 결과](results/resident_control_design_01/run02/index.html). plan_v2/SHA5073b2b9…52fde7은 1회 소비·**stopped_no_resume**. 설치본 pull 로컬 쓰기 I/O 오류·직후 C: free0 확인. 8.360초/ADB5/pull1부분, 세션·launch·runtime·warmup·본 요청·추론·staging·APK push·설치0. 환경/설치본 전체 검증 미도달, 새 J/AP 없음. 앱/host 종료 해당 없음(미실행), 현재 프로세스 부재 미조회.
+- 기존 화면34조회(33정상 중앙0.531/최대0.610초,1timeout)의 내부 원인은 미확정. timeout·marker·주기 유지. claim 전 최소 APK 저장 공간 검사·실패/미시도 판독 보완, **PC14통과**·원본30파일/부분APK/두freeze 해시 보존·APK재빌드0. 사용자 공간 확보 후 재개는 PC 기록·Git만, 기기명령0. strict/default/experiment_ready=false 불변.
+- 다음 행동 하나: 향후 실측을 진행할 경우 최소 공간 검사를 반영한 별도 새 ID·승인을 사용한다. plan_v1/v2 재개·새 계획 자동 생성·재실측 없음. 아래 준비 문구는 당시 이력이다.
+
 ## 2026-10-01 resident 대조 종료 — C 완료/L 부분 중단
 
 - [실행·소비·판독](RESIDENT_CONTROL_RUN01_20261001.md), [공유 화면/CSV](results/resident_control_design_01/run01/index.html). 승인 plan_v1 1회 실행, **stopped_no_resume**. 시도2/정상완료1, runtime8/warmup16/본24=추론40, staging14/pull1/APK push·설치각1, ADB1240/6600, 477.671/2090초. 재시도0.

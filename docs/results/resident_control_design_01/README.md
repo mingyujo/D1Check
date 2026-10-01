@@ -1,6 +1,12 @@
-# 무부하 대조 — C 완료/L 부분 중단
+# 무부하 대조 — 최신 실행02 preflight 중단
 
-최신은 [실행 결과](../../RESIDENT_CONTROL_RUN01_20261001.md)와 [그림·CSV](run01/index.html)이다. plan_v1은 승인1회 소비·stopped_no_resume이며 재실행하지 않는다. L전체창/C–L 차이는 null이다.
+[최신 결과 보고서](../../RESIDENT_CONTROL_RUN02_20261001.md) · [소비/종료 화면](run02/index.html) · [완료 검증](run02/completion_verification.json).
+
+plan_v2는 설치본 host pull의 로컬 쓰기 실패·C: 여유 공간0으로 소비·stopped_no_resume. 세션/추론0, 새 에너지/AP 결과 없음. 공간 확보 후 PC 검증·Git만 완료했으며 종료 계획은 재실행하지 않는다.
+
+# 이전 실행01 — C 완료/L 부분 중단
+
+실행01은 [실행 결과](../../RESIDENT_CONTROL_RUN01_20261001.md)와 [그림·CSV](run01/index.html)이다. plan_v1은 승인1회 소비·stopped_no_resume이며 재실행하지 않는다. L전체창/C–L 차이는 null이다.
 
 ## 준비 당시 기록
 

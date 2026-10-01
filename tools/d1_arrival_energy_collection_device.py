@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import math
 import re
+import shutil
 import time
 from pathlib import Path
 
@@ -20,6 +21,15 @@ from tools import d1_arrival_start_ap
 
 ACTIVITY='com.example.d1check.benchmarkrunner.ArrivalEnergyActivity'
 ACTION='com.example.d1check.benchmarkrunner.action.ARRIVAL_ENERGY'
+
+
+def require_host_pull_space(plan):
+    """Minimum admission only, not a guarantee for the entire run's logs."""
+    required=Path(plan['apk_path']).stat().st_size
+    free=shutil.disk_usage(Path(plan['output_root']).parent).free
+    c.require(free>=required,
+              f'insufficient host disk space before claim: free={free}, minimum APK pull bytes={required}; no device command')
+    return dict(free_bytes=free,minimum_installed_pull_bytes=required)
 
 
 def write(path,value):c.cal.write_new(path,value)
@@ -187,6 +197,8 @@ def run(plan_file,adb,serial,expected_sha,approved):
     else:c.check(plan_file)
     budget=plan['budget']
     root=Path(plan['output_root']);registry=Path(plan['registry'])
+    if plan.get('resident_control_pair'):
+        require_host_pull_space(plan)
     registry.mkdir(parents=True,exist_ok=False);root.mkdir(parents=True,exist_ok=False)
     start=time.monotonic();hard=start+budget['total_seconds']
     write(registry/'claimed.json',dict(utc=legacy.utc(),plan_sha256=expected_sha,budget=budget))

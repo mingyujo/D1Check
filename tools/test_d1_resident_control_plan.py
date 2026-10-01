@@ -13,6 +13,44 @@ def write(path,value):
 
 
 class ControlTests(unittest.TestCase):
+    def tearDown(self):
+        c.configure('energy_ap_resident_control_plan_v1')
+
+    def test_disk_full_stops_real_run_before_claim_and_device(self):
+        from types import SimpleNamespace
+        plan=dict(resident_control_pair=True,budget=c.BUDGET,apk_path='candidate.apk',
+                  output_root='unused-run',registry='unused-registry')
+        with patch.object(runner.p,'digest',return_value='approved'),patch.object(runner.p,'read',return_value=plan),\
+             patch.object(c,'check'),patch.object(Path,'stat',return_value=SimpleNamespace(st_size=100)),\
+             patch.object(runner.shutil,'disk_usage',return_value=SimpleNamespace(free=0)),\
+             patch.object(Path,'mkdir',side_effect=AssertionError('claim forbidden')),\
+             patch.object(runner,'ObservedDevice',side_effect=AssertionError('device forbidden')):
+            with self.assertRaisesRegex(ValueError,'insufficient host disk space'):
+                runner.run('unused-plan','FAKE','', 'approved',True)
+
+    def test_host_pull_space_boundary_is_minimum_not_full_run_reservation(self):
+        from types import SimpleNamespace
+        for free,passes in [(99,False),(100,True)]:
+            with patch.object(Path,'stat',return_value=SimpleNamespace(st_size=100)),\
+                 patch.object(runner.shutil,'disk_usage',return_value=SimpleNamespace(free=free)):
+                plan=dict(apk_path='candidate.apk',output_root='unused-run')
+                if passes:self.assertEqual(runner.require_host_pull_space(plan)['free_bytes'],100)
+                else:
+                    with self.assertRaises(ValueError):runner.require_host_pull_space(plan)
+
+    def test_new_edition_keeps_budget_and_does_not_reset_consumption(self):
+        original=dict(c.BUDGET)
+        c.configure('energy_ap_resident_control_plan_v2')
+        self.assertEqual(c.EXPERIMENT,'ENERGY-AP-RESIDENT-CONTROL-02')
+        self.assertEqual(c.RUN,'energy_ap_resident_control_run_v2')
+        self.assertEqual(c.BUDGET,original)
+        with self.assertRaises(ValueError):c.configure('energy_ap_resident_control_plan_v99')
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)/'energy_ap_resident_control_plan_v2';root.mkdir()
+            marker=root/'claimed.json';write(marker,{'consumed':True})
+            with self.assertRaises(ValueError):c.prepare('unused','unused',root)
+            self.assertTrue(marker.exists())
+
     def test_real_parser_zero_with_complete_observation_and_failure(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);a=root/'artifacts';a.mkdir()
@@ -69,6 +107,7 @@ class ControlTests(unittest.TestCase):
                 fake=type('Fake',(),{'sequence':0,'deadline':None,'call':lambda *a,**k:None})()
                 for obj,name,kwargs in [
                     (c,'check',{}),(runner,'ObservedDevice',{'return_value':fake}),
+                    (runner,'require_host_pull_space',{}),
                     (runner.time,'monotonic',{'side_effect':now}),(runner.time,'sleep',{'side_effect':sleep}),
                     (runner.energy_device,'installation',{'return_value':{'status':'verified'}}),
                     (runner.energy_device,'gates',{}),(runner.install,'installed_hash',{'return_value':'x'}),

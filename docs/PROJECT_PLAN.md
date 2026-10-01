@@ -1,5 +1,9 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-01 — resident 대조02 중단 후 PC 마무리
+
+[결과](RESIDENT_CONTROL_RUN02_20261001.md): plan_v2는 설치본 pull의 로컬 I/O 오류·C: free0으로 preflight 중단, stopped_no_resume. 8.360초/ADB5/pull1부분, 세션·추론0; 환경/전체 설치본 검증과 대조 수집 미완료. 공간 확보 후 PC14검증·최소 claim 전 저장 공간 검사·초기 실패 판독·원본 inventory를 완료했다. 기존 화면 timeout 내부 원인은 미확정이며 주기/기준은 바꾸지 않았다. 이번 재개 기기0, APK/두freeze/strict/default/experiment_ready=false 유지. 향후 실행은 새 ID·승인이 필요하며 현재는 새 계획 생성/실측을 수행하지 않는다.
+
 ## 2026-10-01 — resident 대조 실행 부분 종료
 
 [실행 결과](RESIDENT_CONTROL_RUN01_20261001.md): 사용자 승인 plan_v1을1회 실행해 C완료/L24요청 경계 확보 후 화면 관측2초 timeout으로 중단했다. 40추론/1240명령/477.671초, stopped_no_resume. C무부하 W 시간변화는 새 기술적 근거지만 L전체창 미회수로 대조 차이/새 계수/독립 확인 미완료. 다음은 화면 조회 partial stdout·인접 지연·종료 경계 PC 진단 하나다. 새 실행/재개/기준 완화/모형 재적합 없음. strict/default/experiment_ready=false 유지. 아래 PC 준비 문구는 실행 전 이력이다.

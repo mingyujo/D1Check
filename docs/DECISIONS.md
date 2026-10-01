@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-01 — 로컬 저장 공간 실패와 실행 전 최소 admission
+
+- **확인 사실:** [대조02](RESIDENT_CONTROL_RUN02_20261001.md)는 설치본 pull에서 exit1/로컬 쓰기 I/O 오류, 직후 C: free0으로 종료됐다. 기존 화면 timeout 내부 원인과 별개다. 5명령/8.360초·앱 launch0·추론0, plan_v2 소비·stopped_no_resume. 부분 APK/원본·소비 registry를 보존한다.
+- **구현 채택:** resident-control Run에서 후보 APK 바이트 수의 최소 여유 공간을 claim/기기 명령 전에 확인한다. 전체 저장량/장시간 안정성 보장은 아니며 소비 후 추가된 PC 수정이다. 초기 실패 판독의 미시도·cleanup 해당 없음·관측 null을 보존한다. 14개 관련 PC검증 통과, 실기기 재실행 없음.
+- **범위:** 사용자 공간 확보 후 재개는 PC 검증·문서·Git만 수행한다. 기존 두freeze/APK/strict/default/experiment_ready=false 불변. 종료 계획 재개/새 계획 자동 생성/새 정확도 PASS 없음. 향후 실측은 별도 새 ID와 승인이 필요하다.
+
 ## 2026-10-01 — resident 대조 부분 종료와 판독 범위 확정
 
 - **실행 사실:** 사용자 “실측 ㄱㄱ” 승인으로 plan_v1만1회 실행, C완료/L부분, stopped_no_resume. [원본·소비·정리](RESIDENT_CONTROL_RUN01_20261001.md). 종료 계획을 재개하거나 자료를 대체하지 않는다.
