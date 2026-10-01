@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-02 통합 시뮬레이터 실행·공유 경로 완료
+
+- [시작 화면](results/simulator_workbench_01/index.html), [CLI·지원 범위·추가 실측 판정](results/simulator_workbench_01/README.md), [검증](results/simulator_workbench_01/verification.json). `tools.d1_simulator`로 입력→CPU/B2/B3 일정·응답→서비스 규칙→지원 차단→별도 실측 참조를 연결했다. 고정870건 모형은 별도 episode 경로로 연결. 기존 엔진/계수/strict/default는 불변이다.
+- queue201 세 일정의 모든 실행 경계가 저장 결과와 일치; B2 서비스 적격/B3 urgent P95 부적격. 정확한 입력·seed·모드·일정이 일치할 때만 CPU/B2 네 실측 J/AP를 연결한다. 관측은 예측 입력이 아니며 동적 J/AP/열 피드백/순위는 unsupported/null, experiment_ready=false다.
+- 관련18검사 PASS·두 실제 CLI/재실행 덮어쓰기 차단·HTML/SVG/CSV 일치·Edge 화면 확인. 작은 공유 번들만 필요해 기기/대용량 원본 없이 재현 가능. 이번 기기명령/추론/실측/빌드/새 계획/claim0. 원래 동결본·기각 후보·원자료·소비 계획 보존.
+- **완료/남은 범위:** 제한된 일정/서비스 시뮬레이터와 실측 대조 도구는 완료. 일반 동적 에너지·AP, 후기 최고/열→처리시간의 정확도는 미완료이며 반복 실측만으로 해결됐다고 하지 않는다. 새 계수 식별 목적이 없는 동일 진단은 반복하지 않았다. **다음 행동 하나:** 통합 화면으로 queue201의 서비스 상충과 별도 관측 비용을 결과 시연한다. 아래는 당시 이력이다.
+
 ## 2026-10-02 기록 CPU/B2 네 세션 완료·제한 시뮬레이션 본문 반영
 
 - [실행·소비·판정](RECORDED_POLICY_COMPARE_20261002.md), [관측 화면/CSV](results/recorded_policy_comparison_01/run01/index.html), [본문](ENERGY_AP_RESULTS_DISCUSSION_DRAFT_20260930.md). 새 opt-in CPU 배정/같은 서명 APK·CPU→B2→B2→CPU4세션 모두 completed_descriptive_only. 본96/warmup32=128추론·runtime16·staging4/28·pull/push/설치 각1, 1,279.649/3,670초·ADB3,386/13,000·재시도0. 사전 연결7 포함 총3,393명령.

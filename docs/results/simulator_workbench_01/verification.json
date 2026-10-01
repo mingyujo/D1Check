@@ -1,0 +1,59 @@
+{
+  "utc": "2026-10-01T21:00:53.922280+00:00",
+  "base_head": "f3efdca43eba3870b01ca7baa5cdabd80eacb975",
+  "working_changes": "new workbench and targeted tests; entry docs/navigation only; existing scheduler/models untouched",
+  "test_command": "python -B -m unittest tools.test_d1_simulator tools.test_d1_energy_operational_decision tools.test_d1_arrival_service_guard -v",
+  "tests_passed": 18,
+  "tests_failed": 0,
+  "tests_skipped": 0,
+  "real_cli_routes": [
+    "arrival",
+    "episode"
+  ],
+  "real_cli_duplicate_output": "refused; original result hashes unchanged",
+  "real_cli_wrong_route_options": "refused before output directory creation",
+  "isolated_cli_path": "fake adb.cmd trap, absolute Python only; trap not called",
+  "reproduced_bytes_equal": {
+    "arrival/B2_PC_schedule.csv": true,
+    "arrival/B3_SOLO_EFT_PC_schedule.csv": true,
+    "arrival/CPU_URGENT_schedule.csv": true,
+    "arrival/index.html": true,
+    "arrival/result.json": true,
+    "arrival/summary.csv": true,
+    "episode/index.html": true,
+    "episode/result.json": true,
+    "episode/summary.csv": true
+  },
+  "input_resource_count": 22,
+  "frozen_files_sha256_preserved": {
+    "energy_ap_state_run_v5/development_freeze.json": "35ed6987b1fc09789284018f8502107eaf4e3125373651a01e3a08d427034c54",
+    "energy_ap_idle_response_run_v1/ap_model_freeze.json": "8507adc10485940c36853786ba39a4f42439a9fbd3d71a5da1c7d55e2cbc7ec5"
+  },
+  "source_sha256": {
+    "tools/d1_simulator.py": "98a1111bf56d8ebda5061a352711d7d678ba97a607c3fdcad56fdd1cba69a071",
+    "tools/d1_arrival_explore.py": "08dca7f56f572e24eda5664dce213d7b30816dac4e89db015db657e11534f680",
+    "tools/d1_arrival_explore_batch.py": "f0994f603720c606c5dc58f24c334cd2e91d3a79cc9a525094e7bcbbab86411f",
+    "tools/d1_arrival_energy_research.py": "f8dd374a8157dbd30b2d653c13fd36666c02b60d9be10e61e8f75ef4973df6e8",
+    "tools/d1_arrival_service_guard.py": "5d2f7131aa931ccf9a42486b3f403eba96be28c66c54ec6978dc98ea810055e0",
+    "tools/d1_energy_operational_decision.py": "e3f9324ebad5735c5dd12f0bcce3dcae17f3e66f738dd480ae71582e8827001f",
+    "tools/d1_cal03_connection.py": "d20939eb7feda23e1da67da21e5d6f5d69ecdc3a7f32fd8e38cbe98a95184b6d",
+    "tools/d1_energy_operational_sim.py": "e09fcb633baf6c6884f28ff82792f371db80159f12ef56cdd92a2e419a093401"
+  },
+  "visual_verification": "Edge headless 1280x1700 actual render inspected; standalone SVG XML parsed; chart data equals archived CSV",
+  "interaction_verification": "Node VM minimal DOM: all three policy change events expose exactly one panel; not Android/device verification",
+  "validation_tool_issue": "Initial node -e failed due to PowerShell native argument quoting before script entry; same script passed via stdin, no product assertion failure",
+  "device_commands": 0,
+  "inference_calls": 0,
+  "new_measurements": 0,
+  "new_plans": 0,
+  "new_claims": 0,
+  "apk_builds": 0,
+  "experiment_ready": false,
+  "limitations": [
+    "No new independent physical prediction validation",
+    "No general dynamic J/AP or thermal-to-service law",
+    "Observed replay is not online policy execution"
+  ],
+  "stdlib_only_cli": "python -S -B -m tools.d1_simulator arrival: exit 0",
+  "checkout_scope": "Windows core.autocrlf=true; byte hash contracts unchanged; cross-OS newline conversion not certified"
+}

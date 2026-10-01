@@ -1,0 +1,105 @@
+{
+  "version": "d1-simulator-workbench-v1",
+  "route": "fixed_episode",
+  "result": {
+    "version": "energy-operational-ccdg-decision-preview-v2",
+    "status": "TRADEOFF",
+    "model_candidate": null,
+    "reason": "both arms meet supplied limits; parallel is faster but hotter and common-energy ranking changes",
+    "profile_sha256": "b58c2ca3852cfb4959c65f4dd47c0547454260d6045a0cd87f51487ac1b10772",
+    "evaluation_sha256": "1984b97a9ab5b83808dc14ff3e0b6868f1e02d8741fe153d602f8e6579ec41a9",
+    "constraints": {
+      "max_work_completion_s": null,
+      "max_load_ap_peak_c": null
+    },
+    "fixed_energy_metric": "common_480s_whole_device_conditional_j",
+    "measurements_not_guarantees": true,
+    "nominal_and_sensitivity": {
+      "serial": {
+        "nominal": {
+          "work_completion_s": 326.084729327,
+          "common_window_energy_j_conditional": 758.7463269480811,
+          "load_ap_peak_c": 30.900000000000002
+        },
+        "one_confirmation_error_scenario": {
+          "work_completion_s": 329.07322402,
+          "common_window_energy_j_conditional": 726.4403868956414,
+          "load_ap_peak_c": 30.9
+        }
+      },
+      "parallel": {
+        "nominal": {
+          "work_completion_s": 203.628315166,
+          "common_window_energy_j_conditional": 722.5305453591188,
+          "load_ap_peak_c": 32.4
+        },
+        "one_confirmation_error_scenario": {
+          "work_completion_s": 202.754595782,
+          "common_window_energy_j_conditional": 730.9988990124292,
+          "load_ap_peak_c": 32.8
+        }
+      }
+    },
+    "feasibility": {
+      "serial": {
+        "nominal": true,
+        "one_confirmation_error_scenario": true
+      },
+      "parallel": {
+        "nominal": true,
+        "one_confirmation_error_scenario": true
+      }
+    },
+    "policy_or_device_validation": false,
+    "analysis_scope": "archived_matched_confirmation_start_only_not_online_or_temperature_range",
+    "initial_ap_evidence": {
+      "value_c": 29.1,
+      "source": "posthoc_observed_confirmation_two_arms",
+      "development_starts_c": {
+        "serial": 29.4,
+        "parallel": 29.2
+      },
+      "temperature_template": "development_AP_increments_translated_to_confirmation_start_unvalidated"
+    },
+    "ap_limit_is_safety_threshold": false,
+    "candidate_is_deployable": false,
+    "note": "one confirmation error per arm is a retrospective scenario, not a bound or confidence interval"
+  },
+  "provenance": {
+    "docs/results/arrival_explore_20260925/input_bundle/estimates.json": "3337ce80c1807f35d30484732ea117a2bdf72ac2a7f7c5da9a3d525229e4f594",
+    "docs/results/arrival_explore_20260925/input_bundle/realizations.json": "55d929efbdc3a0b67d36d8b39fd55a7a168a73e75994ec30d7e653635cb44361",
+    "docs/results/arrival_explore_20260925/input_bundle/receipt.json": "05fcb5a462618022e03a73f70a64b24451c15eaf37f27cfbc391720bb6d2e6ad",
+    "docs/results/arrival_explore_20260925/freeze_before_evaluation.json": "69f07a49eb780338dcdb9ade1ce40dd6a78251aa7284203b5fb92bead8f40fa9",
+    "docs/results/arrival_visualization_01/timeline.csv": "5bfd4f4e735f3af9400ff833fb2a473eac01b5d250c376d1e4a992fd172b7d75",
+    "docs/results/arrival_service_guard_01/guard_contract.json": "725d43ab10fa2210ed5afbf4440975d620d1d9155afb821d6cf2f79a94c6e725",
+    "docs/results/energy_operational_sim_01/frozen_profile.json": "b58c2ca3852cfb4959c65f4dd47c0547454260d6045a0cd87f51487ac1b10772",
+    "docs/results/energy_operational_sim_01/confirmation_evaluation.json": "1984b97a9ab5b83808dc14ff3e0b6868f1e02d8741fe153d602f8e6579ec41a9",
+    "docs/results/recorded_policy_comparison_01/run01/summary.json": "d422d297182fd31c7f6827055e6bdddf09d54e5e71bd024b384dbd687ebf6f06",
+    "docs/results/recorded_policy_comparison_01/analysis_contract.json": "0578d49400a048bddd49a3064e0fc24c45363d1864eda18f7bc7ca71378910f2",
+    "docs/results/recorded_policy_comparison_01/run01/0_ap.csv": "57dbefd1c7d44050567e4d1920d64e6f4e9e2a87bdd4b60d8e637f9189de8758",
+    "docs/results/recorded_policy_comparison_01/run01/0_energy.csv": "6acf93148e36a8441c0178be56cbd1d818cd8e4defd1e8a3da195e914a835646",
+    "docs/results/recorded_policy_comparison_01/run01/0_schedule.csv": "8fc2d73e85cfbbf5c01afc468587d9480198748cb30e17da63faff9d6bd7d1a2",
+    "docs/results/recorded_policy_comparison_01/run01/1_ap.csv": "04e8440e21288b9dc0d1adf5fb1cd3b4c61d1d4da0e7ade3ac796afe24db8f15",
+    "docs/results/recorded_policy_comparison_01/run01/1_energy.csv": "d597568c148d02cb6e2114ceb0e631f8d16c8989299c6eb0d12dfe2b992b057e",
+    "docs/results/recorded_policy_comparison_01/run01/1_schedule.csv": "608f678e3e813a9c2e86329e8eee9c253c3c450ff0b2efa1f2381490005cf4ed",
+    "docs/results/recorded_policy_comparison_01/run01/2_ap.csv": "9c5f2096254a7cc7c684ef372d91a760c0d5ab2259b5a5d7a4575fcabfe95760",
+    "docs/results/recorded_policy_comparison_01/run01/2_energy.csv": "fd2206c1835af6f6900bd8258a058c070ae30f8c70d25fd68f2560ef79d16e19",
+    "docs/results/recorded_policy_comparison_01/run01/2_schedule.csv": "996122895b6cd320066f2d1900c20cdf0d761519cb337acce5aa74dd6dcf011e",
+    "docs/results/recorded_policy_comparison_01/run01/3_ap.csv": "ad3efc48a811edc8c2c3960c5aa1c53bd817c16af4a751d96e98ca7e6b18e3b3",
+    "docs/results/recorded_policy_comparison_01/run01/3_energy.csv": "17768e35afb9517dc75038b53cebae35d31898835d8327ffa762e763d6aec865",
+    "docs/results/recorded_policy_comparison_01/run01/3_schedule.csv": "ee9a7c6f99fbaa198ac6aedad3a5f986d5600f9557782b5f5678da23aff01722"
+  },
+  "experiment_ready": false,
+  "interpretation": "archived CC_DG 678 classification CPU + 192 detection GPU; 480s common energy; no arbitrary arrivals",
+  "confirmation_role": "already-seen archived one session per arm; no new independent validation",
+  "code_sha256": {
+    "tools/d1_simulator.py": "98a1111bf56d8ebda5061a352711d7d678ba97a607c3fdcad56fdd1cba69a071",
+    "tools/d1_arrival_explore.py": "08dca7f56f572e24eda5664dce213d7b30816dac4e89db015db657e11534f680",
+    "tools/d1_arrival_explore_batch.py": "f0994f603720c606c5dc58f24c334cd2e91d3a79cc9a525094e7bcbbab86411f",
+    "tools/d1_arrival_energy_research.py": "f8dd374a8157dbd30b2d653c13fd36666c02b60d9be10e61e8f75ef4973df6e8",
+    "tools/d1_arrival_service_guard.py": "5d2f7131aa931ccf9a42486b3f403eba96be28c66c54ec6978dc98ea810055e0",
+    "tools/d1_energy_operational_decision.py": "e3f9324ebad5735c5dd12f0bcce3dcae17f3e66f738dd480ae71582e8827001f",
+    "tools/d1_cal03_connection.py": "d20939eb7feda23e1da67da21e5d6f5d69ecdc3a7f32fd8e38cbe98a95184b6d",
+    "tools/d1_energy_operational_sim.py": "e09fcb633baf6c6884f28ff82792f371db80159f12ef56cdd92a2e419a093401"
+  }
+}
