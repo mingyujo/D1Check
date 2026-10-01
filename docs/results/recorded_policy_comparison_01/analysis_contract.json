@@ -1,0 +1,21 @@
+{
+  "version": "recorded-policy-comparison-v1",
+  "purpose": "Direct descriptive comparison of two saved schedules, not online policy or general model validation",
+  "selection": {"scenario": "queue", "seed": 201, "mode": "explore", "predicted_interference": 1.5, "realized_interference": 1.5},
+  "order": ["CPU_URGENT", "B2_PC", "B2_PC", "CPU_URGENT"],
+  "pairs": [[0,1],[3,2]],
+  "repeats_meaning": "Two observations per schedule with reversed pair order; descriptive spread only, not a precision guarantee or independent model validation",
+  "schedule": "Original arrivals, fixed backend and saved dispatch lower bound; actual duration/lane release never forced; no +35 second release shift",
+  "primary_energy": "Observed whole-device current raw=mA conditional integral over original 0..120 seconds, complete brackets required",
+  "AP": "Observed initial/peak/change and recorded path; no preload candidate when 55 second preload is unavailable; no new AP fitting",
+  "service": "All 24 planned requests retained; output_ready for urgent, persist_complete for normal; report completion, timely count and response P95",
+  "comparison": "B2 minus CPU within each prespecified pair; display both differences, their mean and raw range; no confidence or superiority PASS from n=2",
+  "environment": "Same signed APK, four resident runtimes and eight warmups per session; existing unplugged/BAT/thermal/screen/memory/quality criteria unchanged; AP observe-v2 freshness, no development lower bound",
+  "model": "Original state power arithmetic can be shown only as short-transition diagnostic, not strict supported energy; no recalibration",
+  "failure": "First failure stops this plan, preserves partial observations and cleanup; no retry in the same plan. Any later correction/run requires a distinct evidence-preserving plan and known cause; user allows necessary correction but not success-threshold relaxation.",
+  "missing": "null, never zero fill or shift a window; partial sessions never count as complete pairs",
+  "accuracy_pass": null,
+  "policy_superiority": null,
+  "strict_support": false,
+  "experiment_ready": false
+}

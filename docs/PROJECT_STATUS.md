@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-02 기록 CPU/B2 네 세션 완료·제한 시뮬레이션 본문 반영
+
+- [실행·소비·판정](RECORDED_POLICY_COMPARE_20261002.md), [관측 화면/CSV](results/recorded_policy_comparison_01/run01/index.html), [본문](ENERGY_AP_RESULTS_DISCUSSION_DRAFT_20260930.md). 새 opt-in CPU 배정/같은 서명 APK·CPU→B2→B2→CPU4세션 모두 completed_descriptive_only. 본96/warmup32=128추론·runtime16·staging4/28·pull/push/설치 각1, 1,279.649/3,670초·ADB3,386/13,000·재시도0. 사전 연결7 포함 총3,393명령.
+- 같은120초의 B2−CPU J는−9.198/−1.611(평균−5.405), urgent P95−282.761/−327.330ms·마감 충족18/24→20/24가 두 쌍에서 관측됐다. B2 두 관측 자체 차이8.845J·초기 AP30.1–30.6°C/이력 차이 때문에 안정적 절감률/정책 우월성은 미판정. AP 최고 차이0/−0.5°C·공통창 마지막 유효 표본−승인 초기 변화 차이−1/+0.1°C. 온라인 정책/일반 동적 모형 검증 아님.
+- 요청 전체 시작/반환/저장/worker/lane 해제96·미완료0, 앱 정상cleanup4·회수각58파일·세션별 host 정리1 및 프로세스 부재. 설치 정리1은 별도, parent/child exited·정상 receipt/registry completed. timeout/관측된 연결 소실/lifecycle_cancelled0. plan_v1 소비·완료로 재실행 금지.
+- Python13/Android10·실제 PS Check/Run·분석CLI/CSV/그림·원문 J 재현 완료. 기존 freeze/기각 후보/default/strict/experiment_ready=false 유지. 제한 본문·직접 비용 비교까지 완료, 남은 일반 AP 후기/최고/열 피드백·임의 일정 예측은 미지원으로 명시했다. 다음 행동 하나: 팀과 제한된 최종 결론 검토. 추가 실측 자동 실행 없음. 아래는 당시 이력이다.
+
 ## 2026-10-02 사용자 지정 무선 주소 연결 실패 — 실측 미착수
 
 - 사용자의 연결·실측 요청에 따라 지정 endpoint에 `adb connect`1회(15초 상한), `devices -l`1회(8초 상한)를 실행했다. 전자는 exit0이지만 본문 `failed to connect`, 후자는 exit0·기기0개다. timeout 없음, 연결 실패 내부 원인/페어링 소실 원인은 미확정이다. 자동 재연결·서버 재시작·설정 변경 없음.

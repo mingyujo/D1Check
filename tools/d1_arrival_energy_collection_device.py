@@ -25,6 +25,10 @@ ACTIVITY='com.example.d1check.benchmarkrunner.ArrivalEnergyActivity'
 ACTION='com.example.d1check.benchmarkrunner.action.ARRIVAL_ENERGY'
 
 
+def tracked_bundle(plan):
+    return plan.get('ap_bundled_confirmation') or plan.get('recorded_policy_comparison')
+
+
 def require_host_pull_space(plan):
     """Minimum admission only, not a guarantee for the entire run's logs."""
     required=Path(plan['apk_path']).stat().st_size
@@ -43,13 +47,13 @@ def poll(d,remote,folder,manifest,plan):
     while time.monotonic()<end:
         command_ceiling=(3200 if plan.get('ap_idle_pulse_followup') and
                           manifest.get('phase')=='development' else plan['budget']['adb_commands'])
-        if plan.get('ap_bundled_confirmation'):
+        if tracked_bundle(plan):
             position=next(e['index'] for e in plan['entries'] if e['session_id']==manifest['session_id'])
             command_ceiling=min(command_ceiling,(position+1)*plan['budget']['per_session_adb_commands'])
         if (plan.get('single_arrival_confirmation') or plan.get('recorded_replay_confirmation')) and d.sequence>=command_ceiling-plan['budget'].get('adb_recovery_cleanup_reserve',20):
             raise RuntimeError('ADB observation cap reserve reached; preserve recovery/cleanup slots')
         now=time.monotonic()
-        if plan.get('ap_bundled_confirmation') and now-last_checkpoint>=30:
+        if tracked_bundle(plan) and now-last_checkpoint>=30:
             d.bundle_checkpoint.mark('poll_alive',session_id=manifest['session_id'],
                 adb_commands=d.sequence,remaining_seconds=d.deadline-now,
                 warmup_approved=armed,start_ap_approved=start_ap_sent)
@@ -189,7 +193,11 @@ def run(plan_file,adb,serial,expected_sha,approved):
     plan=p.read(plan_file)
     idle_response=plan.get('ap_idle_pulse_followup',False)
     single=plan.get('single_arrival_confirmation',False) or plan.get('recorded_replay_confirmation',False)
-    if plan.get('ap_bundled_confirmation'):
+    if plan.get('recorded_policy_comparison'):
+        from tools import d1_recorded_policy_comparison as confirmation
+        confirmation.check(plan_file)
+        c.require(bool(serial),'explicit transport required')
+    elif plan.get('ap_bundled_confirmation'):
         from tools import d1_ap_bundle_confirmation as confirmation
         confirmation.check(plan_file)
     elif plan.get('resident_control_pair'):
@@ -210,13 +218,13 @@ def run(plan_file,adb,serial,expected_sha,approved):
     else:c.check(plan_file)
     budget=plan['budget']
     root=Path(plan['output_root']);registry=Path(plan['registry'])
-    if plan.get('resident_control_pair') or plan.get('ap_bundled_confirmation'):
+    if plan.get('resident_control_pair') or tracked_bundle(plan):
         require_host_pull_space(plan)
     registry.mkdir(parents=True,exist_ok=False);root.mkdir(parents=True,exist_ok=False)
     start=time.monotonic();hard=start+budget['total_seconds']
     journal=None
     claim=dict(utc=legacy.utc(),plan_sha256=expected_sha,budget=budget)
-    if plan.get('ap_bundled_confirmation'):
+    if tracked_bundle(plan):
         from tools import d1_energy_host_lifecycle as lifecycle
         from tools import d1_energy_host_checkpoints as checkpoints
         claim.update(host_run_id=uuid.uuid4().hex,host_identity=lifecycle.host_identity())
@@ -224,11 +232,15 @@ def run(plan_file,adb,serial,expected_sha,approved):
                                        claim['host_run_id'],claim['host_identity'])
         journal.mark('claimed')
         (root/'frozen_collection_plan.json').write_bytes(Path(plan_file).read_bytes())
-        (root/'candidate_procedure_freeze.json').write_bytes(Path(plan['candidate_freeze']['path']).read_bytes())
+        if plan.get('ap_bundled_confirmation'):
+            (root/'candidate_procedure_freeze.json').write_bytes(Path(plan['candidate_freeze']['path']).read_bytes())
+        else:
+            (root/'original_model_freeze.json').write_bytes(Path(plan['frozen_model']['path']).read_bytes())
     write(registry/'claimed.json',claim)
     d=(ObservedDevice(adb,serial,root/'host_commands',allow_select=True,
-                      forbid_apk_deploy=plan.get('ap_bundled_confirmation',False))
-       if plan.get('resident_control_pair') or plan.get('ap_bundled_confirmation') else
+                      forbid_apk_deploy=plan.get('ap_bundled_confirmation',False),
+                      allow_other_transports=plan.get('recorded_policy_comparison',False))
+       if plan.get('resident_control_pair') or tracked_bundle(plan) else
        ObservedDevice(adb,serial,root/'host_commands'))
     if journal:d.bundle_checkpoint=journal
     d.deadline=hard

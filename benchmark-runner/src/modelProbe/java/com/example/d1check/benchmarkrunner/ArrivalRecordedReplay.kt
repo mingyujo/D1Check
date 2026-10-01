@@ -4,18 +4,24 @@ package com.example.d1check.benchmarkrunner
 internal object ArrivalRecordedReplay {
     const val POLICY = "RECORDED_B2_REPLAY_V1"
     const val VERSION = "recorded-b2-dispatch-gate-v1"
+    const val COMPARISON_VERSION = "recorded-policy-comparison-v1"
 
     data class Entry(val id: String, val ordinal: Int, val task: String,
                      val arrivalNs: Long, val releaseNs: Long, val backend: String,
                      val sourceId: String)
 
-    fun validate(entries: List<Entry>, requests: List<ArrivalEnergyContract.Request>) {
+    fun validate(entries: List<Entry>, requests: List<ArrivalEnergyContract.Request>,
+                 version: String = VERSION, sourcePolicy: String = "B2_PC") {
+        require(version == VERSION || version == COMPARISON_VERSION)
+        require(if (version == VERSION) sourcePolicy == "B2_PC"
+                else sourcePolicy in setOf("CPU_URGENT", "B2_PC"))
         require(entries.size == requests.size && entries.map { it.id }.toSet().size == entries.size)
         entries.zip(requests).forEach { (entry, request) ->
             require(entry.id == request.id && entry.ordinal == request.ordinal &&
                 entry.task == request.task && entry.arrivalNs == request.offsetMs * 1_000_000L)
             require(entry.releaseNs >= entry.arrivalNs && entry.releaseNs < ArrivalEnergyContract.COMMON_NS)
-            require(entry.backend == (if (entry.task == "classification") "GPU" else "CPU"))
+            require(entry.backend == (if (sourcePolicy == "CPU_URGENT") "CPU"
+                else if (entry.task == "classification") "GPU" else "CPU"))
             require(entry.sourceId.isNotBlank())
         }
     }

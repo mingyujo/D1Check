@@ -180,13 +180,16 @@ class ArrivalEnergyActivity : Activity() {
                 apMode == ArrivalStartApGate.DIAGNOSTIC_VERSION) { "resident control requires recorded observe-v2" }
             requests.forEach { check(UUID.fromString(it.id).toString() == it.id) }
             val replay = if (policy == ArrivalRecordedReplay.POLICY) {
-                check(m.getString("replay_version") == ArrivalRecordedReplay.VERSION)
+                val replayVersion = m.getString("replay_version")
+                check(replayVersion in setOf(ArrivalRecordedReplay.VERSION, ArrivalRecordedReplay.COMPARISON_VERSION))
+                val sourcePolicy = if (replayVersion == ArrivalRecordedReplay.COMPARISON_VERSION)
+                    m.getString("source_policy") else "B2_PC"
                 requestJson.let { arr -> (0 until arr.length()).map { i -> arr.getJSONObject(i).let { q ->
                     ArrivalRecordedReplay.Entry(q.getString("request_id"), q.getInt("ordinal"),
                         q.getString("task_id"), q.getLong("offset_ms") * 1_000_000L,
                         q.getLong("release_offset_ns"), q.getString("recorded_backend"),
                         q.getString("source_request_id"))
-                } } }.also { ArrivalRecordedReplay.validate(it, requests) }.associateBy { it.id }
+                } } }.also { ArrivalRecordedReplay.validate(it, requests, replayVersion, sourcePolicy) }.associateBy { it.id }
             } else emptyMap()
             samples.scheduleAtFixedRate({ sampler.tick { event("power_sample", snapshot()) } }, 0, 1, TimeUnit.SECONDS)
             val setupStart = now()

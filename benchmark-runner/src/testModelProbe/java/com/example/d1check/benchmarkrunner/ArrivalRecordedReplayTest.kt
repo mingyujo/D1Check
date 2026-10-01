@@ -4,6 +4,21 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class ArrivalRecordedReplayTest {
+    @Test fun comparisonRequiresExplicitVersionAndExactSourceAllocation() {
+        val req=requests()
+        val cpu=entries().map { it.copy(backend="CPU") }
+        ArrivalRecordedReplay.validate(cpu,req,ArrivalRecordedReplay.COMPARISON_VERSION,"CPU_URGENT")
+        ArrivalRecordedReplay.validate(entries(),req,ArrivalRecordedReplay.COMPARISON_VERSION,"B2_PC")
+        for (policy in listOf("B2_PC","B3_SOLO_EFT_PC")) {
+            try { ArrivalRecordedReplay.validate(cpu,req,ArrivalRecordedReplay.COMPARISON_VERSION,policy);fail("wrong policy") }
+            catch (_: IllegalArgumentException) {}
+        }
+        try { ArrivalRecordedReplay.validate(cpu,req);fail("legacy broadened") }
+        catch (_: IllegalArgumentException) {}
+        val waiting=req.map { ArrivalPolicy.Ticket(it.id,it.task,it.priority,it.ordinal) }
+        assertNull(ArrivalRecordedReplay.choose(waiting,cpu.associateBy { it.id },1_000_000_000,false,true))
+        assertEquals("CPU",ArrivalRecordedReplay.choose(waiting,cpu.associateBy { it.id },1_000_000_000,true,true)!!.backend)
+    }
     @Test fun delayedBurstReleasePassesActualContractsButShiftedArrivalFails() {
         val req = (0 until 24).map { i ->
             val urgent = i % 4 == 1
