@@ -1,0 +1,103 @@
+{
+  "id": "ENERGY-AP-RESIDENT-CONTROL-DESIGN-01",
+  "status": "DESIGN_CHECKED_EXECUTION_BLOCKED",
+  "approved": false,
+  "execution_ready": false,
+  "candidate_apk_sha256": null,
+  "run_command": null,
+  "experiment_ready": false,
+  "sessions": [
+    {
+      "role": "no_load_control",
+      "work_requests": 0,
+      "warmup": 8,
+      "runtime": 4
+    },
+    {
+      "role": "registered_load",
+      "work_requests": 24,
+      "warmup": 8,
+      "runtime": 4
+    }
+  ],
+  "purpose": "Structure discrimination/development only; no candidate fitting, independent prediction validation or causal attribution from one pair.",
+  "proposed_budget": {
+    "sessions": 2,
+    "work_requests": 24,
+    "warmup": 16,
+    "explicit_inferences": 40,
+    "runtime": 8,
+    "eligibility_inferences": 0,
+    "staging": 2,
+    "staging_files": 14,
+    "installed_host_pulls": 1,
+    "apk_push": 1,
+    "installs": 1,
+    "retry": 0,
+    "replacement": 0,
+    "additional": 0,
+    "fixed_observation_seconds": 420,
+    "installation_seconds": 600,
+    "stage_gate_seconds": 120,
+    "poll_seconds": 485,
+    "recovery_seconds": 50,
+    "cleanup_seconds": 45,
+    "session_seconds": 700,
+    "between_seconds": 90,
+    "total_seconds": 2090,
+    "adb_commands": 6600,
+    "nonpoll_command_allowance": 1154,
+    "final_cleanup_command_reserve": 100
+  },
+  "execution_blockers": [
+    "Android ArrivalEnergyContract requires exactly 24 requests; explicit zero-request opt-in with same warmup/resident/normal cleanup must be implemented and callback-tested.",
+    "Host validates and aggregates exactly 24 completions per session; mixed 0/24 denominator and shared command/deadline reservations require implementation and fault tests.",
+    "Both arms need the same new project-signed APK, manifest/source/input/frozen-model hashes and an unconsumed executable plan; these artifacts have not been produced."
+  ],
+  "fixed_windows_seconds": {
+    "pre": [
+      5,
+      30
+    ],
+    "late_common": [
+      90,
+      120
+    ],
+    "late_cooling": [
+      150,
+      180
+    ],
+    "common": [
+      0,
+      120
+    ]
+  },
+  "analysis": {
+    "power_max_gap_seconds": 2.5,
+    "ap_max_gap_seconds": 10,
+    "load_required_lane_release_before_seconds": 90,
+    "missing": "null; do not shift windows or substitute intervals",
+    "outputs": [
+      "control pre-to-late power/AP drift",
+      "load pre-to-late power/AP drift",
+      "difference of these changes, descriptive only",
+      "whole 120 s observed energy and original frozen diagnostic difference",
+      "actual lane occupancy and all request denominators"
+    ],
+    "decision": "Stop after the pair/readout. No automatic candidate fit, repeat, support promotion, or PASS threshold."
+  },
+  "frozen_models": {
+    "original_sha256": "35ed6987b1fc09789284018f8502107eaf4e3125373651a01e3a08d427034c54",
+    "ap_procedure_sha256": "8507adc10485940c36853786ba39a4f42439a9fbd3d71a5da1c7d55e2cbc7ec5"
+  },
+  "evidence_sha256": {
+    "tools/d1_resident_control_design.py": "3b280d1e6ac8495144b5d85af508dfce58746b3cfc636409de823f1525a13c38",
+    "benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/ArrivalEnergyContract.kt": "08f0d6904a23207ff73a020d1e22f78563f35fdcd37af02e257633ae88bcd93c",
+    "benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/ArrivalEnergyActivity.kt": "5ba15dd603d0cdb83367395b7cedeb7870c10fd921c133e85437b7b04c1aecb8",
+    "benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/ArrivalRuntimeSetup.kt": "2b52f06d4f2eb08608ea2ba26e3fcffff317f324dd4603e998b1046b22fcc5c6",
+    "tools/d1_arrival_energy_collection_device.py": "f6e1a36cfa033a84707f0effe23385aac560b47f8ec67c0fd90b03295058a026",
+    "tools/d1_arrival_recorded_replay.py": "c222af75c62159805882fde2c94388e977ab0fe09bf8e47329ae68d296007907",
+    "docs/results/resident_power_candidate_01/readout/summary.json": "b27853563910505f1b2d57070ffe3449a712605918aa2726d645f3bc786c5771",
+    "docs/results/resident_control_design_01/load_input.json": "347a2dbb0f56cd9dd8f7651fab620194e5db002d6e3cf5fc8d38a98d9ff049f1"
+  }
+}

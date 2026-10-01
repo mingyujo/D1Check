@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-01 무부하 대조 설계 확정 — 실행 경로 차단
+
+- [필요성·두 세션 설계·차단 조건](RESIDENT_CONTROL_MEASUREMENT_PLAN_20261001.md), [계획/입력/PC Check](results/resident_control_design_01/README.md). 동적 에너지 보완에는 같은 준비 후 C무부하1→L짧은 CG_DC1 대조가 필요하다. 기존 고정 일정 설명에는 추가 실측이 필수 아님. 구조 판별용 개발이며 독립 확인/인과/정책 PASS가 아니다.
+- 제안: 본24＋warmup16＝40추론/runtime8·staging2/14파일·pull/push/설치 각≤1·고정420초·총2,090초·ADB6,600·재시도0. **DESIGN_CHECKED_EXECUTION_BLOCKED**: 현 APK/host는 정확히24요청을 요구하므로0요청 대조 불가. 후보APK/Run=null, 실행준비 완료 아님. 기존 APK/동결/strict/experiment_ready=false 보존, 기기/claim0.
+- 다음 행동 하나: 기존 수집기의0요청 대조 opt-in과0/24 분모·정상 종료 경계를 구현/검증하고 같은 새 서명 APK로 실행 묶음을 완성한다. 현재 설계는 미승인·미소비이며 아래 “다음”은 당시 이력이다.
+
 ## 2026-10-01 부하 전 전력 후보 PC 평가 완료 — 채택하지 않음
 
 - [후보1개·4세션 결과·최소 해결 조건](RESIDENT_POWER_CANDIDATE_PC_20261001.md), [휴대 입력/CSV/그림/재현](results/resident_power_candidate_01/README.md). 부하 전20초의 평균 W로 원래 상태 전력을 가산 이동했다. 첫 dispatch→120초 잔차는 B2 +1.072→−17.385J, 유휴 개발 +16.087→+4.280J, 확인 +10.453→+17.702J, 전이 +16.364→+12.957J. 2개선/2악화로 기본 경로 채택 없음. 전체120초 예측·독립 확인으로 표현하지 않는다.
