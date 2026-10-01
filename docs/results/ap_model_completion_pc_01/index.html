@@ -1,0 +1,16 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><title>D1Check PC 보완 완료</title>
+<style>body{font-family:system-ui;max-width:1100px;margin:32px auto;padding:0 20px;line-height:1.7;color:#203040}img{width:100%}table{border-collapse:collapse;width:100%}td,th{padding:8px;border-bottom:1px solid #ccc;text-align:left}.note{background:#fff1d7;padding:16px}a{color:#1265a3}</style>
+<h1>제한 시뮬레이션 본문·PC 보완 완료</h1>
+<p><a href="../../ENERGY_AP_RESULTS_DISCUSSION_DRAFT_20260930.md">결과·논의 본문</a> · <a href="README.md">재현·자료 역할</a> · <a href="readout/summary.json">수치 JSON</a> · <a href="verification.json">검증</a></p>
+<p class="note">새 실측0. 이미 본5세션의 사후 후보 평가이며 독립 확인0입니다. 평균 오차만으로 후보를 채택하지 않았습니다. strict·기본 모형·experiment_ready=false를 유지합니다.</p>
+<h2>AP 지연 후보: 구현·평가 완료, 미채택</h2>
+<p>기존 개발1세션만으로 지연4초를 적합했습니다. 다른4세션은 적합에서 제외했지만 이미 본 자료입니다. β·상태별 계수·부하 전 기준 추정법은 고정했습니다. 물리 지연을 식별했다는 뜻은 아닙니다.</p>
+<table><tr><th>자료</th><th>기존→지연 후보 MAE °C</th><th>판정</th></tr><tr><td>개발</td><td>0.488→0.450</td><td>사후 적합</td></tr><tr><td>기존 확인</td><td>0.418→0.398</td><td>사후 적합 제외</td></tr><tr><td>CG_DC 전이</td><td>0.463→0.452</td><td>최대오차 악화</td></tr><tr><td>한 묶음</td><td>0.450→0.423</td><td>후기 상승 미재현</td></tr><tr><td>두 반묶음</td><td>0.405→0.373</td><td>후기 상승 미재현</td></tr></table>
+<p><b>최고온도 오차는5개 모두 악화했습니다.</b> 관측 AP와 회색 실제 lane 활성 구간, 기존/후보 경로 및 잔차를 함께 표시합니다. 부하 전 관측과 실제 일정이 입력된 조건부 계산입니다.</p>
+<img src="readout/ap_comparison.png" alt="5개 기존 세션의 AP와 잔차; 지연 후보는 사후 평가이며 미채택">
+<p><a href="readout/scores.csv">창·표본·오차</a> · <a href="readout/paths.csv">경로</a> · <a href="readout/directions.csv">후기 방향</a> · <a href="readout/fit_profile.csv">적합 목적함수</a> · <a href="readout/leave_session_out.csv">전체 세션 제외 안정성</a></p>
+<h2>에너지: 순위 대신 판별 민감도</h2>
+<p>저장 queue/201/간섭1.5 일정3개만 사용했습니다. 서비스 선별은 B2 통과/B3 부적격입니다. 미지원 짧은 전환에 동결 W를 적용한 진단 산술에서 CPU_URGENT−B2는−0.884J, 대칭 유휴 잔차 부호 전환 경계는0.00410W입니다. 공통 배경이면 상쇄되지만 두 실행에서 같다는 증거는 없습니다.</p>
+<img src="readout/policy_sensitivity.png" alt="프로토콜별 관측 유휴 잔차를 대입한 정책 차이 민감도; 신뢰구간 아님">
+<p>검은 점은 미지원 전환 진단 산술이고 선은 유한 스트레스 경우입니다. 신뢰구간·보편 오차·검증된 정책 성능이 아닙니다. <a href="readout/policy_sensitivity.csv">구간·식 CSV</a> · <a href="readout/idle_stress_observations.csv">출처별 잔차</a>. 검증된 전체창 J·AP 최고·정책 순위는 null입니다.</p>
+<h2>완료와 실측 공백</h2><table><tr><th>PC에서 완료</th><th>실측이 있어야 확대 가능한 주장</th></tr><tr><td>저장 일정 서비스 비교·고정 묶음 상충·조건부 AP·후보 기각·민감도·재현·본문</td><td>비교 가능한 CPU_URGENT/B2 실행의 J/AP 차이와 실행 간 변동성</td></tr><tr><td>지연1항만으로는 최고/후기 오차가 해결되지 않음</td><td>준비·부하 이력에 따른 AP 반응의 식별과 새 고정 모형의 독립 확인</td></tr></table><p>새 계획·실측은 시작하지 않았습니다. 한 쌍 직접 비교를 동적 모형 검증으로 표현하지 않으며 반복 수·정밀도를 근거 없이 보장하지 않습니다. 상세 최소 관측·종료 기준은 본문 마지막 표에 있습니다.</p></html>
