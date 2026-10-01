@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-01 부하 전 전력 후보 PC 평가 완료 — 채택하지 않음
+
+- [후보1개·4세션 결과·최소 해결 조건](RESIDENT_POWER_CANDIDATE_PC_20261001.md), [휴대 입력/CSV/그림/재현](results/resident_power_candidate_01/README.md). 부하 전20초의 평균 W로 원래 상태 전력을 가산 이동했다. 첫 dispatch→120초 잔차는 B2 +1.072→−17.385J, 유휴 개발 +16.087→+4.280J, 확인 +10.453→+17.702J, 전이 +16.364→+12.957J. 2개선/2악화로 기본 경로 채택 없음. 전체120초 예측·독립 확인으로 표현하지 않는다.
+- 현재4세션만으로 일정한 유휴 보정의 전용을 지지하지 못했다. 전후 전력 변화가 부하 없이도 발생하는지 구분할 대조가 없다. 기존 AP 후보/동결 W·원자료·strict·experiment_ready=false 유지. PC7테스트/실제4세션 판독·구간합·정보 비누설 통과, 기기/계획/claim/추가 후보0.
+- 다음 행동 하나: 같은 준비·resident에서 무부하 대조와 짧은 CG_DC 부하를 비교할 최소 원인 분리 수집 설계를 확정한다. 이번에는 실행 계획·예산을 만들거나 실측하지 않았다. 아래 “다음”은 당시 이력이다.
+
 ## 2026-10-01 CG_DC 전이 확인1 완료 — 계수/strict 불변
 
 - [실측·소비·해석](AP_CGDC_TRANSFER_RUN01_20261001.md), [공유 HTML/CSV/그림](results/energy_ap_cgdc_transfer_01/run01/index.html). 승인된 plan_v2를1회 실행: 본24/warmup8/runtime4·전부 반환/lane 해제, staging7·pull1·APK push/설치0, ADB737(실행736＋선택1)/3200·실행293.138초/1300. 앱 정상 cleanup·58파일 회수·세션 host 정리·프로세스 부재 확인. 연결 소실/lifecycle_cancelled 미관측.

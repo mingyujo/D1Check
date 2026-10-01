@@ -1,5 +1,7 @@
 # D1Check 팀 안내 — 2026-10-01 최신 체크포인트
 
+**최신 PC 판정:** [부하 전 유휴 전력 후보](../RESIDENT_POWER_CANDIDATE_PC_20261001.md)를 기존4세션에 평가했으나2개선/2악화로 채택하지 않았다. [재현 입력·결과](../results/resident_power_candidate_01/README.md). 기기 실행0, 다음은 무부하 대조를 포함한 최소 원인 분리 설계이며 새 실행 계획은 없다.
+
 **최신 A24 실측:** [CG_DC 기록 일정 전이 확인1](../AP_CGDC_TRANSFER_RUN01_20261001.md) 완료, [실제 결과 화면](../results/energy_ap_cgdc_transfer_01/run01/index.html). 본24/warmup8/runtime4·APK 전송/설치0, 실제 병행1.467초. 120초 J 차이+20.584J(+15.23%), 기존/후보 AP MAE5.831/0.463°C. 후보 재보정/strict/정책 PASS 없음. plan_v2는 소비·완료로 재실행하지 않는다.
 
 읽을 브랜치는 **`feature/arrival-scheduling-20260923`**이다. 본 안내는 결과·계약·코드의 공유 위치이며 기기 실행 승인을 부여하지 않는다. 현재 연구 상태는 **`experiment_ready=false`**다. 아래 접힌 이력의 “현재/최신/다음”은 당시 상태이며 이 첫 화면과 [STATUS](../PROJECT_STATUS.md)의 최신 절을 우선한다.
@@ -31,11 +33,11 @@
 
 | 대상 | 현재 해야 할 일 | 실행 상태 |
 |---|---|---|
-| A24 | 기존 후보/동결 W의 CG_DC 전이 확인1 및4세션 유휴 W 대조 완료. 다음 PC 작업은 기존 결과·논의 본문 반영 | `ENERGY-AP-CGDC-TRANSFER-02`/plan_v2 **소비·완료**, 재실행 금지. 새 실측 승인/계획 없음 |
+| A24 | CG_DC 전이 확인·유휴 W 대조·가산 후보 사후 평가·결과 본문 반영 완료. 후보 미채택, 다음은 무부하 대조를 포함한 최소 원인 분리 설계 | `ENERGY-AP-CGDC-TRANSFER-02`/plan_v2 **소비·완료**, 재실행 금지. 새 실측 승인/계획 없음 |
 | S26 CPU/GPU | 이미 보유한 두 모델의 기기·runtime·품질·요청·센서 근거를 먼저 제출. 그 근거를 보고 기기별 지원/실측 공백을 판단 | 공통 [다기기 계약](../MULTITASK_EXPERIMENT_PROTOCOL.md)은 있으나 최신 S26 두 모델의 확정 실행 계획/예산은 이 브랜치에 없음 |
 | S26 NPU | 별도 npu-runner/CompiledModel 소스·변환/실행 장치·대표 입력 품질을 먼저 제출 | MobileNet 보고나 과거 합성32입력을 EfficientNet/EfficientDet NPU 검증으로 전용하지 않음. A24 준비 계획을 S26에 실행하지 않음 |
 
-A24 권고 계획의 상한은 **확인1·runtime4·warmup8·본작업24·명시적추론32·staging1/7파일·설치본pull≤1·선택적APK push/설치 각≤1·전체1,300초·ADB≤3,200·재시도/대체/추가0**이다. 정상 소요시간이나 배터리 완주 보장이 아니다. 계수 재적합·기본/strict 지원 확대·온라인 B2 정책 검증은 포함하지 않는다. 이 한 세션이 성공해도 DC_DG 짧은 전이·AP 최고/한도·정책 간 J/AP 차이 판별은 미완료다.
+완료된 A24 계획의 당시 상한은 **확인1·runtime4·warmup8·본작업24·명시적추론32·staging1/7파일·설치본pull≤1·선택적APK push/설치 각≤1·전체1,300초·ADB≤3,200·재시도/대체/추가0**이었다. 새 계획에 승계하는 예산이 아니다. DC_DG 짧은 전이·AP 최고/한도·정책 간 J/AP 차이 판별은 여전히 미완료다.
 
 기기 실행 전에는 현재 동일 A24·유일 transport·설치본/서명·환경·품질·memory gate를 계약대로 확인한다. 중복 연결을 자동 해제하거나 연결 소실 후 다른 transport로 전환하지 않는다. 개발 시작 AP32.5–34.0°C는 모형 범위 표시이며 numeric-ap-observe-v2의 별도 실행 하한으로 적용하지 않는다. 유효 AP/신선도 및 기존 BAT/thermal/비충전 등 실행 조건은 유지한다. 과거 계획/plan_v1 초안/queue24를 현재 실행 대상으로 사용하지 않는다.
 
