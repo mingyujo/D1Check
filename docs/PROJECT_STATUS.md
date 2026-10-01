@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-02 사용자 지정 무선 주소 연결 실패 — 실측 미착수
+
+- 사용자의 연결·실측 요청에 따라 지정 endpoint에 `adb connect`1회(15초 상한), `devices -l`1회(8초 상한)를 실행했다. 전자는 exit0이지만 본문 `failed to connect`, 후자는 exit0·기기0개다. timeout 없음, 연결 실패 내부 원인/페어링 소실 원인은 미확정이다. 자동 재연결·서버 재시작·설정 변경 없음.
+- 외부 증거 `D1Check_Arrival_Extension/connection_check_20261002_025522/connection.json`. 설치/앱 실행/추론/실측/새 plan/claim0. 기존 bundle02·resident대조03은 실제 receipt completed_descriptive_only·registry/출력 존재를 확인해 재실행하지 않았다. 이번 연결 실패를 기존 실측 계획의 stopped 상태로 기록하지 않는다.
+- 페어링 목록이 비었다는 사용자 관측에 따라 현재 페어링 화면의 IP:포트·코드를 요청했다. **다음 행동:** 현재 페어링 정보로 연결을 복구하고, 완료 진단 반복 대신 CPU_URGENT/B2 비용 비교의 별도 경로·예산을 준비한다. 기존 B2 재생 검사는 입력/backend가 B2로 고정되어 있으므로 CPU_URGENT manifest로 바꾸기만 해 실행할 수 없다. 현재 A24 동일성/환경 gate는 미도달, experiment_ready=false 유지.
+
 ## 2026-10-02 PC 모형 보완·제한 시뮬레이션 본문 완료
 
 - [완성 본문](ENERGY_AP_RESULTS_DISCUSSION_DRAFT_20260930.md), [PC 결과·재현·검증](results/ap_model_completion_pc_01/README.md), [화면](results/ap_model_completion_pc_01/index.html). 사용자 요청에 따라 기존 자료만 재사용했다. 등록 부하 지연1항 후보를 적합 전 계약 후 구현; 기존 개발1세션 τ4초/나머지4세션 사후 평가. MAE는5개 모두 소폭 감소하지만 최고오차5개 모두 악화·후기 상승 미재현으로 **미채택**. 구조/계수 추가 탐색0·새 독립 확인0, 원래freeze/preload/default/strict 불변.
