@@ -1,5 +1,9 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-01 — 일괄 확인 후 PC 판독 준비 종료
+
+[기존 보고서의 판독 검증](AP_BUNDLE_CONFIRM_RUN01_20261001.md#pc-판독-경로-검증--2026-10-01)을 완료했다. 새 실측 없이 이전 queue 개발/확인 원문 두 건을 재생해 J·AP 수치/CSV/그림/HTML 일치와 첫 적격 세션만 보존하는 부분 결과를 확인했다. 판독 경계10검사·실제CLI4경우 PASS, JSONL prefix/반환 종류/미확인 null·렌더링 오류 분리 보완. 후보/모형/고정창 변경0, 기존 consumed plan_v1과 당시 결과 보존. 현재 분석 코드의 해시 변경을 옛 계획에 덮어쓰지 않는다. 이번 PC 준비는 종료하며 다음은 기기 사용 가능 시 이미 정한 두 AP 이력의 새 실행 ID 확보다. 새 기기 계획·claim·실측0, experiment_ready=false.
+
 ## 2026-10-01 — AP 두 이력 일괄 확인 경로와 연결 부재 종료
 
 사용자 승인에 따라 새 ENERGY-AP-BUNDLE-CONFIRM-01에 확인2/개발0을 통합했다. 기존 후보/원래freeze·두 입력 이력·판독을 고정하고 기존 설치 APK만 사용하며 신규 fit·배포 fallback은 없다. 관련26 PC검사·PS Check 완료. Run1회는 첫 현재 목록0대로 claim 후 stopped_no_resume; 앱/추론0·ADB1·두 세션 미시도. [상한·구현·증거·완료 기준](AP_BUNDLE_CONFIRM_RUN01_20261001.md). 기존 원자료/FAIL/동결/default/strict/experiment_ready=false 보존. 연결 복구 전 추가 기기 작업은 없고 소비 계획 재개도 없다.

@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-01 — 판독 완료와 실측 완료·그림 실패를 분리
+
+- **구현 결정:** 정상 JSONL prefix만 소비 하한으로 사용하고 미회수는 null로 남긴다. 실제 반환 event는 host_inference_return이며 부재한 request_return 종류를 추론 반환0으로 해석하지 않는다. 최초 session attempt receipt가 미시도를 입증할 때만0을 표시한다. 그림 실패는 수치/자료 적격성과 별도 상태이고 원래 receipt·stack을 보존한다.
+- **PC 사실:** 원래625e5a8 코드에서 부분 JSONL은 summary를 막고 렌더링 실패는 analysis_ineligible+깨진 링크를 만든 결함을 재현했다. 수정 경계10검사·기존 원문 두 세션의 실제CLI4경우를 통과했다. [검증/수치/자료 역할](results/ap_bundle_confirmation_01/readout_pc/verification.json). 기존 개발/확인 자료의 사후 PC 재생이며 새 독립 확인이 아니다.
+- **보존 결정:** 기존 consumed plan_v1·원자료·당시 소스/결과는 불변이다. 새 분석 코드 해시를 옛 계획에 대입하거나 동일성 검사를 우회하지 않는다. 후보 재적합/strict/default 승격/새 계획·실측0, experiment_ready=false 유지. 다음 실측 목적은 이미 정한 두 이력의 고정 후보 확인이며 추가 포괄적 감사가 아니다.
+
 ## 2026-10-01 — AP 확인을 한 실행 묶음으로 통합, 최초 gate 실패면 종료
 
 **구현/실행 결정:** 사용자 “묶어서 실측하는 쪽으로 가자”, 중단 뒤 “재개해”를 반영해 기존 AP 후보를 재적합하지 않는 확인2(한 pulse/두 half-pulse) 묶음을 채택했다. 총64추론/2,090초/ADB6,600·push/설치0·재시도0, 동일 설치본 실패 시 중단. 진단/개발/승인을 반복해 세션마다 끊는 방식으로 이어가지 않는다. **실행 사실:** 첫 devices -l에0대여서 plan claim 후 중단·두 세션 미시도. [receipt·소비·원래 오류·host 종료](AP_BUNDLE_CONFIRM_RUN01_20261001.md). 이번 결과는 AP/W 검증이나 과거 원인 해결이 아니다. 새 실측/계수/strict/default/experiment_ready 승격 없음; 기존 후보와 미확인 범위 유지.

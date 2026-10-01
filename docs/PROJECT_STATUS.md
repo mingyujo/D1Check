@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-01 AP 일괄 판독 경로 PC 검증 완료
+
+- [기존 보고서의 판독 검증](AP_BUNDLE_CONFIRM_RUN01_20261001.md#pc-판독-경로-검증--2026-10-01), [작은 검증/CSV 화면](results/ap_bundle_confirmation_01/readout_pc/index.html). 기존 queue 개발·확인 원문으로 실제 Python CLI4경우(완료2·둘째 부분기록·전류 결측·AP 결측)를 검증했다. J135.617969/144.565095·후보 MAE0.487518/0.417521°C가 재현됐다. **새 실측/독립 확인0**, 현재 burst/3d8 두 이력 검증으로 전용하지 않는다.
+- 이전 판독의 잘린 JSONL→최종요약 누락/그림 실패→부적격+깨진 링크를 PC 재현하고 수정했다. 소비는 정상 prefix 하한·미회수 null·실제 host_inference_return을 구분하고, 첫 적격 세션/원래 receipt·후속 오류를 보존한다. 관련10검사 PASS·4CLI exit0·원자료 핵심25파일/두freeze 불변·빌드/기기/계획/claim0.
+- 소비된 bundle plan_v1/receipt/registry·당시 소스 해시는 그대로다. 수정본의 해시가 달라 기존 계획을 최신 코드로 재분석/실행하지 않는다; 기존 결과를 보존하고 PC 복사본만 현재 분석 소스에 결합했다. strict/default/experiment_ready=false 유지. **다음 행동 하나:** 기기 사용이 가능할 때 이미 정한 두 AP 이력 확인을 새 ID로 한 번 실행한다. 이번에는 새 계획/실측을 추가하지 않았다. 아래 ‘다음’은 당시 이력이다.
+
 ## 2026-10-01 AP 일괄 확인01 — 연결 부재로 preflight 중단
 
 - [계획·실행·종료](AP_BUNDLE_CONFIRM_RUN01_20261001.md), [작은 결과/화면](results/ap_bundle_confirmation_01/run01/index.html). 사용자 묶음 실측/재개 승인으로 Run1회, **claim 후 stopped_no_resume**. 첫 devices -l 반환 exit0지만 transport0개; 두 확인 모두 미시도. ADB1/6,600·실행기3.362482/2,090초, runtime/warmup/추론/staging/pull/push/설치0·재시도0.

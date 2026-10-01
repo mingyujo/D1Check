@@ -1,0 +1,176 @@
+{
+  "status": "passed",
+  "cases": [
+    {
+      "case": "complete",
+      "status": "complete",
+      "evaluated_sessions": 2,
+      "entrypoint_exit": 0,
+      "source_roles": [
+        "development",
+        "confirmation"
+      ],
+      "sessions": [
+        {
+          "status": "evaluated_pc_replay",
+          "observed_energy_120s_j": 135.61796895171642,
+          "candidate_mae_c": 0.4875183853439651,
+          "frozen_mae_c": 6.038121664906401,
+          "rendering_status": "completed"
+        },
+        {
+          "status": "evaluated_pc_replay",
+          "observed_energy_120s_j": 144.5650951225297,
+          "candidate_mae_c": 0.4175211229048267,
+          "frozen_mae_c": 5.461001650206445,
+          "rendering_status": "completed"
+        }
+      ]
+    },
+    {
+      "case": "partial_progress",
+      "status": "partial",
+      "evaluated_sessions": 1,
+      "entrypoint_exit": 0,
+      "source_roles": [
+        "development",
+        "confirmation"
+      ],
+      "sessions": [
+        {
+          "status": "evaluated_pc_replay",
+          "observed_energy_120s_j": 135.61796895171642,
+          "candidate_mae_c": 0.4875183853439651,
+          "frozen_mae_c": 6.038121664906401,
+          "rendering_status": "completed"
+        },
+        {
+          "status": "incomplete_or_ineligible",
+          "observed_energy_120s_j": null,
+          "candidate_mae_c": null,
+          "frozen_mae_c": null,
+          "rendering_status": "not_attempted"
+        }
+      ],
+      "partial_event_lower_bounds": {
+        "host_inference_return": 0,
+        "host_inference_start": 0,
+        "lane_available": 0,
+        "output_ready": 0,
+        "persist_complete": 0,
+        "request_return": 0,
+        "request_start": 1,
+        "runtime_return": 4,
+        "runtime_start": 4,
+        "warmup_return": 8,
+        "warmup_start": 8,
+        "worker_release": 0
+      }
+    },
+    {
+      "case": "power_gap",
+      "status": "partial",
+      "evaluated_sessions": 1,
+      "entrypoint_exit": 0,
+      "source_roles": [
+        "development",
+        "confirmation"
+      ],
+      "sessions": [
+        {
+          "status": "evaluated_pc_replay",
+          "observed_energy_120s_j": 135.61796895171642,
+          "candidate_mae_c": 0.4875183853439651,
+          "frozen_mae_c": 6.038121664906401,
+          "rendering_status": "completed"
+        },
+        {
+          "status": "analysis_ineligible",
+          "observed_energy_120s_j": null,
+          "candidate_mae_c": null,
+          "frozen_mae_c": null,
+          "rendering_status": "not_attempted"
+        }
+      ]
+    },
+    {
+      "case": "ap_gap",
+      "status": "partial",
+      "evaluated_sessions": 1,
+      "entrypoint_exit": 0,
+      "source_roles": [
+        "development",
+        "confirmation"
+      ],
+      "sessions": [
+        {
+          "status": "evaluated_pc_replay",
+          "observed_energy_120s_j": 135.61796895171642,
+          "candidate_mae_c": 0.4875183853439651,
+          "frozen_mae_c": 6.038121664906401,
+          "rendering_status": "completed"
+        },
+        {
+          "status": "analysis_ineligible",
+          "observed_energy_120s_j": null,
+          "candidate_mae_c": null,
+          "frozen_mae_c": null,
+          "rendering_status": "not_attempted"
+        }
+      ]
+    }
+  ],
+  "source_data_role": "already observed development and confirmation, posthoc PC replay",
+  "new_independent_sessions": 0,
+  "device_commands": 0,
+  "claims_created": 0,
+  "model_fits": 0,
+  "original_evidence_files_preserved": 25,
+  "original_freeze_sha256": "35ed6987b1fc09789284018f8502107eaf4e3125373651a01e3a08d427034c54",
+  "candidate_freeze_sha256": "8507adc10485940c36853786ba39a4f42439a9fbd3d71a5da1c7d55e2cbc7ec5",
+  "analysis_source_sha256": "6ec51ec7d9f746cb47732f155e7ed80a25154076c8ccda9509f7500fee26bfde",
+  "at": "2026-10-01T19:33:50.679815+09:00",
+  "baseline_head": "625e5a8dbe83506e25ee8e12a189979222b76dd1",
+  "worktree_modified_during_verification": true,
+  "focused_unittests": {
+    "passed": 10,
+    "failed": 0,
+    "skipped": 0,
+    "command": "python -X utf8 -B -m unittest tools.test_d1_ap_bundle_readout -q"
+  },
+  "source_files_sha256": {
+    "tools/d1_ap_bundle_readout.py": "6ec51ec7d9f746cb47732f155e7ed80a25154076c8ccda9509f7500fee26bfde",
+    "tools/d1_ap_bundle_readout_check.py": "83ad89ca8341b7198f691803642bd4c08bb89455a1234c590e295d2af78568c4",
+    "tools/test_d1_ap_bundle_readout.py": "909803699a6744a8f5a2ef8dcab038cc66065e7d0ab06bc9a4a38547d04d127d"
+  },
+  "baseline_defects": {
+    "baseline_rendering": {
+      "session_status": "analysis_ineligible",
+      "numeric_scores_retained": true,
+      "broken_image_links": true
+    },
+    "baseline_partial": {
+      "error": "ValueError('incomplete final record')",
+      "summary_written": false,
+      "inventory_written": true
+    },
+    "baseline_head": "625e5a8dbe83506e25ee8e12a189979222b76dd1"
+  },
+  "fixed_csv_direction_consistency": true,
+  "confirmed_host_inference_returns_per_original_session": [
+    24,
+    24
+  ],
+  "original_request_return_event_kind_absent": true,
+  "fixture_device_executor_check": "rejected before device access: bundle path",
+  "figures_visually_checked": [
+    "historical one-pulse AP",
+    "historical two-pulse energy"
+  ],
+  "limitations": [
+    "historical queue inputs, not current burst/3d8 confirmations",
+    "PC fault injection, not real device failure",
+    "no independent new sessions or model fit",
+    "strict/default unchanged, experiment_ready=false"
+  ]
+}
