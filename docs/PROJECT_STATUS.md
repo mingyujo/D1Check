@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-01 CG_DC 전이 확인1 완료 — 계수/strict 불변
+
+- [실측·소비·해석](AP_CGDC_TRANSFER_RUN01_20261001.md), [공유 HTML/CSV/그림](results/energy_ap_cgdc_transfer_01/run01/index.html). 승인된 plan_v2를1회 실행: 본24/warmup8/runtime4·전부 반환/lane 해제, staging7·pull1·APK push/설치0, ADB737(실행736＋선택1)/3200·실행293.138초/1300. 앱 정상 cleanup·58파일 회수·세션 host 정리·프로세스 부재 확인. 연결 소실/lifecycle_cancelled 미관측.
+- 시작 AP28.3°C·실제 lane CG_DC1.466752초. 정확한120초 J 관측135.146493 대 원래식155.730344＝+20.583851J(+15.230770%). AP35.008859–180.062298초의 기존/고정 후보 MAE5.831406/0.463463°C. 부하 전25표본/span65.36초만 후보 입력, 부하 후 재적합0; 후반 재상승 형태는 미재현. 정확도/정책 PASS 없음·strict/기본 모형/experiment_ready=false 유지.
+- Check/98소스·APK/두 freeze 해시·분모/구간합·24요청 경계·cleanup·소비 후 Check 거절·그림3개 검토 완료. plan_v2는 **소비·완료/재실행 불가**, 원본 `energy_ap_cgdc_transfer_run_v2/FINAL_RECEIPT.json`·registry 보존. 추가 실측 자동 실행 없음. 아래 미승인/미실행은 당시 이력이다.
+- [기존4세션 유휴 PC 대조](results/energy_ap_cgdc_transfer_01/run01/idle_comparison/summary.json) 완료: 경계 혼합 제외 부하 후 관측 W는 B2 1.227498·유휴 개발1.046593·확인1.058204·전이1.055108, 동결계수1.225433W. 원문120초 J 재현·관련3테스트 PASS, 신규 계수/기기 명령0. 원인 귀속/정책 차이 허용폭은 미판정. 다음 PC 작업 하나: 전이 확인과 유휴 조건 전용 한계를 기존 연구 결과·논의 본문에 반영한다.
+
 ## 2026-09-30 팀 공유 입구 갱신 완료
 
 - [팀 안내](team/README.md)를 최신 결과·근거·A24 전이 확인1·S26/NPU 자료 요청·GitHub/로컬 파일 경계로 갱신했다. 기존9월26일 본문은 접힌 이력으로 보존했고 저장소 루트에 README를 추가했다. 팀원에게 전달할 요약도 안내에 포함했다.

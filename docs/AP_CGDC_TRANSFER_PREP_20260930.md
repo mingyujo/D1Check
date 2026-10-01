@@ -1,5 +1,7 @@
 # CG_DC의 다른 기록 일정 전이 확인 — 실측 전 준비 완료
 
+> **2026-10-01 실행 후:** 사용자 승인으로 plan_v2를1회 완료했다. [실제 소비·자료·오차·종료](AP_CGDC_TRANSFER_RUN01_20261001.md), [공유 결과](results/energy_ap_cgdc_transfer_01/run01/index.html). 이제 소비·완료 상태로 Run 재호출 금지다. 아래 미승인/미소비/기기0은 준비 당시 이력이며 APK·계획·두 freeze는 변경하지 않았다.
+
 착수 HEAD `06bce390ed3923f88b084eead1258a94c59a9261`, clean worktree. 사용자의 “일단 실측전까지”에 따라 **PC 준비만** 수행했다. 기존 저온 후보·동결 모형·종료 계획·원자료는 그대로다. 상태는 `PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED`; 기기/Run/claim0, `experiment_ready=false`.
 
 ## 이번 한 세션의 목적과 종료점
