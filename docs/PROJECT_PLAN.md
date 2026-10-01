@@ -1,5 +1,9 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-01 — AP 두 이력 일괄 확인 경로와 연결 부재 종료
+
+사용자 승인에 따라 새 ENERGY-AP-BUNDLE-CONFIRM-01에 확인2/개발0을 통합했다. 기존 후보/원래freeze·두 입력 이력·판독을 고정하고 기존 설치 APK만 사용하며 신규 fit·배포 fallback은 없다. 관련26 PC검사·PS Check 완료. Run1회는 첫 현재 목록0대로 claim 후 stopped_no_resume; 앱/추론0·ADB1·두 세션 미시도. [상한·구현·증거·완료 기준](AP_BUNDLE_CONFIRM_RUN01_20261001.md). 기존 원자료/FAIL/동결/default/strict/experiment_ready=false 보존. 연결 복구 전 추가 기기 작업은 없고 소비 계획 재개도 없다.
+
 ## 2026-10-01 — 유휴 시간·이력 PC 분석 종료
 
 [6세션 판독](RESIDENT_IDLE_HISTORY_PC_20261001.md)을 완료했다. 새 L에서 기존 가산 후보가+18.139→+27.929J로 악화해 총2개선/3악화, 미채택 유지. 무부하 시간 변화는 관측됐으나 전용 가능한 time/AP/이력 전력법칙은 미식별. 신규 적합/기기/계획0, source/동결/기존 결과 보존. 고정창/혼합 bracket/null·실제CLI6검사 완료, 대시보드 simulation_scope에 관측 재생·외삽·동적 J/AP 순위null을 연결했다. 다음은 이 제한을 서비스 결과와 함께 기존 결과 본문에 반영하는 PC 작업이며 자동 추가 실측/후보탐색이 아니다. experiment_ready=false.

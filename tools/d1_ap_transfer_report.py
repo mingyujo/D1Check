@@ -162,16 +162,17 @@ def figures(output, table, energy, ap, states, evidence_label):
         fig.suptitle(stamp, fontsize=10)
         fig.tight_layout(rect=(0,0,1,.96)); fig.savefig(output/(name+'.svg')); fig.savefig(output/(name+'.png'), dpi=130)
         plt.close(fig)
-    fig, axes = plt.subplots(2, 1, figsize=(10, 6), sharex=True)
-    for ax, label in zip(axes, ('Stored PC lane occupancy (planned)', 'Observed dispatch to lane available')):
-        ax.set_title(label); ax.set_yticks([0, 1], ['C_GPU', 'D_CPU']); ax.set_ylim(-.7, 1.7)
-        for r in table:
-            y = 0 if r['task'] == 'classification' else 1
-            start = r['release_s'] if ax is axes[0] else r['actual_dispatch_s']
-            end = r['pc_lane_available_s'] if ax is axes[0] else r['actual_lane_available_s']
-            ax.broken_barh([(start, end-start)], (y-.3, .6), facecolors='tab:blue' if y == 0 else 'tab:orange')
-        ax.set_xlim(0, 120); ax.grid(axis='x', alpha=.2)
-    axes[-1].set_xlabel('Seconds from common start (120 s window)'); finish(fig, 'lanes')
+    if table:
+        fig, axes = plt.subplots(2, 1, figsize=(10, 6), sharex=True)
+        for ax, label in zip(axes, ('Stored PC lane occupancy (planned)', 'Observed dispatch to lane available')):
+            ax.set_title(label); ax.set_yticks([0, 1], ['C_GPU', 'D_CPU']); ax.set_ylim(-.7, 1.7)
+            for r in table:
+                y = 0 if r['task'] == 'classification' else 1
+                start = r['release_s'] if ax is axes[0] else r['actual_dispatch_s']
+                end = r['pc_lane_available_s'] if ax is axes[0] else r['actual_lane_available_s']
+                ax.broken_barh([(start, end-start)], (y-.3, .6), facecolors='tab:blue' if y == 0 else 'tab:orange')
+            ax.set_xlim(0, 120); ax.grid(axis='x', alpha=.2)
+        axes[-1].set_xlabel('Seconds from common start (120 s window)'); finish(fig, 'lanes')
     fig, axes = plt.subplots(2, 1, figsize=(10, 6), sharex=True)
     times = [0.]+[float(r['elapsed_s']) for r in energy]
     # Zero is the integral's initial condition, not an imputed sensor sample.

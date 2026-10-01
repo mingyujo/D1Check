@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-01 AP 일괄 확인01 — 연결 부재로 preflight 중단
+
+- [계획·실행·종료](AP_BUNDLE_CONFIRM_RUN01_20261001.md), [작은 결과/화면](results/ap_bundle_confirmation_01/run01/index.html). 사용자 묶음 실측/재개 승인으로 Run1회, **claim 후 stopped_no_resume**. 첫 devices -l 반환 exit0지만 transport0개; 두 확인 모두 미시도. ADB1/6,600·실행기3.362482/2,090초, runtime/warmup/추론/staging/pull/push/설치0·재시도0.
+- 기존 후보 고정·개발0/확인2의 실행 경로/PC26검사/실제PS Check 완료. parent/child 식별·원래stack/4 checkpoint·최종receipt 보존·두 host 소유자 exited 확인. 앱 미실행이므로 app cleanup/force-stop 해당 없음; 현재 앱 프로세스 부재는 미조회. 새 J/AP/병행/그림0, 모형 실패나 열모형 완성 판정 아님.
+- 원본14파일/두freeze/APK/소스/동결 계획 해시 불변, PC 판독 완료·소비 후 Check 거절. strict/default/experiment_ready=false 유지. **다음 행동 하나:** 사용자 측 A24 무선 ADB 연결 복구. 이 plan_v1 재개·새 계획/실측 자동 추가 없음. 아래 ‘다음’은 당시 이력이다.
+
 ## 2026-10-01 유휴 시간·이력6세션 PC 판독 완료
 
 - [판정·재현·남은 한 공백](RESIDENT_IDLE_HISTORY_PC_20261001.md), [화면/CSV/출력 범위](results/resident_history_01/index.html), [검증](results/resident_history_01/verification.json). 완료 C/L대조03＋기존4세션을 재사용했다. 고정 pre→late 적격5개 중 증가3/감소2, B2 pre는 활성 혼합/null. C10초 bin18개는0.869466–1.297921W로 비단조; 상관된 기술적 관측이며 인과/오차 상한 아님.
@@ -235,7 +241,7 @@
 ## 2026-09-28 CONFIRM-06 중단 — ADB transport 소실, 새 확인 결과 없음
 
 - [실행·회수·미확인 범위](ENERGY_AP_CONFIRM06_RESULTS_20260928.md), [작은 요약](results/energy_ap_state_confirm06/summary.json). 별도 계획 SHA `d13e1612…89301` Check 후 현재 온라인 동일 A24/설치본·환경 gate를 통과해 `Run` 1회. 첫 `CG_DC`에서 resident 준비·baseline 일부 후 slot0608 `exec-out cat /proc/uptime`가 `error: closed`/exit -1; 후속 transport `device not found`. **1시도·0완료/2**, `CC_DG` 미시도, `stopped_no_resume`, 재시도0.
-- 원 실행 ADB615/21,000·308.484/4,500초, staging1/7파일·host pull1, APK push/설치0. 최초 단일 회수는 온라인 기기0대로 1명령 후 종료. 사용자 연결 복구 후 동일 A24에서 목록1＋기록형17=18개 읽기 전용 명령으로 원본15파일 회수(전체 기기 명령634): runtime4·warmup8·적격성4 반환, **본 작업0**. 앱은 `baseline_gate` 시간 상한 실패와 실패 cleanup을 기록했다. host parent/child 종료, host force-stop 실패·앱 프로세스 존재; 다른 세션 소유권 미확인으로 재강제종료하지 않았다. 동결 SHA·기존 DC_DG 결과 보존, 새 에너지/AP 오차 계산 불가, `experiment_ready=false`.
+- 원 실행 ADB615/21,000·308.484/4,500초, staging1/7파일·host pull1, APK push/설치0. 최초 단일 회수는 온라인 기기0대로 1명령 후 종료. 사용자 연결 복구 후 동일 A24에서 목록1＋기록형17=18개 읽기 전용 명령으로 원본14파일 회수(전체 기기 명령634): runtime4·warmup8·적격성4 반환, **본 작업0**. 앱은 `baseline_gate` 시간 상한 실패와 실패 cleanup을 기록했다. host parent/child 종료, host force-stop 실패·앱 프로세스 존재; 다른 세션 소유권 미확인으로 재강제종료하지 않았다. 동결 SHA·기존 DC_DG 결과 보존, 새 에너지/AP 오차 계산 불가, `experiment_ready=false`.
 - **다음 행동:** 원본 ADB client·server/transport 기록으로 연결 소실 경계를 PC에서 진단한다. 앱 `baseline_gate`는 host가 arm하지 못한 뒤 60초 상한에 도달한 것으로 확인. 종료된 수집·단일 회수 claim을 재호출하지 않는다.
 
 ## 2026-09-28 CONFIRM-06 승인 후 착수 보류 — 우선 A24 transport offline

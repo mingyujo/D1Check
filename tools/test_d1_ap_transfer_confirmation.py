@@ -80,7 +80,7 @@ class TransferTest(unittest.TestCase):
                 patch.object(runner,'poll') as poll,
                 patch.object(runner.energy_device,'recover',return_value={'status':'recovered'}) as recover,
                 patch.object(runner.shared,'cleanup',return_value={'status':'completed'}) as cleanup,
-                patch.object(runner,'validate',return_value={'status':'eligible_descriptive_only'})):
+                patch.object(runner,'validate',return_value={'status':'eligible_descriptive_only','requests':24})):
                 result=runner.run(file,'forbidden-adb','fixture',t.p.digest(file),True)
             check.assert_called_once();poll.assert_called_once();recover.assert_called_once();cleanup.assert_called_once()
             self.assertEqual(result['sessions'],1)

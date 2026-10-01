@@ -222,19 +222,34 @@ def condition(preload, segments, frozen, initial, query_s, *, baseline_s=-30.):
 
 def readout(plan_file, output):
     """Offline, pre-load-conditioned evaluation; no new fit to post-load AP."""
-    from tools import d1_arrival_recorded_replay_analysis as a
-    from tools import d1_arrival_energy_analysis as descriptive
-    from tools import d1_energy_thermal as energy
     plan_file,output=Path(plan_file),Path(output)
     old.require(not output.exists(),'fresh analysis output only')
     plan=p.read(plan_file)
     old.require(plan['experiment_id']==EXPERIMENT and plan['source_code']==identity() and
         p.digest(plan['frozen_model']['path'])==replay.FROZEN_SHA and
         p.digest(plan['candidate_freeze']['path'])==FREEZE_SHA, 'registered source/freeze differs')
-    e=plan['entries'][0];root=Path(plan['output_root']);folder=root/f"00_{e['session_id']}"
-    old.require(p.read(root/'FINAL_RECEIPT.json')['status']=='completed_descriptive_only' and
-        p.read(folder/'validated.json')['status']=='eligible_descriptive_only',
+    e=plan['entries'][0];root=Path(plan['output_root'])
+    old.require(p.read(root/'FINAL_RECEIPT.json')['status']=='completed_descriptive_only',
         'not a completed eligible session; preserve partial evidence without whole-window scores')
+    return readout_session(plan_file,plan,dict(e,index=0),output)
+
+
+def readout_session(plan_file,plan,e,output):
+    """Shared numerical path; caller verifies its own frozen plan/procedure.
+
+    Permits a completed eligible session in a partially stopped multi-session
+    run without representing the overall run as completed.
+    """
+    from tools import d1_arrival_recorded_replay_analysis as a
+    from tools import d1_arrival_energy_analysis as descriptive
+    from tools import d1_energy_thermal as energy
+    plan_file,output=Path(plan_file),Path(output)
+    old.require(not output.exists(),'fresh analysis output only')
+    old.require(p.digest(plan['frozen_model']['path'])==replay.FROZEN_SHA and
+        p.digest(plan['candidate_freeze']['path'])==FREEZE_SHA,'registered freeze differs')
+    folder=Path(plan['output_root'])/f"{e['index']:02d}_{e['session_id']}"
+    old.require(p.read(folder/'validated.json')['status']=='eligible_descriptive_only',
+                'not an eligible completed session')
     artifact=folder/'artifacts';m=p.read(artifact/'manifest.json')
     old.require(p.digest(plan_file.parent/e['manifest'])==e['manifest_sha256'] and
         m==p.read(plan_file.parent/e['manifest']), 'recovered manifest differs')

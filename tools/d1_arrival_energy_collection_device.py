@@ -6,6 +6,8 @@ import math
 import re
 import shutil
 import time
+import traceback
+import uuid
 from pathlib import Path
 
 from tools import d1_arrival_energy_collection as c
@@ -37,13 +39,21 @@ def write(path,value):c.cal.write_new(path,value)
 
 def poll(d,remote,folder,manifest,plan):
     start=time.monotonic();end=min(d.deadline,start+plan.get('budget',c.BUDGET)['host_poll_seconds'])
-    last_thermal=last_screen=0;armed=False;index=0;start_ap_sent=False
+    last_thermal=last_screen=0;armed=False;index=0;start_ap_sent=False;last_checkpoint=start
     while time.monotonic()<end:
         command_ceiling=(3200 if plan.get('ap_idle_pulse_followup') and
-                         manifest.get('phase')=='development' else plan['budget']['adb_commands'])
+                          manifest.get('phase')=='development' else plan['budget']['adb_commands'])
+        if plan.get('ap_bundled_confirmation'):
+            position=next(e['index'] for e in plan['entries'] if e['session_id']==manifest['session_id'])
+            command_ceiling=min(command_ceiling,(position+1)*plan['budget']['per_session_adb_commands'])
         if (plan.get('single_arrival_confirmation') or plan.get('recorded_replay_confirmation')) and d.sequence>=command_ceiling-plan['budget'].get('adb_recovery_cleanup_reserve',20):
             raise RuntimeError('ADB observation cap reserve reached; preserve recovery/cleanup slots')
         now=time.monotonic()
+        if plan.get('ap_bundled_confirmation') and now-last_checkpoint>=30:
+            d.bundle_checkpoint.mark('poll_alive',session_id=manifest['session_id'],
+                adb_commands=d.sequence,remaining_seconds=d.deadline-now,
+                warmup_approved=armed,start_ap_approved=start_ap_sent)
+            last_checkpoint=now
         if now-last_thermal>=2:
             energy_device.thermal(d,folder,index);index+=1;last_thermal=time.monotonic()
         if now-last_screen>=10:
@@ -179,7 +189,10 @@ def run(plan_file,adb,serial,expected_sha,approved):
     plan=p.read(plan_file)
     idle_response=plan.get('ap_idle_pulse_followup',False)
     single=plan.get('single_arrival_confirmation',False) or plan.get('recorded_replay_confirmation',False)
-    if plan.get('resident_control_pair'):
+    if plan.get('ap_bundled_confirmation'):
+        from tools import d1_ap_bundle_confirmation as confirmation
+        confirmation.check(plan_file)
+    elif plan.get('resident_control_pair'):
         from tools import d1_resident_control_plan as confirmation
         confirmation.check(plan_file)
     elif plan.get('ap_transfer_confirmation'):
@@ -197,13 +210,27 @@ def run(plan_file,adb,serial,expected_sha,approved):
     else:c.check(plan_file)
     budget=plan['budget']
     root=Path(plan['output_root']);registry=Path(plan['registry'])
-    if plan.get('resident_control_pair'):
+    if plan.get('resident_control_pair') or plan.get('ap_bundled_confirmation'):
         require_host_pull_space(plan)
     registry.mkdir(parents=True,exist_ok=False);root.mkdir(parents=True,exist_ok=False)
     start=time.monotonic();hard=start+budget['total_seconds']
-    write(registry/'claimed.json',dict(utc=legacy.utc(),plan_sha256=expected_sha,budget=budget))
-    d=(ObservedDevice(adb,serial,root/'host_commands',allow_select=True)
-       if plan.get('resident_control_pair') else ObservedDevice(adb,serial,root/'host_commands'))
+    journal=None
+    claim=dict(utc=legacy.utc(),plan_sha256=expected_sha,budget=budget)
+    if plan.get('ap_bundled_confirmation'):
+        from tools import d1_energy_host_lifecycle as lifecycle
+        from tools import d1_energy_host_checkpoints as checkpoints
+        claim.update(host_run_id=uuid.uuid4().hex,host_identity=lifecycle.host_identity())
+        journal=checkpoints.Checkpoints(root/'host_checkpoints',expected_sha,
+                                       claim['host_run_id'],claim['host_identity'])
+        journal.mark('claimed')
+        (root/'frozen_collection_plan.json').write_bytes(Path(plan_file).read_bytes())
+        (root/'candidate_procedure_freeze.json').write_bytes(Path(plan['candidate_freeze']['path']).read_bytes())
+    write(registry/'claimed.json',claim)
+    d=(ObservedDevice(adb,serial,root/'host_commands',allow_select=True,
+                      forbid_apk_deploy=plan.get('ap_bundled_confirmation',False))
+       if plan.get('resident_control_pair') or plan.get('ap_bundled_confirmation') else
+       ObservedDevice(adb,serial,root/'host_commands'))
+    if journal:d.bundle_checkpoint=journal
     d.deadline=hard
     if single:d.command_limit=budget['adb_commands']
     complete=[];current=None;remote=None;identified=False;installation=None
@@ -211,8 +238,16 @@ def run(plan_file,adb,serial,expected_sha,approved):
     candidate_freeze_sha=None
     try:
         (root/'installation').mkdir()
-        installation=energy_device.installation(d,plan,plan_file,root/'installation',hard);identified=True
+        if journal:journal.mark('installed_preflight_start')
+        installation=(energy_device.installed_preflight(d,plan,plan_file,root/'installation',hard)
+                      if plan.get('ap_bundled_confirmation') else
+                      energy_device.installation(d,plan,plan_file,root/'installation',hard));identified=True
+        if journal:journal.mark('installed_preflight_verified',adb_commands=d.sequence)
         for entry in plan['entries']:
+            if plan.get('ap_bundled_confirmation'):
+                c.require(p.digest(plan['candidate_freeze']['path'])==plan['candidate_freeze']['sha256'] and
+                          p.digest(root/'candidate_procedure_freeze.json')==plan['candidate_freeze']['sha256'],
+                          'frozen candidate changed; no continuation')
             if idle_response and entry['index']==1:
                 from tools import d1_ap_idle_response_plan as ap_plan
                 freeze_start=time.monotonic()
@@ -254,6 +289,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
                                            'AP structure changed before confirmation')
             c.require(hard-time.monotonic()>=budget['session_seconds'],'whole session reserve')
             current=root/f"{entry['index']:02d}_{entry['session_id']}";current.mkdir();remote=None
+            if journal:journal.mark('session_preparation',session_id=entry['session_id'],index=entry['index'])
             cleanup_attempted=False;cleanup_result=None
             session_start=time.monotonic();session_end=min(hard,session_start+budget['session_seconds'])
             d.deadline=min(session_start+budget['stage_gate_seconds'],session_end-580)
@@ -270,6 +306,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
             d.call('shell','am','start','-W','-n',legacy.PACKAGE+'/'+ACTIVITY,'-a',ACTION,
                    '--es','session_id',entry['session_id'],timeout=20)
             poll(d,remote,current,manifest,plan)
+            if journal:journal.mark('app_terminal_seen',session_id=entry['session_id'],adb_commands=d.sequence)
             d.deadline=min(session_end-45,time.monotonic()+budget['recovery_seconds'])
             write(current/'recovery.json',energy_device.recover(d,remote,current/'artifacts'))
             cleanup_attempted=True
@@ -297,20 +334,26 @@ def run(plan_file,adb,serial,expected_sha,approved):
                     analysis_sha256=p.digest(current/'ap_analysis'/'summary.json'),
                     ap_samples=result['ap_samples'],accuracy_pass=None))
             complete.append(stats)
+            if journal:journal.mark('session_validated',session_id=entry['session_id'],statistics=stats)
         if not single:c.require(p.digest(root/'development_freeze.json')==p.read(root/'freeze_receipt.json')['sha256'],'freeze changed')
         if idle_response:c.require(candidate_freeze_sha is not None and
                     p.digest(root/'ap_model_freeze.json')==candidate_freeze_sha,
                     'AP candidate not frozen throughout confirmation')
         outcome=dict(status='completed_descriptive_only',sessions=len(complete),requests=sum(x['requests'] for x in complete),warmup=8*len(complete),
                      runtime_creations=4*len(complete),adb_commands=d.sequence,elapsed_seconds=time.monotonic()-start,
-                     installation=installation,experiment_ready=False)
+                      installation=installation,experiment_ready=False)
+        if journal:journal.mark('app_sessions_finished_receipt_pending',outcome=outcome)
         write(root/'FINAL_RECEIPT.json',outcome);write(registry/'completed.json',outcome);return outcome
     except BaseException as exc:
         failure=dict(status='stopped_no_resume',error=repr(exc),completed_sessions=len(complete),
                      session_attempts=len(list(root.glob('*/attempt.json'))),
                      launch_attempts=len(list(root.glob('*/launch_attempt.json'))),
                      consumption='confirmed durable event starts/returns only; missing calls remain unknown',
-                     installation=installation,experiment_ready=False)
+                      installation=installation,experiment_ready=False)
+        if journal:
+            failure['original_stack']=traceback.format_exc()
+            try:journal.mark('original_failure',error=repr(exc),stack=failure['original_stack'],adb_commands=d.sequence)
+            except BaseException as recording_error:failure['original_checkpoint_error']=repr(recording_error)
         if identified and remote and current:
             d.deadline=min(hard-45,time.monotonic()+15)
             for name in ('manifest.json','progress.jsonl','cleanup.json','sampler_failure.json','session_failure.json','common_boundary.json','requests.json'):
@@ -333,5 +376,9 @@ def run(plan_file,adb,serial,expected_sha,approved):
                     ('runtime_start','runtime_return','warmup_start','warmup_return','request_start','output_ready','persist_complete','lane_available')},
             missing_not_zero=True)
         failure['elapsed_seconds']=time.monotonic()-start
+        failure['adb_commands']=d.sequence
+        if journal:
+            try:journal.mark('stopped_no_resume',failure=failure)
+            except BaseException as recording_error:failure['terminal_checkpoint_error']=repr(recording_error)
         write(root/'FINAL_RECEIPT.json',failure);write(registry/'stopped.json',failure)
         raise
