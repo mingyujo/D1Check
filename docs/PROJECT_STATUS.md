@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-01 유휴 시간·이력6세션 PC 판독 완료
+
+- [판정·재현·남은 한 공백](RESIDENT_IDLE_HISTORY_PC_20261001.md), [화면/CSV/출력 범위](results/resident_history_01/index.html), [검증](results/resident_history_01/verification.json). 완료 C/L대조03＋기존4세션을 재사용했다. 고정 pre→late 적격5개 중 증가3/감소2, B2 pre는 활성 혼합/null. C10초 bin18개는0.869466–1.297921W로 비단조; 상관된 기술적 관측이며 인과/오차 상한 아님.
+- 변경 없는 기존 가산 후보를 새 L의35.008415–120초에 적용하면 기존 차이+18.139070→후보+27.928944J(부하 후 유휴+16.355960→+24.776531J)로 악화. 기존4점수 보존·총2개선/3악화, 미채택 유지. 새로운 time/AP/이력 계수·후보적합0, 동적 J/AP 순위null. 원래freeze/AP후보/strict/default/experiment_ready=false 불변.
+- 실제CLI 포함6검사 통과, 기존4원문/새pair source해시·동결2파일·120초/고정창 수치·CSV 재현 확인. APK749계열4세션과3d8계열C/L 프로토콜은 분리한다. L 냉각후기 결측과 B2 혼합창을 채우지 않음. 기기 명령/실측/설치/빌드/새 계획/claim0.
+- 다음 PC 작업 하나: 제한 시뮬레이터의 서비스 결과와 동적 J/AP 미판정을 함께 제시하도록 기존 결과 본문을 정리한다. 기록된 고정 일정 재생은 가능하며 동적 정책 우월성은 미입증. 아래 ‘다음’과 준비/실측 문구는 당시 이력이다.
+
 ## 2026-10-01 resident 대조03 두 세션 완료·PC 판독 완료
 
 - [실행 결과·예산·원본·재현](RESIDENT_CONTROL_RUN03_20261001.md), [공유 화면/CSV](results/resident_control_design_01/run03/index.html), [보존·판독 검증](results/resident_control_design_01/run03/verification.json). 사용자 승인 plan_v3 1회 실행, **completed_descriptive_only·소비·종료**. C0/L24 모두 정상 완료, runtime8/warmup16/본24=40추론, staging2/14·pull1·APK push/설치0, ADB1,543/6,600·679.531/2,090초·재시도0.

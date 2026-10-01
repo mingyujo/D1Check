@@ -1,0 +1,56 @@
+{
+  "id": "RESIDENT-HISTORY-PC-01",
+  "starting_head": "cccbe63a2779a00a84d96ba96e8182f8fba511ff",
+  "data_role": "posthoc_descriptive_structure_analysis_all_outcomes_already_seen",
+  "cases": [
+    "B2_queue_seen",
+    "idle_development_seen",
+    "idle_confirmation_seen",
+    "CGDC_transfer_seen",
+    "control03_C_seen",
+    "control03_L_seen"
+  ],
+  "fixed_windows_seconds": {
+    "pre": [
+      5,
+      30
+    ],
+    "late_common": [
+      90,
+      120
+    ],
+    "late_cooling": [
+      150,
+      180
+    ],
+    "common": [
+      0,
+      120
+    ]
+  },
+  "bins_seconds": 10,
+  "bin_extent_seconds": [
+    0,
+    180
+  ],
+  "max_power_gap_s": 2.5,
+  "max_ap_gap_s": 10,
+  "required_resident_keys": [
+    "classification_CPU",
+    "classification_GPU",
+    "detection_CPU",
+    "detection_GPU"
+  ],
+  "idle_rule": "full fixed window must be lane-idle and four resident; mixed bins excluded from idle power",
+  "power_integration": "existing trapezoid midpoint integration, no extrapolation, no zero filling",
+  "ap_integration": "existing AP bracket rule, no endpoint extrapolation",
+  "existing_candidate": "RESIDENT-PRELOAD-OFFSET-01 formula and prefix contract unchanged; extend only to new loaded L; C not scored as candidate because no dispatch information time",
+  "new_candidate_count": 0,
+  "new_fitted_parameters": 0,
+  "statistics": "window and bin arithmetic only; no sample independence, no causal regression or universal accuracy limit",
+  "accuracy_pass": null,
+  "policy_rank": null,
+  "strict_support": false,
+  "experiment_ready": false,
+  "device_execution": false
+}

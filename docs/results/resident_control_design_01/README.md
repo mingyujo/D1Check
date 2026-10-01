@@ -1,5 +1,7 @@
 # 최신 실행03 — C/L 두 세션 정상 완료
 
+[대조 이후 유휴 시간·이력 PC 분석 완료](../resident_history_01/index.html). 추가 실측 없이6세션으로 기존 가산 후보 미채택을 유지했고 동적 정책 비용은 미판정이다.
+
 [결과 보고서·원본·재현](../../RESIDENT_CONTROL_RUN03_20261001.md) · [화면·그림·CSV](run03/index.html) · [검증](run03/verification.json).
 
 plan_v3 소비·completed_descriptive_only. 40추론/1543명령/679.531초, 동일 설치본으로 APK push/설치0. C/L120초 J124.545817/137.005431, 전후 W 변화 차이−0.202361W. 한 쌍의 구조 개발 자료·외삽 진단이며 독립 확인/인과/정확도 PASS 아님. L 냉각후기 결측 null. 원본·두freeze·experiment_ready=false 유지. 아래 미승인/미소비 문구는 준비 당시 이력이다.
