@@ -1,0 +1,12 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><title>Resident C/L 대조03 완료</title>
+<style>body{font:16px sans-serif;max-width:1100px;margin:24px auto;padding:16px;line-height:1.6}table{border-collapse:collapse}td,th{border:1px solid #ccc;padding:8px}img{width:100%}.note{background:#fff2db;padding:16px}</style>
+<h1>Resident 대조03: 두 세션 완료</h1>
+<p>실측 C0 → L24 · 40추론 · 679.531초 · ADB1,543 · APK push/설치0 · 재시도0.</p>
+<p class="note">구조 판별용 개발 한 쌍, 독립 확인·인과 귀속·정확도 PASS 아님. 시작 AP C27.3/L27.7°C는 개발 범위 밖. 동결식은 외삽 진단, AP는 관측만 표시. experiment_ready=false.</p>
+<table><tr><th>arm</th><th>관측120초 J</th><th>동결식 진단J</th><th>예측−관측J</th><th>pre→late W</th></tr>
+<tr><td>C 무부하</td><td>124.545817</td><td>147.052011</td><td>+22.506194</td><td>0.971881→0.989955</td></tr>
+<tr><td>L 등록 부하</td><td>137.005431</td><td>155.685079</td><td>+18.679647</td><td>1.195793→1.011505</td></tr></table>
+<p>변화 차이 −0.202361W. 시작조건·사전 전력·고정 순서가 다르므로 순수 부하 효과가 아닙니다. 실제 CG_DC lane 겹침1.455957초. L 냉각후기150–180초는 전력0.176161초 결측 및 AP bracket 부재로 J/W/AP null; 창 이동·0채움 없음.</p>
+<img src="observed.png" alt="C와 L 관측 전력/AP 및 동결식 누적에너지와 부호 있는 잔차"><p>회색: 고정 판독창, 빨강: 실제 L 점유. 0/120초 누적J는 적분 경계, 센서값 생성 아님. AP 예측 그림이 아닙니다.</p>
+<p><a href="../../../RESIDENT_CONTROL_RUN03_20261001.md">보고서·재현</a> · <a href="summary.json">전체 요약</a> · <a href="windows.csv">고정창</a> · <a href="paths.csv">경로</a> · <a href="states.csv">상태</a> · <a href="partial_load_lanes.csv">lane</a> · <a href="verification.json">검증</a> · <a href="observed.svg">SVG</a></p>
+<p>앱 cleanup 두 세션 완료, host 정리 완료와 대상 프로세스 부재는 별도 원본 증거로 확인. plan_v3 소비·완료, 기존 v1/v2 stopped_no_resume 보존. 추가 실행 없음.</p></html>

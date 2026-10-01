@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-01 resident 대조03 두 세션 완료·PC 판독 완료
+
+- [실행 결과·예산·원본·재현](RESIDENT_CONTROL_RUN03_20261001.md), [공유 화면/CSV](results/resident_control_design_01/run03/index.html), [보존·판독 검증](results/resident_control_design_01/run03/verification.json). 사용자 승인 plan_v3 1회 실행, **completed_descriptive_only·소비·종료**. C0/L24 모두 정상 완료, runtime8/warmup16/본24=40추론, staging2/14·pull1·APK push/설치0, ADB1,543/6,600·679.531/2,090초·재시도0.
+- C/L 공통120초 J124.545817/137.005431; 원래 동결식 진단 차이+22.506194/+18.679647J. pre→late W는 C0.971881→0.989955/L1.195793→1.011505, 변화 차이−0.202361W. 실제 CG_DC1.455957초. 초기 AP27.3/27.7°C 범위 밖·외삽이며 인과/독립 확인/정확도 PASS 아님. L 냉각후기 전력0.176161초 결측·AP bracket 부재로 전체창 null, 창 대체 없음.
+- 앱 정상 cleanup 두 건/소유자 host 정리/기존 ps 대상 부재 확인, Run exit0·회수 완료. timeout/관측된 연결 소실/lifecycle_cancelled 없음. 원본7,923파일·실행95소스/APK/두freeze 불변; 판독4테스트·고정 수치/CSV/그림 일치. 새 계수/후보적합/추가 기기 실행0, strict/default/experiment_ready=false 유지.
+- 다음 PC 작업 하나: 이 완전 C/L 쌍과 기존4세션으로 유휴 전력의 시간·이력 의존성과 식별 가능한 보완 범위를 판정한다. 과거 종료 계획 재개와 자동 재실측 없음. 아래 준비/중단 문구는 당시 이력이다.
+
 ## 2026-10-01 resident 대조03 실행 계획 준비 완료
 
 - [새 계획·정확한 예산·Check/승인 후 Run](RESIDENT_CONTROL_MEASUREMENT_PLAN_20261001.md#새-실행-계획03-준비-완료--2026-10-01), [대상해시·검증](results/resident_control_design_01/plan03/verification.json). `ENERGY-AP-RESIDENT-CONTROL-03`/plan_v3 SHA `2e9b3fcd…7bf6d8`, **PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED**, output/registry 미생성. 기존 plan_v1/v2는 stopped_no_resume.

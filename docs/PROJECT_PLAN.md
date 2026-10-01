@@ -1,5 +1,9 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-01 — resident 대조03 실측·판독 완료
+
+[실행03](RESIDENT_CONTROL_RUN03_20261001.md)는 사용자 승인 새 계획을1회 실행해 C/L 모두 정상 종료·회수했다. 2세션/40추론/1543명령/679.531초, 동일 설치본으로 push/설치0. 고정창 전후 변화 차이−0.202361W는 한 쌍의 기술적 관측이며 L 냉각후기 끝 결측은 null이다. 두 arm의 전체120초 관측과 동결식 외삽 차이를 공유했다. 원본/기존freeze/strict/default/experiment_ready=false 유지, plan_v3 소비·완료. 다음은 이 쌍과 기존4세션의 유휴 시간·이력 의존성 PC 판독이며 새 측정·자동 적합은 시작하지 않는다. 아래 계획 준비는 당시 이력이다.
+
 ## 2026-10-01 — resident 대조03 PC 실행 준비 완료
 
 [계획03](RESIDENT_CONTROL_MEASUREMENT_PLAN_20261001.md#새-실행-계획03-준비-완료--2026-10-01)을 사용자 요청으로 새 ID/경로에 준비·동결했다. 동일 C0→L24 설계/40추론/2,090초/6,600명령/재시도0, 기존 서명APK 재사용. claim 전 공간 검사·새 edition3, 관련7테스트·실제PS Check 통과. 미승인·미소비이며 Run/기기/claim0, 다음은 이 예산의 실측 실행 여부 결정이다. 종료v1/v2/기존freeze/strict/default/experiment_ready=false 보존. 과거 C와 새 L을 합치지 않는다.

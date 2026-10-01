@@ -1,3 +1,9 @@
+# 최신 실행03 — C/L 두 세션 정상 완료
+
+[결과 보고서·원본·재현](../../RESIDENT_CONTROL_RUN03_20261001.md) · [화면·그림·CSV](run03/index.html) · [검증](run03/verification.json).
+
+plan_v3 소비·completed_descriptive_only. 40추론/1543명령/679.531초, 동일 설치본으로 APK push/설치0. C/L120초 J124.545817/137.005431, 전후 W 변화 차이−0.202361W. 한 쌍의 구조 개발 자료·외삽 진단이며 독립 확인/인과/정확도 PASS 아님. L 냉각후기 결측 null. 원본·두freeze·experiment_ready=false 유지. 아래 미승인/미소비 문구는 준비 당시 이력이다.
+
 # 무부하 대조 — 새 계획03 PC 준비 완료
 
 [계획·예산·승인 후 명령](../../RESIDENT_CONTROL_MEASUREMENT_PLAN_20261001.md#새-실행-계획03-준비-완료--2026-10-01) · [PC검증·해시](plan03/verification.json).
