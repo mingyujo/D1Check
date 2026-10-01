@@ -1,0 +1,137 @@
+{
+  "status": "deletion_blocked_by_automatic_tool_review",
+  "verified_utc": "2026-10-01T05:39:37.967090+00:00",
+  "source_backup_actual_remote_head": "421786eea149d2354d011462b36e3814ed6deff8",
+  "files_deleted": 0,
+  "bytes_freed_by_cleanup": 0,
+  "eligible_directories": 971,
+  "eligible_files": 20351,
+  "eligible_bytes": 4426671652,
+  "builds": [
+    {
+      "build": "arrival_ap_gate_build_v1",
+      "directories": 55,
+      "files": 1211,
+      "bytes": 249499376
+    },
+    {
+      "build": "arrival_b2_ap_observe_build_v1",
+      "directories": 55,
+      "files": 1221,
+      "bytes": 249574750
+    },
+    {
+      "build": "arrival_b2_lifecycle_build_v1",
+      "directories": 55,
+      "files": 1221,
+      "bytes": 249570787
+    },
+    {
+      "build": "arrival_energy_synthetic_build_v2",
+      "directories": 51,
+      "files": 548,
+      "bytes": 240340445
+    },
+    {
+      "build": "arrival_recorded_b2_build_v1",
+      "directories": 55,
+      "files": 1221,
+      "bytes": 249564738
+    },
+    {
+      "build": "arrival_recorded_b2_build_v2",
+      "directories": 55,
+      "files": 1221,
+      "bytes": 249565813
+    },
+    {
+      "build": "energy_ap_autonomous_build_v1",
+      "directories": 60,
+      "files": 1277,
+      "bytes": 274238468
+    },
+    {
+      "build": "energy_ap_state_build_v3",
+      "directories": 55,
+      "files": 1205,
+      "bytes": 249398340
+    },
+    {
+      "build": "energy_collection_build_v3",
+      "directories": 60,
+      "files": 1254,
+      "bytes": 273672916
+    },
+    {
+      "build": "energy_collection_build_v4",
+      "directories": 60,
+      "files": 1254,
+      "bytes": 273677267
+    },
+    {
+      "build": "energy_collection_build_v5",
+      "directories": 60,
+      "files": 1254,
+      "bytes": 273678649
+    },
+    {
+      "build": "energy_collection_build_v7",
+      "directories": 55,
+      "files": 1195,
+      "bytes": 249166250
+    },
+    {
+      "build": "energy_collection_build_v8",
+      "directories": 60,
+      "files": 1262,
+      "bytes": 273786556
+    },
+    {
+      "build": "energy_operational_build_v1",
+      "directories": 60,
+      "files": 1262,
+      "bytes": 273794006
+    },
+    {
+      "build": "energy_sampler_build_v1",
+      "directories": 60,
+      "files": 1262,
+      "bytes": 273781010
+    },
+    {
+      "build": "energy_sampler_build_v2",
+      "directories": 60,
+      "files": 1262,
+      "bytes": 273782376
+    },
+    {
+      "build": "resident_control_build_v1",
+      "directories": 55,
+      "files": 1221,
+      "bytes": 249579905
+    }
+  ],
+  "protected_artifacts_count": 62,
+  "protected_categories": [
+    "signed APK outputs",
+    "build receipt/log/attempt metadata",
+    "all measurement originals, plans, registries and frozen models outside the deletion targets",
+    "project sources, all other worktrees, Gradle dependency/wrapper caches"
+  ],
+  "skipped_count": 20,
+  "device_commands": 0,
+  "free_bytes_at_final_check": 4193038336,
+  "check": {
+    "command": "& './tools/Clear-D1BuildIntermediates.ps1' -Action Check -Manifest 'C:/Users/LG/Documents/D1Check_Arrival_Extension/storage_cleanup_pc_20261001_v1/candidates.json'",
+    "result": "CHECK_OK: targets=971; protected=62; deleted=0; device_commands=0",
+    "boundaries": "root/category/reparse/active-build checks; all protected hashes; current candidate file counts, sizes, protected extensions"
+  },
+  "local_inventory": "Documents/D1Check_Arrival_Extension/storage_cleanup_pc_20261001_v1/candidates.json",
+  "tool_rejection_reason": "blocked by policy; process creation rejected before any deletion",
+  "limitations": [
+    "Check does not prove deletion success",
+    "no ambiguous raw data or APK uploaded to GitHub",
+    "intermediates can be regenerated; a later build may recreate them",
+    "manual Run refuses an existing cleanup receipt; failures/partial deletion are preserved without automatic retry"
+  ]
+}

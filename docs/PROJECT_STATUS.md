@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-01 재생성 가능한 빌드 중간 파일 정리 — 도구 삭제 차단
+
+- [정리 후보·검증·차단 요약](results/resident_control_design_01/storage_cleanup_20261001.json): 완료 빌드의 중간971폴더/20,351파일/4,426,671,652바이트만 선정. 서명APK·로그·영수증62파일 해시 확인, 실측 원본/계획/registry/freeze/소스/다른worktree/다운로드캐시 보존. 실제 원격421786e와 로컬의 기존 소스·문서 백업 일치 확인.
+- 삭제 명령은 자동 승인 검토의 `blocked by policy`로 프로세스 생성 전에 거부됨. **삭제0·확보0**, 우회 실행 없음. `tools/Clear-D1BuildIntermediates.ps1 -Action Check -Manifest <로컬 candidates.json>`은 실제 경로/파일수·바이트/해시/활성build/reparse 검사 통과, 기기명령0. 로컬 상세 목록은 `D1Check_Arrival_Extension/storage_cleanup_pc_20261001_v1/candidates.json`, GitHub에는 스크립트와 작은 요약만 저장.
+- 다음 행동 하나: 사용자 로컬 PowerShell에서 같은 manifest로 정리 스크립트의 `-Action Run`을 실행한다. 기존 receipt가 있으면 중복 실행을 차단하고, 삭제/부분실패·보존 해시·free를 별도 receipt로 기록한다. 실제 삭제 완료와 Check 통과를 구분한다. 아래 실측 상태·experiment_ready=false는 불변이다.
+
 ## 2026-10-01 resident 대조02 preflight 중단·PC 마무리 완료
 
 - [실행·진단·검증](RESIDENT_CONTROL_RUN02_20261001.md), [작은 결과](results/resident_control_design_01/run02/index.html). plan_v2/SHA5073b2b9…52fde7은 1회 소비·**stopped_no_resume**. 설치본 pull 로컬 쓰기 I/O 오류·직후 C: free0 확인. 8.360초/ADB5/pull1부분, 세션·launch·runtime·warmup·본 요청·추론·staging·APK push·설치0. 환경/설치본 전체 검증 미도달, 새 J/AP 없음. 앱/host 종료 해당 없음(미실행), 현재 프로세스 부재 미조회.
