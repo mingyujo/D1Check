@@ -1,5 +1,9 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-01 — resident 대조03 PC 실행 준비 완료
+
+[계획03](RESIDENT_CONTROL_MEASUREMENT_PLAN_20261001.md#새-실행-계획03-준비-완료--2026-10-01)을 사용자 요청으로 새 ID/경로에 준비·동결했다. 동일 C0→L24 설계/40추론/2,090초/6,600명령/재시도0, 기존 서명APK 재사용. claim 전 공간 검사·새 edition3, 관련7테스트·실제PS Check 통과. 미승인·미소비이며 Run/기기/claim0, 다음은 이 예산의 실측 실행 여부 결정이다. 종료v1/v2/기존freeze/strict/default/experiment_ready=false 보존. 과거 C와 새 L을 합치지 않는다.
+
 ## 2026-10-01 — resident 대조02 중단 후 PC 마무리
 
 [결과](RESIDENT_CONTROL_RUN02_20261001.md): plan_v2는 설치본 pull의 로컬 I/O 오류·C: free0으로 preflight 중단, stopped_no_resume. 8.360초/ADB5/pull1부분, 세션·추론0; 환경/전체 설치본 검증과 대조 수집 미완료. 공간 확보 후 PC14검증·최소 claim 전 저장 공간 검사·초기 실패 판독·원본 inventory를 완료했다. 기존 화면 timeout 내부 원인은 미확정이며 주기/기준은 바꾸지 않았다. 이번 재개 기기0, APK/두freeze/strict/default/experiment_ready=false 유지. 향후 실행은 새 ID·승인이 필요하며 현재는 새 계획 생성/실측을 수행하지 않는다.

@@ -1,5 +1,72 @@
 # 추가 실측 필요성 및 무부하 대조 최소 설계
 
+## 새 실행 계획03 준비 완료 — 2026-10-01
+
+사용자의 “계획 ㄱㄱ”에 따라 공간 검사 수정본을 새 계획에 고정했다. **이번 범위는 PC 준비이며 `PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED`, 미승인·미소비다.** Run/기기 명령/실행 출력/consumption claim은0이다. plan_v1/v2는 stopped_no_resume로 보존하고 재실행하지 않는다. 아래 plan_v1 준비 설명은 과거 이력이다.
+
+### 목적·역할·중단 기준
+
+같은4resident·8warmup 준비를 거친 **C무부하0요청 → L등록 CG_DC24요청**을 한 쌍으로 관측해, 부하가 없어도 생기는 W/AP 시간 변화와 부하 후 변화를 기술적으로 대조한다. 기존 burst·seed201·B2 기록 입력의 도착 및 release+35초, 실제 lane 경계, baseline30/common120/cooling60초를 유지한다. PC 간섭계수나 lane 점유를 실제 기기에 강제하지 않는다. 기존 완료 C와 새 L을 합쳐 한 대조쌍으로 만들지 않는다.
+
+고정 분석창은 공통0–120초, 부하 전5–30초, 후기90–120초, 냉각후기150–180초다. 해당창에 부하가 남거나 센서 bracket/간격 조건을 충족하지 못하면 null로 남기고 창을 바꾸지 않는다. power 최대공백2.5초/AP10초, L lane은90초 이전 해제 조건을 유지한다. 전체120초 관측J/원래 동결식 진단, 두 arm의 전후 W/AP 변화 및 변화 차이, 실제 lane·호출 분모를 산출한다. 조건당1세션·고정순서의 구조 판별용 개발 자료이며 독립 확인/인과 귀속/정확도 PASS/정책 순위 판정은 아니다. 새 후보 적합·재보정은 자동 수행하지 않는다.
+
+첫 연결·환경·품질·메모리·sampler·시간·회수 실패 시 쌍을 중단하며 다음 세션/재시도/대체/추가를 시작하지 않는다. 기존50초 회수·45초 cleanup 예약과 최종100명령 reserve를 유지한다. 앱 cleanup/host force-stop/프로세스 부재를 구분하고, 확인 불가능한 종료는 미확인으로 남긴다.
+
+### 정확한 상한
+
+| 항목 | 계획03 상한 |
+|---|---:|
+| 세션 | C1＋L1＝2 |
+| runtime 생성 | 8 |
+| warmup | 16 |
+| 본 요청 | C0＋L24＝24 |
+| 별도 적격성 추론 | 0; 기존 warmup 출력 품질 검사 |
+| 총 명시적 추론 | 40 |
+| staging | 2회·14파일 |
+| 설치본 host pull | 최대1 |
+| 후보 APK push·설치 | 각각 최대1; 동일 설치본 검증 시 생략 |
+| 고정 관측 | 세션당210초, 합계420초 |
+| 세션 사이 대기 | 90초 |
+| preflight/설치 예약 | 600초 |
+| 세션 예약 | 700초＝stage120＋poll485＋회수50＋cleanup45 |
+| 전체 예약 | 600＋700×2＋90＝**2,090초(34분50초)** |
+| ADB | **최대6,600명령**, 최종 정리100명령 예약 |
+| 재시도·대체·추가 | 0 |
+
+2,090초는 정상 예상시간이나 완주 보장이 아니다. poll485 안의 baseline·공통창·냉각 및 개별 timeout은 다시 더하지 않는다. screen10초/timeout2초, thermal2초, listing0.25초/timeout3초, 앱1초 sampler, start AP 대기30초, APK push120초를 기존 경로대로 유지한다.
+
+### 동일성·현재 환경 확인 경계
+
+- ID `ENERGY-AP-RESIDENT-CONTROL-03`
+- 계획 `C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_resident_control_plan_v3/collection_plan.json`
+- 계획 SHA-256 `2e9b3fcd6eaa02b6ce820cd34a4b660125b70cb4c35328e804303623ea7bf6d8`
+- APK `C:/Users/LG/Documents/D1Check_Arrival_Extension/resident_control_build_v1/build/_benchmark-runner/outputs/apk/modelProbe/benchmark-runner-modelProbe.apk`
+- APK SHA-256 `3d8ea871103c1350fb74e444c310be02ba8b3999cd6537691e75b457de4e94c2`; 재빌드·재서명 없음.
+- package `com.example.d1check.benchmarkrunner.modelprobe`, versionCode1, 프로젝트 인증서 SHA-256 `b253dbb951d85d1a79ea7f2ca2d1ff76a9fa34dc6c793b1df9b5249f3fcc7565`.
+- 소스95개·두 manifest·실행 스크립트·입력·분석 계약·APK/build receipt·원래 freeze를 고정했다. 원래 freeze `35ed6987…034c54`, 기존 AP 후보 `8507adc1…cbc7ec5` 불변.
+- 출력 예정 `energy_ap_resident_control_run_v3`, registry 예정 `resident_control_registry/ENERGY-AP-RESIDENT-CONTROL-03`: **미생성**.
+
+plan_v2 대비 실행 소스 차이는 새 edition을 허용한 계획 생성기와 claim 전 최소 host 공간 검사다. 두 manifest는 새 실행/세션/요청 ID를 제외하면 의미가 같다. 측정 부하·APK·환경 gate·관측 주기·timeout·분석 기준을 바꾸지 않았다. 공간 검사는 후보 APK 106,108,500바이트 이상의 여유를 claim/기기 명령 전에 요구한다. PC 검사 당시 free12,327,342,080바이트였으나 실제 실행 직전에 다시 확인한다. 이 검사는 설치본 크기 차이·전체 로그 저장량·실행 중 공간 감소의 보장이 아니다.
+
+현재 기기 상태는 이번에 조회하지 않았다. 실행기는 현재 온라인 transport가 정확히 하나인지 확인하고 동일 A24 모델·하드웨어 식별·fingerprint, 설치본 해시·서명·패키지·버전, 배터리·비충전·BAT온도·thermal·화면·메모리·warmup 품질/GPU를 기존 계약대로 확인한다. numeric AP 유효성·신선도는 필수이고32.5–34.0°C는 모형 개발 범위 판정이며 새 실행 하한이 아니다. 화면·무선 디버깅·충전 등 설정을 자동 변경하거나 연결을 강제 복구하지 않는다. 대상 Activity 유지 조건을 따르며 앱을 떠나게 하는 명령을 추가하지 않는다.
+
+### 재현·승인 후 실행 명령
+
+```powershell
+# PC Check, 이번에 실제 수행 완료; 기기 명령0
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_resident_control_plan_v3/RUN_AFTER_APPROVAL.ps1' -Action Check
+
+# 이 새 계획의 실측 승인 후 한 번만 호출; 현재 transport는 실행기가 선택
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_resident_control_plan_v3/RUN_AFTER_APPROVAL.ps1' -Action Run -Approved -ExpectedPlanSha256 '2e9b3fcd6eaa02b6ce820cd34a4b660125b70cb4c35328e804303623ea7bf6d8'
+
+# 실행 종료 후 PC 고정창 판독
+python -B -m tools.d1_resident_control_report --plan 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_resident_control_plan_v3/collection_plan.json' --output '<새 분석 출력 폴더>'
+```
+
+관련7테스트(새 edition2/3·소비 보존·공간 부족 실제 Run 진입·실패 후 두 번째 세션 차단·부분 회수/단일 cleanup·0요청 parser) 통과, 실패/skip0. 실제 PowerShell→Python Check와 device 생성 차단 guard를 둔 Python Check를 통과했다. 빌드 중간 파일 정리 후 APK/빌드 영수증/입력/두 freeze가 보존된 상태에서 확인했다. 소스/계획/manifest 비교와 [검증 JSON](results/resident_control_design_01/plan03/verification.json)에 대상 해시를 남겼다. PC 검증은 기기 연결/온도/장시간 안정성 검증이 아니다. 이전 화면 조회 timeout의 내부 원인은 미확정이며 이번 변경으로 해결됐다고 주장하지 않는다.
+
+**계획 준비 완료. 다음은 새 계획03의 예산 내 실측 실행 여부 결정이다.** 이번에 Run/추론/설치/실측은 하지 않았으며 strict/default/experiment_ready=false를 유지한다.
+
 > 현재 상태: 사용자 승인으로 plan_v1을1회 실행했고 C완료/L부분 중단으로 **소비·stopped_no_resume**다. [결과](RESIDENT_CONTROL_RUN01_20261001.md). 아래 Check/Run 명령은 준비 당시 이력이며 재실행하지 않는다.
 
 > **최신: 구현·서명 APK·실행 계획 PC 준비 완료.** 아래 설계 당시 차단은 opt-in0요청/host0·24 판독으로 해소했다. 현재 상태는 `PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED`이며 기기 작업은0이다. [최종 실행 준비](#실행-준비-완료-2026-10-01)의 해시·명령을 사용한다. 이전 design_plan.json은 수정하지 않은 당시 증거로 보존하며 현재 실행 계획이 아니다.

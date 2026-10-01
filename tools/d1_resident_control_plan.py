@@ -30,7 +30,8 @@ def configure(folder):
     """Separate approved invocation IDs; never reset an occupied registry."""
     global EXPERIMENT,FOLDER,RUN
     editions={'energy_ap_resident_control_plan_v1':1,
-              'energy_ap_resident_control_plan_v2':2}
+              'energy_ap_resident_control_plan_v2':2,
+              'energy_ap_resident_control_plan_v3':3}
     name=Path(folder).name
     old.require(name in editions,'dedicated plan edition')
     edition=editions[name]

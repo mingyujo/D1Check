@@ -40,16 +40,18 @@ class ControlTests(unittest.TestCase):
 
     def test_new_edition_keeps_budget_and_does_not_reset_consumption(self):
         original=dict(c.BUDGET)
-        c.configure('energy_ap_resident_control_plan_v2')
-        self.assertEqual(c.EXPERIMENT,'ENERGY-AP-RESIDENT-CONTROL-02')
-        self.assertEqual(c.RUN,'energy_ap_resident_control_run_v2')
-        self.assertEqual(c.BUDGET,original)
+        for edition in (2,3):
+            with self.subTest(edition=edition):
+                c.configure(f'energy_ap_resident_control_plan_v{edition}')
+                self.assertEqual(c.EXPERIMENT,f'ENERGY-AP-RESIDENT-CONTROL-{edition:02d}')
+                self.assertEqual(c.RUN,f'energy_ap_resident_control_run_v{edition}')
+                self.assertEqual(c.BUDGET,original)
+                with tempfile.TemporaryDirectory() as tmp:
+                    root=Path(tmp)/c.FOLDER;root.mkdir()
+                    marker=root/'claimed.json';write(marker,{'consumed':True})
+                    with self.assertRaises(ValueError):c.prepare('unused','unused',root)
+                    self.assertTrue(marker.exists())
         with self.assertRaises(ValueError):c.configure('energy_ap_resident_control_plan_v99')
-        with tempfile.TemporaryDirectory() as tmp:
-            root=Path(tmp)/'energy_ap_resident_control_plan_v2';root.mkdir()
-            marker=root/'claimed.json';write(marker,{'consumed':True})
-            with self.assertRaises(ValueError):c.prepare('unused','unused',root)
-            self.assertTrue(marker.exists())
 
     def test_real_parser_zero_with_complete_observation_and_failure(self):
         with tempfile.TemporaryDirectory() as tmp:

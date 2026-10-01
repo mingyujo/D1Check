@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-01 resident 대조03 실행 계획 준비 완료
+
+- [새 계획·정확한 예산·Check/승인 후 Run](RESIDENT_CONTROL_MEASUREMENT_PLAN_20261001.md#새-실행-계획03-준비-완료--2026-10-01), [대상해시·검증](results/resident_control_design_01/plan03/verification.json). `ENERGY-AP-RESIDENT-CONTROL-03`/plan_v3 SHA `2e9b3fcd…7bf6d8`, **PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED**, output/registry 미생성. 기존 plan_v1/v2는 stopped_no_resume.
+- 같은 APK/부하/판독 기준으로 C0→L24, runtime8/warmup16/본24/총40추론·staging2/14·pull/push/설치 각각≤1·고정420초·전체2,090초·ADB6,600·재시도/대체/추가0. 공간 검사 수정본과 새 ID를 소스95개에 동결. PC7테스트·실제PS Check·보호된 Python Check 통과, 기기0/Run0/APK재빌드0. 현재 환경·설치본은 실행 직전 재확인한다.
+- 사용자 정리 receipt `finished_preservation_verified`: 971폴더 삭제·실패0·보존해시 확인. PC계획 검사 당시 여유약11.48GiB; 지속 여유 보장은 아니다. 두freeze/과거 자료/strict/default/experiment_ready=false 유지.
+- 다음 행동 하나: 위 새 계획03의 예산 내 실측 실행 여부 결정. 아래 정리 도구 차단과 계획01/02 준비 문구는 당시 이력이다.
+
 ## 2026-10-01 재생성 가능한 빌드 중간 파일 정리 — 도구 삭제 차단
 
 - [정리 후보·검증·차단 요약](results/resident_control_design_01/storage_cleanup_20261001.json): 완료 빌드의 중간971폴더/20,351파일/4,426,671,652바이트만 선정. 서명APK·로그·영수증62파일 해시 확인, 실측 원본/계획/registry/freeze/소스/다른worktree/다운로드캐시 보존. 실제 원격421786e와 로컬의 기존 소스·문서 백업 일치 확인.

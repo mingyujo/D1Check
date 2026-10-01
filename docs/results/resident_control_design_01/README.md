@@ -1,4 +1,10 @@
-# 무부하 대조 — 최신 실행02 preflight 중단
+# 무부하 대조 — 새 계획03 PC 준비 완료
+
+[계획·예산·승인 후 명령](../../RESIDENT_CONTROL_MEASUREMENT_PLAN_20261001.md#새-실행-계획03-준비-완료--2026-10-01) · [PC검증·해시](plan03/verification.json).
+
+plan_v3는 **미승인·미소비·기기 미검증**이다. C0→L24/40추론/2,090초/ADB6,600/재시도0, 기존 서명APK 재사용. 실제PS Check 통과, Run/실행 출력/claim0. 새 실측 결과는 없다. 기존 종료 계획은 아래 이력으로 보존한다.
+
+# 이전 실행02 — preflight 중단
 
 [최신 결과 보고서](../../RESIDENT_CONTROL_RUN02_20261001.md) · [소비/종료 화면](run02/index.html) · [완료 검증](run02/completion_verification.json).
 

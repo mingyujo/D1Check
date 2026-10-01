@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-01 — 공간 검사 수정본의 새 계획03 동결
+
+- **계획 채택:** 사용자 “계획 ㄱㄱ”에 따라 동일 C0/L24·같은APK·입력·센서·판독 기준을 새 ID03에 고정했다. 2세션/40추론/2,090초/6,600명령/재시도0, [해시·실행 경계](RESIDENT_CONTROL_MEASUREMENT_PLAN_20261001.md#새-실행-계획03-준비-완료--2026-10-01). 기존 consumed v1/v2를 재개하지 않는다.
+- **PC 사실:** claim 전 최소 공간 검사와 새 edition 경계7테스트·실제PS Check 완료,95소스/두manifest/기존APK·서명·입력·freeze 동일성 확인. 사용자 정리 영수증은 보존해시 확인 완료다. 설치본·현재 환경·연결 안정성은 기기 미검증.
+- **권한·연구 경계:** 이번 요청은 준비이며 새 계획은 미승인·미소비, Run/기기/claim0. 구조 판별용 개발 쌍이고 독립 확인/인과/정확도 PASS/자동 후보적합 아님. 원래 모형/AP후보/strict/default/experiment_ready=false 유지.
+
 ## 2026-10-01 — 로컬 저장 공간 실패와 실행 전 최소 admission
 
 - **확인 사실:** [대조02](RESIDENT_CONTROL_RUN02_20261001.md)는 설치본 pull에서 exit1/로컬 쓰기 I/O 오류, 직후 C: free0으로 종료됐다. 기존 화면 timeout 내부 원인과 별개다. 5명령/8.360초·앱 launch0·추론0, plan_v2 소비·stopped_no_resume. 부분 APK/원본·소비 registry를 보존한다.
