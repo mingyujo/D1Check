@@ -1,3 +1,9 @@
+# 무부하 대조 — C 완료/L 부분 중단
+
+최신은 [실행 결과](../../RESIDENT_CONTROL_RUN01_20261001.md)와 [그림·CSV](run01/index.html)이다. plan_v1은 승인1회 소비·stopped_no_resume이며 재실행하지 않는다. L전체창/C–L 차이는 null이다.
+
+## 준비 당시 기록
+
 # 무부하 대조 — 실행 계획 PC 준비 완료
 
 최신은 [보고서의 실행 준비 절](../../RESIDENT_CONTROL_MEASUREMENT_PLAN_20261001.md#실행-준비-완료-2026-10-01)과 `execution_contract.json`/`execution_verification.json`이다. 새 서명 APK와 `energy_ap_resident_control_plan_v1` Check 완료, 기기 미검증·미승인·미소비다. 아래 design_plan은 수정하지 않은 구현 전 이력이며 현재 Run 대상이 아니다.

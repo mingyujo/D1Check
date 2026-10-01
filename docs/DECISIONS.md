@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-01 — resident 대조 부분 종료와 판독 범위 확정
+
+- **실행 사실:** 사용자 “실측 ㄱㄱ” 승인으로 plan_v1만1회 실행, C완료/L부분, stopped_no_resume. [원본·소비·정리](RESIDENT_CONTROL_RUN01_20261001.md). 종료 계획을 재개하거나 자료를 대체하지 않는다.
+- **판독 채택:** C무부하 W1.295715→1.114261은 부하 이외 시간 변화의 관측이며 원인·새 계수·인과 비교는 미확정. L전체창/C–L 차이 null, C냉각 끝 결측도 고정창 유지/null. 화면 timeout은 확정, 내부/무선 원인은 미확정. 앱 cleanup과 host force-stop/프로세스 부재를 분리한다.
+- **보존:** 두 freeze/strict/default/experiment_ready=false 불변. 후보 채택/독립 정확도 PASS/정책 우월성/추가 실측 승인 없음. 다음 PC 작업은 화면 조회 실패 경계 진단 하나다. 아래 준비 결정은 당시 이력이다.
+
 ## 2026-10-01 — resident 대조 opt-in 구현 채택, 실측은 미승인
 
 - **구현 채택:** 기존 Activity/worker/sampler/cleanup을 사용하며 `resident-control-pair-v1`의 C만0요청을 허용한다. L 및 기존 실행은24요청이다. host가 각 분모/합계를 검증하고 실패 후 다음 세션/중복 정리를 차단한다. 기기 선택은 실행기의 최초 조회로 한 transport에 고정한다.

@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-01 resident 대조 종료 — C 완료/L 부분 중단
+
+- [실행·소비·판독](RESIDENT_CONTROL_RUN01_20261001.md), [공유 화면/CSV](results/resident_control_design_01/run01/index.html). 승인 plan_v1 1회 실행, **stopped_no_resume**. 시도2/정상완료1, runtime8/warmup16/본24=추론40, staging14/pull1/APK push·설치각1, ADB1240/6600, 477.671/2090초. 재시도0.
+- C 무부하120초145.578J; pre→late W1.295715→1.114261(−0.181454W). 부하 없는 시간 변화의 근거이며 원인/새 계수 미식별. 시작AP29.6°C 범위 밖, 동결식+1.474J는 진단/strict PASS 아님. 냉각 끝 전력0.826초 결측/null.
+- L24개 시작/output/persist/worker/lane event 확보, 경로60.168초까지만 회수. 화면 명령1229의2초 timeout/부분stdout, 연결 소실 증거 없음. L전체창/C–L 차이 null, 세션 완료/최종 품질 미확인. C app cleanup 완료/L app cleanup 미확인; owner host 정리·대상 프로세스 부재 확인. freeze/default/strict/experiment_ready=false 유지.
+- 다음 PC 작업 하나: 화면 조회 partial stdout/marker·인접 지연·subprocess 종료 경계 진단. 종료 계획 재개/새 실측 자동 실행 없음. 아래 준비 문구는 당시 이력이다.
+
 ## 2026-10-01 무부하 대조 구현·서명 APK·실행 계획 준비 완료
 
 - [최종 해시·예산·Check/승인 후 명령](RESIDENT_CONTROL_MEASUREMENT_PLAN_20261001.md#실행-준비-완료-2026-10-01): 새 opt-in C0/L24를 동일4runtime/8warmup·baseline30/common120/cooling60·정상 cleanup으로 연결했다. host0/24 분모·합계·실패시 다음 세션 차단·실제 transport 자동 선택(온라인1개)을 검증했다. 기존24건 경로 보존.

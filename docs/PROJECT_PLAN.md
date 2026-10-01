@@ -1,5 +1,9 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-01 — resident 대조 실행 부분 종료
+
+[실행 결과](RESIDENT_CONTROL_RUN01_20261001.md): 사용자 승인 plan_v1을1회 실행해 C완료/L24요청 경계 확보 후 화면 관측2초 timeout으로 중단했다. 40추론/1240명령/477.671초, stopped_no_resume. C무부하 W 시간변화는 새 기술적 근거지만 L전체창 미회수로 대조 차이/새 계수/독립 확인 미완료. 다음은 화면 조회 partial stdout·인접 지연·종료 경계 PC 진단 하나다. 새 실행/재개/기준 완화/모형 재적합 없음. strict/default/experiment_ready=false 유지. 아래 PC 준비 문구는 실행 전 이력이다.
+
 ## 2026-10-01 — C0/L24 수집 경로 구현 및 실행 계획 PC 완료
 
 [기존 보고서 최종 절](RESIDENT_CONTROL_MEASUREMENT_PLAN_20261001.md#실행-준비-완료-2026-10-01)에 새 opt-in 정상 완료·host 분모·기존 경로 회귀·서명 APK·실제 Check를 완료했다. 동일 새 APK의 C→L 두 세션은 구조 판별용 개발이며 독립 확인/모형 재보정/정책 PASS가 아니다. 계획 SHA/2,090초/6,600명령/40추론을 고정했고 미승인·미소비로 둔다. 현재 추가 PC 준비 차단은 해소했으며 다음은 이 계획의 실측 승인 여부다. 기기명령0, 기존 모형/strict/experiment_ready=false 유지.
