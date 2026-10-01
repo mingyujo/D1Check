@@ -1,4 +1,10 @@
-# AP 두 부하 이력 일괄 확인01
+# AP 두 부하 이력 일괄 확인
+
+## 최신: 확인02 실측·판독 완료 (2026-10-02)
+
+[결과 보고서](../../AP_BUNDLE_CONFIRM_RUN02_20261002.md) · [화면/CSV/그림](run02/index.html) · [검증](run02/verification.json). 변경 없는 후보를 한 묶음/두 반묶음 각1세션에 적용했다.64추론/ADB1,343/616.410초·APK push/설치0, 정상 cleanup/회수. 후보 AP MAE0.450/0.405°C와 후기 재상승 미재현을 함께 보존한다. 두 시작 AP는 원래 개발 범위 밖이고 정확도 PASS/정책 순위/strict 지원은 승격하지 않는다. plan_v2는 소비·완료·Run 재호출 금지.
+
+## 이전 확인01 (보존)
 
 [계획·실행·종료 보고서](../../AP_BUNDLE_CONFIRM_RUN01_20261001.md), [결과 화면](run01/index.html), [작은 요약](run01/summary.json).
 기존 후보를 바꾸지 않은 확인2 묶음이다. 첫 기기 목록0대로 **claim 후 preflight 중단**, 두 세션 모두 미시도. 원본/registry는 소비·종료 상태로 보존하고 Run 재호출 금지. 기존 실패·동결 모형·strict/default/experiment_ready=false 유지.

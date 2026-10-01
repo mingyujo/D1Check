@@ -13,6 +13,36 @@ from tools import d1_energy_host_lifecycle as lifecycle
 
 
 class BundleTests(unittest.TestCase):
+    def test_explicit_edition_two_changes_identity_only_not_measurement(self):
+        template=dict(resident_control_version='old',resident_control_role='registered_load',
+                      models={'classification':{'identity':{'session_id':'old'}}})
+        with (patch.object(bundle.control,'specification',side_effect=lambda *args:({},[template,template])),
+              patch.object(bundle.p,'digest',return_value=bundle.transfer.FREEZE_SHA),
+              patch.object(bundle,'identity',return_value={'PC fixture':'only'})):
+            first,m1=bundle.specification('source.json','build.json',Path('pc/plan1'),1)
+            second,m2=bundle.specification('source.json','build.json',Path('pc/plan2'),2)
+        self.assertNotEqual(first['experiment_id'],second['experiment_id'])
+        self.assertNotEqual(first['output_root'],second['output_root'])
+        self.assertNotEqual(first['registry'],second['registry'])
+        self.assertEqual(first['budget'],second['budget'])
+        self.assertEqual(second['budget'],bundle.BUDGET)
+        self.assertEqual(second['experiment_id'],'ENERGY-AP-BUNDLE-CONFIRM-02')
+        for a,b in zip(m1,m2):
+            self.assertNotEqual(a['session_id'],b['session_id'])
+            self.assertEqual([{k:v for k,v in r.items() if k!='request_id'} for r in a['requests']],
+                             [{k:v for k,v in r.items() if k!='request_id'} for r in b['requests']])
+        for invalid in (0,3,True):
+            with self.assertRaises(ValueError):bundle.run_names(invalid)
+
+    def test_edition_two_consumed_check_never_reuses_edition_one(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder=Path(tmp)/bundle.run_names(2)[1];folder.mkdir()
+            run=Path(tmp)/bundle.run_names(2)[2];run.mkdir()
+            file=folder/'collection_plan.json'
+            bundle.cal.write_new(file,dict(bundle_edition=2,output_root=str(run),registry=str(Path(tmp)/'registry')))
+            with patch.object(bundle,'specification',side_effect=AssertionError('no device/signature after consumed')):
+                with self.assertRaisesRegex(ValueError,'consumed'):bundle.check(file)
+
     def test_budget_and_registered_schedule_preserve_arrivals(self):
         bundle.budget_check(bundle.BUDGET)
         source=bundle.p.read(bundle.control.BUNDLE/'load_input.json')['requests']

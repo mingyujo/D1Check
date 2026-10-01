@@ -29,6 +29,13 @@ BUDGET = dict(control.BUDGET, development=0, confirmation=2, requests=48,
     installed_preflight_seconds=600, per_session_adb_commands=3200)
 
 
+def run_names(edition):
+    """Explicit separate invocation IDs; never select or retry an edition automatically."""
+    old.require(type(edition) is int and edition in (1,2),'dedicated bundle edition')
+    return (f'ENERGY-AP-BUNDLE-CONFIRM-{edition:02d}',
+            f'energy_ap_bundle_confirm_plan_v{edition}',f'energy_ap_bundle_confirm_run_v{edition}')
+
+
 def identity():
     files = (Path(__file__), Path(transfer.__file__), Path(control.__file__),
              ROOT/'tools/d1_ap_bundle_readout.py', BUNDLE/'analysis_contract.json')
@@ -43,9 +50,10 @@ def budget_check(b):
         'bundle budget arithmetic')
 
 
-def specification(source_file, build_file, output):
+def specification(source_file, build_file, output, edition=1):
     """Reuse signed-build and source identity verification; never reuse a claim."""
     source_file, build_file, output = map(Path, (source_file, build_file, output))
+    experiment,folder,run=run_names(edition)
     plan, templates = control.specification(source_file, build_file, output)
     for key in ('resident_control_pair',):
         plan.pop(key, None)
@@ -54,14 +62,15 @@ def specification(source_file, build_file, output):
     contract = p.read(BUNDLE/'analysis_contract.json')
     old.require(contract['candidate_freeze_sha256'] == transfer.FREEZE_SHA and
                 contract['post_load_refit'] is False, 'analysis contract changed')
-    plan.update(experiment_id=EXPERIMENT, status='PC_READY_DEVICE_UNVERIFIED',
-        approval='approved_user_bundle_20261001', ap_bundled_confirmation=True,
+    plan.update(experiment_id=experiment, bundle_edition=edition,status='PC_READY_DEVICE_UNVERIFIED',
+        approval='approved_user_bundle_20261002' if edition==2 else 'approved_user_bundle_20261001',
+        ap_bundled_confirmation=True,
         source_code=identity(), budget=copy.deepcopy(BUDGET),
         source_plan=dict(path=str(source_file.resolve()),sha256=p.digest(source_file)),
         analysis_contract=dict(path=str(BUNDLE/'analysis_contract.json'),
                                sha256=p.digest(BUNDLE/'analysis_contract.json')),
         candidate_freeze=dict(path=str(freeze),sha256=transfer.FREEZE_SHA),
-        output_root=str(output.parent/RUN), registry=str(output.parent/'ap_bundle_registry'/EXPERIMENT),
+        output_root=str(output.parent/run), registry=str(output.parent/'ap_bundle_registry'/experiment),
         selection='fixed burst201 CG_DC; one pulse +35, then two half-pulses +35/+60',
         analysis_scope='two prospective fixed-procedure confirmations, n=1 per history; no refit or accuracy PASS',
         measurement_protocol_change='same current 3d8 APK for both; protocol transfer from 747 candidate-development APK',
@@ -71,7 +80,7 @@ def specification(source_file, build_file, output):
         m=copy.deepcopy(templates[1])
         for key in ('resident_control_version','resident_control_role'):
             m.pop(key,None)
-        sid=str(uuid.uuid5(uuid.NAMESPACE_URL, EXPERIMENT+'/'+role))
+        sid=str(uuid.uuid5(uuid.NAMESPACE_URL, experiment+'/'+role))
         rows=copy.deepcopy(p.read(control.BUNDLE/'load_input.json')['requests'])
         for row in rows:
             for key in list(row):
@@ -81,7 +90,7 @@ def specification(source_file, build_file, output):
                 row['release_offset_ns']+=25_000_000_000
             old.require(row['offset_ms']*1_000_000 <= row['release_offset_ns'] < 120_000_000_000,
                         'release outside common window')
-        m.update(experiment_id=EXPERIMENT,session_id=sid,phase=role,requests=rows,
+        m.update(experiment_id=experiment,session_id=sid,phase=role,requests=rows,
                  ap_bundle_role=role,candidate_procedure_sha256=transfer.FREEZE_SHA)
         for spec in m['models'].values():
             spec['identity']['session_id']=sid
@@ -98,10 +107,11 @@ def script_text():
         'python -B', "& '"+sys.executable.replace('\\','/')+"' -X utf8 -B")
 
 
-def prepare(source_file,build_file,output):
+def prepare(source_file,build_file,output,edition=1):
     output=Path(output)
-    old.require(output.name==FOLDER and not output.exists(),'fresh dedicated bundle only')
-    plan,manifests=specification(source_file,build_file,output)
+    _,folder,_=run_names(edition)
+    old.require(output.name==folder and not output.exists(),'fresh dedicated bundle only')
+    plan,manifests=specification(source_file,build_file,output,edition)
     old.require(not Path(plan['registry']).exists() and not Path(plan['output_root']).exists(),
                 'occupied/consumed plan; no resume')
     output.mkdir();(output/'manifests').mkdir()
@@ -114,10 +124,12 @@ def prepare(source_file,build_file,output):
 
 def check(file):
     file=Path(file);plan=p.read(file)
-    old.require(file.parent.name==FOLDER and file.name=='collection_plan.json','bundle path')
+    edition=plan.get('bundle_edition',1)
+    _,folder,_=run_names(edition)
+    old.require(file.parent.name==folder and file.name=='collection_plan.json','bundle path')
     old.require(not Path(plan['output_root']).exists() and not Path(plan['registry']).exists(),
                 'occupied/consumed plan; no resume')
-    expected,manifests=specification(plan['source_plan']['path'],plan['build_receipt'],file.parent)
+    expected,manifests=specification(plan['source_plan']['path'],plan['build_receipt'],file.parent,edition)
     script=file.parent/'RUN_AFTER_APPROVAL.ps1'
     expected['run_script_sha256']=p.digest(script)
     old.require(script.read_text(encoding='utf-8')==script_text() and plan==expected,
@@ -136,12 +148,13 @@ def main():
     sub=parser.add_subparsers(dest='action',required=True)
     a=sub.add_parser('prepare')
     for k in ('source-plan','build-receipt','output'):a.add_argument('--'+k,required=True)
+    a.add_argument('--edition',type=int,choices=(1,2),default=1)
     a=sub.add_parser('check');a.add_argument('--plan',required=True)
     a=sub.add_parser('run')
     for k in ('plan','adb','expected-sha'):a.add_argument('--'+k,required=True)
     a.add_argument('--serial',default='');a.add_argument('--approved',action='store_true')
     args=parser.parse_args()
-    if args.action=='prepare':result=prepare(args.source_plan,args.build_receipt,args.output)
+    if args.action=='prepare':result=prepare(args.source_plan,args.build_receipt,args.output,args.edition)
     elif args.action=='check':result=check(args.plan)
     else:
         from tools.d1_arrival_energy_collection_device import run

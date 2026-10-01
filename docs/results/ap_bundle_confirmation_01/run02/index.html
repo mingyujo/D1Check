@@ -1,0 +1,93 @@
+<!doctype html><meta charset="utf-8"><title>AP 두 이력 확인02 · 실측 완료</title><h1>AP 두 이력 확인02 · 실측 완료</h1><p><a href="../../../AP_BUNDLE_CONFIRM_RUN02_20261002.md">한국어 결과 보고서</a> · <a href="metrics.csv">점수 CSV</a> · <a href="fixed_directions.csv">고정 후기 방향 CSV</a> · <a href="summary.json">작은 결과/소비</a></p><p><b>후보 평균 오차 감소와 후기 재상승 미재현은 별도 사실입니다.</b> 시작 AP28.1/28.7°C는 기존 개발 범위 밖입니다. strict/정책 순위/정확도 PASS는 미판정이며 각 이력1세션입니다.</p><p>prospective bundled AP confirmation</p><p>기존 후보 고정 · 부하 전 AP＋실제 일정 조건부 계산. 계수 재적합·정책 PASS 없음. J는 raw=mA 조건부이며 절대 정확도 미인증.</p><p>원 실행: completed_descriptive_only · 판독 가능 2/2. 판독 완료와 원 실행 완료는 별도입니다.</p><h2>confirmation_one_pulse</h2><p>evaluated_conditional_transfer</p><pre>{
+  &quot;initial_ap_c&quot;: 28.1,
+  &quot;actual_parallel_seconds&quot;: 1.609444307000004,
+  &quot;observed_energy_120s_j&quot;: 145.62134036929567,
+  &quot;signed_energy_error_j&quot;: 10.20516953368309,
+  &quot;ap_scores&quot;: {
+    &quot;frozen&quot;: {
+      &quot;mae_c&quot;: 5.911909962926211,
+      &quot;max_absolute_error_c&quot;: 6.215910597437116,
+      &quot;observed_idle_change_c&quot;: -1.0,
+      &quot;predicted_idle_change_c&quot;: -0.3779717651876169,
+      &quot;diagnostic_peak_signed_error_c&quot;: 5.158733193615831
+    },
+    &quot;candidate&quot;: {
+      &quot;mae_c&quot;: 0.449944530437889,
+      &quot;max_absolute_error_c&quot;: 1.0153644603937764,
+      &quot;observed_idle_change_c&quot;: -1.0,
+      &quot;predicted_idle_change_c&quot;: -1.0646389700732612,
+      &quot;diagnostic_peak_signed_error_c&quot;: -0.617138650905602
+    }
+  }
+}</pre><img style="max-width:100%" src="confirmation_one_pulse/ap.svg"><img style="max-width:100%" src="confirmation_one_pulse/energy.svg"><pre>[
+  {
+    &quot;start_s&quot;: 90,
+    &quot;end_s&quot;: 115,
+    &quot;status&quot;: &quot;observed&quot;,
+    &quot;observed_change_c&quot;: 0.10000000000000142,
+    &quot;frozen_change_c&quot;: -0.03927390727096025,
+    &quot;candidate_change_c&quot;: -0.1106234275646365
+  },
+  {
+    &quot;start_s&quot;: 120,
+    &quot;end_s&quot;: 145,
+    &quot;status&quot;: &quot;observed&quot;,
+    &quot;observed_change_c&quot;: 0.0,
+    &quot;frozen_change_c&quot;: -0.009909989182304457,
+    &quot;candidate_change_c&quot;: -0.027913621196656635
+  },
+  {
+    &quot;start_s&quot;: 150,
+    &quot;end_s&quot;: 175,
+    &quot;status&quot;: &quot;observed&quot;,
+    &quot;observed_change_c&quot;: 0.20000000000000284,
+    &quot;frozen_change_c&quot;: -0.002495093129766701,
+    &quot;candidate_change_c&quot;: -0.007027967759949405
+  }
+]</pre><h2>confirmation_two_pulses</h2><p>evaluated_conditional_transfer</p><pre>{
+  &quot;initial_ap_c&quot;: 28.7,
+  &quot;actual_parallel_seconds&quot;: 0.8225790769999932,
+  &quot;observed_energy_120s_j&quot;: 142.3512637517639,
+  &quot;signed_energy_error_j&quot;: 13.483338020866569,
+  &quot;ap_scores&quot;: {
+    &quot;frozen&quot;: {
+      &quot;mae_c&quot;: 5.350159207027863,
+      &quot;max_absolute_error_c&quot;: 5.92027625989536,
+      &quot;observed_idle_change_c&quot;: 0.10000000000000142,
+      &quot;predicted_idle_change_c&quot;: -0.5365120284418623,
+      &quot;diagnostic_peak_signed_error_c&quot;: 5.320276259895358
+    },
+    &quot;candidate&quot;: {
+      &quot;mae_c&quot;: 0.4049695956705824,
+      &quot;max_absolute_error_c&quot;: 0.6913988774429534,
+      &quot;observed_idle_change_c&quot;: 0.10000000000000142,
+      &quot;predicted_idle_change_c&quot;: -0.744974962234398,
+      &quot;diagnostic_peak_signed_error_c&quot;: -0.36065890924631105
+    }
+  }
+}</pre><img style="max-width:100%" src="confirmation_two_pulses/ap.svg"><img style="max-width:100%" src="confirmation_two_pulses/energy.svg"><pre>[
+  {
+    &quot;start_s&quot;: 90,
+    &quot;end_s&quot;: 115,
+    &quot;status&quot;: &quot;observed&quot;,
+    &quot;observed_change_c&quot;: -0.027886741217947986,
+    &quot;frozen_change_c&quot;: -0.16628485455146347,
+    &quot;candidate_change_c&quot;: -0.23089520210645986
+  },
+  {
+    &quot;start_s&quot;: 120,
+    &quot;end_s&quot;: 145,
+    &quot;status&quot;: &quot;observed&quot;,
+    &quot;observed_change_c&quot;: 0.0,
+    &quot;frozen_change_c&quot;: -0.04178324309019388,
+    &quot;candidate_change_c&quot;: -0.058018214491013964
+  },
+  {
+    &quot;start_s&quot;: 150,
+    &quot;end_s&quot;: 175,
+    &quot;status&quot;: &quot;observed&quot;,
+    &quot;observed_change_c&quot;: 0.10000000000000142,
+    &quot;frozen_change_c&quot;: -0.01056400367554744,
+    &quot;candidate_change_c&quot;: -0.014668670639295556
+  }
+]</pre>

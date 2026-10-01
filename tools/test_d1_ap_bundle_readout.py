@@ -50,6 +50,16 @@ def fixture(root):
 
 
 class BundleReadoutTest(unittest.TestCase):
+    def test_edition_two_readout_retains_registered_experiment_id(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);plan,first,second,stack=fixture(root)
+            value=transfer.p.read(plan)
+            value.update(bundle_edition=2,experiment_id=bundle.run_names(2)[0]);save(plan,value)
+            with stack,patch.object(graphics,'figures'):
+                result=readout.report(plan,root/'out',evidence_label='PC fixture')
+            self.assertEqual(result['experiment_id'],'ENERGY-AP-BUNDLE-CONFIRM-02')
+            self.assertEqual(result['evaluated_sessions'],2)
+
     def test_cli_two_sessions_csv_figures_html_and_source_preservation(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);plan,first,second,stack=fixture(root)

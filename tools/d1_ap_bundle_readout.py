@@ -88,7 +88,8 @@ def report(plan_file,output,*,evidence_label='prospective bundled AP confirmatio
     for protected in (root,Path(plan['registry']).resolve(),plan_file.parent.resolve()):
         if output.resolve()==protected or protected in output.resolve().parents:raise ValueError('protected output')
     if output.exists():raise FileExistsError(output)
-    transfer.old.require(plan['experiment_id']==bundle.EXPERIMENT and plan['source_code']==bundle.identity(),
+    transfer.old.require(plan['experiment_id']==bundle.run_names(plan.get('bundle_edition',1))[0] and
+                         plan['source_code']==bundle.identity(),
                          'frozen source changed')
     transfer.old.require(transfer.p.digest(plan['candidate_freeze']['path'])==transfer.FREEZE_SHA,
                          'candidate changed')
@@ -139,7 +140,7 @@ def report(plan_file,output,*,evidence_label='prospective bundled AP confirmatio
                     except OSError as recording_error:item['rendering_evidence_error']=repr(recording_error)
         sessions.append(item)
     evaluated=sum(x['scores'] is not None for x in sessions)
-    summary=dict(experiment_id=bundle.EXPERIMENT,receipt=receipt,sessions=sessions,
+    summary=dict(experiment_id=plan['experiment_id'],receipt=receipt,sessions=sessions,
         consumption=consumption(plan),candidate_freeze_sha256=transfer.FREEZE_SHA,
         original_freeze_sha256=transfer.replay.FROZEN_SHA,
         readout_status='complete' if evaluated==len(sessions) else 'partial' if evaluated else 'not_evaluable',

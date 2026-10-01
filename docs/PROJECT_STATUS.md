@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-10-02 AP 두 이력 확인02 — 두 실측·고정 판독 완료
+
+- [새 실행02·정확한 소비·한계](AP_BUNDLE_CONFIRM_RUN02_20261002.md), [공유 화면/CSV/그림](results/ap_bundle_confirmation_01/run02/index.html), [검증](results/ap_bundle_confirmation_01/run02/verification.json). 사용자 승인 plan_v2 SHA `f11992ad…3f89` Run1회, **completed_descriptive_only·소비·완료**. 본48/warmup16/runtime8=64추론, staging2/14·pull1·APK push/설치0, ADB1,343/6,600·616.410/2,090초·재시도0. 이전01 재개 없음.
+- 한 묶음→두 반묶음 모두24요청 terminal/반환/저장/worker/lane 해제 확인·관측 적격. 초기 AP28.1/28.7°C 범위 밖·실제 CG_DC1.609444/0.822579초. 공통120초 J145.621340/142.351264; 원래 W식 차이+10.205170/+13.483338J(+7.008/+9.472%). 짧은 병행 전력 계수 식별 아님.
+- 변경 없는 preload AP 후보 MAE0.449945/0.404970°C(원래식5.911910/5.350159), 최대1.015364/0.691399°C. 150–175초 관측+0.2/+0.1°C에 후보는−0.007028/−0.014669°C: 평균 개선과 후기 재상승 미재현을 함께 보존. 각 이력1세션·실제 일정/부하 전 AP 조건부·3d8 APK 전이이며 계수 재보정/정확도 PASS/strict/default 승격 없음, experiment_ready=false.
+- 앱 정상 cleanup2·회수2·소유자 host force-stop 각1회·기존 ps 대상 부재 확인, parent/child exited·최종 receipt/registry completed. timeout/관측된 연결 소실/lifecycle_cancelled 없음. PC10검사·실제 Check/Run/분석CLI·CSV/그림/구간합 확인. 원본6,993파일·old01/모형/APK18개 핵심파일·실행 소스/manifest/plan 해시 불변; 새 빌드/Android 수정0. 분석 기기0(실측ADB는 위1,343회).
+- **다음 PC 작업 하나:** 이 두 이력 확인 결과를 제한 시뮬레이터 결과 본문에 반영해, 후기 열 방향·최고·동적 J/AP 순위 미판정과 함께 평가를 마무리한다. 새 실측/후보 재적합 자동 추가 없음. 아래 ‘다음’은 당시 이력이다.
+
 ## 2026-10-01 AP 일괄 판독 경로 PC 검증 완료
 
 - [기존 보고서의 판독 검증](AP_BUNDLE_CONFIRM_RUN01_20261001.md#pc-판독-경로-검증--2026-10-01), [작은 검증/CSV 화면](results/ap_bundle_confirmation_01/readout_pc/index.html). 기존 queue 개발·확인 원문으로 실제 Python CLI4경우(완료2·둘째 부분기록·전류 결측·AP 결측)를 검증했다. J135.617969/144.565095·후보 MAE0.487518/0.417521°C가 재현됐다. **새 실측/독립 확인0**, 현재 burst/3d8 두 이력 검증으로 전용하지 않는다.
