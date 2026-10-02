@@ -193,7 +193,10 @@ def run(plan_file,adb,serial,expected_sha,approved):
     plan=p.read(plan_file)
     idle_response=plan.get('ap_idle_pulse_followup',False)
     single=plan.get('single_arrival_confirmation',False) or plan.get('recorded_replay_confirmation',False)
-    if plan.get('recorded_policy_comparison'):
+    if plan.get('ap_memory_confirmation'):
+        from tools import d1_ap_memory_confirmation as confirmation
+        confirmation.check(plan_file)
+    elif plan.get('recorded_policy_comparison'):
         from tools import d1_recorded_policy_comparison as confirmation
         confirmation.check(plan_file)
         c.require(bool(serial),'explicit transport required')
@@ -234,6 +237,9 @@ def run(plan_file,adb,serial,expected_sha,approved):
         (root/'frozen_collection_plan.json').write_bytes(Path(plan_file).read_bytes())
         if plan.get('ap_bundled_confirmation'):
             (root/'candidate_procedure_freeze.json').write_bytes(Path(plan['candidate_freeze']['path']).read_bytes())
+            if plan.get('ap_memory_confirmation'):
+                (root/'memory_candidate_freeze.json').write_bytes(Path(plan['memory_candidate']['path']).read_bytes())
+                (root/'memory_analysis_contract.json').write_bytes(Path(plan['analysis_contract']['path']).read_bytes())
         else:
             (root/'original_model_freeze.json').write_bytes(Path(plan['frozen_model']['path']).read_bytes())
     write(registry/'claimed.json',claim)
@@ -260,6 +266,11 @@ def run(plan_file,adb,serial,expected_sha,approved):
                 c.require(p.digest(plan['candidate_freeze']['path'])==plan['candidate_freeze']['sha256'] and
                           p.digest(root/'candidate_procedure_freeze.json')==plan['candidate_freeze']['sha256'],
                           'frozen candidate changed; no continuation')
+                if plan.get('ap_memory_confirmation'):
+                    c.require(p.digest(plan['memory_candidate']['path'])==plan['memory_candidate']['sha256'] and
+                              p.digest(root/'memory_candidate_freeze.json')==plan['memory_candidate']['sha256'] and
+                              p.digest(root/'memory_analysis_contract.json')==plan['analysis_contract']['sha256'],
+                              'memory model/procedure changed; no continuation')
             if idle_response and entry['index']==1:
                 from tools import d1_ap_idle_response_plan as ap_plan
                 freeze_start=time.monotonic()
@@ -332,6 +343,11 @@ def run(plan_file,adb,serial,expected_sha,approved):
                 raise
             write(current/'host_cleanup.json',cleanup_result)
             stats=validate(current,manifest,plan)
+            if plan.get('ap_memory_confirmation'):
+                from tools import d1_ap_memory_confirmation_readout as memory_readout
+                memory_case=memory_readout.case_from_session(plan_file,plan,entry)
+                _, memory_initial=memory_readout.predict_fixed(memory_case,plan)
+                stats['memory_input_eligibility']=memory_initial
             if idle_response:
                 from tools import d1_ap_idle_response_plan as ap_plan
                 stats['preload_ap']=ap_plan.development_evidence(current,plan['frozen_model']['path'])

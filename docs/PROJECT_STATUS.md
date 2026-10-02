@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-02 준비 이력 AP 독립 확인 계획 PC 완료
+
+- [설계·명령·종료 기준](results/ap_memory_confirmation_01/README.md), [상태 화면](results/ap_memory_confirmation_01/index.html), [검증](results/ap_memory_confirmation_01/verification.json). 후보 τ30/γ0를 재적합 없이 확인하도록 부하 시작 +35/+65초 두 조건을 고정했다. 추가 가열 대신 준비 후 수동 유휴30초 차이를 사용하며 처음 자료 부적격이면 다음 세션을 막는다.
+- `ENERGY-AP-MEMORY-CONFIRM-01`/`energy_ap_memory_confirm_plan_v1`, SHA `7013bcfe…8cfbd`. **PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED**, 실제 Run/output/registry 없음. 기존74e APK 재사용, 개발0/확인2·본48/warmup16=64추론·runtime8·staging2/14·pull1·push/설치0·고정420초·상한2,090초/ADB6,600·재시도0.
+- 관련14검사·실제 PS Check/ADB차단 Check·원문 두 세션 판독 재현/결측 fixture 통과. 기존38근거/모형3개 hash 보존, APK/기기/새 실측/실행 claim0. 실제 일정과 부하 전 AP 조건부 확인이며 후기 재상승/스로틀/정책 비용/strict/default/experiment_ready=false는 미해결·불변이다.
+- **다음 행동 하나:** 두 확인 세션 실행 시 이 계획의 예산과 현재 A24·설치본·환경 gate를 적용한다. 이번에는 PC 준비만 완료했다. 아래는 당시 이력이다.
+
 ## 2026-10-02 준비 이력 AP 후보·온도/처리시간 PC 분석 완료
 
 - [보고서·재현](results/ap_preparation_memory_01/README.md), [화면](results/ap_preparation_memory_01/index.html), [검증](results/ap_preparation_memory_01/verification.json). 구조1개를 적합 전 고정하고 기존 개발1/사후 평가4로 구현·분해했다. τ30초/γ0, 기존 preload 대비 네 평가 MAE0.418/0.463/0.450/0.405→0.257/0.241/0.248/0.146°C. 최고오차도 개선하나 개발 최대오차0.849→1.132°C로 악화, 후기 재상승은 미해결이다.

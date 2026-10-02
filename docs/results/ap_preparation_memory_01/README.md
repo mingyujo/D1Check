@@ -76,3 +76,7 @@ python -B -m tools.d1_ap_memory_analysis --prepare-inputs output/ap_memory_input
 정확한 파일 38개와 해시는 `inputs.json.source_sha256`에 있다. 내부 `docs/` 경로는 저장소 기준, 나머지는 raw-root 기준이다. `energy_ap_idle_response_run_v1`, `energy_ap_cgdc_transfer_run_v2`, `energy_ap_bundle_confirm_run_v2`, `energy_ap_state_run_v5`의 이미 회수한 AP·journal·validated 자료를 사용한다. 원래 freeze 두 파일의 byte 해시 불변도 별도로 검사했다. 현재 Windows 줄끝 환경의 byte SHA이며 줄끝을 바꾼 checkout을 동일 증거로 취급하지 않는다.
 
 실제 CLI의 외부 새 출력과 공유 final의 13개 산출물을 대조했다. 수치10검사 및 기존 시뮬레이터12검사의 **서로 다른 22검사**를 통과했다. 컴파일·가짜 기기 테스트로 실기기 안정성을 주장하는 작업이 아니며 이번 기기 명령·추론·설치·빌드0이다.
+
+## 후속 PC 준비 — 2026-10-02
+
+[고정 후보 두 조건 확인 계획](../ap_memory_confirmation_01/README.md)을 완료했다. 추가 가열 없이 부하 전 대기를35/65초로 나누고 기존 APK를 재사용한다. 계획은 미승인·미소비이고 실제 확인 결과는 아직 없다.
