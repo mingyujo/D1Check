@@ -14,8 +14,8 @@ S26 전용 보조 스크립트. 기존 `tools/`의 A24 검증된 스택은 **건
 ```
 cd s26\tools
 s26_collect.bat                 :: 기기 하나만 연결된 경우
-s26_collect.bat R3KL3039J1V     :: 여러 대 연결된 경우 serial 지정
-s26_probe_npu.bat R3KL3039J1V
+s26_collect.bat <SERIAL>     :: 여러 대 연결된 경우 serial 지정
+s26_probe_npu.bat <SERIAL>
 ```
 
 결과는 `..\device\` 에 번호 붙은 txt로 떨어진다. adb는 `%LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe`를 먼저 찾고, 없으면 PATH의 `adb`를 쓴다.

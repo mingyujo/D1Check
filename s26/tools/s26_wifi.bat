@@ -14,7 +14,7 @@ if not exist "%ADB%" set "ADB=adb"
 if "%~2"=="" (
   echo.
   echo   Usage: s26_wifi.bat ^<pair-ip:port^> ^<6-digit-code^>
-  echo   Example: s26_wifi.bat 172.30.1.46:39427 123456
+  echo   Example: s26_wifi.bat <IP:PORT> 123456
   echo.
   echo   Open on the phone:
   echo     Settings -^> Developer options -^> Wireless debugging

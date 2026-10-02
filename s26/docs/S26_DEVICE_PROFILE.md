@@ -22,7 +22,7 @@ A24 열은 비교 기준이며 코드/문서에서 확인된 값이다.
 | `ro.hardware` | — | `s5e9965` |
 | `ro.soc.manufacturer` / `ro.soc.model` | — | Samsung / **`s5e9965` = Exynos 2600** |
 | `ro.product.cpu.abi` | — | `arm64-v8a` |
-| adb serial | — | `R3KL3039J1V` |
+| adb serial | — | `<SERIAL>` |
 | NPU 하드웨어 | **없음** | **있음** (§4) |
 
 > `SM-S942N` 문자열이 `d1_logger_v4.py` 기기 판별 어댑터에 들어갈 값이다.
@@ -71,14 +71,28 @@ Temperature headroom thresholds = [NaN, 0.8333333, 0.9, 1.0, 1.0666667, 1.5, 2.5
 
 | severity | SKIN ℃ | headroom |
 |---|---|---|
-| LIGHT | 38.0 | 0.833 |
-| MODERATE | 40.0 | 0.900 |
-| **SEVERE** | **42.0** | **1.000** |
-| CRITICAL | 45.0 | 1.067 |
-| EMERGENCY | 47.0 | 1.500 |
-| SHUTDOWN | 60.0 / 90.0 | 2.500 |
+| ~~LIGHT~~ | ~~38.0~~ | ~~0.833~~ |
+| ~~MODERATE~~ | ~~40.0~~ | ~~0.900~~ |
+| ~~**SEVERE**~~ | ~~**42.0**~~ | ~~**1.000**~~ |
+| ~~CRITICAL~~ | ~~45.0~~ | ~~1.067~~ |
+| ~~EMERGENCY~~ | ~~47.0~~ | ~~1.500~~ |
+| ~~SHUTDOWN~~ | ~~60.0 / 90.0~~ | ~~2.500~~ |
 
-**headroom 1.0 = SKIN 42.0℃** — Flip3와 같은 앵커점이다. 다만 구간별 기울기가 달라 Flip3의 `1+(T−42)/30` 같은 단일 선형식은 성립하지 않는다. 위 임계표를 그대로 룩업으로 쓰는 편이 정확하다.
+~~**headroom 1.0 = SKIN 42.0℃** — Flip3와 같은 앵커점이다. 다만 구간별 기울기가 달라 Flip3의 `1+(T−42)/30` 같은 단일 선형식은 성립하지 않는다. 위 임계표를 그대로 룩업으로 쓰는 편이 정확하다.~~
+
+→ [2026-10-02 사후 증거 감사] 위 표는 **한 칸 밀려 있다.** 배열은 심각도 번호(0 = NONE, 1 = LIGHT, … 6 = SHUTDOWN) 순서이고, headroom 배열 0번이 `NaN` 인 것처럼 SKIN 배열 0번(38.0)은 NONE 자리다 (근거: 위 원문 배열 3줄, `device/03_thermalservice_1.txt`). 바른 표:
+
+| severity | SKIN ℃ | headroom |
+|---|---|---|
+| (NONE 자리) | 38.0 | NaN |
+| LIGHT | 40.0 | 0.833 |
+| MODERATE | 42.0 | 0.900 |
+| **SEVERE** | **45.0** | **1.000** |
+| CRITICAL | 47.0 | 1.067 |
+| EMERGENCY | 60.0 | 1.500 |
+| SHUTDOWN | 90.0 | 2.500 |
+
+**headroom 1.0 = SKIN 45.0 ℃.** `headroom = 1 + (T − 45)/30` 이 배열 6칸 전부와 맞는다 (40 → 0.833 · 42 → 0.9 · 47 → 1.067 · 60 → 1.5 · 90 → 2.5). 9/27~9/28 장시간 런의 부하 중 SKIN 최고는 39.6 ℃ 로 LIGHT 아래였고 `thermal_status` 는 계속 0 이었다 — 이 표와 모순이 없다.
 
 `Current cooling devices from HAL:` 은 **비어 있다** (A24는 `thermal-cpufreq-0` 있었음).
 
@@ -198,7 +212,7 @@ Exynos 2600(E9965)은 LiteRT NPU **공식 지원 SoC**이고 요구 조건 Andro
 
 | 항목 | 코드 값 | S26 적절? |
 |---|---|---|
-| Android thermal status 상한 | ≤ 1 (LIGHT) | ✅ LIGHT = SKIN 38.0℃, 여유 있음 |
+| Android thermal status 상한 | ≤ 1 (LIGHT) | ✅ ~~LIGHT = SKIN 38.0℃~~ → [2026-10-02 사후 증거 감사] LIGHT = SKIN 40.0℃ (§2 정정), 여유 있음 |
 | 배터리 온도 상한 | ≤ 35.0 ℃ | ✅ 관측 24.4~30.8℃ |
 | 배터리 잔량 (pilot) | 30~100% | ✅ |
 | 배터리 잔량 (formal) | 30~90% | ✅ |

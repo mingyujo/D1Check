@@ -1,13 +1,13 @@
 # s26/device — 원본 수집 로그
 
-수집일 **2026-09-13** · 기기 `SM-S942N` (`R3KL3039J1V`) · USB, 읽기 전용
+수집일 **2026-09-13** · 기기 `SM-S942N` (`<SERIAL>`) · USB, 읽기 전용
 수집 도구: [`../tools/s26_collect.bat`](../tools/s26_collect.bat), [`../tools/s26_probe_npu.bat`](../tools/s26_probe_npu.bat)
 
 해석 결과는 [`../docs/S26_DEVICE_PROFILE.md`](../docs/S26_DEVICE_PROFILE.md)에 정리돼 있다. 이 폴더는 **그 근거가 되는 원본**이다. 값을 고치거나 지우지 말 것.
 
 | 파일 | 내용 | 이 로그로 확정된 것 |
 |---|---|---|
-| `00_devices.txt` | `adb devices -l` | serial `R3KL3039J1V`, model `SM_S942N` |
+| `00_devices.txt` | `adb devices -l` | serial `<SERIAL>`, model `SM_S942N` |
 | `01_getprop_full.txt` | `getprop` 전체 | SoC `s5e9965`(Exynos 2600), SDK 36, fingerprint |
 | `02_getprop_key.txt` | 핵심 프로퍼티 발췌 | 기기 판별 어댑터에 넣을 값 |
 | `03_thermalservice_1~3.txt` | `dumpsys thermalservice` ×3 (5초 간격) | **AP/BAT/PA/SKIN 그대로 존재** → 센서 일반화 불필요, SKIN SEVERE 42.0℃, headroom 임계표 |
@@ -31,8 +31,8 @@
 
 ```
 cd s26\tools
-s26_collect.bat R3KL3039J1V
-s26_probe_npu.bat R3KL3039J1V
+s26_collect.bat <SERIAL>
+s26_probe_npu.bat <SERIAL>
 ```
 
 기기가 하나만 연결돼 있으면 serial은 생략 가능하다. 결과는 이 폴더에 덮어쓰기 된다 — **덮기 전에 기존 파일을 날짜 붙여 보관할 것.**

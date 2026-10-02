@@ -136,7 +136,7 @@ echo   1. Phone: Settings - Developer options - USB debugging must be ON
 echo   2. When the "Allow USB debugging?" popup appears on the phone,
 echo      tick "Always allow" and press Allow.
 echo   3. If more than one device is listed above, re-run with the serial:
-echo         s26_collect.bat R3KL3039J1V
+echo         s26_collect.bat <SERIAL>
 echo   4. For wireless adb: run "adb connect IP:PORT" first.
 echo.
 pause

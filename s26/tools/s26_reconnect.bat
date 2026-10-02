@@ -7,7 +7,7 @@ REM  TCP session and usually changes the wireless debugging port.
 REM  Pairing survives - only the connection has to be remade.
 REM
 REM  Usage: s26_reconnect.bat            auto-discover
-REM         s26_reconnect.bat 172.30.1.46:41253   explicit
+REM         s26_reconnect.bat <IP:PORT>   explicit
 REM ============================================================
 setlocal enabledelayedexpansion
 

@@ -177,9 +177,9 @@ class OrchestratorTest(unittest.TestCase):
 
     def test_selects_only_connected_device(self):
         devices = ORCH.parse_adb_devices(
-            "List of devices attached\n192.0.2.1:5555 device product:a model:A24\n"
+            "List of devices attached\n<IP:PORT> device product:a model:A24\n"
         )
-        self.assertEqual("192.0.2.1:5555", ORCH.select_device(devices, None))
+        self.assertEqual("<IP:PORT>", ORCH.select_device(devices, None))
 
     def test_multiple_devices_require_explicit_serial(self):
         devices = {"first": "device", "second": "device"}
