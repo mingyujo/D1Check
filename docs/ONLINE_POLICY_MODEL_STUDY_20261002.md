@@ -200,3 +200,37 @@ python -B -m unittest tools.test_d1_pooled_energy_candidate tools.test_d1_online
 검증: 후보2+기존 경계8=10건 통과(실제9.486초), 분석13세션/39행, 동결557fbe 불변, 기존 AP/처리시간 항 불변. 본 PC 후보 단계 기기 명령·추론·APK·새 계획·claim0. 직전 실측의520추론/4144명령은 삭제하거나0으로 바꾸지 않는다.
 
 [후보 화면/CSV](results/online_policy_study_01/pooled_candidate_v1/index.html)
+
+## 2026-10-03 실제 점유 식별력: 기존 장구간 원본을 먼저 재사용
+
+새 계수 적합이나 기기 명령 없이 기존 온라인13세션(312개5초창)과 COLLECT-05 개발3세션의 원본을 대조했다. 옛 manifest/progress/thermal은 동결본에 결속된9해시와 일치했다. 원본/동결본 변경0.
+
+|계산|온라인13|기존 장구간3 중 현재 지원 상태 창|
+|---|---:|---:|
+|5초 창 수|312|272 (미지원 탐지GPU 포함88창 별도 제외표)|
+|배경+4상태 rank|5|5|
+|비정규화 설계 조건수|119.523|6.371|
+|분류CPU 계수의 단위 L2 에너지 교란 민감도|1.078707/s|0.075044/s|
+|탐지CPU|0.090477/s|0.036702/s|
+|분류GPU|0.551768/s|0.049577/s|
+|분류GPU+탐지CPU|0.526540/s|0.043793/s|
+
+이는 동일 단위/5초 창의 선형 설계 기하이며 실제 잡음 분포·정확도·신뢰구간을 추정한 표가 아니다. 창 수가 다른 효과도 포함한다. 온라인 분류CPU는 탐지CPU보다 약11.9배 민감하고, 세션별 배경을 제거한 설계에서도1.141425/0.090618≈12.6배다. 배경만 제거하면 해결되는 문제가 아니다.
+
+온라인13의 실제 총점유는 분류CPU11.789867초, 분류GPU25.199561초, 병행43.294553초, 탐지CPU543.256042초다. 각 연속상태 최대는0.185/0.340/0.399/0.673초이며1초 이상 구간0이다. 원래 occupancy 구현은 인접 동일 상태를 합친다. 짧은 개별 전력을 직접 식별했다고 할 수 없지만, 이 사실이120초 전체 적분 또는 구간 노출 회귀를 자동 금지하지는 않는다.
+
+기존 `d1_energy_state_collection.freeze`는 block의 J/covered_s를 상태 이름별로 합산했다. 이는250ms 반복 제출·빈틈·실제 병행 비율을 포함한 **regimen 평균전력**이다. 순간 dispatch→lane_available 점유의 계수로 그대로 쓰면 의미가 달라진다. 이번에는 옛 요청 lane 경계로5초별 실제 점유를 재구성했으며 탐지GPU가 포함된 창은 제외표에 남겼다. 부분272창을 전체600초 에너지로 표시하지 않았다. AP·전력 계수·지원 범위는 수정하지 않았다.
+
+**결정:** 상태 계수를 구분하기 위한 장구간 실측을 지금 추가할 필요는 입증되지 않았다. 기존 원본에 해당 정보가 존재한다. 다음 작업은 이272창의 실제 점유와 동일창 전류·전압 적분을 연결한 장구간 개발자료 기반 전력 추정/프로토콜 전이 평가다. 기존 온라인13개는 이미 본 사후 평가로 고정하고 이 결과를 새로운 독립 확인이라 부르지 않는다. 다른 초기온도/APK/센서·host조회 차이 때문에 전이 성공은 아직 미확인이다. 데이터 처리 경계를 먼저 고정하고 계수나 입력을 여러 번 바꾸어 가장 좋은 결과를 고르지 않는다.
+
+기존5계수 pooled 후보의 advance=false를 번복하지 않는다. 새 실제점유 추정은 자료 의미가 다른 장구간 원본을 재사용하는 별도 근거 작업이며 아직 후보 채택·추가 실측·새 실행계획0이다. AP와 서비스/정책 비교 구현, 기본/strict/experiment_ready=false는 그대로다.
+
+```powershell
+python -B -m tools.d1_energy_identifiability --archive C:/Users/LG/Documents/D1Check_Arrival_Extension --output output/online_geometry_fresh
+python -B -m tools.d1_energy_identifiability --archive C:/Users/LG/Documents/D1Check_Arrival_Extension --output output/legacy_geometry_fresh --legacy
+python -B -m unittest tools.test_d1_energy_identifiability -q
+```
+
+단위·공선·결측상태 검사2건 통과. 실제13+3 원본 경계 실행 및 해시 확인을 별도로 수행했다. 기기 명령·APK·새 계획·claim0. 실제 정확도 검증과 PC 기하 계산은 다르다.
+
+[식별력 화면](results/online_policy_study_01/identifiability_v1/index.html)
