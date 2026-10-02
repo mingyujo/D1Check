@@ -9,6 +9,17 @@ internal object ArrivalPolicyStudy {
     val POLICIES = setOf(CPU, PARALLEL, SERIAL)
     const val COUNT = 96
 
+    /** Separate measurement protocol; legacy timing cannot change implicitly. */
+    fun samplePeriodMs(studyVersion: String, samplingVersion: String, requestedMs: Long): Long {
+        if (samplingVersion.isEmpty()) {
+            require(requestedMs == 1000L)
+            return 1000L
+        }
+        require(studyVersion == VERSION && samplingVersion == "online-power-phase-audit-v1")
+        require(requestedMs == 900L || requestedMs == 1000L)
+        return requestedMs
+    }
+
     fun validate(version: String, policy: String, role: String, scenario: String,
                  requests: List<ArrivalEnergyContract.Request>) {
         require(version == VERSION && policy in POLICIES && scenario == "sustained_mixed")

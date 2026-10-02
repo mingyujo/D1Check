@@ -4,6 +4,17 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class ArrivalPolicyStudyTest {
+    @Test fun samplerProtocolIsOptInAndBounded() {
+        assertEquals(1000L,ArrivalPolicyStudy.samplePeriodMs("","",1000))
+        for (period in listOf(900L,1000L)) assertEquals(period,
+            ArrivalPolicyStudy.samplePeriodMs(ArrivalPolicyStudy.VERSION,"online-power-phase-audit-v1",period))
+        for (v in listOf(Triple("","",900L),Triple("","online-power-phase-audit-v1",900L),
+            Triple(ArrivalPolicyStudy.VERSION,"unknown",1000L),
+            Triple(ArrivalPolicyStudy.VERSION,"online-power-phase-audit-v1",500L))) {
+            try { ArrivalPolicyStudy.samplePeriodMs(v.first,v.second,v.third);fail("unapproved sampler") }
+            catch (_: IllegalArgumentException) {}
+        }
+    }
     private fun requests(role: String) = (0 until 96).map { i ->
         val urgent = i % 4 == 1
         ArrivalEnergyContract.Request("q$i", i, if (urgent) "classification" else "detection",

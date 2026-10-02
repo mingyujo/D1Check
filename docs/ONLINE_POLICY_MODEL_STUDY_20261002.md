@@ -122,4 +122,55 @@ python -B -m unittest tools.test_d1_online_policy_study tools.test_d1_policy_pre
 
 최종 관련 Python33검사/Android13 callback·정책·기존 계약 검사, 프로젝트 서명 빌드, 실제PS Check(기기0), 실제Run, 공유CLI 수치 재현 및 strict 차단, 전체/부분 적분합·9개곡선/CSV·lane 그림 확인을 완료했다. 소스 검증 대상은 HEAD87122dd의 이번 미커밋 변경이며 code/build/plan/freeze hash로 고정했다. 최종 Git commit은 이 변경과 작은 결과만 포함하며 APK·키·모델 바이너리·원자료는 제외한다. 후처리 기기 명령0, 새 실측 추가0.
 
-Git?? ?? CRLF ??? ?? ?? ??? ??? ???102? ?? ?? ??? checkout bytes? ????. ?? ?? ???8??? ?? ?? ??? ?? ?? ?? raw bytes? Git? ?????, LF ??? ? HEAD? ???? ????. ??? ?? ??? ?? LF/CRLF ??? ????. ?? ?? ?? ?? ???? ?? ??? ???. SVG? ??? ?? ??? ???? ????? ??? ??? ???.
+Git 줄끝 변환으로 동결 소스 해시가 달라지지 않도록 실행 의존102파일의 checkout bytes를 대조했다. 혼합 줄끝8파일은 작업 파일을 다시 쓰지 않고 원래 bytes를 Git에 보존했으며, 정규화 후 기존 HEAD와 같은 내용임을 확인했다. 실행 의미나 추가 빌드는 바꾸지 않았다. SVG 생성기의 줄끝 공백만 제거했고 수치와 좌표는 유지했다.
+
+
+## 전력 오차 후속: 동기화된 표본 시점의 영향 분리
+
+기존9세션의 수치 판독을 다시 수행했다. 개발35–80초 전력45표본은2초 반복 부하의8등분 중2구간에 집중됐다. 확인은2.2초 반복과1초 계측이 어긋나8구간을 모두 관측했다. 이는 **조회 시점 집중의 확정 관측**이며 센서 내부 갱신 주기, aliasing 오차 크기, 전력 과소예측 원인의 확정은 아니다. 기존 snapshot은1초 고정 주기로 읽고 원래 시각으로 적분했다. 적분창 이동이나 실제 전류를 예측 입력에 넣는 수정은 하지 않았다.
+
+네 증가분의 개발행렬 rank4/condition 약56.1은 수치 식별만 뜻한다. CPU 또는 병행 세션을 하나 제외하면 rank3이며, 직렬 제외 시 rank4라도 분류CPU 증가분2.701→5.014W, 병행0.392→1.555W로 바뀐다. 이 값은 사후 민감도이며 새 후보로 채택하지 않는다. 세션 전 배경W가 부하 뒤 같다는 가정도 관측으로 보장되지 않는다. charge counter의 최소 관측 변화4,000raw를 명목uAh로 해석하면 약55.4–56.2J 단계다. 해당 gauge 역시 절대교정되지 않았고, 작은 정책 차이를 확인할 독립 기준으로 사용할 수 없다.
+
+[위상 그림](results/online_policy_study_01/power_diagnosis_v1/sample_phases.svg), [세션 표](results/online_policy_study_01/power_diagnosis_v1/cases.csv), [구간 전력](results/online_policy_study_01/power_diagnosis_v1/windows.csv), [민감도·원본 해시](results/online_policy_study_01/power_diagnosis_v1/diagnosis.json).
+
+### 실행 전에 고정한 계측 대조
+
+같은 APK/resident/병행정책/96요청·500ms 간격·기본환경을 유지하고 전력조회만1,000→900→900→1,000ms로 설정한다. 세션당 baseline30＋common120＋cooling60초, 사이90초 유휴다. 새 opt-in 버전 `online-power-phase-audit-v1`; 기존 모드는1초 그대로다. 두 AB/BA 대비와 같은주기 반복 차이를 함께 보고한다. 결과를 보고 후보를 추가하거나 원래 동결값을 수정하지 않는다. 900ms 자체 추가조회/쓰기 비용과 세션 배경·이력을 완전히 분리하는 설계는 아니므로, 에너지 차이를 모두 aliasing 보정값으로 간주하지 않는다. 이 네 세션은 모형 독립 정확도 확인이 아니다.
+
+APK SHA `7e91b4a3126f0f31328ebfd67ce21e11796a92669d3df7bab20e3aa5ca1c55a7`, 기존 프로젝트 서명/패키지 유지. 외부 `online_sampling_build_v1/build_receipt.json`과 `online_power_sampling_source_v1/identity.json`104파일로 출처를 보존했다. 계획 SHA `d7e962eea85ed50d491630ff1f3162e458f3fd53d1b304ace8c75a7d58be3c6b`. 상한4세션/본384/warmup32/합416/runtime16/staging4·28/pull1/push·설치각1/ADB13000. 총3670초는 preflight600＋4×세션예약700＋3×유휴90이며, 고정관측840초와 구분한다. 실패 후 해당 계획 재시도0. 기존 하드타임아웃·회수50·cleanup45초/명령100예약을 유지한다.
+
+Python11검사, Android7(정책3/lifecycle4), 실제PS Check/실제ADB 호출 차단Check를 통과했다. 첫 Android 명령은 `-PenableModelProbe=true` 누락으로 task-not-found였고 테스트 본문 미실행이었다. 기존 옵션을 바로잡은 두 번째 명령으로 실제7건을 실행했다. 프로젝트 서명 빌드 성공, 설정/환경 기준 변경0. 이는 장시간 기기 안정성 보장이 아니다.
+
+```powershell
+python -B -m tools.d1_online_power_diagnosis --root C:/Users/LG/Documents/D1Check_Arrival_Extension/online_policy_study_run_v4 --output output/power_diagnosis_fresh
+python -B -m unittest tools.test_d1_online_sampling_study tools.test_d1_online_policy_study -q
+```
+
+
+### 2026-10-03 냉각 관측 timeout과 남은 두 세션
+
+첫 묶음은2세션 적격 완료 뒤3번째 냉각의 `dumpsys thermalservice`2초 client timeout으로 중단됐다. 명령2462는2.009917초/출력0bytes/exit1이며, 연결 단절·기기 정지·GPU 오류의 증거가 아니다. 다음 manifest 회수는5.127초에 성공했고 계획상 부분 회수와 force-stop1회, 대상ps 부재·thermal0 확인이 이어졌다. 앱 cleanup은 회수되지 않아 미확인이다. 본 요청96개의 시작/반환/output/persist/worker/lane와 common120초 경계는 해당 부분 기록에 존재하지만 cooling 종료/정상cleanup까지 완료한 적격 세션으로 승격하지 않는다.
+
+원래 plan_v1은 `stopped_no_resume`다. 실제962.876757초/ADB2473/launch3/runtime12/warmup24/본288=총312추론,staging3·21/pull1/push·설치각1. 첫2세션의 정상 앱cleanup/회수/host정리, 실패3번째의 host종료는 분리한다. 네 번째는 미시도다. 원본 `online_power_sampling_run_v1/FINAL_RECEIPT.json`과 failure_prefix를 유지한다.
+
+사용자의 자율적인 실패 복구·후속 실측 승인에 따라 완료2개는412파일 해시로 재사용하고, 미완료900ms와 미시도1000ms만 별도 plan_v2에 고정했다. 계측·timeout·환경 gate·APK 변경0, 기존 실패 계획 재실행0이다. 새 두 세션의 최대192본＋16warmup=208추론/runtime8/staging2·14/pull1/push·설치0/고정420초/ADB6600/상한2090초(600＋2×700＋90)이며 내부재시도0. APK를 다시 빌드하지 않았다.
+
+계획 SHA `af6ff98a41fa746457ba3dc7eeaa2ce5d806717a54b2340b377eeca1941a689b`, `online_power_sampling_plan_v2/collection_plan.json`, 원본 `online_power_sampling_run_v2`. 실제PS Check 통과 후 Run1회. 예산/설치금지/두주기순서/원래 적격자료 해시를 확인했고 새소스104파일을 `online_power_sampling_source_v2`에 보존했다. 이는 원래4세션 계획의 연속 완주가 아니며, 두 실행 사이의 준비시간·환경·이력 차이가 추가된 별도block이다. 실패의96요청도 전체 소비와 실패 분모에 남긴다.
+
+
+### 후속 완료·전력 입력 가정의 남은 문제
+
+후속02는2/2세션 정상 완료(597.785269초/ADB1671/본192/warmup16/runtime8/staging2·14/pull1/배포0)했다. 앱cleanup2·회수2·host정리2·마지막대상ps 부재다. 두 실행 합계 실제5시도/적격4/냉각중단1, 본480＋warmup40=520추론/ADB4144/작업1560.662초(PC 공백 제외). 시작/반환/output/persist/worker/lane는480개 모두 확인됐다. 앱cleanup은4정상/중단1미회수이며 미회수와 실패를 같은 의미로 쓰지 않는다. 첫실행 명령2462 단일timeout 외의 exit1은6개 경로 부재 확인이다.
+
+|순서·계측|관측120초 J|기존식−관측 J|AP MAE °C|최대 AP 오차 °C|시작 AP °C|
+|---|---:|---:|---:|---:|---:|
+|첫block1000ms|173.814325|+0.007760|0.337516|1.009786|29.4|
+|첫block900ms|169.614304|+5.802522|0.240457|0.995047|29.6|
+|후속block900ms|170.846155|−17.871248|0.191953|0.924580|30.0|
+|후속block1000ms|170.545659|−12.714599|0.756355|1.183990|30.1|
+
+900ms는각133표본/8위상,1000ms는각120표본/2위상이었다. 실제병행6.292–6.567초. 두 대비900−1000은−4.200020/+0.300496J로 불일치하며, 같은주기 반복 차이는1000ms−3.268666J/900ms+1.231851J다. 배경을뺀35–120초 차이도−4.909517/+1.580628J로 바뀐다. 단일 원인이나 일정한 보정값을 뒷받침하지 않는다.900ms의 센서읽기 경과8.326/8.438초 대1000ms7.309/7.565초는 추가측정시간 기록이며 CPU사용/에너지 비용으로 바꾸지 않는다.
+
+관측총J의 범위4.200J보다, 부하전20초의 W범위1.053847–1.240496을120초에 고정 적용한 변동22.398J가 크다. 따라서 위상집중을 완화해도 세션마다 짧게 관측한 배경W를 전체창에 전용하는 가정이 남는다. **전체 목표 미완료**이며 원래 독립확인 오류와 이번 전이 오류를 모두 보존한다. 다음PC 보완은 pooled resident 항 하나로 세션별20초입력을 대체하는 최소후보의 식별성/사후 평가다. 기존13적격을 이용하면 그 자료는 새후보의 개발/사후평가이며 독립확인이 아니다. 이번에는 새계수 채택0/원래동결불변이다.
+
+[최종그림/CSV/재현](results/online_policy_study_01/sampling_run01_complete/index.html). 후속receipt SHA `a341cc286c798b9e7f408322556f8e082f1fa26cd45c48296c6320c3bab3f956`, 첫실패receipt `d9a715b2ddc2bf4ec7b5d94480bbf1932555e95f79d27ff85c2c811ab511ca28`. PC 후처리 cp949 읽기오류를 UTF-8명시로 수정하고 새출력에서 재현했다. 수치·적분창·계수 수정은 없고 Python12/Android7검사, 실제 APK/두Check/두Run 경계를 구분한다. 시각자료는새 적격4만 표시하고 중단1을 정상으로 채우지 않았다.

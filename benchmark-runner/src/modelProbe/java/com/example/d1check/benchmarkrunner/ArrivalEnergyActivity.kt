@@ -212,7 +212,11 @@ open class ArrivalEnergyActivity : Activity() {
                         q.getString("source_request_id"))
                 } } }.also { ArrivalRecordedReplay.validate(it, requests, replayVersion, sourcePolicy) }.associateBy { it.id }
             } else emptyMap()
-            samples.scheduleAtFixedRate({ sampler.tick { event("power_sample", snapshot()) } }, 0, 1, TimeUnit.SECONDS)
+            val samplePeriodMs = ArrivalPolicyStudy.samplePeriodMs(policyStudy,
+                m.optString("power_sampling_version", ""), m.optLong("power_sample_period_ms", 1000L))
+            if (m.has("power_sampling_version")) event("power_sampling_contract", mapOf("period_ms" to samplePeriodMs,
+                "version" to m.getString("power_sampling_version")))
+            samples.scheduleAtFixedRate({ sampler.tick { event("power_sample", snapshot()) } }, 0, samplePeriodMs, TimeUnit.MILLISECONDS)
             val setupStart = now()
             Log.i("D1ENERGY", "runtime_scope_start=$sid")
             ArrivalRuntimeSetup.initialize(EnergyCollectionCore.KEYS, false, 8, requests.size) { key ->

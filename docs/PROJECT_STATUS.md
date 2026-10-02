@@ -1,5 +1,26 @@
 # D1Check 현재 상태
 
+## 2026-10-03 전력 계측 대조4 확보·짧은 배경입력의 민감도 확인
+
+- [최종화면/CSV/재현](results/online_policy_study_01/sampling_run01_complete/index.html), [보고서](ONLINE_POLICY_MODEL_STUDY_20261002.md), [검증](results/online_policy_study_01/sampling_run01_complete/verification.json). 앞2완료→냉각thermal조회2초timeout→새남은2완료. 원래4세션 연속완주가 아니며 실패/부분96요청을 보존한다.
+- 실제합계5시도/적격4/부분종료1,본480＋warmup40=520추론/runtime20/staging5·35/pull2/APK push·설치각1/ADB4144/작업1560.662초(PC공백별도). 앱cleanup4완료/중단1미회수,host세션정리5＋설치정리1/각마지막ps부재/parent·child exited. 원본두receipt/inventory21947파일 보존.
+- 900ms는133표본/8위상,1000ms는120표본/2위상으로 분산 개선. 그러나900−1000 J차이는−4.200/+0.300으로 불일치. 기존557fbe동결식을 그대로 적용한 J오차−17.871…+5.803/AP MAE0.192–0.756°C. 조회주기만으로 모형오차 해결/정확도PASS 아님.
+- 관측120초J 범위4.200J에 비해, 부하전20초W 차이를120초고정배경으로 전용한 변동22.398J. **다음 행동:** 기존13적격에서 세션별짧은 배경입력을 pooled resident 항으로 대체하는 최소후보 하나의 식별성/사후평가를 수행한다. 기존계수/default/strict/experiment_ready=false 유지; 새후보 독립확인은 별도로 필요하다. 원래목표는 아직진행중이며 추가동일실측을 기계적으로 반복하지 않는다.
+- Python12/Android7/서명APK·Check·Run·수치/그림 검증. source104/기존3freeze 불변. UTF8 SVG 후처리 오류만 PC수정, 기기재실행으로 해결하지 않았다. 아래진행중/미승인 설명은 당시 이력이다.
+
+## 2026-10-03 전력 계측 대조: 앞2완료·냉각조회 중단 후 남은2 실행 중
+
+- plan_v1은 `thermalservice`2초 timeout으로 stopped_no_resume. 첫2 적격, 세 번째 본96/common120기록은 회수했으나 cooling/appcleanup미확인, 네 번째 미시도. 실제312추론/ADB2473/962.877초, 계획상 force-stop·ps부재 확인. 출력0bytes를 기기단절/전송0으로 해석하지 않는다.
+- 완료2개412근거 해시 보존 후 새 plan_v2에서900/1000ms 두세션만 진행. SHA `af6ff98a…1a689b`, 상한208추론/runtime8/stage2·14/pull1/APK0/ADB6600/2090초. 동일APK·gate·timeout 유지, 내부retry0. 서로 다른block·기존실패 소비를 합쳐 원래4세션 완주로 표시하지 않는다. [근거/판독](ONLINE_POLICY_MODEL_STUDY_20261002.md).
+- 기존 모형 적합/strict/default 변경0, experiment_ready=false. 다음 행동은 남은실측 종료와 계측 민감도 판독·증거/Git 보존이다.
+
+## 2026-10-02 전력 잔차의 표본 위상 집중 확인·새 대조 실행 착수
+
+- 기존9세션의 반복 주기 대비 전력 표본 시각을 분석했다. 개발500ms 도착은 2초 반복에서8위상 중2구간만 관측, 확인550ms는8구간에 분산됐다. aliasing 크기/오차 원인으로 확정하지 않는다. 계수 leave-session-out 불안정과 약4mAh charge counter 단계도 확인했다. [CSV·그림](results/online_policy_study_01/power_diagnosis_v1/sample_phases.svg).
+- 사용자 자율 실측 승인으로 동일 병행96요청/500ms 부하의1,000→900→900→1,000ms 조회 대조4만 실행한다. APK는 별도opt-in900ms를 추가하며 기존기본1초/onDestroy/부하/환경 gate 불변. 900ms 추가조회 약11.1% 자체 비용과 세션변동은 구분 불가 한계다. 새 모형 적합/확인 재보정0.
+- plan SHA `d7e962eea85ed50d491630ff1f3162e458f3fd53d1b304ace8c75a7d58be3c6b`, 외부 `online_power_sampling_plan_v1`, 출력 `online_power_sampling_run_v1`. 상한4세션/본384+warmup32=416추론/runtime16/staging4·28/pull1/push·설치각1/고정840초/상한3670초/ADB13000/재시도0. 현재설치본과환경은 기존 실행기 안에서 확인한다.
+- 관련Python11/Android7·서명APK 빌드·실제PS Check/ADB차단Check 통과. 실측 전 단계이며 예상 정상시간이나 완주보장이 아니다. 다음 행동은 Run1회와 실제 소비/회수/계측 민감도 판독. 기존 freeze/default/strict/experiment_ready=false 보존.
+
 ## 2026-10-02 원래 목표 연결: 온라인 정책 개발3·동결·독립 확인6 완료
 
 - [실행·오차·정책 판정](ONLINE_POLICY_MODEL_STUDY_20261002.md), [그림/CSV/재현](results/online_policy_study_01/run02/index.html), [검증](results/online_policy_study_01/run02/verification.json). 실제 예정도착96개/CPU직렬·CG_DC병행·CG_DC직렬을 실행하고 일정/응답/J/AP를 독립 비교했다. AP 조건부 재생만으로 전체 연구 완료라고 부르던 경계를 바로잡았다.
