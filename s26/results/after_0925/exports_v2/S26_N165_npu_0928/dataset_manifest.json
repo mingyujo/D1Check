@@ -1,0 +1,163 @@
+{
+  "dataset_schema": "d1check_thermal_dataset",
+  "dataset_version": 2,
+  "generated_utc": "2026-09-27T17:39:56.150125+00:00",
+  "source_experiment_manifest": "experiment_manifest.json",
+  "source_experiment_manifest_sha256": "d805238d1ce21acd768b3ba9cde9b374d212e211b4251becf146f12d0a609bd3",
+  "source_run_count": 1,
+  "included_run_count": 0,
+  "excluded_run_count": 1,
+  "exclusion_reason_counts": {
+    "npu_dispatch_not_formally_valid": 1
+  },
+  "thermal_sample_inventory": {
+    "raw_record_count": 857,
+    "valid_unique_sample_count": 857,
+    "phase_assigned_valid_sample_count": 857,
+    "outside_or_unassignable_valid_sample_count": 0
+  },
+  "gpu_delegate_profile_inventory": {
+    "legacy_missing": {
+      "run_count": 0,
+      "row_counts": {
+        "run_summary": 0,
+        "phase_temperature_summary": 0,
+        "thermal_timeseries": 0
+      }
+    },
+    "invalid": {
+      "run_count": 0,
+      "row_counts": {
+        "run_summary": 0,
+        "phase_temperature_summary": 0,
+        "thermal_timeseries": 0
+      }
+    },
+    "cpu_not_applicable": {
+      "run_count": 1,
+      "row_counts": {
+        "run_summary": 1,
+        "phase_temperature_summary": 4,
+        "thermal_timeseries": 857
+      }
+    },
+    "profiles": [],
+    "distinct_gpu_profile_count": 0,
+    "mixed_gpu_profiles": false
+  },
+  "accuracy_preflight": {
+    "schema_version": 2,
+    "validation_scope": "backend-performance-formal",
+    "status": "not_run",
+    "policy": "off",
+    "synthetic_numerical_check": {
+      "status": "not_run",
+      "failure_reasons": [],
+      "note": "synthetic numerical check explicitly disabled"
+    },
+    "representative_input_equivalence": {
+      "status": "not_run",
+      "failure_reasons": [],
+      "note": "no representative tensor-set was executed"
+    },
+    "task_accuracy_check": {
+      "status": "not_run",
+      "failure_reasons": [],
+      "note": "ground-truth task accuracy was not executed"
+    },
+    "formal_gate_result": {
+      "status": "failed",
+      "failure_reasons": [
+        "synthetic_numerical_check_not_passed",
+        "representative_input_equivalence_not_passed"
+      ],
+      "representative_is_blocking": true,
+      "task_accuracy_is_blocking": false
+    },
+    "failure_reasons": [
+      "synthetic_numerical_check_not_passed",
+      "representative_input_equivalence_not_passed"
+    ],
+    "limitations": [
+      "synthetic numerical tolerance is diagnostic and is not task accuracy",
+      "precision_loss_allowed does not reveal actual driver FP16 execution",
+      "Imagenette is a ten-class subset and is not full ImageNet accuracy"
+    ],
+    "cache_key_sha256": "783f21cf8da040d96349a7c20c90f0ccc15d8baaa9045acfffb7ee056a53e0c8",
+    "cache_provenance": {
+      "schema_version": 2,
+      "validation_scope": "backend-performance-formal",
+      "device_fingerprint": "samsung/m1sksx/m1s:16/BP4A.251205.006/S942NKSS4AZHA_OKR4AZHA:user/release-keys",
+      "model_sha256": "D95B3C5EA86750CEF882FA867CA357DFE4D265D0B80B67E83277A0BDA310CFBB",
+      "litert_version": "1.4.2",
+      "gpu_delegate_profile": {
+        "profile_id": "gpu-fp32-strict-v1",
+        "configuration_sha256": "58ee1a9dad76bb62d85dedae9204790863eacc7d8c3c0da404505616ca098068",
+        "precision_loss_allowed": false,
+        "quantized_models_allowed": true,
+        "inference_preference": "FAST_SINGLE_ANSWER",
+        "force_backend": "UNSET",
+        "actual_fp16_execution": "unknown_not_exposed_by_litert_api"
+      },
+      "comparator_version": "output-equivalence-v3",
+      "synthetic_input_set_version": "lcg-float32-unit-v1",
+      "synthetic_seed": 305419896,
+      "synthetic_input_count": 32,
+      "tolerance": {
+        "atol": 0.0001,
+        "rtol": 0.001,
+        "relative_error_epsilon": 1e-06
+      },
+      "representative_tensor_set_sha256": "bcd9fad7f47fd214953d737b5b9ef7a4545642857fc4f5677338676d9764cf2c",
+      "representative_container_sha256": "89190c28f133ceb29bc82fd6b93b2cda6e2980a521db4f3492ec8e7fcdcfc22c",
+      "label_mapping_file_sha256": "70002b0ff5de60a3a17a82dbfcff291931f96225ddf941ad2e182fc39e183d15",
+      "preprocessing_configuration_sha256": "ad6f76b120f8ccf0f64a260ee388f7af2b002dc722436f8b19552dcb6f702260",
+      "representative_policy_sha256": "428a1c1e60623293301929c66315c8bd7603fb87c1a620b0116cf328064353c5",
+      "task_accuracy_policy_sha256": "6dfdc375dc1b0c8fbc3c247076155d91fbf1327cab0876aedac82f5cdcdb5589"
+    },
+    "completed_utc": "2026-09-27T17:24:16.146088+00:00",
+    "resume_reused": false
+  },
+  "row_counts": {
+    "run_summary": 1,
+    "phase_temperature_summary": 4,
+    "thermal_timeseries": 857
+  },
+  "clock_domain": {
+    "name": "android_elapsed_realtime_mono_ns",
+    "source": "thermalservice mono_ns and merged summary phase timestamps",
+    "utc_or_host_monotonic_used_for_alignment": false
+  },
+  "phase_intervals": {
+    "baseline": "[run_start_mono_ns, load_start_mono_ns)",
+    "load": "[load_start_mono_ns, load_end_mono_ns)",
+    "cooling": "[load_end_mono_ns, run_stop_mono_ns)"
+  },
+  "endpoint_selection": {
+    "default": "latest valid sample at or before target",
+    "run_start_fallback": "earliest valid sample after target only when no prior sample exists",
+    "future_fallback_for_other_endpoints": false,
+    "maximum_absolute_offset_ms": 2000.0,
+    "sampling_uncertainty": "per-sample half-width from ADB uptime bracketing"
+  },
+  "temperature_unit": "degrees_Celsius",
+  "limitations": {
+    "accuracy": "CPU-GPU numerical output equivalence only; task accuracy is not measured",
+    "energy": "current units remain unverified; no J or mWh calculation",
+    "statistics": "a pilot run does not establish statistical significance"
+  },
+  "outputs": {
+    "run_summary.csv": {
+      "sha256": "58620f7b9ba09c6297a0c1083c28de814a72865e7e39c813333d52cac8b6d098",
+      "row_count": 1
+    },
+    "phase_temperature_summary.csv": {
+      "sha256": "3d62ac7255cd7a8eddded8928fd1ca45f9fd9627177d6970e96c9c2992744fdf",
+      "row_count": 4
+    },
+    "thermal_timeseries.csv": {
+      "sha256": "6aaa1dec1257d7b29be18004a73d11f3adc2660a5dfe9d3aec45c57a8c293aad",
+      "row_count": 857
+    }
+  }
+}
