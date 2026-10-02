@@ -59,3 +59,6 @@ python -B -m tools.d1_separated_power_readout --bundle <새_bundle> --case-id <�
 PC 검증: `python -B -m unittest tools.test_d1_separated_power_readout -v` 2건 통과. 합성 fixture에서 실제 forecast/costs를 실행했으며 기기 안정성·정확도 검증은 아니다. 미래 관측 입력 무시, 잘못된 버전/역할/해시/누락 바인딩 차단을 확인했다. 검증 기준 HEAD abf63cc + 이번 신규 재생/테스트 파일. 실제 PowerShell Check 재실행은 같은 계획 SHA0340473b…ac7f, 기기 명령0으로 통과했다.
 
 C: 여유 약121MiB로 필수2GiB 예약 미충족: Run/claim/기기 명령0, 계획은 미소비 보류이며 stopped로 바꾸지 않았다. 사용자 공간 확보 응답 대기.
+
+## 실행 상태 갱신
+2026-10-03 공간 확보 후1회 실행했으며 stopped_no_resume. [Run01 결과](../separated_power_run01/README.md). 위 미소비·공간보류는 착수 전 이력이다. 기존 Run 명령을 다시 실행하지 않는다.

@@ -1,5 +1,12 @@
 # D1Check 결정 기록
 
+## 2026-10-03 분리 부하 Run01 중단·첫 개발 자료 보존
+
+- [결과/소비/재현](results/online_policy_study_01/separated_power_run01/README.md), [관측 화면](results/online_policy_study_01/separated_power_run01/index.html). 공간 확보 후 새계획1회 실행: CPU개발1 적격, 병행개발 준비 listing3초 timeout으로 stopped_no_resume. 개발잔여1/확인6 미시도, 추정·동결0. 원인미확정, 직후회수성공을 보존.
+- 확인소비 본96+warmup16=112/runtime8/staging2·14/pull1/push·설치각1/ADB877/428.988초. 두 번째 terminal미회수로 미확인본0–96 별도. 첫앱cleanup완료/두 번째미확인; host세션정리2+설치정리1/최종ps부재. 기존계수·FAIL·strict·experiment_ready=false 불변.
+- 첫120초165.373J, 초기AP32.6, CPU단독만관측,96완료/54마감. 새예측/정확도PASS없음. 다음PC행동: 성공개발1 보존하에 반복된 준비조회 timeout의 관측/중단 경계 검증. 기존계획재실행0. 아래는과거기록.
+
+
 ## 2026-10-03 분리 부하 개발3·혼합 확인6 PC 준비 / 저장공간 보류
 
 - [계약·APK·예산·명령](results/online_policy_study_01/separated_power_v1/README.md). 개발 분류32/탐지32/혼합32 분리, 확인48:48 교대96. 같은정책3, 새정책0. AP557fbe 유지,50초부하전전력+4상태증가분 및서비스평균만개발자료로고정. 사후후보2개미채택보존.

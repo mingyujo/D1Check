@@ -311,3 +311,10 @@ PC검증: 관련Python15(입력3/새모형·계획·공유root·저장공간4/�
 현재C: 약128MB로기기실행을보류한다. 이미완료된빌드의재생성가능3개중간폴더삭제를시도했으나자동승인검토가 `blocked by policy`로거절해삭제0이었다. 원자료/APK/키/사용자변경은보존했다. 사용자에게C:2GiB확보를요청했으며새세션승인을다시요구한것은아니다. 공간확보뒤동일계획 Check와현재기기gate를거쳐진행한다.
 
 [준비 화면](results/online_policy_study_01/separated_power_v1/index.html)
+
+
+## 2026-10-03 분리 부하 Run01 중단·첫 개발 자료 보존
+
+- [결과/소비/재현](results/online_policy_study_01/separated_power_run01/README.md), [관측 화면](results/online_policy_study_01/separated_power_run01/index.html). 공간 확보 후 새계획1회 실행: CPU개발1 적격, 병행개발 준비 listing3초 timeout으로 stopped_no_resume. 개발잔여1/확인6 미시도, 추정·동결0. 원인미확정, 직후회수성공을 보존.
+- 확인소비 본96+warmup16=112/runtime8/staging2·14/pull1/push·설치각1/ADB877/428.988초. 두 번째 terminal미회수로 미확인본0–96 별도. 첫앱cleanup완료/두 번째미확인; host세션정리2+설치정리1/최종ps부재. 기존계수·FAIL·strict·experiment_ready=false 불변.
+- 첫120초165.373J, 초기AP32.6, CPU단독만관측,96완료/54마감. 새예측/정확도PASS없음. 다음PC행동: 성공개발1 보존하에 반복된 준비조회 timeout의 관측/중단 경계 검증. 기존계획재실행0. 아래는과거기록.
