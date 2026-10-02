@@ -7,7 +7,10 @@ which refuses to write an excerpt whose verdicts differ from the full log). Raw 
              NPU rule: 9/25 NPU formal 20 runs, identical to the existing verdict
   must FAIL  NPU rule: 9/24 04:14 / 04:55 diagnostic dumps (DispatchDelegate line then dispatch failure)
              CPU rule: NPU formal logs and both 9/24 dumps (they print "XNNPACK CPU accelerator registered")
-             GPU candidate: every CPU and NPU log
+             GPU rule: every CPU and NPU log and both 9/24 dumps
+  must PASS  GPU rule: the 2026-10-03 CompiledModel GPU smoke run (fixture gpu_smoke_1002_*, the ONE run the
+             rule was frozen from -- a consistency check, not a held-out test; the first M1/M2 chain runs
+             are the first real test)
 Negative inputs are evaluated with metadata that CLAIMS the tested accelerator, so a FAIL comes from the
 log, not from a metadata mismatch.
 """
@@ -30,6 +33,7 @@ spec.loader.exec_module(E)
 
 MANIFEST = json.loads((FIXTURES / "MANIFEST.json").read_text("utf-8")) if (FIXTURES / "MANIFEST.json").is_file() else {}
 FROZEN_CPU_FINGERPRINT = "cef076049ea750289c3406f707f58f70c872f2f7392d4644a3688f6005e7c7bb"  # 2026-09-28 11:23:47 +0900
+FROZEN_GPU_FINGERPRINT = "36615b9e1377c02b13629adf9fe950f90d6614155b2876cdbadcf785aeac0618"  # 2026-10-03 00:3x +0900 (1002 smoke run 9f40b682)
 
 
 def fixtures(prefix: str) -> list[tuple[str, str, dict]]:
@@ -144,38 +148,68 @@ class NpuRuleTest(unittest.TestCase):
                 self.assertEqual("FAIL", E.evaluate_npu(text, claim(metadata, "NPU"))["verdict"])
 
 
-@unittest.skipUnless(MANIFEST, "fixtures missing")
-class GpuCandidateTest(unittest.TestCase):
-    SYNTHETIC = "\n".join([
-        # NOT a device log: built from format strings in litert-2.2.0.aar jni/arm64-v8a (libLiteRt.so,
-        # libLiteRtClGlAccelerator.so) to show what the candidate rule would accept. The delegate name is invented.
-        "09-28 12:00:00.000 4242 4243 I D1GPU   : {\"event\":\"run_metadata\"}",
-        "09-28 12:00:00.100 4242 4260 I litert  : [gpu_environment.cc:1] Created LiteRT GpuEnvironment.",
-        "09-28 12:00:00.200 4242 4260 I tflite  : Replacing 31 out of 31 node(s) with delegate (SyntheticGpuDelegate) node, yielding 1 partitions for subgraph 0 ().",
-        "09-28 12:00:01.000 4242 4243 I D1GPU   : {\"event\":\"load_start\"}",
-    ])
+LOG_CONDITIONS_GPU = {"litert_cl_full_replacement_in_runner_pid", "gpu_environment_created_in_runner_pid",
+                      "no_other_delegate_replacement", "no_failure_or_fallback_line", "single_runner_process"}
 
-    def test_cpu_and_npu_logs_fail(self):
+
+@unittest.skipUnless(MANIFEST, "fixtures missing")
+class GpuRuleTest(unittest.TestCase):
+    """GPU rule v1 (frozen 2026-10-03 from results/S26_GPUcm_smoke_1002 run 9f40b682, FP32 requested)."""
+
+    def test_rule_is_still_the_frozen_one(self):
+        self.assertEqual(FROZEN_GPU_FINGERPRINT, E.rule_fingerprints()["gpu"])
+
+    def test_smoke_run_passes_and_is_neither_cpu_nor_npu_evidence(self):
+        runs = fixtures("gpu_smoke")
+        self.assertEqual(1, len(runs))
+        name, text, metadata = runs[0]
+        self.assertIn("Replacing 31 out of 31 node(s) with delegate (LITERT_CL)", text)
+        self.assertIn("Created LiteRT GpuEnvironment.", text)
+        result = E.evaluate_gpu(text, metadata)
+        self.assertEqual("PASS", result["verdict"], result["failed_conditions"])
+        self.assertEqual(["LITERT_CL"], result["details"]["gpu_delegate_names"])
+        cpu = E.evaluate_cpu(text, claim(metadata, "CPU"))
+        self.assertEqual("FAIL", cpu["verdict"])
+        self.assertTrue(set(cpu["failed_conditions"]) & LOG_CONDITIONS_CPU)
+        self.assertEqual("FAIL", E.evaluate_npu(text, claim(metadata, "NPU"))["verdict"])
+
+    def test_cpu_npu_and_diagnostic_logs_fail(self):
         for name, text, metadata in fixtures("c5_run") + fixtures("npu_formal") + fixtures("g4_diag"):
             with self.subTest(run=name):
-                result = E.evaluate_gpu_candidate(text, claim(metadata, "GPU"))
-                self.assertEqual("CANDIDATE_FAIL", result["verdict"])
-                self.assertIn("gpu_full_replacement_in_runner_pid", result["failed_conditions"])
+                result = E.evaluate_gpu(text, claim(metadata, "GPU"))
+                self.assertEqual("FAIL", result["verdict"])
+                self.assertTrue(set(result["failed_conditions"]) & LOG_CONDITIONS_GPU)
 
-    def test_synthetic_positive_and_its_negatives(self):
-        metadata = {"npu_accelerator_requested": "GPU"}
-        self.assertEqual("CANDIDATE_PASS", E.evaluate_gpu_candidate(self.SYNTHETIC, metadata)["verdict"])
-        unsupported = self.SYNTHETIC + "\n09-28 12:00:00.300 4242 4260 W litert  : Following operations are not supported by GPU delegate:"
-        self.assertEqual("CANDIDATE_FAIL", E.evaluate_gpu_candidate(unsupported, metadata)["verdict"])
-        mixed = self.SYNTHETIC + "\n09-28 12:00:00.300 4242 4260 I tflite  : Replacing 2 out of 2 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 1 partitions for subgraph 0 ()."
-        self.assertIn("no_cpu_or_npu_delegate_replacement", E.evaluate_gpu_candidate(mixed, metadata)["failed_conditions"])
+    def test_negatives_built_from_the_device_lines(self):
+        name, text, metadata = fixtures("gpu_smoke")[0]
+        pid = sorted(E.runner_pids(E.parse_log(text)))[0]
+        lines = text.splitlines()
+        stamp = next(line for line in lines if "(LITERT_CL)" in line).split(" I tflite")[0]
+        partial = text.replace("Replacing 31 out of 31", "Replacing 30 out of 31")
+        self.assertIn("litert_cl_full_replacement_in_runner_pid", E.evaluate_gpu(partial, metadata)["failed_conditions"])
+        foreign = "\n".join(line.replace(f" {pid} ", " 99999 ", 1) if "(LITERT_CL)" in line else line for line in lines)
+        self.assertIn("litert_cl_full_replacement_in_runner_pid", E.evaluate_gpu(foreign, metadata)["failed_conditions"])
+        no_env = "\n".join(line for line in lines if "Created LiteRT GpuEnvironment." not in line)
+        self.assertEqual(["gpu_environment_created_in_runner_pid"], E.evaluate_gpu(no_env, metadata)["failed_conditions"])
+        mixed = text + "\n" + stamp + " I tflite  : Replacing 2 out of 2 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 1 partitions for subgraph 0 ()."
+        self.assertIn("no_other_delegate_replacement", E.evaluate_gpu(mixed, metadata)["failed_conditions"])
+        fallback = text + "\n" + stamp + " W litert  : Gracefully falling back to CPU"
+        self.assertIn("no_failure_or_fallback_line", E.evaluate_gpu(fallback, metadata)["failed_conditions"])
+        self.assertEqual(["requested_accelerator_gpu"], E.evaluate_gpu(text, claim(metadata, "NPU"))["failed_conditions"])
+
+    def test_registration_and_load_lines_alone_are_not_evidence(self):
+        name, text, metadata = fixtures("gpu_smoke")[0]
+        stripped = "\n".join(line for line in text.splitlines() if "(LITERT_CL)" not in line)
+        self.assertIn("Dynamically loaded GPU accelerator(libLiteRtClGlAccelerator.so) registered.", stripped)
+        self.assertIn("Loaded OpenCL library with dlopen.", stripped)
+        self.assertEqual(["litert_cl_full_replacement_in_runner_pid"], E.evaluate_gpu(stripped, metadata)["failed_conditions"])
 
 
 @unittest.skipUnless(MANIFEST, "fixtures missing")
 class DeterminismAndReadOnlyTest(unittest.TestCase):
     def test_same_input_same_bytes(self):
         for name, text, metadata in fixtures("c5_run")[:3] + fixtures("npu_formal")[:3] + fixtures("g4_diag"):
-            for fn in (E.evaluate_cpu, E.evaluate_npu, E.evaluate_gpu_candidate):
+            for fn in (E.evaluate_cpu, E.evaluate_npu, E.evaluate_gpu):
                 with self.subTest(run=name, rule=fn.__name__):
                     first = json.dumps(fn(text, copy.deepcopy(metadata)), sort_keys=True).encode()
                     second = json.dumps(fn(text, copy.deepcopy(metadata)), sort_keys=True).encode()

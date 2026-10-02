@@ -29,13 +29,14 @@ spec.loader.exec_module(EVIDENCE)
 SENSITIVE = re.compile(r"iccid|euicc|imsi|msisdn|phone", re.IGNORECASE)
 LOGGER = EVIDENCE._logger()
 ANY_RULE = re.compile("|".join([
-    EVIDENCE.REPLACE_RE.pattern, EVIDENCE.FAILURE_RE.pattern, EVIDENCE.GPU_SUPPORT_RE.pattern,
+    EVIDENCE.REPLACE_RE.pattern, EVIDENCE.FAILURE_RE.pattern, EVIDENCE.GPU_ENVIRONMENT_RE.pattern,
     EVIDENCE.GPU_FAILURE_RE.pattern, LOGGER.NPU_ENN_LOADED_RE.pattern, re.escape(EVIDENCE.CPU_CREATED),
     LOGGER.NPU_DISPATCH_FAILURE_RE.pattern,
 ]), re.IGNORECASE)
 DIAG = Path("C:/Users/rhoyo/OneDrive/문서/Mine/26-2/산공학회/D1_ondevice/measure/s26/npu/results")
 C5 = REPO / "results" / "S26_C5_cpu_compiled_0927"
 NPU_FORMAL = REPO / "results" / "S26_NPU_formal_0925b"
+GPU_SMOKE = REPO / "results" / "S26_GPUcm_smoke_1002"   # 2026-10-03: the one CompiledModel GPU run (GPU rule v1 source)
 
 
 def excerpt(text: str) -> list[str]:
@@ -56,7 +57,7 @@ def verdicts(text: str, metadata: dict) -> dict:
     return {rule: fn(text, dict(metadata, npu_accelerator_requested=claim))["verdict"]
             for rule, fn, claim in (("cpu", EVIDENCE.evaluate_cpu, "CPU"),
                                     ("npu", EVIDENCE.evaluate_npu, "NPU"),
-                                    ("gpu", EVIDENCE.evaluate_gpu_candidate, "GPU"))}
+                                    ("gpu", EVIDENCE.evaluate_gpu, "GPU"))}
 
 
 def run_metadata(run_dir: Path) -> dict:
@@ -86,6 +87,15 @@ def main() -> int:
                         existing_npu_evidence=summary.get("npu_delegate_evidence", {}).get("verification"))
         sources.append((f"npu_formal_0925b_{slot['slot_id']}", run_dir / "raw" / "logcat.txt",
                         metadata, "9/25 NPU formal (existing verdicts recorded from merged/summary.json)"))
+    if (GPU_SMOKE / "experiment_manifest.json").is_file():
+        smoke = json.loads((GPU_SMOKE / "experiment_manifest.json").read_text("utf-8"))["runs"]
+        for slot in sorted(smoke, key=lambda r: r.get("attempt_started_utc") or ""):
+            if slot.get("status") != "completed":
+                continue
+            run_dir = GPU_SMOKE / "runs" / slot["run_id"]
+            sources.append((f"gpu_smoke_1002_{slot['slot_id']}", run_dir / "raw" / "logcat.txt", run_metadata(run_dir),
+                            "2026-10-03 CompiledModel GPU smoke (MobileNet original, FP32 requested): the ONE run "
+                            "GPU rule v1 was frozen from (rule_building, no holdout yet)"))
     for name, file in (("g4_diag_0924_0414_npu", "G4_DIAG_NPU_2026-09-24414_3202.txt"),
                        ("g4_diag_0924_0455_npu", "G4_DIAG_NPU_2026-09-24455_1519_WIRELESS_ACPLUGGED.txt")):
         sources.append((name, DIAG / file, {"model_sha256": "1415b2c87d01b67a9380b8f912e2b4ef4561502105b06f313332c97c1c8cb5cf"},

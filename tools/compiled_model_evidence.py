@@ -13,9 +13,15 @@ Rules (P2, 2026-09-28):
        `... GPU accelerator(...) registered`), the dispatch-library load line and the ENN load line all
        appear in CPU-only runs 1-5, so none of them is evidence of anything.
   npu  the existing d1_logger_v4.npu_delegate_evidence (unchanged, imported) + the §11-2 PID condition.
-  gpu  CANDIDATE ONLY. No phone GPU CompiledModel log exists yet. Patterns come from format strings in
-       litert-2.2.0.aar jni/arm64-v8a (libLiteRt.so, libLiteRtClGlAccelerator.so). Pre-registered text:
-       "스모크 로그로 패턴을 확정하고, 본 측정 전에 동결한다." Its verdict is reported as CANDIDATE_*.
+  gpu  GPU_RULE_VERSION — frozen 2026-10-03 from the ONE CompiledModel GPU smoke run on the phone
+       (results/S26_GPUcm_smoke_1002, run 9f40b682, MobileNet original, FP32 requested, runner PID 9079):
+       that PID printed `Replacing 31 out of 31 node(s) with delegate (LITERT_CL) node, yielding 1 partitions
+       ...` (tag tflite) and `[gpu_environment.h:155] Created LiteRT GpuEnvironment.` (tag litert) and no
+       failure/fallback line. The pre-registered text was followed ("스모크 로그로 패턴을 확정하고, 본 측정 전에
+       동결한다"); the rule rests on one run, so the first M1/M2 chain runs are its first real test. On this
+       device the ML Drift accelerator (libLiteRtGpuAccelerator.so) was only *attempted* and the OpenCL one
+       (libLiteRtClGlAccelerator.so, delegate name LITERT_CL) was used, so a run that delegated to ML Drift
+       would FAIL this rule — "② insufficient", to be re-frozen as v2 from its own log, never loosened here.
 
 Verdict PASS = "② resource evidence sufficient". FAIL = "② insufficient" — per §11-2 that means
 "실행 성공, 자원 판정 증거 부족" when ① passed, not a failed run. Absence claims are limited to the
@@ -138,13 +144,13 @@ def evaluate_npu(log_text: str, metadata: dict[str, Any] | None) -> dict[str, An
     })
 
 
-# ---------------------------------------------------------------- GPU candidate (NOT frozen)
-GPU_RULE_VERSION = "gpu-compiled-model-evidence-candidate-0"
-NON_GPU_DELEGATES = ("TfLiteXNNPackDelegate", "DispatchDelegate", "TfLiteNnapiDelegate", "YNNPackDelegate")
-# Supporting lines: format strings found in litert-2.2.0.aar jni/arm64-v8a binaries (not seen on device)
-GPU_SUPPORT_RE = re.compile(
-    r"(?:ops are delegated to ML Drift|Created LiteRT GpuEnvironment|LiteRT GPU environment initialized)"
-)
+# ---------------------------------------------------------------- GPU rule (frozen 2026-10-03, see docstring)
+GPU_RULE_VERSION = "gpu-compiled-model-evidence-v1"
+GPU_DELEGATE = "LITERT_CL"   # delegate name printed by the device (OpenCL accelerator, libLiteRtClGlAccelerator.so)
+# `[gpu_environment.h:155] Created LiteRT GpuEnvironment.` — the source line number may move between builds.
+GPU_ENVIRONMENT_RE = re.compile(r"\[gpu_environment\.h:\d+\] Created LiteRT GpuEnvironment\.$")
+# Failure strings from the litert-2.2.0.aar binaries. None was observed on the device (smoke run); they are
+# kept only as extra negatives on top of FAILURE_RE — they can only make the verdict stricter.
 GPU_FAILURE_RE = re.compile(
     r"(?:Following operations are not supported by GPU delegate|Not supported by ML Drift|"
     r"Delegate kernel initialization failed|Failed to create litert::ml_drift|Failed to load OpenCL|"
@@ -153,33 +159,36 @@ GPU_FAILURE_RE = re.compile(
 )
 
 
-def evaluate_gpu_candidate(log_text: str, metadata: dict[str, Any] | None) -> dict[str, Any]:
+def evaluate_gpu(log_text: str, metadata: dict[str, Any] | None) -> dict[str, Any]:
+    """GPU ② for a CompiledModel GPU run. Every condition must hold (same shape as the CPU rule)."""
     rows = parse_log(log_text)
     pids = runner_pids(rows)
     mine = [row for row in rows if row["pid"] in pids]
     replacements = [(row, REPLACE_RE.search(row["msg"])) for row in mine]
     replacements = [(row, match) for row, match in replacements if match]
-    gpu = [(r, m) for r, m in replacements if m.group("name") not in NON_GPU_DELEGATES]
-    non_gpu = [(r, m) for r, m in replacements if m.group("name") in NON_GPU_DELEGATES]
+    gpu = [(r, m) for r, m in replacements if m.group("name") == GPU_DELEGATE]
+    other = [(r, m) for r, m in replacements if m.group("name") != GPU_DELEGATE]
     failures = [row for row in mine if FAILURE_RE.search(row["msg"]) or GPU_FAILURE_RE.search(row["msg"])]
     conditions = {
         "single_runner_process": len(pids) == 1,
-        "gpu_full_replacement_in_runner_pid": bool(gpu) and all(
+        "litert_cl_full_replacement_in_runner_pid": bool(gpu) and all(
             int(m.group("x")) == int(m.group("y")) > 0 for _, m in gpu
         ),
-        "gpu_runtime_support_line_in_runner_pid": any(GPU_SUPPORT_RE.search(row["msg"]) for row in mine),
-        "no_cpu_or_npu_delegate_replacement": not non_gpu,
+        "gpu_environment_created_in_runner_pid": any(GPU_ENVIRONMENT_RE.search(row["msg"].rstrip()) for row in mine),
+        "no_other_delegate_replacement": not other,
         "no_failure_or_fallback_line": not failures,
         "requested_accelerator_gpu": (metadata or {}).get("npu_accelerator_requested") == "GPU",
     }
-    result = _verdict(GPU_RULE_VERSION, conditions, {
+    return _verdict(GPU_RULE_VERSION, conditions, {
         "runner_pids": sorted(pids),
+        "replacement_lines": [row["line"] for row, _ in replacements],
         "gpu_delegate_names": sorted({m.group("name") for _, m in gpu}),
         "failure_lines": [row["line"] for row in failures],
-        "status": "candidate — confirm with the smoke log, then freeze before the main measurement",
+        "frozen_from": "results/S26_GPUcm_smoke_1002 run 9f40b682 (2026-10-03, one run)",
+        "ignored_as_non_evidence": "accelerator registration lines (NPU / LiteRT GPU / XNNPACK registered), the "
+                                   "GPU-accelerator load attempts, dispatch library load, ENN load and the OpenCL "
+                                   "dlopen line — registration/load is not execution",
     })
-    result["verdict"] = "CANDIDATE_" + result["verdict"]
-    return result
 
 
 def _verdict(version: str, conditions: dict[str, bool], details: dict[str, Any]) -> dict[str, Any]:
@@ -194,15 +203,14 @@ def rule_fingerprints() -> dict[str, str]:
     parts = {
         "cpu": [evaluate_cpu, parse_log, runner_pids, _verdict],
         "npu": [evaluate_npu, parse_log, runner_pids, _verdict],
-        "gpu_candidate": [evaluate_gpu_candidate, parse_log, runner_pids, _verdict],
+        "gpu": [evaluate_gpu, parse_log, runner_pids, _verdict],
     }
     constants = {
         "cpu": [THREADTIME_RE.pattern, REPLACE_RE.pattern, FAILURE_RE.pattern, repr(RUNNER_TAGS),
                 CPU_RULE_VERSION, CPU_DELEGATE, CPU_CREATED],
         "npu": [THREADTIME_RE.pattern, repr(RUNNER_TAGS), NPU_RULE_VERSION],
-        "gpu_candidate": [THREADTIME_RE.pattern, REPLACE_RE.pattern, FAILURE_RE.pattern, repr(RUNNER_TAGS),
-                          GPU_RULE_VERSION, repr(NON_GPU_DELEGATES), GPU_SUPPORT_RE.pattern,
-                          GPU_FAILURE_RE.pattern],
+        "gpu": [THREADTIME_RE.pattern, REPLACE_RE.pattern, FAILURE_RE.pattern, repr(RUNNER_TAGS),
+                GPU_RULE_VERSION, GPU_DELEGATE, GPU_ENVIRONMENT_RE.pattern, GPU_FAILURE_RE.pattern],
     }
     del module
     return {
@@ -232,7 +240,7 @@ def evaluate_run(run_dir: Path, rule: str = "auto") -> dict[str, Any]:
     if rule == "auto":
         requested = (metadata or {}).get("npu_accelerator_requested", "NPU")
         rule = {"CPU": "cpu", "GPU": "gpu"}.get(str(requested), "npu")
-    evaluate = {"cpu": evaluate_cpu, "npu": evaluate_npu, "gpu": evaluate_gpu_candidate}[rule]
+    evaluate = {"cpu": evaluate_cpu, "npu": evaluate_npu, "gpu": evaluate_gpu}[rule]
     result = evaluate(text, metadata)
     result["run_dir"] = run_dir.name
     return result
