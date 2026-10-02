@@ -123,7 +123,7 @@ if "%NDEV%"=="0" (
   call :log "    1. phone: Developer options - Wireless debugging must be ON"
   call :log "    2. phone and PC on the same Wi-Fi"
   call :log "    3. pass the ip:port from the Wireless debugging MAIN screen:"
-  call :log "         s26_npu_go.bat <IP:PORT>"
+  call :log "         s26_npu_go.bat IP:PORT"
   call :log "    4. after a phone reboot, pair again with s26\tools\s26_wifi.bat"
   goto :fail
 )
