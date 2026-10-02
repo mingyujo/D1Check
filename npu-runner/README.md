@@ -36,6 +36,12 @@ npu-runner/
 원본 `mobilenet_v1_1.0_224.tflite` 는 `benchmark-runner` 의 assets 를 소스셋으로 공유한다
 (17 MB 를 두 번 커밋하지 않기 위함). CPU 대조 실행에 쓴다.
 
+> **2026-10-02 — 위 `.so` 1개와 MobileNet AOT 2개는 git 에 없다.** 첫 push 전에 로컬 기록에서 뺐다
+> (팀 공유 경계: 모델·컴파일 바이너리는 저장소에 넣지 않는다). 파일은 영훈 PC 에 그대로 있고,
+> 새로 받은 클론에서 빌드하려면 위 경로에 같은 파일을 두어야 한다. SHA-256·크기는
+> `s26/GIT_REWRITE_MAP_20261002.md`. `.so` 는 `s26/npu/tools/build_litert_samsung.sh`, AOT 는
+> `s26/npu/tools/s26_npu_aot_compile.py` 로 다시 만들 수 있다 (같은 nightly 가 아니면 해시는 달라질 수 있다).
+
 > `*_Samsung_E9965.tflite` 는 `DISPATCH_OP` 커스텀 op 가 든 **AOT 산출물**이다.
 > CPU Interpreter 로 열리지 않는 것이 정상이다 — "동작 확인" 을 CPU 로 하려 하지 말 것.
 
@@ -114,8 +120,8 @@ G1-B = `s26/npu/results/G1B_aot_manifest_20260924.json`. 병합하면서 모델�
 
 | 슬롯 | 모델 | 배치 / SDK | 출력 SHA (앞 16) | 파티션 | 파일 위치 | APK |
 |---|---|---|---|---|---|---|
-| 1 | MobileNet V1 FP32 | G1 / `2.3.0.dev20260917` | `1415b2c87d01b67a` | 1/1 PASS | assets (커밋됨) | ✅ |
-| 2 | MobileNet V1 INT8 | G1 / `2.3.0.dev20260917` | `36c75e6acdb71162` | 1/1 PASS | assets (커밋됨) | ✅ |
+| 1 | MobileNet V1 FP32 | G1 / `2.3.0.dev20260917` | `1415b2c87d01b67a` | 1/1 PASS | assets (~~커밋됨~~ → git 제외, 2026-10-02) | ✅ |
+| 2 | MobileNet V1 INT8 | G1 / `2.3.0.dev20260917` | `36c75e6acdb71162` | 1/1 PASS | assets (~~커밋됨~~ → git 제외, 2026-10-02) | ✅ |
 | 3 | EfficientNet-Lite0 FP32 | G1-B / `2.3.0.dev20260922` | `311e4aac8fa1d8de` | 62 ops → 1, PASS | assets (git 제외) | ✅ (Apache-2.0) |
 | 4 | EfficientDet-Lite0 FP32 | G1-B / `2.3.0.dev20260922` | `f51d082dbf68bef9` | 263 ops → 1, PASS | **`local_models/`** (git 제외) | ❌ 라이선스 미확인 → `adb push` + `--es model_path` |
 

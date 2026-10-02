@@ -1,8 +1,12 @@
 # S26 NPU (2026-09-24): AOT-compiled models and EfficientDet binaries stay out of the repo.
 #   EfficientDet-Lite0 license attribution is unverified -> original and compiled never committed.
-#   MobileNet V1 *_Samsung_E9965.tflite committed in 8f64581 stay tracked (ignore does not untrack).
+#   MobileNet V1 *_Samsung_E9965.tflite were committed in 8f64581 (local only, never pushed).
+#   2026-10-02: removed from the local history before the first push; the files stay on disk.
 #   Moved from the root .gitignore (mingyujo's file) so our rules cannot conflict with his branch.
 *_Samsung_E9965.tflite
 *_apply_plugin.tflite
 *efficientdet*.tflite
 local_models/
+# 2026-10-02: the dispatch .so (built from LiteRT source) stays local too.
+#   SHA-256 and rebuild notes: s26/GIT_REWRITE_MAP_20261002.md
+src/main/jniLibs/**/*.so
