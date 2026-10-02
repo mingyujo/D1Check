@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-02 AP 냉각률·부하 반응 식별 PC 판독 완료
+
+- [결과·재현·최소 해결 조건](results/ap_rate_identification_01/README.md), [화면/CSV](results/ap_rate_identification_01/index.html), [검증](results/ap_rate_identification_01/verification.json). 기존 부하7세션+C/L 대조를 재사용; 개발1만으로 구조1개 적합, 이미 본 나머지는 사후 평가. β 최적 격자점은 기존0.0459325203/s, 공통 부하배율0.720002. 평균 일부 개선이나 **부하7세션 전부 최고오차 악화**로 미채택. 최근+65초 MAE0.189876→0.216500°C.
+- 무부하 C의 일부 구간 +0.1°C와 후보 MAE0.346076°C를 확인. 작업 잔열 하나로 원인 확정 불가; 다른 APK/초기 이력/순서 자료를 인과적으로 빼지 않음. β/k 수치 추정 가능성과 물리적 유일성은 구분. L은 부하 전 기록 부족으로 모델 점수 제외/관측 보존.
+- 관련8검사·실제 분석CLI·기존7점수/동결본 보존·공유 수치 검증 완료. 기존 후보의 독립 확인2/기본/strict/experiment_ready=false 보존; 새 후보는 사후 진단 파일에만 존재. 기기/실측/APK/새 계획/claim0.
+- **다음 행동 하나:** 열 정책까지 확장할 경우 같은 조건의 무부하 배경과 부하 시점 반응을 분리하는 통합 대조를 고정한다. 동일 B2 단순 반복은 하지 않는다. 제한된 일정/서비스 시뮬레이터·실측 비용 대조와 결과 본문은 지금 사용할 수 있다. 아래는 당시 이력이다.
+
 ## 2026-10-02 준비 이력 AP 두 독립 확인 완료
 
 - [실행·판독 보고서](AP_MEMORY_CONFIRM_RUN01_20261002.md), [그림/CSV](results/ap_memory_confirmation_01/run01/index.html), [검증](results/ap_memory_confirmation_01/run01/verification.json). 사용자 실측 승인으로 plan_v1 1회 실행, **completed_descriptive_only·소비·완료**. 본48/warmup16=64추론·runtime8·staging2/14·pull1·APK push/설치0·ADB1,698/6,600·581.797/2,090초·재시도0.
