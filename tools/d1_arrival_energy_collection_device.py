@@ -193,7 +193,12 @@ def run(plan_file,adb,serial,expected_sha,approved):
     plan=p.read(plan_file)
     idle_response=plan.get('ap_idle_pulse_followup',False)
     single=plan.get('single_arrival_confirmation',False) or plan.get('recorded_replay_confirmation',False)
-    if plan.get('ap_background_contrast'):
+    if plan.get('ap_completion_study'):
+        from tools import d1_ap_completion_study as confirmation
+        confirmation.check_block(plan_file)
+        c.require(plan['study_phase']=='development' or plan['study_freeze'] is not None,
+                  'confirmation requires frozen study model')
+    elif plan.get('ap_background_contrast'):
         from tools import d1_ap_background_contrast as confirmation
         confirmation.check(plan_file)
     elif plan.get('ap_memory_confirmation'):
@@ -243,6 +248,8 @@ def run(plan_file,adb,serial,expected_sha,approved):
             if plan.get('ap_memory_confirmation') or plan.get('ap_background_contrast'):
                 (root/'memory_candidate_freeze.json').write_bytes(Path(plan['memory_candidate']['path']).read_bytes())
                 (root/'memory_analysis_contract.json').write_bytes(Path(plan['analysis_contract']['path']).read_bytes())
+                if plan.get('ap_completion_study') and plan['study_freeze'] is not None:
+                    (root/'study_model_freeze.json').write_bytes(Path(plan['study_freeze']['path']).read_bytes())
         else:
             (root/'original_model_freeze.json').write_bytes(Path(plan['frozen_model']['path']).read_bytes())
     write(registry/'claimed.json',claim)
@@ -266,6 +273,10 @@ def run(plan_file,adb,serial,expected_sha,approved):
         if journal:journal.mark('installed_preflight_verified',adb_commands=d.sequence)
         for entry in plan['entries']:
             if plan.get('ap_bundled_confirmation'):
+                if plan.get('ap_completion_study') and plan['study_freeze'] is not None:
+                    c.require(p.digest(plan['study_freeze']['path'])==plan['study_freeze']['sha256'] and
+                              p.digest(root/'study_model_freeze.json')==plan['study_freeze']['sha256'],
+                              'study freeze changed; no further confirmation')
                 c.require(p.digest(plan['candidate_freeze']['path'])==plan['candidate_freeze']['sha256'] and
                           p.digest(root/'candidate_procedure_freeze.json')==plan['candidate_freeze']['sha256'],
                           'frozen candidate changed; no continuation')

@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-02 AP 종료형 연구 Run1회·조회 timeout 종료
+
+- 사용자 계획 후 실측 진행 승인에 따라 개발6→한 후보군 추정/선택/동결→새 확인6의 실제 host 진입을 구현/PC검증/Run1회 수행했다. [설계·최종 판독](AP_MODEL_COMPLETION_STUDY_20261002.md), [화면/CSV](results/ap_completion_study_01/index.html). 개발 C1 완료·L35 준비 중 uptime2초timeout으로 **stopped_no_resume**, 나머지개발4/확인6 미시도,추정·동결·확인0. AP 예측 실패/미식별 판정 아님. Android/APK·계측 주기 변경0.
+- plan SHA `09b70105…b14b86`·소비/종료 보존. 실제warmup16/runtime8/본시작기록0/staging2·14파일/pull1/배포0/ADB963/375.400초. 중단 세션 terminal 미회수로 본 호출 미확인범위0–24(발생 주장 아님). 첫C cleanup 정상, 둘째부분회수/host정리각1·최종ps 대상부재; 앱cleanup 미확인. 원본 `ap_completion_study_run_v1/FINAL_RECEIPT.json`, inventory4,960파일/110,483,976bytes. 기존6 plan은 미소비/원문 보존.
+- 새 관련7테스트 PASS: 실제 root 동결 전후 순서/과학적 중단·실패/receipt 실패, 기존6세션 진입의 회수·cleanup 오류8조건/설치 금지/동결 연결, 합성 계수 식별·확인 적합 차단·지원/시간 경계. 실제 PS Check 기기0, 기존 원문6 fixture의 M0 전파 차이<1e-10°C 및 ADB 실행 차단 Check 확인. PC 검증은 기기/장시간/실용 식별 증거가 아니다. 외부 `ap_completion_study_pc_v2/verification.json`에 소스 hash 기록.
+- 부분C 공통120초132.482716J/원래식147.052011J; M0 AP35.344549–179.784549초 MAE0.067274/최대0.385750°C, 새모형확인/방향PASS 없음. uptime190정상 중앙0.091480초/단발timeout1·내부원인미확정, 이후계획내회수/종료성공. 추가기기0. 다음 PC 행동은 동일 시각괄호/thermal 관측을 단일 원격 명령으로 얻는 최소 경계 검증이며 새실측 자동생성 없음. 기존 freeze/default/strict/experiment_ready=false 보존. 아래 미승인·미구현은 당시이력.
+
 ## 2026-10-02 AP 개발→동결→독립 확인의 종료형 실측 설계
 
 - 사용자 ‘오래 걸려도 확실한 계획’ 요청에 [최대12세션 연구 계획](AP_MODEL_COMPLETION_STUDY_20261002.md)을 작성했다. 개발 C/L35/L65 역순6 → 한 후보군 PC 추정·동결 → 새 C/L50/분할 역순6. 같은 자료 보정/독립 확인 혼용 금지, 미식별·실패 시 종료·13번째 세션 없음. 제한 A24 CG_DC AP 모형이며 일반 정책/열 피드백 완성을 보장하지 않는다.

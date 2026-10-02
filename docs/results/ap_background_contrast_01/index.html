@@ -1,6 +1,7 @@
 <!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>AP 배경·부하 시점 통합 대조 준비</title>
 <style>body{font:17px/1.65 system-ui,sans-serif;max-width:1000px;margin:40px auto;padding:0 22px;color:#203448;background:#f5f8fa}section{background:white;border:1px solid #cbd5e1;border-radius:12px;padding:24px;margin:20px 0}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px;border-bottom:1px solid #cbd5e1}.note{background:#fff3cc;border-left:4px solid #b45309;padding:18px}a{color:#075985}.sequence{font-size:22px;line-height:1.7;word-spacing:8px}</style>
 <h1>AP 배경 변화와 부하 반응을 한 묶음에서 구분</h1>
+<p class="note">최신 실행: <a href="../ap_completion_study_01/index.html">새 개발·동결·확인 연구의 부분 종료</a>. C1완료 뒤 L35준비의ADB시각조회timeout으로종료했으며 새모형추정/확인0입니다. 아래 기존6계획은 미소비 원문으로 보존됩니다.</p>
 <p class="note">최신 권고: <a href="../../AP_MODEL_COMPLETION_STUDY_20261002.md">개발6→동결→독립 확인6의 종료형 연구 계획</a>. 전체 추정/확인 PC 연결을 먼저 완성하도록 이6세션 실행을 보류합니다. 계획은 미소비이며 보류를 실패/stopped로 기록하지 않았습니다.</p>
 <p class="note"><strong>PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED</strong> · PC 준비/Check 완료 · Run·기기 명령·소비 claim0. 아래는 실행 설계이며 새 실측 결과가 아닙니다.</p>
 <section><h2>미리 고정한 순서</h2><p class="sequence">무부하 → +35초 부하 → +65초 부하 → +65초 부하 → +35초 부하 → 무부하</p><p>같은 APK·resident·runtime4·warmup8. 각 조건2회로 평균 순번3.5를 맞춥니다. 순번의 선형 효과는 산술적으로 균형을 이루지만 실제 환경·비선형 변화·잔열을 제거했다고 하지 않습니다.</p><p>모든 조건에서 공통창+35초 전 AP만 초기화에 사용합니다. 늦은 부하에 추가 미래 온도를 주지 않습니다. 무부하에 가짜 작업이나 lane 해제를 만들지 않습니다.</p></section>

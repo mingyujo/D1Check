@@ -2,6 +2,64 @@
 
 2026-10-02 · 기준 HEAD `1f828ae07160cd8edf60ef0d101fb72291637046`
 
+> 최종 진행: 사용자 승인으로 아래 고정 설계의 PC 구현과 Run1회를 수행했다. 개발 첫 C는 적격 완료됐으나 다음 L35 준비 중 ADB 시각 조회가2초 timeout해 **stopped_no_resume**로 종료했다. 개발 적합·새 동결·확인은0이다. 이후 미승인/미구현 문구는 계획 작성 당시 이력이며, 원래 과학적 계약 `completion_study.json`은 byte 단위로 보존했다.
+
+## 최종 실행·부분 판독 (2026-10-02)
+
+[결과 화면·CSV·그림·재현](results/ap_completion_study_01/README.md). 연구 전체375.400초, 기기 블록372.043초/ADB963명령. 첫 무부하 C1개 완료, 두 번째 L35는 runtime4/warmup8 이후 resident baseline에서 중단했다. 개발의 나머지4·확인6은 미시도다. 개발6개 적격성이 전제이므로 후보 추정/선택/동결/LOSO/새 독립 확인을 억지로 수행하지 않았다. **AP 모형 예측 실패도, 계수 미식별 판정도 아니다.** 자료 획득의 실행 실패다.
+
+| 항목 | 사전 상한 | 실제 기록 |
+|---|---:|---|
+| 세션 | 개발6＋확인6 | 시도2·완료1·준비 중단1·미시도10 |
+| 본 요청 / warmup / 명시적 추론 | 192 / 96 / 288 | 시작·반환 기록0 / 16 / 16; 중단 세션 terminal 미회수, 누락을0으로 확정하지 않음 |
+| runtime | 48 | 시작·반환8 |
+| staging / 파일 | 12 / 84 | 2 / 14; APK가 아닌 입력 파일 push14 |
+| 설치본 host pull / APK push / 설치 | 2 / 0 / 0 | 1 / 0 / 0 |
+| ADB / 누적 작업 | 38,800 / 14,100초 | 963 / 375.400초 |
+| 확인·재시도·추가 실행 | 6 / 0 / 0 | 0 / 0 / 0 |
+
+중단 세션의 progress73행은 온전한 회수 prefix이며 마지막은 resident_baseline/active={}다. warmup8 반환을 확인했고, host numeric 시작 AP 승인은 아직 발행되지 않았으며 공통창/requests/앱 terminal cleanup은 회수되지 않았다. 기록상 본0과 실제 미기록 여부를 구분한다. 보수적 미확인 범위는 이 시도에 등록된24 본 요청 이내이며 실제 발생을 뜻하지 않는다. 첫 C는 정상 terminal이 있어 실제 본0을 확인했다. 미시도10은 receipt와 생산 폴더 부재로 확인한다.
+
+### timeout 확인 수준과 종료
+
+- `development/host_commands/0952/client/result.json`: 선택한 같은 transport에 `adb -s <current> exec-out cat /proc/uptime`을 실행. UTC05:16:20.016499 시작→05:16:22.017219 종료, 경과2.000735초, TimeoutExpired,client exit1/root_reaped=true. 공유 daemon은 종료하지 않았다. stdout/stderr0byte는 타임스탬프를 받지 못한 사실이며 전송량·연결 단절·앱 정지의 증거가 아니다.
+- 전체963 명령의 시간 구간 중첩0. 같은 uptime 정상190회 중앙0.091480초/P95 0.164338/P99 0.209039/최대0.793218초; timeout1회는 제한에 걸린 관측이라 정상 지연 통계에서 제외했다. listing512회,thermal97회. client 대기 누적은 기기 CPU/에너지 비용이 아니다.6개 nonzero는 실행 전 새 경로 `test -e` 부재 확인이며 추가 실패/재시도로 세지 않는다.
+- 직전 listing5개와 직후 manifest/progress 회수,종료 명령,ps,thermal은 성공했다. 단발성 query 지연·client/transport/기기 처리 중 어느 내부 원인인지는 로그로 구분되지 않는다. 출력은 PIPE가 아닌 파일 redirection이어서 출력 drain deadlock 경로는 확인되지 않는다. 동결된2초 제한이 중단을 일으킨 사실과 그 지연 내부 원인을 구분한다. timeout만 늘리거나 임의 재실행은 하지 않았다.
+- 첫 C 앱 cleanup completed·host cleanup1회. 두 번째 앱 cleanup 미확인/부분 회수(manifest＋progress)·host force-stop1회/정리 completed. 마지막 계획 내 `ps -A`에 대상 패키지 부재. 앱 정상 cleanup과 host 요청 종료는 다른 사실이다. 정상 root/block receipt·원래 stack·checkpoint·시작 PID/생성시각/명령 보존, tool exit1 및 종료 후 해당 host PID 부재 확인. 별도 orphan 복구/추가 기기 조회0.
+
+### 확보한 C1개의 기술 요약
+
+시작 AP29.7°C, 공통120초 관측 **132.482716J**, 원래 상태 W식 **147.052011J**, 차이 **+14.569295J**(+약11.00%). 전류 raw=mA 조건부·절대 정확도 미인증이며 새 AP 후보로 에너지 계수를 고치지 않았다. 병행/본 작업0의 단독 대조로, 부하 조건 대비나 정책 비교 자료가 아니다.
+
+변경 없는 M0를 +35초 전26 AP 표본(63.46초)만으로 초기화하고 실제 일정에 조건부 전파했다. 목표는 common **35.344549–179.784549초**,56표본: MAE **0.067274°C**, 최대 **0.385750°C**, 최고온도 부호오차 **−0.243259°C**. 방향 창90–115/120–145/150–175초의 관측 변화0/0/−0.057503°C는 ±0.1°C endpoint 반올림 민감도에서 모두 방향 미식별이다. 마지막 창 M0+0.004326°C를 ‘방향 재현 성공’으로 세지 않는다. 새 모형 적합/독립 확인/정확도 PASS/strict 승격 없음.
+
+원본 root `D1Check_Arrival_Extension/ap_completion_study_run_v1/FINAL_RECEIPT.json`; PC 판독 `ap_completion_study_readout_v2`에 inventory4,960파일/110,483,976바이트·해시를 보존했다. 공개본은 식별값·APK·대용량 로그를 제외한 작은 결과만 포함한다. 최초 PC 판독v1도 보존했으며, 명령0/목표0일 때 빈 CSV가 실패하던 새 판독기의 결함을 PC fixture로 수정하고v2를 새 경로로 생성했다. 이 수정은 이미 끝난 기기 실행/timeout의 원인과 무관하다.
+
+관련 진입7＋판독3테스트 PASS, 실제 PS Check/Run/분석 CLI/공유 수치 검증을 구분해 기록했다. 원래 모형·procedure·준비 이력 후보·연구 계약 hash 불변. Android/APK 변경0. `experiment_ready=false`/기존 default·strict와 제한 시뮬레이터 완료 범위를 유지한다.
+
+**이번 연구는 종료 상태이며 같은 claim을 재개하지 않는다.** 아직 한 후보군의 새 개발/확인 근거를 얻지 못했다. 다음 PC 행동은 필수 AP 시각 정렬을 유지하면서 uptime→thermal→uptime을 하나의 직렬 원격 명령으로 얻을 수 있는지 검증해,동일 관측을 여러 client왕복에 의존하는 경계만 줄이는 것이다. 측정 프로토콜/지연 영향 확인 없이 자동 새 실측·13번째 세션을 만들지 않는다. 과거 또는 이번 내부 연결 원인을 해결했다고 주장하지 않는다.
+
+## 실행 경로 구현과 사전 검증 (2026-10-02)
+
+- root `tools.d1_ap_completion_study`, 후보군/전파 `tools.d1_ap_completion_model`, 기기 세션은 기존 `d1_arrival_energy_collection_device` opt-in 분기를 재사용한다. 진단 조기 force-stop을 삽입하지 않는다. 개발/확인 각 registry·checkpoint·receipt와 연구 전체 checkpoint/receipt를 별도로 남긴다. 외부 orphan 복구/자동 재연결/추가 호출은 추가하지 않았다.
+- 한 후보군의 선형 두 gain·비음수 적합,61 β profile,정규화 rank,LOSO,선택,방향 중단을 구현했다. 수치 rank가 실용 식별/물리적 유일성을 보장하지 않으며 grid boundary/미식별이면 확인0이다. 개발/확인 합계12 manifest 입력은 사전 준비하되 확인의 모형 binding은 개발 후 생성한 해시로만 채운다. 확인마다 원본·복사 freeze 변조 시 다음 세션을 차단한다.
+- 관련7테스트가 실제 root 진입의 동결 순서/과학적 중단/개발·확인 실패/receipt 쓰기·읽기 실패와 기존6세션 수집 진입의 회수/cleanup 오류8조건을 통과했다. 실제 PowerShell Check와 ADB subprocess 차단 Check는 기기0. 과거 원문6 fixture에 새 M0 전파를 적용해 기존 전파와 최대차0°C를 확인했으며 새 개발/확인 자료로 세지 않거나 적합하지 않았다. 가짜 기기/단축 시간은 장시간 안정성 검증이 아니다.
+- Android/APK·실측 부하·sampler·조회 주기·timeout 변경0. APK `74e8065d…1ee6e`, 기존 프로젝트 signer/패키지를 PC Check에서 검증했다. 변경은 host의 두 블록 연결과 별도 PC 분석뿐이다.
+- 외부 PC 검증 `D1Check_Arrival_Extension/ap_completion_study_pc_v2/verification.json`; 준비 중 상대경로 오류가 발생한 파일과 source 갱신 전 초안은 각각 `ap_completion_study_plan_v1_prepare_failed_001`, `...prepare_superseded_002`에 보존했다. 기기 실행/claim 이전 PC 준비 오류이며 실측 실패 또는 재시도로 세지 않는다. 기존6 plan도 미소비 보존하되 host source 버전이 달라 실행하지 않는다.
+
+동결 root: `D1Check_Arrival_Extension/ap_completion_study_plan_v1/study_plan.json`, SHA `09b70105bf9f6f1d553c1d6abd12023d315d5b1c027c48486d84a66b47b14b86`. 결과 root `ap_completion_study_run_v1`, root registry `ap_completion_registry/AP-LIMITED-MODEL-COMPLETION-STUDY-01`, block registry `ap_completion_block_registry/…-{DEVELOPMENT,CONFIRMATION}`. 소스/입력/APK/기존 freeze hash는 새 rootplan에 바인딩했다. 설치 불일치 시 push/install fallback0이다.
+
+```powershell
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/ap_completion_study_plan_v1/RUN_AFTER_APPROVAL.ps1' -Action Check
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/ap_completion_study_plan_v1/RUN_AFTER_APPROVAL.ps1' -Action Run -Approved -ExpectedPlanSha256 '09b70105bf9f6f1d553c1d6abd12023d315d5b1c027c48486d84a66b47b14b86'
+```
+
+Run은 단일소비이며 실행 중/소비 후 다시 호출하지 않는다. 최대12세션/288추론/48runtime/12staging·84파일/2pull/배포0,기기10,500초＋PC동결3,600초/38,800ADB는 아래 사전 설계와 같다. 연구 성공 또는 식별·예측 실패를 구분하고 `experiment_ready=false`를 유지한다.
+
+---
+
+아래는 실행 승인 이전 설계 원문이다.
+
 **권고는 최대 12세션: 개발 6 → PC 추정·동결 → 독립 확인 6이다.** 기존 통합 대조 6만 끝내고 다음 작은 진단을 결정하는 방식에서, 확인 입력·모형 후보 수·종료점을 지금 정하는 방식으로 바꾼다. 실측 승인이 아니라 연구 계획이다. 이번 ADB/설치/추론/실측/Run/실행 claim은 0이다.
 
 **현재 상태는 DESIGN_FIXED_EXECUTION_NOT_APPROVED다.** 기존 첫 6세션 수집기는 준비됐으나 새 추정·동결과 확인 6세션 실행 연결은 아직 구현·진입 검증이 필요하다. 이 문서를 12세션 실행 가능 판정으로 쓰지 않는다. 첫 6세션도 전체 분석·확인 경로를 PC에서 완성하기 전에는 시작하지 않는 것을 권고한다. 기존 미소비 계획을 실패·stopped로 바꾸거나 파일을 수정하지 않았다.
