@@ -64,15 +64,15 @@ class Model:
 model=Model
 
 
-def block_spec(file,phase,freeze=None):
-    file=Path(file);study=p.read(file);source=p.read(study['source_plan']['path']);build=p.read(study['build_receipt']['path']);contract=p.read(CONTRACT)
+def block_spec(file,phase,freeze=None,*,contract_file=None,experiment_id=None):
+    file=Path(file);study=p.read(file);source=p.read(study['source_plan']['path']);build=p.read(study['build_receipt']['path']);contract=p.read(contract_file or CONTRACT)
     order=contract[phase+'_order'];n=len(order);plan=copy.deepcopy(source)
     for k in list(plan):
         if k.startswith('ap_') or k in ('online_sampling_audit','imported_completed','study_freeze','study_plan_file'):plan.pop(k)
     budget=dict(source['budget'],sessions=n,requests=n*96,warmup=n*8,explicit_inference=n*104,runtime_creations=n*4,staging=n,staging_files=n*7,
         total_seconds=600+n*700+(n-1)*90,adb_commands=n*3200+200,apk_transfers=int(phase=='development'),installs=int(phase=='development'),
         fixed_observation_seconds=n*210,installed_preflight_seconds=600,intersession_cooling_seconds=90)
-    exp=NAME+'-'+phase.upper();plan.update(experiment_id=exp,separated_power_study=True,online_policy_study=True,
+    exp=(experiment_id or NAME)+'-'+phase.upper();plan.update(experiment_id=exp,separated_power_study=True,online_policy_study=True,
         online_configuration_owner_v1=True,study_phase=phase,study_plan_file=str(file),study_freeze=freeze,installed_only=phase=='confirmation',
         source_code=identity(),budget=budget,output_root=str(Path(study['output_root'])/phase),registry=str(Path(study['block_registry_root'])/exp),
         apk_path=build['apk_path'],apk_sha256=build['apk_sha256'],apk_preflight=dict(source['apk_preflight'],candidate=study['candidate']),

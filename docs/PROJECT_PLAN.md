@@ -1,5 +1,12 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-03 분리 부하 개발3·동결·독립 확인6 완료
+
+- [결과·소비·재현](results/online_policy_study_01/separated_power_final/README.md), [대시보드](results/online_policy_study_01/separated_power_final/index.html). 준비 중 silent/reaped 조회 누락을 공식창 승인 전 최대1회로 분리하고 새 관측 성공 후에만 진행하도록 보완했다. 기존 timeout/안전 gate/APK 불변. 실제 원인 미확정; 성공 run04의 누락허용 사용0회.
+- 앞선 CPU/PAR 개발2를 보존하고 SER개발1→freeze19637bf1→독립확인6 완료. v1/v2 stopped_no_resume, v3 미소비 초안, v4 완료. v4 본672+warmup56=728/runtime28/staging7·49/pull2/APK0/ADB4681/2262.958초. 이번 턴 실패 포함840 확인 추론; 이전v1까지952와 미회수2세션의 보수적 본0–192 별도. 앱cleanup7·회수7·host정리7·종료시ps부재, parent/child exited.
+- CPU/PAR 모두96/96 마감, SER 두 번61/96. PAR 긴급P95는CPU보다456–469ms 단축. 예정 도착 J오차 −35.497~+6.004J, AP MAE0.151~0.927°C/최대4.213°C. 마지막CPU의 부하후유휴 전력·AP상승은 미예측이므로 작은 에너지/열 정책 순위와 원래 목표 전체 완료는 미판정. 제외/재적합0; 기존 AP557fbe·기본·strict·experiment_ready=false 유지.
+- PC12검사/소스110/5초창144 합/CLI/오차재계산 통과. 다음 행동: 기존 마지막CPU 유휴 상승의 기록 경계를 국소화하고 배경 변동 미예측 조건을 명시한다. 추가 실측 자동반복 없음. 아래는 과거 이력이다.
+
 ## 2026-10-03 분리 부하 Run01 중단·첫 개발 자료 보존
 
 - [결과/소비/재현](results/online_policy_study_01/separated_power_run01/README.md), [관측 화면](results/online_policy_study_01/separated_power_run01/index.html). 공간 확보 후 새계획1회 실행: CPU개발1 적격, 병행개발 준비 listing3초 timeout으로 stopped_no_resume. 개발잔여1/확인6 미시도, 추정·동결0. 원인미확정, 직후회수성공을 보존.

@@ -44,6 +44,7 @@ def write(path,value):c.cal.write_new(path,value)
 def poll(d,remote,folder,manifest,plan):
     start=time.monotonic();end=min(d.deadline,start+plan.get('budget',c.BUDGET)['host_poll_seconds'])
     last_thermal=last_screen=0;armed=False;index=0;start_ap_sent=False;last_checkpoint=start
+    observation_state={'gaps':0}
     while time.monotonic()<end:
         command_ceiling=(3200 if plan.get('ap_idle_pulse_followup') and
                           manifest.get('phase')=='development' else plan['budget']['adb_commands'])
@@ -59,10 +60,24 @@ def poll(d,remote,folder,manifest,plan):
                 warmup_approved=armed,start_ap_approved=start_ap_sent)
             last_checkpoint=now
         if now-last_thermal>=2:
-            energy_device.thermal(d,folder,index);index+=1;last_thermal=time.monotonic()
+            if plan.get('prewarmup_observation') in ('prewarmup-observation-gap-v2','precommon-observation-gap-v3'):
+                from tools.d1_preparation_observation import thermal as observe_thermal
+                if not observe_thermal(d,folder,index,observation_state,(start_ap_sent if plan.get('prewarmup_observation')=='precommon-observation-gap-v3' else armed),energy_device.thermal,version=plan['prewarmup_observation']):
+                    time.sleep(.25)
+                    continue
+            else:
+                energy_device.thermal(d,folder,index)
+            index+=1;last_thermal=time.monotonic()
         if now-last_screen>=10:
             screen.snapshot(d,folder,f'poll_{index:04d}',plan['screen_contract']);last_screen=time.monotonic()
-        listing=d.call('shell','run-as',legacy.PACKAGE,'ls',remote,timeout=3).stdout.decode().splitlines()
+        if plan.get('prewarmup_observation') in ('prewarmup-listing-gap-v1','prewarmup-observation-gap-v2','precommon-observation-gap-v3'):
+            from tools.d1_preparation_observation import listing as observe_listing
+            listing=observe_listing(d,remote,folder,legacy.PACKAGE,observation_state,(start_ap_sent if plan.get('prewarmup_observation')=='precommon-observation-gap-v3' else armed),version=plan['prewarmup_observation'])
+            if listing is None:
+                time.sleep(.25)
+                continue
+        else:
+            listing=d.call('shell','run-as',legacy.PACKAGE,'ls',remote,timeout=3).stdout.decode().splitlines()
         if 'cleanup.json' in listing:return
         if manifest.get('start_ap_gate') in (d1_arrival_start_ap.VERSION,d1_arrival_start_ap.DIAGNOSTIC_VERSION) and not start_ap_sent and 'start_ap.ready.json' in listing:
             c.require(armed, 'start AP before warmup approval')
@@ -195,7 +210,10 @@ def run(plan_file,adb,serial,expected_sha,approved):
     plan=p.read(plan_file)
     idle_response=plan.get('ap_idle_pulse_followup',False)
     single=plan.get('single_arrival_confirmation',False) or plan.get('recorded_replay_confirmation',False) or plan.get('online_policy_study',False)
-    if plan.get('separated_power_study'):
+    if plan.get('separated_power_followup'):
+        from tools import d1_separated_power_followup as separated
+        separated.check_block(plan_file)
+    elif plan.get('separated_power_study'):
         from tools import d1_separated_power_study as separated
         separated.check_block(plan_file)
     elif plan.get('online_sampling_audit'):
