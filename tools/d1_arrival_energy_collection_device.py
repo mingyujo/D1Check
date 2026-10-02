@@ -26,7 +26,7 @@ ACTION='com.example.d1check.benchmarkrunner.action.ARRIVAL_ENERGY'
 
 
 def tracked_bundle(plan):
-    return plan.get('ap_bundled_confirmation') or plan.get('recorded_policy_comparison')
+    return plan.get('ap_bundled_confirmation') or plan.get('recorded_policy_comparison') or plan.get('online_policy_study')
 
 
 def require_host_pull_space(plan):
@@ -50,7 +50,7 @@ def poll(d,remote,folder,manifest,plan):
         if tracked_bundle(plan):
             position=next(e['index'] for e in plan['entries'] if e['session_id']==manifest['session_id'])
             command_ceiling=min(command_ceiling,(position+1)*plan['budget']['per_session_adb_commands'])
-        if (plan.get('single_arrival_confirmation') or plan.get('recorded_replay_confirmation')) and d.sequence>=command_ceiling-plan['budget'].get('adb_recovery_cleanup_reserve',20):
+        if (plan.get('single_arrival_confirmation') or plan.get('recorded_replay_confirmation') or plan.get('online_policy_study')) and d.sequence>=command_ceiling-plan['budget'].get('adb_recovery_cleanup_reserve',20):
             raise RuntimeError('ADB observation cap reserve reached; preserve recovery/cleanup slots')
         now=time.monotonic()
         if tracked_bundle(plan) and now-last_checkpoint>=30:
@@ -92,7 +92,7 @@ def poll(d,remote,folder,manifest,plan):
 
 
 def validate(folder,manifest,plan):
-    expected=24
+    expected=96 if plan.get('online_policy_study') else 24
     if plan.get('resident_control_pair'):
         from tools import d1_resident_control_plan as control
         expected=control.request_count(manifest)
@@ -126,14 +126,14 @@ def validate(folder,manifest,plan):
     for r in rows:
         fields=('actual_arrival_ns','dispatch_ns','execution_start_ns','output_ready_ns',
                 'persist_complete_ns','worker_release_ns','lane_available_ns')
-        if plan.get('recorded_replay_confirmation'):
+        if plan.get('recorded_replay_confirmation') or plan.get('online_policy_study'):
             fields+=('host_inference_start_ns','host_inference_return_ns')
         c.require(r['terminal_status']=='succeeded' and all(r.get(field) is not None for field in fields),
                   'unfinished/request boundary')
         c.require(r['scheduled_arrival_ns']<=r['actual_arrival_ns']<=r['dispatch_ns']<=
                   r['execution_start_ns']<=r['output_ready_ns']<=r['persist_complete_ns']<=
                   r['worker_release_ns']<=r['lane_available_ns'],'time order')
-        if plan.get('recorded_replay_confirmation'):
+        if plan.get('recorded_replay_confirmation') or plan.get('online_policy_study'):
             c.require(r['execution_start_ns']<=r['host_inference_start_ns']<=
                       r['host_inference_return_ns']<=r['output_ready_ns'], 'host inference bracket')
         key=r['task_id']+'_'+r['selected_backend']
@@ -144,11 +144,13 @@ def validate(folder,manifest,plan):
                       r['dispatch_ns']>=boundary['start_ns']+source['release_offset_ns'] and
                       r['recorded_release_ns']==boundary['start_ns']+source['release_offset_ns'],
                       'recorded replay allocation/release gate')
+        elif plan.get('online_policy_study'):
+            c.require(r['selected_backend']==('CPU' if manifest['policy']=='CPU_URGENT_ONLINE_V1' or r['task_id']=='detection' else 'GPU'),'online policy allocation')
         else:
             c.require(r['selected_backend']==('CPU' if manifest['policy']=='CPU_URGENT' or r['priority']=='urgent' else 'GPU'),'policy allocation')
         result=p.read(artifacts/(r['request_id']+'.result.json'))
         c.old.quality(p.read(plan['references'][key]['path']),result)
-    if plan.get('recorded_replay_confirmation'):
+    if plan.get('recorded_replay_confirmation') or plan.get('online_policy_study'):
         for backend in ('CPU','GPU'):
             ordered=sorted((r for r in rows if r['selected_backend']==backend),
                            key=lambda r:r['dispatch_ns'])
@@ -192,8 +194,12 @@ def run(plan_file,adb,serial,expected_sha,approved):
     c.require(approved and p.digest(plan_file)==expected_sha,'explicit later approval and exact plan hash required')
     plan=p.read(plan_file)
     idle_response=plan.get('ap_idle_pulse_followup',False)
-    single=plan.get('single_arrival_confirmation',False) or plan.get('recorded_replay_confirmation',False)
-    if plan.get('ap_completion_study'):
+    single=plan.get('single_arrival_confirmation',False) or plan.get('recorded_replay_confirmation',False) or plan.get('online_policy_study',False)
+    if plan.get('online_policy_study'):
+        from tools import d1_online_policy_study as confirmation
+        confirmation.check_block(plan_file)
+        c.require(plan['study_phase']=='development' or plan['study_freeze'] is not None,'confirmation freeze required')
+    elif plan.get('ap_completion_study'):
         from tools import d1_ap_completion_study as confirmation
         confirmation.check_block(plan_file)
         c.require(plan['study_phase']=='development' or plan['study_freeze'] is not None,
@@ -254,8 +260,8 @@ def run(plan_file,adb,serial,expected_sha,approved):
             (root/'original_model_freeze.json').write_bytes(Path(plan['frozen_model']['path']).read_bytes())
     write(registry/'claimed.json',claim)
     d=(ObservedDevice(adb,serial,root/'host_commands',allow_select=True,
-                      forbid_apk_deploy=plan.get('ap_bundled_confirmation',False),
-                      allow_other_transports=plan.get('recorded_policy_comparison',False))
+                      forbid_apk_deploy=plan.get('ap_bundled_confirmation',False) or plan.get('installed_only',False),
+                      allow_other_transports=plan.get('recorded_policy_comparison',False) or (plan.get('online_policy_study',False) and bool(serial)))
        if plan.get('resident_control_pair') or tracked_bundle(plan) else
        ObservedDevice(adb,serial,root/'host_commands'))
     if journal:d.bundle_checkpoint=journal
@@ -268,10 +274,12 @@ def run(plan_file,adb,serial,expected_sha,approved):
         (root/'installation').mkdir()
         if journal:journal.mark('installed_preflight_start')
         installation=(energy_device.installed_preflight(d,plan,plan_file,root/'installation',hard)
-                      if plan.get('ap_bundled_confirmation') else
+                      if plan.get('ap_bundled_confirmation') or plan.get('installed_only') else
                       energy_device.installation(d,plan,plan_file,root/'installation',hard));identified=True
         if journal:journal.mark('installed_preflight_verified',adb_commands=d.sequence)
         for entry in plan['entries']:
+            if plan.get('online_policy_study') and plan['study_phase']=='confirmation':
+                c.require(p.digest(plan['study_freeze']['path'])==plan['study_freeze']['sha256'],'online model freeze drift')
             if plan.get('ap_bundled_confirmation'):
                 if plan.get('ap_completion_study') and plan['study_freeze'] is not None:
                     c.require(p.digest(plan['study_freeze']['path'])==plan['study_freeze']['sha256'] and
@@ -340,7 +348,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
             c.require(session_end-time.monotonic()>=580,'poll/recovery/cleanup reserve')
             d.deadline=session_end-95
             write(current/'launch_attempt.json',dict(utc=legacy.utc()))
-            d.call('shell','am','start','-W','-n',legacy.PACKAGE+'/'+ACTIVITY,'-a',ACTION,
+            d.call('shell','am','start','-W','-n',legacy.PACKAGE+'/'+('com.example.d1check.benchmarkrunner.OnlinePolicyStudyActivity' if plan.get('online_configuration_owner_v1') else ACTIVITY),'-a',ACTION,
                    '--es','session_id',entry['session_id'],timeout=20)
             poll(d,remote,current,manifest,plan)
             if journal:journal.mark('app_terminal_seen',session_id=entry['session_id'],adb_commands=d.sequence)

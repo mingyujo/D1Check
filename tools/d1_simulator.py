@@ -331,8 +331,10 @@ def export(result, output):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('route', choices=('arrival', 'episode', 'ap-conditioned'))
+    parser.add_argument('route', choices=('arrival', 'episode', 'ap-conditioned','online-policy'))
     parser.add_argument('--case-id')
+    parser.add_argument('--policy')
+    parser.add_argument('--online-bundle',type=Path,default=RESULTS/'online_policy_study_01/run02')
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--scenario', choices=('low', 'queue', 'burst'), default='queue')
     parser.add_argument('--mode', choices=('strict', 'explore'), default='explore')
@@ -343,6 +345,13 @@ def main():
     args = parser.parse_args()
     if args.output.exists():
         parser.error('existing output is preserved; choose a new output directory')
+    if args.route == 'online-policy':
+        if not args.case_id or not args.policy or (args.scenario,args.mode,args.seed,args.initial_ap_c)!=('queue','explore',201,29.1) or args.ap_cap_c is not None or args.completion_cap_s is not None:
+            parser.error('registered initialization and explicit policy required; strict/thermal feedback unsupported')
+        from tools.d1_online_policy_readout import predict
+        print(json.dumps(predict(args.online_bundle,args.case_id,args.policy,args.output)))
+        return
+    if args.policy:parser.error('--policy belongs to online-policy route')
     if args.route == 'ap-conditioned':
         if not args.case_id or (args.scenario,args.mode,args.seed,args.initial_ap_c)!=( 'queue','explore',201,29.1) or args.completion_cap_s is not None or args.ap_cap_c is not None:
             parser.error('AP route requires only a registered --case-id; no new initial condition or policy options')

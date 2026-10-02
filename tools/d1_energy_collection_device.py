@@ -237,11 +237,12 @@ def gates(d,plan,folder,label):
 def installation(d,plan,plan_file,root,hard):
     start=time.monotonic();end=min(start+600,hard);d.deadline=end-45
     state=dict(status='failed',apk_transfer_attempts=0,install_attempts=0)
-    identified=False
+    identified=False;cleanup_owned=False
     try:
         # preflight proves model/fingerprint before any modifying command.
         pre=apk.preflight(d,dict(plan,_plan_file=str(plan_file)),root/'preflight');identified=True
         gates(d,plan,root,'install_gate')
+        cleanup_owned=True  # require_stopped passed; no other active app work is owned
         if pre['installed']!=pre['candidate']:
             c.require(end-time.monotonic()>=330,'transfer/install/identity/cleanup reserve')
             remote='/data/local/tmp/d1check-'+plan.get('experiment_id',c.EXPERIMENT).lower()+'.apk'
@@ -258,7 +259,7 @@ def installation(d,plan,plan_file,root,hard):
         c.require(state['installed_sha256']==plan['apk_sha256'],'exact installed APK required')
         state['status']='verified'
     finally:
-        if identified:
+        if identified and (not plan.get('online_policy_study') or cleanup_owned):
             try:state['cleanup']=shared.cleanup(d,end)
             except BaseException as exc:state.update(status='failed',cleanup={'error':repr(exc)})
         state['elapsed_seconds']=time.monotonic()-start;save(root/'installation_receipt.json',state)

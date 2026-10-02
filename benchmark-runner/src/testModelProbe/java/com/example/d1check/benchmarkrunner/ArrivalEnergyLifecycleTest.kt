@@ -42,6 +42,34 @@ class ArrivalEnergyLifecycleTest {
             isAccessible = true
         }.get(activity) as AtomicReference<String?>
 
+    @Test fun onlineConfigurationCallbackKeepsOneOwnerAndDestroyStillCancels() {
+        val controller = Robolectric.buildActivity(OnlinePolicyStudyActivity::class.java)
+        val activity = controller.get()
+        val held = HeldSetup()
+        field(activity, "setup", held)
+        controller.create().start().resume().visible()
+        val journal = File(Files.createTempDirectory("d1-online-config").toFile(), "progress.jsonl")
+        val progress = EnergyProgress(journal)
+        field(activity, "sid", "configuration-fixture")
+        field(activity, "progress", progress)
+        val changed = android.content.res.Configuration(activity.resources.configuration)
+        changed.orientation = android.content.res.Configuration.ORIENTATION_LANDSCAPE
+        changed.screenWidthDp = 800
+        changed.screenHeightDp = 400
+        controller.configurationChange(changed)
+        assertSame(activity, controller.get())
+        assertEquals(1, held.pending.size)
+        assertNull(stop(activity).get())
+        controller.pause().stop().destroy()
+        progress.close()
+        assertEquals("lifecycle_cancelled", stop(activity).get())
+        val rows = journal.readLines().map { JSONObject(it) }
+        assertEquals(1, rows.count { it.optString("callback") == "onConfigurationChanged" })
+        assertEquals(1, rows.count { it.optString("callback") == "onDestroy" })
+        assertEquals(1, rows.map { it.getString("activity_instance_id") }.toSet().size)
+        assertTrue(rows.single { it.getString("kind") == "activity_configuration" }.getBoolean("owner_preserved"))
+    }
+
     @Test fun pauseAndStopDoNotCancelButDestroyRecordsTheFirstCause() {
         val controller = Robolectric.buildActivity(ArrivalEnergyActivity::class.java)
         val activity = controller.get()

@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
 
 /** Isolated, measured 24-arrival path; old ArrivalSchedulerActivity remains unchanged. */
-class ArrivalEnergyActivity : Activity() {
+open class ArrivalEnergyActivity : Activity() {
     private val activityInstanceId = UUID.randomUUID().toString()
     private val setup = Executors.newSingleThreadExecutor()
     private val dispatch = Executors.newSingleThreadExecutor()
@@ -61,6 +61,18 @@ class ArrivalEnergyActivity : Activity() {
         } catch (error: Throwable) {
             // A journal failure cannot replace the first cancellation or session error.
             Log.w("D1ARRIVALENERGY", "lifecycle journal unavailable: $callback", error)
+        }
+    }
+
+    protected fun recordConfigurationChange(config: android.content.res.Configuration) {
+        lifecycle("onConfigurationChanged")
+        try {
+            event("activity_configuration", mapOf("activity_instance_id" to activityInstanceId,
+                "orientation" to config.orientation, "screen_width_dp" to config.screenWidthDp,
+                "screen_height_dp" to config.screenHeightDp, "ui_mode" to config.uiMode,
+                "owner_preserved" to true))
+        } catch (error: Throwable) {
+            Log.w("D1ARRIVALENERGY", "configuration journal unavailable", error)
         }
     }
 
@@ -157,12 +169,16 @@ class ArrivalEnergyActivity : Activity() {
                 m.getInt("resident_baseline_seconds").toLong() == ArrivalEnergyContract.BASELINE_SECONDS)
             check(m.getInt("maximum_concurrency") == 2 && m.getString("memory_contract") == V4Gate.CONTRACT && m.getInt("thermal_gate") == 0)
             val policy = m.getString("policy")
+            val policyStudy = m.optString("policy_study_version", "")
+            if (policyStudy.isNotEmpty()) check(policyStudy == ArrivalPolicyStudy.VERSION &&
+                policy in ArrivalPolicyStudy.POLICIES && !m.has("replay_version") && !m.has("resident_control_version"))
             val apMode = m.optString("start_ap_gate", "")
             check(apMode in setOf("", ArrivalStartApGate.VERSION, ArrivalStartApGate.DIAGNOSTIC_VERSION)) { "unknown start AP gate" }
             if (apMode == ArrivalStartApGate.DIAGNOSTIC_VERSION) {
-                check(policy == ArrivalRecordedReplay.POLICY) { "diagnostic AP only for recorded replay" }
+                check(policy == ArrivalRecordedReplay.POLICY || policyStudy == ArrivalPolicyStudy.VERSION) { "diagnostic AP requires explicit protocol" }
             }
-            check(policy in setOf(ArrivalPolicy.URGENT, ArrivalPolicy.FIXED, ArrivalRecordedReplay.POLICY))
+            check(policy in setOf(ArrivalPolicy.URGENT, ArrivalPolicy.FIXED, ArrivalRecordedReplay.POLICY) ||
+                (policyStudy == ArrivalPolicyStudy.VERSION && policy in ArrivalPolicyStudy.POLICIES))
             val imageSpec = m.getJSONArray("images").also { check(it.length() == 1) }.getJSONObject(0)
             val image = File(inputs, imageSpec.getString("filename")); val imageHash = imageSpec.getString("sha256")
             check(ProbeModelFile.sha256(image) == imageHash)
@@ -175,7 +191,12 @@ class ArrivalEnergyActivity : Activity() {
             } }
             val controlVersion = m.optString("resident_control_version", "")
             val controlRole = m.optString("resident_control_role", "")
-            ArrivalEnergyContract.validateSession(m.getString("scenario"), requests, controlVersion, controlRole)
+            if (policyStudy.isNotEmpty()) {
+                check(apMode == ArrivalStartApGate.DIAGNOSTIC_VERSION)
+                check((0 until requestJson.length()).all { !requestJson.getJSONObject(it).has("release_offset_ns") &&
+                    !requestJson.getJSONObject(it).has("recorded_backend") })
+                ArrivalPolicyStudy.validate(policyStudy, policy, m.getString("policy_study_role"), m.getString("scenario"), requests)
+            } else ArrivalEnergyContract.validateSession(m.getString("scenario"), requests, controlVersion, controlRole)
             if (controlVersion.isNotEmpty()) check(policy == ArrivalRecordedReplay.POLICY &&
                 apMode == ArrivalStartApGate.DIAGNOSTIC_VERSION) { "resident control requires recorded observe-v2" }
             requests.forEach { check(UUID.fromString(it.id).toString() == it.id) }
@@ -254,7 +275,9 @@ class ArrivalEnergyActivity : Activity() {
             pump = {
                 while (stop.get() == null) {
                     val begin = now()
-                    val choice = if (policy == ArrivalRecordedReplay.POLICY)
+                    val choice = if (policyStudy.isNotEmpty())
+                        ArrivalPolicyStudy.choose(policy, waiting, !busy.getValue("CPU"), !busy.getValue("GPU"))
+                    else if (policy == ArrivalRecordedReplay.POLICY)
                         ArrivalRecordedReplay.choose(waiting, replay, maxOf(0L, begin-start),
                             !busy.getValue("CPU"), !busy.getValue("GPU"))
                     else ArrivalPolicy.choose(policy, waiting, !busy.getValue("CPU"), !busy.getValue("GPU"), 0, emptyMap())

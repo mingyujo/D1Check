@@ -1,5 +1,15 @@
 # D1Check 현재 상태
 
+## 2026-10-02 원래 목표 연결: 온라인 정책 개발3·동결·독립 확인6 완료
+
+- [실행·오차·정책 판정](ONLINE_POLICY_MODEL_STUDY_20261002.md), [그림/CSV/재현](results/online_policy_study_01/run02/index.html), [검증](results/online_policy_study_01/run02/verification.json). 실제 예정도착96개/CPU직렬·CG_DC병행·CG_DC직렬을 실행하고 일정/응답/J/AP를 독립 비교했다. AP 조건부 재생만으로 전체 연구 완료라고 부르던 경계를 바로잡았다.
+- 02 prelaunch ADB 실패(추론0),03 개발2완료 후 냉각 configuration-destroy 실패(본288/warmup24)는 stopped_no_resume 보존. 새 온라인 전용 Activity의 구성 callback만 보완, 기존 onDestroy 취소/worker/계측은 유지. 구체적 외부 구성 변경 원인은 미확정. 새04 개발1＋확인6 정상 완료, 이전 적격2 재사용; 과학적 구조/입력/판정·동결 후 계수 변경0.
+- 04 실제7세션/본672＋warmup56=728추론/runtime28/staging7·49/pull2/APK push·설치각1/ADB5836,2235.496초. 전체02/03/04 합계1040추론/ADB7762로 실패 소비 포함. 앱cleanup7·회수7·세션host정리7＋설치정리1·최종대상ps 부재·parent/child exited. 기존 원본과 별도 registry 보존.
+- 모형freeze `557fbe5b…7bcf2`(2026-10-02T13:33:27Z), 완료receipt `online_policy_study_run_v4/FINAL_RECEIPT.json`. 확인 전원96/96마감, 예정도착 dispatch MAE11.047–31.375ms/AP MAE0.152–0.605°C. 전체120초 J오차 −0.291…−15.941(−0.162…−9.275%); 실제 일정 조건부에도 비용오차 잔존. 초기화 이후35–120초와 상쇄를 별도표시.
+- 병행의 urgent P95는 CPU보다136–146ms 짧았지만 관측 에너지 차이는 −11.112/−0.820J로 달랐다. AP최고 차이도0.1–0.2°C 수준으로 모형 오차보다 작다. **등록 정책의 실측 비교·예측 평가/도구 연결은 완료, 정밀 에너지·열 정책 선택/안정 절감 우월성은 미입증.** 실측을 더 했다는 이유로 완성/정확도 PASS를 선언하지 않는다.
+- `python -B -m tools.d1_simulator online-policy --case-id confirmation_0_CPU_URGENT_ONLINE_V1 --policy B2_PARALLEL_ONLINE_V1 --output output/online_parallel_fresh`로 부하 전 초기조건과 예정 도착 기반 재현 가능. 기존 AP/arrival/episode/default·strict·experiment_ready=false 유지, 임의 도착/열→처리시간/S26은 자동 지원하지 않는다.
+- 관련Python33/Android13·프로젝트 서명 빌드·실제Check/Run·전체/부분 적분/CLI/CSV/SVG 검증 완료. **다음 PC 작업 하나:** 기존9세션의 상태·이력별 전력 잔차에서 고정 증가분＋부하 전 배경 전력 가정의 실패 경계를 특정한다. 동일6세션 추가/후보 재보정/기기 작업 자동 실행 없음. 아래는 과거 완료·권고의 이력이며 최신 범위는 이 절을 따른다.
+
 ## 2026-10-02 남은 확인4 완료·제한 시뮬레이터 최종 연결
 
 - 사용자 연결·재개 승인으로 새 plan_v3의 SPLIT/SPLIT/L50/C 확인4가 모두 적격 완료됐다. 개발6(과거C1＋새5)→변경 없는M0 동결→확인2＋휴지 후 새4의 판독을 완료했다. [최종 보고서](AP_MODEL_COMPLETION_STUDY_20261002.md), [확인6 곡선/CSV·등록 입력](results/ap_completion_study_01/final/index.html), [통합 시뮬레이터](results/simulator_workbench_01/index.html). 기존01/02 실패·사용자 중지는 stopped_no_resume로 보존하고 연속12세션 완주라고 하지 않는다.

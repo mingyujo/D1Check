@@ -16,7 +16,9 @@ FIELDS = ('execution_start_ns', 'output_ready_ns', 'persist_complete_ns',
           'worker_release_ns', 'lane_available_ns')
 PHASES = ('ASSIGNED', 'EXECUTING', 'OUTPUT_READY', 'PERSISTED', 'WORKER_RELEASED')
 POLICIES = ('CPU_FIFO', 'CPU_URGENT', 'FIXED_SPLIT', 'B2_PC', 'B3_SOLO_EFT_PC',
-            'P_PAIR_COST_PC', 'P_NO_PARALLEL_PC')
+            'P_PAIR_COST_PC', 'P_NO_PARALLEL_PC', 'CPU_URGENT_ONLINE_V1',
+            'B2_PARALLEL_ONLINE_V1', 'B2_SERIAL_ONLINE_V1')
+ONLINE_STUDY = ('CPU_URGENT_ONLINE_V1','B2_PARALLEL_ONLINE_V1','B2_SERIAL_ONLINE_V1')
 
 
 def keyed_index(seed, request_id, backend):
@@ -37,7 +39,7 @@ def choose(config, queue, lanes, now, policy, settings, *, thermal_model=None, c
     aging = settings['aging_ns']
     def order(q):
         if policy == 'CPU_FIFO': return (0, q['ordinal'], q['id'])
-        if policy in ('CPU_URGENT','FIXED_SPLIT'):
+        if policy in ('CPU_URGENT','FIXED_SPLIT',*ONLINE_STUDY):
             return (q['priority']!='urgent',q['ordinal'],q['id'])
         # Common finite aging is an exploratory rule, not the historical Android policy.
         aged = now - q['arrival_ns'] >= aging
@@ -56,14 +58,14 @@ def choose(config, queue, lanes, now, policy, settings, *, thermal_model=None, c
             remain = cell['joint']['dispatch_to_lane_ns']['median_ns'] * settings['estimate_factor'] - elapsed
             residuals[b] = dict(state='ESTIMATED_POINT' if remain > 0 else 'UNKNOWN_OVERRUN', ns=max(0, remain) if remain > 0 else None)
     busy = [b for b in lanes if lanes[b]['request'] is not None]
-    global_serial = settings['mode'] == 'strict' or policy in ('CPU_FIFO', 'CPU_URGENT', 'P_NO_PARALLEL_PC') or (policy == 'B2_PC' and not settings['static_parallel'])
+    global_serial = settings['mode'] == 'strict' or policy in ('CPU_FIFO', 'CPU_URGENT', 'P_NO_PARALLEL_PC','CPU_URGENT_ONLINE_V1','B2_SERIAL_ONLINE_V1') or (policy == 'B2_PC' and not settings['static_parallel'])
     result = dict(now_ns=now, queue=copy.deepcopy(ordered), lanes=copy.deepcopy(lanes), residuals=residuals,
                   candidates=[], selected=None, reason='empty' if not queue else 'busy_or_preferred_lane')
     if global_serial and busy: return result
     for q in ordered:
-        if policy in ('CPU_FIFO', 'CPU_URGENT'): backends = ['CPU']
+        if policy in ('CPU_FIFO', 'CPU_URGENT','CPU_URGENT_ONLINE_V1'): backends = ['CPU']
         elif policy == 'FIXED_SPLIT': backends = ['CPU' if q['priority'] == 'urgent' else 'GPU']
-        elif policy == 'B2_PC': backends = [settings['static_map'][q['task']]]
+        elif policy in ('B2_PC','B2_PARALLEL_ONLINE_V1','B2_SERIAL_ONLINE_V1'): backends = [settings['static_map'][q['task']]]
         elif settings['mode'] == 'strict': backends = ['CPU']  # missing adaptive cost => explicit fallback
         else: backends = ['CPU', 'GPU']
         candidates = []
@@ -100,7 +102,11 @@ def choose(config, queue, lanes, now, policy, settings, *, thermal_model=None, c
 def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=120_000_000_000,
              admission=None, thermal_model=None, decision_provider=None):
     # Optional REPLAN-PC-01 event hook. None preserves the frozen v3 execution path.
-    base.validate_config(config)
+    if config.get('protocol')=='online-context-service-v1':
+        from tools.d1_online_policy_model import validate_service
+        validate_service(config,vectors,requests,policy,settings)
+    else:
+        base.validate_config(config)
     base.require((policy in POLICIES or policy == 'THERMAL_ENERGY_PC_V1')
                  and settings['mode'] in ('strict', 'explore'), 'policy/mode')
     if policy == 'THERMAL_ENERGY_PC_V1':
