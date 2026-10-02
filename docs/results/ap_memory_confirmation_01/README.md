@@ -1,5 +1,7 @@
 # 준비 이력 AP 후보의 독립 확인 준비
 
+**실행 갱신(2026-10-02):** 사용자 승인 후 두 세션 모두 완료·소비됐습니다. [실제 결과/재현](../../AP_MEMORY_CONFIRM_RUN01_20261002.md), [그림/CSV](run01/index.html). 계획 재실행 금지. 아래 미승인·미소비/Run0 문구는 준비 시점 기록이며 현재 상태가 아닙니다.
+
 2026-10-02 · [고정 판독 계약](analysis_contract.json) · [계획/해시/예산](plan_summary.json) · [PC 검증](verification.json) · [후보의 기존 평가](../ap_preparation_memory_01/README.md)
 
 **판정: 평균·최고오차 개선의 전이를 확인할 가치는 있다.** 준비 반응을 분리한 `ap-preparation-memory-v1`을 새로운 자료로 확인하되, 이미 미재현인 후기 상승까지 해결했다고 판단하는 실험은 아니다. 현재 제한된 일정/서비스 시뮬레이터를 사용하는 데 필수 실측도 아니다. 이번 사용자 ‘진행’에 따라 확인 경로를 PC에서 완성했다. 상태는 **PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED**, 실제 기기 Run·출력·소비 registry는 없다.

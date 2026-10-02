@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-02 준비 이력 AP 두 독립 확인 완료
+
+- [실행·판독 보고서](AP_MEMORY_CONFIRM_RUN01_20261002.md), [그림/CSV](results/ap_memory_confirmation_01/run01/index.html), [검증](results/ap_memory_confirmation_01/run01/verification.json). 사용자 실측 승인으로 plan_v1 1회 실행, **completed_descriptive_only·소비·완료**. 본48/warmup16=64추론·runtime8·staging2/14·pull1·APK push/설치0·ADB1,698/6,600·581.797/2,090초·재시도0.
+- 고정 τ30/γ0 후보의 새 확인 MAE **0.178596/0.189876°C**(기존 preload0.544909/0.370485), 최대0.737337/0.700567·최고 부호오차−0.121397/−0.303239°C. 실제 일정/부하 전 AP 조건부이며 조건당1세션. +35 조건 후기 관측+0.100°C 대 후보+0.001121°C로 후기 크기 미재현; 계수 재적합0, 정확도 PASS/기본 채택/strict 확대 없음.
+- 공통120초 관측144.098982/140.797012J, 원래 W식 차이+11.535933/+14.879580J. 초기 AP27.4/27.9°C 범위 밖, 실제 lane병행1.334590/1.391242초. 앱cleanup2·회수각58파일·host정리각1·최종ps 부재·host exit0. timeout/관측 연결 소실/lifecycle_cancelled0. 원본8,778파일 inventory·소스103/동결4파일 보존, 분석 기기0.
+- 원본 `D1Check_Arrival_Extension/energy_ap_memory_confirm_run_v1/FINAL_RECEIPT.json`, 판독 `ap_memory_confirm_run01_pc`. 실제 Check/Run/판독/공유수치 검증 완료. experiment_ready=false 유지. **다음 PC 행동 하나:** 두 독립 확인과 후기/전력 오차 한계를 제한 시뮬레이터 본문에 통합한다. 추가 실측 자동 실행 없음. 아래 준비·미승인 문구는 당시 이력이다.
+
 ## 2026-10-02 준비 이력 AP 독립 확인 계획 PC 완료
 
 - [설계·명령·종료 기준](results/ap_memory_confirmation_01/README.md), [상태 화면](results/ap_memory_confirmation_01/index.html), [검증](results/ap_memory_confirmation_01/verification.json). 후보 τ30/γ0를 재적합 없이 확인하도록 부하 시작 +35/+65초 두 조건을 고정했다. 추가 가열 대신 준비 후 수동 유휴30초 차이를 사용하며 처음 자료 부적격이면 다음 세션을 막는다.

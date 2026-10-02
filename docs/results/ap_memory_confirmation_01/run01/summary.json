@@ -1,0 +1,408 @@
+{
+  "experiment_id": "ENERGY-AP-MEMORY-CONFIRM-01",
+  "receipt": {
+    "adb_commands": 1698,
+    "elapsed_seconds": 581.7969438,
+    "experiment_ready": false,
+    "installation": {
+      "apk_transfer_attempts": 0,
+      "app_launch_attempts": 0,
+      "cleanup": {
+        "host_clients": "recorded_per_command",
+        "status": "not_applicable_no_app_launch"
+      },
+      "elapsed_seconds": 22.072115499991924,
+      "install_attempts": 0,
+      "installed_host_pull_limit": 1,
+      "installed_sha256": "74e8065d10bdfac01c4fbda77afeac196986501b9534bf02d1dd5b0ad541ee6e",
+      "status": "verified"
+    },
+    "requests": 48,
+    "runtime_creations": 8,
+    "sessions": 2,
+    "status": "completed_descriptive_only",
+    "warmup": 16
+  },
+  "sessions": [
+    {
+      "role": "confirmation_preidle35",
+      "status": "evaluated_fixed_candidate",
+      "scores": {
+        "mae_c": 0.1785959013445666,
+        "max_absolute_error_c": 0.7373374766472267,
+        "signed_mean_c": 0.14921238046069327,
+        "peak_signed_error_c": -0.12139704731992396
+      },
+      "independent_sessions": 1,
+      "accuracy_pass": null,
+      "existing_preload_scores": {
+        "mae_c": 0.5449088110600954,
+        "max_absolute_error_c": 0.7577439996480813,
+        "signed_mean_c": -0.5285248429906991,
+        "peak_signed_error_c": -0.5561743160222079
+      },
+      "initialization": {
+        "reference_c": 27.831414333896042,
+        "h_first_c_per_s": -0.08217661905668679,
+        "h_last_c_per_s": -0.009754260415254115,
+        "anchor_s": 33.090766889,
+        "anchor_ap_c": 27.4,
+        "input_end_s": 33.200766889,
+        "samples": 26,
+        "duration_s": 63.935,
+        "scaled_condition": 5.86029492344664,
+        "singular_values": [
+          1.394063054070481,
+          0.23788274690629135
+        ],
+        "preload_rmse_c": 0.11258622362958563,
+        "reference_is_ambient": false,
+        "latent_is_measured_internal_temperature": false
+      },
+      "sample_start_s": 35.630766889,
+      "sample_end_s": 179.800766889,
+      "samples": 56,
+      "directions": [
+        {
+          "start_s": 90,
+          "end_s": 115,
+          "status": "observed",
+          "observed_change_c": 0.0,
+          "candidate_change_c": -0.05655201999787707,
+          "existing_preload_change_c": -0.10902991156677899
+        },
+        {
+          "start_s": 120,
+          "end_s": 145,
+          "status": "observed",
+          "observed_change_c": 0.0,
+          "candidate_change_c": -0.006649205942505176,
+          "existing_preload_change_c": -0.027489682519785674
+        },
+        {
+          "start_s": 150,
+          "end_s": 175,
+          "status": "observed",
+          "observed_change_c": 0.10000000000000142,
+          "candidate_change_c": 0.0011209342028379865,
+          "existing_preload_change_c": -0.006934386922946345
+        }
+      ],
+      "phase_scores": [
+        {
+          "phase": "work_span",
+          "samples": 5,
+          "mae_c": 0.3535254409096879,
+          "max_absolute_error_c": 0.7373374766472267,
+          "signed_mean_c": 0.17626693128718926,
+          "peak_signed_error_c": -0.12139704731992396
+        },
+        {
+          "phase": "post_load_idle",
+          "samples": 51,
+          "mae_c": 0.161445946485241,
+          "max_absolute_error_c": 0.3374987296262759,
+          "signed_mean_c": 0.14655997351691916,
+          "peak_signed_error_c": -0.13621824869315446
+        }
+      ],
+      "initial_ap_c": 27.4,
+      "initial_ap_in_original_range": false,
+      "legacy_comparison": {
+        "status": "prospective_protocol_transfer_diagnostic",
+        "strict_support": false,
+        "accuracy_pass": null,
+        "policy_selection_pass": null,
+        "independent_sessions": 1,
+        "observed_energy_120s_j": 144.09898233183458,
+        "predicted_energy_120s_j": 155.6349149064738,
+        "signed_energy_error_j": 11.535932574639219,
+        "absolute_energy_error_j": 11.535932574639219,
+        "relative_energy_error": 0.08005561446696409,
+        "initial_ap_c": 27.4,
+        "initial_ap_in_development_range": false,
+        "preload": {
+          "version": "ap-preload-idle-reference-diagnostic-v1",
+          "effective_idle_reference_c": 27.039676769467647,
+          "first_ap_c": 28.9,
+          "last_preload_ap_c": 27.4,
+          "first_s": -30.844233111,
+          "last_s": 33.090766889,
+          "duration_s": 63.935,
+          "samples": 26,
+          "prefit_mae_c": 0.19136824017766985,
+          "prefit_max_absolute_error_c": 0.5158897517864816,
+          "meaning": "pre-load observed effective reference; not ambient or independent beta"
+        },
+        "ap_scores": {
+          "frozen": {
+            "mae_c": 6.586183243752663,
+            "max_absolute_error_c": 6.81599961243635,
+            "observed_idle_change_c": -0.8999999999999986,
+            "predicted_idle_change_c": -0.2790012424763475,
+            "diagnostic_peak_signed_error_c": 5.959457753994915
+          },
+          "candidate": {
+            "mae_c": 0.5449088110600954,
+            "max_absolute_error_c": 0.7577439996480813,
+            "observed_idle_change_c": -0.8999999999999986,
+            "predicted_idle_change_c": -1.0610842288216489,
+            "diagnostic_peak_signed_error_c": -0.5561743160222079
+          }
+        },
+        "ap_comparison_start_s": 35.008447772,
+        "ap_comparison_end_s": 180.154429242,
+        "post_load_ap_used_as_input": false,
+        "prediction_generation": "offline conditional reconstruction after retrieval; fixed procedure, pre-load AP only",
+        "supported_policy_energy_j": null,
+        "supported_ap_peak_c": null,
+        "policy_rank": null,
+        "actual_parallel_seconds": 1.3345896940000088,
+        "planned_requests": 24,
+        "completed": 24,
+        "experiment_ready": false,
+        "plan_sha256": "7013bcfe99b922d44c6d78801935c182dc6e525e4df60b1577ecafbb9108cfbd",
+        "frozen_sha256": "35ed6987b1fc09789284018f8502107eaf4e3125373651a01e3a08d427034c54",
+        "candidate_freeze_sha256": "8507adc10485940c36853786ba39a4f42439a9fbd3d71a5da1c7d55e2cbc7ec5"
+      }
+    },
+    {
+      "role": "confirmation_preidle65",
+      "status": "evaluated_fixed_candidate",
+      "scores": {
+        "mae_c": 0.1898756851521477,
+        "max_absolute_error_c": 0.7005674621519198,
+        "signed_mean_c": -0.12124313537723692,
+        "peak_signed_error_c": -0.30323866878596917
+      },
+      "independent_sessions": 1,
+      "accuracy_pass": null,
+      "existing_preload_scores": {
+        "mae_c": 0.3704854574118817,
+        "max_absolute_error_c": 0.9220397196833545,
+        "signed_mean_c": -0.36292053860690393,
+        "peak_signed_error_c": -0.5077431543340545
+      },
+      "initialization": {
+        "reference_c": 28.092897145019467,
+        "h_first_c_per_s": -0.03772532476022556,
+        "h_last_c_per_s": -0.0017014796926262217,
+        "anchor_s": 62.550707177,
+        "anchor_ap_c": 28.0,
+        "input_end_s": 62.665707177,
+        "samples": 37,
+        "duration_s": 92.965,
+        "scaled_condition": 3.8329550919356157,
+        "singular_values": [
+          1.3684088653163315,
+          0.35701145265056955
+        ],
+        "preload_rmse_c": 0.10115054186798805,
+        "reference_is_ambient": false,
+        "latent_is_measured_internal_temperature": false
+      },
+      "sample_start_s": 67.615707177,
+      "sample_end_s": 177.655707177,
+      "samples": 43,
+      "directions": [
+        {
+          "start_s": 90,
+          "end_s": 115,
+          "status": "observed",
+          "observed_change_c": -0.7605886817241405,
+          "candidate_change_c": -0.3974452075123196,
+          "existing_preload_change_c": -0.4207071652484373
+        },
+        {
+          "start_s": 120,
+          "end_s": 145,
+          "status": "observed",
+          "observed_change_c": -0.10000000000000142,
+          "candidate_change_c": -0.09631491007892379,
+          "existing_preload_change_c": -0.1057063828846978
+        },
+        {
+          "start_s": 150,
+          "end_s": 175,
+          "status": "observed",
+          "observed_change_c": -0.03949337718146495,
+          "candidate_change_c": -0.023056163380708483,
+          "existing_preload_change_c": -0.026733318225147684
+        }
+      ],
+      "phase_scores": [
+        {
+          "phase": "work_span",
+          "samples": 4,
+          "mae_c": 0.2029351471559151,
+          "max_absolute_error_c": 0.34517572223425574,
+          "signed_mean_c": 0.04438547022091921,
+          "peak_signed_error_c": 0.14946551251941287
+        },
+        {
+          "phase": "post_load_idle",
+          "samples": 39,
+          "mae_c": 0.1885362531517613,
+          "max_absolute_error_c": 0.7005674621519198,
+          "signed_mean_c": -0.1382306846693555,
+          "peak_signed_error_c": -0.30323866878596917
+        }
+      ],
+      "initial_ap_c": 27.9,
+      "initial_ap_in_original_range": false,
+      "legacy_comparison": {
+        "status": "prospective_protocol_transfer_diagnostic",
+        "strict_support": false,
+        "accuracy_pass": null,
+        "policy_selection_pass": null,
+        "independent_sessions": 1,
+        "observed_energy_120s_j": 140.79701170908936,
+        "predicted_energy_120s_j": 155.67659122537518,
+        "signed_energy_error_j": 14.879579516285816,
+        "absolute_energy_error_j": 14.879579516285816,
+        "relative_energy_error": 0.10568107473068793,
+        "initial_ap_c": 27.9,
+        "initial_ap_in_development_range": false,
+        "preload": {
+          "version": "ap-preload-idle-reference-diagnostic-v1",
+          "effective_idle_reference_c": 27.826404304998494,
+          "first_ap_c": 28.7,
+          "last_preload_ap_c": 28.0,
+          "first_s": -30.414292823,
+          "last_s": 62.550707177,
+          "duration_s": 92.965,
+          "samples": 37,
+          "prefit_mae_c": 0.1266969964531717,
+          "prefit_max_absolute_error_c": 0.3744740747832722,
+          "meaning": "pre-load observed effective reference; not ambient or independent beta"
+        },
+        "ap_scores": {
+          "frozen": {
+            "mae_c": 6.130616012931993,
+            "max_absolute_error_c": 6.422491063392826,
+            "observed_idle_change_c": -0.5999999999999979,
+            "predicted_idle_change_c": -0.874670872283815,
+            "diagnostic_peak_signed_error_c": 5.863539804181961
+          },
+          "candidate": {
+            "mae_c": 0.3704854574118817,
+            "max_absolute_error_c": 0.9220397196833545,
+            "observed_idle_change_c": -0.5999999999999979,
+            "predicted_idle_change_c": -1.0548889013656506,
+            "diagnostic_peak_signed_error_c": -0.5077431543340545
+          }
+        },
+        "ap_comparison_start_s": 65.007372311,
+        "ap_comparison_end_s": 180.202992087,
+        "post_load_ap_used_as_input": false,
+        "prediction_generation": "offline conditional reconstruction after retrieval; fixed procedure, pre-load AP only",
+        "supported_policy_energy_j": null,
+        "supported_ap_peak_c": null,
+        "policy_rank": null,
+        "actual_parallel_seconds": 1.3912421549999863,
+        "planned_requests": 24,
+        "completed": 24,
+        "experiment_ready": false,
+        "plan_sha256": "7013bcfe99b922d44c6d78801935c182dc6e525e4df60b1577ecafbb9108cfbd",
+        "frozen_sha256": "35ed6987b1fc09789284018f8502107eaf4e3125373651a01e3a08d427034c54",
+        "candidate_freeze_sha256": "8507adc10485940c36853786ba39a4f42439a9fbd3d71a5da1c7d55e2cbc7ec5"
+      }
+    }
+  ],
+  "consumption": [
+    {
+      "role": "confirmation_preidle35",
+      "planned_requests": 24,
+      "launch_attempted": true,
+      "counts": {
+        "runtime_start": 4,
+        "runtime_return": 4,
+        "warmup_start": 8,
+        "warmup_return": 8,
+        "request_start": 24,
+        "request_return": 0,
+        "host_inference_start": 24,
+        "host_inference_return": 24,
+        "output_ready": 24,
+        "persist_complete": 24,
+        "worker_release": 24,
+        "lane_available": 24
+      },
+      "progress_integrity": {
+        "status": "parsed",
+        "records": 665,
+        "completeness": "parsing success alone does not prove terminal completion"
+      },
+      "confirmed_not_attempted": false,
+      "return_event_kind": "host_inference_return; request_return is a separate legacy record kind",
+      "confirmed_request_returns": 24,
+      "count_meaning": "observed event counts, lower bounds if partial; not absence-of-execution claims",
+      "progress_recovered": true,
+      "app_cleanup": {
+        "status": "completed",
+        "error": null,
+        "mono_ns": 31707210178122,
+        "sampler_failure": null,
+        "sampler_failure_recording_error": null
+      },
+      "host_cleanup": {
+        "status": "completed",
+        "utc": "2026-10-02T02:16:52.768490+00:00"
+      },
+      "missing_calls": "unknown within per-session hard cap without complete evidence; zero only with host attempt receipt"
+    },
+    {
+      "role": "confirmation_preidle65",
+      "planned_requests": 24,
+      "launch_attempted": true,
+      "counts": {
+        "runtime_start": 4,
+        "runtime_return": 4,
+        "warmup_start": 8,
+        "warmup_return": 8,
+        "request_start": 24,
+        "request_return": 0,
+        "host_inference_start": 24,
+        "host_inference_return": 24,
+        "output_ready": 24,
+        "persist_complete": 24,
+        "worker_release": 24,
+        "lane_available": 24
+      },
+      "progress_integrity": {
+        "status": "parsed",
+        "records": 665,
+        "completeness": "parsing success alone does not prove terminal completion"
+      },
+      "confirmed_not_attempted": false,
+      "return_event_kind": "host_inference_return; request_return is a separate legacy record kind",
+      "confirmed_request_returns": 24,
+      "count_meaning": "observed event counts, lower bounds if partial; not absence-of-execution claims",
+      "progress_recovered": true,
+      "app_cleanup": {
+        "status": "completed",
+        "error": null,
+        "mono_ns": 32030971174680,
+        "sampler_failure": null,
+        "sampler_failure_recording_error": null
+      },
+      "host_cleanup": {
+        "status": "completed",
+        "utc": "2026-10-02T02:22:16.869025+00:00"
+      },
+      "missing_calls": "unknown within per-session hard cap without complete evidence; zero only with host attempt receipt"
+    }
+  ],
+  "candidate_sha256": "d885b87c32d7df5b812b4cd85dcdae5230f47c9bd16d7ae2807df427b26c1466",
+  "plan_sha256": "7013bcfe99b922d44c6d78801935c182dc6e525e4df60b1577ecafbb9108cfbd",
+  "new_coefficients": 0,
+  "post_load_refit": false,
+  "prediction": "offline fixed-parameter reconstruction using only pre-load AP and actual lane schedule",
+  "evidence": "prospective fixed candidate; one session per passive preparation interval",
+  "accuracy_pass": null,
+  "strict_support": false,
+  "experiment_ready": false,
+  "device_commands": 1698,
+  "analysis_device_commands": 0,
+  "execution_base_head": "4c8be6678cceb684c76ce4de14852f0e806719ee"
+}
