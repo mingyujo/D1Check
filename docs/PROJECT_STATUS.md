@@ -1,5 +1,20 @@
 # D1Check 현재 상태
 
+## 2026-10-02 남은 확인4 완료·제한 시뮬레이터 최종 연결
+
+- 사용자 연결·재개 승인으로 새 plan_v3의 SPLIT/SPLIT/L50/C 확인4가 모두 적격 완료됐다. 개발6(과거C1＋새5)→변경 없는M0 동결→확인2＋휴지 후 새4의 판독을 완료했다. [최종 보고서](AP_MODEL_COMPLETION_STUDY_20261002.md), [확인6 곡선/CSV·등록 입력](results/ap_completion_study_01/final/index.html), [통합 시뮬레이터](results/simulator_workbench_01/index.html). 기존01/02 실패·사용자 중지는 stopped_no_resume로 보존하고 연속12세션 완주라고 하지 않는다.
+- 새03 실제 본72/warmup32/runtime16=104추론, staging4·28파일/pull1/APK push·설치0, ADB2812/13000, root1293.024/3670초, timeout·재시도0. 앱 cleanup4·회수4·host 종료4·마지막 대상ps 부재, parent/child 생성시각·명령 식별 기준 exited, receipt/registry completed. 원본 `ap_completion_study_run_v3/FINAL_RECEIPT.json`, PC `ap_completion_remaining_readout_v3`. 현재 시각의 재조회가 아니라 계획 종료 시 관측이다.
+- M1은 개발 LOSO 일부 악화로 미채택, M0 freeze `b5bbfa51…b83e` 불변·확인 재보정0. 확인6 AP MAE0.061661–0.371789°C/최대0.173043–0.901555°C. 분할2의90–115초 냉각 방향 재현,18창 중16 방향미식별. 기존 W식 전체120초 차이+5.438741–+20.446578J, 원래 시작AP 범위밖/외삽. 정확도 PASS·정책 순위 없음.
+- `tools.d1_simulator ap-conditioned --case-id v3_confirmation_2_SPLIT_DELAY30 --output output/ap_split_fresh`로 실제 일정·부하 전AP 조건부 재생이 가능하다. 기존 일정/응답·서비스/관측 참조/고정870 경로 보존, 임의 도착J/AP·열→처리시간 미지원/null, default/strict/experiment_ready=false 유지. 연구 결과·제한 시뮬레이터는 이 범위에서 완료이며 범용 열 정책 완성은 아니다.
+- PC 현재 경계10검사(잔여3＋AP4＋대표기존3), 실제 Check 기기0, 여섯 CSV/CLI 수치·누적J 끝점/상태coverage·SVG·동결 불변 확인. Android/APK 변경0. **다음 행동 하나:** 최종 대시보드와 지원·미판정 결론을 팀 연구 결과로 공유한다. 추가 실측/후보적합/계획 자동 생성 없음. 아래는 과거 준비·실행 이력이다.
+
+## 2026-10-02 남은 확인4 새 계획 PC 검증·실행
+
+- 개발6(기존 적격C1＋신규5) 판독·모형 선택을 완료했다. M1은 LOSO의 C/L65 일부 오차 악화로 미채택, 변경 없는 M0를 확인 전에 동결했다. 확인 C/L50 2개 완료 후 사용자 이동 요청으로 세 번째 staging 중 중지했으며 앱 launch는 없었다. 이전01/02는 stopped_no_resume/원자료·소비 보존이다. [정확한 경계·표·근거](AP_MODEL_COMPLETION_STUDY_20261002.md), [후속02 결과](results/ap_completion_study_01/followup02/index.html).
+- 사용자 연결 복구·남은 실측 승인으로 **새 plan_v3 확인4만** 진행한다: SPLIT_DELAY30/SPLIT_DELAY30/L50/C. 개발 재수집·재적합0, M0 freeze SHA `b5bbfa51…b83e` 불변. 현재 기기/설치본/환경 gate는 기존 실행기 안에서 재확인한다. 계획 SHA `72fe75f7f7730a181331f3fceb15bec5567908446f5615e1ee461c94f54a55ca`, 원본 출력 `ap_completion_study_run_v3`, 상한104추론/runtime16/staging4·28/pull1/APK0/ADB13000/3670초/재시도0.
+- 잔여 subset/실제 root 진입/확인 재적합 금지·동결 불변/소비 계획 차단 관련 PC3검사와 실제 PS Check 통과. Check 기기0. 원래 scientific·measurement 소스/계약/APK unchanged, host orchestration만 보완했고 구 실행 소스를 외부 보존했다. PC 검증은 실기기 안정성 증명이 아니다.
+- **다음 행동:** 승인된 새 Run1회→원본·확인 판독→제한 시뮬레이터/본문·대시보드 반영. 실제 중단이면 그 계획을 종료하고 자동 재실행하지 않는다. 일반 동적 J/AP·열→처리시간·정책 순위는 미검증이며 default/strict/experiment_ready=false 유지. 아래는 역사적 상태다.
+
 ## 2026-10-02 AP 종료형 연구 Run1회·조회 timeout 종료
 
 - 사용자 계획 후 실측 진행 승인에 따라 개발6→한 후보군 추정/선택/동결→새 확인6의 실제 host 진입을 구현/PC검증/Run1회 수행했다. [설계·최종 판독](AP_MODEL_COMPLETION_STUDY_20261002.md), [화면/CSV](results/ap_completion_study_01/index.html). 개발 C1 완료·L35 준비 중 uptime2초timeout으로 **stopped_no_resume**, 나머지개발4/확인6 미시도,추정·동결·확인0. AP 예측 실패/미식별 판정 아님. Android/APK·계측 주기 변경0.

@@ -65,6 +65,28 @@ def analyse(file,output):
         model_frozen=(root/'model_freeze.json').exists(),confirmation_attempted=(root/'confirmation').exists(),
         analysis_device_commands=0,accuracy_pass=None,strict_support=False,experiment_ready=False)
     ap_paths=[];session_rows=[]
+    if s.get('confirmation_only'):
+        binding=s['confirmation_model'];study.verify_remaining_freeze(s)
+        summary.update(model_frozen=True,model_freeze_sha256=binding['sha256'],model_fit_performed=False,
+            confirmation_only=True,previous_confirmations_retained=2,confirmation_continuity=s['continuity'])
+    if 'imported_development' in s:
+        binding=s['imported_development'];source_file=Path(binding['plan']['path']);source=p.read(source_file)
+        entry=source['entries'][0];folder=Path(source['output_root'])/f"00_{entry['session_id']}"
+        case=study.imported_case(s);params=p.read(study.contrast.memory.CANDIDATE)['fixed_parameters']
+        values,init=study.model.predict(case,dict(beta=params['ap_cooling_rate_per_s'],k=1.,g=0.,parameters=params))
+        desc=study.readout.describe(case,values,init,p.read(study.contrast.BUNDLE/'analysis_contract.json'))
+        energy=control.session(folder,p.read(source_file.parent/entry['manifest']),p.read(source['frozen_model']['path']))
+        session_rows.append(dict(phase='development',role=entry['phase'],condition='C',
+            status='eligible_imported_from_stopped_v1',new_session=False,source_block='stopped_v1',
+            energy_120s_j=energy['windows']['common']['observed_j'],predicted_diagnostic_j=energy['frozen_diagnostic_120s_j'],
+            signed_energy_error_j=energy['signed_diagnostic_error_j'],ap_start_c=case['common_start_ap_c'],
+            ap_first_s=desc['first_s'],ap_last_s=desc['last_s'],ap_samples=desc['samples'],
+            ap_mae_c=desc['scores']['mae_c'],ap_max_error_c=desc['scores']['max_absolute_error_c'],
+            ap_peak_signed_error_c=desc['scores']['peak_signed_error_c']))
+        for t,y,v in zip(case['inputs']['query_s'],case['observed_ap_c'],values):
+            ap_paths.append(dict(role=entry['phase'],common_s=t,observed_c=y,m0_c=v,residual_c=v-y,source_block='stopped_v1'))
+        summary.update(imported_development_sessions=1,development_continuity=s['continuity'],
+            previous_stopped_consumption=s['cumulative_previous'])
     for phase in ('development','confirmation'):
         planfile=file.parent/phase/'collection_plan.json';blockroot=root/phase
         if not planfile.exists():
@@ -93,7 +115,7 @@ def analyse(file,output):
             block['consumption'].append(clean)
             item=dict(phase=phase,role=e['phase'],condition=e['condition'],
                 status='not_attempted' if clean['confirmed_not_attempted'] else 'incomplete',
-                energy_120s_j=None,predicted_diagnostic_j=None,ap_mae_c=None)
+                energy_120s_j=None,predicted_diagnostic_j=None,ap_mae_c=None,new_session=True,source_block='current')
             if (folder/'validated.json').exists():
                 case=study.readout.case_from_session(planfile,plan,e)
                 params=p.read(study.contrast.memory.CANDIDATE)['fixed_parameters']
@@ -115,6 +137,11 @@ def analyse(file,output):
         summary['blocks'].append(block)
     safe_csv(output/'sessions.csv',session_rows,['phase','status'])
     safe_csv(output/'ap_paths.csv',ap_paths,['role','common_s','observed_c','m0_c','residual_c'])
+    if (root/'development_selection.json').exists():
+        selection=p.read(root/'development_selection.json')
+        summary['development_selection']={k:selection.get(k) for k in ('status','reason','selected_name')}
+    if (root/'model_freeze.json').exists():summary['model_freeze_sha256']=p.digest(root/'model_freeze.json')
+    summary['session_denominator']=len(session_rows)
     study.common.write_json(output/'summary.json',summary)
     # Original raw evidence is never changed; inventory is external, not published wholesale.
     inventory=[dict(path=f.relative_to(root).as_posix(),bytes=f.stat().st_size,sha256=p.digest(f))

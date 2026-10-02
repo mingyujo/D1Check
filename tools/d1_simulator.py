@@ -28,6 +28,7 @@ PROFILE = RESULTS / 'energy_operational_sim_01/frozen_profile.json'
 EVALUATION = RESULTS / 'energy_operational_sim_01/confirmation_evaluation.json'
 POLICIES = ('CPU_URGENT', 'B2_PC', 'B3_SOLO_EFT_PC')
 VERSION = 'd1-simulator-workbench-v1'
+AP_REGISTER = RESULTS / 'ap_completion_study_01/final/ap_resources.json'
 SCHEDULE_FIELDS = ('id', 'task', 'priority', 'backend', 'status', 'arrival_ns',
                    'deadline_offset_ns', 'dispatch_ns', *engine.FIELDS)
 
@@ -151,6 +152,47 @@ def fixed_episode(initial_ap_c=29.1, completion_cap=None, ap_cap=None):
         confirmation_role='already-seen archived one session per arm; no new independent validation')
 
 
+def conditioned_ap(case_id, register=AP_REGISTER):
+    """Only registered actual schedules and pre-load AP; never a policy cost."""
+    from tools import d1_ap_completion_model as ap
+    spec = read(register)
+    if spec['version'] != 'registered-conditional-ap-v1':
+        raise ValueError('AP register version')
+    if any(spec[key] not in spec['files'] for key in ('cases_file','model_file')):
+        raise ValueError('unbound AP input or model')
+    provenance = {}
+    for relative, expected in spec['files'].items():
+        file = (ROOT / relative).resolve()
+        if not file.is_relative_to(ROOT) or digest(file) != expected:
+            raise ValueError('AP resource mismatch: ' + relative)
+        provenance[relative] = expected
+    if case_id not in spec['case_ids']:
+        raise ValueError('unregistered AP schedule; arbitrary policy costs unsupported')
+    cases = read(ROOT / spec['cases_file'])
+    matches = [c for c in cases if c['id'] == case_id]
+    if len(matches) != 1:
+        raise ValueError('AP case identity')
+    case = matches[0]
+    # Remove targets before prediction, even though the frozen predictor ignores them.
+    predictive_case = {k: v for k, v in case.items() if k != 'observed_ap_c'}
+    values, initial = ap.predict(predictive_case, read(ROOT / spec['model_file']))
+    observed = case['observed_ap_c']
+    if len(observed) != len(values):
+        raise ValueError('AP target length mismatch')
+    from tools.d1_ap_model_completion import score
+    scores = score(observed, values)
+    return dict(version=VERSION, route='ap_conditioned', case_id=case_id,
+        condition=case['condition'], source_block=case['source_block'],
+        scope='registered actual schedule + pre35 AP only; offline conditional',
+        initial=initial, scores=scores,
+        paths=[dict(common_s=t, observed_c=y, predicted_c=v, residual_c=v-y)
+               for t, y, v in zip(case['inputs']['query_s'], observed, values)],
+        provenance=provenance, frozen_source_sha256=spec['original_freeze_sha256'],
+        post35_observations_used_as_inputs=False, strict_support=False,
+        energy_j=None, energy_ap_policy_rank=None, thermal_performance_feedback='unsupported',
+        independent_accuracy_pass=None, experiment_ready=False)
+
+
 def plot(series, ylabel):
     """Small standalone SVG. Gaps split paths; never replace missing values by 0."""
     finite = [(x, y) for _, points in series for x, y in points if x is not None and y is not None]
@@ -204,7 +246,15 @@ def render(result):
     esc = html.escape
     content = ['<h1>D1Check 시뮬레이터</h1><p>일정 예측 · 실측 참조 · 모형 지원을 분리합니다. experiment_ready=false</p>',
         '<p><a href="result.json">전체 결과·입력·해시 JSON</a> · <a href="summary.csv">수치 CSV</a></p>']
-    if result['route'] == 'arrival':
+    if result['route'] == 'ap_conditioned':
+        content.append(f'<h2>등록된 조건부 AP 재생: {esc(result["case_id"])}</h2>')
+        content.append('<p class="notice">실제 lane 일정과 common+35초 전 AP로 초기화합니다. 예정 도착부터의 종단간 예측, 새로운 정책 비용, 열에 따른 처리시간 변화는 지원하지 않습니다. 관측 AP는 점수 계산에만 사용합니다. 정확도 PASS·strict 승격 없음.</p>')
+        content.append(f'<p>확인 block: {esc(result["source_block"])} · MAE {result["scores"]["mae_c"]:.6f}°C · 최대 {result["scores"]["max_absolute_error_c"]:.6f}°C</p>')
+        paths=result['paths']
+        content.append(plot([(name, [[p['common_s'],p[key]] for p in paths])
+                             for name,key in [('관측','observed_c'),('M0 예측','predicted_c')]],'AP °C'))
+        content.append(plot([('예측−관측',[[p['common_s'],p['residual_c']] for p in paths])],'잔차 °C'))
+    elif result['route'] == 'arrival':
         content.append(f'<p>{result["scenario"]} / seed {result["seed"]} / {result["mode"]} · 24요청 · 공통 120초. strict는 기존 스케줄러 실행 제한이며 물리 모형 검증 PASS가 아닙니다.</p>')
         content.append('<p class="notice">응답은 기존 단독 실측 시간에서 생성한 조건부 PC 계산입니다. 간섭 1.5는 가정입니다. 동적 에너지·AP와 열→처리시간 연결은 미지원으로 차단합니다. 아래 J/AP 관측을 새로운 일정의 예측값으로 사용하지 않습니다.</p><label>정책 <select id="policy">')
         content.extend(f'<option>{p}</option>' for p in POLICIES)
@@ -251,7 +301,13 @@ def export(result, output):
     (output / 'result.json').write_text(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False)+'\n', encoding='utf-8')
     (output / 'index.html').write_text(render(result), encoding='utf-8')
     summary = []
-    if result['route'] == 'arrival':
+    if result['route'] == 'ap_conditioned':
+        summary=[dict(case_id=result['case_id'],source_block=result['source_block'],
+            **result['scores'],energy_j=None,strict_support=False,accuracy_pass=None)]
+        with (output/'ap_paths.csv').open('w',encoding='utf-8',newline='') as stream:
+            writer=csv.DictWriter(stream,fieldnames=result['paths'][0].keys())
+            writer.writeheader();writer.writerows(result['paths'])
+    elif result['route'] == 'arrival':
         for c in result['cases']:
             s = c['service']
             summary.append(dict(policy=c['policy'], planned=s['planned'], completed=s['succeeded'],
@@ -275,7 +331,8 @@ def export(result, output):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('route', choices=('arrival', 'episode'))
+    parser.add_argument('route', choices=('arrival', 'episode', 'ap-conditioned'))
+    parser.add_argument('--case-id')
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--scenario', choices=('low', 'queue', 'burst'), default='queue')
     parser.add_argument('--mode', choices=('strict', 'explore'), default='explore')
@@ -286,11 +343,17 @@ def main():
     args = parser.parse_args()
     if args.output.exists():
         parser.error('existing output is preserved; choose a new output directory')
-    if args.route == 'arrival':
+    if args.route == 'ap-conditioned':
+        if not args.case_id or (args.scenario,args.mode,args.seed,args.initial_ap_c)!=( 'queue','explore',201,29.1) or args.completion_cap_s is not None or args.ap_cap_c is not None:
+            parser.error('AP route requires only a registered --case-id; no new initial condition or policy options')
+        result=conditioned_ap(args.case_id)
+    elif args.route == 'arrival':
+        if args.case_id:parser.error('--case-id belongs to the AP route only')
         if args.initial_ap_c != 29.1 or args.completion_cap_s is not None or args.ap_cap_c is not None:
             parser.error('AP/constraint options belong to the archived episode route only')
         result = arrival(args.scenario, args.mode, args.seed)
     else:
+        if args.case_id:parser.error('--case-id belongs to the AP route only')
         if (args.scenario, args.mode, args.seed) != ('queue', 'explore', 201):
             parser.error('arrival options do not modify the fixed episode')
         result = fixed_episode(args.initial_ap_c, args.completion_cap_s, args.ap_cap_c)

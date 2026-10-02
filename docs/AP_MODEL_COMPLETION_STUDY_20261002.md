@@ -1,3 +1,96 @@
+# 2026-10-02 최종: 개발6·M0 동결·확인6과 제한 시뮬레이터 연결 완료
+
+**남은 확인4는 모두 적격 완료됐다.** 이전 확인2와 함께 총6개를 판독하고 등록된 실제 일정의 AP 조건부 재생을 통합 시뮬레이터에 연결했다. 기존 임의 도착의 전력·열 순위, 열→처리시간, 일반 시작 조건까지 검증됐다는 뜻은 아니다. 미지원은 null로 차단하며 정확도 PASS·strict/default 승격·experiment_ready 변경은 없다. 이 한정 연구는 결과와 한계를 공개하는 종료점에 도달했으며 추가 실측/후보 적합/새 계획은 자동 수행하지 않는다.
+
+[완료6 화면·곡선·CSV·작은 재생 입력](results/ap_completion_study_01/final/index.html), [시뮬레이터 시작](results/simulator_workbench_01/index.html), [등록 계약](results/ap_completion_study_01/final/ap_resources.json), [검증](results/ap_completion_study_01/final/verification.json). AP 식은 M0 그대로이며 개발6의 사전 선택에서 M1을 미채택한 사실을 보존한다. 확인 자료의 후기 AP·전류로 재적합하거나 평행 이동 보정을 하지 않았다.
+
+## 실행·소비와 종료
+
+새 plan_v3 SHA `72fe75f7f7730a181331f3fceb15bec5567908446f5615e1ee461c94f54a55ca`, 원본 `ap_completion_study_run_v3/FINAL_RECEIPT.json`, registry `AP-LIMITED-MODEL-REMAINING-CONFIRMATION-03`은 completed_remaining_confirmation/소비·종료다. 이전01/02는 stopped_no_resume로 보존하고 재개하지 않았다. 확인2 뒤 사용자 이동 휴지와 이후 확인4의 환경 차이를 별도 block으로 표시한다. 개발 재사용 C와 이전 실패를 지워 원래 연속12세션이 완주했다고 표현하지 않는다.
+
+| 새 확인4 항목 | 상한 | 실제 |
+|---|---:|---:|
+| 세션 | 4 | 4 적격 완료 |
+| runtime 생성·반환 | 16 | 16·16 |
+| warmup 시작·반환 | 32 | 32·32 |
+| 본 시작 / inference 반환 / output / 저장 / worker / lane 해제 | 72 | 각각72 |
+| 총 명시적 추론 / 별도 적격성 | 104 / 0 | 104 / 0 |
+| staging / 파일 push | 4 / 28 | 4 / 28 (APK 전송 아님) |
+| 설치본 pull / APK push / 설치 | 1 / 0 / 0 | 1 / 0 / 0 |
+| 공식 관측 / 고정 세션 간 휴지 | 840 / 270초 | 840 / 270초 |
+| ADB / timeout / 재시도·대체·추가 | 13000 / — / 0 | 2812 / 0 / 0 |
+| 기기 블록 / root 전체 | 3670초 | 1244.488546 / 1293.024096초 |
+
+세션당 requests.json의 succeeded와 host_inference_return/output_ready/persist_complete/worker_release/lane_available를 연결해 실제 완료를 확인했다. 일반 request_return 이벤트는 이 앱 경로에서 발행되지 않아0이지만 실제 추론 반환0을 뜻하지 않는다. 신규4의 호출 누락/미완료0이다. 앱 cleanup4 completed, 회수3×58＋C10파일, host force-stop4 completed, 계획 내 마지막ps 대상 부재, HAL AP29.2°C/BAT29.3°C/thermal0. cached temperatures와 현재 HAL 값을 구분했다. 앱 자체 cleanup·host 요청 종료·프로세스 부재는 별도 사실이다. Python/PowerShell exit0와 PID·생성시각·명령 식별 기준 parent/child exited, 원래 receipt/checkpoint·명령별 stdout/stderr·exitcode 보존. 별도 사후 회수·재연결·daemon/설정 변경0.
+
+누적 이력: 기존01 runtime8/warmup16/본 미확인0–24/ADB963/375.400초, 후속02 runtime28/warmup56/본120/ADB5581/2481.495초, 이번03 runtime16/warmup32/본72/ADB2812/1293.024초. 확정 runtime52/warmup104/본192(추가 미확인0–24는 별도), ADB9356. 완료 개발6·확인6과 앱 실행 중 실패1·staging-only 중지1을 구분한다. 실패 warmup 등을 포함한 누적 소비가 최초12세션 예산 안이었다고 주장하지 않는다. 각 신규 승인 block의 상한과 별도 비교한다.
+
+## 동결 모형 판독: 실제 일정과 준비 AP에 조건부
+
+M0 freeze UTC `2026-10-02T07:11:30.368851+00:00`, SHA `b5bbfa51690d2b20b6fcb48bea6c64eabb87f1edf2a5249ae2c19df376b6b83e`가 실행 전후 불변이다. β=0.045932520308001434/s, k=1, g=0, τ30초와 상대 상태 AP 기울기를 유지했다. baseline부터 common+35초 **전** AP만으로 세션별 E/H를 초기화했다. E는 유효 유휴 기준이며 주변온도 또는 숨은 내부 온도의 실측값이 아니다. 실제 미래 lane 일정은 입력이므로 예정 도착부터의 종단간 예측이나 온라인 정책 검증이 아니다. 이후 AP·전류는 예측 입력에서 제외했다.
+
+| block/조건 | 시작AP°C | AP 판독 common초 | AP표본 | MAE°C | 최대°C | 최고 부호오차°C | 관측120초J | 기존W식−관측J | 상대차이 |
+|---|---:|---|---:|---:|---:|---:|---:|---:|---:|
+| v2/C | 30.2 | 35.808304–177.618304 | 55 | 0.061661 | 0.173043 | -0.157595 | 140.844575 | +6.207436 | +4.4073% |
+| v2/L50 | 30.5 | 35.509725–179.084725 | 56 | 0.103998 | 0.802498 | -0.213777 | 145.546854 | +10.080428 | +6.9259% |
+| v3/SPLIT_DELAY30 | 28.8 | 37.553449–178.953449 | 52 | 0.237547 | 0.692609 | -0.475262 | 150.302224 | +5.438741 | +3.6185% |
+| v3/SPLIT_DELAY30 | 29.5 | 37.330522–177.330522 | 49 | 0.371789 | 0.618759 | -0.026113 | 143.093089 | +12.619347 | +8.8190% |
+| v3/L50 | 29.3 | 35.732557–179.832557 | 50 | 0.150753 | 0.901555 | -0.453590 | 137.525343 | +18.074437 | +13.1426% |
+| v3/C | 29.3 | 37.408397–177.058397 | 49 | 0.210395 | 0.309902 | +0.152265 | 126.605433 | +20.446578 | +16.1498% |
+
+절대 AP와 같은 관측 anchor를 양쪽에서 뺀 변화량의 잔차는 동일하다. 임의 평행 이동으로 오차를 숨기지 않았다.
+
+AP MAE0.061661–0.371789°C/최대0.173043–0.901555°C를 산출했다. 고정90–115초 창의 분할2세션 관측−0.2/−0.5°C와 예측−0.250399/−0.232880°C는 ±0.1°C endpoint 민감도에서도 냉각 방향이 같다. 전체18방향 창 중2개만 관측 방향 식별,16개는 zero 포함으로 unresolved, 반대 방향0이다. unresolved를 방향 PASS로 세지 않는다. 최고/형태 오차와 실제 냉각 방향은 서로 다른 평가다. 사전 정확도 허용폭이 없어 임의 PASS를 만들지 않으며 후기 배경·이력의 물리 원인은 여전히 미확정이다.
+
+모든 시작AP28.8–30.5°C는 기존 상태 모형의32.5–34.0°C 밖이다. 기존 W식은 전체120초 외삽 진단이고 +5.438741–+20.446578J(+3.6185–+16.1498%) 차이가 남았다. 이번 M0 AP 확인을 전력식의 확인 PASS로 확대하지 않는다. 유효 공통창 전류/전압120표본·결측0(부동소수점 잔여<1e−12초), AP49–56표본을 별도 보고한다. 전류raw=mA 조건부·절대 에너지 정확도 미인증. 1초 간격 누적 곡선720점의 끝점은 원래 전체창 적분과 일치한다. 센서 갱신을 polling 주기와 동일시하지 않고 짧은 개별/병행 전력도 식별했다고 하지 않는다.
+
+실제 병행: 기존 L50 1.321993초, 새 분할0.695377/0.693698초, 새 L50 1.280655초, C0초. 분할 전체 work span은35.01–76.90초이지만 대부분 유휴이며 연속병행42초가 아니다. `actual_states_120s_json`과 ap_cases의 실제 상태 경계를 공유한다. 전체 상태 점유 합120초를 검증했다. 같은 조건당2개 세션은 변동성 보장·신뢰구간이 아니며 block간 시간/초기 AP/배터리/주변·기기 이력은 같지 않다. 이 오차를 모든 정책에 공통 오차한도로 전용하지 않는다.
+
+## 시뮬레이터 종료 범위와 재현
+
+기존 arrival 일정/응답·서비스 guard, exact queue201 CPU/B2 기록 관측, 고정870건 episode 경로를 보존하고 등록된 확인6의 조건부 AP 경로를 추가했다. 범위 밖 case/초기조건/새 정책은 차단한다. 미지원 동적J/AP·열→처리시간·정책 순위는 null이며 `experiment_ready=false`이다. 과학적 모형 구조의 완전 식별과 임의 정책 열 최적화는 이번 완료 범위 밖으로 남긴다. 연구 본문과 공유 가능한 제한 시뮬레이터는 이 범위에서 완료했다. 새 실측이 자동으로 필요하다는 결론이나 또 하나의 준비 계획을 만들지 않는다.
+
+```powershell
+python -B -m tools.d1_simulator arrival --scenario queue --mode explore --seed 201 --output output/sim_queue201_fresh
+python -B -m tools.d1_simulator ap-conditioned --case-id v3_confirmation_2_SPLIT_DELAY30 --output output/ap_split_fresh
+python -B -m tools.d1_ap_completion_publish --previous C:/Users/LG/Documents/D1Check_Arrival_Extension/ap_completion_study_plan_v2/study_plan.json --remaining C:/Users/LG/Documents/D1Check_Arrival_Extension/ap_completion_study_plan_v3/study_plan.json --output docs/results/ap_completion_study_01/reproduce_fresh
+```
+
+앞의 두 PC 재생은 공유된 작은 파일만 필요하며 ADB/기기/외부 원본이 필요 없다(조건부 AP는 NumPy 필요).
+ 세 번째 원본 재판독은 두 계획·동결 파일·manifest/validated/requests/progress/common_boundary/thermal 원본에 의존한다. 기존 계획의 현재 소스 해시가 다르면 실행을 차단하는 규칙은 유지한다. 과거 실행 소스는 별도 보존했다.
+
+PC: 이번 잔여 진입·상한·소비 차단3검사, 조건부 AP/API·정보 누설/해시/실제 CLI4검사, 기존 simulator 대표3회귀 통과. 이전 후속02의12검사 기록은 당시 소스 대상으로 보존한다. 실제 Check 기기0·ADB 차단 Check도 통과했고 실행은 위2812명령뿐이다. 새 공유 생성기의 상대 출력 경로 해석 오류1개는 PC에서 절대경로 정규화로 수정했으며 불완전 PC 출력은 외부 `ap_completion_pc_publish_incomplete_v1`에 보존했다. 실행/모형/원본 변경 또는 기기 재실행은 없다. SVG/CSV/CLI 여섯 예측 및 에너지 끝점·statecoverage/동결 불변 검증 완료. Android/APK 변경·재빌드0.
+
+**다음 행동 하나:** 통합 대시보드와 이 제한·미판정 결론을 팀 연구 결과로 공유한다. 추가 동일 실측 또는 광범위 감사를 자동으로 시작하지 않는다. 아래는 실행 전·이전 중지 이력이다.
+
+---
+
+# 2026-10-02 후속02 완료 구간 보존과 남은 확인4 재개
+
+개발은 과거 적격 C1＋후속02 신규5로 총6개를 확보했다. 사전 고정된 단일 후보군을 개발 자료만으로 추정하고 LOSO·방향 규칙을 적용했다. M1은 수치 rank3이지만 C의 MAE/최고오차와 L65의 최대오차가 M0보다 나빠 미채택이다. 변경 없는 M0(β=0.045932520308001434/s, k=1, g=0)를 확인 전에 동결했다. 방향 창은 센서 양자화 민감도에서 미식별이므로 방향 PASS는 없다.
+
+- 동결 UTC `2026-10-02T07:11:30.368851+00:00`, SHA `b5bbfa51690d2b20b6fcb48bea6c64eabb87f1edf2a5249ae2c19df376b6b83e`.
+- 후속02 plan SHA `f6e8d45f9669b16455a0efe741ce85e162198a22647b5e21543131a28a9ea080`. 개발5와 확인 C/L50 완료 뒤 사용자 이동 요청으로 중지했다. 세 번째 확인은 staging만 진행했고 launch intent와 am start가 없어 본 요청/runtime/warmup 모두 시작하지 않았다. 이 중지는 앱·연결·모형 실패가 아니다. 계획과 registry는 stopped_no_resume로 보존한다.
+- 후속02 실제: 완료7, 앱 launch7, 준비 시도8; runtime28, warmup56, 본120, 명시적 추론176; staging8시도/7완료, 입력 push54, 설치본 pull2, APK 전송/설치0, ADB5581, 전체2481.494682초. timeout0, 사용자 취소 client1. 앱 정상 cleanup7(C는10파일, 부하는58파일), host force-stop8(완료7＋미시작3번째 정리1), 마지막 대상 프로세스 부재·parent/child 종료 확인.
+- 이전01 실패의 runtime8/warmup16/미확인 본0–24는 별도 누적 소비로 유지한다. 재사용 C는 새 독립 확인으로 세지 않는다. 중단 공백·이전 준비 이력·환경 차이를 제거했다고 하지 않는다.
+
+| 후속02 확인 | 시작 AP°C | 관측120초J | 기존 W식J | 예측−관측J | 상대오차 | AP 대상 common초 | 표본 | M0 MAE°C | 최대°C | 최고온도 부호오차°C |
+|---|---:|---:|---:|---:|---:|---|---:|---:|---:|---:|
+| C | 30.2 | 140.844575 | 147.052011 | +6.207436 | +4.4073% | 35.808304–177.618304 | 55 | 0.061661 | 0.173043 | −0.157595 |
+| L50 | 30.5 | 145.546854 | 155.627282 | +10.080428 | +6.9259% | 35.509725–179.084725 | 56 | 0.103998 | 0.802498 | −0.213777 |
+
+AP는 baseline부터 common+35초 전 관측만으로 초기화하고 실제 lane 일정으로 전파한 조건부 예측이다. 이후 AP·전류는 예측 입력이 아니다. 에너지는 기존 상태 W식의 전체 공통창 [0,120]초 외삽 진단이다. raw=mA 조건부·절대 정확도 미인증이며 한 세션 오차를 보편적 정책 판정 한도로 쓰지 않는다.
+
+## 남은 확인 전용 새 계획
+
+사용자의 연결 복구·남은 실측 승인에 따라 별도 plan_v3에서 SPLIT_DELAY30→SPLIT_DELAY30→L50→C만 실행한다. 기존02/01은 재개하지 않으며 개발 재수집·재적합·새 후보 선택은 없다. M0 동결 파일은 byte 단위로 유지한다. 실행 소스 중 host subset/orchestration만 보완하고 수식·초기화·APK·sampler·환경 gate·timeout·부하를 유지한다. 구 실행 소스109개는 `ap_completion_pause_evidence_v2/execution_source`에 원래 해시로 보존했다.
+
+새 상한: 확인4, runtime16, warmup32, 본72, 총104추론, 적격성0, staging4/28파일, 설치본pull1, APK push/설치0. 공식 관측840초, 세션 사이270초, 총3670초=600＋4×700＋3×90, ADB13000=4×3200＋200. 재시도·대체·추가0. 현재 기기·설치본·환경 gate는 실행기 내부에서 새로 확인한다. 과거2와 새4는 분리된 확인 block이며 원래 연속12세션 완주로 표현하지 않는다.
+
+[후속02 자료·부분 그림](results/ap_completion_study_01/followup02/index.html). 원본 `ap_completion_study_run_v2/FINAL_RECEIPT.json`, 동결 `model_freeze.json`, 중지 증거 `ap_completion_pause_evidence_v2/pause_evidence.json`, PC 판독 `ap_completion_followup_readout_v2`. 기존 default/strict/experiment_ready=false 유지. 아래는 원래01 실행·설계 이력이다.
+
+---
+
 # AP 모형의 개발부터 독립 확인까지 끝내는 제한 실측 계획
 
 2026-10-02 · 기준 HEAD `1f828ae07160cd8edf60ef0d101fb72291637046`

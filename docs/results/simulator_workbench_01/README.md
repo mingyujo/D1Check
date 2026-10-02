@@ -44,3 +44,16 @@ queue/201 PC urgent P95는 CPU641.346/B2 424.755/B3 1014.998ms, 마감 충족18/
 ## 준비 이력 후보의 추가 PC 결과
 
 [2026-10-02 후보·재현·한계](../ap_preparation_memory_01/README.md): 기존 개발1/사후 평가4에서 준비 반응 상태를 추가한 조건부 AP 후보를 구현했다. 평균·최고오차는 개선하지만 후기 재상승은 미해결이며 기본/strict로 채택하지 않는다. 이 후보를 arrival 비용으로 넘기면 J/AP/정책 순위는 명시적으로 null이다. 기존12건 시뮬레이터 회귀와 새 경계 검증을 완료했다. 위 verification.json은 최초 구현 시점의 기록이고 이번 소스/검증은 새 후보 번들에 분리했다.
+
+## 등록된 조건부 AP 재생 연결 (2026-10-02)
+
+기존 일정/서비스·직접 관측 참조와 별개인 `ap-conditioned` 경로를 연결한다. 개발6의 사전 선택 규칙으로 미채택된 M1은 쓰지 않고, 확인 전에 동결한 M0를 byte 대응하는 작은 공유 입력과 함께 재생한다. 두 확인은 사용자 휴지 전, 나머지 네 확인은 휴지 후 별도 block이므로 연속12세션 완주나 통제된 환경 반복으로 취급하지 않는다. 최신 상태·수치·재현 파일은 [AP 확인 결과](../ap_completion_study_01/final/index.html)와 [통합 보고서](../../AP_MODEL_COMPLETION_STUDY_20261002.md)를 따른다.
+
+```powershell
+python -B -m tools.d1_simulator ap-conditioned --case-id v2_confirmation_0_C --output output/ap_registered_C
+python -B -m tools.d1_simulator ap-conditioned --case-id v3_confirmation_2_SPLIT_DELAY30 --output output/ap_registered_split
+```
+
+이 경로에는 NumPy가 필요하다. 기존 arrival/episode는 표준 라이브러리 경로를 유지한다. 실제 lane 일정과 common+35초 이전 AP를 알고 있는 **오프라인 조건부 예측**이다. 이후 AP·전류는 예측 입력으로 전달하지 않고 오차 계산에만 사용한다. 등록된 파일·모형·과학 코드 해시 또는 case ID가 다르면 계산을 막는다. AP 값을 바꾸는 `--initial-ap-c` 옵션이나 새로운 도착·정책 입력은 받지 않는다. 출력은 AP 경로·잔차·MAE·최대·최고오차이고 J/정책 순위/열→처리시간/accuracy PASS/strict는 null 또는 미지원이다. 표본 수는 독립 세션 수가 아니다.
+
+기존 임의 도착의 에너지·AP 차단을 해제하지 않았다. 현재 한정 시뮬레이터는 일정/응답, exact 저장 일정의 별도 관측, 고정870건 episode, 등록된 실측 일정의 AP 조건부 재생을 제공한다. 보편적인 에너지 절감률·열 피드백 최적화 모형의 완성은 아니다. `experiment_ready=false`를 유지한다.

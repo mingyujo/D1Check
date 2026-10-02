@@ -35,6 +35,93 @@ def cases(k=.8,g=.4):
 
 
 class StudyTests(unittest.TestCase):
+    def test_remaining_four_actual_root_never_fits_or_rewrites_freeze(self):
+        with tempfile.TemporaryDirectory() as tmp,ExitStack() as stack:
+            root=Path(tmp);conf=root/'confirmation';conf.mkdir();file=root/'study_plan.json'
+            freeze=root/'old_freeze.json';s.contrast.cal.write_new(freeze,{'selected_model':{'fixed':True}})
+            original=freeze.read_bytes();binding={'path':str(freeze),'sha256':s.p.digest(freeze)}
+            study=dict(output_root=str(root/'run'),registry=str(root/'registry'),confirmation_only=True,
+                confirmation_model=binding,budget=s.remaining_budget());s.contrast.cal.write_new(file,study)
+            seen=[]
+            def fake_run(f,*args):
+                seen.append(Path(f).parent.name)
+                self.assertEqual(s.p.read(f)['study_freeze'],binding)
+                return dict(status='completed_descriptive_only',sessions=4)
+            for obj,name,kwargs in [(s,'check',{}),(s,'check_block',{}),
+                (s,'verify_remaining_freeze',{'return_value':s.p.read(freeze)}),
+                (runner,'run',{'side_effect':fake_run}),(s,'load_cases',{'return_value':[]}),
+                (s,'evaluate',{}),(m,'develop',{'side_effect':AssertionError('confirmation fit forbidden')}),
+                (s,'block_spec',{'side_effect':lambda f,phase,b:({'study_freeze':b,'budget':{}},[])}),
+                (lifecycle,'host_identity',{'return_value':{}})]:stack.enter_context(patch.object(obj,name,**kwargs))
+            stack.enter_context(patch('subprocess.Popen',side_effect=AssertionError('real adb prohibited')))
+            result=s.run(file,'FAKE_ONLY',s.p.digest(file),True)
+            self.assertEqual(seen,['confirmation']);self.assertEqual(freeze.read_bytes(),original)
+            self.assertEqual(result['status'],'completed_remaining_confirmation')
+            self.assertFalse((root/'run/model_freeze.json').exists())
+
+    def test_remaining_manifests_preserve_original_order_and_budget(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            file=Path(tmp)/'study_plan.json';s.contrast.cal.write_new(file,dict(
+                source_plan={'path':'fixture'},build_receipt={'path':'fixture'},output_root=str(Path(tmp)/'run'),
+                block_registry_root=str(Path(tmp)/'registry'),experiment_id='REMAINING',confirmation_only=True))
+            template=dict(resident_control_version=s.contrast.memory.base.control.VERSION,
+                scenario='burst',policy=s.contrast.memory.base.replay.POLICY,start_ap_gate='numeric-ap-observe-v2',
+                models={'one':{'identity':{}}},requests=[dict(ordinal=i,offset_ms=0,release_offset_ns=35_000_000_000) for i in range(24)])
+            with patch.object(s.contrast,'specification',return_value=({'budget':s.contrast.BUDGET},[template,template])):
+                plan,manifests=s.block_spec(file,'confirmation',{'path':'old','sha256':'fixed'})
+            self.assertEqual([e['condition'] for e in plan['entries']],['SPLIT_DELAY30','SPLIT_DELAY30','L50','C'])
+            self.assertEqual([e['phase'] for e in plan['entries']],['confirmation_2_SPLIT_DELAY30','confirmation_3_SPLIT_DELAY30','confirmation_4_L50','confirmation_5_C'])
+            self.assertEqual([len(mf['requests']) for mf in manifests],[24,24,24,0])
+            self.assertEqual(manifests[0]['requests'][11]['release_offset_ns'],35_000_000_000)
+            self.assertEqual(manifests[0]['requests'][12]['release_offset_ns'],65_000_000_000)
+            self.assertEqual(manifests[2]['requests'][0]['release_offset_ns'],50_000_000_000)
+            b=s.remaining_budget();self.assertEqual(b['device_total_limit_seconds'],600+4*700+3*90)
+            self.assertEqual((b['runtime_creations'],b['explicit_inference'],b['staging_files']),(16,104,28))
+
+    def test_followup_five_session_block_and_six_case_freeze_actual_entry(self):
+        with tempfile.TemporaryDirectory() as tmp,ExitStack() as stack:
+            root=Path(tmp);dev=root/'development';conf=root/'confirmation';dev.mkdir();conf.mkdir()
+            file=root/'study_plan.json';s.contrast.cal.write_new(dev/'collection_plan.json',{})
+            study=dict(output_root=str(root/'run'),registry=str(root/'registry'),contract={'sha256':'fixture'},
+                budget=s.followup_budget(),imported_development={'session_id':'old-C'},continuity='interrupted')
+            s.contrast.cal.write_new(file,study);cc=cases();seen=[]
+            def fake_run(f,*args):
+                phase=Path(f).parent.name;seen.append(phase)
+                if phase=='confirmation':
+                    freeze=s.p.read(root/'run/model_freeze.json')
+                    self.assertEqual(freeze['imported_development']['session_id'],'old-C')
+                    self.assertEqual(len(s.p.read(root/'run/development_cases.json')),6)
+                return dict(status='completed_descriptive_only',sessions=5 if phase=='development' else 6)
+            def fit_inputs(inputs,*args):
+                self.assertEqual(inputs,cc)
+                return dict(status='ready_to_freeze',reason='fixture',selected_name='M0',selected_model={'fixed':True},m0={})
+            for obj,name,kwargs in [(s,'check',{}),(s,'check_block',{}),(s,'imported_case',{'return_value':cc[0]}),
+                (s,'load_cases',{'side_effect':lambda f:cc[1:] if Path(f).parent.name=='development' else cc}),
+                (runner,'run',{'side_effect':fake_run}),(m,'develop',{'side_effect':fit_inputs}),(s,'evaluate',{}),
+                (s,'block_spec',{'side_effect':lambda f,phase,binding:({'study_freeze':binding,'budget':s.contrast.BUDGET},[])}),
+                (lifecycle,'host_identity',{'return_value':{}})]:stack.enter_context(patch.object(obj,name,**kwargs))
+            stack.enter_context(patch('subprocess.Popen',side_effect=AssertionError('real adb prohibited')))
+            result=s.run(file,'FAKE_ONLY',s.p.digest(file),True)
+            self.assertEqual(seen,['development','confirmation'])
+            self.assertEqual(result['status'],'completed_development_and_confirmation')
+
+    def test_followup_budget_and_manifests_only_uncompleted_arms(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            file=Path(tmp)/'study_plan.json';s.contrast.cal.write_new(file,dict(
+                source_plan={'path':'fixture'},build_receipt={'path':'fixture'},output_root=str(Path(tmp)/'run'),
+                block_registry_root=str(Path(tmp)/'registry'),experiment_id='FOLLOWUP',imported_development={}))
+            template=dict(resident_control_version=s.contrast.memory.base.control.VERSION,
+                scenario='burst',policy=s.contrast.memory.base.replay.POLICY,start_ap_gate='numeric-ap-observe-v2',
+                models={'one':{'identity':{}}},requests=[dict(ordinal=i,offset_ms=0,release_offset_ns=35_000_000_000) for i in range(24)])
+            with patch.object(s.contrast,'specification',return_value=({'budget':s.contrast.BUDGET},[template,template])):
+                plan,manifests=s.block_spec(file,'development')
+            self.assertEqual([e['condition'] for e in plan['entries']],['L35','L65','L65','L35','C'])
+            self.assertEqual([e['phase'] for e in plan['entries']],['development_1_L35','development_2_L65','development_3_L65','development_4_L35','development_5_C'])
+            self.assertEqual([len(mf['requests']) for mf in manifests],[24,24,24,24,0])
+            self.assertEqual(plan['budget']['total_seconds'],600+5*700+4*90)
+            b=s.followup_budget();self.assertEqual(b['device_total_limit_seconds'],4460+5250)
+            self.assertEqual((b['runtime_creations'],b['explicit_inference'],b['staging_files']),(44,280,77))
+
     def test_linear_delayed_basis_and_continuity(self):
         c=cases()[1];beta=PARAMS['ap_cooling_rate_per_s'];init=memory.initialize(c['inputs']['preload'],beta,30)
         values,_=m.predict(c,dict(beta=beta,k=2.,g=1.,parameters=PARAMS))

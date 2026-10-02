@@ -20,6 +20,59 @@ CONTRACT=contrast.BUNDLE/'completion_study.json'
 NAME='AP-LIMITED-MODEL-COMPLETION-STUDY-01'
 FOLDER='ap_completion_study_plan_v1'
 RUN='ap_completion_study_run_v1'
+FOLLOWUP_FOLDER='ap_completion_study_plan_v2'
+REMAINING_FOLDER='ap_completion_study_plan_v3'
+
+
+def remaining_budget():
+    b=copy.deepcopy(p.read(CONTRACT)['budget'])
+    b.update(blocks=1,sessions=4,development_sessions=0,confirmation_sessions=4,sessions_per_block=4,
+        runtime_creations=16,warmup=32,requests=72,explicit_inference=104,staging=4,staging_files=28,
+        installed_host_pulls=1,fixed_observation_seconds=840,intersession_idle_seconds=270,
+        device_block_limit_seconds=3670,device_total_limit_seconds=3670,pc_freeze_limit_seconds=0,
+        active_work_limit_seconds=3670,adb_commands=13000)
+    return b
+
+
+def verify_remaining_freeze(study):
+    binding=study['confirmation_model'];require(p.digest(binding['path'])==binding['sha256'],'remaining freeze drift')
+    freeze=p.read(binding['path'])
+    # Only orchestration/subset selection changed; equations, initializer, gate,
+    # APK and all actual device execution code must remain exact old bytes.
+    for rel,digest in freeze['analysis_source_code'].items():
+        if rel!='tools/d1_ap_completion_study.py':require(p.digest(ROOT/rel)==digest,'frozen scientific/measurement source changed')
+    require(freeze['contract_sha256']==study['contract']['sha256'],'remaining contract drift')
+    previous=study['previous_pause'];require(p.digest(previous['path'])==previous['sha256'],'previous paused plan changed')
+    old=p.read(previous['path']);root=Path(old['output_root'])
+    require(p.read(root/'development/FINAL_RECEIPT.json')['sessions']==5,'previous development incomplete')
+    require(p.read(root/'confirmation/FINAL_RECEIPT.json')['completed_sessions']==2,'unexpected previous confirmation subset')
+    for evidence in study['completed_confirmation_evidence']:
+        require(p.digest(evidence['path'])==evidence['sha256'],'completed confirmation evidence changed')
+    return freeze
+
+
+def followup_budget():
+    b=copy.deepcopy(p.read(CONTRACT)['budget'])
+    b.update(sessions=11,development_sessions=5,sessions_per_block=[5,6],runtime_creations=44,
+        warmup=88,explicit_inference=280,staging=11,staging_files=77,
+        fixed_observation_seconds=2310,intersession_idle_seconds=810,
+        device_total_limit_seconds=9710,active_work_limit_seconds=13310,adb_commands=35600)
+    return b
+
+
+def imported_case(study):
+    """Read only the predeclared eligible C; never import the failed arm."""
+    item=study['imported_development'];file=Path(item['plan']['path']);plan=p.read(file)
+    require(p.digest(file)==item['plan']['sha256'],'import plan changed')
+    for record in item['evidence']:
+        require(p.digest(record['path'])==record['sha256'],'import evidence changed')
+    entry=plan['entries'][0]
+    require(entry['condition']=='C' and entry['requests']==0,'only first C import allowed')
+    folder=Path(plan['output_root'])/f"{entry['index']:02d}_{entry['session_id']}"
+    require(p.read(folder/'validated.json')['status']=='eligible_descriptive_only','import C ineligible')
+    case=readout.case_from_session(file,plan,entry);case['study_phase']='development'
+    require(hashlib.sha256(p.canonical(case)).hexdigest()==item['case_sha256'],'import case changed')
+    return case
 
 
 def identity():
@@ -32,18 +85,33 @@ def block_spec(study_file,phase,freeze=None):
     template_output=study_file.parent.parent/('ap_completion_template_'+phase)
     plan,manifests=contrast.specification(study['source_plan']['path'],study['build_receipt']['path'],template_output)
     contract=p.read(CONTRACT);order=contract[phase+'_order'];fresh=[]
-    exp=NAME+'-'+phase.upper()
+    followup='imported_development' in study
+    remaining=study.get('confirmation_only',False)
+    if followup and phase=='development':order=order[1:]
+    if remaining:
+        require(phase=='confirmation','confirmation-only has no development path')
+        order=order[2:]
+    exp=study['experiment_id']+'-'+phase.upper()
     plan.update(ap_completion_study=True,study_phase=phase,study_plan_file=str(study_file),
         experiment_id=exp,source_code=identity(),approval='user_goal_execute_20261002',
         output_root=str(Path(study['output_root'])/phase),
         registry=str(Path(study['block_registry_root'])/exp),study_freeze=freeze,entries=[],
         selection='prespecified development or heldout order; fixed request transforms',
         analysis_scope='development-only fit then unchanged conditional confirmation; no accuracy PASS')
+    if followup and phase=='development':
+        plan['budget']=dict(plan['budget'],sessions=5,diagnostic_sessions=5,requests=96,warmup=40,
+            explicit_inference=136,runtime_creations=20,staging=5,staging_files=35,
+            total_seconds=4460,adb_commands=16200)
+    if remaining:
+        plan['budget']=dict(plan['budget'],sessions=4,diagnostic_sessions=4,requests=72,warmup=32,
+            explicit_inference=104,runtime_creations=16,staging=4,staging_files=28,
+            total_seconds=3670,adb_commands=13000)
     # Use the new L35 template, not the original resident control's earlier release times.
     loaded=manifests[1]
     for i,condition in enumerate(order):
         m=copy.deepcopy(loaded);sid=str(uuid.uuid5(uuid.NAMESPACE_URL,exp+'/'+str(i)))
-        role=f'{phase}_{i}_{condition}'
+        original_index=i+2 if remaining else i+1 if followup and phase=='development' else i
+        role=f'{phase}_{original_index}_{condition}'
         m.update(experiment_id=exp,session_id=sid,phase=role,ap_bundle_role=role,background_condition=condition,
             resident_control_role='no_load_control' if condition=='C' else 'registered_load')
         if condition=='C':m['requests']=[]
@@ -94,10 +162,57 @@ def prepare(original,output):
     return check(output/'study_plan.json')
 
 
+def prepare_followup(previous,output):
+    previous,output=Path(previous),Path(output);old=p.read(previous)
+    require(output.name==FOLLOWUP_FOLDER and not output.exists(),'fresh followup folder required')
+    receipt=Path(old['output_root'])/'FINAL_RECEIPT.json'
+    require(p.read(receipt)['status']=='stopped_no_resume','previous study must remain stopped')
+    dev=previous.parent/'development/collection_plan.json';dp=p.read(dev);entry=dp['entries'][0]
+    folder=Path(dp['output_root'])/f"00_{entry['session_id']}"
+    require(p.read(folder/'validated.json')['status']=='eligible_descriptive_only','first C not eligible')
+    require(p.read(Path(dp['output_root'])/'FINAL_RECEIPT.json')['completed_sessions']==1,
+            'unexpected prior completion; explicit new subset needed')
+    case=readout.case_from_session(dev,dp,entry);case['study_phase']='development'
+    evidence=[dict(path=str(f),sha256=p.digest(f)) for f in sorted(folder.rglob('*')) if f.is_file()]
+    evidence += [dict(path=str(receipt),sha256=p.digest(receipt)),
+        dict(path=str(Path(dp['output_root'])/'FINAL_RECEIPT.json'),sha256=p.digest(Path(dp['output_root'])/'FINAL_RECEIPT.json')),
+        dict(path=str(dev.parent/entry['manifest']),sha256=p.digest(dev.parent/entry['manifest']))]
+    # Observation/runtime/app behavior must be byte-identical; only PC orchestration changes.
+    for rel,digest in old['source_code'].items():
+        if rel!='tools/d1_ap_completion_study.py':require(p.digest(ROOT/rel)==digest,'measurement/analysis protocol changed')
+    study=copy.deepcopy(old);name='AP-LIMITED-MODEL-COMPLETION-FOLLOWUP-02'
+    study.update(version='ap-completion-followup-v2',experiment_id=name,source_code=identity(),budget=followup_budget(),
+        approval='user_remaining_measurements_20261002',output_root=str(output.parent/'ap_completion_study_run_v2'),
+        registry=str(output.parent/'ap_completion_registry'/name),
+        previous_stopped=dict(path=str(previous),sha256=p.digest(previous)),
+        imported_development=dict(plan=dict(path=str(dev),sha256=p.digest(dev)),evidence=evidence,
+            case_sha256=hashlib.sha256(p.canonical(case)).hexdigest(),session_id=entry['session_id'],
+            meaning='eligible C acquired before interruption; historical development, not new confirmation'),
+        continuity='Interrupted development block: ordinal arithmetic retained, elapsed gaps/environment not matched or controlled',
+        cumulative_previous=dict(runtime_confirmed=8,warmup_confirmed=16,work_start_confirmed=0,
+            interrupted_work_unknown_upper=24,adb_commands=963,elapsed_seconds=375.4001717999927),
+        run_script_sha256=hashlib.sha256(root_script().encode()).hexdigest())
+    require(not Path(study['output_root']).exists() and not Path(study['registry']).exists(),'followup occupied')
+    output.mkdir();contrast.cal.write_new(output/'study_plan.json',study)
+    (output/'RUN_AFTER_APPROVAL.ps1').write_text(root_script(),encoding='utf-8')
+    for phase in ('development','confirmation'):
+        plan,ms=block_spec(output/'study_plan.json',phase);target=output/phase
+        (target/'manifests').mkdir(parents=True)
+        for e,m in zip(plan['entries'],ms):contrast.cal.write_new(target/e['manifest'],m)
+        contrast.cal.write_new(target/('collection_plan.json' if phase=='development' else 'template_plan.json'),plan)
+        (target/'RUN_AFTER_APPROVAL.ps1').write_text(block_script(),encoding='utf-8')
+    return check(output/'study_plan.json')
+
+
 def verify_sources(study):
-    require(study['source_code']==identity() and study['budget']==p.read(CONTRACT)['budget'],'study code/budget drift')
+    budget=remaining_budget() if study.get('confirmation_only') else followup_budget() if 'imported_development' in study else p.read(CONTRACT)['budget']
+    require(study['source_code']==identity() and study['budget']==budget,'study code/budget drift')
     for key in ('original_contrast','source_plan','build_receipt','contract'):
         item=study[key];require(p.digest(item['path'])==item['sha256'],'study bound resource drift')
+    if 'imported_development' in study:
+        item=study['previous_stopped'];require(p.digest(item['path'])==item['sha256'],'previous stopped plan changed')
+        imported_case(study)
+    if study.get('confirmation_only'):verify_remaining_freeze(study)
 
 
 def check_block(file,*,allow_consumed=False):
@@ -111,9 +226,14 @@ def check_block(file,*,allow_consumed=False):
     if phase=='confirmation' and file.name!='template_plan.json':
         binding=plan['study_freeze'];require(binding is not None and p.digest(binding['path'])==binding['sha256'],'confirmation has no frozen model')
         freeze=p.read(binding['path'])
-        require(freeze['contract_sha256']==study['contract']['sha256'] and freeze['analysis_source_code']==identity(), 'freeze contract/code drift')
-        development=p.read(Path(study['output_root'])/'development/FINAL_RECEIPT.json')
-        require(development['status']=='completed_descriptive_only' and development['sessions']==6,'development incomplete')
+        if study.get('confirmation_only'):
+            require(binding==study['confirmation_model'],'remaining confirmation cannot replace freeze')
+            verify_remaining_freeze(study)
+        else:
+            require(freeze['contract_sha256']==study['contract']['sha256'] and freeze['analysis_source_code']==identity(), 'freeze contract/code drift')
+            development=p.read(Path(study['output_root'])/'development/FINAL_RECEIPT.json')
+            expected_count=5 if 'imported_development' in study else 6
+            require(development['status']=='completed_descriptive_only' and development['sessions']==expected_count,'development incomplete')
     for item in [plan[key] for key in ('frozen_model','candidate_freeze','memory_candidate')]+list(plan['source_files'].values())+list(plan['references'].values()):
         require(p.digest(item['path'])==item['sha256'],'freeze/input/reference changed')
     for e,m in zip(plan['entries'],ms):
@@ -123,12 +243,44 @@ def check_block(file,*,allow_consumed=False):
 
 def check(file):
     file=Path(file);study=p.read(file);verify_sources(study)
-    require(file.parent.name==FOLDER and file.name=='study_plan.json','study path')
+    expected_folder=REMAINING_FOLDER if study.get('confirmation_only') else FOLLOWUP_FOLDER if 'imported_development' in study else FOLDER
+    require(file.parent.name==expected_folder and file.name=='study_plan.json','study path')
     require(not Path(study['registry']).exists() and not Path(study['output_root']).exists(),'study consumed; no resume')
     require((file.parent/'RUN_AFTER_APPROVAL.ps1').read_text(encoding='utf-8')==root_script(),'study script drift')
-    for phase in ('development','confirmation'):
+    for phase in (('confirmation',) if study.get('confirmation_only') else ('development','confirmation')):
         check_block(file.parent/phase/('collection_plan.json' if phase=='development' else 'template_plan.json'))
     return dict(status=study['status'],plan_sha256=p.digest(file),budget=study['budget'],device_commands=0)
+
+
+def prepare_remaining(previous,output):
+    previous,output=Path(previous),Path(output);old=p.read(previous);prior=Path(old['output_root'])
+    require(output.name==REMAINING_FOLDER and not output.exists(),'fresh remaining-confirmation folder required')
+    require(p.read(prior/'FINAL_RECEIPT.json')['status']=='stopped_no_resume','paused study must remain stopped')
+    binding=dict(path=str(prior/'model_freeze.json'),sha256=p.digest(prior/'model_freeze.json'))
+    evidence=[];cp=p.read(previous.parent/'confirmation/collection_plan.json')
+    for e in cp['entries'][:2]:
+        folder=prior/'confirmation'/f"{e['index']:02d}_{e['session_id']}"
+        require(p.read(folder/'validated.json')['status']=='eligible_descriptive_only','old confirmation ineligible')
+        evidence.extend(dict(path=str(f),sha256=p.digest(f)) for f in sorted(folder.rglob('*')) if f.is_file())
+    evidence.extend(dict(path=str(f),sha256=p.digest(f)) for f in [prior/'FINAL_RECEIPT.json',prior/'confirmation/FINAL_RECEIPT.json'])
+    study=copy.deepcopy(old);study.pop('imported_development');study.pop('previous_stopped')
+    name='AP-LIMITED-MODEL-REMAINING-CONFIRMATION-03'
+    study.update(version='ap-completion-remaining-confirmation-v3',experiment_id=name,source_code=identity(),budget=remaining_budget(),
+        approval='user_resume_remaining_confirmations_20261002',confirmation_only=True,
+        output_root=str(output.parent/'ap_completion_study_run_v3'),registry=str(output.parent/'ap_completion_registry'/name),
+        previous_pause=dict(path=str(previous),sha256=p.digest(previous)),confirmation_model=binding,
+        completed_confirmation_evidence=evidence,
+        continuity='Four remaining confirmations in new post-pause block; prior two retained separately; no refitting')
+    require(not Path(study['output_root']).exists() and not Path(study['registry']).exists(),'remaining plan occupied')
+    verify_remaining_freeze(study)
+    output.mkdir();contrast.cal.write_new(output/'study_plan.json',study)
+    (output/'RUN_AFTER_APPROVAL.ps1').write_text(root_script(),encoding='utf8')
+    plan,ms=block_spec(output/'study_plan.json','confirmation',binding);folder=output/'confirmation'
+    (folder/'manifests').mkdir(parents=True)
+    for e,m in zip(plan['entries'],ms):contrast.cal.write_new(folder/e['manifest'],m)
+    contrast.cal.write_new(folder/'template_plan.json',plan)
+    (folder/'RUN_AFTER_APPROVAL.ps1').write_text(block_script(),encoding='utf8')
+    return check(output/'study_plan.json')
 
 
 def load_cases(file):
@@ -169,7 +321,7 @@ def plot(output,paths,cases):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    fig,axes=plt.subplots(6,2,figsize=(12,16),constrained_layout=True)
+    fig,axes=plt.subplots(len(cases),2,figsize=(12,max(4,len(cases)*2.7)),squeeze=False,constrained_layout=True)
     for i,c in enumerate(cases):
         pp=[r for r in paths if r['role']==c['id']];obs=[r for r in pp if r['model']=='M0']
         axes[i,0].plot([r['common_s'] for r in obs],[r['observed_c'] for r in obs],color='black',label='Observed')
@@ -195,10 +347,23 @@ def run(file,adb,expected_sha,approved):
     claim=journal.mark('study_claimed',budget=study['budget']);checkpoints.atomic_new(registry/'claimed.json',claim)
     (root/'frozen_study_plan.json').write_bytes(file.read_bytes());outcome={};phase='development';original_error=None
     try:
+        if study.get('confirmation_only'):
+            phase='confirmation';freeze=verify_remaining_freeze(study)
+            binding=study['confirmation_model'];journal.mark('existing_model_bound',freeze_sha256=binding['sha256'])
+            plan,ms=block_spec(file,'confirmation',binding)
+            confirm=file.parent/'confirmation/collection_plan.json';contrast.cal.write_new(confirm,plan);check_block(confirm)
+            outcome['confirmation']=runner.run(confirm,adb,'',p.digest(confirm),True)
+            require(p.digest(binding['path'])==binding['sha256'],'remaining confirmation changed freeze')
+            confirmed=load_cases(confirm);common.write_json(root/'confirmation_cases.json',confirmed)
+            evaluate(confirmed,freeze['selected_model'],root/'confirmation_readout')
+            outcome.update(status='completed_remaining_confirmation',freeze_sha256=binding['sha256'])
+            journal.mark('remaining_confirmation_complete',outcome=outcome['confirmation'])
+            return outcome
         dev=file.parent/'development/collection_plan.json';journal.mark('development_start')
         outcome['development']=runner.run(dev,adb,'',p.digest(dev),True)
         journal.mark('development_complete',outcome=outcome['development'])
         phase='development_freeze';pc_start=time.monotonic();cases=load_cases(dev)
+        if 'imported_development' in study:cases=[imported_case(study)]+cases
         common.write_json(root/'development_cases.json',cases)
         params=p.read(contrast.memory.CANDIDATE)['fixed_parameters'];result=model.develop(cases,params,p.read(CONTRACT))
         common.write_json(root/'development_selection.json',result)
@@ -218,6 +383,9 @@ def run(file,adb,expected_sha,approved):
                 selection_sha256=p.digest(root/'development_selection.json'),utc=checkpoints.utc(),
                 support='A24 registered CG_DC short pulses; actual schedule + pre35 AP; no general policy/strict support',
                 accuracy_pass=None,experiment_ready=False)
+            if 'imported_development' in study:
+                freeze['imported_development']=study['imported_development']
+                freeze['development_continuity']=study['continuity']
             checkpoints.atomic_new(root/'model_freeze.json',freeze)
             binding=dict(path=str(root/'model_freeze.json'),sha256=p.digest(root/'model_freeze.json'))
             checkpoints.atomic_new(root/'freeze_receipt.json',dict(**binding,utc=checkpoints.utc()))
@@ -265,6 +433,8 @@ def run(file,adb,expected_sha,approved):
 def main():
     q=argparse.ArgumentParser(description=__doc__);sub=q.add_subparsers(dest='action',required=True)
     a=sub.add_parser('prepare');a.add_argument('--original',required=True);a.add_argument('--output',required=True)
+    a=sub.add_parser('prepare-followup');a.add_argument('--previous',required=True);a.add_argument('--output',required=True)
+    a=sub.add_parser('prepare-remaining');a.add_argument('--previous',required=True);a.add_argument('--output',required=True)
     for name in ('check','check-block'):
         a=sub.add_parser(name);a.add_argument('--plan',required=True)
     for name in ('run','run-block'):
@@ -273,6 +443,8 @@ def main():
         a.add_argument('--serial',default='');a.add_argument('--approved',action='store_true')
     a=q.parse_args()
     if a.action=='prepare':result=prepare(a.original,a.output)
+    elif a.action=='prepare-followup':result=prepare_followup(a.previous,a.output)
+    elif a.action=='prepare-remaining':result=prepare_remaining(a.previous,a.output)
     elif a.action=='check':result=check(a.plan)
     elif a.action=='check-block':result=check_block(a.plan)
     elif a.action=='run':result=run(a.plan,a.adb,a.expected_sha,a.approved)
