@@ -68,7 +68,7 @@ def consumption(plan):
         not_attempted=(not folder.exists() and isinstance(attempts,int) and e['index']>=attempts)
         event_counts={k:sum(x.get('kind')==k for x in events) if available else
                 0 if not_attempted else None for k in kinds}
-        counts.append(dict(role=e['phase'],planned_requests=24,
+        counts.append(dict(role=e['phase'],planned_requests=e.get('requests',24),
             launch_attempted=(folder/'launch_attempt.json').exists(),
             counts=event_counts,progress_integrity=integrity,confirmed_not_attempted=not_attempted,
             return_event_kind='host_inference_return; request_return is a separate legacy record kind',

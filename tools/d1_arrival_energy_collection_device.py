@@ -193,7 +193,10 @@ def run(plan_file,adb,serial,expected_sha,approved):
     plan=p.read(plan_file)
     idle_response=plan.get('ap_idle_pulse_followup',False)
     single=plan.get('single_arrival_confirmation',False) or plan.get('recorded_replay_confirmation',False)
-    if plan.get('ap_memory_confirmation'):
+    if plan.get('ap_background_contrast'):
+        from tools import d1_ap_background_contrast as confirmation
+        confirmation.check(plan_file)
+    elif plan.get('ap_memory_confirmation'):
         from tools import d1_ap_memory_confirmation as confirmation
         confirmation.check(plan_file)
     elif plan.get('recorded_policy_comparison'):
@@ -237,7 +240,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
         (root/'frozen_collection_plan.json').write_bytes(Path(plan_file).read_bytes())
         if plan.get('ap_bundled_confirmation'):
             (root/'candidate_procedure_freeze.json').write_bytes(Path(plan['candidate_freeze']['path']).read_bytes())
-            if plan.get('ap_memory_confirmation'):
+            if plan.get('ap_memory_confirmation') or plan.get('ap_background_contrast'):
                 (root/'memory_candidate_freeze.json').write_bytes(Path(plan['memory_candidate']['path']).read_bytes())
                 (root/'memory_analysis_contract.json').write_bytes(Path(plan['analysis_contract']['path']).read_bytes())
         else:
@@ -266,7 +269,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
                 c.require(p.digest(plan['candidate_freeze']['path'])==plan['candidate_freeze']['sha256'] and
                           p.digest(root/'candidate_procedure_freeze.json')==plan['candidate_freeze']['sha256'],
                           'frozen candidate changed; no continuation')
-                if plan.get('ap_memory_confirmation'):
+                if plan.get('ap_memory_confirmation') or plan.get('ap_background_contrast'):
                     c.require(p.digest(plan['memory_candidate']['path'])==plan['memory_candidate']['sha256'] and
                               p.digest(root/'memory_candidate_freeze.json')==plan['memory_candidate']['sha256'] and
                               p.digest(root/'memory_analysis_contract.json')==plan['analysis_contract']['sha256'],
@@ -343,6 +346,11 @@ def run(plan_file,adb,serial,expected_sha,approved):
                 raise
             write(current/'host_cleanup.json',cleanup_result)
             stats=validate(current,manifest,plan)
+            if plan.get('ap_background_contrast'):
+                from tools import d1_ap_background_contrast_readout as contrast_readout
+                contrast_case=contrast_readout.case_from_session(plan_file,plan,entry)
+                _,contrast_initial=contrast_readout.predict_fixed(contrast_case,plan)
+                stats['contrast_input_eligibility']=contrast_initial
             if plan.get('ap_memory_confirmation'):
                 from tools import d1_ap_memory_confirmation_readout as memory_readout
                 memory_case=memory_readout.case_from_session(plan_file,plan,entry)

@@ -1,0 +1,134 @@
+{
+  "timestamp": "2026-10-02T04:25:07.463628+00:00",
+  "base_head": "962f25aac09cf94239ef9308d8ec5eff8482ec15",
+  "uncommitted_changes_during_validation": true,
+  "status": "PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED",
+  "plan_sha256": "acfa2510316700e04d02312fa98c72ab43fd844ab03d8851b6de212a0af44be0",
+  "source_files_checked": 106,
+  "source_map_sha256": "b25fd76b7afc7d1670081250d915c2b2baabd43c7b5287d331780c0e9b872704",
+  "resources": {
+    "memory_candidate": {
+      "sha256": "d885b87c32d7df5b812b4cd85dcdae5230f47c9bd16d7ae2807df427b26c1466",
+      "unchanged": true
+    },
+    "candidate_freeze": {
+      "sha256": "8507adc10485940c36853786ba39a4f42439a9fbd3d71a5da1c7d55e2cbc7ec5",
+      "unchanged": true
+    },
+    "frozen_model": {
+      "sha256": "35ed6987b1fc09789284018f8502107eaf4e3125373651a01e3a08d427034c54",
+      "unchanged": true
+    },
+    "analysis_contract": {
+      "sha256": "a09827c78a5f7fdcfbf45f34cee4f68bb8549a93ab58ea6a58a405ff0699db35",
+      "unchanged": true
+    }
+  },
+  "apk_sha256": "74e8065d10bdfac01c4fbda77afeac196986501b9534bf02d1dd5b0ad541ee6e",
+  "apk_rebuilt": false,
+  "tests": {
+    "command": "python -X utf8 -B -m unittest tools.test_d1_ap_background_contrast tools.test_d1_ap_memory_confirmation -v",
+    "passed_unique": 13,
+    "failed": 0,
+    "skipped": 0,
+    "final_entry_test_rerun": true,
+    "entry_scenarios": [
+      "normal_six",
+      "coverage_failure",
+      "poll_timeout",
+      "recovery_failure",
+      "cleanup_failure",
+      "recovery_and_cleanup_failure",
+      "insufficient_reserve",
+      "installed_identity_mismatch"
+    ]
+  },
+  "check": {
+    "real_powershell_entry_exit_code": 0,
+    "device_commands": 0,
+    "guarded_check_pc_executables": [
+      "java.exe",
+      "aapt2.exe"
+    ],
+    "adb_execution_guarded": true
+  },
+  "fixtures": {
+    "complete": {
+      "device_commands": 0,
+      "meaning": "same three archived sessions duplicated only to exercise six parser slots; not six independent data",
+      "mode": "complete",
+      "original_files_verified": 24,
+      "production_claims": 0,
+      "statuses": [
+        "evaluated_fixed_candidate",
+        "evaluated_fixed_candidate",
+        "evaluated_fixed_candidate",
+        "evaluated_fixed_candidate",
+        "evaluated_fixed_candidate",
+        "evaluated_fixed_candidate"
+      ]
+    },
+    "missing_ap": {
+      "device_commands": 0,
+      "meaning": "same three archived sessions duplicated only to exercise six parser slots; not six independent data",
+      "mode": "missing_ap",
+      "original_files_verified": 24,
+      "production_claims": 0,
+      "statuses": [
+        "not_evaluable",
+        "evaluated_fixed_candidate",
+        "evaluated_fixed_candidate",
+        "evaluated_fixed_candidate",
+        "evaluated_fixed_candidate",
+        "evaluated_fixed_candidate"
+      ]
+    },
+    "partial": {
+      "device_commands": 0,
+      "meaning": "same three archived sessions duplicated only to exercise six parser slots; not six independent data",
+      "mode": "partial",
+      "original_files_verified": 24,
+      "production_claims": 0,
+      "statuses": [
+        "evaluated_fixed_candidate",
+        "evaluated_fixed_candidate",
+        "not_evaluable",
+        "evaluated_fixed_candidate",
+        "evaluated_fixed_candidate",
+        "evaluated_fixed_candidate"
+      ]
+    },
+    "final_complete": {
+      "device_commands": 0,
+      "meaning": "same three archived sessions duplicated only to exercise six parser slots; not six independent data",
+      "mode": "complete",
+      "original_files_verified": 24,
+      "production_claims": 0,
+      "statuses": [
+        "evaluated_fixed_candidate",
+        "evaluated_fixed_candidate",
+        "evaluated_fixed_candidate",
+        "evaluated_fixed_candidate",
+        "evaluated_fixed_candidate",
+        "evaluated_fixed_candidate"
+      ]
+    }
+  },
+  "readout_cli_exit_code": 0,
+  "cli_and_function_paths_csv_identical": true,
+  "paths_csv_sha256": "1aa2d075371fa5d2138fee17ef6b526c7ed186ec0eec79ceb7f32df3b5912c43",
+  "fixture_plot_visually_checked": true,
+  "fixture_plot_not_published_as_new_measurement": true,
+  "production_output_exists": false,
+  "production_registry_exists": false,
+  "device_commands": 0,
+  "new_measurements": 0,
+  "new_fit": 0,
+  "experiment_ready": false,
+  "git_diff_check_exit_code": 0,
+  "limitations": [
+    "PC fixtures are not device/long-duration stability evidence",
+    "Three archived sessions duplicated into six parser slots are not independent repetitions",
+    "No new model accuracy or causal identification claim"
+  ]
+}

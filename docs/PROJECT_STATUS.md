@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-02 AP 배경·부하 시점 통합 대조 PC 준비 완료
+
+- [설계·판독·예산·명령](results/ap_background_contrast_01/README.md), [준비 화면](results/ap_background_contrast_01/index.html), [검증](results/ap_background_contrast_01/verification.json). C→L35→L65→L65→L35→C, 같은74e APK/resident/warmup/계측으로6세션을 고정했다. 조건별 평균 순번3.5의 균형이며 임의 환경/잔열 제거 보장은 아니다. 모든 조건은+35초 이전 AP만 초기화에 사용한다.
+- `ENERGY-AP-BACKGROUND-CONTRAST-01`/`energy_ap_background_contrast_plan_v1`, SHA `acfa2510…4be0`. **PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED**, 생산 출력/registry 없음. 구조 판별6·본96/warmup48=144추론·runtime24·staging6/42·pull1·APK push/설치0·고정1,260초·전체5,250초(87분30초)/19,400ADB·재시도0. 새 계수 적합/새 모형 독립 확인0.
+- 관련13테스트·실제PS Check·ADB 실행 차단 Check·원문 fixture 정상/결측/부분 실패·실제 판독CLI 통과. 공용 실행기 opt-in 분기와 C0 요청 소비 분모만 보완; Android/APK 변경0. 원래 오류/회수·cleanup 오류 보존·정리 중복/실패 후 추가 실행 차단. 현재 기기·장시간 안정성은 미검증. 기기 명령/추론/실측/생산claim0.
+- **다음 행동 하나:** 이 미승인 묶음의 실행 시 현재 A24·설치본·환경 gate와 새 예산을 적용한다. 자료가 적격해도 정확도 PASS/열 정책 완성을 보장하지 않으며 미식별이면 자동 추가 없이 종료한다. 동결본·기각 후보·원본·소비 계획·default/strict/experiment_ready=false 보존. 아래는 당시 이력이다.
+
 ## 2026-10-02 AP 냉각률·부하 반응 식별 PC 판독 완료
 
 - [결과·재현·최소 해결 조건](results/ap_rate_identification_01/README.md), [화면/CSV](results/ap_rate_identification_01/index.html), [검증](results/ap_rate_identification_01/verification.json). 기존 부하7세션+C/L 대조를 재사용; 개발1만으로 구조1개 적합, 이미 본 나머지는 사후 평가. β 최적 격자점은 기존0.0459325203/s, 공통 부하배율0.720002. 평균 일부 개선이나 **부하7세션 전부 최고오차 악화**로 미채택. 최근+65초 MAE0.189876→0.216500°C.
