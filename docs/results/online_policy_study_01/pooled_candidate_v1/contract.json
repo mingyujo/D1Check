@@ -1,0 +1,30 @@
+{
+  "version": "pooled-resident-energy-candidate-v1",
+  "selection_utc": "2026-10-02T15:38:33.782226+00:00",
+  "question": "세션 전 짧은 전력 관측을120초 고정 배경으로 전용하는 오차 증폭을 제거할 수 있는가",
+  "family": "P(state) = pooled resident b + four nonnegative occupied-state increments",
+  "coefficients": [
+    "resident_w",
+    "classification_CPU",
+    "detection_CPU",
+    "classification_GPU",
+    "classification_GPU+detection_CPU"
+  ],
+  "estimation": "one NNLS family, fixed 5s windows common0..120, equal total weight per policy and equal session weight within policy",
+  "initialization": "energy uses training-only b, no session pre/post power input; AP and service copied unchanged from557fbe model",
+  "data": "13 previously viewed eligible sessions: prior development3 + prior confirmation6 + sampling contrast4; all candidate development/posthoc evaluation, not new independent validation",
+  "excluded": "cooling failures and incomplete sessions; retained as failures/consumption, no outcome-based window removal",
+  "diagnostics": "leave one entire session out, refit this same family only; report all folds/groups, not independent confirmation",
+  "advance_rule": "every omitted-session design rank5, positive b, mean absolute120s energy error lower than old frozen model on same13, maximum absolute120s error no larger; candidate screen only, not accuracy PASS",
+  "no_search": true,
+  "no_confirmation_refit": true,
+  "old_model_sha256": "557fbe5be8a9c9ba5f5911d44d1c19611710cbe5b80e015d1b965b777357bcf2",
+  "candidate_default": false,
+  "experiment_ready": false,
+  "limitations": [
+    "mixed1000/900ms source protocols and different session histories",
+    "no ambient or thermal-throttle parameter",
+    "state-coefficient identification not physical uniqueness",
+    "if advanced, freeze before fresh independent measurements; no repeated candidate search"
+  ]
+}

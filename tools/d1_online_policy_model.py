@@ -147,7 +147,11 @@ def forecast(initial,manifest_requests,policy,frozen):
 
 
 def costs(segments,initial,queries,model,end):
-    inc=np.array([model['energy_increment_w'][k] for k in STATES]);base=initial['preload_power_w']
+    inc=np.array([model['energy_increment_w'][k] for k in STATES])
+    mode=model.get('energy_baseline_mode','session_preload')
+    if mode=='session_preload':base=initial['preload_power_w']
+    elif mode=='pooled_resident_v1':base=model['resident_w']
+    else:raise ValueError('unregistered energy baseline mode')
     if not math.isfinite(base) or base<=0:raise ValueError('preload power')
     curve=[]
     for t in range(121):curve.append(dict(common_s=t,predicted_j=base*t+float(exposure(segments,0,t)@inc)))

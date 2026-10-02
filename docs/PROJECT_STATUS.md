@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-03 배경 전력 후보1개 평가: 미채택
+
+- [판독·재현](results/online_policy_study_01/pooled_candidate_v1/README.md), [화면](results/online_policy_study_01/pooled_candidate_v1/index.html). 이미 본13세션의 사후 개발/세션제외 평가이며 독립 확인0. 평균 절대J7.118→5.307이나 최대17.871→19.447로 사전 진행 조건 실패. 기준 완화·최악 세션 삭제·추가 후보 탐색·확인 실측0.
+- 기존 AP/처리시간·동결557fbe·strict/default/experiment_ready=false 보존. 일정/응답·조건부 AP와 관측 비교는 가능하지만 작은 J 차이의 정책 우열은 미판정. 원래 목표 진행 중이며 완료/불가능으로 선언하지 않는다.
+- 다음 행동: 고정24분류/72탐지의 상태 점유 식별 기여를 계산해 단순 반복 대신 최소 입력 변경의 필요를 특정한다. 후보2+기존8검사 통과. 이번 PC 단계 기기0; 직전 적격4/실패1/520추론은 보존. 아래 기록은 과거 단계다.
+
+
 ## 2026-10-03 전력 계측 대조4 확보·짧은 배경입력의 민감도 확인
 
 - [최종화면/CSV/재현](results/online_policy_study_01/sampling_run01_complete/index.html), [보고서](ONLINE_POLICY_MODEL_STUDY_20261002.md), [검증](results/online_policy_study_01/sampling_run01_complete/verification.json). 앞2완료→냉각thermal조회2초timeout→새남은2완료. 원래4세션 연속완주가 아니며 실패/부분96요청을 보존한다.
