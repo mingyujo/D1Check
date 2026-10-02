@@ -1,0 +1,154 @@
+{
+ "bad_jsonl_lines": 0,
+ "chain_id": "chain_smoke_gpu_npu_v1",
+ "chain_sha256": "0a73a377163969258431dd71bc1ec483930231508dac28e9d432a604c8e4b8aa",
+ "completed_inference_count": 33079,
+ "d1check_samples": 451,
+ "jvm_max_memory_bytes": null,
+ "load_window_s": 40.15337,
+ "max_inference_spans": null,
+ "model_prepare": "per_segment",
+ "pilot_battery_pct": 75,
+ "pilot_battery_temp_C": 27.4,
+ "run_dir": "results/S26_chainsmoke_1002/runs/a1e3445e-71ca-489d-a700-f665bbbf73e3/",
+ "run_id": "a1e3445e-71ca-489d-a700-f665bbbf73e3",
+ "segments": [
+  {
+   "accelerator": "GPU",
+   "achieved_duty": 100,
+   "after10s_median_ms": 2.521406,
+   "bins10": [
+    {
+     "median_ms": 2.53211,
+     "n": 3879,
+     "t0": 0
+    },
+    {
+     "median_ms": 2.521406,
+     "n": 3891,
+     "t0": 10
+    }
+   ],
+   "duration_s": 20,
+   "duty": 100,
+   "end_thermal": {
+    "AP": 36.9,
+    "BAT": 28.4,
+    "PA": 37.2,
+    "SKIN": 32.7,
+    "dt_s": 0.111209,
+    "thermal_status": 0
+   },
+   "first10s_median_ms": 2.53211,
+   "first20s_median_ms": 2.526622,
+   "first20s_n": 7770,
+   "gpu_precision": "FP32",
+   "index": 0,
+   "label": "smoke_gpu",
+   "length_s": 20.000669,
+   "median_all_ms": 2.526622,
+   "model": "models/mobilenet_v1_1.0_224.tflite",
+   "n": 7770,
+   "p95_ms": 2.851485,
+   "start_d1check": {
+    "battery_temp_C": 27.4,
+    "dt_s": 0.189735,
+    "headroom_now": 0.48,
+    "plugged": 0,
+    "thermal_status": 0
+   },
+   "start_soc": {
+    "age_s": 14.974031,
+    "battery_level": 75,
+    "source": "skin_watch_csv"
+   },
+   "start_thermal": {
+    "AP": 28.9,
+    "BAT": 27.0,
+    "PA": 27.8,
+    "SKIN": 29.4,
+    "dt_s": -0.113122,
+    "thermal_status": 0
+   },
+   "termination_reason": "duration_complete"
+  },
+  {
+   "accelerator": "NPU",
+   "achieved_duty": 100,
+   "after10s_median_ms": 0.750976,
+   "bins10": [
+    {
+     "median_ms": 0.748984,
+     "n": 12692,
+     "t0": 0
+    },
+    {
+     "median_ms": 0.750976,
+     "n": 12617,
+     "t0": 10
+    }
+   ],
+   "duration_s": 20,
+   "duty": 100,
+   "end_thermal": {
+    "AP": 35.7,
+    "BAT": 29.6,
+    "PA": 37.6,
+    "SKIN": 33.1,
+    "dt_s": 0.138796,
+    "thermal_status": 0
+   },
+   "first10s_median_ms": 0.748984,
+   "first20s_median_ms": 0.75,
+   "first20s_n": 25309,
+   "gpu_precision": null,
+   "index": 1,
+   "label": "smoke_npu",
+   "length_s": 20.000588,
+   "median_all_ms": 0.75,
+   "model": "models/mobilenet_v1_1.0_224_Samsung_E9965.tflite",
+   "n": 25309,
+   "p95_ms": 0.963828,
+   "start_d1check": {
+    "battery_temp_C": 27.4,
+    "dt_s": 0.03718,
+    "headroom_now": 0.58,
+    "plugged": 0,
+    "thermal_status": 0
+   },
+   "start_soc": {
+    "age_s": 5.127013,
+    "battery_level": 75,
+    "source": "skin_watch_csv"
+   },
+   "start_thermal": {
+    "AP": 36.9,
+    "BAT": 28.4,
+    "PA": 37.2,
+    "SKIN": 32.7,
+    "dt_s": -0.040616,
+    "thermal_status": 0
+   },
+   "termination_reason": "duration_complete"
+  }
+ ],
+ "termination_reason": "duration_complete",
+ "thermal_samples": 446,
+ "transitions": [
+  {
+   "backend_switch": true,
+   "buffer_init_ns": 210156,
+   "duration_ns": 150757461,
+   "duration_s": 0.150757,
+   "end_ns": 2038647690487886,
+   "env_init_ns": 1664688,
+   "from_accelerator": "GPU",
+   "model_init_ns": 26340234,
+   "model_initialized": true,
+   "start_ns": 2038647539730425,
+   "to_accelerator": "NPU",
+   "to_segment": 1,
+   "warmup_count": 20
+  }
+ ]
+}
