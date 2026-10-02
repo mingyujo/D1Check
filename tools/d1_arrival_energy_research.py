@@ -112,7 +112,7 @@ def aggregate(requests, result, *, horizon_ns=HORIZON_NS, profile=None, initial_
                       reason='A24 frozen regimen coefficients were assessed on recorded 600s blocks; arbitrary arrivals, short overlaps, queue and callback costs are not validated',
                       supported_interface='tools.d1_energy_ap_regimen_transition.calculate: observed CG_DC regimen schedule only',
                       frozen_sha256=profile.get('frozen_sha256'))
-    elif profile.get('evidence') in ('ap-preload-idle-reference-diagnostic-v1',
+    elif profile.get('evidence') in ('ap-preparation-memory-v1', 'ap-preload-idle-reference-diagnostic-v1',
                                       'ap-workload-lag-posthoc-v1'):
         # This candidate needs measured pre-load AP and an actual lane schedule.
         # Never turn its small archived path error into a future peak or J cost.
@@ -120,7 +120,8 @@ def aggregate(requests, result, *, horizon_ns=HORIZON_NS, profile=None, initial_
                       whole_device_energy_j=None, ap_peak_c=None,
                       threshold_exceedance_s=None, policy_rank=None,
                       reason='conditional AP path diagnosis does not identify power or delayed AP peaks; no observed pre-load trace in a synthetic schedule',
-                      supported_interface=('tools.d1_ap_workload_lag.predict'
+                      supported_interface=('tools.d1_ap_preparation_memory.predict'
+                          if profile['evidence'] == 'ap-preparation-memory-v1' else 'tools.d1_ap_workload_lag.predict'
                           if profile['evidence'] == 'ap-workload-lag-posthoc-v1'
                           else 'tools.d1_ap_low_temperature_scope.conditional_path'),
                       strict_support=False, accuracy_pass=None)

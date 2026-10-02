@@ -1,0 +1,88 @@
+{
+  "verified_utc": "2026-10-02T01:02:56.935955+00:00",
+  "base_head": "735269cc3f8f91cd17f13285fc4941eca54409b8",
+  "worktree_changes_present": true,
+  "implementation": "ap-preparation-memory-v1",
+  "python": "3.13.9",
+  "commands": [
+    {
+      "command": "python -B -m tools.d1_ap_memory_analysis --prepare-inputs docs/results/ap_preparation_memory_01/inputs.json --raw-root <existing archive root>",
+      "result": "5 AP cases and 3174 matched request records; extraction completed; files preserve original roles"
+    },
+    {
+      "command": "python -B -m unittest tools.test_d1_ap_preparation_memory tools.test_d1_simulator -v",
+      "result": "21 tests passed before adding the missing-target guard test (9 candidate + 12 simulator)"
+    },
+    {
+      "command": "python -B -m unittest tools.test_d1_ap_preparation_memory -v",
+      "result": "10 passed after adding pre-fit missing-target validation; 22 unique tests across both suites"
+    },
+    {
+      "command": "python -B -m tools.d1_ap_memory_analysis --output <new external directory>/ap_preparation_memory_pc_v1",
+      "result": "exit 0; all 13 artifacts match shared final after updating current source provenance"
+    }
+  ],
+  "unique_unit_tests_passed": 22,
+  "source_sha256": {
+    "tools/d1_ap_preparation_memory.py": "20af3304f8386c7f6adc1df56f5c593e0fd35600ae60d2ce60a518d5c418c40d",
+    "tools/d1_ap_memory_analysis.py": "d840639399a95e8021c97c0d9614bbaffaa699cd4c2247ee6ee24a7f01b4b35b",
+    "tools/test_d1_ap_preparation_memory.py": "1ad07e26a5ed481e2a65eda98346f36b34a7095b7287e4dc6c11bcbb62d6975d",
+    "tools/d1_arrival_energy_research.py": "fb2e1f925a8866799397900d3e258b27dddb747e8a2a3f37e82793452cc4db19",
+    "tools/d1_ap_model_completion.py": "47edbaf771ed9fbe8f6035c2fda5cb12019f6ddcf65501b9705491014514486c",
+    "tools/d1_ap_workload_lag.py": "658a552a0ca27fa1ce80c998ba930891d59ca67458777b8278fb562c70d3aac2",
+    "tools/d1_ap_idle_response.py": "2812472aa31386158a616559955e1bd88d849a5a96e5f5ffc4c59ccc73a2efe6",
+    "tools/d1_arrival_recorded_replay_analysis.py": "16314a0e756a380f060d2d20627ce6a284c48442871b29ace9a5d9744ebb52ea",
+    "tools/d1_simulator.py": "98a1111bf56d8ebda5061a352711d7d678ba97a607c3fdcad56fdd1cba69a071",
+    "tools/test_d1_simulator.py": "417a5116cf7df9ed8c59268c205edfacfadccc51e6da3f8e685370e41252085b"
+  },
+  "artifact_sha256": {
+    "contract.json": "29b3d69b40f79f5291a9e5a352c09f003df785b1ac2334ff144aa765a415e0a4",
+    "inputs.json": "7421002829f8e94eb82f66d18ea17071fbc9fb59d6d1eb2d3c62016dad13f5ee",
+    "final/candidate.json": "d885b87c32d7df5b812b4cd85dcdae5230f47c9bd16d7ae2807df427b26c1466",
+    "final/comparison.png": "938005b8172da6e9d144e914d3ea84ad6415501f1f318ab8742290d122dd2d83",
+    "final/decomposition.csv": "19371470a8a6dee299f3c58e8a08a42f3db1340bc2aa1f5801290988a8d60efd",
+    "final/directions.csv": "c7dec2e0197c37c7e8488c71cc1abbe859d03b60e949e57c61aa64019711446e",
+    "final/fit_profile.csv": "7c145b38a7b95fe5a611171893064192504bfe4a1a548eddd433bffc48060b0a",
+    "final/initial_states.csv": "aa30e3441c714ff4d3b805f8e187e0155094bcd058807d52162ce593a42cf9c2",
+    "final/paths.csv": "4fb3cd6671b3b0c9d88ca91896f955d31d5867e0d0618c617cc89c7db0b2face",
+    "final/phase_scores.csv": "a9f00f76a489cb71f53a22a8b48714238ba00c01830ce39c67c10a704eadd92e",
+    "final/preload_sensitivity.csv": "3ab0f27eb12a6613d90ea91e5c322cfd71347e2ade89853cbbe19387f7f88e14",
+    "final/provenance.json": "0ff1e54035314314c7eaecb61185d5283baa8e0b4faca5ad77bc863c2d0ea655",
+    "final/scores.csv": "f96d273d8e5c53830e3c4d0408a1322caba4e5ed1d8a05c248fd227c99f21baf",
+    "final/summary.json": "6aafd16a96749e805baf380445dd467b390ffccc217413356c24fe8ea52e720e",
+    "final/temperature_service.csv": "ccb51d0b782989d8673fa9314ef43a7714fb33c34380f9b330c5fec19982d423"
+  },
+  "archive_source_hashes_verified_unchanged": 38,
+  "original_freezes_verified_unchanged": {
+    "energy_ap_state_run_v5/development_freeze.json": "35ed6987b1fc09789284018f8502107eaf4e3125373651a01e3a08d427034c54",
+    "energy_ap_idle_response_run_v1/ap_model_freeze.json": "8507adc10485940c36853786ba39a4f42439a9fbd3d71a5da1c7d55e2cbc7ec5"
+  },
+  "checks": [
+    "CSV path metrics equal summary metrics within 1e-12",
+    "decomposition conserves candidate minus original within 1e-9",
+    "old five MAEs reproduced within 1e-8",
+    "HTML/README local links exist",
+    "comparison image visually inspected",
+    "future AP cannot change prediction",
+    "candidate cannot become policy J/AP cost",
+    "pre-fit missing target produces no output",
+    "rank failure rejected; no zero filling",
+    "actual source hashes equal CLI provenance"
+  ],
+  "limitations": [
+    "synthetic parameter recovery is not device validation",
+    "all five AP sessions previously seen; no fresh independent confirmation",
+    "late reheating still not reproduced",
+    "development max error worsened",
+    "gamma boundary zero; physical state not identified",
+    "temperature-service partial associations are not causal throttle model",
+    "current Windows byte provenance; other line-ending checkout not validated"
+  ],
+  "new_device_commands": 0,
+  "new_inference": 0,
+  "new_measurements": 0,
+  "new_apk_builds": 0,
+  "new_plans": 0,
+  "new_claims": 0,
+  "experiment_ready": false
+}

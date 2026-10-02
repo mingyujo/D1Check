@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-02 준비 이력 AP 후보·온도/처리시간 PC 분석 완료
+
+- [보고서·재현](results/ap_preparation_memory_01/README.md), [화면](results/ap_preparation_memory_01/index.html), [검증](results/ap_preparation_memory_01/verification.json). 구조1개를 적합 전 고정하고 기존 개발1/사후 평가4로 구현·분해했다. τ30초/γ0, 기존 preload 대비 네 평가 MAE0.418/0.463/0.450/0.405→0.257/0.241/0.248/0.146°C. 최고오차도 개선하나 개발 최대오차0.849→1.132°C로 악화, 후기 재상승은 미해결이다.
+- 개선의 주된 항은 유효 유휴 기준 E이며 지연 가열/물리 잔열 식별이 아니다. 새 독립 확인0, candidate는 별도 사후 진단용·정책 비용 차단. 기존 완료 COLLECT05 4세션/3,174요청의 23조건층 AP–시간 조정 연관은 양13/음10으로 스로틀 곡선 미식별. 온도 독립성도 입증하지 않는다.
+- 관련22검사·실제 분석 CLI 재현·38근거/두freeze 해시 불변·CSV/그림/화면 검증. 기기/추론/설치/빌드/새계획/claim0; 기본·strict·experiment_ready=false 유지. 제한 시뮬레이터는 사용 가능하고 범용 동적 비용/열 피드백은 미검증이다.
+- **다음 행동 하나:** 이번 고정 후보의 독립 AP 확인 여부를 결정한다. 필요 시 준비 이력이 다른 실행에서 충분한 부하 전 AP와 등록 부하·후기 유휴를 관측하며 기존 B2 단순 반복은 하지 않는다. 이번에는 실행안을 생성하거나 실측하지 않았다. 아래는 당시 이력이다.
+
 ## 2026-10-02 통합 시뮬레이터 실행·공유 경로 완료
 
 - [시작 화면](results/simulator_workbench_01/index.html), [CLI·지원 범위·추가 실측 판정](results/simulator_workbench_01/README.md), [검증](results/simulator_workbench_01/verification.json). `tools.d1_simulator`로 입력→CPU/B2/B3 일정·응답→서비스 규칙→지원 차단→별도 실측 참조를 연결했다. 고정870건 모형은 별도 episode 경로로 연결. 기존 엔진/계수/strict/default는 불변이다.
