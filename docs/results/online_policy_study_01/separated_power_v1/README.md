@@ -45,3 +45,17 @@
 PC검증: 관련Python15(입력3/새모형·계획·공유root·저장공간4/기존8), Android8(정책입력4+실제lifecycle4)본문통과; 실제PS Check 기기0; 빌드/인증서/package/소스검증. 신규root adapter는가짜기기진입으로동결선행/중복실행차단을검증했다. 실기기 안정성·새혼합부하·에너지정확도는미검증이다.
 
 현재C: 약128MB로기기실행을보류한다. 이미완료된빌드의재생성가능3개중간폴더삭제를시도했으나자동승인검토가 `blocked by policy`로거절해삭제0이었다. 원자료/APK/키/사용자변경은보존했다. 사용자에게C:2GiB확보를요청했으며새세션승인을다시요구한것은아니다. 공간확보뒤동일계획 Check와현재기기gate를거쳐진행한다.
+
+## 결과 재생 연결 보완 (2026-10-03)
+
+기존 online-policy 재생은 24:72 입력 전용이므로 새 48:48 입력에 적용하지 않는다. 별도 `tools.d1_separated_power_readout`가 모형 버전·초기 전력창[-20,30]·입력 역할·번들 해시를 확인한 뒤 기존 예측 엔진을 명시적으로 호출한다. 실행기/동결 계획/APK는 변경하지 않았다. 실측 결과가 아직 없으므로 실제 결과 번들은 생성하지 않았다.
+
+완료된 개발3/확인6 결과를 기존 `tools.d1_online_policy_readout export --root <완료된_run> --output <새_bundle>`로 내보낸 뒤 다음 명령을 사용한다. 부분 종료 자료에 완료용 export를 호출하지 않는다.
+
+```powershell
+python -B -m tools.d1_separated_power_readout --bundle <새_bundle> --case-id <등록된_ID> --policy B2_PARALLEL_ONLINE_V1 --output <새_예측_경로>
+```
+
+PC 검증: `python -B -m unittest tools.test_d1_separated_power_readout -v` 2건 통과. 합성 fixture에서 실제 forecast/costs를 실행했으며 기기 안정성·정확도 검증은 아니다. 미래 관측 입력 무시, 잘못된 버전/역할/해시/누락 바인딩 차단을 확인했다. 검증 기준 HEAD abf63cc + 이번 신규 재생/테스트 파일. 실제 PowerShell Check 재실행은 같은 계획 SHA0340473b…ac7f, 기기 명령0으로 통과했다.
+
+C: 여유 약121MiB로 필수2GiB 예약 미충족: Run/claim/기기 명령0, 계획은 미소비 보류이며 stopped로 바꾸지 않았다. 사용자 공간 확보 응답 대기.
