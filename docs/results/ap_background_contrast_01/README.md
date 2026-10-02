@@ -1,5 +1,7 @@
 # AP 배경 변화와 부하 시점의 통합 대조 — 실행 전 고정
 
+> 최신 권고: [개발6→동결→독립 확인6의 종료형 연구 계획](../../AP_MODEL_COMPLETION_STUDY_20261002.md). 아래6세션 계획은 바꾸지 않고 미소비로 보존한다. 전체 추정/확인 PC 연결을 완성하기 전에는 실행 보류를 권고하며, 보류를 실패나 stopped로 기록하지 않는다.
+
 2026-10-02 · [준비 화면](index.html) · [계획 요약·해시](plan_summary.json) · [분석 계약](analysis_contract.json) · [PC 검증](verification.json)
 
 **PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED.** 기존 자료만으로 구분되지 않은 ‘준비 후 배경 변화인가, 등록 부하에 따라 이동하는 반응인가’를 한 묶음에서 확인하도록 준비했다. 이번에는 Run·ADB·설치·추론·실측·소비 claim이 없다. 기존 완료/중단 계획을 재개하지 않는다. 기존 β/k 사후 후보는 미채택이며 동결 모형·준비 이력 후보·strict/default/experiment_ready=false를 유지한다.

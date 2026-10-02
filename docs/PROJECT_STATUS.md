@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-02 AP 개발→동결→독립 확인의 종료형 실측 설계
+
+- 사용자 ‘오래 걸려도 확실한 계획’ 요청에 [최대12세션 연구 계획](AP_MODEL_COMPLETION_STUDY_20261002.md)을 작성했다. 개발 C/L35/L65 역순6 → 한 후보군 PC 추정·동결 → 새 C/L50/분할 역순6. 같은 자료 보정/독립 확인 혼용 금지, 미식별·실패 시 종료·13번째 세션 없음. 제한 A24 CG_DC AP 모형이며 일반 정책/열 피드백 완성을 보장하지 않는다.
+- **DESIGN_FIXED_EXECUTION_NOT_APPROVED**. 본192/warmup96=288추론, runtime48, staging12/84, pull2, push/설치0, 관측42분, 기기상한2시간55분＋PC동결관리60분=누적3시간55분 제안. 현재 새 수집 승인 아님. 입력 변환·예산·원래계획/소스/APK/후보 보존 PC검사 통과, 기기0.
+- 기존6세션 plan_v1은 미승인·미소비 그대로 보존. **전체 경로 완성 전 실행 보류 권고**이며 실패/stopped로 변경하지 않음. 다음 행동은 한 후보군 적합·미식별 처리·동결·확인6 진입을 PC에서 함께 완성하는 것. 현재 실행기에는 12세션 연결이 없으며 새 Run/claim 없음. 기존 계수/default/strict/experiment_ready=false 유지. 아래는 당시 이력이다.
+
 ## 2026-10-02 AP 배경·부하 시점 통합 대조 PC 준비 완료
 
 - [설계·판독·예산·명령](results/ap_background_contrast_01/README.md), [준비 화면](results/ap_background_contrast_01/index.html), [검증](results/ap_background_contrast_01/verification.json). C→L35→L65→L65→L35→C, 같은74e APK/resident/warmup/계측으로6세션을 고정했다. 조건별 평균 순번3.5의 균형이며 임의 환경/잔열 제거 보장은 아니다. 모든 조건은+35초 이전 AP만 초기화에 사용한다.
