@@ -170,8 +170,10 @@ def load_cases(file):
     return [model.load_case(file,plan,e) for e in plan['entries']]
 
 
-def run(file,adb,expected_sha,approved):
-    require(approved and p.digest(file)==expected_sha,'approved exact hash');check(file)
+def run(file,adb,expected_sha,approved,*,adapter=None):
+    import sys
+    api=adapter or sys.modules[__name__]
+    require(approved and p.digest(file)==expected_sha,'approved exact hash');api.check(file)
     from tools import d1_arrival_energy_collection_device as runner
     from tools import d1_energy_host_lifecycle as lifecycle
     file=Path(file);study=p.read(file);root=Path(study['output_root']);registry=Path(study['registry'])
@@ -182,20 +184,20 @@ def run(file,adb,expected_sha,approved):
     try:
         dev=file.parent/'development/collection_plan.json';journal.mark('development_start')
         outcome['development']=runner.run(dev,adb,'',p.digest(dev),True)
-        phase='model_freeze';freeze_start=time.monotonic();cases=imported_cases(study)+load_cases(dev)
-        cal.write_new(root/'development_cases.json',cases);fitted=model.develop(cases)
+        phase='model_freeze';freeze_start=time.monotonic();cases=api.imported_cases(study)+api.load_cases(dev)
+        cal.write_new(root/'development_cases.json',cases);fitted=api.model.develop(cases)
         original_plan=p.read(dev);fitted['original_whole_device_power_w']=p.read(original_plan['frozen_model']['path'])['whole_device_power_w']
-        freeze=dict(model=fitted,source_code=identity(),contract_sha256=study['contract']['sha256'],utc=checkpoints.utc(),development_cases_sha256=p.digest(root/'development_cases.json'))
+        freeze=dict(model=fitted,source_code=api.identity(),contract_sha256=study['contract']['sha256'],utc=checkpoints.utc(),development_cases_sha256=p.digest(root/'development_cases.json'))
         checkpoints.atomic_new(root/'model_freeze.json',freeze);binding=dict(path=str(root/'model_freeze.json'),sha256=p.digest(root/'model_freeze.json'))
-        cal.write_new(root/'development_evaluation.json',model.evaluate(cases,fitted))
+        cal.write_new(root/'development_evaluation.json',api.model.evaluate(cases,fitted))
         require(time.monotonic()-freeze_start<=study['budget']['pc_freeze_seconds'],'freeze time exceeded')
-        plan,ms=block_spec(file,'confirmation',binding);confirm=file.parent/'confirmation/collection_plan.json';cal.write_new(confirm,plan);check_block(confirm)
+        plan,ms=api.block_spec(file,'confirmation',binding);confirm=file.parent/'confirmation/collection_plan.json';cal.write_new(confirm,plan);api.check_block(confirm)
         require(study['budget']['total_seconds']-(time.monotonic()-start)>=plan['budget']['total_seconds'],'confirmation full reserve')
         journal.mark('frozen_confirmation_start',freeze_sha256=binding['sha256']);phase='confirmation'
         outcome['confirmation']=runner.run(confirm,adb,'',p.digest(confirm),True)
         require(p.digest(binding['path'])==binding['sha256'],'confirmation changed model')
-        confirmed=load_cases(confirm);cal.write_new(root/'confirmation_cases.json',confirmed)
-        cal.write_new(root/'confirmation_evaluation.json',model.evaluate(confirmed,fitted))
+        confirmed=api.load_cases(confirm);cal.write_new(root/'confirmation_cases.json',confirmed)
+        cal.write_new(root/'confirmation_evaluation.json',api.model.evaluate(confirmed,fitted))
         outcome.update(status='completed_development_and_confirmation',freeze_sha256=binding['sha256'])
     except BaseException as error:
         original=error;outcome.update(status='stopped_no_resume',phase=phase,error=repr(error),original_stack=traceback.format_exc())

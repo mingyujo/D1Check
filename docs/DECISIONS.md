@@ -1,5 +1,13 @@
 # D1Check 결정 기록
 
+## 2026-10-03 분리 부하 개발3·혼합 확인6 PC 준비 / 저장공간 보류
+
+- [계약·APK·예산·명령](results/online_policy_study_01/separated_power_v1/README.md). 개발 분류32/탐지32/혼합32 분리, 확인48:48 교대96. 같은정책3, 새정책0. AP557fbe 유지,50초부하전전력+4상태증가분 및서비스평균만개발자료로고정. 사후후보2개미채택보존.
+- 새계획 separated_power_plan_v1 SHA0340473b…eac7f, APK5c284190…ba4c. 9세션/본864+warmup72=936/runtime36/staging9·63/pull2/APKpush·설치각1/고정1890초/예약8310초/ADB29200/retry0. PC준비완료·기기미검증·미소비,출력/claim없음.
+- Python15/Android8/서명·소스/실제Check 통과. 기존mode/기본/strict/experiment_ready=false 불변. 초기SDK누락·서명환경오류는PC에서수정,최종프로젝트인증서일치.
+- 현재C:약128MB로host2GiB운영예약부족. 기존빌드중간폴더삭제는자동검토 blocked by policy로거절되어삭제0. 사용자에게공간확보요청;이번기기명령0. 다음행동:공간확보후동일계획/현재기기gate를확인해승인된묶음실행. 아래는과거단계.
+
+
 ## 2026-10-03 장구간 점유 전력 추정 완료·프로토콜 전이 실패
 
 - [계약·계수·오차·재현](results/online_policy_study_01/legacy_transfer_v1/README.md), [화면](results/online_policy_study_01/legacy_transfer_v1/index.html). 옛개발3의272창으로 고정구조1회 적합, 온라인13은 사후평가만. 평균11.877/최대31.704J로 기존7.118/17.871보다 악화하여 미채택. 독립확인0·기준완화0.

@@ -195,7 +195,8 @@ open class ArrivalEnergyActivity : Activity() {
                 check(apMode == ArrivalStartApGate.DIAGNOSTIC_VERSION)
                 check((0 until requestJson.length()).all { !requestJson.getJSONObject(it).has("release_offset_ns") &&
                     !requestJson.getJSONObject(it).has("recorded_backend") })
-                ArrivalPolicyStudy.validate(policyStudy, policy, m.getString("policy_study_role"), m.getString("scenario"), requests)
+                ArrivalPolicyStudy.validate(policyStudy, policy, m.getString("policy_study_role"), m.getString("scenario"), requests,
+                    m.optString("power_identification_version", ""))
             } else ArrivalEnergyContract.validateSession(m.getString("scenario"), requests, controlVersion, controlRole)
             if (controlVersion.isNotEmpty()) check(policy == ArrivalRecordedReplay.POLICY &&
                 apMode == ArrivalStartApGate.DIAGNOSTIC_VERSION) { "resident control requires recorded observe-v2" }
@@ -214,6 +215,12 @@ open class ArrivalEnergyActivity : Activity() {
             } else emptyMap()
             val samplePeriodMs = ArrivalPolicyStudy.samplePeriodMs(policyStudy,
                 m.optString("power_sampling_version", ""), m.optLong("power_sample_period_ms", 1000L))
+            if (m.has("power_identification_version")) {
+                check(policyStudy == ArrivalPolicyStudy.VERSION &&
+                    m.getString("power_identification_version") == ArrivalPolicyStudy.SEPARATED_POWER && samplePeriodMs == 900L)
+                event("power_identification_contract", mapOf("version" to ArrivalPolicyStudy.SEPARATED_POWER,
+                    "role" to m.getString("policy_study_role"), "requests" to requests.size))
+            }
             if (m.has("power_sampling_version")) event("power_sampling_contract", mapOf("period_ms" to samplePeriodMs,
                 "version" to m.getString("power_sampling_version")))
             samples.scheduleAtFixedRate({ sampler.tick { event("power_sample", snapshot()) } }, 0, samplePeriodMs, TimeUnit.MILLISECONDS)

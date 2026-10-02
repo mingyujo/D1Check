@@ -4,6 +4,25 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class ArrivalPolicyStudyTest {
+    @Test fun separatedPowerInputIsExactAndLegacyRemainsClosed() {
+        for (role in listOf("development", "confirmation")) {
+            val rows = (0 until 96).map { i ->
+                val urgent = if (role == "development") i < 32 || (i >= 64 && i % 2 == 0) else i % 2 == 0
+                val offset = if (role == "development")
+                    (if (i < 32) 35000L else if (i < 64) 55000L else 85000L) + (i % 32) * 100L else 35000L + i * 350L
+                ArrivalEnergyContract.Request("q$i",i,if (urgent) "classification" else "detection",
+                    if (urgent) "urgent" else "normal",offset,if (urgent) 1500L else 6000L)
+            }
+            assertEquals(48,rows.count { it.task == "classification" })
+            for (policy in ArrivalPolicyStudy.POLICIES) ArrivalPolicyStudy.validate(ArrivalPolicyStudy.VERSION,
+                policy,role,"separated_power",rows,ArrivalPolicyStudy.SEPARATED_POWER)
+            try { ArrivalPolicyStudy.validate(ArrivalPolicyStudy.VERSION,ArrivalPolicyStudy.CPU,
+                role,"sustained_mixed",rows);fail("legacy widening") } catch (_: IllegalArgumentException) {}
+            try { ArrivalPolicyStudy.validate(ArrivalPolicyStudy.VERSION,ArrivalPolicyStudy.CPU,
+                role,"separated_power",rows.map { it.copy(offsetMs=it.offsetMs+1) },ArrivalPolicyStudy.SEPARATED_POWER)
+                fail("shifted arrival") } catch (_: IllegalArgumentException) {}
+        }
+    }
     @Test fun samplerProtocolIsOptInAndBounded() {
         assertEquals(1000L,ArrivalPolicyStudy.samplePeriodMs("","",1000))
         for (period in listOf(900L,1000L)) assertEquals(period,

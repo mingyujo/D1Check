@@ -195,7 +195,10 @@ def run(plan_file,adb,serial,expected_sha,approved):
     plan=p.read(plan_file)
     idle_response=plan.get('ap_idle_pulse_followup',False)
     single=plan.get('single_arrival_confirmation',False) or plan.get('recorded_replay_confirmation',False) or plan.get('online_policy_study',False)
-    if plan.get('online_sampling_audit'):
+    if plan.get('separated_power_study'):
+        from tools import d1_separated_power_study as separated
+        separated.check_block(plan_file)
+    elif plan.get('online_sampling_audit'):
         from tools import d1_online_sampling_study as confirmation
         confirmation.check(plan_file)
     elif plan.get('online_policy_study'):

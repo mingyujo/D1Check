@@ -8,6 +8,7 @@ internal object ArrivalPolicyStudy {
     const val SERIAL = "B2_SERIAL_ONLINE_V1"
     val POLICIES = setOf(CPU, PARALLEL, SERIAL)
     const val COUNT = 96
+    const val SEPARATED_POWER = "separated-power-input-v1"
 
     /** Separate measurement protocol; legacy timing cannot change implicitly. */
     fun samplePeriodMs(studyVersion: String, samplingVersion: String, requestedMs: Long): Long {
@@ -21,14 +22,21 @@ internal object ArrivalPolicyStudy {
     }
 
     fun validate(version: String, policy: String, role: String, scenario: String,
-                 requests: List<ArrivalEnergyContract.Request>) {
-        require(version == VERSION && policy in POLICIES && scenario == "sustained_mixed")
+                 requests: List<ArrivalEnergyContract.Request>, inputVersion: String = "") {
+        require(version == VERSION && policy in POLICIES)
+        require(inputVersion in setOf("", SEPARATED_POWER))
+        require(scenario == if (inputVersion.isEmpty()) "sustained_mixed" else "separated_power")
         require(role in setOf("development", "confirmation"))
         val interval = if (role == "development") 500L else 550L
         require(requests.size == COUNT && requests.map { it.id }.toSet().size == COUNT)
         requests.forEachIndexed { i, q ->
-            val urgent = i % 4 == 1
-            require(q.ordinal == i && q.offsetMs == 35_000L + i * interval)
+            val separated = inputVersion == SEPARATED_POWER
+            val urgent = if (!separated) i % 4 == 1 else if (role == "development")
+                i < 32 || (i >= 64 && i % 2 == 0) else i % 2 == 0
+            val offset = if (!separated) 35_000L + i * interval else if (role == "development")
+                (if (i < 32) 35_000L else if (i < 64) 55_000L else 85_000L) + (i % 32) * 100L
+                else 35_000L + i * 350L
+            require(q.ordinal == i && q.offsetMs == offset)
             require(q.task == (if (urgent) "classification" else "detection"))
             require(q.priority == (if (urgent) "urgent" else "normal"))
             require(q.deadlineMs == (if (urgent) 1500L else 6000L))

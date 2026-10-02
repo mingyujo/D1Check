@@ -124,21 +124,29 @@ def service_config(frozen,policy):
 
 def validate_service(config,vectors,requests,policy,settings):
     if policy not in POLICIES or config['policy']!=policy or settings['interference']!=1 or settings['predicted_interference']!=1:raise ValueError('service context')
-    if len(requests)!=96 or any(r['task']!=('classification' if r['ordinal']%4==1 else 'detection') or r['priority']!=('urgent' if r['ordinal']%4==1 else 'normal') for r in requests):raise ValueError('unregistered workload')
-    times=[r['arrival_ns'] for r in sorted(requests,key=lambda r:r['ordinal'])]
-    if times not in ([35000000000+i*step for i in range(96)] for step in (500000000,550000000)):
-        raise ValueError('unsupported arrival interval')
+    preview=settings.get('separated_power_planning_role')
+    if preview is not None:
+        from tools import d1_separated_power_protocol as separated
+        if settings['mode']!='explore' or any(r['arrival_ns']%1000000 for r in requests):raise ValueError('planning only')
+        separated.validate(preview,[dict(request_id=r['id'],ordinal=r['ordinal'],task_id=r['task'],priority=r['priority'],
+            offset_ms=r['arrival_ns']//1000000,deadline_ms=r['deadline_offset_ns']//1000000) for r in requests])
+    else:
+        if len(requests)!=96 or any(r['task']!=('classification' if r['ordinal']%4==1 else 'detection') or r['priority']!=('urgent' if r['ordinal']%4==1 else 'normal') for r in requests):raise ValueError('unregistered workload')
+        times=[r['arrival_ns'] for r in sorted(requests,key=lambda r:r['ordinal'])]
+        if times not in ([35000000000+i*step for i in range(96)] for step in (500000000,550000000)):
+            raise ValueError('unsupported arrival interval')
     expected={'detection_CPU_normal','classification_CPU_urgent' if policy==POLICIES[0] else 'classification_GPU_urgent'}
     if set(config['cells'])!=expected or set(vectors['cells'])!=expected:raise ValueError('unsupported service cells')
     for key,v in vectors['cells'].items():
         if key not in config['cells'] or len(v)!=4 or any(len(r['durations_ns'])!=5 or any(not math.isfinite(x) or x<0 for x in r['durations_ns']) for r in v):raise ValueError('phase vector')
 
 
-def forecast(initial,manifest_requests,policy,frozen):
+def forecast(initial,manifest_requests,policy,frozen,*,planning_input_role=None):
     # Explicit initial whitelist: post35 AP/power and actual future rows excluded.
     config,vectors=service_config(frozen,policy);settings=batch.defaults('explore')
     settings.update(interference=1,predicted_interference=1,decision_ns=0,record_ns=0,dispatch_ns=0,
                     static_map={'classification':'GPU','detection':'CPU'},static_parallel=True)
+    if planning_input_role is not None:settings['separated_power_planning_role']=planning_input_role
     tickets=[dict(id=q['request_id'],task=q['task_id'],priority=q['priority'],ordinal=q['ordinal'],arrival_ns=q['offset_ms']*1_000_000,deadline_offset_ns=q['deadline_ms']*1_000_000) for q in manifest_requests]
     result=engine.simulate(config,vectors,tickets,policy=policy,settings=settings,seed=201)
     if any(r['status']!='succeeded' for r in result['ledger']):raise ValueError('forecast incomplete; no partial full cost')
@@ -161,11 +169,11 @@ def costs(segments,initial,queries,model,end):
     return dict(energy_path=curve,whole_120s_j=curve[-1]['predicted_j'],prospective_35_120s_j=curve[-1]['predicted_j']-curve[35]['predicted_j'],ap_path=vals,initial=init)
 
 
-def evaluate(cases,model):
+def evaluate(cases,model,*,planning_input_role=None):
     result=[]
     for c in cases:
         initial=dict(preload=c['inputs']['preload'],preload_power_w=c['preload_power_w'])
-        forecast_rows,forecast_segments=forecast(initial,c['manifest_requests'],c['policy'],model)
+        forecast_rows,forecast_segments=forecast(initial,c['manifest_requests'],c['policy'],model,planning_input_role=planning_input_role)
         outputs={};query=c['inputs']['query_s'];end=c['inputs']['segments'][-1]['end_s']
         for name,seg in [('actual_schedule_conditional',c['inputs']['segments']),('arrival_forecast',forecast_segments)]:
             out=costs(seg,initial,query,model,end);out['energy_signed_error_j']=out['whole_120s_j']-c['observed_120s_j']
