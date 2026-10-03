@@ -1,0 +1,65 @@
+{
+ "column": "30.5",
+ "model": "v1 M-P r3 (d1sim/throttle_v1.py + profiles/throttle_v1_*.json, 커밋 3050e09) — 페이싱 체인 gpu_pacing_v1 (밤 1003 세션에서 d1sim 무수정으로 산출)",
+ "rows": [
+  {
+   "cell": "가열 진입 (1-1)",
+   "criterion": "|Δ| ≤ 10 s",
+   "measured": 70,
+   "predicted": 70,
+   "verdict": "맞음"
+  },
+  {
+   "cell": "540~600 s 배율",
+   "criterion": "상대차 ≤ 10 %",
+   "measured": 2.211762,
+   "predicted": 2.083507,
+   "verdict": "맞음"
+  },
+  {
+   "cell": "휴지 60 s 회복 시각",
+   "criterion": "같은 칸 (±10 s) · 둘 다 중도절단이면 맞음",
+   "measured": 20,
+   "predicted": null,
+   "verdict": "미확인"
+  },
+  {
+   "cell": "재조임 시각",
+   "criterion": "|Δ| ≤ 10 s · 둘 다 없음이면 맞음",
+   "if_wrong": "v1 적분 제어기 K (식은 진입과 뜨거운 재진입을 한 K 로 못 냄 — 스로틀모형_v1 §6)",
+   "measured": 10,
+   "predicted": 30,
+   "verdict": "틀림"
+  },
+  {
+   "cell": "분류",
+   "criterion": "같은 분류",
+   "measured": "60 s 휴지로는 재조임을 못 늦춘다 (재조임 ≤ 20 s)",
+   "predicted": "중간",
+   "verdict": "틀림"
+  },
+  {
+   "cell": "재가열 240~300 s 배율",
+   "criterion": "상대차 ≤ 10 %",
+   "measured": 2.231,
+   "predicted": 2.110968,
+   "verdict": "맞음"
+  },
+  {
+   "cell": "휴지 끝 SKIN · AP (기술)",
+   "criterion": "기술만",
+   "measured": [
+    37.1,
+    38.1
+   ],
+   "predicted": [
+    37.099506,
+    37.162848
+   ],
+   "verdict": "—"
+  }
+ ],
+ "start_skin": 30.5,
+ "support_note": "적용 범위 안",
+ "supported": true
+}

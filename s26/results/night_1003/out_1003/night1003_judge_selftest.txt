@@ -1,0 +1,36 @@
+| 시험 | 결과 | 값 |
+|---|---|---|
+| 탐침 k=5 부터 4칸 ≤ ×1.03 → 50 s | PASS | {'recovered': True, 'recovery_s': 50, 'k': 5, 'last_testable_k': 56, 'censored': None} |
+| 한 칸에 ×1.14 → ×1.01 → 계단형 | PASS | 계단형 {'total_drop_ratio': 0.1299999999999999, 'max_single_step': 0.1299999999999999, 'argmax_step_k': 5, 'fraction': 1.0} |
+| 끝까지 ×1.09 → 570 s 안 미회복 (중도절단) | PASS | {'recovered': False, 'recovery_s': None, 'k': None, 'last_testable_k': 56, 'censored': '570 s 안 미회복 (오른쪽 중도절단)'} |
+| 중도절단 → H-timer 기각 · R-fast/R-skin 둘 다 기각 | PASS | 600 s 안 미회복 — R-fast·R-skin 둘 다 기각 (중도절단) |
+| 한 칸에 ×1.12 → ×1.01 → 계단형 · 30 s | PASS | 계단형 {'recovered': True, 'recovery_s': 30, 'k': 3, 'last_testable_k': 56, 'censored': None} |
+| 선형 감소 → 점진형 | PASS | 점진형 {'recovered': True, 'recovery_s': 110, 'k': 11, 'last_testable_k': 56, 'censored': None} {'total_drop_ratio': 0.10999999999999988, 'max_single_step': 0.01000000000000 |
+| ≤ 1.06 첫 칸 기술 (선형: k=8 → 80 s) | PASS | 80 |
+| 4칸 유지 안 되는 일시 하강은 회복 아님 → 70 s | PASS | {'recovered': True, 'recovery_s': 70, 'k': 7, 'last_testable_k': 56, 'censored': None} |
+| A3: 평탄 기준 → 기준 안정 | PASS | 기준 안정 |
+| A3: 기준 칸 ±5 % 밖 → 기준 불안정 (판정은 한다) | PASS | 기준 불안정 (±5 % 밖 칸 있음) |
+| 가열 1계단 150 s (+4.5 % 유지) · 2계단(1-1) 300 s (합성) | PASS | 150 |
+| 540~600 s 배율 ×1.13 (합성) | PASS | 1.1300000000000001 |
+| SKIN_k 39.0 → H-skin 기각 | PASS | SKIN_k=39.0 {'H-skin': '기각 (SKIN_k ≥ 38.8)', 'H-ap': '유지 (AP_k < 43.0)', 'H-timer': '기각 (해제 > 60 s)'} |
+| AP_k 42.0 → H-ap 유지 | PASS | AP_k=42.0 {'H-skin': '유지 (SKIN_k < 38.8)', 'H-ap': '유지 (AP_k < 43.0)', 'H-timer': '기각 (해제 > 60 s)'} |
+| 해제 130 s · SKIN_k 37.5 → H-skin 유지 (R-skin) · H-timer 기각 | PASS | 해제 100~200 s 이고 SKIN_k ≈ 37~38.8 → H-skin 유지 (R-skin) |
+| 해제 30 s → 'H-ap/H-timer 못 가름' 선언 | PASS | 해제 ≤ 40 s — H-ap 와 H-timer 는 못 가른다 (둘 다 그 범위 예측): H-skin 기각, H-ap/H-timer 보류 로만 적는다 |
+| 해제 80 s → 미분류 | PASS | 해제 60~100 s — 세 가설 중 어느 것도 사전 예측과 맞지 않는다 → 미분류 (사후 가설은 [E]) |
+| 두 런 해제 40 · 50 s (차 10 ≤ 20) → 재현 | PASS | {'rule': '두 런 해제 차 ≤ 20 s → 재현', 'a_s': 40, 'b_s': 50, 'diff_s': 10, 'verdict': '재현', 'shapes': ['계단형', '계단형'], 'SKIN_k': [40.5, 40.1], 'AP_k': [40.0, 40.0], 'classificat |
+| 두 런 해제 40 · 130 s → 1런씩 보고 | PASS | 90 |
+| GPU 회복 20 s 계단형 → v1 ⑥ 유지(2런) · 1런째와 재현 | PASS | {'recovered': True, 'recovery_s': 20, 'k': 2, 'last_testable_k': 26} 계단형 v1 ⑥ 유지(2런) 재현 |
+| GPU 회복 50 s → ⑥ 기각 · 1런씩 보고 | PASS | {'recovered': True, 'recovery_s': 50, 'k': 5, 'last_testable_k': 26} v1 ⑥ 기각 |
+| GPU 점진형 (180 s) → ⑥ 기각 | PASS | {'recovered': True, 'recovery_s': 180, 'k': 18, 'last_testable_k': 26} 점진형 |
+| GPU 끝까지 ×2.0 → 중도절단 · ⑥ 기각 | PASS | {'recovered': False, 'recovery_s': None, 'censored': '270 s 안 미회복 (오른쪽 중도절단)', 'last_testable_k': 26} |
+| v2 JSON 없음 → v1 만 대조 · 'v2 없음' 기록 | PASS | v2 없음 — v1 만 대조 (P1b-2 미완) |
+| 비교 열 = 시작 SKIN 29.7 → 29.5 열 | PASS | 29.5 |
+| 해제 40 s → R-fast 쪽 | PASS | ≤ 60 s → R-fast(AP/타이머) 쪽 · R-skin 틀림 |
+| 시작 SKIN 27.9 → 모형 대조 unsupported | PASS | 적용 범위 밖 (unsupported): 시작 SKIN 27.9 ∉ [28.3, 31.6] — 범위를 넓히지 않는다 |
+| GPU 진입 80 vs 예측 70 → |Δ| 10 ≤ 10 맞음 | PASS | {'cell': '가열 진입 (1-1)', 'predicted': 70, 'measured': 80, 'criterion': '|Δ| ≤ 10 s', 'verdict': '맞음', 'if_wrong': 'GPU CM 제어기 T_set·K (진입)'} |
+| GPU 회복 20 s → ⑥ 유지 + T_off 0.4 ℃ 주석 | PASS | v1 ⑥ 유지(2런) — 회복 20 s 이면 v1 T_off placeholder(39.2) 가 ~0.4 ℃ 낮은 것 |
+| v2 JSON 있으면 v2 열도 채움 | PASS | ['m1_gpu_r2', 'm1_npu_a'] |
+| 구간 하나 뺀 JSONL → 오류로 멈춤 | PASS | 구간 수 불일치: spec 3 · segment_start 2 · segment_end 2 |
+| 결정성: 같은 입력 두 번 = 같은 바이트 (run_id 제외) | PASS | 16067 B |
+
+selftest 전체: PASS (32/32)

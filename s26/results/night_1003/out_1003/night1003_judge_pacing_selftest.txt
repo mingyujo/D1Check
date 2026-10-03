@@ -1,0 +1,20 @@
+| 시험 | 결과 | 값 |
+|---|---|---|
+| 재조임 첫 칸부터 ≥ ×1.10 → 즉시(0 s) · 못 늦춘다 | PASS | {'retightened': True, 'retighten_s': 0, 'k': 0, 'last_testable_k': 26, 'label': '즉시(0 s)'} |
+| 재조임 10 s → 못 늦춘다 | PASS | 60 s 휴지로는 재조임을 못 늦춘다 (재조임 ≤ 20 s) |
+| 재조임 40 s → 중간 | PASS | 중간 (재조임 30~50 s) |
+| 재조임 60 s → 페이싱 후보 | PASS | 60 s 휴지가 재조임을 늦춘다 (페이싱 후보) (재조임 ≥ 60 s) |
+| 300 s 안 ≥ ×1.10 없음 → 재조임 없음 | PASS | {'retightened': False, 'retighten_s': None, 'k': None, 'last_testable_k': 26, 'label': '재조임 없음 (300 s 안)'} |
+| 4칸 유지 안 되는 일시 상승은 재조임 아님 → 40 s | PASS | {'retightened': True, 'retighten_s': 40, 'k': 4, 'last_testable_k': 26, 'label': '40 s'} |
+| 휴지 회복 k=1 → 10 s | PASS | {'recovered': True, 'recovery_s': 10, 'k': 1, 'last_testable_k': 2, 'censored': None} |
+| 휴지 회복 k=2 → 20 s (마지막 검정 k) | PASS | {'recovered': True, 'recovery_s': 20, 'k': 2, 'last_testable_k': 2, 'censored': None} |
+| 휴지 회복 k=3 (검정 불가) → 중도절단 | PASS | {'recovered': False, 'recovery_s': None, 'k': None, 'last_testable_k': 2, 'censored': '검정 가능 범위(≤ 20 s) 안 미회복 — 중도절단'} |
+| 구간 1 진입 70 s (합성) · 540~600 ×2.04 | PASS | (70, 2.04) |
+| A3 평탄 → 기준 안정 | PASS | 기준 안정 |
+| A3 기준 칸 ±5 % 밖 → 기준 불안정 | PASS | 기준 불안정 (±5 % 밖 칸 있음) |
+| cmp: 재조임 10 vs 10 · 분류 같음 → 맞음 | PASS | [('가열 진입 (1-1)', '맞음'), ('540~600 s 배율', '맞음'), ('휴지 60 s 회복 시각', '맞음'), ('재조임 시각', '맞음'), ('분류', '맞음'), ('재가열 240~300 s 배율', '맞음'), ('휴지 끝 SKIN · AP (기술)', '—')] |
+| cmp: 재조임 60 vs 예측 10 → 틀림 | PASS | {'cell': '재조임 시각', 'predicted': 10, 'measured': 60, 'criterion': '|Δ| ≤ 10 s · 둘 다 없음이면 맞음', 'verdict': '틀림', 'if_wrong': 'v1 적분 제어기 K (식은 진입과 뜨거운 재진입을 한 K 로 못 냄 — 스로틀모형_ |
+| 구간 하나 뺀 JSONL → 오류로 멈춤 | PASS | 구간 수 불일치: spec 4 · segment_start 3 · segment_end 3 |
+| 결정성: 같은 입력 두 번 = 같은 바이트 (run_id 제외) | PASS | 11206 B |
+
+selftest 전체: PASS (16/16)

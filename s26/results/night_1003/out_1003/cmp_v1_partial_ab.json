@@ -1,0 +1,287 @@
+{
+ "models": {
+  "v1": "v1 M-P r3 (d1sim/throttle_v1.py + profiles/throttle_v1_*.json)",
+  "v1_pacing": null,
+  "v2": null
+ },
+ "rule": "v1_예측_밤1003.md '이 차이면 틀린 것' 열 그대로 · 비교 열 = 시작 SKIN 에 가까운 쪽 · 시작 SKIN ∉ [28.3, 31.6] → unsupported",
+ "v1": {
+  "m1_gpu_r2": {
+   "column": "30.5",
+   "label": "M1-GPU 2런째",
+   "rows": [
+    {
+     "cell": "가열 진입 (1-1)",
+     "criterion": "|Δ| ≤ 10 s",
+     "if_wrong": "GPU CM 제어기 T_set·K (진입)",
+     "measured": 60,
+     "predicted": 70,
+     "verdict": "맞음"
+    },
+    {
+     "cell": "540~600 s 배율",
+     "criterion": "상대차 ≤ 10 %",
+     "if_wrong": "깊이 (K·u_max·α)",
+     "measured": 2.268244,
+     "predicted": 2.083507,
+     "verdict": "맞음"
+    },
+    {
+     "cell": "1000~1200 s 배율",
+     "criterion": "상대차 ≤ 10 %",
+     "if_wrong": "느린 노드 G_s·τ_s",
+     "measured": 2.256444,
+     "predicted": 2.146186,
+     "verdict": "맞음"
+    },
+    {
+     "cell": "가열 끝 SKIN",
+     "criterion": "|Δ| ≤ 0.5 ℃",
+     "if_wrong": "열 모형 (v1 은 이미 +0.7 높다 [E])",
+     "measured": 38.7,
+     "predicted": 38.977699,
+     "verdict": "맞음"
+    },
+    {
+     "cell": "가열 끝 AP · status (기술)",
+     "criterion": "기술만",
+     "if_wrong": "—",
+     "measured": [
+      41.0,
+      0
+     ],
+     "predicted": [
+      41.204269,
+      0
+     ],
+     "verdict": "—"
+    },
+    {
+     "cell": "탐침 회복 시각 · 모양",
+     "criterion": "20~40 s 이고 계단형 → ⑥ 유지",
+     "if_wrong": "T_off placeholder / 계단 해제 구조",
+     "measured": [
+      10,
+      "계단형"
+     ],
+     "predicted": [
+      30,
+      "계단형"
+     ],
+     "verdict": "계단 해제 구조 기각 (≥ 40 s 또는 점진형)"
+    },
+    {
+     "cell": "해제 순간 SKIN · AP (기술)",
+     "criterion": "기술만",
+     "if_wrong": "—",
+     "measured": [
+      38.2,
+      39.1
+     ],
+     "predicted": [
+      37.708987,
+      38.071206
+     ],
+     "verdict": "—"
+    },
+    {
+     "cell": "탐침 첫 8칸 배율 (기술)",
+     "criterion": "기술만",
+     "if_wrong": "—",
+     "measured": [
+      2.287761,
+      0.993196,
+      0.992962,
+      0.993134,
+      0.987622,
+      0.992651,
+      0.996286,
+      0.985481
+     ],
+     "predicted": [
+      2.147581,
+      2.147592,
+      2.137043,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "verdict": "—"
+    }
+   ],
+   "start_skin": 30.9,
+   "support_note": "적용 범위 안",
+   "supported": true
+  },
+  "m1_npu_a": {
+   "column": "29.5",
+   "columns_used": [
+    "29.5/fast",
+    "29.5/skin"
+   ],
+   "label": "M1-NPU a",
+   "rows": [
+    {
+     "cell": "가열 1계단 (+4.5 % 유지 첫 칸)",
+     "criterion": "|Δ| ≤ 20 s",
+     "if_wrong": "AP 단일 노드 하위모형 (시각)",
+     "measured": 170,
+     "predicted": 150,
+     "verdict": "맞음"
+    },
+    {
+     "cell": "가열 2계단 (1-1 진입)",
+     "criterion": "|Δ| ≤ 20 s",
+     "if_wrong": "AP 단일 노드 하위모형 (시각)",
+     "measured": 310,
+     "predicted": 320,
+     "verdict": "맞음"
+    },
+    {
+     "cell": "2계단 진입 SKIN · AP",
+     "criterion": "SKIN 39.8~40.0 · AP 44.2~44.3 → 트리거 = 온도대 유지",
+     "if_wrong": "트리거 형태",
+     "measured": [
+      40.0,
+      44.0
+     ],
+     "predicted": [
+      39.841153,
+      44.334357
+     ],
+     "verdict": "진입 온도가 3런 범위 밖 — 온도대 유지 주장 못 함"
+    },
+    {
+     "cell": "1계단 SKIN · AP (기술)",
+     "criterion": "기술만",
+     "if_wrong": "—",
+     "measured": [
+      37.7,
+      41.7
+     ],
+     "predicted": [
+      37.47159,
+      42.70965
+     ],
+     "verdict": "—"
+    },
+    {
+     "cell": "540~600 s 배율",
+     "criterion": "|Δ| ≤ 0.03",
+     "if_wrong": "계단 크기 (a1·a2·K)",
+     "measured": 1.207469,
+     "predicted": 1.137754,
+     "verdict": "틀림"
+    },
+    {
+     "cell": "가열 끝 SKIN",
+     "criterion": "|Δ| ≤ 0.5 ℃",
+     "if_wrong": "열 모형",
+     "measured": 42.2,
+     "predicted": 42.021079,
+     "verdict": "맞음"
+    },
+    {
+     "cell": "가열 끝 AP · status (기술)",
+     "criterion": "기술만",
+     "if_wrong": "—",
+     "measured": [
+      46.2,
+      2
+     ],
+     "predicted": [
+      46.165064,
+      2
+     ],
+     "verdict": "—"
+    },
+    {
+     "cell": "탐침 해제 시각 (δ 0.03)",
+     "criterion": "≤ 60 → R-fast · 100~200 → R-skin · 없음 → 둘 다 기각",
+     "if_wrong": "해제 규칙 (R-fast / R-skin)",
+     "measured": 20,
+     "predicted": {
+      "fast": 40,
+      "skin": 130
+     },
+     "verdict": "≤ 60 s → R-fast(AP/타이머) 쪽 · R-skin 틀림"
+    },
+    {
+     "cell": "해제 때 SKIN · AP (기술)",
+     "criterion": "기술만",
+     "if_wrong": "—",
+     "measured": [
+      41.4,
+      43.9
+     ],
+     "predicted": {
+      "fast": {
+       "ap": 40.18243,
+       "skin": 39.504247
+      },
+      "skin": {
+       "ap": 36.785556,
+       "skin": 37.286126
+      }
+     },
+     "verdict": "—"
+    },
+    {
+     "cell": "탐침 칸 배율 모양",
+     "criterion": "점진이면 계단 해제 기각",
+     "if_wrong": "계단 해제 구조",
+     "measured": [
+      "계단형",
+      [
+       4.081544,
+       1.040875,
+       0.987338,
+       0.980168,
+       0.982979,
+       0.985506,
+       0.973721,
+       0.989116,
+       0.970136,
+       0.97942,
+       0.994378,
+       0.981716
+      ]
+     ],
+     "predicted": "계단 (×1.14~1.16 유지 → 1.00)",
+     "verdict": "계단형 → 계단 해제 유지"
+    },
+    {
+     "cell": "탐침 SKIN (0/60/120/300/599 s) MAE",
+     "criterion": "MAE ≤ 0.5 ℃",
+     "if_wrong": "냉각 τ (v1 은 가열 τ 와 같다고 가정)",
+     "measured": [
+      42.2,
+      40.5,
+      39.8,
+      38.3,
+      37.0
+     ],
+     "predicted": [
+      42.025971,
+      39.958801,
+      38.834668,
+      37.552364,
+      36.674837,
+      35.336391,
+      33.298683
+     ],
+     "verdict": "틀림 (MAE 2.15)"
+    }
+   ],
+   "start_skin": 29.9,
+   "support_note": "적용 범위 안",
+   "supported": true
+  }
+ },
+ "v1_pacing_present": false,
+ "v2": {},
+ "v2_note": "v2 없음 — v1 만 대조 (P1b-2 미완)",
+ "v2_present": false
+}

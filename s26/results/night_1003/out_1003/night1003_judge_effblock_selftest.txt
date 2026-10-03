@@ -1,0 +1,17 @@
+| 시험 | 결과 | 값 |
+|---|---|---|
+| 8런 파싱 · 거울 순서 일치 | PASS | ['C50', 'C100', 'G50', 'G100', 'G100', 'G50', 'C100', 'C50'] |
+| CPU d50/d100 run_only 0.882 (±2 % 안) → 상호작용 없음 | PASS | 0.8820895522388059 |
+| 셀별 두 런 · 차 (표류) | PASS | {'values': [5.9, 5.92], 'mean': 5.91, 'diff': 0.019999999999999574, 'diff_rel': 0.003384094754653058, 'n': 2} |
+| GPU 판정 안 함 (비만 기록) | PASS | {'ratio_run_only_d50_d100': 0.9502487562189056, 'verdict': '판정 안 함 (MobileNet CompiledModel GPU d50 자료 없음 — Interpreter 9/14 비는 엔진 다름, 참고만)'} |
+| 런별 run_only · write+run+read 둘 다 | PASS | ({'present': True, 'median_ms': 5.9, 'count': 5004, 'missing': 0, 'p95_ms': 6.49, 'span': 'run_only'}, 6.0) |
+| SKIN 상승 3.0 · 전력 3.0 W (합성) | PASS | (3.0, 3.0) |
+| CPU d50/d100 0.956 (밖) → 상호작용 있음 | PASS | 0.9567164179104477 |
+| GPU 셀 결측 → cells_incomplete 에 G50·G100 | PASS | ['G50', 'G100'] |
+| 한 셀에 런 1개 → diff None · 상호작용 판정은 낸다 | PASS | {'values': [6.4], 'mean': 6.4, 'diff': None, 'diff_rel': None, 'n': 1} |
+| C50 전부 결측 → 판정 불가 | PASS | 판정 불가 (C50 또는 C100 셀 결측) |
+| 연쇄 런 → 오류로 멈춤 | PASS | 연쇄 런 — 이 판정기는 단일 런용 |
+| manifest 없음 → 오류 | PASS | manifest 없음: C:\Users\rhoyo\AppData\Local\Temp\effblock_selftest_x7yfaew1\nope |
+| 결정성: 같은 입력 두 번 = 같은 바이트 (이름 제외) | PASS | 1942 B |
+
+selftest 전체: PASS (13/13)
