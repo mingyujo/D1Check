@@ -18,8 +18,8 @@ from tools import d1_ap_background_contrast as script_source
 
 ROOT=Path(__file__).resolve().parents[1]
 VERSION='background-activity-contrast-v1'
-NAME='BACKGROUND-ACTIVITY-DEVELOPMENT-05'
-FOLDER='background_activity_plan_v5'
+NAME='BACKGROUND-ACTIVITY-DEVELOPMENT-06'
+FOLDER='background_activity_plan_v6'
 ORDER=('B2_PARALLEL_ONLINE_V1','C0_POST')
 CONTRACT=ROOT/'docs/results/online_policy_study_01/background_activity_pc_v1/contract.json'
 TRACE_CONFIG=ROOT/'tools/perfetto/background_activity.pbtxt'
@@ -74,7 +74,12 @@ def specification(source_file,build_file,output):
         analysis_contract=dict(path=str(CONTRACT),sha256=p.digest(CONTRACT)),
         input_bundle=dict(path=str(CONTRACT),sha256=p.digest(CONTRACT)),
         activity_model=dict(path=str(MODEL),sha256=MODEL_SHA),
-        output_root=str(output.parent/'background_activity_run_v5'),
+        output_root=str(output.parent/'background_activity_run_v6'),
+        campaign_retry=dict(of='BACKGROUND-ACTIVITY-DEVELOPMENT-05',
+            receipt_sha256=p.digest(output.parent/'background_activity_run_v5/FINAL_RECEIPT.json'),
+            reason='host localhost5037 client failure before app launch; underlying cause unconfirmed',
+            authorization='user allowed correction and further measurement; bounded separate attempt',
+            automatic_next_plan=False),
         previous_block=dict(path=str(output.parent/'background_activity_run_v4'),
             receipt_sha256=p.digest(output.parent/'background_activity_run_v4/FINAL_RECEIPT.json'),
             validated={f.relative_to(output.parent/'background_activity_run_v4').as_posix():p.digest(f) for f in sorted((output.parent/'background_activity_run_v4').glob('*/validated.json'))},

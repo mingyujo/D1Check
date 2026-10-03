@@ -44,3 +44,8 @@ python -B -m tools.d1_background_activity_result --plan C:/Users/LG/Documents/D1
 & 'C:/Users/LG/Documents/D1Check_Arrival_Extension/background_activity_plan_v5/RUN_AFTER_APPROVAL.ps1' -Action Check
 & 'C:/Users/LG/Documents/D1Check_Arrival_Extension/background_activity_plan_v5/RUN_AFTER_APPROVAL.ps1' -Action Run -Approved -Serial '<현재 확인한 A24 transport>' -ExpectedPlanSha256 '292609c7e9e2d0c4eb54bc2579e223fddaf402f7dc453f0dd2c53a343b84f04a'
 ```
+
+
+## 이후 재개 결과
+
+위 v5 미소비 보류는 이동 당시 기록이다. 이후 재개에서 v5는 staging client의 host daemon 연결 오류로 종료됐고 별도 v6가 남은 개발2를 완료했다. [최신 결과·소비·별도 block](../background_activity_run04/README.md). 기존 v4 실패와 분모를 보존한다.

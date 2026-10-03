@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-03 재개 — v5 host 연결 오류 보존 / v6 남은 개발2 완료
+
+- [결과·소비·원본·재현](results/online_policy_study_01/background_activity_run04/README.md), [대시보드](results/online_policy_study_01/background_activity_run04/index.html). v5 staging에서 host127.0.0.1:5037 client 연결 rc1(21.125초) 중단, launch/추론0·ADB68/142.983초. 같은 daemon 식별과 후속 cleanup 성공; 내부원인 미확정·stopped 보존. 사용자 추가 실행 승인으로 별도 campaign retry1회 v6 준비·Check·실행, gate/timeout/APK 수정0.
+- v6 PAR96→C0_POST 개발2/2 적격, 본96+warmup16=112/runtime8/staging2·14/설치본pull1/tracepull2/APK0/ADB1669/735.433초. 앱cleanup2·host force-stop2·최종ps 대상부재, parent/child exit0·이후PC 부재. trace2 BOOTTIME/8CPU/24bin/loss 통과. 시작AP28.9/29.5°C 범위밖. PAR 실제병행13.051초, J153.440→150.563(−2.877), AP MAE0.225°C; C0 J129.789→143.740(+13.951), MAE0.157°C. 조건부·개발/전이 자료이며 정확도PASS 아님.
+- 기존 v4 C0·CPU와 이번 v6는 별도 block이며 v4 완주로 합치지 않는다. 원본/FAIL/registry/계수/기본/strict/experiment_ready=false 유지, 새fit/채택/독립확인0. Check 기기0·실제경계/CSV/hash/공유그림 재현 통과, Android/빌드0. **다음 행동 하나: 적격 네 개발 자료의 과거 시스템 활동과 잔차에서 gamma 분리 식별 가능성 PC 검사.** 추가 실측 자동 실행 없음.
+
 ## 2026-10-03 v4 두 세션 적격·조회 timeout 종료 / v5 이동 전 미소비 보류
 
 - [결과·소비·수정·재개 명령](results/online_policy_study_01/background_activity_run03/README.md). v4 C0/CPU2적격, PAR 준비 ls3초 timeout; 원인미확정·최종 대상 ps 부재/trace 회수. 확인추론120/runtime12/ADB1803/817.657초. trace 설정 수정 실제 성공, CPU 집계 동일성 최적화·부분 분석/분모 보존 PC15통과. APK/계수 불변.
