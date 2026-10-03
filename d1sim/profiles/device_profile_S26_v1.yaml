@@ -1,0 +1,59 @@
+# D1 simulator v1 — Galaxy S26 (SM-S942N, Exynos 2600) device profile (2026-10-03). v0 file device_profile_S26.yaml is untouched.
+# Every leaf is {value, status, source}. status: measured | measured-fit | placeholder | untested | unsupported. value null -> MASKED.
+# Engines: GPU·NPU = npu-runner CompiledModel (LiteRT 2.2.0); CPU4 = benchmark-runner Interpreter 1.4.2 XNNPACK 4 threads (engine footnote).
+# Throttle model v1 = d1sim/throttle_v1.py (form M-P, see throttle_v1_*.json). STATUS OF v1: 모형 미완 — checklist 2/7
+# (sim/스로틀모형_v1.md §3). Nothing here is validated on unseen data; tonight (2026-10-03 night) is the first true holdout.
+device: S26
+profile_version: v1-2026-10-03
+model: mobilenet_v1_1.0_224
+
+latency_ms:   # unthrottled L0 per inference = first-30 s all-inference median of the FIT run of that resource/engine
+  GPU:  {value: 2.531992, status: measured, source: "d1sim/data/trace_v1_10s_m2_H1.csv seg 0 t=-1 (CompiledModel FP32 request, GPU d100 600 s heated arm H1). Control arms 2.49~2.52 ms [P M2r C1/C2]"}
+  NPU:  {value: 0.753125, status: measured, source: "trace_v1_10s_n1300.csv t=-1 (write+run+read; 9/25 formal 0.743, 1002 install 0.7526 smoke)"}
+  CPU4: {value: 4.631387, status: measured, source: "trace_v1_10s_c600_r1.csv t=-1 — Interpreter 1.4.2 (r2 4.459; 9/14 formal d100 4.370). ENGINE DIFFERS from GPU/NPU"}
+  GPU_interpreter: {value: 3.65332, status: measured, source: "trace_v1_10s_c1p_r1.csv t=-1 (v0 L0) — used only when simulating Interpreter GPU runs"}
+
+power_w:      # battery-side total power, -current_raw(uA)*voltage. ABSOLUTE ACCURACY UNCERTIFIED (MEASUREMENT_DEFINITION.md §10) — ratios only
+  load_d100_first30s:
+    GPU:  {value: 7.4258, status: measured, source: "m2_H1 seg 0 first 30 s mean (CompiledModel)"}
+    NPU:  {value: 5.7273, status: measured, source: "n1300 first 30 s mean"}
+    CPU4: {value: 7.3615, status: measured, source: "c600_r1 first 30 s mean (includes the 10 s boost ~11 W)"}
+    GPU_interpreter: {value: 6.5743, status: measured, source: "c1p_r1 first 30 s mean (v0 P0)"}
+  idle: {value: 0.581, status: measured, source: "NPU_FORMAL_RESULTS.md:239 100-run joint idle median (0.38~0.89 W per run)"}
+  alpha: {value: {GPU: 1.3914, NPU: 1.6791, CPU4: 2.8901, GPU_interpreter: 1.5190}, status: measured-fit, source: "d1sim/out/throttle_fit_v1.json alpha (log regression on 10 s bins with s<=0.95; n 51/100/58/54)"}
+  switch: {value: idle, status: placeholder, source: "power during model init not measured"}
+
+thermal:      # SHARED device state (d1sim/throttle_v1.py ThermalV1): 2-node SKIN + AP fast node. Fit on measured power (stage A).
+  params: {value: file:throttle_v1_thermal.json, status: measured-fit, source: "fit runs m2_H1 s0 + n1300 + c1p_r1 + c600_r1 (SKIN MAE 0.13~0.33); half-holdout SKIN MAE 0.14~0.83 (M2r H 0.81~0.83 — NPU 600 s heating under-predicted ~1.3 C at end)"}
+  tau_f_s: {value: 34.4, status: measured, source: "평가층_사전등록_v1.md:47 GPU SKIN heating tau (fixed)"}
+  tau_a_s: {value: 30.0, status: measured-fit, source: "r3 grid on pooled AP residual; the [D] 17 s value was r1·r2"}
+  A0_ap_minus_skin_at_start: {value: -1.0, status: measured, source: "load_start rows: C1a -1.0 · N1300 -1.3 · M1 -1.0 (per-run value used when simulating a measured run)"}
+  t_start_c: {value: 30.3, status: measured, source: "평가층_사전등록_v1.md:50 load-start SKIN median (treated as ambient — same assumption as v0)"}
+
+throttle:     # per-resource controllers (M-P: AP-triggered integrating controller; NPU two steps). STATUS: 모형 미완
+  GPU:  {value: file:throttle_v1_GPU_compiledmodel.json, status: measured-fit, source: "fit m2_H1 s0; half-holdout m2_H2 s0 · m1 heat. Closed loop: onset 0/-10/-20 s, 540~600 -4~-5 %, power 0.45. T_off placeholder (T_set-2) — no admissible T_off reproduced M1 20 s with measured AP"}
+  GPU_interpreter: {value: file:throttle_v1_GPU_interpreter.json, status: measured-fit, source: "fit c1p_r1; half-holdout c1p_r2 · C1a (onset 0/0/0, plateau -8/+2/-5 %) · M3 (onset -120 s FAIL)"}
+  NPU:  {value: file:throttle_v1_NPU.json, status: measured-fit, source: "fit n1300 (levels +0.093/+0.027, K 7.2e-5); half-holdout m2r_H1·H2 s0. Closed loop: step 1 -90~-110 s, step 2 -30~-90 s FAIL (model AP too hot early); levels/end-60 OK"}
+  CPU4: {value: file:throttle_v1_CPU4_interpreter.json, status: measured-fit, source: "fit c600_r1; half-holdout c600_r2: onset +10 s, plateau -0.6/-4.8 % OK. First-10 s boost NOT modelled"}
+  npu_release: {value: {R-fast: "AP < T1-0.5 -> release (<=20 s step)", R-skin: "SKIN < 37.6 (model SKIN at step 1) -> release"}, status: untested, source: "no NPU recovery data — tonight M1-NPU (sim/M1_NPU_사전등록_v1.md)"}
+
+status_map:   # thermal_status from SKIN (record + npumgr baseline input). NOT a throttle trigger.
+  hal_skin_thresholds_c: {value: {LIGHT: 40.0, MODERATE: 42.0, SEVERE: 45.0}, status: measured, source: "N1300: 0->1 @SKIN 40.0 (471.5 s), 1->2 @42.0 (799.5 s) [P]; thermalservice-probe mHotThrottlingThresholds [D 0928]"}
+
+switch_cost_s:  # model (re)load before executing. Temperature-dependent for NPU->GPU (checklist ⑧ — a TABLE, not a thermal model)
+  idle->CPU4: {value: 0.031, status: measured, source: "NEXT_3WEEKS.md:193 (Interpreter)"}
+  idle->GPU:  {value: 0.273, status: measured, source: "NEXT_3WEEKS.md:192 (Interpreter 238+35 ms); CompiledModel cold model_init 283~287 ms overlaps [P M2r C1/C2]"}
+  idle->NPU:  {value: 0.111, status: measured, source: "d1sim/out/npu_init_span.json 9/25 formal 20 runs median 110.7 ms (P1)"}
+  GPU->NPU:   {value: {cold: 0.142, hot: 0.190}, status: measured, source: "M2 C1/C2 137.1·147.0 ms (model_init 21~28) · H1/H2 196.3·182.8 ms (init 26~32) [P M2_결과 §1]; cold/hot = victim start SKIN 33 vs 38"}
+  NPU->GPU:   {value: {cold: 0.406, hot: 0.805}, status: measured, source: "M2r C1/C2 395.8·417.1 ms (model_init 282.8·286.8) · H1/H2 803.1·807.6 ms (init 610.7·613.4) [P M2_결과 §2]; hot = SKIN 41.3~41.6, status 1"}
+  hot_rule:   {value: "hot if device status >= 1 or SKIN >= 40 at the switch", status: placeholder, source: "[E] only SKIN 41.3~41.6 (hot) and 31.5~33.6 (cold) were measured — the boundary is not"}
+  same:       {value: 0.0, status: placeholder, source: "model stays loaded on the same resource (assumption; M1 GPU->GPU transitions 131~188 ms were warmup+re-check only)"}
+  cross_other: {value: target_init, status: placeholder, source: "CPU<->X not measured"}
+
+limits:
+  battery_budget_j: {value: null, status: placeholder, source: "no budget -> constraint off"}
+  t_ambient_c: {value: 23.0, status: measured, source: "1002 night session start 23 C (1 reading); not used by dynamics (t_start is the reference)"}
+
+quality:
+  FP32: {value: {top1_imagenette: 0.75, top5: 0.95}, status: measured, source: "FORMAL_RESULTS.md §8 (CPU/GPU). NPU FP16 cosine 0.9997, argmax 32/32 (G4); CompiledModel GPU smoke cosine_min 1.0 [P 스모크_1002]"}
+  INT8: {value: null, status: placeholder, source: "not measured - masked (KS-D, 10/4 decision)"}
