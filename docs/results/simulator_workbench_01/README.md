@@ -1,5 +1,20 @@
 # D1Check 통합 시뮬레이터
 
+## 최신 시연 경로 — 2026-10-04
+
+[192요청 CPU/PAR 실측·동결 예측](../online_policy_study_01/overnight_sustained_run01/index.html)과 [연구 본문](../../ENERGY_AP_RESULTS_DISCUSSION_DRAFT_20260930.md)을 먼저 읽는다. 실제 온라인8세션 모두192/192 기한을 충족했다. 병행 긴급P95는127.912–131.381ms 짧았지만, 관측 에너지 차이는−5.304–+11.682J로 부호가 바뀌었다. 관측 최고AP 차이와 모형의 예상 최고AP 차이를 구분하며 작은J/AP 정책 선택은 차단한다.
+
+기존 `tools.d1_simulator arrival`은 과거queue/seed201 일정 경로다. **새192 입력은 별도 등록 경로**로 아래 명령을 사용한다. Python·NumPy·Matplotlib 환경에서 새 출력 폴더를 지정한다. ADB/기기/외부 대용량 원본은 필요 없다.
+
+```powershell
+python -B -m tools.d1_sustained_readout predict --bundle docs/results/online_policy_study_01/overnight_sustained_run01 --index 0 --policy CPU_URGENT_ONLINE_V1 --output output/sustained_cpu
+python -B -m tools.d1_sustained_readout predict --bundle docs/results/online_policy_study_01/overnight_sustained_run01 --index 0 --policy B2_PARALLEL_ONLINE_V1 --output output/sustained_par
+```
+
+초기조건0의120초 모형값 CPU185.389926J/PAR183.299134J를 재현한다. 초기값은 저장된 부하 전 AP 이력과 전력이며 이후 실제 미래 관측은 사용하지 않는다. 전체 실측 재분석과 파일 의존성은 [해당 README](../online_policy_study_01/overnight_sustained_run01/README.md)를 따른다. 입력·계수·공유물 해시가 다르면 차단하며 새 도착/정책을 임의로 허용하지 않는다. strict=false, accuracy_pass/policy_winner=null, experiment_ready=false.
+
+아래는 2026-10-02에 제공한 기존 경로의 사용법과 당시 확장 과제다. 완료된192요청 확인을 다시 준비·실행하라는 지시가 아니다. 기존 verification.json은 당시 검증이며 최신 근거는 새 번들의 verification.json/resources.json에 분리했다.
+
 [통합 시작 화면](index.html) · [도착 일정/실측 참조](arrival/index.html) · [고정 870건 모형](episode/index.html) · [검증](verification.json)
 
 2026-10-02: 여러 개의 분석 스크립트를 찾아 조립하던 경로를 `tools.d1_simulator` 한 진입점으로 연결했다. 새 정책·새 계수·새 실측 없이 기존 엔진과 지원 판정을 재사용한다. 소프트웨어 실행 경로는 완료했으며 **임의 도착의 에너지·AP 예측 또는 열 피드백 모형이 검증 완료됐다는 의미는 아니다.** `experiment_ready=false`와 기존 기본/strict 규칙은 유지한다.

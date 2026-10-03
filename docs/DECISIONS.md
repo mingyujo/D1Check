@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-04 연구 본문·시뮬레이터 시연 안내 최신화 완료
+
+- [본문](ENERGY_AP_RESULTS_DISCUSSION_DRAFT_20260930.md)에 등록192요청 온라인8세션의 방법·관측·A/B 예측·오차·한계와 PC 시연 순서를 반영했다. PAR 응답 개선은 관측 결과, 최고AP 증가 +0.728~+0.748°C는 동일 초기조건의 모형 예측임을 구분했다. 실제 최고AP 차이 −0.4~+0.4°C를 열 우월성으로 해석하지 않는다.
+- 루트 README·[통합 화면](results/simulator_workbench_01/index.html)·사용법의 오래된 ‘최신/미완료’ 안내를 현재 근거와 역사적 기록으로 정리했다. 원본·계수·기존 결과/검증 파일·strict·experiment_ready=false 불변. 새 실측/배치/적합/빌드/기기 명령0.
+- 기존 CSV·공유물 해시·본문 수치·로컬 링크·HTML 구조를 대조했다. 검증 대상은 e4fd9a88 기반 문서 수정이며 기존 모델 정확도 검증을 재수행한 것이 아니다. 다음 행동 하나: 완성된 본문과 통합 화면으로 팀 결과 시연·보고에 사용한다. 추가 감사나 동일 실측 자동 반복은 없다.
+
 ## 2026-10-04 지속192 CPU/PAR 확인8 완료·제한 시뮬레이터 연결
 
 - [보고서](ENERGY_THERMAL_OVERNIGHT_RESULTS_20261004.md), [대시보드·재현](results/online_policy_study_01/overnight_sustained_run01/README.md). 별도opt-in192/400ms·CPU/PAR4쌍8세션전부완료. 본1536+warmup64=1600/runtime32/staging8·56/pull·push·설치각1/ADB6647/2588.054초. 재시도·추가계획0. 앱cleanup8·회수8·host정리8·설치정리1·최종ps대상부재·parent/child exit0. 옛FAIL/원본/미소비계획/기본/strict불변.
