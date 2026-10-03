@@ -76,3 +76,5 @@ python -B -m tools.d1_separated_power_results --root C:/Users/LG/Documents/D1Che
 ```
 
 다음 PC 작업 하나: 이미 회수된 마지막 CPU의 작업 종료 후 전력·열 상승을 시간·센서·host 관측으로 더 국소화하여, 정책 비교에서 배경 변동을 예측하지 못하는 조건을 명시한다. 같은 확인 배치를 자동 반복하거나 이 실패를 제외한 순위를 만들지 않는다.
+
+후속 PC 판독: [작업 후 유휴 상승·정책 사용 경계](../post_idle_pc_v1/README.md). 기존 수치와 원본은 변경하지 않았다.

@@ -31,6 +31,8 @@ class ReadoutTests(unittest.TestCase):
             first=r.shared.p.read(root/'a/result.json')
             self.assertEqual(len(first['forecast']['ledger']),96)
             self.assertFalse(first['experiment_ready'])
+            self.assertIsNone(first['decision_support']['future_error_bound'])
+            self.assertFalse(first['decision_support']['equality_of_policies_established'])
             cases=r.shared.p.read(root/'initial_inputs.json')
             cases[0]['initial'].update(observed_ap_c=[999], power_samples=[999])
             r.shared.write(root/'initial_inputs.json',cases);self.bind(root)
@@ -54,6 +56,16 @@ class ReadoutTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     r.predict(root,'fixture',r.shared.model.POLICIES[0],root/'result')
                 self.assertFalse((root/'result').exists())
+
+    def test_policy_selection_is_not_inferred_from_point_predictions(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.bundle(root)
+            with self.assertRaisesRegex(ValueError,'no validated bound'):
+                r.predict(root,'fixture',r.shared.model.POLICIES[0],root/'out',
+                          purpose='energy-ap-policy-selection')
+            self.assertFalse((root/'out').exists())
+        with self.assertRaisesRegex(ValueError,'unknown prediction purpose'):
+            r.decision_support('silently-rank')
 
 
 if __name__=='__main__':unittest.main()

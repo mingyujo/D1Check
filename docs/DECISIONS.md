@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-03 작업 후 유휴 오차 국소화·정책 사용 경계 구현
+
+- [판독·한계·재현](results/online_policy_study_01/post_idle_pc_v1/README.md), [그림](results/online_policy_study_01/post_idle_pc_v1/index.html). 마지막CPU75–120초82.138J vs 첫CPU46.551J, 활성/대기0; AP최고36°C 첫관측약99.197초. host명령120 vs119/실패0, 화면·비충전·thermal 조건 관측상유지. 추가요청/명령급증으로 설명되지 않지만 외부앱/OS/통신/숨은열 원인은미확정. 동시활동 계측이 없어 같은기록으로원인확정불가.
+- 수치재생은 유지하고 `decision_support`와 `--purpose` 검사추가. 에너지/AP정책선택은 미래오차한도미검증으로차단, 미래bound=null/동등성미입증. 사후최대오차를보편한도로쓰지않음. 큰예측실패자체해결/모형완성아님. 기존모형/strict/기본·experiment_ready=false 보존, 재적합/제외/기기/계획/claim0.
+- 관련PC6검사·원본6세션/144창·실CLI수치불변/정책선택출력차단·freeze해시불변 확인. 다음 행동: 확보한 정책 비교를 서비스 제약 충족·응답 차이와 에너지/열 우열 유보로 구분해 연구 본문에 연결한다. 새변수없는동일실측반복은 하지않는다. 아래는이전이력.
+
 ## 2026-10-03 분리 부하 개발3·동결·독립 확인6 완료
 
 - [결과·소비·재현](results/online_policy_study_01/separated_power_final/README.md), [대시보드](results/online_policy_study_01/separated_power_final/index.html). 준비 중 silent/reaped 조회 누락을 공식창 승인 전 최대1회로 분리하고 새 관측 성공 후에만 진행하도록 보완했다. 기존 timeout/안전 gate/APK 불변. 실제 원인 미확정; 성공 run04의 누락허용 사용0회.

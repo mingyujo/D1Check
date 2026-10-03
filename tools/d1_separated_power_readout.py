@@ -6,7 +6,32 @@ from tools import d1_online_policy_readout as shared
 from tools import d1_separated_power_protocol as protocol
 
 
-def predict(bundle, case_id, policy, output):
+def decision_support(purpose='descriptive'):
+    """Keep numerical predictions separate from justified policy selection.
+
+    A retrospective largest residual is not a calibrated bound for a new run.
+    No confirmation observation is supplied to the forecast through this guard.
+    """
+    if purpose not in ('descriptive', 'energy-ap-policy-selection'):
+        raise ValueError('unknown prediction purpose')
+    if purpose == 'energy-ap-policy-selection':
+        raise ValueError('energy/AP policy selection unavailable: future background power and thermal variation have no validated bound')
+    return dict(
+        purpose=purpose, numerical_prediction_available=True,
+        energy_ap_policy_ranking='withheld_unvalidated_background_variation',
+        future_error_bound=None, future_error_probability=None,
+        equality_of_policies_established=False,
+        retrospective_error_is_future_bound=False,
+        assumptions=['preload whole-device background power remains representative',
+                     'no unobserved heat input or performance change beyond registered model'],
+        limitations=['benchmark lane idle is not whole-device idle',
+                     'thermal status 0 does not establish constant background power',
+                     'small error in another session does not certify this forecast'],
+        experiment_ready=False)
+
+
+def predict(bundle, case_id, policy, output, purpose='descriptive'):
+    support = decision_support(purpose)
     bundle, output = Path(bundle), Path(output)
     resources = shared.p.read(bundle / 'resources.json')
     bindings = resources['files']
@@ -36,16 +61,19 @@ def predict(bundle, case_id, policy, output):
         forecast=ledger, costs=costs, uses_future_measurements=False,
         initialization='registered pre35 AP and pre[-20,30] mean whole-device W',
         model_sha256=bindings['model.json'], initial_inputs_sha256=bindings['initial_inputs.json'],
-        scope=frozen['scope'], accuracy_pass=None, experiment_ready=False, device_commands=0))
-    return dict(output=str(output), whole_120s_j=costs['whole_120s_j'], device_commands=0)
+        scope=frozen['scope'], decision_support=support,
+        accuracy_pass=None, experiment_ready=False, device_commands=0))
+    return dict(output=str(output), whole_120s_j=costs['whole_120s_j'],
+                energy_ap_policy_ranking=support['energy_ap_policy_ranking'],device_commands=0)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for key in ('bundle', 'case-id', 'policy', 'output'):
         parser.add_argument('--' + key, required=True)
+    parser.add_argument('--purpose', choices=('descriptive', 'energy-ap-policy-selection'), default='descriptive')
     args = parser.parse_args()
-    print(json.dumps(predict(args.bundle, args.case_id, args.policy, args.output), indent=2))
+    print(json.dumps(predict(args.bundle, args.case_id, args.policy, args.output, args.purpose), indent=2))
 
 
 if __name__ == '__main__':
