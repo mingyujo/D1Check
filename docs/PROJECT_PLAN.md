@@ -1,5 +1,12 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-04 최대6시간 자율 작업 제안 — 실패 복구 포함
+
+- [시간·입력·예산·중단·마무리](ENERGY_THERMAL_OVERNIGHT_PLAN_20261004.md). PC90분→기기 최대180분→분석75분→Git15분. 단일192요청/400ms CPU–PAR 후보를 검토하고 적격일 때만4쌍8세션 제안. 현재Android/host96고정이므로 opt-in구현·PC검증·서명빌드·새계획동결 전에는 실행 불가. DESIGN_PROPOSED_NOT_RUN_READY.
+- 사용자 추가 요청의 실패 수정은 최대2개 추가세션/총10시도/실행계획최대3 안에서 재현된 코드 오류만 PC수정 후 새ID로 진행하도록 제안. 기존계획재개·환경완화·모형오차 때문에 재측정 금지. 총2000추론/runtime40/staging10·70, push·설치·설치본pull각최대3. 기존식 참고예약9610초/ADB32600은192경로 재검증 전 확정 실행예산 아님.
+- 이번에는 계획 작성·산술 대조만, 기기/빌드/실행계획/claim0. 기존원본/FAIL/모형/strict/experiment_ready=false 보존. 다음 행동: 실행 지시 후90분 PC gate부터 수행; 안 되면 기기 단계 없이 가능한 분석·문서·Git까지 완료. 시뮬레이터 산출물 마무리와 정책 절감 입증은 구분한다.
+
+
 ## 2026-10-04 CPU–PAR 판별 가능성 PC 완료 — 동일 배치 확대 보류
 
 - [판정·가정·재현](results/online_policy_study_01/policy_feasibility_pc_v1/README.md), [민감도 화면](results/online_policy_study_01/policy_feasibility_pc_v1/evaluation/index.html). 기존96요청 CPU/PAR만 선정, 새입력검색/적합/예측/실측0. 관측 차이 +1.657/−42.939J의 기술적SD31.534J는 두 비교뿐이며 미래분산이 아님. 동결 차이1.712761J에 알려진분산 정규근사를 가정하면2661쌍; 실제 필요횟수·권고가 아니다. 8쌍 예시에는SD1.729J 이하가 필요하지만 달성근거 없음.
