@@ -1,5 +1,13 @@
 # D1Check 결정 기록
 
+## 2026-10-03 배경 활동 개발4 v3 Run02 — 수집 완료·trace 계약 부적격
+
+- [보고서·소비·재현](results/online_policy_study_01/background_activity_run02/README.md), [대시보드](results/online_policy_study_01/background_activity_run02/index.html). 새 승인 v3 단1회, C0→CPU96→PAR96→C0 4/4 완료. 본192+warmup32=224/runtime16/staging4·28/설치본pull1/tracepull4/APKpush·설치0/ADB3260(실행기3259+선택1)/기기작업1243.243초, 원본 FINAL_RECEIPT 완료·계획 소비/종료. 연결소실/timeout/추가실행 없음.
+- PAR 실제병행13.154초. 120초 관측→기존 동결 조건부J: CPU171.210→161.438(−9.772), PAR157.006→152.319(−4.688). AP MAE0.207/0.278°C(common35초→냉각말); C0전후138.729/141.342J. 시작AP27.6–28.2°C 원래 범위 밖/계측변경 개발 자료이며 strict·정확도·정책 우월 PASS 아님. 계수 적합/후보채택/독립확인0, 기본/strict/experiment_ready=false 유지.
+- 앱 정상cleanup4 +host정리4/최종 저장ps 대상부재; parent/child 종료exit0/뒤PC에서PID부재. 원본17051파일205776672byte inventory·4trace 보존. 공식TP v58.2 hash확인/SQL16회 exit0; 네 trace 모두 config_write_into_file_no_flush=1로 사전 내용검사 거부. 메모리 설정 경고이지 실제 손실·무선 원인 확정 아님. file_write와flush 주기가 다른 점 확인. system CPU귀속null; selfCPU·과거입력56개 별도판독. 새 readout PC2검사 통과, Android/빌드0.
+- 다음 PC 행동 하나: 확보된 네 trace의 flush 설정 경고와 실제 loss/clock/CPU coverage를 분리해 판독 보완. 원래 부적격 판정 보존; 새 기기계획/실측 자동추가 없음. 아래는 과거 기록.
+
+
 ## 2026-10-03 결정 — 새 개발4는 설치 없는 v3로 분리 (PC 구현 채택·실기기 미승인)
 
 - [계획·예산·명령](results/online_policy_study_01/background_activity_pc_v1/README.md), [검증](results/online_policy_study_01/background_activity_pc_v1/plan_v3/verification.json). 도움말 수정 소스를 새 ID BACKGROUND-ACTIVITY-DEVELOPMENT-03에 동결. plan_v3 SHA dbec1de3…ff501. PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED; 출력/registry/claim 없음. stopped v2·원본 보존.

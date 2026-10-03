@@ -1,5 +1,7 @@
 # 배경·열 이력 개발 대조 4세션 — PC 준비 완료, 2026-10-03
 
+> 최신: 새 plan_v3 수집4/4 완료·소비/종료, 시스템 trace 계약 부적격. [Run02 결과](../background_activity_run02/README.md). 아래 준비·중단 기록은 과거 사실이며 이 계획을 재실행하지 않는다.
+
 ## 2026-10-03 최신 계획 v3 — 설치 없는 미승인 개발4
 
 이 절이 현재 실행 대상이다. 아래 v2 명령·준비 수치는 **과거 기록**이며 v2는 [stopped_no_resume](../background_activity_run01/README.md)다. 새 ID `BACKGROUND-ACTIVITY-DEVELOPMENT-03`만 준비했다. 상태 `PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED`, 출력·registry·소비 claim 없음. 이번 PC 작업은 Run/기기 명령/재빌드 0회다.

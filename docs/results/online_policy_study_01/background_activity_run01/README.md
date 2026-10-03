@@ -1,5 +1,7 @@
 # 배경 활동 개발 대조 Run01 — 앱 시작 전 중단, 2026-10-03
 
+> 최신: 새 plan_v3 수집4/4 완료·소비/종료, 시스템 trace 계약 부적격. [Run02 결과](../background_activity_run02/README.md). 아래 준비·중단 기록은 과거 사실이며 이 계획을 재실행하지 않는다.
+
 **stopped_no_resume.** 승인된 plan_v2를 한 번 호출했다. 새 APK 설치·기기 동일성·host 환경 확인은 통과했지만 첫 C0의 trace 준비에서 `perfetto --help` exit1을 실패로 취급해 종료했다. 앱 시작/추론/공식 관측은 0이다. 새 에너지·AP 오차, 계수 식별, 독립 확인은 없다. 같은 계획을 재실행하거나 새 실행 계획을 자동 생성하지 않았다.
 
 [작은 요약](summary.json) · [종료 화면](index.html) · [원래 준비 계약](../background_activity_pc_v1/README.md)
