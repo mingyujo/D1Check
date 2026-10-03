@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-03 GitHub 공유·S26 최신 계측 인계
+
+- [팀 안내](team/README.md), [S26 전달문](team/S26_HANDOFF_20261003.md). A24 PC 완료5b3de27은 실제 원격 반영 확인. S26 원격cea8eae를 fetch/읽기 전용 대조하여 EfficientNet NPU20런과 MobileNet N1300/M2양방향/M1의 완료 사실을 반영했다. 오래된 “NPU 전부 미검증” 안내를 최신으로 쓰지 않는다. S26원본 전체 재분석/브랜치merge/기기 실행0.
+- 기존 export·에너지 적격성·두 작업 대표 품질/요청 경계를 우선 연결한다. 추가 N1300/M1/M2 CPU 피해자 등은 실제 사용할 연구 범위별 **권고·미승인**, 새 계획/claim 없음. 기기별 계수/엔진/모델·개발/독립확인 분리, 기본/strict/experiment_ready=false 유지. 다음 협업 행동은 담당자의 기존 증거/미보유 항목 회신; A24 다음 PC 분석은 기존 확인6의 오차와 정책 차이 대조로 유지한다.
+
+
 ## 2026-10-03 배경4 PC 식별 완료 — 전력 초기화 수정·gamma 미채택
 
 - [보고서·재현·한계](results/online_policy_study_01/background_identification_pc_v1/README.md), [대시보드](results/online_policy_study_01/background_identification_pc_v1/index.html). 적격 v4 C0/CPU + v6 PAR/C0 두 block 재사용. frozen model의 preload −20~30초를 background 판독기10~30초와 대조해 구현 오류 수정; 기존 수치·원자료 보존/legacy 재현 제공. 120초 J 오차 +4.041/−2.162/−3.252/+3.585, 평균절대8.363→3.260J. AP 초기화·계수·MAE 불변(평균0.184408°C).

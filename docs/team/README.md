@@ -1,3 +1,21 @@
+# D1Check 팀 안내 — 2026-10-03 최신 체크포인트
+
+**최신 인계:** [S26 담당자 전달·남은 실측·완료 조건](S26_HANDOFF_20261003.md). A24 기준 `5b3de27`, 실제 원격 S26 `s26-measure` 기준 `cea8eae`를 대조했다. 아래 접힌10/1 안내는 당시 이력이며 실행 지시가 아니다.
+
+- **A24:** [배경 개발4 PC 분석](../results/online_policy_study_01/background_identification_pc_v1/README.md) / [대시보드](../results/online_policy_study_01/background_identification_pc_v1/index.html). 전력 초기화 계약 오류 수정으로120초 J 평균절대오차8.363→3.260J, AP MAE0.184°C 불변. gamma 후보는 제외 평가 악화로 미채택. 독립 확인·정책의 작은 차이 판정은 별도이며 기존 확인6 PC 대조는 아직 미완료다.
+- **S26:** 9/28 EfficientNet NPU20런,10/2 밤 MobileNet NPU1300초·GPU↔NPU ABBA·GPU d10 회복 결과가 원격에 있다. “NPU 전부 미검증”이라는 과거 안내를 현재 상태로 쓰지 않는다. 반대로 합성입력/단일모델 pilot을 두 작업 대표 품질·도착 정책 독립 확인으로 확대하지 않는다.
+- **다음 협업:** 기존 raw의 최소 재현 export·C2 에너지 판독 근거와 두 모델 품질/요청 경계 보유 자료를 먼저 연결한다. 누락된 실제 사용 상태만 추가 수집 대상으로 남긴다. N1300/M1 반복·M2 CPU 피해자는 목적별 조건부 후보이지 일괄 실행 승인이 아니다.
+- 소스·문서·작은 재현 JSON/CSV·그림은 현재 `feature/arrival-scheduling-20260923`에 공유한다. S26 기록은 별도 `s26-measure`에 있으며 강제 merge하지 않았다. 대용량raw·모델/AOT·APK·키는 별도 보존. 기존 종료계획/FAIL·기본 모형/strict/experiment_ready=false 유지. 이번 기기 명령0.
+
+## 읽는 순서
+
+1. [최신 STATUS](../PROJECT_STATUS.md)
+2. [S26 전달문: 완료/필수/조건부·자료 요청](S26_HANDOFF_20261003.md)
+3. [A24 최신 분석·검증·재현](../results/online_policy_study_01/background_identification_pc_v1/README.md)
+
+<details>
+<summary>2026-10-01 팀 안내와 그 이전 이력 (현재 실행 지시 아님)</summary>
+
 # D1Check 팀 안내 — 2026-10-01 최신 체크포인트
 
 **최신 PC 판정:** [부하 전 유휴 전력 후보](../RESIDENT_POWER_CANDIDATE_PC_20261001.md)를 기존4세션에 평가했으나2개선/2악화로 채택하지 않았다. [재현 입력·결과](../results/resident_power_candidate_01/README.md). 기기 실행0, 다음은 무부하 대조를 포함한 최소 원인 분리 설계이며 새 실행 계획은 없다.
@@ -178,5 +196,7 @@ MobileNet V1 NPU 성공·합성 입력32개·manifest 수정 원인은 **팀원 
 GitHub에는 소스·검증 도구·계약·요약 문서를 공유한다. 모델/컴파일 binary, APK, 키·토큰·개인 설정, 외부 raw 전체·캐시는 새로 넣지 않는다. **기존 legacy MobileNet asset은 이미 추적된 과거 파일**이며 이번에 추가한 모델이 아니다. EfficientDet exact binary와 배포 권한 미확인 파생 AOT는 저장소·PR·APK·팀 bundle에 포함하지 않는다. 승인 실행자가 고정 원 URL에서 직접 확보하는 비배포 경계를 유지한다.
 
 기존 상세 보고서의 `C:/Users/LG/Documents/...`는 담당자 PC의 **로컬 전용 위치**다. GitHub나 팀원 PC에서 열리는 링크가 아니다. 기존 원본은 담당자가 보존하고 필요한 경우 공유 가능 범위를 검토한 뒤 별도 checksum/산출물 목록으로 전달한다. 이 안내의 상대 링크는 저장소 문서만 가리킨다. master merge·타인 브랜치 변경·실기기 실행은 이번 문서 공유에 포함하지 않는다.
+
+</details>
 
 </details>
