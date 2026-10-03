@@ -1,5 +1,12 @@
 # D1Check 결정 기록
 
+## 2026-10-03 확인6 오차와 정책 차이 PC 대조 완료
+
+- [판정·재현](results/online_policy_study_01/policy_resolution_pc_v1/README.md), [결과 화면](results/online_policy_study_01/policy_resolution_pc_v1/evaluation/index.html). 기존 확인6 전부 보존·새 적합/실측0. 동일 초기6×정책3의 제한된 예측에서 PAR−CPU J −1.712761, 최고AP +0.793~0.816°C; SER +2.481829J/+0.194~0.223°C. 기존 관측 비교4개와 원 예측 J6개 재현.
+- 이 96요청에서 CPU/PAR 기한96/96, SER61/96; PAR 긴급P95 −469/−456ms. 그러나 잔차2×2 대입 J 차이는 PAR −40.968~+7.378, SER −39.019~+5.083으로 부호 비보존. 사후 산술이며 미래 bound/신뢰구간 아님. 관측 서비스 결과·제한 예측 허용, 작은 J/AP 정책 우열 보류/기존 선택 차단 유지. 기본/strict/experiment_ready=false·동결/FAIL 불변.
+- 관련 PC7 통과·실제CLI/그림/CSV/hash 확인. 기기/APK/계획/claim0. **다음 행동 하나: 이 결과를 연구 본문의 CPU/PAR 응답–발열 상충과 에너지 우열 보류에 반영.** 동일 실측 반복·새 후보 자동 탐색 없음.
+
+
 ## 2026-10-03 GitHub 공유·S26 최신 계측 인계
 
 - [팀 안내](team/README.md), [S26 전달문](team/S26_HANDOFF_20261003.md). A24 PC 완료5b3de27은 실제 원격 반영 확인. S26 원격cea8eae를 fetch/읽기 전용 대조하여 EfficientNet NPU20런과 MobileNet N1300/M2양방향/M1의 완료 사실을 반영했다. 오래된 “NPU 전부 미검증” 안내를 최신으로 쓰지 않는다. S26원본 전체 재분석/브랜치merge/기기 실행0.

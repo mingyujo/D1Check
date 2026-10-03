@@ -1,0 +1,9 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><title>정책 차이와 확인 오차</title>
+<style>body{max-width:1100px;margin:2rem auto;font:17px/1.6 system-ui;padding:1rem}table{border-collapse:collapse}td,th{border:1px solid #bbb;padding:.5rem}img{width:100%}.notice{background:#fff2cc;padding:1rem}</style>
+<h1>정책 차이와 확인 오차</h1><p class="notice">새 실측 0 · 동결 계수 유지 · 기존 독립 확인 6개를 사후 재분석. 에너지/AP 정책 우열 보류, experiment_ready=false.</p>
+<p>서비스: 이 96요청에서는 CPU/PAR 모두 기한 96/96, SER 61/96. PAR 긴급 P95는 CPU보다 두 실행에서 약 0.46초 짧았습니다. 인과 효과·다른 부하로 일반화하지 않습니다.</p>
+<table><tr><th>실행</th><th>J 오차</th><th>AP MAE °C</th><th>긴급 P95 ms</th><th>전체 기한</th></tr><tr><td>0 CPU</td><td>+4.354</td><td>0.271</td><td>764.7</td><td>96/96</td></tr><tr><td>1 PAR</td><td>+3.758</td><td>0.436</td><td>295.7</td><td>96/96</td></tr><tr><td>2 SER</td><td>+1.753</td><td>0.311</td><td>867.3</td><td>61/96</td></tr><tr><td>3 SER</td><td>+6.004</td><td>0.151</td><td>896.0</td><td>61/96</td></tr><tr><td>4 PAR</td><td>-4.737</td><td>0.227</td><td>295.4</td><td>96/96</td></tr><tr><td>5 CPU</td><td>-35.497</td><td>0.927</td><td>751.0</td><td>96/96</td></tr></table>
+<img src="comparison.png" alt="보존된 여섯 확인의 에너지 오차, AP MAE, 실제 긴급 응답 P95">
+<p>에너지는 0~120초. AP는 각 세션의 실제 조회 시각(~35초 이후~180초 전)이며 서로 다른 최고온도 창은 CSV에 명시했습니다. 센서 점은 독립 세션이 아닙니다.</p>
+<p>동일 초기 입력의 18개 PC 예측은 새로운 실측이 아닙니다. 과거 에너지 잔차 2×2 조합 대입은 산술 민감도이며 미래 오차 한도·확률·신뢰구간이 아닙니다. 실제 세션 차이는 초기조건/배경활동 차이를 포함합니다.</p>
+<p><a href="../README.md">결론·정확한 수치·재현</a> · <a href="evaluation.json">결과 JSON</a> · <a href="same_initial_comparisons.csv">동일 초기 입력 비교</a> · <a href="observed_contrasts.csv">관측 차이와 오차</a></p></html>
