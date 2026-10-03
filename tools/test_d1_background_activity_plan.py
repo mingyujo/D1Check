@@ -16,7 +16,7 @@ class FakeDevice:
     def call(self,*args,**kw):
         self.calls.append((args,kw));self.sequence+=1
         stdout=b'';code=0
-        if args[:3]==('shell','perfetto','--help'):stdout=b'--detach --attach --is_detached --txt'
+        if args[:3]==('shell','perfetto','--help'):stdout=b'Usage: perfetto\n--detach --attach --is_detached --txt'
         if args[:3]==('shell','perfetto','--query'):stdout=b'linux.ftrace linux.process_stats'
         if args[:3]==('shell','test','-e'):code=1
         if args[:3]==('shell','stat','-c'):stdout=b'3'
@@ -59,6 +59,26 @@ class BackgroundTests(unittest.TestCase):
         d=FakeDevice();d.call=lambda *a,**kw:SimpleNamespace(stdout=b'old perfetto',stderr=b'',returncode=0)
         with self.assertRaisesRegex(ValueError,'CLI unsupported'):b.trace_start(d,str(uuid.uuid4()),'unused')
         self.assertFalse(hasattr(d,'background_trace'))
+
+    def test_actual_a24_help_exit_one_is_read_once_before_trace_start(self):
+        fixture=Path(__file__).parent/'fixtures/perfetto_help_a24_exit1.txt'
+        with tempfile.TemporaryDirectory() as tmp:
+            d=FakeDevice();original=d.call;help_calls=[]
+            def actual_help(*args,**kwargs):
+                if args==('shell','perfetto','--help'):
+                    help_calls.append(kwargs)
+                    self.assertFalse(kwargs['check'])
+                    return SimpleNamespace(stdout=b'',stderr=fixture.read_bytes(),returncode=1)
+                return original(*args,**kwargs)
+            d.call=actual_help;b.trace_start(d,str(uuid.uuid4()),tmp)
+            self.assertEqual(len(help_calls),1)
+            self.assertTrue(hasattr(d,'background_trace'))
+            b.trace_recover(d,10**15)
+            for code in (2,):
+                bad=FakeDevice()
+                bad.call=lambda *a,**kw:SimpleNamespace(stdout=b'',stderr=fixture.read_bytes(),returncode=code)
+                with self.assertRaisesRegex(ValueError,'help failed'):b.trace_start(bad,str(uuid.uuid4()),tmp)
+                self.assertFalse(hasattr(bad,'background_trace'))
 
     def test_real_runner_boundary_trace_then_launch_cleanup_then_trace_stop(self):
         from tools import d1_energy_host_lifecycle as life

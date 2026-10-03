@@ -126,9 +126,13 @@ def trace_identity(session):
 
 def trace_start(d,session,folder):
     key,remote=trace_identity(session)
-    help_result=d.call('shell','perfetto','--help',timeout=5)
+    # This installed Perfetto prints complete help to stderr and returns 1.
+    # Accept only recognizable help with every required option, not arbitrary failures.
+    help_result=d.call('shell','perfetto','--help',timeout=5,check=False)
     helptext=(help_result.stdout+help_result.stderr).decode(errors='replace')
-    require(all(x in helptext for x in ('--detach','--attach','--is_detached','--txt')),'Perfetto required CLI unsupported; no app launch')
+    require(help_result.returncode in (0,1) and 'Usage: perfetto' in helptext and
+        all(x in helptext for x in ('--detach','--attach','--is_detached','--txt')),
+        'Perfetto help failed or required CLI unsupported; no app launch')
     sources=d.call('shell','perfetto','--query',timeout=5).stdout.decode(errors='replace')
     require('linux.ftrace' in sources and 'linux.process_stats' in sources,'required trace data sources unavailable')
     exists=d.call('shell','test','-e',remote,check=False,timeout=3)

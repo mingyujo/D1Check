@@ -1,5 +1,7 @@
 # 배경·열 이력 개발 대조 4세션 — PC 준비 완료, 2026-10-03
 
+최신 실행: [Run01 앱 시작 전 중단·PC 판독 수정](../background_activity_run01/README.md). 아래는 실행 전 준비 기록이며 plan_v2는 이제 stopped_no_resume이다.
+
 **PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED.** 기존 후보의 불안정한 gamma와 유휴 AP 상승을 구분할 관측을 구현했다. 새 전력·AP 계수 채택, 정책 우열 확인, 실기기 실행 완료를 뜻하지 않는다. 이번 기기 명령/Run/claim은 0이며 새 계획과 출력 경로는 미소비다.
 
 [준비 화면](index.html) · [고정 계약](contract.json) · [검증·해시](verification.json) · [예산](budget.json) · [기존 후보 미채택 근거](../causal_background_pc_v1/README.md) · [원래 동결 결과](../separated_power_final/README.md)

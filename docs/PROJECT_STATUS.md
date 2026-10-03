@@ -1,5 +1,14 @@
 # D1Check 현재 상태
 
+## 2026-10-03 배경 활동 개발4 Run01 — trace help 판독으로 앱 시작 전 중단
+
+- [실행·소비·수정·근거](results/online_policy_study_01/background_activity_run01/README.md), [종료 화면](results/online_policy_study_01/background_activity_run01/index.html). 승인된 plan_v2 1회 실행: A24/설치본·host 환경 통과, 첫 C0 trace 준비의 `perfetto --help` stderr3804byte/exit1을 host가 실패로 판독. timeout/연결소실·AP 예측실패 아님. 필요한 옵션은 도움말에 있으나 실제 trace 지원·내용은 아직 미검증. stopped_no_resume로 보존.
+- APK9d8d55c2…e73fd932 설치·해시 검증. 실제 앱시작0/본·warmup·runtime0, 준비1/staging1·7/설치본pull1/APKpush·설치각1/trace0/ADB89(실행기88+선택1)/실행누적63.753초·wall92.049초. CPU/PAR/마지막C0 미시도, 공식창·새J/AP·후보식별 없음. 앱cleanup해당없음, 설치·실패단계 host정리 각1/종료ps대상부재 확인.
+- 원본484파일 inventory·원래 오류/후속 non-JSON 회수오류·checkpoint·receipt 외부 `background_activity_run_v2`와 분리 `background_activity_run_v2_pc_analysis` 보존. 상세host_identity=null·PID만 완전소유권으로 간주하지 않음. 뒤의PC조회에서parent/child부재.
+- help 조회만 exit0/1+Usage+필수옵션 모두 확인하도록 최소수정, 원본stderr fixture로 Python8 통과. 다른조회/gate/timeout/재시도불변, Android/추가빌드0. 수정후기기실행0·새계획/claim0·종료planCheck기기전차단/원래plan·APK·모형hash불변. 기본/strict/experiment_ready=false 유지.
+- 다음 행동 하나: 도움말 판독 수정본을 별도 미소비 계획의 소스해시에 연결. 종료plan_v2 재개·기존4세션자동추가 없음. 아래는 과거 기록.
+
+
 ## 2026-10-03 시스템 활동·과거 sampler 입력 및 개발 대조4 PC 준비 완료
 
 - [계약·APK·예산·명령](results/online_policy_study_01/background_activity_pc_v1/README.md), [준비 화면](results/online_policy_study_01/background_activity_pc_v1/index.html). opt-in APK에 process CPU·과거10초 전력 입력을 추가하고 기존 수집기에 UUID 소유 trace 시작/단일 회수를 연결. GPU/무선 전력 식별·새 controller 아님. 이전 gamma 후보 미채택·기본/strict/experiment_ready=false 유지.
