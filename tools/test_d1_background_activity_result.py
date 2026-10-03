@@ -57,5 +57,24 @@ class ResultTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'consumption unconfirmed'):
                 r.session(root/'plan.json',plan,entry,model,root/'unused')
 
+    def test_partial_block_requires_opt_in_and_preserves_missing_denominator(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);run=root/'run';(run/'00_a').mkdir(parents=True)
+            (run/'00_a/validated.json').write_text('{}')
+            model=root/'model.json';model.write_text('{}')
+            plan=dict(output_root=str(run),activity_model=dict(path=str(model),sha256=r.p.digest(model)),
+                entries=[dict(index=0,session_id='a'),dict(index=1,session_id='b')])
+            file=root/'plan.json';file.write_text(json.dumps(plan))
+            (run/'FINAL_RECEIPT.json').write_text(json.dumps(dict(status='stopped_no_resume',completed_sessions=1)))
+            with self.assertRaisesRegex(ValueError,'partial opt-in'):r.run(file,root/'exports',root/'blocked')
+            row=dict(condition='C0',trace_error=None)
+            with patch.object(r,'session',return_value=(row,[dict(condition='C0',common_s=1)],
+                    [dict(condition='C0',common_s=1)],[])) as call:
+                result=r.run(file,root/'exports',root/'partial',allow_partial=True)
+                call.assert_called_once()
+            self.assertFalse(result['full_planned_block_completed'])
+            self.assertEqual((result['completed_sessions'],result['planned_sessions']),(1,2))
+            self.assertEqual(result['acquisition_status'],'stopped_no_resume')
+
 
 if __name__=='__main__':unittest.main()

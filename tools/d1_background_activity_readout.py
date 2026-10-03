@@ -18,8 +18,11 @@ def read_csv(file,columns):
         return list(reader)
 
 
-def summarize(folder,start_ns,end_ns,expected_cpus=None):
+def summarize(folder,start_ns,end_ns,expected_cpus=None,deadline=None):
     folder=Path(folder)
+    def time_check():
+        if deadline is not None and time.monotonic()>deadline:raise TimeoutError('trace content audit aggregate deadline')
+    time_check()
     if not 0<=start_ns<end_ns:raise ValueError('window')
     clocks=read_csv(folder/'clock.csv',('ts','clock_id','clock_value'))
     if not clocks or any(int(c['clock_id'])!=6 or int(c['ts'])!=int(c['clock_value']) for c in clocks):
@@ -27,36 +30,43 @@ def summarize(folder,start_ns,end_ns,expected_cpus=None):
     losses=read_csv(folder/'loss.csv',('name','value'))
     if losses:raise ValueError('trace loss/error; activity inference unsupported')
     rows=read_csv(folder/'sched.csv',('ts','dur','cpu','activity_class'))
+    time_check()
     if not rows or min(int(r['ts']) for r in rows)>start_ns or max(int(r['ts'])+int(r['dur']) for r in rows)<end_ns:
         raise ValueError('trace does not bracket window')
-    groups=('benchmark','tracer','other','unknown','idle');bins=[]
-    cpus={int(r['cpu']) for r in rows}
+    groups=('benchmark','tracer','other','unknown','idle');width=5_000_000_000
+    buckets=[dict(a=a,b=min(end_ns,a+width),total={k:0 for k in groups}) for a in range(start_ns,end_ns,width)]
+    per_cpu={}
+    # Each scheduler slice contributes only to intersected bins, rather than scanning
+    # every trace row again for every bin. Bounds/clipping and denominators unchanged.
+    for i,r in enumerate(rows):
+        if i%4096==0:time_check()
+        ts=int(r['ts']);dur=int(r['dur']);cpu=int(r['cpu']);k=r['activity_class']
+        if k not in groups:raise ValueError('unregistered activity class')
+        if dur<=0:raise ValueError('overlapping/unfinished sched slices')
+        per_cpu.setdefault(cpu,[]).append((ts,ts+dur))
+        a=max(ts,start_ns);b=min(ts+dur,end_ns)
+        if b<=a:continue
+        for index in range((a-start_ns)//width,(b-1-start_ns)//width+1):
+            bucket=buckets[index];bucket['total'][k]+=min(b,bucket['b'])-max(a,bucket['a'])
+    cpus=set(per_cpu)
     if expected_cpus is not None:
         declared={int(r['cpu']) for r in read_csv(folder/'cpu.csv',('cpu',))}
         if declared != set(expected_cpus) or cpus != declared:
             raise ValueError('missing/unexpected CPU; metadata and sched coverage required')
-    for cpu in cpus:
-        previous=None
-        for row in sorted((r for r in rows if int(r['cpu'])==cpu),key=lambda r:int(r['ts'])):
-            ts=int(row['ts']);dur=int(row['dur'])
-            if dur<=0 or (previous is not None and ts<previous):raise ValueError('overlapping/unfinished sched slices')
-            previous=ts+dur
-    for a in range(start_ns,end_ns,5_000_000_000):
-        b=min(end_ns,a+5_000_000_000);total={k:0 for k in groups}
-        for r in rows:
-            k=r['activity_class']
-            if k not in total:raise ValueError('unregistered activity class')
-            ts=int(r['ts']);dur=int(r['dur'])
-            if dur<=0:raise ValueError('unfinished/negative sched duration')
-            total[k]+=max(0,min(ts+dur,b)-max(ts,a))
-        covered=sum(total.values())
-        expected=(b-a)*len(cpus)
+    for values in per_cpu.values():
+        time_check();previous=None
+        for ts,end in sorted(values):
+            if previous is not None and ts<previous:raise ValueError('overlapping/unfinished sched slices')
+            previous=end
+    bins=[]
+    for bucket in buckets:
+        a,b,total=bucket['a'],bucket['b'],bucket['total'];covered=sum(total.values());expected=(b-a)*len(cpus)
         if covered>expected:raise ValueError('overlapping/double counted scheduler slices')
         full=covered==expected
         bins.append(dict(start_s=(a-start_ns)/1e9,end_s=(b-start_ns)/1e9,
             sched_coverage_fraction=covered/expected,full_sched_coverage=full,
             **{k+'_cpu_seconds':v/1e9 if full else None for k,v in total.items()}))
-    frequencies=read_csv(folder/'frequency.csv',('ts','value','cpu'))
+    frequencies=read_csv(folder/'frequency.csv',('ts','value','cpu'));time_check()
     return dict(status='descriptive_cpu_activity_only',bins=bins,
         cpu_frequency_supported=bool(frequencies),frequency_samples=len(frequencies),
         absence_of_activity_proven=False,rail_power_identified=False,gpu_radio_identified=False,
@@ -97,9 +107,11 @@ def export(processor,trace,output,deadline=None,include_cpu=False):
 def audit(processor,processor_sha256,trace,session_folder,output,deadline,expected_cpus):
     started=time.monotonic()
     if p.digest(processor)!=processor_sha256:raise ValueError('bound TraceProcessor hash drift')
-    boundary=p.read(Path(session_folder)/'artifacts/common_boundary.json')
+    boundary_file=Path(session_folder)/'artifacts/common_boundary.json'
+    if not boundary_file.is_file():raise ValueError('no complete app common window; trace not eligible for full-window analysis')
+    boundary=p.read(boundary_file)
     export(processor,trace,output,deadline,include_cpu=True)
-    result=summarize(output,boundary['start_ns'],boundary['planned_end_ns'],expected_cpus)
+    result=summarize(output,boundary['start_ns'],boundary['planned_end_ns'],expected_cpus,deadline)
     if not all(x['full_sched_coverage'] for x in result['bins']):
         raise ValueError('incomplete CPU coverage; no next session')
     if time.monotonic()>deadline:raise TimeoutError('trace content audit aggregate deadline')

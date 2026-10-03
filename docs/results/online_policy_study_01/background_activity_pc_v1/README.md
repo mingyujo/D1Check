@@ -1,5 +1,7 @@
 # 배경·열 이력 개발 대조 4세션 — PC 준비 완료, 2026-10-03
 
+> 최신: v4 C0·CPU 적격/이후 조회 timeout 종료. 새 v5 PAR·C0만 미소비 준비했으나 이동 안내로 claim 전 보류. [현재 결과와 재개 명령](../background_activity_run03/README.md). 아래 v4 명령은 종료 기록이다.
+
 ## 2026-10-03 trace 수정 개발4 v4 — 사용자 추가 실행 승인 범위
 
 v3 완료 원본/부적격 판정은 보존한다. 새 ID BACKGROUND-ACTIVITY-DEVELOPMENT-04, 새 출력 background_activity_run_v4만 사용한다. 사용자 지시 “잘 안된거 있으면 알아서 수정해서 계속 실측해도 돼”에 따라 PC 경계 검증 후 한 번 실행한다. 계획 정적 approval=not_approved는 준비 상태 메타데이터이며 실제 승인/claim은 Run -Approved와 실행 기록에 보존한다.

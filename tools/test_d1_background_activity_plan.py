@@ -27,14 +27,15 @@ class FakeDevice:
 class BackgroundTests(unittest.TestCase):
     def test_budget_includes_trace_client_reserve_and_registered_work(self):
         x=b.budget()
-        self.assertEqual(x['explicit_inference'],2*96+4*8)
+        self.assertEqual(x['explicit_inference'],96+2*8)
         self.assertEqual(x['session_seconds'],120+90+26+485+50+45+120)
-        self.assertEqual(x['total_seconds'],440+4*x['session_seconds']+3*90)
-        self.assertEqual(x['adb_commands'],4*(3200+9)+200)
+        self.assertEqual(x['total_seconds'],425+2*x['session_seconds']+90+15)
+        self.assertEqual(x['adb_commands'],2*(3200+9)+200)
         self.assertEqual((x['retry'],x['replacement'],x['additional']),(0,0,0))
-        self.assertEqual(x['fixed_observation_seconds'],840)
+        self.assertEqual(x['fixed_observation_seconds'],420)
+        self.assertEqual(x['transport_selection_seconds'],15)
         self.assertEqual((x['apk_transfers'],x['installs'],x['installation_seconds']),(0,0,0))
-        self.assertEqual(x['installed_preflight_seconds'],440)
+        self.assertEqual(x['installed_preflight_seconds'],425)
 
     def test_trace_owner_only_and_duplicate_recovery_reuses_result(self):
         with tempfile.TemporaryDirectory() as tmp:

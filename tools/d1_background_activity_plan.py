@@ -18,9 +18,9 @@ from tools import d1_ap_background_contrast as script_source
 
 ROOT=Path(__file__).resolve().parents[1]
 VERSION='background-activity-contrast-v1'
-NAME='BACKGROUND-ACTIVITY-DEVELOPMENT-04'
-FOLDER='background_activity_plan_v4'
-ORDER=('C0_PRE','CPU_URGENT_ONLINE_V1','B2_PARALLEL_ONLINE_V1','C0_POST')
+NAME='BACKGROUND-ACTIVITY-DEVELOPMENT-05'
+FOLDER='background_activity_plan_v5'
+ORDER=('B2_PARALLEL_ONLINE_V1','C0_POST')
 CONTRACT=ROOT/'docs/results/online_policy_study_01/background_activity_pc_v1/contract.json'
 TRACE_CONFIG=ROOT/'tools/perfetto/background_activity.pbtxt'
 MODEL=ROOT/'docs/results/online_policy_study_01/separated_power_final/model.json'
@@ -30,14 +30,14 @@ require=old.require
 
 def budget():
     # Trace recovery is in addition to original 50s evidence/45s app cleanup.
-    return dict(prior.BUDGET,sessions=4,requests=192,warmup=32,explicit_inference=224,
-        runtime_creations=16,staging=4,staging_files=28,installed_host_pulls=1,
-        apk_transfers=0,installs=0,installation_seconds=0,installed_preflight_seconds=440,
-        fixed_observation_seconds=840,intersession_cooling_seconds=90,
-        trace_sessions=4,trace_recovery_seconds=120,trace_content_audit_seconds=40,trace_start_seconds=90,app_launch_seconds=26,trace_max_seconds=600,
-        trace_max_bytes=67108864,trace_host_pulls=4,
-        session_seconds=936,total_seconds=440+4*936+3*90,
-        per_session_adb_commands=3209,adb_commands=200+4*3209,
+    return dict(prior.BUDGET,sessions=2,requests=96,warmup=16,explicit_inference=112,
+        runtime_creations=8,staging=2,staging_files=14,installed_host_pulls=1,
+        apk_transfers=0,installs=0,installation_seconds=0,installed_preflight_seconds=425,
+        fixed_observation_seconds=420,intersession_cooling_seconds=90,
+        trace_sessions=2,trace_recovery_seconds=120,trace_content_audit_seconds=40,trace_start_seconds=90,app_launch_seconds=26,trace_max_seconds=600,
+        trace_max_bytes=67108864,trace_host_pulls=2,
+        session_seconds=936,total_seconds=425+2*936+90+15,transport_selection_seconds=15,
+        per_session_adb_commands=3209,adb_commands=200+2*3209,external_selection_adb_commands=1,
         adb_recovery_cleanup_reserve=109)
 
 
@@ -53,6 +53,11 @@ def script_text():
 def specification(source_file,build_file,output):
     source_file,build_file,output=map(Path,(source_file,build_file,output))
     source,build=p.read(source_file),p.read(build_file)
+    previous=p.read(output.parent/'background_activity_run_v4/FINAL_RECEIPT.json')
+    require(previous['status']=='stopped_no_resume' and previous['completed_sessions']==2,'two prior complete sessions required')
+    for index in (0,1):
+        completed=next((output.parent/'background_activity_run_v4').glob(f'{index:02d}_*/validated.json'))
+        require(p.read(completed)['status']=='eligible_descriptive_only' and p.read(completed)['phase']==('C0_PRE' if index==0 else 'CPU_URGENT_ONLINE_V1'),'prior complete evidence not eligible')
     require(old.apk_sources(build['source_code'])==old.apk_sources(cal.code_identity()),'APK/source mismatch')
     require(p.digest(build['apk_path'])==build['apk_sha256'],'APK drift')
     candidate=apk.inspect(build['apk_path'],source['apk_preflight']['toolchain'])
@@ -69,7 +74,11 @@ def specification(source_file,build_file,output):
         analysis_contract=dict(path=str(CONTRACT),sha256=p.digest(CONTRACT)),
         input_bundle=dict(path=str(CONTRACT),sha256=p.digest(CONTRACT)),
         activity_model=dict(path=str(MODEL),sha256=MODEL_SHA),
-        output_root=str(output.parent/'background_activity_run_v4'),
+        output_root=str(output.parent/'background_activity_run_v5'),
+        previous_block=dict(path=str(output.parent/'background_activity_run_v4'),
+            receipt_sha256=p.digest(output.parent/'background_activity_run_v4/FINAL_RECEIPT.json'),
+            validated={f.relative_to(output.parent/'background_activity_run_v4').as_posix():p.digest(f) for f in sorted((output.parent/'background_activity_run_v4').glob('*/validated.json'))},
+            meaning='additional development subset after stopped block; no resumption or original completion; failure warmup/history preserved'),
         trace_content_audit=dict(processor_path='C:/Users/LG/.local/share/perfetto/prebuilts/trace_processor_shell-adfa6bad3d72be3b.exe',
             processor_sha256='adfa6bad3d72be3ba9b83fa2b17b69fa13b3ab1cad0f42e52b86188bd5f0f997',
             processor_version='v58.2-add693d8b',expected_cpus=list(range(8)),seconds=40,

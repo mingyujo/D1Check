@@ -1,5 +1,11 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-03 v4 두 세션 적격·조회 timeout 종료 / v5 이동 전 미소비 보류
+
+- [결과·소비·수정·재개 명령](results/online_policy_study_01/background_activity_run03/README.md). v4 C0/CPU2적격, PAR 준비 ls3초 timeout; 원인미확정·최종 대상 ps 부재/trace 회수. 확인추론120/runtime12/ADB1803/817.657초. trace 설정 수정 실제 성공, CPU 집계 동일성 최적화·부분 분석/분모 보존 PC15통과. APK/계수 불변.
+- 사용자 추가 실행 승인에 따른 새 v5 PAR→C0 개발2 계획(112추론/2402초/ADB6618/설치0) Check 통과. 사용자 5분 뒤 이동 안내로 **claim 전 보류**; Run/추가 기기 조회/소비0, 실패/stopped 상태 아님. 다음 행동: 연결과 충분한 시간이 있을 때 v5만 현재 gate로 실행. 완료 두 세션 반복/종료 v4 재개/모형 자동채택 없음. 기본/strict/experiment_ready=false·원본/FAIL 보존.
+
+
 ## 2026-10-03 trace 내용 적격성 선행 조건 v4
 
 - 새 trace-v2 개발4에서 첫 C0의 내용 적격성 확인 후에만 CPU/PAR/C0 진행. 로컬검사40초×4를 preflight 집계 예약에서 배분해 총4454초 유지. 새 모델 적합·확인 자동 추가 없음. [근거·정확한 예산](results/online_policy_study_01/background_activity_pc_v1/README.md), [검증](results/online_policy_study_01/background_activity_pc_v1/plan_v4/verification.json). 다음 행동: 현재 A24/설치본/환경을 실행기 gate로 확인하고 v4 1회 실행·판독.

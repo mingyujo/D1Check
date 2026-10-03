@@ -91,7 +91,7 @@ def session(file, plan, entry, model, export_folder):
     cpu = interpolate(counter, [origin, end], 2_500_000_000)
     self_cpu_s = None if None in cpu else (cpu[1]-cpu[0])/1000
     try:
-        activity = trace.summarize(export_folder, origin, end)
+        activity = trace.summarize(export_folder, origin, end,plan.get('trace_content_audit',{}).get('expected_cpus'))
         trace_status = activity['status']; trace_error = None
     except ValueError as error:
         activity = None; trace_status = 'contract_ineligible'; trace_error = str(error)
@@ -124,18 +124,24 @@ def session(file, plan, entry, model, export_folder):
     return summary, curve, aps, causal
 
 
-def run(file, exports, output):
+def run(file, exports, output, allow_partial=False):
     file=Path(file);output=Path(output)
     if output.exists():raise FileExistsError('fresh readout output required')
     plan=p.read(file)
     if p.digest(plan['activity_model']['path']) != plan['activity_model']['sha256']:raise ValueError('frozen model drift')
     receipt=p.read(Path(plan['output_root'])/'FINAL_RECEIPT.json')
-    if receipt['status']!='completed_descriptive_only' or receipt['sessions']!=4:raise ValueError('not completed block')
+    complete=receipt['status']=='completed_descriptive_only'
+    if not complete and not (allow_partial and receipt['status']=='stopped_no_resume'):raise ValueError('not completed block; explicit partial opt-in required')
+    eligible=[e for e in plan['entries'] if (Path(plan['output_root'])/f"{e['index']:02d}_{e['session_id']}"/'validated.json').is_file()]
+    if len(eligible)!=(receipt['sessions'] if complete else receipt['completed_sessions']):raise ValueError('eligible session denominator mismatch')
     output.mkdir(parents=True);model=p.read(plan['activity_model']['path']);results=[];curves=[];aps=[]
-    for e in plan['entries']:
-        s, c, a, inputs=session(file,plan,e,model,Path(exports)/f"{e['index']:02d}_trace_export")
+    for e in eligible:
+        exported=Path(exports)/f"{e['index']:02d}_trace_export"
+        if not exported.exists():exported=Path(exports)/f"{e['index']:02d}_{e['session_id']}"/'trace_export'
+        s, c, a, inputs=session(file,plan,e,model,exported)
         results.append(s);curves.extend(c);aps.extend(a)
     result=dict(status='acquisition_completed_trace_contract_ineligible' if any(x['trace_error'] for x in results) else 'descriptive_only',
+                acquisition_status=receipt['status'],full_planned_block_completed=complete,completed_sessions=len(eligible),planned_sessions=len(plan['entries']),
                 plan_sha256=p.digest(file),model_sha256=p.digest(plan['activity_model']['path']),sessions=results,
                 coefficient_fit=False,candidate_adopted=False,independent_confirmation_sessions=0,experiment_ready=False)
     (output/'summary.json').write_bytes(p.canonical(result))
@@ -148,5 +154,6 @@ def run(file, exports, output):
 if __name__=='__main__':
     q=argparse.ArgumentParser()
     for key in ('plan','exports','output'):q.add_argument('--'+key,required=True)
-    a=q.parse_args();r=run(a.plan,a.exports,a.output)
+    q.add_argument('--allow-partial',action='store_true')
+    a=q.parse_args();r=run(a.plan,a.exports,a.output,a.allow_partial)
     print(json.dumps({k:v for k,v in r.items() if k!='sessions'},indent=2))

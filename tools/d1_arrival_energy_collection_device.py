@@ -278,7 +278,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
     if plan.get('resident_control_pair') or tracked_bundle(plan):
         require_host_pull_space(plan)
     registry.mkdir(parents=True,exist_ok=False);root.mkdir(parents=True,exist_ok=False)
-    start=time.monotonic();hard=start+budget['total_seconds']
+    start=time.monotonic();hard=start+budget['total_seconds']-budget.get('transport_selection_seconds',0)
     journal=None
     claim=dict(utc=legacy.utc(),plan_sha256=expected_sha,budget=budget)
     if tracked_bundle(plan):
@@ -308,7 +308,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
     if plan.get('background_activity_contrast') and plan.get('trace_content_audit'):
         d.background_trace_audit=plan['trace_content_audit']
     d.deadline=hard
-    if single:d.command_limit=budget['adb_commands']
+    if single:d.command_limit=budget['adb_commands']-budget.get('external_selection_adb_commands',0)
     complete=[];current=None;remote=None;identified=False;installation=None
     cleanup_attempted=False;cleanup_result=None
     candidate_freeze_sha=None
