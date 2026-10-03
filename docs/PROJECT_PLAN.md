@@ -1,5 +1,12 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-03 배경4 PC 식별 완료 — 전력 초기화 수정·gamma 미채택
+
+- [보고서·재현·한계](results/online_policy_study_01/background_identification_pc_v1/README.md), [대시보드](results/online_policy_study_01/background_identification_pc_v1/index.html). 적격 v4 C0/CPU + v6 PAR/C0 두 block 재사용. frozen model의 preload −20~30초를 background 판독기10~30초와 대조해 구현 오류 수정; 기존 수치·원자료 보존/legacy 재현 제공. 120초 J 오차 +4.041/−2.162/−3.252/+3.585, 평균절대8.363→3.260J. AP 초기화·계수·MAE 불변(평균0.184408°C).
+- 등록된 단일 gamma 공통최적0(무제약−0.020551), 세션별 부호 불일치. 세션제외MAE0.184408→0.199300, block제외0.203042°C로 악화해 **미채택**. 수치적 rank와 물리적 유효성 구분. 과거10초 잔차 유지도 미래10/30초J 악화. CPU 활동은 동시성 기술통계만, GPU/무선 에너지 귀속·독립PASS 아님. 기본/strict/experiment_ready=false 유지.
+- PC 관련 검사·56개 앱 입력 재현·실제 CLI/원본 수치/동결hash/공유그림 검증 완료. APK/기기/실측/새계획/claim0. 기존 후보/FAIL/종료 계획 보존. **다음 행동 하나: 기존 독립 확인6의 정책별 J/AP 오차를 동결 정책 차이와 대조해 판정 가능/보류 경계를 결과 화면에 연결.** 미채택 후보를 위한 개발4 반복·확인12 자동 실행 없음.
+
+
 ## 2026-10-03 재개 — v5 host 연결 오류 보존 / v6 남은 개발2 완료
 
 - [결과·소비·원본·재현](results/online_policy_study_01/background_activity_run04/README.md), [대시보드](results/online_policy_study_01/background_activity_run04/index.html). v5 staging에서 host127.0.0.1:5037 client 연결 rc1(21.125초) 중단, launch/추론0·ADB68/142.983초. 같은 daemon 식별과 후속 cleanup 성공; 내부원인 미확정·stopped 보존. 사용자 추가 실행 승인으로 별도 campaign retry1회 v6 준비·Check·실행, gate/timeout/APK 수정0.

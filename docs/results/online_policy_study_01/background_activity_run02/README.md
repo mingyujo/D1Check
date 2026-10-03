@@ -1,5 +1,7 @@
 # 배경 활동 개발4 Run02 — 수집 완료·시스템 trace 계약 부적격
 
+> 2026-10-03 PC 정정: 이 문서의 과거 J 결과는 10~30초 초기화로 보존한다. 동결 모형의 −20~30초 계약 복원과 선택된 적격 네 세션의 정정값은 [후속 판독](../background_identification_pc_v1/README.md)을 따른다. 과거 수치 재현에는 `--legacy-preload-window`를 추가한다. AP·원자료·실행 판정은 변경하지 않았다.
+
 ## 결과와 경계
 
 2026-10-03 사용자 `ㄱㄱ`로 새 plan_v3의 1회 실행을 승인했다. 실행 HEAD `afe2e67253e42ac88ca51120a1c07267cccf650a`, 작업 트리는 깨끗했다. 실제 branch/worktree/원격 HEAD 일치와 기기 없는 Check를 확인한 뒤 현재 devices 조회1회로 유일 A24 transport를 선택했다. 이후 실행기에서 모델·fingerprint·하드웨어·설치본·환경을 확인했고 transport 전환은 없었다. 설치된 APK가 후보 SHA `9d8d55c2742b485e18f8a0812b70bf33ed66f9185c6d47b80c39f086e73fd932`와 동일해 배포 없이 진행했다.

@@ -30,7 +30,7 @@ def interpolate(points, queries, max_gap_ns):
     return result
 
 
-def session(file, plan, entry, model, export_folder):
+def load_inputs(file, plan, entry, model, legacy_preload=False):
     folder = Path(plan['output_root'])/f"{entry['index']:02d}_{entry['session_id']}"
     art = folder/'artifacts'
     if p.read(folder/'validated.json')['status'] != 'eligible_descriptive_only':
@@ -70,7 +70,20 @@ def session(file, plan, entry, model, export_folder):
         case = dict(inputs=dict(preload=pre, query_s=[(e['mono_ns']-origin)/1e9 for e in post],
                     segments=segments+[dict(start_s=120., end_s=(cooling[0]-origin)/1e9, state='idle')]),
                     observed_ap_c=[float(e['AP']) for e in post], origin_ns=origin, power_samples=power)
-        case['preload_power_w'] = online.energy_at(case, 10, 30)/20
+    window = [10, 30] if legacy_preload else model.get('preload_power_window_s')
+    if (not isinstance(window, list) or len(window) != 2 or
+            not all(isinstance(v, (int, float)) and np.isfinite(v) for v in window) or
+            not window[0] < window[1] < 35):
+        raise ValueError('missing/invalid frozen preload power window')
+    case['preload_power_w'] = online.energy_at(case, *window)/(window[1]-window[0])
+    case['preload_power_window_s'] = window
+    return folder, rows, origin, end, events, counts, power, points, segments, case
+
+
+def session(file, plan, entry, model, export_folder, legacy_preload=False):
+    folder, rows, origin, end, events, counts, power, points, segments, case = load_inputs(
+        file, plan, entry, model, legacy_preload)
+    art = folder/'artifacts'
     out = online.costs(case['inputs']['segments'], dict(preload=case['inputs']['preload'],
         preload_power_w=case['preload_power_w']), case['inputs']['query_s'], model, case['inputs']['segments'][-1]['end_s'])
     actual = energy.integrate(power, origin, end, 1000)
@@ -103,7 +116,9 @@ def session(file, plan, entry, model, export_folder):
         warmup=counts['warmup_return'], runtime=counts['runtime_return'], consumption_event_counts=counts,
         common_seconds=120, observed_energy_j=actual['full_energy_j'], predicted_energy_j=out['whole_120s_j'],
         signed_energy_error_j=out['whole_120s_j']-actual['full_energy_j'],
-        energy_prediction_inputs='frozen increments + this session pre-load10-30s mean power + actual schedule; not E2E',
+        energy_prediction_inputs='frozen increments + recorded preload window mean power + actual schedule; not E2E',
+        preload_power_window_s=case['preload_power_window_s'], preload_power_w=case['preload_power_w'],
+        legacy_preload_reproduction=legacy_preload,
         ap_scores=online.common.score(case['observed_ap_c'], out['ap_path']), ap_score_window_s=[35.,case['inputs']['query_s'][-1]],
         ap_prediction_inputs='frozen AP coefficients + pre-load AP only + actual schedule; no post-load feedback',
         common_start_ap_c=initial['ap_c'], initial_in_original_development_range=initial['initial_ap_in_frozen_development_range'],
@@ -124,7 +139,7 @@ def session(file, plan, entry, model, export_folder):
     return summary, curve, aps, causal
 
 
-def run(file, exports, output, allow_partial=False):
+def run(file, exports, output, allow_partial=False, legacy_preload=False):
     file=Path(file);output=Path(output)
     if output.exists():raise FileExistsError('fresh readout output required')
     plan=p.read(file)
@@ -138,7 +153,7 @@ def run(file, exports, output, allow_partial=False):
     for e in eligible:
         exported=Path(exports)/f"{e['index']:02d}_trace_export"
         if not exported.exists():exported=Path(exports)/f"{e['index']:02d}_{e['session_id']}"/'trace_export'
-        s, c, a, inputs=session(file,plan,e,model,exported)
+        s, c, a, inputs=session(file,plan,e,model,exported,legacy_preload)
         results.append(s);curves.extend(c);aps.extend(a)
     result=dict(status='acquisition_completed_trace_contract_ineligible' if any(x['trace_error'] for x in results) else 'descriptive_only',
                 acquisition_status=receipt['status'],full_planned_block_completed=complete,completed_sessions=len(eligible),planned_sessions=len(plan['entries']),
@@ -155,5 +170,6 @@ if __name__=='__main__':
     q=argparse.ArgumentParser()
     for key in ('plan','exports','output'):q.add_argument('--'+key,required=True)
     q.add_argument('--allow-partial',action='store_true')
-    a=q.parse_args();r=run(a.plan,a.exports,a.output,a.allow_partial)
+    q.add_argument('--legacy-preload-window',action='store_true',help='Reproduce old 10-30s initialization; not frozen-model interpretation')
+    a=q.parse_args();r=run(a.plan,a.exports,a.output,a.allow_partial,a.legacy_preload_window)
     print(json.dumps({k:v for k,v in r.items() if k!='sessions'},indent=2))

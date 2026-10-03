@@ -1,5 +1,7 @@
 # 배경 활동 Run04 — 남은 PAR·C0 개발2 완료
 
+> 2026-10-03 PC 정정: 이 문서의 과거 J 결과는 10~30초 초기화로 보존한다. 동결 모형의 −20~30초 계약 복원과 선택된 적격 네 세션의 정정값은 [후속 판독](../background_identification_pc_v1/README.md)을 따른다. 과거 수치 재현에는 `--legacy-preload-window`를 추가한다. AP·원자료·실행 판정은 변경하지 않았다.
+
 사용자의 재개와 추가 실행 승인으로 v5를 한 번 실행했으나 입력 staging에서 host localhost5037 연결 오류가 발생했다. 앱 launch0·추론0. v5는 stopped_no_resume로 보존했다. 같은 daemon 식별이 전후 유지되고 후속 동일 transport cleanup은 성공했으나 내부 원인은 미확정이다. timeout이 아닌 rc1/21.125초/timeout30초다. stdout0을 전송0으로 해석하지 않는다. gate·timeout·APK·측정 코드를 바꾸지 않고 별도 ID의 **campaign retry 1회 v6**를 실행해 PAR96→C0_POST 개발2/2를 완료했다. 계획 내 retry0, 추가 자동 실행 없음. daemon restart·reconnect·설정 변경0.
 
 [대시보드](index.html) · [정확한 수치](metrics.csv) · [v6 분석](summary.json) · [별도 block 연결](combined_summary.json) · [소비](consumption.json) · [v5 실패](v5_failure.json) · [검증](verification.json) · [그림](paths.png)

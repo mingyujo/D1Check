@@ -52,6 +52,23 @@ class ResultTests(unittest.TestCase):
             self.assertAlmostEqual(summary['self_cpu_seconds'],12)
             self.assertEqual(summary['completed'],0);self.assertEqual(summary['warmup'],8)
             self.assertEqual(len(observed),1);self.assertTrue(aps)
+            # Changing pre-zero power must affect the model-declared -20..30 window,
+            # while explicit legacy reproduction remains 10..30. AP must not change.
+            for e in events:
+                if e['kind']=='power_sample' and e['snapshot_start_ns'] < origin:
+                    e['current_raw']=-500
+            (art/'progress.jsonl').write_text('\n'.join(json.dumps(x) for x in events)+'\n',encoding='utf8')
+            with patch.object(r.trace,'summarize',side_effect=ValueError('trace loss/error')):
+                fixed,_,fixed_ap,_=r.session(root/'plan.json',plan,entry,model,root/'unused')
+                legacy,_,legacy_ap,_=r.session(root/'plan.json',plan,entry,model,root/'unused',True)
+            self.assertAlmostEqual(fixed['predicted_energy_j'],166.8)
+            self.assertAlmostEqual(legacy['predicted_energy_j'],120.)
+            self.assertEqual(fixed_ap,legacy_ap)
+            self.assertEqual(fixed['preload_power_window_s'],[-20,30])
+            self.assertEqual(legacy['preload_power_window_s'],[10,30])
+            invalid=dict(model);invalid.pop('preload_power_window_s')
+            with self.assertRaisesRegex(ValueError,'frozen preload'):
+                r.load_inputs(root/'plan.json',plan,entry,invalid)
             events=[e for e in events if e['kind']!='warmup_return']
             (art/'progress.jsonl').write_text('\n'.join(json.dumps(x) for x in events)+'\n',encoding='utf8')
             with self.assertRaisesRegex(ValueError,'consumption unconfirmed'):

@@ -1,5 +1,7 @@
 # 배경 활동 Run03 — 2세션 적격, PAR 준비 조회 timeout 후 종료
 
+> 2026-10-03 PC 정정: 이 문서의 과거 J 결과는 10~30초 초기화로 보존한다. 동결 모형의 −20~30초 계약 복원과 선택된 적격 네 세션의 정정값은 [후속 판독](../background_identification_pc_v1/README.md)을 따른다. 과거 수치 재현에는 `--legacy-preload-window`를 추가한다. AP·원자료·실행 판정은 변경하지 않았다.
+
 v4는 stopped_no_resume다. C0_PRE·CPU96 2/4 자료만 적격이며 PAR 준비 중 run-as ls가 3.003초 timeout에 걸렸다. 마지막 C0는 미시도다. 실제 전송 단절·GPU 결함·앱 자체 실패는 확인되지 않았다. 직전 listing 0.12–0.20초 성공, timeout client root reaped, 직후 동일 transport 회수/대상 앱 force-stop·ps 부재 확인이 성공했다. 다른 연결을 해제하거나 reconnect하지 않았다.
 
 [작은 수치](metrics.csv) · [원래 receipt 소비 요약](consumption.json) · [부분 분석](summary.json) · [경로](paths.png)
