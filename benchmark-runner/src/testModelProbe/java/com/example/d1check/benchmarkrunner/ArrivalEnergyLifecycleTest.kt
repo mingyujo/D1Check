@@ -42,6 +42,35 @@ class ArrivalEnergyLifecycleTest {
             isAccessible = true
         }.get(activity) as AtomicReference<String?>
 
+    @Test fun activityPublishesPastInputWithoutStartingAnotherWorker() {
+        val controller=Robolectric.buildActivity(ArrivalEnergyActivity::class.java)
+        val activity=controller.get(); val held=HeldSetup();field(activity,"setup",held)
+        controller.create().start().resume()
+        val file=File(Files.createTempDirectory("d1-past-input").toFile(),"progress.jsonl")
+        val progress=EnergyProgress(file);field(activity,"progress",progress);field(activity,"sid","fixture")
+        field(activity,"commonStartForObservation",1L)
+        field(activity,"nextPastInputNs",android.os.SystemClock.elapsedRealtimeNanos()+10000000000L)
+        val method=ArrivalEnergyActivity::class.java.getDeclaredMethod("publishPastPower",Map::class.java,
+            java.lang.Long.TYPE,java.lang.Long.TYPE).apply { isAccessible=true }
+        for(i in 0..12) {
+            val now=android.os.SystemClock.elapsedRealtimeNanos()
+            method.invoke(activity,mapOf<String,Any?>("current_raw" to -500,"voltage_mV" to 4000,
+                "plugged" to 0,"snapshot_start_ns" to now,"sensor_read_end_ns" to now),i*100L,now)
+            org.robolectric.shadows.ShadowSystemClock.advanceBy(java.time.Duration.ofSeconds(1))
+        }
+        progress.close()
+        val events=file.readLines().map { JSONObject(it) }
+        assertEquals(13,events.count { it.getString("kind")=="power_sample" })
+        val input=events.single { it.getString("kind")=="causal_power_input" }
+        assertEquals(2.0,input.getDouble("mean_whole_device_w"),1e-9)
+        assertFalse(input.getBoolean("future_ap_used"));assertTrue(input.isNull("task_residual_w"))
+        assertTrue(input.getLong("latest_ready_ns")<=input.getLong("issue_ns"))
+        assertTrue(input.getLong("issue_ns")<=input.getLong("mono_ns"))
+        assertEquals(1,held.pending.size)
+        ArrivalEnergyActivity::class.java.getDeclaredField("progress").apply { isAccessible=true }.set(activity,null)
+        controller.pause().stop().destroy()
+    }
+
     @Test fun onlineConfigurationCallbackKeepsOneOwnerAndDestroyStillCancels() {
         val controller = Robolectric.buildActivity(OnlinePolicyStudyActivity::class.java)
         val activity = controller.get()

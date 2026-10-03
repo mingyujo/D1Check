@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-10-03 시스템 활동·과거 sampler 입력 및 개발 대조4 PC 준비 완료
+
+- [계약·APK·예산·명령](results/online_policy_study_01/background_activity_pc_v1/README.md), [준비 화면](results/online_policy_study_01/background_activity_pc_v1/index.html). opt-in APK에 process CPU·과거10초 전력 입력을 추가하고 기존 수집기에 UUID 소유 trace 시작/단일 회수를 연결. GPU/무선 전력 식별·새 controller 아님. 이전 gamma 후보 미채택·기본/strict/experiment_ready=false 유지.
+- C0→CPU96→PAR96→C0 개발4만 동결. plan_v2 SHA a214b53e…ad78d97e, APK9d8d55c2…e73fd932. 본192+warmup32=224/runtime16/staging4·28/설치본pull1/tracepull4/APKpush·설치각최대1/고정840초/예약4454초(74분14초)/ADB13036/retry0. v1은 미소비 PC 초안으로 보존. 최종 계획은 PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED, 새출력·claim 없음.
+- Python 신규7+관련9 통과, 기존cleanup3도 통과. Android12 callback/계약/회귀·서명빌드·실제PowerShell Check 및 device금지 Check 통과. trace 실제 SQL/플랫폼/내용/손실·새APK 계측비용/장시간 미검증. 이번 기기명령·실측·Run0.
+- 다음 행동: 별도 승인 후 개발4 대조를 현재 A24/설치본/환경·trace gate로 실행하고, 회수 자료의 clock/손실/CPU 활동 및 계수 식별을 먼저 판독. 독립확인12/후보채택은 자동 진행하지 않는다. 아래는 과거 기록.
+
+
 ## 2026-10-03 기존 자료 기반 배경·AP 후보 판정 완료 — 미채택
 
 - [분석·필요 실측 판정](results/online_policy_study_01/causal_background_pc_v1/README.md), [화면](results/online_policy_study_01/causal_background_pc_v1/evaluation/index.html). 기존 개발3만으로 gamma1개=0.126287 추정, 이미 본 확인6 사후평가. 새 독립확인0. AP 조건부 평균MAE0.38915→0.29882°C(4개개선/2개악화), 마지막CPU 최대4.2196→3.0403°C; 원인해결·정확도PASS 아님.

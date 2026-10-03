@@ -35,6 +35,10 @@ open class ArrivalEnergyActivity : Activity() {
     private var createdFromSavedState = false
     private var activityCreatedNs = 0L
     private var sequence = 0L
+    private var backgroundObservation = false
+    private val pastPower = ArrivalPastPowerWindow()
+    @Volatile private var commonStartForObservation = 0L
+    private var nextPastInputNs = 0L
     @Volatile private var finished = false
     @Volatile private var finishRequested = false
     private var phase: String
@@ -122,6 +126,21 @@ open class ArrivalEnergyActivity : Activity() {
             "admission_reason" to reason, "snapshot_start_ns" to start,
             "sensor_read_end_ns" to now()) + observed.snapshot()
     }
+    private fun publishPastPower(data: Map<String, Any?>, cpuMs: Long, ready: Long) {
+        val raw = data["current_raw"] as Int
+        val voltage = data["voltage_mV"] as? Int
+        val watts = if (raw != Int.MIN_VALUE && raw <= 0 && voltage != null && voltage > 0 && data["plugged"] == 0)
+            -raw.toDouble()*voltage/1e6 else null
+        pastPower.add(ArrivalPastPowerWindow.Sample(
+            ((data["snapshot_start_ns"] as Long)+(data["sensor_read_end_ns"] as Long))/2,
+            ready,watts,cpuMs))
+        event("power_sample", data + mapOf("self_cpu_ms" to cpuMs,
+            "past_input_ready_ns" to ready, "activity_observation_version" to ArrivalBackgroundObservation.VERSION))
+        if (commonStartForObservation > 0 && ready >= nextPastInputNs) {
+            event("causal_power_input", pastPower.at(ready))
+            nextPastInputNs = ready+10_000_000_000L
+        }
+    }
     private fun update(row: MutableMap<String, Any?>, fields: Map<String, Any?>) = synchronized(row) { row.putAll(fields) }
     private fun detached(row: MutableMap<String, Any?>) = synchronized(row) { LinkedHashMap(row) }
 
@@ -169,16 +188,17 @@ open class ArrivalEnergyActivity : Activity() {
                 m.getInt("resident_baseline_seconds").toLong() == ArrivalEnergyContract.BASELINE_SECONDS)
             check(m.getInt("maximum_concurrency") == 2 && m.getString("memory_contract") == V4Gate.CONTRACT && m.getInt("thermal_gate") == 0)
             val policy = m.getString("policy")
+            backgroundObservation = m.has("background_observation_version")
             val policyStudy = m.optString("policy_study_version", "")
             if (policyStudy.isNotEmpty()) check(policyStudy == ArrivalPolicyStudy.VERSION &&
                 policy in ArrivalPolicyStudy.POLICIES && !m.has("replay_version") && !m.has("resident_control_version"))
             val apMode = m.optString("start_ap_gate", "")
             check(apMode in setOf("", ArrivalStartApGate.VERSION, ArrivalStartApGate.DIAGNOSTIC_VERSION)) { "unknown start AP gate" }
             if (apMode == ArrivalStartApGate.DIAGNOSTIC_VERSION) {
-                check(policy == ArrivalRecordedReplay.POLICY || policyStudy == ArrivalPolicyStudy.VERSION) { "diagnostic AP requires explicit protocol" }
+                check(policy == ArrivalRecordedReplay.POLICY || policyStudy == ArrivalPolicyStudy.VERSION || backgroundObservation) { "diagnostic AP requires explicit protocol" }
             }
             check(policy in setOf(ArrivalPolicy.URGENT, ArrivalPolicy.FIXED, ArrivalRecordedReplay.POLICY) ||
-                (policyStudy == ArrivalPolicyStudy.VERSION && policy in ArrivalPolicyStudy.POLICIES))
+                ((policyStudy == ArrivalPolicyStudy.VERSION || backgroundObservation) && policy in ArrivalPolicyStudy.POLICIES))
             val imageSpec = m.getJSONArray("images").also { check(it.length() == 1) }.getJSONObject(0)
             val image = File(inputs, imageSpec.getString("filename")); val imageHash = imageSpec.getString("sha256")
             check(ProbeModelFile.sha256(image) == imageHash)
@@ -191,7 +211,11 @@ open class ArrivalEnergyActivity : Activity() {
             } }
             val controlVersion = m.optString("resident_control_version", "")
             val controlRole = m.optString("resident_control_role", "")
-            if (policyStudy.isNotEmpty()) {
+            if (backgroundObservation) {
+                check(apMode == ArrivalStartApGate.DIAGNOSTIC_VERSION && policyStudy.isEmpty())
+                ArrivalBackgroundObservation.validate(m.getString("background_observation_version"), policy,
+                    m.getString("background_observation_role"), m.getString("scenario"), requests, controlVersion)
+            } else if (policyStudy.isNotEmpty()) {
                 check(apMode == ArrivalStartApGate.DIAGNOSTIC_VERSION)
                 check((0 until requestJson.length()).all { !requestJson.getJSONObject(it).has("release_offset_ns") &&
                     !requestJson.getJSONObject(it).has("recorded_backend") })
@@ -213,17 +237,24 @@ open class ArrivalEnergyActivity : Activity() {
                         q.getString("source_request_id"))
                 } } }.also { ArrivalRecordedReplay.validate(it, requests, replayVersion, sourcePolicy) }.associateBy { it.id }
             } else emptyMap()
-            val samplePeriodMs = ArrivalPolicyStudy.samplePeriodMs(policyStudy,
+            val samplePeriodMs = ArrivalPolicyStudy.samplePeriodMs(if (backgroundObservation) ArrivalPolicyStudy.VERSION else policyStudy,
                 m.optString("power_sampling_version", ""), m.optLong("power_sample_period_ms", 1000L))
             if (m.has("power_identification_version")) {
-                check(policyStudy == ArrivalPolicyStudy.VERSION &&
+                check((policyStudy == ArrivalPolicyStudy.VERSION || backgroundObservation) &&
                     m.getString("power_identification_version") == ArrivalPolicyStudy.SEPARATED_POWER && samplePeriodMs == 900L)
                 event("power_identification_contract", mapOf("version" to ArrivalPolicyStudy.SEPARATED_POWER,
-                    "role" to m.getString("policy_study_role"), "requests" to requests.size))
+                    "role" to if (backgroundObservation) "development" else m.getString("policy_study_role"), "requests" to requests.size))
             }
             if (m.has("power_sampling_version")) event("power_sampling_contract", mapOf("period_ms" to samplePeriodMs,
                 "version" to m.getString("power_sampling_version")))
-            samples.scheduleAtFixedRate({ sampler.tick { event("power_sample", snapshot()) } }, 0, samplePeriodMs, TimeUnit.MILLISECONDS)
+            samples.scheduleAtFixedRate({ sampler.tick {
+                val data = snapshot()
+                if (backgroundObservation) {
+                    val cpuMs = android.os.Process.getElapsedCpuTime()
+                    val ready = now()
+                    publishPastPower(data,cpuMs,ready)
+                } else event("power_sample", data)
+            } }, 0, samplePeriodMs, TimeUnit.MILLISECONDS)
             val setupStart = now()
             Log.i("D1ENERGY", "runtime_scope_start=$sid")
             ArrivalRuntimeSetup.initialize(EnergyCollectionCore.KEYS, false, 8, requests.size) { key ->
@@ -271,6 +302,7 @@ open class ArrivalEnergyActivity : Activity() {
                 startReading = ArrivalStartApGate.parse(approval.readText(), hash, ready, apMode)
             }
             phase = "common_window"; val start = now()
+            if (backgroundObservation) { nextPastInputNs=start+35_000_000_000L; commonStartForObservation=start }
             startReading?.let {
                 ArrivalStartApGate.atStart(it, start)
                 save("start_ap.accepted.json", mapOf("ap_c" to it.ap, "read_before_ns" to it.before,
@@ -286,7 +318,7 @@ open class ArrivalEnergyActivity : Activity() {
             pump = {
                 while (stop.get() == null) {
                     val begin = now()
-                    val choice = if (policyStudy.isNotEmpty())
+                    val choice = if (policyStudy.isNotEmpty() || (backgroundObservation && controlVersion.isEmpty()))
                         ArrivalPolicyStudy.choose(policy, waiting, !busy.getValue("CPU"), !busy.getValue("GPU"))
                     else if (policy == ArrivalRecordedReplay.POLICY)
                         ArrivalRecordedReplay.choose(waiting, replay, maxOf(0L, begin-start),

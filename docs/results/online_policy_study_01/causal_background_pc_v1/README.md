@@ -1,5 +1,7 @@
 # 과거 전력 기반 단일 AP 후보 — 기존 자료 판정, 2026-10-03
 
+후속 PC 구현 완료: [시스템 활동·과거 입력과 개발4 준비](../background_activity_pc_v1/README.md). 아래 수치는 기존 사후 평가이며 변경하지 않았다.
+
 **기존 자료로 후보의 구현·추정·사후 평가를 완료했다. 일부 AP 오차는 감소하지만 계수의 세션 의존성과 30초 에너지 예측 악화 때문에 채택하지 않는다. 추가 실측은 필요하지만, 직전 최대18세션을 그대로 실행할 근거는 확보되지 않았다.** 새 실측·APK·기기 명령·실행 계획·claim은 모두 0이다. 기본 모형, 기존 strict 검사, `experiment_ready=false`는 유지한다.
 
 [화면](evaluation/index.html) · [AP 경로](evaluation/ap_comparison.svg) · [잔차·미래 구간 한계](evaluation/causal_limits.svg) · [수치](evaluation/diagnostics.json) · [원래 결과](../separated_power_final/README.md) · [해결 설계](../../../ENERGY_THERMAL_COMPLETION_RECOVERY_PLAN_20261003.md)

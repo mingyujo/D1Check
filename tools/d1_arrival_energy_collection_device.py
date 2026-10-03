@@ -108,6 +108,7 @@ def poll(d,remote,folder,manifest,plan):
 
 def validate(folder,manifest,plan):
     expected=96 if plan.get('online_policy_study') else 24
+    if plan.get('background_activity_contrast'):expected=len(manifest['requests'])
     if plan.get('resident_control_pair'):
         from tools import d1_resident_control_plan as control
         expected=control.request_count(manifest)
@@ -189,10 +190,22 @@ def validate(folder,manifest,plan):
                   e['sensor_read_end_ns']-e['snapshot_start_ns']<=2e9,'sensor clock bracket')
         s=dict(e);s['mono_ns']=(e['snapshot_start_ns']+e['sensor_read_end_ns'])//2;samples.append(s)
     begin=boundary['start_ns'];end=boundary['planned_end_ns']
-    if plan.get('resident_control_pair'):
+    if plan.get('resident_control_pair') or plan.get('background_activity_contrast'):
         common_samples=[s for s in samples if begin<=s['mono_ns']<=end]
         c.require(bool(common_samples) and all(set(s.get('resident_keys',[]))==set(c.old.KEYS)
                                                for s in common_samples),'resident control snapshot coverage')
+    if plan.get('background_activity_contrast'):
+        observed_power=[e for e in events if e.get('kind')=='power_sample']
+        c.require(all(e.get('activity_observation_version')=='background-activity-contrast-v1' and
+            isinstance(e.get('self_cpu_ms'),int) and e['self_cpu_ms']>=0 and
+            e['sensor_read_end_ns']<=e.get('past_input_ready_ns',-1)<=e['mono_ns'] for e in observed_power),
+            'activity observation publication/CPU record')
+        c.require(all(a['self_cpu_ms']<=b['self_cpu_ms'] for a,b in zip(observed_power,observed_power[1:])),
+            'process CPU counter regression')
+        past=[e for e in events if e.get('kind')=='causal_power_input' and begin<=e['mono_ns']<=end]
+        c.require(len(past)>=8 and all(e.get('status')=='available' and e['latest_ready_ns']<=e['issue_ns']<=e['mono_ns'] and
+            e['window_end_ns']-e['window_start_ns']==10_000_000_000 and e.get('future_ap_used') is False
+            for e in past),'past-only input coverage; no zero fill')
     c.require(energy.integrate(samples,begin,end,1000)['full_energy_j'] is not None,'common energy coverage')
     ap=[t for t in thermal if begin<=t['mono_ns']<=end and t['AP']!='']
     c.require(len(ap)>=2 and max([ap[0]['mono_ns']-begin,end-ap[-1]['mono_ns']]+[
@@ -210,7 +223,10 @@ def run(plan_file,adb,serial,expected_sha,approved):
     plan=p.read(plan_file)
     idle_response=plan.get('ap_idle_pulse_followup',False)
     single=plan.get('single_arrival_confirmation',False) or plan.get('recorded_replay_confirmation',False) or plan.get('online_policy_study',False)
-    if plan.get('separated_power_followup'):
+    if plan.get('background_activity_contrast'):
+        from tools import d1_background_activity_plan as background
+        background.check(plan_file)
+    elif plan.get('separated_power_followup'):
         from tools import d1_separated_power_followup as separated
         separated.check_block(plan_file)
     elif plan.get('separated_power_study'):
@@ -369,18 +385,20 @@ def run(plan_file,adb,serial,expected_sha,approved):
             (current/'input_manifest.json').write_bytes(manifest_file.read_bytes())
             remote=shared.stage_inputs(d,entry['session_id'],manifest_file,
                                        {k:v['path'] for k,v in plan['source_files'].items()},c.PROTOCOL)
-            c.require(session_end-time.monotonic()>=580,'poll/recovery/cleanup reserve')
-            d.deadline=session_end-95
+            c.require(session_end-time.monotonic()>=580+budget.get('trace_start_seconds',0)+budget.get('trace_recovery_seconds',0),'poll/recovery/cleanup reserve')
+            d.deadline=session_end-95-budget.get('trace_recovery_seconds',0)
+            if plan.get('background_activity_contrast'):
+                background.trace_start(d,entry['session_id'],current)
             write(current/'launch_attempt.json',dict(utc=legacy.utc()))
             d.call('shell','am','start','-W','-n',legacy.PACKAGE+'/'+('com.example.d1check.benchmarkrunner.OnlinePolicyStudyActivity' if plan.get('online_configuration_owner_v1') else ACTIVITY),'-a',ACTION,
                    '--es','session_id',entry['session_id'],timeout=20)
             poll(d,remote,current,manifest,plan)
             if journal:journal.mark('app_terminal_seen',session_id=entry['session_id'],adb_commands=d.sequence)
-            d.deadline=min(session_end-45,time.monotonic()+budget['recovery_seconds'])
+            d.deadline=min(session_end-45-budget.get('trace_recovery_seconds',0),time.monotonic()+budget['recovery_seconds'])
             write(current/'recovery.json',energy_device.recover(d,remote,current/'artifacts'))
             cleanup_attempted=True
             try:
-                cleanup_result=shared.cleanup(d,session_end)
+                cleanup_result=shared.cleanup(d,session_end-budget.get('trace_recovery_seconds',0))
             except BaseException as error:
                 cleanup_result=dict(error=repr(error),status='failed_or_unknown')
                 try:write(current/'host_cleanup_error.json',cleanup_result)
@@ -388,6 +406,9 @@ def run(plan_file,adb,serial,expected_sha,approved):
                     cleanup_result['recording_error']=repr(recording_error)
                 raise
             write(current/'host_cleanup.json',cleanup_result)
+            if plan.get('background_activity_contrast'):
+                trace=background.trace_recover(d,session_end)
+                c.require(trace and not trace['errors'],'system trace incomplete; no next session')
             stats=validate(current,manifest,plan)
             if plan.get('ap_background_contrast'):
                 from tools import d1_ap_background_contrast_readout as contrast_readout
@@ -447,6 +468,9 @@ def run(plan_file,adb,serial,expected_sha,approved):
                     cleanup_result=shared.cleanup(d,hard)
                     write((current or root)/'failure_host_cleanup.json',cleanup_result)
                 except BaseException as error:failure['host_cleanup_error']=repr(error)
+        if plan.get('background_activity_contrast'):
+            try:failure['system_trace']=background.trace_recover(d,hard)
+            except BaseException as error:failure['system_trace_error']=repr(error)
         prefix=current/'failure_prefix/progress.jsonl' if current else None
         records,partial=c.old.progress_prefix(prefix.read_bytes() if prefix and prefix.is_file() else b'')
         failure['last_session_progress']=dict(valid_records=len(records),partial_lines=partial,
