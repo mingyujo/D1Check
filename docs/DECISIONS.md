@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-10-03 trace 설정·내용 검사 최소 수정 채택
+
+- 기존 DISCARD와 producer flush 누락의 공식 parser 플래그를 실제 원본에서 확인. RING_BUFFER/flush5초와 loss 전체 SQL, 회수 후 CPU/clock/coverage 검사로 수정한다. 계측 프로토콜 변경 개발 자료이며 기존 원본의 오류 판정을 덮어쓰지 않는다. [근거·정확한 예산](results/online_policy_study_01/background_activity_pc_v1/README.md), [검증](results/online_policy_study_01/background_activity_pc_v1/plan_v4/verification.json). 다음 행동: 현재 A24/설치본/환경을 실행기 gate로 확인하고 v4 1회 실행·판독.
+
+
 ## 2026-10-03 배경 활동 개발4 v3 Run02 — 수집 완료·trace 계약 부적격
 
 - [보고서·소비·재현](results/online_policy_study_01/background_activity_run02/README.md), [대시보드](results/online_policy_study_01/background_activity_run02/index.html). 새 승인 v3 단1회, C0→CPU96→PAR96→C0 4/4 완료. 본192+warmup32=224/runtime16/staging4·28/설치본pull1/tracepull4/APKpush·설치0/ADB3260(실행기3259+선택1)/기기작업1243.243초, 원본 FINAL_RECEIPT 완료·계획 소비/종료. 연결소실/timeout/추가실행 없음.

@@ -3,6 +3,7 @@ import argparse
 import csv
 import json
 import subprocess
+import time
 from pathlib import Path
 from tools import d1_arrival_plan as p
 from tools import d1_arrival_timing_calibration as cal
@@ -17,7 +18,7 @@ def read_csv(file,columns):
         return list(reader)
 
 
-def summarize(folder,start_ns,end_ns):
+def summarize(folder,start_ns,end_ns,expected_cpus=None):
     folder=Path(folder)
     if not 0<=start_ns<end_ns:raise ValueError('window')
     clocks=read_csv(folder/'clock.csv',('ts','clock_id','clock_value'))
@@ -30,6 +31,10 @@ def summarize(folder,start_ns,end_ns):
         raise ValueError('trace does not bracket window')
     groups=('benchmark','tracer','other','unknown','idle');bins=[]
     cpus={int(r['cpu']) for r in rows}
+    if expected_cpus is not None:
+        declared={int(r['cpu']) for r in read_csv(folder/'cpu.csv',('cpu',))}
+        if declared != set(expected_cpus) or cpus != declared:
+            raise ValueError('missing/unexpected CPU; metadata and sched coverage required')
     for cpu in cpus:
         previous=None
         for row in sorted((r for r in rows if int(r['cpu'])==cpu),key=lambda r:int(r['ts'])):
@@ -58,21 +63,50 @@ def summarize(folder,start_ns,end_ns):
         trace_to_app_clock='verified BOOTTIME equality',experiment_ready=False)
 
 
-def export(processor,trace,output):
+def export(processor,trace,output,deadline=None,include_cpu=False):
     output=Path(output)
     if output.exists():raise ValueError('fresh export only')
     output.mkdir(parents=True)
     binding=dict(processor_sha256=p.digest(processor),trace_sha256=p.digest(trace),queries={})
-    for name in QUERIES:
-        query=ROOT/f'tools/perfetto/background_{name}.sql'
-        binding['queries'][name]=p.digest(query)
-        result=subprocess.run([str(processor),str(trace),'--query-file',str(query)],capture_output=True,timeout=60)
-        (output/(name+'.csv')).write_bytes(result.stdout)
-        (output/(name+'.stderr')).write_bytes(result.stderr)
-        cal.write_new(output/(name+'.result.json'),dict(exit_code=result.returncode))
-        if result.returncode:raise RuntimeError('trace SQL failed '+name+'; partial output preserved')
-    cal.write_new(output/'export_binding.json',binding)
+    try:
+        for name in QUERIES+(('cpu',) if include_cpu else ()):
+            query=ROOT/f'tools/perfetto/background_{name}.sql'
+            binding['queries'][name]=p.digest(query)
+            limit=60 if deadline is None else min(60,deadline-time.monotonic())
+            if limit<=0:raise TimeoutError('trace export aggregate deadline')
+            started=time.monotonic()
+            try:
+                result=subprocess.run([str(processor),str(trace),'--query-file',str(query)],capture_output=True,timeout=limit)
+            except subprocess.TimeoutExpired as error:
+                (output/(name+'.csv')).write_bytes(error.stdout or b'')
+                (output/(name+'.stderr')).write_bytes(error.stderr or b'')
+                cal.write_new(output/(name+'.result.json'),dict(exit_code=None,status='timeout',elapsed_seconds=time.monotonic()-started,error=repr(error)))
+                raise
+            (output/(name+'.csv')).write_bytes(result.stdout)
+            (output/(name+'.stderr')).write_bytes(result.stderr)
+            cal.write_new(output/(name+'.result.json'),dict(exit_code=result.returncode,elapsed_seconds=time.monotonic()-started))
+            if result.returncode:raise RuntimeError('trace SQL failed '+name+'; partial output preserved')
+    except BaseException as error:
+        binding.update(status='failed_or_partial',error=repr(error))
+        raise
+    else:binding['status']='exported_not_yet_validated'
+    finally:cal.write_new(output/'export_binding.json',binding)
     return binding
+
+
+def audit(processor,processor_sha256,trace,session_folder,output,deadline,expected_cpus):
+    started=time.monotonic()
+    if p.digest(processor)!=processor_sha256:raise ValueError('bound TraceProcessor hash drift')
+    boundary=p.read(Path(session_folder)/'artifacts/common_boundary.json')
+    export(processor,trace,output,deadline,include_cpu=True)
+    result=summarize(output,boundary['start_ns'],boundary['planned_end_ns'],expected_cpus)
+    if not all(x['full_sched_coverage'] for x in result['bins']):
+        raise ValueError('incomplete CPU coverage; no next session')
+    if time.monotonic()>deadline:raise TimeoutError('trace content audit aggregate deadline')
+    result.update(status='content_eligible_descriptive_only',elapsed_seconds=time.monotonic()-started,
+        processor_sha256=processor_sha256,trace_sha256=p.digest(trace),expected_cpus=expected_cpus)
+    cal.write_new(Path(output)/'audit.json',result)
+    return result
 
 
 def main():

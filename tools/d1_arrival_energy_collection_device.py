@@ -305,6 +305,8 @@ def run(plan_file,adb,serial,expected_sha,approved):
        if plan.get('resident_control_pair') or tracked_bundle(plan) else
        ObservedDevice(adb,serial,root/'host_commands'))
     if journal:d.bundle_checkpoint=journal
+    if plan.get('background_activity_contrast') and plan.get('trace_content_audit'):
+        d.background_trace_audit=plan['trace_content_audit']
     d.deadline=hard
     if single:d.command_limit=budget['adb_commands']
     complete=[];current=None;remote=None;identified=False;installation=None

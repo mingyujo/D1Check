@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-10-03 trace 수정 개발4 v4 준비·실행 착수
+
+- v3 원본·부적격 판정 보존. RING_BUFFER/producer flush5초와 error/data_loss 전체검사·후속 세션 전 common120초/8CPU coverage 로컬 검사를 연결했다. PC14/실제Check 통과; APK/계수 불변. 사용자 추가 승인에 따라 별도 v4 한 번 실행하며 첫 trace 부적격이면 종료. 개발224추론/4454초/ADB13036/설치0, 결과는 아직 미확인. [근거·정확한 예산](results/online_policy_study_01/background_activity_pc_v1/README.md), [검증](results/online_policy_study_01/background_activity_pc_v1/plan_v4/verification.json). 다음 행동: 현재 A24/설치본/환경을 실행기 gate로 확인하고 v4 1회 실행·판독.
+
+
 ## 2026-10-03 배경 활동 개발4 v3 Run02 — 수집 완료·trace 계약 부적격
 
 - [보고서·소비·재현](results/online_policy_study_01/background_activity_run02/README.md), [대시보드](results/online_policy_study_01/background_activity_run02/index.html). 새 승인 v3 단1회, C0→CPU96→PAR96→C0 4/4 완료. 본192+warmup32=224/runtime16/staging4·28/설치본pull1/tracepull4/APKpush·설치0/ADB3260(실행기3259+선택1)/기기작업1243.243초, 원본 FINAL_RECEIPT 완료·계획 소비/종료. 연결소실/timeout/추가실행 없음.

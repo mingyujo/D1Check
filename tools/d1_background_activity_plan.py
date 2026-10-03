@@ -18,8 +18,8 @@ from tools import d1_ap_background_contrast as script_source
 
 ROOT=Path(__file__).resolve().parents[1]
 VERSION='background-activity-contrast-v1'
-NAME='BACKGROUND-ACTIVITY-DEVELOPMENT-03'
-FOLDER='background_activity_plan_v3'
+NAME='BACKGROUND-ACTIVITY-DEVELOPMENT-04'
+FOLDER='background_activity_plan_v4'
 ORDER=('C0_PRE','CPU_URGENT_ONLINE_V1','B2_PARALLEL_ONLINE_V1','C0_POST')
 CONTRACT=ROOT/'docs/results/online_policy_study_01/background_activity_pc_v1/contract.json'
 TRACE_CONFIG=ROOT/'tools/perfetto/background_activity.pbtxt'
@@ -32,18 +32,18 @@ def budget():
     # Trace recovery is in addition to original 50s evidence/45s app cleanup.
     return dict(prior.BUDGET,sessions=4,requests=192,warmup=32,explicit_inference=224,
         runtime_creations=16,staging=4,staging_files=28,installed_host_pulls=1,
-        apk_transfers=0,installs=0,installation_seconds=0,installed_preflight_seconds=600,
+        apk_transfers=0,installs=0,installation_seconds=0,installed_preflight_seconds=440,
         fixed_observation_seconds=840,intersession_cooling_seconds=90,
-        trace_sessions=4,trace_recovery_seconds=80,trace_start_seconds=90,app_launch_seconds=26,trace_max_seconds=600,
+        trace_sessions=4,trace_recovery_seconds=120,trace_content_audit_seconds=40,trace_start_seconds=90,app_launch_seconds=26,trace_max_seconds=600,
         trace_max_bytes=67108864,trace_host_pulls=4,
-        session_seconds=896,total_seconds=600+4*896+3*90,
+        session_seconds=936,total_seconds=440+4*936+3*90,
         per_session_adb_commands=3209,adb_commands=200+4*3209,
         adb_recovery_cleanup_reserve=109)
 
 
 def identity():
     return old.identity() | {x.relative_to(ROOT).as_posix():p.digest(x) for x in
-        (Path(__file__),CONTRACT,TRACE_CONFIG,MODEL,Path(inputs.__file__),ROOT/'tools/d1_background_activity_readout.py',*[ROOT/f'tools/perfetto/background_{name}.sql' for name in ('sched','frequency','loss','clock')])}
+        (Path(__file__),CONTRACT,TRACE_CONFIG,MODEL,Path(inputs.__file__),ROOT/'tools/d1_background_activity_readout.py',*[ROOT/f'tools/perfetto/background_{name}.sql' for name in ('sched','frequency','loss','clock','cpu')])}
 
 
 def script_text():
@@ -69,9 +69,13 @@ def specification(source_file,build_file,output):
         analysis_contract=dict(path=str(CONTRACT),sha256=p.digest(CONTRACT)),
         input_bundle=dict(path=str(CONTRACT),sha256=p.digest(CONTRACT)),
         activity_model=dict(path=str(MODEL),sha256=MODEL_SHA),
-        output_root=str(output.parent/'background_activity_run_v3'),
+        output_root=str(output.parent/'background_activity_run_v4'),
+        trace_content_audit=dict(processor_path='C:/Users/LG/.local/share/perfetto/prebuilts/trace_processor_shell-adfa6bad3d72be3b.exe',
+            processor_sha256='adfa6bad3d72be3ba9b83fa2b17b69fa13b3ab1cad0f42e52b86188bd5f0f997',
+            processor_version='v58.2-add693d8b',expected_cpus=list(range(8)),seconds=40,
+            trace_recovery_seconds=120,window='common_start_to_planned_end',required_before_next_session=True),
         registry=str(output.parent/'background_activity_registry'/NAME),entries=[],
-        measurement_protocol_change='new APK self CPU/past-power input plus bounded system trace,900ms sampler; new development block only',
+        measurement_protocol_change='trace-v2 RING_BUFFER and producer flush5s, offline content audit before next session; unchanged APK/sampler/host polling; new development block only',
         analysis_scope='structural identification, no adopted candidate or independent policy validation',
         prewarmup_observation='precommon-observation-gap-v3')
     template=p.read(source_file.parent/source['entries'][0]['manifest']);manifests=[]
@@ -116,6 +120,8 @@ def check(file):
     require(expected==plan and (file.parent/'RUN_AFTER_APPROVAL.ps1').read_text(encoding='utf8')==script_text(),'plan/script drift')
     for x in [plan['frozen_model'],plan['activity_model'],*plan['source_files'].values(),*plan['references'].values()]:require(p.digest(x['path'])==x['sha256'],'binding drift')
     require(p.digest(MODEL)==MODEL_SHA,'original frozen model drift')
+    audit=plan['trace_content_audit']
+    require(p.digest(audit['processor_path'])==audit['processor_sha256'],'TraceProcessor drift')
     for e,m in zip(plan['entries'],ms):require(p.digest(file.parent/e['manifest'])==e['manifest_sha256'] and p.read(file.parent/e['manifest'])==m,'manifest drift')
     return dict(status=plan['status'],plan_sha256=p.digest(file),budget=budget(),device_commands=0)
 
@@ -158,7 +164,7 @@ def trace_recover(d,deadline):
     if state['recovery_attempted']:return state.get('result',dict(status='unknown_after_attempt'))
     state['recovery_attempted']=True
     result=dict(status='partial_or_unknown',errors=[],remote=state['remote'])
-    previous=d.deadline;d.deadline=min(deadline,time.monotonic()+80)
+    previous=d.deadline;d.deadline=min(deadline,time.monotonic()+getattr(d,'background_trace_audit',{}).get('trace_recovery_seconds',80))
     try:
         # No PID kill, global stop or retry. Only the key registered by this owner.
         try:
@@ -175,7 +181,16 @@ def trace_recover(d,deadline):
             require(target.stat().st_size==size,'trace size mismatch')
             result.update(bytes=size,sha256=p.digest(target),file=str(target))
         except BaseException as e:result['errors'].append(dict(stage='trace_recovery',error=repr(e)))
-        if not result['errors']:result['status']='recovered_requires_clock_loss_content_audit'
+        if not result['errors']:
+            audit=getattr(d,'background_trace_audit',None)
+            if audit:
+                try:
+                    from tools import d1_background_activity_readout as readout
+                    result['content_audit']=readout.audit(audit['processor_path'],audit['processor_sha256'],target,folder,
+                        folder/'trace_export',min(d.deadline,time.monotonic()+audit['seconds']),audit['expected_cpus'])
+                    result['status']='recovered_content_eligible'
+                except BaseException as error:result['errors'].append(dict(stage='trace_content_audit',error=repr(error)))
+            else:result['status']='recovered_requires_clock_loss_content_audit'
     finally:
         d.deadline=previous;state['result']=result
         cal.write_new(folder/'trace_recovery.json',result)

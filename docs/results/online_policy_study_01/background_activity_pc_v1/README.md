@@ -1,5 +1,25 @@
 # 배경·열 이력 개발 대조 4세션 — PC 준비 완료, 2026-10-03
 
+## 2026-10-03 trace 수정 개발4 v4 — 사용자 추가 실행 승인 범위
+
+v3 완료 원본/부적격 판정은 보존한다. 새 ID BACKGROUND-ACTIVITY-DEVELOPMENT-04, 새 출력 background_activity_run_v4만 사용한다. 사용자 지시 “잘 안된거 있으면 알아서 수정해서 계속 실측해도 돼”에 따라 PC 경계 검증 후 한 번 실행한다. 계획 정적 approval=not_approved는 준비 상태 메타데이터이며 실제 승인/claim은 Run -Approved와 실행 기록에 보존한다.
+
+- trace-v2: DISCARD→RING_BUFFER, producer flush_period_ms=5000 추가. file_write_period_ms=5000과 별개다. 원래 DISCARD는 공식 TraceProcessor가 data_loss 위험으로, no_flush는 메모리 사용 경고로 분류했다. 실제 손실량이나 연결 원인은 미확정이다. [공식 stats 정의](https://github.com/google/perfetto/blob/v58.2/src/trace_processor/storage/stats.h).
+- loss SQL은 severity=data_loss 전체까지 포함한다. APK·입력·warmup/runtime·resident·900ms sampler·host 조회·환경 gate/timeout은 불변. flush/buffer 변경도 기기 전체 에너지에 포함되는 계측 프로토콜 변경으로 기록하며 임의 비용 보정은 하지 않는다.
+- 기존 회수·단일 cleanup 뒤 공식 TP v58.2(SHA adfa6bad…f997)로 로컬 SQL 5종과 common120초 BOOTTIME/8CPU(0–7)/전체 5초 bin coverage를 검사한다. CPU set은 기존 동일 A24 trace metadata의 관측 근거이며 빠진 CPU를 0으로 채우지 않는다. error/data_loss/불완전 coverage/40초 만료면 후속 세션을 시작하지 않는다. 주파수 결측은 별도 unsupported이며 GPU/무선 전력 귀속은 불가다.
+- 개발 C0_PRE→CPU96→PAR96→C0_POST, 확인0. 본192+warmup32=224/runtime16/staging4·28/설치본pull1/tracepull4/APKpush·설치0/ADB13036/retry·대체·추가0. 고정840초+세션간270초.
+- 총4454초 유지: 설치본 preflight 집계440 +4×936 +270. 세션936=stage120+trace start90+launch26+poll485+앱회수50+host cleanup45+trace 회수/PC검사120(기존회수80+PC40). preflight 예약160초를 로컬 검사40×4로 옮겼다. 개별 timeout 연장/재시도 없음; 예약 부족 시 중단하며 완주 보장이 아니다. 기기 transport 선택1회도 명령/시간 집계에 포함한다.
+- 계획 SHA bbb6c75c330f3644118078191ef0943351816fce59ab3d741075559c9c894564. APK9d8d55c2…73fd932/기존 model5682082a…72db2/원래 freeze19637bf1…b825 불변. 설치 없는 경로에서 불일치 시 중단한다.
+- PC14검사 통과. 실제 공유 runner→trace 내용 오류→원래 오류/receipt→후속세션0/cleanup 재사용 및 subprocess timeout 부분stdout/stderr 보존을 포함한다. PowerShell Check/Device 금지 Check 통과, 이 단계 기기0. 기존 trace에 새 실제 공식 TP 실행(5 SQL)을 적용해 두 설정 플래그로 거부되는 것도 재현했다. PC 통과는 수정 trace의 실기기 적격성을 보장하지 않는다.
+
+```powershell
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/background_activity_plan_v4/RUN_AFTER_APPROVAL.ps1' -Action Check
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/background_activity_plan_v4/RUN_AFTER_APPROVAL.ps1' -Action Run -Approved -Serial '<현재 확인한 A24 transport>' -ExpectedPlanSha256 'bbb6c75c330f3644118078191ef0943351816fce59ab3d741075559c9c894564'
+```
+
+이 계획은 gamma 자동 적합/채택·독립 확인·정책 평가를 승인하거나 완료하지 않는다. 기본/strict/experiment_ready=false 불변. 소비된 v2/v3 재실행 금지. 이후 결과는 별도 실행 기록으로 연결한다.
+
+
 > 최신: 새 plan_v3 수집4/4 완료·소비/종료, 시스템 trace 계약 부적격. [Run02 결과](../background_activity_run02/README.md). 아래 준비·중단 기록은 과거 사실이며 이 계획을 재실행하지 않는다.
 
 ## 2026-10-03 최신 계획 v3 — 설치 없는 미승인 개발4
