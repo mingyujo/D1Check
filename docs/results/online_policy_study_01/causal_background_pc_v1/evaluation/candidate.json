@@ -1,0 +1,141 @@
+{
+  "version": "causal-background-ap-candidate-v1",
+  "formula": "T_candidate = T_frozen + delta; delta'=-beta*delta+gamma*r; delta(35)=0",
+  "fit": {
+    "gamma": 0.12628721975973867,
+    "unconstrained_gamma": 0.12628721975973867,
+    "numerical_rank": 1,
+    "total_equal_session_information": 4.380449407987193,
+    "sessions": [
+      {
+        "id": "development_0_CPU_URGENT_ONLINE_V1",
+        "samples": 53,
+        "information": 1.4298103640157207,
+        "cross": 0.49566963281212156,
+        "unconstrained_gamma": 0.3466680933966651,
+        "r_min_w": -0.26507341353160174,
+        "r_max_w": 0.2556429537634124,
+        "unit_gain_basis_rms": 1.1957467808928948
+      },
+      {
+        "id": "development_0_B2_PARALLEL_ONLINE_V1",
+        "samples": 49,
+        "information": 1.4591138827734325,
+        "cross": 0.07963857931041131,
+        "unconstrained_gamma": 0.054580098408108554,
+        "r_min_w": -0.20169103523265774,
+        "r_max_w": 0.2656750725324992,
+        "unit_gain_basis_rms": 1.2079378637882963
+      },
+      {
+        "id": "development_0_B2_SERIAL_ONLINE_V1",
+        "samples": 49,
+        "information": 1.4915251611980394,
+        "cross": -0.022113435089637076,
+        "unconstrained_gamma": -0.014826055681068684,
+        "r_min_w": -0.1576893436591369,
+        "r_max_w": 0.36335803506453734,
+        "unit_gain_basis_rms": 1.2212801321556161
+      }
+    ],
+    "inference": "session sensitivity, not an IID sample confidence interval"
+  },
+  "loso": [
+    {
+      "excluded": "development_0_CPU_URGENT_ONLINE_V1",
+      "gamma": 0.01949582560371299,
+      "unconstrained_gamma": 0.01949582560371299,
+      "numerical_rank": 1,
+      "total_equal_session_information": 2.9506390439714716,
+      "sessions": [
+        {
+          "id": "development_0_B2_PARALLEL_ONLINE_V1",
+          "samples": 49,
+          "information": 1.4591138827734325,
+          "cross": 0.07963857931041131,
+          "unconstrained_gamma": 0.054580098408108554,
+          "r_min_w": -0.20169103523265774,
+          "r_max_w": 0.2656750725324992,
+          "unit_gain_basis_rms": 1.2079378637882963
+        },
+        {
+          "id": "development_0_B2_SERIAL_ONLINE_V1",
+          "samples": 49,
+          "information": 1.4915251611980394,
+          "cross": -0.022113435089637076,
+          "unconstrained_gamma": -0.014826055681068684,
+          "r_min_w": -0.1576893436591369,
+          "r_max_w": 0.36335803506453734,
+          "unit_gain_basis_rms": 1.2212801321556161
+        }
+      ],
+      "inference": "session sensitivity, not an IID sample confidence interval"
+    },
+    {
+      "excluded": "development_0_B2_PARALLEL_ONLINE_V1",
+      "gamma": 0.1621026388907633,
+      "unconstrained_gamma": 0.1621026388907633,
+      "numerical_rank": 1,
+      "total_equal_session_information": 2.92133552521376,
+      "sessions": [
+        {
+          "id": "development_0_CPU_URGENT_ONLINE_V1",
+          "samples": 53,
+          "information": 1.4298103640157207,
+          "cross": 0.49566963281212156,
+          "unconstrained_gamma": 0.3466680933966651,
+          "r_min_w": -0.26507341353160174,
+          "r_max_w": 0.2556429537634124,
+          "unit_gain_basis_rms": 1.1957467808928948
+        },
+        {
+          "id": "development_0_B2_SERIAL_ONLINE_V1",
+          "samples": 49,
+          "information": 1.4915251611980394,
+          "cross": -0.022113435089637076,
+          "unconstrained_gamma": -0.014826055681068684,
+          "r_min_w": -0.1576893436591369,
+          "r_max_w": 0.36335803506453734,
+          "unit_gain_basis_rms": 1.2212801321556161
+        }
+      ],
+      "inference": "session sensitivity, not an IID sample confidence interval"
+    },
+    {
+      "excluded": "development_0_B2_SERIAL_ONLINE_V1",
+      "gamma": 0.1991427129880438,
+      "unconstrained_gamma": 0.1991427129880438,
+      "numerical_rank": 1,
+      "total_equal_session_information": 2.888924246789153,
+      "sessions": [
+        {
+          "id": "development_0_CPU_URGENT_ONLINE_V1",
+          "samples": 53,
+          "information": 1.4298103640157207,
+          "cross": 0.49566963281212156,
+          "unconstrained_gamma": 0.3466680933966651,
+          "r_min_w": -0.26507341353160174,
+          "r_max_w": 0.2556429537634124,
+          "unit_gain_basis_rms": 1.1957467808928948
+        },
+        {
+          "id": "development_0_B2_PARALLEL_ONLINE_V1",
+          "samples": 49,
+          "information": 1.4591138827734325,
+          "cross": 0.07963857931041131,
+          "unconstrained_gamma": 0.054580098408108554,
+          "r_min_w": -0.20169103523265774,
+          "r_max_w": 0.2656750725324992,
+          "unit_gain_basis_rms": 1.2079378637882963
+        }
+      ],
+      "inference": "session sensitivity, not an IID sample confidence interval"
+    }
+  ],
+  "source_freeze_sha256": "19637bf11814e473922c482e752942fb486e4cc74fd74694e6ecf15ee322b825",
+  "contract_sha256": "97d89d6c0166aa333b9ca6d4facbda1fc1e74123abf1e677a15c27d328d8abaa",
+  "independent_validation_sessions": 0,
+  "default": false,
+  "strict_support": false,
+  "experiment_ready": false
+}

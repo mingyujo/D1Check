@@ -1,5 +1,7 @@
 # 에너지·열 최적화 목표를 유지하는 해결 계획 — 2026-10-03
 
+> PC 후속 판정 완료: [단일 후보·사후 평가·필요 실측](results/online_policy_study_01/causal_background_pc_v1/README.md). 후보는 일부 AP 오차를 줄였으나 계수 민감도와 30초 J 악화로 미채택이다. 아래 개발6＋확인12는 당시 최대 제안이며 실행 계획으로 승격하지 않는다. 기존 task 비용을 재사용하고, 시스템 활동을 함께 기록하는 개발 대조4(C0/CPU/PAR/C0)를 우선 PC 구현 대상으로 권고한다. 실행 승인·claim 없음.
+
 상태: **DESIGN_PROPOSED_NOT_RUN_READY**. 사용자 요청은 해결 계획 수립이다. 이번 기기 명령/실측/실행계획/claim 0. 이 문서는 실행 승인이나 동결된 Run 계약이 아니다. 기준 HEAD25e153b, 기존 원본/동결/FAIL/strict/experiment_ready=false 보존. 아래 수집 수와 예산은 제안이며 실제 구현·Check 전 확정값으로 쓰지 않는다.
 
 ## 1. 해결해야 하는 문제와 끝낼 문제
