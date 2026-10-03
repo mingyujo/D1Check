@@ -1,5 +1,36 @@
 # 배경·열 이력 개발 대조 4세션 — PC 준비 완료, 2026-10-03
 
+## 2026-10-03 최신 계획 v3 — 설치 없는 미승인 개발4
+
+이 절이 현재 실행 대상이다. 아래 v2 명령·준비 수치는 **과거 기록**이며 v2는 [stopped_no_resume](../background_activity_run01/README.md)다. 새 ID `BACKGROUND-ACTIVITY-DEVELOPMENT-03`만 준비했다. 상태 `PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED`, 출력·registry·소비 claim 없음. 이번 PC 작업은 Run/기기 명령/재빌드 0회다.
+
+- 계획: `C:/Users/LG/Documents/D1Check_Arrival_Extension/background_activity_plan_v3/collection_plan.json`
+- 최종 계획 SHA-256: `dbec1de344b2963f726fc7a873660f021796802c008a6de77f043d1712fff501`
+- 예정 출력: `background_activity_run_v3`; registry: `background_activity_registry/BACKGROUND-ACTIVITY-DEVELOPMENT-03`. 어느 것도 생성하지 않았다.
+- APK·인증서·패키지·버전·Android 소스는 아래 v2 후보와 동일하다. APK `9d8d55c2742b485e18f8a0812b70bf33ed66f9185c6d47b80c39f086e73fd932`를 재사용한다. 현재 설치본의 동일성은 실행 시 새로 확인한다. 과거 설치 성공은 현재 gate 통과 증거가 아니다.
+- `installed_only=True`: 현재 설치본 host pull 최대1, APK push/설치 **0**. 불일치·조회 실패면 앱 시작 전 중단하며 배포 fallback은 없다. inherited `apk_push_timeout_seconds=120`은 이 경로에서 사용하지 않는 필드다.
+- C0 → CPU96 → PAR96 → C0, 개발4/독립 확인0. 본192 + warmup32 + 별도 적격성0 = 명시적 추론224; runtime16; staging4·28파일; trace4·trace pull4; 재시도/대체/추가 각각0. resident·900ms sampler·입력·worker/lane·AP observe-v2·부하·판정·조회 주기는 v2와 같다.
+- 시간 상한 **4,454초(74분14초)** = 설치본 preflight600 +4×세션896 +3×대기90. preflight600은 설치 시간을 복사해 정상 예상시간으로 쓰는 값이 아니라 현재 설치본 검사 **집계 deadline**이다. 마지막45초를 여유로 두고 명령 및 로컬 APK 검사를 잔여시간에 제한한다. 두 번의 로컬 APK inspect 각각 최대60+30초, host pull180초, identity/환경/remote SHA 조회가 포함된다. 개별 timeout이 모두 최대까지 성공할 것을 보장하지 않으며 deadline 부족이면 중단한다. 설치 예약은0이다.
+- 세션896 = stage/gate120 +trace start90 +launch26 +poll485 +앱 회수50 +host cleanup45 +trace 회수80. 고정 관측30+120+60=210초/세션, 합계840초. 회수/종료 예약이 부족하면 새 단계를 시작하지 않는다. 이 상한은 예상시간·완주 보장이 아니다.
+- ADB **13,036명령** =preflight200 +4×(기존3200 +trace9). 기존 poll 최대0.25초 listing, thermal2초/3명령, screen10초/1명령 유지. 485초의 간격 기반 ceiling1940+729+49=2718과 staging/arm/기타482를 합한 기존3200, trace start5/recovery4를 더한다. 첫 세션 누적 ceiling에도 preflight가 포함된다. heartbeat30초는 host 파일 기록이며 추가 ADB가 아니다.
+- Perfetto 도움말 수정(원본 stderr/exit1+Usage+필수 옵션)을 새 소스 해시에 연결했다. 다른 조회 오류/timeout은 완화하지 않았다. CLI 도움말 수용은 실제 trace 지원·내용 적격성·TraceProcessor 실행 검증을 의미하지 않는다.
+
+PC 검증: `python -B -m unittest tools.test_d1_background_activity_plan` **9건 통과**. 실제 공유 runner의 설치 없는 경로→trace→앱 launch→회수/cleanup 경계를 fake Device로 통과하고 설치 호출은 금지했다. 실제 installed_preflight의 후보 불일치→원래 오류/receipt 보존→추가 명령0을 확인했다. 실제 PowerShell Check 및 Device/server probe 생성 금지 Python Check 통과. [검증 대상·소스 해시·예산](plan_v3/verification.json). 검증 HEAD198c6ac, 이번 host 수정은 미커밋 상태에서 검증했다. Android/기기/장시간 안정성은 새로 검증하지 않았다.
+
+계획 생성 재현(새 빈 폴더에서만, 이미 만든 계획에 재호출하지 않음):
+```powershell
+& 'C:/Users/LG/anaconda3/python.exe' -B -m tools.d1_background_activity_plan prepare --source-plan C:/Users/LG/Documents/D1Check_Arrival_Extension/separated_power_plan_v4/development/collection_plan.json --build-receipt C:/Users/LG/Documents/D1Check_Arrival_Extension/background_activity_build_v1/verified_build_receipt.json --output C:/Users/LG/Documents/D1Check_Arrival_Extension/background_activity_plan_v3
+```
+
+**새 개발4 실행 승인 후** 현재 A24 transport를 지정해 아래 경로를 쓴다. 이번에는 Check만 수행했다. 실행 전 A24·fingerprint/설치본/배터리·비충전·BAT≤35°C·thermal0·화면·memory·품질/GPU 등 기존 gate를 다시 확인한다. 설정 변경·자동 reconnect·transport 전환·추가 호출은 없다.
+```powershell
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/background_activity_plan_v3/RUN_AFTER_APPROVAL.ps1' -Action Check
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/background_activity_plan_v3/RUN_AFTER_APPROVAL.ps1' -Action Run -Approved -Serial '<현재 확인한 A24 transport>' -ExpectedPlanSha256 'dbec1de344b2963f726fc7a873660f021796802c008a6de77f043d1712fff501'
+```
+
+원래 계획 SHA a214b53e…d78d97e, APK, 공유 모형 SHA5682082a…72db2 및 기존 freeze를 보존한다. gamma 후보는 미채택, 기본/strict/experiment_ready=false 불변. 새 실행이 끝나도 내용 적격성·계수 식별·독립 예측 확인·정책 차이 판정은 서로 다른 단계다. PC 준비 완료를 모형 완성으로 표현하지 않는다.
+
+
 최신 실행: [Run01 앱 시작 전 중단·PC 판독 수정](../background_activity_run01/README.md). 아래는 실행 전 준비 기록이며 plan_v2는 이제 stopped_no_resume이다.
 
 **PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED.** 기존 후보의 불안정한 gamma와 유휴 AP 상승을 구분할 관측을 구현했다. 새 전력·AP 계수 채택, 정책 우열 확인, 실기기 실행 완료를 뜻하지 않는다. 이번 기기 명령/Run/claim은 0이며 새 계획과 출력 경로는 미소비다.

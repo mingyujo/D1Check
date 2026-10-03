@@ -33,6 +33,8 @@ class BackgroundTests(unittest.TestCase):
         self.assertEqual(x['adb_commands'],4*(3200+9)+200)
         self.assertEqual((x['retry'],x['replacement'],x['additional']),(0,0,0))
         self.assertEqual(x['fixed_observation_seconds'],840)
+        self.assertEqual((x['apk_transfers'],x['installs'],x['installation_seconds']),(0,0,0))
+        self.assertEqual(x['installed_preflight_seconds'],600)
 
     def test_trace_owner_only_and_duplicate_recovery_reuses_result(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -87,7 +89,7 @@ class BackgroundTests(unittest.TestCase):
             manifest=root/'manifest.json';sid=str(uuid.uuid4());b.cal.write_new(manifest,dict(session_id=sid))
             entry=dict(index=0,session_id=sid,manifest='manifest.json',requests=0)
             plan=dict(background_activity_contrast=True,online_policy_study=True,online_configuration_owner_v1=True,
-                installed_only=False,study_phase='development',budget=b.budget(),apk_sha256='apk',
+                installed_only=True,study_phase='development',budget=b.budget(),apk_sha256='apk',
                 apk_preflight={'candidate':{}},frozen_model={'path':str(source)},source_files={},
                 output_root=str(root/'run'),registry=str(root/'registry'),entries=[entry])
             file=root/'collection_plan.json';b.cal.write_new(file,plan);d=FakeDevice();order=[]
@@ -99,7 +101,9 @@ class BackgroundTests(unittest.TestCase):
             def cleanup(*args):order.append('app_force_stop');return {'status':'completed'}
             for obj,name,opts in [(b,'check',{}),(b,'trace_start',{'side_effect':start}),
                 (runner,'ObservedDevice',{'return_value':d}),(runner,'require_host_pull_space',{}),
-                (life,'host_identity',{'return_value':{}}),(runner.energy_device,'installation',{'return_value':{}}),
+                (life,'host_identity',{'return_value':{}}),
+                (runner.energy_device,'installation',{'side_effect':AssertionError('deploy forbidden')}),
+                (runner.energy_device,'installed_preflight',{'return_value':{}}),
                 (runner.energy_device,'gates',{}),(runner.install,'installed_hash',{'return_value':'apk'}),
                 (runner.shared,'stage_inputs',{'return_value':'owned'}),(runner,'poll',{'side_effect':poll}),
                 (runner.energy_device,'recover',{'return_value':{}}),(runner.shared,'cleanup',{'side_effect':cleanup}),
@@ -109,10 +113,30 @@ class BackgroundTests(unittest.TestCase):
             result=runner.run(file,'FAKE','FAKE',b.p.digest(file),True)
             self.assertEqual(result['status'],'completed_descriptive_only')
             self.assertEqual(order,['trace_start','poll','app_force_stop'])
+            self.assertTrue(runner.ObservedDevice.call_args.kwargs['forbid_apk_deploy'])
+            runner.energy_device.installed_preflight.assert_called_once()
+            runner.energy_device.installation.assert_not_called()
             self.assertTrue((root/'run'/('00_'+sid)/'trace_recovery.json').exists())
             self.assertEqual(sum('force-stop' in c[0] for c in d.calls),0) # cleanup mock owns it exactly once
             self.assertEqual(sum('--stop' in c[0] for c in d.calls),1)
             with self.assertRaises(FileExistsError):runner.run(file,'FAKE','FAKE',b.p.digest(file),True)
+
+    def test_exact_installed_mismatch_preserves_receipt_and_never_deploys(self):
+        from tools import d1_energy_collection_device as energy
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);d=FakeDevice();plan={'budget':b.budget()}
+            with patch.object(energy.apk,'preflight',return_value={'installed':{'apk_sha256':'old'},'candidate':{'apk_sha256':'new'}}), \
+                 patch.object(energy,'gates',side_effect=AssertionError('gate after mismatch')), \
+                 patch.object(energy.install,'installed_hash',side_effect=AssertionError('hash after mismatch')), \
+                 patch('subprocess.Popen',side_effect=AssertionError('real process forbidden')):
+                with self.assertRaisesRegex(ValueError,'no deploy fallback'):
+                    energy.installed_preflight(d,plan,root/'plan.json',root,10**15)
+            receipt=json.loads((root/'installed_preflight_receipt.json').read_text())
+            self.assertEqual(receipt['status'],'failed')
+            self.assertIn('no deploy fallback',receipt['error'])
+            self.assertEqual((receipt['apk_transfer_attempts'],receipt['install_attempts'],receipt['app_launch_attempts']),(0,0,0))
+            self.assertEqual(receipt['cleanup']['status'],'not_applicable_no_app_launch')
+            self.assertEqual(d.calls,[])
 
     def test_trace_alignment_loss_and_missing_frequency(self):
         with tempfile.TemporaryDirectory() as tmp:

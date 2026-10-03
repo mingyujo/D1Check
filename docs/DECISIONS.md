@@ -1,5 +1,13 @@
 # D1Check 결정 기록
 
+## 2026-10-03 결정 — 새 개발4는 설치 없는 v3로 분리 (PC 구현 채택·실기기 미승인)
+
+- [계획·예산·명령](results/online_policy_study_01/background_activity_pc_v1/README.md), [검증](results/online_policy_study_01/background_activity_pc_v1/plan_v3/verification.json). 도움말 수정 소스를 새 ID BACKGROUND-ACTIVITY-DEVELOPMENT-03에 동결. plan_v3 SHA dbec1de3…ff501. PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED; 출력/registry/claim 없음. stopped v2·원본 보존.
+- 설치된 동일 APK9d8d55c2…e73fd932 재사용, installed_only=True·불일치 중단·배포 fallback 없음. 개발 C0→CPU96→PAR96→C0, 본192+warmup32=224/runtime16/staging4·28/설치본pull1/tracepull4/APKpush·설치0/고정840초/총4454초/ADB13036/retry0. 기존 부하·900ms sampler·조회 주기·gate 유지.
+- 관련 Python9 및 실제 PowerShell Check/Device·server probe 금지 Check 통과. 실제 공유 runner 설치 없는 호출 연결/설치본 불일치 오류 보존 검증. Android·APK 재빌드0, 기기명령·Run0. 도움말 옵션 외 실제 trace 시작·내용·clock/loss·TraceProcessor·추가 계측 비용·장시간은 미검증. 기존 모형/기본/strict/experiment_ready=false, gamma 미채택 유지.
+- 다음 행동 하나: 새 개발4 계획의 기기 실행 승인 후 현재 A24/설치본/환경·trace gate로 1회 수행. 이번 진행은 PC 준비까지이며 이전 종료 계획을 재개하지 않음. 아래는 과거 기록.
+
+
 ## 2026-10-03 배경 활동 개발4 Run01 — trace help 판독으로 앱 시작 전 중단
 
 - [실행·소비·수정·근거](results/online_policy_study_01/background_activity_run01/README.md), [종료 화면](results/online_policy_study_01/background_activity_run01/index.html). 승인된 plan_v2 1회 실행: A24/설치본·host 환경 통과, 첫 C0 trace 준비의 `perfetto --help` stderr3804byte/exit1을 host가 실패로 판독. timeout/연결소실·AP 예측실패 아님. 필요한 옵션은 도움말에 있으나 실제 trace 지원·내용은 아직 미검증. stopped_no_resume로 보존.

@@ -18,8 +18,8 @@ from tools import d1_ap_background_contrast as script_source
 
 ROOT=Path(__file__).resolve().parents[1]
 VERSION='background-activity-contrast-v1'
-NAME='BACKGROUND-ACTIVITY-DEVELOPMENT-02'
-FOLDER='background_activity_plan_v2'
+NAME='BACKGROUND-ACTIVITY-DEVELOPMENT-03'
+FOLDER='background_activity_plan_v3'
 ORDER=('C0_PRE','CPU_URGENT_ONLINE_V1','B2_PARALLEL_ONLINE_V1','C0_POST')
 CONTRACT=ROOT/'docs/results/online_policy_study_01/background_activity_pc_v1/contract.json'
 TRACE_CONFIG=ROOT/'tools/perfetto/background_activity.pbtxt'
@@ -32,6 +32,7 @@ def budget():
     # Trace recovery is in addition to original 50s evidence/45s app cleanup.
     return dict(prior.BUDGET,sessions=4,requests=192,warmup=32,explicit_inference=224,
         runtime_creations=16,staging=4,staging_files=28,installed_host_pulls=1,
+        apk_transfers=0,installs=0,installation_seconds=0,installed_preflight_seconds=600,
         fixed_observation_seconds=840,intersession_cooling_seconds=90,
         trace_sessions=4,trace_recovery_seconds=80,trace_start_seconds=90,app_launch_seconds=26,trace_max_seconds=600,
         trace_max_bytes=67108864,trace_host_pulls=4,
@@ -59,7 +60,7 @@ def specification(source_file,build_file,output):
     plan=copy.deepcopy(source)
     for k in list(plan):
         if k.startswith(('separated_','ap_','resident_','recorded_','online_','study_')):plan.pop(k)
-    plan.update(background_activity_contrast=True,installed_only=False,online_policy_study=True,online_configuration_owner_v1=True,
+    plan.update(background_activity_contrast=True,installed_only=True,online_policy_study=True,online_configuration_owner_v1=True,
         study_phase='development',experiment_id=NAME,approval='not_approved',experiment_ready=False,
         status='PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED',minimum_host_free_bytes=2**31,budget=budget(),source_code=identity(),
         source_plan=dict(path=str(source_file.resolve()),sha256=p.digest(source_file)),
@@ -68,7 +69,7 @@ def specification(source_file,build_file,output):
         analysis_contract=dict(path=str(CONTRACT),sha256=p.digest(CONTRACT)),
         input_bundle=dict(path=str(CONTRACT),sha256=p.digest(CONTRACT)),
         activity_model=dict(path=str(MODEL),sha256=MODEL_SHA),
-        output_root=str(output.parent/'background_activity_run_v2'),
+        output_root=str(output.parent/'background_activity_run_v3'),
         registry=str(output.parent/'background_activity_registry'/NAME),entries=[],
         measurement_protocol_change='new APK self CPU/past-power input plus bounded system trace,900ms sampler; new development block only',
         analysis_scope='structural identification, no adopted candidate or independent policy validation',
