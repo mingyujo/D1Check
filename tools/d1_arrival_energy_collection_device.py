@@ -108,6 +108,10 @@ def poll(d,remote,folder,manifest,plan):
 
 def validate(folder,manifest,plan):
     expected=96 if plan.get('online_policy_study') else 24
+    if plan.get('sustained_confirmation'):
+        from tools import d1_sustained_protocol as sustained
+        sustained.validate(manifest['requests'],manifest['policy'])
+        expected=sustained.COUNT
     if plan.get('background_activity_contrast'):expected=len(manifest['requests'])
     if plan.get('resident_control_pair'):
         from tools import d1_resident_control_plan as control
@@ -223,7 +227,10 @@ def run(plan_file,adb,serial,expected_sha,approved):
     plan=p.read(plan_file)
     idle_response=plan.get('ap_idle_pulse_followup',False)
     single=plan.get('single_arrival_confirmation',False) or plan.get('recorded_replay_confirmation',False) or plan.get('online_policy_study',False)
-    if plan.get('background_activity_contrast'):
+    if plan.get('sustained_confirmation'):
+        from tools import d1_sustained_plan as sustained
+        sustained.check(plan_file)
+    elif plan.get('background_activity_contrast'):
         from tools import d1_background_activity_plan as background
         background.check(plan_file)
     elif plan.get('separated_power_followup'):

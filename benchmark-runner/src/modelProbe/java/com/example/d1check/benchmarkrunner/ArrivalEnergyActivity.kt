@@ -241,8 +241,9 @@ open class ArrivalEnergyActivity : Activity() {
                 m.optString("power_sampling_version", ""), m.optLong("power_sample_period_ms", 1000L))
             if (m.has("power_identification_version")) {
                 check((policyStudy == ArrivalPolicyStudy.VERSION || backgroundObservation) &&
-                    m.getString("power_identification_version") == ArrivalPolicyStudy.SEPARATED_POWER && samplePeriodMs == 900L)
-                event("power_identification_contract", mapOf("version" to ArrivalPolicyStudy.SEPARATED_POWER,
+                    m.getString("power_identification_version") in setOf(ArrivalPolicyStudy.SEPARATED_POWER,
+                        ArrivalPolicyStudy.SUSTAINED_CONFIRMATION) && samplePeriodMs == 900L)
+                event("power_identification_contract", mapOf("version" to m.getString("power_identification_version"),
                     "role" to if (backgroundObservation) "development" else m.getString("policy_study_role"), "requests" to requests.size))
             }
             if (m.has("power_sampling_version")) event("power_sampling_contract", mapOf("period_ms" to samplePeriodMs,

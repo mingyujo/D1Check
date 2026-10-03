@@ -55,7 +55,11 @@ def load_case(file,plan,entry):
     # only that count dispatch adapted; no old evidence or function is modified.
     m=p.read(Path(file).parent/entry['manifest']);origin=p.read(art/'common_boundary.json')['start_ns']
     rows=p.read(art/'requests.json');ev=logs.read_lines(art/'progress.jsonl')
-    if len(rows)!=96 or any(r['terminal_status']!='succeeded' for r in rows):raise ValueError('full denominator')
+    expected=192 if plan.get('sustained_confirmation') else 96
+    if plan.get('sustained_confirmation'):
+        from tools import d1_sustained_protocol as sustained
+        sustained.validate(m['requests'],m['policy'])
+    if len(rows)!=expected or any(r['terminal_status']!='succeeded' for r in rows):raise ValueError('full denominator')
     if p.read(art/'manifest.json')!=m or p.read(art/'cleanup.json')['status']!='completed':raise ValueError('manifest/cleanup')
     baseline=[e['mono_ns'] for e in ev if (e.get('phase'),e.get('kind'))==('resident_baseline','phase_start')]
     cooling=[e['mono_ns'] for e in ev if (e.get('phase'),e.get('kind'))==('resident_cooling','phase_end')]
@@ -128,8 +132,13 @@ def validate_service(config,vectors,requests,policy,settings):
     if preview is not None:
         from tools import d1_separated_power_protocol as separated
         if settings['mode']!='explore' or any(r['arrival_ns']%1000000 for r in requests):raise ValueError('planning only')
-        separated.validate(preview,[dict(request_id=r['id'],ordinal=r['ordinal'],task_id=r['task'],priority=r['priority'],
-            offset_ms=r['arrival_ns']//1000000,deadline_ms=r['deadline_offset_ns']//1000000) for r in requests])
+        rows=[dict(request_id=r['id'],ordinal=r['ordinal'],task_id=r['task'],priority=r['priority'],
+            offset_ms=r['arrival_ns']//1000000,deadline_ms=r['deadline_offset_ns']//1000000) for r in requests]
+        if preview=='sustained-confirmation-v1':
+            from tools import d1_sustained_protocol as sustained
+            sustained.validate(rows,policy)
+        else:
+            separated.validate(preview,rows)
     else:
         if len(requests)!=96 or any(r['task']!=('classification' if r['ordinal']%4==1 else 'detection') or r['priority']!=('urgent' if r['ordinal']%4==1 else 'normal') for r in requests):raise ValueError('unregistered workload')
         times=[r['arrival_ns'] for r in sorted(requests,key=lambda r:r['ordinal'])]

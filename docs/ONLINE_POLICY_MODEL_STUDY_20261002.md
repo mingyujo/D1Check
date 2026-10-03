@@ -1,5 +1,9 @@
 # 실제 도착 정책의 일정·에너지·AP 개발/독립 확인
 
+## 2026-10-04 지속 입력의 독립 전이8·시뮬레이터 연결 완료
+
+[한국어결과](ENERGY_THERMAL_OVERNIGHT_RESULTS_20261004.md), [화면·portable예측](results/online_policy_study_01/overnight_sustained_run01/README.md). 기존동결계수불변·192요청CPU/PAR8세션·전부기한충족. PAR응답개선관측,작은J/AP우열미판정. 조건부A/도착B오차와초기조건을공개했고등록입력의제한모형평가를마무리했다. 기존96결과에합치거나strict/experiment_ready를승격하지않는다.
+
 ## 2026-10-03 분리 부하 개발3·동결·독립 확인6 완료
 
 - [결과·소비·재현](results/online_policy_study_01/separated_power_final/README.md), [대시보드](results/online_policy_study_01/separated_power_final/index.html). 준비 중 silent/reaped 조회 누락을 공식창 승인 전 최대1회로 분리하고 새 관측 성공 후에만 진행하도록 보완했다. 기존 timeout/안전 gate/APK 불변. 실제 원인 미확정; 성공 run04의 누락허용 사용0회.

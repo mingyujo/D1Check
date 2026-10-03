@@ -1,5 +1,11 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-04 지속192 CPU/PAR 확인8 완료·제한 시뮬레이터 연결
+
+- [보고서](ENERGY_THERMAL_OVERNIGHT_RESULTS_20261004.md), [대시보드·재현](results/online_policy_study_01/overnight_sustained_run01/README.md). 별도opt-in192/400ms·CPU/PAR4쌍8세션전부완료. 본1536+warmup64=1600/runtime32/staging8·56/pull·push·설치각1/ADB6647/2588.054초. 재시도·추가계획0. 앱cleanup8·회수8·host정리8·설치정리1·최종ps대상부재·parent/child exit0. 옛FAIL/원본/미소비계획/기본/strict불변.
+- 모두기한192/192. PAR실제CG_DC병행21.924~22.581초·긴급P95쌍별127.912~131.381ms단축. 도착B J오차−5.541~+8.210J/AP MAE0.186~0.559°C. PAR−CPU관측J−5.304~+11.682·평균+1.195·SD8.069(4쌍,기술통계). 동일초기동결예측−2.091J/최고AP+0.728~+0.748°C와구분;작은J/AP정책우열은미판정.
+- 관련Android10/Python22·실제Check기기0·8세션독립적분/CSV/hash·portableCLI2검증. 서명APK5fb72bf2…·계획62f4fa62…·원모형5682082a…byte불변. 등록입력조건부A/도착B 전이평가·공유번들완료,임의도착/열처리율/미래오차한도는미지원. accuracy_pass/policy_winner=null, experiment_ready=false. 다음PC행동하나:제한된결과를연구본문/시연의응답개선·열상충·에너지우열미판정에사용. 같은실측확대/추가보정자동실행없음.
+
 ## 2026-10-04 최대6시간 자율 작업 제안 — 실패 복구 포함
 
 - [시간·입력·예산·중단·마무리](ENERGY_THERMAL_OVERNIGHT_PLAN_20261004.md). PC90분→기기 최대180분→분석75분→Git15분. 단일192요청/400ms CPU–PAR 후보를 검토하고 적격일 때만4쌍8세션 제안. 현재Android/host96고정이므로 opt-in구현·PC검증·서명빌드·새계획동결 전에는 실행 불가. DESIGN_PROPOSED_NOT_RUN_READY.

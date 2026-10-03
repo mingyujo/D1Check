@@ -4,6 +4,24 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class ArrivalPolicyStudyTest {
+    @Test fun sustainedConfirmationRequiresExactProtocolAndPreservesLegacy() {
+        val rows = (0 until 192).map { i -> ArrivalEnergyContract.Request("q$i", i,
+            if (i % 2 == 0) "classification" else "detection", if (i % 2 == 0) "urgent" else "normal",
+            35000L + i * 400L, if (i % 2 == 0) 1500L else 6000L) }
+        for (policy in listOf(ArrivalPolicyStudy.CPU, ArrivalPolicyStudy.PARALLEL))
+            ArrivalPolicyStudy.validate(ArrivalPolicyStudy.VERSION, policy, "confirmation", "separated_power",
+                rows, ArrivalPolicyStudy.SUSTAINED_CONFIRMATION)
+        fun rejected(role: String = "confirmation", policy: String = ArrivalPolicyStudy.CPU,
+                     version: String = ArrivalPolicyStudy.SUSTAINED_CONFIRMATION,
+                     input: List<ArrivalEnergyContract.Request> = rows) {
+            try { ArrivalPolicyStudy.validate(ArrivalPolicyStudy.VERSION, policy, role, "separated_power", input, version)
+                fail("invalid sustained input") } catch (_: IllegalArgumentException) {}
+        }
+        rejected(role="development"); rejected(policy=ArrivalPolicyStudy.SERIAL)
+        rejected(version=ArrivalPolicyStudy.SEPARATED_POWER); rejected(input=rows.dropLast(1))
+        rejected(input=rows.map { it.copy(offsetMs=it.offsetMs+1) })
+        rejected(input=rows.map { it.copy(id="same") })
+    }
     @Test fun separatedPowerInputIsExactAndLegacyRemainsClosed() {
         for (role in listOf("development", "confirmation")) {
             val rows = (0 until 96).map { i ->

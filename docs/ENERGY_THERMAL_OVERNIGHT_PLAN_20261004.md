@@ -1,5 +1,7 @@
 # 최대 6시간: 지속 부하 비교·실패 복구·시뮬레이터 마무리
 
+**실행 이력:** 사용자 후속 실행 지시로 준비·동결 후8/8을완료했다. [실제 결과·소비·판독](ENERGY_THERMAL_OVERNIGHT_RESULTS_20261004.md). 아래는착수전원설계이며현재미실행상태를뜻하지않는다.
+
 상태: **DESIGN_PROPOSED_NOT_RUN_READY**. 2026-10-04 사용자 요청에 따라 실패 수정·후속 실행을 포함한 상한을 설계했다. 이번 작업은 계획 작성이며 ADB/실측/새 소비 claim은 0이다. 실행 지시를 받은 뒤 아래 범위에서 준비·동결부터 진행한다. 소비된 기존 계획을 재개하지 않는다.
 
 기준 HEAD `d3a6a4cea1f7b96f890f2098a4787aec86abecde`. [판별 가능성 계산](results/online_policy_study_01/policy_feasibility_pc_v1/README.md), [확인6 결과](results/online_policy_study_01/policy_resolution_pc_v1/README.md)를 재사용한다. 기존 동결 계수·FAIL·원자료·미소비 계획·strict·experiment_ready=false를 유지한다.

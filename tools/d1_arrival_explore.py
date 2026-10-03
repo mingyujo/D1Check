@@ -121,7 +121,10 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
         base.require(settings['mode']=='explore', 'unmeasured power/AP model is explore-only')
         feedback.validate(thermal_model)
         base.require(horizon_ns == 120_000_000_000, 'thermal common window')
-    base.require(0 < len(requests) <= 128 and 0 < horizon_ns <= 600_000_000_000, 'bounded scenario')
+    # Only the separately validated fixed transfer input expands the count cap.
+    request_cap = 192 if (config.get('protocol') == 'online-context-service-v1'
+                          and settings.get('separated_power_planning_role') == 'sustained-confirmation-v1') else 128
+    base.require(0 < len(requests) <= request_cap and 0 < horizon_ns <= 600_000_000_000, 'bounded scenario')
     for name in ('decision_ns', 'record_ns', 'dispatch_ns'):
         base.require(type(settings[name]) is int and settings[name] >= 0, 'explicit overhead assumption')
     base.require(settings['interference'] >= 1 and settings['predicted_interference'] >= 1 and settings['estimate_factor'] > 0, 'sensitivity range')
