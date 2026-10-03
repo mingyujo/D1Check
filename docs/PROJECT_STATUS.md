@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-04 CPU–PAR 판별 가능성 PC 완료 — 동일 배치 확대 보류
+
+- [판정·가정·재현](results/online_policy_study_01/policy_feasibility_pc_v1/README.md), [민감도 화면](results/online_policy_study_01/policy_feasibility_pc_v1/evaluation/index.html). 기존96요청 CPU/PAR만 선정, 새입력검색/적합/예측/실측0. 관측 차이 +1.657/−42.939J의 기술적SD31.534J는 두 비교뿐이며 미래분산이 아님. 동결 차이1.712761J에 알려진분산 정규근사를 가정하면2661쌍; 실제 필요횟수·권고가 아니다. 8쌍 예시에는SD1.729J 이하가 필요하지만 달성근거 없음.
+- **현재1.713J 입증용 확대 반복은 권고하지 않음.** actual_required_pairs/AP표본수/최소실용J/허용AP증가=null, run_ready=false. α.05·power.8은 민감도 가정이며 PASS 기준 아님. 새 실측계획/claim0; 원래 에너지·열 최적화 목표를 완료했다고 하지 않음. 기존모형/FAIL/default/strict/experiment_ready=false 보존.
+- 관련PC4·CLI·결측/편향 비소거·원본hash·그림 검증. 다음 행동 하나: 이 종료 판정을 포함한 제한된 시뮬레이터 결과를 연구 본문에 반영. 향후 실측은 의미 있는 효과·열 허용치와 차분변동/편향 관리 근거가 있을 때 재검토하며 같은 감사/배치 자동 반복 없음.
+
+
 ## 2026-10-03 확인6 오차와 정책 차이 PC 대조 완료
 
 - [판정·재현](results/online_policy_study_01/policy_resolution_pc_v1/README.md), [결과 화면](results/online_policy_study_01/policy_resolution_pc_v1/evaluation/index.html). 기존 확인6 전부 보존·새 적합/실측0. 동일 초기6×정책3의 제한된 예측에서 PAR−CPU J −1.712761, 최고AP +0.793~0.816°C; SER +2.481829J/+0.194~0.223°C. 기존 관측 비교4개와 원 예측 J6개 재현.

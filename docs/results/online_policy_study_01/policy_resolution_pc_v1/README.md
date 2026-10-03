@@ -1,5 +1,7 @@
 # 확인 6세션의 오차와 정책 차이 — 2026-10-03 PC 결과
 
+> 후속 판정: [CPU–PAR 판별 가능성 계산](../policy_feasibility_pc_v1/README.md). 동일1.713J 입증용 확대 반복 보류, 실제 필요 반복 수 미확정.
+
 **서비스 차이는 이 입력에서 관측됐다. 같은 초기조건의 모형 계산도 가능하다. 그러나 작은 에너지·AP 차이를 근거로 정책 우열을 확정할 수는 없다.** 기존 확인 자료를 사후 재분석했으며 새 독립 확인·후보 적합·실측은 0이다. 기본 모형·strict·experiment_ready=false를 유지한다.
 
 [결과 화면](evaluation/index.html) · [JSON](evaluation/evaluation.json) · [실행 전 분석 규칙](analysis_contract.json) · [기존 확인 결과](../separated_power_final/README.md) · [배경 후보 미채택 근거](../background_identification_pc_v1/README.md)
