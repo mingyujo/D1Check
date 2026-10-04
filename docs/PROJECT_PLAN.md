@@ -1,5 +1,10 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-04 실제 앱 원본 빌드 경계
+
+- [Ente 계측 overlay·PC 검증](results/real_app_baseline_pc_01/build_pc.md)을 준비했다. 실제 중단 제어를 Dart에서 실행했고 원본 정책은 변경하지 않았다. indexing 전체 실행과 원앱 개선 비교는 아직 하지 않았다.
+- 전체 빌드는 Windows symlink 권한과 디스크 여유가 차단 조건이다. 현재 설치된 전용 도구와 고정 checkout을 재사용하고 임의 패키지 업그레이드·OS 설정 변경·기기 실행으로 우회하지 않는다. 다음은 해당 PC 빌드 환경 확보 후 재개이며, 정책 실측을 바로 시작하는 단계가 아니다.
+
 ## 2026-10-04 실제 앱 비교 후속 범위
 
 - [선정·구현 경계·PC 검증](results/real_app_baseline_pc_01/README.md). 실제 앱 후보는 Ente Photos 고정 소스의 전경 배경 ML 제어다. 기존 합성 D1 B2/B3 비교는 유지하며 생산 앱 정책으로 재명명하지 않는다.

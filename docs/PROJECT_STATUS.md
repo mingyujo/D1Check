@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-04 현재 작업 — Ente 계측 연결·PC 검증, APK 빌드 차단
+
+- [원본 checkout·구현·검증·재현](results/real_app_baseline_pc_01/build_pc.md): 고정 Ente 원문의 run/indexing/stop/release에 opt-in 로그를 연결했다. 정책·15초 gate·retry는 불변. Python5건·실제 MlRunControl Dart ON/OFF·변경 앱파일3개 정적 분석 통과. 전체 앱 실행·실제 앱 대비 효과는 미검증이다.
+- Flutter3.47.2·Rust1.99 전용 환경 확보, 실패 Pub cache의 잘못된 HEAD를 정확한 ref로 복구. Flutter 후처리는 Windows symlink 권한(WinError1314)으로 차단. Rust 생성기 컴파일 후 expand 중 공간 부족 위험으로 소유 프로세스만 종료; APK/바인딩 완료 아님. 추가 cache 삭제는 자동 승인 검토 거부로 보존.
+- 다음 행동 하나: 충분한 공간과 symlink 생성 권한이 있는 Windows PC 환경에서 보존한 원앱 빌드 재개. OS 설정을 자동 변경하지 않음. 기기/추론/실측/claim0, 기존 모형·결과·strict·experiment_ready=false 유지. 사용자 HTML과 다른 worktree 보존.
+
 ## 2026-10-04 현재 작업 — 실제 앱 비교 대상 선정·PC 경계 확인 완료
 
 - [REAL-APP-BASELINE-PC-01 결과·재현](results/real_app_baseline_pc_01/README.md): Ente Photos 전경 배경 ML 제어를 실제 앱 후보로 선정했다. 기존 9/27 검토·interaction gate를 재사용했다. 원앱 기본15초 유예와 D1 일반6초 기한의 직접 승패 비교는 부적절하며 원앱 재현과 D1 이식을 구분한다.

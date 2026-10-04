@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-10-04 — REAL-APP-BASELINE-BUILD-PC-01: 관측 연결과 검증 한계
+
+- [원본 기반 구현·검증 기록](results/real_app_baseline_pc_01/build_pc.md). Ente 고정 소스에 시작/반환/최초 중단/compute 반환의 opt-in 로그만 연결했다. 함수 반환과 전체 사진 처리 완료를 구분하며 실사용 앱보다 나은 정책을 구현·입증한 것으로 해석하지 않는다.
+- 기존 모델·계수·배정·기한·Ente timer/health/retry는 유지. Windows symlink 권한 부족 및 코드 생성 중 디스크 여유 급감은 PC 환경 차단이며 앱/정책 실패 증거가 아니다. OS 설정 변경·추가 실측·새 정책 채택은 수행하지 않았다.
+
 <a id="real-app-baseline-pc-01"></a>
 ## 2026-10-04 — REAL-APP-BASELINE-PC-01: 실제 앱 후보와 직접 비교의 경계
 
