@@ -1,0 +1,59 @@
+# D1 simulator v2 — Galaxy S26 (SM-S942N, Exynos 2600) device profile (2026-10-04). v0/v1 files are untouched.
+# Every leaf is {value, status, source}. status: measured | measured-fit | placeholder | untested | unsupported. value null -> MASKED.
+# Engines: GPU·NPU = npu-runner CompiledModel (LiteRT 2.2.0); CPU4 = benchmark-runner Interpreter 1.4.2 XNNPACK 4 threads (engine footnote).
+# Throttle model v2 = d1sim/throttle_v2.py (LOAD-DEPENDENT gates + static depth map + 3 NPU steps + cooling asymmetry), parameters in
+# throttle_v2_*.json (written by d1sim/tools/fit_throttle_v2.py --write-profiles). Adopted form / checklist count / status: see
+# throttle_v2_thermal.json "form" and sim/스로틀모형_v2.md §1. Nothing here is validated on unseen data — 2026-10-04 night = first true holdout
+# (N50P · G50P · GI300 · NI300); the 10/3 night runs were the SELECTION set for v2 (prereg v2 §1).
+device: S26
+profile_version: v2-2026-10-04
+model: mobilenet_v1_1.0_224
+
+latency_ms:   # unthrottled L0 — v1 values unchanged (fit runs did not change)
+  GPU:  {value: 2.531992, status: measured, source: "v1 (trace_v1_10s_m2_H1.csv seg 0 t=-1, CompiledModel FP32)"}
+  NPU:  {value: 0.753125, status: measured, source: "v1 (trace_v1_10s_n1300.csv t=-1; write+run+read)"}
+  CPU4: {value: 4.631387, status: measured, source: "v1 (trace_v1_10s_c600_r1.csv t=-1) — Interpreter 1.4.2, ENGINE DIFFERS"}
+  GPU_interpreter: {value: 3.65332, status: measured, source: "v1 (trace_v1_10s_c1p_r1.csv t=-1)"}
+
+power_w:      # ABSOLUTE ACCURACY UNCERTIFIED (MEASUREMENT_DEFINITION.md §10) — ratios only. v1 values unchanged.
+  load_d100_first30s: {value: {GPU: 7.4258, NPU: 5.7273, CPU4: 7.3615, GPU_interpreter: 6.5743}, status: measured, source: "v1 profile"}
+  idle: {value: 0.581, status: measured, source: "NPU_FORMAL_RESULTS.md:239"}
+  alpha: {value: {GPU: 1.3914, NPU: 1.6791, CPU4: 2.8901, GPU_interpreter: 1.5190}, status: measured-fit, source: "v1 d1sim/out/throttle_fit_v1.json alpha (unchanged)"}
+  rest_duty1: {value: idle, status: placeholder, source: "duty 1 (100 ms / 10 s) is simulated as idle on the 1 s grid (+~0.06 W ignored [E])"}
+
+thermal:      # SHARED device state (d1sim/throttle_v2.py ThermalV2): v1 2-node SKIN + AP node, PLUS cooling asymmetry c_f/c_s/c_a (tau x c while a node cools)
+  params: {value: file:throttle_v2_thermal.json, status: measured-fit, source: "stage A v2: v1 4 runs + m1 (1002, incl. d10 probe) + m1n_a (10/3, incl. d10 probe); half-holdout = v1 set + m1n_b · m1g_r2 · gpace (d1sim/out/throttle_fit_v2.json thermal.errors)"}
+  tau_f_s: {value: 34.4, status: measured, source: "평가층_사전등록_v1.md:47 (fixed, v1)"}
+  cooling_asymmetry: {value: file:throttle_v2_thermal.json#c_f,c_s,c_a, status: measured-fit, source: "prereg v2 §2.0 — motivated by ⑫ (NPU probe 599 s SKIN 37.0 vs v1 33.3). c_x >= 1 bound; c_f sat at 1.0 in the fit (fast node wants v1 cooling)"}
+  A0_ap_minus_skin_at_start: {value: -1.0, status: measured, source: "v1 (per-run value used when simulating a measured run)"}
+  t_start_c: {value: 30.3, status: measured, source: "v1 (load-start SKIN median)"}
+
+throttle:     # per-resource LOAD-DEPENDENT gates. u = executing-second fraction of the last 10 s. thr(u) = T_on + kappa (1-u) [form Lk] / gate off when u < theta [Lb] / none [S]
+  GPU:  {value: file:throttle_v2_GPU_compiledmodel.json, status: measured-fit, source: "stage B on m2_H1 s0 + m1 (1002, all segments: d10 ref · d100 1200 · d10 probe). kappa_CM = lower bound from the m1 release (scanned down); sensor chosen by objective (SKIN vs AP both reported)"}
+  GPU_interpreter: {value: file:throttle_v2_GPU_interpreter.json, status: measured-fit, source: "stage B on c1p_r1 + m3 (d50 — fixes kappa_INT). Engine differs from the CompiledModel set"}
+  NPU:  {value: file:throttle_v2_NPU.json, status: measured-fit, source: "stage B on n1300 + m1n_a (all segments). 3 steps T1<T2<T3 (a1·a2·a3). kappa_NPU = LOWER BOUND only (d10 release) -> variants kappa_lo / kappa_2 / kappa_inf frozen for tonight's N50P (prereg v2 §7)"}
+  CPU4: {value: file:throttle_v2_CPU4_interpreter.json, status: measured-fit, source: "v1 integrating controller UNCHANGED (throttle_v1_CPU4_interpreter.json values; v1_controller: true)"}
+  load_window_s: {value: 10, status: placeholder, source: "[E] prereg v2 §2.0 — gives the ~10 s release/retighten delay seen on 10/3 (10 s bin resolution)"}
+
+status_map:   # thermal_status from SKIN (record + npumgr baseline input). NOT a throttle trigger. v1 unchanged.
+  hal_skin_thresholds_c: {value: {LIGHT: 40.0, MODERATE: 42.0, SEVERE: 45.0}, status: measured, source: "N1300 [P]; thermalservice-probe [D 0928]"}
+
+switch_cost_s:  # checklist ⑧ — TABLE, not a thermal model. v1 values unchanged (device_profile_S26_v1.yaml switch_cost_s).
+  idle->CPU4: {value: 0.031, status: measured, source: "v1"}
+  idle->GPU:  {value: 0.273, status: measured, source: "v1"}
+  idle->NPU:  {value: 0.111, status: measured, source: "v1"}
+  GPU->NPU:   {value: {cold: 0.142, hot: 0.190}, status: measured, source: "v1 (M2 C/H arms)"}
+  NPU->GPU:   {value: {cold: 0.406, hot: 0.805}, status: measured, source: "v1 (M2r C/H arms)"}
+  same:       {value: 0.0, status: placeholder, source: "v1 (10/3 same-resource transitions 131~214 ms were warmup/re-check only [P])"}
+  hot_rule:   {value: "hot if device status >= 1 or SKIN >= 40 at the switch", status: placeholder, source: "v1 [E]"}
+  cross_other: {value: target_init, status: placeholder, source: "v1"}
+
+limits:
+  battery_budget_j: {value: null, status: placeholder, source: "no budget -> constraint off"}
+  t_ambient_c: {value: 23.0, status: measured, source: "10/2 · 10/3 night session start 23 C (1 reading each)"}
+  bat_sensor: {value: null, status: unsupported, source: "BAT (battery temperature) is NOT modelled — the 42 C emergency limit [P 10/3 EffN600] cannot be predicted here"}
+
+quality:
+  FP32: {value: {top1_imagenette: 0.75, top5: 0.95}, status: measured, source: "v1"}
+  INT8: {value: null, status: placeholder, source: "서류 제외 (영훈 10/4) — masked"}
+  efficientnet_lite0: {value: null, status: unsupported, source: "no EfficientNet NPU power trace -> EffN420 prediction unsupported (prereg v2 §1)"}

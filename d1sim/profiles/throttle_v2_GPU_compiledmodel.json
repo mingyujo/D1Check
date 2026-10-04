@@ -1,0 +1,53 @@
+{
+ "form": "V2-Lb",
+ "resource": "GPU",
+ "engine": "CompiledModel 2.2.0",
+ "ctrl": {
+  "sensor": "SKIN",
+  "form": "Lb",
+  "d_on": 10.0,
+  "d_off": 10.0,
+  "T_on": 37.19999943533577,
+  "h": 0.2942952042354787,
+  "T_d0": 37.19999943533577,
+  "W": 1.1671355324513177,
+  "D": 1.2298907435856739,
+  "kappa": 0.0,
+  "theta": 0.3,
+  "T_d0_rule": "T_d0 = T_on (r3 constraint)",
+  "kappa_source": "n/a"
+ },
+ "power": {
+  "P_idle": 0.581,
+  "P0": 7.4258,
+  "alpha": 1.3914301582772661
+ },
+ "L0_ms": 2.531992,
+ "fit": {
+  "sensor": "SKIN",
+  "fit_obj": 0.00771672909306911,
+  "x": {
+   "T_on": 37.19999943533577,
+   "h": 0.2942952042354787,
+   "W": 1.1671355324513177,
+   "D": 1.2298907435856739
+  },
+  "other_sensor": {
+   "AP": {
+    "fit_obj": 0.03470115928255206,
+    "x": {
+     "T_on": 40.21360888302181,
+     "h": 0.24618108808009626,
+     "W": 0.3637948192762871,
+     "D": 0.7401807122950086
+    }
+   }
+  },
+  "fit_runs": [
+   "m2_H1 s[0]",
+   "m1 s[0, 1, 2]"
+  ]
+ },
+ "source": "d1sim/tools/fit_throttle_v2.py stage B (measured sensor + duty in) + stage C closed loop",
+ "status": "measured-fit"
+}
