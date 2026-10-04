@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-05 — SUPERVISED-SELECTOR-PC-01: 이력 기반 지도학습 선택 경로
+
+- 채택한 연구 절차: 이전48도착 이력에서5특징을 추출해8기존정책의 비용/위험을 회귀한다.18조건 개발fitting/저장검증→선정동결→새seed전27조건평가.9조합은학습/선정에서제외, 독립기기자료로표현하지않는다. CatBoost미설치로기존sklearn의트리/HistGradientBoosting사용. 물리계수·정책 기본값·strict 불변.
+- [결과](results/supervised_selector_01/README.md): 에너지tree는미학습군집8의16추가위반으로미채택. thermalboosting은EFT와기한수동일하나J증가/AP감소상충이므로PC분석후보만보존. 실기기 채택·공동절감·기한보장·experiment_ready승격은없다. 관측범위밖/위험fallback도기한보장아님.
+- 완료594PC재생/26관련테스트, 결과후재학습0. 이전/다음 구간의 동일분포와 고정초기조건 가정을 명시하고 연속열이력·온라인 요청별전환으로 확대하지 않는다. 다음은저장실패ledger의서비스제약분해한건이며추가실측자동승인이아니다.
+
 ## 2026-10-05 — SCHEDULER-CONDITIONS-PC-01: 조건 탐색 범위 확장
 
 - 최신 사용자 지시에 따라 이전 비교의 네 입력에 한정한 결론을 일반화하지 않고, [사전 고정한 27개 입력 조건](results/scheduler_conditions_01/README.md)과 다른 분야의 네 제어 원리를 PC에서 평가한다. 이전 알고리즘·물리 계수·기기 결과는 덮어쓰지 않는다.
