@@ -1,0 +1,126 @@
+{
+  "id": "REAL-APP-BASELINE-PC-01",
+  "selected_real_app": "Ente Photos",
+  "upstream_commit": "a492f9db8e67def81d5f17c687f69b5778ec0df3",
+  "source_sha256": {
+    "compute_controller.dart": "d949ce675121aa2544c932156c524ad8cc1170d9a5b26b5bfe1383244d9f51c6",
+    "ml_service.dart": "c49419ec9868ee6c52341e42cb40b0d75d23d2eba9d46a543f9633321aea405b",
+    "ml_run_control.dart": "049af2fb7e1948594aa72078e31b2235c81d25608d3ab052d76e0a4f04128e11",
+    "device_health_policy.dart": "d6baa3d41cd8a60c172e8764883cad63ebeef3334fd25527fef18b7265e25cea"
+  },
+  "source_bytes_verified": true,
+  "scope": "foreground Android background-ML start permission, source-pinned; no override/force",
+  "production_release_binary_verified": false,
+  "original_app_executed": false,
+  "original_dart_callbacks_executed": false,
+  "cases": [
+    {
+      "case": "interaction_at_arrival",
+      "arrival_s": 0,
+      "observed_interactions_s": [
+        0
+      ],
+      "earliest_dispatch_bound_s": 15.0,
+      "minimum_wait_s": 15.0,
+      "d1_normal_deadline_s": 6,
+      "deadline_impossible_even_with_zero_service": true,
+      "bound_assumptions": "no later interaction; health and resource available; service time unknown nonnegative",
+      "measured_response_s": null,
+      "energy_j": null,
+      "ap_c": null,
+      "source_behavior_equivalence": "not_tested; D1 request-level adaptation only"
+    },
+    {
+      "case": "one_second_after_interaction",
+      "arrival_s": 1,
+      "observed_interactions_s": [
+        0
+      ],
+      "earliest_dispatch_bound_s": 15.0,
+      "minimum_wait_s": 14.0,
+      "d1_normal_deadline_s": 6,
+      "deadline_impossible_even_with_zero_service": true,
+      "bound_assumptions": "no later interaction; health and resource available; service time unknown nonnegative",
+      "measured_response_s": null,
+      "energy_j": null,
+      "ap_c": null,
+      "source_behavior_equivalence": "not_tested; D1 request-level adaptation only"
+    },
+    {
+      "case": "ten_seconds_after_interaction",
+      "arrival_s": 10,
+      "observed_interactions_s": [
+        0
+      ],
+      "earliest_dispatch_bound_s": 15.0,
+      "minimum_wait_s": 5.0,
+      "d1_normal_deadline_s": 6,
+      "deadline_impossible_even_with_zero_service": false,
+      "bound_assumptions": "no later interaction; health and resource available; service time unknown nonnegative",
+      "measured_response_s": null,
+      "energy_j": null,
+      "ap_c": null,
+      "source_behavior_equivalence": "not_tested; D1 request-level adaptation only"
+    },
+    {
+      "case": "exact_expiry",
+      "arrival_s": 15,
+      "observed_interactions_s": [
+        0
+      ],
+      "earliest_dispatch_bound_s": 15.0,
+      "minimum_wait_s": 0.0,
+      "d1_normal_deadline_s": 6,
+      "deadline_impossible_even_with_zero_service": false,
+      "bound_assumptions": "no later interaction; health and resource available; service time unknown nonnegative",
+      "measured_response_s": null,
+      "energy_j": null,
+      "ap_c": null,
+      "source_behavior_equivalence": "not_tested; D1 request-level adaptation only"
+    },
+    {
+      "case": "reset_before_expiry",
+      "arrival_s": 15,
+      "observed_interactions_s": [
+        0,
+        14
+      ],
+      "earliest_dispatch_bound_s": 29.0,
+      "minimum_wait_s": 14.0,
+      "d1_normal_deadline_s": 6,
+      "deadline_impossible_even_with_zero_service": true,
+      "bound_assumptions": "no later interaction; health and resource available; service time unknown nonnegative",
+      "measured_response_s": null,
+      "energy_j": null,
+      "ap_c": null,
+      "source_behavior_equivalence": "not_tested; D1 request-level adaptation only"
+    },
+    {
+      "case": "no_interaction",
+      "arrival_s": 0,
+      "observed_interactions_s": [],
+      "earliest_dispatch_bound_s": 0.0,
+      "minimum_wait_s": 0.0,
+      "d1_normal_deadline_s": 6,
+      "deadline_impossible_even_with_zero_service": false,
+      "bound_assumptions": "no later interaction; health and resource available; service time unknown nonnegative",
+      "measured_response_s": null,
+      "energy_j": null,
+      "ap_c": null,
+      "source_behavior_equivalence": "not_tested; D1 request-level adaptation only"
+    }
+  ],
+  "direct_d1_vs_ente_performance_comparison_ready": false,
+  "blockers": [
+    "different tasks/runtime/quality and completion semantics",
+    "15s background admission versus D1 6s engineering deadline",
+    "D1 initial idle differs from Ente foreground initialization",
+    "D1 urgent exemption and request boundary are not Ente stages",
+    "original app and paired intervention not built or validated"
+  ],
+  "next_boundary": "reproduce selected original Ente workflow before any app-level performance claim",
+  "device_commands": 0,
+  "inference_calls": 0,
+  "new_measurement_plan": false,
+  "experiment_ready": false
+}

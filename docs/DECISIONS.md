@@ -1,5 +1,12 @@
 # D1Check 결정 기록
 
+<a id="real-app-baseline-pc-01"></a>
+## 2026-10-04 — REAL-APP-BASELINE-PC-01: 실제 앱 후보와 직접 비교의 경계
+
+- 상태: 사용자 지시에 따른 실제 앱 **비교 후보 선정 완료 / 원앱 실행 비교 미완료**. Ente Photos Android 전경 배경 ML 제어를 선정한다. [고정 소스·PC 결과·최소 연결 명세](results/real_app_baseline_pc_01/README.md). Band는 연구 기준선이며 현업 앱이라고 부르지 않는다.
+- 기존 D1 이식 gate는 원앱 재현이 아니다. 15초 시작 유예에 6초 D1 연구 기한을 적용한 승패는 공정하지 않다. 실제 앱 개선 주장은 같은 Ente 작업/품질/전경 반응 보호 조건 안의 비교를 필요로 한다. 기존 B2/B3 연구 결과와 별도로 유지한다.
+- 채택하지 않은 것: 새 admission 정책, 원앱 SLA/허용오차, 실측 계획/예산, 실제 앱 대비 우월성. 다음 원본 PC 빌드/계측은 권고 단계이며 완료 사실이 아니다. 기존 동결 모형/strict/experiment_ready=false 불변.
+
 <a id="s26-thermal-scope-02"></a>
 ## 2026-10-04 — S26-THERMAL-SCOPE-02: 기기별 범위와 공통 평가 정의
 

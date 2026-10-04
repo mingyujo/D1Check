@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-04 현재 작업 — 실제 앱 비교 대상 선정·PC 경계 확인 완료
+
+- [REAL-APP-BASELINE-PC-01 결과·재현](results/real_app_baseline_pc_01/README.md): Ente Photos 전경 배경 ML 제어를 실제 앱 후보로 선정했다. 기존 9/27 검토·interaction gate를 재사용했다. 원앱 기본15초 유예와 D1 일반6초 기한의 직접 승패 비교는 부적절하며 원앱 재현과 D1 이식을 구분한다.
+- 소스4파일 고정 hash·6경계 검사·관련4테스트 및 손상/덮어쓰기 차단 확인. 원앱 Dart/Flutter 실행·성능 비교는 미완료. 기존 B2/B3·모형·결과·strict·experiment_ready=false 보존, 기기 명령0.
+- 다음 행동 하나: 고정한 Ente 전경 indexing의 원본 PC 빌드와 최소 이벤트 계측 연결. 같은 앱·작업에서 비교하기 전에는 실제 앱 대비 우월성/절감률을 주장하지 않는다. 새 기기 계획/자동 실측 없음.
+
 ## 2026-10-04 현재 작업 — S26 범위 결정·입력/ledger 인계 완료
 
 - [팀 회신·근거·완료/미검증 경계](team/S26_SCOPE_AND_INTERFACE_20261004.md), [결정](DECISIONS.md#s26-thermal-scope-02). XDEV-02 두 모델 재현은10/11 필수에서 보류, S26 분류·순차3backend·열 이력/처리율·열 인지 제어를 별도 절로 채택. 공통 문제/평가+기기별 프로필이며 계수 혼합·단일 엔진 구현 완료 주장은 하지 않는다. RL 필수 제외.
