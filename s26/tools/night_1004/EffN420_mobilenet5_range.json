@@ -1,0 +1,171 @@
+{
+ "dropped": {
+  "step1": [
+   "6b_H1",
+   "6b_H2"
+  ],
+  "step2": []
+ },
+ "margin": 0.3,
+ "mobilenet_power_p0_w": {
+  "mean": 5.436149,
+  "note": "잠정 전력 (단위 가정) — 비율 기술만",
+  "values": [
+   5.727297,
+   5.386538,
+   5.194612
+  ]
+ },
+ "ranges": {
+  "step1_AP": {
+   "hi": 42.9,
+   "lo": 41.4,
+   "max": 42.6,
+   "min": 41.7,
+   "n": 3
+  },
+  "step1_SKIN": {
+   "hi": 38.6,
+   "lo": 37.3,
+   "max": 38.3,
+   "min": 37.6,
+   "n": 3
+  },
+  "step2_AP": {
+   "hi": 44.6,
+   "lo": 43.7,
+   "max": 44.3,
+   "min": 44.0,
+   "n": 5
+  },
+  "step2_SKIN": {
+   "hi": 40.3,
+   "lo": 39.5,
+   "max": 40.0,
+   "min": 39.8,
+   "n": 5
+  }
+ },
+ "rule": "MobileNet 5런 계단 진입 SKIN·AP [최소, 최대] ± 0.3 ℃ (밤1004_사전등록_v1 §7)",
+ "runs": [
+  {
+   "onset_s": 470,
+   "power_p0_w": 5.727297,
+   "run": "N1300_1002",
+   "step1": {
+    "AP": 42.6,
+    "SKIN": 38.3
+   },
+   "step1_missing": null,
+   "step1_s": 300,
+   "step1_source": "out_1002/N1300_table.json bins10 (t0 = step1 − 10, HAL 표본 = 칸 끝 = 1계단 시각) · 시각 = step1_time(N1300_throttle_analyze lat10/ref_ms)",
+   "step2": {
+    "AP": 44.3,
+    "SKIN": 39.9
+   },
+   "step2_source": "out_1002/N1300_throttle_analyze.json onset_temps"
+  },
+  {
+   "onset_s": 400,
+   "power_p0_w": 5.386538,
+   "run": "6b_H1",
+   "step1": null,
+   "step1_missing": "1계단 온도가 판정 JSON 에 없음 — 1계단 범위에서 뺀다 (사전 등록 지시)",
+   "step1_s": null,
+   "step1_source": null,
+   "step2": {
+    "AP": 44.2,
+    "SKIN": 39.9
+   },
+   "step2_source": "out_1002/M2r_H1_seg0_throttle.json onset_temps"
+  },
+  {
+   "onset_s": 390,
+   "power_p0_w": 5.194612,
+   "run": "6b_H2",
+   "step1": null,
+   "step1_missing": "1계단 온도가 판정 JSON 에 없음 — 1계단 범위에서 뺀다 (사전 등록 지시)",
+   "step1_s": null,
+   "step1_source": null,
+   "step2": {
+    "AP": 44.2,
+    "SKIN": 39.8
+   },
+   "step2_source": "out_1002/M2r_H2_seg0_throttle.json onset_temps"
+  },
+  {
+   "onset_s": 310,
+   "power_p0_w": null,
+   "run": "M1_npu_a",
+   "step1": {
+    "AP": 41.7,
+    "SKIN": 37.7
+   },
+   "step1_missing": null,
+   "step1_s": 170,
+   "step1_source": "out_1003/M1_npu_a.json heat.step1_thermal",
+   "step2": {
+    "AP": 44.0,
+    "SKIN": 40.0
+   },
+   "step2_source": "out_1003/M1_npu_a.json heat.onset_thermal"
+  },
+  {
+   "onset_s": 290,
+   "power_p0_w": null,
+   "run": "M1_npu_b",
+   "step1": {
+    "AP": 41.7,
+    "SKIN": 37.6
+   },
+   "step1_missing": null,
+   "step1_s": 150,
+   "step1_source": "out_1003/M1_npu_b.json heat.step1_thermal",
+   "step2": {
+    "AP": 44.1,
+    "SKIN": 39.9
+   },
+   "step2_source": "out_1003/M1_npu_b.json heat.onset_thermal"
+  }
+ ],
+ "sources": {
+  "h1": {
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\out_1002\\M2r_H1_seg0_throttle.json",
+   "sha256": "bbf5bd0de57206c6c4639ee233c6c45bed0c0e9f9cfbd28d9a0a0831af0ddd04"
+  },
+  "h2": {
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\out_1002\\M2r_H2_seg0_throttle.json",
+   "sha256": "07b2b8655a7ec4382e27447eb4a0c7daf1811e096c3c83de602440400f73933e"
+  },
+  "m1a": {
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\out_1003\\M1_npu_a.json",
+   "sha256": "c062b960f338054481a5bf1a55fe8007bcce75f2a67d8a447e9f9826bf287359"
+  },
+  "m1b": {
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\out_1003\\M1_npu_b.json",
+   "sha256": "ec1a49c512a2860a45a0f932e5f5f608c89fd8bc21f3b6245185119fdf1beb15"
+  },
+  "n1300_analyze": {
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\out_1002\\N1300_throttle_analyze.json",
+   "sha256": "8e3b87097aadcf216c1fe8c7756a3df8a3d3f6e051c4046fa20417a1203912d9"
+  },
+  "n1300_table": {
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\out_1002\\N1300_table.json",
+   "sha256": "0e2c593834a8dfc6089008905c6abd5663efd2b05ee3cb8a2d4c07c121b3f528"
+  }
+ },
+ "used": {
+  "step1": [
+   "N1300_1002",
+   "M1_npu_a",
+   "M1_npu_b"
+  ],
+  "step2": [
+   "N1300_1002",
+   "6b_H1",
+   "6b_H2",
+   "M1_npu_a",
+   "M1_npu_b"
+  ]
+ }
+}
