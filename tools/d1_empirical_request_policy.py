@@ -23,6 +23,7 @@ POLICIES = ('CPU_REFERENCE', 'SPLIT_SERIAL_REFERENCE', 'SPLIT_REFERENCE', 'EFT_R
 RL_POLICY = 'ENERGY_AP_MC_RL_V1'
 PPO_POLICY = 'ENERGY_AP_PPO_LAGRANGE_V1'
 ALTERNATIVE_POLICIES = ('ECO_EDF_V1', 'LLF_EFT_V1', 'RESERVED_BACKFILL_V1', 'PARETO_MPC_V1', 'THERMAL_MPC_V1')
+CONDITION_POLICIES = ('TOKEN_EFT_V1', 'TOKEN_CPU_V1', 'JIT_CPU_V1', 'PAIR_COALESCE_V1')
 CELLS = ('classification_CPU_urgent', 'classification_GPU_urgent', 'detection_CPU_normal')
 STATES = set(model.STATES) | {'resident_idle'}
 MODEL_SHA = '5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2'
@@ -69,7 +70,7 @@ def backends(q):
 
 
 def validate_engine(config, vectors, requests, policy, settings, provider):
-    if (policy not in (*POLICIES, RL_POLICY, PPO_POLICY, *ALTERNATIVE_POLICIES) or settings['mode']!='explore' or getattr(provider,'protocol',None)!=VERSION
+    if (policy not in (*POLICIES, RL_POLICY, PPO_POLICY, *ALTERNATIVE_POLICIES, *CONDITION_POLICIES) or settings['mode']!='explore' or getattr(provider,'protocol',None)!=VERSION
             or not callable(provider) or not callable(getattr(provider,'observe',None))
             or provider.policy != policy or set(config['cells'])!=set(CELLS)
             or set(vectors['cells'])!=set(CELLS)):

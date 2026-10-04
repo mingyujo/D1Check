@@ -1,0 +1,230 @@
+{
+  "spec": {
+    "id": "scheduler-conditions-v1",
+    "envelopes": [
+      {
+        "id": "g0.15_c0.25_b1",
+        "gap_s": 0.15,
+        "class_share": 0.25,
+        "burst": 1
+      },
+      {
+        "id": "g0.15_c0.25_b4",
+        "gap_s": 0.15,
+        "class_share": 0.25,
+        "burst": 4
+      },
+      {
+        "id": "g0.15_c0.25_b8",
+        "gap_s": 0.15,
+        "class_share": 0.25,
+        "burst": 8
+      },
+      {
+        "id": "g0.15_c0.5_b1",
+        "gap_s": 0.15,
+        "class_share": 0.5,
+        "burst": 1
+      },
+      {
+        "id": "g0.15_c0.5_b4",
+        "gap_s": 0.15,
+        "class_share": 0.5,
+        "burst": 4
+      },
+      {
+        "id": "g0.15_c0.5_b8",
+        "gap_s": 0.15,
+        "class_share": 0.5,
+        "burst": 8
+      },
+      {
+        "id": "g0.15_c0.75_b1",
+        "gap_s": 0.15,
+        "class_share": 0.75,
+        "burst": 1
+      },
+      {
+        "id": "g0.15_c0.75_b4",
+        "gap_s": 0.15,
+        "class_share": 0.75,
+        "burst": 4
+      },
+      {
+        "id": "g0.15_c0.75_b8",
+        "gap_s": 0.15,
+        "class_share": 0.75,
+        "burst": 8
+      },
+      {
+        "id": "g0.45_c0.25_b1",
+        "gap_s": 0.45,
+        "class_share": 0.25,
+        "burst": 1
+      },
+      {
+        "id": "g0.45_c0.25_b4",
+        "gap_s": 0.45,
+        "class_share": 0.25,
+        "burst": 4
+      },
+      {
+        "id": "g0.45_c0.25_b8",
+        "gap_s": 0.45,
+        "class_share": 0.25,
+        "burst": 8
+      },
+      {
+        "id": "g0.45_c0.5_b1",
+        "gap_s": 0.45,
+        "class_share": 0.5,
+        "burst": 1
+      },
+      {
+        "id": "g0.45_c0.5_b4",
+        "gap_s": 0.45,
+        "class_share": 0.5,
+        "burst": 4
+      },
+      {
+        "id": "g0.45_c0.5_b8",
+        "gap_s": 0.45,
+        "class_share": 0.5,
+        "burst": 8
+      },
+      {
+        "id": "g0.45_c0.75_b1",
+        "gap_s": 0.45,
+        "class_share": 0.75,
+        "burst": 1
+      },
+      {
+        "id": "g0.45_c0.75_b4",
+        "gap_s": 0.45,
+        "class_share": 0.75,
+        "burst": 4
+      },
+      {
+        "id": "g0.45_c0.75_b8",
+        "gap_s": 0.45,
+        "class_share": 0.75,
+        "burst": 8
+      },
+      {
+        "id": "g1.2_c0.25_b1",
+        "gap_s": 1.2,
+        "class_share": 0.25,
+        "burst": 1
+      },
+      {
+        "id": "g1.2_c0.25_b4",
+        "gap_s": 1.2,
+        "class_share": 0.25,
+        "burst": 4
+      },
+      {
+        "id": "g1.2_c0.25_b8",
+        "gap_s": 1.2,
+        "class_share": 0.25,
+        "burst": 8
+      },
+      {
+        "id": "g1.2_c0.5_b1",
+        "gap_s": 1.2,
+        "class_share": 0.5,
+        "burst": 1
+      },
+      {
+        "id": "g1.2_c0.5_b4",
+        "gap_s": 1.2,
+        "class_share": 0.5,
+        "burst": 4
+      },
+      {
+        "id": "g1.2_c0.5_b8",
+        "gap_s": 1.2,
+        "class_share": 0.5,
+        "burst": 8
+      },
+      {
+        "id": "g1.2_c0.75_b1",
+        "gap_s": 1.2,
+        "class_share": 0.75,
+        "burst": 1
+      },
+      {
+        "id": "g1.2_c0.75_b4",
+        "gap_s": 1.2,
+        "class_share": 0.75,
+        "burst": 4
+      },
+      {
+        "id": "g1.2_c0.75_b8",
+        "gap_s": 1.2,
+        "class_share": 0.75,
+        "burst": 8
+      }
+    ],
+    "policies": [
+      "CPU_REFERENCE",
+      "SPLIT_REFERENCE",
+      "EFT_REFERENCE",
+      "RESERVED_BACKFILL_V1",
+      "TOKEN_EFT_V1",
+      "TOKEN_CPU_V1",
+      "JIT_CPU_V1",
+      "PAIR_COALESCE_V1"
+    ],
+    "development_seeds": [
+      81001,
+      81002
+    ],
+    "test_seeds": [
+      91001,
+      91002,
+      91003
+    ],
+    "scenarios": [
+      "mean",
+      "short_context",
+      "long_context"
+    ],
+    "requests_per_episode": 48,
+    "runs": 3240,
+    "max_wall_s": 2400,
+    "unchanged": "physical model, initial0, 1.5s/6s deadlines, supported cells, no drops, no DVFS/sleep states",
+    "horizons": {
+      "energy_s": [
+        0,
+        120
+      ],
+      "ap_s": [
+        35,
+        180
+      ]
+    },
+    "shaping": {
+      "token_capacity_work_s": 0.65,
+      "refill_work_s_per_s": 0.65,
+      "max_age_wait_s": 2.0,
+      "slack_fraction": 0.9
+    },
+    "coalescing_window_s": 0.2,
+    "selection": "per declared envelope: full service in all development contexts; no J/peak/AParea worsening vs EFT in any; at least one strict joint improvement; then min mean J, AParea, peak; otherwise EFT",
+    "comparisons": "report every policy vs CPU, SPLIT, EFT separately; all deadlines required for useful region; P95 cost reported but not required equal",
+    "conditions": "synthetic registered load envelopes, not selected by model score; fresh seeds are not independent device evidence",
+    "accuracy_threshold": null,
+    "device_commands": 0,
+    "experiment_ready": false
+  },
+  "hashes": {
+    "tools\\d1_scheduler_conditions.py": "cda103f356585715448ebb3167e2dc81fab95e598f1a6b9e3036f88ed5313b78",
+    "tools\\d1_empirical_request_policy.py": "b6f18692787b66839280a4d2f72e36ca93e4ed528b8f96294c863e8051f5bcfb",
+    "tools\\d1_scheduler_alternatives.py": "e458f65b20063e6110470cfd341460f8df5e0414be08fb7f55fe554198eb8a8a",
+    "tools\\d1_arrival_explore.py": "384a5ab28d289f78a00ab8a4bb5e74c8f7df4e5d2ba8f3059130673ca44a20ac",
+    "tools\\d1_request_ppo.py": "c8282794b92c10e60b1d2a0bffed3eb8e05bf1aad5001493948a801e12e2c0a2",
+    "docs\\results\\online_policy_study_01\\overnight_sustained_run01\\model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs\\results\\online_policy_study_01\\overnight_sustained_run01\\initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d"
+  },
+  "utc": "2026-10-04T22:09:38.274177+00:00"
+}
