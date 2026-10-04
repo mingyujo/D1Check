@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-05 현재 작업 — 요청별 배정·대기 PC 비교 완료
+
+- [구현·판독·재현](results/empirical_request_policy_01/README.md), [비교 화면](results/empirical_request_policy_01/evaluation_v3/index.html). 기존 이벤트 엔진에 별도 opt-in 요청별 J/AP 후보를 연결했다. 실측 계수는 불변이며 개발 문맥 공통 처리시간 전이는 명시적 가정이다. 4입력×5정책×3문맥=60 PC 비교, 기존 두 방식 선택기와 구분한다.
+- sustained 평균 조건의 후보−EFT −1.364J/−0.187°C·긴급P95 +704.829ms, 양쪽192/192. 긴 처리시간 문맥은 후보191/192 vs EFT192/192; burst 평균 후보21/24 vs EFT23/24. **후보 미채택**, 독립 실측 절감/우월성 미입증. 결과 후 튜닝0. 미완료 정책의120초 뒤AP는null로 보존한다.
+- 신규15+관련29=44테스트 통과, 실제CLI·CSV/20경로·미래정보/소유권/그림/동결hash 대조. 기기·실측·APK·모형재적합·새계획0. 기존FAIL/원본/strict/experiment_ready=false 불변. 다음 PC 행동 하나: 저장된 대기 결정의 기한 여유 소모와 긴 문맥1건 위반을 분해해 대기 규칙 수정 또는 배정만 유지 여부를 결정. 같은실측/전체배치 자동 반복 없음.
+
 ## 2026-10-05 현재 작업 — 에너지·AP 선택 후보 PC 구현 완료
 
 - [후보 정의·수치·판독](results/energy_ap_session_selector_01/README.md), [화면](results/energy_ap_session_selector_01/evaluation/index.html). 등록192요청·동일 초기0의 CPU/PAR 두 방식을 한 번 고르는 ENERGY_AP_SESSION_SELECTOR_PC_V1 구현. 전체 기한·lane120초·격자AP 제약 아래 공통120초J 최소화. 요청별 동적 배정/새 대기 최적화는 아님.

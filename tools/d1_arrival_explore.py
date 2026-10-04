@@ -102,17 +102,22 @@ def choose(config, queue, lanes, now, policy, settings, *, thermal_model=None, c
 def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=120_000_000_000,
              admission=None, thermal_model=None, decision_provider=None):
     # Optional REPLAN-PC-01 event hook. None preserves the frozen v3 execution path.
-    if config.get('protocol')=='online-context-service-v1':
+    empirical = config.get('protocol') == 'empirical-request-exploration-v1'
+    if empirical:
+        from tools.d1_empirical_request_policy import validate_engine
+        validate_engine(config, vectors, requests, policy, settings, decision_provider)
+        base.require(admission is None and thermal_model is None, 'isolated empirical exploration')
+    elif config.get('protocol')=='online-context-service-v1':
         from tools.d1_online_policy_model import validate_service
         validate_service(config,vectors,requests,policy,settings)
     else:
         base.validate_config(config)
-    base.require((policy in POLICIES or policy == 'THERMAL_ENERGY_PC_V1')
+    base.require((empirical or policy in POLICIES or policy == 'THERMAL_ENERGY_PC_V1')
                  and settings['mode'] in ('strict', 'explore'), 'policy/mode')
     if policy == 'THERMAL_ENERGY_PC_V1':
         base.require(admission is None and settings['mode']=='explore', 'thermal policy explore-only')
         base.require(thermal_model is not None, 'thermal policy requires explicit model')
-    if decision_provider is not None:
+    if decision_provider is not None and not empirical:
         base.require(policy=='THERMAL_ENERGY_PC_V1' and admission is None and thermal_model is not None,
                      'scripted decisions are isolated to modeled offline exploration')
     if thermal_model is not None:
@@ -122,8 +127,8 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
         feedback.validate(thermal_model)
         base.require(horizon_ns == 120_000_000_000, 'thermal common window')
     # Only the separately validated fixed transfer input expands the count cap.
-    request_cap = 192 if (config.get('protocol') == 'online-context-service-v1'
-                          and settings.get('separated_power_planning_role') == 'sustained-confirmation-v1') else 128
+    request_cap = 192 if (empirical or (config.get('protocol') == 'online-context-service-v1'
+                          and settings.get('separated_power_planning_role') == 'sustained-confirmation-v1')) else 128
     base.require(0 < len(requests) <= request_cap and 0 < horizon_ns <= 600_000_000_000, 'bounded scenario')
     for name in ('decision_ns', 'record_ns', 'dispatch_ns'):
         base.require(type(settings[name]) is int and settings[name] >= 0, 'explicit overhead assumption')
@@ -193,6 +198,9 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
         if now >= horizon_ns: break
         # Zero-duration dispatch stages must transition before judging again.
         if any(x and x['left']<=0.0001 for x in lanes.values()): continue
+        if empirical:
+            # Public phases/tickets only; never expose engine left/durations/future arrivals.
+            decision_provider.observe(now, public())
         if pending is None and queue and (admission is None or review_needed):
             eligible=queue if admission is None else admission.eligible(queue, now)
             d=(decision_provider(config, eligible, public(), now, settings, thermal_model, current_ap)
@@ -204,7 +212,7 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
                 if not eligible: d['reason']='background_start_blocked'
             decisions.append(d)
             review_needed=False
-            if policy == 'THERMAL_ENERGY_PC_V1':
+            if empirical or policy == 'THERMAL_ENERGY_PC_V1':
                 wake_at = d.get('wait_until_ns') if d['selected'] is None else None
             cost=settings['decision_ns']+settings['record_ns']+(settings['dispatch_ns'] if d['selected'] else 0)
             if d['selected']:
