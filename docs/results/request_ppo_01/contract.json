@@ -1,0 +1,99 @@
+{
+  "version": "request-ppo-lagrange-v1",
+  "algorithm": "masked PPO clipped surrogate + 4 value heads + projected Lagrange ascent",
+  "seeds": [
+    11,
+    23,
+    37
+  ],
+  "updates_per_seed": 256,
+  "episodes_per_update": 8,
+  "total_training_episodes": 6144,
+  "train_trace_seeds": [
+    30000,
+    30511
+  ],
+  "validation_trace_seeds": [
+    40001,
+    40002,
+    40003,
+    40004
+  ],
+  "test_trace_seeds": [
+    50001,
+    50002,
+    50003,
+    50004,
+    50005,
+    50006,
+    50007,
+    50008
+  ],
+  "families": [
+    "low",
+    "queue",
+    "burst",
+    "sustained"
+  ],
+  "scenarios": [
+    "mean",
+    "short_context",
+    "long_context"
+  ],
+  "validation_updates": [
+    0,
+    64,
+    128,
+    192,
+    256
+  ],
+  "validation_cases": 48,
+  "test_cases": 96,
+  "test_policies": [
+    "CPU_REFERENCE",
+    "SPLIT_REFERENCE",
+    "EFT_REFERENCE",
+    "ENERGY_AP_REQUEST_V1",
+    "MC_RL_01",
+    "PPO_seed11",
+    "PPO_seed23",
+    "PPO_seed37"
+  ],
+  "test_runs": 768,
+  "architecture": "85 continuous features -> tanh64 -> tanh64 -> logits3 + values4",
+  "optimizer": "Adam lr=0.0003 eps=1e-5",
+  "epochs": 4,
+  "minibatch": 256,
+  "clip": 0.2,
+  "entropy_coefficient": 0.01,
+  "value_coefficient": 0.5,
+  "gradient_clip": 0.5,
+  "target_kl": 0.03,
+  "gamma": 1.0,
+  "gae_lambda": 0.95,
+  "objective": "minimize whole120s J/10; keep expected priority-specific deadline-or-incomplete fractions and AP degree-seconds/100 <= paired EFT",
+  "thermal_definition": "35-180s trapezoidal model AP area above pre-load effective idle reference; not ambient/safety",
+  "multiplier_initial": [
+    10.0,
+    10.0,
+    1.0
+  ],
+  "multiplier_lr": 5.0,
+  "multiplier_bounds": [
+    0.0,
+    100.0
+  ],
+  "action_mask": "supported immediate CPU/GPU; wait<=250ms, arrival-age<=2s, estimated head deadline guard only",
+  "validation_selection": "lexicographic incomplete cases, worse service cases, positive service excess, worse thermal cases, positive thermal excess, mean J, P95; report all 3 seeds, no best-test-seed selection",
+  "freeze": "all three validation-selected actors before any test result; no test-based retraining",
+  "training_data": "new synthetic arrival seeds; previously seen measured model and fixed initial input; no new independent device data",
+  "max_wall_seconds": 7200,
+  "checkpoint_every_updates": 16,
+  "early_success_stop": false,
+  "sources": {
+    "model": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "initial": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d"
+  },
+  "device_commands": 0,
+  "experiment_ready": false
+}
