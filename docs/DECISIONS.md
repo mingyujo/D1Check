@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-05 — ENERGY-AP-SESSION-SELECTOR-PC-01
+
+- 채택 범위: 사용자 지시에 따라 [ENERGY_AP_SESSION_SELECTOR_PC_V1](results/energy_ap_session_selector_01/README.md)을 별도 PC 참고 설계로 구현한다. 기한을 지키는 등록CPU/PAR 전체 일정에서 AP 제약 아래 공통120초J 최소화를 사용한다. 계약은 대표 계산 전에 고정했고 새계수/후보 탐색/기기 실행은 없다.
+- 한 번의 세션 선택으로 제한한다. 예정 도착을 미리 알지만 미래 실현 AP/전력/완료시각은 사용하지 않는다. 기존B2_PC/B3/P와 최신온라인CPU/PAR namespace를 합치지 않는다. 임의 재배정·지연의 효과를 기존 정책문맥 서비스값으로 만들지 않는다.
+- 미채택: 실제AP 안전/허용 상한, 실기기 배포, 후보 우월성. 기존 energy-ap-policy-selection 차단·strict·모형byte·experiment_ready=false 불변. 참고model_only_action과 deployable_action=null을 분리한다. 한 입력에서 두 고정방식 중 하나를 고르는 규칙을 둘 모두보다 나은 새 스케줄러로 주장하지 않는다.
+
 ## 2026-10-04 — REAL-APP-BASELINE-BUILD-PC-01: 관측 연결과 검증 한계
 
 - [원본 기반 구현·검증 기록](results/real_app_baseline_pc_01/build_pc.md). Ente 고정 소스에 시작/반환/최초 중단/compute 반환의 opt-in 로그만 연결했다. 함수 반환과 전체 사진 처리 완료를 구분하며 실사용 앱보다 나은 정책을 구현·입증한 것으로 해석하지 않는다.

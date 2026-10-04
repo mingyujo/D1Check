@@ -1,0 +1,115 @@
+{
+  "version": "ENERGY_AP_SESSION_SELECTOR_PC_V1",
+  "initial_index": 0,
+  "options": [
+    {
+      "policy": "CPU_URGENT_ONLINE_V1",
+      "planned": 192,
+      "completed": 192,
+      "deadline_met": 192,
+      "energy_0_120_j": 185.38992550510372,
+      "sampled_peak_ap_35_180_c": 31.716670607615338,
+      "last_lane_s": 112.021775378,
+      "urgent_p95_ms": 377.955309,
+      "normal_p95_ms": 619.471734
+    },
+    {
+      "policy": "B2_PARALLEL_ONLINE_V1",
+      "planned": 192,
+      "completed": 192,
+      "deadline_met": 192,
+      "energy_0_120_j": 183.29913390480573,
+      "sampled_peak_ap_35_180_c": 32.444091232641725,
+      "last_lane_s": 112.021013765,
+      "urgent_p95_ms": 286.608481,
+      "normal_p95_ms": 618.790912
+    }
+  ],
+  "reference_rule": {
+    "version": "ENERGY_AP_SESSION_SELECTOR_PC_V1",
+    "ap_cap_c": null,
+    "status": "missing_research_cap",
+    "model_only_action": null,
+    "eligible_actions": [],
+    "deployable_action": null,
+    "policy_winner": null,
+    "accuracy_pass": null,
+    "future_error_bound": null,
+    "dispatch_enabled": false,
+    "strict_supported": false,
+    "experiment_ready": false,
+    "reason": "model design only; future J/AP variation is not bounded; no safety guarantee"
+  },
+  "ap_cap_intervals": [
+    {
+      "lower_inclusive_c": null,
+      "upper_exclusive_c": 31.716670607615338,
+      "version": "ENERGY_AP_SESSION_SELECTOR_PC_V1",
+      "ap_cap_c": 31.716670607615335,
+      "status": "model_only_infeasible",
+      "model_only_action": null,
+      "eligible_actions": [],
+      "deployable_action": null,
+      "policy_winner": null,
+      "accuracy_pass": null,
+      "future_error_bound": null,
+      "dispatch_enabled": false,
+      "strict_supported": false,
+      "experiment_ready": false,
+      "reason": "model design only; future J/AP variation is not bounded; no safety guarantee"
+    },
+    {
+      "lower_inclusive_c": 31.716670607615338,
+      "upper_exclusive_c": 32.444091232641725,
+      "version": "ENERGY_AP_SESSION_SELECTOR_PC_V1",
+      "ap_cap_c": 31.716670607615338,
+      "status": "model_only_feasible",
+      "model_only_action": "CPU_URGENT_ONLINE_V1",
+      "eligible_actions": [
+        "CPU_URGENT_ONLINE_V1"
+      ],
+      "deployable_action": null,
+      "policy_winner": null,
+      "accuracy_pass": null,
+      "future_error_bound": null,
+      "dispatch_enabled": false,
+      "strict_supported": false,
+      "experiment_ready": false,
+      "reason": "model design only; future J/AP variation is not bounded; no safety guarantee"
+    },
+    {
+      "lower_inclusive_c": 32.444091232641725,
+      "upper_exclusive_c": null,
+      "version": "ENERGY_AP_SESSION_SELECTOR_PC_V1",
+      "ap_cap_c": 32.444091232641725,
+      "status": "model_only_feasible",
+      "model_only_action": "B2_PARALLEL_ONLINE_V1",
+      "eligible_actions": [
+        "CPU_URGENT_ONLINE_V1",
+        "B2_PARALLEL_ONLINE_V1"
+      ],
+      "deployable_action": null,
+      "policy_winner": null,
+      "accuracy_pass": null,
+      "future_error_bound": null,
+      "dispatch_enabled": false,
+      "strict_supported": false,
+      "experiment_ready": false,
+      "reason": "model design only; future J/AP variation is not bounded; no safety guarantee"
+    }
+  ],
+  "contract_sha256": "b11434afc7f17676b26371e50070473a24a7683778fde5a18e6f8f577ee8419b",
+  "model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+  "inputs_sha256": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+  "implementation_sha256": "60b91d314808fcab86cd40ad41e5c78db20cbc8d6d3f11fce7733f419804fe15",
+  "comparisons_not_calculated": {
+    "B2_PC": "old policy namespace/config is not the registered online B2",
+    "B3_SOLO_EFT_PC": "frozen service vectors are policy-context-specific; dynamic reassignment unvalidated",
+    "P_PAIR_COST_PC": "CAL03 pair-cost assumptions are not this frozen service model"
+  },
+  "independent_selector_validation": false,
+  "uses_future_measurements": false,
+  "known_future_arrivals": true,
+  "device_commands": 0,
+  "experiment_ready": false
+}

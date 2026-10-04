@@ -1,0 +1,71 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><title>에너지·AP 세션 선택 후보</title>
+<style>body{font:16px system-ui;max-width:1050px;margin:32px auto;padding:16px}td,th{padding:9px;border:1px solid #bbb}table{border-collapse:collapse}pre{white-space:pre-wrap}.warn{background:#fff2d9;padding:15px}</style>
+<h1>에너지·AP를 선택 기준에 넣는 후보</h1><p>등록된 192요청을 미리 알고, 부하 전 관측으로 CPU 직렬/PAR 고정 배정 중 선택하는 PC 설계. 요청마다 바꾸는 온라인 정책이 아닙니다.</p>
+<p class="warn">실측 결과가 아닌 동결 모형 계산입니다. 모형상 후보가 있어도 실제 실행 권고·정책 우월성은 미판정입니다. 기존 strict/선택 차단은 그대로 유지합니다.</p>
+<p>목적: 공통0–120초 전체 기기 J 최소화. 조건: 예정192요청 전부 기한 충족·lane 해제120초 이내·35–180초 1초격자 예측 AP 상한. 격자 최고값은 연속 시간의 최고온도나 안전 보장이 아닙니다. AP≠BAT 온도, J≠잔량/사용시간.</p>
+<table><thead><tr><th>방식</th><th>기한 충족</th><th>예측 J</th><th>격자 최고 AP °C</th><th>긴급 P95 ms</th></tr></thead><tbody><tr><td>CPU_URGENT_ONLINE_V1</td><td>192/192</td><td>185.389926</td><td>31.716671</td><td>377.955</td></tr><tr><td>B2_PARALLEL_ONLINE_V1</td><td>192/192</td><td>183.299134</td><td>32.444091</td><td>286.608</td></tr></tbody></table><p><label>연구용 AP 상한 °C <input id="cap" type="number" step="any" placeholder="미설정"></label></p><p id="choice">상한 미설정 — 임의 안전 기준을 정하지 않았습니다.</p>
+<h2>모형상 선택의 정확한 분기점</h2><pre>[
+  {
+    &quot;lower_inclusive_c&quot;: null,
+    &quot;upper_exclusive_c&quot;: 31.716670607615338,
+    &quot;version&quot;: &quot;ENERGY_AP_SESSION_SELECTOR_PC_V1&quot;,
+    &quot;ap_cap_c&quot;: 31.716670607615335,
+    &quot;status&quot;: &quot;model_only_infeasible&quot;,
+    &quot;model_only_action&quot;: null,
+    &quot;eligible_actions&quot;: [],
+    &quot;deployable_action&quot;: null,
+    &quot;policy_winner&quot;: null,
+    &quot;accuracy_pass&quot;: null,
+    &quot;future_error_bound&quot;: null,
+    &quot;dispatch_enabled&quot;: false,
+    &quot;strict_supported&quot;: false,
+    &quot;experiment_ready&quot;: false,
+    &quot;reason&quot;: &quot;model design only; future J/AP variation is not bounded; no safety guarantee&quot;
+  },
+  {
+    &quot;lower_inclusive_c&quot;: 31.716670607615338,
+    &quot;upper_exclusive_c&quot;: 32.444091232641725,
+    &quot;version&quot;: &quot;ENERGY_AP_SESSION_SELECTOR_PC_V1&quot;,
+    &quot;ap_cap_c&quot;: 31.716670607615338,
+    &quot;status&quot;: &quot;model_only_feasible&quot;,
+    &quot;model_only_action&quot;: &quot;CPU_URGENT_ONLINE_V1&quot;,
+    &quot;eligible_actions&quot;: [
+      &quot;CPU_URGENT_ONLINE_V1&quot;
+    ],
+    &quot;deployable_action&quot;: null,
+    &quot;policy_winner&quot;: null,
+    &quot;accuracy_pass&quot;: null,
+    &quot;future_error_bound&quot;: null,
+    &quot;dispatch_enabled&quot;: false,
+    &quot;strict_supported&quot;: false,
+    &quot;experiment_ready&quot;: false,
+    &quot;reason&quot;: &quot;model design only; future J/AP variation is not bounded; no safety guarantee&quot;
+  },
+  {
+    &quot;lower_inclusive_c&quot;: 32.444091232641725,
+    &quot;upper_exclusive_c&quot;: null,
+    &quot;version&quot;: &quot;ENERGY_AP_SESSION_SELECTOR_PC_V1&quot;,
+    &quot;ap_cap_c&quot;: 32.444091232641725,
+    &quot;status&quot;: &quot;model_only_feasible&quot;,
+    &quot;model_only_action&quot;: &quot;B2_PARALLEL_ONLINE_V1&quot;,
+    &quot;eligible_actions&quot;: [
+      &quot;CPU_URGENT_ONLINE_V1&quot;,
+      &quot;B2_PARALLEL_ONLINE_V1&quot;
+    ],
+    &quot;deployable_action&quot;: null,
+    &quot;policy_winner&quot;: null,
+    &quot;accuracy_pass&quot;: null,
+    &quot;future_error_bound&quot;: null,
+    &quot;dispatch_enabled&quot;: false,
+    &quot;strict_supported&quot;: false,
+    &quot;experiment_ready&quot;: false,
+    &quot;reason&quot;: &quot;model design only; future J/AP variation is not bounded; no safety guarantee&quot;
+  }
+]</pre>
+<p>실제 미지원 B3/P를 다른 처리시간이나 전력값으로 채우지 않습니다. 미래 실제 완료/AP/전류를 판단에 넣지 않으며, 서비스시간의 온도 의존성·결정 연산 오버헤드는 미검증입니다.</p>
+<p><a href="../README.md">정의·판독·재현</a> · <a href="options.csv">수치 CSV</a> · <a href="predicted_curves.csv">예측 곡선 CSV</a></p><script>const options=[{"policy": "CPU_URGENT_ONLINE_V1", "planned": 192, "completed": 192, "deadline_met": 192, "energy_0_120_j": 185.38992550510372, "sampled_peak_ap_35_180_c": 31.716670607615338, "last_lane_s": 112.021775378, "urgent_p95_ms": 377.955309, "normal_p95_ms": 619.471734}, {"policy": "B2_PARALLEL_ONLINE_V1", "planned": 192, "completed": 192, "deadline_met": 192, "energy_0_120_j": 183.29913390480573, "sampled_peak_ap_35_180_c": 32.444091232641725, "last_lane_s": 112.021013765, "urgent_p95_ms": 286.608481, "normal_p95_ms": 618.790912}];document.getElementById('cap').addEventListener('input',e=>{
+const text=e.target.value,cap=Number(text),target=document.getElementById('choice');
+if(text===''||!Number.isFinite(cap)){target.textContent='상한 미설정';return;}
+const eligible=options.filter(o=>o.completed===o.planned&&o.deadline_met===o.planned&&o.last_lane_s<=120&&o.sampled_peak_ap_35_180_c<=cap);
+eligible.sort((a,b)=>a.energy_0_120_j-b.energy_0_120_j||a.sampled_peak_ap_35_180_c-b.sampled_peak_ap_35_180_c||a.policy.localeCompare(b.policy));
+target.textContent=(eligible.length?'모형상 후보: '+eligible[0].policy:'모형상 조건을 만족하는 후보 없음')+' — 실제 실행 권고 아님';});</script></html>

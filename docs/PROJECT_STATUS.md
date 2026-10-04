@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-05 현재 작업 — 에너지·AP 선택 후보 PC 구현 완료
+
+- [후보 정의·수치·판독](results/energy_ap_session_selector_01/README.md), [화면](results/energy_ap_session_selector_01/evaluation/index.html). 등록192요청·동일 초기0의 CPU/PAR 두 방식을 한 번 고르는 ENERGY_AP_SESSION_SELECTOR_PC_V1 구현. 전체 기한·lane120초·격자AP 제약 아래 공통120초J 최소화. 요청별 동적 배정/새 대기 최적화는 아님.
+- 대표2예측 모두192/192, CPU185.389926J/31.716671°C vs PAR183.299134J/32.444091°C(35–180초1초격자). AP 제약에 따라 참고 선택이 바뀌나 실제 권고/우월성null. 기존B3/P의 정책문맥 미지원은 비용대입 없이 차단. AP 상한은 연구 요구 미확정으로null, 분기표만 제공.
+- 새9+관련4=13 PC검사, 실제CLI2예측, UI/Python6경계·CSV·해시/링크 일치. 원모형5682082a…·기존선택guard/strict 불변. 기기/추론/빌드/재적합0, experiment_ready=false. 다음 행동: 연구에서 허용할 열 부담/서비스 조건을 정하고 이 상충표로 판단; 같은 실측이나 Ente 빌드 자동 재개 없음.
+
 ## 2026-10-04 현재 작업 — 저장 공간 정리 완료
 
 - [삭제 범위·검증](results/storage_cleanup_20261004/README.md): 외부24.18GiB 중 재생성 빌드 중간물7.22GiB(162디렉터리) 삭제. C: 여유7.47→14.32GiB. APK34개 포함294파일 SHA 불변. 원자료·모형·계획·소비·소스·사용자 HTML/다른 worktree 보존.

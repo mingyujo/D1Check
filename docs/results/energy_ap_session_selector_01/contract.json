@@ -1,0 +1,32 @@
+{
+  "version": "ENERGY_AP_SESSION_SELECTOR_PC_V1",
+  "status": "pc_reference_design_not_device_policy",
+  "actions": ["CPU_URGENT_ONLINE_V1", "B2_PARALLEL_ONLINE_V1"],
+  "workload": "sustained-confirmation-v1: 192 requests, 400 ms, classification urgent / detection normal alternating",
+  "decision_epoch": "once before first scheduled arrival at common 35 s; workload known in advance",
+  "objective": "minimum predicted whole-device energy on common [0,120] s",
+  "constraints": {
+    "all_registered_requests_complete_by_deadline": true,
+    "urgent_deadline_ms": 1500,
+    "normal_deadline_ms": 6000,
+    "last_lane_release_by_common_s": 120,
+    "ap_cap_c": null,
+    "ap_cap_meaning": "explicit research input, not a safety threshold",
+    "ap_prediction_grid_s": [35, 180, 1],
+    "continuous_peak_guaranteed": false
+  },
+  "tie_break": ["lower predicted energy", "lower sampled AP peak", "policy ID lexical order"],
+  "no_feasible_action": "null, no fallback or relaxed constraints",
+  "prediction_inputs": ["registered future arrival plan", "frozen policy-context service vectors", "frozen energy/AP coefficients", "observed pre35 AP history", "preload mean whole-device power"],
+  "forbidden_inputs": ["future actual completion times", "post35 observed AP", "future current/power", "confirmation residual corrections"],
+  "initial_case_for_representative_pc_check": 0,
+  "coefficient_fitting": false,
+  "thermal_to_service_model_added": false,
+  "per_request_dynamic_switching": false,
+  "new_start_delay_search": false,
+  "existing_strict_and_decision_support_guard_unchanged": true,
+  "deployable_action": null,
+  "policy_winner": null,
+  "accuracy_pass": null,
+  "experiment_ready": false
+}
