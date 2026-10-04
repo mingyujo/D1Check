@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>D1Check 발표용 결과 그림</title><style>body{max-width:1100px;margin:32px auto;padding:0 20px;font:18px/1.7 system-ui,sans-serif;color:#203040}img{width:100%;height:auto}figure{margin:30px 0}a{color:#1565a3}figcaption{font-size:16px}h1{font-size:32px}</style></head><body>
+<h1>D1Check 발표용 결과 그림</h1>
+<p>A24 등록192요청의 실제 온라인8세션을 재사용했습니다. 병행의 응답 개선을 관측했으며 에너지·열 우월성은 미판정입니다.</p>
+<p><a href="README.md">8장 발표 문안·결과 표·시연 순서</a> · <a href="session_table.csv">세션별 수치</a> · <a href="../simulator_workbench_01/index.html">시뮬레이터</a></p>
+<figure><img src="01_response.png" alt="네 비교쌍 모두 병행의 긴급 P95가 CPU보다128~131ms 낮음"><figcaption>실측 응답. 정책별4세션, 각192/192 기한 충족. <a href="01_response.svg">SVG</a></figcaption></figure>
+<figure><img src="02_policy_differences.png" alt="병행−CPU 관측 에너지 차이와 최고AP 차이가 비교쌍마다 방향이 다름"><figcaption>실측 정책 차이와 시작AP 차이. 원인이 동일하거나 초기조건이 같다는 보장은 없습니다. <a href="02_policy_differences.svg">SVG</a></figcaption></figure>
+<figure><img src="03_prediction_errors.png" alt="8세션 예정도착 예측 에너지오차−5.54~8.21J, AP MAE0.186~0.559도"><figcaption>예정 도착 기반 B 예측의 실측 대비 오차. 보편 오차 한도나 정확도 PASS가 아닙니다. <a href="03_prediction_errors.svg">SVG</a></figcaption></figure>
+<p>전체 곡선·실제 lane·잔차는 <a href="../online_policy_study_01/overnight_sustained_run01/index.html">원8세션 결과</a>에서 확인할 수 있습니다. 관측 최고AP 차이와 같은 초기조건 모형의 예상 차이를 구분합니다. 배터리 사용시간·SOC·BAT 온도 개선을 검증하지 않았습니다.</p>
+</body></html>

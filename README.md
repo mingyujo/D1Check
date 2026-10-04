@@ -4,6 +4,7 @@
 
 최신 진행 상황은 **`feature/arrival-scheduling-20260923`** 브랜치에서 읽는다. 2026-10-04 현재 등록된192요청 CPU/PAR의 실제 온라인8세션과 동결 모형의 일정·에너지·AP 예측을 대조했다. 두 정책 모두 기한을 충족했고 병행의 긴급 응답 개선을 관측했다. 작은 에너지·열 차이에 의한 정책 우열은 미판정이며 `experiment_ready=false`다. 과거24요청 기록 재생·고정870건·조건부 AP 경로도 별도로 보존한다.
 
+- **[발표 담당자용 문안·그림·표·시연 순서](docs/results/final_presentation_01/README.md)**
 - [팀원용 최신 안내·담당 경계·필요 파일](docs/team/README.md)
 - **[시뮬레이터 시작 화면](docs/results/simulator_workbench_01/index.html)** · [CLI 사용법·재현·지원 범위](docs/results/simulator_workbench_01/README.md)
 - **[최신192요청 실측·예측 결과와 PC 재현](docs/results/online_policy_study_01/overnight_sustained_run01/README.md)**
