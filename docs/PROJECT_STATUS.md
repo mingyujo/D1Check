@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-05 현재 작업 — 비RL5종 비교 완료·EFT 기준 유지 권고
+
+- [설계·결과·완성경계](results/scheduler_alternatives_01/README.md), [대시보드](results/scheduler_alternatives_01/run_v1/index.html). 최소J/LLF/예약보존backfill/두MPC 구현, 개발384→선정·동결→새96조건×11정책1056, 총1440PC계산/612.018초. 기존PPO재학습/물리모형변경0.
+- 개발선정LLF는새시험96/96에서EFT와요청일정까지같음. backfill은queue기한499→504/576·−0.03467J지만최고AP+0.01413°C; 두MPC서비스48/96·열66/96악화. 새공동개선우승정책없음. 실제절감완료로표현하지않고EFT기준유지권고.
+- queue/burst각24/24는탐지CPU만의낙관수요도기한창초과. low/sustained미초과는충분조건아님; EFT기한576/576·4608/4608. 모형J개선여지상한평균0.070–2.349J, 실제절감보장아님. 다음PC작업하나: 기존탐지GPU자료의요청경계/비용/프로토콜을현재배정경로에연결가능한지특정필드로판정.
+- 69검사+1440ledger/95040요청회계·hash검증통과. 기기/실측/APK/새기기계획0, strict/experiment_ready=false/원자료/FAIL/사용자HTML/다른worktree보존.
+
 ## 2026-10-05 현재 작업 — 신경망 PPO 학습·동결 최종평가 완료
 
 - [계약·결과·재현](results/request_ppo_01/README.md), [학습/비교 화면](results/request_ppo_01/run_v2/index.html). 이전96회는 초기 연결 시험으로 정정하고, PPO-Lagrange3seed×2048=6144episode·649,184결정·11,628optimizer갱신을 수행했다. 검증720→세 정책 동결→별도96조건×8정책768평가, 본 run24분27.918초. 기존 J/AP 계수/strict 불변.
