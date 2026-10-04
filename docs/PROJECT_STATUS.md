@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-10-04 현재 작업 — 저장 공간 정리 완료
+
+- [삭제 범위·검증](results/storage_cleanup_20261004/README.md): 외부24.18GiB 중 재생성 빌드 중간물7.22GiB(162디렉터리) 삭제. C: 여유7.47→14.32GiB. APK34개 포함294파일 SHA 불변. 원자료·모형·계획·소비·소스·사용자 HTML/다른 worktree 보존.
+- 기기 명령/실측/빌드0. 정책·strict·experiment_ready=false 불변. 다음 행동: 기존 시간 중심 정책과 구분하여 에너지·열을 선택 기준에 연결하는 후보 정의. Ente 빌드는 자동 재개하지 않는다. 아래는 이전 작업 이력이다.
+
 ## 2026-10-04 현재 작업 — Ente 계측 연결·PC 검증, APK 빌드 차단
 
 - [원본 checkout·구현·검증·재현](results/real_app_baseline_pc_01/build_pc.md): 고정 Ente 원문의 run/indexing/stop/release에 opt-in 로그를 연결했다. 정책·15초 gate·retry는 불변. Python5건·실제 MlRunControl Dart ON/OFF·변경 앱파일3개 정적 분석 통과. 전체 앱 실행·실제 앱 대비 효과는 미검증이다.
