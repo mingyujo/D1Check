@@ -1,0 +1,32 @@
+﻿# 측정 1005 동결 원장 (측정 전 SHA · 시각, KST) — 생성 2026-10-05 06:55:43 +09:00
+## 사전 등록 (OneDrive 원본 · 레포 사본)
+측정1005_사전등록_v1.md
+  OneDrive bd0cc5aaf34b9b779e7784911d7831a50091bd72edc4483fa0432a19f4bfe50e  mtime 2026-10-05 06:47:57
+  레포     bd0cc5aaf34b9b779e7784911d7831a50091bd72edc4483fa0432a19f4bfe50e  (d1sim\docs\측정1005_사전등록_v1.md, 바이트 그대로 복사 — 커밋 ①)
+## 판정기 2개 (사전 등록 §1 기대값과 대조)
+fd22d3ba29771999bc8b4279396c69e8ea0b8ce11b7da5daaba4b5a5a98e3a84 *sim\night1004_judge.py  기대 fd22d3ba29771999bc8b4279396c69e8ea0b8ce11b7da5daaba4b5a5a98e3a84 → 일치 · 레포 사본 s26\tools\night_1004\night1004_judge.py fd22d3ba29771999bc8b4279396c69e8ea0b8ce11b7da5daaba4b5a5a98e3a84 (커밋 bc2bac7 2026-10-05T01:43:53+09:00)
+c1b42acc4effe2cdc669282de417fa9b60799fc71afa6e3d2656eabf4462ca76 *sim\day1005_judge.py  기대 c1b42acc4effe2cdc669282de417fa9b60799fc71afa6e3d2656eabf4462ca76 → 일치 · 레포 사본 s26\tools\am_1005\day1005_judge.py c1b42acc4effe2cdc669282de417fa9b60799fc71afa6e3d2656eabf4462ca76 (커밋 ①)
+## selftest (06:53, 출력 out_1005\day1005_selftest.txt · night1004_selftest.txt)
+day1005_judge.py selftest → 31/31 PASS · night1004_judge.py selftest → 54/54 PASS
+## 예측 JSON (P1c 동결 — 두 번째 홀드아웃)
+1e61a8707a57040d9852441250f4dcdfb85063e402f325c6e998151f7b5e97b9 *d1sim\out\night_1004_prediction_v2.json  커밋 4cc7b87 2026-10-04T18:02:34+09:00
+fd7e01593a0cc518dfd9264b1236c9c0a6b45d1d9c14df91965417f8433e2298 *d1sim\out\night_1004_prediction_v1.json  커밋 4cc7b87 2026-10-04T18:02:34+09:00
+  기대 접두 v2 1e61a870… · v1 fd7e0159… → 둘 다 일치
+## day1005 --prev 입력 (10/4 판정 JSON)
+a981e59977799f445a47acaf849b691813798823b6fd4baf1ca580cd3b86eedd *sim\out_1004\N50P.json
+1a1fe7b776c889798f689e7349faab598d83973b7738931e424c1059735549e9 *sim\out_1004\NI300.json
+7e8c8d8e29ed5035964b312c53af7705a8218151d4aa0522a52bd5da1bcedae1 *sim\out_1004\G50P.json
+## 체인 canonical SHA (py tools\npu_chain.py validate, exit 0) + 파일 SHA
+n50_probe_npu_v1 canonical a0ae4d7d0188de403752ca929316d69331812f3fe5a795194d05219ef66a4d49 total_s 960  file 5a41397bfdba2d1e04532affe15439a0c447697f3bc09b82e467db1fa7aaf7d8
+npu_idle300_v1 canonical f721513b07d0af9ea03499f7babeff197fa644425f00b2fa1fd87159ec4e13bf total_s 840  file 2ce71b64c5b7510e930fd2e071e66d89222c834c37e09a90e88384318c33ad4b
+g50_probe_gpu_v1 canonical 63a0872c8f77005a8985363b427f2d2c5b4a2cdf71f07f272bc32a536c6c3527 total_s 840  file 0d415773ee3d2f105e56fda20bc6937d9bf2210d5cb6247640eed486a9fc3789
+  = 밤1004_체인기록.md §1 (전부 같음)
+## dry-run (실제 시리얼 · 출력 results\S26_am_1005_host\dryrun_*_pre_*.txt, 시리얼 <SERIAL> 치환) 06:54
+N50P2 exit 0 · config.duration_s 960 · chain n50_probe_npu_v1 a0ae4d7d… · max_inference_spans 1,500,000
+NI300r2 exit 0 · config.duration_s 840 · chain npu_idle300_v1 f721513b… · max_inference_spans 1,200,000
+G50P2 exit 0 · config.duration_s 840 · chain g50_probe_gpu_v1 63a0872c… · max_inference_spans 400,000
+## 설치본 · HEAD · push · 폰 설정 (0단계, 06:52)
+npu-runner base.apk 5ac485e382ebc82e380e6161ca6301ff89e9ab3d8be49b5d5388ab28b42c1033 lastUpdateTime 2026-10-02 23:56:58 (재설치 없음)
+HEAD(측정 시작) 2dfdf720420d9d1106e5e77fb203312d517f504d = origin/s26-measure (git ls-remote, fetch 06:52) → push 없음
+airplane_mode_on 1 · wifi_on 2 (06:52:50) — 10/4 칸 (0 · 1) 과 다름 → 공변량 표시, 토글 안 함 (사전 등록 §1 바뀐 것 1)
+게이트 하한 (사전 등록 §1 바뀐 것 2): HAL SKIN ≥ 29.1 이고 BAT ≥ 27.5 — 칸 실행기 run_cell_1005.ps1 이 게이트가 읽은 HAL 값으로 검사
