@@ -74,7 +74,8 @@ class ThermalV2Adapter:
         return tv2.power_of(self.s(running), self.params['power'][running])
 
     def status(self):
-        return tv2.status_of(self.dev.th.skin)
+        # v0 Record.status_s keeps {0, 1, 2}; HAL SEVERE (3, SKIN >= 45) is recorded as 2 here (npumgr only tests >= 2)
+        return min(2, tv2.status_of(self.dev.th.skin))
 
     def advance(self, h, running, executing):
         P = self.power(running, executing)

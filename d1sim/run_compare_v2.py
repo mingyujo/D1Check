@@ -108,11 +108,17 @@ def cmd_s0(a):
 
 
 def cmd_main(a):
-    run_jobs([(s, sc, vid, seed, 'main') for s in SPECS for sc in ('S0', 'S1', 'S2') for vid in VARIANTS for seed in DEV_SEEDS], a.out)
+    # S0 is run by `s0` (d1sim/out/s0_v2.csv) and merged in `report`; main covers S1·S2. --variants narrows the axis set
+    # (P1c 18:4x: the full W1..W4 run was killed by the tool's 30-min background limit at 450/480 -> W1·W2 only, W3·W4 -> P1d)
+    vids = a.variants or list(VARIANTS)
+    run_jobs([(s, sc, vid, seed, 'main') for s in SPECS for sc in ('S1', 'S2') for vid in vids for seed in DEV_SEEDS], a.out)
 
 
 def cmd_report(a):
     rows = rc0.load(a.main)
+    s0 = os.path.join(os.path.dirname(a.main), 's0_v2.csv')
+    if os.path.exists(s0):
+        rows = rc0.load(s0) + rows
     cells = rc0.cell_stats(rows)
     pols = sorted({r['policy'] for r in rows})
     med = lambda d, k: st.median(rc0.fnum(r[k]) for r in d.values())  # noqa: E731
@@ -121,6 +127,8 @@ def cmd_report(a):
              '|---|---|---|---:|---:|---:|---:|---:|---|---:|---:|---:|---:|---:|---|---|']
     for sc in ('S0', 'S1', 'S2'):
         for vid in VARIANTS:
+            if not any(k[1] == sc and k[2] == vid for k in cells):
+                continue
             b = cells.get(('npumgr', sc, vid, '{}'))
             cv = (st.pstdev([rc0.fnum(r['fg_p95_s']) for r in b.values()]) / med(b, 'fg_p95_s')) if b and med(b, 'fg_p95_s') not in (0, math.inf) else 0.0
             m = max(0.05, 2 * cv)
@@ -150,6 +158,9 @@ def cmd_report(a):
         flips, identical = [], True
         for sc in ('S1', 'S2'):
             for a_, b_ in pairs:
+                if f'{sc}/{a_}' not in out['cells'] or f'{sc}/{b_}' not in out['cells']:
+                    flips.append(f'{sc}: {a_}/{b_} 미실행')
+                    continue
                 ca, cb = out['cells'][f'{sc}/{a_}'], out['cells'][f'{sc}/{b_}']
                 if ca['rank'][:2] != cb['rank'][:2]:
                     flips.append(f'{sc}: {a_} {ca["rank"][:2]} vs {b_} {cb["rank"][:2]}')
@@ -159,7 +170,9 @@ def cmd_report(a):
                 va = [round(r['fg_p95'], 3) for r in sorted(ca['rows'], key=lambda r: r['policy'])]
                 vb = [round(r['fg_p95'], 3) for r in sorted(cb['rows'], key=lambda r: r['policy'])]
                 identical = identical and va == vb
-        out['flip'][axis] = dict(verdict=('뒤집는 축' if flips else ('미작동 (소수점 셋째 자리까지 같음)' if identical else '순위·가드 불변 (값은 다름)')), detail=flips)
+        real = [f for f in flips if not f.endswith('미실행')]
+        ran = any(not f.endswith('미실행') for f in flips) or len([f for f in flips if f.endswith('미실행')]) < 2 * len(pairs)
+        out['flip'][axis] = dict(verdict=('미실행 (P1d)' if not ran else ('뒤집는 축' if real else ('미작동 (소수점 셋째 자리까지 같음)' if identical else '순위·가드 불변 (값은 다름)'))), detail=flips)
     lines += ['', '## 뒤집는 축 판정', *[f"- **{k}**: {v['verdict']}" + (''.join(f'\n  - {d}' for d in v['detail']) if v['detail'] else '') for k, v in out['flip'].items()]]
     json.dump(out, open(os.path.join(os.path.dirname(a.main), 'report_v2.json'), 'w', encoding='utf-8'), indent=1, ensure_ascii=False, default=str)
     open(os.path.join(os.path.dirname(a.main), 'report_v2.md'), 'w', encoding='utf-8').write('\n'.join(lines) + '\n')
@@ -176,6 +189,7 @@ def main():
     ap.add_argument('cmd')
     ap.add_argument('--out')
     ap.add_argument('--main')
+    ap.add_argument('--variants', nargs='*')
     a = ap.parse_args()
     {'s0': cmd_s0, 'main': cmd_main, 'report': cmd_report}[a.cmd](a)
 
