@@ -1,5 +1,7 @@
 # D1Check 두 작업 실험·평가 계약
 
+> 2026-10-04 협업 범위 개정: [S26-THERMAL-SCOPE-02](DECISIONS.md#s26-thermal-scope-02)로 S26 XDEV-02 두 모델·동일APK 재현은 이번 제출 필수에서 보류했다. 아래 기존 계약/실측을 소급 변경하지 않는다. 새 S26 분류·순차 절은 [공통 기한·§4 실제 필드 대응·독립 증거](team/S26_SCOPE_AND_INTERFACE_20261004.md)를 따른다. 기기별 프로필/엔진을 분리하며 A24 결과를 S26 검증으로 전용하지 않는다.
+
 - 버전: 1.4 / 설계일: 2026-09-18 / 상태: **planned, 미구현·미실측**
 - 상위 계획: [PROJECT_PLAN.md](PROJECT_PLAN.md) 개정 4.4. 현재 MODEL-02B raw 수치 gate는 통과했지만 decoded gate와 품질 입력은 미완료다. [SIM_01_PREPARATION.md](SIM_01_PREPARATION.md)의 draft schema/no-op·host KPI 함수는 독립 준비 코드이며 아래 실제 `multitask-v1` adapter/ledger 구현을 대체하지 않는다.
 - 예약 protocol ID: `multitask-v1`. 현재 `d1_calibration_cli.py`는 이 protocol을 처리하지 않는다. 이 문서는 존재하지 않는 실행 명령을 제시하지 않는다.

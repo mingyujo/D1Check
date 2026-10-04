@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-04 현재 작업 — S26 범위 결정·입력/ledger 인계 완료
+
+- [팀 회신·근거·완료/미검증 경계](team/S26_SCOPE_AND_INTERFACE_20261004.md), [결정](DECISIONS.md#s26-thermal-scope-02). XDEV-02 두 모델 재현은10/11 필수에서 보류, S26 분류·순차3backend·열 이력/처리율·열 인지 제어를 별도 절로 채택. 공통 문제/평가+기기별 프로필이며 계수 혼합·단일 엔진 구현 완료 주장은 하지 않는다. RL 필수 제외.
+- A24 로컬71a2f2b와 S26 원격b4f7634를 읽기 전용 대조. 이후10/4 측정/v2 완료는 사용자 보고이며 해당 완료 파일 미확인. S26 J 상대 우열도 C2 FAIL 경계를 유지. A24 스로틀 부재나 제안P 우월성은 미입증.
+- [20이미지 해시·기존CPU top5/1000출력](team/s26_interface_20261004/quality_reference.json), 전처리/라벨 출처·허용식·7경계 대응·최소export·인계 일정안 제공. 새 추론 없이 원PNG/텐서/출력60파일 hash·20,000출력 float32 복원 및 비교 경계 검증. [검증 기록](team/s26_interface_20261004/verification.json). Android/모형/과거결과/strict/experiment_ready=false 불변, 기기 명령0.
+- 남은 장애: S26 대표입력 기기 품질·v2 holdout·V3 정책 독립 확인은 이번 인계로 완료되지 않는다. 다음 행동 하나: 담당자가 P1d/V3 결과 전 등록(입력·가드·KPI·모형/정책 hash·분모)을 고정해 공유. 추가 측정 자동 실행 없음.
+
 ## 2026-10-04 최종 발표·시연 공유 묶음 완료
 
 - [8장 발표 문안·그림·표·시연·Q&A](results/final_presentation_01/README.md), [그림 화면](results/final_presentation_01/index.html). 기존192요청8세션만 재사용해 응답/정책차이/예측오차 3그림(PNG·SVG)과8행표를 생성했다. PPTX 제작은 포함하지 않는다.

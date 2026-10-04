@@ -18,6 +18,7 @@
 - 구현·검증 사실은 코드와 증거로 확인한다. 코드가 계획과 다르다고 계획을 자동으로 바꾸지 않는다. 차이를 기록한다.
 - 개정 4.4의 목표는 한 Android 앱 안의 서로 다른 두 AI 작업과 CPU/GPU 요청 배정이다. A24는 개발·주평가 기기이며 EfficientNet-Lite0 분류/EfficientDet-Lite0 탐지 adapter와 arrival 실행기로 두 모델 실측·독립 평가를 수행했다. 기존 MobileNet 단일 모델 경로도 보존한다. 현재 완료/실패/미검증 범위는 STATUS를 따른다. 검증된 조합만 최대 두 건 병행하며 정책 우수성을 전제하지 않는다.
 - 2026-09-24 S26을 XDEV-02 추가 검증 기기로 선정했다. 정확한 모델명·SoC·fingerprint는 manifest 확인 전 팀원 보고다. A24 작업과 별도 `npu-runner`/CompiledModel 기반 S26 NPU 개발을 병행하며 기존 A24 `benchmark-runner` 런타임은 교체하지 않는다. S26 CPU/GPU 동결 정책 재현과 NPU 확장 평가는 분리한다. 모델별 실행 장치·품질 검증을 통과한 경로만 후보로 허용하고 미검증 병행/3건 동시 실행은 금지한다. 현재 정책의 3자원 지원·NPU 성능 검증 완료를 뜻하지 않는다. 강화학습은 필수 범위 밖이다. 상세 판정과 증거는 PLAN·DECISIONS 및 `docs/team/README.md`를 따른다.
+- 2026-10-04 현재 S26 범위는 DECISIONS의 S26-THERMAL-SCOPE-02를 따른다. 위9/24 XDEV-02 두 모델 재현은 이번 제출 필수에서 보류하며, S26 분류·순차3backend·열 이력/처리율·규칙 평가를 별도 절로 다룬다. 공통 문제/평가와 기기별 프로필을 구분하고 계수를 혼합하지 않는다. 정책 효과·에너지 적격성·독립 확인 미완료를 범위 변경으로 완료 처리하지 않는다.
 - 특정 사용 사례는 대표 시연 후보다. 연구 범위는 여러 혼합 요청 조건이며 실기기 합성 도착 재생·실측 기반 시뮬레이션·사용자 시연의 증거를 구분한다. 가상 완료를 실제 추론 성능으로 쓰지 않는다.
 - 현재 목표·작업은 PLAN/STATUS, 혼합 요청·후보·선행 연구의 근거 경계는 `docs/SCOPE_02_EVIDENCE.md`, exact 모델·라벨·host 판정은 `docs/MODEL_02_INVENTORY.md`, 기기 이식 가능한 모델 probe는 `docs/MODEL_02B_PROBE.md`, 새 두 작업·다기기 측정은 `docs/MULTITASK_EXPERIMENT_PROTOCOL.md`, 기존 단일 모델은 `docs/CALIBRATION_PROTOCOL.md`를 따른다. 기존 v1/v2·calibration-v1 계약과 데이터를 조용히 새 의미로 바꾸지 않는다.
 - 개정 4.4의 기준정책 B0/B1/B2/B3 대비 효과는 아직 미입증이다. 정책 ID는 계획 개정과 함께 기록하고 과거 B2와 새 B2를 같은 조건으로 합치지 않는다. formal·진단·혼합 요청 데이터를 구분하고 온도를 에너지로 해석하지 않는다.
