@@ -1,0 +1,78 @@
+{
+  "version": "request-monte-carlo-rl-v1",
+  "candidate": "ENERGY_AP_MC_RL_V1",
+  "algorithm": "first-visit episodic Monte Carlo, sample-mean vector cost, lexicographic greedy epsilon control",
+  "train_seeds": [
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008
+  ],
+  "evaluation_seeds": [
+    2001,
+    2002
+  ],
+  "families": [
+    "low",
+    "queue",
+    "burst",
+    "sustained"
+  ],
+  "baselines": [
+    "CPU_REFERENCE",
+    "SPLIT_REFERENCE",
+    "EFT_REFERENCE",
+    "ENERGY_AP_REQUEST_V1"
+  ],
+  "service_scenarios": [
+    "mean",
+    "short_context",
+    "long_context"
+  ],
+  "train_episodes": 96,
+  "training_reference_runs": 96,
+  "evaluation_runs": 120,
+  "max_wall_seconds": 1800,
+  "training_order_seed": 42,
+  "epsilon": [
+    0.3,
+    0.05
+  ],
+  "discount": 1.0,
+  "objective": [
+    "min expected missed fraction (missing response counts)",
+    "min expected positive peak AP excess over paired EFT",
+    "min expected 120s J difference vs paired EFT",
+    "min expected urgent P95"
+  ],
+  "actions": [
+    "legal immediate CPU",
+    "legal immediate GPU",
+    "wait <=250ms; arrival age <=2s; local head deadline guard"
+  ],
+  "state": "head task/slack/age; remaining window 15s bins; capped arrived queue counts; lane task/phase; modeled T-reference and H bins; no future",
+  "workload": "fixed counts 24/192; shuffled task order; each interval uniform +/-5%; 35s start; seed fixed before outcomes",
+  "unseen": "EFT fallback; no evaluation updates",
+  "selection": "last training checkpoint only; no hyperparameter search",
+  "evaluation": "24 paired synthetic conditions, completion/deadline/P95/J/AP separately; no measured accuracy PASS",
+  "promotion": "no default/device adoption; no future error bounds; failures retained; no post-evaluation retuning",
+  "limitations": [
+    "coarse partially observed state",
+    "finite exploration; no convergence proof",
+    "expected priorities are not per-episode guarantees",
+    "common service transfer assumption",
+    "no temperature-to-throughput model",
+    "zero additional controller execution cost",
+    "fixed previously seen initial inputs",
+    "context extrema are not confidence bounds"
+  ],
+  "existing_model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+  "existing_initial_sha256": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+  "new_device_plan": false,
+  "device_commands": 0,
+  "experiment_ready": false
+}

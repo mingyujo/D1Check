@@ -1,0 +1,35 @@
+{
+  "recorded_utc": "2026-10-04T17:56:09.425601+00:00",
+  "base_head": "fd3363677f58142fbab29dce8024f707ee7c140d",
+  "tested_with_uncommitted_changes": true,
+  "tests": 40,
+  "skipped": 0,
+  "command": [
+    "C:/Users/LG/anaconda3/python.exe",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.test_d1_request_rl",
+    "tools.test_d1_empirical_request_policy",
+    "tools.test_d1_arrival_explore",
+    "-v"
+  ],
+  "result": "PASS",
+  "artifact_checks": [
+    "all 120 ledgers: original arrival, complete denominator, phase order, exclusive lanes",
+    "120 J/AP paths re-accounted from saved ledger; same frozen equations, not independent physical verification",
+    "source/contract/model/initial hashes match pre-run; learned policy hash matches pre-evaluation freeze",
+    "CSV/JSON equality checked by report; PNG visually inspected; no overlap",
+    "evaluation seeds disjoint; evaluation model table unchanged; input generator deterministic"
+  ],
+  "inputs_sha256": "52a36a9fe37bfb00d45ef665d35b06598614ca70f865736fca67466e39f2cdef",
+  "policy_sha256": "8e16996796ddc0cb4ffd5de7aa791c21cb2519021bbc1a43f42726fd8b80f4a7",
+  "device_commands": 0,
+  "additional_training_after_evaluation": 0,
+  "source_hashes": {
+    "tools/d1_request_rl.py": "ac74114e28c6f44e0c3b0c9a1e5a943ad156579c8a3cfe3e015db8a50e2958a9",
+    "tools/d1_request_rl_report.py": "7101b9ed0813fec4ebf815a1941404a2d55d1860f487e848bda4f2d3495f7445",
+    "tools/test_d1_request_rl.py": "4481eb7d48c00fdf3aee2b7371026dda2dc02249842b11f62a235a8d1f78d155",
+    "tools/d1_empirical_request_policy.py": "77b2e88f7ed167d5af87a0a51cee3095cfed0436101dd7b2cace21c99faa322e"
+  }
+}
