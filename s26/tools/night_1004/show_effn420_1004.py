@@ -1,0 +1,23 @@
+"""Print key fields of EffN420 analyze + effnet rule outputs (read-only)."""
+import json, sys
+sys.stdout.reconfigure(encoding="utf-8")
+a = json.load(open(sys.argv[1], encoding="utf-8"))
+e = json.load(open(sys.argv[2], encoding="utf-8"))
+print("run", a.get("run_id"), "resource", a.get("resource"), "load_s", a.get("load_s"), "n_inf", a.get("n_inf"), "ref_ms", a.get("ref_ms"))
+print("onset_1_1", a.get("onset_1_1_s"), "edge", a.get("onset_edge_candidate_s"), "onset_temps", a.get("onset_temps"))
+print("step1", a.get("step1_s"), "step1_temps", a.get("step1_temps"))
+print("levels: step1", a.get("level_step1_ratio"), "step2 first120", a.get("level_step2_first120_ratio"), "end60", a.get("end60"))
+print("load_start_temps", a.get("load_start_temps"), "band", a.get("load_start_skin_in_band"), "end_temps", a.get("end_temps"))
+print("thermal_status", a.get("thermal_status"))
+print("conservation", a.get("conservation"))
+print("runner_termination", a.get("runner_termination"))
+print("run_summary", {k: (a.get("run_summary") or {}).get(k) for k in ("validation_status", "termination_reason", "completed_inference_count", "latency_median_ms") if a.get("run_summary")})
+print("power_p0_w", a.get("power_p0_w"))
+print("bins", [(t, None if r is None else round(r, 3)) for t, r in a.get("bins_ratio", [])])
+print("frozen", a.get("frozen_script"), "import", a.get("import"))
+print("=== effnet rule:", e["verdict"])
+for k, v in (e.get("checks") or {}).items():
+    print("  ", k, v)
+print("power_desc", e.get("power_desc"))
+print("widths", e.get("step_widths_desc"))
+print("range_used", e.get("range_used"), "dropped", e.get("range_dropped"))

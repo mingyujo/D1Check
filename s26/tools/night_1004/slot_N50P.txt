@@ -1,0 +1,21 @@
+﻿====================================================================================================
+C:\Users\rhoyo\AndroidStudioProjects\D1Check_v4\results\S26_N50P_1004
+  manifest status: completed | halt: None | started 2026-10-04T16:22:44.585237+00:00 | completed 2026-10-04T16:55:58.397398+00:00
+  slot npu-d100-r001 status=completed attempts=1 run_id=c717c4cf-64a1-442c-9813-f3755eac8705 error=None
+    valid=True failed_checks=[]
+    chain_conservation_flags=['transitions_explained']
+    chain_check passed=False structure_passed=True timing_flags=['transitions_explained'] failed=['transitions_explained']
+      note: load window 960282721445 ns = segments 960001774453 + transitions 278325430 + residual 2621562 ns (tolerance 300000000 ns)
+      note: transition [2211380410712228,2211380538989845] covered 48989805 ns of 128277617 ns
+      note: transition [2211800539910782,2211800689958595] covered 55584880 ns of 150047813 ns
+    steps(18): ['runner_force_stop', 'pre_capture_d1_quiesce', 'safety_preflight', 'thermal_conditioning', 'safety_after_conditioning', 'logger_clear', 'logger_capture_started', 'event_monitor_started', 'd1_run_started', 'runner_auto_start_sent', 'runner_terminal_event', 'runner_stopped_before_cooling', 'post_load_cooling', 'd1_run_stopped', 'logger_exited', 'run_directory_identified', 'analysis_completed', 'accuracy_provenance_attached']
+    runner events: {'baseline_end': 1, 'baseline_start': 1, 'chain_model_init': 1, 'chain_transition_end': 2, 'chain_transition_start': 2, 'file_summary': 1, 'inference': 862520, 'load_end': 1, 'load_start': 1, 'npu_artifact_hash': 1, 'run_metadata': 1, 'segment_end': 3, 'segment_start': 3, 'shutdown': 1, 'warmup': 60}
+    meta: termination=duration_complete completed=862520 chain_mode=True model_prepare=per_segment max_spans=1500000 jvm=268435456 pilot_pct=89 load_ns=960282689922
+    seg 0 cold_ref_d50 NPU d50 n=36702 term=duration_complete dur=60.001s achieved=49.99753139250226 gpu_precision=None
+    seg 1 heat_d100 NPU d100 n=522833 term=duration_complete dur=420.000s achieved=100 gpu_precision=None
+    seg 2 probe_d50 NPU d50 n=302985 term=duration_complete dur=480.000s achieved=49.99812504483005 gpu_precision=None
+    transition -> seg 1 NPU->NPU switch=False model_initialized=False dur=128.3 ms model_init=0.0 ms env_init=0.0 ms warmup=20
+    transition -> seg 2 NPU->NPU switch=False model_initialized=False dur=150.0 ms model_init=0.0 ms env_init=0.0 ms warmup=20
+    summary: formal_npu_valid=False not_chain_run=False thermalservice_samples=1823 telemetry=1834
+    raw logcat lines=201259 D1GPU=199395
+    run_summary: {'slot_status': 'completed', 'validation_status': 'valid', 'termination_reason': 'duration_complete', 'completed_inference_count': '862520', 'actual_load_duration_s': '960.001774453', 'latency_median_ms': '0.745664', 'skin_load_start_temperature_c': '28.4', 'skin_load_end_temperature_c': '36.0', 'ap_load_end_temperature_c': '38.4', 'cooling_status': 'completed'}

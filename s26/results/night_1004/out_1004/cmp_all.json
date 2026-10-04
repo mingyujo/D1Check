@@ -1,0 +1,6155 @@
+{
+ "dev_range": [
+  28.3,
+  31.6
+ ],
+ "effn420": "unsupported — EfficientNet NPU 전력 자료 없음 (모형 예측 만들지 않음)",
+ "imports": {
+  "fit_throttle_v1": {
+   "expected_prefix": "379039dd",
+   "ok": true,
+   "path": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_v4\\d1sim\\tools\\fit_throttle_v1.py",
+   "sha256": "379039ddbe8a04e0ed6d49dce432b04ea5e7e8638dd65d1a325cfa22fee74c37"
+  },
+  "m1m2_judge_1002": {
+   "expected_prefix": "ea282d4a",
+   "ok": true,
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\m1m2_judge_1002.py",
+   "sha256": "ea282d4a48630c4af3cce301c13216f691389fa9f2c8e69a652de645be055b28"
+  },
+  "night1003_judge": {
+   "expected_prefix": "a5ceab41",
+   "ok": true,
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\night1003_judge.py",
+   "sha256": "a5ceab419c3bb0fed73b75b759901fb0e268f957bd1172e1edacbc246c903f50"
+  }
+ },
+ "measured": {
+  "g50p": {
+   "run_id": "e7b9a65e-da45-4dcf-b9d5-634edde0a5d5",
+   "start_skin": 28.5
+  },
+  "gi300": {
+   "run_id": "1618ce0e-60de-4b61-9bdb-e145e7a6d4f9",
+   "start_skin": 30.7
+  },
+  "n50p": {
+   "run_id": "c717c4cf-64a1-442c-9813-f3755eac8705",
+   "start_skin": 28.4
+  },
+  "ni300": {
+   "run_id": "40533ab0-2693-46e2-a21c-a089e28f27dc",
+   "start_skin": 31.1
+  }
+ },
+ "notes": [],
+ "predictions": {
+  "v1": {
+   "model": "v1 M-P r3 (d1sim/throttle_v1.py + profiles/throttle_v1_*.json, 커밋 3050e09) — 밤 1004 칸, 새 구동 파일 (v1 코드 무수정)",
+   "present": true
+  },
+  "v2": {
+   "model": "v2 V2-Lb (d1sim/throttle_v2.py + profiles/throttle_v2_*.json)",
+   "present": true
+  }
+ },
+ "reference_forms": {
+  "V2-Lk": {
+   "g50p": {
+    "kappa_2": {
+     "column": "29.5/kappa_2",
+     "counts": {
+      "—": 3,
+      "맞음": 2,
+      "틀림": 5
+     },
+     "label": "참고 — 선택에 쓰지 않음: V2-Lk 29.5/kappa_2 · g50p",
+     "rows": [
+      {
+       "cell": "1-1 진입",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "T_on,CM 37.2",
+       "measured": 100,
+       "predicted": 70,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "240~300 s 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이 W·D",
+       "measured": 1.593855,
+       "predicted": 1.870731,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "가열 끝 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "열 블록",
+       "measured": 38.0,
+       "predicted": 37.988057,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 42.2,
+       "predicted": 41.108692,
+       "verdict": "—"
+      },
+      {
+       "cell": "탐침 해제 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "R50-fast → θ_GPU > 0.5 또는 타이머 (모형 기각) · R50-slow → '깊이가 온도 따라 서서히 풀린다' 쪽 (칸 배율 궤적으로 가른다)",
+       "measured": "R50-fast",
+       "predicted": "R50-none",
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 해제 시각",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "해제 규칙",
+       "measured": 10,
+       "predicted": null,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 1~5 칸 중앙 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이 = 정적 지도",
+       "measured": 1.007111,
+       "predicted": 1.468684,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 칸 0~5 궤적 ('계단형 하강' 은 수치 정의 없음 — 궤적 첨부)",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        1.66702,
+        1.002103,
+        1.005312,
+        1.009813,
+        1.015911,
+        1.007111
+       ],
+       "predicted": [
+        1.914807,
+        1.650343,
+        1.521782,
+        1.468684,
+        1.0,
+        1.0
+       ],
+       "verdict": "—"
+      },
+      {
+       "cell": "해제 칸 SKIN · AP (H-ap-히스 는 밤 규칙 — g50p 판정)",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        37.4,
+        39.6
+       ],
+       "predicted": null,
+       "verdict": "—"
+      },
+      {
+       "ap_mae": 0.685655,
+       "cell": "탐침 SKIN·AP 0/60/120/240/479 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "열 (d50 전력 α_GPU)",
+       "measured": [
+        [
+         38.0,
+         42.2
+        ],
+        [
+         37.6,
+         39.8
+        ],
+        [
+         37.7,
+         39.9
+        ],
+        [
+         38.0,
+         40.2
+        ],
+        [
+         37.9,
+         40.1
+        ]
+       ],
+       "predicted": [
+        [
+         37.989141,
+         41.101965
+        ],
+        [
+         38.010891,
+         41.527956
+        ],
+        [
+         37.540725,
+         40.145431
+        ],
+        [
+         37.560662,
+         39.963305
+        ],
+        [
+         37.617805,
+         39.979839
+        ]
+       ],
+       "skin_mae": 0.260512,
+       "verdict": "맞음 (SKIN MAE 0.26 · AP MAE 0.69)"
+      }
+     ],
+     "start_skin": 28.5,
+     "support_note": "적용 범위 안",
+     "supported": true
+    },
+    "kappa_inf": {
+     "column": "29.5/kappa_inf",
+     "counts": {
+      "—": 3,
+      "맞음": 2,
+      "틀림": 5
+     },
+     "label": "참고 — 선택에 쓰지 않음: V2-Lk 29.5/kappa_inf · g50p",
+     "rows": [
+      {
+       "cell": "1-1 진입",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "T_on,CM 37.2",
+       "measured": 100,
+       "predicted": 70,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "240~300 s 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이 W·D",
+       "measured": 1.593855,
+       "predicted": 1.870731,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "가열 끝 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "열 블록",
+       "measured": 38.0,
+       "predicted": 37.988057,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 42.2,
+       "predicted": 41.108692,
+       "verdict": "—"
+      },
+      {
+       "cell": "탐침 해제 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "R50-fast → θ_GPU > 0.5 또는 타이머 (모형 기각) · R50-slow → '깊이가 온도 따라 서서히 풀린다' 쪽 (칸 배율 궤적으로 가른다)",
+       "measured": "R50-fast",
+       "predicted": "R50-none",
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 해제 시각",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "해제 규칙",
+       "measured": 10,
+       "predicted": null,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 1~5 칸 중앙 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이 = 정적 지도",
+       "measured": 1.007111,
+       "predicted": 1.468684,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 칸 0~5 궤적 ('계단형 하강' 은 수치 정의 없음 — 궤적 첨부)",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        1.66702,
+        1.002103,
+        1.005312,
+        1.009813,
+        1.015911,
+        1.007111
+       ],
+       "predicted": [
+        1.914807,
+        1.650343,
+        1.521782,
+        1.468684,
+        1.0,
+        1.0
+       ],
+       "verdict": "—"
+      },
+      {
+       "cell": "해제 칸 SKIN · AP (H-ap-히스 는 밤 규칙 — g50p 판정)",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        37.4,
+        39.6
+       ],
+       "predicted": null,
+       "verdict": "—"
+      },
+      {
+       "ap_mae": 0.685655,
+       "cell": "탐침 SKIN·AP 0/60/120/240/479 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "열 (d50 전력 α_GPU)",
+       "measured": [
+        [
+         38.0,
+         42.2
+        ],
+        [
+         37.6,
+         39.8
+        ],
+        [
+         37.7,
+         39.9
+        ],
+        [
+         38.0,
+         40.2
+        ],
+        [
+         37.9,
+         40.1
+        ]
+       ],
+       "predicted": [
+        [
+         37.989141,
+         41.101965
+        ],
+        [
+         38.010891,
+         41.527956
+        ],
+        [
+         37.540725,
+         40.145431
+        ],
+        [
+         37.560662,
+         39.963305
+        ],
+        [
+         37.617805,
+         39.979839
+        ]
+       ],
+       "skin_mae": 0.260512,
+       "verdict": "맞음 (SKIN MAE 0.26 · AP MAE 0.69)"
+      }
+     ],
+     "start_skin": 28.5,
+     "support_note": "적용 범위 안",
+     "supported": true
+    },
+    "kappa_lo": {
+     "column": "29.5/kappa_lo",
+     "counts": {
+      "—": 3,
+      "맞음": 2,
+      "틀림": 5
+     },
+     "label": "참고 — 선택에 쓰지 않음: V2-Lk 29.5/kappa_lo · g50p",
+     "rows": [
+      {
+       "cell": "1-1 진입",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "T_on,CM 37.2",
+       "measured": 100,
+       "predicted": 70,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "240~300 s 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이 W·D",
+       "measured": 1.593855,
+       "predicted": 1.870731,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "가열 끝 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "열 블록",
+       "measured": 38.0,
+       "predicted": 37.988057,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 42.2,
+       "predicted": 41.108692,
+       "verdict": "—"
+      },
+      {
+       "cell": "탐침 해제 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "R50-fast → θ_GPU > 0.5 또는 타이머 (모형 기각) · R50-slow → '깊이가 온도 따라 서서히 풀린다' 쪽 (칸 배율 궤적으로 가른다)",
+       "measured": "R50-fast",
+       "predicted": "R50-none",
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 해제 시각",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "해제 규칙",
+       "measured": 10,
+       "predicted": null,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 1~5 칸 중앙 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이 = 정적 지도",
+       "measured": 1.007111,
+       "predicted": 1.468684,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 칸 0~5 궤적 ('계단형 하강' 은 수치 정의 없음 — 궤적 첨부)",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        1.66702,
+        1.002103,
+        1.005312,
+        1.009813,
+        1.015911,
+        1.007111
+       ],
+       "predicted": [
+        1.914807,
+        1.650343,
+        1.521782,
+        1.468684,
+        1.0,
+        1.0
+       ],
+       "verdict": "—"
+      },
+      {
+       "cell": "해제 칸 SKIN · AP (H-ap-히스 는 밤 규칙 — g50p 판정)",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        37.4,
+        39.6
+       ],
+       "predicted": null,
+       "verdict": "—"
+      },
+      {
+       "ap_mae": 0.685655,
+       "cell": "탐침 SKIN·AP 0/60/120/240/479 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "열 (d50 전력 α_GPU)",
+       "measured": [
+        [
+         38.0,
+         42.2
+        ],
+        [
+         37.6,
+         39.8
+        ],
+        [
+         37.7,
+         39.9
+        ],
+        [
+         38.0,
+         40.2
+        ],
+        [
+         37.9,
+         40.1
+        ]
+       ],
+       "predicted": [
+        [
+         37.989141,
+         41.101965
+        ],
+        [
+         38.010891,
+         41.527956
+        ],
+        [
+         37.540725,
+         40.145431
+        ],
+        [
+         37.560662,
+         39.963305
+        ],
+        [
+         37.617805,
+         39.979839
+        ]
+       ],
+       "skin_mae": 0.260512,
+       "verdict": "맞음 (SKIN MAE 0.26 · AP MAE 0.69)"
+      }
+     ],
+     "start_skin": 28.5,
+     "support_note": "적용 범위 안",
+     "supported": true
+    }
+   },
+   "gi300": {
+    "kappa_2": {
+     "column": "30.5/kappa_2",
+     "counts": {
+      "—": 2,
+      "맞음": 5,
+      "틀림": 3
+     },
+     "label": "참고 — 선택에 쓰지 않음: V2-Lk 30.5/kappa_2 · gi300",
+     "rows": [
+      {
+       "cell": "1-1 진입",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "T_on",
+       "measured": 60,
+       "predicted": 70,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "540~600 s 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이",
+       "measured": 2.076452,
+       "predicted": 1.932401,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 SKIN · AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        38.1,
+        40.7
+       ],
+       "predicted": [
+        39.182141,
+        41.606167
+       ],
+       "verdict": "—"
+      },
+      {
+       "ap_mae": 0.907971,
+       "cell": "휴지 SKIN·AP 0/60/120/180/240/299 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "냉각 c_s·c_f",
+       "measured": [
+        [
+         38.1,
+         40.7
+        ],
+        [
+         36.0,
+         36.6
+        ],
+        [
+         35.3,
+         35.3
+        ],
+        [
+         34.5,
+         34.5
+        ],
+        [
+         34.0,
+         33.9
+        ],
+        [
+         33.9,
+         33.8
+        ]
+       ],
+       "predicted": [
+        [
+         39.184401,
+         41.608258
+        ],
+        [
+         37.242021,
+         37.914084
+        ],
+        [
+         36.496776,
+         36.313339
+        ],
+        [
+         35.992288,
+         35.391062
+        ],
+        [
+         35.558947,
+         34.75369
+        ],
+        [
+         35.171146,
+         34.267394
+        ]
+       ],
+       "skin_mae": 1.307596,
+       "verdict": "틀림 (SKIN MAE 1.31 · AP MAE 0.91)"
+      },
+      {
+       "cell": "재조임 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "≤ 20 s → 못 늦춤 (모형보다 빠름 → 낮은 문턱 또는 깊이 기억) · ≥ 60 s → 유예 레버 (모형보다 느림)",
+       "measured": "못 늦춘다",
+       "predicted": "못 늦춘다",
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재조임 시각",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "재조임 규칙",
+       "measured": 20,
+       "predicted": 20,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재조임 칸 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "재조임 문턱",
+       "measured": 36.5,
+       "predicted": 37.787596,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "재조임 칸 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 41.5,
+       "predicted": 40.985674,
+       "verdict": "—"
+      },
+      {
+       "cell": "재가열 첫 칸",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "> 1.10 → 깊이에 기억",
+       "measured": 0.994448,
+       "predicted": 1.0,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재가열 240~300 s 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이",
+       "measured": 2.134968,
+       "predicted": 1.932401,
+       "verdict": "틀림"
+      }
+     ],
+     "start_skin": 30.7,
+     "support_note": "적용 범위 안",
+     "supported": true
+    },
+    "kappa_inf": {
+     "column": "30.5/kappa_inf",
+     "counts": {
+      "—": 2,
+      "맞음": 5,
+      "틀림": 3
+     },
+     "label": "참고 — 선택에 쓰지 않음: V2-Lk 30.5/kappa_inf · gi300",
+     "rows": [
+      {
+       "cell": "1-1 진입",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "T_on",
+       "measured": 60,
+       "predicted": 70,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "540~600 s 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이",
+       "measured": 2.076452,
+       "predicted": 1.932401,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 SKIN · AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        38.1,
+        40.7
+       ],
+       "predicted": [
+        39.182141,
+        41.606167
+       ],
+       "verdict": "—"
+      },
+      {
+       "ap_mae": 0.907971,
+       "cell": "휴지 SKIN·AP 0/60/120/180/240/299 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "냉각 c_s·c_f",
+       "measured": [
+        [
+         38.1,
+         40.7
+        ],
+        [
+         36.0,
+         36.6
+        ],
+        [
+         35.3,
+         35.3
+        ],
+        [
+         34.5,
+         34.5
+        ],
+        [
+         34.0,
+         33.9
+        ],
+        [
+         33.9,
+         33.8
+        ]
+       ],
+       "predicted": [
+        [
+         39.184401,
+         41.608258
+        ],
+        [
+         37.242021,
+         37.914084
+        ],
+        [
+         36.496776,
+         36.313339
+        ],
+        [
+         35.992288,
+         35.391062
+        ],
+        [
+         35.558947,
+         34.75369
+        ],
+        [
+         35.171146,
+         34.267394
+        ]
+       ],
+       "skin_mae": 1.307596,
+       "verdict": "틀림 (SKIN MAE 1.31 · AP MAE 0.91)"
+      },
+      {
+       "cell": "재조임 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "≤ 20 s → 못 늦춤 (모형보다 빠름 → 낮은 문턱 또는 깊이 기억) · ≥ 60 s → 유예 레버 (모형보다 느림)",
+       "measured": "못 늦춘다",
+       "predicted": "못 늦춘다",
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재조임 시각",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "재조임 규칙",
+       "measured": 20,
+       "predicted": 20,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재조임 칸 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "재조임 문턱",
+       "measured": 36.5,
+       "predicted": 37.787596,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "재조임 칸 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 41.5,
+       "predicted": 40.985674,
+       "verdict": "—"
+      },
+      {
+       "cell": "재가열 첫 칸",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "> 1.10 → 깊이에 기억",
+       "measured": 0.994448,
+       "predicted": 1.0,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재가열 240~300 s 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이",
+       "measured": 2.134968,
+       "predicted": 1.932401,
+       "verdict": "틀림"
+      }
+     ],
+     "start_skin": 30.7,
+     "support_note": "적용 범위 안",
+     "supported": true
+    },
+    "kappa_lo": {
+     "column": "30.5/kappa_lo",
+     "counts": {
+      "—": 2,
+      "맞음": 5,
+      "틀림": 3
+     },
+     "label": "참고 — 선택에 쓰지 않음: V2-Lk 30.5/kappa_lo · gi300",
+     "rows": [
+      {
+       "cell": "1-1 진입",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "T_on",
+       "measured": 60,
+       "predicted": 70,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "540~600 s 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이",
+       "measured": 2.076452,
+       "predicted": 1.932401,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 SKIN · AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        38.1,
+        40.7
+       ],
+       "predicted": [
+        39.182141,
+        41.606167
+       ],
+       "verdict": "—"
+      },
+      {
+       "ap_mae": 0.907971,
+       "cell": "휴지 SKIN·AP 0/60/120/180/240/299 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "냉각 c_s·c_f",
+       "measured": [
+        [
+         38.1,
+         40.7
+        ],
+        [
+         36.0,
+         36.6
+        ],
+        [
+         35.3,
+         35.3
+        ],
+        [
+         34.5,
+         34.5
+        ],
+        [
+         34.0,
+         33.9
+        ],
+        [
+         33.9,
+         33.8
+        ]
+       ],
+       "predicted": [
+        [
+         39.184401,
+         41.608258
+        ],
+        [
+         37.242021,
+         37.914084
+        ],
+        [
+         36.496776,
+         36.313339
+        ],
+        [
+         35.992288,
+         35.391062
+        ],
+        [
+         35.558947,
+         34.75369
+        ],
+        [
+         35.171146,
+         34.267394
+        ]
+       ],
+       "skin_mae": 1.307596,
+       "verdict": "틀림 (SKIN MAE 1.31 · AP MAE 0.91)"
+      },
+      {
+       "cell": "재조임 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "≤ 20 s → 못 늦춤 (모형보다 빠름 → 낮은 문턱 또는 깊이 기억) · ≥ 60 s → 유예 레버 (모형보다 느림)",
+       "measured": "못 늦춘다",
+       "predicted": "못 늦춘다",
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재조임 시각",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "재조임 규칙",
+       "measured": 20,
+       "predicted": 20,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재조임 칸 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "재조임 문턱",
+       "measured": 36.5,
+       "predicted": 37.787596,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "재조임 칸 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 41.5,
+       "predicted": 40.985674,
+       "verdict": "—"
+      },
+      {
+       "cell": "재가열 첫 칸",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "> 1.10 → 깊이에 기억",
+       "measured": 0.994448,
+       "predicted": 1.0,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재가열 240~300 s 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이",
+       "measured": 2.134968,
+       "predicted": 1.932401,
+       "verdict": "틀림"
+      }
+     ],
+     "start_skin": 30.7,
+     "support_note": "적용 범위 안",
+     "supported": true
+    }
+   },
+   "n50p": {
+    "kappa_2": {
+     "column": "29.5/kappa_2",
+     "counts": {
+      "—": 5,
+      "맞음": 4,
+      "미확인": 1,
+      "틀림": 6
+     },
+     "label": "참고 — 선택에 쓰지 않음: V2-Lk 29.5/kappa_2 · n50p",
+     "rows": [
+      {
+       "cell": "A3 (구간 0 칸 ±5 %)",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": true,
+       "predicted": true,
+       "verdict": "—"
+      },
+      {
+       "cell": "1계단 (+4.5 % 유지 첫 칸)",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "열 블록",
+       "measured": 370,
+       "predicted": 160,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "1-1 진입 (+10 %)",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "열 블록 · 진입 온도대가 틀리면 계단 문턱 T2",
+       "measured": null,
+       "predicted": 290,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "1-1 진입 SKIN (진입 온도대)",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "계단 문턱 T2",
+       "measured": null,
+       "predicted": 39.9724,
+       "verdict": "미확인"
+      },
+      {
+       "cell": "1-1 진입 AP · 1계단 SKIN·AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        null,
+        {
+         "ap": 42.8,
+         "skin": 38.2
+        }
+       ],
+       "predicted": [
+        44.04577,
+        {
+         "ap": 43.023383,
+         "skin": 38.355632
+        }
+       ],
+       "verdict": "—"
+      },
+      {
+       "cell": "360~420 s 배율",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "계단 크기 a1+a2",
+       "measured": 1.068526,
+       "predicted": 1.126031,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "가열 끝 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "열 블록",
+       "measured": 38.5,
+       "predicted": 41.075946,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "가열 끝 AP · status · BAT",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        42.8,
+        0,
+        35.8
+       ],
+       "predicted": [
+        44.828631,
+        1,
+        "미모형화"
+       ],
+       "verdict": "—"
+      },
+      {
+       "cell": "탐침 해제 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "θ ≤ 0.5: R50-fast 면 기각 · θ > 0.5: R50-slow/none 이면 기각 · R50-slow 면 둘 다 (이진형 자체)",
+       "measured": "R50-fast",
+       "predicted": "R50-fast",
+       "verdict": "맞음"
+      },
+      {
+       "cell": "탐침 해제 시각",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "해제 규칙",
+       "measured": 20,
+       "predicted": 10,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "탐침 해제 모양",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": "계단형",
+       "predicted": "계단형",
+       "verdict": "—"
+      },
+      {
+       "cell": "탐침 1~5 칸 (10~60 s) 중앙 배율",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "θ 0.3: 계단 크기 · θ 0.75: > 1.03 이면 해제 지연",
+       "measured": 0.995741,
+       "predicted": 1.0,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "해제 칸 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "냉각 (c_f=1)",
+       "measured": 37.8,
+       "predicted": 40.709309,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "해제 칸 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 40.9,
+       "predicted": 44.180533,
+       "verdict": "—"
+      },
+      {
+       "cell": "해제 뒤 재조임",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "'d50 은 다시 데운다' → 열 블록 (d50 전력)",
+       "measured": null,
+       "predicted": null,
+       "verdict": "맞음"
+      },
+      {
+       "ap_mae": 3.917278,
+       "cell": "탐침 SKIN·AP 0/60/120/240/479 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "냉각 c_s · d50 전력 (α_NPU)",
+       "measured": [
+        [
+         38.5,
+         42.8
+        ],
+        [
+         37.2,
+         39.8
+        ],
+        [
+         36.7,
+         39.0
+        ],
+        [
+         36.4,
+         38.6
+        ],
+        [
+         36.0,
+         38.4
+        ]
+       ],
+       "predicted": [
+        [
+         41.083948,
+         44.835556
+        ],
+        [
+         40.17696,
+         43.370747
+        ],
+        [
+         40.099001,
+         43.194721
+        ],
+        [
+         40.19081,
+         43.254837
+        ],
+        [
+         40.419924,
+         43.530528
+        ]
+       ],
+       "skin_mae": 3.434129,
+       "verdict": "틀림 (SKIN MAE 3.43 · AP MAE 3.92)"
+      }
+     ],
+     "start_skin": 28.4,
+     "support_note": "적용 범위 안",
+     "supported": true
+    },
+    "kappa_inf": {
+     "column": "29.5/kappa_inf",
+     "counts": {
+      "—": 5,
+      "맞음": 4,
+      "미확인": 1,
+      "틀림": 6
+     },
+     "label": "참고 — 선택에 쓰지 않음: V2-Lk 29.5/kappa_inf · n50p",
+     "rows": [
+      {
+       "cell": "A3 (구간 0 칸 ±5 %)",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": true,
+       "predicted": true,
+       "verdict": "—"
+      },
+      {
+       "cell": "1계단 (+4.5 % 유지 첫 칸)",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "열 블록",
+       "measured": 370,
+       "predicted": 160,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "1-1 진입 (+10 %)",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "열 블록 · 진입 온도대가 틀리면 계단 문턱 T2",
+       "measured": null,
+       "predicted": 290,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "1-1 진입 SKIN (진입 온도대)",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "계단 문턱 T2",
+       "measured": null,
+       "predicted": 39.9724,
+       "verdict": "미확인"
+      },
+      {
+       "cell": "1-1 진입 AP · 1계단 SKIN·AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        null,
+        {
+         "ap": 42.8,
+         "skin": 38.2
+        }
+       ],
+       "predicted": [
+        44.04577,
+        {
+         "ap": 43.023383,
+         "skin": 38.355632
+        }
+       ],
+       "verdict": "—"
+      },
+      {
+       "cell": "360~420 s 배율",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "계단 크기 a1+a2",
+       "measured": 1.068526,
+       "predicted": 1.126031,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "가열 끝 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "열 블록",
+       "measured": 38.5,
+       "predicted": 41.075946,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "가열 끝 AP · status · BAT",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        42.8,
+        0,
+        35.8
+       ],
+       "predicted": [
+        44.828631,
+        1,
+        "미모형화"
+       ],
+       "verdict": "—"
+      },
+      {
+       "cell": "탐침 해제 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "θ ≤ 0.5: R50-fast 면 기각 · θ > 0.5: R50-slow/none 이면 기각 · R50-slow 면 둘 다 (이진형 자체)",
+       "measured": "R50-fast",
+       "predicted": "R50-fast",
+       "verdict": "맞음"
+      },
+      {
+       "cell": "탐침 해제 시각",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "해제 규칙",
+       "measured": 20,
+       "predicted": 10,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "탐침 해제 모양",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": "계단형",
+       "predicted": "계단형",
+       "verdict": "—"
+      },
+      {
+       "cell": "탐침 1~5 칸 (10~60 s) 중앙 배율",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "θ 0.3: 계단 크기 · θ 0.75: > 1.03 이면 해제 지연",
+       "measured": 0.995741,
+       "predicted": 1.0,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "해제 칸 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "냉각 (c_f=1)",
+       "measured": 37.8,
+       "predicted": 40.709309,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "해제 칸 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 40.9,
+       "predicted": 44.180533,
+       "verdict": "—"
+      },
+      {
+       "cell": "해제 뒤 재조임",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "'d50 은 다시 데운다' → 열 블록 (d50 전력)",
+       "measured": null,
+       "predicted": null,
+       "verdict": "맞음"
+      },
+      {
+       "ap_mae": 3.917278,
+       "cell": "탐침 SKIN·AP 0/60/120/240/479 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "냉각 c_s · d50 전력 (α_NPU)",
+       "measured": [
+        [
+         38.5,
+         42.8
+        ],
+        [
+         37.2,
+         39.8
+        ],
+        [
+         36.7,
+         39.0
+        ],
+        [
+         36.4,
+         38.6
+        ],
+        [
+         36.0,
+         38.4
+        ]
+       ],
+       "predicted": [
+        [
+         41.083948,
+         44.835556
+        ],
+        [
+         40.17696,
+         43.370747
+        ],
+        [
+         40.099001,
+         43.194721
+        ],
+        [
+         40.19081,
+         43.254837
+        ],
+        [
+         40.419924,
+         43.530528
+        ]
+       ],
+       "skin_mae": 3.434129,
+       "verdict": "틀림 (SKIN MAE 3.43 · AP MAE 3.92)"
+      }
+     ],
+     "start_skin": 28.4,
+     "support_note": "적용 범위 안",
+     "supported": true
+    },
+    "kappa_lo": {
+     "column": "29.5/kappa_lo",
+     "counts": {
+      "—": 5,
+      "미확인": 1,
+      "틀림": 10
+     },
+     "label": "참고 — 선택에 쓰지 않음: V2-Lk 29.5/kappa_lo · n50p",
+     "rows": [
+      {
+       "cell": "A3 (구간 0 칸 ±5 %)",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": true,
+       "predicted": true,
+       "verdict": "—"
+      },
+      {
+       "cell": "1계단 (+4.5 % 유지 첫 칸)",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "열 블록",
+       "measured": 370,
+       "predicted": 160,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "1-1 진입 (+10 %)",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "열 블록 · 진입 온도대가 틀리면 계단 문턱 T2",
+       "measured": null,
+       "predicted": 290,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "1-1 진입 SKIN (진입 온도대)",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "계단 문턱 T2",
+       "measured": null,
+       "predicted": 39.9724,
+       "verdict": "미확인"
+      },
+      {
+       "cell": "1-1 진입 AP · 1계단 SKIN·AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        null,
+        {
+         "ap": 42.8,
+         "skin": 38.2
+        }
+       ],
+       "predicted": [
+        44.04577,
+        {
+         "ap": 43.023383,
+         "skin": 38.355632
+        }
+       ],
+       "verdict": "—"
+      },
+      {
+       "cell": "360~420 s 배율",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "계단 크기 a1+a2",
+       "measured": 1.068526,
+       "predicted": 1.126031,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "가열 끝 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "열 블록",
+       "measured": 38.5,
+       "predicted": 41.075946,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "가열 끝 AP · status · BAT",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        42.8,
+        0,
+        35.8
+       ],
+       "predicted": [
+        44.828631,
+        1,
+        "미모형화"
+       ],
+       "verdict": "—"
+      },
+      {
+       "cell": "탐침 해제 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "θ ≤ 0.5: R50-fast 면 기각 · θ > 0.5: R50-slow/none 이면 기각 · R50-slow 면 둘 다 (이진형 자체)",
+       "measured": "R50-fast",
+       "predicted": "R50-slow",
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 해제 시각",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "해제 규칙",
+       "measured": 20,
+       "predicted": 180,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 해제 모양",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": "계단형",
+       "predicted": "계단형",
+       "verdict": "—"
+      },
+      {
+       "cell": "탐침 1~5 칸 (10~60 s) 중앙 배율",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "θ 0.3: 계단 크기 · θ 0.75: > 1.03 이면 해제 지연",
+       "measured": 0.995741,
+       "predicted": 1.09129,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "해제 칸 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "냉각 (c_f=1)",
+       "measured": 37.8,
+       "predicted": 39.56317,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "해제 칸 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 40.9,
+       "predicted": 42.091309,
+       "verdict": "—"
+      },
+      {
+       "cell": "해제 뒤 재조임",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "'d50 은 다시 데운다' → 열 블록 (d50 전력)",
+       "measured": null,
+       "predicted": 350,
+       "verdict": "틀림"
+      },
+      {
+       "ap_mae": 3.246717,
+       "cell": "탐침 SKIN·AP 0/60/120/240/479 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "냉각 c_s · d50 전력 (α_NPU)",
+       "measured": [
+        [
+         38.5,
+         42.8
+        ],
+        [
+         37.2,
+         39.8
+        ],
+        [
+         36.7,
+         39.0
+        ],
+        [
+         36.4,
+         38.6
+        ],
+        [
+         36.0,
+         38.4
+        ]
+       ],
+       "predicted": [
+        [
+         41.083948,
+         44.835556
+        ],
+        [
+         39.899106,
+         42.717383
+        ],
+        [
+         39.649422,
+         42.236897
+        ],
+        [
+         39.823196,
+         42.747789
+        ],
+        [
+         39.715848,
+         42.295959
+        ]
+       ],
+       "skin_mae": 3.074304,
+       "verdict": "틀림 (SKIN MAE 3.07 · AP MAE 3.25)"
+      }
+     ],
+     "start_skin": 28.4,
+     "support_note": "적용 범위 안",
+     "supported": true
+    }
+   },
+   "ni300": {
+    "kappa_2": {
+     "column": "30.5/kappa_2",
+     "counts": {
+      "—": 2,
+      "맞음": 7,
+      "틀림": 2
+     },
+     "label": "참고 — 선택에 쓰지 않음: V2-Lk 30.5/kappa_2 · ni300",
+     "rows": [
+      {
+       "cell": "1계단",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "열 블록",
+       "measured": 130,
+       "predicted": 140,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "1-1 진입 (300 s 안)",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "29.5 에서 진입이 나오면 가열이 모형보다 빠른 것",
+       "measured": 260,
+       "predicted": 260,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "240~300 s 배율",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "계단 크기 · < 1.06 이면 가열 부족 (판정 불가)",
+       "measured": 1.111337,
+       "predicted": 1.126031,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "열",
+       "measured": 40.2,
+       "predicted": 40.473169,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 44.3,
+       "predicted": 44.406515,
+       "verdict": "—"
+      },
+      {
+       "ap_mae": 1.506856,
+       "cell": "휴지 SKIN·AP 0/60/120/180/240/299 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "냉각 (c_s 또는 d10 전력)",
+       "measured": [
+        [
+         40.2,
+         44.3
+        ],
+        [
+         38.1,
+         39.5
+        ],
+        [
+         37.4,
+         38.5
+        ],
+        [
+         36.8,
+         37.8
+        ],
+        [
+         36.7,
+         37.5
+        ],
+        [
+         36.3,
+         37.2
+        ]
+       ],
+       "predicted": [
+        [
+         40.48416,
+         44.414283
+        ],
+        [
+         37.721195,
+         39.128853
+        ],
+        [
+         36.812951,
+         36.988746
+        ],
+        [
+         36.261922,
+         35.836129
+        ],
+        [
+         35.803796,
+         35.084214
+        ],
+        [
+         35.396615,
+         34.535205
+        ]
+       ],
+       "skin_mae": 0.597947,
+       "verdict": "틀림 (SKIN MAE 0.60 · AP MAE 1.51)"
+      },
+      {
+       "cell": "재조임 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "≤ 20 s → 못 늦춤 (모형보다 빠름 → T1 38.1 보다 낮은 문턱 또는 기억) · 없음 → 냉각이 모형보다 깊음",
+       "measured": "중간",
+       "predicted": "중간",
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재조임 시각 (≥ ref_d100 × 1.06, 마지막 k = 14)",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "재조임 규칙",
+       "measured": 40,
+       "predicted": 40,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재조임 칸 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "T1",
+       "measured": 38.1,
+       "predicted": 38.55023,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재조임 칸 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 41.3,
+       "predicted": 41.776572,
+       "verdict": "—"
+      },
+      {
+       "cell": "재가열 첫 칸",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "> 1.03 → 기억",
+       "measured": 2.884475,
+       "predicted": 1.0,
+       "verdict": "틀림"
+      }
+     ],
+     "start_skin": 31.1,
+     "support_note": "적용 범위 안",
+     "supported": true
+    },
+    "kappa_inf": {
+     "column": "30.5/kappa_inf",
+     "counts": {
+      "—": 2,
+      "맞음": 7,
+      "틀림": 2
+     },
+     "label": "참고 — 선택에 쓰지 않음: V2-Lk 30.5/kappa_inf · ni300",
+     "rows": [
+      {
+       "cell": "1계단",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "열 블록",
+       "measured": 130,
+       "predicted": 140,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "1-1 진입 (300 s 안)",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "29.5 에서 진입이 나오면 가열이 모형보다 빠른 것",
+       "measured": 260,
+       "predicted": 260,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "240~300 s 배율",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "계단 크기 · < 1.06 이면 가열 부족 (판정 불가)",
+       "measured": 1.111337,
+       "predicted": 1.126031,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "열",
+       "measured": 40.2,
+       "predicted": 40.473169,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 44.3,
+       "predicted": 44.406515,
+       "verdict": "—"
+      },
+      {
+       "ap_mae": 1.506856,
+       "cell": "휴지 SKIN·AP 0/60/120/180/240/299 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "냉각 (c_s 또는 d10 전력)",
+       "measured": [
+        [
+         40.2,
+         44.3
+        ],
+        [
+         38.1,
+         39.5
+        ],
+        [
+         37.4,
+         38.5
+        ],
+        [
+         36.8,
+         37.8
+        ],
+        [
+         36.7,
+         37.5
+        ],
+        [
+         36.3,
+         37.2
+        ]
+       ],
+       "predicted": [
+        [
+         40.48416,
+         44.414283
+        ],
+        [
+         37.721195,
+         39.128853
+        ],
+        [
+         36.812951,
+         36.988746
+        ],
+        [
+         36.261922,
+         35.836129
+        ],
+        [
+         35.803796,
+         35.084214
+        ],
+        [
+         35.396615,
+         34.535205
+        ]
+       ],
+       "skin_mae": 0.597947,
+       "verdict": "틀림 (SKIN MAE 0.60 · AP MAE 1.51)"
+      },
+      {
+       "cell": "재조임 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "≤ 20 s → 못 늦춤 (모형보다 빠름 → T1 38.1 보다 낮은 문턱 또는 기억) · 없음 → 냉각이 모형보다 깊음",
+       "measured": "중간",
+       "predicted": "중간",
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재조임 시각 (≥ ref_d100 × 1.06, 마지막 k = 14)",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "재조임 규칙",
+       "measured": 40,
+       "predicted": 40,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재조임 칸 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "T1",
+       "measured": 38.1,
+       "predicted": 38.55023,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재조임 칸 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 41.3,
+       "predicted": 41.776572,
+       "verdict": "—"
+      },
+      {
+       "cell": "재가열 첫 칸",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "> 1.03 → 기억",
+       "measured": 2.884475,
+       "predicted": 1.0,
+       "verdict": "틀림"
+      }
+     ],
+     "start_skin": 31.1,
+     "support_note": "적용 범위 안",
+     "supported": true
+    },
+    "kappa_lo": {
+     "column": "30.5/kappa_lo",
+     "counts": {
+      "—": 2,
+      "맞음": 7,
+      "틀림": 2
+     },
+     "label": "참고 — 선택에 쓰지 않음: V2-Lk 30.5/kappa_lo · ni300",
+     "rows": [
+      {
+       "cell": "1계단",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "열 블록",
+       "measured": 130,
+       "predicted": 140,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "1-1 진입 (300 s 안)",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "29.5 에서 진입이 나오면 가열이 모형보다 빠른 것",
+       "measured": 260,
+       "predicted": 260,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "240~300 s 배율",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "계단 크기 · < 1.06 이면 가열 부족 (판정 불가)",
+       "measured": 1.111337,
+       "predicted": 1.126031,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "열",
+       "measured": 40.2,
+       "predicted": 40.473169,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 44.3,
+       "predicted": 44.406515,
+       "verdict": "—"
+      },
+      {
+       "ap_mae": 1.506856,
+       "cell": "휴지 SKIN·AP 0/60/120/180/240/299 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "냉각 (c_s 또는 d10 전력)",
+       "measured": [
+        [
+         40.2,
+         44.3
+        ],
+        [
+         38.1,
+         39.5
+        ],
+        [
+         37.4,
+         38.5
+        ],
+        [
+         36.8,
+         37.8
+        ],
+        [
+         36.7,
+         37.5
+        ],
+        [
+         36.3,
+         37.2
+        ]
+       ],
+       "predicted": [
+        [
+         40.48416,
+         44.414283
+        ],
+        [
+         37.721195,
+         39.128853
+        ],
+        [
+         36.812951,
+         36.988746
+        ],
+        [
+         36.261922,
+         35.836129
+        ],
+        [
+         35.803796,
+         35.084214
+        ],
+        [
+         35.396615,
+         34.535205
+        ]
+       ],
+       "skin_mae": 0.597947,
+       "verdict": "틀림 (SKIN MAE 0.60 · AP MAE 1.51)"
+      },
+      {
+       "cell": "재조임 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "≤ 20 s → 못 늦춤 (모형보다 빠름 → T1 38.1 보다 낮은 문턱 또는 기억) · 없음 → 냉각이 모형보다 깊음",
+       "measured": "중간",
+       "predicted": "중간",
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재조임 시각 (≥ ref_d100 × 1.06, 마지막 k = 14)",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "재조임 규칙",
+       "measured": 40,
+       "predicted": 40,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재조임 칸 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "T1",
+       "measured": 38.1,
+       "predicted": 38.55023,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재조임 칸 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 41.3,
+       "predicted": 41.776572,
+       "verdict": "—"
+      },
+      {
+       "cell": "재가열 첫 칸",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "> 1.03 → 기억",
+       "measured": 2.884475,
+       "predicted": 1.0,
+       "verdict": "틀림"
+      }
+     ],
+     "start_skin": 31.1,
+     "support_note": "적용 범위 안",
+     "supported": true
+    }
+   }
+  },
+  "V2-S": {
+   "g50p": {
+    "S": {
+     "column": "29.5/S",
+     "counts": {
+      "—": 3,
+      "맞음": 2,
+      "틀림": 5
+     },
+     "label": "참고 — 선택에 쓰지 않음: V2-S 29.5/S · g50p",
+     "rows": [
+      {
+       "cell": "1-1 진입",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "T_on,CM 37.2",
+       "measured": 100,
+       "predicted": 70,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "240~300 s 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이 W·D",
+       "measured": 1.593855,
+       "predicted": 1.854536,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "가열 끝 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "열 블록",
+       "measured": 38.0,
+       "predicted": 38.047154,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 42.2,
+       "predicted": 41.205743,
+       "verdict": "—"
+      },
+      {
+       "cell": "탐침 해제 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "R50-fast → θ_GPU > 0.5 또는 타이머 (모형 기각) · R50-slow → '깊이가 온도 따라 서서히 풀린다' 쪽 (칸 배율 궤적으로 가른다)",
+       "measured": "R50-fast",
+       "predicted": "R50-none",
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 해제 시각",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "해제 규칙",
+       "measured": 10,
+       "predicted": null,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 1~5 칸 중앙 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이 = 정적 지도",
+       "measured": 1.007111,
+       "predicted": 1.481881,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 칸 0~5 궤적 ('계단형 하강' 은 수치 정의 없음 — 궤적 첨부)",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        1.66702,
+        1.002103,
+        1.005312,
+        1.009813,
+        1.015911,
+        1.007111
+       ],
+       "predicted": [
+        1.897978,
+        1.662005,
+        1.538769,
+        1.481881,
+        1.459254,
+        1.452848
+       ],
+       "verdict": "—"
+      },
+      {
+       "cell": "해제 칸 SKIN · AP (H-ap-히스 는 밤 규칙 — g50p 판정)",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        37.4,
+        39.6
+       ],
+       "predicted": null,
+       "verdict": "—"
+      },
+      {
+       "ap_mae": 0.357544,
+       "cell": "탐침 SKIN·AP 0/60/120/240/479 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "열 (d50 전력 α_GPU)",
+       "measured": [
+        [
+         38.0,
+         42.2
+        ],
+        [
+         37.6,
+         39.8
+        ],
+        [
+         37.7,
+         39.9
+        ],
+        [
+         38.0,
+         40.2
+        ],
+        [
+         37.9,
+         40.1
+        ]
+       ],
+       "predicted": [
+        [
+         38.048391,
+         41.199227
+        ],
+        [
+         37.491157,
+         40.111174
+        ],
+        [
+         37.525111,
+         40.122578
+        ],
+        [
+         37.570328,
+         40.024958
+        ],
+        [
+         37.639253,
+         40.021848
+        ]
+       ],
+       "skin_mae": 0.204508,
+       "verdict": "맞음 (SKIN MAE 0.20 · AP MAE 0.36)"
+      }
+     ],
+     "start_skin": 28.5,
+     "support_note": "적용 범위 안",
+     "supported": true
+    }
+   },
+   "gi300": {
+    "S": {
+     "column": "30.5/S",
+     "counts": {
+      "—": 2,
+      "맞음": 5,
+      "틀림": 3
+     },
+     "label": "참고 — 선택에 쓰지 않음: V2-S 30.5/S · gi300",
+     "rows": [
+      {
+       "cell": "1-1 진입",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "T_on",
+       "measured": 60,
+       "predicted": 70,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "540~600 s 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이",
+       "measured": 2.076452,
+       "predicted": 2.114085,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 SKIN · AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        38.1,
+        40.7
+       ],
+       "predicted": [
+        38.517912,
+        40.556554
+       ],
+       "verdict": "—"
+      },
+      {
+       "ap_mae": 0.406824,
+       "cell": "휴지 SKIN·AP 0/60/120/180/240/299 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "냉각 c_s·c_f",
+       "measured": [
+        [
+         38.1,
+         40.7
+        ],
+        [
+         36.0,
+         36.6
+        ],
+        [
+         35.3,
+         35.3
+        ],
+        [
+         34.5,
+         34.5
+        ],
+        [
+         34.0,
+         33.9
+        ],
+        [
+         33.9,
+         33.8
+        ]
+       ],
+       "predicted": [
+        [
+         38.518988,
+         40.557279
+        ],
+        [
+         36.777236,
+         37.261005
+        ],
+        [
+         36.094124,
+         35.818732
+        ],
+        [
+         35.625459,
+         34.979326
+        ],
+        [
+         35.221404,
+         34.394217
+        ],
+        [
+         34.859538,
+         33.944947
+        ]
+       ],
+       "skin_mae": 0.882791,
+       "verdict": "틀림 (SKIN MAE 0.88 · AP MAE 0.41)"
+      },
+      {
+       "cell": "재조임 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "≤ 20 s → 못 늦춤 (모형보다 빠름 → 낮은 문턱 또는 깊이 기억) · ≥ 60 s → 유예 레버 (모형보다 느림)",
+       "measured": "못 늦춘다",
+       "predicted": "중간",
+       "verdict": "틀림"
+      },
+      {
+       "cell": "재조임 시각",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "재조임 규칙",
+       "measured": 20,
+       "predicted": 30,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재조임 칸 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "재조임 문턱",
+       "measured": 36.5,
+       "predicted": 38.060492,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "재조임 칸 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 41.5,
+       "predicted": 41.966193,
+       "verdict": "—"
+      },
+      {
+       "cell": "재가열 첫 칸",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "> 1.10 → 깊이에 기억",
+       "measured": 0.994448,
+       "predicted": 1.0,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재가열 240~300 s 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이",
+       "measured": 2.134968,
+       "predicted": 2.114085,
+       "verdict": "맞음"
+      }
+     ],
+     "start_skin": 30.7,
+     "support_note": "적용 범위 안",
+     "supported": true
+    }
+   },
+   "n50p": {
+    "S": {
+     "column": "29.5/S",
+     "counts": {
+      "—": 6,
+      "맞음": 1,
+      "미확인": 1,
+      "틀림": 8
+     },
+     "label": "참고 — 선택에 쓰지 않음: V2-S 29.5/S · n50p",
+     "rows": [
+      {
+       "cell": "A3 (구간 0 칸 ±5 %)",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": true,
+       "predicted": true,
+       "verdict": "—"
+      },
+      {
+       "cell": "1계단 (+4.5 % 유지 첫 칸)",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "열 블록",
+       "measured": 370,
+       "predicted": 150,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "1-1 진입 (+10 %)",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "열 블록 · 진입 온도대가 틀리면 계단 문턱 T2",
+       "measured": null,
+       "predicted": 320,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "1-1 진입 SKIN (진입 온도대)",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "계단 문턱 T2",
+       "measured": null,
+       "predicted": 40.453067,
+       "verdict": "미확인"
+      },
+      {
+       "cell": "1-1 진입 AP · 1계단 SKIN·AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        null,
+        {
+         "ap": 42.8,
+         "skin": 38.2
+        }
+       ],
+       "predicted": [
+        44.548867,
+        {
+         "ap": 42.802208,
+         "skin": 38.130063
+        }
+       ],
+       "verdict": "—"
+      },
+      {
+       "cell": "360~420 s 배율",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "계단 크기 a1+a2",
+       "measured": 1.068526,
+       "predicted": 1.117979,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "가열 끝 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "열 블록",
+       "measured": 38.5,
+       "predicted": 41.233245,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "가열 끝 AP · status · BAT",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        42.8,
+        0,
+        35.8
+       ],
+       "predicted": [
+        45.072791,
+        1,
+        "미모형화"
+       ],
+       "verdict": "—"
+      },
+      {
+       "cell": "탐침 해제 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "θ ≤ 0.5: R50-fast 면 기각 · θ > 0.5: R50-slow/none 이면 기각 · R50-slow 면 둘 다 (이진형 자체)",
+       "measured": "R50-fast",
+       "predicted": "R50-none",
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 해제 시각",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "해제 규칙",
+       "measured": 20,
+       "predicted": null,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 해제 모양",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": "계단형",
+       "predicted": "중도절단",
+       "verdict": "—"
+      },
+      {
+       "cell": "탐침 1~5 칸 (10~60 s) 중앙 배율",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "θ 0.3: 계단 크기 · θ 0.75: > 1.03 이면 해제 지연",
+       "measured": 0.995741,
+       "predicted": 1.117979,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "해제 칸 SKIN (한쪽 이상 해제 없음 — 해당 없음)",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 37.8,
+       "predicted": null,
+       "verdict": "—"
+      },
+      {
+       "cell": "해제 칸 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 40.9,
+       "predicted": null,
+       "verdict": "—"
+      },
+      {
+       "cell": "해제 뒤 재조임",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "'d50 은 다시 데운다' → 열 블록 (d50 전력)",
+       "measured": null,
+       "predicted": null,
+       "verdict": "맞음"
+      },
+      {
+       "ap_mae": 3.225745,
+       "cell": "탐침 SKIN·AP 0/60/120/240/479 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "냉각 c_s · d50 전력 (α_NPU)",
+       "measured": [
+        [
+         38.5,
+         42.8
+        ],
+        [
+         37.2,
+         39.8
+        ],
+        [
+         36.7,
+         39.0
+        ],
+        [
+         36.4,
+         38.6
+        ],
+        [
+         36.0,
+         38.4
+        ]
+       ],
+       "predicted": [
+        [
+         41.241126,
+         45.079234
+        ],
+        [
+         39.996184,
+         42.820827
+        ],
+        [
+         39.77222,
+         42.410983
+        ],
+        [
+         39.648736,
+         42.227427
+        ],
+        [
+         39.572841,
+         42.190253
+        ]
+       ],
+       "skin_mae": 3.086221,
+       "verdict": "틀림 (SKIN MAE 3.09 · AP MAE 3.23)"
+      }
+     ],
+     "start_skin": 28.4,
+     "support_note": "적용 범위 안",
+     "supported": true
+    }
+   },
+   "ni300": {
+    "S": {
+     "column": "30.5/S",
+     "counts": {
+      "—": 2,
+      "맞음": 2,
+      "틀림": 7
+     },
+     "label": "참고 — 선택에 쓰지 않음: V2-S 30.5/S · ni300",
+     "rows": [
+      {
+       "cell": "1계단",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "열 블록",
+       "measured": 130,
+       "predicted": 140,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "1-1 진입 (300 s 안)",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "29.5 에서 진입이 나오면 가열이 모형보다 빠른 것",
+       "measured": 260,
+       "predicted": null,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "240~300 s 배율",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "계단 크기 · < 1.06 이면 가열 부족 (판정 불가)",
+       "measured": 1.111337,
+       "predicted": 1.079091,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "가열 끝 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "열",
+       "measured": 40.2,
+       "predicted": 40.654236,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 44.3,
+       "predicted": 44.702395,
+       "verdict": "—"
+      },
+      {
+       "ap_mae": 1.472712,
+       "cell": "휴지 SKIN·AP 0/60/120/180/240/299 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "냉각 (c_s 또는 d10 전력)",
+       "measured": [
+        [
+         40.2,
+         44.3
+        ],
+        [
+         38.1,
+         39.5
+        ],
+        [
+         37.4,
+         38.5
+        ],
+        [
+         36.8,
+         37.8
+        ],
+        [
+         36.7,
+         37.5
+        ],
+        [
+         36.3,
+         37.2
+        ]
+       ],
+       "predicted": [
+        [
+         40.663795,
+         44.708039
+        ],
+        [
+         37.823516,
+         39.286906
+        ],
+        [
+         36.89625,
+         37.099263
+        ],
+        [
+         36.336815,
+         35.924314
+        ],
+        [
+         35.872534,
+         35.159443
+        ],
+        [
+         35.460042,
+         34.601839
+        ]
+       ],
+       "skin_mae": 0.562439,
+       "verdict": "틀림 (SKIN MAE 0.56 · AP MAE 1.47)"
+      },
+      {
+       "cell": "재조임 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "≤ 20 s → 못 늦춤 (모형보다 빠름 → T1 38.1 보다 낮은 문턱 또는 기억) · 없음 → 냉각이 모형보다 깊음",
+       "measured": "중간",
+       "predicted": "유예 레버",
+       "verdict": "틀림"
+      },
+      {
+       "cell": "재조임 시각 (≥ ref_d100 × 1.06, 마지막 k = 14)",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "재조임 규칙",
+       "measured": 40,
+       "predicted": 60,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "재조임 칸 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "T1",
+       "measured": 38.1,
+       "predicted": 39.461326,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "재조임 칸 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 41.3,
+       "predicted": 43.356331,
+       "verdict": "—"
+      },
+      {
+       "cell": "재가열 첫 칸",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "> 1.03 → 기억",
+       "measured": 2.884475,
+       "predicted": 1.0,
+       "verdict": "틀림"
+      }
+     ],
+     "start_skin": 31.1,
+     "support_note": "적용 범위 안",
+     "supported": true
+    }
+   }
+  },
+  "adopted_form_cooling_c1": {
+   "g50p": {
+    "c1": {
+     "column": "29.5/c1",
+     "counts": {
+      "—": 3,
+      "맞음": 2,
+      "틀림": 5
+     },
+     "label": "참고 — 선택에 쓰지 않음: adopted_form_cooling_c1 29.5/c1 · g50p",
+     "rows": [
+      {
+       "cell": "1-1 진입",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "T_on,CM 37.2",
+       "measured": 100,
+       "predicted": 70,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "240~300 s 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이 W·D",
+       "measured": 1.593855,
+       "predicted": 1.855418,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "가열 끝 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "열 블록",
+       "measured": 38.0,
+       "predicted": 38.049865,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 42.2,
+       "predicted": 40.685093,
+       "verdict": "—"
+      },
+      {
+       "cell": "탐침 해제 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "R50-fast → θ_GPU > 0.5 또는 타이머 (모형 기각) · R50-slow → '깊이가 온도 따라 서서히 풀린다' 쪽 (칸 배율 궤적으로 가른다)",
+       "measured": "R50-fast",
+       "predicted": "R50-none",
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 해제 시각",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "해제 규칙",
+       "measured": 10,
+       "predicted": null,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 1~5 칸 중앙 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이 = 정적 지도",
+       "measured": 1.007111,
+       "predicted": 1.401463,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 칸 0~5 궤적 ('계단형 하강' 은 수치 정의 없음 — 궤적 첨부)",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        1.66702,
+        1.002103,
+        1.005312,
+        1.009813,
+        1.015911,
+        1.007111
+       ],
+       "predicted": [
+        1.899281,
+        1.616548,
+        1.469349,
+        1.401463,
+        1.372452,
+        1.360448
+       ],
+       "verdict": "—"
+      },
+      {
+       "cell": "해제 칸 SKIN · AP (H-ap-히스 는 밤 규칙 — g50p 판정)",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        37.4,
+        39.6
+       ],
+       "predicted": null,
+       "verdict": "—"
+      },
+      {
+       "ap_mae": 1.081937,
+       "cell": "탐침 SKIN·AP 0/60/120/240/479 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "열 (d50 전력 α_GPU)",
+       "measured": [
+        [
+         38.0,
+         42.2
+        ],
+        [
+         37.6,
+         39.8
+        ],
+        [
+         37.7,
+         39.9
+        ],
+        [
+         38.0,
+         40.2
+        ],
+        [
+         37.9,
+         40.1
+        ]
+       ],
+       "predicted": [
+        [
+         38.05105,
+         40.681921
+        ],
+        [
+         37.394107,
+         38.97066
+        ],
+        [
+         37.3882,
+         38.991546
+        ],
+        [
+         37.386557,
+         38.999861
+        ],
+        [
+         37.441532,
+         39.146329
+        ]
+       ],
+       "skin_mae": 0.328131,
+       "verdict": "맞음 (SKIN MAE 0.33 · AP MAE 1.08)"
+      }
+     ],
+     "start_skin": 28.5,
+     "support_note": "적용 범위 안",
+     "supported": true
+    }
+   },
+   "gi300": {
+    "c1": {
+     "column": "30.5/c1",
+     "counts": {
+      "—": 2,
+      "맞음": 5,
+      "틀림": 3
+     },
+     "label": "참고 — 선택에 쓰지 않음: adopted_form_cooling_c1 30.5/c1 · gi300",
+     "rows": [
+      {
+       "cell": "1-1 진입",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "T_on",
+       "measured": 60,
+       "predicted": 70,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "540~600 s 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이",
+       "measured": 2.076452,
+       "predicted": 2.194622,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 SKIN · AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        38.1,
+        40.7
+       ],
+       "predicted": [
+        38.339118,
+        40.197891
+       ],
+       "verdict": "—"
+      },
+      {
+       "ap_mae": 0.945808,
+       "cell": "휴지 SKIN·AP 0/60/120/180/240/299 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "냉각 c_s·c_f",
+       "measured": [
+        [
+         38.1,
+         40.7
+        ],
+        [
+         36.0,
+         36.6
+        ],
+        [
+         35.3,
+         35.3
+        ],
+        [
+         34.5,
+         34.5
+        ],
+        [
+         34.0,
+         33.9
+        ],
+        [
+         33.9,
+         33.8
+        ]
+       ],
+       "predicted": [
+        [
+         38.339286,
+         40.197644
+        ],
+        [
+         36.24691,
+         35.633746
+        ],
+        [
+         35.254932,
+         34.307285
+        ],
+        [
+         34.544901,
+         33.551986
+        ],
+        [
+         33.960938,
+         32.961897
+        ],
+        [
+         33.472457,
+         32.472591
+        ]
+       ],
+       "skin_mae": 0.173795,
+       "verdict": "맞음 (SKIN MAE 0.17 · AP MAE 0.95)"
+      },
+      {
+       "cell": "재조임 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "≤ 20 s → 못 늦춤 (모형보다 빠름 → 낮은 문턱 또는 깊이 기억) · ≥ 60 s → 유예 레버 (모형보다 느림)",
+       "measured": "못 늦춘다",
+       "predicted": "중간",
+       "verdict": "틀림"
+      },
+      {
+       "cell": "재조임 시각",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "재조임 규칙",
+       "measured": 20,
+       "predicted": 40,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "재조임 칸 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "재조임 문턱",
+       "measured": 36.5,
+       "predicted": 38.014458,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "재조임 칸 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 41.5,
+       "predicted": 43.294038,
+       "verdict": "—"
+      },
+      {
+       "cell": "재가열 첫 칸",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "> 1.10 → 깊이에 기억",
+       "measured": 0.994448,
+       "predicted": 1.0,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재가열 240~300 s 배율",
+       "criterion": "상대차 ≤ 10 %",
+       "if_wrong": "깊이",
+       "measured": 2.134968,
+       "predicted": 2.08088,
+       "verdict": "맞음"
+      }
+     ],
+     "start_skin": 30.7,
+     "support_note": "적용 범위 안",
+     "supported": true
+    }
+   },
+   "n50p": {
+    "c1": {
+     "column": "29.5/c1",
+     "counts": {
+      "—": 6,
+      "맞음": 1,
+      "미확인": 1,
+      "틀림": 8
+     },
+     "label": "참고 — 선택에 쓰지 않음: adopted_form_cooling_c1 29.5/c1 · n50p",
+     "rows": [
+      {
+       "cell": "A3 (구간 0 칸 ±5 %)",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": true,
+       "predicted": true,
+       "verdict": "—"
+      },
+      {
+       "cell": "1계단 (+4.5 % 유지 첫 칸)",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "열 블록",
+       "measured": 370,
+       "predicted": 160,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "1-1 진입 (+10 %)",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "열 블록 · 진입 온도대가 틀리면 계단 문턱 T2",
+       "measured": null,
+       "predicted": 290,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "1-1 진입 SKIN (진입 온도대)",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "계단 문턱 T2",
+       "measured": null,
+       "predicted": 39.965789,
+       "verdict": "미확인"
+      },
+      {
+       "cell": "1-1 진입 AP · 1계단 SKIN·AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        null,
+        {
+         "ap": 42.8,
+         "skin": 38.2
+        }
+       ],
+       "predicted": [
+        43.889563,
+        {
+         "ap": 43.032037,
+         "skin": 38.358467
+        }
+       ],
+       "verdict": "—"
+      },
+      {
+       "cell": "360~420 s 배율",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "계단 크기 a1+a2",
+       "measured": 1.068526,
+       "predicted": 1.126031,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "가열 끝 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "열 블록",
+       "measured": 38.5,
+       "predicted": 41.071006,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "가열 끝 AP · status · BAT",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": [
+        42.8,
+        0,
+        35.8
+       ],
+       "predicted": [
+        44.736966,
+        1,
+        "미모형화"
+       ],
+       "verdict": "—"
+      },
+      {
+       "cell": "탐침 해제 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "θ ≤ 0.5: R50-fast 면 기각 · θ > 0.5: R50-slow/none 이면 기각 · R50-slow 면 둘 다 (이진형 자체)",
+       "measured": "R50-fast",
+       "predicted": "R50-none",
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 해제 시각",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "해제 규칙",
+       "measured": 20,
+       "predicted": null,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "탐침 해제 모양",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": "계단형",
+       "predicted": "중도절단",
+       "verdict": "—"
+      },
+      {
+       "cell": "탐침 1~5 칸 (10~60 s) 중앙 배율",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "θ 0.3: 계단 크기 · θ 0.75: > 1.03 이면 해제 지연",
+       "measured": 0.995741,
+       "predicted": 1.126031,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "해제 칸 SKIN (한쪽 이상 해제 없음 — 해당 없음)",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 37.8,
+       "predicted": null,
+       "verdict": "—"
+      },
+      {
+       "cell": "해제 칸 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 40.9,
+       "predicted": null,
+       "verdict": "—"
+      },
+      {
+       "cell": "해제 뒤 재조임",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "'d50 은 다시 데운다' → 열 블록 (d50 전력)",
+       "measured": null,
+       "predicted": null,
+       "verdict": "맞음"
+      },
+      {
+       "ap_mae": 1.285119,
+       "cell": "탐침 SKIN·AP 0/60/120/240/479 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "냉각 c_s · d50 전력 (α_NPU)",
+       "measured": [
+        [
+         38.5,
+         42.8
+        ],
+        [
+         37.2,
+         39.8
+        ],
+        [
+         36.7,
+         39.0
+        ],
+        [
+         36.4,
+         38.6
+        ],
+        [
+         36.0,
+         38.4
+        ]
+       ],
+       "predicted": [
+        [
+         41.079021,
+         44.744849
+        ],
+        [
+         39.498471,
+         40.97785
+        ],
+        [
+         39.02438,
+         40.301517
+        ],
+        [
+         38.499363,
+         39.752444
+        ],
+        [
+         37.919949,
+         39.248935
+        ]
+       ],
+       "skin_mae": 2.244237,
+       "verdict": "틀림 (SKIN MAE 2.24 · AP MAE 1.29)"
+      }
+     ],
+     "start_skin": 28.4,
+     "support_note": "적용 범위 안",
+     "supported": true
+    }
+   },
+   "ni300": {
+    "c1": {
+     "column": "30.5/c1",
+     "counts": {
+      "—": 2,
+      "맞음": 5,
+      "틀림": 4
+     },
+     "label": "참고 — 선택에 쓰지 않음: adopted_form_cooling_c1 30.5/c1 · ni300",
+     "rows": [
+      {
+       "cell": "1계단",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "열 블록",
+       "measured": 130,
+       "predicted": 140,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "1-1 진입 (300 s 안)",
+       "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "29.5 에서 진입이 나오면 가열이 모형보다 빠른 것",
+       "measured": 260,
+       "predicted": 260,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "240~300 s 배율",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "계단 크기 · < 1.06 이면 가열 부족 (판정 불가)",
+       "measured": 1.111337,
+       "predicted": 1.126031,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "열",
+       "measured": 40.2,
+       "predicted": 40.469417,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "가열 끝 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 44.3,
+       "predicted": 44.199886,
+       "verdict": "—"
+      },
+      {
+       "ap_mae": 3.031919,
+       "cell": "휴지 SKIN·AP 0/60/120/180/240/299 s",
+       "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+       "if_wrong": "냉각 (c_s 또는 d10 전력)",
+       "measured": [
+        [
+         40.2,
+         44.3
+        ],
+        [
+         38.1,
+         39.5
+        ],
+        [
+         37.4,
+         38.5
+        ],
+        [
+         36.8,
+         37.8
+        ],
+        [
+         36.7,
+         37.5
+        ],
+        [
+         36.3,
+         37.2
+        ]
+       ],
+       "predicted": [
+        [
+         40.480418,
+         44.20864
+        ],
+        [
+         37.238748,
+         36.878644
+        ],
+        [
+         35.957518,
+         35.044118
+        ],
+        [
+         35.121203,
+         34.132923
+        ],
+        [
+         34.450276,
+         33.451862
+        ],
+        [
+         33.892074,
+         32.892296
+        ]
+       ],
+       "skin_mae": 1.486766,
+       "verdict": "틀림 (SKIN MAE 1.49 · AP MAE 3.03)"
+      },
+      {
+       "cell": "재조임 분류",
+       "criterion": "같은 분류 (실측 미분류 → 미확인)",
+       "if_wrong": "≤ 20 s → 못 늦춤 (모형보다 빠름 → T1 38.1 보다 낮은 문턱 또는 기억) · 없음 → 냉각이 모형보다 깊음",
+       "measured": "중간",
+       "predicted": "유예 레버",
+       "verdict": "틀림"
+      },
+      {
+       "cell": "재조임 시각 (≥ ref_d100 × 1.06, 마지막 k = 14)",
+       "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+       "if_wrong": "재조임 규칙",
+       "measured": 40,
+       "predicted": 70,
+       "verdict": "틀림"
+      },
+      {
+       "cell": "재조임 칸 SKIN",
+       "criterion": "|Δ| ≤ 0.5 ℃",
+       "if_wrong": "T1",
+       "measured": 38.1,
+       "predicted": 38.51798,
+       "verdict": "맞음"
+      },
+      {
+       "cell": "재조임 칸 AP",
+       "criterion": "기술만",
+       "if_wrong": "—",
+       "measured": 41.3,
+       "predicted": 42.630916,
+       "verdict": "—"
+      },
+      {
+       "cell": "재가열 첫 칸",
+       "criterion": "|Δ| ≤ 0.03",
+       "if_wrong": "> 1.03 → 기억",
+       "measured": 2.884475,
+       "predicted": 1.0,
+       "verdict": "틀림"
+      }
+     ],
+     "start_skin": 31.1,
+     "support_note": "적용 범위 안",
+     "supported": true
+    }
+   }
+  }
+ },
+ "rule": "밤1004_사전등록_v1 §8 + v2_예측_밤1004.md '이 차이면 틀린 것' 열 + 헤더 기준 (스로틀모형_사전등록_v2 §5) · 비교 열 = 시작 SKIN 에 가까운 쪽 (29.5/30.5, 같으면 29.5) · 시작 SKIN ∉ [28.3, 31.6] → unsupported · 변형마다 따로",
+ "tolerances": {
+  "event_s": 10.0,
+  "gpu_onset_s": 10.0,
+  "gpu_ratio_rel": 0.1,
+  "npu_ratio_abs": 0.03,
+  "npu_step_s": 20.0,
+  "skin_abs": 0.5,
+  "skin_mae": 0.5
+ },
+ "v1": {
+  "g50p": {
+   "fast": {
+    "column": "29.5/fast",
+    "counts": {
+     "—": 3,
+     "맞음": 4,
+     "틀림": 3
+    },
+    "label": "v1 29.5/fast · g50p",
+    "rows": [
+     {
+      "cell": "1-1 진입",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "T_on,CM 37.2",
+      "measured": 100,
+      "predicted": 60,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "240~300 s 배율",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "깊이 W·D",
+      "measured": 1.593855,
+      "predicted": 1.732925,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "가열 끝 SKIN",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "열 블록",
+      "measured": 38.0,
+      "predicted": 38.160466,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "가열 끝 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 42.2,
+      "predicted": 41.491197,
+      "verdict": "—"
+     },
+     {
+      "cell": "탐침 해제 분류",
+      "criterion": "같은 분류 (실측 미분류 → 미확인)",
+      "if_wrong": "R50-fast → θ_GPU > 0.5 또는 타이머 (모형 기각) · R50-slow → '깊이가 온도 따라 서서히 풀린다' 쪽 (칸 배율 궤적으로 가른다)",
+      "measured": "R50-fast",
+      "predicted": "R50-fast",
+      "verdict": "맞음"
+     },
+     {
+      "cell": "탐침 해제 시각",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "해제 규칙",
+      "measured": 10,
+      "predicted": 40,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "탐침 1~5 칸 중앙 배율",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "깊이 = 정적 지도",
+      "measured": 1.007111,
+      "predicted": 1.712756,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "탐침 칸 0~5 궤적 ('계단형 하강' 은 수치 정의 없음 — 궤적 첨부)",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       1.66702,
+       1.002103,
+       1.005312,
+       1.009813,
+       1.015911,
+       1.007111
+      ],
+      "predicted": [
+       1.782427,
+       1.779372,
+       1.753473,
+       1.712756,
+       1.0,
+       1.0
+      ],
+      "verdict": "—"
+     },
+     {
+      "cell": "해제 칸 SKIN · AP (H-ap-히스 는 밤 규칙 — g50p 판정)",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       37.4,
+       39.6
+      ],
+      "predicted": {
+       "ap": 38.781684,
+       "skin": 37.189089,
+       "status": 0
+      },
+      "verdict": "—"
+     },
+     {
+      "ap_mae": 0.909103,
+      "cell": "탐침 SKIN·AP 0/60/120/240/479 s",
+      "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+      "if_wrong": "열 (d50 전력 α_GPU)",
+      "measured": [
+       [
+        38.0,
+        42.2
+       ],
+       [
+        37.6,
+        39.8
+       ],
+       [
+        37.7,
+        39.9
+       ],
+       [
+        38.0,
+        40.2
+       ],
+       [
+        37.9,
+        40.1
+       ]
+      ],
+      "predicted": [
+       [
+        38.164146,
+        41.490473
+       ],
+       [
+        37.641154,
+        39.972453
+       ],
+       [
+        38.481704,
+        41.616468
+       ],
+       [
+        38.743188,
+        41.400472
+       ],
+       [
+        38.586875,
+        40.846596
+       ]
+      ],
+      "skin_mae": 0.483414,
+      "verdict": "맞음 (SKIN MAE 0.48 · AP MAE 0.91)"
+     }
+    ],
+    "start_skin": 28.5,
+    "support_note": "적용 범위 안",
+    "supported": true
+   },
+   "skin": {
+    "column": "29.5/skin",
+    "counts": {
+     "—": 3,
+     "맞음": 4,
+     "틀림": 3
+    },
+    "label": "v1 29.5/skin · g50p",
+    "rows": [
+     {
+      "cell": "1-1 진입",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "T_on,CM 37.2",
+      "measured": 100,
+      "predicted": 60,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "240~300 s 배율",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "깊이 W·D",
+      "measured": 1.593855,
+      "predicted": 1.732925,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "가열 끝 SKIN",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "열 블록",
+      "measured": 38.0,
+      "predicted": 38.160466,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "가열 끝 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 42.2,
+      "predicted": 41.491197,
+      "verdict": "—"
+     },
+     {
+      "cell": "탐침 해제 분류",
+      "criterion": "같은 분류 (실측 미분류 → 미확인)",
+      "if_wrong": "R50-fast → θ_GPU > 0.5 또는 타이머 (모형 기각) · R50-slow → '깊이가 온도 따라 서서히 풀린다' 쪽 (칸 배율 궤적으로 가른다)",
+      "measured": "R50-fast",
+      "predicted": "R50-fast",
+      "verdict": "맞음"
+     },
+     {
+      "cell": "탐침 해제 시각",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "해제 규칙",
+      "measured": 10,
+      "predicted": 40,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "탐침 1~5 칸 중앙 배율",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "깊이 = 정적 지도",
+      "measured": 1.007111,
+      "predicted": 1.712756,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "탐침 칸 0~5 궤적 ('계단형 하강' 은 수치 정의 없음 — 궤적 첨부)",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       1.66702,
+       1.002103,
+       1.005312,
+       1.009813,
+       1.015911,
+       1.007111
+      ],
+      "predicted": [
+       1.782427,
+       1.779372,
+       1.753473,
+       1.712756,
+       1.0,
+       1.0
+      ],
+      "verdict": "—"
+     },
+     {
+      "cell": "해제 칸 SKIN · AP (H-ap-히스 는 밤 규칙 — g50p 판정)",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       37.4,
+       39.6
+      ],
+      "predicted": {
+       "ap": 38.781684,
+       "skin": 37.189089,
+       "status": 0
+      },
+      "verdict": "—"
+     },
+     {
+      "ap_mae": 0.909103,
+      "cell": "탐침 SKIN·AP 0/60/120/240/479 s",
+      "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+      "if_wrong": "열 (d50 전력 α_GPU)",
+      "measured": [
+       [
+        38.0,
+        42.2
+       ],
+       [
+        37.6,
+        39.8
+       ],
+       [
+        37.7,
+        39.9
+       ],
+       [
+        38.0,
+        40.2
+       ],
+       [
+        37.9,
+        40.1
+       ]
+      ],
+      "predicted": [
+       [
+        38.164146,
+        41.490473
+       ],
+       [
+        37.641154,
+        39.972453
+       ],
+       [
+        38.481704,
+        41.616468
+       ],
+       [
+        38.743188,
+        41.400472
+       ],
+       [
+        38.586875,
+        40.846596
+       ]
+      ],
+      "skin_mae": 0.483414,
+      "verdict": "맞음 (SKIN MAE 0.48 · AP MAE 0.91)"
+     }
+    ],
+    "start_skin": 28.5,
+    "support_note": "적용 범위 안",
+    "supported": true
+   }
+  },
+  "gi300": {
+   "fast": {
+    "column": "30.5/fast",
+    "counts": {
+     "—": 2,
+     "맞음": 5,
+     "틀림": 3
+    },
+    "label": "v1 30.5/fast · gi300",
+    "rows": [
+     {
+      "cell": "1-1 진입",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "T_on",
+      "measured": 60,
+      "predicted": 70,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "540~600 s 배율",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "깊이",
+      "measured": 2.076452,
+      "predicted": 2.083507,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "가열 끝 SKIN · AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       38.1,
+       40.7
+      ],
+      "predicted": [
+       38.877153,
+       41.245107
+      ],
+      "verdict": "—"
+     },
+     {
+      "ap_mae": 0.644415,
+      "cell": "휴지 SKIN·AP 0/60/120/180/240/299 s",
+      "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+      "if_wrong": "냉각 c_s·c_f",
+      "measured": [
+       [
+        38.1,
+        40.7
+       ],
+       [
+        36.0,
+        36.6
+       ],
+       [
+        35.3,
+        35.3
+       ],
+       [
+        34.5,
+        34.5
+       ],
+       [
+        34.0,
+        33.9
+       ],
+       [
+        33.9,
+        33.8
+       ]
+      ],
+      "predicted": [
+       [
+        38.877744,
+        41.24484
+       ],
+       [
+        36.618856,
+        36.074542
+       ],
+       [
+        35.608877,
+        34.670548
+       ],
+       [
+        34.898493,
+        33.906839
+       ],
+       [
+        34.311028,
+        33.312158
+       ],
+       [
+        33.814107,
+        32.814265
+       ]
+      ],
+      "skin_mae": 0.416815,
+      "verdict": "맞음 (SKIN MAE 0.42 · AP MAE 0.64)"
+     },
+     {
+      "cell": "재조임 분류",
+      "criterion": "같은 분류 (실측 미분류 → 미확인)",
+      "if_wrong": "≤ 20 s → 못 늦춤 (모형보다 빠름 → 낮은 문턱 또는 깊이 기억) · ≥ 60 s → 유예 레버 (모형보다 느림)",
+      "measured": "못 늦춘다",
+      "predicted": "중간",
+      "verdict": "틀림"
+     },
+     {
+      "cell": "재조임 시각",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "재조임 규칙",
+      "measured": 20,
+      "predicted": 50,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "재조임 칸 SKIN",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "재조임 문턱",
+      "measured": 36.5,
+      "predicted": 39.008154,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "재조임 칸 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 41.5,
+      "predicted": 45.323641,
+      "verdict": "—"
+     },
+     {
+      "cell": "재가열 첫 칸",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "> 1.10 → 깊이에 기억",
+      "measured": 0.994448,
+      "predicted": 1.0,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "재가열 240~300 s 배율",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "깊이",
+      "measured": 2.134968,
+      "predicted": 1.954534,
+      "verdict": "맞음"
+     }
+    ],
+    "start_skin": 30.7,
+    "support_note": "적용 범위 안",
+    "supported": true
+   },
+   "skin": {
+    "column": "30.5/skin",
+    "counts": {
+     "—": 2,
+     "맞음": 5,
+     "틀림": 3
+    },
+    "label": "v1 30.5/skin · gi300",
+    "rows": [
+     {
+      "cell": "1-1 진입",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "T_on",
+      "measured": 60,
+      "predicted": 70,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "540~600 s 배율",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "깊이",
+      "measured": 2.076452,
+      "predicted": 2.083507,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "가열 끝 SKIN · AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       38.1,
+       40.7
+      ],
+      "predicted": [
+       38.877153,
+       41.245107
+      ],
+      "verdict": "—"
+     },
+     {
+      "ap_mae": 0.644415,
+      "cell": "휴지 SKIN·AP 0/60/120/180/240/299 s",
+      "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+      "if_wrong": "냉각 c_s·c_f",
+      "measured": [
+       [
+        38.1,
+        40.7
+       ],
+       [
+        36.0,
+        36.6
+       ],
+       [
+        35.3,
+        35.3
+       ],
+       [
+        34.5,
+        34.5
+       ],
+       [
+        34.0,
+        33.9
+       ],
+       [
+        33.9,
+        33.8
+       ]
+      ],
+      "predicted": [
+       [
+        38.877744,
+        41.24484
+       ],
+       [
+        36.618856,
+        36.074542
+       ],
+       [
+        35.608877,
+        34.670548
+       ],
+       [
+        34.898493,
+        33.906839
+       ],
+       [
+        34.311028,
+        33.312158
+       ],
+       [
+        33.814107,
+        32.814265
+       ]
+      ],
+      "skin_mae": 0.416815,
+      "verdict": "맞음 (SKIN MAE 0.42 · AP MAE 0.64)"
+     },
+     {
+      "cell": "재조임 분류",
+      "criterion": "같은 분류 (실측 미분류 → 미확인)",
+      "if_wrong": "≤ 20 s → 못 늦춤 (모형보다 빠름 → 낮은 문턱 또는 깊이 기억) · ≥ 60 s → 유예 레버 (모형보다 느림)",
+      "measured": "못 늦춘다",
+      "predicted": "중간",
+      "verdict": "틀림"
+     },
+     {
+      "cell": "재조임 시각",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "재조임 규칙",
+      "measured": 20,
+      "predicted": 50,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "재조임 칸 SKIN",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "재조임 문턱",
+      "measured": 36.5,
+      "predicted": 39.008154,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "재조임 칸 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 41.5,
+      "predicted": 45.323641,
+      "verdict": "—"
+     },
+     {
+      "cell": "재가열 첫 칸",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "> 1.10 → 깊이에 기억",
+      "measured": 0.994448,
+      "predicted": 1.0,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "재가열 240~300 s 배율",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "깊이",
+      "measured": 2.134968,
+      "predicted": 1.954534,
+      "verdict": "맞음"
+     }
+    ],
+    "start_skin": 30.7,
+    "support_note": "적용 범위 안",
+    "supported": true
+   }
+  },
+  "n50p": {
+   "fast": {
+    "column": "29.5/fast",
+    "counts": {
+     "—": 5,
+     "맞음": 2,
+     "미확인": 1,
+     "틀림": 8
+    },
+    "label": "v1 29.5/fast · n50p",
+    "rows": [
+     {
+      "cell": "A3 (구간 0 칸 ±5 %)",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": true,
+      "predicted": true,
+      "verdict": "—"
+     },
+     {
+      "cell": "1계단 (+4.5 % 유지 첫 칸)",
+      "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "열 블록",
+      "measured": 370,
+      "predicted": 120,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "1-1 진입 (+10 %)",
+      "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "열 블록 · 진입 온도대가 틀리면 계단 문턱 T2",
+      "measured": null,
+      "predicted": 290,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "1-1 진입 SKIN (진입 온도대)",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "계단 문턱 T2",
+      "measured": null,
+      "predicted": 39.76418,
+      "verdict": "미확인"
+     },
+     {
+      "cell": "1-1 진입 AP · 1계단 SKIN·AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       null,
+       {
+        "ap": 42.8,
+        "skin": 38.2
+       }
+      ],
+      "predicted": [
+       44.272129,
+       {
+        "ap": 42.668217,
+        "skin": 37.350643
+       }
+      ],
+      "verdict": "—"
+     },
+     {
+      "cell": "360~420 s 배율",
+      "criterion": "|Δ| ≤ 0.03",
+      "if_wrong": "계단 크기 a1+a2",
+      "measured": 1.068526,
+      "predicted": 1.122183,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "가열 끝 SKIN",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "열 블록",
+      "measured": 38.5,
+      "predicted": 40.984466,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "가열 끝 AP · status · BAT",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       42.8,
+       0,
+       35.8
+      ],
+      "predicted": [
+       45.250506,
+       1,
+       "미모형화"
+      ],
+      "verdict": "—"
+     },
+     {
+      "cell": "탐침 해제 분류",
+      "criterion": "같은 분류 (실측 미분류 → 미확인)",
+      "if_wrong": "θ ≤ 0.5: R50-fast 면 기각 · θ > 0.5: R50-slow/none 이면 기각 · R50-slow 면 둘 다 (이진형 자체)",
+      "measured": "R50-fast",
+      "predicted": "R50-fast",
+      "verdict": "맞음"
+     },
+     {
+      "cell": "탐침 해제 시각",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "해제 규칙",
+      "measured": 20,
+      "predicted": 40,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "탐침 해제 모양",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": "계단형",
+      "predicted": "계단형",
+      "verdict": "—"
+     },
+     {
+      "cell": "탐침 1~5 칸 (10~60 s) 중앙 배율",
+      "criterion": "|Δ| ≤ 0.03",
+      "if_wrong": "θ 0.3: 계단 크기 · θ 0.75: > 1.03 이면 해제 지연",
+      "measured": 0.995741,
+      "predicted": 1.1246,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "해제 칸 SKIN",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "냉각 (c_f=1)",
+      "measured": 37.8,
+      "predicted": 39.71028,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "해제 칸 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 40.9,
+      "predicted": 41.868984,
+      "verdict": "—"
+     },
+     {
+      "cell": "해제 뒤 재조임",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "'d50 은 다시 데운다' → 열 블록 (d50 전력)",
+      "measured": null,
+      "predicted": null,
+      "verdict": "맞음"
+     },
+     {
+      "ap_mae": 2.329332,
+      "cell": "탐침 SKIN·AP 0/60/120/240/479 s",
+      "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+      "if_wrong": "냉각 c_s · d50 전력 (α_NPU)",
+      "measured": [
+       [
+        38.5,
+        42.8
+       ],
+       [
+        37.2,
+        39.8
+       ],
+       [
+        36.7,
+        39.0
+       ],
+       [
+        36.4,
+        38.6
+       ],
+       [
+        36.0,
+        38.4
+       ]
+      ],
+      "predicted": [
+       [
+        40.992914,
+        45.258384
+       ],
+       [
+        39.565287,
+        41.592102
+       ],
+       [
+        39.366637,
+        41.308476
+       ],
+       [
+        39.159022,
+        41.087804
+       ],
+       [
+        38.972089,
+        40.999891
+       ]
+      ],
+      "skin_mae": 2.65119,
+      "verdict": "틀림 (SKIN MAE 2.65 · AP MAE 2.33)"
+     }
+    ],
+    "start_skin": 28.4,
+    "support_note": "적용 범위 안",
+    "supported": true
+   },
+   "skin": {
+    "column": "29.5/skin",
+    "counts": {
+     "—": 6,
+     "맞음": 1,
+     "미확인": 1,
+     "틀림": 8
+    },
+    "label": "v1 29.5/skin · n50p",
+    "rows": [
+     {
+      "cell": "A3 (구간 0 칸 ±5 %)",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": true,
+      "predicted": true,
+      "verdict": "—"
+     },
+     {
+      "cell": "1계단 (+4.5 % 유지 첫 칸)",
+      "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "열 블록",
+      "measured": 370,
+      "predicted": 130,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "1-1 진입 (+10 %)",
+      "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "열 블록 · 진입 온도대가 틀리면 계단 문턱 T2",
+      "measured": null,
+      "predicted": 290,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "1-1 진입 SKIN (진입 온도대)",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "계단 문턱 T2",
+      "measured": null,
+      "predicted": 39.799164,
+      "verdict": "미확인"
+     },
+     {
+      "cell": "1-1 진입 AP · 1계단 SKIN·AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       null,
+       {
+        "ap": 42.8,
+        "skin": 38.2
+       }
+      ],
+      "predicted": [
+       44.308541,
+       {
+        "ap": 42.910397,
+        "skin": 37.597321
+       }
+      ],
+      "verdict": "—"
+     },
+     {
+      "cell": "360~420 s 배율",
+      "criterion": "|Δ| ≤ 0.03",
+      "if_wrong": "계단 크기 a1+a2",
+      "measured": 1.068526,
+      "predicted": 1.122329,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "가열 끝 SKIN",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "열 블록",
+      "measured": 38.5,
+      "predicted": 41.005283,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "가열 끝 AP · status · BAT",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       42.8,
+       0,
+       35.8
+      ],
+      "predicted": [
+       45.269887,
+       1,
+       "미모형화"
+      ],
+      "verdict": "—"
+     },
+     {
+      "cell": "탐침 해제 분류",
+      "criterion": "같은 분류 (실측 미분류 → 미확인)",
+      "if_wrong": "θ ≤ 0.5: R50-fast 면 기각 · θ > 0.5: R50-slow/none 이면 기각 · R50-slow 면 둘 다 (이진형 자체)",
+      "measured": "R50-fast",
+      "predicted": "R50-none",
+      "verdict": "틀림"
+     },
+     {
+      "cell": "탐침 해제 시각",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "해제 규칙",
+      "measured": 20,
+      "predicted": null,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "탐침 해제 모양",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": "계단형",
+      "predicted": "중도절단",
+      "verdict": "—"
+     },
+     {
+      "cell": "탐침 1~5 칸 (10~60 s) 중앙 배율",
+      "criterion": "|Δ| ≤ 0.03",
+      "if_wrong": "θ 0.3: 계단 크기 · θ 0.75: > 1.03 이면 해제 지연",
+      "measured": 0.995741,
+      "predicted": 1.124799,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "해제 칸 SKIN (한쪽 이상 해제 없음 — 해당 없음)",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 37.8,
+      "predicted": null,
+      "verdict": "—"
+     },
+     {
+      "cell": "해제 칸 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 40.9,
+      "predicted": null,
+      "verdict": "—"
+     },
+     {
+      "cell": "해제 뒤 재조임",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "'d50 은 다시 데운다' → 열 블록 (d50 전력)",
+      "measured": null,
+      "predicted": null,
+      "verdict": "맞음"
+     },
+     {
+      "ap_mae": 1.465511,
+      "cell": "탐침 SKIN·AP 0/60/120/240/479 s",
+      "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+      "if_wrong": "냉각 c_s · d50 전력 (α_NPU)",
+      "measured": [
+       [
+        38.5,
+        42.8
+       ],
+       [
+        37.2,
+        39.8
+       ],
+       [
+        36.7,
+        39.0
+       ],
+       [
+        36.4,
+        38.6
+       ],
+       [
+        36.0,
+        38.4
+       ]
+      ],
+      "predicted": [
+       [
+        41.013672,
+        45.277705
+       ],
+       [
+        39.411224,
+        41.202122
+       ],
+       [
+        38.899626,
+        40.355776
+       ],
+       [
+        38.384252,
+        39.788967
+       ],
+       [
+        37.817755,
+        39.302986
+       ]
+      ],
+      "skin_mae": 2.145306,
+      "verdict": "틀림 (SKIN MAE 2.15 · AP MAE 1.47)"
+     }
+    ],
+    "start_skin": 28.4,
+    "support_note": "적용 범위 안",
+    "supported": true
+   }
+  },
+  "ni300": {
+   "fast": {
+    "column": "30.5/fast",
+    "counts": {
+     "—": 2,
+     "맞음": 5,
+     "틀림": 4
+    },
+    "label": "v1 30.5/fast · ni300",
+    "rows": [
+     {
+      "cell": "1계단",
+      "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "열 블록",
+      "measured": 130,
+      "predicted": 110,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "1-1 진입 (300 s 안)",
+      "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "29.5 에서 진입이 나오면 가열이 모형보다 빠른 것",
+      "measured": 260,
+      "predicted": 260,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "240~300 s 배율",
+      "criterion": "|Δ| ≤ 0.03",
+      "if_wrong": "계단 크기 · < 1.06 이면 가열 부족 (판정 불가)",
+      "measured": 1.111337,
+      "predicted": 1.119434,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "가열 끝 SKIN",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "열",
+      "measured": 40.2,
+      "predicted": 40.327269,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "가열 끝 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 44.3,
+      "predicted": 44.665253,
+      "verdict": "—"
+     },
+     {
+      "ap_mae": 3.129704,
+      "cell": "휴지 SKIN·AP 0/60/120/180/240/299 s",
+      "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+      "if_wrong": "냉각 (c_s 또는 d10 전력)",
+      "measured": [
+       [
+        40.2,
+        44.3
+       ],
+       [
+        38.1,
+        39.5
+       ],
+       [
+        37.4,
+        38.5
+       ],
+       [
+        36.8,
+        37.8
+       ],
+       [
+        36.7,
+        37.5
+       ],
+       [
+        36.3,
+        37.2
+       ]
+      ],
+      "predicted": [
+       [
+        40.339147,
+        44.675236
+       ],
+       [
+        37.02983,
+        36.751991
+       ],
+       [
+        35.815694,
+        34.913428
+       ],
+       [
+        35.051785,
+        34.065012
+       ],
+       [
+        34.439484,
+        33.441274
+       ],
+       [
+        33.925053,
+        32.925303
+       ]
+      ],
+      "skin_mae": 1.52955,
+      "verdict": "틀림 (SKIN MAE 1.53 · AP MAE 3.13)"
+     },
+     {
+      "cell": "재조임 분류",
+      "criterion": "같은 분류 (실측 미분류 → 미확인)",
+      "if_wrong": "≤ 20 s → 못 늦춤 (모형보다 빠름 → T1 38.1 보다 낮은 문턱 또는 기억) · 없음 → 냉각이 모형보다 깊음",
+      "measured": "중간",
+      "predicted": "유예 레버",
+      "verdict": "틀림"
+     },
+     {
+      "cell": "재조임 시각 (≥ ref_d100 × 1.06, 마지막 k = 14)",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "재조임 규칙",
+      "measured": 40,
+      "predicted": 60,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "재조임 칸 SKIN",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "T1",
+      "measured": 38.1,
+      "predicted": 38.300046,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "재조임 칸 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 41.3,
+      "predicted": 42.818645,
+      "verdict": "—"
+     },
+     {
+      "cell": "재가열 첫 칸",
+      "criterion": "|Δ| ≤ 0.03",
+      "if_wrong": "> 1.03 → 기억",
+      "measured": 2.884475,
+      "predicted": 1.0,
+      "verdict": "틀림"
+     }
+    ],
+    "start_skin": 31.1,
+    "support_note": "적용 범위 안",
+    "supported": true
+   },
+   "skin": {
+    "column": "30.5/skin",
+    "counts": {
+     "—": 2,
+     "맞음": 5,
+     "틀림": 4
+    },
+    "label": "v1 30.5/skin · ni300",
+    "rows": [
+     {
+      "cell": "1계단",
+      "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "열 블록",
+      "measured": 130,
+      "predicted": 130,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "1-1 진입 (300 s 안)",
+      "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "29.5 에서 진입이 나오면 가열이 모형보다 빠른 것",
+      "measured": 260,
+      "predicted": 250,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "240~300 s 배율",
+      "criterion": "|Δ| ≤ 0.03",
+      "if_wrong": "계단 크기 · < 1.06 이면 가열 부족 (판정 불가)",
+      "measured": 1.111337,
+      "predicted": 1.119476,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "가열 끝 SKIN",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "열",
+      "measured": 40.2,
+      "predicted": 40.353942,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "가열 끝 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 44.3,
+      "predicted": 44.687412,
+      "verdict": "—"
+     },
+     {
+      "ap_mae": 3.11759,
+      "cell": "휴지 SKIN·AP 0/60/120/180/240/299 s",
+      "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+      "if_wrong": "냉각 (c_s 또는 d10 전력)",
+      "measured": [
+       [
+        40.2,
+        44.3
+       ],
+       [
+        38.1,
+        39.5
+       ],
+       [
+        37.4,
+        38.5
+       ],
+       [
+        36.8,
+        37.8
+       ],
+       [
+        36.7,
+        37.5
+       ],
+       [
+        36.3,
+        37.2
+       ]
+      ],
+      "predicted": [
+       [
+        40.365802,
+        44.697503
+       ],
+       [
+        37.054458,
+        36.776025
+       ],
+       [
+        35.837329,
+        34.934982
+       ],
+       [
+        35.070606,
+        34.083822
+       ],
+       [
+        34.455825,
+        33.457614
+       ],
+       [
+        33.93927,
+        32.93952
+       ]
+      ],
+      "skin_mae": 1.518052,
+      "verdict": "틀림 (SKIN MAE 1.52 · AP MAE 3.12)"
+     },
+     {
+      "cell": "재조임 분류",
+      "criterion": "같은 분류 (실측 미분류 → 미확인)",
+      "if_wrong": "≤ 20 s → 못 늦춤 (모형보다 빠름 → T1 38.1 보다 낮은 문턱 또는 기억) · 없음 → 냉각이 모형보다 깊음",
+      "measured": "중간",
+      "predicted": "유예 레버",
+      "verdict": "틀림"
+     },
+     {
+      "cell": "재조임 시각 (≥ ref_d100 × 1.06, 마지막 k = 14)",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "재조임 규칙",
+      "measured": 40,
+      "predicted": 60,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "재조임 칸 SKIN",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "T1",
+      "measured": 38.1,
+      "predicted": 38.312349,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "재조임 칸 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 41.3,
+      "predicted": 42.830945,
+      "verdict": "—"
+     },
+     {
+      "cell": "재가열 첫 칸",
+      "criterion": "|Δ| ≤ 0.03",
+      "if_wrong": "> 1.03 → 기억",
+      "measured": 2.884475,
+      "predicted": 1.0,
+      "verdict": "틀림"
+     }
+    ],
+    "start_skin": 31.1,
+    "support_note": "적용 범위 안",
+    "supported": true
+   }
+  }
+ },
+ "v2": {
+  "g50p": {
+   "theta_0.3": {
+    "column": "29.5/theta_0.3",
+    "counts": {
+     "—": 3,
+     "맞음": 2,
+     "틀림": 5
+    },
+    "label": "v2 V2-Lb theta_0.3 · g50p",
+    "rows": [
+     {
+      "cell": "1-1 진입",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "T_on,CM 37.2",
+      "measured": 100,
+      "predicted": 70,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "240~300 s 배율",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "깊이 W·D",
+      "measured": 1.593855,
+      "predicted": 1.856409,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "가열 끝 SKIN",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "열 블록",
+      "measured": 38.0,
+      "predicted": 38.050638,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "가열 끝 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 42.2,
+      "predicted": 41.208439,
+      "verdict": "—"
+     },
+     {
+      "cell": "탐침 해제 분류",
+      "criterion": "같은 분류 (실측 미분류 → 미확인)",
+      "if_wrong": "R50-fast → θ_GPU > 0.5 또는 타이머 (모형 기각) · R50-slow → '깊이가 온도 따라 서서히 풀린다' 쪽 (칸 배율 궤적으로 가른다)",
+      "measured": "R50-fast",
+      "predicted": "R50-none",
+      "verdict": "틀림"
+     },
+     {
+      "cell": "탐침 해제 시각",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "해제 규칙",
+      "measured": 10,
+      "predicted": null,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "탐침 1~5 칸 중앙 배율",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "깊이 = 정적 지도",
+      "measured": 1.007111,
+      "predicted": 1.472768,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "탐침 칸 0~5 궤적 ('계단형 하강' 은 수치 정의 없음 — 궤적 첨부)",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       1.66702,
+       1.002103,
+       1.005312,
+       1.009813,
+       1.015911,
+       1.007111
+      ],
+      "predicted": [
+       1.90008,
+       1.653586,
+       1.528271,
+       1.472768,
+       1.452082,
+       1.447214
+      ],
+      "verdict": "—"
+     },
+     {
+      "cell": "해제 칸 SKIN · AP (H-ap-히스 는 밤 규칙 — g50p 판정)",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       37.4,
+       39.6
+      ],
+      "predicted": null,
+      "verdict": "—"
+     },
+     {
+      "ap_mae": 0.36124,
+      "cell": "탐침 SKIN·AP 0/60/120/240/479 s",
+      "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+      "if_wrong": "열 (d50 전력 α_GPU)",
+      "measured": [
+       [
+        38.0,
+        42.2
+       ],
+       [
+        37.6,
+        39.8
+       ],
+       [
+        37.7,
+        39.9
+       ],
+       [
+        38.0,
+        40.2
+       ],
+       [
+        37.9,
+        40.1
+       ]
+      ],
+      "predicted": [
+       [
+        38.051818,
+        41.20181
+       ],
+       [
+        37.508669,
+        40.147911
+       ],
+       [
+        37.543713,
+        40.157168
+       ],
+       [
+        37.588196,
+        40.051845
+       ],
+       [
+        37.656331,
+        40.045225
+       ]
+      ],
+      "skin_mae": 0.190982,
+      "verdict": "맞음 (SKIN MAE 0.19 · AP MAE 0.36)"
+     }
+    ],
+    "start_skin": 28.5,
+    "support_note": "적용 범위 안",
+    "supported": true
+   },
+   "theta_0.75": {
+    "column": "29.5/theta_0.75",
+    "counts": {
+     "—": 3,
+     "맞음": 2,
+     "틀림": 5
+    },
+    "label": "v2 V2-Lb theta_0.75 · g50p",
+    "rows": [
+     {
+      "cell": "1-1 진입",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "T_on,CM 37.2",
+      "measured": 100,
+      "predicted": 70,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "240~300 s 배율",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "깊이 W·D",
+      "measured": 1.593855,
+      "predicted": 1.856409,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "가열 끝 SKIN",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "열 블록",
+      "measured": 38.0,
+      "predicted": 38.050638,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "가열 끝 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 42.2,
+      "predicted": 41.208439,
+      "verdict": "—"
+     },
+     {
+      "cell": "탐침 해제 분류",
+      "criterion": "같은 분류 (실측 미분류 → 미확인)",
+      "if_wrong": "R50-fast → θ_GPU > 0.5 또는 타이머 (모형 기각) · R50-slow → '깊이가 온도 따라 서서히 풀린다' 쪽 (칸 배율 궤적으로 가른다)",
+      "measured": "R50-fast",
+      "predicted": "R50-none",
+      "verdict": "틀림"
+     },
+     {
+      "cell": "탐침 해제 시각",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "해제 규칙",
+      "measured": 10,
+      "predicted": null,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "탐침 1~5 칸 중앙 배율",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "깊이 = 정적 지도",
+      "measured": 1.007111,
+      "predicted": 1.472768,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "탐침 칸 0~5 궤적 ('계단형 하강' 은 수치 정의 없음 — 궤적 첨부)",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       1.66702,
+       1.002103,
+       1.005312,
+       1.009813,
+       1.015911,
+       1.007111
+      ],
+      "predicted": [
+       1.90008,
+       1.653586,
+       1.528271,
+       1.472768,
+       1.452082,
+       1.447214
+      ],
+      "verdict": "—"
+     },
+     {
+      "cell": "해제 칸 SKIN · AP (H-ap-히스 는 밤 규칙 — g50p 판정)",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       37.4,
+       39.6
+      ],
+      "predicted": null,
+      "verdict": "—"
+     },
+     {
+      "ap_mae": 0.36124,
+      "cell": "탐침 SKIN·AP 0/60/120/240/479 s",
+      "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+      "if_wrong": "열 (d50 전력 α_GPU)",
+      "measured": [
+       [
+        38.0,
+        42.2
+       ],
+       [
+        37.6,
+        39.8
+       ],
+       [
+        37.7,
+        39.9
+       ],
+       [
+        38.0,
+        40.2
+       ],
+       [
+        37.9,
+        40.1
+       ]
+      ],
+      "predicted": [
+       [
+        38.051818,
+        41.20181
+       ],
+       [
+        37.508669,
+        40.147911
+       ],
+       [
+        37.543713,
+        40.157168
+       ],
+       [
+        37.588196,
+        40.051845
+       ],
+       [
+        37.656331,
+        40.045225
+       ]
+      ],
+      "skin_mae": 0.190982,
+      "verdict": "맞음 (SKIN MAE 0.19 · AP MAE 0.36)"
+     }
+    ],
+    "start_skin": 28.5,
+    "support_note": "적용 범위 안",
+    "supported": true
+   }
+  },
+  "gi300": {
+   "theta_0.3": {
+    "column": "30.5/theta_0.3",
+    "counts": {
+     "—": 2,
+     "맞음": 5,
+     "틀림": 3
+    },
+    "label": "v2 V2-Lb theta_0.3 · gi300",
+    "rows": [
+     {
+      "cell": "1-1 진입",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "T_on",
+      "measured": 60,
+      "predicted": 70,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "540~600 s 배율",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "깊이",
+      "measured": 2.076452,
+      "predicted": 2.194684,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "가열 끝 SKIN · AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       38.1,
+       40.7
+      ],
+      "predicted": [
+       38.339165,
+       40.258355
+      ],
+      "verdict": "—"
+     },
+     {
+      "ap_mae": 0.365962,
+      "cell": "휴지 SKIN·AP 0/60/120/180/240/299 s",
+      "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+      "if_wrong": "냉각 c_s·c_f",
+      "measured": [
+       [
+        38.1,
+        40.7
+       ],
+       [
+        36.0,
+        36.6
+       ],
+       [
+        35.3,
+        35.3
+       ],
+       [
+        34.5,
+        34.5
+       ],
+       [
+        34.0,
+        33.9
+       ],
+       [
+        33.9,
+        33.8
+       ]
+      ],
+      "predicted": [
+       [
+        38.339333,
+        40.257654
+       ],
+       [
+        36.666762,
+        37.091943
+       ],
+       [
+        36.001883,
+        35.697879
+       ],
+       [
+        35.54207,
+        34.881964
+       ],
+       [
+        35.144786,
+        34.310775
+       ],
+       [
+        34.788827,
+        33.870863
+       ]
+      ],
+      "skin_mae": 0.78061,
+      "verdict": "틀림 (SKIN MAE 0.78 · AP MAE 0.37)"
+     },
+     {
+      "cell": "재조임 분류",
+      "criterion": "같은 분류 (실측 미분류 → 미확인)",
+      "if_wrong": "≤ 20 s → 못 늦춤 (모형보다 빠름 → 낮은 문턱 또는 깊이 기억) · ≥ 60 s → 유예 레버 (모형보다 느림)",
+      "measured": "못 늦춘다",
+      "predicted": "중간",
+      "verdict": "틀림"
+     },
+     {
+      "cell": "재조임 시각",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "재조임 규칙",
+      "measured": 20,
+      "predicted": 30,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "재조임 칸 SKIN (v2: = T_on 37.2 ± 0.5)",
+      "criterion": "|SKIN_k − 37.2| ≤ 0.5 ℃",
+      "if_wrong": "T_on",
+      "measured": 36.5,
+      "predicted": [
+       37.2,
+       38.087368
+      ],
+      "verdict": "틀림"
+     },
+     {
+      "cell": "재조임 칸 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 41.5,
+      "predicted": 42.119189,
+      "verdict": "—"
+     },
+     {
+      "cell": "재가열 첫 칸",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "> 1.10 → 깊이에 기억",
+      "measured": 0.994448,
+      "predicted": 1.0,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "재가열 240~300 s 배율",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "깊이",
+      "measured": 2.134968,
+      "predicted": 2.140071,
+      "verdict": "맞음"
+     }
+    ],
+    "start_skin": 30.7,
+    "support_note": "적용 범위 안",
+    "supported": true
+   },
+   "theta_0.75": {
+    "column": "30.5/theta_0.75",
+    "counts": {
+     "—": 2,
+     "맞음": 5,
+     "틀림": 3
+    },
+    "label": "v2 V2-Lb theta_0.75 · gi300",
+    "rows": [
+     {
+      "cell": "1-1 진입",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "T_on",
+      "measured": 60,
+      "predicted": 70,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "540~600 s 배율",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "깊이",
+      "measured": 2.076452,
+      "predicted": 2.194684,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "가열 끝 SKIN · AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       38.1,
+       40.7
+      ],
+      "predicted": [
+       38.339165,
+       40.258355
+      ],
+      "verdict": "—"
+     },
+     {
+      "ap_mae": 0.365962,
+      "cell": "휴지 SKIN·AP 0/60/120/180/240/299 s",
+      "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+      "if_wrong": "냉각 c_s·c_f",
+      "measured": [
+       [
+        38.1,
+        40.7
+       ],
+       [
+        36.0,
+        36.6
+       ],
+       [
+        35.3,
+        35.3
+       ],
+       [
+        34.5,
+        34.5
+       ],
+       [
+        34.0,
+        33.9
+       ],
+       [
+        33.9,
+        33.8
+       ]
+      ],
+      "predicted": [
+       [
+        38.339333,
+        40.257654
+       ],
+       [
+        36.666762,
+        37.091943
+       ],
+       [
+        36.001883,
+        35.697879
+       ],
+       [
+        35.54207,
+        34.881964
+       ],
+       [
+        35.144786,
+        34.310775
+       ],
+       [
+        34.788827,
+        33.870863
+       ]
+      ],
+      "skin_mae": 0.78061,
+      "verdict": "틀림 (SKIN MAE 0.78 · AP MAE 0.37)"
+     },
+     {
+      "cell": "재조임 분류",
+      "criterion": "같은 분류 (실측 미분류 → 미확인)",
+      "if_wrong": "≤ 20 s → 못 늦춤 (모형보다 빠름 → 낮은 문턱 또는 깊이 기억) · ≥ 60 s → 유예 레버 (모형보다 느림)",
+      "measured": "못 늦춘다",
+      "predicted": "중간",
+      "verdict": "틀림"
+     },
+     {
+      "cell": "재조임 시각",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "재조임 규칙",
+      "measured": 20,
+      "predicted": 30,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "재조임 칸 SKIN (v2: = T_on 37.2 ± 0.5)",
+      "criterion": "|SKIN_k − 37.2| ≤ 0.5 ℃",
+      "if_wrong": "T_on",
+      "measured": 36.5,
+      "predicted": [
+       37.2,
+       38.087368
+      ],
+      "verdict": "틀림"
+     },
+     {
+      "cell": "재조임 칸 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 41.5,
+      "predicted": 42.119189,
+      "verdict": "—"
+     },
+     {
+      "cell": "재가열 첫 칸",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "> 1.10 → 깊이에 기억",
+      "measured": 0.994448,
+      "predicted": 1.0,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "재가열 240~300 s 배율",
+      "criterion": "상대차 ≤ 10 %",
+      "if_wrong": "깊이",
+      "measured": 2.134968,
+      "predicted": 2.140071,
+      "verdict": "맞음"
+     }
+    ],
+    "start_skin": 30.7,
+    "support_note": "적용 범위 안",
+    "supported": true
+   }
+  },
+  "n50p": {
+   "theta_0.3": {
+    "column": "29.5/theta_0.3",
+    "counts": {
+     "—": 6,
+     "맞음": 1,
+     "미확인": 1,
+     "틀림": 8
+    },
+    "label": "v2 V2-Lb theta_0.3 · n50p",
+    "rows": [
+     {
+      "cell": "A3 (구간 0 칸 ±5 %)",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": true,
+      "predicted": true,
+      "verdict": "—"
+     },
+     {
+      "cell": "1계단 (+4.5 % 유지 첫 칸)",
+      "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "열 블록",
+      "measured": 370,
+      "predicted": 160,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "1-1 진입 (+10 %)",
+      "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "열 블록 · 진입 온도대가 틀리면 계단 문턱 T2",
+      "measured": null,
+      "predicted": 290,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "1-1 진입 SKIN (진입 온도대)",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "계단 문턱 T2",
+      "measured": null,
+      "predicted": 39.972396,
+      "verdict": "미확인"
+     },
+     {
+      "cell": "1-1 진입 AP · 1계단 SKIN·AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       null,
+       {
+        "ap": 42.8,
+        "skin": 38.2
+       }
+      ],
+      "predicted": [
+       44.045765,
+       {
+        "ap": 43.023383,
+        "skin": 38.355631
+       }
+      ],
+      "verdict": "—"
+     },
+     {
+      "cell": "360~420 s 배율",
+      "criterion": "|Δ| ≤ 0.03",
+      "if_wrong": "계단 크기 a1+a2",
+      "measured": 1.068526,
+      "predicted": 1.126031,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "가열 끝 SKIN",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "열 블록",
+      "measured": 38.5,
+      "predicted": 41.074618,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "가열 끝 AP · status · BAT",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       42.8,
+       0,
+       35.8
+      ],
+      "predicted": [
+       44.826631,
+       1,
+       "미모형화"
+      ],
+      "verdict": "—"
+     },
+     {
+      "cell": "탐침 해제 분류",
+      "criterion": "같은 분류 (실측 미분류 → 미확인)",
+      "if_wrong": "θ ≤ 0.5: R50-fast 면 기각 · θ > 0.5: R50-slow/none 이면 기각 · R50-slow 면 둘 다 (이진형 자체)",
+      "measured": "R50-fast",
+      "predicted": "R50-none",
+      "verdict": "틀림"
+     },
+     {
+      "cell": "탐침 해제 시각",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "해제 규칙",
+      "measured": 20,
+      "predicted": null,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "탐침 해제 모양",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": "계단형",
+      "predicted": "중도절단",
+      "verdict": "—"
+     },
+     {
+      "cell": "탐침 1~5 칸 (10~60 s) 중앙 배율",
+      "criterion": "|Δ| ≤ 0.03",
+      "if_wrong": "θ 0.3: 계단 크기 · θ 0.75: > 1.03 이면 해제 지연",
+      "measured": 0.995741,
+      "predicted": 1.126031,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "해제 칸 SKIN (한쪽 이상 해제 없음 — 해당 없음)",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 37.8,
+      "predicted": null,
+      "verdict": "—"
+     },
+     {
+      "cell": "해제 칸 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 40.9,
+      "predicted": null,
+      "verdict": "—"
+     },
+     {
+      "cell": "해제 뒤 재조임",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "'d50 은 다시 데운다' → 열 블록 (d50 전력)",
+      "measured": null,
+      "predicted": null,
+      "verdict": "맞음"
+     },
+     {
+      "ap_mae": 2.892883,
+      "cell": "탐침 SKIN·AP 0/60/120/240/479 s",
+      "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+      "if_wrong": "냉각 c_s · d50 전력 (α_NPU)",
+      "measured": [
+       [
+        38.5,
+        42.8
+       ],
+       [
+        37.2,
+        39.8
+       ],
+       [
+        36.7,
+        39.0
+       ],
+       [
+        36.4,
+        38.6
+       ],
+       [
+        36.0,
+        38.4
+       ]
+      ],
+      "predicted": [
+       [
+        41.082627,
+        44.83357
+       ],
+       [
+        39.807855,
+        42.504108
+       ],
+       [
+        39.502591,
+        41.925117
+       ],
+       [
+        39.409861,
+        41.894335
+       ],
+       [
+        39.357634,
+        41.907287
+       ]
+      ],
+      "skin_mae": 2.872114,
+      "verdict": "틀림 (SKIN MAE 2.87 · AP MAE 2.89)"
+     }
+    ],
+    "start_skin": 28.4,
+    "support_note": "적용 범위 안",
+    "supported": true
+   },
+   "theta_0.75": {
+    "column": "29.5/theta_0.75",
+    "counts": {
+     "—": 5,
+     "맞음": 4,
+     "미확인": 1,
+     "틀림": 6
+    },
+    "label": "v2 V2-Lb theta_0.75 · n50p",
+    "rows": [
+     {
+      "cell": "A3 (구간 0 칸 ±5 %)",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": true,
+      "predicted": true,
+      "verdict": "—"
+     },
+     {
+      "cell": "1계단 (+4.5 % 유지 첫 칸)",
+      "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "열 블록",
+      "measured": 370,
+      "predicted": 160,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "1-1 진입 (+10 %)",
+      "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "열 블록 · 진입 온도대가 틀리면 계단 문턱 T2",
+      "measured": null,
+      "predicted": 290,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "1-1 진입 SKIN (진입 온도대)",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "계단 문턱 T2",
+      "measured": null,
+      "predicted": 39.972396,
+      "verdict": "미확인"
+     },
+     {
+      "cell": "1-1 진입 AP · 1계단 SKIN·AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       null,
+       {
+        "ap": 42.8,
+        "skin": 38.2
+       }
+      ],
+      "predicted": [
+       44.045765,
+       {
+        "ap": 43.023383,
+        "skin": 38.355631
+       }
+      ],
+      "verdict": "—"
+     },
+     {
+      "cell": "360~420 s 배율",
+      "criterion": "|Δ| ≤ 0.03",
+      "if_wrong": "계단 크기 a1+a2",
+      "measured": 1.068526,
+      "predicted": 1.126031,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "가열 끝 SKIN",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "열 블록",
+      "measured": 38.5,
+      "predicted": 41.074618,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "가열 끝 AP · status · BAT",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": [
+       42.8,
+       0,
+       35.8
+      ],
+      "predicted": [
+       44.826631,
+       1,
+       "미모형화"
+      ],
+      "verdict": "—"
+     },
+     {
+      "cell": "탐침 해제 분류",
+      "criterion": "같은 분류 (실측 미분류 → 미확인)",
+      "if_wrong": "θ ≤ 0.5: R50-fast 면 기각 · θ > 0.5: R50-slow/none 이면 기각 · R50-slow 면 둘 다 (이진형 자체)",
+      "measured": "R50-fast",
+      "predicted": "R50-fast",
+      "verdict": "맞음"
+     },
+     {
+      "cell": "탐침 해제 시각",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "해제 규칙",
+      "measured": 20,
+      "predicted": 10,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "탐침 해제 모양",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": "계단형",
+      "predicted": "계단형",
+      "verdict": "—"
+     },
+     {
+      "cell": "탐침 1~5 칸 (10~60 s) 중앙 배율",
+      "criterion": "|Δ| ≤ 0.03",
+      "if_wrong": "θ 0.3: 계단 크기 · θ 0.75: > 1.03 이면 해제 지연",
+      "measured": 0.995741,
+      "predicted": 1.0,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "해제 칸 SKIN",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "냉각 (c_f=1)",
+      "measured": 37.8,
+      "predicted": 40.708037,
+      "verdict": "틀림"
+     },
+     {
+      "cell": "해제 칸 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 40.9,
+      "predicted": 44.178672,
+      "verdict": "—"
+     },
+     {
+      "cell": "해제 뒤 재조임",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "'d50 은 다시 데운다' → 열 블록 (d50 전력)",
+      "measured": null,
+      "predicted": null,
+      "verdict": "맞음"
+     },
+     {
+      "ap_mae": 3.916171,
+      "cell": "탐침 SKIN·AP 0/60/120/240/479 s",
+      "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+      "if_wrong": "냉각 c_s · d50 전력 (α_NPU)",
+      "measured": [
+       [
+        38.5,
+        42.8
+       ],
+       [
+        37.2,
+        39.8
+       ],
+       [
+        36.7,
+        39.0
+       ],
+       [
+        36.4,
+        38.6
+       ],
+       [
+        36.0,
+        38.4
+       ]
+      ],
+      "predicted": [
+       [
+        41.082627,
+        44.83357
+       ],
+       [
+        40.175859,
+        43.369456
+       ],
+       [
+        40.098035,
+        43.193706
+       ],
+       [
+        40.190049,
+        43.254073
+       ],
+       [
+        40.419448,
+        43.530052
+       ]
+      ],
+      "skin_mae": 3.433204,
+      "verdict": "틀림 (SKIN MAE 3.43 · AP MAE 3.92)"
+     }
+    ],
+    "start_skin": 28.4,
+    "support_note": "적용 범위 안",
+    "supported": true
+   }
+  },
+  "ni300": {
+   "theta_0.3": {
+    "column": "30.5/theta_0.3",
+    "counts": {
+     "—": 2,
+     "맞음": 7,
+     "틀림": 2
+    },
+    "label": "v2 V2-Lb theta_0.3 · ni300",
+    "rows": [
+     {
+      "cell": "1계단",
+      "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "열 블록",
+      "measured": 130,
+      "predicted": 140,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "1-1 진입 (300 s 안)",
+      "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "29.5 에서 진입이 나오면 가열이 모형보다 빠른 것",
+      "measured": 260,
+      "predicted": 260,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "240~300 s 배율",
+      "criterion": "|Δ| ≤ 0.03",
+      "if_wrong": "계단 크기 · < 1.06 이면 가열 부족 (판정 불가)",
+      "measured": 1.111337,
+      "predicted": 1.126031,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "가열 끝 SKIN",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "열",
+      "measured": 40.2,
+      "predicted": 40.470425,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "가열 끝 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 44.3,
+      "predicted": 44.401937,
+      "verdict": "—"
+     },
+     {
+      "ap_mae": 1.507421,
+      "cell": "휴지 SKIN·AP 0/60/120/180/240/299 s",
+      "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+      "if_wrong": "냉각 (c_s 또는 d10 전력)",
+      "measured": [
+       [
+        40.2,
+        44.3
+       ],
+       [
+        38.1,
+        39.5
+       ],
+       [
+        37.4,
+        38.5
+       ],
+       [
+        36.8,
+        37.8
+       ],
+       [
+        36.7,
+        37.5
+       ],
+       [
+        36.3,
+        37.2
+       ]
+      ],
+      "predicted": [
+       [
+        40.481455,
+        44.409766
+       ],
+       [
+        37.719592,
+        39.126365
+       ],
+       [
+        36.811629,
+        36.986992
+       ],
+       [
+        36.260729,
+        35.834725
+       ],
+       [
+        35.802701,
+        35.083015
+       ],
+       [
+        35.395605,
+        34.534143
+       ]
+      ],
+      "skin_mae": 0.598533,
+      "verdict": "틀림 (SKIN MAE 0.60 · AP MAE 1.51)"
+     },
+     {
+      "cell": "재조임 분류",
+      "criterion": "같은 분류 (실측 미분류 → 미확인)",
+      "if_wrong": "≤ 20 s → 못 늦춤 (모형보다 빠름 → T1 38.1 보다 낮은 문턱 또는 기억) · 없음 → 냉각이 모형보다 깊음",
+      "measured": "중간",
+      "predicted": "중간",
+      "verdict": "맞음"
+     },
+     {
+      "cell": "재조임 시각 (≥ ref_d100 × 1.06, 마지막 k = 14)",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "재조임 규칙",
+      "measured": 40,
+      "predicted": 40,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "재조임 칸 SKIN (v2: ∈ [38.1, 38.6])",
+      "criterion": "38.1 ≤ SKIN_k ≤ 38.6",
+      "if_wrong": "T1",
+      "measured": 38.1,
+      "predicted": [
+       [
+        38.1,
+        38.6
+       ],
+       38.54932
+      ],
+      "verdict": "맞음"
+     },
+     {
+      "cell": "재조임 칸 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 41.3,
+      "predicted": 41.775649,
+      "verdict": "—"
+     },
+     {
+      "cell": "재가열 첫 칸",
+      "criterion": "|Δ| ≤ 0.03",
+      "if_wrong": "> 1.03 → 기억",
+      "measured": 2.884475,
+      "predicted": 1.0,
+      "verdict": "틀림"
+     }
+    ],
+    "start_skin": 31.1,
+    "support_note": "적용 범위 안",
+    "supported": true
+   },
+   "theta_0.75": {
+    "column": "30.5/theta_0.75",
+    "counts": {
+     "—": 2,
+     "맞음": 7,
+     "틀림": 2
+    },
+    "label": "v2 V2-Lb theta_0.75 · ni300",
+    "rows": [
+     {
+      "cell": "1계단",
+      "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "열 블록",
+      "measured": 130,
+      "predicted": 140,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "1-1 진입 (300 s 안)",
+      "criterion": "|Δ| ≤ 20 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "29.5 에서 진입이 나오면 가열이 모형보다 빠른 것",
+      "measured": 260,
+      "predicted": 260,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "240~300 s 배율",
+      "criterion": "|Δ| ≤ 0.03",
+      "if_wrong": "계단 크기 · < 1.06 이면 가열 부족 (판정 불가)",
+      "measured": 1.111337,
+      "predicted": 1.126031,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "가열 끝 SKIN",
+      "criterion": "|Δ| ≤ 0.5 ℃",
+      "if_wrong": "열",
+      "measured": 40.2,
+      "predicted": 40.470425,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "가열 끝 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 44.3,
+      "predicted": 44.401937,
+      "verdict": "—"
+     },
+     {
+      "ap_mae": 1.507421,
+      "cell": "휴지 SKIN·AP 0/60/120/180/240/299 s",
+      "criterion": "SKIN MAE ≤ 0.5 ℃ (AP MAE 보고)",
+      "if_wrong": "냉각 (c_s 또는 d10 전력)",
+      "measured": [
+       [
+        40.2,
+        44.3
+       ],
+       [
+        38.1,
+        39.5
+       ],
+       [
+        37.4,
+        38.5
+       ],
+       [
+        36.8,
+        37.8
+       ],
+       [
+        36.7,
+        37.5
+       ],
+       [
+        36.3,
+        37.2
+       ]
+      ],
+      "predicted": [
+       [
+        40.481455,
+        44.409766
+       ],
+       [
+        37.719592,
+        39.126365
+       ],
+       [
+        36.811629,
+        36.986992
+       ],
+       [
+        36.260729,
+        35.834725
+       ],
+       [
+        35.802701,
+        35.083015
+       ],
+       [
+        35.395605,
+        34.534143
+       ]
+      ],
+      "skin_mae": 0.598533,
+      "verdict": "틀림 (SKIN MAE 0.60 · AP MAE 1.51)"
+     },
+     {
+      "cell": "재조임 분류",
+      "criterion": "같은 분류 (실측 미분류 → 미확인)",
+      "if_wrong": "≤ 20 s → 못 늦춤 (모형보다 빠름 → T1 38.1 보다 낮은 문턱 또는 기억) · 없음 → 냉각이 모형보다 깊음",
+      "measured": "중간",
+      "predicted": "중간",
+      "verdict": "맞음"
+     },
+     {
+      "cell": "재조임 시각 (≥ ref_d100 × 1.06, 마지막 k = 14)",
+      "criterion": "|Δ| ≤ 10 s · 둘 다 없음 = 맞음 · 한쪽만 없음 = 틀림",
+      "if_wrong": "재조임 규칙",
+      "measured": 40,
+      "predicted": 40,
+      "verdict": "맞음"
+     },
+     {
+      "cell": "재조임 칸 SKIN (v2: ∈ [38.1, 38.6])",
+      "criterion": "38.1 ≤ SKIN_k ≤ 38.6",
+      "if_wrong": "T1",
+      "measured": 38.1,
+      "predicted": [
+       [
+        38.1,
+        38.6
+       ],
+       38.54932
+      ],
+      "verdict": "맞음"
+     },
+     {
+      "cell": "재조임 칸 AP",
+      "criterion": "기술만",
+      "if_wrong": "—",
+      "measured": 41.3,
+      "predicted": 41.775649,
+      "verdict": "—"
+     },
+     {
+      "cell": "재가열 첫 칸",
+      "criterion": "|Δ| ≤ 0.03",
+      "if_wrong": "> 1.03 → 기억",
+      "measured": 2.884475,
+      "predicted": 1.0,
+      "verdict": "틀림"
+     }
+    ],
+    "start_skin": 31.1,
+    "support_note": "적용 범위 안",
+    "supported": true
+   }
+  }
+ }
+}

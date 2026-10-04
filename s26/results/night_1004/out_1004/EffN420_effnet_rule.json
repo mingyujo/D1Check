@@ -1,0 +1,111 @@
+{
+ "checks": {
+  "step1_AP": {
+   "hi": 42.9,
+   "lo": 41.4,
+   "measured": 41.7,
+   "within": true
+  },
+  "step1_SKIN": {
+   "hi": 38.6,
+   "lo": 37.3,
+   "measured": 37.6,
+   "within": true
+  },
+  "step2_AP": {
+   "hi": 44.6,
+   "lo": 43.7,
+   "measured": 44.0,
+   "within": true
+  },
+  "step2_SKIN": {
+   "hi": 40.3,
+   "lo": 39.5,
+   "measured": 39.8,
+   "within": true
+  }
+ },
+ "counter_interpretations": [
+  "시작 SKIN 밴드(29.1~31.6) 밖 여부",
+  "SOC (세션 후반)",
+  "실내 온도",
+  "1런",
+  "span 차이 (run-only — N1300·M1 과 같음 · 6b H 는 write+run+read)",
+  "EffNet 절대 지연·추론 수·전력이 다르다 → '온도대' 비교지 '시각' 비교가 아님 (시각 차이는 기술만)"
+ ],
+ "onset_1_1_s": 280,
+ "power_desc": {
+  "effnet_p0_w": 5.259862,
+  "mobilenet_p0_w_mean": 5.436149,
+  "note": "잠정 전력 (단위 가정 · 절대 정확도 미인증) — 기술만. H-load 라면 전력이 다르면 진입 온도도 달라질 수 있다 [E]",
+  "ratio": 0.967571
+ },
+ "range_dropped": {
+  "step1": [
+   "6b_H1",
+   "6b_H2"
+  ],
+  "step2": []
+ },
+ "range_file": {
+  "path": "out_1004\\EffN420_mobilenet5_range.json",
+  "sha256": "a43280d62e12d5f17eaef74b7dffc25348133bef2750a179001d35c20bfe9942"
+ },
+ "range_used": {
+  "step1": [
+   "N1300_1002",
+   "M1_npu_a",
+   "M1_npu_b"
+  ],
+  "step2": [
+   "N1300_1002",
+   "6b_H1",
+   "6b_H2",
+   "M1_npu_a",
+   "M1_npu_b"
+  ]
+ },
+ "ranges": {
+  "step1_AP": {
+   "hi": 42.9,
+   "lo": 41.4,
+   "max": 42.6,
+   "min": 41.7,
+   "n": 3
+  },
+  "step1_SKIN": {
+   "hi": 38.6,
+   "lo": 37.3,
+   "max": 38.3,
+   "min": 37.6,
+   "n": 3
+  },
+  "step2_AP": {
+   "hi": 44.6,
+   "lo": 43.7,
+   "max": 44.3,
+   "min": 44.0,
+   "n": 5
+  },
+  "step2_SKIN": {
+   "hi": 40.3,
+   "lo": 39.5,
+   "max": 40.0,
+   "min": 39.8,
+   "n": 5
+  }
+ },
+ "rule": "EffNet 두 계단 SKIN·AP 넷 다 MobileNet 5런 [최소, 최대] ± 0.3 ℃ 안 → 모델 무관 (1런) · 하나라도 밖 → 모델 의존 후보 · 2계단 없음 → 2계단 판정 불가",
+ "step1_s": 140,
+ "step_widths_desc": {
+  "end60": {
+   "lat_ms": 0.919024,
+   "lat_ratio": 1.112705,
+   "power_ratio": 0.901702,
+   "power_w": 4.742828
+  },
+  "level_step1_ratio": 1.081714,
+  "level_step2_first120_ratio": 1.111734
+ },
+ "verdict": "계단 온도대 = 모델 무관 (1런)"
+}
