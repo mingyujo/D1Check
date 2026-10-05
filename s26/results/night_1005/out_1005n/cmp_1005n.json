@@ -1,0 +1,3892 @@
+{
+ "dev_range": [
+  28.3,
+  31.6
+ ],
+ "imports": {
+  "m1m2_judge_1002": {
+   "expected_prefix": "ea282d4a",
+   "ok": true,
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\m1m2_judge_1002.py",
+   "sha256": "ea282d4a48630c4af3cce301c13216f691389fa9f2c8e69a652de645be055b28"
+  },
+  "night1003_judge": {
+   "expected_prefix": "a5ceab41",
+   "ok": true,
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\night1003_judge.py",
+   "sha256": "a5ceab419c3bb0fed73b75b759901fb0e268f957bd1172e1edacbc246c903f50"
+  }
+ },
+ "measured": {
+  "pairs": [
+   {
+    "block": 1,
+    "resource": "NPU"
+   },
+   {
+    "block": 2,
+    "resource": "NPU"
+   },
+   {
+    "block": 1,
+    "resource": "GPU"
+   },
+   {
+    "block": 2,
+    "resource": "GPU"
+   }
+  ],
+  "runs": [
+   {
+    "block": 1,
+    "cell": "NA",
+    "run_id": "70c1cd1e-48d7-4f6f-a1ad-ba8b8212b130",
+    "start_skin": 29.6
+   },
+   {
+    "block": 1,
+    "cell": "GB",
+    "run_id": "d202bc2f-476c-4ae6-8da4-f78467f80553",
+    "start_skin": 29.5
+   },
+   {
+    "block": 1,
+    "cell": "NB",
+    "run_id": "a15cef17-ad24-4a6c-a6ed-8ce79e5b5c8d",
+    "start_skin": 29.6
+   },
+   {
+    "block": 1,
+    "cell": "GA",
+    "run_id": "282822a4-ea20-4712-a2d3-fbad7bf7bba9",
+    "start_skin": 29.4
+   },
+   {
+    "block": 2,
+    "cell": "GA",
+    "run_id": "958084f1-2895-47cc-88a6-0903fd42743c",
+    "start_skin": 30.4
+   },
+   {
+    "block": 2,
+    "cell": "NB",
+    "run_id": "e3dcaea8-93d1-423f-a839-82163ac04beb",
+    "start_skin": 28.6
+   },
+   {
+    "block": 2,
+    "cell": "GB",
+    "run_id": "c1f0e716-ba2b-4f73-a39e-e35e36ceabd2",
+    "start_skin": 27.8
+   },
+   {
+    "block": 2,
+    "cell": "NA",
+    "run_id": "396eb273-0002-4d00-80f2-37c0819e46d1",
+    "start_skin": 30.0
+   }
+  ]
+ },
+ "notes": [],
+ "predictions": {
+  "v1": {
+   "model": "v1 M-P r3 (d1sim/throttle_v1.py + profiles/throttle_v1_*.json, 고정 3050e09) — 밤 1005 칸, 새 구동 파일 (v1 코드 무수정)",
+   "path": "d1sim\\out\\night_1005_prediction_v1.json",
+   "present": true,
+   "sha256": "74bcc3adbe7054bedc8659d0a556dcee68fc27279cc391ea4bfddebc438549dd"
+  },
+  "v2": {
+   "model": "v2 V2-Lb (d1sim/throttle_v2.py + profiles/throttle_v2_*.json, 고정 42338e7) — 밤 1005 칸, 새 구동 파일 (v2 코드 무수정)",
+   "path": "d1sim\\out\\night_1005_prediction_v2.json",
+   "present": true,
+   "sha256": "a06cd2aa2b5d1f9330c59026ed430a812522d423e225d54424971705262e20d1"
+  },
+  "v21": {
+   "model": "v2.1 V21-Ht (d1sim/throttle_v21.py + profiles/throttle_v21_*.json)",
+   "path": "d1sim\\out\\night_1005_prediction_v21.json",
+   "present": true,
+   "sha256": "b6c8e502c8bab3d7aedcf08a2bd50ce8de0eb2cb17d430f3028a7519df939659"
+  }
+ },
+ "results": {
+  "v1": {
+   "variants": {
+    "fast": {
+     "pairs": [
+      {
+       "block": 1,
+       "column": "29.5/fast",
+       "counts": {
+        "기술": 1,
+        "맞음": 2,
+        "틀림": 2
+       },
+       "mean_start_skin": 29.6,
+       "resource": "NPU",
+       "rows": [
+        {
+         "cell": "Δ최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +0.623 ℃",
+         "measured": 2.8,
+         "predicted": 2.177261,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "Δt38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 100,
+         "predicted": 119,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δt40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δ조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 -70.000 s",
+         "measured": 80,
+         "predicted": 150,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "일 비 (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 1.101248,
+         "predicted": 1.148385,
+         "verdict": "기술"
+        }
+       ],
+       "supported": true
+      },
+      {
+       "block": 2,
+       "column": "29.5/fast",
+       "counts": {
+        "기술": 1,
+        "맞음": 2,
+        "틀림": 2
+       },
+       "mean_start_skin": 29.3,
+       "resource": "NPU",
+       "rows": [
+        {
+         "cell": "Δ최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +0.823 ℃",
+         "measured": 3.0,
+         "predicted": 2.177261,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "Δt38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 130,
+         "predicted": 119,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δt40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δ조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 -60.000 s",
+         "measured": 90,
+         "predicted": 150,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "일 비 (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 1.09013,
+         "predicted": 1.148385,
+         "verdict": "기술"
+        }
+       ],
+       "supported": true
+      },
+      {
+       "block": 1,
+       "column": "29.5/fast",
+       "counts": {
+        "기술": 1,
+        "맞음": 1,
+        "틀림": 3
+       },
+       "mean_start_skin": 29.45,
+       "resource": "GPU",
+       "rows": [
+        {
+         "cell": "Δ최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +0.634 ℃",
+         "measured": 0.0,
+         "predicted": -0.633679,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "Δt38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +155.000 s",
+         "measured": 82,
+         "predicted": -73,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "Δt40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δ조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 -70.000 s",
+         "measured": 150,
+         "predicted": 220,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "일 비 (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 1.025582,
+         "predicted": 1.087396,
+         "verdict": "기술"
+        }
+       ],
+       "supported": true
+      },
+      {
+       "block": 2,
+       "note": "A: 적용 범위 안 · B: 적용 범위 밖 (unsupported): 시작 SKIN 27.8 ∉ [28.3, 31.6] — 범위를 넓히지 않는다",
+       "resource": "GPU",
+       "rows": [],
+       "supported": false
+      }
+     ],
+     "resources": {
+      "GPU": {
+       "verdict": "unsupported 또는 예측 열 없음 — 판정 문구 대조 안 함"
+      },
+      "NPU": {
+       "columns": [
+        "29.5/fast",
+        "29.5/fast"
+       ],
+       "criterion": "자원별 판정 문구가 다르면 틀림",
+       "measured": "B 낮음 (2쌍)",
+       "predicted": "B 낮음 (2쌍)",
+       "verdict": "맞음"
+      }
+     },
+     "runs": [
+      {
+       "block": 1,
+       "cell": "NA",
+       "column": "29.5/fast",
+       "counts": {
+        "기술": 1,
+        "맞음": 3,
+        "틀림": 4
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "차 +70.0 s",
+         "measured": 220,
+         "predicted": 150,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 -70.000 s",
+         "measured": 80,
+         "predicted": 150,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 39.3,
+         "predicted": 39.503337,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 100,
+         "predicted": 119,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +1.196 ℃",
+         "measured": 32.4,
+         "predicted": 31.203658,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +7.6 %",
+         "measured": 1257.705869,
+         "predicted": 1169.215813,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 377312,
+         "predicted": 350764.744001,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.6,
+       "supported": true
+      },
+      {
+       "block": 1,
+       "cell": "GB",
+       "column": "29.5/fast",
+       "counts": {
+        "기술": 1,
+        "맞음": 6,
+        "틀림": 1
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s (둘 다 없음 = 맞음)",
+         "if_wrong": "",
+         "measured": null,
+         "predicted": null,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +60.000 s",
+         "measured": 60,
+         "predicted": 0,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 38.3,
+         "predicted": 38.654438,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 62,
+         "predicted": 77,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 32.4,
+         "predicted": 31.987025,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "",
+         "measured": 194.187041,
+         "predicted": 193.896583,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 93210,
+         "predicted": 93070.359924,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.5,
+       "supported": true
+      },
+      {
+       "block": 1,
+       "cell": "NB",
+       "column": "29.5/fast",
+       "counts": {
+        "기술": 1,
+        "맞음": 6,
+        "틀림": 1
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s (둘 다 없음 = 맞음)",
+         "if_wrong": "",
+         "measured": null,
+         "predicted": null,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -0.826 ℃",
+         "measured": 36.5,
+         "predicted": 37.326076,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 33.3,
+         "predicted": 32.855622,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "",
+         "measured": 629.564769,
+         "predicted": 610.322728,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 415514,
+         "predicted": 402813.000745,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.6,
+       "supported": true
+      },
+      {
+       "block": 1,
+       "cell": "GA",
+       "column": "29.5/fast",
+       "counts": {
+        "기술": 1,
+        "맞음": 4,
+        "틀림": 3
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "",
+         "measured": 90,
+         "predicted": 80,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 210,
+         "predicted": 220,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 38.3,
+         "predicted": 38.02076,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +140.000 s",
+         "measured": 144,
+         "predicted": 4,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +1.169 ℃",
+         "measured": 32.2,
+         "predicted": 31.030887,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +6.2 %",
+         "measured": 302.945702,
+         "predicted": 285.300368,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 90885,
+         "predicted": 85590.110272,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.4,
+       "supported": true
+      },
+      {
+       "block": 2,
+       "cell": "GA",
+       "column": "30.5/fast",
+       "counts": {
+        "기술": 1,
+        "맞음": 4,
+        "틀림": 3
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "",
+         "measured": 60,
+         "predicted": 70,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 240,
+         "predicted": 230,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 38.2,
+         "predicted": 38.38386,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +48.000 s",
+         "measured": 113,
+         "predicted": 65,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -2.721 ℃",
+         "measured": 29.2,
+         "predicted": 31.920586,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +12.3 %",
+         "measured": 304.218273,
+         "predicted": 270.821022,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 91266,
+         "predicted": 81246.30653,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 30.4,
+       "supported": true
+      },
+      {
+       "block": 2,
+       "cell": "NB",
+       "column": "29.5/fast",
+       "counts": {
+        "기술": 1,
+        "맞음": 6,
+        "틀림": 1
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s (둘 다 없음 = 맞음)",
+         "if_wrong": "",
+         "measured": null,
+         "predicted": null,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -0.826 ℃",
+         "measured": 36.5,
+         "predicted": 37.326076,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 33.3,
+         "predicted": 32.855622,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "",
+         "measured": 624.840196,
+         "predicted": 610.322728,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 412395,
+         "predicted": 402813.000745,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 28.6,
+       "supported": true
+      },
+      {
+       "block": 2,
+       "cell": "GB",
+       "note": "적용 범위 밖 (unsupported): 시작 SKIN 27.8 ∉ [28.3, 31.6] — 범위를 넓히지 않는다",
+       "rows": [],
+       "start_skin": 27.8,
+       "supported": false
+      },
+      {
+       "block": 2,
+       "cell": "NA",
+       "column": "29.5/fast",
+       "counts": {
+        "기술": 1,
+        "맞음": 3,
+        "틀림": 4
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "차 +70.0 s",
+         "measured": 220,
+         "predicted": 150,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 -60.000 s",
+         "measured": 90,
+         "predicted": 150,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 39.5,
+         "predicted": 39.503337,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 130,
+         "predicted": 119,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +1.496 ℃",
+         "measured": 32.7,
+         "predicted": 31.203658,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +7.8 %",
+         "measured": 1260.994416,
+         "predicted": 1169.215813,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 378299,
+         "predicted": 350764.744001,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 30.0,
+       "supported": true
+      }
+     ]
+    },
+    "skin": {
+     "pairs": [
+      {
+       "block": 1,
+       "column": "29.5/skin",
+       "counts": {
+        "기술": 1,
+        "맞음": 2,
+        "틀림": 2
+       },
+       "mean_start_skin": 29.6,
+       "resource": "NPU",
+       "rows": [
+        {
+         "cell": "Δ최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +0.586 ℃",
+         "measured": 2.8,
+         "predicted": 2.214476,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "Δt38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 100,
+         "predicted": 127,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δt40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δ조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 -60.000 s",
+         "measured": 80,
+         "predicted": 140,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "일 비 (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 1.101248,
+         "predicted": 1.145005,
+         "verdict": "기술"
+        }
+       ],
+       "supported": true
+      },
+      {
+       "block": 2,
+       "column": "29.5/skin",
+       "counts": {
+        "기술": 1,
+        "맞음": 2,
+        "틀림": 2
+       },
+       "mean_start_skin": 29.3,
+       "resource": "NPU",
+       "rows": [
+        {
+         "cell": "Δ최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +0.786 ℃",
+         "measured": 3.0,
+         "predicted": 2.214476,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "Δt38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 130,
+         "predicted": 127,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δt40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δ조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 -50.000 s",
+         "measured": 90,
+         "predicted": 140,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "일 비 (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 1.09013,
+         "predicted": 1.145005,
+         "verdict": "기술"
+        }
+       ],
+       "supported": true
+      },
+      {
+       "block": 1,
+       "column": "29.5/skin",
+       "counts": {
+        "기술": 1,
+        "맞음": 1,
+        "틀림": 3
+       },
+       "mean_start_skin": 29.45,
+       "resource": "GPU",
+       "rows": [
+        {
+         "cell": "Δ최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +0.634 ℃",
+         "measured": 0.0,
+         "predicted": -0.633679,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "Δt38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +155.000 s",
+         "measured": 82,
+         "predicted": -73,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "Δt40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δ조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 -70.000 s",
+         "measured": 150,
+         "predicted": 220,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "일 비 (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 1.025582,
+         "predicted": 1.087396,
+         "verdict": "기술"
+        }
+       ],
+       "supported": true
+      },
+      {
+       "block": 2,
+       "note": "A: 적용 범위 안 · B: 적용 범위 밖 (unsupported): 시작 SKIN 27.8 ∉ [28.3, 31.6] — 범위를 넓히지 않는다",
+       "resource": "GPU",
+       "rows": [],
+       "supported": false
+      }
+     ],
+     "resources": {
+      "GPU": {
+       "verdict": "unsupported 또는 예측 열 없음 — 판정 문구 대조 안 함"
+      },
+      "NPU": {
+       "columns": [
+        "29.5/skin",
+        "29.5/skin"
+       ],
+       "criterion": "자원별 판정 문구가 다르면 틀림",
+       "measured": "B 낮음 (2쌍)",
+       "predicted": "B 낮음 (2쌍)",
+       "verdict": "맞음"
+      }
+     },
+     "runs": [
+      {
+       "block": 1,
+       "cell": "NA",
+       "column": "29.5/skin",
+       "counts": {
+        "기술": 1,
+        "맞음": 3,
+        "틀림": 4
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "차 +60.0 s",
+         "measured": 220,
+         "predicted": 160,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 -60.000 s",
+         "measured": 80,
+         "predicted": 140,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 39.3,
+         "predicted": 39.540552,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 100,
+         "predicted": 127,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +1.188 ℃",
+         "measured": 32.4,
+         "predicted": 31.212166,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +7.3 %",
+         "measured": 1257.705869,
+         "predicted": 1172.667467,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 377312,
+         "predicted": 351800.240178,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.6,
+       "supported": true
+      },
+      {
+       "block": 1,
+       "cell": "GB",
+       "column": "29.5/skin",
+       "counts": {
+        "기술": 1,
+        "맞음": 6,
+        "틀림": 1
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s (둘 다 없음 = 맞음)",
+         "if_wrong": "",
+         "measured": null,
+         "predicted": null,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +60.000 s",
+         "measured": 60,
+         "predicted": 0,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 38.3,
+         "predicted": 38.654438,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 62,
+         "predicted": 77,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 32.4,
+         "predicted": 31.987025,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "",
+         "measured": 194.187041,
+         "predicted": 193.896583,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 93210,
+         "predicted": 93070.359924,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.5,
+       "supported": true
+      },
+      {
+       "block": 1,
+       "cell": "NB",
+       "column": "29.5/skin",
+       "counts": {
+        "기술": 1,
+        "맞음": 6,
+        "틀림": 1
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s (둘 다 없음 = 맞음)",
+         "if_wrong": "",
+         "measured": null,
+         "predicted": null,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -0.826 ℃",
+         "measured": 36.5,
+         "predicted": 37.326076,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 33.3,
+         "predicted": 32.855622,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "",
+         "measured": 629.564769,
+         "predicted": 610.322728,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 415514,
+         "predicted": 402813.000745,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.6,
+       "supported": true
+      },
+      {
+       "block": 1,
+       "cell": "GA",
+       "column": "29.5/skin",
+       "counts": {
+        "기술": 1,
+        "맞음": 4,
+        "틀림": 3
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "",
+         "measured": 90,
+         "predicted": 80,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 210,
+         "predicted": 220,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 38.3,
+         "predicted": 38.02076,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +140.000 s",
+         "measured": 144,
+         "predicted": 4,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +1.169 ℃",
+         "measured": 32.2,
+         "predicted": 31.030887,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +6.2 %",
+         "measured": 302.945702,
+         "predicted": 285.300368,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 90885,
+         "predicted": 85590.110272,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.4,
+       "supported": true
+      },
+      {
+       "block": 2,
+       "cell": "GA",
+       "column": "30.5/skin",
+       "counts": {
+        "기술": 1,
+        "맞음": 4,
+        "틀림": 3
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "",
+         "measured": 60,
+         "predicted": 70,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 240,
+         "predicted": 230,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 38.2,
+         "predicted": 38.38386,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +48.000 s",
+         "measured": 113,
+         "predicted": 65,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -2.721 ℃",
+         "measured": 29.2,
+         "predicted": 31.920586,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +12.3 %",
+         "measured": 304.218273,
+         "predicted": 270.821022,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 91266,
+         "predicted": 81246.30653,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 30.4,
+       "supported": true
+      },
+      {
+       "block": 2,
+       "cell": "NB",
+       "column": "29.5/skin",
+       "counts": {
+        "기술": 1,
+        "맞음": 6,
+        "틀림": 1
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s (둘 다 없음 = 맞음)",
+         "if_wrong": "",
+         "measured": null,
+         "predicted": null,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -0.826 ℃",
+         "measured": 36.5,
+         "predicted": 37.326076,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 33.3,
+         "predicted": 32.855622,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "",
+         "measured": 624.840196,
+         "predicted": 610.322728,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 412395,
+         "predicted": 402813.000745,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 28.6,
+       "supported": true
+      },
+      {
+       "block": 2,
+       "cell": "GB",
+       "note": "적용 범위 밖 (unsupported): 시작 SKIN 27.8 ∉ [28.3, 31.6] — 범위를 넓히지 않는다",
+       "rows": [],
+       "start_skin": 27.8,
+       "supported": false
+      },
+      {
+       "block": 2,
+       "cell": "NA",
+       "column": "29.5/skin",
+       "counts": {
+        "기술": 1,
+        "맞음": 3,
+        "틀림": 4
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "차 +60.0 s",
+         "measured": 220,
+         "predicted": 160,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 -50.000 s",
+         "measured": 90,
+         "predicted": 140,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 39.5,
+         "predicted": 39.540552,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 130,
+         "predicted": 127,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +1.488 ℃",
+         "measured": 32.7,
+         "predicted": 31.212166,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +7.5 %",
+         "measured": 1260.994416,
+         "predicted": 1172.667467,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 378299,
+         "predicted": 351800.240178,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 30.0,
+       "supported": true
+      }
+     ]
+    }
+   }
+  },
+  "v2": {
+   "variants": {
+    "theta_0.3": {
+     "pairs": [
+      {
+       "block": 1,
+       "column": "29.5/theta_0.3",
+       "counts": {
+        "기술": 1,
+        "맞음": 3,
+        "틀림": 1
+       },
+       "mean_start_skin": 29.6,
+       "resource": "NPU",
+       "rows": [
+        {
+         "cell": "Δ최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +1.359 ℃",
+         "measured": 2.8,
+         "predicted": 1.441408,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "Δt38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 100,
+         "predicted": 121,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δt40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δ조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 80,
+         "predicted": 110,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "일 비 (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 1.101248,
+         "predicted": 1.135461,
+         "verdict": "기술"
+        }
+       ],
+       "supported": true
+      },
+      {
+       "block": 2,
+       "column": "29.5/theta_0.3",
+       "counts": {
+        "기술": 1,
+        "맞음": 3,
+        "틀림": 1
+       },
+       "mean_start_skin": 29.3,
+       "resource": "NPU",
+       "rows": [
+        {
+         "cell": "Δ최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +1.559 ℃",
+         "measured": 3.0,
+         "predicted": 1.441408,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "Δt38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 130,
+         "predicted": 121,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δt40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δ조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 90,
+         "predicted": 110,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "일 비 (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 1.09013,
+         "predicted": 1.135461,
+         "verdict": "기술"
+        }
+       ],
+       "supported": true
+      },
+      {
+       "block": 1,
+       "column": "29.5/theta_0.3",
+       "counts": {
+        "기술": 1,
+        "맞음": 2,
+        "틀림": 2
+       },
+       "mean_start_skin": 29.45,
+       "resource": "GPU",
+       "rows": [
+        {
+         "cell": "Δ최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 0.0,
+         "predicted": 0.284873,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δt38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +74.000 s",
+         "measured": 82,
+         "predicted": 8,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "Δt40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δ조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +110.000 s",
+         "measured": 150,
+         "predicted": 40,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "일 비 (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 1.025582,
+         "predicted": 0.989644,
+         "verdict": "기술"
+        }
+       ],
+       "supported": true
+      },
+      {
+       "block": 2,
+       "note": "A: 적용 범위 안 · B: 적용 범위 밖 (unsupported): 시작 SKIN 27.8 ∉ [28.3, 31.6] — 범위를 넓히지 않는다",
+       "resource": "GPU",
+       "rows": [],
+       "supported": false
+      }
+     ],
+     "resources": {
+      "GPU": {
+       "verdict": "unsupported 또는 예측 열 없음 — 판정 문구 대조 안 함"
+      },
+      "NPU": {
+       "columns": [
+        "29.5/theta_0.3",
+        "29.5/theta_0.3"
+       ],
+       "criterion": "자원별 판정 문구가 다르면 틀림",
+       "measured": "B 낮음 (2쌍)",
+       "predicted": "B 낮음 (2쌍)",
+       "verdict": "맞음"
+      }
+     },
+     "runs": [
+      {
+       "block": 1,
+       "cell": "NA",
+       "column": "29.5/theta_0.3",
+       "counts": {
+        "기술": 1,
+        "맞음": 4,
+        "틀림": 3
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "차 +30.0 s",
+         "measured": 220,
+         "predicted": 190,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 80,
+         "predicted": 110,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 39.3,
+         "predicted": 39.720758,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 -52.000 s",
+         "measured": 100,
+         "predicted": 152,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 32.4,
+         "predicted": 32.823922,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +6.4 %",
+         "measured": 1257.705869,
+         "predicted": 1182.524019,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 377312,
+         "predicted": 354757.205689,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.6,
+       "supported": true
+      },
+      {
+       "block": 1,
+       "cell": "GB",
+       "column": "29.5/theta_0.3",
+       "counts": {
+        "기술": 1,
+        "맞음": 1,
+        "틀림": 6
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s (한쪽만 없음 = 틀림)",
+         "if_wrong": "있음/없음 불일치",
+         "measured": null,
+         "predicted": 310,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 -110.000 s",
+         "measured": 60,
+         "predicted": 170,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +0.573 ℃",
+         "measured": 38.3,
+         "predicted": 37.726652,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +62.000 s",
+         "measured": 62,
+         "predicted": 0,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -0.917 ℃",
+         "measured": 32.4,
+         "predicted": 33.316777,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +8.8 %",
+         "measured": 194.187041,
+         "predicted": 178.514572,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 93210,
+         "predicted": 85686.994388,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.5,
+       "supported": true
+      },
+      {
+       "block": 1,
+       "cell": "NB",
+       "column": "29.5/theta_0.3",
+       "counts": {
+        "기술": 1,
+        "맞음": 4,
+        "틀림": 3
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s (둘 다 없음 = 맞음)",
+         "if_wrong": "",
+         "measured": null,
+         "predicted": null,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -1.779 ℃",
+         "measured": 36.5,
+         "predicted": 38.279351,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 -31.000 s",
+         "measured": 0,
+         "predicted": 31,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -1.290 ℃",
+         "measured": 33.3,
+         "predicted": 34.589771,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "",
+         "measured": 629.564769,
+         "predicted": 610.322728,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 415514,
+         "predicted": 402813.000745,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.6,
+       "supported": true
+      },
+      {
+       "block": 1,
+       "cell": "GA",
+       "column": "29.5/theta_0.3",
+       "counts": {
+        "기술": 1,
+        "맞음": 6,
+        "틀림": 1
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "",
+         "measured": 90,
+         "predicted": 90,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 210,
+         "predicted": 210,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 38.3,
+         "predicted": 38.011525,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +136.000 s",
+         "measured": 144,
+         "predicted": 8,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 32.2,
+         "predicted": 32.450346,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "",
+         "measured": 302.945702,
+         "predicted": 288.612272,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 90885,
+         "predicted": 86583.681548,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.4,
+       "supported": true
+      },
+      {
+       "block": 2,
+       "cell": "GA",
+       "column": "30.5/theta_0.3",
+       "counts": {
+        "기술": 1,
+        "맞음": 5,
+        "틀림": 2
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "",
+         "measured": 60,
+         "predicted": 80,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 240,
+         "predicted": 220,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 38.2,
+         "predicted": 38.15201,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 113,
+         "predicted": 83,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -3.956 ℃",
+         "measured": 29.2,
+         "predicted": 33.155673,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +13.5 %",
+         "measured": 304.218273,
+         "predicted": 268.096072,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 91266,
+         "predicted": 80428.82147,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 30.4,
+       "supported": true
+      },
+      {
+       "block": 2,
+       "cell": "NB",
+       "column": "29.5/theta_0.3",
+       "counts": {
+        "기술": 1,
+        "맞음": 4,
+        "틀림": 3
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s (둘 다 없음 = 맞음)",
+         "if_wrong": "",
+         "measured": null,
+         "predicted": null,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -1.779 ℃",
+         "measured": 36.5,
+         "predicted": 38.279351,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 -31.000 s",
+         "measured": 0,
+         "predicted": 31,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -1.290 ℃",
+         "measured": 33.3,
+         "predicted": 34.589771,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "",
+         "measured": 624.840196,
+         "predicted": 610.322728,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 412395,
+         "predicted": 402813.000745,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 28.6,
+       "supported": true
+      },
+      {
+       "block": 2,
+       "cell": "GB",
+       "note": "적용 범위 밖 (unsupported): 시작 SKIN 27.8 ∉ [28.3, 31.6] — 범위를 넓히지 않는다",
+       "rows": [],
+       "start_skin": 27.8,
+       "supported": false
+      },
+      {
+       "block": 2,
+       "cell": "NA",
+       "column": "29.5/theta_0.3",
+       "counts": {
+        "기술": 1,
+        "맞음": 5,
+        "틀림": 2
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "차 +30.0 s",
+         "measured": 220,
+         "predicted": 190,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 90,
+         "predicted": 110,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 39.5,
+         "predicted": 39.720758,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 130,
+         "predicted": 152,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 32.7,
+         "predicted": 32.823922,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +6.6 %",
+         "measured": 1260.994416,
+         "predicted": 1182.524019,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 378299,
+         "predicted": 354757.205689,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 30.0,
+       "supported": true
+      }
+     ]
+    },
+    "theta_0.75": {
+     "pairs": [
+      {
+       "block": 1,
+       "column": "29.5/theta_0.75",
+       "counts": {
+        "기술": 1,
+        "맞음": 3,
+        "틀림": 1
+       },
+       "mean_start_skin": 29.6,
+       "resource": "NPU",
+       "rows": [
+        {
+         "cell": "Δ최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +1.359 ℃",
+         "measured": 2.8,
+         "predicted": 1.441408,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "Δt38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 100,
+         "predicted": 121,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δt40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δ조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 80,
+         "predicted": 110,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "일 비 (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 1.101248,
+         "predicted": 1.135461,
+         "verdict": "기술"
+        }
+       ],
+       "supported": true
+      },
+      {
+       "block": 2,
+       "column": "29.5/theta_0.75",
+       "counts": {
+        "기술": 1,
+        "맞음": 3,
+        "틀림": 1
+       },
+       "mean_start_skin": 29.3,
+       "resource": "NPU",
+       "rows": [
+        {
+         "cell": "Δ최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +1.559 ℃",
+         "measured": 3.0,
+         "predicted": 1.441408,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "Δt38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 130,
+         "predicted": 121,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δt40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δ조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 90,
+         "predicted": 110,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "일 비 (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 1.09013,
+         "predicted": 1.135461,
+         "verdict": "기술"
+        }
+       ],
+       "supported": true
+      },
+      {
+       "block": 1,
+       "column": "29.5/theta_0.75",
+       "counts": {
+        "기술": 1,
+        "맞음": 2,
+        "틀림": 2
+       },
+       "mean_start_skin": 29.45,
+       "resource": "GPU",
+       "rows": [
+        {
+         "cell": "Δ최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 0.0,
+         "predicted": 0.284873,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δt38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +74.000 s",
+         "measured": 82,
+         "predicted": 8,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "Δt40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δ조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +110.000 s",
+         "measured": 150,
+         "predicted": 40,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "일 비 (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 1.025582,
+         "predicted": 0.989644,
+         "verdict": "기술"
+        }
+       ],
+       "supported": true
+      },
+      {
+       "block": 2,
+       "note": "A: 적용 범위 안 · B: 적용 범위 밖 (unsupported): 시작 SKIN 27.8 ∉ [28.3, 31.6] — 범위를 넓히지 않는다",
+       "resource": "GPU",
+       "rows": [],
+       "supported": false
+      }
+     ],
+     "resources": {
+      "GPU": {
+       "verdict": "unsupported 또는 예측 열 없음 — 판정 문구 대조 안 함"
+      },
+      "NPU": {
+       "columns": [
+        "29.5/theta_0.75",
+        "29.5/theta_0.75"
+       ],
+       "criterion": "자원별 판정 문구가 다르면 틀림",
+       "measured": "B 낮음 (2쌍)",
+       "predicted": "B 낮음 (2쌍)",
+       "verdict": "맞음"
+      }
+     },
+     "runs": [
+      {
+       "block": 1,
+       "cell": "NA",
+       "column": "29.5/theta_0.75",
+       "counts": {
+        "기술": 1,
+        "맞음": 4,
+        "틀림": 3
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "차 +30.0 s",
+         "measured": 220,
+         "predicted": 190,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 80,
+         "predicted": 110,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 39.3,
+         "predicted": 39.720758,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 -52.000 s",
+         "measured": 100,
+         "predicted": 152,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 32.4,
+         "predicted": 32.823922,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +6.4 %",
+         "measured": 1257.705869,
+         "predicted": 1182.524019,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 377312,
+         "predicted": 354757.205689,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.6,
+       "supported": true
+      },
+      {
+       "block": 1,
+       "cell": "GB",
+       "column": "29.5/theta_0.75",
+       "counts": {
+        "기술": 1,
+        "맞음": 1,
+        "틀림": 6
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s (한쪽만 없음 = 틀림)",
+         "if_wrong": "있음/없음 불일치",
+         "measured": null,
+         "predicted": 310,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 -110.000 s",
+         "measured": 60,
+         "predicted": 170,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +0.573 ℃",
+         "measured": 38.3,
+         "predicted": 37.726652,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +62.000 s",
+         "measured": 62,
+         "predicted": 0,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -0.917 ℃",
+         "measured": 32.4,
+         "predicted": 33.316777,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +8.8 %",
+         "measured": 194.187041,
+         "predicted": 178.514572,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 93210,
+         "predicted": 85686.994388,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.5,
+       "supported": true
+      },
+      {
+       "block": 1,
+       "cell": "NB",
+       "column": "29.5/theta_0.75",
+       "counts": {
+        "기술": 1,
+        "맞음": 4,
+        "틀림": 3
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s (둘 다 없음 = 맞음)",
+         "if_wrong": "",
+         "measured": null,
+         "predicted": null,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -1.779 ℃",
+         "measured": 36.5,
+         "predicted": 38.279351,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 -31.000 s",
+         "measured": 0,
+         "predicted": 31,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -1.290 ℃",
+         "measured": 33.3,
+         "predicted": 34.589771,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "",
+         "measured": 629.564769,
+         "predicted": 610.322728,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 415514,
+         "predicted": 402813.000745,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.6,
+       "supported": true
+      },
+      {
+       "block": 1,
+       "cell": "GA",
+       "column": "29.5/theta_0.75",
+       "counts": {
+        "기술": 1,
+        "맞음": 6,
+        "틀림": 1
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "",
+         "measured": 90,
+         "predicted": 90,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 210,
+         "predicted": 210,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 38.3,
+         "predicted": 38.011525,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +136.000 s",
+         "measured": 144,
+         "predicted": 8,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 32.2,
+         "predicted": 32.450346,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "",
+         "measured": 302.945702,
+         "predicted": 288.612272,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 90885,
+         "predicted": 86583.681548,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.4,
+       "supported": true
+      },
+      {
+       "block": 2,
+       "cell": "GA",
+       "column": "30.5/theta_0.75",
+       "counts": {
+        "기술": 1,
+        "맞음": 5,
+        "틀림": 2
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "",
+         "measured": 60,
+         "predicted": 80,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 240,
+         "predicted": 220,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 38.2,
+         "predicted": 38.15201,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 113,
+         "predicted": 83,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -3.956 ℃",
+         "measured": 29.2,
+         "predicted": 33.155673,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +13.5 %",
+         "measured": 304.218273,
+         "predicted": 268.096072,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 91266,
+         "predicted": 80428.82147,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 30.4,
+       "supported": true
+      },
+      {
+       "block": 2,
+       "cell": "NB",
+       "column": "29.5/theta_0.75",
+       "counts": {
+        "기술": 1,
+        "맞음": 4,
+        "틀림": 3
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s (둘 다 없음 = 맞음)",
+         "if_wrong": "",
+         "measured": null,
+         "predicted": null,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -1.779 ℃",
+         "measured": 36.5,
+         "predicted": 38.279351,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 -31.000 s",
+         "measured": 0,
+         "predicted": 31,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -1.290 ℃",
+         "measured": 33.3,
+         "predicted": 34.589771,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "",
+         "measured": 624.840196,
+         "predicted": 610.322728,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 412395,
+         "predicted": 402813.000745,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 28.6,
+       "supported": true
+      },
+      {
+       "block": 2,
+       "cell": "GB",
+       "note": "적용 범위 밖 (unsupported): 시작 SKIN 27.8 ∉ [28.3, 31.6] — 범위를 넓히지 않는다",
+       "rows": [],
+       "start_skin": 27.8,
+       "supported": false
+      },
+      {
+       "block": 2,
+       "cell": "NA",
+       "column": "29.5/theta_0.75",
+       "counts": {
+        "기술": 1,
+        "맞음": 5,
+        "틀림": 2
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "차 +30.0 s",
+         "measured": 220,
+         "predicted": 190,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 90,
+         "predicted": 110,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 39.5,
+         "predicted": 39.720758,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 130,
+         "predicted": 152,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 32.7,
+         "predicted": 32.823922,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +6.6 %",
+         "measured": 1260.994416,
+         "predicted": 1182.524019,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 378299,
+         "predicted": 354757.205689,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 30.0,
+       "supported": true
+      }
+     ]
+    }
+   }
+  },
+  "v21": {
+   "variants": {
+    "(단일)": {
+     "pairs": [
+      {
+       "block": 1,
+       "column": "29.5",
+       "counts": {
+        "기술": 1,
+        "맞음": 3,
+        "틀림": 1
+       },
+       "mean_start_skin": 29.6,
+       "resource": "NPU",
+       "rows": [
+        {
+         "cell": "Δ최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +0.715 ℃",
+         "measured": 2.8,
+         "predicted": 2.085167,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "Δt38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 100,
+         "predicted": 127,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δt40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δ조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 80,
+         "predicted": 90,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "일 비 (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 1.101248,
+         "predicted": 1.126087,
+         "verdict": "기술"
+        }
+       ],
+       "supported": true
+      },
+      {
+       "block": 2,
+       "column": "29.5",
+       "counts": {
+        "기술": 1,
+        "맞음": 3,
+        "틀림": 1
+       },
+       "mean_start_skin": 29.3,
+       "resource": "NPU",
+       "rows": [
+        {
+         "cell": "Δ최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +0.915 ℃",
+         "measured": 3.0,
+         "predicted": 2.085167,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "Δt38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 130,
+         "predicted": 127,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δt40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δ조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 90,
+         "predicted": 90,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "일 비 (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 1.09013,
+         "predicted": 1.126087,
+         "verdict": "기술"
+        }
+       ],
+       "supported": true
+      },
+      {
+       "block": 1,
+       "column": "29.5",
+       "counts": {
+        "기술": 1,
+        "맞음": 3,
+        "틀림": 1
+       },
+       "mean_start_skin": 29.45,
+       "resource": "GPU",
+       "rows": [
+        {
+         "cell": "Δ최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 0.0,
+         "predicted": 0.171254,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δt38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +32.000 s",
+         "measured": 82,
+         "predicted": 50,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "Δt40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "Δ조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 150,
+         "predicted": 120,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "일 비 (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 1.025582,
+         "predicted": 1.007031,
+         "verdict": "기술"
+        }
+       ],
+       "supported": true
+      },
+      {
+       "block": 2,
+       "note": "A: 적용 범위 안 · B: 적용 범위 밖 (unsupported): 시작 SKIN 27.8 ∉ [28.3, 31.6] — 범위를 넓히지 않는다",
+       "resource": "GPU",
+       "rows": [],
+       "supported": false
+      }
+     ],
+     "resources": {
+      "GPU": {
+       "verdict": "unsupported 또는 예측 열 없음 — 판정 문구 대조 안 함"
+      },
+      "NPU": {
+       "columns": [
+        "29.5",
+        "29.5"
+       ],
+       "criterion": "자원별 판정 문구가 다르면 틀림",
+       "measured": "B 낮음 (2쌍)",
+       "predicted": "B 낮음 (2쌍)",
+       "verdict": "맞음"
+      }
+     },
+     "runs": [
+      {
+       "block": 1,
+       "cell": "NA",
+       "column": "29.5",
+       "counts": {
+        "기술": 1,
+        "맞음": 5,
+        "틀림": 2
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "",
+         "measured": 220,
+         "predicted": 210,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 80,
+         "predicted": 90,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 39.3,
+         "predicted": 39.456615,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 100,
+         "predicted": 127,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +0.663 ℃",
+         "measured": 32.4,
+         "predicted": 31.736954,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +5.5 %",
+         "measured": 1257.705869,
+         "predicted": 1192.367418,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 377312,
+         "predicted": 357710.225429,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.6,
+       "supported": true
+      },
+      {
+       "block": 1,
+       "cell": "GB",
+       "column": "29.5",
+       "counts": {
+        "기술": 1,
+        "맞음": 5,
+        "틀림": 2
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s (한쪽만 없음 = 틀림)",
+         "if_wrong": "있음/없음 불일치",
+         "measured": null,
+         "predicted": 400,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 60,
+         "predicted": 80,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 38.3,
+         "predicted": 37.933596,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +62.000 s",
+         "measured": 62,
+         "predicted": 0,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 32.4,
+         "predicted": 32.347533,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "",
+         "measured": 194.187041,
+         "predicted": 188.176923,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 93210,
+         "predicted": 90324.923262,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.5,
+       "supported": true
+      },
+      {
+       "block": 1,
+       "cell": "NB",
+       "column": "29.5",
+       "counts": {
+        "기술": 1,
+        "맞음": 6,
+        "틀림": 1
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s (둘 다 없음 = 맞음)",
+         "if_wrong": "",
+         "measured": null,
+         "predicted": null,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -0.871 ℃",
+         "measured": 36.5,
+         "predicted": 37.371448,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 33.3,
+         "predicted": 33.343065,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "",
+         "measured": 629.564769,
+         "predicted": 610.322728,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 415514,
+         "predicted": 402813.000745,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.6,
+       "supported": true
+      },
+      {
+       "block": 1,
+       "cell": "GA",
+       "column": "29.5",
+       "counts": {
+        "기술": 1,
+        "맞음": 5,
+        "틀림": 2
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "",
+         "measured": 90,
+         "predicted": 100,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 210,
+         "predicted": 200,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 38.3,
+         "predicted": 38.10485,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "차 +94.000 s",
+         "measured": 144,
+         "predicted": 50,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +0.623 ℃",
+         "measured": 32.2,
+         "predicted": 31.577496,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "",
+         "measured": 302.945702,
+         "predicted": 298.980806,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 90885,
+         "predicted": 89694.241807,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 29.4,
+       "supported": true
+      },
+      {
+       "block": 2,
+       "cell": "GA",
+       "column": "30.5",
+       "counts": {
+        "기술": 1,
+        "맞음": 5,
+        "틀림": 2
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "",
+         "measured": 60,
+         "predicted": 80,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 240,
+         "predicted": 220,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 38.2,
+         "predicted": 38.248064,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 113,
+         "predicted": 106,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -3.175 ℃",
+         "measured": 29.2,
+         "predicted": 32.374859,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +9.4 %",
+         "measured": 304.218273,
+         "predicted": 278.187776,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 91266,
+         "predicted": 83456.33289,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 30.4,
+       "supported": true
+      },
+      {
+       "block": 2,
+       "cell": "NB",
+       "column": "29.5",
+       "counts": {
+        "기술": 1,
+        "맞음": 6,
+        "틀림": 1
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s (둘 다 없음 = 맞음)",
+         "if_wrong": "",
+         "measured": null,
+         "predicted": null,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 -0.871 ℃",
+         "measured": 36.5,
+         "predicted": 37.371448,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 33.3,
+         "predicted": 33.343065,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "",
+         "measured": 624.840196,
+         "predicted": 610.322728,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 412395,
+         "predicted": 402813.000745,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 28.6,
+       "supported": true
+      },
+      {
+       "block": 2,
+       "cell": "GB",
+       "note": "적용 범위 밖 (unsupported): 시작 SKIN 27.8 ∉ [28.3, 31.6] — 범위를 넓히지 않는다",
+       "rows": [],
+       "start_skin": 27.8,
+       "supported": false
+      },
+      {
+       "block": 2,
+       "cell": "NA",
+       "column": "29.5",
+       "counts": {
+        "기술": 1,
+        "맞음": 5,
+        "틀림": 2
+       },
+       "note": "적용 범위 안",
+       "rows": [
+        {
+         "cell": "첫 조임 (s)",
+         "criterion": "±20.0 s",
+         "if_wrong": "",
+         "measured": 220,
+         "predicted": 210,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "조임 시간 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 90,
+         "predicted": 90,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "최고 SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "",
+         "measured": 39.5,
+         "predicted": 39.456615,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t38 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 130,
+         "predicted": 127,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "t40 (s)",
+         "criterion": "±30.0 s",
+         "if_wrong": "",
+         "measured": 0,
+         "predicted": 0,
+         "verdict": "맞음"
+        },
+        {
+         "cell": "899 s SKIN (℃)",
+         "criterion": "±0.5 ℃",
+         "if_wrong": "차 +0.963 ℃",
+         "measured": 32.7,
+         "predicted": 31.736954,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "처리율 (추론/s)",
+         "criterion": "±5 %",
+         "if_wrong": "상대 차 +5.8 %",
+         "measured": 1260.994416,
+         "predicted": 1192.367418,
+         "verdict": "틀림"
+        },
+        {
+         "cell": "n (기술)",
+         "criterion": "기술",
+         "if_wrong": "",
+         "measured": 378299,
+         "predicted": 357710.225429,
+         "verdict": "기술"
+        }
+       ],
+       "start_skin": 30.0,
+       "supported": true
+      }
+     ]
+    }
+   }
+  }
+ },
+ "rule": "밤1005_사전등록_v1 §4 — 시각 ±20 s · 조임 시간 ±30 s · SKIN ±0.5 ℃ · t38/t40 ±30 s · 처리율 ±5 % · 판정 문구 다르면 틀림 · 비교 열 = 시작 SKIN 에 가까운 쪽 (보간 안 함, 같으면 29.5; 쌍은 A·B 평균) · [28.3, 31.6] 밖 unsupported · 변형마다 따로",
+ "tolerances": {
+  "d_max_skin": 0.5,
+  "d_t38_s": 30.0,
+  "d_t40_s": 30.0,
+  "d_throttle_time_s": 30.0,
+  "rate_rel": 0.05,
+  "skin_abs": 0.5,
+  "t_level_s": 30.0,
+  "throttle_time_s": 30.0,
+  "time_s": 20.0
+ }
+}

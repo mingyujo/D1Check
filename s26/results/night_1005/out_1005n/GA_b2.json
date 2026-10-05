@@ -1,0 +1,556 @@
+{
+ "block": 2,
+ "cell": "GA",
+ "chain_id": "gpu_work100_v1",
+ "chain_sha256": "411513fb9815b6a8510c217d9ea6075d3cffc5e207dc4dff84adfeecb7d0a1d1",
+ "imports": {
+  "m1m2_judge_1002": {
+   "expected_prefix": "ea282d4a",
+   "ok": true,
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\m1m2_judge_1002.py",
+   "sha256": "ea282d4a48630c4af3cce301c13216f691389fa9f2c8e69a652de645be055b28"
+  },
+  "night1003_judge": {
+   "expected_prefix": "a5ceab41",
+   "ok": true,
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\night1003_judge.py",
+   "sha256": "a5ceab419c3bb0fed73b75b759901fb0e268f957bd1172e1edacbc246c903f50"
+  }
+ },
+ "kind": "night1005_run",
+ "resource": "GPU",
+ "run_id": "958084f1-2895-47cc-88a6-0903fd42743c",
+ "segments": [
+  {
+   "duty": 100,
+   "index": 0,
+   "label": "work_d100",
+   "length_s": 300.001703,
+   "n": 91266,
+   "start_soc": {
+    "age_s": 1.008022,
+    "battery_level": 72,
+    "source": "skin_watch_csv"
+   }
+  },
+  {
+   "duty": 1,
+   "index": 1,
+   "label": "tail_idle",
+   "length_s": 600.001557,
+   "n": 1948,
+   "start_soc": {
+    "age_s": 12.204033,
+    "battery_level": 70,
+    "source": "skin_watch_csv"
+   }
+  }
+ ],
+ "side": "A",
+ "start": {
+  "band": "밴드 안 (29.1~31.6)",
+  "gate_note": "게이트 줄 1개 중 마지막 실행 줄",
+  "gate_row": {
+   "AP": "29.5",
+   "BAT": "28.8",
+   "SKIN": "30.7",
+   "action": "run",
+   "label": "GA_b2",
+   "local_time": "2026-10-05T19:17:25",
+   "lower_bat_ge_27.5": "True",
+   "lower_pass": "True",
+   "lower_policy": "required",
+   "lower_skin_ge_29.1": "True",
+   "plugged": "False",
+   "soc": "72",
+   "thermal_status": "0",
+   "upper_pass": "True",
+   "waited_s": "0"
+  },
+  "load_start_thermal": {
+   "AP": 29.2,
+   "BAT": 28.4,
+   "SKIN": 30.4,
+   "dt_s": -0.39448,
+   "status": 0
+  },
+  "lower": {
+   "label": "하한 통과",
+   "lower_pass": true,
+   "source": "게이트 줄 lower_pass"
+  },
+  "start_skin": 30.4,
+  "start_thermal": {
+   "AP": 29.2,
+   "BAT": 28.4,
+   "SKIN": 30.4,
+   "dt_s": -0.394502,
+   "status": 0
+  }
+ },
+ "start_skin": 30.4,
+ "tail": {
+  "duty": 1,
+  "label": "tail_idle",
+  "length_s": 600.001557,
+  "n": 1948
+ },
+ "temps": {
+  "at_899": {
+   "AP": 27.9,
+   "BAT": 26.9,
+   "SKIN": 29.2,
+   "dt_s": -0.009502,
+   "status": 0
+  },
+  "max_AP": 42.9,
+  "max_BAT": 35.3,
+  "max_SKIN": 38.2,
+  "n_samples": 896,
+  "status_ge1_s": 0,
+  "t38_s": 113,
+  "t40_s": 0,
+  "t42_s": 0,
+  "window": "구간 0 start_ns ~ 마지막 구간 end_ns",
+  "window_s": 900.197868
+ },
+ "termination_reason": "duration_complete",
+ "threshold_ratio": 1.1,
+ "transitions": [
+  {
+   "backend_switch": false,
+   "buffer_init_ns": null,
+   "duration_ns": 193392734,
+   "duration_s": 0.193393,
+   "end_ns": 9386355597654,
+   "env_init_ns": null,
+   "from_accelerator": "GPU",
+   "model_init_ns": null,
+   "model_initialized": false,
+   "start_ns": 9386162204920,
+   "to_accelerator": "GPU",
+   "to_segment": 1,
+   "warmup_count": 20
+  }
+ ],
+ "work": {
+  "achieved_duty": 100,
+  "bins": [
+   {
+    "AP": 29.2,
+    "SKIN": 30.4,
+    "k": 0,
+    "median_ms": 2.448437,
+    "n": 4031,
+    "ratio": 1.004036,
+    "t0": 0
+   },
+   {
+    "AP": 35.5,
+    "SKIN": 32.2,
+    "k": 1,
+    "median_ms": 2.438203,
+    "n": 4035,
+    "ratio": 0.99984,
+    "t0": 10
+   },
+   {
+    "AP": 38.4,
+    "SKIN": 33.6,
+    "k": 2,
+    "median_ms": 2.430859,
+    "n": 4061,
+    "ratio": 0.996828,
+    "t0": 20
+   },
+   {
+    "AP": 39.8,
+    "SKIN": 34.6,
+    "k": 3,
+    "median_ms": 2.432988,
+    "n": 4060,
+    "ratio": 0.997701,
+    "t0": 30
+   },
+   {
+    "AP": 41.0,
+    "SKIN": 35.5,
+    "k": 4,
+    "median_ms": 2.442148,
+    "n": 4037,
+    "ratio": 1.001457,
+    "t0": 40
+   },
+   {
+    "AP": 41.9,
+    "SKIN": 36.1,
+    "k": 5,
+    "median_ms": 2.535039,
+    "n": 3902,
+    "ratio": 1.039549,
+    "t0": 50
+   },
+   {
+    "AP": 42.2,
+    "SKIN": 36.6,
+    "k": 6,
+    "median_ms": 2.888399,
+    "n": 3503,
+    "ratio": 1.184453,
+    "t0": 60
+   },
+   {
+    "AP": 42.5,
+    "SKIN": 36.9,
+    "k": 7,
+    "median_ms": 3.010039,
+    "n": 3287,
+    "ratio": 1.234334,
+    "t0": 70
+   },
+   {
+    "AP": 42.6,
+    "SKIN": 37.2,
+    "k": 8,
+    "median_ms": 3.023086,
+    "n": 3282,
+    "ratio": 1.239684,
+    "t0": 80
+   },
+   {
+    "AP": 42.8,
+    "SKIN": 37.4,
+    "k": 9,
+    "median_ms": 3.058711,
+    "n": 3105,
+    "ratio": 1.254293,
+    "t0": 90
+   },
+   {
+    "AP": 42.7,
+    "SKIN": 37.4,
+    "k": 10,
+    "median_ms": 3.057891,
+    "n": 3105,
+    "ratio": 1.253957,
+    "t0": 100
+   },
+   {
+    "AP": 42.8,
+    "SKIN": 37.6,
+    "k": 11,
+    "median_ms": 3.115879,
+    "n": 2940,
+    "ratio": 1.277736,
+    "t0": 110
+   },
+   {
+    "AP": 42.7,
+    "SKIN": 37.7,
+    "k": 12,
+    "median_ms": 3.102891,
+    "n": 2951,
+    "ratio": 1.27241,
+    "t0": 120
+   },
+   {
+    "AP": 42.6,
+    "SKIN": 37.8,
+    "k": 13,
+    "median_ms": 3.107578,
+    "n": 2956,
+    "ratio": 1.274332,
+    "t0": 130
+   },
+   {
+    "AP": 42.7,
+    "SKIN": 37.9,
+    "k": 14,
+    "median_ms": 3.517988,
+    "n": 2804,
+    "ratio": 1.44263,
+    "t0": 140
+   },
+   {
+    "AP": 42.5,
+    "SKIN": 37.9,
+    "k": 15,
+    "median_ms": 3.497383,
+    "n": 2812,
+    "ratio": 1.43418,
+    "t0": 150
+   },
+   {
+    "AP": 42.5,
+    "SKIN": 37.9,
+    "k": 16,
+    "median_ms": 3.612227,
+    "n": 2773,
+    "ratio": 1.481274,
+    "t0": 160
+   },
+   {
+    "AP": 42.5,
+    "SKIN": 37.9,
+    "k": 17,
+    "median_ms": 3.545156,
+    "n": 2793,
+    "ratio": 1.45377,
+    "t0": 170
+   },
+   {
+    "AP": 42.5,
+    "SKIN": 37.9,
+    "k": 18,
+    "median_ms": 3.874531,
+    "n": 2626,
+    "ratio": 1.588838,
+    "t0": 180
+   },
+   {
+    "AP": 42.0,
+    "SKIN": 37.8,
+    "k": 19,
+    "median_ms": 3.094375,
+    "n": 2953,
+    "ratio": 1.268918,
+    "t0": 190
+   },
+   {
+    "AP": 42.6,
+    "SKIN": 38.1,
+    "k": 20,
+    "median_ms": 4.012989,
+    "n": 2472,
+    "ratio": 1.645616,
+    "t0": 200
+   },
+   {
+    "AP": 42.0,
+    "SKIN": 38.0,
+    "k": 21,
+    "median_ms": 3.837032,
+    "n": 2640,
+    "ratio": 1.573461,
+    "t0": 210
+   },
+   {
+    "AP": 42.1,
+    "SKIN": 38.0,
+    "k": 22,
+    "median_ms": 3.835664,
+    "n": 2637,
+    "ratio": 1.5729,
+    "t0": 220
+   },
+   {
+    "AP": 42.2,
+    "SKIN": 38.0,
+    "k": 23,
+    "median_ms": 3.840078,
+    "n": 2628,
+    "ratio": 1.57471,
+    "t0": 230
+   },
+   {
+    "AP": 42.3,
+    "SKIN": 38.0,
+    "k": 24,
+    "median_ms": 4.017383,
+    "n": 2466,
+    "ratio": 1.647418,
+    "t0": 240
+   },
+   {
+    "AP": 41.9,
+    "SKIN": 38.0,
+    "k": 25,
+    "median_ms": 3.975937,
+    "n": 2491,
+    "ratio": 1.630422,
+    "t0": 250
+   },
+   {
+    "AP": 41.9,
+    "SKIN": 38.0,
+    "k": 26,
+    "median_ms": 4.010352,
+    "n": 2476,
+    "ratio": 1.644535,
+    "t0": 260
+   },
+   {
+    "AP": 41.8,
+    "SKIN": 38.0,
+    "k": 27,
+    "median_ms": 3.95707,
+    "n": 2497,
+    "ratio": 1.622685,
+    "t0": 270
+   },
+   {
+    "AP": 41.8,
+    "SKIN": 38.0,
+    "k": 28,
+    "median_ms": 4.024864,
+    "n": 2468,
+    "ratio": 1.650485,
+    "t0": 280
+   },
+   {
+    "AP": 41.8,
+    "SKIN": 38.0,
+    "k": 29,
+    "median_ms": 4.010196,
+    "n": 2475,
+    "ratio": 1.644471,
+    "t0": 290
+   }
+  ],
+  "cumulative": [
+   {
+    "cum": 4031,
+    "t_end": 10
+   },
+   {
+    "cum": 8066,
+    "t_end": 20
+   },
+   {
+    "cum": 12127,
+    "t_end": 30
+   },
+   {
+    "cum": 16187,
+    "t_end": 40
+   },
+   {
+    "cum": 20224,
+    "t_end": 50
+   },
+   {
+    "cum": 24126,
+    "t_end": 60
+   },
+   {
+    "cum": 27629,
+    "t_end": 70
+   },
+   {
+    "cum": 30916,
+    "t_end": 80
+   },
+   {
+    "cum": 34198,
+    "t_end": 90
+   },
+   {
+    "cum": 37303,
+    "t_end": 100
+   },
+   {
+    "cum": 40408,
+    "t_end": 110
+   },
+   {
+    "cum": 43348,
+    "t_end": 120
+   },
+   {
+    "cum": 46299,
+    "t_end": 130
+   },
+   {
+    "cum": 49255,
+    "t_end": 140
+   },
+   {
+    "cum": 52059,
+    "t_end": 150
+   },
+   {
+    "cum": 54871,
+    "t_end": 160
+   },
+   {
+    "cum": 57644,
+    "t_end": 170
+   },
+   {
+    "cum": 60437,
+    "t_end": 180
+   },
+   {
+    "cum": 63063,
+    "t_end": 190
+   },
+   {
+    "cum": 66016,
+    "t_end": 200
+   },
+   {
+    "cum": 68488,
+    "t_end": 210
+   },
+   {
+    "cum": 71128,
+    "t_end": 220
+   },
+   {
+    "cum": 73765,
+    "t_end": 230
+   },
+   {
+    "cum": 76393,
+    "t_end": 240
+   },
+   {
+    "cum": 78859,
+    "t_end": 250
+   },
+   {
+    "cum": 81350,
+    "t_end": 260
+   },
+   {
+    "cum": 83826,
+    "t_end": 270
+   },
+   {
+    "cum": 86323,
+    "t_end": 280
+   },
+   {
+    "cum": 88791,
+    "t_end": 290
+   },
+   {
+    "cum": 91266,
+    "t_end": 300
+   },
+   {
+    "cum": 91266,
+    "t_end": 310
+   }
+  ],
+  "duration_s": 300,
+  "duty": 100,
+  "end_thermal": {
+   "AP": 41.8,
+   "BAT": 35.2,
+   "SKIN": 38.0,
+   "dt_s": -0.091204,
+   "status": 0
+  },
+  "first_throttle_label": "60 s",
+  "first_throttle_s": 60,
+  "label": "work_d100",
+  "length_s": 300.001703,
+  "n": 91266,
+  "n_ref30": 12127,
+  "rate_per_s": 304.218273,
+  "ref30_ms": 2.438594,
+  "termination_reason": "duration_complete",
+  "throttle_time_s": 240
+ }
+}

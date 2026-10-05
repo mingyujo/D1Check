@@ -1,0 +1,48 @@
+# 밤 1005 (1005n) 동결 원장 (측정 전 SHA · 시각, KST) — 생성 2026-10-05 17:15 +09:00 · 첫 칸 전
+# "측정 전" 증거는 P1d 커밋이다. 이 원장은 밤 세션이 본 파일이 그 커밋과 같은지의 기록이다.
+## P1d 커밋 (git log, 이 레포 s26-measure)
+adc17a58818ef75320da218e8ce9f3ef7c29984c 2026-10-05 13:58:31 +0900 d1sim: 밤 1005 사전 등록 (Cowork) + 체인 4개
+26a5fc1554e745abf0074f83dd2dcdd5fa693258 2026-10-05 14:04:28 +0900 s26: 밤 1005 판정기 (결과 전 고정)
+c6a7da2 2026-10-05 14:39:03 +0900 d1sim: v2.1 고정 — v2.1 미완 — 최선 V21-Hθ r1 (밤 1005 전)
+e092b75ceb4db162fcb52626e82a45543bde7f8c 2026-10-05 14:40:19 +0900 d1sim: 밤 1005 예측 동결 — v2.1 (+v2 · v1) (PAT 0)
+HEAD(측정 시작) 5d98fe7 = origin/s26-measure (git status -sb: ahead 0) · .git\index.lock 없음 · 이 폴더에서 도는 다른 Claude Code 프로세스 없음 (17:08)
+## 사전 등록 (OneDrive 원본 · 레포 사본) — 체인기록 기대 16af8331…
+16af8331fc781dc1ccaaf386094ce64a21bc9fa4bbe90ffb4972c417678dc1e3  sim\밤1005_사전등록_v1.md → 일치
+16af8331fc781dc1ccaaf386094ce64a21bc9fa4bbe90ffb4972c417678dc1e3  d1sim\docs\밤1005_사전등록_v1.md → 일치
+## 체인 4개 — canonical (py tools\npu_chain.py validate, 4개 exit 0) · 파일 SHA — 체인기록 §1 과 대조
+npu_work100_v1 canonical 3f331010644eadc3d64a46c98c674e0ee9c2995ddd6c58ad9a6cc91c525126e4  file 0c2ced4c8f54e13394a2696da0d7495b83d10305826ea1693fb78d7b418d363f → 일치
+npu_work50_v1  canonical 8f476e364dd0ac93389e6fdc4e92eee3612e096276f5214d0cc729530278f327  file c570c18989ee91187af9338400879d82c46b4a8405149b0772751c2f8868bd79 → 일치
+gpu_work100_v1 canonical 411513fb9815b6a8510c217d9ea6075d3cffc5e207dc4dff84adfeecb7d0a1d1  file 8d520ba6691cd34ef4d1b145c4f2fa7b743a5f184560744fe827cbcd0ac76b76 → 일치
+gpu_work50_v1  canonical 3a4334f1cc336bd1727d43926410b52f8f5642e8b1e3745b784168f4a55bf28b  file 38d4d23bfdadbc89a958cbac4646fd534d1141cc8f63a3644a796d560dcf1025 → 일치
+## 판정기 — 체인기록 §4-1 기대 ca8680c2…
+ca8680c2b5abb8d62b37f9abc48134ea0c3e2b1e96d9da5be671c5361d4cbb92  sim\night1005_judge.py → 일치
+ca8680c2b5abb8d62b37f9abc48134ea0c3e2b1e96d9da5be671c5361d4cbb92  s26\tools\night_1005\night1005_judge.py → 일치
+import 대상: ea282d4a48630c4af3cce301c13216f691389fa9f2c8e69a652de645be055b28  sim\m1m2_judge_1002.py (기대 ea282d4a…) → 일치
+             a5ceab419c3bb0fed73b75b759901fb0e268f957bd1172e1edacbc246c903f50  sim\night1003_judge.py (기대 a5ceab41…) → 일치
+## selftest (17:11, 출력 out_1005n\night1005_selftest.txt)
+night1005_judge.py selftest → 49/49 PASS (exit 0)
+## 예측 JSON (P1d 동결 e092b75) — 체인기록 §4-2 기대와 대조
+b6c8e502c8bab3d7aedcf08a2bd50ce8de0eb2cb17d430f3028a7519df939659  d1sim\out\night_1005_prediction_v21.json → 일치
+a06cd2aa2b5d1f9330c59026ed430a812522d423e225d54424971705262e20d1  d1sim\out\night_1005_prediction_v2.json → 일치
+74bcc3adbe7054bedc8659d0a556dcee68fc27279cc391ea4bfddebc438549dd  d1sim\out\night_1005_prediction_v1.json → 일치
+## dry-run (실제 시리얼 · 출력 results\S26_night_1005n_host\dryrun_pre_*.txt, 시리얼 <SERIAL> 치환) 17:13
+NA exit 0 · config.duration_s 900 · chain npu_work100_v1 total 900 3f331010… · max_inference_spans 1,000,000 · 슬롯 npu-d100-r001
+NB exit 0 · config.duration_s 900 · chain npu_work50_v1 total 900 8f476e36… · max_inference_spans 1,000,000
+GA exit 0 · config.duration_s 900 · chain gpu_work100_v1 total 900 411513fb… · max_inference_spans 400,000
+GB exit 0 · config.duration_s 900 · chain gpu_work50_v1 total 900 3a4334f1… · max_inference_spans 400,000
+seed 20261005 · 나머지 인자 = 체인기록 §2 명령 틀 그대로
+## 설치본 · 폰 설정 (0단계, 17:09)
+npu-runner base.apk 5ac485e382ebc82e380e6161ca6301ff89e9ab3d8be49b5d5388ab28b42c1033 lastUpdateTime 2026-10-02 23:56:58 (재설치 없음)
+airplane_mode_on 1 · wifi_on 2 (10/5 오전과 같음) · zen_mode 1 (기록만, 바꾸지 않음) · screen_off_timeout 600000
+plugged 0 · SOC 89 · BAT 30.2 (충전기 분리 16:50:33) · 실내 23 ℃ (시작, 영훈 진술 — 측정값 아님)
+게이트 상한 = s26_start_gate.py (무변경) · 하한 SKIN ≥ 29.1 이고 BAT ≥ 27.5 — run_cell_1005n.ps1 이 게이트가 읽은 HAL 값으로 검사
+## 참고 (측정과 무관, 기록만)
+sim\밤1005e_사전등록_v1.md (Cowork, 16:2x~17:00 수정) 가 OneDrive 에 있다 — P1e 용, 이 밤 (N1) 의 판정·순서와 무관. 이 세션은 열어서 머리만 보고 고치지 않았다.
+## cmp 직전 (2026-10-05 21:15:52 +09:00) 예측 SHA
+b6c8e502c8bab3d7aedcf08a2bd50ce8de0eb2cb17d430f3028a7519df939659 *d1sim\out\night_1005_prediction_v21.json
+a06cd2aa2b5d1f9330c59026ed430a812522d423e225d54424971705262e20d1 *d1sim\out\night_1005_prediction_v2.json
+74bcc3adbe7054bedc8659d0a556dcee68fc27279cc391ea4bfddebc438549dd *d1sim\out\night_1005_prediction_v1.json
+## cmp 직후 (2026-10-05 21:15:52 +09:00, exit 0) 예측 SHA
+b6c8e502c8bab3d7aedcf08a2bd50ce8de0eb2cb17d430f3028a7519df939659 *d1sim\out\night_1005_prediction_v21.json
+a06cd2aa2b5d1f9330c59026ed430a812522d423e225d54424971705262e20d1 *d1sim\out\night_1005_prediction_v2.json
+74bcc3adbe7054bedc8659d0a556dcee68fc27279cc391ea4bfddebc438549dd *d1sim\out\night_1005_prediction_v1.json
