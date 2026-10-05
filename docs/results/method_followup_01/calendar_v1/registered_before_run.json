@@ -1,0 +1,46 @@
+{
+  "spec": {
+    "version": "offline-calendar-reference-v1",
+    "source": "docs/results/method_followup_01/run_v1/records.jsonl.gz",
+    "cases": [
+      "g0.45_c0.5_b4",
+      "g0.45_c0.75_b4"
+    ],
+    "seeds": [
+      223001,
+      223002
+    ],
+    "scenario": "mean",
+    "modes": [
+      "min_J",
+      "min_J_under_EFT_peak"
+    ],
+    "grid_s": 0.02,
+    "solver_time_limit_s": 45.0,
+    "max_wall_s": 900.0,
+    "maximum_solves": 8,
+    "service": "every scheduled request must meet its original response deadline; preserve original five-phase replay",
+    "thermal": "same 1s AP query grid 35..180; modeled EFT peak cap is comparison, not safety certification",
+    "objective": "minimize same-work modeled J on rounded nonpreemptive grid; evaluate incumbent with unrounded engine",
+    "cutoff": "solver incumbent/timeouts/infeasibility retained; no finer grid or parameter retuning in this run",
+    "scope": "future input and actual scenario known; offline reference not deployable policy; grid optimum not original continuum optimum",
+    "model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "initial_sha256": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "strict_supported": false,
+    "independent_device_validation": false,
+    "experiment_ready": false,
+    "device_commands": 0
+  },
+  "hashes": {
+    "tools/d1_deadline_calendar_study.py": "fd3c42bd95ecc0e090470d3f038200f5af2455081334b6bf7acef19516018f2f",
+    "tools/d1_deadline_calendar.py": "44cc2f409f235bb72714da160a71da85f891e3918a37be91d2064eb6fc9e7c98",
+    "tools/d1_industrial_scheduling.py": "f52afb68dc349a37c9d76d021efc42a7c612ea9c1d800c59138e5b79fa4f2b67",
+    "tools/d1_empirical_request_policy.py": "554f494a65f972099877e242e0c0fedd287da23e158b3e46663ff462b3909c7c",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "docs/results/method_followup_01/run_v1/records.jsonl.gz": "0b1b49e23da376657ddb37330f03447a72d5b2873e198ddacd56e2a68c9a6b2c"
+  },
+  "utc": "2026-10-05T17:38:31.234093+00:00",
+  "base_head": "42890f417871c262685bce0e6bb6a85d908d1372",
+  "implementation_dirty": true
+}

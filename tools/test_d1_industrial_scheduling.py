@@ -1,6 +1,7 @@
 import copy
 import json
 import unittest
+from unittest.mock import patch
 
 from tools import d1_industrial_scheduling as x
 
@@ -85,7 +86,9 @@ class IndustrialTests(unittest.TestCase):
     def test_timeout_preserves_incumbent_not_fake_optimum(self):
         _,rr,_,_,_=x.simulate(self.frozen,self.initial,self.qs,'mean','EFT_REFERENCE')
         jobs=x.jobs_from_ledger(rr['ledger'])
-        winners,stats=x.search(self.frozen,self.initial,self.qs,'mean',[jobs],timeout=0.)
+        # Windows clock can remain on the same tick: equality must stop too.
+        with patch.object(x.time,'monotonic',return_value=1.):
+            winners,stats=x.search(self.frozen,self.initial,self.qs,'mean',[jobs],timeout=0.)
         self.assertTrue(stats['timed_out']);self.assertEqual(stats['depth_completed'],0)
         self.assertFalse(stats['optimality_proved'])
         self.assertEqual(winners['energy'],jobs)

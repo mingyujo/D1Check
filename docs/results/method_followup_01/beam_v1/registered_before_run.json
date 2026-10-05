@@ -1,0 +1,61 @@
+{
+  "spec": {
+    "version": "causal-pareto-beam-v1",
+    "cases": [
+      "g1.2_c0.5_b1",
+      "g0.45_c0.5_b4",
+      "g0.15_c0.5_b8",
+      "g0.45_c0.75_b4"
+    ],
+    "stored_seeds": [
+      123001,
+      123002
+    ],
+    "new_seeds": [
+      323001,
+      323002
+    ],
+    "scenarios": [
+      "mean",
+      "short_context",
+      "long_context"
+    ],
+    "requests": 48,
+    "new_runs": 72,
+    "policy": "PARETO_BEAM_SERVICE_V1",
+    "branch_requests": 4,
+    "beam_width": 8,
+    "expanded_calendars_per_callback": 64,
+    "intentional_delay_grid_s": [
+      0,
+      0.25
+    ],
+    "max_age_delay_s": 2,
+    "max_wall_s": 1800,
+    "online_information": "arrived queue, public active phases, modeled past AP, fixed mean/long development service; no future trace/service/AP",
+    "local_guard": "individual long-context predicted lateness no worse than EFT; mean J and modeled peak no worse on current queue continuation",
+    "selection": "lowest mean J then peak then first response; report every condition and thermal area/P95 effects",
+    "parameters_locked": true,
+    "refit": false,
+    "controller_overhead_zero_assumption": true,
+    "model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "initial_sha256": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "independent_device_validation": false,
+    "strict_supported": false,
+    "experiment_ready": false,
+    "device_commands": 0
+  },
+  "hashes": {
+    "tools/d1_pareto_beam_study.py": "c92d669b762099afc4fa8c1a8cb6b2a1b57d2c15f628a75dae272c3fdfbfd4bb",
+    "tools/d1_pareto_beam.py": "b442e74b212c070587cd3b141ccd1aea34bd251f255ace8c706cbaafea8c94df",
+    "tools/d1_empirical_request_policy.py": "a83851b1ead401e8607791301a2ecd6034f7d2d110c48b217e290db58e8fea49",
+    "tools/d1_industrial_scheduling.py": "f52afb68dc349a37c9d76d021efc42a7c612ea9c1d800c59138e5b79fa4f2b67",
+    "tools/d1_arrival_explore.py": "384a5ab28d289f78a00ab8a4bb5e74c8f7df4e5d2ba8f3059130673ca44a20ac",
+    "tools/d1_scheduler_conditions.py": "cda103f356585715448ebb3167e2dc81fab95e598f1a6b9e3036f88ed5313b78",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d"
+  },
+  "utc": "2026-10-05T17:49:34.643403+00:00",
+  "base_head": "42890f417871c262685bce0e6bb6a85d908d1372",
+  "implementation_dirty": true
+}

@@ -1,0 +1,37 @@
+{
+  "base_head": "42890f417871c262685bce0e6bb6a85d908d1372",
+  "dirty": true,
+  "new_boundary_tests_passed": 23,
+  "existing_regressions_first_passed": 29,
+  "existing_regressions_first_failed": 1,
+  "failure": "zero timeout equality on coarse Windows monotonic tick",
+  "minimal_fix": "elapsed >= timeout; fixed-clock callback test",
+  "targeted_after_fix_passed": 5,
+  "full_repeated_batch": false,
+  "device_commands": 0,
+  "experiment_ready": false,
+  "source_sha256": {
+    "tools/d1_empirical_request_policy.py": "32407050fae7a0f6f7d58a19cd6f2f4eedea46ba9c8651e15363d0af496050a0",
+    "tools/d1_industrial_scheduling.py": "5537b8746d329a8ab25f69c105218ecb6eaba99d26bfb6bb8434950b2e5b6bab",
+    "tools/d1_method_followup_report.py": "56ca31b0f8c1153bf964a3b387a40835e255ae3086e320a896f46678b7ca9cdf",
+    "tools/d1_pareto_beam.py": "b442e74b212c070587cd3b141ccd1aea34bd251f255ace8c706cbaafea8c94df",
+    "tools/d1_pareto_beam_immediate.py": "3a49acee7782a5bcd621f5c33643d24342f70f96ad8d13e8a73adee12ca22a0e"
+  },
+  "commands": [
+    "python -m unittest tools.test_d1_method_followup_report tools.test_d1_method_followup tools.test_d1_deadline_calendar tools.test_d1_pareto_beam tools.test_d1_pareto_immediate tools.test_d1_energy_heat_frontier -v",
+    "python -m unittest tools.test_d1_empirical_request_policy tools.test_d1_industrial_scheduling tools.test_d1_industrial_scheduling_report -v",
+    "python -m unittest tools.test_d1_industrial_scheduling.IndustrialTests.test_timeout_preserves_incumbent_not_fake_optimum tools.test_d1_method_followup_report -v"
+  ],
+  "frozen_model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+  "frozen_initial_sha256": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+  "verified_utc": "2026-10-05T18:12:45.351833+00:00",
+  "test_sha256": {
+    "tools/test_d1_method_followup.py": "471c8f6fec67eb812c8afaec909697349b73a3fa9224e854048c303daec2d021",
+    "tools/test_d1_method_followup_report.py": "9efa558b733c598a6d0054a01a091706afc85e04a5a6417cd79e8af0dd0daaca",
+    "tools/test_d1_deadline_calendar.py": "1c30d3e1fd8dc86e13267967451911b077dfcd6af7932c2bd4abeaadc0495f14",
+    "tools/test_d1_pareto_beam.py": "02f02b442155b0c7a06329dc6eea9126ef085297e94b1f5e1f8f68a5ab87462d",
+    "tools/test_d1_pareto_immediate.py": "dfe8e87b2234816ffd4d3ba86e732ade084cbf34797a7fba73602e26a78247c7",
+    "tools/test_d1_energy_heat_frontier.py": "e4e0316e8bbec7873ec9305c6aa1e51578e5a39fb013446b64cc5d8d0e2eb7c0",
+    "tools/test_d1_industrial_scheduling.py": "3890b50e271304d4e74dd5872fa5806b5822b900e50bc5ef7be4b1f2d021869c"
+  }
+}

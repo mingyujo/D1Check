@@ -1,5 +1,9 @@
 # D1Check 통합 시뮬레이터
 
+## 전체 요청 방법론 비교 — 2026-10-06
+
+[전체48요청·다단계큐·offline 참고값](../method_followup_01/index.html), [계약·재현·상충식](../method_followup_01/README.md). 새264PC계산과8일정재생을 연결했다. ATC/병목의J감소와AP증가, 유예후보의기한실패, 즉시배정후보의EFT동일/과부하손해를 보존한다. 미래입력을아는참고일정은온라인정책이아니다. 새실측/정확도PASS/실제절감그림이아니며기본·strict·experiment_ready=false를유지한다.
+
 ## 최신 시연 경로 — 2026-10-04
 
 [192요청 CPU/PAR 실측·동결 예측](../online_policy_study_01/overnight_sustained_run01/index.html)과 [연구 본문](../../ENERGY_AP_RESULTS_DISCUSSION_DRAFT_20260930.md)을 먼저 읽는다. 실제 온라인8세션 모두192/192 기한을 충족했다. 병행 긴급P95는127.912–131.381ms 짧았지만, 관측 에너지 차이는−5.304–+11.682J로 부호가 바뀌었다. 관측 최고AP 차이와 모형의 예상 최고AP 차이를 구분하며 작은J/AP 정책 선택은 차단한다.

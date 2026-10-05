@@ -25,7 +25,6 @@ PPO_POLICY = 'ENERGY_AP_PPO_LAGRANGE_V1'
 ALTERNATIVE_POLICIES = ('ECO_EDF_V1', 'LLF_EFT_V1', 'RESERVED_BACKFILL_V1', 'PARETO_MPC_V1', 'THERMAL_MPC_V1')
 CONDITION_POLICIES = ('TOKEN_EFT_V1', 'TOKEN_CPU_V1', 'JIT_CPU_V1', 'PAIR_COALESCE_V1')
 INDUSTRIAL_POLICIES = ('ATC_QUEUED_GUARD_V1', 'CPU_BOTTLENECK_GUARD_V1', 'INDUSTRIAL_OFFLINE_REPLAY_V1')
-RECEDING_POLICIES = ('PARETO_BEAM_SERVICE_V1', 'PARETO_BEAM_IMMEDIATE_V2')
 CELLS = ('classification_CPU_urgent', 'classification_GPU_urgent', 'detection_CPU_normal')
 STATES = set(model.STATES) | {'resident_idle'}
 MODEL_SHA = '5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2'
@@ -72,7 +71,7 @@ def backends(q):
 
 
 def validate_engine(config, vectors, requests, policy, settings, provider):
-    if (policy not in (*POLICIES, RL_POLICY, PPO_POLICY, *ALTERNATIVE_POLICIES, *CONDITION_POLICIES, *INDUSTRIAL_POLICIES, *RECEDING_POLICIES) or settings['mode']!='explore' or getattr(provider,'protocol',None)!=VERSION
+    if (policy not in (*POLICIES, RL_POLICY, PPO_POLICY, *ALTERNATIVE_POLICIES, *CONDITION_POLICIES, *INDUSTRIAL_POLICIES) or settings['mode']!='explore' or getattr(provider,'protocol',None)!=VERSION
             or not callable(provider) or not callable(getattr(provider,'observe',None))
             or provider.policy != policy or set(config['cells'])!=set(CELLS)
             or set(vectors['cells'])!=set(CELLS)):

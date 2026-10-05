@@ -1,0 +1,56 @@
+{
+  "spec": {
+    "version": "method-followup-v1",
+    "cases": [
+      "g1.2_c0.5_b1",
+      "g0.45_c0.5_b4",
+      "g0.15_c0.5_b8",
+      "g0.45_c0.75_b4"
+    ],
+    "requests": 48,
+    "selection_reason": "three previous prefix inputs plus previously declared 75% classification queue; no outcome screening",
+    "stored_seeds": [
+      123001,
+      123002
+    ],
+    "new_seeds": [
+      223001,
+      223002
+    ],
+    "scenarios": [
+      "mean",
+      "short_context",
+      "long_context"
+    ],
+    "methods": [
+      "EFT_REFERENCE",
+      "ATC_QUEUED_GUARD_V1",
+      "CPU_BOTTLENECK_GUARD_V1"
+    ],
+    "new_simulations": 120,
+    "stored_EFT_controls": 24,
+    "max_wall_s": 1800,
+    "controller_overhead_zero_assumption": true,
+    "model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "initial_sha256": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "freeze": "existing ATC/bottleneck parameters unchanged; no fitting/tuning after evaluation",
+    "interpretation": "stored inputs post-hoc regression; fresh synthetic seeds not device validation",
+    "selection": "publish all; full deadlines separate from J/peak/AParea non-worsening vs EFT; no default adoption",
+    "device_commands": 0,
+    "strict_supported": false,
+    "experiment_ready": false
+  },
+  "hashes": {
+    "tools/d1_method_followup.py": "31e9f2133eb91df8d8666e3d4c86732e3829b0b8c985520987cd236a4f833003",
+    "tools/d1_industrial_scheduling.py": "f52afb68dc349a37c9d76d021efc42a7c612ea9c1d800c59138e5b79fa4f2b67",
+    "tools/d1_empirical_request_policy.py": "554f494a65f972099877e242e0c0fedd287da23e158b3e46663ff462b3909c7c",
+    "tools/d1_arrival_explore.py": "384a5ab28d289f78a00ab8a4bb5e74c8f7df4e5d2ba8f3059130673ca44a20ac",
+    "tools/d1_scheduler_conditions.py": "cda103f356585715448ebb3167e2dc81fab95e598f1a6b9e3036f88ed5313b78",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d"
+  },
+  "source": "docs\\results\\supervised_selector_01\\run_v1\\local_ledgers.jsonl",
+  "source_sha256": "ba8897113d9e4d3b086fc2a44c28fdfa666f9fdd6b829552f9394239d78fe38f",
+  "base_head": "42890f417871c262685bce0e6bb6a85d908d1372",
+  "utc": "2026-10-05T17:32:48.255181+00:00"
+}

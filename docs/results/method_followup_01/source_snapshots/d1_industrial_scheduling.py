@@ -262,7 +262,7 @@ def search(frozen,initial,tickets,scenario,incumbents,width=32,waits=(0.,.25),ti
                 if q['id'] in used: continue
                 for b in p.backends(q):
                     for delay in waits:
-                        if time.monotonic()-began>=timeout:
+                        if time.monotonic()-began>timeout:
                             timed_out=True; break
                         first=fc.place(q,b,q['arrival_ns']/1e9+delay,jobs)
                         if first['end']>120: continue

@@ -1,0 +1,58 @@
+{
+  "spec": {
+    "version": "causal-pareto-immediate-v2",
+    "cases": [
+      "g1.2_c0.5_b1",
+      "g0.45_c0.5_b4",
+      "g0.15_c0.5_b8",
+      "g0.45_c0.75_b4"
+    ],
+    "stored_seeds": [
+      123001,
+      123002
+    ],
+    "new_seeds": [
+      423001,
+      423002
+    ],
+    "scenarios": [
+      "mean",
+      "short_context",
+      "long_context"
+    ],
+    "requests": 48,
+    "new_runs": 72,
+    "policy": "PARETO_BEAM_IMMEDIATE_V2",
+    "parent_failed_policy": "PARETO_BEAM_SERVICE_V1",
+    "change": "same beam/physical coefficients/guard; first action must be legal immediately; no voluntary idle deferral",
+    "development_used": "already seen v1 failures; v2 is post-hoc development, new seeds are software confirmation only",
+    "branch_requests": 4,
+    "beam_width": 8,
+    "expanded_calendars_per_callback": 64,
+    "max_wall_s": 1800,
+    "local_guard": "per-request long-context lateness and conditional mean J/peak vs EFT; not global future-arrival guarantee",
+    "parameters_locked": true,
+    "refit": false,
+    "controller_overhead_zero_assumption": true,
+    "model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "initial_sha256": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "independent_device_validation": false,
+    "strict_supported": false,
+    "experiment_ready": false,
+    "device_commands": 0
+  },
+  "hashes": {
+    "tools/d1_pareto_immediate_study.py": "d408de7ddef8838a76d7d65a49890e597d00c7ea0aaece925c6af2884dd47ff3",
+    "tools/d1_pareto_beam_immediate.py": "3a49acee7782a5bcd621f5c33643d24342f70f96ad8d13e8a73adee12ca22a0e",
+    "tools/d1_pareto_beam.py": "b442e74b212c070587cd3b141ccd1aea34bd251f255ace8c706cbaafea8c94df",
+    "tools/d1_empirical_request_policy.py": "32407050fae7a0f6f7d58a19cd6f2f4eedea46ba9c8651e15363d0af496050a0",
+    "tools/d1_industrial_scheduling.py": "f52afb68dc349a37c9d76d021efc42a7c612ea9c1d800c59138e5b79fa4f2b67",
+    "tools/d1_arrival_explore.py": "384a5ab28d289f78a00ab8a4bb5e74c8f7df4e5d2ba8f3059130673ca44a20ac",
+    "tools/d1_scheduler_conditions.py": "cda103f356585715448ebb3167e2dc81fab95e598f1a6b9e3036f88ed5313b78",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d"
+  },
+  "utc": "2026-10-05T17:57:28.190822+00:00",
+  "base_head": "42890f417871c262685bce0e6bb6a85d908d1372",
+  "implementation_dirty": true
+}
