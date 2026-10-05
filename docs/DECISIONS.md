@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-10-06 — METHOD-JOINT-GAIN-PRECISION-PC-01
+
+- 채택한 판독: 전체 mean 4결과/short·long 4결과를 재계산 없이 읽고 같은 고정 일정·공통 background의 `ΔJ=ΣΔt·W`를 검증한다. 6계산의 조건부 이득 소거 계수오차는 0.060–0.099W, 실제 계수 오차와 차등 제어비용은 null이다. 두 solver null은 계산 불가능/계수0으로 바꾸지 않는다. [전체 상태시간·5검증·재현](results/method_followup_01/README.md).
+- 미채택: 역산을 신뢰구간/새 정확도 기준/실제 공동 절감으로 표현하기, 작은 J만으로 mW 정밀도 필요를 단정하기, 미래 입력 일정의 온라인 정책 승격, 새 후보 기본 채택. 현재 연구 목표는 미완료이며 EFT 대조·기한·목적별 Pareto 평가를 사용한다. 이번 PC 분석 후 manifest는 사전 등록이 아니다. 새 실측 계획/기기 작업/claim0, 기존 동결/기본/strict/experiment_ready=false 보존.
+
 ## 2026-10-06 — METHOD-JOINT-QUEUE-AREA-PC-01
 
 - 이번규칙:현재도착큐beam의기존J/peak/기한guard에양의AP면적 비악화만추가한후보한개를별도ID로분리했다. queue75와새2seed/3전체문맥·12실행만등록,결과뒤재튜닝/새후보/seed추가0. 내부콜백ABI를재사용하되공개결과를옛beam과합치지않는다. 물리계수/parent/engine/기본불변.

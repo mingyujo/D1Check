@@ -1,5 +1,9 @@
 # D1Check 통합 시뮬레이터
 
+## 2026-10-06 방법론 탐색의 최종 판독
+
+[계수오차 역산 8행](../method_followup_01/joint_gain_sensitivity_v2/index.html), [전체 결과·41 관련 검증](../method_followup_01/README.md). 고정 미래일정의 작은 공동 모형 이득과 온라인 후보의 AP 감소/J 증가를 분리한다. 같은 고정 일정의 J 이득 소거 계수오차 조건은 약 0.060–0.099W이며 실제 불확실성·제어비용은 null이다. 실제 절감·독립 예측 확인·온라인 우월성은 미완료다. 현재 추천은 강한 EFT 대조·전체 도착 기한·목적별 Pareto이며, 새 후보/기본/strict/기기계획을 추가하지 않았다.
+
 ## 2026-10-06 현재 큐의 열 지향 후보: 에너지와 상충
 
 [새2seed×3문맥·같은EFT 대조](../method_followup_01/joint_queue_readout_v1/index.html), [계약·13검증·재현](../method_followup_01/README.md). J/최고AP/면적을현재큐에서같이검사한후보는288/288기한을지켰지만전체창J +0.055–+0.176J/최고AP −0.108–−0.020°C상충이었다. local guard의통과를전체미래창/실기기절감보장으로바꾸지않는다. 새후보하나만평가·재튜닝0,기본/strict/experiment_ready=false유지. 그림은모형끼리의차이이고새실측확인그림이아니다.
