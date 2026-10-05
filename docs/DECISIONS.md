@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-06 — METHOD-UNMODELED-COST-READOUT-PC-01
+
+- 채택한판독경계: 기존3등록block의같은seed/처리문맥·전48요청에서서비스를먼저검사하고J/AP상충과미모형화차등비용의손익분기조건을산출한다. [원자료대응·식·해석](results/method_followup_01/README.md). 추가시뮬레이션/계수/기기실측없음.
+- EFT의원callback시간0은timer부재였으므로새표에서는null,원본/기존일정은보존한다. PC시간을휴대폰J로환산하거나최소응답잔여를허용추가지연으로채택하지않는다. 비용여유/AP증가필요량은사후산술질문이며새허용폭/정확도/실제우월성승인이아니다.
+- 신규8검증·실제CLI/그림통과,실제공동절감/정책우월성미완료·기본/strict/experiment_ready=false유지. 기기명령/실측/APK/새기기계획/claim0. 재현경로연결외추가후보/실측자동승인없음.
+
 ## 2026-10-06 — COMPATIBLE-TIMING-BACKFILL-PC-01
 
 - 채택한구현경계: 분류CPU고정·탐지CPU/GPU의호환즉시배정,실제lane해제까지같은종류병행차단을과거시간전용opt-in으로연결. 실제도착큐·원기한/시간벡터유지,미래실현값/가짜전력모형없음. 기존이벤트본문/기본/strict/동결파일보존. [근거·검증](results/detector_gpu_bridge_01/README.md).

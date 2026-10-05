@@ -1,5 +1,31 @@
 # 전체 요청 방법론 비교와 동결식의 에너지·AP 상충
 
+## 절감을 지워 버릴 수 있는 비용까지 판독 — 2026-10-06
+
+[손익분기·상충 화면](tradeoff_budget_v2/index.html), [28개 묶음](tradeoff_budget_v2/groups.csv), [168개 동일입력 사례](tradeoff_budget_v2/cases.csv). 새 시뮬레이션이나 모형 fitting 없이 세 등록block의 새seed 결과만 재사용했다. 각block/입력의2seed×3전체5단계문맥을 유지하고, 다른block의seed를 같은 대조로 합치지 않았다.
+
+동일한 모형 일정/공통창이라는 조건에서 `실제 차등J = 모형 차등J + 미모형화된 차등비용`이다. 따라서 모형상 절감을 남기는 조건은 `미모형화된 차등비용 < −모형 차등J`다. 등호에서는 이득이0이므로 엄격한 절감이 아니다. 이 식은 새로운 물리 계수나 실기기 오차모형을 추가한 것이 아니라, 계산에서 빠진 비용에 대한 **조건부 산술 질문**이다. 제어 때문에 일정·간섭·AP가 바뀌거나 센서 단위/계측이 달라지는 경우는 별도 미확인으로 남긴다.
+
+| 전체48요청 조건·후보 | 저장6사례 모두의 모형상 J 이득을 남길 차등비용 | EFT 대비 최대 AP 증가 | 최대 AP면적 증가 | 최소 당시 응답 기한잔여 |
+|---|---:|---:|---:|---:|
+| queue50·ATC | 0.177365J 미만 | 0.283401°C | 7.473288°C·s | 632.055ms |
+| queue50·CPU병목 | 0.430421J 미만 | 0.291083°C | 9.852405°C·s | 663.191ms |
+| queue75·CPU병목 | 0.414962J 미만 | 0.261954°C | 8.158515°C·s | 775.951ms |
+
+이것은 앞으로의 입력에 대한 절감 보장·신뢰구간·안전상한·허용오차가 아니다. 최대 AP/면적 증가는 사용자가 받아들여야 한다는 결정도 아니다. **J의 이득과 열 부담 증가를 같이 남기는 사후 모형 결과**이며 실제 정책 우열은 미판정이다. 표의 최소 기한잔여도 “그만큼 제어 지연을 추가해도 된다”는 보장이 아니다. 대기·lane 경합·다음 요청의 연쇄 지연이 달라질 수 있어 `safe_global_extra_delay_ms=null`이다.
+
+CPU병목의queue50은 저장된각사례에서252–282번 판단했고, PC callback 합계는0.071–0.105초다. 이 값을 휴대폰 실행시간/J로 환산하지 않는다. 새판독에서 발견한 **EFT callback 계측 부재**도 명시했다. 원 runner는 EFT controller에 callback timer를 붙이지 않아 저장 `decision_host_total_s=0`이 나왔다. 원본0은 보존하고 새CSV의 EFT 계측값은null로 표시한다. EFT가 실제로 무비용이라는 근거나, 두 정책의 실기기 제어 비용 차이는 없다. 정책 일정/동결 계수를 바꾼 수정이 아니다.
+
+저부하와queue75 ATC의EFT동일은 양의절감예산으로 승격하지 않는다. burst는본후보와기준의전기한충족을못하므로 낮은J가있어도 적격절감예산은null이다. beam의불완전/동일결과도 그대로 유지한다. 센서오차·독립세션변동·실기기controllerJ의미확인값을0으로채우지않았다.
+
+```powershell
+# 기존압축ledger 판독만 수행; 새 실행/기기명령 없음
+python -m tools.d1_method_tradeoff_budget --output output/method_tradeoff_readout
+python -m unittest tools.test_d1_method_tradeoff_budget -v
+```
+
+신규8검증: 같은입력/전체분모/우선순위별response·실제lane반환,평균이아닌최소같은사례J여유,기한실패/결측/null/EFT동일차단,기존동결hash불변. event simulate를금지한상태에서도실제저장자료판독·CSV/그림생성이통과했다. 첫그림v1의동일원점label겹침은local보존하고v2에서묶음표시만고쳤으며수치는바꾸지않았다. 기기명령·실측·APK·새계획·claim0,기본·strict·`experiment_ready=false`불변. [대상해시·명령·시점](tradeoff_budget_verification.json).
+
 2026-10-06 PC 작업. 시작 HEAD `42890f417871c262685bce0e6bb6a85d908d1372`, 미커밋 구현에서 각 실행 전에 입력·소스·계수 해시를 등록했다. [화면](index.html), [대표 일정·모형 경로](comparison.png).
 
 ## 지금 사용할 판독 방법

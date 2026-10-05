@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-06 현재 작업 — 제어 비용의 손익분기·모형 상충 판독 완료
+
+- [동일입력 비용여유·원계측 부재](results/method_followup_01/README.md), [화면](results/method_followup_01/tradeoff_budget_v2/index.html). 기존3block/28묶음/168사례 재집계·새시뮬레이션0. queue50 CPU병목은6저장사례의최소J이득0.430421J 대신최대AP+0.291083°C;미모형화차등비용이J이득을없앨수있음을명시했다.
+- EFT callback 저장0은timer부재로확인해새판독에서null,원본보존. 응답기한잔여를허용추가지연으로승격하지않음. 신규8검증/실제CLI/CSV·그림통과,동결hash/기본/strict/experiment_ready=false/사용자파일/다른worktree보존. 기기·실측·APK·새기기계획·claim0.
+- 실제공동절감/새정책실기기우월성은미완료. 다음PC행동은지원조건/목적별결과·미확인비용을하나의재현실행경로로묶는것이며추가후보/가정/실측을자동시작하지않는다. S26원격5d98fe7은직전검토와동일해재감사하지않았다.
+
 ## 2026-10-06 현재 작업 — 호환 자원 backfill PC 후속 완료
 
 - [결과·실제 진입·재현](results/detector_gpu_bridge_01/README.md), [새 시간 비교](results/detector_gpu_bridge_01/compatible_backfill_v2/index.html), [방법론 대응](results/industrial_scheduling_01/README.md). 분류CPU 고정/탐지CPU·GPU opt-in과 실제 lane해제까지의 같은 종류 병행 차단을 연결했다. 새16PC계산/768요청·저장48대조 재사용,12사례는전기한충족이나큐응답상충/버스트실패. DG94배정의 현재J/AP는null,새기본정책미채택.

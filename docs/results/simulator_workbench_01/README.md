@@ -1,5 +1,9 @@
 # D1Check 통합 시뮬레이터
 
+## 2026-10-06 모형 절감과 실제 제어 비용의 경계
+
+[상충·손익분기 화면](../method_followup_01/tradeoff_budget_v2/index.html), [판독·실제계측부재·재현](../method_followup_01/README.md). 기존28묶음/168사례에서전기한충족과같은사례비용을먼저검사했다. queue50 CPU병목의최소모형J이득0.430421J는미모형화차등비용으로없어질수있고최대AP+0.291083°C상충이남는다. EFT callback의원0은계측부재/null이며휴대폰무비용이아니다. 새실측·새가정·정책효과PASS를표시하지않는다.
+
 ## 2026-10-06 호환 자원 backfill의 시간 평가 완료
 
 [분류CPU고정/탐지CPU·GPU 비교](../detector_gpu_bridge_01/compatible_backfill_v2/index.html), [근거·검증](../detector_gpu_bridge_01/README.md). 새16PC사례 중12전기한충족이나큐응답상충/버스트실패·현재J/AP null로새기본정책미채택. 실제lane해제/중복점유차단을검증하고옛이벤트본문을보존했다. 실측/독립확인/절감그림이아니다. [전체입력 방법론 판정](../industrial_scheduling_01/README.md)은기한우선·EFT대조·Pareto상충평가를권고한다.
