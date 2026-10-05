@@ -1,0 +1,25 @@
+{
+  "schema": "d1-npu-chain-v1",
+  "chain_id": "gpu_eff_work100_v1",
+  "model_prepare": "per_segment",
+  "segments": [
+    {
+      "accelerator": "GPU",
+      "model_path": "/data/local/tmp/efficientnet_lite0.tflite",
+      "input_spec": "lcg-rgb-127-128",
+      "duty": 100,
+      "duration_s": 300,
+      "gpu_precision": "FP32",
+      "label": "work_d100"
+    },
+    {
+      "accelerator": "GPU",
+      "model_path": "/data/local/tmp/efficientnet_lite0.tflite",
+      "input_spec": "lcg-rgb-127-128",
+      "duty": 1,
+      "duration_s": 600,
+      "gpu_precision": "FP32",
+      "label": "tail_idle"
+    }
+  ]
+}
