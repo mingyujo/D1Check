@@ -1,0 +1,23 @@
+{
+  "schema": "d1-npu-chain-v1",
+  "chain_id": "npu_work50_v1",
+  "model_prepare": "per_segment",
+  "segments": [
+    {
+      "accelerator": "NPU",
+      "model": "models/mobilenet_v1_1.0_224_Samsung_E9965.tflite",
+      "input_spec": "lcg-unit",
+      "duty": 50,
+      "duration_s": 660,
+      "label": "work_d50"
+    },
+    {
+      "accelerator": "NPU",
+      "model": "models/mobilenet_v1_1.0_224_Samsung_E9965.tflite",
+      "input_spec": "lcg-unit",
+      "duty": 1,
+      "duration_s": 240,
+      "label": "tail_idle"
+    }
+  ]
+}
