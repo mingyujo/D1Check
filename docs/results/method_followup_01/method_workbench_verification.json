@@ -1,0 +1,50 @@
+{
+  "version": "method-workbench-verification-v1",
+  "recorded_utc": "2026-10-05T19:46:24.306924+00:00",
+  "tested_base_head": "d7a5ef3a6fde5be687c6f661e0f9ff63d745b84b",
+  "tested_with_uncommitted_changes": true,
+  "target_tests": {
+    "command": "python -B -m unittest tools.test_d1_method_workbench -v",
+    "passed": 8,
+    "skipped": 0
+  },
+  "representative_regression": {
+    "tests": [
+      "tools.test_d1_simulator.WorkbenchTests.test_exact_archived_schedules_and_service_guard",
+      "tools.test_d1_simulator.WorkbenchTests.test_episode_reuses_frozen_model_and_rejects_temperature_sweep",
+      "tools.test_d1_simulator.WorkbenchTests.test_real_cli_exports_both_routes_and_refuses_overwrite"
+    ],
+    "passed": 3,
+    "selection_error_preserved": "Initial third selector named a nonexistent test; test loader AttributeError, not an assertion or dependency failure. Correct actual selector passed."
+  },
+  "actual_cli": {
+    "command": "python -B -m tools.d1_simulator method-readout --output docs/results/method_followup_01/workbench_v3",
+    "exit_code": 0,
+    "groups": 28,
+    "cases": 168
+  },
+  "source_versions": "8 new tests ran on same semantic source; simulator CRLF normalized per existing attributes; final v3 CLI and legacy actual CLI used final source bytes. Local v1/v2 outputs preserved, not shared.",
+  "visual_review": "final PNG viewed; labels readable, source counts and CSV checked",
+  "device_commands": 0,
+  "new_simulations": 0,
+  "accuracy_pass": null,
+  "policy_winner": null,
+  "experiment_ready": false,
+  "sha256": {
+    "tools/d1_method_workbench.py": "3690bc66a533a9e3f59966cd8507fcb0d5c31f49f75da2b8aa345934a3f8cc4f",
+    "tools/test_d1_method_workbench.py": "b8656b9ecb268e8f02db9204112dd46ffefbbd887b7974ff407a9227d6cff222",
+    "tools/d1_simulator.py": "1ffbbaae7599bef811ad65e8f4ee772495e4309365b7da428281fd55cb2dc6b9",
+    "docs/results/method_followup_01/method_readout_resources.json": "fbdc783cd6a12998a8db9d0605645123ede708a29f4e55dd544cfc34c9933204",
+    "docs/results/method_followup_01/workbench_v3/index.html": "99d414b208401af839c7d6905d55c81204eb594c89bb6f7f688b420ea338e69d",
+    "docs/results/method_followup_01/workbench_v3/result.json": "baa497df5e83e547bd15c7ebd9c2d58fe375a0ae12834739f52f1ec58253db36",
+    "docs/results/method_followup_01/workbench_v3/scope_audit.csv": "9b96d6075a149cbe7aecca1ee91a322b2dc7158932f74a72163c1d4033bf69f8",
+    "docs/results/method_followup_01/workbench_v3/summary.csv": "ade0104615eaf7d1df42c27faf1623c46b73f897fa6c223c46419c8133a8f626",
+    "docs/results/method_followup_01/workbench_v3/tradeoffs/cases.csv": "67d5eb6228387dfb0c8348cbd182dc20cd3c0ba8c19e6d4cd11af49910ea9729",
+    "docs/results/method_followup_01/workbench_v3/tradeoffs/groups.csv": "029bc2025e93b6476cd965a5c6b323cf9bfd7a99eb5f8b87ec8fbf5fadf30a95",
+    "docs/results/method_followup_01/workbench_v3/tradeoffs/index.html": "957a503f1f365267714c6d3f3de0423cb28461c89599214311698da11dd8134e",
+    "docs/results/method_followup_01/workbench_v3/tradeoffs/result.json": "26d68aaf2a88f76f7e27493952f8f5879af8ca3171250925cc5c12ebb909263b",
+    "docs/results/method_followup_01/workbench_v3/tradeoffs/tradeoff.png": "60b4ff89a34bb50ea059de8f49bca91b631b200c6a07d1d9bf34d525a489664c",
+    "docs/results/method_followup_01/workbench_v3/tradeoffs/tradeoff.svg": "903b8886512c5ea18a5b7c99125f9f0dbc42f016f10eb2be7379bac9c589fce1"
+  },
+  "source_storage": "New method source bytes and simulator Windows CRLF bytes preserved via scoped -text attributes; staged byte SHA equals verified exports. The first stage used historical simulator LF normalization and failed only the byte-identity check; fixed scoped attributes, no semantic/test/model change."
+}

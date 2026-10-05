@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-10-06 — METHOD-WORKBENCH-READONLY-01
+
+- 채택한 PC 연결: [저장방법론 판독](results/method_followup_01/README.md)을 `d1_simulator method-readout`으로 제공한다. 새계수/정책채택이 아닌 기한 우선·같은seed대조·전체분모·목적별상충 판독이다. 원등록6파일/모형·초기값2파일의해시와실제D→L 상태를검사한다.
+- 수치반환/계수매핑/독립예측확인/정책차이식별을분리한다. 현재전용·제어비용0은가정이고,실제우월성/배포/strict승격은아니다. 새시뮬레이션/기기/계획/claim0,기존기본·동결·experiment_ready=false보존. 신규8/기존대표3검증통과.
+
 ## 2026-10-06 — METHOD-UNMODELED-COST-READOUT-PC-01
 
 - 채택한판독경계: 기존3등록block의같은seed/처리문맥·전48요청에서서비스를먼저검사하고J/AP상충과미모형화차등비용의손익분기조건을산출한다. [원자료대응·식·해석](results/method_followup_01/README.md). 추가시뮬레이션/계수/기기실측없음.

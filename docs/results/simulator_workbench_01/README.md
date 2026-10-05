@@ -1,5 +1,13 @@
 # D1Check 통합 시뮬레이터
 
+## 2026-10-06 방법론 판독의 통합 진입 완료
+
+```powershell
+python -B -m tools.d1_simulator method-readout --output output/method_readout
+```
+
+[실행 예시 화면](../method_followup_01/workbench_v3/index.html), [범위·검증·해시](../method_followup_01/README.md). 저장28묶음/168사례를 기한→계수 매핑→독립 예측 확인→정책 차이 식별로 나눠 읽는다. 새 일정/계수/기기 실행이 아니며 새 seed·정책·온도·제약을 이 경로에 전달할 수 없다. 실제lane 반환까지의 상태 창과 자원 중복을 확인하되 새 일정의 전용·제어비용0은 탐색 가정, strict/독립 확인/배포추천은 미완료다. 신규8검증·기존 대표3회귀 통과. 기존 네 실행 경로의 의미를 바꾸지 않았다.
+
 ## 2026-10-06 모형 절감과 실제 제어 비용의 경계
 
 [상충·손익분기 화면](../method_followup_01/tradeoff_budget_v2/index.html), [판독·실제계측부재·재현](../method_followup_01/README.md). 기존28묶음/168사례에서전기한충족과같은사례비용을먼저검사했다. queue50 CPU병목의최소모형J이득0.430421J는미모형화차등비용으로없어질수있고최대AP+0.291083°C상충이남는다. EFT callback의원0은계측부재/null이며휴대폰무비용이아니다. 새실측·새가정·정책효과PASS를표시하지않는다.

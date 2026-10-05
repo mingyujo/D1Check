@@ -9,6 +9,7 @@ import csv
 import hashlib
 import html
 import json
+import sys
 from pathlib import Path
 
 from tools import d1_arrival_explore as engine
@@ -329,9 +330,9 @@ def export(result, output):
     return output
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('route', choices=('arrival', 'episode', 'ap-conditioned','online-policy'))
+    parser.add_argument('route', choices=('arrival', 'episode', 'ap-conditioned','online-policy','method-readout'))
     parser.add_argument('--case-id')
     parser.add_argument('--policy')
     parser.add_argument('--online-bundle',type=Path,default=RESULTS/'online_policy_study_01/run02')
@@ -342,9 +343,20 @@ def main():
     parser.add_argument('--initial-ap-c', type=float, default=29.1)
     parser.add_argument('--completion-cap-s', type=float)
     parser.add_argument('--ap-cap-c', type=float)
-    args = parser.parse_args()
+    arguments = sys.argv[1:] if argv is None else argv
+    args = parser.parse_args(arguments)
     if args.output.exists():
         parser.error('existing output is preserved; choose a new output directory')
+    if args.route == 'method-readout':
+        if any(token.startswith('--') and token.split('=')[0] != '--output' for token in arguments):
+            parser.error('method-readout reads only registered evidence; no new seed, policy, temperature or constraints')
+        from tools import d1_method_workbench as methods
+        result = methods.analyze()
+        methods.save(result, args.output)
+        print(json.dumps(dict(route='method-readout', output=str(args.output),
+            groups=len(result['readout']['groups']), cases=len(result['audit']),
+            new_simulations=0, device_commands=0, experiment_ready=False)))
+        return
     if args.route == 'online-policy':
         if not args.case_id or not args.policy or (args.scenario,args.mode,args.seed,args.initial_ap_c)!=('queue','explore',201,29.1) or args.ap_cap_c is not None or args.completion_cap_s is not None:
             parser.error('registered initialization and explicit policy required; strict/thermal feedback unsupported')

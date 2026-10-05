@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-06 현재 작업 — 방법론 판독 통합 진입 완료
+
+- [단일 CLI·재현](results/method_followup_01/README.md), [화면](results/method_followup_01/workbench_v3/index.html). 저장3block/28묶음/168사례의 기한·dispatch→실제L 상태 경계·원해시를 확인하고 계수 매핑/독립 예측 확인/정책 차이 식별을 분리했다. 새 시뮬레이션0.
+- 신규8검증·기존 arrival/episode/실제CLI 대표3회귀 통과. 새 옵션/덮어쓰기/미지원DG/같은lane 중복·W/L 혼동을 거절한다. 모형·기본·strict·experiment_ready=false/사용자파일/다른worktree 불변; 기기/APK/새기기계획/claim0.
+- 지금 사용 가능한 방법: EFT 대조·기한 우선·목적별 Pareto/비용 여유 판독. 실제 공동절감은 미확보이며 현재 DG/CC_DG 비용·실기기 제어비용·독립 오차는 미확인이다. 추가 후보/실측을 자동 시작하지 않는다. 다음 PC 검토 경계는 현재 동결식에서 공동절감 여지가 남는지에 대한 필요한 수학적 조건이며, 이미 완료한 배치나 감사 반복이 아니다.
+
 ## 2026-10-06 현재 작업 — 제어 비용의 손익분기·모형 상충 판독 완료
 
 - [동일입력 비용여유·원계측 부재](results/method_followup_01/README.md), [화면](results/method_followup_01/tradeoff_budget_v2/index.html). 기존3block/28묶음/168사례 재집계·새시뮬레이션0. queue50 CPU병목은6저장사례의최소J이득0.430421J 대신최대AP+0.291083°C;미모형화차등비용이J이득을없앨수있음을명시했다.

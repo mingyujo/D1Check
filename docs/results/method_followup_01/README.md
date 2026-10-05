@@ -1,5 +1,20 @@
 # 전체 요청 방법론 비교와 동결식의 에너지·AP 상충
 
+## 시뮬레이터 한 진입점에서 판독 — 2026-10-06
+
+[통합 화면](workbench_v3/index.html)에서 기한·모형 계수 매핑·독립 예측 확인·정책 차이 식별을 따로 표시한다. 세 등록block/28묶음/168사례의 저장 ledger만 읽었다. 원래48요청과 같은 seed 대조를 유지하고 dispatch→실제 lane_available 구간, 같은 lane 중복 점유, 전체0–180초 상태 경계를 검사했다. 현재3cell/CG_DC의 계수 존재는 새 일정의 전용 가능성이나 strict 정확도 검증이 아니다. 미측정 DG 비용을 대신 채우지 않았다.
+
+```powershell
+python -B -m tools.d1_simulator method-readout --output output/method_readout
+python -B -m unittest tools.test_d1_method_workbench -v
+```
+
+이 경로는 출력 위치만 받는다. 새로운 seed·정책·초기 AP·제약값을 넘기면 시작 전에 거절하며 기존 출력도 덮어쓰지 않는다. `method_readout_resources.json`은 원 비교6파일과 동결 모형·초기값2파일의 byte 해시를 고정한다. 저장 일정의 제어 비용0 가정과 현재 열→처리시간 미지원을 표시하고, 계측 부재/예측 오차한도/실제 승자는 null로 유지한다. 단순 Pareto 표시는 온라인 제어기나 채택한 정책이 아니다.
+
+신규8검증과 기존 arrival/episode·실제 CLI 대표 회귀3건 통과. 가짜ADB trap 및 새 event simulation을 금지한 검증으로 기기 호출·새 시뮬레이션이 없음을 확인했다. 실제 CLI 산출물과 CSV/그림을 검수했다. [대상·명령·원본 보존](method_workbench_verification.json). 기존 기본/strict/동결값·`experiment_ready=false`·사용자 자료/다른worktree를 유지한다.
+
+지금 바로 가능한 실험은 **동결식과 시간 전용 가정을 명시한, 기한 우선의 목적별 상충 평가**다. ATC/CPU병목/호환 backfill이 실제 기기의 열·에너지를 함께 줄이는 방법으로 확인됐다는 뜻은 아니다. 새 정책을 계속 추가하기보다 강한EFT 대조에서 어느 목적이 개선되고 무엇을 손해 보는지 먼저 읽는다.
+
 ## 절감을 지워 버릴 수 있는 비용까지 판독 — 2026-10-06
 
 [손익분기·상충 화면](tradeoff_budget_v2/index.html), [28개 묶음](tradeoff_budget_v2/groups.csv), [168개 동일입력 사례](tradeoff_budget_v2/cases.csv). 새 시뮬레이션이나 모형 fitting 없이 세 등록block의 새seed 결과만 재사용했다. 각block/입력의2seed×3전체5단계문맥을 유지하고, 다른block의seed를 같은 대조로 합치지 않았다.
