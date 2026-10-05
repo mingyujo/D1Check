@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-10-06 — S26-CONTRACT-MODEL-03
+
+- 사용자 승인된 팀 회신 반영: S26 정책 비교·폰 확인의 주대상은 EfficientNet-Lite0 FLOAT32 원본 SHA `6c7ab0a6e5dcbf38a8c33b960996a55a3b4300b36a018c4545801de3a3c8bde0`. MobileNet V1은 열모형 개발·민감도 자료로분리. NPU AOT의변환출처/실행정밀도/품질과MobileNet→EffNet열전이는별도적격성이다.
+- 범위채택이지모형전이·정책효과PASS또는기기실행승인이아니다. [회신·원격근거·v1수정요청](team/S26_REPLY_AND_INPUT_HANDOFF_20261006.md). S26 v1가드/oracle/FG없는재생의한계는v2수정**권고**이며담당자채택·구현은미확인. 원v1/FAIL보존, A24계수전용없음.
+
 ## 2026-10-05 — PAIR-QUEUED-SERVICE-GUARD-PC-01
 
 - 채택한구현경계:학습기가고른PAIR의병행우선제안에현재도착대기열의상대지각검사를별도옵트인으로추가한다. 원정책/학습/동결모형을덮어쓰지않고예측상해로운결정만EFT로돌린다. long_context는WCET가아니며미래도착기한을보장하지않는다.

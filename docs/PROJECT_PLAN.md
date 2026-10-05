@@ -1,5 +1,10 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-06 S26 계약모델·입력 인계
+
+- [검토 회신](team/S26_REPLY_AND_INPUT_HANDOFF_20261006.md): EfficientNet 주대상·MobileNet 개발/민감도 분리(S26-CONTRACT-MODEL-03). 입력20개기존byte묶음준비완료, 모델간전이/품질/정책검증은별도.
+- 다음: S26 담당자가v1의절대서비스조건·제한oracle·BG전용폰재생판독을v2에서명확히하고품질기준을결과전에등록. 이번기기실행/학습/시뮬0,기존A24guard후속PC회귀는별도미진행.
+
 ## 2026-10-05 실패 대기열 기한 보호
 
 - [burst8 분석·guard](results/pair_service_guard_01/README.md)를별도PC옵트인으로구현했다. 기존PAIR/ML/물리계수는불변. 현재대기열예측에서EFT보다지각을늘리는제안을거부하며미래도착/실현처리시간은입력하지않는다.
