@@ -2,6 +2,28 @@
 
 ## 최고 AP와 부담 면적을 함께 제한한 offline 참고값 — 2026-10-06
 
+### 이미 찾은 일정의 처리문맥 전이
+
+[고정 backend/실행허용시각의 4재생](joint_calendar_transfer_v1/index.html), [CSV](joint_calendar_transfer_v1/results.csv). mean에서 찾은 두 일정을 바꾸지 않고, 기존 short_context/long_context의 **전체5단계**만 적용했다. 새 계수/입력/재최적화/추가 solver0. 기존 recorded replay의 정확한 시작시각 assertion을 삭제하지 않았으며, 별도 PC `NotBeforeReplay`에서 미리 정한 실행허용시각 이후 실제 lane 해제를 기다리도록 했다. 이 경로도 미래 일정이 주어진 재생이고 온라인 정책이 아니다.
+
+| 고정 계획 seed | 처리문맥 | 기한 | ΔJ | Δ최고 AP | Δ양의 AP면적 | Δ긴급P95 | Δ일반평균 |
+|---|---|---:|---:|---:|---:|---:|---:|
+| 223001 | short | 48/48 | −0.046887J | −0.049657°C | −0.893828°C·s | +702.250ms | +2398.716ms |
+| 223001 | long | 48/48 | −0.055721J | −0.050100°C | −0.885058°C·s | +671.357ms | +2398.482ms |
+| 223002 | short | 48/48 | −0.002644J | −0.046408°C | −1.171571°C·s | +789.612ms | +2981.368ms |
+| 223002 | long | 48/48 | −0.019947J | −0.045242°C | −1.166434°C·s | +762.177ms | +2981.133ms |
+
+**네 PC 재생 모두** 예정 dispatch보다 지연된 요청0이었다. 이는 계획 여유가 해당 개발 문맥을 수용했다는 계산 결과일 뿐이며, 미래/실기기 지연 상한·통계적 안정성·임의 열 이력까지 증명하지 않는다. 두 계획×3문맥의 여섯 계산 중 가장 작은 J 이득은 **0.0026438245J**다. 이 값은 실제 미모형화 차등비용이나 예측 오차로 쉽게 지워질 수 있으며, 실기기 오차 기준이 아니다. 기한 유지와 에너지·열·응답 상충을 따로 보고한다.
+
+별도 진입4재생/192 PC 요청/새 optimizer0, elapsed0.203초. 최초 두 테스트 오류는 분수ns인 개발 평균과 정수ns로 독립 반올림되는 dispatch/phase 경계를 정확 동등으로 비교한 신규 검증 guard의 결함이었다. 기존 엔진의 다섯 경계 각각에 **1.01ns의 반올림 검증 여유**를 적용했고, 처리시간을 계획 길이로 맞추지 않았음을 확인했다. 이 수치 여유는 연구 정확도 허용폭이 아니다. 신규6검증 및 가짜ADB trap 아래 실제 CLI가 통과했다. 기존 모델/엔진/planner byte 불변, 부하/센서/Android/기기0. [검증](joint_calendar_transfer_verification.json).
+
+```powershell
+python -B -m tools.d1_joint_calendar_transfer --output output/fixed_calendar_transfer
+python -B -m unittest tools.test_d1_joint_calendar_transfer -v
+```
+
+**판정:** 이 두 고정 미래 일정의 모델 안 가능성은 mean 한 문맥에만 국한되지는 않는다. 인과적 온라인 제어의 이득, 실제 차등 비용, 독립 정책 차이 식별은 여전히 미확인이다. 강한 EFT 대비 실제 에너지·열 절감 완료로 표시하지 않으며 기본/strict/experiment_ready=false를 유지한다. 같은 결과를 더 좋게 만들기 위한 재최적화나 새 기기 계획은 만들지 않았다.
+
 [새 4사례 판독](joint_calendar_readout_v2/index.html), [같은 입력·응답·부호 있는 면적 CSV](joint_calendar_readout_v2/comparisons.csv). 앞선 최고 AP만 제한한 8회 최적화와 별도 실행이다. 기존 두 queue 입력/seed223001·223002/48요청/mean 처리시간/초기값을 유지하고, **EFT의 최고 AP와 양의 AP 부담 면적을 동시에 넘지 않으면서 J를 최소화**하도록 기존 격자 문제에 면적 epigraph만 더했다. 원래 planner·이벤트 엔진·물리 계수를 수정하지 않았다. 시작 HEAD `fe70b1f6abd188bba65a2eff9fee4196935c3c1f`, 미커밋 구현의 byte를 실행 전에 등록했다.
 
 | 입력·seed | 원 5단계 재생의 기한 | ΔJ, 0–120초 | Δ최고 AP | Δ양의 AP 면적, 35–180초 | Δ긴급 P95 | Δ일반 평균 |

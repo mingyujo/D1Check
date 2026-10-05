@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-06 현재 작업 — 고정 공동 제약 일정의 처리문맥 전이 완료
+
+- [같은 두 미래일정/기존short·long 4재생](results/method_followup_01/joint_calendar_transfer_v1/index.html), [재현·검증·한계](results/method_followup_01/README.md). backend/허용시각을고정해48/48기한·J/최고AP/양의면적 감소가4/4유지됐다. 새최적화0/192PC요청, 신규6검증/가짜ADBtrap 실제CLI통과. 평균문맥과합친6계산의최소J이득은0.002644J로실기기비용/오차미확인이다.
+- 실행자는 실제lane반환을기다리며다섯서비스경계를검증한다. 기존정확시각Replay·엔진/계수/planner는불변. 이번4재생은허용시각지연0이지만미래/실기기보장은아니다. 긴급P95 +671–790ms/일반평균 +2.398–2.981초상충을남긴다. 독립기기확인/인과적온라인정책/실제공동절감은미완료.
+- 다음 PC 판단은새후보반복이아니라기존목적별Pareto와이참고값의이득/응답비용을방법론결론에합치는것이다. 기기/ADB/실측/APK/설치/기기계획/claim0,동결/기본/strict/experiment_ready=false/사용자파일·다른worktree보존.
+
 ## 2026-10-06 현재 작업 — J·AP 최고/면적 공동 제약의 offline 참고값 확인
 
 - [4사례/전체48요청·재현·검증](results/method_followup_01/README.md), [화면](results/method_followup_01/joint_calendar_readout_v2/index.html). mean queue75 두 사례에서 48/48 기한 유지와 ΔJ −0.052468/−0.013042J, Δ최고AP −0.049803/−0.045679°C, Δ양의AP면적 −0.886985/−1.164743°C·s를 원 이벤트 재생으로 확인했다. 미래 입력을 아는 사후 offline 참고이며 응답 증가/전체 열입력 증가를 함께 보존한다. 온라인 정책·실기기 공동절감·최적성은 미확인이다.

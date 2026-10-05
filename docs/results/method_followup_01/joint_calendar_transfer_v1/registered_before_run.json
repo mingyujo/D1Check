@@ -1,0 +1,57 @@
+{
+  "spec": {
+    "version": "fixed-joint-calendar-transfer-v1",
+    "cases": [
+      "g0.45_c0.75_b4"
+    ],
+    "seeds": [
+      223001,
+      223002
+    ],
+    "source_scenario": "mean",
+    "contexts": [
+      "short_context",
+      "long_context"
+    ],
+    "maximum_PC_replays": 4,
+    "maximum_wall_s": 120.0,
+    "optimizer_runs": 0,
+    "rule": "all two prior integer incumbents; fixed request ID/backend/not-before release; arrived queue only; actual lane ownership; no new delays or replanning",
+    "timing": "existing whole five-phase development contexts, not randomized or independent device sessions",
+    "windows": {
+      "energy_s": [
+        0,
+        120
+      ],
+      "AP_s": [
+        35,
+        180
+      ]
+    },
+    "comparison": "same-arrival EFT already stored for each context; no source plan selection by transfer outcome",
+    "physical_validation": false,
+    "strict_supported": false,
+    "experiment_ready": false,
+    "device_commands": 0
+  },
+  "code": {
+    "tools/d1_joint_calendar_transfer.py": "8a63b8c90ecc0e971d2fa47911e14753ad39c68f894f955c5e74f98a4bcf0d41",
+    "tools/d1_joint_calendar_report.py": "e9b1e124ea531606ff4befb310d4b586340110618aebcbc239d968d9a1ab39ae",
+    "tools/d1_industrial_scheduling.py": "5537b8746d329a8ab25f69c105218ecb6eaba99d26bfb6bb8434950b2e5b6bab",
+    "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9"
+  },
+  "resources": {
+    "docs/results/method_followup_01/run_v1/registered_before_run.json": "b30ebda7e434c709d5180e13883067dca623489af120bf3c78e0c3cfcd95a56f",
+    "docs/results/method_followup_01/run_v1/records.jsonl.gz": "0b1b49e23da376657ddb37330f03447a72d5b2873e198ddacd56e2a68c9a6b2c",
+    "docs/results/method_followup_01/beam_v1/registered_before_run.json": "13963e26a188d1b959bba2e603abe55686e59f8910984588e1e71ff07bb52ed9",
+    "docs/results/method_followup_01/beam_v1/records.jsonl.gz": "5e9c9445e9635db5c9e30fa469e2c35f2f084bda2071fd39c1cda305dc2d5236",
+    "docs/results/method_followup_01/beam_v2/registered_before_run.json": "fe246c8e5ddbd3fc5c23471c3869b9a3547f820227a5ca00df899e14a89eaf00",
+    "docs/results/method_followup_01/beam_v2/records.jsonl.gz": "88b5569c71abd7349eba6455533689abcaba61476bbce1278654ce1c87ff9a28",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d"
+  },
+  "source_plans_sha256": "e0ca80151dde94fbfacb5d995c471992bd64a33892966d65310d4dfe39557bd3",
+  "base_head": "9846846db60221fb6d9489eff3210971b0593917",
+  "source_dirty": true,
+  "utc": "2026-10-05T20:36:30.715181+00:00"
+}

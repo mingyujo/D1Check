@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-06 — METHOD-FIXED-CALENDAR-TRANSFER-PC-01
+
+- 채택한검증규칙: 평균문맥의두기존incumbent backend/허용시각을고정해기존short/long전문맥만4회재생한다. 기존Replay의정확시각assertion은보존,별도not-before PC실행에서실제lane반환을기다리며강제처리시간/인위감속을넣지않는다. 이경로는미래일정이주어지며온라인정책이아니다.
+- 확인:4/4기한48/48과J/최고AP/양의면적감소·원소스해시불변. 실제허용시각지연0이나일반/긴급응답손해가남는다. mean포함최소J이득0.002644J는미모형화실기기비용으로지워질수있다. 신규6검증/실제CLI통과; 독립세션/실제절감/미래서비스보장은미완료.
+- 미채택:기본/strict/experiment_ready 변경,사후안전/정확도PASS,solver재시도/계수보정/새기기계획. [원소스·분모·시간양자화·재현](results/method_followup_01/README.md). 기기/실측/APK/claim0.
+
 ## 2026-10-06 — METHOD-JOINT-CALENDAR-PC-01
 
 - 이번 분석 규칙: 기존 두queue/두seed/mean/48요청·20ms·사례당native120초를 유지하고 EFT 최고AP와 양의AP면적을 함께 제한한 J 최소화 참고값을4회만 계산했다. 물리계수/원planner/이벤트본문은 보존했다. 후보/정확도/안전기준 채택 결정이 아니다.

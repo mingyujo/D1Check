@@ -1,5 +1,9 @@
 # D1Check 통합 시뮬레이터
 
+## 2026-10-06 고정 미래일정의 처리문맥 전이
+
+[short/long4재생](../method_followup_01/joint_calendar_transfer_v1/index.html). mean에서찾은두계획의backend/허용시각을유지하고기존개발전체5단계문맥만바꿨다. 4/4전기한·J/최고AP/양의AP면적감소가유지됐지만mean포함6계산최소J이득은0.002644J로작고응답이늘었다. 실제lane반환을기다리는별도PC경로이며새최적화/기기실측이아니다. 독립확인/온라인정책/정책효과PASS 미완료,기본/strict/experiment_ready=false유지. [소스·6검증·실제CLI·재현](../method_followup_01/README.md).
+
 ## 2026-10-06 공동 제약 offline 참고 일정 추가
 
 [저장4사례 화면](../method_followup_01/joint_calendar_readout_v2/index.html), [계약·재현·검증](../method_followup_01/README.md). 같은 mean queue75 두 입력에서 모든48기한을지키며 J/최고AP/양의AP면적이 함께 감소하는 미래일정을 원PC엔진으로 확인했다. J 차이는 −0.052468/−0.013042J로작고 긴급P95/일반응답이늘었다. 모든시점/부호있는온도면적은개선이아니며실기기·온라인정책·독립확인이아니다. queue50 정수해미확보는제약불가능으로해석하지않는다. 현재기본/strict/experiment_ready=false불변. 기존온라인후보공동개선0 결과와분리한다.
