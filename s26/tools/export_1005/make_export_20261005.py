@@ -43,7 +43,7 @@ INVENTORY_ONLY = ['S26_N50P_1004', 'S26_G50P_1004', 'S26_GI300_1004', 'S26_NI300
                  [f'S26_EffB2_0{i}_{k}_1004' for i, k in ((1, 'gpu50'), (2, 'gpu100'), (3, 'cpu50'), (4, 'cpu100'), (5, 'cpu100'), (6, 'cpu50'), (7, 'gpu100'), (8, 'gpu50'))] + \
                  ['S26_N50P2_1005', 'S26_NI300r2_1005', 'S26_G50P2_1005']
 C2_DIR = 'S26_C2_efficientnet_npu_0928'
-META_KEYS = ['run_id', 'resource', 'engine', 'litert_version', 'model_id', 'model_sha256', 'precision', 'limit_mode', 'requested_duration_s',
+META_KEYS = ['run_id', 'resource', 'npu_accelerator_requested', 'npu_timed_resource_label', 'engine', 'litert_version', 'model_id', 'model_sha256', 'precision', 'limit_mode', 'requested_duration_s',
              'actual_load_duration_ns', 'termination_reason', 'completed_inference_count', 'experiment_valid', 'invalid_reason', 'cpu_threads',
              'warmup_count', 'baseline_s', 'achieved_duty_cycle_percent', 'npu_dispatch_lib_sha256', 'npu_input_spec', 'npu_input_sha256',
              'npu_latency_boundary', 'npu_model_partition', 'gpu_delegate_profile', 'gpu_compatibility_policy_id', 'gpu_compatibility_list_enforced',
@@ -153,7 +153,10 @@ def attribution(exp, R, anchors, tr_full, logs):
                 cnt['enn'] += 1
             if FAIL_RE.search(msg):
                 cnt['failure'] += 1
-        exp_acc = s['accelerator'] if chain else meta.get('resource')
+        # [사후 수정 14:26 — 첫 실행 표 b3_attribution_run1_labelbug.csv 보존] npu-runner 단일 런의 run_metadata.resource 는 항상 'NPU' 라벨이다;
+        # 규칙의 '런 자원' = 실제 요청 가속기 npu_accelerator_requested (CPU/GPU/NPU). 규칙 문장·판정식은 그대로.
+        req = meta.get('npu_accelerator_requested')
+        exp_acc = s['accelerator'] if chain else (req if req in ('CPU', 'GPU', 'NPU') else meta.get('resource'))
         model_init = None if i == 0 else (tr_full[i - 1].get('model_initialized') if i - 1 < len(tr_full) else None)
         if exp_acc in ('GPU', 'NPU'):
             other = cnt['NPU' if exp_acc == 'GPU' else 'GPU'] + cnt['other']
