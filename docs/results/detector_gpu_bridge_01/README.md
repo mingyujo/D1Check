@@ -1,5 +1,44 @@
 # 탐지 GPU 시간 자료 재사용과 현재 비용 공백
 
+## 2026-10-06 추가 완료: 호환 자원 backfill의 실제 PC 경로
+
+[새 비교 화면](compatible_backfill_v2/index.html), [동일 seed 대조](compatible_backfill_v2/paired_comparisons.csv), [등록](compatible_backfill_v2/registered_before_run.json), [검증](compatible_backfill_verification.json). 시작 HEAD `dd89aea5506afa86ddd6ad06ccc8ef7a3730c505` 이후의 PC 수정이며, 아래 이전64계산과 구분한다.
+
+분류는 CPU에 두고 탐지만 빈 CPU/GPU에 배정하는 `CLASS_CPU_DETECTOR_BACKFILL_PC_V1`을 별도 opt-in으로 연결했다. 실제 도착 큐·우선순위·4초 aging을 사용하며 미래 도착이나 실현 처리시간을 받지 않는다. 같은 종류의 CPU/GPU 동시 점유를 금지하고, worker_release가 아니라 실제 lane_available 이벤트까지 busy를 유지한다. 앞 요청이 합법 자원을 사용할 수 없을 때 뒤의 호환 요청을 배정한다. **뒤 작업이 앞 작업의 미래 응답을 전혀 늦추지 않는다는 예약 보장은 없다.** EASY 또는 보수적 backfilling 원 알고리즘의 완전 재현이 아니다.
+
+동일 CAL03 시간 프로필·기존 입력8개·seed623001/623002·간섭 가정1.0/1.5를 유지했다. 새16계산/768요청, 저장 정적48계산은 재사용했다. 이 입력은 이미 본 자료이므로 사후 개발/소프트웨어 평가다. 현재 실측 기반 EFT의 서로 다른 시간 프로필과 원 지연값을 직접 비교하지 않았다. 제어 비용도 기존 PC phase 설정이며 실기기 제어 비용 검증은 아니다.
+
+| 입력·간섭 | 새 후보 기한/도착 | CPU 직렬 / 고정 CG_DC 기한 | 새 후보 긴급 P95(ms) | 새 후보 일반 평균(ms) | 판독 |
+|---|---:|---:|---:|---:|---|
+| low·1.0/1.5 | 각각96/96 | 각각96/96 / 96/96 | 159.200 | 622.788 | CPU 직렬과 동일, DG 사용0 |
+| queue50·1.0 | 96/96 | 96/96 / 96/96 | 833.204 | 1,876.743 | CG_DC 대비 긴급−51.475ms / 일반+718.595ms |
+| queue50·1.5 | 96/96 | 96/96 / 96/96 | 947.637 | 2,299.275 | CG_DC 대비 긴급−227.284ms / 일반+942.740ms |
+| queue75·1.0 | 96/96 | 96/96 / 96/96 | 971.197 | 1,151.824 | CPU 직렬 대비 긴급 동일 / 일반+101.414ms |
+| queue75·1.5 | 96/96 | 96/96 / 96/96 | 971.829 | 1,253.165 | CPU 직렬 대비 긴급+0.632ms / 일반+202.756ms |
+| burst50·1.0 | 60/96 | 56/96 / 74/96 | 950.028 | 7,564.673 | 전체 서비스 실패 |
+| burst50·1.5 | 46/96 | 56/96 / 33/96 | 8,641.780 | 7,341.746 | 전체 서비스 실패·긴급 악화 |
+
+각 행은2seed합계96도착, P95/일반평균은 사례별 지표의 평균이고96표본을 합친 P95가 아니다. 새16사례 중12사례가48/48기한을 충족했다. 탐지GPU배정94건, 미측정 같은 종류 병행0초다. 모두 PC 시간 진단이며 새 실측이 아니다.
+
+**새 기본 정책으로 채택하지 않는다.** 큐의 긴급/일반 응답 상충과 버스트 기한 실패가 남았고, 현재 DG/CC_DG 증가 전력·AP 전환 항은 계속 null이다. 과거 고정 상태의 존재는 현재 짧은 요청 비용이나 예측 정확도 확인과 다르다. 이 결과만으로 새로운 DG 실측을 우선 실행하거나 원래 열·에너지 공동 절감을 완료했다고 판정하지 않는다.
+
+첫 실제 `python -m` 실행은 `__main__`과 canonical 모듈의 Controller 타입 불일치로 첫 사례의 이벤트 실행 전에 중단됐다. [실패 기록·등록·정확한 당시 소스](compatible_backfill_v1/PC_FAILURE.json)를 보존하고, CLI를 canonical 함수로 연결해 별도 v2에서 실행했다. 자료 파싱의 `start_ns`를 실제 `execution_start_ns` 필드로 고친 것은 후처리 결함이며 일정이나 계수를 다시 맞추지 않았다.
+
+기존 이벤트 본문은 변경하지 않았다. opt-in 식별·검사·라우팅만 추가했음을 실행 전 원본 byte snapshot과 정확한 변환 검사로 확인한다. 기존 CPU_URGENT/B2/B3의 대표 경로 결과 전체가 원본과 일치한다. 옛 등록 해시를 현재 해시로 덮어쓰지 않으며, 다른 이벤트 본문 변경은 재집계에서 거부한다. 기존 모형·기본 backend 마스크·strict·미소비 queue24·`experiment_ready=false`는 유지한다. Android 수정·APK 빌드·기기 명령·새 기기 계획·claim0.
+
+```powershell
+# 저장된 gzip ledger 재집계·그림; 새 시뮬레이션 없음
+python -m tools.d1_compatible_timing_report
+python -m unittest tools.test_d1_compatible_timing_backfill tools.test_d1_compatible_timing_report -v
+# 본 시간 탐색을 새 PC 폴더에서 재현할 때만 16계산 수행
+python -m tools.d1_compatible_timing_backfill --output output/compatible_backfill_reproduction
+python -m tools.d1_compatible_timing_report --root output/compatible_backfill_reproduction
+```
+
+공유 입력·시간 벡터·기존 정적 ledger·원 이벤트 source snapshot을 저장소에서 읽는다. 본 재현과 회귀 fixture를 실측 독립 세션 수로 집계하지 않는다. gzip 재집계는 event simulate를 차단한 테스트에서도 통과했다. 최종 신규13검사+관련23회귀=36통과, 별도 실제 CLI와 그림 검수는 검증파일에 기록했다. 현재 권고는 지원되는 EFT와 기한 우선/Pareto 상충 판독을 유지하는 것이다.
+
+아래는 이전 시간 자료 연결 작업의 원 보고이며 그대로 보존한다. 이전의 “새 정책을 만들지 않았다”는 해당64계산 단계에 대한 설명이다.
+
 2026-10-06, 시작 HEAD `865f7617414258951f3289e5efd04f633a3b30c7`의 후속 PC 작업이다. [집계 화면](index.html), [전체 표](timing_groups.csv), [대표 일정](timing_reference.png). 새 실측·모형 fitting·전력/열 가정·기기 계획·소비 claim은 없다.
 
 ## 결론과 이번에 끝낸 것

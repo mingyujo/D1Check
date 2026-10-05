@@ -16,6 +16,9 @@ def records(path):
 def verify_registered_source(file,digest,root):
     current=f.x.p.ROOT/file
     if f.x.p.digest(current)==digest:return 'current'
+    if file=='tools/d1_arrival_explore.py':
+        from tools.d1_compatible_timing_backfill import verify_legacy_engine
+        return verify_legacy_engine(digest)
     if file=='tools/d1_industrial_scheduling.py':
         archive=root/'source_snapshots/d1_industrial_scheduling.py'
         if f.x.p.digest(archive)!=digest:raise ValueError('historical search source hash mismatch')

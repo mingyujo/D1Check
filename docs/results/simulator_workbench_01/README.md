@@ -1,5 +1,9 @@
 # D1Check 통합 시뮬레이터
 
+## 2026-10-06 호환 자원 backfill의 시간 평가 완료
+
+[분류CPU고정/탐지CPU·GPU 비교](../detector_gpu_bridge_01/compatible_backfill_v2/index.html), [근거·검증](../detector_gpu_bridge_01/README.md). 새16PC사례 중12전기한충족이나큐응답상충/버스트실패·현재J/AP null로새기본정책미채택. 실제lane해제/중복점유차단을검증하고옛이벤트본문을보존했다. 실측/독립확인/절감그림이아니다. [전체입력 방법론 판정](../industrial_scheduling_01/README.md)은기한우선·EFT대조·Pareto상충평가를권고한다.
+
 ## 방법론 결과를 사용하는 경로 — 2026-10-06
 
 [기한→Pareto 상충 판독](../method_followup_01/decision_readout_v2/index.html), [명시한 J/AP 비악화 질문](../method_followup_01/decision_nonworsening_v2/index.html), [CLI/해석](../method_followup_01/README.md). 저장된 전체48요청결과만읽고추가시뮬레이션은하지않는다. 다른seed의block을같은대조로합치지않으며,EFT동일과새개선·기한실패·미확인비용을구분한다. 제약/상충판독은완료했지만실제정책승자·미래오차한도·배포추천은null/false다.

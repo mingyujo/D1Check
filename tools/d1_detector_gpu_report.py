@@ -27,6 +27,10 @@ def verify(root):
         for relative, expected in registration['hashes'].items():
             data = source_bytes(r.b.f.x.p.ROOT/relative)
             if hashlib.sha256(data).hexdigest() != expected:
+                if relative=='tools/d1_arrival_explore.py':
+                    from tools.d1_compatible_timing_backfill import verify_legacy_engine
+                    verify_legacy_engine(expected)
+                    continue
                 raise ValueError('registered source/result mismatch: '+relative)
     if r.b.f.x.p.digest(r.b.f.x.p.BUNDLE/'model.json') != r.b.f.x.p.MODEL_SHA:
         raise ValueError('frozen model changed')

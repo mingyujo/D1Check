@@ -103,11 +103,6 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
              admission=None, thermal_model=None, decision_provider=None):
     # Optional REPLAN-PC-01 event hook. None preserves the frozen v3 execution path.
     empirical = config.get('protocol') == 'empirical-request-exploration-v1'
-    compatible = getattr(decision_provider, 'protocol', None) == 'cal03-compatible-timing-backfill-v1'
-    if compatible:
-        from tools.d1_compatible_timing_backfill import validate_engine
-        validate_engine(config, vectors, requests, policy, settings, decision_provider)
-        base.require(admission is None and thermal_model is None, 'timing-only compatible provider')
     if empirical:
         from tools.d1_empirical_request_policy import validate_engine
         validate_engine(config, vectors, requests, policy, settings, decision_provider)
@@ -117,12 +112,12 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
         validate_service(config,vectors,requests,policy,settings)
     else:
         base.validate_config(config)
-    base.require((empirical or compatible or policy in POLICIES or policy == 'THERMAL_ENERGY_PC_V1')
+    base.require((empirical or policy in POLICIES or policy == 'THERMAL_ENERGY_PC_V1')
                  and settings['mode'] in ('strict', 'explore'), 'policy/mode')
     if policy == 'THERMAL_ENERGY_PC_V1':
         base.require(admission is None and settings['mode']=='explore', 'thermal policy explore-only')
         base.require(thermal_model is not None, 'thermal policy requires explicit model')
-    if decision_provider is not None and not (empirical or compatible):
+    if decision_provider is not None and not empirical:
         base.require(policy=='THERMAL_ENERGY_PC_V1' and admission is None and thermal_model is not None,
                      'scripted decisions are isolated to modeled offline exploration')
     if thermal_model is not None:

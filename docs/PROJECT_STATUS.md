@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-06 현재 작업 — 호환 자원 backfill PC 후속 완료
+
+- [결과·실제 진입·재현](results/detector_gpu_bridge_01/README.md), [새 시간 비교](results/detector_gpu_bridge_01/compatible_backfill_v2/index.html), [방법론 대응](results/industrial_scheduling_01/README.md). 분류CPU 고정/탐지CPU·GPU opt-in과 실제 lane해제까지의 같은 종류 병행 차단을 연결했다. 새16PC계산/768요청·저장48대조 재사용,12사례는전기한충족이나큐응답상충/버스트실패. DG94배정의 현재J/AP는null,새기본정책미채택.
+- 실제CLI 타입 불일치 수정·첫실패등록/당시소스 보존. 기존이벤트본문 정확한변환검사/CPU·B2·B3대표결과동일,신규13/관련23검증통과. Android/APK/기기/새기기계획/claim0,동결/strict/experiment_ready=false/사용자파일/다른worktree보존.
+- 현재 사용할 방법은 강한EFT기준·기한우선·목적별Pareto상충판독이다. 공정스케줄링 탐색을 실제열·에너지공동절감완료로 부르지 않는다. 다음행동: 기존지원모형의 서비스적격 목적별선택과 기준대조를 최종비교방법으로 정리하며,미확인DG비용을임의추정하거나새실측을자동추가하지않는다.
+
 ## 2026-10-06 현재 작업 — 기한 우선·상충 판독 경로 완료
 
 - [저장결과CLI/판독](results/method_followup_01/README.md), [Pareto화면](results/method_followup_01/decision_readout_v2/index.html), [동시비악화질문](results/method_followup_01/decision_nonworsening_v2/index.html). 새시뮬레이션없이3등록block각자의같은seed대조/288전체도착/기한/5비용지표를연결했다. 기한실패·결측·EFT동일을새우월정책으로표시하지않는다.

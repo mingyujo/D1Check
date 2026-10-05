@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-06 — COMPATIBLE-TIMING-BACKFILL-PC-01
+
+- 채택한구현경계: 분류CPU고정·탐지CPU/GPU의호환즉시배정,실제lane해제까지같은종류병행차단을과거시간전용opt-in으로연결. 실제도착큐·원기한/시간벡터유지,미래실현값/가짜전력모형없음. 기존이벤트본문/기본/strict/동결파일보존. [근거·검증](results/detector_gpu_bridge_01/README.md).
+- 결과/채택보류: 새16PC사례/768요청 중12전기한충족,탐지GPU94배정. queue응답상충과burst기한실패,현재DG/CC_DG J/AP null 때문에새우월정책으로채택하지않는다. 입력은이미본자료이며사후개발·소프트웨어평가,독립실기기확인아님.
+- 원래EASY/보수적backfill의앞작업예약보장을구현했다고부르지않는다. CLI모듈타입결함수정·첫실패보존,새13/관련23검증통과. 이번PC구현완료와연구목표달성을분리,experiment_ready=false/기존FAIL/미소비계획유지. 기기/실측/APK/새기기계획/claim0·자동추가실측승인없음.
+
 ## 2026-10-06 — METHOD-CONSTRAINT-READOUT-PC-01
 
 - 채택한연결경계: 기존전체48요청결과의기한우선/5지표Pareto/명시적상대제약판독CLI. 각등록block의같은seed·모형·6사례를유지하고다른seed를paired비교로합치지않는다. [실행·근거](results/method_followup_01/README.md).
