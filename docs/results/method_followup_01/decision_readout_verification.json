@@ -1,0 +1,59 @@
+{
+  "verified_at_utc": "2026-10-05T18:51:48.131387+00:00",
+  "base_head": "1a6b0941ae165a606f835d0f966f874536e6fff4",
+  "uncommitted_changes": true,
+  "sources": {
+    "tools/d1_method_decision_readout.py": "8068ce23d669e0506c88c7d1ff8761633bd66b7b11a2ce23bc67c88a93eebd28",
+    "tools/test_d1_method_decision_readout.py": "1c8b87697a85cec3c0a0ce38e6473022006793a298264a7137a241aa8c79129e",
+    "docs/results/method_followup_01/relative_nonworsening_example.json": "fc96df47a77a62133e31679fbabf05f976974886c318c9185344ce7c5f1dfb00"
+  },
+  "artifacts": {
+    "decision_readout_v2/constraints_and_frontiers.csv": "ca1347a43d12f8b115a58daabe4c7ff3fd2520ebba82e0842ca1cce18fea0029",
+    "decision_readout_v2/index.html": "01cc8e7fb4708985e6cbd3c04c4425578768ade1bdb5cacc82c4d51874c07916",
+    "decision_readout_v2/result.json": "f66ff45025c4d001295b64b1e3a88429db2c173689be6fd3cf5f1200f808e4ee",
+    "decision_nonworsening_v2/constraints_and_frontiers.csv": "0fad33f9e06c6a57262279776459b932dd016e3d067d7faa1fd86435e5d312b3",
+    "decision_nonworsening_v2/index.html": "1078735565b4260d7b2aa7d5578d00f08fedc01cd8b5dbee27267d6188f44143",
+    "decision_nonworsening_v2/result.json": "c961c2f64d34f1e3ce5851d97ccce5eea71ba3b2fb7a33bc256ebce53b45ce2a"
+  },
+  "commands": [
+    {
+      "command": "python -m unittest tools.test_d1_method_decision_readout -v",
+      "tests": 7,
+      "passed": 7,
+      "exit_code": 0
+    },
+    {
+      "command": "python -m tools.d1_method_decision_readout --output docs/results/method_followup_01/decision_readout_v2",
+      "exit_code": 0
+    },
+    {
+      "command": "python -m tools.d1_method_decision_readout --relative-caps-file docs/results/method_followup_01/relative_nonworsening_example.json --output docs/results/method_followup_01/decision_nonworsening_v2",
+      "exit_code": 0
+    }
+  ],
+  "prototype_v1_preserved_locally_not_authoritative": true,
+  "same_registered_seeds_per_block": true,
+  "input_request_denominator": 288,
+  "readout_rows_per_output": 28,
+  "partial_or_missing_reference_rejected_or_null": true,
+  "new_simulations": 0,
+  "device_commands": 0,
+  "new_device_plans": 0,
+  "APK_build": 0,
+  "claim": 0,
+  "model_changed": false,
+  "default_changed": false,
+  "accuracy_pass": null,
+  "policy_winner": null,
+  "future_error_bounds": null,
+  "experiment_ready": false,
+  "input_hashes": {
+    "docs/results/method_followup_01/run_v1/records.jsonl.gz": "0b1b49e23da376657ddb37330f03447a72d5b2873e198ddacd56e2a68c9a6b2c",
+    "docs/results/method_followup_01/run_v1/registered_before_run.json": "b30ebda7e434c709d5180e13883067dca623489af120bf3c78e0c3cfcd95a56f",
+    "docs/results/method_followup_01/beam_v1/records.jsonl.gz": "5e9c9445e9635db5c9e30fa469e2c35f2f084bda2071fd39c1cda305dc2d5236",
+    "docs/results/method_followup_01/beam_v1/registered_before_run.json": "13963e26a188d1b959bba2e603abe55686e59f8910984588e1e71ff07bb52ed9",
+    "docs/results/method_followup_01/beam_v2/records.jsonl.gz": "88b5569c71abd7349eba6455533689abcaba61476bbce1278654ce1c87ff9a28",
+    "docs/results/method_followup_01/beam_v2/registered_before_run.json": "fe246c8e5ddbd3fc5c23471c3869b9a3547f820227a5ca00df899e14a89eaf00",
+    "tools/d1_method_followup_report.py": "56ca31b0f8c1153bf964a3b387a40835e255ae3086e320a896f46678b7ca9cdf"
+  }
+}

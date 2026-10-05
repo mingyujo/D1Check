@@ -2,6 +2,23 @@
 
 2026-10-06 PC 작업. 시작 HEAD `42890f417871c262685bce0e6bb6a85d908d1372`, 미커밋 구현에서 각 실행 전에 입력·소스·계수 해시를 등록했다. [화면](index.html), [대표 일정·모형 경로](comparison.png).
 
+## 지금 사용할 판독 방법
+
+**기한 제약을 먼저 검사하고, J·최고AP·AP면적·응답의 상충을 Pareto 집합으로 남기는 방법을 권고한다.** 여러 비용을 임의 가중치로 합쳐 새 승자를 만들지 않는다. [저장 결과 판독 화면](decision_readout_v2/index.html)과 [J/AP 동시 비악화 질문의 예시](decision_nonworsening_v2/index.html)를 구현했다. 새로운 정책이나 새 계산 결과가 아니라, 앞서 완료한 전체48요청 결과를 그대로 읽는 CLI다. 현재 사용할 강한 PC 기준은 EFT이고, ATC/CPU 병목은 목적별 상충을 드러내는 비교 후보다.
+
+각 block/입력에서2seed×3전체5단계 문맥,288도착을 모두 검사한다. 지표별 Δ는 **각 사례의 동일 seed EFT 대비 차이의 최댓값**이다. 이는 미래 오차한도·WCET가 아니다. 부모3block은 서로 다른seed이므로 섞어서정책을순위매기지않는다. `equivalent_to_reference=true`는 계산이EFT와같다는뜻이며개선이아니다. J/AP를낮추면서응답을늘리는후보와응답기한을어기는후보를구분한다. 소수점 `1e-8`은 산술 판독오차이며 연구 허용오차가 아니다.
+
+상대 제약은 사용자가 직접 지정한 PC 질문으로만 사용한다. `relative_nonworsening_example.json`의0은 “각 저장 사례에서EFT보다J/최고AP/AP면적이커지지않는가”를 읽는 **예시 질문**이지새안전기준·정확도합격선·배포정책이아니다. ATC/병목block의queue50에서는EFT만통과하고, 즉시beam은일부조건에서EFT와동일하다. 전체기한을지키지못하는burst는낮은J값이있어도적격후보가없다. 실제승자/배포허용/미래오차한도는계속null/false다.
+
+```powershell
+# 아래는 새 출력 폴더의 사후 재집계이며 추가 시뮬레이션/기기 명령은 없다.
+python -m tools.d1_method_decision_readout --output output/method_frontiers
+python -m tools.d1_method_decision_readout --relative-caps-file docs/results/method_followup_01/relative_nonworsening_example.json --output output/method_nonworsening
+python -m unittest tools.test_d1_method_decision_readout -v
+```
+
+본 실험을 더 반복하지 않고 같은seed대조·전체분모·부분/결측null·기한실패차단·모형해시를검증했다. 새로운초기온도/사용사례/열피드백을승인하는경로가아니다. [검증 대상과명령](decision_readout_verification.json). 기기 계측이 필요한 구체적 경계는 [탐지 GPU 근거 연결](../detector_gpu_bridge_01/README.md)에 별도로 남겼다.
+
 ## 결론
 
 현재 지원되는 세 요청 cell과 CG_DC 병행에서 **EFT를 기준으로 전 요청의 기한을 지키면서 J·최고 AP·AP 부담 면적을 함께 비악화시키는 새 후보는 확보하지 못했다.** ATC/CPU 병목은 에너지와 일부 일반 응답을 줄이지만 AP와 긴급 응답의 손해가 있다. 현재 큐 다단계 유예는 미래 요청의 여유를 소모했고, 첫 행동을 즉시 배정으로 제한한 별도 후보도 기본 채택 근거가 없다. 실패와 동일 결과를 모두 보존한다.

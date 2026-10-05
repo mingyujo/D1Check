@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-06 현재 작업 — 기한 우선·상충 판독 경로 완료
+
+- [저장결과CLI/판독](results/method_followup_01/README.md), [Pareto화면](results/method_followup_01/decision_readout_v2/index.html), [동시비악화질문](results/method_followup_01/decision_nonworsening_v2/index.html). 새시뮬레이션없이3등록block각자의같은seed대조/288전체도착/기한/5비용지표를연결했다. 기한실패·결측·EFT동일을새우월정책으로표시하지않는다.
+- 새7검사와실제CLI2경로통과. 임의목적가중치/새합격기준/기본정책변경0, 미래오차한도·실제승자null/배포허용false. method264계산+8재생은commit865f761, 탐지GPU64시간계산/12검사는1a6b094 정상push·당시실제원격일치. 이번판독소스/검증은별도Git반영대상이다.
+- 지금가능: 지원된동결식에서기한을먼저지키는EFT기준과목적별J/AP/응답상충의PC평가. 원래실제공동절감목표는미완료. 다음구체적경계는분류CPU고정/탐지CPU·GPU제한배정의opt-in/admission과현재DG/CC_DG항이며새기기계획·실측은추가하지않는다. 기기명령/빌드/claim0·동결/strict/experiment_ready=false/사용자파일/다른worktree유지.
+
 ## 2026-10-06 현재 작업 — 탐지 GPU 과거 시간 연결 판정 완료
 
 - [근거·최소 해결 명세·재현](results/detector_gpu_bridge_01/README.md), [시간 참고 화면](results/detector_gpu_bridge_01/index.html). CAL03 원본32요청의5단계/W/L·개발/확인·delegate 검증을 대응했다. exact 모델/runtime/resident 기록은 일치하지만 APK/프로토콜은 달라 현재 DG 서비스·J/AP 항은 null/미지원이다.

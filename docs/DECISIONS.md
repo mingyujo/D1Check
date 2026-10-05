@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-06 — METHOD-CONSTRAINT-READOUT-PC-01
+
+- 채택한연결경계: 기존전체48요청결과의기한우선/5지표Pareto/명시적상대제약판독CLI. 각등록block의같은seed·모형·6사례를유지하고다른seed를paired비교로합치지않는다. [실행·근거](results/method_followup_01/README.md).
+- 실제선택정책이아닌사후결과판독이며새시뮬레이션·기기명령0. 상대제약0의예시는동시비악화질문이지정확도/안전기준/사용자배포승인이아니다. 모델수치반환/지원/독립오차확인/실제정책차이를분리한다.
+- 현재강한EFT기준/목적별상충평가를사용하고새공동절감우승자를선언하지않는다. 기한실패/부분비용/null/EFT동일을성공으로승격하지않는다. 기본·strict·계수·experiment_ready=false/기존원본·FAIL유지,후속실측자동승인없음.
+
 ## 2026-10-06 — DETECTOR-GPU-TIMING-REUSE-PC-01
 
 - 확인/재사용: CAL03 exact32요청의D/A/S/O/P/W/L·입력해시·개발동결/별도확인·GPU delegate 검증을연결했다. 모델/runtime/resident기록은일치하나APK/프로토콜은달라현재요청의서비스/J/AP적격으로자동승격하지않는다. [보고/재현](results/detector_gpu_bridge_01/README.md).
