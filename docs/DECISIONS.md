@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-10-06 — METHOD-DIRECT-PAIR-READOUT-PC-01
+
+- 채택한판독:세션별requestID를제외한의미입력은같아야하며실제요청기록/전체분모/기한·공통창을대조한다. 모든실패/미완료/미확인을남긴다. J/AP적격성은독립검사,없는값은null,제어비용이포함된전체기기J에이중합산0. 실제CLI/7검증으로기존1536응답·4쌍의의미입력을확인했다. [결과·소스·검증](results/method_followup_01/README.md).
+- 기존4쌍의같은120초J점차이는보존하되완전동일AP창/초기조건/불확실성근거부족으로공동순위는미판정이다. 과거공유계획동일성과미래기기/APK/센서/runtime/resident동일성을혼동하지않는다. 새측정/계획/claim/정확도PASS/기본후보채택0,연구목표미완료,기본/strict/동결/experiment_ready=false유지.
+
 ## 2026-10-06 — METHOD-JOINT-EVIDENCE-REQUIREMENTS-PC-01
 
 - 채택한판독:기존192요청8세션의A/B두층을같은4쌍으로검증하고새48요청의오차인증으로사용하지않는다. 원pairCSV의B값·조건부A·실제AP표본창을구분한다. 부하전background차이항/개발RMSE를관측보정·보편적오차한도·계수W불확실성으로승격하지않는다. [수치·4검증·최소조건](results/method_followup_01/README.md).
