@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-06 현재 작업 — 공동 절감의 모형상 필요조건 판독 완료
+
+- [식·실행·검증](results/method_followup_01/README.md), [낙관적 경계](results/method_followup_01/joint_bound_v2/index.html). 같은48요청/고정3시간문맥/기한/초기값에서EFT최고AP·양의AP면적을유지할J이득상한을구했다. queue50 각6사례0.120–0.178J;실현가능성/실기기이득/불가능증명이아님.
+- 기존24기준 중18전기한충족·6버스트기한실패/null보존. 순간열입력·lane/도착packing 완화·dual검사·ns반올림을명시했다. 새9검증/CLI통과,새계수/후보/시뮬레이션/기기/APK/계획/claim0. 동결/기본/strict/experiment_ready=false/사용자파일/다른worktree보존.
+- 현재추천방법은EFT대조·기한우선·목적별Pareto상충판독. 실제공동절감/새정책우월성은미확보,현재DG/CC_DG 비용·실제제어비용/독립오차는미확인이다. 작은상한을성과로승격하거나후보/실측을자동추가하지않는다. 다음은이등록조건의결과를기준과상충별로사용하는것이며,같은배치/포괄감사를다시돌리지않는다.
+
 ## 2026-10-06 현재 작업 — 방법론 판독 통합 진입 완료
 
 - [단일 CLI·재현](results/method_followup_01/README.md), [화면](results/method_followup_01/workbench_v3/index.html). 저장3block/28묶음/168사례의 기한·dispatch→실제L 상태 경계·원해시를 확인하고 계수 매핑/독립 예측 확인/정책 차이 식별을 분리했다. 새 시뮬레이션0.

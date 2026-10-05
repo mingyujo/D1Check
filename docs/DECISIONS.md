@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-10-06 — METHOD-JOINT-BOUND-PC-01
+
+- 채택한추가판독은 [현재동결식의필요조건](results/method_followup_01/README.md)이다. 동일48요청/고정시간문맥/초기이력에서전기한/EFT최고AP·양의AP면적을유지할J이득의낙관적상한을순간열입력완화/dual검사로산출했다. 후보정책/전력·열계수/정확도기준을추가하지않는다.
+- 양의상한은실현가능성이나실기기효과가아니다. 새정책공동절감채택/모든방법불가능판정없음. 18적격/6기한실패분모·null보존,신규9검증/CLI통과. 기존기본/strict/동결값/experiment_ready=false/기기계획미소비유지;기기명령/실측/새claim0.
+
 ## 2026-10-06 — METHOD-WORKBENCH-READONLY-01
 
 - 채택한 PC 연결: [저장방법론 판독](results/method_followup_01/README.md)을 `d1_simulator method-readout`으로 제공한다. 새계수/정책채택이 아닌 기한 우선·같은seed대조·전체분모·목적별상충 판독이다. 원등록6파일/모형·초기값2파일의해시와실제D→L 상태를검사한다.

@@ -1,0 +1,42 @@
+{
+  "version": "method-joint-bound-verification-v1",
+  "utc": "2026-10-05T20:02:04.694504+00:00",
+  "tested_base_head": "ec29d5dde4f17b0319f97115047d52b938ab4891",
+  "tested_with_uncommitted_changes": true,
+  "tests": {
+    "command": "python -B -m unittest tools.test_d1_method_joint_bound -v",
+    "passed": 9,
+    "skipped": 0
+  },
+  "actual_cli": {
+    "command": "python -B -m tools.d1_method_joint_bound --output docs/results/method_followup_01/joint_bound_v2",
+    "exit_code": 0,
+    "reference_cases": 24,
+    "full_service_cases": 18,
+    "failed_service_null_cases": 6
+  },
+  "interpretation": "numerical optimistic necessary upper bound; not actual policy, physical effect, accuracy criterion or impossibility certificate",
+  "checks": [
+    "dual inequalities repaired and checked",
+    "known positive input and actual stored reference contained in relaxation",
+    "peak constraint monotonicity",
+    "phase/clock/whole denominator",
+    "solver incomplete remains null",
+    "no new event simulation and original input hash unchanged",
+    "HTML links/counts match CSV/JSON"
+  ],
+  "new_simulations": 0,
+  "device_commands": 0,
+  "experiment_ready": false,
+  "policy_winner": null,
+  "accuracy_pass": null,
+  "sha256": {
+    "tools/d1_method_joint_bound.py": "6c2813e021b623b5255c6d6f82feaa42776b7a1586843b1fed9563572c2ea1a0",
+    "tools/test_d1_method_joint_bound.py": "db14198f99e23d24b6214012d837fa4112ec29da8665d967f03f400144e01ce4",
+    "docs/results/method_followup_01/joint_bound_v2/bounds.csv": "ec1fefc0f17801f1b08780bdedddedce8a886fc2be74c8031221b987b5f6f1d3",
+    "docs/results/method_followup_01/joint_bound_v2/index.html": "328c4e6e0e947b0871ed782a2f5d3c3890f2dc0267db40c94a5d2d8cdf6f0fd3",
+    "docs/results/method_followup_01/joint_bound_v2/registered_before_analysis.json": "0832a0f92d9e838671fa1264c68bbb7f1da98dd64a02f0290315111f11af944a",
+    "docs/results/method_followup_01/joint_bound_v2/result.json": "e23d93f2aea89176a25dee13eccd29ee8f9daf81260201adf9d2c4f408d492c1",
+    "docs/results/method_followup_01/joint_bound_v2/source_snapshot.py": "6c2813e021b623b5255c6d6f82feaa42776b7a1586843b1fed9563572c2ea1a0"
+  }
+}
