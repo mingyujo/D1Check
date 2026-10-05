@@ -1,0 +1,74 @@
+{
+  "spec": {
+    "version": "industrial-scheduling-pc-v1",
+    "envelopes": [
+      "g1.2_c0.5_b1",
+      "g0.45_c0.5_b4",
+      "g0.15_c0.5_b8"
+    ],
+    "source_seed": 123001,
+    "prefix_requests": 8,
+    "scenarios": [
+      "mean",
+      "short_context",
+      "long_context"
+    ],
+    "online_policies": [
+      "EFT_REFERENCE",
+      "ATC_QUEUED_GUARD_V1",
+      "CPU_BOTTLENECK_GUARD_V1"
+    ],
+    "atc": {
+      "k": 2.0,
+      "urgent_weight": 4.0,
+      "normal_weight": 1.0,
+      "weight_reason": "deadline ratio 6/1.5; heuristic, not measured delay cost"
+    },
+    "online_rule": "immediate legal dispatch only; aging4s; mean service forecast; per-request long-context lateness may not increase vs EFT continuation",
+    "bottleneck": "minimum projected mandatory CPU lateness then mandatory clearance, J, peak, first response; no extra intentional wait",
+    "beam_width": 32,
+    "offline_wait_grid_s": [
+      0.0,
+      0.25
+    ],
+    "reference_case_timeout_s": 20.0,
+    "max_wall_s": 900.0,
+    "offline": "future arrivals and scenario durations known; two half-beams for service-then-J/peak; retain online incumbents; no optimality/lower-bound claim",
+    "accounting": {
+      "energy_window_s": [
+        0,
+        120
+      ],
+      "ap_window_s": [
+        35,
+        180
+      ],
+      "full_denominator": 8,
+      "controller_incremental_time_energy_zero_assumption": true
+    },
+    "online_runs": 27,
+    "offline_replays": 18,
+    "fitting": false,
+    "strict_supported": false,
+    "independent_device_validation": false,
+    "experiment_ready": false,
+    "device_commands": 0,
+    "scope": "post-hoc method exploration on prefixes of already-seen stored inputs; no policy selection or tuning"
+  },
+  "hashes": {
+    "tools/d1_industrial_scheduling.py": "f52afb68dc349a37c9d76d021efc42a7c612ea9c1d800c59138e5b79fa4f2b67",
+    "tools/d1_empirical_request_policy.py": "554f494a65f972099877e242e0c0fedd287da23e158b3e46663ff462b3909c7c",
+    "tools/d1_request_rl.py": "ac74114e28c6f44e0c3b0c9a1e5a943ad156579c8a3cfe3e015db8a50e2958a9",
+    "tools/d1_arrival_explore.py": "384a5ab28d289f78a00ab8a4bb5e74c8f7df4e5d2ba8f3059130673ca44a20ac",
+    "tools/d1_online_policy_model.py": "a4e28dc489f221b1f85e8754b23385c60ba134af20ac701a3660293cac63156a",
+    "tools/d1_ap_preparation_memory.py": "20af3304f8386c7f6adc1df56f5c593e0fd35600ae60d2ce60a518d5c418c40d",
+    "docs/results/industrial_scheduling_01/contract.json": "9c0e226834901ceb1cbf668b7773f454a5f3897ff58640a42e12922d23c14066",
+    "docs/results/industrial_scheduling_01/inputs.json": "5d2d814901da54ca232e2286d8db6da46b6fee3806e87a0b24f4337b55044eb1",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d"
+  },
+  "base_head": "af2dd0aa03a34f0997d30db12b03d80a3e3c8e3a",
+  "utc": "2026-10-05T17:08:06.830324+00:00",
+  "original_source_available": true,
+  "original_source_sha256": "ba8897113d9e4d3b086fc2a44c28fdfa666f9fdd6b829552f9394239d78fe38f"
+}

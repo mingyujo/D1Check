@@ -1,6 +1,12 @@
 # D1Check 현재 상태
 
-## 2026-10-06 현재 작업 — 산업공학 스케줄링 적용 후보 조사 완료
+## 2026-10-06 현재 작업 — 산업공학 스케줄링 제한 비교 완료
+
+- [구현·결과·재현](results/industrial_scheduling_01/README.md), [화면](results/industrial_scheduling_01/run_v2/index.html). 현재 도착 큐를 사용하는 ATC/CPU 병목 후보와 기한 보호를 기존 엔진에 연결하고, offline beam 참고 일정과 분리했다. 저장된 3입력의 첫 8요청×3문맥, 최종 45계산·360/360 기한 충족. mean에서 burst는 EFT 대비 −0.135488J/긴급 P95 +417.101ms; queue 병목은 −0.043247J/일반 평균 −110.144ms/긴급 동일. 열부담 0·최고 AP가 180초 끝이어서 열 절감은 미판정이며 기본정책으로 채택하지 않았다.
+- 새 PC replay의 ns 반올림으로 생기는 미지원 병행 결함 수정; 신설 15+기존 15=30검증 통과. 공유 입력만으로 재현하도록 원 부모 ledger의 출처 확인을 보완했다. 초기 45+최종 45=90본계산, 모형 수치 동일. beam 8,400노드·timeout 0·최적성 증명 없음. 동결본/strict/experiment_ready=false/FAIL/사용자 파일/다른 worktree 유지, 기기 명령 0회.
+- 다음 PC 행동 하나: queue g0.45_c0.5_b4 전체 48요청의 병목 후보 서비스·상태 점유를 기존 저장 EFT와 제한 대조한다. 이번에는 미진행. S26 인계·기존 PAIR 회귀는 별도 보존했다.
+
+## 2026-10-06 산업공학 스케줄링 적용 후보 조사 기록
 
 - [문헌·코드 대응](RELATED_WORK_GAP.md): 병목 기반 배정·ATC를 온라인 비교 후보, 작은 offline 일정 최적화를 개선 여지 확인 기준으로 권고. 기존 token/LLF/backfill/MPC와의 중복, 동일 상태 점유시간의 순서만 바꿔서는 J가 감소하지 않는 비용식 경계를 명시. 효과·기본 채택은 미확인.
 - 공식 공개 자료·현재 place/score·저장 결과 대조, 문서 링크/diff 확인. 새 시뮬레이션/학습/기기 명령0. 계수·strict·experiment_ready=false·FAIL·사용자 파일·다른 worktree 불변.

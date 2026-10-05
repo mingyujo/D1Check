@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-06 — INDUSTRIAL-SCHEDULING-PC-01
+
+- 사용자 진행 승인에 따라 채택한 PC 경계: 현재 도착 큐만 보는 ATC/CPU 병목 적용을 기존 물리모형의 별도 opt-in으로 구현하고, 미래 도착/해당 처리시간을 아는 offline beam 참고값과 분리한다. 도착·기한·응답/lane·모형·초기자료 불변. 원 ATC/DBR 전체 재현이나 현업 폰 정책으로 부르지 않는다.
+- [최종 45계산](results/industrial_scheduling_01/README.md): 각각 8/8 기한 충족. mean의 burst −0.135488J/긴급 P95 +417.101ms; queue 병목 −0.043247J/일반 평균 −110.144ms/긴급 동일. AP 부담 0·최고값이 180초 끝이어서 열 절감은 미판정이다. 작은 부분 입력의 사후 탐색이며 독립 확인·전체 48요청·폰 효과는 미완료다.
+- 후보 기본 채택·strict 지원 확대·추가 실측은 채택하지 않는다. 공유 재현의 출처 확인 보완을 포함한 총 90본계산, 모형 수치 불변. 기존 모형/FAIL/종료계획/experiment_ready=false 유지. 다음 queue 전체 48요청 제한 회귀는 권고이며 이번에는 미실행이다.
+
 ## 2026-10-06 — S26-CONTRACT-MODEL-03
 
 - 사용자 승인된 팀 회신 반영: S26 정책 비교·폰 확인의 주대상은 EfficientNet-Lite0 FLOAT32 원본 SHA `6c7ab0a6e5dcbf38a8c33b960996a55a3b4300b36a018c4545801de3a3c8bde0`. MobileNet V1은 열모형 개발·민감도 자료로분리. NPU AOT의변환출처/실행정밀도/품질과MobileNet→EffNet열전이는별도적격성이다.

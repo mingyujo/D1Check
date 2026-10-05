@@ -1,5 +1,11 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-06 산업공학 후보의 제한 PC 적용 완료
+
+- [고정 입력·구현·결과](results/industrial_scheduling_01/README.md): 저장된 3부하의 첫 8요청에 ATC/CPU 병목과 현재 큐의 지각 보호를 연결하고, offline beam 참고 일정을 실제 이벤트 엔진에서 재생했다. 최종 45계산·360/360 기한 충족. burst의 작은 J 감소/긴급 지연 상충과 queue 병목의 일반 응답 개선을 분리한다.
+- 완료: 신설 15+관련 15검증·해시·CSV/PNG/SVG/공유 압축 ledger·화면. 재현 보완을 포함한 본 90계산으로 종료했다. 후보 재조정/계수 fitting/전체 배치/기기 실행 없음. AP 양의 부담 0/최고값이 180초 끝이어서 열 효과는 미확인이다. 기본 경로·strict·experiment_ready=false 보존.
+- 다음 단일 PC 회귀는 queue g0.45_c0.5_b4 전체 48요청의 병목 후보를 기존 저장 EFT와 대조하는 것이다. 아직 미진행이며 새 정책 채택/실측 승인으로 승격하지 않는다.
+
 ## 2026-10-06 S26 계약모델·입력 인계
 
 - [검토 회신](team/S26_REPLY_AND_INPUT_HANDOFF_20261006.md): EfficientNet 주대상·MobileNet 개발/민감도 분리(S26-CONTRACT-MODEL-03). 입력20개기존byte묶음준비완료, 모델간전이/품질/정책검증은별도.

@@ -1,0 +1,67 @@
+{
+  "spec": {
+    "version": "industrial-scheduling-pc-v1",
+    "envelopes": [
+      "g1.2_c0.5_b1",
+      "g0.45_c0.5_b4",
+      "g0.15_c0.5_b8"
+    ],
+    "source_seed": 123001,
+    "prefix_requests": 8,
+    "scenarios": [
+      "mean",
+      "short_context",
+      "long_context"
+    ],
+    "online_policies": [
+      "EFT_REFERENCE",
+      "ATC_QUEUED_GUARD_V1",
+      "CPU_BOTTLENECK_GUARD_V1"
+    ],
+    "atc": {
+      "k": 2.0,
+      "urgent_weight": 4.0,
+      "normal_weight": 1.0,
+      "weight_reason": "deadline ratio 6/1.5; heuristic, not measured delay cost"
+    },
+    "online_rule": "immediate legal dispatch only; aging4s; mean service forecast; per-request long-context lateness may not increase vs EFT continuation",
+    "bottleneck": "minimum projected mandatory CPU lateness then mandatory clearance, J, peak, first response; no extra intentional wait",
+    "beam_width": 32,
+    "offline_wait_grid_s": [
+      0.0,
+      0.25
+    ],
+    "reference_case_timeout_s": 20.0,
+    "max_wall_s": 900.0,
+    "offline": "future arrivals and scenario durations known; two half-beams for service-then-J/peak; retain online incumbents; no optimality/lower-bound claim",
+    "accounting": {
+      "energy_window_s": [
+        0,
+        120
+      ],
+      "ap_window_s": [
+        35,
+        180
+      ],
+      "full_denominator": 8,
+      "controller_incremental_time_energy_zero_assumption": true
+    },
+    "online_runs": 27,
+    "offline_replays": 18,
+    "fitting": false,
+    "strict_supported": false,
+    "independent_device_validation": false,
+    "experiment_ready": false,
+    "device_commands": 0,
+    "scope": "post-hoc method exploration on prefixes of already-seen stored inputs; no policy selection or tuning"
+  },
+  "runs": 45,
+  "cases": 9,
+  "elapsed_s": 20.609000000054948,
+  "reference_search_timeouts": 0,
+  "hashes_unchanged": true,
+  "device_commands": 0,
+  "policy_winner": null,
+  "strict_supported": false,
+  "experiment_ready": false
+}
