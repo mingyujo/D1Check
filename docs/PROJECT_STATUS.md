@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-05 현재 작업 — burst8 기한 보호 계층 PC 검증 완료
+
+- [원인·구현·재현](results/pair_service_guard_01/README.md), [화면](results/pair_service_guard_01/run_v1/index.html). 원실패16건전부긴급분류,PAIR의탐지우선/분류GPU점유에뒤대기열기한검사누락. EFT대비평균대기+602.602ms/자체응답+76.158ms. 원12ledger정확재현.
+- 별도PAIR_QUEUED_SERVICE_GUARD_V1:현재도착대기열의long_context예측지각이EFT보다늘면거부. 원2seed기한272→288/288,새2seed270→288/288. 새seed EFT대비−0.560587J/+0.225968°C/긴급P95+419.675ms로에너지·열상충유지. 전역기한보장·기본채택·실기기효과아님.
+- 36PC계산/13테스트/1728요청재회계,기존계수/hash/strict/experiment_ready=false/사용자파일보존. 기기/실측/APK/새기기계획0. 다음PC행동:다른부하조합에서보호계층의서비스손해유무를제한회귀비교. 추가실측자동진행없음.
+
 ## 2026-10-05 현재 작업 — 비지도 군집 탐색 완료·주정책 미채택
 
 - [결과·재현](results/unsupervised_selector_01/README.md), [화면](results/unsupervised_selector_01/run_v1/index.html). K-means/GMM의3·6군집 후보를 결과label없이선정,각6군집. 개발성과로정책을연결한혼합방식이며순수비지도최적화아님. 저장162조건×4선택648판독,새시뮬레이션0/기기0.

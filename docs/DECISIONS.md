@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-10-05 — PAIR-QUEUED-SERVICE-GUARD-PC-01
+
+- 채택한구현경계:학습기가고른PAIR의병행우선제안에현재도착대기열의상대지각검사를별도옵트인으로추가한다. 원정책/학습/동결모형을덮어쓰지않고예측상해로운결정만EFT로돌린다. long_context는WCET가아니며미래도착기한을보장하지않는다.
+- [36PC비교](results/pair_service_guard_01/README.md)에서원/새seed총576/576기한충족. 새seed에너지−0.560587J/최고AP+0.225968°C상충과응답지연을보존한다. 기본정책·strict승격·실기기절감/우월성은채택하지않는다. 다른부하검증은남았고기기명령0이다.
+
 ## 2026-10-05 — UNSUPERVISED-SELECTOR-PC-01: 군집 탐색 종료
 
 - 채택한절차: 요청이력5특징의K-means/GMM fitting과내재점수선정,개발성과를사용한별도정책연결,저장결과의사후판독. 군집자체를절감label이나새물리상태로보지않는다. [근거](results/unsupervised_selector_01/README.md).

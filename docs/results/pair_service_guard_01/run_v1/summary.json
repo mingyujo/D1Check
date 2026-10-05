@@ -1,0 +1,39 @@
+{
+  "spec": {
+    "id": "PAIR_QUEUED_SERVICE_GUARD_V1",
+    "utc": "2026-10-05T00:18:45.181471+00:00",
+    "base_head": "e884882b88d6146b78c740437e0b002a27b09377",
+    "envelope": "g1.2_c0.75_b8",
+    "reproduction_seeds": [
+      123001,
+      123002
+    ],
+    "fresh_seeds": [
+      124001,
+      124002
+    ],
+    "scenarios": [
+      "mean",
+      "short_context",
+      "long_context"
+    ],
+    "policies": [
+      "EFT_REFERENCE",
+      "PAIR_COALESCE_V1",
+      "PAIR_QUEUED_SERVICE_GUARD_V1"
+    ],
+    "runs": 36,
+    "max_wall_s": 300,
+    "rule": "per arrived request predicted lateness under long_context may not increase vs current EFT choice; EFT continuation",
+    "scope": "one known failed envelope; fresh seeds not unseen workload/device validation",
+    "no_fit": true,
+    "device_commands": 0,
+    "experiment_ready": false
+  },
+  "reproduced_ledgers": 12,
+  "runs": 36,
+  "elapsed_s": 3.1718896999955177,
+  "original_missed_requests": 16,
+  "hashes_unchanged": true,
+  "device_commands": 0
+}
