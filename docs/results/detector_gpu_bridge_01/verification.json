@@ -1,0 +1,84 @@
+{
+  "verified_at_utc": "2026-10-05T18:40:45.987314+00:00",
+  "base_head": "865f7617414258951f3289e5efd04f633a3b30c7",
+  "uncommitted_changes": true,
+  "commands": [
+    {
+      "command": "python -m tools.d1_detector_gpu_bridge --output docs/results/detector_gpu_bridge_01/run_v1",
+      "exit_code": 0,
+      "new_PC_simulations": 48
+    },
+    {
+      "command": "python -m tools.d1_detector_gpu_reference --output docs/results/detector_gpu_bridge_01/reference_v1",
+      "exit_code": 0,
+      "new_PC_simulations": 16,
+      "reused_controls": 48
+    },
+    {
+      "command": "python -m unittest tools.test_d1_detector_gpu_bridge -v",
+      "initial": {
+        "tests": 9,
+        "passed": 8,
+        "errors": 1,
+        "cause": "test fixture request_id vs actual id schema; no production change"
+      },
+      "final": {
+        "tests": 12,
+        "passed": 12,
+        "errors": 0,
+        "exit_code": 0
+      }
+    },
+    {
+      "command": "python -m tools.d1_detector_gpu_report",
+      "exit_code": 0,
+      "new_simulations": 0
+    }
+  ],
+  "device_commands": 0,
+  "ADB": 0,
+  "APK_build": 0,
+  "new_device_plans": 0,
+  "new_claims": 0,
+  "experiment_ready": false,
+  "current_DG_physics_admitted": false,
+  "current_energy_AP_computed": false,
+  "frozen_hashes": {
+    "model": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "initial": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d"
+  },
+  "source_hashes": {
+    "tools/d1_detector_gpu_bridge.py": "8311425e19736ad739df8661aa7ea254ee4ef360a232340f5324a62368793140",
+    "tools/d1_detector_gpu_reference.py": "ca0a981abe192e558651db10c97f0192dd1cdd60ca413484b3d8fae464624b7a",
+    "tools/d1_detector_gpu_report.py": "2f79b9e10b4aca388077d72093f4bef3ce5ef521681ae3ee44f033879d14d30a",
+    "tools/test_d1_detector_gpu_bridge.py": "75604fabb6cb342411bbff1b121bb8ba80cc517b267121f43147c960d35421dd"
+  },
+  "artifact_hashes": {
+    "code_boundary.json": "8e414b18d8f413297548cbd6cdcd87d749846f490c4c7a00451ee1454eedd5a4",
+    "index.html": "ecc3944f32ffa9095831d3162c0e13fec4859b70799f5c222d311e9d14f56186",
+    "README.md": "bcb05ca08d8ebc763021b718bbcdee7bba66873276125caf9a8514ee526c8bc9",
+    "timing_groups.csv": "7d432415a9000ed2864de6c9b6f426668061c3bf53b3bf702490d33264ca6056",
+    "timing_reference.png": "fa67c3b83df97eb7be2b4f8c23a59581c5a648d56b37cefb2cf7ab7efbddd0f3",
+    "timing_reference.svg": "ec91b39197c34b3d4ed7d8231178df29ebee64518b1543f02eaf54490c891a42",
+    "reference_v1/registered_before_run.json": "cf91302df340177ca865af37d972af9cc352a5a2d6b878e703fa7845db49c251",
+    "reference_v1/summary.json": "1c31d58c4ba865b6d59a7ea144bdf4f4f960bc35180022a349e753ce27633bf3",
+    "reference_v1/timing_ledgers.json.gz": "394b6cbc0dada2dfd80d02ad47be7b0850da258d2044be290562f5b64cb9f817",
+    "reference_v1/timing_only.csv": "461851d942c48c9c26e3f9569422cef44d20bd66fe196b8af9170ca7d32df068",
+    "run_v1/inputs.json": "912cc987daca7f0a427259190832ec086d5805814a637c8aa5a2d0a4b45f2548",
+    "run_v1/registered_before_run.json": "de4a748b2130900e56f1a76bc9bbd628e1495ad95651bcb563acc5ef62ca32cd",
+    "run_v1/requirements.json": "8ce92991040bebbeb2bbfc41a09c3cc43719ba1b72504ce6e7fd25e3d1b0a8f9",
+    "run_v1/summary.json": "63c49ad37aba029ffb3b0aad4995a53b69622322f11e2fdd890a05c6920ff584",
+    "run_v1/timing_evidence.json": "89765dbafd7b3f5f26eba0621fda811737a66f0246457100e906c97cb9a95113",
+    "run_v1/timing_ledgers.json.gz": "042fd314e5b370f018eac879f9ffb41cbefa14ca64f29021ffecca0e210d3d03",
+    "run_v1/timing_only.csv": "5379370fa07008e6c996c9f91b6f65fa304ab247b0a093aca3f05ff8664e5f3b"
+  },
+  "visual_check": "PNG viewed; 4 historical PC schedules, measured data curves absent; explicit unmeasured classification pair shading",
+  "compressed_only_reaggregation": {
+    "passed": true,
+    "groups": 32,
+    "forced_gzip_reader": true,
+    "registered_hashes_verified": true,
+    "simulation_function_forbidden": true
+  },
+  "generated_SVG_whitespace_normalized": true
+}

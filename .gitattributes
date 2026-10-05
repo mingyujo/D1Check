@@ -1,4 +1,10 @@
 # PC 계획 신규 파일의 byte hash를 Windows checkout에서도 보존한다.
+# Recorded detector GPU timing: preserve registered source/result bytes.
+/tools/d1_detector_gpu_bridge.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/tools/d1_detector_gpu_reference.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/tools/d1_detector_gpu_report.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/tools/test_d1_detector_gpu_bridge.py text eol=lf
+/docs/results/detector_gpu_bridge_01/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 # Full-input method study: preserve exactly the registered local source/result bytes.
 /tools/d1_deadline_calendar.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /tools/d1_deadline_calendar_study.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

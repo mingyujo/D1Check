@@ -1,5 +1,12 @@
 # D1Check 결정 기록
 
+## 2026-10-06 — DETECTOR-GPU-TIMING-REUSE-PC-01
+
+- 확인/재사용: CAL03 exact32요청의D/A/S/O/P/W/L·입력해시·개발동결/별도확인·GPU delegate 검증을연결했다. 모델/runtime/resident기록은일치하나APK/프로토콜은달라현재요청의서비스/J/AP적격으로자동승격하지않는다. [보고/재현](results/detector_gpu_bridge_01/README.md).
+- 채택한계산경계: 기존시간벡터의48정적+16기존EFT참고만수행,64새PC계산/3,072요청. 간섭1.0/1.5가정분리·전체도착분모·미측정분류CPU+GPU병행표시·J/AP모두null. 신규물리계수/가정/새기기실측은없다.
+- 미채택: 모든탐지GPU배정, 현재4-cellEFT새정책, 옛전체W−새배경W로만든증가분, S26계수혼합. queue기한실패와현재지원공백을보존한다. 최소확장경계는분류CPU고정+탐지CPU/GPU선택에필요한DG/CC_DG항이며전backend표채우기는필수가아니다.
+- 최소해결명세는권고·자료역할/완료조건고정이며새실행계획/자동승인은아니다. 원래실제공동절감목표/미확인오차한도는남고기본/strict/experiment_ready=false/기존동결/FAIL/미소비계획보존,기기명령0.
+
 ## 2026-10-06 — FULL-REQUEST-METHOD-PC-01
 
 - 채택한 평가 경계: 전체48요청의 도착·기한·5단계/lane·동결 계수를 유지해 ATC/CPU 병목과 현재 큐 Pareto beam을 평가하고, 모든 미래를 아는20ms 혼합정수 참고 일정은 별도로 표시한다. 입력/후보/시간 상한/소스 해시는 각 실행 전에 등록했다. [결과·재현](results/method_followup_01/README.md).

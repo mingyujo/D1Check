@@ -1,5 +1,9 @@
 # D1Check 통합 시뮬레이터
 
+## 탐지 GPU 과거 시간 근거의 연결 판정 — 2026-10-06
+
+[과거 CAL03 원본·미식별 항](../detector_gpu_bridge_01/README.md), [시간 참고 일정](../detector_gpu_bridge_01/index.html). 5단계/worker release/lane 해제·delegate 근거는 존재한다. 64개 새 시간전이 PC 계산에서 모든 탐지GPU의 일반기한손해와4-cellEFT의미측정분류CPU+GPU병행을분리했다. 현재DG/CC_DG J/AP는null이며새실측/예측PASS/정책절감으로표시하지않는다. 이번확인은추가GPU측정이반드시이득이라는주장이아니다.
+
 ## 전체 요청 방법론 비교 — 2026-10-06
 
 [전체48요청·다단계큐·offline 참고값](../method_followup_01/index.html), [계약·재현·상충식](../method_followup_01/README.md). 새264PC계산과8일정재생을 연결했다. ATC/병목의J감소와AP증가, 유예후보의기한실패, 즉시배정후보의EFT동일/과부하손해를 보존한다. 미래입력을아는참고일정은온라인정책이아니다. 새실측/정확도PASS/실제절감그림이아니며기본·strict·experiment_ready=false를유지한다.
