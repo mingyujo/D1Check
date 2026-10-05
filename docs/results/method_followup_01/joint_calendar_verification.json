@@ -1,0 +1,66 @@
+{
+  "version": "joint-calendar-verification-v1",
+  "utc": "2026-10-05T20:32:05.736917+00:00",
+  "base_head": "fe70b1f6abd188bba65a2eff9fee4196935c3c1f",
+  "source_dirty": true,
+  "tests": [
+    {
+      "command": "python -B -m unittest tools.test_d1_joint_calendar -v",
+      "passed": 6,
+      "initial_failure": "test-only class function descriptor binding, corrected; source/global preservation assertion retained"
+    },
+    {
+      "command": "python -B -m unittest tools.test_d1_joint_calendar_study -v",
+      "passed": 3
+    },
+    {
+      "command": "python -B -m unittest tools.test_d1_joint_calendar_readout -v",
+      "passed": 8
+    }
+  ],
+  "actual_entry": "python -B -m tools.d1_joint_calendar_report --output docs/results/method_followup_01/joint_calendar_readout_v2",
+  "actual_entry_exit": 0,
+  "actual_cli_under_fake_adb_trap": true,
+  "readonly_optimizer_and_event_simulator_blocked_test": true,
+  "whole_batches_rerun": 0,
+  "source_sha256": {
+    "tools/d1_joint_calendar.py": "8e11962987ab1a920550c3f3b8de182f5e064f1129e5c2714bfbbc1ce0df36ba",
+    "tools/d1_joint_calendar_study.py": "feba6a9c2e7c1921744603fa2de4c220b4326c7ad7afb84845863ae475e71471",
+    "tools/d1_joint_calendar_witness.py": "63c7f551f950ea01a7ceb11705e02df6cb401816b7a185fc50e1856db7e3c4ad",
+    "tools/d1_joint_calendar_report.py": "e9b1e124ea531606ff4befb310d4b586340110618aebcbc239d968d9a1ab39ae",
+    "tools/test_d1_joint_calendar.py": "160ee875f2ea712f813e54c94e4aca110170922597b46742fd84defbb7750581",
+    "tools/test_d1_joint_calendar_study.py": "0a97a4ac4194e18ef554b5c3d8d5fc94db6cbef4f522c1819825c528a90fb5e1",
+    "tools/test_d1_joint_calendar_readout.py": "04ad9bcc383415847880a5b42e8f28f3c771c80c8d2df050265175d6b32a6c9a"
+  },
+  "results_sha256": {
+    "docs/results/method_followup_01/joint_calendar_v1/d1_joint_calendar.py": "8e11962987ab1a920550c3f3b8de182f5e064f1129e5c2714bfbbc1ce0df36ba",
+    "docs/results/method_followup_01/joint_calendar_v1/d1_joint_calendar_study.py": "feba6a9c2e7c1921744603fa2de4c220b4326c7ad7afb84845863ae475e71471",
+    "docs/results/method_followup_01/joint_calendar_v1/progress.json": "96c32d01da09f28b715a89e17d7d3a7afb3dfe984c57cab6ecb0b346bf472e45",
+    "docs/results/method_followup_01/joint_calendar_v1/records.jsonl.gz": "e0ca80151dde94fbfacb5d995c471992bd64a33892966d65310d4dfe39557bd3",
+    "docs/results/method_followup_01/joint_calendar_v1/registered_before_run.json": "2c9bd406b6842e4307e4a4441e6c41f41261925ea16ca225c22a99cda5ca7d22",
+    "docs/results/method_followup_01/joint_calendar_v1/results.csv": "6f75c5f286d62140099109aee15ea7e855e6e1e861a0c49b51897f576057ad70",
+    "docs/results/method_followup_01/joint_calendar_v1/summary.json": "a74eb64340c344e733c9fb515f94c33b723b26b0e59ecca7eb99e66887ba90a9",
+    "docs/results/method_followup_01/joint_calendar_witness_v1/registered_before_analysis.json": "57a72c0396e3a24842ed59c8f32bdeaa8f9115bc263fcb5ef6874b62f3eefd57",
+    "docs/results/method_followup_01/joint_calendar_witness_v1/result.json": "b7bc05a2dfcccd7a43491800e8e11dcc93623121b2cd3977d4adbdf5c1cb9799",
+    "docs/results/method_followup_01/joint_calendar_witness_v1/source_snapshot.py": "63c7f551f950ea01a7ceb11705e02df6cb401816b7a185fc50e1856db7e3c4ad",
+    "docs/results/method_followup_01/joint_calendar_witness_v1/witnesses.csv": "361d74e711e8efc9c20f3f4da8597f6feda2702c39d64d7a748e8ee98811155e",
+    "docs/results/method_followup_01/joint_calendar_readout_v2/comparisons.csv": "3ea9de1fb234597e4a9c0ee92044eaafd33a73c322056f7485f9042c4de2f79a",
+    "docs/results/method_followup_01/joint_calendar_readout_v2/index.html": "63645bfac9ca7c9813f85932e467b12070304c36ccf22ab3739a307674d343d1",
+    "docs/results/method_followup_01/joint_calendar_readout_v2/modeled_paths.csv": "5442b07099c9fd6e541b5052c3740d30900527ccd921f2318cb453521b00da8b",
+    "docs/results/method_followup_01/joint_calendar_readout_v2/modeled_paths.png": "bda8f9535123a82f100dbb756663402005146e062acb22a552ed383e2623719f",
+    "docs/results/method_followup_01/joint_calendar_readout_v2/modeled_paths.svg": "bb3b44c9406919f950e18328092329d21eaed7f54b909001c5e3f27434727a57",
+    "docs/results/method_followup_01/joint_calendar_readout_v2/result.json": "4a99971f8fa717d39622e4ed292e0a1ddaae0827eed36bc3c74b4ae339731b26"
+  },
+  "frozen_model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+  "frozen_initial_sha256": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+  "native_solves": 4,
+  "actual_new_PC_request_replays": 288,
+  "independent_device_sessions": 0,
+  "device_commands": 0,
+  "new_device_plans": 0,
+  "consumption_claims": 0,
+  "APK_changes": false,
+  "experiment_ready": false,
+  "visual_review": "modeled_paths.png inspected: readable modeled curves/lane schedule; no measurement curve",
+  "original_goal_real_joint_saving_complete": false
+}

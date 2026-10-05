@@ -1,0 +1,49 @@
+{
+  "spec": {
+    "version": "joint-calendar-reference-v1",
+    "cases": [
+      "g0.45_c0.5_b4",
+      "g0.45_c0.75_b4"
+    ],
+    "seeds": [
+      223001,
+      223002
+    ],
+    "scenario": "mean",
+    "grid_s": 0.02,
+    "solver_time_limit_s": 120.0,
+    "maximum_solves": 4,
+    "overall_pc_limit_s": 1200.0,
+    "selection": "same four full48 queue references as previous calendar, now adding rectified AP area; no result-selected input",
+    "objective": "minimize modeled J while every original response deadline, EFT peak and EFT rectified AP area hold",
+    "thermal": "original query35..180 1s; same preload; area above effective idle, not measured ambient",
+    "replay": "unchanged engine and original five phases; planning occupancy rounded up",
+    "freeze": "no finer-grid retry, extra cases, changed caps or coefficients after results",
+    "interpretation": "posthoc offline reference knows future arrivals/service; neither causal policy nor physical optimality",
+    "strict_supported": false,
+    "independent_device_validation": false,
+    "experiment_ready": false,
+    "device_commands": 0
+  },
+  "resources": {
+    "docs/results/method_followup_01/run_v1/registered_before_run.json": "b30ebda7e434c709d5180e13883067dca623489af120bf3c78e0c3cfcd95a56f",
+    "docs/results/method_followup_01/run_v1/records.jsonl.gz": "0b1b49e23da376657ddb37330f03447a72d5b2873e198ddacd56e2a68c9a6b2c",
+    "docs/results/method_followup_01/beam_v1/registered_before_run.json": "13963e26a188d1b959bba2e603abe55686e59f8910984588e1e71ff07bb52ed9",
+    "docs/results/method_followup_01/beam_v1/records.jsonl.gz": "5e9c9445e9635db5c9e30fa469e2c35f2f084bda2071fd39c1cda305dc2d5236",
+    "docs/results/method_followup_01/beam_v2/registered_before_run.json": "fe246c8e5ddbd3fc5c23471c3869b9a3547f820227a5ca00df899e14a89eaf00",
+    "docs/results/method_followup_01/beam_v2/records.jsonl.gz": "88b5569c71abd7349eba6455533689abcaba61476bbce1278654ce1c87ff9a28",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d"
+  },
+  "code": {
+    "tools/d1_joint_calendar_study.py": "feba6a9c2e7c1921744603fa2de4c220b4326c7ad7afb84845863ae475e71471",
+    "tools/d1_joint_calendar.py": "8e11962987ab1a920550c3f3b8de182f5e064f1129e5c2714bfbbc1ce0df36ba",
+    "tools/d1_deadline_calendar.py": "44cc2f409f235bb72714da160a71da85f891e3918a37be91d2064eb6fc9e7c98",
+    "tools/d1_industrial_scheduling.py": "5537b8746d329a8ab25f69c105218ecb6eaba99d26bfb6bb8434950b2e5b6bab",
+    "tools/d1_empirical_request_policy.py": "32407050fae7a0f6f7d58a19cd6f2f4eedea46ba9c8651e15363d0af496050a0",
+    "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9"
+  },
+  "utc": "2026-10-05T20:08:29.157388+00:00",
+  "base_head": "fe70b1f6abd188bba65a2eff9fee4196935c3c1f",
+  "source_dirty": true
+}

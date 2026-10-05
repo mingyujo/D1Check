@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-06 현재 작업 — J·AP 최고/면적 공동 제약의 offline 참고값 확인
+
+- [4사례/전체48요청·재현·검증](results/method_followup_01/README.md), [화면](results/method_followup_01/joint_calendar_readout_v2/index.html). mean queue75 두 사례에서 48/48 기한 유지와 ΔJ −0.052468/−0.013042J, Δ최고AP −0.049803/−0.045679°C, Δ양의AP면적 −0.886985/−1.164743°C·s를 원 이벤트 재생으로 확인했다. 미래 입력을 아는 사후 offline 참고이며 응답 증가/전체 열입력 증가를 함께 보존한다. 온라인 정책·실기기 공동절감·최적성은 미확인이다.
+- queue50 두 native 시간제한/null은 제약 불가능이 아니다. 같은 격자 CPU witness 네 사례 모두 기한/열 제약 충족, J는 증가했다. solve4회/543.515초, 새 PC 재생288요청; adapter6+진입/예외3+판독/실제CLI8 검증 통과. 미미한 J 이득의 제어 비용/예측 오차 민감도 미확인.
+- 다음: 저장한 두 mean 계획의 짧은/긴 기존 처리문맥 재생에서 기한·실제 lane 해제·공동 비악화 유지 여부를 제한 확인한다. 재최적화/새 물리 계수/실측은 추가하지 않는다. 기기/ADB/APK/설치/기기계획/claim0, 기본/strict/동결/experiment_ready=false/사용자 파일·다른 worktree 유지.
+
 ## 2026-10-06 현재 작업 — 공동 절감의 모형상 필요조건 판독 완료
 
 - [식·실행·검증](results/method_followup_01/README.md), [낙관적 경계](results/method_followup_01/joint_bound_v2/index.html). 같은48요청/고정3시간문맥/기한/초기값에서EFT최고AP·양의AP면적을유지할J이득상한을구했다. queue50 각6사례0.120–0.178J;실현가능성/실기기이득/불가능증명이아님.

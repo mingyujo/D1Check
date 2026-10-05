@@ -1,5 +1,9 @@
 # D1Check 통합 시뮬레이터
 
+## 2026-10-06 공동 제약 offline 참고 일정 추가
+
+[저장4사례 화면](../method_followup_01/joint_calendar_readout_v2/index.html), [계약·재현·검증](../method_followup_01/README.md). 같은 mean queue75 두 입력에서 모든48기한을지키며 J/최고AP/양의AP면적이 함께 감소하는 미래일정을 원PC엔진으로 확인했다. J 차이는 −0.052468/−0.013042J로작고 긴급P95/일반응답이늘었다. 모든시점/부호있는온도면적은개선이아니며실기기·온라인정책·독립확인이아니다. queue50 정수해미확보는제약불가능으로해석하지않는다. 현재기본/strict/experiment_ready=false불변. 기존온라인후보공동개선0 결과와분리한다.
+
 ## 2026-10-06 공동 절감의 필요조건 추가
 
 [현재 동결식의 J 이득 상한](../method_followup_01/joint_bound_v2/index.html), [식·검증](../method_followup_01/README.md). 전기한/EFT최고AP·양의AP면적을동시에유지하는queue50의낙관적이득상한은각저장사례0.120–0.178J다. 완화된순간입력LP이며실현가능정책/실기기성능/정확도기준이아니다. 큰공동절감이나모든방법의불가능을증명하지않는다. 기본정책/계수/strict미변경,새시뮬레이션·기기0.

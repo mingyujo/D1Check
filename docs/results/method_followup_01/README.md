@@ -1,5 +1,36 @@
 # 전체 요청 방법론 비교와 동결식의 에너지·AP 상충
 
+## 최고 AP와 부담 면적을 함께 제한한 offline 참고값 — 2026-10-06
+
+[새 4사례 판독](joint_calendar_readout_v2/index.html), [같은 입력·응답·부호 있는 면적 CSV](joint_calendar_readout_v2/comparisons.csv). 앞선 최고 AP만 제한한 8회 최적화와 별도 실행이다. 기존 두 queue 입력/seed223001·223002/48요청/mean 처리시간/초기값을 유지하고, **EFT의 최고 AP와 양의 AP 부담 면적을 동시에 넘지 않으면서 J를 최소화**하도록 기존 격자 문제에 면적 epigraph만 더했다. 원래 planner·이벤트 엔진·물리 계수를 수정하지 않았다. 시작 HEAD `fe70b1f6abd188bba65a2eff9fee4196935c3c1f`, 미커밋 구현의 byte를 실행 전에 등록했다.
+
+| 입력·seed | 원 5단계 재생의 기한 | ΔJ, 0–120초 | Δ최고 AP | Δ양의 AP 면적, 35–180초 | Δ긴급 P95 | Δ일반 평균 |
+|---|---:|---:|---:|---:|---:|---:|
+| queue50·223001 | null | null | null | null | null | null |
+| queue50·223002 | null | null | null | null | null | null |
+| queue75·223001 | 48/48 | −0.052468J | −0.049803°C | −0.886985°C·s | +686.803ms | +2398.596ms |
+| queue75·223002 | 48/48 | −0.013042J | −0.045679°C | −1.164743°C·s | +776.264ms | +2981.247ms |
+
+**현재식에서 공동 비악화하는 미래 일정은 2개 존재한다. 온라인 정책으로 확보한 것은 아니다.** 미래 도착과 mean 처리시간을 알고 계획한 참고 일정이며, 긴급 1.5초/일반 6초 기한 안에서 응답을 늦춰 얻은 작은 J 이득이다. 새 독립 입력이나 실기기 확인이 아니고, 모든 온도 지표 또는 모든 시점이 개선된다는 뜻도 아니다. queue75·223001의 부호 있는 AP 차이 적분은 **+0.617532°C·s**, 추가 가열입력 적분은 **+0.033200°C**다. queue75·223002는 각각 −0.140978°C·s와 +0.002494°C다. 유효 유휴 기준 아래의 초기 AP 구간 및 열 입력의 시점 때문에 양의 면적과 부호 있는 면적은 다르다. 이 산술을 임의 물리적 냉각량으로 해석하지 않는다.
+
+두 queue50의 null은 120초 solver 제한 안에서 정수해를 확보하지 못했다는 뜻이다. **제약 불가능이라는 증명이 아니다.** 별도 결정적 CPU-only/도착한 요청의 절대 기한 우선/동일20ms 격자 일정이 네 입력 모두의 기한·최고 AP·면적 제약을 만족함을 구성적으로 확인했다. 이 확인은 solver 재시작/입력 선정/새 계수 fitting이 아니다. CPU witness의 ΔJ는 각각 +0.086494/+0.242688/+0.161923/+0.416662J로, 에너지 개선 정책이 아니다. [전체 증거와 ledger](joint_calendar_witness_v1/result.json), [판독 전 규칙](joint_calendar_witness_v1/registered_before_analysis.json).
+
+native solve는 등록대로 **4회·각120초·20ms**이며 전체 기록 시간은 **543.515초**다. 120초는 native solver의 제한으로 모델 행렬 생성·회수·판독 시간을 포함한 전체 시간 제한이 아니다. 성공한 두 해의 gap은 0.003051/0.005617, 둘 다 시간제한 상태로 최적성 미입증이다. 추가/finer-grid/변경 제약 재시도0. 새 원 엔진 재생은 최적화해2×48=96요청과 CPU witness4×48=192요청, 합계 **288 PC 요청**이다. 이전 전체 배치는 재실행하지 않았다. [실행 전 등록·해시](joint_calendar_v1/registered_before_run.json), [종료 요약](joint_calendar_v1/summary.json).
+
+현재 모형의 controller 차등비용0 가정에서 얻은 0.013–0.052J는 실기기 제어·기록·지연 영향이나 예측 오차로 사라질 수 있다. 같은 일정이라는 조건에서 미모형화된 차등비용이 각 이득에 도달하면 J 이득이0이 된다. **이 숫자는 실기기 허용오차·비열등성 기준·미래 보장값이 아니다.** mean 외 처리시간, 인과적 온라인 구현, 독립 예측 및 정책 차이 식별은 별도 미확인이다. 기본 정책/동결/strict/`experiment_ready=false` 유지. 현재 추천은 강한 EFT 대조와 기한 우선·목적별 Pareto 판독이며, 이 offline 계획을 배포 정책으로 채택하지 않는다.
+
+```powershell
+# 저장 결과 판독만: 최적화/추가 이벤트 재생/기기 명령 없음
+python -B -m tools.d1_joint_calendar_report --output output/joint_calendar_readout
+python -B -m unittest tools.test_d1_joint_calendar_readout -v
+# 재현 가능한 신규 PC 탐색 명령. 이미 종료한 폴더에는 실행하지 않는다.
+python -B -m tools.d1_joint_calendar_study --output output/joint_calendar_reference
+python -B -m tools.d1_joint_calendar_witness --output output/joint_calendar_cpu_witness
+```
+
+새 경계 검증은 adapter6/실행 분모·예외3/증거 판독·실제 CLI8, 총17건이다. 처음 adapter 검증의 함수 identity assertion은 class attribute를 instance에서 읽어 bound method로 만든 테스트 코드 오류였으며 class에서 읽도록 정정했다. assertion을 삭제하지 않았고 source/global 불변 검사가 통과했다. 판독v1은 local 보존하고 v2에 witness의 실제 ledger/격자 면적 재계산 및 공동 개선 표지/분모 검증을 보강했다. 수치와 그림은 동일하다. CSV·모형 경로 그림을 검수했으며 새 실측 그림이 아니다. [대상·명령·검증](joint_calendar_verification.json). 기기 명령/ADB/설치/실측/APK/새 기기 계획/claim **0**.
+
+
 ## 새로운 후보 대신 공동 절감의 필요조건 계산 — 2026-10-06
 
 [동결식의 낙관적 상한](joint_bound_v2/index.html), [24개 기준 사례](joint_bound_v2/bounds.csv). 앞선 무한시간 부호 있는 온도 적분 항등식만으로는 유한창의 최고AP·양의 AP면적을 판단할 수 없었다. 이번에는 기존 전체48요청·같은시간문맥·EFT 대조를 유지한 채, **기한을 모두 지키고 최고AP와 AP면적을 EFT보다 늘리지 않는 경우의 에너지 이득 상한**을 추가 계산했다. 후보 생성/튜닝/새 시뮬레이션/실측은0이며 새 전력·열 계수가 없다.
@@ -94,7 +125,7 @@ python -m unittest tools.test_d1_method_decision_readout -v
 
 ## 결론
 
-현재 지원되는 세 요청 cell과 CG_DC 병행에서 **EFT를 기준으로 전 요청의 기한을 지키면서 J·최고 AP·AP 부담 면적을 함께 비악화시키는 새 후보는 확보하지 못했다.** ATC/CPU 병목은 에너지와 일부 일반 응답을 줄이지만 AP와 긴급 응답의 손해가 있다. 현재 큐 다단계 유예는 미래 요청의 여유를 소모했고, 첫 행동을 즉시 배정으로 제한한 별도 후보도 기본 채택 근거가 없다. 실패와 동일 결과를 모두 보존한다.
+앞선 온라인 후보 비교에서는 현재 지원되는 세 요청 cell과 CG_DC 병행에서 **EFT를 기준으로 전 요청의 기한을 지키면서 J·최고 AP·AP 부담 면적을 함께 비악화시키는 새 온라인 후보는 확보하지 못했다.** ATC/CPU 병목은 에너지와 일부 일반 응답을 줄이지만 AP와 긴급 응답의 손해가 있다. 현재 큐 다단계 유예는 미래 요청의 여유를 소모했고, 첫 행동을 즉시 배정으로 제한한 별도 후보도 기본 채택 근거가 없다. 실패와 동일 결과를 모두 보존한다.
 
 이는 방법론 전체의 불가능 판정이나 프로젝트 주제 변경이 아니다. 기존 [조건별 목적 선택](../scheduler_conditions_01/README.md)의 고정 split 대비 제한된 개선은 그대로 유효한 **PC 탐색 결과**다. 강한 EFT 대비 공동 절감·실기기 효과는 별도 미완료다. 기본 스케줄러·동결 모형·strict·`experiment_ready=false`를 바꾸지 않았다.
 
