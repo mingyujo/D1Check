@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-06 현재 작업 — 산업공학 스케줄링 적용 후보 조사 완료
+
+- [문헌·코드 대응](RELATED_WORK_GAP.md): 병목 기반 배정·ATC를 온라인 비교 후보, 작은 offline 일정 최적화를 개선 여지 확인 기준으로 권고. 기존 token/LLF/backfill/MPC와의 중복, 동일 상태 점유시간의 순서만 바꿔서는 J가 감소하지 않는 비용식 경계를 명시. 효과·기본 채택은 미확인.
+- 공식 공개 자료·현재 place/score·저장 결과 대조, 문서 링크/diff 확인. 새 시뮬레이션/학습/기기 명령0. 계수·strict·experiment_ready=false·FAIL·사용자 파일·다른 worktree 불변.
+- 다음 PC 행동 하나: 작은 저장 입력의 일정 탐색 기준과 ATC·CPU 병목 인지 후보를 제한 비교. 아직 실행하지 않았으며 기존 S26 인계·guard 회귀 상태 보존.
+
 ## 2026-10-06 현재 작업 — S26 회신·대표 텐서 인계 완료
 
 - [회신/검토/전달경로](team/S26_REPLY_AND_INPUT_HANDOFF_20261006.md), [manifest·검증](team/s26_interface_20261006/verification.json). S26원격5d98fe7읽기검토;v1의기한가드/제한oracle/FG없는폰재생에v2수정권고. 계약EffNet범위결정반영,정책효과승인아님.
