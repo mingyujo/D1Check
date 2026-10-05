@@ -1,0 +1,93 @@
+{
+ "rule": "측정1005_사전등록_v1 §4 (G50P2) — 해제 뒤 d50 재조임 (칸 k′ + 뒤 3칸 ≥ ref_d50 × 1.10, k′ ≤ 44) · Δ = SKIN_k′ − d100 진입 SKIN (±0.5 ℃)",
+ "start": {
+  "start_skin": 31.0,
+  "in_band": true,
+  "label": "밴드 안 (29.1~31.6)"
+ },
+ "v1": {
+  "class_token": "R50-none",
+  "classification": "R50-none (440 s 안 미회복 — 중도절단)",
+  "release_s": null,
+  "hypotheses": {
+   "H-ap-히스": "판정 불가 (해제 없음 — 규칙은 해제 칸 AP_k 로만)",
+   "H-load(GPU)": "유지 (R50-none)",
+   "H-timer": "기각 (R50-none)"
+  },
+  "premise_ok": true,
+  "premise_label": "가열 충분 (240~300 s 배율 ≥ 1.5)",
+  "release_AP_k": null
+ },
+ "retighten": {
+  "token": "해제 없음",
+  "label": "해제 없음 — 재조임 판정 해당 없음"
+ },
+ "v2_variant": "v2 GPU gate 와 같은 방향",
+ "side_by_side": {
+  "cur": {
+   "start": {
+    "start_skin": 31.0,
+    "in_band": true,
+    "label": "밴드 안 (29.1~31.6)"
+   },
+   "onset_1_1_s": 30,
+   "onset": {
+    "SKIN": 36.8,
+    "AP": 42.0,
+    "BAT": 33.3,
+    "status": 0
+   },
+   "ratio_240_300": 2.064491,
+   "class_token": "R50-none",
+   "release_s": null
+  },
+  "prev_1004": {
+   "start": {
+    "start_skin": 28.5,
+    "in_band": false,
+    "label": "밴드 밖 (29.1~31.6)"
+   },
+   "onset_1_1_s": 100,
+   "onset": {
+    "SKIN": 37.3,
+    "AP": 43.7,
+    "BAT": 33.3,
+    "status": 0
+   },
+   "ratio_240_300": 1.593855,
+   "class_token": "R50-fast",
+   "release_s": 10,
+   "retighten_desc": {
+    "token": "재조임",
+    "k": 32,
+    "t_s": 320,
+    "ratio_k": 1.235242,
+    "SKIN_k": 38.0,
+    "AP_k": 40.8,
+    "release_k": 1,
+    "tail_42_47_median_ratio": 1.224542,
+    "delta": 0.7,
+    "onset_SKIN": 37.3,
+    "onset_AP": 43.7,
+    "temp_token": "높은 온도",
+    "temp_label": "d50 은 같은 런 d100 진입보다 높은 온도에서 다시 조여졌다",
+    "label": "재조임 320 s · SKIN 38.0 · AP 40.8"
+   }
+  },
+  "note": "10/4 = 이 규칙을 정하기 전에 본 자료 (개발) — 기술만"
+ },
+ "inputs": {
+  "cur": {
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\out_1005\\G50P2.json",
+   "sha256": "1fce65d97c4cc1ec1d2db107cf19b2c599df986c2ddd7ad0bf1dabc1a484b20f"
+  },
+  "prev": {
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\out_1004\\G50P.json",
+   "sha256": "7e8c8d8e29ed5035964b312c53af7705a8218151d4aa0522a52bd5da1bcedae1"
+  }
+ },
+ "script": {
+  "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\day1005_judge.py",
+  "sha256": "c1b42acc4effe2cdc669282de417fa9b60799fc71afa6e3d2656eabf4462ca76"
+ }
+}

@@ -1,0 +1,142 @@
+{
+ "rule": "측정1005_사전등록_v1 §3 (N50P2) — 2계단 전제 · 뜨거운 채 해제 (해제 칸 SKIN_k·AP_k − 같은 런 1계단 진입 SKIN·AP, 경계 ±0.2 ℃)",
+ "start": {
+  "start_skin": 30.7,
+  "in_band": true,
+  "label": "밴드 안 (29.1~31.6)"
+ },
+ "v1": {
+  "class_token": "R50-none",
+  "classification": "R50-none (440 s 안 미회복 — 중도절단)",
+  "release_s": null,
+  "premise_ok": true,
+  "premise_label": "가열 충분 (360~420 s 배율 ≥ 1.06)",
+  "conclusion": "H-timer 기각 · H-load(θ ≤ 50 %) 쪽",
+  "hypotheses": {
+   "H-load (θ > 50 %)": "기각 (R50-none)",
+   "H-load (θ ≤ 50 %)": "유지 (R50-none)",
+   "H-timer": "기각 (R50-none)"
+  }
+ },
+ "hot_release": {
+  "token": "해제 없음",
+  "two_step": true,
+  "label": "2계단 도달 · 탐침 안 해제 없음 — 온도 비교 해당 없음"
+ },
+ "verdict": "R50-none · v1 표: H-timer 기각 · H-load(θ ≤ 50 %) 쪽 — d75 불필요",
+ "v2_variant": "θ ≤ 0.5 유지",
+ "policy_input": {
+  "probe_1_5_median": 1.127547,
+  "state": "2계단",
+  "label": "뜨거운 NPU d50 첫 1분 배율 (기술)"
+ },
+ "side_by_side": {
+  "cur": {
+   "run_id": "39001561-6e6a-48a3-a4fb-12ea3e32199d",
+   "start": {
+    "start_skin": 30.7,
+    "in_band": true,
+    "label": "밴드 안 (29.1~31.6)"
+   },
+   "start_thermal": {
+    "SKIN": 30.7,
+    "AP": 29.7,
+    "BAT": 28.6,
+    "status": 0
+   },
+   "heat_start": {
+    "SKIN": 32.6,
+    "AP": 33.8,
+    "BAT": 30.2,
+    "status": 0
+   },
+   "step1_s": 120,
+   "step1": {
+    "SKIN": 37.4,
+    "AP": 41.3,
+    "BAT": 35.1,
+    "status": 0
+   },
+   "onset_1_1_s": 260,
+   "onset": {
+    "SKIN": 39.8,
+    "AP": 44.1,
+    "BAT": 38.2,
+    "status": 0
+   },
+   "ratio_360_420": 1.131142,
+   "heat_end": {
+    "SKIN": 41.9,
+    "AP": 46.3,
+    "BAT": 40.8,
+    "status": 1
+   },
+   "class_token": "R50-none",
+   "release_s": null,
+   "release_SKIN_k": null,
+   "release_AP_k": null,
+   "probe_1_5": 1.127547
+  },
+  "prev_1004": {
+   "run_id": "c717c4cf-64a1-442c-9813-f3755eac8705",
+   "start": {
+    "start_skin": 28.4,
+    "in_band": false,
+    "label": "밴드 밖 (29.1~31.6)"
+   },
+   "start_thermal": {
+    "SKIN": 28.4,
+    "AP": 27.0,
+    "BAT": 25.9,
+    "status": 0
+   },
+   "heat_start": {
+    "SKIN": 30.8,
+    "AP": 32.2,
+    "BAT": 27.6,
+    "status": 0
+   },
+   "step1_s": 370,
+   "step1": {
+    "SKIN": 38.2,
+    "AP": 42.8,
+    "BAT": 35.7,
+    "status": 0
+   },
+   "onset_1_1_s": null,
+   "onset": null,
+   "ratio_360_420": 1.068526,
+   "heat_end": {
+    "SKIN": 38.5,
+    "AP": 42.8,
+    "BAT": 35.8,
+    "status": 0
+   },
+   "class_token": "R50-fast",
+   "release_s": 20,
+   "release_SKIN_k": 37.8,
+   "release_AP_k": 40.9,
+   "probe_1_5": 0.995741
+  },
+  "note": "10/4 = 이 규칙을 정하기 전에 본 자료 (개발) — 기술만"
+ },
+ "prev_hot_release_desc": {
+  "token": "시험 불가",
+  "two_step": false,
+  "label": "2계단 미도달 (가열 420 s 안 1-1 진입 없음) — 뜨거운 채 해제 시험 불가"
+ },
+ "inputs": {
+  "cur": {
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\out_1005\\N50P2.json",
+   "sha256": "3a5d59d64347bb790e23d75cca7b966af5e5db8f75fccf3e37c402946369a678"
+  },
+  "prev": {
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\out_1004\\N50P.json",
+   "sha256": "a981e59977799f445a47acaf849b691813798823b6fd4baf1ca580cd3b86eedd"
+  }
+ },
+ "script": {
+  "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\day1005_judge.py",
+  "sha256": "c1b42acc4effe2cdc669282de417fa9b60799fc71afa6e3d2656eabf4462ca76"
+ }
+}

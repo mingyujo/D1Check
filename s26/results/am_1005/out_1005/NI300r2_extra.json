@@ -1,0 +1,134 @@
+{
+ "rule": "측정1005_사전등록_v1 §5 (NI300r2) — 분류 재현 (10/4 와 같은 분류) · 전환 잔재 (재가열 칸 0·1 ≥ ×2.0) · 휴지 냉각 Δ℃ (기술)",
+ "start": {
+  "start_skin": 31.1,
+  "in_band": true,
+  "label": "밴드 안 (29.1~31.6)"
+ },
+ "v1": {
+  "class_token": "중간",
+  "classification": "중간 (재조임 30 s, 30~50 s)",
+  "retighten_s": 30,
+  "premise_ok": true,
+  "premise_label": "가열 충분 (240~300 s 배율 ≥ 1.06)",
+  "retighten_SKIN_k": 38.2,
+  "retighten_AP_k": 41.3
+ },
+ "reproduction": {
+  "token": "분류 재현",
+  "cur": "중간",
+  "prev_1004": "중간",
+  "retighten_s_cur": 30,
+  "retighten_s_prev": 40,
+  "dt_s": -10
+ },
+ "residue": {
+  "cur": {
+   "token": "없음",
+   "bin0": 0.97604,
+   "bin1": 0.98304
+  },
+  "prev_1004_desc": {
+   "token": "전환 잔재 재현",
+   "bin0": 2.884475,
+   "bin1": 3.228043
+  }
+ },
+ "rest_cooling": {
+  "cur": {
+   "t0": {
+    "SKIN": 40.3,
+    "AP": 44.4,
+    "BAT": 38.8,
+    "status": 1
+   },
+   "t299": {
+    "SKIN": 36.2,
+    "AP": 36.9,
+    "BAT": 35.0,
+    "status": 0
+   },
+   "dSKIN": -4.1,
+   "dAP": -7.5,
+   "dBAT": -3.8
+  },
+  "prev_1004": {
+   "t0": {
+    "SKIN": 40.2,
+    "AP": 44.3,
+    "BAT": 38.8,
+    "status": 1
+   },
+   "t299": {
+    "SKIN": 36.3,
+    "AP": 37.2,
+    "BAT": 35.1,
+    "status": 0
+   },
+   "dSKIN": -3.9,
+   "dAP": -7.1,
+   "dBAT": -3.7
+  }
+ },
+ "side_by_side": {
+  "cur": {
+   "start": {
+    "start_skin": 31.1,
+    "in_band": true,
+    "label": "밴드 안 (29.1~31.6)"
+   },
+   "step1_s": 140,
+   "onset_1_1_s": null,
+   "ratio_240_300": 1.110783,
+   "heat_end": {
+    "SKIN": 40.2,
+    "AP": 44.3,
+    "BAT": 38.8,
+    "status": 1
+   },
+   "reheat_start": {
+    "SKIN": 36.2,
+    "AP": 36.9,
+    "BAT": 35.0,
+    "status": 0
+   }
+  },
+  "prev_1004": {
+   "start": {
+    "start_skin": 31.1,
+    "in_band": true,
+    "label": "밴드 안 (29.1~31.6)"
+   },
+   "step1_s": 130,
+   "onset_1_1_s": 260,
+   "ratio_240_300": 1.111337,
+   "heat_end": {
+    "SKIN": 40.2,
+    "AP": 44.3,
+    "BAT": 38.7,
+    "status": 1
+   },
+   "reheat_start": {
+    "SKIN": 36.2,
+    "AP": 37.2,
+    "BAT": 35.0,
+    "status": 0
+   }
+  },
+  "note": "10/4 = 이 규칙을 정하기 전에 본 자료 (개발) — 기술만"
+ },
+ "inputs": {
+  "cur": {
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\out_1005\\NI300r2.json",
+   "sha256": "20d88dba622141b9f88a5d54e440c1a4374bf3b71e01d25dfcf49deacd54fbc0"
+  },
+  "prev": {
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\out_1004\\NI300.json",
+   "sha256": "1a1fe7b776c889798f689e7349faab598d83973b7738931e424c1059735549e9"
+  }
+ },
+ "script": {
+  "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\day1005_judge.py",
+  "sha256": "c1b42acc4effe2cdc669282de417fa9b60799fc71afa6e3d2656eabf4462ca76"
+ }
+}

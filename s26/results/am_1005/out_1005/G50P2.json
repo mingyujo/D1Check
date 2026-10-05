@@ -1,0 +1,1013 @@
+{
+ "a3_label": "기준 안정",
+ "a3_reference_stable": true,
+ "chain_id": "g50_probe_gpu_v1",
+ "chain_sha256": "63a0872c8f77005a8985363b427f2d2c5b4a2cdf71f07f272bc32a536c6c3527",
+ "completed_inference_count": 136089,
+ "counter_interpretations": [
+  "§2 ① d50 은 뜨거운 상태에서 더 데운다 (탐침 SKIN·AP 궤적)",
+  "§2 ③ d50 가동 주기 첫 추론 — ref_d50 과만 비교",
+  "§2 ④ 1런",
+  "§2 ⑤ 전환 잔재 — k + 뒤 3칸 (GPU 는 전환 잔재가 없다 [P 페이싱 k0 ×1.02] 지만 규칙 유지)"
+ ],
+ "heat": {
+  "bins_ratio": [
+   [
+    0,
+    0.981595
+   ],
+   [
+    10,
+    0.988561
+   ],
+   [
+    20,
+    1.102277
+   ],
+   [
+    30,
+    1.230076
+   ],
+   [
+    40,
+    1.239443
+   ],
+   [
+    50,
+    1.264661
+   ],
+   [
+    60,
+    1.578342
+   ],
+   [
+    70,
+    1.567757
+   ],
+   [
+    80,
+    1.577679
+   ],
+   [
+    90,
+    1.640089
+   ],
+   [
+    100,
+    1.648815
+   ],
+   [
+    110,
+    1.653952
+   ],
+   [
+    120,
+    1.678492
+   ],
+   [
+    130,
+    1.748744
+   ],
+   [
+    140,
+    1.758469
+   ],
+   [
+    150,
+    1.857499
+   ],
+   [
+    160,
+    1.865776
+   ],
+   [
+    170,
+    1.888502
+   ],
+   [
+    180,
+    1.88697
+   ],
+   [
+    190,
+    1.958739
+   ],
+   [
+    200,
+    1.977182
+   ],
+   [
+    210,
+    1.948801
+   ],
+   [
+    220,
+    1.965568
+   ],
+   [
+    230,
+    1.971223
+   ],
+   [
+    240,
+    1.996494
+   ],
+   [
+    250,
+    2.01189
+   ],
+   [
+    260,
+    2.016188
+   ],
+   [
+    270,
+    2.047983
+   ],
+   [
+    280,
+    2.096911
+   ],
+   [
+    290,
+    2.1707
+   ]
+  ],
+  "edge_candidate_s": null,
+  "end_thermal": {
+   "AP": 41.1,
+   "BAT": 36.5,
+   "SKIN": 38.5,
+   "dt_s": 0.15071,
+   "status": 0
+  },
+  "length_s": 300.003664,
+  "n": 70481,
+  "n_window": 11263,
+  "onset_1_1_s": 30,
+  "onset_thermal": {
+   "AP": 42.0,
+   "BAT": 33.3,
+   "SKIN": 36.8,
+   "dt_s": -0.385626,
+   "status": 0
+  },
+  "premise_label": "가열 충분 (240~300 s 배율 ≥ 1.5)",
+  "premise_ok": true,
+  "ratio_window": 2.064491,
+  "ref30_ms": 2.562753,
+  "start_thermal": {
+   "AP": 37.1,
+   "BAT": 31.4,
+   "SKIN": 34.3,
+   "dt_s": 0.409374,
+   "status": 0
+  },
+  "step1_s": null,
+  "step1_thermal": null,
+  "termination_reason": "duration_complete",
+  "window": "240~300"
+ },
+ "hypotheses": {
+  "H-ap-히스": "판정 불가 (해제 없음 — 규칙은 해제 칸 AP_k 로만)",
+  "H-load(GPU)": "유지 (R50-none)",
+  "H-timer": "기각 (R50-none)"
+ },
+ "imports": {
+  "fit_throttle_v1": {
+   "expected_prefix": "379039dd",
+   "ok": true,
+   "path": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_v4\\d1sim\\tools\\fit_throttle_v1.py",
+   "sha256": "379039ddbe8a04e0ed6d49dce432b04ea5e7e8638dd65d1a325cfa22fee74c37"
+  },
+  "m1m2_judge_1002": {
+   "expected_prefix": "ea282d4a",
+   "ok": true,
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\m1m2_judge_1002.py",
+   "sha256": "ea282d4a48630c4af3cce301c13216f691389fa9f2c8e69a652de645be055b28"
+  },
+  "night1003_judge": {
+   "expected_prefix": "a5ceab41",
+   "ok": true,
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\night1003_judge.py",
+   "sha256": "a5ceab419c3bb0fed73b75b759901fb0e268f957bd1172e1edacbc246c903f50"
+  }
+ },
+ "m3_reference": "0928 M3 (Interpreter GPU d50 식은 출발) 진입 350 s @ SKIN 38.1 [D 가설원장 T2-M3] — 엔진 다름, 참고",
+ "pilot_battery_pct": 71,
+ "probe": {
+  "AP_k": null,
+  "SKIN_k": null,
+  "accelerator": "GPU",
+  "ap_min_probe": 38.7,
+  "bins": [
+   {
+    "AP": 41.1,
+    "BAT": 36.5,
+    "SKIN": 38.5,
+    "k": 0,
+    "median_ms": 5.513535,
+    "n": 896,
+    "ratio": 2.186047,
+    "status": 0,
+    "t0": 0
+   },
+   {
+    "AP": 39.8,
+    "BAT": 36.6,
+    "SKIN": 38.1,
+    "k": 1,
+    "median_ms": 5.194844,
+    "n": 939,
+    "ratio": 2.05969,
+    "status": 0,
+    "t0": 10
+   },
+   {
+    "AP": 39.3,
+    "BAT": 36.4,
+    "SKIN": 37.9,
+    "k": 2,
+    "median_ms": 5.090196,
+    "n": 961,
+    "ratio": 2.018199,
+    "status": 0,
+    "t0": 20
+   },
+   {
+    "AP": 39.2,
+    "BAT": 36.4,
+    "SKIN": 37.9,
+    "k": 3,
+    "median_ms": 5.099394,
+    "n": 964,
+    "ratio": 2.021846,
+    "status": 0,
+    "t0": 30
+   },
+   {
+    "AP": 39.0,
+    "BAT": 36.3,
+    "SKIN": 37.8,
+    "k": 4,
+    "median_ms": 5.027579,
+    "n": 976,
+    "ratio": 1.993372,
+    "status": 0,
+    "t0": 40
+   },
+   {
+    "AP": 38.9,
+    "BAT": 36.2,
+    "SKIN": 37.7,
+    "k": 5,
+    "median_ms": 5.071934,
+    "n": 980,
+    "ratio": 2.010958,
+    "status": 0,
+    "t0": 50
+   },
+   {
+    "AP": 38.8,
+    "BAT": 36.1,
+    "SKIN": 37.6,
+    "k": 6,
+    "median_ms": 5.100625,
+    "n": 984,
+    "ratio": 2.022334,
+    "status": 0,
+    "t0": 60
+   },
+   {
+    "AP": 38.7,
+    "BAT": 36.1,
+    "SKIN": 37.6,
+    "k": 7,
+    "median_ms": 4.931211,
+    "n": 1006,
+    "ratio": 1.955163,
+    "status": 0,
+    "t0": 70
+   },
+   {
+    "AP": 38.7,
+    "BAT": 36.1,
+    "SKIN": 37.6,
+    "k": 8,
+    "median_ms": 4.771797,
+    "n": 1050,
+    "ratio": 1.891958,
+    "status": 0,
+    "t0": 80
+   },
+   {
+    "AP": 38.8,
+    "BAT": 36.0,
+    "SKIN": 37.6,
+    "k": 9,
+    "median_ms": 4.725156,
+    "n": 1065,
+    "ratio": 1.873465,
+    "status": 0,
+    "t0": 90
+   },
+   {
+    "AP": 39.1,
+    "BAT": 36.1,
+    "SKIN": 37.7,
+    "k": 10,
+    "median_ms": 4.694942,
+    "n": 1064,
+    "ratio": 1.861485,
+    "status": 0,
+    "t0": 100
+   },
+   {
+    "AP": 38.9,
+    "BAT": 36.1,
+    "SKIN": 37.6,
+    "k": 11,
+    "median_ms": 4.484492,
+    "n": 1099,
+    "ratio": 1.778045,
+    "status": 0,
+    "t0": 110
+   },
+   {
+    "AP": 38.9,
+    "BAT": 36.1,
+    "SKIN": 37.6,
+    "k": 12,
+    "median_ms": 4.623398,
+    "n": 1077,
+    "ratio": 1.833119,
+    "status": 0,
+    "t0": 120
+   },
+   {
+    "AP": 38.8,
+    "BAT": 36.1,
+    "SKIN": 37.6,
+    "k": 13,
+    "median_ms": 4.24543,
+    "n": 1162,
+    "ratio": 1.683259,
+    "status": 0,
+    "t0": 130
+   },
+   {
+    "AP": 39.0,
+    "BAT": 36.1,
+    "SKIN": 37.7,
+    "k": 14,
+    "median_ms": 4.334531,
+    "n": 1129,
+    "ratio": 1.718587,
+    "status": 0,
+    "t0": 140
+   },
+   {
+    "AP": 39.0,
+    "BAT": 36.1,
+    "SKIN": 37.7,
+    "k": 15,
+    "median_ms": 4.341093,
+    "n": 1125,
+    "ratio": 1.721189,
+    "status": 0,
+    "t0": 150
+   },
+   {
+    "AP": 38.9,
+    "BAT": 36.1,
+    "SKIN": 37.7,
+    "k": 16,
+    "median_ms": 4.257539,
+    "n": 1157,
+    "ratio": 1.688061,
+    "status": 0,
+    "t0": 160
+   },
+   {
+    "AP": 39.0,
+    "BAT": 36.1,
+    "SKIN": 37.5,
+    "k": 17,
+    "median_ms": 3.968789,
+    "n": 1287,
+    "ratio": 1.573575,
+    "status": 0,
+    "t0": 170
+   },
+   {
+    "AP": 39.1,
+    "BAT": 36.2,
+    "SKIN": 37.7,
+    "k": 18,
+    "median_ms": 3.714785,
+    "n": 1330,
+    "ratio": 1.472866,
+    "status": 0,
+    "t0": 180
+   },
+   {
+    "AP": 39.3,
+    "BAT": 36.2,
+    "SKIN": 37.8,
+    "k": 19,
+    "median_ms": 4.263516,
+    "n": 1158,
+    "ratio": 1.69043,
+    "status": 0,
+    "t0": 190
+   },
+   {
+    "AP": 39.1,
+    "BAT": 36.3,
+    "SKIN": 37.8,
+    "k": 20,
+    "median_ms": 4.229062,
+    "n": 1167,
+    "ratio": 1.67677,
+    "status": 0,
+    "t0": 200
+   },
+   {
+    "AP": 39.1,
+    "BAT": 36.3,
+    "SKIN": 37.7,
+    "k": 21,
+    "median_ms": 3.833945,
+    "n": 1293,
+    "ratio": 1.520111,
+    "status": 0,
+    "t0": 210
+   },
+   {
+    "AP": 39.3,
+    "BAT": 36.4,
+    "SKIN": 37.9,
+    "k": 22,
+    "median_ms": 4.344296,
+    "n": 1131,
+    "ratio": 1.722459,
+    "status": 0,
+    "t0": 220
+   },
+   {
+    "AP": 39.1,
+    "BAT": 36.4,
+    "SKIN": 37.9,
+    "k": 23,
+    "median_ms": 4.318906,
+    "n": 1148,
+    "ratio": 1.712392,
+    "status": 0,
+    "t0": 230
+   },
+   {
+    "AP": 39.0,
+    "BAT": 36.3,
+    "SKIN": 37.7,
+    "k": 24,
+    "median_ms": 3.741445,
+    "n": 1331,
+    "ratio": 1.483436,
+    "status": 0,
+    "t0": 240
+   },
+   {
+    "AP": 39.8,
+    "BAT": 36.4,
+    "SKIN": 38.0,
+    "k": 25,
+    "median_ms": 4.298945,
+    "n": 1149,
+    "ratio": 1.704478,
+    "status": 0,
+    "t0": 250
+   },
+   {
+    "AP": 39.6,
+    "BAT": 36.4,
+    "SKIN": 38.0,
+    "k": 26,
+    "median_ms": 4.265547,
+    "n": 1155,
+    "ratio": 1.691236,
+    "status": 0,
+    "t0": 260
+   },
+   {
+    "AP": 39.5,
+    "BAT": 36.4,
+    "SKIN": 38.0,
+    "k": 27,
+    "median_ms": 4.262949,
+    "n": 1158,
+    "ratio": 1.690206,
+    "status": 0,
+    "t0": 270
+   },
+   {
+    "AP": 39.5,
+    "BAT": 36.4,
+    "SKIN": 38.0,
+    "k": 28,
+    "median_ms": 4.289668,
+    "n": 1150,
+    "ratio": 1.700799,
+    "status": 0,
+    "t0": 280
+   },
+   {
+    "AP": 39.5,
+    "BAT": 36.4,
+    "SKIN": 38.0,
+    "k": 29,
+    "median_ms": 4.306016,
+    "n": 1151,
+    "ratio": 1.707281,
+    "status": 0,
+    "t0": 290
+   },
+   {
+    "AP": 39.4,
+    "BAT": 36.4,
+    "SKIN": 38.0,
+    "k": 30,
+    "median_ms": 4.284219,
+    "n": 1155,
+    "ratio": 1.698639,
+    "status": 0,
+    "t0": 300
+   },
+   {
+    "AP": 39.5,
+    "BAT": 36.4,
+    "SKIN": 38.0,
+    "k": 31,
+    "median_ms": 4.262207,
+    "n": 1162,
+    "ratio": 1.689912,
+    "status": 0,
+    "t0": 310
+   },
+   {
+    "AP": 39.6,
+    "BAT": 36.4,
+    "SKIN": 38.0,
+    "k": 32,
+    "median_ms": 4.252168,
+    "n": 1160,
+    "ratio": 1.685931,
+    "status": 0,
+    "t0": 320
+   },
+   {
+    "AP": 39.5,
+    "BAT": 36.5,
+    "SKIN": 38.0,
+    "k": 33,
+    "median_ms": 4.226973,
+    "n": 1170,
+    "ratio": 1.675941,
+    "status": 0,
+    "t0": 330
+   },
+   {
+    "AP": 39.5,
+    "BAT": 36.5,
+    "SKIN": 38.0,
+    "k": 34,
+    "median_ms": 3.748594,
+    "n": 1327,
+    "ratio": 1.48627,
+    "status": 0,
+    "t0": 340
+   },
+   {
+    "AP": 39.9,
+    "BAT": 36.5,
+    "SKIN": 38.1,
+    "k": 35,
+    "median_ms": 4.341914,
+    "n": 1140,
+    "ratio": 1.721514,
+    "status": 0,
+    "t0": 350
+   },
+   {
+    "AP": 39.6,
+    "BAT": 36.6,
+    "SKIN": 38.1,
+    "k": 36,
+    "median_ms": 4.36375,
+    "n": 1131,
+    "ratio": 1.730172,
+    "status": 0,
+    "t0": 360
+   },
+   {
+    "AP": 39.5,
+    "BAT": 36.6,
+    "SKIN": 38.1,
+    "k": 37,
+    "median_ms": 4.259844,
+    "n": 1151,
+    "ratio": 1.688975,
+    "status": 0,
+    "t0": 370
+   },
+   {
+    "AP": 39.5,
+    "BAT": 36.6,
+    "SKIN": 38.0,
+    "k": 38,
+    "median_ms": 4.28379,
+    "n": 1155,
+    "ratio": 1.698469,
+    "status": 0,
+    "t0": 380
+   },
+   {
+    "AP": 39.4,
+    "BAT": 36.6,
+    "SKIN": 38.0,
+    "k": 39,
+    "median_ms": 4.340273,
+    "n": 1151,
+    "ratio": 1.720864,
+    "status": 0,
+    "t0": 390
+   },
+   {
+    "AP": 39.5,
+    "BAT": 36.6,
+    "SKIN": 38.0,
+    "k": 40,
+    "median_ms": 4.286524,
+    "n": 1155,
+    "ratio": 1.699553,
+    "status": 0,
+    "t0": 400
+   },
+   {
+    "AP": 39.4,
+    "BAT": 36.6,
+    "SKIN": 38.0,
+    "k": 41,
+    "median_ms": 4.265253,
+    "n": 1158,
+    "ratio": 1.691119,
+    "status": 0,
+    "t0": 410
+   },
+   {
+    "AP": 39.4,
+    "BAT": 36.6,
+    "SKIN": 38.0,
+    "k": 42,
+    "median_ms": 4.360781,
+    "n": 1123,
+    "ratio": 1.728995,
+    "status": 0,
+    "t0": 420
+   },
+   {
+    "AP": 39.3,
+    "BAT": 36.6,
+    "SKIN": 38.0,
+    "k": 43,
+    "median_ms": 4.416465,
+    "n": 1120,
+    "ratio": 1.751073,
+    "status": 0,
+    "t0": 430
+   },
+   {
+    "AP": 39.3,
+    "BAT": 36.6,
+    "SKIN": 38.0,
+    "k": 44,
+    "median_ms": 4.414219,
+    "n": 1116,
+    "ratio": 1.750182,
+    "status": 0,
+    "t0": 440
+   },
+   {
+    "AP": 39.3,
+    "BAT": 36.6,
+    "SKIN": 38.0,
+    "k": 45,
+    "median_ms": 4.407754,
+    "n": 1122,
+    "ratio": 1.747619,
+    "status": 0,
+    "t0": 450
+   },
+   {
+    "AP": 39.3,
+    "BAT": 36.6,
+    "SKIN": 38.0,
+    "k": 46,
+    "median_ms": 4.373437,
+    "n": 1124,
+    "ratio": 1.734013,
+    "status": 0,
+    "t0": 460
+   },
+   {
+    "AP": 39.3,
+    "BAT": 36.6,
+    "SKIN": 38.0,
+    "k": 47,
+    "median_ms": 4.427031,
+    "n": 1110,
+    "ratio": 1.755262,
+    "status": 0,
+    "t0": 470
+   }
+  ],
+  "bins_0_5": [
+   2.186047,
+   2.05969,
+   2.018199,
+   2.021846,
+   1.993372,
+   2.010958
+  ],
+  "bins_1_5_median": 2.018199,
+  "bins_ratio": [
+   2.186047,
+   2.05969,
+   2.018199,
+   2.021846,
+   1.993372,
+   2.010958,
+   2.022334,
+   1.955163,
+   1.891958,
+   1.873465,
+   1.861485,
+   1.778045,
+   1.833119,
+   1.683259,
+   1.718587,
+   1.721189,
+   1.688061,
+   1.573575,
+   1.472866,
+   1.69043,
+   1.67677,
+   1.520111,
+   1.722459,
+   1.712392,
+   1.483436,
+   1.704478,
+   1.691236,
+   1.690206,
+   1.700799,
+   1.707281,
+   1.698639,
+   1.689912,
+   1.685931,
+   1.675941,
+   1.48627,
+   1.721514,
+   1.730172,
+   1.688975,
+   1.698469,
+   1.720864,
+   1.699553,
+   1.691119,
+   1.728995,
+   1.751073,
+   1.750182,
+   1.747619,
+   1.734013,
+   1.755262
+  ],
+  "class_token": "R50-none",
+  "classification": "R50-none (440 s 안 미회복 — 중도절단)",
+  "d10_release_ref": {
+   "AP": [
+    38.0,
+    39.1
+   ],
+   "SKIN": [
+    37.1,
+    38.2
+   ]
+  },
+  "duty": 50,
+  "length_s": 480.000483,
+  "n": 53972,
+  "release": {
+   "AP_k": null,
+   "SKIN_k": null,
+   "censored": "440 s 안 미회복 (중도절단)",
+   "k": null,
+   "last_testable_k": 44,
+   "recovered": false,
+   "release_s": null,
+   "release_thermal": null,
+   "shape": null,
+   "step": null,
+   "threshold_ratio": 1.1
+  },
+  "release_s": null,
+  "shape": null,
+  "start_soc": {
+   "age_s": 4.135026,
+   "battery_level": 68,
+   "source": "skin_watch_csv"
+  },
+  "temps": [
+   {
+    "AP": 41.1,
+    "BAT": 36.5,
+    "SKIN": 38.5,
+    "status": 0,
+    "t": 0
+   },
+   {
+    "AP": 38.8,
+    "BAT": 36.1,
+    "SKIN": 37.6,
+    "status": 0,
+    "t": 60
+   },
+   {
+    "AP": 38.9,
+    "BAT": 36.1,
+    "SKIN": 37.6,
+    "status": 0,
+    "t": 120
+   },
+   {
+    "AP": 39.0,
+    "BAT": 36.3,
+    "SKIN": 37.7,
+    "status": 0,
+    "t": 240
+   },
+   {
+    "AP": 39.9,
+    "BAT": 36.6,
+    "SKIN": 38.0,
+    "status": 0,
+    "t": 479
+   }
+  ],
+  "termination_reason": "duration_complete"
+ },
+ "ref_bins_ratio": [
+  0.993255,
+  1.005591,
+  1.002114,
+  1.002455,
+  0.997855,
+  1.000411
+ ],
+ "ref_d50_ms": 2.522148,
+ "ref_n": 11636,
+ "rule": "밤1004_사전등록_v1 §3 (G50P): 해제 = 탐침 칸 k + 뒤 3칸 ≤ ref_d50×1.10 → 10k s · 마지막 k=44 · 분류 §2 경계 · 전제 240~300 ≥ 1.5 · H-ap-히스 AP_k ≥ 40.0 기각",
+ "run_id": "78a4a1c0-7dc7-4292-afc3-b8e0d5259d4c",
+ "segments": [
+  {
+   "accelerator": "GPU",
+   "achieved_duty": 50.012516,
+   "duration_s": 60,
+   "duty": 50,
+   "end_thermal": {
+    "AP": 37.1,
+    "BAT": 31.4,
+    "SKIN": 34.3,
+    "dt_s": -0.445417,
+    "status": 0
+   },
+   "index": 0,
+   "label": "cold_ref_d50",
+   "length_s": 60.004175,
+   "n": 11636,
+   "start_soc": {
+    "age_s": 8.763033,
+    "battery_level": 71,
+    "source": "skin_watch_csv"
+   },
+   "start_thermal": {
+    "AP": 30.0,
+    "BAT": 29.1,
+    "SKIN": 31.0,
+    "dt_s": 0.103758,
+    "status": 0
+   },
+   "termination_reason": "duration_complete"
+  },
+  {
+   "accelerator": "GPU",
+   "achieved_duty": 100,
+   "duration_s": 300,
+   "duty": 100,
+   "end_thermal": {
+    "AP": 41.1,
+    "BAT": 36.5,
+    "SKIN": 38.5,
+    "dt_s": 0.15071,
+    "status": 0
+   },
+   "index": 1,
+   "label": "heat_d100",
+   "length_s": 300.003664,
+   "n": 70481,
+   "start_soc": {
+    "age_s": 7.907012,
+    "battery_level": 70,
+    "source": "skin_watch_csv"
+   },
+   "start_thermal": {
+    "AP": 37.1,
+    "BAT": 31.4,
+    "SKIN": 34.3,
+    "dt_s": 0.409374,
+    "status": 0
+   },
+   "termination_reason": "duration_complete"
+  },
+  {
+   "accelerator": "GPU",
+   "achieved_duty": 50.015309,
+   "duration_s": 480,
+   "duty": 50,
+   "end_thermal": {
+    "AP": 39.3,
+    "BAT": 36.6,
+    "SKIN": 37.9,
+    "dt_s": -0.243717,
+    "status": 0
+   },
+   "index": 2,
+   "label": "probe_d50",
+   "length_s": 480.000483,
+   "n": 53972,
+   "start_soc": {
+    "age_s": 4.135026,
+    "battery_level": 68,
+    "source": "skin_watch_csv"
+   },
+   "start_thermal": {
+    "AP": 41.1,
+    "BAT": 36.5,
+    "SKIN": 38.5,
+    "dt_s": -0.073233,
+    "status": 0
+   },
+   "termination_reason": "duration_complete"
+  }
+ ],
+ "start_skin": 31.0,
+ "start_skin_in_band_29_1_31_6": true,
+ "start_skin_in_dev_range": true,
+ "start_thermal": {
+  "AP": 30.0,
+  "BAT": 29.1,
+  "SKIN": 31.0,
+  "dt_s": 0.103758,
+  "status": 0
+ },
+ "termination_reason": "duration_complete",
+ "transitions": [
+  {
+   "backend_switch": false,
+   "buffer_init_ns": null,
+   "duration_ns": 136411602,
+   "duration_s": 0.136412,
+   "end_ns": 2236609255510791,
+   "env_init_ns": null,
+   "from_accelerator": "GPU",
+   "model_init_ns": null,
+   "model_initialized": false,
+   "start_ns": 2236609119099189,
+   "to_accelerator": "GPU",
+   "to_segment": 1,
+   "warmup_count": 20
+  },
+  {
+   "backend_switch": false,
+   "buffer_init_ns": null,
+   "duration_ns": 222880000,
+   "duration_s": 0.22288,
+   "end_ns": 2236909483053252,
+   "env_init_ns": null,
+   "from_accelerator": "GPU",
+   "model_init_ns": null,
+   "model_initialized": false,
+   "start_ns": 2236909260173252,
+   "to_accelerator": "GPU",
+   "to_segment": 2,
+   "warmup_count": 20
+  }
+ ]
+}

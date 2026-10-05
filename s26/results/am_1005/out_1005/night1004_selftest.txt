@@ -1,0 +1,58 @@
+﻿| 시험 | 결과 | 값 |
+|---|---|---|
+| import 대상 SHA 접두 일치 (m1m2 ea282d4a · night1003 a5ceab41 · fit_v1 379039dd) | PASS | {'m1m2_judge_1002': 'ea282d4a', 'night1003_judge': 'a5ceab41', 'fit_throttle_v1': '379039dd'} |
+| n50p: 탐침 k=3 부터 4칸 ≤ ×1.03 → 30 s · R50-fast | PASS | R50-fast (해제 30 s ≤ 40 s) |
+| n50p: R50-fast → 'H-timer 와 H-load(θ > 50 %) 는 못 가른다 — 다음은 d75' | PASS | H-timer 와 H-load(θ > 50 %) 는 못 가른다 — 다음은 d75 |
+| n50p: 한 칸에 ×1.13 → ×1.01 → 계단형 | PASS | 계단형 |
+| n50p: 가열 1계단 150 s · 1-1 진입 300 s · 360~420 ×1.13 · 가열 충분 (합성) | PASS | (150, 300, 1.1300000000000001) |
+| n50p: A3 평탄 → 기준 안정 | PASS | 기준 안정 |
+| n50p: 탐침 120 s SKIN = 40.0 (합성 HAL) | PASS | [{'t': 0, 'SKIN': 41.5, 'AP': 45.0, 'BAT': 39.5, 'status': 0}, {'t': 60, 'SKIN': 40.0, 'AP': 43.0, 'BAT': 38.0, 'status': 0}, {'t': 120, 'SKIN': 40.0, 'AP': 43.0, 'BAT':  |
+| n50p: 끝까지 ×1.09 → 440 s 안 미회복 (중도절단) · R50-none | PASS | {'recovered': False, 'release_s': None, 'k': None, 'last_testable_k': 44, 'censored': '440 s 안 미회복 (중도절단)', 'threshold_ratio': 1.03, 'shape': None, 'step': None, 'release |
+| n50p: R50-none → 'H-timer 기각 · H-load(θ ≤ 50 %) 쪽' | PASS | H-timer 기각 · H-load(θ ≤ 50 %) 쪽 |
+| n50p: 가열 360~420 s ×1.04 → '가열 부족 — 탐침 판정 불가' | PASS | (1.04, '가열 부족 — 탐침 판정 불가 (기술만)') |
+| n50p: 해제 50 s → 미분류 · 가설 판정 불가 | PASS | 미분류 (해제 50 s) |
+| n50p: 해제 100 s → R50-slow · H-timer 기각 | PASS | R50-slow (해제 100 s, 60~440 s) |
+| n50p: 마지막 검정 k = 44 → 440 s · R50-slow | PASS | {'recovered': True, 'release_s': 440, 'k': 44, 'last_testable_k': 44, 'censored': None, 'threshold_ratio': 1.03, 'shape': '계단형', 'step': {'total_drop_ratio': 0.0800000000 |
+| n50p: k = 45 부터 하강 (검정 불가) → 중도절단 | PASS | {'recovered': False, 'release_s': None, 'k': None, 'last_testable_k': 44, 'censored': '440 s 안 미회복 (중도절단)', 'threshold_ratio': 1.03, 'shape': None, 'step': None, 'release |
+| n50p: 해제 20 s 뒤 칸 12 부터 ≥ ×1.06 → 해제 뒤 재조임 (k′=12, 120 s) | PASS | (20, '해제 뒤 재조임 (k′=12, 120 s)') |
+| n50p: 탐침 1~5 칸 중앙 배율 = 칸 1..5 중앙 (1.14) | PASS | 1.14 |
+| n50p: 선형 감소 → 점진형 | PASS | ('점진형', 100) |
+| n50p: A3 기준 칸 ±5 % 밖 → 기준 불안정 (판정은 한다) | PASS | 기준 불안정 (±5 % 밖 칸 있음) — 표시하고 판정은 한다 |
+| g50p: 해제 20 s · 해제 칸 AP 40.2 → H-ap-히스 기각 · R50-fast · H-load(GPU) 기각 | PASS | (40.2, {'H-timer': '유지 (R50-fast)', 'H-ap-히스': '기각 (해제 칸 AP_k 40.2 ≥ 40.0)', 'H-load(GPU)': '기각 (R50-fast)'}) |
+| g50p: 해제 칸 AP 39.0 → H-ap-히스 유지 | PASS | (39.0, '유지 (해제 칸 AP_k 39.0 < 40.0)') |
+| g50p: 240~300 s ×1.4 → 가열 부족 — 탐침 판정 불가 | PASS | 1.4 |
+| g50p: 끝까지 ×1.9 → R50-none · H-timer 기각 · H-load(GPU) 유지 · H-ap-히스 판정 불가 | PASS | {'H-timer': '기각 (R50-none)', 'H-ap-히스': '판정 불가 (해제 없음 — 규칙은 해제 칸 AP_k 로만)', 'H-load(GPU)': '유지 (R50-none)'} |
+| g50p: 해제 80 s → R50-slow · 1-1 진입 70 s · 240~300 ×1.9 | PASS | (80, 70, 1.9) |
+| g50p: ×1.08 (≤ 1.10) 도 해제 (δ 0.10) · n50p 였으면 아님 | PASS | {'recovered': True, 'release_s': 20, 'k': 2, 'last_testable_k': 44, 'censored': None, 'threshold_ratio': 1.1, 'shape': '계단형', 'step': {'total_drop_ratio': 0.8199999999999 |
+| gi300: 재조임 첫 칸부터 ≥ ×1.10 → 즉시(0 s) · 못 늦춘다 | PASS | 300 s 유휴로도 재조임을 못 늦춘다 (재조임 0 s ≤ 20 s) |
+| gi300: 300 s 안 없음 → 재조임 없음 | PASS | {'retightened': False, 'retighten_s': None, 'k': None, 'last_testable_k': 26, 'label': '재조임 없음 (300 s 안, 검정 가능 k ≤ 26)'} |
+| gi300: 재조임 30 s → 중간 | PASS | 중간 (재조임 30 s, 30~50 s) |
+| gi300: 재조임 60 s → 유예 레버 | PASS | 300 s 유휴가 재조임을 늦춘다 (유예 레버) (재조임 60 s ≥ 60 s) |
+| gi300: 재조임 20 s → 못 늦춘다 | PASS | 300 s 유휴로도 재조임을 못 늦춘다 (재조임 20 s ≤ 20 s) |
+| gi300: 휴지 SKIN 299 s = 34.0 · 0 s = 38.0 (합성) · 휴지 duty 1 표기 | PASS | ([{'t': 0, 'SKIN': 38.0, 'AP': 41.0, 'BAT': 36.0, 'status': 0}, {'t': 60, 'SKIN': 37.2, 'AP': 39.6, 'BAT': 35.2, 'status': 0}, {'t': 120, 'SKIN': 36.4, 'AP': 38.2, 'BAT': |
+| gi300: 진입 70 s · 540~600 ×2.04 · 첫 칸 배율 · 240~300 비 | PASS | (70, 2.04, 1.0) |
+| gi300: 휴지 d10 (rest_d10) → '완전 유휴 아님' | PASS | 완전 유휴 아님 — 조민규 인계의 유휴 질문에 답 못 함 (휴지 duty 10) |
+| ni300: 가열 240~300 ×1.05 → 가열 부족 — 재조임 판정 불가 | PASS | 가열 부족 — 재조임 판정 불가 |
+| ni300: 재조임 20 s (≥ ×1.06) → 못 늦춘다 · 1계단 150 s · 가열 충분 | PASS | ('300 s 유휴로도 재조임을 못 늦춘다 (재조임 20 s ≤ 20 s)', 150) |
+| ni300: 180 s 안 없음 → '180 s 안 재조임 없음' · 분류 유예 레버 (≥ 60 s 또는 없음) | PASS | ({'retightened': False, 'retighten_s': None, 'k': None, 'last_testable_k': 14, 'label': '180 s 안 재조임 없음'}, '300 s 유휴가 재조임을 늦춘다 (유예 레버) (≥ 60 s 또는 없음 — 180 s 안 재조임 없음)') |
+| ni300: k = 14 (마지막 검정) → 140 s · 유예 레버 | PASS | {'retightened': True, 'retighten_s': 140, 'k': 14, 'last_testable_k': 14, 'label': '140 s'} |
+| ni300: k = 15 부터 상승 (검정 불가) → 재조임 없음 | PASS | {'retightened': False, 'retighten_s': None, 'k': None, 'last_testable_k': 14, 'label': '180 s 안 재조임 없음'} |
+| ni300: 경계 ×1.06 은 재조임 (≥) → 30 s 중간 | PASS | {'retightened': True, 'retighten_s': 30, 'k': 3, 'last_testable_k': 14, 'label': '30 s'} |
+| cmp: N50P R50-fast (10 s) → θ_0.3 틀림 · θ_0.75 맞음 · 열 29.5 | PASS | ('틀림', '맞음') |
+| cmp: v1 (fast/skin) 와 reference_forms (참고) 블록도 채움 | PASS | (['fast', 'skin'], ['adopted_form_cooling_c1', 'V2-Lk', 'V2-S']) |
+| cmp: N50P R50-slow → 두 변형 다 틀림 · 시작 30.2 → 30.5 열 · v1 없음 기록 | PASS | (['틀림', '틀림'], ['v1 예측 없음', 'g50p: 실측 없음 (칸 미실행·FAILED·미판정) — 대조 안 함', 'gi300: 실측 없음 (칸 미실행·FAILED·미판정) — 대조 안 함', 'ni300: 실측 없음 (칸 미실행·FAILED·미판정) — 대조 안 함']) |
+| cmp: 시작 SKIN 30.0 (같은 거리) → 29.5 열 | PASS | 30.0 |
+| cmp: 시작 SKIN 27.9 → 적용 범위 밖 (unsupported) | PASS | 적용 범위 밖 (unsupported): 시작 SKIN 27.9 ∉ [28.3, 31.6] — 범위를 넓히지 않는다 |
+| cmp: 예측 JSON 없음 → '예측 없음' 기록 · 대조 블록 없음 | PASS | ['v2 예측 없음', 'v1 예측 없음', 'g50p: 실측 없음 (칸 미실행·FAILED·미판정) — 대조 안 함', 'gi300: 실측 없음 (칸 미실행·FAILED·미판정) — 대조 안 함', 'ni300: 실측 없음 (칸 미실행·FAILED·미판정) — 대조 안 함'] |
+| cmp: 칸 실측 없음 → '실측 없음' 기록 | PASS | ['v1 예측 없음', 'n50p: 실측 없음 (칸 미실행·FAILED·미판정) — 대조 안 함', 'g50p: 실측 없음 (칸 미실행·FAILED·미판정) — 대조 안 함', 'gi300: 실측 없음 (칸 미실행·FAILED·미판정) — 대조 안 함', 'ni300: 실측 없음 (칸 미실행·FAILED |
+| cmp: GI300 재조임 20 s vs v2 30 s 중간 → 분류 틀림 · 시각 ±10 맞음 · 재조임 SKIN 37.5 = T_on ±0.5 맞음 | PASS | ('틀림', '맞음', '맞음') |
+| cmp: GI300 재조임 칸 SKIN 37.9 → v2 T_on 행 틀림 | PASS | 틀림 |
+| cmp: NI300 재조임 없음 vs v2 29.5 60 s → 분류 틀림 · 시각 틀림 | PASS | ('틀림', '틀림') |
+| cmp: NI300 실측 가열 부족 → 재조임 행 '판정 불가 (가열 부족)' | PASS | 판정 불가 (가열 부족) |
+| 구간 하나 뺀 JSONL → 오류로 멈춤 | PASS | 구간 수 불일치: spec 3 · segment_start 2 · segment_end 2 |
+| GPU 체인을 n50p 로 → 오류로 멈춤 (가속기) | PASS | 구간 0 가속기 GPU ≠ NPU |
+| 3구간 체인을 gi300 으로 → 오류로 멈춤 (구간 수) | PASS | 구간이 3개 — 기대 4 (['cold_ref_d10', 'heat_d100', 'rest_*', 'reheat_d100']), 실제 라벨 ['cold_ref_d50', 'heat_d100', 'probe_d50'] |
+| 결정성: n50p 같은 입력 두 번 = 같은 바이트 (태그 제외) | PASS | 17616 B |
+| 결정성: cmp 같은 입력 두 번 = 같은 바이트 (태그 제외) | PASS | 29256 B |
+
+selftest 전체: PASS (54/54)
