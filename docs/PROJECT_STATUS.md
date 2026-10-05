@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-06 현재 작업 — 온라인 공동 비용 후보 평가·상충 판독 완료
+
+- [새2seed/기존3문맥·6대조](results/method_followup_01/joint_queue_readout_v1/index.html), [근거·13검증·실제CLI](results/method_followup_01/README.md). 기존J/peak 큐 탐색에 양의AP면적 조건만 더한 후보 한 개를12PC실행/576요청으로 확인했다. 후보288/288기한이나 J +0.054911–+0.176347J/최고AP −0.108491–−0.020172°C 상충, 공동비악화0/6. 결과뒤 재튜닝/새seed/후보추가0.
+- 분류GPU/병행겹침 감소의 J 항을 분리하고 local guard가 전체 미래창 보장이 아님을 확인했다. 미래 일정의 작은 공동이득과 인과적 온라인후보 결과를 합치지 않는다. 현재추천은EFT 대조·기한우선·목적별Pareto이며 새기본/실제절감/최적성/독립예측확인 미완료. PC callback시간은휴대폰비용으로환산하지 않는다.
+- 다음 PC 행동은완료한목적별결과를사용해기한/열/에너지상충을평가하는것이며,강한EFT 대비실제공동절감은추가근거없이완료로표시하지 않는다. 기기/ADB/실측/APK/기기계획/claim0,동결/strict/experiment_ready=false/원자료·사용자파일·다른worktree보존.
+
 ## 2026-10-06 현재 작업 — 고정 공동 제약 일정의 처리문맥 전이 완료
 
 - [같은 두 미래일정/기존short·long 4재생](results/method_followup_01/joint_calendar_transfer_v1/index.html), [재현·검증·한계](results/method_followup_01/README.md). backend/허용시각을고정해48/48기한·J/최고AP/양의면적 감소가4/4유지됐다. 새최적화0/192PC요청, 신규6검증/가짜ADBtrap 실제CLI통과. 평균문맥과합친6계산의최소J이득은0.002644J로실기기비용/오차미확인이다.

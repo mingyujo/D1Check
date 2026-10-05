@@ -1,0 +1,59 @@
+{
+  "spec": {
+    "version": "joint-queue-area-study-v1",
+    "envelope": "g0.45_c0.75_b4",
+    "seeds": [
+      523001,
+      523002
+    ],
+    "scenarios": [
+      "mean",
+      "short_context",
+      "long_context"
+    ],
+    "requests": 48,
+    "policies": [
+      "EFT_REFERENCE",
+      "ARRIVED_QUEUE_J_PEAK_AREA_V1"
+    ],
+    "maximum_PC_runs": 12,
+    "maximum_wall_s": 900.0,
+    "parameter_candidates": 1,
+    "selection": "prior offline queue75 witness motivates this posthoc structure; only two new synthetic seeds; not new independent device evidence",
+    "modification": "add clipped AP area veto vs current-queue EFT continuation to unchanged J/peak/long-context per-request guard",
+    "preserved": "parent first four queue, depth4/width8/64 candidates, firstwait0 or0.25s, maxfirststart2s, original aging and every arrival independent of completion",
+    "relative_caps": "current-queue model comparison only; neither global future-service proof nor safety/accuracy threshold",
+    "engine_callback_ABI": "PARETO_BEAM_SERVICE_V1",
+    "public_candidate_ID": "ARRIVED_QUEUE_J_PEAK_AREA_V1",
+    "no_new_physical_terms": true,
+    "controller_zero_incremental_cost_assumption": true,
+    "freeze": "publish all six paired contexts; no re-tuning/extra seeds/extra candidates after outcomes",
+    "independent_device_validation": false,
+    "strict_supported": false,
+    "experiment_ready": false,
+    "device_commands": 0
+  },
+  "code": {
+    "tools/d1_joint_queue_study.py": "4e823a23cbac90ac3dd336b6c3ba975d5b3c893999c91cb1d9541b38e85e564f",
+    "tools/d1_joint_queue_area.py": "b0202f9656b4f4b0f2323f123c00fbd4df5557748eb115db1126919c8a754710",
+    "tools/d1_pareto_beam.py": "b442e74b212c070587cd3b141ccd1aea34bd251f255ace8c706cbaafea8c94df",
+    "tools/d1_empirical_request_policy.py": "32407050fae7a0f6f7d58a19cd6f2f4eedea46ba9c8651e15363d0af496050a0",
+    "tools/d1_industrial_scheduling.py": "5537b8746d329a8ab25f69c105218ecb6eaba99d26bfb6bb8434950b2e5b6bab",
+    "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9",
+    "tools/d1_scheduler_conditions.py": "cda103f356585715448ebb3167e2dc81fab95e598f1a6b9e3036f88ed5313b78"
+  },
+  "resources": {
+    "docs/results/method_followup_01/run_v1/registered_before_run.json": "b30ebda7e434c709d5180e13883067dca623489af120bf3c78e0c3cfcd95a56f",
+    "docs/results/method_followup_01/run_v1/records.jsonl.gz": "0b1b49e23da376657ddb37330f03447a72d5b2873e198ddacd56e2a68c9a6b2c",
+    "docs/results/method_followup_01/beam_v1/registered_before_run.json": "13963e26a188d1b959bba2e603abe55686e59f8910984588e1e71ff07bb52ed9",
+    "docs/results/method_followup_01/beam_v1/records.jsonl.gz": "5e9c9445e9635db5c9e30fa469e2c35f2f084bda2071fd39c1cda305dc2d5236",
+    "docs/results/method_followup_01/beam_v2/registered_before_run.json": "fe246c8e5ddbd3fc5c23471c3869b9a3547f820227a5ca00df899e14a89eaf00",
+    "docs/results/method_followup_01/beam_v2/records.jsonl.gz": "88b5569c71abd7349eba6455533689abcaba61476bbce1278654ce1c87ff9a28",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d"
+  },
+  "input_sha256": "cb5fab7b66c046ca23b2200fe7bcea4f8d7b17a25a5652502ed3faac6f30fd19",
+  "utc": "2026-10-05T20:45:16.140865+00:00",
+  "base_head": "43953af69036e8511f7021009682c7ac26625c81",
+  "source_dirty": true
+}

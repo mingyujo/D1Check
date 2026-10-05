@@ -1,0 +1,62 @@
+{
+  "version": "joint-queue-verification-v1",
+  "utc": "2026-10-05T20:53:23.733385+00:00",
+  "base_head": "43953af69036e8511f7021009682c7ac26625c81",
+  "source_dirty": true,
+  "tests": [
+    {
+      "command": "python -B -m unittest tools.test_d1_joint_queue_area -v",
+      "passed": 5
+    },
+    {
+      "command": "python -B -m unittest tools.test_d1_joint_queue_study -v",
+      "passed": 8
+    }
+  ],
+  "producer_entry": "python -B -m tools.d1_joint_queue_study --output docs/results/method_followup_01/joint_queue_area_v1",
+  "producer_entry_exit": 0,
+  "readonly_entry": "python -B -m tools.d1_joint_queue_report --output docs/results/method_followup_01/joint_queue_readout_v1",
+  "readonly_entry_exit": 0,
+  "readonly_entry_fake_adb_trap_called": false,
+  "readonly_simulate_functions_forbidden_test": true,
+  "source_sha256": {
+    "tools/d1_joint_queue_area.py": "b0202f9656b4f4b0f2323f123c00fbd4df5557748eb115db1126919c8a754710",
+    "tools/d1_joint_queue_study.py": "4e823a23cbac90ac3dd336b6c3ba975d5b3c893999c91cb1d9541b38e85e564f",
+    "tools/d1_joint_queue_report.py": "c311425f7df55f44c69b830335c72a3e4b2fcbec39f87372f6ae252cf48ef425",
+    "tools/test_d1_joint_queue_area.py": "9c782d49bd468f427b261a054720fe902f5f8de7922c1bf198843d1a4efe96e2",
+    "tools/test_d1_joint_queue_study.py": "cb9e62ac56abc4af1675fd008871d36c53a1cbe17884124e487701c78e93a06c"
+  },
+  "results_sha256": {
+    "docs/results/method_followup_01/joint_queue_area_v1/comparisons.csv": "18cf2a6dd32a11258de9adb604fbf008d23bf437c7f96cfaf129c4b14b7cfa77",
+    "docs/results/method_followup_01/joint_queue_area_v1/d1_joint_queue_area.py": "b0202f9656b4f4b0f2323f123c00fbd4df5557748eb115db1126919c8a754710",
+    "docs/results/method_followup_01/joint_queue_area_v1/d1_joint_queue_study.py": "4e823a23cbac90ac3dd336b6c3ba975d5b3c893999c91cb1d9541b38e85e564f",
+    "docs/results/method_followup_01/joint_queue_area_v1/index.html": "3309b61232e1febba46239c757eddb24278bc4f2df04197c2ffa594f48423372",
+    "docs/results/method_followup_01/joint_queue_area_v1/inputs.json": "cb5fab7b66c046ca23b2200fe7bcea4f8d7b17a25a5652502ed3faac6f30fd19",
+    "docs/results/method_followup_01/joint_queue_area_v1/progress.json": "6763f238094dcff117769041d9d1f4e731d87adb9f384606b3075c79d9a5ce42",
+    "docs/results/method_followup_01/joint_queue_area_v1/records.jsonl.gz": "c90d5db0abf6f4b97d4d0379a58396c730acaa2f6897cbca1f729f05f5f87d4d",
+    "docs/results/method_followup_01/joint_queue_area_v1/registered_before_run.json": "8191f31de6b52300d19818c358d7418326d959feb0785a2e401ff912bbf92efa",
+    "docs/results/method_followup_01/joint_queue_area_v1/results.csv": "2065d117ac67ff545e679f99c7580b69f9fe4f894ef25ff51f90ead9c6e9d41d",
+    "docs/results/method_followup_01/joint_queue_area_v1/summary.json": "4a87c234f2ce2c5dbaf6bb580533c1af9bbbe7ed1aa8aa5e7e3af423dde1266b",
+    "docs/results/method_followup_01/joint_queue_readout_v1/comparisons.csv": "2963a8f598626b80bf56ef2fbc073f125c0956a4568c6bd36519392475360c9b",
+    "docs/results/method_followup_01/joint_queue_readout_v1/index.html": "70f775b1a1da7f5efea2606d56012d771559e9b0689fbff9c855380864851037",
+    "docs/results/method_followup_01/joint_queue_readout_v1/modeled_differences.png": "72c94a0bcd7f3920f0b2283d3a229ddf0b4353ebc1be4609ff85e655286f51a0",
+    "docs/results/method_followup_01/joint_queue_readout_v1/modeled_differences.svg": "76865cc828d02852565e1be018c64caede37d69bbac9b70d7e074d55692bece7",
+    "docs/results/method_followup_01/joint_queue_readout_v1/modeled_difference_paths.csv": "f35f44117b6c9a3b452e562805448ff1c3fc6f6a8e6da7e2a98e7463871a6b2a",
+    "docs/results/method_followup_01/joint_queue_readout_v1/result.json": "190cc4582b382845c2865a12814983f989e7930675b0ba1fd116bafa4daa4544"
+  },
+  "registered_source_and_inputs_unchanged": true,
+  "old_planner_engine_parent_model_unchanged": true,
+  "PC_runs": 12,
+  "PC_requests": 576,
+  "candidate_count": 1,
+  "re_tuning_runs": 0,
+  "whole_legacy_batches_rerun": 0,
+  "independent_device_sessions": 0,
+  "device_commands": 0,
+  "new_device_plans": 0,
+  "consumption_claims": 0,
+  "APK_changes": false,
+  "experiment_ready": false,
+  "visual_review": "modeled_differences.png inspected; two seeds/three development contexts readable; no device measurements",
+  "actual_goal_real_joint_savings_complete": false
+}

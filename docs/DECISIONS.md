@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-06 — METHOD-JOINT-QUEUE-AREA-PC-01
+
+- 이번규칙:현재도착큐beam의기존J/peak/기한guard에양의AP면적 비악화만추가한후보한개를별도ID로분리했다. queue75와새2seed/3전체문맥·12실행만등록,결과뒤재튜닝/새후보/seed추가0. 내부콜백ABI를재사용하되공개결과를옛beam과합치지않는다. 물리계수/parent/engine/기본불변.
+- 확인:6대조모두48/48기한이나 J +0.055–+0.176J/최고AP −0.108–−0.020°C 상충으로공동비악화0/6. 현재큐의local비용비악화가미래요청포함전체창보장은아니다. GPU/겹침 항과실제도착ID·localguard·원오류/부분결과를검증했다. [수치·13검증·재현](results/method_followup_01/README.md).
+- 미채택:새기본정책,실제기기절감/정확도PASS/독립확인,사후열목표/허용오차,PCcallback의휴대폰비용환산. 현재권고는강한EFT 대조와기한우선·목적별Pareto 평가다. strict/experiment_ready=false/기존FAIL/원자료/미소비기기계획보존,기기/실측/claim0.
+
 ## 2026-10-06 — METHOD-FIXED-CALENDAR-TRANSFER-PC-01
 
 - 채택한검증규칙: 평균문맥의두기존incumbent backend/허용시각을고정해기존short/long전문맥만4회재생한다. 기존Replay의정확시각assertion은보존,별도not-before PC실행에서실제lane반환을기다리며강제처리시간/인위감속을넣지않는다. 이경로는미래일정이주어지며온라인정책이아니다.

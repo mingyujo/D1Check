@@ -1,5 +1,9 @@
 # D1Check 통합 시뮬레이터
 
+## 2026-10-06 현재 큐의 열 지향 후보: 에너지와 상충
+
+[새2seed×3문맥·같은EFT 대조](../method_followup_01/joint_queue_readout_v1/index.html), [계약·13검증·재현](../method_followup_01/README.md). J/최고AP/면적을현재큐에서같이검사한후보는288/288기한을지켰지만전체창J +0.055–+0.176J/최고AP −0.108–−0.020°C상충이었다. local guard의통과를전체미래창/실기기절감보장으로바꾸지않는다. 새후보하나만평가·재튜닝0,기본/strict/experiment_ready=false유지. 그림은모형끼리의차이이고새실측확인그림이아니다.
+
 ## 2026-10-06 고정 미래일정의 처리문맥 전이
 
 [short/long4재생](../method_followup_01/joint_calendar_transfer_v1/index.html). mean에서찾은두계획의backend/허용시각을유지하고기존개발전체5단계문맥만바꿨다. 4/4전기한·J/최고AP/양의AP면적감소가유지됐지만mean포함6계산최소J이득은0.002644J로작고응답이늘었다. 실제lane반환을기다리는별도PC경로이며새최적화/기기실측이아니다. 독립확인/온라인정책/정책효과PASS 미완료,기본/strict/experiment_ready=false유지. [소스·6검증·실제CLI·재현](../method_followup_01/README.md).
