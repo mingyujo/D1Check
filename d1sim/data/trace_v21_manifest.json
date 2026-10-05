@@ -1,0 +1,658 @@
+{
+ "n50p": {
+  "tag": "n50p",
+  "result_dir": "results/S26_N50P_1004",
+  "run_id": "c717c4cf-64a1-442c-9813-f3755eac8705",
+  "resource": "NPU",
+  "duty": null,
+  "chain_mode": true,
+  "engine": "litert-compiled-model",
+  "litert_version": "2.2.0",
+  "termination_reason": "duration_complete",
+  "n_inference": 862520,
+  "load_window_s": 960.282721445,
+  "segments": [
+   {
+    "index": 0,
+    "label": "cold_ref_d50",
+    "accelerator": "NPU",
+    "duty": 50,
+    "duration_s": 60,
+    "start_ns": 2211320408138790,
+    "end_ns": 2211380409232579,
+    "inference_count": 36702,
+    "termination": "duration_complete"
+   },
+   {
+    "index": 1,
+    "label": "heat_d100",
+    "accelerator": "NPU",
+    "duty": 100,
+    "duration_s": 420,
+    "start_ns": 2211380539170939,
+    "end_ns": 2211800539628439,
+    "inference_count": 522833,
+    "termination": "duration_complete"
+   },
+   {
+    "index": 2,
+    "label": "probe_d50",
+    "accelerator": "NPU",
+    "duty": 50,
+    "duration_s": 480,
+    "start_ns": 2211800690084728,
+    "end_ns": 2212280690307892,
+    "inference_count": 302985,
+    "termination": "duration_complete"
+   }
+  ],
+  "transitions": [
+   {
+    "to_segment": 1,
+    "start_ns": 2211380410712228,
+    "end_ns": 2211380538989845,
+    "duration_s": 0.128277617,
+    "model_init_ns": null,
+    "backend_switch": false
+   },
+   {
+    "to_segment": 2,
+    "start_ns": 2211800539910782,
+    "end_ns": 2211800689958595,
+    "duration_s": 0.150047813,
+    "model_init_ns": null,
+    "backend_switch": false
+   }
+  ],
+  "files": {
+   "runner_jsonl": {
+    "path": "results\\S26_N50P_1004\\runs\\c717c4cf-64a1-442c-9813-f3755eac8705\\gpu\\gpu-events-c717c4cf-64a1-442c-9813-f3755eac8705-8f6c88cc-d7d6-4fbf-aa8e-cb7afa22b7b5.jsonl",
+    "bytes": 323207600,
+    "sha256": "095cde82da97f2903751de91fd57d87cddac24b91b6d4b6c9c1885b4eea86fa8"
+   },
+   "merged_events": {
+    "path": "results\\S26_N50P_1004\\runs\\c717c4cf-64a1-442c-9813-f3755eac8705\\merged\\events.jsonl",
+    "bytes": 345512528,
+    "sha256": "5fb4afa8cded87177d4afd78d844f50d8c4990911d83d02172c3f540ffae6611"
+   }
+  },
+  "rows_1s": 963,
+  "rows_10s": 99,
+  "thermal_samples": 1823,
+  "d1check_samples": 1834,
+  "plugged_nonzero": 0,
+  "role": "chain NPU d50 60 / d100 420 / d50 480 — N50P (10/4), v2.1 dev"
+ },
+ "g50p": {
+  "tag": "g50p",
+  "result_dir": "results/S26_G50P_1004",
+  "run_id": "e7b9a65e-da45-4dcf-b9d5-634edde0a5d5",
+  "resource": "GPU",
+  "duty": null,
+  "chain_mode": true,
+  "engine": "litert-compiled-model",
+  "litert_version": "2.2.0",
+  "termination_reason": "duration_complete",
+  "n_inference": 187396,
+  "load_window_s": 840.332112031,
+  "segments": [
+   {
+    "index": 0,
+    "label": "cold_ref_d50",
+    "accelerator": "GPU",
+    "duty": 50,
+    "duration_s": 60,
+    "start_ns": 2218749064817657,
+    "end_ns": 2218809066749025,
+    "inference_count": 11706,
+    "termination": "duration_complete"
+   },
+   {
+    "index": 1,
+    "label": "heat_d100",
+    "accelerator": "GPU",
+    "duty": 100,
+    "duration_s": 300,
+    "start_ns": 2218809207044845,
+    "end_ns": 2219109209793204,
+    "inference_count": 95170,
+    "termination": "duration_complete"
+   },
+   {
+    "index": 2,
+    "label": "probe_d50",
+    "accelerator": "GPU",
+    "duty": 50,
+    "duration_s": 480,
+    "start_ns": 2219109395136954,
+    "end_ns": 2219589395636876,
+    "inference_count": 80520,
+    "termination": "duration_complete"
+   }
+  ],
+  "transitions": [
+   {
+    "to_segment": 1,
+    "start_ns": 2218809069480236,
+    "end_ns": 2218809206939259,
+    "duration_s": 0.137459023,
+    "model_init_ns": null,
+    "backend_switch": false
+   },
+   {
+    "to_segment": 2,
+    "start_ns": 2219109210224337,
+    "end_ns": 2219109394937111,
+    "duration_s": 0.184712774,
+    "model_init_ns": null,
+    "backend_switch": false
+   }
+  ],
+  "files": {
+   "runner_jsonl": {
+    "path": "results\\S26_G50P_1004\\runs\\e7b9a65e-da45-4dcf-b9d5-634edde0a5d5\\gpu\\gpu-events-e7b9a65e-da45-4dcf-b9d5-634edde0a5d5-62d21ee3-99c8-4bff-896c-9763b9f4f0d4.jsonl",
+    "bytes": 70264081,
+    "sha256": "62670c58334b0eac9fc41f3147effd5151c1773d8763619239018b10a12c2153"
+   },
+   "merged_events": {
+    "path": "results\\S26_G50P_1004\\runs\\e7b9a65e-da45-4dcf-b9d5-634edde0a5d5\\merged\\events.jsonl",
+    "bytes": 76152765,
+    "sha256": "a5e4ee64bd2c7dc2cce822f15eb07082d385f24ba61c55677afe2a23f57f4430"
+   }
+  },
+  "rows_1s": 843,
+  "rows_10s": 87,
+  "thermal_samples": 1582,
+  "d1check_samples": 1589,
+  "plugged_nonzero": 0,
+  "role": "chain GPU d50 60 / d100 300 / d50 480 — G50P (10/4), v2.1 dev"
+ },
+ "gi300": {
+  "tag": "gi300",
+  "result_dir": "results/S26_GI300_1004",
+  "run_id": "1618ce0e-60de-4b61-9bdb-e145e7a6d4f9",
+  "resource": "GPU",
+  "duty": null,
+  "chain_mode": true,
+  "engine": "litert-compiled-model",
+  "litert_version": "2.2.0",
+  "termination_reason": "duration_complete",
+  "n_inference": 209657,
+  "load_window_s": 1260.492907812,
+  "segments": [
+   {
+    "index": 0,
+    "label": "cold_ref_d10",
+    "accelerator": "GPU",
+    "duty": 10,
+    "duration_s": 60,
+    "start_ns": 2220488473105587,
+    "end_ns": 2220548477662345,
+    "inference_count": 2327,
+    "termination": "duration_complete"
+   },
+   {
+    "index": 1,
+    "label": "heat_d100",
+    "accelerator": "GPU",
+    "duty": 100,
+    "duration_s": 600,
+    "start_ns": 2220548615753907,
+    "end_ns": 2221148619781720,
+    "inference_count": 138420,
+    "termination": "duration_complete"
+   },
+   {
+    "index": 2,
+    "label": "rest_idle",
+    "accelerator": "GPU",
+    "duty": 1,
+    "duration_s": 300,
+    "start_ns": 2221148819196642,
+    "end_ns": 2221448820558439,
+    "inference_count": 1006,
+    "termination": "duration_complete"
+   },
+   {
+    "index": 3,
+    "label": "reheat_d100",
+    "accelerator": "GPU",
+    "duty": 100,
+    "duration_s": 300,
+    "start_ns": 2221448965248517,
+    "end_ns": 2221748965301915,
+    "inference_count": 67904,
+    "termination": "duration_complete"
+   }
+  ],
+  "transitions": [
+   {
+    "to_segment": 1,
+    "start_ns": 2220548481541681,
+    "end_ns": 2220548615629689,
+    "duration_s": 0.134088008,
+    "model_init_ns": null,
+    "backend_switch": false
+   },
+   {
+    "to_segment": 2,
+    "start_ns": 2221148620152462,
+    "end_ns": 2221148818955587,
+    "duration_s": 0.198803125,
+    "model_init_ns": null,
+    "backend_switch": false
+   },
+   {
+    "to_segment": 3,
+    "start_ns": 2221448821788087,
+    "end_ns": 2221448965166407,
+    "duration_s": 0.14337832,
+    "model_init_ns": null,
+    "backend_switch": false
+   }
+  ],
+  "files": {
+   "runner_jsonl": {
+    "path": "results\\S26_GI300_1004\\runs\\1618ce0e-60de-4b61-9bdb-e145e7a6d4f9\\gpu\\gpu-events-1618ce0e-60de-4b61-9bdb-e145e7a6d4f9-97f2fb0a-2145-4ab3-9fb2-7ec509a2831f.jsonl",
+    "bytes": 78645219,
+    "sha256": "5fb2282fba8c42e9c8f2d770dc884c8a3018659929da6c8f2126ef8c629791f7"
+   },
+   "merged_events": {
+    "path": "results\\S26_GI300_1004\\runs\\1618ce0e-60de-4b61-9bdb-e145e7a6d4f9\\merged\\events.jsonl",
+    "bytes": 85516565,
+    "sha256": "854b19fc0633113e0259eca2e303a063c3c86b7445d55b3e383a02cbfeab2dda"
+   }
+  },
+  "rows_1s": 1264,
+  "rows_10s": 130,
+  "thermal_samples": 2092,
+  "d1check_samples": 2101,
+  "plugged_nonzero": 0,
+  "role": "chain GPU d10 60 / d100 600 / d1 300 / d100 300 — GI300 (10/4), v2.1 dev"
+ },
+ "ni300": {
+  "tag": "ni300",
+  "result_dir": "results/S26_NI300_1004",
+  "run_id": "40533ab0-2693-46e2-a21c-a089e28f27dc",
+  "resource": "NPU",
+  "duty": null,
+  "chain_mode": true,
+  "engine": "litert-compiled-model",
+  "litert_version": "2.2.0",
+  "termination_reason": "duration_complete",
+  "n_inference": 559836,
+  "load_window_s": 840.48820543,
+  "segments": [
+   {
+    "index": 0,
+    "label": "cold_ref_d10",
+    "accelerator": "NPU",
+    "duty": 10,
+    "duration_s": 60,
+    "start_ns": 2222939739182853,
+    "end_ns": 2222999740944806,
+    "inference_count": 6901,
+    "termination": "duration_complete"
+   },
+   {
+    "index": 1,
+    "label": "heat_d100",
+    "accelerator": "NPU",
+    "duty": 100,
+    "duration_s": 300,
+    "start_ns": 2222999899643087,
+    "end_ns": 2223299899755861,
+    "inference_count": 360804,
+    "termination": "duration_complete"
+   },
+   {
+    "index": 2,
+    "label": "rest_idle",
+    "accelerator": "NPU",
+    "duty": 1,
+    "duration_s": 300,
+    "start_ns": 2223300061717462,
+    "end_ns": 2223600061964532,
+    "inference_count": 1065,
+    "termination": "duration_complete"
+   },
+   {
+    "index": 3,
+    "label": "reheat_d100",
+    "accelerator": "NPU",
+    "duty": 100,
+    "duration_s": 180,
+    "start_ns": 2223600226896134,
+    "end_ns": 2223780227024298,
+    "inference_count": 191066,
+    "termination": "duration_complete"
+   }
+  ],
+  "transitions": [
+   {
+    "to_segment": 1,
+    "start_ns": 2222999742515314,
+    "end_ns": 2222999899401368,
+    "duration_s": 0.156886054,
+    "model_init_ns": null,
+    "backend_switch": false
+   },
+   {
+    "to_segment": 2,
+    "start_ns": 2223299900066056,
+    "end_ns": 2223300061558087,
+    "duration_s": 0.161492031,
+    "model_init_ns": null,
+    "backend_switch": false
+   },
+   {
+    "to_segment": 3,
+    "start_ns": 2223600062561915,
+    "end_ns": 2223600226741759,
+    "duration_s": 0.164179844,
+    "model_init_ns": null,
+    "backend_switch": false
+   }
+  ],
+  "files": {
+   "runner_jsonl": {
+    "path": "results\\S26_NI300_1004\\runs\\40533ab0-2693-46e2-a21c-a089e28f27dc\\gpu\\gpu-events-40533ab0-2693-46e2-a21c-a089e28f27dc-5704625f-f043-4f7c-be9f-95ec8f1b9ba0.jsonl",
+    "bytes": 209760411,
+    "sha256": "3e515cc74a4bd731c45d698598a6c7f8814e8e18cffea5462acf738aa2e8c01a"
+   },
+   "merged_events": {
+    "path": "results\\S26_NI300_1004\\runs\\40533ab0-2693-46e2-a21c-a089e28f27dc\\merged\\events.jsonl",
+    "bytes": 224961989,
+    "sha256": "545c2be82f0735885f48b6f5053c5d7fe52359eb1aa38a73df6a64e85c72a0fc"
+   }
+  },
+  "rows_1s": 844,
+  "rows_10s": 88,
+  "thermal_samples": 2004,
+  "d1check_samples": 2012,
+  "plugged_nonzero": 0,
+  "role": "chain NPU d10 60 / d100 300 / d1 300 / d100 180 — NI300 (10/4), v2.1 dev"
+ },
+ "n50p2": {
+  "tag": "n50p2",
+  "result_dir": "results/S26_N50P2_1005",
+  "run_id": "39001561-6e6a-48a3-a4fb-12ea3e32199d",
+  "resource": "NPU",
+  "duty": null,
+  "chain_mode": true,
+  "engine": "litert-compiled-model",
+  "litert_version": "2.2.0",
+  "termination_reason": "duration_complete",
+  "n_inference": 780140,
+  "load_window_s": 960.275139726,
+  "segments": [
+   {
+    "index": 0,
+    "label": "cold_ref_d50",
+    "accelerator": "NPU",
+    "duty": 50,
+    "duration_s": 60,
+    "start_ns": 2231757807535517,
+    "end_ns": 2231817808526611,
+    "inference_count": 36538,
+    "termination": "duration_complete"
+   },
+   {
+    "index": 1,
+    "label": "heat_d100",
+    "accelerator": "NPU",
+    "duty": 100,
+    "duration_s": 420,
+    "start_ns": 2231817930003213,
+    "end_ns": 2232237930096338,
+    "inference_count": 491427,
+    "termination": "duration_complete"
+   },
+   {
+    "index": 2,
+    "label": "probe_d50",
+    "accelerator": "NPU",
+    "duty": 50,
+    "duration_s": 480,
+    "start_ns": 2232238081001142,
+    "end_ns": 2232718082001650,
+    "inference_count": 252175,
+    "termination": "duration_complete"
+   }
+  ],
+  "transitions": [
+   {
+    "to_segment": 1,
+    "start_ns": 2231817809395869,
+    "end_ns": 2231817929792783,
+    "duration_s": 0.120396914,
+    "model_init_ns": null,
+    "backend_switch": false
+   },
+   {
+    "to_segment": 2,
+    "start_ns": 2232237930395244,
+    "end_ns": 2232238080841963,
+    "duration_s": 0.150446719,
+    "model_init_ns": null,
+    "backend_switch": false
+   }
+  ],
+  "files": {
+   "runner_jsonl": {
+    "path": "results\\S26_N50P2_1005\\runs\\39001561-6e6a-48a3-a4fb-12ea3e32199d\\gpu\\gpu-events-39001561-6e6a-48a3-a4fb-12ea3e32199d-58d887c3-794f-4639-8eb0-67a6aa1af634.jsonl",
+    "bytes": 292361099,
+    "sha256": "6d5f58f40a3dc448065af29b0e682af669c9abf24a6d23fc29ffb5d499ee6ea2"
+   },
+   "merged_events": {
+    "path": "results\\S26_N50P2_1005\\runs\\39001561-6e6a-48a3-a4fb-12ea3e32199d\\merged\\events.jsonl",
+    "bytes": 312903890,
+    "sha256": "3f5841209987c8af08d5ced7274cee9d02acf4bec95568c020fcdf970ea6b155"
+   }
+  },
+  "rows_1s": 963,
+  "rows_10s": 99,
+  "thermal_samples": 2066,
+  "d1check_samples": 2074,
+  "plugged_nonzero": 0,
+  "role": "chain NPU d50 60 / d100 420 / d50 480 — N50P2 (10/5), v2.1 dev"
+ },
+ "g50p2": {
+  "tag": "g50p2",
+  "result_dir": "results/S26_G50P2_1005",
+  "run_id": "78a4a1c0-7dc7-4292-afc3-b8e0d5259d4c",
+  "resource": "GPU",
+  "duty": null,
+  "chain_mode": true,
+  "engine": "litert-compiled-model",
+  "litert_version": "2.2.0",
+  "termination_reason": "duration_complete",
+  "n_inference": 136089,
+  "load_window_s": 840.373951016,
+  "segments": [
+   {
+    "index": 0,
+    "label": "cold_ref_d50",
+    "accelerator": "GPU",
+    "duty": 50,
+    "duration_s": 60,
+    "start_ns": 2236549111241767,
+    "end_ns": 2236609115417080,
+    "inference_count": 11636,
+    "termination": "duration_complete"
+   },
+   {
+    "index": 1,
+    "label": "heat_d100",
+    "accelerator": "GPU",
+    "duty": 100,
+    "duration_s": 300,
+    "start_ns": 2236609255625634,
+    "end_ns": 2236909259290088,
+    "inference_count": 70481,
+    "termination": "duration_complete"
+   },
+   {
+    "index": 2,
+    "label": "probe_d50",
+    "accelerator": "GPU",
+    "duty": 50,
+    "duration_s": 480,
+    "start_ns": 2236909483233408,
+    "end_ns": 2237389483716884,
+    "inference_count": 53972,
+    "termination": "duration_complete"
+   }
+  ],
+  "transitions": [
+   {
+    "to_segment": 1,
+    "start_ns": 2236609119099189,
+    "end_ns": 2236609255510791,
+    "duration_s": 0.136411602,
+    "model_init_ns": null,
+    "backend_switch": false
+   },
+   {
+    "to_segment": 2,
+    "start_ns": 2236909260173252,
+    "end_ns": 2236909483053252,
+    "duration_s": 0.22288,
+    "model_init_ns": null,
+    "backend_switch": false
+   }
+  ],
+  "files": {
+   "runner_jsonl": {
+    "path": "results\\S26_G50P2_1005\\runs\\78a4a1c0-7dc7-4292-afc3-b8e0d5259d4c\\gpu\\gpu-events-78a4a1c0-7dc7-4292-afc3-b8e0d5259d4c-cd0ae601-36bc-49c2-9c22-c6af3ef6d229.jsonl",
+    "bytes": 50979588,
+    "sha256": "5c0d3dfa8076137f29209c1cc1a19efd435df70d5769dfe6874c61d2e3aca202"
+   },
+   "merged_events": {
+    "path": "results\\S26_G50P2_1005\\runs\\78a4a1c0-7dc7-4292-afc3-b8e0d5259d4c\\merged\\events.jsonl",
+    "bytes": 55788218,
+    "sha256": "4e21322243ff1469f64ca42d1c3494b37944f96c6ab8331c2bb5bb7aed0dab26"
+   }
+  },
+  "rows_1s": 843,
+  "rows_10s": 87,
+  "thermal_samples": 1752,
+  "d1check_samples": 1761,
+  "plugged_nonzero": 0,
+  "role": "chain GPU d50 60 / d100 300 / d50 480 — G50P2 (10/5), v2.1 dev"
+ },
+ "ni300r2": {
+  "tag": "ni300r2",
+  "result_dir": "results/S26_NI300r2_1005",
+  "run_id": "ddd71eea-9b41-4569-b1c3-204a05b2d387",
+  "resource": "NPU",
+  "duty": null,
+  "chain_mode": true,
+  "engine": "litert-compiled-model",
+  "litert_version": "2.2.0",
+  "termination_reason": "duration_complete",
+  "n_inference": 571384,
+  "load_window_s": 840.449480703,
+  "segments": [
+   {
+    "index": 0,
+    "label": "cold_ref_d10",
+    "accelerator": "NPU",
+    "duty": 10,
+    "duration_s": 60,
+    "start_ns": 2234153723166416,
+    "end_ns": 2234213723653134,
+    "inference_count": 6873,
+    "termination": "duration_complete"
+   },
+   {
+    "index": 1,
+    "label": "heat_d100",
+    "accelerator": "NPU",
+    "duty": 100,
+    "duration_s": 300,
+    "start_ns": 2234213866540166,
+    "end_ns": 2234513866928564,
+    "inference_count": 357999,
+    "termination": "duration_complete"
+   },
+   {
+    "index": 2,
+    "label": "rest_idle",
+    "accelerator": "NPU",
+    "duty": 1,
+    "duration_s": 300,
+    "start_ns": 2234514027066845,
+    "end_ns": 2234814028161689,
+    "inference_count": 1026,
+    "termination": "duration_complete"
+   },
+   {
+    "index": 3,
+    "label": "reheat_d100",
+    "accelerator": "NPU",
+    "duty": 100,
+    "duration_s": 180,
+    "start_ns": 2234814171683603,
+    "end_ns": 2234994172267861,
+    "inference_count": 205486,
+    "termination": "duration_complete"
+   }
+  ],
+  "transitions": [
+   {
+    "to_segment": 1,
+    "start_ns": 2234213724712392,
+    "end_ns": 2234213866352744,
+    "duration_s": 0.141640352,
+    "model_init_ns": null,
+    "backend_switch": false
+   },
+   {
+    "to_segment": 2,
+    "start_ns": 2234513867235986,
+    "end_ns": 2234514026811181,
+    "duration_s": 0.159575195,
+    "model_init_ns": null,
+    "backend_switch": false
+   },
+   {
+    "to_segment": 3,
+    "start_ns": 2234814029034658,
+    "end_ns": 2234814171527236,
+    "duration_s": 0.142492578,
+    "model_init_ns": null,
+    "backend_switch": false
+   }
+  ],
+  "files": {
+   "runner_jsonl": {
+    "path": "results\\S26_NI300r2_1005\\runs\\ddd71eea-9b41-4569-b1c3-204a05b2d387\\gpu\\gpu-events-ddd71eea-9b41-4569-b1c3-204a05b2d387-dcae6dd7-f389-4d85-9387-5d9c06478575.jsonl",
+    "bytes": 214085152,
+    "sha256": "5c32a7661cdb506176223a3160699445977313a0a6944302fa81a57075c361bd"
+   },
+   "merged_events": {
+    "path": "results\\S26_NI300r2_1005\\runs\\ddd71eea-9b41-4569-b1c3-204a05b2d387\\merged\\events.jsonl",
+    "bytes": 229719286,
+    "sha256": "9cdb68b27724585cc2577e5b3d9612b04f2dc3be323b9286c2531a0bf34fe932"
+   }
+  },
+  "rows_1s": 844,
+  "rows_10s": 88,
+  "thermal_samples": 2180,
+  "d1check_samples": 2189,
+  "plugged_nonzero": 0,
+  "role": "chain NPU d10 60 / d100 300 / d1 300 / d100 180 — NI300r2 (10/5), v2.1 dev"
+ },
+ "_definition": "identical to trace_v1_manifest.json _definition (functions imported from extract_traces_v1.py unchanged)",
+ "_watch_csv": {
+  "1004": {
+   "path": "results\\S26_night_1004_host\\skin_watch_1004.csv",
+   "present": true
+  },
+  "1005": {
+   "path": "results\\S26_am_1005_host\\skin_watch_1005.csv",
+   "present": true
+  }
+ }
+}

@@ -1,0 +1,67 @@
+{
+ "form": "V21-Ht",
+ "resource": "GPU",
+ "engine": "CompiledModel 2.2.0",
+ "ctrl": {
+  "sensor": "SKIN",
+  "form": "Ht",
+  "d_on": 10.0,
+  "theta_low": 0.3,
+  "T_d0_rule": "T_d0 = T_on (v2 r3 constraint)",
+  "T_on": 37.29999999888398,
+  "kappa": 0.5097160042261253,
+  "h": 0.19132405290833823,
+  "W": 1.2269632976863092,
+  "D": 1.250588452986772
+ },
+ "power": {
+  "P_idle": 0.581,
+  "P0": 7.4258,
+  "alpha": 1.3914301582772661
+ },
+ "L0_ms": 2.531992,
+ "fit": {
+  "sensor": "SKIN",
+  "fit_obj": 0.019330205084819762,
+  "x": {
+   "sensor": "SKIN",
+   "form": "Ht",
+   "d_on": 10.0,
+   "theta_low": 0.3,
+   "T_d0_rule": "T_d0 = T_on (v2 r3 constraint)",
+   "T_on": 37.29999999888398,
+   "kappa": 0.5097160042261253,
+   "h": 0.19132405290833823,
+   "W": 1.2269632976863092,
+   "D": 1.250588452986772
+  },
+  "other_sensor": {
+   "AP": {
+    "fit_obj": 0.17003101117971586,
+    "x": {
+     "sensor": "AP",
+     "form": "Ht",
+     "d_on": 10.0,
+     "theta_low": 0.3,
+     "T_d0_rule": "T_d0 = T_on (v2 r3 constraint)",
+     "T_on": 43.50000000010287,
+     "kappa": 2.2993180841727314,
+     "h": 0.190494006918587,
+     "W": 1.4386038849217746,
+     "D": 1.057502136705536
+    }
+   }
+  },
+  "fit_runs": [
+   "m2_H1 s[0]",
+   "m1 s[0, 1, 2]",
+   "m1g_r2 s[0, 1, 2]",
+   "gpace s[0, 1, 2, 3]",
+   "g50p s[0, 1, 2]",
+   "g50p2 s[0, 1, 2]",
+   "gi300 s[0, 1, 3]"
+  ]
+ },
+ "source": "d1sim/tools/fit_throttle_v21.py",
+ "status": "measured-fit"
+}
