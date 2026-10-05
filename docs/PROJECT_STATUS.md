@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-06 현재 작업 — 선행연구·발표 표현 대응 완료
+
+- [구현 대응표](RELATED_WORK_GAP.md), [팀원 조사 정정](BACKGROUND_EVIDENCE_AND_USE_CASES_20261004.md), [발표 문안](results/final_presentation_01/README.md). R10 본문 기한 벌점 확인, headroom/Apple6초/NPU Manager 표현 정정. R4 상세 수치 원문 미확인 유지.
+- 원격 팀원 문서를 fast-forward로 보존하고 정정 이력을 추가했다. 코드/모형/strict/experiment_ready=false 불변. 새학습/시뮬/기기0. 사용자 PDF/HTML·다른 worktree 보존.
+- 다음 행동: 발표 담당자가 대응표와 4·13·14쪽 문안을 반영. 기존 guard의 다른 부하 제한 PC 회귀는 별도 미진행 상태로 유지.
+
 ## 2026-10-05 현재 작업 — burst8 기한 보호 계층 PC 검증 완료
 
 - [원인·구현·재현](results/pair_service_guard_01/README.md), [화면](results/pair_service_guard_01/run_v1/index.html). 원실패16건전부긴급분류,PAIR의탐지우선/분류GPU점유에뒤대기열기한검사누락. EFT대비평균대기+602.602ms/자체응답+76.158ms. 원12ledger정확재현.

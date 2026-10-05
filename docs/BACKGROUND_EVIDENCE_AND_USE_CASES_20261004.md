@@ -1,5 +1,21 @@
 # 조사·검증 자료: 배경 근거 · 활용 사례 · 참고문헌 · 검수 표
 
+## 2026-10-06 재검토 정정 — 아래 10/4 초안보다 우선
+
+원 조사 내용을 이력으로 보존한다. 발표 전사는 이 정정과 [구현 대응표](RELATED_WORK_GAP.md)를 따른다. 이번에 확인하지 못한 시장 전망/R5/세부 수치는 원 조사 확인 수준 그대로이며 전부 재검증한 문서가 아니다.
+
+| 초안 항목 | 정정 및 사용 기준 |
+|---|---|
+| B5/R10 기한 언급 | 공개 본문 §4에 기한 초과 벌점이 있다. '기한까지 고려하는 것이 우리만의 차이' 금지. 분산 다중 앱 실행 구성 선택과 단일 앱 요청 큐 제어를 비교한다. https://www.usenix.org/system/files/atc23-sung.pdf |
+| B5/R4·R3 차이 | 기기 차이·RL 제출 제외는 신규성 근거 아님. R4 본문 접근 실패로 수치 67°C/600→200MHz/10→2fps는 발표 전 대조 필요. R3은 고정 모델 대비 모델 전환이라는 범위 차이로만 사용 |
+| 검수5 열 여유분0~1 | 1.0 초과 가능. 큰 값은 더 많은 여유를 뜻하지 않는다. severe 기준 정규화 지표이며 numeric AP°C와 다르다. 기기 지원/NaN 확인 필요. https://developer.android.com/games/optimize/adpf/thermal |
+| U1/검수12 Apple | 원문이 야간 충전을 말하는 것은 인물 클러스터링. 지연 가능한 실제 AI 작업의 사례이지 우리 일반 요청6초의 근거 아님. https://machinelearning.apple.com/research/recognizing-people-photos |
+| U2/검수9 WorkManager | '해당 문서의 명시적 제약 목록에 열 항목이 없다'는 확인 가능. Android 전체 도구의 한계로 확대 금지. https://developer.android.com/develop/background-work/background-tasks/persistent/getting-started/define-work |
+| U3 headroom 측정 도구 | 실제 기록 여부를 기기별 확인 전에는 향후 활용 가능성. 기존 AP 측정/모형과 headroom을 동등한 값으로 취급하지 않음 |
+| U4/질답 NPU Manager | 공식 문서는 NPU 자원 할당·스케줄링·우선순위·열 경계를 다룬다. '언제 실행할지는 안 다룬다' 대신 '우리 CPU/GPU 요청 큐 정책과 동일 구현이 아니다'. 실제 OS 정책과 연구 근사 기준을 구분. https://source.android.com/docs/core/perf/npu-manager |
+
+발표 채택 권고: R4/R10/R3=선행연구, Thermal API/WorkManager=제어 계층, Apple=사용 사례. 시장 전망·LLM 타 기기 수치는 보조로만 둔다. API 존재나 타 연구 절감값으로 우리 효과를 입증하지 않는다.
+
 - 작성: 이지안 (조사·검증 담당) 
 - 범위: 공개 자료만 사용한다. GitHub 저장소는 비공개라서 참고문헌에 넣지 않는다.
 - 이 파일에서 하지 않는 것: 측정값 인용·정책 우열 주장·A24/S26 결과 해석 (해당 내용은 조민규·영훈 자료와 팀 문서를 따른다).

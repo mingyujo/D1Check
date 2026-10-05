@@ -1,5 +1,35 @@
 # 선행연구와 D1Check의 기여 경계
 
+## 2026-10-06 보완 — 열 인지 선행연구와 현재 구현 대응
+
+이 절은 최신 요청별 PC 후보를 대상으로 한다. 아래 9/22 비교는 당시 범위의 기록으로 보존한다. 새 문헌 비교는 우월성·독창성 인증이나 새 정책 채택이 아니다. [팀원 조사와 정정](BACKGROUND_EVIDENCE_AND_USE_CASES_20261004.md), [발표 안내](results/final_presentation_01/README.md).
+
+### 입력·행동·목적·검증 범위
+
+| 대상 | 입력/상태 | 결정 행동 | 목적·서비스 조건 | 확인 범위·우리와의 관계 |
+|---|---|---|---|---|
+| Tan·Cao, TMC 2024 | 열 상태를 고려한 모바일 NPU 기기 scheduling | GPU/NPU 활용의 열 인지 배정; HBS/DRLS의 상세 규칙은 원문 재확인 필요 | 과열을 피하며 처리시간·정확도 절충 | [소속 대학 서지·초록](https://pure.psu.edu/en/publications/thermal-aware-scheduling-for-deep-learning-on-mobile-devices-with/), DOI 10.1109/TMC.2024.3379501. 이번 PDF 접근 실패. 팀원이 전달한 67°C/600→200MHz/10→2fps는 이번에 검증하지 못함. 기기 차이·RL 비필수는 기술적 신규성 아님 |
+| Sung 외, USENIX ATC 2023 | DNN 특성, CPU/GPU 이용률·메모리 등 환경 관측 | 앱별 DQN이 실행 구성 선택; CPU thread/NNAPI 선호 등 | 지연×전력 비용, 기한 초과 벌점 | [공개 본문](https://www.usenix.org/system/files/atc23-sung.pdf) §3–4, §6. 여러 앱이 각자 선택하는 분산 조율. **기한을 이미 고려**한다. 우리 단일 앱의 중앙 요청 큐와 구분. 본문 관련 절 확인이며 전체 재현 아님 |
+| Zhou 외, Play It Cool, ICML DyNN Workshop 2022 | 열 상태에 따른 실행 조건 | 모델 크기 전환 | 지연–정확도 절충 | [저자 공개 초록](https://arxiv.org/abs/2206.10849). 고정 모델·동일 작업량을 유지하는 우리 범위와 다름; 우리 방식의 우월성은 아님 |
+| D1 조건·목적별 선택표 | 사전 지정 부하 조합과 개발 비용 | 기한 적격 정책 중 energy/thermal 모드로 선택 | energy: 평균J→최고AP; thermal: 최고AP→AP면적→J | [구현](../tools/d1_scheduler_condition_selector.py), [결과](results/scheduler_conditions_01/README.md). 27중17선택 가능,10불가 보존. 새seed PC 평가이며 온라인 부하 식별·폰 절감 아님 |
+| D1 요청별 예측 배정·유예/MPC | 현재 도착 큐·lane·개발 처리시간·모형 상태 | 합법 자원·즉시/제한 유예 후 첫 행동 실행 | 기한과 비용의 국소 예측 비교 | [요청 후보](results/empirical_request_policy_01/README.md), [MPC 등](results/scheduler_alternatives_01/README.md). 이후 도착·예측오차로 전역 서비스/J/AP 보장 안 됨. 기본 채택하지 않음 |
+| D1 PAIR 기한 보호 | 현재 도착 큐와 long_context 처리시간 추정 | PAIR 제안이 EFT보다 어느 요청의 예측 지각을 늘리면 EFT로 전환 | 현재 큐의 상대 서비스 보호 | [구현](../tools/d1_pair_service_guard.py), [결과](results/pair_service_guard_01/README.md). 해당 조건576/576, 새seed −0.560587J/+0.225968°C. WCET·미래 기한 보장·실기기 효과 아님 |
+
+### 발표에 사용할 차별성의 범위
+
+> 열 인지 배정, 앱 수준 다중 DNN 조율, 모델 전환은 이미 연구되어 있다. D1Check는 고정된 두 모델과 동일 작업량 조건에서 요청의 자원·실행 시점을 바꾸고, 기한 충족과 기기 전체 공통창 에너지·AP의 상충을 실측 기반 모형으로 비교한다. 기기별 지원 조건과 실패 분모를 보존하며, 선택 규칙의 PC 결과와 실기기 효과를 구분한다.
+
+이는 구현·평가 범위 설명이지 최초성 증명은 아니다. EDF/LLF/EFT/backfill/token bucket/MPC는 기존 원리의 프로젝트 적용이다. 현재 큐 보호도 새로운 이론 보장으로 표현하지 않는다. RL을 시험했으나 최종 필수·기본정책으로 채택하지 않았다는 사실과, RL 미사용을 차별성으로 삼는 주장은 다르다.
+
+### 바로 활용할 것 / 이번에 추가하지 않을 것
+
+- 발표: R4·R10·R3 비교표와 위 범위 문장. 주 방법은 조건·목적별 선택 규칙, 요청별 보호는 좁은 PC 보완 결과로 구분한다.
+- R10의 보상 기반 기한 유도와 우리 별도 큐 보호의 구조 차이는 설명 가능하다. 동일 행동/입력/측정 경계에서 재현하지 않았으므로 성능 우열은 비교하지 않는다.
+- S26 열 이력→처리율 자료의 관련 선행연구로 R4를 연결하되 A24에 계수를 전용하지 않는다. S26 구현/검증 완료 여부는 담당 원본 확인을 따른다.
+- 새 DQN/HBS 구현·학습·시뮬레이션·실측 없음. 논문 구현을 축소 이식했을 때 원 알고리즘 재현이라고 부르지 않는다. 기존 정책별 저장 결과를 재사용한다.
+
+검증: 2026-10-06, 기준 HEAD da5d798f9e109c5c2a4b0ab82578f9a873ad4ed6 + 이번 문서 diff. 위 두 구현의 선택/지각 판정과 기존 README 수치를 대조했다. 외부 자료는 연결된 원문/공식 문서의 해당 범위만 확인. 문서 상대 링크와 git diff --check 확인; 코드·수치 변경이 없어 전체 테스트/배치 재실행 없음. 기기 명령0, experiment_ready=false 유지.
+
 후속 `support-constrained-simulation-v1`에도 아래 문헌 근거를 적용한다. 후속 범위는 배치 시작 전 layout 선택이며 일반 온라인 동적 배정의 차별성을 입증하지 않는다.
 
 2026-09-22 확인. PC 계획 `pc-simulation-plan-v1`의 문헌 근거다. 논문 성능 수치를 D1Check의 예상 성능으로 전용하지 않는다. 아래는 지정된 여섯 연구의 비교이며 전체 최신 문헌에 대한 독창성 증명은 아니다.
