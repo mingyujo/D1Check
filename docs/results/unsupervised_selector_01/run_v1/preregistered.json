@@ -1,0 +1,33 @@
+{
+  "spec": {
+    "base_head": "323c8628caa35369c577fb74bfa9888f3529eabb",
+    "utc": "2026-10-05T00:01:04.852527+00:00",
+    "methods": [
+      "kmeans",
+      "gmm"
+    ],
+    "candidate_k": [
+      3,
+      6
+    ],
+    "k_selection": "KMeans max train silhouette; GMM min train BIC",
+    "train": "18 envelopes x seeds81001/81002,36 independent synthetic history windows",
+    "evaluation_seeds": [
+      91002,
+      91003
+    ],
+    "evaluation": "saved previously observed outcomes; posthoc NOT fresh holdout",
+    "policy_mapping": "all cluster development contexts complete every deadline, then mean J or peak AP",
+    "radius": "max assigned training distance in standardized feature space, not calibrated uncertainty",
+    "no_new_simulations": true,
+    "device_commands": 0,
+    "experiment_ready": false
+  },
+  "hashes": {
+    "tools\\d1_unsupervised_selector.py": "86b8a9c416e2172a2e1ed54353b65cbcb824d5739c06b5aa9d3b7bff57dd9e53",
+    "tools\\d1_supervised_selector.py": "b5e1b1442b99a633ca6f4b07a73b3f877e60f8b7bfe696fccee0742b3e711aee",
+    "docs\\results\\scheduler_conditions_01\\run_v2\\results.csv": "0e92bedea025deb47063e71f0ff54bf235657f57b380f8b038619874f9625f59",
+    "docs\\results\\online_policy_study_01\\overnight_sustained_run01\\model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs\\results\\online_policy_study_01\\overnight_sustained_run01\\initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d"
+  }
+}

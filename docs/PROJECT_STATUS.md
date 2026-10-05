@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-05 현재 작업 — 비지도 군집 탐색 완료·주정책 미채택
+
+- [결과·재현](results/unsupervised_selector_01/README.md), [화면](results/unsupervised_selector_01/run_v1/index.html). K-means/GMM의3·6군집 후보를 결과label없이선정,각6군집. 개발성과로정책을연결한혼합방식이며순수비지도최적화아님. 저장162조건×4선택648판독,새시뮬레이션0/기기0.
+- 두방식 모두EFT와기한6897/7776동일. 에너지목적−0.000900J/+0.000090°C,열목적+0.040714J/−0.015505°C. 54이력중44–46fallback으로실질EFT유지. 주정책미채택,부하유형설명보조로만보존. 사후분석이며새독립확인/실제절감아님.
+- 22테스트·36비교행재집계/hash확인,기존모형/strict/experiment_ready=false/원본/사용자파일불변. 다음PC행동은기존미학습burst8실패ledger의slack/배정경계를분해해서비스제약특정한건. 새학습기/실측자동진행없음.
+
 ## 2026-10-05 현재 작업 — 지도학습 선택기 구현·분리 평가 완료
 
 - [설계·결과·재현](results/supervised_selector_01/README.md), [화면](results/supervised_selector_01/run_v1/index.html). 이전48요청 통계로 기존8정책 비용/기한위험을 예측하는 결정나무·부스팅 구현.18조합 개발 fitting→모델선정→새2seed·27조합·3문맥594PC계산.9조합은 fitting/선정에서 제외; 미래 trace/실현시간 입력 없음. 정상 부하분포·고정초기조건 가정, 요청별 전환 아님.

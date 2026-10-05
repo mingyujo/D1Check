@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-10-05 — UNSUPERVISED-SELECTOR-PC-01: 군집 탐색 종료
+
+- 채택한절차: 요청이력5특징의K-means/GMM fitting과내재점수선정,개발성과를사용한별도정책연결,저장결과의사후판독. 군집자체를절감label이나새물리상태로보지않는다. [근거](results/unsupervised_selector_01/README.md).
+- 주스케줄러채택은보류한다. 기한수는EFT와같고대부분fallback이며J/AP공동개선미확보. 부하유형설명보조로만보존,strict/기존계수/experiment_ready=false 유지. 이번결과는모든비지도기법불가능판정아님. 새실측/기기계획/시뮬레이션0.
+
 ## 2026-10-05 — SUPERVISED-SELECTOR-PC-01: 이력 기반 지도학습 선택 경로
 
 - 채택한 연구 절차: 이전48도착 이력에서5특징을 추출해8기존정책의 비용/위험을 회귀한다.18조건 개발fitting/저장검증→선정동결→새seed전27조건평가.9조합은학습/선정에서제외, 독립기기자료로표현하지않는다. CatBoost미설치로기존sklearn의트리/HistGradientBoosting사용. 물리계수·정책 기본값·strict 불변.
