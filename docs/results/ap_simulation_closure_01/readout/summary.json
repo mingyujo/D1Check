@@ -1,0 +1,158 @@
+{
+  "version": "ap-simulation-closure-v1",
+  "input_sha256": "c31212bd833df44cd4f5aae7c87d5c4621af98d31e1b16d31a7f6c5923f09896",
+  "source_sha256": {
+    "fixed_profile": "b58c2ca3852cfb4959c65f4dd47c0547454260d6045a0cd87f51487ac1b10772",
+    "fixed_evaluation": "1984b97a9ab5b83808dc14ff3e0b6868f1e02d8741fe153d602f8e6579ec41a9",
+    "fixed_comparison_csv": "71004c5685697bc62168f4bac9e395b5fd1123357df3a5bef57ec6b1c6d39190",
+    "saved_support": "74faae5c14767c4fff8180d526c59a705930d1932fa012e84f19c6029dac1d0a"
+  },
+  "candidate_decision": "conditional_diagnostic_only_not_default",
+  "new_fitted_parameters": 0,
+  "physical_sensor_delay_identified": false,
+  "hidden_thermal_state_identified": false,
+  "evidence_sessions": 8,
+  "idle_windows": 19,
+  "observed_nonmonotonic_idle_windows": 2,
+  "archived_fixed_episode_case_count": 1,
+  "complete_dynamic_energy_ap_policy_cases": 0,
+  "fixed_episode": {
+    "version": "energy-operational-ccdg-decision-preview-v2",
+    "status": "TRADEOFF",
+    "model_candidate": null,
+    "reason": "both arms meet supplied limits; parallel is faster but hotter and common-energy ranking changes",
+    "profile_sha256": "b58c2ca3852cfb4959c65f4dd47c0547454260d6045a0cd87f51487ac1b10772",
+    "evaluation_sha256": "1984b97a9ab5b83808dc14ff3e0b6868f1e02d8741fe153d602f8e6579ec41a9",
+    "constraints": {
+      "max_work_completion_s": null,
+      "max_load_ap_peak_c": null
+    },
+    "fixed_energy_metric": "common_480s_whole_device_conditional_j",
+    "measurements_not_guarantees": true,
+    "nominal_and_sensitivity": {
+      "serial": {
+        "nominal": {
+          "work_completion_s": 326.084729327,
+          "common_window_energy_j_conditional": 758.7463269480811,
+          "load_ap_peak_c": 30.900000000000002
+        },
+        "one_confirmation_error_scenario": {
+          "work_completion_s": 329.07322402,
+          "common_window_energy_j_conditional": 726.4403868956414,
+          "load_ap_peak_c": 30.9
+        }
+      },
+      "parallel": {
+        "nominal": {
+          "work_completion_s": 203.628315166,
+          "common_window_energy_j_conditional": 722.5305453591188,
+          "load_ap_peak_c": 32.4
+        },
+        "one_confirmation_error_scenario": {
+          "work_completion_s": 202.754595782,
+          "common_window_energy_j_conditional": 730.9988990124292,
+          "load_ap_peak_c": 32.8
+        }
+      }
+    },
+    "feasibility": {
+      "serial": {
+        "nominal": true,
+        "one_confirmation_error_scenario": true
+      },
+      "parallel": {
+        "nominal": true,
+        "one_confirmation_error_scenario": true
+      }
+    },
+    "policy_or_device_validation": false,
+    "analysis_scope": "archived_matched_confirmation_start_only_not_online_or_temperature_range",
+    "initial_ap_evidence": {
+      "value_c": 29.1,
+      "source": "posthoc_observed_confirmation_two_arms",
+      "development_starts_c": {
+        "serial": 29.4,
+        "parallel": 29.2
+      },
+      "temperature_template": "development_AP_increments_translated_to_confirmation_start_unvalidated"
+    },
+    "ap_limit_is_safety_threshold": false,
+    "candidate_is_deployable": false,
+    "note": "one confirmation error per arm is a retrospective scenario, not a bound or confidence interval"
+  },
+  "fixed_observations": [
+    {
+      "block": "development",
+      "mode": "serial",
+      "work_completion_s": 326.084729327,
+      "work_energy_j_conditional": 578.383519236449,
+      "common_window_energy_j_conditional": 758.8422664605183,
+      "load_ap_peak_c": 31.2
+    },
+    {
+      "block": "development",
+      "mode": "parallel",
+      "work_completion_s": 203.628315166,
+      "work_energy_j_conditional": 398.58250542308906,
+      "common_window_energy_j_conditional": 722.5876776070513,
+      "load_ap_peak_c": 32.4
+    },
+    {
+      "block": "confirmation",
+      "mode": "parallel",
+      "work_completion_s": 202.754595782,
+      "work_energy_j_conditional": 410.48182953582716,
+      "common_window_energy_j_conditional": 730.9988990124292,
+      "load_ap_peak_c": 32.8
+    },
+    {
+      "block": "confirmation",
+      "mode": "serial",
+      "work_completion_s": 329.07322402,
+      "work_energy_j_conditional": 553.8224751580581,
+      "common_window_energy_j_conditional": 726.4403868956414,
+      "load_ap_peak_c": 30.9
+    }
+  ],
+  "dynamic_representatives": [
+    {
+      "policy": "B2_PC",
+      "scenario": "queue",
+      "seed": "201",
+      "schedule_response": "PC_SAVED_MODEL_ONLY",
+      "energy": "UNSUPPORTED_ARRIVAL_STATE_TRANSITIONS",
+      "ap": "UNSUPPORTED_INITIAL_AP_AND_ARRIVAL_TRANSITIONS",
+      "full_window_j": null,
+      "full_window_ap_peak_c": null,
+      "policy_rank": null,
+      "new_evidence": "B2 actual schedule only; low-temperature AP candidate conditional, not general transition support"
+    },
+    {
+      "policy": "B3_SOLO_EFT_PC",
+      "scenario": "queue",
+      "seed": "201",
+      "schedule_response": "PC_SAVED_MODEL_ONLY",
+      "energy": "UNSUPPORTED_ARRIVAL_STATE_TRANSITIONS",
+      "ap": "UNSUPPORTED_INITIAL_AP_AND_ARRIVAL_TRANSITIONS",
+      "full_window_j": null,
+      "full_window_ap_peak_c": null,
+      "policy_rank": null,
+      "new_evidence": "B2 actual schedule only; low-temperature AP candidate conditional, not general transition support"
+    },
+    {
+      "policy": "CPU_URGENT",
+      "scenario": "queue",
+      "seed": "201",
+      "schedule_response": "PC_SAVED_MODEL_ONLY",
+      "energy": "UNSUPPORTED_ARRIVAL_STATE_TRANSITIONS",
+      "ap": "UNSUPPORTED_INITIAL_AP_AND_ARRIVAL_TRANSITIONS",
+      "full_window_j": null,
+      "full_window_ap_peak_c": null,
+      "policy_rank": null,
+      "new_evidence": "B2 actual schedule only; low-temperature AP candidate conditional, not general transition support"
+    }
+  ],
+  "experiment_ready": false,
+  "accuracy_pass": null,
+  "policy_selection_pass": null
+}

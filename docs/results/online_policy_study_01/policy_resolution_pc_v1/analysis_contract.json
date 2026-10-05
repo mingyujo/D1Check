@@ -1,0 +1,29 @@
+{
+  "version": "policy-resolution-pc-v1",
+  "session_ids": [
+    "confirmation_0_CPU_URGENT_ONLINE_V1",
+    "confirmation_1_B2_PARALLEL_ONLINE_V1",
+    "confirmation_2_B2_SERIAL_ONLINE_V1",
+    "confirmation_3_B2_SERIAL_ONLINE_V1",
+    "confirmation_4_B2_PARALLEL_ONLINE_V1",
+    "confirmation_5_CPU_URGENT_ONLINE_V1"
+  ],
+  "energy_window_s": [
+    0,
+    120
+  ],
+  "counterfactual_ap_grid_s": [
+    35,
+    180,
+    1
+  ],
+  "design": "Retain all six previously viewed confirmations; same registered 96-request trace, six pre-load contexts x three frozen policies; no fitting.",
+  "historical_sensitivity": "delta - (policy residual - CPU residual), all 2 x 2 combinations; arithmetic illustration, not exchangeability assumption, CI or future bound",
+  "ap_comparison": "Recorded query windows retained for observed peaks; counterfactual grid 35..180s is separate. No transfer of session MAE as universal error bound.",
+  "exclusions": [],
+  "new_fits": 0,
+  "new_measurements": 0,
+  "accuracy_pass": null,
+  "policy_winner": null,
+  "experiment_ready": false
+}

@@ -1,0 +1,59 @@
+{
+  "at_utc": "2026-10-01T17:46:42.232094+00:00",
+  "base_head": "eee1174a2fea4af9dc44743c057714204bae804b",
+  "uncommitted_changes": true,
+  "commands": [
+    "python -B -m unittest tools.test_d1_ap_workload_lag tools.test_d1_arrival_energy_research -v",
+    "python -B -m tools.d1_ap_model_completion --output <new PC folder>"
+  ],
+  "unit_tests_passed": 18,
+  "unit_tests_skipped": 0,
+  "actual_cli_exit": 0,
+  "duplicate_output_rejected": true,
+  "byte_identical_reproduction": {
+    "ap_comparison.png": true,
+    "candidate.json": true,
+    "directions.csv": true,
+    "fit_profile.csv": true,
+    "idle_stress_observations.csv": true,
+    "leave_session_out.csv": true,
+    "paths.csv": true,
+    "policy_cost_diagnostic.csv": true,
+    "policy_sensitivity.csv": true,
+    "policy_sensitivity.png": true,
+    "provenance.json": true,
+    "scores.csv": true,
+    "summary.json": true
+  },
+  "source_files_unchanged": 14,
+  "original_freezes_sha256": {
+    "energy_ap_state_run_v5/development_freeze.json": "35ed6987b1fc09789284018f8502107eaf4e3125373651a01e3a08d427034c54",
+    "energy_ap_idle_response_run_v1/ap_model_freeze.json": "8507adc10485940c36853786ba39a4f42439a9fbd3d71a5da1c7d55e2cbc7ec5"
+  },
+  "code_sha256": {
+    "tools/d1_ap_workload_lag.py": "658a552a0ca27fa1ce80c998ba930891d59ca67458777b8278fb562c70d3aac2",
+    "tools/d1_ap_model_completion.py": "47edbaf771ed9fbe8f6035c2fda5cb12019f6ddcf65501b9705491014514486c",
+    "tools/test_d1_ap_workload_lag.py": "27cca24f7e423bdf9833682202922fe5f76dc6e27bdbb8f296c606933b84d08e",
+    "tools/d1_arrival_energy_research.py": "f8dd374a8157dbd30b2d653c13fd36666c02b60d9be10e61e8f75ef4973df6e8"
+  },
+  "checks": [
+    "five archived preload MAEs reproduced",
+    "analytic equal-pole and split continuity",
+    "no future observed AP input",
+    "whole 120s policy coverage or reject",
+    "missing bracket is null",
+    "engine rejects posthoc candidate policy cost",
+    "five peak errors worsen despite five MAE improvements"
+  ],
+  "visual_review": [
+    "AP comparison 5 rows inspected",
+    "policy sensitivity plot inspected"
+  ],
+  "device_commands": 0,
+  "new_device_plans": 0,
+  "new_claims": 0,
+  "experiment_ready": false,
+  "fixed_ap_parameters_equal_original_freeze": true,
+  "local_links_checked": 52,
+  "local_links_missing": 0
+}

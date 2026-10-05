@@ -1,0 +1,75 @@
+{
+  "version": "arrival-service-guard-v1",
+  "interpretation": "posthoc on archived PC results; fixed only for future independent use",
+  "source_sha256": "d36dd3072de9f0071d483f80cc1c5201d2a60a6b6ec3c2e340f24a240b82c694",
+  "contract_sha256": "725d43ab10fa2210ed5afbf4440975d620d1d9155afb821d6cf2f79a94c6e725",
+  "paired_conditions": 45,
+  "case_count": 135,
+  "representative": [
+    {
+      "scenario": "queue",
+      "realized": "1.5",
+      "seed": "201",
+      "policy": "CPU_URGENT",
+      "reference": "CPU_URGENT",
+      "eligible": true,
+      "failed_conditions": "",
+      "urgent_p95_delta_ms": "0.000000",
+      "normal_mean_delta_ms": "0E-12",
+      "urgent_not_timely_delta": 0,
+      "normal_not_timely_delta": 0,
+      "completed": 24,
+      "planned": 24,
+      "energy_j": null,
+      "ap_peak_c": null,
+      "energy_ap_rank": null
+    },
+    {
+      "scenario": "queue",
+      "realized": "1.5",
+      "seed": "201",
+      "policy": "B2_PC",
+      "reference": "CPU_URGENT",
+      "eligible": true,
+      "failed_conditions": "",
+      "urgent_p95_delta_ms": "-216.591381",
+      "normal_mean_delta_ms": "-326.931979555556",
+      "urgent_not_timely_delta": 0,
+      "normal_not_timely_delta": -2,
+      "completed": 24,
+      "planned": 24,
+      "energy_j": null,
+      "ap_peak_c": null,
+      "energy_ap_rank": null
+    },
+    {
+      "scenario": "queue",
+      "realized": "1.5",
+      "seed": "201",
+      "policy": "B3_SOLO_EFT_PC",
+      "reference": "CPU_URGENT",
+      "eligible": false,
+      "failed_conditions": "urgent_p95_loss",
+      "urgent_p95_delta_ms": "373.651580",
+      "normal_mean_delta_ms": "-471.3320045555558",
+      "urgent_not_timely_delta": 0,
+      "normal_not_timely_delta": -2,
+      "completed": 24,
+      "planned": 24,
+      "energy_j": null,
+      "ap_peak_c": null,
+      "energy_ap_rank": null
+    }
+  ],
+  "candidate_eligible_counts": {
+    "B2_PC": 21,
+    "B3_SOLO_EFT_PC": 22
+  },
+  "candidate_ineligible_counts": {
+    "B2_PC": 24,
+    "B3_SOLO_EFT_PC": 23
+  },
+  "eligible_both_count": 7,
+  "energy_ap_policy_rank": null,
+  "experiment_ready": false
+}

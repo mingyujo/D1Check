@@ -105,6 +105,10 @@ def same_stage_serial_anchor(results, phase, pair, mode):
 
 def poll(d,remote,folder,m,plan,baseline_anchor=None,checkpoint=None,
          diagnostic_stop_after_preparation=False):
+    autonomous=m.get('session_control')=='device-after-probe-diagnostic-v1'
+    c.require(not autonomous or (plan.get('autonomous_diagnostic_only') and
+              m.get('autonomous_diagnostic_only') and plan.get('diagnostic_only') and
+              not plan.get('state_model_followup')), 'autonomous segment requires isolated diagnostic plan')
     conditioned=plan.get('temperature_preparation') is not None
     operational=plan.get('operational_only',False)
     start=time.monotonic();end=min(d.deadline,start+plan['budget']['host_poll_seconds'])
@@ -198,6 +202,18 @@ def poll(d,remote,folder,m,plan,baseline_anchor=None,checkpoint=None,
                 save(target/'baseline.json',dict(ap_median_c=median,anchor_c=baseline_anchor,
                     tolerance_c=None if operational else .5,unit='degC',
                     role='recorded initial covariate; no thermal equivalence claim' if operational else 'environment matching not effect margin'))
+            if autonomous and gate=='baseline':
+                # Observe the single official baseline when ADB is available, but
+                # the app has already continued. Never imply this was an arm gate.
+                save(target/'observation_receipt.json',dict(gate=gate,utc=legacy.utc(),
+                    meaning='posthoc_only_not_a_host_arm'))
+                armed.add(gate)
+                continue
+            if autonomous and gate=='probe':
+                # Ambiguous delivery must be treated as potentially active. The
+                # failure path will not force-stop this bounded device segment.
+                save(Path(folder)/'autonomous_segment_arm_intent.json',dict(
+                    session_id=m['session_id'],utc=legacy.utc(),manifest_sha256=ready['manifest_sha256']))
             arm(d,'files/arrival-scheduler-inputs/'+m['session_id'],gate,ready['manifest_sha256'])
             save(target/'arm_receipt.json',dict(gate=gate,utc=legacy.utc(),manifest_sha256=ready['manifest_sha256']))
             armed.add(gate)
@@ -221,18 +237,19 @@ def gates(d,plan,folder,label):
 def installation(d,plan,plan_file,root,hard):
     start=time.monotonic();end=min(start+600,hard);d.deadline=end-45
     state=dict(status='failed',apk_transfer_attempts=0,install_attempts=0)
-    identified=False
+    identified=False;cleanup_owned=False
     try:
         # preflight proves model/fingerprint before any modifying command.
         pre=apk.preflight(d,dict(plan,_plan_file=str(plan_file)),root/'preflight');identified=True
         gates(d,plan,root,'install_gate')
+        cleanup_owned=True  # require_stopped passed; no other active app work is owned
         if pre['installed']!=pre['candidate']:
             c.require(end-time.monotonic()>=330,'transfer/install/identity/cleanup reserve')
             remote='/data/local/tmp/d1check-'+plan.get('experiment_id',c.EXPERIMENT).lower()+'.apk'
             probe=d.call('shell','test','-e',remote,check=False,timeout=3)
             c.require(probe.returncode==1 and not probe.stderr.strip(),'remote install output already exists')
             state['apk_transfer_attempts']=1;save(root/'apk_transfer_attempt.json',dict(utc=legacy.utc()))
-            d.call('push',plan['apk_path'],remote,timeout=120)
+            d.call('push',plan['apk_path'],remote,timeout=plan['budget'].get('apk_push_timeout_seconds',120))
             actual=d.call('shell','sha256sum',remote,timeout=5).stdout.decode().split()[0]
             c.require(actual==plan['apk_sha256'],'remote APK hash');save(root/'apk_transferred.json',dict(sha256=actual))
             state['install_attempts']=1;save(root/'install_attempt.json',dict(utc=legacy.utc()))
@@ -242,7 +259,7 @@ def installation(d,plan,plan_file,root,hard):
         c.require(state['installed_sha256']==plan['apk_sha256'],'exact installed APK required')
         state['status']='verified'
     finally:
-        if identified:
+        if identified and (not plan.get('online_policy_study') or cleanup_owned):
             try:state['cleanup']=shared.cleanup(d,end)
             except BaseException as exc:state.update(status='failed',cleanup={'error':repr(exc)})
         state['elapsed_seconds']=time.monotonic()-start;save(root/'installation_receipt.json',state)
@@ -278,7 +295,17 @@ def run(plan_file,adb,serial,expected_sha,approved):
     except FileNotFoundError:
         c.check(plan_file)
         raise
-    if plan.get('state_model_followup'):
+    if plan.get('short_transition_diagnostic_only'):
+        from tools import d1_energy_ap_short_transition as short_transition
+        from tools import d1_energy_state_collection as state
+        short_transition.check(plan_file)
+        c.require(serial is None,'short transition selects the current transport itself')
+    elif plan.get('autonomous_diagnostic_only'):
+        from tools import d1_energy_ap_autonomous_diag as autonomous
+        from tools import d1_energy_state_collection as state
+        autonomous.check(plan_file)
+        c.require(serial is None,'autonomous diagnostic selects the current transport itself')
+    elif plan.get('state_model_followup'):
         from tools import d1_energy_state_collection as state
         from tools import d1_energy_ap_followup as followup
         followup.check(plan_file)
@@ -300,23 +327,27 @@ def run(plan_file,adb,serial,expected_sha,approved):
     save(registry/'claimed.json',dict(plan_sha256=expected_sha,utc=legacy.utc(),budget=budget,
                                       host_run_id=host_run_id,host_identity=host_identity))
     results=[];current=None;remote=None;identified=False;install_result=None;d=None;journal=None
+    cleanup_attempted=False;cleanup_result=None
     def mark(stage,**details):
         if journal:journal.mark(stage,**details)
     try:
         if state_model:
             journal=checkpoints.Checkpoints(root/'host_checkpoints',expected_sha,host_run_id,host_identity)
             mark('claimed')
-        d=(ObservedDevice(adb,serial,root/'host_commands',allow_select=True,forbid_apk_deploy=True)
+        d=(ObservedDevice(adb,serial,root/'host_commands',allow_select=True,
+                          forbid_apk_deploy=not plan.get('autonomous_diagnostic_only',False))
            if state_model else ObservedDevice(adb,serial,root/'host_commands'))
         if state_model:d.command_limit=budget['pre_cleanup_command_slots']
         d.deadline=hard
-        install_root=root/('installed_preflight' if state_model else 'installation');install_root.mkdir()
+        install_root=root/('installed_preflight' if state_model and not plan.get('autonomous_diagnostic_only') else 'installation');install_root.mkdir()
         mark('installed_preflight_start')
-        install_result=(installed_preflight(d,plan,plan_file,install_root,hard) if state_model else
+        install_result=(installation(d,plan,plan_file,install_root,hard)
+                        if plan.get('autonomous_diagnostic_only') else
+                        installed_preflight(d,plan,plan_file,install_root,hard) if state_model else
                         installation(d,plan,plan_file,install_root,hard));identified=True
         mark('installed_preflight_verified')
         frozen=None
-        if plan.get('state_model_followup'):
+        if plan.get('state_model_followup') or plan.get('short_transition_diagnostic_only'):
             # Preserve the exact development artifact. No re-fit, no confirmation-derived edits.
             source=Path(plan['prior_freeze']['path'])
             c.require(c.p.digest(source)==plan['prior_freeze']['sha256'],'prior freeze changed')
@@ -342,6 +373,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
                 mark('development_frozen')
             c.require(hard-time.monotonic()>=budget['session_seconds'],'insufficient whole session reserve; stop')
             current=root/f"{e['index']:02d}_{e['session_id']}";current.mkdir();remote=None
+            cleanup_attempted=False;cleanup_result=None
             mark('session_reserved',session_index=e['index'],session_id=e['session_id'],phase=e['phase'])
             session_start=time.monotonic();session_end=min(session_start+budget['session_seconds'],hard);d.deadline=min(session_start+120,session_end-105)
             gates(d,plan,current,'before_session')
@@ -352,6 +384,8 @@ def run(plan_file,adb,serial,expected_sha,approved):
                 c.require(any(r['condition']==serial_key and r['status']=='eligible_descriptive_only' for r in results if r['phase']==e['phase']),'same-stage serial prerequisite')
             save(current/'attempt.json',dict(entry=e,utc=legacy.utc(),plan_sha256=expected_sha))
             manifest=Path(plan_file).parent/e['manifest'];m=c.p.read(manifest)
+            c.require((m.get('session_control')=='device-after-probe-diagnostic-v1') ==
+                      bool(plan.get('autonomous_diagnostic_only')), 'session-control/plan mismatch')
             (current/'input_manifest.json').write_bytes(manifest.read_bytes())
             remote=shared.stage_inputs(d,e['session_id'],manifest,{k:v['path'] for k,v in plan['source_files'].items()},plan.get('protocol',c.PROTOCOL))
             mark('inputs_staged',session_index=e['index'],session_id=e['session_id'])
@@ -369,13 +403,26 @@ def run(plan_file,adb,serial,expected_sha,approved):
             save(current/'recovery.json',recover(d,remote,current/'artifacts',plan.get('operational_only',False)))
             # Cleanup is reserved BEFORE PC validation; validation cannot prolong active device work.
             mark('host_cleanup_start',session_index=e['index'],session_id=e['session_id'])
-            save(current/'host_cleanup.json',shared.cleanup(d,session_end))
+            cleanup_attempted=True
+            cleanup_result=shared.cleanup(d,session_end)
+            save(current/'host_cleanup.json',cleanup_result)
             mark('host_cleanup_returned',session_index=e['index'],session_id=e['session_id'])
             stats=(state.summarize_session if state else c.summarize_session)(current/'artifacts',manifest,plan);stats['phase']=e['phase']
+            if plan.get('autonomous_diagnostic_only'):
+                stats['formal_confirmation']=False
+                stats['diagnostic_scope']=('short_transition_schedule_conditional_protocol_transfer_only'
+                    if plan.get('short_transition_diagnostic_only') else
+                    'device_segment_normal_completion_and_host_observation_coverage_only')
             c.require(time.monotonic()<=session_end,'session PC validation exhausted reservation; no next session')
             stats['elapsed_seconds']=time.monotonic()-session_start
             if frozen is not None:
-                if state: stats['confirmation_errors']=state.evaluate(stats,frozen,plan)
+                if state:
+                    errors=state.evaluate(stats,frozen,plan)
+                    if plan.get('short_transition_diagnostic_only'):
+                        errors['meaning']='short-transition diagnostic on changed APK/protocol; not formal confirmation or arrival-policy validation'
+                        errors['accuracy_pass']=None
+                        stats['transition_errors']=errors
+                    else: stats['confirmation_errors']=errors
                 else:
                     fr=frozen[stats['condition']]
                     stats['confirmation_errors']={phase:dict(power_w=values['energy']['mean_power_w']-fr['phases'][phase]['energy']['mean_power_w'],
@@ -383,12 +430,12 @@ def run(plan_file,adb,serial,expected_sha,approved):
                 c.require(c.p.digest(root/'development_freeze.json')==c.p.read(root/'freeze_receipt.json')['sha256'],'freeze changed')
             save(current/'validated.json',stats);results.append(stats)
             mark('session_validated',session_index=e['index'],session_id=e['session_id'])
-        result=dict(status='completed_followup_confirmation_only' if plan.get('state_model_followup') else 'completed_regimen_diagnostic_only' if state else 'completed_diagnostic_only' if plan.get('diagnostic_only') else 'completed_descriptive_only',
+        result=dict(status='completed_short_transition_protocol_diagnostic_only' if plan.get('short_transition_diagnostic_only') else 'completed_followup_confirmation_only' if plan.get('state_model_followup') else 'completed_regimen_diagnostic_only' if state else 'completed_diagnostic_only' if plan.get('diagnostic_only') else 'completed_descriptive_only',
             sessions=len(results),diagnostic_requests=(sum(r['work_calls']+r['eligibility_calls'] for r in results) if state else budget['diagnostic_requests']),
             warmup=(sum(r['warmup_calls'] for r in results) if state else budget['warmup']),
             explicit_inference=(sum(r['work_calls']+r['eligibility_calls']+r['warmup_calls'] for r in results) if state else budget['explicit_inference']),
-            installation=install_result if not state_model else None,
-            installed_preflight=install_result if state_model else None,
+            installation=install_result if (not state_model or plan.get('autonomous_diagnostic_only')) else None,
+            installed_preflight=install_result if (state_model and not plan.get('autonomous_diagnostic_only')) else None,
             elapsed_seconds=time.monotonic()-start,adb_command_slots=d.sequence,
             accuracy_pass=None,experiment_ready=False)
         mark('completion_receipt_intent')
@@ -406,8 +453,8 @@ def run(plan_file,adb,serial,expected_sha,approved):
             exception_thread=threading.current_thread().name,utc_failure=legacy.utc(),
             session_attempts=len(list(root.glob('*/attempt.json'))),launch_attempts=len(list(root.glob('*/launch_attempt.json'))),
             consumption='only durable start/return pairs confirm counts; absent logs remain unknown',elapsed_seconds=time.monotonic()-start,
-            installation=install_result if not state_model else None,
-            installed_preflight=install_result if state_model else None,
+            installation=install_result if (not state_model or plan.get('autonomous_diagnostic_only')) else None,
+            installed_preflight=install_result if (state_model and not plan.get('autonomous_diagnostic_only')) else None,
             experiment_ready=False)
         try:mark('failure_detected',error_type=type(exc).__name__,session_id=current.name if current else None)
         except BaseException as err:failure['failure_checkpoint_error']=repr(err)
@@ -420,9 +467,34 @@ def run(plan_file,adb,serial,expected_sha,approved):
                     failure.setdefault('recovery_errors',{})[name]=repr(err)
                     try:save(current/(name+'.recovery_error.json'),dict(error=repr(err)))
                     except BaseException as write_error:failure.setdefault('recovery_record_errors',{})[name]=repr(write_error)
+        if current:
+            for name in ('cleanup.json','session_failure.json'):
+                artifact=current/'artifacts'/name
+                if not artifact.is_file():artifact=current/'failure_prefix'/name
+                if artifact.is_file():
+                    try:failure.setdefault('app_terminal_evidence',{})[name]=c.p.read(artifact)
+                    except BaseException as err:failure.setdefault('app_terminal_read_errors',{})[name]=repr(err)
+        autonomous_may_be_active=bool(plan.get('autonomous_diagnostic_only') and current and
+            (current/'autonomous_segment_arm_intent.json').exists())
         if identified and d is not None:
-            try:save((current or root)/'failure_host_cleanup.json',shared.cleanup(d,hard))
-            except BaseException as err:failure['host_cleanup_error']=repr(err)
+            if cleanup_attempted:
+                # Validation or receipt failure after cleanup must not issue a
+                # second force-stop. A raised cleanup has an unknown partial
+                # outcome; retrying it would also exceed the single attempt.
+                failure['host_cleanup']=(cleanup_result if cleanup_result is not None else
+                    dict(status='attempted_outcome_unknown_no_retry'))
+            elif autonomous_may_be_active:
+                failure['host_cleanup']=dict(status='deferred_device_segment_may_be_active',
+                    reason='probe arm delivery or app completion unconfirmed; no automatic transport switch/force-stop')
+            else:
+                cleanup_attempted=True
+                try:
+                    cleanup_result=shared.cleanup(d,hard)
+                    save((current or root)/'failure_host_cleanup.json',cleanup_result)
+                    failure['host_cleanup']=cleanup_result
+                except BaseException as err:
+                    failure['host_cleanup']=cleanup_result or dict(status='attempted_outcome_unknown_no_retry')
+                    failure['host_cleanup_error']=repr(err)
         prefix=current/'failure_prefix/progress.jsonl' if current else None
         try:
             failure['last_session_progress']=(state.progress_consumption(prefix.read_bytes() if prefix and prefix.is_file() else b'',

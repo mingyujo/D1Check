@@ -16,7 +16,9 @@ FIELDS = ('execution_start_ns', 'output_ready_ns', 'persist_complete_ns',
           'worker_release_ns', 'lane_available_ns')
 PHASES = ('ASSIGNED', 'EXECUTING', 'OUTPUT_READY', 'PERSISTED', 'WORKER_RELEASED')
 POLICIES = ('CPU_FIFO', 'CPU_URGENT', 'FIXED_SPLIT', 'B2_PC', 'B3_SOLO_EFT_PC',
-            'P_PAIR_COST_PC', 'P_NO_PARALLEL_PC')
+            'P_PAIR_COST_PC', 'P_NO_PARALLEL_PC', 'CPU_URGENT_ONLINE_V1',
+            'B2_PARALLEL_ONLINE_V1', 'B2_SERIAL_ONLINE_V1')
+ONLINE_STUDY = ('CPU_URGENT_ONLINE_V1','B2_PARALLEL_ONLINE_V1','B2_SERIAL_ONLINE_V1')
 
 
 def keyed_index(seed, request_id, backend):
@@ -37,7 +39,7 @@ def choose(config, queue, lanes, now, policy, settings, *, thermal_model=None, c
     aging = settings['aging_ns']
     def order(q):
         if policy == 'CPU_FIFO': return (0, q['ordinal'], q['id'])
-        if policy in ('CPU_URGENT','FIXED_SPLIT'):
+        if policy in ('CPU_URGENT','FIXED_SPLIT',*ONLINE_STUDY):
             return (q['priority']!='urgent',q['ordinal'],q['id'])
         # Common finite aging is an exploratory rule, not the historical Android policy.
         aged = now - q['arrival_ns'] >= aging
@@ -56,14 +58,14 @@ def choose(config, queue, lanes, now, policy, settings, *, thermal_model=None, c
             remain = cell['joint']['dispatch_to_lane_ns']['median_ns'] * settings['estimate_factor'] - elapsed
             residuals[b] = dict(state='ESTIMATED_POINT' if remain > 0 else 'UNKNOWN_OVERRUN', ns=max(0, remain) if remain > 0 else None)
     busy = [b for b in lanes if lanes[b]['request'] is not None]
-    global_serial = settings['mode'] == 'strict' or policy in ('CPU_FIFO', 'CPU_URGENT', 'P_NO_PARALLEL_PC') or (policy == 'B2_PC' and not settings['static_parallel'])
+    global_serial = settings['mode'] == 'strict' or policy in ('CPU_FIFO', 'CPU_URGENT', 'P_NO_PARALLEL_PC','CPU_URGENT_ONLINE_V1','B2_SERIAL_ONLINE_V1') or (policy == 'B2_PC' and not settings['static_parallel'])
     result = dict(now_ns=now, queue=copy.deepcopy(ordered), lanes=copy.deepcopy(lanes), residuals=residuals,
                   candidates=[], selected=None, reason='empty' if not queue else 'busy_or_preferred_lane')
     if global_serial and busy: return result
     for q in ordered:
-        if policy in ('CPU_FIFO', 'CPU_URGENT'): backends = ['CPU']
+        if policy in ('CPU_FIFO', 'CPU_URGENT','CPU_URGENT_ONLINE_V1'): backends = ['CPU']
         elif policy == 'FIXED_SPLIT': backends = ['CPU' if q['priority'] == 'urgent' else 'GPU']
-        elif policy == 'B2_PC': backends = [settings['static_map'][q['task']]]
+        elif policy in ('B2_PC','B2_PARALLEL_ONLINE_V1','B2_SERIAL_ONLINE_V1'): backends = [settings['static_map'][q['task']]]
         elif settings['mode'] == 'strict': backends = ['CPU']  # missing adaptive cost => explicit fallback
         else: backends = ['CPU', 'GPU']
         candidates = []
@@ -100,13 +102,22 @@ def choose(config, queue, lanes, now, policy, settings, *, thermal_model=None, c
 def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=120_000_000_000,
              admission=None, thermal_model=None, decision_provider=None):
     # Optional REPLAN-PC-01 event hook. None preserves the frozen v3 execution path.
-    base.validate_config(config)
-    base.require((policy in POLICIES or policy == 'THERMAL_ENERGY_PC_V1')
+    empirical = config.get('protocol') == 'empirical-request-exploration-v1'
+    if empirical:
+        from tools.d1_empirical_request_policy import validate_engine
+        validate_engine(config, vectors, requests, policy, settings, decision_provider)
+        base.require(admission is None and thermal_model is None, 'isolated empirical exploration')
+    elif config.get('protocol')=='online-context-service-v1':
+        from tools.d1_online_policy_model import validate_service
+        validate_service(config,vectors,requests,policy,settings)
+    else:
+        base.validate_config(config)
+    base.require((empirical or policy in POLICIES or policy == 'THERMAL_ENERGY_PC_V1')
                  and settings['mode'] in ('strict', 'explore'), 'policy/mode')
     if policy == 'THERMAL_ENERGY_PC_V1':
         base.require(admission is None and settings['mode']=='explore', 'thermal policy explore-only')
         base.require(thermal_model is not None, 'thermal policy requires explicit model')
-    if decision_provider is not None:
+    if decision_provider is not None and not empirical:
         base.require(policy=='THERMAL_ENERGY_PC_V1' and admission is None and thermal_model is not None,
                      'scripted decisions are isolated to modeled offline exploration')
     if thermal_model is not None:
@@ -115,7 +126,10 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
         base.require(settings['mode']=='explore', 'unmeasured power/AP model is explore-only')
         feedback.validate(thermal_model)
         base.require(horizon_ns == 120_000_000_000, 'thermal common window')
-    base.require(0 < len(requests) <= 128 and 0 < horizon_ns <= 600_000_000_000, 'bounded scenario')
+    # Only the separately validated fixed transfer input expands the count cap.
+    request_cap = 192 if (empirical or (config.get('protocol') == 'online-context-service-v1'
+                          and settings.get('separated_power_planning_role') == 'sustained-confirmation-v1')) else 128
+    base.require(0 < len(requests) <= request_cap and 0 < horizon_ns <= 600_000_000_000, 'bounded scenario')
     for name in ('decision_ns', 'record_ns', 'dispatch_ns'):
         base.require(type(settings[name]) is int and settings[name] >= 0, 'explicit overhead assumption')
     base.require(settings['interference'] >= 1 and settings['predicted_interference'] >= 1 and settings['estimate_factor'] > 0, 'sensitivity range')
@@ -184,6 +198,9 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
         if now >= horizon_ns: break
         # Zero-duration dispatch stages must transition before judging again.
         if any(x and x['left']<=0.0001 for x in lanes.values()): continue
+        if empirical:
+            # Public phases/tickets only; never expose engine left/durations/future arrivals.
+            decision_provider.observe(now, public())
         if pending is None and queue and (admission is None or review_needed):
             eligible=queue if admission is None else admission.eligible(queue, now)
             d=(decision_provider(config, eligible, public(), now, settings, thermal_model, current_ap)
@@ -195,7 +212,7 @@ def simulate(config, vectors, requests, *, policy, settings, seed, horizon_ns=12
                 if not eligible: d['reason']='background_start_blocked'
             decisions.append(d)
             review_needed=False
-            if policy == 'THERMAL_ENERGY_PC_V1':
+            if empirical or policy == 'THERMAL_ENERGY_PC_V1':
                 wake_at = d.get('wait_until_ns') if d['selected'] is None else None
             cost=settings['decision_ns']+settings['record_ns']+(settings['dispatch_ns'] if d['selected'] else 0)
             if d['selected']:

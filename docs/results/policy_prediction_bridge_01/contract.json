@@ -1,0 +1,61 @@
+{
+  "version": "policy-prediction-bridge-v1",
+  "role": "PC implementation and prospective-input diagnostic; no new independent validation",
+  "fixed_before_calculation": true,
+  "goal": "arrival and resource/start decisions -> response, whole-device energy, AP -> independent errors and policy-difference judgment",
+  "scenario": "queue",
+  "seed": 201,
+  "arrival_origin_s": 35,
+  "common_window_s": [
+    0,
+    120
+  ],
+  "ap_prediction_window_s": [
+    35,
+    180
+  ],
+  "initialization_case_id": "v3_confirmation_2_SPLIT_DELAY30",
+  "allowed_initial_input": "measured pre35 AP only; no recorded workload times, later AP or current",
+  "arms": [
+    {
+      "policy": "CPU_URGENT",
+      "start_hold_s": 0
+    },
+    {
+      "policy": "B2_PC",
+      "start_hold_s": 0
+    },
+    {
+      "policy": "B3_SOLO_EFT_PC",
+      "start_hold_s": 0
+    },
+    {
+      "policy": "B2_PC",
+      "start_hold_s": 0.2
+    }
+  ],
+  "hold_choice": "one 200ms input-interval delay tests causal waiting plumbing; not tuned for an advantage or a thermal policy",
+  "duration_source": "existing CAL03 estimates/realizations; original seed and interference 1.5 assumption retained",
+  "energy_source_sha256": "35ed6987b1fc09789284018f8502107eaf4e3125373651a01e3a08d427034c54",
+  "whole_device_power_w": {
+    "classification_CPU": 1.7414095382900974,
+    "classification_CPU+detection_GPU": 2.1104195495120037,
+    "classification_GPU": 1.6107917099161095,
+    "classification_GPU+detection_CPU": 2.327017852625475,
+    "detection_CPU": 1.9319364179863232,
+    "detection_CPU+detection_GPU": 2.313041399341412,
+    "detection_GPU": 1.6125347399692977,
+    "resident_idle": 1.2254334209795854
+  },
+  "original_initial_ap_range_c": [
+    32.5,
+    34.0
+  ],
+  "ap_source": "unchanged selected M0",
+  "parameter_fits": 0,
+  "accuracy_threshold": null,
+  "policy_rank": null,
+  "strict_support": false,
+  "experiment_ready": false,
+  "device_commands": 0
+}

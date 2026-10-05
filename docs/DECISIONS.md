@@ -1,5 +1,526 @@
 # D1Check 결정 기록
 
+## 2026-10-05 — PAIR-QUEUED-SERVICE-GUARD-PC-01
+
+- 채택한구현경계:학습기가고른PAIR의병행우선제안에현재도착대기열의상대지각검사를별도옵트인으로추가한다. 원정책/학습/동결모형을덮어쓰지않고예측상해로운결정만EFT로돌린다. long_context는WCET가아니며미래도착기한을보장하지않는다.
+- [36PC비교](results/pair_service_guard_01/README.md)에서원/새seed총576/576기한충족. 새seed에너지−0.560587J/최고AP+0.225968°C상충과응답지연을보존한다. 기본정책·strict승격·실기기절감/우월성은채택하지않는다. 다른부하검증은남았고기기명령0이다.
+
+## 2026-10-05 — UNSUPERVISED-SELECTOR-PC-01: 군집 탐색 종료
+
+- 채택한절차: 요청이력5특징의K-means/GMM fitting과내재점수선정,개발성과를사용한별도정책연결,저장결과의사후판독. 군집자체를절감label이나새물리상태로보지않는다. [근거](results/unsupervised_selector_01/README.md).
+- 주스케줄러채택은보류한다. 기한수는EFT와같고대부분fallback이며J/AP공동개선미확보. 부하유형설명보조로만보존,strict/기존계수/experiment_ready=false 유지. 이번결과는모든비지도기법불가능판정아님. 새실측/기기계획/시뮬레이션0.
+
+## 2026-10-05 — SUPERVISED-SELECTOR-PC-01: 이력 기반 지도학습 선택 경로
+
+- 채택한 연구 절차: 이전48도착 이력에서5특징을 추출해8기존정책의 비용/위험을 회귀한다.18조건 개발fitting/저장검증→선정동결→새seed전27조건평가.9조합은학습/선정에서제외, 독립기기자료로표현하지않는다. CatBoost미설치로기존sklearn의트리/HistGradientBoosting사용. 물리계수·정책 기본값·strict 불변.
+- [결과](results/supervised_selector_01/README.md): 에너지tree는미학습군집8의16추가위반으로미채택. thermalboosting은EFT와기한수동일하나J증가/AP감소상충이므로PC분석후보만보존. 실기기 채택·공동절감·기한보장·experiment_ready승격은없다. 관측범위밖/위험fallback도기한보장아님.
+- 완료594PC재생/26관련테스트, 결과후재학습0. 이전/다음 구간의 동일분포와 고정초기조건 가정을 명시하고 연속열이력·온라인 요청별전환으로 확대하지 않는다. 다음은저장실패ledger의서비스제약분해한건이며추가실측자동승인이아니다.
+
+## 2026-10-05 — SCHEDULER-CONDITIONS-PC-01: 조건 탐색 범위 확장
+
+- 최신 사용자 지시에 따라 이전 비교의 네 입력에 한정한 결론을 일반화하지 않고, [사전 고정한 27개 입력 조건](results/scheduler_conditions_01/README.md)과 다른 분야의 네 제어 원리를 PC에서 평가한다. 이전 알고리즘·물리 계수·기기 결과는 덮어쓰지 않는다.
+- 채택한 평가 절차: 개발2seed에서 조건별 선택 동결 후 새3seed 및 3처리 문맥을 모두 보고한다. 전 요청의 기한 충족을 필수로 하고 기한 안의 P95 손해는 별도 표시한다. 에너지·최고 AP·AP 면적의 공동 개선과 서로 간 상충을 나눈다. 특정 기준과의 차이를 EFT/모든 정책 대비 우월성으로 확대하지 않는다.
+- 이는 연구 절차 채택이며 새 스케줄러의 성능 채택 결정이 아니다. 미측정 상태/주파수/전력 차단/스로틀/S26 계수는 추가하지 않고, strict/experiment_ready=false 및 기기 실행0을 유지한다.
+- 종료 판정: 27조건 본탐색 후 목적별 선택기를 사후 설계했음을 표시하며 개발자료만으로 고정, 새 seed112001–112003의738계산으로 확인했다. 17조건 전 기한 충족·고정병행대비 공동절감10/9조건, EFT대비 상충이다. PC 목적별 선택 경로만 채택하고 기본 스케줄러/실기기 우월성으로 승격하지 않는다. 반올림에 따른 선택 결함·CSV/export 결함을 보완하고 원 결과/소스를 보존했다.
+
+## 2026-10-05 — SCHEDULER-ALTERNATIVES-PC-01: 비RL 비교 완료, 새 우월정책 채택 없음
+
+- 사용자요청에따라 [5종 대안과3기준·PPO3](results/scheduler_alternatives_01/README.md)을PC에서구현·분리평가했다. 개발384→LLF선정동결→최종1056. 개발선정과최종시험을나눴으며결과후재튜닝없음. 기존물리계수·지원cell·작업/입력분포불변.
+- 결정: LLF는EFT와동일하고다른후보는서비스/J/AP상충이남아새기본/기기정책으로채택하지않는다. 기존EFT를PC기준으로유지하는것을권고한다. 현재3cell모형에서queue/burst의탐지CPU수요필요조건위반과작은에너지개선상한을구체적인범위한계로기록한다. 알고리즘전체불가능/실기기용량인증/실제절감완료를뜻하지않는다.
+- 완료:69검사·1440저장ledger/95040요청검증·대시보드. 다음권고는기존탐지GPU자료의정확한요청/비용/프로토콜연결판정이며자동실측승인이아니다. 기존FAIL/원자료/동결/미소비계획/strict/experiment_ready=false보존.
+
+## 2026-10-05 — REQUEST-PPO-PC-01: 신경망 강화학습과 분리 평가, 기본정책 채택 보류
+
+- 사용자 요구에 따라96회 표 기반 결과를 초기시험으로 한정하고3개 seed의 PPO-Lagrange 후보를 한 구조·설정으로 학습했다. [사전 계약·구현·실제 결과](results/request_ppo_01/README.md). 기존실측모형/서비스문맥가정/지원mask를 유지하고 미래정보를 차단한다. 학습6144episode, 검증720, 동결후최종768시험 완료; 결과후재학습/최고testseed선택 없음.
+- 채택된 절차: 서비스와 열 기대제약을 실제등급별분모/°C·s로 학습·판독, 검증에서checkpoint선정, 세seed전부보고. 이번결과의정책채택은 보류: queue/burst서비스 개선에도 열악화조건과 seed별J/AP상충이 남는다. 수렴/최적성/실기기절감이나 strict지원승격은 아니다.
+- 완료56테스트,768저장ledger/50688요청회계 및 frozenhash 확인. 다음권고는 저장배정·대기상충분해1건이며 새실측/반복학습자동승인이 아니다. 기존원자료/FAIL/종료계획/동결계수/experiment_ready=false 보존.
+
+## 2026-10-05 REQUEST-RL-PC-01 — 제한 학습 경로 완료, 정책 미채택
+
+- 사용자 강화학습 제안·진행 승인을 반영해 [단일 Monte Carlo 후보](results/request_rl_01/README.md)를 별도PC모드로 수행했다. 사전벡터목적·seed·입력·예산고정, 마지막표동결후평가. 새로운 전력/열가정·기존계수재적합·실기기 실행은 없다.
+- 기한위반→EFT대비AP증가→J→P95의 기대비용 우선순위는 후보설계이며 개별조건의제약보장/합격기준이 아니다. 학습방문이적고압축상태이며 신규PC입력평가를독립기기확인으로취급하지않는다.
+- 채택한 것은 재현가능한 제한RL비교 경로다. 후보는queue서비스악화와sustained에너지/열/응답손해로 기본/실기기정책 채택보류. 평가후재학습0·새실측승인0, 원본/FAIL/동결/strict/experiment_ready=false 유지. 다음은저장된결정에서누락상태·제약국소화; 평가자료를새후보개발에쓰면더이상독립평가가아니다.
+
+## 2026-10-05 EMPIRICAL-REQUEST-POLICY-PC-01 — 요청별 비교 경로 채택, 후보 성능 채택 보류
+
+- 근거: [계약·코드·60개 제한 PC 비교·44검사](results/empirical_request_policy_01/README.md). 실측 상태비용으로 새 일정을 계산하는 PC 전이 탐색을 기존 독립확인/strict 출력과 분리한다. 개발 정책별 처리시간의 공통프로필 전이는 가정으로 명시하고 미래 완료/AP/전류를 결정에 전달하지 않는다.
+- 이번 완료는 기존 엔진의 요청별 자원 배정·250ms 단위 제한 유예와 다섯 방식 비교이다. 새 열/전력 계수·스로틀·정책별 맞춤서비스·독립확인·기기실행은 없다. 세션 단위 선택기를 원래 동적스케줄러 목표의 완료로 부르지 않는다.
+- 후보ENERGY_AP_REQUEST_V1은 평균 지속입력에서만 제한된 상충개선이 보였고burst·긴문맥 서비스조건이 악화해 **기본정책/배포정책으로 채택하지 않음**. 해당 부정결과를 보존하며 결과를 보고 이번 후보를 다시 맞추지 않는다. 다음 권고는 저장결정의 기한여유 소모 판독으로 한정하며 새실측 승인이 아니다.
+- 기존 모형/FAIL/원자료/strict/experiment_ready=false 및 S26 별도범위 유지.
+
+## 2026-10-05 — ENERGY-AP-SESSION-SELECTOR-PC-01
+
+- 채택 범위: 사용자 지시에 따라 [ENERGY_AP_SESSION_SELECTOR_PC_V1](results/energy_ap_session_selector_01/README.md)을 별도 PC 참고 설계로 구현한다. 기한을 지키는 등록CPU/PAR 전체 일정에서 AP 제약 아래 공통120초J 최소화를 사용한다. 계약은 대표 계산 전에 고정했고 새계수/후보 탐색/기기 실행은 없다.
+- 한 번의 세션 선택으로 제한한다. 예정 도착을 미리 알지만 미래 실현 AP/전력/완료시각은 사용하지 않는다. 기존B2_PC/B3/P와 최신온라인CPU/PAR namespace를 합치지 않는다. 임의 재배정·지연의 효과를 기존 정책문맥 서비스값으로 만들지 않는다.
+- 미채택: 실제AP 안전/허용 상한, 실기기 배포, 후보 우월성. 기존 energy-ap-policy-selection 차단·strict·모형byte·experiment_ready=false 불변. 참고model_only_action과 deployable_action=null을 분리한다. 한 입력에서 두 고정방식 중 하나를 고르는 규칙을 둘 모두보다 나은 새 스케줄러로 주장하지 않는다.
+
+## 2026-10-04 — REAL-APP-BASELINE-BUILD-PC-01: 관측 연결과 검증 한계
+
+- [원본 기반 구현·검증 기록](results/real_app_baseline_pc_01/build_pc.md). Ente 고정 소스에 시작/반환/최초 중단/compute 반환의 opt-in 로그만 연결했다. 함수 반환과 전체 사진 처리 완료를 구분하며 실사용 앱보다 나은 정책을 구현·입증한 것으로 해석하지 않는다.
+- 기존 모델·계수·배정·기한·Ente timer/health/retry는 유지. Windows symlink 권한 부족 및 코드 생성 중 디스크 여유 급감은 PC 환경 차단이며 앱/정책 실패 증거가 아니다. OS 설정 변경·추가 실측·새 정책 채택은 수행하지 않았다.
+
+<a id="real-app-baseline-pc-01"></a>
+## 2026-10-04 — REAL-APP-BASELINE-PC-01: 실제 앱 후보와 직접 비교의 경계
+
+- 상태: 사용자 지시에 따른 실제 앱 **비교 후보 선정 완료 / 원앱 실행 비교 미완료**. Ente Photos Android 전경 배경 ML 제어를 선정한다. [고정 소스·PC 결과·최소 연결 명세](results/real_app_baseline_pc_01/README.md). Band는 연구 기준선이며 현업 앱이라고 부르지 않는다.
+- 기존 D1 이식 gate는 원앱 재현이 아니다. 15초 시작 유예에 6초 D1 연구 기한을 적용한 승패는 공정하지 않다. 실제 앱 개선 주장은 같은 Ente 작업/품질/전경 반응 보호 조건 안의 비교를 필요로 한다. 기존 B2/B3 연구 결과와 별도로 유지한다.
+- 채택하지 않은 것: 새 admission 정책, 원앱 SLA/허용오차, 실측 계획/예산, 실제 앱 대비 우월성. 다음 원본 PC 빌드/계측은 권고 단계이며 완료 사실이 아니다. 기존 동결 모형/strict/experiment_ready=false 불변.
+
+<a id="s26-thermal-scope-02"></a>
+## 2026-10-04 — S26-THERMAL-SCOPE-02: 기기별 범위와 공통 평가 정의
+
+- 상태: 사용자 협업 요청에 따라 **범위 변경 채택 / S26 정책 효과 검증 미완료**. [실제 근거·회신·품질 입력·ledger 인계](team/S26_SCOPE_AND_INTERFACE_20261004.md). A24 기준71a2f2b, S26 실제 읽은 원격b4f7634. 이후10/4 측정/v2 완료는 팀원 보고와 파일 확인을 구분한다.
+- 9/24 S26-NPU-COLLAB-01의 XDEV-02 두 모델 CPU/GPU 축소 재현을10/11 동결·10/22 제출 필수 범위에서 보류한다. 기존 결정/결과는 보존하며 재현 완료로 표시하지 않는다. S26은 검증된 분류·순차 CPU/GPU/NPU, 열 이력→처리율·회복, 열 인지 유예/부하 상한/자원 선택의 별도 절로 구성한다. 3backend는3건 병행 지원이 아니다.
+- 공통 목표는 응답·완료 요구 아래 기기 전체 에너지·열 부담의 개선 가능 조건 판정이다. 기기별 모델/엔진/프로필·확인을 분리하며 A24 CPU/GPU+S26 NPU 혼합을 금지한다. 현재 두 엔진을 단일 구현이라고 표현하지 않는다. 코드 통합은 후속 후보, 납기 보장 없음.
+- S26 CompiledModel2.2.0/OpenCL/무override 근거와 Interpreter1.4.2 GPU 미지원 경로를 구분한다.9/15 override80런은 보조 이력. A24 APK의 S26 arrival 실행은 미검증이다. 기존 런타임·계수·strict·experiment_ready=false 불변.
+- RL은 이번 제출 필수 범위에서 제외한다. 강한 기준선·규칙·대조군·명시적 oracle과 결과 전 등록을 우선한다. 제안 P 우월성·작은 J/AP 효과는 아직 미입증이며 A24의 CPU/PAR 비교와 혼동하지 않는다.
+- A24는 열→처리시간 연결 미식별이지 스로틀 부재 인증이 아니다. S26 C2 일관성 FAIL은 같은 폰 상대 J 우열에도 제한이다. CV screening·oracle 회수율은 조건부 기술값이며 섭씨 온도 퍼센트·보편 오차 한도로 사용하지 않는다. S26 결과가 A24 미검증을 대신 채우지 않는다.
+- 인계 일정/분량은10/12 초안·10/13 대조, 본문2쪽+부록1쪽/발표2장 **제안**이며 담당자 합의·측정 완료와 구분한다. 새 기기 실행·새 예산·정책 PASS를 승인하지 않는다.
+
+## 2026-10-04 결과 전달 형식 확정
+
+- 상태: 적용 완료. 사용자 지시에 따라 기존192요청8세션의 [발표 자료](results/final_presentation_01/README.md)를 생성했다. 그림은 모든8세션·4쌍을 포함하고 경로 예시는 시간순 첫 CPU/PAR 쌍으로 고정했다. 최소오차 사례 선별·새 적합·정확도 PASS는 없다.
+- 정책 비교의 결론은 응답 개선 관측, 작은 에너지·열 차이 우열 미판정이다. 모형의 동일초기조건 AP 증가를 실제 관측 증가로 바꾸지 않는다. 기존 연구 범위·계수·strict·experiment_ready=false 유지.
+
+## 2026-10-04 연구 본문·시뮬레이터 시연 안내 최신화 완료
+
+- [본문](ENERGY_AP_RESULTS_DISCUSSION_DRAFT_20260930.md)에 등록192요청 온라인8세션의 방법·관측·A/B 예측·오차·한계와 PC 시연 순서를 반영했다. PAR 응답 개선은 관측 결과, 최고AP 증가 +0.728~+0.748°C는 동일 초기조건의 모형 예측임을 구분했다. 실제 최고AP 차이 −0.4~+0.4°C를 열 우월성으로 해석하지 않는다.
+- 루트 README·[통합 화면](results/simulator_workbench_01/index.html)·사용법의 오래된 ‘최신/미완료’ 안내를 현재 근거와 역사적 기록으로 정리했다. 원본·계수·기존 결과/검증 파일·strict·experiment_ready=false 불변. 새 실측/배치/적합/빌드/기기 명령0.
+- 기존 CSV·공유물 해시·본문 수치·로컬 링크·HTML 구조를 대조했다. 검증 대상은 e4fd9a88 기반 문서 수정이며 기존 모델 정확도 검증을 재수행한 것이 아니다. 다음 행동 하나: 완성된 본문과 통합 화면으로 팀 결과 시연·보고에 사용한다. 추가 감사나 동일 실측 자동 반복은 없다.
+
+## 2026-10-04 지속192 CPU/PAR 확인8 완료·제한 시뮬레이터 연결
+
+- [보고서](ENERGY_THERMAL_OVERNIGHT_RESULTS_20261004.md), [대시보드·재현](results/online_policy_study_01/overnight_sustained_run01/README.md). 별도opt-in192/400ms·CPU/PAR4쌍8세션전부완료. 본1536+warmup64=1600/runtime32/staging8·56/pull·push·설치각1/ADB6647/2588.054초. 재시도·추가계획0. 앱cleanup8·회수8·host정리8·설치정리1·최종ps대상부재·parent/child exit0. 옛FAIL/원본/미소비계획/기본/strict불변.
+- 모두기한192/192. PAR실제CG_DC병행21.924~22.581초·긴급P95쌍별127.912~131.381ms단축. 도착B J오차−5.541~+8.210J/AP MAE0.186~0.559°C. PAR−CPU관측J−5.304~+11.682·평균+1.195·SD8.069(4쌍,기술통계). 동일초기동결예측−2.091J/최고AP+0.728~+0.748°C와구분;작은J/AP정책우열은미판정.
+- 관련Android10/Python22·실제Check기기0·8세션독립적분/CSV/hash·portableCLI2검증. 서명APK5fb72bf2…·계획62f4fa62…·원모형5682082a…byte불변. 등록입력조건부A/도착B 전이평가·공유번들완료,임의도착/열처리율/미래오차한도는미지원. accuracy_pass/policy_winner=null, experiment_ready=false. 다음PC행동하나:제한된결과를연구본문/시연의응답개선·열상충·에너지우열미판정에사용. 같은실측확대/추가보정자동실행없음.
+
+## 2026-10-04 최대6시간 자율 작업 제안 — 실패 복구 포함
+
+- [시간·입력·예산·중단·마무리](ENERGY_THERMAL_OVERNIGHT_PLAN_20261004.md). PC90분→기기 최대180분→분석75분→Git15분. 단일192요청/400ms CPU–PAR 후보를 검토하고 적격일 때만4쌍8세션 제안. 현재Android/host96고정이므로 opt-in구현·PC검증·서명빌드·새계획동결 전에는 실행 불가. DESIGN_PROPOSED_NOT_RUN_READY.
+- 사용자 추가 요청의 실패 수정은 최대2개 추가세션/총10시도/실행계획최대3 안에서 재현된 코드 오류만 PC수정 후 새ID로 진행하도록 제안. 기존계획재개·환경완화·모형오차 때문에 재측정 금지. 총2000추론/runtime40/staging10·70, push·설치·설치본pull각최대3. 기존식 참고예약9610초/ADB32600은192경로 재검증 전 확정 실행예산 아님.
+- 이번에는 계획 작성·산술 대조만, 기기/빌드/실행계획/claim0. 기존원본/FAIL/모형/strict/experiment_ready=false 보존. 다음 행동: 실행 지시 후90분 PC gate부터 수행; 안 되면 기기 단계 없이 가능한 분석·문서·Git까지 완료. 시뮬레이터 산출물 마무리와 정책 절감 입증은 구분한다.
+
+
+## 2026-10-04 CPU–PAR 판별 가능성 PC 완료 — 동일 배치 확대 보류
+
+- [판정·가정·재현](results/online_policy_study_01/policy_feasibility_pc_v1/README.md), [민감도 화면](results/online_policy_study_01/policy_feasibility_pc_v1/evaluation/index.html). 기존96요청 CPU/PAR만 선정, 새입력검색/적합/예측/실측0. 관측 차이 +1.657/−42.939J의 기술적SD31.534J는 두 비교뿐이며 미래분산이 아님. 동결 차이1.712761J에 알려진분산 정규근사를 가정하면2661쌍; 실제 필요횟수·권고가 아니다. 8쌍 예시에는SD1.729J 이하가 필요하지만 달성근거 없음.
+- **현재1.713J 입증용 확대 반복은 권고하지 않음.** actual_required_pairs/AP표본수/최소실용J/허용AP증가=null, run_ready=false. α.05·power.8은 민감도 가정이며 PASS 기준 아님. 새 실측계획/claim0; 원래 에너지·열 최적화 목표를 완료했다고 하지 않음. 기존모형/FAIL/default/strict/experiment_ready=false 보존.
+- 관련PC4·CLI·결측/편향 비소거·원본hash·그림 검증. 다음 행동 하나: 이 종료 판정을 포함한 제한된 시뮬레이터 결과를 연구 본문에 반영. 향후 실측은 의미 있는 효과·열 허용치와 차분변동/편향 관리 근거가 있을 때 재검토하며 같은 감사/배치 자동 반복 없음.
+
+
+## 2026-10-03 확인6 오차와 정책 차이 PC 대조 완료
+
+- [판정·재현](results/online_policy_study_01/policy_resolution_pc_v1/README.md), [결과 화면](results/online_policy_study_01/policy_resolution_pc_v1/evaluation/index.html). 기존 확인6 전부 보존·새 적합/실측0. 동일 초기6×정책3의 제한된 예측에서 PAR−CPU J −1.712761, 최고AP +0.793~0.816°C; SER +2.481829J/+0.194~0.223°C. 기존 관측 비교4개와 원 예측 J6개 재현.
+- 이 96요청에서 CPU/PAR 기한96/96, SER61/96; PAR 긴급P95 −469/−456ms. 그러나 잔차2×2 대입 J 차이는 PAR −40.968~+7.378, SER −39.019~+5.083으로 부호 비보존. 사후 산술이며 미래 bound/신뢰구간 아님. 관측 서비스 결과·제한 예측 허용, 작은 J/AP 정책 우열 보류/기존 선택 차단 유지. 기본/strict/experiment_ready=false·동결/FAIL 불변.
+- 관련 PC7 통과·실제CLI/그림/CSV/hash 확인. 기기/APK/계획/claim0. **다음 행동 하나: 이 결과를 연구 본문의 CPU/PAR 응답–발열 상충과 에너지 우열 보류에 반영.** 동일 실측 반복·새 후보 자동 탐색 없음.
+
+
+## 2026-10-03 GitHub 공유·S26 최신 계측 인계
+
+- [팀 안내](team/README.md), [S26 전달문](team/S26_HANDOFF_20261003.md). A24 PC 완료5b3de27은 실제 원격 반영 확인. S26 원격cea8eae를 fetch/읽기 전용 대조하여 EfficientNet NPU20런과 MobileNet N1300/M2양방향/M1의 완료 사실을 반영했다. 오래된 “NPU 전부 미검증” 안내를 최신으로 쓰지 않는다. S26원본 전체 재분석/브랜치merge/기기 실행0.
+- 기존 export·에너지 적격성·두 작업 대표 품질/요청 경계를 우선 연결한다. 추가 N1300/M1/M2 CPU 피해자 등은 실제 사용할 연구 범위별 **권고·미승인**, 새 계획/claim 없음. 기기별 계수/엔진/모델·개발/독립확인 분리, 기본/strict/experiment_ready=false 유지. 다음 협업 행동은 담당자의 기존 증거/미보유 항목 회신; A24 다음 PC 분석은 기존 확인6의 오차와 정책 차이 대조로 유지한다.
+
+
+## 2026-10-03 배경4 PC 식별 완료 — 전력 초기화 수정·gamma 미채택
+
+- [보고서·재현·한계](results/online_policy_study_01/background_identification_pc_v1/README.md), [대시보드](results/online_policy_study_01/background_identification_pc_v1/index.html). 적격 v4 C0/CPU + v6 PAR/C0 두 block 재사용. frozen model의 preload −20~30초를 background 판독기10~30초와 대조해 구현 오류 수정; 기존 수치·원자료 보존/legacy 재현 제공. 120초 J 오차 +4.041/−2.162/−3.252/+3.585, 평균절대8.363→3.260J. AP 초기화·계수·MAE 불변(평균0.184408°C).
+- 등록된 단일 gamma 공통최적0(무제약−0.020551), 세션별 부호 불일치. 세션제외MAE0.184408→0.199300, block제외0.203042°C로 악화해 **미채택**. 수치적 rank와 물리적 유효성 구분. 과거10초 잔차 유지도 미래10/30초J 악화. CPU 활동은 동시성 기술통계만, GPU/무선 에너지 귀속·독립PASS 아님. 기본/strict/experiment_ready=false 유지.
+- PC 관련 검사·56개 앱 입력 재현·실제 CLI/원본 수치/동결hash/공유그림 검증 완료. APK/기기/실측/새계획/claim0. 기존 후보/FAIL/종료 계획 보존. **다음 행동 하나: 기존 독립 확인6의 정책별 J/AP 오차를 동결 정책 차이와 대조해 판정 가능/보류 경계를 결과 화면에 연결.** 미채택 후보를 위한 개발4 반복·확인12 자동 실행 없음.
+
+
+## 2026-10-03 재개 — v5 host 연결 오류 보존 / v6 남은 개발2 완료
+
+- [결과·소비·원본·재현](results/online_policy_study_01/background_activity_run04/README.md), [대시보드](results/online_policy_study_01/background_activity_run04/index.html). v5 staging에서 host127.0.0.1:5037 client 연결 rc1(21.125초) 중단, launch/추론0·ADB68/142.983초. 같은 daemon 식별과 후속 cleanup 성공; 내부원인 미확정·stopped 보존. 사용자 추가 실행 승인으로 별도 campaign retry1회 v6 준비·Check·실행, gate/timeout/APK 수정0.
+- v6 PAR96→C0_POST 개발2/2 적격, 본96+warmup16=112/runtime8/staging2·14/설치본pull1/tracepull2/APK0/ADB1669/735.433초. 앱cleanup2·host force-stop2·최종ps 대상부재, parent/child exit0·이후PC 부재. trace2 BOOTTIME/8CPU/24bin/loss 통과. 시작AP28.9/29.5°C 범위밖. PAR 실제병행13.051초, J153.440→150.563(−2.877), AP MAE0.225°C; C0 J129.789→143.740(+13.951), MAE0.157°C. 조건부·개발/전이 자료이며 정확도PASS 아님.
+- 기존 v4 C0·CPU와 이번 v6는 별도 block이며 v4 완주로 합치지 않는다. 원본/FAIL/registry/계수/기본/strict/experiment_ready=false 유지, 새fit/채택/독립확인0. Check 기기0·실제경계/CSV/hash/공유그림 재현 통과, Android/빌드0. **다음 행동 하나: 적격 네 개발 자료의 과거 시스템 활동과 잔차에서 gamma 분리 식별 가능성 PC 검사.** 추가 실측 자동 실행 없음.
+
+## 2026-10-03 v4 두 세션 적격·조회 timeout 종료 / v5 이동 전 미소비 보류
+
+- [결과·소비·수정·재개 명령](results/online_policy_study_01/background_activity_run03/README.md). v4 C0/CPU2적격, PAR 준비 ls3초 timeout; 원인미확정·최종 대상 ps 부재/trace 회수. 확인추론120/runtime12/ADB1803/817.657초. trace 설정 수정 실제 성공, CPU 집계 동일성 최적화·부분 분석/분모 보존 PC15통과. APK/계수 불변.
+- 사용자 추가 실행 승인에 따른 새 v5 PAR→C0 개발2 계획(112추론/2402초/ADB6618/설치0) Check 통과. 사용자 5분 뒤 이동 안내로 **claim 전 보류**; Run/추가 기기 조회/소비0, 실패/stopped 상태 아님. 다음 행동: 연결과 충분한 시간이 있을 때 v5만 현재 gate로 실행. 완료 두 세션 반복/종료 v4 재개/모형 자동채택 없음. 기본/strict/experiment_ready=false·원본/FAIL 보존.
+
+
+## 2026-10-03 trace 설정·내용 검사 최소 수정 채택
+
+- 기존 DISCARD와 producer flush 누락의 공식 parser 플래그를 실제 원본에서 확인. RING_BUFFER/flush5초와 loss 전체 SQL, 회수 후 CPU/clock/coverage 검사로 수정한다. 계측 프로토콜 변경 개발 자료이며 기존 원본의 오류 판정을 덮어쓰지 않는다. [근거·정확한 예산](results/online_policy_study_01/background_activity_pc_v1/README.md), [검증](results/online_policy_study_01/background_activity_pc_v1/plan_v4/verification.json). 다음 행동: 현재 A24/설치본/환경을 실행기 gate로 확인하고 v4 1회 실행·판독.
+
+
+## 2026-10-03 배경 활동 개발4 v3 Run02 — 수집 완료·trace 계약 부적격
+
+- [보고서·소비·재현](results/online_policy_study_01/background_activity_run02/README.md), [대시보드](results/online_policy_study_01/background_activity_run02/index.html). 새 승인 v3 단1회, C0→CPU96→PAR96→C0 4/4 완료. 본192+warmup32=224/runtime16/staging4·28/설치본pull1/tracepull4/APKpush·설치0/ADB3260(실행기3259+선택1)/기기작업1243.243초, 원본 FINAL_RECEIPT 완료·계획 소비/종료. 연결소실/timeout/추가실행 없음.
+- PAR 실제병행13.154초. 120초 관측→기존 동결 조건부J: CPU171.210→161.438(−9.772), PAR157.006→152.319(−4.688). AP MAE0.207/0.278°C(common35초→냉각말); C0전후138.729/141.342J. 시작AP27.6–28.2°C 원래 범위 밖/계측변경 개발 자료이며 strict·정확도·정책 우월 PASS 아님. 계수 적합/후보채택/독립확인0, 기본/strict/experiment_ready=false 유지.
+- 앱 정상cleanup4 +host정리4/최종 저장ps 대상부재; parent/child 종료exit0/뒤PC에서PID부재. 원본17051파일205776672byte inventory·4trace 보존. 공식TP v58.2 hash확인/SQL16회 exit0; 네 trace 모두 config_write_into_file_no_flush=1로 사전 내용검사 거부. 메모리 설정 경고이지 실제 손실·무선 원인 확정 아님. file_write와flush 주기가 다른 점 확인. system CPU귀속null; selfCPU·과거입력56개 별도판독. 새 readout PC2검사 통과, Android/빌드0.
+- 다음 PC 행동 하나: 확보된 네 trace의 flush 설정 경고와 실제 loss/clock/CPU coverage를 분리해 판독 보완. 원래 부적격 판정 보존; 새 기기계획/실측 자동추가 없음. 아래는 과거 기록.
+
+
+## 2026-10-03 결정 — 새 개발4는 설치 없는 v3로 분리 (PC 구현 채택·실기기 미승인)
+
+- [계획·예산·명령](results/online_policy_study_01/background_activity_pc_v1/README.md), [검증](results/online_policy_study_01/background_activity_pc_v1/plan_v3/verification.json). 도움말 수정 소스를 새 ID BACKGROUND-ACTIVITY-DEVELOPMENT-03에 동결. plan_v3 SHA dbec1de3…ff501. PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED; 출력/registry/claim 없음. stopped v2·원본 보존.
+- 설치된 동일 APK9d8d55c2…e73fd932 재사용, installed_only=True·불일치 중단·배포 fallback 없음. 개발 C0→CPU96→PAR96→C0, 본192+warmup32=224/runtime16/staging4·28/설치본pull1/tracepull4/APKpush·설치0/고정840초/총4454초/ADB13036/retry0. 기존 부하·900ms sampler·조회 주기·gate 유지.
+- 관련 Python9 및 실제 PowerShell Check/Device·server probe 금지 Check 통과. 실제 공유 runner 설치 없는 호출 연결/설치본 불일치 오류 보존 검증. Android·APK 재빌드0, 기기명령·Run0. 도움말 옵션 외 실제 trace 시작·내용·clock/loss·TraceProcessor·추가 계측 비용·장시간은 미검증. 기존 모형/기본/strict/experiment_ready=false, gamma 미채택 유지.
+- 다음 행동 하나: 새 개발4 계획의 기기 실행 승인 후 현재 A24/설치본/환경·trace gate로 1회 수행. 이번 진행은 PC 준비까지이며 이전 종료 계획을 재개하지 않음. 아래는 과거 기록.
+
+
+## 2026-10-03 배경 활동 개발4 Run01 — trace help 판독으로 앱 시작 전 중단
+
+- [실행·소비·수정·근거](results/online_policy_study_01/background_activity_run01/README.md), [종료 화면](results/online_policy_study_01/background_activity_run01/index.html). 승인된 plan_v2 1회 실행: A24/설치본·host 환경 통과, 첫 C0 trace 준비의 `perfetto --help` stderr3804byte/exit1을 host가 실패로 판독. timeout/연결소실·AP 예측실패 아님. 필요한 옵션은 도움말에 있으나 실제 trace 지원·내용은 아직 미검증. stopped_no_resume로 보존.
+- APK9d8d55c2…e73fd932 설치·해시 검증. 실제 앱시작0/본·warmup·runtime0, 준비1/staging1·7/설치본pull1/APKpush·설치각1/trace0/ADB89(실행기88+선택1)/실행누적63.753초·wall92.049초. CPU/PAR/마지막C0 미시도, 공식창·새J/AP·후보식별 없음. 앱cleanup해당없음, 설치·실패단계 host정리 각1/종료ps대상부재 확인.
+- 원본484파일 inventory·원래 오류/후속 non-JSON 회수오류·checkpoint·receipt 외부 `background_activity_run_v2`와 분리 `background_activity_run_v2_pc_analysis` 보존. 상세host_identity=null·PID만 완전소유권으로 간주하지 않음. 뒤의PC조회에서parent/child부재.
+- help 조회만 exit0/1+Usage+필수옵션 모두 확인하도록 최소수정, 원본stderr fixture로 Python8 통과. 다른조회/gate/timeout/재시도불변, Android/추가빌드0. 수정후기기실행0·새계획/claim0·종료planCheck기기전차단/원래plan·APK·모형hash불변. 기본/strict/experiment_ready=false 유지.
+- 다음 행동 하나: 도움말 판독 수정본을 별도 미소비 계획의 소스해시에 연결. 종료plan_v2 재개·기존4세션자동추가 없음. 아래는 과거 기록.
+
+
+## 2026-10-03 시스템 활동·과거 sampler 입력 및 개발 대조4 PC 준비 완료
+
+- [계약·APK·예산·명령](results/online_policy_study_01/background_activity_pc_v1/README.md), [준비 화면](results/online_policy_study_01/background_activity_pc_v1/index.html). opt-in APK에 process CPU·과거10초 전력 입력을 추가하고 기존 수집기에 UUID 소유 trace 시작/단일 회수를 연결. GPU/무선 전력 식별·새 controller 아님. 이전 gamma 후보 미채택·기본/strict/experiment_ready=false 유지.
+- C0→CPU96→PAR96→C0 개발4만 동결. plan_v2 SHA a214b53e…ad78d97e, APK9d8d55c2…e73fd932. 본192+warmup32=224/runtime16/staging4·28/설치본pull1/tracepull4/APKpush·설치각최대1/고정840초/예약4454초(74분14초)/ADB13036/retry0. v1은 미소비 PC 초안으로 보존. 최종 계획은 PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED, 새출력·claim 없음.
+- Python 신규7+관련9 통과, 기존cleanup3도 통과. Android12 callback/계약/회귀·서명빌드·실제PowerShell Check 및 device금지 Check 통과. trace 실제 SQL/플랫폼/내용/손실·새APK 계측비용/장시간 미검증. 이번 기기명령·실측·Run0.
+- 채택한 결정은 PC 구현·개발4 준비에 한정된다. 기기 실행은 미승인이다. 다음 행동: 별도 승인 후 개발4 대조를 현재 A24/설치본/환경·trace gate로 실행하고, 회수 자료의 clock/손실/CPU 활동 및 계수 식별을 먼저 판독. 독립확인12/후보채택은 자동 진행하지 않는다. 아래는 과거 기록.
+
+
+## 2026-10-03 기존 자료 기반 배경·AP 후보 판정 완료 — 미채택
+
+- [분석·필요 실측 판정](results/online_policy_study_01/causal_background_pc_v1/README.md), [화면](results/online_policy_study_01/causal_background_pc_v1/evaluation/index.html). 기존 개발3만으로 gamma1개=0.126287 추정, 이미 본 확인6 사후평가. 새 독립확인0. AP 조건부 평균MAE0.38915→0.29882°C(4개개선/2개악화), 마지막CPU 최대4.2196→3.0403°C; 원인해결·정확도PASS 아님.
+- 개발 세션 제외 gamma0.01950–0.19914, 평균MAE0.45832→0.47809°C 악화. 30초 미래J MAE3.91198→4.16008J 악화. 계수 실용 안정성/정책사용 근거 부족으로 후보미채택, 둘째후보탐색0. 기존동결/default/strict/experiment_ready=false 불변.
+- 최대18세션을 바로 실행하지 않음. 기존4상태전력·서비스는재사용; 시스템활동 동시관측을 추가한 C0→CPU96→PAR96→C0 개발4 대조를 우선PC구현할 것을 권고. 산술224추론/runtime16/고정840초, 정확한 총시간·ADB·반복정밀도 미확정/실행계획·claim0. 확인12는후보식별전보류이며사용자실행승인아님.
+- 관련PC13검사/실제CLI·미래정보변조·원본9세션J/AP일치·해시불변/그림검사 완료. 이번기기/실측/빌드0. 다음 행동: 대조4에 필요한 시스템 관측과 기존 sampler의 과거입력 경로를 PC 구현·검증. 아래는이전기록.
+
+## 2026-10-03 에너지·열 최적화 목표 유지 — 해결 설계 제안
+
+- [새 해결 계획](ENERGY_THERMAL_COMPLETION_RECOVERY_PLAN_20261003.md). 응답 비교/우열 차단만으로 완료하지 않는다는 사용자 목표를 재확인했다. 기존 자료의 단일 후보 식별 검사→필요한 시스템 활동 관측·개발 최대6→모형·정책 동결→대응 확인12를 한 캠페인으로 구현할 것을 권고한다. 현재는 DESIGN_PROPOSED_NOT_RUN_READY이며 실행승인·새Run계획·claim은 아니다.
+- 부하/배경/계측 활동을 분리하고, 개방루프 예측과 과거관측까지만 쓰는 온라인 갱신 예측을 별도평가. 후보1개·확인재보정0·추가세션자동생성0. 18세션/본1536+warmup144=1680/runtime72/staging18·126은 제안. trace기능·비용·ADB추가명령/최종시간은PC구현과기기지원확인전미동결. 기존모형/FAIL/기본/strict/experiment_ready=false유지.
+- 다음 행동: 단일후보의기존자료식별과앱과거표본온라인예측을PC구현·검증하고필요한관측/예산/판독을동결. numericAP는host관측이고실시간앱입력으로가정하지않음. 이전 '본문정리만 다음행동' 권고는완성경로로승계하지않음. 이번기기/빌드/추론/실측0. 아래는기존이력.
+
+## 2026-10-03 작업 후 유휴 오차 국소화·정책 사용 경계 구현
+
+- [판독·한계·재현](results/online_policy_study_01/post_idle_pc_v1/README.md), [그림](results/online_policy_study_01/post_idle_pc_v1/index.html). 마지막CPU75–120초82.138J vs 첫CPU46.551J, 활성/대기0; AP최고36°C 첫관측약99.197초. host명령120 vs119/실패0, 화면·비충전·thermal 조건 관측상유지. 추가요청/명령급증으로 설명되지 않지만 외부앱/OS/통신/숨은열 원인은미확정. 동시활동 계측이 없어 같은기록으로원인확정불가.
+- 수치재생은 유지하고 `decision_support`와 `--purpose` 검사추가. 에너지/AP정책선택은 미래오차한도미검증으로차단, 미래bound=null/동등성미입증. 사후최대오차를보편한도로쓰지않음. 큰예측실패자체해결/모형완성아님. 기존모형/strict/기본·experiment_ready=false 보존, 재적합/제외/기기/계획/claim0.
+- 관련PC6검사·원본6세션/144창·실CLI수치불변/정책선택출력차단·freeze해시불변 확인. 다음 행동: 확보한 정책 비교를 서비스 제약 충족·응답 차이와 에너지/열 우열 유보로 구분해 연구 본문에 연결한다. 새변수없는동일실측반복은 하지않는다. 아래는이전이력.
+
+## 2026-10-03 분리 부하 개발3·동결·독립 확인6 완료
+
+- [결과·소비·재현](results/online_policy_study_01/separated_power_final/README.md), [대시보드](results/online_policy_study_01/separated_power_final/index.html). 준비 중 silent/reaped 조회 누락을 공식창 승인 전 최대1회로 분리하고 새 관측 성공 후에만 진행하도록 보완했다. 기존 timeout/안전 gate/APK 불변. 실제 원인 미확정; 성공 run04의 누락허용 사용0회.
+- 앞선 CPU/PAR 개발2를 보존하고 SER개발1→freeze19637bf1→독립확인6 완료. v1/v2 stopped_no_resume, v3 미소비 초안, v4 완료. v4 본672+warmup56=728/runtime28/staging7·49/pull2/APK0/ADB4681/2262.958초. 이번 턴 실패 포함840 확인 추론; 이전v1까지952와 미회수2세션의 보수적 본0–192 별도. 앱cleanup7·회수7·host정리7·종료시ps부재, parent/child exited.
+- CPU/PAR 모두96/96 마감, SER 두 번61/96. PAR 긴급P95는CPU보다456–469ms 단축. 예정 도착 J오차 −35.497~+6.004J, AP MAE0.151~0.927°C/최대4.213°C. 마지막CPU의 부하후유휴 전력·AP상승은 미예측이므로 작은 에너지/열 정책 순위와 원래 목표 전체 완료는 미판정. 제외/재적합0; 기존 AP557fbe·기본·strict·experiment_ready=false 유지.
+- PC12검사/소스110/5초창144 합/CLI/오차재계산 통과. 다음 행동: 기존 마지막CPU 유휴 상승의 기록 경계를 국소화하고 배경 변동 미예측 조건을 명시한다. 추가 실측 자동반복 없음. 아래는 과거 이력이다.
+
+## 2026-10-03 분리 부하 Run01 중단·첫 개발 자료 보존
+
+- [결과/소비/재현](results/online_policy_study_01/separated_power_run01/README.md), [관측 화면](results/online_policy_study_01/separated_power_run01/index.html). 공간 확보 후 새계획1회 실행: CPU개발1 적격, 병행개발 준비 listing3초 timeout으로 stopped_no_resume. 개발잔여1/확인6 미시도, 추정·동결0. 원인미확정, 직후회수성공을 보존.
+- 확인소비 본96+warmup16=112/runtime8/staging2·14/pull1/push·설치각1/ADB877/428.988초. 두 번째 terminal미회수로 미확인본0–96 별도. 첫앱cleanup완료/두 번째미확인; host세션정리2+설치정리1/최종ps부재. 기존계수·FAIL·strict·experiment_ready=false 불변.
+- 첫120초165.373J, 초기AP32.6, CPU단독만관측,96완료/54마감. 새예측/정확도PASS없음. 다음PC행동: 성공개발1 보존하에 반복된 준비조회 timeout의 관측/중단 경계 검증. 기존계획재실행0. 아래는과거기록.
+
+
+## 2026-10-03 분리 부하 개발3·혼합 확인6 PC 준비 / 저장공간 보류
+
+- [계약·APK·예산·명령](results/online_policy_study_01/separated_power_v1/README.md). 개발 분류32/탐지32/혼합32 분리, 확인48:48 교대96. 같은정책3, 새정책0. AP557fbe 유지,50초부하전전력+4상태증가분 및서비스평균만개발자료로고정. 사후후보2개미채택보존.
+- 새계획 separated_power_plan_v1 SHA0340473b…eac7f, APK5c284190…ba4c. 9세션/본864+warmup72=936/runtime36/staging9·63/pull2/APKpush·설치각1/고정1890초/예약8310초/ADB29200/retry0. PC준비완료·기기미검증·미소비,출력/claim없음.
+- Python15/Android8/서명·소스/실제Check 통과. 기존mode/기본/strict/experiment_ready=false 불변. 초기SDK누락·서명환경오류는PC에서수정,최종프로젝트인증서일치.
+- 현재C:약128MB로host2GiB운영예약부족. 기존빌드중간폴더삭제는자동검토 blocked by policy로거절되어삭제0. 사용자에게공간확보요청;이번기기명령0. 다음행동:공간확보후동일계획/현재기기gate를확인해승인된묶음실행. 아래는과거단계.
+
+
+## 2026-10-03 장구간 점유 전력 추정 완료·프로토콜 전이 실패
+
+- [계약·계수·오차·재현](results/online_policy_study_01/legacy_transfer_v1/README.md), [화면](results/online_policy_study_01/legacy_transfer_v1/index.html). 옛개발3의272창으로 고정구조1회 적합, 온라인13은 사후평가만. 평균11.877/최대31.704J로 기존7.118/17.871보다 악화하여 미채택. 독립확인0·기준완화0.
+- 부하전후 유휴가 평균차이7.206J/60.7%; 산술분해이며 원인확정/보정 아님. 자료 재사용 경로는 완성했지만 현재 배경·점유 전력의 전이 예측은 미해결. 기존 AP/서비스·동결·기본/strict/experiment_ready=false 불변.
+- 다음 행동: 현재 계측 조건의 유휴·분리부하 개발과 혼합 독립확인을 묶어 배경 변화/상태 항을 구분하는 경로 준비. 옛3세션 또는 동일96요청 단순반복은 하지 않는다. 원본9해시/PC2검사/13구간합 검증, 이번 기기·새계획·claim0. 아래는 과거 단계.
+
+
+## 2026-10-03 상태 점유 식별력: 기존 장구간 원본 재사용으로 전환
+
+- [수치·근거·재현](results/online_policy_study_01/identifiability_v1/README.md). 온라인13의 조건수119.5, 분류CPU 총11.79초. 옛 개발3 원본의 지원272개5초창은 조건수6.37로 더 분리된다. 미지원 탐지GPU 포함88창은 제외표 보존; 부분을 전체창으로 표시하지 않음.
+- 옛 W는250ms 반복 regimen 평균이며 순간 lane 점유 W와 다름. 원본9해시 확인, 새 계수 적합0. 추가 장구간 측정 필요를 지금 선언하지 않는다. 실패 pooled 후보 판정 불변, 기본/strict/experiment_ready=false 유지.
+- 다음 행동: 기존272창 실제 점유와 동일창 J를 연결해 전력 추정 및 이미 본 온라인자료의 프로토콜 전이 평가. 새 독립 확인으로 표현하지 않는다. PC2검사·실제 원본 분석 완료, 기기/새계획/claim0. 아래는 과거 단계.
+
+
+## 2026-10-03 배경 전력 후보1개 평가: 미채택
+
+- [판독·재현](results/online_policy_study_01/pooled_candidate_v1/README.md), [화면](results/online_policy_study_01/pooled_candidate_v1/index.html). 이미 본13세션의 사후 개발/세션제외 평가이며 독립 확인0. 평균 절대J7.118→5.307이나 최대17.871→19.447로 사전 진행 조건 실패. 기준 완화·최악 세션 삭제·추가 후보 탐색·확인 실측0.
+- 기존 AP/처리시간·동결557fbe·strict/default/experiment_ready=false 보존. 일정/응답·조건부 AP와 관측 비교는 가능하지만 작은 J 차이의 정책 우열은 미판정. 원래 목표 진행 중이며 완료/불가능으로 선언하지 않는다.
+- 다음 행동: 고정24분류/72탐지의 상태 점유 식별 기여를 계산해 단순 반복 대신 최소 입력 변경의 필요를 특정한다. 후보2+기존8검사 통과. 이번 PC 단계 기기0; 직전 적격4/실패1/520추론은 보존. 아래 기록은 과거 단계다.
+
+
+## 2026-10-03 계측 대조 완료·전력 보완 대상 특정
+
+적격4를 두block에서 확보하고 냉각 중단1의 실제소비/부분자료를 보존했다. 조회900ms는표본위상을 넓혔지만J차이방향이 두대비에서 불일치하고 기존모형 오차도 남았다. 새정확도PASS/기본채택은 하지 않는다. 관측J 범위보다 세션별20초배경W를 전체창에 전용한 예측변동이 커, 다음후보는 pooled resident 항이라는 단일최소구조만 검토한다. 기존13적격을 쓰면 새후보에 대해서는 사후개발/평가이고 원래동결 확인은 그대로 유지한다. 연구 전체목표는미완료이며 기존모형/strict/default/experiment_ready=false를 보존한다. [근거](results/online_policy_study_01/sampling_run01_complete/README.md).
+
+## 2026-10-02 전력 표본 위상 민감도만 별도 대조 — 채택
+
+관측 사실은 개발1초 조회가2초 부하 반복의8구간 중2구간에 집중됐다는 것이다. 센서 내부 갱신/aliasing 편향 크기는 미확정이다. 기존 승인에 따라 같은APK에서1000/900/900/1000ms,96요청 병행4를 수행하며 원래계수 적합이나 새로운 정확도 PASS는 하지 않는다. sampler만 명시적opt-in으로 분리하고 나머지 정책/상태/환경/cleanup은 유지한다. 900ms 추가 계측 비용을 포함한 프로토콜 비교이며 절대 기준 계측이나 순수aliasing 인과실험으로 표현하지 않는다.
+
+## 2026-10-02 온라인 정책 독립 평가 완료·정밀 비용 모형 미승격 — 채택
+
+사용자 자율 실측/실패 복구 승인으로 온라인 CPU/CG_DC병행/CG_DC직렬의 개발3→동결→확인6을 완료했다. 구성 변경으로 Activity가 파괴된 새 증거에 한해 별도 온라인 Activity의 common configuration callback을 같은 소유자에서 처리했고, 기존 Activity/실제 onDestroy 취소는 보존했다. 실제 구성 변경 callback은 새실측에서 발생0이므로 그 내성은 PC검증 범위다.
+
+기존 적격 개발2와 신규1의 APK 차이는 기록하고 실패·소비·구 프로토콜을 보존했다. 후보군/추정법/입력/마감/gate는 실행 중 바꾸지 않았다. 확인자료 재적합0이다. 새6 확인의 서비스100%/AP오차와 에너지 과소예측을 모두 채택 결과에 반영하며, 작은 정책차이를 구분할 정확도가 부족하므로 새 후보를 default/strict에 승격하지 않는다. experiment_ready=false 유지. 원래 목표의 정책/입력→일정/J/AP→새 관측 연결은 실제 구현·검증됐으나 안정 절감/열 우월성은 미입증이다. [수치·소비·판정](ONLINE_POLICY_MODEL_STUDY_20261002.md).
+
+## 2026-10-02 원래 목표를 제한 도구 완료로 대체하지 않음 — 채택
+
+사용자가 원래 목표 달성을 다시 명시했다. ‘제한 시뮬레이터 완료 후 팀 공유’는 하위 작업의 종료 설명으로만 남기며 전체 프로젝트 종료 결정으로 사용하지 않는다. 완료 기준은 자원 배정·시작 대기의 서비스/J/AP 예측과 독립 정책 차이 판독이다. 이번에는 기존 계수를 바꾸지 않고 예정 입력→일정→W/M0 계산을 연결했다. 계산 가능·계측 지원·독립 오차 확인·정책 차이 식별을 분리하며 PC 결과를 실측 검증으로 승격하지 않는다. [코드/검증/구체적 다음 작업](results/policy_prediction_bridge_01/README.md). 기기 작업0, 실행 계획/claim0.
+
+## 2026-10-02 등록된 조건부 AP 확인6·제한 시뮬레이터로 연구 종료 (완료)
+
+새 확인4의 적격 완료를 기존2와 별도 block으로 보존해 사전 지정6개를 판독했다. 동결M0 유지·M1 미채택·재적합0이다. AP 평균/최대/최고 및 냉각 방향/미식별을 공개하되 근거 없는 정확도 PASS나 정책 우월성을 만들지 않는다. 등록된 실제 일정＋common+35초 전AP에 한해 한정 시뮬레이터에 연결하고 원래 strict/default는 유지한다. 기존 W식의+5.44–+20.45J 오차와 작은 병행/유휴 이력 한계 때문에 임의 도착J/AP·열 피드백의 지원을 확대하지 않는다. 연구 결과와 소프트웨어의 제한 완료를 전체 물리 모형 완성과 구분하고 experiment_ready=false를 유지한다. 추가 실측·새 후보·새 계획 자동 실행 대신 완성된 범위의 결과 공유로 종료한다.
+
+## 2026-10-02 사용자 중지 보존·동결 M0 재사용·확인4 신규 실행 (승인)
+
+후속02는 개발5＋기존C의 개발6과 M0 동결, 확인2 완료 뒤 사용자 이동 요청으로 staging 중 중지됐다. 모형/연결 실패로 변경하지 않는다. M1은 사전 LOSO 선택 규칙을 충족하지 못해 미채택이며 확인 자료로 다시 맞추지 않는다. 새 승인으로 잔여4만 별도 plan_v3 ID/registry에서 실행한다. 원래2개 확인을 반복하지 않고 APK·수식·초기화·계측·timeout·gate·계수 변경0, host subset만 보완한다. 휴지 공백과 환경 차이는 별도 block 한계로 유지한다. 사용자 목표의 제한 시뮬레이터 완료와 일반 열 피드백 정책 검증을 구분하며 default/strict/experiment_ready=false를 유지한다.
+
+## 2026-10-02 — 미완료 실측의 신규 후속 block과 적격 C 재사용 (사용자 승인)
+
+- 사용자의 “미진행된 실측 마저 진행” 지시로 새 follow-up 02를 한 번 실행한다. 종료된01의 소비 기록은 유지하며 재개하지 않는다. 적격 첫 C만 원자료·manifest·판독 입력 해시로 고정해 개발 자료로 가져오고 나머지 개발5 이후 동일 사전 계약으로 추정/동결·확인6을 수행한다. 실패 L35는 적합 표본이 아니며 소비·실패 분모에서는 지우지 않는다.
+- APK·앱/센서·조회 주기·timeout·부하·추정 격자·선별·중단 기준은 그대로다. 과거 timeout 내부 원인은 미확정이고 이번 후속 경로 구현은 그 원인의 해결이 아니다. 개발 중 공백/실패 준비 이력/환경 차이는 사전에 기록하며 순번의 산술 균형을 실제 환경 균형으로 해석하지 않는다. 재사용 C는 신규 독립 확인으로 집계하지 않는다.
+- 새 실행 예산과 이전 소비를 구분한다. 최대11세션/280추론·기기9710초＋PC3600초/35600ADB·배포0, 실패/미식별이면 다음 단계 없이 종료한다. 확인 후 재적합·새 후보·추가 실행은 없다. 기존 원본/동결/default/strict/experiment_ready=false 보존. 근거: [실행 전 후속 계약](AP_MODEL_COMPLETION_STUDY_20261002.md).
+
+## 2026-10-02 — 개발·동결·확인 종료형 연구 실행 연결 (사용자 승인)
+
+- 실제 실행은 첫C 적격 완료 뒤 다음 L35 준비의 단발 uptime client timeout으로 종료됐다. 원인 미확정이고 재현 가능한 실행 코드 결함은 확인되지 않아 조건/timeout을 바꾼 자동 재실측은 하지 않는다. 개발/확인 모형 적합 실패와 자료 획득 실패를 구분한다. 일부C의 작은AP오차를 새 후보 독립 확인으로 승격하지 않는다. 계획/소비/실패·부분 회수/정리 결과를 최종 기록한다.
+
+- 사용자 ‘계획 마무리 후 연결된 기기에서 실측까지 진행’ 승인으로 [사전12세션 설계](AP_MODEL_COMPLETION_STUDY_20261002.md)를 실제 host 경로에 연결했다. 신규 입력/모형 후보 추가/식별 기준 완화는 하지 않는다. 실행 장애의 수정 가능성과 과학적 식별·예측 실패를 구분하며, 후자는 자동 재실측 없이 최종 결과로 남긴다.
+- 개발6만 적합/LOSO/선택에 사용하고 확인6은 생성된 모형 freeze를 바인딩한 후에만 진입한다. 기존 계수/사후 후보/두 독립 확인/모든 종료 계획은 보존한다. 기본·strict 지원 확대/experiment_ready 변경 없음. 기존 미소비6세션 plan은 새 host 코드와 다르므로 실행하지 않는다.
+
+## 2026-10-02 — 열 모형의 끝없는 진단 확대를 막는 종료형 설계 (권고, 실행 미승인)
+
+- 사용자 요청에 따라 [개발6→동결→독립 확인6](AP_MODEL_COMPLETION_STUDY_20261002.md)의 입력·한 후보군·선별·중단·종료와 예산을 실행 전에 명세했다. 12세션은 성공 보장·검정력 계산 결과가 아니라 조건/순서 대비와 새로운 입력 확인을 포함한 상한이다. 모든 내부 열 기제나 임의 정책까지 이번 완료 조건으로 확대하지 않는다.
+- 기존6 plan/동결원본을 변경하지 않고 별도 오프라인 개발 분석 역할을 선언한다. 확인 자료 재적합·새 수식 자동 추가·13번째 세션 금지. 한정 지원 또는 미식별도 최종 결과다. 한 후보군 추정/동결과 확인 실행 연결은 아직 PC 구현 대상이므로 기존6부터 먼저 실행하지 않는 것을 권고한다. 실행예산 승인·소비0, 기기0, default/strict/experiment_ready=false 불변.
+
+## 2026-10-02 — AP 배경 대 부하 시점 통합 대조 채택 (PC 설계, 실행 미승인)
+
+- [고정 계약](results/ap_background_contrast_01/analysis_contract.json): C/L35/L65/L65/L35/C로 세 조건 평균 순번을 맞춘다. 선형 순번항의 산술 균형과 실제 환경/잔열 통제는 구분한다. 한 묶음에서 부족하면 미식별 종료하며 같은 B2·추가 후보/세션을 자동 반복하지 않는다.
+- 모든 조건은 baseline→common+35 전 AP만 E/H 초기화에 쓰고 후기값은 목표로만 사용한다. 무부하를 실제0요청으로 취급하며 가짜 작업/센서값을 넣지 않는다. 기존 τ30/γ0 후보·원래 계수는 고정, 새 β/k 미채택 보존. 이번 자료를 나중에 모형 개발에 쓰면 그 모형의 독립 확인이 아니다.
+- 기존 APK/자율 실행/소유권/회수 경로 재사용, 설치 불일치 fallback 금지. PC13검사/Check/원문 판독 완료, 새 계획144추론/5,250초/19,400ADB를 미승인·미소비로 준비했다. 기기·설치·실측·claim0. 정확도/정책 PASS·strict/default 승격 없음. 실행 승인과 환경 적격성은 아직 충족한 것으로 기록하지 않는다.
+
+## 2026-10-02 — β/k 사후 후보 미채택, 배경과 부하 반응의 식별 한계 보존 (채택)
+
+- 사용자 ‘어떻게 알아내는가/진행’에 따라 [단일 구조 PC 판독](results/ap_rate_identification_01/README.md)을 수행했다. 분석 계약을 적합 전에 기록하되 자료 결과는 모두 이미 본 사후 분석으로 명시했다. 기존 개발1만 적합해 β=기존값/k0.720002를 얻었으나 부하7세션 모두 최고 절대오차가 증가하므로 후보를 기본/strict로 채택하지 않는다.
+- 무부하의 일부 +0.1°C 상승과 초기 기준 오차를 부하 잔열의 증명으로 해석하지 않는다. 수치 rank와 물리적 식별은 다르며 두 자유 감쇠율의 무부하 항 교환도 구분한다. 주변온도/센서지연/내부열 원인은 미확정이다. 기존 독립 확인·계수·원본·소비 계획은 보존한다.
+- 현재 제한 시뮬레이터 사용과 결과 본문 완성에는 추가 실측을 강제하지 않는다. 열 정책 확장의 다음 권고는 동일 조건의 무부하 대 부하 시점 통합 대조이며 **아직 실행 설계 채택·승인·예산 확정이 아니다**. 이번 새 실측/계획/claim0, experiment_ready=false.
+
+## 2026-10-02 — 준비 이력 후보의 독립 오차 확인과 채택 판정 분리 (채택)
+
+- 사용자 명시적 실측 승인으로 기존 plan_v1을 한 번 실행해 두 조건 모두 정상 회수했다. [사전 고정 후보 결과](AP_MEMORY_CONFIRM_RUN01_20261002.md): τ30/γ0·계수 불변, 부하 전 AP 초기화/실제 일정 조건부 MAE0.178596/0.189876°C. 새 결과를 후보 개발에 사용하지 않는다.
+- 기존 preload 대비 평균·최고오차 개선은 새 확인 근거로 보존한다. 후기 작은 상승의 크기와 순간 최대오차는 남으며 조건당1세션으로 보편 오차한도·물리 잔열·정책 판별을 승인하지 않는다. 원래 W식 오차+8.006/+10.568%도 별개로 남긴다.
+- 소비 계획/원본/freeze/default/strict/experiment_ready=false를 유지한다. 완료 결과만 공유하고 추가 실측·후보 재보정·확인 추가는 자동 수행하지 않는다. 다음은 제한 시뮬레이터 본문 반영이다.
+
+## 2026-10-02 — 준비 이력 후보의 확인 목적과 종료점 고정 (PC 설계 채택)
+
+- [새 확인 계약](results/ap_memory_confirmation_01/analysis_contract.json): τ30/γ0 후보를 그대로 두고, 같은 runtime4/warmup8 후 등록 부하를+35/+65초에 허용하는 두 새 세션을 권고한다. 순서/시간은 결과 전에 고정하며 임의 가열·온도 맞춤·재적합은 하지 않는다. 부하 전 E/H 초기화는 관측 입력 처리이며 미래 AP를 사용하지 않는다.
+- 후기 재상승 해결을 이 후보의 성공 조건처럼 전제하지 않는다. 자료 적격성/오차 산출/정확도/정책 판별을 분리하고 조건별1세션으로 반복 안정성을 주장하지 않는다. 74e APK는 후보 개발의747/3d8과 프로토콜 전이로 표시한다. 설치본이 다르면 자동 배포 없이 중단한다.
+- PC 계획·동결·검증만 완료했다. 전체2,090초·64추론·6,600ADB, push/설치/재시도0. 실행 상태는 미승인·미소비이고 Run/claim0; 실행 준비와 실제 독립 확인 완료는 별개다. 기존 freeze/default/strict/experiment_ready=false 유지.
+
+## 2026-10-02 — 준비 반응 후보는 사후 진단 전용, 스로틀 계수 미도입 (채택)
+
+- [사전 구조·사후 평가](results/ap_preparation_memory_01/README.md): 기존 냉각률/상태 기울기를 고정한 추가 H상태1개를 구현했다. 부하 전 AP만으로 E/H를 추정하고 개발1세션만으로 τ30초/γ0을 얻었다. 네 적합 제외 세션의 평균·최고오차 개선은 보존하지만 새 독립 확인으로 부르지 않는다.
+- 후기 개선은 주로 E 변경이며 후기 재상승을 재현하지 못했다. 개발 최대오차 악화·γ0경계·초기값 민감도를 숨기지 않는다. 기본/strict/정책 비용으로 승격하지 않고 별도 후보만 보존한다. 기존 기각 지연 후보도 변경하지 않는다.
+- COLLECT05 완료4세션의 AP/시간 연관은 조건층에 따라 부호가 달라 인과 스로틀 곡선을 추가하지 않는다. 온도 무관 가정으로 승격하지도 않는다. 준비 이력에 대한 새 확인 필요 여부는 다음 결정이며 이번 새계획/실측0. 기존 freeze/FAIL/원본/experiment_ready=false 불변.
+
+## 2026-10-02 — 실행 도구 완성과 물리 예측 검증 분리 (채택)
+
+- `tools.d1_simulator`는 기존 엔진·동결 B2 선택·서비스 비교 규칙·모형 지원 검사를 호출한다. 새 전력/열 가정이나 계수는 추가하지 않는다. 지원되지 않는 도착 비용은 null로 차단하고 고정870건 모형과 분리한다.
+- 실측 참조는 queue/explore/201 및 저장 일정의 backend·도착·dispatch·실행·응답·저장·worker/lane 전체 경계 일치를 요구한다. 정확한 기록 일정과의 대응이지 현재 PC 예측의 독립 실기기 검증이 아니다. 관측 전류·AP·실현 미래 시간을 예측 입력으로 전달하지 않는다.
+- 사용자 추가 실측 허용은 존중하되, 제한 도구 완료에 동일 ABBA/열 진단 반복은 필요하지 않다. 기존 관측의 기술적 상충을 결과로 사용하며 미식별 후기/최고·열 피드백을 ‘완성’으로 승격하지 않는다. 기기0·새계획0·claim0, 원래 freeze/default/strict/experiment_ready=false 유지. 근거: [사용법·판정·검증](results/simulator_workbench_01/README.md).
+
+## 2026-10-02 — 두 기록 일정 직접 비교와 모형 예측을 분리 (채택)
+
+사용자의 실측·시뮬레이션 마무리 요청에 따라 서비스 적격 후보 CPU_URGENT/B2만 ABBA4세션으로 직접 관측한다. 저장 일정·입력·동결 계수 불변, 새 opt-in CPU replay로 동일 APK의 두 배정을 지원한다. 각2세션은 순서 역전 기술 비교이며 정밀도/정책 우월성/동적 에너지·AP 지원 확대의 증거가 아니다. 기존 AP 지연 후보 미채택 유지, 추가 후보 탐색·기존 종료 계획 재개 없음. 실행4세션을 완료했고 두 비교쌍 B2−CPU J−9.198/−1.611·마감+2/24를 제한된 관측 결과로 채택한다. 효과 크기·초기조건 변동 때문에 일반 우월성/엄격 모형 지원은 확대하지 않는다. 근거: [사전 예산·판독](RECORDED_POLICY_COMPARE_20261002.md).
+
+
+## 2026-10-02 — 사후 지연 후보 미채택·PC 시뮬레이션 본문 완료
+
+- **승인/수행:** 사용자 최신 요청에 따라 기존 실측만으로 가능한 후보 보완·민감도·본문을 완료했다. 이전 확인02의 무적합 판독은 그대로 보존하고 새 사후 후보를 분리했다. [적합 전 계약](results/ap_model_completion_pc_01/contract.json)의 구조1개/τ만 추정, 기존 개발1세션 τ4초·다른4세션 적합 제외. 모든 자료를 이미 봤으므로 새 독립 확인으로 부르지 않는다.
+- **판정:** 평균 MAE 감소만으로 채택하지 않는다. 최고온도 차이5개 모두 악화·CG_DC 최대오차 악화·후기 재상승 미재현이다. 미채택 candidate JSON/API는 진단 전용, 원래 계수/절차/default/strict 불변이다. 엔진 비용 사용은 unsupported/null로 명시한다. τ3.5–4.5초의 전체세션 제외 안정성을 물리 지연 식별이나 신뢰구간으로 쓰지 않는다.
+- **에너지:** 기존 상태W·저장 일정3개·protocol별 관측 잔차만 사용하는 민감도다. CPU_URGENT/B2의0.884J 진단 차이를 구분하려면 유휴 잔차에 매우 민감함을 확인했으나 보편 오차범위/새 W 보정/정책 우열을 만들지 않았다. 공통 배경의 산술 상쇄와 실제 배경 동일성 증거를 구분한다.
+- **완료/권고 구분:** [결과·논의 본문](ENERGY_AP_RESULTS_DISCUSSION_DRAFT_20260930.md)은 현재 증거 범위에서 완성했다. 서비스 적격 정책쌍의 실제 비용/변동성과 AP 이력 반응은 주장 확장에 필요한 미확인이다. 미채택 후보를 같은 B2 실측으로 확인하는 반복은 권고하지 않는다. 새 기기 계획·claim·기기 명령0, experiment_ready=false 유지.
+
+## 2026-10-02 — 두 이력 확인 결과와 후보 적용 경계
+
+- **실행 사실:** 사용자 실측/문제 해결 승인으로 별도 edition2를 준비·PC10검사·Check·동결 후 Run1회 실행했다. [두 세션/원본/종료](AP_BUNDLE_CONFIRM_RUN02_20261002.md) 모두 완료·회수,64추론·616.410초·ADB1,343·push/설치/재시도0. 새 edition은 ID·경로를 명시적으로 분리한 것이며 자동 재시도 선택기는 아니다. 과거01의 소비/중단 기록은 불변이다.
+- **판독 사실:** 사전 동결한 후보·고정 방향창을 변경 없이 적용했다. 부하 후 AP 재적합0, 각 이력1개의 새로운3d8 전이 확인. 후보 평균 오차는 감소했지만 후기+0.2/+0.1°C 상승을 냉각으로 예측했다. 작은 양자화/시간 불확실성·독립 변동성 미확인과 함께 기록하고 물리 원인을 확정하지 않는다.
+- **현재 적용 결정:** 후보는 실현 일정·부하 전 AP 조건부 진단으로 유지한다. 평균 개선만으로 최고/한도·온도 피드백 처리시간·동적 정책 J/AP 순위를 지원하지 않는다. 원래 W식의 새+7.01/+9.47% 차이를 보편 오차 한도로 채택하지 않는다. 기본/strict/계수·기존 FAIL·experiment_ready=false 불변이며, 확인 결과에 맞춘 후보/실측 추가는 하지 않는다.
+
+## 2026-10-01 — 판독 완료와 실측 완료·그림 실패를 분리
+
+- **구현 결정:** 정상 JSONL prefix만 소비 하한으로 사용하고 미회수는 null로 남긴다. 실제 반환 event는 host_inference_return이며 부재한 request_return 종류를 추론 반환0으로 해석하지 않는다. 최초 session attempt receipt가 미시도를 입증할 때만0을 표시한다. 그림 실패는 수치/자료 적격성과 별도 상태이고 원래 receipt·stack을 보존한다.
+- **PC 사실:** 원래625e5a8 코드에서 부분 JSONL은 summary를 막고 렌더링 실패는 analysis_ineligible+깨진 링크를 만든 결함을 재현했다. 수정 경계10검사·기존 원문 두 세션의 실제CLI4경우를 통과했다. [검증/수치/자료 역할](results/ap_bundle_confirmation_01/readout_pc/verification.json). 기존 개발/확인 자료의 사후 PC 재생이며 새 독립 확인이 아니다.
+- **보존 결정:** 기존 consumed plan_v1·원자료·당시 소스/결과는 불변이다. 새 분석 코드 해시를 옛 계획에 대입하거나 동일성 검사를 우회하지 않는다. 후보 재적합/strict/default 승격/새 계획·실측0, experiment_ready=false 유지. 다음 실측 목적은 이미 정한 두 이력의 고정 후보 확인이며 추가 포괄적 감사가 아니다.
+
+## 2026-10-01 — AP 확인을 한 실행 묶음으로 통합, 최초 gate 실패면 종료
+
+**구현/실행 결정:** 사용자 “묶어서 실측하는 쪽으로 가자”, 중단 뒤 “재개해”를 반영해 기존 AP 후보를 재적합하지 않는 확인2(한 pulse/두 half-pulse) 묶음을 채택했다. 총64추론/2,090초/ADB6,600·push/설치0·재시도0, 동일 설치본 실패 시 중단. 진단/개발/승인을 반복해 세션마다 끊는 방식으로 이어가지 않는다. **실행 사실:** 첫 devices -l에0대여서 plan claim 후 중단·두 세션 미시도. [receipt·소비·원래 오류·host 종료](AP_BUNDLE_CONFIRM_RUN01_20261001.md). 이번 결과는 AP/W 검증이나 과거 원인 해결이 아니다. 새 실측/계수/strict/default/experiment_ready 승격 없음; 기존 후보와 미확인 범위 유지.
+
+## 2026-10-01 — 기존 가산 후보 미채택 유지·유휴 법칙 미식별
+
+- **사후 사실:** 완료 C/L＋기존4세션의 [고정창/10초 bin 판독](RESIDENT_IDLE_HISTORY_PC_20261001.md)으로 무부하 시간 변화·loaded 전후 변화의 방향 불일치를 기록했다. APK/초기조건·이력이 다르며 bin을 독립 세션이나 보편 예측오차 한도로 쓰지 않는다.
+- **판정 채택:** 기존 후보 식/창을 새 L에 그대로 적용한 첫 dispatch→120초 차이는+18.139→+27.929J. 이전4점수 불변·총2개선/3악화, 가산 후보 미채택 유지. 새 time/thermal/hidden-history 법칙을 추가 적합하지 않는다. 원래 W/AP·AP후보·strict/default/experiment_ready=false 보존.
+- **출력 경계:** 적격 고정창 관측 재생과 동결식 외삽은 제공하되 미래 유휴 비용의 전용 법칙/동적 정책 J/AP 순위는 미판정이다. 후속 독립 예측 질문을 특정했으나 새 기기 계획/예산/승인을 만들지 않았다. PC6검사·출처/동결 해시 재검증, 기기 명령0.
+
+## 2026-10-01 — resident 대조03 완료 자료의 판독 경계
+
+- **확인 사실:** [실행03](RESIDENT_CONTROL_RUN03_20261001.md) C/L 두 세션 정상 완료·회수,40추론/1543명령/679.531초. 동일 설치본 push/설치0. 원본·두freeze·APK·실행95소스 불변.
+- **판독 결정:** 공통120초 J와 pre/late 변화는 고정창으로 산출했다. L 냉각후기0.176161초 결측/AP 끝 bracket 부재는 null로 보존한다. 창 이동·0채움·부분창을 전체창으로 표현하지 않는다.
+- **연구 경계:** 초기 AP/사전 전력·고정순서가 다른 조건당1세션의 구조 판별용 개발 쌍이다. −0.202361W를 부하 인과효과/전역 보정계수로 쓰지 않는다. 동결식은 외삽 진단, 새 후보 적합/독립 정확도 PASS/default 변경 없음. experiment_ready=false 유지. 다음 유휴 이력 PC 분석은 계획이며 아직 보완 모형을 채택하지 않았다.
+
+## 2026-10-01 — 공간 검사 수정본의 새 계획03 동결
+
+- **계획 채택:** 사용자 “계획 ㄱㄱ”에 따라 동일 C0/L24·같은APK·입력·센서·판독 기준을 새 ID03에 고정했다. 2세션/40추론/2,090초/6,600명령/재시도0, [해시·실행 경계](RESIDENT_CONTROL_MEASUREMENT_PLAN_20261001.md#새-실행-계획03-준비-완료--2026-10-01). 기존 consumed v1/v2를 재개하지 않는다.
+- **PC 사실:** claim 전 최소 공간 검사와 새 edition 경계7테스트·실제PS Check 완료,95소스/두manifest/기존APK·서명·입력·freeze 동일성 확인. 사용자 정리 영수증은 보존해시 확인 완료다. 설치본·현재 환경·연결 안정성은 기기 미검증.
+- **권한·연구 경계:** 이번 요청은 준비이며 새 계획은 미승인·미소비, Run/기기/claim0. 구조 판별용 개발 쌍이고 독립 확인/인과/정확도 PASS/자동 후보적합 아님. 원래 모형/AP후보/strict/default/experiment_ready=false 유지.
+
+## 2026-10-01 — 로컬 저장 공간 실패와 실행 전 최소 admission
+
+- **확인 사실:** [대조02](RESIDENT_CONTROL_RUN02_20261001.md)는 설치본 pull에서 exit1/로컬 쓰기 I/O 오류, 직후 C: free0으로 종료됐다. 기존 화면 timeout 내부 원인과 별개다. 5명령/8.360초·앱 launch0·추론0, plan_v2 소비·stopped_no_resume. 부분 APK/원본·소비 registry를 보존한다.
+- **구현 채택:** resident-control Run에서 후보 APK 바이트 수의 최소 여유 공간을 claim/기기 명령 전에 확인한다. 전체 저장량/장시간 안정성 보장은 아니며 소비 후 추가된 PC 수정이다. 초기 실패 판독의 미시도·cleanup 해당 없음·관측 null을 보존한다. 14개 관련 PC검증 통과, 실기기 재실행 없음.
+- **범위:** 사용자 공간 확보 후 재개는 PC 검증·문서·Git만 수행한다. 기존 두freeze/APK/strict/default/experiment_ready=false 불변. 종료 계획 재개/새 계획 자동 생성/새 정확도 PASS 없음. 향후 실측은 별도 새 ID와 승인이 필요하다.
+
+## 2026-10-01 — resident 대조 부분 종료와 판독 범위 확정
+
+- **실행 사실:** 사용자 “실측 ㄱㄱ” 승인으로 plan_v1만1회 실행, C완료/L부분, stopped_no_resume. [원본·소비·정리](RESIDENT_CONTROL_RUN01_20261001.md). 종료 계획을 재개하거나 자료를 대체하지 않는다.
+- **판독 채택:** C무부하 W1.295715→1.114261은 부하 이외 시간 변화의 관측이며 원인·새 계수·인과 비교는 미확정. L전체창/C–L 차이 null, C냉각 끝 결측도 고정창 유지/null. 화면 timeout은 확정, 내부/무선 원인은 미확정. 앱 cleanup과 host force-stop/프로세스 부재를 분리한다.
+- **보존:** 두 freeze/strict/default/experiment_ready=false 불변. 후보 채택/독립 정확도 PASS/정책 우월성/추가 실측 승인 없음. 다음 PC 작업은 화면 조회 실패 경계 진단 하나다. 아래 준비 결정은 당시 이력이다.
+
+## 2026-10-01 — resident 대조 opt-in 구현 채택, 실측은 미승인
+
+- **구현 채택:** 기존 Activity/worker/sampler/cleanup을 사용하며 `resident-control-pair-v1`의 C만0요청을 허용한다. L 및 기존 실행은24요청이다. host가 각 분모/합계를 검증하고 실패 후 다음 세션/중복 정리를 차단한다. 기기 선택은 실행기의 최초 조회로 한 transport에 고정한다.
+- **PC 사실:** Python18/Android9·서명 패키징·실제PS Check 완료, [계획/해시](RESIDENT_CONTROL_MEASUREMENT_PLAN_20261001.md#실행-준비-완료-2026-10-01) 미소비. 원래 설계 JSON은 당시 blocked 증거로 보존했다. 현 예산은2세션·40추론·2,090초·6,600명령·재시도0.
+- **범위:** 동일 새 APK끼리의 시간 변화 기술용 자료다. 조건당1세션/고정순서의 원인 귀속·독립 확인 한계 유지, 계수/strict/기본 경로/experiment_ready=false 불변. 이번 작업은 실행 승인이나 실기기 검증이 아니다.
+
+## 2026-10-01 — 무부하 대조 목적과 실행 차단 구분
+
+- **설계 권고:** [C무부하1＋L등록부하1](RESIDENT_CONTROL_MEASUREMENT_PLAN_20261001.md)로 같은 준비 이후의 시간 변화와 부하 후 변화를 기술한다. 조건당1세션·고정순서이므로 인과 귀속/변동성/독립 모형 확인은 하지 않는다. 고정 일정 설명은 추가 실측 없이 가능하고, 동적 에너지 보완에는 누락 대조가 필요하다.
+- **구현 판정:** 현 APK와 host는24건 전제다. 요청0 JSON/강제 종료/setup-only로 대체하지 않는다. 설계 산술·입력 해시 Check를 실행준비 PASS로 표현하지 않는다. 수집기/Android 수정·새 APK는 이번 설계에서 수행하지 않았고 Run/후보APK hash=null이다.
+- **보존:** 두 세션/40추론/2,090초/6,600명령은 미승인 제안 예산. 기존 모형/미채택 후보/원자료/소비 기록/strict/experiment_ready=false 유지. 후속 구현 후 실행 동일성/예산 검증이 필요하며 자동 측정 승인을 만들지 않는다.
+
+## 2026-10-01 — 부하 전 유휴 가산 전력 후보 미채택
+
+- **판정 채택:** [RESIDENT-PRELOAD-OFFSET-01](RESIDENT_POWER_CANDIDATE_PC_20261001.md)은 네 세션을 이미 본 뒤 정한 후보1개다. 부하 전20초 평균＋원래 상태 차이의 고정식은2개선/2악화로 미채택; 창/배율 추가 탐색·AP 변경·기본/strict 승격 없음. prefix만 입력하는 정보 경계를 PC에서 구현했고 이후 전류 변경이 예측을 바꾸지 않음을 확인했다.
+- **다음 권고, 실행 승인 아님:** 같은 준비·resident의 무부하 대조로 시간 변화와 부하 후 효과를 구분할 최소 설계를 확정한다. 반복 수/정확도 허용폭/실행 예산은 현재 미확정이며 기기 계획·claim을 만들지 않는다. 후보 확인을 위한 즉시 재측정은 권고하지 않는다.
+
+## 2026-10-01 — CG_DC 전이 확인 종료, 후보의 진단 범위 유지
+
+- **실행 사실:** 사용자 “실측 진행하자” 승인으로 기존 ENERGY-AP-CGDC-TRANSFER-02를1회 완료. [소비/자료/오차](AP_CGDC_TRANSFER_RUN01_20261001.md). plan_v2는 소비·완료이며 기존 미소비/종료 계획과 구분한다.
+- **판정:** 고정 preload 후보가 다른 기록 일정에서 AP MAE0.463463°C를 보였으나 후반 재상승을 표현하지 못한다. 원래 W는120초 +20.583851J이며 이번 세 구간의 잔차는 모두 양수. 4세션 원문 유휴 대조도 완료했고 경계 혼합 제외 후 W1.046593–1.227498의 조건 차이가 남았다. 부하 후 재적합·기본 모형 채택·strict/최고/한도/정책 순위/experiment_ready 승격은 하지 않는다. 수집 조건/열 이력/주변 원인과 정책 판별력을 이 사후 분석으로 확정하지 않는다. 다음 PC 작업은 결과·논의 본문 반영이며 새 실측 승인이 아니다.
+
+## 2026-09-30 — 최신 팀 안내와 과거 실행 이력의 읽기 순서 고정
+
+- **공유 안내 채택:** 루트 README→[팀 안내](team/README.md)→결과/현재 STATUS/현재 준비 계약 순으로 읽는다. 기존 팀 안내는 당시 이력으로 접어 보존하고 현재 “최신”으로 읽지 않는다. GitHub 계약/코드와 외부 실행 묶음·APK·모형/원자료의 확보 경계를 명시한다.
+- **연구/실행 결정 불변:** 팀원 전달용 갱신이며 새 측정 승인·새 예산·모형 채택이 아니다. S26/NPU는 보유 근거를 먼저 제출하고 기기별로 판단한다. 미승인/미소비plan_v2·strict·FAIL·`experiment_ready=false` 유지.
+
+## 2026-09-30 — 기존 제한 결과를 연구 본문으로 정리
+
+- **본문에 채택한 표현:** [결과·논의 초안](ENERGY_AP_RESULTS_DISCUSSION_DRAFT_20260930.md)의 고정 CC_DG 상충, 저장 PC 서비스 선별, 조건부 에너지 잔차와 AP 후보의 제한적 확인. 기존 판정의 통합 서술이며 새로운 정책 채택/계수/지원 범위 결정이 아니다.
+- **미완료 유지:** 온라인 정책의 에너지·열 우월성, AP 최고/한도 보장, 새 일정 전이 및 정책 차이 판별력. 실측 가능 전에는 준비된 계획을 미승인·미소비로 보존하고 이번 글을 실행 승인으로 해석하지 않는다. 새 기기 명령0, `experiment_ready=false`.
+
+## 2026-09-30 — 동결 실행 경로와 분리한 PC 판독 어댑터 채택
+
+- **구현 채택:** [고정 transfer readout→CSV 검사→그림·HTML](AP_CGDC_TRANSFER_PREP_20260930.md#실측-후-pc-판독과-그림-자동화-2026-09-30). 실제 일정 조건부 진단만 출력하며 post-load AP는 점수 대상이다. 원래 120초 예측 요약값은 이미 정확한 끝까지 적분한다. 센서 타임스탬프만 있는 누적 경로에는 유효한 창 끝 적분과 요약·상태 적분이 일치할 때120초 점을 추가하고 원래 CSV를 보존한다. 계수/창/요약 오차 변경은 없다.
+- **승격하지 않는 것:** fixture PASS는 실기기/새 예측 확인이 아니다. 미실행 계획의 not_evaluable은 실행 실패/소비가 아니다. 새 승인/Run/claim0, 기존 미승인plan_v2·동결본·strict·FAIL·`experiment_ready=false` 유지.
+
+## 2026-09-30 — APK를 유지한 다른 CG_DC 일정의 전이 확인만 준비
+
+- **채택한 PC 준비 범위:** [고정 절차 확인1의 목적과 종료 기준](AP_CGDC_TRANSFER_PREP_20260930.md). 원래 개발3 freeze와 이미 고정한 preload 후보를 변경하지 않고, 저장 burst/201/B2의 release만35초 이동해 전이 오차를 확인할 실행 전 자료·plan_v2·Check·readout을 구현했다. Android의 도착 격자 검사를 실제 JVM 경계에서 확인해 원래 도착을 유지하며, 서비스 guard 적격 원본이라는 이유로 새35초 대기 입력의 서비스 적격성을 주장하지 않는다. APK/관측 주기 변경은 없다.
+- **권고이지 기기 승인/검증이 아닌 것:** 확인1·명시적추론≤32·전체≤1300초/ADB≤3200 계획. 현재 미승인·미소비, Run/claim0. 원본/후보·strict/기본 simulator·`experiment_ready=false` 유지. AP/전력식 수치 산출을 정책 순위나 최고온도 제약 검증으로 승격하지 않는다. DC_DG까지 넣기 위한 새 APK/다중 세션 개발은 이번 준비에 추가하지 않는다. v1 초안은 실제 contract 불일치를 발견해 실행불가 초안으로 보존했다.
+
+## 2026-09-30 — 저온 AP 후보의 조건부 진단 인터페이스만 채택
+
+- **PC 구현 채택:** [실현 lane 일정·부하 전 AP 조건부 경로](AP_SIMULATION_CLOSURE_PC_20260930.md#6-저온-ap-출력의-pc-연결-2026-09-30)만 opt-in 계산한다. 정보 cutoff 이전 구간 출력, 부족한 pre-load·다른 APK/구성·미지원 상태를 차단한다. 기존 두 세션의 수치 재현은 사후 scope readout이고 기존 확인 역할을 새 독립 검증으로 늘리지 않는다.
+- **채택하지 않은 범위:** AP 최고/한도 초과/기기 J/정책 순위/미래 일정 비용의 후보 지원. 실제 arrival 집계는 후보 profile을 명시적 unsupported/null로 반환한다. 작은 MAE를 정책 판별력으로 승격하지 않고 기존 β/기울기/동결/후보절차/strict·`experiment_ready=false`를 유지한다. 이번 PC 작업은 완료; ADB·새 실측·APK·실행계획/claim0.
+
+## 2026-09-30 — 승인 B2 범위 내 확인 중단 보존, 온도 gate 반복 금지
+
+- 사용자의 계획준비·실측·기술오류 수리 후 진행 승인으로 [새 계획1회](ARRIVAL_B2_INRANGE_RUN01_20260930.md)를 실행했다. 기존 APK의 v1 gate를 선택한 별도 ID이며 과거 v2 진단을 수정하지 않는다. 동일 설치본/환경이 확인되고 warmup8 반환 뒤 AP30.0°C로 arm을 거절했다. 공통창·본 요청0, host 종료/프로세스 부재 확인, `stopped_no_resume`다.
+- 초기조건 부적합은 기술 오류나 모형 예측 실패가 아니다. 수정할 코드 결함이 확인되지 않아 같은 계획/동일 gate를 성공할 때까지 반복하지 않고 개발 하한 삭제·가열·계수 변경도 하지 않는다. 정상 저온에 대한 별도 모형 질문은 기존 저온 자료를 먼저 사용해야 하며, 이번 중단을 독립 확인 성공으로 승격하지 않는다. 동결/FAIL/원자료/`experiment_ready=false` 유지.
+## 2026-09-30 — 동적 정책 비용 비교 전 연구용 서비스 선별 규칙
+
+- **채택한 PC 비교 규칙:** [계약과 사후 판독](results/arrival_service_guard_01/README.md)에 따라 동일 trace·seed·실현 간섭의 `CPU_URGENT` 대비 24예정 요청 전부 완료, 긴급·일반 기한 미준수 건수 비증가, 긴급 완료 응답 P95 비증가를 요구한다. 일반 평균은 보고값이다. 기존 δ=0 허용폭 탐색 결과를 소급 변경하지 않는다. 이 규칙은 보수적 연구용 선별이며 실제 UX SLA·에너지/AP 허용오차가 아니다.
+- **증거 경계:** 이미 본 저장135사례에 적용한 B2 적격21/45·B3 적격22/45·동시 적격7/45는 사후 PC 판독이다. 대표 queue/201/1.5의 B2는 남고 B3는 긴급 P95 +373.652ms로 제외된다. 동시 적격 사례도 J/AP 전체창 지원·독립 예측 검증이 없어 비용 순위는 null이다. 향후 다른 허용폭은 독립 자료를 보기 전에 별도 결정해야 한다. 새 정책·계수·실측·SLA PASS는 채택하지 않고 동결 모형·FAIL·원자료·`experiment_ready=false`를 유지한다.
+
+## 2026-09-30 — AP 후보와 에너지 전이 판정, 제한 계산과 동적 완성 분리
+
+- **확정한 PC 판정:** [기존8세션 판독](AP_SIMULATION_CLOSURE_PC_20260930.md)에서 single-state idle 식은 관측 상승→하강을 재현할 수 없지만 HAL 내부 timestamp 부재로 센서 지연/열 이력을 따로 식별하지 못한다. 새 계수를 임의 생성하지 않고 부하 전 유효 기준 후보를 조건부 진단에만 남긴다. 새 유휴2세션의120초 W 외삽 오차 +20.090/+11.305J를 보존하며 B2의 작은 전체오차를 보편 정확도로 전용하지 않는다.
+- **재사용 범위 확정:** 기존 고정CC_DG870건/480초 회고 선택 인터페이스의 `TRADEOFF`는 지금 재현할 수 있는 제한 계산이다. 이것으로 원래 동적 목표를 완료 처리하지 않는다. 저장135개 일정의 완전한 J/AP 지원0과 대표3개의 null을 유지한다. 후보/지원 마스크/동결계수/원자료/FAIL/`experiment_ready=false`는 변경하지 않는다.
+- **후속 권고, 기기 계획·승인 아님:** 동적 정책 비교의 남은 질문은 같은 프로토콜에서 B2/B3 짧은 상태 전환의 전체창 비용과 AP 관측 반응·일정 전이 오차다. 같은 B2 반복이나 모든 조합 추가 계측을 자동 권고하지 않는다. 당장 다음은 완료된 고정 비교의 상충과 순위 실패를 연구 결과로 반영하는 PC 작업이다.
+
+## 2026-09-30 — 저온 AP 후보는 확인 오차 개선에도 기본 채택 보류
+
+- [승인 계획 실행과 별도 확인](ENERGY_AP_IDLE_RESPONSE_RUN01_20260929.md): 부하 전 AP로만 세션별 유효 기준을 넣는 고정 절차는 개발 후 동결했고, 다른 두 묶음의 확인 세션에서 후보 AP MAE0.418°C 대 원래 동결식의 저온 외삽5.461°C를 관측했다. 그러나 확인의 마지막 부하 후 AP는 관측 시작→끝 0.000°C이며 중간 상승 표본이 있고 후보는 −0.719°C 냉각을 예측했다. 후보의 이력·지연 한계가 남으므로 기본 시뮬레이터/strict 지원/정확도 PASS로 **채택하지 않는다**. 이미 본 확인을 재보정에 사용하지 않는다.
+- 원래 동결본·기존 사후 후보·원자료·실패·종료 계획은 보존하고 `experiment_ready=false` 유지. 같은 승인 실행은 소비·종료했으며 새 기기 계획/추가 실측을 자동 시작하지 않는다. 기존 기록에서 AP 최고 표본 지연과 실제 lane 경계를 분리 판독하는 PC 작업만 다음 행동으로 둔다. 아래 2026-09-29 권고는 **당시 실행 전 결정**이다.
+
+## 2026-09-29 — AP 유휴 방향 오류의 후속 수집 권고(실측 채택/승인 아님)
+
+- [근거·계획](ENERGY_AP_IDLE_RESPONSE_PLAN_PC_20260929.md): 동결식의 공통 idle 평형34.380°C가 저온 B2 관측의 냉각과 반대로 가열 방향을 만든다. 같은 B2 한 세션 반복 또는 그 세션만 맞는 시작값 평행 이동 후보의 기본 채택은 하지 않는다. 기존 개발 β·상태별 차이를 고정하고 **부하 전** resident AP로 세션별 *유효* 유휴 기준을 구하는 별도 진단 후보를 채택해 PC 준비한다. 이는 주변온도·숨은 잔열을 식별하는 물리 모형이 아니다.
+- 개발1(한 묶음)→구조/코드 동결→확인1(두 묶음)의 미승인 `ENERGY-AP-IDLE-RESPONSE-01`을 권고한다. AP<32.5°C는 이 저온 층의 일회성 자료 적격성이지 안전 하한 변경이 아니다. 기존 BAT/비충전/thermal/화면/메모리/품질 gate·동결/strict/기본 profile·원본/FAIL/`experiment_ready=false`를 보존한다. PC Check·실행 준비는 실기기 완주, 독립 정확도 PASS, 정책 우월성을 뜻하지 않는다. 새 plan 실행 승인·claim 없음.
+
+## 2026-09-29 — 저온 AP 후보 기본 채택 보류, 상쇄 구간 명시
+
+- **PC 결과·채택하지 않은 변경:** [잔차·후보 판독](ARRIVAL_RECORDED_B2_RESIDUAL_MODEL_PC_20260929.md)에서 원래 +1.062J는 부하+1.687J와 긴 유휴−0.625J의 상쇄로 분해됐다. 시계/적분/상태 매핑 결함은 발견하지 못했다. 동결 초기 AP는 29.9°C로 정확히 초기화됐으나 idle 평형34.380°C 예측과 실제 냉각이 반대였다.
+- 별도 AP 후보 `energy-ap-start-referenced-idle-diagnostic-v1`은 **사후 감도 구현**으로만 보존한다. B2에서 MAE가 감소해도 기존 개발3·확인 DC_DG·DIAG-04에서 모두 악화하고 시작 AP를 주변온도로 동일시할 수 없으므로 simulator 기본 profile·strict 범위로 **채택하지 않는다**. 기존 동결 계수·원본·FAIL·`experiment_ready=false` 불변. 새 실측 계획/승인은 만들지 않았으며, 저온 독립 확인의 필요성은 후속 결정으로 남긴다.
+
+## 2026-09-29 — B2 관측 1회 완료의 해석 경계
+
+- **실행 사실과 채택하지 않은 주장:** [plan_v6 결과](ARRIVAL_RECORDED_B2_AP_OBSERVE_RUN01_20260929.md)는 24요청·공통120초·실제 CG_DC 병행을 회수했다. 개발 범위 밖 시작 AP29.9°C에서 동결식의 J 오차+1.062J, AP MAE3.555°C는 외삽 진단이다. strict 지원 확대, 정확도 PASS, 온라인 B2 우월성, 동결 계수 재보정은 채택하지 않는다.
+- plan_v6는 소비·완료됐으며 재실행하지 않는다. 기존 미소비 plan_v5 초안·queue24, 종료된 plan_v3/v4, 원본·FAIL과 `experiment_ready=false`를 보존한다. 다음 PC 판독은 상태구간의 에너지 오차 상쇄와 AP 초기조건 차이 분석 하나로 제한한다. 새 실측은 승인하거나 자동 시작하지 않는다.
+
+## 2026-09-29 — 개발 시작 AP 범위와 실행 적격성 분리
+
+- **채택한 PC 프로토콜 변경, 실측 승인 아님:** [근거·계약](ARRIVAL_RECORDED_B2_AP_OBSERVE_PC_20260929.md)에 따라 32.5–34.0°C는 개발 세션에서 본 시작 AP 범위로 취급한다. 독립적인 실행 안전 하한은 확인되지 않았다. 새 `numeric-ap-observe-v2`는 기존 안전·환경·품질 gate와 numeric AP 유효성·신선도는 유지하면서 이 범위 밖의 관측을 허용한다. 과거 v1 gate 중단은 소급 변경하지 않는다.
+- 범위 밖 동결식 계산은 별도 외삽 진단이며 에너지/AP 경험적 지원·short-transition strict·정책 우월성을 확장하지 않는다. 새 plan_v6는 미승인·미소비, 실행 출력/claim 없음. v5 PC 초안은 현재 코드 Check 불일치로 실행 대상이 아니다. 기존 동결 계수·FAIL·원본·queue24 미소비 계획과 `experiment_ready=false` 유지.
+
+## 2026-09-29 — 새 B2 재생의 AP gate 중단 판정
+
+- [승인된 plan_v4 1회](ARRIVAL_RECORDED_B2_REPLAY_RUN02_20260929.md)에서 시작 직전 HAL AP 28.8°C가 사전 범위 32.5–34.0°C 미달이므로 host가 arm을 보내지 않았다. 이는 자료 적격성 중단이지 동결 J/AP 예측 실패나 lifecycle 수정의 성공/실패 판정이 아니다. 공식창·실제 병행이 없어 정확도·정책 우월성은 계속 미판정이다.
+- 소비 계획 재실행, 즉석 가열·시작 범위 완화·동결 계수 변경·새 실측 자동 생성은 채택하지 않는다. 이전 plan_v3·원본/FAIL, 미소비 queue24 계획, strict 지원과 `experiment_ready=false`를 보존한다. 다음 PC 판독은 이미 있는 초기 AP 관측으로 gate의 적용 가능성을 판단하는 범위다.
+
+## 2026-09-29 — B2 재생의 Activity 소유권은 유지, 종료 증거만 보강
+
+- [PC 시간축·코드 판독](ARRIVAL_RECORDED_B2_LIFECYCLE_PC_20260929.md)에서 `onDestroy` 취소 뒤 앱 실패 기록, 이후 host force-stop을 확인했다. 최초 `onDestroy` trigger는 구 APK에 callback/instance 로그가 없어 미확정이다. Activity의 작업 소유권·미완료 취소를 삭제하거나 Service로 전환하지 않는다. 별도 journal 기록은 다음 사건의 구분을 위한 변경이며 원인 해결·기기 검증 결정이 아니다.
+- 중단 plan_v3 재실행과 새 실측 자동 시작은 채택하지 않았다. 새 APK의 추가 계측 비용은 미확인이고 기존 동결 모델·FAIL·미소비 queue24·`experiment_ready=false`는 그대로 둔다. 다음 실행은 새 계획과 별도 승인/현재 gate를 필요로 한다.
+
+## 2026-09-29 — 짧은 전환 확인용 기록 일정 선택과 1회 결과
+
+- **PC 확인 범위 확정:** [B2 원본·49구간 교차검사](ARRIVAL_RECORDED_B2_REPLAY_PC_20260929.md)에 따라 queue/seed201/실현 간섭1.5의 B2_PC 24요청을 첫 조건부 모형 전이 질문으로 고정했다. 이는 유휴·탐지 CPU·분류 GPU·CG_DC를 포함하는 최소 상태 묶음이고 반대 병행 방향은 포함하지 않는다. 저장 dispatch는 실행 허용 *하한*일 뿐 기기 완료시간이나 실제 병행을 강제하지 않는다. 별도 기록 재생 모드와 기존 정책/strict 지원은 구분한다.
+- **승인 실행의 한계:** 서명 APK와 plan_v3을 별도 승인으로 [한 번 실행](ARRIVAL_RECORDED_B2_REPLAY_RUN01_20260929.md)했으나 resident baseline에서 앱 lifecycle 취소로 `stopped_no_resume`가 됐다. 공식창이 없어 동결 모형 조건부 J/AP 오차는 산출할 수 없으며, 정확도·정책 우월성 PASS는 미정이다. 소비 계획 재실행·기존 queue24 계획 소비·동결 계수 보정·`experiment_ready=true`를 결정하지 않았다. 오류의 최초 기록을 다음 판독에서 먼저 보존하도록 host 검증 경로만 보완했다.
+
+## 2026-09-29 — 실측 기반 정책 우열의 현 지원 판정
+
+- **확정된 지원 판정:** [저장 일정 135개 지원 검사](ARRIVAL_MEASURED_SUPPORT_BOUNDARY_20260929.md)에서 동결 A24 모형으로 전체120초 J/AP를 계산할 정책·입력 사례가 없다. 지원 마스크가 0인 상태에서 가정 비용 순위를 실측 기반 우열로 승격하지 않는다. PC 일정·응답 비교는 유지한다. 온도→처리시간 식 부재는 고정 처리시간 *탐색*을 자동 차단하지 않지만 실제 고온 응답의 증거도 아니다.
+- **후속 권고, 실측 승인 아님:** 상태 이름이 모두 있는 queue/seed201/실현1.5의 CPU/B2/B3를 최소 *PC* 비교 묶음으로 둔다. 기존 Android FIXED_SPLIT 도착 경로가 세 정책의 직접 실기기 재생을 지원한다고 가정하지 않는다. 먼저 유효한 관측 시작 AP와 유휴/단독/세 종류 병행의 짧은 실제 전환·전체 J/AP를 동결식과 조건부로 대조해야 상태 비용 지원을 재판정할 수 있다. 실제 정책 우열은 별도 정책 실행·종단간 확인이다. burst/B3의 미계측 분류 CPU＋분류 GPU는 현재 범위에서 제외한다. 기존 queue24/FIXED_SPLIT 미승인·미소비 계획, 동결 계수·FAIL·원본·`experiment_ready=false`를 유지한다.
+
+## 2026-09-29 — 기존 근거로 시작할 정책 탐색과 측정 보류의 구분
+
+- **이번 감사의 권고, 새 목표 채택/실측 승인 아님:** [근거표·종료 기준](ENERGY_AP_POLICY_MEASUREMENT_AUDIT_20260929.md)에 따라 기존 CPU_URGENT·B2·B3의 제한 PC 서비스/가정 비용 비교는 진행 가능하다. 실측 기반 정책 우열은 동결 모형의 임의 도착 전환 오차와 정책 차이를 구분하는 독립 근거가 필요하다. 온도→처리시간 계수는 미검증이므로 넣지 않고 OS 열 보호의 존재를 부정하지 않는다.
+- 준비된 queue24/FIXED_SPLIT 계획은 A/B의 좁은 예측 진단에 유용하지만 병행 계수·정책 순위 확인의 필수조건으로 채택하지 않는다. 계획 SHA·미승인·미소비 상태를 유지하며 이번 보류를 실패·`stopped_no_resume`로 바꾸지 않는다. A24·S26 모형은 분리하고 기존 FAIL/원본/동결값/`experiment_ready=false`를 보존한다.
+
+## 2026-09-29 — 짧은 전환 진단의 계측 적격성과 모형 지원을 분리
+
+- [별도 DIAG-01 실행](ENERGY_AP_SHORT_TRANSITION_DIAG01_20260929.md)은 36개 블록과 공동 lane 점유·전류/AP coverage를 충족했다. 이것은 상태 전환의 관측 가능성이지 임의 도착 시뮬레이터의 예측 검증이 아니다. 기존 개발3 동결 파일의 byte·계수, 기존 정식 확인 분모, 실패/종료 계획을 보존한다.
+- AP 시작32.3°C가 개발 관측 범위32.5~39.5°C 밖이므로 동결 모형 `evaluate`의 unsupported 판정을 유지한다. 동결식 대입값을 정확도 PASS나 지원 범위 확대에 사용하지 않는다. 새 APK/제어 프로토콜은 동일 조건 확인으로 합치지 않고, `energy_ap_state_regimen_fit_v1`의 임의 도착 strict 계산 불가와 `experiment_ready=false`를 유지한다.
+- 다음 정책·모형 실측은 결과에 맞춰 냉각/재시도하지 않는다. 상태 시간 척도·센서 분해능·초기 AP gate를 PC에서 사전 고정한 최소 입력만 후속 후보로 다룬다. 현재 수집 설계를 반복하는 결정을 채택하지 않는다.
+
+## 2026-09-29 — 기존 queue 단일 도착 경로를 상태별 계수 확인 계획으로 전용하지 않음
+
+- [저장된 일정의 센서 해상도 감사](ENERGY_AP_REGIMEN_TRANSFER_PC_20260929.md): queue/seed201/strict의 24요청에서 Android 지원 `FIXED_SPLIT`의 CC_DG 공동 lane 점유가 없고, 단독 연속 구간은 1초 전류·약2.65초 AP 표본보다 짧다. 이 **PC 일정의 실패**를 다른 seed·실기기에서도 병행이 없다는 결론으로 일반화하지 않는다.
+- 실제 단독↔병행↔유휴 전환의 별도 opt-in 단일 세션 재생·적격성 경로를 PC에서 먼저 준비한다. 기존 12세션 계획의 값·APK·승인을 승계하지 않으며 정확한 예산/해시/Check 없이 수집하지 않는다. 동결 모형·도착 unsupported·`experiment_ready=false`는 유지한다.
+
+## 2026-09-29 — 상태 동결 모형은 실제 블록 일정 전이 진단까지만 연결
+
+- [전이 평가](ENERGY_AP_REGIMEN_TRANSFER_PC_20260929.md)의 **확정 경계:** DIAG-04 CG_DC는 개발 시작 AP 범위·exact 모델/입력/runtime을 충족하지만 새 APK·host 계측 방식의 별도 프로토콜이다. 동결 파일은 유지하고 실제 상태 일정 조건부 오차만 표시한다. 전체창과 상태 매핑 구간의 0.008초 차이는 분리한다.
+- [도착 엔진](../tools/d1_arrival_energy_research.py)에 이 동결 profile을 지정해도 임의 도착·짧은 전환은 unsupported/null이다. 한 프로토콜 전이 세션의 잔차로 새 계수를 적합하거나 정책 절감·AP 한도 준수를 인증하지 않는다. 독립 짧은 전환 확인 목적은 남아 있지만 현재 실행기·예산 근거가 없어 새 계획은 미승인·미소비다. `experiment_ready=false` 유지.
+
+## 2026-09-29 — DIAG-04 완료의 주장 범위
+
+- 사용자 “알아서 실측까지 계속 진행해” 승인으로 새 ID의 기존 CG_DC 단일 진단을 1회 수행했다. [정상 완료·소비](ENERGY_AP_DEVICE_SEGMENT_DIAG04_RESULTS_20260929.md). 앱 cleanup·finish 요청과 host 사후 cleanup1회가 확인됐지만, 연결 소실이 없었으므로 단절 내성이나 과거 onDestroy 원인 해결은 미입증이다.
+- 새 APK/프로토콜 자료를 기존 동일 조건 확인에 합치지 않는다. lane 공동 점유120.037초와 host invocation 겹침9.062초를 구분하며 지속 병행 상태의 전력 계수로 자동 전용하지 않는다. 동결 모형·기존 FAIL·정식 미완료 상태·`experiment_ready=false`를 유지한다.
+
+## 2026-09-29 — host cleanup은 같은 종료 처리에서 한 번만 시도
+
+- **확정된 코드 경계:** [DIAG-03 PC 조사](ENERGY_AP_DEVICE_SEGMENT_LIFECYCLE_PC_20260929.md)에서 앱 실패·회수·첫 host cleanup 뒤 요약 거절로 예외 cleanup이 반복되는 결함을 확인했다. 향후 실행기는 첫 cleanup의 성공/부분 실패/미확인을 보존하고 동일 종료 처리에서 두 번째 force-stop을 자동 시도하지 않는다. 원래 앱 stack과 host 요약 오류는 별도로 보존한다.
+- **미확정:** DIAG-03의 실제 `onDestroy` trigger와 사용자가 본 무선 디버깅 OFF→ON의 전환 시각·주체·인과 관계. 새 Android 기록은 종료 의미를 바꾸지 않는 관측 보완이며 기존 APK·동결 모형의 동일 조건 검증이 아니다. 기기 진단·설치·수집 승인 또는 새 실측 계획은 이번 결정에 포함하지 않는다. `experiment_ready=false` 유지.
+
+## 2026-09-28 — host arm 제거 범위를 진단 세션 내부로 제한
+
+- **결정:** [ADB 의존성·계측 비교](ENERGY_AP_DEVICE_SEGMENT_PC_20260928.md)에 따라 `baseline.arm` 생략은 별도 opt-in 진단에서만 허용한다. host의 warmup/GPU·품질, probe/AP 준비 승인은 보존한다. 앱이 읽지 못하는 AP numeric 적격성은 새 모드의 결측으로 남긴다. 기존 정식 모드·개발 동결 모형과 CONFIRM-06 실패 결과는 변경하지 않는다.
+- **회수/전이:** host가 관측을 잃으면 앱 실패와 분리해 미확인으로 기록하고, 원 host 종료·동일 session ID·앱 terminal 근거 뒤 읽기 전용 회수한다. 새 APK와 host 조회/앱 screen 관측 변경은 기존 계수의 **동일 조건 확인**이 아닌 전이 진단이다. `experiment_ready=false`, DIAG-03 미승인·미소비다.
+
 ## 2026-09-28 — CONFIRM-06 중단 자료의 모형 확인 판정
 
 - **판정:** [별도 확인 실행 결과](ENERGY_AP_CONFIRM06_RESULTS_20260928.md)는 첫 `CG_DC`에서 host transport 소실과 후속 앱 `baseline_gate` 실패로 끝났다. 전체 앱 journal에서 본 작업 호출0·완료 세션0을 확인했으므로 CG_DC/CC_DG 예측 오차나 모형 지원 범위를 추가하지 않는다.
@@ -765,3 +1286,16 @@
 
 - 동일 A24와 현재 gate가 확인되어 승인 plan_v3를 한 번 호출했다. 이전 설치본이 정확한 후보 APK와 달라 전송 1회가 시작됐으나, 120초 timeout으로 원격 해시 전 경계에서 실패했다. 설치·앱·세션·추론 0, 개발/동결/확인 미실시. `stopped_no_resume`와 소비 registry를 보존한다. [원본 경계·cleanup 보고](ENERGY_AP_STATE_COLLECT03_RESULTS_20260927.md).
 - 재시도·대체·추가와 기존 계획 재개는 채택하지 않는다. 전송 원인과 원격 부분 파일 상태는 미확정이고 이번 결과는 전력/AP 계수나 정책 효과의 증거가 아니다. `experiment_ready=false` 유지.
+## 2026-09-29 — 최소 도착 입력은 고정, 시작 AP gate 미충족으로 실행 차단
+
+- 결정: 기존 queue 24요청/FIXED_SPLIT/120초를 첫 확인 입력으로 고정하고, 32.5–34.0°C 개발 **시작** AP 범위를 사전 gate 계약으로 사용한다. 32.5–39.5°C 세션 경로 범위나 32.3°C의 범위 밖 결과로 하한을 바꾸지 않는다. 1초 전류·약2.63초 AP 대비 짧은 요청과 병행 점유0초 때문에 이 입력은 공통창/전환 확인 질문에만 쓴다.
+- 실행 판정: 현 앱/host는 실제 load 시작의 numeric AP를 집행하지 못한다. 새 실시간 handshake를 즉석에 넣거나 thermal status로 대신하지 않고 `PC_INPUT_FIXED_RUN_BLOCKED`로 둔다. [`근거·입력·Check`](ENERGY_AP_ARRIVAL_CONFIRMATION_PC_20260929.md). 동결 계수·과거 결과·strict unsupported·`experiment_ready=false` 유지; 실행 계획이나 실측 승인을 만든 결정이 아니다.
+## 2026-09-29 — 시작 AP는 baseline 뒤 1회 조회와 앱 최종 검사로 집행
+
+- 사용자 후속 구현 지시에 따라 `numeric-ap-once-v1`을 별도 opt-in으로 구현했다. host 준비 온도를 재사용하지 않고 baseline 뒤 새 HAL AP를1회 조회해 앱이 origin 직전 범위/표본 나이를 확인한다. 사전 최대5명령/앱 대기30초, 실패 시 본 작업0·재시도0; 부하 중 새 handshake 없음. 이전 차단 판단과 동결값을 보존한다.
+- 이 입력의 완료는24요청 조건부/종단간 오차 보고까지이며 병행 계수·짧은 요청 J·임의 부하 정확도 PASS로 확대하지 않는다. 계측 변경은 프로토콜 전이로 표시한다. [실제 코드·검증·한계](ENERGY_AP_ARRIVAL_CONFIRMATION_PC_20260929.md). 실측 승인/실행 계획 발행 아님.
+
+## 2026-09-29 — 시작 AP 단일세션 계획은 미승인 PC 준비로 분리
+
+- queue24/FIXED_SPLIT/공통120초의 [별도 실행 계약](ENERGY_AP_ARRIVAL_CONFIRMATION_PC_20260929.md)을 고정했다. 프로젝트 서명 APK·AP gate·새 session/output/registry·1,300초/ADB3,000/총 추론32 상한을 PC Check했으나 현재 기기 조건과 예측 정확도는 미검증이고 실측 승인은 없다. 처음 `PC_INPUT_FIXED_RUN_BLOCKED` 입력 기록은 이력으로 보존한다.
+- 이번 확인의 종료 범위는 한 입력의 A(실제 일정 조건부 J/AP)·B(예정 도착 종단간 일정/응답/비용)의 자료 적격성 및 오차 보고다. 병행0인 PC 일정만으로 병행 계수, 열→시간 피드백, 동적 정책 우월성을 채택하지 않는다. 동결 계수와 `experiment_ready=false` 유지.

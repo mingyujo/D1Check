@@ -1,0 +1,48 @@
+{
+  "version": "online-power-phase-audit-v1",
+  "purpose": "동일 반복 부하에서 전력 조회 시점 집중과 관측 에너지 민감도를 구분",
+  "periods_ms": [
+    1000,
+    900,
+    900,
+    1000
+  ],
+  "policy": "B2_PARALLEL_ONLINE_V1",
+  "requests_per_session": 96,
+  "arrival_interval_ms": 500,
+  "common_seconds": 120,
+  "baseline_seconds": 30,
+  "cooling_seconds": 60,
+  "intersession_seconds": 90,
+  "fit_coefficients": false,
+  "freeze_existing": true,
+  "prospective_selection": "기존 자료의 위상 집중을 본 뒤 선택한 측정 방법 비교; 기존 독립 확인을 재보정하지 않음",
+  "judgment": [
+    "각 세션의 35..80초 표본 위상 8구간 분포",
+    "전체120초 및35..120초 관측J, 10..30초 배경W, AP 및 실제점유",
+    "두 AB/BA 차이와 동주기 반복 차이; 평균만으로 유의성/PASS 부여 금지",
+    "900ms는 약11.1% 추가 센서 조회/기록; 순수 aliasing과 계측 부하/기기변동을 완전히 분리하지 못함",
+    "양쪽 프로토콜 모두 절대 전력 기준 아님; charge counter 약4mAh 단계는 작은 정책 차이 기준으로 부족"
+  ],
+  "stop": "기존 환경/품질/메모리/연결/시간/회수/cleanup gate 그대로; 실패 후 이 계획 재실행0",
+  "next_rule": "완료 후 관측 민감도와 독립모형 오차를 PC에서 판독한다. 이 계획은 자동 모형 적합이나 추가 세션을 실행하지 않는다.",
+  "budget": {
+    "sessions": 4,
+    "runtime": 16,
+    "warmup": 32,
+    "work": 384,
+    "explicit": 416,
+    "staging": 4,
+    "files": 28,
+    "pull": 1,
+    "push": 1,
+    "install": 1,
+    "fixed_observation_s": 840,
+    "inter_session_s": 270,
+    "preflight_reserve_s": 600,
+    "per_session_s": 700,
+    "total_s": 3670,
+    "adb": 13000,
+    "retry": 0
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "spec": {
+    "id": "history-supervised-selector-v1",
+    "utc": "2026-10-04T23:12:57.926142+00:00",
+    "base_head": "f4f6049826807ed5f7e4471ef6ae7f7cd82724bb",
+    "features": [
+      "class_share",
+      "mean_gap_s",
+      "median_gap_s",
+      "gap_cv",
+      "short_gap_share"
+    ],
+    "targets": [
+      "miss_fraction",
+      "energy_j",
+      "peak_ap_c",
+      "thermal_degree_seconds"
+    ],
+    "train_seeds": [
+      81001,
+      81002
+    ],
+    "validation_seed": 91001,
+    "final_seeds": [
+      123001,
+      123002
+    ],
+    "withheld_envelopes": [
+      "g0.15_c0.25_b1",
+      "g0.15_c0.5_b8",
+      "g0.15_c0.75_b4",
+      "g0.45_c0.25_b8",
+      "g0.45_c0.5_b4",
+      "g0.45_c0.75_b1",
+      "g1.2_c0.25_b4",
+      "g1.2_c0.5_b1",
+      "g1.2_c0.75_b8"
+    ],
+    "selection": "validation missed requests, then objective delta vs EFT; no refit after selection",
+    "history": "independent preceding 48 arrivals, same stationary envelope; reset initial0; not continuous history thermal simulation",
+    "risk_cutoff": 0.010416666666666666,
+    "fallback": "EFT, not a service guarantee",
+    "models": [
+      "tree",
+      "boosting"
+    ],
+    "max_simulations": 1296,
+    "max_wall_s": 1200,
+    "sklearn": "1.7.2",
+    "prior_study_seen": true,
+    "accuracy_pass": null,
+    "device_commands": 0,
+    "experiment_ready": false
+  },
+  "hashes": {
+    "tools\\d1_supervised_selector.py": "b5e1b1442b99a633ca6f4b07a73b3f877e60f8b7bfe696fccee0742b3e711aee",
+    "docs\\results\\scheduler_conditions_01\\run_v2\\results.csv": "0e92bedea025deb47063e71f0ff54bf235657f57b380f8b038619874f9625f59",
+    "docs\\results\\online_policy_study_01\\overnight_sustained_run01\\model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs\\results\\online_policy_study_01\\overnight_sustained_run01\\initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "tools\\d1_scheduler_conditions.py": "cda103f356585715448ebb3167e2dc81fab95e598f1a6b9e3036f88ed5313b78",
+    "tools\\d1_empirical_request_policy.py": "b6f18692787b66839280a4d2f72e36ca93e4ed528b8f96294c863e8051f5bcfb",
+    "tools\\d1_scheduler_alternatives.py": "e458f65b20063e6110470cfd341460f8df5e0414be08fb7f55fe554198eb8a8a",
+    "tools\\d1_arrival_explore.py": "384a5ab28d289f78a00ab8a4bb5e74c8f7df4e5d2ba8f3059130673ca44a20ac"
+  }
+}

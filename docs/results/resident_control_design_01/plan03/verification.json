@@ -1,0 +1,100 @@
+{
+  "status": "PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED",
+  "base_head": "59f07a92e50bd1f9f76752247b5385ca5bb8a040",
+  "verified_utc": "2026-10-01T05:52:38.872459+00:00",
+  "uncommitted_changes": true,
+  "plan_sha256": "2e9b3fcd6eaa02b6ce820cd34a4b660125b70cb4c35328e804303623ea7bf6d8",
+  "apk_sha256": "3d8ea871103c1350fb74e444c310be02ba8b3999cd6537691e75b457de4e94c2",
+  "candidate_identity": {
+    "apk_sha256": "3d8ea871103c1350fb74e444c310be02ba8b3999cd6537691e75b457de4e94c2",
+    "package": "com.example.d1check.benchmarkrunner.modelprobe",
+    "signer_sha256": "b253dbb951d85d1a79ea7f2ca2d1ff76a9fa34dc6c793b1df9b5249f3fcc7565",
+    "version_code": 1
+  },
+  "budget": {
+    "adb_commands": 6600,
+    "adb_recovery_cleanup_reserve": 100,
+    "additional": 0,
+    "apk_push_timeout_seconds": 120,
+    "apk_transfers": 1,
+    "app_cooling_seconds": 60,
+    "app_drain_seconds": 30,
+    "cleanup_seconds": 45,
+    "common_window_seconds": 120,
+    "eligibility_inferences": 0,
+    "explicit_inference": 40,
+    "host_poll_seconds": 485,
+    "installation_seconds": 600,
+    "installed_host_pulls": 1,
+    "installs": 1,
+    "intersession_cooling_seconds": 90,
+    "recovery_seconds": 50,
+    "replacement": 0,
+    "requests": 24,
+    "resident_baseline_seconds": 30,
+    "retry": 0,
+    "runtime_creations": 8,
+    "session_seconds": 700,
+    "sessions": 2,
+    "stage_gate_seconds": 120,
+    "staging": 2,
+    "staging_files": 14,
+    "start_ap_wait_seconds": 30,
+    "total_seconds": 2090,
+    "warmup": 16
+  },
+  "manifest_sha256": [
+    "dc27cf6772b1d582d7d19c1e2937465c6f07d9ede0ef310156b4099545eb9b2c",
+    "b5f2031706b54494e4fd917ac66dc858a535580af08a43672324219358e78b81"
+  ],
+  "run_script_sha256": "74c260fe26464b2b3509c6b05ef8674de496676933ccf6e84c814d525be5b4bc",
+  "source_files_bound": 95,
+  "changed_execution_sources_since_v2": [
+    "tools/d1_arrival_energy_collection_device.py",
+    "tools/d1_resident_control_plan.py"
+  ],
+  "changed_source_sha256": {
+    "tools/d1_arrival_energy_collection_device.py": "193f06acbbf0e8860d89be58421061be16b629ce1aaa01eaf859187dc47b79e5",
+    "tools/d1_resident_control_plan.py": "0fbcfea0691eaf4140b428bf70330cb979eabe1100f12f5cd2231fd550d8884c"
+  },
+  "test_source_sha256": "0bf791f7425eb1a614eca88e101372b21bc20db48193f868ea517f919e52e537",
+  "python_tests": 7,
+  "failures": 0,
+  "skips": 0,
+  "actual_powershell_check": "PASS",
+  "guarded_python_check": "PASS",
+  "device_commands": 0,
+  "apk_rebuilt": false,
+  "run_called": false,
+  "output_exists": false,
+  "registry_exists": false,
+  "host_space_check": {
+    "free_bytes": 12327342080,
+    "minimum_installed_pull_bytes": 106108500
+  },
+  "space_guarantee": "minimum candidate APK bytes only, not total log reservation or sustained free space guarantee",
+  "manifest_semantics_unchanged_except_ids": true,
+  "old_plans": [
+    {
+      "edition": 1,
+      "sha256": "7c200ab73b0f3868d9dc6088cf66a626300fead4937f4d92d7f8374e2f58e135",
+      "receipt_sha256": "73fee4ab06985e0a28078fd4c8149b5793ec0326b4477e746e4c9410aecf36f8",
+      "status": "stopped_no_resume"
+    },
+    {
+      "edition": 2,
+      "sha256": "5073b2b95bf772db5ca89b8977f819b2403a797f739bc52d151ee9751352fde7",
+      "receipt_sha256": "29b72a318e108dd859623ee435990d67e85cd22bdef556ba8277af1223ece1a5",
+      "status": "stopped_no_resume"
+    }
+  ],
+  "frozen_model_sha256": "35ed6987b1fc09789284018f8502107eaf4e3125373651a01e3a08d427034c54",
+  "ap_candidate_sha256": "8507adc10485940c36853786ba39a4f42439a9fbd3d71a5da1c7d55e2cbc7ec5",
+  "cleanup": {
+    "state": "finished_preservation_verified",
+    "deleted_dirs": 971,
+    "failed_or_partial": 0
+  },
+  "tests_command": "python -X utf8 -B -m unittest tools.test_d1_resident_control_plan -v",
+  "experiment_ready": false
+}

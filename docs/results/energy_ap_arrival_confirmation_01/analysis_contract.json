@@ -1,0 +1,49 @@
+{
+  "version": "arrival-ap-confirmation-readout-v1",
+  "session_role": "protocol_transfer_confirmation_single_session",
+  "planned_requests": 24,
+  "scenario": "queue",
+  "policy": "FIXED_SPLIT",
+  "common_window_seconds": 120,
+  "origin": "device_common_start_after_numeric_ap_acceptance",
+  "denominator": "all_24_planned_requests_including_failed_and_unfinished",
+  "response_boundary": "scheduled_arrival_to_urgent_output_ready_or_normal_persist_complete; actual_arrival_lag_reported_separately",
+  "initial_ap_c": {
+    "allowed": [32.5, 34.0],
+    "source": "HAL_AP_mName_AP_mType_0_single_post_baseline_query",
+    "max_query_start_to_origin_seconds": 3,
+    "sensor_internal_refresh_age": "unknown"
+  },
+  "eligibility": {
+    "start_ap_outside_or_missing": "no_work_and_unsupported",
+    "missing_or_unmapped_state_interval": "unsupported_not_zero",
+    "missing_current_or_voltage_interval": "energy_unsupported_not_zero",
+    "missing_ap_path_interval": "ap_path_unsupported_not_zero",
+    "actual_concurrency": "report_observed_lane_occupancy; do_not_infer_from_PC_zero",
+    "protocol": "new_signed_AP_gate_APK_and_host_sampling; separate_from_frozen_development_and_DC_DG"
+  },
+  "prediction_a": {
+    "name": "schedule_conditional",
+    "inputs": ["observed_initial_AP_at_origin", "actual_state_and_transition_timestamps", "frozen_development_coefficients"],
+    "forbidden_inputs": ["later_observed_current", "later_observed_AP"],
+    "outputs": ["120s_whole_device_energy_J", "cumulative_energy_path_J", "AP_path_C", "AP_MAE_C", "AP_max_absolute_error_C", "AP_peak_error_C", "state_interval_residuals"]
+  },
+  "prediction_b": {
+    "name": "arrival_to_schedule_end_to_end",
+    "inputs": ["24_planned_arrivals", "FIXED_SPLIT", "pre_frozen_service_time_model", "observed_initial_AP_at_origin"],
+    "forbidden_inputs": ["actual_future_completion", "actual_future_current", "actual_future_AP", "actual_future_state_schedule"],
+    "outputs": ["schedule_and_response_error", "deadline_violations", "completed_failed_unfinished", "120s_energy_J", "AP_path_C"],
+    "status": "diagnostic_only_until_time_model_and_state_support_are_checked"
+  },
+  "thresholds": {
+    "data_eligibility": "separate_from_prediction_accuracy",
+    "accuracy_pass": null,
+    "policy_selection_pass": null
+  },
+  "measurement_boundaries": {
+    "preparation_baseline_AP_gate": "outside_120s_common_window_record_separately",
+    "post_window_drain_cooling_cleanup": "outside_120s_common_window_record_separately",
+    "unfinished_at_120s": "retain_in_denominator_and_record_post_window_completion_or_failure"
+  },
+  "unsupported_claims": ["pair_power_or_AP_coefficient_validation", "per_request_energy", "arbitrary_arrival_accuracy", "physical_throttling", "battery_percent_or_runtime", "real_policy_savings"]
+}

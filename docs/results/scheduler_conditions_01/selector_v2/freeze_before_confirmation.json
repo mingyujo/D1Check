@@ -1,0 +1,147 @@
+{
+  "spec": {
+    "id": "condition-selector-fresh-pc-v1",
+    "designed_after_first_test_seen": true,
+    "fitting_rows": "development 81001/81002 only",
+    "selection": {
+      "g0.15_c0.25_b1": {
+        "energy": null,
+        "thermal": null
+      },
+      "g0.15_c0.25_b4": {
+        "energy": null,
+        "thermal": null
+      },
+      "g0.15_c0.25_b8": {
+        "energy": null,
+        "thermal": null
+      },
+      "g0.15_c0.5_b1": {
+        "energy": null,
+        "thermal": null
+      },
+      "g0.15_c0.5_b4": {
+        "energy": null,
+        "thermal": null
+      },
+      "g0.15_c0.5_b8": {
+        "energy": null,
+        "thermal": null
+      },
+      "g0.15_c0.75_b1": {
+        "energy": null,
+        "thermal": null
+      },
+      "g0.15_c0.75_b4": {
+        "energy": null,
+        "thermal": null
+      },
+      "g0.15_c0.75_b8": {
+        "energy": null,
+        "thermal": null
+      },
+      "g0.45_c0.25_b1": {
+        "energy": "PAIR_COALESCE_V1",
+        "thermal": "CPU_REFERENCE"
+      },
+      "g0.45_c0.25_b4": {
+        "energy": "PAIR_COALESCE_V1",
+        "thermal": "CPU_REFERENCE"
+      },
+      "g0.45_c0.25_b8": {
+        "energy": null,
+        "thermal": null
+      },
+      "g0.45_c0.5_b1": {
+        "energy": "PAIR_COALESCE_V1",
+        "thermal": "CPU_REFERENCE"
+      },
+      "g0.45_c0.5_b4": {
+        "energy": "PAIR_COALESCE_V1",
+        "thermal": "CPU_REFERENCE"
+      },
+      "g0.45_c0.5_b8": {
+        "energy": "EFT_REFERENCE",
+        "thermal": "CPU_REFERENCE"
+      },
+      "g0.45_c0.75_b1": {
+        "energy": "PAIR_COALESCE_V1",
+        "thermal": "TOKEN_CPU_V1"
+      },
+      "g0.45_c0.75_b4": {
+        "energy": "PAIR_COALESCE_V1",
+        "thermal": "TOKEN_CPU_V1"
+      },
+      "g0.45_c0.75_b8": {
+        "energy": "EFT_REFERENCE",
+        "thermal": "CPU_REFERENCE"
+      },
+      "g1.2_c0.25_b1": {
+        "energy": "JIT_CPU_V1",
+        "thermal": "CPU_REFERENCE"
+      },
+      "g1.2_c0.25_b4": {
+        "energy": "PAIR_COALESCE_V1",
+        "thermal": "TOKEN_CPU_V1"
+      },
+      "g1.2_c0.25_b8": {
+        "energy": "PAIR_COALESCE_V1",
+        "thermal": "TOKEN_CPU_V1"
+      },
+      "g1.2_c0.5_b1": {
+        "energy": "CPU_REFERENCE",
+        "thermal": "CPU_REFERENCE"
+      },
+      "g1.2_c0.5_b4": {
+        "energy": "PAIR_COALESCE_V1",
+        "thermal": "TOKEN_CPU_V1"
+      },
+      "g1.2_c0.5_b8": {
+        "energy": "RESERVED_BACKFILL_V1",
+        "thermal": "CPU_REFERENCE"
+      },
+      "g1.2_c0.75_b1": {
+        "energy": "CPU_REFERENCE",
+        "thermal": "CPU_REFERENCE"
+      },
+      "g1.2_c0.75_b4": {
+        "energy": "PAIR_COALESCE_V1",
+        "thermal": "TOKEN_CPU_V1"
+      },
+      "g1.2_c0.75_b8": {
+        "energy": "EFT_REFERENCE",
+        "thermal": "CPU_REFERENCE"
+      }
+    },
+    "seeds": [
+      102001,
+      102002,
+      102003
+    ],
+    "selection_input": "declared envelope and objective before arrivals; no future realized trace",
+    "objectives": {
+      "energy": "min mean J, then peak AP",
+      "thermal": "min mean peak AP, then AP area, then J"
+    },
+    "feasibility": "all six development contexts meet every deadline; not a guarantee for future input",
+    "references": [
+      "EFT_REFERENCE",
+      "SPLIT_REFERENCE"
+    ],
+    "max_unique_simulations": 972,
+    "max_wall_s": 900,
+    "no_further_fit": true,
+    "accuracy_pass": null,
+    "device_commands": 0,
+    "experiment_ready": false
+  },
+  "hashes": {
+    "tools/d1_scheduler_condition_selector.py": "3712485ec776b49bbaebcf027d4fc258577932587210bd75cf660277e5f60bf1",
+    "tools/d1_scheduler_conditions.py": "cda103f356585715448ebb3167e2dc81fab95e598f1a6b9e3036f88ed5313b78",
+    "tools/d1_empirical_request_policy.py": "b6f18692787b66839280a4d2f72e36ca93e4ed528b8f96294c863e8051f5bcfb",
+    "docs/results/scheduler_conditions_01/run_v2/results.csv": "0e92bedea025deb47063e71f0ff54bf235657f57b380f8b038619874f9625f59",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d"
+  },
+  "utc": "2026-10-04T22:22:14.238168+00:00"
+}

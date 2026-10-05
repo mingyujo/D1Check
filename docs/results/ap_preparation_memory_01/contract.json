@@ -1,0 +1,92 @@
+{
+  "id": "ap-preparation-memory-v1",
+  "written_before_fit_utc": "2026-10-02T00:44:18.520705+00:00",
+  "hypothesis": "One latent preparation/workload memory plus observed AP; separate effective idle reference from residual preparation heat. Diagnostic linear state, not identified internal temperature or ambient.",
+  "equations": [
+    "dT/dt=beta*(E-T)+u+H",
+    "dH/dt=(gamma*u-H)/tau",
+    "u=frozen_state_slope-frozen_idle_slope"
+  ],
+  "fixed": [
+    "original beta",
+    "original state slopes",
+    "actual lane schedule",
+    "original scoring timestamps/windows"
+  ],
+  "global_fit": {
+    "tau_seconds": [
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120,
+      125,
+      130,
+      135,
+      140,
+      145,
+      150,
+      155,
+      160,
+      165,
+      170,
+      175,
+      180
+    ],
+    "gamma": "one nonnegative least-squares coefficient conditional on tau; no grid/gain cap or post-evaluation refit",
+    "primary_session": "idle_development",
+    "loss": "post-load AP MSE; tie smaller tau",
+    "meaning": "prespecified finite diagnostic search, not physical range"
+  },
+  "per_session_initialization": "Use only existing >=55 second pre-load AP, fit E and H at first pre-load sample by rank-checked linear least squares; anchor observed T at last pre-load sample, propagate H and remaining idle without future AP. No required ambient value.",
+  "evaluation": [
+    "idle_confirmation",
+    "cgdc_transfer",
+    "one_pulse",
+    "two_pulses"
+  ],
+  "data_role": "All five sessions previously seen. One posthoc development, four parameter-fit-excluded posthoc evaluations; fresh independent sessions zero.",
+  "identifiability": "Report scaled singular values/condition, full tau profile, boundary optimum and ±0.05C hypothetical pre-load rounding sensitivity. Profile within best RMSE+0.05C is a sensitivity set, not CI or acceptance criterion. Rank deficient -> null.",
+  "directions_windows_seconds": [
+    [
+      90,
+      115
+    ],
+    [
+      120,
+      145
+    ],
+    [
+      150,
+      175
+    ]
+  ],
+  "comparators": [
+    "unchanged_preload",
+    "previous_rejected_lag_tau4"
+  ],
+  "adoption": "No automatic default/strict/policy-cost promotion; accuracy_pass null. Do not try another candidate family if this one fails.",
+  "thermal_service": "Archived COLLECT05 completed development3+confirmation1; match last AP whose read ended before invocation within 10 seconds. Stratify session x state-block x task-backend x actual inference overlap. Show within-stratum AP and elapsed associations, not causal throttle coefficient; unmatched samples excluded with denominator. No thermal curve fit.",
+  "new_device_commands": 0,
+  "new_device_plan": false,
+  "experiment_ready": false
+}

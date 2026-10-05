@@ -1,0 +1,11 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><title>지도학습 정책 선택기</title>
+<style>body{font:16px sans-serif;max-width:1200px;margin:40px auto;line-height:1.6}td,th{border:1px solid #ccc;padding:6px}table{border-collapse:collapse}img{width:100%}</style>
+<h1>이전 요청 기록으로 선택하는 지도학습 스케줄러</h1>
+<p>PC 합성입력 평가. 실측 절감·strict 검증·기한 보장 아님. 미래 trace/실현 처리시간을 선택기에 입력하지 않음.</p>
+<p>이전48요청과 다음48요청이 같은 부하 분포라는 가정. 이전 이력의 열은 이어붙이지 않고 동일 initial0 사용.
+콜드스타트·분포 변화·요청별 정책 전환·다른 AP 초기조건은 미검증. EFT fallback도 서비스 보장 아님.</p>
+<p>18부하 조합·36이력으로 학습,9조합 통째 제외. 저장 자료로 두 모형 선정 후 새2seed×27조합×3처리문맥 확인.
+학습에 쓰지 않은 조합도 이전 연구에서는 본 조건이며 물리모형의 독립 실기기 확인이 아님.</p>
+<h2>선정 모형의 전체162조건 — 실패도 포함</h2><table><tr><th>모형</th><th>목적</th><th>기준</th><th>기한충족</th><th>요청분모</th><th>전 요청 충족 사례</th><th>기준보다 서비스 악화</th><th>ΔJ</th><th>Δ최고AP</th></tr><tr><td>tree</td><td>energy</td><td>EFT_REFERENCE</td><td>6772</td><td>7776</td><td>100</td><td>5</td><td>-0.105158</td><td>0.053325</td></tr><tr><td>tree</td><td>energy</td><td>SPLIT_REFERENCE</td><td>6772</td><td>7776</td><td>100</td><td>4</td><td>-0.657564</td><td>-0.101093</td></tr><tr><td>tree</td><td>energy</td><td>CPU_REFERENCE</td><td>6772</td><td>7776</td><td>100</td><td>5</td><td>-0.368757</td><td>0.185278</td></tr><tr><td>boosting</td><td>thermal</td><td>EFT_REFERENCE</td><td>6788</td><td>7776</td><td>105</td><td>0</td><td>0.086789</td><td>-0.040130</td></tr><tr><td>boosting</td><td>thermal</td><td>SPLIT_REFERENCE</td><td>6788</td><td>7776</td><td>105</td><td>4</td><td>-0.465616</td><td>-0.194548</td></tr><tr><td>boosting</td><td>thermal</td><td>CPU_REFERENCE</td><td>6788</td><td>7776</td><td>105</td><td>0</td><td>-0.176810</td><td>0.091823</td></tr></table>
+<img src="comparison.png" alt="조건별 비용차이와 기한 실패 표시"><p>음수는 해당 비용 감소. 에너지/열 목적 그림은 다른 선택이며 공동 개선을 뜻하지 않음.</p>
+<p><a href="metrics.csv">모든 모형·학습/미학습 조합·기준별 수치</a> · <a href="decisions.csv">결정·실패·응답차이</a> · <a href="fallback.csv">fallback</a> · <a href="../README.md">설계·결론·재현</a></p></html>

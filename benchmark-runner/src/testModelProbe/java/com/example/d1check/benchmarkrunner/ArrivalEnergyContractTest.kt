@@ -4,6 +4,22 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class ArrivalEnergyContractTest {
+    @Test fun zeroRequestsOnlyInExplicitControl() {
+        ArrivalEnergyContract.validateSession("burst", emptyList(), ArrivalEnergyContract.RESIDENT_CONTROL, "no_load_control")
+        for ((version, role) in listOf("" to "", "" to "no_load_control",
+            ArrivalEnergyContract.RESIDENT_CONTROL to "registered_load", "unknown" to "no_load_control")) {
+            try { ArrivalEnergyContract.validateSession("burst", emptyList(), version, role); fail("accepted invalid zero request session") }
+            catch (_: IllegalArgumentException) { }
+        }
+        val requests = (0 until 24).map { i ->
+            val urgent = i % 4 == 1
+            ArrivalEnergyContract.Request("q$i", i, if (urgent) "classification" else "detection",
+                if (urgent) "urgent" else "normal", ArrivalEnergyContract.offset("burst", i), if (urgent) 1500 else 6000)
+        }
+        ArrivalEnergyContract.validateSession("burst", requests, ArrivalEnergyContract.RESIDENT_CONTROL, "registered_load")
+        try { ArrivalEnergyContract.validateSession("burst", requests, ArrivalEnergyContract.RESIDENT_CONTROL, "no_load_control"); fail("control allowed work") }
+        catch (_: IllegalArgumentException) { }
+    }
     @Test fun fixedTraceAndDistinctScheduledArrivals() {
         for (scenario in listOf("low", "queue", "burst")) {
             val requests = (0 until 24).map { i ->

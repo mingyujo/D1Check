@@ -1,0 +1,42 @@
+{
+  "verified_utc": "2026-10-04T10:29:07.611839+00:00",
+  "base_head": "71a2f2b5bc6b537d3a8313ccc175072dabac8485",
+  "target": "base HEAD plus listed uncommitted handoff changes",
+  "s26_read_commit": "b4f7634a64e068c66cfaff4d5af4ab4548af4529",
+  "checks": {
+    "samples": 20,
+    "raw_output_elements": 20000,
+    "float32_hash_round_trip": true,
+    "comparator_self_and_mismatch": true,
+    "device_commands": 0,
+    "new_inference": 0
+  },
+  "source_export_equal": true,
+  "source_png_tensor_output_hashes_checked": 60,
+  "relative_links_checked": 12,
+  "commands": [
+    "python -B -m tools.d1_s26_quality_handoff --source-root <existing Decode_Resolution> --bundle <new handoff file>",
+    "python -B -m tools.d1_s26_quality_handoff --bundle docs/team/s26_interface_20261004/quality_reference.json",
+    "source rebuild equality; relative link and source hash checks",
+    "git diff --check",
+    "git ls-remote origin refs/heads/feature/arrival-scheduling-20260923 refs/heads/s26-measure"
+  ],
+  "changed_file_sha256": {
+    "AGENTS.md": "b85981ce4cd318ae26a5ec436985e399730bb6c6dac82cce6844b1d4889a6ddc",
+    "docs/DECISIONS.md": "43a7ca3d61e286cf60156ec858536ff279248801e9e46ae2739f6c9244787d87",
+    "docs/MULTITASK_EXPERIMENT_PROTOCOL.md": "3f7062854d7aed634cdfd302a4da702e37c7d471c382c3f529ff1f96f82c9729",
+    "docs/PROJECT_PLAN.md": "f0b67ea9b4559b194eef1343e1932da189e57e7e5a6bff1352b42d8f47fc8f8f",
+    "docs/PROJECT_STATUS.md": "7d9dfd4bd2eeab984c6290318937476310fcf3a2c6a848c1b5fd5b9cfbd877e5",
+    "docs/team/README.md": "c00a39ce75731520e4e1aa7aaf4ebfcd8a4a37bdd172159bcd4f568709f5f428",
+    "docs/team/S26_HANDOFF_20261003.md": "cce3ed9018c667bab537a93e6a5ff05b226117a5f0a7ed819a570161479248a2",
+    "docs/team/S26_SCOPE_AND_INTERFACE_20261004.md": "0a21bfcd9f60ca99d5ac2b0a2b290a1ad9391db86825e70d4d2cc458506d16be",
+    "docs/team/s26_interface_20261004/quality_reference.json": "148e3be8065659b2d305d03a10924ac657a1ee8b4a5a17b14613c584e2cc66f4",
+    "tools/d1_s26_quality_handoff.py": "ff938565290f25abe7607e8d08f1c6736c3970687de9f9da8e3c6f294d90cc8d"
+  },
+  "limitations": [
+    "No new inference, Android build or device command",
+    "No S26 real-image quality test or policy holdout executed",
+    "Shared CPU engineering reference is not classification ground truth",
+    "Oct4 later measurements/v2 completion reported by user, not verified at pinned S26 commit"
+  ]
+}

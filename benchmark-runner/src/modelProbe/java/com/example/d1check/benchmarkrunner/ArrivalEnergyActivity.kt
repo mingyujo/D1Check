@@ -16,7 +16,8 @@ import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
 
 /** Isolated, measured 24-arrival path; old ArrivalSchedulerActivity remains unchanged. */
-class ArrivalEnergyActivity : Activity() {
+open class ArrivalEnergyActivity : Activity() {
+    private val activityInstanceId = UUID.randomUUID().toString()
     private val setup = Executors.newSingleThreadExecutor()
     private val dispatch = Executors.newSingleThreadExecutor()
     private val cpu = Executors.newSingleThreadExecutor()
@@ -31,8 +32,15 @@ class ArrivalEnergyActivity : Activity() {
     private var progress: EnergyProgress? = null
     private lateinit var root: File
     private lateinit var sid: String
+    private var createdFromSavedState = false
+    private var activityCreatedNs = 0L
     private var sequence = 0L
+    private var backgroundObservation = false
+    private val pastPower = ArrivalPastPowerWindow()
+    @Volatile private var commonStartForObservation = 0L
+    private var nextPastInputNs = 0L
     @Volatile private var finished = false
+    @Volatile private var finishRequested = false
     private var phase: String
         get() = observed.phase
         set(value) { observed.phase = value }
@@ -42,6 +50,35 @@ class ArrivalEnergyActivity : Activity() {
     private val watchdog = Runnable { android.os.Process.killProcess(android.os.Process.myPid()) }
     private fun now() = SystemClock.elapsedRealtimeNanos()
     private fun lane(key: String) = if (key.endsWith("_CPU")) cpu else gpu
+
+    private fun lifecycle(callback: String) {
+        if (progress == null) return
+        try {
+            event("activity_lifecycle", mapOf("callback" to callback,
+                "activity_instance_id" to activityInstanceId,
+                "activity_created_ns" to activityCreatedNs,
+                "is_finishing" to isFinishing,
+                "is_changing_configurations" to isChangingConfigurations,
+                "created_from_saved_state" to createdFromSavedState,
+                "finish_requested_by_session" to finishRequested,
+                "stop_reason" to stop.get()))
+        } catch (error: Throwable) {
+            // A journal failure cannot replace the first cancellation or session error.
+            Log.w("D1ARRIVALENERGY", "lifecycle journal unavailable: $callback", error)
+        }
+    }
+
+    protected fun recordConfigurationChange(config: android.content.res.Configuration) {
+        lifecycle("onConfigurationChanged")
+        try {
+            event("activity_configuration", mapOf("activity_instance_id" to activityInstanceId,
+                "orientation" to config.orientation, "screen_width_dp" to config.screenWidthDp,
+                "screen_height_dp" to config.screenHeightDp, "ui_mode" to config.uiMode,
+                "owner_preserved" to true))
+        } catch (error: Throwable) {
+            Log.w("D1ARRIVALENERGY", "configuration journal unavailable", error)
+        }
+    }
 
     @Synchronized private fun event(kind: String, data: Map<String, Any?> = emptyMap()) {
         progress?.add(ModelProbeArtifacts.json(data + mapOf("kind" to kind, "mono_ns" to now(),
@@ -89,11 +126,28 @@ class ArrivalEnergyActivity : Activity() {
             "admission_reason" to reason, "snapshot_start_ns" to start,
             "sensor_read_end_ns" to now()) + observed.snapshot()
     }
+    private fun publishPastPower(data: Map<String, Any?>, cpuMs: Long, ready: Long) {
+        val raw = data["current_raw"] as Int
+        val voltage = data["voltage_mV"] as? Int
+        val watts = if (raw != Int.MIN_VALUE && raw <= 0 && voltage != null && voltage > 0 && data["plugged"] == 0)
+            -raw.toDouble()*voltage/1e6 else null
+        pastPower.add(ArrivalPastPowerWindow.Sample(
+            ((data["snapshot_start_ns"] as Long)+(data["sensor_read_end_ns"] as Long))/2,
+            ready,watts,cpuMs))
+        event("power_sample", data + mapOf("self_cpu_ms" to cpuMs,
+            "past_input_ready_ns" to ready, "activity_observation_version" to ArrivalBackgroundObservation.VERSION))
+        if (commonStartForObservation > 0 && ready >= nextPastInputNs) {
+            event("causal_power_input", pastPower.at(ready))
+            nextPastInputNs = ready+10_000_000_000L
+        }
+    }
     private fun update(row: MutableMap<String, Any?>, fields: Map<String, Any?>) = synchronized(row) { row.putAll(fields) }
     private fun detached(row: MutableMap<String, Any?>) = synchronized(row) { LinkedHashMap(row) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activityCreatedNs = now()
+        createdFromSavedState = savedInstanceState != null
         setContentView(TextView(this).apply { text = "합성 도착 에너지·AP 계측" })
         window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         handler.postDelayed(watchdog, ArrivalEnergyContract.WATCHDOG_MS)
@@ -123,7 +177,9 @@ class ArrivalEnergyActivity : Activity() {
             root = canonicalProbeOutputRoot(filesDir, ArrivalEnergyContract.PROTOCOL, sid)
             check(!root.exists() && root.mkdirs())
             FileOutputStream(File(root, "manifest.json")).use { it.write(mf.readBytes()); it.fd.sync() }
-            progress = EnergyProgress(File(root, "progress.jsonl")); event("session_start", mapOf("manifest_sha256" to hash))
+            progress = EnergyProgress(File(root, "progress.jsonl"))
+            event("session_start", mapOf("manifest_sha256" to hash))
+            lifecycle("onCreate")
             check(m.getString("protocol") == ArrivalEnergyContract.PROTOCOL && m.getString("session_id") == sid)
             check(!m.getBoolean("experiment_ready") && m.getLong("maximum_duration_ms") == ArrivalEnergyContract.WATCHDOG_MS)
             check(m.getString("apk_sha256") == ProbeModelFile.sha256(File(applicationInfo.sourceDir)) &&
@@ -132,7 +188,17 @@ class ArrivalEnergyActivity : Activity() {
                 m.getInt("resident_baseline_seconds").toLong() == ArrivalEnergyContract.BASELINE_SECONDS)
             check(m.getInt("maximum_concurrency") == 2 && m.getString("memory_contract") == V4Gate.CONTRACT && m.getInt("thermal_gate") == 0)
             val policy = m.getString("policy")
-            check(policy in setOf(ArrivalPolicy.URGENT, ArrivalPolicy.FIXED))
+            backgroundObservation = m.has("background_observation_version")
+            val policyStudy = m.optString("policy_study_version", "")
+            if (policyStudy.isNotEmpty()) check(policyStudy == ArrivalPolicyStudy.VERSION &&
+                policy in ArrivalPolicyStudy.POLICIES && !m.has("replay_version") && !m.has("resident_control_version"))
+            val apMode = m.optString("start_ap_gate", "")
+            check(apMode in setOf("", ArrivalStartApGate.VERSION, ArrivalStartApGate.DIAGNOSTIC_VERSION)) { "unknown start AP gate" }
+            if (apMode == ArrivalStartApGate.DIAGNOSTIC_VERSION) {
+                check(policy == ArrivalRecordedReplay.POLICY || policyStudy == ArrivalPolicyStudy.VERSION || backgroundObservation) { "diagnostic AP requires explicit protocol" }
+            }
+            check(policy in setOf(ArrivalPolicy.URGENT, ArrivalPolicy.FIXED, ArrivalRecordedReplay.POLICY) ||
+                ((policyStudy == ArrivalPolicyStudy.VERSION || backgroundObservation) && policy in ArrivalPolicyStudy.POLICIES))
             val imageSpec = m.getJSONArray("images").also { check(it.length() == 1) }.getJSONObject(0)
             val image = File(inputs, imageSpec.getString("filename")); val imageHash = imageSpec.getString("sha256")
             check(ProbeModelFile.sha256(image) == imageHash)
@@ -143,9 +209,53 @@ class ArrivalEnergyActivity : Activity() {
                 ArrivalEnergyContract.Request(q.getString("request_id"), q.getInt("ordinal"), q.getString("task_id"),
                     q.getString("priority"), q.getLong("offset_ms"), q.getLong("deadline_ms"))
             } }
-            ArrivalEnergyContract.validate(m.getString("scenario"), requests)
+            val controlVersion = m.optString("resident_control_version", "")
+            val controlRole = m.optString("resident_control_role", "")
+            if (backgroundObservation) {
+                check(apMode == ArrivalStartApGate.DIAGNOSTIC_VERSION && policyStudy.isEmpty())
+                ArrivalBackgroundObservation.validate(m.getString("background_observation_version"), policy,
+                    m.getString("background_observation_role"), m.getString("scenario"), requests, controlVersion)
+            } else if (policyStudy.isNotEmpty()) {
+                check(apMode == ArrivalStartApGate.DIAGNOSTIC_VERSION)
+                check((0 until requestJson.length()).all { !requestJson.getJSONObject(it).has("release_offset_ns") &&
+                    !requestJson.getJSONObject(it).has("recorded_backend") })
+                ArrivalPolicyStudy.validate(policyStudy, policy, m.getString("policy_study_role"), m.getString("scenario"), requests,
+                    m.optString("power_identification_version", ""))
+            } else ArrivalEnergyContract.validateSession(m.getString("scenario"), requests, controlVersion, controlRole)
+            if (controlVersion.isNotEmpty()) check(policy == ArrivalRecordedReplay.POLICY &&
+                apMode == ArrivalStartApGate.DIAGNOSTIC_VERSION) { "resident control requires recorded observe-v2" }
             requests.forEach { check(UUID.fromString(it.id).toString() == it.id) }
-            samples.scheduleAtFixedRate({ sampler.tick { event("power_sample", snapshot()) } }, 0, 1, TimeUnit.SECONDS)
+            val replay = if (policy == ArrivalRecordedReplay.POLICY) {
+                val replayVersion = m.getString("replay_version")
+                check(replayVersion in setOf(ArrivalRecordedReplay.VERSION, ArrivalRecordedReplay.COMPARISON_VERSION))
+                val sourcePolicy = if (replayVersion == ArrivalRecordedReplay.COMPARISON_VERSION)
+                    m.getString("source_policy") else "B2_PC"
+                requestJson.let { arr -> (0 until arr.length()).map { i -> arr.getJSONObject(i).let { q ->
+                    ArrivalRecordedReplay.Entry(q.getString("request_id"), q.getInt("ordinal"),
+                        q.getString("task_id"), q.getLong("offset_ms") * 1_000_000L,
+                        q.getLong("release_offset_ns"), q.getString("recorded_backend"),
+                        q.getString("source_request_id"))
+                } } }.also { ArrivalRecordedReplay.validate(it, requests, replayVersion, sourcePolicy) }.associateBy { it.id }
+            } else emptyMap()
+            val samplePeriodMs = ArrivalPolicyStudy.samplePeriodMs(if (backgroundObservation) ArrivalPolicyStudy.VERSION else policyStudy,
+                m.optString("power_sampling_version", ""), m.optLong("power_sample_period_ms", 1000L))
+            if (m.has("power_identification_version")) {
+                check((policyStudy == ArrivalPolicyStudy.VERSION || backgroundObservation) &&
+                    m.getString("power_identification_version") in setOf(ArrivalPolicyStudy.SEPARATED_POWER,
+                        ArrivalPolicyStudy.SUSTAINED_CONFIRMATION) && samplePeriodMs == 900L)
+                event("power_identification_contract", mapOf("version" to m.getString("power_identification_version"),
+                    "role" to if (backgroundObservation) "development" else m.getString("policy_study_role"), "requests" to requests.size))
+            }
+            if (m.has("power_sampling_version")) event("power_sampling_contract", mapOf("period_ms" to samplePeriodMs,
+                "version" to m.getString("power_sampling_version")))
+            samples.scheduleAtFixedRate({ sampler.tick {
+                val data = snapshot()
+                if (backgroundObservation) {
+                    val cpuMs = android.os.Process.getElapsedCpuTime()
+                    val ready = now()
+                    publishPastPower(data,cpuMs,ready)
+                } else event("power_sample", data)
+            } }, 0, samplePeriodMs, TimeUnit.MILLISECONDS)
             val setupStart = now()
             Log.i("D1ENERGY", "runtime_scope_start=$sid")
             ArrivalRuntimeSetup.initialize(EnergyCollectionCore.KEYS, false, 8, requests.size) { key ->
@@ -176,7 +286,31 @@ class ArrivalEnergyActivity : Activity() {
             val baselineStart = now()
             while (now()-baselineStart < ArrivalEnergyContract.BASELINE_SECONDS*1_000_000_000) { healthy(); Thread.sleep(100) }
             event("phase_end")
+            var startReading: ArrivalStartApGate.Reading? = null
+            if (apMode == ArrivalStartApGate.VERSION || apMode == ArrivalStartApGate.DIAGNOSTIC_VERSION) {
+                phase = "start_ap_gate"
+                val ready = now()
+                progress!!.flushBeforeGate()
+                save("start_ap.ready.json", mapOf("manifest_sha256" to hash, "mono_ns" to ready))
+                val approval = File(inputs, "start_ap.arm")
+                while (!approval.exists()) {
+                    healthy()
+                    check(now() - ready < ArrivalStartApGate.WAIT_NS) { "start AP gate timeout; no load" }
+                    Thread.sleep(25)
+                }
+                healthy()
+                check(now() - ready < ArrivalStartApGate.WAIT_NS && approval.length() in 1..512) { "late/oversized AP approval" }
+                startReading = ArrivalStartApGate.parse(approval.readText(), hash, ready, apMode)
+            }
             phase = "common_window"; val start = now()
+            if (backgroundObservation) { nextPastInputNs=start+35_000_000_000L; commonStartForObservation=start }
+            startReading?.let {
+                ArrivalStartApGate.atStart(it, start)
+                save("start_ap.accepted.json", mapOf("ap_c" to it.ap, "read_before_ns" to it.before,
+                    "read_after_ns" to it.after, "common_start_ns" to start,
+                    "read_to_start_ns" to start-it.after, "max_age_ns" to ArrivalStartApGate.MAX_AGE_NS,
+                    "gate_mode" to apMode, "initial_ap_in_frozen_development_range" to (it.ap in 32.5..34.0)))
+            }
             event("common_start", mapOf("scheduled_origin_ns" to start, "window_ns" to ArrivalEnergyContract.COMMON_NS))
             val waiting = mutableListOf<ArrivalPolicy.Ticket>() // dispatch executor only
             val busy = mutableMapOf("CPU" to false, "GPU" to false)
@@ -185,7 +319,12 @@ class ArrivalEnergyActivity : Activity() {
             pump = {
                 while (stop.get() == null) {
                     val begin = now()
-                    val choice = ArrivalPolicy.choose(policy, waiting, !busy.getValue("CPU"), !busy.getValue("GPU"), 0, emptyMap())
+                    val choice = if (policyStudy.isNotEmpty() || (backgroundObservation && controlVersion.isEmpty()))
+                        ArrivalPolicyStudy.choose(policy, waiting, !busy.getValue("CPU"), !busy.getValue("GPU"))
+                    else if (policy == ArrivalRecordedReplay.POLICY)
+                        ArrivalRecordedReplay.choose(waiting, replay, maxOf(0L, begin-start),
+                            !busy.getValue("CPU"), !busy.getValue("GPU"))
+                    else ArrivalPolicy.choose(policy, waiting, !busy.getValue("CPU"), !busy.getValue("GPU"), 0, emptyMap())
                     event("decision", mapOf("policy" to policy, "waiting" to waiting.size,
                         "selected" to choice?.ticket?.id, "backend" to choice?.backend,
                         "decision_start_ns" to begin, "decision_end_ns" to now()))
@@ -195,14 +334,19 @@ class ArrivalEnergyActivity : Activity() {
                     val row = rows.getValue(choice.ticket.id); val key = "${choice.ticket.task}_${choice.backend}"
                     val dispatched = now(); observed.dispatch(key, choice.ticket.id)
                     update(row, mapOf("selected_backend" to choice.backend, "decision_reason" to choice.reason,
-                        "dispatch_ns" to dispatched))
+                        "dispatch_ns" to dispatched, "recorded_release_ns" to replay[choice.ticket.id]?.let { start+it.releaseNs },
+                        "release_gate_delay_ns" to replay[choice.ticket.id]?.let { dispatched-(start+it.releaseNs) }))
                     event("dispatch", mapOf("id" to choice.ticket.id, "key" to key, "dispatch_ns" to dispatched))
                     lane(key).execute {
                         try {
                             val execution = now(); update(row, mapOf("execution_start_ns" to execution))
                             event("request_start", mapOf("id" to choice.ticket.id, "key" to key))
                             event("admission", snapshot()); healthy()
+                            val inferenceStart = now(); update(row, mapOf("host_inference_start_ns" to inferenceStart))
+                            event("host_inference_start", mapOf("id" to choice.ticket.id, "key" to key))
                             val outcome = observed.runtime(key).execute(image, imageHash)
+                            val inferenceReturn = now(); update(row, mapOf("host_inference_return_ns" to inferenceReturn))
+                            event("host_inference_return", mapOf("id" to choice.ticket.id, "key" to key))
                             val ready = now(); update(row, mapOf("output_ready_ns" to ready))
                             event("output_ready", mapOf("id" to choice.ticket.id, "key" to key))
                             save("${choice.ticket.id}.result.json", outcome)
@@ -235,6 +379,7 @@ class ArrivalEnergyActivity : Activity() {
                     val actual = now()
                     val row = linkedMapOf<String, Any?>("request_id" to q.id, "ordinal" to q.ordinal,
                         "task_id" to q.task, "priority" to q.priority,
+                        "source_request_id" to replay[q.id]?.sourceId,
                         "scheduled_arrival_ns" to target, "actual_arrival_ns" to actual,
                         "deadline_ns" to target + q.deadlineMs * 1_000_000,
                         "terminal_status" to "unfinished")
@@ -248,6 +393,15 @@ class ArrivalEnergyActivity : Activity() {
                         event("queue_entry", mapOf("id" to q.id)); pump()
                     }
                 }, maxOf(0, target - now()), TimeUnit.NANOSECONDS)
+            }
+            if (policy == ArrivalRecordedReplay.POLICY) for (entry in replay.values) {
+                val target = start + entry.releaseNs
+                arrivals.schedule({ dispatch.execute {
+                    event("recorded_release_gate", mapOf("id" to entry.id,
+                        "source_request_id" to entry.sourceId, "scheduled_ns" to target,
+                        "actual_ns" to now()))
+                    pump()
+                } }, maxOf(0, target-now()), TimeUnit.NANOSECONDS)
             }
             while (now()-start < ArrivalEnergyContract.COMMON_NS) { healthy(); Thread.sleep(100) }
             val commonEnd = now(); event("common_end", mapOf("common_end_ns" to commonEnd))
@@ -279,7 +433,12 @@ class ArrivalEnergyActivity : Activity() {
                 try { ArrivalRuntimeSetup.closeLane(executor) { observed.laneRuntimes(suffix).forEach { it.close() } } }
                 catch(e: Throwable) { failure = "$failure; cleanup: $e" }
             }
-            try { event("app_cleanup", mapOf("error" to failure)); progress?.close() }
+            try {
+                event("app_cleanup", mapOf("error" to failure))
+                finishRequested = true
+                lifecycle("finish_requested")
+                progress?.close()
+            }
             catch(e: Throwable) { failure = "$failure; flush: $e" }
             if (::root.isInitialized) try { save("cleanup.json", mapOf("status" to if(failure==null) "completed" else "failed",
                 "error" to failure, "mono_ns" to now(), "sampler_failure" to sampler.failure.get(),
@@ -291,5 +450,14 @@ class ArrivalEnergyActivity : Activity() {
             runOnUiThread { finish() }
         }
     }
-    override fun onDestroy() { if (!finished) stop.compareAndSet(null,"lifecycle_cancelled"); super.onDestroy() }
+    override fun onStart() { super.onStart(); lifecycle("onStart") }
+    override fun onResume() { super.onResume(); lifecycle("onResume") }
+    override fun onPause() { lifecycle("onPause"); super.onPause() }
+    override fun onStop() { lifecycle("onStop"); super.onStop() }
+    override fun onNewIntent(intent: Intent) { super.onNewIntent(intent); lifecycle("onNewIntent") }
+    override fun onDestroy() {
+        if (!finished) stop.compareAndSet(null,"lifecycle_cancelled")
+        lifecycle("onDestroy")
+        super.onDestroy()
+    }
 }

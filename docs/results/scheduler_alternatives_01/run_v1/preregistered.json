@@ -1,0 +1,72 @@
+{
+  "spec": {
+    "version": "scheduler-alternatives-v1",
+    "new_policies": [
+      "ECO_EDF_V1",
+      "LLF_EFT_V1",
+      "RESERVED_BACKFILL_V1",
+      "PARETO_MPC_V1",
+      "THERMAL_MPC_V1"
+    ],
+    "baselines": [
+      "CPU_REFERENCE",
+      "SPLIT_REFERENCE",
+      "EFT_REFERENCE"
+    ],
+    "development_seeds": [
+      60001,
+      60002,
+      60003,
+      60004
+    ],
+    "test_seeds": [
+      70001,
+      70002,
+      70003,
+      70004,
+      70005,
+      70006,
+      70007,
+      70008
+    ],
+    "families": [
+      "low",
+      "queue",
+      "burst",
+      "sustained"
+    ],
+    "scenarios": [
+      "mean",
+      "short_context",
+      "long_context"
+    ],
+    "development_runs": 384,
+    "final_runs": 1056,
+    "ppo_seeds": [
+      11,
+      23,
+      37
+    ],
+    "causal": "arrived tickets/public phases/preload initial/fixed development service estimates; no future arrivals/realizations",
+    "mpc": "top4 first-request alternatives + head wait<=250ms/age2s; full arrived-queue EFT rollout; all3 contexts no predicted priority service/lateness, J, peak, AP-area worsening vs EFT; execute first action only",
+    "selection": "development: lex service-worse cases, heat-worse cases, energy-worse cases, mean J, mean AP burden; choose one for follow-up but publish every candidate; not a PASS",
+    "final_rule": "no tuning after opening test; report pairwise constraints, deadlines, P95, J, peak, AP burden; no default/device adoption",
+    "analytical_bound": "optimistic full-work-before120 J lower bound; no heat or deadline optimality guarantee",
+    "max_wall_s": 3600,
+    "physical_model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "initial_sha256": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "device_commands": 0,
+    "experiment_ready": false
+  },
+  "sources": {
+    "tools/d1_scheduler_alternatives.py": "e458f65b20063e6110470cfd341460f8df5e0414be08fb7f55fe554198eb8a8a",
+    "tools/d1_empirical_request_policy.py": "ff99dd32da43bf27193738a20bd6ac35b3864ca94300ccd3259fad2e3307b00e",
+    "tools/d1_arrival_explore.py": "384a5ab28d289f78a00ab8a4bb5e74c8f7df4e5d2ba8f3059130673ca44a20ac",
+    "tools/d1_request_rl.py": "ac74114e28c6f44e0c3b0c9a1e5a943ad156579c8a3cfe3e015db8a50e2958a9",
+    "tools/d1_request_ppo.py": "c8282794b92c10e60b1d2a0bffed3eb8e05bf1aad5001493948a801e12e2c0a2",
+    "docs/results/scheduler_alternatives_01/contract.json": "0f560b9fab4f83e2e67566d82ea8b0748baa7d012e1794261148d6f11937f1c3",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d"
+  },
+  "utc": "2026-10-04T21:22:56.203055+00:00"
+}

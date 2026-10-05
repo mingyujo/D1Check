@@ -1,0 +1,33 @@
+{
+  "id": "ap-fixed-rate-identification-v1",
+  "base_head": "50820bccbee8bea6a465ce2890143656ce2faab7",
+  "timing": "Written before this profile/fit. All source outcomes, including the two latest confirmations, were already seen. This entire analysis is posthoc.",
+  "question": "Can the fixed cooling rate and common load response explain the remaining error, separately from idle background/preparation history?",
+  "family": "Reuse preparation-memory-v1: T'=beta*(E-T)+k*u+H; H'=-H/30. Same original relative state slopes u. gamma fixed zero; no new heat circuit or delay family.",
+  "fixed": ["tau=30 seconds", "gamma=0", "original relative per-state slopes", "actual lane schedule", "original AP timestamps", "pre-load-only E/H initialization"],
+  "fit": {
+    "development": "idle_development only",
+    "beta_multipliers": "61 log-spaced values from 0.2 to 5 times original beta, including 1 exactly",
+    "gain": "one nonnegative analytic least-squares k per beta; no cap",
+    "objective": "development post-load AP MSE; ties lower beta",
+    "boundary": "report boundary optimum; do not expand grid after seeing results",
+    "interpretation": "finite diagnostic range, not physiological bounds"
+  },
+  "identification": {
+    "profile": "all beta/k values and preload conditions; best RMSE+0.05C range is a descriptive sensitivity set, NOT CI or PASS",
+    "local": "normalized numerical Jacobian of log(beta),log(k), rank and correlation; not global physical identifiability",
+    "state_basis": "per-state unit-response SVD at original beta; no per-state refit",
+    "control": "archived no-work resident C: observed baseline to +35s initializes E/H, later samples are targets. No workload start is invented. A zero load basis returns gain=null.",
+    "limits": "Single development session, effective reference not ambient, AP alone cannot label both idle exponential rates as physical components"
+  },
+  "evaluation": ["idle_confirmation", "cgdc_transfer", "one_pulse", "two_pulses", "confirmation_preidle35", "confirmation_preidle65"],
+  "control_pair": "Existing C/L retained as descriptive observations. L lacks required 55s pre-load history and is excluded from candidate scores, not from the evidence inventory.",
+  "observational_windows": [[90,115],[120,145],[150,175]],
+  "alignment": "Common-origin fixed windows plus time since last lane release. No causal subtraction between unmatched sessions/APKs; no alignment by observed peak.",
+  "candidate_policy": "At most one development-selected diagnostic candidate. Preserve the old candidate and frozen model; no outcome-driven family search or re-fit on confirmation. No automatic adoption.",
+  "accuracy_pass": null,
+  "strict_support": false,
+  "experiment_ready": false,
+  "device_commands": 0,
+  "new_measurement_plan": false
+}

@@ -52,10 +52,28 @@ def server_probe(timeout=1):
         return dict(address='127.0.0.1',port=5037,protocol_version=version)
 
 class ObservedDevice(legacy.Device):
-    def __init__(self,adb,serial,root,allow_select=False,forbid_apk_deploy=False):
+    def __init__(self,adb,serial,root,allow_select=False,forbid_apk_deploy=False,
+                 allow_other_transports=False):
         if not serial and not allow_select:raise ValueError('explicit approved serial required')
         super().__init__(adb,serial);self.root=Path(root);self.sequence=0
         self.allow_select=allow_select;self.forbid_apk_deploy=forbid_apk_deploy
+        self.allow_other_transports=allow_other_transports
+
+    def identify(self,fingerprint):
+        if not self.allow_other_transports:
+            return super().identify(fingerprint)
+        if not self.serial:
+            raise ValueError('explicit transport required; no automatic selection/switch')
+        lines=self.call('devices','-l').stdout.decode().splitlines()[1:]
+        selected=[r.split() for r in lines if r.split() and r.split()[0]==self.serial]
+        if len(selected)!=1 or len(selected[0])<2 or selected[0][1]!='device':
+            raise RuntimeError('selected current transport unavailable; no fallback')
+        model=self.call('shell','getprop','ro.product.model').stdout.decode().strip()
+        actual=self.call('shell','getprop','ro.build.fingerprint').stdout.decode().strip()
+        if model!='SM-A245N' or actual!=fingerprint:
+            raise RuntimeError('selected device model/fingerprint mismatch')
+        return dict(serial=self.serial,model=model,fingerprint=actual,
+                    selection='explicit current transport; other connections untouched')
 
     def failure_snapshot(self):
         remaining=min(2,self.deadline-time.monotonic()) if self.deadline else 2

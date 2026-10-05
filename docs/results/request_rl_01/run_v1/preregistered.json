@@ -1,0 +1,89 @@
+{
+  "contract": {
+    "version": "request-monte-carlo-rl-v1",
+    "candidate": "ENERGY_AP_MC_RL_V1",
+    "algorithm": "first-visit episodic Monte Carlo, sample-mean vector cost, lexicographic greedy epsilon control",
+    "train_seeds": [
+      1001,
+      1002,
+      1003,
+      1004,
+      1005,
+      1006,
+      1007,
+      1008
+    ],
+    "evaluation_seeds": [
+      2001,
+      2002
+    ],
+    "families": [
+      "low",
+      "queue",
+      "burst",
+      "sustained"
+    ],
+    "baselines": [
+      "CPU_REFERENCE",
+      "SPLIT_REFERENCE",
+      "EFT_REFERENCE",
+      "ENERGY_AP_REQUEST_V1"
+    ],
+    "service_scenarios": [
+      "mean",
+      "short_context",
+      "long_context"
+    ],
+    "train_episodes": 96,
+    "training_reference_runs": 96,
+    "evaluation_runs": 120,
+    "max_wall_seconds": 1800,
+    "training_order_seed": 42,
+    "epsilon": [
+      0.3,
+      0.05
+    ],
+    "discount": 1.0,
+    "objective": [
+      "min expected missed fraction (missing response counts)",
+      "min expected positive peak AP excess over paired EFT",
+      "min expected 120s J difference vs paired EFT",
+      "min expected urgent P95"
+    ],
+    "actions": [
+      "legal immediate CPU",
+      "legal immediate GPU",
+      "wait <=250ms; arrival age <=2s; local head deadline guard"
+    ],
+    "state": "head task/slack/age; remaining window 15s bins; capped arrived queue counts; lane task/phase; modeled T-reference and H bins; no future",
+    "workload": "fixed counts 24/192; shuffled task order; each interval uniform +/-5%; 35s start; seed fixed before outcomes",
+    "unseen": "EFT fallback; no evaluation updates",
+    "selection": "last training checkpoint only; no hyperparameter search",
+    "evaluation": "24 paired synthetic conditions, completion/deadline/P95/J/AP separately; no measured accuracy PASS",
+    "promotion": "no default/device adoption; no future error bounds; failures retained; no post-evaluation retuning",
+    "limitations": [
+      "coarse partially observed state",
+      "finite exploration; no convergence proof",
+      "expected priorities are not per-episode guarantees",
+      "common service transfer assumption",
+      "no temperature-to-throughput model",
+      "zero additional controller execution cost",
+      "fixed previously seen initial inputs",
+      "context extrema are not confidence bounds"
+    ],
+    "existing_model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "existing_initial_sha256": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "new_device_plan": false,
+    "device_commands": 0,
+    "experiment_ready": false
+  },
+  "hashes": {
+    "tools\\d1_request_rl.py": "ac74114e28c6f44e0c3b0c9a1e5a943ad156579c8a3cfe3e015db8a50e2958a9",
+    "tools\\d1_empirical_request_policy.py": "77b2e88f7ed167d5af87a0a51cee3095cfed0436101dd7b2cace21c99faa322e",
+    "tools\\d1_arrival_explore.py": "384a5ab28d289f78a00ab8a4bb5e74c8f7df4e5d2ba8f3059130673ca44a20ac",
+    "docs\\results\\request_rl_01\\contract.json": "51b980bf976500ef52cc4134d4e740a01404709008233338e1c02c874649eb19",
+    "docs\\results\\online_policy_study_01\\overnight_sustained_run01\\model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs\\results\\online_policy_study_01\\overnight_sustained_run01\\initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d"
+  },
+  "recorded_utc": "2026-10-04T17:50:03.344042+00:00"
+}

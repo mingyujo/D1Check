@@ -1,0 +1,123 @@
+{
+  "timestamp": "2026-10-05T02:32:57.706924+09:00",
+  "base_head": "21940aa7fccbe8344b42da4b7a07f7f25155a2a7",
+  "uncommitted_task_changes": true,
+  "tests": {
+    "command": "python -B -m unittest tools.test_d1_empirical_request_policy tools.test_d1_arrival_explore tools.test_d1_arrival_thermal_feedback tools.test_d1_sustained_readout -v",
+    "passed": 44,
+    "skipped": 0,
+    "elapsed_seconds": 5.023
+  },
+  "cli": {
+    "command": "python -B -m tools.d1_empirical_request_policy --output docs/results/empirical_request_policy_01/evaluation_v3",
+    "exit_code": 0,
+    "runs": 60,
+    "elapsed_seconds": 23.446106599993072,
+    "prior_attempts": [
+      "evaluation: CLI class identity check failed before simulation, corrected",
+      "evaluation_v2: completed60; unfinished post120 AP labeling corrected; source preserved locally"
+    ]
+  },
+  "report": {
+    "command": "python -B -m tools.d1_empirical_request_report --folder docs/results/empirical_request_policy_01/evaluation_v3",
+    "exit_code": 0,
+    "energy_paths_reproduced": 20,
+    "ledger_rows": 1320,
+    "decision_rows": 1748,
+    "figures_visually_checked": [
+      "tradeoffs.png",
+      "sustained_paths.png"
+    ]
+  },
+  "checks": [
+    "CSV/JSON exact numeric agreement",
+    "null AP for unfinished post120",
+    "pre-run code/model/initial/contract SHA match",
+    "local dashboard links",
+    "old policy paths covered by regression tests",
+    "SVG whitespace normalization preserves parsed path tokens; staged diff check"
+  ],
+  "device_commands": 0,
+  "apk_builds": 0,
+  "coefficient_fits": 0,
+  "independent_policy_validation": false,
+  "experiment_ready": false,
+  "files": {
+    "tools/d1_empirical_request_policy.py": {
+      "bytes": 19409,
+      "sha256": "823d2fb2794a8646221358852980d9c7f0c962e053249bb93c54b519866d07ac"
+    },
+    "tools/d1_empirical_request_report.py": {
+      "bytes": 8346,
+      "sha256": "b5355b4b02487121199f2be5a843134003d6cd0db9d40e29d21d23584be02fa0"
+    },
+    "tools/test_d1_empirical_request_policy.py": {
+      "bytes": 8487,
+      "sha256": "d965e21590e55b52474b0391a61afc834bc32acb1f5fa5babbe6063c12801294"
+    },
+    "tools/d1_arrival_explore.py": {
+      "bytes": 19194,
+      "sha256": "384a5ab28d289f78a00ab8a4bb5e74c8f7df4e5d2ba8f3059130673ca44a20ac"
+    },
+    "docs/results/empirical_request_policy_01/contract.json": {
+      "bytes": 3072,
+      "sha256": "9f8f0e7270c99772dd80786c8a3427ed578a9accd3035f45ca702b78fb5fd1a0"
+    },
+    "docs/results/empirical_request_policy_01/evaluation_v3/comparison.csv": {
+      "bytes": 9778,
+      "sha256": "852ba6494db5dc2403e50de7dbf03e8d7d0759d0ab38dc07d9cc5d07d6592718"
+    },
+    "docs/results/empirical_request_policy_01/evaluation_v3/contract_before_run.json": {
+      "bytes": 3957,
+      "sha256": "198c328ff89dfc97238ba950772510dabe44d146f5d3988955afa0aed0595a4c"
+    },
+    "docs/results/empirical_request_policy_01/evaluation_v3/decision_summary.csv": {
+      "bytes": 250906,
+      "sha256": "8c9c6b01a83d88cc3a91adeb951cdf8f2d70e09408af71f30fa4336b6fede8ba"
+    },
+    "docs/results/empirical_request_policy_01/evaluation_v3/differences.csv": {
+      "bytes": 4347,
+      "sha256": "b0aca880ab753b3a0c392479e83d50eb615d095e5efdf9bcd33421180f8dccab"
+    },
+    "docs/results/empirical_request_policy_01/evaluation_v3/index.html": {
+      "bytes": 20196,
+      "sha256": "96901fb9872ee6b1a5712f2d84d4b3beb071eee3a9561c5095641c5df97831a6"
+    },
+    "docs/results/empirical_request_policy_01/evaluation_v3/inputs.json": {
+      "bytes": 65924,
+      "sha256": "b8ca5eaa8851bff749be457ef1e9938300d204cd4fb627defed30069e8d59dd1"
+    },
+    "docs/results/empirical_request_policy_01/evaluation_v3/predicted_ap.csv": {
+      "bytes": 134571,
+      "sha256": "d92aa81cd0f7b699318991efdc84c64f2df1c46a3ce4f8f4e9a2b529b517c647"
+    },
+    "docs/results/empirical_request_policy_01/evaluation_v3/predicted_energy.csv": {
+      "bytes": 112566,
+      "sha256": "2812d9ba17523bef94dd74285273c688f5355938ba70af399b1490ecadca3130"
+    },
+    "docs/results/empirical_request_policy_01/evaluation_v3/request_ledger.csv": {
+      "bytes": 208217,
+      "sha256": "ccff19ddb98b74648519323ea9ae33097e6907c6df1d4d610e648054815b1f6a"
+    },
+    "docs/results/empirical_request_policy_01/evaluation_v3/summary.json": {
+      "bytes": 38940,
+      "sha256": "729edaa84fafb8233cee593eb89e3d14cf1a65ececfd7492b1df60efeeccaa60"
+    },
+    "docs/results/empirical_request_policy_01/evaluation_v3/sustained_paths.png": {
+      "bytes": 175082,
+      "sha256": "0e77a5edf1e507f357553ebdffed988d3cb8c55e2bac580be43286d7b3003268"
+    },
+    "docs/results/empirical_request_policy_01/evaluation_v3/sustained_paths.svg": {
+      "bytes": 163019,
+      "sha256": "a54ec1c43ddf1226e764633eda8b3e1fd60457ee9bc5870c1499e54f51a0d861"
+    },
+    "docs/results/empirical_request_policy_01/evaluation_v3/tradeoffs.png": {
+      "bytes": 209684,
+      "sha256": "f52d41c8633a20b695b3ee15ca45ad4524814d8d20c052b07fec890c30cbc01d"
+    },
+    "docs/results/empirical_request_policy_01/evaluation_v3/tradeoffs.svg": {
+      "bytes": 151554,
+      "sha256": "ee69a1e4f2ca6c409e7b61df2ab50aa15673f9545287a67fa66f17a0a6b9e17c"
+    }
+  }
+}

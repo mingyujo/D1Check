@@ -1,0 +1,80 @@
+{
+  "verified_utc": "2026-10-02T03:33:13.383320+00:00",
+  "base_head": "50820bccbee8bea6a465ce2890143656ce2faab7",
+  "worktree_changes_present": true,
+  "python": "3.13.9",
+  "commands": [
+    {
+      "command": "python -X utf8 -B -m unittest tools.test_d1_ap_rate_identification -v",
+      "result": "8 tests passed"
+    },
+    {
+      "command": "python -X utf8 -B -m tools.d1_ap_rate_identification --output <archive root>/ap_rate_identification_pc_v1",
+      "result": "exit0; numerical artifacts copied unchanged"
+    },
+    {
+      "command": "python -X utf8 -B docs/results/ap_rate_identification_01/verify.py --archive <existing archive root>",
+      "result": "exit0; existing scores and hashes preserved"
+    }
+  ],
+  "unique_tests_passed": 8,
+  "source_sha256": {
+    "tools/d1_ap_rate_identification.py": "72d812e3dc5f1a79d03cf196a09a5f45863c7599e9dd8b954f75e37d90a88d17",
+    "tools/test_d1_ap_rate_identification.py": "e95948bcac7b63c05006f163a28e2aae138fe126e990112cabd565dc9f8e0669",
+    "tools/d1_ap_preparation_memory.py": "20af3304f8386c7f6adc1df56f5c593e0fd35600ae60d2ce60a518d5c418c40d",
+    "tools/d1_ap_model_completion.py": "47edbaf771ed9fbe8f6035c2fda5cb12019f6ddcf65501b9705491014514486c",
+    "tools/d1_arrival_recorded_replay_analysis.py": "16314a0e756a380f060d2d20627ce6a284c48442871b29ace9a5d9744ebb52ea",
+    "tools/d1_simulator.py": "98a1111bf56d8ebda5061a352711d7d678ba97a607c3fdcad56fdd1cba69a071"
+  },
+  "artifact_sha256": {
+    "contract.json": "0992fecf195256ea9ab29cf6a4e641de22014bc5b899c59b94bb35b31886a047",
+    "final/candidate.json": "13c5bdb97245269119a5a209ffd5aefb81b58c2ef90cbdcdd5ce936bdc699475",
+    "final/control_profile.csv": "f6d1fed1b70d4905173d197f71b2ed9108203f6978c4ef7b31651114161dcfd1",
+    "final/directions.csv": "41b72a9ea4a6a571804123a07bdf7c48016f4127afd53a9a8aa8311896d86157",
+    "final/inputs.json": "2b0914ae9316620a1f3f79d9984fb0c161a40e95c571d4208c69941656a64a6f",
+    "final/observed_paths.csv": "98bafff5b13591bd5a2b6ac6dd5dd77b5fe8c406cc42e1664fb126ed7e50b5c1",
+    "final/observed_windows.csv": "071acadf9553fa0da30a99f43ea21e67d41acb39ef424c81e64739ca2a44d79f",
+    "final/paths.csv": "31b96a183ee08b1fce6441b158c0ad4ba21ee5f972b81eae6ae0a0d5d4a76a07",
+    "final/paths.png": "963f004a227e154052e56be7087b4c3fafb0977429cca980bc88bdd3857f1040",
+    "final/paths.svg": "93ace1852ec7d855614a65be8d7d3fb29e9ed23176e1161a11c15af21a82b33a",
+    "final/profile.csv": "8a48d8f772b8abc5ad1e1843d22e476d431bd5acca05f4144fae197c541689c2",
+    "final/profile.png": "dc20340f17bb04dd67deebdb73940289c78402d5938b01690618d5eb0265e2fa",
+    "final/profile.svg": "10138f24b6d18817854d7ed674890796accbfee4a5e19f3212b4249959271540",
+    "final/scores.csv": "a03a0154c0dae82356b4cdd66d3d532aaee9c15560356d18ba6af77ded03b306",
+    "final/summary.json": "24ff23cae1559566a200b0ae503d94ff8b958de02ca3a879ea79f519bb1d317c",
+    "index.html": "e2986a99fd5dc040f5751b99b65033c81f3efcba0a36da10f8494d775abc7456",
+    "README.md": "c620c1af630183ac9133a5ffb6c59971fb9e0f12f504ade9bef28f51008b3f7b",
+    "verify.py": "f33b897390d28881226b6ea79e94bcda0ca48a7d52314ca5e07ce4dde339d0af"
+  },
+  "checks": {
+    "input_hashes_verified": 8,
+    "upstream_sources_verified": 38,
+    "old_scores_reproduced": 7,
+    "new_score_rows_recomputed": 16,
+    "old_candidate_sha256": "d885b87c32d7df5b812b4cd85dcdae5230f47c9bd16d7ae2807df427b26c1466",
+    "original_freezes_verified": {
+      "energy_ap_state_run_v5/development_freeze.json": "35ed6987b1fc09789284018f8502107eaf4e3125373651a01e3a08d427034c54",
+      "energy_ap_idle_response_run_v1/ap_model_freeze.json": "8507adc10485940c36853786ba39a4f42439a9fbd3d71a5da1c7d55e2cbc7ec5"
+    },
+    "archive_checked": true,
+    "device_commands": 0
+  },
+  "links_verified": 25,
+  "images_visually_inspected": [
+    "final/paths.png",
+    "final/profile.png"
+  ],
+  "verification_note": "An initial ad-hoc archive check resolved archive-relative paths under repository and failed FileNotFoundError before writing. verify.py now explicitly separates repository and archive roots; no model/data change.",
+  "new_device_commands": 0,
+  "new_measurements": 0,
+  "new_apk_builds": 0,
+  "new_plans": 0,
+  "new_claims": 0,
+  "experiment_ready": false,
+  "limitations": [
+    "All current outcomes already seen; no fresh independent confirmation for this family",
+    "No-load control is not matched causally",
+    "Numerical rank is not physical identification"
+  ],
+  "git_diff_check": "passed before staging; staged check recorded by final Git verification"
+}

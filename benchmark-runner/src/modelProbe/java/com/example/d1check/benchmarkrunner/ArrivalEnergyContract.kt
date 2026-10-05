@@ -2,6 +2,19 @@ package com.example.d1check.benchmarkrunner
 
 /** Isolated synthetic-arrival collection. No change to existing arrival/energy protocols. */
 internal object ArrivalEnergyContract {
+    const val RESIDENT_CONTROL = "resident-control-pair-v1"
+
+    fun validateSession(scenario: String, requests: List<Request>, version: String, role: String) {
+        if (version.isEmpty()) {
+            require(role.isEmpty())
+            validate(scenario, requests)
+            return
+        }
+        require(version == RESIDENT_CONTROL && scenario == "burst")
+        require(role in setOf("no_load_control", "registered_load"))
+        if (role == "no_load_control") require(requests.isEmpty())
+        else validate(scenario, requests)
+    }
     const val PROTOCOL = "arrival-energy-synthetic-v1"
     const val WATCHDOG_MS = 480_000L
     const val COMMON_NS = 120_000_000_000L

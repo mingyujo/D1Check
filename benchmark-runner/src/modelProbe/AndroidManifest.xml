@@ -4,6 +4,9 @@
     <!-- Tasks' transitive transport must not grant network access to this offline probe. -->
     <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
     <application>
+        <activity android:name=".OnlinePolicyStudyActivity" android:excludeFromRecents="true"
+            android:exported="true" android:noHistory="true" android:process=":model_probe"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|uiMode" />
         <activity android:name=".ArrivalEnergyActivity" android:excludeFromRecents="true"
             android:exported="true" android:noHistory="true" android:process=":model_probe" />
         <activity android:name=".EnergyCollectionActivity" android:excludeFromRecents="true"

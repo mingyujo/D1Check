@@ -15,4 +15,15 @@ class EnergyStateCalibrationTest {
         assertEquals(1_680, development.sumOf { it.lanes.size * it.seconds * 4 })
         assertTrue(EnergyStateCalibration.COMMON_NS > 480_000_000_000L)
     }
+
+    @Test fun shortTransitionDiagnosticKeepsOriginalCaps() {
+        val blocks = EnergyStateCalibration.shortTransitionBlocks()
+        EnergyStateCalibration.validate(blocks)
+        assertEquals(36, blocks.size)
+        assertEquals(36, blocks.map { it.id }.toSet().size)
+        assertEquals(480, blocks.sumOf { it.seconds })
+        assertEquals(1_680, blocks.sumOf { it.lanes.size * it.seconds * 4 })
+        assertEquals(120, blocks.filter { it.lanes.size == 2 }.sumOf { it.seconds })
+        assertEquals(180, blocks.filter { it.lanes.isEmpty() }.sumOf { it.seconds })
+    }
 }

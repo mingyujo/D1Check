@@ -1,0 +1,18 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><title>부하 전 전력 후보 — 미채택</title>
+<style>body{font:16px sans-serif;max-width:1080px;margin:24px auto;padding:16px;line-height:1.6}table{border-collapse:collapse}td,th{border:1px solid #ccc;padding:8px}img{width:100%}.note{background:#fff2db;padding:16px}</style>
+<p class="note"><a href="../resident_control_design_01/run03/index.html">최신 C/L 대조03 완료</a>: 두 세션·40추론·679.531초. pre→late 변화 차이−0.202361W는 고정순서 한 쌍의 기술적 관측이며 인과효과가 아닙니다. L 냉각후기 결측 null. 기존 후보 미채택·추가 후보 적합 없음. 아래 준비/중단 안내는 이력입니다.</p>
+<p class="note"><a href="../resident_control_design_01/run02/index.html">최신 대조02</a>: 설치본 pull 로컬 쓰기 실패·C: 공간0으로 preflight 중단. 세션/추론0·새 J/AP 없음·소비 계획 재개 금지. 공간 확보 후 PC14검증과 기록만 완료했습니다.</p>
+<p class="note"><a href="../../RESIDENT_CONTROL_MEASUREMENT_PLAN_20261001.md#새-실행-계획03-준비-완료--2026-10-01">새 대조 계획03 준비 완료</a>: 동일 C0→L24,40추론·2,090초·ADB6,600. 미승인·미소비, PC Check 통과·새 실측 결과 없음. <a href="../resident_control_design_01/plan03/verification.json">검증/해시</a></p>
+<p class="note"><a href="../resident_history_01/index.html">후속6세션 판독 완료</a>: 같은 후보를 새 L에 적용해+18.139→+27.929J로 악화, 총2개선/3악화·미채택 유지. 새 계수/실측0, 유휴 시간·이력 법칙과 동적 J/AP 순위는 미판정입니다.</p>
+<h1>부하 전 전력 후보: 4세션 사후 평가, 미채택</h1>
+<p class="note">RESIDENT-PRELOAD-OFFSET-01 · 후보1개 · 독립 확인0 · 기기 명령0 · experiment_ready=false.<br>전체120초 예측·정책 순위·정확도 PASS가 아닙니다. 기존 동결본과 AP 후보는 그대로입니다.</p>
+<p>첫 dispatch 전20초 명목창의 관측 평균전력으로 원래 상태 전력에 같은 W를 더합니다. 이후 전류·AP는 예측 입력이 아닙니다. 실제 미래 lane 일정이 주어진 조건부 계산이며, 네 세션의 결과를 이미 본 뒤 정한 후보입니다.</p>
+<table><tr><th>자료</th><th>비교 시작→끝 s</th><th>관측 J</th><th>기존 차이 J</th><th>후보 차이 J</th></tr>
+<tr><td>B2</td><td>0.009285→120</td><td>154.675249</td><td>+1.071731</td><td>−17.385376</td></tr>
+<tr><td>유휴 개발</td><td>35.007436→120</td><td>96.721891</td><td>+16.087255</td><td>+4.280380</td></tr>
+<tr><td>유휴 확인</td><td>35.007297→120</td><td>102.517717</td><td>+10.453317</td><td>+17.702203</td></tr>
+<tr><td>CG_DC 전이</td><td>35.008859→120</td><td>96.464871</td><td>+16.364447</td><td>+12.956830</td></tr></table>
+<p>차이=예측−관측. 2개선/2악화이므로 채택하지 않습니다. 부하 전 유휴를 이후에도 일정하게 전용하기 어렵다는 결과이며, 특정 환경·온도·네트워크 원인 증명은 아닙니다. raw=mA 조건부·절대 에너지 정확도 미인증.</p>
+<img src="readout/comparison.svg" alt="네 세션의 정보 시점 이후 누적 에너지 잔차">
+<p><a href="../resident_control_design_01/run01/index.html">무부하 대조 실행 결과</a>: 승인된 계획은 C완료/L부분 중단으로 소비·stopped_no_resume입니다. C에서 부하 없이 평균W가1.295715→1.114261로 변했습니다. L전체창은 미회수이며 대조 차이·원인·새 계수·정확도 PASS는 미판정입니다. <a href="../../RESIDENT_CONTROL_MEASUREMENT_PLAN_20261001.md">준비 계약</a>은 실행 전 이력으로 보존합니다.</p>
+<p><a href="../../RESIDENT_POWER_CANDIDATE_PC_20261001.md">판정·최소 해결 조건</a> · <a href="README.md">입력·재현 명령</a> · <a href="readout/scores.csv">구간 점수</a> · <a href="readout/energy_paths.csv">누적 경로</a> · <a href="readout/summary.json">정보 경계·해시</a> · <a href="readout/comparison.png">PNG</a> · <a href="verification.json">PC 검증</a></p></html>

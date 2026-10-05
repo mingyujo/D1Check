@@ -1,0 +1,458 @@
+{
+  "id": "ap-fixed-rate-identification-v1",
+  "best_development": {
+    "beta_per_s": 0.045932520308001434,
+    "gain": 0.7200023282045722,
+    "unconstrained_gain": 0.7200023282045722,
+    "rmse_c": 0.2589229135837301,
+    "gain_information": 7.747945251349748,
+    "reference_c": 28.309662701175675,
+    "initial_condition": 5.811327239061521
+  },
+  "profile_near_best": {
+    "criterion": "RMSE <= best+0.05C; sensitivity only, NOT CI or PASS",
+    "beta_min": 0.03512572322812075,
+    "beta_max": 0.06337446069461919,
+    "gain_min": 0.4997758721308765,
+    "gain_max": 0.9623857354756324,
+    "points": 12
+  },
+  "boundary_optimum": false,
+  "cases": [
+    {
+      "case": "idle_development",
+      "last_lane_s": 47.015407772,
+      "initialization": {
+        "reference_c": 28.309662701175675,
+        "h_first_c_per_s": -0.060196950331127395,
+        "h_last_c_per_s": -0.007029542968247914,
+        "anchor_s": 34.06627482,
+        "anchor_ap_c": 28.0,
+        "input_end_s": 34.18627482,
+        "samples": 26,
+        "duration_s": 64.425,
+        "scaled_condition": 5.811327239061521,
+        "singular_values": [
+          1.3937294106939142,
+          0.2398297933260061
+        ],
+        "preload_rmse_c": 0.1449178175316125,
+        "reference_is_ambient": false,
+        "latent_is_measured_internal_temperature": false
+      },
+      "state_information": {
+        "states": [
+          "classification_GPU",
+          "classification_GPU+detection_CPU",
+          "detection_CPU"
+        ],
+        "column_norms": [
+          0.3117053567704721,
+          3.2782346040488637,
+          18.034387733772082
+        ],
+        "singular_values": [
+          1.6958783815991605,
+          0.3228133812103693,
+          0.14066995321013417
+        ],
+        "rank": 3,
+        "scaled_condition": 12.055725781509578,
+        "meaning": "numerical independent shapes only; no state coefficient fit or precision guarantee"
+      },
+      "local_rate_gain": {
+        "status": "numerical_only",
+        "singular_values": [
+          1.21293953323305,
+          0.7271710175195314
+        ],
+        "scaled_condition": 1.6680251330292755,
+        "column_cosine": -0.47122231127960923,
+        "column_norms": [
+          4.541371957364462,
+          2.0041359253537983
+        ]
+      }
+    },
+    {
+      "case": "idle_confirmation",
+      "last_lane_s": 72.053465004,
+      "initialization": {
+        "reference_c": 28.99221437831833,
+        "h_first_c_per_s": -0.06654798590309316,
+        "h_last_c_per_s": -0.007802336810889898,
+        "anchor_s": 33.956333877,
+        "anchor_ap_c": 28.9,
+        "input_end_s": 34.106333877,
+        "samples": 26,
+        "duration_s": 64.305,
+        "scaled_condition": 5.8883305673957596,
+        "singular_values": [
+          1.3942504452332827,
+          0.23678195870207738
+        ],
+        "preload_rmse_c": 0.11544941633427229,
+        "reference_is_ambient": false,
+        "latent_is_measured_internal_temperature": false
+      },
+      "state_information": {
+        "states": [
+          "classification_GPU",
+          "classification_GPU+detection_CPU",
+          "detection_CPU"
+        ],
+        "column_norms": [
+          1.9474394421521422,
+          1.6864467173411246,
+          16.45533651853113
+        ],
+        "singular_values": [
+          1.4799335088526049,
+          0.8445392883664767,
+          0.31072528024070195
+        ],
+        "rank": 3,
+        "scaled_condition": 4.762835864871313,
+        "meaning": "numerical independent shapes only; no state coefficient fit or precision guarantee"
+      },
+      "local_rate_gain": {
+        "status": "numerical_only",
+        "singular_values": [
+          1.278676896413952,
+          0.6041402110248769
+        ],
+        "scaled_condition": 2.116523404798327,
+        "column_cosine": -0.6350146054228171,
+        "column_norms": [
+          5.103717802631407,
+          1.6280759983192383
+        ]
+      }
+    },
+    {
+      "case": "cgdc_transfer",
+      "last_lane_s": 46.906149233,
+      "initialization": {
+        "reference_c": 28.677713670101934,
+        "h_first_c_per_s": -0.07801713738405214,
+        "h_last_c_per_s": -0.008830943371001017,
+        "anchor_s": 34.787498499,
+        "anchor_ap_c": 28.4,
+        "input_end_s": 34.972498499,
+        "samples": 25,
+        "duration_s": 65.36,
+        "scaled_condition": 5.8546287202523555,
+        "singular_values": [
+          1.3940248628657774,
+          0.23810645037892172
+        ],
+        "preload_rmse_c": 0.1184537715301159,
+        "reference_is_ambient": false,
+        "latent_is_measured_internal_temperature": false
+      },
+      "state_information": {
+        "states": [
+          "classification_GPU",
+          "classification_GPU+detection_CPU",
+          "detection_CPU"
+        ],
+        "column_norms": [
+          0.6428192365389385,
+          2.652309949706579,
+          17.29395947543061
+        ],
+        "singular_values": [
+          1.7025467924110147,
+          0.31830869745960283,
+          0.0037406914516565507
+        ],
+        "rank": 3,
+        "scaled_condition": 455.1422683250308,
+        "meaning": "numerical independent shapes only; no state coefficient fit or precision guarantee"
+      },
+      "local_rate_gain": {
+        "status": "numerical_only",
+        "singular_values": [
+          1.2068263350152142,
+          0.7372721323322524
+        ],
+        "scaled_condition": 1.6368804435854585,
+        "column_cosine": -0.4564298028862535,
+        "column_norms": [
+          5.432995282397241,
+          1.8677206701518
+        ]
+      }
+    },
+    {
+      "case": "one_pulse",
+      "last_lane_s": 46.883878157,
+      "initialization": {
+        "reference_c": 28.539395533670547,
+        "h_first_c_per_s": -0.07190591932227107,
+        "h_last_c_per_s": -0.0082649630049888,
+        "anchor_s": 34.485963463,
+        "anchor_ap_c": 28.2,
+        "input_end_s": 34.670963463,
+        "samples": 23,
+        "duration_s": 64.9,
+        "scaled_condition": 5.728022090718401,
+        "singular_values": [
+          1.393142605176335,
+          0.2432152989482638
+        ],
+        "preload_rmse_c": 0.14199905335713547,
+        "reference_is_ambient": false,
+        "latent_is_measured_internal_temperature": false
+      },
+      "state_information": {
+        "states": [
+          "classification_GPU",
+          "classification_GPU+detection_CPU",
+          "detection_CPU"
+        ],
+        "column_norms": [
+          0.40653606513802987,
+          3.0211521708572766,
+          17.60303756773987
+        ],
+        "singular_values": [
+          1.6810671485106854,
+          0.38715890113262136,
+          0.1553101009977605
+        ],
+        "rank": 3,
+        "scaled_condition": 10.82393957450923,
+        "meaning": "numerical independent shapes only; no state coefficient fit or precision guarantee"
+      },
+      "local_rate_gain": {
+        "status": "numerical_only",
+        "singular_values": [
+          1.2127967671097015,
+          0.7274091020108675
+        ],
+        "scaled_condition": 1.6672829137785279,
+        "column_cosine": -0.4708759983117437,
+        "column_norms": [
+          4.717823460685827,
+          1.9406088222227547
+        ]
+      }
+    },
+    {
+      "case": "two_pulses",
+      "last_lane_s": 71.872105004,
+      "initialization": {
+        "reference_c": 29.028936344027798,
+        "h_first_c_per_s": -0.055537335331604085,
+        "h_last_c_per_s": -0.006678469447008907,
+        "anchor_s": 32.219933674,
+        "anchor_ap_c": 28.7,
+        "input_end_s": 32.384933674,
+        "samples": 23,
+        "duration_s": 63.545,
+        "scaled_condition": 6.00127812908054,
+        "singular_values": [
+          1.3949796937532635,
+          0.2324470993926404
+        ],
+        "preload_rmse_c": 0.12608162299627676,
+        "reference_is_ambient": false,
+        "latent_is_measured_internal_temperature": false
+      },
+      "state_information": {
+        "states": [
+          "classification_GPU",
+          "classification_GPU+detection_CPU",
+          "detection_CPU"
+        ],
+        "column_norms": [
+          1.9892667769509917,
+          1.5800955964110721,
+          15.402707893360542
+        ],
+        "singular_values": [
+          1.5265248566233862,
+          0.7534798665773378,
+          0.3193586585229021
+        ],
+        "rank": 3,
+        "scaled_condition": 4.779970155448017,
+        "meaning": "numerical independent shapes only; no state coefficient fit or precision guarantee"
+      },
+      "local_rate_gain": {
+        "status": "numerical_only",
+        "singular_values": [
+          1.267384211770402,
+          0.627484868148322
+        ],
+        "scaled_condition": 2.019784501752835,
+        "column_cosine": -0.6062627402448832,
+        "column_norms": [
+          3.905264085334011,
+          1.5359915154848267
+        ]
+      }
+    },
+    {
+      "case": "confirmation_preidle35",
+      "last_lane_s": 46.884998772,
+      "initialization": {
+        "reference_c": 27.831414333896042,
+        "h_first_c_per_s": -0.08217661905668679,
+        "h_last_c_per_s": -0.009754260415254115,
+        "anchor_s": 33.090766889,
+        "anchor_ap_c": 27.4,
+        "input_end_s": 33.200766889,
+        "samples": 26,
+        "duration_s": 63.935,
+        "scaled_condition": 5.86029492344664,
+        "singular_values": [
+          1.394063054070481,
+          0.23788274690629135
+        ],
+        "preload_rmse_c": 0.11258622362958563,
+        "reference_is_ambient": false,
+        "latent_is_measured_internal_temperature": false
+      },
+      "state_information": {
+        "states": [
+          "classification_GPU",
+          "classification_GPU+detection_CPU",
+          "detection_CPU"
+        ],
+        "column_norms": [
+          0.5911849647436257,
+          2.613172908155898,
+          18.585625043009276
+        ],
+        "singular_values": [
+          1.700742761265395,
+          0.3089997801177262,
+          0.10951345072892114
+        ],
+        "rank": 3,
+        "scaled_condition": 15.529989694829787,
+        "meaning": "numerical independent shapes only; no state coefficient fit or precision guarantee"
+      },
+      "local_rate_gain": {
+        "status": "numerical_only",
+        "singular_values": [
+          1.2021062797408384,
+          0.7449432812017579
+        ],
+        "scaled_condition": 1.6136883304747385,
+        "column_cosine": -0.44505950779235876,
+        "column_norms": [
+          5.636673870251344,
+          1.9656566084212825
+        ]
+      }
+    },
+    {
+      "case": "confirmation_preidle65",
+      "last_lane_s": 76.904127697,
+      "initialization": {
+        "reference_c": 28.092897145019467,
+        "h_first_c_per_s": -0.03772532476022556,
+        "h_last_c_per_s": -0.0017014796926262217,
+        "anchor_s": 62.550707177,
+        "anchor_ap_c": 28.0,
+        "input_end_s": 62.665707177,
+        "samples": 37,
+        "duration_s": 92.965,
+        "scaled_condition": 3.8329550919356157,
+        "singular_values": [
+          1.3684088653163315,
+          0.35701145265056955
+        ],
+        "preload_rmse_c": 0.10115054186798805,
+        "reference_is_ambient": false,
+        "latent_is_measured_internal_temperature": false
+      },
+      "state_information": {
+        "states": [
+          "classification_GPU",
+          "classification_GPU+detection_CPU",
+          "detection_CPU"
+        ],
+        "column_norms": [
+          0.701573956905625,
+          2.7281611253277194,
+          18.344091764702824
+        ],
+        "singular_values": [
+          1.6982919720293008,
+          0.3401060260201702,
+          0.011500817605552834
+        ],
+        "rank": 3,
+        "scaled_condition": 147.66706422761894,
+        "meaning": "numerical independent shapes only; no state coefficient fit or precision guarantee"
+      },
+      "local_rate_gain": {
+        "status": "numerical_only",
+        "singular_values": [
+          1.2861775160165079,
+          0.5880028888480104
+        ],
+        "scaled_condition": 2.1873659813752457,
+        "column_cosine": -0.6542526027063944,
+        "column_norms": [
+          2.5800147646910085,
+          1.9650644060622713
+        ]
+      }
+    },
+    {
+      "case": "resident_no_load_C",
+      "last_lane_s": null,
+      "initialization": {
+        "reference_c": 27.83073327696036,
+        "h_first_c_per_s": -0.08475952593429338,
+        "h_last_c_per_s": -0.00983700675951125,
+        "anchor_s": 34.683945211,
+        "anchor_ap_c": 27.4,
+        "input_end_s": 34.838945211,
+        "samples": 25,
+        "duration_s": 64.61,
+        "scaled_condition": 5.8446086099403844,
+        "singular_values": [
+          1.3939570612019658,
+          0.23850306397440432
+        ],
+        "preload_rmse_c": 0.15184695755217836,
+        "reference_is_ambient": false,
+        "latent_is_measured_internal_temperature": false
+      },
+      "state_information": {
+        "states": [],
+        "rank": 0,
+        "meaning": "no load coefficient information"
+      },
+      "local_rate_gain": {
+        "status": "rank_deficient",
+        "singular_values": null
+      }
+    }
+  ],
+  "source_sha256": {
+    "docs/results/ap_preparation_memory_01/inputs.json": "7421002829f8e94eb82f66d18ea17071fbc9fb59d6d1eb2d3c62016dad13f5ee",
+    "docs/results/ap_preparation_memory_01/final/candidate.json": "d885b87c32d7df5b812b4cd85dcdae5230f47c9bd16d7ae2807df427b26c1466",
+    "docs/results/ap_memory_confirmation_01/run01/summary.json": "26f67d694a2d1a036eff31f26d58c94d07d67f72752d2b7746097e5d4c4f3c92",
+    "docs/results/ap_memory_confirmation_01/run01/confirmation_preidle35/prediction_inputs.json": "09e47e7b3fc1616972e32d733033a04b493e99e5d9463a150aca27d762b5606c",
+    "docs/results/ap_memory_confirmation_01/run01/confirmation_preidle35/ap_paths.csv": "30ff991cd997f8c17b979ffeba39d8fa0443a13ae20271d8ea58b1b6117373ce",
+    "docs/results/ap_memory_confirmation_01/run01/confirmation_preidle65/prediction_inputs.json": "67978e4b0b27d6f9865b221db6158a8501d76316559dcaf3273952a189e4f90e",
+    "docs/results/ap_memory_confirmation_01/run01/confirmation_preidle65/ap_paths.csv": "39afcdda41ae06f2cf38247b1bd8d6a2a25cdde783bda92bd33e3ed8d28b29f5",
+    "docs/results/resident_history_01/inputs.json": "698bb83c89052d0b9d57f9040b50479a7a032c12d4aa936185159fe4569dda2f"
+  },
+  "contract_sha256": "0992fecf195256ea9ab29cf6a4e641de22014bc5b899c59b94bb35b31886a047",
+  "family_count": 1,
+  "fresh_independent_confirmation": 0,
+  "accuracy_pass": null,
+  "strict_support": false,
+  "experiment_ready": false,
+  "default_changed": false,
+  "device_commands": 0,
+  "new_measurement_plan": false
+}

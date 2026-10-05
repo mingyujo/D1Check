@@ -1,0 +1,170 @@
+{
+  "plan_sha256": "b6622fcad140146bf92460c99637d2224450aaf79f5648645675df1b730114ed",
+  "original_frozen_sha256": "35ed6987b1fc09789284018f8502107eaf4e3125373651a01e3a08d427034c54",
+  "candidate_freeze_sha256": "8507adc10485940c36853786ba39a4f42439a9fbd3d71a5da1c7d55e2cbc7ec5",
+  "protocol": "AP pre-load effective reference diagnostic; original frozen calculation is extrapolation",
+  "posthoc_phase_split": "actual lane occupancy; does not change the frozen estimator",
+  "energy_meaning": "descriptive current/voltage 120 s integration, not new power coefficient validation",
+  "summaries": [
+    {
+      "role": "development",
+      "data_role": "development",
+      "initial_ap_c": 28.1,
+      "preload_samples": 26,
+      "preload_duration_s": 64.425,
+      "effective_idle_reference_c": 27.729416040246164,
+      "original_idle_equilibrium_c": 34.379778329144536,
+      "ap_samples": 54,
+      "observed_energy_120s_j": 135.61796895171642,
+      "observed_postwork_direction_c": -1.1999999999999993,
+      "frozen_postwork_direction_c": -0.358964836329541,
+      "candidate_postwork_direction_c": -1.0389775855153118,
+      "frozen": {
+        "samples": 54,
+        "mae_c": 6.038121664906401,
+        "max_absolute_error_c": 6.62898159145589,
+        "peak_signed_error_c": 5.377594764407924,
+        "signed_mean_c": 6.038121664906401
+      },
+      "candidate": {
+        "samples": 54,
+        "mae_c": 0.4875183853439651,
+        "max_absolute_error_c": 0.848639272226432,
+        "peak_signed_error_c": -0.5028406418367339,
+        "signed_mean_c": -0.4120578740973469
+      },
+      "phase_scores": {
+        "occupied": {
+          "frozen": {
+            "samples": 5,
+            "mae_c": 5.9698625803379715,
+            "max_absolute_error_c": 6.62898159145589,
+            "peak_signed_error_c": 5.377594764407924,
+            "signed_mean_c": 5.9698625803379715
+          },
+          "candidate": {
+            "samples": 5,
+            "mae_c": 0.5080548890990848,
+            "max_absolute_error_c": 0.8396595425641245,
+            "peak_signed_error_c": -0.5028406418367339,
+            "signed_mean_c": 0.3069186323643912
+          }
+        },
+        "resident_idle_after_work": {
+          "frozen": {
+            "samples": 49,
+            "mae_c": 6.045086877617464,
+            "max_absolute_error_c": 6.285654962861916,
+            "peak_signed_error_c": 5.33971097693756,
+            "signed_mean_c": 6.045086877617464
+          },
+          "candidate": {
+            "samples": 49,
+            "mae_c": 0.4854228237362998,
+            "max_absolute_error_c": 0.848639272226432,
+            "peak_signed_error_c": -0.6288051683381184,
+            "signed_mean_c": -0.4854228237362998
+          }
+        }
+      },
+      "observed_state_seconds": {
+        "classification:GPU": 0.15860930800000972,
+        "classification:GPU+detection:CPU": 1.6779249219999954,
+        "detection:CPU": 9.549740772000014,
+        "idle": 108.61372499799998
+      },
+      "independent_session_count": 1,
+      "strict_support": false,
+      "accuracy_pass": null,
+      "policy_selection_pass": null
+    },
+    {
+      "role": "confirmation",
+      "data_role": "independent_confirmation",
+      "initial_ap_c": 28.7,
+      "preload_samples": 26,
+      "preload_duration_s": 64.30499999999999,
+      "effective_idle_reference_c": 28.347760482052685,
+      "original_idle_equilibrium_c": 34.379778329144536,
+      "ap_samples": 54,
+      "observed_energy_120s_j": 144.5650951225297,
+      "observed_postwork_direction_c": 0.0,
+      "frozen_postwork_direction_c": -0.5185766767541722,
+      "candidate_postwork_direction_c": -0.7194514345491889,
+      "frozen": {
+        "samples": 54,
+        "mae_c": 5.4610016502064465,
+        "max_absolute_error_c": 6.102713561369111,
+        "peak_signed_error_c": 5.202713561369112,
+        "signed_mean_c": 5.4610016502064465
+      },
+      "candidate": {
+        "samples": 54,
+        "mae_c": 0.4175211229048267,
+        "max_absolute_error_c": 0.8505303495874799,
+        "peak_signed_error_c": -0.6205237076829988,
+        "signed_mean_c": -0.38972402821327556
+      },
+      "phase_scores": {
+        "occupied": {
+          "frozen": {
+            "samples": 5,
+            "mae_c": 5.394444655797953,
+            "max_absolute_error_c": 6.0838122116405025,
+            "peak_signed_error_c": 5.983812211640505,
+            "signed_mean_c": 5.394444655797953
+          },
+          "candidate": {
+            "samples": 5,
+            "mae_c": 0.1826074801353002,
+            "max_absolute_error_c": 0.2806539788977993,
+            "peak_signed_error_c": 0.1794762923170019,
+            "signed_mean_c": -0.04886374004296101
+          }
+        },
+        "idle_between_pulses": {
+          "frozen": {
+            "samples": 9,
+            "mae_c": 5.0595274369503755,
+            "max_absolute_error_c": 5.560181323865624,
+            "peak_signed_error_c": 4.760181323865623,
+            "signed_mean_c": 5.0595274369503755
+          },
+          "candidate": {
+            "samples": 9,
+            "mae_c": 0.4370176414868862,
+            "max_absolute_error_c": 0.8298282962404002,
+            "peak_signed_error_c": -0.5570965864017268,
+            "signed_mean_c": -0.405261327353936
+          }
+        },
+        "resident_idle_after_work": {
+          "frozen": {
+            "samples": 40,
+            "mae_c": 5.559652972490122,
+            "max_absolute_error_c": 6.102713561369111,
+            "peak_signed_error_c": 5.202713561369112,
+            "signed_mean_c": 5.559652972490122
+          },
+          "candidate": {
+            "samples": 40,
+            "mae_c": 0.4424986115700541,
+            "max_absolute_error_c": 0.8505303495874799,
+            "peak_signed_error_c": -0.6267412071572416,
+            "signed_mean_c": -0.4288356719279163
+          }
+        }
+      },
+      "observed_state_seconds": {
+        "classification:GPU": 1.0037296149999975,
+        "classification:GPU+detection:CPU": 0.8468443840000006,
+        "detection:CPU": 10.613497848000009,
+        "idle": 107.53592815299999
+      },
+      "independent_session_count": 1,
+      "strict_support": false,
+      "accuracy_pass": null,
+      "policy_selection_pass": null
+    }
+  ]
+}

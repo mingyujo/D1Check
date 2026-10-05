@@ -1,0 +1,43 @@
+{
+  "version": "background-activity-contrast-v1",
+  "role": "development_only",
+  "order": [
+    "C0_PRE",
+    "CPU96",
+    "PAR96",
+    "C0_POST"
+  ],
+  "question": "Distinguish observed benchmark/tracer/other CPU activity and heat history accompanying whole-device residual; no rail-power attribution",
+  "candidate": "existing single gamma family not adopted; no automatic refit/confirmation/policy selection",
+  "initial_input": "host pre-load numeric AP; no post-load AP feedback",
+  "causal_input": {
+    "period_seconds": 10,
+    "window_seconds": 10,
+    "ready_age_seconds": 3,
+    "max_gap_seconds": 2.5,
+    "ring_capacity": 128,
+    "task_residual": "null until past lane join"
+  },
+  "trace": {
+    "duration_seconds": 600,
+    "max_bytes": 67108864,
+    "buffer_bytes": 8388608,
+    "write_period_seconds": 5,
+    "proc_stats_period_seconds": 1,
+    "cpu_sched_frequency_only": true,
+    "heap": false,
+    "callstack": false,
+    "screen_content": false,
+    "remote_delete": false,
+    "validity": "clock/coverage/data-source/loss audit mandatory after recovery; missing CPU frequency is unsupported, never zero"
+  },
+  "measurement_change": "self CPU and bounded past-window computation plus system trace; compare as protocol transfer, do not subtract invented overhead",
+  "termination": {
+    "no_excitation": "unidentified stop",
+    "missing_required_trace": "stop no next session",
+    "no_precision_guarantee": true,
+    "no_threshold_selection": true
+  },
+  "approval": "not_approved",
+  "experiment_ready": false
+}

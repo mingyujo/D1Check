@@ -1,0 +1,59 @@
+{
+  "version": "separated-power-followup-v2",
+  "registered_utc": "2026-10-02T16:34:07.473115+00:00",
+  "question": "현 프로토콜에서 유휴 입력과 분리 상태 노출로 에너지 항을 추정하고 다른 혼합 입력에서 예측 가능한가",
+  "development_order": [
+    "B2_PARALLEL_ONLINE_V1",
+    "B2_SERIAL_ONLINE_V1"
+  ],
+  "confirmation_order": [
+    "CPU_URGENT_ONLINE_V1",
+    "B2_PARALLEL_ONLINE_V1",
+    "B2_SERIAL_ONLINE_V1",
+    "B2_SERIAL_ONLINE_V1",
+    "B2_PARALLEL_ONLINE_V1",
+    "CPU_URGENT_ONLINE_V1"
+  ],
+  "budget": {
+    "sessions": 8,
+    "development_sessions": 2,
+    "confirmation_sessions": 6,
+    "requests": 768,
+    "warmup": 64,
+    "explicit_inference": 832,
+    "runtime_creations": 32,
+    "staging": 8,
+    "staging_files": 56,
+    "installed_host_pulls": 2,
+    "apk_transfers": 0,
+    "installs": 0,
+    "eligibility_inferences": 0,
+    "fixed_observation_seconds": 1680,
+    "development_block_seconds": 2090,
+    "confirmation_block_seconds": 5250,
+    "pc_freeze_seconds": 180,
+    "total_seconds": 7520,
+    "adb_commands": 26000,
+    "retry": 0,
+    "replacement": 0,
+    "additional": 0
+  },
+  "minimum_host_free_bytes": 2147483648,
+  "storage_reason": "two possible installed APK pulls ~212MB, signed candidate ~106MB, nine host/artifact sets and recovery logs; 2GiB operational reserve, not measured source-size forecast",
+  "unchanged_model": {
+    "path": "C:/Users/LG/Documents/D1Check_Arrival_Extension/online_policy_study_run_v4/model_freeze.json",
+    "sha256": "557fbe5be8a9c9ba5f5911d44d1c19611710cbe5b80e015d1b965b777357bcf2"
+  },
+  "input": "development:32class@35s/32detect@55s/alternating32@85s,100ms fixed submissions; confirmation:alternating96@35s,350ms; each48class48detect; no pacing by completion",
+  "model": "one nonnegative four-state increment fit to5s windows35..120 after subtracting each session pre(-20,30) mean; no intercept refit or structure search; service phase means by policy from development; AP unchanged557fbe",
+  "initial_inputs": "resident power mean[-20,30] only; AP original preload only; no post35 power/AP/actual future completion in prospective prediction",
+  "baseline_diagnostics": "record pre[-20,30], gaps and after actual last lane; report drift error separately, do not use future idle to correct prediction",
+  "freeze": "development3 eligibility and fullrank4 required before independent confirmation6; all coefficients/analysis/source hashes frozen; no confirmation refit",
+  "confirmation_purpose": "two sessions per registered policy, mirrored order; independent prediction and observed contrast, not statistical stability proof",
+  "analysis": "actual-schedule conditional and arrival-to-schedule prospective; same120J and35..120; AP MAE/max/peak; full96 deadline denominator; no numerical accuracy PASS invented",
+  "stop": "newplan no session retries; read observation gap allowance max1/session before warmup approval, same timeout/cadence/endpoint/caps. All other gates unchanged.",
+  "outcome": "report prediction and policy-difference resolution; no default/strict promotion; failure does not trigger new candidate search",
+  "experiment_ready": false,
+  "preparation_observation": "one silent reaped3s listing timeout before warmup approval per session; next regular poll only; original exception preserved; any second/explicit connection/environment/after-arm failure stops. No mutation retry.",
+  "import": "completed CPU development1 from v1 retained by hashes; different block/initial conditions reported; fit uses this plus new2; no confirmation refit"
+}

@@ -1,0 +1,115 @@
+{
+  "contract": {
+    "version": "request-ppo-lagrange-v1",
+    "algorithm": "masked PPO clipped surrogate + 4 value heads + projected Lagrange ascent",
+    "seeds": [
+      11,
+      23,
+      37
+    ],
+    "updates_per_seed": 256,
+    "episodes_per_update": 8,
+    "total_training_episodes": 6144,
+    "train_trace_seeds": [
+      30000,
+      30511
+    ],
+    "validation_trace_seeds": [
+      40001,
+      40002,
+      40003,
+      40004
+    ],
+    "test_trace_seeds": [
+      50001,
+      50002,
+      50003,
+      50004,
+      50005,
+      50006,
+      50007,
+      50008
+    ],
+    "families": [
+      "low",
+      "queue",
+      "burst",
+      "sustained"
+    ],
+    "scenarios": [
+      "mean",
+      "short_context",
+      "long_context"
+    ],
+    "validation_updates": [
+      0,
+      64,
+      128,
+      192,
+      256
+    ],
+    "validation_cases": 48,
+    "test_cases": 96,
+    "test_policies": [
+      "CPU_REFERENCE",
+      "SPLIT_REFERENCE",
+      "EFT_REFERENCE",
+      "ENERGY_AP_REQUEST_V1",
+      "MC_RL_01",
+      "PPO_seed11",
+      "PPO_seed23",
+      "PPO_seed37"
+    ],
+    "test_runs": 768,
+    "architecture": "85 continuous features -> tanh64 -> tanh64 -> logits3 + values4",
+    "optimizer": "Adam lr=0.0003 eps=1e-5",
+    "epochs": 4,
+    "minibatch": 256,
+    "clip": 0.2,
+    "entropy_coefficient": 0.01,
+    "value_coefficient": 0.5,
+    "gradient_clip": 0.5,
+    "target_kl": 0.03,
+    "gamma": 1.0,
+    "gae_lambda": 0.95,
+    "objective": "minimize whole120s J/10; keep expected priority-specific deadline-or-incomplete fractions and AP degree-seconds/100 <= paired EFT",
+    "thermal_definition": "35-180s trapezoidal model AP area above pre-load effective idle reference; not ambient/safety",
+    "multiplier_initial": [
+      10.0,
+      10.0,
+      1.0
+    ],
+    "multiplier_lr": 5.0,
+    "multiplier_bounds": [
+      0.0,
+      100.0
+    ],
+    "action_mask": "supported immediate CPU/GPU; wait<=250ms, arrival-age<=2s, estimated head deadline guard only",
+    "validation_selection": "lexicographic incomplete cases, worse service cases, positive service excess, worse thermal cases, positive thermal excess, mean J, P95; report all 3 seeds, no best-test-seed selection",
+    "freeze": "all three validation-selected actors before any test result; no test-based retraining",
+    "training_data": "new synthetic arrival seeds; previously seen measured model and fixed initial input; no new independent device data",
+    "max_wall_seconds": 7200,
+    "checkpoint_every_updates": 16,
+    "early_success_stop": false,
+    "sources": {
+      "model": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+      "initial": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d"
+    },
+    "device_commands": 0,
+    "experiment_ready": false
+  },
+  "hashes": {
+    "tools\\d1_request_ppo.py": "c8282794b92c10e60b1d2a0bffed3eb8e05bf1aad5001493948a801e12e2c0a2",
+    "tools\\d1_empirical_request_policy.py": "da5166562cd7997cdfca9dfb3773309f6f3173387b92eec9f81e42d3f2f9f05b",
+    "tools\\d1_request_rl.py": "ac74114e28c6f44e0c3b0c9a1e5a943ad156579c8a3cfe3e015db8a50e2958a9",
+    "tools\\d1_arrival_explore.py": "384a5ab28d289f78a00ab8a4bb5e74c8f7df4e5d2ba8f3059130673ca44a20ac",
+    "docs\\results\\request_ppo_01\\contract.json": "c54703ccad9ad6f33a1dd5fe681f5d438771034e12e2be3346eaa1261482df7b",
+    "docs\\results\\online_policy_study_01\\overnight_sustained_run01\\model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs\\results\\online_policy_study_01\\overnight_sustained_run01\\initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d"
+  },
+  "utc": "2026-10-04T18:21:38.036299+00:00",
+  "torch": "2.11.0+cpu",
+  "numpy": "2.3.5",
+  "mkl_threading_layer": "SEQUENTIAL",
+  "threads": 1
+}
