@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-10-06 현재 작업 — Git 공유본의 격리 재현 확인
+
+- [commit-only 재현 증거](results/method_followup_01/committed_reproduction_verification.json), [최종 결과·52검증·정확한 미완료](results/method_followup_01/README.md). a6087a2의tools/docs만worktree밖임시폴더로내보내세분석함수에서8/8/4행을재현했다. ignored파일/외부원자료가필요하지않았다. archive의Git메타데이터없는CLI저장까지검증했다고하지않는다.
+- 최종목표미완료:작은공동모형이득의실기기효과/인과적온라인정책독립확인. PC기한우선·목적별Pareto와동결입력/일정/출력별판독은구현·검증됐으나실제공동절감/최적정책을완료로승격하지않는다. 추가실측·새후보·포괄감사를자동반복하지않는다. 기기/ADB/APK/새계획/claim0,동결/기본/strict/experiment_ready=false/사용자파일·다른worktree보존.
+
 ## 2026-10-06 현재 작업 — 직접 비교 판독 경계 구현 완료
 
 - [4쌍의 실제 입력·분모·창 판독](results/method_followup_01/direct_pair_readout_v4/index.html), [재현·52관련검증](results/method_followup_01/README.md). 세션마다requestID는다르나모든192요청의예정도착/작업/우선순위/기한은같았다. 실제1536응답과예정분모/기한을대조했고전체120초J차이는원보고서와일치했다.
