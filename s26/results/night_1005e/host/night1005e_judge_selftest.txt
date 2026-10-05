@@ -1,0 +1,39 @@
+﻿| 시험 | 결과 | 값 |
+|---|---|---|
+| ① night1005_judge.py selftest 그대로 49/49 (새 칸을 더한 뒤) | PASS | (49/49) |
+| ① import 대상 SHA 접두 (night1005 ca8680c2 · m1m2 ea282d4a · night1003 a5ceab41) | PASS | {'night1005_judge': 'ca8680c2', 'm1m2_judge_1002': 'ea282d4a', 'night1003_judge': 'a5ceab41'} |
+| ② run NAe: 100 s 부터 ×1.059 → 첫 조임 None (문턱 1.06) | PASS | (None, 0) |
+| ② run NAe: 100 s 부터 ×1.06 → 첫 조임 100 (문턱 1.06) | PASS | (100, 200) |
+| ② run GAe: 100 s 부터 ×1.099 → 첫 조임 None (문턱 1.1) | PASS | (None, 0) |
+| ② run GAe: 100 s 부터 ×1.1 → 첫 조임 100 (문턱 1.1) | PASS | (100, 200) |
+| ② run NBe: d50 20/s → n ≈ 6,600 · 처리율 ≈ 10/s · 누적 66칸 · 마지막 = n | PASS | (6600, 10.0) |
+| ② run GBe: work 720 s · tail 180 s · n ≈ 7,200 · 누적 72칸 | PASS | (720.0, 180.0, 7200) |
+| ② MobileNet 체인 (npu_work100_v1) 을 NAe 로 → 오류 | PASS | chain_id npu_work100_v1 ≠ npu_eff_work100_v1 (칸 NAe) |
+| ② MobileNet 칸 NA → 오류 (이 판정기는 EffNet 칸만) | PASS | 칸 NA ∉ ['NAe', 'NBe', 'GAe', 'GBe'] (이 판정기는 EffNet 칸만) |
+| ③ 모델 SHA 일치 → '모델 SHA 일치' | PASS | 모델 SHA 일치 |
+| ③ 구간 1 모델 SHA 다름 → 오류 | PASS | 구간 모델 SHA 다름: [(1, '1415b2c8')] ≠ 311e4aac (NPU) |
+| ③ SHA 필드 없음 → '모델 SHA 미기록' (오류 아님) | PASS | 모델 SHA 미기록 |
+| ④ 정상 표본만 → 이벤트 0 · 공백 없음 | PASS | (0, 10.0) |
+| ④ 구간 안 맨 앞 창 바뀜 → 이벤트 ③ | PASS | [{'t_rel_s': 405.0, 'kind': '③ 맨 앞 창', 'value': 'com.kakao.talk/Main'}] |
+| ④ 감시 이벤트 런 → pair 거부 | PASS | A (NAe b1) 에 감시 이벤트 1건 — 무효 런 |
+| ④ 구간 0 앞 60 s 의 맨 앞 창 바뀜 → 무시 | PASS | [] |
+| ④ 구간 0 앞 60 s 의 오디오 ≠ normal → 이벤트 ② | PASS | [{'t_rel_s': -25.0, 'kind': '② 오디오 모드', 'value': 'MODE_IN_COMMUNICATION'}] |
+| ④ 창 밖 (구간 0 − 61 s) 통화·오디오 → 무시 | PASS | [] |
+| ④ 10 s 박자 · 공백 31 s → '감시 공백' | PASS | ('감시 공백 31 s', 31.0) |
+| ④ 10 s 박자 · 공백 30 s → 없음 | PASS | (None, 30.0) |
+| ④ 30 s 박자 · 공백 31 s → 없음 | PASS | (None, 31.0) |
+| ④ 구간 안 화면 ≠ Awake → 이벤트 ④ | PASS | [{'t_rel_s': 605.0, 'kind': '④ 화면', 'value': 'Asleep'}] |
+| ④ watchcheck = run 과 같은 이벤트 수 | PASS | 1 |
+| ⑤ B 899 s SKIN 37.9 → 'B t38 잘림 가능' False | PASS | {'b_skin_899': 37.9, 'flag': False, 'label': None, 'rule': 'B 899 s SKIN ≥ 38.0'} |
+| ⑤ B 899 s SKIN 38.0 → 'B t38 잘림 가능' True | PASS | {'b_skin_899': 38.0, 'flag': True, 'label': 'B t38 잘림 가능', 'rule': 'B 899 s SKIN ≥ 38.0'} |
+| ⑥ pair NA (MobileNet) + NBe → 오류 | PASS | A 칸 NA 는 EffNet 칸이 아님 (MobileNet 칸과 섞지 않는다) |
+| ⑥ pair NAe + GBe → 오류 | PASS | 쌍은 NAe·NBe 또는 GAe·GBe 만: NAe + GBe |
+| ⑦ resource --room-c 23 → 'B 낮음' · 문장 끝 '실내 23 ℃ (진술)' 조건 | PASS | EfficientNet-Lite0 FLOAT32 (계약 분류 모델 · NPU 는 AOT 변환본) · 시작 밴드 · 비행기 모드 켬 · 방해 금지 켬 · 실내 23 ℃ (진술) · 자원당 2쌍 · 도착·기한·긴급 요청 없는 레버 시험 (정책 시험 아님) |
+| ⑦ resource (room 없음) → '실내 미기록' | PASS | · 시작 밴드 · 비행기 모드 켬 · 방해 금지 켬 · 실내 미기록 · 자원당 2쌍 · 도착·기한·긴급 요청 없는 레버 시험 (정책 시험 아님) |
+| ⑦ resource --spare → 문장 끝 '(예비 런 포함 — 블록 순서 안 지켜짐)' | PASS | 2쌍 · 도착·기한·긴급 요청 없는 레버 시험 (정책 시험 아님) (예비 런 포함 — 블록 순서 안 지켜짐) |
+| ⑦ resource 뒤 import 모듈 COND 원복 | PASS | — 조건: 이 설치본 · 시작 밴드 · 비행기 모드 켬 |
+| ⑧ --gate-label 정확 매칭: NAe_b1 → 자기 줄 (하한 통과) · NAe_b1_re → 자기 줄 (하한 미달) | PASS | ('03_NAe_b1', '04_NAe_b1_re') |
+| ⑧ --gate-label 없음 → 오류 | PASS | --gate-label 필수 (부분 문자열 매칭 금지) |
+| ⑨ 결정성: run 같은 입력 두 번 = 같은 바이트 (경로 제외) | PASS | 16557 B |
+
+selftest 전체: PASS (35/35)

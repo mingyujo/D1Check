@@ -1,0 +1,80 @@
+﻿[2026-10-05 23:56:23 +09:00] DRIVER START pid=9624 watch=on_provisional phase=all dry=False
+[2026-10-05 23:56:23 +09:00] SMOKE smokeN attempt 1 -> S26_smokeN_1005e label=01_smokeN
+[2026-10-06 00:04:00 +09:00] SMOKE smokeN rc=0
+[2026-10-06 00:04:00 +09:00] SLOT S26_smokeN_1005e :: manifest=completed slot=completed valid=True failed= halt= emerg=False
+[2026-10-06 00:04:01 +09:00] RUNCHECK S26_smokeN_1005e rc=0 :: {"out_dir": "S26_smokeN_1005e", "resource": "NPU", "reasons": [], "manifest_status": "completed", "halt_reason": null, "slot_status": "completed", "valid": true, "failed_checks": [], "emergency": false, "segments": [{"index": 0, "label": "work_d100", "termination_reason": "duration_complete", "n": 34371, "model": "models/efficientnet_lite0_Samsung_E9965.tflite", "model_sha256": "311e4aac8fa1d8def4e13359c731ddc1c92f4c9ff7074e0d3860b036df8b2a31", "input_spec": "lcg-rgb-127-128"}, {"index": 1, "label": "tail_idle", "termination_reason": "duration_complete", "n": 254, "model": "models/efficientnet_lite0_Samsung_E9965.tflite", "model_sha256": "311e4aac8fa1d8def4e13359c731ddc1c92f4c9ff7074e0d3860b036df8b2a31", "input_spec": "lcg-rgb-127-128"}], "chain_id": "smoke_npu_eff_v1", "run_id": "32f05e93-3636-45cd-adf8-fcd40b344870", "sha_label": "??硫뷀? SHA ?쇱튂", "passed": true}
+[2026-10-06 00:04:02 +09:00] WATCHCHECK S26_smokeN_1005e events=0 samples=12 max_gap_s=10.054 gap='' ref_focus='com.example.d1check.npurunner/com.example.d1check.npurunner.NpuRunnerActivity'
+[2026-10-06 00:04:02 +09:00] SMOKE smokeG attempt 1 -> S26_smokeG_1005e label=02_smokeG
+[2026-10-06 00:13:39 +09:00] SMOKE smokeG rc=0
+[2026-10-06 00:13:39 +09:00] SLOT S26_smokeG_1005e :: manifest=completed slot=completed valid=True failed= halt= emerg=False
+[2026-10-06 00:13:39 +09:00] RUNCHECK S26_smokeG_1005e rc=0 :: {"out_dir": "S26_smokeG_1005e", "resource": "GPU", "reasons": [], "manifest_status": "completed", "halt_reason": null, "slot_status": "completed", "valid": true, "failed_checks": [], "emergency": false, "segments": [{"index": 0, "label": "work_d100", "termination_reason": "duration_complete", "n": 9155, "model": "/data/local/tmp/efficientnet_lite0.tflite", "model_sha256": "6c7ab0a6e5dcbf38a8c33b960996a55a3b4300b36a018c4545801de3a3c8bde0", "input_spec": "lcg-rgb-127-128"}, {"index": 1, "label": "tail_idle", "termination_reason": "duration_complete", "n": 82, "model": "/data/local/tmp/efficientnet_lite0.tflite", "model_sha256": "6c7ab0a6e5dcbf38a8c33b960996a55a3b4300b36a018c4545801de3a3c8bde0", "input_spec": "lcg-rgb-127-128"}], "chain_id": "smoke_gpu_eff_v1", "run_id": "a52352d0-039a-4e97-bed5-c07b02951af2", "sha_label": "??硫뷀? SHA ?쇱튂", "passed": true}
+[2026-10-06 00:13:40 +09:00] WATCHCHECK S26_smokeG_1005e events=0 samples=12 max_gap_s=10.061 gap='' ref_focus='com.example.d1check.npurunner/com.example.d1check.npurunner.NpuRunnerActivity'
+[2026-10-06 00:13:40 +09:00] WATCH negative control: smoke events=0,0 -> watch=on
+[2026-10-06 00:13:40 +09:00] SMOKE RESULT NPU=True GPU=True -> resources=NPU,GPU
+[2026-10-06 00:13:40 +09:00] BLOCK 1 START queue=NAe,GBe,NBe,GAe watch=on
+[2026-10-06 00:13:40 +09:00] CELL NAe b1 -> S26_NAe_b1_1005e label=03_NAe_b1 policy=required remaining=GBe,NBe,GAe
+[2026-10-06 00:45:33 +09:00] CELL NAe b1 rc=0
+[2026-10-06 00:45:33 +09:00] SLOT S26_NAe_b1_1005e :: manifest=completed slot=completed valid=True failed= halt= emerg=False
+[2026-10-06 00:45:37 +09:00] WATCHCHECK S26_NAe_b1_1005e events=0 samples=96 max_gap_s=10.231 gap='' ref_focus='com.example.d1check.npurunner/com.example.d1check.npurunner.NpuRunnerActivity'
+[2026-10-06 00:45:43 +09:00] JUDGE S26_NAe_b1_1005e rc=0 out=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\NAe_b1.json phone_watch=True :: 
+[2026-10-06 00:45:43 +09:00] CELL GBe b1 -> S26_GBe_b1_1005e label=04_GBe_b1 policy=required remaining=NBe,GAe
+[2026-10-06 01:19:51 +09:00] CELL GBe b1 rc=0
+[2026-10-06 01:19:51 +09:00] SLOT S26_GBe_b1_1005e :: manifest=completed slot=completed valid=True failed= halt= emerg=False
+[2026-10-06 01:19:52 +09:00] WATCHCHECK S26_GBe_b1_1005e events=0 samples=96 max_gap_s=10.114 gap='' ref_focus='com.example.d1check.npurunner/com.example.d1check.npurunner.NpuRunnerActivity'
+[2026-10-06 01:19:55 +09:00] JUDGE S26_GBe_b1_1005e rc=0 out=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\GBe_b1.json phone_watch=True :: 
+[2026-10-06 01:19:55 +09:00] CELL NBe b1 -> S26_NBe_b1_1005e label=05_NBe_b1 policy=required remaining=GAe
+[2026-10-06 01:52:32 +09:00] CELL NBe b1 rc=0
+[2026-10-06 01:52:32 +09:00] SLOT S26_NBe_b1_1005e :: manifest=completed slot=completed valid=True failed= halt= emerg=False
+[2026-10-06 01:52:36 +09:00] WATCHCHECK S26_NBe_b1_1005e events=0 samples=96 max_gap_s=10.109 gap='' ref_focus='com.example.d1check.npurunner/com.example.d1check.npurunner.NpuRunnerActivity'
+[2026-10-06 01:52:43 +09:00] JUDGE S26_NBe_b1_1005e rc=0 out=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\NBe_b1.json phone_watch=True :: 
+[2026-10-06 01:52:44 +09:00] PAIR NPU b1 exit=0 out=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\pair_NPU_b1.json a=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\NAe_b1.json b=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\NBe_b1.json
+[2026-10-06 01:52:44 +09:00] CELL GAe b1 -> S26_GAe_b1_1005e label=06_GAe_b1 policy=mark remaining=
+[2026-10-06 02:22:51 +09:00] CELL GAe b1 rc=0
+[2026-10-06 02:22:51 +09:00] SLOT S26_GAe_b1_1005e :: manifest=completed slot=completed valid=True failed= halt= emerg=False
+[2026-10-06 02:22:53 +09:00] WATCHCHECK S26_GAe_b1_1005e events=0 samples=96 max_gap_s=10.156 gap='' ref_focus='com.example.d1check.npurunner/com.example.d1check.npurunner.NpuRunnerActivity'
+[2026-10-06 02:22:55 +09:00] JUDGE S26_GAe_b1_1005e rc=0 out=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\GAe_b1.json phone_watch=True :: 
+[2026-10-06 02:22:56 +09:00] PAIR GPU b1 exit=0 out=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\pair_GPU_b1.json a=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\GAe_b1.json b=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\GBe_b1.json
+[2026-10-06 02:22:56 +09:00] BLOCK 1 END NAe=valid GBe=valid NBe=valid GAe=valid
+[2026-10-06 02:22:56 +09:00] BLOCK 2 START queue=GAe,NBe,GBe,NAe watch=on
+[2026-10-06 02:22:56 +09:00] CELL GAe b2 -> S26_GAe_b2_1005e label=07_GAe_b2 policy=required remaining=NBe,GBe,NAe
+[2026-10-06 02:52:33 +09:00] CELL GAe b2 rc=0
+[2026-10-06 02:52:33 +09:00] SLOT S26_GAe_b2_1005e :: manifest=completed slot=completed valid=True failed= halt= emerg=False
+[2026-10-06 02:52:34 +09:00] WATCHCHECK S26_GAe_b2_1005e events=0 samples=96 max_gap_s=10.252 gap='' ref_focus='com.example.d1check.npurunner/com.example.d1check.npurunner.NpuRunnerActivity'
+[2026-10-06 02:52:36 +09:00] JUDGE S26_GAe_b2_1005e rc=0 out=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\GAe_b2.json phone_watch=True :: 
+[2026-10-06 02:52:36 +09:00] CELL NBe b2 -> S26_NBe_b2_1005e label=08_NBe_b2 policy=required remaining=GBe,NAe
+[2026-10-06 03:23:29 +09:00] CELL NBe b2 rc=0
+[2026-10-06 03:23:29 +09:00] SLOT S26_NBe_b2_1005e :: manifest=completed slot=completed valid=True failed= halt= emerg=False
+[2026-10-06 03:23:32 +09:00] WATCHCHECK S26_NBe_b2_1005e events=0 samples=96 max_gap_s=10.975 gap='' ref_focus='com.example.d1check.npurunner/com.example.d1check.npurunner.NpuRunnerActivity'
+[2026-10-06 03:23:38 +09:00] JUDGE S26_NBe_b2_1005e rc=0 out=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\NBe_b2.json phone_watch=True :: 
+[2026-10-06 03:23:39 +09:00] CELL GBe b2 -> S26_GBe_b2_1005e label=09_GBe_b2 policy=required remaining=NAe
+[2026-10-06 03:54:16 +09:00] CELL GBe b2 rc=0
+[2026-10-06 03:54:16 +09:00] SLOT S26_GBe_b2_1005e :: manifest=completed slot=completed valid=True failed= halt= emerg=False
+[2026-10-06 03:54:18 +09:00] WATCHCHECK S26_GBe_b2_1005e events=0 samples=96 max_gap_s=10.098 gap='' ref_focus='com.example.d1check.npurunner/com.example.d1check.npurunner.NpuRunnerActivity'
+[2026-10-06 03:54:20 +09:00] JUDGE S26_GBe_b2_1005e rc=0 out=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\GBe_b2.json phone_watch=True :: 
+[2026-10-06 03:54:21 +09:00] PAIR GPU b2 exit=0 out=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\pair_GPU_b2.json a=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\GAe_b2.json b=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\GBe_b2.json
+[2026-10-06 03:54:21 +09:00] CELL NAe b2 -> S26_NAe_b2_1005e label=10_NAe_b2 policy=mark remaining=
+[2026-10-06 04:31:14 +09:00] CELL NAe b2 rc=0
+[2026-10-06 04:31:14 +09:00] SLOT S26_NAe_b2_1005e :: manifest=completed slot=completed valid=True failed= halt= emerg=False
+[2026-10-06 04:31:17 +09:00] WATCHCHECK S26_NAe_b2_1005e events=0 samples=96 max_gap_s=10.148 gap='' ref_focus='com.example.d1check.npurunner/com.example.d1check.npurunner.NpuRunnerActivity'
+[2026-10-06 04:31:22 +09:00] JUDGE S26_NAe_b2_1005e rc=0 out=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\NAe_b2.json phone_watch=True :: 
+[2026-10-06 04:31:23 +09:00] PAIR NPU b2 exit=0 out=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\pair_NPU_b2.json a=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\NAe_b2.json b=C:\Users\rhoyo\OneDrive\문서\Mine\26-2\산공학회\D1_ondevice\sim\out_1005e\NBe_b2.json
+[2026-10-06 04:31:23 +09:00] BLOCK 2 END GAe=valid NBe=valid GBe=valid NAe=valid
+[2026-10-06 04:31:24 +09:00] RESOURCE NPU pairs=2 exit=0
+[2026-10-06 04:31:25 +09:00] RESOURCE GPU pairs=2 exit=0
+[2026-10-06 04:31:25 +09:00] N4 BLOCK 1 START queue=NIe,GIe
+[2026-10-06 04:31:25 +09:00] N4 CELL NIe -> S26_NIe_b1_1005r label=11_NIe_b1 policy=required
+[2026-10-06 04:31:25 +09:00] N4 CELL NIe rc=7
+[2026-10-06 04:31:25 +09:00] N4 LOWER FAIL NIe -> swapped with GIe
+[2026-10-06 04:31:25 +09:00] N4 CELL GIe -> S26_GIe_b1_1005r label=12_GIe_b1 policy=mark
+[2026-10-06 05:11:18 +09:00] N4 CELL GIe rc=0
+[2026-10-06 05:11:18 +09:00] SLOT S26_GIe_b1_1005r :: manifest=completed slot=completed valid=True failed= halt= emerg=False
+[2026-10-06 05:11:21 +09:00] WATCHCHECK S26_GIe_b1_1005r events=0 samples=132 max_gap_s=10.142 gap='' ref_focus='com.example.d1check.npurunner/com.example.d1check.npurunner.NpuRunnerActivity'
+[2026-10-06 05:11:22 +09:00] RUNCHECK S26_GIe_b1_1005r rc=0 :: {"out_dir": "S26_GIe_b1_1005r", "resource": "GPU", "reasons": [], "manifest_status": "completed", "halt_reason": null, "slot_status": "completed", "valid": true, "failed_checks": [], "emergency": false, "segments": [{"index": 0, "label": "cold_ref_d10", "termination_reason": "duration_complete", "n": 1788, "model": "/data/local/tmp/efficientnet_lite0.tflite", "model_sha256": "6c7ab0a6e5dcbf38a8c33b960996a55a3b4300b36a018c4545801de3a3c8bde0", "input_spec": "lcg-rgb-127-128"}, {"index": 1, "label": "heat_d100", "termination_reason": "duration_complete", "n": 128510, "model": "/data/local/tmp/efficientnet_lite0.tflite", "model_sha256": "6c7ab0a6e5dcbf38a8c33b960996a55a3b4300b36a018c4545801de3a3c8bde0", "input_spec": "lcg-rgb-127-128"}, {"index": 2, "label": "rest_idle", "termination_reason": "duration_complete", "n": 757, "model": "/data/local/tmp/efficientnet_lite0.tflite", "model_sha256": "6c7ab0a6e5dcbf38a8c33b960996a55a3b4300b36a018c4545801de3a3c8bde0", "input_spec": "lcg-rgb-127-128"}, {"index": 3, "label": "reheat_d100", "termination_reason": "duration_complete", "n": 62337, "model": "/data/local/tmp/efficientnet_lite0.tflite", "model_sha256": "6c7ab0a6e5dcbf38a8c33b960996a55a3b4300b36a018c4545801de3a3c8bde0", "input_spec": "lcg-rgb-127-128"}], "chain_id": "gpu_eff_idle300_v1", "run_id": "8a89d938-d7f0-448e-8b11-90685d1a9d14", "sha_label": "??硫뷀? SHA ?쇱튂", "passed": true}
+[2026-10-06 05:11:24 +09:00] N4 JUDGE gi300 S26_GIe_b1_1005r exit=0
+[2026-10-06 05:11:24 +09:00] N4 CELL NIe -> S26_NIe_b1_1005r label=13_NIe_b1 policy=mark
+[2026-10-06 05:49:02 +09:00] N4 CELL NIe rc=0
+[2026-10-06 05:49:02 +09:00] SLOT S26_NIe_b1_1005r :: manifest=completed slot=completed valid=True failed= halt= emerg=False
+[2026-10-06 05:49:07 +09:00] WATCHCHECK S26_NIe_b1_1005r events=0 samples=90 max_gap_s=10.072 gap='' ref_focus='com.example.d1check.npurunner/com.example.d1check.npurunner.NpuRunnerActivity'
+[2026-10-06 05:49:10 +09:00] RUNCHECK S26_NIe_b1_1005r rc=0 :: {"out_dir": "S26_NIe_b1_1005r", "resource": "NPU", "reasons": [], "manifest_status": "completed", "halt_reason": null, "slot_status": "completed", "valid": true, "failed_checks": [], "emergency": false, "segments": [{"index": 0, "label": "cold_ref_d10", "termination_reason": "duration_complete", "n": 5684, "model": "models/efficientnet_lite0_Samsung_E9965.tflite", "model_sha256": "311e4aac8fa1d8def4e13359c731ddc1c92f4c9ff7074e0d3860b036df8b2a31", "input_spec": "lcg-rgb-127-128"}, {"index": 1, "label": "heat_d100", "termination_reason": "duration_complete", "n": 337289, "model": "models/efficientnet_lite0_Samsung_E9965.tflite", "model_sha256": "311e4aac8fa1d8def4e13359c731ddc1c92f4c9ff7074e0d3860b036df8b2a31", "input_spec": "lcg-rgb-127-128"}, {"index": 2, "label": "rest_idle", "termination_reason": "duration_complete", "n": 658, "model": "models/efficientnet_lite0_Samsung_E9965.tflite", "model_sha256": "311e4aac8fa1d8def4e13359c731ddc1c92f4c9ff7074e0d3860b036df8b2a31", "input_spec": "lcg-rgb-127-128"}, {"index": 3, "label": "reheat_d100", "termination_reason": "duration_complete", "n": 197946, "model": "models/efficientnet_lite0_Samsung_E9965.tflite", "model_sha256": "311e4aac8fa1d8def4e13359c731ddc1c92f4c9ff7074e0d3860b036df8b2a31", "input_spec": "lcg-rgb-127-128"}], "chain_id": "npu_eff_idle300_v1", "run_id": "49311d10-3da7-4b44-be40-b5555dae55c0", "sha_label": "??硫뷀? SHA ?쇱튂", "passed": true}
+[2026-10-06 05:49:16 +09:00] N4 JUDGE ni300 S26_NIe_b1_1005r exit=0
+[2026-10-06 05:49:16 +09:00] DRIVER END emerg=0 sessionEnd=False watch=on spare=GIe_b1 (N4) : 하한 미달 (보충 런 — 나중 세션)

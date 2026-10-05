@@ -1,0 +1,70 @@
+freeze_1005e — 밤 1005e (N2 EffNet 세기 A/B + N4 블록 1) 동결 원장 · 2026-10-05 23:56 KST (2-0, 스모크 전)
+값은 모두 이 시각의 Get-FileHash / npu_chain.py validate / adb 출력 [P]. 실제 무선 adb 주소·시리얼은 적지 않는다.
+
+[사전 등록]
+1287acd9ed576b6949a8867822830e1d1d23d41f0f6c86e861a6a6aca4ad4233  sim\밤1005e_사전등록_v1.md (OneDrive) = d1sim\docs\ 사본 (프롬프트 기대값과 같음)
+
+[체인 canonical SHA-256 (npu_chain.py validate)]
+4433e25923aa7aacfaa5f123466135e145b10100e27c7d416874abab8337f09c  npu_eff_work100_v1 (NAe)
+168a5b53c1c73dee0d3e219832735de67642946b98d57c2899bb1db7b2eaa3f6  npu_eff_work50_v1 (NBe)
+df0ffa2f15ddc9c1c0cab60cd09daeff48e34165296af64aaf77e58bc85eb513  gpu_eff_work100_v1 (GAe)
+4af89784ae20fce30f356ca30c69d4ec54aab65f9582901e846a0b4ac54cf53c  gpu_eff_work50_v1 (GBe)
+db087cfabdc3503f0465c54a2bf589f1731c735625b5ae7a93aebf3cadea69fa  npu_eff_idle300_v1 (NIe)
+25eea6a576694063ade211b633ef5965adf7a5b1be2fdf829119be6ac8fee454  gpu_eff_idle300_v1 (GIe)
+82ce7744d47c8fa783d46f86fa105a4ed62883d84e8cc44d2a451bca2a906eeb  smoke_npu_eff_v1
+16c951ba993423b82b2921b2e000957afeb7ea8e5b192121590a381ae29aea29  smoke_gpu_eff_v1
+
+[판정기]
+2db1cda5b7f2c84ffcd6bff52f8b2abc7d7b7bad78f165562e0e0101b005cf3a  sim\night1005e_judge.py = s26\tools\night_1005e\night1005e_judge.py (selftest 35/35)
+fd22d3ba29771999bc8b4279396c69e8ea0b8ce11b7da5daaba4b5a5a98e3a84  sim\night1004_judge.py (무변경, selftest 54/54)
+ca8680c2b5abb8d62b37f9abc48134ea0c3e2b1e96d9da5be671c5361d4cbb92  sim\night1005_judge.py (import 대상, 무변경)
+ea282d4a48630c4af3cce301c13216f691389fa9f2c8e69a652de645be055b28  sim\m1m2_judge_1002.py (import 대상)
+a5ceab419c3bb0fed73b75b759901fb0e268f957bd1172e1edacbc246c903f50  sim\night1003_judge.py (import 대상)
+
+[예측 JSON (커밋 ④)]
+4506709f00a59bc7205cbd2bd550b8efec07453c76e14c7d34b8bf0458dabe1f  d1sim\out\night_1005e_prediction_v21.json
+dae4129ed0c7029c137b2fab3f2cc5a2a5833fdab94ea9c0c1409349d1a837c1  d1sim\out\night_1005e_prediction_v2.json
+3070a192fdce5ab52d6aa64aec70368c0b3b233da831a9d1a832aef97b9aef1a  d1sim\out\night_1005e_prediction_v1.json
+
+[커밋 (측정 전 증거, push 안 함)]
+① c05b31dd7f39a8da7e8c9c5776162605f7d23290  2026-10-05 23:11:27 +0900  사전 등록 사본 + 체인 8개 + 체인기록
+② 7f9f8c1e29d6a442ab845942be42f33371822694  2026-10-05 23:42:44 +0900  통화·화면 감시 스크립트 + 시험 (메시지 머리에 BOM 1자 — 표시만, 내용 같음)
+③ b60ba99edce7ea9aafbc5c9d65e779868fa9639f  2026-10-05 23:46:05 +0900  판정기
+④ 3786f16c788f2140fe79e4c7ad5dffba5b7487d1  2026-10-05 23:48:52 +0900  예측 동결 (= HEAD)
+
+[게이트 스크립트 — 사전 등록 SOC 30~100 때문에 새 사본]
+8dd1428863a8b8ff8caed26c22adfbd6daa44994f0eb9e87e9a8f518ffadb059  s26\tools\night_1005e\start_gate_1005e.py
+  = s26\tools\s26_start_gate.py (무변경) 에서 SOC 상한 90 → 100 만 바꾼 사본 (사전 등록 §1 21:5x). 원본은 SOC > 90 이면 GATE_BLOCKED 로 끝난다.
+
+[폰 · 환경 (23:56)]
+설치본 base.apk 5ac485e382ebc82e380e6161ca6301ff89e9ab3d8be49b5d5388ab28b42c1033 (2026-10-02 23:56:54, 재설치 없음)
+폰 GPU 모델 /data/local/tmp/efficientnet_lite0.tflite 6c7ab0a6e5dcbf38a8c33b960996a55a3b4300b36a018c4545801de3a3c8bde0 (18,582,189 B, 2026-09-27)
+airplane_mode_on 1 · wifi_on 2 · zen_mode 1 (기록만) · battery plugged 0 (AC/USB/Wireless false) · SOC 97 · 배터리 26.7 ℃
+충전기 분리 2026-10-05 22:30:29 (dumpsys battery 이력 — 영훈이 1부 전에 뽑음; 1-5 케이블 대기 없이 2부로)
+실내 23 ℃ (영훈 진술, 23:0x) · 폰 회수 2026-10-06 11:00 (영훈)
+d1sim pytest 85 passed · 호스트 C: 여유 16.7 GB · 폰 /data 여유 60 GB
+
+[감시]
+통화·화면 감시 = "감시 켬 (잠정)" (③ 통과 · ② 미시험) → 스모크 두 런 음성 대조로 확정 (드라이버가 기록)
+PC 절전 방지 keepawake_1005e.ps1 (23:42:02~) · 호스트 SKIN 감시 s26_skin_watch_npu.py → skin_watch_1005e.csv (23:42:14~)
+1-2 시험 중 23:17:46~23:40:32 PC 절전 (측정 0 — 칸 영향 없음)
+
+[눈가림]
+N1 결과 파일 (out_1005n\*.json · 세기AB_*_1005n.md · 모형_홀드아웃_결과_1005n.md · 작업결과_1005_밤측정.md §1~§5) 을 열었나 = 아니오
+  (읽은 것: N1 스크립트 · 보고서 §6~§8 · 호스트 폴더의 파일 목록 (이름·크기만))
+CLAUDE.md 에 N1 판정 있음/없음: 이 세션에 자동으로 읽힌 것은 레포 CLAUDE.md 와 사용자 전역 CLAUDE.md 다. 레포 CLAUDE.md 의 N1 블록에는 판정·숫자가 없다 ("P1e 눈가림 때문에 이 파일에 쓰지 않는다"). 산공학회\CLAUDE.md 는 이 세션에 자동으로 읽히지 않았고, 열지도 않았다 → "없음 (이 세션이 읽은 범위)"
+※ 레포 CLAUDE.md N1 블록의 운영 사실 (블록 2 하한 미달 바꿈 1회 · GB_b2·NB_b2 표시 실행) 은 읽혔다 — 판정이 아니라 실행 조건이다.
+
+[N2 판정 산출 — G3 (N1 자원 판정 열기) 전에 기록, 2026-10-06 04:32:37 +09:00]
+9e8e94229c50009225d9809eda9cfec7bf2e4718cfb55f7f37d99be09e2ec7af  out_1005e\res_NPU.json  (B 낮음 (2쌍))
+313de3e1bbc31dd4dfdaad046110f59ae46be5144186022aa12cfda7fa6dce2c  out_1005e\res_GPU.json  (엇갈림)
+d09d7965ebc18848683b120f55a4c56fca226f78832bd390a17e3bef07a358ce  out_1005e\pair_NPU_b1.json
+f590aae4499dcd890a75b638d5390a6fa092024fa6cfeacd856204d986d89604  out_1005e\pair_NPU_b2.json
+8ab1ab094a15be91efe7c520d1990bc07151ba64a6fbd3d73e6e9ae5b1a10ceb  out_1005e\pair_GPU_b1.json
+b2c115b4760834906186888b8aadfc0c55086c525c89a412e4d5900116deb4d6  out_1005e\pair_GPU_b2.json
+a5d145370f28eb6b51cc93c4e5e1763e86797aef6c009c3a5a814ad2b9ea7954  out_1005e\cmp_1005e.json
+cmp 직전 예측 SHA 접두 4506709f · dae4129e · 3070a192 = 직후 같음 = 커밋 ④ 와 같음
+
+[G3 — 위 SHA 를 적은 뒤 04:32:43 에 N1 자원 판정을 열었다 (out_1005n\resource_N.json 1501e692… · resource_G.json 565d9a4c…)]
+NPU: EffNet B 낮음 (2쌍) · MobileNet B 낮음 (2쌍) → 두 모델에서 같은 판정
+GPU: EffNet 엇갈림 · MobileNet B 낮음 (2쌍) → 모델 따라 다름 (S26 결론 = EffNet 판정, MobileNet 은 민감도)
