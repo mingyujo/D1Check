@@ -1,0 +1,59 @@
+freeze_1006r — N4 세션 1006 (EffNet 회복 칸 블록 2 + 예비 런 + N1 보충 런) 동결 원장 · 2026-10-06 06:35 KST (첫 칸 전)
+값은 모두 이 시각의 Get-FileHash / npu_chain.py validate / adb 출력 [P]. 실제 무선 adb 주소·시리얼은 적지 않는다.
+
+[사전 등록]
+1287acd9ed576b6949a8867822830e1d1d23d41f0f6c86e861a6a6aca4ad4233  sim\밤1005e_사전등록_v1.md (OneDrive) = d1sim\docs\밤1005e_사전등록_v1.md (레포 사본) — 체인기록 값과 같음
+67434642287791dbca8fc7fc72c602d3e30cad401d5a48b087a3ca4fbe28fb0e  sim\밤1005_보충_사전등록_v1.md (OneDrive, 수정 시각 2026-10-05 22:10:19) — 레포 커밋 없음 (측정 전 커밋 증거 없음 · 이 원장 SHA 가 측정 전 기록)
+
+[체인 canonical SHA-256 (npu_chain.py validate)]
+25eea6a576694063ade211b633ef5965adf7a5b1be2fdf829119be6ac8fee454  gpu_eff_idle300_v1 (GIe b2 · 예비 GIe_b1) = 체인기록 §1
+db087cfabdc3503f0465c54a2bf589f1731c735625b5ae7a93aebf3cadea69fa  npu_eff_idle300_v1 (NIe b2) = 체인기록 §1
+8f476e364dd0ac93389e6fdc4e92eee3612e096276f5214d0cc729530278f327  npu_work50_v1 (N1 보충 NB_b2) = 밤1005_체인기록 §1
+3a4334f1cc336bd1727d43926410b52f8f5642e8b1e3745b784168f4a55bf28b  gpu_work50_v1 (N1 보충 GB_b2) = 밤1005_체인기록 §1
+
+[판정기]
+fd22d3ba29771999bc8b4279396c69e8ea0b8ce11b7da5daaba4b5a5a98e3a84  sim\night1004_judge.py (selftest 54/54 PASS — results\S26_host_1006r\night1004_selftest_1006r.txt)
+2db1cda5b7f2c84ffcd6bff52f8b2abc7d7b7bad78f165562e0e0101b005cf3a  sim\night1005e_judge.py = s26\tools\night_1005e\night1005e_judge.py (selftest 35/35 PASS)
+ca8680c2b5abb8d62b37f9abc48134ea0c3e2b1e96d9da5be671c5361d4cbb92  sim\night1005_judge.py (selftest 49/49 PASS — N1 보충 판정)
+ea282d4a48630c4af3cce301c13216f691389fa9f2c8e69a652de645be055b28  sim\m1m2_judge_1002.py (import 대상)
+a5ceab419c3bb0fed73b75b759901fb0e268f957bd1172e1edacbc246c903f50  sim\night1003_judge.py (import 대상)
+
+[게이트 · 확인 스크립트]
+8dd1428863a8b8ff8caed26c22adfbd6daa44994f0eb9e87e9a8f518ffadb059  s26\tools\night_1005e\start_gate_1005e.py (1005e 그대로 사용, SOC 30~100)
+968ffce6c99905e29a5c997a5d186f0ed043e44343527a8c0bfd511101a245e0  s26\tools\night_1005e\run_check_1005e.py (원본 · 무변경)
+  → 사본 s26\tools\n4_1006\run_check_1006r.py (--exp-sha · --input 덮어쓰기만 더함 — MobileNet 보충 런 모델 SHA 기록용)
+
+[커밋 · HEAD]
+HEAD a381f3a4682272560454ed7005231e6a568cab2e (1005e 커밋 ⑤ — 측정 코드 변경 0) · origin 보다 6개 앞 (push 안 함)
+1005e 커밋 ① c05b31d · ② 7f9f8c1 · ③ b60ba99 · ④ 3786f16 · ⑤ a381f3a
+
+[폰 · 환경 (06:28~06:35)]
+설치본 base.apk 5ac485e382ebc82e380e6161ca6301ff89e9ab3d8be49b5d5388ab28b42c1033 (2026-10-02 23:56, 재설치 없음)
+폰 GPU 모델 /data/local/tmp/efficientnet_lite0.tflite 6c7ab0a6e5dcbf38a8c33b960996a55a3b4300b36a018c4545801de3a3c8bde0 (18,582,189 B, 2026-09-27 00:22) → GIe 실행 가능
+airplane_mode_on 1 · wifi_on 2 · zen_mode 1 (기록만, 토글 안 함) · plugged 0 (AC/USB/Wireless/Dock false)
+충전: 1005e 끝 (05:49, SOC 45) 뒤 충전 → 충전기 분리 2026-10-06 06:26:43 (dumpsys battery 이력) · 06:28 SOC 73 · 배터리 34.9 ℃ (충전 직후 — 상한 게이트 대기 예상)
+실내 23 ℃ (영훈 진술, 06:2x) · 폰 회수 2026-10-06 10:30 (영훈 진술) → 칸 실행기 기한 10:30
+호스트 C: 12.6 GB · 폰 /data 여유 59 GB · adb 1대 (IP:PORT 한 줄)
+
+[감시]
+통화·화면 감시 = "감시 켬" (1005e 에서 확정된 상태를 이어 씀) — 같은 스크립트 s26\tools\night_1005e\phone_watch_1005e.ps1 (무변경), 출력 results\S26_host_1006r\phone_watch_1006r.csv · 시작 06:29:01 · 10 s 주기
+호스트 SKIN 감시 s26\tools\s26_skin_watch_npu.py → skin_watch_1006r.csv (06:29:01~) · PC 절전 방지 s26\tools\n4_1006\keepawake_1006r.ps1 (06:29:02~)
+폰 screen_off_timeout 600000 → 86400000 은 드라이버가 첫 칸 직전에
+
+[orchestrator --dry-run (실제 시리얼, 출력은 <SERIAL> 치환) — results\S26_host_1006r\dryrun_freeze_*.txt]
+GIe_b2       exit 0 · 체인 SHA 25eea6a5 일치 · duration_s 1260 · max_inference_spans 400000
+NIe_b2       exit 0 · 체인 SHA db087cfa 일치 · duration_s 840 · max_inference_spans 1200000
+GIe_b1_spare exit 0 · 체인 SHA 25eea6a5 일치 · duration_s 1260 · max_inference_spans 400000
+NB_b2_re     exit 0 · 체인 SHA 8f476e36 일치 · duration_s 900 · max_inference_spans 1000000
+GB_b2_re     exit 0 · 체인 SHA 3a4334f1 일치 · duration_s 900 · max_inference_spans 400000
+
+[끝난 N4 칸 (1005e 세션)]
+GIe b1 (12_GIe_b1, 하한 미달 표시 실행 → 예비 런 목록) · NIe b1 (13_NIe_b1) — 하한 바꿈 때문에 실제 순서 GIe b1 → NIe b1
+예비 런 목록 (1005e 보고서 부록 B): GIe_b1 — 사유 "하한 미달" (게이트 BAT 27.2) · 그 밖 없음 (안전 비상 0 · 재시도 0 · 감시 이벤트 0)
+
+[이번에 할 칸 순서]
+1 GIe b2 (S26_GIe_b2_1005r, gi300) → 2 NIe b2 (S26_NIe_b2_1005r, ni300)   [N4 블록 2 = 거울 GIe → NIe]
+3 예비 GIe_b1 (S26_GIe_b1_1005r_spare, gi300 → out_1005r\GIe_b1_spare.json) — 상한·하한 둘 다 통과할 때만
+4 N1 보충 NB_b2 (S26_NB_b2_1005n_re, night1005_judge run → out_1005n\NB_b2_re.json) → 5 N1 보충 GB_b2 (S26_GB_b2_1005n_re)
+SOC 조건 GIe ≥ 40 · NIe/NB/GB ≥ 41 · 시각 조건 지금 + 칸 시간 + 30 분 ≤ 10:30 — 못 미치면 거기서 멈춤 (다음 세션)
+드라이버 s26\tools\n4_1006\session_driver_1006r.ps1 · 칸 실행기 run_cell_1006r.ps1 (= run_cell_1005e.ps1 사본: 폴더 · 게이트 CSV 이름 · 기한 10:30 만)
