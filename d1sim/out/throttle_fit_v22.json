@@ -1,0 +1,1351 @@
+{
+ "model": "v2.2",
+ "prereg": "sim/스로틀모형_사전등록_v22.md (commit 9056685)",
+ "fit_runs": [
+  "m2_H1 s0",
+  "n1300 s0",
+  "c1p_r1 s0",
+  "c600_r1 s0",
+  "m1 sall",
+  "m1n_a sall",
+  "m1n_b sall",
+  "m1g_r2 sall",
+  "gpace sall",
+  "n50p sall",
+  "g50p sall",
+  "gi300 sall",
+  "ni300 sall",
+  "n50p2 sall",
+  "g50p2 sall",
+  "ni300r2 sall",
+  "n1_na_b1 sall",
+  "n1_na_b2 sall",
+  "n1_nb_b1 sall",
+  "n1_nb_b2 sall",
+  "n1_ga_b1 sall",
+  "n1_ga_b2 sall",
+  "n1_gb_b1 sall",
+  "n1_gb_b2 sall",
+  "n2_nae_b1 sall",
+  "n2_nae_b2 sall",
+  "n2_nbe_b1 sall",
+  "n2_nbe_b2 sall",
+  "n2_gae_b1 sall",
+  "n2_gae_b2 sall",
+  "n2_gbe_b1 sall",
+  "n2_gbe_b2 sall",
+  "n4_gie_b1 sall",
+  "n4_gie_b2 sall",
+  "n4_nie_b1 sall",
+  "n4_nie_b2 sall"
+ ],
+ "v21_thermal_on_dev36": {
+  "skin_mse": 0.5170745712978243,
+  "ap_mse": 1.2468706052924277
+ },
+ "forms": {
+  "A": {
+   "thermal": {
+    "tau_f": 34.4,
+    "G_f": 0.6478432161500944,
+    "G_s": 3.023243958596744,
+    "tau_s": 480.5547926662764,
+    "tau_a": 30.0,
+    "G_a": {
+     "GPU": 1.2049850298054117,
+     "NPU": 1.0430842768166462,
+     "CPU4": 1.7063428161187861
+    },
+    "P_idle": 0.581,
+    "c_f": 1.4427439066012804,
+    "c_s": 1.000000000000083,
+    "c_a": 1.7766444211240007,
+    "k_b": 1.1746251864223782,
+    "d_ref": 2.1500000000000004,
+    "source": "stage A v2.2 (V22-A): SKIN NM (G_f,G_s,tau_s,c_f,c_s,k_b) from v2.1 values (+ k_b 0 start); d_ref = median(SKIN0-BAT0) of the 36 thermal dev runs; AP tau_a grid {30,50,80,120} x NM (G_a x3, c_a) from v2.1 values"
+   },
+   "stage_a": {
+    "d_ref": 2.1500000000000004,
+    "skin_starts": [
+     {
+      "fun": 0.4794520940328055,
+      "x": [
+       0.6478432161500944,
+       3.023243958596744,
+       480.5547926662764,
+       1.4427439066012804,
+       1.000000000000083,
+       1.1746251864223782
+      ],
+      "nit": 413,
+      "nfev": 672,
+      "x0": [
+       0.6182051606013019,
+       3.1448166733993004,
+       482.60620118868553,
+       1.0000000000001341,
+       1.068812692202652,
+       1.8020504975289264
+      ]
+     },
+     {
+      "fun": 0.4988240916705596,
+      "x": [
+       0.6437775719776258,
+       3.0363863114969387,
+       474.44558168807225,
+       1.2400844208946622,
+       1.000000000002643,
+       0.002489283675287799
+      ],
+      "nit": 632,
+      "nfev": 999,
+      "x0": [
+       0.6182051606013019,
+       3.1448166733993004,
+       482.60620118868553,
+       1.0000000000001341,
+       1.068812692202652,
+       0.0
+      ]
+     }
+    ],
+    "chosen_start": "v2.1 values",
+    "skin_obj": 0.4794520940328055,
+    "ap_grid": [
+     {
+      "tau_a": 30.0,
+      "fun": 1.2618715179861464,
+      "nit": 100
+     },
+     {
+      "tau_a": 50.0,
+      "fun": 1.2863633509404522,
+      "nit": 96
+     },
+     {
+      "tau_a": 80.0,
+      "fun": 1.4478555224960912,
+      "nit": 308
+     },
+     {
+      "tau_a": 120.0,
+      "fun": 1.779839515799279,
+      "nit": 315
+     }
+    ],
+    "ap_obj": 1.2618715179861464
+   },
+   "score": {
+    "N1": {
+     "runs_ok": 34,
+     "runs_judged": 49,
+     "runs_unknown": 0,
+     "runs_unsupported": 1,
+     "pairs_ok": 7,
+     "pairs_judged": 12,
+     "pairs_unsupported": 1,
+     "res_ok": 1,
+     "res_judged": 1,
+     "per_run": {
+      "NA_b1": "4/7",
+      "NA_b2": "4/7",
+      "NB_b1": "6/7",
+      "NB_b2": "6/7",
+      "GA_b1": "5/7",
+      "GA_b2": "5/7",
+      "GB_b1": "4/7",
+      "GB_b2": "unsupported/열 없음"
+     },
+     "per_pair": {
+      "NPU_b1": "2/4",
+      "NPU_b2": "3/4",
+      "GPU_b1": "2/4",
+      "GPU_b2": "unsupported/열 없음"
+     },
+     "resources": {
+      "GPU": {
+       "verdict": "unsupported 또는 예측 열 없음 — 판정 문구 대조 안 함",
+       "predicted": null,
+       "measured": null
+      },
+      "NPU": {
+       "verdict": "맞음",
+       "predicted": "B 낮음 (2쌍)",
+       "measured": "B 낮음 (2쌍)"
+      }
+     },
+     "total_ok": 42,
+     "total_judged": 62,
+     "columns": [
+      27.8,
+      28.6,
+      29.1,
+      29.3,
+      29.4,
+      29.45,
+      29.5,
+      29.6,
+      30.0,
+      30.4
+     ]
+    },
+    "N2": {
+     "runs_ok": 32,
+     "runs_judged": 56,
+     "runs_unknown": 0,
+     "runs_unsupported": 0,
+     "pairs_ok": 7,
+     "pairs_judged": 16,
+     "pairs_unsupported": 0,
+     "res_ok": 1,
+     "res_judged": 2,
+     "per_run": {
+      "NAe_b1": "4/7",
+      "NAe_b2": "2/7",
+      "NBe_b1": "6/7",
+      "NBe_b2": "6/7",
+      "GAe_b1": "5/7",
+      "GAe_b2": "5/7",
+      "GBe_b1": "2/7",
+      "GBe_b2": "2/7"
+     },
+     "per_pair": {
+      "NPU_b1": "1/4",
+      "NPU_b2": "2/4",
+      "GPU_b1": "2/4",
+      "GPU_b2": "2/4"
+     },
+     "resources": {
+      "GPU": {
+       "verdict": "틀림",
+       "predicted": "B 높음 (2쌍)",
+       "measured": "엇갈림"
+      },
+      "NPU": {
+       "verdict": "맞음",
+       "predicted": "B 낮음 (2쌍)",
+       "measured": "B 낮음 (2쌍)"
+      }
+     },
+     "total_ok": 40,
+     "total_judged": 74,
+     "columns": [
+      29.0,
+      29.15,
+      29.2,
+      29.3,
+      29.4,
+      29.5,
+      29.55,
+      29.7,
+      29.8
+     ]
+    },
+    "total_ok": 82,
+    "total_judged": 136
+   },
+   "n_params": 22
+  },
+  "M": {
+   "thermal": {
+    "tau_f": 34.4,
+    "G_f": 0.6478432161500944,
+    "G_s": 3.023243958596744,
+    "tau_s": 480.5547926662764,
+    "tau_a": 30.0,
+    "G_a": {
+     "GPU": 1.2049850298054117,
+     "NPU": 1.0430842768166462,
+     "CPU4": 1.7063428161187861
+    },
+    "P_idle": 0.581,
+    "c_f": 1.4427439066012804,
+    "c_s": 1.000000000000083,
+    "c_a": 1.7766444211240007,
+    "k_b": 1.1746251864223782,
+    "d_ref": 2.1500000000000004,
+    "source": "stage A v2.2 (V22-A): SKIN NM (G_f,G_s,tau_s,c_f,c_s,k_b) from v2.1 values (+ k_b 0 start); d_ref = median(SKIN0-BAT0) of the 36 thermal dev runs; AP tau_a grid {30,50,80,120} x NM (G_a x3, c_a) from v2.1 values + V22-M g_m (EffNet closed-loop model power, NM from (1,1) on N2 + N4)",
+    "g_m": {
+     "NPU": 0.973396183293338,
+     "GPU": 0.9112764663978004
+    }
+   },
+   "g_m_fit": {
+    "g_m": {
+     "NPU": 0.973396183293338,
+     "GPU": 0.9112764663978004
+    },
+    "fun": 0.2864766601839912,
+    "nit": 75,
+    "nfev": 150,
+    "fun_at_1": 0.32670016019476716
+   },
+   "score": {
+    "N1": {
+     "runs_ok": 34,
+     "runs_judged": 49,
+     "runs_unknown": 0,
+     "runs_unsupported": 1,
+     "pairs_ok": 7,
+     "pairs_judged": 12,
+     "pairs_unsupported": 1,
+     "res_ok": 1,
+     "res_judged": 1,
+     "per_run": {
+      "NA_b1": "4/7",
+      "NA_b2": "4/7",
+      "NB_b1": "6/7",
+      "NB_b2": "6/7",
+      "GA_b1": "5/7",
+      "GA_b2": "5/7",
+      "GB_b1": "4/7",
+      "GB_b2": "unsupported/열 없음"
+     },
+     "per_pair": {
+      "NPU_b1": "2/4",
+      "NPU_b2": "3/4",
+      "GPU_b1": "2/4",
+      "GPU_b2": "unsupported/열 없음"
+     },
+     "resources": {
+      "GPU": {
+       "verdict": "unsupported 또는 예측 열 없음 — 판정 문구 대조 안 함",
+       "predicted": null,
+       "measured": null
+      },
+      "NPU": {
+       "verdict": "맞음",
+       "predicted": "B 낮음 (2쌍)",
+       "measured": "B 낮음 (2쌍)"
+      }
+     },
+     "total_ok": 42,
+     "total_judged": 62,
+     "columns": [
+      27.8,
+      28.6,
+      29.1,
+      29.3,
+      29.4,
+      29.45,
+      29.5,
+      29.6,
+      30.0,
+      30.4
+     ]
+    },
+    "N2": {
+     "runs_ok": 39,
+     "runs_judged": 56,
+     "runs_unknown": 0,
+     "runs_unsupported": 0,
+     "pairs_ok": 12,
+     "pairs_judged": 16,
+     "pairs_unsupported": 0,
+     "res_ok": 1,
+     "res_judged": 2,
+     "per_run": {
+      "NAe_b1": "5/7",
+      "NAe_b2": "5/7",
+      "NBe_b1": "6/7",
+      "NBe_b2": "6/7",
+      "GAe_b1": "6/7",
+      "GAe_b2": "6/7",
+      "GBe_b1": "2/7",
+      "GBe_b2": "3/7"
+     },
+     "per_pair": {
+      "NPU_b1": "3/4",
+      "NPU_b2": "4/4",
+      "GPU_b1": "3/4",
+      "GPU_b2": "2/4"
+     },
+     "resources": {
+      "GPU": {
+       "verdict": "틀림",
+       "predicted": "차이 없음 (2쌍)",
+       "measured": "엇갈림"
+      },
+      "NPU": {
+       "verdict": "맞음",
+       "predicted": "B 낮음 (2쌍)",
+       "measured": "B 낮음 (2쌍)"
+      }
+     },
+     "total_ok": 52,
+     "total_judged": 74,
+     "columns": [
+      29.0,
+      29.15,
+      29.2,
+      29.3,
+      29.4,
+      29.5,
+      29.55,
+      29.7,
+      29.8
+     ]
+    },
+    "total_ok": 94,
+    "total_judged": 136
+   },
+   "n_params": 24
+  }
+ },
+ "timing": {
+  "stage_A_s": 151.53708958625793,
+  "g_m_s": 123.18579626083374,
+  "reports_s": 5.698096036911011,
+  "total_s": 288.00909447669983
+ },
+ "judge": {
+  "night1005e_judge": "2db1cda5b7f2c84ffcd6bff52f8b2abc7d7b7bad78f165562e0e0101b005cf3a",
+  "night1005_judge": "ca8680c2b5abb8d62b37f9abc48134ea0c3e2b1e96d9da5be671c5361d4cbb92"
+ },
+ "counting_check": {
+  "recount": {
+   "runs_ok": 35,
+   "runs_judged": 56,
+   "pairs_ok": 7,
+   "pairs_judged": 16,
+   "res_ok": 1,
+   "res_judged": 2
+  },
+  "stored": {
+   "runs_ok": 35,
+   "runs_judged": 56,
+   "pairs_ok": 7,
+   "pairs_judged": 16,
+   "res_ok": 1,
+   "res_judged": 2
+  },
+  "same": true,
+  "g1_table": {
+   "pairs_ok": 7,
+   "pairs_judged": 16,
+   "res_ok": 1,
+   "res_judged": 2
+  },
+  "g1_match": true
+ },
+ "score_v21": {
+  "N1": {
+   "runs_ok": 36,
+   "runs_judged": 49,
+   "runs_unknown": 0,
+   "runs_unsupported": 1,
+   "pairs_ok": 8,
+   "pairs_judged": 12,
+   "pairs_unsupported": 1,
+   "res_ok": 1,
+   "res_judged": 1,
+   "per_run": {
+    "NA_b1": "4/7",
+    "NA_b2": "5/7",
+    "NB_b1": "6/7",
+    "NB_b2": "6/7",
+    "GA_b1": "5/7",
+    "GA_b2": "5/7",
+    "GB_b1": "5/7",
+    "GB_b2": "unsupported/열 없음"
+   },
+   "per_pair": {
+    "NPU_b1": "2/4",
+    "NPU_b2": "3/4",
+    "GPU_b1": "3/4",
+    "GPU_b2": "unsupported/열 없음"
+   },
+   "resources": {
+    "GPU": {
+     "verdict": "unsupported 또는 예측 열 없음 — 판정 문구 대조 안 함",
+     "predicted": null,
+     "measured": null
+    },
+    "NPU": {
+     "verdict": "맞음",
+     "predicted": "B 낮음 (2쌍)",
+     "measured": "B 낮음 (2쌍)"
+    }
+   },
+   "total_ok": 45,
+   "total_judged": 62,
+   "columns": [
+    27.8,
+    28.6,
+    29.1,
+    29.3,
+    29.4,
+    29.45,
+    29.5,
+    29.6,
+    30.0,
+    30.4
+   ]
+  },
+  "N2": {
+   "runs_ok": 34,
+   "runs_judged": 56,
+   "runs_unknown": 0,
+   "runs_unsupported": 0,
+   "pairs_ok": 6,
+   "pairs_judged": 16,
+   "pairs_unsupported": 0,
+   "res_ok": 1,
+   "res_judged": 2,
+   "per_run": {
+    "NAe_b1": "4/7",
+    "NAe_b2": "2/7",
+    "NBe_b1": "6/7",
+    "NBe_b2": "6/7",
+    "GAe_b1": "5/7",
+    "GAe_b2": "5/7",
+    "GBe_b1": "3/7",
+    "GBe_b2": "3/7"
+   },
+   "per_pair": {
+    "NPU_b1": "1/4",
+    "NPU_b2": "1/4",
+    "GPU_b1": "2/4",
+    "GPU_b2": "2/4"
+   },
+   "resources": {
+    "GPU": {
+     "verdict": "틀림",
+     "predicted": "B 높음 (2쌍)",
+     "measured": "엇갈림"
+    },
+    "NPU": {
+     "verdict": "맞음",
+     "predicted": "B 낮음 (2쌍)",
+     "measured": "B 낮음 (2쌍)"
+    }
+   },
+   "total_ok": 41,
+   "total_judged": 74,
+   "columns": [
+    29.0,
+    29.15,
+    29.2,
+    29.3,
+    29.4,
+    29.5,
+    29.55,
+    29.7,
+    29.8
+   ]
+  },
+  "total_ok": 86,
+  "total_judged": 136
+ },
+ "adopted": "M",
+ "v22_status": "v2.2",
+ "adoption_rule": "선택 점수 (N1 + N2 cmp 맞음 수) 최다 → 동률이면 파라미터 적은 쪽 (V22-A); 최선 ≤ v2.1 (같은 방식) 이면 \"v2.2 개선 없음\" — 그래도 주 모형 = v2.2 최선 형태 (G1 §3-4)",
+ "n4_report": {
+  "A": {
+   "n4_gie_b1": {
+    "model": {
+     "step1_s": 110,
+     "onset_1_1_s": 110,
+     "retighten_s": 50,
+     "dskin": -5.363,
+     "dap": -8.664
+    },
+    "measured": {
+     "step1_s": null,
+     "onset_1_1_s": 140,
+     "retighten_s": 30,
+     "dskin": -4.8,
+     "dap": -7.7
+    },
+    "closed_skin_mse": 0.07776543258004502,
+    "closed_skin_mae": 0.21840095751387575,
+    "retighten_within_10s": false,
+    "dskin_within_0_5": false
+   },
+   "n4_gie_b2": {
+    "model": {
+     "step1_s": 80,
+     "onset_1_1_s": 80,
+     "retighten_s": 40,
+     "dskin": -4.558,
+     "dap": -7.378
+    },
+    "measured": {
+     "step1_s": null,
+     "onset_1_1_s": 90,
+     "retighten_s": 30,
+     "dskin": -4.4,
+     "dap": -7.3
+    },
+    "closed_skin_mse": 0.10468664074249914,
+    "closed_skin_mae": 0.23932214362220802,
+    "retighten_within_10s": true,
+    "dskin_within_0_5": true
+   },
+   "n4_nie_b1": {
+    "model": {
+     "step1_s": 230,
+     "onset_1_1_s": null,
+     "retighten_s": 110,
+     "dskin": -6.293,
+     "dap": -11.153
+    },
+    "measured": {
+     "step1_s": 260,
+     "onset_1_1_s": null,
+     "retighten_s": 100,
+     "dskin": -5.1,
+     "dap": -9.1
+    },
+    "closed_skin_mse": 0.2610344668786883,
+    "closed_skin_mae": 0.4430229823795402,
+    "retighten_within_10s": true,
+    "dskin_within_0_5": false
+   },
+   "n4_nie_b2": {
+    "model": {
+     "step1_s": 190,
+     "onset_1_1_s": null,
+     "retighten_s": 80,
+     "dskin": -6.131,
+     "dap": -10.9
+    },
+    "measured": {
+     "step1_s": 210,
+     "onset_1_1_s": null,
+     "retighten_s": 40,
+     "dskin": -4.6,
+     "dap": -8.5
+    },
+    "closed_skin_mse": 0.3057012308829028,
+    "closed_skin_mae": 0.43980655763286575,
+    "retighten_within_10s": false,
+    "dskin_within_0_5": false
+   }
+  },
+  "M": {
+   "n4_gie_b1": {
+    "model": {
+     "step1_s": 130,
+     "onset_1_1_s": 130,
+     "retighten_s": 60,
+     "dskin": -5.303,
+     "dap": -8.572
+    },
+    "measured": {
+     "step1_s": null,
+     "onset_1_1_s": 140,
+     "retighten_s": 30,
+     "dskin": -4.8,
+     "dap": -7.7
+    },
+    "closed_skin_mse": 0.07089962414899324,
+    "closed_skin_mae": 0.22151153101953347,
+    "retighten_within_10s": false,
+    "dskin_within_0_5": false
+   },
+   "n4_gie_b2": {
+    "model": {
+     "step1_s": 100,
+     "onset_1_1_s": 100,
+     "retighten_s": 40,
+     "dskin": -4.492,
+     "dap": -7.273
+    },
+    "measured": {
+     "step1_s": null,
+     "onset_1_1_s": 90,
+     "retighten_s": 30,
+     "dskin": -4.4,
+     "dap": -7.3
+    },
+    "closed_skin_mse": 0.05445517893572402,
+    "closed_skin_mae": 0.18593656993710972,
+    "retighten_within_10s": true,
+    "dskin_within_0_5": true
+   },
+   "n4_nie_b1": {
+    "model": {
+     "step1_s": 240,
+     "onset_1_1_s": null,
+     "retighten_s": 120,
+     "dskin": -6.177,
+     "dap": -10.955
+    },
+    "measured": {
+     "step1_s": 260,
+     "onset_1_1_s": null,
+     "retighten_s": 100,
+     "dskin": -5.1,
+     "dap": -9.1
+    },
+    "closed_skin_mse": 0.2475299126454438,
+    "closed_skin_mae": 0.3964356180224723,
+    "retighten_within_10s": false,
+    "dskin_within_0_5": false
+   },
+   "n4_nie_b2": {
+    "model": {
+     "step1_s": 200,
+     "onset_1_1_s": null,
+     "retighten_s": 90,
+     "dskin": -5.992,
+     "dap": -10.652
+    },
+    "measured": {
+     "step1_s": 210,
+     "onset_1_1_s": null,
+     "retighten_s": 40,
+     "dskin": -4.6,
+     "dap": -8.5
+    },
+    "closed_skin_mse": 0.32832001180113984,
+    "closed_skin_mae": 0.43697479454021554,
+    "retighten_within_10s": false,
+    "dskin_within_0_5": false
+   }
+  }
+ },
+ "n4_report_v21": {
+  "n4_gie_b1": {
+   "model": {
+    "step1_s": 120,
+    "onset_1_1_s": 120,
+    "retighten_s": 50,
+    "dskin": -5.325,
+    "dap": -8.992
+   },
+   "measured": {
+    "step1_s": null,
+    "onset_1_1_s": 140,
+    "retighten_s": 30,
+    "dskin": -4.8,
+    "dap": -7.7
+   },
+   "closed_skin_mse": 0.06136306001197792,
+   "closed_skin_mae": 0.20180892965677896,
+   "retighten_within_10s": false,
+   "dskin_within_0_5": false
+  },
+  "n4_gie_b2": {
+   "model": {
+    "step1_s": 80,
+    "onset_1_1_s": 80,
+    "retighten_s": 40,
+    "dskin": -4.439,
+    "dap": -7.516
+   },
+   "measured": {
+    "step1_s": null,
+    "onset_1_1_s": 90,
+    "retighten_s": 30,
+    "dskin": -4.4,
+    "dap": -7.3
+   },
+   "closed_skin_mse": 0.10623306141988766,
+   "closed_skin_mae": 0.24858328496476848,
+   "retighten_within_10s": true,
+   "dskin_within_0_5": true
+  },
+  "n4_nie_b1": {
+   "model": {
+    "step1_s": 230,
+    "onset_1_1_s": null,
+    "retighten_s": 110,
+    "dskin": -6.141,
+    "dap": -11.227
+   },
+   "measured": {
+    "step1_s": 260,
+    "onset_1_1_s": null,
+    "retighten_s": 100,
+    "dskin": -5.1,
+    "dap": -9.1
+   },
+   "closed_skin_mse": 0.2133372921230166,
+   "closed_skin_mae": 0.4013223466314495,
+   "retighten_within_10s": true,
+   "dskin_within_0_5": false
+  },
+  "n4_nie_b2": {
+   "model": {
+    "step1_s": 190,
+    "onset_1_1_s": null,
+    "retighten_s": 80,
+    "dskin": -5.966,
+    "dap": -10.95
+   },
+   "measured": {
+    "step1_s": 210,
+    "onset_1_1_s": null,
+    "retighten_s": 40,
+    "dskin": -4.6,
+    "dap": -8.5
+   },
+   "closed_skin_mse": 0.22862390791766943,
+   "closed_skin_mae": 0.3842461858940124,
+   "retighten_within_10s": false,
+   "dskin_within_0_5": false
+  }
+ },
+ "items19_v22A": {
+  "count": 4,
+  "items": [
+   "④",
+   "⑥",
+   "⑬",
+   "⑱"
+  ],
+  "runs21": {
+   "n50p": {
+    "start": {
+     "T": 28.4,
+     "A0": -1.3999999999999986,
+     "B0": 25.9
+    },
+    "heat": {
+     "step1_s": 250,
+     "onset_1_1_s": null,
+     "r240": 1.082688091445698,
+     "end_skin": 39.9160323283636
+    },
+    "probe": {
+     "release_s": 110,
+     "release_skin": 38.253739353123194,
+     "release_ap": 39.821672479287514,
+     "p15": 1.082688091445698,
+     "temps": {
+      "0": 39.92537994999985,
+      "60": 38.65469387490861,
+      "120": 38.2694784247288,
+      "240": 38.205059130396585,
+      "479": 38.024615960057716
+     },
+     "minutes": [
+      1.082688091445698,
+      1.082688091445698,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "retighten_s": null,
+     "retighten_skin": null
+    }
+   },
+   "n50p2": {
+    "start": {
+     "T": 30.7,
+     "A0": -1.0,
+     "B0": 28.6
+    },
+    "heat": {
+     "step1_s": 130,
+     "onset_1_1_s": 240,
+     "r240": 1.1163864306171474,
+     "end_skin": 41.856417356662305
+    },
+    "probe": {
+     "release_s": null,
+     "release_skin": null,
+     "release_ap": null,
+     "p15": 1.1163864306171474,
+     "temps": {
+      "0": 41.865900122849254,
+      "60": 40.69227523377262,
+      "120": 40.2828862648469,
+      "240": 39.94293715196726,
+      "479": 39.71463265042634
+     },
+     "minutes": [
+      1.1163864306171474,
+      1.1163864306171474,
+      1.1163864306171474,
+      1.1163864306171474,
+      1.082688091445698,
+      1.082688091445698,
+      1.082688091445698,
+      1.082688091445698
+     ],
+     "retighten_s": null,
+     "retighten_skin": null
+    }
+   },
+   "g50p": {
+    "start": {
+     "T": 28.5,
+     "A0": -1.1999999999999993,
+     "B0": 26.0
+    },
+    "heat": {
+     "step1_s": 100,
+     "onset_1_1_s": 100,
+     "r240": 1.6255800853641018,
+     "end_skin": 37.957760637181266
+    },
+    "probe": {
+     "release_s": null,
+     "release_skin": null,
+     "release_ap": null,
+     "p15": 1.2705444637359424,
+     "temps": {
+      "0": 37.959170067321864,
+      "60": 37.401201345365,
+      "120": 37.408130194272445,
+      "240": 37.4182936398839,
+      "479": 37.47765279683811
+     },
+     "minutes": [
+      1.2937818442160025,
+      1.2504611041769382,
+      1.2566053261176022,
+      1.2608553754243608,
+      1.2637319674241523,
+      1.2656747422841574,
+      1.266984988085437,
+      1.267867804604338
+     ],
+     "retighten_s": null,
+     "retighten_skin": null
+    }
+   },
+   "g50p2": {
+    "start": {
+     "T": 31.0,
+     "A0": -1.0,
+     "B0": 29.1
+    },
+    "heat": {
+     "step1_s": 50,
+     "onset_1_1_s": 50,
+     "r240": 2.0429166988780247,
+     "end_skin": 38.373181292027056
+    },
+    "probe": {
+     "release_s": null,
+     "release_skin": null,
+     "release_ap": null,
+     "p15": 1.7204297687624772,
+     "temps": {
+      "0": 38.37478847157505,
+      "60": 37.84816079115725,
+      "120": 37.829121179605934,
+      "240": 37.82743368005938,
+      "479": 37.86332832274083
+     },
+     "minutes": [
+      1.7559218690872571,
+      1.6319222679376884,
+      1.6277614818968216,
+      1.6271066893817174,
+      1.6267047338613976,
+      1.6264241504237442,
+      1.6262272972158485,
+      1.6260891545557765
+     ],
+     "retighten_s": null,
+     "retighten_skin": null
+    }
+   },
+   "gi300": {
+    "start": {
+     "T": 30.7,
+     "A0": -0.8999999999999986,
+     "B0": 28.6
+    },
+    "heat": {
+     "step1_s": 70,
+     "onset_1_1_s": 70
+    },
+    "idle": {
+     "retighten_s": 30,
+     "dskin": -4.377414545359123,
+     "dap": -7.086658772303203,
+     "first_bin": 1.0
+    },
+    "probe": null
+   },
+   "ni300": {
+    "start": {
+     "T": 31.1,
+     "A0": -0.8000000000000007,
+     "B0": 29.3
+    },
+    "heat": {
+     "step1_s": 130,
+     "onset_1_1_s": 230
+    },
+    "idle": {
+     "retighten_s": 50,
+     "dskin": -5.812090856343218,
+     "dap": -10.352429322883438,
+     "first_bin": 1.0
+    },
+    "probe": null
+   },
+   "ni300r2": {
+    "start": {
+     "T": 31.1,
+     "A0": -1.0,
+     "B0": 29.2
+    },
+    "heat": {
+     "step1_s": 130,
+     "onset_1_1_s": 240
+    },
+    "idle": {
+     "retighten_s": 50,
+     "dskin": -5.843585796876731,
+     "dap": -10.388451952250684,
+     "first_bin": 1.0
+    },
+    "probe": null
+   }
+  },
+  "checklist": {
+   "①": {
+    "pass": false
+   },
+   "②": {
+    "pass": false
+   },
+   "③": {
+    "pass": false
+   },
+   "④": {
+    "pass": true
+   },
+   "⑤": {
+    "pass": false
+   },
+   "⑥": {
+    "pass": true
+   },
+   "⑦": {
+    "pass": false
+   },
+   "⑨": {
+    "pass": false
+   },
+   "⑩": {
+    "pass": false
+   },
+   "⑪": {
+    "pass": false
+   },
+   "⑫": {
+    "pass": false
+   },
+   "⑬": {
+    "pass": true
+   },
+   "⑭": {
+    "pass": false
+   },
+   "⑮": {
+    "pass": false
+   },
+   "⑯": {
+    "pass": false
+   },
+   "⑰": {
+    "pass": false
+   },
+   "⑱": {
+    "pass": true
+   },
+   "⑲": {
+    "pass": false
+   },
+   "⑳": {
+    "pass": false
+   },
+   "⑧": {
+    "pass": null
+   }
+  }
+ },
+ "items19_v21_recount": {
+  "count": 5,
+  "items": [
+   "④",
+   "⑥",
+   "⑦",
+   "⑬",
+   "⑱"
+  ],
+  "runs21": {
+   "n50p": {
+    "start": {
+     "T": 28.4,
+     "A0": -1.3999999999999986,
+     "B0": 25.9
+    },
+    "heat": {
+     "step1_s": 250,
+     "onset_1_1_s": null,
+     "r240": 1.082688091445698,
+     "end_skin": 39.82082879536596
+    },
+    "probe": {
+     "release_s": 70,
+     "release_skin": 38.233385903078165,
+     "release_ap": 40.12152743522546,
+     "p15": 1.082688091445698,
+     "temps": {
+      "0": 39.830318400938665,
+      "60": 38.33918151595306,
+      "120": 38.13628507585695,
+      "240": 37.95436138391128,
+      "479": 37.7628883183154
+     },
+     "minutes": [
+      1.082688091445698,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "retighten_s": null,
+     "retighten_skin": null
+    }
+   },
+   "n50p2": {
+    "start": {
+     "T": 30.7,
+     "A0": -1.0,
+     "B0": 28.6
+    },
+    "heat": {
+     "step1_s": 130,
+     "onset_1_1_s": 240,
+     "r240": 1.1163864306171474,
+     "end_skin": 41.89893867459226
+    },
+    "probe": {
+     "release_s": null,
+     "release_skin": null,
+     "release_ap": null,
+     "p15": 1.1163864306171474,
+     "temps": {
+      "0": 41.898412173098784,
+      "60": 40.50727321660406,
+      "120": 40.12760227273445,
+      "240": 39.88673200904832,
+      "479": 39.64091288422124
+     },
+     "minutes": [
+      1.1163864306171474,
+      1.1163864306171474,
+      1.1163864306171474,
+      1.082688091445698,
+      1.082688091445698,
+      1.082688091445698,
+      1.082688091445698,
+      1.082688091445698
+     ],
+     "retighten_s": null,
+     "retighten_skin": null
+    }
+   },
+   "g50p": {
+    "start": {
+     "T": 28.5,
+     "A0": -1.1999999999999993,
+     "B0": 26.0
+    },
+    "heat": {
+     "step1_s": 110,
+     "onset_1_1_s": 110,
+     "r240": 1.616055721054496,
+     "end_skin": 37.95075290381887
+    },
+    "probe": {
+     "release_s": null,
+     "release_skin": null,
+     "release_ap": null,
+     "p15": 1.25162438369231,
+     "temps": {
+      "0": 37.952219140089774,
+      "60": 37.49669440842068,
+      "120": 37.41756355761607,
+      "240": 37.37675221988424,
+      "479": 37.44375288942445
+     },
+     "minutes": [
+      1.3136302353112685,
+      1.2838917583411573,
+      1.2383513660752428,
+      1.2403863984318764,
+      1.2437155464730647,
+      1.24583747777156,
+      1.2471854610053519,
+      1.248040772152561
+     ],
+     "retighten_s": null,
+     "retighten_skin": null
+    }
+   },
+   "g50p2": {
+    "start": {
+     "T": 31.0,
+     "A0": -1.0,
+     "B0": 29.1
+    },
+    "heat": {
+     "step1_s": 50,
+     "onset_1_1_s": 50,
+     "r240": 2.069975507334245,
+     "end_skin": 38.4022147160428
+    },
+    "probe": {
+     "release_s": null,
+     "release_skin": null,
+     "release_ap": null,
+     "p15": 1.6917663802927754,
+     "temps": {
+      "0": 38.40388611364644,
+      "60": 37.81053025353244,
+      "120": 37.803142831021404,
+      "240": 37.81260638578592,
+      "479": 37.85959203616406
+     },
+     "minutes": [
+      1.7298036961760332,
+      1.612867330370932,
+      1.6163071967554117,
+      1.620770712532254,
+      1.623831404989696,
+      1.6259044128032296,
+      1.6273071163028647,
+      1.6282558566356242
+     ],
+     "retighten_s": null,
+     "retighten_skin": null
+    }
+   },
+   "gi300": {
+    "start": {
+     "T": 30.7,
+     "A0": -0.8999999999999986,
+     "B0": 28.6
+    },
+    "heat": {
+     "step1_s": 80,
+     "onset_1_1_s": 80
+    },
+    "idle": {
+     "retighten_s": 30,
+     "dskin": -4.295789669201895,
+     "dap": -7.2721093920745545,
+     "first_bin": 1.0
+    },
+    "probe": null
+   },
+   "ni300": {
+    "start": {
+     "T": 31.1,
+     "A0": -0.8000000000000007,
+     "B0": 29.3
+    },
+    "heat": {
+     "step1_s": 130,
+     "onset_1_1_s": 230
+    },
+    "idle": {
+     "retighten_s": 40,
+     "dskin": -5.632341450200812,
+     "dap": -10.374212034829533,
+     "first_bin": 1.0
+    },
+    "probe": null
+   },
+   "ni300r2": {
+    "start": {
+     "T": 31.1,
+     "A0": -1.0,
+     "B0": 29.2
+    },
+    "heat": {
+     "step1_s": 140,
+     "onset_1_1_s": 240
+    },
+    "idle": {
+     "retighten_s": 50,
+     "dskin": -5.677476205622305,
+     "dap": -10.4259872296929,
+     "first_bin": 1.0
+    },
+    "probe": null
+   }
+  },
+  "checklist": {
+   "①": {
+    "pass": false
+   },
+   "②": {
+    "pass": false
+   },
+   "③": {
+    "pass": false
+   },
+   "④": {
+    "pass": true
+   },
+   "⑤": {
+    "pass": false
+   },
+   "⑥": {
+    "pass": true
+   },
+   "⑦": {
+    "pass": true
+   },
+   "⑨": {
+    "pass": false
+   },
+   "⑩": {
+    "pass": false
+   },
+   "⑪": {
+    "pass": false
+   },
+   "⑫": {
+    "pass": false
+   },
+   "⑬": {
+    "pass": true
+   },
+   "⑭": {
+    "pass": false
+   },
+   "⑮": {
+    "pass": false
+   },
+   "⑯": {
+    "pass": false
+   },
+   "⑰": {
+    "pass": false
+   },
+   "⑱": {
+    "pass": true
+   },
+   "⑲": {
+    "pass": false
+   },
+   "⑳": {
+    "pass": false
+   },
+   "⑧": {
+    "pass": null
+   }
+  }
+ }
+}
