@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-06 최신 작업 — 사용자 터미널용 PPO 코드·진입 검증 완료
+
+- [실행/진행 확인 §11](REQUEST_PPO_QUEUE_RULES_20261006.md), `tools/RUN_QUEUE_PPO.ps1`, `tools/d1_queue_ppo.py`. 기존 엔진/계수/과거PPO를 보존하고17슬롯·85관측·5value·공유가드·절대서비스cost를 연결했다. Check/Smoke/Run/Status, 즉시진행로그·원자적progress·16update checkpoint·단일owner lock·부분receipt를 구현했다.
+- 관련13시험 통과, 실제PowerShell Check 및2축소진입의14+10=24PC실행 완료. 최종Smoke는 정식formal함수의fixture 학습→선택→동결→시험→receipt를 통과했다. 최고APcost의유휴기준아래값복원오류를새연결에서수정했고동결물리식/과거결과는불변이다. 기기명령0회.
+- 다음행동하나: 사용자가 §11의Check 후 새출력경로에서정식Run을실행한다. 정식학습12,288/최종정식결과는아직없으며이번fixture최적화는성능근거가아니다. Python3.11.9/Torch2.11.0+cpu/NumPy2.4.6 환경기록. 기한1.5/6초·동결/기본/strict/experiment_ready=false/사용자변경·다른worktree보존.
+
 ## 2026-10-06 최신 작업 — 최종 강화학습 PC 계획 고정
 
 - [PPO 계획 §10](REQUEST_PPO_QUEUE_RULES_20261006.md), [기계 판독 예산](results/request_ppo_01/queue_training_plan_v1.json). 주 기한1.5/6초·동결모형을 유지하고 masked PPO-Lagrange HEAD/QUEUE만 비교한다.17출력/5value·같은가드·3학습seed·각2048episode, 총학습12,288. 정식 참조/검증/시험 포함17,936PC실행·전체상한7200초, 별도smoke최대24를 계획했다.

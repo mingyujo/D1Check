@@ -1,10 +1,10 @@
 # 요청 선택을 포함하는 강화학습 규칙
 
-2026-10-06 · REQUEST-PPO-QUEUE-RULES-02 · **설계 완료 / 구현·학습 미실행**
+2026-10-06 · REQUEST-PPO-QUEUE-RULES-02 · **PC 실행 코드·축소 검증 완료 / 정식 학습 미실행**
 
 **최신 확정 기준은 §9: 분류 도착→output_ready 1.5초, 탐지 도착→persist_complete 6초다.** 동일 서비스 요구 아래 정책 효과를 분리하는 공학적 평가 기한이며 실제 앱 SLA는 아니다. §7의 정규화 조건은 민감도 설계 기록, §8의 1초/공통120초는 철회된 주조건 제안으로 보존한다. §8 JSON을 활성 학습 계약으로 사용하지 않는다. 기존 결과의 기한·판정은 변경하지 않는다.
 
-최종 PC 수행 계획은 **§10** 및 [queue_training_plan_v1.json](results/request_ppo_01/queue_training_plan_v1.json)이다. 이번 완료는 계획 고정이며 구현/학습 Run은 시작하지 않았다. 이 JSON은 구현 소스·입력 해시가 연결된 실행 manifest를 대신하지 않는다.
+최종 PC 수행 계획은 **§10** 및 [queue_training_plan_v1.json](results/request_ppo_01/queue_training_plan_v1.json)이다. 실제 터미널 진입·진행 확인은 최신 **§11**을 따른다. 과거 절의 구현 미완료는 당시 기록이며 현재는 별도 실행 코드와 축소 검증을 완료했다. 정식 Run은 사용자가 실행할 다음 단계다.
 
 사용자 요청은 기존 PPO의 선택 범위를 다시 정하는 것이다. 이번 문서는 다음 구현의 규칙이며 실행 가능한 학습 manifest나 새 기기 계획이 아니다. 기존 [PPO 결과](results/request_ppo_01/README.md)와 [방법론 탐색](results/method_followup_01/README.md)을 보존한다. 기존 PPO가 공동 절감에 실패한 원인이 행동 공간이었다고 확정하지 않는다.
 
@@ -262,3 +262,41 @@ low/queue/burst는24요청, sustained는192요청의 기존 생성 규칙을 유
 결론은 (a) 범위가 명시된 모형상 개선 후보, (b) J/AP/응답 상충, (c) 기준과 차이 없음, (d) 제약 미충족/예산 중단 중 실제 근거에 따라 끝낸다. 개선 실패는RL전체 불가능의 증명이 아니다. 성공이어도 실기기 효과는 미확인이며 **추가 실측·후보 재보정·DQN/SAC 자동 전환은 하지 않는다.** 휴대폰 확인은 얻은 이득 크기와 미확인 비용을 판독한 뒤 별도 실행 범위로 정한다.
 
 계획 작성 검증:2026-10-06 KST, 부모HEAD `b5efc3068c7080d94ec8bab3ad9da0126821ebbf`+계획/상태 문서 미커밋 변경. JSON구문·17슬롯·예산산술·seed분할비중복·기한·동결2파일해시·문서링크·diff검사만 수행한다. 과거seed사용/trace해시검사와 실제17슬롯 callback/학습 검증은 아직 수행하지 않았다. 이번 학습/새시뮬레이션/기기명령0회.
+
+## 11. 사용자 터미널 실행과 진행 확인
+
+[현재 코드 해시·시험·축소 실행 증거](results/request_ppo_01/queue_code_verification_v1.json). 검증 부모HEAD는 `fde84b228b8bc1c730677529fb51b2deac1ec605`이며 구현/시험/문서는 미커밋 상태에서 검증하고 파일SHA로 대상을 특정했다.
+
+기존 이벤트 엔진·실측 모형·과거 PPO를 보존하고 `tools/d1_queue_ppo.py`에 새17슬롯 controller/5value/절대서비스cost/최고APcost를 연결했다. PowerShell 진입은 `tools/RUN_QUEUE_PPO.ps1`다. Python3.11.9/PyTorch2.11.0+cpu/NumPy2.4.6으로 검증했으며 과거2.3.5 환경과 구분한다. 패키지·기기설정 변경은 하지 않았다.
+
+관측85차원은 기존 PPO의 필드순서·정규화 코드 그대로이며8슬롯은 강제기아후보를 포함한 현재 후보순서다. Run 진입 시 소스/입력/환경/관측schema·계획SHA가 연결된 `run_manifest.json`을 만든다. Check는 접근 가능한 저장소의 등록JSON/CSV에서 과거seed사용과 split간trace해시를 검사한다. 외부미등록이력은 확인범위밖이며 Check가 학습·기기명령·출력claim을 만들지는 않는다.
+
+저장소의 PowerShell 터미널에서:
+
+```powershell
+Set-Location 'C:\Users\LG\AndroidStudioProjects\D1Check-model02b'
+& '.\tools\RUN_QUEUE_PPO.ps1' -Action Check
+# 기존 출력 폴더가 없는 새 경로 사용
+& '.\tools\RUN_QUEUE_PPO.ps1' -Action Run -Output 'output/queue_ppo_run_v1'
+```
+
+Check의 `CHECK_PASSED`, `device_commands:0`을 확인한다. 필요하면 `-Python 'C:\Users\LG\AppData\Local\Programs\Python\Python311\python.exe'`로 검증한 인터프리터를 명시한다. wrapper는 해당 호출에만 MKL순차/UTF8을 설정하고 종료 후 환경을 복원한다.
+
+진행은 초기/학습/검증/동결/시험/종료 단계 JSON으로 즉시 출력한다. `variant`, `seed`, `update/total_updates`, `learner_episodes`, `counts`, `energy_J`, `mean_costs`, `elapsed_s`를 읽는다. 비용4개는 긴급실패율·일반실패율·공유EFT대비AP면적/100·최고AP차이°C다. 매update마다 상태를 출력하고16update마다 checkpoint를 남긴다. 검증/참조 계산 중에는 update가 잠시 늘지 않을 수 있다.
+
+다른 터미널에서는 같은 출력 경로를 읽는다:
+
+```powershell
+Set-Location 'C:\Users\LG\AndroidStudioProjects\D1Check-model02b'
+Get-Content '.\output\queue_ppo_run_v1\journal.jsonl' -Tail 5 -Wait
+# 한 번만 최신 상태 확인
+& '.\tools\RUN_QUEUE_PPO.ps1' -Action Status -Output 'output/queue_ppo_run_v1'
+```
+
+완료 후 `FINAL_RECEIPT.json`, `summary.json`, `test.csv`, `paired_differences.csv`, `index.html`을 읽는다. 중단이면 `ORIGINAL_ERROR.json`, 마지막 `progress.json`, journal/checkpoint를 확인한다. 정상receipt 쓰기 실패는 별도 오류이며 정상exit로 숨기지 않는다. Ctrl+C는 가능한 취소receipt를 남기지만 강제종료/전원상실은 마지막 내구기록까지만 남는다. checkpoint는 보존용이며 자동재개는 없다.
+
+공유owner lock은 활성/상태미확인 실행의 중복 시작을 막는다. Hard kill 뒤 남은 lock은 원 run ID/PID/시작기록/명령과 실제 프로세스를 대조해야 하며 PID만 보고 삭제하지 않는다. 기존 출력 덮어쓰기와 자동재학습은 거절한다.
+
+검증: 관련13시험 통과. 실제 PowerShell→Python→이벤트/optimizer/동결/시험/receipt를 통과했다. 첫 축소14실행은 HEAD/QUEUE×4계열과기준 연결, 최종Smoke10실행은 정식 `formal` 함수의1학습/2검증/5비참조시험/2참조 경계다. 합계24축소PC실행이며 독립 성능평가 자료가 아니다. 최종Smoke의 학습/검증은 같은fixture를 의도적으로 사용한다. 정식12,288episode는 미실행이다.
+
+수정한 연결결함: 최고APcost를 양의 유휴기준 초과량에서 복원하면 기준 아래 온도가 올라가므로 절대 모형AP경로로 계산하도록 고쳤다. 시간별 최고값 증분합을 원모형 최고AP와 대조했다. 기존 물리계수·과거 결과는 변경하지 않았다. 미지원task/priority의명시적오류, 원래오류/취소/receipt실패 보존, 부분비용null, lane/시간/소유권도 검증했다. 실기기절감·2시간전체완주·6learner수렴은 아직 확인하지 않았다.

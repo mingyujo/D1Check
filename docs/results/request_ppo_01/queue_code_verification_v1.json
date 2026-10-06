@@ -1,0 +1,53 @@
+{
+  "parent_head": "fde84b228b8bc1c730677529fb51b2deac1ec605",
+  "working_changes": true,
+  "source_sha256": {
+    "tools/d1_queue_ppo.py": "0aea534d37465884d070d192fdfe7f863b480d4db17b85082773c9acc42ec9f1",
+    "tools/test_d1_queue_ppo.py": "368bc3de414bd66b13ba1f39cf5e8e8d9d2e4b052ca88f66c6ecdd992aa72890",
+    "tools/RUN_QUEUE_PPO.ps1": "29988d5055449cbf06e9f13247b6416d10e693dd03eae4a46d8cc764fd239f58"
+  },
+  "test_command": "$env:MKL_THREADING_LAYER=SEQUENTIAL; python -u -B -m unittest tools.test_d1_queue_ppo -v",
+  "tests_passed": 13,
+  "tests_failed": 0,
+  "completed_smoke_runs": [
+    {
+      "path": "output/request_queue_ppo_smoke_20261006_v1",
+      "status": "smoke_completed",
+      "counts": {
+        "training": 0,
+        "validation": 0,
+        "test": 0,
+        "reference": 0,
+        "smoke": 14
+      },
+      "elapsed_s": 17.828000000095926
+    },
+    {
+      "path": "output/request_queue_ppo_smoke_20261006_v2",
+      "status": "smoke_completed",
+      "counts": {
+        "training": 1,
+        "validation": 2,
+        "test": 5,
+        "reference": 2,
+        "smoke": 0
+      },
+      "elapsed_s": 11.797000000020489
+    }
+  ],
+  "smoke_total_simulations": 24,
+  "runtime": {
+    "python": "3.11.9",
+    "torch": "2.11.0+cpu",
+    "numpy": "2.4.6"
+  },
+  "frozen_sources_unchanged": true,
+  "powershell_check_passed": true,
+  "powershell_status_passed": true,
+  "formal_training_started": false,
+  "device_commands": 0,
+  "limits": [
+    "PC fixtures, no device stability or policy performance validation",
+    "Full six-learner 2h execution not yet run"
+  ]
+}

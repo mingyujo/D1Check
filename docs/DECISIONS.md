@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-06 — REQUEST-PPO-TERMINAL-05: 사용자 실행 코드와 진행 관측
+
+- 사용자직접터미널실행요청에따라기존이벤트엔진/모형을재사용한별도 `d1_queue_ppo` 경로를구현했다.17출력/5value/85관측·공유진행가드와Check/Smoke/Run/Status·journal/원자적progress/checkpoint/owner lock/receipt를연결했다. 주기한1.5/6초와정식예산은변경하지않았다.
+- 관련13시험및실제PowerShell→Python축소14+10=24실행통과. 최고APcost를양의유휴초과량에서복원하던새연결오류를절대AP경로사용으로수정했다. 기존모형/과거PPO/결과byte는보존한다. fixture최적화·단일축소동결/시험은정식학습/독립예측/정책효과증거가아니다.
+- 다음은사용자Check→정식Run이며이번에자동시작하지않았다. 정상취소/실패는원래stack과부분진행을보존한다. 강제종료/전원상실의finally보장/자동재개/실기기절감은주장하지않는다. 기기명령0,기본/strict/experiment_ready=false유지.
+
 ## 2026-10-06 — REQUEST-PPO-FINAL-PLAN-04: 유한한 HEAD/QUEUE 비교 계획
 
 - 사용자 최종계획 요청에 따라 [§10](REQUEST_PPO_QUEUE_RULES_20261006.md)과 [예산 JSON](results/request_ppo_01/queue_training_plan_v1.json)을 설계로 고정한다.1.5/6초·동결모형·17슬롯·5value의masked PPO-Lagrange를 사용하고 HEAD/QUEUE와5기준정책을비교한다. PPO최적성검증이나기기실행승인이아니다.

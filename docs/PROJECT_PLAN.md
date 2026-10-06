@@ -1,5 +1,10 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-06 사용자 직접 실행 단계
+
+- [터미널 명령 §11](REQUEST_PPO_QUEUE_RULES_20261006.md)의17슬롯 실행코드·실제진입축소검증을완료했다. Check는기기/학습명령없이소스·입력동일성/등록seed이력을확인하고Run에서새output·manifest를동결한다. Status와journal tail은읽기전용이다.
+- 정식12,288학습/17,936PC실행/7200초계획은그대로다.13관련시험·14+10축소24실행을검증에사용했으며정식Run은사용자가터미널에서시작할다음행동이다. 미완료/취소/예산중단과receipt오류는각각보존하고자동재개/기기실행을추가하지않는다.
+
 ## 2026-10-06 최종 강화학습 수행 계획
 
 - [PPO 규칙 §10](REQUEST_PPO_QUEUE_RULES_20261006.md)·[계획 JSON](results/request_ppo_01/queue_training_plan_v1.json): 공유adapter/17mask→관련경계검증·최대24smoke→소스/입력manifest동결→HEAD/QUEUE 각3seed·2048episode→검증선택·6actor동결→최종192사례→전체결과종료. 현재는 계획만 작성했고 학습/기기작업을 실행하지 않았다.
