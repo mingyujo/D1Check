@@ -1,0 +1,73 @@
+{
+  "version": "task-deadline-design-v1",
+  "status": "prospective_research_design_runner_not_connected",
+  "applies_to": "future_A24_PC_HEAD_and_QUEUE_comparison",
+  "historical_results_relabelled": false,
+  "task_role_mapping_is_assumption": true,
+  "real_app_sla_validated": false,
+  "roles": {
+    "classification_urgent": {
+      "task": "classification",
+      "model": "EfficientNet-Lite0 FLOAT32",
+      "role": "interactive_result_preparation_proxy",
+      "deadline_type": "relative_to_planned_arrival",
+      "relative_deadline_ns": 1000000000,
+      "response_event": "output_ready_ns",
+      "basis": "one_second_interaction_guideline_adopted_as_research_target_not_measured_user_SLA",
+      "display_latency_included": false
+    },
+    "detection_normal": {
+      "task": "detection",
+      "model": "EfficientDet-Lite0 FLOAT32",
+      "role": "deferrable_result_persistence",
+      "deadline_type": "common_batch_end_relative_to_common_origin",
+      "absolute_due_ns": 120000000000,
+      "relative_deadline_rule": "120000000000 - planned_arrival_ns_relative_to_common_origin",
+      "response_event": "persist_complete_ns",
+      "per_request_user_sla_ns": null,
+      "basis": "existing_common_energy_window_equal_work_completion_budget_not_gallery_app_SLA"
+    }
+  },
+  "boundaries": {
+    "first_planned_arrival_ns": 35000000000,
+    "common_energy_end_ns": 120000000000,
+    "first_arrival_to_batch_end_ns": 85000000000,
+    "common_ap_end_ns": 180000000000,
+    "equal_work_energy_requires_every_lane_available_by_ns": 120000000000,
+    "classification_arrival_plus_deadline_after_energy_end": "mark_window_incompatible_do_not_clip_or_shift",
+    "detection_arrival_at_or_after_batch_end": "reject_invalid_plan_do_not_create_zero_or_negative_deadline"
+  },
+  "late_or_failed_work": {
+    "drop_to_reduce_energy": false,
+    "extend_deadline_on_dispatch": false,
+    "denominator": "all_planned_requests",
+    "report": ["on_time", "late", "failed", "unfinished", "unknown", "maximum_wait", "backlog", "all_lane_release"]
+  },
+  "fair_comparison": {
+    "same_inputs_and_due_times_for_all_policies": true,
+    "policy_can_see_future_arrivals_or_total_count": false,
+    "policy_can_know_registered_batch_end": true,
+    "allow_legacy_fixed_2s_background_aging_silently": false,
+    "unimplemented_boundaries": ["mixed_deadline_types", "batch_progress_guard", "full_window_cost_eligibility", "PPO_and_baseline_shared_masks"]
+  },
+  "sensitivity_and_history": {
+    "normalized_deadline_design": "docs/results/request_ppo_01/deadline_design_v1.json",
+    "normalized_role": "engineering_sensitivity_only_not_product_SLA_or_primary_task_target",
+    "legacy_relative_deadline_ns": {"classification": 1500000000, "detection": 6000000000},
+    "normalized_midpoint_as_primary_recommendation": "superseded_by_explicit_task_roles"
+  },
+  "provenance": {
+    "source_head": "8cd0ccb7802746992ad20330d8b88cd20be6950e",
+    "model": "docs/results/online_policy_study_01/overnight_sustained_run01/model.json",
+    "model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "source_contract": "docs/MULTITASK_EXPERIMENT_PROTOCOL.md",
+    "synthetic_role_history": "docs/ARRIVAL_ENERGY_SYNTHETIC_RESEARCH_20260926.md",
+    "interaction_guideline": "https://www.nngroup.com/articles/response-times-3-important-limits/",
+    "background_example_not_numeric_deadline_source": "https://machinelearning.apple.com/research/recognizing-people-photos",
+    "web_read_date": "2026-10-06"
+  },
+  "new_training_runs": 0,
+  "new_simulation_runs": 0,
+  "device_commands": 0,
+  "experiment_ready": false
+}
