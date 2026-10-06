@@ -1,0 +1,221 @@
+{
+  "version": "request-ppo-feasibility-design-v2",
+  "status": "PC_READY_NOT_RUN",
+  "source_head": "435aa2533fc2704eb6a3c014f400a12afcffeea8",
+  "experiment_ready": false,
+  "device_commands": 0,
+  "independent_device_validation": false,
+  "retrospective_design": true,
+  "algorithm": "masked_PPO_Lagrange",
+  "variants": [
+    "HEAD",
+    "QUEUE"
+  ],
+  "learning_seeds": [
+    11,
+    23,
+    37
+  ],
+  "deadlines_ns": {
+    "classification_output_ready": 1500000000,
+    "detection_persist_complete": 6000000000
+  },
+  "windows_s": {
+    "energy": [
+      0,
+      120
+    ],
+    "ap": [
+      35,
+      180
+    ],
+    "all_lane_release_by": 120
+  },
+  "support": {
+    "cells": [
+      "classification_CPU_urgent",
+      "classification_GPU_urgent",
+      "detection_CPU_normal"
+    ],
+    "pair": "classification_GPU+detection_CPU",
+    "preemption": false,
+    "precision_change": false,
+    "thermal_latency_feedback": false,
+    "controller_device_energy_unknown": true
+  },
+  "actions": {
+    "request_slots": 8,
+    "outputs": 17,
+    "max_wait_s": 0.25,
+    "guard": "v1_aging_WAIT_plus_same_request_known_late_backend_when_immediate_on_time_alternative_exists"
+  },
+  "network": {
+    "observations": 85,
+    "hidden": [
+      64,
+      64
+    ],
+    "actor_outputs": 17,
+    "value_outputs": 5
+  },
+  "objective": {
+    "energy_reward": "-whole_0_120s_J/10",
+    "costs": [
+      "urgent_absolute_failure_fraction",
+      "normal_absolute_failure_fraction",
+      "positive_part(AP_area-shared_EFT_area)/100",
+      "positive_part(AP_peak-shared_EFT_peak)"
+    ],
+    "targets": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "thermal_attribution": "terminal_positive_violation_no_cross_case_cancellation",
+    "multipliers_initial": [
+      10,
+      10,
+      1,
+      1
+    ],
+    "multiplier_step": 5.0,
+    "multiplier_bounds": [
+      0,
+      100
+    ],
+    "claim": "expected_nonnegative_zero_cost_is_not_finite_training_or_unseen_case_guarantee"
+  },
+  "numeric_equality_tolerance": {
+    "J": 1e-09,
+    "C": 1e-09,
+    "Cs": 1e-09,
+    "accuracy_margin": false
+  },
+  "optimizer": {
+    "name": "Adam",
+    "lr": 0.0003,
+    "epsilon": 1e-05,
+    "epochs": 4,
+    "minibatch": 256,
+    "clip": 0.2,
+    "entropy": 0.01,
+    "value_coefficient": 0.5,
+    "gradient_clip": 0.5,
+    "target_kl": 0.03,
+    "gamma": 1.0,
+    "gae_lambda": 0.95
+  },
+  "data": {
+    "train_seed_range": [
+      610700000,
+      610700511
+    ],
+    "validation_seed_range": [
+      610710001,
+      610710004
+    ],
+    "test_seed_range": [
+      610720001,
+      610720016
+    ],
+    "primary_families": [
+      "low",
+      "sustained"
+    ],
+    "stress_families": [
+      "queue",
+      "burst"
+    ],
+    "contexts": [
+      "mean",
+      "short_context",
+      "long_context"
+    ],
+    "train_order": "seed=start+i//2; family=i%2; context=(i//2+i%2)%3",
+    "witness": "fixed_split_FIFO_GPU_classification_CPU_detection_using_frozen_context",
+    "main_admission": "all_train_and_validation_cases_require_feasible_witness",
+    "stress_use": "final_test_only_not_training_or_selection",
+    "unknown_use": "block_main_and_record_separately",
+    "input_choice": "existing_generator_and_capacity_rule_not_policy_J_AP_results",
+    "old_seen_test": "v1_is_retrospective_development_evidence_never_v2_holdout",
+    "initial_conditions": "one_unchanged_preload_history",
+    "new_physical_holdout": false
+  },
+  "baselines": [
+    "CPU_REFERENCE",
+    "SPLIT_REFERENCE",
+    "EFT_REFERENCE",
+    "SHARED_EDF",
+    "SHARED_EFT"
+  ],
+  "thermal_reference": "SHARED_EFT",
+  "selection": {
+    "order": [
+      "incomplete",
+      "absolute_service_violation_cases",
+      "service_fraction_sum",
+      "positive_thermal_violation_cases",
+      "positive_scaled_thermal_sum",
+      "mean_J",
+      "urgent_P95",
+      "normal_mean",
+      "earlier_update"
+    ],
+    "validation": "primary_only_per_case_nonworsening",
+    "freeze_all_six_before_test": true,
+    "test_action": "deterministic_masked_argmax",
+    "best_test_seed_selection": false,
+    "ineligible_actor": "diagnostic_only_never_adoption",
+    "joint_nonworsening": "J_peak_area_all_nonworse_and_one_lower_full_work_zero_service_failures",
+    "strict_joint": "J_peak_area_all_lower_full_work_zero_service_failures",
+    "accuracy_pass": null,
+    "policy_winner": null,
+    "automatic_default_promotion": false
+  },
+  "budget": {
+    "updates_per_learner": 128,
+    "batch": 8,
+    "validation_updates": [
+      0,
+      32,
+      64,
+      96,
+      128
+    ],
+    "counts": {
+      "training": 6144,
+      "validation": 720,
+      "test": 1920,
+      "reference": 1240,
+      "smoke": 0
+    },
+    "formal_simulations": 10024,
+    "test_table_rows": 2112,
+    "primary_test_cases": 96,
+    "stress_test_cases": 96,
+    "preflight_witnesses": 1240,
+    "active_limit_s": 5400,
+    "receipt_reserve_s": 120,
+    "checkpoint": "every_completed_durable_unit",
+    "fixture_simulations_max": 40,
+    "retries": 0,
+    "additional_training": 0,
+    "additional_algorithm": 0,
+    "fixture_budget_scope": "each_frozen_verification_pass_not_policy_search",
+    "expected_time_note": "v1_active5770.077s*10024/17936_linear_reference_not_guarantee"
+  },
+  "frozen_files": {
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d"
+  },
+  "run_output": "output/queue_ppo_feasible_v2",
+  "limitations": [
+    "conditional_current_model_only",
+    "same_workload_family_confounds_count_mix_interval",
+    "three_service_contexts_not_three_independent_phone_sessions",
+    "no_policy_device_overhead_measurement",
+    "finite_AP_window_not_total_physical_heat",
+    "no_thermal_service_feedback"
+  ]
+}

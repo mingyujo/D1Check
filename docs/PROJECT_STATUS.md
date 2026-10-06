@@ -1,5 +1,15 @@
 # D1Check 현재 상태
 
+## 2026-10-06 최신 — PPO v2 PC 실행 준비·최종 검토 완료
+
+- 사용자 중지 후 재개하여 최종 검토를 완료했다. 최종14시험(9.367초)·실제PowerShell Check 통과; 재개 시 검증 소스20개와v1 원파일8개SHA 불변,공유44행/최종2112분모·링크32개를 확인했다. 완료한학습/시험은반복하지않았으며 정식출력/claim은없다. 관련파일만Git에반영하고 사용자 HTML/PDF와다른worktree는보존한다.
+
+- 사용자 terminal v1은 완료됐다: 학습12288·논리계산17936·활성5770.077초. 원본 `output/queue_ppo_run_v1/resume_v1`, 이관복구2096·재계산최대39·중단미기록0–1 별도. 여섯actor 채택부적격·공동개선0·update0 두선택을 보존했다. 아래 '진행중/미실행'은 당시 이력이다.
+- [판독·계약·예산·명령](results/request_ppo_01/queue_design_v2/README.md), [화면](results/request_ppo_01/queue_design_v2/index.html). v1 결정 snapshot 부재로 WAIT 인과 미확정; 첫 실패/idle backlog만 판독했다. 제시간CPU대안이있는데늦는GPU를허용하는mask경계를PC재현해v2공유규칙으로차단했다.
+- v2 주학습low/sustained1024·검증24 모두유효한일정witness,시험주96/과부하96. 비음수열초과cost와조건별선택을맞췄다. 기한1.5/6초·모형/85관측/17슬롯보존. 정식6144학습/10024계산·90분활성상한(종료120초포함)·retry0. 새Run/Resume/claim·기기0.
+- 관련14시험·축소실제진입/정상재개 actor/CSV일치 통과. [최종대상·Check·검증기록](results/request_ppo_01/queue_design_v2/verification.json). fixture는성능/실기기근거가아니다. 원본/FAIL/기본/strict/experiment_ready=false·사용자파일/다른worktree보존.
+- 다음행동하나:사용자터미널에서 `RUN_QUEUE_PPO_V2.ps1 -Action Check` 후새v2 Run. 이번준비에서정식학습은실행하지않았다.
+
 ## 2026-10-06 최신 작업 — 정확한 Resume 구현·검증 완료
 
 - [정상정지/이관/명령 §12](REQUEST_PPO_QUEUE_RULES_20261006.md), `tools/RUN_QUEUE_PPO_RESUMABLE.ps1`. 전체진행·optimizer/RNG·참조캐시·검증선택·동결/시험 커서·소비/시간을원자적으로저장한다. Ctrl+C는단위완료후paused,Resume는기한/모형/seed와잔여활성시간예산을그대로이어간다.

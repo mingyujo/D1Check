@@ -1,0 +1,143 @@
+{
+  "status": "PC_READY_NOT_RUN",
+  "verified_at_utc": "2026-10-06 10:54:19 UTC",
+  "base_head": "435aa2533fc2704eb6a3c014f400a12afcffeea8",
+  "working_tree": "related implementation and docs uncommitted; user HTML/PDF preserved",
+  "tests": {
+    "command": "$env:MKL_THREADING_LAYER='SEQUENTIAL'; & 'C:\\Users\\LG\\AppData\\Local\\Programs\\Python\\Python311\\python.exe' -B -m unittest tools.test_d1_queue_ppo_v2 -v",
+    "passed": 14,
+    "failed": 0,
+    "elapsed_s": 9.367,
+    "final_fixture_simulations": 35,
+    "final_fixture_optimizer_training_episodes": 2,
+    "fixture_is_performance_evidence": false
+  },
+  "development_passes": [
+    {
+      "passed": 13,
+      "elapsed_s": 28.877,
+      "fixture_simulations": 35,
+      "note": "before same-request backend guard; file-handle warning subsequently fixed"
+    },
+    {
+      "passed": 14,
+      "elapsed_s": 27.963,
+      "fixture_simulations": 35,
+      "note": "guard revision before lateness and unit tolerance additions"
+    },
+    {
+      "passed": 13,
+      "failed": 1,
+      "elapsed_s": 5.912,
+      "fixture_simulations": 3,
+      "note": "numpy int64 validation-key serialization; corrected with native-float tuple; original fixture error preserved in test output"
+    }
+  ],
+  "total_development_fixture_simulations": 108,
+  "formal_training_started": false,
+  "formal_output_created": false,
+  "formal_consumption_claim_created": false,
+  "device_commands": 0,
+  "legacy_result_relabelled": false,
+  "next_action": "User starts registered v2 Check/Run from terminal; normal Ctrl+C/Resume preserves exact state.",
+  "check": {
+    "version": "queue-ppo-feasible-durable-v2",
+    "status": "CHECK_PASSED_NOT_STARTED",
+    "plan_sha256": "a4d232efcc081b92781e8eedb2bfdde75cc47477cff907be4224a20ee58f03c8",
+    "certificate_sha256": "f94dd19ab9db1bf839ad5ca91ddefa6aa6073bd16dff77fa0b7f299f08c81104",
+    "sources": {
+      "tools/d1_queue_ppo.py": "0aea534d37465884d070d192fdfe7f863b480d4db17b85082773c9acc42ec9f1",
+      "docs/results/request_ppo_01/queue_training_plan_v1.json": "cb8a91d8690c47f99e5242b4583cdb7bf80090feb82a5222b98c161aee4aee29",
+      "tools/d1_request_ppo.py": "c8282794b92c10e60b1d2a0bffed3eb8e05bf1aad5001493948a801e12e2c0a2",
+      "tools/d1_empirical_request_policy.py": "32407050fae7a0f6f7d58a19cd6f2f4eedea46ba9c8651e15363d0af496050a0",
+      "tools/d1_request_rl.py": "ac74114e28c6f44e0c3b0c9a1e5a943ad156579c8a3cfe3e015db8a50e2958a9",
+      "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9",
+      "docs/results/request_ppo_01/contract.json": "c54703ccad9ad6f33a1dd5fe681f5d438771034e12e2be3346eaa1261482df7b",
+      "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+      "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+      "tools/d1_online_policy_model.py": "a4e28dc489f221b1f85e8754b23385c60ba134af20ac701a3660293cac63156a",
+      "tools/d1_ap_preparation_memory.py": "20af3304f8386c7f6adc1df56f5c593e0fd35600ae60d2ce60a518d5c418c40d",
+      "tools/d1_arrival_explore_batch.py": "f0994f603720c606c5dc58f24c334cd2e91d3a79cc9a525094e7bcbbab86411f",
+      "tools/RUN_QUEUE_PPO.ps1": "29988d5055449cbf06e9f13247b6416d10e693dd03eae4a46d8cc764fd239f58",
+      "tools/d1_queue_ppo_resume.py": "1d40dab75ae60fc612c4564ceea999c12e04fee76b5176b21e788af9a45ca283",
+      "tools/RUN_QUEUE_PPO_RESUMABLE.ps1": "f77939adfa0d5b07992aea0f2fce9343899dce99a525c85b287beb5dcdc19746",
+      "tools/d1_queue_ppo_v2.py": "25174bee02d890876aee6c36e4a0e5150a6828c10e25e469cc8115945bcec59e",
+      "tools/d1_queue_ppo_design.py": "a93c7fbce7819946af88c34592d626bb0ea359beb18ecb170f603c013da86531",
+      "tools/RUN_QUEUE_PPO_V2.ps1": "3211f1d069dafc8ce38046c648f866f6b38175aa5bcca22f6bd69654c9a0b69d",
+      "docs/results/request_ppo_01/queue_design_v2/training_plan.json": "a4d232efcc081b92781e8eedb2bfdde75cc47477cff907be4224a20ee58f03c8",
+      "docs/results/request_ppo_01/queue_design_v2/preflight.json": "f94dd19ab9db1bf839ad5ca91ddefa6aa6073bd16dff77fa0b7f299f08c81104"
+    },
+    "input_and_certificate_sha256": "6d43ce923b5f87146b870b048e5e32e87d4bbb1cb9b3cb3f2c9d85633cf91730",
+    "admission": {
+      "train": {
+        "feasible_witness": 1024,
+        "overload_proved": 0,
+        "unknown": 0
+      },
+      "validation": {
+        "feasible_witness": 24,
+        "overload_proved": 0,
+        "unknown": 0
+      },
+      "test": {
+        "feasible_witness": 96,
+        "overload_proved": 96,
+        "unknown": 0
+      }
+    },
+    "budget": {
+      "updates_per_learner": 128,
+      "batch": 8,
+      "validation_updates": [
+        0,
+        32,
+        64,
+        96,
+        128
+      ],
+      "counts": {
+        "training": 6144,
+        "validation": 720,
+        "test": 1920,
+        "reference": 1240,
+        "smoke": 0
+      },
+      "formal_simulations": 10024,
+      "test_table_rows": 2112,
+      "primary_test_cases": 96,
+      "stress_test_cases": 96,
+      "preflight_witnesses": 1240,
+      "active_limit_s": 5400,
+      "receipt_reserve_s": 120,
+      "checkpoint": "every_completed_durable_unit",
+      "fixture_simulations_max": 40,
+      "retries": 0,
+      "additional_training": 0,
+      "additional_algorithm": 0,
+      "fixture_budget_scope": "each_frozen_verification_pass_not_policy_search",
+      "expected_time_note": "v1_active5770.077s*10024/17936_linear_reference_not_guarantee"
+    },
+    "runtime": {
+      "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+      "torch": "2.11.0+cpu",
+      "numpy": "2.4.6"
+    },
+    "seed_history_scope": "accessible registered JSON/CSV/explicit prior terminal manifests; external unregistered history unknown",
+    "device_commands": 0,
+    "policy_simulations": 0,
+    "training_updates": 0,
+    "consumption_claim_created": false
+  },
+  "resumed_final_review_utc": "2026-10-06 13:26:50 UTC",
+  "final_review": {
+    "source_hashes_verified": 20,
+    "legacy_files_unchanged": 8,
+    "shared_rows": 44,
+    "final_denominator": 2112,
+    "links_checked": 32,
+    "formal_output": false,
+    "formal_claim": false,
+    "test_source_sha256": "29c2390fe2083d00f9b18eb768de89c5e05e2cc021d9df095494f78ac9c3aa26"
+  },
+  "git_recording_stage": "precommit verification; delivery commit and remote equality reported from real Git history"
+}

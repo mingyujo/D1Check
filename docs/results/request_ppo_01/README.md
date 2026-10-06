@@ -1,8 +1,8 @@
 # 요청별 PPO-Lagrange: 신경망 학습과 분리 평가
 
-2026-10-06 최신 [정상정지·정확재개 §12](../../REQUEST_PPO_QUEUE_RULES_20261006.md): 별도resumable실행기·9관련시험/실제PowerShell Resume 검증을 추가했다. 사용자가 시작한 첫 버전은 실행 중이며 해당 소스·원본을 보존한다. 현재 정식Run의 성공/성능은 아직 미판정이다.
+2026-10-06 최신: [완료17슬롯 v1 판독과 feasible v2 준비](queue_design_v2/README.md), [공유화면](queue_design_v2/index.html). v1은학습12288/논리17936계산완료,6actor부적격/공동개선0이며원본보존. 새v2는주학습low/sustained·과부하별도판독·양의열초과cost·공유mask경계·정상재개를PC준비했다. 정식v2 Run/claim 미실행.
 
-2026-10-06 최신 요청 선택 확장: [터미널 실행·진행 확인 §11](../../REQUEST_PPO_QUEUE_RULES_20261006.md), [새 계획](queue_training_plan_v1.json). 새17슬롯/5value 실행 코드와13관련시험·24축소PC실행은 완료했다. 정식 HEAD/QUEUE 학습은 아직 미실행이며 아래 run_v2는 과거3행동 결과로 보존한다.
+이전17슬롯v1의 [터미널 §11/정상재개 §12](../../REQUEST_PPO_QUEUE_RULES_20261006.md), [원계획](queue_training_plan_v1.json)은이력이다. 완료사용자출력 `output/queue_ppo_run_v1/resume_v1`을재실행하지않는다. 아래 `run_v2/`는10/05의과거3행동PPO 결과이며새queue 설계v2와다르다.
 
 2026-10-05, REQUEST-PPO-PC-01. 사용자 지적을 반영한 별도 실험이다. 이전 표 기반96회는 구현 연결 초기 시험으로 남기며 강화학습의 효과·불가능성을 판정할 충분한 학습으로 취급하지 않는다. 기존 결과/계약/표는 덮어쓰지 않는다.
 
