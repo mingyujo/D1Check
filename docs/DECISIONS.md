@@ -1,5 +1,12 @@
 # D1Check 결정 기록
 
+## 2026-10-06 — REQUEST-PPO-FINAL-PLAN-04: 유한한 HEAD/QUEUE 비교 계획
+
+- 사용자 최종계획 요청에 따라 [§10](REQUEST_PPO_QUEUE_RULES_20261006.md)과 [예산 JSON](results/request_ppo_01/queue_training_plan_v1.json)을 설계로 고정한다.1.5/6초·동결모형·17슬롯·5value의masked PPO-Lagrange를 사용하고 HEAD/QUEUE와5기준정책을비교한다. PPO최적성검증이나기기실행승인이아니다.
+- 같은순서2048학습사례×2변형×3seed=12,288episode. 참조/검증/시험포함17,936PC시뮬레이션·정식전체7200초·기록120초예약, 구현smoke별도최대24. 기존hyperparameter를재사용하며최고AP비용승수초기1을추가한다. 서비스비용은기준실패율차이가아닌절대실패율0이다. 수렴·성공·검정력보장으로해석하지않는다.
+- 검증48사례에서각actor를고르고6actor모두최종192사례전에동결한다. 시험최선seed선택·결과후재튜닝·예산증액·DQN/SAC자동탐색0. 원래EFT와공유guard기준을구분하고조건별전체분모·기한/J/AP상충을보고한다. 절감없음/제약실패도정상연구종료다.
+- 현재는계획의정적검증만완료,새학습/시뮬레이션/실측0. 정확한관측schema/소스/입력hash·seed사용검사·callback검증을다음구현에서연결한후에만학습가능하다. 기존원자료/결과/동결/기본/strict/experiment_ready=false보존;실기기절감과정책기본채택은미확인이다.
+
 ## 2026-10-06 — REQUEST-DEADLINE-FIX-03: 동일 서비스 요구의 주 기한 확정
 
 - 사용자 요청에 따라 주 평가 기한은 **분류 예정 도착→output_ready1.5초, 탐지 예정 도착→persist_complete6초**로 유지한다. [PPO 규칙 §9](REQUEST_PPO_QUEUE_RULES_20261006.md). 현실 앱의 유일한 정답/SLA가 아니라 비교 가능한 등록 연구 조건이다. 개발 CPU 평균 응답 대비 두 작업 약9.6배라는 산술은 일관성 점검이며 원래 선정/사용자 연구 근거로 소급 주장하지 않는다.
