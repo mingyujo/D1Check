@@ -1,5 +1,12 @@
 # D1Check 결정 기록
 
+## 2026-10-07 — REQUEST-PPO-LEARNING-AMOUNT-09: 정확한 연장 조건과 상태 보존
+
+- 사용자 승인: 학습량만 연장(추가18,432episode/환경30,000/활성4시간·종료5분예약), 상태부재시초기화/전체재학습없이가능한분석을완료한다. [실제자료·판정](REQUEST_PPO_LEARNING_AMOUNT_PC_20261007.md).
+- 원 v2 ring checkpoint는 학습후 network/optimizer를지우고시험까지덮어써6개최종Adam/RNG가없다. 선택actor대체·Adam재초기화는순수학습량비교가아니므로정식연장차단. 기존소비계획의재실행차단을해제하지않는다.
+- 확정된 구현 보완: 별도 producer에서 상태를 지우기 전 최종 network/optimizer 참조를 확보하고, 마지막 검증 직후 다음 learner로 넘어가기 전에 actor+critic/Adam/승수/RNG/선택상태를 불변archive에 보존한다. 기존 실행자료를 복구하지 않는다. 두update fixture에서 정상재개 후 추가학습·archive의 optimizer/RNG 동일성을 검증했다.
+- 기존데이터의후반개선/회귀·seed차이를기록하고1,024/2,048/4,096 효과는미판정으로남긴다. 정식본학습/시험/claim0·기기0, 기본/strict/experiment_ready=false/모형/원자료는보존한다. 별도재학습은현재전체재학습0 승인범위밖이며자동실행하지않는다.
+
 ## 2026-10-07 — REQUEST-PPO-EVALUATION-08: 시간 종료 뒤 동결 정책 평가만 준비
 
 - 상태: 사용자의 이어가는 방법 요청에 따른 PC 후속 경로 구현·검증. 정식 후속Run은 사용자터미널 명시 호출까지 미실행이다. 기존 학습Run의 budget_stopped·90분예산·원본·동결actor를 보존한다.

@@ -1,0 +1,104 @@
+{
+  "version": "queue-ppo-learning-amount-review-v1",
+  "registered_utc": "2026-10-06T17:04:50.877020+00:00",
+  "question": "?? ?? ??? ?? ???? ??/????? ????? J/AP? ?????",
+  "approval": {
+    "max_additional_training_episodes": 18432,
+    "max_additional_environment_runs": 30000,
+    "max_active_seconds": 14400,
+    "termination_reserve_seconds": 300,
+    "device_commands": 0,
+    "full_retraining": 0,
+    "algorithm_changes": 0,
+    "reward_tuning": 0
+  },
+  "status": "BLOCKED_MISSING_PER_LEARNER_TERMINAL_STATES",
+  "execution_allowed": false,
+  "claim_created": false,
+  "prior_episodes_per_learner": 1024,
+  "conditional_comparison_episodes": [
+    1024,
+    2048,
+    4096
+  ],
+  "conditional_additional_updates_per_learner": 384,
+  "conditional_additional_train_seed_range": [
+    610730000,
+    610731535
+  ],
+  "conditional_train_rule": "same low/sustained generator; seed=start+i//2; family=i%2; context=(512+i//2+i%2)%3; same inputs for all six learners",
+  "conditional_reused_validation_seed_range": [
+    610710001,
+    610710004
+  ],
+  "conditional_validation_updates": [
+    160,
+    192,
+    224,
+    256,
+    288,
+    320,
+    352,
+    384,
+    416,
+    448,
+    480,
+    512
+  ],
+  "conditional_new_test_seed_range": [
+    610740001,
+    610740016
+  ],
+  "conditional_test_cases": 192,
+  "conditional_budget": {
+    "training": 18432,
+    "validation": 1728,
+    "reference": 3288,
+    "test": 4224,
+    "total_environment_runs": 27672
+  },
+  "selection": "unchanged lexicographic v2; keep prior best; freeze choices at cumulative2048/4096; test only after all selection ends",
+  "all_seeds_reported": true,
+  "lr_schedule": "constant Adam lr0.0003; no total-budget-dependent schedule; advantage normalization per batch only",
+  "original_seen_test": "retrospective control, not new holdout",
+  "extension_requires": [
+    "terminal actor and critic for each of six learners",
+    "Adam moments and step",
+    "Python/NumPy/Torch per-learner terminal RNG",
+    "constraint multipliers",
+    "selection state and original progress identity"
+  ],
+  "no_fallback_to_selected_actor": true,
+  "no_fallback_to_reinitialization": true,
+  "current_missing": [
+    "all six terminal optimizers",
+    "all six terminal RNG identities",
+    "four final training weight states; selected actors are historical best",
+    "five per-learner terminal multiplier sets"
+  ],
+  "full_retraining_if_requested_later": {
+    "learners": 6,
+    "baseline_episodes": 6144,
+    "cumulative4096_total_episodes": 24576,
+    "within_current_approval": false
+  },
+  "outcome": "comparison_incomplete_due_to_missing_state_not_RL_failure_or_convergence",
+  "fixture_budget_accounting": {
+    "actual_fixture_environment_runs": 114,
+    "actual_fixture_training_episodes": 12,
+    "actual_formal_extension_episodes": 0,
+    "actual_total_additional_training_episodes": 12,
+    "hypothetical_formal_plus_fixture_episodes": 18444,
+    "strict_combined_episode_cap_would_be_exceeded_by": 12,
+    "formal_run_allowed": false
+  },
+  "conditional_input_seed_history": {
+    "status": "NO_ACCESSIBLE_REGISTERED_CONFLICT",
+    "conflicts": [],
+    "json_files_scanned": 547,
+    "scope": "registered repository JSON/CSV and local run manifests; external unregistered inputs unknown",
+    "formal_inputs_generated": false
+  },
+  "plan_id": "PPO_LEARNING_AMOUNT_REVIEW_V1_20261007",
+  "analysis_output": "output/queue_ppo_learning_amount_review_v1"
+}

@@ -1,0 +1,157 @@
+{
+  "version": "queue-ppo-learning-amount-review-v1",
+  "extension_ready": false,
+  "status": "CHECK_BLOCKED_MISSING_STATE",
+  "reason": "EXACT_EXTENSION_BLOCKED: [{\"identity\": [\"HEAD\", 11], \"missing\": [\"network\", \"optimizer\", \"multipliers\", \"python_rng\", \"numpy_rng\", \"torch_rng\", \"terminal_update_identity\"]}, {\"identity\": [\"HEAD\", 23], \"missing\": [\"network\", \"optimizer\", \"multipliers\", \"python_rng\", \"numpy_rng\", \"torch_rng\", \"terminal_update_identity\"]}, {\"identity\": [\"HEAD\", 37], \"missing\": [\"network\", \"optimizer\", \"multipliers\", \"python_rng\", \"numpy_rng\", \"torch_rng\", \"terminal_update_identity\"]}, {\"identity\": [\"QUEUE\", 11], \"missing\": [\"network\", \"optimizer\", \"multipliers\", \"python_rng\", \"numpy_rng\", \"torch_rng\", \"terminal_update_identity\"]}, {\"identity\": [\"QUEUE\", 23], \"missing\": [\"network\", \"optimizer\", \"multipliers\", \"python_rng\", \"numpy_rng\", \"torch_rng\", \"terminal_update_identity\"]}, {\"identity\": [\"QUEUE\", 37], \"missing\": [\"network\", \"optimizer\", \"multipliers\", \"python_rng\", \"numpy_rng\", \"torch_rng\", \"terminal_update_identity\"]}]",
+  "required_learners": [
+    [
+      "HEAD",
+      11
+    ],
+    [
+      "HEAD",
+      23
+    ],
+    [
+      "HEAD",
+      37
+    ],
+    [
+      "QUEUE",
+      11
+    ],
+    [
+      "QUEUE",
+      23
+    ],
+    [
+      "QUEUE",
+      37
+    ]
+  ],
+  "available_terminal_states": 0,
+  "inventory": [
+    {
+      "file": "state_0.pt",
+      "sha256": "1b502686dfde20d235447f97c8e78f9cc8f8039f36b0a48c07c2e25ee99c164b",
+      "bytes": 155451576,
+      "status": "running",
+      "phase": "test",
+      "learner": 6,
+      "update": 128,
+      "network_present": false,
+      "optimizer_present": false,
+      "selected_only": [
+        {
+          "variant": "HEAD",
+          "seed": 11,
+          "selected_update": 128
+        },
+        {
+          "variant": "HEAD",
+          "seed": 23,
+          "selected_update": 32
+        },
+        {
+          "variant": "HEAD",
+          "seed": 37,
+          "selected_update": 0
+        },
+        {
+          "variant": "QUEUE",
+          "seed": 11,
+          "selected_update": 64
+        },
+        {
+          "variant": "QUEUE",
+          "seed": 23,
+          "selected_update": 32
+        },
+        {
+          "variant": "QUEUE",
+          "seed": 37,
+          "selected_update": 128
+        }
+      ],
+      "global_rng_scope": "after_freeze_and_final_test_not_per_learner_terminal",
+      "remaining_multiplier_identity": [
+        "QUEUE",
+        37
+      ]
+    },
+    {
+      "file": "state_1.pt",
+      "sha256": "a31a28e813f1e243ca21e60ed6e882bc7d15f4e0e5865e127e5af8c92135c400",
+      "bytes": 155451768,
+      "status": "budget_stopped",
+      "phase": "test",
+      "learner": 6,
+      "update": 128,
+      "network_present": false,
+      "optimizer_present": false,
+      "selected_only": [
+        {
+          "variant": "HEAD",
+          "seed": 11,
+          "selected_update": 128
+        },
+        {
+          "variant": "HEAD",
+          "seed": 23,
+          "selected_update": 32
+        },
+        {
+          "variant": "HEAD",
+          "seed": 37,
+          "selected_update": 0
+        },
+        {
+          "variant": "QUEUE",
+          "seed": 11,
+          "selected_update": 64
+        },
+        {
+          "variant": "QUEUE",
+          "seed": 23,
+          "selected_update": 32
+        },
+        {
+          "variant": "QUEUE",
+          "seed": 37,
+          "selected_update": 128
+        }
+      ],
+      "global_rng_scope": "after_freeze_and_final_test_not_per_learner_terminal",
+      "remaining_multiplier_identity": [
+        "QUEUE",
+        37
+      ]
+    }
+  ],
+  "original_receipt": {
+    "version": "queue-ppo-feasible-durable-v2",
+    "status": "budget_stopped",
+    "phase": "test",
+    "counts": {
+      "training": 6144,
+      "validation": 720,
+      "test": 1040,
+      "reference": 1152,
+      "smoke": 0
+    },
+    "elapsed_s": 5319.094000000041,
+    "pause_intervals": [],
+    "original_error": null,
+    "stop_reason": {
+      "type": "ActiveBudgetExceeded",
+      "message": "active budget; reserve receipt time",
+      "phase": "test"
+    },
+    "device_commands": 0,
+    "experiment_ready": false
+  },
+  "claim_created": false,
+  "additional_training_episodes": 0,
+  "additional_environment_runs": 0,
+  "device_commands": 0
+}

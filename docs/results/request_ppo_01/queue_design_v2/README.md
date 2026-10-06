@@ -1,5 +1,7 @@
 # PPO v2 — 처리 가능한 주 실험과 과부하 평가
 
+2026-10-07 최신: 후속 평가까지 전체192조건/2,112행이 완료됐다. 기존 원 실행은budget_stopped로보존한다. [학습량 분석·정확한 연장 차단 근거](../queue_learning_amount_v1/README.md), [6-seed 추세와 실제소비](../queue_learning_amount_v1/index.html). 원 checkpoint는 각 실행의 최종Adam/RNG를보존하지않아 선택actor를이어학습하지않았다. 추가본학습/새시험/claim0이며 아래 실행안내는이력이다.
+
 ## 2026-10-07 최신: 동결 정책의 남은 평가만 이어가기
 
 원본 `output/queue_ppo_feasible_v2`는 **budget_stopped**다. 학습6144·검증720은 완료했고 최종192조건 중104조건(1144행)을 저장했다. 원래 학습 실행과 90분 상한을 보존한다. 기존 학습 Run/Resume를 다시 호출하지 않는다.

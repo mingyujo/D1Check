@@ -1,5 +1,7 @@
 # 요청별 PPO-Lagrange: 신경망 학습과 분리 평가
 
+2026-10-07 최신: [v2 학습량 분석·상태 누락](queue_learning_amount_v1/README.md), [6-seed 추세/그림5개](queue_learning_amount_v1/index.html). v2 학습6,144·192조건/2,112행 평가 완료, 검증 적격3개/공동개선0. 정확한1,024→2,048→4,096 연장은 최종Adam/RNG 부재로 차단했으며 추가본학습·새시험·claim0이다. 기존 정체를 수렴/RL 일반 실패로 판정하지 않는다. 아래 미실행/준비 문구는당시이력이다.
+
 2026-10-06 최신: [완료17슬롯 v1 판독과 feasible v2 준비](queue_design_v2/README.md), [공유화면](queue_design_v2/index.html). v1은학습12288/논리17936계산완료,6actor부적격/공동개선0이며원본보존. 새v2는주학습low/sustained·과부하별도판독·양의열초과cost·공유mask경계·정상재개를PC준비했다. 정식v2 Run/claim 미실행.
 
 이전17슬롯v1의 [터미널 §11/정상재개 §12](../../REQUEST_PPO_QUEUE_RULES_20261006.md), [원계획](queue_training_plan_v1.json)은이력이다. 완료사용자출력 `output/queue_ppo_run_v1/resume_v1`을재실행하지않는다. 아래 `run_v2/`는10/05의과거3행동PPO 결과이며새queue 설계v2와다르다.

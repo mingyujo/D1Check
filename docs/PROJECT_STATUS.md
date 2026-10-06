@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-10-07 최신 — PPO 학습량 진단 완료·정확한 연장은 상태 누락으로 차단
+
+- 기존 학습6,144/검증720, 별도 후속평가까지192조건/2,112행 완료를 실제 receipt로 확인했다. 원 실행 budget_stopped(5,319.094초)·후속평가 completed(205.984초)와 동결6정책을 보존한다. 활성 PPO/owner는없다.
+- [학습량 보고서](REQUEST_PPO_LEARNING_AMOUNT_PC_20261007.md), [CSV·그림5개](results/request_ppo_01/queue_learning_amount_v1/index.html). 각 실행1,024에피소드/128update, 기록된 학습rollout 총1,091,211·optimizer 표본제시4,364,844. 환경 전체transition은미기록. 일부후반개선/일부회귀가있어 학습량부족·수렴을확정하지않는다.
+- 두 원 checkpoint 모두 test 단계에서 network/optimizer가None이다. 최종 Adam/RNG가6개모두없고, 선택 actor4개는최종학습weights도아니다. 사용자 지시의 정확한 연장 조건에 따라 본학습/새시험/claim0. 처음부터재학습이나최우수actor대체를하지않았다.
+- 별도 최종상태 보존 구현·누락차단·정상재개/추가학습/optimizer/RNG일치·공유그림재현 검증4개 통과. fixture환경114/학습12에피소드, 분석프로세스49.562초. 원자료/모형/FAIL/기본/strict/experiment_ready=false·사용자파일/다른worktree 보존. [검증·정확한소비](results/request_ppo_01/queue_learning_amount_v1/verification.json).
+- 다음 행동 하나: 최종상태를 보존하는 별도6-seed 비교의 재학습 범위를 새 승인 예산으로 결정. 현재 전체재학습0 승인과 상태부재로 실행가능 연장계획은없다. 아래 준비/진행상태는이력이다.
+
 ## 2026-10-07 최신 — PPO v2 학습 완료·평가 시간 종료와 후속 경로
 
 - 사용자 Run의 학습6144/검증720 완료, 최종평가104/192조건 저장 후 budget_stopped로 종료(5319.094초,오류없음). 원본 `output/queue_ppo_feasible_v2`와 동결6actor를 보존한다. 3actor는 검증 적격이며 최종효과 미확정, 기존 Run/Resume 재호출 금지.

@@ -1,0 +1,103 @@
+{
+  "status": "ANALYSIS_COMPLETED_EXTENSION_BLOCKED",
+  "verified_utc": "2026-10-06T17:23:17.653878+00:00",
+  "base_head": "c51746238cebb10387524a479ce9d8aa5f7c0d87",
+  "working_tree": "related implementation/docs/results uncommitted; user HTML/PDF preserved",
+  "test_command": "python -B -m unittest tools.test_d1_queue_ppo_learning_amount -v",
+  "tests_passed": 4,
+  "tests_failed": 0,
+  "elapsed_s": 18.172,
+  "final_fixture_environment_runs": 38,
+  "final_fixture_training_episodes": 4,
+  "development_passes": [
+    {
+      "passed": 2,
+      "failed": 1,
+      "elapsed_s": 19.628,
+      "environment_runs": 38,
+      "training_episodes": 4,
+      "note": "fixture batch1 requires episodes2, not16; assertion corrected to actual contract"
+    },
+    {
+      "passed": 3,
+      "failed": 0,
+      "elapsed_s": 17.742,
+      "environment_runs": 38,
+      "training_episodes": 4
+    },
+    {
+      "passed": 1,
+      "failed": 0,
+      "elapsed_s": 0.018,
+      "environment_runs": 0,
+      "note": "shared CSV missing values remain null"
+    },
+    {
+      "passed": 4,
+      "failed": 0,
+      "elapsed_s": 18.172,
+      "environment_runs": 38,
+      "training_episodes": 4,
+      "final": true
+    }
+  ],
+  "actual_total_fixture_environment_runs": 114,
+  "actual_total_fixture_training_episodes": 12,
+  "formal_extension_episodes": 0,
+  "formal_new_test_runs": 0,
+  "execution_claim_created": false,
+  "device_commands": 0,
+  "original_source_hashes_preserved": true,
+  "model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+  "initial_sha256": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+  "sources": {
+    "tools/d1_queue_ppo_learning_amount.py": "5369d968ca512280830c137dca62e3410ac01944f57a1d1e91a8f36a0a3ded99",
+    "tools/test_d1_queue_ppo_learning_amount.py": "c43d12a3cc3568186a63086a2312b4daf65b46772aacbbbf71a15a36cc2168a6"
+  },
+  "shared_reproduction": {
+    "action": "PlotShared",
+    "raw_checkpoints_required": false,
+    "unchanged_figures_identical_bytes": [
+      "01_transition_validation.png",
+      "02_episode_validation.png",
+      "04_EFT_tradeoff.png"
+    ],
+    "figures_relabelled_only": [
+      "03_seed_results.png",
+      "05_consumption.png"
+    ],
+    "new_learning_calls": 0
+  },
+  "png_sha256": {
+    "01_transition_validation.png": "64cec79cebc270e6cc1b72594d7cb3bdefa37d60529aed680cc6a9a71d77ff2f",
+    "02_episode_validation.png": "7a58c5c4f40503d5245531490d70189a3645f0c942922f80ed027075f66d95e3",
+    "03_seed_results.png": "a839177ee0d4694f87210ab59f63490c47e0ae238787e04bf4bd2d5c32d020ea",
+    "04_EFT_tradeoff.png": "24178e62b9504d38d07f5285364d3369db98728fd867fddb80d23379cdfa186c",
+    "05_consumption.png": "a62adf40b65bc7c955bfbffce070120f0f300cf4cbae5b4500d5a38386793991"
+  },
+  "analysis_receipt": {
+    "status": "analysis_completed_extension_blocked",
+    "elapsed_s": 49.56200000003446,
+    "training_updates": 0,
+    "environment_runs": 0,
+    "device_commands": 0,
+    "claim_created": false,
+    "original_inputs_preserved": true,
+    "analyzed_training_updates": 768,
+    "analyzed_final_table_rows": 2112
+  },
+  "experiment_ready": false,
+  "limitations": [
+    "full environment transition totals unrecorded",
+    "exact new learning comparison not executable with preserved states",
+    "fixture correctness is not empirical policy effectiveness",
+    "post-hoc old validation/test analysis; future test inputs not executed"
+  ],
+  "analysis_contract_sha256": "00f8c9abc4fcbaf0ec64873e7c3a5dee1a9b3bd6c88f98e78dfa53e21f4aa1f0",
+  "csv_sha256": {
+    "policy_results.csv": "5ac665059198028400639f2babbbad1ee1af925186ab7bdfe7772d0f7c9661d7",
+    "seed_accounting.csv": "e845bf7e1ee35152d6f1ba279d86d26981440b45dcb93225e517e20f29d06238",
+    "training_curve.csv": "d5c6db7a05fa0fcec5680dc2361e99fa95e8eca809ddb0887e3941afc75af194",
+    "validation_curve.csv": "efc4af04d755757e94473f974fbf159262d06f5a43f316e312cab20d9ad23379"
+  }
+}
