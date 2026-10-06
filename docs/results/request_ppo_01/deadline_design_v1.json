@@ -1,0 +1,103 @@
+{
+  "version": "deadline-design-v1",
+  "status": "design_only_runner_not_connected",
+  "references": {
+    "classification": {
+      "priority": "urgent",
+      "cell": "classification_CPU_urgent",
+      "contexts": [
+        {
+          "context": "CPU_URGENT_ONLINE_V1",
+          "response_ns": 156179931.1041667,
+          "lane_ns": 165216275.6875
+        }
+      ],
+      "reference_ns": 157000000,
+      "unrounded_response_ns": 156179931.1041667,
+      "reference_kind": "maximum_of_development_context_means_not_quantile"
+    },
+    "detection": {
+      "priority": "normal",
+      "cell": "detection_CPU_normal",
+      "contexts": [
+        {
+          "context": "B2_PARALLEL_ONLINE_V1",
+          "response_ns": 618790911.8333333,
+          "lane_ns": 621013764.5624999
+        },
+        {
+          "context": "B2_SERIAL_ONLINE_V1",
+          "response_ns": 620151684.2916666,
+          "lane_ns": 622421541.7083333
+        },
+        {
+          "context": "CPU_URGENT_ONLINE_V1",
+          "response_ns": 619471734.0416667,
+          "lane_ns": 621775378.2916667
+        }
+      ],
+      "reference_ns": 621000000,
+      "unrounded_response_ns": 620151684.2916666,
+      "reference_kind": "maximum_of_development_context_means_not_quantile"
+    }
+  },
+  "scenarios": [
+    {
+      "id": "normalized_1",
+      "relative_deadline_ns": {
+        "classification": 314000000,
+        "detection": 2484000000
+      },
+      "response_multipliers": {
+        "classification": 2,
+        "detection": 4
+      },
+      "interpretation": "engineering_sensitivity_not_user_SLA"
+    },
+    {
+      "id": "normalized_2",
+      "relative_deadline_ns": {
+        "classification": 628000000,
+        "detection": 4968000000
+      },
+      "response_multipliers": {
+        "classification": 4,
+        "detection": 8
+      },
+      "interpretation": "engineering_sensitivity_not_user_SLA"
+    },
+    {
+      "id": "normalized_3",
+      "relative_deadline_ns": {
+        "classification": 1256000000,
+        "detection": 9936000000
+      },
+      "response_multipliers": {
+        "classification": 8,
+        "detection": 16
+      },
+      "interpretation": "engineering_sensitivity_not_user_SLA"
+    },
+    {
+      "id": "legacy_1500_6000",
+      "relative_deadline_ns": {
+        "classification": 1500000000,
+        "detection": 6000000000
+      },
+      "response_multipliers": {
+        "classification": 9.604306964379125,
+        "detection": 9.67505233312905
+      },
+      "interpretation": "historical_comparison_not_new_validation"
+    }
+  ],
+  "user_sla": null,
+  "precision_claim": null,
+  "experiment_ready": false,
+  "multiplier_basis": "preregistered_factor_two_sensitivity_choice_not_measured_tolerance",
+  "source": {
+    "model": "docs/results/online_policy_study_01/overnight_sustained_run01/model.json",
+    "sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "producer_sha256": "35cd459a6b85a2321f2e3ea35c6601656de268e36cf7fde41a804523465198db"
+  }
+}
