@@ -139,5 +139,34 @@
     "formal_claim": false,
     "test_source_sha256": "29c2390fe2083d00f9b18eb768de89c5e05e2cc021d9df095494f78ac9c3aa26"
   },
-  "git_recording_stage": "precommit verification; delivery commit and remote equality reported from real Git history"
+  "git_recording_stage": "precommit verification; delivery commit and remote equality reported from real Git history",
+  "review_amendment": {
+    "verified_at_utc": "2026-10-06T13:46:05.725128+00:00",
+    "base_head": "a86ce552fb700a41c9f4b11cdeb89db7423cbd17",
+    "working_tree": "review amendments uncommitted; user HTML/PDF preserved",
+    "command": "git archive HEAD tools docs; overlay reviewed runner/tests; python -B -m unittest tools.test_d1_queue_ppo_v2 -v",
+    "isolated_tracked_checkout": true,
+    "legacy_output_present": false,
+    "tests_passed": 15,
+    "test_body_elapsed_s": 44.625,
+    "process_elapsed_s": 52.5,
+    "fixture_simulations": 39,
+    "fixture_optimizer_training_episodes": 4,
+    "formal_training_started": false,
+    "formal_consumption_claim_created": false,
+    "device_commands": 0,
+    "check_status": "CHECK_PASSED_NOT_STARTED",
+    "plan_sha256": "a4d232efcc081b92781e8eedb2bfdde75cc47477cff907be4224a20ee58f03c8",
+    "sources": {
+      "tools/d1_queue_ppo_v2.py": "292496e3d6dc921d79d935f3ec25bade2d3f63f6b4f381e4f7c9c6d3b9bb14f4",
+      "tools/test_d1_queue_ppo_v2.py": "5014f13b29aa150938ede0e4d69176f0f9ecd829eada0f53dc259a7057a85c96"
+    },
+    "changes": [
+      "budget checks before each test policy and validation simulation",
+      "reserved budget exhaustion retains partial state and stop reason; unrelated TimeoutError preserved",
+      "two-update fixture pauses after update1 and verifies subsequent training byte equality",
+      "test original-source hashes read from shared verification, no legacy output dependency"
+    ],
+    "test_output": "test_capacity_failure_is_not_witness_success (tools.test_d1_queue_ppo_v2.DesignTests.test_capacity_failure_is_not_witness_success) ... ok\ntest_check_never_calls_engine_optimizer_or_creates_claim (tools.test_d1_queue_ppo_v2.DesignTests.test_check_never_calls_engine_optimizer_or_creates_claim) ... ok\ntest_consumed_output_owner_and_plan_claim_block_check (tools.test_d1_queue_ppo_v2.DesignTests.test_consumed_output_owner_and_plan_claim_block_check) ... ok\ntest_controller_observation_and_action_preserve_causal_boundary (tools.test_d1_queue_ppo_v2.DesignTests.test_controller_observation_and_action_preserve_causal_boundary) ... ok\ntest_energy_and_service_rewards_preserved (tools.test_d1_queue_ppo_v2.DesignTests.test_energy_and_service_rewards_preserved) ... ok\ntest_idle_backlog_is_observation_not_reconstructed_cause (tools.test_d1_queue_ppo_v2.DesignTests.test_idle_backlog_is_observation_not_reconstructed_cause) ... ok\ntest_invalid_inputs_and_primary_overload_are_blocked (tools.test_d1_queue_ppo_v2.DesignTests.test_invalid_inputs_and_primary_overload_are_blocked) ... ok\ntest_known_late_gpu_removed_only_with_immediate_on_time_alternative (tools.test_d1_queue_ppo_v2.DesignTests.test_known_late_gpu_removed_only_with_immediate_on_time_alternative) ... ok\ntest_legacy_readout_retains_all_failures_and_update_zero (tools.test_d1_queue_ppo_v2.DesignTests.test_legacy_readout_retains_all_failures_and_update_zero) ... ok\ntest_plan_budget_split_hash_and_unchanged_models (tools.test_d1_queue_ppo_v2.DesignTests.test_plan_budget_split_hash_and_unchanged_models) ... ok\ntest_thermal_costs_cannot_cancel_and_selection_matches (tools.test_d1_queue_ppo_v2.DesignTests.test_thermal_costs_cannot_cancel_and_selection_matches) ... ok\ntest_witness_keeps_lane_tail_and_supported_joint (tools.test_d1_queue_ppo_v2.DesignTests.test_witness_keeps_lane_tail_and_supported_joint) ... ok\ntest_budget_no_reset_partial_error_and_receipt_preserves_original (tools.test_d1_queue_ppo_v2.EntryTests.test_budget_no_reset_partial_error_and_receipt_preserves_original) ... ok\ntest_budget_stops_between_test_policies_preserving_partial_results (tools.test_d1_queue_ppo_v2.EntryTests.test_budget_stops_between_test_policies_preserving_partial_results) ... ok\ntest_real_training_entry_and_exact_pause_resume_fixture (tools.test_d1_queue_ppo_v2.EntryTests.test_real_training_entry_and_exact_pause_resume_fixture) ... ok\n\n----------------------------------------------------------------------\nRan 15 tests in 44.625s\n\nOK\n"
+  }
 }

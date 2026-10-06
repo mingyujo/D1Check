@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-06 최신 — PPO v2 검토 보완 완료
+
+- 평가 정책별·검증 계산 직전 시간 예산 확인을 추가했다. 예약 경계는 `budget_stopped`로 종료하며 완료한 부분 행·소비·stop_reason을 보존하고 재개를 차단한다. 일반 timeout과 후속 receipt 오류는 원래 실패로 구분한다.
+- 두 업데이트 중 첫 업데이트 뒤 중지·재개하여 추가 학습 후 actor/CSV byte 일치를 검증했다. 공유 테스트의 Git 밖 v1 output 의존성을 제거했다. Git 추적 파일만 있는 임시 checkout에서 15시험 통과(44.625초, fixture39계산), 실제 PowerShell Check 통과. [보완 검증 기록](results/request_ppo_01/queue_design_v2/verification.json).
+- 계획 SHA·모형·입력·정식 예산은 동일하다. 정식 학습·기기 명령·소비 claim 0. 사용자 파일과 다른 worktree를 보존했다. 다음 행동: 사용자 터미널에서 [v2 Check/Run](results/request_ppo_01/queue_design_v2/README.md).
+
 ## 2026-10-06 최신 — PPO v2 PC 실행 준비·최종 검토 완료
 
 - 사용자 중지 후 재개하여 최종 검토를 완료했다. 최종14시험(9.367초)·실제PowerShell Check 통과; 재개 시 검증 소스20개와v1 원파일8개SHA 불변,공유44행/최종2112분모·링크32개를 확인했다. 완료한학습/시험은반복하지않았으며 정식출력/claim은없다. 관련파일만Git에반영하고 사용자 HTML/PDF와다른worktree는보존한다.

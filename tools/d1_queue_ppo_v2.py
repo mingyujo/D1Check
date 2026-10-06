@@ -22,6 +22,10 @@ from tools import d1_queue_ppo_design as design
 VERSION = 'queue-ppo-feasible-durable-v2'
 
 
+class ActiveBudgetExceeded(TimeoutError):
+    """Reserved termination boundary; unrelated timeouts remain original errors."""
+
+
 def load_plan():
     plan=json.loads(design.PLAN.read_text(encoding='utf8'))
     if plan!=design.specification(): raise ValueError('v2 contract/code mismatch')
@@ -269,6 +273,7 @@ class Session(durable.Session):
             return
         if phase=='validate':
             variant,seed=cfg['learners'][s['learner']];case=cfg['validation'][s['validation_index']];self.admit(case)
+            self.budget()
             before=q.prev.model_hash(self.network);row=self.episode(case,variant,self.network)[0];ref=self.reference(case)
             if before!=q.prev.model_hash(self.network): raise ValueError('validation mutated actor')
             s['current_validation'].append((row,ref));s['counts']['validation']+=1
@@ -287,13 +292,16 @@ class Session(durable.Session):
             case=cfg['test'][s['test_index']];ref=self.reference(case)
             for policy in s['plan']['baselines']:
                 if policy=='SHARED_EFT': row=ref;result=s['ref_ledgers'][tuple(case)]
-                else: row,result,_,_=self.episode(case,policy);s['counts']['test']+=1
+                else:
+                    self.budget()
+                    row,result,_,_=self.episode(case,policy);s['counts']['test']+=1
                 s['test_rows'].append(dict(trace_seed=case[0],family=case[1],context=case[2],policy=policy,**row))
                 s['test_ledgers'].append(dict(case=case,policy=policy,ledger=result['ledger'],decisions=result.get('decisions'),
                     reference_decisions_recorded=policy=='SHARED_EFT'))
             for item in s['freeze']:
                 path=self.folder/item['filename']
                 if q.p.digest(path)!=item['sha256']: raise ValueError('frozen actor drift')
+                self.budget()
                 row,result,_,_=self.episode(case,item['variant'],q.load_actor(path));s['counts']['test']+=1
                 policy=f'{item["variant"]}_seed{item["seed"]}'
                 s['test_rows'].append(dict(trace_seed=case[0],family=case[1],context=case[2],policy=policy,**row))
@@ -314,16 +322,21 @@ class Session(durable.Session):
 
     def budget(self):
         c=self.s['config']
-        if self.elapsed()>=c['active_limit_s']-c['receipt_reserve_s']:raise TimeoutError('active budget; reserve receipt time')
+        if self.elapsed()>=c['active_limit_s']-c['receipt_reserve_s']:raise ActiveBudgetExceeded('active budget; reserve receipt time')
 
     def execute(self,pause_after=None):
         units=0;error=None
         try:
             self.save()
             while self.s['phase']!='done':
-                try:self.budget()
-                except TimeoutError:self.s['status']='budget_stopped';self.save();break
-                self.step();units+=1;self.save()
+                try:
+                    self.budget()
+                    self.step()
+                except ActiveBudgetExceeded as exc:
+                    self.s['status']='budget_stopped'
+                    self.s['stop_reason']=dict(type=type(exc).__name__,message=str(exc),phase=self.s['phase'])
+                    self.save();break
+                units+=1;self.save()
                 if self.pause_requested or (pause_after is not None and units>=pause_after):self.s['status']='paused';self.save();break
             if self.s['phase']=='done':self.s['status']='completed';self.save()
         except BaseException as exc:
@@ -332,6 +345,7 @@ class Session(durable.Session):
         finally:
             receipt=dict(version=VERSION,status=self.s['status'],phase=self.s['phase'],counts=self.s['counts'],
                 elapsed_s=self.elapsed(),pause_intervals=self.s['pause_intervals'],original_error=error,
+                stop_reason=self.s.get('stop_reason'),
                 device_commands=0,experiment_ready=False)
             later_error=None
             try:

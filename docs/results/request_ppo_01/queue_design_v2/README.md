@@ -74,6 +74,10 @@ v2 plan SHA별 소비 claim은 **정식 Run 때만** 새로 생성한다. 완료
 
 ## 검증·후속 실행
 
+2026-10-06 후속 검토 보완: Git 추적 파일만 있는 임시 checkout(과거 output 없음)에서 관련15시험 통과, 실제 PowerShell Check 통과. 두 업데이트 중 첫 업데이트 뒤 정상 중지·재개하여 **추가 학습 이후** actor/CSV byte 일치를 검사했다. 공유 테스트는 아래 기존 verification.json의 원래 소스 해시를 사용하므로 Git 밖 과거 실행 폴더가 필요하지 않다.
+
+각 평가 정책 계산과 검증 계산 직전에 시간 예산을 확인한다. 예약 경계 도달 시 `budget_stopped`·부분 결과·실제 소비·stop_reason을 저장하고 같은 실행의 Resume를 차단한다. 일반 TimeoutError는 이 예약 중단과 구분해 원래 stack을 보존한다. 진행 중인 단일 계산/native 호출을 강제로 종료하는 보장은 없으며, 종료·저장 비용과 예약시간은 실제로 소비된다. 예산·모형·입력·목적·계획 SHA는 바꾸지 않았다. 정식 Run/claim은 생성하지 않았다.
+
 최종 관련14시험과 실제PowerShell Check가 통과했다. fixture의 실제학습→검증→동결→주/과부하시험→receipt·두 경로 actor/CSV byte일치·원래오류와receipt오류 분리를 검사했다. Check는 정책엔진/optimizer 호출금지 mock와 파일목록/claim 부재로 확인했다. 개발 중 선언필드 context 중복과 검증키numpy정수 JSON 직렬화 문제는 PC에서 수정했다. 개발fixture와 정식학습·실기기 결과는 구분한다. 정확한 최종 대상·명령/시각·PC 소비는 verification.json을 따른다.
 
 ```powershell

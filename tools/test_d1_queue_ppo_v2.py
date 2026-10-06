@@ -58,8 +58,9 @@ class DesignTests(unittest.TestCase):
         self.assertFalse({s for s,_,_ in train}&{s for s,_,_ in test})
         self.assertEqual(sum(plan['budget']['counts'].values()),10024)
         self.assertEqual(plan['budget']['counts']['training'],6*128*8)
-        original=json.loads((v.q.p.ROOT/'output/queue_ppo_run_v1/resume_v1/freeze_before_test.json').read_text())
-        for name,sha in original['source_hashes'].items():self.assertEqual(v.q.p.digest(v.q.p.ROOT/name),sha,name)
+        evidence=json.loads((d.BUNDLE/'verification.json').read_text(encoding='utf8'))
+        original=evidence['check']['sources']
+        for name in v.q.hashes():self.assertEqual(v.q.p.digest(v.q.p.ROOT/name),original[name],name)
 
     def test_check_never_calls_engine_optimizer_or_creates_claim(self):
         before={p.name for p in d.BUNDLE.iterdir()};claim=v.claim_path()
@@ -147,14 +148,20 @@ class DesignTests(unittest.TestCase):
 
 class EntryTests(unittest.TestCase):
     def test_real_training_entry_and_exact_pause_resume_fixture(self):
-        with tempfile.TemporaryDirectory() as root,redirect_stdout(io.StringIO()):
+        cfg=v.fixture_config()
+        cfg.update(train=cfg['train']*2,updates=2,validation_updates=[1,2],
+            expected=dict(training=2,validation=3,test=10,reference=4,smoke=0))
+        with tempfile.TemporaryDirectory() as root,redirect_stdout(io.StringIO()),patch.object(v,'fixture_config',return_value=cfg):
             lock=Path(root)/'fixture.lock'
             full=v.Session(Path(root)/'full',fixture=True,lock=lock)
-            self.assertEqual(full.execute(),'completed');self.assertEqual(sum(full.s['counts'].values()),17)
+            self.assertEqual(full.execute(),'completed');self.assertEqual(sum(full.s['counts'].values()),19)
             part=v.Session(Path(root)/'part',fixture=True,lock=lock)
             self.assertEqual(part.execute(pause_after=3),'paused')
+            self.assertEqual(part.s['update'],1)
+            self.assertIsNotNone(part.s['optimizer'])
             resumed=v.Session(part.folder,v.durable.read_state(part.folder),lock=lock)
             self.assertEqual(resumed.execute(),'completed')
+            self.assertEqual(resumed.s['update'],2)
             self.assertEqual(full.s['test_rows'],resumed.s['test_rows'])
             self.assertTrue(any(x['total_lateness_s']>0 for x in full.s['test_rows'] if x['family']=='queue'))
             self.assertEqual((full.folder/'QUEUE_seed101.json').read_bytes(),(part.folder/'QUEUE_seed101.json').read_bytes())
@@ -167,6 +174,29 @@ class EntryTests(unittest.TestCase):
             with self.assertRaises(ValueError):v.durable.read_state(part.folder)
             with self.assertRaises(FileExistsError):v.Session(part.folder,fixture=True,lock=lock)
 
+    def test_budget_stops_between_test_policies_preserving_partial_results(self):
+        with tempfile.TemporaryDirectory() as root,redirect_stdout(io.StringIO()):
+            s=v.Session(Path(root)/'test-budget',fixture=True,lock=Path(root)/'lock')
+            case=s.s['config']['test'][0]
+            row=dict(planned=24)
+            s.s.update(phase='test',freeze=[],refs={tuple(case):row},
+                ref_ledgers={tuple(case):dict(ledger=[],decisions=[])})
+            expired=[False];calls=[]
+            def elapsed():return 781. if expired[0] else 0.
+            def episode(*args):
+                calls.append(args[1]);expired[0]=True
+                return row,dict(ledger=[],decisions=[]),None,None
+            with patch.object(s,'elapsed',side_effect=elapsed),patch.object(s,'episode',side_effect=episode):
+                self.assertEqual(s.execute(),'budget_stopped')
+            self.assertEqual(calls,['CPU_REFERENCE'])
+            self.assertEqual(s.s['counts']['test'],1)
+            self.assertEqual(len(s.s['test_rows']),1)
+            receipt=json.loads((s.folder/json.loads((s.folder/'LATEST_RECEIPT.json').read_text())['file']).read_text())
+            self.assertEqual(receipt['stop_reason']['type'],'ActiveBudgetExceeded')
+            self.assertIsNone(receipt['original_error'])
+            self.assertFalse(s.lock.exists())
+            with self.assertRaises(ValueError):v.durable.read_state(s.folder)
+
     def test_budget_no_reset_partial_error_and_receipt_preserves_original(self):
         with tempfile.TemporaryDirectory() as root,redirect_stdout(io.StringIO()):
             s=v.Session(Path(root)/'budget',fixture=True,lock=Path(root)/'lock')
@@ -177,8 +207,8 @@ class EntryTests(unittest.TestCase):
             def fail(path,obj):
                 if Path(path).name.startswith('RECEIPT_') and Path(path).name!='RECEIPT_ERROR.json':raise OSError('receipt fixture')
                 original(path,obj)
-            with patch.object(failed,'step',side_effect=RuntimeError('original fixture')),patch.object(v.q,'atomic',side_effect=fail):
-                with self.assertRaisesRegex(RuntimeError,'original fixture'):failed.execute()
+            with patch.object(failed,'step',side_effect=TimeoutError('original fixture')),patch.object(v.q,'atomic',side_effect=fail):
+                with self.assertRaisesRegex(TimeoutError,'original fixture'):failed.execute()
             evidence=json.loads((failed.folder/'RECEIPT_ERROR.json').read_text())
             self.assertEqual(evidence['original_error']['message'],'original fixture')
             self.assertFalse(failed.lock.exists())
