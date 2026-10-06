@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-06 최신 작업 — 정확한 Resume 구현·검증 완료
+
+- [정상정지/이관/명령 §12](REQUEST_PPO_QUEUE_RULES_20261006.md), `tools/RUN_QUEUE_PPO_RESUMABLE.ps1`. 전체진행·optimizer/RNG·참조캐시·검증선택·동결/시험 커서·소비/시간을원자적으로저장한다. Ctrl+C는단위완료후paused,Resume는기한/모형/seed와잔여활성시간예산을그대로이어간다.
+- 관련9시험/실제PowerShell Resume 통과, 연속실행 대비2번재개와첫버전이관의actor/CSV byte일치. 완료/변경/손상/활성소유자/강제중단을차단한다. 첫버전이관은checkpoint후재계산·참조복구비용을별도기록(보수적상한2399PC계산)하며원본은resume_v1밖에서보존한다. 원래최종시험단계의이관은무반복커서부족으로차단한다.
+- 사용자가시작한원래Run은계속진행중:7:15UTC조회에서HEAD/seed23/update227,학습3864·검증432·참조2096. 현재결과/성능미판정. 해당실행을자동중단/이관/재개하지않았고원본코드/계획/모형byte불변이다. 다음행동하나:중단이필요한때원터미널Ctrl+C→종료확인→§12 Resume. 기기명령0,기본/strict/experiment_ready=false·사용자변경보존.
+
 ## 2026-10-06 최신 작업 — 사용자 터미널용 PPO 코드·진입 검증 완료
 
 - [실행/진행 확인 §11](REQUEST_PPO_QUEUE_RULES_20261006.md), `tools/RUN_QUEUE_PPO.ps1`, `tools/d1_queue_ppo.py`. 기존 엔진/계수/과거PPO를 보존하고17슬롯·85관측·5value·공유가드·절대서비스cost를 연결했다. Check/Smoke/Run/Status, 즉시진행로그·원자적progress·16update checkpoint·단일owner lock·부분receipt를 구현했다.

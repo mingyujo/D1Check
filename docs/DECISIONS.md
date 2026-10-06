@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-06 — REQUEST-PPO-RESUME-06: 사용자 요청의 명시적 상태 복원
+
+- 최신사용자요청에따라별도정상정지/Resume를추가한다. [§12](REQUEST_PPO_QUEUE_RULES_20261006.md). 현재실행중인원래코드와기한/물리식/학습선정은변경하지않고전체state·RNG·캐시·검증/시험cursor·소비·잔여활성시간을복원한다. source/runtime변경·강제중단·완료·활성/미확인owner는재개거절이다.
+- 첫버전의부족한캐시는고정참조만재구축하고checkpoint뒤계산반복을따로기록한다. 논리적원배치는같으며최대2399추가PC복구계산과실제소비/미기록범위를별도로보고한다. 이최신명시적복원요청은과거재시도0의정상checkpoint이어가기만변경하며결과후튜닝/추가seed/실측을승인하지않는다.7200초는기존사용시간과복구를합산하고정지공백은따로기록한다.
+- 9관련시험·실제PowerShell Resume 및연속/재개/첫버전이관의actor/CSV일치확인. 독립정책효과/실기기/장시간완료는미판정이다. 현재사용자폴더는조사만했으며자동중단/이관을수행하지않았다. 동결/기본/strict/experiment_ready=false·기기명령0유지.
+
 ## 2026-10-06 — REQUEST-PPO-TERMINAL-05: 사용자 실행 코드와 진행 관측
 
 - 사용자직접터미널실행요청에따라기존이벤트엔진/모형을재사용한별도 `d1_queue_ppo` 경로를구현했다.17출력/5value/85관측·공유진행가드와Check/Smoke/Run/Status·journal/원자적progress/checkpoint/owner lock/receipt를연결했다. 주기한1.5/6초와정식예산은변경하지않았다.

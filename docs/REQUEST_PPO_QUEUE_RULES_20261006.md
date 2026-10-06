@@ -265,6 +265,8 @@ low/queue/burst는24요청, sustained는192요청의 기존 생성 규칙을 유
 
 ## 11. 사용자 터미널 실행과 진행 확인
 
+중단/재개가 필요한 최신 사용법은 **§12**다. §11의 최초 실행 코드는 현재 사용자 학습을 보존하기 위해 byte 그대로 두었다.
+
 [현재 코드 해시·시험·축소 실행 증거](results/request_ppo_01/queue_code_verification_v1.json). 검증 부모HEAD는 `fde84b228b8bc1c730677529fb51b2deac1ec605`이며 구현/시험/문서는 미커밋 상태에서 검증하고 파일SHA로 대상을 특정했다.
 
 기존 이벤트 엔진·실측 모형·과거 PPO를 보존하고 `tools/d1_queue_ppo.py`에 새17슬롯 controller/5value/절대서비스cost/최고APcost를 연결했다. PowerShell 진입은 `tools/RUN_QUEUE_PPO.ps1`다. Python3.11.9/PyTorch2.11.0+cpu/NumPy2.4.6으로 검증했으며 과거2.3.5 환경과 구분한다. 패키지·기기설정 변경은 하지 않았다.
@@ -300,3 +302,48 @@ Get-Content '.\output\queue_ppo_run_v1\journal.jsonl' -Tail 5 -Wait
 검증: 관련13시험 통과. 실제 PowerShell→Python→이벤트/optimizer/동결/시험/receipt를 통과했다. 첫 축소14실행은 HEAD/QUEUE×4계열과기준 연결, 최종Smoke10실행은 정식 `formal` 함수의1학습/2검증/5비참조시험/2참조 경계다. 합계24축소PC실행이며 독립 성능평가 자료가 아니다. 최종Smoke의 학습/검증은 같은fixture를 의도적으로 사용한다. 정식12,288episode는 미실행이다.
 
 수정한 연결결함: 최고APcost를 양의 유휴기준 초과량에서 복원하면 기준 아래 온도가 올라가므로 절대 모형AP경로로 계산하도록 고쳤다. 시간별 최고값 증분합을 원모형 최고AP와 대조했다. 기존 물리계수·과거 결과는 변경하지 않았다. 미지원task/priority의명시적오류, 원래오류/취소/receipt실패 보존, 부분비용null, lane/시간/소유권도 검증했다. 실기기절감·2시간전체완주·6learner수렴은 아직 확인하지 않았다.
+
+## 12. 정확한 정지·재개와 기존 실행의 이관
+
+[검증 코드SHA·9시험·실제진입 증거](results/request_ppo_01/resume_code_verification_v1.json). 부모HEAD `7fcefbb1479bd9caf7eda8b300eb1e4d8720a094`+이번 미커밋파일에서 검증했다.
+
+`tools/d1_queue_ppo_resume.py`와 `tools/RUN_QUEUE_PPO_RESUMABLE.ps1`을 추가했다. 실행 중인 첫 버전의 `d1_queue_ppo.py`·기존 wrapper·계수/계획을 수정하지 않았다. 현재 사용자 실행을 자동으로 멈추거나 재개하지 않는다.
+
+### 현재 사용자가 실행한 첫 버전
+
+중단하려면 원래 학습 터미널에서 **Ctrl+C를 한 번** 누르고 Python 종료/중단 기록을 기다린다. 이후 같은 원본 경로를 지정한다:
+
+```powershell
+& '.\tools\RUN_QUEUE_PPO_RESUMABLE.ps1' -Action Resume -Output 'output/queue_ppo_run_v1'
+```
+
+이관 결과는 원본 아래 `resume_v1`에 별도로 저장한다. 원래 journal·receipt·checkpoint·선택 actor를 덮어쓰지 않는다. 확인된 정상KeyboardInterrupt·원본 소스/환경 동일성·소유자 부재·완전한 checkpoint/검증 기록이 있어야 이관한다. 활성/상태미확인 PID와 unresolved lock은 차단하고 다른 프로세스를 종료하거나 lock을 자동 삭제하지 않는다. 이미 완료되었거나 첫 버전의 최종시험 단계에 진입한 경우는 이관하지 않는다. 첫 버전은 시험 case 커서가 원자적으로 저장되지 않아 그 단계의 무반복 재개를 보장할 수 없다.
+
+첫 버전의16update checkpoint 뒤 계산은 되돌려 다시 계산될 수 있다. 복원은 동일 입력·동일Torch RNG·optimizer·승수·검증 선택을 사용한다. 완료된 이전 learner·미래시험 선정은 바꾸지 않는다. 첫 checkpoint 이전에는 등록 seed와 저장된 update0 actor 해시가 일치할 때만 초기 경계를 재구성한다. 모호하거나 저장 근거가 부족하면 실패로 남긴다.
+
+첫 버전에 없던 참조 캐시는 같은 고정 SHARED_EFT를 결정론적으로 재구축한다. **이는 추가 정책 탐색이 아닌 복구 계산**이며16참조 단위로 checkpoint를 남겨 복구 중에도 다시 일시정지할 수 있다. `LEGACY_IMPORT.json`/receipt의 recovery에 재구축 횟수·버린 과거 계산·다시 수행할 학습/검증의 상한을 남긴다. 상한은 참조 재구축2096, 과거 checkpoint 뒤 학습127, 검증48, 버린 참조127이다. 중단 순간 미기록 simulation은0으로 확정하지 않고0–1 범위로 표시한다. 보수적 추가복구 상한은2399PC계산이다. 기본 정식의논리적17,936사례·12,288학습 목표는 유지하되, 실제 소비는 기본 계산과 이 복구 비용을 구분해 함께 보고한다. 이전의 재실행0 정책은 이번 사용자 요청의 **명시적 checkpoint 복구만** 수정하며 다른 seed/기한/모형 탐색을 허용하지 않는다.
+
+### 앞으로 새로 시작하는 실행
+
+새 미사용 출력 경로에서 다음을 사용한다. 이미 실행 중인 원본과 동시에 시작하지 않는다.
+
+```powershell
+& '.\tools\RUN_QUEUE_PPO_RESUMABLE.ps1' -Action Check
+& '.\tools\RUN_QUEUE_PPO_RESUMABLE.ps1' -Action Run -Output 'output/queue_ppo_run_v2'
+# 정상 일시정지 뒤 같은 폴더에서 이어서 수행
+& '.\tools\RUN_QUEUE_PPO_RESUMABLE.ps1' -Action Resume -Output 'output/queue_ppo_run_v2'
+```
+
+새 실행기에서 Ctrl+C는 진행 중인update/검증case/시험case/캐시묶음을 완료한 뒤 **paused**를 기록한다. 두 번째 Ctrl+C나 강제종료/전원상실은 깨끗한 정지로 인증하지 않는다. checkpoint 전체에는 learner/update/단계 커서, 모델·optimizer·승수, Python/NumPy/Torch RNG, 참조 캐시, 검증 결과·best actor, 동결 actor, 시험 결과/ledger, 소비량·소스/환경 해시가 있다. 두 슬롯에 교대로 fsync 저장하고 SHA가 있는 원자적 pointer로 commit한다. 정상정지 재개는 이미commit된 update·검증·시험을 반복하지 않는다.
+
+완료/시간상한소진·변경된 소스/환경·손상된 checkpoint·무효receipt·강제 중단은 재개를 거절한다. 같은PC/같은환경의 bit 일치를 검증한 범위이며 다른CPU/런타임에서도 bit 동일하다는 뜻은 아니다. local checkpoint는 이 실행기가 직접 만든 파일만 읽는다.
+
+7,200초는 재개 때 새로 부여하지 않는다. 원래 사용한 시간＋재개/복구의 활성 시간을 누적하고 마지막120초 예약을 유지한다. 사용자 일시정지 공백은 pause_intervals에 별도로 기록하며 벽시계2시간 종료 보장으로 표현하지 않는다. 후보·실측 추가나 자동재개를 하지 않는다.
+
+```powershell
+& '.\tools\RUN_QUEUE_PPO_RESUMABLE.ps1' -Action Status -Output 'output/queue_ppo_run_v1'
+```
+
+Status는 원본 또는 이관된 `resume_v1`의 최신 진행만 읽는다. 새 실행기에서도 매update/검증·시험·복구 단계가 터미널과journal/progress에 표시된다. 각 재개 구간 receipt는별도 파일로 보존하고 `LATEST_RECEIPT.json`이 최신 것을 가리킨다.
+
+검증: 연속실행 대비 두 번 정상정지/재개 후 actor JSON·최종CSV byte일치, 첫버전 checkpoint 이관·초기checkpoint 이전 재구성에서도 동일 결과를 확인했다. 활성owner·완료재개·소스변경·손상·예산초기화·부분실패·원래오류가려짐을 차단했고 실제PowerShell Resume 진입을 실행했다. 관련9시험 통과. 축소fixture는 성능/독립확인자료가 아니다. 현재 사용자의 실제 폴더는 조회만 했고 이관·중단·재개하지 않았다. 기기명령0회.
