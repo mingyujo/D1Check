@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-07 최신 — PPO v2 학습 완료·평가 시간 종료와 후속 경로
+
+- 사용자 Run의 학습6144/검증720 완료, 최종평가104/192조건 저장 후 budget_stopped로 종료(5319.094초,오류없음). 원본 `output/queue_ppo_feasible_v2`와 동결6actor를 보존한다. 3actor는 검증 적격이며 최종효과 미확정, 기존 Run/Resume 재호출 금지.
+- [후속 평가 명령/계약](results/request_ppo_01/queue_design_v2/README.md): 남은88조건만, 평가880+참조88=968PC계산·학습0·별도45분상한(종료120초포함)·retry0. 조건별 기록과 작은 재개 위치 저장을 구현했다. 원 실행의 상한/종료 상태를 변경하지 않는다.
+- 관련5시험 통과(4.638초): 원본/actor 불변·완료조건 재계산 차단·중지/재개 CSV 일치·부분기록/원래오류 보존·Check 무계산. 실제 원본 Check 통과, 정식 후속Run/claim·기기0. [검증](results/request_ppo_01/queue_design_v2/evaluation_followup_verification.json). 사용자파일/다른worktree·기본/strict/experiment_ready=false 보존.
+- 다음 행동: 사용자 터미널에서 `RUN_QUEUE_PPO_EVALUATION.ps1 -Action Check` 후 `-Action Run`. 과거 준비·진행 상태는 아래 이력이다.
+
 ## 2026-10-06 최신 — PPO v2 검토 보완 완료
 
 - 평가 정책별·검증 계산 직전 시간 예산 확인을 추가했다. 예약 경계는 `budget_stopped`로 종료하며 완료한 부분 행·소비·stop_reason을 보존하고 재개를 차단한다. 일반 timeout과 후속 receipt 오류는 원래 실패로 구분한다.

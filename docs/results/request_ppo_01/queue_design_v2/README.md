@@ -1,5 +1,25 @@
 # PPO v2 — 처리 가능한 주 실험과 과부하 평가
 
+## 2026-10-07 최신: 동결 정책의 남은 평가만 이어가기
+
+원본 `output/queue_ppo_feasible_v2`는 **budget_stopped**다. 학습6144·검증720은 완료했고 최종192조건 중104조건(1144행)을 저장했다. 원래 학습 실행과 90분 상한을 보존한다. 기존 학습 Run/Resume를 다시 호출하지 않는다.
+
+[후속 평가 계획](evaluation_followup_plan_v1.json), [검증 기록](evaluation_followup_verification.json). 동결6actor·같은 입력/순서/모형/판독을 사용하며 나머지88조건만 계산한다. 학습·추가선택·재보정0, 평가880+SHARED_EFT88=968PC계산, 별도활성상한2700초(45분,종료120초포함), retry0. 이 별도 시간 예산은 원 실행의 완주를 의미하지 않는다. 완료되면 원본104조건을 재계산 없이 결합한192조건/2112행을 새 출력에 저장한다. 일부 최종 결과를 본 뒤의 운영 보완이며, 정책·입력·판독 기준을 바꾸지 않았다.
+
+조건별 ledger/결정 기록은 한 번씩 보존하고 재개 위치는 작은 JSON 체크포인트로 저장한다. 원본 체크포인트155451768바이트와 actor는 그대로 보존한다. 예산 소진·일반실패·부분기록·receipt 오류를 구분한다. Ctrl+C 한 번은 현재 조건을 마친 뒤 paused, 동일 출력의 Resume는 남은 조건과 누적활성시간만 이어간다. 강제중단/예산종료/완료는 Resume를 거절한다. native hang을 강제로 종료하거나 전체 실행시간을 항상 보장하는 기능은 아니다.
+
+```powershell
+cd 'C:\Users\LG\AndroidStudioProjects\D1Check-model02b'
+& '.\tools\RUN_QUEUE_PPO_EVALUATION.ps1' -Action Check
+# CHECK_PASSED_NOT_STARTED 확인 후:
+& '.\tools\RUN_QUEUE_PPO_EVALUATION.ps1' -Action Run
+# Ctrl+C 한 번 후 paused/프로세스 종료를 확인하고 나중에 재개:
+& '.\tools\RUN_QUEUE_PPO_EVALUATION.ps1' -Action Resume
+& '.\tools\RUN_QUEUE_PPO_EVALUATION.ps1' -Action Status
+```
+
+새 출력은 `output/queue_ppo_v2_evaluation_v1`이다. Check는 원본155MB의 해시/구조를 확인하므로 출력까지 시간이 걸릴 수 있다. 기본 python이 다르면 기존과 동일한 Python3.11.9/Torch2.11.0+cpu/NumPy2.4.6 경로를 `-Python`으로 지정한다. 실기기 연결·ADB·추론 없이 PC 평가만 수행한다. actor 가중치 변경·물리 모형 수정·정책 우월성/정확도 PASS 자동 부여는 없다.
+
 2026-10-06, REQUEST-PPO-FEASIBILITY-07. 부모 HEAD `435aa2533fc2704eb6a3c014f400a12afcffeea8`. **PC 실행 준비 완료·정식 Run 미실행·미소비**다. 사용자가 완료된 v1을 본 뒤 요청한 설계 개정이며 사후 개발이다. 기존 결과·동결 모형·기본/strict·`experiment_ready=false`를 보존한다.
 
 [준비 및 v1 판독 화면](index.html), [새 계약·예산](training_plan.json), [입력/가능 일정 증거](preflight.json), [검증 기록](verification.json).

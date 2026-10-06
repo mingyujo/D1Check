@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-07 — REQUEST-PPO-EVALUATION-08: 시간 종료 뒤 동결 정책 평가만 준비
+
+- 상태: 사용자의 이어가는 방법 요청에 따른 PC 후속 경로 구현·검증. 정식 후속Run은 사용자터미널 명시 호출까지 미실행이다. 기존 학습Run의 budget_stopped·90분예산·원본·동결actor를 보존한다.
+- 완료104조건과 남은88조건을 원 checkpoint/receipt/순서/해시로 고정했다. 남은평가880+참조88, 추가학습/선택/재보정0, 별도활성2700초(종료120초포함)·retry0. 종료 계획 Resume 제한을 풀지 않고 별도 소비claim/출력을 사용한다. [명령·근거](results/request_ppo_01/queue_design_v2/README.md).
+- 조건별 원자료와 작은 재개 위치를 저장한다. 정상 Ctrl+C 뒤의 동일 후속 실행만 Resume를 지원한다. 완료·예산종료·비정상중단은 재실행하지 않는다. 일부최종결과를본후운영보완이며 조건/정책/판독은 고정, 독립실기기확인/절감효과/strict/PASS/experiment_ready를 승격하지 않는다.
+
 ## 2026-10-06 — REQUEST-PPO-FEASIBILITY-07: 처리 가능한 주 실험과 과부하 판독
 
 - 상태:사용자의 '위 작업 진행' 요청에 따른 **PC 설계/구현 채택**,새학습/실측/정책효과채택 아님. [계약과근거](results/request_ppo_01/queue_design_v2/README.md). v1을본사후설계로여섯actor부적격·공동개선0·기존계획/모형을보존한다.

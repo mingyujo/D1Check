@@ -1,0 +1,141 @@
+{
+  "verified_utc": "2026-10-06T16:34:47.851961+00:00",
+  "base_head": "1f8c3c78f2b2ff13270269ea4173f4c1c284e34b",
+  "working_tree": "evaluation-only changes uncommitted; user HTML/PDF preserved",
+  "status": "PC_READY_NOT_RUN",
+  "tests": {
+    "command": "python -B -m unittest tools.test_d1_queue_ppo_evaluate -v",
+    "passed": 5,
+    "failed": 0,
+    "elapsed_s": 5.139,
+    "final_fixture_simulations": 30,
+    "fixture_training_updates": 0,
+    "optimizer_calls_blocked": true
+  },
+  "development_passes": [
+    {
+      "passed": 1,
+      "errors": 4,
+      "fixture_simulations": 6,
+      "issue": "tuple/list normalization at sealed prefix boundary; corrected"
+    },
+    {
+      "passed": 3,
+      "errors": 2,
+      "fixture_simulations": 18,
+      "issue": "fixture metadata collided with metrics; fixture validation table empty; corrected fixture"
+    },
+    {
+      "passed": 5,
+      "errors": 0,
+      "fixture_simulations": 30
+    },
+    {
+      "passed": 5,
+      "errors": 0,
+      "fixture_simulations": 30,
+      "final": true
+    }
+  ],
+  "total_development_fixture_simulations": 84,
+  "check": {
+    "status": "CHECK_PASSED_NOT_STARTED",
+    "version": "queue-ppo-frozen-evaluation-v1",
+    "plan_sha256": "8c259469450b106be5fbb9998487e3df21dc1786be6e620620c8f2b0cd85a40a",
+    "completed_cases": 104,
+    "remaining_cases": 88,
+    "budget": {
+      "test": 880,
+      "reference": 88,
+      "simulations": 968,
+      "active_limit_s": 2700,
+      "receipt_reserve_s": 120,
+      "retries": 0,
+      "additional_training": 0
+    },
+    "training_updates": 0,
+    "device_commands": 0,
+    "policy_simulations": 0,
+    "claim_created": false
+  },
+  "source_files_after": {
+    "checkpoint.json": "9c0c6d478159afd0b770ac2eb95d80ed04e7d4a5a52301a81eaacd75eccfcf67",
+    "state_1.pt": "a31a28e813f1e243ca21e60ed6e882bc7d15f4e0e5865e127e5af8c92135c400",
+    "LATEST_RECEIPT.json": "8df6d543684323487bbed8cc369008363824489753f40d0fed8e3229ce6c72e2",
+    "RECEIPT_b30267ececb54e1f88774edae1c0ab75.json": "0cb1ba74b81f79fdbe204887e7534f2cf80d1fc60dbd2fcfe8a11dc8ea28b24f",
+    "freeze_before_test.json": "d834036612273e7b57d544cbbe83c6828ab928f6f00abfcc3f1c6b4c8b0acf3a",
+    "run_manifest.json": "567d991ab9c97606fc75fbbf7ccd825a2b1daee9ab49c57480b7652b9040d75d",
+    "HEAD_seed11.json": "0c3a165bba1ee23e8c2b0b5114d91fd53624457851bbb4f308a4fbfac546d102",
+    "HEAD_seed23.json": "529a6a98a818e021b83d33ecbf771f3a6bdad9d0f2b8cd77e83d02b438e6d4ea",
+    "HEAD_seed37.json": "84f28e37924d1087318e46c64038047f739d538cb32c604e4908401a131dca14",
+    "QUEUE_seed11.json": "635eb0f5b224a6c98cd51aa9a9de10c2bd208ab953f0a34bdcc0c65c196f321e",
+    "QUEUE_seed23.json": "9d6c43d29062790213fd5279d1ca7c9ad1b165354a2de173147c78c7b5e404c5",
+    "QUEUE_seed37.json": "67f744dcd1e516260f521576c541ce461de7187bdc1f96c0aa713246c2f19d25"
+  },
+  "sources": {
+    "tools/d1_queue_ppo_evaluate.py": "abc4818ff0422a39b63a915a509ef8378141588bc81e9c30390ca59f51cb1f68",
+    "tools/RUN_QUEUE_PPO_EVALUATION.ps1": "97ea90cf3a1a69c0aa55af53050a7e0188e008fcca02ce2751f869b0757fa03b",
+    "tools/test_d1_queue_ppo_evaluate.py": "6a01655bd0269e978e852e87422e9d43d788f6d1744634a586b99dd44fbe2004"
+  },
+  "original_status": "budget_stopped",
+  "original_active_elapsed_s": 5319.094,
+  "original_complete_cases": 104,
+  "original_checkpoint_bytes": 155451768,
+  "source_load_observed_s": 19.047,
+  "load_observation_scope": "one local read; no general overhead attribution",
+  "frozen_actors": [
+    {
+      "variant": "HEAD",
+      "seed": 11,
+      "update": 128,
+      "eligible": true,
+      "filename": "HEAD_seed11.json",
+      "sha256": "0c3a165bba1ee23e8c2b0b5114d91fd53624457851bbb4f308a4fbfac546d102"
+    },
+    {
+      "variant": "HEAD",
+      "seed": 23,
+      "update": 32,
+      "eligible": true,
+      "filename": "HEAD_seed23.json",
+      "sha256": "529a6a98a818e021b83d33ecbf771f3a6bdad9d0f2b8cd77e83d02b438e6d4ea"
+    },
+    {
+      "variant": "HEAD",
+      "seed": 37,
+      "update": 0,
+      "eligible": false,
+      "filename": "HEAD_seed37.json",
+      "sha256": "84f28e37924d1087318e46c64038047f739d538cb32c604e4908401a131dca14"
+    },
+    {
+      "variant": "QUEUE",
+      "seed": 11,
+      "update": 64,
+      "eligible": true,
+      "filename": "QUEUE_seed11.json",
+      "sha256": "635eb0f5b224a6c98cd51aa9a9de10c2bd208ab953f0a34bdcc0c65c196f321e"
+    },
+    {
+      "variant": "QUEUE",
+      "seed": 23,
+      "update": 32,
+      "eligible": false,
+      "filename": "QUEUE_seed23.json",
+      "sha256": "9d6c43d29062790213fd5279d1ca7c9ad1b165354a2de173147c78c7b5e404c5"
+    },
+    {
+      "variant": "QUEUE",
+      "seed": 37,
+      "update": 128,
+      "eligible": false,
+      "filename": "QUEUE_seed37.json",
+      "sha256": "67f744dcd1e516260f521576c541ce461de7187bdc1f96c0aa713246c2f19d25"
+    }
+  ],
+  "formal_evaluation_started": false,
+  "formal_claim_created": false,
+  "device_commands": 0,
+  "experiment_ready": false,
+  "next_action": "user terminal Check then Run; same follow-up clean pause may Resume"
+}
