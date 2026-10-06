@@ -1,0 +1,34 @@
+﻿PASS import night1005e_judge selftest 그대로 35/35
+PASS import SHA 접두 (night1005e 2db1cda5 · night1005 ca8680c2 · m1m2 ea282d4a · night1003 a5ceab41)
+PASS 칸 표 = tools/chains/v3_*.json (duty · 길이 · 라벨)
+PASS ③ 두 블록 Δ ≥ 1.0 (경계 1.0 포함) → 기준 넘음
+PASS ③ 0.999999 → 같은 부호, 기준 안
+PASS ③ 하나라도 ≤ 0 (0.0) → 같은 방향 아님
+PASS ③ 음수 → 같은 방향 아님
+PASS ③ r 0.949999 < 0.95 → 작업량 차 큼 (위 판정 대신)
+PASS ③ r = 0.95 → 큼 아님 · 기준 넘음 · 문장에 5.0 % 덜 함
+PASS ③ r < 0.95 이면 방향 아님보다 앞선다
+PASS ④ |3.0 − 2.0| = 1.0 → 경계 포함 확인 (29.9 → 열 29.5)
+PASS ④ |3.0 − 1.999| = 1.001 > 1.0 → 미확인
+PASS ④ 부호 다름 (예측 +0.3 · 실측 −0.5, |차| 0.8) → 미확인
+PASS ④ 열 고르기: 30.0 (같은 거리) → 29.5 · 30.1 → 30.5
+PASS ④ 범위 밖 (32.0) 표시 · 판정은 함
+PASS 결론: 기준 넘음 + 확인 → 1행 (A 는 가족 대조군 문장)
+PASS 결론: 기준 넘음 + 미확인 → 4행 보류
+PASS 결론: 기준 안 · 같은 방향 아님 → 4행 재현 안 됨
+PASS 결론: 작업량 차 큼 → 행 없음 (1행 아님)
+PASS cond 블록 1개 → 판정 안 함
+PASS run: n = 구간 Σ
+PASS run: 조임 0 (지연 일정) · 가동 칸 = 34+34+35
+PASS run: 창 끝 SKIN 33.0 · 최고 38.5 · t38 > 0
+PASS run: 모델 SHA 미기록 표시 (합성)
+PASS run: 다른 칸 표 → 오류
+PASS run: --gate-label 없음 → 오류
+PASS run: d25 540 s 구간 ×1.2 → 조임 540 s (54칸, 문턱 1.06)
+PASS run: 가동 칸 수 (d1 구간 제외) = 33+54+3+30+55+3+30+56+3
+PASS pair: Δ = base − ours (38.5 − 31.0 = 7.5) · r = n_ours / n_base
+PASS pair: 자리 바뀜 → 오류
+PASS pair: 감시 이벤트 런 → 오류
+PASS pair: 블록 다름 → 오류
+PASS cond: 합성 끝까지 · 같은 입력 = 같은 바이트
+selftest PASS (33/33)
