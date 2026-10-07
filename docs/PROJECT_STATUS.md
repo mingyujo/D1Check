@@ -1,6 +1,6 @@
 # D1Check 현재 상태
 
-## 2026-10-07 최신 — EXTERNAL-RULES-11 비교·검증 완료 / Git 마무리
+## 2026-10-07 최신 — EXTERNAL-RULES-11 승인 PC 작업 완료
 
 - 사용자 승인: 공식 출처 조사 → 기존 판단 규칙 adapter → 작은 재현 검증 → 동일 조건 비교·오프라인 화면·보고서 → commit/push. 기기/ADB/설치/추가 실측0. 착수 HEAD `69417fe`, 브랜치·두 worktree 확인, 활성 RL/재조합0. 사용자 미추적 HTML/PDF/VSCode 보존.
 - Ente Android 건강/활동 시작 허용과 Band 기본 HEFT를 대상으로 고정한다. Ente의 배경 작업 대응과 Band whole-request 단위 변경은 제한적 재현 B다. Band LSF early-drop, MediaPipe busy-drop, LiteRT metadata, NPU load/선점 범위는 성능 비교 보류다.
@@ -12,7 +12,8 @@
 - 공유 재현 I/O를 보완했다: evaluator는 자기 결과폴더만 쓰고 per-run 사용자 보존기록을 생성하며 캐시의 조건 ID를 대조한다. raw 없는 새폴더의2환경·재호출0재계산 시험 통과. 수치/정책코드 불변, 누적18검증·fixture6환경·진단복구1환경·기기/RL0. 과거실행 소스와 이후I/O 소스를 분리 기록한다.
 - 남은279행만 완료해 최종1,056행/69,696예정 요청 확보. 본비교 실패/진단 포함1,057환경+fixture6=이번1,063환경·학습/기기0. Band 요청adapter는 저부하12동률, 지속12전량/기한·강한EFT 대비평균J−0.131672/최고AP−0.021760/면적−1.817722·긴급P95동률. 우리열·에너지2규칙의지속12조건은전기한0. 실제Band/기기우열로확대하지않는다.
 - Ente quiet48일정동일. 저부하간헐활동은전량이나기한29.167%,지속활동/저배터리는완료25%·AP180 null. 단순J감소를절감성공으로쓰지않는다. 전체69,696요청/lane/원13파일·사용자9파일 감사와첫seed264J/AP재계산차이0·18관련검증 통과. 8PNG/SVG·CSV·[화면](results/external_rules_01/index.html)·[최종보고서](REQUEST_EXTERNAL_RULES_PC_20261007.md) 완료,공유8PNG재현일치·화면필터384/672/96/2행 통과.
-- 다음 행동: 관련파일만commit/push·실제원격HEAD일치 확인. 원모형/기본/strict/experiment_ready=false·사용자파일·다른worktree 보존,기기/추가학습 자동시작0.
+- 관련48파일/공유37파일(약5.32MB)을 결과 커밋 `3d8b2b9b99218b2913bc3331a3508664c76327bd`에 반영했다. 정상push·실제원격HEAD일치 확인,원13소스의Git index byte와등록SHA 일치·공유개인경로0·로컬링크/공백검사 통과. 진행중 owned 비교/학습0.
+- 다음 행동 하나: 제출 본문에서 제한적 재현 B의 결과와 우리규칙의기한손실·작은모형이득의한계를반영한다. 원모형/기본/strict/experiment_ready=false·사용자파일·다른worktree 보존,이번승인실행종료·기기/추가학습 자동시작0.
 
 ## 2026-10-07 최신 — RULES-RL-AMOUNT-10 승인 작업 완료
 
