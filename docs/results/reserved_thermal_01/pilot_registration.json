@@ -1,0 +1,422 @@
+{
+  "revision": 2,
+  "parent_sha256": "7775bdffb8e0119c772bc311525157acd8449b30b3e7755bfcc4ccca0f878eee",
+  "manifest": {
+    "version": "reserved-thermal-pilot-v1",
+    "design": {
+      "version": "reserved-thermal-review-candidate-v2",
+      "public_policy": "RESERVED_THERMAL_REQUEST_V1",
+      "engine_abi_policy": "PARETO_BEAM_SERVICE_V1",
+      "review_required_before_pilot": true,
+      "reservation": "cap_i=min(original deadline_i, long-context initial EFT response_i); never relaxed",
+      "energy_initial": "B=C_observed+J_remaining(EFT of arrived queue)",
+      "energy_arrival": "B+=J_remaining(EFT of full queue)-J_remaining(EFT of old queue), at same snapshot",
+      "energy_other_events": "no budget renewal; observed prefix remains spent",
+      "energy_veto": "C_observed+J_remaining(candidate)>B+numerical epsilon",
+      "full_calendar": true,
+      "prefix_cost_veto": false,
+      "maximum_expansions": 64,
+      "beam_width": 8,
+      "depth": 4,
+      "wait_step_s": 0.25,
+      "wait_limit_s": 2.0,
+      "rank": [
+        "predicted running AP peak",
+        "predicted total J",
+        "urgent predicted response",
+        "sequence"
+      ],
+      "future_arrivals": false,
+      "predicted_lane_release": false,
+      "model_costs_only": true,
+      "ap_window_s": [
+        35,
+        180
+      ],
+      "energy_window_s": [
+        0,
+        120
+      ],
+      "physical_safety_guarantee": false,
+      "retained_calendar": "preserve each pending absolute start lower bound; log expiry or conflict",
+      "terminal_budget": "B_final-J_common_0_120; partial work separately marked",
+      "pending_reservation": "first seen and issued times separate during unknown overrun",
+      "diagnostics": "candidate rejection, callback fallback and actual request violation separate"
+    },
+    "source_hashes": {
+      "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+      "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+      "tools/d1_ap_preparation_memory.py": "20af3304f8386c7f6adc1df56f5c593e0fd35600ae60d2ce60a518d5c418c40d",
+      "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9",
+      "tools/d1_arrival_explore_batch.py": "f0994f603720c606c5dc58f24c334cd2e91d3a79cc9a525094e7bcbbab86411f",
+      "tools/d1_empirical_request_policy.py": "32407050fae7a0f6f7d58a19cd6f2f4eedea46ba9c8651e15363d0af496050a0",
+      "tools/d1_industrial_scheduling.py": "5537b8746d329a8ab25f69c105218ecb6eaba99d26bfb6bb8434950b2e5b6bab",
+      "tools/d1_joint_queue_area.py": "b0202f9656b4f4b0f2323f123c00fbd4df5557748eb115db1126919c8a754710",
+      "tools/d1_online_policy_model.py": "a4e28dc489f221b1f85e8754b23385c60ba134af20ac701a3660293cac63156a",
+      "tools/d1_pareto_beam.py": "b442e74b212c070587cd3b141ccd1aea34bd251f255ace8c706cbaafea8c94df",
+      "tools/d1_queue_ppo.py": "0aea534d37465884d070d192fdfe7f863b480d4db17b85082773c9acc42ec9f1",
+      "tools/d1_request_ppo.py": "c8282794b92c10e60b1d2a0bffed3eb8e05bf1aad5001493948a801e12e2c0a2",
+      "tools/d1_request_rl.py": "ac74114e28c6f44e0c3b0c9a1e5a943ad156579c8a3cfe3e015db8a50e2958a9",
+      "tools/d1_reserved_thermal.py": "19066ddf8696eb500c921cd697067fdd2bd904f47ce832f84c40cb123ed03249",
+      "tools/d1_reserved_thermal_study.py": "6e682d73596027a20c83024906df53e8cf7736528fd1ea7b5a88d72d8b2178bb",
+      "tools/test_d1_reserved_thermal.py": "8787758044edbfd77d12e935459eca8c08df4b5d23b9a26b34d789d5b8c9a2fb",
+      "tools/d1_external_rules.py": "4e824c0ba7bf7c6efc86893a676d7346337f4a2b74d5f8f4726f112e400bc756",
+      "tools/d1_external_rules_study.py": "fd60087aeeb35452ba9cf6d20dc47423a9cb1d32adeea3f750d1ac63e8fc1e82"
+    },
+    "reference": {
+      "input_sha256": "6805942995e2133bb2a489ade916af6a97d631716eb3b442ba5e7db2a46e1aea",
+      "source_files": {
+        "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+        "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+        "tools/d1_ap_preparation_memory.py": "20af3304f8386c7f6adc1df56f5c593e0fd35600ae60d2ce60a518d5c418c40d",
+        "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9",
+        "tools/d1_arrival_explore_batch.py": "f0994f603720c606c5dc58f24c334cd2e91d3a79cc9a525094e7bcbbab86411f",
+        "tools/d1_empirical_request_policy.py": "32407050fae7a0f6f7d58a19cd6f2f4eedea46ba9c8651e15363d0af496050a0",
+        "tools/d1_industrial_scheduling.py": "5537b8746d329a8ab25f69c105218ecb6eaba99d26bfb6bb8434950b2e5b6bab",
+        "tools/d1_joint_queue_area.py": "b0202f9656b4f4b0f2323f123c00fbd4df5557748eb115db1126919c8a754710",
+        "tools/d1_online_policy_model.py": "a4e28dc489f221b1f85e8754b23385c60ba134af20ac701a3660293cac63156a",
+        "tools/d1_pareto_beam.py": "b442e74b212c070587cd3b141ccd1aea34bd251f255ace8c706cbaafea8c94df",
+        "tools/d1_queue_ppo.py": "0aea534d37465884d070d192fdfe7f863b480d4db17b85082773c9acc42ec9f1",
+        "tools/d1_request_ppo.py": "c8282794b92c10e60b1d2a0bffed3eb8e05bf1aad5001493948a801e12e2c0a2",
+        "tools/d1_request_rl.py": "ac74114e28c6f44e0c3b0c9a1e5a943ad156579c8a3cfe3e015db8a50e2958a9",
+        "tools/d1_external_rules.py": "4e824c0ba7bf7c6efc86893a676d7346337f4a2b74d5f8f4726f112e400bc756",
+        "tools/d1_external_rules_study.py": "fd60087aeeb35452ba9cf6d20dc47423a9cb1d32adeea3f750d1ac63e8fc1e82",
+        "tools/d1_external_rules_report.py": "83ca2d427e07e284ee48bcf686e0b9976e6c48c5cee8e842db93fd8a434dedb1",
+        "docs/results/external_rules_01/results.csv": "185a4a37bdc6f991812d26d7aa150183eac891ef091a30ca3d68bc161ca34c5a",
+        "docs/results/external_rules_01/contract.json": "9c59e80f076a364e954842783bf247cf0fde6857a25ae7555577dfe8e7da52f7",
+        "docs/results/external_rules_01/inputs.json": "6805942995e2133bb2a489ade916af6a97d631716eb3b442ba5e7db2a46e1aea"
+      },
+      "execution_bindings": {
+        "code_sha256": {
+          "tools/d1_triton_rules.py": "b7ee715935fa2b8a466fc68a217f88948fa978d2bf0daece7cb47f9e11955e21",
+          "tools/d1_triton_study.py": "c6ad5099929cf0ce8a00d07f710d2ed2d9442da1d3a51e1915cb8230bf71cf6b"
+        },
+        "contract_sha256": "733c2930a0bf884cfdd889dff652d9bad2fda5e86a4bab8aba2593ca0ff239d8"
+      },
+      "reference_artifact_sha256": "ee1e2bdd2d7accff71d66cb338a2a2a3a5c722a622f7eef7e9f9f02f61759fb7",
+      "band_completion_sha256": "4c65f2b8075692ced9d4967f77a8788583448551134cbfcbf8a1603e0d496907",
+      "reused_csv_sha256": "02455a3902b4696e6594624e1eb97be654c56d7934649b5ed0aacac3b71121d0",
+      "rows_sha256": "32c416f22e3e9fc7698f250978bec4643c19e3f87fec30020ee81bfa0531b392",
+      "policies": [
+        "TRITON_RATE_OFF_FIXED_REQUEST_ADAPT_V1",
+        "TRITON_RATE_CAP1_EQUAL_REQUEST_ADAPT_V1",
+        "TRITON_RATE_CAP2_EQUAL_REQUEST_ADAPT_V1",
+        "TRITON_RATE_CAP1_CLASS_WEIGHT_REQUEST_ADAPT_V1",
+        "TRITON_RATE_CAP2_CLASS_WEIGHT_REQUEST_ADAPT_V1",
+        "BAND_HEFT_WHOLE_REQUEST_ADAPT_V1",
+        "SHARED_EFT",
+        "ENERGY_AP_REQUEST_V1",
+        "ARRIVED_QUEUE_J_PEAK_AREA_V1"
+      ],
+      "conditions": 48,
+      "rows": 432,
+      "representative": {
+        "seed": 610810001,
+        "context": "mean",
+        "families": [
+          "queue",
+          "sustained"
+        ]
+      }
+    },
+    "conditions": [
+      {
+        "seed": 610810001,
+        "family": "low",
+        "context": "mean",
+        "tickets_sha256": "0b2c4f7d1de1bf7f779a4b6485c87403cf72112f4887f48f16cc93c81133b0d1"
+      },
+      {
+        "seed": 610810001,
+        "family": "low",
+        "context": "short_context",
+        "tickets_sha256": "0b2c4f7d1de1bf7f779a4b6485c87403cf72112f4887f48f16cc93c81133b0d1"
+      },
+      {
+        "seed": 610810001,
+        "family": "low",
+        "context": "long_context",
+        "tickets_sha256": "0b2c4f7d1de1bf7f779a4b6485c87403cf72112f4887f48f16cc93c81133b0d1"
+      },
+      {
+        "seed": 610810001,
+        "family": "queue",
+        "context": "mean",
+        "tickets_sha256": "1730e819adfa2aa18ea6a2db165edf4ed2bee6ae9871203133110d89cd659a53"
+      },
+      {
+        "seed": 610810001,
+        "family": "queue",
+        "context": "short_context",
+        "tickets_sha256": "1730e819adfa2aa18ea6a2db165edf4ed2bee6ae9871203133110d89cd659a53"
+      },
+      {
+        "seed": 610810001,
+        "family": "queue",
+        "context": "long_context",
+        "tickets_sha256": "1730e819adfa2aa18ea6a2db165edf4ed2bee6ae9871203133110d89cd659a53"
+      },
+      {
+        "seed": 610810001,
+        "family": "burst",
+        "context": "mean",
+        "tickets_sha256": "758c0caaa2a06555c86c320691e8b0486b4f1dd657b7a626ffe7729b4da57836"
+      },
+      {
+        "seed": 610810001,
+        "family": "burst",
+        "context": "short_context",
+        "tickets_sha256": "758c0caaa2a06555c86c320691e8b0486b4f1dd657b7a626ffe7729b4da57836"
+      },
+      {
+        "seed": 610810001,
+        "family": "burst",
+        "context": "long_context",
+        "tickets_sha256": "758c0caaa2a06555c86c320691e8b0486b4f1dd657b7a626ffe7729b4da57836"
+      },
+      {
+        "seed": 610810001,
+        "family": "sustained",
+        "context": "mean",
+        "tickets_sha256": "124841a6301b1c731b1cbeed160481a7897c4c35508ef41ec7c89794b28ae099"
+      },
+      {
+        "seed": 610810001,
+        "family": "sustained",
+        "context": "short_context",
+        "tickets_sha256": "124841a6301b1c731b1cbeed160481a7897c4c35508ef41ec7c89794b28ae099"
+      },
+      {
+        "seed": 610810001,
+        "family": "sustained",
+        "context": "long_context",
+        "tickets_sha256": "124841a6301b1c731b1cbeed160481a7897c4c35508ef41ec7c89794b28ae099"
+      },
+      {
+        "seed": 610810002,
+        "family": "low",
+        "context": "mean",
+        "tickets_sha256": "1ce1b9768c2a06a24071ae7db7f257da572abfe776098cda129f8fd8cf8e1c33"
+      },
+      {
+        "seed": 610810002,
+        "family": "low",
+        "context": "short_context",
+        "tickets_sha256": "1ce1b9768c2a06a24071ae7db7f257da572abfe776098cda129f8fd8cf8e1c33"
+      },
+      {
+        "seed": 610810002,
+        "family": "low",
+        "context": "long_context",
+        "tickets_sha256": "1ce1b9768c2a06a24071ae7db7f257da572abfe776098cda129f8fd8cf8e1c33"
+      },
+      {
+        "seed": 610810002,
+        "family": "queue",
+        "context": "mean",
+        "tickets_sha256": "6ba2ca74bbdea5778bd8716764e8298200e397db97feb38e8e59871a978c7e64"
+      },
+      {
+        "seed": 610810002,
+        "family": "queue",
+        "context": "short_context",
+        "tickets_sha256": "6ba2ca74bbdea5778bd8716764e8298200e397db97feb38e8e59871a978c7e64"
+      },
+      {
+        "seed": 610810002,
+        "family": "queue",
+        "context": "long_context",
+        "tickets_sha256": "6ba2ca74bbdea5778bd8716764e8298200e397db97feb38e8e59871a978c7e64"
+      },
+      {
+        "seed": 610810002,
+        "family": "burst",
+        "context": "mean",
+        "tickets_sha256": "5dd6fa994f26eb0e985cf3394cca4af52ea0a81637f1992b6fcd19c7fdc2b8e3"
+      },
+      {
+        "seed": 610810002,
+        "family": "burst",
+        "context": "short_context",
+        "tickets_sha256": "5dd6fa994f26eb0e985cf3394cca4af52ea0a81637f1992b6fcd19c7fdc2b8e3"
+      },
+      {
+        "seed": 610810002,
+        "family": "burst",
+        "context": "long_context",
+        "tickets_sha256": "5dd6fa994f26eb0e985cf3394cca4af52ea0a81637f1992b6fcd19c7fdc2b8e3"
+      },
+      {
+        "seed": 610810002,
+        "family": "sustained",
+        "context": "mean",
+        "tickets_sha256": "e13477087d746af2f520f7631f49eeb49bf70ba2ad8116938adebc6fdb6c1fa3"
+      },
+      {
+        "seed": 610810002,
+        "family": "sustained",
+        "context": "short_context",
+        "tickets_sha256": "e13477087d746af2f520f7631f49eeb49bf70ba2ad8116938adebc6fdb6c1fa3"
+      },
+      {
+        "seed": 610810002,
+        "family": "sustained",
+        "context": "long_context",
+        "tickets_sha256": "e13477087d746af2f520f7631f49eeb49bf70ba2ad8116938adebc6fdb6c1fa3"
+      },
+      {
+        "seed": 610810003,
+        "family": "low",
+        "context": "mean",
+        "tickets_sha256": "5bdc2ae49515c9584d7c3e6c74de7f8d1a57b54fc76586d1e1d3d4715377abcc"
+      },
+      {
+        "seed": 610810003,
+        "family": "low",
+        "context": "short_context",
+        "tickets_sha256": "5bdc2ae49515c9584d7c3e6c74de7f8d1a57b54fc76586d1e1d3d4715377abcc"
+      },
+      {
+        "seed": 610810003,
+        "family": "low",
+        "context": "long_context",
+        "tickets_sha256": "5bdc2ae49515c9584d7c3e6c74de7f8d1a57b54fc76586d1e1d3d4715377abcc"
+      },
+      {
+        "seed": 610810003,
+        "family": "queue",
+        "context": "mean",
+        "tickets_sha256": "6835cea815b787bf7f76795c85ff8ebf5d45ecb46db0155b3f8a33940660692f"
+      },
+      {
+        "seed": 610810003,
+        "family": "queue",
+        "context": "short_context",
+        "tickets_sha256": "6835cea815b787bf7f76795c85ff8ebf5d45ecb46db0155b3f8a33940660692f"
+      },
+      {
+        "seed": 610810003,
+        "family": "queue",
+        "context": "long_context",
+        "tickets_sha256": "6835cea815b787bf7f76795c85ff8ebf5d45ecb46db0155b3f8a33940660692f"
+      },
+      {
+        "seed": 610810003,
+        "family": "burst",
+        "context": "mean",
+        "tickets_sha256": "bad01ec3623d53a02dec982fe6a41983a1914d40c8784ca4c2cb17e9bec82ae6"
+      },
+      {
+        "seed": 610810003,
+        "family": "burst",
+        "context": "short_context",
+        "tickets_sha256": "bad01ec3623d53a02dec982fe6a41983a1914d40c8784ca4c2cb17e9bec82ae6"
+      },
+      {
+        "seed": 610810003,
+        "family": "burst",
+        "context": "long_context",
+        "tickets_sha256": "bad01ec3623d53a02dec982fe6a41983a1914d40c8784ca4c2cb17e9bec82ae6"
+      },
+      {
+        "seed": 610810003,
+        "family": "sustained",
+        "context": "mean",
+        "tickets_sha256": "c7c2b80481804afab25970d1d52dd4277dabc32ecfb91f6a0f6db3ea929a83d8"
+      },
+      {
+        "seed": 610810003,
+        "family": "sustained",
+        "context": "short_context",
+        "tickets_sha256": "c7c2b80481804afab25970d1d52dd4277dabc32ecfb91f6a0f6db3ea929a83d8"
+      },
+      {
+        "seed": 610810003,
+        "family": "sustained",
+        "context": "long_context",
+        "tickets_sha256": "c7c2b80481804afab25970d1d52dd4277dabc32ecfb91f6a0f6db3ea929a83d8"
+      },
+      {
+        "seed": 610810004,
+        "family": "low",
+        "context": "mean",
+        "tickets_sha256": "3f94a555bce29a61359f42188ad454d065e9e25839f1d57951f44884c24edcbf"
+      },
+      {
+        "seed": 610810004,
+        "family": "low",
+        "context": "short_context",
+        "tickets_sha256": "3f94a555bce29a61359f42188ad454d065e9e25839f1d57951f44884c24edcbf"
+      },
+      {
+        "seed": 610810004,
+        "family": "low",
+        "context": "long_context",
+        "tickets_sha256": "3f94a555bce29a61359f42188ad454d065e9e25839f1d57951f44884c24edcbf"
+      },
+      {
+        "seed": 610810004,
+        "family": "queue",
+        "context": "mean",
+        "tickets_sha256": "f1d82dc04095f1f26722216c1593b05dee025d0d4445077c626b19d8afc7f3f6"
+      },
+      {
+        "seed": 610810004,
+        "family": "queue",
+        "context": "short_context",
+        "tickets_sha256": "f1d82dc04095f1f26722216c1593b05dee025d0d4445077c626b19d8afc7f3f6"
+      },
+      {
+        "seed": 610810004,
+        "family": "queue",
+        "context": "long_context",
+        "tickets_sha256": "f1d82dc04095f1f26722216c1593b05dee025d0d4445077c626b19d8afc7f3f6"
+      },
+      {
+        "seed": 610810004,
+        "family": "burst",
+        "context": "mean",
+        "tickets_sha256": "5a22759fb9d23703264723a241efd039b6ae90edd614cf12a71c9179aec556f7"
+      },
+      {
+        "seed": 610810004,
+        "family": "burst",
+        "context": "short_context",
+        "tickets_sha256": "5a22759fb9d23703264723a241efd039b6ae90edd614cf12a71c9179aec556f7"
+      },
+      {
+        "seed": 610810004,
+        "family": "burst",
+        "context": "long_context",
+        "tickets_sha256": "5a22759fb9d23703264723a241efd039b6ae90edd614cf12a71c9179aec556f7"
+      },
+      {
+        "seed": 610810004,
+        "family": "sustained",
+        "context": "mean",
+        "tickets_sha256": "d90ec4a29985004217520eb27d614b4ef5d56988573acbe2fad4a3f5c38f0d2f"
+      },
+      {
+        "seed": 610810004,
+        "family": "sustained",
+        "context": "short_context",
+        "tickets_sha256": "d90ec4a29985004217520eb27d614b4ef5d56988573acbe2fad4a3f5c38f0d2f"
+      },
+      {
+        "seed": 610810004,
+        "family": "sustained",
+        "context": "long_context",
+        "tickets_sha256": "d90ec4a29985004217520eb27d614b4ef5d56988573acbe2fad4a3f5c38f0d2f"
+      }
+    ],
+    "new_rows": 48,
+    "reused_rows": 432,
+    "logical_rows": 480,
+    "ap_optimizer_grid": "integer seconds + state transition boundaries",
+    "ap_evaluation_grid": "common integer seconds 35..180; incomplete 35..120 separately",
+    "incremental_controller_device_cost": "existing model assumption 0; PC callback time measured",
+    "training_episodes": 0,
+    "device_commands": 0,
+    "experiment_ready": false
+  }
+}

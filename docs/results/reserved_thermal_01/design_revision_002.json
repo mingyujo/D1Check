@@ -1,0 +1,48 @@
+{
+  "revision": 2,
+  "parent_sha256": "b19ca0df7f418af661cb9176c776a3b776a1498bfe8795d189edb30d564be03d",
+  "design": {
+    "version": "reserved-thermal-review-candidate-v2",
+    "public_policy": "RESERVED_THERMAL_REQUEST_V1",
+    "engine_abi_policy": "PARETO_BEAM_SERVICE_V1",
+    "review_required_before_pilot": true,
+    "reservation": "cap_i=min(original deadline_i, long-context initial EFT response_i); never relaxed",
+    "energy_initial": "B=C_observed+J_remaining(EFT of arrived queue)",
+    "energy_arrival": "B+=J_remaining(EFT of full queue)-J_remaining(EFT of old queue), at same snapshot",
+    "energy_other_events": "no budget renewal; observed prefix remains spent",
+    "energy_veto": "C_observed+J_remaining(candidate)>B+numerical epsilon",
+    "full_calendar": true,
+    "prefix_cost_veto": false,
+    "maximum_expansions": 64,
+    "beam_width": 8,
+    "depth": 4,
+    "wait_step_s": 0.25,
+    "wait_limit_s": 2.0,
+    "rank": [
+      "predicted running AP peak",
+      "predicted total J",
+      "urgent predicted response",
+      "sequence"
+    ],
+    "future_arrivals": false,
+    "predicted_lane_release": false,
+    "model_costs_only": true,
+    "ap_window_s": [
+      35,
+      180
+    ],
+    "energy_window_s": [
+      0,
+      120
+    ],
+    "physical_safety_guarantee": false,
+    "retained_calendar": "preserve each pending absolute start lower bound; log expiry or conflict",
+    "terminal_budget": "B_final-J_common_0_120; partial work separately marked",
+    "pending_reservation": "first seen and issued times separate during unknown overrun",
+    "diagnostics": "candidate rejection, callback fallback and actual request violation separate"
+  },
+  "previous_design_sha256": "0e26da9f6cd270b5f07b0f2e6629f748e8a89ae46aadb36a032704707380a9fb",
+  "review_sha256": "7a983eec07134993f043cd3895e1f306c0b521f216489a1a194b878b625f0194",
+  "review_file": "7a983eec07134993f043cd3895e1f306c0b521f216489a1a194b878b625f0194.json",
+  "registered_utc": "2026-10-07T16:57:36.440459+00:00"
+}

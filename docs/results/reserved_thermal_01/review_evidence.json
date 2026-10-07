@@ -1,0 +1,233 @@
+{
+  "version": "reserved-thermal-astra-review-evidence-v1",
+  "utc": "2026-10-07T16:45:28.043038+00:00",
+  "head": "e73d6e956587a75f1129882591473664b2f78895",
+  "dirty": true,
+  "method": "read-only source inspection, existing fixture accounting and direct projection; no engine.simulate",
+  "command": "MKL_THREADING_LAYER=SEQUENTIAL; python -B - (inline projection and saved gzip accounting)",
+  "source_hashes": {
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "tools/d1_ap_preparation_memory.py": "20af3304f8386c7f6adc1df56f5c593e0fd35600ae60d2ce60a518d5c418c40d",
+    "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9",
+    "tools/d1_arrival_explore_batch.py": "f0994f603720c606c5dc58f24c334cd2e91d3a79cc9a525094e7bcbbab86411f",
+    "tools/d1_empirical_request_policy.py": "32407050fae7a0f6f7d58a19cd6f2f4eedea46ba9c8651e15363d0af496050a0",
+    "tools/d1_industrial_scheduling.py": "5537b8746d329a8ab25f69c105218ecb6eaba99d26bfb6bb8434950b2e5b6bab",
+    "tools/d1_joint_queue_area.py": "b0202f9656b4f4b0f2323f123c00fbd4df5557748eb115db1126919c8a754710",
+    "tools/d1_online_policy_model.py": "a4e28dc489f221b1f85e8754b23385c60ba134af20ac701a3660293cac63156a",
+    "tools/d1_pareto_beam.py": "b442e74b212c070587cd3b141ccd1aea34bd251f255ace8c706cbaafea8c94df",
+    "tools/d1_queue_ppo.py": "0aea534d37465884d070d192fdfe7f863b480d4db17b85082773c9acc42ec9f1",
+    "tools/d1_request_ppo.py": "c8282794b92c10e60b1d2a0bffed3eb8e05bf1aad5001493948a801e12e2c0a2",
+    "tools/d1_request_rl.py": "ac74114e28c6f44e0c3b0c9a1e5a943ad156579c8a3cfe3e015db8a50e2958a9",
+    "tools/d1_reserved_thermal.py": "3a95abb4fe7acbd95120857f17c8e59727da71dbdc9eb8f50a040a4bdfeea208",
+    "tools/d1_reserved_thermal_study.py": "4496cc50175ab61bbed7d87780fdbab8dbe0cf8ff4d4ca3b799a509f597ed51a",
+    "tools/test_d1_reserved_thermal.py": "0a50c3ade2bfec337808eb1cd927d2777ee28d1a63920c2ca648fc7effa36610"
+  },
+  "previous_verification_sha256": "bf5f91110cccba3f70370918d8355fa709070d47f5599c54942c11a20981895a",
+  "retention_witness": {
+    "classification": "constructed valid CPU calendar, not a performance run",
+    "construction": "q0,q1: detection normal, arrival=35s, deadline_offset=6s; a=place(q0,CPU,35.1,[]); b=place(q1,CPU,a.end+0.25,[a]); calendar=[a,b]; sequence=_retained_sequence([q0,q1],35); finish_plan(sequence,[q0,q1],[],35,controller)",
+    "saved": [
+      {
+        "id": "review/a",
+        "state": "detection_CPU",
+        "backend": "CPU",
+        "start": 35.1,
+        "end": 35.72173689485417,
+        "response": 35.71947144338889,
+        "deadline": 41.0,
+        "already_responded": false
+      },
+      {
+        "id": "review/b",
+        "state": "detection_CPU",
+        "backend": "CPU",
+        "start": 35.97173689485417,
+        "end": 36.593473789708334,
+        "response": 36.59120833824306,
+        "deadline": 41.0,
+        "already_responded": false
+      }
+    ],
+    "retained_sequence": [
+      [
+        "review/a",
+        "CPU",
+        0.10000000000000142
+      ],
+      [
+        "review/b",
+        "CPU",
+        0.0
+      ]
+    ],
+    "rebuilt": [
+      {
+        "id": "review/a",
+        "state": "detection_CPU",
+        "backend": "CPU",
+        "start": 35.1,
+        "end": 35.72173689485417,
+        "response": 35.71947144338889,
+        "deadline": 41.0,
+        "already_responded": false
+      },
+      {
+        "id": "review/b",
+        "state": "detection_CPU",
+        "backend": "CPU",
+        "start": 35.72173689485417,
+        "end": 36.343473789708334,
+        "response": 36.34120833824306,
+        "deadline": 41.0,
+        "already_responded": false
+      }
+    ],
+    "erased_gap_s": 0.25
+  },
+  "existing_fixture_accounting": [
+    {
+      "path": "output/reserved_thermal_20261008_v1/fixtures/00007_single.json.gz",
+      "sha256": "f2aa32365e802cd387bd490bf39efa88e886e79ca59600d7a8ec574f5462bdce",
+      "name": "single",
+      "energy_j": 133.66212817627155,
+      "budget_j": 133.6621281760889,
+      "energy_excess_j": 1.8263790479977615e-10,
+      "reservation_breaks": [],
+      "completed": 1,
+      "planned": 1
+    },
+    {
+      "path": "output/reserved_thermal_20261008_v1/fixtures/00008_mixed.json.gz",
+      "sha256": "a012013fa5807658a43bdff085be569b4640598be4be488b1ffc9858584e57c9",
+      "name": "mixed",
+      "energy_j": 134.64519010368426,
+      "budget_j": 134.64519010369543,
+      "energy_excess_j": -1.1169731806148775e-11,
+      "reservation_breaks": [
+        {
+          "now_s": 35.1,
+          "reason": "no_admitted_calendar",
+          "ids": [
+            "reserved-fixture/1"
+          ],
+          "caps": {
+            "reserved-fixture/1": 35.78536795997916
+          },
+          "budget_j": 134.20193776718736
+        },
+        {
+          "now_s": 35.949903994763886,
+          "reason": "observed_response_after_reservation",
+          "ids": [
+            "reserved-fixture/1"
+          ],
+          "caps": {
+            "reserved-fixture/1": 35.78536795997916
+          },
+          "budget_j": 134.64519010369543
+        },
+        {
+          "now_s": 35.952169446,
+          "reason": "observed_overrun",
+          "ids": [
+            "reserved-fixture/1"
+          ],
+          "caps": {
+            "reserved-fixture/1": 35.78536795997916
+          },
+          "budget_j": 134.64519010369543
+        }
+      ],
+      "completed": 4,
+      "planned": 4
+    },
+    {
+      "path": "output/reserved_thermal_20261008_v1/fixtures/00009_suffix_a.json.gz",
+      "sha256": "3885f25d7cb96377319192dd7b9d2d03be92c9a21eb0e12857cef433c7301181",
+      "name": "suffix_a",
+      "energy_j": 134.20193776765663,
+      "budget_j": 134.20193776718736,
+      "energy_excess_j": 4.692708444054006e-10,
+      "reservation_breaks": [],
+      "completed": 3,
+      "planned": 3
+    },
+    {
+      "path": "output/reserved_thermal_20261008_v1/fixtures/00010_suffix_b.json.gz",
+      "sha256": "3a40fcd69d2461dec66e3fe72c711023fe9929877e2fe68b720604ddb7e54132",
+      "name": "suffix_b",
+      "energy_j": 134.54863284949565,
+      "budget_j": 134.54863284910505,
+      "energy_excess_j": 3.905995527020423e-10,
+      "reservation_breaks": [],
+      "completed": 3,
+      "planned": 3
+    },
+    {
+      "path": "output/reserved_thermal_20261008_v1/fixtures/00011_overrun.json.gz",
+      "sha256": "bea89de50847386efcd5fd1e01a86a3406a4a6086a4e7a5777531de05f4a3301",
+      "name": "overrun",
+      "energy_j": 134.64616630884416,
+      "budget_j": 134.64519010369543,
+      "energy_excess_j": 0.0009762051487314238,
+      "reservation_breaks": [
+        {
+          "now_s": 35.1,
+          "reason": "no_admitted_calendar",
+          "ids": [
+            "reserved-fixture/1"
+          ],
+          "caps": {
+            "reserved-fixture/1": 35.78536795997916
+          },
+          "budget_j": 134.20193776718736
+        },
+        {
+          "now_s": 35.95058423566667,
+          "reason": "observed_response_after_reservation",
+          "ids": [
+            "reserved-fixture/1"
+          ],
+          "caps": {
+            "reserved-fixture/1": 35.78536795997916
+          },
+          "budget_j": 134.64519010369543
+        },
+        {
+          "now_s": 35.952169446,
+          "reason": "observed_overrun",
+          "ids": [
+            "reserved-fixture/1"
+          ],
+          "caps": {
+            "reserved-fixture/1": 35.78536795997916
+          },
+          "budget_j": 134.64519010369543
+        },
+        {
+          "now_s": 35.95285409308333,
+          "reason": "no_admitted_calendar",
+          "ids": [],
+          "caps": {},
+          "budget_j": 134.64519010369543
+        }
+      ],
+      "completed": 4,
+      "planned": 4
+    }
+  ],
+  "consumption_before": {
+    "environment_starts": 11,
+    "fixture_starts": 11,
+    "pilot_starts": 0,
+    "training_episodes": 0,
+    "device_commands": 0,
+    "failed_starts": 1
+  },
+  "additional_environment_starts": 0,
+  "additional_training_episodes": 0,
+  "additional_device_commands": 0,
+  "owner_exists": false,
+  "previous_test_suite_rerun": false
+}

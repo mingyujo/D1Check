@@ -1,0 +1,101 @@
+{
+  "version": "reserved-thermal-sol-repair-verification-v1",
+  "utc": "2026-10-07T17:03:04.679593+00:00",
+  "client_date_kst": "2026-10-08",
+  "head": "a081d55e9cc9d1a732bee9bed9e1ca8535244b29",
+  "dirty": true,
+  "source_hashes": {
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "tools/d1_ap_preparation_memory.py": "20af3304f8386c7f6adc1df56f5c593e0fd35600ae60d2ce60a518d5c418c40d",
+    "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9",
+    "tools/d1_arrival_explore_batch.py": "f0994f603720c606c5dc58f24c334cd2e91d3a79cc9a525094e7bcbbab86411f",
+    "tools/d1_empirical_request_policy.py": "32407050fae7a0f6f7d58a19cd6f2f4eedea46ba9c8651e15363d0af496050a0",
+    "tools/d1_industrial_scheduling.py": "5537b8746d329a8ab25f69c105218ecb6eaba99d26bfb6bb8434950b2e5b6bab",
+    "tools/d1_joint_queue_area.py": "b0202f9656b4f4b0f2323f123c00fbd4df5557748eb115db1126919c8a754710",
+    "tools/d1_online_policy_model.py": "a4e28dc489f221b1f85e8754b23385c60ba134af20ac701a3660293cac63156a",
+    "tools/d1_pareto_beam.py": "b442e74b212c070587cd3b141ccd1aea34bd251f255ace8c706cbaafea8c94df",
+    "tools/d1_queue_ppo.py": "0aea534d37465884d070d192fdfe7f863b480d4db17b85082773c9acc42ec9f1",
+    "tools/d1_request_ppo.py": "c8282794b92c10e60b1d2a0bffed3eb8e05bf1aad5001493948a801e12e2c0a2",
+    "tools/d1_request_rl.py": "ac74114e28c6f44e0c3b0c9a1e5a943ad156579c8a3cfe3e015db8a50e2958a9",
+    "tools/d1_reserved_thermal.py": "19066ddf8696eb500c921cd697067fdd2bd904f47ce832f84c40cb123ed03249",
+    "tools/d1_reserved_thermal_study.py": "6e682d73596027a20c83024906df53e8cf7736528fd1ea7b5a88d72d8b2178bb",
+    "tools/test_d1_reserved_thermal.py": "8787758044edbfd77d12e935459eca8c08df4b5d23b9a26b34d789d5b8c9a2fb",
+    "tools/d1_external_rules.py": "4e824c0ba7bf7c6efc86893a676d7346337f4a2b74d5f8f4726f112e400bc756",
+    "tools/d1_external_rules_study.py": "fd60087aeeb35452ba9cf6d20dc47423a9cb1d32adeea3f750d1ac63e8fc1e82"
+  },
+  "implementation_revision": 5,
+  "design_revision": 2,
+  "design_chain": [
+    {
+      "path": "output/reserved_thermal_20261008_v1/design_revisions/001.json",
+      "sha256": "b19ca0df7f418af661cb9176c776a3b776a1498bfe8795d189edb30d564be03d"
+    },
+    {
+      "path": "output/reserved_thermal_20261008_v1/design_revisions/002.json",
+      "sha256": "e624cce873330d73258308a564c03ab9f7491979376a48a4ce7ae491f6d14dc8"
+    }
+  ],
+  "tests": {
+    "command": "MKL_THREADING_LAYER=SEQUENTIAL; python -B -m unittest tools.test_d1_reserved_thermal tools.test_d1_joint_queue_area -v",
+    "result": "PASS",
+    "new_adapter_tests": 38,
+    "existing_regressions": 5,
+    "distinct_total": 43,
+    "test_body_wall_s": 9.801,
+    "runs_this_turn": [
+      {
+        "tests": 28,
+        "engine_starts": 0
+      },
+      {
+        "tests": 40,
+        "engine_starts": 5
+      },
+      {
+        "tests": 43,
+        "engine_starts": 5
+      }
+    ],
+    "final_retest_reason": "added local-state loss/owner guards and preserved pre-performance pilot source revision"
+  },
+  "consumption": {
+    "environment_starts": 21,
+    "fixture_starts": 21,
+    "pilot_starts": 0,
+    "training_episodes": 0,
+    "device_commands": 0,
+    "failed_starts": 1
+  },
+  "added_environment_starts": 10,
+  "total_planned_fixture_requests": 61,
+  "total_completed_successful_fixture_requests": 60,
+  "latest_fixture_cases": 5,
+  "latest_fixture_planned": 15,
+  "latest_fixture_completed": 15,
+  "mocked_pilot": {
+    "engine_starts": 0,
+    "saved_items": 48,
+    "logical_rows": 480,
+    "resume_engine_calls": 0,
+    "changed_cache_rejected": true
+  },
+  "pilot_manifest_sha256": "60afd7847689fb0c08c6fe67ba7b45e3d17ac16097fea6de33d496bab48169b7",
+  "reuse_manifest_sha256": "13d6ae65644661d1b304dd08408038a270f2dbe330bf279d37391d3f1c8ce15c",
+  "pilot_manifest_revision": 2,
+  "pilot_gate": {
+    "result": "BLOCKED_BEFORE_ENVIRONMENT_START",
+    "reason": "Astra review does not permit performance pilot",
+    "additional_starts": 0
+  },
+  "remaining_environment_budget": 19979,
+  "remaining_stage2_budget": 491,
+  "campaign_original_preserved": true,
+  "protected_sources": 13,
+  "owner_released": true,
+  "full_pilot_completed": false,
+  "training_started": false,
+  "device_commands": 0,
+  "experiment_ready": false,
+  "previous_verification_preserved_sha256": "bf5f91110cccba3f70370918d8355fa709070d47f5599c54942c11a20981895a"
+}

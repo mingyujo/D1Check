@@ -1,0 +1,91 @@
+{
+  "version": "reserved-thermal-astra-review-v1",
+  "utc": "2026-10-07T16:45:28.046665+00:00",
+  "head": "e73d6e956587a75f1129882591473664b2f78895",
+  "dirty": true,
+  "role": "Astra design/code review",
+  "decision": "REVISE_BEFORE_RUN",
+  "source_hashes": {
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "tools/d1_ap_preparation_memory.py": "20af3304f8386c7f6adc1df56f5c593e0fd35600ae60d2ce60a518d5c418c40d",
+    "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9",
+    "tools/d1_arrival_explore_batch.py": "f0994f603720c606c5dc58f24c334cd2e91d3a79cc9a525094e7bcbbab86411f",
+    "tools/d1_empirical_request_policy.py": "32407050fae7a0f6f7d58a19cd6f2f4eedea46ba9c8651e15363d0af496050a0",
+    "tools/d1_industrial_scheduling.py": "5537b8746d329a8ab25f69c105218ecb6eaba99d26bfb6bb8434950b2e5b6bab",
+    "tools/d1_joint_queue_area.py": "b0202f9656b4f4b0f2323f123c00fbd4df5557748eb115db1126919c8a754710",
+    "tools/d1_online_policy_model.py": "a4e28dc489f221b1f85e8754b23385c60ba134af20ac701a3660293cac63156a",
+    "tools/d1_pareto_beam.py": "b442e74b212c070587cd3b141ccd1aea34bd251f255ace8c706cbaafea8c94df",
+    "tools/d1_queue_ppo.py": "0aea534d37465884d070d192fdfe7f863b480d4db17b85082773c9acc42ec9f1",
+    "tools/d1_request_ppo.py": "c8282794b92c10e60b1d2a0bffed3eb8e05bf1aad5001493948a801e12e2c0a2",
+    "tools/d1_request_rl.py": "ac74114e28c6f44e0c3b0c9a1e5a943ad156579c8a3cfe3e015db8a50e2958a9",
+    "tools/d1_reserved_thermal.py": "3a95abb4fe7acbd95120857f17c8e59727da71dbdc9eb8f50a040a4bdfeea208",
+    "tools/d1_reserved_thermal_study.py": "4496cc50175ab61bbed7d87780fdbab8dbe0cf8ff4d4ca3b799a509f597ed51a",
+    "tools/test_d1_reserved_thermal.py": "0a50c3ade2bfec337808eb1cd927d2777ee28d1a63920c2ca648fc7effa36610"
+  },
+  "design": {
+    "version": "reserved-thermal-review-candidate-v1",
+    "public_policy": "RESERVED_THERMAL_REQUEST_V1",
+    "engine_abi_policy": "PARETO_BEAM_SERVICE_V1",
+    "review_required_before_pilot": true,
+    "reservation": "cap_i=min(original deadline_i, long-context initial EFT response_i); never relaxed",
+    "energy_initial": "B=C_observed+J_remaining(EFT of arrived queue)",
+    "energy_arrival": "B+=J_remaining(EFT of full queue)-J_remaining(EFT of old queue), at same snapshot",
+    "energy_other_events": "no budget renewal; observed prefix remains spent",
+    "energy_veto": "C_observed+J_remaining(candidate)>B+numerical epsilon",
+    "full_calendar": true,
+    "prefix_cost_veto": false,
+    "maximum_expansions": 64,
+    "beam_width": 8,
+    "depth": 4,
+    "wait_step_s": 0.25,
+    "wait_limit_s": 2.0,
+    "rank": [
+      "predicted running AP peak",
+      "predicted total J",
+      "urgent predicted response",
+      "sequence"
+    ],
+    "future_arrivals": false,
+    "predicted_lane_release": false,
+    "model_costs_only": true,
+    "ap_window_s": [
+      35,
+      180
+    ],
+    "energy_window_s": [
+      0,
+      120
+    ],
+    "physical_safety_guarantee": false
+  },
+  "reviewed_registration_revision": 3,
+  "report": "ASTRA_REVIEW.md",
+  "report_sha256": "fca8e770f5482699f2152d16fd169c23b2d7fab1ce36165fcd0201c558b1723c",
+  "evidence": "review_evidence.json",
+  "evidence_sha256": "0277f43e4448b2b72d55fa99bdcb7c372407bdae699d42a3e5d315b026aad274",
+  "core_equations": "retain initial immutable caps and signed arrival credit as conservative model-only hypothesis",
+  "required_repairs": [
+    "preserve all pending calendar absolute start bounds",
+    "separate reservation/energy/search failures and reconcile terminal common-window energy budget",
+    "append immutable authorized design revisions without campaign or consumption reset",
+    "isolate review gate tests and complete pilot driver before final source review"
+  ],
+  "authorizes": {
+    "sol_implementation_and_bounded_fixtures": true,
+    "performance_pilot": false,
+    "training": false,
+    "device": false
+  },
+  "next_role": "Sol repairs and pilot-driver preparation, then Astra final source binding",
+  "consumption": {
+    "environment_starts": 11,
+    "fixture_starts": 11,
+    "pilot_starts": 0,
+    "training_episodes": 0,
+    "device_commands": 0,
+    "failed_starts": 1
+  },
+  "remaining_overall": 19989,
+  "remaining_stage2": 501
+}

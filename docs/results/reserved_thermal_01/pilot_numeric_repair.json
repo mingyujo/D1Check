@@ -1,0 +1,87 @@
+{
+  "version": "retained-lane-numeric-repair-v1",
+  "registered_utc": "2026-10-07T17:17:58.868677+00:00",
+  "original_manifest_sha256": "60afd7847689fb0c08c6fe67ba7b45e3d17ac16097fea6de33d496bab48169b7",
+  "review_sha256": "ef2b03962afae28f0dcecaa2adda1ed22bc0e44ae371526deb12bcc18ba9c15c",
+  "source_hashes": {
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "tools/d1_ap_preparation_memory.py": "20af3304f8386c7f6adc1df56f5c593e0fd35600ae60d2ce60a518d5c418c40d",
+    "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9",
+    "tools/d1_arrival_explore_batch.py": "f0994f603720c606c5dc58f24c334cd2e91d3a79cc9a525094e7bcbbab86411f",
+    "tools/d1_empirical_request_policy.py": "32407050fae7a0f6f7d58a19cd6f2f4eedea46ba9c8651e15363d0af496050a0",
+    "tools/d1_industrial_scheduling.py": "5537b8746d329a8ab25f69c105218ecb6eaba99d26bfb6bb8434950b2e5b6bab",
+    "tools/d1_joint_queue_area.py": "b0202f9656b4f4b0f2323f123c00fbd4df5557748eb115db1126919c8a754710",
+    "tools/d1_online_policy_model.py": "a4e28dc489f221b1f85e8754b23385c60ba134af20ac701a3660293cac63156a",
+    "tools/d1_pareto_beam.py": "b442e74b212c070587cd3b141ccd1aea34bd251f255ace8c706cbaafea8c94df",
+    "tools/d1_queue_ppo.py": "0aea534d37465884d070d192fdfe7f863b480d4db17b85082773c9acc42ec9f1",
+    "tools/d1_request_ppo.py": "c8282794b92c10e60b1d2a0bffed3eb8e05bf1aad5001493948a801e12e2c0a2",
+    "tools/d1_request_rl.py": "ac74114e28c6f44e0c3b0c9a1e5a943ad156579c8a3cfe3e015db8a50e2958a9",
+    "tools/d1_reserved_thermal.py": "19066ddf8696eb500c921cd697067fdd2bd904f47ce832f84c40cb123ed03249",
+    "tools/d1_reserved_thermal_study.py": "6e682d73596027a20c83024906df53e8cf7736528fd1ea7b5a88d72d8b2178bb",
+    "tools/test_d1_reserved_thermal.py": "8787758044edbfd77d12e935459eca8c08df4b5d23b9a26b34d789d5b8c9a2fb",
+    "tools/d1_external_rules.py": "4e824c0ba7bf7c6efc86893a676d7346337f4a2b74d5f8f4726f112e400bc756",
+    "tools/d1_external_rules_study.py": "fd60087aeeb35452ba9cf6d20dc47423a9cb1d32adeea3f750d1ac63e8fc1e82"
+  },
+  "runtime_hashes": {
+    "tools/d1_reserved_thermal_pilot_repair.py": "9d465af66832015cf51c690b5dfdd8a486a11520583813b48f34d58b58549e8a",
+    "tools/test_d1_reserved_thermal_pilot_repair.py": "4aab4f56873d7b7cdbe339e03cbcd81fc2409f2705adc31f2749cb4520266b49"
+  },
+  "preserved_items": {
+    "0000.json.gz": "695056737e2de0a0bb5da2183c1571ee622e43979887e507476515f136435b97",
+    "0001.json.gz": "713ac348ee31ce1c0f2c44c7981fbca3765455a64162d6ccadc7643fa62e1355",
+    "0002.json.gz": "35a6dc2cff1a0c83e64ecde9350bb71de2c30b2dc77e602bf39d50c75ffb83a1",
+    "0003.json.gz": "8aa255d5c416524a49159ab47912034918361e0b57c2c24b644ddbc6d9a24ab0"
+  },
+  "repair": "retained unsupported positive overlap <=1e-9s: snap start to lane end; otherwise raise",
+  "unchanged_design": {
+    "version": "reserved-thermal-review-candidate-v2",
+    "public_policy": "RESERVED_THERMAL_REQUEST_V1",
+    "engine_abi_policy": "PARETO_BEAM_SERVICE_V1",
+    "review_required_before_pilot": true,
+    "reservation": "cap_i=min(original deadline_i, long-context initial EFT response_i); never relaxed",
+    "energy_initial": "B=C_observed+J_remaining(EFT of arrived queue)",
+    "energy_arrival": "B+=J_remaining(EFT of full queue)-J_remaining(EFT of old queue), at same snapshot",
+    "energy_other_events": "no budget renewal; observed prefix remains spent",
+    "energy_veto": "C_observed+J_remaining(candidate)>B+numerical epsilon",
+    "full_calendar": true,
+    "prefix_cost_veto": false,
+    "maximum_expansions": 64,
+    "beam_width": 8,
+    "depth": 4,
+    "wait_step_s": 0.25,
+    "wait_limit_s": 2.0,
+    "rank": [
+      "predicted running AP peak",
+      "predicted total J",
+      "urgent predicted response",
+      "sequence"
+    ],
+    "future_arrivals": false,
+    "predicted_lane_release": false,
+    "model_costs_only": true,
+    "ap_window_s": [
+      35,
+      180
+    ],
+    "energy_window_s": [
+      0,
+      120
+    ],
+    "physical_safety_guarantee": false,
+    "retained_calendar": "preserve each pending absolute start lower bound; log expiry or conflict",
+    "terminal_budget": "B_final-J_common_0_120; partial work separately marked",
+    "pending_reservation": "first seen and issued times separate during unknown overrun",
+    "diagnostics": "candidate rejection, callback fallback and actual request violation separate"
+  },
+  "consumption": {
+    "environment_starts": 27,
+    "fixture_starts": 22,
+    "pilot_starts": 5,
+    "training_episodes": 0,
+    "device_commands": 0,
+    "failed_starts": 3
+  },
+  "failure_evidence_sha256": "8a8f47bb9851a452fb82cabe87592c7db46078c88018199c0f744e9cb61e7871",
+  "user_scope": "approved pilot; routine implementation error repair and continuation"
+}

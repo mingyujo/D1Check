@@ -35,6 +35,13 @@
 - 최대6시간(대기·수정 포함), 마지막600초 예약. 정상12세션/2,016추론, 보완 포함 최대13세션/2,120추론·runtime52·staging91파일·설치/push/pull각2·ADB99,240. 모든 상한을 함께 소진할 수 있다는 뜻은 아니다. 보완은 **첫 앱 실패·적격 개발0·원인 재현/검증·남은 전체 블록 시간**일 때만 새12세션 block1회 허용. 이후 실패·모형 gate 실패·원인 미확정은 재실측하지 않는다.
 - Python36검사/기기차단 Check 통과. 기기/ADB/실측/Run/claim0, 기존 기본/RL/strict/experiment_ready=false 보존. 다른 작업의 문서·.gitattributes·사용자 파일은 이번 commit에서 제외한다. 다음 행동 하나: 새 캠페인 예산의 실측 승인 후 현재 A24 환경 gate를 확인한다.
 
+## 2026-10-08 RESERVED-THERMAL-01 — 최종192조건 완료·현 후보 미채택·Git 공유
+
+- 사용자 최신 자율 지시로 전환 대기/반복질문 없이 단계3–5를 완료했다. 수치R2 9직접검증·10회귀·같은48조건/576행, 새16seed×4부하×3문맥/192조건×11정책=2,112행 완료. [최종 요약](results/reserved_thermal_01/FINAL_SUMMARY.md)·[오프라인 화면](results/reserved_thermal_01/final_rule_only/index.html)·[보고서](results/reserved_thermal_01/final_rule_only/REPORT.md).
+- 수정본12,672전량·주96조건10,368기한 통과. 주96평균 Triton 대비AP−0.129776°C/J−0.790014·공동감소96, Band 대비AP−0.052367/J+0.167123·공동0. 전체일반실패292 vsBand193/SHARED_EFT204/Triton192. 현 후보 미채택·RL 본학습0, 실제제품/실기기 우월성 미입증. 원래 목표 전체완료로 승격하지 않는다.
+- 이번 추가2,170/누적2,241환경(완료2,238·이전오류3), 단계2 129/512·평가2,112·잔여전체17,759/단계2 383·본학습0/상한6,144·이작업기기/ADB0. 원18소스·첫보완2·원48항목·모형·기본/strict/experiment_ready=false·사용자9파일·다른worktree/다른작업 보존. owner/활성평가 없음. 남은예산으로 새실험 자동시작하지 않는다.
+- 검증 HEAD `4dcf282`+이번 미커밋23실행소스 binding, 전체2,112 raw/receipt/요청/lane·J재계산최대1.42e−13J·5그림·화면2,138행/검색195/5그림 통과. [검증](results/reserved_thermal_01/final_rule_only/verification.json). 이번 PC캠페인은 종료하며 Git commit/push·원격HEAD 결과는 최종 응답과 로컬 git_final.json에 남긴다. 다음 자동실험0. 새설계/폰확인은 별도근거·범위가 필요하며 기존캠페인 예산초기화0.
+
 ## 2026-10-08 HISTORY-CONTROL-PC-01 — 통합 경로·서명 APK·실행 계획 준비 완료
 
 - 사용자 `진행해`에 따라 실측 전 PC 구현을 완료했다. 같은 resident에서 conditioning96→고정 회복30/180초→C0/CPU96/PAR96을 수행하는 opt-in 경로와 개발6→후보동결→확인6 진입을 연결했다. 기존 경로·동결 모형·RL·strict·experiment_ready=false 보존. [상세/정확 예산](ENERGY_AP_HISTORY_CONTROL_DESIGN_20261007.md) · [검증/바인딩](results/history_control_plan_01/implementation_check.json).

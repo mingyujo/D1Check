@@ -35,6 +35,29 @@
 - 최대6시간(대기·수정 포함), 마지막600초 예약. 정상12세션/2,016추론, 보완 포함 최대13세션/2,120추론·runtime52·staging91파일·설치/push/pull각2·ADB99,240. 모든 상한을 함께 소진할 수 있다는 뜻은 아니다. 보완은 **첫 앱 실패·적격 개발0·원인 재현/검증·남은 전체 블록 시간**일 때만 새12세션 block1회 허용. 이후 실패·모형 gate 실패·원인 미확정은 재실측하지 않는다.
 - Python36검사/기기차단 Check 통과. 기기/ADB/실측/Run/claim0, 기존 기본/RL/strict/experiment_ready=false 보존. 다른 작업의 문서·.gitattributes·사용자 파일은 이번 commit에서 제외한다. 다음 행동 하나: 새 캠페인 예산의 실측 승인 후 현재 A24 환경 gate를 확인한다.
 
+## 2026-10-08 — RESERVED-THERMAL-01 단계 진행과 모델 역할 채택
+
+- 최종 자율 실행 완료/판정: 수치R2·동일48조건576행·새192조건11정책2,112행을 완료했다. 주96Triton공동감소96/Band0·전체일반실패292 vsBand193이므로 현후보미채택·RL0. 내부EFT 대조추가/원후보R2교체·계획11정책 개정을 명시하며 기존판정/기본/strict/experiment_ready=false를 유지한다. 누적2,241/전체20,000·단계2 129/512·학습0/6,144·이작업기기0, 사용자/다른작업 보존. [최종요약/원본/재현](results/reserved_thermal_01/FINAL_SUMMARY.md). 이번파일만Git공유하고 남은예산으로 새설계/학습/실측을 자동시작하지 않는다. 아래는 이전 단계 이력이다.
+
+- 단계3 수정본48/576행 완료·누적129환경(추가58, 실패추가0). 9직접검증/10회귀·최대이동0.458ns·원 pilot 주요지표 동일. 유효행동 다양성319/12,623이나 배정차이0·Band/EFT 주24공동개선0이므로 RL0/보류. `PROCEED_RULE_ONLY`로 새16seed×4부하×3문맥=192조건/11정책2,112행을 사전등록해 최종 비교 중이다. 내부EFT 대조 추가/원후보 대신R2 사용을 명시했고 기기0·계수불변. 최종블록 최대2,128환경/60분·저장5분, 같은 전체20,000 장부. [검토/범위](results/reserved_thermal_01/numeric_r2/RULE_ONLY_REVIEW.md).
+
+- 최신 사용자 지시로 단계별 모델 전환 대기와 반복 확인을 해제한다. 기존 예산 안에서 전체 계획·조건부 RL 판정·문서/시각화/Git까지 자율 진행하며 모델 자동 위임은 하지 않는다. 단계3 `REVISE_BEFORE_RUN`에 따라 원48행 보존, 이동량≤1ns 수치R2·내부EFT 대조·행동 다양성·같은48조건을 최대64추가환경/60분으로 수행한다. 학습/새 최종시험은 이 보완 결과 판정 전0. [검토 계약](results/reserved_thermal_01/ASTRA_STAGE3_REVIEW.md).
+
+- Sol 승인pilot 완료: 고정48신규/432재사용=480행을 보존했다. `PROCEED_PILOT`의 코드/식/물리계수는 바꾸지 않고 저장 일정≤1ns 겹침만 별도 수치adapter로 보완, 첫4원실행/44보완실행 binding과 실패2회 추가를 명시했다. 누적71환경/학습·기기0. [실행 결과와 한계](results/reserved_thermal_01/PILOT_REPORT.md). 강한Triton 대비 주24공동개선24이나 Band/EFT0·전체 기한손실이 있어 정책 채택/RL 허가로 승격하지 않는다. 다음 판정은 Astra 단계3이다.
+
+- 최종 코드/pilot 검토 `PROCEED_PILOT` 확정: 구현5·설계2·pilot등록2에 바인딩한 48신규/432재사용 개발 pilot만 허용한다. 이전 차단 사유 해소와43검증 소스 일치, 전체/단계 예산 소비21 보존을 확인했다. 경미한 fallback 집계 누락은 원본 decisions 후처리로 분리 보고하며 동결 정책은 변경하지 않는다. [최종 판정과 구체 범위](results/reserved_thermal_01/ASTRA_FINAL_REVIEW.md). 이번 환경/학습/기기 추가0, Sol 실행 후 Astra 단계3에서 성능/RL 판정. 아래 수정 판정 이력과 초기 검토 원본은 보존한다.
+
+- Sol이 Astra 수정 계약을 반영했다. 완료 cap/signed J 식은 유지하며 저장 일정 각 시작 하한·최종 장부/원인 분리·pending·설계revision/원 상태 소실과 owner 보호·gate 검증·pilot 실행/재개를 보완했다. 43검증과 이번10fixture를 완료했고 누적21환경이다. 48신규/432재사용 설정을 고정했다. [보완·해시·다음 Astra](results/reserved_thermal_01/SOL_REPAIR.md). 최종 소스 확인 전 `REVISE_BEFORE_RUN` 유지, 성능 pilot/RL/기기 허가로 승격하지 않는다.
+
+- Astra 사전 검토 판정은 `REVISE_BEFORE_RUN`이다. 최초 완료 cap과 signed J credit을 보수적 1차 pilot 가설로 유지하며 일반 cap 완화·새 계수·그림자 기준정책은 이번 수정에 추가하지 않는다. 누적 예산 충족은 별도 EFT/Band 실행 대비 J 비악화 보장이 아니다. 저장 일정의 절대 시각 보존·최종 예산/원인 분리·불변 설계 revision과 gate 검증 보완 후 최종 소스를 다시 확인한다. [검토·직접 반례·Sol 범위](results/reserved_thermal_01/ASTRA_REVIEW.md). 성능 정책 채택/RL 허가0, 이번 환경/학습/기기 추가0, 누적11환경 유지.
+
+- 단계2 구현안을검토가능하게완성했다. 최초long-context EFT응답cap과현재상태새요청signed J credit은**제안식**이며성능정책채택아니다. 원16+회귀5검증·fixture11환경(실패1포함), pilot/학습/기기0. [명시식·인계](results/reserved_thermal_01/README.md). 사용자가정한Astra핵심식검토를거쳐Sol이pilot을이어가며, 판정완화/모형변경/소비초기화없음.
+
+- 사용자 지시에 따라 [단계별 PC 진행](RESERVED_THERMAL_STAGE_PLAN_20261008.md)을 채택한다. Astra=계획/검토, Sol=구현/실행, 사용자가 직접 모델 전환. 다른 모델 하위 에이전트로 자동 위임하지 않는다.
+- 전량·기한·긴급 응답 유지 아래 AP 최고값을 주목적으로, J 비증가를 조건으로 연구한다. Band/Triton 요청adapter·강한EFT·학습 없는 새 규칙을 대조한다. 과거 판정 변경/외부제품·실기기 우월성 채택이 아니다.
+- 새20,000환경·본학습6,144 상한, Sol 구현/최대512환경 pilot 뒤 Astra 검토. RL은 필요할 때만 새 알고리즘으로 수행한다. 입력/소스 manifest·RL 세부 설정 미동결을 남긴다.
+- 기기/ADB/실측0, 사용자파일/다른worktree/별도 수집 작업/동결/기본/strict/experiment_ready=false 보존. 최초 계획 작성과 이번 Astra 검토의 추가 소비는0이며, 사이에 수행한 Sol fixture11환경은 누적 장부에 유지한다.
+
 ## 2026-10-08 HISTORY-CONTROL-PC-01 — 통합 경로·서명 APK·실행 계획 준비 완료
 
 - 사용자 `진행해`에 따라 실측 전 PC 구현을 완료했다. 같은 resident에서 conditioning96→고정 회복30/180초→C0/CPU96/PAR96을 수행하는 opt-in 경로와 개발6→후보동결→확인6 진입을 연결했다. 기존 경로·동결 모형·RL·strict·experiment_ready=false 보존. [상세/정확 예산](ENERGY_AP_HISTORY_CONTROL_DESIGN_20261007.md) · [검증/바인딩](results/history_control_plan_01/implementation_check.json).
