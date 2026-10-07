@@ -1,5 +1,12 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-08 HISTORY-RECOVERY-PC-02 — 6시간·연결대기·보완 실행 경계 준비 완료
+
+- 실측 전 PC 작업만 수행. 원 수집 child 종료 확인 뒤 동일 transport를 최대20분/20회 조회하고, 동일 기기·manifest·앱 종료 증거를 확인한 경우 읽기 전용 회수1회(120초/20명령)를 수행하는 별도 parent 경로를 구현했다. 자동 연결/서버재시작/설정변경/endpoint전환0. [최종 계약](ENERGY_AP_HISTORY_RECOVERY_PC_20261008.md).
+- 새 `energy_ap_history_recovery_plan_v2` 캠페인 SHA `7daa7326…13ace`, 기본 child SHA `2e25aa64…62620`, Check 통과·미승인·미소비. 기존 v1 계획 byte/미소비 보존하되 실행 대상은 새 wrapper뿐이다. APK `3840bfb1…c8768be` 재사용, Android 변경/재빌드0.
+- 최대6시간(대기·수정 포함), 마지막600초 예약. 정상12세션/2,016추론, 보완 포함 최대13세션/2,120추론·runtime52·staging91파일·설치/push/pull각2·ADB99,240. 모든 상한을 함께 소진할 수 있다는 뜻은 아니다. 보완은 **첫 앱 실패·적격 개발0·원인 재현/검증·남은 전체 블록 시간**일 때만 새12세션 block1회 허용. 이후 실패·모형 gate 실패·원인 미확정은 재실측하지 않는다.
+- Python36검사/기기차단 Check 통과. 기기/ADB/실측/Run/claim0, 기존 기본/RL/strict/experiment_ready=false 보존. 다른 작업의 문서·.gitattributes·사용자 파일은 이번 commit에서 제외한다. 다음 행동 하나: 새 캠페인 예산의 실측 승인 후 현재 A24 환경 gate를 확인한다.
+
 ## 2026-10-08 HISTORY-CONTROL-PC-01 — 통합 경로·서명 APK·실행 계획 준비 완료
 
 - 사용자 `진행해`에 따라 실측 전 PC 구현을 완료했다. 같은 resident에서 conditioning96→고정 회복30/180초→C0/CPU96/PAR96을 수행하는 opt-in 경로와 개발6→후보동결→확인6 진입을 연결했다. 기존 경로·동결 모형·RL·strict·experiment_ready=false 보존. [상세/정확 예산](ENERGY_AP_HISTORY_CONTROL_DESIGN_20261007.md) · [검증/바인딩](results/history_control_plan_01/implementation_check.json).

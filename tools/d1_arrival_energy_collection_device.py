@@ -234,6 +234,9 @@ def run(plan_file,adb,serial,expected_sha,approved):
         from tools import d1_history_control_plan as history
         from tools import d1_background_activity_plan as background
         history.check(plan_file)
+        if plan.get('history_recovery_child'):
+            from tools.d1_history_recovery_campaign import require_admission
+            require_admission(plan_file)
     elif plan.get('sustained_confirmation'):
         from tools import d1_sustained_plan as sustained
         sustained.check(plan_file)

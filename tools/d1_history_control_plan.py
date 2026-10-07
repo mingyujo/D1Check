@@ -47,7 +47,7 @@ def budget():
 
 
 def identity():
-    files=[Path(__file__),Path(analysis.__file__),Path(bg.__file__),DESIGN,TRACE,
+    files=[Path(__file__),ROOT/'tools/d1_history_recovery_campaign.py',Path(analysis.__file__),Path(bg.__file__),DESIGN,TRACE,
         Path(bg.inputs.__file__),ROOT/'tools/d1_background_activity_readout.py',
         Path(analysis.m.__file__),Path(analysis.m.thermal.__file__),Path(analysis.m.memory.__file__),
         Path(analysis.m.base.__file__),Path(analysis.states.__file__),
@@ -121,6 +121,9 @@ def specification(source_file,build_file,output):
 
 def check(file):
     file=Path(file);plan=p.read(file)
+    if plan.get('history_recovery_child'):
+        from tools.d1_history_recovery_campaign import check_child
+        return check_child(file)
     require(file.parent.name==FOLDER and not Path(plan['registry']).exists() and not Path(plan['output_root']).exists(),'consumed/occupied')
     require(shutil.disk_usage(file.parent).free>=plan['minimum_host_free_bytes'],'4GiB disk admission')
     expected,ms=specification(plan['source_plan']['path'],plan['build_receipt'],file.parent)
