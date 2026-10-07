@@ -1,0 +1,49 @@
+{
+  "id": "ENERGY_AP_EXISTING_DATA_REFINEMENT_01",
+  "created_utc": "2026-10-07T14:00:00.154195+00:00",
+  "source_head": "9d4b5c89a6d7849951c21638d829c66cdb603d45",
+  "development": "separated_power_run_v4/development_cases.json: 3 sessions",
+  "evaluation": [
+    "separated_power_run_v4/confirmation_cases.json: 6 sessions",
+    "sustained_confirmation_run_v1: 8 sessions / 4 paired blocks"
+  ],
+  "posthoc": true,
+  "candidates": {
+    "AP_SIMPLE": "fixed beta; effective idle reference from pre-load first-order curve; no initial latent; fit one nonnegative load gain",
+    "AP_DELAY": "AP_SIMPLE initialization; fixed existing tau=30s; fit nonnegative direct and delayed load gains",
+    "E_TREND": "unchanged state increments and pre[-20,30] baseline; one linear coefficient on pre10..30 minus pre[-20,0] mean W, times decaying 30s extrapolation after35s"
+  },
+  "selection": "leave-one-development-session-out, equal sessions; candidate must not worsen any development held-out session primary MAE, then smallest mean; otherwise retain frozen; confirmation never selects",
+  "unchanged": [
+    "beta",
+    "tau=30s",
+    "state increments for energy",
+    "service model",
+    "default simulator",
+    "RL",
+    "strict",
+    "experiment_ready=false"
+  ],
+  "no_fit": [
+    "temperature-power coefficient: only 3 policy-confounded development sessions",
+    "new thermal time constant",
+    "ambient temperature",
+    "hidden measured temperature"
+  ],
+  "windows": {
+    "energy": [
+      0,
+      120
+    ],
+    "AP": "actual post35 valid query times to cooling end",
+    "partitions": [
+      "0..35",
+      "35..actual last lane",
+      "actual last lane..120"
+    ],
+    "mixed_energy_bins_s": 5
+  },
+  "accuracy_pass": null,
+  "device_commands": 0,
+  "new_measurement": false
+}

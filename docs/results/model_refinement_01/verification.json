@@ -1,0 +1,45 @@
+{
+  "id": "MODEL-REFINEMENT-01",
+  "utc": "2026-10-07T14:24:13.578240+00:00",
+  "start_head": "9d4b5c89a6d7849951c21638d829c66cdb603d45",
+  "tested_head": "9d4b5c89a6d7849951c21638d829c66cdb603d45",
+  "uncommitted_own_changes": true,
+  "concurrent_triton_changes_excluded": true,
+  "commands": [
+    "python -B -m tools.d1_model_refinement extract --external <D1Check_Arrival_Extension> --output output/model_refinement_extract_v1",
+    "python -B -m tools.d1_model_refinement audit-raw --external <D1Check_Arrival_Extension> --output output/model_refinement_raw_audit_v1",
+    "python -B -m tools.d1_model_refinement analyze --inputs docs/results/model_refinement_01/inputs.json.gz --output output/model_refinement_analysis_v2",
+    "python -B -m unittest tools.test_d1_model_refinement -v"
+  ],
+  "tests": 7,
+  "last_test_seconds": 0.239,
+  "raw_files_unchanged": 105,
+  "raw_cache_sessions": 9,
+  "direct_raw_sessions": 8,
+  "frozen_prediction_reproductions": 34,
+  "analysis_rows": 136,
+  "portable_replay_equal_rows": 136,
+  "png_byte_equal": 3,
+  "csv_curve_partition_audit": true,
+  "links_checked": true,
+  "model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+  "sources": {
+    "tools/d1_model_refinement.py": "184c3d97f915d4821966f66ef1123df2fbd25dc9caf5c3dffdbcdfe0caf03338",
+    "tools/test_d1_model_refinement.py": "817731ff81310739535cbf52fd43bbddd7c77b8470fe7a4d5b77d5a7a093ab43",
+    "tools/d1_online_policy_model.py": "a4e28dc489f221b1f85e8754b23385c60ba134af20ac701a3660293cac63156a",
+    "tools/d1_ap_completion_model.py": "d40f26595b04a10641eb0501673e94962483165925ad5a84a74b7ab5a9c44ded",
+    "tools/d1_ap_preparation_memory.py": "20af3304f8386c7f6adc1df56f5c593e0fd35600ae60d2ce60a518d5c418c40d",
+    "tools/d1_energy_thermal.py": "0c41ffa19ae4853a7d98f132aa921fff2e5bae0b53c701f2d23ff5af08f57cd6"
+  },
+  "immutable_contract_sha256": "bfef8bf86cd714391aaa0a7eeeef27ab2339a0aa0148dc7261f57344b4f54d18",
+  "device_commands": 0,
+  "rl_training": 0,
+  "new_collection_claims": 0,
+  "numerical_fit_runs": "initial analysis and identical portable replay; 3 fixed structures, no tuning after evaluation",
+  "limitations": [
+    "posthoc previously viewed evaluation",
+    "only 3 policy-confounded fitting sessions",
+    "historical sensor timing uncertainty",
+    "no accuracy PASS or default change"
+  ]
+}
