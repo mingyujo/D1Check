@@ -1,6 +1,6 @@
 # D1Check 현재 상태
 
-## 2026-10-07 최신 — RULES-RL-AMOUNT-10 평가·검증 완료 / Git 마무리
+## 2026-10-07 최신 — RULES-RL-AMOUNT-10 승인 작업 완료
 
 - 사용자 새 승인: 기존 규칙 재조합 → 별도 RL 6실행 재학습·학습량 비교 → 한국어 분석/화면/commit/push. 과거 정확한 연장 차단과 원본은 보존한다. HEAD/실제 원격 `9e1975b` 일치, 추적 변경 없음에서 착수했다.
 - 이번 누적 상한: 벽시계16시간, 재조합 환경4,000/RL환경80,000(검증·복구 포함), HEAD/QUEUE×11/23/37 각각8,192학습, 기기0. `output/rules_rl_amount_20261007_v1/campaign.json`·소비장부·보호해시 등록. 보수적 기산 KST10/7 03:00, 종료19:00, 학습중단 전 마무리90분 예약.
@@ -9,7 +9,8 @@
 - 적격best 정책3→3→4→4개, 강한SHARED_EFT 대비그들의공동개선0. 일부부적격정책의조건별이득은진단으로보존한다. B−A는주96조건ΔJ−0.024361/Δ최고AP+0.001545/Δ면적+0.440628으로상충이다. 상한도달·수렴미확인,모형이득을실기기성과로올리지않는다.
 - KST06:41 state.json교체WinError5 1건, HEAD/11 update423에서같은수치/RNG재개했다. 학습소스불변·본환경재계산0. share-delete진단도실패해append-only로그로관측,강제학습중지/새시작없음. [복구기록](../output/rules_rl_amount_20261007_v1/io_recovery_01.json). 사용자이동/중지질문뒤최신계속지시를반영했으며실제pause0,정확한owner 일시정지/재개helper만추가검증했다.
 - 검증: 원prefix768update/6actor해시일치·24상태/455,808요청/3,650alias/원125파일·사용자8파일 SHA, J/AP430재계산최대차이0. fixture정확재개·I/O재계산동일성통과. 검증대상9e1975b+이번미커밋관련변경이며과거Adam/RNG비교불가. [계약/화면](results/request_ppo_01/rules_rl_amount_v1/README.md), [보고서](REQUEST_RULES_RL_AMOUNT_20261007.md).
-- 다음(최대3): (1) 공유CSV/화면최종재현, (2) 관련파일만commit/push·실제원격HEAD확인, (3) 제한된결과를제출본문에반영. 사용자HTML/PDF/VSCode변경·다른worktree·원모형/기본/strict/experiment_ready=false 보존.
+- 공유 CSV로 그림5개 최종 재현·PNG SHA 일치, 화면54/8/8행 검증 완료. 관련60파일을 결과 커밋 `5a747b076fc6809dd47f4bbc3053f368859ef63b`에 반영하고 정상 push·실제 원격 HEAD 일치를 확인했다. 생성 CSV/SVG 원형을 보존하고 소스·문서43파일의 Git 공백 검사를 통과했다. 검증 명령·시점·대상 SHA는 공유 검증 JSON에 기록했다.
+- 다음 행동 하나: 제한된 결과를 제출 본문의 방법·결과·한계에 반영한다. 이번 승인 실행은 종료했으며 추가 학습·실측은 자동 시작하지 않는다. 사용자HTML/PDF/VSCode변경·다른worktree·원모형/기본/strict/experiment_ready=false 보존.
 
 ## 2026-10-07 최신 — PPO 학습량 진단 완료·정확한 연장은 상태 누락으로 차단
 
