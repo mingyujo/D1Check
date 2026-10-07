@@ -353,6 +353,11 @@ def run(plan_file,adb,serial,expected_sha,approved):
                       energy_device.installation(d,plan,plan_file,root/'installation',hard));identified=True
         if journal:journal.mark('installed_preflight_verified',adb_commands=d.sequence)
         for entry in plan['entries']:
+            if plan.get('history_reuse') and entry['index']==0:
+                stats=history.reuse_first(plan,root)
+                complete.append(stats)
+                if journal:journal.mark('historical_evidence_reused',session_id=entry['session_id'],statistics=stats,device_commands=0)
+                continue
             if plan.get('history_control'):
                 history.before_entry(plan,root,entry,complete,hard)
             if plan.get('online_policy_study') and plan['study_phase']=='confirmation':
@@ -484,6 +489,10 @@ def run(plan_file,adb,serial,expected_sha,approved):
         if plan.get('history_control'):
             outcome.update(conditioning_requests=sum(x['conditioning_requests'] for x in complete),
                 explicit_inference=sum(x['requests']+x['conditioning_requests']+8 for x in complete))
+            if plan.get('history_reuse'):
+                outcome.update(reused_sessions=1,new_sessions=len(complete)-1,reused_inference=104,
+                    new_explicit_inference=outcome['explicit_inference']-104,new_runtime_creations=4*(len(complete)-1),
+                    new_warmup=8*(len(complete)-1),accounting='sessions/explicit_inference include immutable historical evidence; new_* are current device consumption')
         if journal:journal.mark('app_sessions_finished_receipt_pending',outcome=outcome)
         write(root/'FINAL_RECEIPT.json',outcome);write(registry/'completed.json',outcome);return outcome
     except BaseException as exc:

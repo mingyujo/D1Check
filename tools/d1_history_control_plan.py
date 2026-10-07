@@ -157,6 +157,20 @@ def load_cases(plan,root,entries):
     return cases
 
 
+def reuse_first(plan,root):
+    reuse=plan['history_reuse'];source=Path(reuse['source_folder'])
+    require({str(f.relative_to(source)):p.digest(f) for f in source.rglob('*') if f.is_file()}==reuse['file_sha256'],'reused raw drift')
+    entry=plan['entries'][0];manifest=p.read(source/'input_manifest.json')
+    require(p.digest(source/'input_manifest.json')==entry['manifest_sha256'],'reused manifest drift')
+    stats=analysis.validate(source,manifest,plan)
+    target=Path(root)/f"00_{entry['session_id']}"
+    shutil.copytree(source,target)
+    stats.update(reused_evidence=True,reused_source_sha256=reuse['file_sha256']['input_manifest.json'],new_device_calls=0)
+    cal.write_new(target/'validated.json',stats)
+    cal.write_new(target/'reuse_provenance.json',reuse)
+    return stats
+
+
 def freeze_verify(plan,root):
     root=Path(root);receipt=p.read(root/'history_freeze_receipt.json');freeze=p.read(root/'history_candidate_freeze.json')
     require(p.digest(root/'history_candidate_freeze.json')==receipt['sha256'],'candidate drift')

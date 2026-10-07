@@ -16,6 +16,15 @@ def lines(path):
     return [json.loads(x) for x in Path(path).read_text(encoding='utf8').splitlines() if x.strip()]
 
 
+def power_coverage(power,origin,target,end):
+    # Registered J comparisons end at target common+120s; AP cooling uses its own observations.
+    common=energy.integrate(power,origin,target+120_000_000_000,1000)
+    if common['full_energy_j'] is None:raise ValueError('power gap in registered common/history window')
+    cooling=energy.integrate(power,target+120_000_000_000,end,1000)
+    return dict(registered_history_common=common,cooling=cooling,
+                cooling_full_energy_available=cooling['full_energy_j'] is not None)
+
+
 def request_gate(rows, expected, origin, policy, plan, artifacts):
     if len(rows)!=len(expected) or {r['request_id'] for r in rows}!={r['request_id'] for r in expected}:
         raise ValueError('history request denominator')
@@ -107,7 +116,7 @@ def load_case(folder,manifest):
         if v is None:raise ValueError('power gap')
         return v
     # Coverage includes conditioning and recovery; no hidden gap is zero-filled.
-    integrate(origin,end[0])
+    coverage=power_coverage(power,origin,target,end[0])
     registered=[r for r in full if r['before_ns']>=origin+35e9]
     return dict(id=manifest['session_id'],role=manifest['history_role'],gap=manifest['history_recovery_seconds'],
         target_policy=manifest['history_target_policy'],inputs=dict(preload=pre,query_s=q,segments=seg),
@@ -118,7 +127,7 @@ def load_case(folder,manifest):
         observed_j=integrate(target,target+120_000_000_000),pre_w=integrate(target-20_000_000_000,target+30_000_000_000)/50,
         last_lane_s=max([35.]+[(r['lane_available_ns']-target)/1e9 for r in targetrows]),
         power_t=[(r['mono_ns']-target)/1e9 for r in power],power_w=[energy.discharge_w(r,1000) for r in power],
-        source_sha256={x.name:m.sha(x) for x in [art/'progress.jsonl',art/'history_boundary.json',folder/'thermal.jsonl',art/'requests.json',art/'conditioning_requests.json']})
+        power_coverage=coverage,source_sha256={x.name:m.sha(x) for x in [art/'progress.jsonl',art/'history_boundary.json',folder/'thermal.jsonl',art/'requests.json',art/'conditioning_requests.json']})
 
 
 def basis(case,frozen):

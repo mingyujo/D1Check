@@ -76,8 +76,9 @@ class RecoveryTests(unittest.TestCase):
 
     def test_no_repair_start_without_full_time_reservation(self):
         with tempfile.TemporaryDirectory() as t,patch.object(r,'remaining',return_value=1000),patch.object(r.subprocess,'run',side_effect=AssertionError('must not launch')) as run:
-            with self.assertRaisesRegex(ValueError,'full block'):r.invoke('unused',t,'FAKE','FAKE',{},'repair')
-            run.assert_not_called();self.assertFalse(list(Path(t).iterdir()))
+            file=Path(t)/'child.json';r.write(file,dict(budget=r.h.budget()))
+            with self.assertRaisesRegex(ValueError,'full block'):r.invoke(file,t,'FAKE','FAKE',{},'repair')
+            run.assert_not_called();self.assertEqual(list(Path(t).iterdir()),[file])
 
     def test_readonly_terminal_session_recovery_never_launches_or_force_stops(self):
         from tools import d1_energy_collection_device as energy

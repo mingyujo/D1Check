@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-08 HISTORY-BOUNDARY-REPAIR-01 — 완료C0 재사용·남은11 실행 동결
+
+- v3첫앱은정상종료/회수됐으나PC가냉각마지막0.393초전류까지요구해power gap으로종료했다. 공식conditioning→target120초는결측0이어서해당구간필수검사와냉각full J의null을분리했다. 원v3FAIL/receipt/원자료불변, 수정판독으로C0적격1을확인. [수정·재사용·정확예산](ENERGY_AP_HISTORY_BOUNDARY_REPAIR_20261008.md).
+- 42관련PC검증/원본실제재판독/바인딩Check통과. APK변경0. 새v4 `d2b9687a…da2e`, child `ede6b9e2…f59d`: 첫C0원자료read-only복사/출처hash·현재검사, **개발5+확인6=11새세션만실행**. 총cohort12와새실행소비를분리하며원v3중단을완주로고치지않는다.
+- 새1912추론/runtime44/staging11·77파일/ADB83800/17691초예약. 설치본fresh원격hash와이전검증APKcache동일성으로pull0·push0·install0, 불일치면중단. v3원claimclock을승계해수정시간포함6시간/마무리600초·연결대기20분상한을초기화하지않는다. 새보완실측0, 상한소진은중단·부분분석.
+- 이전v2의104와v3의104＋남은1912=총상한2120추론/runtime52/staging13, hostAPKpull총2. user/RESERVED/S26변경과동결모형/기본/RL/strict/experiment_ready=false유지. 다음은최신자율승인아래동결v4의남은수집→g동결→확인→분석이다.
+
 ## 2026-10-08 POSTAPPROVAL-OBSERVATION-01 — PC 검증·새 v3 동결, 자율 실행 승인
 
 - 사용자 “알아서 수정해가면서 계속 진행…계획한거 다 마무리”로 PC 수정 뒤 새 실행을 승인했다. 단순 진행 listing을 opt-in2초 주기로 분리하고, 출력없는3초 timeout/client-reaped/증거완전일 때만 세션당1gap을 기록한다. 다음 정규관측의 fresh thermal/화면 확인은 필수, 두번째실패/연결오류/환경실패/저장실패는중단. [계약·검증](ENERGY_AP_POSTAPPROVAL_OBSERVATION_PC_20261008.md).

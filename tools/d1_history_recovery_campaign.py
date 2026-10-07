@@ -19,8 +19,8 @@ from pathlib import Path
 from tools import d1_history_control_plan as h
 from tools import d1_energy_host_lifecycle as life
 
-NAME='ENERGY-AP-HISTORY-RECOVERY-03'
-FOLDER='energy_ap_history_recovery_plan_v3'
+NAME='ENERGY-AP-HISTORY-RECOVERY-04'
+FOLDER='energy_ap_history_recovery_plan_v4'
 ENV='D1_HISTORY_CAMPAIGN_PERMIT'
 require=h.require
 write=h.cal.write_new
@@ -31,7 +31,7 @@ sha=h.p.digest
 def limits():
     return dict(total_seconds=21600,terminal_reserve_seconds=600,wait_seconds=1200,
         wait_interval_seconds=60,wait_commands=20,readonly_recovery_seconds=120,
-        readonly_recovery_commands=20,repair_blocks=1,sessions=13,
+        readonly_recovery_commands=20,repair_blocks=0,sessions=13,
         requests=2016,warmup=104,explicit_inference=2120,runtime_creations=52,
         staging=13,staging_files=91,installed_host_pulls=2,apk_transfers=2,installs=2,
         trace_host_pulls=13,adb_commands=99240,
@@ -62,6 +62,29 @@ def child_spec(source,build,folder,role,campaign_root):
         for key in ('requests','conditioning_requests'):
             for r in m[key]:r['request_id']=str(uuid.uuid5(uuid.NAMESPACE_URL,sid+'/'+key+'/'+str(r['ordinal'])))
         e.update(session_id=sid,manifest='manifests/'+sid+'.json',manifest_sha256=hashlib.sha256(h.p.canonical(m)).hexdigest())
+    if role=='primary':
+        previous=folder.parent.parent/'energy_ap_history_recovery_run_v3/primary'
+        session=next(previous.glob('00_*'));old=read(previous/'frozen_collection_plan.json');old_entry=old['entries'][0]
+        manifest=read(session/'input_manifest.json')
+        require(h.analysis.validate(session,manifest,old)['status']=='eligible_descriptive_only','historical evidence not eligible')
+        allowed={'tools/d1_history_recovery_campaign.py','tools/d1_history_control_plan.py','tools/d1_history_control_analysis.py','tools/d1_arrival_energy_collection_device.py','tools/d1_apk_identity.py'}
+        current=h.identity()
+        for key,value in old['source_code'].items():
+            require(key in allowed or current.get(key)==value,'historical measurement source differs: '+key)
+        plan['entries'][0]=dict(old_entry);ms[0]=manifest
+        plan['history_reuse']=dict(source_folder=str(session),
+            file_sha256={str(f.relative_to(session)):sha(f) for f in session.rglob('*') if f.is_file()},
+            original_receipt=dict(path=str(previous/'FINAL_RECEIPT.json'),sha256=sha(previous/'FINAL_RECEIPT.json')),
+            meaning='read-only PC common-window boundary correction; original stopped receipt retained')
+        cache=previous/'installation/preflight/installed-base.apk'
+        plan['cached_installed_apk']=dict(path=str(cache),sha256=sha(cache))
+        plan['installed_only']=True
+        b=plan['budget'];b.update(sessions=11,development_sessions=5,confirmation_sessions=6,
+            requests=1824,conditioning_requests=1056,target_requests=768,warmup=88,explicit_inference=1912,
+            runtime_creations=44,staging=11,staging_files=77,installed_host_pulls=0,apk_transfers=0,installs=0,
+            trace_host_pulls=11,installation_seconds=180,installed_preflight_seconds=180,adb_commands=83800,
+            fixed_registered_seconds=4860,
+            total_seconds=h.budget()['total_seconds']-h.budget()['session_seconds']-420)
     return plan,ms
 
 
@@ -87,6 +110,7 @@ def check_child(file):
     for e,m in zip(plan['entries'],ms):require(read(file.parent/e['manifest'])==m and sha(file.parent/e['manifest'])==e['manifest_sha256'],'manifest drift')
     for x in [plan['frozen_model'],plan['activity_model'],*plan['source_files'].values(),*plan['references'].values()]:require(sha(x['path'])==x['sha256'],'input/model drift')
     require(sha(plan['trace_content_audit']['processor_path'])==plan['trace_content_audit']['processor_sha256'],'trace processor drift')
+    if plan.get('cached_installed_apk'):require(sha(plan['cached_installed_apk']['path'])==plan['apk_sha256'],'cached APK drift')
     return dict(status='PC_READY_UNAPPROVED',plan_sha256=sha(file),device_commands=0)
 
 
@@ -107,18 +131,20 @@ try {
 
 def prepare(source,build,output):
     folder=Path(output);require(folder.name==FOLDER and not folder.exists(),'fresh campaign plan')
-    root=folder.parent/'energy_ap_history_recovery_run_v3';require(not root.exists(),'campaign consumed')
+    root=folder.parent/'energy_ap_history_recovery_run_v4';require(not root.exists(),'campaign consumed')
     folder.mkdir();child=write_child(source,build,folder/'primary_plan','primary',root)
     plan=dict(id=NAME,status='PC_READY_UNAPPROVED_UNCONSUMED',approval='not_approved',experiment_ready=False,
         limits=limits(),output_root=str(root),primary_plan=str(child),primary_sha256=sha(child),
         source_code=h.identity(),repair='one fresh block only after first app failure and zero eligible development; requires recorded causal review/tests/build and remaining full-block reserve',
         run_script_sha256=hashlib.sha256(script().encode()).hexdigest())
-    previous=folder.parent/'energy_ap_history_recovery_run_v2/primary/FINAL_RECEIPT.json'
+    previous=folder.parent/'energy_ap_history_recovery_run_v3/primary/FINAL_RECEIPT.json'
     require(previous.is_file() and read(previous)['status']=='stopped_no_resume','preserved prior receipt required')
     plan['previous_execution']=dict(path=str(previous),sha256=sha(previous),
-        outcome='stopped_no_resume retained; no eligible development; separate protocol block',
+        outcome='stopped_no_resume retained; first complete session reclassified read-only; not recollected',
         recorded_inference_starts=104,adb_commands=read(previous)['adb_commands'],
-        accounting='prior attempt reported separately; no consumed claim reset')
+        accounting='prior consumption retained; one historical session plus eleven new device sessions',
+        clock_claim_path=str(folder.parent/'energy_ap_history_recovery_run_v3/claim.json'),
+        clock_claim_sha256=sha(folder.parent/'energy_ap_history_recovery_run_v3/claim.json'))
     write(folder/'campaign_plan.json',plan);(folder/'RUN_AFTER_APPROVAL.ps1').write_text(script(),encoding='utf8',newline='\n')
     return check(folder/'campaign_plan.json')
 
@@ -144,13 +170,14 @@ def require_admission(file):
 
 
 def invoke(file,root,adb,serial,claim,role):
-    require(remaining(claim)>=h.budget()['total_seconds']+600,'full block and terminal reserve')
+    budget=read(file)['budget']
+    require(remaining(claim)>=budget['total_seconds']+600,'full block and terminal reserve')
     permit=Path(root)/(role+'_permit.json')
     write(permit,dict(parent_pid=os.getpid(),plan_sha256=sha(file),campaign_token=claim['token']))
     env=dict(os.environ);env[ENV]=str(permit)
     command=[sys.executable,'-X','utf8','-B','-m','tools.d1_history_control_plan','run','--plan',str(file),'--adb',adb,'--serial',serial,'--expected-sha',sha(file),'--approved']
     with (Path(root)/(role+'_host.log')).open('xb') as log:
-        result=subprocess.run(command,cwd=h.ROOT,env=env,stdout=log,stderr=subprocess.STDOUT,timeout=h.budget()['total_seconds']+5)
+        result=subprocess.run(command,cwd=h.ROOT,env=env,stdout=log,stderr=subprocess.STDOUT,timeout=budget['total_seconds']+5)
     write(Path(root)/(role+'_child_exit.json'),dict(returncode=result.returncode,utc=utc(),parent_pid=os.getpid()))
     child=read(file);receipt=Path(child['output_root'])/'FINAL_RECEIPT.json'
     require(receipt.is_file(),'child exited without receipt; no automatic recovery/restart')
@@ -240,6 +267,7 @@ def repair_eligibility(receipt,root):
 
 def prepare_repair(plan_file,build,review_file):
     plan=read(plan_file);root=Path(plan['output_root']);claim=read(root/'claim.json')
+    require(plan['limits']['repair_blocks']>0,'remaining cohort forbids another repair/recollection')
     require(plan['limits']==limits(),'campaign limits immutable')
     require(not (root/'repair_permit.json').exists(),'repair already attempted')
     primary=read(plan['primary_plan']);child_exited(primary)
@@ -263,9 +291,12 @@ def run(file,adb,serial,expected,approved,repair=False):
     plan=read(file);root=Path(plan['output_root'])
     if not repair:
         check(file);root.mkdir(exist_ok=False)
-        claim=dict(utc=utc(),monotonic_start=time.monotonic(),wall_start=time.time(),token=uuid.uuid4().hex,serial=serial,plan_sha256=sha(file))
+        prior=plan['previous_execution'];require(sha(prior['clock_claim_path'])==prior['clock_claim_sha256'],'original clock claim drift')
+        old_clock=read(prior['clock_claim_path']);require(serial==old_clock['serial'],'same original transport')
+        claim=dict(utc=utc(),monotonic_start=old_clock['monotonic_start'],wall_start=old_clock['wall_start'],token=uuid.uuid4().hex,serial=serial,plan_sha256=sha(file),clock_origin='original v3 campaign; PC correction time included, no reset')
         write(root/'claim.json',claim);childfile=Path(plan['primary_plan']);role='primary'
     else:
+        require(plan['limits']['repair_blocks']>0,'remaining cohort forbids another repair/recollection')
         claim=read(root/'claim.json');require(serial==claim['serial'] and claim['plan_sha256']==sha(file),'same campaign/transport')
         require(plan['limits']==limits(),'campaign limits immutable')
         binding=read(root/'repair_binding.json');require(sha(binding['plan'])==binding['sha256'] and sha(binding['review'])==binding['review_sha256'],'repair binding drift')

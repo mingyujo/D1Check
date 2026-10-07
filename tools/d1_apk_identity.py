@@ -60,8 +60,17 @@ def preflight(device, plan, output):
         if len(paths) != 1 or not re.fullmatch(r'package:/data/app/[A-Za-z0-9_+./=~-]+/base\.apk', paths[0].strip()):
             raise ValueError('installed base APK unavailable or unsupported split layout')
         remote = paths[0].strip()[len('package:'):]
-        device.call('pull', remote, str(output / 'installed-base.apk'), timeout=180)
-        installed = inspect(output / 'installed-base.apk', tools, deadline=device.deadline)
+        cache=plan.get('cached_installed_apk')
+        if cache:
+            if p.digest(cache['path'])!=cache['sha256'] or cache['sha256']!=candidate['apk_sha256']:
+                raise ValueError('cached installed APK identity drift')
+            current=device.call('shell','sha256sum',remote,timeout=5).stdout.decode().split()[0]
+            if current!=cache['sha256']:raise ValueError('current installed APK differs; no cached fallback')
+            installed=inspect(cache['path'],tools,deadline=device.deadline)
+            result['installed_identity_proof']='fresh remote hash equals inspected cached exact bytes; host pull0'
+        else:
+            device.call('pull', remote, str(output / 'installed-base.apk'), timeout=180)
+            installed = inspect(output / 'installed-base.apk', tools, deadline=device.deadline)
         result['installed'] = installed
         compatible(candidate, installed, plan['apk_preflight']['candidate'])
         result['status'] = 'PREFLIGHT_COMPATIBLE_NOT_INSTALLED'

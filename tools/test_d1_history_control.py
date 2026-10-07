@@ -27,6 +27,28 @@ def case(gap=30,policy='CPU_URGENT_ONLINE_V1',role='development'):
 
 
 class HistoryTests(unittest.TestCase):
+    def test_readonly_reuse_preserves_source_and_starts_no_runtime(self):
+        with tempfile.TemporaryDirectory() as t:
+            source=Path(t)/'source';source.mkdir();p.cal.write_new(source/'input_manifest.json',dict(session_id='fixture'))
+            (source/'progress.jsonl').write_text('original')
+            hashes={str(f.relative_to(source)):p.p.digest(f) for f in source.iterdir()}
+            plan=dict(history_reuse=dict(source_folder=str(source),file_sha256=hashes),entries=[dict(session_id='fixture',manifest_sha256=hashes['input_manifest.json'])])
+            root=Path(t)/'new';root.mkdir()
+            with patch.object(a,'validate',return_value=dict(status='eligible_descriptive_only')):
+                result=p.reuse_first(plan,root)
+            self.assertEqual(result['new_device_calls'],0);self.assertTrue((root/'00_fixture/validated.json').exists())
+            self.assertFalse((source/'validated.json').exists());self.assertEqual({str(f.relative_to(source)):p.p.digest(f) for f in source.iterdir()},hashes)
+            (source/'progress.jsonl').write_text('drift')
+            with self.assertRaisesRegex(ValueError,'raw drift'):p.reuse_first(plan,root)
+
+    def test_common_energy_coverage_not_cooling_tail_extrapolation(self):
+        power=[dict(mono_ns=i*1_000_000_000,current_raw=-100,voltage_mV=4000,plugged=0,current_valid=True) for i in range(360)]
+        result=a.power_coverage(power,0,180_000_000_000,360_000_000_000)
+        self.assertIsNotNone(result['registered_history_common']['full_energy_j'])
+        self.assertIsNone(result['cooling']['full_energy_j']);self.assertAlmostEqual(result['cooling']['missing_s'],1)
+        missing=[x for x in power if not 150_000_000_000<x['mono_ns']<160_000_000_000]
+        with self.assertRaisesRegex(ValueError,'registered common'):a.power_coverage(missing,0,180_000_000_000,360_000_000_000)
+
     def test_budget_and_registered_denominators(self):
         b=p.budget();self.assertEqual(b['total_seconds'],19557)
         self.assertEqual(b['session_seconds'],1446);self.assertEqual(b['explicit_inference'],2016)
