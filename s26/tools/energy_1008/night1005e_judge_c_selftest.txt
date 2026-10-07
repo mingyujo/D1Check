@@ -1,0 +1,23 @@
+| 시험 | 결과 | 값 |
+|---|---|---|
+| ① night1005e_judge.py selftest 그대로 전부 PASS (NAc · NBc 를 더한 뒤) | PASS | selftest 전체: PASS (35/35) |
+| ① import 대상 SHA 접두 (night1005e 2db1cda5 · night1005 ca8680c2 · m1m2 ea282d4a · night1003 a5ceab41) | PASS | {'night1005_judge': 'ca8680c2', 'm1m2_judge_1002': 'ea282d4a', 'night1003_judge': 'a5ceab41'} |
+| ① 기존 칸 유지 (NA NB GA GB NAe NBe GAe GBe) + NAc NBc | PASS | ['GA', 'GAe', 'GB', 'GBe', 'NA', 'NAc', 'NAe', 'NB', 'NBc', 'NBe'] |
+| ② 620/280 런 (npu_eff_work50eq_v1) 을 NBe 로 → 오류 | PASS | 구간 0 duration_s 620 ≠ 660 |
+| ② 620/280 런을 NBc (블록 5) 로 → 통과 · work 620 s · tail 280 s · n ≈ 6,200 · 누적 62칸 · block 5 | PASS | (620.0, 280.0, 6200, 5) |
+| ② 300/600 런 (npu_eff_work100_v1) 을 NAc 로 → 통과 · work 300 s · tail 600 s | PASS | (300.0, 600.0) |
+| ② 같은 300/600 런을 NAe 로 → 기존 판정기도 그대로 통과 (칸 사양 같음) | PASS | (6000, 6000) |
+| ② 300/600 런을 NBc 로 → 오류 | PASS | 구간 라벨 불일치: ['work_d100', 'tail_idle'] ≠ ['work_d50', 'tail_idle'] |
+| ② 620/280 런을 NAc 로 → 오류 | PASS | 구간 라벨 불일치: ['work_d50', 'tail_idle'] ≠ ['work_d100', 'tail_idle'] |
+| ③ 블록 0 → 오류 | PASS | 블록 0 ∉ 1..8 |
+| ③ 블록 9 → 오류 | PASS | 블록 9 ∉ 1..8 |
+| ③ 칸 NAe → 오류 (이 래퍼는 에너지 C 칸만) | PASS | 칸 NAe ∉ ['NAc', 'NBc'] (이 래퍼는 에너지 C 칸만) |
+| ③ --gate-label 없음 → 오류 | PASS | --gate-label 필수 (부분 문자열 매칭 금지) |
+| ④ pair NAc + NBc (같은 블록 5) → 일 비 ≈ 6,200/6,000 · 같은 일 · block 5 | PASS | (5, 1.0333) |
+| ④ pair 블록 다름 (5 vs 6) → 오류 | PASS | 블록 다름: 5 vs 6 |
+| ④ pair A/B 자리 바뀜 → 오류 | PASS | 쌍은 A = NAc · B = NBc 만: NBc + NAc |
+| ④ pair NAe + NBc → 오류 | PASS | A 칸 NAe 는 에너지 C 칸이 아님 (NAc · NBc 만) |
+| ④ 감시 이벤트 런 → pair 거부 | PASS | A (NAc b5) 에 감시 이벤트 1건 — 무효 런 |
+| ⑤ 결정성: run 같은 입력 두 번 = 같은 바이트 (경로 제외) | PASS | 15158 B |
+
+selftest 전체: PASS (19/19)
