@@ -1,0 +1,21 @@
+﻿PASS v3_judge selftest 그대로 33/33 (v1 칸 표)
+PASS v3_judge SHA 접두 67ad5d42
+PASS v1 selftest 뒤 v3_judge.CELLS = v1 표 그대로
+PASS v2 칸 표 = tools/chains (chain_id · duty · 길이 · 라벨)
+PASS v2 ours 칸 = v1 ours 칸 (같은 체인 · 같은 구간)
+PASS Σ: A2 3010 · B2 2729 (v1 과 같음) · 기준선 구간 7
+PASS run A2_base: n = 구간 Σ · 조임 0 · 가동 칸 31+31+31
+PASS run B2_base: 가동 칸 33+33+34
+PASS run 뒤 v3_judge.CELLS = v1 표로 되돌림
+PASS v2 기준선 런을 v1 칸 A_base 로 → 오류
+PASS v2 기준선 런을 A2_ours 로 → 오류
+PASS v2 기준선 런을 B2_base 로 → 오류
+PASS v1 기준선 런 (v3_A_base_v1) 을 A2_base 로 → 오류
+PASS --gate-label 없음 → 오류
+PASS 오류 뒤에도 v3_judge.CELLS = v1 표
+PASS pair A2: Δ = 39.0 − 36.0 = 3.0 · r = n_ours / n_base
+PASS pair: 자리 바뀜 → 오류
+PASS pair: v1 칸 런 → 오류
+PASS cond A2: 같은 입력 = 같은 바이트 · ③ 문구 = v3_judge L3 · 결론 = conclusion_row
+PASS cond 블록 1개 → 판정 안 함
+selftest v2 PASS (20/20)
