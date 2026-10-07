@@ -1,5 +1,5 @@
 ﻿param([switch]$DryRun, [string]$WatchMode = "on", [int]$SeqStart = 1, [Parameter(Mandatory=$true)][ValidateSet("A2","B2")][string]$Cond,
-      [Parameter(Mandatory=$true)][string]$SessionEnd, [string]$QueueSpec = "", [int]$RetryRestS = 600)
+      [Parameter(Mandatory=$true)][string]$SessionEnd, [string]$QueueSpec = "", [int]$RetryRestS = 600, [int]$MinSocCell = 45)
 # V3 v2 (P1h 1007) session driver = copy of s26\tools\v3_1006\session_driver_v3.ps1. Changed only (P1h report s8; prereg v2 s3 운영 보강):
 #   (1) -Cond A2|B2 · cell table A2_base (v3_A_base_v2) · A2_ours (v3_A_ours_v1) · B2_base (v3_B_base_v2) · B2_ours (v3_B_ours_v1) ·
 #       folders results\S26_V3_<cell>_b<block>_1007 · labels NN_<cell>_b<block> (-SeqStart continues the numbering) ·
@@ -11,7 +11,7 @@
 #       then the gate; a failed retry STOPS the measurement (no next cell — block pair protection). Watch-event reruns (_re) keep the
 #       P1g rule (right after; the slot already had the orchestrator cooling). Emergency = FAILED, no retry (v1 rule), next cell.
 #   (5) adb get-state every 60 s inside the cell wait (adb_state_v3b.csv).
-#   (6) cell condition = SOC >= 45 and now + Σ + 45 min <= -SessionEnd (run_cell_v3b -Deadline) — replaces the fixed 2026-10-07 11:00.
+#   (6) cell condition = SOC >= MinSocCell (default 45; 영훈 10-07 11:1x "기준은 30으로 낮추고 끝까지 진행" -> run with -MinSocCell 30 = the orchestrator / runner start floor) and now + Σ + 45 min <= -SessionEnd (run_cell_v3b -Deadline) — replaces the fixed 2026-10-07 11:00.
 # Kept as P1g: gate = start_gate_1005e.py + lower (SKIN >= 29.1 and BAT >= 27.5) inside run_cell; lower fail -> swap with the next
 #   cell of the SAME block once; watch "on" + events -> _re once; SOC < 30 -> session end; SOC / time fail (rc 3/4) -> stop.
 # Every variable name is unique ignoring case. Serial only from $env:ANDROID_SERIAL, logged as <SERIAL>.
@@ -46,7 +46,7 @@ $CELLSPEC = @{
   B2_base = @{ Chain="v3_B_base_v2"; Dur=2729; Spans=1500000; Sha="f8529443fb695f97d7835c09823e93e1341f4f784ca8c7ccfc539e01efcb03f0" }
   B2_ours = @{ Chain="v3_B_ours_v1"; Dur=2729; Spans=1400000; Sha="d0753f48f28e5f1f8995f3449403a72c7f7cd13fa223a26a9033d1e10b644b75" }
 }
-$MINSOC = 45
+$MINSOC = $MinSocCell
 function NewItem([string]$cellName, [int]$blk) {
   return [pscustomobject]@{ Cell = $cellName; Block = $blk; Key = "${cellName}_b$blk"; OutName = "S26_V3_${cellName}_b${blk}_1007"; Swapped = $false; IsRe = $false; RetryOf = "" }
 }
@@ -154,7 +154,7 @@ function QueueRetry($it, [string]$why) {
   $QUEUE.Insert(0, $reIt)
 }
 
-Log "DRIVER START pid=$PID cond=$Cond watch=$WatchMode dry=$DryRun sessionEnd=$SessionEnd retryRest=${RetryRestS}s queue=$(($QUEUE | ForEach-Object { $_.Key }) -join ',')"
+Log "DRIVER START pid=$PID cond=$Cond watch=$WatchMode dry=$DryRun sessionEnd=$SessionEnd retryRest=${RetryRestS}s minSoc=$MINSOC queue=$(($QUEUE | ForEach-Object { $_.Key }) -join ',')"
 if ($DryRun) {
   foreach ($it in $QUEUE) { Log "PLAN $($it.Key) -> results\$($it.OutName) label=$('{0:D2}' -f $script:seqNo)_$($it.Key) chain=$($CELLSPEC[$it.Cell].Chain) sha=$($CELLSPEC[$it.Cell].Sha.Substring(0,8)) soc>=$MINSOC hours=$(HoursOf $it.Cell) deadline=$SessionEnd args=$(CellArgsOf $it.Cell)"; $script:seqNo++ }
   exit 0
