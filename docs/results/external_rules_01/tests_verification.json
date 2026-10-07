@@ -1,0 +1,36 @@
+{
+  "status": "PASSED",
+  "utc": "2026-10-07T11:28:01.333243+00:00",
+  "base_head": "69417fe2433cbc11521aa8399ef72fa55c7b4ab9",
+  "source_dirty": true,
+  "source_boundary_and_engine_tests": 14,
+  "audit_rounding_boundary_tests": 1,
+  "report_aggregation_tests": 2,
+  "total_tests": 18,
+  "fixture_environment_runs": 6,
+  "diagnostic_recovery_environment_runs": 1,
+  "source_sha256": {
+    "tools/d1_external_rules.py": "4e824c0ba7bf7c6efc86893a676d7346337f4a2b74d5f8f4726f112e400bc756",
+    "tools/d1_external_rules_study.py": "08ac1f896a52a3631969af0de5db6bbf5c8580d3c2a6b3034494f7e68d303702",
+    "tools/test_d1_external_rules.py": "a75b327010b619840250eeb27bde0ee99768d95b6b88746e7d68cbd367df648d",
+    "tools/d1_external_rules_report.py": "07990223f89eeb3b837902060139a8c6a48b9abf56d79fa5cec85c2720e82aa5",
+    "tools/test_d1_external_rules_report.py": "6579d21d38a15f7d633e27f02923d9877098b5489973d7c0a8c2e1bca4486687"
+  },
+  "commands": [
+    "python -B -m unittest tools.test_d1_external_rules -v",
+    "python -B -m unittest tools.test_d1_external_rules.SourceBoundaryTests.test_response_audit_one_ns_rounding_does_not_change_deadline_criterion -v",
+    "python -B -m unittest tools.test_d1_external_rules_report -v"
+  ],
+  "note": "18 distinct checks:14 initial source/engine,1 rounding,2 aggregation,1 run-isolation. Aggregation rerun2 on final report; fixture4 initial plus2 isolation. Adapter unchanged; orchestration I/O/audit and presentation changed with targeted checks.",
+  "device_commands": 0,
+  "latest_utc": "2026-10-07T13:21:26.916995+00:00",
+  "IO_cache_isolation_tests": 1,
+  "total_test_executions_including_report_rerun": 20,
+  "current_source_sha256": {
+    "tools/d1_external_rules.py": "4e824c0ba7bf7c6efc86893a676d7346337f4a2b74d5f8f4726f112e400bc756",
+    "tools/d1_external_rules_study.py": "fd60087aeeb35452ba9cf6d20dc47423a9cb1d32adeea3f750d1ac63e8fc1e82",
+    "tools/test_d1_external_rules.py": "c43af1e151f36c9d74a68d16c8e2627d71b52dd005c29ad22d49dd06fecde262",
+    "tools/d1_external_rules_report.py": "83ca2d427e07e284ee48bcf686e0b9976e6c48c5cee8e842db93fd8a434dedb1",
+    "tools/test_d1_external_rules_report.py": "6579d21d38a15f7d633e27f02923d9877098b5489973d7c0a8c2e1bca4486687"
+  }
+}

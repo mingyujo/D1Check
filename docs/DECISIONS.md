@@ -1,5 +1,13 @@
 # D1Check 결정 기록
 
+## 2026-10-07 — EXTERNAL-RULES-11: 외부 규칙의 제어 대상·근거 경계
+
+- 최종 판정: 원출처2개/제한적B adapter·48조건/1,056행 완주. Band 적용의지속12조건은강한EFT 대비기한유지·J/AP소폭동시감소이나외부제품/실기기우열미판정. 우리열에너지2규칙은같은지속조건기한위반,Ente합성상태일부지각/미완료를보존한다. 판정완화/원모형변경/튜닝/기기/학습0. 기본/strict/experiment_ready 승격과LSF/MediaPipe/LiteRT/NPU의미재현범위를자동완료하지않는다. [근거](REQUEST_EXTERNAL_RULES_PC_20261007.md).
+
+- 사용자 지시를 채택하여 공식 출처에서 확인한 Ente 건강/활동 시작 허용과 Band 기본 HEFT를 별도 PC adapter로 비교한다. [결과 전 대응표](results/external_rules_01/mapping.md)에 변경·생략·동점·상태·단위를 고정한다.
+- Ente BAT·OS thermal·활동은 미보유 입력이므로 합성 상태 민감도만 허용하고 AP를 BAT로 대신 쓰지 않는다. 양쪽 하위 EFT를 동일하게 고정한다. Band subgraph를 whole-request로 축약하는 변경은 핵심 구조 차이이므로 B·제한적 재현이며 동일 Band 알고리즘/제품 비교로 쓰지 않는다.
+- LSF/MediaPipe의 drop을 제거해 원 이름으로 비교하지 않는다. LiteRT priority 전달과 NPU Manager load/선점의 기능 존재를 현재3cell 스케줄러·전력 모형 지원으로 승격하지 않는다. 기존 기본·strict·experiment_ready=false·사용자 자료·활성 실행 보존, 기기0.
+
 ## 2026-10-07 — RULES-RL-AMOUNT-10: 규칙 재조합·별도 재학습의 새 승인
 
 - 최종 상태: 본학습49,152/공통4지점/최종192조건·10,560행 완료, 실제RL68,754/재조합458·기기0. 후보/시험입력은결과전에동결했고시험후다시선택하지않았다. 적격best3→3→4→4·강한SHARED_EFT 공동개선0, 부적격조건별이득과B−A 열상충을보존한다. 8,192상한·수렴미확인이다. 현재자료로기본정책/strict/experiment_ready를변경하거나추가학습·실측을자동승인하지않는다. [근거·한계](REQUEST_RULES_RL_AMOUNT_20261007.md).
