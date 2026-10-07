@@ -1,0 +1,89 @@
+{
+  "sampled_utc": "2026-10-07T14:06:00.405817+00:00",
+  "files": [
+    {
+      "system": "triton",
+      "commit": "3af839d613da6995051f9bcfab00efe2eac87d4c",
+      "path": "src/rate_limiter.cc",
+      "url": "https://github.com/triton-inference-server/core/blob/3af839d613da6995051f9bcfab00efe2eac87d4c/src/rate_limiter.cc",
+      "raw_url": "https://raw.githubusercontent.com/triton-inference-server/core/3af839d613da6995051f9bcfab00efe2eac87d4c/src/rate_limiter.cc",
+      "sha256": "31d6d03d02ac4f61e1ad947b4ea62535ce49a0fa647d37a936cf6a5e7facd88e",
+      "bytes": 37707
+    },
+    {
+      "system": "triton",
+      "commit": "3af839d613da6995051f9bcfab00efe2eac87d4c",
+      "path": "src/rate_limiter.h",
+      "url": "https://github.com/triton-inference-server/core/blob/3af839d613da6995051f9bcfab00efe2eac87d4c/src/rate_limiter.h",
+      "raw_url": "https://raw.githubusercontent.com/triton-inference-server/core/3af839d613da6995051f9bcfab00efe2eac87d4c/src/rate_limiter.h",
+      "sha256": "404a6b4ba7a50ec1ba7059432bb2e30952a24bc5ccba78a3058e4024d08fb1dd",
+      "bytes": 15734
+    },
+    {
+      "system": "triton",
+      "commit": "3af839d613da6995051f9bcfab00efe2eac87d4c",
+      "path": "LICENSE",
+      "url": "https://github.com/triton-inference-server/core/blob/3af839d613da6995051f9bcfab00efe2eac87d4c/LICENSE",
+      "raw_url": "https://raw.githubusercontent.com/triton-inference-server/core/3af839d613da6995051f9bcfab00efe2eac87d4c/LICENSE",
+      "sha256": "1d8ab2aa8b37b75104251624d3305bc5d6ab4a0388430b3ba5f5e0c3fbc1b96f",
+      "bytes": 1499
+    },
+    {
+      "system": "starpu",
+      "commit": "356c8e443d75dfec0eb9d00a95b92d6b3fb1b486",
+      "path": "src/sched_policies/deque_modeling_policy_data_aware.c",
+      "url": "https://github.com/starpu-runtime/starpu/blob/356c8e443d75dfec0eb9d00a95b92d6b3fb1b486/src/sched_policies/deque_modeling_policy_data_aware.c",
+      "raw_url": "https://raw.githubusercontent.com/starpu-runtime/starpu/356c8e443d75dfec0eb9d00a95b92d6b3fb1b486/src/sched_policies/deque_modeling_policy_data_aware.c",
+      "sha256": "2adc682ef407ae87e15643f5a51a37b942a95778536f244677816c83b68dff11",
+      "bytes": 39654
+    }
+  ],
+  "triton": {
+    "rule": "Rate limiter fixed specific FIFO instances",
+    "observations": [
+      "pending queues",
+      "instance available",
+      "token counts",
+      "completed executions",
+      "configured priority"
+    ],
+    "decisions": "submit->stage->immediate AttemptAllocation; Release increments count and restages before final attempt",
+    "priority": "exec_count * max(priority,1); min first; top-only allocation attempt",
+    "default_priority": 1,
+    "zero_priority_means": 1,
+    "resources": "configured named counts; off by default",
+    "preemption": false,
+    "cost_prediction": null,
+    "missed_deadline": "no drop in configured path; D1Check external evaluation",
+    "source_symbols": {
+      "rate_limiter.cc": [
+        "OnStage",
+        "OnRelease",
+        "AttemptAllocation",
+        "StageInstanceIfAvailable",
+        "ModelInstanceContext::Release",
+        "ScaledPriority"
+      ],
+      "rate_limiter.h": [
+        "ScaledPriorityComparator"
+      ]
+    },
+    "documentation": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/user_guide/rate_limiter.html"
+  },
+  "starpu": {
+    "level": "C - deferred for this batch",
+    "score": "alpha*(expected_end-min_end)+beta*transfer_penalty+gamma*task_energy+idle_extension_cost",
+    "defaults": {
+      "alpha": 1,
+      "beta": 1,
+      "gamma_us_per_j": 1000,
+      "idle_power_w": 0
+    },
+    "gaps": [
+      "task-attributed energy model not equivalent to state whole-device J",
+      "separate data residency/transfer/prefetch costs not measured",
+      "independent worker queues must respect unsupported D1Check joint states without changing source ranking"
+    ],
+    "meaning": "not a claim that any limited adaptation is impossible; this bounded batch does not invent these inputs"
+  }
+}

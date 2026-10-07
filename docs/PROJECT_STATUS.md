@@ -1,5 +1,21 @@
 # D1Check 현재 상태
 
+## 2026-10-07 최신 — MODEL-REFINEMENT-01 기존 실측 후보 평가 완료
+
+- [보고서](MODEL_REFINEMENT_EXISTING_DATA_20261007.md)·[세션별 A/B·그림·재현](results/model_refinement_01/README.md). 착수9d4b5c8, 개발3/확인6/지속8의 동결34예측과 원본17세션 재현. 초기AP/잔열/전력추세3후보·세션제외선택·사후평가136행 완료, 현재처리결함0.
+- 일반개선 근거 미확보. 지속8 조건부 J MAE동결4.624→전력후보6.750J, AP MAE동결0.381→잔열후보0.411°C. 확인14 중 해당출력악화각10세션. 모든후보 미채택, 4쌍정책차이오차도 악화. 일부개선·부하후배경급증·상쇄 보존.
+- 신규7검증·원본9캐시일치/지속8직접로딩·독립적분최대1.43e−13J·136공유재현동일·그림확인. 기기/ADB/설치/실측/RL0. 원모형/기본/strict/experiment_ready=false불변. 동시Triton작업·사용자파일·다른worktree 제외.
+- 다음 PC 행동 하나: 기존 정책차이 판독에 세션/쌍별 잔차를 병기해 작은 모형차이를 실제절감으로 승격하지 않는다. 추가후보·실측 자동시작없음.
+
+## 2026-10-07 최신 — EXTERNAL-RULES-12 Triton 열·에너지 비교 완료
+
+- 사용자 계획 승인 후 진행: 기존 기한·전량 완료를 유지한 J/AP 비교. 시작 HEAD `9d4b5c8`, 같은 브랜치/두 worktree·활성 학습0 확인. 기존 결과·사용자 HTML/PDF/VSCode 보존.
+- Triton core `3af839d`의 실제 callback/자원/완료횟수 규칙을 별도 adapter로 적용한다. 제한해제+동시1/2×동일/분류가중치5설정, 기존48조건·240환경. [사전 대응](results/external_rules_02/mapping.md)과 contract/input/source SHA 고정. StarPU는 task-energy/전송/허용 병행과 worker 큐 대응 미확정으로 이번 성능 배치 보류.
+- 환경 최대400/보수적 기산 UTC13:45부터3시간·마지막20분 저장 예약 유지. 신규240행/15,840예정요청+원384행/25,344논리요청 재사용=624행/41,184논리요청. fixture6환경20요청을 포함한 이번 실제246환경/15,860예정요청, 기기/학습0. 별도 `output/external_rules_20261007_v2` 장부·고정SHA와 원 실패0을 보존한다.
+- source/엔진11+집계/재현I/O5=16검증 통과. 전체요청/lane·새240 J/AP 재계산 차이0·원19/사용자9 SHA 유지. 동시2건 두설정은48조건씩제한해제와동일, 1건제한은지속미완료111/85·J증가+2.530277/+2.218061J. 기한·전량을 유지한 J/AP 공동개선0. 우리2규칙의지속기한손실도보존한다.
+- [보고서](REQUEST_TRITON_THERMAL_ENERGY_PC_20261007.md)·[대시보드](results/external_rules_02/index.html)·CSV4개/그림6PNG+SVG 완료. 화면624/156/12행·13/52그룹·部分J/nullAP·차이기준교체 통과, 공유자료6그림 재현 일치.
+- 관련 파일만 commit/push와 원격HEAD 일치를 확인하며 사용자파일/다른worktree·기본/strict/experiment_ready=false 유지. 다음 행동 하나: 제출 본문에 제한적B·동등서비스/J/AP 상충·StarPU 보류를 반영한다. 추가환경/학습/기기 자동시작0.
+
 ## 2026-10-07 최신 — EXTERNAL-RULES-11 승인 PC 작업 완료
 
 - 사용자 승인: 공식 출처 조사 → 기존 판단 규칙 adapter → 작은 재현 검증 → 동일 조건 비교·오프라인 화면·보고서 → commit/push. 기기/ADB/설치/추가 실측0. 착수 HEAD `69417fe`, 브랜치·두 worktree 확인, 활성 RL/재조합0. 사용자 미추적 HTML/PDF/VSCode 보존.

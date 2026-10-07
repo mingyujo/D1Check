@@ -1,0 +1,42 @@
+{
+  "status": "PASSED",
+  "recorded_utc": "2026-10-07T14:19:38.623898+00:00",
+  "head": "9d4b5c89a6d7849951c21638d829c66cdb603d45",
+  "dirty": true,
+  "distinct_tests": 16,
+  "total_test_invocations": 19,
+  "engine_fixture_environments": 6,
+  "engine_fixture_planned_requests": 20,
+  "commands": [
+    {
+      "command": "python -B -m unittest tools.test_d1_triton_rules -v",
+      "tests": 11,
+      "result": "OK",
+      "duration_s": 0.053,
+      "observed_fixture_time_range_utc": [
+        "2026-10-07T14:06:00.837160+00:00",
+        "2026-10-07T14:06:00.884529+00:00"
+      ]
+    },
+    {
+      "command": "python -B -m unittest tools.test_d1_triton_report -v",
+      "tests": 3,
+      "result": "OK",
+      "duration_s": 0.001
+    },
+    {
+      "command": "python -B -m unittest tools.test_d1_triton_report -v",
+      "tests": 5,
+      "result": "OK",
+      "duration_s": 0.061
+    }
+  ],
+  "source_sha256": {
+    "tools/d1_triton_rules.py": "b7ee715935fa2b8a466fc68a217f88948fa978d2bf0daece7cb47f9e11955e21",
+    "tools/test_d1_triton_rules.py": "2b0ccd0fd05bc4fec4ab8b5af82c5d842549389cf0a8c22c125d35e27b640ec3",
+    "tools/d1_triton_reproduce.py": "a446704ca17198014f66b19cdcfeeee14eb9b1b84c57163040fa6906b8d3263d",
+    "tools/test_d1_triton_report.py": "a8fe9fc20e486386fe6dfddf83d72b9815a1aa800309e49c68fd5ae085707092"
+  },
+  "report_tests_cover": "paired/group semantics unchanged by later offline static-file-copy and figure-legend changes",
+  "device_commands": 0
+}
