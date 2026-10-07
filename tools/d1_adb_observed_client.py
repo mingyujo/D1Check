@@ -58,6 +58,7 @@ class ObservedDevice(legacy.Device):
         super().__init__(adb,serial);self.root=Path(root);self.sequence=0
         self.allow_select=allow_select;self.forbid_apk_deploy=forbid_apk_deploy
         self.allow_other_transports=allow_other_transports
+        self.local_server_probe_gap_limit=0;self.local_server_probe_gaps=0
 
     def identify(self,fingerprint):
         if not self.allow_other_transports:
@@ -94,7 +95,19 @@ class ObservedDevice(legacy.Device):
             server_environment={k:os.environ.get(k) for k in ENV_KEYS},vendor_keys_env_present='ADB_VENDOR_KEYS' in os.environ,
             phase='before_client',client_launch_intent=False)
         if self.sequence==1:context['current_host_snapshot']=host_snapshot(min(2,max(.1,remaining-6)))
-        try:context['server']=server_probe(min(1,remaining-5))
+        try:
+            try:context['server']=server_probe(min(1,remaining-5))
+            except TimeoutError as first_error:
+                left=self.deadline-time.monotonic() if self.deadline else timeout+6
+                if self.local_server_probe_gaps>=self.local_server_probe_gap_limit or left<=timeout+7:raise
+                self.local_server_probe_gaps+=1
+                gap=dict(original_error=repr(first_error),client_launched=False,scope='local localhost5037 smart socket only',
+                    retry_count=1,total_campaign_gaps=self.local_server_probe_gaps,maximum_campaign_gaps=self.local_server_probe_gap_limit,
+                    server_start_restart=False,device_command_retry=False)
+                rp.write(folder/'server_precheck_gap.json',gap)
+                time.sleep(.25)
+                context['server']=server_probe(min(1,(self.deadline-time.monotonic()-5) if self.deadline else 1))
+                context['server_precheck_gap']=gap
         except Exception as error:
             context.update(status='server_precheck_failed',error=repr(error));rp.write(folder/'context.json',context)
             rp.write(folder/'host_after_failure.json',self.failure_snapshot())

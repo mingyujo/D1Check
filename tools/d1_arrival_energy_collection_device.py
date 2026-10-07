@@ -352,6 +352,9 @@ def run(plan_file,adb,serial,expected_sha,approved):
        if plan.get('resident_control_pair') or tracked_bundle(plan) else
        ObservedDevice(adb,serial,root/'host_commands'))
     if journal:d.bundle_checkpoint=journal
+    if plan.get('local_server_probe_gap_version'):
+        c.require(plan['local_server_probe_gap_version']=='local-server-probe-gap-v1' and plan.get('history_control'),'local server probe protocol mismatch')
+        d.local_server_probe_gap_limit=2
     if plan.get('background_activity_contrast') and plan.get('trace_content_audit'):
         d.background_trace_audit=plan['trace_content_audit']
     if plan.get('history_control'):d.history_trace_spec=plan['history_trace']
@@ -372,6 +375,8 @@ def run(plan_file,adb,serial,expected_sha,approved):
             if entry['index']<reuse_count:
                 stats=history.reuse_entry(plan,root,entry)
                 complete.append(stats)
+                if entry['index']==6 and plan.get('original_model_confirmation'):
+                    history.pc_stage(plan,root,'freeze',budget['development_freeze_seconds'])
                 if journal:journal.mark('historical_evidence_reused',session_id=entry['session_id'],statistics=stats,device_commands=0)
                 continue
             if plan.get('history_control'):

@@ -38,7 +38,7 @@ class RecoveryTests(unittest.TestCase):
         self.assertEqual(r.remaining(claim,200,1100),21500)
         with self.assertRaisesRegex(ValueError,'clock'):r.remaining(claim,50,1100)
         with self.assertRaisesRegex(ValueError,'clock'):r.remaining(claim,200,1200)
-        self.assertEqual(r.limits()['explicit_inference'],r.h.budget()['explicit_inference']+304)
+        self.assertEqual(r.limits()['explicit_inference'],r.h.budget()['explicit_inference']+312)
         self.assertEqual(r.limits()['adb_commands'],r.h.budget()['adb_commands']+7800+40)
         self.assertLess(r.h.budget()['total_seconds']+1200+120+600,21600)
 

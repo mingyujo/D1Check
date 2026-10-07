@@ -1,5 +1,12 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-08 HISTORY-LOCAL-SERVER-PROBE-01 — 7자료再사용·남은확인5 동결
+
+- v6 첫원모형확인PAR180적격(개발6+확인1). 다음준비의localhost5037 host:version1초timeout은서버동일PID8648존재/이후정상응답이며원client미실행. warmup8반환・AP시작승인없어조건부하0(코드gate/arm명령부재확인), 앱host정리완료/원FAIL보존. [구체원인·PC수정](ENERGY_AP_HISTORY_BOUNDARY_REPAIR_20261008.md#v7-로컬-server-probe의-한정된-재확인).
+- opt-inPC서버TimeoutError만전체2gap・.25초뒤같은1초probe1회추가, 통과뒤원기기client단1회. serverrestart/daemon생성/프로토콜불일치/기기명령재시도0, 원오류/컨텍스트보존. 실제wrapper/원client1회·legacy/거절/횟수cap검증포함50PASS. APK변경0・모형/g비교값불변.
+- v7 `e3d9e199…aa7ae2`/child `76e45a64…bab2cc9`, 적격개발6+확인1read-only 재사용, 원모형/보조비교재동결fit0・새확인5만실행. 808추론/runtime20/staging35파일/ADB38200/9015초예약・APK/pull/install0. 추가준비실패warmup8만누적상한+8=2328・15시도/runtime60/staging105파일, 원v3clock6시간/마무리600초초기화0.
+- v5새잔열후보gate실패/미채택과모든원FAIL/소비・동결/기본/RL/strict/experiment_ready=false보존. 나머지확인은추가조건/모형탐색이아니며이미예정된원모형전이확인이다. 다른작업/사용자변경보존. 다음: 현재동일기기gate→남은확인5→전체자료판독・그림・보고/Git.
+
 ## 2026-10-08 HISTORY-ORIGINAL-CONFIRM-01 — 원동결모형 별도전이확인6 동결
 
 - v5개발6모두적격. 새g0.162291은두회복block교차기준미충족(원APMAE평균0.169°C/후보0.267°C), 기존원모형냉각방향오류0. v5gate실패/FAIL보존·g후보미채택. 최신자율진행승인아래남은예정6세션을 **원동결모형의별도전이확인**으로고정하며새모형탐색/재적합/허용폭변경0. [목적·기준·예산](ENERGY_AP_HISTORY_BOUNDARY_REPAIR_20261008.md#v6-원동결-모형의-별도-전이-확인).

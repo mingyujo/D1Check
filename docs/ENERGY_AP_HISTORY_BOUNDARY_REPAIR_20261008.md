@@ -73,3 +73,22 @@ v5는개발6적격을확보했으나 g=0.16229091917947994의교차history gate�
 & 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_history_recovery_plan_v6/RUN_AFTER_APPROVAL.ps1' -Action Check
 & 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_history_recovery_plan_v6/RUN_AFTER_APPROVAL.ps1' -Action Run -Approved -Serial '<동일현재A24 transport>' -ExpectedPlanSha256 'ac518af1056306b544dc7a7dc81d8eab32538c0776e2c898574aaec801ca6a18'
 ```
+
+## v7 로컬 server probe의 한정된 재확인
+
+v6첫확인PAR180은정상종료/원자료/trace/자료검사완료. 다음CPU180준비에서호스트localhost5037 `host:version`1초socket TimeoutError가발생했다. 원host_commands/1228/context는client_launch_intent=false, client실행전실패. failure host snapshot에는동일adb serverPID8648/생성시각이있고사후PC-only동일protocol0029응답확인. 이후원host기기회수/force-stop/ps/trace회수도정상반환했다. 기기연결소실/서버종료/두transport충돌로단정하지않는다.
+
+실패준비는runtime4/warmup8시작·반환후resident baseline이다. start_ap.host_approval/arm명령이없고APKcode는numeric AP승인없이는conditioning을시작할수없다. 본호출0판독은이gate근거와명령전량대조에근거하며단순로그부재로0을대입한것이아니다. 원prefix뒤의추가work는허용되지않는다. 원중단/부분기록은유지한다.
+
+`local-server-probe-gap-v1` opt-in은 **PC의server_probe TimeoutError만**, 실행deadline/예약이충분하고현재전체gap사용<2일때 .25초후동일1초smart socketprobe를1회추가한다. 타이머를늘리지않고context/server_precheck_gap에최초오류/원client미실행/pc-only범위/누적횟수를보존한다. 두번째가0029정상서버를확인한경우에만원ADB기기client를단1회실행한다. devicecommand재시도/ADBserver시작·재시작/timeout연장0. connectionrefused/protocolmismatch/ENVoverride/두번째실패/횟수소진/시간부족은client미실행으로중단한다. flag없는원래경로는첫PC오류에서종료한다. 프로토콜check와client실행사이race는기존처럼있으며미확인자동server변경메시지는여전히원오류로보존/중단한다.
+
+검증50PASS: 실제ObservedDevice.call에서PCprobe2/기기client1, legacy기기0・거절/다른프로토콜/no-reprobe・전체2gap제한, 기존환경/진행lease・원window/readonly재사용/원모형동결fit0/cleanup회귀. 실제원실패context를PC판독했다. 새 기기조회는진단중없고후속실행기 내부현재gate에만쓴다. Android변경/재빌드0. 1초 timeout은 원계약그대로이고추가PCquery시간도원claim의6시간에포함한다.
+
+새v7은개발6+확인PAR180 1을현재검사/sourcehash/manifest로read-only복사한다. 첫확인기록을보고원모형계수/비교값/선정방식을바꾸지않으며원모형/보조comparison을같은 값으로봉인한다. 새확인5만실행: 768작업+40warmup=808추론/runtime20/staging5・35파일/tracepull5/ADB38200/설치본pull・APKpush・install0/9015초예약. 누적상한은준비실패8warmup만더해2328추론/15시도/runtime60/staging105파일이다. 기존추가실패PAR미확인상한200은유지한다. ADB99240/pull2・최초v3clock부터6시간/마무리600초/endpoint고정/연결소실대기20분은불변이다.
+
+계획 `energy_ap_history_recovery_plan_v7/campaign_plan.json` SHA `e3d9e199db93a3b6121be018646175d905ee9a26622996c52ff9af76f9aa7ae2`, child `76e45a6490ffada6d606a8597df8358b42d897b388f09c575f94958a0bab2cc9`. 현재 Check기기0, 원coef/원trace/rawhash불변. 최신자율승인아래단1회Run하여남은예정확인5와자료마무리를진행한다.
+
+```powershell
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_history_recovery_plan_v7/RUN_AFTER_APPROVAL.ps1' -Action Check
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_history_recovery_plan_v7/RUN_AFTER_APPROVAL.ps1' -Action Run -Approved -Serial '<동일현재A24 transport>' -ExpectedPlanSha256 'e3d9e199db93a3b6121be018646175d905ee9a26622996c52ff9af76f9aa7ae2'
+```
