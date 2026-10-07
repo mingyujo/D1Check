@@ -50,6 +50,12 @@ def request_gate(rows, expected, origin, policy, plan, artifacts):
 def validate(folder,manifest,plan):
     folder=Path(folder);art=folder/'artifacts'
     cleanup=m.read(art/'cleanup.json')
+    if (folder/'postapproval_environment_gap.json').exists():
+        restored=m.read(folder/'postapproval_environment_restored.json')
+        if restored['host_monotonic']>=restored['lease_deadline']:raise ValueError('environment lease recovery late')
+        records=lines(art/'progress.jsonl')
+        if any(e.get('interactive') is not True or e.get('plugged')!=0 or e.get('thermal_status')!=0 or e.get('low_memory') is not False for e in records if e.get('kind')=='power_sample'):
+            raise ValueError('app internal environment evidence not eligible')
     if cleanup['status']!='completed':
         original=m.read(art/'session_failure.json') if (art/'session_failure.json').exists() else cleanup
         raise RuntimeError('history app failure: '+str(original))

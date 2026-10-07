@@ -1,5 +1,12 @@
 # D1Check 결정 기록
 
+## 2026-10-08 HISTORY-ENVIRONMENT-LEASE-01 — 2자료재사용·남은10 실행 동결
+
+- 최신사용자자율수정/재실측승인아래v4의화면2초무출력timeout을PC판독했다. 마지막정상host화면/앱interactive/thermal표본은정상이었으며조회응답소실과실제상태위반을구분한다. opt-in환경미확인1회/session, 마지막유효AP부터10초안에fresh thermal/화면복구필수; 실제위반/두번째실패/미복구/증거실패는중단. [계약개정](ENERGY_AP_HISTORY_BOUNDARY_REPAIR_20261008.md#v5-환경-미확인-lease와-완료-2자료-재사용).
+- 실제poll/fresh복구·lease만료·원stack·state위반·legacy·재사용/캐시 포함46검증PASS. v5 SHA `a5a9e425…fa4ba4`, child `5f5c3bf3…735a74f`; C0/CPU적격2는원hash복사, 실패PAR은개발/확인에서제외. 새개발4+확인6/10세션·1712추론/runtime40/staging70파일/ADB76200/16245초예약, APK설치/push/pull0.
+- 실패PAR durable108시작/107반환·그뒤미확인(등록상한200)을별도보존한다. 최신계속수정/실행승인으로전체누적상한2320추론/14시도/runtime56/staging98파일로등록(+실패PAR최대200); ADB99240·설치본pull2·6시간/마무리600초는유지. 시간은v3원claimclock승계해수정/대기포함초기화0.
+- 원v2/v3/v4receipt·FAIL·원모형/기본/RL/strict/experiment_ready=false보존. helperlease는환경PASS가아니며후속기록의APcoverage/앱환경/최종적격성검사를통과해야한다. 다른RESERVED/S26/사용자변경보존. 다음은남은10세션→등록개발gate/g동결→조건부확인6→부분/완료분석이다.
+
 ## 2026-10-08 HISTORY-BOUNDARY-REPAIR-01 — 완료C0 재사용·남은11 실행 동결
 
 - v3첫앱은정상종료/회수됐으나PC가냉각마지막0.393초전류까지요구해power gap으로종료했다. 공식conditioning→target120초는결측0이어서해당구간필수검사와냉각full J의null을분리했다. 원v3FAIL/receipt/원자료불변, 수정판독으로C0적격1을확인. [수정·재사용·정확예산](ENERGY_AP_HISTORY_BOUNDARY_REPAIR_20261008.md).

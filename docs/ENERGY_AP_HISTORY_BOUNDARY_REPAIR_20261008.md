@@ -35,3 +35,22 @@ PC수식의J보고구간은target 공통120초다. 기존검사는 conditioning 
 ```
 
 최신사용자자율수정/실행승인에따라별도질문없이현재gate후진행한다. 중간stop/완료/후보fit·독립확인·오차·실소비는종료후별도최종보고로남긴다.
+
+## v5 환경 미확인 lease와 완료 2자료 재사용
+
+v4 CPU는정상완료/자료적격, 다음PAR은화면poll1373의2초무출력/root-reaped timeout으로중단됐다. 화면꺼짐이나연결소실을확정할근거는없다. 직전정상host화면은awake/interactive=true, 마지막앱power표본도interactive=true/thermal0/plugged0/low_memory=false. 원FAIL/receipt/부분PAR을그대로남기고학습/확인에서제외한다. PAR durable시작100작업+warmup8=108, 반환99+8=107, 원prefix뒤호출은미확인·등록상한200을보수적으로예약한다.
+
+새 opt-in `postapproval-environment-lease-v1`은무출력2초timeout·정확한screen/thermal명령·client-reaped·완전증거·최근정상thermal10초미만/화면20초미만일때만1회환경unknown을기록한다. ValueError실제위반·부분출력·closed/offline·명령불일치·증거저장실패는여전히중단. 원오류/stack/clock/제한을먼저기록하고다음정규loop에서freshthermal/화면을확인한다. 마지막유효thermal부터10초가최대복구기한이며그동안환경이통과했다고표시하지않는다. 제시간복구파일없음·두번째환경실패·늦은응답은중단한다. 환경공백중작업이진행할수있으며, 앱의기존battery/thermal/interactive/memory감시와watchdog는그대로다. nativehang/프로세스정지까지항상종료한다고보장하지않는다.
+
+후속자료검사는APgap≤10초·원숫자AP·전체필수power창·호출/품질을그대로확인한다. lease를사용했다면추가로앱power표본의interactive/plugged/thermal/low_memory가전부적격이고복구가lease기한이전이어야한다. 관측손실을실제환경위반과분리한새계약이다. 필수센서를삭제/thermal을numericAP로대체하지않는다. query/추가fresh환경관측의에너지영향은보정해빼지않고프로토콜전이로분리한다. 기존지원범위/계수/strict/기본모형은불변.
+
+검증46PASS: 실제poll에서무출력환경timeout→제시간fresh복구, 두번째실패/lease만료/state위반/최근정상값부재차단, 기존경로fail-fast, listing간격/원오류·재사용·현재APKfreshhash/no-pull·원공통창/냉각null·개발/확인분리. 실제ADB0의PC검증이며실기기안정성PASS가아니다. fixture의명시index누락1을보완했고최종46PASS.
+
+v5는C0+CPU 2개만read-only로재사용하며새개발4/확인6=10세션이다. 1632작업+80warmup=1712추론/runtime40/staging10·70파일/tracepull10/ADB76200/설치・APKpush・hostAPKpull0/전체예약16245초. 최종cohort12의2016추론과실제새소비는분리한다. v2실패104+cohort2016+실패PAR최대200=**전체누적상한2320추론/14시도/runtime56/staging98파일**이다. 최신사용자의“알아서수정하며계속…다마무리”승인에따른추가실패1회분예약이며무한증액이아니다. ADB99240/hostAPKpull2/6시간상한은유지한다. 실패PAR후단순재실행이아니라관측계약/구현/PC검증을고친새ID로진행하며완료2자료는재측정하지않는다.
+
+계획 `energy_ap_history_recovery_plan_v5/campaign_plan.json` SHA `a5a9e4257a44648230b86f567641749f8c46b2bfffaceeac2b2ae3e636fa4ba4`, child `5f5c3bf39b527162d53a6fd8ca888146af881278c3bd9c3c79bf02fe4735a74f`. v4claim의시작clock은v3원clock이므로v5도이를승계해PC수정시간포함6시간을초기화하지않는다. 남은시간≥16245+600초일때만Run진입한다. 최신승인으로새v5만단1회실행한다.
+
+```powershell
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_history_recovery_plan_v5/RUN_AFTER_APPROVAL.ps1' -Action Check
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_history_recovery_plan_v5/RUN_AFTER_APPROVAL.ps1' -Action Run -Approved -Serial '<동일현재A24 transport>' -ExpectedPlanSha256 'a5a9e4257a44648230b86f567641749f8c46b2bfffaceeac2b2ae3e636fa4ba4'
+```

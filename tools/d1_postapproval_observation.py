@@ -1,11 +1,48 @@
 """Opt-in bounded progress gap; mandatory environment observations remain fatal."""
 import json
+import shlex
 import time
 import traceback
 from pathlib import Path
 
 VERSION = 'postapproval-listing-gap-v1'
 PERIOD_SECONDS = 2
+ENV_VERSION = 'postapproval-environment-lease-v1'
+
+
+def environment_enabled(plan):
+    version=plan.get('postapproval_environment')
+    if version is None:return False
+    if version!=ENV_VERSION or plan.get('postapproval_observation')!=VERSION:
+        raise ValueError('postapproval environment protocol mismatch')
+    return True
+
+
+def environment(device,folder,state,poll_deadline,last_thermal,last_screen,kind,read):
+    sequence=device.sequence
+    try:
+        read();return True
+    except RuntimeError as error:
+        now=time.monotonic();path=Path(device.root)/f'{device.sequence-1:04d}'/'client/result.json'
+        if state.get('environment_gaps',0) or not sequence<device.sequence<=sequence+3 or not path.exists():raise
+        result=json.loads(path.read_text(encoding='utf8'))
+        from tools import d1_energy_screen as screen
+        allowed=[['shell','sh','-c',shlex.quote(screen.SCRIPT)]] if kind=='screen' else [['exec-out','cat','/proc/uptime'],['shell','dumpsys','thermalservice']]
+        if (result.get('command',[])[:3]!=[device.adb,'-s',device.serial]
+                or result['command'][3:] not in allowed or result.get('status')!='timeout'
+                or result.get('root_reaped') is not True or result.get('returncode') is None
+                or result.get('stdout_bytes')!=0 or result.get('stderr_bytes')!=0
+                or result.get('timeout_seconds')!=2 or now-last_thermal>=10 or now-last_screen>=20
+                or min(device.deadline,poll_deadline)-now<=30):raise
+        evidence=dict(version=ENV_VERSION,kind=kind,result=result,original_error=repr(error),original_stack=traceback.format_exc(),
+            last_good_thermal_host=last_thermal,last_good_screen_host=last_screen,
+            recovery_deadline=last_thermal+10,maximum_gaps=1,used_gaps=1,
+            meaning='environment temporarily unknown, never classified as passed; fresh thermal and screen required before next progress query')
+        try:
+            with (Path(folder)/'postapproval_environment_gap.json').open('x',encoding='utf8') as stream:json.dump(evidence,stream,indent=2)
+        except OSError as recording_error:raise error from recording_error
+        state.update(environment_gaps=1,refresh_environment=True,environment_lease_deadline=last_thermal+10)
+        return False
 
 
 def enabled(plan, manifest):

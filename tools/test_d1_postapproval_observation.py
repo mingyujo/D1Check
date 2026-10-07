@@ -21,10 +21,10 @@ class Clock:
 
 
 class PostapprovalTests(unittest.TestCase):
-    def exercise(self,tmp,*,optin=True,second=False,thermal_failure=False,screen_failure=False,deadline=400.,cap=100):
+    def exercise(self,tmp,*,optin=True,second=False,thermal_failure=False,screen_failure=False,deadline=400.,cap=100,env=False,env_repeat=False,env_late=False):
         folder=Path(tmp);clock=Clock();calls=[]
         d=SimpleNamespace(root=folder/'commands',sequence=0,adb='FAKE',serial='fixture',deadline=1000.,bundle_checkpoint=Mock())
-        listings=0;listing_times=[]
+        listings=0;listing_times=[];env_timeouts=0
         def call(*args,**kwargs):
             nonlocal listings
             index=d.sequence;d.sequence+=1;calls.append(args[0]);clock.now+=.1
@@ -40,8 +40,14 @@ class PostapprovalTests(unittest.TestCase):
             return SimpleNamespace(stdout=b'warmup.ready.json\n' if listings==1 else b'start_ap.ready.json\n' if listings==2 else b'cleanup.json\n')
         d.call=call
         def thermal(*args):
+            nonlocal env_timeouts
             calls.append('thermal')
             if thermal_failure and (folder/'postapproval_observation_gap.json').exists():raise RuntimeError('mandatory thermal unknown')
+            if env and listings>=3 and (env_timeouts==0 or env_repeat):
+                p=d.root/f'{d.sequence:04d}'/'client';p.mkdir(parents=True);d.sequence+=1
+                result=copy.deepcopy(json.loads(FIXTURE.read_text())['result']);result.update(command=[d.adb,'-s',d.serial,'shell','dumpsys','thermalservice'],timeout_seconds=2)
+                (p/'result.json').write_text(json.dumps(result));clock.now+=2;env_timeouts+=1;raise RuntimeError('environment silent timeout')
+            if env_late and env_timeouts:clock.now+=20
         def screen(*args):
             calls.append('screen')
             if screen_failure and (folder/'postapproval_observation_gap.json').exists():raise ValueError('mandatory screen violation')
@@ -51,6 +57,7 @@ class PostapprovalTests(unittest.TestCase):
             budget=dict(host_poll_seconds=deadline-100,adb_commands=cap,per_session_adb_commands=cap,adb_recovery_cleanup_reserve=10),
             entries=[dict(index=0,session_id='fixture')],screen_contract={},references={k:dict(path='ref',sha256='hash') for k in runner.c.old.KEYS})
         if optin:plan['postapproval_observation']=observe.VERSION
+        if env:plan['postapproval_environment']=observe.ENV_VERSION
         manifest=dict(session_id='fixture',history_control_version='registered-history-control-v1',start_ap_gate='numeric-ap-observe-v2')
         with ExitStack() as stack:
             for obj,name,opts in [(runner.time,'monotonic',dict(side_effect=clock.monotonic)),(runner.time,'sleep',dict(side_effect=clock.sleep)),
@@ -72,6 +79,40 @@ class PostapprovalTests(unittest.TestCase):
             self.assertEqual(r['calls'][-3:],['thermal','screen','shell'])
             self.assertGreaterEqual(r['listing_times'][3]-r['listing_times'][2],5)
             self.assertFalse((Path(tmp)/'prewarmup_observation_gap.json').exists())
+
+    def test_environment_lease_recovers_within_deadline_actual_poll(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            r=self.exercise(tmp,env=True);self.assertIsNone(r['error']);self.assertEqual((r['arm'],r['approve']),(1,1))
+            restored=json.loads((Path(tmp)/'postapproval_environment_restored.json').read_text())
+            self.assertLess(restored['host_monotonic'],restored['lease_deadline'])
+
+    def test_environment_second_timeout_and_late_recovery_fail(self):
+        for changes in [dict(env_repeat=True),dict(env_late=True)]:
+            with self.subTest(changes=changes),tempfile.TemporaryDirectory() as tmp:
+                r=self.exercise(tmp,env=True,**changes);self.assertIsNotNone(r['error'])
+                self.assertTrue((Path(tmp)/'postapproval_environment_gap.json').exists())
+                self.assertFalse((Path(tmp)/'postapproval_environment_restored.json').exists())
+
+    def test_screen_lease_only_silent_reaped_actual_command_and_fresh_prior(self):
+        import shlex
+        for stale in (False,True):
+            with self.subTest(stale=stale),tempfile.TemporaryDirectory() as tmp:
+                d=SimpleNamespace(root=Path(tmp)/'commands',sequence=0,adb='FAKE',serial='fixture',deadline=1000)
+                def failed():
+                    p=d.root/'0000/client';p.mkdir(parents=True);d.sequence+=1
+                    result=copy.deepcopy(json.loads(FIXTURE.read_text())['result']);result.update(command=['FAKE','-s','fixture','shell','sh','-c',shlex.quote(runner.screen.SCRIPT)],timeout_seconds=2)
+                    (p/'result.json').write_text(json.dumps(result));raise RuntimeError('screen silent timeout')
+                state={}
+                with patch.object(observe.time,'monotonic',return_value=105):
+                    if stale:
+                        with self.assertRaisesRegex(RuntimeError,'screen silent'):observe.environment(d,Path(tmp),state,400,90,90,'screen',failed)
+                    else:
+                        self.assertFalse(observe.environment(d,Path(tmp),state,400,102,95,'screen',failed));self.assertEqual(state['environment_lease_deadline'],112)
+                self.assertEqual((Path(tmp)/'postapproval_environment_gap.json').exists(),not stale)
+
+    def test_environment_state_violation_is_never_a_gap(self):
+        def violated():raise ValueError('screen actually off')
+        with self.assertRaisesRegex(ValueError,'actually off'):observe.environment(SimpleNamespace(sequence=0),Path('.'),{},400,100,100,'screen',violated)
 
     def test_second_listing_gap_is_fatal_original_evidence_retained(self):
         with tempfile.TemporaryDirectory() as tmp:

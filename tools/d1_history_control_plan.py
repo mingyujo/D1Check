@@ -88,7 +88,7 @@ def specification(source_file,build_file,output):
         measurement_protocol_change='same-resident registered conditioning/recovery/target; 900s watchdog; 1000s trace 128MiB; numeric gate before conditioning only; target numeric coverage checked from host observations, not a second handshake; opt-in postapproval progress listing starts at least 2s after previous result, one recorded silent gap per session with fresh thermal/screen; mandatory environment failures remain fatal',
         analysis_scope='conditional registered-history diagnostic; no default/strict adoption; no accuracy PASS',
         prewarmup_observation='precommon-observation-gap-v3',
-        postapproval_observation='postapproval-listing-gap-v1')
+        postapproval_observation='postapproval-listing-gap-v1',postapproval_environment='postapproval-environment-lease-v1')
     plan['trace_content_audit']=dict(source['trace_content_audit'],window='conditioning_start_to_target_end',trace_recovery_seconds=120)
     template=p.read(source_file.parent/source['entries'][0]['manifest']);manifests=[]
     policies=dict(C0='C0',CPU='CPU_URGENT_ONLINE_V1',PAR='B2_PARALLEL_ONLINE_V1')
@@ -157,18 +157,23 @@ def load_cases(plan,root,entries):
     return cases
 
 
-def reuse_first(plan,root):
-    reuse=plan['history_reuse'];source=Path(reuse['source_folder'])
+def reuse_entry(plan,root,entry):
+    config=plan['history_reuse']
+    reuse=next(x for x in config['entries'] if x['index']==entry['index']) if 'entries' in config else config
+    source=Path(reuse['source_folder'])
     require({str(f.relative_to(source)):p.digest(f) for f in source.rglob('*') if f.is_file()}==reuse['file_sha256'],'reused raw drift')
-    entry=plan['entries'][0];manifest=p.read(source/'input_manifest.json')
+    manifest=p.read(source/'input_manifest.json')
     require(p.digest(source/'input_manifest.json')==entry['manifest_sha256'],'reused manifest drift')
     stats=analysis.validate(source,manifest,plan)
-    target=Path(root)/f"00_{entry['session_id']}"
-    shutil.copytree(source,target)
+    target=Path(root)/f"{entry['index']:02d}_{entry['session_id']}"
+    shutil.copytree(source,target,ignore=shutil.ignore_patterns('validated.json','reuse_provenance.json'))
     stats.update(reused_evidence=True,reused_source_sha256=reuse['file_sha256']['input_manifest.json'],new_device_calls=0)
     cal.write_new(target/'validated.json',stats)
     cal.write_new(target/'reuse_provenance.json',reuse)
     return stats
+
+
+def reuse_first(plan,root):return reuse_entry(plan,root,plan['entries'][0])
 
 
 def freeze_verify(plan,root):

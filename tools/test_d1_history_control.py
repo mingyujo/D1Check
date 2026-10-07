@@ -32,7 +32,7 @@ class HistoryTests(unittest.TestCase):
             source=Path(t)/'source';source.mkdir();p.cal.write_new(source/'input_manifest.json',dict(session_id='fixture'))
             (source/'progress.jsonl').write_text('original')
             hashes={str(f.relative_to(source)):p.p.digest(f) for f in source.iterdir()}
-            plan=dict(history_reuse=dict(source_folder=str(source),file_sha256=hashes),entries=[dict(session_id='fixture',manifest_sha256=hashes['input_manifest.json'])])
+            plan=dict(history_reuse=dict(source_folder=str(source),file_sha256=hashes),entries=[dict(index=0,session_id='fixture',manifest_sha256=hashes['input_manifest.json'])])
             root=Path(t)/'new';root.mkdir()
             with patch.object(a,'validate',return_value=dict(status='eligible_descriptive_only')):
                 result=p.reuse_first(plan,root)

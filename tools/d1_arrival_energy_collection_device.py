@@ -44,6 +44,8 @@ def write(path,value):c.cal.write_new(path,value)
 def poll(d,remote,folder,manifest,plan):
     from tools import d1_postapproval_observation as postapproval
     postapproval_enabled=postapproval.enabled(plan,manifest)
+    environment_enabled=postapproval.environment_enabled(plan)
+    c.require(not environment_enabled or postapproval_enabled,'environment lease requires registered history context')
     start=time.monotonic();end=min(d.deadline,start+plan.get('budget',c.BUDGET)['host_poll_seconds'])
     last_thermal=last_screen=0;armed=False;index=0;start_ap_sent=False;last_checkpoint=start
     observation_state={'gaps':0}
@@ -64,8 +66,13 @@ def poll(d,remote,folder,manifest,plan):
                 warmup_approved=armed,start_ap_approved=start_ap_sent)
             last_checkpoint=now
         refresh=postapproval_state['refresh_environment']
+        lease=postapproval_state.get('environment_lease_deadline')
+        if lease is not None and now>=lease:raise TimeoutError('environment lease expired; original gap retained')
         if refresh or now-last_thermal>=2:
-            if plan.get('prewarmup_observation') in ('prewarmup-observation-gap-v2','precommon-observation-gap-v3'):
+            if environment_enabled and armed and start_ap_sent:
+                if not postapproval.environment(d,folder,postapproval_state,end,last_thermal,last_screen,'thermal',lambda:energy_device.thermal(d,folder,index)):
+                    time.sleep(.25);continue
+            elif plan.get('prewarmup_observation') in ('prewarmup-observation-gap-v2','precommon-observation-gap-v3'):
                 from tools.d1_preparation_observation import thermal as observe_thermal
                 if not observe_thermal(d,folder,index,observation_state,(start_ap_sent if plan.get('prewarmup_observation')=='precommon-observation-gap-v3' else armed),energy_device.thermal,version=plan['prewarmup_observation']):
                     time.sleep(.25)
@@ -74,7 +81,15 @@ def poll(d,remote,folder,manifest,plan):
                 energy_device.thermal(d,folder,index)
             index+=1;last_thermal=time.monotonic()
         if refresh or now-last_screen>=10:
-            screen.snapshot(d,folder,f'poll_{index:04d}',plan['screen_contract']);last_screen=time.monotonic()
+            if environment_enabled and armed and start_ap_sent:
+                if not postapproval.environment(d,folder,postapproval_state,end,last_thermal,last_screen,'screen',lambda:screen.snapshot(d,folder,f'poll_{index:04d}',plan['screen_contract'])):
+                    time.sleep(.25);continue
+            else:screen.snapshot(d,folder,f'poll_{index:04d}',plan['screen_contract'])
+            last_screen=time.monotonic()
+        if lease is not None:
+            if time.monotonic()>=lease:raise TimeoutError('fresh environment arrived after lease; original gap retained')
+            write(Path(folder)/'postapproval_environment_restored.json',dict(status='fresh_thermal_screen_observed',host_monotonic=time.monotonic(),lease_deadline=lease))
+            postapproval_state.pop('environment_lease_deadline')
         if refresh:postapproval_state['refresh_environment']=False
         if postapproval_enabled and armed and start_ap_sent:
             if time.monotonic()-last_progress_query<postapproval.PERIOD_SECONDS:
@@ -353,8 +368,9 @@ def run(plan_file,adb,serial,expected_sha,approved):
                       energy_device.installation(d,plan,plan_file,root/'installation',hard));identified=True
         if journal:journal.mark('installed_preflight_verified',adb_commands=d.sequence)
         for entry in plan['entries']:
-            if plan.get('history_reuse') and entry['index']==0:
-                stats=history.reuse_first(plan,root)
+            reuse_count=plan.get('history_reuse',{}).get('count',1) if plan.get('history_reuse') else 0
+            if entry['index']<reuse_count:
+                stats=history.reuse_entry(plan,root,entry)
                 complete.append(stats)
                 if journal:journal.mark('historical_evidence_reused',session_id=entry['session_id'],statistics=stats,device_commands=0)
                 continue
@@ -490,9 +506,10 @@ def run(plan_file,adb,serial,expected_sha,approved):
             outcome.update(conditioning_requests=sum(x['conditioning_requests'] for x in complete),
                 explicit_inference=sum(x['requests']+x['conditioning_requests']+8 for x in complete))
             if plan.get('history_reuse'):
-                outcome.update(reused_sessions=1,new_sessions=len(complete)-1,reused_inference=104,
-                    new_explicit_inference=outcome['explicit_inference']-104,new_runtime_creations=4*(len(complete)-1),
-                    new_warmup=8*(len(complete)-1),accounting='sessions/explicit_inference include immutable historical evidence; new_* are current device consumption')
+                reused=sum(x['requests']+x['conditioning_requests']+8 for x in complete[:reuse_count])
+                outcome.update(reused_sessions=reuse_count,new_sessions=len(complete)-reuse_count,reused_inference=reused,
+                    new_explicit_inference=outcome['explicit_inference']-reused,new_runtime_creations=4*(len(complete)-reuse_count),
+                    new_warmup=8*(len(complete)-reuse_count),accounting='sessions/explicit_inference include immutable historical evidence; new_* are current device consumption')
         if journal:journal.mark('app_sessions_finished_receipt_pending',outcome=outcome)
         write(root/'FINAL_RECEIPT.json',outcome);write(registry/'completed.json',outcome);return outcome
     except BaseException as exc:
