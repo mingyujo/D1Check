@@ -1,0 +1,20 @@
+{
+  "error": {
+    "type": "PermissionError",
+    "message": "[WinError 5] 액세스가 거부되었습니다: 'C:\\\\Users\\\\LG\\\\AndroidStudioProjects\\\\D1Check-model02b\\\\output\\\\rules_rl_amount_20261007_v1\\\\rl\\\\state.json.tmp' -> 'C:\\\\Users\\\\LG\\\\AndroidStudioProjects\\\\D1Check-model02b\\\\output\\\\rules_rl_amount_20261007_v1\\\\rl\\\\state.json'",
+    "stack": "Traceback (most recent call last):\n  File \"C:\\Users\\LG\\AndroidStudioProjects\\D1Check-model02b\\tools\\d1_rl_amount_campaign.py\", line 319, in execute\n    status=self.train(stop_after_units)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\LG\\AndroidStudioProjects\\D1Check-model02b\\tools\\d1_rl_amount_campaign.py\", line 297, in train\n    self.update(identity,payload)\n  File \"C:\\Users\\LG\\AndroidStudioProjects\\D1Check-model02b\\tools\\d1_rl_amount_campaign.py\", line 275, in update\n    self.save(identity,payload,milestone=update in self.cfg['milestones'])\n  File \"C:\\Users\\LG\\AndroidStudioProjects\\D1Check-model02b\\tools\\d1_rl_amount_campaign.py\", line 215, in save\n    common.atomic(self.root/'state.json',self.state)\n  File \"C:\\Users\\LG\\AndroidStudioProjects\\D1Check-model02b\\tools\\d1_rules_rl_common.py\", line 28, in atomic\n    os.replace(tmp, path)\nPermissionError: [WinError 5] 액세스가 거부되었습니다: 'C:\\\\Users\\\\LG\\\\AndroidStudioProjects\\\\D1Check-model02b\\\\output\\\\rules_rl_amount_20261007_v1\\\\rl\\\\state.json.tmp' -> 'C:\\\\Users\\\\LG\\\\AndroidStudioProjects\\\\D1Check-model02b\\\\output\\\\rules_rl_amount_20261007_v1\\\\rl\\\\state.json'\n",
+    "utc": "2026-10-06T21:41:01.898272+00:00"
+  },
+  "error_type": "Windows atomic state replacement, WinError5",
+  "resume_identity": "HEAD_11",
+  "resume_update": 423,
+  "resume_episode": 3384,
+  "original_numeric_sources_changed": false,
+  "worker_pid_preserved": 8176,
+  "formal_replayed_environments_observed": 0,
+  "observation_fix": "append-only worker stdout log; never opens atomic state/progress targets",
+  "share_delete_diagnostic": "failed on an owned test JSON even with share7; retained failed diagnostic, no policy environment executed",
+  "cause": "reader collision plausible from timing; exact original locking process not independently proven",
+  "new_environment_runs_for_diagnosis": 0,
+  "verified_utc": "2026-10-06T21:53:13.397280+00:00"
+}

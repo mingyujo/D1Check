@@ -1,5 +1,16 @@
 # D1Check 현재 상태
 
+## 2026-10-07 최신 — RULES-RL-AMOUNT-10 평가·검증 완료 / Git 마무리
+
+- 사용자 새 승인: 기존 규칙 재조합 → 별도 RL 6실행 재학습·학습량 비교 → 한국어 분석/화면/commit/push. 과거 정확한 연장 차단과 원본은 보존한다. HEAD/실제 원격 `9e1975b` 일치, 추적 변경 없음에서 착수했다.
+- 이번 누적 상한: 벽시계16시간, 재조합 환경4,000/RL환경80,000(검증·복구 포함), HEAD/QUEUE×11/23/37 각각8,192학습, 기기0. `output/rules_rl_amount_20261007_v1/campaign.json`·소비장부·보호해시 등록. 보수적 기산 KST10/7 03:00, 종료19:00, 학습중단 전 마무리90분 예약.
+- 재조합72본실행 완료, 개발EFT 동결. 확인B는ΔJ−0.064737/Δ긴급P95+207.681ms/Δ최고AP+0.0000716°C로상충, A는EFT와동률이다. 첫3요청 결정 감사에서prefix guard가놓친적격완성96건(개발48/확인48), 새환경0. reference incumbent를완성수에포함한raw집계는보존하고감사에서분리했다.
+- 본학습49,152episode/6,144PPO update·공통4지점·24terminal/48latest-best 정책·192조건/10,560행 평가 완료. 같은가중치14정책/기존기준960행 등3,650행재사용,다른variant간hash충돌0. KST03:28:32~14:00:31 worker정상종료·활성학습/owner0. 실제RL환경68,754/80,000·재조합458/4,000·이번fixture20episode·기기0.
+- 적격best 정책3→3→4→4개, 강한SHARED_EFT 대비그들의공동개선0. 일부부적격정책의조건별이득은진단으로보존한다. B−A는주96조건ΔJ−0.024361/Δ최고AP+0.001545/Δ면적+0.440628으로상충이다. 상한도달·수렴미확인,모형이득을실기기성과로올리지않는다.
+- KST06:41 state.json교체WinError5 1건, HEAD/11 update423에서같은수치/RNG재개했다. 학습소스불변·본환경재계산0. share-delete진단도실패해append-only로그로관측,강제학습중지/새시작없음. [복구기록](../output/rules_rl_amount_20261007_v1/io_recovery_01.json). 사용자이동/중지질문뒤최신계속지시를반영했으며실제pause0,정확한owner 일시정지/재개helper만추가검증했다.
+- 검증: 원prefix768update/6actor해시일치·24상태/455,808요청/3,650alias/원125파일·사용자8파일 SHA, J/AP430재계산최대차이0. fixture정확재개·I/O재계산동일성통과. 검증대상9e1975b+이번미커밋관련변경이며과거Adam/RNG비교불가. [계약/화면](results/request_ppo_01/rules_rl_amount_v1/README.md), [보고서](REQUEST_RULES_RL_AMOUNT_20261007.md).
+- 다음(최대3): (1) 공유CSV/화면최종재현, (2) 관련파일만commit/push·실제원격HEAD확인, (3) 제한된결과를제출본문에반영. 사용자HTML/PDF/VSCode변경·다른worktree·원모형/기본/strict/experiment_ready=false 보존.
+
 ## 2026-10-07 최신 — PPO 학습량 진단 완료·정확한 연장은 상태 누락으로 차단
 
 - 기존 학습6,144/검증720, 별도 후속평가까지192조건/2,112행 완료를 실제 receipt로 확인했다. 원 실행 budget_stopped(5,319.094초)·후속평가 completed(205.984초)와 동결6정책을 보존한다. 활성 PPO/owner는없다.

@@ -1,0 +1,57 @@
+{
+  "base_head": "9e1975bfd4cb96587e7cfb5b18b85f5409ff0b83",
+  "verified_utc": "2026-10-06T18:52:58.597195+00:00",
+  "boundary_tests": 6,
+  "report_tests": 2,
+  "all_final_boundaries_passed": true,
+  "initial_failure": "actor output directory missing, FileNotFoundError; fixture only",
+  "recovery": "create directory; failed boundary rerun, then transaction rollback test passed",
+  "verification_logs": [
+    "verification_initial.log",
+    "verification_resume.stderr",
+    "boundary_0.stderr",
+    "storage_boundary.stderr",
+    "report_tests.stderr",
+    "readonly_verify_0.stderr"
+  ],
+  "no_long_training_before_exact_state_gate": true,
+  "exact_original_vs_pause_resume_fields": [
+    "network",
+    "Adam",
+    "Python RNG",
+    "NumPy RNG",
+    "Torch RNG",
+    "multipliers",
+    "best actor"
+  ],
+  "report_read_only": true,
+  "shared_reproduction": {
+    "environment_runs": 0,
+    "training": 0,
+    "source_verification_sha256": "cce922ee4136480f5e4c7fa1e7d7cf00a080251f032afcaf3a43215cb7f821a0",
+    "source_files": {
+      "summary.json": "7b45dad65750d3744cd5f175e47ddcc0d45c3c2a31b4cfc2a7b4e3902f7f5d56",
+      "training.csv": "c843143fd83365485dfb00c1a7b63b77ac1d0904224fdc4579d0a5124982d745",
+      "validation.csv": "fe86f879eb6eb5b55ffac2990111c28b9cb0ec2ae11a0b63da6766b389dc602a",
+      "policy_summary.csv": "7703741f562b3f2c276fc35a9aba6f2de114df21e80f56ebf257cdb5ea03115c",
+      "recombination_paired.csv": "da3cd881296b6330580bf473a0d50595fb23535fd749da64164a7b826c188a0e"
+    },
+    "png_identical": {
+      "01_validation.png": true,
+      "02_training.png": true,
+      "03_latest_best.png": true,
+      "04_recombination.png": true
+    }
+  },
+  "dashboard_headless_exit": 0,
+  "device_commands": 0,
+  "experiment_ready": false,
+  "pre_formal_actual_consumption": {
+    "recombination_environment_runs": 76,
+    "rl_environment_runs": 106,
+    "rl_fixture_training_episodes": 20,
+    "fixture_PPO_updates": 20,
+    "formal_training_episodes": 0,
+    "provenance": "consumption snapshot printed at18:28:01Z before worker start18:28:32Z"
+  }
+}
