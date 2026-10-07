@@ -2,3 +2,20 @@
 [2026-10-07 15:30:08 +09:00] PRECHECK soc=47 endBy+30m=10-07 17:05
 [2026-10-07 15:30:09 +09:00] GATE rc=0 last=03_A2_ours_b2 2026-10-07T15:30:09 0 27.2 25.2 24.7 0 47 False True
 [2026-10-07 15:30:09 +09:00] LOWER skin=27.2(>=29.1:False) bat=24.7(>=27.5:False) pass=False policy=required -> not_run_lower_required
+[2026-10-07 19:38:30 +09:00] CELL START A2_ours_b2 label=06_A2_ours_b2 out=S26_V3_A2_ours_b2_1007 pid=16476 minSoc=30 hours=1.086 lower=mark duration=3010 deadline=2026-10-08 12:00 stall=600s cap=Σ+150min
+[2026-10-07 19:38:30 +09:00] PRECHECK soc=76 endBy+30m=10-07 21:13
+[2026-10-07 19:38:30 +09:00] GATE rc=2 last=GATE_BLOCKED_NONTHERMAL
+[2026-10-07 19:38:30 +09:00] GATE BLOCKED rc=2
+[2026-10-07 19:39:48 +09:00] CELL START A2_ours_b2 label=07_A2_ours_b2 out=S26_V3_A2_ours_b2_1007 pid=15964 minSoc=30 hours=1.086 lower=mark duration=3010 deadline=2026-10-08 12:00 stall=600s cap=Σ+150min
+[2026-10-07 19:39:48 +09:00] PRECHECK soc=76 endBy+30m=10-07 21:14
+[2026-10-07 19:47:49 +09:00] GATE rc=0 last=07_A2_ours_b2 2026-10-07T19:47:49 481 31.4 30.1 29.8 0 75 False True
+[2026-10-07 19:47:49 +09:00] LOWER skin=31.4(>=29.1:True) bat=29.8(>=27.5:True) pass=True policy=mark -> run
+[2026-10-07 19:47:49 +09:00] POSTGATE soc=75 endBy+30m=10-07 21:22
+[2026-10-07 19:47:50 +09:00] DRYRUN exit=0 file=C:\Users\rhoyo\AndroidStudioProjects\D1Check_v4\results\S26_host_v3_1007\dryrun_07_A2_ours_b2_final_194750.txt lines=626
+[2026-10-07 19:47:50 +09:00] CHAIN SHA match lines=1
+[2026-10-07 19:47:50 +09:00] DRYRUN duration_s 3010 lines=1
+[2026-10-07 19:47:50 +09:00] LAUNCHED 07_A2_ours_b2 -> S26_V3_A2_ours_b2_1007 pid=30704
+[2026-10-07 19:47:55 +09:00] STALLWATCH start pid=30704 stall>600s cap>12010s trace0=1|26089|639269668736034407
+[2026-10-07 20:53:47 +09:00] ORCH EXITED pid=30704
+[2026-10-07 20:53:48 +09:00] DONE manifest_status=completed halt= slot=completed attempts=1 valid=True failed= flags=transitions_explained error=
+[2026-10-07 20:53:48 +09:00] CELL END A2_ours_b2
