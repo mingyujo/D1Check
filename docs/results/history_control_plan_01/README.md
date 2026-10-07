@@ -18,3 +18,7 @@ python -X utf8 -B -m unittest tools.test_d1_history_control tools.test_d1_backgr
 ## v2 실제 실행 종료
 
 첫 세션 listing timeout으로 stopped_no_resume, 적격개발/확인0. [실제 결과·부분 기록·재현](run_v2/README.md). 후보/J/AP 오차는 null이며 v2를 재실행하지 않는다.
+
+## 최종 원모형 전이 확인
+
+개발6/확인6 완료・새g미채택/원모형유지・세부예산불일치공개. [최종보고・화면・재현](run_v7/README.md). 기존FAIL과소비계획은보존한다.

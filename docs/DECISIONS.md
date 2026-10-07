@@ -1,5 +1,12 @@
 # D1Check 결정 기록
 
+## 2026-10-08 HISTORY-FINAL-01 — 실측12자료・원모형별도확인 완료
+
+- 실제개발6・새확인6총12자료적격확보/회수/판독완료, 마지막app/host정리・PC프로세스부재확인. 원g후보0.162는dev gate실패미채택, 원모형유지·고정된미채택보조비교만수행했다. 원모형확인APMAE0.260°C/최대1.077°C・JMAE3.913J/최대9.682J, 30초C0냉각방향오류1/6남음. [최종보고](ENERGY_AP_HISTORY_FINAL_RESULTS_20261008.md) · [화면/CSV/재현](results/history_control_plan_01/run_v7/README.md).
+- 독립physical15시도/12완료・durable2236시작/2235반환/미확인실패PAR최대92추가가능성・전체상한2328유지. runtime60/warmup120/staging105파일/ADB12827 intent/12826 client, APKpush/설치각1・pull2. 원v3clock부터11784.782초/21600초, 이후추가기기0. v7는과거7자료재사용＋새5로12cohort를구성했고최초종료계획들의실패를완주로바꾸지않았다.
+- 세부예산결함공개: v7 budget808 대manifest/실제904(+96), 전체상한이내이나세부상한불일치. sourcegenerator를원roster합으로수정하고새Check invariant/실제bad-plan거부25관련회귀통과(총51경계). 잘못된중간조건설명은최종manifest표로정정. original/raw/modelhash불변/재현/그림확인, default/RL/strict/experiment_ready=false유지.
+- 다음PC행동하나: 이번잔차를기존정책 차이에병기해분별가능한큰효과범위를산출. 새실측/후보재보정/전체정책배치자동시작0. 다른작업/사용자파일과다른worktree변경보존.
+
 ## 2026-10-08 HISTORY-LOCAL-SERVER-PROBE-01 — 7자료再사용·남은확인5 동결
 
 - v6 첫원모형확인PAR180적격(개발6+확인1). 다음준비의localhost5037 host:version1초timeout은서버동일PID8648존재/이후정상응답이며원client미실행. warmup8반환・AP시작승인없어조건부하0(코드gate/arm명령부재확인), 앱host정리완료/원FAIL보존. [구체원인·PC수정](ENERGY_AP_HISTORY_BOUNDARY_REPAIR_20261008.md#v7-로컬-server-probe의-한정된-재확인).

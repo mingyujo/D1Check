@@ -15,6 +15,14 @@ class Clock:
 
 
 class RecoveryTests(unittest.TestCase):
+    def test_remaining_roster_blocks_the_recorded_808_vs_904_mismatch(self):
+        entries=[dict(conditioning_requests=96,requests=n,warmup=8,runtime_creations=4) for n in [0,96,96,96,0,96,0,96,96,96,96,0]]
+        b=dict(sessions=5,conditioning_requests=480,target_requests=384,requests=864,warmup=40,explicit_inference=904,runtime_creations=20,staging=5,staging_files=35)
+        plan=dict(entries=entries,history_reuse={'count':7},budget=b)
+        r.validate_budget_entries(plan)
+        for changes in [dict(explicit_inference=808),dict(target_requests=288),dict(runtime_creations=24),dict(staging_files=42)]:
+            with self.assertRaisesRegex(ValueError,'budget mismatch'):r.validate_budget_entries(dict(plan,budget=dict(b,**changes)))
+
     def test_wait_bounded_twenty_minutes_twenty_queries_no_reconnect(self):
         clock=Clock();calls=[];records=[]
         def call(*args,**kwargs):calls.append(args);return SimpleNamespace(returncode=1,stdout=b'',stderr=b'not found')

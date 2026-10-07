@@ -86,12 +86,26 @@ def child_spec(source,build,folder,role,campaign_root):
             selection='original frozen model only; rejected memory comparator secondary; no new fit or threshold change',
             local_server_probe_gap_version='local-server-probe-gap-v1')
         b=plan['budget'];b.update(sessions=5,development_sessions=0,confirmation_sessions=5,
-            requests=768,conditioning_requests=480,target_requests=288,warmup=40,explicit_inference=808,
+            requests=864,conditioning_requests=480,target_requests=384,warmup=40,explicit_inference=904,
             runtime_creations=20,staging=5,staging_files=35,installed_host_pulls=0,apk_transfers=0,installs=0,
             trace_host_pulls=5,installation_seconds=180,installed_preflight_seconds=180,adb_commands=38200,
             fixed_registered_seconds=2100,
             total_seconds=h.budget()['total_seconds']-7*h.budget()['session_seconds']-420)
+        validate_budget_entries(plan)
     return plan,ms
+
+
+def validate_budget_entries(plan):
+    count=plan.get('history_reuse',{}).get('count',0)
+    entries=plan['entries'][count:];b=plan['budget']
+    conditioning=sum(e['conditioning_requests'] for e in entries)
+    target=sum(e['requests'] for e in entries);warmup=sum(e['warmup'] for e in entries)
+    require(b['sessions']==len(entries) and b['conditioning_requests']==conditioning
+        and b['target_requests']==target and b['requests']==conditioning+target
+        and b['warmup']==warmup and b['explicit_inference']==conditioning+target+warmup
+        and b['runtime_creations']==sum(e['runtime_creations'] for e in entries)
+        and b['staging']==len(entries) and b['staging_files']==7*len(entries),
+        'remaining manifest roster/resource budget mismatch; no device execution')
 
 
 def write_child(source,build,folder,role,campaign_root):
