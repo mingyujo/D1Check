@@ -110,6 +110,11 @@ def audit(processor,processor_sha256,trace,session_folder,output,deadline,expect
     boundary_file=Path(session_folder)/'artifacts/common_boundary.json'
     if not boundary_file.is_file():raise ValueError('no complete app common window; trace not eligible for full-window analysis')
     boundary=p.read(boundary_file)
+    history_file=Path(session_folder)/'artifacts/history_boundary.json'
+    if history_file.is_file():
+        history=p.read(history_file)
+        if history.get('version')!='registered-history-control-v1':raise ValueError('unknown history boundary')
+        boundary=dict(boundary,start_ns=history['conditioning_start_ns'])
     export(processor,trace,output,deadline,include_cpu=True)
     result=summarize(output,boundary['start_ns'],boundary['planned_end_ns'],expected_cpus,deadline)
     if not all(x['full_sched_coverage'] for x in result['bins']):

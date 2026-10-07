@@ -1,5 +1,12 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-08 HISTORY-CONTROL-PC-01 — 통합 경로·서명 APK·실행 계획 준비 완료
+
+- 사용자 `진행해`에 따라 실측 전 PC 구현을 완료했다. 같은 resident에서 conditioning96→고정 회복30/180초→C0/CPU96/PAR96을 수행하는 opt-in 경로와 개발6→후보동결→확인6 진입을 연결했다. 기존 경로·동결 모형·RL·strict·experiment_ready=false 보존. [상세/정확 예산](ENERGY_AP_HISTORY_CONTROL_DESIGN_20261007.md) · [검증/바인딩](results/history_control_plan_01/implementation_check.json).
+- APK `3840bfb1…c8768be`, 계획 `da212cf9…79954f`. 외부 `energy_ap_history_control_plan_v1`은 **미승인·미소비**이며 Check 통과. 최대12세션/2,016추론/runtime48/staging84파일, ADB91,400명령·19,557초(5시간25분57초) 예약. 고정103.5분과 정상 예상시간을 구분한다.
+- Android12·Python26 관련 검사, 기존 프로젝트 서명 격리빌드·패키지·해시·계획 Check 완료. 새 모드의 실기기 동작·trace 연속성·계수 식별 가능성은 미확인이다. 개발 부적격/후보 gate 실패이면 확인에 진입하지 않는다. 기기/ADB/설치/실측/Run/claim0.
+- 다음 행동 하나: 준비된 한 캠페인의 실측 승인을 받은 뒤 현재 기기·설치본·환경 gate를 통과할 때만 실행한다. 이번 PC 작업에서 실행 승인이나 자동 재시도는 만들지 않았다. 과거 종료 계획·사용자 파일·다른 worktree 보존.
+
 ## 2026-10-07 HISTORY-CONTROL-DESIGN-01 — 수집 설계 제안, 실행 미준비
 
 - 사용자 계획작성 요청. 기존배경대조4가이미있으므로단순반복제외. 동일conditioning96→고정회복30/180초→C0/CPU96/PAR96의개발6·동결·확인6을권고. 채택/실행승인이아닌제안이다. [계획](ENERGY_AP_HISTORY_CONTROL_DESIGN_20261007.md).

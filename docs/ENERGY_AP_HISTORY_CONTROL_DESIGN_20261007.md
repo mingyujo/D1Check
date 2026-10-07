@@ -1,6 +1,6 @@
 # 배경 소비·부하 이력 분리 수집 설계 — 2026-10-07
 
-**권고: 개발6 → 절차·계수 동결 → 별도 확인6, 최대12세션의 한 캠페인.** 단순 무부하/부하 반복이 아니라 같은 등록 사전부하 뒤 고정 회복시간을 바꾼다. 현재 상태는 **설계 산술검사 완료·실행 미준비·미승인·미소비**다. 이 문서는 실측 승인이나 기존 종료계획 재개가 아니다.
+**권고: 개발6 → 절차·계수 동결 → 별도 확인6, 최대12세션의 한 캠페인.** 단순 무부하/부하 반복이 아니라 같은 등록 사전부하 뒤 고정 회복시간을 바꾼다. 현재 상태는 **PC 구현·서명 APK·실행 계획 Check 완료, 실측 미승인·미소비**다. 아래 초기 설계와 구별해 10/8 구현 결과를 함께 보존한다. 이 문서는 실측 승인이나 기존 종료계획 재개가 아니다.
 
 [설계JSON](results/history_control_plan_01/design.json) · [PC검사](results/history_control_plan_01/check.json). 착수09ab32e, 원모형 SHA5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2 유지.
 
@@ -51,7 +51,7 @@ A 실제일정조건부 예측이 주분석, B 예정도착→기존동결일정
 
 종료결론은 후보확인개선/특정이력만개선/식별불충분/외생배경으로개선미확인 중하나다. 확인이악화하면같은캠페인에서후보수정·재확인하지않는다. 실패시증거회수·소유한앱cleanup예약후중단하며 자동재연결·설정변경·대체/재시도0. 원본실패를지우지않는다.
 
-## 예산과 실행 준비 상태
+## 최초 설계 시점의 예산과 미준비 상태 (10/7 기록 보존)
 
 |항목|최대 설계량|
 |---|---:|
@@ -84,3 +84,73 @@ python -B -m tools.check_history_control_design
 ```
 
 **다음행동하나:** 위4개경계를하나의PC구현작업으로마치고, 소스·APK·정확상한을묶은최종실행계획을동결한다. 중간작은기기진단을추가하는것이아니라전체통합수집의실행경로를완성하는작업이다.
+
+
+## 10/8 구현 결과와 최종 실행 계약
+
+앱 `registered-history-control-v1`을 opt-in으로 추가했다. 기존 단일창·onDestroy 취소·runtime/worker 소유권과 정상/실패 cleanup은 유지한다. 4 runtime·8 warmup을 한 번만 수행하고, 같은 sampler·dispatch/lane worker로 두 120초 창을 수행한다. 요청 ID는 단계마다 다르며 서로 중복을 금지한다. 창 종료 시 미완료가 있으면 다음 단계로 넘어가지 않는다. conditioner/target의 Android elapsedRealtimeNanos origin·회복·baseline 경계와 실제 lane 해제를 별도 기록한다.
+
+앱 watchdog 900초, trace 1,000초/128MiB로 별도 등록했다. 기존 경로의 watchdog 480초/trace600초·64MiB 기본값은 유지한다. host 반복 관측은 listing 최소0.25초·3초 timeout, thermal 관측 시도 간격2초(실제 client 지연 포함), 화면10초를 유지한다. 전력900ms와 trace flush/write5초를 유지하되 더 긴 기록·단계 이벤트가 추가되므로 **새 계측 프로토콜**이다. 비용을 기존 데이터에서 임의 차감하지 않는다. trace는 같은 설정으로 conditioning부터 목표창 끝까지 CPU coverage/loss/clock를 검사하며 자동 종료 후에도 원본을 보존한다. CPU 활동만으로 전체 에너지 원인을 귀속하지 않는다.
+
+**numeric AP gate는 conditioning 직전 한 번**이며 observe-v2 신선도≤3초를 유지한다. 목표 부하 직전 두 번째 handshake를 추가하지 않았다. 목표 baseline과 초기35초 AP는 기존 host 관측으로 사후 자료 적격성을 확인하며, 해당 경계의 실시간 numeric AP 보장을 주장하지 않는다. 앱 내부 thermal/메모리 감시와 host 환경 관측은 계속된다. 연결 소실·필수 조회 오류는 기존 bounded 중단/회수 경로를 따른다. native hang·OS 정지에서 소프트웨어 watchdog이나 host 예약이 실제 벽시계 종료를 절대 보장하지 않는다.
+
+환경은 기존 비충전, 배터리 시작/운영≥20%, BAT≤35°C, thermal0, 기존 화면·메모리·품질 기준을 바꾸지 않았다. 현재 환경은 아직 조회하지 않았다. 모형 개발 시작AP 하한을 새 실행 차단에 넣지 않는다. AP 범위 밖·새 전환의 결과는 진단이며 strict 확장 또는 정확도 PASS가 아니다.
+
+### 후보의 정보 경계와 기계 판독
+
+기존 β/k/tau30·상태 전력은 고정한다. 개발6의 **conditioning 첫부하35초부터 회복·목표·냉각 끝까지** AP를 g 하나의 추정 목표로 사용한다. 짧은 목표창만 보고 g를 맞추는 대신 등록 이력의 가열·회복 반응도 포함한다. 세션마다 동일 가중치이며 센서 표본을 독립 세션으로 세지 않는다. 초기 R/H는 conditioning 전 baseline부터 conditioning 내 첫35초 이전 AP만 사용한다. 확인에서는 g를 고정하고 같은 초기 관측 규칙만 사용한다. 목표 부하후 AP와 전류는 평가 목표이며 후보 예측 입력이 아니다. 실제 일정 조건부 A만 구현했으며 예정 도착부터의 B는 이번 자동 판독에 포함하지 않는다.
+
+수치 gate: g basis 제곱합>1e-12, 초기 상태 scaled condition≤1e8, g>0. 이는 수치 식별 검사이지 물리적 식별 보장이나 정확도 허용폭이 아니다. 짧은/긴 이력 각각을 통째로 제외해 다른3세션으로 g를 추정하고, 제외한 block의 목표 AP 평균 MAE가 기존 모형보다 악화하지 않으며 0.1°C 양자화 구분 가능한 가열/냉각에서 반대 방향을 내지 않아야 한다. 두 block 모두 통과해야 확인으로 간다. 조건별 오차와 계수는 모두 남기며 계수 변동성을 통계적으로 인증하지 않는다.
+
+AP 표본 간격 최대10초, 초기 관측은 기존 최소55초/15표본·동기화 bracket 검사를 사용한다. 전류 적분 공백2.5초 초과·결측은 0으로 채우지 않는다. 회복 중 AP 누락도 검출한다. 공개 AP metrics는 목표35초 이후부터 냉각 종료의 실제 관측 표본까지이며, ΔAP는 이 공통 평가 첫 표본 기준임을 표시한다. 에너지는 목표 [0,120]초의 기존 식으로 계산하고 pre[0,35] / 실제 마지막lane까지 / 이후 유휴의 부호 있는 잔차를 합산한다. C0의 부하구간은 없으며 null인 방향을 성공으로 세지 않는다.
+
+개발6 적격·gate 통과 뒤 별도 PC child에 최대300초를 주어 결과·동결 계수·UTC·SHA를 기록한다. 개발 근거와 코드 SHA를 매 확인 세션 전에 대조한다. 미식별·gate 실패·시간 부족이면 확인0회로 종료한다. 확인 자료로 다시 추정하는 API는 거부한다. 마지막 분석도 별도 최대300초이고 원래 오류와 로그를 보존한다. host 원래 cleanup을 재사용하므로 이미 정리한 이전 세션에 다시 force-stop하지 않는다. 중단 prefix에 두 창 경계와 history 경계를 추가했다.
+
+### 정확한 최종 예산
+
+|항목|상한|
+|---|---:|
+|세션|개발6 + 확인6 = 12|
+|conditioning / 목표 요청|1,152 / 768|
+|warmup / 별도 적격성 추론|96 / 0|
+|총 명시적 추론 / runtime|2,016 / 48|
+|staging|12회·84파일|
+|설치본 host pull / APK push / 설치|각 최대1회, 동일 APK 생략|
+|trace host pull|최대12회·각128MiB 미만|
+|등록 관측·회복 / 세션 간 pause|5,220초 / 990초|
+|설치 확인·배포|600초|
+|세션당 예약|1,446초|
+|개발 동결 / 최종 PC 분석|각300초|
+|전체 예약|**19,557초 = 5시간25분57초**|
+|ADB|**91,400명령** (설치 등200 + 세션당7,600×12)|
+|재시도·대체·추가|모두0|
+
+세션1,446 = 준비120 + trace시작90 + launch26 + host관측925 + 앱원본회수120 + cleanup45 + trace회수/판독120. 전체는600 + 12×1,446 + 990 + 300 + 300 + transport예약15이다. CLI는 승인된 현재 serial을 요구하고 별도 자동탐색/재연결을 추가하지 않는다. 고정103.5분에 초기준비 baseline·warmup·조회/전송·회수 시간이 추가되므로 정확한 정상 예상시간은 아직 미확인이다.
+
+ADB 상한은 추정 소비량이 아니라 client에서 강제하는 중단 한도다. 925초 최단0.25초 listing≤3,700, thermal 시도≤463×3명령, 화면≤93×4명령, 나머지 설치확인·warmup품질·AP승인·staging·회수·trace와 여유를 합쳐 세션7,600으로 제한한다. polling은 최소500명령을 회수/cleanup용으로 남기며 실제 시간도 각각 예약한다. 모든 호출이 timeout까지 걸리면 완주 대신 중단한다. Check/시작 admission은 host 여유4GiB를 요구하며 무제한 로그 보관/OS 쓰기 성공을 보장하지 않는다.
+
+### APK·계획·재현
+
+- 계획: `C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_history_control_plan_v1/collection_plan.json`
+- 계획 SHA-256: `da212cf9b2bed901c6e57855206ccdd3777f972a2879030eadeaf124b079954f`
+- APK: `C:/Users/LG/Documents/D1Check_Arrival_Extension/history_control_build_v1/build/_benchmark-runner/outputs/apk/modelProbe/benchmark-runner-modelProbe.apk`
+- APK SHA-256: `3840bfb161b038ae61f34cd4215f8fe88bc511ec4e5f87cccc3b58e02c8768be`
+- 프로젝트 인증서 SHA-256: `b253dbb951d85d1a79ea7f2ca2d1ff76a9fa34dc6c793b1df9b5249f3fcc7565`
+- package `com.example.d1check.benchmarkrunner.modelprobe`, versionCode1/versionName1.0. 격리 build_receipt의 소스별 SHA와 대조했다. 바이너리·키는 Git에 올리지 않는다.
+- 현재 설치본과 일치 여부는 미확인. 새 APK는 전송/설치하지 않았다.
+- 원설계 `design.json`과 설계 Check는 10/7 기록 그대로 보존하고 최종 구현 근거는 [implementation_check.json](results/history_control_plan_01/implementation_check.json)에 둔다. 새 실행 출력/registry/claim은 없다.
+
+```powershell
+# 기기 명령 없는 실제 최종 Check (이번에 수행)
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_history_control_plan_v1/RUN_AFTER_APPROVAL.ps1' -Action Check
+
+# 이번에는 호출하지 않음: 향후 이 예산의 실측 승인과 현재 transport 확인 후 단 1회
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_history_control_plan_v1/RUN_AFTER_APPROVAL.ps1' -Action Run -Approved -Serial '<현재 승인된 A24 transport>' -ExpectedPlanSha256 'da212cf9b2bed901c6e57855206ccdd3777f972a2879030eadeaf124b079954f'
+
+# 관련 PC 검사
+python -X utf8 -B -m unittest tools.test_d1_history_control tools.test_d1_background_activity_plan tools.test_d1_energy_device_lifecycle_cleanup
+```
+
+Android 검증은 `:benchmark-runner:testModelProbeUnitTest`에 ArrivalHistoryControlTest·ArrivalEnergyLifecycleTest·ArrivalEnergyContractTest를 지정해 12건 실행했다. 신규 단계 helper4건, 실제 lifecycle callback5건, 기존계약3건이다. Python26건에는 원본 형식의 clock/power/lane 파싱 fixture, 실제 host 진입 경로의 모사12세션, 개발동결 실패 후 확인 차단, 원래 오류·cleanup 재사용이 포함된다. **native GPU 추론이나 완전한 Android 두 창 실측을 PC에서 검증한 것이 아니다.** 관련 본문/테스트 소스 컴파일과 기존 프로젝트 서명 빌드 통과. 전체 과거 배치·RL·기기 명령0.
+
+**완료 범위:** 실행 경로·분석/동결/차단·바인딩·PC Check 준비. **남은 한계:** 새 앱 경로의 실기기 안정성, 장시간 trace 적격성, 두 회복 이력의 구분 가능성 및 후보의 실제 예측 개선. **다음 행동 하나:** 이 한 캠페인의 실측 승인 후 현재 환경 gate를 확인해 실행한다. 추가 작은 진단이나 새 후보 탐색을 자동 연결하지 않는다.

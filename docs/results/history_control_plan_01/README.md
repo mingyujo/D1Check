@@ -1,5 +1,12 @@
-# 이력 통제 수집 설계
+# 이력 통제 수집: PC 구현 완료·실측 미승인
 
-[한국어 계획](../../ENERGY_AP_HISTORY_CONTROL_DESIGN_20261007.md). 개발6→동결→확인6, 설계 산술검사만 완료. 실행 미준비·미승인·미소비. 기기 명령0.
+[한국어 계약·정확 예산·승인 후 명령](../../ENERGY_AP_HISTORY_CONTROL_DESIGN_20261007.md) · [PC 검증과 APK/계획 바인딩](implementation_check.json).
 
-`python -B -m tools.check_history_control_design`
+개발6→한 후보 동결→확인6. 최대2,016추론, runtime48, 19,557초, ADB91,400명령. 실제 소비/결과가 아닌 준비 예산이다. 개발 gate가 실패하면 확인은 수행하지 않는다. 기기·Run·claim0, 기본/RL/strict/experiment_ready=false 유지.
+
+`design.json`과 `check.json`은 최초 설계 시점(실행 미준비)의 기록이다. 현재 상태는 implementation_check와 최종 외부 계획의 Check를 따른다. APK·원자료·개인 기기 식별정보는 Git 밖에 있다.
+
+```powershell
+python -X utf8 -B -m unittest tools.test_d1_history_control tools.test_d1_background_activity_plan tools.test_d1_energy_device_lifecycle_cleanup
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_history_control_plan_v1/RUN_AFTER_APPROVAL.ps1' -Action Check
+```

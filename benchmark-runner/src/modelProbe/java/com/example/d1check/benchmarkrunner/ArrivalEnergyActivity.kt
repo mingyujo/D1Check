@@ -181,7 +181,14 @@ open class ArrivalEnergyActivity : Activity() {
             event("session_start", mapOf("manifest_sha256" to hash))
             lifecycle("onCreate")
             check(m.getString("protocol") == ArrivalEnergyContract.PROTOCOL && m.getString("session_id") == sid)
-            check(!m.getBoolean("experiment_ready") && m.getLong("maximum_duration_ms") == ArrivalEnergyContract.WATCHDOG_MS)
+            val historyVersion = m.optString("history_control_version", "")
+            val history = historyVersion.isNotEmpty()
+            val sessionWatchdog = ArrivalHistoryControl.watchdog(historyVersion)
+            check(!m.getBoolean("experiment_ready") && m.getLong("maximum_duration_ms") == sessionWatchdog)
+            if (history) {
+                handler.removeCallbacks(watchdog)
+                handler.postDelayed(watchdog, maxOf(1L,sessionWatchdog-(now()-activityCreatedNs)/1_000_000))
+            }
             check(m.getString("apk_sha256") == ProbeModelFile.sha256(File(applicationInfo.sourceDir)) &&
                 m.getString("device_fingerprint") == Build.FINGERPRINT && m.getInt("cpu_threads") == 1)
             check(m.getInt("common_window_seconds") == 120 && m.getInt("cooling_seconds") == 60 &&
@@ -189,6 +196,7 @@ open class ArrivalEnergyActivity : Activity() {
             check(m.getInt("maximum_concurrency") == 2 && m.getString("memory_contract") == V4Gate.CONTRACT && m.getInt("thermal_gate") == 0)
             val policy = m.getString("policy")
             backgroundObservation = m.has("background_observation_version")
+            if (history) check(backgroundObservation && m.optString("start_ap_gate") == ArrivalStartApGate.DIAGNOSTIC_VERSION)
             val policyStudy = m.optString("policy_study_version", "")
             if (policyStudy.isNotEmpty()) check(policyStudy == ArrivalPolicyStudy.VERSION &&
                 policy in ArrivalPolicyStudy.POLICIES && !m.has("replay_version") && !m.has("resident_control_version"))
@@ -209,6 +217,14 @@ open class ArrivalEnergyActivity : Activity() {
                 ArrivalEnergyContract.Request(q.getString("request_id"), q.getInt("ordinal"), q.getString("task_id"),
                     q.getString("priority"), q.getLong("offset_ms"), q.getLong("deadline_ms"))
             } }
+            val conditioning = if (history) m.getJSONArray("conditioning_requests").let { arr ->
+                (0 until arr.length()).map { i -> arr.getJSONObject(i).let { q ->
+                    ArrivalEnergyContract.Request(q.getString("request_id"),q.getInt("ordinal"),q.getString("task_id"),
+                        q.getString("priority"),q.getLong("offset_ms"),q.getLong("deadline_ms"))
+                } }
+            } else emptyList()
+            if (history) ArrivalHistoryControl.validate(historyVersion,m.getLong("history_recovery_seconds"),
+                m.getString("history_role"),m.getString("history_target_policy"),conditioning,requests)
             val controlVersion = m.optString("resident_control_version", "")
             val controlRole = m.optString("resident_control_role", "")
             if (backgroundObservation) {
@@ -224,7 +240,7 @@ open class ArrivalEnergyActivity : Activity() {
             } else ArrivalEnergyContract.validateSession(m.getString("scenario"), requests, controlVersion, controlRole)
             if (controlVersion.isNotEmpty()) check(policy == ArrivalRecordedReplay.POLICY &&
                 apMode == ArrivalStartApGate.DIAGNOSTIC_VERSION) { "resident control requires recorded observe-v2" }
-            requests.forEach { check(UUID.fromString(it.id).toString() == it.id) }
+            (requests+conditioning).forEach { check(UUID.fromString(it.id).toString() == it.id) }
             val replay = if (policy == ArrivalRecordedReplay.POLICY) {
                 val replayVersion = m.getString("replay_version")
                 check(replayVersion in setOf(ArrivalRecordedReplay.VERSION, ArrivalRecordedReplay.COMPARISON_VERSION))
@@ -258,7 +274,7 @@ open class ArrivalEnergyActivity : Activity() {
             } }, 0, samplePeriodMs, TimeUnit.MILLISECONDS)
             val setupStart = now()
             Log.i("D1ENERGY", "runtime_scope_start=$sid")
-            ArrivalRuntimeSetup.initialize(EnergyCollectionCore.KEYS, false, 8, requests.size) { key ->
+            ArrivalRuntimeSetup.initialize(EnergyCollectionCore.KEYS, false, 8, requests.size+conditioning.size) { key ->
                 healthy(); check(now() - setupStart < ArrivalEnergyContract.SETUP_NS)
                 event("runtime_submit", mapOf("key" to key))
                 lane(key).submit {
@@ -312,6 +328,9 @@ open class ArrivalEnergyActivity : Activity() {
                     "gate_mode" to apMode, "initial_ap_in_frozen_development_range" to (it.ap in 32.5..34.0)))
             }
             event("common_start", mapOf("scheduled_origin_ns" to start, "window_ns" to ArrivalEnergyContract.COMMON_NS))
+            fun runWindow(requests: List<ArrivalEnergyContract.Request>, policy: String,
+                          start: Long, prefix: String, strictEnd: Boolean) {
+            phase = if (prefix.isEmpty()) "common_window" else "conditioning_window"
             val waiting = mutableListOf<ArrivalPolicy.Ticket>() // dispatch executor only
             val busy = mutableMapOf("CPU" to false, "GPU" to false)
             val done = CountDownLatch(requests.size)
@@ -319,7 +338,7 @@ open class ArrivalEnergyActivity : Activity() {
             pump = {
                 while (stop.get() == null) {
                     val begin = now()
-                    val choice = if (policyStudy.isNotEmpty() || (backgroundObservation && controlVersion.isEmpty()))
+                    val choice = if (history || policyStudy.isNotEmpty() || (backgroundObservation && controlVersion.isEmpty()))
                         ArrivalPolicyStudy.choose(policy, waiting, !busy.getValue("CPU"), !busy.getValue("GPU"))
                     else if (policy == ArrivalRecordedReplay.POLICY)
                         ArrivalRecordedReplay.choose(waiting, replay, maxOf(0L, begin-start),
@@ -405,22 +424,47 @@ open class ArrivalEnergyActivity : Activity() {
             }
             while (now()-start < ArrivalEnergyContract.COMMON_NS) { healthy(); Thread.sleep(100) }
             val commonEnd = now(); event("common_end", mapOf("common_end_ns" to commonEnd))
-            save("common_boundary.json", mapOf("start_ns" to start, "planned_end_ns" to start + ArrivalEnergyContract.COMMON_NS,
+            save(prefix+"common_boundary.json", mapOf("start_ns" to start, "planned_end_ns" to start + ArrivalEnergyContract.COMMON_NS,
                 "end_ns" to commonEnd,
                 "planned" to requests.size, "rows" to requests.map { q -> rows[q.id]?.let(::detached) ?: mapOf(
                     "request_id" to q.id, "scheduled_arrival_ns" to start+q.offsetMs*1_000_000,
                     "terminal_status" to "unobserved_arrival") }))
             phase = "post_window_drain"
-            check(done.await(ArrivalEnergyContract.DRAIN_SECONDS, TimeUnit.SECONDS)) { "post-window drain incomplete" }
+            check(done.await(if (strictEnd) 0 else ArrivalEnergyContract.DRAIN_SECONDS, TimeUnit.SECONDS)) { "post-window drain incomplete" }
             healthy()
             val finalRows = requests.map { detached(rows.getValue(it.id)) }
-            save("requests.json", finalRows)
+            save(prefix+"requests.json", finalRows)
+            }
+            if (history) {
+                var recoveryStart=0L; var targetBaseline=0L
+                ArrivalHistoryControl.execute(::healthy, {
+                event("history_conditioning_start",mapOf("start_ns" to start,"planned" to conditioning.size))
+                runWindow(conditioning,ArrivalPolicyStudy.CPU,start,"conditioning_",true)
+                }, {
+                phase="history_recovery"; recoveryStart=now()
+                event("history_recovery_start",mapOf("start_ns" to recoveryStart,"seconds" to m.getLong("history_recovery_seconds")))
+                while (now()-recoveryStart < m.getLong("history_recovery_seconds")*1_000_000_000L) { healthy(); Thread.sleep(100) }
+                phase="target_resident_baseline"; targetBaseline=now(); event("phase_start")
+                while (now()-targetBaseline < ArrivalEnergyContract.BASELINE_SECONDS*1_000_000_000L) { healthy(); Thread.sleep(100) }
+                }, {
+                healthy(); val targetStart=now()
+                save("history_boundary.json",mapOf("version" to historyVersion,"conditioning_start_ns" to start,
+                    "recovery_start_ns" to recoveryStart,"target_baseline_start_ns" to targetBaseline,
+                    "target_start_ns" to targetStart,"recovery_seconds" to m.getLong("history_recovery_seconds"),
+                    "runtime_recreated" to false,"additional_warmup" to 0))
+                event("history_target_start",mapOf("start_ns" to targetStart,"planned" to requests.size))
+                runWindow(requests,if (requests.isEmpty()) ArrivalPolicyStudy.CPU else policy,targetStart,"",true)
+                })
+            } else runWindow(requests,policy,start,"",false)
+            val finalRows = requests.map { detached(rows.getValue(it.id)) }
+            val targetBoundary = JSONObject(File(root,"common_boundary.json").readText())
+            val commonEnd = targetBoundary.getLong("end_ns")
             phase = "resident_cooling"; event("phase_start")
             val cool = now(); while (now()-cool < ArrivalEnergyContract.COOLING_SECONDS*1_000_000_000) { healthy(); Thread.sleep(100) }
             event("phase_end")
             save("summary.json", mapOf("status" to "completed", "planned" to requests.size,
                 "terminal" to finalRows.count { it["terminal_status"] == "succeeded" },
-                "policy" to policy, "scenario" to m.getString("scenario"), "common_start_ns" to start,
+                "policy" to policy, "scenario" to m.getString("scenario"), "common_start_ns" to targetBoundary.getLong("start_ns"),
                 "common_end_ns" to commonEnd, "experiment_ready" to false))
         } catch (e: Throwable) {
             failure = e.toString(); stop.compareAndSet(null, failure)

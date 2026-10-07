@@ -158,10 +158,15 @@ def trace_start(d,session,folder):
     require('linux.ftrace' in sources and 'linux.process_stats' in sources,'required trace data sources unavailable')
     exists=d.call('shell','test','-e',remote,check=False,timeout=3)
     require(exists.returncode==1 and not exists.stdout.strip() and not exists.stderr.strip(),'trace path exists or unavailable')
-    config=TRACE_CONFIG.read_text(encoding='utf8')
+    trace_spec=getattr(d,'history_trace_spec',None)
+    config_path=Path(trace_spec['path']) if trace_spec else TRACE_CONFIG
+    if trace_spec:require(p.digest(config_path)==trace_spec['sha256'],'history trace config drift')
+    config=config_path.read_text(encoding='utf8')
     command="printf '%s' "+shlex.quote(config)+' | perfetto --txt -c - -o '+shlex.quote(remote)+' --detach='+key
     # Persist identity BEFORE launch: timeout may leave a bounded recording alive.
-    state=dict(key=key,remote=remote,start_attempted=True,recovery_attempted=False,duration_ms=600000,max_bytes=67108864)
+    state=dict(key=key,remote=remote,start_attempted=True,recovery_attempted=False,
+        duration_ms=trace_spec['duration_ms'] if trace_spec else 600000,
+        max_bytes=trace_spec['max_bytes'] if trace_spec else 67108864)
     cal.write_new(Path(folder)/'trace_start_intent.json',state)
     d.background_trace=(Path(folder),state)
     result=d.call('shell',command,timeout=35)
@@ -189,7 +194,7 @@ def trace_recover(d,deadline):
         except BaseException as e:result['errors'].append(dict(stage='trace_stop',error=repr(e)))
         try:
             stat=d.call('shell','stat','-c','%s',state['remote'],timeout=3)
-            size=int(stat.stdout.strip());require(0<size<67108864,'trace missing/empty/file cap reached')
+            size=int(stat.stdout.strip());require(0<size<state['max_bytes'],'trace missing/empty/file cap reached')
             target=folder/'system_activity.pftrace'
             d.call('pull',state['remote'],str(target),timeout=30)
             require(target.stat().st_size==size,'trace size mismatch')

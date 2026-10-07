@@ -107,6 +107,9 @@ def poll(d,remote,folder,manifest,plan):
 
 
 def validate(folder,manifest,plan):
+    if plan.get('history_control'):
+        from tools.d1_history_control_analysis import validate as history_validate
+        return history_validate(folder,manifest,plan)
     expected=96 if plan.get('online_policy_study') else 24
     if plan.get('sustained_confirmation'):
         from tools import d1_sustained_protocol as sustained
@@ -227,7 +230,11 @@ def run(plan_file,adb,serial,expected_sha,approved):
     plan=p.read(plan_file)
     idle_response=plan.get('ap_idle_pulse_followup',False)
     single=plan.get('single_arrival_confirmation',False) or plan.get('recorded_replay_confirmation',False) or plan.get('online_policy_study',False)
-    if plan.get('sustained_confirmation'):
+    if plan.get('history_control'):
+        from tools import d1_history_control_plan as history
+        from tools import d1_background_activity_plan as background
+        history.check(plan_file)
+    elif plan.get('sustained_confirmation'):
         from tools import d1_sustained_plan as sustained
         sustained.check(plan_file)
     elif plan.get('background_activity_contrast'):
@@ -314,6 +321,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
     if journal:d.bundle_checkpoint=journal
     if plan.get('background_activity_contrast') and plan.get('trace_content_audit'):
         d.background_trace_audit=plan['trace_content_audit']
+    if plan.get('history_control'):d.history_trace_spec=plan['history_trace']
     d.deadline=hard
     if single:d.command_limit=budget['adb_commands']-budget.get('external_selection_adb_commands',0)
     complete=[];current=None;remote=None;identified=False;installation=None
@@ -327,6 +335,8 @@ def run(plan_file,adb,serial,expected_sha,approved):
                       energy_device.installation(d,plan,plan_file,root/'installation',hard));identified=True
         if journal:journal.mark('installed_preflight_verified',adb_commands=d.sequence)
         for entry in plan['entries']:
+            if plan.get('history_control'):
+                history.before_entry(plan,root,entry,complete,hard)
             if plan.get('online_policy_study') and plan['study_phase']=='confirmation':
                 c.require(p.digest(plan['study_freeze']['path'])==plan['study_freeze']['sha256'],'online model freeze drift')
             if plan.get('ap_bundled_confirmation'):
@@ -386,7 +396,8 @@ def run(plan_file,adb,serial,expected_sha,approved):
             if journal:journal.mark('session_preparation',session_id=entry['session_id'],index=entry['index'])
             cleanup_attempted=False;cleanup_result=None
             session_start=time.monotonic();session_end=min(hard,session_start+budget['session_seconds'])
-            d.deadline=min(session_start+budget['stage_gate_seconds'],session_end-580)
+            poll_reserve=budget.get('history_poll_recovery_reserve',580)
+            d.deadline=min(session_start+budget['stage_gate_seconds'],session_end-poll_reserve)
             energy_device.gates(d,plan,current,'before_session')
             c.require(install.installed_hash(d,plan['apk_preflight']['candidate'])==plan['apk_sha256'],'installed APK changed')
             write(current/'attempt.json',dict(entry=entry,utc=legacy.utc(),plan_sha256=expected_sha))
@@ -394,8 +405,8 @@ def run(plan_file,adb,serial,expected_sha,approved):
             (current/'input_manifest.json').write_bytes(manifest_file.read_bytes())
             remote=shared.stage_inputs(d,entry['session_id'],manifest_file,
                                        {k:v['path'] for k,v in plan['source_files'].items()},c.PROTOCOL)
-            c.require(session_end-time.monotonic()>=580+budget.get('trace_start_seconds',0)+budget.get('trace_recovery_seconds',0),'poll/recovery/cleanup reserve')
-            d.deadline=session_end-95-budget.get('trace_recovery_seconds',0)
+            c.require(session_end-time.monotonic()>=poll_reserve+budget.get('trace_start_seconds',0)+budget.get('trace_recovery_seconds',0),'poll/recovery/cleanup reserve')
+            d.deadline=session_end-budget['recovery_seconds']-budget['cleanup_seconds']-budget.get('trace_recovery_seconds',0)
             if plan.get('background_activity_contrast'):
                 background.trace_start(d,entry['session_id'],current)
             write(current/'launch_attempt.json',dict(utc=legacy.utc()))
@@ -403,7 +414,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
                    '--es','session_id',entry['session_id'],timeout=20)
             poll(d,remote,current,manifest,plan)
             if journal:journal.mark('app_terminal_seen',session_id=entry['session_id'],adb_commands=d.sequence)
-            d.deadline=min(session_end-45-budget.get('trace_recovery_seconds',0),time.monotonic()+budget['recovery_seconds'])
+            d.deadline=min(session_end-budget['cleanup_seconds']-budget.get('trace_recovery_seconds',0),time.monotonic()+budget['recovery_seconds'])
             write(current/'recovery.json',energy_device.recover(d,remote,current/'artifacts'))
             cleanup_attempted=True
             try:
@@ -448,9 +459,13 @@ def run(plan_file,adb,serial,expected_sha,approved):
         if idle_response:c.require(candidate_freeze_sha is not None and
                     p.digest(root/'ap_model_freeze.json')==candidate_freeze_sha,
                     'AP candidate not frozen throughout confirmation')
+        if plan.get('history_control'):history.finish_analysis(plan,root)
         outcome=dict(status='completed_descriptive_only',sessions=len(complete),requests=sum(x['requests'] for x in complete),warmup=8*len(complete),
                      runtime_creations=4*len(complete),adb_commands=d.sequence,elapsed_seconds=time.monotonic()-start,
                       installation=installation,experiment_ready=False)
+        if plan.get('history_control'):
+            outcome.update(conditioning_requests=sum(x['conditioning_requests'] for x in complete),
+                explicit_inference=sum(x['requests']+x['conditioning_requests']+8 for x in complete))
         if journal:journal.mark('app_sessions_finished_receipt_pending',outcome=outcome)
         write(root/'FINAL_RECEIPT.json',outcome);write(registry/'completed.json',outcome);return outcome
     except BaseException as exc:
@@ -465,7 +480,10 @@ def run(plan_file,adb,serial,expected_sha,approved):
             except BaseException as recording_error:failure['original_checkpoint_error']=repr(recording_error)
         if identified and remote and current:
             d.deadline=min(hard-45,time.monotonic()+15)
-            for name in ('manifest.json','progress.jsonl','cleanup.json','sampler_failure.json','session_failure.json','common_boundary.json','requests.json'):
+            prefix_names=('manifest.json','progress.jsonl','cleanup.json','sampler_failure.json','session_failure.json','common_boundary.json','requests.json')
+            if plan.get('history_control'):
+                prefix_names+=('history_boundary.json','conditioning_common_boundary.json','conditioning_requests.json')
+            for name in prefix_names:
                 try:energy_device.pull_file(d,remote,name,current/'failure_prefix')
                 except BaseException as error:write(current/(name+'.recovery_error.json'),dict(error=repr(error)))
         if identified:
