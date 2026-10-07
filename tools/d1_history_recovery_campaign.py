@@ -19,8 +19,8 @@ from pathlib import Path
 from tools import d1_history_control_plan as h
 from tools import d1_energy_host_lifecycle as life
 
-NAME='ENERGY-AP-HISTORY-RECOVERY-02'
-FOLDER='energy_ap_history_recovery_plan_v2'
+NAME='ENERGY-AP-HISTORY-RECOVERY-03'
+FOLDER='energy_ap_history_recovery_plan_v3'
 ENV='D1_HISTORY_CAMPAIGN_PERMIT'
 require=h.require
 write=h.cal.write_new
@@ -107,12 +107,18 @@ try {
 
 def prepare(source,build,output):
     folder=Path(output);require(folder.name==FOLDER and not folder.exists(),'fresh campaign plan')
-    root=folder.parent/'energy_ap_history_recovery_run_v2';require(not root.exists(),'campaign consumed')
+    root=folder.parent/'energy_ap_history_recovery_run_v3';require(not root.exists(),'campaign consumed')
     folder.mkdir();child=write_child(source,build,folder/'primary_plan','primary',root)
     plan=dict(id=NAME,status='PC_READY_UNAPPROVED_UNCONSUMED',approval='not_approved',experiment_ready=False,
         limits=limits(),output_root=str(root),primary_plan=str(child),primary_sha256=sha(child),
         source_code=h.identity(),repair='one fresh block only after first app failure and zero eligible development; requires recorded causal review/tests/build and remaining full-block reserve',
         run_script_sha256=hashlib.sha256(script().encode()).hexdigest())
+    previous=folder.parent/'energy_ap_history_recovery_run_v2/primary/FINAL_RECEIPT.json'
+    require(previous.is_file() and read(previous)['status']=='stopped_no_resume','preserved prior receipt required')
+    plan['previous_execution']=dict(path=str(previous),sha256=sha(previous),
+        outcome='stopped_no_resume retained; no eligible development; separate protocol block',
+        recorded_inference_starts=104,adb_commands=read(previous)['adb_commands'],
+        accounting='prior attempt reported separately; no consumed claim reset')
     write(folder/'campaign_plan.json',plan);(folder/'RUN_AFTER_APPROVAL.ps1').write_text(script(),encoding='utf8',newline='\n')
     return check(folder/'campaign_plan.json')
 
@@ -122,6 +128,7 @@ def check(file):
     require(plan['id']==NAME and plan['limits']==limits() and plan['source_code']==h.identity(),'campaign identity')
     require(not Path(plan['output_root']).exists(),'campaign consumed')
     require(sha(plan['primary_plan'])==plan['primary_sha256'],'primary binding')
+    require(sha(plan['previous_execution']['path'])==plan['previous_execution']['sha256'],'prior receipt drift')
     require((file.parent/'RUN_AFTER_APPROVAL.ps1').read_text(encoding='utf8')==script(),'wrapper drift')
     child=check_child(plan['primary_plan'])
     return dict(status=plan['status'],campaign_sha256=sha(file),primary=child,limits=limits(),device_commands=0)

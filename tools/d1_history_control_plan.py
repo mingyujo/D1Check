@@ -47,7 +47,7 @@ def budget():
 
 
 def identity():
-    files=[Path(__file__),ROOT/'tools/d1_history_recovery_campaign.py',Path(analysis.__file__),Path(bg.__file__),DESIGN,TRACE,
+    files=[Path(__file__),ROOT/'tools/d1_history_recovery_campaign.py',ROOT/'tools/d1_postapproval_observation.py',Path(analysis.__file__),Path(bg.__file__),DESIGN,TRACE,
         Path(bg.inputs.__file__),ROOT/'tools/d1_background_activity_readout.py',
         Path(analysis.m.__file__),Path(analysis.m.thermal.__file__),Path(analysis.m.memory.__file__),
         Path(analysis.m.base.__file__),Path(analysis.states.__file__),
@@ -85,9 +85,10 @@ def specification(source_file,build_file,output):
         output_root=str(output.parent/'energy_ap_history_control_run_v1'),
         registry=str(output.parent/'history_control_registry'/NAME),entries=[],
         history_trace=dict(path=str(TRACE),sha256=p.digest(TRACE),duration_ms=1000000,max_bytes=134217728),
-        measurement_protocol_change='same-resident registered conditioning/recovery/target; 900s watchdog; 1000s trace 128MiB; numeric gate before conditioning only; target numeric coverage checked from host observations, not a second handshake',
+        measurement_protocol_change='same-resident registered conditioning/recovery/target; 900s watchdog; 1000s trace 128MiB; numeric gate before conditioning only; target numeric coverage checked from host observations, not a second handshake; opt-in postapproval progress listing starts at least 2s after previous result, one recorded silent gap per session with fresh thermal/screen; mandatory environment failures remain fatal',
         analysis_scope='conditional registered-history diagnostic; no default/strict adoption; no accuracy PASS',
-        prewarmup_observation='precommon-observation-gap-v3')
+        prewarmup_observation='precommon-observation-gap-v3',
+        postapproval_observation='postapproval-listing-gap-v1')
     plan['trace_content_audit']=dict(source['trace_content_audit'],window='conditioning_start_to_target_end',trace_recovery_seconds=120)
     template=p.read(source_file.parent/source['entries'][0]['manifest']);manifests=[]
     policies=dict(C0='C0',CPU='CPU_URGENT_ONLINE_V1',PAR='B2_PARALLEL_ONLINE_V1')

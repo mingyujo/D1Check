@@ -1,5 +1,12 @@
 # D1Check 결정 기록
 
+## 2026-10-08 POSTAPPROVAL-OBSERVATION-01 — PC 검증·새 v3 동결, 자율 실행 승인
+
+- 사용자 “알아서 수정해가면서 계속 진행…계획한거 다 마무리”로 PC 수정 뒤 새 실행을 승인했다. 단순 진행 listing을 opt-in2초 주기로 분리하고, 출력없는3초 timeout/client-reaped/증거완전일 때만 세션당1gap을 기록한다. 다음 정규관측의 fresh thermal/화면 확인은 필수, 두번째실패/연결오류/환경실패/저장실패는중단. [계약·검증](ENERGY_AP_POSTAPPROVAL_OBSERVATION_PC_20261008.md).
+- 실제 poll 진입·원0605비식별fixture·legacy·회수/cleanup 포함39검증/기기차단Check통과. APK재빌드0, 기존원모형/기본/RL/strict/experiment_ready=false보존. 새 v3 SHA `2a4f3443…96213`, child `e64cda96…63a65`/동일APK `3840bfb1…c8768be`; v2소비·원자료는불변.
+- v3는별도6시간 캠페인(최대2120추론/13시도/ADB99240, 마무리600초/연결대기1200초/읽기회수120초); 이전v2의104추론/623명령은별도공개한다. 최신승인아래새v3만단1회실행하며수정/대기중시간증액없다. 첫앱결함/적격개발0/전체블록잔여예약일때만보완1회, 무한재시도·미확정원인우회없다.
+- 다음행동: v3로현재A24·설치본·환경gate를확인해개발6→g동결→확인6을수행하고부분/완료결과를판독한다. 다른RESERVED/S26인계/사용자파일변경보존.
+
 ## 2026-10-08 HISTORY-RECOVERY-RUN-02 — 첫 개발 세션 host timeout 중단
 
 - 사용자 최신 “진행하자” 승인으로 v2 SHA `7daa7326…13ace`를 단1회 실행했다. 첫 conditioning96/120초와 runtime4/warmup8을 회수했으나 회복30초 도중 listing3초 무출력 timeout. 적격개발0/6·확인0/6, candidate 동결0, target/J/AP 평가null. [결과·소비·원인 경계](ENERGY_AP_HISTORY_RECOVERY_RUN02_20261008.md) · [작은 결과/재현](results/history_control_plan_01/run_v2/README.md).

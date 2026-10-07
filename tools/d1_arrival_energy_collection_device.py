@@ -42,9 +42,13 @@ def write(path,value):c.cal.write_new(path,value)
 
 
 def poll(d,remote,folder,manifest,plan):
+    from tools import d1_postapproval_observation as postapproval
+    postapproval_enabled=postapproval.enabled(plan,manifest)
     start=time.monotonic();end=min(d.deadline,start+plan.get('budget',c.BUDGET)['host_poll_seconds'])
     last_thermal=last_screen=0;armed=False;index=0;start_ap_sent=False;last_checkpoint=start
     observation_state={'gaps':0}
+    postapproval_state={'gaps':0,'refresh_environment':False}
+    last_progress_query=0
     while time.monotonic()<end:
         command_ceiling=(3200 if plan.get('ap_idle_pulse_followup') and
                           manifest.get('phase')=='development' else plan['budget']['adb_commands'])
@@ -59,7 +63,8 @@ def poll(d,remote,folder,manifest,plan):
                 adb_commands=d.sequence,remaining_seconds=d.deadline-now,
                 warmup_approved=armed,start_ap_approved=start_ap_sent)
             last_checkpoint=now
-        if now-last_thermal>=2:
+        refresh=postapproval_state['refresh_environment']
+        if refresh or now-last_thermal>=2:
             if plan.get('prewarmup_observation') in ('prewarmup-observation-gap-v2','precommon-observation-gap-v3'):
                 from tools.d1_preparation_observation import thermal as observe_thermal
                 if not observe_thermal(d,folder,index,observation_state,(start_ap_sent if plan.get('prewarmup_observation')=='precommon-observation-gap-v3' else armed),energy_device.thermal,version=plan['prewarmup_observation']):
@@ -68,9 +73,19 @@ def poll(d,remote,folder,manifest,plan):
             else:
                 energy_device.thermal(d,folder,index)
             index+=1;last_thermal=time.monotonic()
-        if now-last_screen>=10:
+        if refresh or now-last_screen>=10:
             screen.snapshot(d,folder,f'poll_{index:04d}',plan['screen_contract']);last_screen=time.monotonic()
-        if plan.get('prewarmup_observation') in ('prewarmup-listing-gap-v1','prewarmup-observation-gap-v2','precommon-observation-gap-v3'):
+        if refresh:postapproval_state['refresh_environment']=False
+        if postapproval_enabled and armed and start_ap_sent:
+            if time.monotonic()-last_progress_query<postapproval.PERIOD_SECONDS:
+                time.sleep(.25)
+                continue
+            listing=postapproval.listing(d,remote,folder,legacy.PACKAGE,postapproval_state,end)
+            last_progress_query=time.monotonic()
+            if listing is None:
+                time.sleep(.25)
+                continue
+        elif plan.get('prewarmup_observation') in ('prewarmup-listing-gap-v1','prewarmup-observation-gap-v2','precommon-observation-gap-v3'):
             from tools.d1_preparation_observation import listing as observe_listing
             listing=observe_listing(d,remote,folder,legacy.PACKAGE,observation_state,(start_ap_sent if plan.get('prewarmup_observation')=='precommon-observation-gap-v3' else armed),version=plan['prewarmup_observation'])
             if listing is None:
