@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-07 HISTORY-CONTROL-DESIGN-01 — 수집 설계 제안, 실행 미준비
+
+- 사용자 계획작성 요청. 기존배경대조4가이미있으므로단순반복제외. 동일conditioning96→고정회복30/180초→C0/CPU96/PAR96의개발6·동결·확인6을권고. 채택/실행승인이아닌제안이다. [계획](ENERGY_AP_HISTORY_CONTROL_DESIGN_20261007.md).
+- 최대2,016명시추론/runtime48, 고정관측+pause103.5분. 총6시간은제안예약이며실제ADB/전체강제상한은구현전null. 같은resident의2단계origin/trace/watchdog/후보동결gate/APK바인딩이필요해실행준비완료라고하지않는다.
+- PC조합·산술Check통과, 기기/ADB/설치/빌드/실측/claim0. 원동결/기본/RL/strict/experiment_ready=false유지. 다음행동하나: 등록이력연속실행과분석gate를PC구현해정확상한·APK·manifest를최종동결한다. 기존실패/종료계획재개없음.
+
 ## 2026-10-07 MODEL-REFINEMENT-02 — 후보 미채택
 
 - 사용자 추가 검토 승인으로 기존개발3+확인6을 사후개발9로 사용하고 지속8 적합제외. 부하구간 세션중앙값 공통전력gain/AP k 한후보 구현, 개발LOSO9·A/B68행·사전특징최근접 진단 완료. [보고서](MODEL_ROBUST_GAIN_20261007.md)·[화면/재현](results/model_refinement_02/README.md).
