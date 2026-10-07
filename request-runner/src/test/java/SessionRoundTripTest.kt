@@ -92,6 +92,13 @@ class SessionRoundTripTest {
             "efficientnet_lite0_Samsung_E9965.tflite" to "fake NPU AOT artifact")) {
             File(inputs, name).writeBytes(body.toByteArray()); modelSha[name] = ImageContract.sha256(body.toByteArray())
         }
+        // The host validator looks the NPU artifact up in the AOT table (tools/d1_logger_v4.py) by SHA-256: use the real AOT file when it is
+        // on disk (git 밖, npu-runner assets) so the e2e self-test can exercise the npu-dispatch-evidence conditions; the fake backend ignores it.
+        val realAot = File(moduleDir, "../npu-runner/src/main/assets/models/efficientnet_lite0_Samsung_E9965.tflite")
+        if (realAot.isFile) {
+            realAot.copyTo(File(inputs, "efficientnet_lite0_Samsung_E9965.tflite"), overwrite = true)
+            modelSha["efficientnet_lite0_Samsung_E9965.tflite"] = TaskRuntime.sha256(realAot)
+        }
     }
 
     private fun runtimeSpec(key: String): Map<String, Any?> {
