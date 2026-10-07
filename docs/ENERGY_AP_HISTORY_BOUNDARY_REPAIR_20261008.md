@@ -54,3 +54,22 @@ v5는C0+CPU 2개만read-only로재사용하며새개발4/확인6=10세션이다.
 & 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_history_recovery_plan_v5/RUN_AFTER_APPROVAL.ps1' -Action Check
 & 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_history_recovery_plan_v5/RUN_AFTER_APPROVAL.ps1' -Action Run -Approved -Serial '<동일현재A24 transport>' -ExpectedPlanSha256 'a5a9e4257a44648230b86f567641749f8c46b2bfffaceeac2b2ae3e636fa4ba4'
 ```
+
+## v6 원동결 모형의 별도 전이 확인
+
+v5는개발6적격을확보했으나 g=0.16229091917947994의교차history gate가둘다실패했다. 회복30초: 원APMAE평균0.168262°C/후보0.216477°C, 180초: 원0.169161°C/후보0.316622°C. 원모형의cooling opposite는전부false이고candidate도냉각방향보다는절대AP/장기초기상태전용오차가문제다. 초기입력범위도다르다: 원모형은target부하전AP/유휴전력으로초기화, history후보는conditioning전AP와전체등록이력만으로propagate한다. 따라서차이를새g항물리메커니즘의실패하나로단정하지않는다.
+
+최신사용자자율진행승인범위에서남은예정확인6을 **기존원동결모형의새프로토콜전이확인**으로사전고정한다. 원모형은이번개발6으로계수를적합하지않았고원SHA/β/k/g0은불변이다. v5의gate실패는완료로고치지않고새v6ID를쓴다. 다른후보/새구조/재적합/정확도허용폭변경/기존g기준완화는0. 기존원모형을유지할실제이유는6개개발자료의AP오차/냉각방향이더좋았기때문이며그선택은개발결과를본뒤이뤄졌다는사실을공개한다. 다음6확인은선택에사용하지않고사전에모두고정한뒤측정한다.
+
+실패한g0.162후보는원계수그대로고정한 **보조비교**다. 독립자료에서그차이를관찰하되기존gate 실패・미채택을소급바꾸지않는다. 원모형과보조비교모두실제일정조건부A 예측이며예정도착→일정B/정책우월성/실기기절감검증아니다. 부하전AP와초기유휴전력은허용된입력이고부하후AP/전류를예측입력이나계수적합에사용하지않는다. 부하전입력시점(target −30~+35초AP/−20~+30초idlepower)과conditioning초기입력의차이를보고한다.
+
+새freeze분기는6개개발자료의현재적격성/sourcehash를검증하고원모형SHA・선택ORIGINAL_FROZEN・보조g와이전개발gate실패를한파일로봉인한다. `new_fit_calls=0`이며테스트에서fit/develop호출을금지해검증했다. modelcode/raw/default/RL/strict/experiment_ready=false는불변이다. callback/host/protocol은v5와동일하고APK 재빌드0. 마지막clientreap은원격producer종료증거와다르며, readonly재관측의원격중첩/계측비용은임의차감하지않는다.
+
+원개발6은hash/manifest/trace/유효성재검사후read-only로재사용한다. **새확인6/960요청+48warmup=1008추론/runtime24/staging42파일/tracepull6/ADB45800・설치/push/pull0/10461초예약**. 누적physical상한2320/runtime56/staging98파일/14시도와미확인PAR상한200은그대로다. 시간도v3원시claim부터6시간으로수정/대기포함초기화0. 새추가후보/추가조건/확인반복0.
+
+계획 `energy_ap_history_recovery_plan_v6/campaign_plan.json` SHA `ac518af1056306b544dc7a7dc81d8eab32538c0776e2c898574aaec801ca6a18`, child `db14ac7d3ae90a9eed60813c0a5333852374f9a6c395a48dfba3515f7e95505a`. 기존47경계중동결관련신규1+기존23=24검사다시통과, 실제source/APK/원자료/캐시Check기기0. 새동결분기를한번검사한뒤최신승인아래단1회Run한다. 종료후확인자료는재보정/추가측정결정에사용하지않고등록지표를전체6조건에서산출한다.
+
+```powershell
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_history_recovery_plan_v6/RUN_AFTER_APPROVAL.ps1' -Action Check
+& 'C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_ap_history_recovery_plan_v6/RUN_AFTER_APPROVAL.ps1' -Action Run -Approved -Serial '<동일현재A24 transport>' -ExpectedPlanSha256 'ac518af1056306b544dc7a7dc81d8eab32538c0776e2c898574aaec801ca6a18'
+```

@@ -19,8 +19,8 @@ from pathlib import Path
 from tools import d1_history_control_plan as h
 from tools import d1_energy_host_lifecycle as life
 
-NAME='ENERGY-AP-HISTORY-RECOVERY-05'
-FOLDER='energy_ap_history_recovery_plan_v5'
+NAME='ENERGY-AP-HISTORY-RECOVERY-06'
+FOLDER='energy_ap_history_recovery_plan_v6'
 ENV='D1_HISTORY_CAMPAIGN_PERMIT'
 require=h.require
 write=h.cal.write_new
@@ -63,29 +63,33 @@ def child_spec(source,build,folder,role,campaign_root):
             for r in m[key]:r['request_id']=str(uuid.uuid5(uuid.NAMESPACE_URL,sid+'/'+key+'/'+str(r['ordinal'])))
         e.update(session_id=sid,manifest='manifests/'+sid+'.json',manifest_sha256=hashlib.sha256(h.p.canonical(m)).hexdigest())
     if role=='primary':
-        previous=folder.parent.parent/'energy_ap_history_recovery_run_v4/primary'
+        previous=folder.parent.parent/'energy_ap_history_recovery_run_v5/primary'
         old=read(previous/'frozen_collection_plan.json');reused=[]
         allowed={'tools/d1_history_recovery_campaign.py','tools/d1_history_control_plan.py','tools/d1_history_control_analysis.py','tools/d1_arrival_energy_collection_device.py','tools/d1_apk_identity.py','tools/d1_postapproval_observation.py'}
         current=h.identity()
         for key,value in old['source_code'].items():
             require(key in allowed or current.get(key)==value,'historical measurement source differs: '+key)
-        for i in range(2):
+        for i in range(6):
             old_entry=old['entries'][i];session=previous/f"{i:02d}_{old_entry['session_id']}";manifest=read(session/'input_manifest.json')
             require(h.analysis.validate(session,manifest,old)['status']=='eligible_descriptive_only','historical evidence not eligible')
             plan['entries'][i]=dict(old_entry);ms[i]=manifest
             reused.append(dict(index=i,source_folder=str(session),file_sha256={str(f.relative_to(session)):sha(f) for f in session.rglob('*') if f.is_file()}))
-        plan['history_reuse']=dict(count=2,entries=reused,
+        plan['history_reuse']=dict(count=6,entries=reused,
             original_receipt=dict(path=str(previous/'FINAL_RECEIPT.json'),sha256=sha(previous/'FINAL_RECEIPT.json')),
             meaning='read-only PC common-window boundary correction; original stopped receipt retained')
         cache=Path(old['cached_installed_apk']['path'])
         plan['cached_installed_apk']=dict(path=str(cache),sha256=sha(cache))
         plan['installed_only']=True
-        b=plan['budget'];b.update(sessions=10,development_sessions=4,confirmation_sessions=6,
-            requests=1632,conditioning_requests=960,target_requests=672,warmup=80,explicit_inference=1712,
-            runtime_creations=40,staging=10,staging_files=70,installed_host_pulls=0,apk_transfers=0,installs=0,
-            trace_host_pulls=10,installation_seconds=180,installed_preflight_seconds=180,adb_commands=76200,
-            fixed_registered_seconds=4500,
-            total_seconds=h.budget()['total_seconds']-2*h.budget()['session_seconds']-420)
+        rejected=previous/'history_development_result.json'
+        require(read(rejected)['status']=='development_gate_stop','preserve rejected candidate decision')
+        plan.update(original_model_confirmation=True,fixed_memory_comparator=dict(path=str(rejected),sha256=sha(rejected)),
+            selection='original frozen model only; rejected memory comparator secondary; no new fit or threshold change')
+        b=plan['budget'];b.update(sessions=6,development_sessions=0,confirmation_sessions=6,
+            requests=960,conditioning_requests=576,target_requests=384,warmup=48,explicit_inference=1008,
+            runtime_creations=24,staging=6,staging_files=42,installed_host_pulls=0,apk_transfers=0,installs=0,
+            trace_host_pulls=6,installation_seconds=180,installed_preflight_seconds=180,adb_commands=45800,
+            fixed_registered_seconds=2610,
+            total_seconds=h.budget()['total_seconds']-6*h.budget()['session_seconds']-420)
     return plan,ms
 
 
@@ -132,20 +136,20 @@ try {
 
 def prepare(source,build,output):
     folder=Path(output);require(folder.name==FOLDER and not folder.exists(),'fresh campaign plan')
-    root=folder.parent/'energy_ap_history_recovery_run_v5';require(not root.exists(),'campaign consumed')
+    root=folder.parent/'energy_ap_history_recovery_run_v6';require(not root.exists(),'campaign consumed')
     folder.mkdir();child=write_child(source,build,folder/'primary_plan','primary',root)
     plan=dict(id=NAME,status='PC_READY_UNAPPROVED_UNCONSUMED',approval='not_approved',experiment_ready=False,
         limits=limits(),output_root=str(root),primary_plan=str(child),primary_sha256=sha(child),
         source_code=h.identity(),repair='one fresh block only after first app failure and zero eligible development; requires recorded causal review/tests/build and remaining full-block reserve',
         run_script_sha256=hashlib.sha256(script().encode()).hexdigest())
-    previous=folder.parent/'energy_ap_history_recovery_run_v4/primary/FINAL_RECEIPT.json'
+    previous=folder.parent/'energy_ap_history_recovery_run_v5/primary/FINAL_RECEIPT.json'
     require(previous.is_file() and read(previous)['status']=='stopped_no_resume','preserved prior receipt required')
     plan['previous_execution']=dict(path=str(previous),sha256=sha(previous),
-        outcome='stopped_no_resume retained; two complete development sessions reused; failed PAR excluded',
+        outcome='candidate gate failure retained; six development sessions reused; original model confirmation only',
         failed_session_known_starts=108,failed_session_registered_upper_bound=200,adb_commands=read(previous)['adb_commands'],
-        accounting='prior consumption retained; two historical sessions plus ten new device sessions; upper call budget adds failed PAR200 only',
-        clock_claim_path=str(folder.parent/'energy_ap_history_recovery_run_v4/claim.json'),
-        clock_claim_sha256=sha(folder.parent/'energy_ap_history_recovery_run_v4/claim.json'))
+        accounting='prior consumption retained; six historical development sessions plus six new confirmation sessions',
+        clock_claim_path=str(folder.parent/'energy_ap_history_recovery_run_v5/claim.json'),
+        clock_claim_sha256=sha(folder.parent/'energy_ap_history_recovery_run_v5/claim.json'))
     write(folder/'campaign_plan.json',plan);(folder/'RUN_AFTER_APPROVAL.ps1').write_text(script(),encoding='utf8',newline='\n')
     return check(folder/'campaign_plan.json')
 

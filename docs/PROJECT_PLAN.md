@@ -1,5 +1,12 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-08 HISTORY-ORIGINAL-CONFIRM-01 — 원동결모형 별도전이확인6 동결
+
+- v5개발6모두적격. 새g0.162291은두회복block교차기준미충족(원APMAE평균0.169°C/후보0.267°C), 기존원모형냉각방향오류0. v5gate실패/FAIL보존·g후보미채택. 최신자율진행승인아래남은예정6세션을 **원동결모형의별도전이확인**으로고정하며새모형탐색/재적합/허용폭변경0. [목적·기준·예산](ENERGY_AP_HISTORY_BOUNDARY_REPAIR_20261008.md#v6-원동결-모형의-별도-전이-확인).
+- v6 `ac518af1…ca6a18`/child `db14ac7d…95505a`, 개발6read-only재사용·새확인6만실행. 모델5682082a/β・k・g0불변, 실패g0.162는동결된보조비교만. 동결분기fit0검사/관련24회귀PASS(나머지기존경계46PASS), Check/캐시/자료hash통과·APK변경0.
+- 새1008추론/runtime24/staging6·42파일/tracepull6/ADB45800/10461초예약. 누적상한2320·14시도・6시간/마무리600초/기존계획소비는그대로, v3원시clock승계초기화0・추가후보/추가세션0. 향후결과는원모형conditional전이오차와미채택후보사전고정보조결과, strict/PASS/정책우열아님.
+- 다른작업/사용자파일/원모형/기본/RL/experiment_ready=false보존. 다음: 현재동일A24 gate후원모형/보조비교동결→예정확인6→원자료분석/그림/보고서/Git.
+
 ## 2026-10-08 HISTORY-ENVIRONMENT-LEASE-01 — 2자료재사용·남은10 실행 동결
 
 - 최신사용자자율수정/재실측승인아래v4의화면2초무출력timeout을PC판독했다. 마지막정상host화면/앱interactive/thermal표본은정상이었으며조회응답소실과실제상태위반을구분한다. opt-in환경미확인1회/session, 마지막유효AP부터10초안에fresh thermal/화면복구필수; 실제위반/두번째실패/미복구/증거실패는중단. [계약개정](ENERGY_AP_HISTORY_BOUNDARY_REPAIR_20261008.md#v5-환경-미확인-lease와-완료-2자료-재사용).

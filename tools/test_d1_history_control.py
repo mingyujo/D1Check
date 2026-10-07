@@ -27,6 +27,22 @@ def case(gap=30,policy='CPU_URGENT_ONLINE_V1',role='development'):
 
 
 class HistoryTests(unittest.TestCase):
+    def test_original_confirmation_freezes_without_refitting_rejected_candidate(self):
+        with tempfile.TemporaryDirectory() as t:
+            root=Path(t);previous=root/'previous.json';p.cal.write_new(previous,dict(status='development_gate_stop',candidate={'g':.162}))
+            entries=[]
+            for i in range(6):
+                sid=str(i);folder=root/f'{i:02d}_{sid}';folder.mkdir();(folder/'evidence.json').write_text('original')
+                entries.append(dict(index=i,session_id=sid))
+            plan=dict(original_model_confirmation=True,fixed_memory_comparator=dict(path=str(previous),sha256=p.p.digest(previous)),entries=entries,source_code=p.identity())
+            with patch.object(p,'load_cases',return_value=[dict(id=str(i)) for i in range(6)]),patch.object(a,'develop',side_effect=AssertionError('no refit')) as develop:
+                p.freeze(plan,root)
+            frozen=p.p.read(root/'history_candidate_freeze.json')
+            self.assertEqual(frozen['selected_model'],'ORIGINAL_FROZEN');self.assertEqual(frozen['new_fit_calls'],0)
+            self.assertEqual(frozen['candidate'],{'g':.162});self.assertEqual(frozen['prior_development_gate'],'development_gate_stop')
+            self.assertEqual(p.p.digest(root/'history_candidate_freeze.json'),p.p.read(root/'history_freeze_receipt.json')['sha256'])
+            develop.assert_not_called()
+
     def test_readonly_reuse_preserves_source_and_starts_no_runtime(self):
         with tempfile.TemporaryDirectory() as t:
             source=Path(t)/'source';source.mkdir();p.cal.write_new(source/'input_manifest.json',dict(session_id='fixture'))

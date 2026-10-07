@@ -206,14 +206,24 @@ def before_entry(plan,root,entry,complete,hard):
 
 def freeze(plan,root):
     root=Path(root);cases=load_cases(plan,root,plan['entries'][:6])
-    result=analysis.develop(cases,p.read(analysis.m.MODEL));cal.write_new(root/'history_development_result.json',result)
-    require(result['status']=='ready_to_freeze','development gate failed; no confirmation')
+    original_only=plan.get('original_model_confirmation',False)
+    if original_only:
+        comparator=plan['fixed_memory_comparator'];require(p.digest(comparator['path'])==comparator['sha256'],'rejected comparator drift')
+        previous=p.read(comparator['path']);require(previous['status']=='development_gate_stop','prior rejection must be preserved')
+        result=dict(candidate=previous['candidate'],development_ids=[c['id'] for c in cases])
+    else:
+        result=analysis.develop(cases,p.read(analysis.m.MODEL));cal.write_new(root/'history_development_result.json',result)
+        require(result['status']=='ready_to_freeze','development gate failed; no confirmation')
     evidence={str(f.relative_to(root)):p.digest(f) for e in plan['entries'][:6]
         for f in (root/f"{e['index']:02d}_{e['session_id']}").rglob('*') if f.is_file() and f.name not in ('system_activity.pftrace',)}
     obj=dict(version=analysis.VERSION,candidate=result['candidate'],development_ids=result['development_ids'],
         source_code=plan['source_code'],frozen_model_sha256=analysis.m.MODEL_SHA,development_evidence=evidence,
         prediction_inputs='preconditioning AP + actual registered schedule; no target postload AP/current',
         accuracy_pass=None,strict_support=False,experiment_ready=False)
+    if original_only:
+        obj.update(selected_model='ORIGINAL_FROZEN',memory_candidate_status='rejected; fixed secondary comparator only',
+            new_fit_calls=0,original_model_sha256=analysis.m.MODEL_SHA,prior_development_gate='development_gate_stop',
+            original_prediction_inputs='actual target schedule + permitted target pre-load AP and idle power; no post-load AP/current')
     cal.write_new(root/'history_candidate_freeze.json',obj)
     from tools.d1_arrival_device import utc
     cal.write_new(root/'history_freeze_receipt.json',dict(sha256=p.digest(root/'history_candidate_freeze.json'),utc=utc()))
