@@ -1,0 +1,13 @@
+﻿[2026-10-07 15:30:09 +09:00] CELL START A2_base_b2 label=04_A2_base_b2 out=S26_V3_A2_base_b2_1007 pid=15116 minSoc=30 hours=1.086 lower=mark duration=3010 deadline=2026-10-08 12:00 stall=600s cap=Σ+150min
+[2026-10-07 15:30:09 +09:00] PRECHECK soc=47 endBy+30m=10-07 17:05
+[2026-10-07 15:30:09 +09:00] GATE rc=0 last=04_A2_base_b2 2026-10-07T15:30:09 0 27.2 25.2 24.7 0 47 False True
+[2026-10-07 15:30:09 +09:00] LOWER skin=27.2(>=29.1:False) bat=24.7(>=27.5:False) pass=False policy=mark -> run_marked_lower_fail
+[2026-10-07 15:30:10 +09:00] POSTGATE soc=47 endBy+30m=10-07 17:05
+[2026-10-07 15:30:10 +09:00] DRYRUN exit=0 file=C:\Users\rhoyo\AndroidStudioProjects\D1Check_v4\results\S26_host_v3_1007\dryrun_04_A2_base_b2_final_153010.txt lines=561
+[2026-10-07 15:30:10 +09:00] CHAIN SHA match lines=1
+[2026-10-07 15:30:10 +09:00] DRYRUN duration_s 3010 lines=1
+[2026-10-07 15:30:10 +09:00] LAUNCHED 04_A2_base_b2 -> S26_V3_A2_base_b2_1007 pid=26728
+[2026-10-07 15:30:15 +09:00] STALLWATCH start pid=26728 stall>600s cap>12010s trace0=1|23604|639269514131343194
+[2026-10-07 15:52:02 +09:00] ORCH EXITED pid=26728
+[2026-10-07 15:52:02 +09:00] DONE manifest_status=failed halt=ADB command failed rc=1: ['shell', 'dumpsys', 'battery']; error: closed slot=failed attempts=1 valid= failed= flags= error=OrchestratorError: ADB command failed rc=1: ['shell', 'dumpsys', 'battery']; error: closed
+[2026-10-07 15:52:02 +09:00] CELL END A2_base_b2

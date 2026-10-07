@@ -1,0 +1,49 @@
+V3 freeze ledger (P1g 1부, 2026-10-06) — V3 폰 칸 0 인 시점
+=====================================================================
+branch s26-measure · origin/s26-measure = 01822a2 (세션 시작, push 안 함)
+
+commit 1 (사전 등록)   036f87ba9e485c76f739195e340588f776890375  2026-10-06T20:23:34+09:00
+  d1sim/docs/V3_사전등록_v1.md  sha256 40b9c3d44a387e28f6e0fe5941191680acfab42a0c02406bf30f3a0a09e94abd (= OneDrive 원본, 머리 줄 덧붙이기 전)
+commit 2 (체인 · 판정 · 예측 동결)   08733ff3e86321bbad686446d897504324bf1746  2026-10-06T20:36:32+09:00
+HEAD after commit 2 = 08733ff3e86321bbad686446d897504324bf1746
+
+prediction  d1sim/out/v3_prediction_1006.json  sha256 5aa7755e6c4a3d6839003e7bfa5163e10d4a8cf5bdf034222c58e5540e105f9f
+timelines   d1sim/out/v3_1006/timelines.json    sha256 10d8f6f59ad283715308db2f155c32877dffcc63bc48080ccb600bec35b161cc
+
+chains (canonical sha256 · file sha256 · Σ s · segments)
+  v3_A_base_v1  25b12c3d0f3bea14dd513fe26508f2090aeb55b85b242eea9fd17600fbdac9b0  2734625cb57671087fa0f737e0db17ad0ffecf9f2b4b97491d571011fe9be2de  3010  7
+  v3_A_ours_v1  3bb185fc0633f0a1da5d5407e7402b9112924f8c1cce033ee6c0780e88c3e9e0  ad59acf2de19f185a97edb8b724730929aed7b5424cc5a89cc2e3201881c3798  3010  12
+  v3_B_base_v1  d6934e78373d5afccaa0d2ae31f41f90c3cc64835fe1cd39381907251d76d430  63d8f7bbeb1f7ead740a737efa4ac84e0e5ba54fb9d05c01efd411337a6888dc  2729  7
+  v3_B_ours_v1  d0753f48f28e5f1f8995f3449403a72c7f7cd13fa223a26a9033d1e10b644b75  d6cd1cf96fa35342e0587f2a7e1c04c44ef759503bba01b518fb487334f0fa40  2729  14
+  segment model (all) models/efficientnet_lite0_Samsung_E9965.tflite  311e4aac8fa1d8def4e13359c731ddc1c92f4c9ff7074e0d3860b036df8b2a31 (dry-run manifest)
+
+judge  sim/v3_judge.py = s26/tools/v3_1006/v3_judge.py  sha256 67ad5d422cc64da7196c9cd1d541eb46832e810f176b6566dc81f8c70f3e27db  selftest 33/33 PASS
+  imports: night1005e_judge.py 2db1cda5… · night1005_judge.py ca8680c2… · m1m2_judge_1002.py ea282d4a… · night1003_judge.py a5ceab41… (무변경)
+
+frozen upstream (무변경): policy freeze 31fb686 · v2.2 e52a922 · _frozen manifest 10b4358c… · v3_candidates d6432865…
+installed npu-runner APK: expected 5ac485e3… — 2부 준비에서 폰으로 확인 (1부는 폰 0)
+pytest d1sim/tests: 93 passed (세션 시작 · 커밋 2 직전)
+
+pre-result note [P-시뮬]: v2.2 predicted r (ours/base) A 0.898 / 0.911 · B 0.947 / 0.961 (29.5 / 30.5) — A < 0.95 in all 4 models.
+  Registration §5 unchanged; recorded before any V3 cell.
+
+== v2 == (P1h, 2026-10-07) — v2 칸 0 인 시점
+session start: HEAD = origin/s26-measure = 8dd83678e08f4f96da1e0b6f6b498d605debbe08 · index.lock 없음 · pytest d1sim/tests 93 passed
+commit v2-1 (사전 등록 v2)   d0a513c21b9b847daea4253d34fa9ff5945f92b1  2026-10-07T10:52:55+09:00
+  d1sim/docs/V3_사전등록_v2.md  sha256 c478525d6b8cb4ee744a4b74f2a3c434c78dd09bf50a7b64b836ba51d44a3fac (= OneDrive 원본, 머리 줄 덧붙이기 전)
+열람 기록: Cowork 는 v2 등록을 10/7 08:59 에 고정 (c478525d…) 한 뒤 09:1x 에 P1g 보고서 (A_base_b1_re 최고 SKIN · BAT · 조임 · n 포함) 를 읽었다 — 등록은 그 뒤 바꾸지 않았다 (OneDrive 파일 수정 시각 2026-10-07 08:59:15 · SHA 위와 같음, P1h 10:4x 확인)
+commit v2-2 (기준선 체인 v2 · 판정 칸 표 · 예측 v2 동결 · 드라이버 v3b)   94f9bcc2200e170952d17204a43d5523d79cb254  2026-10-07T11:09:52+09:00
+HEAD after commit v2-2 = 94f9bcc2200e170952d17204a43d5523d79cb254
+chains v2 (canonical sha256 · file sha256 · Σ s · segments)
+  v3_A_base_v2  8792180762f9e1fb327cf5854d6379fc92f9001e608f7f7d144f4280b175c020  0b81f8a1b0666a66ec8a54f1f589d07c7e349a6648c245318d593163f624b98c  3010  7  (d100 310/310/310)
+  v3_B_base_v2  f8529443fb695f97d7835c09823e93e1341f4f784ca8c7ccfc539e01efcb03f0  e2dfd29af77e68dd42a2b32d890b0f358f94de39e0b89e24651e0c408693c579  2729  7  (d100 330/330/340)
+  ours = v3_A_ours_v1 · v3_B_ours_v1 (above, unchanged) · segment model 311e4aac… (dry-run 4/4)
+  build d1sim/out/v3_v2/base_v2_build.json  b9349ae02feb1f821bc53e01c9bf959e18c7f97f08cd268556e5009d4af9de63 · main-model r (d1 incl.) A 0.968/0.983 · B 0.966/0.979 (29.5/30.5) -> §2-4 not hit
+prediction v2  d1sim/out/v3_prediction_v2.json  sha256 a3252cadd4f27df14e525c851e836e5ac6482984182d3063ddb7db4cb4173049  (ours rows = v3_prediction_1006.json 5aa7755e… exactly)
+  v2.2 Δmax SKIN A +2.89/+2.61 · B +2.37/+2.14 ℃ (29.5/30.5)
+judge v2  sim/v3_judge_v2.py = s26/tools/v3_1006/v3_judge_v2.py  sha256 b4462d58f0b593842a6e94bc6e91fda581dffb069e9eba47349a96b45debf11b  selftest 20/20 PASS (imports v3_judge.py 67ad5d42…, unchanged)
+helpers (s26/tools/v3_1006/): session_driver_v3b.ps1 de7b926a… · run_cell_v3b.ps1 d387b904… · stall_watch_v3b.ps1 099ebd47… · dryrun_v3b.ps1 92505cb4… · launch_cell_v3b.ps1 3dc418e4… · keepawake_v3b.ps1 7443481a… · make_base_v2.py 62bfd0b4… · predict_v3_v2.py e54a276f… · dryrun_table_v3b.py fb0c5b59…
+stall selftest 3/3 PASS (fake process Start-Sleep 300 · threshold 60 s)
+session end (cell time condition) = 2026-10-08 12:00 (P1h 가 정함, 영훈 답 "끝날 때까지 · 6 h 이상")
+commit v2-2b (driver -MinSocCell; 영훈 결정 SOC 45 -> 30, 결과 전)   9742288a6c5397fa2d083fbfb8ec4fb7c95ad4ad  2026-10-07T11:14:26+09:00
+  session_driver_v3b.ps1 sha256 524a832731117fa995ed51e93f65ae4818bdd1e16470e081bc8bffd83dd75c5b (replaces de7b926a… above) · HEAD = 9742288a6c5397fa2d083fbfb8ec4fb7c95ad4ad

@@ -1,0 +1,33 @@
+﻿[2026-10-07 11:11:46 +09:00] P1h 0-4 phone check (read-only; serial not written)
+  npu-runner base.apk sha256 = 5ac485e382ebc82e380e6161ca6301ff89e9ab3d8be49b5d5388ab28b42c1033 (expected 5ac485e3…: True)
+  settings system screen_brightness_mode = 0
+  settings system screen_brightness = 1
+  settings global airplane_mode_on = 1
+  settings global wifi_on = 2
+  settings global zen_mode = 1
+  settings system screen_off_timeout = 600000
+  df /data: /dev/block/dm-77 221G 154G   67G  70% /data/user/0
+  battery AC powered: false
+  battery USB powered: false
+  battery Wireless powered: false
+  battery Dock powered: false
+  battery status: 3
+  battery level: 71
+  battery temperature: 259
+[2026-10-07 13:02:00 +09:00] 2부 start check (PC Wi-Fi back on the phone hotspot; adb port changed after the PC network switch; serial not written)
+  settings system screen_brightness_mode = 0
+  settings system screen_brightness = 1
+  settings global airplane_mode_on = 1
+  settings global wifi_on = 2
+  settings global zen_mode = 1
+  AC powered: false
+  USB powered: false
+  Wireless powered: false
+  status: 3
+  level: 69
+  temperature: 219
+[2026-10-07 13:03:23 +09:00] phone cold (SKIN 25.2 BAT 21.9 < lower 29.1 / 27.5) -> 영훈 결정: 충전으로 데우기 (SKIN >= 29.5 and BAT >= 28 -> unplug -> gate). screen focus was com.android.settings -> asked to return to home screen.
+[2026-10-07 13:08:20 +09:00] screen_off_timeout -> 86400000 (driver A2 start, before first cell) now=86400000
+[2026-10-07 15:54:15 +09:00] P1h manual: NPU runner still running after A2_base_b2 orchestrator failure (SKIN 38.3 rising) -> am force-stop rc=0 pid_before='9300' pid_after=''
+[2026-10-07 17:17:57 +09:00] restore (driver A2 end): screen_off_timeout -> 600000 now=600000
+[2026-10-07 17:36:54 +09:00] A2 -> charge: plugged detected 17:36:09 (skin_watch any_powered True x2, SOC 26)

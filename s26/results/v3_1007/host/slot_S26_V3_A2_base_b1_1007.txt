@@ -1,0 +1,32 @@
+﻿====================================================================================================
+C:\Users\rhoyo\AndroidStudioProjects\D1Check_v4\results\S26_V3_A2_base_b1_1007
+  manifest status: completed | halt: None | started 2026-10-07T04:08:22.605881+00:00 | completed 2026-10-07T05:22:16.286228+00:00
+  slot npu-d100-r001 status=completed attempts=1 run_id=11b2638c-c3da-42b1-858e-b0b7a270da22 error=None
+    valid=True failed_checks=[]
+    chain_conservation_flags=['transitions_explained']
+    chain_check passed=False structure_passed=True timing_flags=['transitions_explained'] failed=['transitions_explained']
+      note: load window 3010848192148 ns = segments 3010008602617 + transitions 832244882 + residual 7344649 ns (tolerance 700000000 ns)
+      note: transition [51057539390838,51057677389783] covered 61554258 ns of 137998945 ns
+      note: transition [51367678455018,51367801718494] covered 55341874 ns of 123263476 ns
+      note: transition [51977804749588,51977926660291] covered 42730860 ns of 121910703 ns
+      note: transition [52287927027361,52288097593533] covered 74598592 ns of 170566172 ns
+      note: transition [52848099868768,52848224269940] covered 46994296 ns of 124401172 ns
+    steps(18): ['runner_force_stop', 'pre_capture_d1_quiesce', 'safety_preflight', 'thermal_conditioning', 'safety_after_conditioning', 'logger_clear', 'logger_capture_started', 'event_monitor_started', 'd1_run_started', 'runner_auto_start_sent', 'runner_terminal_event', 'runner_stopped_before_cooling', 'post_load_cooling', 'd1_run_stopped', 'logger_exited', 'run_directory_identified', 'analysis_completed', 'accuracy_provenance_attached']
+    runner events: {'baseline_end': 1, 'baseline_start': 1, 'chain_model_init': 1, 'chain_transition_end': 6, 'chain_transition_start': 6, 'file_summary': 1, 'inference': 1081627, 'load_end': 1, 'load_start': 1, 'npu_artifact_hash': 1, 'run_metadata': 1, 'segment_end': 7, 'segment_start': 7, 'shutdown': 1, 'warmup': 140}
+    meta: termination=duration_complete completed=1081627 chain_mode=True model_prepare=per_segment max_spans=1400000 jvm=268435456 pilot_pct=70 load_ns=3010848121836
+    seg 0 s00_d1 NPU d1 n=114 term=duration_complete dur=10.002s achieved=1.0050220011732294 gpu_precision=None
+    seg 1 s01_d100 NPU d100 n=359764 term=duration_complete dur=310.001s achieved=100 gpu_precision=None
+    seg 2 s02_d1 NPU d1 n=3051 term=duration_complete dur=610.002s achieved=0.9927559615156718 gpu_precision=None
+    seg 3 s03_d100 NPU d100 n=353950 term=duration_complete dur=310.000s achieved=100 gpu_precision=None
+    seg 4 s04_d1 NPU d1 n=2030 term=duration_complete dur=560.001s achieved=1.006102066711413 gpu_precision=None
+    seg 5 s05_d100 NPU d100 n=356863 term=duration_complete dur=310.003s achieved=100 gpu_precision=None
+    seg 6 s06_d1 NPU d1 n=5855 term=duration_complete dur=900.000s achieved=1.0026392157098691 gpu_precision=None
+    transition -> seg 1 NPU->NPU switch=False model_initialized=False dur=138.0 ms model_init=0.0 ms env_init=0.0 ms warmup=20
+    transition -> seg 2 NPU->NPU switch=False model_initialized=False dur=123.3 ms model_init=0.0 ms env_init=0.0 ms warmup=20
+    transition -> seg 3 NPU->NPU switch=False model_initialized=False dur=121.9 ms model_init=0.0 ms env_init=0.0 ms warmup=20
+    transition -> seg 4 NPU->NPU switch=False model_initialized=False dur=170.6 ms model_init=0.0 ms env_init=0.0 ms warmup=20
+    transition -> seg 5 NPU->NPU switch=False model_initialized=False dur=124.4 ms model_init=0.0 ms env_init=0.0 ms warmup=20
+    transition -> seg 6 NPU->NPU switch=False model_initialized=False dur=154.1 ms model_init=0.0 ms env_init=0.0 ms warmup=20
+    summary: formal_npu_valid=False not_chain_run=False thermalservice_samples=3676 telemetry=3690
+    raw logcat lines=209568 D1GPU=205848
+    run_summary: {'slot_status': 'completed', 'validation_status': 'valid', 'termination_reason': 'duration_complete', 'completed_inference_count': '1081627', 'actual_load_duration_s': '3010.008602617', 'latency_median_ms': '0.798555', 'skin_load_start_temperature_c': '27.5', 'skin_load_end_temperature_c': '29.2', 'ap_load_end_temperature_c': '27.7', 'cooling_status': 'completed'}

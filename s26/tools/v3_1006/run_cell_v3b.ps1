@@ -97,6 +97,14 @@ if ($wres -ne "exited") {
   exit 8
 }
 Log "ORCH EXITED pid=$opid"
+# P1h 10-07 15:5x (after A2_base_b2: orchestrator failed on adb 'closed' and the runner kept running the chain alone, SKIN 38 rising):
+# if the NPU runner is still alive after the orchestrator exits, force-stop it (the same command the orchestrator uses).
+$orphan = "$(& $adb -s $S shell 'pidof com.example.d1check.npurunner' 2>$null)".Trim()
+if ($orphan) {
+  $null = & $adb -s $S shell 'am force-stop com.example.d1check.npurunner' 2>$null
+  $orphan2 = "$(& $adb -s $S shell 'pidof com.example.d1check.npurunner' 2>$null)".Trim()
+  Log "ORPHAN RUNNER after orchestrator exit pid=$orphan -> force-stop rc=$LASTEXITCODE alive_after='$orphan2'"
+}
 $mp = "$wd\results\$OutName\experiment_manifest.json"
 if (Test-Path $mp) {
   try {
