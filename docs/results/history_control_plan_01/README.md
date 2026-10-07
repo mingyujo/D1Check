@@ -14,3 +14,7 @@ python -X utf8 -B -m unittest tools.test_d1_history_control tools.test_d1_backgr
 ## 최신: 20분 복구 대기와 조건부 보완 실행
 
 [6시간 캠페인 최종 계약](../../ENERGY_AP_HISTORY_RECOVERY_PC_20261008.md) · [검증/새 hash](recovery_check.json). 실행 대상은 `energy_ap_history_recovery_plan_v2` wrapper. 미승인·미소비, 기기0. 첫 앱 실패·적격개발0인 경우에만 새 block1회 보완 가능하며 일반적인 모든 오류 자동수정/재측정 보장은 아니다.
+
+## v2 실제 실행 종료
+
+첫 세션 listing timeout으로 stopped_no_resume, 적격개발/확인0. [실제 결과·부분 기록·재현](run_v2/README.md). 후보/J/AP 오차는 null이며 v2를 재실행하지 않는다.

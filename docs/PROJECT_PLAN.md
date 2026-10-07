@@ -1,5 +1,12 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-08 HISTORY-RECOVERY-RUN-02 — 첫 개발 세션 host timeout 중단
+
+- 사용자 최신 “진행하자” 승인으로 v2 SHA `7daa7326…13ace`를 단1회 실행했다. 첫 conditioning96/120초와 runtime4/warmup8을 회수했으나 회복30초 도중 listing3초 무출력 timeout. 적격개발0/6·확인0/6, candidate 동결0, target/J/AP 평가null. [결과·소비·원인 경계](ENERGY_AP_HISTORY_RECOVERY_RUN02_20261008.md) · [작은 결과/재현](results/history_control_plan_01/run_v2/README.md).
+- 총 durable 추론104/상한2,120·ADB623/99,240·251.720초/21,600초. 설치본pull/APKpush/설치각1, staging1/7파일, tracepull1. 앱결함/명시연결소실증거없어 보완/20분대기0. 첫계획소비·stopped_no_resume, 새claim/재실측0.
+- 대상 세션 host force-stop1/프로세스부재 확인, 앱 cleanup 미회수. child/parent실제PC프로세스부재·원모형2hash·원본불변/공유판독 재현 확인. 원인내부미확정, 기기 설정/연결전환/추가조회0. 원기본/RL/strict/experiment_ready=false·사용자/RESERVED/팀회신 변경 보존.
+- 다음PC작업하나: 승인 후 반복 listing의 단순 진행 관찰 실패와 필수 환경 감시 실패를 실제 poll 진입fixture에서 분리 검증한다. 같은 계획·앱결함 추측 재실행으로 이어가지 않는다.
+
 ## 2026-10-08 HISTORY-RECOVERY-PC-02 — 6시간·연결대기·보완 실행 경계 준비 완료
 
 - 실측 전 PC 작업만 수행. 원 수집 child 종료 확인 뒤 동일 transport를 최대20분/20회 조회하고, 동일 기기·manifest·앱 종료 증거를 확인한 경우 읽기 전용 회수1회(120초/20명령)를 수행하는 별도 parent 경로를 구현했다. 자동 연결/서버재시작/설정변경/endpoint전환0. [최종 계약](ENERGY_AP_HISTORY_RECOVERY_PC_20261008.md).
