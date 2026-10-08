@@ -1,0 +1,66 @@
+{
+  "a24_reference_for_q2": {
+    "deadline": "192/192",
+    "energy_j_mA_interpretation": "184.5~199.2",
+    "last_lane_s": "112.01~112.07",
+    "overlap_par_s": "21.92~22.58",
+    "pair_delta_ms": "−127.9~−131.4",
+    "peak_ap_delta_c": "−0.4~+0.4",
+    "sessions": "8/8",
+    "source": "등록 §1-6 [D] (Cowork 가 등록 전에 본 A24 숫자)",
+    "urgent_p95_cpu_ms": "422.5~430.2",
+    "urgent_p95_par_ms": "291.1~302.3",
+    "verdict": "정책 우열 미판정"
+  },
+  "auxiliary": {
+    "block_A_par_minus_cpu": [],
+    "block_N_parnpu_minus_cpu": [],
+    "cpu_urgent_p95_block_A": [],
+    "cpu_urgent_p95_block_N": [],
+    "par_vs_parnpu": "다른 블록 · 다른 분류 artifact · 정밀도 — 순위 아님 (기술만)"
+  },
+  "blocks": {
+    "A": {
+      "block": "A",
+      "deadline_missed_by_policy": {
+        "B2_PARALLEL_ONLINE_V1": 0,
+        "CPU_URGENT_ONLINE_V1": 0
+      },
+      "judgment": "쌍 부족 — 기술만",
+      "n": 0,
+      "pairs": [],
+      "parallel_policy": "B2_PARALLEL_ONLINE_V1",
+      "service_judgment": "기한 미충족 있음",
+      "valid_sessions": []
+    },
+    "N": {
+      "block": "N",
+      "deadline_missed_by_policy": {
+        "CPU_URGENT_ONLINE_V1": 0,
+        "S26_NPU_PARALLEL_V1": 0
+      },
+      "judgment": "유효 PAR-NPU 세션 없음 — 기술만",
+      "n": 0,
+      "note": "서비스 · 응답 · 열 판정 없음 (등록 §6 Q3 ①); 쌍별 Δ · 기한 충족 수만 기술",
+      "npu_contract_failed_sessions": [],
+      "pairs": [],
+      "parallel_policy": "S26_NPU_PARALLEL_V1",
+      "service_judgment": "기한 미충족 있음",
+      "valid_sessions": []
+    }
+  },
+  "notes": [
+    "J = S26 µA 해석 · 기술만 (적격성 미확보)",
+    "열 = 호스트 HAL SKIN/AP (센서 이름 그대로) · A24 는 AP",
+    "NPU 문장: Samsung ENN NPU 경로로 실행 (코어 직접 증거 없음)",
+    "조민규 확인 전 = 부록 관측 (등록 §9)"
+  ],
+  "per_session": [],
+  "plan": "s26\\results\\mixreq_1008\\plan_v1\\plan.json",
+  "plan_sha256": "a733041ca269dd6a9f313b34f28de92ba6449af2877a1e971727fcde84776708",
+  "q2_block_A": [],
+  "schema": "s26-mixreq-readout-v1",
+  "selftest": false,
+  "sessions": 0,
+  "skipped": []
+}
