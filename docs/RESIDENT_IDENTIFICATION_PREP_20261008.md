@@ -1,5 +1,7 @@
 # 에너지·AP 모형 식별과 독립 확인: 실측 전 PC 준비
 
+**2026-10-09 후속:** 승인Run1회/개발4정상/AP식별gate실패/확인4미시도·계획종료. [실제결과와소비](RESIDENT_IDENTIFICATION_RESULTS_20261009.md). 아래는실행전준비기록이며현재미소비라는뜻이아니다.
+
 2026-10-08 · ENERGY-AP-RESIDENT-IDENTIFICATION-02 · **PC 준비·Check 완료, 미승인·미소비**
 
 기존 자료에서 불안정했던 GPU 단독 전력과 유휴/잔열 반응을 분리하기 위해, 같은 네 resident runtime의 긴 상태 구간 개발4회와 모형 동결 후 확인4회를 준비했다. 마지막 확인2회는 기존 Arrival 실행기의96/192 혼합 요청이다. 새 측정이나 오차 감소 결과는 아직 없다. 원모형·기본 시뮬레이터·RL·strict·experiment_ready=false를 유지한다.

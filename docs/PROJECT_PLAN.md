@@ -1,5 +1,10 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-09 RESIDENT-IDENTIFICATION-RUN-01 — 실행 종료·PC 구조 판독으로 전환
+
+- 승인된plan_v3를1회실행해개발4를정상회수했으나AP beta 상한 경계해로동결/확인4를미진행했다. 실제3466추론/7350ADB/4622.687초·추가0, 계획stopped_no_resume/원본보존. [결과](RESIDENT_IDENTIFICATION_RESULTS_20261009.md).
+- 다음은확보개발4의AP 상태별가열비율·고정30초잔열항판독하나. 새로운기기계획/자동실측/상한완화/기본교체로이어가지않는다. 현재결과는조건부비용A 진단이며B 일정/정책우월성/strict/experiment_ready 승격0.
+
 ## 2026-10-09 IE-MICRO-ORACLE-01 — 개선 여지의 유한 공간 인증
 
 - [24미니 조건 계약](results/micro_oracle_01/README.md)을 실행한다. 같은4요청·자원·원계수에서 Band/Triton 서비스와 AP 조건의 J 최소, J 조건의 AP 최소, 엄격한 공동감소 존재를 전수 확인하고 원 엔진으로 재생한다. 여유시간·CPU유연성 진단2규칙도 원정책과 별도비교하며 새RL0이다.

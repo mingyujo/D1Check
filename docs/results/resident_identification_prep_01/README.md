@@ -1,5 +1,7 @@
 # 에너지·AP 식별/확인 PC 준비
 
+**2026-10-09 실행 후 상태:** 사용자승인으로plan_v3는소비·종료됐다. 개발4 정상/동결 AP 상한 gate 실패/확인4 미시도. [실행결과](../../RESIDENT_IDENTIFICATION_RESULTS_20261009.md). 아래 준비 당시 미승인/미소비 기록과해시는역사적근거로보존한다. 재실행하지않는다.
+
 [한국어 계약·예산·승인후명령](../../RESIDENT_IDENTIFICATION_PREP_20261008.md) · [분석계약v2](analysis_contract_v2.json) · [8개입력](roster.csv) · [작은계획요약](plan_summary.json) · [검증](verification.json).
 
 현재상태는 `PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED`,미승인·미소비다. 최종실행대상은 `energy_ap_resident_identification_plan_v3` 하나이며v1/v2는소비되지않은PC초안이다. 기존FAIL/stopped계획과구분한다. 새실측결과·성능그래프가없다.

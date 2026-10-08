@@ -25,6 +25,40 @@ class FakeDevice:
 
 
 class HostFailureTest(unittest.TestCase):
+    def test_resident_freeze_failure_summarizes_last_development_not_next_confirmation(self):
+        # Real host loop advances e to confirmation index4 before freeze raises.
+        # The last recovered development allowed1200; upcoming confirmation only600.
+        from tools import d1_resident_identification_plan as resident
+        with TemporaryDirectory() as tmp:
+            root=Path(tmp);path=self.fixture(root);plan=json.loads(path.read_text())
+            plan.update(resident_identification=True,autonomous_diagnostic_only=True,diagnostic_only=True,
+                        budget=dict(resident.budget(),intersession_cooling_seconds=0))
+            plan['entries']=[dict(index=i,phase='development' if i<4 else 'confirmation',pair='CC_DG',mode='calibration',
+                                  family='regimen',session_id=f'fixture{i}',manifest='manifest.json',
+                                  work_requests=1200 if i<4 else 600,eligibility_requests=4) for i in range(5)]
+            path.write_text(json.dumps(plan),encoding='utf8')
+            (root/'manifest.json').write_text(json.dumps({'protocol':resident.PROTOCOL,
+                'session_control':'device-after-probe-diagnostic-v1'}),encoding='utf8')
+            with patch.object(resident,'check'),patch.object(device,'ObservedDevice',FakeDevice), \
+                 patch.object(device,'installation',return_value={'status':'verified'}),patch.object(device,'gates'), \
+                 patch.object(device.install,'installed_hash',return_value='fixture'), \
+                 patch.object(device.shared,'stage_inputs',return_value='remote'),patch.object(device,'poll'), \
+                 patch.object(device,'recover',return_value={'status':'recovered'}), \
+                 patch.object(device.shared,'cleanup',return_value={'status':'completed'}) as cleanup, \
+                 patch.object(resident,'summarize_session',return_value={'status':'eligible_identification_only',
+                             'work_calls':853,'eligibility_calls':4,'warmup_calls':8}), \
+                 patch.object(resident,'freeze',side_effect=ValueError('AP model unidentified; no confirmation')), \
+                 patch.object(device,'pull_file'),patch.object(resident,'progress_consumption',return_value={'fixture':True}) as consumption:
+                with self.assertRaisesRegex(ValueError,'AP model unidentified'):
+                    device.run(path,'NO_ADB','PC_FAKE_ONLY',plan_io.digest(path),True)
+            self.assertEqual(cleanup.call_count,4)  # No second cleanup after freeze failure.
+            self.assertEqual(consumption.call_args.kwargs['load_cap'],1200)
+            receipt=json.loads((root/'run/FINAL_RECEIPT.json').read_text(encoding='utf8'))
+            self.assertEqual(receipt['completed_sessions'],4)
+            self.assertNotIn('progress_summary_error',receipt)
+            self.assertIn('AP model unidentified',receipt['error'])
+            self.assertFalse((root/'run/04_fixture4').exists())
+
     def test_new_checkpoint_module_is_in_frozen_source_identity(self):
         self.assertIn('tools/d1_energy_host_checkpoints.py',collection.HOST_FILES)
         self.assertIn('tools/d1_energy_host_checkpoints.py',state.identity())

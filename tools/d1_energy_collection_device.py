@@ -335,7 +335,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
     host_identity=lifecycle.host_identity() if state_model else None
     save(registry/'claimed.json',dict(plan_sha256=expected_sha,utc=legacy.utc(),budget=budget,
                                       host_run_id=host_run_id,host_identity=host_identity))
-    results=[];current=None;remote=None;identified=False;install_result=None;d=None;journal=None
+    results=[];current=None;current_entry=None;remote=None;identified=False;install_result=None;d=None;journal=None
     cleanup_attempted=False;cleanup_result=None
     def mark(stage,**details):
         if journal:journal.mark(stage,**details)
@@ -399,7 +399,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
                 c.require(time.monotonic()-freeze_start<600,'freeze time exceeded')
                 mark('development_frozen')
             c.require(hard-time.monotonic()>=budget['session_seconds'],'insufficient whole session reserve; stop')
-            current=root/f"{e['index']:02d}_{e['session_id']}";current.mkdir();remote=None
+            current=root/f"{e['index']:02d}_{e['session_id']}";current.mkdir();current_entry=e;remote=None
             cleanup_attempted=False;cleanup_result=None
             mark('session_reserved',session_index=e['index'],session_id=e['session_id'],phase=e['phase'])
             session_start=time.monotonic();session_end=min(session_start+budget['session_seconds'],hard);d.deadline=min(session_start+120,session_end-105)
@@ -534,7 +534,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
         try:
             if plan.get('resident_identification'):
                 failure['last_session_progress']=state.progress_consumption(prefix.read_bytes() if prefix and prefix.is_file() else b'',
-                    bool(current and (current/'launch_attempt.json').exists()),load_cap=e['work_requests'] if current else 1200,eligibility_cap=e['eligibility_requests'] if current else 4)
+                    bool(current and (current/'launch_attempt.json').exists()),load_cap=current_entry['work_requests'] if current_entry else 1200,eligibility_cap=current_entry['eligibility_requests'] if current_entry else 4)
             else:failure['last_session_progress']=(state.progress_consumption(prefix.read_bytes() if prefix and prefix.is_file() else b'',
                 bool(current and (current/'launch_attempt.json').exists())) if state else
                 c.progress_consumption(prefix.read_bytes() if prefix and prefix.is_file() else b'',

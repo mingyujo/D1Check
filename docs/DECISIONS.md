@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-09 RESIDENT-IDENTIFICATION-RUN-01 — AP 식별 실패로 확인 진행 차단 유지
+
+- 확정: 사용자실측승인으로plan_v3 개발4 정상완료. 첫개발제외 AP fit의beta_boundary=true로사전계약에따라확인4 미시도/소비계획종료. power rank5/AP rank3은안정적물리식별/정확도PASS의대체가아니다. [실행·근거·한계](RESIDENT_IDENTIFICATION_RESULTS_20261009.md).
+- 상한확대나결과후후보선택으로 gate를우회하지않는다. 첫heldout의J개선/AP악화를함께보존하고기본/RL/strict/experiment_ready=false유지. 새개발자료의AP 상태가열입력비율/고정30초잔열구조를PC에서판독하는것이후속이며자동새실측0.
+- 종료후host소비요약은현재세션entry의cap에결합하는최소수정만수행했다. 원receipt의AP 원오류/후속회수·요약오류를지우지않고별도corrected 요약을제공한다. APK/기기 설정/센서/실측중코드변경0.
+
 ## 2026-10-09 IE-MICRO-ORACLE-01 — 작은 문제부터 제약과 개선 여지 확인
 
 - 사용자 진행 승인에 따라 기존 후보의 목적/예산을 바꾸지 않고 별도 [유한 최적 일정 비교](results/micro_oracle_01/README.md)를 먼저 수행한다. Band 일정을 포함한 사전 시작시각집합·모든CPU/GPU배정을 전수 확인하며 서비스/AP조건의J최소와J조건의AP최소를 분리한다. 일반평균 비악화는 추가진단 조건으로만표시한다.

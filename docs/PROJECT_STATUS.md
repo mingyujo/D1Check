@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-10-09 RESIDENT-IDENTIFICATION-RUN-01 — 개발4 정상·AP 경계해로 확인 미시도
+
+- 사용자 `실측가보자` 승인, plan_v3 Check/동일성/미소비 통과 후 Run1회. 현재 A24 고정 transport/환경/프로젝트 서명 APK gate 통과. 개발A/B/B/A 4회 정상 수집·회수/cleanup, 확인4는AP 동결 gate 실패로미시도·plan stopped_no_resume. [결과·소비·오차·원본](RESIDENT_IDENTIFICATION_RESULTS_20261009.md) · [화면/재현](results/resident_identification_run_01/README.md).
+- 실제본3418/적격16/warm32/총3466/runtime16/staging4·28파일/pull·APKpush·설치각1/ADB7350(내부7349+선택1)/4622.687초, 승인6376/34728/19070 이내·재시도/대체/추가0. 앱·host 정리완료/프로세스부재, 연결소실/lifecycle_cancelled없음. 원자료/FAIL/소비·종료계획과미소비초안보존.
+- GPU단독약60초씩확보/power rank5; AP load2/numerical3이나beta=0.2296626/s가사전상한에붙어미식별. 첫개발제외예측 AP MAE0.944→1.018 악화/J12.597→4.119 감소는미채택진단·독립확인아님. 원모형 개발4 진단J MAE12.697/120초·AP MAE0.756(약35–815초), 차가운시작/장부하프로토콜과기존확인수치구분.
+- host 중단소비요약이현재개발에다음확인600상한을쓴결함만종료후3행수정; 원receipt 보존/현재entry 결합 회귀통과. host기존8+신규1·원문/적분/그림/portable 재현 PASS. APK/모형/기본/RL/strict/experiment_ready=false·사용자14행·다른작업/worktree 보존.
+- 다음하나: 새개발4로AP 상태별가열입력비율과고정30초잔열항의잔차를분리해공통k/g구조의타당성판정. 추가실측/상한확대/확인재실행/자동기본교체0.
+
 ## 2026-10-09 IE-MICRO-ORACLE-01 — 유한 전수 인증·원 엔진 비교 완료
 
 - 사용자 진행 승인으로 Band/Triton 대비 서비스·J/AP 조건의 개선 일정 존재를 먼저 확인한다. 기존 개발2trace×4부하에서2분류/2탐지 추출·3문맥=24조건, 도착기준100ms/3s 격자+Band시각의 유한 전수공간이다. 미래를 아는 참고 최적 일정이며 현재RL의대기범위를 바꾸지 않는다. [계약·명령](results/micro_oracle_01/README.md).
