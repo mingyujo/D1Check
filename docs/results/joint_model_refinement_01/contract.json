@@ -1,0 +1,93 @@
+{
+  "id": "JOINT-REFIT-01",
+  "utc": "2026-10-08T06:00:16.886659+00:00",
+  "source_head": "02130cda6ee57865fbb3ff0430cd9cea5ac35556",
+  "input_hashes": {
+    "docs/results/model_refinement_01/inputs.json.gz": "cb07aa735100971b6e7e635ecf9c8c24bc9b9c2b7ffdbc4e9824b0566f7f2ffb",
+    "docs/results/history_model_refinement_01/inputs.json.gz": "2005a26656c7c4a88b6b914ac51c2fcb156cb9229f050491c7f1826b5d8d816f",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/energy_memory30_01/session_errors.csv": "0e8d372772727dc3de76d4a9e12ef42df32a81472a84be4b99400bb9d2202fec"
+  },
+  "compatibility_sha256": "accce6cb2698630e5365b29a708d0a3f07055020f576792d8acd7e6e64092de3",
+  "development_ids": [
+    "development_0",
+    "development_1",
+    "development_2",
+    "development_30_C0",
+    "development_30_CPU",
+    "development_30_PAR",
+    "development_180_PAR",
+    "development_180_CPU",
+    "development_180_C0"
+  ],
+  "evaluation_ids": [
+    "confirmation_0",
+    "confirmation_1",
+    "confirmation_2",
+    "confirmation_3",
+    "confirmation_4",
+    "confirmation_5",
+    "sustained_0",
+    "sustained_1",
+    "sustained_2",
+    "sustained_3",
+    "sustained_4",
+    "sustained_5",
+    "sustained_6",
+    "sustained_7",
+    "confirmation_180_C0",
+    "confirmation_180_CPU",
+    "confirmation_180_PAR",
+    "confirmation_30_PAR",
+    "confirmation_30_CPU",
+    "confirmation_30_C0"
+  ],
+  "duplicate_ids": [
+    "sustained_0",
+    "sustained_1",
+    "sustained_2",
+    "sustained_3",
+    "sustained_4",
+    "sustained_5",
+    "sustained_6",
+    "sustained_7"
+  ],
+  "candidate_structures": 1,
+  "energy": "same four nonnegative state increments; pre -20..30 W fixed per session; equal session 5s bin loss",
+  "ap": "same R/H preload initialization and 30s latent memory; existing 61 beta grid .2..5 times original; k>=0, g=0; existing slopes fixed",
+  "fit_calls": 4,
+  "beta_profiles": 244,
+  "development_cv": "old3/history30x3/history180x3 block-exclusion, final9; no evaluation selection",
+  "gate": "CV every block energy MAE nonworse; AP path MAE and mean session max nonworse; AP rank2/interior beta required; diagnostic candidate retained even if gate fails",
+  "general_adoption": "development gates plus every evaluation block MAE/max/direction nonworse and sustained paired delta-J MAE nonworse; no automatic adoption even if met",
+  "evaluation_seen_before": true,
+  "evaluation_modes": [
+    "A actual schedule conditional",
+    "B archived arrival forecast schedule, only 14 available sessions"
+  ],
+  "energy_window_s": [
+    0,
+    120
+  ],
+  "ap_window": "actual post35 brackets through last cooling query, per-session CSV boundaries",
+  "rolling_question": "fixed MEMORY30 coefficients, 35..115 s sequential-observation paired errors only; no full120 or hypothetical-policy claim",
+  "budget": {
+    "active_seconds": 14400,
+    "final_reserve_seconds": 300,
+    "candidate_structures": 1,
+    "fit_calls": 4,
+    "beta_profiles": 244,
+    "device_commands": 0,
+    "policy_simulations": 0,
+    "rl_training": 0
+  },
+  "stop": [
+    "nonfinite",
+    "input identity mismatch",
+    "rank loss: unidentified stop",
+    "budget before reserve; preserve partial/error"
+  ],
+  "defaults_unchanged": true,
+  "implementation_sha256": "6c11b9624aaf1697b9f8b626d263498b1e7e4f4f49418fbc75d2d2ef46ba5bbe",
+  "test_sha256": "512d0c84090c67b4920103b7728bb7181876fa17b1b420ff5a1749961f4f52a6"
+}

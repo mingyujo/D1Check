@@ -1,5 +1,10 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-08 JOINT-REFIT-01 — 기존 자료 공동 적합 라운드 종료
+
+- 사용자 승인으로 개발9/평가20 고정→기존 MEMORY30 명목짝 판독→한구조의전력4계수/AP beta,k 재추정→개발제외3묶음/20사후평가/14B 비용판독을완료했다. [결과·재현](JOINT_MODEL_REFINEMENT_RESULTS_20261008.md). 개발gate실패·정책차이악화로일반적용보류,기본/RL/strict불변.
+- 남은정보는같은계측조건의GPU단독계수식별과유사부하전조건의부하후배경변동이다. 이번에는새실측계획/실행기를만들지않았다. 다음PC범위는저장정책차이의개발묶음민감도표시로한정하며다른진행중EDD작업을수정하지않는다. 기기명령0/experiment_ready=false유지.
+
 ## 2026-10-08 POWER-RESIDUAL-STRUCTURE-01 / ENERGY-MEMORY30-01 — 고정 30초 후보 평가 완료
 
 - 기존 20세션의 기록 간격·반복값과 잔차 지속성을 분석했다. 진단 전에 10/30초 두 기간만 고정하고 개발 근거를 확인한 뒤 후보 하나를 개발 6세션에서 적합·동결했다. [결과·종료 판정](POWER_RESIDUAL_STRUCTURE_RESULTS_20261008.md) · [재현 번들](results/energy_memory30_01/README.md).

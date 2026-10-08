@@ -1,0 +1,127 @@
+{
+  "accuracy_pass": null,
+  "ap": {
+    "beta": 0.060064141829709435,
+    "g": 0.0,
+    "k": 1.27584254304203,
+    "parameters": {
+      "ap_cooling_rate_per_s": 0.045932520308001434,
+      "ap_slope_at_30_c_per_s": {
+        "classification_CPU": 0.2089945285737141,
+        "classification_CPU+detection_GPU": 0.33292875064367283,
+        "classification_GPU": 0.2515668356125531,
+        "classification_GPU+detection_CPU": 0.4245181056452392,
+        "detection_CPU": 0.31714941083532494,
+        "detection_CPU+detection_GPU": 0.4265039575362234,
+        "detection_GPU": 0.24667019523538128,
+        "resident_idle": 0.2011742570479759
+      }
+    }
+  },
+  "development_ids": [
+    "development_0_CPU_URGENT_ONLINE_V1",
+    "development_0_B2_PARALLEL_ONLINE_V1",
+    "development_0_B2_SERIAL_ONLINE_V1"
+  ],
+  "energy_baseline_mode": "session_preload",
+  "energy_design_singular_values": [
+    20.198642405706003,
+    11.025654799703872,
+    5.544895767045148,
+    4.259715912007747
+  ],
+  "energy_fit_rmse_j": 0.9289912809598967,
+  "energy_increment_w": {
+    "classification_CPU": 0.5556769911804333,
+    "detection_CPU": 0.7139932388903756,
+    "classification_GPU": 0.47676239057668246,
+    "classification_GPU+detection_CPU": 1.1769042736285327
+  },
+  "experiment_ready": false,
+  "original_whole_device_power_w": {
+    "classification_CPU": 1.7414095382900974,
+    "classification_CPU+detection_GPU": 2.1104195495120037,
+    "classification_GPU": 1.6107917099161095,
+    "classification_GPU+detection_CPU": 2.327017852625475,
+    "detection_CPU": 1.9319364179863232,
+    "detection_CPU+detection_GPU": 2.313041399341412,
+    "detection_GPU": 1.6125347399692977,
+    "resident_idle": 1.2254334209795854
+  },
+  "preload_power_window_s": [
+    -20,
+    30
+  ],
+  "scope": "registered separated development/mixed confirmation only; AP unchanged; no generic support",
+  "service": {
+    "B2_PARALLEL_ONLINE_V1": {
+      "counts": {
+        "classification_GPU_urgent": 48,
+        "detection_CPU_normal": 48
+      },
+      "phase_means_ns": {
+        "classification_GPU_urgent": [
+          1304681.1458333333,
+          285303799.5833333,
+          7293177.916666667,
+          410296.5,
+          2794149.0208333335
+        ],
+        "detection_CPU_normal": [
+          1136892.6875,
+          609597921.4791666,
+          8056097.666666667,
+          275399.0625,
+          1947453.6666666667
+        ]
+      }
+    },
+    "B2_SERIAL_ONLINE_V1": {
+      "counts": {
+        "classification_GPU_urgent": 48,
+        "detection_CPU_normal": 48
+      },
+      "phase_means_ns": {
+        "classification_GPU_urgent": [
+          1456959.9375,
+          300043828.6666667,
+          7437344.541666667,
+          532979.1458333334,
+          3081734.0
+        ],
+        "detection_CPU_normal": [
+          1198631.3541666667,
+          611719721.2083334,
+          7233331.729166667,
+          270512.8541666667,
+          1999344.5625
+        ]
+      }
+    },
+    "CPU_URGENT_ONLINE_V1": {
+      "counts": {
+        "classification_CPU_urgent": 48,
+        "detection_CPU_normal": 48
+      },
+      "phase_means_ns": {
+        "classification_CPU_urgent": [
+          1574173.1458333333,
+          154605757.95833334,
+          6508278.979166667,
+          275445.5416666667,
+          2252620.0625
+        ],
+        "detection_CPU_normal": [
+          1219862.2083333333,
+          610544298.1458334,
+          7707573.6875,
+          271637.7708333333,
+          2032006.4791666667
+        ]
+      }
+    }
+  },
+  "version": "joint-development-refit-v1",
+  "default": false,
+  "strict_support": false
+}

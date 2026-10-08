@@ -1,0 +1,72 @@
+{
+  "utc": "2026-10-08T06:07:48.126590+00:00",
+  "source_head": "02130cda6ee57865fbb3ff0430cd9cea5ac35556",
+  "uncommitted": true,
+  "commands": [
+    "Python311 -B -m unittest tools.test_d1_joint_model_refinement -v",
+    "Python311 -B -m tools.d1_joint_model_refinement freeze --output docs/results/joint_model_refinement_01/run",
+    "Python311 -B -m tools.d1_joint_model_refinement evaluate --output docs/results/joint_model_refinement_01/run",
+    "Python311 -B -m tools.d1_joint_model_report --output docs/results/joint_model_refinement_01/run"
+  ],
+  "tests": 8,
+  "actual_scoring_reproduced_rows": 68,
+  "maximum_reproduction_delta": 0.0,
+  "final_fit_reproduction": "exact equality incl 61 profile",
+  "verification_fit_calls": 1,
+  "formal_fit_calls": 4,
+  "formal_beta_profiles": 244,
+  "verification_beta_profiles": 61,
+  "future_targets_ignored_sessions": 20,
+  "diagnostic_sensitivity_pairs": 6,
+  "diagnostic_sensitivity_fits": 4,
+  "sensitivity_ap_calls": 48,
+  "model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+  "input_hashes": {
+    "docs/results/model_refinement_01/inputs.json.gz": "cb07aa735100971b6e7e635ecf9c8c24bc9b9c2b7ffdbc4e9824b0566f7f2ffb",
+    "docs/results/history_model_refinement_01/inputs.json.gz": "2005a26656c7c4a88b6b914ac51c2fcb156cb9229f050491c7f1826b5d8d816f",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/energy_memory30_01/session_errors.csv": "0e8d372772727dc3de76d4a9e12ef42df32a81472a84be4b99400bb9d2202fec"
+  },
+  "source_hashes": {
+    "tools/d1_joint_model_refinement.py": "6c11b9624aaf1697b9f8b626d263498b1e7e4f4f49418fbc75d2d2ef46ba5bbe",
+    "tools/d1_joint_model_report.py": "a4aedb554c10b8c8d70cfff19ffcc585f35820216d983510111f163fbe3041e5",
+    "tools/test_d1_joint_model_refinement.py": "512d0c84090c67b4920103b7728bb7181876fa17b1b420ff5a1749961f4f52a6"
+  },
+  "artifact_hashes": {
+    "ap_paths.png": "2a85fccdbf51fc15b36896eb34eacaf70cfd07d573c08d600cfa1392b10c1904",
+    "ap_paths.svg": "b72ce5b6a19db3166572ae298a4d5e00d92bae2d24ef5929e6a2211f800ce4ec",
+    "candidate_freeze.json": "dda533cdf84ec6b14ab323b082b96404b2ccccf5c230d6103eb7e4f91631adf7",
+    "candidate_model.json": "ed1eb5c875dd9b94356e15e94ef517c573acff3fd3610c92a75eed9290c84ddc",
+    "coefficient_stability.csv": "fd24aff44aafddc3bb310a26fcf46400e0d1827229e9cbb9f205654b4dffe30d",
+    "comparison.csv": "33870abd050564bd82ac7c8f59d69faeac4ad4bd0f07dfb95a4d838ac154a1c6",
+    "development_folds.csv": "00aa1b67b1419eb6e4a95b5e0615c95c24de7366b7eb9eb9d186e87798d222a6",
+    "evaluation_started.json": "144f182168e454bd44704e76da3a2a738cc4440597ef6b6a7e9d2b807a8bc426",
+    "index.html": "3d3be3319ff26d20423b7d3ee6d8ebe7a864318630f8ae6cb62ad8902ebf557d",
+    "memory30_paired_errors.csv": "33dc2f0e95805a11951c847d3463dcdfec8c25655821acf92abbf8713c2f85ad",
+    "paired_errors.csv": "6a78a483c51a3899dba342f277ce90775421027b37c85fb4a167819fad64488a",
+    "paired_errors.png": "8a86c52c8c6fb78a762068e89e19070948adebbb22d5e120eea790e0d28b2de9",
+    "paired_errors.svg": "9880991e6314ed55b5b9c8470f0a2d7bbcd08614a2956217605dba0a00a98b7a",
+    "paths.csv": "507425b3b60f72931b301f41b9e1418e6a851df19f3971e30a77452669370524",
+    "policy_model_sensitivity.csv": "4ef999491a477bdcf4f0308e7a033fcfd0d4e8285bf3ecaa3df96e740cd222ba",
+    "residual_paths.png": "23d3fda3e3abf88e9629081157974d22a1cd25b1bd9037e77fddf940e5463a7b",
+    "residual_paths.svg": "c6ede6d0dcaede2a808f6a0b8bb7956da7424afe7073043ae6a64a45edfa5270",
+    "session_errors.csv": "01085ecac77439f92182e7229776c0051ef9499b69a50acbe6a58684b5e5d6b1",
+    "session_errors.png": "3b7362e79badf235fe3da248c269c365607049e24f73616d030a3046f1e43089",
+    "session_errors.svg": "b93b36208a7727e0a8c7354277599ce1be0cdf9b6cd62ec90c7d7463e1fbad74",
+    "summary.json": "b6f5d46536984df7b9ef0a60c7f072696ba52fc81322f705c503d3b76507ccf5",
+    "windows.csv": "7a658159dcc08605ab920c673c6ef9ca92983cbec911ac6624708f12eb60ac9b"
+  },
+  "device_commands": 0,
+  "rl_training": 0,
+  "policy_simulations": 0,
+  "default_changed": false,
+  "html_local_links_checked": 10,
+  "figures_visually_checked": 4,
+  "contract_code_inputs_unchanged_after_evaluation": true,
+  "raw_inventory_files_checked": 129,
+  "raw_inventory_mismatches": 0,
+  "pc_packaging_corrections": [
+    "STATUS cached patch preserved original CRLF bytes; first patch failed without index mutation",
+    "Matplotlib SVG trailing whitespace removed; numeric content unchanged"
+  ]
+}
