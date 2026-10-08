@@ -1,5 +1,11 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-08 IE-FOUR-CANDIDATES-02 — 네 후보의 공통 PC 비교
+
+- 최신 사용자 시작 승인으로 [고정 계약](results/ie_candidates_v2/README.md)을 실행한다. 열·에너지 리스트와 Rolling Horizon CP-SAT은 산업공학 배정·수리계획의 자체 적용, PPO/DDQN은 같은109/68 후보·물리mask·목적·에피소드 예산의 학습 비교다. 원 모형과 완료 경계를 유지한다.
+- 새 환경최대1,536/학습420, 기존3,633/225 계승, PPO/DDQN 각3×64·검증24·확인48×12. validation 선택을 final 전에 고정하며 서비스·J/AP가 Band/Triton 양쪽을 함께 이기지 못하면 미채택한다. 시간2h·저장5min, 새 기기/NPU0. 기존 종료clock/결과/2032 미실행 등록 보존.
+- 완료: 실제1,422환경/416학습, 누적5,055/641·확인576행/38,016전량. validation 적격0→선택none 동결→확인도새채택0. 리스트3조건 공동감소와다른조건의서비스악화, CP-SAT의서비스/열 개선·J증가, RL변동을 [결과](results/ie_candidates_v2/README.md)에기록했다. 조건부이득은새계약에서재현여부를확인하며이번자동추가0.
+
 ## 2026-10-08 RESIDENT-IDENTIFICATION-PREP-02 — 에너지/AP 식별→동결→확인 PC 준비
 
 - 현재모형의GPU단독·유휴/잔열 공백을위한신규8세션한묶음을준비했다. 개발4상태구간/확인2다른순서+Arrival96/192요청2를기존worker/lifecycle/회수경로로연결했다. [실행전계약·계수·게이트·확정상한](RESIDENT_IDENTIFICATION_PREP_20261008.md). A 비용확인이며정책순위/B일정정확도완료가아니다.

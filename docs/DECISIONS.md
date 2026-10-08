@@ -1,5 +1,12 @@
 # D1Check 결정 기록
 
+## 2026-10-08 IE-FOUR-CANDIDATES-02 — 추가 후보 범위와 공통 판정 고정
+
+- 확정: 사용자 시작 승인에 따라 리스트·Rolling Horizon CP-SAT·masked PPO·Double DQN만 별도 PC 파일럿으로 추가한다. 산업공학 연구 사용과 우리 휴대폰 적용을 구분하며 제품 전체의 우월성을 주장하지 않는다. [근거·계약](results/ie_candidates_v2/README.md).
+- 원 PPO의 BASE logit 가산점이 유지되는 구조는 보존하고 새 PPO에서만 제거한다. PPO/DDQN 목적은 Band/Triton 양쪽 대비 에너지 이득과 AP/완료/서비스/P95 비악화이며 공통 상태·후보·물리mask·64에피소드×3seed를 사용한다. 학습은 같아도 replay/target/계산량 차이를 공개한다.
+- CP-SAT은1ms 계획과 측정 병행 에너지, 기존 정확한 열모형의 첫 행동 필터를 사용한다. 열모형을 정확히 CP-SAT에 넣었다거나 제한시간 FEASIBLE이 최적이라는 주장은 하지 않는다. 검증 선택 후 확인 고정·기존예산 차감·기기/NPU0·원모형/기본/strict/experiment_ready=false 유지.
+- 최종판정: validation24 새적격0을확인전에동결했고final48도새정책미채택이다. 리스트공동감소3조건은독립1trace/3문맥이며정상기한·긴급P95를지켰지만일반평균약3.1초지연·전체서비스악화를동반한다. CP-SAT의응답/열 감소는J증가와상충하고RL은3seed서비스안정성을통과하지못했다. 수렴/일반RL실패/물리절감/제품전체우월성·자동기본교체로승격0. 실제1,422/학습416은기존예산에차감, 원자료/체크포인트보존.
+
 ## 2026-10-08 RESIDENT-IDENTIFICATION-PREP-02 — 모형 식별과 Arrival 전이 확인 경계 고정
 
 - 확정: 현재범위는실측전PC 구현/서명APK/미승인계획준비다. 개발4회로유휴bias+4상태W/AP beta,k,g를식별하고제외예측·자료hash를동결한후확인4로진행한다. Arrival2회는실제요청경로의조건부비용전이만판독하며정책우열/B성공으로승격하지않는다. [근거·실행조건](RESIDENT_IDENTIFICATION_PREP_20261008.md).

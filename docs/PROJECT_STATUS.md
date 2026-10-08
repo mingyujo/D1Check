@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-08 IE-FOUR-CANDIDATES-02 — 네 후보 비교 완료·새 정책 미채택
+
+- 사용자 시작 승인에 따라 열·에너지 리스트, 도착4요청 Rolling Horizon CP-SAT/AP 필터, 가산점 없는 native masked PPO, 실제 Double DQN을 별도 코드·경로에 구현했다. [계약·근거·명령](results/ie_candidates_v2/README.md). 기존 C/E·Band/Triton·모형·사용자 변경 보존.
+- PPO/DDQN 각3seed×64=384본학습·8update, 검증288/확인576행·확인38,016전량 완료. validation 새적격0을final전에고정, final도전체채택0. 리스트3/48 공동감소는첫sustained trace의3문맥·일반평균+3.1초, 다른조건서비스악화. CP-SAT은Band대비전체P95−40.609ms/일반실패46vs51/AP−0.049649이나J+0.116473. RL서비스변동·원EDD와일정비동일을보고했다.
+- 실제1,422환경·실패0/학습416·약92분25초, 누적5,055/20,000(잔여14,945)·641/6,144(잔여5,503). 새 기능7+선정5·기존15/실제재개32/채워진archive 추가update 동등/기존보존/600행·5그림 오프라인PASS. 35source·JSON9,826/압축22,084 seed충돌0. 기기/NPU/ADB0·기본/strict/experiment_ready=false·사용자14행/개인/다른worktree 보존.
+- 다음최대3: 리스트조건부이득의순서/대기·일반지연 진단, 같은설정의fresh지속trace 확인 계약, RL종단credit·soft제약 감사 후유한후속학습 범위 결정. 추가학습/실측/조건완화/자동기본교체0. 완료체크포인트6개 로컬보존, 결과/그림/재현은 위보고서.
+
 ## 2026-10-08 RESIDENT-IDENTIFICATION-PREP-02 — 모형 식별/확인 PC 실행 준비 완료·미승인
 
 - 사용자승인은실측전PC 준비다. 같은4resident의60초상태·90초유휴개발A/B/B/A→계수/자료hash동결→30초다른순서2회→기존Arrival96/192회2회의단일8세션계획을구현했다. 긴GPU단독/유휴bias/잔열식별과요청경로전이를분리한다. [계약·예산·승인후명령](RESIDENT_IDENTIFICATION_PREP_20261008.md) · [입력/검증](results/resident_identification_prep_01/README.md).
