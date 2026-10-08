@@ -1,0 +1,2215 @@
+{
+  "version": "edd-ect-residual-prototype-v1",
+  "registered_utc": "2026-10-08T05:42:11.111062+00:00",
+  "head": "02130cda6ee57865fbb3ff0430cd9cea5ac35556",
+  "dirty": true,
+  "source_hashes": {
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "tools/d1_ap_preparation_memory.py": "20af3304f8386c7f6adc1df56f5c593e0fd35600ae60d2ce60a518d5c418c40d",
+    "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9",
+    "tools/d1_arrival_explore_batch.py": "f0994f603720c606c5dc58f24c334cd2e91d3a79cc9a525094e7bcbbab86411f",
+    "tools/d1_empirical_request_policy.py": "32407050fae7a0f6f7d58a19cd6f2f4eedea46ba9c8651e15363d0af496050a0",
+    "tools/d1_industrial_scheduling.py": "5537b8746d329a8ab25f69c105218ecb6eaba99d26bfb6bb8434950b2e5b6bab",
+    "tools/d1_joint_queue_area.py": "b0202f9656b4f4b0f2323f123c00fbd4df5557748eb115db1126919c8a754710",
+    "tools/d1_online_policy_model.py": "a4e28dc489f221b1f85e8754b23385c60ba134af20ac701a3660293cac63156a",
+    "tools/d1_pareto_beam.py": "b442e74b212c070587cd3b141ccd1aea34bd251f255ace8c706cbaafea8c94df",
+    "tools/d1_queue_ppo.py": "0aea534d37465884d070d192fdfe7f863b480d4db17b85082773c9acc42ec9f1",
+    "tools/d1_request_ppo.py": "c8282794b92c10e60b1d2a0bffed3eb8e05bf1aad5001493948a801e12e2c0a2",
+    "tools/d1_request_rl.py": "ac74114e28c6f44e0c3b0c9a1e5a943ad156579c8a3cfe3e015db8a50e2958a9",
+    "tools/d1_external_rules.py": "4e824c0ba7bf7c6efc86893a676d7346337f4a2b74d5f8f4726f112e400bc756",
+    "tools/d1_ie_dispatch.py": "318db8c5f6401076f2861d45ad7c998994cf20f2a9b1743823180d50ede071ab",
+    "tools/d1_edd_ect_residual_controller.py": "451fa485df03ca66857b5f69265dc324f7afe967bcee7013003aaae4bd15073e",
+    "tools/d1_edd_ect_residual_study.py": "3b697413087e4ab63c5952fc0d5213752cc5b2bf3b8995db78f814ee4bdf41d6",
+    "tools/test_d1_edd_ect_residual_controller.py": "e881870d955cd18189d93ad5c16e6d12ecdabb07f7c6bc6d5aef769f276b8ea9"
+  },
+  "input_path": "docs/results/external_rules_02/inputs.json",
+  "input_sha256": "6805942995e2133bb2a489ade916af6a97d631716eb3b442ba5e7db2a46e1aea",
+  "design_path": "docs/results/edd_ect_residual_design_01/design_contract.json",
+  "design_sha256": "200ce2fff34bc849acb4bcd3f794cdfec137e60606ee7fb28714d9ca837507b3",
+  "selected_workloads": [
+    {
+      "seed": 610810001,
+      "family": "low",
+      "tickets": [
+        {
+          "id": "610810001/low/0",
+          "ordinal": 0,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 35000000000,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/low/1",
+          "ordinal": 1,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 36147268689,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/low/2",
+          "ordinal": 2,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 37304132720,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/low/3",
+          "ordinal": 3,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 38537661779,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/low/4",
+          "ordinal": 4,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 39762621171,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/low/5",
+          "ordinal": 5,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 41006009704,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/low/6",
+          "ordinal": 6,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 42229210606,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/low/7",
+          "ordinal": 7,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 43394436774,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/low/8",
+          "ordinal": 8,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 44620420770,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/low/9",
+          "ordinal": 9,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 45874054703,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/low/10",
+          "ordinal": 10,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 47120562136,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/low/11",
+          "ordinal": 11,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 48270744039,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/low/12",
+          "ordinal": 12,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 49503796601,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/low/13",
+          "ordinal": 13,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 50707756586,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/low/14",
+          "ordinal": 14,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 51908547835,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/low/15",
+          "ordinal": 15,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 53061734506,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/low/16",
+          "ordinal": 16,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 54274184721,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/low/17",
+          "ordinal": 17,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 55420757611,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/low/18",
+          "ordinal": 18,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 56602217541,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/low/19",
+          "ordinal": 19,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 57846554272,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/low/20",
+          "ordinal": 20,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 58988955950,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/low/21",
+          "ordinal": 21,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 60209440435,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/low/22",
+          "ordinal": 22,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 61407762721,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/low/23",
+          "ordinal": 23,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 62577448453,
+          "deadline_offset_ns": 6000000000
+        }
+      ]
+    },
+    {
+      "seed": 610810001,
+      "family": "queue",
+      "tickets": [
+        {
+          "id": "610810001/queue/0",
+          "ordinal": 0,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 35000000000,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/queue/1",
+          "ordinal": 1,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 35205146616,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/queue/2",
+          "ordinal": 2,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 35410129751,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/queue/3",
+          "ordinal": 3,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 35613263315,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/queue/4",
+          "ordinal": 4,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 35817109134,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/queue/5",
+          "ordinal": 5,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 36016100813,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/queue/6",
+          "ordinal": 6,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 36216376604,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/queue/7",
+          "ordinal": 7,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 36412574208,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/queue/8",
+          "ordinal": 8,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 36612831581,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/queue/9",
+          "ordinal": 9,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 36808093990,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/queue/10",
+          "ordinal": 10,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 37004627458,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/queue/11",
+          "ordinal": 11,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 37211401297,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/queue/12",
+          "ordinal": 12,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 37421260390,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/queue/13",
+          "ordinal": 13,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 37619016414,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/queue/14",
+          "ordinal": 14,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 37816890488,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/queue/15",
+          "ordinal": 15,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 38020048275,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/queue/16",
+          "ordinal": 16,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 38216148510,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/queue/17",
+          "ordinal": 17,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 38424174507,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/queue/18",
+          "ordinal": 18,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 38621801615,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/queue/19",
+          "ordinal": 19,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 38829024386,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/queue/20",
+          "ordinal": 20,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 39023803235,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/queue/21",
+          "ordinal": 21,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 39223651586,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/queue/22",
+          "ordinal": 22,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 39430925432,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/queue/23",
+          "ordinal": 23,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 39621414105,
+          "deadline_offset_ns": 6000000000
+        }
+      ]
+    },
+    {
+      "seed": 610810001,
+      "family": "burst",
+      "tickets": [
+        {
+          "id": "610810001/burst/0",
+          "ordinal": 0,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 35000000000,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/burst/1",
+          "ordinal": 1,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 35076911115,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/burst/2",
+          "ordinal": 2,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 35160341383,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/burst/3",
+          "ordinal": 3,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 35243804495,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/burst/4",
+          "ordinal": 4,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 35324003155,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/burst/5",
+          "ordinal": 5,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 35400802551,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/burst/6",
+          "ordinal": 6,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 36482203933,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/burst/7",
+          "ordinal": 7,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 36565905943,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/burst/8",
+          "ordinal": 8,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 36644837145,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/burst/9",
+          "ordinal": 9,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 36725188717,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/burst/10",
+          "ordinal": 10,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 36805069904,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/burst/11",
+          "ordinal": 11,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 36886926478,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/burst/12",
+          "ordinal": 12,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 37966020027,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/burst/13",
+          "ordinal": 13,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 38049182676,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/burst/14",
+          "ordinal": 14,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 38129092510,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/burst/15",
+          "ordinal": 15,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 38208724896,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/burst/16",
+          "ordinal": 16,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 38288202830,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/burst/17",
+          "ordinal": 17,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 38366357602,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/burst/18",
+          "ordinal": 18,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 39445134361,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/burst/19",
+          "ordinal": 19,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 39523195487,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/burst/20",
+          "ordinal": 20,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 39602155678,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/burst/21",
+          "ordinal": 21,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 39681109762,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/burst/22",
+          "ordinal": 22,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 39763326544,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/burst/23",
+          "ordinal": 23,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 39846831982,
+          "deadline_offset_ns": 6000000000
+        }
+      ]
+    },
+    {
+      "seed": 610810001,
+      "family": "sustained",
+      "tickets": [
+        {
+          "id": "610810001/sustained/0",
+          "ordinal": 0,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 35000000000,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/1",
+          "ordinal": 1,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 35383011853,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/2",
+          "ordinal": 2,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 35767774281,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/3",
+          "ordinal": 3,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 36149588174,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/4",
+          "ordinal": 4,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 36532246217,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/5",
+          "ordinal": 5,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 36943000353,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/6",
+          "ordinal": 6,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 37358861397,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/7",
+          "ordinal": 7,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 37763267022,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/8",
+          "ordinal": 8,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 38175871106,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/9",
+          "ordinal": 9,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 38587654396,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/10",
+          "ordinal": 10,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 38987130461,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/11",
+          "ordinal": 11,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 39381835341,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/12",
+          "ordinal": 12,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 39800843935,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/13",
+          "ordinal": 13,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 40197008897,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/14",
+          "ordinal": 14,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 40586078191,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/15",
+          "ordinal": 15,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 41005104733,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/16",
+          "ordinal": 16,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 41400938572,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/17",
+          "ordinal": 17,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 41787139062,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/18",
+          "ordinal": 18,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 42192341496,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/19",
+          "ordinal": 19,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 42585724390,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/20",
+          "ordinal": 20,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 42972811447,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/21",
+          "ordinal": 21,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 43376904063,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/22",
+          "ordinal": 22,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 43771013673,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/23",
+          "ordinal": 23,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 44158057603,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/24",
+          "ordinal": 24,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 44552115778,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/25",
+          "ordinal": 25,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 44957915866,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/26",
+          "ordinal": 26,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 45361456942,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/27",
+          "ordinal": 27,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 45754155826,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/28",
+          "ordinal": 28,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 46135601008,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/29",
+          "ordinal": 29,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 46533320331,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/30",
+          "ordinal": 30,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 46950967677,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/31",
+          "ordinal": 31,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 47343259463,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/32",
+          "ordinal": 32,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 47753685231,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/33",
+          "ordinal": 33,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 48143877339,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/34",
+          "ordinal": 34,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 48548501108,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/35",
+          "ordinal": 35,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 48940679009,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/36",
+          "ordinal": 36,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 49323061149,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/37",
+          "ordinal": 37,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 49707250613,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/38",
+          "ordinal": 38,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 50123893272,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/39",
+          "ordinal": 39,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 50533054387,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/40",
+          "ordinal": 40,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 50926936420,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/41",
+          "ordinal": 41,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 51318387695,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/42",
+          "ordinal": 42,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 51704149682,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/43",
+          "ordinal": 43,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 52096271588,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/44",
+          "ordinal": 44,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 52480564263,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/45",
+          "ordinal": 45,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 52895920313,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/46",
+          "ordinal": 46,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 53286410151,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/47",
+          "ordinal": 47,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 53703283625,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/48",
+          "ordinal": 48,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 54117249915,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/49",
+          "ordinal": 49,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 54497329263,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/50",
+          "ordinal": 50,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 54914267005,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/51",
+          "ordinal": 51,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 55314109519,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/52",
+          "ordinal": 52,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 55702407061,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/53",
+          "ordinal": 53,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 56120955604,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/54",
+          "ordinal": 54,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 56501476382,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/55",
+          "ordinal": 55,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 56897783038,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/56",
+          "ordinal": 56,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 57314770647,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/57",
+          "ordinal": 57,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 57696485661,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/58",
+          "ordinal": 58,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 58100504823,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/59",
+          "ordinal": 59,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 58494105935,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/60",
+          "ordinal": 60,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 58911490698,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/61",
+          "ordinal": 61,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 59295134990,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/62",
+          "ordinal": 62,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 59700477396,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/63",
+          "ordinal": 63,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 60110659494,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/64",
+          "ordinal": 64,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 60503180465,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/65",
+          "ordinal": 65,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 60916463042,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/66",
+          "ordinal": 66,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 61299569682,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/67",
+          "ordinal": 67,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 61685726793,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/68",
+          "ordinal": 68,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 62082015230,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/69",
+          "ordinal": 69,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 62487460798,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/70",
+          "ordinal": 70,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 62872894800,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/71",
+          "ordinal": 71,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 63270110079,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/72",
+          "ordinal": 72,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 63680563080,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/73",
+          "ordinal": 73,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 64094719343,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/74",
+          "ordinal": 74,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 64500915432,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/75",
+          "ordinal": 75,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 64905496422,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/76",
+          "ordinal": 76,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 65311650708,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/77",
+          "ordinal": 77,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 65695296070,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/78",
+          "ordinal": 78,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 66110790785,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/79",
+          "ordinal": 79,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 66492785337,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/80",
+          "ordinal": 80,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 66884003702,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/81",
+          "ordinal": 81,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 67286061781,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/82",
+          "ordinal": 82,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 67667964379,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/83",
+          "ordinal": 83,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 68067496172,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/84",
+          "ordinal": 84,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 68447798722,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/85",
+          "ordinal": 85,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 68861756880,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/86",
+          "ordinal": 86,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 69265127391,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/87",
+          "ordinal": 87,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 69657770984,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/88",
+          "ordinal": 88,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 70055591180,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/89",
+          "ordinal": 89,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 70465999054,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/90",
+          "ordinal": 90,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 70851593015,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/91",
+          "ordinal": 91,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 71266265777,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/92",
+          "ordinal": 92,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 71673926532,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/93",
+          "ordinal": 93,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 72061303870,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/94",
+          "ordinal": 94,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 72479210835,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/95",
+          "ordinal": 95,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 72874809791,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/96",
+          "ordinal": 96,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 73263010102,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/97",
+          "ordinal": 97,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 73660323274,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/98",
+          "ordinal": 98,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 74067955121,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/99",
+          "ordinal": 99,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 74459630465,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/100",
+          "ordinal": 100,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 74867561370,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/101",
+          "ordinal": 101,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 75254787716,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/102",
+          "ordinal": 102,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 75674355249,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/103",
+          "ordinal": 103,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 76080492777,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/104",
+          "ordinal": 104,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 76495497176,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/105",
+          "ordinal": 105,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 76909652721,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/106",
+          "ordinal": 106,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 77320736922,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/107",
+          "ordinal": 107,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 77717917512,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/108",
+          "ordinal": 108,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 78116729242,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/109",
+          "ordinal": 109,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 78528326634,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/110",
+          "ordinal": 110,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 78934911805,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/111",
+          "ordinal": 111,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 79344156733,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/112",
+          "ordinal": 112,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 79742440272,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/113",
+          "ordinal": 113,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 80161919862,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/114",
+          "ordinal": 114,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 80553523723,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/115",
+          "ordinal": 115,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 80934814434,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/116",
+          "ordinal": 116,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 81332152994,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/117",
+          "ordinal": 117,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 81736230076,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/118",
+          "ordinal": 118,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 82138348006,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/119",
+          "ordinal": 119,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 82535901298,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/120",
+          "ordinal": 120,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 82927551634,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/121",
+          "ordinal": 121,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 83317140787,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/122",
+          "ordinal": 122,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 83732703677,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/123",
+          "ordinal": 123,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 84114551247,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/124",
+          "ordinal": 124,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 84506153166,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/125",
+          "ordinal": 125,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 84893669982,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/126",
+          "ordinal": 126,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 85280262686,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/127",
+          "ordinal": 127,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 85698707645,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/128",
+          "ordinal": 128,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 86088376502,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/129",
+          "ordinal": 129,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 86471150878,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/130",
+          "ordinal": 130,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 86871124842,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/131",
+          "ordinal": 131,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 87257641917,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/132",
+          "ordinal": 132,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 87665758702,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/133",
+          "ordinal": 133,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 88052072407,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/134",
+          "ordinal": 134,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 88457797979,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/135",
+          "ordinal": 135,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 88865055283,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/136",
+          "ordinal": 136,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 89278225727,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/137",
+          "ordinal": 137,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 89664446540,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/138",
+          "ordinal": 138,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 90068007324,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/139",
+          "ordinal": 139,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 90462348790,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/140",
+          "ordinal": 140,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 90873959031,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/141",
+          "ordinal": 141,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 91266562467,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/142",
+          "ordinal": 142,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 91666219586,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/143",
+          "ordinal": 143,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 92076036835,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/144",
+          "ordinal": 144,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 92468743803,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/145",
+          "ordinal": 145,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 92854000059,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/146",
+          "ordinal": 146,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 93237600643,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/147",
+          "ordinal": 147,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 93638117343,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/148",
+          "ordinal": 148,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 94055056013,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/149",
+          "ordinal": 149,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 94473311562,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/150",
+          "ordinal": 150,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 94861232260,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/151",
+          "ordinal": 151,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 95259674668,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/152",
+          "ordinal": 152,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 95652209008,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/153",
+          "ordinal": 153,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 96064225435,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/154",
+          "ordinal": 154,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 96459810125,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/155",
+          "ordinal": 155,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 96870667100,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/156",
+          "ordinal": 156,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 97285687404,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/157",
+          "ordinal": 157,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 97677633976,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/158",
+          "ordinal": 158,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 98088612972,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/159",
+          "ordinal": 159,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 98506671753,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/160",
+          "ordinal": 160,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 98892140484,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/161",
+          "ordinal": 161,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 99301886314,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/162",
+          "ordinal": 162,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 99716866614,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/163",
+          "ordinal": 163,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 100128076037,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/164",
+          "ordinal": 164,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 100526097776,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/165",
+          "ordinal": 165,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 100912147942,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/166",
+          "ordinal": 166,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 101298782555,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/167",
+          "ordinal": 167,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 101693708479,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/168",
+          "ordinal": 168,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 102091082388,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/169",
+          "ordinal": 169,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 102474146544,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/170",
+          "ordinal": 170,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 102883940266,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/171",
+          "ordinal": 171,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 103281389703,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/172",
+          "ordinal": 172,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 103674987700,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/173",
+          "ordinal": 173,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 104069768185,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/174",
+          "ordinal": 174,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 104465101524,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/175",
+          "ordinal": 175,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 104855927132,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/176",
+          "ordinal": 176,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 105240841639,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/177",
+          "ordinal": 177,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 105632709290,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/178",
+          "ordinal": 178,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 106040927119,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/179",
+          "ordinal": 179,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 106448538499,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/180",
+          "ordinal": 180,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 106848930247,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/181",
+          "ordinal": 181,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 107244440734,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/182",
+          "ordinal": 182,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 107644104830,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/183",
+          "ordinal": 183,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 108062881154,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/184",
+          "ordinal": 184,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 108448871848,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/185",
+          "ordinal": 185,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 108831727430,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/186",
+          "ordinal": 186,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 109246236275,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/187",
+          "ordinal": 187,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 109650757417,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/188",
+          "ordinal": 188,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 110049811645,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "610810001/sustained/189",
+          "ordinal": 189,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 110434835375,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/190",
+          "ordinal": 190,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 110841595300,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "610810001/sustained/191",
+          "ordinal": 191,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 111259456638,
+          "deadline_offset_ns": 6000000000
+        }
+      ]
+    }
+  ],
+  "contexts": [
+    "mean",
+    "short_context",
+    "long_context"
+  ],
+  "policies": [
+    "IE_EDD_ECT_LANE_PC_V1",
+    "SHARED_EFT",
+    "BAND_HEFT_WHOLE_REQUEST_ADAPT_V1",
+    "EDD_ECT_FEASIBILITY_PRIOR_V1",
+    "EDD_ECT_THERMAL_GREEDY_V1"
+  ],
+  "conditions": 12,
+  "policy_runs_max": 60,
+  "branch_runs_max": 24,
+  "fixture_and_error_max": 44,
+  "new_start_max": 128,
+  "historical_consumption": {
+    "historical": [
+      2241,
+      584
+    ],
+    "new_starts": 0,
+    "cumulative_starts": 2825,
+    "environment_ceiling": 20000,
+    "prototype_ceiling": 128,
+    "training_episodes": 0,
+    "device_commands": 0,
+    "failed": 0
+  },
+  "wall_seconds": 3600,
+  "save_reserve_seconds": 300,
+  "realization_seed": 201,
+  "training_allowed": false,
+  "device_commands": 0,
+  "experiment_ready": false,
+  "temperature_input": "MODEL_AP",
+  "physical_scope": "original A24 measured coefficients with synthetic arrivals and fixed transferred service contexts",
+  "representative": {
+    "seed": 610810001,
+    "family": "queue",
+    "context": "mean"
+  },
+  "phase_residual_rule": "phase end already elapsed in required running forecast => unavailable, exact BASE; no zero residual",
+  "branch_rule": "first BASE and alternative valid/distinct immediate physical prefix; no winning branch search; both prior thereafter",
+  "clock": "new authorized prototype block; one registration time, no reset on resume",
+  "old_design_and_finished_campaign_clocks_unchanged": true
+}

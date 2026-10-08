@@ -1,5 +1,12 @@
 # D1Check 결정 기록
 
+## 2026-10-08 CPU-GPU-METHOD-PILOT-01 — 검토 범위의 Band 요청 적용 기준 선정
+
+- 확정범위: 검증12조건에서고정한`BAND_HEFT_WHOLE_REQUEST_ADAPT_V1`이확인24조건에서공용EFT/Band대비서비스·J/AP비악화를유지해이번PC후보중선정한다. 실제Band제품전체·전역최적·폰물리절감은미확정이며앱기본/strict는교체하지않는다. [선정근거](results/cpu_gpu_method_01/README.md).
+- 현재C의AP우선계약은보존, E는같은maskedPPO에서물리mask와`ENERGY_AP_NONWORSE_V1` 목적을별도등록했다. 알고리즘비교로해석0. C/E각3seed×32·동일예산의모든확인원장이EDD와동일하여새RL/D미채택, 수렴/일반RL실패판정0. 미유망RL에추가구성제거/대규모학습을자동추가하지않는다.
+- 실패C schema KeyError는원기본행동을그대로기록하는wrapper로수정하고원소스/partial batch/RNG/실패/clock을보존했다. 성공fixture32+실패1 포함225학습을기존6144에차감,717환경을누적3633/20000에차감했다. 기기/NPU0·원모형/기본/experiment_ready=false 유지. 별도2032등록은미실행준비로보존한다.
+
+
 ## 2026-10-08 PRELOAD-DYNAMICS-REFINEMENT-01 — AP 초기화 후보 별도 보존·일반 채택 보류
 
 - 확정: 목표는정책판독이아닌에너지/AP 예측오차보완이다. 원beta/k/g0/상태계수/잠재30초를유지한AP 첫표본고정해제와사전전력추세의두구조를사전에제한하고개발/평가를분리했다. [근거](PRELOAD_DYNAMICS_REFINEMENT_RESULTS_20261008.md).

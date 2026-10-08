@@ -1,5 +1,14 @@
 # D1Check 현재 상태
 
+## 2026-10-08 CPU-GPU-METHOD-PILOT-01 — 공통 RL 파일럿·방법론 선정 완료
+
+- 현재C는109/68·32slot native masked PPO, EDD앞8·기본/fallback/예측suffix에서작업/자원/묶음/대기를직접선택한다. 모델AP/h 추정과실제센서/엔진미래값을구분했다. 원C소스보존·fallback schema wrapper수정, E물리mask/energy-AP목적버전·D휴리스틱을별도로연결했다. [구현/근거감사](CPU_GPU_METHOD_IMPLEMENTATION_AUDIT_20261008.md).
+- C/E각3seed×32=192본학습·각4update, 재개32성공/실패1 포함225학습시작. 검증12×11=132·확인24×11=264행, 확인17,424전량완료. C/E6actor의24/24일정은EDD와동일, 주12 Band대비J+0.182674/AP−0.050222·과부하일반실패36 vs18로새RL/D미채택. 수렴/강화학습일반실패판정아님.
+- 검증12의선택을고정한Band whole-request HEFT 적용기준이확인24/24서비스/J/AP비악화 유지. 주12 Shared대비J−0.083874/AP−0.012063°C이며작은모형차이·물리절감미확정. [선정/한계/다음작업](results/cpu_gpu_method_01/README.md) · [대시보드](results/cpu_gpu_method_01/index.html).
+- 실제717환경(실패1)·누적3,633/20,000·잔여16,367, 학습225/6,144·기기/NPU/ADB0. 7+5새검증/기존8·실제C/E Adam/RNG/partial-batch재개일치·5그림/오프라인 화면/공유check PASS. 원모형/기본/strict/experiment_ready=false·원자료·사용자14행/Android변경/개인파일/타worktree보존.
+- 다음최대3: (1) 선정범위를팀보고서에반영, (2) 필요시동일C/E128episode연장계약·fresh검증부터결정, (3) 기기효과는동일지원Band/Shared짝실측·판단비용/표면채널의별도승인계획. 미유망RL구성제거/대규모학습/기기자동확대0. 준비했던2032episode 등록은미실행으로보존한다.
+
+
 ## 2026-10-08 PRELOAD-DYNAMICS-REFINEMENT-01 — AP 일부 오차 감소 후보/API 구현 완료
 
 - 사용자의목표정정에따라정책비교를멈추고예측오차보완을수행했다. 첫부하전AP 고정해제·전력사전추세의두초기화구조를고정,개발9/평가20에서172행A/B를계산했다. [결과·악화·해석](PRELOAD_DYNAMICS_REFINEMENT_RESULTS_20261008.md) · [후보/API·그림·재현](results/preload_dynamics_refinement_01/README.md).

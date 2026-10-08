@@ -1,5 +1,12 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-08 CPU-GPU-METHOD-PILOT-01 — 작은 맞춤 비교와 선정 종료
+
+- 최신사용자의CPU/GPU방법론선정요청으로큰2032episode 등록을실행하지않고 C/E동일3seed·32episode 파일럿을완료했다. 상태/행동/경계/실측전이/추정열입력을[감사](CPU_GPU_METHOD_IMPLEMENTATION_AUDIT_20261008.md)하고원C/EDD/기존시스템/모형은보존했다. NPU/새모델/기기0.
+- 검증12선택→별도확인24·11역할/264행에서Band whole-request HEFT 기준을선정, C/E모든seed는EDD와24/24동일·새정책개선미입증. 산업공학/RL기반선정이라는이유로성능을전제하지않는다. 과부하기한실패·작은모형차이·5계수stress 범위를함께보고한다. [결과/재현/다음](results/cpu_gpu_method_01/README.md).
+- 이번717·누적3,633/20,000, 학습실제225/6,144(공통192+fixture32+실패1). 시간2h/저장5min·서브학습오류여유228을repair에명시하고기존clock/예산초기화0. 현재앱기본/strict/experiment_ready=false유지. 유망RL없어구성제거/본평가확대보류, 추가학습/실측은구체적후속계약에서결정한다.
+
+
 ## 2026-10-08 PRELOAD-DYNAMICS-REFINEMENT-01 — 예측 오차 개선 라운드 완료
 
 - 사용자정정으로현재목표를에너지/AP 예측오차감소로돌렸다. 두사전초기화구조→개발판정동결→동일20평가→별도AP API를완료했다. [결과·재현](PRELOAD_DYNAMICS_REFINEMENT_RESULTS_20261008.md). 실제지속AP평균약11.94%개선과새확인악화를함께보존,전력추세후보제외·원기본/RL/strict불변.
