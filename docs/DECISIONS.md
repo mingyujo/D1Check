@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-08 RESIDENT-IDENTIFICATION-PREP-02 — 모형 식별과 Arrival 전이 확인 경계 고정
+
+- 확정: 현재범위는실측전PC 구현/서명APK/미승인계획준비다. 개발4회로유휴bias+4상태W/AP beta,k,g를식별하고제외예측·자료hash를동결한후확인4로진행한다. Arrival2회는실제요청경로의조건부비용전이만판독하며정책우열/B성공으로승격하지않는다. [근거·실행조건](RESIDENT_IDENTIFICATION_PREP_20261008.md).
+- 실현가능성에맞춰종료tail90초와기존Arrival구간을사용했다. 초기91분구상/중간6800추론PC초안을최종93분/6376추론명세로대체했으며소비실패가아니다. 최종plan_v3 하나만실행후보다. 소스변경이APK/계측비용에미치는차이와원모형/프로토콜구분을유지한다.
+- 새실측승인·자동재연결·timeout완화·기준변경·원계수재보정·기본/RL/strict 교체없음. experiment_ready=false/원자료/FAIL/종료계획·사용자/다른작업을보존한다. 모형개선효과는새실측전미판정이다.
+
 ## 2026-10-08 CPU-GPU-METHOD-PILOT-01 — 검토 범위의 Band 요청 적용 기준 선정
 
 - 확정범위: 검증12조건에서고정한`BAND_HEFT_WHOLE_REQUEST_ADAPT_V1`이확인24조건에서공용EFT/Band대비서비스·J/AP비악화를유지해이번PC후보중선정한다. 실제Band제품전체·전역최적·폰물리절감은미확정이며앱기본/strict는교체하지않는다. [선정근거](results/cpu_gpu_method_01/README.md).

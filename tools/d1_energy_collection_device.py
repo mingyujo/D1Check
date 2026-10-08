@@ -125,6 +125,11 @@ def poll(d,remote,folder,m,plan,baseline_anchor=None,checkpoint=None,
             screen.snapshot(d,folder,f'poll_{index:04d}',plan['screen_contract']);last_screen=time.monotonic()
         listing=d.call('shell','run-as',legacy.PACKAGE,'ls',remote,timeout=3).stdout.decode().splitlines()
         if 'cleanup.json' in listing:return
+        if plan.get('resident_identification') and 'start_ap.ready.json' in listing and 'start_ap' not in armed:
+            from tools import d1_arrival_start_ap
+            d1_arrival_start_ap.approve(d,remote,folder,m)
+            armed.add('start_ap')
+            if checkpoint:checkpoint('gate_armed',session_id=m['session_id'],gate='start_ap')
         if time.monotonic()-start>15 and index%5==0 and index!=heartbeat_index:
             line=d.call('exec-out','run-as',legacy.PACKAGE,'tail','-n','1',remote+'/progress.jsonl',timeout=3).stdout
             heartbeat=json.loads(line)
@@ -218,7 +223,7 @@ def poll(d,remote,folder,m,plan,baseline_anchor=None,checkpoint=None,
             save(target/'arm_receipt.json',dict(gate=gate,utc=legacy.utc(),manifest_sha256=ready['manifest_sha256']))
             armed.add(gate)
             if checkpoint:checkpoint('gate_armed',session_id=m['session_id'],gate=gate)
-        time.sleep(1 if diagnostic_stop_after_preparation else .25)
+        time.sleep(2 if plan.get('resident_identification') else 1 if diagnostic_stop_after_preparation else .25)
     raise TimeoutError('host completion bound; do not infer zero calls')
 
 def gates(d,plan,folder,label):
@@ -295,7 +300,11 @@ def run(plan_file,adb,serial,expected_sha,approved):
     except FileNotFoundError:
         c.check(plan_file)
         raise
-    if plan.get('short_transition_diagnostic_only'):
+    if plan.get('resident_identification'):
+        from tools import d1_resident_identification_plan as state
+        state.check(plan_file)
+        c.require(bool(serial),'identification requires explicitly selected current transport')
+    elif plan.get('short_transition_diagnostic_only'):
         from tools import d1_energy_ap_short_transition as short_transition
         from tools import d1_energy_state_collection as state
         short_transition.check(plan_file)
@@ -335,7 +344,8 @@ def run(plan_file,adb,serial,expected_sha,approved):
             journal=checkpoints.Checkpoints(root/'host_checkpoints',expected_sha,host_run_id,host_identity)
             mark('claimed')
         d=(ObservedDevice(adb,serial,root/'host_commands',allow_select=True,
-                          forbid_apk_deploy=not plan.get('autonomous_diagnostic_only',False))
+                          forbid_apk_deploy=not plan.get('autonomous_diagnostic_only',False),
+                          allow_other_transports=bool(plan.get('resident_identification')))
            if state_model else ObservedDevice(adb,serial,root/'host_commands'))
         if state_model:d.command_limit=budget['pre_cleanup_command_slots']
         d.deadline=hard
@@ -357,6 +367,23 @@ def run(plan_file,adb,serial,expected_sha,approved):
             frozen=c.p.read(root/'development_freeze.json')
             mark('prior_development_freeze_loaded',sha256=plan['prior_freeze']['sha256'])
         for e in plan['entries']:
+            if plan.get('resident_identification') and e['index']==4:
+                mark('development_freeze_start')
+                before_freeze=time.monotonic()
+                c.require(hard-before_freeze>=budget['freeze_seconds']+budget['session_seconds'], 'freeze and confirmation reservation')
+                frozen=state.freeze(results,plan,root)
+                save(root/'development_freeze.json',frozen)
+                save(root/'freeze_receipt.json',dict(sha256=c.p.digest(root/'development_freeze.json'),utc=legacy.utc()))
+                c.require(time.monotonic()-before_freeze<budget['freeze_seconds'],'freeze reservation exhausted')
+                mark('development_frozen')
+            if plan.get('resident_identification') and frozen is not None:
+                c.require(c.p.digest(root/'development_freeze.json')==c.p.read(root/'freeze_receipt.json')['sha256'],'frozen model changed before confirmation')
+                for file,digest in frozen['development_validated_sha256'].items():
+                    c.require(c.p.digest(root/file)==digest,'development evidence changed before confirmation')
+            if plan.get('resident_identification') and e['index']:
+                pause=budget['intersession_cooling_seconds']
+                c.require(hard-time.monotonic()>=pause+budget['session_seconds'],'intersession reserve')
+                time.sleep(pause)
             if e['index']==budget['development'] and not plan.get('diagnostic_only') and not plan.get('state_model_followup'):
                 mark('development_freeze_start')
                 freeze_start=time.monotonic();frozen={r['condition']:r for r in results}
@@ -384,19 +411,26 @@ def run(plan_file,adb,serial,expected_sha,approved):
                 c.require(any(r['condition']==serial_key and r['status']=='eligible_descriptive_only' for r in results if r['phase']==e['phase']),'same-stage serial prerequisite')
             save(current/'attempt.json',dict(entry=e,utc=legacy.utc(),plan_sha256=expected_sha))
             manifest=Path(plan_file).parent/e['manifest'];m=c.p.read(manifest)
-            c.require((m.get('session_control')=='device-after-probe-diagnostic-v1') ==
-                      bool(plan.get('autonomous_diagnostic_only')), 'session-control/plan mismatch')
+            arrival_identification=bool(plan.get('resident_identification') and e.get('family')=='arrival')
+            c.require(arrival_identification or ((m.get('session_control')=='device-after-probe-diagnostic-v1') ==
+                      bool(plan.get('autonomous_diagnostic_only'))), 'session-control/plan mismatch')
             (current/'input_manifest.json').write_bytes(manifest.read_bytes())
-            remote=shared.stage_inputs(d,e['session_id'],manifest,{k:v['path'] for k,v in plan['source_files'].items()},plan.get('protocol',c.PROTOCOL))
+            remote=shared.stage_inputs(d,e['session_id'],manifest,{k:v['path'] for k,v in plan['source_files'].items()},m['protocol'] if plan.get('resident_identification') else plan.get('protocol',c.PROTOCOL))
             mark('inputs_staged',session_index=e['index'],session_id=e['session_id'])
             c.require(session_end-time.monotonic()>=budget['host_poll_seconds']+105,'launch reserve')
             d.deadline=session_end-105
             save(current/'launch_attempt.json',dict(utc=legacy.utc()))
             mark('launch_intent',session_index=e['index'],session_id=e['session_id'])
-            d.call('shell','am','start','-W','-n',legacy.PACKAGE+'/'+ACTIVITY,'-a',ACTION,'--es','session_id',e['session_id'],timeout=20)
+            if arrival_identification:
+                from tools import d1_arrival_energy_collection_device as arrival
+                activity,action=arrival.ACTIVITY,arrival.ACTION
+            else:activity,action=ACTIVITY,ACTION
+            d.call('shell','am','start','-W','-n',legacy.PACKAGE+'/'+activity,'-a',action,'--es','session_id',e['session_id'],timeout=20)
             mark('launch_returned',session_index=e['index'],session_id=e['session_id'])
             anchor=None if state or plan.get('operational_only') else same_stage_serial_anchor(results,e['phase'],e['pair'],e['mode'])
-            poll(d,remote,current,m,plan,anchor,checkpoint=mark if state_model else None)
+            if arrival_identification:
+                arrival.poll(d,remote,current,m,dict(plan,budget=dict(budget,host_poll_seconds=485)))
+            else:poll(d,remote,current,m,plan,anchor,checkpoint=mark if state_model else None)
             mark('poll_completed',session_index=e['index'],session_id=e['session_id'])
             d.deadline=min(time.monotonic()+60,session_end-45)
             mark('recovery_start',session_index=e['index'],session_id=e['session_id'])
@@ -410,7 +444,8 @@ def run(plan_file,adb,serial,expected_sha,approved):
             stats=(state.summarize_session if state else c.summarize_session)(current/'artifacts',manifest,plan);stats['phase']=e['phase']
             if plan.get('autonomous_diagnostic_only'):
                 stats['formal_confirmation']=False
-                stats['diagnostic_scope']=('short_transition_schedule_conditional_protocol_transfer_only'
+                stats['diagnostic_scope']=('registered_resident_model_identification_and_conditional_confirmation'
+                    if plan.get('resident_identification') else 'short_transition_schedule_conditional_protocol_transfer_only'
                     if plan.get('short_transition_diagnostic_only') else
                     'device_segment_normal_completion_and_host_observation_coverage_only')
             c.require(time.monotonic()<=session_end,'session PC validation exhausted reservation; no next session')
@@ -497,7 +532,10 @@ def run(plan_file,adb,serial,expected_sha,approved):
                     failure['host_cleanup_error']=repr(err)
         prefix=current/'failure_prefix/progress.jsonl' if current else None
         try:
-            failure['last_session_progress']=(state.progress_consumption(prefix.read_bytes() if prefix and prefix.is_file() else b'',
+            if plan.get('resident_identification'):
+                failure['last_session_progress']=state.progress_consumption(prefix.read_bytes() if prefix and prefix.is_file() else b'',
+                    bool(current and (current/'launch_attempt.json').exists()),load_cap=e['work_requests'] if current else 1200,eligibility_cap=e['eligibility_requests'] if current else 4)
+            else:failure['last_session_progress']=(state.progress_consumption(prefix.read_bytes() if prefix and prefix.is_file() else b'',
                 bool(current and (current/'launch_attempt.json').exists())) if state else
                 c.progress_consumption(prefix.read_bytes() if prefix and prefix.is_file() else b'',
                 bool(current and (current/'launch_attempt.json').exists()),plan.get('operational_only',False)))

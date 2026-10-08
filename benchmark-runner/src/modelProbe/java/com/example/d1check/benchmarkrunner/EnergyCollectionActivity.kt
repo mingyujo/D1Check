@@ -30,6 +30,7 @@ class EnergyCollectionActivity : Activity() {
     private lateinit var root: File
     private lateinit var sid: String
     private var outputOwned = false
+    private var residentIdentification = false
     private var sessionControl = EnergySessionControl.HOST_GATED
     private var diagnosticScreen: Triple<Int, Int, Int>? = null
     private var seq = 0L
@@ -150,9 +151,12 @@ class EnergyCollectionActivity : Activity() {
             val inputs = canonicalProbeInputRoot(filesDir, "arrival-scheduler-inputs", sid)
             val mf = File(inputs, "manifest.json"); val m = JSONObject(mf.readText()); val hash = ProbeModelFile.sha256(mf)
             val calibration = m.optBoolean("state_model_calibration", false)
+            residentIdentification = m.has("resident_identification_version")
+            check(!residentIdentification || calibration)
             sessionControl = EnergySessionControl.validate(m.optString("session_control", EnergySessionControl.HOST_GATED),
                 calibration, m.optBoolean("autonomous_diagnostic_only", false))
-            val protocol = if (calibration) EnergyStateCalibration.PROTOCOL else EnergyCollectionCore.PROTOCOL
+            val protocol = if (residentIdentification) EnergyResidentIdentification.PROTOCOL
+                else if (calibration) EnergyStateCalibration.PROTOCOL else EnergyCollectionCore.PROTOCOL
             if (calibration) {
                 handler.removeCallbacks(watchdog); handler.postDelayed(watchdog, EnergyStateCalibration.WATCHDOG_MS)
             }
@@ -183,9 +187,19 @@ class EnergyCollectionActivity : Activity() {
             val operational = m.optBoolean("operational_only", false)
             val shortTransition = m.optBoolean("short_transition_diagnostic_only", false)
             check(!shortTransition || calibration)
-            val calibrationBlocks = if (shortTransition) EnergyStateCalibration.shortTransitionBlocks()
+            val identificationProfile = m.optString("identification_profile", "")
+            val calibrationBlocks = if (residentIdentification) EnergyResidentIdentification.blocks(identificationProfile)
+                else if (shortTransition) EnergyStateCalibration.shortTransitionBlocks()
                 else EnergyStateCalibration.blocks(m.getString("phase") == "confirmation")
-            if (calibration) {
+            if (residentIdentification) {
+                check(operational && !shortTransition && sessionControl == EnergySessionControl.DEVICE_AFTER_PROBE)
+                val specified=m.getJSONArray("blocks").let { arr -> (0 until arr.length()).map { i -> arr.getJSONObject(i).let { b ->
+                    EnergyStateCalibration.Block(b.getString("id"),b.getJSONArray("lane_indices").let { lanes -> (0 until lanes.length()).map(lanes::getInt) },b.getInt("seconds")) } } }
+                EnergyResidentIdentification.validate(m.getString("resident_identification_version"),identificationProfile,specified,m.getInt("work_call_cap"))
+                check(m.getString("calibration_version")==EnergyResidentIdentification.VERSION &&
+                    m.getInt("common_work_seconds")==EnergyResidentIdentification.commonSeconds(identificationProfile) &&
+                    m.getInt("cadence_ms")==250 && m.getString("mode")=="calibration")
+            } else if (calibration) {
                 check(operational && m.getString("calibration_version") ==
                     (if (shortTransition) "short-transition-diagnostic-v1" else "state-regimen-v1"))
                 check(m.getInt("common_work_seconds") == 600 && m.getInt("work_call_cap") == EnergyStateCalibration.MAX_WORK_CALLS)
@@ -214,9 +228,9 @@ class EnergyCollectionActivity : Activity() {
             val imageSpec = images.getJSONObject(0); val image = File(inputs, imageSpec.getString("filename"))
             val imageHash = imageSpec.getString("sha256"); check(ProbeModelFile.sha256(image) == imageHash)
             val anchors = File(inputs, "anchors.json")
-            samples.scheduleAtFixedRate({ sampler.tick { event("power_sample", snapshot()) } },0,1,TimeUnit.SECONDS)
+            samples.scheduleAtFixedRate({ sampler.tick { event("power_sample", snapshot()+mapOf("sample_period_ms" to if (residentIdentification) 900 else 1000)) } },0,if (residentIdentification) 900 else 1000,TimeUnit.MILLISECONDS)
             val setupStart = now()
-            ArrivalRuntimeSetup.initialize(EnergyCollectionCore.KEYS, false, 8, if (calibration) EnergyStateCalibration.MAX_WORK_CALLS + 4 else if (operational) 874 else 872) { key ->
+            ArrivalRuntimeSetup.initialize(EnergyCollectionCore.KEYS, false, 8, if (residentIdentification) EnergyResidentIdentification.workCap(identificationProfile)+4 else if (calibration) EnergyStateCalibration.MAX_WORK_CALLS + 4 else if (operational) 874 else 872) { key ->
                 healthy(); EnergyCollectionCore.requireTime(now(),setupStart,150_000_000_000)
                 event("runtime_submit",mapOf("key" to key))
                 lane(key).submit {
@@ -253,14 +267,31 @@ class EnergyCollectionActivity : Activity() {
             event("phase_end") // Host quality and AP readiness precede the only official baseline.
             idle("resident_baseline",120)
             phase = "baseline_gate"; gate(inputs,"baseline",hash)
+            var identificationReading: ArrivalStartApGate.Reading? = null
+            if (residentIdentification) {
+                phase="start_ap_gate"; val ready=now(); progress!!.flushBeforeGate()
+                save("start_ap.ready.json",mapOf("manifest_sha256" to hash,"mono_ns" to ready))
+                val arm=File(inputs,"start_ap.arm")
+                while (!arm.exists()) { healthy(); check(now()-ready<ArrivalStartApGate.WAIT_NS); Thread.sleep(25) }
+                check(now()-ready<ArrivalStartApGate.WAIT_NS && arm.length() in 1..512)
+                identificationReading=ArrivalStartApGate.parse(arm.readText(),hash,ready,ArrivalStartApGate.DIAGNOSTIC_VERSION)
+            }
             phase = "load"; val commonStart = now()
-            if (calibration) calibrationWorkload(keys,image,imageHash,calibrationBlocks,
-                m.getString("calibration_version"),commonStart)
+            val commonNs = if (residentIdentification) EnergyResidentIdentification.commonSeconds(identificationProfile)*1_000_000_000L
+                else if (calibration) EnergyStateCalibration.COMMON_NS else EnergyCollectionCore.LOAD_NS
+            identificationReading?.let {
+                ArrivalStartApGate.atStart(it,commonStart)
+                save("start_ap.accepted.json",mapOf("ap_c" to it.ap,"read_before_ns" to it.before,"read_after_ns" to it.after,
+                    "common_start_ns" to commonStart,"read_to_start_ns" to commonStart-it.after,"gate_mode" to ArrivalStartApGate.DIAGNOSTIC_VERSION))
+                event("identification_common_start",mapOf("start_ns" to commonStart,"window_ns" to commonNs))
+            }
+            if (calibration) calibrationWorkload(if (residentIdentification) EnergyResidentIdentification.KEYS else keys,image,imageHash,calibrationBlocks,
+                m.getString("calibration_version"),commonStart,commonNs)
             else workload(keys,parallel,listOf(678,192),image,imageHash,EnergyCollectionCore.LOAD_NS)
             phase = "post_work_wait"; event("phase_start")
-            val commonNs = if (calibration) EnergyStateCalibration.COMMON_NS else EnergyCollectionCore.LOAD_NS
             while (now()-commonStart < commonNs) { healthy(); Thread.sleep(100) }
             event("phase_end")
+            if (residentIdentification) event("identification_common_end",mapOf("start_ns" to commonStart,"planned_end_ns" to commonStart+commonNs,"end_ns" to now()))
             idle("resident_cooling",180)
             save("summary.json",mapOf("status" to "completed","requests" to (if (calibration) "bounded_by_journal" else 870),"probe" to (if (operational) 4 else 2),"warmup" to 8,"mono_ns" to now(),
                 "session_control" to sessionControl,"formal_confirmation" to (sessionControl == EnergySessionControl.HOST_GATED)))
@@ -292,13 +323,16 @@ class EnergyCollectionActivity : Activity() {
         }
     }
     private fun calibrationWorkload(keys: List<String>, image: File, imageHash: String,
-                                    blocks: List<EnergyStateCalibration.Block>, version: String, commonStart: Long) {
-        EnergyStateCalibration.validate(blocks)
+                                    blocks: List<EnergyStateCalibration.Block>, version: String, commonStart: Long, commonNs: Long) {
+        if (!residentIdentification) EnergyStateCalibration.validate(blocks)
         event("phase_start", mapOf("calibration_version" to version))
         var nominalOffset = 0L
         for (block in blocks) {
-            healthy(); EnergyCollectionCore.requireTime(now(), commonStart, EnergyStateCalibration.COMMON_NS)
-            val start = now(); val end = start + block.seconds * 1_000_000_000L
+            healthy(); EnergyCollectionCore.requireTime(now(), commonStart, commonNs)
+            val plannedStart=commonStart+nominalOffset
+            while (residentIdentification && now()<plannedStart) { healthy(); Thread.sleep(10) }
+            val start = now(); val end = (if (residentIdentification) plannedStart else start)+block.seconds * 1_000_000_000L
+            check(!residentIdentification || start<end) { "missed registered block; no timeline shift" }
             event("block_start", mapOf("block" to block.id, "keys" to block.lanes.map { keys[it] },
                 "nominal_offset_ns" to nominalOffset, "target_seconds" to block.seconds,
                 "cadence_ns" to EnergyStateCalibration.CADENCE_NS,
@@ -313,7 +347,7 @@ class EnergyCollectionActivity : Activity() {
                         var count = 0
                         while (now() < end) {
                             healthy()
-                            check(count < EnergyStateCalibration.MAX_PER_LANE_PER_BLOCK) { "calibration call cap" }
+                            check(count < (if (residentIdentification) block.seconds*4 else EnergyStateCalibration.MAX_PER_LANE_PER_BLOCK)) { "calibration call cap" }
                             val id = "cal-${block.id}-$index-$count"
                             val dispatch = now(); activeStart.set(dispatch); observed.dispatch(key,id)
                             event("dispatch",mapOf("id" to id,"key" to key,"block" to block.id,
@@ -361,7 +395,7 @@ class EnergyCollectionActivity : Activity() {
             event("block_end",mapOf("block" to block.id,"actual_duration_ns" to now()-start))
             nominalOffset += block.seconds * 1_000_000_000L
         }
-        check(now()-commonStart < EnergyStateCalibration.COMMON_NS) { "no common-window tail reserve" }
+        check(now()-commonStart < commonNs) { "no common-window tail reserve" }
         event("phase_end")
     }
     private fun workload(keys: List<String>, parallel: Boolean, counts: List<Int>, image: File, imageHash: String, budget: Long) {

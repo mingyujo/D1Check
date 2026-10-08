@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-08 RESIDENT-IDENTIFICATION-PREP-02 — 모형 식별/확인 PC 실행 준비 완료·미승인
+
+- 사용자승인은실측전PC 준비다. 같은4resident의60초상태·90초유휴개발A/B/B/A→계수/자료hash동결→30초다른순서2회→기존Arrival96/192회2회의단일8세션계획을구현했다. 긴GPU단독/유휴bias/잔열식별과요청경로전이를분리한다. [계약·예산·승인후명령](RESIDENT_IDENTIFICATION_PREP_20261008.md) · [입력/검증](results/resident_identification_prep_01/README.md).
+- 최종plan_v3 SHA2cb32c36…17ac1f·APK57d2320c…9cb20/기존프로젝트서명. 개발예측gate 실패/미식별이면확인4 미시도. 8세션·본6288/적격24/warm64/총6376·runtime32/staging56파일·APKpush/install/pull각1·ADB34728·고정관측93분＋별도준비12분/대기10.5분·전체예약19070초(5h17m50s),재시도/대체/추가0. v1/v2는PC미소비초안보존.
+- Android10/Python10+host회귀8 PASS·2보존Arrival실제원본reader/합성전체동결경로검증·서명/860payload동일·source/APK/원모형SHA 확인. SDK누락/기본서명차이를기존SDK/프로젝트키로해결. Check 기기0·출력/claim없음. 실제기기/연결/예측정확도검증은아직없다.
+- 원모형/기본/RL/strict/experiment_ready=false·사용자14행/다른worktree·별도CPU/GPU방법론01fa13f/기존실패보존. 다음하나: 위단일8세션예산의별도실행승인과현재A24 transport·환경gate 확인. 이번엔Run/ADB/설치/추론/실측0.
+
 ## 2026-10-08 CPU-GPU-METHOD-PILOT-01 — 공통 RL 파일럿·방법론 선정 완료
 
 - 현재C는109/68·32slot native masked PPO, EDD앞8·기본/fallback/예측suffix에서작업/자원/묶음/대기를직접선택한다. 모델AP/h 추정과실제센서/엔진미래값을구분했다. 원C소스보존·fallback schema wrapper수정, E물리mask/energy-AP목적버전·D휴리스틱을별도로연결했다. [구현/근거감사](CPU_GPU_METHOD_IMPLEMENTATION_AUDIT_20261008.md).

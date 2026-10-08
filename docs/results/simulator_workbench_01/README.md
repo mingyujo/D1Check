@@ -1,5 +1,9 @@
 # D1Check 통합 시뮬레이터
 
+## 2026-10-08 모형 식별/확인: PC 준비·미승인
+
+[8세션·계약·상한](../../RESIDENT_IDENTIFICATION_PREP_20261008.md) · [준비/검증/입력](../resident_identification_prep_01/README.md). 개발4 긴상태/유휴→자료/계수동결→다른순서2+실제Arrival96/192 요청2의전이확인이다. 새실측/오차감소그림없음·Check기기0/미소비. 최대6376추론/5h17m50s/34728ADB는별도실행승인대상이며기본/RL/strict는유지한다.
+
 ## 2026-10-08 AP 초기화 변경: 지속 부하 일부 오차 감소
 
 [20평가·관측/예측/잔차](../preload_dynamics_refinement_01/run/index.html) · [초기화후보/API·재현](../../PRELOAD_DYNAMICS_REFINEMENT_RESULTS_20261008.md). AP지속8 MAE0.381→0.335°C/최대1.277→1.165°C,최근14 평균0.329→0.307°C 감소. 새확인6/지속4개악화·개발기준실패로기본미교체,전력추세후보악화로제외. 별도opt-in AP API29경로일치,물리계수/원기본/RL/strict/기기불변.

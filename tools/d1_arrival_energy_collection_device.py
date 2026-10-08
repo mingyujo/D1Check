@@ -71,11 +71,11 @@ def poll(d,remote,folder,manifest,plan):
         if refresh or now-last_thermal>=2:
             if environment_enabled and armed and start_ap_sent:
                 if not postapproval.environment(d,folder,postapproval_state,end,last_thermal,last_screen,'thermal',lambda:energy_device.thermal(d,folder,index)):
-                    time.sleep(.25);continue
+                    time.sleep(2 if plan.get('resident_identification') else .25);continue
             elif plan.get('prewarmup_observation') in ('prewarmup-observation-gap-v2','precommon-observation-gap-v3'):
                 from tools.d1_preparation_observation import thermal as observe_thermal
                 if not observe_thermal(d,folder,index,observation_state,(start_ap_sent if plan.get('prewarmup_observation')=='precommon-observation-gap-v3' else armed),energy_device.thermal,version=plan['prewarmup_observation']):
-                    time.sleep(.25)
+                    time.sleep(2 if plan.get('resident_identification') else .25)
                     continue
             else:
                 energy_device.thermal(d,folder,index)
@@ -83,7 +83,7 @@ def poll(d,remote,folder,manifest,plan):
         if refresh or now-last_screen>=10:
             if environment_enabled and armed and start_ap_sent:
                 if not postapproval.environment(d,folder,postapproval_state,end,last_thermal,last_screen,'screen',lambda:screen.snapshot(d,folder,f'poll_{index:04d}',plan['screen_contract'])):
-                    time.sleep(.25);continue
+                    time.sleep(2 if plan.get('resident_identification') else .25);continue
             else:screen.snapshot(d,folder,f'poll_{index:04d}',plan['screen_contract'])
             last_screen=time.monotonic()
         if lease is not None:
@@ -93,18 +93,18 @@ def poll(d,remote,folder,manifest,plan):
         if refresh:postapproval_state['refresh_environment']=False
         if postapproval_enabled and armed and start_ap_sent:
             if time.monotonic()-last_progress_query<postapproval.PERIOD_SECONDS:
-                time.sleep(.25)
+                time.sleep(2 if plan.get('resident_identification') else .25)
                 continue
             listing=postapproval.listing(d,remote,folder,legacy.PACKAGE,postapproval_state,end)
             last_progress_query=time.monotonic()
             if listing is None:
-                time.sleep(.25)
+                time.sleep(2 if plan.get('resident_identification') else .25)
                 continue
         elif plan.get('prewarmup_observation') in ('prewarmup-listing-gap-v1','prewarmup-observation-gap-v2','precommon-observation-gap-v3'):
             from tools.d1_preparation_observation import listing as observe_listing
             listing=observe_listing(d,remote,folder,legacy.PACKAGE,observation_state,(start_ap_sent if plan.get('prewarmup_observation')=='precommon-observation-gap-v3' else armed),version=plan['prewarmup_observation'])
             if listing is None:
-                time.sleep(.25)
+                time.sleep(2 if plan.get('resident_identification') else .25)
                 continue
         else:
             listing=d.call('shell','run-as',legacy.PACKAGE,'ls',remote,timeout=3).stdout.decode().splitlines()
@@ -132,7 +132,7 @@ def poll(d,remote,folder,manifest,plan):
             energy_device.arm(d,'files/arrival-scheduler-inputs/'+manifest['session_id'],'warmup',ready['manifest_sha256'])
             write(gate/'arm_receipt.json',dict(utc=legacy.utc(),manifest_sha256=ready['manifest_sha256']))
             armed=True
-        time.sleep(.25)
+        time.sleep(2 if plan.get('resident_identification') else .25)
     raise TimeoutError('host poll elapsed; later calls are unknown, never retry')
 
 

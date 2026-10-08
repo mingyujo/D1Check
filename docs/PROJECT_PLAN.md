@@ -1,5 +1,10 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-08 RESIDENT-IDENTIFICATION-PREP-02 — 에너지/AP 식별→동결→확인 PC 준비
+
+- 현재모형의GPU단독·유휴/잔열 공백을위한신규8세션한묶음을준비했다. 개발4상태구간/확인2다른순서+Arrival96/192요청2를기존worker/lifecycle/회수경로로연결했다. [실행전계약·계수·게이트·확정상한](RESIDENT_IDENTIFICATION_PREP_20261008.md). A 비용확인이며정책순위/B일정정확도완료가아니다.
+- 최종plan_v3/미승인·미소비. 총6376추론·5h17m50s·34728ADB예약,8세션과각호출명세를코드/manifest합으로검사했다. 개발gate 실패면확인중단·확인재적합/자동추가0. 이후사용자가예산을승인하고현재기기gate가통과해야만Run1회가가능하다. 현재기기0·원기본/RL/strict/experiment_ready=false/다른작업보존.
+
 ## 2026-10-08 CPU-GPU-METHOD-PILOT-01 — 작은 맞춤 비교와 선정 종료
 
 - 최신사용자의CPU/GPU방법론선정요청으로큰2032episode 등록을실행하지않고 C/E동일3seed·32episode 파일럿을완료했다. 상태/행동/경계/실측전이/추정열입력을[감사](CPU_GPU_METHOD_IMPLEMENTATION_AUDIT_20261008.md)하고원C/EDD/기존시스템/모형은보존했다. NPU/새모델/기기0.

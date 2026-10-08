@@ -72,7 +72,7 @@ class HostFailureTest(unittest.TestCase):
             self.assertIn('cleanup',receipt['host_cleanup_error'])
             self.assertIn('journal parse',receipt['progress_summary_error'])
             self.assertEqual(json.loads((root/'registry/stopped.json').read_text())['status'],'stopped_no_resume')
-            stages=[json.loads(p.read_text())['stage'] for p in sorted((root/'run/host_checkpoints').glob('*.json'))]
+            stages=[json.loads(p.read_text(encoding='utf-8'))['stage'] for p in sorted((root/'run/host_checkpoints').glob('*.json'))]
             self.assertIn('launch_returned',stages)
             self.assertEqual(stages[-1],'stopped')
             with patch.object(state,'check'),self.assertRaises(FileExistsError):
