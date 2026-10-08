@@ -9,18 +9,19 @@ package com.example.d1check.requestrunner
  *     tools/d1_sustained_protocol.py (192 · 짝/홀 · 35,000 + 400·i · 1,500 / 6,000)
  *   d1sim/docs/혼합요청_사전등록_v1.md §1 · §2 · §3 (S26 쪽 값: 블록 · 상주 runtime · 준비 상한 · 정지 규칙)
  * 의미를 바꾸지 않는다. A24 와 다른 값은 "A24 와 다름" 으로 주석에 적는다.
+ * v2 (등록 v2 `d1sim/docs/혼합요청_사전등록_v2.md` #1 · #2, 2026-10-09): STEP_MS 400 → 200 · EXPERIMENT_ID -01 → -02 (스모크도). v1 = `03f271a`. 그 밖 무변경.
  */
 object MixreqContract {
     const val PROTOCOL = "s26-mixreq-session-v1"
-    const val EXPERIMENT_ID = "S26-MIXREQ-01"
-    const val SMOKE_EXPERIMENT_ID = "S26-MIXREQ-01-SMOKE"
+    const val EXPERIMENT_ID = "S26-MIXREQ-02"
+    const val SMOKE_EXPERIMENT_ID = "S26-MIXREQ-02-SMOKE"
     const val SPLIT_CONFIRMATION = "confirmation"
     const val SPLIT_DIAGNOSTIC = "diagnostic"
 
     const val REQUEST_COUNT = 192
     const val SMOKE_REQUEST_COUNT = 24
     const val FIRST_OFFSET_MS = 35_000L
-    const val STEP_MS = 400L
+    const val STEP_MS = 200L
     const val URGENT_DEADLINE_MS = 1_500L
     const val NORMAL_DEADLINE_MS = 6_000L
 

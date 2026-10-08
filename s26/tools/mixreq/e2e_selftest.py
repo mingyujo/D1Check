@@ -8,6 +8,8 @@ Expectations: blockA_cpu · blockA_par · blockN_cpu · blockN_parnpu → eligib
 blockN_npu_create_fails → ineligible (0_artifacts, 4_assignment); blockA_plugged → ineligible (0/8/9 stop_reason); NPU contract computed
 for block N (PASS on the fake outputs); readout: block A = "쌍 부족 — 기술만" (1 pair), block N likewise; A24 formula cross-check = match;
 negative evidence variants (no ENN line / 0 of 1 replacement / failure line / other delegate) → rule 7 FAIL.
+v2 (R3): a PAR session with overlap 0 stays eligible under the v2 id and fails rule 5 under the v1 id; readout over {CPU, PAR-no-overlap}
+→ block A "병행 겹침 없음 — 기술만"; --a24-compare FAIL → Q1 · Q3 · Q2 "이식 대조 FAIL — 기술만"; v2 Q2 title.
 The synthetic logcat only exercises the *parsing* of the frozen regexes; it is not device evidence.
 """
 from __future__ import annotations
@@ -86,6 +88,32 @@ def synthetic_logcat(device: Path, variant: str = "good") -> str:
     return "\n".join(lines) + "\n"
 
 
+def serialise_par_rows(device: Path, out: Path) -> None:
+    """Copy a PAR round-trip device folder and push every GPU row after the CPU lane went idle (overlap -> 0). Time order and the
+    [35 s, 120 s) window are kept by shifting the rows into the tail of the common window (same mutation as test_rule5_overlap)."""
+    if out.exists():
+        shutil.rmtree(out)
+    shutil.copytree(device, out)
+    rows = C.read_json(out / "requests.json")
+    m = C.read_json(out / "manifest.json")
+    scale = int(m.get("time_scale", 1))
+    origin = C.read_json(out / "common_boundary.json")["start_ns"]
+    cpu_end = max(int(r["lane_available_ns"]) for r in rows if r["selected_backend"] == "CPU")
+    t = max(cpu_end + 1, origin + int(100e9 / scale))
+    hi = origin + int(C.COMMON_S * 1e9 / scale)
+    keys = ("dispatch_ns", "execution_start_ns", "host_inference_start_ns", "host_inference_return_ns", "output_ready_ns", "persist_complete_ns",
+            "worker_release_ns", "lane_available_ns")
+    gpu_rows = sorted((r for r in rows if r["selected_backend"] == "GPU"), key=lambda r: int(r["dispatch_ns"]))
+    for r in gpu_rows:
+        shift = t - int(r["dispatch_ns"])
+        for k in keys:
+            r[k] = int(r[k]) + shift
+        t = int(r["lane_available_ns"]) + 1
+    if t >= hi:  # keep the window rule: squeeze if the tail would spill past 120 s (fake latencies are tiny, so this is defensive)
+        raise RuntimeError("serialised GPU rows spill past the common window")
+    C.write_json(out / "requests.json", rows)
+
+
 def run_validate(case_dir: Path, device: Path, logcat_text: str, out_dir: Path):
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "host").mkdir(exist_ok=True)
@@ -101,7 +129,7 @@ def run_validate(case_dir: Path, device: Path, logcat_text: str, out_dir: Path):
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--roundtrip", type=Path, default=REPO / "request-runner" / "build" / "mixreq-roundtrip")
-    ap.add_argument("--plan", type=Path, default=REPO / "s26" / "results" / "mixreq_1008" / "plan_v1" / "plan.json")
+    ap.add_argument("--plan", type=Path, default=REPO / "s26" / "results" / "mixreq_1008" / "plan_v2" / "plan.json")
     ap.add_argument("--out", type=Path, default=REPO / "request-runner" / "build" / "mixreq-e2e")
     args = ap.parse_args()
     if args.out.exists():
@@ -151,6 +179,58 @@ def main() -> int:
                 failures.append(f"block {b} judgment {ro['blocks'][b].get('judgment')!r} != '쌍 부족 — 기술만' (1 pair each)")
             if ro["blocks"][b]["n"] != 1:
                 failures.append(f"block {b} pairs {ro['blocks'][b]['n']} != 1")
+        if ro.get("registration_version") == 2 and ro["q2_table"]["title"] != "간격이 다른 이식 (S26 200 ms · A24 400 ms) — 나란히 기술만":
+            failures.append(f"v2 Q2 title {ro['q2_table']['title']!r}")
+    # v2 (등록 v2 #3 · #4): a PAR session whose two lanes never overlap is NOT invalid — it is eligible with overlap 0 and the readout tags
+    # the block "병행 겹침 없음 — 기술만" (before "쌍 부족"). Built from blockA_par by serialising the GPU rows after the CPU lane (same trick
+    # as test_rule5_overlap); under the v1 rule the same artifacts fail rule 5 (checked here too, so the v1 path stays frozen).
+    par_device = args.roundtrip / "blockA_par" / "a1"
+    cpu_device = args.roundtrip / "blockA_cpu" / "a1"
+    if (par_device / "manifest.json").is_file() and (cpu_device / "manifest.json").is_file():
+        v2_results = args.out / "v2_no_overlap" / "results"
+        v2_results.mkdir(parents=True, exist_ok=True)
+        no_ov = args.out / "v2_no_overlap" / "device_par_no_overlap"
+        serialise_par_rows(par_device, no_ov)
+        validated_v2, _ = run_validate(args.roundtrip / "blockA_par", no_ov, synthetic_logcat(no_ov), v2_results / "blockA_par_no_overlap")
+        report["v2:blockA_par_no_overlap"] = dict(eligible=validated_v2["eligible"], reasons=validated_v2["reasons"],
+                                                  overlap_s=validated_v2["rules"]["5_overlap"]["detail"]["overlap_s"])
+        if C.registration_version(C.read_json(no_ov / "manifest.json")["experiment_id"]) != 2:
+            failures.append("v2 no-overlap case: round-trip manifest is not a v2 experiment id (rebuild with gradlew :request-runner:testDebugUnitTest)")
+        elif not validated_v2["eligible"] or validated_v2["rules"]["5_overlap"]["detail"]["overlap_s"] != 0:
+            failures.append(f"v2 no-overlap PAR session must stay eligible with overlap 0: eligible={validated_v2['eligible']} reasons={validated_v2['reasons']}")
+        # same artifacts, v1 id -> rule 5 fails (v1 path frozen)
+        v1_dev = args.out / "v2_no_overlap" / "device_par_no_overlap_v1id"
+        shutil.copytree(no_ov, v1_dev)
+        m1 = C.read_json(v1_dev / "manifest.json")
+        m1["experiment_id"] = C.V1_EXPERIMENT_ID
+        (v1_dev / "manifest.json").write_bytes(C.canonical_json(m1))
+        validated_v1, _ = V.validate(args.out / "v2_no_overlap", v1_dev, args.out / "v2_no_overlap" / "results" / "blockA_par_no_overlap" / "host" / "logcat_threadtime.txt", None, None, True)
+        report["v1:blockA_par_no_overlap"] = dict(eligible=validated_v1["eligible"], reasons=validated_v1["reasons"])
+        if validated_v1["eligible"] or "5_overlap" not in validated_v1["reasons"]:
+            failures.append(f"v1 rule 5 must still fail a no-overlap PAR session: {validated_v1['reasons']}")
+        # readout over {CPU, PAR-no-overlap}: block A tag "병행 겹침 없음 — 기술만"; with a FAIL a24 compare json -> "이식 대조 FAIL — 기술만"
+        shutil.copytree(results / "blockA_cpu", v2_results / "blockA_cpu")
+        v2_readout = args.out / "v2_no_overlap" / "readout"
+        r2 = subprocess.run([sys.executable, "-X", "utf8", str(HERE / "mixreq_readout.py"), "--plan", str(args.plan), "--results", str(v2_results), "--out", str(v2_readout), "--selftest"],
+                            capture_output=True, text=True, encoding="utf-8", errors="replace")
+        if r2.returncode != 0:
+            failures.append(f"v2 readout rc={r2.returncode}: {r2.stderr.strip()[-600:]}")
+        else:
+            ro2 = C.read_json(v2_readout / "readout.json")
+            report["v2:readout_block_A"] = dict(judgment=ro2["blocks"]["A"].get("judgment"), tags=ro2["blocks"]["A"].get("tags"), n=ro2["blocks"]["A"]["n"])
+            if ro2["blocks"]["A"].get("judgment") != "병행 겹침 없음 — 기술만" or ro2["blocks"]["A"]["n"] != 1:
+                failures.append(f"v2 block A judgment {ro2['blocks']['A'].get('judgment')!r} (n={ro2['blocks']['A']['n']}) != '병행 겹침 없음 — 기술만'")
+        fail_json = args.out / "v2_no_overlap" / "a24_compare_fail.json"
+        C.write_json(fail_json, dict(schema="s26-mixreq-a24-compare-v1", a24_detection="FAIL", classification="PASS", verdict="FAIL", note="synthetic e2e"))
+        r3 = subprocess.run([sys.executable, "-X", "utf8", str(HERE / "mixreq_readout.py"), "--plan", str(args.plan), "--results", str(v2_results), "--out", str(args.out / "v2_no_overlap" / "readout_a24fail"),
+                             "--selftest", "--a24-compare", str(fail_json)], capture_output=True, text=True, encoding="utf-8", errors="replace")
+        if r3.returncode != 0:
+            failures.append(f"v2 readout (a24 FAIL) rc={r3.returncode}: {r3.stderr.strip()[-600:]}")
+        else:
+            ro3 = C.read_json(args.out / "v2_no_overlap" / "readout_a24fail" / "readout.json")
+            report["v2:readout_a24_fail"] = dict(A=ro3["blocks"]["A"].get("judgment"), N=ro3["blocks"]["N"].get("judgment"), q2=ro3["q2_table"]["judgment"])
+            if not (ro3["blocks"]["A"].get("judgment") == ro3["blocks"]["N"].get("judgment") == ro3["q2_table"]["judgment"] == "이식 대조 FAIL — 기술만"):
+                failures.append(f"a24 compare FAIL must tag Q1 · Q3 · Q2: {report['v2:readout_a24_fail']}")
         if any(s.get("a24_service_cross_check") != "match" for s in ro["per_session"] if s.get("eligible")):
             failures.append("A24 service formula cross-check did not report match for an eligible session")
         inv = (readout_dir / "inventory.csv").read_text(encoding="utf-8").splitlines()

@@ -12,6 +12,8 @@ S2 (short sessions, first 24 requests): CPU · PAR (block A config) · PAR-NPU (
 arrival delay · parallel verification (§3-3): (a) no error (b) overlap > 0 (c) evidence PASS for the used accelerated runtime
 (d) actual runtime == assignment. PAR fail -> "block A: do not run"; PAR-NPU fail -> "block N: do not run".
 No KPI comparison and no conclusion sentence are printed (smoke numbers must not change the design).
+v2 (plan experiment_id S26-MIXREQ-02, 등록 v2 #3 · #5): the (a)~(d) and S1 reference checks are RECORDED ONLY (`observations`);
+`decisions` stays empty — both blocks run regardless. v1 plans keep the v1 decisions.
 """
 from __future__ import annotations
 
@@ -43,6 +45,18 @@ def run_session(args, smoke_name: str) -> int:
 
 def folder_of(args, smoke_name: str) -> Path:
     return args.results / f"S26_MIXREQ_SMOKE_{smoke_name}_a1"
+
+
+V2_NOTE = "v2: 실행 차단 아님 (등록 v2 #3 · #5) — 스모크 (a)~(d) · A24 대조는 기록만, 두 블록 16세션은 결과와 무관하게 돈다 (판정 꼬리표는 readout 이 단다)"
+
+
+def record_decision(report: dict, reg_version: int, text: str) -> None:
+    """v1 (등록 §3-3 · §11-1): the text is a decision (block not run / R2 not started). v2 (등록 v2 #3 · #5): the same observation is
+    recorded only — `decisions` stays empty so nothing downstream reads it as a stop."""
+    if reg_version == 1:
+        report["decisions"].append(text)
+    else:
+        report["observations"].append(dict(v1_would_decide=text, v2="기록만 — 실행 차단 아님 (등록 v2 #3 · #5)"))
 
 
 def s1_checks(folder: Path, reference_pc: dict | None) -> dict:
@@ -157,7 +171,10 @@ def main() -> int:
     ap.add_argument("--only", choices=("S1", "S2"))
     args = ap.parse_args()
     reference = C.read_json(args.reference_pc) if args.reference_pc and args.reference_pc.is_file() else None
-    report = dict(schema="s26-mixreq-smoke-report-v1", dry_run=args.dry_run, S1=None, S2=[], decisions=[])
+    plan = C.read_json(args.plan / "plan.json")
+    reg_version = C.registration_version(plan["experiment_id"])
+    report = dict(schema="s26-mixreq-smoke-report-v1", dry_run=args.dry_run, registration_version=reg_version, S1=None, S2=[], decisions=[],
+                  observations=[])
     if args.only != "S2":
         rc = run_session(args, "S1_warmup_only_blockN")
         report["S1_rc"] = rc
@@ -165,7 +182,7 @@ def main() -> int:
             report["S1"] = s1_checks(folder_of(args, "S1_warmup_only_blockN"), reference)
             s1 = report["S1"]["checks"]
             if s1.get("cpu_top5_label_index_equals_pc_reference") is False or s1.get("det_cpu_equals_pc_reference_decode_a24_tolerance") is False:
-                report["decisions"].append("R2 를 시작하지 말 것 — S26 CPU 출력이 PC 참조와 다름 (이식 오류 의심, 등록 §11-1 ①②)")
+                record_decision(report, reg_version, "R2 를 시작하지 말 것 — S26 CPU 출력이 PC 참조와 다름 (이식 오류 의심, 등록 §11-1 ①②)")
     if args.only != "S1":
         for name, policy in (("S2_CPU_URGENT_ONLINE_V1", policy_ref.POLICY_CPU), ("S2_B2_PARALLEL_ONLINE_V1", policy_ref.POLICY_PAR),
                              ("S2_S26_NPU_PARALLEL_V1", policy_ref.POLICY_PAR_NPU)):
@@ -174,11 +191,13 @@ def main() -> int:
             if not args.dry_run:
                 entry.update(s2_checks(folder_of(args, name), policy))
                 if policy == policy_ref.POLICY_PAR and not entry.get("parallel_verification_passed"):
-                    report["decisions"].append("블록 A 미실행 — PAR 병행 검증 실패 (등록 §3-3)")
+                    record_decision(report, reg_version, "블록 A 미실행 — PAR 병행 검증 실패 (등록 §3-3)")
                 if policy == policy_ref.POLICY_PAR_NPU and not entry.get("parallel_verification_passed"):
-                    report["decisions"].append("블록 N 미실행 — PAR-NPU 병행 검증 실패 (등록 §3-3)")
+                    record_decision(report, reg_version, "블록 N 미실행 — PAR-NPU 병행 검증 실패 (등록 §3-3)")
             report["S2"].append(entry)
     report["note"] = "스모크 = 동작 확인용. KPI 비교 · 결론 문장 없음. NPU 계약 첫 값은 기록만 (기준 · 설계 · 블록 N 실행 여부를 바꾸지 않는다)."
+    if reg_version == 2:
+        report["v2_note"] = V2_NOTE
     args.results.mkdir(parents=True, exist_ok=True)
     C.write_json(args.results / "smoke_report.json", report)
     print(json.dumps({k: v for k, v in report.items() if k != "S1" or v is None} | {"S1_checks": (report["S1"] or {}).get("checks")}, ensure_ascii=False, indent=1)[:5000])

@@ -2,6 +2,9 @@
 
 Registration: d1sim/docs/혼합요청_사전등록_v1.md (SHA-256 edf9e594…, commit 20967fb). The constants below are copied from it
 and from the request-runner Kotlin contract (request-runner/src/main/java/MixreqContract.kt). Nothing here reads a device.
+v2 (R3, 2026-10-09): d1sim/docs/혼합요청_사전등록_v2.md (SHA-256 8e8e1104…, commit 672bb3f) overrides #1 STEP_MS 400 -> 200 and
+#2 the experiment ids (-01 -> -02); everything else stays v1. v1 artifacts (S26-MIXREQ-01*) are still judged with the v1 rules —
+see registration_version().
 """
 from __future__ import annotations
 
@@ -14,16 +17,35 @@ from pathlib import Path
 import policy_ref
 
 PROTOCOL = "s26-mixreq-session-v1"
-EXPERIMENT_ID = "S26-MIXREQ-01"
-SMOKE_EXPERIMENT_ID = "S26-MIXREQ-01-SMOKE"
-REGISTRATION_SHA256 = "edf9e594c66b695104698c52ded8ff5c869f70946ee886bc42364ef99c862e28"
-REGISTRATION_COMMIT = "20967fb98478c451bd36d9c6c83e0e33154b9109"
-REGISTRATION_TIME = "2026-10-08T03:41:26+09:00"
+EXPERIMENT_ID = "S26-MIXREQ-02"
+SMOKE_EXPERIMENT_ID = "S26-MIXREQ-02-SMOKE"
+V1_EXPERIMENT_ID = "S26-MIXREQ-01"
+V1_SMOKE_EXPERIMENT_ID = "S26-MIXREQ-01-SMOKE"
+# v1 registration (kept: v2 overrides 10 items only, 등록 v2 머리말)
+REGISTRATION_V1_FILE = "d1sim/docs/혼합요청_사전등록_v1.md"
+REGISTRATION_V1_SHA256 = "edf9e594c66b695104698c52ded8ff5c869f70946ee886bc42364ef99c862e28"
+REGISTRATION_V1_COMMIT = "20967fb98478c451bd36d9c6c83e0e33154b9109"
+REGISTRATION_V1_TIME = "2026-10-08T03:41:26+09:00"
+# v2 registration (commit ① of R3)
+REGISTRATION_FILE = "d1sim/docs/혼합요청_사전등록_v2.md"
+REGISTRATION_SHA256 = "8e8e1104ff3591098b7aba22bd42a1494eaeafed8ff6aaf63e638070a20806f0"
+REGISTRATION_COMMIT = "672bb3f68a8f8ece2483c37bfcaa824264c49c49"
+REGISTRATION_TIME = "2026-10-09T04:24:55+09:00"
+
+
+def registration_version(experiment_id: str) -> int:
+    """2 for the v2 ids (S26-MIXREQ-02 · S26-MIXREQ-02-SMOKE), 1 for the v1 ids; anything else is an error (fail closed)."""
+    if experiment_id in (EXPERIMENT_ID, SMOKE_EXPERIMENT_ID):
+        return 2
+    if experiment_id in (V1_EXPERIMENT_ID, V1_SMOKE_EXPERIMENT_ID):
+        return 1
+    raise ValueError(f"unknown experiment_id {experiment_id!r}")
+
 
 REQUEST_COUNT = 192
 SMOKE_REQUEST_COUNT = 24
 FIRST_OFFSET_MS = 35_000
-STEP_MS = 400
+STEP_MS = 200  # v2 (등록 v2 #1); v1 = 400
 URGENT_DEADLINE_MS = 1_500
 NORMAL_DEADLINE_MS = 6_000
 COMMON_S = 120
@@ -42,7 +64,7 @@ SESSION_ORDER = (
     ("N", policy_ref.POLICY_CPU), ("N", policy_ref.POLICY_PAR_NPU), ("N", policy_ref.POLICY_PAR_NPU), ("N", policy_ref.POLICY_CPU),
     ("N", policy_ref.POLICY_PAR_NPU), ("N", policy_ref.POLICY_CPU), ("N", policy_ref.POLICY_CPU), ("N", policy_ref.POLICY_PAR_NPU),
 )
-SMOKE_SESSIONS = (  # (smoke index, block, policy) — ID namespace S26-MIXREQ-01-SMOKE/<index>
+SMOKE_SESSIONS = (  # (smoke index, block, policy) — ID namespace <SMOKE_EXPERIMENT_ID>/<index>
     (0, "A", policy_ref.POLICY_CPU), (1, "A", policy_ref.POLICY_PAR), (9, "N", policy_ref.POLICY_PAR_NPU),
 )
 SMOKE_WARMUP_ONLY_INDEX = 8  # S1 = block N configuration, warmup 10, no requests (등록 §3-8 스모크 셈)

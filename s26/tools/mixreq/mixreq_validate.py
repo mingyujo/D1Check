@@ -374,16 +374,25 @@ def validate(session_dir: Path, device_dir: Path | None, logcat: Path | None, sk
                                            detail=dict(wrong_lane=wrong_lane[:10], created=sorted(created), missing_created=missing_created,
                                                        missing_warmed=missing_warm, create_failed=sorted(create_failed), used_keys=used))
 
-    # 5 overlap
+    # 5 overlap — v1 (등록 §4 규칙 5): CPU overlap 0 · PAR / PAR-NPU overlap > 0 are validity conditions.
+    #             v2 (등록 v2 #4, experiment_id S26-MIXREQ-02*): only CPU overlap 0 is a validity condition; PAR / PAR-NPU overlap_s is
+    #             recorded (the readout turns "any valid PAR/PAR-NPU session with overlap 0" into the tag "병행 겹침 없음 — 기술만", v2 #3).
+    reg_version = C.registration_version(m["experiment_id"])
     lane_a, lane_b = [k.rsplit("_", 1)[1] for k in policy_ref.overlap_keys(policy)]
     ov = overlap_ns(rows, lane_a, lane_b) if lane_a != lane_b else 0
     foreign = [r["request_id"] for r in rows if r.get("selected_backend") not in (lane_a, lane_b)]
     if policy == policy_ref.POLICY_CPU:
         passed5 = ov == 0 and not foreign and all(r.get("selected_backend") == "CPU" for r in rows)
-    else:
+        expected5 = "0"
+    elif reg_version == 1:
         passed5 = ov > 0 and not foreign
+        expected5 = ">0"
+    else:
+        passed5 = not foreign
+        expected5 = "recorded only (v2 #4); overlap 0 -> readout tag"
     rules["5_overlap"] = dict(passed=bool(rows) and passed5, detail=dict(lanes=[lane_a, lane_b], overlap_s=ov / 1e9 * scale, overlap_ns_raw=ov,
-                                                                        foreign_lane_rows=foreign[:10], expected="0" if policy == policy_ref.POLICY_CPU else ">0"))
+                                                                        foreign_lane_rows=foreign[:10], expected=expected5,
+                                                                        registration_version=reg_version, overlap_zero=(ov == 0)))
 
     # 6 warmup quality (GPU vs CPU #1; CPU #2 vs #1; detection_CPU #2 vs #1) — only used keys judge; residents recorded
     wq = {}
@@ -464,7 +473,8 @@ def validate(session_dir: Path, device_dir: Path | None, logcat: Path | None, sk
         reasons.append("selftest cannot judge a confirmation session")
     eligible = not reasons
     validated = dict(schema=SCHEMA, session_id=sid, session_index=m["session_index"], block=block, pair=m["pair"], policy=policy,
-                     attempt=m["attempt"], experiment_id=m["experiment_id"], split=m["split"], time_scale=scale, selftest=selftest,
+                     attempt=m["attempt"], experiment_id=m["experiment_id"], registration_version=reg_version, split=m["split"],
+                     time_scale=scale, selftest=selftest,
                      eligible=eligible, reasons=reasons, rules=rules, a24_differences=differences,
                      device_dir=data["device_dir"], host_dir=data["host_dir"],
                      counts=dict(planned=planned, succeeded=sum(1 for r in rows if r.get("terminal_status") == "succeeded"),

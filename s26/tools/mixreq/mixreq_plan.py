@@ -59,7 +59,8 @@ def manifest(experiment_id: str, split: str, index: int, block: str, policy: str
                     detection=dict(path=device["det_labels"]["device_path"], sha256=device["det_labels"]["sha256"])),
         requests=rows, phases=dict(C.PHASES[block]), sample_period_ms=C.SAMPLE_PERIOD_MS, time_scale=1, warmup_gate=True,
         stop_rules=dict(C.STOP_RULES), start_check=dict(C.START_CHECK),
-        registration=dict(file="d1sim/docs/혼합요청_사전등록_v1.md", sha256=C.REGISTRATION_SHA256, commit=C.REGISTRATION_COMMIT),
+        registration=dict(file=C.REGISTRATION_FILE, sha256=C.REGISTRATION_SHA256, commit=C.REGISTRATION_COMMIT),
+        registration_v1=dict(file=C.REGISTRATION_V1_FILE, sha256=C.REGISTRATION_V1_SHA256, commit=C.REGISTRATION_V1_COMMIT),
         used_keys=list(policy_ref.USED_KEYS[policy]),
     )
     if warmup_only:
@@ -115,8 +116,11 @@ def build(args) -> dict:
                   fixed_observation_s=16 * 210)
     assert budget["calls_total"] == 3216 and budget["smoke_calls"] == 108, budget
     plan = dict(schema=PLAN_SCHEMA, experiment_id=C.EXPERIMENT_ID, protocol=C.PROTOCOL,
-                registration=dict(file="d1sim/docs/혼합요청_사전등록_v1.md", sha256=C.REGISTRATION_SHA256, commit=C.REGISTRATION_COMMIT,
+                registration=dict(file=C.REGISTRATION_FILE, sha256=C.REGISTRATION_SHA256, commit=C.REGISTRATION_COMMIT,
                                   time=C.REGISTRATION_TIME),
+                registration_v1=dict(file=C.REGISTRATION_V1_FILE, sha256=C.REGISTRATION_V1_SHA256, commit=C.REGISTRATION_V1_COMMIT,
+                                     time=C.REGISTRATION_V1_TIME),
+                registration_version=C.registration_version(C.EXPERIMENT_ID), step_ms=C.STEP_MS,
                 inputs={k: {kk: vv for kk, vv in v.items() if kk != "host_path"} for k, v in device.items()},
                 device_input_dir=C.DEVICE_INPUT_DIR, device_session_dir=C.DEVICE_SESSION_DIR, app_package=C.APP_PACKAGE,
                 app_output_dir=C.APP_OUTPUT_DIR, phases=C.PHASES, sample_period_ms=C.SAMPLE_PERIOD_MS, stop_rules=C.STOP_RULES,

@@ -5,23 +5,27 @@ import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-/** K1: 192 요청 · 짝/홀 · offset · 기한 · uuid5 == Python uuid.uuid5 (값은 py -3 -c 'import uuid; ...' 로 생성, 2026-10-08). */
+/** K1: 192 요청 · 짝/홀 · offset · 기한 · uuid5 == Python uuid.uuid5 (값은 py -3 -c 'import uuid; ...' 로 생성, 2026-10-08 · v2 네임스페이스 2026-10-09). */
 class RequestPlanTest {
     @Test fun uuid5MatchesPythonForNamespaceUrl() {
-        assertEquals("20b64aab-fe48-54ea-b5c8-476ec1972d7d", RequestPlan.sessionId(MixreqContract.EXPERIMENT_ID, 0))
-        assertEquals("74855171-414c-56cb-8096-e2315d480937", RequestPlan.sessionId(MixreqContract.EXPERIMENT_ID, 1))
-        assertEquals("e3c32bd0-1235-593d-8503-d30c0ca43e43", RequestPlan.sessionId(MixreqContract.EXPERIMENT_ID, 7))
-        assertEquals("27de62f3-eedd-561c-b06d-12e0fd55214e", RequestPlan.sessionId(MixreqContract.EXPERIMENT_ID, 8))
-        assertEquals("f59209d8-3a86-53c6-aafa-825ea8eb2c25", RequestPlan.sessionId(MixreqContract.EXPERIMENT_ID, 15))
-        assertEquals("ae211423-4bed-5e7f-a38c-0b981a9a89eb", RequestPlan.sessionId(MixreqContract.SMOKE_EXPERIMENT_ID, 0))
+        // v2 namespace S26-MIXREQ-02 (등록 v2 #2) — Python uuid.uuid5(NAMESPACE_URL, "S26-MIXREQ-02/<i>"), 2026-10-09 04:2x
+        assertEquals("25a97307-6261-5c0a-b608-fa7a0566bca3", RequestPlan.sessionId(MixreqContract.EXPERIMENT_ID, 0))
+        assertEquals("57796f65-279c-5995-8a6a-e3291f80177a", RequestPlan.sessionId(MixreqContract.EXPERIMENT_ID, 1))
+        assertEquals("56cd63e1-2777-5202-9ad9-ccfd0c0db61b", RequestPlan.sessionId(MixreqContract.EXPERIMENT_ID, 7))
+        assertEquals("c4fe0a73-7aca-5684-9b06-67cc120373b1", RequestPlan.sessionId(MixreqContract.EXPERIMENT_ID, 8))
+        assertEquals("7b3badf4-aae4-5011-84f8-64e34692e10e", RequestPlan.sessionId(MixreqContract.EXPERIMENT_ID, 15))
+        assertEquals("f6d1ec00-ce61-52a4-a14b-a4face78e590", RequestPlan.sessionId(MixreqContract.SMOKE_EXPERIMENT_ID, 0))
+        // v1 namespace (S26-MIXREQ-01, 03f271a) for the record: the derivation itself did not change
+        assertEquals("20b64aab-fe48-54ea-b5c8-476ec1972d7d", RequestPlan.sessionId("S26-MIXREQ-01", 0))
+        assertEquals("ae211423-4bed-5e7f-a38c-0b981a9a89eb", RequestPlan.sessionId("S26-MIXREQ-01-SMOKE", 0))
         // A24 namespace string, for the record (tools/d1_sustained_plan.py NAME)
         assertEquals("fd107fbf-b077-5cfb-9112-88a09ad3f838", Uuid5.uuid5(Uuid5.NAMESPACE_URL, "SUSTAINED-CPU-PAR-CONFIRM-01/0").toString())
         val sid0 = RequestPlan.sessionId(MixreqContract.EXPERIMENT_ID, 0)
-        assertEquals("aab496ba-5456-50de-8472-6ee42998c6cb", RequestPlan.requestId(sid0, 0))
-        assertEquals("538200cc-58a0-5fbd-a00b-456462c781f6", RequestPlan.requestId(sid0, 191))
+        assertEquals("4f44b70a-91c7-5ef2-9e65-d90506486a80", RequestPlan.requestId(sid0, 0))
+        assertEquals("2cfd0921-4b30-54c1-b755-9ca4060f2b46", RequestPlan.requestId(sid0, 191))
         val sid15 = RequestPlan.sessionId(MixreqContract.EXPERIMENT_ID, 15)
-        assertEquals("e9370679-bc4e-554a-a082-cb26a0cde277", RequestPlan.requestId(sid15, 0))
-        assertEquals("bb9f95ba-4579-5c20-ba9a-f89baf6de69c", RequestPlan.requestId(sid15, 191))
+        assertEquals("2f6f7125-800d-5115-826f-2da94a94fa31", RequestPlan.requestId(sid15, 0))
+        assertEquals("f053a06a-516b-5ced-9663-e03a123a5490", RequestPlan.requestId(sid15, 191))
         assertTrue(Uuid5.isCanonical(sid0))
         assertEquals(5, java.util.UUID.fromString(sid0).version())
         assertEquals(2, java.util.UUID.fromString(sid0).variant())
@@ -36,10 +40,10 @@ class RequestPlanTest {
         assertEquals(96, rows.count { it.task == "detection" && it.priority == "normal" && it.deadlineMs == 6000L })
         rows.forEachIndexed { i, q ->
             assertEquals(i, q.ordinal)
-            assertEquals(35_000L + 400L * i, q.offsetMs)
+            assertEquals(35_000L + 200L * i, q.offsetMs)  // v2: step 200 ms (등록 v2 #1); v1 was 400 ms
             assertEquals(if (i % 2 == 0) "classification" else "detection", q.task)
         }
-        assertEquals(111_400L, rows.last().offsetMs)
+        assertEquals(73_200L, rows.last().offsetMs)  // 35,000 + 200 * 191
         MixreqContract.validateRequests(rows)
         RequestPlan.requireDerived(MixreqContract.EXPERIMENT_ID, 3, sid, rows)
     }
@@ -48,7 +52,7 @@ class RequestPlanTest {
         val sid = RequestPlan.sessionId(MixreqContract.SMOKE_EXPERIMENT_ID, 1)
         val rows = RequestPlan.requests(sid, 24)
         assertEquals(24, rows.size)
-        assertEquals(35_000L + 400L * 23, rows.last().offsetMs)
+        assertEquals(35_000L + 200L * 23, rows.last().offsetMs)
         MixreqContract.validateRequests(rows, 24)
     }
 

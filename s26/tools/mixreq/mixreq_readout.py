@@ -278,7 +278,15 @@ def thermal_direction(deltas: list[float | None]):
     return "엇갈림"
 
 
-def judge_block(block: str, sessions: list[dict]) -> dict:
+TAG_A24_FAIL = "이식 대조 FAIL — 기술만"          # 등록 v2 #5 (Q1 · Q2 · Q3 전부)
+TAG_NO_OVERLAP = "병행 겹침 없음 — 기술만"         # 등록 v2 #3 (유효 PAR / PAR-NPU 세션 중 겹침 0 이 하나라도)
+Q2_TITLE_V1 = "동일 요청 정의의 기기 · 엔진별 이식 평가 (조민규 확인 뒤 본문 이름)"
+Q2_TITLE_V2 = "간격이 다른 이식 (S26 200 ms · A24 400 ms) — 나란히 기술만"
+Q2_SAME_DEFINITION_LINE_V2 = "같은 정의 (400 ms) S26 관측 = v1 스모크 24요청 · 겹침 0 (R2, s26-mixreq 03f271a)"
+CONCLUSION_SUFFIX_V2 = "도착 간격 200 ms (A24 400 ms 의 절반 · v1 스모크 뒤 설계)"
+
+
+def judge_block(block: str, sessions: list[dict], reg_version: int = 1, a24_compare_fail: bool = False) -> dict:
     par_policy = policy_ref.POLICY_PAR if block == "A" else policy_ref.POLICY_PAR_NPU
     label = "병행" if block == "A" else "NPU 병행"
     valid = [s for s in sessions if s["block"] == block and s["eligible"]]
@@ -301,22 +309,33 @@ def judge_block(block: str, sessions: list[dict]) -> dict:
                               d_peak_ap_c=(x["thermal"]["peak_ap"] - c["thermal"]["peak_ap"]) if x.get("thermal") and c.get("thermal") and x["thermal"].get("peak_ap") is not None and c["thermal"].get("peak_ap") is not None else None,
                               d_start_skin_c=(x["thermal"]["start_skin"] - c["thermal"]["start_skin"]) if x.get("thermal") and c.get("thermal") and x["thermal"].get("start_skin") is not None and c["thermal"].get("start_skin") is not None else None,
                               d_energy_j=((x["energy"]["ours"]["full_energy_j"] or math.nan) - (c["energy"]["ours"]["full_energy_j"] or math.nan)) if x.get("energy") and c.get("energy") else None))
-    out = dict(block=block, parallel_policy=par_policy, valid_sessions=sorted(s["index"] for s in by_index.values()), pairs=pairs, n=len(pairs))
+    out = dict(block=block, parallel_policy=par_policy, valid_sessions=sorted(s["index"] for s in by_index.values()), pairs=pairs, n=len(pairs),
+               registration_version=reg_version, tags=[])
     # service judgment
     deadline = {pol: sum(s["service"]["all"]["planned"] - s["service"]["all"]["deadline_met"] for s in by_index.values() if s["policy"] == pol)
                 for pol in (policy_ref.POLICY_CPU, par_policy)}
     out["deadline_missed_by_policy"] = deadline
     out["service_judgment"] = "두 정책 모두 기한 충족" if all(v == 0 for v in deadline.values()) and by_index else "기한 미충족 있음"
+    # v2 #3: any valid parallel session (paired or not) with overlap 0 -> tag (recorded for v1 too, but only v2 uses it as a judgment)
+    par_valid = [s for s in by_index.values() if s["policy"] == par_policy]
+    out["parallel_overlap_zero_sessions"] = sorted(s["index"] for s in par_valid if s.get("overlap_s") is not None and s["overlap_s"] == 0)
+    out["parallel_overlap_s"] = {str(s["index"]): s.get("overlap_s") for s in sorted(par_valid, key=lambda s: s["index"])}
+    # tag precedence (R3 원장 1-2 ①, fixed before any v2 session): 이식 대조 FAIL > NPU 계약 실패 > 병행 겹침 없음 > 쌍 부족 > 방향 판정
+    if a24_compare_fail:
+        out["tags"].append(TAG_A24_FAIL)
     if block == "N":
         contracts = [s for s in valid if s["policy"] == par_policy]
         failed = [s["index"] for s in contracts if not (s.get("contract") and s["contract"].get("passed") is True)]
         out["npu_contract_failed_sessions"] = failed
         if failed or not contracts:
-            out["judgment"] = "NPU 출력 계약 실패 — 같은 일로 보지 않음 · 기술만" if failed else "유효 PAR-NPU 세션 없음 — 기술만"
+            out["tags"].append("NPU 출력 계약 실패 — 같은 일로 보지 않음 · 기술만" if failed else "유효 PAR-NPU 세션 없음 — 기술만")
             out["note"] = "서비스 · 응답 · 열 판정 없음 (등록 §6 Q3 ①); 쌍별 Δ · 기한 충족 수만 기술"
-            return out
+    if reg_version == 2 and out["parallel_overlap_zero_sessions"]:
+        out["tags"].append(TAG_NO_OVERLAP)
     if len(pairs) < 3:
-        out["judgment"] = "쌍 부족 — 기술만"
+        out["tags"].append("쌍 부족 — 기술만")
+    if out["tags"]:
+        out["judgment"] = out["tags"][0]
         return out
     d_urgent = [p["d_urgent_p95_ms"] for p in pairs]
     out["urgent_judgment"] = direction(d_urgent, [p["cpu_urgent_p95_ms"] for p in pairs], 0.05).replace("병행", label)
@@ -325,6 +344,26 @@ def judge_block(block: str, sessions: list[dict]) -> dict:
     out["thermal_ap_judgment"] = thermal_direction([p["d_peak_ap_c"] for p in pairs]).replace("병행", label)
     out["energy_judgment"] = "판정 없음 (기술만)"
     out["judgment"] = out["urgent_judgment"]
+    return out
+
+
+# ----------------------------------------------------------------------------------------------- slots (v2 #6 · inventory)
+def slot_status(plan: dict, sessions: list[dict]) -> dict:
+    """Per planned index: valid (an eligible attempt) · invalid_twice (two attempts, none eligible — the driver moved on, 등록 v2 #6) ·
+    invalid_once (one ineligible attempt only — e.g. the block stopped before the retry) · not_attempted."""
+    out = {}
+    for entry in plan["sessions"]:
+        tries = sorted((s for s in sessions if s["index"] == entry["index"]), key=lambda s: s["attempt"])
+        if any(s["eligible"] for s in tries):
+            status = "valid"
+        elif len(tries) >= 2:
+            status = "invalid_twice"
+        elif tries:
+            status = "invalid_once"
+        else:
+            status = "not_attempted"
+        out[str(entry["index"])] = dict(status=status, attempts=[dict(attempt=s["attempt"], eligible=s["eligible"], reasons=s["reasons"]) for s in tries],
+                                        block=entry["block"], policy=entry["policy"])
     return out
 
 
@@ -348,6 +387,7 @@ def inventory_rows(plan: dict, sessions: list[dict], args) -> list[dict]:
                              filename="missing", bytes="missing", sha256="missing", validation_status="not_attempted", session_index=idx,
                              block=entry["block"], pair=entry["pair"], attempt=0, rejected_expired_cancelled_counts="0/0/0"))
             continue
+        slot = slot_status(plan, sessions)[str(idx)]["status"]
         for s in sorted(attempted[idx], key=lambda s: s["attempt"]):
             v = s["validated"]
             counts = v.get("counts", {})
@@ -365,7 +405,7 @@ def inventory_rows(plan: dict, sessions: list[dict], args) -> list[dict]:
             rows.append(dict(experiment_id=s["manifest"]["experiment_id"], session_id=s["session_id"], split=s["split"], terminal_status=status,
                              planned_request_count=counts.get("planned", 192), completed_count=counts.get("succeeded", 0), on_time_count=svc.get("deadline_met", "unknown"),
                              failed_count=counts.get("failed", 0), unfinished_count=counts.get("unfinished", 0),
-                             reason=";".join(s["reasons"]) if s["reasons"] else ("eligible" if s["eligible"] else "unknown"),
+                             reason=(";".join(s["reasons"]) if s["reasons"] else ("eligible" if s["eligible"] else "unknown")) + (f";slot={slot}" if slot != "valid" else ""),
                              device_profile_id="S26-anon", model_sha256=";".join(sorted({r["model_sha256"] for r in s["manifest"]["runtimes"] if r["key"] in policy_ref.USED_KEYS[s["policy"]]})),
                              input_sha256=s["manifest"]["image"]["sha256"], apk_sha256=((s.get("summary") or {}).get("apk_sha256") or args.apk_sha256 or "unknown"),
                              source_commit=args.source_commit or "unknown", engine_version="litert-compiled-model 2.2.0",
@@ -408,8 +448,14 @@ def main() -> int:
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--apk-sha256")
     ap.add_argument("--source-commit")
+    ap.add_argument("--a24-compare", type=Path, help="v2 #5: mixreq_a24_compare.py output json of the v2 APK smoke; verdict FAIL -> Q1 · Q2 · Q3 '이식 대조 FAIL — 기술만'")
     args = ap.parse_args()
     plan = C.read_json(args.plan)
+    reg_version = C.registration_version(plan["experiment_id"])
+    a24_compare = C.read_json(args.a24_compare) if args.a24_compare and args.a24_compare.is_file() else None
+    if args.a24_compare and a24_compare is None:
+        raise SystemExit(f"--a24-compare {args.a24_compare} not found (v2 #5 needs the verdict; pass the smoke a24_compare.json)")
+    a24_fail = bool(a24_compare) and a24_compare.get("verdict") != "PASS"
     sessions = []
     skipped = []
     for folder in sorted(p for p in args.results.iterdir() if p.is_dir()):
@@ -418,7 +464,8 @@ def main() -> int:
             skipped.append(folder.name)
         else:
             sessions.append(s)
-    blocks = {b: judge_block(b, sessions) for b in ("A", "N")}
+    blocks = {b: judge_block(b, sessions, reg_version, a24_fail) for b in ("A", "N")}
+    slots = slot_status(plan, sessions)
     # Q2 (block A only) table rows
     q2 = [dict(index=s["index"], policy=s["policy"], attempt=s["attempt"], eligible=s["eligible"],
                deadline_met=s.get("service", {}).get("all", {}).get("deadline_met"), urgent_p95_ms=s.get("service", {}).get("urgent", {}).get("p95_ms"),
@@ -434,11 +481,22 @@ def main() -> int:
     a24_reference = dict(source="등록 §1-6 [D] (Cowork 가 등록 전에 본 A24 숫자)", sessions="8/8", deadline="192/192",
                          urgent_p95_cpu_ms="422.5~430.2", urgent_p95_par_ms="291.1~302.3", pair_delta_ms="−127.9~−131.4", overlap_par_s="21.92~22.58",
                          last_lane_s="112.01~112.07", energy_j_mA_interpretation="184.5~199.2", peak_ap_delta_c="−0.4~+0.4", verdict="정책 우열 미판정")
+    q2_table = dict(title=Q2_TITLE_V2 if reg_version == 2 else Q2_TITLE_V1, judgment=(TAG_A24_FAIL if a24_fail else "관측만 · 우열 · 기기 효과 판정 없음"),
+                    rows=q2, a24_reference=a24_reference)
+    if reg_version == 2:
+        q2_table["same_definition_s26_observation"] = Q2_SAME_DEFINITION_LINE_V2
+        q2_table["note"] = "A24 400 ms · S26 200 ms — 같은 요청 정의가 아니다 (등록 v2 #9); 같은 부하로 읽지 않는다 (v2 §2 반대 해석 18)"
+    notes = ["J = S26 µA 해석 · 기술만 (적격성 미확보)", "열 = 호스트 HAL SKIN/AP (센서 이름 그대로) · A24 는 AP",
+             "NPU 문장: Samsung ENN NPU 경로로 실행 (코어 직접 증거 없음)", "조민규 확인 전 = 부록 관측 (등록 §9)"]
+    if reg_version == 2:
+        notes += [f"결론 문장에 늘 붙인다: {CONCLUSION_SUFFIX_V2} (등록 v2 §3)", "결과 지위 = S26 부록 관측 (등록 v2 §3)",
+                  "꼬리표 우선순위 (R3 원장 1-2): 이식 대조 FAIL > NPU 계약 실패 > 병행 겹침 없음 > 쌍 부족 > 방향 판정"]
     readout = dict(schema=SCHEMA, plan=str(args.plan), plan_sha256=C.sha256_file(args.plan), selftest=args.selftest, sessions=len(sessions), skipped=skipped,
+                   registration_version=reg_version, registration=plan.get("registration"), step_ms=plan.get("step_ms", 400),
+                   a24_compare=dict(path=str(args.a24_compare) if args.a24_compare else None, verdict=(a24_compare or {}).get("verdict"), fail=a24_fail),
+                   slots=slots, slot_counts={k: sum(1 for v in slots.values() if v["status"] == k) for k in ("valid", "invalid_twice", "invalid_once", "not_attempted")},
                    per_session=[{k: v for k, v in s.items() if k not in ("validated", "manifest", "rows", "host_log")} for s in sessions],
-                   blocks=blocks, q2_block_A=q2, a24_reference_for_q2=a24_reference, auxiliary=aux,
-                   notes=["J = S26 µA 해석 · 기술만 (적격성 미확보)", "열 = 호스트 HAL SKIN/AP (센서 이름 그대로) · A24 는 AP",
-                          "NPU 문장: Samsung ENN NPU 경로로 실행 (코어 직접 증거 없음)", "조민규 확인 전 = 부록 관측 (등록 §9)"])
+                   blocks=blocks, q2_block_A=q2, q2_table=q2_table, a24_reference_for_q2=a24_reference, auxiliary=aux, notes=notes)
     C.write_json(args.out / "readout.json", readout)
     write_csv(args.out / "inventory.csv", inventory_rows(plan, sessions, args), INVENTORY_FIELDS)
     write_csv(args.out / "files_inventory.csv", files_inventory(sessions), ["session_id", "attempt", "filename", "bytes", "sha256"])
@@ -451,8 +509,9 @@ def main() -> int:
                                              peak_ap_c=(s.get("thermal") or {}).get("peak_ap"), npu_contract=(s.get("contract") or {}).get("passed")) for s in sessions],
               ["index", "block", "pair", "policy", "attempt", "eligible", "urgent_p95_ms", "normal_p95_ms", "all_p95_ms", "deadline_met", "completed", "overlap_s",
                "last_lane_available_s", "arrival_delay_max_ms", "queue_aux_urgent_p95_ms", "energy_j", "peak_skin_c", "peak_ap_c", "npu_contract"])
-    print(json.dumps(dict(sessions=len(sessions), skipped=skipped, block_A=blocks["A"].get("judgment"), block_N=blocks["N"].get("judgment"),
-                          pairs_A=blocks["A"]["n"], pairs_N=blocks["N"]["n"]), ensure_ascii=False))
+    print(json.dumps(dict(sessions=len(sessions), skipped=skipped, registration_version=reg_version, a24_compare_fail=a24_fail,
+                          block_A=blocks["A"].get("judgment"), block_N=blocks["N"].get("judgment"), tags_A=blocks["A"]["tags"], tags_N=blocks["N"]["tags"],
+                          q2_title=q2_table["title"], pairs_A=blocks["A"]["n"], pairs_N=blocks["N"]["n"], slot_counts=readout["slot_counts"]), ensure_ascii=False))
     return 0
 
 

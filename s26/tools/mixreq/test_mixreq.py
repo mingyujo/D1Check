@@ -5,6 +5,8 @@ validate: every rule has >= 1 failing case; NPU evidence (replacement 1/1 + ENN 
 NPU contract synthetic vectors (cosine 0.99 boundary · top-1 differs · bit identical · second warmup only fails · missing output) ·
 attempt folder refusal · readout (A24 formula == ours · hand-computed case · nearest-rank edges · no cross-block pairs · contract fail → Q3 기술만) ·
 session dry-run.
+v2 (R3, 2026-10-09): rule 5 v2 (overlap recorded only, v1 id still fails) · smoke decisions recorded only · readout tags (병행 겹침 없음 ·
+이식 대조 FAIL, precedence) · slot status (invalid_twice) · driver dry-run.
 """
 from __future__ import annotations
 
@@ -200,7 +202,9 @@ def test_plan_is_deterministic_and_has_registered_order(tmp_path):
     assert [s["block"] for s in plan["sessions"]] == ["A"] * 8 + ["N"] * 8
     assert [s["pair"] for s in plan["sessions"]] == [0, 0, 1, 1, 2, 2, 3, 3] * 2
     assert plan["budget"]["calls_total"] == 3216 and plan["budget"]["smoke_calls"] == 108
-    assert plan["sessions"][0]["session_id"] == "20b64aab-fe48-54ea-b5c8-476ec1972d7d"
+    assert plan["sessions"][0]["session_id"] == "25a97307-6261-5c0a-b608-fa7a0566bca3"  # v2 namespace S26-MIXREQ-02/0
+    assert plan["experiment_id"] == "S26-MIXREQ-02" and plan["registration_version"] == 2 and plan["step_ms"] == 200
+    assert plan["registration"]["file"].endswith("_v2.md") and plan["registration_v1"]["sha256"].startswith("edf9e594")
     for s in plan["sessions"]:
         m = C.read_json(tmp_path / "p1" / s["manifest"])
         assert m["session_id"] == C.session_id(C.EXPERIMENT_ID, s["index"])
@@ -210,12 +214,22 @@ def test_plan_is_deterministic_and_has_registered_order(tmp_path):
 
 
 def test_request_table_matches_kotlin_expectations():
+    # v2 (등록 v2 #1 · #2): namespace S26-MIXREQ-02, step 200 ms. Values = uuid.uuid5(NAMESPACE_URL, ...) 2026-10-09, same in RequestPlanTest.kt (K1).
     sid0 = C.session_id(C.EXPERIMENT_ID, 0)
-    assert sid0 == "20b64aab-fe48-54ea-b5c8-476ec1972d7d"
-    assert C.request_id(sid0, 0) == "aab496ba-5456-50de-8472-6ee42998c6cb"
-    assert C.request_id(sid0, 191) == "538200cc-58a0-5fbd-a00b-456462c781f6"
+    assert sid0 == "25a97307-6261-5c0a-b608-fa7a0566bca3"
+    assert C.request_id(sid0, 0) == "4f44b70a-91c7-5ef2-9e65-d90506486a80"
+    assert C.request_id(sid0, 191) == "2cfd0921-4b30-54c1-b755-9ca4060f2b46"
+    assert C.session_id(C.SMOKE_EXPERIMENT_ID, 0) == "f6d1ec00-ce61-52a4-a14b-a4face78e590"
+    # v1 ids are unchanged by the derivation (only the namespace string moved): R2 artifacts keep their sids
+    assert C.session_id(C.V1_EXPERIMENT_ID, 0) == "20b64aab-fe48-54ea-b5c8-476ec1972d7d"
+    assert C.request_id(C.session_id(C.V1_EXPERIMENT_ID, 0), 0) == "aab496ba-5456-50de-8472-6ee42998c6cb"
+    assert C.registration_version(C.EXPERIMENT_ID) == 2 and C.registration_version(C.SMOKE_EXPERIMENT_ID) == 2
+    assert C.registration_version(C.V1_EXPERIMENT_ID) == 1 and C.registration_version(C.V1_SMOKE_EXPERIMENT_ID) == 1
+    with pytest.raises(ValueError):
+        C.registration_version("S26-MIXREQ-03")
     rows = C.requests(sid0)
-    assert len(rows) == 192 and rows[-1]["offset_ms"] == 111_400
+    assert len(rows) == 192 and rows[-1]["offset_ms"] == 73_200 and rows[1]["offset_ms"] == 35_200
+    assert C.requests(C.session_id(C.SMOKE_EXPERIMENT_ID, 1), 24)[-1]["offset_ms"] == 39_600
     with pytest.raises(ValueError):
         C.validate_requests([dict(r, offset_ms=r["offset_ms"] + 1) for r in rows])
     with pytest.raises(ValueError):
@@ -299,7 +313,29 @@ def test_rule5_overlap(tmp_path):
                 for k in ("dispatch_ns", "execution_start_ns", "host_inference_start_ns", "host_inference_return_ns", "output_ready_ns", "persist_complete_ns", "worker_release_ns", "lane_available_ns"):
                     r[k] += shift
                 t = r["lane_available_ns"] + 1
-    _fail(tmp_path, policy_ref.POLICY_PAR, "A", "5_overlap", serial)
+    # v2 (등록 v2 #4): the same no-overlap PAR session is NOT invalid under the v2 id — overlap_s is recorded (0) and the readout tags it
+    v2, _ = validate_synth(tmp_path / "v2", policy_ref.POLICY_PAR, "A", mutate=serial)
+    assert v2["eligible"], v2["reasons"]
+    assert v2["registration_version"] == 2 and v2["rules"]["5_overlap"]["detail"]["overlap_zero"] is True and v2["rules"]["5_overlap"]["detail"]["overlap_s"] == 0
+    # v1 id on identical artifacts -> rule 5 fails (R2 재검증 결과 불변)
+    def serial_v1(ctx):
+        serial(ctx)
+        ctx["manifest"]["experiment_id"] = C.V1_SMOKE_EXPERIMENT_ID
+    v1 = _fail(tmp_path / "v1", policy_ref.POLICY_PAR, "A", "5_overlap", serial_v1)
+    assert v1["registration_version"] == 1 and v1["reasons"] == ["5_overlap"]
+    # a foreign lane row still fails rule 5 under v2 (only the "> 0" condition was dropped)
+    def foreign(ctx): ctx["rows"][0]["selected_backend"] = "NPU"
+    v2f, _ = validate_synth(tmp_path / "v2f", policy_ref.POLICY_PAR, "A", mutate=foreign)
+    assert "5_overlap" in v2f["reasons"]
+    # CPU overlap 0 stays a validity condition under v2
+    def cpu_overlap(ctx):
+        ctx["rows"][1]["selected_backend"] = "GPU"
+    v2c, _ = validate_synth(tmp_path / "v2c", policy_ref.POLICY_CPU, "A", mutate=cpu_overlap)
+    assert not v2c["eligible"]
+
+
+def test_rule5_default_synthetic_sessions_are_v2():
+    assert C.registration_version(C.SMOKE_EXPERIMENT_ID) == 2  # synth_session() uses SMOKE_EXPERIMENT_ID -> the v2 branch above is the default path
 
 
 def test_rule6_warmup_quality_only_for_used_keys(tmp_path):
@@ -475,6 +511,84 @@ def test_pairs_never_cross_blocks_and_contract_failure_makes_q3_descriptive():
     assert R.judge_block("A", mixed)["urgent_judgment"] == "엇갈림"
 
 
+def test_v2_readout_tags_overlap_zero_and_a24_fail():
+    """등록 v2 #3 · #5 + R3 원장 1-2 ① (꼬리표 우선순위: 이식 대조 FAIL > NPU 계약 실패 > 병행 겹침 없음 > 쌍 부족 > 방향 판정)."""
+    def sess(index, block, policy, eligible=True, p95=400.0, contract=True, overlap=5.0):
+        return dict(index=index, block=block, pair=C.pair_of(block, index), policy=policy, attempt=1, eligible=eligible, overlap_s=overlap,
+                    service=dict(urgent=dict(p95_ms=p95, planned=96, deadline_met=96), normal=dict(p95_ms=900.0, planned=96, deadline_met=96),
+                                 all=dict(planned=192, deadline_met=192)), thermal=None, energy=None,
+                    contract=dict(passed=contract) if block == "N" and policy == policy_ref.POLICY_PAR_NPU else None)
+    three = [sess(0, "A", policy_ref.POLICY_CPU, overlap=0.0), sess(1, "A", policy_ref.POLICY_PAR, p95=300.0), sess(2, "A", policy_ref.POLICY_PAR, p95=310.0),
+             sess(3, "A", policy_ref.POLICY_CPU, p95=410.0, overlap=0.0), sess(4, "A", policy_ref.POLICY_PAR, p95=290.0), sess(5, "A", policy_ref.POLICY_CPU, p95=420.0, overlap=0.0)]
+    # v2, all PAR overlaps > 0 -> direction judgment, no tag
+    j = R.judge_block("A", three, reg_version=2)
+    assert j["judgment"] == "병행이 긴급 응답을 줄였다" and j["tags"] == [] and j["parallel_overlap_zero_sessions"] == []
+    # one valid PAR session with overlap 0 (even an unpaired one) -> "병행 겹침 없음 — 기술만" replaces the direction judgment
+    with_zero = three + [sess(7, "A", policy_ref.POLICY_PAR, p95=280.0, overlap=0.0)]
+    j0 = R.judge_block("A", with_zero, reg_version=2)
+    assert j0["judgment"] == "병행 겹침 없음 — 기술만" and j0["parallel_overlap_zero_sessions"] == [7] and j0["n"] == 3
+    assert "urgent_judgment" not in j0
+    # the same sessions under v1 rules: overlap is not a readout tag (v1 rule 5 would have made the session invalid upstream)
+    assert R.judge_block("A", with_zero, reg_version=1)["judgment"] == "병행이 긴급 응답을 줄였다"
+    # a24 compare FAIL -> "이식 대조 FAIL — 기술만" first, overlap tag still listed
+    jf = R.judge_block("A", with_zero, reg_version=2, a24_compare_fail=True)
+    assert jf["judgment"] == "이식 대조 FAIL — 기술만" and jf["tags"] == ["이식 대조 FAIL — 기술만", "병행 겹침 없음 — 기술만"]
+    # block N: NPU contract failure precedes the overlap tag; both are recorded
+    n_sessions = [sess(8, "N", policy_ref.POLICY_CPU, overlap=0.0), sess(9, "N", policy_ref.POLICY_PAR_NPU, p95=250.0, contract=False, overlap=0.0)]
+    jn = R.judge_block("N", n_sessions, reg_version=2)
+    assert jn["judgment"].startswith("NPU 출력 계약 실패") and jn["tags"][1] == "병행 겹침 없음 — 기술만" and jn["tags"][2] == "쌍 부족 — 기술만"
+    jn_ok = R.judge_block("N", [sess(8, "N", policy_ref.POLICY_CPU, overlap=0.0), sess(9, "N", policy_ref.POLICY_PAR_NPU, p95=250.0, overlap=0.0)], reg_version=2)
+    assert jn_ok["judgment"] == "병행 겹침 없음 — 기술만" and jn_ok["tags"] == ["병행 겹침 없음 — 기술만", "쌍 부족 — 기술만"]
+    assert R.TAG_NO_OVERLAP == "병행 겹침 없음 — 기술만" and R.TAG_A24_FAIL == "이식 대조 FAIL — 기술만"
+    assert R.Q2_TITLE_V2 == "간격이 다른 이식 (S26 200 ms · A24 400 ms) — 나란히 기술만"
+    assert "200 ms" in R.CONCLUSION_SUFFIX_V2 and "v1 스모크 뒤 설계" in R.CONCLUSION_SUFFIX_V2
+
+
+def test_v2_smoke_decisions_are_recorded_only():
+    import mixreq_smoke as S
+    v1 = dict(decisions=[], observations=[])
+    S.record_decision(v1, 1, "블록 A 미실행 — PAR 병행 검증 실패 (등록 §3-3)")
+    assert v1["decisions"] == ["블록 A 미실행 — PAR 병행 검증 실패 (등록 §3-3)"] and v1["observations"] == []
+    v2 = dict(decisions=[], observations=[])
+    S.record_decision(v2, 2, "블록 A 미실행 — PAR 병행 검증 실패 (등록 §3-3)")
+    S.record_decision(v2, 2, "R2 를 시작하지 말 것 — S26 CPU 출력이 PC 참조와 다름 (이식 오류 의심, 등록 §11-1 ①②)")
+    assert v2["decisions"] == [] and len(v2["observations"]) == 2 and all("실행 차단 아님" in o["v2"] for o in v2["observations"])
+    assert "등록 v2 #3" in S.V2_NOTE
+
+
+def test_slot_status_valid_invalid_twice_not_attempted():
+    plan = dict(sessions=[dict(index=i, block="A" if i < 8 else "N", policy=p, pair=C.pair_of("A" if i < 8 else "N", i)) for i, (_, p) in enumerate(C.SESSION_ORDER)])
+    sessions = [dict(index=0, attempt=1, eligible=True, reasons=[]),
+                dict(index=1, attempt=1, eligible=False, reasons=["1_requests_succeeded_quality"]), dict(index=1, attempt=2, eligible=False, reasons=["9_watch_stop"]),
+                dict(index=2, attempt=1, eligible=False, reasons=["4_assignment_residents"]), dict(index=2, attempt=2, eligible=True, reasons=[]),
+                dict(index=3, attempt=1, eligible=False, reasons=["2_time_order"])]
+    slots = R.slot_status(plan, sessions)
+    assert slots["0"]["status"] == "valid" and slots["1"]["status"] == "invalid_twice" and slots["2"]["status"] == "valid"
+    assert slots["3"]["status"] == "invalid_once" and slots["4"]["status"] == "not_attempted"
+    assert sum(1 for v in slots.values() if v["status"] == "not_attempted") == 12
+
+
+def test_driver_dry_run(tmp_path):
+    """mixreq_driver.ps1 -DryRun over a temp results root (never the real one): 8 sessions, 0 retries, DRIVER END completed."""
+    import shutil
+    ps = shutil.which("powershell") or shutil.which("powershell.exe")
+    if ps is None:
+        pytest.skip("powershell missing")
+    plan_dir = REPO / "s26" / "results" / "mixreq_1008" / "plan_v2"
+    if not (plan_dir / "plan.json").is_file():
+        pytest.skip("plan_v2 missing")
+    results = tmp_path / "drv"
+    cmd = [ps, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(HERE / "mixreq_driver.ps1"), "-Block", "A", "-DryRun", "-SkipGate",
+           "-PlanDir", str(plan_dir), "-ResultsRoot", str(results)]
+    r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=600, env={**__import__("os").environ, "ANDROID_SERIAL": ""})
+    out = r.stdout + r.stderr
+    assert "DRIVER END block=A reason=completed retries=0 invalid_twice=[]" in out, out[-2000:]
+    assert out.count("RESULT index=") == 8 and "<SERIAL>" not in str(results)
+    assert all((results / f"S26_MIXREQ_{i:02d}_{p}_a1").is_dir() for i, (_, p) in enumerate(C.SESSION_ORDER[:8]))
+    text = (HERE / "mixreq_driver.ps1").read_bytes()
+    assert all(b < 128 for b in text) and b"\r\n" in text and b"\n" not in text.replace(b"\r\n", b"")  # ASCII + CRLF only
+
+
 def test_energy_cross_check_matches_vendor(tmp_path):
     dev = synth_session(tmp_path, policy_ref.POLICY_CPU, "A")
     events = [json.loads(l) for l in (dev / "progress.jsonl").read_text().splitlines()]
@@ -486,9 +600,9 @@ def test_energy_cross_check_matches_vendor(tmp_path):
 
 # ----------------------------------------------------------------------------------------------- session dry-run / attempt refusal
 def test_session_dry_run_and_attempt_folder_refusal(tmp_path):
-    plan_dir = REPO / "s26" / "results" / "mixreq_1008" / "plan_v1"
+    plan_dir = REPO / "s26" / "results" / "mixreq_1008" / "plan_v2"
     if not (plan_dir / "plan.json").is_file():
-        pytest.skip("plan_v1 missing")
+        pytest.skip("plan_v2 missing")
     results = tmp_path / "results"
     cmd = [sys.executable, "-X", "utf8", str(HERE / "mixreq_session.py"), "--plan", str(plan_dir), "--index", "1", "--results", str(results), "--dry-run", "--skip-gate"]
     r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", env={**__import__("os").environ, "ANDROID_SERIAL": ""})
