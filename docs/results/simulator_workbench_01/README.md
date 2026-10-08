@@ -1,5 +1,9 @@
 # D1Check 통합 시뮬레이터
 
+## 2026-10-08 정책 계수 민감도: 설정 안의 방향 판독
+
+[첫seed72저장일정·96guard·그림](../policy_coefficient_sensitivity_01/run_v2/index.html) · [판정·재현·면적수정](../../POLICY_COEFFICIENT_SENSITIVITY_RESULTS_20261008.md). R2/EDD는주6조건Triton대응대비J/최고AP방향5설정모두유지,공용EFT/Band대비공동감소0·지속J부호변화. 미채택계수변형의고정일정민감도이며새B재실행/실제절감/신뢰구간아님. 기본/RL/strict불변·환경/적합/기기0.
+
 ## 2026-10-08 공동 계수 후보: 일반 적용 보류
 
 [20세션·68행·그림](../joint_model_refinement_01/run/index.html) · [개발/평가·정책 차이·재현](../../JOINT_MODEL_REFINEMENT_RESULTS_20261008.md). 최근14 조건부J MAE4.319→4.273J이나AP0.329→0.369°C·정책차이6.322→8.730J 악화. 개발묶음제외기준실패. 과거고오차도보존하며원모형/RL/strict유지. MEMORY30의80초실행중관측보정은사전정책예측과구분한다. 기기명령0.

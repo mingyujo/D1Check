@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-08 POLICY-COEFFICIENT-SENSITIVITY-01 — 저장 일정 방향 판독 완료
+
+- 첫seed610880001/4family×3context×6policy의72저장일정을다섯계수설정으로후처리했다. 신규환경/적합/학습/기기0. [판독·경계·수정](POLICY_COEFFICIENT_SENSITIVITY_RESULTS_20261008.md) · [96비교/360비용/그림](results/policy_coefficient_sensitivity_01/README.md).
+- R2·EDD는주6조건에서Triton대응대비J/최고AP감소방향5설정모두유지,공용EFT/Band대비공동감소0/6. 지속ΔJ부호는계수에따라변화한다. 전체96중서비스부적격18/전기한미충족30을성공에서제외. 첫seed·고정PC일정·미채택변형민감도이며실제절감/확률구간/계수변경후B재실행아님.
+- 새분석AP면적기준오류를기존유효유휴R로수정,초안run/contract_v1보존→run_v2분리. J/최고AP/96판정불변·8검증/360독립J/480짝검사·72archive/동결hash불변·3그림확인. 원모형/기본/RL/strict/experiment_ready=false·사용자14행/진행중EDD/타worktree보존.
+- 다음PC하나: EDD/RL 작업이시험일정을남기면같은서비스guard와계수민감도로공용EFT/Band 대비방향판독. 이번에그작업수정/새학습/실측/claim을시작하지않는다.
+
 ## 2026-10-08 JOINT-REFIT-01 — 공동 계수 후보 평가 완료·일반 적용 보류
 
 - 개발9/평가20·중복8제거, 후보1개/4적합으로원수식계수를추정했다. APK/준비이력차이를명시한전이후보이며개발묶음제외에너지/AP gate 모두실패. [결과·구체적공백](JOINT_MODEL_REFINEMENT_RESULTS_20261008.md) · [68행·그림·재현](results/joint_model_refinement_01/README.md).

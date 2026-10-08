@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-08 POLICY-COEFFICIENT-SENSITIVITY-01 — 설정 내 방향과 실제 절감 구분
+
+- 확정: 원모형＋이미적합된개발변형4의짝지은계수민감도를기한/서비스guard뒤선택적으로표시한다. 변형4는미채택stress probe이며범위를확률구간/보편오차한도로쓰지않고기본/RL에자동적용하지않는다. [근거](POLICY_COEFFICIENT_SENSITIVITY_RESULTS_20261008.md).
+- 첫seed주6조건의R2/EDD 대Triton J/최고AP방향유지는제한적모형결과이며강한공용EFT/Band대비공동개선이아니다. 원기본/RL/strict/experiment_ready=false유지. AP면적구현수정은기존KPI정의복구이며결과후목적함수/합격선변경없음.
+- 후속권고는별도EDD/RL 시험일정의같은판독이며신규학습/정책선정/기기승인/소비claim을만들지않는다. 진행중작업·사용자/원자료/실패/소비계획보존.
+
 ## 2026-10-08 JOINT-REFIT-01 — 공동 개발자료 후보 일반 채택 보류
 
 - 확정: 기존3+이력6 개발자료로한구조의계수를추정하고세묶음제외선택과이미본평가20을구분한다. APK·준비이력차이로전이후보이며strict확대로처리하지않는다. [근거](JOINT_MODEL_REFINEMENT_RESULTS_20261008.md).

@@ -1,5 +1,10 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-08 POLICY-COEFFICIENT-SENSITIVITY-01 — 선택적 판독 연결 완료
+
+- 저장72일정의동일계수짝차이/96서비스·방향guard를구현했다. 기존일정에조건부인후처리이며정책결정재실행/환경소비0. [결과·제한·재현](POLICY_COEFFICIENT_SENSITIVITY_RESULTS_20261008.md). R2/EDD 대Triton방향유지와공용EFT/Band대비에너지부호민감도를구분한다.
+- 원모형·기본·RL·strict·experiment_ready=false유지. 다음은별도EDD/RL 시험일정이준비된뒤읽기전용계수민감도판독이며이번에자동실행하지않는다. 추가물리적성공/전기한성공/전체seed비율로확대하지않는다.
+
 ## 2026-10-08 JOINT-REFIT-01 — 기존 자료 공동 적합 라운드 종료
 
 - 사용자 승인으로 개발9/평가20 고정→기존 MEMORY30 명목짝 판독→한구조의전력4계수/AP beta,k 재추정→개발제외3묶음/20사후평가/14B 비용판독을완료했다. [결과·재현](JOINT_MODEL_REFINEMENT_RESULTS_20261008.md). 개발gate실패·정책차이악화로일반적용보류,기본/RL/strict불변.
