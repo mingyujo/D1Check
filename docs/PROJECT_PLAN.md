@@ -1,5 +1,10 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-08 PRELOAD-DYNAMICS-REFINEMENT-01 — 예측 오차 개선 라운드 완료
+
+- 사용자정정으로현재목표를에너지/AP 예측오차감소로돌렸다. 두사전초기화구조→개발판정동결→동일20평가→별도AP API를완료했다. [결과·재현](PRELOAD_DYNAMICS_REFINEMENT_RESULTS_20261008.md). 실제지속AP평균약11.94%개선과새확인악화를함께보존,전력추세후보제외·원기본/RL/strict불변.
+- AP후보는물리계수가같은조건부비용진단이며개발기준실패로일반적용보류다. 이후평가로허용폭·지원범위를바꾸지않는다. 부하전정보만으로다른실행후유휴기준을구분할정보가남았으며이번에는새실측계획/후보재탐색/정책비교를시작하지않는다. 기기0/experiment_ready=false유지.
+
 ## 2026-10-08 POLICY-COEFFICIENT-SENSITIVITY-01 — 선택적 판독 연결 완료
 
 - 저장72일정의동일계수짝차이/96서비스·방향guard를구현했다. 기존일정에조건부인후처리이며정책결정재실행/환경소비0. [결과·제한·재현](POLICY_COEFFICIENT_SENSITIVITY_RESULTS_20261008.md). R2/EDD 대Triton방향유지와공용EFT/Band대비에너지부호민감도를구분한다.

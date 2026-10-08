@@ -1,5 +1,9 @@
 # D1Check 통합 시뮬레이터
 
+## 2026-10-08 AP 초기화 변경: 지속 부하 일부 오차 감소
+
+[20평가·관측/예측/잔차](../preload_dynamics_refinement_01/run/index.html) · [초기화후보/API·재현](../../PRELOAD_DYNAMICS_REFINEMENT_RESULTS_20261008.md). AP지속8 MAE0.381→0.335°C/최대1.277→1.165°C,최근14 평균0.329→0.307°C 감소. 새확인6/지속4개악화·개발기준실패로기본미교체,전력추세후보악화로제외. 별도opt-in AP API29경로일치,물리계수/원기본/RL/strict/기기불변.
+
 ## 2026-10-08 정책 계수 민감도: 설정 안의 방향 판독
 
 [첫seed72저장일정·96guard·그림](../policy_coefficient_sensitivity_01/run_v2/index.html) · [판정·재현·면적수정](../../POLICY_COEFFICIENT_SENSITIVITY_RESULTS_20261008.md). R2/EDD는주6조건Triton대응대비J/최고AP방향5설정모두유지,공용EFT/Band대비공동감소0·지속J부호변화. 미채택계수변형의고정일정민감도이며새B재실행/실제절감/신뢰구간아님. 기본/RL/strict불변·환경/적합/기기0.

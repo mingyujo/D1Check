@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-08 PRELOAD-DYNAMICS-REFINEMENT-01 — AP 일부 오차 감소 후보/API 구현 완료
+
+- 사용자의목표정정에따라정책비교를멈추고예측오차보완을수행했다. 첫부하전AP 고정해제·전력사전추세의두초기화구조를고정,개발9/평가20에서172행A/B를계산했다. [결과·악화·해석](PRELOAD_DYNAMICS_REFINEMENT_RESULTS_20261008.md) · [후보/API·그림·재현](results/preload_dynamics_refinement_01/README.md).
+- AP 지속8 MAE0.381→0.335°C/최대1.277→1.165°C·최근14 평균0.329→0.307°C 감소를재현했다. 새확인6은0.260→0.268°C 악화/지속4개악화·개발최대오차기준실패로일반채택보류. 전력후보는최근14 J4.319→7.435로악화해제외. 기본 J/AP모형과물리계수는그대로다.
+- 8검증/172행재현차0·29독립적분최대3.16e−9J·별도AP API29일치·3그림확인. 모형/입력SHA·원자료/FAIL·진행중EDD/RL·사용자14행/타worktree보존. 기기/ADB/실측/빌드/정책환경/학습/claim0·strict/experiment_ready=false 유지.
+- 이번라운드완료: 별도AP후보는opt-in재현가능하며기본배포아님. 다음근거는부하전관측으로구분되지않는부하후유휴기준변화를설명할정보다. 평가후강도/시간상수재탐색·새측정자동추가·정책비교로의목표전환0.
+
 ## 2026-10-08 POLICY-COEFFICIENT-SENSITIVITY-01 — 저장 일정 방향 판독 완료
 
 - 첫seed610880001/4family×3context×6policy의72저장일정을다섯계수설정으로후처리했다. 신규환경/적합/학습/기기0. [판독·경계·수정](POLICY_COEFFICIENT_SENSITIVITY_RESULTS_20261008.md) · [96비교/360비용/그림](results/policy_coefficient_sensitivity_01/README.md).

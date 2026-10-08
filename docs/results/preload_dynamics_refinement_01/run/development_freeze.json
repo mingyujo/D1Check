@@ -1,0 +1,92 @@
+{
+  "id": "PRELOAD-DYNAMICS-REFINEMENT-01",
+  "utc": "2026-10-08T06:52:46.166489+00:00",
+  "contract_sha256": "63e758af23ead9edffc3bd3c1df6247d69a8747aed6881095177b5a771d56ae3",
+  "development_ids": [
+    "development_0",
+    "development_1",
+    "development_2",
+    "development_30_C0",
+    "development_30_CPU",
+    "development_30_PAR",
+    "development_180_PAR",
+    "development_180_CPU",
+    "development_180_C0"
+  ],
+  "gates": {
+    "E_PRE_TRANSIENT": {
+      "selected": false,
+      "checks": [
+        {
+          "block": "history_180",
+          "available": true,
+          "abs_j": {
+            "original": 4.99356686157996,
+            "candidate": 9.388468510045087
+          }
+        },
+        {
+          "block": "history_30",
+          "available": true,
+          "abs_j": {
+            "original": 5.215102121150338,
+            "candidate": 5.735590492325836
+          }
+        },
+        {
+          "block": "old_development",
+          "available": true,
+          "abs_j": {
+            "original": 4.168711208851657,
+            "candidate": 3.755627785233069
+          }
+        }
+      ]
+    },
+    "AP_FREE_INITIAL": {
+      "selected": false,
+      "checks": [
+        {
+          "block": "history_180",
+          "available": true,
+          "mae_c": {
+            "original": 0.16916096234813402,
+            "candidate": 0.16730632412071722
+          },
+          "max_absolute_error_c": {
+            "original": 0.6088141138280498,
+            "candidate": 0.6063403094199439
+          }
+        },
+        {
+          "block": "history_30",
+          "available": true,
+          "mae_c": {
+            "original": 0.16826206830625356,
+            "candidate": 0.16690085886528758
+          },
+          "max_absolute_error_c": {
+            "original": 0.7199105954072932,
+            "candidate": 0.7175406321137293
+          }
+        },
+        {
+          "block": "old_development",
+          "available": true,
+          "mae_c": {
+            "original": 0.4583152645836159,
+            "candidate": 0.44803064611695725
+          },
+          "max_absolute_error_c": {
+            "original": 1.4010634590035405,
+            "candidate": 1.4030261565255937
+          }
+        }
+      ]
+    }
+  },
+  "initializers_fixed": true,
+  "no_population_fit": true,
+  "physical_coefficients_changed": false,
+  "default": false
+}

@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-08 PRELOAD-DYNAMICS-REFINEMENT-01 — AP 초기화 후보 별도 보존·일반 채택 보류
+
+- 확정: 목표는정책판독이아닌에너지/AP 예측오차보완이다. 원beta/k/g0/상태계수/잠재30초를유지한AP 첫표본고정해제와사전전력추세의두구조를사전에제한하고개발/평가를분리했다. [근거](PRELOAD_DYNAMICS_REFINEMENT_RESULTS_20261008.md).
+- AP 지속8/최근14 평균개선은사후평가근거이며새확인악화와개발기준실패를이유로기본채택하지않는다. 선택적API만별도보존한다. 전력후보는평균악화로제외하며전력개선·정책효과로포장하지않는다.
+- 원모형/기본/RL/strict/experiment_ready=false·원자료/FAIL/소비계획을보존한다. 추가강도/범위/합격선변경·새실측/claim·다른EDD작업수정0. 단순첫값고정이유휴/잔열오차전체원인이라는판정도하지않는다.
+
 ## 2026-10-08 POLICY-COEFFICIENT-SENSITIVITY-01 — 설정 내 방향과 실제 절감 구분
 
 - 확정: 원모형＋이미적합된개발변형4의짝지은계수민감도를기한/서비스guard뒤선택적으로표시한다. 변형4는미채택stress probe이며범위를확률구간/보편오차한도로쓰지않고기본/RL에자동적용하지않는다. [근거](POLICY_COEFFICIENT_SENSITIVITY_RESULTS_20261008.md).

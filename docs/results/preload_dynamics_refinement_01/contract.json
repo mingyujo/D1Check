@@ -1,0 +1,62 @@
+{
+  "id": "PRELOAD-DYNAMICS-REFINEMENT-01",
+  "utc": "2026-10-08T06:52:11.584657+00:00",
+  "head": "29da591ab671cfe707e2065c694acfbc52ff984c",
+  "posthoc": true,
+  "input_hashes": {
+    "docs/results/model_refinement_01/inputs.json.gz": "cb07aa735100971b6e7e635ecf9c8c24bc9b9c2b7ffdbc4e9824b0566f7f2ffb",
+    "docs/results/history_model_refinement_01/inputs.json.gz": "2005a26656c7c4a88b6b914ac51c2fcb156cb9229f050491c7f1826b5d8d816f",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2"
+  },
+  "energy": {
+    "id": "PRELOAD_EXPONENTIAL_BASELINE_V1",
+    "initialization": "OLS on measured power samples -20..30: B+Z exp(-(t+20)/30); equal sample loss, original baseline before35",
+    "prediction": "after35 B+(P35-B) exp(-(t-35)/30) plus unchanged state increments",
+    "tau_s": 30,
+    "fixed_time_constant": "prior hypothesis, not fitted physical constant",
+    "unavailable": "coverage/order/count/rank/nonpositive predicted baseline; no clipping or zero fill"
+  },
+  "ap": {
+    "id": "FREE_FIRST_PRELOAD_INITIAL_V1",
+    "initialization": "OLS pre curve R+A exp(-beta dt)+Hfirst convolution(beta,30,dt); first observed AP is no longer forced exact; last observed AP remains exact anchor",
+    "fixed": [
+      "beta",
+      "k",
+      "g0",
+      "tau30",
+      "state slopes"
+    ],
+    "unavailable": "existing preload/bracket checks plus rank3/finite; no invented state"
+  },
+  "component_structures": 2,
+  "combined": "no third fitting or selection; arithmetic composition diagnostic only",
+  "development": "same nine, each old/history30/history180 block must be nonworse; not independent cross-validation because there is no population training",
+  "selection": "energy block mean whole120 MAE nonworse; AP block mean trajectory MAE and mean session max nonworse; at least one strict improvement; epsilon1e-10 numeric only",
+  "evaluation": "old confirmation6/history confirmation6/sustained8 kept separate; already seen posthoc; all rejected diagnostic candidates retained",
+  "prediction_modes": [
+    "A actual schedule conditional",
+    "B archived forecast schedule, no new service or scheduler execution"
+  ],
+  "windows": {
+    "energy": [
+      0,
+      120
+    ],
+    "ap": "session actual post35 sensor window"
+  },
+  "purpose": "reduce energy/AP prediction errors, not policy ranking",
+  "after_evaluation_retune": false,
+  "model_replacement": false,
+  "accuracy_pass": null,
+  "experiment_ready": false,
+  "budget": {
+    "active_seconds": 14400,
+    "reserve_seconds": 300,
+    "device_commands": 0,
+    "policy_environment_starts": 0,
+    "new_population_fits": 0,
+    "structures": 2
+  },
+  "implementation_sha256": "e81bf8c21fb444bda5ccabb8f35820bd7ed6476c7163e4384d68894666e14cf1",
+  "test_sha256": "863875f74931a6717b4cf92e638a2e2d3dba7625d6353e832a0e1832bae74571"
+}
