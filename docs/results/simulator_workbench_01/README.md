@@ -1,5 +1,9 @@
 # D1Check 통합 시뮬레이터
 
+## 2026-10-08 에너지 보정 강도 추정: 원모형보다 평균오차 감소 미확보
+
+[비교/480행](../rolling_energy_shrink_01/index.html) · [추정·교차평가·범위](../../ROLLING_ENERGY_SHRINK_RESULTS_20261008.md). 개발6에서 alpha0.263 고정·회복교차gate실패. 확인10초MAE 원0.870→후보0.922J/지속0.844→0.856J 악화, 합산80초 확인3.891→2.960J 감소는상쇄/순차관측포함·120초전체예측개선아님. 원모형/RL/strict 유지·이창의에너지오차보완작업이며정책/앱AP/기기0.
+
 ## 2026-10-08 AP 관측 경로: host 진단 입력 검증·현재APK 미지원
 
 [지원표](../ap_observation_path_01/index.html) · [적용판정/8검증/재현](../../AP_OBSERVATION_PATH_PC_20261008.md). host CurrentHAL AP→PC10초예측의별도API구현/20진입검증, 기존1630관측대조3명령span중앙값.328초/P95.437초. producer기록시각을consumer수신으로승격하지않고실수신시각은명시필수·없으면proxy. 현재APK직접AP/연속consumer없음·전달지연null·기기자율적용불가. Android/빌드/기기0·원기본/strict/RL불변.

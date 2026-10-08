@@ -1,0 +1,91 @@
+{
+  "id": "ROLLING-ENERGY-SHRINK-01",
+  "utc": "2026-10-08T03:19:06.417885+00:00",
+  "head": "d8b2ec2e2512dd170752a42c3c3b4076fefa541e",
+  "posthoc": true,
+  "formula": "predicted10sJ = frozen10sJ + alpha*(past available residual W)*10s",
+  "candidate_structures": 1,
+  "alpha_bounds": [
+    0,
+    1
+  ],
+  "intercept": false,
+  "fitting": "designated history development6 only; minimize mean per-session mean absolute10sJ error; analytic weighted median of desired correction/x, weights abs(x)/windows/session",
+  "tie": "smallest minimizing alpha; numerical zero information=>unidentified, never silently fabricate coefficient",
+  "validation": "leave recovery30/180 block out; each excluded block mean10sMAE and absolute net80s error nonworsening vs frozen, at least one strict primary improvement; otherwise selected alpha0, retain candidate as diagnostic",
+  "comparison": [
+    "FROZEN alpha0",
+    "prior full correction alpha1",
+    "development fitted shrink alpha"
+  ],
+  "evaluation": "history confirmation6 and prior sustained8, already viewed; no selection/refit on evaluation",
+  "windows_s": [
+    [
+      35,
+      45
+    ],
+    [
+      45,
+      55
+    ],
+    [
+      55,
+      65
+    ],
+    [
+      65,
+      75
+    ],
+    [
+      75,
+      85
+    ],
+    [
+      85,
+      95
+    ],
+    [
+      95,
+      105
+    ],
+    [
+      105,
+      115
+    ]
+  ],
+  "partial_union_s": [
+    35,
+    115
+  ],
+  "common120_error": null,
+  "fixed": [
+    "same past10s window and availability gates",
+    "current/profile model",
+    "actual future schedule conditionA",
+    "AP correction",
+    "no filter/window/state/temperature retuning"
+  ],
+  "metrics": [
+    "session mean absolute10sJ",
+    "signed/relative window error",
+    "worst10s error",
+    "absolute net80s error",
+    "sum absolute window errors",
+    "all worsened sessions",
+    "idle/mixed strata"
+  ],
+  "acceptance": "statistical/physical accuracy PASS null; report both local and aggregate plus worsened sessions; do not compare10s or80s error with old120s error as improvement",
+  "device_commands": 0,
+  "policy_simulations": 0,
+  "rl_training": 0,
+  "apk_builds": 0,
+  "default": false,
+  "strict_support": false,
+  "experiment_ready": false,
+  "source_hashes": {
+    "docs/results/rolling_forecast_01/window_errors.csv": "f86e1a1866e1f013a5122bc68c9a42b89d233f3400c50da1a5322df1261bc152",
+    "docs/results/rolling_forecast_01/snapshots.csv": "0afef87f021fa983c36fb1d57bfd5bd464895f18a7bd089e1906f9d57ac6fd2a",
+    "docs/results/rolling_forecast_01/inputs.json.gz": "a74e9009fd54c79654359d6470276a83ef95a0e7a15b31471a2ad9556be25964",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2"
+  }
+}

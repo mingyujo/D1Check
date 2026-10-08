@@ -1,5 +1,12 @@
 # D1Check 결정 기록
 
+## 2026-10-08 ROLLING-ENERGY-SHRINK-01 — 개발 전용 강도 추정·평가 완료, 후보 미채택
+
+- 이 대화의 시뮬레이션 에너지 오차 보완으로 단일alpha0..1을 개발6/48창 MAE최소로추정해0.262688로봉인. 확인6+지속8을재적합없이평가했다. [결과·상충·범위](ROLLING_ENERGY_SHRINK_RESULTS_20261008.md) · [480행/재현](results/rolling_energy_shrink_01/README.md).
+- 개발회복제외alpha.171..526·30초개별오차악화로gate실패/선택0(원유지). 확인10초MAE 원.870→후보.922J·지속.844→.856J 악화, 확인합산80초3.891→2.960J/지속4.615→3.433J 감소는상쇄/순차관측포함·120초전체개선아님. 전량보정대비악화완화와원모형개선을구분·확인후튜닝0.
+- 8검증·실제API160창/480점수재현·원4입력hash/모형불변·표/그림통과. 단일후보적합3회(전체+history2fold), fixture/재현별도. AP/기한/원모형/RL/strict/experiment_ready=false 유지, 정책환경/학습/기기/ADB/실측/Android/APK/claim0·다른IE/SLACK과사용자14행/개인/다른worktree보존.
+- 종료/다음에너지PC질문하나: 기존전류의반복/갱신양상과최근잔차지속성으로변동과지속편향을분리할근거가있는지판독. 앱AP배포/RL로목표를대체하거나보정기간/강도를결과후자동탐색하지않는다.
+
 ## 2026-10-08 IE-DISPATCH-PC-01 — 산업공학 ECT·SPT·EDD 동일조건 검증 완료
 
 - 사용자 ‘한번 검증해보자’에 따라 FIFO/SPT/EDD 순서+동일 ECT(5단계 lane 완료)의 제한적 B를 별도 adapter로 비교했다. 결과 전 대응·소스·설정 고정, 튜닝0. 기존192조건9정책1,728행(신규576/재사용1,152). [결과·범위·재현](results/ie_dispatch_01/README.md) · [오프라인 화면](results/ie_dispatch_01/index.html).
