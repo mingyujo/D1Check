@@ -1,0 +1,59 @@
+{
+  "utc": "2026-10-08T02:56:51.127746+00:00",
+  "starting_head": "af3017c20bc15fdfc33cdde081af8daff52f9515",
+  "verification_head": "d6074dab4dce7834f0c20675e32897e525e45467",
+  "dirty": true,
+  "unrelated_commit_during_work": "d6074dab4dce7834f0c20675e32897e525e45467; inspected, only separate SLACK/docs added, preserved",
+  "tests_passed": 8,
+  "commands": [
+    "python -X utf8 -B -m unittest tools.test_d1_ap_observation_bridge -v",
+    "python -X utf8 -B -m tools.d1_ap_delivery_readout --external <raw_root> --output output/ap_delivery_readout_v1",
+    "python -X utf8 -B -m tools.d1_ap_delivery_readout --check-shared"
+  ],
+  "code_evidence_hashes": {
+    "tools/d1_ap_observation_bridge.py": "51b01c3892e5ffe47448e80d4283724116c2eff9e1a182c8f31b3d17523177f1",
+    "tools/d1_ap_delivery_readout.py": "5791bf145e687bd7d517b6b7d3cd9c6a567eeda1efe3988fcc703793c3545add",
+    "tools/test_d1_ap_observation_bridge.py": "e14287ac67fa6b6972bb323ca1d3285d86ba158fee5f98a6d8c9eb0e2ed7661b",
+    "benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/ArrivalEnergyActivity.kt": "b5750ba7188c9dca82f051174b199cacac051ac8f3405f637c31b97eeee273a4",
+    "benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/ArrivalStartApGate.kt": "b84a8aaa122bfd5f37cec5a2d0867a0139548d5b1c5d203c2c34eb634cf05e84",
+    "benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/ArrivalBackgroundObservation.kt": "dd6df18c5bd605a39f9d48e4f63784e52cf7f6ad074593f7853e12fd65e1aacc",
+    "benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/EnergyCollectionCore.kt": "8da8257fff515924369793aa0b7066c5fe993863b8f9006186f78f946f911788",
+    "benchmark-runner/src/modelProbe/AndroidManifest.xml": "6f9531183fde8aad1191454288605a4e084a46e39683ab92747e9adbd980d955",
+    "tools/d1_energy_collection_device.py": "cb1a2777975d18fc5016899a198924e634b85f930a097a12bb4e2a6595954ea9",
+    "app/src/main/java/com/example/d1check/TelemetryForegroundService.kt": "ef961125cf277c59a152734e855ef0fca9f1e833b70d15ef669b20843babeef7"
+  },
+  "artifact_hashes": {
+    "docs/results/ap_observation_path_01/capabilities.json": "27cd75bfa2f3df5bbac16d72c5d3d3e0a4c70bd51e59179296e21a1b416d7f4d",
+    "docs/results/ap_observation_path_01/forecast_fixtures.json": "5439751818bb4967d6462f4b26f59bd75627f883679e08a39af8b7dab7c6b638",
+    "docs/results/ap_observation_path_01/forecast_integration.csv": "3a69079401f5678471aaffb758e4a0a4fe64c90958d02b175fdeea42671877d5",
+    "docs/results/ap_observation_path_01/index.html": "26fda078291e319b0a5705b53c9fc95338c6096c206f23f277fcf6b70024a905",
+    "docs/results/ap_observation_path_01/owner_gate_replay.csv": "037f6aa5b94c0c0903f72145458cbd6c70625a490a10f2d660b8dc6fb297cec0",
+    "docs/results/ap_observation_path_01/query_timings.csv": "440510943577cdfc62180c770c6fc04a8d7c6d4e965007bf9d4c23322c3d0586",
+    "docs/results/ap_observation_path_01/README.md": "89902c7c153ed31084d7feb5e6221df31de63d0172683044ca25b9f0a622be92",
+    "docs/results/ap_observation_path_01/source_alias_hashes.json": "11f99069ebd326a5e4fb000e2d52b716614799291077654d521b1d5d2b67d258",
+    "docs/results/ap_observation_path_01/summary.json": "6d31c22ff14485b87b6d06d7908269a5bc0429e653e9a50625f8b93567fe2afa"
+  },
+  "model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+  "query_rows": 1630,
+  "actual_manifest_gate_sessions": 20,
+  "actual_record_gate_rows": 1630,
+  "forecast_integration_cases": 20,
+  "shared_fixture_forecasts": 20,
+  "live_runner_hooked": false,
+  "current_APK_app_ready": false,
+  "consumer_receipt_replay": "historical producer timestamp proxy only; explicit actual callback timestamp supported and unit-tested",
+  "android_source_changes": 0,
+  "android_compilations": 0,
+  "apk_builds": 0,
+  "device_commands": 0,
+  "new_queries": 0,
+  "new_claims": 0,
+  "html_rows": 11,
+  "local_links_exist": true,
+  "original_receiver_timing_rows_preserved": true,
+  "user_status_lines_preserved": 14,
+  "official_sources": [
+    "https://developer.android.com/reference/android/os/HardwarePropertiesManager#getDeviceTemperatures(int,%20int)",
+    "https://developer.android.com/reference/android/os/PowerManager#getThermalHeadroom(int)"
+  ]
+}

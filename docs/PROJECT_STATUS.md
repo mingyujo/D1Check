@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-08 AP-OBSERVATION-PATH-01 — host 진단 입력 연결·현재APK 자율AP 미지원 확정
+
+- 현재코드에서numericAP는host CurrentHAL에서만읽고start_ap.arm은시작승인1회. 앱은전력/status/BAT와별도메인앱headroom만읽으며지속APconsumer없음. 공식온도API호출자제한·headroom/AP단위차이확인. [코드/판정](AP_OBSERVATION_PATH_PC_20261008.md) · [지원표/재현](results/ap_observation_path_01/README.md).
+- 기존20세션1630AP관측을19473원client기록에대조. 3명령host span중앙값.328초/P95.437초·producer기록지연중앙값14.6ms, 앱전달지연null. 기록timestamp는write/flush전이라consumer수신과다름. 실제callback시각명시/proxy표시·소유권/단위/dualclock/future/stale/buffer의독립PC API와10초예측연결 구현.
+- 8검증·actualmanifest20/owner1630/예측20·공유Git20fixture/조회통계PASS. 원collector미부착·Android/컴파일/APK/설치/ADB/실측/설정/claim0·원모형/strict/RL/experiment_ready=false유지. 별도SLACKcommit d6074da/사용자14행·개인파일·다른worktree보존.
+- 종료/다음행동하나: AP보정은host연구도구로범위를고정하고앱자체경로에는기존공개thermal signal용별도입력계약필요성을결정. 현APK에APstream/반복startarm을붙여소유권/지연/계측비용을우회하지않는다.
+
 ## 2026-10-08 SLACK-RESIDUAL-DESIGN-01 — 보정 RL 재설계 완료·구현/학습0
 
 - 사용자 ‘재설계 해보자’에 따라 SHARED_EFT 기본 + 실제 기한 여유의 단건/CG_DC묶음/제한 대기 보정으로 재설계했다. 실제 기한·전량·긴급P95/J 비악화·원모형/기본/strict/experiment_ready=false 유지. [상세 설계·핵심식](SLACK_RESIDUAL_RL_REDESIGN_20261008.md)·[요약/schema](results/slack_residual_design_01/README.md).

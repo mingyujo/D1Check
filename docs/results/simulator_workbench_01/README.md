@@ -1,5 +1,9 @@
 # D1Check 통합 시뮬레이터
 
+## 2026-10-08 AP 관측 경로: host 진단 입력 검증·현재APK 미지원
+
+[지원표](../ap_observation_path_01/index.html) · [적용판정/8검증/재현](../../AP_OBSERVATION_PATH_PC_20261008.md). host CurrentHAL AP→PC10초예측의별도API구현/20진입검증, 기존1630관측대조3명령span중앙값.328초/P95.437초. producer기록시각을consumer수신으로승격하지않고실수신시각은명시필수·없으면proxy. 현재APK직접AP/연속consumer없음·전달지연null·기기자율적용불가. Android/빌드/기기0·원기본/strict/RL불변.
+
 ## 2026-10-08 10초 관측 갱신: AP 평균 개선·개별J 악화
 
 [화면/840창](../rolling_forecast_01/index.html) · [결과·가용시각·재현](../../ROLLING_FORECAST_RESULTS_20261008.md). 같은조건부A10초창에서AP확인0.258→0.156°C/지속0.383→0.209°C, 확인최대AP1.077→1.380°C. 개별J확인0.870→1.268J악화, 35..115초갱신합순오차3.891→0.632J감소는상쇄/지속관측을포함하며120초전체예측아님. 새계수fit/정책환경/기기0, 기본/strict/RL/experiment_ready=false유지·실시간numericAP전달경로미검증.
