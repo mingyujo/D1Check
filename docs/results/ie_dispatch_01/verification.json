@@ -1,0 +1,67 @@
+{
+  "status": "PASS",
+  "utc": "2026-10-08T03:19:13.246417+00:00",
+  "head": "d8b2ec2e2512dd170752a42c3c3b4076fefa541e",
+  "dirty": true,
+  "commands": [
+    "python -B -m unittest tools.test_d1_ie_dispatch tools.test_d1_ie_dispatch_report -v",
+    "completed raw576 conformance/hash/CSV re-audit"
+  ],
+  "unit_tests": 13,
+  "fixture_runs": 8,
+  "baseline_ledgers_identical": 2,
+  "new_audited_rows": 576,
+  "spt_edd_identical_ledgers": 192,
+  "protected_user_files": 9,
+  "training_episodes": 0,
+  "device_commands": 0,
+  "environment_starts_added_by_audit": 0,
+  "consumption": {
+    "previous_starts": 2241,
+    "new_starts": 584,
+    "cumulative_starts": 2825,
+    "new_failed_starts": 0,
+    "training_episodes": 0,
+    "device_commands": 0,
+    "ceiling": 20000
+  },
+  "source_sha256": {
+    "tools/d1_ie_dispatch.py": "318db8c5f6401076f2861d45ad7c998994cf20f2a9b1743823180d50ede071ab",
+    "tools/d1_ie_dispatch_study.py": "cb0fc96bb9388ae2569be354e8b8c878316119225c6d7e46181bf20aa9e68f5c",
+    "tools/d1_ie_dispatch_report.py": "63fc4007240838e3d9a42b96c0eaad1a1c49c08d26a14366fbc2cd66b650ef22",
+    "tools/test_d1_ie_dispatch.py": "00f68e72ec75c2bee6a6298b07536f9656743c784f6b96d21a571000f2b1a491",
+    "tools/test_d1_ie_dispatch_report.py": "d3c85c79ff794fdd31f44886ab42571b7624b932f204a4080669c812218adac5",
+    "tools/d1_ie_dispatch_browser_check.py": "e2a38dc35b4b597879a5c45ad6a559a70a35f52a82b39f07827cef6ad1e4ad54",
+    "tools/d1_ie_dispatch_check.py": "cfb89f4af4d64ce56ab707a5a7771d0068c6104102f20eed2a831841ca81287a"
+  },
+  "browser_check": {
+    "utc": "2026-10-08T03:22:10.337490+00:00",
+    "status": "PASS",
+    "surface": "isolated headless Chrome; offline file page",
+    "rows": 1743,
+    "filtered_band_rows": 196,
+    "reset_rows": 1743,
+    "images_loaded": 5,
+    "screenshot": "output/ie_dispatch_20261008_v1/ie_dispatch_01_dashboard.png",
+    "target": "docs/results/ie_dispatch_01/index.html",
+    "head": "d8b2ec2e2512dd170752a42c3c3b4076fefa541e",
+    "dirty": true,
+    "checker_sha256": "e2a38dc35b4b597879a5c45ad6a559a70a35f52a82b39f07827cef6ad1e4ad54",
+    "consumption": {
+      "previous_starts": 2241,
+      "new_starts": 584,
+      "cumulative_starts": 2825,
+      "new_failed_starts": 0,
+      "training_episodes": 0,
+      "device_commands": 0,
+      "ceiling": 20000
+    }
+  },
+  "errors": [
+    "read-only document stdout cp949: UTF-8 retry",
+    "browser direct script import: changed command to -m",
+    "browser receipt digest alias: checker repaired; no policy change"
+  ],
+  "result_boundary": "relative baseline nonworsening and full actual deadline success kept as separate columns; no rule/threshold tuning",
+  "presentation_note": "shared representative all9 ledgers/paths preserved; detailed callbacks remain immutable local raw; modeled metrics unchanged"
+}

@@ -1,0 +1,99 @@
+{
+  "version": "ie-dispatch-pc-v1",
+  "id": "IE-DISPATCH-PC-01",
+  "registered_utc": "2026-10-08T03:06:52.312344+00:00",
+  "head": "d8b2ec2e2512dd170752a42c3c3b4076fefa541e",
+  "dirty": true,
+  "source_hashes": {
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "tools/d1_ap_preparation_memory.py": "20af3304f8386c7f6adc1df56f5c593e0fd35600ae60d2ce60a518d5c418c40d",
+    "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9",
+    "tools/d1_arrival_explore_batch.py": "f0994f603720c606c5dc58f24c334cd2e91d3a79cc9a525094e7bcbbab86411f",
+    "tools/d1_empirical_request_policy.py": "32407050fae7a0f6f7d58a19cd6f2f4eedea46ba9c8651e15363d0af496050a0",
+    "tools/d1_industrial_scheduling.py": "5537b8746d329a8ab25f69c105218ecb6eaba99d26bfb6bb8434950b2e5b6bab",
+    "tools/d1_joint_queue_area.py": "b0202f9656b4f4b0f2323f123c00fbd4df5557748eb115db1126919c8a754710",
+    "tools/d1_online_policy_model.py": "a4e28dc489f221b1f85e8754b23385c60ba134af20ac701a3660293cac63156a",
+    "tools/d1_pareto_beam.py": "b442e74b212c070587cd3b141ccd1aea34bd251f255ace8c706cbaafea8c94df",
+    "tools/d1_queue_ppo.py": "0aea534d37465884d070d192fdfe7f863b480d4db17b85082773c9acc42ec9f1",
+    "tools/d1_request_ppo.py": "c8282794b92c10e60b1d2a0bffed3eb8e05bf1aad5001493948a801e12e2c0a2",
+    "tools/d1_request_rl.py": "ac74114e28c6f44e0c3b0c9a1e5a943ad156579c8a3cfe3e015db8a50e2958a9",
+    "tools/d1_external_rules.py": "4e824c0ba7bf7c6efc86893a676d7346337f4a2b74d5f8f4726f112e400bc756",
+    "tools/d1_external_rules_study.py": "fd60087aeeb35452ba9cf6d20dc47423a9cb1d32adeea3f750d1ac63e8fc1e82",
+    "tools/d1_ie_dispatch.py": "318db8c5f6401076f2861d45ad7c998994cf20f2a9b1743823180d50ede071ab",
+    "tools/d1_ie_dispatch_study.py": "cb0fc96bb9388ae2569be354e8b8c878316119225c6d7e46181bf20aa9e68f5c"
+  },
+  "mapping_sha256": "be90f3b362ca01a6632a1a05d6c229d249ceaa2f5404d3d4f926700a6a02629a",
+  "input_path": "docs/results/reserved_thermal_01/final_rule_only/inputs.json",
+  "input_sha256": "67c11ccc5ee0a3b67a40a9d645fc44589798a59f9f11b017bec1eb687c78c0a0",
+  "prior_verification_path": "docs/results/reserved_thermal_01/final_rule_only/verification.json",
+  "prior_verification_sha256": "1b3a8c18912d1e1f6a9415f572e745b120a34c3e9f59a75065bfc11ff4742779",
+  "new_policies": [
+    "IE_FIFO_ECT_LANE_PC_V1",
+    "IE_SPT_ECT_LANE_PC_V1",
+    "IE_EDD_ECT_LANE_PC_V1"
+  ],
+  "reused_policies": [
+    "SHARED_EFT",
+    "EFT_REFERENCE",
+    "BAND_HEFT_WHOLE_REQUEST_ADAPT_V1",
+    "TRITON_RATE_OFF_FIXED_REQUEST_ADAPT_V1",
+    "ENERGY_AP_REQUEST_V1",
+    "ARRIVED_QUEUE_J_PEAK_AREA_V1"
+  ],
+  "conditions": 192,
+  "new_rows": 576,
+  "reused_rows": 1152,
+  "logical_rows": 1728,
+  "maximum_new_environment_starts": 600,
+  "baseline_consumption": {
+    "previous_starts": 2241,
+    "new_starts": 0,
+    "cumulative_starts": 2241,
+    "new_failed_starts": 0,
+    "training_episodes": 0,
+    "device_commands": 0,
+    "ceiling": 20000
+  },
+  "whole_ceiling": 20000,
+  "learning_ceiling_unchanged": 6144,
+  "wall_seconds": 3600,
+  "save_reserve_seconds": 300,
+  "realization_seed": 201,
+  "tuning_candidates": 0,
+  "independent_holdout": false,
+  "scope": "already seen 192 synthetic conditions; fixed rule comparison, not new unseen test",
+  "ect_objective": "mean predicted end of all5 phases including actual lane ownership",
+  "spt_processing_time": "minimum mean all5 time over supported backends",
+  "no_aging_override": true,
+  "no_deadline_drop": true,
+  "device_commands": 0,
+  "training_episodes": 0,
+  "physical_model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+  "initial_source_sha256": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+  "energy_window_s": [
+    0,
+    120
+  ],
+  "ap_window_s": [
+    35,
+    180
+  ],
+  "ap_safety_limit_c": null,
+  "primary_families": [
+    "low",
+    "sustained"
+  ],
+  "strict_supported": false,
+  "experiment_ready": false,
+  "representative": {
+    "seed": 610880001,
+    "family": "queue",
+    "context": "mean"
+  },
+  "smoke_first_rows": 6,
+  "fixture_new_runs": 6,
+  "unchanged_baseline_regressions": 2,
+  "service": "full denominator + urgent/normal failures + urgentP95 nonworsening; then J/AP",
+  "prior_budget_note": "new diagnostics counted against remaining20000; old stage2/clock not reset; proposed RL run not started"
+}
