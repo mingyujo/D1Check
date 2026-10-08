@@ -1,0 +1,146 @@
+{
+  "apk_path": "/data/app/~~C_BIZWn2zzQmnL_4G2RZAw==/com.example.d1check.requestrunner-uYrGooiJELosPQF4-Fq2YQ==/base.apk",
+  "apk_sha256": "fb2407911a5ee036b52e9bdb259d5e1bb1e8b16082ed9afad92eb576dd8fb230",
+  "attempt": 1,
+  "command_id": "636f1c03-a087-4177-bf8e-39cc36d1e5f7",
+  "commands": [
+    {
+      "cmd": "get-state",
+      "t": 1791474998.096217
+    },
+    {
+      "cmd": "shell getprop ro.product.model",
+      "t": 1791474998.12817
+    },
+    {
+      "cmd": "shell pm path com.example.d1check.requestrunner",
+      "t": 1791474998.3181105
+    },
+    {
+      "cmd": "shell sha256sum /data/app/~~C_BIZWn2zzQmnL_4G2RZAw==/com.example.d1check.requestrunner-uYrGooiJELosPQF4-Fq2YQ==/base.apk",
+      "t": 1791474998.4387722
+    },
+    {
+      "cmd": "shell ls -d /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/7af3d8f3-58fc-529c-91fc-5991d63094b0/a1 2>/dev/null",
+      "t": 1791474998.6056516
+    },
+    {
+      "cmd": "shell settings get global airplane_mode_on",
+      "t": 1791475084.9315262
+    },
+    {
+      "cmd": "shell settings get global zen_mode",
+      "t": 1791475085.0133018
+    },
+    {
+      "cmd": "shell settings get system screen_brightness_mode",
+      "t": 1791475085.082624
+    },
+    {
+      "cmd": "shell settings get system screen_brightness",
+      "t": 1791475085.1629817
+    },
+    {
+      "cmd": "shell settings get system screen_off_timeout",
+      "t": 1791475085.2309468
+    },
+    {
+      "cmd": "shell settings put system screen_off_timeout 86400000",
+      "t": 1791475085.3334212
+    },
+    {
+      "cmd": "shell mkdir -p /data/local/tmp/mixreq /data/local/tmp/mixreq/sessions/7af3d8f3-58fc-529c-91fc-5991d63094b0/a1",
+      "t": 1791475085.4181147
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/anchors.json 2>/dev/null",
+      "t": 1791475085.4980226
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/efficientnet_lite0_Samsung_E9965.tflite 2>/dev/null",
+      "t": 1791475085.5770473
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/labels_without_background.txt 2>/dev/null",
+      "t": 1791475085.6739511
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/efficientnet_lite0.tflite 2>/dev/null",
+      "t": 1791475085.740499
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/labels.txt 2>/dev/null",
+      "t": 1791475085.8289397
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/efficientdet_lite0.tflite 2>/dev/null",
+      "t": 1791475085.8922276
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/00575b9132bb3746.png 2>/dev/null",
+      "t": 1791475085.9924288
+    },
+    {
+      "cmd": "push results\\S26_MIXREQ_SMOKE_1009_r2\\S26_MIXREQ_SMOKE_S2_S26_NPU_PARALLEL_V1_a1\\host\\manifest_pushed.json /data/local/tmp/mixreq/sessions/7af3d8f3-58fc-529c-91fc-5991d63094b0/a1/manifest.json",
+      "t": 1791475086.0708091
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/sessions/7af3d8f3-58fc-529c-91fc-5991d63094b0/a1/manifest.json",
+      "t": 1791475086.133382
+    },
+    {
+      "cmd": "logcat -c",
+      "t": 1791475086.201182
+    },
+    {
+      "cmd": "shell am start -W -n com.example.d1check.requestrunner/.SessionActivity --es d1_session_manifest /data/local/tmp/mixreq/sessions/7af3d8f3-58fc-529c-91fc-5991d63094b0/a1/manifest.json --es d1_session_id 7af3d8f3-58fc-529c-91fc-5991d63094b0 --es d1_command_id 636f1c03-a087-4177-bf8e-39cc36d1e5f7",
+      "t": 1791475086.4779441
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791475087.9002838
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/7af3d8f3-58fc-529c-91fc-5991d63094b0/a1 2>/dev/null",
+      "t": 1791475087.9271953
+    },
+    {
+      "cmd": "pull /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/7af3d8f3-58fc-529c-91fc-5991d63094b0/a1 results\\S26_MIXREQ_SMOKE_1009_r2\\S26_MIXREQ_SMOKE_S2_S26_NPU_PARALLEL_V1_a1\\device_pull",
+      "t": 1791475087.9987526
+    },
+    {
+      "cmd": "shell am force-stop com.example.d1check.requestrunner",
+      "t": 1791475088.1049724
+    },
+    {
+      "cmd": "shell pidof com.example.d1check.requestrunner",
+      "t": 1791475088.2212548
+    },
+    {
+      "cmd": "shell settings put system screen_off_timeout 600000",
+      "t": 1791475104.6524932
+    },
+    {
+      "cmd": "shell settings put system screen_off_timeout 600000",
+      "t": 1791475107.8423078
+    }
+  ],
+  "device_model": "SM-S942N",
+  "end_time": "2026-10-09T00:58:08",
+  "events": [],
+  "gate": {
+    "last": "S26_MIXREQ_SMOKE_S2_S26_NPU_PARALLEL_V1_a1 2026-10-09T00:58:04 0 30.1 29.0 27.9 0 82 False True",
+    "rc": 0
+  },
+  "label": "S2_S26_NPU_PARALLEL_V1",
+  "manifest_sha256": "8caf20460f419227062e50ba2b0de78d55d5496f6faa7bc0f73d50a76d6bf2bc",
+  "session_id": "7af3d8f3-58fc-529c-91fc-5991d63094b0",
+  "settings_before": {
+    "airplane": "1",
+    "brightness": "1",
+    "brightness_mode": "0",
+    "screen_off_timeout": "600000",
+    "zen_mode": "1"
+  },
+  "start_time": "2026-10-09T00:58:06"
+}

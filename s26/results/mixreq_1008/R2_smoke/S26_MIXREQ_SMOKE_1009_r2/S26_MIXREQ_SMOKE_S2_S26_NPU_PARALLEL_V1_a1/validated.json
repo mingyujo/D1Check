@@ -1,0 +1,234 @@
+{
+  "a24_differences": [
+    "상주만 하는 classification_CPU 의 warmup 이 CPU 기준과 불일치 (표시만, 판정 아님)",
+    "상주만 하는 classification_GPU 의 warmup 이 CPU 기준과 불일치 (표시만, 판정 아님)",
+    "상주만 하는 detection_GPU 의 warmup 이 CPU 기준과 불일치 (표시만, 판정 아님)"
+  ],
+  "attempt": 1,
+  "block": "N",
+  "counts": {
+    "failed": 0,
+    "planned": 24,
+    "succeeded": 0,
+    "unfinished": 24
+  },
+  "device_dir": "results\\S26_MIXREQ_SMOKE_1009_r2\\S26_MIXREQ_SMOKE_S2_S26_NPU_PARALLEL_V1_a1\\device",
+  "eligible": false,
+  "experiment_id": "S26-MIXREQ-01-SMOKE",
+  "host_dir": "results\\S26_MIXREQ_SMOKE_1009_r2\\S26_MIXREQ_SMOKE_S2_S26_NPU_PARALLEL_V1_a1\\host",
+  "pair": 0,
+  "policy": "S26_NPU_PARALLEL_V1",
+  "reasons": [
+    "0_artifacts",
+    "1_requests_succeeded_quality",
+    "2_time_order",
+    "3_window",
+    "4_assignment_residents",
+    "5_overlap",
+    "6_warmup_quality",
+    "7_delegation_evidence",
+    "8_plugged_start",
+    "9_watch_stop"
+  ],
+  "rules": {
+    "0_artifacts": {
+      "detail": {
+        "cleanup_completed": false,
+        "common_boundary": false,
+        "part_files_zero": true,
+        "requests_json": false,
+        "result_files": false,
+        "split": "diagnostic",
+        "summary_completed": false,
+        "time_scale": 1,
+        "time_scale_ok": true,
+        "warmup_json": false
+      },
+      "passed": false
+    },
+    "1_requests_succeeded_quality": {
+      "detail": {
+        "input_tensor_fail": [],
+        "planned": 24,
+        "quality_fail": [],
+        "quality_rule": "same runtime key, both warmups: top-5 label/index + |ds|<=1e-3 / count+labels + |ds|<=1e-3 + box<=2px",
+        "rows": 0,
+        "status_fail": [
+          "c82c170f-c6f7-551c-8db2-5be758dc347e",
+          "c3e98d90-14e8-5410-bb70-8712d0f09da0",
+          "a5db0761-7a74-59a4-967c-417da30f1014",
+          "f98d08f7-caf3-5227-80e2-87b813271e72",
+          "d64d1126-0565-550d-8f92-272013e23c72",
+          "34b86007-99f6-5c3f-962b-bd8d2e2b773a",
+          "0d66b713-6a87-59ed-b992-0669674d67ef",
+          "54e0f91c-c78b-52bf-a35c-3456d1b5ab6e",
+          "d9285dea-3e1b-5d3f-bc8d-0c53b4830f0b",
+          "813c08a7-0804-55e2-83c0-c008376a858c"
+        ],
+        "succeeded": 0
+      },
+      "passed": false
+    },
+    "2_time_order": {
+      "detail": {
+        "fields": [
+          "scheduled_arrival_ns",
+          "actual_arrival_ns",
+          "queue_entry_ns",
+          "dispatch_ns",
+          "execution_start_ns",
+          "host_inference_start_ns",
+          "host_inference_return_ns",
+          "output_ready_ns",
+          "persist_complete_ns",
+          "worker_release_ns",
+          "lane_available_ns"
+        ],
+        "violations": []
+      },
+      "passed": false
+    },
+    "3_window": {
+      "detail": {
+        "bounds_s": [
+          35.0,
+          120.0
+        ],
+        "last_lane_available_s": null,
+        "origin_ns": null,
+        "violations": []
+      },
+      "passed": false
+    },
+    "4_assignment_residents": {
+      "detail": {
+        "create_failed": [],
+        "created": [],
+        "missing_created": [
+          "classification_CPU",
+          "classification_GPU",
+          "classification_NPU",
+          "detection_CPU",
+          "detection_GPU"
+        ],
+        "missing_warmed": [
+          "classification_CPU",
+          "classification_GPU",
+          "classification_NPU",
+          "detection_CPU",
+          "detection_GPU"
+        ],
+        "used_keys": [
+          "classification_NPU",
+          "detection_CPU"
+        ],
+        "wrong_lane": []
+      },
+      "passed": false
+    },
+    "5_overlap": {
+      "detail": {
+        "expected": ">0",
+        "foreign_lane_rows": [],
+        "lanes": [
+          "NPU",
+          "CPU"
+        ],
+        "overlap_ns_raw": 0,
+        "overlap_s": 0.0
+      },
+      "passed": false
+    },
+    "6_warmup_quality": {
+      "comparisons": {
+        "classification_CPU": null,
+        "classification_GPU": null,
+        "classification_NPU": null,
+        "detection_CPU": null,
+        "detection_GPU": null
+      },
+      "detail": {
+        "classification_CPU": {
+          "judged": false,
+          "passed": false,
+          "reason": "warmups missing"
+        },
+        "classification_GPU": {
+          "judged": false,
+          "passed": false,
+          "reason": "warmups missing"
+        },
+        "classification_NPU": {
+          "judged": false,
+          "reason": "NPU → §4-N contract, not the A24 tolerance"
+        },
+        "detection_CPU": {
+          "judged": true,
+          "passed": false,
+          "reason": "warmups missing"
+        },
+        "detection_GPU": {
+          "judged": false,
+          "passed": false,
+          "reason": "warmups missing"
+        }
+      },
+      "passed": false
+    },
+    "7_delegation_evidence": {
+      "detail": {
+        "logcat": "results\\S26_MIXREQ_SMOKE_1009_r2\\S26_MIXREQ_SMOKE_S2_S26_NPU_PARALLEL_V1_a1\\host\\logcat_threadtime.txt",
+        "mark_count": 2,
+        "runner_pid": "2936",
+        "runtimes": {
+          "classification_GPU": {
+            "key": "classification_GPU",
+            "reason": "window marks missing",
+            "used_by_policy": false,
+            "verdict": "FAIL"
+          },
+          "classification_NPU": {
+            "key": "classification_NPU",
+            "reason": "window marks missing",
+            "used_by_policy": true,
+            "verdict": "FAIL"
+          },
+          "detection_GPU": {
+            "key": "detection_GPU",
+            "reason": "window marks missing",
+            "used_by_policy": false,
+            "verdict": "FAIL"
+          }
+        }
+      },
+      "passed": false
+    },
+    "8_plugged_start": {
+      "detail": {
+        "plugged_nonzero": 0,
+        "samples": 2,
+        "start_check": null,
+        "start_thermal_status": null
+      },
+      "passed": false
+    },
+    "9_watch_stop": {
+      "detail": {
+        "failure_files": [],
+        "stop_reason": "environment/screen_off",
+        "watch_events": {
+          "phone": 2,
+          "skin": 0
+        },
+        "watch_source": "host csv"
+      },
+      "passed": false
+    }
+  },
+  "schema": "s26-mixreq-validated-v1",
+  "selftest": false,
+  "session_id": "7af3d8f3-58fc-529c-91fc-5991d63094b0",
+  "session_index": 9,
+  "split": "diagnostic",
+  "time_scale": 1
+}

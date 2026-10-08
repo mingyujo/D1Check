@@ -1,0 +1,241 @@
+RUN C:\Users\rhoyo\AndroidStudioProjects\D1Check_mixreq\s26\tools\mixreq\mixreq_session.py --plan s26\results\mixreq_1008\plan_v1 --smoke S1_warmup_only_blockN --results results\S26_MIXREQ_SMOKE_1009_r2 --allow-settings-mismatch
+[2026-10-09T00:45:22] SESSION START sid=962ea966-9ff6-5069-a6ce-baf936171b84 attempt=1 policy=CPU_URGENT_ONLINE_V1 block=N manifest_sha=2645dc4018e28c1ac4f452b361518fc25272646d76726bc6ed3c0490ccf5385b
+[2026-10-09T00:45:22] device model=SM-S942N apk_sha256=fb2407911a5ee036b52e9bdb259d5e1bb1e8b16082ed9afad92eb576dd8fb230
+[2026-10-09T00:45:22] gate rc=0 last=S26_MIXREQ_SMOKE_S1_warmup_only_blockN_a1 2026-10-09T00:45:22 0 28.9 27.0 26.8 0 83 False True
+[2026-10-09T00:45:23] settings {'airplane': '1', 'zen_mode': '1', 'brightness_mode': '0', 'brightness': '1', 'screen_off_timeout': '600000'}
+[2026-10-09T00:45:23] screen_off_timeout -> 86400000
+[2026-10-09T00:45:23] push anchors -> /data/local/tmp/mixreq/anchors.json
+[2026-10-09T00:45:23] push aot_model -> /data/local/tmp/mixreq/efficientnet_lite0_Samsung_E9965.tflite
+[2026-10-09T00:45:25] push cls_labels -> /data/local/tmp/mixreq/labels_without_background.txt
+[2026-10-09T00:45:25] push cls_model -> /data/local/tmp/mixreq/efficientnet_lite0.tflite
+[2026-10-09T00:45:28] push det_labels -> /data/local/tmp/mixreq/labels.txt
+[2026-10-09T00:45:28] push det_model -> /data/local/tmp/mixreq/efficientdet_lite0.tflite
+[2026-10-09T00:45:30] push png -> /data/local/tmp/mixreq/00575b9132bb3746.png
+[2026-10-09T00:45:31] am start rc=0 Starting: Intent { cmp=com.example.d1check.requestrunner/.SessionActivity (has extras) }
+Status: ok
+LaunchState: COLD
+Ac
+[2026-10-09T00:45:36] observe -> done
+[2026-10-09T00:45:37] force-stop request-runner; alive_after=''
+[2026-10-09T00:45:49] screen_off_timeout restored -> 600000
+[2026-10-09T00:45:49] VALID=False reasons=['0_artifacts', '1_requests_succeeded_quality', '2_time_order', '3_window', '4_assignment_residents', '5_overlap', '8_plugged_start'] npu_contract=True
+[2026-10-09T00:45:53] screen_off_timeout restored -> 600000
+[2026-10-09T00:45:53] SESSION END
+RUN C:\Users\rhoyo\AndroidStudioProjects\D1Check_mixreq\s26\tools\mixreq\mixreq_session.py --plan s26\results\mixreq_1008\plan_v1 --smoke S2_CPU_URGENT_ONLINE_V1 --results results\S26_MIXREQ_SMOKE_1009_r2 --allow-settings-mismatch
+[2026-10-09T00:45:53] SESSION START sid=ae211423-4bed-5e7f-a38c-0b981a9a89eb attempt=1 policy=CPU_URGENT_ONLINE_V1 block=A manifest_sha=903b3d219d076816a22ef6a86ab0bf398e1cb8cdf899a32cbd66713c8f9428b2
+[2026-10-09T00:45:53] device model=SM-S942N apk_sha256=fb2407911a5ee036b52e9bdb259d5e1bb1e8b16082ed9afad92eb576dd8fb230
+[2026-10-09T00:45:53] inter-session gap: sleeping 86 s (min 90)
+[2026-10-09T00:47:20] gate rc=0 last=S26_MIXREQ_SMOKE_S2_CPU_URGENT_ONLINE_V1_a1 2026-10-09T00:47:20 0 29.1 27.3 26.9 0 83 False True
+[2026-10-09T00:47:20] settings {'airplane': '1', 'zen_mode': '1', 'brightness_mode': '0', 'brightness': '1', 'screen_off_timeout': '600000'}
+[2026-10-09T00:47:20] screen_off_timeout -> 86400000
+[2026-10-09T00:47:20] input anchors present (sha ok)
+[2026-10-09T00:47:20] input aot_model present (sha ok)
+[2026-10-09T00:47:20] input cls_labels present (sha ok)
+[2026-10-09T00:47:21] input cls_model present (sha ok)
+[2026-10-09T00:47:21] input det_labels present (sha ok)
+[2026-10-09T00:47:21] input det_model present (sha ok)
+[2026-10-09T00:47:21] input png present (sha ok)
+[2026-10-09T00:47:21] am start rc=0 Starting: Intent { cmp=com.example.d1check.requestrunner/.SessionActivity (has extras) }
+Status: ok
+LaunchState: COLD
+Ac
+[2026-10-09T00:47:26] warmup gate {'classification_CPU': 'PASS', 'detection_CPU': 'PASS'} -> ARM
+[2026-10-09T00:50:56] observe -> done
+[2026-10-09T00:50:57] force-stop request-runner; alive_after=''
+[2026-10-09T00:51:12] screen_off_timeout restored -> 600000
+[2026-10-09T00:51:12] VALID=True reasons=[] npu_contract=None
+[2026-10-09T00:51:15] screen_off_timeout restored -> 600000
+[2026-10-09T00:51:15] SESSION END
+RUN C:\Users\rhoyo\AndroidStudioProjects\D1Check_mixreq\s26\tools\mixreq\mixreq_session.py --plan s26\results\mixreq_1008\plan_v1 --smoke S2_B2_PARALLEL_ONLINE_V1 --results results\S26_MIXREQ_SMOKE_1009_r2 --allow-settings-mismatch
+[2026-10-09T00:51:15] SESSION START sid=5667edd6-69c4-5c4f-beef-5688cc963ffc attempt=1 policy=B2_PARALLEL_ONLINE_V1 block=A manifest_sha=d90a88be1b23f97d249072ef248d2d7377b6b082d1d50a8cd0cb06418ce2d81a
+[2026-10-09T00:51:15] device model=SM-S942N apk_sha256=fb2407911a5ee036b52e9bdb259d5e1bb1e8b16082ed9afad92eb576dd8fb230
+[2026-10-09T00:51:16] inter-session gap: sleeping 86 s (min 90)
+[2026-10-09T00:52:42] gate rc=0 last=S26_MIXREQ_SMOKE_S2_B2_PARALLEL_ONLINE_V1_a1 2026-10-09T00:52:42 0 29.4 27.9 27.3 0 83 False True
+[2026-10-09T00:52:42] settings {'airplane': '1', 'zen_mode': '1', 'brightness_mode': '0', 'brightness': '1', 'screen_off_timeout': '600000'}
+[2026-10-09T00:52:42] screen_off_timeout -> 86400000
+[2026-10-09T00:52:43] input anchors present (sha ok)
+[2026-10-09T00:52:43] input aot_model present (sha ok)
+[2026-10-09T00:52:43] input cls_labels present (sha ok)
+[2026-10-09T00:52:43] input cls_model present (sha ok)
+[2026-10-09T00:52:43] input det_labels present (sha ok)
+[2026-10-09T00:52:43] input det_model present (sha ok)
+[2026-10-09T00:52:43] input png present (sha ok)
+[2026-10-09T00:52:44] am start rc=0 Starting: Intent { cmp=com.example.d1check.requestrunner/.SessionActivity (has extras) }
+Status: ok
+LaunchState: COLD
+Ac
+[2026-10-09T00:52:48] warmup gate {'classification_GPU': 'PASS', 'detection_CPU': 'PASS'} -> ARM
+[2026-10-09T00:56:18] observe -> done
+[2026-10-09T00:56:19] force-stop request-runner; alive_after=''
+[2026-10-09T00:56:34] screen_off_timeout restored -> 600000
+[2026-10-09T00:56:34] VALID=False reasons=['5_overlap'] npu_contract=None
+[2026-10-09T00:56:37] screen_off_timeout restored -> 600000
+[2026-10-09T00:56:37] SESSION END
+RUN C:\Users\rhoyo\AndroidStudioProjects\D1Check_mixreq\s26\tools\mixreq\mixreq_session.py --plan s26\results\mixreq_1008\plan_v1 --smoke S2_S26_NPU_PARALLEL_V1 --results results\S26_MIXREQ_SMOKE_1009_r2 --allow-settings-mismatch
+[2026-10-09T00:56:38] SESSION START sid=7af3d8f3-58fc-529c-91fc-5991d63094b0 attempt=1 policy=S26_NPU_PARALLEL_V1 block=N manifest_sha=8caf20460f419227062e50ba2b0de78d55d5496f6faa7bc0f73d50a76d6bf2bc
+[2026-10-09T00:56:38] device model=SM-S942N apk_sha256=fb2407911a5ee036b52e9bdb259d5e1bb1e8b16082ed9afad92eb576dd8fb230
+[2026-10-09T00:56:38] inter-session gap: sleeping 86 s (min 90)
+[2026-10-09T00:58:04] gate rc=0 last=S26_MIXREQ_SMOKE_S2_S26_NPU_PARALLEL_V1_a1 2026-10-09T00:58:04 0 30.1 29.0 27.9 0 82 False True
+[2026-10-09T00:58:05] settings {'airplane': '1', 'zen_mode': '1', 'brightness_mode': '0', 'brightness': '1', 'screen_off_timeout': '600000'}
+[2026-10-09T00:58:05] screen_off_timeout -> 86400000
+[2026-10-09T00:58:05] input anchors present (sha ok)
+[2026-10-09T00:58:05] input aot_model present (sha ok)
+[2026-10-09T00:58:05] input cls_labels present (sha ok)
+[2026-10-09T00:58:05] input cls_model present (sha ok)
+[2026-10-09T00:58:05] input det_labels present (sha ok)
+[2026-10-09T00:58:05] input det_model present (sha ok)
+[2026-10-09T00:58:06] input png present (sha ok)
+[2026-10-09T00:58:07] am start rc=0 Starting: Intent { cmp=com.example.d1check.requestrunner/.SessionActivity (has extras) }
+Status: ok
+LaunchState: UNKNOWN
+[2026-10-09T00:58:07] observe -> done
+[2026-10-09T00:58:08] force-stop request-runner; alive_after=''
+[2026-10-09T00:58:24] screen_off_timeout restored -> 600000
+[2026-10-09T00:58:24] VALID=False reasons=['0_artifacts', '1_requests_succeeded_quality', '2_time_order', '3_window', '4_assignment_residents', '5_overlap', '6_warmup_quality', '7_delegation_evidence', '8_plugged_start', '9_watch_stop'] npu_contract=False
+[2026-10-09T00:58:28] screen_off_timeout restored -> 600000
+[2026-10-09T00:58:28] SESSION END
+{
+ "schema": "s26-mixreq-smoke-report-v1",
+ "dry_run": false,
+ "S2": [
+  {
+   "name": "S2_CPU_URGENT_ONLINE_V1",
+   "rc": 0,
+   "folder": "results\\S26_MIXREQ_SMOKE_1009_r2\\S26_MIXREQ_SMOKE_S2_CPU_URGENT_ONLINE_V1_a1",
+   "checks": {
+    "a_no_error": true,
+    "b_overlap": true,
+    "c_evidence": true,
+    "d_assignment": true
+   },
+   "record": {
+    "validated_reasons": [],
+    "eligible_short": true,
+    "overlap_s": 0.0,
+    "time_order": true,
+    "window": true,
+    "requests": {
+     "input_tensor_fail": [],
+     "planned": 24,
+     "quality_fail": [],
+     "quality_rule": "same runtime key, both warmups: top-5 label/index + |ds|<=1e-3 / count+labels + |ds|<=1e-3 + box<=2px",
+     "rows": 24,
+     "status_fail": [],
+     "succeeded": 24
+    }
+   },
+   "parallel_verification_passed": true
+  },
+  {
+   "name": "S2_B2_PARALLEL_ONLINE_V1",
+   "rc": 1,
+   "folder": "results\\S26_MIXREQ_SMOKE_1009_r2\\S26_MIXREQ_SMOKE_S2_B2_PARALLEL_ONLINE_V1_a1",
+   "checks": {
+    "a_no_error": true,
+    "b_overlap": false,
+    "c_evidence": true,
+    "d_assignment": true
+   },
+   "record": {
+    "validated_reasons": [
+     "5_overlap"
+    ],
+    "eligible_short": false,
+    "overlap_s": 0.0,
+    "time_order": true,
+    "window": true,
+    "requests": {
+     "input_tensor_fail": [],
+     "planned": 24,
+     "quality_fail": [],
+     "quality_rule": "same runtime key, both warmups: top-5 label/index + |ds|<=1e-3 / count+labels + |ds|<=1e-3 + box<=2px",
+     "rows": 24,
+     "status_fail": [],
+     "succeeded": 24
+    }
+   },
+   "parallel_verification_passed": false
+  },
+  {
+   "name": "S2_S26_NPU_PARALLEL_V1",
+   "rc": 1,
+   "folder": "results\\S26_MIXREQ_SMOKE_1009_r2\\S26_MIXREQ_SMOKE_S2_S26_NPU_PARALLEL_V1_a1",
+   "checks": {
+    "a_no_error": false,
+    "b_overlap": false,
+    "c_evidence": false,
+    "d_assignment": false
+   },
+   "record": {
+    "validated_reasons": [
+     "0_artifacts",
+     "1_requests_succeeded_quality",
+     "2_time_order",
+     "3_window",
+     "4_assignment_residents",
+     "5_overlap",
+     "6_warmup_quality",
+     "7_delegation_evidence",
+     "8_plugged_start",
+     "9_watch_stop"
+    ],
+    "eligible_short": false,
+    "overlap_s": 0.0,
+    "time_order": false,
+    "window": false,
+    "requests": {
+     "input_tensor_fail": [],
+     "planned": 24,
+     "quality_fail": [],
+     "quality_rule": "same runtime key, both warmups: top-5 label/index + |ds|<=1e-3 / count+labels + |ds|<=1e-3 + box<=2px",
+     "rows": 0,
+     "status_fail": [
+      "c82c170f-c6f7-551c-8db2-5be758dc347e",
+      "c3e98d90-14e8-5410-bb70-8712d0f09da0",
+      "a5db0761-7a74-59a4-967c-417da30f1014",
+      "f98d08f7-caf3-5227-80e2-87b813271e72",
+      "d64d1126-0565-550d-8f92-272013e23c72",
+      "34b86007-99f6-5c3f-962b-bd8d2e2b773a",
+      "0d66b713-6a87-59ed-b992-0669674d67ef",
+      "54e0f91c-c78b-52bf-a35c-3456d1b5ab6e",
+      "d9285dea-3e1b-5d3f-bc8d-0c53b4830f0b",
+      "813c08a7-0804-55e2-83c0-c008376a858c"
+     ],
+     "succeeded": 0
+    },
+    "npu_contract_first_values": {
+     "applicable": true,
+     "block": "N",
+     "passed": false,
+     "policy": "S26_NPU_PARALLEL_V1",
+     "reason": "warmup outputs missing (CPU 0, NPU 0)",
+     "schema": "npu-mixreq-contract-v1",
+     "session_id": "7af3d8f3-58fc-529c-91fc-5991d63094b0",
+     "used_by_policy": true,
+     "warmups": []
+    }
+   },
+   "parallel_verification_passed": false
+  }
+ ],
+ "decisions": [
+  "블록 A 미실행 — PAR 병행 검증 실패 (등록 §3-3)",
+  "블록 N 미실행 — PAR-NPU 병행 검증 실패 (등록 §3-3)"
+ ],
+ "S1_rc": 1,
+ "note": "스모크 = 동작 확인용. KPI 비교 · 결론 문장 없음. NPU 계약 첫 값은 기록만 (기준 · 설계 · 블록 N 실행 여부를 바꾸지 않는다).",
+ "S1_checks": {
+  "five_runtimes_created": true,
+  "ten_warmups": true,
+  "classification_tensor_sha_603328d0": true,
+  "decoded_rgb_sha_ca6c2e2b": true,
+  "cpu_top5_label_index_equals_pc_reference": true,
+  "det_cpu_equals_pc_reference_decode_a24_tolerance": true,
+  "classification_GPU_vs_cpu_4_6": true,
+  "detection_GPU_vs_cpu_4_6": true,
+  "detection_gpu_created": true,
+  "evidence_classification_GPU": true,
+  "evidence_detection_GPU": true,
+  "evidence_classification_NPU": false
+ }
+}

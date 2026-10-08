@@ -1,0 +1,62 @@
+# R2 혼합 요청 — 0단계 preflight (2026-10-08 20:4x KST)  작업 클론 = C:\Users\rhoyo\AndroidStudioProjects\D1Check_mixreq (s26-mixreq)
+# 주소 · 시리얼은 <IP:PORT> · <SERIAL> 로 치환. 표기 [P] 실측 · [E] 추정 · 미확인.
+
+## 0단계 — 묻기 (영훈 답, 20:4x)
+- ① 폰: 케이블 안 꽂음 (SOC 숫자는 답에 없음 → adb 로 읽음: level 94 · status 3 · AC/USB/Wireless powered false)
+- ② 실내 온도: 약 24~27 ℃ (영훈 답)
+- ③ 측정 마감: "10/10 오전 더 늦게" (구체 시각 미지정 → 10/10 06:00 을 넘길 수 있으나 10/10 오전 안. 보수적으로 06:00 기준으로 계획, 넘기는 세션은 그때 다시 판단 — 새 세션 시작 전 원장에 적는다)
+
+## 1. git (D1Check_mixreq) [P]
+- git status -sb: `## s26-mixreq...origin/s26-mixreq` · 작업 트리 clean (추적 파일 변경 0)
+- git fetch origin: 완료 (s26-measure 0598a10..0846bb2 · master · feature/arrival-scheduling 01a3ac0..f95ce8a 갱신 — 이 세션은 쓰지 않음)
+- HEAD = 2de4d59 = origin/s26-mixreq 2de4d59  ✔
+- .git\index.lock 없음 ✔
+- 이 PC 의 다른 프로세스: powershell.exe 6개 (13:35 · 14:11 ×2 · 15:13 · 20:22 · 20:44 — 명령줄 인자 없음 = 다른 Claude 세션 · 터미널 창의 유휴 셸) · python/py 0 · adb 서버 1 (fork-server). 드라이버 · 감시 · keepawake 스크립트로 식별되는 프로세스 0 (P1i 잔재 없음).
+
+## 2. 등록 동결 [P]
+- git show 20967fb:d1sim/docs/혼합요청_사전등록_v1.md → blob e6993586… · 34,452 B · SHA-256 edf9e594c66b695104698c52ded8ff5c869f70946ee886bc42364ef99c862e28 ✔ (= 작업 트리 사본)
+
+## 3. git 밖 입력 [P] — device_inputs.json 7개 전부 존재 · bytes · SHA 일치
+- anchors   local_inputs\reference_pc\anchors.json                      1,438,467  e095e869… ✔
+- aot_model npu-runner\src\main\assets\models\efficientnet_lite0_Samsung_E9965.tflite  10,033,376  311e4aac… ✔
+- cls_labels local_inputs\reference_pc\labels_without_background.txt     10,473  e697a491… ✔
+- cls_model local_models\efficientnet_lite0.tflite                       18,582,189  6c7ab0a6… ✔
+- det_labels local_inputs\reference_pc\labels.txt                        661  f8803ef7… ✔
+- det_model local_inputs\public\efficientdet_lite0.tflite                13,836,895  40338edf… ✔
+- png       local_inputs\canonical_v123\00575b9132bb3746.png             937,799  3e8b925f… ✔
+- local_inputs\reference_pc\reference_pc.json 있음 ✔
+- APK: request-runner\build\outputs\apk\debug\ 없음 (R1 끝에 build 삭제) → local_inputs\apk\request-runner-debug_fb240791.apk 14,439,196 B SHA-256 fb2407911a5ee036b52e9bdb259d5e1bb1e8b16082ed9afad92eb576dd8fb230 ✔ (이것을 설치한다 · 다시 빌드하지 않는다)
+
+## 4. PC 디스크 [P]
+- C: Free 18,227,900,416 B ≈ 18.2 GB (≥ 5 GB ✔; R1 끝 4.2 GB 에서 늘어남 — 영훈이 정리한 것으로 보임 [E])
+
+## 5. 테스트 (기록만) [P]
+- py -3 -m pytest s26\tools\mixreq\test_mixreq.py -q → **29 passed** (4.85 s) ✔
+- py -3 s26\tools\mixreq\e2e_selftest.py → **E2E FAIL (9)** — 전부 "round-trip artifacts missing (request-runner\build\mixreq-roundtrip\...) — run gradlew :request-runner:testDebugUnitTest first" (R1 끝 디스크 정리로 build\ 삭제됨) + 그에 따른 쌍 0. 호스트 코드 결함 아님. gradlew :request-runner:testDebugUnitTest 를 배경으로 돌려 재생성 뒤 다시 기록 (아래 5b).
+- 5b: (아래 추가)
+
+## 6. 폰 (읽기만) [P]
+- adb devices -l: 기기 하나 `<IP:PORT>  device product:m1sksx model:SM_S942N device:m1s` (무선, IPv4 — P1h · P1i 의 IPv6 링크 로컬과 다름)
+- ro.product.model = SM-S942N ✔
+- pm path com.example.d1check.requestrunner = (없음) → 2-1 에서 설치
+- npu-runner 설치본 sha256 = 5ac485e382ebc82e380e6161ca6301ff89e9ab3d8be49b5d5388ab28b42c1033 ✔ (안 바뀜)
+- 원래 값 (원복용 → phone_settings_log_r2.txt): screen_brightness_mode 0 · screen_brightness **127** · screen_off_timeout 600000 · airplane_mode_on 1 · wifi_on 2 · zen_mode 1
+  (P1i 보고의 "밝기 31" 과 다름 — 이 세션의 원복 값은 127)
+- 배터리: level 94 · status 3 (discharging) · temperature 273 (27.3 ℃) · AC/USB/Wireless/Dock powered 전부 false → plugged 0 ✔
+- HAL (Current temperatures from HAL): AP 27.5 · BAT 27.2 · SKIN 29.3 · PA 27.4 · thermal status 0 (게이트 상한 안 · 하한 SKIN ≥ 29.1 ✔ · BAT 27.2 < 27.5 → 하한 미달 표시 대상 [E, 세션 시작 시점에 다시 읽음])
+- df /data: 232,179,712 K 중 64,543,496 K 여유 (73 % 사용) ✔
+
+## 1-1. 2차 zip (S26_mixreq_handoff_1008) [P]
+- 복사: OneDrive 산공학회\S26_mixreq_handoff_1008\ → local_inputs\a24_handoff_1008\ (git 밖, .git\info\exclude 의 local_inputs/ 로 ignored 확인 `!! local_inputs/`)
+- manifest.json SHA-256 = d93e097811c7cd4d0b9be617cbab1d14750396f4113a593da8247292db762f70 (24 파일 · created_utc 2026-10-07T17:42:54Z · head a081d55e · s26_registration_reviewed false)
+- `py -3 -B -I verify_bundle.py` (폴더 안에서) → `PASS: file bytes/SHA, 192 requests, 19206x4 anchors, exact A24 warmup extraction; no device/inference` rc=0
+- 독립 SHA 대조 (PowerShell Get-FileHash): 24 파일 mismatch 0
+- PNG 3e8b925feafbfe5fdd4efb9d7911f445a3212100fa73744f6fd855cf6160f1ab (937,799 B) · anchors e095e869203d5f5442583712e1546aac8f5112512b1a98925165fe17b455c3bc (1,438,467 B) = device_inputs.json 값과 같음 → **R1 재현본과 바이트 동일 → 계획 · device_inputs 그대로. "A24 와 다름: 입력 PNG 바이트" 아님.**
+- 기록만 (manifest.checks): host_vs_a24_cpu_decoded_score_max_abs 3.58e-7 · host_vs_a24_cpu_box_max_abs_px 8.89e-5 · all_8_a24_semantic_traces_identical true · new_inference_count 0
+
+## 5b. e2e 재실행 (21:0x) [P]
+- gradlew :request-runner:testDebugUnitTest --offline → GRADLE EXIT 0 (round-trip 산출물 재생성 · 측정 코드 변경 0 · APK 재빌드 아님)
+- py -3 s26\tools\mixreq\e2e_selftest.py → "failures": [] · **E2E PASS** ✔
+
+## 1-2. 대조 도구 [P]
+- s26\tools\mixreq\mixreq_a24_compare.py SHA-256 c1e43ecec4c7946e77e680b39682b550cae962e3dd31843959cd61a1984b0a81 · --selftest 15/15 → SELFTEST PASS · 가짜 S1 (PC round-trip blockN_cpu) 에 실행 → FAIL (기대) · 크래시 0

@@ -1,0 +1,55 @@
+RUN C:\Users\rhoyo\AndroidStudioProjects\D1Check_mixreq\s26\tools\mixreq\mixreq_session.py --plan s26\results\mixreq_1008\plan_v1 --smoke S2_CPU_URGENT_ONLINE_V1 --results results\S26_MIXREQ_SMOKE_1009_r3 --allow-settings-mismatch
+[2026-10-09T03:11:40] SESSION START sid=ae211423-4bed-5e7f-a38c-0b981a9a89eb attempt=1 policy=CPU_URGENT_ONLINE_V1 block=A manifest_sha=903b3d219d076816a22ef6a86ab0bf398e1cb8cdf899a32cbd66713c8f9428b2
+[2026-10-09T03:11:40] device model=SM-S942N apk_sha256=fb2407911a5ee036b52e9bdb259d5e1bb1e8b16082ed9afad92eb576dd8fb230
+[2026-10-09T03:11:40] SESSION END
+device attempt folder exists: /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/ae211423-4bed-5e7f-a38c-0b981a9a89eb/a1 (exit 5)
+RUN C:\Users\rhoyo\AndroidStudioProjects\D1Check_mixreq\s26\tools\mixreq\mixreq_session.py --plan s26\results\mixreq_1008\plan_v1 --smoke S2_B2_PARALLEL_ONLINE_V1 --results results\S26_MIXREQ_SMOKE_1009_r3 --allow-settings-mismatch
+[2026-10-09T03:11:40] SESSION START sid=5667edd6-69c4-5c4f-beef-5688cc963ffc attempt=1 policy=B2_PARALLEL_ONLINE_V1 block=A manifest_sha=d90a88be1b23f97d249072ef248d2d7377b6b082d1d50a8cd0cb06418ce2d81a
+[2026-10-09T03:11:41] device model=SM-S942N apk_sha256=fb2407911a5ee036b52e9bdb259d5e1bb1e8b16082ed9afad92eb576dd8fb230
+[2026-10-09T03:11:41] SESSION END
+device attempt folder exists: /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/5667edd6-69c4-5c4f-beef-5688cc963ffc/a1 (exit 5)
+RUN C:\Users\rhoyo\AndroidStudioProjects\D1Check_mixreq\s26\tools\mixreq\mixreq_session.py --plan s26\results\mixreq_1008\plan_v1 --smoke S2_S26_NPU_PARALLEL_V1 --results results\S26_MIXREQ_SMOKE_1009_r3 --allow-settings-mismatch
+[2026-10-09T03:11:41] SESSION START sid=7af3d8f3-58fc-529c-91fc-5991d63094b0 attempt=1 policy=S26_NPU_PARALLEL_V1 block=N manifest_sha=8caf20460f419227062e50ba2b0de78d55d5496f6faa7bc0f73d50a76d6bf2bc
+[2026-10-09T03:11:41] device model=SM-S942N apk_sha256=fb2407911a5ee036b52e9bdb259d5e1bb1e8b16082ed9afad92eb576dd8fb230
+[2026-10-09T03:11:41] SESSION END
+device attempt folder exists: /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/7af3d8f3-58fc-529c-91fc-5991d63094b0/a1 (exit 5)
+{
+ "schema": "s26-mixreq-smoke-report-v1",
+ "dry_run": false,
+ "S1": null,
+ "S2": [
+  {
+   "name": "S2_CPU_URGENT_ONLINE_V1",
+   "rc": 5,
+   "folder": "results\\S26_MIXREQ_SMOKE_1009_r3\\S26_MIXREQ_SMOKE_S2_CPU_URGENT_ONLINE_V1_a1",
+   "checks": {
+    "validated": false
+   },
+   "record": {}
+  },
+  {
+   "name": "S2_B2_PARALLEL_ONLINE_V1",
+   "rc": 5,
+   "folder": "results\\S26_MIXREQ_SMOKE_1009_r3\\S26_MIXREQ_SMOKE_S2_B2_PARALLEL_ONLINE_V1_a1",
+   "checks": {
+    "validated": false
+   },
+   "record": {}
+  },
+  {
+   "name": "S2_S26_NPU_PARALLEL_V1",
+   "rc": 5,
+   "folder": "results\\S26_MIXREQ_SMOKE_1009_r3\\S26_MIXREQ_SMOKE_S2_S26_NPU_PARALLEL_V1_a1",
+   "checks": {
+    "validated": false
+   },
+   "record": {}
+  }
+ ],
+ "decisions": [
+  "블록 A 미실행 — PAR 병행 검증 실패 (등록 §3-3)",
+  "블록 N 미실행 — PAR-NPU 병행 검증 실패 (등록 §3-3)"
+ ],
+ "note": "스모크 = 동작 확인용. KPI 비교 · 결론 문장 없음. NPU 계약 첫 값은 기록만 (기준 · 설계 · 블록 N 실행 여부를 바꾸지 않는다).",
+ "S1_checks": null
+}

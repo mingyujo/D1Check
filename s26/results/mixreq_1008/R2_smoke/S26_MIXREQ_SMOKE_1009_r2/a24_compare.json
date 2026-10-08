@@ -1,0 +1,294 @@
+{
+  "a24_detection": "PASS",
+  "classification": "PASS",
+  "classification_detail": {
+    "compare": {
+      "candidate_count": 5,
+      "pairs": [
+        {
+          "index": true,
+          "label": true,
+          "score_delta": 3.5762786865234375e-07
+        },
+        {
+          "index": true,
+          "label": true,
+          "score_delta": 3.427267074584961e-07
+        },
+        {
+          "index": true,
+          "label": true,
+          "score_delta": 1.825392246246338e-07
+        },
+        {
+          "index": true,
+          "label": true,
+          "score_delta": 1.0058283805847168e-07
+        },
+        {
+          "index": true,
+          "label": true,
+          "score_delta": 6.705522537231445e-08
+        }
+      ],
+      "passed": true,
+      "reference_count": 5
+    },
+    "decoded_rgb_sha_ca6c2e2b": true,
+    "input_tensor_sha_603328d0": true,
+    "raw_output_equals_reference": false,
+    "reference": {
+      "raw_output_sha256": "0df3d53519e40f8e86e683866a00a1083f7b90c53a6b0625b52fe2b065926103",
+      "results": [
+        {
+          "class_index": 518,
+          "label": "crash helmet",
+          "score": 0.21342213451862335
+        },
+        {
+          "class_index": 671,
+          "label": "mountain bike",
+          "score": 0.11249527335166931
+        },
+        {
+          "class_index": 535,
+          "label": "disk brake",
+          "score": 0.0572345145046711
+        },
+        {
+          "class_index": 870,
+          "label": "tricycle",
+          "score": 0.05507273972034454
+        },
+        {
+          "class_index": 665,
+          "label": "moped",
+          "score": 0.05448594316840172
+        }
+      ],
+      "source": "host_classification_reference/reference.json -> reference.results"
+    },
+    "s26_decoded_rgb_sha256": "ca6c2e2bf77bfd8c9240404f516a17eb21c24ba34159ce2e3722bf8aaf225455",
+    "s26_input_tensor_sha256": "603328d02dfc2b1aa356b26b0f14b9e70f8cdb80609c89fd171bcf4c3ff85462",
+    "s26_raw_output_sha256": [
+      "714d3406b0e47fcc3ad50ccd83eb01f46d66310cc199b2da7948be4380557dae"
+    ],
+    "s26_top5": [
+      {
+        "class_index": 518,
+        "label": "crash helmet",
+        "score": 0.2134217768907547
+      },
+      {
+        "class_index": 671,
+        "label": "mountain bike",
+        "score": 0.11249493062496185
+      },
+      {
+        "class_index": 535,
+        "label": "disk brake",
+        "score": 0.05723469704389572
+      },
+      {
+        "class_index": 870,
+        "label": "tricycle",
+        "score": 0.0550728403031826
+      },
+      {
+        "class_index": 665,
+        "label": "moped",
+        "score": 0.05448601022362709
+      }
+    ],
+    "s26_warmup_count": 2
+  },
+  "detection": {
+    "a24_records_identical": {
+      "decoded_bit_equal": true,
+      "decoded_within_tolerance": true,
+      "raw_sha_equal": true
+    },
+    "a24_reference": {
+      "actual_backend": "CPU",
+      "input_tensor_sha256": "e1ce665bedf565285adccc4098433e338b9cdb08d681e0c0d424cae521e273ad",
+      "raw_output_sha256": [
+        "109e7e72616cd8441546edc01b434bbaa1945eaad8f7248956477466118e4729",
+        "018ddba6c170cea575328f1e1392d0a82caa7babfdd5b8cc3bca6e3518b1fa2d"
+      ],
+      "results": [
+        {
+          "box": [
+            372.135776826232,
+            24.47343933266307,
+            576.7281844497841,
+            321.4590852799534
+          ],
+          "label": "person",
+          "score": 0.6962101459503174
+        },
+        {
+          "box": [
+            -11.354641724794732,
+            12.291336479462991,
+            495.5273370370457,
+            470.6138081300607
+          ],
+          "label": "bicycle",
+          "score": 0.5589990019798279
+        }
+      ]
+    },
+    "per_warmup": [
+      {
+        "index": 0,
+        "input_tensor_equals_a24": true,
+        "raw_output_equals_a24": false,
+        "s26_input_tensor_sha256": "e1ce665bedf565285adccc4098433e338b9cdb08d681e0c0d424cae521e273ad",
+        "s26_raw_output_sha256": [
+          "109e7e72616cd8441546edc01b434bbaa1945eaad8f7248956477466118e4729",
+          "4505de7b057477d3d37b2768669870df7fb2ef9f59584ffa29398fe7cc2a8403"
+        ],
+        "s26_results": [
+          {
+            "box": [
+              372.1357774899192,
+              24.473440530191464,
+              576.7281758558645,
+              321.45908288489665
+            ],
+            "label": "person",
+            "score": 0.6962101459503174
+          },
+          {
+            "box": [
+              -11.354660022926566,
+              12.291342714557366,
+              495.52738134064396,
+              470.61378709198465
+            ],
+            "label": "bicycle",
+            "score": 0.5589990019798279
+          }
+        ],
+        "vs_a24_record0": {
+          "candidate_count": 2,
+          "pairs": [
+            {
+              "label": true,
+              "max_box_delta_px": 8.593919574195752e-06,
+              "score_delta": 0.0
+            },
+            {
+              "label": true,
+              "max_box_delta_px": 4.430359825846608e-05,
+              "score_delta": 0.0
+            }
+          ],
+          "passed": true,
+          "reference_count": 2
+        },
+        "vs_a24_record1": {
+          "candidate_count": 2,
+          "pairs": [
+            {
+              "label": true,
+              "max_box_delta_px": 8.593919574195752e-06,
+              "score_delta": 0.0
+            },
+            {
+              "label": true,
+              "max_box_delta_px": 4.430359825846608e-05,
+              "score_delta": 0.0
+            }
+          ],
+          "passed": true,
+          "reference_count": 2
+        }
+      },
+      {
+        "index": 1,
+        "input_tensor_equals_a24": true,
+        "raw_output_equals_a24": false,
+        "s26_input_tensor_sha256": "e1ce665bedf565285adccc4098433e338b9cdb08d681e0c0d424cae521e273ad",
+        "s26_raw_output_sha256": [
+          "109e7e72616cd8441546edc01b434bbaa1945eaad8f7248956477466118e4729",
+          "4505de7b057477d3d37b2768669870df7fb2ef9f59584ffa29398fe7cc2a8403"
+        ],
+        "s26_results": [
+          {
+            "box": [
+              372.1357774899192,
+              24.473440530191464,
+              576.7281758558645,
+              321.45908288489665
+            ],
+            "label": "person",
+            "score": 0.6962101459503174
+          },
+          {
+            "box": [
+              -11.354660022926566,
+              12.291342714557366,
+              495.52738134064396,
+              470.61378709198465
+            ],
+            "label": "bicycle",
+            "score": 0.5589990019798279
+          }
+        ],
+        "vs_a24_record0": {
+          "candidate_count": 2,
+          "pairs": [
+            {
+              "label": true,
+              "max_box_delta_px": 8.593919574195752e-06,
+              "score_delta": 0.0
+            },
+            {
+              "label": true,
+              "max_box_delta_px": 4.430359825846608e-05,
+              "score_delta": 0.0
+            }
+          ],
+          "passed": true,
+          "reference_count": 2
+        },
+        "vs_a24_record1": {
+          "candidate_count": 2,
+          "pairs": [
+            {
+              "label": true,
+              "max_box_delta_px": 8.593919574195752e-06,
+              "score_delta": 0.0
+            },
+            {
+              "label": true,
+              "max_box_delta_px": 4.430359825846608e-05,
+              "score_delta": 0.0
+            }
+          ],
+          "passed": true,
+          "reference_count": 2
+        }
+      }
+    ],
+    "s26_warmup_count": 2
+  },
+  "handoff": {
+    "cls_file_sha256": "c9ae61f267857073c184798604653cfc4276b4d0988805f8b2772ed9828c8ceb",
+    "cls_input_tensor_sha256": "603328d02dfc2b1aa356b26b0f14b9e70f8cdb80609c89fd171bcf4c3ff85462",
+    "cls_raw_output_sha256": "0df3d53519e40f8e86e683866a00a1083f7b90c53a6b0625b52fe2b065926103",
+    "cls_role": "engineering_reference_not_ground_truth",
+    "cls_source": "host_classification_reference/reference.json -> reference.results",
+    "det_experiment_id": "SUSTAINED-CPU-PAR-CONFIRM-01",
+    "det_file_sha256": "da66b96838af725da8be3cefeb27c8efa93357c255009bcabde546db847b7666",
+    "det_role": "A24 actual decoded CPU warmup reference, not ground truth or full raw tensor capture",
+    "det_session_id": "fd107fbf-b077-5cfb-9112-88a09ad3f838",
+    "handoff": "local_inputs\\a24_handoff_1008",
+    "manifest_sha256": "d93e097811c7cd4d0b9be617cbab1d14750396f4113a593da8247292db762f70"
+  },
+  "note": "판정 = ① 탐지 (S26 detection_CPU warmup 2회 각각 vs A24 실제 탐지 CPU warmup, A24 허용) · ② 분류 (S26 classification_CPU warmup 1회차 top-5 vs host CPU 참조). 입력 텐서 · RGB · raw SHA 는 기록만. KPI 없음.",
+  "s1_folder": "results\\S26_MIXREQ_SMOKE_1009_r2\\S26_MIXREQ_SMOKE_S1_warmup_only_blockN_a1",
+  "schema": "s26-mixreq-a24-compare-v1",
+  "verdict": "PASS"
+}

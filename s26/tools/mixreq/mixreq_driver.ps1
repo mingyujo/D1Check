@@ -1,5 +1,5 @@
 param([Parameter(Mandatory=$true)][ValidateSet("A","N")][string]$Block, [int]$StartIndex = -1, [switch]$DryRun,
-      [string]$PlanDir = "", [string]$ResultsRoot = "", [int]$RetryRestS = 600, [switch]$SkipGate)
+      [string]$PlanDir = "", [string]$ResultsRoot = "", [int]$RetryRestS = 600, [switch]$SkipGate, [switch]$AllowSettingsMismatch)
 # S26 mixed-request block driver (R2). ASCII + CRLF only. One block per invocation (A = sessions 0..7, N = 8..15).
 # Rules (prereg §3-3, §4): sessions in registered order; an invalid session is retried ONCE in the same slot after >= RetryRestS (600 s)
 # rest + the gate (attempt 2, same sid/request ids); a second invalid stops the block; gate SOC/plugged block (exit 6) stops the block
@@ -48,6 +48,7 @@ function RunSession([int]$idx, [int]$attempt) {
   $argList = @("-X","utf8","$TOOLDIR\mixreq_session.py","--plan",$PlanDir,"--index",$idx,"--attempt",$attempt,"--results",$ResultsRoot)
   if ($DryRun) { $argList += "--dry-run" }
   if ($SkipGate) { $argList += "--skip-gate" }
+  if ($AllowSettingsMismatch) { $argList += "--allow-settings-mismatch" }  # R2 10/9 decision: S26 rewrites brightness 0 -> 1 while awake (display float 0.0 = minimum); value is recorded per session
   Log "RUN index=$idx attempt=$attempt"
   & py @argList 2>&1 | ForEach-Object { Log ("  py: " + "$_") }
   $rcode = $LASTEXITCODE

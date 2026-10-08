@@ -35,6 +35,8 @@ def run_session(args, smoke_name: str) -> int:
         cmd.append("--dry-run")
     if args.skip_gate:
         cmd.append("--skip-gate")
+    if args.allow_settings_mismatch:
+        cmd.append("--allow-settings-mismatch")  # R2 10/9 00:4x 영훈 결정: S26 은 화면 켜짐 중 brightness 0 -> 1 로 되돌림 (표시 float 0.0 = 최소); 값은 session_log settings_before 에 기록
     print("RUN", " ".join(cmd[3:]), flush=True)
     return subprocess.call(cmd)
 
@@ -151,6 +153,7 @@ def main() -> int:
     ap.add_argument("--reference-pc", type=Path)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--skip-gate", action="store_true")
+    ap.add_argument("--allow-settings-mismatch", action="store_true", help="pass through to mixreq_session.py (R2: phone rewrites brightness 0 -> 1 while awake)")
     ap.add_argument("--only", choices=("S1", "S2"))
     args = ap.parse_args()
     reference = C.read_json(args.reference_pc) if args.reference_pc and args.reference_pc.is_file() else None
