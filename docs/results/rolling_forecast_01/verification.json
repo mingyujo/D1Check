@@ -1,0 +1,61 @@
+{
+  "utc": "2026-10-08T02:01:13.626658+00:00",
+  "head": "6928150f77a34afbba11d40948cc5c38a5546a79",
+  "dirty": true,
+  "tests_passed": 8,
+  "commands": [
+    "python -X utf8 -B -m unittest tools.test_d1_rolling_forecast -v",
+    "python -X utf8 -B -m tools.d1_rolling_forecast run --output output/rolling_forecast_v3",
+    "python -X utf8 -B -m tools.d1_rolling_forecast_readout --output docs/results/rolling_forecast_01"
+  ],
+  "source_hashes": {
+    "tools/d1_rolling_forecast.py": "dc4f35dfcf5ab36fb7162bb2743a254ec4b29bee24e3d5a3ba69134cc0ddcb0b",
+    "tools/d1_rolling_forecast_readout.py": "1195f8674eb2af137089a1baed14b2f1aa7db41ccb491ecfc93945002e94145f",
+    "tools/test_d1_rolling_forecast.py": "f06807cb8ca65aeeae02ef8e31c0c942d70d248c0a1820c80815c9cf68823135"
+  },
+  "artifact_hashes": {
+    "docs/results/rolling_forecast_01/ap_paths.csv": "f4658753484f53b57669be1db0120adb9f8e93771ae508062ec9378855f5bfc3",
+    "docs/results/rolling_forecast_01/comparison.csv": "2178b819cdaab8b14850aca89601f5195dd2faeae4a819c67ac1272fb4b69cdb",
+    "docs/results/rolling_forecast_01/comparison.png": "d8b36e1f8d8b240dc3a63ad37de2c8073c1ff61b9edc267e5604d65bc49ffd2d",
+    "docs/results/rolling_forecast_01/confirmation_AP.png": "af8916b4a9f4122cd99aff954593ecdf343ef9f0a513048c2df54e40ccf73003",
+    "docs/results/rolling_forecast_01/contract.json": "ca97b31f26a8e146509f2835c76ff50fbd20d8edb2aff89c9e70086660c137f1",
+    "docs/results/rolling_forecast_01/diagnostics.json": "84fd88841d132fae62f0697b39472b3d2ce11ca8e7eac51d49911faeba966499",
+    "docs/results/rolling_forecast_01/index.html": "63ab43388c4d8b34e59c9487639b8d7f0a8dad1914eb111f55225d3ceaa8aa25",
+    "docs/results/rolling_forecast_01/inputs.json.gz": "a74e9009fd54c79654359d6470276a83ef95a0e7a15b31471a2ad9556be25964",
+    "docs/results/rolling_forecast_01/partial_totals.csv": "dfad13bc9aea9317cab1092f358737d42bc180067564fa65d427374aa36d052f",
+    "docs/results/rolling_forecast_01/past_future_residual.csv": "b9cde53b6706beadcdf7f706b0100767b3476517010d832a39976a7e669e8ca7",
+    "docs/results/rolling_forecast_01/README.md": "5e9c55ebe32565f873110c743c7ea7fd9510648883f545a1ae15a6ce023605e5",
+    "docs/results/rolling_forecast_01/segment_summary.csv": "a2afb28352bd3a09205070675e0acf0cb3b2b0f81659d07a8ff6941ca7e81e9e",
+    "docs/results/rolling_forecast_01/session_errors.csv": "ebdf27c899fe67b697e373fc1b391cf40ad50ca47166dfd57c2dd08e2b66cd3a",
+    "docs/results/rolling_forecast_01/snapshots.csv": "0afef87f021fa983c36fb1d57bfd5bd464895f18a7bd089e1906f9d57ac6fd2a",
+    "docs/results/rolling_forecast_01/source_inventory.json": "c5e5aaa23d2d41d9180b55a14d3a22914ea616ca3b088f1bec3e533635ffdc66",
+    "docs/results/rolling_forecast_01/summary.json": "c30e9735b03bee7173055928a72e14c01726a33a7933ed4c1c92051988776ec7",
+    "docs/results/rolling_forecast_01/window_errors.csv": "f86e1a1866e1f013a5122bc68c9a42b89d233f3400c50da1a5322df1261bc152"
+  },
+  "model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+  "raw_files_rechecked": 40,
+  "sessions": 20,
+  "forecast_origins": 280,
+  "rows": 840,
+  "energy_scored_rows": 480,
+  "ap_scored_rows": 840,
+  "baseline_and_final_numeric_bytes_identical": true,
+  "initial_export_error": "Exact rounded half-ns key join failed on floating-point ULP; bounded match and original-value identity implemented",
+  "initial_forecast_error": "Prefix clipping found exact-anchor incomplete prediction; original v2/failure.json preserved and all20 initial anchors tested",
+  "future_observation_input": false,
+  "schedule": "actual future states condition for frozen/rolling, not causal policy evaluation",
+  "availability": "device bracket/event publication proxy, host delivery unknown",
+  "new_model_fit_calls": 0,
+  "policy_environments": 0,
+  "training": 0,
+  "device_commands": 0,
+  "builds": 0,
+  "new_claims": 0,
+  "html_table_rows": 9,
+  "local_links_exist": true,
+  "images_viewed": [
+    "comparison.png",
+    "confirmation_AP.png"
+  ],
+  "unrelated_changes_preserved": true
+}

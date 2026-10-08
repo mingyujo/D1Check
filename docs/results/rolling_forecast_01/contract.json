@@ -1,0 +1,57 @@
+{
+  "id": "ROLLING-FORECAST-01",
+  "utc": "2026-10-08T01:39:22.437928+00:00",
+  "head": "6928150f77a34afbba11d40948cc5c38a5546a79",
+  "posthoc": true,
+  "schedule": "A actual future lane schedule given, same for frozen and rolling; not B arrival forecast or causal scheduler evaluation",
+  "starts_s": [
+    35,
+    45,
+    55,
+    65,
+    75,
+    85,
+    95,
+    105,
+    115,
+    125,
+    135,
+    145,
+    155,
+    165
+  ],
+  "horizon_s": 10,
+  "energy_available": "only complete ten-second windows ending<=120; 35..115 union, not full120",
+  "methods": [
+    "FROZEN_OPEN_LOOP",
+    "OBSERVATION_PERSISTENCE",
+    "ROLLING_OFFSET"
+  ],
+  "rolling_power": "delta W = last available up-to10s observed mean W minus same past interval frozen state mean W; constant correction over next10s",
+  "rolling_ap": "last available AP minus original prediction at that observation time, propagated with frozen beta; original latent H and reference kept",
+  "persistence": "last available AP held, past available mean whole-device W held; no future schedule input",
+  "availability": "AP after_ns upper bracket; power event mono_ns publication proxy; host delivery and sensor hardware refresh not certified",
+  "power_max_age_s": 2.5,
+  "ap_max_age_s": 10,
+  "minimum_power_history_s": 5,
+  "role": "no parameter fitting or window tuning; development6, confirmation6, prior sustained8 reported separately",
+  "primary_metrics": [
+    "per-session mean ten-second absolute-J error",
+    "per-session mean AP path MAE at actual valid within-window query times"
+  ],
+  "other_metrics": [
+    "signed/relative J",
+    "max AP error",
+    "window peak error",
+    "direction errors",
+    "load/transition/idle stratification",
+    "all worsened sessions",
+    "coverage"
+  ],
+  "accuracy_pass": null,
+  "policy_winner": null,
+  "experiment_ready": false,
+  "device_commands": 0,
+  "policy_simulations": 0,
+  "rl_training": 0
+}
