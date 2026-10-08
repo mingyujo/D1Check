@@ -1,0 +1,46 @@
+{
+  "utc": "2026-10-08T02:43:22.808300+00:00",
+  "head": "af3017c20bc15fdfc33cdde081af8daff52f9515",
+  "dirty": true,
+  "command": "python -B -m unittest tools.test_d1_slack_residual_design_audit -v; Python contract/link/formula validation",
+  "direct_tests_passed": 7,
+  "formula_checks": {
+    "heat_return_telescope": true,
+    "baseline_prior": true,
+    "slots32": true,
+    "state_dimension": 107,
+    "candidate_dimension": 61,
+    "independent_reference_constraints": true,
+    "two_reference_cache_ceiling": 4160,
+    "total_proposed_environment_max": 13912,
+    "all_learning_max": 6144,
+    "local_links": true,
+    "original_execution_sources_unchanged": 23,
+    "old_environment_starts_unchanged": 2241
+  },
+  "implementation_status": "DESIGN_COMPLETE_NOT_IMPLEMENTED",
+  "engine_calls": 0,
+  "learner_calls": 0,
+  "device_commands": 0,
+  "source_hashes": {
+    "tools/d1_slack_residual_design_audit.py": "f722662ad502540ed195f6b35c8634e1b071395057b596c897801e7ddb26f85c",
+    "tools/test_d1_slack_residual_design_audit.py": "8c7a5a2236ab281ac7e58fe5d03add5acdfa05f9ff0136452be828f430af8f93",
+    "docs/SLACK_RESIDUAL_RL_REDESIGN_20261008.md": "efc1f9aaf536fbdf2b9f818d99082e147e6915cac631ff869c4327b799112cb4",
+    "docs/results/slack_residual_design_01/design_contract.json": "bc6f978032d52ed574c64635fa6caf704ea4c983912365efa7bfc1e17c94ff91",
+    "tools/d1_slack_residual_design_check.py": "58fb1dccdb2cf972b859d1c70d6729d3052d13d03a13fcba10f63f6d8846575e"
+  },
+  "outputs": {
+    "audit_manifest.json": "47d2f255723afba0c5503d7b42a109e35a43e2fcff3784a12d1e119e362d7492",
+    "constraint_audit.csv": "9394411ca3d26664621abc37ece345f80f31948c51281555fb9e2a85cb5a6e9f",
+    "constraint_audit.json": "7a19ecfffc071fc72b712140e8f63df428d3e6c80cd75d57aa29f8ce8a90cb0a",
+    "design_contract.json": "bc6f978032d52ed574c64635fa6caf704ea4c983912365efa7bfc1e17c94ff91",
+    "DESIGN_REVIEW.md": "f75229bc187f57f732a002672f4e49b243b67a5e896159c71c4744d077603ab6",
+    "README.md": "a7320a2a59632dba759a0aea90d6c8c882f7e80c24bf66b35de2414eebca5e05"
+  },
+  "old_campaign_consumption": {
+    "environment_starts": 2241,
+    "training_episodes": 0,
+    "remaining_environment_starts": 17759
+  },
+  "result_limit": "formula/schema/audit checks only; new controller masks, actuator, PPO and real-device feasibility untested"
+}

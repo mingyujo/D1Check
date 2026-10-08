@@ -1,5 +1,12 @@
 # D1Check 결정 기록
 
+## 2026-10-08 — SLACK-RESIDUAL-DESIGN-01 재설계 방향 채택
+
+- 사용자 재설계 지시로 정확한 SHARED_EFT fallback + 실제 기한 내 단건/허용2건/제한 대기 보정을 선택한다. 원기한/완료/P95/J기준·물리계수/기본/strict/experiment_ready=false는 유지하고 R2의 최초EFT cap/signed J veto만 새정책에서 제외한다. [설계·식·구현 경계](SLACK_RESIDUAL_RL_REDESIGN_20261008.md).
+- 기록분석192조건: 이른cap12,403/12,672·cap-only탈락579,528·라벨제외추가즉시배정6,776. 실제SLA재검증/새성능은미완료, old192는소비된설계자료로명시한다. 미래일정의작은공동이득은P95증가로teacher불가. 함수7/schema/망원합/prior/예산검증만완료, 환경/학습/기기0.
+- 관측107/후보61/32slot·6headcritic·두종료후참조의5제약을 제안한다. MODELED_AP만사용, 최신관측prefix는앱입력/지연/동등입력을확인할별도v2로분리한다. PPOLagrange/예측mask가실제제약보장을준다는주장은하지않는다.
+- 기존누적2,241/20,000·잔여17,759·학습0/6,144를유지한다. 제안후속13,912환경/본6,096+학습fixture48·참조cache4,160필수·학습시간null이며 실행계약은미동결이다. 다음은학습없는prototype의A/B/C/D gate, 미통과면학습0. 신규숫자/설계파일을실행승인/정책채택으로승격하지않는다. 다른작업/사용자자료보존.
+
 ## 2026-10-08 ROLLING-FORECAST-01 — 관측 가용prefix·10초 갱신 구현/평가 완료
 
 - 기존20세션/280발행·840창을고정10초식으로평가. [판독·평균/최악/합산경계](ROLLING_FORECAST_RESULTS_20261008.md) · [화면/재현](results/rolling_forecast_01/README.md). AP after_ns/전력기록완료이전만입력, future관측누출차단·계수재적합0. 원/갱신은실제미래일정이주어진A조건부, 온라인정책/B검증아님.

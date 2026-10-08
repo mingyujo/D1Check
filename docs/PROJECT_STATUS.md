@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-10-08 SLACK-RESIDUAL-DESIGN-01 — 보정 RL 재설계 완료·구현/학습0
+
+- 사용자 ‘재설계 해보자’에 따라 SHARED_EFT 기본 + 실제 기한 여유의 단건/CG_DC묶음/제한 대기 보정으로 재설계했다. 실제 기한·전량·긴급P95/J 비악화·원모형/기본/strict/experiment_ready=false 유지. [상세 설계·핵심식](SLACK_RESIDUAL_RL_REDESIGN_20261008.md)·[요약/schema](results/slack_residual_design_01/README.md).
+- 저장 R2 192조건의12,672요청 중12,403이 이른cap, cap만 탈락579,528후보·라벨제외시추가즉시배정6,776callback을 확인했다. 새 실제SLA/물리실행 적격성 증명은 아님. 옛작은공동이득6일정은 긴급P95+671–790ms/미래입력 때문에 이번기준 teacher불가. 원본/옛판정/미열람시험 의미 보존.
+- 관측107·후보61·32slot·6critic·종료후SHARED_EFT/Band 5제약·AP격자 최고증가 보상/180초tail·묶음실제lane재검사·반환이아닌실행prefix차이·온도MODEL_AP모드로 구체화했다. 새정책/PPO 구현·환경·학습·기기0. 함수7검증+schema/보상망원합/prior확률/예산산술 PASS는 controller성능 통과가 아니다.
+- 방향/불변조건은 채택, 신경망/optimizer/실행숫자는 후속등록 전 제안이다. 기존2,241/20,000환경·학습0/6,144·잔여17,759/단계2 383 초기화0. 후속 최대13,912환경·6,096본학습+48학습fixture 제안, 2참조cache4160필수·학습시간null. 실제 학습은 A/B/C/D gate 통과 전 불허.
+- 검증대상 새설계/읽기분석 소스SHA·HEAD+미커밋은 [검증](results/slack_residual_design_01/design_verification.json). 다른rolling/history/사용자14행·HTML/PDF·다른worktree 보존. 다음: 학습없는controller prototype→실제기한/물리선택폭/개선신호/계산시간 검증. 자동학습/재실측0.
+
 ## 2026-10-08 ROLLING-FORECAST-01 — 관측 가용prefix·10초 갱신 구현/평가 완료
 
 - 기존20세션/280발행·840창을고정10초식으로평가. [판독·평균/최악/합산경계](ROLLING_FORECAST_RESULTS_20261008.md) · [화면/재현](results/rolling_forecast_01/README.md). AP after_ns/전력기록완료이전만입력, future관측누출차단·계수재적합0. 원/갱신은실제미래일정이주어진A조건부, 온라인정책/B검증아님.
