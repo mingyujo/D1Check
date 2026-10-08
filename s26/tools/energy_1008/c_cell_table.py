@@ -26,9 +26,11 @@ for sfx in sys.argv[1:]:
     rows = []
     for f in cells:
         lines = open(os.path.join(H, f), encoding="utf-8-sig").read().splitlines()
-        if not any(f"_{sfx}" in ln for ln in lines if "CELL START" in ln):
+        starts = [i for i, ln in enumerate(lines) if "CELL START" in ln and f"_{sfx}" in ln]
+        if not starts:
             continue
-        st = next(ln for ln in lines if "CELL START" in ln)
+        lines = lines[starts[-1]:]          # this session's attempt only (a log file can hold an earlier session's lines)
+        st = lines[0]
         label = re.search(r"label=(\S+)", st).group(1)
         key = label.split("_", 1)[1]
         launched = next((t(ln) for ln in lines if "LAUNCHED" in ln), None)

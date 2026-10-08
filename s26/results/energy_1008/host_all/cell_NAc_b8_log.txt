@@ -1,0 +1,13 @@
+﻿[2026-10-08 18:01:44 +09:00] CELL START NAc_b8 label=19_NAc_b8 out=S26_NAc_b8_1009c pid=21532 minSoc=30 hours=0.5 lower=mark duration=900 deadline=2026-10-10 06:00 stall=600s cap=Σ+150min
+[2026-10-08 18:01:44 +09:00] PRECHECK soc=56 endBy+30m=10-08 19:01
+[2026-10-08 18:03:45 +09:00] GATE rc=0 last=19_NAc_b8 2026-10-08T18:03:45 120 31.3 30.1 29.7 0 56 False True
+[2026-10-08 18:03:45 +09:00] LOWER skin=31.3(>=29.1:True) bat=29.7(>=27.5:True) pass=True policy=mark -> run
+[2026-10-08 18:03:45 +09:00] POSTGATE soc=56 endBy+30m=10-08 19:03
+[2026-10-08 18:03:45 +09:00] DRYRUN exit=0 file=C:\Users\rhoyo\AndroidStudioProjects\D1Check_v4\results\S26_host_energy_1008\dryrun_19_NAc_b8_final_180345.txt lines=496
+[2026-10-08 18:03:45 +09:00] CHAIN SHA match lines=1
+[2026-10-08 18:03:45 +09:00] DRYRUN duration_s 900 lines=1
+[2026-10-08 18:03:45 +09:00] LAUNCHED 19_NAc_b8 -> S26_NAc_b8_1009c pid=12668
+[2026-10-08 18:03:50 +09:00] STALLWATCH start pid=12668 stall>600s cap>9900s trace0=1|21138|639270470281228831
+[2026-10-08 18:23:22 +09:00] ORCH EXITED pid=12668
+[2026-10-08 18:23:22 +09:00] DONE manifest_status=failed halt=ADB command timed out after 15s: ['C:\\Users\\rhoyo\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe', '-s', '<SERIAL>', 'shell', 'dumpsys', 'battery'] slot=failed attempts=1 valid= failed= flags= error=OrchestratorError: ADB command timed out after 15s: ['C:\\Users\\rhoyo\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe', '-s', '<SERIAL>', 'shell', 'dumpsys', 'battery']
+[2026-10-08 18:23:22 +09:00] CELL END NAc_b8

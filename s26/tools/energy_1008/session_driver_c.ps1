@@ -1,5 +1,9 @@
 ﻿param([switch]$DryRun, [string]$WatchMode = "on", [int]$SeqStart = 1, [Parameter(Mandatory=$true)][ValidateSet("C1","C2")][string]$Session,
-      [string]$SessionEnd = "2026-10-10 06:00", [string]$Blocks = "", [switch]$NoSmoke, [int]$RetryRestS = 600)
+      [string]$SessionEnd = "2026-10-10 06:00", [string]$Blocks = "", [switch]$NoSmoke, [int]$RetryRestS = 600,
+      [string]$RetryFirst = "", [switch]$Resume)
+# P1i 10-08 16:5x (after the C2 driver stopped on adb loss with "NBc_b7 -> retry once (_re)" queued): + -RetryFirst "<cell>:<k>" puts that
+#   pending retry (_re, RetryOf slot_invalid) at the front of the queue · + -Resume = the session's first measured cell already ran
+#   (SOC >= 85 rule met by it), so the first cell of this run uses the normal floor. Operation only — no judgment rule changed.
 # Energy C (P1i 1008) session driver = copy of s26\tools\v3_1006\session_driver_v3b.ps1. Changed only (energy prereg v1 §6 · P1i prompt 1-5):
 #   (1) -Session C1|C2 -> blocks C1 = 1..4 · C2 = 5..8 (or -Blocks "2,5,6" for blocks left from an earlier session — whole block, both cells).
 #       Order in a block (§6-3, same frame each session): odd k = A -> B · even k = B -> A. Cells NAc (A, npu_eff_work100_v1) · NBc (B, npu_eff_work50eq_v1).
@@ -59,7 +63,7 @@ function NewItem([string]$cellName, [int]$blk, [bool]$firstInBlock) {
   return [pscustomobject]@{ Cell = $cellName; Block = $blk; Key = $kk; OutName = $on; FirstInBlock = $firstInBlock; IsRe = $false; RetryOf = "" }
 }
 $BLOCKLIST = @()
-if ($Blocks) { $BLOCKLIST = @($Blocks -split "," | ForEach-Object { [int]$_.Trim() }) } elseif ($Session -eq "C1") { $BLOCKLIST = @(1, 2, 3, 4) } else { $BLOCKLIST = @(5, 6, 7, 8) }
+if ($Blocks -eq "none") { $BLOCKLIST = @() } elseif ($Blocks) { $BLOCKLIST = @($Blocks -split "," | ForEach-Object { [int]$_.Trim() }) } elseif ($Session -eq "C1") { $BLOCKLIST = @(1, 2, 3, 4) } else { $BLOCKLIST = @(5, 6, 7, 8) }
 foreach ($bk in $BLOCKLIST) { if ($bk -lt 1 -or $bk -gt 8) { throw "block $bk not in 1..8" } }
 $QUEUE = New-Object System.Collections.ArrayList
 if (-not $NoSmoke) { [void]$QUEUE.Add((NewItem "smokeN" 0 $false)) }
@@ -67,11 +71,17 @@ foreach ($bk in $BLOCKLIST) {
   if ($bk % 2 -eq 1) { $c1st = "NAc"; $c2nd = "NBc" } else { $c1st = "NBc"; $c2nd = "NAc" }
   [void]$QUEUE.Add((NewItem $c1st $bk $true)); [void]$QUEUE.Add((NewItem $c2nd $bk $false))
 }
+if ($RetryFirst) {
+  $rp = $RetryFirst -split ":"
+  if (-not $CELLSPEC.ContainsKey($rp[0]) -or $rp[0] -eq "smokeN") { throw "RetryFirst cell $($rp[0])" }
+  $rItem = NewItem $rp[0] ([int]$rp[1]) $false; $rItem.IsRe = $true; $rItem.RetryOf = "slot_invalid (previous driver run)"
+  $QUEUE.Insert(0, $rItem)
+}
 $STATE = [ordered]@{ session = $Session; watch = $WatchMode; session_end = $SessionEnd; blocks = $BLOCKLIST; cells = [ordered]@{}; lower_marked = @(); qc = [ordered]@{};
                      brightness_orig = $null; emergencies = 0; stop_reason = ""; left_blocks = @(); notes = @() }
 $script:seqNo = $SeqStart
 $script:lastCellEnd = $null
-$script:firstMeasuredDone = $false
+$script:firstMeasuredDone = [bool]$Resume
 function SaveState() { if (-not $DryRun) { ($STATE | ConvertTo-Json -Depth 8) | Set-Content -Encoding UTF8 $stateFile } }
 function CellArgsOf([string]$cellName) { $cspec = $CELLSPEC[$cellName]; return "--npu-chain tools\chains\$($cspec.Chain).json --duration $($cspec.Dur) --npu-max-inference-spans $($cspec.Spans) $($cspec.Tmo) $COMMONARGS" }
 function HoursOf([string]$cellName) { return [math]::Round(($CELLSPEC[$cellName].Dur + 900) / 3600.0, 3) }
@@ -187,13 +197,14 @@ function RestoreBright([string]$why) {
 
 Log "DRIVER START pid=$PID session=$Session watch=$WatchMode dry=$DryRun sessionEnd=$SessionEnd blocks=$($BLOCKLIST -join ',') smoke=$(-not $NoSmoke) retryRest=${RetryRestS}s queue=$(($QUEUE | ForEach-Object { $_.Key }) -join ',')"
 if ($DryRun) {
-  $fm = $false
+  $fm = [bool]$Resume
   foreach ($it in $QUEUE) {
     $pol = if ($it.Cell -eq "smokeN") { "upper_only" } else { "mark" }
     $ms = if ($it.Cell -eq "smokeN") { $CELL_FLOOR_SOC } elseif (-not $fm) { $FIRST_SOC } else { $CELL_FLOOR_SOC }
     if ($it.Cell -ne "smokeN") { $fm = $true }
     $bc = if ($it.FirstInBlock) { " blockcheck(soc>=$BLOCK_SOC, now+${BLOCK_MIN}min<=end)" } else { "" }
-    Log "PLAN $($it.Key) -> results\$($it.OutName) label=$('{0:D2}' -f $script:seqNo)_$($it.Key) chain=$($CELLSPEC[$it.Cell].Chain) sha=$($CELLSPEC[$it.Cell].Sha.Substring(0,8)) lower=$pol minsoc=$ms$bc hours=$(HoursOf $it.Cell) out=$OUTC args=$(CellArgsOf $it.Cell)"
+    $psx = if ($it.IsRe) { "_re" } else { "" }
+    Log "PLAN $($it.Key)$psx -> results\$($it.OutName)$psx label=$('{0:D2}' -f $script:seqNo)_$($it.Key)$psx chain=$($CELLSPEC[$it.Cell].Chain) sha=$($CELLSPEC[$it.Cell].Sha.Substring(0,8)) lower=$pol minsoc=$ms$bc hours=$(HoursOf $it.Cell) out=$OUTC args=$(CellArgsOf $it.Cell)"
     $script:seqNo++
   }
   exit 0

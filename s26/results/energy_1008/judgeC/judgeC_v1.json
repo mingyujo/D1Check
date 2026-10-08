@@ -1,0 +1,426 @@
+{
+ "always": "연료게이지 잔량계 기준 · 절대 정확도 미인증",
+ "attach": "(같은 폰 · 같은 블록 같은 일 쌍 · 연료게이지 잔량계 기준 · 절대 정확도 미인증 · [C1] ② 내부 일관성: R_sum 0.957 (편차 -0.043) · 허용 ±0.024 (σ_R 0.022 · N 8) → FAIL · [C2] ② 내부 일관성: R_sum 0.959 (편차 -0.041) · 허용 ±0.034 (σ_R 0.032 · N 8) → FAIL · ②′ 팔 사이 일관성: 평균 d_R -0.022 · 한계 max(0.03, 3·SE) = 0.034 → 통과 통과 (팔 사이 치우침 차 ≤ max(0.03, 3·SE)))",
+ "conclusion_sentence": "「같은 일을 d50 으로 나눠 해도 같은 900 s 창의 기기 에너지 차이는 등록한 동등 범위 ±2 눈금 (≈ ±126 J, 창 에너지의 약 5.9 %) 안이었다 (같은 일 쌍 6개 · 잔량계 기준).」",
+ "eligibility_v2": "적격 (등록 검사 통과 · v2 §9)",
+ "head": "결론 (적격 (등록 검사 통과 · v2 §9))",
+ "imports": {
+  "m1m2_judge_1002": {
+   "expected_prefix": "ea282d4a",
+   "ok": true,
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\m1m2_judge_1002.py",
+   "sha256": "ea282d4a48630c4af3cce301c13216f691389fa9f2c8e69a652de645be055b28"
+  },
+  "night1003_judge": {
+   "expected_prefix": "a5ceab41",
+   "ok": true,
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\night1003_judge.py",
+   "sha256": "a5ceab419c3bb0fed73b75b759901fb0e268f957bd1172e1edacbc246c903f50"
+  },
+  "night1005e_judge": {
+   "expected_prefix": "2db1cda5",
+   "ok": true,
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\night1005e_judge.py",
+   "sha256": "2db1cda5b7f2c84ffcd6bff52f8b2abc7d7b7bad78f165562e0e0101b005cf3a"
+  },
+  "night1005e_judge_c": {
+   "expected_prefix": "4e4dbcd3",
+   "ok": true,
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\night1005e_judge_c.py",
+   "sha256": "4e4dbcd3116a8634a50c8497e321e27a184f25f64e772f6929f72b44873be085"
+  },
+  "s26_energy": {
+   "expected_prefix": "ada0308f",
+   "ok": true,
+   "path": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_v4\\s26\\tools\\s26_energy.py",
+   "sha256": "ada0308ff29a2ea139475a04578f5a9c508215eeeae35b175c58de4331d8dfc5"
+  },
+  "v3_judge": {
+   "expected_prefix": "67ad5d42",
+   "ok": true,
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\v3_judge.py",
+   "sha256": "67ad5d422cc64da7196c9cd1d541eb46832e810f176b6566dc81f8c70f3e27db"
+  },
+  "v3_judge_v2": {
+   "expected_prefix": "b4462d58",
+   "ok": true,
+   "path": "C:\\Users\\rhoyo\\OneDrive\\문서\\Mine\\26-2\\산공학회\\D1_ondevice\\sim\\v3_judge_v2.py",
+   "sha256": "b4462d58f0b593842a6e94bc6e91fda581dffb069e9eba47349a96b45debf11b"
+  }
+ },
+ "inst_line": "②′ 팔 사이 일관성: 평균 d_R -0.022 · 한계 max(0.03, 3·SE) = 0.034 → 통과",
+ "judged_blocks": [
+  1,
+  4,
+  5,
+  6,
+  7,
+  8
+ ],
+ "kind": "energy_judgeC_v1",
+ "limit_note": "남는 한계 (v2 §9-4): ②′ 는 팔 사이 치우침 차가 max(0.03, 3·SE) 아래면 거르지 못한다 — 0.03 은 창 에너지 (~2,000 J [E v1 §1-4]) 의 ~3 % ≈ 60 J ≈ 한 눈금이다. v1 §7-1 (잔량계가 SOC 추정에서 나온 값일 가능성) 은 미확인 그대로다.",
+ "n_judged": 6,
+ "not_judged": [
+  {
+   "block": 2,
+   "why": "작업량 차 — 기술만 (r 1.0598)"
+  },
+  {
+   "block": 3,
+   "why": "작업량 차 — 기술만 (r 1.0481)"
+  }
+ ],
+ "numbers": {
+  "SE_J": 24.612751,
+  "d_bar_J": 22.78233,
+  "d_bar_int_J": -25.883975,
+  "inst": {
+   "SE_d_R": 0.011214,
+   "fail_bias": false,
+   "fail_sign": false,
+   "limit": 0.033643,
+   "mean_d_R": -0.022145,
+   "verdict": "통과"
+  },
+  "mean_E_cc_a": 2126.11824,
+  "n": 6,
+  "q_bar_J": 62.977162,
+  "sd_dE": 60.288681,
+  "se_floor_used": false,
+  "three_SE_J": 73.838253,
+  "verdict": "동등 범위 안 (±2 눈금)"
+ },
+ "pairs": [
+  {
+   "E_cc_a": 2052.01026,
+   "E_cc_b": 2037.68217,
+   "E_int_a": 1968.773782,
+   "E_int_b": 1977.460682,
+   "R_a": 0.958916,
+   "R_b": 0.969583,
+   "a": {
+    "cell": "NAc",
+    "run_id": "861e3baa-fb21-43c5-a400-adc3b47edbcb"
+   },
+   "b": {
+    "cell": "NBc",
+    "run_id": "06dea826-98ed-4dce-bdcb-e263fe5b2376"
+   },
+   "block": 1,
+   "dE_adj": 29.250843,
+   "dE_in_ticks": 0.215884,
+   "dE_int": -8.6869,
+   "dE_p": 14.32809,
+   "dE_pct_of_a": 0.698247,
+   "d_R": -0.010667,
+   "e_hat_b_J": 0.003859,
+   "excluded": false,
+   "exclusion": [],
+   "family": "C",
+   "kind": "energy_pair_v1",
+   "mJ_per_inf_a": 5.93777,
+   "mJ_per_inf_b": 5.831062,
+   "n_a": 345586,
+   "n_b": 349453,
+   "q_bar_J": 66.369375,
+   "r": 1.01119,
+   "r_in_filter": true,
+   "session_a": "C1",
+   "session_b": "C1",
+   "sign": "+"
+  },
+  {
+   "E_cc_a": 2042.48385,
+   "E_cc_b": 2019.50658,
+   "E_int_a": 1901.231605,
+   "E_int_b": 2015.662023,
+   "R_a": 0.929234,
+   "R_b": 0.996795,
+   "a": {
+    "cell": "NAc",
+    "run_id": "d2449bfa-f451-4068-8511-6539464d4c12"
+   },
+   "b": {
+    "cell": "NBc",
+    "run_id": "277fc75b-7cca-4251-bde8-f0fb9be2eea1"
+   },
+   "block": 2,
+   "dE_adj": 99.948037,
+   "dE_in_ticks": 0.35459,
+   "dE_int": -114.430418,
+   "dE_p": 22.97727,
+   "dE_pct_of_a": 1.124967,
+   "d_R": -0.067561,
+   "e_hat_b_J": 0.003811,
+   "excluded": false,
+   "exclusion": [],
+   "family": "C",
+   "kind": "energy_pair_v1",
+   "mJ_per_inf_a": 6.0443,
+   "mJ_per_inf_b": 5.639253,
+   "n_a": 337919,
+   "n_b": 358116,
+   "q_bar_J": 64.799595,
+   "r": 1.059769,
+   "r_in_filter": false,
+   "session_a": "C1",
+   "session_b": "C1",
+   "sign": "+"
+  },
+  {
+   "E_cc_a": 2016.98262,
+   "E_cc_b": 2121.43455,
+   "E_int_a": 1983.713946,
+   "E_int_b": 1980.655385,
+   "R_a": 0.981255,
+   "R_b": 0.931882,
+   "a": {
+    "cell": "NAc",
+    "run_id": "cb45dfcf-d116-4dcd-b6a5-12b598257219"
+   },
+   "b": {
+    "cell": "NBc",
+    "run_id": "7ec0970d-a9ee-461e-9069-7dc85da18a40"
+   },
+   "block": 3,
+   "dE_adj": -40.457552,
+   "dE_in_ticks": -1.659413,
+   "dE_int": 3.058561,
+   "dE_p": -104.45193,
+   "dE_pct_of_a": -5.178623,
+   "d_R": 0.049373,
+   "e_hat_b_J": 0.003934,
+   "excluded": false,
+   "exclusion": [],
+   "family": "C",
+   "kind": "energy_pair_v1",
+   "mJ_per_inf_a": 5.960861,
+   "mJ_per_inf_b": 5.981972,
+   "n_a": 338371,
+   "n_b": 354638,
+   "q_bar_J": 62.9451,
+   "r": 1.048074,
+   "r_in_filter": false,
+   "session_a": "C1",
+   "session_b": "C1",
+   "sign": "-"
+  },
+  {
+   "E_cc_a": 2052.16416,
+   "E_cc_b": 2042.99172,
+   "E_int_a": 1942.219491,
+   "E_int_b": 1941.126577,
+   "R_a": 0.94258,
+   "R_b": 0.949759,
+   "a": {
+    "cell": "NAc",
+    "run_id": "2594ac2a-b800-4e57-9d32-8e7417bd1590"
+   },
+   "b": {
+    "cell": "NBc",
+    "run_id": "faf8925b-c120-4a40-bd3d-49f0dca44acc"
+   },
+   "block": 4,
+   "dE_adj": 6.337796,
+   "dE_in_ticks": 0.149037,
+   "dE_int": 1.092914,
+   "dE_p": 9.17244,
+   "dE_pct_of_a": 0.446964,
+   "d_R": -0.007179,
+   "e_hat_b_J": 0.003959,
+   "excluded": false,
+   "exclusion": [],
+   "family": "C",
+   "kind": "energy_pair_v1",
+   "mJ_per_inf_a": 5.946595,
+   "mJ_per_inf_b": 5.932325,
+   "n_a": 345099,
+   "n_b": 344383,
+   "q_bar_J": 61.54461,
+   "r": 0.997925,
+   "r_in_filter": true,
+   "session_a": "C1",
+   "session_b": "C1",
+   "sign": "+"
+  },
+  {
+   "E_cc_a": 2147.10507,
+   "E_cc_b": 2127.62133,
+   "E_int_a": 2120.260754,
+   "E_int_b": 2123.532745,
+   "R_a": 0.986366,
+   "R_b": 0.99649,
+   "a": {
+    "cell": "NAc",
+    "run_id": "47781414-7c31-407a-b56a-8247834c1bac"
+   },
+   "b": {
+    "cell": "NBc",
+    "run_id": "9c68926c-1fa9-4d62-8c9e-7af9b32cb9d9"
+   },
+   "block": 5,
+   "dE_adj": 52.765404,
+   "dE_in_ticks": 0.29961,
+   "dE_int": -3.271991,
+   "dE_p": 19.48374,
+   "dE_pct_of_a": 0.907442,
+   "d_R": -0.010124,
+   "e_hat_b_J": 0.003616,
+   "excluded": false,
+   "exclusion": [],
+   "family": "C",
+   "kind": "energy_pair_v1",
+   "mJ_per_inf_a": 6.120474,
+   "mJ_per_inf_b": 5.909879,
+   "n_a": 350807,
+   "n_b": 360011,
+   "q_bar_J": 65.030445,
+   "r": 1.026237,
+   "r_in_filter": true,
+   "session_a": "C2",
+   "session_b": "C2",
+   "sign": "+"
+  },
+  {
+   "E_cc_a": 2060.42859,
+   "E_cc_b": 2098.7343,
+   "E_int_a": 2008.829623,
+   "E_int_b": 2035.647797,
+   "R_a": 0.972656,
+   "R_b": 0.968284,
+   "a": {
+    "cell": "NAc",
+    "run_id": "b1d27fce-7f5b-449e-b645-c79243082d19"
+   },
+   "b": {
+    "cell": "NBc",
+    "run_id": "a6b2878e-a53b-4db7-b547-36439c01a81d"
+   },
+   "block": 6,
+   "dE_adj": 2.538725,
+   "dE_in_ticks": -0.605596,
+   "dE_int": -26.818174,
+   "dE_p": -38.30571,
+   "dE_pct_of_a": -1.859114,
+   "d_R": 0.004372,
+   "e_hat_b_J": 0.003979,
+   "excluded": false,
+   "exclusion": [],
+   "family": "C",
+   "kind": "energy_pair_v1",
+   "mJ_per_inf_a": 5.970422,
+   "mJ_per_inf_b": 5.905756,
+   "n_a": 345106,
+   "n_b": 355371,
+   "q_bar_J": 63.2529,
+   "r": 1.029744,
+   "r_in_filter": true,
+   "session_a": "C2",
+   "session_b": "C2",
+   "sign": "-"
+  },
+  {
+   "E_cc_a": 2216.52936,
+   "E_cc_b": 2078.28099,
+   "E_int_a": 2083.914873,
+   "E_int_b": 2035.109528,
+   "R_a": 0.938349,
+   "R_b": 0.977851,
+   "a": {
+    "cell": "NAc",
+    "run_id": "784eefb0-ebf9-4666-8102-3bc2d43246f3"
+   },
+   "b": {
+    "cell": "NBc",
+    "run_id": "f8f98eaf-19fc-4d8d-a1ce-d3f9a6bef368"
+   },
+   "block": 7,
+   "dE_adj": 138.367538,
+   "dE_in_ticks": 2.235689,
+   "dE_int": 48.805345,
+   "dE_p": 138.24837,
+   "dE_pct_of_a": 6.237155,
+   "d_R": -0.039502,
+   "e_hat_b_J": 0.003724,
+   "excluded": false,
+   "exclusion": [],
+   "family": "C",
+   "kind": "energy_pair_v1",
+   "mJ_per_inf_a": 6.272084,
+   "mJ_per_inf_b": 5.880352,
+   "n_a": 353396,
+   "n_b": 353428,
+   "q_bar_J": 61.83702,
+   "r": 1.000091,
+   "r_in_filter": true,
+   "session_a": "C2",
+   "session_b": "C2",
+   "sign": "+"
+  },
+  {
+   "E_cc_a": 2228.472,
+   "E_cc_b": 2234.70495,
+   "E_int_a": 1975.588862,
+   "E_int_b": 2142.013909,
+   "R_a": 0.887444,
+   "R_b": 0.957215,
+   "a": {
+    "cell": "NAc",
+    "run_id": "d22ea212-19d6-40a6-99a4-e4dcadb0b7b5"
+   },
+   "b": {
+    "cell": "NBc",
+    "run_id": "732c5563-e732-427f-81ec-ba3fdfa23062"
+   },
+   "block": 8,
+   "dE_adj": 12.255114,
+   "dE_in_ticks": -0.10418,
+   "dE_int": -166.425047,
+   "dE_p": -6.23295,
+   "dE_pct_of_a": -0.279696,
+   "d_R": -0.069771,
+   "e_hat_b_J": 0.003648,
+   "excluded": false,
+   "exclusion": [],
+   "family": "C",
+   "kind": "energy_pair_v1",
+   "mJ_per_inf_a": 6.285353,
+   "mJ_per_inf_b": 6.214108,
+   "n_a": 354550,
+   "n_b": 359618,
+   "q_bar_J": 59.828625,
+   "r": 1.014294,
+   "r_in_filter": true,
+   "session_a": "C2",
+   "session_b": "C2",
+   "sign": "-"
+  }
+ ],
+ "registered_sentence": "「같은 일을 d50 으로 나눠 해도 같은 900 s 창의 기기 에너지 차이는 등록한 동등 범위 ±2 눈금 (≈ ±126 J, 창 에너지의 약 5.9 %) 안이었다 (같은 일 쌍 6개 · 잔량계 기준).」",
+ "session_2": {
+  "C1": {
+   "N": 8,
+   "R_sum": 0.956952,
+   "dev": -0.043048,
+   "line": "② 내부 일관성: R_sum 0.957 (편차 -0.043) · 허용 ±0.024 (σ_R 0.022 · N 8) → FAIL",
+   "sigma_R_pop": 0.022344,
+   "sigma_source": "σ_R 0.022",
+   "sigma_used": 0.022344,
+   "tolerance": 0.0237,
+   "verdict": "FAIL"
+  },
+  "C2": {
+   "N": 8,
+   "R_sum": 0.959035,
+   "dev": -0.040965,
+   "line": "② 내부 일관성: R_sum 0.959 (편차 -0.041) · 허용 ±0.034 (σ_R 0.032 · N 8) → FAIL",
+   "sigma_R_pop": 0.032234,
+   "sigma_source": "σ_R 0.032",
+   "sigma_used": 0.032234,
+   "tolerance": 0.034189,
+   "verdict": "FAIL"
+  }
+ },
+ "unpaired": [],
+ "verdict": "동등 범위 안 (±2 눈금)"
+}

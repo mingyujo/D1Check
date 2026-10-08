@@ -60,3 +60,29 @@ freeze_energy.txt — 에너지 C / B 동결 원장 (P1i, 2026-10-08 · 결과 �
   → 스모크 중 드라이버만 멈춤 (orchestrator 는 그대로 완주) → 스모크 뒤처리 손으로 (valid · 감시 이벤트 0 · 모델 SHA 일치) → 03:43:49 재실행 (pid 1704, -NoSmoke -SeqStart 2, 인자 한 문자열).
   밝기 원래 값: 0단계 (03:06) mode 0 · 31 / 첫 드라이버 (03:37) 가 읽은 값 mode 0 · 1 (그 사이 바뀜, 원인 미상) → 원복 기준 = 0단계 값 31 (brightness_orig_c.json 다시 씀).
   NAc_b1 게이트: SKIN 29.3 · BAT 27.0 → 하한 미달 표시 실행 (§6-5 — 바꾸지 않음).
+
+[2026-10-08 08:14] C1 끝 — DRIVER END emerg 0 · stop 없음 · 남은 블록 없음 · 8칸 valid · 런별 QC 8/8 제외 없음 · 하한 미달 표시 NAc_b1 · 밝기 31 · screen_off 600000 원복
+  [08:14] 영훈에게 "C1 끝 — 충전기를 꽂아 주세요" · 커밋 ④ 4ac0718d00f661edde4b23381303f85aeeb8e426 (08:15:42) · 쌍 ΔE 계산 0
+  [09:37] 충전 시작 확인 (AC powered true · SOC 54 · BAT 27.0) — C1 끝 08:14 → 꽂힘까지 83 분 (영훈 부재로 보임)
+  [10:0x] 충전 중 adb 끊김 (10:07, 화면 꺼진 뒤 포트 무응답) → disconnect/connect 1회로 복구 · 화면 켜 둠 (86400000) · [10:1x] SOC 91 (BAT 36.0) → 영훈에게 "충전 끝 — 케이블을 뽑으세요 (실내 온도도 한 줄)"
+  [11:14] adb offline → 재연결 3회 실패 · 원인 = PC Wi-Fi 가 학교망 (DGU-WIFI) 으로 자동 전환 (폰은 DLive5G_21C7) · 폰 ping 없음 · 영훈에게 PC Wi-Fi 되돌리기 요청 · C2 미시작 (칸 안 돌고 있음)
+  [13:0x] 영훈: PC · 폰 = 영훈 핫스폿 · 폰 무선 디버깅 새 포트 → adb = IPv6 링크 로컬 (192.0.0.4 = CLAT, 닿지 않음 — 10/7 과 같음) · 감시 새 주소로 다시 켬
+  [13:0x] C: 여유 1.4 GB (C1 칸당 0.42 GB 실측 → C2 ≈ 3.5 GB 필요) → C2 시작 안 함 · 영훈에게 비우기 요청 → [14:1x] 21.1 GB
+  [10:29 · 11:16 · 13:22 · 13:23] PC Modern Standby 진입 (Kernel-Power 506 Reason: Lid · 11:16 은 Battery Drain Budget) · 덮개 AC 설정이 다시 1 (14:12 읽음 — 03:36 엔 0)
+  [14:12] keep-awake · 감시 프로세스가 없었다 (Claude 앱 세션 재시작으로 보임 — stop 파일 없이 끝남) → keep-awake 둘 다시 켬 · adb 같은 포트 재연결 · 감시 다시 켬
+  [14:13] 폰 SOC 88 · plugged 0 · BAT 27.3 · 화면 켬 · 맨 앞 런처 — C2 는 덮개 AC 0 확인 뒤 시작 (프롬프트 0단계 3 규칙)
+
+[2026-10-08 14:14 ~ 16:55] C2 (pid 15380, -Session C2 -SeqStart 10): 스모크 valid (감시 0) · NAc_b5 · NBc_b5 · NBc_b6 · NAc_b6 · NAc_b7 valid · QC 제외 없음 · NAc_b7 하한 미달 표시 (BAT 27.1)
+  [14:44] PC 충전기 꽂힘 확인 (AC True) · [16:53] NBc_b7 orchestrator 실패 (adb 'closed' — dumpsys thermalservice, 측정 전) → 드라이버가 _re 재시도 대기열 → 재연결 3회 실패 → DRIVER END stop='adb' (16:55)
+  원인 = PC Wi-Fi 가 다시 DGU-WIFI 로 자동 전환 · PC 다시 배터리 (AC False). 남은 것 = NBc_b7_re (블록 7 B) · 블록 8.
+  P1i 가 정함 (블록 7 결과 전 · 에너지 숫자 0): 드라이버에 -RetryFirst "NBc:7" (밀린 _re 를 맨 앞) · -Resume (세션 첫 칸 SOC ≥ 85 규칙은 NAc_b5 가 이미 충족) 추가 → session_driver_c.ps1 SHA 앞 8 = 31c75129 (판정 · 체인 · 칸 표 무변경)
+  재개 계획 (dry-run): 17_NBc_b7_re → 블록 8 (18_NBc_b8 → 19_NAc_b8) · 블록 7 쌍 = NAc_b7 (16:22) + NBc_b7_re (재개 뒤, 600 s 쉼 이상 · 게이트) — v3b 재시도 규칙 그대로.
+  [17:03 ~ 18:26] 재개 드라이버 (pid 21532): NBc_b7_re valid (블록 7 완성) · NBc_b8 valid · NAc_b8 slot 실패 (18:23 orchestrator: adb 'dumpsys battery' 15 s 시간 초과 · 런 창 안 d1check 표본 0 → QC 도 제외) → _re 대기열 → 재연결 3회 실패 → DRIVER END stop='adb' (18:26) · 밝기 · 화면 원복 못 함 (adb 없음)
+  [18:2x] PC = 핫스폿 그대로 · 대기 · Wi-Fi 이벤트 없음 · 폰이 핫스폿에서 안 보임 (포트 · mDNS 없음) → 영훈에게 폰 Wi-Fi · 무선 디버깅 확인 요청
+  유효 블록 7 (1~7) · 블록 8 = NBc_b8 valid + NAc_b8 재시도 필요. 드라이버에 -Blocks none 추가 (재시도 하나만 돌리기) — 운영만.
+  [18:3x] 폰 · PC 다시 DLive5G (새 포트) · 남은 러너 없음 · 감시 다시 켬 · NAc_b8_re (pid 18784, -Blocks none -RetryFirst NAc:8 -Resume -SeqStart 20) valid 19:03 · QC 제외 없음 · 하한 미달 표시 (BAT 24.8)
+[2026-10-08 19:0x] 유효 8블록 완성 (1~4 C1 · 5~8 C2 · B7 = NBc_b7_re · A8 = NAc_b8_re) → 4단계 judgeC 한 번 (s26\tools\energy_1008\judge_c_run.py — 판정기 dcd6d9b7 그대로)
+[2026-10-08 19:0x] judgeC 한 번 → out_energy\judgeC_v1.json SHA-256 2d9e8db6de67a7d5ad076378057deae9a4a6974d7327369a17bea982484f6c8d
+  판정 「동등 범위 안 (±2 눈금)」 · v2 §9-4 적격 · 판정 쌍 6 (블록 2 · 3 r 밖) · ② C1 · C2 FAIL · ②′ 통과 · E_int 평균 차 부호 반대 (−26 J vs +23 J)
+  [19:07] restore_c -Full (감시 · keep-awake 정지 · 화면 600000 · 밝기 31) · 비행기 · 방해 금지 켠 채 · 열 지표 쌍 (기술) out_energy\c_thermal_pairs\
+  재시도 쉼: NBc_b7_re 597 s (600 s 규칙 3 s 미달 — 새 드라이버 프로세스가 직전 칸 끝 시각을 몰라 대기 건너뜀) · NAc_b8_re 620 s

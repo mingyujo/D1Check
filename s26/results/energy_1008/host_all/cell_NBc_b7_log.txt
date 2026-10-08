@@ -1,0 +1,13 @@
+﻿[2026-10-08 16:50:39 +09:00] CELL START NBc_b7 label=16_NBc_b7 out=S26_NBc_b7_1009c pid=15380 minSoc=30 hours=0.5 lower=mark duration=900 deadline=2026-10-10 06:00 stall=600s cap=Σ+150min
+[2026-10-08 16:50:39 +09:00] PRECHECK soc=65 endBy+30m=10-08 17:50
+[2026-10-08 16:50:39 +09:00] GATE rc=0 last=16_NBc_b7 2026-10-08T16:50:39 0 31.0 29.7 29.1 0 65 False True
+[2026-10-08 16:50:39 +09:00] LOWER skin=31(>=29.1:True) bat=29.1(>=27.5:True) pass=True policy=mark -> run
+[2026-10-08 16:50:39 +09:00] POSTGATE soc=65 endBy+30m=10-08 17:50
+[2026-10-08 16:50:40 +09:00] DRYRUN exit=0 file=C:\Users\rhoyo\AndroidStudioProjects\D1Check_v4\results\S26_host_energy_1008\dryrun_16_NBc_b7_final_165040.txt lines=496
+[2026-10-08 16:50:40 +09:00] CHAIN SHA match lines=1
+[2026-10-08 16:50:40 +09:00] DRYRUN duration_s 900 lines=1
+[2026-10-08 16:50:40 +09:00] LAUNCHED 16_NBc_b7 -> S26_NBc_b7_1009c pid=17412
+[2026-10-08 16:50:45 +09:00] STALLWATCH start pid=17412 stall>600s cap>9900s trace0=1|21140|639270426428853294
+[2026-10-08 16:53:15 +09:00] ORCH EXITED pid=17412
+[2026-10-08 16:53:15 +09:00] DONE manifest_status=failed halt=ADB command failed rc=1: ['shell', 'dumpsys', 'thermalservice']; error: closed slot=failed attempts=1 valid= failed= flags= error=OrchestratorError: ADB command failed rc=1: ['shell', 'dumpsys', 'thermalservice']; error: closed
+[2026-10-08 16:53:15 +09:00] CELL END NBc_b7
