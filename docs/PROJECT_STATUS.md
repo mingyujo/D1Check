@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-10-08 POWER-RESIDUAL-STRUCTURE-01 / ENERGY-MEMORY30-01 — 특정 조건 개선, 기본 적용 보류
+
+- 이 대화의 에너지 오차 보완으로 기존 20세션의 전류 반복·잔차 지속성을 판독하고 고정 30초 후보 하나를 구현했다. 반복 10/2,644쌍·기록 간격 약 0.9초이며 센서 내부 갱신 주기는 미확인. [결과·악화·재현](POWER_RESIDUAL_STRUCTURE_RESULTS_20261008.md) · [640행 화면](results/energy_memory30_01/index.html).
+- 개발 전용 alpha 0.518654 고정, 확인 10초 MAE 0.870→0.848J·지속 0.844→0.854J. 확인 합산 80초 순오차 3.891→2.150J 감소는 순차 관측·상쇄 포함이며 전체 120초 예측이 아니다. 개발 교차 기준 실패/선택 alpha 0, 일반 적용 보류. 확인 3/6·지속 4/8 개별 악화도 공개한다.
+- 관련 8검증·실제 API 160창·3개 CSV 재현 일치·두 그림/12집계행·원모형 SHA 불변. 사후 평가/모형 A 조건부이며 B·정책 우월성·정확도 PASS 없음. AP·원모형·기본·RL·strict·experiment_ready=false 유지, 환경/학습/기기/ADB/실측/Android/APK/claim 0. 다른 EDD/SLACK 작업·사용자 변경·개인 파일·다른 worktree 보존.
+- 종료/다음 PC 질문 하나: 기존 CPU/PAR 짝 자료에서 후보가 정책 에너지 차이의 예측 오차도 줄였는지 판독. 후보 기간·강도를 다시 탐색하거나 새 실측을 자동 추가하지 않는다.
+
+
 ## 2026-10-08 EDD-ECT-RESIDUAL-DESIGN-01 — EDD+ECT 중심 RL 설계 수정 완료
 
 - 최신 사용자 지시에 따라 기본/fallback/예측 suffix를 정확한 EDD+ECT로 정하고, 순서·자원·허용병행·냉각 대기를 RL 보정 대상으로 통합했다. SHARED 강제 aging 제거, ECT 자원 대기와 추가 냉각 credit 구분, lane 완료/응답 경계 유지. [현행 설계](EDD_ECT_RESIDUAL_RL_DESIGN_20261008.md) · [계약/검토/재현](results/edd_ect_residual_design_01/README.md). 아래 SLACK 안은 보존된 이전 설계다.

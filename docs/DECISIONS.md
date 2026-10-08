@@ -1,5 +1,12 @@
 # D1Check 결정 기록
 
+## 2026-10-08 ENERGY-MEMORY30-01 — 30초 잔차 후보를 기본으로 채택하지 않음
+
+- 상태: 개발/평가 분리와 기본 보존 확정. 고정 30초 평균 후보 하나를 개발 전용 alpha 0.518654로 동결해 확인 6·지속 8세션에 사후 평가했다. 확인 개별 MAE 0.870→0.848J 개선과 지속 0.844→0.854J 악화를 함께 보존한다. [근거·교차 기준](POWER_RESIDUAL_STRUCTURE_RESULTS_20261008.md).
+- 회복 이력 교차평가에서 개별 오차 비악화 조건을 충족하지 못했으므로 selected_alpha=0으로 원모형을 유지한다. 합산 80초 순오차 감소만으로 후보를 채택하거나 전체 120초/정책 우월성/센서 정확도/독립 확인을 완료 처리하지 않는다. 30초를 물리적 센서 갱신 주기나 시간상수로 해석하지 않는다.
+- AP·기본 시뮬레이터·RL 환경·strict·experiment_ready=false 불변. 이번 결과로 후보 기간/계수를 자동 재탐색하거나 새 실측·claim을 생성하지 않는다. 다른 EDD/SLACK 방향과 이번 에너지 판정을 별도로 유지한다.
+
+
 ## 2026-10-08 EDD-ECT-RESIDUAL-DESIGN-01 — EDD+ECT 중심 설계 방향 채택
 
 - 최신 사용자 지시로 후속 RL의 기본 제안·fallback·예측 후속규칙을 `IE_EDD_ECT_LANE_PC_V1`로 변경한다. 원 EDD/ECT는 제한적 B이며, 보정 정책은 별도 `EDD_ECT_SLACK_RESIDUAL_PPO_V1`이다. SHARED의 aging을 섞거나 ECT lane 완료를 응답으로 바꾸지 않는다. [현행 설계·핵심식](EDD_ECT_RESIDUAL_RL_DESIGN_20261008.md).

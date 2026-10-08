@@ -1,0 +1,57 @@
+{
+  "id": "POWER-RESIDUAL-STRUCTURE-01",
+  "utc": "2026-10-08T04:48:27.924092+00:00",
+  "head": "a9c2e5fab7ed277acbba9a7c56738e9d91eed1fd",
+  "posthoc": true,
+  "question": "Can observed repetition/update patterns and past residual persistence distinguish short variability from a sustained bias?",
+  "diagnostics": [
+    "current/voltage/power recorded intervals and repeated-run spans",
+    "voltage-only changes",
+    "5s integrated residual lag1/lag2 correlations",
+    "fixed past10 vs past30 residual noise and next10 prediction correlation"
+  ],
+  "temporal_features": [
+    10,
+    30
+  ],
+  "long_window_reason": "one fixed three-times-longer average, not a physical update interval or tuning grid",
+  "prediction_origins_s": [
+    35,
+    45,
+    55,
+    65,
+    75,
+    85,
+    95,
+    105
+  ],
+  "future_horizon_s": 10,
+  "window_union_s": [
+    35,
+    115
+  ],
+  "full120_error": null,
+  "candidate_rule": "only if development6 finite past30 information and stronger past-to-next10 association than past10; otherwise stop without evaluation fitting or new candidates",
+  "development": "history development6 only",
+  "evaluation": "history confirmation6 and sustained8 already viewed; diagnostic groups separate",
+  "hardware_refresh_period": "unknown; recorded changes/repetition do not certify hardware refresh or sensor accuracy",
+  "no_change": [
+    "raw/model/default/RL/AP",
+    "sampler period",
+    "units",
+    "current actual schedule conditionA"
+  ],
+  "device_commands": 0,
+  "rl_training": 0,
+  "policy_simulations": 0,
+  "apk_builds": 0,
+  "accuracy_pass": null,
+  "experiment_ready": false,
+  "source_hashes": {
+    "docs/results/rolling_forecast_01/inputs.json.gz": "a74e9009fd54c79654359d6470276a83ef95a0e7a15b31471a2ad9556be25964",
+    "docs/results/rolling_forecast_01/snapshots.csv": "0afef87f021fa983c36fb1d57bfd5bd464895f18a7bd089e1906f9d57ac6fd2a",
+    "docs/results/rolling_forecast_01/window_errors.csv": "f86e1a1866e1f013a5122bc68c9a42b89d233f3400c50da1a5322df1261bc152",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2"
+  },
+  "association_gate": "development pooled descriptive correlation with equal8-window sessions: past30/next10 > max(0,past10/next10); within-session correlations and between-session spread reported separately, no statistical significance claim"
+}

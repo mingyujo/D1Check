@@ -1,0 +1,48 @@
+{
+  "id": "ENERGY-MEMORY30-01",
+  "utc": "2026-10-08T04:53:02.270306+00:00",
+  "head": "a9c2e5fab7ed277acbba9a7c56738e9d91eed1fd",
+  "posthoc": true,
+  "prerequisite": "development-only descriptive past30-next10 correlation0.228848 > past10 0.114526; weaker variation, not population or hardware identification",
+  "candidate_structures": 1,
+  "past_seconds": 30,
+  "horizon_s": 10,
+  "formula": "frozen future10sJ + alpha*past30 available mean residual W*10",
+  "alpha_bounds": [
+    0,
+    1
+  ],
+  "fit": "history development6 only, same equal-session MAE weighted-median analytic estimator as previous shrink study, no intercept",
+  "selection": "same recovery-block exclusions, primary10s MAE and absolute net80s nonworsening on both blocks; otherwise retain baseline",
+  "evaluation": "confirmation6+sustained8 once at frozen alpha; already viewed posthoc evaluation",
+  "comparisons": [
+    "original",
+    "previous full10 correction",
+    "previous fitted10 shrink0.26268831243642554",
+    "new fixed30 fitted-alpha candidate"
+  ],
+  "no_tuning": [
+    "period30 selected before diagnosis, not grid",
+    "no AP/profile/state/time alignment changes",
+    "no evaluation coefficient updates"
+  ],
+  "partial_union_s": [
+    35,
+    115
+  ],
+  "common120_error": null,
+  "hardware_refresh_period": null,
+  "accuracy_pass": null,
+  "policy_winner": null,
+  "experiment_ready": false,
+  "device_commands": 0,
+  "rl_training": 0,
+  "policy_simulations": 0,
+  "apk_builds": 0,
+  "source_hashes": {
+    "docs/results/power_residual_structure_01/past_features.csv": "fcbc069dbf9954e27f51e445f1d82f3f5c51ace5fd2c548d375abb879d66c582",
+    "docs/results/power_residual_structure_01/summary.json": "aa4420a662fac6ce7287bd9d7c61c86874708869b426190484bf3bae209278c6",
+    "docs/results/rolling_forecast_01/inputs.json.gz": "a74e9009fd54c79654359d6470276a83ef95a0e7a15b31471a2ad9556be25964",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2"
+  }
+}

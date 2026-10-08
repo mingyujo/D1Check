@@ -1,5 +1,12 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-08 POWER-RESIDUAL-STRUCTURE-01 / ENERGY-MEMORY30-01 — 고정 30초 후보 평가 완료
+
+- 기존 20세션의 기록 간격·반복값과 잔차 지속성을 분석했다. 진단 전에 10/30초 두 기간만 고정하고 개발 근거를 확인한 뒤 후보 하나를 개발 6세션에서 적합·동결했다. [결과·종료 판정](POWER_RESIDUAL_STRUCTURE_RESULTS_20261008.md) · [재현 번들](results/energy_memory30_01/README.md).
+- alpha 0.518654의 확인 개별 10초 오차는 감소했으나 지속 오차와 개발 교차 기준이 악화했다. 선택 alpha 0, 기본 적용 보류. 합산 35–115초는 순차 관측을 포함하며 전체 120초 예측이나 정책 차이 판별 개선이 아니다. 8검증/160 API/640행·수치 재현 완료.
+- 추가 후보·재적합·새 실측 계획 없이 종료한다. 다음 PC 판독은 같은 기존 CPU/PAR 짝의 정책 차이 오차 하나로 한정한다. AP·원모형·RL·strict·experiment_ready=false와 다른 작업의 설정/출력 보존, 기기 명령 0회.
+
+
 ## 2026-10-08 EDD-ECT-RESIDUAL-DESIGN-01 — 산업공학 기본 규칙과 RL 보정
 
 - 사용자 ‘이전 내용과 합쳐서 EDD+ECT 주축인 RL 설계 수정’에 따라 [현행 설계](EDD_ECT_RESIDUAL_RL_DESIGN_20261008.md)를 후속 구현 기준으로 삼는다. 원 EDD adapter 불변, 정확한 BASE/예측 suffix와 RL의 순서·자원·묶음·제한 냉각을 구분한다. SHARED_EFT는 독립 강한 비교군으로 유지한다. 아래 SLACK 설계는 이력이며 두 안을 각각 실행하지 않는다.
