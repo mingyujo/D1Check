@@ -1,0 +1,75 @@
+{
+  "id": "HISTORY-MODEL-REFINEMENT-01",
+  "registered_utc": "2026-10-08T01:10:21.813383+00:00",
+  "head": "083231033497772eab00c9a99bd771771d33f722",
+  "budget": {
+    "active_seconds": 14400,
+    "reserve_seconds": 300,
+    "device_commands": 0,
+    "rl_training": 0,
+    "policy_simulations": 0
+  },
+  "mode": "A actual schedule conditional, no service model changes",
+  "posthoc": true,
+  "development": "history development six only; 30/180 history-block exclusion",
+  "evaluation": "history confirmation six and prior sustained eight; already viewed, posthoc",
+  "energy_candidate": {
+    "id": "CONTROL_IDLE_LOAD_V1",
+    "formula": "P=pre_w + alpha*d*exp(-(t-35)/30) for t>=35 + gain*existing_state_increment",
+    "d": "mean W10..30 - mean W-20..0, preload only",
+    "alpha_fit": "development C0 five-second residual bins35..120, equal session weight, zero-intercept scalar LS",
+    "gain_fit": "development CPU/PAR five-second residual bins35..120 after fixed idle term, nonnegative scalar LS, equal session weight",
+    "fixed": [
+      "existing state ratios",
+      "30s decay copied from prior E_TREND hypothesis; not physically identified",
+      "no temperature coefficient"
+    ],
+    "unidentified": "if information<=1e-12, coefficient null and candidate unavailable; not silently zero"
+  },
+  "ap_candidate": {
+    "id": "PRELOAD_RIDGE_H_V1",
+    "formula": "normalized preload two-column LS for R,H0 + lambda*scaled_H0**2 penalty; R unpenalized; latest observed preload AP anchor",
+    "lambdas": [
+      0,
+      0.01,
+      0.1,
+      1,
+      10
+    ],
+    "fixed": [
+      "beta",
+      "k",
+      "g=0",
+      "tau=30",
+      "state slopes"
+    ],
+    "selection": "development equal-session MAE minimum among settings with neither history block mean worse than original and no increase in opposite-direction count; prefer lambda0 on exact tie; otherwise retain original",
+    "purpose": "regularize correlated effective-reference/initial-memory fit; not ambient or measured internal state"
+  },
+  "energy_selection": "both excluded-history fold mean absolute-J errors must not worsen original; no confirmation selection",
+  "secondary": "prior rejected g=0.16229091917947994 applied with same fresh target preload; fixed comparator, not eligible for selection",
+  "windows": {
+    "J": [
+      0,
+      120
+    ],
+    "AP": "actual post35 queries, target+cooling",
+    "partitions": [
+      "0..35",
+      "35..last_lane",
+      "last_lane..120"
+    ]
+  },
+  "outputs": [
+    "signed/absolute/relative J",
+    "load/post errors and cancellation",
+    "AP MAE/max/peak/directions",
+    "all worsened and unavailable cases"
+  ],
+  "accuracy_pass": null,
+  "default": false,
+  "strict_support": false,
+  "experiment_ready": false,
+  "stop": "finite candidate list; nonfinite/rank/coverage failure unavailable; budget stop partial output; no post-evaluation retuning",
+  "diagnostic_evaluation": "If AP selection retains lambda0, freeze development-best nonzero lambda as rejected diagnostic; it cannot be adopted using evaluation results. Energy rejected but identified candidate also shown diagnostically. Combined is component composition, not a third fitted family."
+}
