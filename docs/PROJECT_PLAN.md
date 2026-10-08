@@ -1,5 +1,12 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-08 EDD-ECT-RESIDUAL-DESIGN-01 — 산업공학 기본 규칙과 RL 보정
+
+- 사용자 ‘이전 내용과 합쳐서 EDD+ECT 주축인 RL 설계 수정’에 따라 [현행 설계](EDD_ECT_RESIDUAL_RL_DESIGN_20261008.md)를 후속 구현 기준으로 삼는다. 원 EDD adapter 불변, 정확한 BASE/예측 suffix와 RL의 순서·자원·묶음·제한 냉각을 구분한다. SHARED_EFT는 독립 강한 비교군으로 유지한다. 아래 SLACK 설계는 이력이며 두 안을 각각 실행하지 않는다.
+- 구현 순서는 학습 없는 prototype의 A/B/C/D 검증 뒤 조건부 PPO다. 세 참조 종료 target, 관측109/후보68/32slot, 전량·실제기한·P95/J 비악화와 AP 개선을 검사한다. EDD만 이겨서 성공 처리하지 않으며 원 EDD→prior→greedy→RL 차이를 공개한다. 현재 새 구현/환경/학습/기기0.
+- 누적2,825/20,000 이후 제안16,488환경/총학습6,144, 최대17정책×새192조건·7고정검증정책·참조cache6,240을 명시한다. 최대누적19,313, seed/학습시간 null. 예산/clock 초기화·추가학습 승인·기기범위 확대 없음. [검토·검증](results/edd_ect_residual_design_01/README.md).
+
+
 ## 2026-10-08 ROLLING-ENERGY-SHRINK-01 — 개발 전용 강도 추정·평가 완료, 후보 미채택
 
 - 이 대화의 시뮬레이션 에너지 오차 보완으로 단일alpha0..1을 개발6/48창 MAE최소로추정해0.262688로봉인. 확인6+지속8을재적합없이평가했다. [결과·상충·범위](ROLLING_ENERGY_SHRINK_RESULTS_20261008.md) · [480행/재현](results/rolling_energy_shrink_01/README.md).

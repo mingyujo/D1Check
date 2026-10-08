@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-10-08 EDD-ECT-RESIDUAL-DESIGN-01 — EDD+ECT 중심 RL 설계 수정 완료
+
+- 최신 사용자 지시에 따라 기본/fallback/예측 suffix를 정확한 EDD+ECT로 정하고, 순서·자원·허용병행·냉각 대기를 RL 보정 대상으로 통합했다. SHARED 강제 aging 제거, ECT 자원 대기와 추가 냉각 credit 구분, lane 완료/응답 경계 유지. [현행 설계](EDD_ECT_RESIDUAL_RL_DESIGN_20261008.md) · [계약/검토/재현](results/edd_ect_residual_design_01/README.md). 아래 SLACK 안은 보존된 이전 설계다.
+- EDD 자체 개선과 강한 Shared/Band/Triton 대비 판정을 분리한다. 학습 참조3개·관측109/후보68/32slot·6critic·초기 grid 부재/180초tail·부분 batch archive를 명시했다. 설계·근거·수식·예산 검증은 정책 구현/성능 검증이 아니며 새 controller/PPO/환경/학습/기기0.
+- 누적2,825/20,000·학습0/6,144를 유지한다. 후속 제안16,488환경(참조6,240·최종최대17정책 포함), 누적최대19,313·미배분687. 옛13,912 제안을 교체하며 합산 실행하지 않는다. 숫자/seed/학습시간은 실행 전 등록 대상, A/B/C/D 미통과·학습0 유지.
+- 다음: 학습 없는 EDD residual prototype→원규칙/선택폭/개선 신호 검증→시간·통합 장부 등록. 원모형/기본/strict/experiment_ready=false·옛 결과·사용자14행/개인파일/다른 worktree 보존. 새 AP/J 보정 후보 자동채택0.
+
+
 ## 2026-10-08 ROLLING-ENERGY-SHRINK-01 — 개발 전용 강도 추정·평가 완료, 후보 미채택
 
 - 이 대화의 시뮬레이션 에너지 오차 보완으로 단일alpha0..1을 개발6/48창 MAE최소로추정해0.262688로봉인. 확인6+지속8을재적합없이평가했다. [결과·상충·범위](ROLLING_ENERGY_SHRINK_RESULTS_20261008.md) · [480행/재현](results/rolling_energy_shrink_01/README.md).

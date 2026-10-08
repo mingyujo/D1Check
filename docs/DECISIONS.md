@@ -1,5 +1,12 @@
 # D1Check 결정 기록
 
+## 2026-10-08 EDD-ECT-RESIDUAL-DESIGN-01 — EDD+ECT 중심 설계 방향 채택
+
+- 최신 사용자 지시로 후속 RL의 기본 제안·fallback·예측 후속규칙을 `IE_EDD_ECT_LANE_PC_V1`로 변경한다. 원 EDD/ECT는 제한적 B이며, 보정 정책은 별도 `EDD_ECT_SLACK_RESIDUAL_PPO_V1`이다. SHARED의 aging을 섞거나 ECT lane 완료를 응답으로 바꾸지 않는다. [현행 설계·핵심식](EDD_ECT_RESIDUAL_RL_DESIGN_20261008.md).
+- 기존 EDD의 주96 AP 감소/J 증가와 전체 일반실패292를 근거로 열·J·서비스 상충을 검증한다. 종료 후 EDD/Shared/Band 세 참조와 검증의 강한Triton을 유지한다. 산업공학 규칙+RL 자체의 최초성, 기본 정책 개선만으로 외부 제품 우월성은 주장하지 않는다.
+- 설계 방향/불변조건은 채택, NN·optimizer·후속16,488환경 배분은 구현 전 등록 제안이다. 기존소비2,825·학습0/6,144와 원모형/기본/strict/experiment_ready=false 보존. A/B/C/D/새 controller/PPO 미완료, 이번 환경/학습/기기0. 이전 SLACK 봉인과 결과는 소급 수정하지 않는다.
+
+
 ## 2026-10-08 ROLLING-ENERGY-SHRINK-01 — 개발 전용 강도 추정·평가 완료, 후보 미채택
 
 - 이 대화의 시뮬레이션 에너지 오차 보완으로 단일alpha0..1을 개발6/48창 MAE최소로추정해0.262688로봉인. 확인6+지속8을재적합없이평가했다. [결과·상충·범위](ROLLING_ENERGY_SHRINK_RESULTS_20261008.md) · [480행/재현](results/rolling_energy_shrink_01/README.md).
