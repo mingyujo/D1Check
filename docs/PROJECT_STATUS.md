@@ -12,6 +12,14 @@
 - 최신 사용자 지시로 EDD 후보4+CPU전용 최소 응답여유1·물리 단건/병행·첫 행동 후 재계획을 Band fallback에 연결한다. 세문맥 도착큐 예측에서 서비스/J/AP 비악화 뒤 미래AP를 줄인다. 누적대기0.25/1s·제거ablation, 원목적/정책은보존하고새열우선계약을분리했다. [고정 설계/예산](results/thermal_slack_v3/README.md).
 - 완료: 개발선택none동결→확인168행/11,088전량. 0.25s는열감소12/24이나일반실패27vsBand21/AP평균+0.057°C,1s적격0·대기0원장24Band동일. 실제338/실패0/22,182전량(합성fixture6포함)·약19m15s/8새+9기존·원엔진2fixture/5그림/158행화면PASS·새학습0. 원 결과보존후위부하허용장치로발전, 기기/기본/strict/experiment_ready=false·사용자14행보존.
 
+## 2026-10-09 RESIDENT-AP-STRUCTURE-01 — 장구간 AP 일부 개선·Arrival 전이 보류
+
+- 사용자 `진행해` 승인으로새개발4의고정상태가열비율/30초항을분리했다. β/τ30/부하전R/H 고정·비음수4상태입력+지연gain1 주후보를별도구현,2대조는분해용/사후승자교체0. [한국어결과·지원·한계](RESIDENT_AP_STRUCTURE_RESULTS_20261009.md) · [화면/재현](results/resident_ap_structure_01/README.md).
+- 4 LOSO MAE0.756→0.498°C(34.1%)/평균최대2.186→1.667·전4개선·A/B 개발비악화통과. 평균최고온도절대차0.505→0.566악화. 기존29전이0.322→0.411·19MAE/16최대악화,최근14도0.329→0.423. 새독립확인0·기본/RL/strict/experiment_ready=false 유지·에너지예측변경0.
+- 상태비율자유화가주개선(대조0.709→0.531),30초항추가효과0.033°C. 부하후268–270초에도관측편차0.4–1.3°C가남는데고정R/30초모형은R로복귀한다. 느린잔열/유휴기준변화/초기화편향중물리원인은미확정. 장구간같은APK/입력/4resident/초기AP·실제블록의명시후보API만계산,짧은Arrival/다른기기/미지원은null.
+- 표기콜론/underscore 차이로25과거가잘못차단된reader를기존state_key로수정,계수/개발결과재사용/추가fit0·원v1보존. 총주후보5+대조8 fit·74평가/144구간·11검증/실제4API/curve·J·계수재현 PASS. 기기/ADB/설치/빌드/새계획0·원본·종료계획·사용자14행/다른작업/worktree보존.
+- 다음하나: 기존33세션의부하후꼬리와C0 대조로느린잔열항/변하는유휴기준의식별가능성판정. 자동추가실측/계수탐색/기본교체0.
+
 ## 2026-10-09 RESIDENT-IDENTIFICATION-RUN-01 — 개발4 정상·AP 경계해로 확인 미시도
 
 - 사용자 `실측가보자` 승인, plan_v3 Check/동일성/미소비 통과 후 Run1회. 현재 A24 고정 transport/환경/프로젝트 서명 APK gate 통과. 개발A/B/B/A 4회 정상 수집·회수/cleanup, 확인4는AP 동결 gate 실패로미시도·plan stopped_no_resume. [결과·소비·오차·원본](RESIDENT_IDENTIFICATION_RESULTS_20261009.md) · [화면/재현](results/resident_identification_run_01/README.md).

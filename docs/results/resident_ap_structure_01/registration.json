@@ -1,0 +1,39 @@
+{
+  "id": "RESIDENT-AP-STRUCTURE-01",
+  "registered_utc": "2026-10-08T20:22:57.083233+00:00",
+  "head": "860c8c454d1d161947574c7790741b64a0ab7f8f",
+  "posthoc": true,
+  "previous_results_seen": true,
+  "question": "fixed state heating ratios versus fixed30s delayed term; actual-schedule conditional AP only",
+  "training": "new four development sessions only; LOSO train3/evaluate1; final train4; no row random split",
+  "evaluation": "29 previously seen archived sessions, no fit; independent confirmation absent",
+  "primary": "STATE_DELAYED: four nonnegative independent instantaneous drives plus one nonnegative coefficient of existing old-ratio30s delayed column",
+  "controls": [
+    "FROZEN",
+    "RATIO_REFIT: fixed beta/tau and old ratios, fit k/g only",
+    "STATE_DIRECT: primary delayed coefficient constrained0; attribution only, not alternative winner selection"
+  ],
+  "fixed": [
+    "original beta",
+    "tau30",
+    "old-ratio delayed input",
+    "pre-only R/H initializer",
+    "actual states/timing",
+    "energy model",
+    "strict/default/RL/experiment_ready=false"
+  ],
+  "selection": "primary not switched to best ablation; DEV_A/B heldout mean MAE and max nonworse original, all individual worsening disclosed; no accuracy PASS threshold invented; archive transfer separate",
+  "budgets": {
+    "physical_commands": 0,
+    "new_plans": 0,
+    "algorithm_tuning": 0,
+    "candidate_families": 1,
+    "development_folds": 4,
+    "final_fits": 1
+  },
+  "inputs_sha256": "806fba262cafee14a650a91dc6e4383216eb09e3dc4adc4702f7ccf0f0d15fb1",
+  "original_model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+  "accuracy_pass": null,
+  "default": false,
+  "experiment_ready": false
+}
