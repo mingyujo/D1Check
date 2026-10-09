@@ -31,6 +31,7 @@ class EnergyCollectionActivity : Activity() {
     private lateinit var sid: String
     private var outputOwned = false
     private var residentIdentification = false
+    private var tailObservation = false
     private var sessionControl = EnergySessionControl.HOST_GATED
     private var diagnosticScreen: Triple<Int, Int, Int>? = null
     private var seq = 0L
@@ -151,14 +152,17 @@ class EnergyCollectionActivity : Activity() {
             val inputs = canonicalProbeInputRoot(filesDir, "arrival-scheduler-inputs", sid)
             val mf = File(inputs, "manifest.json"); val m = JSONObject(mf.readText()); val hash = ProbeModelFile.sha256(mf)
             val calibration = m.optBoolean("state_model_calibration", false)
-            residentIdentification = m.has("resident_identification_version")
+            tailObservation = m.has("tail_observation_version")
+            if (tailObservation) EnergyTailObservation.validate(m) // Before watchdog or output ownership changes.
+            residentIdentification = tailObservation || m.has("resident_identification_version")
             check(!residentIdentification || calibration)
             sessionControl = EnergySessionControl.validate(m.optString("session_control", EnergySessionControl.HOST_GATED),
                 calibration, m.optBoolean("autonomous_diagnostic_only", false))
-            val protocol = if (residentIdentification) EnergyResidentIdentification.PROTOCOL
+            val protocol = if (tailObservation) EnergyTailObservation.PROTOCOL
+                else if (residentIdentification) EnergyResidentIdentification.PROTOCOL
                 else if (calibration) EnergyStateCalibration.PROTOCOL else EnergyCollectionCore.PROTOCOL
             if (calibration) {
-                handler.removeCallbacks(watchdog); handler.postDelayed(watchdog, EnergyStateCalibration.WATCHDOG_MS)
+                handler.removeCallbacks(watchdog); handler.postDelayed(watchdog, if (tailObservation) EnergyTailObservation.WATCHDOG_MS else EnergyStateCalibration.WATCHDOG_MS)
             }
             root = canonicalProbeOutputRoot(filesDir, protocol, sid); check(!root.exists() && root.mkdirs())
             outputOwned = true
@@ -172,9 +176,9 @@ class EnergyCollectionActivity : Activity() {
             }
             Log.i("D1ENERGY", "runtime_scope_start=$sid")
             check(m.getString("protocol") == protocol && m.getString("session_id") == sid)
-            check(m.getLong("maximum_duration_ms") == (if (calibration) EnergyStateCalibration.WATCHDOG_MS else EnergyCollectionCore.WATCHDOG_MS) && !m.getBoolean("experiment_ready"))
+            check(m.getLong("maximum_duration_ms") == (if (tailObservation) EnergyTailObservation.WATCHDOG_MS else if (calibration) EnergyStateCalibration.WATCHDOG_MS else EnergyCollectionCore.WATCHDOG_MS) && !m.getBoolean("experiment_ready"))
             check(m.getString("apk_sha256") == ProbeModelFile.sha256(File(applicationInfo.sourceDir)) && m.getString("device_fingerprint") == Build.FINGERPRINT)
-            check(m.getInt("cpu_threads") == 1 && m.getInt("baseline_seconds") == 120 && m.getInt("cooling_seconds") == 180)
+            check(m.getInt("cpu_threads") == 1 && m.getInt("baseline_seconds") == 120 && m.getInt("cooling_seconds") == (if (tailObservation) EnergyTailObservation.COOLING_SECONDS else 180))
             if (sessionControl == EnergySessionControl.DEVICE_AFTER_PROBE) {
                 val screen = m.getJSONObject("device_screen_contract")
                 diagnosticScreen = Triple(screen.getInt("screen_brightness"),
@@ -188,10 +192,14 @@ class EnergyCollectionActivity : Activity() {
             val shortTransition = m.optBoolean("short_transition_diagnostic_only", false)
             check(!shortTransition || calibration)
             val identificationProfile = m.optString("identification_profile", "")
-            val calibrationBlocks = if (residentIdentification) EnergyResidentIdentification.blocks(identificationProfile)
+            val calibrationBlocks = if (tailObservation) EnergyTailObservation.blocks(identificationProfile)
+                else if (residentIdentification) EnergyResidentIdentification.blocks(identificationProfile)
                 else if (shortTransition) EnergyStateCalibration.shortTransitionBlocks()
                 else EnergyStateCalibration.blocks(m.getString("phase") == "confirmation")
-            if (residentIdentification) {
+            if (tailObservation) {
+                check(!shortTransition)
+                EnergyTailObservation.validate(m)
+            } else if (residentIdentification) {
                 check(operational && !shortTransition && sessionControl == EnergySessionControl.DEVICE_AFTER_PROBE)
                 val specified=m.getJSONArray("blocks").let { arr -> (0 until arr.length()).map { i -> arr.getJSONObject(i).let { b ->
                     EnergyStateCalibration.Block(b.getString("id"),b.getJSONArray("lane_indices").let { lanes -> (0 until lanes.length()).map(lanes::getInt) },b.getInt("seconds")) } } }
@@ -230,7 +238,7 @@ class EnergyCollectionActivity : Activity() {
             val anchors = File(inputs, "anchors.json")
             samples.scheduleAtFixedRate({ sampler.tick { event("power_sample", snapshot()+mapOf("sample_period_ms" to if (residentIdentification) 900 else 1000)) } },0,if (residentIdentification) 900 else 1000,TimeUnit.MILLISECONDS)
             val setupStart = now()
-            ArrivalRuntimeSetup.initialize(EnergyCollectionCore.KEYS, false, 8, if (residentIdentification) EnergyResidentIdentification.workCap(identificationProfile)+4 else if (calibration) EnergyStateCalibration.MAX_WORK_CALLS + 4 else if (operational) 874 else 872) { key ->
+            ArrivalRuntimeSetup.initialize(EnergyCollectionCore.KEYS, false, 8, if (tailObservation) EnergyTailObservation.workCap(identificationProfile)+4 else if (residentIdentification) EnergyResidentIdentification.workCap(identificationProfile)+4 else if (calibration) EnergyStateCalibration.MAX_WORK_CALLS + 4 else if (operational) 874 else 872) { key ->
                 healthy(); EnergyCollectionCore.requireTime(now(),setupStart,150_000_000_000)
                 event("runtime_submit",mapOf("key" to key))
                 lane(key).submit {
@@ -277,7 +285,8 @@ class EnergyCollectionActivity : Activity() {
                 identificationReading=ArrivalStartApGate.parse(arm.readText(),hash,ready,ArrivalStartApGate.DIAGNOSTIC_VERSION)
             }
             phase = "load"; val commonStart = now()
-            val commonNs = if (residentIdentification) EnergyResidentIdentification.commonSeconds(identificationProfile)*1_000_000_000L
+            val commonNs = if (tailObservation) EnergyTailObservation.COMMON_SECONDS*1_000_000_000L
+                else if (residentIdentification) EnergyResidentIdentification.commonSeconds(identificationProfile)*1_000_000_000L
                 else if (calibration) EnergyStateCalibration.COMMON_NS else EnergyCollectionCore.LOAD_NS
             identificationReading?.let {
                 ArrivalStartApGate.atStart(it,commonStart)
@@ -292,7 +301,7 @@ class EnergyCollectionActivity : Activity() {
             while (now()-commonStart < commonNs) { healthy(); Thread.sleep(100) }
             event("phase_end")
             if (residentIdentification) event("identification_common_end",mapOf("start_ns" to commonStart,"planned_end_ns" to commonStart+commonNs,"end_ns" to now()))
-            idle("resident_cooling",180)
+            idle("resident_cooling",if (tailObservation) EnergyTailObservation.COOLING_SECONDS.toLong() else 180)
             save("summary.json",mapOf("status" to "completed","requests" to (if (calibration) "bounded_by_journal" else 870),"probe" to (if (operational) 4 else 2),"warmup" to 8,"mono_ns" to now(),
                 "session_control" to sessionControl,"formal_confirmation" to (sessionControl == EnergySessionControl.HOST_GATED)))
         } catch(e: Throwable) {

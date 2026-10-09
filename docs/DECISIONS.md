@@ -1,5 +1,12 @@
 # D1Check 결정 기록
 
+## 2026-10-09 AP-TAIL-OBSERVATION-PREP-01 — 긴 C0·회복 PC 준비 완료
+
+- 확정된 PC 설계: 같은4resident의 긴 C0→기존 DEV_A 부하회복2조건을 한block으로 준비한다. C0는 본작업0이나 동일warmup8/적격성4를 유지한다. 각120/600/1920초, 기존상한/종료계획을 변경하지 않는 새 tail-observation opt-in과 watchdog3540초를 사용한다. [계약·코드·검증](AP_TAIL_OBSERVATION_PREP_20261009.md).
+- LOAD_SLOW·CLOCK_SHIFT·원동결식/초기화를 실행전 고정하고 새자료 자동fit/τ범위확장/후보교체0.1920초는 물리τ/평형 보장이 아니며 C0가 부하의존과 공통clock변화를 구분해도 열메커니즘은 미확정일 수 있다. 긴창 외삽과 strict를 분리한다.
+- 최종실행 후보는 plan_v2/1224추론/16752ADB/9050초이며 **실행 승인 결정은 아님**. v1 PC초안은 미소비로 보존한다. Check/PC검증/기존서명APK 완료, 기기·Run·claim0/기본/RL/strict/experiment_ready=false 유지. 표본끝누락 전체J/error null과 새경로 preflight 소유권미확인 시 임의cleanup 금지를 지킨다.
+
+
 ## 2026-10-09 AP-TAIL-IDENTIFICATION-01 — 느린 부하 후보 보존·물리 식별 미승격
 
 - 확정: 기존33으로부하연동slow1 주후보+clock 기준변화대조를사후등록/평가했다. 개발4와최근14 개선은있지만전체29 일반개선없음/13악화,τ1920경계/원인미식별/새독립확인0을보존한다. [근거·모든조건](AP_TAIL_IDENTIFICATION_RESULTS_20261009.md). clock가더잘맞는개발결과를보고주후보를교체하지않는다.

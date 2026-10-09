@@ -34,6 +34,12 @@ def arrival_case(folder,m):
 
 def read_case(folder,manifest,plan):
     folder=Path(folder);m=old.p.read(manifest)
+    c0=False
+    if plan.get('tail_observation'):
+        from tools import d1_ap_tail_observation_plan as tail
+        tail.validate_manifest(m);c0=m['identification_profile']=='C0_LONG'
+    elif m.get('tail_observation_version'):
+        raise ValueError('tail manifest outside isolated plan')
     if old.p.digest(folder/'manifest.json')!=old.p.digest(manifest):raise ValueError('executed manifest identity')
     cleanup=old.p.read(folder/'cleanup.json')
     if cleanup['status']!='completed' or any((folder/n).exists() for n in ['sampler_failure.json','session_failure.json']):
@@ -45,7 +51,7 @@ def read_case(folder,manifest,plan):
         if sum(e['kind']==kind for e in events)!=count:raise ValueError('runtime/warmup denominator')
     eligibility=[e for e in events if e['kind']=='lane_available' and e['phase'].startswith('eligibility_')]
     rows=[e for e in events if e['kind']=='lane_available' and e['phase']=='load']
-    if len(eligibility)!=4 or not rows or len(rows)>m['work_call_cap'] or len({r['id'] for r in rows})!=len(rows):raise ValueError('work/quality denominator')
+    if len(eligibility)!=4 or (not rows and not c0) or (c0 and bool(rows)) or len(rows)>m['work_call_cap'] or len({r['id'] for r in rows})!=len(rows):raise ValueError('work/quality denominator')
     starts={e['id'] for e in events if e['kind']=='request_start' and e['phase']=='load'}
     if starts!={r['id'] for r in rows}:raise ValueError('unconfirmed request completion')
     for r in rows+eligibility:
@@ -106,7 +112,7 @@ def read_case(folder,manifest,plan):
     common_end=(end['planned_end_ns']-origin)/1e9
     if integrate(samples,origin,end['planned_end_ns'],1000)['full_energy_j'] is None:raise ValueError('whole registered energy coverage')
     c=dict(id=m['phase'],role=m['identification_role'],study_phase=m['identification_role'],policy=m['identification_profile'],
-           pre=pre,q=[r['t'] for r in after],ap=[r['ap'] for r in after],actual=seg,last_lane_s=max(r['lane_available_ns'] for r in ledger)/1e9,
+           pre=pre,q=[r['t'] for r in after],ap=[r['ap'] for r in after],actual=seg,last_lane_s=max(r['lane_available_ns'] for r in ledger)/1e9 if ledger else None,
            power_t=[(r['mono_ns']-origin)/1e9 for r in samples],power_w=[j.m.base.energy.discharge_w(r,1000) for r in samples],common_end_s=common_end)
     c['pre_w']=j.m.integral(c,-20,30)/50
     j.m.base.exposure(seg,0,common_end)

@@ -1,5 +1,9 @@
 # D1Check 통합 시뮬레이터
 
+## 2026-10-09 긴 C0·부하 회복: 미승인 실행 준비
+
+[최종2조건 계약·예산](../../AP_TAIL_OBSERVATION_PREP_20261009.md) · [준비 화면/Check](../ap_tail_observation_prep_01/index.html). 별도opt-in으로 C0와1920초냉각을 지원했다. 고정88분/전체2h30m50s/최대1224추론·16752ADB, 새실측/오차감소결과아님·기기0·기본/RL/strict 유지. 기존33판독과 현재미승인계획을 구분한다.
+
 ## 2026-10-08 모형 식별/확인: PC 준비·미승인
 
 [8세션·계약·상한](../../RESIDENT_IDENTIFICATION_PREP_20261008.md) · [준비/검증/입력](../resident_identification_prep_01/README.md). 개발4 긴상태/유휴→자료/계수동결→다른순서2+실제Arrival96/192 요청2의전이확인이다. 새실측/오차감소그림없음·Check기기0/미소비. 최대6376추론/5h17m50s/34728ADB는별도실행승인대상이며기본/RL/strict는유지한다.

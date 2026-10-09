@@ -1,5 +1,12 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-09 AP-TAIL-OBSERVATION-PREP-01 — 긴 C0·회복 PC 준비 완료
+
+- 완료: 같은4resident의 긴 C0+부하회복을 기존 실행기/Activity에 별도opt-in으로 준비했다. 새watchdog3540초는 새프로토콜만 적용하며 legacy1800초를 변경하지 않는다. [명세·예산·종료](AP_TAIL_OBSERVATION_PREP_20261009.md).
+- 실행대상 후보는 미승인/미소비 plan_v2 하나다. C0→LOAD_A, 고정88분/추론1224/총9050초/ADB16752. C0부적격이면 부하 미시도, 후보·clock·원식 사전동결/자동refit·재시도·추가0. 끝power 미관측은 null로 보존하고AP 적격성과 분리한다.
+- PC 구현/서명/Check·관련검증 완료는 물리τ 식별·독립오차PASS·기본모형교체가 아니다. 다음하나는 이 block의 실측승인 여부 결정이며 현재자동Run/claim/기기0이다.
+
+
 ## 2026-10-09 AP-TAIL-IDENTIFICATION-01 — 기존33 꼬리 판독·다음 정보 공백 특정
 
 - fast4+동결증분전력느린항1이새4제외평가0.498→0.279°C/최근14 0.329→0.308로오차를줄였으나과거29는동률수준·13악화로기본교체0. clock 대조는원인분해용,τ상한1920/긴C0부재로물리원인·시간상수미확정. [결과](AP_TAIL_IDENTIFICATION_RESULTS_20261009.md).

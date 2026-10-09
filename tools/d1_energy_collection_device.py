@@ -264,7 +264,7 @@ def installation(d,plan,plan_file,root,hard):
         c.require(state['installed_sha256']==plan['apk_sha256'],'exact installed APK required')
         state['status']='verified'
     finally:
-        if identified and (not plan.get('online_policy_study') or cleanup_owned):
+        if identified and ((not plan.get('online_policy_study') and not plan.get('tail_observation')) or cleanup_owned):
             try:state['cleanup']=shared.cleanup(d,end)
             except BaseException as exc:state.update(status='failed',cleanup={'error':repr(exc)})
         state['elapsed_seconds']=time.monotonic()-start;save(root/'installation_receipt.json',state)
@@ -300,7 +300,11 @@ def run(plan_file,adb,serial,expected_sha,approved):
     except FileNotFoundError:
         c.check(plan_file)
         raise
-    if plan.get('resident_identification'):
+    if plan.get('tail_observation'):
+        from tools import d1_ap_tail_observation_plan as state
+        state.check(plan_file)
+        c.require(bool(serial),'tail observation requires explicitly selected current transport')
+    elif plan.get('resident_identification'):
         from tools import d1_resident_identification_plan as state
         state.check(plan_file)
         c.require(bool(serial),'identification requires explicitly selected current transport')
@@ -367,7 +371,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
             frozen=c.p.read(root/'development_freeze.json')
             mark('prior_development_freeze_loaded',sha256=plan['prior_freeze']['sha256'])
         for e in plan['entries']:
-            if plan.get('resident_identification') and e['index']==4:
+            if plan.get('resident_identification') and not plan.get('tail_observation') and e['index']==4:
                 mark('development_freeze_start')
                 before_freeze=time.monotonic()
                 c.require(hard-before_freeze>=budget['freeze_seconds']+budget['session_seconds'], 'freeze and confirmation reservation')
@@ -403,6 +407,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
             cleanup_attempted=False;cleanup_result=None
             mark('session_reserved',session_index=e['index'],session_id=e['session_id'],phase=e['phase'])
             session_start=time.monotonic();session_end=min(session_start+budget['session_seconds'],hard);d.deadline=min(session_start+120,session_end-105)
+            if plan.get('tail_observation'):state.verify_frozen(plan)
             gates(d,plan,current,'before_session')
             c.require(install.installed_hash(d,plan['apk_preflight']['candidate'])==plan['apk_sha256'],'installed APK changed')
             mark('session_gate_passed',session_index=e['index'],session_id=e['session_id'])

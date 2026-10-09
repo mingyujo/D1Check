@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-10-09 AP-TAIL-OBSERVATION-PREP-01 — 긴 C0·회복 PC 준비 완료
+
+- 사용자 `ㄱㄱ`의 PC 준비 승인으로 긴 C0→기존 DEV_A 부하 2조건을 별도 opt-in으로 구현·검증했다. 각 baseline120/common600/cooling1920초, C0 본작업0·준비12. 원1800초계약/동결모형/기본/RL/strict/experiment_ready=false 유지. [계약·APK·명령](AP_TAIL_OBSERVATION_PREP_20261009.md) · [준비 화면/검증](results/ap_tail_observation_prep_01/README.md).
+- 최종 plan_v2 SHA e4aec382…e6f68, 서명APK dd55b04d…75497. Check 기기0·미승인/미소비, Run/claim0. 최대2세션/1224추론/8runtime/14staged파일/16752ADB/9050초; 고정5280초와 준비240초를 timeout 예약과 구분한다. v1 PC초안/기존 종료계획·원본은 보존.
+- 새Python12+관련host9/기존reader1, Android 새4/기존4/lifecycle2 통과·컴파일/격리assembly/기존서명·860payload 검증 완료. 후보/clock/원식은 미리 동결, 새자료 자동fit0. 마지막power 미관측은 전체J/error null·coverage 유지; 물리τ/원인/정확도PASS를 보장하지 않는다. 사용자STATUS14행/개인파일/다른worktree 보존.
+- 다음 하나: 최종2조건 block의 별도 실측승인 여부 결정. 현재 A24/설치/환경·장시간 동작은 기기에서 아직 미검증이며 이번ADB/기기/설치/실측0이다.
+
+
 ## 2026-10-09 AP-TAIL-IDENTIFICATION-01 — 느린 부하 항 개선·시간상수/원인 미식별
 
 - 사용자 `진행 ㄱㄱ` 승인으로기존33 꼬리/C0를분리했다. 새개발4만LOSO/final fit·과거29사후전이,β/초기화·에너지고정·fast4+부하증분전력느린항1 주후보. clock 기준변화는대조/사후승자교체0. [결과·원인분해·최소정보](AP_TAIL_IDENTIFICATION_RESULTS_20261009.md) · [화면/재현](results/ap_tail_identification_01/README.md).

@@ -1,0 +1,67 @@
+{
+  "utc": "2026-10-09T04:29:06.709156+00:00",
+  "start_head": "51505bff45c745e51258dac7885ebb0ee174d44a",
+  "current_head": "51505bff45c745e51258dac7885ebb0ee174d44a",
+  "uncommitted_changes_at_validation": true,
+  "android_tests": [
+    {
+      "name": "com.example.d1check.benchmarkrunner.EnergyCollectionLifecycleTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.example.d1check.benchmarkrunner.EnergyResidentIdentificationTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.example.d1check.benchmarkrunner.EnergyTailObservationTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  ],
+  "android_compile": true,
+  "assembly": true,
+  "signed_existing_project_certificate": true,
+  "device_commands": 0,
+  "python_final_new_tests": 12,
+  "related_host_tests": 9,
+  "legacy_artifact_reader_tests": 1,
+  "python_command": "python -B -m unittest tools.test_d1_ap_tail_observation_plan.TailPlanTests tools.test_d1_energy_host_failure.HostFailureTest tools.test_d1_resident_identification_plan.PlanTests.test_actual_read_case_entry_with_registered_blocks_and_missing_block -v",
+  "final_new_test_command": "python -B -m unittest tools.test_d1_ap_tail_observation_plan.TailPlanTests -v",
+  "tests_status": "PASS; final new12 after script byte/last-power-interval corrections, host9/legacy1 previously passed on unchanged boundaries",
+  "build_command": "gradlew.bat --no-configuration-cache --init-script tools/arrival_timing_isolated_build.gradle :benchmark-runner:assembleModelProbe -PenableModelProbe=true --console=plain",
+  "android_test_command": "gradlew.bat --no-configuration-cache --init-script tools/arrival_timing_isolated_build.gradle :benchmark-runner:testModelProbeUnitTest --tests '*EnergyTailObservationTest' --tests '*EnergyCollectionLifecycleTest' --tests '*EnergyResidentIdentificationTest' -PenableModelProbe=true --console=plain",
+  "logs": {
+    "ap_tail_observation_build_test.log": "349a0c948cc3d7c7b2c713fff802f607f1dd31e92016717ef90e7e83d3bed35a",
+    "ap_tail_observation_build_test_fixed.log": "a992c4a5f1e9bf96399eb21871bf704cdf009d0991dfea14c344c2b9a17a25ed",
+    "ap_tail_observation_assemble.log": "427c9e7887035d9dafea70c0b34f53885019f95c985965b8ba69bd1586723538",
+    "ap_tail_observation_python_tests.log": "b1bace4e26b83664088f234c41373539c7b82c1045ac50b9cacd8b9f772102c8",
+    "ap_tail_observation_final_python_tests.log": "c44f4750728f0112ac71a1cc85784bb672559c8a819cd35de14f705688a37007"
+  },
+  "limitations": [
+    "mock host and journal tests are not physical watchdog/transport/long-duration validation",
+    "Robolectric ran2real lifecycle callbacks with withheld native workers;not complete Android/native execution",
+    "no new measurement/error reduction achieved"
+  ],
+  "preserved_pc_failures": [
+    "first Kotlin compile public/internal visibility mismatch;changed new object to internal",
+    "first budget test added100s incorrectly;actual stage sum3405s",
+    "sparse prediction fixture violated existing max10s query gap;fixed fixture,not gate",
+    "PC plan_v1 script newline translation;preserved unconsumed draft,finalv2 raw script hash exact"
+  ],
+  "plan_sha256": "e4aec38289084840df0a54a9c2322354bda1e6c83388bd47e85a7d95641e6f68",
+  "apk_sha256": "dd55b04d1f91be1f30ce894afdb0d80b2ec8815f1a938a6903836d568e675497",
+  "apk_source_code_sha256": "bf98f939889a963faf86857132561e13fa4836d9a0b4da41c3008b2fee5a98d3",
+  "build_receipt_sha256": "542fe83fedc4b41658e8cca1d648b2e89e0a4e1e56e9375832447005b25e6ba5",
+  "frozen_candidates_sha256": "aa28410d701c9810001a4e6c176823e7d2b446f46f980ebeab3ff14f4540cc84",
+  "original_model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+  "claims_present": false,
+  "execution_output_present": false
+}
