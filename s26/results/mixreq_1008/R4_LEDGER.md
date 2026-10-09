@@ -162,3 +162,41 @@ index 1342d550..2a008fbf 100644
              phases.gateS == MixreqContract.GATE_NS / 1_000_000_000L) { "phase lengths must equal the contract" }
          require(phases.setupS * 1_000_000_000L == MixreqContract.setupNsOf(block)) { "setup_s for block $block" }
 ```
+
+## 1-5 회귀 · 커밋 ② · push (20:5x) [P]
+
+- `py -m pytest tools` **243 passed · 1 failed** (= 기준: `test_d1_representative_tensors … canonical_bytes_and_hash_golden`, CRLF fixture) · `d1sim/tests` **93 passed**.
+- **커밋 ② `c75d0855edb44e38d064a93f192f37efdfe2a50b`** (2026-10-09 20:51:36 +0900) "request-runner · s26/tools/mixreq: v3 (실험 ID 표 · 지속 3,000 · 720 s · 확인 순서) + 계획 v3c · v3s (v3 칸 전)" — 61 파일 +909/−72 (앱 2 · 시험 3 · 호스트 9 · plan_v3c 21 · plan_v3s 21 · 원장) · 추가 줄 PAT 0 · 바이너리 0 → **push `344dd9fa..c75d0855` · origin = HEAD**.
+
+## 2-1 (C) 폰 준비 (20:51) [P]
+
+- adb `device` · SOC 71 · plugged 0 · `screen_off_timeout` 86400000 ✔ · 잠금 없음 · 밝기 모드 0 · `screen_brightness 0` put → 폰이 1 로 되돌림 (v2 #7 허용) · 비행기 1 · zen 1 · HAL AP 27.0 · BAT 25.2 · SKIN 27.7.
+- **APK v3 설치** (`adb install -r`, Success) · 기기 `pm path` sha256sum = **`b97a9784…` = 1-4 값** ✔ · `npurunner` `5ac485e3…` 무접촉.
+
+## 2-2 (C) 스모크 · A24 대조 (20:52:23 ~ 21:09:04, `results\S26_MIXREQ_SMOKE_R4C`, APK v3 · plan_v3c) [P] — 기록만 (v2 #3 · #5)
+
+- S1 (warmup_only 블록 N, 20:52:23 ~ 20:52:47): 게이트 즉시 PASS (SKIN 27.9 · AP 26.0 · BAT 25.4 · SOC 71) · 5 runtime · warmup 10 · 텐서 `603328d0…` ✔ · RGB `ca6c2e2b…` ✔ · CPU top-5 = PC 참조 ✔ · 탐지 CPU = PC 참조 (A24 허용) ✔ · GPU vs CPU §4-6 ✔ ×2 · `detection_GPU` 생성 ✔ · GPU 증거 PASS ×2 · NPU 증거 FAIL = `no_dispatch_failure_in_common_window` (warmup_only 에 공통창 없음 — R2 · R3 와 같은 검증기 한계) · **NPU 계약 첫 값 PASS (top-1 518 · cosine 0.9999935 ×2 = R3 와 같은 값)** · **`top -H` 파서 보수 확인: 패키지 스레드 행 31 · `d1mix-*` 3** (R3 는 0행).
+- S2: CPU rc 0 유효 · 겹침 0 (21:54:14 ~ 20:58:06, 게이트 28.0 · 26.0 · 25.5) / PAR rc 0 유효 · **겹침 0.437 s** (20:59:36 ~ 21:03:28) / PAR-NPU rc 0 유효 · **겹침 0.420 s** · NPU 계약 PASS (21:04:59 ~ 21:08:51, SOC 70) · (a)~(d) 셋 다 통과 · decisions [] · observations [] (v3 기록만).
+- **A24 대조 (`mixreq_a24_compare.py` `c1e43ece…` 무변경) PASS**: 탐지 warmup 0 · 1 각각 라벨 같음 · |Δscore| 0.0 · box ≤ 4.4e-5 px · 입력 텐서 = A24 ✔ · 분류 top-5 5/5 |Δscore| ≤ 3.6e-7 · raw ≠ (엔진 다름, 기록만) → `a24_compare.json`.
+- 재시도 0 · 비상 0 · 잠금 0 · adb 끊김 0 · 밝기 설정값 1 (허용) · 화면 86400000 유지.
+
+## 2-3 (C) 블록 N 시작 (21:1x) — 드라이버 `mixreq_driver.ps1 -Block N -Experiment 02C` (index 8 → 15: PAR-NPU · CPU · CPU · PAR-NPU · CPU · PAR-NPU · PAR-NPU · CPU) → 끝나면 `-Block A` (0 → 7). 결과 지위 = S26 부록 관측 (조민규 확인 없음).
+
+## 2-3 (C) 블록 N 진행 (21:09:51 ~) [P] — 세션 사용 한도로 Claude 세션 중단 (21:2x)
+
+- index 8 PAR-NPU rc 0 (21:09:51 ~ 21:13:47) · 9 CPU rc 0 (~21:19:09) · 10 CPU rc 0 (~21:24:35) · 11 PAR-NPU 실행 중 (21:24:35 ~). 재시도 0 · 비상 0. 드라이버 (pid `driver_pid_blockN.txt`) 는 detached 로 계속 돈다 — index 15 까지 혼자 끝낸다 (`driver_log_blockN.txt` 의 `DRIVER END` 줄).
+- **남은 것 (새 Claude 세션이 이어서)**: ① 블록 N `DRIVER END` 확인 → `mixreq_driver.ps1 -Block A -Experiment 02C` (0 → 7) ② (C) readout: `mixreq_readout.py --plan s26\results\mixreq_1008\plan_v3c\plan.json --results results\S26_MIXREQ_R4C --out results\S26_MIXREQ_R4C\readout --a24-compare results\S26_MIXREQ_SMOKE_R4C\a24_compare.json --apk-sha256 b97a9784… --source-commit c75d0855… --reference-readout s26\results\mixreq_1008\R3_readout\readout.json` → 결과 사본 `R4C_*` · 커밋 ③ · push ③ 3부 (S): 충전 SOC 90 → 스모크 `mixreq_smoke.py --plan plan_v3s --results results\S26_MIXREQ_SMOKE_R4S --allow-settings-mismatch --reference-pc …` → `mixreq_driver.ps1 -Block N -Experiment 03` → 충전 → `-Block A -Experiment 03` ④ 4부 (S) readout (`--plan plan_v3s\plan.json --results results\S26_MIXREQ_R4S …`) · `sim\혼합요청_결과_v3.md` · `작업결과_1010_R4_혼합요청v3.md` · 커밋 ④ · push · CLAUDE.md 블록. 원복: 화면 86400000 유지 (영훈) · 밝기 127.
+
+## 2-3 (C) 블록 N 끝 (21:09:51 ~ 21:51:29) [P]: **8/8 유효** (index 8 ~ 15 전부 rc 0) · 재시도 0 · invalid_twice 0 · 연결 사고 0 · 비상 0 · 블록 안 충전 0 · `DRIVER END block=N reason=completed`. Claude 세션은 21:2x ~ 22:45 사용 한도로 비어 있었고 그동안 드라이버가 혼자 끝냈다 (설계대로). 22:45 폰 SOC 62 · 잠금 없음 · 프로세스 0.
+## 2-3 (C) 블록 A 시작 22:46 — `-Block A -Experiment 02C` (index 0 → 7: PAR · CPU · CPU · PAR · CPU · PAR · PAR · CPU). SOC 62 ≥ 40 → 충전 없이.
+
+## 2-3 (C) 블록 A 끝 (22:46:03 ~ 23:27:45) [P]: **8/8 유효** (index 0 ~ 7 rc 0) · 재시도 0 · 비상 0 · 블록 안 충전 0 · 게이트 대기 0 s (SKIN 26.8 ~ 30.3) · `DRIVER END block=A reason=completed`. **(C) 16/16 유효** · NPU 계약 4/4 PASS · 실행 순서 8 → 15 → 0 → 7 (등록 (C)-2).
+
+## 2-4 (C) readout · 확인 판정 (23:28 · 23:3x) [P]
+
+- `mixreq_readout.py --plan plan_v3c --results results\S26_MIXREQ_R4C --a24-compare …R4C\a24_compare.json --apk-sha256 b97a9784… --source-commit c75d0855… --reference-readout R3_readout\readout.json` → 16세션 · slots valid 16 · 꼬리표 0 · A24 대조 PASS.
+- **확인 판정 (등록 (C)-4)**: **Q1 (블록 A) = "확인됨 (개발 · 확인 2블록 같은 판정)"** — 개발 R3 · 확인 R4 둘 다 "병행이 긴급 응답을 줄였다" (R4 4쌍 Δ긴급 P95 −28.9 · −35.9 · −34.4 · −38.4 ms · CPU 107.5 ~ 114.0 → PAR 74.9 ~ 78.6) · **Q3 (블록 N) = "확인됨"** — 둘 다 "NPU 병행이 긴급 응답을 줄였다" (R4 −38.6 · −42.5 · −57.1 · −45.0 ms · CPU 109.8 ~ 124.2 → PAR-NPU 67.2 ~ 71.1 · NPU 계약 4/4). 서비스 "두 정책 모두 기한 충족" ×2 (16 × 192/192) 같음 · 일반 P95 판정 같음 (A "엇갈림" / N "같은 방향 · 일부 작음").
+- **다른 판정 (나란히 · Q 판정은 `judgment` 만 따른다)**: 블록 A 최고 SKIN — 개발 "열 차이 기준 안 (1.0 ℃)" vs 확인 **"엇갈림"** (R4 Δ −1.1 · −0.2 · −0.2 · −0.1 — 쌍 A0 한 쌍이 −1.1 ℃, 시작 SKIN 첫 세션 29.5 ℃ 로 가장 낮음) · 블록 A 최고 AP — 개발 "엇갈림" vs 확인 **"병행이 덜 뜨거웠다"** (Δ −3.1 · −1.0 · −1.1 · −1.1 — 전부 ≤ −1.0) · 블록 N 6 항목 전부 같음 (SKIN "기준 안" Δ −0.9 · −0.1 · −0.3 · −0.4 · AP "엇갈림" Δ −2.0 · −0.8 · −1.3 · −1.4).
+- 겹침 PAR 4.22 ~ 4.50 s · PAR-NPU 4.26 ~ 4.51 s (R3 4.45 ~ 4.77 / 4.46 ~ 4.67) · J (µA 해석 · 기술만) ΔA −22.8 · −33.9 · −13.8 · −25.3 · ΔN −29.7 · −0.3 · −28.6 · −50.2 · SOC 71 → 56.
+- **결과 뒤 라벨 수정 1건 (기록)**: 첫 readout (`readout_c/`, 사본 `R4C_readout_first/`) 의 Q2 표 제목이 v1 문구 (`reg_version == 2` 조건) 였다 → `>= 2` 로 고쳐 다시 실행 (`readout/`, 사본 `R4C_readout/`). 두 readout 은 `q2_table` (제목 · note) 과 `skipped` 만 다르고 판정 · 쌍 · KPI · CSV 3개 바이트 동일. 판정 · 허용치 변경 0.
+- 결과 사본 (`git add -f`): `R4C_smoke/` (S1 + S2 ×3 · smoke_report · a24_compare, logcat 제외) · `R4C_blocks/` (16세션 device + host (logcat 제외) + validated + npu_contract · 드라이버 로그 · state · keepawake) · `R4C_readout/` · `R4C_readout_first/`.

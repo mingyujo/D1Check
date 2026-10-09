@@ -1,0 +1,441 @@
+{
+  "a24_differences": [],
+  "attempt": 1,
+  "block": "N",
+  "counts": {
+    "failed": 0,
+    "planned": 192,
+    "succeeded": 192,
+    "unfinished": 0
+  },
+  "device_dir": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_mixreq\\results\\S26_MIXREQ_R4C\\S26_MIXREQ_08_S26_NPU_PARALLEL_V1_a1\\device",
+  "eligible": true,
+  "experiment_id": "S26-MIXREQ-02C",
+  "host_dir": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_mixreq\\results\\S26_MIXREQ_R4C\\S26_MIXREQ_08_S26_NPU_PARALLEL_V1_a1\\host",
+  "pair": 0,
+  "policy": "S26_NPU_PARALLEL_V1",
+  "reasons": [],
+  "registration_version": 3,
+  "rules": {
+    "0_artifacts": {
+      "detail": {
+        "cleanup_completed": true,
+        "common_boundary": true,
+        "part_files_zero": true,
+        "requests_json": true,
+        "result_files": true,
+        "split": "confirmation",
+        "summary_completed": true,
+        "time_scale": 1,
+        "time_scale_ok": true,
+        "warmup_json": true
+      },
+      "passed": true
+    },
+    "1_requests_succeeded_quality": {
+      "detail": {
+        "input_tensor_fail": [],
+        "planned": 192,
+        "quality_fail": [],
+        "quality_rule": "same runtime key, both warmups: top-5 label/index + |ds|<=1e-3 / count+labels + |ds|<=1e-3 + box<=2px",
+        "rows": 192,
+        "status_fail": [],
+        "succeeded": 192
+      },
+      "passed": true
+    },
+    "2_time_order": {
+      "detail": {
+        "fields": [
+          "scheduled_arrival_ns",
+          "actual_arrival_ns",
+          "queue_entry_ns",
+          "dispatch_ns",
+          "execution_start_ns",
+          "host_inference_start_ns",
+          "host_inference_return_ns",
+          "output_ready_ns",
+          "persist_complete_ns",
+          "worker_release_ns",
+          "lane_available_ns"
+        ],
+        "violations": []
+      },
+      "passed": true
+    },
+    "3_window": {
+      "detail": {
+        "bounds_s": [
+          35.0,
+          120.0
+        ],
+        "last_lane_available_s": 73.448424571,
+        "origin_ns": 15433889396240,
+        "violations": []
+      },
+      "passed": true
+    },
+    "4_assignment_residents": {
+      "detail": {
+        "create_failed": [],
+        "created": [
+          "classification_CPU",
+          "classification_GPU",
+          "classification_NPU",
+          "detection_CPU",
+          "detection_GPU"
+        ],
+        "missing_created": [],
+        "missing_warmed": [],
+        "used_keys": [
+          "classification_NPU",
+          "detection_CPU"
+        ],
+        "wrong_lane": []
+      },
+      "passed": true
+    },
+    "5_overlap": {
+      "detail": {
+        "expected": "recorded only (v2 #4); overlap 0 -> readout tag",
+        "foreign_lane_rows": [],
+        "lanes": [
+          "NPU",
+          "CPU"
+        ],
+        "overlap_ns_raw": 4350086049,
+        "overlap_s": 4.350086049,
+        "overlap_zero": false,
+        "registration_version": 3
+      },
+      "passed": true
+    },
+    "6_warmup_quality": {
+      "comparisons": {
+        "classification_CPU": [
+          {
+            "candidate_count": 5,
+            "pairs": [
+              {
+                "index": true,
+                "label": true,
+                "score_delta": 0.0
+              },
+              {
+                "index": true,
+                "label": true,
+                "score_delta": 0.0
+              },
+              {
+                "index": true,
+                "label": true,
+                "score_delta": 0.0
+              },
+              {
+                "index": true,
+                "label": true,
+                "score_delta": 0.0
+              },
+              {
+                "index": true,
+                "label": true,
+                "score_delta": 0.0
+              }
+            ],
+            "passed": true,
+            "reference_count": 5
+          }
+        ],
+        "classification_GPU": [
+          {
+            "candidate_count": 5,
+            "pairs": [
+              {
+                "index": true,
+                "label": true,
+                "score_delta": 7.748603820800781e-07
+              },
+              {
+                "index": true,
+                "label": true,
+                "score_delta": 2.5331974029541016e-07
+              },
+              {
+                "index": true,
+                "label": true,
+                "score_delta": 3.3527612686157227e-08
+              },
+              {
+                "index": true,
+                "label": true,
+                "score_delta": 2.086162567138672e-07
+              },
+              {
+                "index": true,
+                "label": true,
+                "score_delta": 3.725290298461914e-08
+              }
+            ],
+            "passed": true,
+            "reference_count": 5
+          },
+          {
+            "candidate_count": 5,
+            "pairs": [
+              {
+                "index": true,
+                "label": true,
+                "score_delta": 7.748603820800781e-07
+              },
+              {
+                "index": true,
+                "label": true,
+                "score_delta": 2.5331974029541016e-07
+              },
+              {
+                "index": true,
+                "label": true,
+                "score_delta": 3.3527612686157227e-08
+              },
+              {
+                "index": true,
+                "label": true,
+                "score_delta": 2.086162567138672e-07
+              },
+              {
+                "index": true,
+                "label": true,
+                "score_delta": 3.725290298461914e-08
+              }
+            ],
+            "passed": true,
+            "reference_count": 5
+          }
+        ],
+        "classification_NPU": null,
+        "detection_CPU": [
+          {
+            "candidate_count": 2,
+            "pairs": [
+              {
+                "label": true,
+                "max_box_delta_px": 0.0,
+                "score_delta": 0.0
+              },
+              {
+                "label": true,
+                "max_box_delta_px": 0.0,
+                "score_delta": 0.0
+              }
+            ],
+            "passed": true,
+            "reference_count": 2
+          }
+        ],
+        "detection_GPU": [
+          {
+            "candidate_count": 2,
+            "pairs": [
+              {
+                "label": true,
+                "max_box_delta_px": 4.2969596051989356e-05,
+                "score_delta": 1.1920928955078125e-07
+              },
+              {
+                "label": true,
+                "max_box_delta_px": 7.38393283086225e-05,
+                "score_delta": 4.76837158203125e-07
+              }
+            ],
+            "passed": true,
+            "reference_count": 2
+          },
+          {
+            "candidate_count": 2,
+            "pairs": [
+              {
+                "label": true,
+                "max_box_delta_px": 4.2969596051989356e-05,
+                "score_delta": 1.1920928955078125e-07
+              },
+              {
+                "label": true,
+                "max_box_delta_px": 7.38393283086225e-05,
+                "score_delta": 4.76837158203125e-07
+              }
+            ],
+            "passed": true,
+            "reference_count": 2
+          }
+        ]
+      },
+      "detail": {
+        "classification_CPU": {
+          "judged": false,
+          "passed": true
+        },
+        "classification_GPU": {
+          "judged": false,
+          "passed": true
+        },
+        "classification_NPU": {
+          "judged": false,
+          "reason": "NPU → §4-N contract, not the A24 tolerance"
+        },
+        "detection_CPU": {
+          "judged": true,
+          "passed": true
+        },
+        "detection_GPU": {
+          "judged": false,
+          "passed": true
+        }
+      },
+      "passed": true
+    },
+    "7_delegation_evidence": {
+      "detail": {
+        "logcat": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_mixreq\\results\\S26_MIXREQ_R4C\\S26_MIXREQ_08_S26_NPU_PARALLEL_V1_a1\\host\\logcat_threadtime.txt",
+        "mark_count": 35,
+        "runner_pid": "8088",
+        "runtimes": {
+          "classification_GPU": {
+            "conditions": {
+              "gpu_environment_created": true,
+              "litert_cl_full_replacement": true,
+              "no_failure_or_fallback_line": true,
+              "no_other_delegate_replacement": true
+            },
+            "failed_conditions": [],
+            "failure_lines": [],
+            "key": "classification_GPU",
+            "replacement_lines": [
+              1492
+            ],
+            "replacements": [
+              "62/62 LITERT_CL"
+            ],
+            "rule": "gpu-compiled-model-evidence-v1",
+            "used_by_policy": false,
+            "verdict": "PASS",
+            "window_lines": [
+              [
+                1413,
+                1502
+              ],
+              [
+                1652,
+                1670
+              ]
+            ]
+          },
+          "classification_NPU": {
+            "aot_partition": {
+              "ai_edge_litert": "2.3.0.dev20260922",
+              "compile_batch": "G1-B",
+              "dispatch_ops": 1,
+              "model": "efficientnet_lite0_Samsung_E9965.tflite",
+              "non_dispatch_ops": 0
+            },
+            "common_window_lines": [
+              3397,
+              11244
+            ],
+            "conditions": {
+              "aot_partition_known": true,
+              "dispatch_replacement_matches_aot": true,
+              "enn_loaded_in_runner_pid": true,
+              "no_dispatch_failure_in_common_window": true,
+              "no_dispatch_failure_in_npu_window": true,
+              "no_other_delegate_replacement_in_npu_window": true
+            },
+            "dispatch_lines": [
+              1523
+            ],
+            "dispatch_replacements": [
+              "1/1"
+            ],
+            "enn_lines": [
+              1404
+            ],
+            "failed_conditions": [],
+            "failure_lines": [],
+            "key": "classification_NPU",
+            "note": "ENN load alone is not NPU evidence (CPU runs print it too); NPU core execution is not observable from the app",
+            "rule": "npu-dispatch-evidence-v1 (conditions, windowed by D1MIX marks)",
+            "used_by_policy": true,
+            "verdict": "PASS",
+            "window_lines": [
+              [
+                1503,
+                1569
+              ],
+              [
+                1671,
+                1729
+              ]
+            ]
+          },
+          "detection_GPU": {
+            "conditions": {
+              "gpu_environment_created": true,
+              "litert_cl_full_replacement": true,
+              "no_failure_or_fallback_line": true,
+              "no_other_delegate_replacement": true
+            },
+            "failed_conditions": [],
+            "failure_lines": [],
+            "key": "detection_GPU",
+            "replacement_lines": [
+              1618
+            ],
+            "replacements": [
+              "263/263 LITERT_CL"
+            ],
+            "rule": "gpu-compiled-model-evidence-v1",
+            "used_by_policy": false,
+            "verdict": "PASS",
+            "window_lines": [
+              [
+                1588,
+                1622
+              ],
+              [
+                1760,
+                1787
+              ]
+            ]
+          }
+        }
+      },
+      "passed": true
+    },
+    "8_plugged_start": {
+      "detail": {
+        "plugged_nonzero": 0,
+        "samples": 238,
+        "start_check": true,
+        "start_thermal_status": 0
+      },
+      "passed": true
+    },
+    "9_watch_stop": {
+      "detail": {
+        "failure_files": [],
+        "stop_reason": null,
+        "watch_events": {
+          "phone": 0,
+          "skin": 0
+        },
+        "watch_source": "host csv"
+      },
+      "passed": true
+    }
+  },
+  "schema": "s26-mixreq-validated-v1",
+  "selftest": false,
+  "session_id": "31cc7655-bdff-5aa0-9f69-af4b566418a6",
+  "session_index": 8,
+  "split": "confirmation",
+  "time_scale": 1
+}

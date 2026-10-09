@@ -614,9 +614,11 @@ def main() -> int:
     a24_reference = dict(source="등록 §1-6 [D] (Cowork 가 등록 전에 본 A24 숫자)", sessions="8/8", deadline="192/192",
                          urgent_p95_cpu_ms="422.5~430.2", urgent_p95_par_ms="291.1~302.3", pair_delta_ms="−127.9~−131.4", overlap_par_s="21.92~22.58",
                          last_lane_s="112.01~112.07", energy_j_mA_interpretation="184.5~199.2", peak_ap_delta_c="−0.4~+0.4", verdict="정책 우열 미판정")
-    q2_table = dict(title=Q2_TITLE_V2 if reg_version == 2 else Q2_TITLE_V1, judgment=(TAG_A24_FAIL if a24_fail else "관측만 · 우열 · 기기 효과 판정 없음"),
+    # v3 label fix (R4, after the (C) readout — table title only, no judgment/KPI change; both readouts kept in the ledger): the v2 Q2 title
+    # and the same-definition line apply to every 200 ms experiment (v2 · -02C · -03), not only to registration version 2.
+    q2_table = dict(title=Q2_TITLE_V2 if reg_version >= 2 else Q2_TITLE_V1, judgment=(TAG_A24_FAIL if a24_fail else "관측만 · 우열 · 기기 효과 판정 없음"),
                     rows=q2, a24_reference=a24_reference)
-    if reg_version == 2:
+    if reg_version >= 2:
         q2_table["same_definition_s26_observation"] = Q2_SAME_DEFINITION_LINE_V2
         q2_table["note"] = "A24 400 ms · S26 200 ms — 같은 요청 정의가 아니다 (등록 v2 #9); 같은 부하로 읽지 않는다 (v2 §2 반대 해석 18)"
     notes = ["J = S26 µA 해석 · 기술만 (적격성 미확보)", "열 = 호스트 HAL SKIN/AP (센서 이름 그대로) · A24 는 AP",
