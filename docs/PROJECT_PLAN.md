@@ -1,5 +1,11 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-10 LIST-CANDIDATE-RL-TRAIN-MAIN-05 — 실제 학습과 동일 learner 연장
+
+- 최신 사용자 지시로 actual resume gate·3seed64 파일럿·미개선 시3AI 회의·동일 learner64연장까지 진행한다. 성과 판정/기본/strict는 유지한다. 원 성공3일정의.25credit 밖 exact경로는 새 공간의 한계로 기록하며 유효성 오류와 분리한다. [실행 계약](LIST_CANDIDATE_RL_TRAIN_MAIN_20261010.md).
+- 원1536환경/416학습에 구현32기소비를 포함한다. 새gate28·L0참조64·pilot192·개발216·main192·main개발72·확인432·조건부noWait144이면 총1372/학습404. 이력제거192학습 몫을 main192로 재배분, 새 튜닝0. 새 clock2h/저장5분을 결과 전에 등록하며 소비/실패/episode 경계 archive를 보존한다.
+- 완료: 실제 resume20학습 exact·33순수검사,3seed128/16update·이번1196환경/78,936전량/실행실패0. 개발cell통과0→54·새확인117/432이나 전체M/G미적격으로RL미채택, 조건부noWait0. 원기준/목적/지원/계수·기기0·기본/strict/experiment_ready=false보존,누적7,745/1,045·전체cap1536/416유지다.
+
 ## 2026-10-10 SESSION-CONTRAST-COST-PC-01 — 같은자료 대조와 새 AP 실제 평가 완료
 
 - 세AI4차토론후같은개발13의일반/중심화 E4/AP5·4source제외+최종으로20fit,선택동결후이미본22평가·원35전량표를완료했다. [결과·수식·해석·명령](SESSION_CONTRAST_COST_RESULTS_20261010.md). 고정β/prep30/slow1920/원전력proxy와순수학습nuisance를구분하고미래평균/target을예측입력에넣지않았다.

@@ -1,0 +1,37 @@
+{
+  "task": "LIST-CANDIDATE-RL-TRAIN-MAIN-05",
+  "review_complete": true,
+  "main_allowed": true,
+  "pilot_promising": false,
+  "human_expert_review": false,
+  "participants": ["mobile_review", "ie_review", "rl_review"],
+  "rounds": ["독립 원자료 검토", "세 검토자 직접 반론 교환", "확률·gradient·서비스 증거에 대한 교차 합의"],
+  "facts": {
+    "actual_resume_exact": true,
+    "pilot_episodes_each": 64,
+    "updates_each": 8,
+    "development_conditions": 24,
+    "evaluation_rows": 216,
+    "paired_service_worse": 216,
+    "completed_each": 1584,
+    "urgent_failures_by_seed": [171, 8, 4],
+    "normal_failures_by_seed": [153, 24, 436],
+    "low_seed11": "총24작업·CPU배정은L0와같고추가대기6초/P95+250ms/AP-0.015684/J동률",
+    "near_uniform_selected_probability_examples": [".339354/3후보", ".513189/2후보", ".254208/4후보"],
+    "actor_gradient_exceeds_critic_in_final_pilot_update": true,
+    "lambda_J_positive_all_three_seeds": true
+  },
+  "agreed": [
+    "전량 완료를 서비스 유지로 대체하지 않고 M/G 미적격 판정을 보존한다.",
+    "현재 증거에서 학습·실행 P1은 없다. RuleNetwork 타입 오류는 native 진입 전에 고쳤고 원 데이터·등록·checkpoint를 보존했다.",
+    "작은 최대확률 차이를 argmax가 반복대기로 확대하는 것은 원인 후보다. 입력·문맥·weights도 달라 argmax만의 인과효과로 확정하지 않는다.",
+    "critic이 actor를 압도했다거나 J항이 사라졌다는 해석은 현재 로그와 맞지 않는다. clipping 비율을 Adam parameterstep 감소율로 해석하지 않는다.",
+    "사용자의 미개선 후 본학습 지시에 따라 같은3learner의θ·Adam·승수·RNG에서64회를 추가해terminal128 전seed를 고정한다.",
+    "목적·보상·기한·물리mask·credit·seed·entropy·λ설정·평가 방식·성과 기준은 바꾸지 않는다. sampling평가나epsilon L0 tie로 결과를 살리지 않는다.",
+    "기존3성공의 exact credit 제외는 그 일정에만 적용하며 모든 개선 일정의 불가능이나 PPO 일반의 실패로 확장하지 않는다."
+  ],
+  "disagreements": [],
+  "unresolved": ["추가64학습의 개선 여부", "미개선의 단일 인과 원인", "현재 후보 공간의 전체 서비스 유지 개선 일정 존재 여부"],
+  "reviewer_environment_optimizer_device_calls": 0,
+  "final_method_selected": false
+}

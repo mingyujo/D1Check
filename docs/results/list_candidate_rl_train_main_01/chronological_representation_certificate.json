@@ -1,0 +1,1051 @@
+{
+  "status": "completed",
+  "scope": "read-only pure chronological necessary-condition certificates",
+  "source_task": "LIST-CANDIDATE-RL-IMPLEMENT-04",
+  "source_head": "87321f8685a2f9976f5a170d89ca9d5cf2770305",
+  "source_registration_sha256": "33fe6f1dbb96d79848120ff50203ad279684102ec115252784c16ea0968f5b2e",
+  "source_execution_ledger_sha256": "73bbdd4fa1067c8d3f0a0a0048f8d0f730f7954016ebb0c2c538d25fdc81ec75",
+  "certificate_source_sha256": "4fbd1ec8afd5bc1158bb93a971665bc9fcecb70c0954003b9526d2fc4c3acb96",
+  "frozen_model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+  "frozen_initial_sha256": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+  "rounding_assumption": "original native round(now) integer timestamps have at most0.5ns error; arrival timestamps are exact registered integers",
+  "rounding_radius_ns_exact": {
+    "numerator": 1,
+    "denominator": 2
+  },
+  "numeric_credit_epsilon": 0,
+  "credit_upper_bound_s": 0.25,
+  "no_credit_reset_on_phase_or_release_or_arrival": true,
+  "credit_exclusion_uses_actual_feasible_alternative_time_not_declared_old_timer": true,
+  "same_time_dispatches_grouped_before_counting_delay": true,
+  "absence_of_negative_certificate_is_replay_PASS": false,
+  "no_automatic_bank_credit_objective_change": true,
+  "cases": [
+    {
+      "exact_schedule_outcome": "excluded",
+      "exclusion_reasons": [
+        "discretionary_credit_lower_bound"
+      ],
+      "planned_and_completed_requests": 192,
+      "same_time_dispatch_groups": 191,
+      "fifo_violation_witness": null,
+      "credit_exclusion_spells": 1,
+      "maximum_required_discretionary_s_lower_bound": 0.3369242495,
+      "total_required_discretionary_s_lower_bound": 11.213462664,
+      "worst_spell": {
+        "reset_dispatch_ns": 98933262825,
+        "reset_request_ids": [
+          "812020001/sustained/160"
+        ],
+        "next_dispatch_ns": 99681179099,
+        "next_request_ids": [
+          "812020001/sustained/161"
+        ],
+        "same_rounded_dispatch_group_count": 1,
+        "safe_interval_start_ns": 98933262825.5,
+        "safe_interval_end_ns": 99681179098.5,
+        "intermediate_actual_dispatch_count": 0,
+        "required_discretionary_ns_exact": {
+          "numerator": 673848499,
+          "denominator": 2
+        },
+        "required_discretionary_s_lower_bound": 0.3369242495,
+        "credit_upper_bound_s": 0.25,
+        "certificate_margin_ns_exact": {
+          "numerator": 173848499,
+          "denominator": 2
+        },
+        "certificate_margin_s": 0.0869242495,
+        "first_certified_feasible_ns": 99344254849,
+        "credit_exhaustion_boundary_ns": 99594254849,
+        "parts": [
+          {
+            "start_ns": 99344254849,
+            "end_ns": 99431179098.5,
+            "duration_ns_exact": {
+              "numerator": 173848499,
+              "denominator": 2
+            },
+            "head_ids": {
+              "classification": "812020001/sustained/161",
+              "detection": "812020001/sustained/152"
+            },
+            "physically_feasible_jobs": [
+              {
+                "request_id": "812020001/sustained/161",
+                "task": "classification",
+                "backend": "GPU"
+              }
+            ],
+            "possible_owned_jobs": [
+              {
+                "request_id": "812020001/sustained/150",
+                "task": "detection",
+                "backend": "CPU"
+              }
+            ]
+          },
+          {
+            "start_ns": 99431179098.5,
+            "end_ns": 99431179099.5,
+            "duration_ns_exact": {
+              "numerator": 1,
+              "denominator": 1
+            },
+            "head_ids": {
+              "classification": "812020001/sustained/161",
+              "detection": "812020001/sustained/152"
+            },
+            "physically_feasible_jobs": [
+              {
+                "request_id": "812020001/sustained/161",
+                "task": "classification",
+                "backend": "GPU"
+              }
+            ],
+            "possible_owned_jobs": [
+              {
+                "request_id": "812020001/sustained/150",
+                "task": "detection",
+                "backend": "CPU"
+              }
+            ]
+          },
+          {
+            "start_ns": 99431179099.5,
+            "end_ns": 99681179098.5,
+            "duration_ns_exact": {
+              "numerator": 249999999,
+              "denominator": 1
+            },
+            "head_ids": {
+              "classification": "812020001/sustained/161",
+              "detection": "812020001/sustained/152"
+            },
+            "physically_feasible_jobs": [
+              {
+                "request_id": "812020001/sustained/161",
+                "task": "classification",
+                "backend": "CPU"
+              },
+              {
+                "request_id": "812020001/sustained/161",
+                "task": "classification",
+                "backend": "GPU"
+              },
+              {
+                "request_id": "812020001/sustained/152",
+                "task": "detection",
+                "backend": "CPU"
+              }
+            ],
+            "possible_owned_jobs": []
+          }
+        ]
+      },
+      "credit_witnesses": [
+        {
+          "reset_dispatch_ns": 98933262825,
+          "reset_request_ids": [
+            "812020001/sustained/160"
+          ],
+          "next_dispatch_ns": 99681179099,
+          "next_request_ids": [
+            "812020001/sustained/161"
+          ],
+          "same_rounded_dispatch_group_count": 1,
+          "safe_interval_start_ns": 98933262825.5,
+          "safe_interval_end_ns": 99681179098.5,
+          "intermediate_actual_dispatch_count": 0,
+          "required_discretionary_ns_exact": {
+            "numerator": 673848499,
+            "denominator": 2
+          },
+          "required_discretionary_s_lower_bound": 0.3369242495,
+          "credit_upper_bound_s": 0.25,
+          "certificate_margin_ns_exact": {
+            "numerator": 173848499,
+            "denominator": 2
+          },
+          "certificate_margin_s": 0.0869242495,
+          "first_certified_feasible_ns": 99344254849,
+          "credit_exhaustion_boundary_ns": 99594254849,
+          "parts": [
+            {
+              "start_ns": 99344254849,
+              "end_ns": 99431179098.5,
+              "duration_ns_exact": {
+                "numerator": 173848499,
+                "denominator": 2
+              },
+              "head_ids": {
+                "classification": "812020001/sustained/161",
+                "detection": "812020001/sustained/152"
+              },
+              "physically_feasible_jobs": [
+                {
+                  "request_id": "812020001/sustained/161",
+                  "task": "classification",
+                  "backend": "GPU"
+                }
+              ],
+              "possible_owned_jobs": [
+                {
+                  "request_id": "812020001/sustained/150",
+                  "task": "detection",
+                  "backend": "CPU"
+                }
+              ]
+            },
+            {
+              "start_ns": 99431179098.5,
+              "end_ns": 99431179099.5,
+              "duration_ns_exact": {
+                "numerator": 1,
+                "denominator": 1
+              },
+              "head_ids": {
+                "classification": "812020001/sustained/161",
+                "detection": "812020001/sustained/152"
+              },
+              "physically_feasible_jobs": [
+                {
+                  "request_id": "812020001/sustained/161",
+                  "task": "classification",
+                  "backend": "GPU"
+                }
+              ],
+              "possible_owned_jobs": [
+                {
+                  "request_id": "812020001/sustained/150",
+                  "task": "detection",
+                  "backend": "CPU"
+                }
+              ]
+            },
+            {
+              "start_ns": 99431179099.5,
+              "end_ns": 99681179098.5,
+              "duration_ns_exact": {
+                "numerator": 249999999,
+                "denominator": 1
+              },
+              "head_ids": {
+                "classification": "812020001/sustained/161",
+                "detection": "812020001/sustained/152"
+              },
+              "physically_feasible_jobs": [
+                {
+                  "request_id": "812020001/sustained/161",
+                  "task": "classification",
+                  "backend": "CPU"
+                },
+                {
+                  "request_id": "812020001/sustained/161",
+                  "task": "classification",
+                  "backend": "GPU"
+                },
+                {
+                  "request_id": "812020001/sustained/152",
+                  "task": "detection",
+                  "backend": "CPU"
+                }
+              ],
+              "possible_owned_jobs": []
+            }
+          ]
+        }
+      ],
+      "unknown_if_not_excluded": [
+        "timer reachability",
+        "phase-only hold versus old redecision",
+        "same-time bundle commitment",
+        "full actual-credit candidate path"
+      ],
+      "proof_scope": "necessary-condition exclusion of this exact recorded dispatch schedule; not policy performance or exhaustive path search",
+      "context": "mean",
+      "source_artifact": "items/source_intent_mean.json.gz",
+      "source_sha256": "2b2aaf30a0f35dfd02721f9fffdc4b3d0ffd57398dbfdd33c95148d8133013be",
+      "pinned_completion_hash_verified": true,
+      "source_row_preserved": {
+        "planned": 192,
+        "completed": 192,
+        "incomplete": 0,
+        "urgent_failure": 0,
+        "normal_failure": 0,
+        "urgent_p95_ms": 294.054635,
+        "normal_mean_ms": 4116.730581239583,
+        "energy_j": 182.8949735090306,
+        "peak_ap_c": 32.36920719850545,
+        "native_seconds": 33.435404999996535
+      },
+      "prior_success_artifact": "items/prior_success_mean.json.gz",
+      "prior_success_sha256": "f94142da8c07e70192a883f8d3625528f2addc03e4d1782e050435378a6a9a25",
+      "original_ledger_transitions_metrics_decisions_exact": true,
+      "source_decision_count": 1176,
+      "source_transition_count": 960
+    },
+    {
+      "exact_schedule_outcome": "excluded",
+      "exclusion_reasons": [
+        "discretionary_credit_lower_bound"
+      ],
+      "planned_and_completed_requests": 192,
+      "same_time_dispatch_groups": 189,
+      "fifo_violation_witness": null,
+      "credit_exclusion_spells": 1,
+      "maximum_required_discretionary_s_lower_bound": 0.3863225635,
+      "total_required_discretionary_s_lower_bound": 11.1284677345,
+      "worst_spell": {
+        "reset_dispatch_ns": 94114127344,
+        "reset_request_ids": [
+          "812020001/sustained/148"
+        ],
+        "next_dispatch_ns": 94881762072,
+        "next_request_ids": [
+          "812020001/sustained/149"
+        ],
+        "same_rounded_dispatch_group_count": 1,
+        "safe_interval_start_ns": 94114127344.5,
+        "safe_interval_end_ns": 94881762071.5,
+        "intermediate_actual_dispatch_count": 0,
+        "required_discretionary_ns_exact": {
+          "numerator": 772645127,
+          "denominator": 2
+        },
+        "required_discretionary_s_lower_bound": 0.3863225635,
+        "credit_upper_bound_s": 0.25,
+        "certificate_margin_ns_exact": {
+          "numerator": 272645127,
+          "denominator": 2
+        },
+        "certificate_margin_s": 0.1363225635,
+        "first_certified_feasible_ns": 94495439508,
+        "credit_exhaustion_boundary_ns": 94745439508,
+        "parts": [
+          {
+            "start_ns": 94495439508,
+            "end_ns": 94631762071.5,
+            "duration_ns_exact": {
+              "numerator": 272645127,
+              "denominator": 2
+            },
+            "head_ids": {
+              "classification": "812020001/sustained/149",
+              "detection": "812020001/sustained/139"
+            },
+            "physically_feasible_jobs": [
+              {
+                "request_id": "812020001/sustained/149",
+                "task": "classification",
+                "backend": "GPU"
+              }
+            ],
+            "possible_owned_jobs": [
+              {
+                "request_id": "812020001/sustained/138",
+                "task": "detection",
+                "backend": "CPU"
+              }
+            ]
+          },
+          {
+            "start_ns": 94631762071.5,
+            "end_ns": 94631762072.5,
+            "duration_ns_exact": {
+              "numerator": 1,
+              "denominator": 1
+            },
+            "head_ids": {
+              "classification": "812020001/sustained/149",
+              "detection": "812020001/sustained/139"
+            },
+            "physically_feasible_jobs": [
+              {
+                "request_id": "812020001/sustained/149",
+                "task": "classification",
+                "backend": "GPU"
+              }
+            ],
+            "possible_owned_jobs": [
+              {
+                "request_id": "812020001/sustained/138",
+                "task": "detection",
+                "backend": "CPU"
+              }
+            ]
+          },
+          {
+            "start_ns": 94631762072.5,
+            "end_ns": 94881762071.5,
+            "duration_ns_exact": {
+              "numerator": 249999999,
+              "denominator": 1
+            },
+            "head_ids": {
+              "classification": "812020001/sustained/149",
+              "detection": "812020001/sustained/139"
+            },
+            "physically_feasible_jobs": [
+              {
+                "request_id": "812020001/sustained/149",
+                "task": "classification",
+                "backend": "CPU"
+              },
+              {
+                "request_id": "812020001/sustained/149",
+                "task": "classification",
+                "backend": "GPU"
+              },
+              {
+                "request_id": "812020001/sustained/139",
+                "task": "detection",
+                "backend": "CPU"
+              }
+            ],
+            "possible_owned_jobs": []
+          }
+        ]
+      },
+      "credit_witnesses": [
+        {
+          "reset_dispatch_ns": 94114127344,
+          "reset_request_ids": [
+            "812020001/sustained/148"
+          ],
+          "next_dispatch_ns": 94881762072,
+          "next_request_ids": [
+            "812020001/sustained/149"
+          ],
+          "same_rounded_dispatch_group_count": 1,
+          "safe_interval_start_ns": 94114127344.5,
+          "safe_interval_end_ns": 94881762071.5,
+          "intermediate_actual_dispatch_count": 0,
+          "required_discretionary_ns_exact": {
+            "numerator": 772645127,
+            "denominator": 2
+          },
+          "required_discretionary_s_lower_bound": 0.3863225635,
+          "credit_upper_bound_s": 0.25,
+          "certificate_margin_ns_exact": {
+            "numerator": 272645127,
+            "denominator": 2
+          },
+          "certificate_margin_s": 0.1363225635,
+          "first_certified_feasible_ns": 94495439508,
+          "credit_exhaustion_boundary_ns": 94745439508,
+          "parts": [
+            {
+              "start_ns": 94495439508,
+              "end_ns": 94631762071.5,
+              "duration_ns_exact": {
+                "numerator": 272645127,
+                "denominator": 2
+              },
+              "head_ids": {
+                "classification": "812020001/sustained/149",
+                "detection": "812020001/sustained/139"
+              },
+              "physically_feasible_jobs": [
+                {
+                  "request_id": "812020001/sustained/149",
+                  "task": "classification",
+                  "backend": "GPU"
+                }
+              ],
+              "possible_owned_jobs": [
+                {
+                  "request_id": "812020001/sustained/138",
+                  "task": "detection",
+                  "backend": "CPU"
+                }
+              ]
+            },
+            {
+              "start_ns": 94631762071.5,
+              "end_ns": 94631762072.5,
+              "duration_ns_exact": {
+                "numerator": 1,
+                "denominator": 1
+              },
+              "head_ids": {
+                "classification": "812020001/sustained/149",
+                "detection": "812020001/sustained/139"
+              },
+              "physically_feasible_jobs": [
+                {
+                  "request_id": "812020001/sustained/149",
+                  "task": "classification",
+                  "backend": "GPU"
+                }
+              ],
+              "possible_owned_jobs": [
+                {
+                  "request_id": "812020001/sustained/138",
+                  "task": "detection",
+                  "backend": "CPU"
+                }
+              ]
+            },
+            {
+              "start_ns": 94631762072.5,
+              "end_ns": 94881762071.5,
+              "duration_ns_exact": {
+                "numerator": 249999999,
+                "denominator": 1
+              },
+              "head_ids": {
+                "classification": "812020001/sustained/149",
+                "detection": "812020001/sustained/139"
+              },
+              "physically_feasible_jobs": [
+                {
+                  "request_id": "812020001/sustained/149",
+                  "task": "classification",
+                  "backend": "CPU"
+                },
+                {
+                  "request_id": "812020001/sustained/149",
+                  "task": "classification",
+                  "backend": "GPU"
+                },
+                {
+                  "request_id": "812020001/sustained/139",
+                  "task": "detection",
+                  "backend": "CPU"
+                }
+              ],
+              "possible_owned_jobs": []
+            }
+          ]
+        }
+      ],
+      "unknown_if_not_excluded": [
+        "timer reachability",
+        "phase-only hold versus old redecision",
+        "same-time bundle commitment",
+        "full actual-credit candidate path"
+      ],
+      "proof_scope": "necessary-condition exclusion of this exact recorded dispatch schedule; not policy performance or exhaustive path search",
+      "context": "short_context",
+      "source_artifact": "items/source_intent_short_context.json.gz",
+      "source_sha256": "23c715e08e1694e08b5eb9a1b78875d812984784c2b7da7c18500ef7a8fae888",
+      "pinned_completion_hash_verified": true,
+      "source_row_preserved": {
+        "planned": 192,
+        "completed": 192,
+        "incomplete": 0,
+        "urgent_failure": 0,
+        "normal_failure": 0,
+        "urgent_p95_ms": 286.608481,
+        "normal_mean_ms": 4146.806051333333,
+        "energy_j": 182.84572112971387,
+        "peak_ap_c": 32.30114603412898,
+        "native_seconds": 33.91456589999143
+      },
+      "prior_success_artifact": "items/prior_success_short_context.json.gz",
+      "prior_success_sha256": "6e40d8482a55f4e7138e48d9b75a994eab134b18e58f373f50259d2a71ec2e2b",
+      "original_ledger_transitions_metrics_decisions_exact": true,
+      "source_decision_count": 1173,
+      "source_transition_count": 960
+    },
+    {
+      "exact_schedule_outcome": "excluded",
+      "exclusion_reasons": [
+        "discretionary_credit_lower_bound"
+      ],
+      "planned_and_completed_requests": 192,
+      "same_time_dispatch_groups": 190,
+      "fifo_violation_witness": null,
+      "credit_exclusion_spells": 3,
+      "maximum_required_discretionary_s_lower_bound": 0.2920395625,
+      "total_required_discretionary_s_lower_bound": 11.302460127,
+      "worst_spell": {
+        "reset_dispatch_ns": 98933262825,
+        "reset_request_ids": [
+          "812020001/sustained/160"
+        ],
+        "next_dispatch_ns": 99636294412,
+        "next_request_ids": [
+          "812020001/sustained/161"
+        ],
+        "same_rounded_dispatch_group_count": 1,
+        "safe_interval_start_ns": 98933262825.5,
+        "safe_interval_end_ns": 99636294411.5,
+        "intermediate_actual_dispatch_count": 0,
+        "required_discretionary_ns_exact": {
+          "numerator": 584079125,
+          "denominator": 2
+        },
+        "required_discretionary_s_lower_bound": 0.2920395625,
+        "credit_upper_bound_s": 0.25,
+        "certificate_margin_ns_exact": {
+          "numerator": 84079125,
+          "denominator": 2
+        },
+        "certificate_margin_s": 0.0420395625,
+        "first_certified_feasible_ns": 99344254849,
+        "credit_exhaustion_boundary_ns": 99594254849,
+        "parts": [
+          {
+            "start_ns": 99344254849,
+            "end_ns": 99386294411.5,
+            "duration_ns_exact": {
+              "numerator": 84079125,
+              "denominator": 2
+            },
+            "head_ids": {
+              "classification": "812020001/sustained/161",
+              "detection": "812020001/sustained/152"
+            },
+            "physically_feasible_jobs": [
+              {
+                "request_id": "812020001/sustained/161",
+                "task": "classification",
+                "backend": "GPU"
+              }
+            ],
+            "possible_owned_jobs": [
+              {
+                "request_id": "812020001/sustained/150",
+                "task": "detection",
+                "backend": "CPU"
+              }
+            ]
+          },
+          {
+            "start_ns": 99386294411.5,
+            "end_ns": 99386294412.5,
+            "duration_ns_exact": {
+              "numerator": 1,
+              "denominator": 1
+            },
+            "head_ids": {
+              "classification": "812020001/sustained/161",
+              "detection": "812020001/sustained/152"
+            },
+            "physically_feasible_jobs": [
+              {
+                "request_id": "812020001/sustained/161",
+                "task": "classification",
+                "backend": "GPU"
+              }
+            ],
+            "possible_owned_jobs": [
+              {
+                "request_id": "812020001/sustained/150",
+                "task": "detection",
+                "backend": "CPU"
+              }
+            ]
+          },
+          {
+            "start_ns": 99386294412.5,
+            "end_ns": 99636294411.5,
+            "duration_ns_exact": {
+              "numerator": 249999999,
+              "denominator": 1
+            },
+            "head_ids": {
+              "classification": "812020001/sustained/161",
+              "detection": "812020001/sustained/152"
+            },
+            "physically_feasible_jobs": [
+              {
+                "request_id": "812020001/sustained/161",
+                "task": "classification",
+                "backend": "CPU"
+              },
+              {
+                "request_id": "812020001/sustained/161",
+                "task": "classification",
+                "backend": "GPU"
+              },
+              {
+                "request_id": "812020001/sustained/152",
+                "task": "detection",
+                "backend": "CPU"
+              }
+            ],
+            "possible_owned_jobs": []
+          }
+        ]
+      },
+      "credit_witnesses": [
+        {
+          "reset_dispatch_ns": 89330219385,
+          "reset_request_ids": [
+            "812020001/sustained/136"
+          ],
+          "next_dispatch_ns": 89994308211,
+          "next_request_ids": [
+            "812020001/sustained/137"
+          ],
+          "same_rounded_dispatch_group_count": 1,
+          "safe_interval_start_ns": 89330219385.5,
+          "safe_interval_end_ns": 89994308210.5,
+          "intermediate_actual_dispatch_count": 0,
+          "required_discretionary_ns_exact": {
+            "numerator": 504092619,
+            "denominator": 2
+          },
+          "required_discretionary_s_lower_bound": 0.2520463095,
+          "credit_upper_bound_s": 0.25,
+          "certificate_margin_ns_exact": {
+            "numerator": 4092619,
+            "denominator": 2
+          },
+          "certificate_margin_s": 0.0020463095,
+          "first_certified_feasible_ns": 89742261901,
+          "credit_exhaustion_boundary_ns": 89992261901,
+          "parts": [
+            {
+              "start_ns": 89742261901,
+              "end_ns": 89744308210.5,
+              "duration_ns_exact": {
+                "numerator": 4092619,
+                "denominator": 2
+              },
+              "head_ids": {
+                "classification": "812020001/sustained/137",
+                "detection": "812020001/sustained/126"
+              },
+              "physically_feasible_jobs": [
+                {
+                  "request_id": "812020001/sustained/137",
+                  "task": "classification",
+                  "backend": "GPU"
+                }
+              ],
+              "possible_owned_jobs": [
+                {
+                  "request_id": "812020001/sustained/124",
+                  "task": "detection",
+                  "backend": "CPU"
+                }
+              ]
+            },
+            {
+              "start_ns": 89744308210.5,
+              "end_ns": 89744308211.5,
+              "duration_ns_exact": {
+                "numerator": 1,
+                "denominator": 1
+              },
+              "head_ids": {
+                "classification": "812020001/sustained/137",
+                "detection": "812020001/sustained/126"
+              },
+              "physically_feasible_jobs": [
+                {
+                  "request_id": "812020001/sustained/137",
+                  "task": "classification",
+                  "backend": "GPU"
+                }
+              ],
+              "possible_owned_jobs": [
+                {
+                  "request_id": "812020001/sustained/124",
+                  "task": "detection",
+                  "backend": "CPU"
+                }
+              ]
+            },
+            {
+              "start_ns": 89744308211.5,
+              "end_ns": 89994308210.5,
+              "duration_ns_exact": {
+                "numerator": 249999999,
+                "denominator": 1
+              },
+              "head_ids": {
+                "classification": "812020001/sustained/137",
+                "detection": "812020001/sustained/126"
+              },
+              "physically_feasible_jobs": [
+                {
+                  "request_id": "812020001/sustained/137",
+                  "task": "classification",
+                  "backend": "CPU"
+                },
+                {
+                  "request_id": "812020001/sustained/137",
+                  "task": "classification",
+                  "backend": "GPU"
+                },
+                {
+                  "request_id": "812020001/sustained/126",
+                  "task": "detection",
+                  "backend": "CPU"
+                }
+              ],
+              "possible_owned_jobs": []
+            }
+          ]
+        },
+        {
+          "reset_dispatch_ns": 98933262825,
+          "reset_request_ids": [
+            "812020001/sustained/160"
+          ],
+          "next_dispatch_ns": 99636294412,
+          "next_request_ids": [
+            "812020001/sustained/161"
+          ],
+          "same_rounded_dispatch_group_count": 1,
+          "safe_interval_start_ns": 98933262825.5,
+          "safe_interval_end_ns": 99636294411.5,
+          "intermediate_actual_dispatch_count": 0,
+          "required_discretionary_ns_exact": {
+            "numerator": 584079125,
+            "denominator": 2
+          },
+          "required_discretionary_s_lower_bound": 0.2920395625,
+          "credit_upper_bound_s": 0.25,
+          "certificate_margin_ns_exact": {
+            "numerator": 84079125,
+            "denominator": 2
+          },
+          "certificate_margin_s": 0.0420395625,
+          "first_certified_feasible_ns": 99344254849,
+          "credit_exhaustion_boundary_ns": 99594254849,
+          "parts": [
+            {
+              "start_ns": 99344254849,
+              "end_ns": 99386294411.5,
+              "duration_ns_exact": {
+                "numerator": 84079125,
+                "denominator": 2
+              },
+              "head_ids": {
+                "classification": "812020001/sustained/161",
+                "detection": "812020001/sustained/152"
+              },
+              "physically_feasible_jobs": [
+                {
+                  "request_id": "812020001/sustained/161",
+                  "task": "classification",
+                  "backend": "GPU"
+                }
+              ],
+              "possible_owned_jobs": [
+                {
+                  "request_id": "812020001/sustained/150",
+                  "task": "detection",
+                  "backend": "CPU"
+                }
+              ]
+            },
+            {
+              "start_ns": 99386294411.5,
+              "end_ns": 99386294412.5,
+              "duration_ns_exact": {
+                "numerator": 1,
+                "denominator": 1
+              },
+              "head_ids": {
+                "classification": "812020001/sustained/161",
+                "detection": "812020001/sustained/152"
+              },
+              "physically_feasible_jobs": [
+                {
+                  "request_id": "812020001/sustained/161",
+                  "task": "classification",
+                  "backend": "GPU"
+                }
+              ],
+              "possible_owned_jobs": [
+                {
+                  "request_id": "812020001/sustained/150",
+                  "task": "detection",
+                  "backend": "CPU"
+                }
+              ]
+            },
+            {
+              "start_ns": 99386294412.5,
+              "end_ns": 99636294411.5,
+              "duration_ns_exact": {
+                "numerator": 249999999,
+                "denominator": 1
+              },
+              "head_ids": {
+                "classification": "812020001/sustained/161",
+                "detection": "812020001/sustained/152"
+              },
+              "physically_feasible_jobs": [
+                {
+                  "request_id": "812020001/sustained/161",
+                  "task": "classification",
+                  "backend": "CPU"
+                },
+                {
+                  "request_id": "812020001/sustained/161",
+                  "task": "classification",
+                  "backend": "GPU"
+                },
+                {
+                  "request_id": "812020001/sustained/152",
+                  "task": "detection",
+                  "backend": "CPU"
+                }
+              ],
+              "possible_owned_jobs": []
+            }
+          ]
+        },
+        {
+          "reset_dispatch_ns": 108622048656,
+          "reset_request_ids": [
+            "812020001/sustained/184"
+          ],
+          "next_dispatch_ns": 109184601502,
+          "next_request_ids": [
+            "812020001/sustained/176"
+          ],
+          "same_rounded_dispatch_group_count": 1,
+          "safe_interval_start_ns": 108622048656.5,
+          "safe_interval_end_ns": 109184601501.5,
+          "intermediate_actual_dispatch_count": 0,
+          "required_discretionary_ns_exact": {
+            "numerator": 253167210,
+            "denominator": 1
+          },
+          "required_discretionary_s_lower_bound": 0.25316721,
+          "credit_upper_bound_s": 0.25,
+          "certificate_margin_ns_exact": {
+            "numerator": 3167210,
+            "denominator": 1
+          },
+          "certificate_margin_s": 0.00316721,
+          "first_certified_feasible_ns": 108931434291.5,
+          "credit_exhaustion_boundary_ns": 109181434291.5,
+          "parts": [
+            {
+              "start_ns": 108931434291.5,
+              "end_ns": 108934601501.5,
+              "duration_ns_exact": {
+                "numerator": 3167210,
+                "denominator": 1
+              },
+              "head_ids": {
+                "detection": "812020001/sustained/176"
+              },
+              "physically_feasible_jobs": [
+                {
+                  "request_id": "812020001/sustained/176",
+                  "task": "detection",
+                  "backend": "CPU"
+                }
+              ],
+              "possible_owned_jobs": [
+                {
+                  "request_id": "812020001/sustained/184",
+                  "task": "classification",
+                  "backend": "GPU"
+                }
+              ]
+            },
+            {
+              "start_ns": 108934601501.5,
+              "end_ns": 108934601502.5,
+              "duration_ns_exact": {
+                "numerator": 1,
+                "denominator": 1
+              },
+              "head_ids": {
+                "detection": "812020001/sustained/176"
+              },
+              "physically_feasible_jobs": [
+                {
+                  "request_id": "812020001/sustained/176",
+                  "task": "detection",
+                  "backend": "CPU"
+                }
+              ],
+              "possible_owned_jobs": [
+                {
+                  "request_id": "812020001/sustained/184",
+                  "task": "classification",
+                  "backend": "GPU"
+                }
+              ]
+            },
+            {
+              "start_ns": 108934601502.5,
+              "end_ns": 109011113290,
+              "duration_ns_exact": {
+                "numerator": 153023575,
+                "denominator": 2
+              },
+              "head_ids": {
+                "detection": "812020001/sustained/176"
+              },
+              "physically_feasible_jobs": [
+                {
+                  "request_id": "812020001/sustained/176",
+                  "task": "detection",
+                  "backend": "CPU"
+                }
+              ],
+              "possible_owned_jobs": []
+            },
+            {
+              "start_ns": 109011113290,
+              "end_ns": 109184601501.5,
+              "duration_ns_exact": {
+                "numerator": 346976423,
+                "denominator": 2
+              },
+              "head_ids": {
+                "detection": "812020001/sustained/176"
+              },
+              "physically_feasible_jobs": [
+                {
+                  "request_id": "812020001/sustained/176",
+                  "task": "detection",
+                  "backend": "CPU"
+                }
+              ],
+              "possible_owned_jobs": []
+            }
+          ]
+        }
+      ],
+      "unknown_if_not_excluded": [
+        "timer reachability",
+        "phase-only hold versus old redecision",
+        "same-time bundle commitment",
+        "full actual-credit candidate path"
+      ],
+      "proof_scope": "necessary-condition exclusion of this exact recorded dispatch schedule; not policy performance or exhaustive path search",
+      "context": "long_context",
+      "source_artifact": "items/source_intent_long_context.json.gz",
+      "source_sha256": "9acf20321e92c09daf0e36845c3ee117abf4d1685dc57b037f663354f66b73c1",
+      "pinned_completion_hash_verified": true,
+      "source_row_preserved": {
+        "planned": 192,
+        "completed": 192,
+        "incomplete": 0,
+        "urgent_failure": 0,
+        "normal_failure": 0,
+        "urgent_p95_ms": 301.500789,
+        "normal_mean_ms": 4176.169263875,
+        "energy_j": 182.94943023486346,
+        "peak_ap_c": 32.384961065994744,
+        "native_seconds": 32.79911950000678
+      },
+      "prior_success_artifact": "items/prior_success_long_context.json.gz",
+      "prior_success_sha256": "3c71451f8c1a95127be2aa05373fab8197eb03080a42ced67c8048296758f784",
+      "original_ledger_transitions_metrics_decisions_exact": true,
+      "source_decision_count": 1268,
+      "source_transition_count": 960
+    }
+  ],
+  "all_three_exact_schedules_excluded": true,
+  "consumption": {
+    "native_environment_starts": 0,
+    "learning_starts": 0,
+    "device_commands": 0
+  }
+}

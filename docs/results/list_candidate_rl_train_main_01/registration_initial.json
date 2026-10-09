@@ -1,0 +1,916 @@
+{
+  "task": "LIST-CANDIDATE-RL-TRAIN-MAIN-05",
+  "head": "29af09df041ae413aa547aa1df22d755b9b39a3f",
+  "registered_utc": "2026-10-09T19:43:17.789422+00:00",
+  "active_seconds": 7200,
+  "save_reserve_seconds": 300,
+  "previous_environment_starts": 6549,
+  "previous_learning_starts": 641,
+  "implementation_gate_already_consumed": 32,
+  "design_environment_cap": 1536,
+  "design_learning_cap": 416,
+  "global_environment_cap": 20000,
+  "global_learning_cap": 6144,
+  "stage_A_design_environment_cap": 536,
+  "stage_A_learning_cap": 224,
+  "learning_seeds": [
+    11,
+    23,
+    37
+  ],
+  "pilot_episodes_per_seed": 64,
+  "main_additional_episodes_per_seed": 64,
+  "resume_learning_fixture_expected": 20,
+  "historical_no_arrival_training_reallocated_to_main": 192,
+  "hyperparameters": {
+    "episodes_per_update": 8,
+    "epochs": 4,
+    "minibatch_frames": 256,
+    "learning_rate": 0.0003,
+    "adam_eps": 1e-05,
+    "clip": 0.2,
+    "value_coefficient": 0.5,
+    "entropy_coefficient": 0.01,
+    "gradient_clip": 0.5,
+    "target_kl": 0.03,
+    "lambda_eta": 0.01,
+    "lambda_cap": 100.0
+  },
+  "objective": "v4 AP primary; signed energy, positive-part service costs; gamma1",
+  "schema": "head2+C_next",
+  "train": [
+    {
+      "seed": 818010001,
+      "family": "low",
+      "context": "mean"
+    },
+    {
+      "seed": 818010001,
+      "family": "queue",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010001,
+      "family": "burst",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010001,
+      "family": "sustained",
+      "context": "mean"
+    },
+    {
+      "seed": 818010002,
+      "family": "low",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010002,
+      "family": "queue",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010002,
+      "family": "burst",
+      "context": "mean"
+    },
+    {
+      "seed": 818010002,
+      "family": "sustained",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010003,
+      "family": "low",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010003,
+      "family": "queue",
+      "context": "mean"
+    },
+    {
+      "seed": 818010003,
+      "family": "burst",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010003,
+      "family": "sustained",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010004,
+      "family": "low",
+      "context": "mean"
+    },
+    {
+      "seed": 818010004,
+      "family": "queue",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010004,
+      "family": "burst",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010004,
+      "family": "sustained",
+      "context": "mean"
+    },
+    {
+      "seed": 818010005,
+      "family": "low",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010005,
+      "family": "queue",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010005,
+      "family": "burst",
+      "context": "mean"
+    },
+    {
+      "seed": 818010005,
+      "family": "sustained",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010006,
+      "family": "low",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010006,
+      "family": "queue",
+      "context": "mean"
+    },
+    {
+      "seed": 818010006,
+      "family": "burst",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010006,
+      "family": "sustained",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010007,
+      "family": "low",
+      "context": "mean"
+    },
+    {
+      "seed": 818010007,
+      "family": "queue",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010007,
+      "family": "burst",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010007,
+      "family": "sustained",
+      "context": "mean"
+    },
+    {
+      "seed": 818010008,
+      "family": "low",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010008,
+      "family": "queue",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010008,
+      "family": "burst",
+      "context": "mean"
+    },
+    {
+      "seed": 818010008,
+      "family": "sustained",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010009,
+      "family": "low",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010009,
+      "family": "queue",
+      "context": "mean"
+    },
+    {
+      "seed": 818010009,
+      "family": "burst",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010009,
+      "family": "sustained",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010010,
+      "family": "low",
+      "context": "mean"
+    },
+    {
+      "seed": 818010010,
+      "family": "queue",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010010,
+      "family": "burst",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010010,
+      "family": "sustained",
+      "context": "mean"
+    },
+    {
+      "seed": 818010011,
+      "family": "low",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010011,
+      "family": "queue",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010011,
+      "family": "burst",
+      "context": "mean"
+    },
+    {
+      "seed": 818010011,
+      "family": "sustained",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010012,
+      "family": "low",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010012,
+      "family": "queue",
+      "context": "mean"
+    },
+    {
+      "seed": 818010012,
+      "family": "burst",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010012,
+      "family": "sustained",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010013,
+      "family": "low",
+      "context": "mean"
+    },
+    {
+      "seed": 818010013,
+      "family": "queue",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010013,
+      "family": "burst",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010013,
+      "family": "sustained",
+      "context": "mean"
+    },
+    {
+      "seed": 818010014,
+      "family": "low",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010014,
+      "family": "queue",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010014,
+      "family": "burst",
+      "context": "mean"
+    },
+    {
+      "seed": 818010014,
+      "family": "sustained",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010015,
+      "family": "low",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010015,
+      "family": "queue",
+      "context": "mean"
+    },
+    {
+      "seed": 818010015,
+      "family": "burst",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010015,
+      "family": "sustained",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010016,
+      "family": "low",
+      "context": "mean"
+    },
+    {
+      "seed": 818010016,
+      "family": "queue",
+      "context": "short_context"
+    },
+    {
+      "seed": 818010016,
+      "family": "burst",
+      "context": "long_context"
+    },
+    {
+      "seed": 818010016,
+      "family": "sustained",
+      "context": "mean"
+    }
+  ],
+  "development": [
+    {
+      "seed": 818020101,
+      "family": "low",
+      "context": "mean"
+    },
+    {
+      "seed": 818020101,
+      "family": "low",
+      "context": "short_context"
+    },
+    {
+      "seed": 818020101,
+      "family": "low",
+      "context": "long_context"
+    },
+    {
+      "seed": 818020101,
+      "family": "queue",
+      "context": "mean"
+    },
+    {
+      "seed": 818020101,
+      "family": "queue",
+      "context": "short_context"
+    },
+    {
+      "seed": 818020101,
+      "family": "queue",
+      "context": "long_context"
+    },
+    {
+      "seed": 818020101,
+      "family": "burst",
+      "context": "mean"
+    },
+    {
+      "seed": 818020101,
+      "family": "burst",
+      "context": "short_context"
+    },
+    {
+      "seed": 818020101,
+      "family": "burst",
+      "context": "long_context"
+    },
+    {
+      "seed": 818020101,
+      "family": "sustained",
+      "context": "mean"
+    },
+    {
+      "seed": 818020101,
+      "family": "sustained",
+      "context": "short_context"
+    },
+    {
+      "seed": 818020101,
+      "family": "sustained",
+      "context": "long_context"
+    },
+    {
+      "seed": 818020102,
+      "family": "low",
+      "context": "mean"
+    },
+    {
+      "seed": 818020102,
+      "family": "low",
+      "context": "short_context"
+    },
+    {
+      "seed": 818020102,
+      "family": "low",
+      "context": "long_context"
+    },
+    {
+      "seed": 818020102,
+      "family": "queue",
+      "context": "mean"
+    },
+    {
+      "seed": 818020102,
+      "family": "queue",
+      "context": "short_context"
+    },
+    {
+      "seed": 818020102,
+      "family": "queue",
+      "context": "long_context"
+    },
+    {
+      "seed": 818020102,
+      "family": "burst",
+      "context": "mean"
+    },
+    {
+      "seed": 818020102,
+      "family": "burst",
+      "context": "short_context"
+    },
+    {
+      "seed": 818020102,
+      "family": "burst",
+      "context": "long_context"
+    },
+    {
+      "seed": 818020102,
+      "family": "sustained",
+      "context": "mean"
+    },
+    {
+      "seed": 818020102,
+      "family": "sustained",
+      "context": "short_context"
+    },
+    {
+      "seed": 818020102,
+      "family": "sustained",
+      "context": "long_context"
+    }
+  ],
+  "confirmation": [
+    {
+      "seed": 818030101,
+      "family": "low",
+      "context": "mean"
+    },
+    {
+      "seed": 818030101,
+      "family": "low",
+      "context": "short_context"
+    },
+    {
+      "seed": 818030101,
+      "family": "low",
+      "context": "long_context"
+    },
+    {
+      "seed": 818030101,
+      "family": "queue",
+      "context": "mean"
+    },
+    {
+      "seed": 818030101,
+      "family": "queue",
+      "context": "short_context"
+    },
+    {
+      "seed": 818030101,
+      "family": "queue",
+      "context": "long_context"
+    },
+    {
+      "seed": 818030101,
+      "family": "burst",
+      "context": "mean"
+    },
+    {
+      "seed": 818030101,
+      "family": "burst",
+      "context": "short_context"
+    },
+    {
+      "seed": 818030101,
+      "family": "burst",
+      "context": "long_context"
+    },
+    {
+      "seed": 818030101,
+      "family": "sustained",
+      "context": "mean"
+    },
+    {
+      "seed": 818030101,
+      "family": "sustained",
+      "context": "short_context"
+    },
+    {
+      "seed": 818030101,
+      "family": "sustained",
+      "context": "long_context"
+    },
+    {
+      "seed": 818030102,
+      "family": "low",
+      "context": "mean"
+    },
+    {
+      "seed": 818030102,
+      "family": "low",
+      "context": "short_context"
+    },
+    {
+      "seed": 818030102,
+      "family": "low",
+      "context": "long_context"
+    },
+    {
+      "seed": 818030102,
+      "family": "queue",
+      "context": "mean"
+    },
+    {
+      "seed": 818030102,
+      "family": "queue",
+      "context": "short_context"
+    },
+    {
+      "seed": 818030102,
+      "family": "queue",
+      "context": "long_context"
+    },
+    {
+      "seed": 818030102,
+      "family": "burst",
+      "context": "mean"
+    },
+    {
+      "seed": 818030102,
+      "family": "burst",
+      "context": "short_context"
+    },
+    {
+      "seed": 818030102,
+      "family": "burst",
+      "context": "long_context"
+    },
+    {
+      "seed": 818030102,
+      "family": "sustained",
+      "context": "mean"
+    },
+    {
+      "seed": 818030102,
+      "family": "sustained",
+      "context": "short_context"
+    },
+    {
+      "seed": 818030102,
+      "family": "sustained",
+      "context": "long_context"
+    },
+    {
+      "seed": 818030103,
+      "family": "low",
+      "context": "mean"
+    },
+    {
+      "seed": 818030103,
+      "family": "low",
+      "context": "short_context"
+    },
+    {
+      "seed": 818030103,
+      "family": "low",
+      "context": "long_context"
+    },
+    {
+      "seed": 818030103,
+      "family": "queue",
+      "context": "mean"
+    },
+    {
+      "seed": 818030103,
+      "family": "queue",
+      "context": "short_context"
+    },
+    {
+      "seed": 818030103,
+      "family": "queue",
+      "context": "long_context"
+    },
+    {
+      "seed": 818030103,
+      "family": "burst",
+      "context": "mean"
+    },
+    {
+      "seed": 818030103,
+      "family": "burst",
+      "context": "short_context"
+    },
+    {
+      "seed": 818030103,
+      "family": "burst",
+      "context": "long_context"
+    },
+    {
+      "seed": 818030103,
+      "family": "sustained",
+      "context": "mean"
+    },
+    {
+      "seed": 818030103,
+      "family": "sustained",
+      "context": "short_context"
+    },
+    {
+      "seed": 818030103,
+      "family": "sustained",
+      "context": "long_context"
+    },
+    {
+      "seed": 818030104,
+      "family": "low",
+      "context": "mean"
+    },
+    {
+      "seed": 818030104,
+      "family": "low",
+      "context": "short_context"
+    },
+    {
+      "seed": 818030104,
+      "family": "low",
+      "context": "long_context"
+    },
+    {
+      "seed": 818030104,
+      "family": "queue",
+      "context": "mean"
+    },
+    {
+      "seed": 818030104,
+      "family": "queue",
+      "context": "short_context"
+    },
+    {
+      "seed": 818030104,
+      "family": "queue",
+      "context": "long_context"
+    },
+    {
+      "seed": 818030104,
+      "family": "burst",
+      "context": "mean"
+    },
+    {
+      "seed": 818030104,
+      "family": "burst",
+      "context": "short_context"
+    },
+    {
+      "seed": 818030104,
+      "family": "burst",
+      "context": "long_context"
+    },
+    {
+      "seed": 818030104,
+      "family": "sustained",
+      "context": "mean"
+    },
+    {
+      "seed": 818030104,
+      "family": "sustained",
+      "context": "short_context"
+    },
+    {
+      "seed": 818030104,
+      "family": "sustained",
+      "context": "long_context"
+    }
+  ],
+  "fixture": [
+    {
+      "seed": 818001001,
+      "family": "low",
+      "context": "mean"
+    },
+    {
+      "seed": 818001001,
+      "family": "queue",
+      "context": "short_context"
+    },
+    {
+      "seed": 818001001,
+      "family": "burst",
+      "context": "long_context"
+    },
+    {
+      "seed": 818001001,
+      "family": "sustained",
+      "context": "mean"
+    },
+    {
+      "seed": 818001002,
+      "family": "low",
+      "context": "short_context"
+    },
+    {
+      "seed": 818001002,
+      "family": "queue",
+      "context": "long_context"
+    },
+    {
+      "seed": 818001002,
+      "family": "burst",
+      "context": "mean"
+    },
+    {
+      "seed": 818001002,
+      "family": "sustained",
+      "context": "short_context"
+    }
+  ],
+  "success_gate_unchanged": true,
+  "main_after_development_failure_explicitly_authorized": true,
+  "changes_after_pilot": "expert discussion then validity repair only; no automatic reward/action/threshold tuning",
+  "reference": "new L0; Band/Triton evaluation only",
+  "NPU_added": false,
+  "device_commands": 0,
+  "frozen_model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+  "frozen_initial_sha256": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+  "source_sha256": {
+    "tools/d1_list_candidate_rl_representation.py": "4fbd1ec8afd5bc1158bb93a971665bc9fcecb70c0954003b9526d2fc4c3acb96",
+    "tools/d1_triton_rules.py": "b7ee715935fa2b8a466fc68a217f88948fa978d2bf0daece7cb47f9e11955e21",
+    "tools/d1_external_rules.py": "4e824c0ba7bf7c6efc86893a676d7346337f4a2b74d5f8f4726f112e400bc756",
+    "tools/d1_queue_ppo.py": "0aea534d37465884d070d192fdfe7f863b480d4db17b85082773c9acc42ec9f1",
+    "tools/d1_request_ppo.py": "c8282794b92c10e60b1d2a0bffed3eb8e05bf1aad5001493948a801e12e2c0a2",
+    "tools/d1_empirical_request_policy.py": "32407050fae7a0f6f7d58a19cd6f2f4eedea46ba9c8651e15363d0af496050a0",
+    "tools/d1_arrival_explore_batch.py": "f0994f603720c606c5dc58f24c334cd2e91d3a79cc9a525094e7bcbbab86411f",
+    "tools/d1_arrival_plan.py": "7d7efc3b858ae08482cab950a50d4a3028cd68b6eba11db02465fa68028f5e6d",
+    "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9",
+    "tools/d1_online_policy_model.py": "a4e28dc489f221b1f85e8754b23385c60ba134af20ac701a3660293cac63156a",
+    "tools/d1_sustained_protocol.py": "b5bc8df420396a52ce7cabc78371263a5a3d60025c8af89aa497c82465b10ce6",
+    "tools/d1_policy_resolution.py": "da15f352f559f8344d2b09f4416cdb3abad8188edcc9111d6392f74592e31812",
+    "tools/d1_separated_power_readout.py": "636ac010282b5b00b81e8ccfe298ef74465dc3f5ea1ebb5cde4048f87712dd94",
+    "tools/d1_separated_power_protocol.py": "d4b52993c160e4650939e5a9b79952bb313dd0f37484e3bef203ffbf018ab5c1",
+    "tools/d1_energy_identifiability.py": "766fa8380372ba8880b57498147dcb88c95067a17466e61b9022721217eaff40",
+    "tools/d1_pooled_energy_candidate.py": "15b5f1efe8e77ab049746e614a5bfa53b28ab7fe528752ce6ecbadab0becd5da",
+    "tools/d1_online_policy_readout.py": "6fbaae6c8732e3d3e0e08a960f7dfcb7114e71eb345a3ea4251bb97e73ef1098",
+    "tools/d1_arrival_energy_analysis.py": "0a7e7a7d6c8e0c10e436d82f4d37efbf64565c91601f69c414a036683d9ea848",
+    "tools/d1_energy_thermal.py": "0c41ffa19ae4853a7d98f132aa921fff2e5bae0b53c701f2d23ff5af08f57cd6",
+    "tools/d1_arrival_policy_screen.py": "9711a97d9a87134bf5dbb321df4adc247bc7c25bbfd00431139947e29aa18551",
+    "tools/d1_ap_model_completion.py": "47edbaf771ed9fbe8f6035c2fda5cb12019f6ddcf65501b9705491014514486c",
+    "tools/d1_arrival_recorded_replay_analysis.py": "16314a0e756a380f060d2d20627ce6a284c48442871b29ace9a5d9744ebb52ea",
+    "tools/d1_arrival_recorded_replay.py": "c222af75c62159805882fde2c94388e977ab0fe09bf8e47329ae68d296007907",
+    "tools/d1_arrival_energy_collection_device.py": "23241583eb1fbb23c9958a334dbb8712968b387a800339e81bbe207e82699a49",
+    "tools/d1_arrival_ap_confirmation.py": "41a8d4e36621b982bbd74451fa5ba00897ea2c87b3cc2b46178d128d2f2f6fe5",
+    "tools/d1_apk_identity.py": "e77093d540e374f3b10cee410800b8edb21ef03c400bcea1ed82a2f89146f9d8",
+    "tools/d1_arrival_timing_calibration.py": "fb475ec0316690cc8689b0ac8c663791e909d09a27d8b82543e069e7655e752a",
+    "tools/d1_arrival_timing_calibration_device.py": "aa54be58f928a9a0e12dc104b937418d73c7703b854551f2f5c98bd06283267b",
+    "tools/d1_arrival_failure_evidence.py": "513ddb66c47dec0cf5b804f1ebfafc9eac4c29d26d4876fcb3f296d7896a4be7",
+    "tools/d1_arrival_device.py": "d7bd6fff22a8b698df5bc2d3f0f6a34d113c10db534223f4875022cc2791194d",
+    "tools/d1_telemetry_v4.py": "0ffe71eefc6e8a1c034d2e318c1c48d2c6e2ee35ad76d28cd0e03038bedb2a58",
+    "tools/d1_sim_prepare.py": "3d7017c5a6f679567fb6a5fb38edeb09807aeb922b46c8ac00e9346daa8f9972",
+    "tools/d1_model_probe.py": "ae3ae5f73131db88c855772a6c64edad431c29f538d62e3b4cf28f3af0f95df5",
+    "tools/d1_task_profile.py": "ec01d79bffdd7d7108031695c05b5dc3b0632cc676bc4532a0fc1d8bef957167",
+    "tools/d1_arrival_timing_dev.py": "1e5914c6d95ccc8e28ea4e84af1145ee2e43c3435b1f16994f3dce7c1c5515bc",
+    "tools/d1_arrival_energy_collection.py": "4f481710dfb0adf7ee7a46cfa9c0a259baa18a8e5fcd1aba3b1e90813c32b9cc",
+    "tools/d1_energy_collection.py": "b3972ac096328dda38a26c736bdc2a215185ccd23ffb80a89fa35d83a4534e87",
+    "tools/d1_energy_collection_device.py": "087724c7875bb38f0833a11df278c34659fdcb1c67b8cf8a98e99672cf401b7b",
+    "tools/d1_energy_state_collection.py": "81294f0287bd46b676ff724fc7836094268d48df7c6efd36bb498b919bc9de23",
+    "tools/d1_energy_ap_short_transition.py": "5a1727c03dff4476d23a8fe00bbabc533634690526693dd6df53bfe5c6780535",
+    "tools/d1_energy_ap_autonomous_diag.py": "0b5011d75875e9c622f01dfdf87e2c50b6433a901acdc738171a4cb8027098f0",
+    "tools/d1_adb_observed_client.py": "399cfa90c3bfe376d0e669b7908bf87919b93fb82b3b8f84b03c6fadf5c2dfd1",
+    "tools/d1_recorded_process.py": "6049e3840017edecd3b5ccf2d614dc2421d38a254b2144227005d3a14e3cc519",
+    "tools/d1_energy_host_checkpoints.py": "cbfbfd509c20beaf6dc22a733fa3bf9b10e0c6ecc68eca708c8dc0535a25251f",
+    "tools/d1_energy_host_lifecycle.py": "01186c7648f1c4649b6d5978247a4d8619025dd22235bc28d9352f3d391f6aee",
+    "tools/d1_energy_ap_followup.py": "d7753869b0f4bb19abc9cdc45c45ed6c34f1dddeefbedb67292df7e2b4a474f4",
+    "tools/d1_energy_operational.py": "04ffadedbd923e0e0896c13bfb971a4e92d2ca68f9133fc8ea5446acba2a3137",
+    "tools/d1_resident_identification_plan.py": "d7b04c707d338f4e45c02f1a0ddfe0270b0a907aa039b04801c11b73c0d57597",
+    "tools/d1_resident_identification_analysis.py": "75c351a7f315412aa73c99aa6e0bf439f5b0adf7b6db33a045e05ccc689003cd",
+    "tools/d1_ap_tail_observation_plan.py": "1ea8d2f249d4f4a30c78263df918b1fbf53dcbc04a2d548495799bafc6241e9b",
+    "tools/d1_ap_tail_identification.py": "024826a99f8840eaf57be4a935708351ffa08e722606fd0a0012478890595265",
+    "tools/d1_resident_ap_structure.py": "5e038256882073ac55d3557d6b6f810a2c9cff82c0453444104c8c5b0d2542dc",
+    "tools/d1_joint_model_refinement.py": "6c11b9624aaf1697b9f8b626d263498b1e7e4f4f49418fbc75d2d2ef46ba5bbe",
+    "tools/d1_history_model_refinement.py": "578814ab71f8f77b338d2a189cadc8ebb188b06fe410772e2829890dd32ad35d",
+    "tools/d1_ap_preparation_memory.py": "20af3304f8386c7f6adc1df56f5c593e0fd35600ae60d2ce60a518d5c418c40d",
+    "tools/d1_ap_idle_response.py": "2812472aa31386158a616559955e1bd88d849a5a96e5f5ffc4c59ccc73a2efe6",
+    "tools/d1_model_refinement.py": "184c3d97f915d4821966f66ef1123df2fbd25dc9caf5c3dffdbcdfe0caf03338",
+    "tools/d1_ap_completion_model.py": "d40f26595b04a10641eb0501673e94962483165925ad5a84a74b7ab5a9c44ded",
+    "tools/d1_arrival_start_ap.py": "8f063c2838f795c0970a6f8e1b99f1bbf7e55afd04d9185bab9da913397b62ad",
+    "tools/d1_energy_temperature.py": "d4bd9da3ac285dc8982326079b7e094af5bed0d3169b56eef709a500789e77a8",
+    "tools/d1_energy_screen.py": "96a6cf6e22fd700b7bcf6ca17a1eb46b9494ca7166dd7e919c336a303ac9b5e8",
+    "tools/d1_logger_v4.py": "cd18bae8dda62820f56548f4debc3f90c1d2eab4208921d422bc5523a49e1ab3",
+    "tools/d1_collection_recovery.py": "f85a6c6b2f2d77116a9c8f9c53861c3accfa57db003308bd12383424f29c7497",
+    "tools/d1_arrival_collection_device.py": "4ad87e32dc2e753594ec0035ffb8ae80129652d5d7184f9aa1da6673c8d2fd36",
+    "tools/d1_collection_followup.py": "efaa322cb1bd881ad2c6159cf9dc0a3116dbea37f1fe5f25c5527aa811773ffc",
+    "tools/d1_arrival_collection.py": "0b7cfd517a57e3ad00b39889e9daf7c55b4297301e16060f6bb46f359d627b1d",
+    "tools/d1_cal03_connection.py": "d20939eb7feda23e1da67da21e5d6f5d69ecdc3a7f32fd8e38cbe98a95184b6d",
+    "tools/d1_energy_trace_account.py": "6092dcaa6d098d3aab556053f8fed9e39a3b46421227ac75f9ecbc96da8fd0c2",
+    "tools/d1_probe_compare.py": "ec1ef01b8b1852b05317bef3aafe1e7b8b2c96688dad563a53aef76213de7a3b",
+    "tools/d1_ap_idle_response_plan.py": "19c91b3b17613a02714feffab63b9c6d641abfca02e2c821a3c60ac8d7786561",
+    "tools/d1_ap_transfer_confirmation.py": "dbe89f720ea666276e940e10865a6f1aac4361306bb23a2e6244071fffb61938",
+    "tools/d1_resident_control_plan.py": "0fbcfea0691eaf4140b428bf70330cb979eabe1100f12f5cd2231fd550d8884c",
+    "tools/d1_ap_bundle_confirmation.py": "3594f14d0e9590a244de531ba1c3ed8dccb3ff23e6971f082dd7a2216fbef752",
+    "tools/d1_recorded_policy_comparison.py": "890920eaa37f41c7f5ffbda1578dbb896d2125dc3bb18f6558968a4352dafc85",
+    "tools/d1_ap_memory_confirmation.py": "82e4f4465cff11f1b0539e110494d188b7a24174af1970fa885e792c1ba24fac",
+    "tools/d1_ap_background_contrast.py": "f390047b12f652bf8412d6aadad45650ff3cc71ebee155a0e0772b0632f9808b",
+    "tools/d1_ap_completion_study.py": "d95067ca47f4b427a7b92b103f9a83a359e348fa76e7a6a9413b78de9102e6c9",
+    "tools/d1_ap_bundle_readout.py": "d528ee97cd45651ea27b1a0ddd7b02ce26c9db4602d405a010d63ea274c43ba8",
+    "tools/d1_ap_transfer_report.py": "a6dfac20d39c24ec8b03a6f2e94d2d707ae1971eff4d8bc9eee7893245a109ff",
+    "tools/d1_ap_background_contrast_readout.py": "da73c8db8735d8a05b5a8cd4ad36e46e0ad0ec91cc80c7f38dfb6e02b149c801",
+    "tools/d1_resident_control_readout.py": "a14b37c003c7a1a676400514cf71e602a86c750fdfdd04cb76efe39e7c34ac1a",
+    "tools/d1_online_policy_study.py": "af44b14452f382319056ce49ef411512a058be783da933c2e481bed2f47422ef",
+    "tools/d1_online_sampling_study.py": "2e29d9228e682d937ee49a4bbd8dd89cecf537e3c41dcc8ef823e747f5b051e7",
+    "tools/d1_separated_power_study.py": "e6583d2a2ab37df0f3643017297d451fe0183350ebe67ca6e416220fcb9f0128",
+    "tools/d1_separated_power_followup.py": "ddaa3e5ceb0ddabd7a70acba4e519af9be79698f3552abcddb3e9f5cfeab8c2c",
+    "tools/d1_preparation_observation.py": "2890e5c0f5d68eb1e950b7e6a2db2f4c8031d028c0574bbfd8210d1e65d15345",
+    "tools/d1_ap_memory_confirmation_readout.py": "fe9c003485279047c53605be6f9817b3dd3843eeb568ceb6b0952e69bfa0ac7e",
+    "tools/d1_background_activity_plan.py": "0a2ff836bc48bf32731145c2dd0b66e61253787ea35d5a3e516a516c4591b78e",
+    "tools/d1_background_activity_readout.py": "a6576f2e07d43d33ee4e1da2450f9c9fa6c6917b1158367650a8d48d2dff5c51",
+    "tools/d1_sustained_plan.py": "40c08bf90ea07dcbd73c76caf131113c5340a37d8c5073daa20d285880338334",
+    "tools/d1_history_recovery_campaign.py": "37a0a2b9ccdae2bb18139d013790fd07950656223483523babf756ccc3923683",
+    "tools/d1_history_control_plan.py": "04e1d393fae18cbb671ac5d51d53a53a8870ff640e72167e3062c54d406b0b12",
+    "tools/d1_history_control_analysis.py": "ce7029194ac91939388ea3cf5165fa50759493c428dab3d87048e405ec1efae9",
+    "tools/d1_postapproval_observation.py": "6af865241944020f5ac12e9711fe9d4d75afd3d9f5c1d8fd488d35d2086003d4",
+    "tools/d1_ap_workload_lag.py": "658a552a0ca27fa1ce80c998ba930891d59ca67458777b8278fb562c70d3aac2",
+    "tools/d1_arrival_thermal_feedback.py": "08bd334c883aec2deea85b0533db494e3614737ef68e2a577b33faf51678188a",
+    "tools/d1_compatible_timing_backfill.py": "815c1c091f3d4b6a0f6ec281be547d39ce08b991dbe3ee077480e4f91a47082f",
+    "tools/d1_detector_gpu_reference.py": "ca0a981abe192e558651db10c97f0192dd1cdd60ca413484b3d8fae464624b7a",
+    "tools/d1_detector_gpu_bridge.py": "8311425e19736ad739df8661aa7ea254ee4ef360a232340f5324a62368793140",
+    "tools/d1_method_followup.py": "31e9f2133eb91df8d8666e3d4c86732e3829b0b8c985520987cd236a4f833003",
+    "tools/d1_scheduler_capacity.py": "3b2db43a7b50816252a8817f8ca39ec905b0e4b9d223292f966d9d738c0c4ec3",
+    "tools/d1_scheduler_alternatives.py": "e458f65b20063e6110470cfd341460f8df5e0414be08fb7f55fe554198eb8a8a",
+    "tools/d1_request_rl.py": "ac74114e28c6f44e0c3b0c9a1e5a943ad156579c8a3cfe3e015db8a50e2958a9",
+    "tools/d1_scheduler_conditions.py": "cda103f356585715448ebb3167e2dc81fab95e598f1a6b9e3036f88ed5313b78",
+    "tools/d1_industrial_scheduling.py": "5537b8746d329a8ab25f69c105218ecb6eaba99d26bfb6bb8434950b2e5b6bab",
+    "tools/d1_detector_gpu_report.py": "f6fa22e81992bbc426c82f62e1bc08ca291eddb4f4cc7fdbacab7a36d35d5643",
+    "tools/d1_joint_queue_area.py": "b0202f9656b4f4b0f2323f123c00fbd4df5557748eb115db1126919c8a754710",
+    "tools/d1_pareto_beam.py": "b442e74b212c070587cd3b141ccd1aea34bd251f255ace8c706cbaafea8c94df",
+    "tools/d1_ie_candidates_v2.py": "67d55d3b8be36bd53e52d3889cf5033924597d3931cacd4a473e4340b9dbcac6",
+    "tools/d1_cpu_gpu_method_candidates.py": "17c3824e2ddf83d32baa12f4196d14abef35583bc5bdea2d3a9df2874b6b9d72",
+    "tools/d1_edd_ect_residual_ppo.py": "86ca79823eb9d5babb474c28321563fa44c877524663b6b60f4356171c81758a",
+    "tools/d1_edd_ect_residual_controller.py": "451fa485df03ca66857b5f69265dc324f7afe967bcee7013003aaae4bd15073e",
+    "tools/d1_ie_dispatch.py": "318db8c5f6401076f2861d45ad7c998994cf20f2a9b1743823180d50ede071ab",
+    "tools/d1_list_candidate_rl_engine.py": "2a74b51cf8f06f4ba8d37e69f7a35ab6c0af2c0c2ec7e619403a4d1f026d0da2",
+    "tools/d1_list_candidate_rl.py": "da03b39cddc5ed02b77b74c09ef61ba026bbc10888cbc8133a6f418f269081fa",
+    "tools/d1_list_candidate_rl_prepilot_check.py": "59bbc644bab6c66f6451ffce7e7a9dffd6a37441b6460137e977b35b859324ea",
+    "tools/d1_list_candidate_rl_training.py": "da780e79780393e82296643d56934733dbb3fdcbad15fedcae92656f49ea8ce0",
+    "tools/d1_list_candidate_rl_run.py": "487725b4d778f70fa993cb1f7a6e2e4a3304a682c5bd0119fd65b8b5609ebea5",
+    "docs/results/list_candidate_rl_design_01/design_contract.json": "88aed61e301345b41245ce32416b7e15f2cbb69237485a3085336ea08b8ca421",
+    "docs/results/list_candidate_rl_review_01/design_amendment_v4.json": "7e35ce7d83e8a68f8606352aaac62b4d7ad5f14e9b9361267c121e10a89ceb83",
+    "docs/results/list_candidate_rl_prepilot_02/prepilot_contract.json": "874f3571f7c3c34cf7ee39f4ba11a8689d63c8ada33c3818cf4e7987d72b5bd1"
+  },
+  "python_version": "3.11.9",
+  "torch_version": "2.11.0+cpu",
+  "numpy_version": "2.4.6",
+  "torch_threads": 1,
+  "torch_deterministic": true,
+  "expected_design_environment_total_with_conditional_ablation": 1372,
+  "expected_learning_total": 404,
+  "heldout_policy": "fixed terminal128 actors, never best seed or best validation checkpoint",
+  "initial_scope": "existing validated fixed preload; same CPU/GPU profiles/inputs/deadlines/curves; model conditional PC only",
+  "original_experiment_ready": false,
+  "input_sha256": {
+    "train": "990dc80d4aa6937dc9d5542f20752ad9430a26df88b57ab53836581704cd133d",
+    "development": "d45fb4a67a088e58a809950210775aca75178fa28d475ba7bef8a160137404d8",
+    "confirmation": "f924358319bc679da1a5d13b52d3bccf51836453c4d5bf2a3f6941bfdaddd5f4",
+    "fixture": "3c5a9d40269ab14244ec7cb0d663274b95c11547f3aa068228f537c4d24c0768"
+  }
+}

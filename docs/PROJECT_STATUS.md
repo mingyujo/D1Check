@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-10-10 LIST-CANDIDATE-RL-TRAIN-MAIN-05 — 본학습·확인 완료, RL 미채택
+
+- 최신 사용자 승인: 유효성 검증→3seed 작은 학습→미개선 시 기존3AI 회의→본학습까지 PC 자율 진행. [범위·예산 배분](LIST_CANDIDATE_RL_TRAIN_MAIN_20261010.md). 성과 판정은 유지하고 개발 미적격 뒤 본학습 진행만 별도 승인으로 기록한다.
+- 실행기·분모/clock guard와33순수검증, 실제 Adam/partial4/추가4episode-update exact 재개 PASS. 원3성공은 .292~.386초 credit 하한으로.25후보의 exact 재현 제외를 증명했다. 원자료/목적/행동/기한/지원과 별도 모형작업은 불변이다.
+- 3seed64→128/각16update·총본384＋재개20=404학습, 이번1196환경/실행실패0·78,936전량. 구현32포함설계1228/1536·학습404/416, 누적7,745/1,045. RuleNetwork 타입오류1은 native진입전 수정하고 원등록/driver/7archive보존·dependency외payload exact 확인. browser메타오류2는환경/학습0으로수정했다.
+- 파일럿 미적격 뒤 같은3AI 직접회의를 완료하고 동일 Adam/RNG에서64연장했다. 개발서비스악화216→147대응·cell통과0→54이나 전체M/G미달, 새확인48×9/432행도 적격0·RL미채택. 128에서는 모든seed긴급기한0이나P95악화/seed37일반실패798가남는다. 조건부noWait0·기기/ADB/NPU0·기본/strict/experiment_ready=false·owner없음.
+- [보고서·재현·한계](LIST_CANDIDATE_RL_TRAIN_MAIN_20261010.md) · [864행/6그림/화면·검증](results/list_candidate_rl_train_main_01/README.md). 다음 최대3: 완료결과공유, 기준선/L0유지, 후속설계는이번실패원인·남은예산을대조해별도등록. 시작29af09d/후속7272a51+미커밋·source/input/hash와 소비는verification.json. 사용자STATUS14행·다른worktree 보존이다.
+
 ## 2026-10-10 SESSION-CONTRAST-COST-PC-01 — 재토론·전력/AP20추정·국소 개선 판독 완료
 
 - 사용자 후속지시로 같은3AI가 가설→동일자료대조→AP추가→실제결과의4차를토론했다. 개발13/추정미사용22, 일반/중심화의E4/AP5를정식20fit(각10)하고원35전량을평가했다. [추가개선·악화·역할](SESSION_CONTRAST_COST_RESULTS_20261010.md) · [토론·곡선·CSV·새API](results/session_contrast_cost_01/README.md).
