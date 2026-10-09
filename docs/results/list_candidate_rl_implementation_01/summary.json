@@ -1,0 +1,1267 @@
+{
+  "task": "LIST-CANDIDATE-RL-IMPLEMENT-04",
+  "status": "implementation_and_bounded_validation_completed",
+  "consumption": {
+    "new_native_environment_starts": 32,
+    "cumulative_environment_starts": 6549,
+    "new_learning_starts": 0,
+    "cumulative_learning_starts": 641,
+    "optimizer_steps": 0,
+    "device_commands": 0,
+    "failed": 0,
+    "planned_requests": 1748,
+    "completed_requests": 1748
+  },
+  "registration": {
+    "task": "LIST-CANDIDATE-RL-IMPLEMENT-04",
+    "head": "87321f8685a2f9976f5a170d89ca9d5cf2770305",
+    "recorded_utc": "2026-10-09T17:34:02.552401+00:00",
+    "previous_environment_starts": 6517,
+    "previous_learning_starts": 641,
+    "max_native_starts": 32,
+    "new_learning_starts": 0,
+    "device_commands": 0,
+    "active_seconds": 7200,
+    "save_reserve_seconds": 300,
+    "source_hashes": {
+      "tools/d1_list_candidate_rl.py": "2e3ef01dfe2c1a884dc956f9cd253b60984e8ef2d3963955e9ee59f809fc6938",
+      "tools/d1_list_candidate_rl_engine.py": "2a74b51cf8f06f4ba8d37e69f7a35ab6c0af2c0c2ec7e619403a4d1f026d0da2",
+      "tools/d1_list_candidate_rl_verify.py": "c54d9c86f6ee2ad7096e33bc4096c0a614a53100e3f2bd84806315b91441d6b8"
+    },
+    "frozen_model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "frozen_initial_sha256": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "c2_inputs": {
+      "A": [
+        {
+          "id": "OD1",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 0,
+          "arrival_ns": 35404367946,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "OD2",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 1,
+          "arrival_ns": 35404367946,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "OD3",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 2,
+          "arrival_ns": 35404367946,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "OD4",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 3,
+          "arrival_ns": 35404367946,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "OD5",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 4,
+          "arrival_ns": 35404367946,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "OD6",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 5,
+          "arrival_ns": 35404367946,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "OD7",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 6,
+          "arrival_ns": 35404367946,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "OD8",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 7,
+          "arrival_ns": 35404367946,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "OD9",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 8,
+          "arrival_ns": 35404367946,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "OG1",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 9,
+          "arrival_ns": 39768604155,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "OG2",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 10,
+          "arrival_ns": 39768604155,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "OG3",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 11,
+          "arrival_ns": 39768604155,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "OG4",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 12,
+          "arrival_ns": 39768604155,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "C1",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 13,
+          "arrival_ns": 39900000000,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "D1",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 14,
+          "arrival_ns": 35850000000,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "C2",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 15,
+          "arrival_ns": 40000000000,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "D2",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 16,
+          "arrival_ns": 40700000000,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "C3",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 17,
+          "arrival_ns": 40725000000,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "D3",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 18,
+          "arrival_ns": 40750000000,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "C4",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 19,
+          "arrival_ns": 40775000000,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "D4",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 20,
+          "arrival_ns": 40800000000,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "C5",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 21,
+          "arrival_ns": 40825000000,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "D5",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 22,
+          "arrival_ns": 40850000000,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "C6",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 23,
+          "arrival_ns": 40875000000,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "D6",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 24,
+          "arrival_ns": 40900000000,
+          "deadline_offset_ns": 6000000000
+        }
+      ],
+      "B": [
+        {
+          "id": "OD1",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 0,
+          "arrival_ns": 35404367946,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "OD2",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 1,
+          "arrival_ns": 35404367946,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "OD3",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 2,
+          "arrival_ns": 35404367946,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "OD4",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 3,
+          "arrival_ns": 35404367946,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "OD5",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 4,
+          "arrival_ns": 35404367946,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "OD6",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 5,
+          "arrival_ns": 35404367946,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "OD7",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 6,
+          "arrival_ns": 35404367946,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "OD8",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 7,
+          "arrival_ns": 35404367946,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "OD9",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 8,
+          "arrival_ns": 35404367946,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "OG1",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 9,
+          "arrival_ns": 39768604155,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "OG2",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 10,
+          "arrival_ns": 39768604155,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "OG3",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 11,
+          "arrival_ns": 39768604155,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "OG4",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 12,
+          "arrival_ns": 39768604155,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "C1",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 13,
+          "arrival_ns": 39900000000,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "D1",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 14,
+          "arrival_ns": 35850000000,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "C2",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 15,
+          "arrival_ns": 40500000000,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "D2",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 16,
+          "arrival_ns": 40700000000,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "C3",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 17,
+          "arrival_ns": 40725000000,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "D3",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 18,
+          "arrival_ns": 40750000000,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "C4",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 19,
+          "arrival_ns": 40775000000,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "D4",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 20,
+          "arrival_ns": 40800000000,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "C5",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 21,
+          "arrival_ns": 40825000000,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "D5",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 22,
+          "arrival_ns": 40850000000,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "C6",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 23,
+          "arrival_ns": 40875000000,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "D6",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 24,
+          "arrival_ns": 40900000000,
+          "deadline_offset_ns": 6000000000
+        }
+      ]
+    },
+    "c2_continuation": "LIST_SAME_BANK_RISK5_PC_V4_1",
+    "initial_features": [
+      56,
+      28,
+      8
+    ],
+    "optional_feature_repair_only_after_alias_evidence": true,
+    "native_order": "legacy nonregression8, C2 four, zero-phase2, neutral development four, known-success replay three, controller variants three",
+    "experimental_ready": false,
+    "original_native_source_sha256": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9"
+  },
+  "implementation": {
+    "opt_in_engine": true,
+    "old_engine_unchanged": true,
+    "public_journal": true,
+    "finite_hold": true,
+    "physical_bank": true,
+    "L0": true,
+    "risk5_fixed_rule": true,
+    "masked_actor_critic": true,
+    "posthoc_targets": true,
+    "episode_loss": true,
+    "controller_RNG_archive": true,
+    "training_epoch_dual_minibatch_runner": false,
+    "live_engine_resume": false
+  },
+  "tests": {
+    "unit_tests_passed": 12,
+    "unit_test_record": {
+      "status": "PASS",
+      "passed": 12,
+      "command": "python -B -X utf8 -m unittest tools.test_d1_list_candidate_rl -v",
+      "environment": {
+        "MKL_THREADING_LAYER": "SEQUENTIAL"
+      },
+      "recorded_utc": "2026-10-09T18:37:08.138072+00:00",
+      "result_source": "completed 12-test command output; functionality10 and evidence-preservation guards2",
+      "source_hashes": {
+        "tools/d1_list_candidate_rl.py": "da03b39cddc5ed02b77b74c09ef61ba026bbc10888cbc8133a6f418f269081fa",
+        "tools/d1_list_candidate_rl_engine.py": "2a74b51cf8f06f4ba8d37e69f7a35ab6c0af2c0c2ec7e619403a4d1f026d0da2",
+        "tools/d1_list_candidate_rl_verify.py": "4f6d8af619f31125e5bdbe45ff44b379c10ccbe16d4e16fb9238fd559942fbeb",
+        "tools/test_d1_list_candidate_rl.py": "2381f9326b7964bafa974e6ec59f0320b1c09bd6ee8d23bf2a5df7f011255020"
+      },
+      "new_native_starts": 0,
+      "new_learning_starts": 0,
+      "optimizer_steps": 0,
+      "device_commands": 0
+    },
+    "legacy_nonregression": [
+      {
+        "policy": "EDD",
+        "exact_fields": [
+          "ledger",
+          "transitions",
+          "metrics",
+          "decisions"
+        ]
+      },
+      {
+        "policy": "Band",
+        "exact_fields": [
+          "ledger",
+          "transitions",
+          "metrics",
+          "decisions"
+        ]
+      },
+      {
+        "policy": "Triton",
+        "exact_fields": [
+          "ledger",
+          "transitions",
+          "metrics",
+          "decisions"
+        ]
+      },
+      {
+        "policy": "ListV2",
+        "exact_fields": [
+          "ledger",
+          "transitions",
+          "metrics",
+          "decisions"
+        ]
+      }
+    ],
+    "native_event_zero_duration": true,
+    "original_tensor_alias": {
+      "C_CPU_NOW": true,
+      "PAIR_NOW": true
+    },
+    "original_full_control_alias": {
+      "C_CPU_NOW": true,
+      "PAIR_NOW": true
+    },
+    "C_next_repair": [
+      {
+        "identity": "repair_A_C_CPU_NOW",
+        "original_execution_exact": true,
+        "cut": {
+          "tensors": {
+            "state": {
+              "shape": [
+                56
+              ],
+              "dtype": "float32",
+              "sha256": "41cf4d6997383d978a07220e06faee4c23ea82f244c013c53d2e2182a6b2210f"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                28
+              ],
+              "dtype": "float32",
+              "sha256": "1b2ee73843b97acb40193087b91c1f360a2b2d9a42bfa96462ed66dda2972f8e"
+            },
+            "mask": {
+              "shape": [
+                8
+              ],
+              "dtype": "bool",
+              "sha256": "04abc8821a06e5a30937967d11ad10221cb5ac3b5273e434f1284ee87129a061"
+            }
+          },
+          "base": 0,
+          "kinds": [
+            "C_CPU_NOW",
+            "PAIR_NOW",
+            "C_GPU_DEFER_D_SHORT",
+            "D_CPU_DEFER_C_SHORT",
+            "C_GPU_DEFER_D_FULL",
+            "D_CPU_DEFER_C_FULL",
+            "DEFER_ALL_SHORT",
+            "DEFER_ALL_FULL"
+          ],
+          "credit": 0.23792205560414886,
+          "now_ns": 41000000000.31248,
+          "pending": null,
+          "hold": null,
+          "event_seq": 103
+        },
+        "schema_id": "a96f73663960b2f86af3b01f69d5ff9c493f3901ae07ea7abf8c25a3a62e2c77",
+        "new_field_value": 0.3333333432674408,
+        "row": {
+          "planned": 25,
+          "completed": 25,
+          "incomplete": 0,
+          "urgent_failure": 2,
+          "normal_failure": 0,
+          "urgent_p95_ms": 1636.487709,
+          "normal_mean_ms": 3703.9870238666667,
+          "energy_j": 140.9913478053025,
+          "peak_ap_c": 30.296208480432764,
+          "native_seconds": 0.16576000000350177
+        }
+      },
+      {
+        "identity": "repair_A_PAIR_NOW",
+        "original_execution_exact": true,
+        "cut": {
+          "tensors": {
+            "state": {
+              "shape": [
+                56
+              ],
+              "dtype": "float32",
+              "sha256": "41cf4d6997383d978a07220e06faee4c23ea82f244c013c53d2e2182a6b2210f"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                28
+              ],
+              "dtype": "float32",
+              "sha256": "1b2ee73843b97acb40193087b91c1f360a2b2d9a42bfa96462ed66dda2972f8e"
+            },
+            "mask": {
+              "shape": [
+                8
+              ],
+              "dtype": "bool",
+              "sha256": "04abc8821a06e5a30937967d11ad10221cb5ac3b5273e434f1284ee87129a061"
+            }
+          },
+          "base": 0,
+          "kinds": [
+            "C_CPU_NOW",
+            "PAIR_NOW",
+            "C_GPU_DEFER_D_SHORT",
+            "D_CPU_DEFER_C_SHORT",
+            "C_GPU_DEFER_D_FULL",
+            "D_CPU_DEFER_C_FULL",
+            "DEFER_ALL_SHORT",
+            "DEFER_ALL_FULL"
+          ],
+          "credit": 0.23792205560414886,
+          "now_ns": 41000000000.31248,
+          "pending": null,
+          "hold": null,
+          "event_seq": 103
+        },
+        "schema_id": "a96f73663960b2f86af3b01f69d5ff9c493f3901ae07ea7abf8c25a3a62e2c77",
+        "new_field_value": 0.3333333432674408,
+        "row": {
+          "planned": 25,
+          "completed": 25,
+          "incomplete": 0,
+          "urgent_failure": 3,
+          "normal_failure": 0,
+          "urgent_p95_ms": 1636.487709,
+          "normal_mean_ms": 3692.972605533333,
+          "energy_j": 140.92044741747452,
+          "peak_ap_c": 30.306605530857745,
+          "native_seconds": 0.1498135000001639
+        }
+      },
+      {
+        "identity": "repair_B_C_CPU_NOW",
+        "original_execution_exact": true,
+        "cut": {
+          "tensors": {
+            "state": {
+              "shape": [
+                56
+              ],
+              "dtype": "float32",
+              "sha256": "69db4d25f9573aab498ff40b2511827f116bf2976a607f5f5c08743deecb798a"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                28
+              ],
+              "dtype": "float32",
+              "sha256": "1b2ee73843b97acb40193087b91c1f360a2b2d9a42bfa96462ed66dda2972f8e"
+            },
+            "mask": {
+              "shape": [
+                8
+              ],
+              "dtype": "bool",
+              "sha256": "04abc8821a06e5a30937967d11ad10221cb5ac3b5273e434f1284ee87129a061"
+            }
+          },
+          "base": 0,
+          "kinds": [
+            "C_CPU_NOW",
+            "PAIR_NOW",
+            "C_GPU_DEFER_D_SHORT",
+            "D_CPU_DEFER_C_SHORT",
+            "C_GPU_DEFER_D_FULL",
+            "D_CPU_DEFER_C_FULL",
+            "DEFER_ALL_SHORT",
+            "DEFER_ALL_FULL"
+          ],
+          "credit": 0.23792205560414886,
+          "now_ns": 41000000000.31248,
+          "pending": null,
+          "hold": null,
+          "event_seq": 103
+        },
+        "schema_id": "a96f73663960b2f86af3b01f69d5ff9c493f3901ae07ea7abf8c25a3a62e2c77",
+        "new_field_value": 0.6666666865348816,
+        "row": {
+          "planned": 25,
+          "completed": 25,
+          "incomplete": 0,
+          "urgent_failure": 1,
+          "normal_failure": 0,
+          "urgent_p95_ms": 1563.781929,
+          "normal_mean_ms": 3679.751763933333,
+          "energy_j": 140.9636942671787,
+          "peak_ap_c": 30.28015729121445,
+          "native_seconds": 0.1447817999869585
+        }
+      },
+      {
+        "identity": "repair_B_PAIR_NOW",
+        "original_execution_exact": true,
+        "cut": {
+          "tensors": {
+            "state": {
+              "shape": [
+                56
+              ],
+              "dtype": "float32",
+              "sha256": "69db4d25f9573aab498ff40b2511827f116bf2976a607f5f5c08743deecb798a"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                28
+              ],
+              "dtype": "float32",
+              "sha256": "1b2ee73843b97acb40193087b91c1f360a2b2d9a42bfa96462ed66dda2972f8e"
+            },
+            "mask": {
+              "shape": [
+                8
+              ],
+              "dtype": "bool",
+              "sha256": "04abc8821a06e5a30937967d11ad10221cb5ac3b5273e434f1284ee87129a061"
+            }
+          },
+          "base": 0,
+          "kinds": [
+            "C_CPU_NOW",
+            "PAIR_NOW",
+            "C_GPU_DEFER_D_SHORT",
+            "D_CPU_DEFER_C_SHORT",
+            "C_GPU_DEFER_D_FULL",
+            "D_CPU_DEFER_C_FULL",
+            "DEFER_ALL_SHORT",
+            "DEFER_ALL_FULL"
+          ],
+          "credit": 0.23792205560414886,
+          "now_ns": 41000000000.31248,
+          "pending": null,
+          "hold": null,
+          "event_seq": 103
+        },
+        "schema_id": "a96f73663960b2f86af3b01f69d5ff9c493f3901ae07ea7abf8c25a3a62e2c77",
+        "new_field_value": 0.6666666865348816,
+        "row": {
+          "planned": 25,
+          "completed": 25,
+          "incomplete": 0,
+          "urgent_failure": 2,
+          "normal_failure": 0,
+          "urgent_p95_ms": 1636.487709,
+          "normal_mean_ms": 3692.972605533333,
+          "energy_j": 140.99134780519094,
+          "peak_ap_c": 30.295468038262868,
+          "native_seconds": 0.16194250000989996
+        }
+      }
+    ],
+    "gradient": {
+      "sampled_choices": 32,
+      "direct_energy_term_max": 0.0,
+      "shared_encoder_J_critic_gradient": 2.0673294925435926,
+      "actor_gradient": 5.313057903839532,
+      "critic_gradient": 1.7015602159090712,
+      "reward_sum": 0.03920177234906319,
+      "expected_reward": 0.03920177234906319,
+      "costs": [
+        0.1552478065156606,
+        0.0,
+        0.0,
+        3.0,
+        0.050744131333333296
+      ],
+      "valid": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "optimizer_steps": 0,
+      "learning_episodes": 0
+    },
+    "checkpoint": {
+      "controller_state_rng_weights_preserved": true,
+      "Adam_state_saved": true,
+      "Adam_state_nonempty": false,
+      "cross_schema_rejected": true,
+      "live_engine_or_additional_learning_identity_tested": false
+    },
+    "checkpoint_tree": {
+      "status": "PASS",
+      "scope": "source-bound archive payload and restored controller tree; no live engine/additional learning identity",
+      "controller_full_tree_equal": true,
+      "partial_batch_payload_equal": true,
+      "multiplier_payload_equal": true,
+      "consumption_payload_equal": true,
+      "Adam_structure_equal": true,
+      "Adam_nonempty": false,
+      "new_native_starts": 0,
+      "new_learning_starts": 0,
+      "optimizer_steps": 0,
+      "remaining_resume_dependencies": "formula/plant/engine source manifest binding and actual optimizer update continuity remain future gates"
+    }
+  },
+  "c2": [
+    {
+      "identity": "c2_A_C_CPU_NOW",
+      "row": {
+        "planned": 25,
+        "completed": 25,
+        "incomplete": 0,
+        "urgent_failure": 2,
+        "normal_failure": 0,
+        "urgent_p95_ms": 1636.487709,
+        "normal_mean_ms": 3703.9870238666667,
+        "energy_j": 140.9913478053025,
+        "peak_ap_c": 30.296208480432764,
+        "native_seconds": 0.13558060000650585
+      },
+      "core_response_s": {
+        "C1": 1.256179931,
+        "D1": 5.934687719,
+        "C2": 1.459270911
+      },
+      "cut": {
+        "tensors": {
+          "state": {
+            "shape": [
+              56
+            ],
+            "dtype": "float32",
+            "sha256": "0fcb23fd34c1439f0db520313f3406dd76d89912115944350ed2e0f74539952d"
+          },
+          "candidates": {
+            "shape": [
+              8,
+              28
+            ],
+            "dtype": "float32",
+            "sha256": "1b2ee73843b97acb40193087b91c1f360a2b2d9a42bfa96462ed66dda2972f8e"
+          },
+          "mask": {
+            "shape": [
+              8
+            ],
+            "dtype": "bool",
+            "sha256": "04abc8821a06e5a30937967d11ad10221cb5ac3b5273e434f1284ee87129a061"
+          }
+        },
+        "base": 0,
+        "kinds": [
+          "C_CPU_NOW",
+          "PAIR_NOW",
+          "C_GPU_DEFER_D_SHORT",
+          "D_CPU_DEFER_C_SHORT",
+          "C_GPU_DEFER_D_FULL",
+          "D_CPU_DEFER_C_FULL",
+          "DEFER_ALL_SHORT",
+          "DEFER_ALL_FULL"
+        ],
+        "credit": 0.23792205560414886,
+        "now_ns": 41000000000.31248,
+        "pending": null,
+        "hold": null,
+        "event_seq": 103
+      },
+      "voluntary_defer_s": 1.750000000625,
+      "fallbacks": 0,
+      "selection_opportunities": 34
+    },
+    {
+      "identity": "c2_A_PAIR_NOW",
+      "row": {
+        "planned": 25,
+        "completed": 25,
+        "incomplete": 0,
+        "urgent_failure": 3,
+        "normal_failure": 0,
+        "urgent_p95_ms": 1636.487709,
+        "normal_mean_ms": 3692.972605533333,
+        "energy_j": 140.92044741747452,
+        "peak_ap_c": 30.306605530857745,
+        "native_seconds": 0.11598539998522028
+      },
+      "core_response_s": {
+        "C1": 1.394054635,
+        "D1": 5.769471444,
+        "C2": 1.59888411
+      },
+      "cut": {
+        "tensors": {
+          "state": {
+            "shape": [
+              56
+            ],
+            "dtype": "float32",
+            "sha256": "0fcb23fd34c1439f0db520313f3406dd76d89912115944350ed2e0f74539952d"
+          },
+          "candidates": {
+            "shape": [
+              8,
+              28
+            ],
+            "dtype": "float32",
+            "sha256": "1b2ee73843b97acb40193087b91c1f360a2b2d9a42bfa96462ed66dda2972f8e"
+          },
+          "mask": {
+            "shape": [
+              8
+            ],
+            "dtype": "bool",
+            "sha256": "04abc8821a06e5a30937967d11ad10221cb5ac3b5273e434f1284ee87129a061"
+          }
+        },
+        "base": 0,
+        "kinds": [
+          "C_CPU_NOW",
+          "PAIR_NOW",
+          "C_GPU_DEFER_D_SHORT",
+          "D_CPU_DEFER_C_SHORT",
+          "C_GPU_DEFER_D_FULL",
+          "D_CPU_DEFER_C_FULL",
+          "DEFER_ALL_SHORT",
+          "DEFER_ALL_FULL"
+        ],
+        "credit": 0.23792205560414886,
+        "now_ns": 41000000000.31248,
+        "pending": null,
+        "hold": null,
+        "event_seq": 103
+      },
+      "voluntary_defer_s": 1.512077945020851,
+      "fallbacks": 0,
+      "selection_opportunities": 32
+    },
+    {
+      "identity": "c2_B_C_CPU_NOW",
+      "row": {
+        "planned": 25,
+        "completed": 25,
+        "incomplete": 0,
+        "urgent_failure": 1,
+        "normal_failure": 0,
+        "urgent_p95_ms": 1563.781929,
+        "normal_mean_ms": 3679.751763933333,
+        "energy_j": 140.9636942671787,
+        "peak_ap_c": 30.28015729121445,
+        "native_seconds": 0.11349750001681969
+      },
+      "core_response_s": {
+        "C1": 1.256179931,
+        "D1": 5.934687719,
+        "C2": 1.209270911
+      },
+      "cut": {
+        "tensors": {
+          "state": {
+            "shape": [
+              56
+            ],
+            "dtype": "float32",
+            "sha256": "0fcb23fd34c1439f0db520313f3406dd76d89912115944350ed2e0f74539952d"
+          },
+          "candidates": {
+            "shape": [
+              8,
+              28
+            ],
+            "dtype": "float32",
+            "sha256": "1b2ee73843b97acb40193087b91c1f360a2b2d9a42bfa96462ed66dda2972f8e"
+          },
+          "mask": {
+            "shape": [
+              8
+            ],
+            "dtype": "bool",
+            "sha256": "04abc8821a06e5a30937967d11ad10221cb5ac3b5273e434f1284ee87129a061"
+          }
+        },
+        "base": 0,
+        "kinds": [
+          "C_CPU_NOW",
+          "PAIR_NOW",
+          "C_GPU_DEFER_D_SHORT",
+          "D_CPU_DEFER_C_SHORT",
+          "C_GPU_DEFER_D_FULL",
+          "D_CPU_DEFER_C_FULL",
+          "DEFER_ALL_SHORT",
+          "DEFER_ALL_FULL"
+        ],
+        "credit": 0.23792205560414886,
+        "now_ns": 41000000000.31248,
+        "pending": null,
+        "hold": null,
+        "event_seq": 103
+      },
+      "voluntary_defer_s": 1.5789853646458587,
+      "fallbacks": 0,
+      "selection_opportunities": 33
+    },
+    {
+      "identity": "c2_B_PAIR_NOW",
+      "row": {
+        "planned": 25,
+        "completed": 25,
+        "incomplete": 0,
+        "urgent_failure": 2,
+        "normal_failure": 0,
+        "urgent_p95_ms": 1636.487709,
+        "normal_mean_ms": 3692.972605533333,
+        "energy_j": 140.99134780519094,
+        "peak_ap_c": 30.295468038262868,
+        "native_seconds": 0.07558029997744597
+      },
+      "core_response_s": {
+        "C1": 1.394054635,
+        "D1": 5.769471444,
+        "C2": 1.34888411
+      },
+      "cut": {
+        "tensors": {
+          "state": {
+            "shape": [
+              56
+            ],
+            "dtype": "float32",
+            "sha256": "0fcb23fd34c1439f0db520313f3406dd76d89912115944350ed2e0f74539952d"
+          },
+          "candidates": {
+            "shape": [
+              8,
+              28
+            ],
+            "dtype": "float32",
+            "sha256": "1b2ee73843b97acb40193087b91c1f360a2b2d9a42bfa96462ed66dda2972f8e"
+          },
+          "mask": {
+            "shape": [
+              8
+            ],
+            "dtype": "bool",
+            "sha256": "04abc8821a06e5a30937967d11ad10221cb5ac3b5273e434f1284ee87129a061"
+          }
+        },
+        "base": 0,
+        "kinds": [
+          "C_CPU_NOW",
+          "PAIR_NOW",
+          "C_GPU_DEFER_D_SHORT",
+          "D_CPU_DEFER_C_SHORT",
+          "C_GPU_DEFER_D_FULL",
+          "D_CPU_DEFER_C_FULL",
+          "DEFER_ALL_SHORT",
+          "DEFER_ALL_FULL"
+        ],
+        "credit": 0.23792205560414886,
+        "now_ns": 41000000000.31248,
+        "pending": null,
+        "hold": null,
+        "event_seq": 103
+      },
+      "voluntary_defer_s": 1.750000000625,
+      "fallbacks": 0,
+      "selection_opportunities": 34
+    }
+  ],
+  "behavior": [
+    {
+      "family": "low",
+      "row": {
+        "planned": 24,
+        "completed": 24,
+        "incomplete": 0,
+        "urgent_failure": 0,
+        "normal_failure": 0,
+        "urgent_p95_ms": 156.179931,
+        "normal_mean_ms": 869.471443,
+        "energy_j": 142.12345650915358,
+        "peak_ap_c": 30.21772930387987,
+        "native_seconds": 0.0820747000107076
+      },
+      "defer_s": 4.5,
+      "holds": 23,
+      "fallbacks": 0,
+      "selection_opportunities": 47,
+      "forced_waits": 0,
+      "known_prediction_choices": 47
+    },
+    {
+      "family": "queue",
+      "row": {
+        "planned": 24,
+        "completed": 24,
+        "incomplete": 0,
+        "urgent_failure": 0,
+        "normal_failure": 12,
+        "urgent_p95_ms": 294.054635,
+        "normal_mean_ms": 6527.595408555556,
+        "energy_j": 142.10271044139654,
+        "peak_ap_c": 30.363376985918084,
+        "native_seconds": 0.11371330000110902
+      },
+      "defer_s": 2.3127152192291716,
+      "holds": 26,
+      "fallbacks": 0,
+      "selection_opportunities": 50,
+      "forced_waits": 122,
+      "known_prediction_choices": 50
+    },
+    {
+      "family": "burst",
+      "row": {
+        "planned": 24,
+        "completed": 24,
+        "incomplete": 0,
+        "urgent_failure": 0,
+        "normal_failure": 10,
+        "urgent_p95_ms": 294.054635,
+        "normal_mean_ms": 6183.270187611111,
+        "energy_j": 142.0802096565513,
+        "peak_ap_c": 30.37130911231166,
+        "native_seconds": 0.12798239997937344
+      },
+      "defer_s": 2.473626610833344,
+      "holds": 22,
+      "fallbacks": 0,
+      "selection_opportunities": 46,
+      "forced_waits": 128,
+      "known_prediction_choices": 46
+    },
+    {
+      "family": "sustained",
+      "row": {
+        "planned": 192,
+        "completed": 192,
+        "incomplete": 0,
+        "urgent_failure": 0,
+        "normal_failure": 31,
+        "urgent_p95_ms": 294.054635,
+        "normal_mean_ms": 5336.6815024375,
+        "energy_j": 183.18602393210406,
+        "peak_ap_c": 32.35978489141811,
+        "native_seconds": 0.9366115000157151
+      },
+      "defer_s": 18.279898215813013,
+      "holds": 148,
+      "fallbacks": 0,
+      "selection_opportunities": 332,
+      "forced_waits": 1010,
+      "known_prediction_choices": 332
+    }
+  ],
+  "known_success_replay": [
+    {
+      "context": "mean",
+      "row": {
+        "planned": 192,
+        "completed": 192,
+        "incomplete": 0,
+        "urgent_failure": 0,
+        "normal_failure": 0,
+        "urgent_p95_ms": 294.054635,
+        "normal_mean_ms": 4116.730581239583,
+        "energy_j": 182.8949735090306,
+        "peak_ap_c": 32.36920719850545,
+        "native_seconds": 32.947298400016734
+      },
+      "scope": "prior development/consumed-final diagnosis only"
+    },
+    {
+      "context": "short_context",
+      "row": {
+        "planned": 192,
+        "completed": 192,
+        "incomplete": 0,
+        "urgent_failure": 0,
+        "normal_failure": 0,
+        "urgent_p95_ms": 286.608481,
+        "normal_mean_ms": 4146.806051333333,
+        "energy_j": 182.84572112971387,
+        "peak_ap_c": 32.30114603412898,
+        "native_seconds": 34.58101640001405
+      },
+      "scope": "prior development/consumed-final diagnosis only"
+    },
+    {
+      "context": "long_context",
+      "row": {
+        "planned": 192,
+        "completed": 192,
+        "incomplete": 0,
+        "urgent_failure": 0,
+        "normal_failure": 0,
+        "urgent_p95_ms": 301.500789,
+        "normal_mean_ms": 4176.169263875,
+        "energy_j": 182.94943023486346,
+        "peak_ap_c": 32.384961065994744,
+        "native_seconds": 42.02747369999997
+      },
+      "scope": "prior development/consumed-final diagnosis only"
+    }
+  ],
+  "representation": {
+    "scope": "posthoc pointwise source-intent coverage; upper credit is optimistic, not full scheduler replay",
+    "cases": [
+      {
+        "context": "mean",
+        "counts": {
+          "included_declared_timer": 46,
+          "included_immediate": 192,
+          "outside_actor_forced_wait": 874,
+          "unknown": 64
+        }
+      },
+      {
+        "context": "short_context",
+        "counts": {
+          "included_declared_timer": 43,
+          "included_immediate": 192,
+          "outside_actor_forced_wait": 857,
+          "unknown": 81
+        }
+      },
+      {
+        "context": "long_context",
+        "counts": {
+          "included_declared_timer": 48,
+          "included_immediate": 192,
+          "outside_actor_forced_wait": 958,
+          "unknown": 70
+        }
+      }
+    ],
+    "full_new_policy_chronology_proven": false,
+    "credit_source": "optimistic upper .25, no original wait debit replay"
+  },
+  "learning_ready": false,
+  "not_selected_as_final_method": true,
+  "remaining": [
+    "actual epoch/minibatch/dual training runner and post-update resume equivalence",
+    "full old successful schedule representation under new hold/credit chronology",
+    "fresh common-budget three-seed development and final performance",
+    "phone/controller energy and surface-temperature support"
+  ],
+  "scope": "measured-coefficient PC validation; no physical policy improvement or RL training",
+  "frozen_model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+  "frozen_initial_sha256": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d"
+}

@@ -61,6 +61,13 @@
 - Run/claim/설치/앱실행/추론/세션0, ADB2명령(연결1/목록1), daemon재시작/설정변경/자동재연결0. 계획은 **미소비로 보존**, stopped_no_resume/실측실패로 기록하지 않는다. PC Wi-Fi는 연결돼 있으나 휴대폰주소/포트/페어링·네트워크 내부원인은 미확정.
 - 다음하나: 사용자가 현재 무선디버깅 접속주소(페어링이 없으면 페어링주소/코드)를 제공하면 기존승인으로 동일계획의 현재기기·환경 gate부터 진행한다. 연결 회복만으로 세션이 시작됐다고 하지 않는다.
 
+## 2026-10-10 LIST-CANDIDATE-RL-IMPLEMENT-04 — 구현·32회 PC 검증 완료, 본학습 보류
+
+- 공개 이벤트·유한 hold·실제 dispatch/PAIR·L0/risk5·56/28 encoder·Maskable PPO forward/목표/loss·controller/RNG 저장을 별도 경로에 구현했다. [결과·한계·재현](LIST_CANDIDATE_RL_IMPLEMENTATION_20261010.md) · [화면·CSV·검증](results/list_candidate_rl_implementation_01/README.md). 원 EDD/Band/Triton/List 4정책의 원장/전이/지표/결정은 정확히 보존됐다.
+- 순수 unit12 PASS(기능10＋소비 기록 재호출 보호2), 등록 native32/32·실패0·1,748/1,748완료. 누적6,549환경/641학습, 이번 학습/optimizer step/기기/ADB0이다. 실제 C2 입력 별칭과 추가 기한 실패를 확인해 opt-in `head2+C_next`의 중복 시간 슬롯1만 공개 뒤 요청 기한으로 보완했다. 추가4회에서 해당 슬롯만 구분·기존 고정 선택기 실행 불변이며 성능 개선 증거가 아니다.
+- 고정 선택기 지속 부하 일반 기한 위반31·자발대기18.28초, 미학습 PPO 진단도 서비스/J 악화가 있어 채택하지 않는다. 이전 성공 일정은 점별 primitive 포함만 검사했으며 전체 hold/credit 시간순 표현성은 미확정이다. Adam은 비어 있고 실제 갱신 후 재개/live engine 재개·epoch/minibatch/dual runner는 남아 **본학습 NO-GO, 최종 방법론 미선정**이다.
+- 다음 최대3: 전체 일정 표현성/비학습 대조 행동 검증, 실제 학습 runner·종속 소스 manifest·갱신 후 재개 동일성 구현, gate 통과 후에만 기존 예산의 3seed 소규모 개발. 원 모형/기본/strict/experiment_ready=false·별도 AP/에너지 작업·사용자14행·다른 worktree 보존. 검증 시작87321f8+미커밋, 최종 판독 df6cb59+미커밋·소스별 해시는 verification.json에 기록한다.
+
 ## 2026-10-09 LIST-CANDIDATE-RL-IMPLEMENTATION-GATE-03 — v4.1 유지·구현 검사표 토론 완료
 
 - 모바일/산업공학/RL AI가사용자후속검토를직접반론하며 [구현게이트검사표](LIST_CANDIDATE_RL_IMPLEMENTATION_GATE_20261009.md)를정리했다. v4.1/목적/행동/.25/예산은유지·새정책버전0, 실제encoder/eventadapter/learner PASS없어본학습NO-GO다.

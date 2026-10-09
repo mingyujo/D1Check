@@ -1,0 +1,156 @@
+{
+  "task": "LIST-CANDIDATE-RL-IMPLEMENT-04",
+  "status": "PASS_WITH_UNRESOLVED_LEARNING_GATES",
+  "verified_utc": "2026-10-09T18:38:38.320522+00:00",
+  "head_before_commit": "df6cb59cd1fe3c5c58b0c2b328501f71ef4dc646",
+  "registration_head": "87321f8685a2f9976f5a170d89ca9d5cf2770305",
+  "working_changes_present": true,
+  "source_sha256": {
+    "tools/d1_list_candidate_rl.py": "da03b39cddc5ed02b77b74c09ef61ba026bbc10888cbc8133a6f418f269081fa",
+    "tools/d1_list_candidate_rl_engine.py": "2a74b51cf8f06f4ba8d37e69f7a35ab6c0af2c0c2ec7e619403a4d1f026d0da2",
+    "tools/d1_list_candidate_rl_verify.py": "4f6d8af619f31125e5bdbe45ff44b379c10ccbe16d4e16fb9238fd559942fbeb",
+    "tools/d1_list_candidate_rl_report.py": "3634bc2ac031dca6682d39f7189f09bc63c1fe0fd2863596bef2bf66cd1b3e4c",
+    "tools/test_d1_list_candidate_rl.py": "2381f9326b7964bafa974e6ec59f0320b1c09bd6ee8d23bf2a5df7f011255020",
+    "tools/templates/d1_list_candidate_gate.html": "95d4bf00b4d3b8da9e2cfb19d152cf123280e6ccd5162de4a40d91993ed82842"
+  },
+  "frozen_inputs": {
+    "model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "initial_sha256": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "original_engine_sha256": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9"
+  },
+  "consumed_source_versions": [
+    {
+      "filename": "d1_list_candidate_rl_2e3ef01dfe2c1a884dc956f9cd253b60984e8ef2d3963955e9ee59f809fc6938.py",
+      "sha256": "2e3ef01dfe2c1a884dc956f9cd253b60984e8ef2d3963955e9ee59f809fc6938",
+      "bytes": 30169,
+      "location": "local output source_versions"
+    },
+    {
+      "filename": "d1_list_candidate_rl_da03b39cddc5ed02b77b74c09ef61ba026bbc10888cbc8133a6f418f269081fa.py",
+      "sha256": "da03b39cddc5ed02b77b74c09ef61ba026bbc10888cbc8133a6f418f269081fa",
+      "bytes": 35916,
+      "location": "local output source_versions"
+    },
+    {
+      "filename": "d1_list_candidate_rl_engine_2a74b51cf8f06f4ba8d37e69f7a35ab6c0af2c0c2ec7e619403a4d1f026d0da2.py",
+      "sha256": "2a74b51cf8f06f4ba8d37e69f7a35ab6c0af2c0c2ec7e619403a4d1f026d0da2",
+      "bytes": 20438,
+      "location": "local output source_versions"
+    },
+    {
+      "filename": "d1_list_candidate_rl_verify_81536baf9d32b3ec498f191ace58015c0ed22342087eb686ef23c3a402cbb180.py",
+      "sha256": "81536baf9d32b3ec498f191ace58015c0ed22342087eb686ef23c3a402cbb180",
+      "bytes": 21559,
+      "location": "local output source_versions"
+    },
+    {
+      "filename": "d1_list_candidate_rl_verify_c54d9c86f6ee2ad7096e33bc4096c0a614a53100e3f2bd84806315b91441d6b8.py",
+      "sha256": "c54d9c86f6ee2ad7096e33bc4096c0a614a53100e3f2bd84806315b91441d6b8",
+      "bytes": 14239,
+      "location": "local output source_versions"
+    },
+    {
+      "filename": "d1_list_candidate_rl_verify_c79a7e55751e9a9e8347561978e0c2efe2a393f06504410e72432c7dceb48766.py",
+      "sha256": "c79a7e55751e9a9e8347561978e0c2efe2a393f06504410e72432c7dceb48766",
+      "bytes": 26488,
+      "location": "local output source_versions"
+    }
+  ],
+  "native_version_scope": {
+    "initial_24": {
+      "tools/d1_list_candidate_rl.py": "2e3ef01dfe2c1a884dc956f9cd253b60984e8ef2d3963955e9ee59f809fc6938",
+      "tools/d1_list_candidate_rl_engine.py": "2a74b51cf8f06f4ba8d37e69f7a35ab6c0af2c0c2ec7e619403a4d1f026d0da2",
+      "tools/d1_list_candidate_rl_verify.py": "c54d9c86f6ee2ad7096e33bc4096c0a614a53100e3f2bd84806315b91441d6b8"
+    },
+    "repair_and_forward_5": {
+      "controller_sha256": "da03b39cddc5ed02b77b74c09ef61ba026bbc10888cbc8133a6f418f269081fa",
+      "verifier_sha256": "81536baf9d32b3ec498f191ace58015c0ed22342087eb686ef23c3a402cbb180"
+    },
+    "source_intent_3": {
+      "verifier_sha256": "c79a7e55751e9a9e8347561978e0c2efe2a393f06504410e72432c7dceb48766"
+    },
+    "final_guard_change": "CLI/evidence reuse guards only; verified by two pure tests after all native starts, no additional native run"
+  },
+  "commands": [
+    "python -B -X utf8 -m unittest tools.test_d1_list_candidate_rl -v",
+    "python -B -X utf8 -m tools.d1_list_candidate_rl_verify --output output/list_candidate_rl_implementation_20261010_v1",
+    "python -B -X utf8 -m tools.d1_list_candidate_rl_verify --additional --output output/list_candidate_rl_implementation_20261010_v1",
+    "python -B -X utf8 -m tools.d1_list_candidate_rl_verify --representation --output output/list_candidate_rl_implementation_20261010_v1",
+    "python -B -X utf8 -m tools.d1_list_candidate_rl_report --run output/list_candidate_rl_implementation_20261010_v1 --output docs/results/list_candidate_rl_implementation_01 --check-browser"
+  ],
+  "unit_test_record": {
+    "status": "PASS",
+    "passed": 12,
+    "command": "python -B -X utf8 -m unittest tools.test_d1_list_candidate_rl -v",
+    "environment": {
+      "MKL_THREADING_LAYER": "SEQUENTIAL"
+    },
+    "recorded_utc": "2026-10-09T18:37:08.138072+00:00",
+    "result_source": "completed 12-test command output; functionality10 and evidence-preservation guards2",
+    "source_hashes": {
+      "tools/d1_list_candidate_rl.py": "da03b39cddc5ed02b77b74c09ef61ba026bbc10888cbc8133a6f418f269081fa",
+      "tools/d1_list_candidate_rl_engine.py": "2a74b51cf8f06f4ba8d37e69f7a35ab6c0af2c0c2ec7e619403a4d1f026d0da2",
+      "tools/d1_list_candidate_rl_verify.py": "4f6d8af619f31125e5bdbe45ff44b379c10ccbe16d4e16fb9238fd559942fbeb",
+      "tools/test_d1_list_candidate_rl.py": "2381f9326b7964bafa974e6ec59f0320b1c09bd6ee8d23bf2a5df7f011255020"
+    },
+    "new_native_starts": 0,
+    "new_learning_starts": 0,
+    "optimizer_steps": 0,
+    "device_commands": 0
+  },
+  "artifact_checks": {
+    "raw_artifacts_sha_checked": 32,
+    "native_csv_rows": 32,
+    "c2_rows": 4,
+    "source_intent_rows": 3617,
+    "planned": 1748,
+    "completed": 1748
+  },
+  "consumption": {
+    "new_native_environment_starts": 32,
+    "cumulative_environment_starts": 6549,
+    "new_learning_starts": 0,
+    "cumulative_learning_starts": 641,
+    "optimizer_steps": 0,
+    "device_commands": 0,
+    "failed_native_starts": 0
+  },
+  "browser": {
+    "status": "PASS",
+    "surface": "isolated headless Chrome; offline file page",
+    "native_rows": 32,
+    "links_checked": 4,
+    "screenshot": "dashboard.png",
+    "screenshot_sha256": "1e174fafcd4e13f8e779568e74099dbab8d290b2d3ef442f4f6e2d50a853bac6",
+    "new_native_starts": 0,
+    "new_learning_starts": 0,
+    "device_commands": 0
+  },
+  "checkpoint_tree": {
+    "status": "PASS",
+    "scope": "source-bound archive payload and restored controller tree; no live engine/additional learning identity",
+    "controller_full_tree_equal": true,
+    "partial_batch_payload_equal": true,
+    "multiplier_payload_equal": true,
+    "consumption_payload_equal": true,
+    "Adam_structure_equal": true,
+    "Adam_nonempty": false,
+    "new_native_starts": 0,
+    "new_learning_starts": 0,
+    "optimizer_steps": 0,
+    "remaining_resume_dependencies": "formula/plant/engine source manifest binding and actual optimizer update continuity remain future gates"
+  },
+  "learning_ready": false,
+  "final_method_selected": false,
+  "unchanged_default_strict_experiment_ready_false": true,
+  "validation_scope": "PC functional/event/observation/loss verification; not training, full chronological representation, actual Adam continuation, physical policy superiority, or surface-temperature prediction",
+  "artifact_sha256": {
+    "c2_results.csv": "4b7ed14760bcf4e7d40a489f8c1e7be976615add8a4e912a75745d211e1de894",
+    "index.html": "68a1371afd66d884ef4cd26ecd5b42b0584d7e2966570508dbbbef3a63aec871",
+    "native_results.csv": "f137a4b03ee8938ed293cca62cbe6b437452500cd30c5b5d79f0723b829f3c53",
+    "README.md": "f8c7365715e3071b3eb56fd6b227637b17eecb4f7c135aca04478a2bffab19b2",
+    "review_record.json": "21207d6f4db2293be91ae18efea07b37c25cea329839514e92bb9ae6cc69e7b3",
+    "source_intent_coverage.csv": "60741fa3ecfa32ae2dced5197b087ba1ac3df042f56770a5b0af0b90bee3a91e",
+    "summary.json": "151e0ef25ff75090b131f68c86138a2342b1cc31e6cf1aa1b0a89e6abe3c1fbc"
+  }
+}

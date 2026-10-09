@@ -23,6 +23,11 @@
 - 승인plan_v2는 C0600초 뒤의 tail 검사 결함으로 stopped_no_resume. 본작업0/준비12/runtime4/ADB1588/927.703초, 긴회복/LOAD_A미진행·새예측오차없음. [실제결과](AP_TAIL_OBSERVATION_RUN01_20261009.md). 이전C0미소비준비와현재소비종료를구분한다.
 - exact 등록C0만 전체common 종료를허용하고 legacy/LOAD_A의tail검사는유지한다. 실제Activity종료분기 포함Android13/Python5·기존서명후보APK 준비완료, 기기전송/설치/추가실측0. 다음하나는 수정APK의별도새계획PC 동결이며 이번자동재시도/새claim/모형교체/계수적합0이다.
 
+## 2026-10-10 LIST-CANDIDATE-RL-IMPLEMENT-04 — 실제 후보·event·PPO 경로의 구현 검사
+
+- 사용자 최종 검토/구현 지시로 v4.1의 별도 실행 경로와 순수 unit12/등록 native32를 완료했다. 원 engine/모형/물리 지원/목적/대기.25/기본 정책은 보존했다. 실제 별칭 근거 후 중복 state 슬롯만 공개 C_next 기한으로 교체한 선택적 schema를 추가했다. [구현·검증·남은 범위](LIST_CANDIDATE_RL_IMPLEMENTATION_20261010.md).
+- 32환경·실패0·1,748전량/새 학습·기기0·누적6,549/641이다. 원 제안1,520/상한1,536/학습416은 초기화하지 않으며 gate32를 이미 소비했다. 고정 대조군 서비스 실패, 전체 시간순 표현성 미확정, 실제 optimizer 갱신 후 resume/학습 runner 미완료로 본학습 NO-GO를 유지한다. 다음 작은 학습도 이를 닫은 뒤 등록된 남은 예산과 최초 clock을 대조해야 한다.
+
 ## 2026-10-09 LIST-CANDIDATE-RL-IMPLEMENTATION-GATE-03 — 설계 추가확장보다 구현·증거검사
 
 - 같은3AI 추가토론의 [실제구현게이트](LIST_CANDIDATE_RL_IMPLEMENTATION_GATE_20261009.md): v4.1고정·C2합법prefix/저장tensor전체/전체후속KPI·공통arrival9·holdelapsed/fallback/λJ기록을먼저완성한다. 본학습현재NO-GO·새feature/action/목적자동수정0이다.
