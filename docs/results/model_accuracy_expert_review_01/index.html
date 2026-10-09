@@ -2,6 +2,7 @@
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>에너지·AP 오차 개선 토론</title>
 <style>body{font:17px/1.7 system-ui;max-width:1100px;margin:30px auto;padding:0 18px;color:#203040}aside{background:#fff2cf;padding:18px}img{width:100%}table{border-collapse:collapse;width:100%}td,th{padding:10px;border-bottom:1px solid #ddd}a{color:#075985}</style></head>
 <body><h1>세 관점 토론: 개선 성분과 실패 반례</h1>
+<p><a href="../energy_ap_zero_offset_01/index.html">후속 구현 완료: δ0/p4 실제5fit·35평가·에너지+AP 비용 API</a> — 아래는 당시 토론과0fit 진단이며 후속 실행 결과와 구분합니다.</p>
 <aside>기존 자료의 사후 성분 분해입니다. 새 계수 추정·기기 명령0회, 새 실측0회입니다. 원모형·기본·RL·strict는 유지합니다. 세 검토 AI의 합의는 독립 정확도 검증이나 사람 전문가 인증이 아닙니다.</aside>
 <p>유휴 상수 보정을 제거하면 일부 에너지 오차를 줄일 수 있었습니다. 최근20초 전력을 긴 미래에 그대로 쓰는 대안은 짧은 창만 좋아지고 긴 회복에서 실패했습니다. 권고는 개발4만의 δ=0/p4 제약 재추정 후보1개이며, 아직 추정하지 않았습니다. 무부하 미래 기준전력·정책 차이의 부호 문제는 남아 있습니다.</p>
 <table><tr><th>같은 LOAD 관측창</th><th>원식 → 성분 진단</th><th>해석</th></tr>

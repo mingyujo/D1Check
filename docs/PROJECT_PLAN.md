@@ -1,5 +1,11 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-10 ENERGY-AP-ZERO-OFFSET-PC-01 — 제한 오차 감소 구현·실행 완료
+
+- 직전권고를실제수행했다. 원P50/5초목적·δ0·비음수p4 한family·개발4 제외+최종5fit,전체35/상쇄/짝차/저장B17 평가를완료했다. [결과·API·재현](ENERGY_AP_ZERO_OFFSET_RESULTS_20261010.md). AP는고정후보재사용이며개발재생과AP LOSO를분리한다.
+- LOAD같은관측창 J절대23.060→6.187/AP MAE0.437→0.173°C,과거29 J평균5.522→5.144이나10악화·C0/정책부호문제는미해결이다. 명시적macro 진단 API만연결하고기본/RL/strict는유지한다. 다음은이별도경로의지원맥락내비용재생사용이며추가후보/성공할때까지재fit/기기진단을자동추가하지않는다.
+- 새에너지 독립확인과배경식별은이전조건부계획의질문으로남는다. 이번새실측/계획/claim0·experiment_ready=false·다른RL/사용자작업보존이다.
+
 ## 2026-10-10 MODEL-ACCURACY-EXPERT-REVIEW-PC-01 — 기존 자료의 개선 성분과 조건부 후보
 
 - 세 검토AI의3차 토론과0fit 진단을 [보고서](MODEL_ACCURACY_EXPERT_REVIEW_20261010.md)·[구체적 계획](results/model_accuracy_expert_review_01/consensus_plan.json)에 보존했다. 상수δ 제거는제한적J 개선, 최근20초영구기준은긴회복/과거/짝차반례로기각했다. 원식·AP LOAD_SLOW·기본/RL/strict는교체하지않는다.

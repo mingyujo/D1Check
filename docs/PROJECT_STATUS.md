@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-10 ENERGY-AP-ZERO-OFFSET-PC-01 — 전력4계수 실제 추정·35평가·비용 API 완료
+
+- 사용자 자율 진행 승인으로 δ=0/p4 후보1개를 개발4만으로4LOSO+최종1=5fit하고 전체35를 평가했다. AP LOAD_SLOW/원전력proxy는 고정·APfit0. [완료 결과·한계](ENERGY_AP_ZERO_OFFSET_RESULTS_20261010.md) · [그림·CSV·API 재현](results/energy_ap_zero_offset_01/README.md).
+- LOAD J/AP공통37.4174..2554.5103초 J차이−23.060→−6.187/AP MAE0.43731→0.17296°C,등록600초J−15.151→+2.081. 개발LOSO120초평균절대J12.697→7.457/과거29 5.522→5.144이나1/10악화·C0미개선·정책짝부호2/4문제는남는다. 새에너지는사후평가이며AP개선을새AP학습성과로쓰지않는다.
+- 기존6맥락의전력pre50/Android동일원점/35초이전read-return 증거를확인하고별도opt-in 에너지+AP API를실제호출했다. 일반도착/RL/strict는차단·저장B17의비용투영만분리. 고정δ삭제진단보다전조건최선인것도아니므로전체기본교체0이다.
+- 수치·경계7+출력1검증통과/합성fit1·정식fit5. 사전잔차표 빈구간/종료뒤NumPy직렬화오류를최소수정·원소스/등록/오류/완료결과보존·재fit0. 기기·ADB·실측·설치·빌드·새계획·claim·정책배치/RL학습0/원식·후보·자료·기본/strict/experiment_ready=false·사용자14행/다른worktree보존. 다음하나: 같은등록macro의보조비용평가에서명시적opt-in으로이경로를사용하되새독립확인/정책우월성을주장하지않는다.
+
 ## 2026-10-10 MODEL-ACCURACY-EXPERT-REVIEW-PC-01 — 세 관점 토론·반례·해결 순서 완료
 
 - 사용자 요청으로 에너지·열/식별·확인/시뮬레이션·정책 AI3개가 독립 검토→직접 반론→초기전력 재토론3차를 수행했다. [결론·조건부 계획](MODEL_ACCURACY_EXPERT_REVIEW_20261010.md) · [토론·CSV·그림](results/model_accuracy_expert_review_01/README.md). 사람 전문가 인증/새 정확도PASS가 아니다.
