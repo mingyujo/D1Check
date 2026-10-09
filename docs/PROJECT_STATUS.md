@@ -36,6 +36,13 @@
 - Run/claim/설치/앱실행/추론/세션0, ADB2명령(연결1/목록1), daemon재시작/설정변경/자동재연결0. 계획은 **미소비로 보존**, stopped_no_resume/실측실패로 기록하지 않는다. PC Wi-Fi는 연결돼 있으나 휴대폰주소/포트/페어링·네트워크 내부원인은 미확정.
 - 다음하나: 사용자가 현재 무선디버깅 접속주소(페어링이 없으면 페어링주소/코드)를 제공하면 기존승인으로 동일계획의 현재기기·환경 gate부터 진행한다. 연결 회복만으로 세션이 시작됐다고 하지 않는다.
 
+## 2026-10-09 LIST-CANDIDATE-RL-PREPILOT-02 — 유망성·대조 수식·표현성 추가 토론
+
+- 사용자3지적을같은모바일/산업공학/RL AI가독립/직접반론/중재3차로검토했다. [v4.1 제안·정확식·예산·반례](LIST_CANDIDATE_RL_PREPILOT_20261009.md) · [토론/계약/검산](results/list_candidate_rl_prepilot_02/README.md). 기본/복귀/학습참조L0·Band평가only·원v3/v4와과거판정보존이다.
+- 새유망성은전조건/3seed서비스·비용비악화후동일low또는sustained family의전trace/3문맥/3seed 재현으로열형/에너지형/공동형허용·확인전family동결이다. epsilon0/불명미승격·같은2head서비스회계/risk5·대조확인48(3actorpaired144) 제안1520/1536·학습416/예비16자동소비0이다.
+- pure검산PASS:9부호유형/4반복gate·CPU경합/개별hold/overrun/긴급proxy/P95정정·C2반례. PAIR뒤C2약.599초대CPUfirst약.459초·세작업증분J차이−.04325는정적산술이며encoder/전체trace/기기증거아님. 정책/eventadapter/learner미구현·native/학습/기기0·누적6,517/641유지다.
+- 다음최대3: event/hold/같은수식feature구현·원장비회귀, 원성공/중립개발snapshot의포함제외표·encoderC2별칭/도달성·숫자감사, gate통과때만등록된3seed작은파일럿. 원모형/계수/기본/strict/experiment_ready=false·별도Run05/7다른변경·사용자14행/worktree보존. 검토bb062ed+미커밋·sourcehash와명령은verification.json이다.
+
 ## 2026-10-09 LIST-CANDIDATE-RL-REVIEW-01 — 세 관점 AI 토론·v4 보완 제안 완료
 
 - 사용자 요청으로 모바일/산업공학/RL 검토AI3개가 코드 확인→직접 반론→중재 수정의3차 토론을 수행했다. [토론·보완·미합의](LIST_CANDIDATE_RL_REVIEW_20261009.md) · [별도v4 계약/정적검증](results/list_candidate_rl_review_01/README.md). 원v3·계수/원정책/checkpoint는 보존했다.

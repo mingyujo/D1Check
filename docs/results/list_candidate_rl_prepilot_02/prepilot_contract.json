@@ -1,0 +1,238 @@
+{
+  "task": "LIST-CANDIDATE-RL-PREPILOT-02",
+  "version": "v4.1-prepilot-proposal",
+  "status": "discussion_formula_and_static_contract_only",
+  "created_utc": "2026-10-09T13:01:44.207245+00:00",
+  "head": "bb062edb81908cb29888ed97f9583d1ed546c096",
+  "dirty": true,
+  "source_basis": {
+    "docs/results/list_candidate_rl_review_01/design_amendment_v4.json": "7e35ce7d83e8a68f8606352aaac62b4d7ad5f14e9b9361267c121e10a89ceb83",
+    "docs/LIST_CANDIDATE_RL_REVIEW_20261009.md": "99ae1143011874f00d1d2804859d67b3fe56a1e2cf4fd22bccb82187ed584bd1",
+    "docs/results/list_candidate_rl_design_01/design_contract.json": "88aed61e301345b41245ce32416b7e15f2cbb69237485a3085336ea08b8ca421",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9",
+    "tools/d1_empirical_request_policy.py": "32407050fae7a0f6f7d58a19cd6f2f4eedea46ba9c8651e15363d0af496050a0",
+    "tools/d1_edd_ect_residual_controller.py": "451fa485df03ca66857b5f69265dc324f7afe967bcee7013003aaae4bd15073e",
+    "docs/results/list_candidate_rl_design_01/prior_list_inventory.json": "7347a5640eb208d6c84328f074e8fa3a96e0b140c7d35d0f62418bcc7cfb52c9"
+  },
+  "parent_v4_sha256": "7e35ce7d83e8a68f8606352aaac62b4d7ad5f14e9b9361267c121e10a89ceb83",
+  "original_v3_v4_judgments_unchanged": true,
+  "policy_learner_event_adapter_implemented": false,
+  "online": {
+    "base_and_fallback_and_training_reference": "new list L0",
+    "Band_Triton": "evaluation only",
+    "rolling_or_full_queue_added": false,
+    "service_probe_two_current_heads_fixed_order_allowed": true,
+    "AP_J_proxy": "owned jobs and chosen atom only; shadow continuation excluded"
+  },
+  "promotion": {
+    "maintenance_families": [
+      "low",
+      "queue",
+      "burst",
+      "sustained"
+    ],
+    "improvement_families": [
+      "low",
+      "sustained"
+    ],
+    "training_seeds": [
+      11,
+      23,
+      37
+    ],
+    "contexts": [
+      "mean",
+      "short_context",
+      "long_context"
+    ],
+    "mandatory_reference_roles": [
+      "L0",
+      "Band",
+      "Triton"
+    ],
+    "all_cells_all_seeds_service_full_work_and_cost_nonworse": true,
+    "primary_absolute_F_U_N_zero": true,
+    "same_primary_family_all_registered_arrival_traces_contexts_learning_seeds_references_strict_one_axis": true,
+    "passing_families_frozen_before_confirmation": true,
+    "confirmation_only_uses_frozen_passing_families": true,
+    "dev_arrival_trace_count": 2,
+    "final_arrival_trace_count": 4,
+    "types": [
+      "heat_only",
+      "energy_only",
+      "joint",
+      "tradeoff",
+      "tie",
+      "worse",
+      "service_failed",
+      "numerically_undetermined"
+    ],
+    "new_numeric_epsilon": 0,
+    "physical_maintenance_claim": false,
+    "same_canonical_cost_ledger": "evaluate once in common deterministic accounting; cost tie, service separately checked",
+    "canonical_cost_key": "same model/input/preload/window plus task/backend/dispatch_ns/lane_available_ns sorted consistently",
+    "different_ledger_numeric_audit": "raw full precision; stable order/re-evaluation audit. sign instability -> undetermined, no promotion",
+    "old_fast_forecast_error_or_Run05_error_used_as_margin": false
+  },
+  "service_formula": {
+    "mean_vectors": "original profile(mean), equal source context weights, five phases unchanged",
+    "owned_residual_estimator": "legacy dispatch anchored cumulative phase mean, not refitted conditional distribution",
+    "owned_validity": "dispatch+sum(mu[:phase+1])>now and dispatch+sum(mu)>now; otherwise unknown; no residual zero clipping",
+    "owned_end": "dispatch+sum(mu)",
+    "owned_intervals": "[now,predicted lane_available) only when valid",
+    "atom_jobs": "fixed immediate dispatch at now, compatible actual ownership required",
+    "unassigned_head_release": "now or declared per-head hold end; never entire proxy span end",
+    "unassigned_order": [
+      "absolute_due",
+      "arrival",
+      "ordinal",
+      "id"
+    ],
+    "start": "earliest s>=head_release whose [s,s+L) has no same-lane or unsupported-state overlap with owned/atom/prior-shadow intervals",
+    "resource_choice": [
+      "minimum predicted five-phase finish",
+      "CPU tie"
+    ],
+    "classification_response": "start+mu[0]+mu[1]",
+    "detection_response": "start+mu[0]+mu[1]+mu[2]",
+    "lane_end": "start+sum(mu[0:5])",
+    "rho": {
+      "classification_phases": 2,
+      "detection_phases": 3,
+      "lane_phases": 5
+    },
+    "reserve_for_next_head": true,
+    "counterfactual_not_actual_reservation": true,
+    "per_head_expected_latency": "response_absolute-arrival",
+    "deadline_slack": "absolute_due-response_absolute",
+    "RL_and_selector_same_function": true,
+    "body_uses_queue_beyond_two_heads": false,
+    "permutation_or_optimizer_search": false,
+    "prediction_unknown": "return unknown; selector falls back to physical free-resource L0, not old global idle",
+    "actual_lane_release_from_prediction": false
+  },
+  "selector": {
+    "policy": "LIST_SAME_BANK_RISK5_GREEDY_V4_1_PROPOSAL",
+    "rank": [
+      "urgent predicted deadline violation",
+      "normal predicted deadline violation",
+      "urgent positive normalized tardiness",
+      "normal positive normalized tardiness",
+      "observed/current urgent response envelope positive deterioration vs L0",
+      "one-atom span peak AP proxy",
+      "one-atom end AP proxy",
+      "one-atom J proxy",
+      "L0 tie",
+      "fixed signature"
+    ],
+    "late_units": "tardiness/D, D_C=1.5s, D_D=6s",
+    "urgent_envelope": "E(a)=max(observed_P95/1.5s,C_head_pred_latency/1.5s); count0 uses C only; absent C is not applicable",
+    "urgent_envelope_cost": "max(0,E(a)-E(L0)); already normalized, no second /1.5",
+    "unknown_service_or_proxy": "L0 physical immediate choice, never risk0",
+    "shared_feature_sizes": [
+      56,
+      28
+    ],
+    "new_features_automatically_added": false,
+    "future_P95_guarantee": false,
+    "known_one_atom_work_window_bias_remains": true,
+    "only_beating_this_rule_claims_general_RL_superiority": false
+  },
+  "same_bank_final": {
+    "development_conditions": 24,
+    "fresh_confirmation_conditions": 48,
+    "selector_runs_per_condition": 1,
+    "paired_actor_seeds": 3,
+    "paired_confirmation_differences": 144,
+    "extra_final_environment_starts": 48,
+    "train_or_tune_selector": 0,
+    "service_comparable_before_cost_comparison": true,
+    "selector_service_failed": "report service restoration/cost tradeoff, not unconditional energy/AP superiority",
+    "equal_service_and_KPI_with_qualified_selector": "prefer simpler nonlearning method; no RL necessity evidence",
+    "scope": "specified same-bank fixed selector and evaluated conditions, not PPO general superiority"
+  },
+  "representation": {
+    "known_success_cases": 3,
+    "known_success_intents_available": false,
+    "success_replay_needed_before_claim": true,
+    "exclusion_labels": [
+      "head_restriction",
+      "discretionary_credit_bound",
+      "parallel_composition",
+      "actual_lane_ownership",
+      "hold_interruption_or_timer_reachability",
+      "canonicalization",
+      "unknown_intent_or_missing_public_evidence"
+    ],
+    "raw_queue_wait_over_025_means_credit_violation": false,
+    "neutral_development_snapshot_rule": "first public decision at/after35,60,90,110s; first both-heads,CPU-only-owned+GPUfree,PAIR-supported,credit0; deduplicate up to8 per condition; absent=null",
+    "selection_uses_improvement_or_final_winner": false,
+    "alias_evidence_requirement": "different available public queue/history -> same current feature definition -> materially different feasible/preferred action; actual encoder bytes and whole continuation remain to validate",
+    "private_future_or_realized_context_only_difference_is_feature_bug": false,
+    "C2_deadline_alias_static_case": true,
+    "add_queue_feature_or_extend_credit_before_evidence": false,
+    "native_gate_max_environment_starts": 32,
+    "training_blocked_before_native_gate": true
+  },
+  "budget": {
+    "previous_base_expected": 1448,
+    "development_control": 24,
+    "confirmation_control": 48,
+    "total_expected": 1520,
+    "total_cap": 1536,
+    "unconsumed_reserve": 16,
+    "first_stage_cap": 512,
+    "separate_development_control_stage": 24,
+    "before_confirmation_if_all_prior_stages_complete": 536,
+    "conditional_confirmation_original_roles": 384,
+    "conditional_confirmation_new_control": 48,
+    "conditional_confirmation_total": 432,
+    "conditional_no_wait": 144,
+    "conditional_no_history_train_dev_final": 408,
+    "learning_cap": 416,
+    "learning_breakdown": {
+      "main": 192,
+      "resume_fixture_max": 32,
+      "conditional_no_history": 192
+    },
+    "cumulative_environment_starts": 6517,
+    "cumulative_learning_starts": 641,
+    "failures_count_against_caps": true,
+    "all_conditional_success_with_failures_guaranteed": false,
+    "reserve_is_new_retry_tuning_or_learning_authorization": false,
+    "old_task_retry_rule_automatically_inherited": false,
+    "automatic_native_execution_by_this_discussion": false
+  },
+  "preserved_from_v4": [
+    "hold and phase callback separation",
+    "public response event journal",
+    "actual AVAILABLE boundary",
+    "PAIR failed-second request preservation",
+    "realized reward after action plus180s tail",
+    "positive service costs and signed J",
+    "absolute primary deadline and per-condition service checks",
+    "terminal checkpoint actor/critic/Adam/RNG/control state"
+  ],
+  "unresolved_actual_evidence": [
+    "old success primitive-intent replay/representation exclusion table",
+    "current encoder exact public-alias bytes and full continuation outcome",
+    "native hook/hold/paired commit baseline nonregression",
+    "numeric audit sign stability on evaluated schedules",
+    "physical AP/J and controller energy"
+  ],
+  "consumption": {
+    "new_native_environment_starts": 0,
+    "new_learning_starts": 0,
+    "device_commands": 0
+  },
+  "preserved": {
+    "original_model_coefficients": true,
+    "original_results_checkpoints": true,
+    "strict_support": true,
+    "experiment_ready": false,
+    "independent_AP_Run05_untouched": true,
+    "other_worktree_user_files_unrelated_changes": true
+  }
+}

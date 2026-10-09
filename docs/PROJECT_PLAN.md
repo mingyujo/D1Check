@@ -5,6 +5,12 @@
 - 승인plan_v2는 C0600초 뒤의 tail 검사 결함으로 stopped_no_resume. 본작업0/준비12/runtime4/ADB1588/927.703초, 긴회복/LOAD_A미진행·새예측오차없음. [실제결과](AP_TAIL_OBSERVATION_RUN01_20261009.md). 이전C0미소비준비와현재소비종료를구분한다.
 - exact 등록C0만 전체common 종료를허용하고 legacy/LOAD_A의tail검사는유지한다. 실제Activity종료분기 포함Android13/Python5·기존서명후보APK 준비완료, 기기전송/설치/추가실측0. 다음하나는 수정APK의별도새계획PC 동결이며 이번자동재시도/새claim/모형교체/계수적합0이다.
 
+## 2026-10-09 LIST-CANDIDATE-RL-PREPILOT-02 — 파일럿 판정·대조·진단 사전 제안
+
+- 사용자추가지적에따라 [v4.1 미실행계약](LIST_CANDIDATE_RL_PREPILOT_20261009.md)으로유망성과최종채택을분리한다. 원판정보존·epsilon0·전M비악화/primary절대0·같은Gfamily전trace/문맥/3seed에서열/J한축strict허용·확인전family동결이다. AP주보상은그대로이며J항/λ를별도로보고한다.
+- owned+atom후미배정현재2head만고정EDD순서로한번회계/응답2·3단계/lane5·개별hold로정확식고정,AP/Jproxy에후속head미포함·전체큐/online rolling/미래예약0이다. risk4에기존P95목표의공개긴급proxy비악화항추가·RL동일특징/모형·unknown물리L0복귀다.
+- samebank확인48추가로원first512+별도24+조건부432/144/408=1520예상·상한1536/학습416/여유16미소비,원누적6517/641이다. 32native구현gate에원성공포함/제외/불명과결과무관개발snapshot·C2별칭을먼저확인한다. 이번pure검산/토론만완료·정책/학습/native/기기0·Run05/사용자/기본/strict/experiment_ready=false보존이다.
+
 ## 2026-10-09 LIST-CANDIDATE-RL-REVIEW-01 — AI 토론 후 실행·평가 계약 보완
 
 - 사용자3관점토론 요청을 [별도v4 보완안](LIST_CANDIDATE_RL_REVIEW_20261009.md)으로 정리했다. 원v3는보존, 작은 리스트/native Maskable PPO·Band평가전용/온라인롤링제외·원CPU/GPU지원은유지한다. 공개event/hold·응답과lane반환·행동이후APreward/180초꼬리·서비스positive잔차·기존primary절대조건을명시한다.

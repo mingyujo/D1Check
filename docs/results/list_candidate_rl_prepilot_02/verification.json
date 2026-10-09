@@ -1,0 +1,69 @@
+{
+  "task": "LIST-CANDIDATE-RL-PREPILOT-02",
+  "status": "completed_additional_debate_and_pure_formula_checks",
+  "verified_utc": "2026-10-09T13:18:01.148605+00:00",
+  "head": "bb062edb81908cb29888ed97f9583d1ed546c096",
+  "dirty": true,
+  "command": "python -B -X utf8 -m tools.d1_list_candidate_rl_prepilot_check",
+  "result": {
+    "status": "PASS",
+    "scope": "pure prepilot formula audit; no native engine or policy execution",
+    "head": "bb062edb81908cb29888ed97f9583d1ed546c096",
+    "checker_sha256": "59bbc644bab6c66f6451ffce7e7a9dffd6a37441b6460137e977b35b859324ea",
+    "contract_sha256": "874f3571f7c3c34cf7ee39f4ba11a8689d63c8ada33c3818cf4e7987d72b5bd1",
+    "cost_type_sign_cases": 9,
+    "promotion_cases": 4,
+    "formula_examples": "CPU collision, per-head hold, overrun, urgent envelope, quantile correction",
+    "C2_alias": {
+      "C2_response_pair_s": 0.5988841098958333,
+      "C2_response_CPU_first_s": 0.4592709103541667,
+      "D1_response_CPU_first_s": 0.7846877190763889,
+      "three_request_increment_pair_J": 0.5498731463761237,
+      "three_request_increment_CPU_first_J": 0.5931199960324891,
+      "energy_difference_J": -0.04324684965636538,
+      "scope": "static three-request arithmetic; no encoder/whole-trace/physical proof"
+    },
+    "native_environment_starts": 0,
+    "learning_starts": 0,
+    "device_commands": 0
+  },
+  "source_basis": {
+    "docs/results/list_candidate_rl_review_01/design_amendment_v4.json": "7e35ce7d83e8a68f8606352aaac62b4d7ad5f14e9b9361267c121e10a89ceb83",
+    "docs/LIST_CANDIDATE_RL_REVIEW_20261009.md": "99ae1143011874f00d1d2804859d67b3fe56a1e2cf4fd22bccb82187ed584bd1",
+    "docs/results/list_candidate_rl_design_01/design_contract.json": "88aed61e301345b41245ce32416b7e15f2cbb69237485a3085336ea08b8ca421",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9",
+    "tools/d1_empirical_request_policy.py": "32407050fae7a0f6f7d58a19cd6f2f4eedea46ba9c8651e15363d0af496050a0",
+    "tools/d1_edd_ect_residual_controller.py": "451fa485df03ca66857b5f69265dc324f7afe967bcee7013003aaae4bd15073e",
+    "docs/results/list_candidate_rl_design_01/prior_list_inventory.json": "7347a5640eb208d6c84328f074e8fa3a96e0b140c7d35d0f62418bcc7cfb52c9"
+  },
+  "policy_learner_public_event_adapter_implemented": false,
+  "old_native_success_replay_performed": false,
+  "encoder_tensor_alias_test_performed": false,
+  "whole_trace_KPI_or_physical_improvement_verified": false,
+  "limitations": [
+    "pure sign and recurrence criteria with hypothetical metric rows",
+    "two-head mean interval arithmetic, not native event semantics",
+    "C2 counterexample includes only three requests, not remaining queue or full AP/P95",
+    "original v3/v4 decisions preserved; new gate affects future pilot only",
+    "no numerical error or measured error allowance introduced"
+  ],
+  "new_native_environment_starts": 0,
+  "new_learning_starts": 0,
+  "device_commands": 0,
+  "cumulative_environment_starts": 6517,
+  "cumulative_learning_starts": 641,
+  "independent_AP_Run05_not_touched": true,
+  "other_changes_preserved": true,
+  "preparation_errors": [
+    {
+      "kind": "staging text check",
+      "detail": "Korean STATUS summary contained one unintended CJK character; staging scan stopped before commit",
+      "fix": "replace only own summary character, preserve other changes, rerun text and artifact checks",
+      "native_environment_starts": 0,
+      "criteria_relaxed": false
+    }
+  ],
+  "publication_checked_utc": "2026-10-09T13:21:56.133672+00:00"
+}

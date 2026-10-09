@@ -6,6 +6,12 @@
 - exact C0 profile에만 전체window종료를허용하고 조기/미등록/다른창은거부, LOAD_A/legacy tail·기존watchdog·계측·호출·onDestroy취소/동결계수불변. 실제Activity종료분기 회귀를추가해Android13/Python5 통과, 수정후보는기존서명으로PC 생성만했다.
 - 원plan_v2 stopped_no_resume/추론12·부분기록/기존FAIL·모형/후보를보존한다. 긴C0/LOAD독립오차확인·정확도PASS·기본/RL/strict/experiment_ready승격0. 별도계획/추가실측은이번자동생성하지않는다.
 
+## 2026-10-09 LIST-CANDIDATE-RL-PREPILOT-02 — 사용자유망성 정정·새파일럿 사전판정
+
+- 사용자지적을반영해원v3/v4·과거판정은보존하고 [v4.1 파일럿전제안](LIST_CANDIDATE_RL_PREPILOT_20261009.md)을별도기록한다. 세AI는열형/에너지형/공동형유망·서비스먼저·수치/물리유지구분·epsilon0·전조건비악화/동일Gfamily전반복·확인전동결에합의했다. Band는평가only/L0기본참조를유지한다.
+- 좁은서비스추정범위변경을명시: owned+atom/현재2head 고정순일회가상회계만허용·순열최적화/전체큐/online rolling/예약0·AP/J에미배정완료비용미포함. 비학습risk5/unknown물리L0·최종대조48을제안했고대조도최종통과·RL동률이면비학습우선추천이다.
+- 기대1520/전체1536/학습416·예비16자동추가권한0·native/학습/기기0·누적6517/641이다. 정적C2반례는실제encoder/전체KPI/표현성증명이아니므로근거없이차원·credit·알고리즘을확대하지않는다. 원모형/결과/strict/experiment_ready=false·별도Run05/다른작업/사용자변경을보존한다.
+
 ## 2026-10-09 LIST-CANDIDATE-RL-REVIEW-01 — 세 AI 검토 완료·v4는 미구현 제안
 
 - 확정작업: 사용자가요청한모바일/산업공학/RL AI3개의실제교차검토를수행했다. [쟁점·반론후변경·합의/미합의](LIST_CANDIDATE_RL_REVIEW_20261009.md)를기록하고원v3를보존한다. 작은리스트/Maskable PPO와Band/Triton평가전용/온라인롤링제외방향은유지한다.
