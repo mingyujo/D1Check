@@ -15,6 +15,17 @@ internal object EnergyTailObservation {
         else -> throw IllegalArgumentException("unregistered tail profile")
     }
     fun workCap(profile: String) = blocks(profile).sumOf { it.lanes.size * it.seconds * 4 }
+    fun requireCommonEnd(specified: List<EnergyStateCalibration.Block>, elapsedNs: Long, commonNs: Long) {
+        require(commonNs == COMMON_SECONDS * 1_000_000_000L && elapsedNs >= 0)
+        if (specified == blocks("C0_LONG")) {
+            // C0 intentionally fills the entire common window: there is no work
+            // completion tail to reserve. Whole watchdog/health checks still apply.
+            check(elapsedNs >= commonNs) { "registered C0 window unfinished" }
+        } else {
+            require(specified == blocks("LOAD_A_LONG"))
+            check(elapsedNs < commonNs) { "no common-window tail reserve" }
+        }
+    }
     fun validate(m: JSONObject): String {
         val profile = m.getString("identification_profile")
         val expected = blocks(profile)

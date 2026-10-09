@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-09 AP-TAIL-OBSERVATION-RUN-01 — C0 종료 결함 수정·원실패 보존
+
+- 확정원인: 무부하C0가common600초 전부를 쓰는데 기존부하의elapsed<commonNs tail검사를공통적용한코드결함이다. 원앱stack/Android600.028초 실패·정상common_end/냉각미진입을근거로분류하며 무선단절·lifecycle·모형오차로해석하지않는다. [원본·수정검증](AP_TAIL_OBSERVATION_RUN01_20261009.md).
+- exact C0 profile에만 전체window종료를허용하고 조기/미등록/다른창은거부, LOAD_A/legacy tail·기존watchdog·계측·호출·onDestroy취소/동결계수불변. 실제Activity종료분기 회귀를추가해Android13/Python5 통과, 수정후보는기존서명으로PC 생성만했다.
+- 원plan_v2 stopped_no_resume/추론12·부분기록/기존FAIL·모형/후보를보존한다. 긴C0/LOAD독립오차확인·정확도PASS·기본/RL/strict/experiment_ready승격0. 별도계획/추가실측은이번자동생성하지않는다.
+
 ## 2026-10-09 IE-ROLLING-PREFIX-GUARD-02 — 첫 선택 검사 보존·전범위 미채택
 
 - 확정 구현: 후속 전체 계획의 이득이 실제 첫 단건/동시쌍/대기에도 남는지 원3문맥·현재전체큐/Band suffix로 검사한다. 차단은 미실행 pending/hold/cooling만 취소해 Band를 반환하며 이미 실행 중 작업은 변경하지 않는다. 원창/선별/계수/기한/품질/5단계 점유·CPU/GPU 지원은 보존했다. [근거·범위](results/rolling_prefix_01/README.md).

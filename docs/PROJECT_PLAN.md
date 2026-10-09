@@ -1,5 +1,10 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-09 AP-TAIL-OBSERVATION-RUN-01 — 실행 종료·C0 경계 수정
+
+- 승인plan_v2는 C0600초 뒤의 tail 검사 결함으로 stopped_no_resume. 본작업0/준비12/runtime4/ADB1588/927.703초, 긴회복/LOAD_A미진행·새예측오차없음. [실제결과](AP_TAIL_OBSERVATION_RUN01_20261009.md). 이전C0미소비준비와현재소비종료를구분한다.
+- exact 등록C0만 전체common 종료를허용하고 legacy/LOAD_A의tail검사는유지한다. 실제Activity종료분기 포함Android13/Python5·기존서명후보APK 준비완료, 기기전송/설치/추가실측0. 다음하나는 수정APK의별도새계획PC 동결이며 이번자동재시도/새claim/모형교체/계수적합0이다.
+
 ## 2026-10-09 IE-ROLLING-PREFIX-GUARD-02 — 첫 선택 검사 한 후보 비교 완료
 
 - 개발에서 선별 손실 근거0·후속 이득을 첫 선택에 전용한 AP 반례12/527을 확인하여 실제 첫 prefix만 추가 검사했다. 원 선별8/창4/credit/원3문맥/모형·요청·기한·자원 점유를 보존하고 개발에서 선택 동결 후 새815030101/102 확인을 수행했다. [계약·결과](results/rolling_prefix_01/README.md).

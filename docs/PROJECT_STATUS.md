@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-10-09 AP-TAIL-OBSERVATION-RUN-01 — C0 경계 결함 중단·PC 수정 완료
+
+- 사용자 재페어링 정보로 pairing1회 성공/현재 단일A24 transport 고정, Check·현재기기/설치본/환경/품질 gate 통과 후 승인plan_v2 Run1회. 첫C0600초 종료에 기존부하tail 검사를 적용해 no common-window tail reserve로 실패, 긴1920초 회복/LOAD_A미진행. 연결소실/lifecycle_cancelled/모형예측실패아님. [원인·소비·수정](AP_TAIL_OBSERVATION_RUN01_20261009.md) · [실제 종료 화면](results/ap_tail_observation_run_01/run_v2/index.html).
+- 실제 runtime4/본작업0/적격성4/warmup8/추론12/staging1·7파일/pull·APKpush·install각1/ADB1588(내부1584+준비4)/927.703초.18파일회수·원stack/부분J/FAIL/receipt/checkpoints 보존, 앱정리failed/host세션정리1회·프로세스부재/parent·child부재확인. plan_v2 stopped_no_resume·재시도0, Check 재실행차단확인.
+- 시작AP29.1°C, 실제조회후시작0.198초. 정상common_end/회복없음·새J/AP예측오차null; 관측부분549.732J/599.744초는전체600초J가아니다. exact 등록C0만 전체600초종료 허용하는 최소수정, legacy/LOADtail·watchdog/센서/모형불변. Android실제Activity종료분기3+관련10=13/Python5·서명후보00b2b926…51cdb 검증완료, 수정후보설치/추가실측0.
+- 원모형·후보·기본/RL/strict/experiment_ready=false·사용자STATUS14행/개인파일/다른정책작업을보존한다. 다음하나: 수정APK를 별도ID의 새계획에동결하는PC 준비. 이번새계획/claim/재실측은없으며 기존종료계획은재개하지 않는다.
+
+
 ## 2026-10-09 AP-TAIL-CONNECTION-GATE-01 — 실행 승인·연결 실패로 실측 미시도
 
 - 사용자 지정 주소 연결과 최종 plan_v2 2조건 실측을 승인했다. 최신 HEAD03714dc/사용자STATUS14행·다른정책결과를 보존하고 Check 동일성·미소비 통과. 계획SHA e4aec382…e6f68/원모형·후보 불변.

@@ -404,7 +404,11 @@ class EnergyCollectionActivity : Activity() {
             event("block_end",mapOf("block" to block.id,"actual_duration_ns" to now()-start))
             nominalOffset += block.seconds * 1_000_000_000L
         }
-        check(now()-commonStart < commonNs) { "no common-window tail reserve" }
+        finishCalibrationWindow(blocks,commonStart,commonNs)
+    }
+    private fun finishCalibrationWindow(blocks: List<EnergyStateCalibration.Block>, commonStart: Long, commonNs: Long) {
+        if (tailObservation) EnergyTailObservation.requireCommonEnd(blocks,now()-commonStart,commonNs)
+        else check(now()-commonStart < commonNs) { "no common-window tail reserve" }
         event("phase_end")
     }
     private fun workload(keys: List<String>, parallel: Boolean, counts: List<Int>, image: File, imageHash: String, budget: Long) {

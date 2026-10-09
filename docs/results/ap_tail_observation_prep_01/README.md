@@ -1,5 +1,9 @@
 # 긴 resident C0·부하 회복: PC 준비, 미승인·미소비
 
+## 실제 후속: plan_v2 소비·중단
+
+재페어링 후 승인Run1회, 첫C0 종료 경계 결함으로 stopped_no_resume. 준비12/본작업0·긴회복/LOAD_A미시도다. [실제 결과·PC 수정](../../AP_TAIL_OBSERVATION_RUN01_20261009.md) · [종료 화면](../ap_tail_observation_run_01/run_v2/index.html). 아래 미소비/미승인/연결대기 설명은 과거 체크포인트이며 현재 plan_v2는 재실행할 수 없다.
+
 ## 2026-10-09 현재 실행 상태
 
 실측은 사용자 승인됐으나 현재 기기 연결 gate에서 대기한다. 연결1회가 실패했고 목록 확인1회에는 온라인기기0이었다. Run/claim/설치/세션/추론0·ADB2명령이며 계획은 미소비다. 준비 시점의 미승인 표시는 과거 기록이다. [연결 증거 요약](connection_gate_20261009.json) · [현재 보고](../../AP_TAIL_OBSERVATION_PREP_20261009.md).

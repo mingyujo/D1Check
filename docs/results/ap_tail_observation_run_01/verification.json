@@ -1,0 +1,83 @@
+{
+  "utc": "2026-10-09T07:09:15.954254+00:00",
+  "measurement_start_head": "2bd99700106e3795672bab0b54f8b3a7ec5017f0",
+  "current_head": "2bd99700106e3795672bab0b54f8b3a7ec5017f0",
+  "uncommitted_fix_at_validation": true,
+  "receipt_sha256": "aa5b14c14d1d6337c692bea98162ff3a945596a63c41268d1b9ffdab5c484ca6",
+  "raw_plan_sha256": "e4aec38289084840df0a54a9c2322354bda1e6c83388bd47e85a7d95641e6f68",
+  "original_model_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+  "candidate_sha256": "aa28410d701c9810001a4e6c176823e7d2b446f46f980ebeab3ff14f4540cc84",
+  "outcome": "C0 app boundary failure;LOAD_A unattempted;no1920s recovery;no valid model errors",
+  "android_tests": [
+    {
+      "name": "com.example.d1check.benchmarkrunner.EnergyCollectionLifecycleTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.example.d1check.benchmarkrunner.EnergyResidentIdentificationTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.example.d1check.benchmarkrunner.EnergyTailObservationTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.example.d1check.benchmarkrunner.EnergyTailWindowBoundaryTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  ],
+  "android_compile": true,
+  "assemble": true,
+  "python_tests": 5,
+  "python_command": "python -B -m unittest tools.test_d1_ap_tail_observation_results.ResultTests -v",
+  "android_test_command": "gradlew.bat --no-configuration-cache --init-script tools/arrival_timing_isolated_build.gradle :benchmark-runner:testModelProbeUnitTest --tests '*EnergyTailWindowBoundaryTest' --tests '*EnergyTailObservationTest' --tests '*EnergyResidentIdentificationTest' --tests '*EnergyCollectionLifecycleTest' -PenableModelProbe=true --console=plain",
+  "source_sha256": {
+    "benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/EnergyCollectionActivity.kt": "d4f805a691d9f49a344c9051613dbca2c4f1b78ce81816f5b7702a8af69d26b8",
+    "benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/EnergyTailObservation.kt": "80b0732b7cddceb6577d47150a453e4d0e6e8ba69e48989f81bbb51b754d8af6",
+    "benchmark-runner/src/testModelProbe/java/com/example/d1check/benchmarkrunner/EnergyTailWindowBoundaryTest.kt": "892efa03d7e7b04759128e9aefbd6b5fe710f7f23f478c1ae68cb1b3e78b84a4",
+    "tools/d1_ap_tail_observation_results.py": "12e461d982608774486166b072270d9739cb0caf685dc076f2a8b6a585220b00",
+    "tools/test_d1_ap_tail_observation_results.py": "c42ffed1add4b6c70d90adc01dd29f53838d52e770b952a88950754a09c51837"
+  },
+  "logs": {
+    "ap_tail_boundary_fix_tests.log": "0fa06b5200a007fdaa3ecba65f15a35668d2680fbe9000f69587e3c1f53f904c",
+    "ap_tail_boundary_fix_final_tests.log": "2da23709a4e3f12195fbccb1ae109126b80dff7e4ca54cb97b6eb038a968b988",
+    "ap_tail_boundary_fix_assemble.log": "97b49acfa80368cd504c26ace6cc150d899fa637cec7bca730315f7a9769dbef"
+  },
+  "fixed_APK": "00b2b926d8505e149e6ec3315dc2156031fde290a9327fb751e07e016d651cdb",
+  "fixed_APK_installed": false,
+  "new_plan_created": false,
+  "new_claim": false,
+  "retry": 0,
+  "run_calls": 1,
+  "internal_adb": 1584,
+  "external_adb": 4,
+  "total_adb": 1588,
+  "explicit_inference_confirmed": 12,
+  "runtime_confirmed": 4,
+  "work_confirmed": 0,
+  "original_failure_preserved": true,
+  "host_parent_child": {
+    "utc": "2026-10-09T06:56:57.251892+00:00",
+    "child": {
+      "status": "absent",
+      "pid": 15992
+    },
+    "parent": {
+      "status": "absent",
+      "pid": 2652
+    }
+  },
+  "limitations": "actual completion boundary dispatch tested with Robolectric;not full600+1920s real device replay"
+}
