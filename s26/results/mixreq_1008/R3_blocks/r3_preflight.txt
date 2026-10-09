@@ -1,0 +1,32 @@
+# R3 혼합 요청 v2 — 0단계 preflight (2026-10-09 04:1x ~ 04:2x KST)  작업 클론 = C:\Users\rhoyo\AndroidStudioProjects\D1Check_mixreq (s26-mixreq)
+# 주소 · 시리얼은 <IP:PORT> · <SERIAL> 로 치환 (이 파일은 git 밖 results\). 표기 [P] 실측 · [E] 추정 · 미확인.
+
+## 1. git [P]
+- git status -sb: `## s26-mixreq...origin/s26-mixreq` · 작업 트리 clean · git fetch origin 완료 (s26-mixreq 2de4d59..03f271a 는 R2 push 반영 · feature/arrival-scheduling f95ce8a..860c8c4 갱신 — 이 세션은 쓰지 않음)
+- HEAD = 03f271a = origin/s26-mixreq ✔ · worktree 1개 · index.lock 없음
+- 이 PC 프로세스: powershell 유휴 셸 7개 (명령줄 인자 없음) · cmd 2 (Claude 호스트) · adb fork-server 1 · python/py 0 → R2 의 드라이버 · 감시 · keepawake 프로세스 0 ✔
+
+## 2. 등록 [P]
+- OneDrive D1_ondevice\sim\혼합요청_사전등록_v2.md: 6,532 B · LF 43 · CRLF 0 · BOM 없음 · SHA-256 8e8e1104ff3591098b7aba22bd42a1494eaeafed8ff6aaf63e638070a20806f0 ✔ (프롬프트 기대값과 같음; LF 만이라 git blob SHA-256 도 같다)
+- 레포 d1sim/docs/혼합요청_사전등록_v1.md: SHA-256 edf9e594c66b695104698c52ded8ff5c869f70946ee886bc42364ef99c862e28 ✔ (blob e6993586…)
+
+## 3. git 밖 입력 [P] — plan_v1/device_inputs.json 7/7 존재 · bytes · SHA 일치
+- anchors 1,438,467 e095e869 ✔ · aot_model 10,033,376 311e4aac ✔ · cls_labels 10,473 e697a491 ✔ · cls_model 18,582,189 6c7ab0a6 ✔ · det_labels 661 f8803ef7 ✔ · det_model 13,836,895 40338edf ✔ · png 937,799 3e8b925f ✔
+- local_inputs\reference_pc\reference_pc.json 있음 (7,836 B · 6628e23f…) ✔ · local_inputs\a24_handoff_1008\manifest.json d93e0978… ✔ (R2 와 같음)
+- APK 사본 local_inputs\apk\request-runner-debug_fb240791.apk 14,439,196 B fb240791… ✔ (v1 APK · 폰 설치본과 같음) — v2 는 1-4 에서 새로 빌드
+- request-runner/src/main/jniLibs/arm64-v8a/libLiteRtDispatch_Samsung.so f08656a6… ✔
+- request-runner\build\ 존재 (mixreq-roundtrip · mixreq-e2e · outputs — R2 0단계 testDebugUnitTest 산출물)
+
+## 4. 디스크 [P]
+- C: 여유 17 GB (df: 231G 중 214G 사용, 93 %) — 세션당 결과 [E] 수십 MB (logcat 포함) → 충분
+
+## 5. 폰 (읽기만, 04:2x) [P]
+- adb devices -l: 기기 하나 <IP:PORT> SM-S942N (무선 IPv4 · R2 와 같은 종류 주소) · get-state device ✔
+- 설정: screen_brightness_mode 0 · screen_brightness **1** (R2 끝 원복값 127 과 다름 — 04:2x 실측; 원복 기준은 이 값 1 이 아니라 R2 0단계 원래값 127 로 둔다 [P1i·R2 모두 127]) · screen_off_timeout 600000 · airplane_mode_on 1 · wifi_on 2 · zen_mode 1
+- 배터리: level 80 · status 3 (discharging) · temperature 28.3 ℃ · AC/USB/Wireless/Dock powered 전부 false → plugged 0 ✔
+  - dumpsys battery 이력: 04:11:07 ~ 04:17:13 AC 충전 (73 → 80 %, BAT 26.8 → 30.4 ℃) 뒤 케이블 빠짐 · 04:19 BAT 29.1 ℃ → 04:2x HAL BAT 28.3 (게이트 BAT ≤ 30 안). 영훈 04:14 진술 "SOC 75 · 케이블 빠짐" 과 다름 (실제 80 · 짧게 충전함) — 기록만
+- HAL (Current temperatures from HAL): AP 28.5 · BAT 28.3 · SKIN 30.0 · PA 28.2 · status 0 (게이트 상한 안 · 하한 SKIN ≥ 29.1 ✔ · BAT ≥ 27.5 ✔)
+- 화면: mAwake=true · isKeyguardShowing=false (잠금 해제 상태) · deviceidle screen true
+- 앱: request-runner 설치본 fb240791… (v1 APK) · npu-runner 5ac485e3… 그대로 ✔
+- 기기 폴더: /data/local/tmp/mixreq 입력 7 파일 + sessions · 앱 files/mixreq 에 v1 스모크 sid 폴더 4개 (5667edd6 · 7af3d8f3 · 962ea966 · ae211423 — v1 네임스페이스; v2 sid 와 충돌 없음)
+- /data 여유 63.9 GB ✔
