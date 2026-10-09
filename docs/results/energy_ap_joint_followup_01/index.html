@@ -1,5 +1,6 @@
 <!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>에너지·AP 함께 평가</title><style>body{font:17px/1.7 system-ui;max-width:1100px;margin:30px auto;padding:0 18px;color:#203040}aside{background:#fff2cf;padding:18px}img{width:100%}table{border-collapse:collapse;width:100%}td,th{padding:10px;border-bottom:1px solid #ddd}a{color:#075985}</style></head><body>
 <h1>에너지 개선도 실제 평가: 600초 개선과 긴 유휴 악화</h1>
+<p><a href="../model_accuracy_expert_review_01/index.html">후속 세 관점 토론: δ 제거의 제한 개선·최근20초 초기화의 반례·조건부 해결 순서</a> — 새 계수fit/실측0, 기존 결과와 분리한 진단입니다.</p>
 <aside>원래목표는열과에너지예측오차를모두줄이는것입니다. AP후보는고정,새에너지후보1개를개발4로추정했습니다. 새C0/LOAD에너지결과를본뒤만든사후평가이며기본/RL/strict 교체·정확도PASS·새독립확인이아닙니다. 추가실측0.</aside>
 <table><tr><th>고정600초창</th><th>원 J차이 → 후보 J차이</th><th>원 AP MAE → 고정후보</th></tr><tr><td>C0</td><td>-13.148 → +1.342J</td><td>0.013 → 0.013°C</td></tr><tr><td>LOAD_A</td><td>-15.151 → +10.763J</td><td>0.544 → 0.186°C</td></tr></table>
 <p>긴유휴에서는상수offset 누적으로악화합니다. LOAD의덮인등록회복구간은절대7.655→38.700J,원래전체회복은끝표본누락으로null입니다. 과거29의J 평균절대오차5.522→5.402J이나14세션악화,AP도이전13악화를보존합니다. 개선창만골라전체성공으로표현하지않습니다.</p>

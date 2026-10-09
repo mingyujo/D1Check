@@ -1,5 +1,11 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-10 MODEL-ACCURACY-EXPERT-REVIEW-PC-01 — 기존 자료의 개선 성분과 조건부 후보
+
+- 세 검토AI의3차 토론과0fit 진단을 [보고서](MODEL_ACCURACY_EXPERT_REVIEW_20261010.md)·[구체적 계획](results/model_accuracy_expert_review_01/consensus_plan.json)에 보존했다. 상수δ 제거는제한적J 개선, 최근20초영구기준은긴회복/과거/짝차반례로기각했다. 원식·AP LOAD_SLOW·기본/RL/strict는교체하지않는다.
+- 다음PC후보는원P50/개발4/동일5초목적의δ0·비음수p4 한family,4LOSO+최종1의최대5fit에한정한다. 기존29/긴2는이미본평가자료이며학습금지. 무부하C0/미래배경변동/정책짝부호2/4미해결을목표완료로숨기지않는다. 새fit은이번0이며필요성확인후별도구현·평가한다.
+- 추가실측은새동결후C0+LOAD2조건의독립예측확인이나정책짝/이력식별질문중필요한것에만조건부다. 기존2조건상한은참고이며반복수·새정확예산·미소비계획은미확정. 이번새기기계획/claim/실측0,별도RL작업·사용자변경보존·experiment_ready=false 유지.
+
 ## 2026-10-10 ENERGY-AP-JOINT-PC-01 — 원목표는 두 출력 정확도 개선
 
 - 사용자정정: 목표는에너지/열AP예측오차감소이며AP-only범위정리가전체목표완료를뜻하지않는다. 기존개발4에너지후보1개5fit과전체35·고정AP의동시판독을완료했다. [실제개선/악화](ENERGY_AP_JOINT_FOLLOWUP_PC_20261010.md).

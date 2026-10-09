@@ -1,0 +1,97 @@
+{
+  "id": "MODEL-ACCURACY-EXPERT-REVIEW-PC-01",
+  "status": "review_completed_conditional_followup_proposed",
+  "reviewers": 3,
+  "review_rounds": 3,
+  "human_expert_certification": false,
+  "objective": "reduce both device energy and AP prediction error without replacing the frozen simulator or RL model",
+  "completed_this_turn": {
+    "fixed_coefficient_delta_ablation": true,
+    "fixed_pre20_initialization_diagnostic": true,
+    "common_energy_AP_window_check": true,
+    "counterbalanced_CPU_PAR_difference_check": true,
+    "new_physical_model_fits": 0,
+    "fixed_AP_case_replays": 2,
+    "policy_simulator_runs": 0,
+    "device_commands": 0
+  },
+  "conditional_PC_candidate": {
+    "id": "resident-energy-zero-offset-p4-proposed-v1",
+    "implemented_or_fitted": false,
+    "entry_condition": "state-dependent development residuals justify a four-state refit; do not claim it fixes no-load future baseline drift",
+    "family_count_max": 1,
+    "energy_fit_calls_max": 5,
+    "AP_fit_calls": 0,
+    "development_ids": ["session_00", "session_01", "session_02", "session_03"],
+    "evaluation_only": ["29 already-viewed archival sessions", "2 already-viewed long cases"],
+    "loss": "same equally-session-weighted least squares of 5-second development energy intervals after t=35",
+    "constraints": "idle_bias_w fixed zero; four state increments nonnegative; rank4 and positive total power required",
+    "initialization": "original pre50 power from canonical [-20,30]; observed preAP only; no post-load sensor feedback",
+    "AP": "frozen LOAD_SLOW and its original energy proxy unchanged; no new energy coefficient injection",
+    "windows": ["reference[0,120] with historical-prefix interpretation", "future[35,120]", "registered[35,635]", "work-present", "post-lane-idle", "recovery", "full covered prefix", "deterministic common AP/power support intersection"],
+    "report": ["all sessions and groups", "signed/absolute/relative J and cumulative cancellation", "5/10-second residuals where covered", "AP MAE/max/peak/direction", "CPU_PAR paired delta error and sign", "null endpoints and unsupported states", "stored A and B schedules separately where available"],
+    "stops": ["rank deficiency", "nonfinite or nonpositive total power", "source or candidate hash mismatch", "missing required role or schedule fields", "declared finite fit budget exhausted"],
+    "no_automatic": ["new family or tau grid", "coefficient adjustment after evaluation", "default/RL/strict replacement", "measurement or consumed-plan restart"],
+    "accuracy_pass_threshold": null,
+    "success_scope": "limited posthoc model improvement if supported; not a policy-superiority or general baseline solution"
+  },
+  "rejected_shortcuts": [
+    "permanent positive delta over long idle",
+    "permanent pre20 initialization for long future, rejected by long recovery and policy differences",
+    "select P20 for C0 and P50 for LOAD after seeing results",
+    "invent decay tau or physical ambient/coupling parameters",
+    "combine new energy coefficients with already-confirmed AP proxy",
+    "treat an online observer with new observations as the same offline prediction task"
+  ],
+  "conditional_measurement": {
+    "execution_authorized_this_turn": false,
+    "new_collection_plan_created": false,
+    "consumption_claim_created": false,
+    "priority": "after conditional PC candidate and both output heads, issue information and windows are frozen",
+    "candidate_confirmation": {
+      "question": "does the frozen prediction generalize to a new registered no-load and load/recovery block?",
+      "profiles": ["C0_LONG", "LOAD_A_LONG"],
+      "sessions": 2,
+      "role": "new confirmation only; no refitting with resulting data",
+      "conditional_unchanged_runner_reference_budget": {
+        "source": "tools/d1_ap_tail_observation_plan.py and existing two-profile contract; reference, not new execution manifest",
+        "runtime_max": 8,
+        "warmup_max": 16,
+        "eligibility_max": 8,
+        "work_max": 1200,
+        "explicit_inference_max": 1224,
+        "staging_max": 2,
+        "staged_files_max": 14,
+        "installed_APK_pull_max": 1,
+        "APK_push_max": 1,
+        "install_max": 1,
+        "identical_install_skip": true,
+        "fixed_observation_s": 5280,
+        "total_reference_reserve_s": 9050,
+        "ADB_reference_max": 16752,
+        "retry_replacement_additional": 0
+      },
+      "final_new_plan_budget": null,
+      "missing_before_execution": ["new unconsumed ID and manifests", "final candidate hash and issue information contract", "freeze question and profile order", "code-derived current plan budget and cleanup reserve", "current device/install/environment gate"],
+      "not_identified_by_one_block": ["causal date/order/background effects", "independent-block variability", "physical tau", "policy superiority"]
+    },
+    "policy_difference_if_required": {
+      "question": "is an energy/AP policy difference distinguishable from predictive and block variation?",
+      "design_example": "same arrival CPU/PAR counterbalanced ABBA four sessions",
+      "required_sample_count": null,
+      "budget": null,
+      "reason": "precision/variance basis and frozen policy workload/runner budget are not yet available; four is a design example, not a guarantee",
+      "not_combined_with_macro_as_automatic_six_session_run": true
+    },
+    "baseline_identification_if_required": {
+      "question": "can observed pre-state/history predict long no-load baseline drift?",
+      "requirements": ["observable prior workload/idle history", "define conditioning and independent order blocks", "development and separate confirmation roles"],
+      "samples_and_budget": null,
+      "reason": "pre50 and pre20 both fail some full-horizon cases; no known causal ambient or internal state observation"
+    }
+  },
+  "default_changed": false,
+  "strict_support_changed": false,
+  "RL_environment_changed": false,
+  "experiment_ready": false
+}

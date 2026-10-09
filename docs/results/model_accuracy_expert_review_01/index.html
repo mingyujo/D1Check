@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>에너지·AP 오차 개선 토론</title>
+<style>body{font:17px/1.7 system-ui;max-width:1100px;margin:30px auto;padding:0 18px;color:#203040}aside{background:#fff2cf;padding:18px}img{width:100%}table{border-collapse:collapse;width:100%}td,th{padding:10px;border-bottom:1px solid #ddd}a{color:#075985}</style></head>
+<body><h1>세 관점 토론: 개선 성분과 실패 반례</h1>
+<aside>기존 자료의 사후 성분 분해입니다. 새 계수 추정·기기 명령0회, 새 실측0회입니다. 원모형·기본·RL·strict는 유지합니다. 세 검토 AI의 합의는 독립 정확도 검증이나 사람 전문가 인증이 아닙니다.</aside>
+<p>유휴 상수 보정을 제거하면 일부 에너지 오차를 줄일 수 있었습니다. 최근20초 전력을 긴 미래에 그대로 쓰는 대안은 짧은 창만 좋아지고 긴 회복에서 실패했습니다. 권고는 개발4만의 δ=0/p4 제약 재추정 후보1개이며, 아직 추정하지 않았습니다. 무부하 미래 기준전력·정책 차이의 부호 문제는 남아 있습니다.</p>
+<table><tr><th>같은 LOAD 관측창</th><th>원식 → 성분 진단</th><th>해석</th></tr>
+<tr><td>37.4174–2554.5103초 J 차이</td><td>−23.060 → −11.934J</td><td>고정 p4에서 δ만 제거, 새 학습 아님</td></tr>
+<tr><td>같은 구간 AP MAE</td><td>0.43731 → 0.17296°C</td><td>고정 LOAD_SLOW, 과거13악화 유지</td></tr>
+<tr><td>과거29 참고120초 평균 절대J</td><td>5.522 → 5.087J</td><td>11악화·C0미개선, 일반 교체 안 함</td></tr>
+<tr><td>CPU/PAR 4짝 차이 오차</td><td>6.322 → 6.213J</td><td>부호 오판2/4, 정책 순위 미해결</td></tr></table>
+<p><a href="../../MODEL_ACCURACY_EXPERT_REVIEW_20261010.md">결론·정확한 창·한계</a> · <a href="consensus_plan.json">조건부 PC/실측 계획</a> · <a href="README.md">전체 근거·재현</a> · <a href="verification.json">검증·hash</a> · <a href="../energy_ap_joint_followup_01/index.html">직전 후보 결과</a></p>
+<img src="figures/component_counterexamples.png" alt="같은 LOAD 구간의 에너지 잔차와 고정 AP 성분 분해; 최근20초 초기화의 장기 실패">
+<img src="figures/paired_differences.png" alt="기존 CPU/PAR 네 짝의 관측 차이와 예측 차이; 두 짝의 부호 문제 유지">
+<p>추가 실측은 PC 후보 동결 뒤 새 예측 확인 질문이 남을 때만 검토합니다. 기존 C0+LOAD 두 조건 참고 관측88분·예약150분50초는 새 승인/collection plan이 아닙니다. 정책짝4회·초기이력 식별의 반복 수와 예산은 별도 미확정입니다. 지원 마스크 통과, 예측 오차, 정확도 합격, 정책 우월성은 다른 단계입니다.</p>
+</body></html>

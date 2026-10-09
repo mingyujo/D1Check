@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-10-10 MODEL-ACCURACY-EXPERT-REVIEW-PC-01 — 성분 진단과 전체 모형 채택을 분리
+
+- 확정한검토판정: 세AI 직접토론3차/기존자료 산술에서상수δ의긴유휴전용과최근20초영구초기화의실패를확인했다. δ삭제/p4고정은새제약재fit의성과가아니며과거11악화·C0미개선·정책짝부호2/4미해결을함께보존한다. 고정AP의제한개선을전체열·에너지목표완료로승격하지않는다. [근거·반례·미합의](MODEL_ACCURACY_EXPERT_REVIEW_20261010.md).
+- 확정한보존: 원식/후보/자료·기본/RL/strict·experiment_ready=false,새기기명령/claim0. 새로운진단의정책짝순서버그만수정하고초안/원자료를보존했다. 권고인δ0/p4 한family재fit과조건부실측계획은아직채택모형/실행승인/새소비계획이아니다. 현재최종baseline해법·반복수·정확도허용폭은미확정이다.
+
 ## 2026-10-10 LIST-CANDIDATE-RL-IMPLEMENT-04 — 별칭 실증 후 선택적 관측 보완
 
 - 실제 합법 prefix→C2 비교에서 A/B의 state/candidate/mask 전체가 같고 A의 PAIR가 C2 기한을 추가 위반했다. 최소 보완으로 `head2+C_next` schema에서 중복 시간 state 슬롯1만 현재 도착한 두 번째 분류의 `(절대기한−현재시각)/1.5초`로 바꾼다. 기본 `head2`·차원56/28·8후보·물리 mask·hold.25·목적/모형/지원은 보존한다. [수치·구현·범위](LIST_CANDIDATE_RL_IMPLEMENTATION_20261010.md).
