@@ -5,6 +5,10 @@ and from the request-runner Kotlin contract (request-runner/src/main/java/Mixreq
 v2 (R3, 2026-10-09): d1sim/docs/혼합요청_사전등록_v2.md (SHA-256 8e8e1104…, commit 672bb3f) overrides #1 STEP_MS 400 -> 200 and
 #2 the experiment ids (-01 -> -02); everything else stays v1. v1 artifacts (S26-MIXREQ-01*) are still judged with the v1 rules —
 see registration_version().
+v3 (R4, 2026-10-09): d1sim/docs/혼합요청_사전등록_v3.md (SHA-256 45f151d3…, commit 70c50f7) adds two experiments on top of v2 (nothing of
+v1 · v2 changes): (C) S26-MIXREQ-02C = the v2 design run again in reversed order (N first, mirrored order reversed inside each block) and
+(S) S26-MIXREQ-03 = sustained 3,000 requests · common window 720 s. EXPERIMENTS is the single table (same as MixreqContract.EXPERIMENTS);
+every v3 branch keys off it. v2 ids keep version 2 and the byte-identical v2 outputs (regression: R3 artifacts re-validate the same).
 """
 from __future__ import annotations
 
@@ -31,15 +35,81 @@ REGISTRATION_FILE = "d1sim/docs/혼합요청_사전등록_v2.md"
 REGISTRATION_SHA256 = "8e8e1104ff3591098b7aba22bd42a1494eaeafed8ff6aaf63e638070a20806f0"
 REGISTRATION_COMMIT = "672bb3f68a8f8ece2483c37bfcaa824264c49c49"
 REGISTRATION_TIME = "2026-10-09T04:24:55+09:00"
+# v3 registration (commit ① of R4) — (C) confirmation block · (S) sustained 600 s
+REGISTRATION_V3_FILE = "d1sim/docs/혼합요청_사전등록_v3.md"
+REGISTRATION_V3_SHA256 = "45f151d3cac03236fd8f9d6f529efefbac43b54ba1c57933082957fe6f43d46b"
+REGISTRATION_V3_COMMIT = "70c50f73c2e9d600a86deaa8a93f1b4dd02225a1"
+REGISTRATION_V3_TIME = "2026-10-09T20:33:31+09:00"
+
+# 등록 v3 §0-2 experiment table (app MixreqContract.EXPERIMENTS has the same rows). kind: "dev" (v2, R3) · "confirm" ((C), reversed order)
+# · "sustained" ((S), 3,000 · 720 s). The common window of a smoke id is the window of its experiment; smoke requests = SMOKE_REQUEST_COUNT.
+EXPERIMENTS = {
+    "S26-MIXREQ-02": dict(smoke_id="S26-MIXREQ-02-SMOKE", request_count=192, common_s=120, registration_version=2, kind="dev", plan_dir="plan_v2"),
+    "S26-MIXREQ-02C": dict(smoke_id="S26-MIXREQ-02C-SMOKE", request_count=192, common_s=120, registration_version=3, kind="confirm", plan_dir="plan_v3c"),
+    "S26-MIXREQ-03": dict(smoke_id="S26-MIXREQ-03-SMOKE", request_count=3000, common_s=720, registration_version=3, kind="sustained", plan_dir="plan_v3s"),
+}
+EXPERIMENT_BY_ARG = {"02": "S26-MIXREQ-02", "02C": "S26-MIXREQ-02C", "03": "S26-MIXREQ-03"}
+
+
+def experiment_of(experiment_id: str):
+    """(experiment id, table row) for a confirmation or smoke id of the v2/v3 table; v1 ids map to a v1 stand-in row (192 · 120 s)."""
+    for eid, row in EXPERIMENTS.items():
+        if experiment_id in (eid, row["smoke_id"]):
+            return eid, row
+    if experiment_id in (V1_EXPERIMENT_ID, V1_SMOKE_EXPERIMENT_ID):
+        return V1_EXPERIMENT_ID, dict(smoke_id=V1_SMOKE_EXPERIMENT_ID, request_count=192, common_s=120, registration_version=1, kind="v1", plan_dir="plan_v1")
+    raise ValueError(f"unknown experiment_id {experiment_id!r}")
 
 
 def registration_version(experiment_id: str) -> int:
-    """2 for the v2 ids (S26-MIXREQ-02 · S26-MIXREQ-02-SMOKE), 1 for the v1 ids; anything else is an error (fail closed)."""
-    if experiment_id in (EXPERIMENT_ID, SMOKE_EXPERIMENT_ID):
-        return 2
-    if experiment_id in (V1_EXPERIMENT_ID, V1_SMOKE_EXPERIMENT_ID):
-        return 1
-    raise ValueError(f"unknown experiment_id {experiment_id!r}")
+    """2 for the v2 ids (S26-MIXREQ-02 · S26-MIXREQ-02-SMOKE), 1 for the v1 ids, 3 for the v3 ids (-02C · -03 and their smoke ids);
+    anything else is an error (fail closed)."""
+    return experiment_of(experiment_id)[1]["registration_version"]
+
+
+def experiment_kind(experiment_id: str) -> str:
+    return experiment_of(experiment_id)[1]["kind"]
+
+
+def request_count_of(experiment_id: str) -> int:
+    return experiment_of(experiment_id)[1]["request_count"]
+
+
+def common_s_of(experiment_id: str) -> int:
+    return experiment_of(experiment_id)[1]["common_s"]
+
+
+def phases_of(experiment_id: str, block: str) -> dict:
+    """PHASES[block] with common_s from the experiment table (120 for v1/v2/-02C, 720 for -03)."""
+    return dict(PHASES[block], common_s=common_s_of(experiment_id))
+
+
+def session_cap_s(experiment_id: str, block: str) -> int:
+    """mixreq_session.observe absolute cap: nominal phases (setup + gate + baseline + common + drain + cooling) + 240 s host margin.
+    v2: 180 + 60 + 30 + 120 + 30 + 60 = 480 → 720 (the frozen v2 value was 1200; kept for v2 ids). -03: 1,080 + 240 = 1,320."""
+    if registration_version(experiment_id) <= 2:
+        return 1200
+    p = phases_of(experiment_id, block)
+    return p["setup_s"] + p["gate_s"] + p["baseline_s"] + p["common_s"] + p["drain_s"] + p["cooling_s"] + 240
+
+
+def listing_period_s(experiment_id: str) -> float:
+    """mixreq_session progress poll (`ls -l` of the app output folder): 1 s for 192-request sessions, 3 s for 3,000 (6,000+ files)."""
+    return 3.0 if request_count_of(experiment_id) >= 1000 else 1.0
+
+
+def registration_fields(experiment_id: str) -> dict:
+    """plan/manifest registration dicts. v2 ids keep exactly the v2 shape (byte-identical plan_v2); v3 ids add registration_v2."""
+    if registration_version(experiment_id) >= 3:
+        return dict(registration=dict(file=REGISTRATION_V3_FILE, sha256=REGISTRATION_V3_SHA256, commit=REGISTRATION_V3_COMMIT),
+                    registration_v2=dict(file=REGISTRATION_FILE, sha256=REGISTRATION_SHA256, commit=REGISTRATION_COMMIT),
+                    registration_v1=dict(file=REGISTRATION_V1_FILE, sha256=REGISTRATION_V1_SHA256, commit=REGISTRATION_V1_COMMIT))
+    return dict(registration=dict(file=REGISTRATION_FILE, sha256=REGISTRATION_SHA256, commit=REGISTRATION_COMMIT),
+                registration_v1=dict(file=REGISTRATION_V1_FILE, sha256=REGISTRATION_V1_SHA256, commit=REGISTRATION_V1_COMMIT))
+
+
+def registration_time_of(experiment_id: str) -> str:
+    return REGISTRATION_V3_TIME if registration_version(experiment_id) >= 3 else REGISTRATION_TIME
 
 
 REQUEST_COUNT = 192
@@ -68,6 +138,20 @@ SMOKE_SESSIONS = (  # (smoke index, block, policy) — ID namespace <SMOKE_EXPER
     (0, "A", policy_ref.POLICY_CPU), (1, "A", policy_ref.POLICY_PAR), (9, "N", policy_ref.POLICY_PAR_NPU),
 )
 SMOKE_WARMUP_ONLY_INDEX = 8  # S1 = block N configuration, warmup 10, no requests (등록 §3-8 스모크 셈)
+# 등록 v3 (C)-2: confirmation order = block N first, and inside each block the reversed v2 mirror order (index numbering unchanged:
+# A = 0..7, N = 8..15; the driver runs 8 → 15 then 0 → 7). (S)-4: the sustained blocks keep the v2 order (N first in execution).
+SESSION_ORDER_C = (
+    ("A", policy_ref.POLICY_PAR), ("A", policy_ref.POLICY_CPU), ("A", policy_ref.POLICY_CPU), ("A", policy_ref.POLICY_PAR),
+    ("A", policy_ref.POLICY_CPU), ("A", policy_ref.POLICY_PAR), ("A", policy_ref.POLICY_PAR), ("A", policy_ref.POLICY_CPU),
+    ("N", policy_ref.POLICY_PAR_NPU), ("N", policy_ref.POLICY_CPU), ("N", policy_ref.POLICY_CPU), ("N", policy_ref.POLICY_PAR_NPU),
+    ("N", policy_ref.POLICY_CPU), ("N", policy_ref.POLICY_PAR_NPU), ("N", policy_ref.POLICY_PAR_NPU), ("N", policy_ref.POLICY_CPU),
+)
+EXECUTION_ORDER_C = tuple(range(8, 16)) + tuple(range(0, 8))   # (C)-2: 8 → 15 → 0 → 7
+EXECUTION_ORDER_S = tuple(range(8, 16)) + tuple(range(0, 8))   # (S)-4: block N first → charge → block A
+
+
+def session_order_of(experiment_id: str):
+    return SESSION_ORDER_C if experiment_kind(experiment_id) == "confirm" else SESSION_ORDER
 
 # Pinned artifacts (등록 §1-3 · §1-4)
 CLS_MODEL_SHA256 = "6c7ab0a6e5dcbf38a8c33b960996a55a3b4300b36a018c4545801de3a3c8bde0"
@@ -150,7 +234,8 @@ def requests(sid: str, count: int = REQUEST_COUNT) -> list[dict]:
 
 
 def validate_requests(rows: list[dict], count: int = REQUEST_COUNT) -> None:
-    if count not in (REQUEST_COUNT, SMOKE_REQUEST_COUNT) or len(rows) != count or len({r["request_id"] for r in rows}) != count:
+    allowed = {SMOKE_REQUEST_COUNT} | {row["request_count"] for row in EXPERIMENTS.values()}   # v3: 24 · 192 · 3,000
+    if count not in allowed or len(rows) != count or len({r["request_id"] for r in rows}) != count:
         raise ValueError("request count/id")
     for i, q in enumerate(rows):
         urgent = i % 2 == 0

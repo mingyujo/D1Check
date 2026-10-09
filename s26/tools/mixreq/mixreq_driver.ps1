@@ -1,6 +1,9 @@
 param([Parameter(Mandatory=$true)][ValidateSet("A","N")][string]$Block, [int]$StartIndex = -1, [switch]$DryRun,
       [string]$PlanDir = "", [string]$ResultsRoot = "", [int]$RetryRestS = 600, [switch]$SkipGate, [switch]$AllowSettingsMismatch,
-      [switch]$StrictSettings, [int]$ReconnectWaitS = 600, [int]$ConnectionStopAfter = 3)
+      [switch]$StrictSettings, [int]$ReconnectWaitS = 600, [int]$ConnectionStopAfter = 3, [ValidateSet("02","02C","03")][string]$Experiment = "02")
+# v3 (R4, prereg v3): -Experiment selects the plan dir and results root defaults (02 = plan_v2 / S26_MIXREQ_1009v2, 02C = plan_v3c /
+# S26_MIXREQ_R4C, 03 = plan_v3s / S26_MIXREQ_R4S). (C) execution order 8 -> 15 -> 0 -> 7 = run "-Block N" first, then "-Block A";
+# inside a block the indices stay ascending (the plan already holds the reversed policy order). Session logic unchanged.
 # S26 mixed-request block driver (R2 -> v2 R3, 2026-10-09). ASCII + CRLF only. One block per invocation (A = sessions 0..7, N = 8..15).
 # v1 rules kept (prereg s3-3, s4): sessions in registered order; an invalid session is retried ONCE in the same slot after >= RetryRestS
 # (600 s) rest + the gate (attempt 2, same sid/request ids); gate SOC/plugged block (exit 6) stops the block with "CHARGE NEEDED".
@@ -16,8 +19,10 @@ param([Parameter(Mandatory=$true)][ValidateSet("A","N")][string]$Block, [int]$St
 # Serial only from $env:ANDROID_SERIAL (logged as <SERIAL>). Every variable name is unique ignoring case ($d/$D collisions).
 $ErrorActionPreference = "Continue"
 $REPO = "C:\Users\rhoyo\AndroidStudioProjects\D1Check_mixreq"
-if (-not $PlanDir) { $PlanDir = "$REPO\s26\results\mixreq_1008\plan_v2" }
-if (-not $ResultsRoot) { $ResultsRoot = "$REPO\results\S26_MIXREQ_1009v2" }
+$planByExp = @{ "02" = "plan_v2"; "02C" = "plan_v3c"; "03" = "plan_v3s" }
+$rootByExp = @{ "02" = "S26_MIXREQ_1009v2"; "02C" = "S26_MIXREQ_R4C"; "03" = "S26_MIXREQ_R4S" }
+if (-not $PlanDir) { $PlanDir = "$REPO\s26\results\mixreq_1008\" + $planByExp[$Experiment] }
+if (-not $ResultsRoot) { $ResultsRoot = "$REPO\results\" + $rootByExp[$Experiment] }
 $TOOLDIR = "$REPO\s26\tools\mixreq"
 $ADBEXE = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
 $DEVSER = $env:ANDROID_SERIAL
@@ -48,7 +53,7 @@ $kaFile = "$ResultsRoot\keepawake_block$Block.ps1"
 Set-Content -Path $kaFile -Value $kaScript -Encoding ASCII
 $kaProc = $null
 if (-not $DryRun) { $kaProc = Start-Process powershell -ArgumentList "-NoProfile","-ExecutionPolicy","Bypass","-WindowStyle","Hidden","-File",$kaFile -PassThru; Log "keepawake pid=$($kaProc.Id)" }
-Log "DRIVER START block=$Block startIndex=$StartIndex plan=$PlanDir results=$ResultsRoot dry=$DryRun allowSettingsMismatch=$allowMismatch (v2 driver: invalid_twice -> next index; connection x$ConnectionStopAfter -> stop)"
+Log "DRIVER START block=$Block experiment=$Experiment startIndex=$StartIndex plan=$PlanDir results=$ResultsRoot dry=$DryRun allowSettingsMismatch=$allowMismatch (v2 driver: invalid_twice -> next index; connection x$ConnectionStopAfter -> stop)"
 Log "NOTE: laptop lid must stay OPEN (Modern Standby stops the PC; SetThreadExecutionState cannot prevent it)"
 $indices = if ($Block -eq "A") { 0..7 } else { 8..15 }
 if ($StartIndex -ge 0) { $indices = $indices | Where-Object { $_ -ge $StartIndex } }

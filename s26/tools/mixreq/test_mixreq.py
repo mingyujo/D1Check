@@ -7,6 +7,9 @@ attempt folder refusal · readout (A24 formula == ours · hand-computed case · 
 session dry-run.
 v2 (R3, 2026-10-09): rule 5 v2 (overlap recorded only, v1 id still fails) · smoke decisions recorded only · readout tags (병행 겹침 없음 ·
 이식 대조 FAIL, precedence) · slot status (invalid_twice) · driver dry-run.
+v3 (R4, 2026-10-09): experiment table (-02C · -03, registration_version 3) · 3,000-request table (offset end 634,800 ms) · (C) reversed
+order plan · rule 3 window 720 s for -03 (and still 120 s for -02C / v2) · (C)-4 confirmation judgment (same / different) · (S)-6 38 ℃ time
+(gap rule) · degradation ratio · (S)-7 38 ℃-time direction (3 branches) · sustained judge_block fields · driver -Experiment dry-run.
 """
 from __future__ import annotations
 
@@ -65,11 +68,13 @@ def top5_results(vec):
 DET_RESULTS = [dict(label="person", score=0.7, box=[10.0, 20.0, 100.0, 200.0]), dict(label="bicycle", score=0.6, box=[300.0, 40.0, 80.0, 90.0])]
 
 
-def synth_session(tmp: Path, policy: str, block: str, n: int = 24, scale: int = 1, mutate=None, npu_softmax=None, gpu_perturb=1e-5) -> Path:
+def synth_session(tmp: Path, policy: str, block: str, n: int = 24, scale: int = 1, mutate=None, npu_softmax=None, gpu_perturb=1e-5,
+                  experiment_id: str = C.SMOKE_EXPERIMENT_ID) -> Path:
     """Consistent synthetic artifacts for a 'diagnostic' session (selftest). mutate(ctx) may edit rows/events/warmups/etc."""
     device = fake_device(tmp / "inputs")
     index = {policy_ref.POLICY_CPU: 0 if block == "A" else 8, policy_ref.POLICY_PAR: 1, policy_ref.POLICY_PAR_NPU: 9}[policy]
-    m = P.manifest(C.SMOKE_EXPERIMENT_ID, "diagnostic", index, block, policy, device, n)
+    m = P.manifest(experiment_id, "diagnostic", index, block, policy, device, n)
+    common_s = C.common_s_of(experiment_id)
     m["time_scale"] = scale
     for r in m["runtimes"]:  # the validator looks the NPU artifact up in the AOT table by SHA (the fake file is not there)
         if r["key"] == "classification_NPU":
@@ -110,7 +115,7 @@ def synth_session(tmp: Path, policy: str, block: str, n: int = 24, scale: int = 
     lane_free = {"CPU": origin, "GPU": origin, "NPU": origin}
     svc = {"classification": 100_000_000, "detection": 700_000_000}  # 700 ms detections make the CPU lane span the next classification -> overlap under PAR*
     results = {}
-    ev("common_start", scheduled_origin_ns=origin, window_ns=int(C.COMMON_S * 1e9 / scale))
+    ev("common_start", scheduled_origin_ns=origin, window_ns=int(common_s * 1e9 / scale))
     for q in m["requests"]:
         sched = origin + int(q["offset_ms"] * 1e6 / scale)
         lane = policy_ref.lane_for(policy, q["task_id"])
@@ -131,7 +136,7 @@ def synth_session(tmp: Path, policy: str, block: str, n: int = 24, scale: int = 
         key = f"{q['task_id']}_{lane}"
         w = next(x for x in warm if x["key"] == key and x["index"] == 0)
         results[q["request_id"]] = dict(results=w["result"]["results"], input_tensor_sha256=w["result"]["input_tensor_sha256"], task_id=q["task_id"])
-    end = origin + int(C.COMMON_S * 1e9 / scale)
+    end = origin + int(common_s * 1e9 / scale)
     ev("common_end", common_end_ns=end)
     ev("phase_end", phase="post_window_drain")
     for i in range(12):
@@ -226,7 +231,7 @@ def test_request_table_matches_kotlin_expectations():
     assert C.registration_version(C.EXPERIMENT_ID) == 2 and C.registration_version(C.SMOKE_EXPERIMENT_ID) == 2
     assert C.registration_version(C.V1_EXPERIMENT_ID) == 1 and C.registration_version(C.V1_SMOKE_EXPERIMENT_ID) == 1
     with pytest.raises(ValueError):
-        C.registration_version("S26-MIXREQ-03")
+        C.registration_version("S26-MIXREQ-04")   # v3: -03 is now a table id (R4); an id outside the table still fails closed
     rows = C.requests(sid0)
     assert len(rows) == 192 and rows[-1]["offset_ms"] == 73_200 and rows[1]["offset_ms"] == 35_200
     assert C.requests(C.session_id(C.SMOKE_EXPERIMENT_ID, 1), 24)[-1]["offset_ms"] == 39_600
@@ -615,3 +620,159 @@ def test_session_dry_run_and_attempt_folder_refusal(tmp_path):
     assert "<SERIAL>" not in str(folder) and "npurunner" not in cmds
     r2 = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
     assert r2.returncode == 5  # same attempt folder exists -> refuse
+
+
+# ----------------------------------------------------------------------------------------------- v3 (R4): experiment table · (C) · (S)
+def test_v3_experiment_table_and_registration_version():
+    assert C.registration_version("S26-MIXREQ-02C") == 3 and C.registration_version("S26-MIXREQ-02C-SMOKE") == 3
+    assert C.registration_version("S26-MIXREQ-03") == 3 and C.registration_version("S26-MIXREQ-03-SMOKE") == 3
+    assert C.registration_version(C.EXPERIMENT_ID) == 2 and C.registration_version(C.V1_EXPERIMENT_ID) == 1   # frozen
+    with pytest.raises(ValueError):
+        C.registration_version("S26-MIXREQ-04")
+    assert C.request_count_of("S26-MIXREQ-03") == 3000 and C.request_count_of("S26-MIXREQ-02C") == 192 and C.request_count_of(C.V1_SMOKE_EXPERIMENT_ID) == 192
+    assert C.common_s_of("S26-MIXREQ-03") == 720 and C.common_s_of("S26-MIXREQ-03-SMOKE") == 720 and C.common_s_of("S26-MIXREQ-02C") == 120 == C.common_s_of(C.EXPERIMENT_ID)
+    assert C.phases_of("S26-MIXREQ-03", "N") == dict(setup_s=180, gate_s=60, baseline_s=30, common_s=720, drain_s=30, cooling_s=60)
+    assert C.phases_of(C.EXPERIMENT_ID, "A") == C.PHASES["A"]
+    assert C.session_cap_s("S26-MIXREQ-03", "N") == 1320 and C.session_cap_s(C.EXPERIMENT_ID, "N") == 1200
+    assert C.listing_period_s("S26-MIXREQ-03") == 3.0 and C.listing_period_s("S26-MIXREQ-02C") == 1.0
+    assert C.experiment_kind("S26-MIXREQ-02C") == "confirm" and C.experiment_kind("S26-MIXREQ-03") == "sustained" and C.experiment_kind(C.EXPERIMENT_ID) == "dev"
+    reg3 = C.registration_fields("S26-MIXREQ-03")
+    assert reg3["registration"]["sha256"].startswith("45f151d3") and reg3["registration_v2"]["sha256"].startswith("8e8e1104") and reg3["registration_v1"]["sha256"].startswith("edf9e594")
+    assert set(C.registration_fields(C.EXPERIMENT_ID)) == {"registration", "registration_v1"}   # v2 plan shape unchanged
+    # (C)-2 reversed order: block N = PAR-NPU · CPU · CPU · PAR-NPU · CPU · PAR-NPU · PAR-NPU · CPU, block A mirrored likewise; execution 8..15 then 0..7
+    c = [p for _, p in C.session_order_of("S26-MIXREQ-02C")]
+    assert c[8:] == [policy_ref.POLICY_PAR_NPU, policy_ref.POLICY_CPU, policy_ref.POLICY_CPU, policy_ref.POLICY_PAR_NPU, policy_ref.POLICY_CPU, policy_ref.POLICY_PAR_NPU, policy_ref.POLICY_PAR_NPU, policy_ref.POLICY_CPU]
+    assert c[:8] == [policy_ref.POLICY_PAR, policy_ref.POLICY_CPU, policy_ref.POLICY_CPU, policy_ref.POLICY_PAR, policy_ref.POLICY_CPU, policy_ref.POLICY_PAR, policy_ref.POLICY_PAR, policy_ref.POLICY_CPU]
+    assert c == [p for _, p in C.SESSION_ORDER][::-1][8:] + [p for _, p in C.SESSION_ORDER][::-1][:8]   # per-block reversal of the v2 mirror order
+    assert C.session_order_of("S26-MIXREQ-03") == C.SESSION_ORDER and C.EXECUTION_ORDER_C == tuple(range(8, 16)) + tuple(range(8))
+
+
+def test_v3_request_table_3000_matches_kotlin_expectations():
+    sid = C.session_id("S26-MIXREQ-03", 0)
+    assert sid == "2bf5048f-4ac1-5e15-afc7-7ed43ca567ff" and C.request_id(sid, 0) == "1f3daad3-6e83-534f-b7cc-604c45331528"
+    assert C.request_id(sid, 2999) == "85804c92-baac-543c-8831-460940033f6f"
+    assert C.session_id("S26-MIXREQ-02C", 8) == "31cc7655-bdff-5aa0-9f69-af4b566418a6" and C.session_id("S26-MIXREQ-03-SMOKE", 0) == "4e6fec0a-b5da-50e8-b29a-94b5e713755a"
+    rows = C.requests(sid, 3000)
+    assert len(rows) == 3000 and rows[-1]["offset_ms"] == 634_800 and sum(1 for r in rows if r["priority"] == "urgent") == 1500
+    C.validate_requests(rows, 3000)
+    with pytest.raises(ValueError):
+        C.validate_requests(rows[:2999], 2999)
+    with pytest.raises(ValueError):
+        C.validate_requests(rows[:192], 192) if False else C.validate_requests(rows, 192)
+
+
+def test_v3_rule3_window_720_only_for_sustained(tmp_path):
+    """A lane_available at 700 s after the origin: inside the -03 window (720 s) → eligible; outside the v2 window (120 s) → 3_window fails."""
+    def late(ctx): ctx["rows"][-1]["lane_available_ns"] = ctx["origin"] + int(700e9)
+    v3, _ = validate_synth(tmp_path / "s03", policy_ref.POLICY_CPU, "A", mutate=late, experiment_id="S26-MIXREQ-03-SMOKE")
+    assert v3["eligible"], v3["reasons"]
+    assert v3["registration_version"] == 3 and v3["rules"]["3_window"]["detail"]["bounds_s"] == [35.0, 720.0]
+    v2 = _fail(tmp_path / "s02", policy_ref.POLICY_CPU, "A", "3_window", late)
+    assert v2["rules"]["3_window"]["detail"]["bounds_s"] == [35.0, 120.0]
+    # -02C keeps the v2 window and the v2 rule-5 branch (PAR overlap recorded only)
+    vc, _ = validate_synth(tmp_path / "s02c", policy_ref.POLICY_PAR, "A", experiment_id="S26-MIXREQ-02C-SMOKE")
+    assert vc["eligible"] and vc["registration_version"] == 3 and vc["rules"]["3_window"]["detail"]["bounds_s"] == [35.0, 120.0]
+    assert vc["rules"]["5_overlap"]["detail"]["expected"].startswith("recorded only")
+
+
+def test_v3_time_above_38_and_direction():
+    rows = [dict(t=0.0, SKIN=37.9), dict(t=2.0, SKIN=38.0), dict(t=4.0, SKIN=38.4), dict(t=6.0, SKIN=37.0), dict(t=8.0, SKIN=39.0),
+            dict(t=20.0, SKIN=39.5), dict(t=22.0, SKIN=39.1), dict(t=24.0, SKIN=None), dict(t=26.0, SKIN=38.5)]
+    t = R.time_above(rows)
+    # hot samples 2.0 (gap 2) + 4.0 (gap 2) + 8.0 (gap 12 > 2.5: not bridged) + 20.0 (gap 2) + 22.0 (gap 2) + 26.0 (last: no next) = 8 s
+    assert t["seconds"] == pytest.approx(8.0) and t["hot_samples"] == 4 and t["samples"] == 9
+    assert R.time_above([])["seconds"] == 0.0
+    assert R.time38_direction([10.0, -30.0, 59.9]) == "38 ℃ 이상 시간 기준 안 (60 s)"
+    assert R.time38_direction([60.0, 120.0, 61.0]) == "병행이 더 오래 38 ℃ 이상"
+    assert R.time38_direction([-60.0, -200.0, -75.0]) == "병행이 덜 오래 38 ℃ 이상"
+    assert R.time38_direction([60.0, -60.0, 0.0]) == "엇갈림" and R.time38_direction([10.0, None]) == "열 자료 없음"
+    assert R.SKIN_HOT_C == 38.0 and R.TIME38_RULE_S == 60.0
+
+
+def test_v3_lane_degradation_ratio():
+    origin = 0
+    requests = [dict(request_id=f"r{i}", offset_ms=35_000 + 200 * i) for i in range(3000)]
+    rows = []
+    for i, q in enumerate(requests):
+        svc_ms = 100.0 if q["offset_ms"] < 95_000 else (150.0 if q["offset_ms"] >= 574_800 else 120.0)   # first 60 s: 100 · last 60 s: 150
+        rows.append(dict(request_id=q["request_id"], task_id="classification" if i % 2 == 0 else "detection", selected_backend="CPU",
+                         terminal_status="succeeded", execution_start_ns=1_000, output_ready_ns=1_000 + int(svc_ms * 1e6)))
+    d = R.lane_degradation(rows, requests, origin, 720)
+    assert d["first_window_offset_ms"] == [35_000, 95_000.0] and d["last_window_offset_ms"] == [574_800.0, 634_800]
+    for key in ("classification_CPU", "detection_CPU"):
+        # first window: offsets 35,000..94,800 = 300 requests → 150 per lane; last window: offsets ≥ 574,800 (index 2699..2999 = 301) → 150 / 151
+        assert d["lanes"][key]["ratio_last_over_first"] == pytest.approx(1.5) and d["lanes"][key]["n_first"] == 150 and d["lanes"][key]["n_last"] in (150, 151)
+    rows2 = [r for r in rows if r["request_id"] != "r0"]
+    rows2[0]["terminal_status"] = "failed"
+    assert R.lane_degradation(rows2, requests, origin, 720)["lanes"]["classification_CPU"]["n_first"] == 149
+    assert R.lane_degradation([], requests, origin, 720)["lanes"] == {}
+
+
+def test_v3_confirmation_judgment_same_and_different():
+    dev = {"A": dict(judgment="병행이 긴급 응답을 줄였다", urgent_judgment="병행이 긴급 응답을 줄였다", normal_judgment="엇갈림",
+                     thermal_skin_judgment="열 차이 기준 안 (1.0 ℃)", thermal_ap_judgment="엇갈림", service_judgment="두 정책 모두 기한 충족", tags=[], n=4),
+           "N": dict(judgment="NPU 병행이 긴급 응답을 줄였다", urgent_judgment="NPU 병행이 긴급 응답을 줄였다", normal_judgment="같은 방향 · 일부 작음",
+                     thermal_skin_judgment="열 차이 기준 안 (1.0 ℃)", thermal_ap_judgment="엇갈림", service_judgment="두 정책 모두 기한 충족", tags=[], n=4)}
+    same = R.confirmation(dev, dev)
+    assert same["blocks"]["A"]["verdict"] == R.CONFIRMED and same["blocks"]["N"]["verdict"] == R.CONFIRMED and same["blocks"]["A"]["question"] == "Q1"
+    assert all(v["same"] for v in same["blocks"]["N"]["items"].values())
+    conf = {"A": dict(dev["A"], judgment="엇갈림", urgent_judgment="엇갈림"), "N": dict(dev["N"], thermal_ap_judgment="NPU 병행이 덜 뜨거웠다")}
+    diff = R.confirmation(dev, conf)
+    assert diff["blocks"]["A"]["verdict"] == R.NOT_CONFIRMED and diff["blocks"]["A"]["items"]["judgment"]["same"] is False
+    assert diff["blocks"]["N"]["verdict"] == R.CONFIRMED and diff["blocks"]["N"]["items"]["thermal_ap_judgment"]["same"] is False   # Q verdict follows `judgment` only
+    tagged = {"A": dict(dev["A"], judgment="쌍 부족 — 기술만", tags=["쌍 부족 — 기술만"]), "N": dev["N"]}
+    assert R.confirmation(dev, tagged)["blocks"]["A"]["verdict"] == R.NOT_CONFIRMED
+
+
+def test_v3_sustained_judge_block_fields():
+    def sess(index, block, policy, p95=400.0, peak=36.0, t38=0.0, end=35.0, deg=1.0):
+        return dict(index=index, block=block, pair=C.pair_of(block, index), policy=policy, attempt=1, eligible=True, overlap_s=5.0,
+                    service=dict(urgent=dict(p95_ms=p95, planned=1500, deadline_met=1500), normal=dict(p95_ms=900.0, planned=1500, deadline_met=1500),
+                                 all=dict(planned=3000, deadline_met=3000)), thermal=dict(peak_skin=peak, peak_ap=peak + 2, start_skin=30.0, end_skin=end),
+                    energy=None, contract=None,
+                    sustained=dict(time_above_38=dict(seconds=t38), end_skin=end, degradation=dict(lanes={"detection_CPU": dict(ratio_last_over_first=deg)})))
+    cpu = [sess(0, "A", policy_ref.POLICY_CPU, peak=40.0, t38=300.0), sess(3, "A", policy_ref.POLICY_CPU, peak=40.5, t38=320.0), sess(5, "A", policy_ref.POLICY_CPU, peak=40.2, t38=310.0)]
+    par = [sess(1, "A", policy_ref.POLICY_PAR, p95=300.0, peak=38.5, t38=100.0, deg=1.2), sess(2, "A", policy_ref.POLICY_PAR, p95=310.0, peak=38.9, t38=120.0), sess(4, "A", policy_ref.POLICY_PAR, p95=290.0, peak=38.7, t38=90.0)]
+    j = R.judge_block("A", cpu + par, reg_version=3, sustained=True)
+    assert j["n"] == 3 and j["thermal_skin_judgment"] == "병행이 덜 뜨거웠다" and j["thermal_time38_judgment"] == "병행이 덜 오래 38 ℃ 이상"
+    assert j["urgent_judgment"] == "병행이 긴급 응답을 줄였다" and j["primary_kpi"].startswith("thermal_skin_judgment")
+    assert [p["d_time_above_38_s"] for p in j["pairs"]] == [-200.0, -200.0, -220.0] and j["pairs"][0]["d_end_skin_c"] == 0.0
+    assert j["degradation_by_session"]["1"]["lanes"]["detection_CPU"] == 1.2 and j["degradation_judgment"] == "판정 없음 (기술만)"
+    # without the sustained flag (v2 / (C)) the v2 output has none of these keys
+    j2 = R.judge_block("A", cpu + par, reg_version=2)
+    assert "thermal_time38_judgment" not in j2 and "degradation_by_session" not in j2 and "d_time_above_38_s" not in j2["pairs"][0]
+    # n < 3 → 쌍 부족 before any sustained judgment
+    j3 = R.judge_block("A", cpu[:1] + par[:1], reg_version=3, sustained=True)
+    assert j3["judgment"] == "쌍 부족 — 기술만" and "thermal_time38_judgment" not in j3
+
+
+def test_v3_plans_and_driver_dry_run(tmp_path):
+    """plan_v3c / plan_v3s (generated in R4 1-4) + driver -Experiment 02C -DryRun over a temp results root."""
+    import shutil
+    base = REPO / "s26" / "results" / "mixreq_1008"
+    if not (base / "plan_v3c" / "plan.json").is_file() or not (base / "plan_v3s" / "plan.json").is_file():
+        pytest.skip("plan_v3c / plan_v3s missing")
+    pc = C.read_json(base / "plan_v3c" / "plan.json"); ps = C.read_json(base / "plan_v3s" / "plan.json")
+    assert pc["experiment_id"] == "S26-MIXREQ-02C" and pc["registration_version"] == 3 and pc["execution_order"] == list(range(8, 16)) + list(range(8))
+    assert [s["policy"] for s in pc["sessions"]] == [p for _, p in C.SESSION_ORDER_C] and pc["registration"]["sha256"].startswith("45f151d3")
+    assert ps["experiment_id"] == "S26-MIXREQ-03" and ps["request_count"] == 3000 and ps["common_s"] == 720 and ps["phases"]["N"]["common_s"] == 720
+    assert [s["policy"] for s in ps["sessions"]] == [p for _, p in C.SESSION_ORDER] and ps["budget"]["requests"] == 48_000
+    m = C.read_json(base / "plan_v3s" / ps["sessions"][0]["manifest"])
+    assert len(m["requests"]) == 3000 and m["requests"][-1]["offset_ms"] == 634_800 and m["phases"]["common_s"] == 720 and m["experiment_id"] == "S26-MIXREQ-03"
+    sm = C.read_json(base / "plan_v3s" / ps["smoke"][1]["manifest"])
+    assert sm["experiment_id"] == "S26-MIXREQ-03-SMOKE" and len(sm["requests"]) == 24 and sm["phases"]["common_s"] == 720
+    pv2 = C.read_json(base / "plan_v2" / "plan.json")
+    assert "request_count" not in pv2 and "registration_v2" not in pv2   # v2 plan shape untouched
+    ps_exe = shutil.which("powershell") or shutil.which("powershell.exe")
+    if ps_exe is None:
+        pytest.skip("powershell missing")
+    results = tmp_path / "drv02c"
+    cmd = [ps_exe, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(HERE / "mixreq_driver.ps1"), "-Block", "N", "-Experiment", "02C", "-DryRun", "-SkipGate",
+           "-ResultsRoot", str(results)]
+    r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=600, env={**__import__("os").environ, "ANDROID_SERIAL": ""})
+    out = r.stdout + r.stderr
+    assert "DRIVER START block=N experiment=02C" in out and "plan_v3c" in out and "DRIVER END block=N reason=completed retries=0 invalid_twice=[]" in out, out[-2000:]
+    assert out.count("RESULT index=") == 8
+    assert (results / "S26_MIXREQ_08_S26_NPU_PARALLEL_V1_a1").is_dir() and (results / "S26_MIXREQ_09_CPU_URGENT_ONLINE_V1_a1").is_dir()   # reversed order at 8 · 9
+    text = (HERE / "mixreq_driver.ps1").read_bytes()
+    assert all(b < 128 for b in text) and b"\r\n" in text and b"\n" not in text.replace(b"\r\n", b"")

@@ -108,12 +108,13 @@ class SessionRoundTripTest {
             "gpu_precision" to (if (lane == "GPU") "FP32" else null), "cpu_threads" to (if (lane == "CPU") 1 else null))
     }
 
-    private fun manifestBytes(index: Int, block: String, policy: String, attempt: Int = 1): ByteArray {
-        val sid = RequestPlan.sessionId(MixreqContract.EXPERIMENT_ID, index)
-        val requests = RequestPlan.requests(sid).map { linkedMapOf("request_id" to it.id, "ordinal" to it.ordinal, "task_id" to it.task,
+    private fun manifestBytes(index: Int, block: String, policy: String, attempt: Int = 1, experimentId: String = MixreqContract.EXPERIMENT_ID,
+                              requestCount: Int = MixreqContract.experimentOf(experimentId).requestCount, commonS: Long = MixreqContract.experimentOf(experimentId).commonS): ByteArray {
+        val sid = RequestPlan.sessionId(experimentId, index)
+        val requests = RequestPlan.requests(sid, requestCount).map { linkedMapOf("request_id" to it.id, "ordinal" to it.ordinal, "task_id" to it.task,
             "priority" to it.priority, "offset_ms" to it.offsetMs, "deadline_ms" to it.deadlineMs) }
         val m = linkedMapOf<String, Any?>(
-            "protocol" to MixreqContract.PROTOCOL, "experiment_id" to MixreqContract.EXPERIMENT_ID, "split" to MixreqContract.SPLIT_DIAGNOSTIC,
+            "protocol" to MixreqContract.PROTOCOL, "experiment_id" to experimentId, "split" to MixreqContract.SPLIT_DIAGNOSTIC,
             "session_id" to sid, "session_index" to index, "block" to block, "pair" to (if (block == "A") index / 2 else (index - 8) / 2), "attempt" to attempt,
             "policy" to policy, "runtimes" to MixreqContract.keysOf(block).sorted().map(::runtimeSpec),
             "image" to linkedMapOf("path" to File(inputs, "image.png").path, "sha256" to pngSha, "width" to 2, "height" to 1),
@@ -121,7 +122,7 @@ class SessionRoundTripTest {
             "labels" to linkedMapOf("classification" to linkedMapOf("path" to File(inputs, "labels_without_background.txt").path, "sha256" to clsLabelsSha),
                 "detection" to linkedMapOf("path" to File(inputs, "labels.txt").path, "sha256" to detLabelsSha)),
             "requests" to requests,
-            "phases" to linkedMapOf("setup_s" to (if (block == "N") 180 else 150), "gate_s" to 60, "baseline_s" to 30, "common_s" to 120, "drain_s" to 30, "cooling_s" to 60),
+            "phases" to linkedMapOf("setup_s" to (if (block == "N") 180 else 150), "gate_s" to 60, "baseline_s" to 30, "common_s" to commonS, "drain_s" to 30, "cooling_s" to 60),
             "sample_period_ms" to 900, "time_scale" to TIME_SCALE, "warmup_gate" to true,
             "stop_rules" to linkedMapOf("battery_deci_c_max" to 420, "thermal_status_max" to 2, "soc_min" to 20),
             "start_check" to linkedMapOf("thermal_status_max" to 1),
@@ -139,10 +140,10 @@ class SessionRoundTripTest {
     } / TIME_SCALE
 
     private fun runCase(case: String, index: Int, block: String, policy: String, plugged: Int = 0, npuFails: Boolean = false,
-                        longDetection: Boolean = false, expectCompleted: Boolean): Pair<File, SessionEngine> {
+                        longDetection: Boolean = false, expectCompleted: Boolean, experimentId: String = MixreqContract.EXPERIMENT_ID): Pair<File, SessionEngine> {
         writeInputs()
         val caseDir = File(root, case).apply { deleteRecursively(); mkdirs() }
-        val bytes = manifestBytes(index, block, policy)
+        val bytes = manifestBytes(index, block, policy, experimentId = experimentId)
         val manifest = SessionManifest.parse(String(bytes)).also { it.validate() }
         val sessionInputs = File(caseDir, "inputs").apply { mkdirs() }
         File(sessionInputs, "manifest.json").writeBytes(bytes)
@@ -171,13 +172,13 @@ class SessionRoundTripTest {
     private fun rows(out: File): List<Map<*, *>> = (TestJson.parse(File(out, "requests.json").readText()) as List<*>).map { it as Map<*, *> }
     private fun ns(row: Map<*, *>, key: String) = (row[key] as Number).toLong()
 
-    private fun assertCompletedShape(out: File, policy: String, keys: Int) {
+    private fun assertCompletedShape(out: File, policy: String, keys: Int, count: Int = 192) {
         val summary = TestJson.parse(File(out, "summary.json").readText()) as Map<*, *>
-        assertEquals("completed", summary["status"]); assertEquals(192L, summary["planned"]); assertEquals(192L, summary["terminal"])
+        assertEquals("completed", summary["status"]); assertEquals(count.toLong(), summary["planned"]); assertEquals(count.toLong(), summary["terminal"])
         val cleanup = TestJson.parse(File(out, "cleanup.json").readText()) as Map<*, *>
         assertEquals("completed", cleanup["status"])
         val rows = rows(out)
-        assertEquals(192, rows.size)
+        assertEquals(count, rows.size)
         assertTrue(rows.all { it["terminal_status"] == "succeeded" })
         for (r in rows) {
             val order = listOf("scheduled_arrival_ns", "actual_arrival_ns", "queue_entry_ns", "dispatch_ns", "execution_start_ns", "host_inference_start_ns",
@@ -185,14 +186,14 @@ class SessionRoundTripTest {
             assertEquals(r.toString(), order, order.sorted())
             assertEquals(PolicyStudy.laneFor(policy, r["task_id"] as String), r["selected_backend"])
         }
-        assertEquals(192, out.listFiles()!!.count { it.name.endsWith(".result.json") })
-        assertEquals(192, out.listFiles()!!.count { it.name.endsWith(".event.json") })
+        assertEquals(count, out.listFiles()!!.count { it.name.endsWith(".result.json") })
+        assertEquals(count, out.listFiles()!!.count { it.name.endsWith(".event.json") })
         assertEquals(0, out.listFiles()!!.count { it.name.endsWith(".part") })
         val warmups = TestJson.parse(File(out, "warmup.json").readText()) as List<*>
         assertEquals(keys * 2, warmups.size)
         assertTrue(warmups.map { it as Map<*, *> }.filter { (it["key"] as String).startsWith("classification") }.all { it["softmax_f32le_base64"] != null })
         val progress = File(out, "progress.jsonl").readLines()
-        assertTrue(progress.size > 192 * 10)
+        assertTrue(progress.size > count * 10)
         assertEquals(1, progress.count { it.contains("\"kind\":\"common_start\"") })
         assertTrue(progress.count { it.contains("\"kind\":\"power_sample\"") } > 10)
     }
@@ -231,6 +232,29 @@ class SessionRoundTripTest {
         assertTrue(overlapNs(rows(out), "NPU", "CPU") > 0L)
         assertEquals(96, rows(out).count { it["selected_backend"] == "NPU" })
         assertEquals(0, rows(out).count { it["selected_backend"] == "GPU" })
+    }
+
+    /** v3 (C): 같은 앱 · 같은 설계 · 실험 ID 만 -02C (등록 v3 (C)-1). 계약 상수 표 밖의 코드는 바뀌지 않았으므로 v2 사례와 같은 모양이어야 한다. */
+    @Test fun confirmationExperiment02CRunsLikeV2() {
+        val (out, _) = runCase("blockA_par_02C", 1, "A", MixreqContract.POLICY_PAR, longDetection = true, expectCompleted = true, experimentId = "S26-MIXREQ-02C")
+        assertCompletedShape(out, MixreqContract.POLICY_PAR, 4)
+        assertTrue(overlapNs(rows(out), "GPU", "CPU") > 0L)
+        val manifest = TestJson.parse(File(out, "manifest.json").readText()) as Map<*, *>
+        assertEquals("S26-MIXREQ-02C", manifest["experiment_id"])
+        assertTrue(File(out, "progress.jsonl").readLines().any { it.contains("\"kind\":\"common_start\"") && it.contains("\"window_ns\":12000000000") })  // 120 s / 10
+    }
+
+    /** v3 (S): 3,000 요청 (35.0 ~ 634.8 s) · 공통창 720 s (등록 v3 (S)-2 · (S)-3) — time_scale 10 → 창 72 s · 결과 파일 3,000 · progress 3만 줄대. */
+    @Test fun sustainedExperiment03CompletesThreeThousandRequestsInTheSevenHundredTwentySecondWindow() {
+        val (out, _) = runCase("blockN_parnpu_03", 9, "N", MixreqContract.POLICY_PAR_NPU, expectCompleted = true, experimentId = "S26-MIXREQ-03")
+        assertCompletedShape(out, MixreqContract.POLICY_PAR_NPU, 5, count = 3_000)
+        assertEquals(1_500, rows(out).count { it["selected_backend"] == "NPU" })
+        val boundary = TestJson.parse(File(out, "common_boundary.json").readText()) as Map<*, *>
+        assertEquals(3_000L, boundary["planned"])
+        assertEquals(72_000_000_000L, ns(boundary, "planned_end_ns") - ns(boundary, "start_ns"))   // 720 s / time_scale 10
+        val last = rows(out).maxOf { ns(it, "scheduled_arrival_ns") } - ns(boundary, "start_ns")
+        assertEquals(63_480_000_000L, last)   // 634.8 s / 10
+        assertTrue(File(out, "progress.jsonl").readLines().any { it.contains("\"kind\":\"common_start\"") && it.contains("\"window_ns\":72000000000") })
     }
 
     @Test fun npuCreationFailureInvalidatesTheBlockNSessionBeforeAnyRequest() {
@@ -282,10 +306,28 @@ class SessionRoundTripTest {
             { it["session_index"] = 2 },                                     // sid is not uuid5(.../2)
             { it["sample_period_ms"] = 1000 },
             { (it["phases"] as Map<*, *>).let { p -> it["phases"] = LinkedHashMap(p as Map<String, Any?>).apply { this["common_s"] = 100 } } },
+            { it["experiment_id"] = "S26-MIXREQ-04" },                                                                                      // v3: 표에 없는 실험 ID
+            { it["experiment_id"] = "S26-MIXREQ-01" },                                                                                      // v3 APK 는 v1 ID 를 받지 않는다
+            { (it["phases"] as Map<*, *>).let { p -> it["phases"] = LinkedHashMap(p as Map<String, Any?>).apply { this["common_s"] = 720 } } },   // -02 에 -03 의 창
         )) {
             var threw = false
             try { parsed(mutate).validate() } catch (_: IllegalArgumentException) { threw = true } catch (_: IllegalStateException) { threw = true }
             assertTrue("mutation accepted", threw)
         }
+        // v3 표 조합: -03 는 3,000 · 720 s 일 때만 confirmation 통과; 192 요청 · 120 s 창은 거부. -02C 는 192 · 120.
+        fun bytesOf(experimentId: String, count: Int, commonS: Long, split: String) =
+            TestJson.parse(String(manifestBytes(1, "A", MixreqContract.POLICY_PAR, experimentId = experimentId, requestCount = count, commonS = commonS))).let { m ->
+                @Suppress("UNCHECKED_CAST") val mm = LinkedHashMap(m as Map<String, Any?>); mm["split"] = split; mm["time_scale"] = 1; Json.encode(mm) }
+        SessionManifest.parse(bytesOf("S26-MIXREQ-03", 3_000, 720L, MixreqContract.SPLIT_CONFIRMATION)).validate()
+        SessionManifest.parse(bytesOf("S26-MIXREQ-02C", 192, 120L, MixreqContract.SPLIT_CONFIRMATION)).validate()
+        SessionManifest.parse(bytesOf("S26-MIXREQ-03-SMOKE", 24, 720L, MixreqContract.SPLIT_DIAGNOSTIC)).validate()
+        for (bad in listOf(bytesOf("S26-MIXREQ-03", 192, 720L, MixreqContract.SPLIT_CONFIRMATION), bytesOf("S26-MIXREQ-03", 3_000, 120L, MixreqContract.SPLIT_CONFIRMATION),
+                           bytesOf("S26-MIXREQ-02C", 192, 720L, MixreqContract.SPLIT_CONFIRMATION), bytesOf("S26-MIXREQ-03-SMOKE", 24, 720L, MixreqContract.SPLIT_CONFIRMATION),
+                           bytesOf("S26-MIXREQ-03-SMOKE", 24, 120L, MixreqContract.SPLIT_DIAGNOSTIC))) {
+            var threw = false
+            try { SessionManifest.parse(bad).validate() } catch (_: IllegalArgumentException) { threw = true } catch (_: IllegalStateException) { threw = true }
+            assertTrue("v3 table combination accepted", threw)
+        }
+        MixreqContract.activeExperiment = MixreqContract.EXPERIMENTS[0]
     }
 }

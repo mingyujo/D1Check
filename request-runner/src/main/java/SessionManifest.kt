@@ -48,11 +48,14 @@ class SessionManifest(
     fun validate() {
         require(protocol == MixreqContract.PROTOCOL) { "protocol $protocol" }
         require(split == MixreqContract.SPLIT_CONFIRMATION || split == MixreqContract.SPLIT_DIAGNOSTIC) { "split $split" }
+        // v3 (등록 v3 §0-1 · §0-2): 실험 ID 는 표에 있어야 하고 (fail closed), 요청 수 · 공통창 · index 범위는 그 표 행의 값이어야 한다.
+        val experiment = MixreqContract.experimentOf(experimentId)
+        MixreqContract.activeExperiment = experiment
         require(Uuid5.isCanonical(sessionId)) { "session_id" }
         require(block == MixreqContract.BLOCK_A || block == MixreqContract.BLOCK_N) { "block $block" }
         require(policy in MixreqContract.policiesOf(block)) { "policy $policy is not allowed in block $block" }
         require(attempt in 1..2) { "attempt $attempt" }
-        require(sessionIndex in 0..15 && pair in 0..3) { "session_index/pair" }
+        require(sessionIndex in 0..experiment.sessionIndexMax && pair in 0..3) { "session_index/pair" }
         val keys = runtimes.map { it.key }
         require(keys.toSet() == MixreqContract.keysOf(block) && keys.size == keys.toSet().size) {
             "runtimes $keys != block $block keys"
@@ -67,14 +70,14 @@ class SessionManifest(
         MixreqContract.validateRequests(requests, requests.size)
         RequestPlan.requireDerived(experimentId, sessionIndex, sessionId, requests)
         if (split == MixreqContract.SPLIT_CONFIRMATION) {
-            require(experimentId == MixreqContract.EXPERIMENT_ID) { "confirmation experiment_id" }
-            require(requests.size == MixreqContract.REQUEST_COUNT) { "confirmation needs 192 requests" }
+            require(experimentId == experiment.id) { "confirmation experiment_id" }
+            require(requests.size == experiment.requestCount) { "confirmation needs ${experiment.requestCount} requests" }
             require(timeScale == 1) { "confirmation needs time_scale 1" }
             require(!warmupOnly) { "confirmation cannot be warmup_only" }
         } else {
             require(timeScale in 1..100) { "time_scale" }
         }
-        require(phases.commonS == 120L && phases.baselineS == MixreqContract.BASELINE_SECONDS &&
+        require(phases.commonS == experiment.commonS && phases.baselineS == MixreqContract.BASELINE_SECONDS &&
             phases.drainS == MixreqContract.DRAIN_SECONDS && phases.coolingS == MixreqContract.COOLING_SECONDS &&
             phases.gateS == MixreqContract.GATE_NS / 1_000_000_000L) { "phase lengths must equal the contract" }
         require(phases.setupS * 1_000_000_000L == MixreqContract.setupNsOf(block)) { "setup_s for block $block" }

@@ -129,8 +129,14 @@ def s1_checks(folder: Path, reference_pc: dict | None) -> dict:
     out["record"]["npu_contract_first_values"] = V.npu_contract(data)
     top = folder / "host" / "top_h.txt"
     if top.is_file():
-        counts = [len([l for l in block.splitlines() if re.match(r"^\s*\d+\s+\d+\s", l)]) for block in top.read_text(encoding="utf-8", errors="replace").split("### ")[1:]]
+        # v3 (R3 §11-4 도구 보수): Android `top -H -b` rows are "TID USER PR NI VIRT RES SHR S[%CPU] %MEM TIME+ THREAD PROCESS" (R3 top_h.txt);
+        # the R2 regex expected "PID TID" and matched 0 rows. Count rows of our package and the d1mix-* worker threads.
+        blocks_txt = top.read_text(encoding="utf-8", errors="replace").split("### ")[1:]
+        row_re = re.compile(r"^\s*\d+\s+\S+\s+-?\d+\s+-?\d+\s+\S+\s+\S+\s+\S+\s+[A-Z]\s")
+        counts = [len([l for l in block.splitlines() if row_re.match(l) and l.rstrip().endswith(C.APP_PACKAGE)]) for block in blocks_txt]
+        d1mix = [len([l for l in block.splitlines() if row_re.match(l) and " d1mix-" in l]) for block in blocks_txt]
         out["record"]["observed_thread_rows_top_h_max"] = max(counts) if counts else None
+        out["record"]["observed_d1mix_threads_max"] = max(d1mix) if d1mix else None
         out["record"]["cpu_threads_configured"] = 1
     return out
 
@@ -198,6 +204,8 @@ def main() -> int:
     report["note"] = "스모크 = 동작 확인용. KPI 비교 · 결론 문장 없음. NPU 계약 첫 값은 기록만 (기준 · 설계 · 블록 N 실행 여부를 바꾸지 않는다)."
     if reg_version == 2:
         report["v2_note"] = V2_NOTE
+    if reg_version == 3:
+        report["v3_note"] = "v3 (등록 v3 §0-3 · (C)-1 · (S)-5): 스모크는 기록만 — v2 #3 · #5 그대로 (실행 차단 아님)"
     args.results.mkdir(parents=True, exist_ok=True)
     C.write_json(args.results / "smoke_report.json", report)
     print(json.dumps({k: v for k, v in report.items() if k != "S1" or v is None} | {"S1_checks": (report["S1"] or {}).get("checks")}, ensure_ascii=False, indent=1)[:5000])

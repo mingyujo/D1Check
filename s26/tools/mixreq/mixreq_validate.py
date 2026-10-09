@@ -343,10 +343,10 @@ def validate(session_dir: Path, device_dir: Path | None, logcat: Path | None, sk
                  any(int(r[a]) > int(r[b]) for a, b in zip(order, order[1:]))]
     rules["2_time_order"] = dict(passed=bool(rows) and not bad_order, detail=dict(violations=bad_order[:10], fields=order))
 
-    # 3 window [35 s, 120 s) relative to the common origin (scaled under --selftest)
+    # 3 window [35 s, common_s) relative to the common origin (scaled under --selftest); common_s from the experiment table (v3: -03 720 s)
     boundary = data.get("common_boundary") or {}
     origin = boundary.get("start_ns")
-    lo, hi = C.WINDOW_START_S * 1e9 / scale, C.COMMON_S * 1e9 / scale
+    lo, hi = C.WINDOW_START_S * 1e9 / scale, C.common_s_of(m["experiment_id"]) * 1e9 / scale
     out_of_window = []
     if origin is not None:
         for r in rows:

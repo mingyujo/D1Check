@@ -2,6 +2,15 @@
 
   py -3 s26/tools/mixreq/mixreq_readout.py --plan <plan.json> --results <dir with session result folders> --out <readout_dir>
       [--selftest] [--registration-commit <sha>] [--apk-sha256 <hex>] [--source-commit <sha>]
+      [--reference-readout <R3 readout.json>]   (v3 (C): confirmation judgment = block judgment names equal to the development readout)
+
+v3 (R4, 등록 v3): the v2 output is unchanged for v2 plans (byte-identical regression). For plan experiment S26-MIXREQ-02C the readout adds
+`confirmation` ((C)-4: per block and per judgment name, "확인됨 (개발 · 확인 2블록 같은 판정)" / "확인 안 됨 — 개발 · 확인 판정 다름";
+blocks are never pooled). For S26-MIXREQ-03 every session gets `sustained` ((S)-6: SKIN >= 38.0 ℃ time from the host HAL 2 s samples =
+sum of sample intervals (gap <= 2.5 s, missing samples not bridged) whose sample is >= 38.0; end-of-window SKIN; lane service-time
+degradation = median of the last 60 s of arrivals (scheduled offset >= 634.8 − 60 s) ÷ median of the first 60 s (offset < 35 + 60 s), per
+lane key, 기술만) and each block gets the (S)-7 judgments: peak SKIN (1.0 ℃ rule, as v1) and the 38 ℃-time rule (60 s) — n < 3 pairs
+→ "쌍 부족 — 기술만". Sessions whose manifest experiment_id differs from the plan's are skipped (never mixed).
 
 A session result folder = <results>/<anything>/ containing validated.json (+ npu_contract.json for block N), device/ or the bare
 device artifacts, and optionally host/hal.csv (host HAL temperatures, 2 s) for the thermal KPIs. Sessions without validated.json
@@ -171,9 +180,9 @@ def our_integrate(samples, start_ns, end_ns, max_gap_s=2.5):
                 full_energy_j=energy if abs(duration - covered) < 1e-6 else None)
 
 
-def energy_block(events, origin_ns, scale):
+def energy_block(events, origin_ns, scale, common_s=C.COMMON_S):
     samples = power_samples(events)
-    end = origin_ns + int(C.COMMON_S * 1e9 / scale)
+    end = origin_ns + int(common_s * 1e9 / scale)
     a24 = A24_ENERGY.integrate(samples, origin_ns, end, 1, 2.5)
     ours = our_integrate(samples, origin_ns, end)
     for k in ("covered_energy_j", "full_energy_j"):
@@ -209,6 +218,103 @@ def thermal_block(hal_csv: Path | None, start_ns, end_ns):
     ap = [r["AP"] for r in rows if r["AP"] is not None]
     return dict(samples=len(rows), start_skin=first["SKIN"], start_ap=first["AP"], peak_skin=max(skin) if skin else None,
                 peak_ap=max(ap) if ap else None, end_skin=last["SKIN"], end_ap=last["AP"], sensor_names="HAL SKIN / AP (Current temperatures from HAL)")
+
+
+# ----------------------------------------------------------------------------------------------- v3 (S) sustained metrics (등록 v3 (S)-6)
+SKIN_HOT_C = 38.0
+DEGRADATION_SPAN_S = 60.0
+TIME38_RULE_S = 60.0
+
+
+def hal_rows(hal_csv: Path | None, start_ns, end_ns) -> list[dict]:
+    if not hal_csv or not Path(hal_csv).is_file() or start_ns is None or end_ns is None:
+        return []
+    rows = []
+    with open(hal_csv, encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            try:
+                t = float(r["device_boottime_s"])
+                skin = float(r["SKIN"]) if r.get("SKIN") else None
+            except (KeyError, ValueError, TypeError):
+                continue
+            if start_ns / 1e9 <= t <= end_ns / 1e9:
+                rows.append(dict(t=t, SKIN=skin))
+    return rows
+
+
+def time_above(rows: list[dict], threshold_c: float = SKIN_HOT_C, max_gap_s: float = 2.5) -> dict:
+    """(S)-6 'SKIN ≥ 38.0 ℃ 시간' = Σ (t[i+1] − t[i]) over consecutive HAL samples with SKIN[i] ≥ threshold and gap ≤ max_gap_s
+    (missing / late samples are not bridged — 결측은 넣지 않음). Samples: host hal.csv (2 s) inside the common window."""
+    total = 0.0
+    hot_samples = 0
+    for a, b in zip(rows, rows[1:]):
+        if a["SKIN"] is None:
+            continue
+        gap = b["t"] - a["t"]
+        if a["SKIN"] >= threshold_c and 0 < gap <= max_gap_s:
+            total += gap
+            hot_samples += 1
+    return dict(seconds=total, hot_samples=hot_samples, samples=len(rows), threshold_c=threshold_c, max_gap_s=max_gap_s)
+
+
+def lane_degradation(rows: list[dict], requests: list[dict], origin_ns, common_s: int, scale: int = 1) -> dict:
+    """(S)-6 처리 속도 저하 (기술만): per lane key, median service time (execution_start → output_ready, ms) of the LAST 60 s of
+    scheduled arrivals ÷ the FIRST 60 s. First window = scheduled offset < 35 + 60 s; last window = offset ≥ (last offset − 60 s).
+    Offsets are read from the manifest requests (scaled under --selftest). None when either side has no completed row."""
+    off = {q["request_id"]: q["offset_ms"] for q in requests}
+    last_offset = max(off.values()) if off else 0
+    first_hi = (C.FIRST_OFFSET_MS + DEGRADATION_SPAN_S * 1000)
+    last_lo = last_offset - DEGRADATION_SPAN_S * 1000
+    first, last = {}, {}
+    for r in rows:
+        if r.get("terminal_status") != "succeeded" or r["request_id"] not in off:
+            continue
+        key = f"{r['task_id']}_{r['selected_backend']}"
+        svc = (r["output_ready_ns"] - r["execution_start_ns"]) / 1e6 * scale
+        o = off[r["request_id"]]
+        if o < first_hi:
+            first.setdefault(key, []).append(svc)
+        if o >= last_lo:
+            last.setdefault(key, []).append(svc)
+    out = {}
+    for key in sorted(set(first) | set(last)):
+        f, l = sorted(first.get(key, [])), sorted(last.get(key, []))
+        mf = f[len(f) // 2] if f else None
+        ml = l[len(l) // 2] if l else None
+        out[key] = dict(first_60s_median_ms=mf, last_60s_median_ms=ml, n_first=len(f), n_last=len(l),
+                        ratio_last_over_first=(ml / mf) if (mf and ml) else None)
+    return dict(lanes=out, first_window_offset_ms=[C.FIRST_OFFSET_MS, first_hi], last_window_offset_ms=[last_lo, last_offset],
+                definition="median service (execution_start→output_ready) of arrivals in the last 60 s ÷ first 60 s, per lane (기술만)")
+
+
+def time38_direction(deltas):
+    if any(d is None for d in deltas):
+        return "열 자료 없음"
+    if all(abs(d) < TIME38_RULE_S for d in deltas):
+        return "38 ℃ 이상 시간 기준 안 (60 s)"
+    if all(d >= TIME38_RULE_S for d in deltas):
+        return "병행이 더 오래 38 ℃ 이상"
+    if all(d <= -TIME38_RULE_S for d in deltas):
+        return "병행이 덜 오래 38 ℃ 이상"
+    return "엇갈림"
+
+
+# ----------------------------------------------------------------------------------------------- v3 (C) confirmation (등록 v3 (C)-4)
+CONFIRMED = "확인됨 (개발 · 확인 2블록 같은 판정)"
+NOT_CONFIRMED = "확인 안 됨 — 개발 · 확인 판정 다름"
+CONFIRMATION_KEYS = ("judgment", "urgent_judgment", "normal_judgment", "thermal_skin_judgment", "thermal_ap_judgment", "service_judgment")
+
+
+def confirmation(reference_blocks: dict, blocks: dict) -> dict:
+    """Per block (A → Q1, N → Q3) and per judgment name: development (R3 readout) vs confirmation (R4 (C)) — same / different.
+    The Q verdict follows `judgment` (the name printed by the readout, tags included). Blocks are never pooled ((C)-4)."""
+    out = dict(rule="(C)-4: judgment name equal → 확인됨 · different → 확인 안 됨 (block by block, no pooling)", blocks={})
+    for b, q in (("A", "Q1"), ("N", "Q3")):
+        dev, conf = reference_blocks.get(b, {}), blocks.get(b, {})
+        items = {k: dict(development=dev.get(k), confirmation=conf.get(k), same=(dev.get(k) == conf.get(k))) for k in CONFIRMATION_KEYS}
+        out["blocks"][b] = dict(question=q, verdict=CONFIRMED if items["judgment"]["same"] else NOT_CONFIRMED, items=items,
+                                development_tags=dev.get("tags"), confirmation_tags=conf.get("tags"), development_n=dev.get("n"), confirmation_n=conf.get("n"))
+    return out
 
 
 # ----------------------------------------------------------------------------------------------- per session
@@ -250,8 +356,13 @@ def read_session(folder: Path, selftest: bool) -> dict | None:
         s["arrival_delay_ms"] = arrival_delay(rows)
         origin = boundary.get("start_ns")
         s["last_lane_available_s"] = max((r["lane_available_ns"] - origin) / 1e9 * scale for r in rows if r.get("lane_available_ns")) if origin else None
-        s["energy"] = energy_block(events, origin, scale) if origin is not None else None
+        s["energy"] = energy_block(events, origin, scale, C.common_s_of(manifest["experiment_id"])) if origin is not None else None
         s["thermal"] = thermal_block(Path(folder) / "host" / "hal.csv", origin, boundary.get("end_ns"))
+        if C.experiment_kind(manifest["experiment_id"]) == "sustained":   # v3 (S)-6 — never added to v2 sessions (byte-identical v2 readout)
+            hal = hal_rows(Path(folder) / "host" / "hal.csv", origin, boundary.get("end_ns"))
+            s["sustained"] = dict(time_above_38=time_above(hal) if hal else None,
+                                  end_skin=(s["thermal"] or {}).get("end_skin"), start_skin=(s["thermal"] or {}).get("start_skin"),
+                                  degradation=lane_degradation(rows, manifest["requests"], origin, C.common_s_of(manifest["experiment_id"]), scale) if origin is not None else None)
     return s
 
 
@@ -286,7 +397,7 @@ Q2_SAME_DEFINITION_LINE_V2 = "같은 정의 (400 ms) S26 관측 = v1 스모크 2
 CONCLUSION_SUFFIX_V2 = "도착 간격 200 ms (A24 400 ms 의 절반 · v1 스모크 뒤 설계)"
 
 
-def judge_block(block: str, sessions: list[dict], reg_version: int = 1, a24_compare_fail: bool = False) -> dict:
+def judge_block(block: str, sessions: list[dict], reg_version: int = 1, a24_compare_fail: bool = False, sustained: bool = False) -> dict:
     par_policy = policy_ref.POLICY_PAR if block == "A" else policy_ref.POLICY_PAR_NPU
     label = "병행" if block == "A" else "NPU 병행"
     valid = [s for s in sessions if s["block"] == block and s["eligible"]]
@@ -311,6 +422,19 @@ def judge_block(block: str, sessions: list[dict], reg_version: int = 1, a24_comp
                               d_energy_j=((x["energy"]["ours"]["full_energy_j"] or math.nan) - (c["energy"]["ours"]["full_energy_j"] or math.nan)) if x.get("energy") and c.get("energy") else None))
     out = dict(block=block, parallel_policy=par_policy, valid_sessions=sorted(s["index"] for s in by_index.values()), pairs=pairs, n=len(pairs),
                registration_version=reg_version, tags=[])
+    if sustained:   # v3 (S)-6 · (S)-7: pair deltas of the 38 ℃ time and end SKIN · per-session degradation (기술만)
+        for p in pairs:
+            c, x = by_index[p["cpu_index"]], by_index[p["par_index"]]
+            tc, tx = (c.get("sustained") or {}).get("time_above_38"), (x.get("sustained") or {}).get("time_above_38")
+            p["d_time_above_38_s"] = (tx["seconds"] - tc["seconds"]) if (tc and tx) else None
+            p["cpu_time_above_38_s"] = tc["seconds"] if tc else None
+            p["par_time_above_38_s"] = tx["seconds"] if tx else None
+            ec, ex = (c.get("sustained") or {}).get("end_skin"), (x.get("sustained") or {}).get("end_skin")
+            p["d_end_skin_c"] = (ex - ec) if (ec is not None and ex is not None) else None
+            p["cpu_peak_skin_c"] = (c.get("thermal") or {}).get("peak_skin")
+            p["par_peak_skin_c"] = (x.get("thermal") or {}).get("peak_skin")
+        out["degradation_by_session"] = {str(s["index"]): dict(policy=s["policy"], lanes={k: v.get("ratio_last_over_first") for k, v in ((s.get("sustained") or {}).get("degradation") or {}).get("lanes", {}).items()})
+                                         for s in sorted(by_index.values(), key=lambda s: s["index"])}
     # service judgment
     deadline = {pol: sum(s["service"]["all"]["planned"] - s["service"]["all"]["deadline_met"] for s in by_index.values() if s["policy"] == pol)
                 for pol in (policy_ref.POLICY_CPU, par_policy)}
@@ -343,6 +467,10 @@ def judge_block(block: str, sessions: list[dict], reg_version: int = 1, a24_comp
     out["thermal_skin_judgment"] = thermal_direction([p["d_peak_skin_c"] for p in pairs]).replace("병행", label)
     out["thermal_ap_judgment"] = thermal_direction([p["d_peak_ap_c"] for p in pairs]).replace("병행", label)
     out["energy_judgment"] = "판정 없음 (기술만)"
+    if sustained:
+        out["thermal_time38_judgment"] = time38_direction([p.get("d_time_above_38_s") for p in pairs]).replace("병행", label)
+        out["degradation_judgment"] = "판정 없음 (기술만)"
+        out["primary_kpi"] = "thermal_skin_judgment (공통창 최고 SKIN — (S)-1 주 지표)"
     out["judgment"] = out["urgent_judgment"]
     return out
 
@@ -449,9 +577,12 @@ def main() -> int:
     ap.add_argument("--apk-sha256")
     ap.add_argument("--source-commit")
     ap.add_argument("--a24-compare", type=Path, help="v2 #5: mixreq_a24_compare.py output json of the v2 APK smoke; verdict FAIL -> Q1 · Q2 · Q3 '이식 대조 FAIL — 기술만'")
+    ap.add_argument("--reference-readout", type=Path, help="v3 (C)-4: development readout.json (R3) whose block judgment names the confirmation blocks are compared with")
     args = ap.parse_args()
     plan = C.read_json(args.plan)
     reg_version = C.registration_version(plan["experiment_id"])
+    kind = C.experiment_kind(plan["experiment_id"])
+    sustained = kind == "sustained"
     a24_compare = C.read_json(args.a24_compare) if args.a24_compare and args.a24_compare.is_file() else None
     if args.a24_compare and a24_compare is None:
         raise SystemExit(f"--a24-compare {args.a24_compare} not found (v2 #5 needs the verdict; pass the smoke a24_compare.json)")
@@ -462,9 +593,11 @@ def main() -> int:
         s = read_session(folder, args.selftest)
         if s is None:
             skipped.append(folder.name)
+        elif s["manifest"]["experiment_id"] != plan["experiment_id"]:   # v3: never mix experiments (fail closed, recorded)
+            skipped.append(f"{folder.name}: experiment_id {s['manifest']['experiment_id']} != plan {plan['experiment_id']}")
         else:
             sessions.append(s)
-    blocks = {b: judge_block(b, sessions, reg_version, a24_fail) for b in ("A", "N")}
+    blocks = {b: judge_block(b, sessions, reg_version, a24_fail, sustained) for b in ("A", "N")}
     slots = slot_status(plan, sessions)
     # Q2 (block A only) table rows
     q2 = [dict(index=s["index"], policy=s["policy"], attempt=s["attempt"], eligible=s["eligible"],
@@ -488,15 +621,33 @@ def main() -> int:
         q2_table["note"] = "A24 400 ms · S26 200 ms — 같은 요청 정의가 아니다 (등록 v2 #9); 같은 부하로 읽지 않는다 (v2 §2 반대 해석 18)"
     notes = ["J = S26 µA 해석 · 기술만 (적격성 미확보)", "열 = 호스트 HAL SKIN/AP (센서 이름 그대로) · A24 는 AP",
              "NPU 문장: Samsung ENN NPU 경로로 실행 (코어 직접 증거 없음)", "조민규 확인 전 = 부록 관측 (등록 §9)"]
-    if reg_version == 2:
+    if reg_version >= 2:
         notes += [f"결론 문장에 늘 붙인다: {CONCLUSION_SUFFIX_V2} (등록 v2 §3)", "결과 지위 = S26 부록 관측 (등록 v2 §3)",
                   "꼬리표 우선순위 (R3 원장 1-2): 이식 대조 FAIL > NPU 계약 실패 > 병행 겹침 없음 > 쌍 부족 > 방향 판정"]
+    extra = {}
+    if reg_version >= 3:
+        notes += ["v3 (등록 v3): " + ("(C) 확인 블록 — 순서 뒤집음 · 재보정 없음 (판정기 = v2 그대로)" if kind == "confirm" else
+                                     "(S) 지속 600 s — 결과 뒤 설계 (v2 결과를 본 뒤) · 확인 블록 없음 (개발 1블록씩) · 열 (최고 SKIN) 이 주 지표")]
+        extra["experiment_kind"] = kind
+        if kind == "confirm":
+            ref = C.read_json(args.reference_readout) if args.reference_readout and args.reference_readout.is_file() else None
+            if args.reference_readout and ref is None:
+                raise SystemExit(f"--reference-readout {args.reference_readout} not found ((C)-4 needs the development readout)")
+            extra["confirmation"] = confirmation(ref["blocks"], blocks) if ref else dict(verdict="reference readout not given — 확인 판정 없음 (기록만)")
+            extra["confirmation"]["reference_readout"] = str(args.reference_readout) if args.reference_readout else None
+            extra["conclusion_suffix"] = "(개발 R3 · 확인 R4 — 2블록, 순서 뒤집음, 재보정 없음)"
+        else:
+            extra["sustained_definitions"] = dict(time_above_38="Σ HAL 2 s 표본 간격 (gap ≤ 2.5 s) where SKIN ≥ 38.0 ℃, 공통창 안 (결측 미보간)",
+                                                 degradation="lane 서비스 시간 (execution_start→output_ready) 마지막 60 s 도착 중앙 ÷ 처음 60 s 도착 중앙 (기술만)",
+                                                 judgments="최고 SKIN 1.0 ℃ 규칙 (주) · 38 ℃ 시간 60 s 규칙 (보조) · 긴급 응답 5 % screening · n < 3 → 쌍 부족")
+            extra["conclusion_template"] = ("S26 에서 같은 혼합 요청 (3,000 · 200 ms · 600 s) 을 [병행 / NPU 병행] 으로 처리하자 CPU 직렬보다 공통창 최고 SKIN 이 Z ~ W ℃ [판정 이름] · "
+                                            "38 ℃ 이상 시간이 … [판정 이름] · 긴급 응답 P95 가 X ~ Y ms [판정 이름] 였다 (n쌍 · 개발 1블록 · 확인 없음). 지속 600 s 는 v2 결과 뒤 설계. S26 J 기술만. 결과 지위 = S26 부록 관측.")
     readout = dict(schema=SCHEMA, plan=str(args.plan), plan_sha256=C.sha256_file(args.plan), selftest=args.selftest, sessions=len(sessions), skipped=skipped,
                    registration_version=reg_version, registration=plan.get("registration"), step_ms=plan.get("step_ms", 400),
                    a24_compare=dict(path=str(args.a24_compare) if args.a24_compare else None, verdict=(a24_compare or {}).get("verdict"), fail=a24_fail),
                    slots=slots, slot_counts={k: sum(1 for v in slots.values() if v["status"] == k) for k in ("valid", "invalid_twice", "invalid_once", "not_attempted")},
                    per_session=[{k: v for k, v in s.items() if k not in ("validated", "manifest", "rows", "host_log")} for s in sessions],
-                   blocks=blocks, q2_block_A=q2, q2_table=q2_table, a24_reference_for_q2=a24_reference, auxiliary=aux, notes=notes)
+                   blocks=blocks, q2_block_A=q2, q2_table=q2_table, a24_reference_for_q2=a24_reference, auxiliary=aux, notes=notes, **extra)
     C.write_json(args.out / "readout.json", readout)
     write_csv(args.out / "inventory.csv", inventory_rows(plan, sessions, args), INVENTORY_FIELDS)
     write_csv(args.out / "files_inventory.csv", files_inventory(sessions), ["session_id", "attempt", "filename", "bytes", "sha256"])
@@ -511,7 +662,9 @@ def main() -> int:
                "last_lane_available_s", "arrival_delay_max_ms", "queue_aux_urgent_p95_ms", "energy_j", "peak_skin_c", "peak_ap_c", "npu_contract"])
     print(json.dumps(dict(sessions=len(sessions), skipped=skipped, registration_version=reg_version, a24_compare_fail=a24_fail,
                           block_A=blocks["A"].get("judgment"), block_N=blocks["N"].get("judgment"), tags_A=blocks["A"]["tags"], tags_N=blocks["N"]["tags"],
-                          q2_title=q2_table["title"], pairs_A=blocks["A"]["n"], pairs_N=blocks["N"]["n"], slot_counts=readout["slot_counts"]), ensure_ascii=False))
+                          q2_title=q2_table["title"], pairs_A=blocks["A"]["n"], pairs_N=blocks["N"]["n"], slot_counts=readout["slot_counts"],
+                          confirmation={b: v["verdict"] for b, v in extra.get("confirmation", {}).get("blocks", {}).items()} if "confirmation" in extra else None,
+                          sustained={b: dict(skin=blocks[b].get("thermal_skin_judgment"), t38=blocks[b].get("thermal_time38_judgment")) for b in "AN"} if sustained else None), ensure_ascii=False))
     return 0
 
 

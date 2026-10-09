@@ -77,6 +77,9 @@ class Session:
         self.manifest_sha = C.sha256_bytes(self.manifest_bytes)
         self.sid = manifest["session_id"]
         self.attempt = manifest["attempt"]
+        # v3 (R4): host constants from the experiment table — absolute observe cap and listing poll period (등록 v3 §0-2; constants only)
+        self.cap_s = C.session_cap_s(manifest["experiment_id"], manifest["block"])
+        self.listing_period = C.listing_period_s(manifest["experiment_id"])
         self.results_root = args.results
         self.folder = self.results_root / (f"S26_MIXREQ_{label}_a{self.attempt}" if not args.smoke else f"S26_MIXREQ_SMOKE_{label}_a{self.attempt}")
         self.host = self.folder / "host"
@@ -343,12 +346,12 @@ class Session:
                 self.warmup_gate()
             if time.time() - last_change > self.args.stall_s:
                 return "stall"
-            if time.time() - started > 1200:  # absolute cap: setup 180 + gate 60 + 30 + 120 + 30 + 60 = 480 s nominal
+            if time.time() - started > self.cap_s:  # absolute cap: v2 1200 s (setup 180 + gate 60 + 30 + 120 + 30 + 60 = 480 s nominal) · -03 1,320 s
                 return "stall"
             self.sample_hal()
             if self.dry:
                 return "done"
-            time.sleep(1.0)
+            time.sleep(self.listing_period)
 
     def pull_and_stop(self):
         self.adb("pull", self.device_out, str(self.folder / "device_pull"), timeout=600)

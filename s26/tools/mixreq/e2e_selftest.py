@@ -10,6 +10,10 @@ for block N (PASS on the fake outputs); readout: block A = "쌍 부족 — 기�
 negative evidence variants (no ENN line / 0 of 1 replacement / failure line / other delegate) → rule 7 FAIL.
 v2 (R3): a PAR session with overlap 0 stays eligible under the v2 id and fails rule 5 under the v1 id; readout over {CPU, PAR-no-overlap}
 → block A "병행 겹침 없음 — 기술만"; --a24-compare FAIL → Q1 · Q3 · Q2 "이식 대조 FAIL — 기술만"; v2 Q2 title.
+v3 (R4): K6 cases blockA_par_02C (-02C, 192) and blockN_parnpu_03 (-03, 3,000 · 720 s, time_scale 10) → eligible under their own
+experiment ids (rule 3 window 72 s for -03); readout per v3 plan (plan_v3c / plan_v3s) → "쌍 부족 — 기술만" (one session each), the
+(C) readout with a synthetic --reference-readout carries `confirmation` (differs → "확인 안 됨"), the (S) readout carries `sustained`
+per session (degradation lanes present; 38 ℃ time None without hal.csv); a v2 session is skipped by a v3 plan (never mixed).
 The synthetic logcat only exercises the *parsing* of the frozen regexes; it is not device evidence.
 """
 from __future__ import annotations
@@ -131,6 +135,8 @@ def main() -> int:
     ap.add_argument("--roundtrip", type=Path, default=REPO / "request-runner" / "build" / "mixreq-roundtrip")
     ap.add_argument("--plan", type=Path, default=REPO / "s26" / "results" / "mixreq_1008" / "plan_v2" / "plan.json")
     ap.add_argument("--out", type=Path, default=REPO / "request-runner" / "build" / "mixreq-e2e")
+    ap.add_argument("--plan-v3c", type=Path, default=REPO / "s26" / "results" / "mixreq_1008" / "plan_v3c" / "plan.json")
+    ap.add_argument("--plan-v3s", type=Path, default=REPO / "s26" / "results" / "mixreq_1008" / "plan_v3s" / "plan.json")
     args = ap.parse_args()
     if args.out.exists():
         shutil.rmtree(args.out)
@@ -239,6 +245,65 @@ def main() -> int:
         attempted = len({c for c in expect if (args.roundtrip / c / "a1" / "manifest.json").is_file()})
         if sum(1 for l in inv if ",not_attempted," in l) != 16 - attempted:
             failures.append(f"inventory not_attempted count != {16 - attempted}")
+    # ---------------------------------------------------------------------------------------------------- v3 (R4): -02C · -03
+    for case, plan_path, exp_id, kind in (("blockA_par_02C", args.plan_v3c, "S26-MIXREQ-02C", "confirm"), ("blockN_parnpu_03", args.plan_v3s, "S26-MIXREQ-03", "sustained")):
+        device = args.roundtrip / case / "a1"
+        if not (device / "manifest.json").is_file():
+            failures.append(f"{case}: round-trip artifacts missing ({device}) — run gradlew :request-runner:testDebugUnitTest first")
+            continue
+        if not plan_path.is_file():
+            failures.append(f"{case}: plan {plan_path} missing — run mixreq_plan.py --experiment first")
+            continue
+        if C.read_json(device / "manifest.json")["experiment_id"] != exp_id:
+            failures.append(f"{case}: round-trip manifest experiment_id != {exp_id}")
+            continue
+        v3_results = args.out / "v3" / case / "results"
+        v3_results.mkdir(parents=True, exist_ok=True)
+        validated, contract = run_validate(args.roundtrip / case, device, synthetic_logcat(device), v3_results / case)
+        report[f"v3:{case}"] = dict(eligible=validated["eligible"], reasons=validated["reasons"], registration_version=validated["registration_version"],
+                                   window=validated["rules"]["3_window"]["detail"]["bounds_s"], npu_contract=None if contract is None else contract.get("passed"))
+        if not validated["eligible"] or validated["registration_version"] != 3:
+            failures.append(f"v3 {case}: eligible={validated['eligible']} reasons={validated['reasons']} version={validated['registration_version']}")
+        if kind == "sustained" and validated["rules"]["3_window"]["detail"]["bounds_s"] != [35.0 / 10, 720.0 / 10]:
+            failures.append(f"v3 {case}: window bounds {validated['rules']['3_window']['detail']['bounds_s']} != [3.5, 72.0] (720 s / time_scale 10)")
+        # a v2 session dropped into the v3 results must be skipped, never paired
+        shutil.copytree(results / ("blockA_cpu" if kind == "confirm" else "blockN_cpu"), v3_results / "v2_session_should_be_skipped")
+        ro_dir = args.out / "v3" / case / "readout"
+        cmd3 = [sys.executable, "-X", "utf8", str(HERE / "mixreq_readout.py"), "--plan", str(plan_path), "--results", str(v3_results), "--out", str(ro_dir), "--selftest"]
+        if kind == "confirm":
+            ref = args.out / "v3" / case / "reference_readout.json"
+            C.write_json(ref, dict(blocks={"A": dict(judgment="병행이 긴급 응답을 줄였다", urgent_judgment="병행이 긴급 응답을 줄였다", normal_judgment="엇갈림",
+                                                      thermal_skin_judgment="열 차이 기준 안 (1.0 ℃)", thermal_ap_judgment="엇갈림", service_judgment="두 정책 모두 기한 충족", tags=[], n=4),
+                                           "N": dict(judgment="NPU 병행이 긴급 응답을 줄였다", tags=[], n=4)}))
+            cmd3 += ["--reference-readout", str(ref)]
+        r3 = subprocess.run(cmd3, capture_output=True, text=True, encoding="utf-8", errors="replace")
+        if r3.returncode != 0:
+            failures.append(f"v3 {case} readout rc={r3.returncode}: {r3.stderr.strip()[-800:]}")
+            continue
+        ro3 = C.read_json(ro_dir / "readout.json")
+        block = "A" if kind == "confirm" else "N"
+        report[f"v3:{case}:readout"] = dict(judgment=ro3["blocks"][block].get("judgment"), skipped=ro3["skipped"], kind=ro3.get("experiment_kind"), sessions=ro3["sessions"])
+        if ro3["sessions"] != 1 or not any("experiment_id" in s for s in ro3["skipped"]):
+            failures.append(f"v3 {case}: readout must use 1 session and skip the v2 one (sessions={ro3['sessions']} skipped={ro3['skipped']})")
+        if ro3["blocks"][block].get("judgment") != "쌍 부족 — 기술만" or ro3.get("registration_version") != 3 or ro3.get("experiment_kind") != kind:
+            failures.append(f"v3 {case}: judgment {ro3['blocks'][block].get('judgment')!r} version {ro3.get('registration_version')} kind {ro3.get('experiment_kind')}")
+        if kind == "confirm":
+            conf = ro3.get("confirmation", {}).get("blocks", {})
+            report[f"v3:{case}:confirmation"] = {b: v.get("verdict") for b, v in conf.items()}
+            if conf.get("A", {}).get("verdict") != "확인 안 됨 — 개발 · 확인 판정 다름" or conf.get("N", {}).get("verdict") != "확인 안 됨 — 개발 · 확인 판정 다름":
+                failures.append(f"v3 {case}: confirmation verdicts {report[f'v3:{case}:confirmation']} (1 session → 쌍 부족 ≠ development judgment)")
+            if ro3.get("conclusion_suffix") != "(개발 R3 · 확인 R4 — 2블록, 순서 뒤집음, 재보정 없음)":
+                failures.append(f"v3 {case}: conclusion suffix {ro3.get('conclusion_suffix')!r}")
+        else:
+            ps = [s for s in ro3["per_session"] if s.get("eligible")]
+            sus = (ps[0].get("sustained") or {}) if ps else {}
+            report[f"v3:{case}:sustained"] = dict(keys=sorted(sus), lanes=sorted(((sus.get("degradation") or {}).get("lanes") or {})))
+            if not ps or "degradation" not in sus or "time_above_38" not in sus or "detection_CPU" not in ((sus.get("degradation") or {}).get("lanes") or {}):
+                failures.append(f"v3 {case}: sustained fields missing: {report[f'v3:{case}:sustained']}")
+            if "sustained_definitions" not in ro3 or "conclusion_template" not in ro3:
+                failures.append(f"v3 {case}: sustained definitions / conclusion template missing")
+            if ro3["blocks"]["N"].get("degradation_by_session") is None:
+                failures.append(f"v3 {case}: degradation_by_session missing on block N")
     C.write_json(args.out / "e2e_report.json", dict(report=report, failures=failures))
     print(json.dumps(dict(cases=report, failures=failures), ensure_ascii=False, indent=1)[:6000])
     print("E2E", "PASS" if not failures else f"FAIL ({len(failures)})")
