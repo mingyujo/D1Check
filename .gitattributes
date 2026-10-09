@@ -468,6 +468,17 @@
 /tools/d1_future_thermal_v4_check.py text eol=lf
 /tools/d1_future_thermal_v4_browser_check.py text eol=lf
 
+# Rolling diagnosis and actual-prefix guard: preserve registered bytes.
+/docs/results/rolling_diagnosis_01/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/results/rolling_prefix_01/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/tools/d1_rolling_diagnosis.py text eol=lf
+/tools/d1_rolling_prefix_guard.py text eol=lf
+/tools/d1_rolling_prefix_study.py text eol=lf
+/tools/test_d1_rolling_prefix_guard.py text eol=lf
+/tools/d1_rolling_prefix_report.py text eol=lf
+/tools/d1_rolling_prefix_check.py text eol=lf
+/tools/d1_rolling_prefix_browser_check.py text eol=lf
+
 # Bounded joint rolling-horizon schedules.
 /docs/results/rolling_joint_01/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /tools/d1_rolling_joint_thermal.py text eol=lf
