@@ -6,6 +6,12 @@
 - exact C0 profile에만 전체window종료를허용하고 조기/미등록/다른창은거부, LOAD_A/legacy tail·기존watchdog·계측·호출·onDestroy취소/동결계수불변. 실제Activity종료분기 회귀를추가해Android13/Python5 통과, 수정후보는기존서명으로PC 생성만했다.
 - 원plan_v2 stopped_no_resume/추론12·부분기록/기존FAIL·모형/후보를보존한다. 긴C0/LOAD독립오차확인·정확도PASS·기본/RL/strict/experiment_ready승격0. 별도계획/추가실측은이번자동생성하지않는다.
 
+## 2026-10-09 LIST-CANDIDATE-RL-DESIGN-01 — 온라인 Band·롤링 제외 확정, 설계값은 제안
+
+- 확정 방향: 사용자는 Band 기본+롤링을 빼고 리스트 후보+RL 보정 선택을 검토하도록 지시했다. Band는 기본/복귀/학습 참조가 아니며 Triton과 함께 독립 평가 전용으로 남긴다. 기존 알고리즘/체크포인트/결과를 삭제하거나 새 정책 효과를 전제하지 않는다. [논문·코드 근거와 대응](LIST_CANDIDATE_RL_DESIGN_20261009.md).
+- 추천 제안: 자체 서비스 우선 리스트 L0·과업별FIFO head·실제 단건/병행/양방향 유한지연의8슬롯·56/28특징·native Maskable PPO. AP 주목적과 signed J/서비스 제약은 새 목적 버전이며 CPO 보장/전역최적성/실제 표면온도 감소가 아니다. 논문의 공장DAG/주파수/선점/미지원계수를 도입하지 않는다.
+- 완료 범위는 설계와 정적 검증뿐이다. 후보 공간의 개선 여지 gate 이전에는 학습하지 않으며 제안1536환경/416학습을 새 승인·소비로 승격하지 않는다. 누적6,517/641·이번환경/학습/기기0·기본/strict/experiment_ready=false와 별도실측 중단 기록을 보존한다.
+
 ## 2026-10-09 IE-ROLLING-TERMINAL-03 — 종단 상태 제약의 조건부 개발 비교
 
 - 확정 범위: 사용자 승인으로 실제첫prefix/Band의 같은H에서 AP/h 비악화를검사한다. 원g=0으로 h를부하별잔열양이나독립특징으로해석하지않고 새계수/모형은추가하지않는다. 같은미래열입력의조건부순서보존과실제미래SLA보장을구분한다. [계약·한계](results/rolling_terminal_01/README.md).

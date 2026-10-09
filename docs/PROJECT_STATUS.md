@@ -36,6 +36,13 @@
 - Run/claim/설치/앱실행/추론/세션0, ADB2명령(연결1/목록1), daemon재시작/설정변경/자동재연결0. 계획은 **미소비로 보존**, stopped_no_resume/실측실패로 기록하지 않는다. PC Wi-Fi는 연결돼 있으나 휴대폰주소/포트/페어링·네트워크 내부원인은 미확정.
 - 다음하나: 사용자가 현재 무선디버깅 접속주소(페어링이 없으면 페어링주소/코드)를 제공하면 기존승인으로 동일계획의 현재기기·환경 gate부터 진행한다. 연결 회복만으로 세션이 시작됐다고 하지 않는다.
 
+## 2026-10-09 LIST-CANDIDATE-RL-DESIGN-01 — 리스트 후보·RL 보정 선택 설계 완료
+
+- 사용자 지시로 Band 기본/복귀/학습참조와 온라인 롤링을 제외하고, 과업별 FIFO head·EDD/여유/ECT/호환성 리스트와 native Maskable PPO 재정렬을 설계했다. Band/Triton은 평가 전용이다. [설계·목적·파일럿 제안](LIST_CANDIDATE_RL_DESIGN_20261009.md) · [논문 대응·정적 검증](results/list_candidate_rl_design_01/README.md).
+- 새 L0/후보56·28/8슬롯·양방향 유한 지연·AP 주보상/서비스/J signed 제약은 제안이며 정책/학습 미구현이다. 기존 masking/AP telescope는 새 기여가 아니다. 기존 성공3원장의 과업내FIFO/192전량을 확인했으나 새 후보 재현/성능 증거로 승격하지 않았다.
+- 정적180경우/최대8후보·3보상합·예산/원소스hash 확인 PASS, native환경/학습/기기0. 누적6,517환경/641학습을 유지하고 제안1536환경/416학습은 이번에 실행하지 않는다. 원모형/원정책/checkpoint/기본/strict/experiment_ready=false·사용자14행/개인파일/다른worktree/별도실측 중단 상태를 보존했다.
+- 다음 최대3: 새 후보가 기존 서비스 유지 개선 일정을 표현하는지 작은 구현 검증, 통과할 때만3seed 동일64episode 개발, 적격할 때만 새 확인·구성 제거. 이번 완료 범위는 설계/정적 감사이며 AP모형 오차·실제 제어J/표면온도·실기기 우위는 미확정이다. 검증 HEAD4842c84+설계 미커밋, 정확한hash/명령은 verification.json이다.
+
 ## 2026-10-09 IE-ROLLING-TERMINAL-03 — 종단 AP 개발 비교 완료·추가효과0
 
 - 사용자 진행 승인으로 같은H=max(두 lane종료)의 AP/h 비악화를 원 첫prefix/Band 비교에 추가한다. 실제 원식 g=0으로 h는 부하별 잔열 누적이 아니며 독립 판별력 가정을 철회했다. 원계수/입력/기한/지원·기본/strict/experiment_ready=false 보존. [결과 전 계약](results/rolling_terminal_01/README.md).

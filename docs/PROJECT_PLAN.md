@@ -5,6 +5,12 @@
 - 승인plan_v2는 C0600초 뒤의 tail 검사 결함으로 stopped_no_resume. 본작업0/준비12/runtime4/ADB1588/927.703초, 긴회복/LOAD_A미진행·새예측오차없음. [실제결과](AP_TAIL_OBSERVATION_RUN01_20261009.md). 이전C0미소비준비와현재소비종료를구분한다.
 - exact 등록C0만 전체common 종료를허용하고 legacy/LOAD_A의tail검사는유지한다. 실제Activity종료분기 포함Android13/Python5·기존서명후보APK 준비완료, 기기전송/설치/추가실측0. 다음하나는 수정APK의별도새계획PC 동결이며 이번자동재시도/새claim/모형교체/계수적합0이다.
 
+## 2026-10-09 LIST-CANDIDATE-RL-DESIGN-01 — 리스트 후보를 RL이 보정 선택
+
+- 사용자 방향을 [별도 설계](LIST_CANDIDATE_RL_DESIGN_20261009.md)에 고정했다. Band 기본/복귀/보상참조·온라인 롤링/CP-SAT/전체 큐 suffix를 제외한다. 과업별2head·EDD/응답여유/ECT/호환성·원 지원CPU/GPU와 양방향 유한지연을 후보로 만들고 기존 native Maskable PPO로 실제 행동을 선택한다. Band/Triton/원List/EDD는 평가 비교군으로 보존한다.
+- 이번은 문헌/코드/원장 확인과 정적 감사만 완료, 정책/learner/native 평가/기기 실행0이다. AP 주보상·J/서비스 signed 제약은 기존v2 목적과 다른 제안 버전이며 성능/제약보장이 아니다. 기존 성공 일정의 새bank 표현가능성/의미 있는 선택정보를 구현 전 gate로 확인한다.
+- 후속 제안: 첫단계512환경/3seed×64학습, 통과할 때만 새48조건/ablation·전체cap1536환경/416학습·첫clock2h/저장5min. 현재6,517/641을 계승하고 남은13,483/5,503 안에 둔다. 설정/seed/후속clock은 실행 전 고정하며 이번 설계 완료로 실행하지 않는다. 원모형·원결과/기본/strict/experiment_ready=false와 별도실측 사용자중단을 유지한다.
+
 ## 2026-10-09 IE-ROLLING-TERMINAL-03 — 개발 기회 점검·조건부 작은 pilot
 
 - 공통H의 AP/h 비악화를 실제 첫prefix에 연결한다. 원g=0으로 부하별 잔열독립성 가정은철회하고 원식 그대로 h동률을검사한다. 원3문맥/서비스/J/AP/완료량·입력/지원/기본/strict를유지한다. [계약](results/rolling_terminal_01/README.md).

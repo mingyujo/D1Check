@@ -1,0 +1,65 @@
+{
+  "task": "LIST-CANDIDATE-RL-DESIGN-01",
+  "status": "completed_design_only",
+  "verified_utc": "2026-10-09T10:33:35.751917+00:00",
+  "command": "python -B -X utf8 -m tools.d1_list_candidate_rl_design_check",
+  "head": "4842c84f7ab0a63de1360654c5c490331c3186f1",
+  "dirty": true,
+  "result": {
+    "status": "PASS",
+    "scope": "static design audit; not policy/simulator/training/device verification",
+    "head": "4842c84f7ab0a63de1360654c5c490331c3186f1",
+    "checker_sha256": "bbafb737bfa6b6a4ac056241ac7fdbe523ab3722c90c96058ccd5627c9d21820",
+    "contract_sha256": "88aed61e301345b41245ce32416b7e15f2cbb69237485a3085336ea08b8ca421",
+    "state_fields": 56,
+    "candidate_fields": 28,
+    "parameters": 16455,
+    "abstract_cases": 180,
+    "maximum_abstract_candidates": 8,
+    "reward_algebra_cases": 3,
+    "prior_FIFO_records": 3,
+    "proposed_budget_checked": true,
+    "environment_starts": 0,
+    "learning_starts": 0,
+    "device_commands": 0
+  },
+  "source_basis": {
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/initial_inputs.json": "42f603120e0f3db18243ef9f3053179039dc6138ce31f37df2c91ac2bf45d18d",
+    "tools/d1_ie_candidates_v2.py": "67d55d3b8be36bd53e52d3889cf5033924597d3931cacd4a473e4340b9dbcac6",
+    "tools/d1_cpu_gpu_method_candidates.py": "17c3824e2ddf83d32baa12f4196d14abef35583bc5bdea2d3a9df2874b6b9d72",
+    "tools/d1_edd_ect_residual_ppo.py": "86ca79823eb9d5babb474c28321563fa44c877524663b6b60f4356171c81758a",
+    "tools/d1_edd_ect_residual_controller.py": "451fa485df03ca66857b5f69265dc324f7afe967bcee7013003aaae4bd15073e",
+    "tools/d1_ie_dispatch.py": "318db8c5f6401076f2861d45ad7c998994cf20f2a9b1743823180d50ede071ab",
+    "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9",
+    "docs/results/ie_candidates_v2/README.md": "68d988457b4b33ab5240f8271b2960ee6c6deee3ba36ab8900e03e4694e33cac",
+    "docs/results/ie_candidates_v2/joint_gain_conditions.csv": "cdf465a92507cedb9a539eb2124bb55af8401af537fd12e0142872e5e7149827",
+    "docs/results/rolling_terminal_01/summary.json": "e50fd131d611394d58c03dcf288dcac4752280957af733affeeac47dfb22030f"
+  },
+  "policy_or_engine_verification": false,
+  "performance_comparison_performed": false,
+  "limitations": [
+    "abstract cases share a deadline bound; no native event loop execution",
+    "new 56/28/8 policy and learner not implemented",
+    "no online data-leak or resume-equivalence test of a new learner",
+    "old ledger has no decision intents; new-bank replay unverified",
+    "AP model only; surface temperature and controller energy unsupported",
+    "proposal is not a claim of improvement or optimality"
+  ],
+  "research_evidence": "research_mapping.md; pinned primary versions; access limitations recorded separately",
+  "resume_changes": [
+    "both directions of bounded mixed defer",
+    "independent physical task is user-stopped at resume",
+    "old AP telescope explicitly acknowledged"
+  ],
+  "consumption": {
+    "new_environment_starts": 0,
+    "new_learning_starts": 0,
+    "device_commands": 0,
+    "cumulative_environment_starts": 6517,
+    "cumulative_learning_starts": 641
+  },
+  "user_unrelated_status_sections_preserved": true,
+  "independent_AP_work_modified_or_started": false,
+  "proposed_budget_is_not_consumed_or_execution_approval": true
+}
