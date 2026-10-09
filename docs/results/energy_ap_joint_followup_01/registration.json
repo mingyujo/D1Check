@@ -1,0 +1,37 @@
+{
+  "id": "ENERGY-AP-JOINT-FOLLOWUP-PC-01",
+  "purpose": "reduce both output errors in separate heads;energy correction omitted previously",
+  "candidate_family": "one existing signed common-start idle offset plus four nonnegative state increments",
+  "training_ids": [
+    "session_00",
+    "session_01",
+    "session_02",
+    "session_03"
+  ],
+  "training_role": "development",
+  "selection": "one family only;four LOSO fits then one final fit;no outcome-based family/seed/window search",
+  "energy": "pre_w*t + max(0,t-35)*idle_bias + state exposure dot nonnegative increments;whole device not incremental-only",
+  "AP": "fixed LOAD_SLOW unchanged;keep its original energy proxy basis,do not inject refitted energy increments into its validated equation",
+  "evaluation": "29 already-viewed archival sessions plus two already-viewed long blocks;posthoc energy evaluation,not fresh blind independent confirmation",
+  "windows": "reference0..120 all35;registered35..635 macro/long;occupied35..last_lane and resident post-last separately;missing endpoints null,covered interval separately",
+  "energy_fit_calls": 5,
+  "AP_fit_calls": 0,
+  "model_structures": 1,
+  "device_commands": 0,
+  "environment_simulations": 0,
+  "new_measurement_plan": 0,
+  "default_changed": false,
+  "strict_support": false,
+  "accuracy_pass": null,
+  "experiment_ready": false,
+  "sources": {
+    "docs/results/resident_identification_run_01/recorded_v3/inputs.json.gz": "806fba262cafee14a650a91dc6e4383216eb09e3dc4adc4702f7ccf0f0d15fb1",
+    "docs/results/ap_tail_observation_run_05/run_v6/inputs.json.gz": "43033ffbe67705738f63f04ab0ca17ad99b6c5ccac6b4fbf3da187da8c4addf6",
+    "docs/results/model_refinement_01/inputs.json.gz": "cb07aa735100971b6e7e635ecf9c8c24bc9b9c2b7ffdbc4e9824b0566f7f2ffb",
+    "docs/results/history_model_refinement_01/inputs.json.gz": "2005a26656c7c4a88b6b914ac51c2fcb156cb9229f050491c7f1826b5d8d816f",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/ap_tail_identification_01/run_v2/candidates.json": "aa28410d701c9810001a4e6c176823e7d2b446f46f980ebeab3ff14f4540cc84",
+    "tools/d1_resident_identification_analysis.py": "75c351a7f315412aa73c99aa6e0bf439f5b0adf7b6db33a045e05ccc689003cd"
+  },
+  "freeze_before_fit": true
+}

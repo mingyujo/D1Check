@@ -1,0 +1,9 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>에너지·AP 함께 평가</title><style>body{font:17px/1.7 system-ui;max-width:1100px;margin:30px auto;padding:0 18px;color:#203040}aside{background:#fff2cf;padding:18px}img{width:100%}table{border-collapse:collapse;width:100%}td,th{padding:10px;border-bottom:1px solid #ddd}a{color:#075985}</style></head><body>
+<h1>에너지 개선도 실제 평가: 600초 개선과 긴 유휴 악화</h1>
+<aside>원래목표는열과에너지예측오차를모두줄이는것입니다. AP후보는고정,새에너지후보1개를개발4로추정했습니다. 새C0/LOAD에너지결과를본뒤만든사후평가이며기본/RL/strict 교체·정확도PASS·새독립확인이아닙니다. 추가실측0.</aside>
+<table><tr><th>고정600초창</th><th>원 J차이 → 후보 J차이</th><th>원 AP MAE → 고정후보</th></tr><tr><td>C0</td><td>-13.148 → +1.342J</td><td>0.013 → 0.013°C</td></tr><tr><td>LOAD_A</td><td>-15.151 → +10.763J</td><td>0.544 → 0.186°C</td></tr></table>
+<p>긴유휴에서는상수offset 누적으로악화합니다. LOAD의덮인등록회복구간은절대7.655→38.700J,원래전체회복은끝표본누락으로null입니다. 과거29의J 평균절대오차5.522→5.402J이나14세션악화,AP도이전13악화를보존합니다. 개선창만골라전체성공으로표현하지않습니다.</p>
+<p><a href="../../ENERGY_AP_JOINT_FOLLOWUP_PC_20261010.md">한국어 보고서·원인·역할·명령</a> · <a href="run_v1/energy_errors.csv">모든 J창·결측</a> · <a href="run_v1/joint_errors.csv">AP와에너지 세션 비교</a> · <a href="run_v1/candidate.json">별도 에너지 후보</a> · <a href="registration.json">추정 전 등록</a> · <a href="verification.json">검증·보존</a></p>
+<img src="run_v1/long_energy_AP_residuals.png" alt="C0와LOAD의누적J잔차및기존에너지계수를기준으로한고정AP후보의오차">
+<img src="run_v1/session_energy_errors.png" alt="개발제외평가·과거사후·새긴자료사후를분리한35세션J절대오차">
+</body></html>
