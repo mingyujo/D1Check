@@ -1,5 +1,14 @@
 # D1Check 현재 상태
 
+## 2026-10-09 AP-TAIL-OBSERVATION-RUN-05 — C0·LOAD 완료, 고정 후보 확인
+
+- 사용자 `C0부터 재개` 지시로 새 ID `ENERGY-AP-TAIL-OBSERVATION-05` / plan_v6를 준비했다. 기존 plan_v5 중단·부분 원자료·소비 기록은 보존한다. Check는 기기 명령 0회, 계획 SHA `d5d4edfca4819b34595ac12c62e9d5c28e4fe2bae22f473a0636c0b55f0b7059`, 미소비·APK/계약/모형 동일성 통과 후 Run 1회 호출했다.
+- C0_LONG → LOAD_A_LONG, 고정 관측 5,280초, 전체 예약 9,050초, runtime 8 / warmup 16 / 적격성 8 / 본 작업 최대 1,200 / 총 명시적 추론 최대 1,224 / ADB 최대 16,752. 저SOC 시작·진행 ≥6%, ≤5% 중단과 나머지 환경 gate는 유지한다. APK `703d09d5…b200e` 재사용, 재빌드 0, 재시도·대체·추가 0.
+- 두 조건 모두 관측·앱/host cleanup·회수·자료 검증 완료, 실제 parent/child 부재. runtime8 / warmup16 / 적격성8 / 본857 / 추론881 / ADB9,030 / 5,837.765초, staging14 / 설치본pull1 / APKpush·설치0 / retry0. 실제 배터리 C0 64→64%, LOAD64→61%·절전false. 모형·후보·기본/RL/strict/experiment_ready=false 불변.
+- AP 공통＋회복 MAE: C0 원식/LOAD_SLOW0.091·CLOCK0.873°C; LOAD 원식0.437→LOAD_SLOW0.173°C·CLOCK0.574°C. 회복 관측−0.700 / LOAD_SLOW−0.633 / CLOCK+0.264°C. 부하 의존 항의 확인 근거이며 τ1920/물리원인/정확도PASS/전체후보우월성 확정은 아니다. 등록600초 J차이 C0−13.148 / LOAD−15.151, 냉각끝 미관측0.350/0.578초로 전체 냉각J/오차 null.
+- [결과·소비·한계](AP_TAIL_OBSERVATION_RUN05_20261009.md) · [곡선·CSV·공유 재현](results/ap_tail_observation_run_05/run_v6/index.html). 소스163파일/모형·APK 해시 불변·18 AP＋6 J행 공유 입력 재현 통과. 다음 하나: 기존 악화 조건과 이번 장시간 확인을 반영해 LOAD_SLOW의 별도 opt-in 평가 지원 경계를 고정한다. 추가 실측/fit/새계획0, 사용자 STATUS 변경·다른 정책/RL 작업·다른 worktree 보존.
+
+
 ## 2026-10-09 AP-TAIL-USER-STOP-01 — 사용자 요청 중단·C0부터 새 실행 예정
 
 - 사용자 지금중단/이따C0부터재실행지시. plan_v5의소유권확인된대상만force-stop1/ps부재/thermal0, host정상실패처리·parent/child실부재 확인. C0후반관측중 중단·LOAD미시도, runtime4/준비12/본0/총3310ADB/1921.609초. [중단·재개 체크포인트](AP_TAIL_STOP_CHECKPOINT_20261009.md).

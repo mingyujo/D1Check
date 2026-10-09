@@ -28,6 +28,9 @@ RUNS={NAME:dict(folder=FOLDER,run='energy_ap_tail_observation_run_v2',contract=C
           protocol='energy-ap-tail-observation-low-battery-v1',battery_minimum=6),
       'ENERGY-AP-TAIL-OBSERVATION-04':dict(folder='energy_ap_tail_observation_plan_v5',
           run='energy_ap_tail_observation_run_v5',contract=cal.ROOT/'docs/results/ap_tail_observation_prep_04/analysis_contract.json',
+          protocol='energy-ap-tail-observation-low-battery-v1',battery_minimum=6,screen_version='power-proto-complete-v1'),
+      'ENERGY-AP-TAIL-OBSERVATION-05':dict(folder='energy_ap_tail_observation_plan_v6',
+          run='energy_ap_tail_observation_run_v6',contract=cal.ROOT/'docs/results/ap_tail_observation_prep_05/analysis_contract.json',
           protocol='energy-ap-tail-observation-low-battery-v1',battery_minimum=6,screen_version='power-proto-complete-v1')}
 LOW_BATTERY_GATE='tail-battery-stop5-v1'
 LOW_BATTERY_PROTOCOL='energy-ap-tail-observation-low-battery-v1'

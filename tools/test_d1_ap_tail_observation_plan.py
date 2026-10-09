@@ -28,6 +28,13 @@ class TailPlanTests(unittest.TestCase):
         self.assertNotEqual(new['contract'],p.CONTRACT)
         with self.assertRaises(ValueError):p.registration('unapproved_automatic_third_run')
 
+    def test_user_resume_is_new_ID_and_keeps_low_battery_screen_and_budget(self):
+        old=p.registration('ENERGY-AP-TAIL-OBSERVATION-04');new=p.registration('ENERGY-AP-TAIL-OBSERVATION-05')
+        self.assertNotEqual(old['folder'],new['folder']);self.assertNotEqual(old['run'],new['run'])
+        self.assertNotEqual(old['contract'],new['contract'])
+        self.assertEqual(old['protocol'],new['protocol']);self.assertEqual(old['battery_minimum'],new['battery_minimum'])
+        self.assertEqual(old['screen_version'],new['screen_version']);self.assertEqual(p.budget()['sessions'],2)
+
     def test_low_battery_is_explicit_and_other_host_gates_survive(self):
         low=manifest('C0_LONG');low.update(protocol=p.LOW_BATTERY_PROTOCOL,tail_battery_gate_version=p.LOW_BATTERY_GATE,battery_min_percent=6,battery_stop_at_percent=5)
         p.validate_manifest(low)
