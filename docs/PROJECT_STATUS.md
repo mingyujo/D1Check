@@ -1,5 +1,26 @@
 # D1Check 현재 상태
 
+## 2026-10-09 AP-TAIL-USER-STOP-01 — 사용자 요청 중단·C0부터 새 실행 예정
+
+- 사용자 지금중단/이따C0부터재실행지시. plan_v5의소유권확인된대상만force-stop1/ps부재/thermal0, host정상실패처리·parent/child실부재 확인. C0후반관측중 중단·LOAD미시도, runtime4/준비12/본0/총3310ADB/1921.609초. [중단·재개 체크포인트](AP_TAIL_STOP_CHECKPOINT_20261009.md).
+- 소스와원자료/receipt/USER_STOP보조/모형·후보를보존·로컬백업했다. v2/v3/v4/v5는각중단·소비이며재개하지않는다. 현재추가실측/새claim0, 기본/RL/strict/experiment_ready=false 유지.
+- 저SOC사용자명시승인으로≥6진행/≤5중단, 동일환경·품질유지/절전기록. 화면필드는동일service의완료proto·기존2초/10초로관측, APK703…재사용. Android15/계획14/proto6+host9 PASS. 자세한부분C0/실패/계측변경은체크포인트를따른다.
+- 다음하나: 사용자가재개하면새ID·계획의Check/현재기기gate 후C0부터처음수행. 이번사용자부분자료를완료세션으로합치지않는다. 사용자STATUS14행/다른worktree/다른정책작업 보존.
+
+## 2026-10-09 AP-TAIL-OBSERVATION-RUN-04 — 저잔량·동등 화면조건 proto 관측 실행 중
+
+- 사용자 명시 지시로20%미만 실측을허용한 별도low-battery 프로토콜을 구현했다. 시작/진행≥6%,≤5%중단, 기존20%계약/원실패·model/센서·timeout·호출·입력은보존한다. PowerSave/scale기록을추가한APK703d09d5…b200e/기존서명·Android15/Python14 검증 후 plan_v4를실행했으나2초dumpsys power text조회timeout으로host종료됐다.
+- 동일PID/manifest/freshjournal/설치본소유권 확인 후 보류됐던첫force-stop1/ps부재를확인했다.12명령예산으로최종thermal은미확인, 원receipt의deferred상태와후속partialcleanup을별도로보존했다. 연결소실/앱실패와관측오류를구분하며후속prefix회수성공을기록한다.
+- 필요한두상태(Awake/HAL-interactive)를같은서비스변수의완료proto로확인하는PC 최소경로를추가했다.2초/10초·설정검사/환경gate·producer exit검증·원오류보존·재시도0 유지, 관측경로비용변경은transfer진단으로표시. 실제A24완료exit0/predicatetrue0.296초·원문필드fixture/6신규+9host PASS, APK재빌드0.
+- 새NAME ENERGY-AP-TAIL-OBSERVATION-04/plan_v5 SHA dfc03491…aa1028, 동일APK/새UUID/root·분석계약·부모실패보존·Check통과 후Run1회. 기기/환경/품질·무부하600초를통과해현재후반1920초유휴관측이다. [실행 계약·근거](results/ap_tail_observation_prep_04/README.md).
+- 최대2세션/명시추론1224/runtime8/staging14/ADB16752/전체9050초·고정88분, 새계획재시도/추가0. 모델/계수/기본/RL/strict/experiment_ready=false 유지, 다음하나는2조건종료·회수·정해진고정모형PC판독이다. 사용자STATUS14행·다른worktree/다른정책작업을보존한다.
+
+## 2026-10-09 AP-TAIL-OBSERVATION-RUN-02 — 수정 후2조건 실행 중
+
+- 사용자 계속 진행 지시로 수정APK00b2b926…51cdb를 새NAME ENERGY-AP-TAIL-OBSERVATION-02/plan_v3에동결했다. Check SHA43b83374…9803d1·동일성/미소비/기존프로젝트서명/새sessionID 통과. 기존plan_v2실패·receipt·원본·소비registry는그대로보존한다.
+- 같은C0→LOAD_A/고정88분/추론1224·runtime8/ADB16752/전체9050초를유지하며새계획Run1회, 현재A24 단일transport를새목록으로확인해고정했다. 수정APK 데이터보존 업데이트1회·설치/기기/환경·첫C0적격성 통과, 현재준비관측이다. 계수/관측주기/timeout/모형/판독기준은수집중변경하지않는다.
+- 새로운원본root D1Check_Arrival_Extension/energy_ap_tail_observation_run_v3. 완료조건은2조건회수/고정3모형오차·범위·미식별/실제소비/정리/문서/Git이며기본/RL/strict/experiment_ready=false자동승격0. 다음하나는현재block종료·PC판독이고재시도/추가0이다.
+
 ## 2026-10-09 AP-TAIL-OBSERVATION-RUN-01 — C0 경계 결함 중단·PC 수정 완료
 
 - 사용자 재페어링 정보로 pairing1회 성공/현재 단일A24 transport 고정, Check·현재기기/설치본/환경/품질 gate 통과 후 승인plan_v2 Run1회. 첫C0600초 종료에 기존부하tail 검사를 적용해 no common-window tail reserve로 실패, 긴1920초 회복/LOAD_A미진행. 연결소실/lifecycle_cancelled/모형예측실패아님. [원인·소비·수정](AP_TAIL_OBSERVATION_RUN01_20261009.md) · [실제 종료 화면](results/ap_tail_observation_run_01/run_v2/index.html).

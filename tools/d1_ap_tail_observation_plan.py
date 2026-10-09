@@ -20,6 +20,22 @@ CONTRACT=PUBLIC/'analysis_contract.json'
 CANDIDATES=tail.BUNDLE/'run_v2/candidates.json'
 PROFILES=('C0_LONG','LOAD_A_LONG')
 WATCHDOG_MS=3540000
+RUNS={NAME:dict(folder=FOLDER,run='energy_ap_tail_observation_run_v2',contract=CONTRACT),
+      'ENERGY-AP-TAIL-OBSERVATION-02':dict(folder='energy_ap_tail_observation_plan_v3',
+          run='energy_ap_tail_observation_run_v3',contract=cal.ROOT/'docs/results/ap_tail_observation_prep_02/analysis_contract.json'),
+      'ENERGY-AP-TAIL-OBSERVATION-03':dict(folder='energy_ap_tail_observation_plan_v4',
+          run='energy_ap_tail_observation_run_v4',contract=cal.ROOT/'docs/results/ap_tail_observation_prep_03/analysis_contract.json',
+          protocol='energy-ap-tail-observation-low-battery-v1',battery_minimum=6),
+      'ENERGY-AP-TAIL-OBSERVATION-04':dict(folder='energy_ap_tail_observation_plan_v5',
+          run='energy_ap_tail_observation_run_v5',contract=cal.ROOT/'docs/results/ap_tail_observation_prep_04/analysis_contract.json',
+          protocol='energy-ap-tail-observation-low-battery-v1',battery_minimum=6,screen_version='power-proto-complete-v1')}
+LOW_BATTERY_GATE='tail-battery-stop5-v1'
+LOW_BATTERY_PROTOCOL='energy-ap-tail-observation-low-battery-v1'
+
+
+def registration(experiment_id):
+    if experiment_id not in RUNS:raise ValueError('unregistered experiment; no automatic extra runs')
+    return RUNS[experiment_id]
 
 
 def blocks(profile):
@@ -53,7 +69,10 @@ def budget():
 
 def validate_manifest(m):
     profile=m['identification_profile'];b=blocks(profile)
-    expected=dict(protocol=PROTOCOL,tail_observation_version=VERSION,calibration_version=VERSION,
+    low=m.get('tail_battery_gate_version')==LOW_BATTERY_GATE
+    if 'tail_battery_gate_version' in m and not low:raise ValueError('unregistered battery gate')
+    if low and (m.get('battery_min_percent')!=6 or m.get('battery_stop_at_percent')!=5):raise ValueError('exact low battery boundary required')
+    expected=dict(protocol=LOW_BATTERY_PROTOCOL if low else PROTOCOL,tail_observation_version=VERSION,calibration_version=VERSION,
         maximum_duration_ms=WATCHDOG_MS,baseline_seconds=120,common_work_seconds=600,cooling_seconds=1920,
         work_call_cap=sum(len(x['lane_indices'])*x['seconds']*4 for x in b),cadence_ms=250,
         power_sample_period_ms=900,start_ap_gate='numeric-ap-observe-v2',blocks=b,
@@ -64,10 +83,10 @@ def validate_manifest(m):
     return profile
 
 
-def identity():
+def identity(contract=CONTRACT):
     files=[Path(__file__),Path(analysis.__file__),Path(tail.__file__),Path(tail.s.__file__),
         cal.ROOT/'tools/d1_energy_collection_device.py',cal.ROOT/'tools/d1_arrival_start_ap.py',
-        CONTRACT,CANDIDATES,j.m.MODEL]
+        contract,CANDIDATES,j.m.MODEL]
     files += [cal.ROOT/name for name in old.HOST_FILES]
     files += [Path(module.__file__) for module in (prior,j,j.m,j.m.thermal,j.m.memory,j.m.base.common)]
     return cal.code_identity()|{p.relative_to(cal.ROOT).as_posix():old.p.digest(p) for p in files}
@@ -87,53 +106,64 @@ def verify_frozen(plan):
     return models
 
 
-def expected(source,build,output):
+def expected(source,build,output,experiment_id=NAME):
     sourcefile=Path(source);src=old.p.read(sourcefile);receipt=old.p.read(build);output=Path(output)
+    registered=registration(experiment_id);contract=registered['contract']
+    protocol=registered.get('protocol',PROTOCOL);minimum=registered.get('battery_minimum',20)
+    old.require(output.name==registered['folder'],'experiment namespace')
     candidate=prior.apk.inspect(receipt['apk_path'],src['apk_preflight']['toolchain'])
     old.require(candidate['signer_sha256']==src['apk_preflight']['candidate']['signer_sha256'],'existing project signer required')
     plan=copy.deepcopy(src)
     for k in list(plan):
         if k.startswith(('previous_','prior_','stopped_')) or k in ('cached_installed_apk','recovery'):plan.pop(k)
-    plan.update(protocol=PROTOCOL,experiment_id=NAME,plan_file=str((output/'collection_plan.json').resolve()),
+    plan.update(protocol=protocol,experiment_id=experiment_id,plan_file=str((output/'collection_plan.json').resolve()),
         approval='not_approved',status='PC_READY_DEVICE_UNVERIFIED_NOT_APPROVED',tail_observation=True,
         resident_identification=True,state_model_calibration=True,diagnostic_only=True,autonomous_diagnostic_only=True,
         state_model_followup=False,short_transition_diagnostic_only=False,operational_only=True,experiment_ready=False,
-        budget=budget(),source_code=identity(),source_plan=dict(path=str(sourcefile.resolve()),sha256=old.p.digest(sourcefile)),
+        tail_low_battery=minimum==6,battery_start_percent=minimum,battery_min_percent=minimum,
+        host_screen_version=registered.get('screen_version'),
+        budget=budget(),source_code=identity(contract),source_plan=dict(path=str(sourcefile.resolve()),sha256=old.p.digest(sourcefile)),
         build_receipt=str(Path(build).resolve()),build_receipt_sha256=old.p.digest(build),
         apk_path=receipt['apk_path'],apk_sha256=receipt['apk_sha256'],apk_preflight=dict(src['apk_preflight'],candidate=candidate),
-        analysis_contract=dict(path=str(CONTRACT),sha256=old.p.digest(CONTRACT)),
+        analysis_contract=dict(path=str(contract),sha256=old.p.digest(contract)),
         frozen_candidates=dict(path=str(CANDIDATES),sha256=old.p.digest(CANDIDATES)),
         original_model=dict(path=str(j.m.MODEL),sha256=j.m.MODEL_SHA),
         analysis=dict(version='tail-observation-confirmation-v1',fit_calls=0,actual_schedule_conditional=True,
                       current_ua_per_raw=1000,current_unit='A24 raw mA conditional; absolute J not certified',
                       strict_adoption=False,accuracy_pass=None),
-        output_root=str(output.parent/'energy_ap_tail_observation_run_v2'),
-        registry=str(output.parent/'tail_observation_registry'/NAME),minimum_host_free_bytes=4*2**30,
+        output_root=str(output.parent/registered['run']),
+        registry=str(output.parent/'tail_observation_registry'/experiment_id),minimum_host_free_bytes=4*2**30,
         temperature_preparation=copy.deepcopy(old.operational_rules.PREPARATION),
         collection_semantics='C0 then registered DEV_A load; same resident/preparation,2640s fixed observation each; no automatic refit',
         measurement_protocol_change='new explicit3540s watchdog/1920s cooling/C0 support; same900ms sampler/2s AP+listing/10s screen; long host observation affects whole-device cost',entries=[])
+    if minimum==6:
+        plan['measurement_protocol_change']+=';user explicitly allows below20%;stop<=5%;power_save_mode/battery_scale recorded;low-SOC transfer diagnostic only'
+    if registered.get('screen_version'):plan['measurement_protocol_change']+=';same awake/HAL-interactive gate via complete power protobuf instead of full text dump;2s bound/10s period unchanged'
     template=old.p.read(sourcefile.parent/src['entries'][0]['manifest']);manifests=[]
     for i,profile in enumerate(PROFILES):
         m=copy.deepcopy(template);m.pop('resident_identification_version',None)
-        sid=str(uuid.uuid5(uuid.NAMESPACE_URL,NAME+'/'+str(i)))
+        for key in ('tail_battery_gate_version','battery_min_percent','battery_stop_at_percent'):m.pop(key,None)
+        sid=str(uuid.uuid5(uuid.NAMESPACE_URL,experiment_id+'/'+str(i)))
         work=budget()['profiles'][i]['work_requests']
-        m.update(protocol=PROTOCOL,experiment_id=NAME,session_id=sid,phase=f'confirmation_{i}_{profile}',
+        m.update(protocol=protocol,experiment_id=experiment_id,session_id=sid,phase=f'confirmation_{i}_{profile}',
             identification_profile=profile,identification_role='confirmation',tail_observation_version=VERSION,
             calibration_version=VERSION,maximum_duration_ms=WATCHDOG_MS,common_work_seconds=600,cooling_seconds=1920,
             work_call_cap=work,blocks=blocks(profile),apk_sha256=receipt['apk_sha256'],experiment_ready=False)
+        if minimum==6:m.update(tail_battery_gate_version=LOW_BATTERY_GATE,battery_min_percent=6,battery_stop_at_percent=5)
         for spec in m['models'].values():spec['identity']['session_id']=sid;spec['target']['apk_sha256']=receipt['apk_sha256']
         validate_manifest(m);name=f'manifests/{sid}.json';manifests.append(m)
         plan['entries'].append(dict(index=i,phase=m['phase'],role='confirmation',profile=profile,pair='CG_DC',mode='calibration',
-            session_id=sid,manifest=name,family='regimen',protocol=PROTOCOL,manifest_sha256=hashlib.sha256(old.p.canonical(m)).hexdigest(),
+            session_id=sid,manifest=name,family='regimen',protocol=protocol,manifest_sha256=hashlib.sha256(old.p.canonical(m)).hexdigest(),
             work_requests=work,runtime_creations=4,warmup=8,eligibility_requests=4))
     plan['run_script_sha256']=hashlib.sha256(script_text().encode('utf8')).hexdigest()
     verify_frozen(plan)
     return plan,manifests
 
 
-def prepare(source,build,output):
-    output=Path(output);old.require(output.name==FOLDER and not output.exists(),'new namespace only')
-    plan,manifests=expected(source,build,output)
+def prepare(source,build,output,experiment_id=NAME):
+    registered=registration(experiment_id)
+    output=Path(output);old.require(output.name==registered['folder'] and not output.exists(),'new namespace only')
+    plan,manifests=expected(source,build,output,experiment_id)
     old.require(not Path(plan['registry']).exists() and not Path(plan['output_root']).exists(),'occupied namespace')
     (output/'manifests').mkdir(parents=True)
     for e,m in zip(plan['entries'],manifests):cal.write_new(output/e['manifest'],m)
@@ -144,9 +174,10 @@ def prepare(source,build,output):
 
 def check(file):
     file=Path(file);plan=old.p.read(file)
-    old.require(file.parent.name==FOLDER and plan['experiment_id']==NAME and plan['tail_observation'] and plan['approval']=='not_approved','separate registered final plan')
+    registered=registration(plan['experiment_id'])
+    old.require(file.parent.name==registered['folder'] and plan['tail_observation'] and plan['approval']=='not_approved','separate registered final plan')
     old.require(not Path(plan['registry']).exists() and not Path(plan['output_root']).exists(),'consumed/occupied; never resume')
-    expected_plan,manifests=expected(plan['source_plan']['path'],plan['build_receipt'],file.parent)
+    expected_plan,manifests=expected(plan['source_plan']['path'],plan['build_receipt'],file.parent,plan['experiment_id'])
     old.require(plan==expected_plan and (file.parent/'RUN_AFTER_APPROVAL.ps1').read_text(encoding='utf8')==script_text(),'plan/script/code identity')
     old.require(old.p.digest(file.parent/'RUN_AFTER_APPROVAL.ps1')==plan['run_script_sha256'],'raw script byte identity')
     for e,m in zip(plan['entries'],manifests):
@@ -203,11 +234,11 @@ progress_consumption=prior.progress_consumption
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();sub=p.add_subparsers(dest='action',required=True)
-    q=sub.add_parser('prepare');q.add_argument('--source',required=True);q.add_argument('--build',required=True);q.add_argument('--output',required=True)
+    q=sub.add_parser('prepare');q.add_argument('--source',required=True);q.add_argument('--build',required=True);q.add_argument('--output',required=True);q.add_argument('--experiment-id',default=NAME,choices=tuple(RUNS))
     q=sub.add_parser('check');q.add_argument('--plan',required=True)
     q=sub.add_parser('run');q.add_argument('--plan',required=True);q.add_argument('--approved',action='store_true');q.add_argument('--serial',required=True);q.add_argument('--expected-sha',required=True);q.add_argument('--adb',required=True)
     a=p.parse_args()
-    if a.action=='prepare':r=prepare(a.source,a.build,a.output)
+    if a.action=='prepare':r=prepare(a.source,a.build,a.output,a.experiment_id)
     elif a.action=='check':r=check(a.plan)
     else:
         from tools.d1_energy_collection_device import run

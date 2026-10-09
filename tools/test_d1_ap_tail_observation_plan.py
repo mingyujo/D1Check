@@ -21,6 +21,25 @@ def manifest(profile):
 
 
 class TailPlanTests(unittest.TestCase):
+    def test_followup_is_a_new_registered_namespace_not_reset(self):
+        new=p.registration('ENERGY-AP-TAIL-OBSERVATION-02')
+        self.assertEqual(new['folder'],'energy_ap_tail_observation_plan_v3')
+        self.assertNotEqual(new['run'],p.registration(p.NAME)['run'])
+        self.assertNotEqual(new['contract'],p.CONTRACT)
+        with self.assertRaises(ValueError):p.registration('unapproved_automatic_third_run')
+
+    def test_low_battery_is_explicit_and_other_host_gates_survive(self):
+        low=manifest('C0_LONG');low.update(protocol=p.LOW_BATTERY_PROTOCOL,tail_battery_gate_version=p.LOW_BATTERY_GATE,battery_min_percent=6,battery_stop_at_percent=5)
+        p.validate_manifest(low)
+        for bad in [dict(low,battery_min_percent=0),dict(low,protocol=p.PROTOCOL),dict(low,tail_battery_gate_version='unknown')]:
+            with self.assertRaises(ValueError):p.validate_manifest(bad)
+        from tools import d1_arrival_device as host_gate
+        plan=dict(battery_start_percent=6,battery_min_percent=6,battery_max_temperature_tenths_c=350,require_unplugged=True)
+        raw='level: 19\nscale: 100\ntemperature: 299\nAC powered: false\nUSB powered: false\nWireless powered: false\n'
+        host_gate.battery_gate(plan,raw,True)
+        for bad in [raw.replace('level: 19','level: 5'),raw.replace('temperature: 299','temperature: 351'),raw.replace('USB powered: false','USB powered: true')]:
+            with self.assertRaises(RuntimeError):host_gate.battery_gate(plan,bad,True)
+
     def test_exact_budget_and_reservations(self):
         b=p.budget()
         self.assertEqual((b['sessions'],b['explicit_inference'],b['fixed_observation_seconds']), (2,1224,5280))
@@ -145,6 +164,15 @@ class TailPlanTests(unittest.TestCase):
                 self.assertIsNone(stats['energy_windows']['recovery1920']['observed_j'])
                 self.assertIsNone(stats['energy_windows']['recovery1920']['signed_error_j'])
                 self.assertIsNotNone(stats['energy_windows']['registered600']['observed_j'])
+                low=copy.deepcopy(m);low.update(protocol=p.LOW_BATTERY_PROTOCOL,tail_battery_gate_version=p.LOW_BATTERY_GATE,battery_min_percent=6,battery_stop_at_percent=5)
+                plan['tail_low_battery']=True;write(mf,low);write(folder/'manifest.json',low)
+                for e in events:
+                    if e['kind']=='power_sample':e.update(battery_level=19,battery_scale=100,battery_min_percent=6,power_save_mode=False)
+                journal(events)
+                self.assertEqual(p.summarize_session(folder,mf,plan)['work_calls'],0)
+                sample=next(e for e in reversed(events) if e['kind']=='power_sample');sample['battery_level']=5;journal(events)
+                with self.assertRaisesRegex(ValueError,'low battery protocol sample invalid'):p.summarize_session(folder,mf,plan)
+                sample['battery_level']=19;plan.pop('tail_low_battery');write(mf,m);write(folder/'manifest.json',m)
                 journal([e for e in events if e['kind']!='block_end'])
                 with self.assertRaisesRegex(ValueError,'missing registered block'):p.summarize_session(folder,mf,plan)
                 journal(events+[dict(kind='request_start',phase='load',mono_ns=begin+1,id='forbidden',session_id='fixture')])

@@ -32,6 +32,7 @@ class EnergyCollectionActivity : Activity() {
     private var outputOwned = false
     private var residentIdentification = false
     private var tailObservation = false
+    private var batteryMinimum = 20
     private var sessionControl = EnergySessionControl.HOST_GATED
     private var diagnosticScreen: Triple<Int, Int, Int>? = null
     private var seq = 0L
@@ -95,7 +96,7 @@ class EnergyCollectionActivity : Activity() {
         val level = b?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
         val scale = b?.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
         if (reason != "admit" || plugged != 0 || temp == null || temp !in 0..350 ||
-            level == null || level < 20 || scale != 100 || !interactive) stop.compareAndSet(null, "environment/$reason")
+            !EnergyTailObservation.batteryAdmitted(level,scale,batteryMinimum) || !interactive) stop.compareAndSet(null, "environment/$reason")
         // Only the opt-in diagnostic adds device-side settings checks. A missing
         // setting is failure, never a cached host value or a passing sample.
         val screen = diagnosticScreen?.let { expected ->
@@ -112,7 +113,7 @@ class EnergyCollectionActivity : Activity() {
             "plugged" to plugged, "battery_temperature_deci_c" to temp, "battery_level" to level, "thermal_status" to thermal,
             "interactive" to interactive, "avail_bytes" to mem.availMem, "threshold_bytes" to mem.threshold,
             "low_memory" to mem.lowMemory, "peak_pss_bytes" to peakBytes, "admission_reason" to reason,
-            "snapshot_start_ns" to snapshotStart, "sensor_read_end_ns" to now()) + screen + observed.snapshot()
+            "snapshot_start_ns" to snapshotStart, "sensor_read_end_ns" to now()) + screen + observed.snapshot() + (if (batteryMinimum == 6) mapOf("power_save_mode" to pm.isPowerSaveMode, "battery_min_percent" to batteryMinimum, "battery_scale" to scale) else emptyMap())
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -153,12 +154,12 @@ class EnergyCollectionActivity : Activity() {
             val mf = File(inputs, "manifest.json"); val m = JSONObject(mf.readText()); val hash = ProbeModelFile.sha256(mf)
             val calibration = m.optBoolean("state_model_calibration", false)
             tailObservation = m.has("tail_observation_version")
-            if (tailObservation) EnergyTailObservation.validate(m) // Before watchdog or output ownership changes.
+            if (tailObservation) { EnergyTailObservation.validate(m); batteryMinimum = EnergyTailObservation.batteryMinimum(m) } // Before watchdog or output ownership changes.
             residentIdentification = tailObservation || m.has("resident_identification_version")
             check(!residentIdentification || calibration)
             sessionControl = EnergySessionControl.validate(m.optString("session_control", EnergySessionControl.HOST_GATED),
                 calibration, m.optBoolean("autonomous_diagnostic_only", false))
-            val protocol = if (tailObservation) EnergyTailObservation.PROTOCOL
+            val protocol = if (tailObservation) EnergyTailObservation.protocol(m)
                 else if (residentIdentification) EnergyResidentIdentification.PROTOCOL
                 else if (calibration) EnergyStateCalibration.PROTOCOL else EnergyCollectionCore.PROTOCOL
             if (calibration) {

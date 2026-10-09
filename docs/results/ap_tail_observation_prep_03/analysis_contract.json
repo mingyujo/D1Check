@@ -1,0 +1,72 @@
+{
+  "version": "tail-observation-confirmation-v1",
+  "experiment_id": "ENERGY-AP-TAIL-OBSERVATION-03",
+  "approved": false,
+  "consumed": false,
+  "purpose": "matched long C0 versus registered DEV_A load recovery; work dependence versus common clock drift",
+  "order": [
+    "C0_LONG",
+    "LOAD_A_LONG"
+  ],
+  "order_limit": "one fixed C0?load block; order/date/thermal history confounding not eliminated; no variability claim",
+  "roles": {
+    "C0_LONG": "no registered work control;12 preparation inferences",
+    "LOAD_A_LONG": "existing four-state registered load;candidate confirmation and identification evidence"
+  },
+  "fixed_windows_s": {
+    "preparation": 120,
+    "baseline": 120,
+    "common": 600,
+    "cooling": 1920
+  },
+  "comparators": [
+    "FROZEN",
+    "LOAD_SLOW",
+    "CLOCK_SHIFT"
+  ],
+  "candidate_source": "docs/results/ap_tail_identification_01/run_v2/candidates.json",
+  "new_data_fit_calls": 0,
+  "tau_grid_extension": false,
+  "selection_after_measurement": false,
+  "prediction": "actual schedule conditional A; observed pre-load AP only; no post-load AP/current prediction inputs",
+  "initialization": "original pre-only R/H, fixed beta/preparation tau30; additional slow change S(35)=0, not measured empty internal state",
+  "horizon": "1920s is present grid upper reference, not identified tau or proof of equilibrium; long predictions are explicit extrapolation diagnostics",
+  "energy": "original coefficients unchanged;report reference[0,120](35s before work), registered[35,635]600s, recovery[635,2555] separately; final cooling sample may not cover end:full_J/error null,covered_J/duration retained; no endpoint extrapolation",
+  "time": "Android elapsedRealtimeNanos;host AP /proc/uptime brackets?4s,uncertainty?2s,max AP gap10s,first/last gap?10s;full cooling_end2555..2560;host wallclock only client lifecycle",
+  "eligibility": "same A24/inputs/resident/quality;unplugged,BAT<=35C,thermal0,screen/memory unchanged;battery>=6 to admit/continue,<=5 stop;numericAP valid/fresh<=3s",
+  "AP_initial_support": "old32.5..34.0C development context only, not execution threshold; all long horizon/newAPK diagnostic, no strict expansion",
+  "report": [
+    "absolute AP and delta AP MAE/max/peak",
+    "pre/common/recovery residuals",
+    "heating/cooling sign",
+    "full registered power integration",
+    "common clock versus work-linked residuals",
+    "missing/unknown calls",
+    "actual solo/pair/lane tails"
+  ],
+  "no_accuracy_pass_threshold": true,
+  "independent_sessions": 2,
+  "statistical_stability_certified": false,
+  "stop": [
+    "gate/connection/app/timeout/budget failure:single attempt stop, original error and partial evidence retained",
+    "no reconnect/server restart/transport switch/extra recovery/heating/retry",
+    "if C0 fails no load session; if tau/cause remains unidentified finish with limit, no automatic refit/grid enlargement",
+    "battery<=5%,invalidscale or environment violation:stop/recover/cleanup,no automatic extra execution"
+  ],
+  "unidentifiable": "C0 separates common clock drift only; work-induced reference shifts versus latent physical heat can remain equivalent; ambient/internal state not observed",
+  "default_changed": false,
+  "strict_support": false,
+  "experiment_ready": false,
+  "predecessor": "ENERGY-AP-TAIL-OBSERVATION-01 stopped_no_resume;C0 common-end bug fixed,newAPK,newsessionIDs,no inheritedclaim",
+  "revision": "explicit user override below20%;admit>=6 and stop<=5;other gates/inputs/coefficients/periods/timeouts/budget preserved;newAPK/ID/output",
+  "battery_execution_gate": {
+    "version": "tail-battery-stop5-v1",
+    "start_min_percent": 6,
+    "runtime_min_percent": 6,
+    "stop_at_percent": 5,
+    "old20_contract_preserved": true,
+    "authorized_by": "latest explicit user instruction allows below20%"
+  },
+  "comparability": "low SOC/newAPK/power_save_mode may change device-wide power and service;transfer diagnostic,not ordinary>=20%confirmation;no correction/subtraction or model adoption",
+  "power_save": "record on device in snapshot;never automatically enable/disable;report changes,not equivalent to thermalstatus"
+}

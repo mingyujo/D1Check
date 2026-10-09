@@ -163,7 +163,8 @@ def publish(plan_file,output,external_commands=0):
     headings=''.join('<h2>'+html.escape(s['session'])+'</h2>'+''.join('<img style="max-width:100%" src="'+s['session']+'_'+kind+'.png">' for kind in ('ap','delta','energy')) for s in sessions)
     links='<a href="consumption.json">실제 소비/cleanup</a>'
     if sessions:links+=' · <a href="metrics.csv">구간별 AP 오차</a> · <a href="energy.csv">J 창/coverage</a> · <a href="sessions.csv">세션·초기 조건</a>'
-    note='고정 모형의 실제 일정 조건부 외삽 진단입니다.' if sessions else '첫 C0 앱 경계 오류로 중단했습니다. 긴 냉각과 부하 세션은 미진행이며 완성된 관측–예측 비교 그림이나 새 예측오차를 만들지 않습니다.'
+    app_error=receipt.get('app_terminal_evidence',{}).get('session_failure.json',{}).get('message',receipt.get('error',''))
+    note='고정 모형의 실제 일정 조건부 외삽 진단입니다.' if sessions else '등록 block을 완료하지 못했습니다. 원본 오류: '+html.escape(app_error)+'. 완성된 관측–예측 비교 그림이나 전체 block 예측오차를 만들지 않습니다.'
     page='<!doctype html><html lang="ko"><meta charset="utf-8"><title>긴 C0·부하 회복 확인</title><style>body{font:17px/1.7 system-ui;max-width:1100px;margin:32px auto}aside{background:#fff2ce;padding:18px}table{border-collapse:collapse}td,th{padding:9px;border-bottom:1px solid #bbb}</style><h1>긴 무부하 대조·부하 회복</h1><aside>'+note+' 계수 재적합0·기본/RL/strict/experiment_ready=false 유지. 한 C0→부하 block은 물리 원인·τ·반복 안정성·정책 우월성을 보장하지 않습니다.</aside><p>종료 상태: '+html.escape(receipt['status'])+' · 적격 세션 '+str(len(sessions))+'/2</p>'+links+headings
     (out/'index.html').write_text(page,encoding='utf8',newline='\n')
     write(out/'summary.json',dict(receipt_status=receipt['status'],validated_sessions=len(sessions),fit_calls=0,

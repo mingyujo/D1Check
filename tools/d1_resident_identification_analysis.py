@@ -85,6 +85,8 @@ def read_case(folder,manifest,plan):
     samples=[e for e in events if e['kind']=='power_sample']
     for e in samples:
         if e.get('sample_period_ms')!=900:raise ValueError('sampling protocol mismatch')
+        if plan.get('tail_low_battery') and (e.get('battery_min_percent')!=6 or e.get('battery_scale')!=100 or not isinstance(e.get('battery_level'),int) or not 6<=e['battery_level']<=100 or not isinstance(e.get('power_save_mode'),bool)):
+            raise ValueError('low battery protocol sample invalid;no support substitution')
         if e['plugged']!=0 or e['thermal_status']!=0 or not e['interactive'] or e['admission_reason']!='admit':raise ValueError('device environment violation')
         if not e['snapshot_start_ns']<=e['sensor_read_end_ns']<=e['state_snapshot_ns']<=e['mono_ns']:raise ValueError('snapshot clock')
         e['mono_ns']=(e['snapshot_start_ns']+e['sensor_read_end_ns'])//2

@@ -51,4 +51,25 @@ class EnergyTailObservationTest {
         assertEquals(3405,bound)
         assertTrue(bound*1000L<EnergyTailObservation.WATCHDOG_MS)
     }
+    @Test fun lowBatteryRequiresExplicitProtocolAndExactFloor() {
+        val old=manifest("C0_LONG")
+        assertEquals(20,EnergyTailObservation.batteryMinimum(old))
+        val low=manifest("C0_LONG").put("protocol",EnergyTailObservation.LOW_BATTERY_PROTOCOL)
+            .put("tail_battery_gate_version",EnergyTailObservation.LOW_BATTERY_GATE)
+            .put("battery_min_percent",6).put("battery_stop_at_percent",5)
+        EnergyTailObservation.validate(low)
+        assertEquals(6,EnergyTailObservation.batteryMinimum(low))
+        assertThrows(IllegalArgumentException::class.java) { EnergyTailObservation.validate(low.put("battery_min_percent",0)) }
+        assertThrows(IllegalArgumentException::class.java) { EnergyTailObservation.validate(old.put("tail_battery_gate_version","unknown")) }
+    }
+    @Test fun nineteenIsOptInAndFiveStopsWithoutRelaxingValidity() {
+        assertFalse(EnergyTailObservation.batteryAdmitted(19,100,20))
+        assertTrue(EnergyTailObservation.batteryAdmitted(19,100,6))
+        assertTrue(EnergyTailObservation.batteryAdmitted(6,100,6))
+        assertFalse(EnergyTailObservation.batteryAdmitted(5,100,6))
+        assertFalse(EnergyTailObservation.batteryAdmitted(null,100,6))
+        assertFalse(EnergyTailObservation.batteryAdmitted(19,null,6))
+        assertFalse(EnergyTailObservation.batteryAdmitted(19,99,6))
+        assertFalse(EnergyTailObservation.batteryAdmitted(101,100,6))
+    }
 }

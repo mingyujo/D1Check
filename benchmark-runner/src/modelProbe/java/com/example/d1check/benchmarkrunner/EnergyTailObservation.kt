@@ -6,6 +6,19 @@ import org.json.JSONObject
 internal object EnergyTailObservation {
     const val VERSION = "tail-observation-regimen-v1"
     const val PROTOCOL = "energy-ap-tail-observation-v1"
+    const val LOW_BATTERY_PROTOCOL = "energy-ap-tail-observation-low-battery-v1"
+    const val LOW_BATTERY_GATE = "tail-battery-stop5-v1"
+    fun lowBattery(m: JSONObject) = m.optString("tail_battery_gate_version", "") == LOW_BATTERY_GATE
+    fun protocol(m: JSONObject) = if (lowBattery(m)) LOW_BATTERY_PROTOCOL else PROTOCOL
+    fun batteryMinimum(m: JSONObject): Int {
+        if (!m.has("tail_battery_gate_version")) return 20
+        require(lowBattery(m) && m.getInt("battery_min_percent") == 6 && m.getInt("battery_stop_at_percent") == 5)
+        return 6 // 6% admitted, <=5% stops. Separate user-authorized protocol.
+    }
+    fun batteryAdmitted(level: Int?, scale: Int?, minimum: Int): Boolean {
+        require(minimum == 20 || minimum == 6)
+        return level != null && scale == 100 && level in minimum..100
+    }
     const val WATCHDOG_MS = 3_540_000L
     const val COOLING_SECONDS = 1920
     const val COMMON_SECONDS = 600
@@ -29,7 +42,8 @@ internal object EnergyTailObservation {
     fun validate(m: JSONObject): String {
         val profile = m.getString("identification_profile")
         val expected = blocks(profile)
-        require(!m.has("resident_identification_version") && m.getString("protocol") == PROTOCOL)
+        require(!m.has("resident_identification_version") && m.getString("protocol") == protocol(m))
+        batteryMinimum(m)
         require(m.getString("tail_observation_version") == VERSION && m.getString("calibration_version") == VERSION)
         require(m.getBoolean("state_model_calibration") && m.getBoolean("operational_only") &&
             m.getBoolean("autonomous_diagnostic_only") && !m.getBoolean("experiment_ready"))

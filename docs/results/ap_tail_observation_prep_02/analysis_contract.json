@@ -1,0 +1,61 @@
+{
+  "version": "tail-observation-confirmation-v1",
+  "experiment_id": "ENERGY-AP-TAIL-OBSERVATION-02",
+  "approved": false,
+  "consumed": false,
+  "purpose": "matched long C0 versus registered DEV_A load recovery; work dependence versus common clock drift",
+  "order": [
+    "C0_LONG",
+    "LOAD_A_LONG"
+  ],
+  "order_limit": "one fixed C0?load block; order/date/thermal history confounding not eliminated; no variability claim",
+  "roles": {
+    "C0_LONG": "no registered work control;12 preparation inferences",
+    "LOAD_A_LONG": "existing four-state registered load;candidate confirmation and identification evidence"
+  },
+  "fixed_windows_s": {
+    "preparation": 120,
+    "baseline": 120,
+    "common": 600,
+    "cooling": 1920
+  },
+  "comparators": [
+    "FROZEN",
+    "LOAD_SLOW",
+    "CLOCK_SHIFT"
+  ],
+  "candidate_source": "docs/results/ap_tail_identification_01/run_v2/candidates.json",
+  "new_data_fit_calls": 0,
+  "tau_grid_extension": false,
+  "selection_after_measurement": false,
+  "prediction": "actual schedule conditional A; observed pre-load AP only; no post-load AP/current prediction inputs",
+  "initialization": "original pre-only R/H, fixed beta/preparation tau30; additional slow change S(35)=0, not measured empty internal state",
+  "horizon": "1920s is present grid upper reference, not identified tau or proof of equilibrium; long predictions are explicit extrapolation diagnostics",
+  "energy": "original coefficients unchanged;report reference[0,120](35s before work), registered[35,635]600s, recovery[635,2555] separately; final cooling sample may not cover end:full_J/error null,covered_J/duration retained; no endpoint extrapolation",
+  "time": "Android elapsedRealtimeNanos;host AP /proc/uptime brackets?4s,uncertainty?2s,max AP gap10s,first/last gap?10s;full cooling_end2555..2560;host wallclock only client lifecycle",
+  "eligibility": "same APK/input/four resident runtimes;warmup8/probe4;numeric AP valid fresh?3s;unplugged BAT?35C thermal0 battery?20% screen81/manual/18000000ms memory+quality",
+  "AP_initial_support": "old32.5..34.0C development context only, not execution threshold; all long horizon/newAPK diagnostic, no strict expansion",
+  "report": [
+    "absolute AP and delta AP MAE/max/peak",
+    "pre/common/recovery residuals",
+    "heating/cooling sign",
+    "full registered power integration",
+    "common clock versus work-linked residuals",
+    "missing/unknown calls",
+    "actual solo/pair/lane tails"
+  ],
+  "no_accuracy_pass_threshold": true,
+  "independent_sessions": 2,
+  "statistical_stability_certified": false,
+  "stop": [
+    "gate/connection/app/timeout/budget failure:single attempt stop, original error and partial evidence retained",
+    "no reconnect/server restart/transport switch/extra recovery/heating/retry",
+    "if C0 fails no load session; if tau/cause remains unidentified finish with limit, no automatic refit/grid enlargement"
+  ],
+  "unidentifiable": "C0 separates common clock drift only; work-induced reference shifts versus latent physical heat can remain equivalent; ambient/internal state not observed",
+  "default_changed": false,
+  "strict_support": false,
+  "experiment_ready": false,
+  "predecessor": "ENERGY-AP-TAIL-OBSERVATION-01 stopped_no_resume;C0 common-end bug fixed,newAPK,newsessionIDs,no inheritedclaim",
+  "revision": "same question/inputs/criteria/budget;exact C0 end accepted;old LOAD/legacy tail check retained"
+}

@@ -351,6 +351,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
                           forbid_apk_deploy=not plan.get('autonomous_diagnostic_only',False),
                           allow_other_transports=bool(plan.get('resident_identification')))
            if state_model else ObservedDevice(adb,serial,root/'host_commands'))
+        d.screen_version=plan.get('host_screen_version')
         if state_model:d.command_limit=budget['pre_cleanup_command_slots']
         d.deadline=hard
         install_root=root/('installed_preflight' if state_model and not plan.get('autonomous_diagnostic_only') else 'installation');install_root.mkdir()
