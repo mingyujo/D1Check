@@ -1,5 +1,9 @@
 # 긴 resident C0·부하 회복: PC 준비, 미승인·미소비
 
+## 2026-10-09 현재 실행 상태
+
+실측은 사용자 승인됐으나 현재 기기 연결 gate에서 대기한다. 연결1회가 실패했고 목록 확인1회에는 온라인기기0이었다. Run/claim/설치/세션/추론0·ADB2명령이며 계획은 미소비다. 준비 시점의 미승인 표시는 과거 기록이다. [연결 증거 요약](connection_gate_20261009.json) · [현재 보고](../../AP_TAIL_OBSERVATION_PREP_20261009.md).
+
 [한국어 계약·예산](../../AP_TAIL_OBSERVATION_PREP_20261009.md) · [준비 화면](index.html) · [입력표](roster.csv) · [계획·소스 SHA](plan_summary.json) · [검증](verification.json).
 
 C0→LOAD_A 한 block, 각 baseline120/common600/cooling1920초. 새 측정이 아니라 계획이다. 기존 동결식·주후보 LOAD_SLOW·원인 대조 CLOCK_SHIFT를 사전에 고정했다. 적합0·기본/RL/strict/experiment_ready=false 유지. 긴 C0는 공통 시각 드리프트와 부하 의존을 구분할 정보를 주며 물리 원인·τ 식별을 보장하지 않는다.

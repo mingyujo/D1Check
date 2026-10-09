@@ -106,3 +106,9 @@ APK: `C:/Users/LG/Documents/D1Check_Arrival_Extension/ap_tail_observation_signed
 Android 새4＋기존regimen4＋실제lifecycle callback2=10개가 테스트본문까지 통과했다. compile/assembly/기존프로젝트서명·패키지/버전/해시/비서명payload 검증을 통과했다. 최초Kotlin public/internal 오류는 새객체를internal로 제한했고, fixture의100초 산술오류/희소query 공백은 실제 경계에 맞춰 수정했다. assertion/gate는 완화하지 않았다. 초기FAIL로그와 PC초안을 외부에 보존했다.
 
 mock/Robolectric는 실기기 긴 실행/연결/계측비용 검증이 아니다. 원모형·기본/RL/strict·experiment_ready=false·원자료/FAIL/종료계획·사용자STATUS14행·개인파일/다른worktree를 보존했다. 착수HEAD51505bff, 검증 대상은 미커밋 소스 SHA로 특정했다. 다음행동 하나는 최종2조건 block의 별도 실측승인 여부 결정이며 이번에는 실행하지 않았다.
+
+## 2026-10-09 실행 승인 이후 연결 gate
+
+사용자가 지정 주소의 연결과 최종2조건 실측을 승인했다. Check는 기존 SHA/미소비/코드·APK·모형 동일성으로 통과했지만 연결1회는 stdout `failed to connect`를 반환했고, 현재 목록 확인1회에는 온라인기기가 없었다. ADB client exit0은 연결성공 증거가 아니다.
+
+**Run·claim·설치·세션·추론0, ADB2명령.** 계획은 미소비로 유지하고 stopped_no_resume/실측실패로 기록하지 않는다. 재연결/daemon재시작/설정변경/다른계획 실행은 하지 않았다. 현재 접속주소 또는 필요한 페어링 정보를 기다리며 이미 주어진 실측 승인은 유지한다. 기기 연결소실 원인·포트 변경·사용자 조작은 미확정이다. [작은 gate 요약](results/ap_tail_observation_prep_01/connection_gate_20261009.json).

@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-09 AP-TAIL-CONNECTION-GATE-01 — 실행 승인·연결 실패로 실측 미시도
+
+- 사용자 지정 주소 연결과 최종 plan_v2 2조건 실측을 승인했다. 최신 HEAD03714dc/사용자STATUS14행·다른정책결과를 보존하고 Check 동일성·미소비 통과. 계획SHA e4aec382…e6f68/원모형·후보 불변.
+- ADB connect1회가 exit0이나 stdout에 failed to connect를 반환했다. 이후 devices -l1회는 온라인기기0. 프로세스 exit0을 연결성공으로 해석하지 않았다. 외부 원기록: D1Check_Arrival_Extension/ap_tail_observation_connection_20261009T052916Z. [연결 gate 요약](results/ap_tail_observation_prep_01/connection_gate_20261009.json).
+- Run/claim/설치/앱실행/추론/세션0, ADB2명령(연결1/목록1), daemon재시작/설정변경/자동재연결0. 계획은 **미소비로 보존**, stopped_no_resume/실측실패로 기록하지 않는다. PC Wi-Fi는 연결돼 있으나 휴대폰주소/포트/페어링·네트워크 내부원인은 미확정.
+- 다음하나: 사용자가 현재 무선디버깅 접속주소(페어링이 없으면 페어링주소/코드)를 제공하면 기존승인으로 동일계획의 현재기기·환경 gate부터 진행한다. 연결 회복만으로 세션이 시작됐다고 하지 않는다.
+
 ## 2026-10-09 IE-ROLLING-JOINT-01 — 공동 롤링 계획 구현·확인 완료
 
 - 사용자 롤링호라이즌 진행 승인으로 EDD창4/CPU전용 최소응답여유 요청·과업내EDD/교차순서·CPU/GPU/유휴1구간을 공동비교한다. 최대72평균창계획→8선별→현재전체큐/원3문맥 J/AP·서비스비악화 평가후첫선택실행. [사전계약](results/rolling_joint_01/README.md). 전역/연속최적성/미래기한보장으로승격0.
