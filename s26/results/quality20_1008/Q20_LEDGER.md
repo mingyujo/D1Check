@@ -55,3 +55,31 @@
 - `:quality-runner:assembleDebug` 재실행 (커밋 ① 뒤) → UP-TO-DATE · APK SHA `bc9701e3…` 그대로 (= 커밋 ① 소스).
 - **커밋 ① `c600a20bd6035f33075829be5c3bbadc9f7a31c1`** (2026-10-09 19:00:03 +0900) "quality-runner: S26 대표 입력 20장 품질 실행기 (CompiledModel 2.2.0 · 폰 실행 전)" — 19 파일 +1,195 · PAT 0 · 바이너리 0 · `.so/.tflite/.apk` 0.
 - 커밋 ② = `s26/tools/quality20/` 5 파일 + `s26/results/quality20_1008/{INPUT_CHECK.md,Q20_LEDGER.md}` (`git add -f`, 루트 `.gitignore` `results/` 때문) — SHA 는 OneDrive `freeze_q20.txt` 와 2부 커밋 ③ 의 원장에 적는다.
+- **커밋 ② `24b8affc4c78c94b77181c8402e0822d8a4c2c44`** (19:00:58 +0900) "s26/tools/quality20: 실행 · 증거 · 판정기 고정 (폰 실행 전)" — 7 파일 +1,601 · 브랜치 전체 PAT 0 · 추가 바이너리 0 · 기존 모듈 diff 0 → **push `git push -u origin s26-quality20` 완료 (origin = `24b8aff`, 19:01)**. 커밋된 판정기 blob SHA `616e7490…` = 표의 값 (LF). 1부 끝 19:0x — R3 끝을 5 분마다 자동 확인 (①②③ 둘 이상 + 드라이버 · 세션 · keepawake 프로세스 0).
+- **영훈 결정 (10/9 19:4x)**: "핸드폰은 세션 끝나도 화면 끄기 방지는 유지해" → 2부 7 의 `screen_off_timeout` 600000 원복을 하지 않는다 (86400000 유지). 밝기 · 비행기 · 방해 금지도 그대로.
+
+## R3 끝 자동 확인 (19:47) [P]
+
+- ① `origin/s26-mixreq` = `344dd9f` (19:44:22 +0900) "s26: 혼합 요청 v2 블록 N · readout · 보고 (+ 스모크 v2 · 블록 A 사본)" ✔ · ② `작업결과_1009_R3_혼합요청v2.md` §1 한 줄 결론 채워짐 ✔ · ③ `CLAUDE.md` `★ 1009 R3` 블록 ✔ → 3/3.
+- 프로세스: `mixreq_driver` · `mixreq_session` · `keepawake_block` 0 (드라이버 끝 19:29:54 · keepawake stop 19:30:39 · readout 19:31 — 5 분 확인에서 보이던 powershell 1개는 확인 명령 자체의 자기 매칭). 19:32 부터 R3 세션은 보고만 (폰 명령 없음).
+- 5 분 확인 기록: 19:0x ~ 19:47 (스크래치 `r3_end_log.jsonl`, 11회). → **2부 시작 19:47**.
+
+## 2부 1~3 (19:47 ~ 19:49) [P]
+
+- 연결: `adb devices -l` 기기 하나 (SM-S942N, `<IP:PORT>` 학교망 + 같은 폰의 mDNS tls 항목) · R3 드라이버 · 감시 · keepawake 0 · `requestrunner` · `npurunner` 프로세스 0.
+- **맨 먼저 `screen_off_timeout` 600000 → 86400000** (19:47, R3 가 19:30 에 600000 으로 원복 → 이미 10 분 지나 **잠금 화면** · Dozing). 영훈에게 "잠금 풀어 주세요" · 30 s 폴링 · 2 분마다 KEYCODE_WAKEUP. 원래 설정: 화면 600000 · 밝기 127 (모드 0) · 비행기 1 · zen 1 — **끝에 원복 안 함** (영훈 19:4x 결정 "화면 끄기 방지 유지").
+- 폰: SOC 75 · plugged 0 · status 3 · BAT 26.0 · AP 26.6 · SKIN 28.5 · PA 26.4 · thermal status 0 · 빌드 `CP2A.260605.016.S942NKSS4BZIG` · `/data` 여유 63 GB.
+- `adb install local_inputs\apk\quality-runner-debug_bc9701e3.apk` → Success · 기기 `pm path` sha256sum = **`bc9701e3…` = 1부 값** ✔. `npurunner` · `requestrunner` 설치본 무변경 (재설치 0).
+- PC keepawake (keepawake_v3b 사본, 스크래치) 19:48:38 시작 · 덮개 열어 둠.
+
+## 2부 4~6 실행 · 증거 · 판정 (19:49 ~ 19:5x) [P]
+
+- 잠금 해제 19:49:21 (영훈) → `q20_run.py --run-id q20_1009a --apk …bc9701e3.apk` 19:49:29 ~ 19:52:01 (`results\S26_Q20_q20_1009a\`, git 밖): 기기 APK SHA = `bc9701e3…` ✔ · 입력 20 + 모델 2 push (기기 sha256sum 전부 일치) · manifest `a240fda9…` · 열 확인 CPU SKIN 29.0 · BAT 26.4 / GPU 28.7 · 26.2 / NPU 28.7 · 26.3 (status 0 · SOC 75 · plugged 0) · 사이 60 s · **CPU 19:49:40 (0.43 s) · GPU 19:50:47 (1.09 s) · NPU 19:51:55 (0.32 s) 전부 `completed` · 20/20 · runtime 생성** · 재시도 0 · 비상 0 · adb 끊김 0 · SKIN 변화 0.
+- 증거 (`q20_evidence.py`, 창 = create_start ~ image_end 0): **CPU PASS** (62/62 TfLiteXNNPackDelegate · delegate 생성 줄 · 다른 교체 0 · 실패 0) · **GPU PASS** (62/62 LITERT_CL · GpuEnvironment · 실패 0) · **NPU PASS** (1/1 DispatchDelegate = AOT 파티션 G1-B · ENN 로드 줄 · 실패 0 · 다른 교체 0). GPU 실제 정밀도 줄 0 → **`미확인`** (요청 FP32).
+- 판정 (`q20_judge.py` `616e7490…` 무변경, 19:5x): **CPU "참조와 일치 (FP32 기존 경로 기준)"** (top-1 20/20 · top-5 순서 20/20 · cosine 최소 1.0000000 · 최대|차| 최댓값 1.103e-06 · 위반 0 · 2회 비트 동일 20/20) · **GPU "지표만 · PASS 보류 (GPU 실제 정밀도 미확인)"** (20/20 · 20/20 · 1.0000000 · 1.788e-06 · 위반 0 기록 · 비트 동일 20/20) · **NPU "지표만 · 품질 PASS 보류 (FP16 합격선 미등록)"** (top-1 20/20 · top-5 순서 19/20 (#12 Dog `0007cebe…` 순서만 다름, 겹침 5/5) · cosine 최소 0.9999554 (#10) · 중앙 0.999997 · 최대|차| 최댓값 0.0018 · 허용식 위반 1~15/이미지 기록만 · 비트 동일 20/20). 꼬리표 0.
+- 사본 (`git add -f`): `s26/results/quality20_1008/q20_1009a/` = 판정 JSON · MD · 증거 JSON · MD · run_record · manifest · thermal_wait · backend 별 summary + 20 result JSON (raw `.f32le` · 텐서 · logcat 제외). PAT 0 · iccid/eSIM 0.
+- 기록만 (측정 아님): `run()` ns 중앙 CPU 6.4 ms · GPU 0.7 ms (첫 이미지 210 ms = 첫 실행) · NPU 0.8 ms.
+
+## 2부 7 원복 (19:5x) [P]
+
+- `screen_off_timeout` **86400000 유지** (영훈 결정) · 밝기 127 · 비행기 1 · zen 1 그대로 · `quality-runner` force-stop (pidof 빈 값) · `/data/local/tmp/quality20/` 보존 (39 MB · 재현용) · PC keepawake stop 19:52:48 · `npurunner` · `requestrunner` 무접촉 · 끝 SOC 74 · SKIN 28.5 · BAT 26.1.

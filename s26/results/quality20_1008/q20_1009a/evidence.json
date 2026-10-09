@@ -1,0 +1,199 @@
+{
+  "schema": "s26-q20-evidence-v1",
+  "run_id": "q20_1009a",
+  "root": "results\\S26_Q20_q20_1009a",
+  "backends": {
+    "CPU": {
+      "backend": "CPU",
+      "key": "classification_CPU",
+      "run_id": "q20_1009a",
+      "logcat": "results\\S26_Q20_q20_1009a\\CPU\\host\\logcat_threadtime.txt",
+      "verdict": "PASS",
+      "summary_status": "completed",
+      "runtime_created": true,
+      "pid": "13213",
+      "window_lines": [
+        708,
+        1016
+      ],
+      "mark_count": 44,
+      "images_logged": 20,
+      "images_ok_logged": 20,
+      "evidence": {
+        "rule": "cpu-compiled-model-evidence-v1 (conditions, windowed by D1Q20 marks)",
+        "key": "classification_CPU",
+        "verdict": "PASS",
+        "conditions": {
+          "xnnpack_full_replacement": true,
+          "xnnpack_delegate_created": true,
+          "no_other_delegate_replacement": true,
+          "no_failure_or_fallback_line": true
+        },
+        "failed_conditions": [],
+        "window_lines": [
+          [
+            708,
+            972
+          ],
+          [
+            973,
+            1016
+          ]
+        ],
+        "replacement_lines": [
+          971
+        ],
+        "replacements": [
+          "62/62 TfLiteXNNPackDelegate"
+        ],
+        "failure_lines": [],
+        "ignored_as_non_evidence": "dispatch library load and ENN SetGenAiPerfConfigFromSoc lines (present in CPU-only C5 runs 1-5)"
+      },
+      "available_accelerators": [
+        "CPU",
+        "GPU",
+        "NPU"
+      ],
+      "dispatch_so_present": true,
+      "accelerators_passed_to_native": [
+        "CPU"
+      ]
+    },
+    "GPU": {
+      "backend": "GPU",
+      "key": "classification_GPU",
+      "run_id": "q20_1009a",
+      "logcat": "results\\S26_Q20_q20_1009a\\GPU\\host\\logcat_threadtime.txt",
+      "verdict": "PASS",
+      "summary_status": "completed",
+      "runtime_created": true,
+      "pid": "13777",
+      "window_lines": [
+        674,
+        1283
+      ],
+      "mark_count": 44,
+      "images_logged": 20,
+      "images_ok_logged": 20,
+      "gpu_precision_requested": "FP32",
+      "gpu_precision": {
+        "observed": "미확인",
+        "lines": [],
+        "fp32_match": false,
+        "fp16_match": false,
+        "rule": "FP32 only if a runner-PID line in the window matches /precision.*(fp32|f32|float32)/i and none matches /(fp16|f16|float16|half)/i"
+      },
+      "evidence": {
+        "rule": "gpu-compiled-model-evidence-v1",
+        "key": "classification_GPU",
+        "verdict": "PASS",
+        "conditions": {
+          "litert_cl_full_replacement": true,
+          "gpu_environment_created": true,
+          "no_other_delegate_replacement": true,
+          "no_failure_or_fallback_line": true
+        },
+        "failed_conditions": [],
+        "window_lines": [
+          [
+            674,
+            1250
+          ],
+          [
+            1251,
+            1283
+          ]
+        ],
+        "replacement_lines": [
+          1042
+        ],
+        "replacements": [
+          "62/62 LITERT_CL"
+        ],
+        "failure_lines": []
+      },
+      "available_accelerators": [
+        "CPU",
+        "GPU",
+        "NPU"
+      ],
+      "dispatch_so_present": true,
+      "accelerators_passed_to_native": [
+        "GPU"
+      ]
+    },
+    "NPU": {
+      "backend": "NPU",
+      "key": "classification_NPU",
+      "run_id": "q20_1009a",
+      "logcat": "results\\S26_Q20_q20_1009a\\NPU\\host\\logcat_threadtime.txt",
+      "verdict": "PASS",
+      "summary_status": "completed",
+      "runtime_created": true,
+      "pid": "14189",
+      "window_lines": [
+        669,
+        1036
+      ],
+      "mark_count": 44,
+      "images_logged": 20,
+      "images_ok_logged": 20,
+      "evidence": {
+        "rule": "npu-dispatch-evidence-v1 (conditions, windowed by D1MIX marks)",
+        "key": "classification_NPU",
+        "verdict": "PASS",
+        "conditions": {
+          "aot_partition_known": true,
+          "dispatch_replacement_matches_aot": true,
+          "enn_loaded_in_runner_pid": true,
+          "no_dispatch_failure_in_npu_window": true,
+          "no_dispatch_failure_in_common_window": true,
+          "no_other_delegate_replacement_in_npu_window": true
+        },
+        "failed_conditions": [],
+        "window_lines": [
+          [
+            669,
+            979
+          ],
+          [
+            980,
+            1036
+          ]
+        ],
+        "common_window_lines": [
+          1037,
+          1220
+        ],
+        "dispatch_lines": [
+          928
+        ],
+        "dispatch_replacements": [
+          "1/1"
+        ],
+        "enn_lines": [
+          927
+        ],
+        "failure_lines": [],
+        "aot_partition": {
+          "model": "efficientnet_lite0_Samsung_E9965.tflite",
+          "compile_batch": "G1-B",
+          "ai_edge_litert": "2.3.0.dev20260922",
+          "dispatch_ops": 1,
+          "non_dispatch_ops": 0
+        },
+        "note": "ENN load alone is not NPU evidence (CPU runs print it too); NPU core execution is not observable from the app"
+      },
+      "available_accelerators": [
+        "CPU",
+        "GPU",
+        "NPU"
+      ],
+      "dispatch_so_present": true,
+      "accelerators_passed_to_native": [
+        "NPU",
+        "CPU"
+      ]
+    }
+  }
+}
