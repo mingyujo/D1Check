@@ -1,0 +1,65 @@
+{
+  "task": "LIST-CANDIDATE-RL-REVIEW-01",
+  "status": "completed_AI_review_and_design_proposal_only",
+  "verified_utc": "2026-10-09T12:14:45.730269+00:00",
+  "head": "6ca596c4728f6c6e21224b57421ec50005e47ffa",
+  "dirty": true,
+  "command": "python -B -X utf8 -m tools.d1_list_candidate_rl_review_check",
+  "result": {
+    "status": "PASS",
+    "scope": "static proposal audit; not engine, training or performance verification",
+    "head": "6ca596c4728f6c6e21224b57421ec50005e47ffa",
+    "checker_sha256": "7b9af879e7836f7901c9216fa6a3d3d1580050e94e327a850f7c305031dd8128",
+    "proposal_sha256": "7e35ce7d83e8a68f8606352aaac62b4d7ad5f14e9b9361267c121e10a89ceb83",
+    "participants": 3,
+    "debate_rounds": 3,
+    "state_fields": 56,
+    "candidate_fields": 28,
+    "parameters": 16455,
+    "reward_attribution_algebra_cases": 3,
+    "service_cancellation_counterexamples": 1,
+    "actor_aggregation_counterexamples": 1,
+    "local_links": 9,
+    "source_hashes": 10,
+    "environment_starts": 0,
+    "learning_starts": 0,
+    "device_commands": 0
+  },
+  "source_basis": {
+    "docs/LIST_CANDIDATE_RL_DESIGN_20261009.md": "8a0d0572387ed00d9b23a5ed112b3749f4e62df6e42c5a3cc11dcd878b8947dd",
+    "docs/results/list_candidate_rl_design_01/design_contract.json": "88aed61e301345b41245ce32416b7e15f2cbb69237485a3085336ea08b8ca421",
+    "tools/d1_ie_dispatch.py": "318db8c5f6401076f2861d45ad7c998994cf20f2a9b1743823180d50ede071ab",
+    "tools/d1_edd_ect_residual_controller.py": "451fa485df03ca66857b5f69265dc324f7afe967bcee7013003aaae4bd15073e",
+    "tools/d1_edd_ect_residual_ppo.py": "86ca79823eb9d5babb474c28321563fa44c877524663b6b60f4356171c81758a",
+    "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9",
+    "tools/d1_empirical_request_policy.py": "32407050fae7a0f6f7d58a19cd6f2f4eedea46ba9c8651e15363d0af496050a0",
+    "docs/results/ie_candidates_v2/README.md": "68d988457b4b33ab5240f8271b2960ee6c6deee3ba36ab8900e03e4694e33cac",
+    "tools/d1_ie_candidates_v2_study.py": "2b00e22ec3469fac55806c26ff506f81d2a2534842723c62ff34a4274248cad2",
+    "benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/ArrivalSchedulerActivity.kt": "94aa7fc34a8fb1a35dc75d7fd67b733ed79b7f85ff4db5f3f2fae8b42ec38388"
+  },
+  "scope_limits": [
+    "no event-hook/hold/pair/learner implementation",
+    "no native simulator/learning/device verification",
+    "three AI roles, not independent human experts or empirical replication",
+    "reward/gradient examples are algebraic counterexamples, not measured improvements",
+    "fixed selector service-risk formula must be frozen before native execution",
+    "old model/controller overhead/surface-temperature limits preserved"
+  ],
+  "preparation_errors": [
+    {
+      "kind": "publication build order",
+      "detail": "first bootstrap audit referenced artifact_manifest before generation; both initial audit attempts failed",
+      "fix": "generate manifest envelope before audit, then bind every final artifact and rerun all checks",
+      "native_or_learning_starts": 0,
+      "criteria_relaxed": false
+    }
+  ],
+  "new_environment_starts": 0,
+  "new_learning_starts": 0,
+  "device_commands": 0,
+  "cumulative_environment_starts": 6517,
+  "cumulative_learning_starts": 641,
+  "base_design_unchanged": true,
+  "independent_AP_run05_not_modified_or_stopped": true,
+  "other_uncommitted_changes_preserved": true
+}

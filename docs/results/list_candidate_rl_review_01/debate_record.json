@@ -1,0 +1,63 @@
+{
+  "task": "LIST-CANDIDATE-RL-REVIEW-01",
+  "record_type": "실제 검토 메시지의 핵심 요약; 축어록 아님",
+  "participants": ["mobile_review", "ie_review", "rl_review"],
+  "moderator": "root",
+  "human_expert_review": false,
+  "automatic_model_switch": false,
+  "direct_peer_exchange_confirmed_by_reviewers": true,
+  "rounds": [
+    {
+      "round": 1,
+      "phase": "독립 코드·설계 확인",
+      "positions": {
+        "mobile_review": "기존 phase 취소와 새 hold 유지의 충돌, snapshot 응답시각 누락, worker release와 AVAILABLE 구분, proxy 기간 누락을 지적",
+        "ie_review": "새 free-resource L0와 기존 점유자원 ECT의 차이, head/credit 축약 근거 한계, primary 절대서비스 계약 누락, 같은bank 대조 필요성을 지적",
+        "rl_review": "signed 서비스 평균 상쇄, 무효채널 전체trajectory 처리, 선택수/학습 집계, 초기 actor gradient, reward 실현곡선·시점 문제를 지적"
+      }
+    },
+    {
+      "round": 2,
+      "phase": "검토자 간 직접 질문·반박·절충",
+      "exchanges": [
+        {"from": "mobile_review", "to": ["ie_review", "rl_review"], "result": "공개 event observer와 hold 상태 분리는 필수. 긴 resource wait는 무료 forced wait가 아니며 근거 없는 credit 확대에 반대"},
+        {"from": "ie_review", "to": ["mobile_review", "rl_review"], "result": "서비스 positive 잔차와 원 절대조건 복원에 동의. 단조 lambda 위험은 기록. proxy 기간은 estimated_next_free와 다르며 같은bank 무학습 대조 제안"},
+        {"from": "rl_review", "to": ["mobile_review", "ie_review"], "result": "phase-only hold가 원 projection과 다름에 동의. 기존 grid_peak는 mean observer이며 실현 보상 경로와 분리 필요. actor 1/T 나눔은 반대"}
+      ]
+    },
+    {
+      "round": 3,
+      "phase": "중재 반론·최종 의견",
+      "changes_after_challenge": [
+        {"challenge": "zero 마지막층의 첫 actor feature gradient0은 결함인가?", "response": "RL 검토자가 결함 판정을 철회. critic/state 학습과 다음 score update 이후 gradient를 고려해 균등초기화 유지+진단으로 정리"},
+        {"challenge": "특징을 늘리지 않고 proxy 기간을 표현할 수 있는가?", "response": "2head/미예약 조건에서 included_now C/D는 dispatches C/D와 정확중복. 세 검토자가 이를 기간/known으로 교체하고28차원 유지에 동의"},
+        {"challenge": "보상 합만 맞으면 행동 시점도 맞는가?", "response": "RL이 행동 이후 구간에 증분을 배분하고180초 꼬리를 마지막에 넣는 식 제시. 모바일이 공개 시각과 실현curve 경로 분리 확인"},
+        {"challenge": "같은bank 대조를 기존 예산에 어떻게 넣는가?", "response": "개발24만 first512 이후 별도단계로 추가, 전체예상1472/상한1536/학습416 유지에 합의. 확인48은 자동추가하지 않음"}
+      ]
+    }
+  ],
+  "consensus": [
+    "native Maskable PPO와 작은 실제 후보 구조 유지, 원v3보존·별도v4제안",
+    "명시hold/공개event observer/실제lane AVAILABLE/PAIR취소요청보존",
+    "서비스 positive 잔차·signed J, primary F=U=N=0 복원, 평균학습 보장 아님",
+    "56/28/16455 크기유지·새schema, proxy기간과원단위KPI구분",
+    "실현APreward와mean actor관측분리·행동이후구간·180초 합검증",
+    "같은bank 비학습 개발대조, 원강한기준군/엄격gate보존",
+    "학습/실측0, 표현성·정보별칭 진단 없이 후보/알고리즘 확대0"
+  ],
+  "unresolved": [
+    "0.25초 밖 CPU resource wait 필요성",
+    "공개 후속 기한 밀도를56특징이 충분히 구분하는지",
+    "고정selector의 서비스 위험 정확식과 event hook/hold 구현의 비회귀"
+  ],
+  "not_adopted": [
+    "자료 없는 지연credit 확대·새 열 slowdown/계수",
+    "actor objective를 episode 내 결정수T로 나누기",
+    "근거 없는 GNN/RecurrentPPO/새 알고리즘 일괄 추가",
+    "저부하 열감소 gate를 결과 후 완화",
+    "AI 합의를 실제기기 우월성이나 전역최적성으로 표현"
+  ],
+  "new_environment_starts": 0,
+  "new_learning_starts": 0,
+  "device_commands": 0
+}

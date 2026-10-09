@@ -5,6 +5,12 @@
 - 승인plan_v2는 C0600초 뒤의 tail 검사 결함으로 stopped_no_resume. 본작업0/준비12/runtime4/ADB1588/927.703초, 긴회복/LOAD_A미진행·새예측오차없음. [실제결과](AP_TAIL_OBSERVATION_RUN01_20261009.md). 이전C0미소비준비와현재소비종료를구분한다.
 - exact 등록C0만 전체common 종료를허용하고 legacy/LOAD_A의tail검사는유지한다. 실제Activity종료분기 포함Android13/Python5·기존서명후보APK 준비완료, 기기전송/설치/추가실측0. 다음하나는 수정APK의별도새계획PC 동결이며 이번자동재시도/새claim/모형교체/계수적합0이다.
 
+## 2026-10-09 LIST-CANDIDATE-RL-REVIEW-01 — AI 토론 후 실행·평가 계약 보완
+
+- 사용자3관점토론 요청을 [별도v4 보완안](LIST_CANDIDATE_RL_REVIEW_20261009.md)으로 정리했다. 원v3는보존, 작은 리스트/native Maskable PPO·Band평가전용/온라인롤링제외·원CPU/GPU지원은유지한다. 공개event/hold·응답과lane반환·행동이후APreward/180초꼬리·서비스positive잔차·기존primary절대조건을명시한다.
+- 같은bank 비학습selector를개발24만추가하는미실행제안: 원first512뒤별도24·조건부기대1472/전체cap1536/학습416유지. 정확서비스위험식·zero-phasehook/기존원장비회귀·credit/PAIR·정보누출·학습분모/재개동일성은학습전구현gate다. 확인대조48/추가대기/알고리즘/학습을자동추가하지않는다.
+- 이번은AI코드검토/토론/정적감사완료·정책/환경/학습/기기0·누적6,517/641이다. 원모형·원결과/기본/strict/experiment_ready=false·별도실측Run05/사용자변경을유지하고AI합의를실물우위로승격하지않는다.
+
 ## 2026-10-09 LIST-CANDIDATE-RL-DESIGN-01 — 리스트 후보를 RL이 보정 선택
 
 - 사용자 방향을 [별도 설계](LIST_CANDIDATE_RL_DESIGN_20261009.md)에 고정했다. Band 기본/복귀/보상참조·온라인 롤링/CP-SAT/전체 큐 suffix를 제외한다. 과업별2head·EDD/응답여유/ECT/호환성·원 지원CPU/GPU와 양방향 유한지연을 후보로 만들고 기존 native Maskable PPO로 실제 행동을 선택한다. Band/Triton/원List/EDD는 평가 비교군으로 보존한다.

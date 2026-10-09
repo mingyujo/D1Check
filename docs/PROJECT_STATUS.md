@@ -36,6 +36,13 @@
 - Run/claim/설치/앱실행/추론/세션0, ADB2명령(연결1/목록1), daemon재시작/설정변경/자동재연결0. 계획은 **미소비로 보존**, stopped_no_resume/실측실패로 기록하지 않는다. PC Wi-Fi는 연결돼 있으나 휴대폰주소/포트/페어링·네트워크 내부원인은 미확정.
 - 다음하나: 사용자가 현재 무선디버깅 접속주소(페어링이 없으면 페어링주소/코드)를 제공하면 기존승인으로 동일계획의 현재기기·환경 gate부터 진행한다. 연결 회복만으로 세션이 시작됐다고 하지 않는다.
 
+## 2026-10-09 LIST-CANDIDATE-RL-REVIEW-01 — 세 관점 AI 토론·v4 보완 제안 완료
+
+- 사용자 요청으로 모바일/산업공학/RL 검토AI3개가 코드 확인→직접 반론→중재 수정의3차 토론을 수행했다. [토론·보완·미합의](LIST_CANDIDATE_RL_REVIEW_20261009.md) · [별도v4 계약/정적검증](results/list_candidate_rl_review_01/README.md). 원v3·계수/원정책/checkpoint는 보존했다.
+- 합의: 명시hold/공개event observer/실제AVAILABLE·PAIR실패요청보존, 서비스positive잔차/primary절대조건복원, 실현AP의행동이후구간/180초꼬리, 중복특징을span/known으로교체해56/28유지, 같은bank 비학습개발대조24. 제안예상1472/전체1536/학습416·원first512뒤별도24이며미실행이다.
+- 완료는 설계/정적계약 감사뿐이다. 엔진hook/hold/learner/selector미구현·환경/학습/기기0·누적6,517/641·기본/strict/experiment_ready=false 유지. 별도실측Run05·다른미커밋/사용자14행/개인파일/worktree는 건드리지 않았다. 사람전문가검증/기기우위/수렴판정아님.
+- 다음 최대3: public-event/hold·보상/학습분모 구현gate, 원일정표현성/공개정보별칭과고정selector정확식고정, gate통과때만등록된작은3seed파일럿. .25밖resourcewait/추가기한특징·모형오차이하실물절감은미확정이다. 검토기준6ca596c+미커밋, 검증대상hash/명령은verification.json이다.
+
 ## 2026-10-09 LIST-CANDIDATE-RL-DESIGN-01 — 리스트 후보·RL 보정 선택 설계 완료
 
 - 사용자 지시로 Band 기본/복귀/학습참조와 온라인 롤링을 제외하고, 과업별 FIFO head·EDD/여유/ECT/호환성 리스트와 native Maskable PPO 재정렬을 설계했다. Band/Triton은 평가 전용이다. [설계·목적·파일럿 제안](LIST_CANDIDATE_RL_DESIGN_20261009.md) · [논문 대응·정적 검증](results/list_candidate_rl_design_01/README.md).

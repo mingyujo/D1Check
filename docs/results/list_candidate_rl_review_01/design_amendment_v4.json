@@ -1,0 +1,472 @@
+{
+  "task": "LIST-CANDIDATE-RL-REVIEW-01",
+  "status": "review_and_design_proposal_only",
+  "created_utc": "2026-10-09T12:05:06.731729+00:00",
+  "head": "6ca596c4728f6c6e21224b57421ec50005e47ffa",
+  "dirty": true,
+  "base_contract_sha256": "88aed61e301345b41245ce32416b7e15f2cbb69237485a3085336ea08b8ca421",
+  "base_contract_unchanged": true,
+  "source_basis": {
+    "docs/LIST_CANDIDATE_RL_DESIGN_20261009.md": "8a0d0572387ed00d9b23a5ed112b3749f4e62df6e42c5a3cc11dcd878b8947dd",
+    "docs/results/list_candidate_rl_design_01/design_contract.json": "88aed61e301345b41245ce32416b7e15f2cbb69237485a3085336ea08b8ca421",
+    "tools/d1_ie_dispatch.py": "318db8c5f6401076f2861d45ad7c998994cf20f2a9b1743823180d50ede071ab",
+    "tools/d1_edd_ect_residual_controller.py": "451fa485df03ca66857b5f69265dc324f7afe967bcee7013003aaae4bd15073e",
+    "tools/d1_edd_ect_residual_ppo.py": "86ca79823eb9d5babb474c28321563fa44c877524663b6b60f4356171c81758a",
+    "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9",
+    "tools/d1_empirical_request_policy.py": "32407050fae7a0f6f7d58a19cd6f2f4eedea46ba9c8651e15363d0af496050a0",
+    "docs/results/ie_candidates_v2/README.md": "68d988457b4b33ab5240f8271b2960ee6c6deee3ba36ab8900e03e4694e33cac",
+    "tools/d1_ie_candidates_v2_study.py": "2b00e22ec3469fac55806c26ff506f81d2a2534842723c62ff34a4274248cad2",
+    "benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/ArrivalSchedulerActivity.kt": "94aa7fc34a8fb1a35dc75d7fd67b733ed79b7f85ff4db5f3f2fae8b42ec38388"
+  },
+  "participants": [
+    "mobile_review",
+    "ie_review",
+    "rl_review"
+  ],
+  "human_expert_review": false,
+  "parent_role": "moderator and repository integration",
+  "schema": "list-candidate-56-28-v4-reviewed-proposal",
+  "rl_policy": "LIST_CANDIDATE_CONSTRAINED_PPO_V4_PROPOSAL",
+  "base_policy": "LIST_SERVICE_FIRST_PC_V4_PROPOSAL",
+  "implementation_complete": false,
+  "learning_started": false,
+  "native_evaluation_complete": false,
+  "architecture": {
+    "base_policy": "LIST_SERVICE_FIRST_PC_V4_PROPOSAL",
+    "rl_policy": "LIST_CANDIDATE_CONSTRAINED_PPO_V4_PROPOSAL",
+    "training_reference": "LIST_SERVICE_FIRST_PC_V4_PROPOSAL",
+    "online_components": [
+      "task_FIFO_heads",
+      "EDD_response_slack_ECT_flexibility_list",
+      "immediate_atomic_candidates_and_bounded_defer",
+      "native_masked_PPO_candidate_reranker",
+      "same_time_bundle_commit"
+    ],
+    "excluded_online": [
+      "Band_base",
+      "Band_fallback",
+      "Band_suffix",
+      "Band_reference_reward",
+      "rolling_horizon",
+      "CPSAT",
+      "MILP",
+      "full_queue_forecast",
+      "synthetic_future_arrivals"
+    ],
+    "evaluation_only": [
+      "BAND_HEFT_WHOLE_REQUEST_ADAPT_V1",
+      "TRITON_RATE_OFF_FIXED_REQUEST_ADAPT_V1",
+      "IE_ENERGY_AP_LIST_V2",
+      "IE_EDD_ECT_LANE_PC_V1"
+    ]
+  },
+  "features": {
+    "state_fields": [
+      "elapsed_over_120s",
+      "remaining_over_120s",
+      "queued_classification_over_192",
+      "queued_detection_over_192",
+      "CPU_owned",
+      "GPU_owned",
+      "defer_credit_over_025s",
+      "valid_candidates_over_8",
+      "estimated_AP_minus_reference_over_1C",
+      "past_grid_peak_minus_reference_over_1C",
+      "observed_urgent_response_count_over_192",
+      "observed_urgent_P95_over_1500ms",
+      "observed_urgent_failures_over_192",
+      "observed_normal_failures_over_192",
+      "C_head.present",
+      "C_head.age_over_own_deadline",
+      "C_head.deadline_slack_over_own_deadline",
+      "C_head.mean_response_CPU_over_own_deadline",
+      "C_head.CPU_response_known",
+      "C_head.mean_response_GPU_over_own_deadline",
+      "C_head.GPU_response_known",
+      "C_head.supported_backend_count_over_2",
+      "C_head.same_task_backlog_over_192",
+      "D_head.present",
+      "D_head.age_over_own_deadline",
+      "D_head.deadline_slack_over_own_deadline",
+      "D_head.mean_response_CPU_over_own_deadline",
+      "D_head.CPU_response_known",
+      "D_head.mean_response_GPU_over_own_deadline",
+      "D_head.GPU_response_known",
+      "D_head.supported_backend_count_over_2",
+      "D_head.same_task_backlog_over_192",
+      "CPU.owned",
+      "CPU.classification",
+      "CPU.detection",
+      "CPU.public_phase_index_over_5",
+      "CPU.elapsed_since_dispatch_over_6s",
+      "CPU.elapsed_since_phase_over_6s",
+      "CPU.estimated_remaining_lane_over_6s",
+      "CPU.remaining_prediction_known",
+      "GPU.owned",
+      "GPU.classification",
+      "GPU.detection",
+      "GPU.public_phase_index_over_5",
+      "GPU.elapsed_since_dispatch_over_6s",
+      "GPU.elapsed_since_phase_over_6s",
+      "GPU.estimated_remaining_lane_over_6s",
+      "GPU.remaining_prediction_known",
+      "arrival.last_arrival_age_over_6s",
+      "arrival.last_gap_over_1s",
+      "arrival.mean_last8_gaps_over_1s",
+      "arrival.min_last8_gaps_over_1s",
+      "arrival.std_last8_gaps_over_1s",
+      "arrival.classification_fraction_last8",
+      "arrival.observed_gap_count_over_8",
+      "arrival.has_gap_observation"
+    ],
+    "state_size": 56,
+    "candidate_fields": [
+      "uses_CPU_now",
+      "uses_GPU_now",
+      "dispatches_classification",
+      "dispatches_detection",
+      "is_bundle",
+      "is_discretionary_defer",
+      "defer_duration_over_025s",
+      "dispatched_count_over_2",
+      "proxy_span_duration_over_6s",
+      "C_head.deadline_slack_over_own_deadline",
+      "C_head.predicted_response_over_own_deadline",
+      "proxy_span_duration_known",
+      "D_head.deadline_slack_over_own_deadline",
+      "D_head.predicted_response_over_own_deadline",
+      "CPU_new_occupation_over_6s",
+      "GPU_new_occupation_over_6s",
+      "estimated_overlap_over_6s",
+      "C_head_slack_after_this_atom_over_own_deadline",
+      "D_head_slack_after_this_atom_over_own_deadline",
+      "estimated_next_free_over_6s",
+      "proxy_span_whole_device_J_over_1J",
+      "span_J_known",
+      "proxy_end_AP_delta_over_1C",
+      "end_AP_known",
+      "proxy_span_peak_AP_delta_over_1C",
+      "span_peak_known",
+      "is_L0_choice",
+      "prediction_supported"
+    ],
+    "candidate_size": 28,
+    "slots": 8,
+    "max_live": 8,
+    "parameter_count": 16455,
+    "replaced_exact_redundancy": [
+      "C_head.included_now",
+      "D_head.included_now"
+    ],
+    "old_weights_or_optimizer_compatible": false
+  },
+  "hold": {
+    "explicit_control_state": true,
+    "phase_only_keeps_timer": true,
+    "reconsider": [
+      "new arrived request",
+      "actual lane ownership change",
+      "hold timer"
+    ],
+    "credit_replenished_by_actual_dispatch_event_only": true,
+    "elapsed_time_debit_once": true,
+    "credit_s": 0.25,
+    "defer_s": [
+      0.125,
+      0.25
+    ],
+    "long_resource_wait_added": false,
+    "repeat_same_public_state_resamples": false
+  },
+  "public_event_adapter": {
+    "implemented": false,
+    "opt_in_PC_hook_proposed": true,
+    "Android_changes": 0,
+    "public_fields": [
+      "at_ns",
+      "event_seq",
+      "request_id",
+      "backend",
+      "event"
+    ],
+    "allowed_events": [
+      "arrived",
+      "dispatch_ns",
+      "execution_start_ns",
+      "output_ready_ns",
+      "persist_complete_ns",
+      "worker_release_ns",
+      "lane_available_ns"
+    ],
+    "forbidden_payloads": [
+      "private_left",
+      "future_arrival_list",
+      "realized_cost_vector",
+      "plant_context",
+      "realized_AP_curve"
+    ],
+    "journal_or_response_invalid": "L0 fallback; never infer exact response from means",
+    "existing_baseline_clock_values_budget_must_match": true
+  },
+  "pair_commit": {
+    "one_actor_sample": true,
+    "second_commit_rechecks_request_ownership_support": true,
+    "first_dispatch_retained_if_second_fails": true,
+    "second_unassigned_request_retained": true,
+    "same_commit_no_resampling": true,
+    "distinct_actual_public_event_same_timestamp_can_trigger_next_decision": true,
+    "physical_simultaneous_start_guaranteed": false
+  },
+  "proxy": {
+    "scope": "owned jobs and one chosen atom only; no queue suffix",
+    "start": "current decision/commit time under original zero-control-cost model",
+    "end_immediate": "latest predicted lane_available of current owned/new atom jobs",
+    "end_mixed": "max of those predicted lane_available times and declared hold timer",
+    "end_pure_defer": "declared hold timer; owned jobs may remain unfinished",
+    "duration_observed_in_features": true,
+    "unknown_raw_values": null,
+    "tensor_zero_requires_known_false": true,
+    "whole_episode_cost_ranking_claim": false,
+    "full_queue_rolling_added": false
+  },
+  "objective": {
+    "version": "LIST_AP_PRIMARY_SERVICE_ENERGY_NONWORSE_V4_PROPOSAL",
+    "reward": "(A_L0-A_policy)/1C",
+    "J_cost": "signed (J_policy-J_L0)/1J",
+    "service_costs": [
+      "max(0,F_policy-F_L0)",
+      "max(0,U_policy-U_L0)",
+      "max(0,N_policy-N_L0)",
+      "max(0,P_policy-P_L0)/1500ms"
+    ],
+    "gamma": 1,
+    "lambda_initial": [
+      1.0,
+      10.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lambda_eta": 0.01,
+    "lambda_cap": 100,
+    "lambda_optimal_or_service_guarantee": false,
+    "service_lambda_monotone_risk_logged": true,
+    "AP_primary_not_finite_lagrangian_lexicographic_guarantee": true,
+    "report_raw_signed_differences_too": true
+  },
+  "reward_attribution": {
+    "curve_source": "completed episode realized AP grid, posthoc training path only",
+    "actor_curve_source": "public-event observer plus frozen mean model",
+    "AP_grid": [
+      35,
+      180,
+      1
+    ],
+    "M_i": "past running max of realized in-window grid at actual decision i",
+    "first_M": "past realized grid peak at first decision; first arrival>=35s, fixed prehistory; empty grid requires explicit initial-potential/validity fixture",
+    "r_i": "-(M_next-M_i) for transition after chosen action",
+    "r_last": "-(A_policy-M_last)+(A_L0-M_first)",
+    "sum": "A_L0-A_policy",
+    "after_last_actor_tail_to_180s_required": true,
+    "old_current_step_past_peak_assignment_reused": false,
+    "actor_receives_realized_curve": false
+  },
+  "invalid_channels": {
+    "AP_J_whole_episode_trajectory_mask": true,
+    "known_failure_costs_remain_valid": true,
+    "unknown_metrics_report_null": true,
+    "unknown_metrics_not_assumed_zero": true,
+    "infrastructure_exception_without_complete_ledger": "no learner update; failed start counted and evidence preserved",
+    "invalid_AP_J_not_compensated_by_signed_service_gain": true
+  },
+  "learner_aggregation": {
+    "actor": "negative (1/B) sum_episode sum_informative PPO clipped surrogate",
+    "divide_actor_by_episode_decision_count": false,
+    "entropy": "(1/B) sum_episode mean_informative entropy; no actor ->0",
+    "critic": "(1/B) sum_episode mean_unique_valid_state mean_valid_channel squared error",
+    "combined_advantage": "AP advantage minus lambda dot cost advantages in original units, then one shared standardization",
+    "advantage_statistics": "episode-balanced informative means and second moments; never channelwise scale before lambda",
+    "dual": "equal-episode mean raw valid costs; not actor-normalized advantages",
+    "exclude_actor": [
+      "duplicate callback",
+      "forced single action",
+      "pair second commit"
+    ],
+    "zero_actor_last_layer_retained": true,
+    "uniform_initial_valid_actions": true,
+    "CPO_optimizer_or_guarantee": false
+  },
+  "evaluation": {
+    "primary_families": [
+      "low",
+      "sustained"
+    ],
+    "primary_absolute_requirements": {
+      "F": 0,
+      "U": 0,
+      "N": 0
+    },
+    "existing_deadlines_s": {
+      "classification": 1.5,
+      "detection": 6
+    },
+    "all_condition_nonworse_vs": [
+      "L0",
+      "Band",
+      "Triton"
+    ],
+    "strict_low_sustained_thermal_gate_unchanged": true,
+    "no_best_seed_pick": true,
+    "training_seeds": [
+      11,
+      23,
+      37
+    ],
+    "episodes_per_seed": 64,
+    "64_episodes_is_convergence_test": false,
+    "independent_dev_arrival_traces": 2,
+    "independent_final_arrival_traces": 4,
+    "service_contexts_are_independent_arrival_repeats": false,
+    "physical_temperature_energy_superiority_claim": false
+  },
+  "matched_nonlearning_control": {
+    "policy": "LIST_SAME_BANK_GREEDY_V4_PROPOSAL",
+    "same_candidate_state_proxy": true,
+    "development_conditions": 24,
+    "final_conditions_automatically_added": 0,
+    "training": 0,
+    "tuning": 0,
+    "rank": [
+      "current-head predicted service-risk vector",
+      "one-atom AP proxy",
+      "one-atom J proxy",
+      "L0 tie",
+      "fixed signature"
+    ],
+    "exact_service_risk_formula_registered_before_any_native_run": false,
+    "unknown_service_prediction": "L0 fallback",
+    "only_beating_this_control_implies_adoption": false,
+    "pure_RL_contribution_claim_scope": "development only unless separately registered final control exists"
+  },
+  "future_budget": {
+    "cumulative_environment_starts": 6517,
+    "cumulative_learning_starts": 641,
+    "original_first_stage_environment_cap": 512,
+    "separate_development_control_max": 24,
+    "conditional_before_final_total": 536,
+    "environment_expected_max": 1472,
+    "overall_proposed_cap": 1536,
+    "learning_proposed_cap": 416,
+    "original_base_expected": 1448,
+    "control_training_starts": 0,
+    "final_control_addition_auto_authorized": false,
+    "execution_authorized_by_this_review": false
+  },
+  "unresolved": [
+    "whether long CPU resource-wait is necessary outside .25 credit",
+    "whether 56-feature public-history compression aliases action-relevant queue states",
+    "exact local service-risk formula for fixed control before native execution",
+    "feasibility and nonregression of optional public-event hook and hold implementation",
+    "physical AP/energy improvement including controller cost"
+  ],
+  "mandatory_implementation_gates": [
+    "public event completeness for zero-phase transitions/actual dispatch",
+    "hold .25 survives phase-only events and debits elapsed time once",
+    "worker_release never frees lane early; pair cancellation conserves requests",
+    "same public history/different private context produces equal actor tensors",
+    "candidate-effect uniqueness and old schedule representability/exclusion rate",
+    "AP reward transition attribution and terminal 180s sum",
+    "actor/critic/dual/entropy denominator and preclip-gradient stress",
+    "full checkpoint interruption/resume equivalence",
+    "baseline exact ledger/clock/budget preservation"
+  ],
+  "run_diagnostics": [
+    "candidate/action/hold coverage",
+    "decision event counts and deduplications",
+    "lambda and raw per-condition KPI violations",
+    "layer and actor/critic preclip gradient norms",
+    "objective component magnitude",
+    "host proxy/network decision P50/P95/max",
+    "lane ownership vs execution overlap"
+  ],
+  "preserved": {
+    "Band_online_and_rolling_excluded": true,
+    "original_model_and_coefficients": true,
+    "existing_results_checkpoints": true,
+    "NPU_no_addition": true,
+    "strict_support": true,
+    "experiment_ready": false,
+    "independent_AP_run05_untouched": true,
+    "surface_temperature_unsupported": true,
+    "phone_control_J_unsupported": true
+  },
+  "consumption": {
+    "new_environment_starts": 0,
+    "new_learning_starts": 0,
+    "device_commands": 0
+  },
+  "network": {
+    "algorithm": "native masked PPO",
+    "state_layers": [
+      56,
+      64,
+      64
+    ],
+    "candidate_layers": [
+      28,
+      32,
+      32
+    ],
+    "score_layers": [
+      96,
+      64,
+      1
+    ],
+    "critic_layers": [
+      64,
+      6
+    ],
+    "parameter_count": 16455,
+    "activation": "Tanh",
+    "actor_final_layer_zero": true,
+    "training_initial_valid_distribution": "uniform",
+    "evaluation_tie": "L0",
+    "fixed_BASE_bonus": false,
+    "old_weights_compatible": false,
+    "reuse_old_optimizer": false
+  },
+  "hyperparameters": {
+    "adam_lr": 0.0003,
+    "clip": 0.2,
+    "epochs": 4,
+    "minibatch": 256,
+    "entropy": 0.01,
+    "value_coefficient": 0.5,
+    "grad_clip": 0.5,
+    "target_KL": 0.03,
+    "tuning_trials": 0,
+    "optimizer_settings_are_proposals": true
+  },
+  "archive": [
+    "actor",
+    "critic",
+    "Adam",
+    "python_numpy_torch_RNG",
+    "signed_multipliers",
+    "candidate_schema_and_decoder_version",
+    "partial_batch",
+    "physical_masks",
+    "pending_bundle_or_defer",
+    "remaining_credit",
+    "trace_cursor",
+    "L0_cache_hashes",
+    "source_model_input_hashes",
+    "consumption",
+    "original_deadline",
+    "public_event_seq",
+    "credited_dispatch_ids",
+    "last_hold_debit_time",
+    "realized_reward_curve_origin_and_validity",
+    "episode_aggregation_schema"
+  ]
+}

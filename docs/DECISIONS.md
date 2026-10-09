@@ -6,6 +6,12 @@
 - exact C0 profile에만 전체window종료를허용하고 조기/미등록/다른창은거부, LOAD_A/legacy tail·기존watchdog·계측·호출·onDestroy취소/동결계수불변. 실제Activity종료분기 회귀를추가해Android13/Python5 통과, 수정후보는기존서명으로PC 생성만했다.
 - 원plan_v2 stopped_no_resume/추론12·부분기록/기존FAIL·모형/후보를보존한다. 긴C0/LOAD독립오차확인·정확도PASS·기본/RL/strict/experiment_ready승격0. 별도계획/추가실측은이번자동생성하지않는다.
 
+## 2026-10-09 LIST-CANDIDATE-RL-REVIEW-01 — 세 AI 검토 완료·v4는 미구현 제안
+
+- 확정작업: 사용자가요청한모바일/산업공학/RL AI3개의실제교차검토를수행했다. [쟁점·반론후변경·합의/미합의](LIST_CANDIDATE_RL_REVIEW_20261009.md)를기록하고원v3를보존한다. 작은리스트/Maskable PPO와Band/Triton평가전용/온라인롤링제외방향은유지한다.
+- 보완추천은별도v4제안이다: event/hold/실제laneAvailable·PAIR취소요청보존, 서비스positive잔차/원primary절대계약, 행동이후실현APreward/180초합, 중복2특징을span/known으로교체해56/28유지, 같은bank개발대조24. .25확대/추가상태/새알고리즘·low엄격gate완화는근거없어채택하지않는다.
+- 이번실행승인/소비가아니며원first512뒤제안24·전체예상1472/상한1536/학습416·누적6,517/641이다. 정책/환경/학습/기기0, 사람전문가검증/수렴/실물절감보장아님. 원계수/원결과·기본/strict/experiment_ready=false·별도Run05/사용자변경을보존한다.
+
 ## 2026-10-09 LIST-CANDIDATE-RL-DESIGN-01 — 온라인 Band·롤링 제외 확정, 설계값은 제안
 
 - 확정 방향: 사용자는 Band 기본+롤링을 빼고 리스트 후보+RL 보정 선택을 검토하도록 지시했다. Band는 기본/복귀/학습 참조가 아니며 Triton과 함께 독립 평가 전용으로 남긴다. 기존 알고리즘/체크포인트/결과를 삭제하거나 새 정책 효과를 전제하지 않는다. [논문·코드 근거와 대응](LIST_CANDIDATE_RL_DESIGN_20261009.md).
