@@ -1,0 +1,39 @@
+{
+  "utc": "2026-10-09T06:44:12.971394+00:00",
+  "head": "2bd99700106e3795672bab0b54f8b3a7ec5017f0",
+  "dirty": true,
+  "source_overrides": {
+    "tools/d1_rolling_terminal_study.py": "065b9acc5952a2049ec57512341158ff2ca117e17a648a9752fe5700716a7032",
+    "tools/test_d1_rolling_terminal.py": "6fc03ddecd3359f39bf84b2ec59be46118dc3efcca00dd31eef57480071746f8"
+  },
+  "preserved_original_sources": {
+    "docs/results/rolling_terminal_01/source_v1/d1_rolling_terminal_study.py": "a006c37afb982a6bc8f78d7d477788a0bc679392d05962e13e2fd7bebcf046f4",
+    "docs/results/rolling_terminal_01/source_v1/test_d1_rolling_terminal.py": "c179919a677d9843dd92e5b6132e6395f108edbdae98520e6dd8edcbde0a50c1"
+  },
+  "cause": "Same-time Band dispatch without a selected plan was incorrectly bound to the later selected plan guard at the same timestamp. Match the original plan window and selected-plan flag before consuming a guard.",
+  "correction": "Observer/action replay and thermal equations unchanged. Exact plan cursor/window binding added; no timestamp tolerance or criterion relaxed.",
+  "original_registration_utc": "2026-10-09T06:39:41.664747+00:00",
+  "clock_reset": false,
+  "failed_identity": "development/10/IE_ROLLING_JOINT_ACTUAL_PREFIX_GUARD_WAIT025_V2",
+  "retry_identity_map": {
+    "development/10/IE_ROLLING_JOINT_ACTUAL_PREFIX_GUARD_WAIT025_V2": "development/10/IE_ROLLING_JOINT_ACTUAL_PREFIX_GUARD_WAIT025_V2/repair1"
+  },
+  "retry_cap": 1,
+  "preserved_v1_successes": [
+    "development/0/IE_ROLLING_JOINT_ACTUAL_PREFIX_GUARD_WAIT025_V2",
+    "development/1/IE_ROLLING_JOINT_ACTUAL_PREFIX_GUARD_WAIT025_V2",
+    "development/2/IE_ROLLING_JOINT_ACTUAL_PREFIX_GUARD_WAIT025_V2",
+    "development/3/IE_ROLLING_JOINT_ACTUAL_PREFIX_GUARD_WAIT025_V2",
+    "development/4/IE_ROLLING_JOINT_ACTUAL_PREFIX_GUARD_WAIT025_V2",
+    "development/5/IE_ROLLING_JOINT_ACTUAL_PREFIX_GUARD_WAIT025_V2",
+    "development/6/IE_ROLLING_JOINT_ACTUAL_PREFIX_GUARD_WAIT025_V2",
+    "development/7/IE_ROLLING_JOINT_ACTUAL_PREFIX_GUARD_WAIT025_V2",
+    "development/8/IE_ROLLING_JOINT_ACTUAL_PREFIX_GUARD_WAIT025_V2",
+    "development/9/IE_ROLLING_JOINT_ACTUAL_PREFIX_GUARD_WAIT025_V2"
+  ],
+  "failure_started_requests": 192,
+  "failure_partial_completed_requests": null,
+  "test_command": "python -B -X utf8 -m unittest tools.test_d1_rolling_terminal",
+  "tests": 8,
+  "test_status": "PASS"
+}
