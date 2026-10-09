@@ -83,3 +83,11 @@
 ## 2부 7 원복 (19:5x) [P]
 
 - `screen_off_timeout` **86400000 유지** (영훈 결정) · 밝기 127 · 비행기 1 · zen 1 그대로 · `quality-runner` force-stop (pidof 빈 값) · `/data/local/tmp/quality20/` 보존 (39 MB · 재현용) · PC keepawake stop 19:52:48 · `npurunner` · `requestrunner` 무접촉 · 끝 SOC 74 · SKIN 28.5 · BAT 26.1.
+
+## 2부 8 커밋 · push (19:57 ~ 19:59) [P]
+
+- **커밋 ③ `37b31a15c64f1c5fcc392640c7a6c783ae901466`** (19:57:08 +0900) "s26: 대표 입력 20장 품질 결과 · 보고 (q20_1009a · 판정기 616e7490… 무변경)" — 73 파일 +3,329 (결과 사본 65 · 원장 · 보고 사본 2) · 바이너리 0 · raw/logcat 0 → push `24b8aff..37b31a1`.
+- **절차 위반 기록**: 커밋 ③ 의 캐시 diff PAT 검사가 **1건** 이었는데 (`echo` 가 게이트가 아니어서) push 됐다. 1건의 정체 = 보고서 사본 §3 문장의 정규식 설명 문자열 (IPv6 링크 로컬 접두 네 글자 + 콜론) — **주소 · 시리얼 아님**. 원문은 git 이력에 남는다 (rewrite 금지).
+- **커밋 ④ `a89c81092bc9c7e070a9b7f4804e27faa4db6930`** (19:58:52) 문구 수정 (추가 줄 PAT 0 으로 게이트) → push `37b31a1..a89c810` · HEAD 트리 (`quality-runner` · `s26/tools/quality20` · `s26/results/quality20_1008`) PAT 파일 0 · origin = `a89c810`.
+- OneDrive: `D1_ondevice\sim\품질20장_결과_v1.md` · `작업결과_1008_Q20_품질20장.md` (레포 사본 `Q20_reports/`) · `CLAUDE.md` 최종 갱신 줄 + §4 맨 위 `★ 1008 Q20` 블록 (R3 블록 위 · 다른 블록 무변경 — 삽입 중 `\f` · `\r` 이스케이프 손상 2곳을 sed 로 복구, 백업 대조로 나머지 동일 확인).
+- Q20 끝 20:0x. 폰: 화면 끄기 방지 86400000 유지 · `quality-runner` 설치된 채 (삭제 안 함) · `/data/local/tmp/quality20/` 보존.
