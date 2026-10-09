@@ -45,6 +45,13 @@
 - Run/claim/설치/앱실행/추론/세션0, ADB2명령(연결1/목록1), daemon재시작/설정변경/자동재연결0. 계획은 **미소비로 보존**, stopped_no_resume/실측실패로 기록하지 않는다. PC Wi-Fi는 연결돼 있으나 휴대폰주소/포트/페어링·네트워크 내부원인은 미확정.
 - 다음하나: 사용자가 현재 무선디버깅 접속주소(페어링이 없으면 페어링주소/코드)를 제공하면 기존승인으로 동일계획의 현재기기·환경 gate부터 진행한다. 연결 회복만으로 세션이 시작됐다고 하지 않는다.
 
+## 2026-10-09 LIST-CANDIDATE-RL-IMPLEMENTATION-GATE-03 — v4.1 유지·구현 검사표 토론 완료
+
+- 모바일/산업공학/RL AI가사용자후속검토를직접반론하며 [구현게이트검사표](LIST_CANDIDATE_RL_IMPLEMENTATION_GATE_20261009.md)를정리했다. v4.1/목적/행동/.25/예산은유지·새정책버전0, 실제encoder/eventadapter/learner PASS없어본학습NO-GO다.
+- C2는A/B×CPU/PAIR4native가각합법prefix→전체입력bytes→같은risk5후속→예정25(C10/D15)/전체창을포함하는미실행안이다. 최근8gap은C2뒤공통arrival9필요·수동snapshot/epsilon별칭PASS0. 반복hold·실제양의elapsed/credit·요청응답/fallback와λJ직접항/공유critic영향을구분한다.
+- 학습전도달/입력별칭/전체서비스차이를분리하며미재현이면특징을자동추가하지않는다. 재현시최소공개정보보완후재검증·기능회귀/누출/요청손실이면학습0. 다음최대3:고정v4.1구현,기존32상한내필수검사/C2실증,통과때만작은파일럿이다.
+- 이번토론native/학습/기기0·누적6517/641·예상1520/상한1536/학습416유지. 별도C0/LOAD2조건·총881실측완료를90782a2에서대조했고원모형/기본/strict/experiment_ready=false·사용자14행/worktree보존. 근거/검증범위는results/list_candidate_rl_gate_03/review_record.json이다.
+
 ## 2026-10-09 LIST-CANDIDATE-RL-PREPILOT-02 — 유망성·대조 수식·표현성 추가 토론
 
 - 사용자3지적을같은모바일/산업공학/RL AI가독립/직접반론/중재3차로검토했다. [v4.1 제안·정확식·예산·반례](LIST_CANDIDATE_RL_PREPILOT_20261009.md) · [토론/계약/검산](results/list_candidate_rl_prepilot_02/README.md). 기본/복귀/학습참조L0·Band평가only·원v3/v4와과거판정보존이다.
