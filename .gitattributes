@@ -558,3 +558,9 @@
 /tools/fixtures/energy_screen_proto_a24.bin -text
 /tools/d1_energy_screen.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /tools/test_d1_energy_screen_proto.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Explicit diagnostic AP scope; frozen JSON bytes and portable Python sources.
+/docs/results/ap_tail_scope_01/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/tools/d1_ap_tail_scope.py text eol=lf
+/tools/d1_ap_tail_scope_report.py text eol=lf
+/tools/test_d1_ap_tail_scope.py text eol=lf

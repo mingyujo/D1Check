@@ -133,3 +133,5 @@ C0는 AP 초기28.2°C·관측 최고28.6°C·표본 첫/끝28.2→28.5°C, LOAD
 ```
 
 다른 사용자 변경·worktree·정책/RL 작업은 보존한다. 기본 시뮬레이터·RL·strict·experiment_ready=false는 그대로다.
+
+후속 PC 작업 완료: [LOAD_SLOW의 별도 AP 평가 계약·API·검증](AP_TAIL_SCOPE_PC_20261009.md). 위 원 결과·계수는 바꾸지 않았으며 등록 부하의 보조 AP 진단만 명시적으로 허용한다. 일반 도착/strict/RL 채택과 구분한다.

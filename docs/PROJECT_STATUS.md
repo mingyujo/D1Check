@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-10-09 AP-TAIL-SCOPE-01 — 별도 AP 진단 적용 범위 구현 완료
+
+- 사용자 후속 진행 지시로 [LOAD_SLOW opt-in AP API](../tools/d1_ap_tail_scope.py)를 구현했다. 기본/strict/RL·원식/후보/기존결과는 불변, 실제 일정 조건부 AP만 허용한다. CPU1/동일모델·입력/4resident·준비이력·pre AP26.5–28.8·등록macro/시간·APK/관측variant 검사; 밖이면null, J/응답/RL/strict 사용 차단이다.
+- 기존35 오차 재사용: 등록개발4＋새장시간2만 진단 맥락 일치, 도착·이력대조29는모두차단. 과거29 평균원식0.3217→후보0.3228°C·악화13(원개발3/확인4/sustained5/history1) 모두보존. 새LOAD0.4371→0.1728/C00.0908은기존확인곡선과일치. 범위는결과의좋고나쁨/ID로고르지않았으며자료계약통과를정확도PASS/τ식별로승격하지않는다.
+- [보고서·명령·한계](AP_TAIL_SCOPE_PC_20261009.md) · [범위/악화/CSV 화면](results/ap_tail_scope_01/index.html). 새경계13검증·실제API 예제·원식/후보byte와구현9hash검사 통과. scope CPU4초안/중첩inventory PC오류2는보존후 실제6manifest CPU1/기존raw_files 구조로정정했다.
+- 이번기기/ADB/실측/설치/빌드/새계획/claim/학습/환경실행/물리계수fit0. 원비교/FAIL/중단계획·experiment_ready=false·사용자STATUS14행/다른정책/RL/worktree는보존한다. 이번구현완료; 같은등록부하의보조AP 재생평가에사용할수있고 일반도착정책·RL 비용모형에는자동적용하지않는다.
+
+
 ## 2026-10-09 AP-TAIL-OBSERVATION-RUN-05 — C0·LOAD 완료, 고정 후보 확인
 
 - 사용자 `C0부터 재개` 지시로 새 ID `ENERGY-AP-TAIL-OBSERVATION-05` / plan_v6를 준비했다. 기존 plan_v5 중단·부분 원자료·소비 기록은 보존한다. Check는 기기 명령 0회, 계획 SHA `d5d4edfca4819b34595ac12c62e9d5c28e4fe2bae22f473a0636c0b55f0b7059`, 미소비·APK/계약/모형 동일성 통과 후 Run 1회 호출했다.

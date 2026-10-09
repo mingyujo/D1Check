@@ -1,0 +1,13 @@
+{
+  "status": "PC_report_failed_before_outputs",
+  "original_error": {
+    "type": "ValueError",
+    "message": "recorded macro context unexpectedly blocked: context_mismatch:cpu_threads",
+    "boundary": "scope expected context versus recorded manifest",
+    "cause": "initial scope drafting incorrectly used four runtimes as four CPU threads; all six actual manifests specify cpu_threads=1"
+  },
+  "fix": "correct new scope to the existing six-manifest CPU1 setting; keep frozen coefficients and data unchanged; CPU4 remains blocked",
+  "device_commands": 0,
+  "fit_calls": 0,
+  "environment_simulations": 0
+}
