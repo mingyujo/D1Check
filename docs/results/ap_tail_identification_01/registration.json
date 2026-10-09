@@ -1,0 +1,48 @@
+{
+  "id": "AP-TAIL-IDENTIFICATION-01",
+  "utc": "2026-10-09T03:05:06.460336+00:00",
+  "head": "ba62d9a949e7c7595f68a19b91d3341dad6649ad",
+  "posthoc": true,
+  "previous_results_seen": true,
+  "question": "load-linked slow memory versus time-linked effective reference change; mathematical and causal identifiability separated",
+  "primary": "FAST4_PLUS_LOAD_SLOW: original beta/pre-only R/H; 4 nonnegative direct drives + 1 nonnegative frozen-increment-power kernel coefficient; load kernel initialized0 as additional change since35, not measured empty physical state",
+  "control": "FAST4_PLUS_CLOCK_SHIFT: same fast4 and tau grid, time-linked saturating reference change; signed shift coefficient; attribution only, never switch winner",
+  "comparators": [
+    "FROZEN",
+    "prior STATE_DELAYED30 candidate"
+  ],
+  "tau_grid_s": [
+    30.0,
+    60.0,
+    120.0,
+    240.0,
+    480.0,
+    960.0,
+    1920.0
+  ],
+  "tau_grid_reason": "existing30s term doubled until first point >=2x longest new AP horizon; times only, no outcome-driven narrowing or extension",
+  "observed_horizon_s": 779.901588966,
+  "fit_roles": "new development4 only: LOSO train3/test1 then final4; archive29 not fitting",
+  "selection": "profile minimum equal-session training MSE per fit; endpoint or zero kernel sensitivity unidentified; preserve full profile and Jacobian singular values; primary not chosen using archive or control winner",
+  "evaluation": "4 posthoc LOSO plus29 archived evaluation; C0 four are prior different-protocol short controls, not matched long no-load counterfactual",
+  "missing_control": "no same900s macro protocol C0; do not infer cause from missing data",
+  "budgets": {
+    "primary_fit_calls": 5,
+    "control_fit_calls": 5,
+    "profile_points_per_fit": 7,
+    "new_physical_commands": 0,
+    "new_plans": 0,
+    "new_candidate_families": 1,
+    "algorithm_or_reward_tuning": 0
+  },
+  "sources": {
+    "docs/results/resident_identification_run_01/recorded_v3/inputs.json.gz": "806fba262cafee14a650a91dc6e4383216eb09e3dc4adc4702f7ccf0f0d15fb1",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/model_refinement_01/inputs.json.gz": "cb07aa735100971b6e7e635ecf9c8c24bc9b9c2b7ffdbc4e9824b0566f7f2ffb",
+    "docs/results/history_model_refinement_01/inputs.json.gz": "2005a26656c7c4a88b6b914ac51c2fcb156cb9229f050491c7f1826b5d8d816f"
+  },
+  "independent_confirmation_sessions": 0,
+  "accuracy_pass": null,
+  "default": false,
+  "experiment_ready": false
+}
