@@ -1,5 +1,10 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-10 SESSION-CONTRAST-COST-PC-01 — 같은자료 대조와 새 AP 실제 평가 완료
+
+- 세AI4차토론후같은개발13의일반/중심화 E4/AP5·4source제외+최종으로20fit,선택동결후이미본22평가·원35전량표를완료했다. [결과·수식·해석·명령](SESSION_CONTRAST_COST_RESULTS_20261010.md). 고정β/prep30/slow1920/원전력proxy와순수학습nuisance를구분하고미래평균/target을예측입력에넣지않았다.
+- LOAD600 두출력개선과추가AP긴창MAE감소는보존하나과거20 AP/긴J/정책차악화로전체교체는보류한다. 원zero+고정AP 주진단/기본/RL/strict유지·새API는등록macro6의명시적전이진단이다. 추가fit/τ/조건선택/실측·새계획/claim0으로종료했다. 개발선택은채택gate/정확도PASS가아니며원자료/사용자·다른RL작업을보존한다.
+
 ## 2026-10-10 ENERGY-AP-ZERO-OFFSET-PC-01 — 제한 오차 감소 구현·실행 완료
 
 - 직전권고를실제수행했다. 원P50/5초목적·δ0·비음수p4 한family·개발4 제외+최종5fit,전체35/상쇄/짝차/저장B17 평가를완료했다. [결과·API·재현](ENERGY_AP_ZERO_OFFSET_RESULTS_20261010.md). AP는고정후보재사용이며개발재생과AP LOSO를분리한다.

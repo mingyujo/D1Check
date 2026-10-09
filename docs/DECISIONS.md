@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-10-10 SESSION-CONTRAST-COST-PC-01 — 추가 AP 개선과 전체 교체 보류
+
+- 사용자 재토론 승인에따라 같은개발13·두방법·E/AP20fit 후개발선택E일반/AP중심화를22판독전에고정했다. LOAD600 공동개선/긴AP추가개선은있지만과거20 AP평균·12악화/긴J/회복진폭/정책차악화로새후보전체채택은하지않는다. [근거·토론·역할](SESSION_CONTRAST_COST_RESULTS_20261010.md).
+- 확정:개발선택은두새방법간순위이지prior비악화gate아니다. 평가후방법변경/추가fit/τ/유리창선택0,주진단zero+고정LOAD·기본/RL/strict·experiment_ready=false유지. 새버전/hash의macro6 전이계산API만완료했고그계산지원은새정확도·정책·기기검증이아니다. 추가실측/새계획/claim0·원자료/모형/타작업·사용자변경보존이다.
+
 ## 2026-10-10 ENERGY-AP-ZERO-OFFSET-PC-01 — 별도 비용 경로 구현과 전체 채택 분리
 
 - 확정한구현: 사용자후속승인으로δ0/p4 한family를개발4에서5fit·전체35평가하고고정AP와함께반환하는opt-in macro API를구현했다. LOAD/전체평균의제한개선과과거10악화·C0미개선·정책짝부호2/4문제를함께공개한다. [원자료역할·오차·경계](ENERGY_AP_ZERO_OFFSET_RESULTS_20261010.md).

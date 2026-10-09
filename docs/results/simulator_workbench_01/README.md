@@ -1,5 +1,9 @@
 # D1Check 통합 시뮬레이터
 
+## 2026-10-10 추가 AP 후보와 전체 교체 보류
+
+[세AI4차토론·20fit·35판독](../../SESSION_CONTRAST_COST_RESULTS_20261010.md) · [추가개선과반례](../session_contrast_cost_01/index.html). LOAD600 J/AP와긴AP가더개선됐지만추정미사용과거20 AP/긴J/정책차가악화했다. 새API는명시적전이진단용으로만두고기존zero+고정LOAD 주진단/기본/RL/strict를유지한다. 이미본자료의사후평가·새실측/기기0이다.
+
 ## 2026-10-10 에너지·AP 개선 비용 API 구현 완료
 
 [실제추정·35평가·API](../../ENERGY_AP_ZERO_OFFSET_RESULTS_20261010.md) · [그림·악화·명령](../energy_ap_zero_offset_01/index.html). δ0/p4를개발4로5fit,고정AP와별도opt-in으로연결했다. LOAD공통관측J절대23.060→6.187/AP MAE0.437→0.173°C,과거29의참고120초J5.522→5.144이나10악화/C0·정책차부호문제는남는다. 기본/RL/strict는유지·새실측/기기0. 계산경로구현과새독립확인·전체정책정확도를구분한다.

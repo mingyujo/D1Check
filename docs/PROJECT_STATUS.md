@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-10 SESSION-CONTRAST-COST-PC-01 — 재토론·전력/AP20추정·국소 개선 판독 완료
+
+- 사용자 후속지시로 같은3AI가 가설→동일자료대조→AP추가→실제결과의4차를토론했다. 개발13/추정미사용22, 일반/중심화의E4/AP5를정식20fit(각10)하고원35전량을평가했다. [추가개선·악화·역할](SESSION_CONTRAST_COST_RESULTS_20261010.md) · [토론·곡선·CSV·새API](results/session_contrast_cost_01/README.md).
+- 개발에서선택동결한E일반/AP중심화는LOAD600 J차이+2.081→+0.988/AP MAE0.18615→0.16671°C,긴AP공통MAE0.17296→0.12859. 반대근거:긴J절대6.187→7.121/같은과거20 AP0.34393→0.35078(12악화)/냉각변화량차약0.067→0.133/정책차6.219→6.899J. C0불변·20fit후추가fit/재선정0이다.
+- 실행핵심13계약은같으나baseline/관측version/APK는달라전이가설로만판독했다. 새macro6 opt-in API는계산용이며주진단zero+고정LOAD/기본/RL/strict/experiment_ready=false는유지한다. 4단위검증·실제API 미래target비사용/차단/C0항등통과, 원등록진입hash오류는fit0에서수정·원자료/실패/원소스보존. 기기·ADB·실측·설치·빌드·새계획/claim0·다른RL/사용자변경/worktree보존.
+- 이번후속완료. 다음하나: 같은지원맥락의비용판독은기존주진단경로를유지하고새후보는반례가포함된명시적전이계산으로만사용한다. 실패후보독립확인을위한추가실측을자동권고·실행하지않는다.
+
 ## 2026-10-10 ENERGY-AP-ZERO-OFFSET-PC-01 — 전력4계수 실제 추정·35평가·비용 API 완료
 
 - 사용자 자율 진행 승인으로 δ=0/p4 후보1개를 개발4만으로4LOSO+최종1=5fit하고 전체35를 평가했다. AP LOAD_SLOW/원전력proxy는 고정·APfit0. [완료 결과·한계](ENERGY_AP_ZERO_OFFSET_RESULTS_20261010.md) · [그림·CSV·API 재현](results/energy_ap_zero_offset_01/README.md).

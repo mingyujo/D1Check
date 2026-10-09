@@ -1,0 +1,19 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>세션 편향 토론·실제 AP 개선과 악화</title>
+<style>body{font:17px/1.7 system-ui;max-width:1100px;margin:30px auto;padding:0 18px;color:#203040}aside{background:#fff2cf;padding:18px}img{width:100%}table{border-collapse:collapse;width:100%}td,th{padding:10px;border-bottom:1px solid #ddd}a{color:#075985}</style></head>
+<body><h1>추가 AP 개선은 확인, 전체 교체는 보류</h1>
+<aside>세 검토 AI의4차 토론과 정식20fit·기존35세션 전량 평가입니다. 개발13/추정미사용22로 역할을 분리했습니다. 모두 이미 열람한 자료의 사후 연구이며 시간상수·원전력proxy는 고정했습니다. 새 독립 확인·정확도PASS·정책 우월성이 아닙니다. 기기 명령0회.</aside>
+<p>개발에서 전력=일반13/AP=중심화13을 선택한 뒤 평가22에서 바꾸지 않았습니다. 선택은 두 새 방법간 순위이며 직전모형 비악화gate가 아닙니다. 기존 zero-offset+고정 LOAD_SLOW 주진단 경로를 유지하고, 새모형은 명시적 전이 계산용 API로만 제공합니다.</p>
+<table><tr><th>동일 조건·분모</th><th>직전 → 새 동결선택</th><th>해석</th></tr>
+<tr><td>LOAD 등록600초 J차이</td><td>+2.081 → +0.988J</td><td>추가 개선</td></tr>
+<tr><td>같은600초 AP MAE</td><td>0.18615 → 0.16671°C</td><td>새 AP계수로 추가 개선</td></tr>
+<tr><td>LOAD 긴 J/AP공통창 J차이</td><td>−6.187 → −7.121J</td><td>악화</td></tr>
+<tr><td>같은 긴 창 AP MAE</td><td>0.17296 → 0.12859°C</td><td>개선, 냉각 변화량 오차는 악화</td></tr>
+<tr><td>추정미사용20·참고120초 평균절대J</td><td>5.4589 → 5.3847J</td><td>11악화</td></tr>
+<tr><td>같은20·J/AP공통창 AP 평균MAE</td><td>0.34393 → 0.35078°C</td><td>12악화</td></tr></table>
+<p><a href="../../SESSION_CONTRAST_COST_RESULTS_20261010.md">결과·수식·창·한계</a> · <a href="README.md">토론·모든CSV·API 명령</a> · <a href="run_v1/selected_joint_errors.csv">동결선택표</a> · <a href="run_v1/adoption.json">미채택판정</a> · <a href="verification.json">검증·hash</a></p>
+<img src="figures/LOAD_phase_comparison.png" alt="세 방법의 같은 LOAD 구간별 J/AP 오차; 직전후보와 비교한 개선과 악화">
+<img src="figures/LOAD_AP_path.png" alt="LOAD의 관측·직전·새 AP 경로와 잔차; 냉각 변화량 오차 악화도 함께 판독">
+<img src="figures/seen_archival_evaluation.png" alt="추정에 쓰지 않은 과거20의 에너지·AP 개별 오차; 서로 다른 지표창 구분과 악화 공개">
+<img src="figures/seen_long_evaluation.png" alt="긴 C0·LOAD 사후 평가; C0 동일과 일부 개선·악화 유지">
+<p>에너지의 선택 방법은 중심화가 아니므로 에너지 변화를 중심화의 성과라고 부르지 않습니다. 무부하 C0·미래 배경변동·정책 차이부호2/4는 미해결입니다. 최종 시험값을 보고 재추정·시간상수탐색·창선택·자동버전선택을 하지 않았습니다. 기본/RL/strict·experiment_ready=false와 기존 자료를 보존했습니다.</p>
+</body></html>
