@@ -1,5 +1,9 @@
 # D1Check 통합 시뮬레이터
 
+## 2026-10-10 초기정보와 기준전력의 실제 근거
+
+[원자료복원·기존trace대조](../../PREBOUNDARY_EVIDENCE_RESULTS_20261010.md) · [그림·기록AP예제](../preboundary_evidence_01/index.html). 같은계수에서등록회복AP확장으로확인6 MAE0.230→0.166/C0한조건0.339→0.068°C,개발/peak악화도공개. 동일C0의pre 추가CPU활동과전력차로기준전력변동을좁혔다. 전역fit/기기/새실측0·주진단/기본/RL/strict유지이며새정확도PASS는아니다.
+
 ## 2026-10-10 추가 AP 후보와 전체 교체 보류
 
 [세AI4차토론·20fit·35판독](../../SESSION_CONTRAST_COST_RESULTS_20261010.md) · [추가개선과반례](../session_contrast_cost_01/index.html). LOAD600 J/AP와긴AP가더개선됐지만추정미사용과거20 AP/긴J/정책차가악화했다. 새API는명시적전이진단용으로만두고기존zero+고정LOAD 주진단/기본/RL/strict를유지한다. 이미본자료의사후평가·새실측/기기0이다.

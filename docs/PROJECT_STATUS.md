@@ -15,6 +15,13 @@
 - 파일럿 미적격 뒤 같은3AI 직접회의를 완료하고 동일 Adam/RNG에서64연장했다. 개발서비스악화216→147대응·cell통과0→54이나 전체M/G미달, 새확인48×9/432행도 적격0·RL미채택. 128에서는 모든seed긴급기한0이나P95악화/seed37일반실패798가남는다. 조건부noWait0·기기/ADB/NPU0·기본/strict/experiment_ready=false·owner없음.
 - [보고서·재현·한계](LIST_CANDIDATE_RL_TRAIN_MAIN_20261010.md) · [864행/6그림/화면·검증](results/list_candidate_rl_train_main_01/README.md). 다음 최대3: 완료결과공유, 기준선/L0유지, 후속설계는이번실패원인·남은예산을대조해별도등록. 시작29af09d/후속7272a51+미커밋·source/input/hash와 소비는verification.json. 사용자STATUS14행·다른worktree 보존이다.
 
+## 2026-10-10 PREBOUNDARY-EVIDENCE-PC-01 — 실제근거 복원·초기정보 개선·CPU대조 완료
+
+- 사용자 `근거를 찾아` 지시로 원history12의등록회복AP 약91/243초를복원,기존약60초입력과동일계수/최종AP/시각으로비교했다. 이미본확인6 MAE0.22962→0.16630°C, C0확인180은0.33886→0.06786이나개발6 0.13000→0.13560/peak악화로전체미채택이다. [근거·해석·다음질문](PREBOUNDARY_EVIDENCE_RESULTS_20261010.md) · [그림·CSV·재현](results/preboundary_evidence_01/README.md).
+- 기존C0 trace4/8구간의정확BOOTTIME·8CPUcoverage/loss0 확인. 같은회복30 C0 pre전력개발0.9711/확인1.0527W인데이후0.9750/0.9785로유사; 확인pre other CPU활동증가를관측했다. 유휴state계수0의J오차는작업계수변경으로못바뀌며CPU seconds의인과J귀속은하지않는다. 미래활동/전력은예측입력아니다.
+- 전역계수fit0/AP경로36·초기상태84계산(입력24종/진단재계산24/선택36;시험·예제5별도),부하전1표본선택은확인MAE0.21443/중요C0선택실패로추가탐색없이보존·미채택. 3단위/실제기록예제/36raw·16traceexport hash검증완료. 기기·ADB·실측·설치·빌드/새계획/claim0·원모형/주진단/RL/strict/experiment_ready=false·사용자14행/다른worktree보존.
+- 다음하나: 같은12의이미기록된pre CPU활동으로일시적인초기전력오염을구분하는예측가설을검사한다. 포괄감사/동일B2재실측을먼저반복하지않는다.
+
 ## 2026-10-10 SESSION-CONTRAST-COST-PC-01 — 재토론·전력/AP20추정·국소 개선 판독 완료
 
 - 사용자 후속지시로 같은3AI가 가설→동일자료대조→AP추가→실제결과의4차를토론했다. 개발13/추정미사용22, 일반/중심화의E4/AP5를정식20fit(각10)하고원35전량을평가했다. [추가개선·악화·역할](SESSION_CONTRAST_COST_RESULTS_20261010.md) · [토론·곡선·CSV·새API](results/session_contrast_cost_01/README.md).

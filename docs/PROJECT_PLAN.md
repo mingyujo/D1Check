@@ -6,6 +6,11 @@
 - 원1536환경/416학습에 구현32기소비를 포함한다. 새gate28·L0참조64·pilot192·개발216·main192·main개발72·확인432·조건부noWait144이면 총1372/학습404. 이력제거192학습 몫을 main192로 재배분, 새 튜닝0. 새 clock2h/저장5분을 결과 전에 등록하며 소비/실패/episode 경계 archive를 보존한다.
 - 완료: 실제 resume20학습 exact·33순수검사,3seed128/16update·이번1196환경/78,936전량/실행실패0. 개발cell통과0→54·새확인117/432이나 전체M/G미적격으로RL미채택, 조건부noWait0. 원기준/목적/지원/계수·기기0·기본/strict/experiment_ready=false보존,누적7,745/1,045·전체cap1536/416유지다.
 
+## 2026-10-10 PREBOUNDARY-EVIDENCE-PC-01 — 원자료의추가초기정보와구간활동 근거
+
+- 원history12의사용하지않은등록회복pre AP를복원해계수불변AP확인MAE0.230→0.166°C 근거를얻었다. 개발악화/peak악화·부하전짧은선택실패를같이공개했다. [완료근거·정확경계](PREBOUNDARY_EVIDENCE_RESULTS_20261010.md). 원짧은계약을소급버그로바꾸거나후보전체채택하지않는다.
+- 에너지초기전력구간의other CPU추가활동은기존Perfetto4C0/8구간에서관측했으며같은주어진lane계수만으로못고치는유휴오차를35자료에서분해했다. 다음은이미확보한pre 활동입력의일시성/이후기준값예측검사이며새측정/격자/계수반복탐색이아니다. 기기/ADB/새계획0·RL/기본/strict/experiment_ready=false 유지.
+
 ## 2026-10-10 SESSION-CONTRAST-COST-PC-01 — 같은자료 대조와 새 AP 실제 평가 완료
 
 - 세AI4차토론후같은개발13의일반/중심화 E4/AP5·4source제외+최종으로20fit,선택동결후이미본22평가·원35전량표를완료했다. [결과·수식·해석·명령](SESSION_CONTRAST_COST_RESULTS_20261010.md). 고정β/prep30/slow1920/원전력proxy와순수학습nuisance를구분하고미래평균/target을예측입력에넣지않았다.

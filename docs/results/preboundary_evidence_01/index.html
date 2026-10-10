@@ -1,0 +1,15 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>오차의 실제 근거·초기정보 보완</title><style>body{font:17px/1.7 system-ui;max-width:1100px;margin:30px auto;padding:0 18px;color:#203040}aside{background:#fff2cf;padding:18px}img{width:100%}table{border-collapse:collapse;width:100%}td,th{padding:10px;border-bottom:1px solid #ddd}a{color:#075985}</style></head>
+<body><h1>사용하지 않은 과거정보와 실제 기준전력 변화</h1>
+<aside>기존 자료의 새 초기정보 시험입니다. 추가 실측·전역계수fit0, 원 β/τ/계수·마지막AP·anchor시각을 유지했습니다. 이미 본 확인자료의 사후 분석이고새정확도PASS/전체교체가아닙니다. 주사용/RL/strict는유지합니다.</aside>
+<table><tr><th>확인한 근거</th><th>실제 결과</th></tr>
+<tr><td>AP 초기화 입력</td><td>약60초 → 등록회복 전체 약91/243초, 모두예측전에확보</td></tr>
+<tr><td>이미본확인6 AP MAE</td><td>0.22962 → 0.16630°C, 개발6은0.13000→0.13560 악화</td></tr>
+<tr><td>같은AP29.2°C C0</td><td>계수/최종시각불변, MAE0.33886→0.06786°C</td></tr>
+<tr><td>같은C0·회복30의pre 전력</td><td>개발0.97110/확인1.05272W, 이후는0.97500/0.97852W로유사</td></tr>
+<tr><td>같은확인pre의other CPU활동</td><td>0.39213 core seconds/second → 이후0.28209; 인과J귀속아님</td></tr></table>
+<p><a href="../../PREBOUNDARY_EVIDENCE_RESULTS_20261010.md">근거·설명·다음PC질문</a> · <a href="README.md">CSV·원hash·재현</a> · <a href="verification.json">검증</a> · <a href="run_v1/preonly_choice.csv">부하전선택규칙 실패도 보존</a></p>
+<img src="figures/C0_initial_information.png" alt="같은마지막초기AP에서등록된과거회복정보만추가했을때의C0 경로개선">
+<img src="figures/all_history_initialization.png" alt="개발6·확인6의기존/회복전체/부하전선택 오차; 악화도포함">
+<img src="figures/C0_baseline_CPU_association.png" alt="동일등록C0 조건에서pre 추가CPU활동과평균전력,이후구간의대조; 인과효과단정없음">
+<p>전체회복입력만무조건쓰거나마지막한AP표본으로고르는방법은모든조건에서통하지않았습니다. 에너지의다음입력문제는pre 기준값에섞인일시활동의분리입니다. 기존trace가있으므로같은B2를다시측정하기보다그자료로예측가능성을확인할수있습니다. 새실측계획을자동생성하지않았습니다.</p>
+</body></html>
