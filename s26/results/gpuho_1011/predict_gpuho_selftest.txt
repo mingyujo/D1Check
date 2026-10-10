@@ -1,0 +1,16 @@
+﻿| 시험 | 결과 | 값 |
+|---|---|---|
+| ① chain: GAh = (100,300)(1,600) GPU · GBh = (50,T)(1,900−T) GPU · canonical SHA = common | PASS | [(50, 500), (1, 400)] |
+| ① frozen: model files · profiles · predict_v3.py SHA = V3 v2 prediction record | PASS | {'v3_prediction_v2_sha256': 'a3252cadd4f27df14e525c851e836e5ac6482984182d3063ddb7db4cb4173049', 'model_files_equal': True, 'profiles_equal': True, 'predict_v3_py_equal':  |
+| ② determinism: same GPU replay twice → identical rows (합성 체인) | PASS | 90 |
+| ② cell_metrics reuses predict_v3.run_metrics (max · end · t38 equal) · threshold 1.10 · 90 rows · 9 bins · 6 active bins · skin_899 None (Σ ≤ 899) | PASS |  |
+| ② d50 합성 체인: 10 active bins · 모든 칸에 가동 초 있음 | PASS |  |
+| ③ first_throttle GPU ×1.10 경계: [1,1,1.10,1.10,1.10,1.10] → 2 · [1.09]*5 → None · [1,1.07,1.07,1.07,1.07] (NPU 문턱이면 1) → None | PASS |  |
+| ③ ratio_bins ref = first-30 s median → bins 0..2 ≈ 1 when no throttling | PASS |  |
+| ④ 모형 4 변형 × 열 2 가 GPU 합성 체인에서 전부 돈다 (유한 SKIN) | PASS |  |
+| ④ v2.2 GPU 경로 = CompiledModel 프로파일 (CM 행과 같음 · INT 행과 다름) | PASS |  |
+| ④ PV.checks(): v2 θ params = night1004 route · flags = 1005e duty_flags · 1005e v21 NAe reproduced | PASS |  |
+| ⑤ pick_column: 30.0 → 29.5 (tie) · 30.1 → 30.5 · 27.2 → 29.5 (범위 밖 표시) · None → None | PASS |  |
+| ⑥ predict_gpuho.json 이 이미 있으면 거부 (한 번만) — 파일 유무 확인 | PASS | False |
+
+selftest 전체: PASS (12/12)

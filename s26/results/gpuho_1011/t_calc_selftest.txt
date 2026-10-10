@@ -1,0 +1,11 @@
+﻿| 시험 | 결과 | 값 |
+|---|---|---|
+| ① ceil10: 500 → 500 · 495 → 500 · 500.1 → 510 · 491 → 500 | PASS |  |
+| ② reaches 490 · 510 → mean 500 → T 500 (상한 아님) | PASS | {'reaches': [490, 510], 'mean_s': 500.0, 'ceil10_s': 500, 'cap_s': 840, 'capped': False, 'T': 500} |
+| ② reaches 490 · 520 → mean 505 → 올림 510 | PASS | {'reaches': [490, 520], 'mean_s': 505.0, 'ceil10_s': 510, 'cap_s': 840, 'capped': False, 'T': 510} |
+| ② reaches 840 · 860 → 850 > 840 → T = 840 (capped 기록) | PASS | {'reaches': [840, 860], 'mean_s': 850.0, 'ceil10_s': 850, 'cap_s': 840, 'capped': True, 'T': 840} |
+| ③ reach_from_cumulative: n_a 250 → 30 s (경계 300 → 30) · 7201 → None | PASS |  |
+| ④ 합성 JSONL: 구간 0 창 · work 추론 50 (구간 1 의 5 제외) · 20번째 추론 = 19.0 s | PASS |  |
+| ⑤ N2 입력 존재: pair_GPU_b1 · b2 · GAe · GBe 판정 JSON · results 런 폴더 | PASS |  |
+
+selftest 전체: PASS (7/7)

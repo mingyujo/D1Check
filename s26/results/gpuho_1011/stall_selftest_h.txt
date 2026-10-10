@@ -1,0 +1,14 @@
+﻿[02:53:14]   watch: STALLWATCH start pid=16992 stall>60s cap>3600s trace0=0|0|0
+[02:54:19]   watch: STALL DETECTED (stall): trace idle 65s (limit 60) elapsed 65s (cap 3600) last trace=0|0|0 -> kill orchestrator tree pid=16992
+[02:54:19]   watch: taskkill rc=0
+[02:54:22]   watch: orchestrator alive after kill=False
+[02:54:22] T1 result=[02:53:14]   watch: STALLWATCH start pid=16992 stall>60s cap>3600s trace0=0|0|0 [02:54:19]   watch: STALL DETECTED (stall): trace idle 65s (limit 60) elapsed 65s (cap 3600) last trace=0|0|0 -> kill orchestrator tree pid=16992 [02:54:19]   watch: taskkill rc=0 [02:54:22]   watch: orchestrator alive after kill=False stall elapsed=69s alive_after=False -> PASS
+[02:54:35] T0 kept-open file after 12 s: enumeration Length=0  FileInfo.Refresh Length=606
+[02:54:35]   watch: STALLWATCH start pid=14936 stall>60s cap>3600s trace0=1|606|639272516733268235
+[02:56:05] T2 result=[02:54:35]   watch: STALLWATCH start pid=14936 stall>60s cap>3600s trace0=1|606|639272516733268235 exited elapsed=90s -> PASS
+[02:56:05]   watch: STALLWATCH start pid=19400 stall>600s cap>90s trace0=0|0|0
+[02:57:40]   watch: STALL DETECTED (cap): trace idle 35s (limit 600) elapsed 95s (cap 90) last trace=1|2424|639272518206795116 -> kill orchestrator tree pid=19400
+[02:57:40]   watch: taskkill rc=0
+[02:57:43]   watch: orchestrator alive after kill=False
+[02:57:43] T3 result=[02:56:05]   watch: STALLWATCH start pid=19400 stall>600s cap>90s trace0=0|0|0 [02:57:40]   watch: STALL DETECTED (cap): trace idle 35s (limit 600) elapsed 95s (cap 90) last trace=1|2424|639272518206795116 -> kill orchestrator tree pid=19400 [02:57:40]   watch: taskkill rc=0 [02:57:43]   watch: orchestrator alive after kill=False cap elapsed=99s alive_after=False -> PASS
+[02:57:43] stall selftest PASS (3/3)

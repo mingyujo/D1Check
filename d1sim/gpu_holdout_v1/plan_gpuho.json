@@ -1,0 +1,316 @@
+{
+ "T_s": 500,
+ "blocks": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8
+ ],
+ "cell_spec": {
+  "GAh": {
+   "canonical": "df0ffa2f15ddc9c1c0cab60cd09daeff48e34165296af64aaf77e58bc85eb513",
+   "chain": "gpu_eff_work100_v1",
+   "orchestrator_args": "--npu-chain tools\\chains\\gpu_eff_work100_v1.json --duration 900 --npu-max-inference-spans 400000 --runner-timeout-seconds 2700 --logger-exit-timeout-seconds 1800 --analyze-timeout-seconds 600 --cooling-min-seconds 600 --logger-keep-files-open --mode pilot --resources NPU --warmup 20 --repeat 1 --seed 20261005 --accuracy-preflight off --start-policy stable --cooling-policy stable --stability-timeout-seconds 1800 --cooling-timeout-seconds 3600 --emergency-check-interval-seconds 10 --emergency-max-android-thermal-status 3",
+   "segments": [
+    [
+     "work_d100",
+     "GPU",
+     100,
+     300
+    ],
+    [
+     "tail_idle",
+     "GPU",
+     1,
+     600
+    ]
+   ],
+   "side": "A",
+   "sigma_s": 900,
+   "spans": 400000,
+   "timeouts": "--runner-timeout-seconds 2700 --logger-exit-timeout-seconds 1800 --analyze-timeout-seconds 600 --cooling-min-seconds 600"
+  },
+  "GBh": {
+   "canonical": "28d84c5c4c286dd94cfca13c9ef5dd2f46c7e34224c3a378ed0be50ae6838205",
+   "chain": "gpu_eff_work50eq_v1",
+   "orchestrator_args": "--npu-chain tools\\chains\\gpu_eff_work50eq_v1.json --duration 900 --npu-max-inference-spans 400000 --runner-timeout-seconds 2700 --logger-exit-timeout-seconds 1800 --analyze-timeout-seconds 600 --cooling-min-seconds 600 --logger-keep-files-open --mode pilot --resources NPU --warmup 20 --repeat 1 --seed 20261005 --accuracy-preflight off --start-policy stable --cooling-policy stable --stability-timeout-seconds 1800 --cooling-timeout-seconds 3600 --emergency-check-interval-seconds 10 --emergency-max-android-thermal-status 3",
+   "segments": [
+    [
+     "work_d50",
+     "GPU",
+     50,
+     500
+    ],
+    [
+     "tail_idle",
+     "GPU",
+     1,
+     400
+    ]
+   ],
+   "side": "B",
+   "sigma_s": 900,
+   "spans": 400000,
+   "timeouts": "--runner-timeout-seconds 2700 --logger-exit-timeout-seconds 1800 --analyze-timeout-seconds 600 --cooling-min-seconds 600"
+  },
+  "smokeG": {
+   "canonical": "16c951ba993423b82b2921b2e000957afeb7ea8e5b192121590a381ae29aea29",
+   "chain": "smoke_gpu_eff_v1",
+   "orchestrator_args": "--npu-chain tools\\chains\\smoke_gpu_eff_v1.json --duration 60 --npu-max-inference-spans 50000 --runner-timeout-seconds 900 --logger-exit-timeout-seconds 600 --analyze-timeout-seconds 300 --cooling-min-seconds 60 --logger-keep-files-open --mode pilot --resources NPU --warmup 20 --repeat 1 --seed 20261005 --accuracy-preflight off --start-policy stable --cooling-policy stable --stability-timeout-seconds 1800 --cooling-timeout-seconds 3600 --emergency-check-interval-seconds 10 --emergency-max-android-thermal-status 3",
+   "segments": [
+    [
+     "work_d100",
+     "GPU",
+     100,
+     30
+    ],
+    [
+     "tail_idle",
+     "GPU",
+     1,
+     30
+    ]
+   ],
+   "side": null,
+   "sigma_s": 60,
+   "spans": 50000,
+   "timeouts": "--runner-timeout-seconds 900 --logger-exit-timeout-seconds 600 --analyze-timeout-seconds 300 --cooling-min-seconds 60"
+  }
+ },
+ "cells": [
+  {
+   "block": 0,
+   "cell": "smokeG",
+   "key": "smokeG",
+   "out_name": "S26_smokeG_1011h",
+   "role": "칸 0 = 스모크 G (판정 밖 · GPU 실행 증거 PASS 필요 · FAIL → 2 분 뒤 1번 더 → 또 FAIL 이면 등록 §0-2)",
+   "seq": 0
+  },
+  {
+   "block": 1,
+   "cell": "GAh",
+   "first_in_block": true,
+   "judge_json": "sim/out_gpuho/GAh_b1.json",
+   "key": "GAh_b1",
+   "out_name": "S26_GAh_b1_1011h",
+   "seq": 1
+  },
+  {
+   "block": 1,
+   "cell": "GBh",
+   "first_in_block": false,
+   "judge_json": "sim/out_gpuho/GBh_b1.json",
+   "key": "GBh_b1",
+   "out_name": "S26_GBh_b1_1011h",
+   "seq": 2
+  },
+  {
+   "block": 2,
+   "cell": "GBh",
+   "first_in_block": true,
+   "judge_json": "sim/out_gpuho/GBh_b2.json",
+   "key": "GBh_b2",
+   "out_name": "S26_GBh_b2_1011h",
+   "seq": 3
+  },
+  {
+   "block": 2,
+   "cell": "GAh",
+   "first_in_block": false,
+   "judge_json": "sim/out_gpuho/GAh_b2.json",
+   "key": "GAh_b2",
+   "out_name": "S26_GAh_b2_1011h",
+   "seq": 4
+  },
+  {
+   "block": 3,
+   "cell": "GAh",
+   "first_in_block": true,
+   "judge_json": "sim/out_gpuho/GAh_b3.json",
+   "key": "GAh_b3",
+   "out_name": "S26_GAh_b3_1011h",
+   "seq": 5
+  },
+  {
+   "block": 3,
+   "cell": "GBh",
+   "first_in_block": false,
+   "judge_json": "sim/out_gpuho/GBh_b3.json",
+   "key": "GBh_b3",
+   "out_name": "S26_GBh_b3_1011h",
+   "seq": 6
+  },
+  {
+   "block": 4,
+   "cell": "GBh",
+   "first_in_block": true,
+   "judge_json": "sim/out_gpuho/GBh_b4.json",
+   "key": "GBh_b4",
+   "out_name": "S26_GBh_b4_1011h",
+   "seq": 7
+  },
+  {
+   "block": 4,
+   "cell": "GAh",
+   "first_in_block": false,
+   "judge_json": "sim/out_gpuho/GAh_b4.json",
+   "key": "GAh_b4",
+   "out_name": "S26_GAh_b4_1011h",
+   "seq": 8
+  },
+  {
+   "block": 5,
+   "cell": "GAh",
+   "first_in_block": true,
+   "judge_json": "sim/out_gpuho/GAh_b5.json",
+   "key": "GAh_b5",
+   "out_name": "S26_GAh_b5_1011h",
+   "seq": 9
+  },
+  {
+   "block": 5,
+   "cell": "GBh",
+   "first_in_block": false,
+   "judge_json": "sim/out_gpuho/GBh_b5.json",
+   "key": "GBh_b5",
+   "out_name": "S26_GBh_b5_1011h",
+   "seq": 10
+  },
+  {
+   "block": 6,
+   "cell": "GBh",
+   "first_in_block": true,
+   "judge_json": "sim/out_gpuho/GBh_b6.json",
+   "key": "GBh_b6",
+   "out_name": "S26_GBh_b6_1011h",
+   "seq": 11
+  },
+  {
+   "block": 6,
+   "cell": "GAh",
+   "first_in_block": false,
+   "judge_json": "sim/out_gpuho/GAh_b6.json",
+   "key": "GAh_b6",
+   "out_name": "S26_GAh_b6_1011h",
+   "seq": 12
+  },
+  {
+   "block": 7,
+   "cell": "GAh",
+   "first_in_block": true,
+   "judge_json": "sim/out_gpuho/GAh_b7.json",
+   "key": "GAh_b7",
+   "out_name": "S26_GAh_b7_1011h",
+   "seq": 13
+  },
+  {
+   "block": 7,
+   "cell": "GBh",
+   "first_in_block": false,
+   "judge_json": "sim/out_gpuho/GBh_b7.json",
+   "key": "GBh_b7",
+   "out_name": "S26_GBh_b7_1011h",
+   "seq": 14
+  },
+  {
+   "block": 8,
+   "cell": "GBh",
+   "first_in_block": true,
+   "judge_json": "sim/out_gpuho/GBh_b8.json",
+   "key": "GBh_b8",
+   "out_name": "S26_GBh_b8_1011h",
+   "seq": 15
+  },
+  {
+   "block": 8,
+   "cell": "GAh",
+   "first_in_block": false,
+   "judge_json": "sim/out_gpuho/GAh_b8.json",
+   "key": "GAh_b8",
+   "out_name": "S26_GAh_b8_1011h",
+   "seq": 16
+  }
+ ],
+ "driver": "s26/tools/gpuho_1011/session_driver_h.ps1 (-Blocks · -Resume · -RetryFirst · -NoSmoke) · run_cell_h.ps1 · dryrun_h.ps1 · launch_cell_h.ps1 · stall_watch_h.ps1 (600 s idle / Σ + 150 min)",
+ "expected_hours": "[E] 칸 31 ~ 37 분 (N2) → 스모크 + 16칸 ≈ 9 ~ 10 h + 충전 대기",
+ "gate": {
+  "airplane_mode": 1,
+  "cooling": "orchestrator --cooling-min-seconds 600 (+ --start-policy stable · --cooling-policy stable)",
+  "dnd": 1,
+  "emergency": "orchestrator BAT 42 · android thermal status 3 (--emergency-max-android-thermal-status 3)",
+  "lower": {
+   "BAT_min": 27.5,
+   "SKIN_min": 29.1,
+   "policy": "mark — 미달이면 칸을 바꾸지 않고 '하한 미달' 표시로 실행 (등록 §2-5)"
+  },
+  "screen": "brightness mode 0 · 0 · screen_off_timeout 86400000 유지",
+  "upper": {
+   "AP_max": 32.0,
+   "BAT_max": 30.0,
+   "SKIN_max": 32.0,
+   "plugged": 0,
+   "script": "s26/tools/night_1005e/start_gate_1005e.py (120 s poll)",
+   "soc": [
+    30,
+    100
+   ]
+  },
+  "watch": "phone_watch_1005e.ps1 (10 s · 통화 · 오디오 · 맨 앞 창 · 화면) + s26_skin_watch_npu.py (15 s · SKIN ≥ 45 → runner force-stop)"
+ },
+ "invalid_rules": {
+  "abort": "adb 끊김 · PC 절전 등 운영 중단 → results\\<out>_abort_<HHmmss> · 시도 소모 안 함 · 다시 붙으면 게이트 뒤 같은 칸",
+  "emergency_stop": "세션 3번째 비상 → 멈춤 (안전)",
+  "invalid": "FAILED · 감시 이벤트 · 비상 · 유효성 (run_check GPU) 실패 → 게이트 뒤 같은 칸 _re 1번",
+  "invalid_twice": "또 무효 → invalid_twice: 그 블록 계산 불가 (분모 8 유지) · 블록의 남은 칸 건너뜀 → 다음 블록"
+ },
+ "judge": "sim/night1005e_judge_h.py run (칸마다) · pair (블록 두 칸 valid 뒤) · watchcheck → sim/out_gpuho/ · 판정 = d1sim/gpu_holdout_v1/judge_gpuho.py 한 번 (8블록 뒤)",
+ "kind": "gpuho_plan_v1",
+ "order": {
+  "1": [
+   "GAh",
+   "GBh"
+  ],
+  "2": [
+   "GBh",
+   "GAh"
+  ],
+  "3": [
+   "GAh",
+   "GBh"
+  ],
+  "4": [
+   "GBh",
+   "GAh"
+  ],
+  "5": [
+   "GAh",
+   "GBh"
+  ],
+  "6": [
+   "GBh",
+   "GAh"
+  ],
+  "7": [
+   "GAh",
+   "GBh"
+  ],
+  "8": [
+   "GBh",
+   "GAh"
+  ]
+ },
+ "order_rule": "거울 순서 (등록 §2-3 · 에너지 C 와 같음): 홀수 블록 A → B · 짝수 블록 B → A",
+ "registration": "d1sim/docs/GPU홀드아웃_사전등록_v1.md (b3f84a7) §2",
+ "session": "H",
+ "session_suffix": "1011h",
+ "soc_rules": {
+  "block_start_min": 45,
+  "cell_floor": 30,
+  "charge_between_blocks": "SOC < 45 at a block start → 드라이버 멈춤 → '충전 필요 — 케이블 꽂아 주세요 (SOC 90 까지)' → 90 → 뽑음 → 게이트 → 그 블록부터 (-Blocks -Resume -NoSmoke)",
+  "first_measured_cell_min": 85
+ }
+}

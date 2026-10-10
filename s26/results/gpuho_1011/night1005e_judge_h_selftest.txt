@@ -1,0 +1,25 @@
+﻿| 시험 | 결과 | 값 |
+|---|---|---|
+| ① night1005e_judge.py selftest 그대로 전부 PASS (GAh · GBh 를 더한 뒤) | PASS | selftest 전체: PASS (35/35) |
+| ① import 대상 SHA 접두 (night1005e 2db1cda5 · night1005 ca8680c2 · m1m2 ea282d4a · night1003 a5ceab41) | PASS | {'night1005_judge': 'ca8680c2', 'm1m2_judge_1002': 'ea282d4a', 'night1003_judge': 'a5ceab41'} |
+| ① 기존 칸 유지 (NA NB GA GB NAe NBe GAe GBe) + GAh GBh · GBe 720/180 그대로 · GBh = (T, 900 − T) · T 는 10 의 배수 | PASS | (500, 'common.py canonical 일치') |
+| ② 500/400 런 (gpu_eff_work50eq_v1) 을 GBe 로 → 오류 | PASS | 구간 0 duration_s 500 ≠ 720 |
+| ② 같은 런을 GBh (블록 5) 로 → 통과 · work 500 s · tail 400 s · n ≈ 5000 · 누적 50칸 · block 5 · GPU 문턱 1.10 | PASS | (500.0, 400.0, 5000, 5, 1.1) |
+| ② 300/600 GPU 런 (gpu_eff_work100_v1) 을 GAh 로 → 통과 · work 300 s · tail 600 s | PASS | (300.0, 600.0) |
+| ② 같은 300/600 런을 GAe 로 → 기존 판정기도 그대로 통과 (칸 사양 같음) | PASS | (6000, 6000) |
+| ② 다른 체인 런을 GBh 로 → 오류 | PASS | 구간 라벨 불일치: ['work_d100', 'tail_idle'] ≠ ['work_d50', 'tail_idle'] |
+| ② 다른 체인 런을 GAh 로 → 오류 | PASS | 구간 라벨 불일치: ['work_d50', 'tail_idle'] ≠ ['work_d100', 'tail_idle'] |
+| ② GBh: 100 s 부터 ×1.099 → 첫 조임 None (GPU 문턱 1.10) | PASS | (None, 0) |
+| ② GBh: 100 s 부터 ×1.1 → 첫 조임 100 (GPU 문턱 1.10) | PASS | (100, 400) |
+| ③ 블록 0 → 오류 | PASS | 블록 0 ∉ 1..8 |
+| ③ 블록 9 → 오류 | PASS | 블록 9 ∉ 1..8 |
+| ③ 칸 GAe → 오류 (이 래퍼는 GH 칸만) | PASS | 칸 GAe ∉ ['GAh', 'GBh'] (이 래퍼는 GH 칸만) |
+| ③ --gate-label 없음 → 오류 | PASS | --gate-label 필수 (부분 문자열 매칭 금지) |
+| ④ pair GAh + GBh (같은 블록 5) → 일 비 ≈ 5000/6,000 · block 5 · cells | PASS | (5, 0.8333, '같은 일 아님 — 비교 기술만') |
+| ④ pair 블록 다름 (5 vs 6) → 오류 | PASS | 블록 다름: 5 vs 6 |
+| ④ pair A/B 자리 바뀜 → 오류 | PASS | 쌍은 A = GAh · B = GBh 만: GBh + GAh |
+| ④ pair GAe + GBh → 오류 | PASS | A 칸 GAe 는 GH 칸이 아님 (GAh · GBh 만) |
+| ④ 감시 이벤트 런 → pair 거부 | PASS | A (GAh b5) 에 감시 이벤트 1건 — 무효 런 |
+| ⑤ 결정성: run 같은 입력 두 번 = 같은 바이트 (경로 제외) | PASS | 13371 B |
+
+selftest 전체: PASS (21/21)

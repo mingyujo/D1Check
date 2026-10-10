@@ -1,0 +1,10 @@
+﻿| 시험 | 결과 | 값 |
+|---|---|---|
+| ① HAL bins (imported measure_energyc arithmetic): 90 · bin 0 30.45 · n 900 · max 119.9 · 899 s 119.9 | PASS |  |
+| ② first_throttle GPU 규칙: [1,1,1.10,1.10,1.10,1.10,0.9] → 20 s · [1,1.07,1.07,1.07,1.07] → None | PASS |  |
+| ③ noise: Δ sd = sd(0.0..0.7) · B max sd 0 · A start range [30.0, 30.7] · 하한 미달 1 · 범위 밖 1 | PASS | 0.2449 |
+| ③ noise: 계산 불가 블록만 → delta_sd None · n_blocks 0 (오류 없음) | PASS |  |
+| ④ block_rows: B 없는 8블록 → 전부 "계산 불가" · 블록 3 사유 = invalid_twice (B) · 분모 8 | PASS | {'block': 3, 'status': '계산 불가', 'reason': 'invalid_twice (B)', 'run_a': 'a3', 'run_b': None, 'start_skin_a': 30.0, 'start_skin_b': None, 'start_skin_mean': None, 'column' |
+| ⑤ cells_gpuho.json 기본 경로 · results 폴더 접두 S26_<cell>_b<k>_1011h | PASS |  |
+
+selftest 전체: PASS (6/6)
