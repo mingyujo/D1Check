@@ -1,0 +1,38 @@
+freeze_gpuerr.txt — S26 시뮬레이터 GPU 모형 오차 v1 (P1k) 동결 원장 (2026-10-11 · 오차 계산 전부터 append only)
+=====================================================================================================
+세션: Claude Code (P1k) · 클론 D1Check_v4 · 브랜치 s26-measure · 시작 HEAD = origin = 1952bbce1720fe3a00ac0c4bca0876d270e5a07c · 폰 0 · adb 0 · 모형 재피팅 0 · 새 측정 0.
+등록 = OneDrive sim\GPU모형오차_사전등록_v1.md (Cowork 2026-10-11 02:0x · 영훈 "1 일단 써주고" 01:55) · 점검 = sim\out_gpuerr\preflight.txt (02:12) · 런 목록 = cells_gpu.json (커밋 ②).
+
+[2026-10-11 02:12 +09:00] 1단계 점검 (preflight.txt) — 등록 SHA a569b862… 일치 · 동결 커밋 5 (402acab · 3050e09 · 42338e7 · c6a7da2 · e52a922) + 예측 동결 커밋 5 (b40cbc9 · 4cc7b87 · e092b75 · 3786f16 · b154862) · 동결 파일 (모형 4 · 프로파일 15 · 구동기 4 · 예측 JSON 10 · v0 _scratch 사본 2) 전부 = 커밋 (CRLF 정규화) · frozen_check (V3 v2 기록) True ×3.
+  원시 자료: 10/4 까지 GPU 런 (C1a · M3 · M1-GPU 2런째 · 페이싱 · G50P · GI300) 의 results/ 폴더는 10/8 백업 1차 뒤 로컬에서 지워 Drive zip 에만 있다 → 실측 원천 = d1sim/data 추출 trace (1 s HAL · 10 s 러너 지연, 추출 당시 판정 JSON 과 대조 기록) + 판정 JSON (OneDrive sim\out_*). 10/5 ~ 10/6 런 (G50P2 · N1 · N2 · N4 · 보충) 은 원시 HAL 도 있어 대조한다.
+  등록과 다른 곳 · 읽은 뒤 정한 것 = preflight.txt (a) ~ (j) (멈추지 않고 적음 — 등록 §1 "다르면 원장에 적고 V3 규칙"):
+  (a) 실측 = 추출 trace (원시 폴더 없음). (b) 동결 예측 파일엔 SKIN 시계열이 없다 → m3 · 없는 m1/m2 는 그 판의 동결 코드 · 동결 구동 규칙으로 재생 + 재현 검사 (동결 스칼라 1e-6) · 재현 실패면 "계산 불가". 동결 파일 값이 있는 항목은 파일 값 그대로. (c) v2.2: 동결 파일 있는 런 (N1 · N2 · N1 보충) = 그 파일 (실제 시작 열) · 없는 런 = 열 두 점 29.5 / 30.5 (V3 v2 · P1j 규칙) · C1a · M3 = GPU_interpreter 프로파일 · 열 두 점 값은 N1 · N2 에도 기술로 나란히. (d) m4 = 칸 k + 뒤 3칸 · GPU ×1.10 · NPU ×1.06 · 실측 = 판정 JSON 항목 → 체인 절대 시각. (e) m2 창 끝 = 마지막 공통 시각 (N1 · N2 = 899 s). (f) m5 통과 = 부호 같음 ∧ |차| ≤ 1.0 ℃ · k / n 기술. (g) m6 = resource_verdict (cmp_one 순서). (h) 판정 이름 두 가지만. (i) 기존 표 ① 숫자 재계산 0 · 다르면 둘 다. (j) 폰 0 · 기존 코드 수정 0.
+
+[2026-10-11 02:12:58 +09:00] 커밋 ① 35c934249a67e22b30ea7047167e06cecd02ac09  d1sim: GPU 모형 오차 사전 등록 v1 (계산 전)
+  d1sim/docs/GPU모형오차_사전등록_v1.md  blob 바이트 SHA-256 a569b86207410fe28a0469b94057200f8a075e490b2ae4da4c1c5afd402866eb (= OneDrive 원본 · CR 0) · git diff --cached PAT 0 · 바이너리 0 · 이 경로만 add.
+  → 가설원장 PRE-M2 줄. 이제부터 3단계 (런 목록 · 예측 목록 · 오차 코드 · selftest) — 오차 계산 0.
+
+[2026-10-11 02:19 ~ 02:27 +09:00] 3단계 — 코드 · selftest (합성만) · 런 목록 · 예측 생성 (오차 계산 0 · 실측 열 값 읽기 0)
+  selftest: cells_gpu 9/9 · predict_gpuerr 12/12 · measure_gpu 8/8 · judge_gpuerr 12/12 (sim\out_gpuerr\*_selftest.txt · 레포 사본 s26/results/gpuerr_1011/).
+  selftest 중 고친 것 (코드 규칙 아님): common.get_path 가 list JSON (out_0928/C1a.json) 에서 None 을 돌려주도록 · v0 구동기는 자기 assert (sys.path 순서로 _scratch v0 트리의 d1sim.env) 때문에 패키지 안 import 불가 → v0_replay.py 독립 프로세스 헬퍼 (구동기 무수정) · 시험 기대값 2곳 (반올림 허용 1e-6 · "B 낮음" 은 Δ = A − B > 0 쪽).
+  cells_gpu.json  90446b5104fa2ce4420bfb86448517d3525cb0d2f8e1e73757c37b4e225714d4 — 런 30 (GPU 19 · NPU 11) · 쌍 10 · 자원 6 · 범위 밖 n1_gb_b2 (27.8) 만 · 시작 SKIN trace = 판정 JSON 전부 일치.
+  predictions_gpu.json  1b5d850ffd41383d6e637656c2bfcf55806b43058a42303dc2a38bdd1fea05a4 — 판 × 열 재현 검사 실패 0 (v0 skin_mae_c · 끝 SKIN · onset · v1 heat_end_skin · onset · v2 heat_end_skin · onset · θ 변형 동일 · v2.1 max_skin · skin_899 · first_throttle · throttle_time · t38 · n · v2.2 N1 · N2 · 보충 같은 항목) · frozen_check True.
+    출처 요약: v0 = v0_holdout_1003.json (실제 시작 31.2 · 31.5 재생) · v1 = night_1003_prediction.json · night_1003_prediction_v1_pacing.json · v2 = night_1004_prediction_v2.json (θ0.3 키 · GPU 칸 θ 무관 확인) · v2.1 = night_1005_prediction_v21.json · night_1005e_prediction_v21.json · v2.2 N1 · N2 · 보충 = v22_score_pred_M_N1 · _N2 · v22_weak_holdout_prediction_N1supp (실제 시작 열) · 나머지 v2.2 = 생성 (열 두 점 · C1a · M3 GPU_interpreter).
+    예측 쌍 Δ최고 SKIN (동결 파일 그대로): v2.1 GPU +0.171 (29.5) / +0.306 (30.5) · v2.2 GPU N1 +0.084 · +0.064 · +0.180 · N2 +0.058 · +0.045 · NPU +1.87 ~ +2.07. 예측 자원 문구: N1 GPU v2.1 · v2.2 "B 낮음 (2쌍)" · N1 보충 v2.1 "엇갈림" (블록별 열 29.5 / 30.5 가 달라서) · v2.2 "B 낮음" · N2 GPU v2.1 "B 높음" · v2.2 "차이 없음" · NPU 전부 "B 낮음".
+  코드 SHA: __init__ 4dd04f6a… · common 8c5e34d8… · cells_gpu 80ec258b… · predict_gpuerr 9fd60ddd… · v0_replay 432a5b1b… · measure_gpu 62e6cd15… · judge_gpuerr 7cae67bc….
+[2026-10-11 02:28:21 +09:00] 커밋 ② 480b3c4d2f50f94d456737e03ca2eea887b92955  d1sim/model_error_gpu_v1: 런 목록 · 예측 목록 · 오차 코드 (계산 전)
+  16 파일 (+128,460) · git diff --cached PAT 0 · 바이너리 0 · 이 세션 경로만 (d1sim/model_error_gpu_v1/ · s26/results/gpuerr_1011/ git add -f).
+  → 이제부터 4단계 실행 (measure → judge 각 한 번). 이 뒤 런 목록 · 지표 · 시작 상태 규칙을 바꾸지 않는다.
+
+[2026-10-11 02:3x +09:00] 4단계 실행 (커밋 ② 뒤 · measure → judge 각 한 번 · 런 목록 · 지표 · 시작 상태 · 기준 변경 0)
+  (d′) measure 첫 실행 뒤 (오차 계산 전) 정한 것: m4 실측 = 그 런 조임 구간 trace 10 s 칸에 N2 규칙 (칸 k + 뒤 3칸 ≥ 자원 문턱 · ref = 구간 처음 30 s 중앙 · 건너뜀 없음) 재계산 → 절대 시각. 이유: 예측 쪽 생성값이 이 규칙이고, 런 판정기 항목은 두 런에서 다르다 — G50P2 판정 30 s vs 재계산 20 s (판정기 onset_time_ref 가 t < 30 칸을 건너뜀) · NIe_b2 판정 None vs 210 s (판정기 1-1 은 +10 %, NPU 문턱 ×1.06 과 다름). 판정 항목은 judge_rel_s · judge_equal_trace 로 나란히 (28/30 일치). measure_gpu.py 수정 2곳 (이 규칙 · 출력 줄) → SHA 4ab95a56… (커밋 ② 62e6cd15… 와 다름 · 커밋 ③ 에).
+  measure_gpu.json  22534e787b60fd69c967a6cd676b2a3d5a25dbb494aea781379e6120973ff779 — 30런 · 교차 검사 실패 = 위 두 런의 first_throttle (judge ≠ trace) 뿐 · 시작 SKIN · 최고 SKIN (판정 JSON · 원시 HAL 있는 14런) 전부 일치 · 쌍 Δ = pair JSON = 재계산.
+  gpuerr.json  8c46652bbd3f3cce0a993077be2a645ed567d17c3c98e8ac8f269004ed108a8c · gpuerr_runs.csv · gpuerr_pairs.csv · gpuerr_summary.csv · fig8_pred_vs_meas.csv (NPU 에너지 C 16 = P1j 값 그대로 + 이번 30런).
+  요약 (판정 이름 두 가지 · 통과 / 실패 없음 — 쌍 k / n · 문구 맞음 수만):
+    v2.2 GPU 19런 "GPU 적합도 오차 (개발 자료)": m1 평균 −0.19 ℃ (|·| 최대 1.02) · m2 −0.08 · m3 MAE 평균 0.39 (0.17 ~ 1.48) · m4 |·| 평균 33 s (16런 · null 3) · m5 0 / 5 · m6 2 / 3
+    v2.2 NPU 11런 (비교): m1 +0.22 (|·| 최대 1.01) · m2 −0.75 · m3 0.54 (0.32 ~ 0.85) · m4 |·| 20 s (4런 · null 7) · m5 5 / 5 · m6 3 / 3
+    홀드아웃 (판 · 동결 예측) GPU: v0 2런 m3 0.35 (0.32 · 0.38) · m1 −0.81 · m4 −10 · −170 s / v1 2런 m3 0.48 (0.42 · 0.55) · m1 +1.36 (페이싱 +2.54) / v2 3런 m3 0.30 (0.21 ~ 0.35) · m1 −0.27 / v2.1 9런 m3 0.66 (0.13 ~ 2.11) · m1 −0.04 (|·| 최대 1.83 GB_b2 범위 밖) · m5 0 / 5 · m6 1 / 3
+    GPU 쌍 (m5) 0 / 5 (v2.1 · v2.2 둘 다): 실측 Δ최고 SKIN +0.0 · +2.1 (GB_b2 범위 밖) · −0.1 · −0.1 · −0.1 vs 예측 +0.05 ~ +0.31 (작은 +) → 부호 규칙 (0 · − vs +) 에서 전부 실패 · |차| 는 4쌍 0.08 ~ 0.41 · GB_b2 쌍 1.9 ~ 2.0.
+[2026-10-11 02:4x +09:00] 5 ~ 7단계 — 그림 · 표 ① · 결과 문서 (숫자 = gpuerr.json 그대로)
+  fig8_pred_vs_meas.csv (9ab1e194…) → sim\fig8_pred_vs_meas.png (matplotlib 3.10 · Malgun Gothic · x 실측 최고 SKIN · y v2.2 예측 · 대각선 + ±1.0 띠 · NPU 파랑 / GPU 빨강 · 적합도 ● / 홀드아웃 ▲ · 제목 없음 · 46점 = NPU 적합도 10 · NPU 홀드아웃 17 (에너지 C 16 + 보충 1) · GPU 적합도 17 · GPU 약한 홀드아웃 2). 스크립트 = 세션 scratchpad fig8_plot.py (레포 밖 · PNG 는 D1_ondevice 에만).
+  표 ① sim\표1_모형오차_S26.md: 행 10a 무변경 · 그 아래 행 11 "GPU 모형 오차 (P1k)" 추가 + 머리 한 줄. 결과 sim\GPU모형오차_결과_v1.md (한계 먼저 · 요약 · 런별 · 홀드아웃 행 · 쌍 · 문구 · 반대 해석 · 등록 §6 결과 문장).

@@ -5,7 +5,9 @@ Run AFTER commit ② (first reading of the measured thermal series by this check
   · OneDrive sim/out_*/<run>.json        that run's own judge output (start · max_SKIN · first-throttle items by its own "칸 k + 뒤 3칸" rule)
   · results/<run>/runs/<id>/raw/thermalservice.jsonl  raw HAL (only where the folder still exists — cross-check of max · start SKIN)
 Per run: start SKIN · max SKIN (trace; judge where present) · SKIN by absolute second (for the window-end value at any T) · 10 s bin means ·
-measured first throttle (judge item → chain-absolute s) + trace recomputation (same rule) as cross-check. Pairs: pair JSON deltas + Δ first throttle.
+measured first throttle = the N2-judge rule ("칸 k + 뒤 3칸", GPU ×1.10 · NPU ×1.06, ref = that segment's first-30 s median, no t ≥ 30 skip) recomputed on the
+trace 10 s bins of the run's throttle segment → chain-absolute s (the same rule the predicted side uses); the run's own judge item (its 1-1 rule:
++10 % for every resource · onset_time_ref skips t < 30) is kept alongside with an equality flag (rule (d′), set before any error computation). Pairs: pair JSON deltas + Δ first throttle.
 Resources: resource JSON verdicts. results/ · judge JSONs · traces are read only.
 
   py -X utf8 -m d1sim.model_error_gpu_v1.measure_gpu [--selftest] [--out-od DIR] [--out-repo DIR]
@@ -83,8 +85,9 @@ def measure_run(tag, cells):
     bins, cnts = C.bin_means(ss, n_bins)
     offs = C.seg_offsets_meas(tag)
     ft_rel, seg, ft_label = judge_first_throttle(tag, J)
-    ft_abs = None if ft_rel is None else round(offs[seg] + ft_rel, 3)
+    jf_abs = None if ft_rel is None else round(offs[seg] + ft_rel, 3)
     tr_rel, ref_ms, nb = trace_first_throttle(tag, seg, C.THR[r['resource']])
+    ft_abs = None if tr_rel is None else round(offs[seg] + tr_rel, 3)      # (d′) measured m4 = N2 rule on the trace bins (same rule as the predicted side); judge item alongside
     max_judge = C.get_path(J, 'temps.max_SKIN')
     start_trace = cells['runs'][tag]['start_skin']
     raw = raw_hal_check(tag, m)
@@ -99,7 +102,8 @@ def measure_run(tag, cells):
                 start_skin=start_trace, in_range=C.in_range(start_trace), lower=cells['runs'][tag]['lower'], column_2pt=C.pick_column(start_trace),
                 max_skin=max_trace, max_skin_judge=max_judge, t_max=t_max, n_rows_with_skin=len(ss), skin_by_t=[(t, v) for t, v in ss],
                 bin_mean_skin=bins, bin_counts=cnts, n_bins=n_bins, seg_offsets_meas=offs,
-                first_throttle=dict(rel_s=ft_rel, segment=seg, abs_s=ft_abs, source=ft_label, trace_recomputed_rel_s=tr_rel, trace_ref_ms=ref_ms, trace_n_bins=nb, threshold=C.THR[r['resource']]),
+                first_throttle=dict(rel_s=tr_rel, segment=seg, abs_s=ft_abs, source=f"trace 10 s 칸 재계산 (N2 규칙: 칸 k + 뒤 3칸 ≥ ×{C.THR[r['resource']]} · ref = 그 구간 처음 30 s 중앙 · 건너뜀 없음) → 구간 {seg} 오프셋 {round(offs[seg], 3)} s",
+                                    judge_rel_s=ft_rel, judge_abs_s=jf_abs, judge_source=ft_label, judge_equal_trace=(tr_rel == ft_rel), trace_ref_ms=ref_ms, trace_n_bins=nb, threshold=C.THR[r['resource']]),
                 throttle_time_judge_s=C.get_path(J, 'work.throttle_time_s'), t38_judge_s=C.get_path(J, 'temps.t38_s'), skin_899_judge=C.get_path(J, 'temps.at_899.SKIN'),
                 judge_json=r['judge'], judge_json_sha256=C.sha256_file(C.judge_path(tag)), trace_1s_sha256=cells['runs'][tag]['trace_1s_sha256'], raw_hal=raw, checks=checks)
 
@@ -153,7 +157,7 @@ def main(argv=None):
     s2 = C.write_json(os.path.join(a.out_repo, 'measure_gpu.json'), res)
     for t, r in runs.items():
         ft = r['first_throttle']
-        print(f"{t:15s} start {r['start_skin']} ({'안' if r['in_range'] else '밖'}) · max {r['max_skin']} (judge {r['max_skin_judge']}) · t_max {r['t_max']} · bins {r['n_bins']} · 1st thr {ft['rel_s']} (seg {ft['segment']} → abs {ft['abs_s']}; trace {ft['trace_recomputed_rel_s']}) · raw {r['raw_hal'].get('max_skin')} · checks {'OK' if all(v is not False for v in r['checks'].values()) else 'FAIL'}")
+        print(f"{t:15s} start {r['start_skin']} ({'안' if r['in_range'] else '밖'}) · max {r['max_skin']} (judge {r['max_skin_judge']}) · t_max {r['t_max']} · bins {r['n_bins']} · 1st thr trace {ft['rel_s']} (seg {ft['segment']} → abs {ft['abs_s']}; judge {ft['judge_rel_s']} {'=' if ft['judge_equal_trace'] else '≠'}) · raw {r['raw_hal'].get('max_skin')} · checks {'OK' if all(v is not False for v in r['checks'].values()) else 'FAIL'}")
     for k, p in pairs.items():
         print(f"pair {k}: Δmax {p['d_max_skin']:+.1f} (recomputed {p['d_max_skin_recomputed']:+.1f}) · Δthr {p['d_first_throttle_s']} · r {p['work_ratio']:.4f} · col {p['column_2pt']}")
     for k, r in resources.items():
