@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-10 LIST-CANDIDATE-RL-POSTMAIN-REVIEW-06 — RL128 이후 재회의 완료
+
+- 같은 모바일·산업공학·RL 관점 AI3개를 다시 구성해 원자료검토→직접반론→합의를 수행했다. [결론·제안·한계](LIST_CANDIDATE_RL_POSTMAIN_REVIEW_20261010.md) · [회의/검증](results/list_candidate_rl_postmain_review_01/README.md). RL128 미채택 유지·새 정책 구현/실험0이다.
+- 새확인:seed23/Triton의 개발24＋확인48 원장/전이72묶음 exact동일, WAIT0이어도 GPU배정으로저부하P95가L0보다늦다. 기존NoWait는encode전bank를줄여후보수관측도바꾼다. 고정5phase/thermal slowdown1은냉각→속도회복효과를평가하지않는다.
+- 제안순서:저장로그분해→원56/28관측보존·선택직전WAIT제거72개발진단→필요시sampling216 또는서비스선택기/잔차사양. 잔여308환경/12학습은불변·3seed각1update에24학습필요·288은최대선택지/자동승인아님. 확인48은새설계독립확인으로재사용0.
+- 이번 native/학습/optimizer/기기/계수/코드변경0·누적7,745/1,045·원모형/기본/strict/experiment_ready=false·사용자STATUS14행/다른worktree보존. 다음최대3:회의결론공유,사용자지시후별도진단등록,진단후조건부잔차설계. 검토fe49442와소스/원자료hash는verification.json이다.
+
 ## 2026-10-10 LIST-CANDIDATE-RL-TRAIN-MAIN-05 — 본학습·확인 완료, RL 미채택
 
 - 최신 사용자 승인: 유효성 검증→3seed 작은 학습→미개선 시 기존3AI 회의→본학습까지 PC 자율 진행. [범위·예산 배분](LIST_CANDIDATE_RL_TRAIN_MAIN_20261010.md). 성과 판정은 유지하고 개발 미적격 뒤 본학습 진행만 별도 승인으로 기록한다.
