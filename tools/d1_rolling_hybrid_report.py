@@ -22,7 +22,9 @@ def item(role,condition):
 
 
 def save(fig,name):
-    fig.tight_layout();fig.savefig(x.PUBLIC/(name+'.png'),dpi=150);fig.savefig(x.PUBLIC/(name+'.svg'));plt.close(fig)
+    fig.tight_layout();fig.savefig(x.PUBLIC/(name+'.png'),dpi=150);svg=x.PUBLIC/(name+'.svg');fig.savefig(svg)
+    svg.write_text('\n'.join(line.rstrip() for line in svg.read_text(encoding='utf-8').splitlines())+'\n',encoding='utf-8')
+    plt.close(fig)
 
 
 def run():
