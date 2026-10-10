@@ -1,0 +1,19 @@
+{
+  "id": "AP-POWER-INITIALIZATION-PC-01",
+  "registered_before_pre_power_extraction_and_fit": true,
+  "question": "Can recorded pre-power changes explain AP preparation dynamics and fix the wrong idle heating forecast without future temperature or power?",
+  "family": "One nonnegative global gain kappa into the existing preparation-memory H state; no new thermal state, beta, tau, workload coefficient or model search.",
+  "pre_equations": "T'=-beta*(T-R)+H; H'=(kappa*(P_pre-P_reference)-H)/tau30. Per-session R/Hfirst nuisance estimated from pre AP only; first/last observed AP/time are preserved. R is not ambient.",
+  "power_input": "Zero-order-hold recorded power events from first through last registered pre AP. Source event<=segment start, all<35; previous-value age/gap<=2.5s. P_reference is time-weighted held pre mean. Power is positive whole-device W; signed deviations are operational deviations, not negative consumption. Raw energy integration stays unchanged.",
+  "AP_input": "Existing expanded registered-idle pre AP, >=15 samples/span>=55s, gap<=10s, query bracket hi<35. No window or sensor shift selected after outcomes.",
+  "future": "After exact last pre AP anchor, external pre-power deviation is set to0 as a declared forecast assumption; inferred H decays with fixed tau30. Actual target lane schedule drives the already frozen LOAD_SLOW fast4/slow1 terms at unchanged beta/tau1920/original power proxy.",
+  "fit": "Residualize each development session against its2 R/H nuisance columns, equal session weights, fit one nonnegative kappa. Opposite-gap block exclusion2 then final development6 =3 global fits. Projection diagnostics and local-state estimates reported separately.",
+  "identification": "Numerical residual information and scaled3column condition, fold gain variation, deterministic sensitivity to assumed independent +/-0.05C pre AP perturbations (not confidence interval or certified sensor accuracy). No arbitrary accuracy PASS.",
+  "evaluation": "All12; development uses opposite-gap gain, already seen confirmation6 final gain. Control is existing registered-idle initialization of fixed LOAD_SLOW, not original AP equation. SameAP35..120 and35..180/last covered sample, work and idle separately; MAE/max/peak/direction/worsening all shown.",
+  "energy_link_readout": "At unchanged rejected pre-AP/power relation coefficients from previous study, replace ONLY AP initial R/H, report both original/zero4power heads. No energy refit, head selection or default adoption; static power relation failure remains a separate issue.",
+  "limits": "Recorded actual-schedule conditional prediction, not arrival-to-response or online policy validation; pre exports offline, no live consumer. Previously viewed outcomes mean posthoc evidence even with session/block separation.",
+  "bounds": {"global_gain_fits": 3, "development_session_projection_bundles": 12, "evaluation_pre_state_estimates": 12, "energy_fits": 0, "new_AP_workload_fits": 0, "device_commands": 0, "new_plans": 0, "environment_simulations": 0},
+  "preservation": "All original coefficients, raw/FAIL/closed plans, prior candidates, default simulator/RL/strict unchanged; separate ID/output and no automatic refit.",
+  "accuracy_pass": null,
+  "experiment_ready": false
+}

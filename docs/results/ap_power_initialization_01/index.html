@@ -1,0 +1,15 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pre 전력 입력 AP 초기화</title><style>body{font:17px/1.7 system-ui;max-width:1120px;margin:30px auto;padding:0 18px;color:#203040}aside{background:#fff2cf;padding:18px}img{max-width:100%;height:auto}table{border-collapse:collapse;width:100%}td,th{padding:10px;border-bottom:1px solid #ddd}a{color:#075985}</style></head><body>
+<h1>시작 전 전력 입력으로 가열 방향 오류가 고쳐지는가</h1>
+<aside><strong>구현·평가 완료, 후보 미채택.</strong>고정H 상태에pre전력편차를넣는gain1개를개발6에서3회추정했습니다. 회복30C0의가열오예측이남고평균변화도극소여서기본/RL/strict/AP계수를유지합니다. 기기/추가실측/새계획0·experiment_ready=false입니다.</aside>
+<table><tr><th>같은확인6·고정LOAD_SLOW</th><th>기존초기화</th><th>전력입력초기화</th></tr><tr><td>35..120초 AP MAE</td><td>0.21160°C</td><td>0.21125°C</td></tr><tr><td>35..180초 AP MAE</td><td>0.16630°C</td><td>0.16656°C</td></tr><tr><td>평균최고온도절대오차·전체</td><td>0.08180°C</td><td>0.08505°C</td></tr></table>
+<p>원동결AP수식과의비교가아니며같은마지막AP/시각·기존fast4/slow1/β/τ/원전력proxy를유지한초기화비교입니다. 실제미래AP/전력은예측입력에없고같은세션표본을독립반복으로집계하지않았습니다.</p>
+<p><a href="../../AP_POWER_INITIALIZATION_RESULTS_20261010.md">모형·정확한판독·남은한계</a> · <a href="README.md">의존성·재현</a> · <a href="run_v1/AP_errors.csv">전12·관측시각·최대/최고/방향</a> · <a href="verification.json">검증</a></p>
+<img src="figures/all_session_AP_errors.png" alt="개발/이미본확인12세션의같은관측창 AP오차,악화포함">
+<h2>더 큰gain을넣으면해결되는가</h2><p>개발gain0/0.0525,최종0.0394. 가정한±0.05°C독립반올림변동에서gain0..0.1711이며신뢰구간은아닙니다. 회복30 방향을뒤집는값0.6588은16.7배이고가상개발pre 잔차RMS0.0575→0.1837°C로커집니다. 이값을후보/예측에적용하지않았습니다.</p>
+<img src="figures/C0_direction_and_gain_identification.png" alt="남은가열방향오류와gain크기/가정민감도/적용하지않은방향경계">
+<h2>전력모형 개선과별도로보는연결진단</h2><p>미채택한AP→전력관계의계수는고정했습니다. 원4계수와의관계J 평균4.637→4.531이지만원전력식3.913보다높습니다. 새에너지모형검증/정책절감/원관계채택이아닙니다.</p>
+<img src="figures/fixed_energy_relation_link.png" alt="미채택전력관계에AP초기화만교체한연결진단,두head전량">
+<p><a href="readout_v1/AP_paired_errors.csv">전량짝표</a> · <a href="readout_v1/C0_direction_gain.csv">4C0 방향경계</a> · <a href="readout_v1/energy_link_summary.csv">J연결분모</a>. 실제일정조건부·이미본자료의사후평가/live전달미구현·A24 raw=mA/절대J미인증·S26비혼합·정확도PASS없음.</p>
+<h2>이미 있는 다음정보</h2><p>문제세션원본의conditioning96요청과AP48표본/120.066초/2.1°C범위를확인했습니다. 현재target모형이slow초기상태0으로시작하는가정과이전실행이력의연결은아직미완료이며실제원인이라고확정하지않습니다. <a href="conditioning_availability.json">원본3hash·가용성근거</a>. 새측정을한것이아닙니다.</p>
+<p><a href="../simulator_workbench_01/index.html">시뮬레이터 전체 안내</a></p>
+</body></html>

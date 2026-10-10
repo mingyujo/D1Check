@@ -1,5 +1,10 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-10 AP-POWER-INITIALIZATION-PC-01 — 하나의 준비-power gain 시험 종료
+
+- 고정β/τ30/LOAD_SLOW에pre전력변화→기존H 입력만추가,global3fit/지역12상태·전12평가했다. 평균/최대/최고/방향과가정민감도·미채택전력관계연결을분리해근거미확보·후보미채택이다. [결과·재현](AP_POWER_INITIALIZATION_RESULTS_20261010.md).
+- 추가gain/τ/창탐색은종료한다. 다음은실제로남은conditioning96일정/AP48과기존slow상태0 가정의초기이력연결이며새물리계수/실측부터하지않는다. 이번그후속모형은미구현·원자료/기본/RL/strict/experiment_ready=false·기기/새계획0보존이다.
+
 ## 2026-10-10 AP-CONDITIONED-POWER-PC-01 — 고정 AP 초기경로의 에너지 연결 시험 완료
 
 - 기존pre85/235초의동일창 CPU-only/CPU＋AP와두고정전력head를6fit/12평가했다. 확인J평균/최악악화로후보미채택·AP초기상태/β/τ/계수불변이다. [결과·정확한진단경계](AP_CONDITIONED_POWER_RESULTS_20261010.md).

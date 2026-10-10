@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-10 AP-POWER-INITIALIZATION-PC-01 — pre 전력 입력 평가 완료·방향 오류 미해결
+
+- 기존H에pre전력편차를넣는gain1개를개발6/반대block제외2＋최종1·3fit했다. 확인AP35..120 MAE.21160→.21125극소감소/전체.16630→.16656악화·회복30 가열오예측유지로미채택. [수식·전량·정확count](AP_POWER_INITIALIZATION_RESULTS_20261010.md).
+- 최종gain.03943/개발회복별0·.05251·가정반올림범위0.. .1711은신뢰구간아님. 방향전환필요.6588(적용0)은16.7배/가상개발pre RMS.0575→.1837로커진다. 에너지연결4.637→4.531은미채택관계고정진단·원모형교체0이다.
+- 새7경계·실제APIcontrol2/동결해시보존·기기/ADB/실측/설치/빌드/새계획/claim0·기본/RL/strict/experiment_ready=false/사용자14행보존. 다음PC행동하나:기존conditioning96/그구간AP48(2.1°C)과고정slow초기상태를연결해0가정을검증한다. 원본3hash확인·새표본아님/해결확정아님. [그림·공유재현](results/ap_power_initialization_01/index.html).
+
 ## 2026-10-10 AP-CONDITIONED-POWER-PC-01 — AP 초기경로와 전력 연결의 오류 분리 완료
 
 - pre CPU/AP 후보＋동일창CPU대조를 개발6/각블록제외2＋최종1·총6fit하고12전량을평가했다. 확인원계수J120 MAE3.913→4.637/최악9.682→11.701로악화해미채택,APfit/초기상태재추정0이다. [실제 판독](AP_CONDITIONED_POWER_RESULTS_20261010.md).

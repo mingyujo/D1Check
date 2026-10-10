@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-10 AP-POWER-INITIALIZATION-PC-01 — 작은 pre 전력 보완 미채택·다음입력 특정
+
+- 판정:pre-power→기존H gain1개/3개발fit은확인35..120 AP MAE극소감소이나전체/최고오차악화·회복30 방향오류미해결로미채택한다. 필요한gain을키워확인에맞추지않으며반올림민감도를신뢰구간이나정확도PASS로쓰지않는다. [전량·basis진단](AP_POWER_INITIALIZATION_RESULTS_20261010.md).
+- 확인한근거:현재초기화가사용하지않는문제원본conditioning96요청/AP48표본·120.066초/2.1°C가존재한다. slow초기0은코드가정이지측정된빈상태아니다. 이력연결을다음PC검증으로권고하되과거실패원인/해결/새실측승인으로승격하지않는다.
+- 원계수·후보·원자료/FAIL/소비계획·기본/RL/strict/experiment_ready=false·타작업/사용자변경보존,기기/새계획0. 추가fit/실측자동실행없음이다.
+
 ## 2026-10-10 AP-CONDITIONED-POWER-PC-01 — 단순 pre AP 전력 후보 미채택
 
 - 판정:개발pre만의CPU/AP 관계식＋고정idleAP초기경로는확인J120 평균3.913→4.637/최악11.701로악화해미채택한다. 같은창CPU대조/두원전력head·전12를보존,결과보고창/계수/유리조건을다시고르지않는다. [전량·분해](AP_CONDITIONED_POWER_RESULTS_20261010.md).
