@@ -1,0 +1,1479 @@
+{
+  "status": "completed",
+  "task": "ROLLING-HYBRID-PILOT-07",
+  "model_context": "A24_V3_THERMAL_ONLY_HYBRID_FROZEN_V1",
+  "upstream_model_sha256": "6dd806bc30c5d69dd07237dc8fbe0bc09ed90a86fede4d86294ae14be2eb1196",
+  "exported_model_sha256": "48c5cd7196055c3cbe03f1e5a5974d4d791dee28658ce4c77a2c070294ffa8c7",
+  "summary": [
+    {
+      "policy": "Band",
+      "name_ko": "Band 판단규칙 대응",
+      "conditions": 24,
+      "planned": 1584,
+      "completed": 1584,
+      "incomplete": 0,
+      "urgent_planned": 684,
+      "normal_planned": 900,
+      "urgent_failure": 0,
+      "normal_failure": 21,
+      "urgent_failure_rate": 0.0,
+      "normal_on_time_completion_rate": 0.9766666666666667,
+      "mean_condition_urgent_p95_ms": 411.7524589166667,
+      "mean_condition_normal_ms": 2162.745784145978,
+      "mean_condition_energy_j": 152.2746038376406,
+      "mean_condition_peak_ap_c": 30.452170084352602,
+      "native_total_seconds": 1.4609068999707233
+    },
+    {
+      "policy": "Triton",
+      "name_ko": "Triton 판단규칙 대응",
+      "conditions": 24,
+      "planned": 1584,
+      "completed": 1584,
+      "incomplete": 0,
+      "urgent_planned": 684,
+      "normal_planned": 900,
+      "urgent_failure": 0,
+      "normal_failure": 21,
+      "urgent_failure_rate": 0.0,
+      "normal_on_time_completion_rate": 0.9766666666666667,
+      "mean_condition_urgent_p95_ms": 436.094618,
+      "mean_condition_normal_ms": 2151.93271231033,
+      "mean_condition_energy_j": 152.74060978552967,
+      "mean_condition_peak_ap_c": 30.47219762770079,
+      "native_total_seconds": 1.1928036999306642
+    },
+    {
+      "policy": "OriginalV2",
+      "name_ko": "기존 공동 롤링",
+      "conditions": 24,
+      "planned": 1584,
+      "completed": 1584,
+      "incomplete": 0,
+      "urgent_planned": 684,
+      "normal_planned": 900,
+      "urgent_failure": 0,
+      "normal_failure": 21,
+      "urgent_failure_rate": 0.0,
+      "normal_on_time_completion_rate": 0.9766666666666667,
+      "mean_condition_urgent_p95_ms": 411.75054375,
+      "mean_condition_normal_ms": 2376.2957549466146,
+      "mean_condition_energy_j": 152.0249984935015,
+      "mean_condition_peak_ap_c": 30.442379541788252,
+      "native_total_seconds": 69.27858479996212
+    },
+    {
+      "policy": "ExecutionPrefix",
+      "name_ko": "첫 행동 직접선정 롤링",
+      "conditions": 24,
+      "planned": 1584,
+      "completed": 1584,
+      "incomplete": 0,
+      "urgent_planned": 684,
+      "normal_planned": 900,
+      "urgent_failure": 0,
+      "normal_failure": 30,
+      "urgent_failure_rate": 0.0,
+      "normal_on_time_completion_rate": 0.9666666666666667,
+      "mean_condition_urgent_p95_ms": 411.75054375,
+      "mean_condition_normal_ms": 2518.0528271332464,
+      "mean_condition_energy_j": 152.03280108474675,
+      "mean_condition_peak_ap_c": 30.438887097953064,
+      "native_total_seconds": 64.20824720000383
+    }
+  ],
+  "gates": {
+    "OriginalV2": {
+      "maintenance_pass": false,
+      "promising": false,
+      "promising_families": [],
+      "comparisons": 48,
+      "epsilon": 0,
+      "learners": 0,
+      "differences": [
+        {
+          "condition": 0,
+          "family": "low",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": 0.00482026713488537
+          }
+        },
+        {
+          "condition": 0,
+          "family": "low",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": -137.874704,
+            "energy_j": -0.2855510426356318,
+            "peak_ap_c": -0.012679240708333595
+          }
+        },
+        {
+          "condition": 1,
+          "family": "low",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": 0.00481458048477279
+          }
+        },
+        {
+          "condition": 1,
+          "family": "low",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": -130.42854999999997,
+            "energy_j": -0.2636374739105918,
+            "peak_ap_c": -0.010893484420282817
+          }
+        },
+        {
+          "condition": 2,
+          "family": "low",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": 0.004825651331014313
+          }
+        },
+        {
+          "condition": 2,
+          "family": "low",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": -145.320858,
+            "energy_j": -0.3074646113606718,
+            "peak_ap_c": -0.014465906462017841
+          }
+        },
+        {
+          "condition": 3,
+          "family": "queue",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.0016098277910714387
+          }
+        },
+        {
+          "condition": 3,
+          "family": "queue",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -0.0188408960557922,
+            "peak_ap_c": -0.004816735795955651
+          }
+        },
+        {
+          "condition": 4,
+          "family": "queue",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.00321182074407389
+          }
+        },
+        {
+          "condition": 4,
+          "family": "queue",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -0.017490186662769247,
+            "peak_ap_c": -0.0060722177465954985
+          }
+        },
+        {
+          "condition": 5,
+          "family": "queue",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": -0.04596399999991263,
+            "energy_j": -0.0007998724800017953,
+            "peak_ap_c": 0.00013557358190041668
+          }
+        },
+        {
+          "condition": 5,
+          "family": "queue",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -0.020191605448815153,
+            "peak_ap_c": -0.0036504863672846
+          }
+        },
+        {
+          "condition": 6,
+          "family": "burst",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.016298670753194244
+          }
+        },
+        {
+          "condition": 6,
+          "family": "burst",
+          "baseline": "Triton",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.01961314086230459,
+            "peak_ap_c": -0.02540606675919932
+          }
+        },
+        {
+          "condition": 7,
+          "family": "burst",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.0178872394662406
+          }
+        },
+        {
+          "condition": 7,
+          "family": "burst",
+          "baseline": "Triton",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.020963850255327543,
+            "peak_ap_c": -0.02664812446987952
+          }
+        },
+        {
+          "condition": 8,
+          "family": "burst",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.014798317039439013
+          }
+        },
+        {
+          "condition": 8,
+          "family": "burst",
+          "baseline": "Triton",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.018262430756323056,
+            "peak_ap_c": -0.024252344350351507
+          }
+        },
+        {
+          "condition": 9,
+          "family": "sustained",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -1.0700133032680128,
+            "peak_ap_c": -0.001675053153753936
+          }
+        },
+        {
+          "condition": 9,
+          "family": "sustained",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -2.5520509848539916,
+            "peak_ap_c": -0.07550157791059675
+          }
+        },
+        {
+          "condition": 10,
+          "family": "sustained",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -1.08321109823828,
+            "peak_ap_c": -0.006095569993728844
+          }
+        },
+        {
+          "condition": 10,
+          "family": "sustained",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -2.4460392926773693,
+            "peak_ap_c": -0.07221657594209319
+          }
+        },
+        {
+          "condition": 11,
+          "family": "sustained",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -1.058045822555897,
+            "peak_ap_c": 0.0027341893358894254
+          }
+        },
+        {
+          "condition": 11,
+          "family": "sustained",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -2.659751706858202,
+            "peak_ap_c": -0.07880873455664172
+          }
+        },
+        {
+          "condition": 12,
+          "family": "low",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": 0.00453541185703088
+          }
+        },
+        {
+          "condition": 12,
+          "family": "low",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": -137.874704,
+            "energy_j": -0.2855510426356318,
+            "peak_ap_c": -0.01665402014548789
+          }
+        },
+        {
+          "condition": 13,
+          "family": "low",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": 0.004530061264162555
+          }
+        },
+        {
+          "condition": 13,
+          "family": "low",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": -130.42854999999997,
+            "energy_j": -0.2636374739105918,
+            "peak_ap_c": -0.014491315216599077
+          }
+        },
+        {
+          "condition": 14,
+          "family": "low",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": 0.004540477869667825
+          }
+        },
+        {
+          "condition": 14,
+          "family": "low",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": -145.320858,
+            "energy_j": -0.3074646113606718,
+            "peak_ap_c": -0.01881774314579232
+          }
+        },
+        {
+          "condition": 15,
+          "family": "queue",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.032612172577987764
+          }
+        },
+        {
+          "condition": 15,
+          "family": "queue",
+          "baseline": "Triton",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 80.99681399999997,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.032552608686657436
+          }
+        },
+        {
+          "condition": 16,
+          "family": "queue",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.03259432140523799
+          }
+        },
+        {
+          "condition": 16,
+          "family": "queue",
+          "baseline": "Triton",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 88.72018500000001,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.03253157396733286
+          }
+        },
+        {
+          "condition": 17,
+          "family": "queue",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.03262908303761236
+          }
+        },
+        {
+          "condition": 17,
+          "family": "queue",
+          "baseline": "Triton",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 73.27344300000004,
+            "energy_j": -1.7487877812527586e-10,
+            "peak_ap_c": -0.0325729502275216
+          }
+        },
+        {
+          "condition": 18,
+          "family": "burst",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.032612172577991316
+          }
+        },
+        {
+          "condition": 18,
+          "family": "burst",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.032612172577991316
+          }
+        },
+        {
+          "condition": 19,
+          "family": "burst",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.032594321405241544
+          }
+        },
+        {
+          "condition": 19,
+          "family": "burst",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.032594321405241544
+          }
+        },
+        {
+          "condition": 20,
+          "family": "burst",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.03262908303760881
+          }
+        },
+        {
+          "condition": 20,
+          "family": "burst",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.03262908303760881
+          }
+        },
+        {
+          "condition": 21,
+          "family": "sustained",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -0.9379669450710821,
+            "peak_ap_c": -0.002007288054606704
+          }
+        },
+        {
+          "condition": 21,
+          "family": "sustained",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -2.6136695510747927,
+            "peak_ap_c": -0.037397122122602156
+          }
+        },
+        {
+          "condition": 22,
+          "family": "sustained",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -0.9497744461233708,
+            "peak_ap_c": -0.005130110789028919
+          }
+        },
+        {
+          "condition": 22,
+          "family": "sustained",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -2.49853205951635,
+            "peak_ap_c": -0.03568756325248046
+          }
+        },
+        {
+          "condition": 23,
+          "family": "sustained",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -0.8907167716023139,
+            "peak_ap_c": -0.0015241825768441686
+          }
+        },
+        {
+          "condition": 23,
+          "family": "sustained",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -2.6936378914136867,
+            "peak_ap_c": -0.04168209262634548
+          }
+        }
+      ],
+      "automatic_adoption": false
+    },
+    "ExecutionPrefix": {
+      "maintenance_pass": false,
+      "promising": false,
+      "promising_families": [],
+      "comparisons": 48,
+      "epsilon": 0,
+      "learners": 0,
+      "differences": [
+        {
+          "condition": 0,
+          "family": "low",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": 0.004106034739972841
+          }
+        },
+        {
+          "condition": 0,
+          "family": "low",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": -137.874704,
+            "energy_j": -0.2855510426356318,
+            "peak_ap_c": -0.013393473103246123
+          }
+        },
+        {
+          "condition": 1,
+          "family": "low",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": 0.004101190698378332
+          }
+        },
+        {
+          "condition": 1,
+          "family": "low",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": -130.42854999999997,
+            "energy_j": -0.2636374739105918,
+            "peak_ap_c": -0.011606874206677276
+          }
+        },
+        {
+          "condition": 2,
+          "family": "low",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": 0.004110621143119886
+          }
+        },
+        {
+          "condition": 2,
+          "family": "low",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": -145.320858,
+            "energy_j": -0.3074646113606718,
+            "peak_ap_c": -0.015180936649912269
+          }
+        },
+        {
+          "condition": 3,
+          "family": "queue",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.0016098277910714387
+          }
+        },
+        {
+          "condition": 3,
+          "family": "queue",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -0.0188408960557922,
+            "peak_ap_c": -0.004816735795955651
+          }
+        },
+        {
+          "condition": 4,
+          "family": "queue",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.00321182074407389
+          }
+        },
+        {
+          "condition": 4,
+          "family": "queue",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -0.017490186662769247,
+            "peak_ap_c": -0.0060722177465954985
+          }
+        },
+        {
+          "condition": 5,
+          "family": "queue",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": -0.04596399999991263,
+            "energy_j": -0.0007998724800017953,
+            "peak_ap_c": 0.00013557358190041668
+          }
+        },
+        {
+          "condition": 5,
+          "family": "queue",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -0.020191605448815153,
+            "peak_ap_c": -0.0036504863672846
+          }
+        },
+        {
+          "condition": 6,
+          "family": "burst",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 1,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.006859507663001807
+          }
+        },
+        {
+          "condition": 6,
+          "family": "burst",
+          "baseline": "Triton",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 1,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.01961314086230459,
+            "peak_ap_c": -0.015966903669006882
+          }
+        },
+        {
+          "condition": 7,
+          "family": "burst",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 1,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.008462466524104428
+          }
+        },
+        {
+          "condition": 7,
+          "family": "burst",
+          "baseline": "Triton",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 1,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.020963850255327543,
+            "peak_ap_c": -0.017223351527743347
+          }
+        },
+        {
+          "condition": 8,
+          "family": "burst",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 1,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.005345521016145938
+          }
+        },
+        {
+          "condition": 8,
+          "family": "burst",
+          "baseline": "Triton",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 1,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.018262430756323056,
+            "peak_ap_c": -0.014799548327058432
+          }
+        },
+        {
+          "condition": 9,
+          "family": "sustained",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -0.8686721817753948,
+            "peak_ap_c": 0.015099226436166902
+          }
+        },
+        {
+          "condition": 9,
+          "family": "sustained",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -2.3507098633613737,
+            "peak_ap_c": -0.058727298320675914
+          }
+        },
+        {
+          "condition": 10,
+          "family": "sustained",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -0.8791996719252495,
+            "peak_ap_c": 0.011473993842557206
+          }
+        },
+        {
+          "condition": 10,
+          "family": "sustained",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -2.2420278663643387,
+            "peak_ap_c": -0.054647012105807136
+          }
+        },
+        {
+          "condition": 11,
+          "family": "sustained",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -0.8598761310391865,
+            "peak_ap_c": 0.018698342165393456
+          }
+        },
+        {
+          "condition": 11,
+          "family": "sustained",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -2.4615820153414916,
+            "peak_ap_c": -0.0628445817271377
+          }
+        },
+        {
+          "condition": 12,
+          "family": "low",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": 0.0037344075613710004
+          }
+        },
+        {
+          "condition": 12,
+          "family": "low",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": -137.874704,
+            "energy_j": -0.2855510426356318,
+            "peak_ap_c": -0.01745502444114777
+          }
+        },
+        {
+          "condition": 13,
+          "family": "low",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": 0.003730001945950079
+          }
+        },
+        {
+          "condition": 13,
+          "family": "low",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": -130.42854999999997,
+            "energy_j": -0.2636374739105918,
+            "peak_ap_c": -0.015291374534811553
+          }
+        },
+        {
+          "condition": 14,
+          "family": "low",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": 0.0037385788567689815
+          }
+        },
+        {
+          "condition": 14,
+          "family": "low",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": -145.320858,
+            "energy_j": -0.3074646113606718,
+            "peak_ap_c": -0.019619642158691164
+          }
+        },
+        {
+          "condition": 15,
+          "family": "queue",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 1,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.026081856974755624
+          }
+        },
+        {
+          "condition": 15,
+          "family": "queue",
+          "baseline": "Triton",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 1,
+            "urgent_p95_ms": 80.99681399999997,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.026022293083425296
+          }
+        },
+        {
+          "condition": 16,
+          "family": "queue",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 1,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.02754338102415943
+          }
+        },
+        {
+          "condition": 16,
+          "family": "queue",
+          "baseline": "Triton",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 1,
+            "urgent_p95_ms": 88.72018500000001,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.0274806335862543
+          }
+        },
+        {
+          "condition": 17,
+          "family": "queue",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 1,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.024702889319662802
+          }
+        },
+        {
+          "condition": 17,
+          "family": "queue",
+          "baseline": "Triton",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 1,
+            "urgent_p95_ms": 73.27344300000004,
+            "energy_j": -1.7487877812527586e-10,
+            "peak_ap_c": -0.024646756509572043
+          }
+        },
+        {
+          "condition": 18,
+          "family": "burst",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 1,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 7.129301593522541e-10,
+            "peak_ap_c": -0.02392078555303101
+          }
+        },
+        {
+          "condition": 18,
+          "family": "burst",
+          "baseline": "Triton",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 1,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 7.129301593522541e-10,
+            "peak_ap_c": -0.02392078555303101
+          }
+        },
+        {
+          "condition": 19,
+          "family": "burst",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 1,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.02543235832272117
+          }
+        },
+        {
+          "condition": 19,
+          "family": "burst",
+          "baseline": "Triton",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 1,
+            "urgent_p95_ms": 0.0,
+            "energy_j": 0.0,
+            "peak_ap_c": -0.02543235832272117
+          }
+        },
+        {
+          "condition": 20,
+          "family": "burst",
+          "baseline": "Band",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 1,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -7.129301593522541e-10,
+            "peak_ap_c": -0.022494622731024094
+          }
+        },
+        {
+          "condition": 20,
+          "family": "burst",
+          "baseline": "Triton",
+          "passed": false,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 1,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -7.129301593522541e-10,
+            "peak_ap_c": -0.022494622731024094
+          }
+        },
+        {
+          "condition": 21,
+          "family": "sustained",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -1.0650656610642955,
+            "peak_ap_c": -0.07175200705881224
+          }
+        },
+        {
+          "condition": 21,
+          "family": "sustained",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -2.740768267068006,
+            "peak_ap_c": -0.10714184112680769
+          }
+        },
+        {
+          "condition": 22,
+          "family": "sustained",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -1.07970119755106,
+            "peak_ap_c": -0.07224045892303721
+          }
+        },
+        {
+          "condition": 22,
+          "family": "sustained",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -2.628458810944039,
+            "peak_ap_c": -0.10279791138648875
+          }
+        },
+        {
+          "condition": 23,
+          "family": "sustained",
+          "baseline": "Band",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -1.049951353617388,
+            "peak_ap_c": -0.06806214091486495
+          }
+        },
+        {
+          "condition": 23,
+          "family": "sustained",
+          "baseline": "Triton",
+          "passed": true,
+          "delta": {
+            "incomplete": 0,
+            "urgent_failure": 0,
+            "normal_failure": 0,
+            "urgent_p95_ms": 0.0,
+            "energy_j": -2.8528724734287607,
+            "peak_ap_c": -0.10822005096436627
+          }
+        }
+      ],
+      "automatic_adoption": false
+    }
+  },
+  "consumption": {
+    "native_environment_starts": 100,
+    "native_cap": 112,
+    "learning_starts": 0,
+    "device_commands": 0,
+    "failed": 0,
+    "cumulative_policy_environment_starts": 9849,
+    "cumulative_policy_learning_starts": 1449
+  },
+  "same_Band_schedules": 0,
+  "same_Band_denominator": 24,
+  "completed_batch_requests": 6336,
+  "completed_gate_requests": 8,
+  "model_fit_calls": 0,
+  "device_commands": 0,
+  "learning_starts": 0,
+  "recommendation": "no adoption or learning expansion without all-condition gates; retain existing reference",
+  "scope": "two new arrival seeds x four load families x three sensitivity contexts; development model exploration, not physical product performance",
+  "AP_channel": "modeled AP, not surface temperature",
+  "surface_peak_c": null,
+  "thermal_limit_exceed_s": null,
+  "thermal_service_feedback": false,
+  "experiment_ready": false,
+  "mean_AP_validation_error_c": 0.202484,
+  "PC_control_cost_is_phone_cost": false,
+  "report_generated_utc": "2026-10-10T16:38:03.959403+00:00"
+}

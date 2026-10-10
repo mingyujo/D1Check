@@ -1,5 +1,10 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-11 ROLLING-HYBRID-PILOT-07 — 새 모형에서 고정 전체 흐름 비교 완료
+
+- 사용자 새시뮬레이션 실행지시로 [v3 hybrid 이관 계약](ROLLING_HYBRID_PILOT_20261011.md)을 결과전에 고정했다. 같은24조건×4정책·gate4, 원미소비112cap/1시간·저장5분이며 원prepared 미실행을 보존했다. 선별/보호/최종AP에 같은열head, 서비스/J/기한/지원/기본은불변이다.
+- 완료100환경·6344요청·학습/적합/기기0·42순수/native4/전량96검증 PASS. 새선택 일반기한실패30vsBand/원롤링21로탈락, 원롤링평균J/AP감소이나조건별비악화미달이다. [전량결과](results/rolling_hybrid_pilot_07/README.md)·기존기준유지·RL자동확대0·누적9849/1449·strict/experiment_ready=false보존이다.
+
 ## 2026-10-10 ROLLING-EXECUTION-PILOT-06 — 새 요청 전체 흐름의 준비
 
 - [계약·입력·검증](ROLLING_EXECUTION_PILOT_PREP_20261010.md): 사용자준비지시로 실제prefix 정책연결/32순수/24새조건·4역할/고정gate4를준비했다. 예상100/상한112·학습/기기0, 결과전모형/초기/기한/후보/지원/판정을고정한다.

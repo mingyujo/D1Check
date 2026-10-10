@@ -1,0 +1,124 @@
+{
+  "accuracy_pass": null,
+  "composition_is_posthoc": true,
+  "default": false,
+  "development_ids": [
+    "session_00",
+    "session_01",
+    "session_02",
+    "session_03",
+    "development_0",
+    "development_1",
+    "development_2",
+    "development_30_C0",
+    "development_30_CPU",
+    "development_30_PAR",
+    "development_180_PAR",
+    "development_180_CPU",
+    "development_180_C0",
+    "development_0_MODEL2_RECOVERY_A",
+    "development_1_MODEL2_RECOVERY_B",
+    "development_2_MODEL2_RECOVERY_B",
+    "development_3_MODEL2_RECOVERY_A"
+  ],
+  "energy": {
+    "energy_fit_calls": 0,
+    "energy_mode": "frozen_original_exact",
+    "gain": 0.0,
+    "increments": {
+      "classification_CPU": 0.5844294346219239,
+      "classification_GPU": 0.4728843731804206,
+      "classification_GPU+detection_CPU": 0.8878118931374972,
+      "detection_CPU": 0.712925901899471
+    },
+    "lambda_": 100.0,
+    "original_sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "relaxation_tau_s": 30.0,
+    "ridge_not_applied": true
+  },
+  "energy_decrease_claim": false,
+  "evidence": "source-balanced development correction; nested selection conditional on fixed prior and service, not full-family independent OOF",
+  "experiment_ready": false,
+  "original_model": {
+    "path": "docs/results/online_policy_study_01/overnight_sustained_run01/model.json",
+    "sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2"
+  },
+  "parent_model_sha256": "82838f2dcafdac7aa96c686cd95c52d2cd423c0cd1fbb8a7a4f5e4f4c2b73d55",
+  "service": {
+    "mode": "frozen_original_forecast",
+    "sha256": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2"
+  },
+  "service_decrease_claim": false,
+  "strict_support": false,
+  "thermal": {
+    "accuracy_pass": null,
+    "alpha": 0.5,
+    "beta": 0.045932520308001434,
+    "coefficients": [
+      0.11646705340833842,
+      0.12823275886137442,
+      0.08336493997875569,
+      0.19997601557058206,
+      0.005614273067419016
+    ],
+    "default": false,
+    "development_ids": [
+      "session_00",
+      "session_01",
+      "session_02",
+      "session_03",
+      "development_0",
+      "development_1",
+      "development_2",
+      "development_30_C0",
+      "development_30_CPU",
+      "development_30_PAR",
+      "development_180_PAR",
+      "development_180_CPU",
+      "development_180_C0",
+      "development_0_MODEL2_RECOVERY_A",
+      "development_1_MODEL2_RECOVERY_B",
+      "development_2_MODEL2_RECOVERY_B",
+      "development_3_MODEL2_RECOVERY_A"
+    ],
+    "evidence": "development-only empirical correction; physical thermal parameters not identified",
+    "experiment_ready": false,
+    "head": "thermal",
+    "initial_tau_s": 30.0,
+    "lambda_": 0.1,
+    "numerical_rank": 5,
+    "original_coefficients": [
+      0.00841229405732353,
+      0.12475488783113649,
+      0.05420747704178806,
+      0.2402517769505672,
+      0.0
+    ],
+    "original_input_sha256": "0d4d9e33ddbf95d906b854755adabd0ff650b2e06e8bdfbc0fcbd507e7d68962",
+    "regularization_column_norms": [
+      1.6771935962227387,
+      4.416045507422614,
+      2.507785565639225,
+      4.474392731329479,
+      65.6241840707609
+    ],
+    "scaled_condition": 1.7776229237613461,
+    "slow_tau_identified": false,
+    "slow_tau_s": 1920.0,
+    "source_groups": {
+      "history180": 3,
+      "history30": 3,
+      "macro": 4,
+      "new_recovery": 4,
+      "old": 3
+    },
+    "strict_support": false,
+    "thermal_service_feedback": null,
+    "version": "empirical-simulation-model-v3-thermal",
+    "weighted_training_rmse_c": 0.32634285778178584,
+    "weighting": "source equal, then session equal, then AP sample equal"
+  },
+  "thermal_service_feedback": null,
+  "variant": "thermal_only_hybrid_v1",
+  "version": "empirical-simulation-model-v3"
+}

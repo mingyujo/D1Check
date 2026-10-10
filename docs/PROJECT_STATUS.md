@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-11 ROLLING-HYBRID-PILOT-07 — 새 온도 보정 모형의 전체 흐름 비교 완료
+
+- [사전범위·이관](ROLLING_HYBRID_PILOT_20261011.md): 사용자 새시뮬레이션 실행지시로 최종v3 hybrid를 선별/보호/최종AP에 일관 연결했다. 원5phase·J·CPU/GPU·기한·창4/선별8/credit.25는 유지했다. 전달식 수치동등/새검사10＋기존32 PASS, native 이벤트gate4 PASS다.
+- gate4＋96행＝100/112·실패0,6344/6344요청완료·누적9849/1449·학습/적합/기기0이다. Band/Triton/원롤링/새선택 일반기한실패21/21/21/30; 원롤링평균J−.249605/AP−.009791,새선택J−.241803/AP−.013283 대비Band이나전조건유망기준은둘다FAIL이다. 기존기준유지·추가학습/자동채택0이다.
+- [전량CSV·그림5종·화면](results/rolling_hybrid_pilot_07/README.md). 다음최대3:결과공유,원공동롤링의조건별AP/누적대기진단검토,새명시범위없이확대0. 검증ba80d94＋등록sourceSHA/전량96원장·구모형prepared미실행·새모형개발/원FAIL/사용자변경/다른worktree/strict/experiment_ready=false보존이다.
+
 ## 2026-10-10 ROLLING-EXECUTION-PILOT-06 — 전체 요청 흐름 파일럿 준비 완료·본실행0
 
 - [범위·연결·기준](ROLLING_EXECUTION_PILOT_PREP_20261010.md): 실제prefix선택기를 별도PC정책에 연결했다. 원창4/선별8/0.25credit·actualAVAILABLE/arrival취소·동시쌍/실패요청보존·원계수/기한/CPU·GPU 지원은 유지했다. adapter7/계약8/기존선택17＝32순수 PASS, native gate 성과는아니다.
