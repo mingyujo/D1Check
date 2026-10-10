@@ -1,0 +1,17 @@
+| 시험 | 결과 | 값 |
+|---|---|---|
+| ① flags: d100 → True · d1 → all False · d50 → 5 on-seconds per 10 s (20 s → 10) | PASS | [True, True, True, True, True, False, False, False, False, False] |
+| ① chain canonical SHA = 에너지C_체인기록 (NAc 4433e259… · NBc ba74ed03…) · Σ 900 · 구간 (100,300)(1,600) / (50,620)(1,280) | PASS |  |
+| ① frozen: model files · profiles · predict_v3.py SHA = V3 v2 prediction record | PASS | {'v3_prediction_v2_sha256': 'a3252cadd4f27df14e525c851e836e5ac6482984182d3063ddb7db4cb4173049', 'model_files_equal': True, 'profiles_equal': True, 'predict_v3_p |
+| ② determinism: same replay twice → identical rows (합성 체인) | PASS | 90 |
+| ② cell_metrics reuses predict_v3.run_metrics (max · end · t38 · throttle_time · n equal) | PASS |  |
+| ② rows = Σ (90) · bins = Σ/10 (9) · bin 0 mean = mean(rows 0..9) · skin_899 None when Σ ≤ 899 · 6 active bins | PASS |  |
+| ② d50 합성 체인: 10 active bins · 모든 칸에 가동 초 있음 (ratio not None) | PASS |  |
+| ③ first_throttle HOLD 3: [1,1,1.07,1.07,1.07,1.07] → 2 · [1,1.07,1.0,1.07,1.07,1.07] → None · [1.06]*4 → 0 (경계 포함) · None 칸 → 실패 | PASS |  |
+| ③ ratio_bins ref = first-30 s median → bins 0..2 ≈ 1 when no throttling | PASS |  |
+| ④ 모형 4 변형 × 열 2 가 합성 체인에서 전부 돈다 (유한 SKIN) | PASS |  |
+| ④ Σ 900 재생: 900 rows · skin_899 = rows[899] · bin_means 90 | PASS |  |
+| ④ PV.checks(): v2 θ params = night1004 route · flags = 1005e duty_flags · 1005e v21 NAe reproduced | PASS |  |
+| ⑤ pick_column: 30.0 → 29.5 (tie) · 30.1 → 30.5 · 27.2 → 29.5 (범위 밖 표시) · None → None | PASS |  |
+
+selftest 전체: PASS (13/13)

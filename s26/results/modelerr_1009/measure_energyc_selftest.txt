@@ -1,0 +1,13 @@
+| 시험 | 결과 | 값 |
+|---|---|---|
+| ① bins: 90 · bin 0 mean = mean(30.0..30.9) = 30.45 · bin 89 mean = mean(119.0..119.9) = 119.45 · 10 samples each | PASS | [30.45, 31.45] |
+| ① window: n 900 · max = last sample 119.9 · start = 30.0 (dt 0) · 899 s = 119.9 (dt 0) | PASS |  |
+| ① nearest sample: start_ns + 0.5 s → nearest is sample 0 or 1 (|dt| 0.5) · bins shift (bin 0 has 10 samples 1..10) | PASS | 30.55 |
+| ① HAL gap → empty bins are None · n_bins_with_samples 87 | PASS |  |
+| ② first_throttle recomputation rule on judge ratios: [1,1,1.07,1.07,1.07,1.07,0.9] → 20 s | PASS |  |
+| ② pick_column / in_range: 28.8 → 29.5 안 · 27.2 → 29.5 밖 · 31.7 → 30.5 밖 · 30.0 → 29.5 | PASS |  |
+| ③ noise: Δ sd = sd(2.0..2.7) (4자리 반올림 0.2449) · B max sd 0 · A start range [30.0, 30.7] | PASS | 0.2449 |
+| ④ segment window = segment 0 start_ns 1000 · last segment end_ns 9000 | PASS | (1000, 9000) |
+| ⑤ 16 sources · 8 blocks × 2 cells · retry cells = NAc_b8 · NBc_b7 · all run dirs and judge JSONs exist | PASS |  |
+
+selftest 전체: PASS (9/9)
