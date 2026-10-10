@@ -1,0 +1,244 @@
+{
+  "task": "IE-RESPONSE-GUARD-03",
+  "registered_utc": "2026-10-10T09:10:10.231368+00:00",
+  "source_sha256": {
+    "tools/d1_ie_response_backfill.py": "f381eaf37c05db2548c6217840bc1823d7ad9409f8060c2f36d8034c436ced25",
+    "tools/d1_ie_response_backfill_study.py": "427b1378df04415c27fd751d879ff308766dc1bfd5a2595fdda72b7911ac5b08",
+    "tools/test_d1_ie_response_backfill.py": "330d491e8c7f51fa4e597cb5be69ae7c2171a2b7db1e72119169ecfffeca41b2"
+  },
+  "parent_registration_sha256": "0e0f5c4313c36cef8dda0d7a98d929f86e241ffa7ce1ede3d0a15886fed65820",
+  "parent_consumed": 448,
+  "shared_cap": 480,
+  "new_expected": 28,
+  "extra_learning": 0,
+  "original_clock_reset": false,
+  "deadline_utc": "2026-10-10T09:18:47.186405+00:00",
+  "rule": "strict EDD head/CPU busy D/GPU empty: GPU-now response <= CPU-wait response; full arrived EDD suffix every response <= baseline",
+  "forecast_is_guarantee": false,
+  "setting_search": 0,
+  "independent_confirmation": 0,
+  "already_seen_confirmation_not_reused": true,
+  "development": [
+    {
+      "seed": 822020101,
+      "family": "low",
+      "context": "mean"
+    },
+    {
+      "seed": 822020101,
+      "family": "low",
+      "context": "short_context"
+    },
+    {
+      "seed": 822020101,
+      "family": "low",
+      "context": "long_context"
+    },
+    {
+      "seed": 822020101,
+      "family": "queue",
+      "context": "mean"
+    },
+    {
+      "seed": 822020101,
+      "family": "queue",
+      "context": "short_context"
+    },
+    {
+      "seed": 822020101,
+      "family": "queue",
+      "context": "long_context"
+    },
+    {
+      "seed": 822020101,
+      "family": "burst",
+      "context": "mean"
+    },
+    {
+      "seed": 822020101,
+      "family": "burst",
+      "context": "short_context"
+    },
+    {
+      "seed": 822020101,
+      "family": "burst",
+      "context": "long_context"
+    },
+    {
+      "seed": 822020101,
+      "family": "sustained",
+      "context": "mean"
+    },
+    {
+      "seed": 822020101,
+      "family": "sustained",
+      "context": "short_context"
+    },
+    {
+      "seed": 822020101,
+      "family": "sustained",
+      "context": "long_context"
+    },
+    {
+      "seed": 822020102,
+      "family": "low",
+      "context": "mean"
+    },
+    {
+      "seed": 822020102,
+      "family": "low",
+      "context": "short_context"
+    },
+    {
+      "seed": 822020102,
+      "family": "low",
+      "context": "long_context"
+    },
+    {
+      "seed": 822020102,
+      "family": "queue",
+      "context": "mean"
+    },
+    {
+      "seed": 822020102,
+      "family": "queue",
+      "context": "short_context"
+    },
+    {
+      "seed": 822020102,
+      "family": "queue",
+      "context": "long_context"
+    },
+    {
+      "seed": 822020102,
+      "family": "burst",
+      "context": "mean"
+    },
+    {
+      "seed": 822020102,
+      "family": "burst",
+      "context": "short_context"
+    },
+    {
+      "seed": 822020102,
+      "family": "burst",
+      "context": "long_context"
+    },
+    {
+      "seed": 822020102,
+      "family": "sustained",
+      "context": "mean"
+    },
+    {
+      "seed": 822020102,
+      "family": "sustained",
+      "context": "short_context"
+    },
+    {
+      "seed": 822020102,
+      "family": "sustained",
+      "context": "long_context"
+    }
+  ],
+  "gate_fixtures": [
+    {
+      "seed": 822001001,
+      "family": "fixture",
+      "context": "mean",
+      "requests": [
+        {
+          "id": "fixture0/0",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 0,
+          "arrival_ns": 35000000000,
+          "deadline_offset_ns": 1500000000
+        }
+      ]
+    },
+    {
+      "seed": 822001002,
+      "family": "fixture",
+      "context": "mean",
+      "requests": [
+        {
+          "id": "fixture1/0",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 0,
+          "arrival_ns": 35000000000,
+          "deadline_offset_ns": 6000000000
+        }
+      ]
+    },
+    {
+      "seed": 822001003,
+      "family": "fixture",
+      "context": "mean",
+      "requests": [
+        {
+          "id": "fixture2/0",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 0,
+          "arrival_ns": 35000000000,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "fixture2/1",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 1,
+          "arrival_ns": 35000000000,
+          "deadline_offset_ns": 6000000000
+        }
+      ]
+    },
+    {
+      "seed": 822001004,
+      "family": "fixture",
+      "context": "mean",
+      "requests": [
+        {
+          "id": "fixture3/0",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 0,
+          "arrival_ns": 35000000000,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "fixture3/1",
+          "task": "classification",
+          "priority": "urgent",
+          "ordinal": 1,
+          "arrival_ns": 35000000000,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "fixture3/2",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 2,
+          "arrival_ns": 35200000000,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "fixture3/3",
+          "task": "detection",
+          "priority": "normal",
+          "ordinal": 3,
+          "arrival_ns": 35200000000,
+          "deadline_offset_ns": 6000000000
+        }
+      ]
+    }
+  ],
+  "selected_as_final": false,
+  "common_realization": 201,
+  "energy_AP_service_coefficients_changed": false,
+  "representative_selected_before_amendment_results": {
+    "condition": 20,
+    "reason": "development public opportunity diagnosis"
+  }
+}
