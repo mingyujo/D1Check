@@ -1,5 +1,10 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-10 ROLLING-PREFIX-OPPORTUNITY-05 — 제한 상태의 실행prefix 진단 종료
+
+- [공개상태/실행의미/예산](ROLLING_PREFIX_OPPORTUNITY_20261010.md): 사용자진행승인으로8상태/792예측상한·native/학습/기기0를 고정,170예측/복원8/추가기회1을 확인했다. 같은창/선별/계수에서 전체winner와 실행prefix최선이 달라질수있으나 국소witness를 전체성능으로 쓰지않는다.
+- 100환경예상/112상한 새24조건pilot은 미등록후속제안이다. 정책연결/대기·쌍commit검증·원단위KPI판정이 필요하며 이번native0/9749·1449/닫힌예산/다른모형실측/원기준·strict·experiment_ready=false를 보존한다.
+
 ## 2026-10-10 ROLLING-EXPERT-REVIEW-04 — 기존 후보의 실행prefix 직접 선정 제안
 
 - [실제구현감사/3AI토론](ROLLING_EXPERT_REVIEW_20261010.md): 창4·선별8·원행동/기한/모형은유지하고 실제첫행동별평가를별도draft로정의했다. 동일공개상태/과거최고/취소가능한WAIT의미를검증하며 future-only감소를전체최고KPI개선으로세지않는다.

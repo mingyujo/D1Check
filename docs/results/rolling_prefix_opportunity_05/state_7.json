@@ -1,0 +1,584 @@
+{
+  "row": {
+    "index": 7,
+    "seed": 813010102,
+    "family": "sustained",
+    "context": "mean",
+    "selection": "earliest_declared_nonBand_action",
+    "now_s": 42.234522549,
+    "status": "diagnosed",
+    "reason": "strict_prefix_model_gain",
+    "unique_prefixes": 2,
+    "admissible": 1,
+    "opportunity": true,
+    "state_key": "f0bcc01367ef596015700f11b469d490a35ca5ddc93353753f6808e8deb3c234",
+    "queued": 1,
+    "rounded_transition_records": 496,
+    "reconstruction_errors": {
+      "mean.peak_ap_c": 1.5010215292932116e-11,
+      "mean.global_peak_ap_c": 1.5010215292932116e-11,
+      "mean.remaining_increment_j": 0.0,
+      "mean.urgent_p95_ms": 3.333358904455963e-07,
+      "short_context.peak_ap_c": 1.5010215292932116e-11,
+      "short_context.global_peak_ap_c": 1.5010215292932116e-11,
+      "short_context.remaining_increment_j": 0.0,
+      "short_context.urgent_p95_ms": 3.333358904455963e-07,
+      "long_context.peak_ap_c": 1.5010215292932116e-11,
+      "long_context.global_peak_ap_c": 1.5010215292932116e-11,
+      "long_context.remaining_increment_j": 0.0,
+      "long_context.urgent_p95_ms": 3.333358904455963e-07
+    },
+    "delta_global_AP": -0.012321832304646563,
+    "delta_increment_J": 0.0
+  },
+  "public_queue": [
+    {
+      "id": "813010102/sustained/18",
+      "ordinal": 18,
+      "task": "detection",
+      "priority": "normal",
+      "arrival_ns": 42234522549,
+      "deadline_offset_ns": 6000000000
+    }
+  ],
+  "public_lanes": {
+    "CPU": {
+      "request": null,
+      "phase": "AVAILABLE",
+      "since": 41993576702.0,
+      "dispatch": null
+    },
+    "GPU": {
+      "request": null,
+      "phase": "AVAILABLE",
+      "since": 40920942119.0,
+      "dispatch": null
+    }
+  },
+  "snapshot_state_key": "f0bcc01367ef596015700f11b469d490a35ca5ddc93353753f6808e8deb3c234",
+  "past_peak_c": 29.88863403522521,
+  "controller_observation": {
+    "t": 29.884219195516522,
+    "h": -0.0096177883229241,
+    "credit": 0.25,
+    "observed_responses": {
+      "813010102/sustained/0": {
+        "priority": "urgent",
+        "response_ms": 156.179931,
+        "failed": false
+      },
+      "813010102/sustained/1": {
+        "priority": "urgent",
+        "response_ms": 156.179931,
+        "failed": false
+      },
+      "813010102/sustained/2": {
+        "priority": "normal",
+        "response_ms": 619.471443,
+        "failed": false
+      },
+      "813010102/sustained/3": {
+        "priority": "urgent",
+        "response_ms": 294.054635,
+        "failed": false
+      },
+      "813010102/sustained/4": {
+        "priority": "normal",
+        "response_ms": 619.471443,
+        "failed": false
+      },
+      "813010102/sustained/5": {
+        "priority": "urgent",
+        "response_ms": 294.054635,
+        "failed": false
+      },
+      "813010102/sustained/6": {
+        "priority": "normal",
+        "response_ms": 619.4714433888855,
+        "failed": false
+      },
+      "813010102/sustained/7": {
+        "priority": "normal",
+        "response_ms": 854.4519322430497,
+        "failed": false
+      },
+      "813010102/sustained/8": {
+        "priority": "normal",
+        "response_ms": 1077.4967920972138,
+        "failed": false
+      },
+      "813010102/sustained/11": {
+        "priority": "urgent",
+        "response_ms": 294.0546346666641,
+        "failed": false
+      },
+      "813010102/sustained/9": {
+        "priority": "normal",
+        "response_ms": 1289.6073039513778,
+        "failed": false
+      },
+      "813010102/sustained/12": {
+        "priority": "urgent",
+        "response_ms": 294.054635,
+        "failed": false
+      },
+      "813010102/sustained/10": {
+        "priority": "normal",
+        "response_ms": 1507.335488805542,
+        "failed": false
+      },
+      "813010102/sustained/14": {
+        "priority": "urgent",
+        "response_ms": 294.054635,
+        "failed": false
+      },
+      "813010102/sustained/13": {
+        "priority": "normal",
+        "response_ms": 923.3796096597061,
+        "failed": false
+      },
+      "813010102/sustained/15": {
+        "priority": "urgent",
+        "response_ms": 274.782424,
+        "failed": false
+      },
+      "813010102/sustained/16": {
+        "priority": "urgent",
+        "response_ms": 156.179931,
+        "failed": false
+      },
+      "813010102/sustained/17": {
+        "priority": "urgent",
+        "response_ms": 156.179931,
+        "failed": false
+      }
+    },
+    "band_expected": {
+      "classification_CPU_urgent": 165216275,
+      "classification_GPU_urgent": 304829475,
+      "detection_CPU_normal": 621736894
+    }
+  },
+  "restored_shortlist": [
+    {
+      "ordinal": 1,
+      "plan": [
+        {
+          "request_id": "813010102/sustained/18",
+          "backend": "CPU",
+          "delay_ns": 250000000.0
+        }
+      ],
+      "signature": "{\"hold_signature\":[[\"813010102/sustained/18\"],[[\"CPU\",null],[\"GPU\",null]]],\"interrupt_on\":[\"arrival\",\"any_lane_available\"],\"kind\":\"cool_wait\",\"until_ns\":42484522549.0}"
+    },
+    {
+      "ordinal": 0,
+      "plan": [
+        {
+          "request_id": "813010102/sustained/18",
+          "backend": "CPU",
+          "delay_ns": 0.0
+        }
+      ],
+      "signature": "{\"jobs\":[{\"backend\":\"CPU\",\"request_id\":\"813010102/sustained/18\"}],\"kind\":\"single\"}"
+    }
+  ],
+  "references": {
+    "mean": {
+      "valid": true,
+      "feasible": true,
+      "remaining_increment_j": 0.443252336508083,
+      "peak_ap_c": 29.94622053518231,
+      "global_peak_ap_c": 29.94622053518231,
+      "volumes": {
+        "classification_CPU": 0.0,
+        "classification_GPU": 0.0,
+        "classification_GPU+detection_CPU": 0.0,
+        "detection_CPU": 0.6217368948541662
+      },
+      "urgent_margin": null,
+      "normal_margin": 5.380528556999998,
+      "urgent_p95_ms": 294.054635,
+      "dispatches": [
+        {
+          "request_id": "813010102/sustained/18",
+          "backend": "CPU",
+          "at_ns": 42234522549
+        }
+      ],
+      "lane_end_s": 42.856259443854164,
+      "deadline_misses": 0,
+      "urgent_misses": 0,
+      "normal_misses": 0,
+      "probe_urgent_ms": {},
+      "projection": null,
+      "state_key": "f0bcc01367ef596015700f11b469d490a35ca5ddc93353753f6808e8deb3c234"
+    },
+    "short_context": {
+      "valid": true,
+      "feasible": true,
+      "remaining_increment_j": 0.44273679819270484,
+      "peak_ap_c": 29.9461309162964,
+      "global_peak_ap_c": 29.9461309162964,
+      "volumes": {
+        "classification_CPU": 0.0,
+        "classification_GPU": 0.0,
+        "classification_GPU+detection_CPU": 0.0,
+        "detection_CPU": 0.6210137645624982
+      },
+      "urgent_margin": null,
+      "normal_margin": 5.3812090879999985,
+      "urgent_p95_ms": 294.054635,
+      "dispatches": [
+        {
+          "request_id": "813010102/sustained/18",
+          "backend": "CPU",
+          "at_ns": 42234522549
+        }
+      ],
+      "lane_end_s": 42.855536313562496,
+      "deadline_misses": 0,
+      "urgent_misses": 0,
+      "normal_misses": 0,
+      "probe_urgent_ms": {},
+      "projection": null,
+      "state_key": "f0bcc01367ef596015700f11b469d490a35ca5ddc93353753f6808e8deb3c234"
+    },
+    "long_context": {
+      "valid": true,
+      "feasible": true,
+      "remaining_increment_j": 0.4437404389840684,
+      "peak_ap_c": 29.946305387487374,
+      "global_peak_ap_c": 29.946305387487374,
+      "volumes": {
+        "classification_CPU": 0.0,
+        "classification_GPU": 0.0,
+        "classification_GPU+detection_CPU": 0.0,
+        "detection_CPU": 0.6224215417083272
+      },
+      "urgent_margin": null,
+      "normal_margin": 5.379848316,
+      "urgent_p95_ms": 294.054635,
+      "dispatches": [
+        {
+          "request_id": "813010102/sustained/18",
+          "backend": "CPU",
+          "at_ns": 42234522549
+        }
+      ],
+      "lane_end_s": 42.856944090708325,
+      "deadline_misses": 0,
+      "urgent_misses": 0,
+      "normal_misses": 0,
+      "probe_urgent_ms": {},
+      "projection": null,
+      "state_key": "f0bcc01367ef596015700f11b469d490a35ca5ddc93353753f6808e8deb3c234"
+    }
+  },
+  "candidates": [
+    {
+      "ordinal": 1,
+      "action": {
+        "kind": "cool_wait",
+        "until_ns": 42484522549.0,
+        "hold_signature": [
+          [
+            "813010102/sustained/18"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "state_key": "f0bcc01367ef596015700f11b469d490a35ca5ddc93353753f6808e8deb3c234",
+      "semantics": "wait_to_first_public_event_then_band_v1",
+      "forecasts": {
+        "mean": {
+          "valid": true,
+          "state_key": "f0bcc01367ef596015700f11b469d490a35ca5ddc93353753f6808e8deb3c234",
+          "remaining_increment_j": 0.443252336508083,
+          "peak_ap_c": 29.933809083991754,
+          "global_peak_ap_c": 29.933809083991754,
+          "volumes": {
+            "classification_CPU": 0.0,
+            "classification_GPU": 0.0,
+            "classification_GPU+detection_CPU": 0.0,
+            "detection_CPU": 0.6217368948541662
+          },
+          "lane_end_s": 43.106259443854164,
+          "urgent_misses": 0,
+          "normal_misses": 0,
+          "urgent_p95_ms": 294.054635,
+          "dispatches": [
+            {
+              "request_id": "813010102/sustained/18",
+              "backend": "CPU",
+              "at_ns": 42484522549
+            }
+          ]
+        },
+        "short_context": {
+          "valid": true,
+          "state_key": "f0bcc01367ef596015700f11b469d490a35ca5ddc93353753f6808e8deb3c234",
+          "remaining_increment_j": 0.44273679819270484,
+          "peak_ap_c": 29.933809083991754,
+          "global_peak_ap_c": 29.933809083991754,
+          "volumes": {
+            "classification_CPU": 0.0,
+            "classification_GPU": 0.0,
+            "classification_GPU+detection_CPU": 0.0,
+            "detection_CPU": 0.6210137645624982
+          },
+          "lane_end_s": 43.105536313562496,
+          "urgent_misses": 0,
+          "normal_misses": 0,
+          "urgent_p95_ms": 294.054635,
+          "dispatches": [
+            {
+              "request_id": "813010102/sustained/18",
+              "backend": "CPU",
+              "at_ns": 42484522549
+            }
+          ]
+        },
+        "long_context": {
+          "valid": true,
+          "state_key": "f0bcc01367ef596015700f11b469d490a35ca5ddc93353753f6808e8deb3c234",
+          "remaining_increment_j": 0.4437404389840684,
+          "peak_ap_c": 29.933809083991754,
+          "global_peak_ap_c": 29.933809083991754,
+          "volumes": {
+            "classification_CPU": 0.0,
+            "classification_GPU": 0.0,
+            "classification_GPU+detection_CPU": 0.0,
+            "detection_CPU": 0.6224215417083272
+          },
+          "lane_end_s": 43.106944090708325,
+          "urgent_misses": 0,
+          "normal_misses": 0,
+          "urgent_p95_ms": 294.054635,
+          "dispatches": [
+            {
+              "request_id": "813010102/sustained/18",
+              "backend": "CPU",
+              "at_ns": 42484522549
+            }
+          ]
+        }
+      }
+    },
+    {
+      "ordinal": 0,
+      "action": {
+        "kind": "single",
+        "jobs": [
+          {
+            "request_id": "813010102/sustained/18",
+            "backend": "CPU"
+          }
+        ]
+      },
+      "state_key": "f0bcc01367ef596015700f11b469d490a35ca5ddc93353753f6808e8deb3c234",
+      "semantics": "immediate_prefix_then_band_v1",
+      "forecasts": {
+        "mean": {
+          "valid": true,
+          "state_key": "f0bcc01367ef596015700f11b469d490a35ca5ddc93353753f6808e8deb3c234",
+          "remaining_increment_j": 0.443252336508083,
+          "peak_ap_c": 29.94622053518231,
+          "global_peak_ap_c": 29.94622053518231,
+          "volumes": {
+            "classification_CPU": 0.0,
+            "classification_GPU": 0.0,
+            "classification_GPU+detection_CPU": 0.0,
+            "detection_CPU": 0.6217368948541662
+          },
+          "lane_end_s": 42.856259443854164,
+          "urgent_misses": 0,
+          "normal_misses": 0,
+          "urgent_p95_ms": 294.054635,
+          "dispatches": [
+            {
+              "request_id": "813010102/sustained/18",
+              "backend": "CPU",
+              "at_ns": 42234522549
+            }
+          ]
+        },
+        "short_context": {
+          "valid": true,
+          "state_key": "f0bcc01367ef596015700f11b469d490a35ca5ddc93353753f6808e8deb3c234",
+          "remaining_increment_j": 0.44273679819270484,
+          "peak_ap_c": 29.9461309162964,
+          "global_peak_ap_c": 29.9461309162964,
+          "volumes": {
+            "classification_CPU": 0.0,
+            "classification_GPU": 0.0,
+            "classification_GPU+detection_CPU": 0.0,
+            "detection_CPU": 0.6210137645624982
+          },
+          "lane_end_s": 42.855536313562496,
+          "urgent_misses": 0,
+          "normal_misses": 0,
+          "urgent_p95_ms": 294.054635,
+          "dispatches": [
+            {
+              "request_id": "813010102/sustained/18",
+              "backend": "CPU",
+              "at_ns": 42234522549
+            }
+          ]
+        },
+        "long_context": {
+          "valid": true,
+          "state_key": "f0bcc01367ef596015700f11b469d490a35ca5ddc93353753f6808e8deb3c234",
+          "remaining_increment_j": 0.4437404389840684,
+          "peak_ap_c": 29.946305387487374,
+          "global_peak_ap_c": 29.946305387487374,
+          "volumes": {
+            "classification_CPU": 0.0,
+            "classification_GPU": 0.0,
+            "classification_GPU+detection_CPU": 0.0,
+            "detection_CPU": 0.6224215417083272
+          },
+          "lane_end_s": 42.856944090708325,
+          "urgent_misses": 0,
+          "normal_misses": 0,
+          "urgent_p95_ms": 294.054635,
+          "dispatches": [
+            {
+              "request_id": "813010102/sustained/18",
+              "backend": "CPU",
+              "at_ns": 42234522549
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "selection": {
+    "chosen": {
+      "ordinal": 1,
+      "action": {
+        "kind": "cool_wait",
+        "until_ns": 42484522549.0,
+        "hold_signature": [
+          [
+            "813010102/sustained/18"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "state_key": "f0bcc01367ef596015700f11b469d490a35ca5ddc93353753f6808e8deb3c234",
+      "semantics": "wait_to_first_public_event_then_band_v1",
+      "forecasts": {
+        "mean": {
+          "valid": true,
+          "state_key": "f0bcc01367ef596015700f11b469d490a35ca5ddc93353753f6808e8deb3c234",
+          "remaining_increment_j": 0.443252336508083,
+          "peak_ap_c": 29.933809083991754,
+          "global_peak_ap_c": 29.933809083991754,
+          "volumes": {
+            "classification_CPU": 0.0,
+            "classification_GPU": 0.0,
+            "classification_GPU+detection_CPU": 0.0,
+            "detection_CPU": 0.6217368948541662
+          },
+          "lane_end_s": 43.106259443854164,
+          "urgent_misses": 0,
+          "normal_misses": 0,
+          "urgent_p95_ms": 294.054635,
+          "dispatches": [
+            {
+              "request_id": "813010102/sustained/18",
+              "backend": "CPU",
+              "at_ns": 42484522549
+            }
+          ]
+        },
+        "short_context": {
+          "valid": true,
+          "state_key": "f0bcc01367ef596015700f11b469d490a35ca5ddc93353753f6808e8deb3c234",
+          "remaining_increment_j": 0.44273679819270484,
+          "peak_ap_c": 29.933809083991754,
+          "global_peak_ap_c": 29.933809083991754,
+          "volumes": {
+            "classification_CPU": 0.0,
+            "classification_GPU": 0.0,
+            "classification_GPU+detection_CPU": 0.0,
+            "detection_CPU": 0.6210137645624982
+          },
+          "lane_end_s": 43.105536313562496,
+          "urgent_misses": 0,
+          "normal_misses": 0,
+          "urgent_p95_ms": 294.054635,
+          "dispatches": [
+            {
+              "request_id": "813010102/sustained/18",
+              "backend": "CPU",
+              "at_ns": 42484522549
+            }
+          ]
+        },
+        "long_context": {
+          "valid": true,
+          "state_key": "f0bcc01367ef596015700f11b469d490a35ca5ddc93353753f6808e8deb3c234",
+          "remaining_increment_j": 0.4437404389840684,
+          "peak_ap_c": 29.933809083991754,
+          "global_peak_ap_c": 29.933809083991754,
+          "volumes": {
+            "classification_CPU": 0.0,
+            "classification_GPU": 0.0,
+            "classification_GPU+detection_CPU": 0.0,
+            "detection_CPU": 0.6224215417083272
+          },
+          "lane_end_s": 43.106944090708325,
+          "urgent_misses": 0,
+          "normal_misses": 0,
+          "urgent_p95_ms": 294.054635,
+          "dispatches": [
+            {
+              "request_id": "813010102/sustained/18",
+              "backend": "CPU",
+              "at_ns": 42484522549
+            }
+          ]
+        }
+      }
+    },
+    "score": [
+      -0.012321832304646563,
+      0.0,
+      0
+    ],
+    "reason": "strict_prefix_model_gain",
+    "admissible": 1,
+    "unique_prefixes": 2,
+    "future_only": 0,
+    "rejected": [
+      [
+        1,
+        "same_actual_band_action"
+      ]
+    ],
+    "performance_claim": false
+  },
+  "unknown_future_arrival_assumption": true,
+  "not_policy_performance": true
+}

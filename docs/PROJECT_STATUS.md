@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-10 ROLLING-PREFIX-OPPORTUNITY-05 — 8공개상태 진단 완료·추가 첫 행동1개
+
+- [사전범위·복원·결과](ROLLING_PREFIX_OPPORTUNITY_20261010.md): 개발2seed×4부하mean의 최초차단/비Band선정8상태를 복원했다. Band국소이득4 중3은 원행동동일, 새기회1은burst 즉시탐지→0.25초대기/J·기한·P95동률/AP약−0.0142°C·일반응답＋250ms다. 실제차단상태의 추가대안0·전체trace효과 미확정이다.
+- 실제WAIT는 미래대상 강제배정없이 timer/첫AVAILABLE뒤Band, phase/worker소유·미래도착차단5＋원형17 PASS. 예측170/792·실패0·screen98/그외72·8raw/source/장부/snapshot검증·native/학습/기기0·9749/1449보존이다. [전체대조·그림](results/rolling_prefix_opportunity_05/README.md).
+- 다음최대3:진단공유,별도등록후24조건pilot100/상한112검토,전조건미달시확대/학습보류. 이번nativecap0·닫힌IE480/480·원모형/기본/strict/experiment_ready=false·다른진행중실측/사용자변경/worktree보존. 검증33dffd9＋등록sourceSHA·owner없음이다.
+
 ## 2026-10-10 ROLLING-EXPERT-REVIEW-04 — 세 AI 재회의·실행 첫 행동 선택기 정의 완료
 
 - [회의·설계·한계](ROLLING_EXPERT_REVIEW_20261010.md): 모바일/산업공학/RL 2라운드 상호반론. 원8후보의 실제prefix별선정·전체최고AP/Jstrictgain에합의했다. 과거최고/동일상태/Band별칭/WAIT의미 반례수정·순수16 PASS, 정책연결/실제대안기회미확정이다.

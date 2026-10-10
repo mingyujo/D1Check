@@ -32,9 +32,6 @@ def signature(action):
         if kind=='resource_wait' and until is not None:raise ValueError('resource wait wakes on a public event')
         payload=dict(kind=kind,until_ns=until,hold_signature=action['hold_signature'],
             interrupt_on=['arrival','any_lane_available'])
-    elif kind=='band_event_wait':
-        if action.get('jobs'):raise ValueError('Band event wait cannot dispatch a request')
-        payload=dict(kind=kind,interrupt_on=['arrival','phase','lane_available'])
     elif kind=='band':payload=dict(kind=kind)
     else:raise ValueError('unknown action')
     return json.dumps(payload,sort_keys=True,separators=(',',':'))
@@ -93,7 +90,6 @@ def select(candidates,references,band_action,*,past_peak_c,state_key,now_ns):
         index,candidate=group[0];action=candidate['action'];fs=candidate.get('forecasts')
         expected=DISPATCH if action['kind'] in ('single','bundle') else WAIT
         if action['kind']=='band' or key==band_key:rejected.append((index,'same_actual_band_action'));continue
-        if action['kind']=='band_event_wait':rejected.append((index,'reference_only_band_wait'));continue
         if candidate.get('state_key')!=state_key:rejected.append((index,'different_public_state'));continue
         if action['kind']=='cool_wait' and action['until_ns']<=now_ns:
             rejected.append((index,'expired_wait_timer'));continue

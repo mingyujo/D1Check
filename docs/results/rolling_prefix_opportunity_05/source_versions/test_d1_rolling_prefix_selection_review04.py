@@ -77,9 +77,4 @@ class Selection(unittest.TestCase):
         with self.assertRaises(ValueError):x.signature(dict(kind='resource_wait',hold_signature=[],until_ns=40e9))
         c=candidate(remaining_increment_j=1.9);c['action']=dict(kind='cool_wait',hold_signature=[],until_ns=34e9);c['semantics']=x.WAIT
         self.assertIsNone(choose([c],values(forecast()),action())['chosen'])
-    def test_resolved_Band_no_dispatch_is_reference_only(self):
-        reference=dict(kind='band_event_wait')
-        self.assertIsNotNone(choose([candidate(remaining_increment_j=1.9)],values(forecast()),reference)['chosen'])
-        c=candidate(remaining_increment_j=1.9);c['action']=reference;c['semantics']=x.WAIT
-        self.assertIsNone(choose([c],values(forecast()),action())['chosen'])
 if __name__=='__main__':unittest.main()
