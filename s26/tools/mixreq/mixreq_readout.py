@@ -242,9 +242,14 @@ def hal_rows(hal_csv: Path | None, start_ns, end_ns) -> list[dict]:
     return rows
 
 
-def time_above(rows: list[dict], threshold_c: float = SKIN_HOT_C, max_gap_s: float = 2.5) -> dict:
+TIME38_MAX_GAP_S = 5.0   # R4 3-3 (before the (S) readout): the -03 host loop polls every 3 s, so HAL samples land every ~3.2 s (v2: ~2.3 s);
+                         # the first cut (2.5 s) would have excluded every interval → 0 s for every session. 5 s = covers the real cadence,
+                         # still excludes true gaps (adb loss ≥ 60 s). Judgment rule (60 s) unchanged. Recorded in R4_LEDGER.md 3-3.
+
+
+def time_above(rows: list[dict], threshold_c: float = SKIN_HOT_C, max_gap_s: float = TIME38_MAX_GAP_S) -> dict:
     """(S)-6 'SKIN ≥ 38.0 ℃ 시간' = Σ (t[i+1] − t[i]) over consecutive HAL samples with SKIN[i] ≥ threshold and gap ≤ max_gap_s
-    (missing / late samples are not bridged — 결측은 넣지 않음). Samples: host hal.csv (2 s) inside the common window."""
+    (missing / late samples are not bridged — 결측은 넣지 않음). Samples: host hal.csv (~2 s v2 · ~3.2 s -03) inside the common window."""
     total = 0.0
     hot_samples = 0
     for a, b in zip(rows, rows[1:]):
@@ -639,7 +644,7 @@ def main() -> int:
             extra["confirmation"]["reference_readout"] = str(args.reference_readout) if args.reference_readout else None
             extra["conclusion_suffix"] = "(개발 R3 · 확인 R4 — 2블록, 순서 뒤집음, 재보정 없음)"
         else:
-            extra["sustained_definitions"] = dict(time_above_38="Σ HAL 2 s 표본 간격 (gap ≤ 2.5 s) where SKIN ≥ 38.0 ℃, 공통창 안 (결측 미보간)",
+            extra["sustained_definitions"] = dict(time_above_38=f"Σ HAL 표본 간격 (gap ≤ {TIME38_MAX_GAP_S} s; -03 실측 간격 ≈ 3.2 s) where SKIN ≥ 38.0 ℃, 공통창 안 (결측 미보간)",
                                                  degradation="lane 서비스 시간 (execution_start→output_ready) 마지막 60 s 도착 중앙 ÷ 처음 60 s 도착 중앙 (기술만)",
                                                  judgments="최고 SKIN 1.0 ℃ 규칙 (주) · 38 ℃ 시간 60 s 규칙 (보조) · 긴급 응답 5 % screening · n < 3 → 쌍 부족")
             extra["conclusion_template"] = ("S26 에서 같은 혼합 요청 (3,000 · 200 ms · 600 s) 을 [병행 / NPU 병행] 으로 처리하자 CPU 직렬보다 공통창 최고 SKIN 이 Z ~ W ℃ [판정 이름] · "

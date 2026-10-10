@@ -200,3 +200,94 @@ index 1342d550..2a008fbf 100644
 - 겹침 PAR 4.22 ~ 4.50 s · PAR-NPU 4.26 ~ 4.51 s (R3 4.45 ~ 4.77 / 4.46 ~ 4.67) · J (µA 해석 · 기술만) ΔA −22.8 · −33.9 · −13.8 · −25.3 · ΔN −29.7 · −0.3 · −28.6 · −50.2 · SOC 71 → 56.
 - **결과 뒤 라벨 수정 1건 (기록)**: 첫 readout (`readout_c/`, 사본 `R4C_readout_first/`) 의 Q2 표 제목이 v1 문구 (`reg_version == 2` 조건) 였다 → `>= 2` 로 고쳐 다시 실행 (`readout/`, 사본 `R4C_readout/`). 두 readout 은 `q2_table` (제목 · note) 과 `skipped` 만 다르고 판정 · 쌍 · KPI · CSV 3개 바이트 동일. 판정 · 허용치 변경 0.
 - 결과 사본 (`git add -f`): `R4C_smoke/` (S1 + S2 ×3 · smoke_report · a24_compare, logcat 제외) · `R4C_blocks/` (16세션 device + host (logcat 제외) + validated + npu_contract · 드라이버 로그 · state · keepawake) · `R4C_readout/` · `R4C_readout_first/`.
+
+## 3-1 (S) 충전 대기 → 생략 (23:28 ~ 00:30) [P] — 프롬프트와 다르게 한 것
+
+- 23:28 "케이블 꽂으세요 (SOC 90)" → 60 분 동안 plugged 0 (SOC 56 → 54, 영훈 응답 없음). 영훈 10/9 지시 "중간에 내 답을 기다리지 말고 무조건 완주 규칙대로" 에 따라 **SOC 54 에서 (S) 스모크 → 블록 N 을 충전 없이 시작** (R3 프롬프트 표: SOC < 30 → 드라이버 `CHARGE NEEDED` 멈춤 → 충전 → `-StartIndex` 로 이어서). 게이트 (SOC 30 ~ 100) 가 세션 시작을 막으므로 앱 안 SOC < 20 멈춤은 나지 않는다. 세션 중 케이블이 꽂히면 그 세션은 앱 안 멈춤 (plugged) → 재시도 1회.
+- (S) 스모크 시작 00:30 (`results\S26_MIXREQ_SMOKE_R4S`, plan_v3s · 24 요청 · 공통창 720 s = 등록 표).
+
+## 3-2 (S) 스모크 (00:30:04 ~ 01:16:25, `results\S26_MIXREQ_SMOKE_R4S`, APK v3 · plan_v3s · 24 요청 · 공통창 720 s) [P] — 기록만
+
+- S1 (warmup_only 블록 N): 5 runtime · warmup 10 · 텐서 · RGB · PC 참조 ✔ · GPU 증거 PASS ×2 · NPU 증거 FAIL = warmup_only 공통창 조건 (검증기 한계, R2 · R3 · (C) 와 같음) · NPU 계약 PASS · `top -H` 패키지 스레드 30 · `d1mix-*` 3.
+- S2 (각 ≈ 15 분 = 720 s 창 실기기 첫 통과): CPU rc 0 유효 · 겹침 0 (00:31:55 ~ 00:45:40, 게이트 26.8 · 24.4 · 24.1) / PAR rc 0 유효 · **겹침 0.480 s** (00:47:10 ~ 01:00:56, 27.5 · 25.5) / PAR-NPU rc 0 유효 · **겹침 0.493 s** · NPU 계약 PASS (01:02:26 ~ 01:16:11, 27.6 · 25.6 · 25.1). (a)~(d) 셋 다 통과 · decisions [] · observations [] · 재시도 0 · 비상 0 · SOC 54 → 50.
+
+## 3-3 (S) 블록 N 시작 01:16:44 — `-Block N -Experiment 03` (CPU · PAR-NPU · PAR-NPU · CPU · PAR-NPU · CPU · CPU · PAR-NPU) · SOC 50 · 충전 없이 (3-1) · `CHARGE NEEDED` 가 뜨면 영훈에게 "케이블 꽂으세요".
+
+## 3-3 (S) 블록 N 1차 (01:16:44 ~ 02:47:07) [P]: index 8 · 9 · 10 · 11 · 12 **유효 5/8** (각 ≈ 15 분 · 게이트 대기 0 ~ 120 s · SKIN 27.9 ~ 30.8) · 재시도 0 · 비상 0 · SOC 50 → < 30 → index 13 게이트 `GATE_BLOCKED_NONTHERMAL` → rc 6 → **`DRIVER END reason=CHARGE NEEDED at index 13`** (02:47). 영훈에게 "케이블 꽂으세요 (SOC 90)". 재개 = `-Block N -Experiment 03 -StartIndex 13` (index 13 a1 호스트 폴더는 폰에 닿기 전 rc 6 라 `_pre1_charge` 로 옆에 둔 뒤 — 드라이버 pre-start 규칙과 같은 운영 처리).
+- **(S) readout 전 수정 1건 (02:5x, 코드 — 판정 규칙 아님)**: (S) 세션의 호스트 HAL 표본 간격이 ≈ 3.2 s (`listing_period_s` 3 s 때문; v2 · (C) 는 ≈ 2.3 s) 로, `time_above()` 의 gap 상한 2.5 s 로는 모든 구간이 빠져 38 ℃ 시간이 늘 0 이 된다 — 5 세션 산출물의 **필드 존재만 확인하는 파이프라인 점검** (스크래치, KPI 미열람 · 미기록) 중 표본 간격으로 발견. `TIME38_MAX_GAP_S` 2.5 → **5.0 s** (실측 최대 3.68 s 포함 · adb 끊김 ≥ 60 s 는 여전히 제외) · 정의 문구 갱신 · 시험 추가. 60 s 판정 규칙 · 그 밖 지표 무변경. 커밋 ④ 에 포함 (블록 도는 중 git 0).
+- 충전: 02:47 요청 → **08:24 케이블 연결** (SOC 14 — 5시간 37분 대기, 그동안 화면 켜짐 유지로 SOC 26 → 14) → 10:16 SOC 90 → "뽑으세요" → **10:37 분리 (SOC 98)** → 10:38 `-Block N -Experiment 03 -StartIndex 13` 재개.
+- **index 13 (CPU) attempt 1 무효 (11:16 ~ 11:30)** [P 진단 · KPI 아님]: 게이트 38 분 대기 뒤 31.3 · 30.0 · 29.8 로 시작 (충전 직후 · 1차 세션들보다 3 ℃ 높음) → 앱 안 `post-window drain incomplete` (요청 2,800 / 3,000 완료 · 창 끝 720 s + drain 30 s 안에 CPU lane 이 못 따라감 · 마지막 lane_available 750 s · 탐지 CPU 서비스 시간 중앙 238 → 506 ms (유효한 index 8 은 236 → 365 ms · 마지막 656.6 s) · 창 끝 SKIN 38.9 · AP 41.6). 규칙 0 · 1 · 9 로 무효 → 드라이버 재시도 1회 (600 s 쉼 + 게이트). 두 번째도 무효면 `invalid_twice` → 다음 index (쌍 N2 소실 · 남은 쌍 3 ≥ 3). 설계 · 규칙 변경 0.
+- **index 13 attempt 2 무효 (11:52 ~ 12:07)** [P]: 게이트 12 분 대기 뒤 31.4 · 30.1 · 30.0 시작 → 같은 원인 `post-window drain incomplete` (2,830 / 3,000 · 마지막 lane_available 750.4 s · 창 끝 SKIN 38.2 · AP 40.5) → **`INVALID_TWICE` index 13 → 다음 index (등록 v2 #6)**. 쌍 N2 (12 · 13) 소실. index 14 (CPU) 도 같은 조건이면 쌍 N3 소실 → 블록 N 쌍 2 < 3 → "쌍 부족 — 기술만" 이 될 수 있다 (규칙 그대로 둔다 · 기록만).
+- **index 14 (CPU) attempt 1 무효 (12:24 ~ 12:39)** [P]: 시작 31.4 · 30.0 · 29.9 → 같은 원인 `post-window drain incomplete` (완료 수 · 창 끝 SKIN 은 레포 사본 `R4S_blocks/`) → 600 s 쉼 + 게이트 뒤 attempt 2. 오후 (실내 · 폰 모두 더 따뜻한 상태 · 게이트 통과 직후 SKIN 31.4) 의 CPU 직렬은 600 s 를 못 버틴다 — 새벽 1차 (index 8 · 11, 27.9 ~ 30.8 시작) 는 유효. 규칙 변경 0.
+- **index 14 attempt 2 무효 (12:59 ~ 13:14)** [P]: 같은 원인 → **`INVALID_TWICE` index 14**. 블록 N 유효 = 8 · 9 · 10 · 11 · 12 (+ 15 진행) → 쌍 N0 (8 · 9) · N1 (10 · 11) 만 완전 → **n = 2 < 3 → 블록 N 판정 "쌍 부족 — 기술만"** 이 확정 (등록 (S)-7). 무효 4세션 (13 ×2 · 14 ×2) 의 "CPU 직렬이 600 s 를 못 따라감 (2,800 ~ 2,840 / 3,000 · 창 끝 SKIN 38 ~ 39)" 은 결과 문서에 기술 (유효 세션 아님 · KPI 아님).
+
+## 운영 중단 (영훈 지시 10/10 13:28 "지금 R4 측정 중단해. 인터넷이 곧 바뀐다") — 13:29:33 [P]
+
+- ① 프로세스 정지: 드라이버 (pid 15832, `-Block N -Experiment 03 -StartIndex 13`) · 세션 py/python (8324 · 29060, index 15 attempt 1) · 게이트 python (24180) · keepawake (30464) → Stop-Process 전부 성공 · `keepawake.stop` 기록 · 남은 프로세스 0.
+- ② adb 붙어 있음 (`device`) → `am force-stop com.example.d1check.requestrunner` (앱은 떠 있지 않았음 — 게이트 대기 중) · `npurunner` · `qualityrunner` 무접촉. SOC 80.
+- ③ 진행 중이던 시도: **블록 N · index 15 (PAR-NPU) · attempt 1** — 13:14:33 세션 시작 → 간격 85 s 대기 → 13:15:59 게이트 폴링 중 (SKIN/BAT 기준 미달로 대기, 앱 미시작 · manifest 미push · 기기 폴더 없음 [P]) → **시도 소모 없음 (운영 중단)**. 호스트 폴더 → `S26_MIXREQ_15_S26_NPU_PARALLEL_V1_a1_abort_133009`. 재개 = `mixreq_driver.ps1 -Block N -Experiment 03 -StartIndex 15` (attempt 1 부터).
+- 남은 칸: (S) 블록 N index **15** (미시도) · (S) 블록 A index **0 ~ 7** (전부 미시도, 충전 뒤) · (S) readout · 4부 보고 · CLAUDE.md 블록 · 커밋 ④. 완료: (C) 16/16 (커밋 ③ push 완료) · (S) 스모크 · (S) 블록 N 유효 8 · 9 · 10 · 11 · 12 · invalid_twice 13 · 14.
+- ④ git 커밋 · push 없음 (지시). 작업 트리 미커밋 변경 = `mixreq_readout.py` (38 ℃ 시간 gap 상한 5 s · 라벨) · `test_mixreq.py` · `R4_LEDGER.md` — 다음 세션이 커밋 ④ 에 포함.
+- ⑤ 폰: `screen_off_timeout` 86400000 그대로 · 밝기 1 (수동) · 비행기 · 방해 금지 그대로 · 케이블 없음 · APK v3 설치된 채 · `/data/local/tmp/mixreq` 보존.
+- 인터넷 (학교망) 이 바뀌면 무선 디버깅 주소가 바뀐다 → 재개 시 `adb devices -l` · 폰 무선 디버깅 화면으로 새 `<IP:PORT>` 확인 (R3 9-3 과 같은 절차).
+
+## R4 재개 (10/10 15:1x ~, 프롬프트 `프롬프트_R4재개_1010.md`) — 0단계 · 1단계 [P]
+
+- **0단계 (15:15)**: R4 프로세스 (`mixreq_driver` · `mixreq_session` · `keepawake_block` · `phone_watch` · `skin_watch`) **0**. `git status -sb`: HEAD `3ab3d706` = `origin/s26-mixreq` · 미커밋 3 파일 = `R4_LEDGER.md` · `mixreq_readout.py` (38 ℃ gap 5 s) · `test_mixreq.py` (운영 중단 ④ 그대로, 건드리지 않음 · 커밋 ④ 에 포함). 디스크 free 12 GB (> 10 GB). 측정 코드 변경 0.
+- **재개 전 상태 (원장 · `driver_state_blockN.json` (resume13 실행분: 13 · 14 `invalid_twice` · retries 2) · `results\S26_MIXREQ_R4S\` 폴더 · `validated.json` `eligible` · `reasons` 로 확정)**:
+
+| index | 정책 | 시도 폴더 | 판정 (validated `reasons`) |
+|---|---|---|---|
+| 8 | CPU | a1 | **valid** (reasons []) |
+| 9 | PAR-NPU | a1 | **valid** |
+| 10 | PAR-NPU | a1 | **valid** |
+| 11 | CPU | a1 | **valid** |
+| 12 | PAR-NPU | a1 | **valid** |
+| 13 | CPU | `a1_pre1_charge` (rc 6 · 폰 미접촉 · 미소모) · a1 · a2 | **invalid_twice** (a1 · a2 모두 reasons 0 · 1 · 2 · 3 · 4 · 5 · 9 = drain incomplete) |
+| 14 | CPU | a1 · a2 | **invalid_twice** (같은 reasons) |
+| 15 | PAR-NPU | `a1_abort_133009` (운영 중단 · 게이트 대기 중 · 앱 미시작 · `host/session_log.txt` 만) | **미시도 → 여기서 재개 (attempt 1)** |
+| A 0 ~ 7 | CPU · PAR · PAR · CPU · PAR · CPU · CPU · PAR | 없음 | **미시도** (블록 N 뒤 · 충전 뒤) |
+
+- **운영 중단 시도 처리 (0단계 4, 결과 · KPI 를 보지 않고 정한 운영 규칙)**: 블록 N index 15 attempt 1 (13:14:33 시작 · 13:15:59 ~ 13:29 게이트 폴링 중 중단) 은 폰에 닿지 않았다 (manifest 미push · 기기 폴더 없음 · 앱 미시작) → 폴더는 이미 `S26_MIXREQ_15_S26_NPU_PARALLEL_V1_a1_abort_133009` 로 옆에 있고 **시도를 소모하지 않는다** (R3 원장 1-2 ③ "연결 문제 · 시도 소모 안 함" 과 같은 처리 — 측정 실패 아님). 재개 = index 15 attempt 1 부터.
+- **1단계 연결 (15:15 ~ 15:19)**: `adb devices -l` 비어 있음 → 영훈이 준 새 망 주소 (`192.0.0.x` 대역 · 포트) 로 `adb connect` → **timeout (10060)**. PC 는 핫스팟 망 (IPv4 /28, 게이트웨이 1개) 에 붙어 있고, 그 대역 포트 스캔 · 게이트웨이 IPv4 · IPv6 전부 거부 (10061). `adb mdns services` 가 폰 서비스 (`adb-<SERIAL>-…  _adb-tls-connect._tcp :<PORT>`) 를 **주소 없이** 찾음 → mDNS 이름으로 `adb connect` 는 거부 → IPv6 all-nodes ping 으로 Wi-Fi 링크의 이웃을 열거 → 게이트웨이가 아닌 IPv6 링크로컬 이웃 1개 → **`adb connect [<IPv6 링크로컬>%<if>]:<PORT>` 성공 (15:19, `device`, SM-S942N)**. `$env:ANDROID_SERIAL` = 그 문자열 (세션 도구 · 드라이버는 `<SERIAL>` 로 가림 · PAT 정규식에 IPv6 링크로컬 접두가 포함이라 원장 · 커밋에 안 쓴다). [E] 영훈이 읽은 주소는 폰의 clat464 (464XLAT) 주소로 보이며 PC 에서 닿지 않는다 — 이 망에서는 IPv6 링크로컬로 붙는다 (링크로컬은 폰의 무작위 MAC 에서 나오므로 같은 망이면 유지 [E]). `kill-server` · `start-server` 안 씀 (adb 데몬은 `devices` 가 자동 시작).
+- **폰 상태 (15:20, 첫 명령 = `settings put system screen_off_timeout 86400000` — 이미 86400000)**: 잠금 없음 (`isKeyguardShowing=false` · Awake) · **SOC 77 · plugged 0** (status 3 방전 · 케이블 없음 ✔) · 밝기 1 (모드 0) → **0 put → 0 유지** · 비행기 1 · zen 1 · HAL **SKIN 29.7 · AP 34.7 / 26.6 · BAT 25.3 / 26.3** (중단 13:28 SKIN 32.1 → 식음) · 설치본 APK `b97a9784…` = v3 ✔ (재설치 없음).
+- **2단계 드라이버 재개 15:20:59**: `mixreq_driver.ps1 -Block N -Experiment 03 -StartIndex 15` (기본 plan `plan_v3s` · 결과 root `results\S26_MIXREQ_R4S` — R4 와 같음) · pid `driver_pid_blockN_resume15.txt` · stdout/stderr `driver_stdout_blockN_resume15.txt` · keepawake 새 pid. **index 15 (PAR-NPU) attempt 1: 게이트 즉시 PASS (대기 0 s · SKIN 28.4 · AP 26.6 · BAT 26.2 · SOC 77 · 직전 쉼 = 13:14 세션 끝 뒤 2 h 7 min)** → 15:21:03 `am start` → warmup 게이트 ARM. 블록 도는 동안 git 0.
+
+## 3-3 (S) 블록 N 끝 (15:20:59 ~ 15:36:21) [P]: index 15 (PAR-NPU) attempt 1 **유효** (rc 0 · `eligible` · reasons [] · 3,000/3,000 성공 · NPU 계약 PASS · 호스트 HAL 표본 250 행) · 게이트 즉시 PASS (대기 0 s · 28.4 · 26.6 · 26.2 · SOC 77) · 직전 쉼 2 h 7 min (13:14 → 15:21, 중단 포함) · SOC 77 → 73 · `DRIVER END block=N reason=completed retries=0 invalid_twice=[]` (resume15 실행분의 state — 13 · 14 의 invalid_twice 는 resume13 실행분 state · 원장 · 폴더로 남음).
+
+**블록 N 합계**: 유효 6 (8 · 9 · 10 · 11 · 12 · 15) · invalid_twice 2 (13 · 14, CPU 직렬 drain incomplete ×4) · 완전 쌍 2 (N0 = 8 · 9, N1 = 10 · 11) · N2 (12 · 13) · N3 (14 · 15) 는 CPU 쪽 소실 → **n = 2 < 3 → "쌍 부족 — 기술만"** (readout 이 확정) · 재시도 2 · 운영 중단 1 (시도 미소모) · 충전 멈춤 1 (`_pre1_charge`) · 비상 0 · 연결 사고 0.
+
+## 3-3 (S) 블록 A 시작 15:37:49 — 충전 없이 (프롬프트와 다르게 한 것 · 운영 규칙) [P]
+
+- 등록 v3 (S)-4 · R4 프롬프트 3부 = "블록 N → 충전 (SOC 90) → 블록 A". **SOC 73 (케이블 없음) 에서 충전 없이 시작**한 이유 (결과 · KPI 를 보지 않고 정함): ① 영훈 10/9 지시 "중간에 내 답을 기다리지 말고 무조건 완주 규칙대로" (R4 3-1 과 같은 처리 — 그때는 60 분 응답 없음 뒤 SOC 54 에서 시작) ② (C) 의 블록 사이 기준 "SOC < 40 이면 충전" 을 넘는다 (73) — 8세션 ≈ 2 %p 씩 [E] 이면 끝 ≈ 57 · 게이트 SOC 30 까지 여유 ③ R4 3-3 의 관측: 충전 직후 (SOC 98 · 따뜻한 폰) 재개한 CPU 직렬 4시도가 모두 drain incomplete 무효 — 지금 식은 상태 (게이트 28.4 통과) 를 충전으로 버리지 않는다 (프롬프트 머리 "충전 직후 따뜻하면 … 무효가 되기 쉽다" 와 같은 방향). SOC < 30 이면 드라이버 `CHARGE NEEDED` → 영훈에게 "케이블 꽂으세요 (SOC 90)" → `-StartIndex` 로 이어서 ("블록 안 충전").
+- `mixreq_driver.ps1 -Block A -Experiment 03` (plan_v3s · `results\S26_MIXREQ_R4S` · 같은 root) · pid `driver_pid_blockA.txt` · stdout `driver_stdout_blockA.txt` · 순서 index 0 → 7 = CPU · PAR · PAR · CPU · PAR · CPU · CPU · PAR. 블록 도는 동안 git 0.
+
+## 3-3 (S) 블록 A (15:37:49 ~ 18:51:07) [P]: **8/8 유효** · 재시도 0 · invalid_twice 0 · 연결 사고 0 · 비상 0 · 블록 안 충전 0 · `DRIVER END block=A reason=completed`
+
+| idx | 쌍 | 정책 | 세션 시작 (RUN) | 게이트 PASS (am start) | 게이트 대기 s | 게이트 SKIN · AP · BAT | 게이트 첫 판 SKIN · AP · BAT | SOC | 판정 |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | A0 | CPU | 15:37:49 | 15:43:53 | 361 | 31.0 · 29.6 · 29.4 | 33.5 · 32.6 · 32.1 | 72 | valid (reasons []) |
+| 1 | A0 | PAR | 15:59:10 | 16:08:39 | 481 | 31.3 · 29.9 · 29.8 | 34.2 · 33.3 · 33.0 | 68 | valid |
+| 2 | A1 | PAR | 16:24:12 | 16:31:40 | 361 | 31.5 · 30.1 · 30.0 | 34.0 · 33.1 · 32.7 | 63 | valid |
+| 3 | A1 | CPU | 16:47:01 | 16:56:27 | 481 | 31.3 · 29.9 · 29.7 | 33.8 · 32.9 · 32.6 | 59 | valid |
+| 4 | A2 | PAR | 17:12:00 | 17:21:29 | 481 | 31.0 · 29.7 · 29.5 | 34.0 · 33.0 · 32.7 | 54 | valid |
+| 5 | A2 | CPU | 17:36:47 | 17:46:15 | 481 | 31.2 · 29.9 · 29.6 | 34.1 · 33.2 · 32.8 | 49 | valid |
+| 6 | A3 | CPU | 18:01:33 | 18:11:02 | 481 | 31.5 · 30.1 · 30.0 | 34.4 · 33.7 · 33.2 | 45 | valid |
+| 7 | A3 | PAR | 18:26:20 | 18:35:48 | 481 | 31.4 · 30.0 · 29.9 | 34.2 · 33.4 · 33.1 | 40 | valid |
+
+- 직전 쉼 = 세션 간격 85 s + 게이트 대기 (361 ~ 481 s) — 앞 세션 끝 SKIN 33.5 ~ 34.4 에서 게이트 기준 (SKIN ≤ 32 · AP ≤ 32 · BAT ≤ 30) 까지 6 ~ 8 분. 4쌍 전부 완전 (A0 ~ A3) · CPU 직렬 4세션 전부 유효 (블록 N 오후의 drain incomplete 와 달리 게이트 통과 직후 SKIN 31.0 ~ 31.5 로 시작 — 같은 오후 · 충전 없음). SOC 73 → 40 (8세션 ≈ 4 %p 씩 [P]) · 밝기 설정값 0 (이번 재개부터 0 유지) · `screen_off_timeout` 86400000 · 잠금 0 · adb 끊김 0.
+- **(S) 16칸 전부 시도 끝 (18:51)**: 유효 14 (N 6 + A 8) · invalid_twice 2 (N 13 · 14) · 재시도 2 · 운영 중단 1 (미소모) · 충전 멈춤 1 · 비상 0.
+
+## 4-1 원복 (20:18) [P]
+
+- 프로세스 0 (keepawake stop 18:51:12) · 앱 미실행 · adb `device` · **SOC 32 · plugged 0** (18:51 뒤 화면 켜진 채 대기로 40 → 32) · `screen_off_timeout` **86400000 유지** (영훈 10/9 19:4x) · **밝기 0 → 127** · 비행기 1 · zen 1 그대로 · HAL SKIN 28.0 · BAT 25.7 · `/data/local/tmp/mixreq` 보존 · APK v3 설치된 채.
+- 커밋 ④ 전 시험: `py -3 -m pytest s26/tools/mixreq` **42 passed** (38 ℃ gap 5 s 시험 포함).
+
+## 4-2 (S) readout 한 번 (20:19:25 ~ 20:35:01, `results\S26_MIXREQ_R4S\readout`) [P]
+
+- `mixreq_readout.py --plan plan_v3s\plan.json --results results\S26_MIXREQ_R4S --out …\readout --apk-sha256 b97a9784… --source-commit 3ab3d706…` (readout 코드 = HEAD + 미커밋 gap 5 s 수정 → 커밋 ④). 세션 18 (유효 14 · 무효 4) · skipped 2 (`_pre1_charge` · `_abort_133009`, validated.json 없음) · slots valid 14 / invalid_twice 2 / not_attempted 0 · 다른 실험 세션 0 · A24 식 대조 18/18 match · files_inventory 107,032 파일 (해시 16 분).
+- **블록 A (Q-S1, n = 4, 꼬리표 0)**: 주 지표 최고 SKIN **"열 차이 기준 안 (1.0 ℃)"** (Δ 0.0 · 0.0 · 0.0 · 0.0 — **14 유효 세션 전부 최고 SKIN 38.1 ℃**) · 38 ℃ 시간 **"엇갈림"** (Δ −65.7 · −25.2 · −25.8 · −26.2 s — 전부 음수지만 3쌍 < 60 s) · 최고 AP "열 차이 기준 안" (−0.3 · −0.2 · −0.9 · +0.6) · 긴급 응답 **"병행이 긴급 응답을 줄였다"** (Δ −324.2 · −328.1 · −324.5 · −330.0 ms · CPU 424.6 ~ 431.7 → PAR 100.4 ~ 102.6) · 일반 P95 같은 이름 (Δ −42.9 · −38.2 · −43.7 · −58.5 **s**) · 서비스 **"기한 미충족 있음"** (CPU 일반 기한 706 ~ 740 / 1,500 · PAR 1,007 ~ 1,334 / 1,500 · 긴급은 둘 다 1,500/1,500) · 저하 비 · J 기술만.
+- **블록 N (Q-S3, n = 2)**: **"쌍 부족 — 기술만"** (tags) · NPU 계약 4/4 PASS · 서비스 "기한 미충족 있음" (CPU 일반 1,066 · 816 / 1,500 · PAR-NPU 4세션 전부 3,000/3,000) · 기술: Δ긴급 −306.2 · −322.6 ms · 최고 SKIN 38.1 ×6 · Δ38 ℃ 시간 +41.1 · +27.1 s · Δ시작 SKIN +2.8 (N0: index 8 새벽 첫 세션 28.6 vs 9 31.4) · 0.0.
+- 결과 뒤 코드 변경 0 (readout 은 3-3 의 gap 5 s 수정이 들어간 코드로 한 번) · 판정 규칙 변경 0 · 두 번째 readout 없음.
+- 진단 (무효 4세션, KPI 아님 — `device/session_failure.json` `post-window drain incomplete` · 창 시작 SKIN 32.1 ~ 32.2 (게이트 31.3 ~ 31.4) · 완료 2,800 · 2,830 · 2,839 · 2,842 / 3,000 · 마지막 worker_release +750.2 ~ 750.4 s = drain 한계 · 창 끝 (720 s) SKIN 38.1 ~ 38.9 · AP 40.2 ~ 41.2 · 창 안 최고 SKIN 38.2 ~ 38.9 · 탐지 CPU 서비스 (execution_start→output_ready) 처음 60 s 중앙 295 ~ 298 ms → 300 ~ 360 s 459 ~ 506 ms · 마지막 60 s 도착분 처리 0). 유효 CPU 직렬 (블록 A) 도 마지막 lane_available 695.9 ~ 707.7 s 로 750 s 직전.
+- 결과 사본 (`git add -f`, logcat 제외): `R4S_blocks/` (18 세션 + `_pre1_charge` + `_abort_133009` + 드라이버 로그 · state · stdout/stderr · pid · keepawake · gate log · 107,032 파일 · 163 MB) · `R4S_readout/` (readout.json · inventory · metrics · files_inventory) · `R4S_smoke/` (S1 + S2 ×3 · smoke_report, 230 파일) · `R4S_reports/` (보고 2 사본).

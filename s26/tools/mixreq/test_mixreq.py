@@ -679,9 +679,13 @@ def test_v3_time_above_38_and_direction():
     rows = [dict(t=0.0, SKIN=37.9), dict(t=2.0, SKIN=38.0), dict(t=4.0, SKIN=38.4), dict(t=6.0, SKIN=37.0), dict(t=8.0, SKIN=39.0),
             dict(t=20.0, SKIN=39.5), dict(t=22.0, SKIN=39.1), dict(t=24.0, SKIN=None), dict(t=26.0, SKIN=38.5)]
     t = R.time_above(rows)
-    # hot samples 2.0 (gap 2) + 4.0 (gap 2) + 8.0 (gap 12 > 2.5: not bridged) + 20.0 (gap 2) + 22.0 (gap 2) + 26.0 (last: no next) = 8 s
+    # hot samples 2.0 (gap 2) + 4.0 (gap 2) + 8.0 (gap 12 > 5: not bridged) + 20.0 (gap 2) + 22.0 (gap 2) + 26.0 (last: no next) = 8 s
     assert t["seconds"] == pytest.approx(8.0) and t["hot_samples"] == 4 and t["samples"] == 9
     assert R.time_above([])["seconds"] == 0.0
+    # -03 real cadence (~3.2 s) must count (R4 3-3 correction: max gap 5 s); a 60 s adb gap must not
+    rows32 = [dict(t=0.0, SKIN=38.5), dict(t=3.2, SKIN=38.6), dict(t=6.4, SKIN=38.4), dict(t=66.4, SKIN=38.9), dict(t=69.6, SKIN=38.1)]
+    t32 = R.time_above(rows32)
+    assert t32["seconds"] == pytest.approx(6.4 + 3.2) and t32["hot_samples"] == 3 and R.TIME38_MAX_GAP_S == 5.0
     assert R.time38_direction([10.0, -30.0, 59.9]) == "38 ℃ 이상 시간 기준 안 (60 s)"
     assert R.time38_direction([60.0, 120.0, 61.0]) == "병행이 더 오래 38 ℃ 이상"
     assert R.time38_direction([-60.0, -200.0, -75.0]) == "병행이 덜 오래 38 ℃ 이상"
