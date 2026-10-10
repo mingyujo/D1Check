@@ -1,0 +1,80 @@
+{
+  "id": "CPU-PREBASELINE-PC-01",
+  "contract": {
+    "id": "CPU-PREBASELINE-PC-01",
+    "registered_before_new_pre_feature_extraction_and_fit": true,
+    "hypothesis": "Pre50 contains transient other-CPU activity; fixed late20 minus pre50 CPU rate estimates one baseline correction without future activity.",
+    "structures": 1,
+    "pre_bins": {
+      "start_s": -20,
+      "end_s": 30,
+      "width_s": 5
+    },
+    "late_window_s": [
+      10,
+      30
+    ],
+    "hypothetical_issue_s": 35,
+    "forecast_end_s": 120,
+    "fit": "One nonnegative within-session slope of pre-only power against other_CPU core seconds/wall second. Equal session weights, no intercept or post-load targets. Leave gap30/180 block out then final development6 fit: exactly3 fits.",
+    "prediction": "Keep original P50 until35; thereafter P50+b*(late20 otherCPU rate - pre50 rate), fixed zero-offset p4 unchanged. No clipping: nonpositive result unsupported.",
+    "evaluation": "All history12. Development6 use opposite-gap fit. Already viewed confirmation6 use final development-only fit. Session/block unit, not random sensor splits. No selection/re-fit after outcomes.",
+    "primary_readout": "same 0..120 and future35..120 J signed/absolute/relative errors; actual work and post-lane idle separately; all worsening shown",
+    "AP": "unchanged; no new AP fit or coefficient injection",
+    "availability": "Offline recorded event-time features only; CSV export was produced after session. This study does not implement live feature availability or device execution.",
+    "inapplicable": "missing/lost trace, nonexact BOOTTIME, missing any of8 CPUs, overlap, unknown classification, missing pre power bracket, missing future observation endpoint; no zero filling. Other23 cases not applied.",
+    "safety_budget": {
+      "global_fits": 3,
+      "device_commands": 0,
+      "new_measurement_plans": 0,
+      "environment_simulations": 0
+    },
+    "provenance": "Family chosen after prior results were viewed; posthoc exploratory evidence, not fresh independent confirmation or physical CPU-energy identification.",
+    "default_changed": false,
+    "RL_changed": false,
+    "strict_support": false,
+    "accuracy_pass": null,
+    "experiment_ready": false
+  },
+  "sources": {
+    "docs/results/resident_identification_run_01/recorded_v3/inputs.json.gz": "806fba262cafee14a650a91dc6e4383216eb09e3dc4adc4702f7ccf0f0d15fb1",
+    "docs/results/ap_tail_observation_run_05/run_v6/inputs.json.gz": "43033ffbe67705738f63f04ab0ca17ad99b6c5ccac6b4fbf3da187da8c4addf6",
+    "docs/results/model_refinement_01/inputs.json.gz": "cb07aa735100971b6e7e635ecf9c8c24bc9b9c2b7ffdbc4e9824b0566f7f2ffb",
+    "docs/results/history_model_refinement_01/inputs.json.gz": "2005a26656c7c4a88b6b914ac51c2fcb156cb9229f050491c7f1826b5d8d816f",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/ap_tail_identification_01/run_v2/candidates.json": "aa28410d701c9810001a4e6c176823e7d2b446f46f980ebeab3ff14f4540cc84",
+    "tools/d1_resident_identification_analysis.py": "75c351a7f315412aa73c99aa6e0bf439f5b0adf7b6db33a045e05ccc689003cd",
+    "tools/d1_energy_ap_zero_offset.py": "ec96c6dac20f16ca77cd3701a0f18abce13dff20e3782f99cd9348c02a6eba65",
+    "tools/test_d1_energy_ap_zero_offset.py": "1dc6f9450266f86ddf45006f0104e8ec9290fb24b3ccd5c801eae2042eff12a4",
+    "tools/d1_energy_ap_joint_followup.py": "4c740f8312cc43d2a73ac1a862692149ed80c3915586345b6bfb1d718523e851",
+    "tools/d1_ap_tail_scope.py": "4338f4fc82509248e353e91deb230cff27594fb57cf173b96954c57513a55aba",
+    "docs/results/ap_tail_scope_01/scope.json": "c630f315c31efd1d06ec9e215c41723e67bf8338b20453c73d923242112656c8",
+    "docs/results/model_accuracy_expert_review_01/consensus_plan.json": "0adc7c3a0cd7373775fda7c63c491ad8a0ba858110e47a593a3f22f450196749",
+    "docs/results/energy_ap_joint_followup_01/run_v1/candidate.json": "a64e735c4be3ff2a8bd867f5f53e1639066bcf430adae7bda1bc45166592c017",
+    "docs/results/energy_ap_zero_offset_01/run_v1/candidate.json": "bf12fd70b5e84d984a01826c149d42a9736371a0efbf2290aab5b039628782bd",
+    "tools/d1_cpu_prebaseline.py": "87d69e1c36b8cd0fc91d573a481960af0a3073d2493d171ece76665bb90bea6e",
+    "docs/results/cpu_prebaseline_01/analysis_contract.json": "f9dd5c3edbd1e52bf9e0cff0c0237947ed6e184d9b3140d4f831286c869ba4f0"
+  },
+  "input_hashes": {
+    "pre_inputs.json": "61da76ce35da1fe13700f668f012a5643733ad59516763547e9cbfe6931b7a40",
+    "pre_bins.csv": "afc4e4b3c89b4907d1dacba8fbd2ff7d977f000f375638c183ecb99fdfeb280a",
+    "source_inventory.json": "e98ed6fe63b38e5a7ad79ef852ab83885a924cbec072bf2329e887fec28b17e8",
+    "pre_features.csv": "89126885a331c1e2c6faee61c13217c7860b69b7a61bdc87240efd29d8be590f"
+  },
+  "development_ids": [
+    "development_30_C0",
+    "development_30_CPU",
+    "development_30_PAR",
+    "development_180_PAR",
+    "development_180_CPU",
+    "development_180_C0"
+  ],
+  "evaluation_ids": [
+    "confirmation_180_C0",
+    "confirmation_180_CPU",
+    "confirmation_180_PAR",
+    "confirmation_30_PAR",
+    "confirmation_30_CPU",
+    "confirmation_30_C0"
+  ]
+}

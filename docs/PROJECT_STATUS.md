@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-10 CPU-PREBASELINE-PC-01 — 시작 전 CPU 기준전력 후보 평가 완료·미채택
+
+- 시작 전 CPU/전력만의 계수1개를 개발6에서3회 추정하고 이미 본 확인6을 전량 평가했다. 공통120초 J MAE는 기존 δ=0 보완식4.564→5.522로 악화, 원식은3.913이다. 확인3개 개선/3개 악화·직전CPU증가 후 미래감소 C0 반례를 공개했다. [완료 결과·정확한 정보 경계](CPU_PREBASELINE_RESULTS_20261010.md).
+- 새 경계7검증·원자료/export/trace120hash·구간가산성·공유곡선1440점 차이0J 확인. 새 RMSE 표기1줄만 수정/원source·모델·receipt 보존·재추정0. AP·원식·기본/RL/strict/experiment_ready=false·다른작업/사용자STATUS/다른worktree 보존, 기기/ADB/실측/설치/빌드/새계획/claim0이다.
+- 이번 후보 미채택·온라인CPU입력 미구현. 다음 PC 질문 하나는 등록회복 전체 전력·CPU 이력으로 일시적인 준비활동과 지속 기준부하를 구분할 수 있는가이다. 미래CPU를 예측에 사용하거나 좋은 세션만 고르지 않으며 새실측을 자동 추가하지 않는다. [화면·CSV·재현](results/cpu_prebaseline_01/index.html).
+
 ## 2026-10-10 LIST-CANDIDATE-RL-DEVELOP-07 — 서비스·에너지 보완 완료, 열 상충으로 미채택
 
 - 사용자 발전 지시로 재회의의 첫72진단을 구현했다. [사전범위·조건부후속](LIST_CANDIDATE_RL_DEVELOP_20261010.md). 원bank/56·28/물리mask는보존하고 선택단계에서만WAIT후보를제한한다. 새3순수검증통과·기존encoder전필터와구분한다.

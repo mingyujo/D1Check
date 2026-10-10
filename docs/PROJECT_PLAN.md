@@ -1,5 +1,10 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-10 CPU-PREBASELINE-PC-01 — 준비 활동 정보의 예측 전이 시험 완료
+
+- 부하 전50초 CPU/전력의 세션 중심화 계수1개와 고정 late20−pre50 대비를 단일 후보로 구현했다. 회복시간 블록 제외2＋최종개발1, 추정3회/12세션 전량 평가. 확인120초 J MAE4.564→5.522로 악화해 미채택하며 AP/기본/RL/strict를 유지한다. [결과·반례·재현](CPU_PREBASELINE_RESULTS_20261010.md).
+- 사건 시각상 pre 입력과 종료 후 CSV export 가용성을 구분했다. 다음 질문은 기존 등록회복 전체 이력의 기준부하 지속성 식별이며 이번에 새 측정·계획·claim·후보 반복 탐색을 추가하지 않는다. 다른 정책 작업과 사용자 변경·원자료·동결값·experiment_ready=false 보존이다.
+
 ## 2026-10-10 LIST-CANDIDATE-RL-DEVELOP-07 — 원관측 대기진단과서비스중심보완 완료
 
 - 사용자발전지시로고정128원관측보존NoWait72→공통head작업량/공통예측창V1개발24→탐지backlog보호V2개발24를수행했다. [범위·결과·상충](LIST_CANDIDATE_RL_DEVELOP_20261010.md). 새학습/optimizer/기기0·원모형/기본/strict유지다.

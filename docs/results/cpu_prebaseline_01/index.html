@@ -1,0 +1,14 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>시작 전 CPU 기준전력 후보</title><style>body{font:17px/1.7 system-ui;max-width:1120px;margin:30px auto;padding:0 18px;color:#203040}aside{background:#fff2cf;padding:18px}img{max-width:100%;height:auto}table{border-collapse:collapse;width:100%}td,th{padding:10px;border-bottom:1px solid #ddd}a{color:#075985}</style></head><body>
+<h1>시작 전 CPU 정보만으로 기준전력을 보완할 수 있는가</h1>
+<aside><strong>구현·평가 완료, 후보 미채택.</strong> 개발6에서 계수1개를3회 추정하고 이미 본 확인6 전체를 평가했습니다. 평균 에너지 오차는 감소하지 않았습니다. 기존 동결식·AP·기본 시뮬레이터·RL·strict·experiment_ready=false를 보존합니다. 추가 실측·기기 명령0회입니다.</aside>
+<table><tr><th>같은0..120초</th><th>동결 원식</th><th>기존 δ=0 보완식</th><th>CPU 초기화 후보</th></tr><tr><td>개발6 평균 절대J</td><td>5.104</td><td>4.157</td><td>4.403</td></tr><tr><td>이미 본 확인6 평균 절대J</td><td>3.913</td><td>4.564</td><td>5.522</td></tr></table>
+<p>확인6 중3개 개선/3개 악화, 악화 폭이 더 컸습니다.4개는 개발 시 관측한 CPU 특징 범위 밖이지만 제외하지 않았습니다. CPU 활동과 전력의 연관을 발견한 것과 이후 활동을 예측한 것은 다릅니다.</p>
+<p><a href="../../CPU_PREBASELINE_RESULTS_20261010.md">반례·모형·실제 종료 판정</a> · <a href="README.md">입력·재현 명령</a> · <a href="readout_v1/paired_errors.csv">모든 조건·구간오차</a> · <a href="run_v1/energy_errors.csv">관측/예측·부호·상대오차</a> · <a href="verification.json">검증</a></p>
+<img src="figures/all_session_errors.png" alt="모든12세션의 공통120초 부호 및 절대 에너지 오차, 개발과 이미 본 확인을 분리">
+<h2>예측에 실제 사용한 정보</h2><p>−20..30초의 pre50과10..30초의 late20 CPU 차이만 사용했습니다. 미래CPU·전력·AP는 입력에 없습니다. CSV는 종료 후 export였으므로 실시간 입력 전달을 구현하거나 검증한 것은 아닙니다.</p>
+<img src="figures/C0_pre_CPU_power.png" alt="무부하4세션의 고정된 시작 전 CPU 활동과 기기 전체 전력, 인과J귀속은 아님">
+<h2>실패 원인을 구분한 반례</h2><p>회복180 C0에서는 직전 CPU 증가 뒤 미래 활동이 줄었습니다. 후보가 기준전력을 +68mW 높여120초 절대오차2.764→8.566J로 악화했습니다. 회복30 C0에서는 직전 평균 활동이 거의 일정해 −0.027mW만 보정했으나 이후 전력은74mW 낮았습니다. 미래 관측은 이 설명에만 사용했습니다.</p>
+<img src="figures/C0_cumulative_residual.png" alt="두 C0의 기존 및 CPU 후보 누적 에너지 잔차, 초기 구간이 아닌 정보 경계35초 이후의 반례">
+<p>새 AP 계산·계수 보완은 없습니다. <a href="../preboundary_evidence_01/index.html">이전 AP 초기정보 개선 근거</a>는 별도로 유지합니다. 이 결과는 실제 일정 조건부 오프라인·사후 진단입니다. 정책 우월성·실기기 에너지 절감·독립 정확도 PASS가 아닙니다. A24 raw=mA, 절대J 미인증·S26 계수 비혼합.</p>
+<p><a href="../simulator_workbench_01/index.html">기존 시뮬레이터 안내</a></p>
+</body></html>
