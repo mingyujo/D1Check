@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-10 ROLLING-EXECUTION-PILOT-06 — 전체 요청 흐름 파일럿 준비 완료·본실행0
+
+- [범위·연결·기준](ROLLING_EXECUTION_PILOT_PREP_20261010.md): 실제prefix선택기를 별도PC정책에 연결했다. 원창4/선별8/0.25credit·actualAVAILABLE/arrival취소·동시쌍/실패요청보존·원계수/기한/CPU·GPU 지원은 유지했다. adapter7/계약8/기존선택17＝32순수 PASS, native gate 성과는아니다.
+- 새825060101/102×4부하×3문맥24조건×Band/Triton/원V2/새정책4개＝96행＋실행gate4,100환경예상/112상한·학습/기기0. 준비입력/sourceSHA 고정·실행clock은 명시적run 때시작하며 현재본배치/native/미래예측0·owner없음이다. [계약·준비화면](results/rolling_execution_pilot_06/README.md).
+- 다음최대3:실행지시후gate4,고정96행,전량KPI/조건별판독. 기존9749/1449·닫힌IE480/480·진단170·기본/strict/experiment_ready=false·사용자변경/다른worktree/별도중단실측보존. 검증ee653ac＋prepared source SHA, 다른기기작업재개0이다.
+
 ## 2026-10-10 ROLLING-PREFIX-OPPORTUNITY-05 — 8공개상태 진단 완료·추가 첫 행동1개
 
 - [사전범위·복원·결과](ROLLING_PREFIX_OPPORTUNITY_20261010.md): 개발2seed×4부하mean의 최초차단/비Band선정8상태를 복원했다. Band국소이득4 중3은 원행동동일, 새기회1은burst 즉시탐지→0.25초대기/J·기한·P95동률/AP약−0.0142°C·일반응답＋250ms다. 실제차단상태의 추가대안0·전체trace효과 미확정이다.

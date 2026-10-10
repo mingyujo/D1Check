@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-10-10 ROLLING-EXECUTION-PILOT-06 — 준비 승인과 본실행 구분
+
+- 확정:[작은전체흐름파일럿 준비](ROLLING_EXECUTION_PILOT_PREP_20261010.md)를 수행했다. 새selector의온라인ABI 연결/모의선택32검증/고정24조건·4역할·gate4만 준비완료다. 이전원형/원V2·진단 witness/결과를보존하고 native성과/새정책채택으로승격하지않는다.
+- 본실행/nativegate/미래예측/학습/기기0·clock미시작이다. 실행지시후 예상100/상한112와1시간/저장5분을계승하며 기존9749/1449·닫힌예산·중단중다른실측·원모형/기한/기본/strict/experiment_ready=false를보존한다.
+
 ## 2026-10-10 ROLLING-PREFIX-OPPORTUNITY-05 — 새prefix의 조건부 기회와 정책성과 구분
 
 - 확정:[8개사전선정상태](ROLLING_PREFIX_OPPORTUNITY_20261010.md)·실제취소가능WAIT 투영·원후보진단170예측을 완료했다. 새이득4 중기존동일3/추가대안1,burst현재4탐지기한/J/P95동률·예상AP약−0.0142°C 대신일반응답＋250ms다. 전체trace·실기기·독립확인성과는 미확정이다.

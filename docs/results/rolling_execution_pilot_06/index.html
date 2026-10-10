@@ -1,0 +1,10 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><title>전체 요청 흐름 파일럿 준비</title>
+<style>body{font:16px system-ui;max-width:1100px;margin:30px auto;padding:0 16px;line-height:1.65}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:9px}th{background:#eef3f7}.status{padding:18px;background:#e8f4ef}</style>
+<h1>공동 롤링 실행 첫 행동:파일럿 준비</h1><p class="status">정책 연결·입력 고정·순수32검사 완료. native gate·본배치 미실행. 실행 clock 미시작·환경/학습/기기0회. 성능 결과가 아니다.</p>
+<p><a href="README.md">범위·재현</a> · <a href="execution_contract.json">실행계약</a> · <a href="cases.json">고정 입력</a> · <a href="preparation_verification.json">준비 검증</a></p>
+<h2>정책과 실행 범위</h2><table><tr><th>정책</th><th>역할</th></tr><tr><td>Band 요청 대응</td><td>기존 강한 공개 규칙 기준</td></tr><tr><td>Triton 요청 대응</td><td>기존 고정 자원 실행 기준</td></tr><tr><td>기존 V2</td><td>전체 계획 1등 뒤 첫 행동 검사</td></tr><tr><td>새 실행 첫 행동 선택기</td><td>같은 후보의 실제 첫 행동을 직접 비교</td></tr></table>
+<p>새 도착2seed × 4부하 × 3실행문맥 = 24조건 × 4정책 = 96행. 실행 의미 gate4 후 예상100환경/상한112. 각 정책 예정1584건. 학습·튜닝·기기0.</p>
+<h2>실행 전 확인할 사건</h2><ol><li>냉각 중 긴급 도착이 대기를 취소하고 재판단하는가</li><li>phase/worker release 동안 소유를 유지하고 실제 AVAILABLE에서 배정하는가</li><li>지원 동시 쌍의 둘째 배정이 첫 배정 후 같은시각에 이뤄지는가</li><li>실패한 둘째 commit이 요청을 누락하지 않는가</li></ol>
+<h2>판정·보존</h2><p>24조건 전체의 완료·기한 실패·긴급P95·J·AP를 Band/Triton과 비교한다. 한 주부하군에서 AP 또는J 엄격감소가 있어야 유망이다. 일반 완료 지연·미완료·PC 판단부담도 표시하며 작은 모형 차이를 실기기 절감으로 확정하지 않는다.</p>
+<p>기존9749환경/1449학습·닫힌IE480/480·진단170예측·원모형/기한/CPU·GPU지원·기본/strict/experiment_ready=false·별도중단실측 보존. 준비 시간은 1시간 실행 clock에 포함하지 않고 실제 run에서 한 번 시작한다.</p>
+<h2>준비 재검사</h2><pre>python -B -X utf8 -m tools.d1_rolling_execution_pilot check</pre><p>공유 파일만의 검사도 새local budget을 만들지 않는다. native 실행은 이후 실행지시와 원local 준비/소비계보에서만 시작한다.</p></html>
