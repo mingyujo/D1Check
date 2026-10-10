@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-10-11 ROLLING-LIST-RL-PILOT-08 — 같은 후보 RL 추가효과 미확보
+
+- 확정:[공개위험·같은후보파일럿](ROLLING_LIST_RL_PILOT_20261011.md)의L0/Rule/PPO를구현·각3seed32학습/16·32개발/NoWait/실제Adam·partial재개까지완료했다. 기존자체masked PPO를재사용하고새schema로fresh weights,원보상·설정·계수·기한·CPU/GPU를유지했다. 기본/학습참조/복귀/예측후속L0·Band평가군을구분한다.
+- 전3seed실제학습/gradient/λJ작동은확인했지만Rule대비전조건추가우위는없다. RL23/37은비용감소대신일반실패18→21,NoWait는손실과이득을모두없앴다. 개발유망0/새최종확인0·새채택0,이번실제추천은기존기준유지·자체발전후보Rule이다.32episode를수렴/일반RL실패로해석하지않으며추가본학습/실측을자동확대하지않는다.
+
 ## 2026-10-11 ROLLING-HYBRID-PILOT-07 — 열head 이관·두 후보 미채택
 
 - 확정:[새모형 전체흐름 비교](ROLLING_HYBRID_PILOT_20261011.md)를 원준비본의미소비112상한으로이관했다. v3최종열head만새모형으로연결, 원service/J/기한/행동/채택계약/CPU·GPU지원을유지했다. 원prepared결과/실패/다른모형실측은보존하고추가fit/기기0이다.

@@ -1,5 +1,10 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-11 ROLLING-LIST-RL-PILOT-08 — 같은 후보·공개 위험정보·작은 학습 완료
+
+- 사용자진행승인으로 [대기보완/같은후보Rule·PPO](ROLLING_LIST_RL_PILOT_20261011.md)를별도등록했다. 창4/선별8의실제행동과새L0를8슬롯,공개큐/최근도착/요청누적대기를입력한다. 기본/복귀/학습참조/예측후속은L0이며Band는비교군이다. 원algorithm/목적/설정·v3열/원service·J/지원/기본은유지한다.
+- 완료3seed각32/4update＋실제재개4·336행/NoWait72·472환경/100학습/30896전량·누적10321/1549,실패/기기/fit0이다. Rule 서비스18유지/비용평균감소이나조건손실,RL11Band동일/23·37일반21로모든후보미채택. [결과·재현](results/rolling_list_rl_pilot_08/README.md)·유망0/조건부열특징제거0·추가본학습0·원예산/자료/strict/experiment_ready=false보존이다.
+
 ## 2026-10-11 ROLLING-HYBRID-PILOT-07 — 새 모형에서 고정 전체 흐름 비교 완료
 
 - 사용자 새시뮬레이션 실행지시로 [v3 hybrid 이관 계약](ROLLING_HYBRID_PILOT_20261011.md)을 결과전에 고정했다. 같은24조건×4정책·gate4, 원미소비112cap/1시간·저장5분이며 원prepared 미실행을 보존했다. 선별/보호/최종AP에 같은열head, 서비스/J/기한/지원/기본은불변이다.

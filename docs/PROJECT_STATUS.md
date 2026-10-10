@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-11 ROLLING-LIST-RL-PILOT-08 — 대기 위험 보완·3seed 작은 PPO 완료
+
+- [사전 계약](ROLLING_LIST_RL_PILOT_20261011.md): 원롤링창4/선별8의실제첫행동＋L0 최대8슬롯,같은후보 Rule/PPO와공개작업량/도착이력/누적대기를보완했다. 기본/복귀/학습참조/예측후속은새리스트L0, Band는평가군이다. 기존자체masked PPO/원보상·설정 재사용·새schema/weights다.
+- 472/572환경·100/104학습(본96/replay4)·실패0·30896전량완료·누적10321/1549. 각32/4update/Adam48step·actor gradient/λJ작동·nonempty Adam/partial4재개exact·14순수/2공유/native4/28339snapshot PASS다. 336행·NoWait72 완료,유망0/열특징제거0·기기/fit/NPU/기본교체0이다.
+- [CSV·그림5종·화면](results/rolling_list_rl_pilot_08/README.md):Rule 일반실패18/J평균Band−.084759/AP−.000607이나조건손실로미채택. PPO11은Band24원장same,23/37은일반21로상충·NoWait 모든seed L0로복귀했다. 다음최대3:결과공유,초기도착불명대기/후속CPU부하위험검토,새명시범위없이본학습확대0. 검증85171e2＋등록source SHA·원결과/weights/다른모형작업/사용자변경/worktree/strict/experiment_ready=false보존이다.
+
 ## 2026-10-11 ROLLING-HYBRID-PILOT-07 — 새 온도 보정 모형의 전체 흐름 비교 완료
 
 - [사전범위·이관](ROLLING_HYBRID_PILOT_20261011.md): 사용자 새시뮬레이션 실행지시로 최종v3 hybrid를 선별/보호/최종AP에 일관 연결했다. 원5phase·J·CPU/GPU·기한·창4/선별8/credit.25는 유지했다. 전달식 수치동등/새검사10＋기존32 PASS, native 이벤트gate4 PASS다.
