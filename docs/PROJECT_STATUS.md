@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-10-10 LIST-CANDIDATE-RL-TAIL-08 — 3AI 보완·6learner 학습·새 확인 완료, 미채택
+
+- [결과·설계·예산·제한](LIST_CANDIDATE_RL_TAIL_20261010.md). 현재 도착 전체 큐의 고정 L0 후속·AP35..180/J120·서비스/J 예측 허용을 별도 schema로 구현했다. 원8후보/계수/기한/CPU·GPU 지원/기본·strict·experiment_ready=false 보존이다.
+- 작은 gate32 정합PASS/기회0 보존→고정 혼합진단32 기회확인→실제 Adam/partial 재개20학습 exact→현재/보완 각3seed32→64(본384)→개발24/새확인48×10역할480 완료다. 같은episode/update이며 current128/tail96 Adam step/learner, 원actor128 연장이 아니다.
+- 새확인 보완PPO 서비스악화240→72/432이나AP142→138·전M/G미달. seed11은L0원장정확동일,23/37은같은비학습대조보다J감소/일반실패12·AP증가로RL추가우위미입증·새후보미채택이다. 저장42추가실패의미도착/같은상태L0이미지각반례를0환경으로공개했다.
+- 실제1404환경/404학습·실행실패0·90,696전량·누적9269/1449·원닫힌1348/404불변이다. 산수100과다정정/최종driver등록보호는원source별도보존·정책과학습불변,새cap1536/416·잔여132/12·clock초기화0이다.
+- [960행/6그림/토론·검증](results/list_candidate_tail_01/README.md). 순수33/전체raw경계·6최종archive/browser PASS·owner없음·기기/ADB/NPU0·사용자14행/별도CPU작업/다른worktree보존. 다음최대3:결과공유,기존기준선/L0유지,새지시때만공개도착이력의후속위험설계. 검증debd597/독립후속ccd485d＋sourceSHA/원실행driver는결과verification을따른다.
+
 ## 2026-10-10 REGISTERED-BASELINE-PC-01 — 유휴 J 국소 개선·전체 교체 보류
 
 - 기존 등록회복90/240초의전력·CPU로 고정 후보1개/개발6·3fit＋평균만의비교를 완료했다. 확인6 유휴J 평균절대2.921→2.176,전체120초는δ=0 4.564→4.000이나원식3.913보다높다. C0회복30 전체4.421→0.086에는−1.886/+1.800J 상쇄·미래85초6.307→1.800 실제개선,회복180C0/최악/정책차이악화도공개했다. [완료 판독](REGISTERED_BASELINE_RESULTS_20261010.md).
