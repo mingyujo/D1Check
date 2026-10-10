@@ -1,0 +1,40 @@
+freeze_modelerr.txt — S26 시뮬레이터 모형 오차 v1 (P1j) 동결 원장 (2026-10-10 · 예측 계산 전부터 append only)
+=====================================================================================================
+세션: Claude Code (P1j) · 클론 D1Check_v4 · 브랜치 s26-measure · 시작 HEAD = origin = 0846bb2338d69f43ffb4e03d41888a87276f50e7 · 폰 0 · adb 0 · 모형 재피팅 0.
+등록 = OneDrive sim\모형오차_사전등록_v1.md (Cowork 2026-10-09 20:3x · 영훈 "진행" 20:26) · 점검 = sim\out_modelerr\preflight.txt (21:31) · 칸 목록 = cells16.json.
+
+[2026-10-10 21:31 +09:00] 1단계 점검 (preflight.txt) — 등록 SHA 일치 · 동결 모형 3개 파일 SHA = HEAD = V3 v2 예측 JSON 기록 · V3 v2 예측 경로 재실행 → 같은 SHA a3252cad… (git 변화 0) · 유효 16칸 run_id · 런 폴더 · HAL · 러너 JSONL · 판정 JSON 전부 있음 · 무효 2칸 (NBc_b7 · NAc_b8) 제외.
+  등록과 다른 곳 (멈추지 않고 적는다 — 등록 §1 "다르면 … 원장에 적고 V3 규칙을 따른다"):
+  (a) HAL 시계열은 1 s 표본 (등록 §2 "2 s") — 1 s 그대로 쓴다.
+  (b) 시작 상태 규칙 = V3 v2 규칙: 시작 열 SKIN 29.5 · 30.5 두 점 (실제 시작 SKIN 을 직접 넣지 않음) · A0 −1.0 · BAT0 = SKIN0 − d_ref · 비교 열 = 실제 시작 SKIN 에 가까운 쪽 (같으면 29.5 · 보간 없음) · 쌍 (m5) 은 A·B 시작 SKIN 평균으로 열 하나 (v3_judge ⑤ · night1003_judge._pick_col). 등록 §2 의 "시작 SKIN / AP / BAT (부하 시작 시점)" 는 열 고르기 · 범위 표시 · 잡음 기준에 쓴다.
+      기술만 (판정 아님 · 결과 전 선언): 실제 시작 SKIN 을 T0 로 넣은 예측도 같은 코드로 나란히 낸다 (v2.2 선택 점수의 "실제 시작 열" 과 같은 방식) — m1~m5 의 기술 열 · 주 판정에 안 섞음.
+  (c) m4 첫 조임 = N2 판정기 정의 그대로 "칸 k 와 뒤 3칸 (HOLD 3) 이 모두 ≥ ×1.06 인 첫 k" (night1005_judge.first_throttle) — 등록 문장 "처음 넘는 칸" 을 이 정의로 읽는다 (등록 §3 "N2 판정기와 같은 정의"). 모형도 같은 규칙을 모형 10 s 칸 (predict_v3.run_metrics 의 bins · ref = 첫 가동 구간 처음 30 s 가동 초 중앙) 에 적용.
+  (d) m2 창 끝 = 899 s: 실측 = 판정 JSON temps.at_899 (구간 0 시작 + 899 s 에 가장 가까운 HAL) · 모형 = 1 s 재생 행 t = 899 (0 기준) 의 SKIN.
+  (e) m3 궤적 MAE: 10 s 칸 k = [10k, 10k+10) s (구간 0 start_ns 기준, k = 0..89) 안 HAL SKIN 평균 vs 같은 칸 모형 1 s 행 평균 → 90 칸 |차| 평균. HAL 표본이 없는 칸은 빼고 칸 수를 적는다.
+  (f) m1 최고 SKIN: 실측 = 판정 JSON temps.max_SKIN (900 s 창) · 모형 = 재생 900 행 최대.
+  (g) 실측 Δ (m5) = c_thermal_pairs tpair_b*.json deltas.d_max_skin 그대로 (판정기 출력 · 이미 공개된 값).
+  이미 본 것: 실측 Δ 8블록 (등록 §0 · preflight) — 예측은 아직 0.
+
+[2026-10-10 21:31:55 +09:00] 커밋 ① 9e29851858f6b695b964cb3cdf75e74269d96a8c  d1sim: 모형 오차 사전 등록 v1 (예측 전)
+  d1sim/docs/모형오차_사전등록_v1.md  blob 바이트 SHA-256 4d144c0a398e2c513788a3cc153bafb3064a570495dc94326a743e5b9997365b (= OneDrive 원본 · CR 0) · git diff --cached PAT 0 · 바이너리 0 · 이 경로만 add.
+
+[2026-10-10 21:45:06 +09:00] 커밋 ② 2775c814e565aa6a1d78fb5110d55f97d5f8ce45  d1sim/model_error_v1: 예측 · 오차 · 판정 코드 (예측 실행 전)
+  d1sim/model_error_v1/__init__.py  6a0448262056ebd4a6daa62e92726bba653be52d21208f407c3fa1531da5c989
+  d1sim/model_error_v1/common.py  fe61649c53ae7ae76f82106c79eaf5105e4ad1407372929808bb2c023497c228
+  d1sim/model_error_v1/predict_energyc.py  f486cc5c1dcdb8887063765dfedae1c93484bae2ecc3cab5e33bb073ae38000c
+  d1sim/model_error_v1/measure_energyc.py  44a5b8e6443133d1ab61b18fdff01316b4eb8ef4809ba9dad7b7d346954ad711
+  d1sim/model_error_v1/judge_modelerr.py  21b7917c9f0977abecf9fba26ad0c5c01bf132ec1bc35b2734b535407b6c7d39
+  selftest: predict 13/13 · measure 9/9 · judge 11/11 (sim\out_modelerr\*_selftest.txt · 레포 사본 s26/results/modelerr_1009/) — 합성 체인 · 합성 예측만, 에너지 C 체인 예측 실행 0.
+  selftest 중 고친 것 (코드 아님 · 시험 기대값 3곳): first_throttle None 칸 기대 (규칙대로 None) · 합성 bin 89 평균 산술 · 잡음 sd 반올림 비교 · 합성 러너 JSONL 을 compact 형식으로. 판정 규칙 · 지표 정의 변경 0.
+  git diff --cached PAT 0 · 바이너리 0 · add 경로 = d1sim/model_error_v1/ 5 파일 + s26/results/modelerr_1009/ 5 파일 (git add -f — .gitignore 가 s26/results 를 덮음).
+  → 이제부터 4단계 실행 (predict → measure → judge). 이 뒤 지표 · 기준 · 시작 상태 규칙 · 블록 목록을 바꾸지 않는다.
+
+[2026-10-10 21:4x ~ 21:47 +09:00] 4단계 실행 (커밋 ② 뒤 · 순서 predict → measure → judge · 각 한 번씩, 규칙 변경 0)
+  predict_energyc.json  d8a3ddaf91a7991e455eaa528e04ceb29d76469426c4008e897425f2a0eb5a43  (frozen_check 전부 True · 2 체인 × 4 변형 × 2 열 + actual 16 × 4)
+  measure 첫 실행이 러너 JSONL 창 읽기에서 멈춤 (segment_end 가 파일 끝이 아니라 머리 33 KB 안에 — 러너가 lifecycle 이벤트를 먼저 flush) → measure_energyc.segment_window_ns 를 머리 · 꼬리 둘 다 훑어 index 최대 segment_end 를 잡게 고침 (파일 읽기만 · 지표 · 규칙 · 판정 무변경 · selftest 9/9 재통과). 이 수정은 커밋 ③ 에 들어가며 ② 의 SHA 와 다르다 (아래).
+  measure_energyc.py (고친 뒤)  f0d24694a1725fcd39c9d23d77b6b21b385ce1113d86faf5371e99da88d9f6b8
+  measure_energyc.json  a5998658afa99410c4ec1b307713a072a35805955d59f43acb18321b0c3b4c03  (16칸 cross-check 실패 0 — 재계산 max SKIN · 899 s · 시작 SKIN · 창 길이 · 첫 조임 = 판정 JSON)
+  modelerr_energyc.json  b9722f08c336aa3b560f0cd7e8e1ab021f65f373690fe3c3b95019df065dfd05 · modelerr_cells.csv 11ffb8ebd60c2293… · modelerr_blocks.csv 7b99e68a6a6200c5…
+  판정 (등록 §4): 주 v2.2 k = 7 / 8 → 「재현 확인 (에너지 C · 같은 계열 · 8블록 중 7)」 · 민감도 v21 k = 7 / 8 「재현 확인 (에너지 C · 같은 계열 · 8블록 중 7)」 · v2_t0.3 k = 6 / 8 「부분 재현 (6/8)」 · v2_t0.75 k = 6 / 8 「부분 재현 (6/8)」
+  블록 8 (A 시작 27.2 범위 밖 · 실측 Δ −1.1) 만 부호 반대로 실패 · 7블록 |차| 0.04 ~ 0.96 ℃ (블록 5 0.963 경계 가까움).
+  예측 Δ (v2.2) = +2.143 (열 29.5) · +1.937 (열 30.5) — 등록 §0 대로 실측 Δ 는 등록 전 공개돼 있었고, 이 예측값은 이 실행에서 처음 계산됐다.

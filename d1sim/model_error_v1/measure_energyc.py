@@ -50,21 +50,19 @@ def segment_window_ns(gpu_jsonl):
         head = fh.read(min(HEAD_BYTES, size))
         fh.seek(max(0, size - TAIL_BYTES))
         tail = fh.read()
-    start_ns = end_ns = None
-    for line in head.split(b'\n'):
-        if b'"event":"segment_start"' in line:
-            e = json.loads(line.decode('utf-8'))
-            d = json.loads(e['detail'])
-            if d.get('index') == 0:
-                start_ns = int(d['start_ns'])
-                break
-    last = None
-    for line in tail.split(b'\n'):
-        if b'"event":"segment_end"' in line:
-            last = line
-    if last is not None:
-        d = json.loads(json.loads(last.decode('utf-8'))['detail'])
-        end_ns = int(d['end_ns'])
+    # the runner flushes lifecycle events (segment_start / segment_end / load_end) ahead of the inference events, so both ends of the
+    # window are normally in the head; the tail is scanned too (fallback). The segment_end with the highest index wins.
+    start_ns, end_ns, end_idx = None, None, -1
+    for chunk in (head, tail):
+        for line in chunk.split(b'\n'):
+            if b'"event":"segment_start"' in line:
+                d = json.loads(json.loads(line.decode('utf-8'))['detail'])
+                if d.get('index') == 0 and start_ns is None:
+                    start_ns = int(d['start_ns'])
+            elif b'"event":"segment_end"' in line:
+                d = json.loads(json.loads(line.decode('utf-8'))['detail'])
+                if int(d.get('index', -1)) > end_idx:
+                    end_idx, end_ns = int(d['index']), int(d['end_ns'])
     if start_ns is None or end_ns is None:
         raise SystemExit(f'segment window not found in {gpu_jsonl}')
     return start_ns, end_ns
