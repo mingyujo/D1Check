@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-10 AP-CONDITIONED-POWER-PC-01 — AP 초기경로와 전력 연결의 오류 분리 완료
+
+- pre CPU/AP 후보＋동일창CPU대조를 개발6/각블록제외2＋최종1·총6fit하고12전량을평가했다. 확인원계수J120 MAE3.913→4.637/최악9.682→11.701로악화해미채택,APfit/초기상태재추정0이다. [실제 판독](AP_CONDITIONED_POWER_RESULTS_20261010.md).
+- 진단전용 미래AP대입으로회복30 AP평균오차.213°C의J기여3.167,회복180은미래AP정확가정에도4.727J/CPU비율까지대입해도4.360J 잔차를분리했다. 실제예측입력/선택이아님·rank와물리식별구분·다른원인미확정·새임계/재fit0이다.
+- 새경계7검증·고정기존값/해석적적분/가산성·동결해시보존,기기/ADB/실측/설치/빌드/새계획/claim0. 기본/RL/strict/experiment_ready=false·사용자/진행중RL/다른worktree보존. 다음PC질문하나:pre전력변화를AP초기화에반영하면회복30 가열오예측을줄일수있는가. [CSV·그림·재현](results/ap_conditioned_power_01/index.html).
+
 ## 2026-10-10 LIST-CANDIDATE-RL-TAIL-08 — 3AI 보완·6learner 학습·새 확인 완료, 미채택
 
 - [결과·설계·예산·제한](LIST_CANDIDATE_RL_TAIL_20261010.md). 현재 도착 전체 큐의 고정 L0 후속·AP35..180/J120·서비스/J 예측 허용을 별도 schema로 구현했다. 원8후보/계수/기한/CPU·GPU 지원/기본·strict·experiment_ready=false 보존이다.

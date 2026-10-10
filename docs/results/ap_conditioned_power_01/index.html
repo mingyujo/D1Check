@@ -1,0 +1,15 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AP 냉각과 전력 연결 시험</title><style>body{font:17px/1.7 system-ui;max-width:1120px;margin:30px auto;padding:0 18px;color:#203040}aside{background:#fff2cf;padding:18px}img{max-width:100%;height:auto}table{border-collapse:collapse;width:100%}td,th{padding:10px;border-bottom:1px solid #ddd}a{color:#075985}</style></head><body>
+<h1>AP 예측과 전력 연결의 서로 다른 오류</h1>
+<aside><strong>CPU＋AP 후보 미채택.</strong> pre 정보만으로 추정6회·전12평가 완료. 확인6 원4계수의120초 평균절대J3.913→4.637로악화했습니다. 기존계수/AP/기본/RL/strict·experiment_ready=false·원자료보존,기기/실측0회입니다.</aside>
+<table><tr><th>같은 확인6·원4전력계수</th><th>원식 P50</th><th>이전 전체CPU</th><th>동일창CPU</th><th>CPU＋AP</th></tr><tr><td>120초 평균 절대J</td><td>3.913</td><td>3.876</td><td>3.913</td><td>4.637</td></tr><tr><td>최대 절대J</td><td>9.682</td><td>10.690</td><td>10.946</td><td>11.701</td></tr></table>
+<p>AP를맞추려고미래실측온도를예측에넣지않았습니다. 기존 pre R/H와β/τ로작업없는초기AP경로를계산했고,동일창CPU대조로창변경의효과를분리했습니다.2열수치rank와물리적인과식별은다릅니다.</p>
+<p><a href="../../AP_CONDITIONED_POWER_RESULTS_20261010.md">수식·원인분해·판정</a> · <a href="README.md">의존성·재현명령</a> · <a href="run_v1/energy_errors.csv">전량·정확한창·부호오차</a> · <a href="verification.json">검증</a></p>
+<img src="figures/all_session_energy_errors.png" alt="전12세션의원/이전CPU/동일창CPU/CPUAP 에너지오차,개발과이미본확인분리">
+<h2>회복180과회복30은다른문제였습니다</h2><p>회복180 C0는이후냉각해도미래AP평균이pre평균보다높습니다. 회복30 C0는고정초기AP경로가가열을계산했지만관측은냉각했습니다. 기존AP모형의유효reference는주변온도가아닙니다.</p>
+<img src="figures/C0_AP_energy_paths.png" alt="두C0의작업없는AP모형경로/평가용실측AP와에너지누적잔차,회복30 방향오류표시">
+<h2>미래 AP 대입은 진단 전용입니다</h2><p>4개무부하C0에서만실측미래AP를고정계수에사후대입했습니다. 회복180 미래85초오차5.399→4.727J가남아AP예측만의문제가아닙니다. 회복30은2.927→−0.240J로변해AP예측오차의기여3.167J를확인했습니다. 이대입은사용가능한예측/독립확인/선택기가아닙니다.</p>
+<img src="figures/C0_oracle_AP_attribution.png" alt="4C0의예측과진단전용미래AP대입,전력관계잔차와AP예측기여구분">
+<p>기존other CPU 기록까지 사후 대입해도 회복180 C0의 미래85초 잔차4.36049J가 남았습니다. 현재 두 입력의 미래값 오차만으로 설명할 수 없는 관계식/기준값 문제가 있으며 숨은 물리 원인은 미확정입니다. <a href="covariate_v1/C0_covariate_oracle.csv">진단전용 두입력 대입4조건</a>. 예측/선택/RL에 사용하는 값이 아닙니다.</p>
+<p><a href="readout_v1/C0_oracle_attribution.csv">진단4조건전량표</a> · <a href="readout_v1/AP_CPU_arithmetic.csv">AP/CPU산술분해</a> · <a href="readout_v1/feature_ranges.csv">관측범위밖표시</a>. 실제일정조건부/사후평가·미래센서는오차평가에만사용·live전달미구현·A24 raw=mA/절대J미인증·S26계수비혼합·정확도PASS/정책우월성없음.</p>
+<p><a href="../registered_baseline_01/index.html">이전 유휴 개선과 반례</a> · <a href="../simulator_workbench_01/index.html">시뮬레이터 전체 안내</a></p>
+</body></html>

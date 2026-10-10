@@ -1,0 +1,19 @@
+{
+  "id": "AP-CONDITIONED-POWER-PC-01",
+  "registered_before_new_AP_power_alignment_and_fit": true,
+  "question": "Does recorded pre-load AP cooling explain residual baseline power beyond pre-CPU activity?",
+  "family": "One two-covariate pre-only observational model, CPU slope nonnegative and AP slope signed; matched-pre CPU-only ablation. No physical leakage/ambient coefficient claim.",
+  "training": "Pre5s whole-device power vs otherCPU rate and bracketed time-integrated AP, within-session centered, equal session weights. Three opposite-gap/final development fits for each of two heads =6 formal fits. No post-load/confirmation targets, new tau, threshold, window search or further family.",
+  "pre_window": "Reuse registered recovery complete5s bins. Use all bins bracketed by valid recorded pre AP; initial unbracketed bins excluded only for availability. Both new heads use identical bins; complete span >=75s ending30. AP query hi and right power bracket must be before35.",
+  "AP_initial_state": "Read already frozen registered_idle_pre R/H/lastAP/time from preboundary initial_states.csv, paired with same expanded_pre.json and fixed original beta/preparation tau30. No AP coefficient/local-state refit.",
+  "AP_forecast_input": "Fixed no-target-work resident-idle counterfactual AP from the pre initialization only. Target load heating is not added to this baseline correction; do not use measured future AP or power. This is an operational preparatory-cooling component, not ambient or all-state thermal-power feedback.",
+  "baseline_formula": "P_matched_mean + b_CPU*(CPU_median - CPU_mean) + b_AP*(predicted_idle_AP(t) - matched_pre_mean_AP). Applies35..120 only. First0..35 P50 and each frozen4state head unchanged.",
+  "numerics": "Analytic idle-AP integral including equal-rate limit; assess all endpoints and analytic stationary point for positive power across35..120. No negative clipping or missing-to-zero filling.",
+  "evaluation": "All12, development opposite-gap models, already viewed confirmation6 final development-only. Both original/zero-offset4power heads fixed and reported, no outcome-based head selection. Same0..120/future85/work/post-lane idle, errors/cancellation/worst and CPU-PAR recorded difference.",
+  "forecast_layer": "Actual schedule conditional cost only; no new arrival-to-response prediction. Pre event/return deadline35, output horizon120. Post-session exports remain offline; no live CPU or AP delivery implementation.",
+  "posthoc": "Candidate family chosen after earlier session outcomes viewed. Leave-block-out and confirmation role separation do not make this new blind evidence.",
+  "bounds": {"formal_fits": 6, "new_AP_fits": 0, "new_AP_initializations": 0, "device_commands": 0, "new_plans": 0, "environment_simulations": 0},
+  "no_automatic_default_RL_strict_replacement": true,
+  "accuracy_pass": null,
+  "experiment_ready": false
+}
