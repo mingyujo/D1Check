@@ -1,5 +1,10 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-10 RECOVERY-SERVICE-PC-01 — 기존 회복 자료의 처리시간 확인 종료
+
+- [판독·후보·재현](RECOVERY_SERVICE_RESULTS_20261010.md): 개발/확인 CPU/PAR 8부하세션의5phase·invocation·AP·겹침·동일ordinal을 비교하고 구조1개를 평가했다. 고정 평균 재보정은 오차 감소, 시작 AP 추가는 고정대조보다 악화로 미채택이다.
+- 현재 온도→처리시간의 동적 연결은 미해결이다. 필요한 다음 근거는 동일 작업/입력/경합 조건의 실제 감속과 회복 전후 처리시간이며, 이번에는 계측 조건을 특정했을 뿐 계획/실행을 추가하지 않았다. 기본/RL/strict/experiment_ready=false·기존AP/J 작업/원자료/사용자 변경은 보존한다.
+
 ## 2026-10-10 AP-POWER-INITIALIZATION-PC-01 — 하나의 준비-power gain 시험 종료
 
 - 고정β/τ30/LOAD_SLOW에pre전력변화→기존H 입력만추가,global3fit/지역12상태·전12평가했다. 평균/최대/최고/방향과가정민감도·미채택전력관계연결을분리해근거미확보·후보미채택이다. [결과·재현](AP_POWER_INITIALIZATION_RESULTS_20261010.md).
