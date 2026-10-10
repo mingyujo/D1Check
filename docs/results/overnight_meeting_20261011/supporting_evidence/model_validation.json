@@ -1,0 +1,126 @@
+{
+  "version": "sanitized-model-forward-validation-v1",
+  "original_local_provenance": {
+    "repository_relative_path": "docs/results/simulation_model_v3_expert_01/hybrid_v2/summary.json",
+    "sha256": "cfd990e0fc4dc37bf5a15f0ba2ab3f7294b155d2f45f2c73fd053ebf44f27460",
+    "original_file_shared": false,
+    "cost_scores_relative_path": "docs/results/simulation_model_v3_expert_01/hybrid_v2/cost_scores.csv",
+    "cost_scores_sha256": "d6f4bddaf7deab11bd0a35e944886d97484cbcd3613c11cf83bc1426ac9237f5"
+  },
+  "frozen_model": {
+    "shared_path": "docs/results/rolling_hybrid_pilot_07/model.json",
+    "sha256": "48c5cd7196055c3cbe03f1e5a5974d4d791dee28658ce4c77a2c070294ffa8c7"
+  },
+  "comparison": {
+    "primary_mode": "B_fixed_original_service",
+    "modes": {
+      "B_fixed_original_service": {
+        "overall": {
+          "hybrid": {
+            "evaluated_sessions": 2,
+            "mean_AP_MAE_c": 0.2024841221046868,
+            "mean_J120_abs_j": 1.8122018309077959,
+            "mean_J120_signed_j": -0.6803872983304444,
+            "worst_AP_MAE_c": 0.2522278165040884,
+            "worst_AP_max_error_c": 0.9559594120698307,
+            "worst_J120_abs_j": 2.4925891292382403
+          },
+          "original": {
+            "evaluated_sessions": 2,
+            "mean_AP_MAE_c": 0.3974525256556201,
+            "mean_J120_abs_j": 1.8122018309077959,
+            "mean_J120_signed_j": -0.6803872983304444,
+            "worst_AP_MAE_c": 0.4791752124966711,
+            "worst_AP_max_error_c": 1.1094556446999277,
+            "worst_J120_abs_j": 2.4925891292382403
+          },
+          "v2": {
+            "evaluated_sessions": 2,
+            "mean_AP_MAE_c": 0.51644992031444,
+            "mean_J120_abs_j": 2.0701350643987837,
+            "mean_J120_signed_j": 2.0701350643987837,
+            "worst_AP_MAE_c": 0.6818459045797117,
+            "worst_AP_max_error_c": 1.1414431657718218,
+            "worst_J120_abs_j": 3.3443134483945016
+          }
+        },
+        "by_policy": {
+          "B2_PARALLEL_ONLINE_V1": {
+            "hybrid": {
+              "evaluated_sessions": 1,
+              "mean_AP_MAE_c": 0.1527404277052852,
+              "mean_J120_abs_j": 2.4925891292382403,
+              "mean_J120_signed_j": -2.4925891292382403,
+              "worst_AP_MAE_c": 0.1527404277052852,
+              "worst_AP_max_error_c": 0.9559594120698307,
+              "worst_J120_abs_j": 2.4925891292382403
+            },
+            "original": {
+              "evaluated_sessions": 1,
+              "mean_AP_MAE_c": 0.3157298388145691,
+              "mean_J120_abs_j": 2.4925891292382403,
+              "mean_J120_signed_j": -2.4925891292382403,
+              "worst_AP_MAE_c": 0.3157298388145691,
+              "worst_AP_max_error_c": 1.1094556446999277,
+              "worst_J120_abs_j": 2.4925891292382403
+            },
+            "v2": {
+              "evaluated_sessions": 1,
+              "mean_AP_MAE_c": 0.35105393604916835,
+              "mean_J120_abs_j": 0.7959566804030658,
+              "mean_J120_signed_j": 0.7959566804030658,
+              "worst_AP_MAE_c": 0.35105393604916835,
+              "worst_AP_max_error_c": 1.0001486640094939,
+              "worst_J120_abs_j": 0.7959566804030658
+            }
+          },
+          "CPU_URGENT_ONLINE_V1": {
+            "hybrid": {
+              "evaluated_sessions": 1,
+              "mean_AP_MAE_c": 0.2522278165040884,
+              "mean_J120_abs_j": 1.1318145325773514,
+              "mean_J120_signed_j": 1.1318145325773514,
+              "worst_AP_MAE_c": 0.2522278165040884,
+              "worst_AP_max_error_c": 0.9288722231187663,
+              "worst_J120_abs_j": 1.1318145325773514
+            },
+            "original": {
+              "evaluated_sessions": 1,
+              "mean_AP_MAE_c": 0.4791752124966711,
+              "mean_J120_abs_j": 1.1318145325773514,
+              "mean_J120_signed_j": 1.1318145325773514,
+              "worst_AP_MAE_c": 0.4791752124966711,
+              "worst_AP_max_error_c": 0.7603873640008842,
+              "worst_J120_abs_j": 1.1318145325773514
+            },
+            "v2": {
+              "evaluated_sessions": 1,
+              "mean_AP_MAE_c": 0.6818459045797117,
+              "mean_J120_abs_j": 3.3443134483945016,
+              "mean_J120_signed_j": 3.3443134483945016,
+              "worst_AP_MAE_c": 0.6818459045797117,
+              "worst_AP_max_error_c": 1.1414431657718218,
+              "worst_J120_abs_j": 3.3443134483945016
+            }
+          }
+        }
+      }
+    },
+    "scope": "minimum forward confirmation: one session per policy, no significance or population superiority conclusion",
+    "validated_sessions": 2,
+    "original_V3_joint_pass": false
+  },
+  "confirmed_completed_requests": 192,
+  "confirmed_timely_requests": 192,
+  "limitations": {
+    "surface_temperature_verified": false,
+    "thermal_service_feedback": false,
+    "absolute_energy_calibrated": false,
+    "sessions_per_policy": 1,
+    "CPU_max_error_original_c": 0.7603873640008842,
+    "CPU_max_error_hybrid_c": 0.9288722231187663,
+    "CPU_peak_error_original_c": 0.010239895817711897,
+    "CPU_peak_error_hybrid_c": 0.22654000560719822
+  },
+  "interpretation": "original local numeric result extracted without raw/private paths; thermal head only, original service/energy identity; not policy saving"
+}

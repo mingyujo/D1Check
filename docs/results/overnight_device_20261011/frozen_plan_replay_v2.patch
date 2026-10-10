@@ -1,0 +1,119 @@
+--- a/benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/ArrivalRecordedReplay.kt
++++ b/benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/ArrivalRecordedReplay.kt
+@@ -5,6 +5,20 @@
+     const val POLICY = "RECORDED_B2_REPLAY_V1"
+     const val VERSION = "recorded-b2-dispatch-gate-v1"
+     const val COMPARISON_VERSION = "recorded-policy-comparison-v1"
++    const val FROZEN_PLAN_VERSION = "frozen-plan-96-cpu-gpu-replay-v2"
++
++    /** Exact opt-in 96-request device-validation trace. This is not an online policy. */
++    fun validateFrozenRequests(scenario: String, requests: List<ArrivalEnergyContract.Request>) {
++        require(scenario == "frozen_plan_periodic96")
++        require(requests.size == 96 && requests.map { it.id }.toSet().size == 96)
++        requests.forEachIndexed { i, q ->
++            val urgent = i % 2 == 0
++            require(q.ordinal == i && q.offsetMs == 35_000L + i * 350L)
++            require(q.task == (if (urgent) "classification" else "detection"))
++            require(q.priority == (if (urgent) "urgent" else "normal"))
++            require(q.deadlineMs == (if (urgent) 1500L else 6000L))
++        }
++    }
+ 
+     data class Entry(val id: String, val ordinal: Int, val task: String,
+                      val arrivalNs: Long, val releaseNs: Long, val backend: String,
+@@ -12,26 +26,34 @@
+ 
+     fun validate(entries: List<Entry>, requests: List<ArrivalEnergyContract.Request>,
+                  version: String = VERSION, sourcePolicy: String = "B2_PC") {
+-        require(version == VERSION || version == COMPARISON_VERSION)
+-        require(if (version == VERSION) sourcePolicy == "B2_PC"
++        require(version in setOf(VERSION, COMPARISON_VERSION, FROZEN_PLAN_VERSION))
++        if (version == FROZEN_PLAN_VERSION) require(sourcePolicy.isNotBlank())
++        else require(if (version == VERSION) sourcePolicy == "B2_PC"
+                 else sourcePolicy in setOf("CPU_URGENT", "B2_PC"))
+         require(entries.size == requests.size && entries.map { it.id }.toSet().size == entries.size)
+         entries.zip(requests).forEach { (entry, request) ->
+             require(entry.id == request.id && entry.ordinal == request.ordinal &&
+                 entry.task == request.task && entry.arrivalNs == request.offsetMs * 1_000_000L)
+             require(entry.releaseNs >= entry.arrivalNs && entry.releaseNs < ArrivalEnergyContract.COMMON_NS)
+-            require(entry.backend == (if (sourcePolicy == "CPU_URGENT") "CPU"
++            if (version == FROZEN_PLAN_VERSION) {
++                require(entry.backend in setOf("CPU", "GPU"))
++                require(entry.task != "detection" || entry.backend == "CPU")
++            } else require(entry.backend == (if (sourcePolicy == "CPU_URGENT") "CPU"
+                 else if (entry.task == "classification") "GPU" else "CPU"))
+             require(entry.sourceId.isNotBlank())
+         }
+     }
+ 
+     fun choose(waiting: List<ArrivalPolicy.Ticket>, entries: Map<String, Entry>,
+-               elapsedNs: Long, freeCpu: Boolean, freeGpu: Boolean): ArrivalPolicy.Choice? {
++               elapsedNs: Long, freeCpu: Boolean, freeGpu: Boolean,
++               runningTasks: Map<String,String> = emptyMap(), version: String = VERSION): ArrivalPolicy.Choice? {
+         require(elapsedNs >= 0)
+         return waiting.map { ticket -> entries.getValue(ticket.id) to ticket }
+             .filter { (entry, _) -> entry.releaseNs <= elapsedNs &&
+-                (if (entry.backend == "CPU") freeCpu else freeGpu) }
++                (if (entry.backend == "CPU") freeCpu else freeGpu) &&
++                (version != FROZEN_PLAN_VERSION ||
++                    !(entry.task == "classification" &&
++                      runningTasks[if (entry.backend == "CPU") "GPU" else "CPU"] == "classification")) }
+             .sortedWith(compareBy<Pair<Entry, ArrivalPolicy.Ticket>> { it.first.releaseNs }
+                 .thenBy { it.first.ordinal }.thenBy { it.first.sourceId })
+             .firstOrNull()?.let { (entry, ticket) ->
+--- a/benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/ArrivalEnergyActivity.kt
++++ b/benchmark-runner/src/modelProbe/java/com/example/d1check/benchmarkrunner/ArrivalEnergyActivity.kt
+@@ -246,14 +246,17 @@
+                     !requestJson.getJSONObject(it).has("recorded_backend") })
+                 ArrivalPolicyStudy.validate(policyStudy, policy, m.getString("policy_study_role"), m.getString("scenario"), requests,
+                     m.optString("power_identification_version", ""))
++            } else if (m.optString("replay_version") == ArrivalRecordedReplay.FROZEN_PLAN_VERSION) {
++                check(policy == ArrivalRecordedReplay.POLICY && controlVersion.isEmpty() && controlRole.isEmpty())
++                ArrivalRecordedReplay.validateFrozenRequests(m.getString("scenario"), requests)
+             } else ArrivalEnergyContract.validateSession(m.getString("scenario"), requests, controlVersion, controlRole)
+             if (controlVersion.isNotEmpty()) check(policy == ArrivalRecordedReplay.POLICY &&
+                 apMode == ArrivalStartApGate.DIAGNOSTIC_VERSION) { "resident control requires recorded observe-v2" }
+             (requests+conditioning).forEach { check(UUID.fromString(it.id).toString() == it.id) }
+             val replay = if (policy == ArrivalRecordedReplay.POLICY) {
+                 val replayVersion = m.getString("replay_version")
+-                check(replayVersion in setOf(ArrivalRecordedReplay.VERSION, ArrivalRecordedReplay.COMPARISON_VERSION))
+-                val sourcePolicy = if (replayVersion == ArrivalRecordedReplay.COMPARISON_VERSION)
++                check(replayVersion in setOf(ArrivalRecordedReplay.VERSION, ArrivalRecordedReplay.COMPARISON_VERSION, ArrivalRecordedReplay.FROZEN_PLAN_VERSION))
++                val sourcePolicy = if (replayVersion != ArrivalRecordedReplay.VERSION)
+                     m.getString("source_policy") else "B2_PC"
+                 requestJson.let { arr -> (0 until arr.length()).map { i -> arr.getJSONObject(i).let { q ->
+                     ArrivalRecordedReplay.Entry(q.getString("request_id"), q.getInt("ordinal"),
+@@ -342,6 +345,7 @@
+             phase = if (prefix.isEmpty()) "common_window" else "conditioning_window"
+             val waiting = mutableListOf<ArrivalPolicy.Ticket>() // dispatch executor only
+             val busy = mutableMapOf("CPU" to false, "GPU" to false)
++            val replayRunningTasks = mutableMapOf<String,String>()
+             val done = CountDownLatch(requests.size)
+             lateinit var pump: () -> Unit
+             pump = {
+@@ -351,7 +355,8 @@
+                         ArrivalPolicyStudy.choose(policy, waiting, !busy.getValue("CPU"), !busy.getValue("GPU"))
+                     else if (policy == ArrivalRecordedReplay.POLICY)
+                         ArrivalRecordedReplay.choose(waiting, replay, maxOf(0L, begin-start),
+-                            !busy.getValue("CPU"), !busy.getValue("GPU"))
++                            !busy.getValue("CPU"), !busy.getValue("GPU"), replayRunningTasks,
++                            m.getString("replay_version"))
+                     else ArrivalPolicy.choose(policy, waiting, !busy.getValue("CPU"), !busy.getValue("GPU"), 0, emptyMap())
+                     event("decision", mapOf("policy" to policy, "waiting" to waiting.size,
+                         "selected" to choice?.ticket?.id, "backend" to choice?.backend,
+@@ -359,6 +364,7 @@
+                     if (choice == null) break
+                     waiting.remove(choice.ticket); observed.setWaiting(waiting.size)
+                     busy[choice.backend] = true
++                    replayRunningTasks[choice.backend] = choice.ticket.task
+                     val row = rows.getValue(choice.ticket.id); val key = "${choice.ticket.task}_${choice.backend}"
+                     val dispatched = now(); observed.dispatch(key, choice.ticket.id)
+                     update(row, mapOf("selected_backend" to choice.backend, "decision_reason" to choice.reason,
+@@ -392,6 +398,7 @@
+                             dispatch.execute {
+                                 val available = now(); update(row, mapOf("lane_available_ns" to available))
+                                 observed.release(key); busy[choice.backend] = false
++                                replayRunningTasks.remove(choice.backend)
+                                 try { event("lane_available", mapOf("id" to choice.ticket.id, "key" to key)) } finally {
+                                     done.countDown(); pump()
+                                 }

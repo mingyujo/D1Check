@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "rl": {
+    "status": "completed|blocked|stopped|partial|budget_stopped|in_progress",
+    "source": "relative/path/to/real_terminal_evidence.json",
+    "reason": "미완료라면 구체적 이유; completed는 실제 final result/verification 있을 때만 허용"
+  },
+  "device": {
+    "status": "same enum",
+    "source": "relative/path/to/real_terminal_evidence.json",
+    "reason": "동일 규칙"
+  },
+  "publication_rule": "final requires terminal evidence for both; incomplete states are labelled and no KPI invented",
+  "automatic_sources": {
+    "rl_result": "docs/results/overnight_rl_20261011/result.json",
+    "device_summary": "docs/results/overnight_device_20261011/summary.json"
+  },
+  "numeric_overrides_allowed": false,
+  "expected_consumption": {
+    "cumulative_native": "optional integer guard; computed actual completed data must equal",
+    "cumulative_learning": "same guard, no override"
+  }
+}

@@ -1,0 +1,5 @@
+def dest = System.getenv('D1_OVERNIGHT_BUILD_ROOT')
+if (!dest) throw new GradleException('isolated build root required')
+gradle.beforeProject { project ->
+    project.layout.buildDirectory.set(new File(dest, project.path.replace(':', '_')))
+}

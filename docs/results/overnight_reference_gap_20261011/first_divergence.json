@@ -1,0 +1,7964 @@
+[
+  {
+    "condition": 0,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 1,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 2,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 3,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 4,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 5,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 6,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 7,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 8,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 9,
+    "arrival_seed": 827020101,
+    "family": "sustained",
+    "context": "mean",
+    "same_dispatch_schedule": false,
+    "first_difference_ns": 38186420374,
+    "L0_jobs": [
+      [
+        "827020101/sustained/8",
+        "GPU"
+      ]
+    ],
+    "Band_jobs": [],
+    "public_state": {
+      "now_ns": 38186420374,
+      "queue": [
+        {
+          "id": "827020101/sustained/8",
+          "ordinal": 8,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 38186420374,
+          "deadline_offset_ns": 1500000000
+        }
+      ],
+      "owners": {
+        "CPU": "827020101/sustained/6",
+        "GPU": null
+      },
+      "phases": {
+        "CPU": "EXECUTING",
+        "GPU": "AVAILABLE"
+      },
+      "source": "only actual dispatches before now and public phase callbacks<=now; no remaining duration or later arrival input"
+    },
+    "snapshot_found": true,
+    "candidate_matches": [
+      {
+        "slot": 1,
+        "kind": "resource_wait",
+        "physical": true,
+        "prediction_admitted": true,
+        "reason": "permitted_prediction_not_guarantee",
+        "forecasts": [
+          {
+            "valid": true,
+            "remaining_increment_j": 0.13764232287538247,
+            "peak_ap_c": 29.418066141090428,
+            "global_peak_ap_c": 29.418066141090428,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.05762880570832607
+            },
+            "responses": {
+              "827020101/sustained/6": 38.241783728,
+              "827020101/sustained/8": 38.400229111
+            },
+            "lane_end_s": 38.409265455395825,
+            "urgent_p95_ms": 294.0546346666641,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.13764232287538247,
+            "peak_ap_c": 29.418066141090428,
+            "global_peak_ap_c": 29.418066141090428,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.05762880570832607
+            },
+            "responses": {
+              "827020101/sustained/6": 38.241783728,
+              "827020101/sustained/8": 38.400229111
+            },
+            "lane_end_s": 38.409265455395825,
+            "urgent_p95_ms": 294.0546346666641,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.13813042535137293,
+            "peak_ap_c": 29.418154266603405,
+            "global_peak_ap_c": 29.418154266603405,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.058313452562494206
+            },
+            "responses": {
+              "827020101/sustained/6": 38.242463969,
+              "827020101/sustained/8": 38.400913758
+            },
+            "lane_end_s": 38.409950102249994,
+            "urgent_p95_ms": 294.0546346666641,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          }
+        ]
+      }
+    ],
+    "encoder_snapshot": {
+      "state": [
+        0.3182201683521271,
+        0.010416666977107525,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        0.7354164719581604,
+        0.7347797751426697,
+        -0.001092399237677455,
+        0.011437208391726017,
+        0.0,
+        0.667202353477478,
+        1.0,
+        0.06674986332654953,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.1960364282131195,
+        0.0416666679084301,
+        0.03125,
+        0.4000000059604645,
+        0.0,
+        0.09401801228523254,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6217368841171265,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidates": [
+        [
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.5,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.3208247721195221,
+          0.1997498720884323,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.667202353477478,
+          1.0,
+          0.25,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          -0.02676628902554512,
+          -0.00487119983881712,
+          -0.00487119983881712,
+          0.0,
+          0.0,
+          0.0,
+          0.3200829029083252,
+          0.2142511010169983,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.667202353477478,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020101/sustained/8",
+              "backend": "GPU"
+            }
+          ]
+        },
+        {
+          "kind": "resource_wait",
+          "until_ns": null,
+          "hold_signature": [
+            [
+              "827020101/sustained/8"
+            ],
+            [
+              [
+                "CPU",
+                "827020101/sustained/6"
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "admissions": [
+        "L0",
+        "permitted_prediction_not_guarantee"
+      ],
+      "chosen": 0,
+      "schema_id": "3316d0996b4b7f704bca3d79916925933a564a82c362e2a8ecf906643883566e",
+      "window_ids": [
+        "827020101/sustained/8"
+      ],
+      "risk": {
+        "rho": 0.6672023351281555,
+        "known": true,
+        "gap": 0.40049918900000137,
+        "gap_known": true,
+        "queued": 0
+      }
+    },
+    "classification": "in bank and permitted, selector chooses differently"
+  },
+  {
+    "condition": 10,
+    "arrival_seed": 827020101,
+    "family": "sustained",
+    "context": "short_context",
+    "same_dispatch_schedule": false,
+    "first_difference_ns": 38186420374,
+    "L0_jobs": [
+      [
+        "827020101/sustained/8",
+        "GPU"
+      ]
+    ],
+    "Band_jobs": [],
+    "public_state": {
+      "now_ns": 38186420374,
+      "queue": [
+        {
+          "id": "827020101/sustained/8",
+          "ordinal": 8,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 38186420374,
+          "deadline_offset_ns": 1500000000
+        }
+      ],
+      "owners": {
+        "CPU": "827020101/sustained/6",
+        "GPU": null
+      },
+      "phases": {
+        "CPU": "EXECUTING",
+        "GPU": "AVAILABLE"
+      },
+      "source": "only actual dispatches before now and public phase callbacks<=now; no remaining duration or later arrival input"
+    },
+    "snapshot_found": true,
+    "candidate_matches": [
+      {
+        "slot": 1,
+        "kind": "resource_wait",
+        "physical": true,
+        "prediction_admitted": true,
+        "reason": "permitted_prediction_not_guarantee",
+        "forecasts": [
+          {
+            "valid": true,
+            "remaining_increment_j": 0.1371267845600043,
+            "peak_ap_c": 29.416103948372267,
+            "global_peak_ap_c": 29.416103948372267,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.05690567541665814
+            },
+            "responses": {
+              "827020101/sustained/6": 38.241060598,
+              "827020101/sustained/8": 38.399505981
+            },
+            "lane_end_s": 38.40854232510416,
+            "urgent_p95_ms": 286.60848072917173,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.1371267845600043,
+            "peak_ap_c": 29.416103948372267,
+            "global_peak_ap_c": 29.416103948372267,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.05690567541665814
+            },
+            "responses": {
+              "827020101/sustained/6": 38.241060598,
+              "827020101/sustained/8": 38.399505981
+            },
+            "lane_end_s": 38.40854232510416,
+            "urgent_p95_ms": 286.60848072917173,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.13761488703598967,
+            "peak_ap_c": 29.416192071048144,
+            "global_peak_ap_c": 29.416192071048144,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.05759032227081917
+            },
+            "responses": {
+              "827020101/sustained/6": 38.241740839,
+              "827020101/sustained/8": 38.400190627
+            },
+            "lane_end_s": 38.40922697195832,
+            "urgent_p95_ms": 286.60848072917173,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          }
+        ]
+      }
+    ],
+    "encoder_snapshot": {
+      "state": [
+        0.3182201683521271,
+        0.010416666977107525,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        0.735368013381958,
+        0.7347449660301208,
+        -0.001092399237677455,
+        0.011385290883481503,
+        0.0,
+        0.6669920086860657,
+        1.0,
+        0.06674986332654953,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.19107231497764587,
+        0.0416666679084301,
+        0.03125,
+        0.4000000059604645,
+        0.0,
+        0.09413853287696838,
+        0.0,
+        0.16521628201007843,
+        0.30273643136024475,
+        0.621540904045105,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidates": [
+        [
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.5,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.3208247721195221,
+          0.1997498720884323,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.6669920086860657,
+          1.0,
+          0.25,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          -0.0269817803055048,
+          -0.004881146363914013,
+          -0.004881146363914013,
+          -1.8055337780431557e-10,
+          0.0,
+          0.0,
+          0.3200768828392029,
+          0.21437162160873413,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.6669920086860657,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020101/sustained/8",
+              "backend": "GPU"
+            }
+          ]
+        },
+        {
+          "kind": "resource_wait",
+          "until_ns": null,
+          "hold_signature": [
+            [
+              "827020101/sustained/8"
+            ],
+            [
+              [
+                "CPU",
+                "827020101/sustained/6"
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "admissions": [
+        "L0",
+        "permitted_prediction_not_guarantee"
+      ],
+      "chosen": 0,
+      "schema_id": "3316d0996b4b7f704bca3d79916925933a564a82c362e2a8ecf906643883566e",
+      "window_ids": [
+        "827020101/sustained/8"
+      ],
+      "risk": {
+        "rho": 0.6669920356016603,
+        "known": true,
+        "gap": 0.40049918900000137,
+        "gap_known": true,
+        "queued": 0
+      }
+    },
+    "classification": "in bank and permitted, selector chooses differently"
+  },
+  {
+    "condition": 11,
+    "arrival_seed": 827020101,
+    "family": "sustained",
+    "context": "long_context",
+    "same_dispatch_schedule": false,
+    "first_difference_ns": 38186420374,
+    "L0_jobs": [
+      [
+        "827020101/sustained/8",
+        "GPU"
+      ]
+    ],
+    "Band_jobs": [],
+    "public_state": {
+      "now_ns": 38186420374,
+      "queue": [
+        {
+          "id": "827020101/sustained/8",
+          "ordinal": 8,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 38186420374,
+          "deadline_offset_ns": 1500000000
+        }
+      ],
+      "owners": {
+        "CPU": "827020101/sustained/6",
+        "GPU": null
+      },
+      "phases": {
+        "CPU": "EXECUTING",
+        "GPU": "AVAILABLE"
+      },
+      "source": "only actual dispatches before now and public phase callbacks<=now; no remaining duration or later arrival input"
+    },
+    "snapshot_found": true,
+    "candidate_matches": [
+      {
+        "slot": 1,
+        "kind": "resource_wait",
+        "physical": true,
+        "prediction_admitted": true,
+        "reason": "permitted_prediction_not_guarantee",
+        "forecasts": [
+          {
+            "valid": true,
+            "remaining_increment_j": 0.13813042535137293,
+            "peak_ap_c": 29.420015902678657,
+            "global_peak_ap_c": 29.420015902678657,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.058313452562494206
+            },
+            "responses": {
+              "827020101/sustained/6": 38.242468375,
+              "827020101/sustained/8": 38.400913758
+            },
+            "lane_end_s": 38.409950102249994,
+            "urgent_p95_ms": 301.50078860416414,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.13813042535137293,
+            "peak_ap_c": 29.420015902678657,
+            "global_peak_ap_c": 29.420015902678657,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.058313452562494206
+            },
+            "responses": {
+              "827020101/sustained/6": 38.242468375,
+              "827020101/sustained/8": 38.400913758
+            },
+            "lane_end_s": 38.409950102249994,
+            "urgent_p95_ms": 301.50078860416414,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.13861852782735834,
+            "peak_ap_c": 29.420104030877834,
+            "global_peak_ap_c": 29.420104030877834,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.058998099416655236
+            },
+            "responses": {
+              "827020101/sustained/6": 38.243148616,
+              "827020101/sustained/8": 38.401598405
+            },
+            "lane_end_s": 38.410634749104155,
+            "urgent_p95_ms": 301.50078860416414,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          }
+        ]
+      }
+    ],
+    "encoder_snapshot": {
+      "state": [
+        0.3182201683521271,
+        0.010416666977107525,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        0.7354646921157837,
+        0.7348142862319946,
+        -0.001092399237677455,
+        0.011488947086036205,
+        0.0,
+        0.6674014329910278,
+        1.0,
+        0.06674986332654953,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.20100052654743195,
+        0.0416666679084301,
+        0.03125,
+        0.4000000059604645,
+        0.0,
+        0.09390390664339066,
+        0.0,
+        0.16521628201007843,
+        0.3069224953651428,
+        0.6219224333763123,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidates": [
+        [
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.5,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.3208247721195221,
+          0.1997498720884323,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.6674014329910278,
+          1.0,
+          0.25,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          -0.026562264189124107,
+          -0.004861782770603895,
+          -0.004861782770603895,
+          0.0,
+          0.0,
+          0.0,
+          0.32008862495422363,
+          0.2141369879245758,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.6674014329910278,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020101/sustained/8",
+              "backend": "GPU"
+            }
+          ]
+        },
+        {
+          "kind": "resource_wait",
+          "until_ns": null,
+          "hold_signature": [
+            [
+              "827020101/sustained/8"
+            ],
+            [
+              [
+                "CPU",
+                "827020101/sustained/6"
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "admissions": [
+        "L0",
+        "permitted_prediction_not_guarantee"
+      ],
+      "chosen": 0,
+      "schema_id": "3316d0996b4b7f704bca3d79916925933a564a82c362e2a8ecf906643883566e",
+      "window_ids": [
+        "827020101/sustained/8"
+      ],
+      "risk": {
+        "rho": 0.66740144087216,
+        "known": true,
+        "gap": 0.40049918900000137,
+        "gap_known": true,
+        "queued": 0
+      }
+    },
+    "classification": "in bank and permitted, selector chooses differently"
+  },
+  {
+    "condition": 12,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 13,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 14,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 15,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 16,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 17,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 18,
+    "arrival_seed": 827020102,
+    "family": "burst",
+    "context": "mean",
+    "same_dispatch_schedule": false,
+    "first_difference_ns": 35165216276,
+    "L0_jobs": [
+      [
+        "827020102/burst/1",
+        "CPU"
+      ]
+    ],
+    "Band_jobs": [
+      [
+        "827020102/burst/1",
+        "GPU"
+      ],
+      [
+        "827020102/burst/2",
+        "CPU"
+      ]
+    ],
+    "public_state": {
+      "now_ns": 35165216276,
+      "queue": [
+        {
+          "id": "827020102/burst/1",
+          "ordinal": 1,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 35079578289,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "827020102/burst/2",
+          "ordinal": 2,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 35157222133,
+          "deadline_offset_ns": 6000000000
+        }
+      ],
+      "owners": {
+        "CPU": null,
+        "GPU": null
+      },
+      "phases": {
+        "CPU": "AVAILABLE",
+        "GPU": "AVAILABLE"
+      },
+      "source": "only actual dispatches before now and public phase callbacks<=now; no remaining duration or later arrival input"
+    },
+    "snapshot_found": true,
+    "candidate_matches": [
+      {
+        "slot": 1,
+        "kind": "bundle",
+        "physical": true,
+        "prediction_admitted": false,
+        "reason": "urgent_response",
+        "forecasts": [
+          {
+            "valid": true,
+            "remaining_increment_j": 0.49656274144210116,
+            "peak_ap_c": 29.18709555472589,
+            "global_peak_ap_c": 29.18709555472589,
+            "volumes": {
+              "classification_CPU": 0.0,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.3048294752291554,
+              "detection_CPU": 0.3169074196250108
+            },
+            "responses": {
+              "827020102/burst/1": 35.45927091,
+              "827020102/burst/2": 35.784687719
+            },
+            "lane_end_s": 35.786953170541665,
+            "urgent_p95_ms": 379.6926210000038,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.4946964937227566,
+            "peak_ap_c": 29.186452576313204,
+            "global_peak_ap_c": 29.186452576313204,
+            "volumes": {
+              "classification_CPU": 0.0,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.29710610416667294,
+              "detection_CPU": 0.3239076603958182
+            },
+            "responses": {
+              "827020102/burst/1": 35.451824756,
+              "827020102/burst/2": 35.784007188
+            },
+            "lane_end_s": 35.78623004024999,
+            "urgent_p95_ms": 372.24646700000363,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.4984015533220528,
+            "peak_ap_c": 29.187733687107187,
+            "global_peak_ap_c": 29.187733687107187,
+            "volumes": {
+              "classification_CPU": 0.0,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.31255284629166624,
+              "detection_CPU": 0.30986869541666096
+            },
+            "responses": {
+              "827020102/burst/1": 35.466717064,
+              "827020102/burst/2": 35.78536796
+            },
+            "lane_end_s": 35.787637817395826,
+            "urgent_p95_ms": 387.13877500000393,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          }
+        ]
+      },
+      {
+        "slot": 2,
+        "kind": "bundle",
+        "physical": true,
+        "prediction_admitted": false,
+        "reason": "urgent_response",
+        "forecasts": [
+          {
+            "valid": true,
+            "remaining_increment_j": 0.49656274144210116,
+            "peak_ap_c": 29.18709555472589,
+            "global_peak_ap_c": 29.18709555472589,
+            "volumes": {
+              "classification_CPU": 0.0,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.3048294752291554,
+              "detection_CPU": 0.3169074196250108
+            },
+            "responses": {
+              "827020102/burst/2": 35.784687719,
+              "827020102/burst/1": 35.45927091
+            },
+            "lane_end_s": 35.786953170541665,
+            "urgent_p95_ms": 379.6926210000038,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.4946964937227566,
+            "peak_ap_c": 29.186452576313204,
+            "global_peak_ap_c": 29.186452576313204,
+            "volumes": {
+              "classification_CPU": 0.0,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.29710610416667294,
+              "detection_CPU": 0.3239076603958182
+            },
+            "responses": {
+              "827020102/burst/2": 35.784007188,
+              "827020102/burst/1": 35.451824756
+            },
+            "lane_end_s": 35.78623004024999,
+            "urgent_p95_ms": 372.24646700000363,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.4984015533220528,
+            "peak_ap_c": 29.187733687107187,
+            "global_peak_ap_c": 29.187733687107187,
+            "volumes": {
+              "classification_CPU": 0.0,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.31255284629166624,
+              "detection_CPU": 0.30986869541666096
+            },
+            "responses": {
+              "827020102/burst/2": 35.78536796,
+              "827020102/burst/1": 35.466717064
+            },
+            "lane_end_s": 35.787637817395826,
+            "urgent_p95_ms": 387.13877500000393,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          }
+        ]
+      }
+    ],
+    "encoder_snapshot": {
+      "state": [
+        0.29304346442222595,
+        0.010416666977107525,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7274911403656006,
+        0.7270674705505371,
+        -0.0012081414461135864,
+        0.0005420754896476865,
+        0.10362281650304794,
+        3.954512596130371,
+        1.0,
+        0.012940640561282635,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.942907989025116,
+        0.9986676573753357,
+        0.0,
+        0.0,
+        0.05709199234843254,
+        0.0013323570601642132,
+        0.10411995649337769,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6217368841171265,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidates": [
+        [
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.5,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.29960712790489197,
+          0.20969700813293457,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.10362281650304794,
+          3.954512596130371,
+          1.0,
+          0.235726997256279,
+          0.014272998087108135
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          -0.041896142065525055,
+          0.0023179345298558474,
+          0.0023179345298558474,
+          0.09688057005405426,
+          0.0,
+          0.0,
+          0.2982303202152252,
+          0.1854768693447113,
+          0.0,
+          0.0,
+          0.09688057005405426,
+          0.0,
+          0.10362281650304794,
+          3.954512596130371,
+          1.0,
+          0.235726997256279,
+          0.014272998087108135
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          -0.041896142065525055,
+          0.0023179345298558474,
+          0.0023179345298558474,
+          0.09688057005405426,
+          0.0,
+          0.0,
+          0.2982303202152252,
+          0.1854768693447113,
+          0.0,
+          0.0,
+          0.09688057005405426,
+          0.0,
+          0.10362281650304794,
+          3.954512596130371,
+          1.0,
+          0.9986676573753357,
+          0.0013323570601642132
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.5,
+          0.0,
+          1.0,
+          -0.041896142065525055,
+          0.0023179345298558474,
+          0.0023179345298558474,
+          0.09688057005405426,
+          0.0,
+          0.0,
+          0.2982303202152252,
+          0.1854768693447113,
+          0.0,
+          0.0,
+          0.09688057005405426,
+          0.0,
+          0.10362281650304794,
+          3.954512596130371,
+          1.0,
+          0.9986676573753357,
+          0.0013323570601642132
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "physical_mask": [
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mask": [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020102/burst/1",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "bundle",
+          "jobs": [
+            {
+              "request_id": "827020102/burst/1",
+              "backend": "GPU"
+            },
+            {
+              "request_id": "827020102/burst/2",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "bundle",
+          "jobs": [
+            {
+              "request_id": "827020102/burst/2",
+              "backend": "CPU"
+            },
+            {
+              "request_id": "827020102/burst/1",
+              "backend": "GPU"
+            }
+          ]
+        },
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020102/burst/2",
+              "backend": "CPU"
+            }
+          ]
+        }
+      ],
+      "admissions": [
+        "L0",
+        "urgent_response",
+        "urgent_response",
+        "urgent_response"
+      ],
+      "chosen": 0,
+      "schema_id": "3316d0996b4b7f704bca3d79916925933a564a82c362e2a8ecf906643883566e",
+      "window_ids": [
+        "827020102/burst/1",
+        "827020102/burst/2"
+      ],
+      "risk": {
+        "rho": 3.9545125294425048,
+        "known": true,
+        "gap": 0.07764384400000068,
+        "gap_known": true,
+        "queued": 0.6217368948541666
+      }
+    },
+    "classification": "prediction masked"
+  },
+  {
+    "condition": 19,
+    "arrival_seed": 827020102,
+    "family": "burst",
+    "context": "short_context",
+    "same_dispatch_schedule": false,
+    "first_difference_ns": 35165216276,
+    "L0_jobs": [
+      [
+        "827020102/burst/1",
+        "CPU"
+      ]
+    ],
+    "Band_jobs": [
+      [
+        "827020102/burst/1",
+        "GPU"
+      ],
+      [
+        "827020102/burst/2",
+        "CPU"
+      ]
+    ],
+    "public_state": {
+      "now_ns": 35165216276,
+      "queue": [
+        {
+          "id": "827020102/burst/1",
+          "ordinal": 1,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 35079578289,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "827020102/burst/2",
+          "ordinal": 2,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 35157222133,
+          "deadline_offset_ns": 6000000000
+        }
+      ],
+      "owners": {
+        "CPU": null,
+        "GPU": null
+      },
+      "phases": {
+        "CPU": "AVAILABLE",
+        "GPU": "AVAILABLE"
+      },
+      "source": "only actual dispatches before now and public phase callbacks<=now; no remaining duration or later arrival input"
+    },
+    "snapshot_found": true,
+    "candidate_matches": [
+      {
+        "slot": 1,
+        "kind": "bundle",
+        "physical": true,
+        "prediction_admitted": false,
+        "reason": "urgent_response",
+        "forecasts": [
+          {
+            "valid": true,
+            "remaining_increment_j": 0.49656274144210116,
+            "peak_ap_c": 29.18709555472589,
+            "global_peak_ap_c": 29.18709555472589,
+            "volumes": {
+              "classification_CPU": 0.0,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.3048294752291554,
+              "detection_CPU": 0.3169074196250108
+            },
+            "responses": {
+              "827020102/burst/1": 35.45927091,
+              "827020102/burst/2": 35.784687719
+            },
+            "lane_end_s": 35.786953170541665,
+            "urgent_p95_ms": 379.6926210000038,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.4946964937227566,
+            "peak_ap_c": 29.186452576313204,
+            "global_peak_ap_c": 29.186452576313204,
+            "volumes": {
+              "classification_CPU": 0.0,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.29710610416667294,
+              "detection_CPU": 0.3239076603958182
+            },
+            "responses": {
+              "827020102/burst/1": 35.451824756,
+              "827020102/burst/2": 35.784007188
+            },
+            "lane_end_s": 35.78623004024999,
+            "urgent_p95_ms": 372.24646700000363,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.4984015533220528,
+            "peak_ap_c": 29.187733687107187,
+            "global_peak_ap_c": 29.187733687107187,
+            "volumes": {
+              "classification_CPU": 0.0,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.31255284629166624,
+              "detection_CPU": 0.30986869541666096
+            },
+            "responses": {
+              "827020102/burst/1": 35.466717064,
+              "827020102/burst/2": 35.78536796
+            },
+            "lane_end_s": 35.787637817395826,
+            "urgent_p95_ms": 387.13877500000393,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          }
+        ]
+      },
+      {
+        "slot": 2,
+        "kind": "bundle",
+        "physical": true,
+        "prediction_admitted": false,
+        "reason": "urgent_response",
+        "forecasts": [
+          {
+            "valid": true,
+            "remaining_increment_j": 0.49656274144210116,
+            "peak_ap_c": 29.18709555472589,
+            "global_peak_ap_c": 29.18709555472589,
+            "volumes": {
+              "classification_CPU": 0.0,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.3048294752291554,
+              "detection_CPU": 0.3169074196250108
+            },
+            "responses": {
+              "827020102/burst/2": 35.784687719,
+              "827020102/burst/1": 35.45927091
+            },
+            "lane_end_s": 35.786953170541665,
+            "urgent_p95_ms": 379.6926210000038,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.4946964937227566,
+            "peak_ap_c": 29.186452576313204,
+            "global_peak_ap_c": 29.186452576313204,
+            "volumes": {
+              "classification_CPU": 0.0,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.29710610416667294,
+              "detection_CPU": 0.3239076603958182
+            },
+            "responses": {
+              "827020102/burst/2": 35.784007188,
+              "827020102/burst/1": 35.451824756
+            },
+            "lane_end_s": 35.78623004024999,
+            "urgent_p95_ms": 372.24646700000363,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.4984015533220528,
+            "peak_ap_c": 29.187733687107187,
+            "global_peak_ap_c": 29.187733687107187,
+            "volumes": {
+              "classification_CPU": 0.0,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.31255284629166624,
+              "detection_CPU": 0.30986869541666096
+            },
+            "responses": {
+              "827020102/burst/2": 35.78536796,
+              "827020102/burst/1": 35.466717064
+            },
+            "lane_end_s": 35.787637817395826,
+            "urgent_p95_ms": 387.13877500000393,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          }
+        ]
+      }
+    ],
+    "encoder_snapshot": {
+      "state": [
+        0.29304346442222595,
+        0.010416666977107525,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7274911403656006,
+        0.7270674705505371,
+        -0.0012081414461135864,
+        0.0005420754896476865,
+        0.10362281650304794,
+        3.954512596130371,
+        1.0,
+        0.012940640561282635,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.942907989025116,
+        0.9986676573753357,
+        0.0,
+        0.0,
+        0.05709199234843254,
+        0.0013323570601642132,
+        0.10411995649337769,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6217368841171265,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidates": [
+        [
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.5,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.29960712790489197,
+          0.20969700813293457,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.10362281650304794,
+          3.954512596130371,
+          1.0,
+          0.235726997256279,
+          0.014272998087108135
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          -0.041896142065525055,
+          0.0023179345298558474,
+          0.0023179345298558474,
+          0.09688057005405426,
+          0.0,
+          0.0,
+          0.2982303202152252,
+          0.1854768693447113,
+          0.0,
+          0.0,
+          0.09688057005405426,
+          0.0,
+          0.10362281650304794,
+          3.954512596130371,
+          1.0,
+          0.235726997256279,
+          0.014272998087108135
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          -0.041896142065525055,
+          0.0023179345298558474,
+          0.0023179345298558474,
+          0.09688057005405426,
+          0.0,
+          0.0,
+          0.2982303202152252,
+          0.1854768693447113,
+          0.0,
+          0.0,
+          0.09688057005405426,
+          0.0,
+          0.10362281650304794,
+          3.954512596130371,
+          1.0,
+          0.9986676573753357,
+          0.0013323570601642132
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.5,
+          0.0,
+          1.0,
+          -0.041896142065525055,
+          0.0023179345298558474,
+          0.0023179345298558474,
+          0.09688057005405426,
+          0.0,
+          0.0,
+          0.2982303202152252,
+          0.1854768693447113,
+          0.0,
+          0.0,
+          0.09688057005405426,
+          0.0,
+          0.10362281650304794,
+          3.954512596130371,
+          1.0,
+          0.9986676573753357,
+          0.0013323570601642132
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "physical_mask": [
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mask": [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020102/burst/1",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "bundle",
+          "jobs": [
+            {
+              "request_id": "827020102/burst/1",
+              "backend": "GPU"
+            },
+            {
+              "request_id": "827020102/burst/2",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "bundle",
+          "jobs": [
+            {
+              "request_id": "827020102/burst/2",
+              "backend": "CPU"
+            },
+            {
+              "request_id": "827020102/burst/1",
+              "backend": "GPU"
+            }
+          ]
+        },
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020102/burst/2",
+              "backend": "CPU"
+            }
+          ]
+        }
+      ],
+      "admissions": [
+        "L0",
+        "urgent_response",
+        "urgent_response",
+        "urgent_response"
+      ],
+      "chosen": 0,
+      "schema_id": "3316d0996b4b7f704bca3d79916925933a564a82c362e2a8ecf906643883566e",
+      "window_ids": [
+        "827020102/burst/1",
+        "827020102/burst/2"
+      ],
+      "risk": {
+        "rho": 3.9545125294425048,
+        "known": true,
+        "gap": 0.07764384400000068,
+        "gap_known": true,
+        "queued": 0.6217368948541666
+      }
+    },
+    "classification": "prediction masked"
+  },
+  {
+    "condition": 20,
+    "arrival_seed": 827020102,
+    "family": "burst",
+    "context": "long_context",
+    "same_dispatch_schedule": false,
+    "first_difference_ns": 35165216276,
+    "L0_jobs": [
+      [
+        "827020102/burst/1",
+        "CPU"
+      ]
+    ],
+    "Band_jobs": [
+      [
+        "827020102/burst/1",
+        "GPU"
+      ],
+      [
+        "827020102/burst/2",
+        "CPU"
+      ]
+    ],
+    "public_state": {
+      "now_ns": 35165216276,
+      "queue": [
+        {
+          "id": "827020102/burst/1",
+          "ordinal": 1,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 35079578289,
+          "deadline_offset_ns": 1500000000
+        },
+        {
+          "id": "827020102/burst/2",
+          "ordinal": 2,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 35157222133,
+          "deadline_offset_ns": 6000000000
+        }
+      ],
+      "owners": {
+        "CPU": null,
+        "GPU": null
+      },
+      "phases": {
+        "CPU": "AVAILABLE",
+        "GPU": "AVAILABLE"
+      },
+      "source": "only actual dispatches before now and public phase callbacks<=now; no remaining duration or later arrival input"
+    },
+    "snapshot_found": true,
+    "candidate_matches": [
+      {
+        "slot": 1,
+        "kind": "bundle",
+        "physical": true,
+        "prediction_admitted": false,
+        "reason": "urgent_response",
+        "forecasts": [
+          {
+            "valid": true,
+            "remaining_increment_j": 0.49656274144210116,
+            "peak_ap_c": 29.18709555472589,
+            "global_peak_ap_c": 29.18709555472589,
+            "volumes": {
+              "classification_CPU": 0.0,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.3048294752291554,
+              "detection_CPU": 0.3169074196250108
+            },
+            "responses": {
+              "827020102/burst/1": 35.45927091,
+              "827020102/burst/2": 35.784687719
+            },
+            "lane_end_s": 35.786953170541665,
+            "urgent_p95_ms": 379.6926210000038,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.4946964937227566,
+            "peak_ap_c": 29.186452576313204,
+            "global_peak_ap_c": 29.186452576313204,
+            "volumes": {
+              "classification_CPU": 0.0,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.29710610416667294,
+              "detection_CPU": 0.3239076603958182
+            },
+            "responses": {
+              "827020102/burst/1": 35.451824756,
+              "827020102/burst/2": 35.784007188
+            },
+            "lane_end_s": 35.78623004024999,
+            "urgent_p95_ms": 372.24646700000363,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.4984015533220528,
+            "peak_ap_c": 29.187733687107187,
+            "global_peak_ap_c": 29.187733687107187,
+            "volumes": {
+              "classification_CPU": 0.0,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.31255284629166624,
+              "detection_CPU": 0.30986869541666096
+            },
+            "responses": {
+              "827020102/burst/1": 35.466717064,
+              "827020102/burst/2": 35.78536796
+            },
+            "lane_end_s": 35.787637817395826,
+            "urgent_p95_ms": 387.13877500000393,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          }
+        ]
+      },
+      {
+        "slot": 2,
+        "kind": "bundle",
+        "physical": true,
+        "prediction_admitted": false,
+        "reason": "urgent_response",
+        "forecasts": [
+          {
+            "valid": true,
+            "remaining_increment_j": 0.49656274144210116,
+            "peak_ap_c": 29.18709555472589,
+            "global_peak_ap_c": 29.18709555472589,
+            "volumes": {
+              "classification_CPU": 0.0,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.3048294752291554,
+              "detection_CPU": 0.3169074196250108
+            },
+            "responses": {
+              "827020102/burst/2": 35.784687719,
+              "827020102/burst/1": 35.45927091
+            },
+            "lane_end_s": 35.786953170541665,
+            "urgent_p95_ms": 379.6926210000038,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.4946964937227566,
+            "peak_ap_c": 29.186452576313204,
+            "global_peak_ap_c": 29.186452576313204,
+            "volumes": {
+              "classification_CPU": 0.0,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.29710610416667294,
+              "detection_CPU": 0.3239076603958182
+            },
+            "responses": {
+              "827020102/burst/2": 35.784007188,
+              "827020102/burst/1": 35.451824756
+            },
+            "lane_end_s": 35.78623004024999,
+            "urgent_p95_ms": 372.24646700000363,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.4984015533220528,
+            "peak_ap_c": 29.187733687107187,
+            "global_peak_ap_c": 29.187733687107187,
+            "volumes": {
+              "classification_CPU": 0.0,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.31255284629166624,
+              "detection_CPU": 0.30986869541666096
+            },
+            "responses": {
+              "827020102/burst/2": 35.78536796,
+              "827020102/burst/1": 35.466717064
+            },
+            "lane_end_s": 35.787637817395826,
+            "urgent_p95_ms": 387.13877500000393,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          }
+        ]
+      }
+    ],
+    "encoder_snapshot": {
+      "state": [
+        0.29304346442222595,
+        0.010416666977107525,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7274911403656006,
+        0.7270674705505371,
+        -0.0012081414461135864,
+        0.0005420754896476865,
+        0.10362281650304794,
+        3.954512596130371,
+        1.0,
+        0.012940640561282635,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.942907989025116,
+        0.9986676573753357,
+        0.0,
+        0.0,
+        0.05709199234843254,
+        0.0013323570601642132,
+        0.10411995649337769,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6217368841171265,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidates": [
+        [
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.5,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.29960712790489197,
+          0.20969700813293457,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.10362281650304794,
+          3.954512596130371,
+          1.0,
+          0.235726997256279,
+          0.014272998087108135
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          -0.041896142065525055,
+          0.0023179345298558474,
+          0.0023179345298558474,
+          0.09688057005405426,
+          0.0,
+          0.0,
+          0.2982303202152252,
+          0.1854768693447113,
+          0.0,
+          0.0,
+          0.09688057005405426,
+          0.0,
+          0.10362281650304794,
+          3.954512596130371,
+          1.0,
+          0.235726997256279,
+          0.014272998087108135
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          -0.041896142065525055,
+          0.0023179345298558474,
+          0.0023179345298558474,
+          0.09688057005405426,
+          0.0,
+          0.0,
+          0.2982303202152252,
+          0.1854768693447113,
+          0.0,
+          0.0,
+          0.09688057005405426,
+          0.0,
+          0.10362281650304794,
+          3.954512596130371,
+          1.0,
+          0.9986676573753357,
+          0.0013323570601642132
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.5,
+          0.0,
+          1.0,
+          -0.041896142065525055,
+          0.0023179345298558474,
+          0.0023179345298558474,
+          0.09688057005405426,
+          0.0,
+          0.0,
+          0.2982303202152252,
+          0.1854768693447113,
+          0.0,
+          0.0,
+          0.09688057005405426,
+          0.0,
+          0.10362281650304794,
+          3.954512596130371,
+          1.0,
+          0.9986676573753357,
+          0.0013323570601642132
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "physical_mask": [
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mask": [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020102/burst/1",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "bundle",
+          "jobs": [
+            {
+              "request_id": "827020102/burst/1",
+              "backend": "GPU"
+            },
+            {
+              "request_id": "827020102/burst/2",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "bundle",
+          "jobs": [
+            {
+              "request_id": "827020102/burst/2",
+              "backend": "CPU"
+            },
+            {
+              "request_id": "827020102/burst/1",
+              "backend": "GPU"
+            }
+          ]
+        },
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020102/burst/2",
+              "backend": "CPU"
+            }
+          ]
+        }
+      ],
+      "admissions": [
+        "L0",
+        "urgent_response",
+        "urgent_response",
+        "urgent_response"
+      ],
+      "chosen": 0,
+      "schema_id": "3316d0996b4b7f704bca3d79916925933a564a82c362e2a8ecf906643883566e",
+      "window_ids": [
+        "827020102/burst/1",
+        "827020102/burst/2"
+      ],
+      "risk": {
+        "rho": 3.9545125294425048,
+        "known": true,
+        "gap": 0.07764384400000068,
+        "gap_known": true,
+        "queued": 0.6217368948541666
+      }
+    },
+    "classification": "prediction masked"
+  },
+  {
+    "condition": 21,
+    "arrival_seed": 827020102,
+    "family": "sustained",
+    "context": "mean",
+    "same_dispatch_schedule": false,
+    "first_difference_ns": 37402069341,
+    "L0_jobs": [
+      [
+        "827020102/sustained/6",
+        "GPU"
+      ]
+    ],
+    "Band_jobs": [],
+    "public_state": {
+      "now_ns": 37402069341,
+      "queue": [
+        {
+          "id": "827020102/sustained/6",
+          "ordinal": 6,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 37402069341,
+          "deadline_offset_ns": 1500000000
+        }
+      ],
+      "owners": {
+        "CPU": "827020102/sustained/4",
+        "GPU": null
+      },
+      "phases": {
+        "CPU": "EXECUTING",
+        "GPU": "AVAILABLE"
+      },
+      "source": "only actual dispatches before now and public phase callbacks<=now; no remaining duration or later arrival input"
+    },
+    "snapshot_found": true,
+    "candidate_matches": [
+      {
+        "slot": 1,
+        "kind": "resource_wait",
+        "physical": true,
+        "prediction_admitted": true,
+        "reason": "permitted_prediction_not_guarantee",
+        "forecasts": [
+          {
+            "valid": true,
+            "remaining_increment_j": 0.1245486523297302,
+            "peak_ap_c": 29.345126916336667,
+            "global_peak_ap_c": 29.345126916336667,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.03926270270832788
+            },
+            "responses": {
+              "827020102/sustained/4": 37.439066592,
+              "827020102/sustained/6": 37.597511975
+            },
+            "lane_end_s": 37.60654831939583,
+            "urgent_p95_ms": 294.0546346666641,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.1245486523297302,
+            "peak_ap_c": 29.345126916336667,
+            "global_peak_ap_c": 29.345126916336667,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.03926270270832788
+            },
+            "responses": {
+              "827020102/sustained/4": 37.439066592,
+              "827020102/sustained/6": 37.597511975
+            },
+            "lane_end_s": 37.60654831939583,
+            "urgent_p95_ms": 294.0546346666641,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.12503675480571974,
+            "peak_ap_c": 29.34521581939023,
+            "global_peak_ap_c": 29.34521581939023,
+            "volumes": {
+              "classification_CPU": 0.16521627568750574,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.03994734956248891
+            },
+            "responses": {
+              "827020102/sustained/4": 37.439746833,
+              "827020102/sustained/6": 37.598196622
+            },
+            "lane_end_s": 37.607232966249995,
+            "urgent_p95_ms": 294.0546346666641,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          }
+        ]
+      }
+    ],
+    "encoder_snapshot": {
+      "state": [
+        0.31168392300605774,
+        0.010416666977107525,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        0.7334304451942444,
+        0.731819212436676,
+        -0.0011213365942239761,
+        0.008553039282560349,
+        0.0,
+        0.7765015959739685,
+        1.0,
+        0.06734414398670197,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.1960364282131195,
+        0.03125,
+        0.02083333395421505,
+        0.4000000059604645,
+        0.0,
+        0.09707903116941452,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6217368841171265,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidates": [
+        [
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.5,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.31428852677345276,
+          0.1997498720884323,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.7765015959739685,
+          1.0,
+          0.25,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          -0.03223935887217522,
+          -0.005172949284315109,
+          -0.005172949284315109,
+          0.0,
+          0.0,
+          0.0,
+          0.31339362263679504,
+          0.21731211245059967,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.7765015959739685,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020102/sustained/6",
+              "backend": "GPU"
+            }
+          ]
+        },
+        {
+          "kind": "resource_wait",
+          "until_ns": null,
+          "hold_signature": [
+            [
+              "827020102/sustained/6"
+            ],
+            [
+              [
+                "CPU",
+                "827020102/sustained/4"
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "admissions": [
+        "L0",
+        "permitted_prediction_not_guarantee"
+      ],
+      "chosen": 0,
+      "schema_id": "3316d0996b4b7f704bca3d79916925933a564a82c362e2a8ecf906643883566e",
+      "window_ids": [
+        "827020102/sustained/6"
+      ],
+      "risk": {
+        "rho": 0.7765015991528361,
+        "known": true,
+        "gap": 0.4040648450000006,
+        "gap_known": true,
+        "queued": 0
+      }
+    },
+    "classification": "in bank and permitted, selector chooses differently"
+  },
+  {
+    "condition": 22,
+    "arrival_seed": 827020102,
+    "family": "sustained",
+    "context": "short_context",
+    "same_dispatch_schedule": false,
+    "first_difference_ns": 37402069341,
+    "L0_jobs": [
+      [
+        "827020102/sustained/6",
+        "GPU"
+      ]
+    ],
+    "Band_jobs": [],
+    "public_state": {
+      "now_ns": 37402069341,
+      "queue": [
+        {
+          "id": "827020102/sustained/6",
+          "ordinal": 6,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 37402069341,
+          "deadline_offset_ns": 1500000000
+        }
+      ],
+      "owners": {
+        "CPU": "827020102/sustained/4",
+        "GPU": null
+      },
+      "phases": {
+        "CPU": "EXECUTING",
+        "GPU": "AVAILABLE"
+      },
+      "source": "only actual dispatches before now and public phase callbacks<=now; no remaining duration or later arrival input"
+    },
+    "snapshot_found": true,
+    "candidate_matches": [
+      {
+        "slot": 1,
+        "kind": "resource_wait",
+        "physical": true,
+        "prediction_admitted": true,
+        "reason": "permitted_prediction_not_guarantee",
+        "forecasts": [
+          {
+            "valid": true,
+            "remaining_increment_j": 0.12403311401435109,
+            "peak_ap_c": 29.343800008647857,
+            "global_peak_ap_c": 29.343800008647857,
+            "volumes": {
+              "classification_CPU": 0.16521627568750574,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.038539572416652845
+            },
+            "responses": {
+              "827020102/sustained/4": 37.438343462,
+              "827020102/sustained/6": 37.596788845
+            },
+            "lane_end_s": 37.60582518910416,
+            "urgent_p95_ms": 286.60848072917173,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.12403311401435109,
+            "peak_ap_c": 29.343800008647857,
+            "global_peak_ap_c": 29.343800008647857,
+            "volumes": {
+              "classification_CPU": 0.16521627568750574,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.038539572416652845
+            },
+            "responses": {
+              "827020102/sustained/4": 37.438343462,
+              "827020102/sustained/6": 37.596788845
+            },
+            "lane_end_s": 37.60582518910416,
+            "urgent_p95_ms": 286.60848072917173,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.1245212164903374,
+            "peak_ap_c": 29.343888908838505,
+            "global_peak_ap_c": 29.343888908838505,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.03922421927082098
+            },
+            "responses": {
+              "827020102/sustained/4": 37.439023703,
+              "827020102/sustained/6": 37.597473491
+            },
+            "lane_end_s": 37.60650983595832,
+            "urgent_p95_ms": 286.60848072917173,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          }
+        ]
+      }
+    ],
+    "encoder_snapshot": {
+      "state": [
+        0.31168392300605774,
+        0.010416666977107525,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        0.7333987951278687,
+        0.7318012118339539,
+        -0.0011213365942239761,
+        0.00852328259497881,
+        0.0,
+        0.7763299942016602,
+        1.0,
+        0.06734414398670197,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.19107231497764587,
+        0.03125,
+        0.02083333395421505,
+        0.4000000059604645,
+        0.0,
+        0.09719955176115036,
+        0.0,
+        0.16521628201007843,
+        0.30336204171180725,
+        0.6215994954109192,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidates": [
+        [
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.5,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.31428852677345276,
+          0.1997498720884323,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.7763299942016602,
+          1.0,
+          0.25,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          -0.032454848289489746,
+          -0.005182975437492132,
+          -0.005182975437492132,
+          -1.8055337780431557e-10,
+          0.0,
+          0.0,
+          0.31338757276535034,
+          0.2174326479434967,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.7763299942016602,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020102/sustained/6",
+              "backend": "GPU"
+            }
+          ]
+        },
+        {
+          "kind": "resource_wait",
+          "until_ns": null,
+          "hold_signature": [
+            [
+              "827020102/sustained/6"
+            ],
+            [
+              [
+                "CPU",
+                "827020102/sustained/4"
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "admissions": [
+        "L0",
+        "permitted_prediction_not_guarantee"
+      ],
+      "chosen": 0,
+      "schema_id": "3316d0996b4b7f704bca3d79916925933a564a82c362e2a8ecf906643883566e",
+      "window_ids": [
+        "827020102/sustained/6"
+      ],
+      "risk": {
+        "rho": 0.7763300033568569,
+        "known": true,
+        "gap": 0.4040648450000006,
+        "gap_known": true,
+        "queued": 0
+      }
+    },
+    "classification": "in bank and permitted, selector chooses differently"
+  },
+  {
+    "condition": 23,
+    "arrival_seed": 827020102,
+    "family": "sustained",
+    "context": "long_context",
+    "same_dispatch_schedule": false,
+    "first_difference_ns": 37402069341,
+    "L0_jobs": [
+      [
+        "827020102/sustained/6",
+        "GPU"
+      ]
+    ],
+    "Band_jobs": [],
+    "public_state": {
+      "now_ns": 37402069341,
+      "queue": [
+        {
+          "id": "827020102/sustained/6",
+          "ordinal": 6,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 37402069341,
+          "deadline_offset_ns": 1500000000
+        }
+      ],
+      "owners": {
+        "CPU": "827020102/sustained/4",
+        "GPU": null
+      },
+      "phases": {
+        "CPU": "EXECUTING",
+        "GPU": "AVAILABLE"
+      },
+      "source": "only actual dispatches before now and public phase callbacks<=now; no remaining duration or later arrival input"
+    },
+    "snapshot_found": true,
+    "candidate_matches": [
+      {
+        "slot": 1,
+        "kind": "resource_wait",
+        "physical": true,
+        "prediction_admitted": true,
+        "reason": "permitted_prediction_not_guarantee",
+        "forecasts": [
+          {
+            "valid": true,
+            "remaining_increment_j": 0.12503675480571974,
+            "peak_ap_c": 29.3464450437442,
+            "global_peak_ap_c": 29.3464450437442,
+            "volumes": {
+              "classification_CPU": 0.16521627568750574,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.03994734956248891
+            },
+            "responses": {
+              "827020102/sustained/4": 37.439751239,
+              "827020102/sustained/6": 37.598196622
+            },
+            "lane_end_s": 37.607232966249995,
+            "urgent_p95_ms": 301.50078860416414,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.12503675480571974,
+            "peak_ap_c": 29.3464450437442,
+            "global_peak_ap_c": 29.3464450437442,
+            "volumes": {
+              "classification_CPU": 0.16521627568750574,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.03994734956248891
+            },
+            "responses": {
+              "827020102/sustained/4": 37.439751239,
+              "827020102/sustained/6": 37.598196622
+            },
+            "lane_end_s": 37.607232966249995,
+            "urgent_p95_ms": 301.50078860416414,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.12552485728170604,
+            "peak_ap_c": 29.346533949508405,
+            "global_peak_ap_c": 29.346533949508405,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.040631996416657046
+            },
+            "responses": {
+              "827020102/sustained/4": 37.44043148,
+              "827020102/sustained/6": 37.598881269
+            },
+            "lane_end_s": 37.607917613104156,
+            "urgent_p95_ms": 301.50078860416414,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          }
+        ]
+      }
+    ],
+    "encoder_snapshot": {
+      "state": [
+        0.31168392300605774,
+        0.010416666977107525,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        0.7334619760513306,
+        0.7318370938301086,
+        -0.0011213365942239761,
+        0.008582706563174725,
+        0.0,
+        0.7766640782356262,
+        1.0,
+        0.06734414398670197,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.20100052654743195,
+        0.03125,
+        0.02083333395421505,
+        0.4000000059604645,
+        0.0,
+        0.09696492552757263,
+        0.0,
+        0.16521628201007843,
+        0.3062969148159027,
+        0.6218670010566711,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidates": [
+        [
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.5,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.31428852677345276,
+          0.1997498720884323,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.7766640782356262,
+          1.0,
+          0.25,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          -0.032035332173109055,
+          -0.005163456778973341,
+          -0.005163456778973341,
+          0.0,
+          0.0,
+          0.0,
+          0.3133993148803711,
+          0.21719801425933838,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.7766640782356262,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020102/sustained/6",
+              "backend": "GPU"
+            }
+          ]
+        },
+        {
+          "kind": "resource_wait",
+          "until_ns": null,
+          "hold_signature": [
+            [
+              "827020102/sustained/6"
+            ],
+            [
+              [
+                "CPU",
+                "827020102/sustained/4"
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "admissions": [
+        "L0",
+        "permitted_prediction_not_guarantee"
+      ],
+      "chosen": 0,
+      "schema_id": "3316d0996b4b7f704bca3d79916925933a564a82c362e2a8ecf906643883566e",
+      "window_ids": [
+        "827020102/sustained/6"
+      ],
+      "risk": {
+        "rho": 0.7766640615738309,
+        "known": true,
+        "gap": 0.4040648450000006,
+        "gap_known": true,
+        "queued": 0
+      }
+    },
+    "classification": "in bank and permitted, selector chooses differently"
+  },
+  {
+    "condition": 24,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 25,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 26,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 27,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 28,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 29,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 30,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 31,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 32,
+    "arrival_seed": 827020103,
+    "family": "burst",
+    "context": "long_context",
+    "same_dispatch_schedule": false,
+    "first_difference_ns": 36867264625,
+    "L0_jobs": [
+      [
+        "827020103/burst/3",
+        "CPU"
+      ]
+    ],
+    "Band_jobs": [],
+    "public_state": {
+      "now_ns": 36867264625,
+      "queue": [
+        {
+          "id": "827020103/burst/3",
+          "ordinal": 3,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 35236659284,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "827020103/burst/4",
+          "ordinal": 4,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 35315982079,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "827020103/burst/5",
+          "ordinal": 5,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 35398084647,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "827020103/burst/6",
+          "ordinal": 6,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 36477798737,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "827020103/burst/8",
+          "ordinal": 8,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 36638011939,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "827020103/burst/9",
+          "ordinal": 9,
+          "task": "detection",
+          "priority": "normal",
+          "arrival_ns": 36716781310,
+          "deadline_offset_ns": 6000000000
+        },
+        {
+          "id": "827020103/burst/10",
+          "ordinal": 10,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 36797807142,
+          "deadline_offset_ns": 1500000000
+        }
+      ],
+      "owners": {
+        "CPU": null,
+        "GPU": "827020103/burst/7"
+      },
+      "phases": {
+        "CPU": "AVAILABLE",
+        "GPU": "OUTPUT_READY"
+      },
+      "source": "only actual dispatches before now and public phase callbacks<=now; no remaining duration or later arrival input"
+    },
+    "snapshot_found": true,
+    "candidate_matches": [],
+    "encoder_snapshot": {
+      "state": [
+        0.3072271943092346,
+        0.010416666977107525,
+        0.0625,
+        0.0,
+        1.0,
+        1.0,
+        0.7327930927276611,
+        0.7298905849456787,
+        -0.0011415057815611362,
+        0.007770676631480455,
+        0.6219224333763123,
+        2.3902506828308105,
+        1.0,
+        0.01350430492311716,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.9536949992179871,
+        0.7282324433326721,
+        0.0,
+        0.7414529323577881,
+        0.046304989606142044,
+        0.2717675566673279,
+        0.20100052654743195,
+        0.010416666977107525,
+        0.03125,
+        0.0,
+        0.6000000238418579,
+        0.0,
+        0.05100768804550171,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6219224333763123,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidates": [
+        [
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.5,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.6219224333763123,
+          2.3902506828308105,
+          1.0,
+          0.7282324433326721,
+          0.2717675566673279
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "physical_mask": [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mask": [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020103/burst/3",
+              "backend": "CPU"
+            }
+          ]
+        }
+      ],
+      "admissions": [
+        "L0"
+      ],
+      "chosen": 0,
+      "schema_id": "3316d0996b4b7f704bca3d79916925933a564a82c362e2a8ecf906643883566e",
+      "window_ids": [
+        "827020103/burst/10",
+        "827020103/burst/3",
+        "827020103/burst/4",
+        "827020103/burst/5"
+      ],
+      "risk": {
+        "rho": 2.3902505954221507,
+        "known": true,
+        "gap": 0.08102583200000169,
+        "gap_known": true,
+        "queued": 3.731534597126528
+      }
+    },
+    "classification": "not in recorded bank"
+  },
+  {
+    "condition": 33,
+    "arrival_seed": 827020103,
+    "family": "sustained",
+    "context": "mean",
+    "same_dispatch_schedule": false,
+    "first_difference_ns": 44149671823,
+    "L0_jobs": [
+      [
+        "827020103/sustained/23",
+        "GPU"
+      ]
+    ],
+    "Band_jobs": [],
+    "public_state": {
+      "now_ns": 44149671823,
+      "queue": [
+        {
+          "id": "827020103/sustained/23",
+          "ordinal": 23,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 44149671823,
+          "deadline_offset_ns": 1500000000
+        }
+      ],
+      "owners": {
+        "CPU": "827020103/sustained/21",
+        "GPU": null
+      },
+      "phases": {
+        "CPU": "OUTPUT_READY",
+        "GPU": "AVAILABLE"
+      },
+      "source": "only actual dispatches before now and public phase callbacks<=now; no remaining duration or later arrival input"
+    },
+    "snapshot_found": true,
+    "candidate_matches": [
+      {
+        "slot": 1,
+        "kind": "resource_wait",
+        "physical": true,
+        "prediction_admitted": true,
+        "reason": "permitted_prediction_not_guarantee",
+        "forecasts": [
+          {
+            "valid": true,
+            "remaining_increment_j": 0.10258037607005376,
+            "peak_ap_c": 29.98338287468682,
+            "global_peak_ap_c": 29.98338287468682,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.008448453708332693
+            },
+            "responses": {
+              "827020103/sustained/21": 44.155854825,
+              "827020103/sustained/23": 44.314300208
+            },
+            "lane_end_s": 44.32333655239583,
+            "urgent_p95_ms": 294.0546346666641,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.10258037607005376,
+            "peak_ap_c": 29.98338287468682,
+            "global_peak_ap_c": 29.98338287468682,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.008448453708332693
+            },
+            "responses": {
+              "827020103/sustained/21": 44.155854825,
+              "827020103/sustained/23": 44.314300208
+            },
+            "lane_end_s": 44.32333655239583,
+            "urgent_p95_ms": 294.0546346666641,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.10306847854603914,
+            "peak_ap_c": 29.98338287468682,
+            "global_peak_ap_c": 29.98338287468682,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.009133100562493723
+            },
+            "responses": {
+              "827020103/sustained/21": 44.156535066,
+              "827020103/sustained/23": 44.314984855
+            },
+            "lane_end_s": 44.32402119924999,
+            "urgent_p95_ms": 294.0546346666641,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          }
+        ]
+      }
+    ],
+    "encoder_snapshot": {
+      "state": [
+        0.3679139316082001,
+        0.010416666977107525,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        0.7495845556259155,
+        0.7492027878761292,
+        -0.0008954770746640861,
+        0.03414320573210716,
+        0.0,
+        0.8811473846435547,
+        1.0,
+        0.06688755750656128,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.1960364282131195,
+        0.1145833358168602,
+        0.1145833358168602,
+        0.6000000238418579,
+        0.0,
+        0.1022147387266159,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6217368841171265,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidates": [
+        [
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.5,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.3705185353755951,
+          0.1997498720884323,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.8811473846435547,
+          1.0,
+          0.25,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          -0.041421953588724136,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.369366854429245,
+          0.22244782745838165,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.8811473846435547,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020103/sustained/23",
+              "backend": "GPU"
+            }
+          ]
+        },
+        {
+          "kind": "resource_wait",
+          "until_ns": null,
+          "hold_signature": [
+            [
+              "827020103/sustained/23"
+            ],
+            [
+              [
+                "CPU",
+                "827020103/sustained/21"
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "admissions": [
+        "L0",
+        "permitted_prediction_not_guarantee"
+      ],
+      "chosen": 0,
+      "schema_id": "3316d0996b4b7f704bca3d79916925933a564a82c362e2a8ecf906643883566e",
+      "window_ids": [
+        "827020103/sustained/23"
+      ],
+      "risk": {
+        "rho": 0.881147358562021,
+        "known": true,
+        "gap": 0.401325326999995,
+        "gap_known": true,
+        "queued": 0
+      }
+    },
+    "classification": "in bank and permitted, selector chooses differently"
+  },
+  {
+    "condition": 34,
+    "arrival_seed": 827020103,
+    "family": "sustained",
+    "context": "short_context",
+    "same_dispatch_schedule": false,
+    "first_difference_ns": 44149671823,
+    "L0_jobs": [
+      [
+        "827020103/sustained/23",
+        "GPU"
+      ]
+    ],
+    "Band_jobs": [],
+    "public_state": {
+      "now_ns": 44149671823,
+      "queue": [
+        {
+          "id": "827020103/sustained/23",
+          "ordinal": 23,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 44149671823,
+          "deadline_offset_ns": 1500000000
+        }
+      ],
+      "owners": {
+        "CPU": "827020103/sustained/21",
+        "GPU": null
+      },
+      "phases": {
+        "CPU": "OUTPUT_READY",
+        "GPU": "AVAILABLE"
+      },
+      "source": "only actual dispatches before now and public phase callbacks<=now; no remaining duration or later arrival input"
+    },
+    "snapshot_found": true,
+    "candidate_matches": [
+      {
+        "slot": 1,
+        "kind": "resource_wait",
+        "physical": true,
+        "prediction_admitted": true,
+        "reason": "permitted_prediction_not_guarantee",
+        "forecasts": [
+          {
+            "valid": true,
+            "remaining_increment_j": 0.1020648377546705,
+            "peak_ap_c": 29.978517135942216,
+            "global_peak_ap_c": 29.978517135942216,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.007725323416657659
+            },
+            "responses": {
+              "827020103/sustained/21": 44.155131695,
+              "827020103/sustained/23": 44.313577078
+            },
+            "lane_end_s": 44.322613422104155,
+            "urgent_p95_ms": 286.60848072917173,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.1020648377546705,
+            "peak_ap_c": 29.978517135942216,
+            "global_peak_ap_c": 29.978517135942216,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.007725323416657659
+            },
+            "responses": {
+              "827020103/sustained/21": 44.155131695,
+              "827020103/sustained/23": 44.313577078
+            },
+            "lane_end_s": 44.322613422104155,
+            "urgent_p95_ms": 286.60848072917173,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.10255294023066004,
+            "peak_ap_c": 29.978517135942216,
+            "global_peak_ap_c": 29.978517135942216,
+            "volumes": {
+              "classification_CPU": 0.16521627568750574,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.00840997027081869
+            },
+            "responses": {
+              "827020103/sustained/21": 44.155811936,
+              "827020103/sustained/23": 44.314261724
+            },
+            "lane_end_s": 44.32329806895832,
+            "urgent_p95_ms": 286.60848072917173,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          }
+        ]
+      }
+    ],
+    "encoder_snapshot": {
+      "state": [
+        0.3679139316082001,
+        0.010416666977107525,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        0.749462902545929,
+        0.7490943670272827,
+        -0.0008954770746640861,
+        0.03402714803814888,
+        0.0,
+        0.8804441094398499,
+        1.0,
+        0.06688755750656128,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.19107231497764587,
+        0.1145833358168602,
+        0.1145833358168602,
+        0.6000000238418579,
+        0.0,
+        0.10233525931835175,
+        0.0,
+        0.16521628201007843,
+        0.3004307448863983,
+        0.6212406754493713,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidates": [
+        [
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.5,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.3705185353755951,
+          0.1997498720884323,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.8804441094398499,
+          1.0,
+          0.25,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          -0.041637446731328964,
+          0.0,
+          0.0,
+          -1.8055337780431557e-10,
+          0.0,
+          0.0,
+          0.3693608045578003,
+          0.2225683480501175,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.8804441094398499,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020103/sustained/23",
+              "backend": "GPU"
+            }
+          ]
+        },
+        {
+          "kind": "resource_wait",
+          "until_ns": null,
+          "hold_signature": [
+            [
+              "827020103/sustained/23"
+            ],
+            [
+              [
+                "CPU",
+                "827020103/sustained/21"
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "admissions": [
+        "L0",
+        "permitted_prediction_not_guarantee"
+      ],
+      "chosen": 0,
+      "schema_id": "3316d0996b4b7f704bca3d79916925933a564a82c362e2a8ecf906643883566e",
+      "window_ids": [
+        "827020103/sustained/23"
+      ],
+      "risk": {
+        "rho": 0.8804441179944719,
+        "known": true,
+        "gap": 0.401325326999995,
+        "gap_known": true,
+        "queued": 0
+      }
+    },
+    "classification": "in bank and permitted, selector chooses differently"
+  },
+  {
+    "condition": 35,
+    "arrival_seed": 827020103,
+    "family": "sustained",
+    "context": "long_context",
+    "same_dispatch_schedule": false,
+    "first_difference_ns": 44149671823,
+    "L0_jobs": [
+      [
+        "827020103/sustained/23",
+        "GPU"
+      ]
+    ],
+    "Band_jobs": [],
+    "public_state": {
+      "now_ns": 44149671823,
+      "queue": [
+        {
+          "id": "827020103/sustained/23",
+          "ordinal": 23,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 44149671823,
+          "deadline_offset_ns": 1500000000
+        }
+      ],
+      "owners": {
+        "CPU": "827020103/sustained/21",
+        "GPU": null
+      },
+      "phases": {
+        "CPU": "EXECUTING",
+        "GPU": "AVAILABLE"
+      },
+      "source": "only actual dispatches before now and public phase callbacks<=now; no remaining duration or later arrival input"
+    },
+    "snapshot_found": true,
+    "candidate_matches": [],
+    "encoder_snapshot": {
+      "state": [
+        0.3679139316082001,
+        0.010416666977107525,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        0.7497052550315857,
+        0.7493101954460144,
+        -0.0008954770746640861,
+        0.034258369356393814,
+        0.0,
+        0.8818131685256958,
+        1.0,
+        0.06688755750656128,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.20100052654743195,
+        0.1145833358168602,
+        0.1145833358168602,
+        0.4000000059604645,
+        0.0,
+        0.10210063308477402,
+        0.0,
+        0.16521628201007843,
+        0.30922818183898926,
+        0.6222066879272461,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidates": [
+        [
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.5,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.8818131685256958,
+          1.0,
+          0.25,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "physical_mask": [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mask": [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020103/sustained/23",
+              "backend": "GPU"
+            }
+          ]
+        }
+      ],
+      "admissions": [
+        "L0"
+      ],
+      "chosen": 0,
+      "schema_id": "3316d0996b4b7f704bca3d79916925933a564a82c362e2a8ecf906643883566e",
+      "window_ids": [
+        "827020103/sustained/23"
+      ],
+      "risk": {
+        "rho": 0.8818131685329432,
+        "known": true,
+        "gap": 0.401325326999995,
+        "gap_known": true,
+        "queued": 0
+      }
+    },
+    "classification": "not in recorded bank"
+  },
+  {
+    "condition": 36,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 37,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 38,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 39,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 40,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 41,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 42,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 43,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 44,
+    "same_dispatch_schedule": true
+  },
+  {
+    "condition": 45,
+    "arrival_seed": 827020104,
+    "family": "sustained",
+    "context": "mean",
+    "same_dispatch_schedule": false,
+    "first_difference_ns": 42125120152,
+    "L0_jobs": [
+      [
+        "827020104/sustained/18",
+        "GPU"
+      ]
+    ],
+    "Band_jobs": [],
+    "public_state": {
+      "now_ns": 42125120152,
+      "queue": [
+        {
+          "id": "827020104/sustained/18",
+          "ordinal": 18,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 42125120152,
+          "deadline_offset_ns": 1500000000
+        }
+      ],
+      "owners": {
+        "CPU": "827020104/sustained/16",
+        "GPU": null
+      },
+      "phases": {
+        "CPU": "EXECUTING",
+        "GPU": "AVAILABLE"
+      },
+      "source": "only actual dispatches before now and public phase callbacks<=now; no remaining duration or later arrival input"
+    },
+    "snapshot_found": true,
+    "candidate_matches": [
+      {
+        "slot": 1,
+        "kind": "resource_wait",
+        "physical": true,
+        "prediction_admitted": true,
+        "reason": "permitted_prediction_not_guarantee",
+        "forecasts": [
+          {
+            "valid": true,
+            "remaining_increment_j": 0.15411571632984114,
+            "peak_ap_c": 29.726884991682656,
+            "global_peak_ap_c": 29.726884991682656,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.08073554570832897
+            },
+            "responses": {
+              "827020104/sustained/16": 42.203590246,
+              "827020104/sustained/18": 42.362035629
+            },
+            "lane_end_s": 42.37107197339583,
+            "urgent_p95_ms": 294.0546346666641,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.15411571632984114,
+            "peak_ap_c": 29.726884991682656,
+            "global_peak_ap_c": 29.726884991682656,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.08073554570832897
+            },
+            "responses": {
+              "827020104/sustained/16": 42.203590246,
+              "827020104/sustained/18": 42.362035629
+            },
+            "lane_end_s": 42.37107197339583,
+            "urgent_p95_ms": 294.0546346666641,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.15460381880582652,
+            "peak_ap_c": 29.726884991682656,
+            "global_peak_ap_c": 29.726884991682656,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.08142019256249
+            },
+            "responses": {
+              "827020104/sustained/16": 42.204270487,
+              "827020104/sustained/18": 42.362720276
+            },
+            "lane_end_s": 42.37175662024999,
+            "urgent_p95_ms": 294.0546346666641,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          }
+        ]
+      }
+    ],
+    "encoder_snapshot": {
+      "state": [
+        0.35104265809059143,
+        0.010416666977107525,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        0.7431721091270447,
+        0.7428088784217834,
+        -0.0009579941397532821,
+        0.02399941347539425,
+        0.0,
+        0.6792712807655334,
+        1.0,
+        0.06343592703342438,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.1960364282131195,
+        0.1041666641831398,
+        0.0729166641831398,
+        0.4000000059604645,
+        0.0,
+        0.09016688913106918,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6217368841171265,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidates": [
+        [
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.5,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.35364726185798645,
+          0.1997498720884323,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.6792712807655334,
+          1.0,
+          0.25,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          -0.019880516454577446,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.35309797525405884,
+          0.21039998531341553,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.6792712807655334,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020104/sustained/18",
+              "backend": "GPU"
+            }
+          ]
+        },
+        {
+          "kind": "resource_wait",
+          "until_ns": null,
+          "hold_signature": [
+            [
+              "827020104/sustained/18"
+            ],
+            [
+              [
+                "CPU",
+                "827020104/sustained/16"
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "admissions": [
+        "L0",
+        "permitted_prediction_not_guarantee"
+      ],
+      "chosen": 0,
+      "schema_id": "3316d0996b4b7f704bca3d79916925933a564a82c362e2a8ecf906643883566e",
+      "window_ids": [
+        "827020104/sustained/18"
+      ],
+      "risk": {
+        "rho": 0.6792712518513747,
+        "known": true,
+        "gap": 0.38061556400000285,
+        "gap_known": true,
+        "queued": 0
+      }
+    },
+    "classification": "in bank and permitted, selector chooses differently"
+  },
+  {
+    "condition": 46,
+    "arrival_seed": 827020104,
+    "family": "sustained",
+    "context": "short_context",
+    "same_dispatch_schedule": false,
+    "first_difference_ns": 42125120152,
+    "L0_jobs": [
+      [
+        "827020104/sustained/18",
+        "GPU"
+      ]
+    ],
+    "Band_jobs": [],
+    "public_state": {
+      "now_ns": 42125120152,
+      "queue": [
+        {
+          "id": "827020104/sustained/18",
+          "ordinal": 18,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 42125120152,
+          "deadline_offset_ns": 1500000000
+        }
+      ],
+      "owners": {
+        "CPU": "827020104/sustained/16",
+        "GPU": null
+      },
+      "phases": {
+        "CPU": "EXECUTING",
+        "GPU": "AVAILABLE"
+      },
+      "source": "only actual dispatches before now and public phase callbacks<=now; no remaining duration or later arrival input"
+    },
+    "snapshot_found": true,
+    "candidate_matches": [
+      {
+        "slot": 1,
+        "kind": "resource_wait",
+        "physical": true,
+        "prediction_admitted": true,
+        "reason": "permitted_prediction_not_guarantee",
+        "forecasts": [
+          {
+            "valid": true,
+            "remaining_increment_j": 0.15360017801445788,
+            "peak_ap_c": 29.72310631943922,
+            "global_peak_ap_c": 29.72310631943922,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.08001241541665394
+            },
+            "responses": {
+              "827020104/sustained/16": 42.202867116,
+              "827020104/sustained/18": 42.361312499
+            },
+            "lane_end_s": 42.37034884310415,
+            "urgent_p95_ms": 286.60848072917173,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.15360017801445788,
+            "peak_ap_c": 29.72310631943922,
+            "global_peak_ap_c": 29.72310631943922,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.08001241541665394
+            },
+            "responses": {
+              "827020104/sustained/16": 42.202867116,
+              "827020104/sustained/18": 42.361312499
+            },
+            "lane_end_s": 42.37034884310415,
+            "urgent_p95_ms": 286.60848072917173,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.15408828049044834,
+            "peak_ap_c": 29.72310631943922,
+            "global_peak_ap_c": 29.72310631943922,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.08069706227082207
+            },
+            "responses": {
+              "827020104/sustained/16": 42.203547357,
+              "827020104/sustained/18": 42.361997145
+            },
+            "lane_end_s": 42.37103348995832,
+            "urgent_p95_ms": 286.60848072917173,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          }
+        ]
+      }
+    ],
+    "encoder_snapshot": {
+      "state": [
+        0.35104265809059143,
+        0.010416666977107525,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        0.7430776357650757,
+        0.7427279353141785,
+        -0.0009579941397532821,
+        0.02389228530228138,
+        0.0,
+        0.6788590550422668,
+        1.0,
+        0.06343592703342438,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.19107231497764587,
+        0.1041666641831398,
+        0.0729166641831398,
+        0.4000000059604645,
+        0.0,
+        0.09028740972280502,
+        0.0,
+        0.16521628201007843,
+        0.3012106120586395,
+        0.621359646320343,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidates": [
+        [
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.5,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.35364726185798645,
+          0.1997498720884323,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.6788590550422668,
+          1.0,
+          0.25,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          -0.020096009597182274,
+          0.0,
+          0.0,
+          -1.8055337780431557e-10,
+          0.0,
+          0.0,
+          0.3530919551849365,
+          0.21052050590515137,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.6788590550422668,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020104/sustained/18",
+              "backend": "GPU"
+            }
+          ]
+        },
+        {
+          "kind": "resource_wait",
+          "until_ns": null,
+          "hold_signature": [
+            [
+              "827020104/sustained/18"
+            ],
+            [
+              [
+                "CPU",
+                "827020104/sustained/16"
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "admissions": [
+        "L0",
+        "permitted_prediction_not_guarantee"
+      ],
+      "chosen": 0,
+      "schema_id": "3316d0996b4b7f704bca3d79916925933a564a82c362e2a8ecf906643883566e",
+      "window_ids": [
+        "827020104/sustained/18"
+      ],
+      "risk": {
+        "rho": 0.678859080923533,
+        "known": true,
+        "gap": 0.38061556400000285,
+        "gap_known": true,
+        "queued": 0
+      }
+    },
+    "classification": "in bank and permitted, selector chooses differently"
+  },
+  {
+    "condition": 47,
+    "arrival_seed": 827020104,
+    "family": "sustained",
+    "context": "long_context",
+    "same_dispatch_schedule": false,
+    "first_difference_ns": 42125120152,
+    "L0_jobs": [
+      [
+        "827020104/sustained/18",
+        "GPU"
+      ]
+    ],
+    "Band_jobs": [],
+    "public_state": {
+      "now_ns": 42125120152,
+      "queue": [
+        {
+          "id": "827020104/sustained/18",
+          "ordinal": 18,
+          "task": "classification",
+          "priority": "urgent",
+          "arrival_ns": 42125120152,
+          "deadline_offset_ns": 1500000000
+        }
+      ],
+      "owners": {
+        "CPU": "827020104/sustained/16",
+        "GPU": null
+      },
+      "phases": {
+        "CPU": "EXECUTING",
+        "GPU": "AVAILABLE"
+      },
+      "source": "only actual dispatches before now and public phase callbacks<=now; no remaining duration or later arrival input"
+    },
+    "snapshot_found": true,
+    "candidate_matches": [
+      {
+        "slot": 1,
+        "kind": "resource_wait",
+        "physical": true,
+        "prediction_admitted": true,
+        "reason": "permitted_prediction_not_guarantee",
+        "forecasts": [
+          {
+            "valid": true,
+            "remaining_increment_j": 0.15460381880582652,
+            "peak_ap_c": 29.730641349840543,
+            "global_peak_ap_c": 29.730641349840543,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.08142019256249
+            },
+            "responses": {
+              "827020104/sustained/16": 42.204274893,
+              "827020104/sustained/18": 42.362720276
+            },
+            "lane_end_s": 42.37175662024999,
+            "urgent_p95_ms": 301.50078860416414,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.15460381880582652,
+            "peak_ap_c": 29.730641349840543,
+            "global_peak_ap_c": 29.730641349840543,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.08142019256249
+            },
+            "responses": {
+              "827020104/sustained/16": 42.204274893,
+              "827020104/sustained/18": 42.362720276
+            },
+            "lane_end_s": 42.37175662024999,
+            "urgent_p95_ms": 301.50078860416414,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          },
+          {
+            "valid": true,
+            "remaining_increment_j": 0.15509192128181698,
+            "peak_ap_c": 29.730641349840543,
+            "global_peak_ap_c": 29.730641349840543,
+            "volumes": {
+              "classification_CPU": 0.16521627568749864,
+              "classification_GPU": 0.0,
+              "classification_GPU+detection_CPU": 0.0,
+              "detection_CPU": 0.08210483941665814
+            },
+            "responses": {
+              "827020104/sustained/16": 42.204955134,
+              "827020104/sustained/18": 42.363404923
+            },
+            "lane_end_s": 42.37244126710416,
+            "urgent_p95_ms": 301.50078860416414,
+            "urgent_misses": 0,
+            "normal_misses": 0
+          }
+        ]
+      }
+    ],
+    "encoder_snapshot": {
+      "state": [
+        0.35104265809059143,
+        0.010416666977107525,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        0.7432660460472107,
+        0.7428892254829407,
+        -0.0009579941397532821,
+        0.02410600520670414,
+        0.0,
+        0.6796615123748779,
+        1.0,
+        0.06343592703342438,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.20100052654743195,
+        0.1041666641831398,
+        0.0729166641831398,
+        0.4000000059604645,
+        0.0,
+        0.0900527834892273,
+        0.0,
+        0.16521628201007843,
+        0.30844831466674805,
+        0.6220940947532654,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidates": [
+        [
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.5,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.35364726185798645,
+          0.1997498720884323,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.6796615123748779,
+          1.0,
+          0.25,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          -0.019676493480801582,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.3531036674976349,
+          0.21028587222099304,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.6796615123748779,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "827020104/sustained/18",
+              "backend": "GPU"
+            }
+          ]
+        },
+        {
+          "kind": "resource_wait",
+          "until_ns": null,
+          "hold_signature": [
+            [
+              "827020104/sustained/18"
+            ],
+            [
+              [
+                "CPU",
+                "827020104/sustained/16"
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "admissions": [
+        "L0",
+        "permitted_prediction_not_guarantee"
+      ],
+      "chosen": 0,
+      "schema_id": "3316d0996b4b7f704bca3d79916925933a564a82c362e2a8ecf906643883566e",
+      "window_ids": [
+        "827020104/sustained/18"
+      ],
+      "risk": {
+        "rho": 0.6796614857064811,
+        "known": true,
+        "gap": 0.38061556400000285,
+        "gap_known": true,
+        "queued": 0
+      }
+    },
+    "classification": "in bank and permitted, selector chooses differently"
+  }
+]

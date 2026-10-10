@@ -1,0 +1,38 @@
+{
+  "schema_id": "3316d0996b4b7f704bca3d79916925933a564a82c362e2a8ecf906643883566e",
+  "L0": {
+    "policy_id": "ROLLING_LIST_L0_SERVICE_FIRST_EMA_V1",
+    "controller": "tools.d1_rolling_list_rl.Controller mode=L0",
+    "reference_and_fallback": true
+  },
+  "Rule": {
+    "policy_id": "ROLLING_LIST_PUBLIC_RISK_RULE_V1",
+    "controller": "tools.d1_rolling_list_rl.Controller mode=RULE",
+    "same_input_candidates_masks": true
+  },
+  "PPO": {
+    "policy_id": "ROLLING_LIST_MASKED_PPO_V1",
+    "controller": "tools.d1_rolling_list_rl.Controller mode=PPO",
+    "algorithm": "native PyTorch masked PPO, same settings and learner",
+    "learning_seeds": [
+      11,
+      23,
+      37
+    ],
+    "terminal_episode_counts": [
+      64,
+      128,
+      256,
+      512
+    ]
+  },
+  "Band": {
+    "policy_id": "BAND_HEFT_WHOLE_REQUEST_ADAPT_V1",
+    "scope": "whole-request limited adaptation, not original Band subgraph runtime"
+  },
+  "Triton": {
+    "policy_id": "TRITON_RATE_OFF_FIXED_REQUEST_ADAPT_V1",
+    "scope": "request scheduling adaptation with CPU/GPU resources, not actual Triton server"
+  },
+  "engine_record_note": "controller ABI retains inherited execution adapter identity; report role/policy_id and frozen schema identify the actual selection rule"
+}

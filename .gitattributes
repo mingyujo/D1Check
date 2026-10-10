@@ -711,3 +711,14 @@ tools/d1_rolling_list_rl*.py text eol=lf
 tools/test_d1_rolling_list_rl*.py text eol=lf
 docs/ROLLING_LIST_RL_PILOT_20261011.md -text
 docs/results/rolling_list_rl_pilot_08/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Bounded overnight comparison; executable sources use LF, evidence keeps bytes.
+tools/d1_overnight*.py text eol=lf
+tools/test_d1_overnight*.py text eol=lf
+docs/OVERNIGHT_COMPLETION_20261011.md -text
+docs/OVERNIGHT_DEVICE_REPLAY_20261011.md -text whitespace=cr-at-eol
+docs/OVERNIGHT_RL_AMOUNT_20261011.md -text
+docs/results/overnight_*_20261011/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# Unified patches intentionally retain a space as the marker of an empty context line.
+docs/results/overnight_device_20261011/*.patch -text whitespace=-blank-at-eol
+docs/results/overnight_device_20261011/source_bundle/*.patch -text whitespace=-blank-at-eol

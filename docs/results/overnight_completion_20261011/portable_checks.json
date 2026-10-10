@@ -1,0 +1,174 @@
+{
+  "ie": {
+    "status": "PASS",
+    "command": [
+      "python",
+      "-B",
+      "-X",
+      "utf8",
+      "-m",
+      "unittest",
+      "tools.test_d1_overnight_ie_policy",
+      "tools.test_d1_overnight_ie_device_export",
+      "tools.test_d1_overnight_ie_flex_policy",
+      "-v"
+    ],
+    "source_checkout_head": "0d6535b486ef144acd641e64fd5f60eb297b43dd",
+    "files_copied": 10,
+    "new_native": 0,
+    "new_learning": 0,
+    "device_commands": 0,
+    "source_user_files_changed": 0,
+    "log_sha256": "5971f669817e4e299c0aaa98d5f87f2c3a71719b06b7c4722b52a3084b0edfc6",
+    "tests_run": 20,
+    "passed": 19,
+    "skipped": 1,
+    "skip_scope": "One exact native-ledger export check requires local raw artifacts; separately passed on executing workspace. Preload/arrival check now uses public inputs in portable checkout.",
+    "final_export_test_source_SHA": "d9d635264c0b206a5414eee9346f414fa6ef1ceeef9c6f55f11039a5029c6b8b",
+    "final_export_log_sha256": "2c0ac81a4149cb9fbb188fa775c714e6fb2e3872bee85af228142cacd3c66fd6",
+    "updated_export_source_status": "PASS_with_one_private_raw_skip",
+    "initial_tests_run": 20,
+    "initial_passed": 18,
+    "initial_skipped": 2
+  },
+  "device": {
+    "status": "PASS",
+    "source_checkout_head": "0d6535b486ef144acd641e64fd5f60eb297b43dd",
+    "source_archive_version": 2,
+    "source_prerequisites_copied": 11,
+    "own_tools_copied": 8,
+    "records": [
+      {
+        "tag": "unit",
+        "status": "PASS",
+        "command": [
+          "python",
+          "-B",
+          "-X",
+          "utf8",
+          "-m",
+          "unittest",
+          "tools.test_d1_overnight_device_replay",
+          "-v"
+        ],
+        "log_sha256": "006fdbaa82b6cc2d3c4ddc0e4bef1b9a78d795523aae25a3cbd283076900537a"
+      },
+      {
+        "tag": "shared",
+        "status": "PASS",
+        "command": [
+          "python",
+          "-B",
+          "-X",
+          "utf8",
+          "-m",
+          "tools.d1_overnight_device_verify"
+        ],
+        "log_sha256": "cd8fc21ef493d8e3f3f6aa7420ecf8efa8799d135974eeafe1f2c1ba153b5f81"
+      }
+    ],
+    "new_native": 0,
+    "new_learning": 0,
+    "device_commands": 0,
+    "raw_available": false,
+    "original_working_tree_changed": false,
+    "previous_host_copy_error": "Windows MAX_PATH 206; source content preserved, flattened portable source archive resolves long paths",
+    "final_display_metadata_verify": {
+      "status": "public_artifact_arithmetic_and_source_PASS",
+      "public_requests": 384,
+      "physical_consumption_recorded": 416,
+      "source_prerequisites": 11,
+      "raw_files_verified": 0,
+      "new_device_commands": 0,
+      "new_native_environments": 0,
+      "source_archive_version": 2,
+      "new_training": 0,
+      "new_coefficient_fit": 0,
+      "new_session_claim": 0
+    },
+    "log_sha256_after_display_only_amendment": "cd8fc21ef493d8e3f3f6aa7420ecf8efa8799d135974eeafe1f2c1ba153b5f81"
+  },
+  "rl": {
+    "status": "PASS",
+    "source_checkout_head": "0d6535b486ef144acd641e64fd5f60eb297b43dd",
+    "records": [
+      {
+        "tag": "unit",
+        "status": "PASS",
+        "command": [
+          "python",
+          "-B",
+          "-X",
+          "utf8",
+          "-m",
+          "unittest",
+          "tools.test_d1_overnight_rl_amount",
+          "tools.test_d1_overnight_rl_host",
+          "-v"
+        ],
+        "log_sha256": "bad4127dc607f753da85cc0e6a418d970810cbc7a62404d93df31406cae36bc5"
+      },
+      {
+        "tag": "source",
+        "status": "PASS",
+        "command": [
+          "python",
+          "-B",
+          "-X",
+          "utf8",
+          "-m",
+          "tools.d1_overnight_rl_check"
+        ],
+        "log_sha256": "7c1bf6c2d7814aa42ba619679ca270c2ed7350453b4f60b5840f623620375b94"
+      },
+      {
+        "tag": "artifact",
+        "status": "PASS",
+        "command": [
+          "python",
+          "-B",
+          "-X",
+          "utf8",
+          "-m",
+          "tools.d1_overnight_rl_artifact_check"
+        ],
+        "log_sha256": "eb1e15c81255da3a8e712b67c877b74e73f386c38f943403c8f3bf43462d3897"
+      }
+    ],
+    "own_files_copied": 52,
+    "private_raw_or_checkpoint_copied": false,
+    "new_native": 0,
+    "new_learning": 0,
+    "device_commands": 0,
+    "original_working_tree_changed": false
+  },
+  "gap": {
+    "status": "PASS",
+    "tests_passed": 4,
+    "source_checkout_head": "0d6535b486ef144acd641e64fd5f60eb297b43dd",
+    "log_sha256": "04b2bb3dc95712c1ee5914b20ee524b774e566680e9adb57ffd54b4bb6262ac2",
+    "new_native": 0,
+    "new_learning": 0,
+    "device_commands": 0
+  },
+  "meeting": {
+    "status": "PASS",
+    "command": [
+      "python",
+      "-B",
+      "-X",
+      "utf8",
+      "-m",
+      "tools.d1_overnight_meeting",
+      "--check"
+    ],
+    "source_checkout_head": "0d6535b486ef144acd641e64fd5f60eb297b43dd",
+    "private_model_report_absent": true,
+    "private_native_archives_absent": true,
+    "own_files_copied": 84,
+    "log_sha256": "4bfa3fae6fa38d53c7c3da5f28e469393e0aebac144942114e6b0bf0bc6677b1",
+    "new_native": 0,
+    "new_learning": 0,
+    "device_commands": 0
+  }
+}
