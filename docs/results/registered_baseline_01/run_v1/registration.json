@@ -1,0 +1,80 @@
+{
+  "id": "REGISTERED-BASELINE-PC-01",
+  "sources": {
+    "docs/results/resident_identification_run_01/recorded_v3/inputs.json.gz": "806fba262cafee14a650a91dc6e4383216eb09e3dc4adc4702f7ccf0f0d15fb1",
+    "docs/results/ap_tail_observation_run_05/run_v6/inputs.json.gz": "43033ffbe67705738f63f04ab0ca17ad99b6c5ccac6b4fbf3da187da8c4addf6",
+    "docs/results/model_refinement_01/inputs.json.gz": "cb07aa735100971b6e7e635ecf9c8c24bc9b9c2b7ffdbc4e9824b0566f7f2ffb",
+    "docs/results/history_model_refinement_01/inputs.json.gz": "2005a26656c7c4a88b6b914ac51c2fcb156cb9229f050491c7f1826b5d8d816f",
+    "docs/results/online_policy_study_01/overnight_sustained_run01/model.json": "5682082a936b7c83efeee747ceeb64fd0c64f0bef8765bbf1b90b807db872db2",
+    "docs/results/ap_tail_identification_01/run_v2/candidates.json": "aa28410d701c9810001a4e6c176823e7d2b446f46f980ebeab3ff14f4540cc84",
+    "tools/d1_resident_identification_analysis.py": "75c351a7f315412aa73c99aa6e0bf439f5b0adf7b6db33a045e05ccc689003cd",
+    "tools/d1_energy_ap_zero_offset.py": "ec96c6dac20f16ca77cd3701a0f18abce13dff20e3782f99cd9348c02a6eba65",
+    "tools/test_d1_energy_ap_zero_offset.py": "1dc6f9450266f86ddf45006f0104e8ec9290fb24b3ccd5c801eae2042eff12a4",
+    "tools/d1_energy_ap_joint_followup.py": "4c740f8312cc43d2a73ac1a862692149ed80c3915586345b6bfb1d718523e851",
+    "tools/d1_ap_tail_scope.py": "4338f4fc82509248e353e91deb230cff27594fb57cf173b96954c57513a55aba",
+    "docs/results/ap_tail_scope_01/scope.json": "c630f315c31efd1d06ec9e215c41723e67bf8338b20453c73d923242112656c8",
+    "docs/results/model_accuracy_expert_review_01/consensus_plan.json": "0adc7c3a0cd7373775fda7c63c491ad8a0ba858110e47a593a3f22f450196749",
+    "docs/results/energy_ap_joint_followup_01/run_v1/candidate.json": "a64e735c4be3ff2a8bd867f5f53e1639066bcf430adae7bda1bc45166592c017",
+    "tools/d1_registered_baseline.py": "e16644a3d6be72bf60d7a03de4988fe951e70e1bfd71de8e3020ad6477ec0e80",
+    "tools/d1_cpu_prebaseline.py": "3e636bd9924e65603116d80263e24dcf30d21988a160e3fb1fb2eb208eaa15b8",
+    "docs/results/registered_baseline_01/analysis_contract.json": "db77296432084c02ec8bbb8cdd62f5738e34d13f27c00ca320c767b57dca5af2",
+    "docs/results/energy_ap_zero_offset_01/run_v1/candidate.json": "bf12fd70b5e84d984a01826c149d42a9736371a0efbf2290aab5b039628782bd",
+    "docs/results/cpu_prebaseline_01/run_v1/candidate_final.json": "07bdef0665d53999dbd6f39574901682dc32352f5a8390ddbb48e2bae0d40ddd",
+    "docs/results/cpu_prebaseline_01/run_v1/candidate_30.json": "398e1e8b0a71d5ca36181190a92bedf4c05d08fcd08a477491402dc16f5e44b8",
+    "docs/results/cpu_prebaseline_01/run_v1/candidate_180.json": "3c7a0fe8a8f7e9b7d67e29947c4efc5ea6e5d4cae1b5edd31f546f645509a098",
+    "docs/results/cpu_prebaseline_01/run_v1/pre_inputs.json": "61da76ce35da1fe13700f668f012a5643733ad59516763547e9cbfe6931b7a40",
+    "docs/results/cpu_prebaseline_01/run_v1/source_inventory.json": "e98ed6fe63b38e5a7ad79ef852ab83885a924cbec072bf2329e887fec28b17e8"
+  },
+  "inputs": {
+    "pre_inputs.json": "d9b8c3707ab796e4cdf2985c03eaaddf212f935116cd0eb4f06ff2685079c52a",
+    "pre_bins.csv": "bd55a85b134393a0f9762f0ad6000850a39db97d5d33d45eb995bd2e85d527f3",
+    "availability.csv": "d858b85c4ed90aac6dbbd959542029773ac1087fd088e39bd52d9978571a165c"
+  },
+  "development_ids": [
+    "development_30_C0",
+    "development_30_CPU",
+    "development_30_PAR",
+    "development_180_PAR",
+    "development_180_CPU",
+    "development_180_C0"
+  ],
+  "evaluation_ids": [
+    "confirmation_180_C0",
+    "confirmation_180_CPU",
+    "confirmation_180_PAR",
+    "confirmation_30_PAR",
+    "confirmation_30_CPU",
+    "confirmation_30_C0"
+  ],
+  "contract": {
+    "id": "REGISTERED-BASELINE-PC-01",
+    "registered_before_new_full_pre_extraction_fit_and_future_evaluation": true,
+    "question": "Does the whole registered resident recovery distinguish episodic pre-CPU activity from a persistent baseline better than late20 or P50?",
+    "structures": 1,
+    "ablation": "FULL_MEAN: use whole registered pre mean power without CPU. Separately report whether any gain belongs to longer power observation rather than CPU information.",
+    "window": "All complete5s bins from ceil(registered recovery_start relative to target/5)*5 through30. Discard only leading partial bin<5s, not outcome-selected dates or temperatures. Conditioning96 fully lane-released before start.",
+    "persistent_CPU_proxy": "Time-weighted median other CPU rate over same registered pre. Operational robust location for episodic activity; not certified latent persistent state, future CPU level or physical CPU energy.",
+    "fit": "One nonnegative within-session pre-only power/CPU slope with equal session weights. Hold gap30/180 blocks out then final development6: exactly3 global fits. All widths, median, horizon and constraints fixed; no threshold or family search.",
+    "candidate_baseline": "P_full_mean + b*(median other_CPU - mean other_CPU). Existing fixed p4 unchanged. Applies only35..120; keep original P50 accounting0..35. Nonpositive power unsupported, no clipping.",
+    "comparison": [
+      "FROZEN",
+      "ZERO",
+      "PRIOR_CPU",
+      "FULL_MEAN",
+      "FULL_CPU"
+    ],
+    "evaluation": "Development6 opposite-gap estimates; all already viewed confirmation6 final development-only slope. Same0..120/future35..120/work/post-lane idle windows; no random sample splits. Show all worsening and feature extrapolation, no confirmation-based selection.",
+    "prediction_layer": "Actual lane schedule conditional cost only; not arrival-to-response end-to-end validation. Pre event cutoff30, hypothetical issue35, horizon120; CSV export is post-session and live delivery not implemented.",
+    "outcome_rule": "Report errors and finite evidence; no fabricated accuracy PASS, policy ranking or automatic default/RL/strict change. CPU slope/median not physical cause identification. If mean-only improves and CPU does not, attribute gain to observation, not CPU.",
+    "bounds": {
+      "global_fits": 3,
+      "device_commands": 0,
+      "environment_simulations": 0,
+      "new_measurement_plans": 0,
+      "AP_fits": 0
+    },
+    "AP": "Keep all existing AP coefficients, initialization results and energy proxy unchanged.",
+    "preservation": "Frozen coefficients, prior candidates, raw/FAIL/terminated plans and other RL/user work read-only; separate ID/output; experiment_ready=false.",
+    "posthoc": "Family chosen after prior results were viewed; future outcomes of these sessions are already seen. New feature extraction does not make this a fresh blind confirmation."
+  }
+}

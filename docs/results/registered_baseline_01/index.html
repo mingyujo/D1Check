@@ -1,0 +1,15 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>등록회복 전체 기준전력 보완</title><style>body{font:17px/1.7 system-ui;max-width:1120px;margin:30px auto;padding:0 18px;color:#203040}aside{background:#fff2cf;padding:18px}img{max-width:100%;height:auto}table{border-collapse:collapse;width:100%}td,th{padding:10px;border-bottom:1px solid #ddd}a{color:#075985}</style></head><body>
+<h1>긴 사전 기록으로 일부 유휴 오차 감소</h1>
+<aside><strong>특정 조건에서 개선·전체 교체 보류.</strong> 기존 등록회복90/240초 전력·CPU를 사용한 후보 하나를 개발6으로 추정하고, 이미 본 확인6 전량을 평가했습니다. 원식·AP·기본/RL·strict·experiment_ready=false는 유지합니다. 새 기기 명령·추가 실측·새 계획0회입니다.</aside>
+<table><tr><th>같은 확인6</th><th>원식</th><th>기존 δ=0</th><th>전체 pre 평균</th><th>전체＋CPU 후보</th></tr><tr><td>전체120초 평균 절대J</td><td>3.913</td><td>4.564</td><td>4.546</td><td>4.000</td></tr><tr><td>실제lane 해제 후 유휴 평균 절대J</td><td>2.921</td><td>2.921</td><td>2.661</td><td>2.176</td></tr></table>
+<p>개발6 모두 개선/확인6은3개 개선·3개 악화. 원식보다 전체 평균이낮지않고최악도악화했습니다. 장구간평균만의효과와CPU중앙값효과를분리했으며중앙값을물리적지속부하라고인증하지않습니다.</p>
+<p><a href="../../REGISTERED_BASELINE_RESULTS_20261010.md">수식·반례·판정</a> · <a href="README.md">원본 의존성·재현</a> · <a href="run_v1/energy_errors.csv">전량·정확한 창·부호오차</a> · <a href="run_v1/feature_ranges.csv">외삽 표시</a> · <a href="verification.json">검증</a></p>
+<img src="figures/all_session_energy_errors.png" alt="동결 원식/기존 보완식/긴 pre 평균/CPU 후보의 전체12세션 에너지 오차, 악화도 모두 표시">
+<h2>0.086J는 완벽한 예측이 아닙니다</h2><p>확인 회복30 C0의120초 절대오차4.421→0.086J. 하지만 이전35초−1.886J와 이후85초+1.800J의 상쇄가 있습니다. 이후 구간 자체는6.307→1.800J로개선했습니다. 회복180 C0는2.764→4.098J로악화했습니다.</p>
+<img src="figures/C0_energy_residual_paths.png" alt="회복30 개선의 상쇄와 회복180 악화를 함께 보여주는 누적 에너지 잔차">
+<h2>정책 차이 판별은 아직 부족합니다</h2><p>원계수/기존보완계수2종을 사후에 모두 분해했으며 최선 조합을 선택하지 않았습니다. 원계수와후보의평균은3.913→3.876J로극소감소하나최악9.682→10.690J로악화했습니다. CPU−PAR차이오차는회복30에서줄고회복180에서커졌습니다. 동일초기조건의인과적정책효과나우월성검증이아닙니다.</p>
+<img src="figures/policy_difference_errors.png" alt="두 고정 전력계수에서 CPU−PAR 차이 예측오차, 회복180 악화 포함">
+<h2>기존 AP 초기정보 보완과의 공동 판독 완료</h2><p>같은 고정 LOAD_SLOW 후보·같은 마지막 초기AP에서 등록유휴 전체pre를 쓴 AP MAE35..120초는 확인6의0.26518→0.21160°C입니다. 원 동결AP 식과의 비교가 아닙니다. J0..120/AP35..120의두평균오차가함께감소한세션은원J계수기준1/6·δ=0기준2/6,좋은ID를선택기로만들지않았고최악/정책차이개선도아닙니다. <a href="joint_v1/all_sessions.csv">모든24짝과AP최대/최고값오차</a> · <a href="joint_v1/summary.csv">분모별요약</a>. AP재추정/재생0입니다.</p>
+<p><a href="readout_v1/policy_difference_errors.csv">정책 차이 전량표</a> · <a href="readout_v1/fixed_head_errors.csv">계수/기준값 분해</a>. 사건 시각상 pre 데이터만 사용했지만 CSV는 종료 후 export였으므로 live입력기능은미구현입니다. 실제일정조건부·이미본자료의사후진단, 새정확도PASS없음·A24 raw=mA/절대J미인증·S26계수비혼합입니다.</p>
+<p><a href="../preboundary_evidence_01/index.html">기존 AP 초기정보 개선 결과</a> · <a href="../simulator_workbench_01/index.html">시뮬레이터 전체 안내</a></p>
+</body></html>

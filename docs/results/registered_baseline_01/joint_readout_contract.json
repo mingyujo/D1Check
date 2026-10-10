@@ -1,0 +1,19 @@
+{
+  "purpose": "Finish session-level energy/AP comparison now by joining existing fixed LOAD_SLOW AP curves to this baseline study, without fitting or replaying AP.",
+  "posthoc": true,
+  "sessions": "all12; never select a favorable session as an application rule",
+  "energy_window_s": [0, 120],
+  "AP_window_s": [35, 120],
+  "AP_baseline": "existing_short_pre initialization of fixed LOAD_SLOW; not original frozen AP equation",
+  "AP_information_variant": "registered_idle_pre of same fixed LOAD_SLOW and same last AP/time/coefficients",
+  "energy_heads": ["original_frozen", "existing_zero_offset"],
+  "energy_information_variant": "FULL_CPU of same energy head; compare P50",
+  "readout": "session signed/absolute energy, AP MAE/max/peak error and sample span. Report simultaneous improvements only as posthoc observations, not a selector or validated support range.",
+  "new_fits": 0,
+  "new_AP_replays": 0,
+  "device_commands": 0,
+  "default_changed": false,
+  "RL_changed": false,
+  "strict_support": false,
+  "experiment_ready": false
+}

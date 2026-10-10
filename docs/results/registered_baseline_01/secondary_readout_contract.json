@@ -1,0 +1,17 @@
+{
+  "id": "REGISTERED-BASELINE-FIXED-HEAD-READOUT-01",
+  "purpose": "Separate the effect of a pre-only baseline initializer from previously frozen state increments. Evaluate a complete two-head ablation, not a post-result winner selection.",
+  "timing": "Registered after primary5-method outcomes were viewed, before this additional calculation. Explicitly secondary/posthoc; not fresh validation or a new selected candidate.",
+  "baseline_initializers": ["P50", "FULL_MEAN", "FULL_CPU"],
+  "state_power_heads": ["original_frozen", "existing_zero_offset"],
+  "sessions": "All12, keep same development opposite-gap and already seen confirmation final slope. No refit, new window, threshold or discarded session.",
+  "windows": ["reference120", "future85", "post_lane_idle", "work_present"],
+  "policy_difference": "CPU minus PAR in each role/gap block, same0..120. Prediction-minus-observed difference error. These blocks have different session initial conditions; report as recorded association, not identical-initial-condition counterfactual policy effect.",
+  "bounds": {"additional_fits": 0, "device_commands": 0, "new_plans": 0, "environment_simulations": 0},
+  "no_automatic_head_selection": true,
+  "default_changed": false,
+  "RL_changed": false,
+  "strict_support": false,
+  "experiment_ready": false,
+  "accuracy_pass": null
+}

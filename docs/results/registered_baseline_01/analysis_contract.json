@@ -1,0 +1,19 @@
+{
+  "id": "REGISTERED-BASELINE-PC-01",
+  "registered_before_new_full_pre_extraction_fit_and_future_evaluation": true,
+  "question": "Does the whole registered resident recovery distinguish episodic pre-CPU activity from a persistent baseline better than late20 or P50?",
+  "structures": 1,
+  "ablation": "FULL_MEAN: use whole registered pre mean power without CPU. Separately report whether any gain belongs to longer power observation rather than CPU information.",
+  "window": "All complete5s bins from ceil(registered recovery_start relative to target/5)*5 through30. Discard only leading partial bin<5s, not outcome-selected dates or temperatures. Conditioning96 fully lane-released before start.",
+  "persistent_CPU_proxy": "Time-weighted median other CPU rate over same registered pre. Operational robust location for episodic activity; not certified latent persistent state, future CPU level or physical CPU energy.",
+  "fit": "One nonnegative within-session pre-only power/CPU slope with equal session weights. Hold gap30/180 blocks out then final development6: exactly3 global fits. All widths, median, horizon and constraints fixed; no threshold or family search.",
+  "candidate_baseline": "P_full_mean + b*(median other_CPU - mean other_CPU). Existing fixed p4 unchanged. Applies only35..120; keep original P50 accounting0..35. Nonpositive power unsupported, no clipping.",
+  "comparison": ["FROZEN", "ZERO", "PRIOR_CPU", "FULL_MEAN", "FULL_CPU"],
+  "evaluation": "Development6 opposite-gap estimates; all already viewed confirmation6 final development-only slope. Same0..120/future35..120/work/post-lane idle windows; no random sample splits. Show all worsening and feature extrapolation, no confirmation-based selection.",
+  "prediction_layer": "Actual lane schedule conditional cost only; not arrival-to-response end-to-end validation. Pre event cutoff30, hypothetical issue35, horizon120; CSV export is post-session and live delivery not implemented.",
+  "outcome_rule": "Report errors and finite evidence; no fabricated accuracy PASS, policy ranking or automatic default/RL/strict change. CPU slope/median not physical cause identification. If mean-only improves and CPU does not, attribute gain to observation, not CPU.",
+  "bounds": {"global_fits": 3, "device_commands": 0, "environment_simulations": 0, "new_measurement_plans": 0, "AP_fits": 0},
+  "AP": "Keep all existing AP coefficients, initialization results and energy proxy unchanged.",
+  "preservation": "Frozen coefficients, prior candidates, raw/FAIL/terminated plans and other RL/user work read-only; separate ID/output; experiment_ready=false.",
+  "posthoc": "Family chosen after prior results were viewed; future outcomes of these sessions are already seen. New feature extraction does not make this a fresh blind confirmation."
+}

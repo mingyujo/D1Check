@@ -1,0 +1,35 @@
+{
+  "version": "registered-full-pre-CPU-baseline-v1",
+  "coefficient_count": 1,
+  "slope_W_per_core_s_per_s": 0.2788897873263694,
+  "unconstrained_slope": 0.2788897873263694,
+  "information": 0.006202354562649076,
+  "pre_equal_session_RMSE_W": 0.10883344822099837,
+  "development_ids": [
+    "development_30_C0",
+    "development_30_CPU",
+    "development_30_PAR"
+  ],
+  "pre_bins_by_session": [
+    {
+      "session": "development_30_C0",
+      "pre_bins": 18
+    },
+    {
+      "session": "development_30_CPU",
+      "pre_bins": 18
+    },
+    {
+      "session": "development_30_PAR",
+      "pre_bins": 18
+    }
+  ],
+  "formula": "P_full_mean + b*(time-weighted median other_CPU - P_full_mean other_CPU rate); fixed35..120 only",
+  "physical_CPU_power_identified": false,
+  "persistent_CPU_identified": false,
+  "future_observations_used_in_fit": false,
+  "default": false,
+  "strict_support": false,
+  "accuracy_pass": null,
+  "experiment_ready": false
+}
