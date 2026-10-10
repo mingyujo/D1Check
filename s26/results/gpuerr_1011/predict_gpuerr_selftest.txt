@@ -1,0 +1,16 @@
+| 시험 | 결과 | 값 |
+|---|---|---|
+| ① frozen: 모형 파일 · 프로파일 · predict_v3.py = V3 v2 기록 | PASS |  |
+| ① 판정기 SHA: night1005e 2db1cda5 · night1005 ca8680c2 · 페이싱 구동 파일 있음 | PASS |  |
+| ② 결정성: 합성 체인 두 번 → 같은 행 | PASS | 110 |
+| ② metrics_2pt: 행 110 · 오프셋 [0, 20, 80] · 가동 칸 2 + 6 = 8 · 문턱 1.10 · max = max(rows) | PASS | ([0, 20, 80], 8) |
+| ② effnet · CM 합성 체인: simulate_2pt == predict_v3.simulate(v22) (같은 구동) | PASS |  |
+| ② model=mobilenet ≠ effnet (g_m) · engine INT ≠ CM (GPU 프로파일 다름) — 합성 체인에서 행이 다르다 | PASS |  |
+| ③ first_throttle HOLD 3 · ×1.10 경계 포함: [1,1,1.10,1.10,1.10,1.10] → 2 · [1.09]*5 → None · None 칸 실패 | PASS |  |
+| ③ bins: 25 행 → 2 칸 · 칸 0 = mean(rows 0..9) | PASS |  |
+| ④ pick_column / col_key: 29.45 → "29.45" · 30.0 → "30.0" · 29.4 → 29.5 (두 점) | PASS |  |
+| ⑤ v0 독립 프로세스 재생 (m3): 동결 사본 throttle.py SHA = v0_holdout 기록 · env 는 _scratch 트리 · 601 행 · skin_mae 1 s = 동결 0.396 (재현) | PASS | (0.39597633362836365, 0.39597633362836365) |
+| ⑥ v2.1 구동 재현 (NA 29.5 · NPU, GPU 런 아님): max_skin · skin_899 · first_throttle = 동결 night_1005_prediction_v21 | PASS | (39.4566153700026, 39.4566153700026) |
+| ⑦ resource_verdict (판정기 함수 그대로): 전부 0 → "차이 없음 (2쌍)" · 전부 + (A − B > 0) → "B 낮음 (2쌍)" · 전부 − → "B 높음 (2쌍)" · 블록 엇갈림 → "엇갈림" | PASS | ('차이 없음 (2쌍)', 'B 낮음 (2쌍)', 'B 높음 (2쌍)', '엇갈림') |
+
+selftest 전체: PASS (12/12)

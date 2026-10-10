@@ -1,0 +1,167 @@
+preflight.txt — P1k GPU 모형 오차 v1 점검 (1단계 · 등록 커밋 전 · 오차 계산 0) — 2026-10-11 02:12:48 +0900
+====================================================================================================
+[git]
+## s26-measure...origin/s26-measure
+ M .idea/deploymentTargetSelector.xml
+ M .idea/gradle.xml
+ M .idea/misc.xml
+?? .idea/.name
+?? CLAUDE.md
+?? D1_ondevice/
+?? _audit_tools/README_AUDIT.txt
+?? _audit_tools/audit_pack_log.txt
+?? _audit_tools/make_audit_pack.ps1
+?? _audit_tools/run_audit_pack.bat
+?? d1sim/out/policy_eval_v2/dev_refconst_all.jsonl
+?? d1sim/out/policy_eval_v2/dev_rows.jsonl
+?? d1sim/out/policy_eval_v2/holdout_refconst_all.jsonl
+?? d1sim/out/policy_eval_v2/holdout_rows.jsonl
+HEAD 1952bbce1720fe3a00ac0c4bca0876d270e5a07c · origin/s26-measure 1952bbce1720fe3a00ac0c4bca0876d270e5a07c (git fetch origin 실행 뒤)
+1952bbce1720fe3a00ac0c4bca0876d270e5a07c 2026-10-10 21:55:52 +0900 d1sim: 모형 오차 v1 — 에너지 C 재현 · 표 ① (S26)
+
+[등록]
+OneDrive sim\GPU모형오차_사전등록_v1.md  SHA-256 a569b86207410fe28a0469b94057200f8a075e490b2ae4da4c1c5afd402866eb  6,631 B  mtime 2026-10-11 01:57:32
+  기대 (프롬프트 P1k) a569b862… → 일치
+  레포 d1sim/docs/GPU모형오차_사전등록_v1.md 존재: False (2단계에서 바이트 그대로 복사)
+
+[동결 모형 — 커밋 5개]
+  402acab2ed068b459f922898c621c97093ec396d 2026-09-27 18:15:48 +0900 d1sim: 1단계 — 스로틀 모형 v0 고정 (M-A2 SKIN 구동 2노드, r1 피팅)
+  3050e096f294f080c874ab0d00b76467b03c3d5c 2026-10-03 18:44:03 +0900 d1sim: v1 2단계 — 스로틀 모형 v1 고정 (M-P r3, 모형 미완 — 체크리스트 2/7)
+  42338e749f55abe8a60f5d046566fa299433dac1 2026-10-04 17:57:17 +0900 d1sim: v2 고정 — V2-Lb (밤 1004 전)
+  c6a7da24159cd59a8e75bc2fa3c743d6745de1ea 2026-10-05 14:39:03 +0900 d1sim: v2.1 고정 — v2.1 미완 — 최선 V21-Hθ r1 (밤 1005 전)
+  e52a922782ff29533d46ac6e2cd789b56060a89e 2026-10-06 15:35:17 +0900 d1sim: 스로틀 모형 v2.2 고정 — V22-M (94 vs v2.1 86)
+  예측 동결 커밋: b40cbc942 2026-10-03 18:47:50 +0900 · 4cc7b87d3 2026-10-04 18:02:34 +0900 · e092b75ce 2026-10-05 14:40:19 +0900 · 3786f16c7 2026-10-05 23:48:52 +0900 · b154862ec 2026-10-06 15:36:40 +0900
+
+[동결 파일 SHA — 작업 트리 vs 동결 커밋 (CRLF 정규화 비교)]
+  3050e09 d1sim/throttle_v1.py  work-tree bc90f6c387eaa8e5  = 커밋 (정규화): True
+  3050e09 d1sim/profiles/throttle_v1_thermal.json  work-tree 7595ada5a9770fe6  = 커밋 (정규화): True
+  3050e09 d1sim/profiles/throttle_v1_GPU_compiledmodel.json  work-tree 8bfacdad61fb633d  = 커밋 (정규화): True
+  3050e09 d1sim/profiles/throttle_v1_NPU.json  work-tree 0812d9cb519a5207  = 커밋 (정규화): True
+  3050e09 d1sim/profiles/throttle_v1_CPU4_interpreter.json  work-tree b0d3a812e7e7f03f  = 커밋 (정규화): True
+  3050e09 d1sim/tools/predict_night_1003.py  work-tree 4aa2c110da85aadd  = 커밋 (정규화): True
+  42338e7 d1sim/throttle_v2.py  work-tree e35714b5a972913d  = 커밋 (정규화): True
+  42338e7 d1sim/profiles/throttle_v2_thermal.json  work-tree ad10f9affd441f54  = 커밋 (정규화): True
+  42338e7 d1sim/profiles/throttle_v2_GPU_compiledmodel.json  work-tree 827bb50abebc5e42  = 커밋 (정규화): True
+  42338e7 d1sim/profiles/throttle_v2_GPU_interpreter.json  work-tree 3a4c780ee52b4d79  = 커밋 (정규화): True
+  42338e7 d1sim/profiles/throttle_v2_NPU.json  work-tree 234e0df63aabc2f7  = 커밋 (정규화): True
+  42338e7 d1sim/profiles/throttle_v2_CPU4_interpreter.json  work-tree 051d1a995fe6860f  = 커밋 (정규화): True
+  42338e7 d1sim/tools/predict_night_1004.py  work-tree 35bb8832ac8ad447  = 커밋 (정규화): True
+  c6a7da2 d1sim/throttle_v21.py  work-tree 76d76e7148f323fe  = 커밋 (정규화): True
+  c6a7da2 d1sim/profiles/throttle_v21_thermal.json  work-tree 43b873e5e9779739  = 커밋 (정규화): True
+  c6a7da2 d1sim/profiles/throttle_v21_GPU_compiledmodel.json  work-tree 01d1c5ac405ba998  = 커밋 (정규화): True
+  c6a7da2 d1sim/profiles/throttle_v21_GPU_interpreter.json  work-tree 8ce9470ea8194b66  = 커밋 (정규화): True
+  c6a7da2 d1sim/profiles/throttle_v21_NPU.json  work-tree ad52e3cb6a61f96a  = 커밋 (정규화): True
+  c6a7da2 d1sim/profiles/throttle_v21_CPU4_interpreter.json  work-tree a71d3b11fbadf863  = 커밋 (정규화): True
+  e092b75 d1sim/tools/predict_night_1005.py  work-tree 326b5bd9af21a259  = 커밋 (정규화): True
+  e092b75 d1sim/out/night_1005_prediction_v21.json  work-tree b6c8e502c8bab3d7  = 커밋 (정규화): True
+  3786f16 d1sim/tools/predict_night_1005e.py  work-tree ec36d72492485db7  = 커밋 (정규화): True
+  3786f16 d1sim/out/night_1005e_prediction_v21.json  work-tree 4506709f00a59bc7  = 커밋 (정규화): True
+  e52a922 d1sim/throttle_v22.py  work-tree f81c8ba2a459fa47  = 커밋 (정규화): True
+  e52a922 d1sim/profiles/throttle_v22_thermal.json  work-tree 4f05298cd8d40998  = 커밋 (정규화): True
+  e52a922 d1sim/profiles/throttle_v22_GPU_compiledmodel.json  work-tree 0ebac66f07293e6e  = 커밋 (정규화): True
+  e52a922 d1sim/profiles/throttle_v22_GPU_interpreter.json  work-tree 968477b54b134eca  = 커밋 (정규화): True
+  e52a922 d1sim/profiles/throttle_v22_NPU.json  work-tree e4709149df73e7ad  = 커밋 (정규화): True
+  e52a922 d1sim/profiles/throttle_v22_CPU4_interpreter.json  work-tree 5853b3954bf505b6  = 커밋 (정규화): True
+  e52a922 d1sim/tools/fit_throttle_v22.py  work-tree 9a18dc37ceb28cdb  = 커밋 (정규화): True
+  e52a922 d1sim/out/v22_score_pred_M_N1.json  work-tree 8529f40291bea103  = 커밋 (정규화): True
+  e52a922 d1sim/out/v22_score_pred_M_N2.json  work-tree 9b753e60b5057b71  = 커밋 (정규화): True
+  08733ff d1sim/v3/predict_v3.py  work-tree 9c696f6efb18ed15  = 커밋 (정규화): True
+  b40cbc9 d1sim/out/night_1003_prediction.json  work-tree c5ecf89c76fe67e5  = 커밋 (정규화): True
+  4cc7b87 d1sim/out/night_1004_prediction_v2.json  work-tree 1e61a8707a57040d  = 커밋 (정규화): True
+  4cc7b87 d1sim/out/night_1004_prediction_v1.json  work-tree fd7e01593a0cc518  = 커밋 (정규화): True
+  b154862 d1sim/out/v22_weak_holdout_prediction_N1supp.json  work-tree 00e1e8913fb3501b  = 커밋 (정규화): True
+  b154862 d1sim/out/v22_weak_holdout.json  work-tree 7c0d149073ca236c  = 커밋 (정규화): True
+  5d7681a s26/results/night_1003/night_1003_prediction_v1_pacing.json  work-tree b4ada83969b0ac5a  = 커밋 (정규화): True
+  8c1f170 d1sim/tools/v0_driver_1003.py  work-tree 0f5a15891880fe41  = 커밋 (정규화): True
+  8c1f170 d1sim/out/v0_holdout_1003.json  work-tree bc950760906bd766  = 커밋 (정규화): True
+  402acab d1sim/throttle.py  _scratch/v0_80ca6c4 사본 694be82010d066a8 = 402acab (정규화): True  (v0_holdout_1003.json throttle_sha 694be820…)
+  402acab d1sim/profiles/throttle_v0_GPU.json  _scratch/v0_80ca6c4 사본 91a38bec11d5d83b = 402acab (정규화): True  (v0_holdout_1003.json throttle_sha 694be820…)
+  예측 경로 predict_v3.py 9c696f6efb18ed15 (P1j 기록 9c696f6e…)
+
+[판정기 SHA (import 대상 · 수정 0)]
+  sim\night1003_judge.py  a5ceab419c3bb0fed73b75b759901fb0e268f957bd1172e1edacbc246c903f50
+  sim\night1004_judge.py  fd22d3ba29771999bc8b4279396c69e8ea0b8ce11b7da5daaba4b5a5a98e3a84
+  sim\night1005_judge.py  ca8680c2b5abb8d62b37f9abc48134ea0c3e2b1e96d9da5be671c5361d4cbb92
+  sim\night1005e_judge.py  2db1cda5b7f2c84ffcd6bff52f8b2abc7d7b7bad78f165562e0e0101b005cf3a
+  sim\day1005_judge.py  c1b42acc4effe2cdc669282de417fa9b60799fc71afa6e3d2656eabf4462ca76
+  sim\m1m2_judge_1002.py  ea282d4a48630c4af3cce301c13216f691389fa9f2c8e69a652de645be055b28
+  sim\predict_pacing_v1_1003.py  4940907b5412b4e7bd59f668e4b2810635dbfbd667613d0cfe6de306b7a14a80
+
+[런 목록 — 등록 §2 GPU 런 + 비교 NPU 런 · 원시 자료 (d1sim/data 추출 trace 1 s · 10 s) · 판정 JSON · 시작 SKIN]
+  원시 run 폴더: 10/8 백업 1차 (backup_results/README_backup.md) 로 10/4 까지 폴더 67개는 로컬에서 지워 Google Drive zip 에만 있다 → 1 s · 10 s 추출 trace (d1sim/data, 추출 10/3 ~ 10/6 · 10 s 칸 판정 JSON 과 대조 완료 기록) 를 실측 원천으로 쓴다. 10/5 ~ 10/6 런은 results/ 에 원시도 있다 (대조용).
+  c1a             C1a GPU d100 1300 s                           GPU mobilenet INT run_id c5a3f92f-1b76-4b95-91e8-74c275783701 · 구간 [(100, 1300)] · trace 1 s 행 1301 (sha 43269a32a021) · 10 s sha 3f9fc65ee228 · 시작 SKIN(trace 첫 행) 31.2 · 판정 JSON out_0928/C1a.json 존재 True (sha 3b0bb85814f1) · 원시 results/ 폴더 없음 (Drive zip) · 구분: v0 홀드아웃 (T1) · v2.2 적합도
+  m3              M3 GPU d50 600 s                              GPU mobilenet INT run_id 8f35d5c1-5c83-4a9e-8400-c3d81972bec8 · 구간 [(50, 600)] · trace 1 s 행 601 (sha 11b20e534307) · 10 s sha 4dea3d06b6f2 · 시작 SKIN(trace 첫 행) 31.5 · 판정 JSON out_0928/M3.json 존재 True (sha e33a1dc5141b) · 원시 results/ 폴더 없음 (Drive zip) · 구분: v0 홀드아웃 (T2) · v2.2 적합도
+  m1g_r2          M1-GPU 2런째 d10 60 / d100 1200 / d10 300       GPU mobilenet CM  run_id 2de50482-2a78-4690-86ee-7b2de1afed68 · 구간 [(10, 60), (100, 1200), (10, 300)] · trace 1 s 행 1563 (sha 2c16501f9b4b) · 10 s sha 31d32d77b80b · 시작 SKIN(trace 첫 행) 30.9 · 판정 JSON out_1003/M1_gpu_r2.json 존재 True (sha 3410928da3ff) · 원시 results/ 폴더 없음 (Drive zip) · 구분: v1 홀드아웃 · v2.2 적합도
+  gpace           GPU 페이싱 d10 60 / d100 600 / d10 60 / d100 300 GPU mobilenet CM  run_id ca65b008-43ed-4066-8910-b3cb10613907 · 구간 [(10, 60), (100, 600), (10, 60), (100, 300)] · trace 1 s 행 1024 (sha 6129562b5139) · 10 s sha 13b621ab0b2f · 시작 SKIN(trace 첫 행) 30.5 · 판정 JSON out_1003/GPUpace.json 존재 True (sha 989c15e6ba74) · 원시 results/ 폴더 없음 (Drive zip) · 구분: v1 홀드아웃 · v2.2 적합도
+  g50p            G50P d50 60 / d100 300 / d50 480              GPU mobilenet CM  run_id e7b9a65e-da45-4dcf-b9d5-634edde0a5d5 · 구간 [(50, 60), (100, 300), (50, 480)] · trace 1 s 행 843 (sha 3f2e1c42be60) · 10 s sha f9372977b57a · 시작 SKIN(trace 첫 행) 28.5 · 판정 JSON out_1004/G50P.json 존재 True (sha 7e8c8d8e29ed) · 원시 results/ 폴더 없음 (Drive zip) · 구분: v2 홀드아웃 · v2.2 적합도
+  gi300           GI300 d10 60 / d100 600 / d1 300 / d100 300   GPU mobilenet CM  run_id 1618ce0e-60de-4b61-9bdb-e145e7a6d4f9 · 구간 [(10, 60), (100, 600), (1, 300), (100, 300)] · trace 1 s 행 1264 (sha cd4afc394e98) · 10 s sha f9a75e1830cf · 시작 SKIN(trace 첫 행) 30.7 · 판정 JSON out_1004/GI300.json 존재 True (sha ee2a390085d8) · 원시 results/ 폴더 없음 (Drive zip) · 구분: v2 홀드아웃 · v2.2 적합도
+  g50p2           G50P2 (10/5)                                  GPU mobilenet CM  run_id 78a4a1c0-7dc7-4292-afc3-b8e0d5259d4c · 구간 [(50, 60), (100, 300), (50, 480)] · trace 1 s 행 843 (sha 4ff94a58f1d6) · 10 s sha 637b0d756583 · 시작 SKIN(trace 첫 행) 31.0 · 판정 JSON out_1005/G50P2.json 존재 True (sha 1fce65d97c4c) · 원시 results/ 폴더 있음 · 구분: v2 홀드아웃 · v2.2 적합도
+  n1_ga_b1        N1 GA b1                                      GPU mobilenet CM  run_id 282822a4-ea20-4712-a2d3-fbad7bf7bba9 · 구간 [(100, 300), (1, 600)] · trace 1 s 행 902 (sha 43c2a8e5355a) · 10 s sha ec10c0a4cda0 · 시작 SKIN(trace 첫 행) 29.4 · 판정 JSON out_1005n/GA_b1.json 존재 True (sha c8cd1799f5f8) · 원시 results/ 폴더 있음 · 구분: v2.1 홀드아웃 · v2.2 적합도
+  n1_ga_b2        N1 GA b2                                      GPU mobilenet CM  run_id 958084f1-2895-47cc-88a6-0903fd42743c · 구간 [(100, 300), (1, 600)] · trace 1 s 행 902 (sha 3c3529f8c70c) · 10 s sha 0406363c3583 · 시작 SKIN(trace 첫 행) 30.4 · 판정 JSON out_1005n/GA_b2.json 존재 True (sha 15f12392174a) · 원시 results/ 폴더 있음 · 구분: v2.1 홀드아웃 · v2.2 적합도
+  n1_gb_b1        N1 GB b1                                      GPU mobilenet CM  run_id d202bc2f-476c-4ae6-8da4-f78467f80553 · 구간 [(50, 480), (1, 420)] · trace 1 s 행 902 (sha d6acc355c2a3) · 10 s sha a02ad3db08c5 · 시작 SKIN(trace 첫 행) 29.5 · 판정 JSON out_1005n/GB_b1.json 존재 True (sha 5b5d13144f88) · 원시 results/ 폴더 있음 · 구분: v2.1 홀드아웃 · v2.2 적합도
+  n1_gb_b2        N1 GB b2 (범위 밖)                               GPU mobilenet CM  run_id c1f0e716-ba2b-4f73-a39e-e35e36ceabd2 · 구간 [(50, 480), (1, 420)] · trace 1 s 행 902 (sha afb946803508) · 10 s sha f7510450a9fe · 시작 SKIN(trace 첫 행) 27.8 · 판정 JSON out_1005n/GB_b2.json 존재 True (sha 40636f6da015) · 원시 results/ 폴더 있음 · 구분: v2.1 홀드아웃 · v2.2 적합도 (범위 밖 표시)
+  h_gb_b2_re      N1 보충 GB b2_re                                GPU mobilenet CM  run_id 943dc725-5b6b-4381-9ec0-fee51dad38c4 · 구간 [(50, 480), (1, 420)] · trace 1 s 행 902 (sha 6f0810a838be) · 10 s sha 5e40135f98fb · 시작 SKIN(trace 첫 행) 29.7 · 판정 JSON out_1005n/GB_b2_re.json 존재 True (sha a44096c8d983) · 원시 results/ 폴더 있음 · 구분: v2.1 홀드아웃 · v2.2 약한 홀드아웃
+  n2_gae_b1       N2 GAe b1                                     GPU effnet    CM  run_id 0b2d0730-38b7-493d-bd81-c8c5fca1fe9b · 구간 [(100, 300), (1, 600)] · trace 1 s 행 902 (sha ddee503e15bd) · 10 s sha 6487d3a82183 · 시작 SKIN(trace 첫 행) 29.4 · 판정 JSON out_1005e/GAe_b1.json 존재 True (sha d9b114ce1ea6) · 원시 results/ 폴더 있음 · 구분: v2.1 홀드아웃 · v2.2 g_GPU 피팅 자료
+  n2_gae_b2       N2 GAe b2                                     GPU effnet    CM  run_id 8d34ca3b-51f5-4931-9dbb-8c0841b382a7 · 구간 [(100, 300), (1, 600)] · trace 1 s 행 902 (sha fba33504df14) · 10 s sha 8ebed813517d · 시작 SKIN(trace 첫 행) 29.2 · 판정 JSON out_1005e/GAe_b2.json 존재 True (sha 824ed881d6f4) · 원시 results/ 폴더 있음 · 구분: v2.1 홀드아웃 · v2.2 g_GPU 피팅 자료
+  n2_gbe_b1       N2 GBe b1                                     GPU effnet    CM  run_id bdf487cb-6bf3-4387-a1cb-528083dfcaec · 구간 [(50, 720), (1, 180)] · trace 1 s 행 902 (sha 635e09fd690b) · 10 s sha b70eca454b0f · 시작 SKIN(trace 첫 행) 29.4 · 판정 JSON out_1005e/GBe_b1.json 존재 True (sha c894bafb20b1) · 원시 results/ 폴더 있음 · 구분: v2.1 홀드아웃 · v2.2 g_GPU 피팅 자료
+  n2_gbe_b2       N2 GBe b2                                     GPU effnet    CM  run_id 3171bf5e-69d7-4417-92bf-eb2ff38a8b8a · 구간 [(50, 720), (1, 180)] · trace 1 s 행 902 (sha cd0636fa9f7f) · 10 s sha e3a57931b494 · 시작 SKIN(trace 첫 행) 29.8 · 판정 JSON out_1005e/GBe_b2.json 존재 True (sha 92e2d07e844d) · 원시 results/ 폴더 있음 · 구분: v2.1 홀드아웃 · v2.2 g_GPU 피팅 자료
+  n4_gie_b1       N4 GIe b1                                     GPU effnet    CM  run_id 8a89d938-d7f0-448e-8b11-90685d1a9d14 · 구간 [(10, 60), (100, 600), (1, 300), (100, 300)] · trace 1 s 행 1264 (sha 687eeb2b1b41) · 10 s sha 2dc05dbdbbd5 · 시작 SKIN(trace 첫 행) 29.0 · 판정 JSON out_1005r/GIe_b1.json 존재 True (sha 9b6b85f33604) · 원시 results/ 폴더 있음 · 구분: v2.2 적합도
+  n4_gie_b2       N4 GIe b2                                     GPU effnet    CM  run_id c9889e8a-9b9e-40de-bf31-228b3acb0c1d · 구간 [(10, 60), (100, 600), (1, 300), (100, 300)] · trace 1 s 행 1264 (sha 1801719cfca7) · 10 s sha 07d36a4c8a12 · 시작 SKIN(trace 첫 행) 30.2 · 판정 JSON out_1005r/GIe_b2.json 존재 True (sha 6212ec65024c) · 원시 results/ 폴더 있음 · 구분: v2.2 적합도
+  h_gie_b1_spare  N4 예비 GIe b1                                  GPU effnet    CM  run_id d587b619-0764-4c0c-839c-32393b856d2f · 구간 [(10, 60), (100, 600), (1, 300), (100, 300)] · trace 1 s 행 1264 (sha 2c28dbb7623e) · 10 s sha a8e204854b2a · 시작 SKIN(trace 첫 행) 29.8 · 판정 JSON out_1005r/GIe_b1_spare.json 존재 True (sha d4fff2ab8de2) · 원시 results/ 폴더 있음 · 구분: v2.2 기술 (약한 홀드아웃)
+  n1_na_b1        N1 NA b1 (비교)                                 NPU mobilenet CM  run_id 70c1cd1e-48d7-4f6f-a1ad-ba8b8212b130 · 구간 [(100, 300), (1, 600)] · trace 1 s 행 902 (sha 98cc34edc988) · 10 s sha 279462e75cc5 · 시작 SKIN(trace 첫 행) 29.6 · 판정 JSON out_1005n/NA_b1.json 존재 True (sha 633b2f7aab18) · 원시 results/ 폴더 있음 · 구분: v2.2 적합도 (NPU 비교)
+  n1_na_b2        N1 NA b2 (비교)                                 NPU mobilenet CM  run_id 396eb273-0002-4d00-80f2-37c0819e46d1 · 구간 [(100, 300), (1, 600)] · trace 1 s 행 902 (sha 79a01357274b) · 10 s sha 91e67e8d33d6 · 시작 SKIN(trace 첫 행) 30.0 · 판정 JSON out_1005n/NA_b2.json 존재 True (sha f464b285418e) · 원시 results/ 폴더 있음 · 구분: v2.2 적합도 (NPU 비교)
+  n1_nb_b1        N1 NB b1 (비교)                                 NPU mobilenet CM  run_id a15cef17-ad24-4a6c-a6ed-8ce79e5b5c8d · 구간 [(50, 660), (1, 240)] · trace 1 s 행 902 (sha 215be05c7cfb) · 10 s sha 79e8f565abd1 · 시작 SKIN(trace 첫 행) 29.6 · 판정 JSON out_1005n/NB_b1.json 존재 True (sha 296f527ad6b6) · 원시 results/ 폴더 있음 · 구분: v2.2 적합도 (NPU 비교)
+  n1_nb_b2        N1 NB b2 (비교)                                 NPU mobilenet CM  run_id e3dcaea8-93d1-423f-a839-82163ac04beb · 구간 [(50, 660), (1, 240)] · trace 1 s 행 902 (sha 268eb2379516) · 10 s sha 5234a659b416 · 시작 SKIN(trace 첫 행) 28.6 · 판정 JSON out_1005n/NB_b2.json 존재 True (sha bd7beb400d88) · 원시 results/ 폴더 있음 · 구분: v2.2 적합도 (NPU 비교)
+  h_nb_b2_re      N1 보충 NB b2_re (비교)                           NPU mobilenet CM  run_id 2237b1fa-bb7e-416d-ba73-fef5ec901120 · 구간 [(50, 660), (1, 240)] · trace 1 s 행 902 (sha 4c66c23c5a64) · 10 s sha 694e38f57b60 · 시작 SKIN(trace 첫 행) 30.0 · 판정 JSON out_1005n/NB_b2_re.json 존재 True (sha a4b494d639db) · 원시 results/ 폴더 있음 · 구분: v2.2 약한 홀드아웃 (NPU 비교)
+  n2_nae_b1       N2 NAe b1 (비교)                                NPU effnet    CM  run_id 763f6c9e-1fbc-4183-b444-74ce2afa19c8 · 구간 [(100, 300), (1, 600)] · trace 1 s 행 902 (sha 2c500599fb7b) · 10 s sha b8726f290aba · 시작 SKIN(trace 첫 행) 29.4 · 판정 JSON out_1005e/NAe_b1.json 존재 True (sha b9e4348b63bd) · 원시 results/ 폴더 있음 · 구분: v2.2 g_NPU 피팅 자료 (NPU 비교)
+  n2_nae_b2       N2 NAe b2 (비교)                                NPU effnet    CM  run_id cb0f1205-ac12-4b56-b6e2-acaa2977e05c · 구간 [(100, 300), (1, 600)] · trace 1 s 행 902 (sha 9db11f8f3e81) · 10 s sha fac96efdc6b5 · 시작 SKIN(trace 첫 행) 29.0 · 판정 JSON out_1005e/NAe_b2.json 존재 True (sha ef522510994f) · 원시 results/ 폴더 있음 · 구분: v2.2 g_NPU 피팅 자료 (NPU 비교)
+  n2_nbe_b1       N2 NBe b1 (비교)                                NPU effnet    CM  run_id f0689c78-c581-4bc8-8310-48b2318d083b · 구간 [(50, 660), (1, 240)] · trace 1 s 행 902 (sha 1c7bf060509f) · 10 s sha 20c923dcb22a · 시작 SKIN(trace 첫 행) 29.7 · 판정 JSON out_1005e/NBe_b1.json 존재 True (sha d1698ba5dbe5) · 원시 results/ 폴더 있음 · 구분: v2.2 g_NPU 피팅 자료 (NPU 비교)
+  n2_nbe_b2       N2 NBe b2 (비교)                                NPU effnet    CM  run_id cf7abb13-0950-4aea-81b1-79e201a229fa · 구간 [(50, 660), (1, 240)] · trace 1 s 행 902 (sha 63cc3539f024) · 10 s sha f787d20519a0 · 시작 SKIN(trace 첫 행) 29.3 · 판정 JSON out_1005e/NBe_b2.json 존재 True (sha 53cf9974d69b) · 원시 results/ 폴더 있음 · 구분: v2.2 g_NPU 피팅 자료 (NPU 비교)
+  n4_nie_b1       N4 NIe b1 (비교)                                NPU effnet    CM  run_id 49311d10-3da7-4b44-be40-b5555dae55c0 · 구간 [(10, 60), (100, 300), (1, 300), (100, 180)] · trace 1 s 행 844 (sha 83fee90034d1) · 10 s sha c0f8a1fff732 · 시작 SKIN(trace 첫 행) 29.0 · 판정 JSON out_1005r/NIe_b1.json 존재 True (sha 9440474b2414) · 원시 results/ 폴더 있음 · 구분: v2.2 적합도 (NPU 비교)
+  n4_nie_b2       N4 NIe b2 (비교)                                NPU effnet    CM  run_id 9a56e074-b03f-4d7f-9f89-3d9dc4f6dfd1 · 구간 [(10, 60), (100, 300), (1, 300), (100, 180)] · trace 1 s 행 844 (sha 20221ab6a311) · 10 s sha 5bbd7029e676 · 시작 SKIN(trace 첫 행) 29.7 · 판정 JSON out_1005r/NIe_b2.json 존재 True (sha 5ceb92c8d4de) · 원시 results/ 폴더 있음 · 구분: v2.2 적합도 (NPU 비교)
+
+[쌍 · 자원 판정 JSON (m5 · m6 실측)]
+  out_1005n/pair_G_b1.json  sha 795d9428716d  a GA 29.4 · b GB 29.5 · Δmax 0.0 · r 1.0256
+  out_1005n/pair_G_b2.json  sha c2b7c69baade  a GA 30.4 · b GB 27.8 · Δmax 2.1 · r 1.0583
+  out_1005n/pair_G_b2s.json  sha 54effaee957c  a GA 30.4 · b GB 29.7 · Δmax -0.1 · r 1.0249
+  out_1005n/pair_N_b1.json  sha f23457c58e50  a NA 29.6 · b NB 29.6 · Δmax 2.8 · r 1.1012
+  out_1005n/pair_N_b2.json  sha 913643fe2d95  a NA 30.0 · b NB 28.6 · Δmax 3.0 · r 1.0901
+  out_1005n/pair_N_b2s.json  sha 6e40cf8d0b41  a NA 30.0 · b NB 30.0 · Δmax 1.7 · r 1.0850
+  out_1005n/resource_G.json  sha 565d9a4cd0d3  verdict B 낮음 (2쌍)
+  out_1005n/resource_G_supp.json  sha 33c1b0b62c89  verdict B 낮음 (2쌍)
+  out_1005n/resource_N.json  sha 1501e6923113  verdict B 낮음 (2쌍)
+  out_1005n/resource_N_supp.json  sha 359a8a265d9d  verdict B 낮음 (2쌍)
+  out_1005e/pair_GPU_b1.json  sha 8ab1ab094a15  a GAe 29.4 · b GBe 29.4 · Δmax -0.1 · r 1.4432
+  out_1005e/pair_GPU_b2.json  sha b2c115b47608  a GAe 29.2 · b GBe 29.8 · Δmax -0.1 · r 1.3626
+  out_1005e/pair_NPU_b1.json  sha d09d7965ebc1  a NAe 29.4 · b NBe 29.7 · Δmax 2.6 · r 1.0978
+  out_1005e/pair_NPU_b2.json  sha f590aae4499d  a NAe 29.0 · b NBe 29.3 · Δmax 1.6 · r 1.0614
+  out_1005e/res_GPU.json  sha 313de3e1bbc3  verdict 엇갈림
+  out_1005e/res_NPU.json  sha 9e8e94229c50  verdict B 낮음 (2쌍)
+
+[동결 예측 파일 (등록 §1 — 있으면 그대로 · 없는 항목만 동결 코드로 생성)]
+  d1sim/out/v0_holdout_1003.json  bc950760906bd7666bf3f5f61f22bb83e8641c53bce07ccb15da743b39490d5e  35,883 B — v0 T1 · T2 (실제 시작 SKIN 31.2 · 31.5 구동 · skin_mae_c 1 s · onset · 끝 SKIN — SKIN 시계열 없음 → m3 는 동결 v0 코드 재생 (재현 검사: skin_mae_c · 끝 SKIN 일치))
+  d1sim/out/night_1003_prediction.json  c5ecf89c76fe67e5d202509f144fc46148d7f6431e1919040b4121af7e3fd8b8  7,716 B — v1 M1-GPU (열 29.5 · 30.5: heat_onset · heat_end_skin · 회복 — 최고 SKIN · 시계열 없음 → v1 동결 코드 재생, 재현 검사 heat_end_skin · onset)
+  s26/results/night_1003/night_1003_prediction_v1_pacing.json  b4ada83969b0ac5a4efb337e1fef51e224f4fab4a792ec7859a359e2215767f8  2,651 B — v1 페이싱 (heat_end_skin · rest_end · reheat_end_skin · onset · 재조임)
+  d1sim/out/night_1004_prediction_v2.json  1e61a8707a57040d9852441250f4dcdfb85063e402f325c6e998151f7b5e97b9  107,496 B — v2 g50p · gi300 (θ 변형마다 — GPU 칸은 θ_NPU 무관, 같은지 검사) · G50P2 도 같은 동결 예측
+  d1sim/out/night_1005_prediction_v21.json  b6c8e502c8bab3d7aedcf08a2bd50ce8de0eb2cb17d430f3028a7519df939659  30,557 B — v2.1 N1 GA · GB (max_skin · skin_899 · first_throttle · throttle_time · 쌍 · 자원 문구)
+  d1sim/out/night_1005e_prediction_v21.json  4506709f00a59bc7205cbd2bd550b8efec07453c76e14c7d34b8bf0458dabe1f  34,052 B — v2.1 N2 GAe · GBe
+  d1sim/out/v22_score_pred_M_N1.json  8529f40291bea10326227ccc60507d2bae633ced97b2db2f9f6c057cb7a887c9  67,976 B — v2.2 N1 (실제 시작 SKIN 열 · 적합도)
+  d1sim/out/v22_score_pred_M_N2.json  9b753e60b5057b71e1b05c9e00b65bb4306af6d465f3d4672df180440d5aaa43  65,640 B — v2.2 N2 (실제 시작 SKIN 열 · g_m 피팅 자료)
+  d1sim/out/v22_weak_holdout_prediction_N1supp.json  00e1e8913fb3501b96823bcfe44e5e4e517cd5d36583b0212871a6b867875643  21,536 B — v2.2 N1 보충 (열 29.7 · 30.0 · 30.05)
+  d1sim/out/v22_weak_holdout.json  7c0d149073ca236cb700e30f024da2d9efd8f723ecb7a633bb8171bd014b7e5a  3,844 B — v2.2 GIe_b1_spare 닫힌 고리 (기술)
+  d1sim/out/v3_prediction_v2.json  a3252cadd4f27df14e525c851e836e5ac6482984182d3063ddb7db4cb4173049  54,443 B — V3 v2 예측 (모형 파일 · 프로파일 SHA 기록 — frozen_check 기준)
+  없는 것 (동결 코드로 생성 예정 · 생성 SHA 는 predictions_gpu.json · 원장에): v2.2 × (C1a · M3 (GPU_interpreter 프로파일) · M1-GPU 2런째 · 페이싱 · G50P · GI300 · G50P2 · N4 GIe b1 · b2 · GIe_b1_spare · NIe b1 · b2) — 열 두 점 29.5 / 30.5 (V3 v2 · P1j 규칙) · 모든 판 × 모든 런의 SKIN 10 s 궤적 (m3) — 그 판의 동결 코드 · 동결 구동 규칙 그대로 재생 (재현 검사 = 동결 파일의 스칼라와 일치).
+
+[frozen_check] 모형 파일 4 = V3 v2 예측 기록: True · 프로파일 15 = True · predict_v3.py = True
+
+[등록과 다른 곳 · 읽은 뒤 정한 것 (오차 계산 전 · 멈추지 않고 적는다)]
+  (a) 10/4 까지 런의 원시 results/ 폴더가 로컬에 없다 (10/8 백업 1차 뒤 삭제 · Drive zip) → 실측 = d1sim/data 추출 trace (1 s: HAL 표본 [k, k+1) 안 또는 직전 보류 · 10 s: 러너 지연 전수 중앙 · ref 행 = 구간 처음 30 s 중앙). 추출 trace 는 10/3 ~ 10/6 에 판정 JSON 과 대조됐다 (trace_v22 10 s 칸 4500/4500 일치 기록). 10/5 ~ 10/6 런은 원시 HAL 과도 다시 대조한다 (cross-check).
+  (b) 동결 예측 파일에는 SKIN 시계열이 없다 (스칼라 항목만) → m3 (10 s 궤적 MAE) 와 m1 · m2 가 없는 판 (v0 · v1 · v2) 은 그 판의 동결 코드 · 동결 구동 규칙 (v0: 실제 시작 SKIN · 실측 가동 플래그 (v0_driver_1003) · v1 · v2: 열 29.5 / 30.5 · 10 s 주기 앞 duty % 가동 (predict_night_1003 · 1004 · predict_pacing_v1_1003) · v2.1: 열 두 점 + BAT0 (predict_night_1005 · 1005e) · v2.2 N1 · N2 · 보충: 실제 시작 열 (fit_throttle_v22.predict_night 와 같은 구동)) 으로 재생한다. 재생이 동결 파일의 스칼라 (onset · heat_end_skin · max_skin · skin_899 …) 를 1e-6 안에서 재현하는지 검사하고, 재현되지 않으면 그 판의 m3 = "계산 불가 (재현 실패)" 로 둔다. 동결 파일 값이 있는 항목은 파일 값을 쓴다 (재계산 금지).
+  (c) v2.2 적합도 행의 구동: 동결 예측이 있는 런 (N1 · N2 · N1 보충) = 그 파일 (실제 시작 SKIN 열) · 없는 런 = 열 두 점 29.5 / 30.5 (V3 v2 · P1j 규칙, 비교 열 = 실제 시작 SKIN 에 가까운 쪽 · 같으면 29.5) · Bresenham duty 플래그 (predict_v3.flags) · A0 −1.0 · BAT0 = SKIN0 − d_ref · MobileNet 런 model=mobilenet (g_m = 1) · EffNet 런 model=effnet · C1a · M3 = GPU_interpreter 프로파일 (Interpreter 1.4.2 런) · 나머지 = GPU_compiledmodel. 기술만: N1 · N2 런에도 열 두 점 값을 나란히 낸다 (판정 아님).
+  (d) m4 첫 조임 = "칸 k 와 뒤 3칸 ≥ 문턱" (HOLD 3) · GPU ×1.10 · NPU ×1.06 (night1005_judge.THR). 실측 = 그 런 판정 JSON 의 같은 규칙 항목 (N1 · N2 work.first_throttle_s · GI300 · GIe · G50P · 페이싱 heat.onset_1_1_s · M1 heat_extra.onset_1_1_s · C1a · M3 v0_holdout onset_meas_s (같은 규칙: +10 % 칸 + 30 s 유지)) 을 가열 구간 시작 기준 → 체인 절대 시각 (구간 시작 오프셋 = manifest start_ns 차) 으로 환산. 예측 = 동결 파일의 같은 항목 (v2.1 · v2.2 first_throttle_s · v2 heat_onset_1_1_s · v1 heat_onset_s · v0 onset_model_s) + 구간 오프셋 (예측 체인은 전환 0 s); 생성 예측 = predict_v3.run_metrics 칸 (가동 구간 · 기준 = 첫 가동 구간 처음 30 s) 에 같은 규칙 → 절대 시각. 둘 중 하나 없으면 null + 이유.
+  (e) m2 창 끝 = 그 런의 마지막 공통 시각: N1 · N2 (900 s 창) = 899 s (동결 skin_899) · 그 밖 = min(예측 행 수 − 1, trace 마지막 t_load_s) 초의 SKIN (실측 = trace 1 s 행 · 예측 = 재생 행). m1 실측 = 판정 JSON max_SKIN (있으면) · trace 1 s 최대 (대조). m3 = 10 s 칸 k = [10k, 10k+10) (체인 절대 시각 · 실측 trace t_load_s · 예측 행 번호) 평균 |차| · 칸 수 기록 · 공통 칸만.
+  (f) m5 쌍 Δ = 최고 SKIN Δ (A − B) · 첫 조임 시각 Δ — 실측 = pair JSON deltas.d_max_skin · 런 first_throttle 차 · 예측 = 동결 pairs (열 = A·B 시작 평균에 가까운 쪽; v2.2 N1 · N2 파일은 쌍 평균 열이 그대로 있음) · 통과 = 부호 같음 ∧ |차| ≤ 1.0 ℃ (등록 §4 · P1j 규칙) · k / n 기술.
+  (g) m6 자원 판정 문구 = 실측 resource JSON verdict vs 예측 = night1005_judge.resource_verdict (블록별 열의 예측 쌍 → _pred_pair_as_judged, cmp_one 과 같은 순서) · N1 GPU 는 GB_b2 범위 밖 (판정기 cmp 에서는 unsupported) 이지만 등록 §2 대로 넣고 표시 · 보충 쌍 (GB_b2_re) 판 나란히.
+  (h) 판정 이름 두 가지만 (등록 §4): v2.2 행 "GPU 적합도 오차 (개발 자료)" · 각 판 홀드아웃 행 "GPU 홀드아웃 오차 (판 ○ · 동결 예측)". 결론 문장 = 등록 §6 틀만.
+  (i) 기존 표 ① 숫자 (v0 T1 SKIN MAE 0.324 = 1 s 행 MAE · T2 0.396 등) 는 재계산하지 않고 그대로 두며, 이번 m3 (10 s 칸) 와 다르면 둘 다 적고 이유 (칸 정의 · 창) 를 쓴다.
+  (j) R 세션 = 이 세션 (P1k). 폰 0 · adb 0 · 모형 재피팅 0 · 기존 d1sim 코드 · 판정기 수정 0 (import 만).

@@ -1,0 +1,13 @@
+| 시험 | 결과 | 값 |
+|---|---|---|
+| ① 런 수 30 = GPU 19 + NPU 11 · 전부 manifest run_id · 판정 JSON · trace 1 s · 10 s 존재 | PASS | (30, 19, 11) |
+| ② 판정 JSON run_id = manifest run_id (run_id 가 있는 모든 런) | PASS | [] |
+| ③ 시작 SKIN: trace 첫 행 = 판정 JSON (있는 런 전부 · 1e-9) | PASS | [] |
+| ④ 범위 밖 = n1_gb_b2 (27.8) 만 · 열: 28.5 → 29.5 · 30.7 → 30.5 · 30.0 → 29.5 (동률 작은 쪽) | PASS | [('n1_gb_b2', 27.8)] |
+| ⑤ 판: v0 런 [v0, v22] · N1 GPU [v21, v22, v22_2pt] · N4 [v22] · NPU N1 [v22, v22_2pt] | PASS |  |
+| ⑥ 쌍 10 (GPU 5 · NPU 5) · pair JSON run_id = A · B run_id · 열 = 평균에 가까운 쪽 | PASS | [('N1_GPU_b1', 29.45, 29.5), ('N1_GPU_b2', 29.1, 29.5), ('N1_GPU_b2s', 30.05, 30.5), ('N2_GPU_b1', 29.4, 29.5), ('N2_GPU_b2', 29.5, 29.5), ('N1_NPU_b1', 29.6, 29.5), ('N1 |
+| ⑦ 자원 6 · 쌍 키 전부 pairs 에 있음 · 판정기 SHA 접두 (ca8680c2 · 2db1cda5 · a5ceab41) | PASS |  |
+| ⑧ 오차 숫자 없음: 런 항목에 max · 899 · mae · delta 키 없음 | PASS |  |
+| ⑨ 결정성: 같은 입력 두 번 → 같은 JSON 바이트 | PASS |  |
+
+selftest 전체: PASS (9/9)

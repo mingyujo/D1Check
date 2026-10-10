@@ -1,0 +1,12 @@
+| 시험 | 결과 | 값 |
+|---|---|---|
+| ① 1301 행 (0..1300) → 130 칸 · 칸 0 = mean(30.00..30.09) = 30.045 · 칸 129 = 42.945 · 10 표본씩 | PASS | [30.045, 30.145] |
+| ① 전환 오프셋 (60.134 + t): 칸 6 = [60, 70) 에 10 행 · 칸 7 에 10 행 · 칸 5 비어 None | PASS | ([0, 0, 0, 0, 0, 0, 10, 10], [None, None, None, None, None, None, 31.0, 31.0]) |
+| ② first_throttle on 10 s ratio bins (trace rule): [1.0,1.05,1.12,1.11,1.10,1.15] → k 2 → 20 s · [1.0]*6 → None | PASS |  |
+| ③ get_path: heat.onset_1_1_s · work.first_throttle_s · 없으면 None | PASS |  |
+| ④ 런 표의 judge_ft 구간: N1 · N2 = 0 (work) · 가열 구간 체인 = 1 · v0 = 0 | PASS |  |
+| ⑤ seg_offsets_meas (manifest): 구간 0 = 0 · 구간 1 ≈ 300 (+ 전환 < 1 s) · model 오프셋 [0, 300] | PASS | [0.0, 300.207257657] |
+| ⑥ HAL 공백 (30~50 s) → 칸 3 · 4 None · 나머지 10 표본 | PASS |  |
+| ⑦ pairs 표: Δ첫 조임 = A − B (둘 다 있을 때만) — 합성 | PASS |  |
+
+selftest 전체: PASS (8/8)
