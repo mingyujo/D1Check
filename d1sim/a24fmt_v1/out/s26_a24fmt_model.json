@@ -1,0 +1,114 @@
+{
+ "model_family": "s26-a24fmt-v1 (S0 · E0 · T1 — A24 꼴, S26 계수)",
+ "decisions": "DECISIONS_A24FMT.md D1 ~ D10",
+ "data": "R3 S26-MIXREQ-02 16세션 (개발) · origin/s26-mixreq 21cba44",
+ "current_unit": "uA (S26 가정) — W = -I*V/1e9",
+ "service": {
+  "B2_PARALLEL|classification|GPU": {
+   "n": 384,
+   "phase_means_ns": [
+    1038261.5052083334,
+    65536396.1953125,
+    1564574.1744791667,
+    33861.395833333336,
+    431226.6901041667
+   ]
+  },
+  "B2_PARALLEL|detection|CPU": {
+   "n": 384,
+   "phase_means_ns": [
+    703506.3697916666,
+    244328447.76822916,
+    2317325.9921875,
+    63497.408854166664,
+    687337.5104166666
+   ]
+  },
+  "CPU_URGENT|classification|CPU": {
+   "n": 768,
+   "phase_means_ns": [
+    236347.0859375,
+    50063263.979166664,
+    1841198.33984375,
+    34033.411458333336,
+    394502.5234375
+   ]
+  },
+  "CPU_URGENT|detection|CPU": {
+   "n": 768,
+   "phase_means_ns": [
+    683925.7434895834,
+    246334362.48046875,
+    1965024.5494791667,
+    32183.91796875,
+    399702.55078125
+   ]
+  },
+  "NPU_PARALLEL|classification|NPU": {
+   "n": 384,
+   "phase_means_ns": [
+    1038864.2630208334,
+    59557299.393229164,
+    1425925.3802083333,
+    42753.682291666664,
+    419864.9453125
+   ]
+  },
+  "NPU_PARALLEL|detection|CPU": {
+   "n": 384,
+   "phase_means_ns": [
+    702441.2109375,
+    243815137.8515625,
+    2110175.765625,
+    53762.807291666664,
+    645301.7421875
+   ]
+  }
+ },
+ "phases": [
+  "dispatch_to_execution_start",
+  "execution_start_to_output_ready",
+  "output_ready_to_persist_complete",
+  "persist_complete_to_worker_release",
+  "worker_release_to_lane_available"
+ ],
+ "power": {
+  "pre_mode": "session resident_baseline 30 s mean",
+  "state_increment_w": {
+   "cls_CPU": 19.828804692061563,
+   "det_CPU": 4.739986720797283,
+   "cls_GPU": 26.721273185199244,
+   "cls_NPU": 26.573610702462158,
+   "det_CPU&cls_GPU": 14.644218830631537,
+   "det_CPU&cls_NPU": 15.169572558033812
+  },
+  "states": [
+   "cls_CPU",
+   "det_CPU",
+   "cls_GPU",
+   "cls_NPU",
+   "det_CPU&cls_GPU",
+   "det_CPU&cls_NPU"
+  ],
+  "bin_s": 5.0
+ },
+ "thermal": {
+  "form": "dT/dt = -beta (T - R) + sum theta_s x_s ; R = baseline last 10 s AP mean ; T0 = last AP before common start",
+  "beta_per_s": 0.06361201193509713,
+  "theta_c_per_s": {
+   "cls_CPU": 4.390412609705922,
+   "det_CPU": 0.48476507791677,
+   "cls_GPU": 4.999999999999999,
+   "cls_NPU": 4.999999999999999,
+   "det_CPU&cls_GPU": 2.6804489395785396,
+   "det_CPU&cls_NPU": 3.0176699406110274
+  }
+ },
+ "thermal_service_feedback": null,
+ "unsupported": [
+  "detection_GPU",
+  "detection_NPU",
+  "3-resource",
+  "throttle"
+ ]
+}
