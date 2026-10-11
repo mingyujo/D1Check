@@ -19,7 +19,7 @@ out_path = sys.argv[sys.argv.index("--out") + 1] if "--out" in sys.argv else os.
 cells_state, not_comp, aborts, lower_marked, smoke = {}, {}, [], [], {}
 state_files = sorted(glob.glob(os.path.join(H, "driver_state_h*.json")), key=os.path.getmtime)
 for sf in state_files:
-    st = json.load(open(sf, encoding="utf-8"))
+    st = json.load(open(sf, encoding="utf-8-sig"))  # PowerShell Set-Content -Encoding UTF8 writes a BOM (GH-R 10/12 fix, reading only)
     cells_state.update(st.get("cells") or {})
     not_comp.update(st.get("not_computable") or {})
     aborts += list(st.get("aborts") or [])

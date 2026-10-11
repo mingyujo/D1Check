@@ -1,0 +1,125 @@
+freeze_gpuho.txt — S26 GPU 홀드아웃 v1 (GH · 10/11) 동결 원장 (append only · 결과 전부터)
+=====================================================================================================
+세션: Claude Code (GH) · 클론 D1Check_v4 · 브랜치 s26-measure · 프롬프트 프롬프트_GPU홀드아웃_P1k감시_1011.md · 등록 = OneDrive sim\GPU홀드아웃_사전등록_v1.md
+  SHA-256 eaad42e3500a4b4fe0f0aacc93ea20b15be3c8261e01fea2485d13adb200832b (8,341 B · 프롬프트 값 eaad42e3… 일치) [P Get-FileHash 02:3x].
+규칙 (프롬프트): P1k 가 끝나기 전 D1Check_v4 git 쓰기 · fetch · d1sim 실행 · 파일 쓰기 0 (읽기 · git ls-remote 만). 이 원장은 OneDrive (레포 아님).
+
+[2026-10-11 02:35:47 +09:00] 0단계 — 폰 연결 · 상태 기록 (실행 0)
+  연결: 첫 메시지 "무선 디버깅 주소 알려 주세요" 뒤 db devices -l 에 이미 기기 1대가 mDNS 이름 (_adb-tls-connect) 으로 붙어 있었다 (transport 3 · model SM_S942N)
+    → db connect 없이 그 serial 을 $env:ANDROID_SERIAL 로 씀 (같은 기기에 IP:PORT 로 또 connect 하면 중복 항목 — 메모리 규칙). mdns 가 보여 준 주소 = <IP:PORT> (파일에 안 씀).
+    adb 는 PATH 에 없어 %LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe 를 쓴다 (에너지 C helper 와 같음).
+  연결 직후 첫 명령: settings put system screen_off_timeout 86400000 → 86400000 확인.
+  잠금: isKeyguardShowing=true · mWakefulness=Dozing (화면 꺼짐 + 잠금) → 영훈에게 "잠금 풀어 주세요" 한 줄 (1단계 감시 중 1분마다 확인 · 폰 실행은 4단계).
+  폰 상태 [P 02:3x]: SOC 68 · AC powered true (충전 중, 02:01 꽂힘) · screen_brightness_mode 0 · screen_brightness 127 (원래 값) · airplane_mode_on 1 · zen_mode 1 ·
+    HAL SKIN 37.2 · AP 38.0 · BAT 36.8 (충전으로 더움) · thermal status 0.
+  설치본 npu-runner APK sha256sum = 5ac485e382ebc82e380e6161ca6301ff89e9ab3d8be49b5d5388ab28b42c1033 (= 5ac485e3… 재설치 불필요).
+  PC 측정 프로세스 (Win32_Process, orchestrator · driver · keepawake · mixreq · session_driver · run_cell · phone_watch): 0 (DriverStore 경로 오탐 2개뿐).
+  PC C: 여유 11.3 GB (칸당 0.42 GB × 17 ≈ 7.1 GB — 부족하면 4단계 전 영훈에게 한 줄). 
+  P1k 상태 02:30: (a) 작업결과_1011_P1k 없음 · (b) CLAUDE.md "1011 P1k" 없음 · (c) 원격 = 1952bbc (P1k 커밋 ③ 미push) · 로컬 HEAD = 480b3c4 (P1k 커밋 ② 02:28:21) ·
+    sim\out_gpuerr\ 02:30 gpuerr.json 생성됨 (4단계 실행 중) → 1단계 감시로.
+
+[2026-10-11 02:44:12 +09:00] 1단계 끝 — P1k 완료 확인: (a) 작업결과_1011_P1k_GPU모형오차.md 02:4x 있음 · (b) OneDrive CLAUDE.md "1011 P1k" 블록 02:39:51 · (c) git ls-remote = 17890ff (P1k 커밋 ③ push) · 멈춤 0 · adb 유지 (rc 0) · 폰 잠금 풀림 (02:38 isKeyguardShowing=false · Awake · SOC 79 · AC 충전 중).
+[2026-10-11 02:44:12 +09:00] 2단계 — git fetch origin · status: HEAD = origin = 17890ffdef6cd573b55d7a20061b6b643df091d1 (P1k 커밋 ③) · 로컬 수정 = P1k 이전과 같은 .idea · 미추적뿐 (이 세션 쓰기 0).
+  P1k 판독 3줄 (sim\GPU모형오차_결과_v1.md §0 · §1 · §6 · 작업결과_1011_P1k §1):
+  ① v2.2 GPU 적합도 오차 (19런): 최고 SKIN 평균 −0.19 ℃ (|·| 최대 1.02) · 10 s 궤적 MAE 평균 0.39 ℃ (0.17 ~ 1.48) · 첫 조임 |오차| 평균 33 s (같은 묶음 NPU 11런 +0.22 · 0.54 ℃ · 20 s) — 전부 적합도 (개발 자료).
+  ② 홀드아웃 문구 맞은 수: 쌍 Δ최고 SKIN GPU 0 / 5 (실측 Δ 0.0 · −0.1 — GPU 최고 SKIN 38.2 ~ 38.6 포화 · 모형 작은 + 로 부호 규칙 실패 · |차| 4쌍 0.08 ~ 0.28) · 자원 판정 문구 v2.2 2 / 3 (N2 "엇갈림" 못 냄) · 판별 홀드아웃 (v0 ~ v2.1) 쌍 0 / 5 · 문구 1 / 3.
+  ③ "v2.2 동결 코드로 GPU 예측을 만들 수 있었는가" = 있었다 — P1k 는 동결 파일 없는 GPU 런 (C1a · M3 · M1 · 페이싱 · G50P · GI300 · G50P2 · GIe ×3) 의 v2.2 예측을 동결 코드 (V3 v2 · P1j 경로 predict_v3.flags/schedule + tv22.simulate(model, engine CM) · 열 두 점) 로 생성했고 재현 검사 실패 0 (freeze_gpuerr 02:19 ~ 02:27 · 결과 §7 (b)(c)). "예측 불가" 문장 없음.
+  → 등록 §0-1 (동결 v2.2 로 GPU 체인 예측 불가) 해당 없음 · P1k 오차 숫자는 취소 사유 아님 (등록 §0) → 3단계로.
+
+[2026-10-11 02:46:08 +09:00] 3단계-1 커밋 ① b3f84a75d9de120103d6af075f1d18daa7552822  d1sim: GPU 홀드아웃 사전 등록 v1 (예측 · 측정 전)
+  d1sim/docs/GPU홀드아웃_사전등록_v1.md  작업 트리 SHA-256 eaad42e3… (= OneDrive 원본 · 8,341 B · CR 0) · git diff --cached PAT 0 · 바이너리 0 · 이 경로만 add · 가설원장 PRE-H1 줄.
+  → 이제부터 3단계-2 ~ 5 (T · 체인 · 스모크 G 체인 · 예측 16 · 판정 코드 · 드라이버) — 폰 실행 0.
+
+[2026-10-11 02:54:11 +09:00] 3단계-2 ~ 5 (폰 실행 0 · 02:47 ~ 02:53)
+  3-2 T 계산 (d1sim/gpu_holdout_v1/t_calc.py · selftest 7/7): N2 GBe_b1 · b2 에서 B 누적 추론 수가 같은 블록 GAe 300 s 총 추론 수 (n_a 72,821 · 75,505) 에 닿은 시각 =
+    판정기 b_reach_s 490 · 510 (pair_GPU_b1 8ab1ab09… · b2 b2c115b4… · 재계산 일치 · 원시 JSONL 정확 교차 481.05 · 500.73 s · n 재집계 일치) → 평균 500 → 10 s 올림 → T = 500 (840 상한 아님)
+    → sim\out_gpuho\T_calc.json SHA-256 9cbd8fd91b6d226cd14462a5204f5c2447f6b709b8e7c8a68178763f138ca1c3. B 체인 = work_d50 GPU 50·500 → tail_idle GPU 1·400 (Σ 900).
+    GH 가 정함: "닿은 시각" = 에너지 C 와 같은 판정기 10 s 칸 끝 값 (b_reach_s · NPU 610/630 → 620 과 같은 출처) · 원시 정확 교차는 대조만.
+  3-3 체인 (s26\tools\gpuho_1011\make_chain_h.py = make_chain_c.py 방식): 기존 체인 34/34 재직렬화 바이트 동일 · 틀 gpu_eff_work50_v1 4af89784… 재생성 바이트 동일 ·
+    새 tools\chains\gpu_eff_work50eq_v1.json canonical 28d84c5c4c286dd94cfca13c9ef5dd2f46c7e34224c3a378ed0be50ae6838205 · 파일 cc01d12f… · 바뀐 줄 = chain_id · duration_s 720→500 · 180→400 (git diff --no-index).
+    A = gpu_eff_work100_v1 df0ffa2f… (N2 그대로) · 스모크 G = smoke_gpu_eff_v1 16c951ba… (N2 스모크 그대로) · npu_chain validate exit 0 · orchestrator --dry-run (가짜 serial) 3칸 exit 0 · stderr 0 · 상한 400,000 / 50,000 (dryrun_table_h.txt).
+  3-4 예측 16 (predict_gpuho.py · selftest 12/12 · frozen_check 모형 파일 · 프로파일 · predict_v3.py = V3 v2 기록 True): 4 모형 × 체인 A · B × 열 29.5 · 30.5 → sim\out_gpuho\predict_gpuho.json
+    SHA-256 df3cf14f08f2f6cea93494834906882e520a44821b28f300c356cdd7340b73bd (레포 사본 같음). v2.2 GPU 엔진 = CM 프로파일 (N2 GPU = CompiledModel). 첫 조임 = ×1.10 HOLD 3 (GPU). n 예측 없음 (GPU R0 없음).
+    [P-시뮬] Δ최고 SKIN (A − B): v2.2 +0.045 (29.5) / +0.193 (30.5) · v2.1 +0.171 / +0.306 · v2 θ0.3 +0.271 / +0.292 · θ0.75 +0.271 / +0.292 · 최고 SKIN A 37.96 ~ 38.25 · B 37.74 ~ 37.94.
+    → 등록 §0-1 (v2.2 로 GPU 체인 예측 불가) 해당 없음. predict_gpuho.json 은 한 번만 (있으면 거부).
+  3-5 판정 코드: measure_gpuho.py (selftest 6/6) · judge_gpuho.py (selftest 15/15 — P1j 항목 + invalid_twice 분모 유지 + 하한 미달 표시 + m6 + GPU 이름 + 분모 8 강제 + readout 한 번) ·
+    래퍼 sim\night1005e_judge_h.py (= 레포 s26\tools\gpuho_1011\ 사본 · SHA 326c00cf…; night1005e_judge 2db1cda5 import · GAh = GAe 사양 · GBh = 500/400 · 블록 1~8 · selftest 21/21, import 35/35 포함).
+    드라이버 s26\tools\gpuho_1011\session_driver_h.ps1 (에너지 C 드라이버 c 사본 + 바꾼 곳 머리글: 스모크 G FAIL → 120 s → _re → 또 FAIL = §0-2 멈춤 · 무효 → _re → invalid_twice (블록 계산 불가 · 남은 칸 건너뜀) ·
+    운영 중단 = adb 끊김 판정 (stall + adb 0 · 칸 뒤 adb 아님 · 슬롯 오류 문구) → _abort_<HHmmss> · 시도 소모 안 함 · adb 재연결 60 분 루프 (mdns 5 분마다) · 세션 3번째 비상 멈춤 · screen_off_timeout 유지) ·
+    run_cell/launch/dryrun/stall_watch/keepawake(+screen)/start_watch/phone_read/restore/stall_selftest _h = energy_1008 사본 정확 치환 (build_helpers_h.py) · 칸 계획 d1sim\gpu_holdout_v1\plan_gpuho.json (5bd6caa7…) ·
+    드라이버 dry-run 17칸 (driver_h_dryrun.txt). chain_slot_report.py 는 results\S26_night_1004_host 에 없어 s26\tools\night_1002\ 사본으로 (운영 보고만). 측정 코드 · 기존 판정기 · d1sim 기존 코드 수정 0.
+
+[2026-10-11 02:59:12 +09:00] 3단계-6 커밋 ② 0a0749890fba2452c5907433c6bea476a2da7e24  d1sim/gpu_holdout_v1: T · 체인 · 예측 16 · 판정 코드 (측정 전) — 39 파일 · git diff --cached PAT 0 · 바이너리 0 · 이 세션 경로만 (d1sim/gpu_holdout_v1 · tools/chains/gpu_eff_work50eq_v1.json · s26/tools/gpuho_1011 · s26/results/gpuho_1011 add -f).
+  stall selftest 3/3 PASS (02:53 ~ 02:57 · T1 stall 69 s · T2 exited · T3 cap 99 s). push origin s26-measure → 원격 = HEAD = 0a0749890fba2452c5907433c6bea476a2da7e24 (검사 0). 이제부터 4단계 (폰 칸).
+[2026-10-11 02:59:12 +09:00] 4단계-1 폰 준비 (phone_read_h stage4-1 · 02:58): 설치본 5ac485e3… (같음) · SOC 91 · plugged 0 (02:50 케이블 뽑힘 — 영훈) · 밝기 모드 0 · 밝기 1 (원래 값 = 1 — Awake 상태의 S26 최소값; 드라이버가 brightness_orig_h.json 에 기록 뒤 0 으로) ·
+  screen_off_timeout 86400000 · 비행기 1 · Wi-Fi 2 · 방해 금지 1 · 잠금 풀림 · HAL AP 30.2 · BAT 29.4 (충전 뒤 식는 중) · 폰 모델 파일 /data/local/tmp/efficientnet_lite0.tflite sha256 6c7ab0a6… (= 계약 파일).
+  PC: AC (Win32_Battery status 2) · 덮개 닫힘 설정 ACSettingIndex 1 (= 절전 — 영훈에게 "덮개 열어 두기" 한 줄 · 설정은 바꾸지 않음) · C: 여유 10.5 GB (17칸 × 0.42 ≈ 7.1 GB — 빠듯, 블록마다 확인) · 실내 온도 미확인.
+
+[2026-10-11 03:00:46 +09:00] 4단계 시작 — keepawake_h 6500 · keepawake_h_screen 23160 · 감시 skin 24796 (15 s) · phone 15064 (10 s · 첫 표본 정상 Awake · launcher) · 드라이버 session_driver_h.ps1 pid 13192 (detached · 인자 한 문자열 · -WatchMode on -SessionEnd 2026-10-13 06:00) 03:00:04 → 03:00:06 CELL smokeG 시작.
+  git 보정: P1k 가 02:4x 에 4번째 커밋 c502ebb (d1sim/docs 표 ① 경로 글자 고침) 을 push 했고, 이 세션 커밋 ① b3f84a7 · ② 0a07498 은 그 위에 있다 (push c502ebb..0a07498).
+
+[2026-10-11 03:15:16 +09:00] 칸 0 스모크 G (S26_smokeG_1011h · 03:00:07 ~ 03:14:28): 게이트 대기 0 s · SKIN 30.8 · AP 30.2 · BAT 28.7 · SOC 91 · 상한만 · 슬롯 valid · run_check GPU PASS (구간 2 duration_complete · n 8,237 / 77 · 모델 SHA 6c7ab0a6 런 메타 · input lcg-rgb-127-128) · 감시 이벤트 0 (표본 12 · 최대 간격 10.1 s · 기준 창 npurunner) · 비상 0 → 등록 §0-2 해당 없음 · 블록 1 시작 03:14:30 (SOC 90).
+
+[2026-10-11 03:45:41 +09:00] 블록 1 A = GAh_b1 (S26_GAh_b1_1011h · 03:14:30 ~ 03:44:53 · 30 분): 게이트 대기 0 s · SKIN 29.7 · AP 28.6 · BAT 27.2 · SOC 90 · 하한 미달 (BAT 27.2 < 27.5) 표시 실행 · 슬롯 valid · run_check GPU PASS (n 73,682) · 감시 이벤트 0 (표본 96) · 모델 SHA 일치 · 판정 JSON out_gpuho\GAh_b1.json (열 결과 안 봄).
+  블록 1 B = GBh_b1 03:44:57 시작 · 게이트 줄: 03_GBh_b1,2026-10-11T03:44:57,0,29.3,27.9,26.9,0,86,False,True,True,False,False,mark,run_marked_lower_fail
+
+[2026-10-11 04:14:08 +09:00] 블록 1 B = GBh_b1 (S26_GBh_b1_1011h · 03:44:57 ~ 04:13:35 · 29 분): 게이트 대기 0 s · SKIN 29.3 · AP 27.9 · BAT 26.9 · SOC 86 · 하한 미달 (BAT) 표시 실행 · 슬롯 valid · run_check GPU PASS · 감시 이벤트 0 (표본 96) · 모델 SHA 일치 · pair_b1.json (열 지표 기술 · 안 봄). 블록 1 = 두 칸 valid (둘 다 하한 미달 표시).
+  블록 2 시작 04:13:39 SOC 82 · B = GBh_b2 게이트 대기 0 s · SKIN 29.4 · AP 28.0 · BAT 27.1 · 하한 미달 (BAT) 표시 실행. 30 분 상태: adb 유지 · 감시 이벤트 0 · 비상 0 · 재시도 0 · C: 10.4 GB.
+
+[2026-10-11 04:44:46 +09:00] 블록 2 B = GBh_b2 (S26_GBh_b2_1011h · 04:13:39 ~ 04:44:03 · 30 분): 게이트 대기 0 · SKIN 29.4 · AP 28.0 · BAT 27.1 · SOC 82 · 하한 미달 (BAT) 표시 · valid · run_check PASS · 감시 0 (96) · SHA 일치. 블록 2 A = GAh_b2 04:44:06 시작 · 게이트 SKIN 29.5 · AP 28.1 · BAT 27.1 · SOC 79 · 하한 미달 (BAT) 표시. C: 10.1 GB.
+
+[2026-10-11 05:13:58 +09:00] 블록 2 A = GAh_b2 (S26_GAh_b2_1011h · 04:44:06 ~ 05:13:30 · 29 분): 게이트 대기 0 · SKIN 29.5 · AP 28.1 · BAT 27.1 · SOC 79 · 하한 미달 (BAT) 표시 · valid · run_check PASS · 감시 0 (96) · SHA 일치 · pair_b2.json. 블록 2 = 두 칸 valid.
+  블록 3 시작 05:13:34 SOC 75 · A = GAh_b3 게이트 대기 0 · SKIN 29.4 · AP 28.0 · BAT 27.1 · 하한 미달 (BAT) 표시. 30 분 상태: 4/4 valid · 재시도 0 · 비상 0 · adb 유지 · C: 10.1 GB.
+
+[2026-10-12 01:37:30 +09:00] [재개] — 새 Claude Code 세션 (GH-R v2 · 프롬프트_GPU홀드아웃_재개_v2_1011.md · 이전 대화 이어 가기 아님)
+  GH 세션 공백: 이 원장의 마지막 줄 = 10-11 05:13:58 (블록 3 시작). 그 뒤 GH 세션이 끊김 — 원인 미확인 (사용 한도 추정 [E]). 측정은 detached 드라이버 (13192) 가 혼자 이어 감 (설계대로).
+  11시 재개 프롬프트 v1 은 실행되지 않음 (out_gpuho 에 블록 1~6 JSON 만 · 원장 05:13 그대로).
+  05:13 ~ 09:11 칸 요약 (driver_h_log.txt · gate_log_h.csv 에서 옮김 · 열 지표 안 봄) — 칸 · 시작 · valid · run_check · 감시 이벤트 · 게이트 대기 · SKIN/AP/BAT · SOC · 하한:
+    GAh_b3 05:13:35 ~ 05:44:43 · valid · PASS · 0 · 0 s · 29.4/28.0/27.1 · 75 · 미달 (BAT) 표시 실행
+    GBh_b3 05:44:47 ~ 06:13:25 · valid · PASS · 0 · 0 s · 29.3/27.7/26.9 · 71 · 미달 (BAT) 표시
+    GBh_b4 06:13:30 ~ 06:43:08 · valid · PASS · 0 · 0 s · 29.5/28.1/27.2 · 67 · 미달 (BAT) 표시
+    GAh_b4 06:43:12 ~ 07:13:35 · valid · PASS · 0 · 0 s · 29.3/27.8/27.0 · 63 · 미달 (BAT) 표시
+    GAh_b5 07:13:40 ~ 07:43:03 · valid · PASS · 0 · 0 s · 29.3/28.0/27.0 · 59 · 미달 (BAT) 표시
+    GBh_b5 07:43:07 ~ 08:11:45 · valid · PASS · 0 · 0 s · 29.3/28.0/27.0 · 55 · 미달 (BAT) 표시
+    GBh_b6 08:11:49 ~ 08:41:42 · valid · PASS · 0 · 0 s · 29.5/28.3/27.2 · 50 · 미달 (BAT) 표시
+    GAh_b6 08:41:47 ~ 09:11:09 · valid · PASS · 0 · 0 s · 29.6/28.3/27.3 · 46 · 미달 (BAT) 표시
+    → 블록 1 ~ 6 의 12칸 전부 valid · 12칸 전부 하한 미달 (BAT < 27.5) 표시 실행 · 비상 0 · 운영 중단 0 · 재시도 0 · invalid_twice 0 · pair_b1 ~ b6 생성 (안 봄).
+  09:11:14 드라이버: "BLOCK 7 NOT STARTED: soc=42 (>= 45)" → DRIVER END stop='block condition at b7 (soc=42)' left_blocks=7,8 → 등록 §2-7 "블록 사이 충전". 밝기 원복 (mode 0 · 1) · screen_off_timeout 86400000 유지.
+  충전: 영훈이 GH-R 붙여 넣기 전에 충전 (정확한 꽂은 · 뽑은 시각 미확인) → 01:36 SOC 95 · plugged 0 (AC/USB/Wireless false).
+  driver_state_h.json → driver_state_h_b1-6.json 복사 보존 (SHA-256 252ac788b28d5ea0bc9b079e0b615e9dcabaa6ba9f163113ca4da19431f700a6).
+  연결: 영훈이 준 <IP:PORT> 로 adb connect → 같은 기기가 mDNS 이름으로도 붙어 있어 중복 → IP 항목 disconnect · 첫 실행과 같은 mDNS serial (<SERIAL>) 사용. 첫 명령 screen_off_timeout 86400000 확인 · 잠금 없음 (isKeyguardShowing=false · Awake).
+  감시 프로세스 처리: 01:34 에 살아 있던 것 = skin 24796 (+ 자식 python 4396) · phone 15064 · keepawake 6500 · keepawake_screen 23160 · 드라이버 13192 = 없음 (정상 종료).
+    stop 파일 (skin_watch.stop · phone_watch.stop · keepawake_h.stop · keepawake_h_screen.stop) 로 종료 (60 s 뒤 전부 종료 확인) →
+    01:36:11 같은 스크립트로 다시 띄움: keepawake_h 31976 · keepawake_h_screen 31748 · start_watch_h → skin 23360 · phone 24740.
+  폰 상태 [P 01:36]: SOC 95 · plugged 0 · 밝기 모드 0 · 밝기 1 · screen_off_timeout 86400000 · 비행기 1 · Wi-Fi 2 · 방해 금지 1 · 설치본 5ac485e3… (같음) ·
+    폰 모델 파일 6c7ab0a6… (같음) · HAL SKIN 27.5 · AP 25.4 · BAT 25.0 · thermal status 0 (밤 실내 — 하한 SKIN ≥ 29.1 · BAT ≥ 27.5 미달 예상 → 등록 §2-5 표시 실행).
+  PC: AC (BatteryStatus 2) · C: 여유 5.3 GB (4칸 × 0.42 ≈ 1.7 GB) · 실내 온도 미확인.
+  다음: session_driver_h.ps1 -Blocks "7,8" -Resume -NoSmoke -SeqStart 14 -WatchMode on -SessionEnd "2026-10-13 06:00" (detached · 인자 한 문자열).
+
+[2026-10-12 03:34:00 +09:00] 블록 7 · 8 (재개 드라이버 pid 34876 · 01:36:45 ~ 03:34:00 · 칸 라벨 14 ~ 17) — 칸 · 시간 · valid · run_check · 감시 · 게이트 대기 · SKIN/AP/BAT · SOC · 하한:
+    GAh_b7 01:36:48 ~ 02:05:12 · valid · PASS · 0 (96) · 0 s · 27.4/25.6/24.9 · 95 · 미달 (SKIN · BAT) 표시 실행 · 시작 SKIN 27.8 (범위 [28.3, 31.6] 밖 — 판정은 함 · 표시)
+    GBh_b7 02:05:18 ~ 02:34:56 · valid · PASS · 0 (96) · 0 s · 29.4/28.1/27.0 · 91 · 미달 (BAT) 표시
+    GBh_b8 02:35:02 ~ 03:03:56 · valid · PASS · 0 (96) · 0 s · 29.4/28.0/27.1 · 87 · 미달 (BAT) 표시
+    GAh_b8 03:04:01 ~ 03:33:54 · valid · PASS · 0 (96) · 0 s · 29.8/28.4/27.4 · 84 · 미달 (BAT) 표시
+  DRIVER END emerg=0 stop='' left_blocks= (없음) · 모델 SHA 일치 (4칸) · pair_b7 · pair_b8 생성.
+  16칸 상태표 (driver_state_h_b1-6.json + driver_state_h.json 합침 = cells_gpuho.json):
+    b1 GAh valid · GBh valid | b2 GBh valid · GAh valid | b3 GAh valid · GBh valid | b4 GBh valid · GAh valid |
+    b5 GAh valid · GBh valid | b6 GBh valid · GAh valid | b7 GAh valid · GBh valid | b8 GBh valid · GAh valid
+    → 16 / 16 valid · 계산 불가 블록 0 · 무효 0 · 재시도 0 · invalid_twice 0 · 운영 중단 0 · 비상 0 · 블록 사이 충전 1 (b6 → b7) · 하한 미달 표시 16 / 16 · 범위 밖 1 (GAh_b7 27.8).
+[2026-10-12 03:34:19 +09:00] 5단계-1 원복 (restore_h.ps1 -Full): 밝기 모드 0 · 밝기 1 (원래 값) · screen_off_timeout 86400000 유지 · 비행기 1 · 방해 금지 1 (켠 채) · SOC 80 · plugged 0 ·
+  감시 · keepawake stop 파일 → 측정 프로세스 0 (Win32_Process 확인) · 러너 pidof 없음.
+[2026-10-12 03:35 +09:00] 5단계-2 판정 입력:
+  도구 오류 1 (측정 · 판정 규칙 무관): s26\tools\gpuho_1011\cells_from_state.py 가 driver_state_h*.json 의 UTF-8 BOM (PowerShell Set-Content -Encoding UTF8) 에서 JSONDecodeError →
+    읽기 인코딩만 utf-8-sig 로 고침 (한 줄 · 읽기 전용 도구) → 다시 실행.
+  cells_gpuho.json d90d4d0d3c7dabe2b8ee2836a831ff6c2ab7562c48858433388b135e7214337d (valid 16/16) ·
+  measure_gpuho.json a076d06d3f9658d33352cac253213a34a359939f467ff536d8705cb7c36e3a96 (교차 검사 실패 0) ·
+  predict_gpuho_actual.json eef4a11c0165a0b43670ed66e76c969fe825ad8f8a39221936231aa5690e68e6 (기술 열 — 판정 아님) ·
+  predict_gpuho.json df3cf14f08f2f6cea93494834906882e520a44821b28f300c356cdd7340b73bd (= 커밋 ② 값 · 무변경) · d1sim/gpu_holdout_v1 코드 = 커밋 ② 그대로 (git diff 0).
+[2026-10-12 03:35:55 +09:00] judge_gpuho 한 번 (readout 1회) → gpuho_judge.json 9937d135cc09682aa7a1c334d01bbd838291bb45dfaf0175e322e43f9ef6c110 (레포 사본 같음) · gpuho_cells.csv · gpuho_blocks.csv
+  주 v2.2: k = 0 / 8 → 「GPU 재현 미확인 (0/8)」 — 8블록 모두 부호 같음 (+) · |예측 Δ − 실측 Δ| 1.86 ~ 2.26 (> 1.0) · 예측 Δ +0.045 (열 29.5 — 8블록 모두) · 실측 Δ +1.9 ~ +2.3 (평균 2.16 · sd 0.17)
+  민감도: v2.1 0/8 (예측 Δ +0.171) · v2 θ0.3 0/8 (+0.271) · θ0.75 0/8 (+0.271)
+  v2.2 m1 평균 +0.39 ℃ (A −0.67 · B +1.44 · |·| 최대 1.52) · m2 평균 +0.55 · m3 MAE 평균 0.73 (최대 1.20) · m4 16칸 null (A 예측 120 s · 실측 조임 없음 / B 둘 다 없음) · m6 n 0
+  잡음: 실측 Δ sd 0.17 · A 최고 SKIN 38.64 (sd 0.11) · B 36.48 (sd 0.09) · 시작 SKIN 27.8 ~ 29.1 · r 0.917 ~ 0.975
+  기술 열 (실제 시작 SKIN · 판정 아님): v2.2 k 0 · 예측 Δ +0.13 ~ +0.55 · m1 +0.14 · m3 0.45.
+[2026-10-12 03:40 +09:00] 5단계-3 fig8_pred_vs_meas_v2.csv 068e701c2bcdae714f978ea7fe7a8709d803c5090146d1588451161c2becb6ce (62행 = P1k 46 + GH 16) · sim\fig8_pred_vs_meas_v2.png
+  (fig8_v2.py 범례 고침: GH 16 점이 "GPU 홀드아웃 ▲" 범례 수에 겹쳐 세지던 것 (n=18) → GH 는 자기 범례에만. CSV 무변경.)
