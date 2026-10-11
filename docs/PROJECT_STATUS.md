@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-11 REPOSITORY-CLEANUP-01 — 재생성 캐시 정리 완료
+
+- 사용자 요청으로 [생성물 정리 기록](REPOSITORY_CLEANUP_20261011.md)의 Gradle 변환/Android 중간물/QA 임시브라우저/Python 캐시26,837파일·3,943폴더를 삭제해 실제약2.15GiB를 확보했다. 경로확인오류18대상과 모델/원자료가 섞인35후보는 유지했다.
+- 소스/원실측/원장/checkpoint/동결모델/APK outputs/assets·사용자WIP/HTML/PDF/다른worktree를 보존했다. 보호56파일 SHA·기존10추적변경·다른HEAD 동일, 정리뒤 원source/모형/terminal64/공유세션CLI복원PASS다. 새환경/학습/기기0·기존계보/원판정/기본/strict/experiment_ready=false 불변이다.
+- 다음최대2:데스크톱학습결과회수,필요한빌드때캐시재생성. 검증8175aac＋로컬정리명세/검산, 현재추가학습 자동시작0이다. 상세대상·오류는output/repository_cleanup_20261011_v1에보존하며 개인경로원문은공유하지않는다.
+
 ## 2026-10-11 DESKTOP-GIT-DISTRIBUTION-01 — GitHub ZIP·실행 프롬프트 배포
 
 - 최신 “깃에 올려 다운로드·실행” 요청으로 [약1.66MiB 실행ZIP](results/desktop_handoff_20261011/D1Check-desktop-cpu-20261011.zip)과 [전달 프롬프트](DESKTOP_AUTO_RUN_PROMPT_20261011.md)를 추가 배포한다. 같은ZIP/96파일SHA/CRC/자체PPO상태3개를 검산했으며 APK/TFLite/원시실측/키/개인경로는 제외한다. 기존ZIP·checkpoint는 보존한다.
