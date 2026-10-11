@@ -6,6 +6,13 @@
 - 소스/원실측/원장/checkpoint/동결모델/APK outputs/assets·사용자WIP/HTML/PDF/다른worktree를 보존했다. 보호56파일 SHA·기존10추적변경·다른HEAD 동일, 정리뒤 원source/모형/terminal64/공유세션CLI복원PASS다. 새환경/학습/기기0·기존계보/원판정/기본/strict/experiment_ready=false 불변이다.
 - 다음최대2:데스크톱학습결과회수,필요한빌드때캐시재생성. 검증8175aac＋로컬정리명세/검산, 현재추가학습 자동시작0이다. 상세대상·오류는output/repository_cleanup_20261011_v1에보존하며 개인경로원문은공유하지않는다.
 
+## 2026-10-11 DESKTOP-AMOUNT-512-01 — 원64→512 실제 연장·확인 완료
+
+- [한국어보고·CSV·그림·오프라인화면](results/desktop_amount512_20261011/README.md): 세 모델 각448추가·총1344학습,2200/2300환경 전량완료·native오류0이다. 새48조건×7정책336행·개발24×3의72행 완료, 기능smoke3환경/72요청/학습0은별도다. 긴급실패0·일반실패(Band/Triton/Joint/Cost/PPO11/23/37)=40/39/40/40/40/40/40, 원strict 최종gate 세 PPO 모두FAIL·새채택0이다.
+- 세모델각512/64update/Adam768/768/768, 원actor/critic/Adam/승수/공유round-robin RNG/source96/SHA/요청원장을검산했다. 정상중지473/25에서partial1/0/0·전체cursor/RNG exact복원후같은task재개·중복학습/clock초기화0이다. 실제wall/active/CPU=21.850/21.764/20.595분≤active240분·저장10분이다.
+- parent500/192·프로젝트기저14735/3181 계승, 이번2200＋smoke3/1344로관련계보16938/4525다. 기존기본/strict/experiment_ready=false·원FAIL·사용자변경/원자료/다른worktree보존·휴대폰/ADB/실측/NPU/탐색0이다. 개발64→512 대응은이미본24이며새48에서64actor추가평가0·수렴/실기기절감미입증이다.
+- 다음최대2: 결과공유, 별도설계승인전까지기존기준유지. task amount512_desktop_20261011_a 완료·자동확대0. 실행HEAD8175aac＋ZIP SHA4d7e0fcf…·전체검증영수증/원장/PT는local보존, 작은보고/설정/source만authorized branch에반영하며실제원격HEAD는별도확인영수증이다.
+
 ## 2026-10-11 DESKTOP-GIT-DISTRIBUTION-01 — GitHub ZIP·실행 프롬프트 배포
 
 - 최신 “깃에 올려 다운로드·실행” 요청으로 [약1.66MiB 실행ZIP](results/desktop_handoff_20261011/D1Check-desktop-cpu-20261011.zip)과 [전달 프롬프트](DESKTOP_AUTO_RUN_PROMPT_20261011.md)를 추가 배포한다. 같은ZIP/96파일SHA/CRC/자체PPO상태3개를 검산했으며 APK/TFLite/원시실측/키/개인경로는 제외한다. 기존ZIP·checkpoint는 보존한다.

@@ -1,5 +1,11 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-11 DESKTOP-AMOUNT-512-01 — 승인된 데스크톱 학습량 실험 완료
+
+- [실제결과](results/desktop_amount512_20261011/README.md)의원V1/absolute-service v2 세learner64→512를동결ZIP에서실행했다. 각448추가/총1344학습·teacher448＋train1344＋dev72＋confirm336＝2200환경, 별도smoke3/학습0이다. 승인환경2300/학습1344·active240분/저장10분을확대하지않았다.
+- source/보상/mask/목적/기한/지원/Adam/공유sampling RNG/parent소비보존, 실제경계중지·partial/RNG/cursor복원후같은task재개를검산했다. 전체48조건7정책원단위와이미본개발24의64→512 대응을구분했다.
+- 원strict 최종gate 세 PPO 모두FAIL·새채택0. 학습완료를수렴·목표절감·실기기/표면온도/온라인제어비용의입증으로승격하지않는다. 기존기본·strict·experiment_ready=false·과거소비/실험/원source유지, 기기/ADB/추가실측/새모형/탐색0이며남은상한자동사용0이다.
+
 ## 2026-10-11 DESKTOP-GIT-DISTRIBUTION-01 — 작은 실행 ZIP으로 데스크톱 전달
 
 - 최신사용자요청으로 [Git 배포ZIP](results/desktop_handoff_20261011/D1Check-desktop-cpu-20261011.zip)과 [복사할실행프롬프트](DESKTOP_AUTO_RUN_PROMPT_20261011.md)를 제공한다. 이한ZIP의 자체정책상태3개만추가공유하며 Android모델/APK/원시실측/키/개인경로는계속제외한다.
