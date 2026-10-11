@@ -1,0 +1,141 @@
+param([Parameter(Mandatory=$true)][ValidateSet("statesplit","abba")][string]$Kind, [int]$StartIndex = -1, [int]$EndIndex = -1, [switch]$DryRun,
+      [string]$PlanDir = "", [string]$ResultsRoot = "", [int]$RetryRestS = 600, [switch]$SkipGate, [switch]$AllowSettingsMismatch,
+      [switch]$StrictSettings, [int]$ReconnectWaitS = 600, [int]$ConnectionStopAfter = 3)
+# M5 (2026-10-12) copy of mixreq_driver.ps1 (R3/R4 v2 driver). Rules kept verbatim: sessions in registered order; an invalid session is retried
+# ONCE in the same slot after >= RetryRestS (600 s) rest + the gate (attempt 2); a second invalid attempt -> slot invalid_twice, next index;
+# connection-class results (rc 2/3/4) before the app started are not consumed (host folder moved aside, adb wait, same attempt);
+# ConnectionStopAfter consecutive connection failures -> STOP; rc 5 = consumed attempt; rc 6 = CHARGE NEEDED -> STOP; keep-awake loop.
+# Changes: repo = D1Check_statesplit; session script = statesplit_session.py (SOC precheck + start SKIN band 29.5~31.5 / 20 min wait, then
+# mixreq_session.Session unchanged with statesplit_validate); -Kind statesplit = plan_v4ss indices 0..11 (block 1 C G N, block 2 N G C,
+# block 3 C G N, block 4 N G C), SOC >= 45 per session and >= 50 before index 6 (block 3) and index 9 (block 4);
+# -Kind abba = plan_abba indices 0..3 (A B B A), SOC >= 60 per session. -StartIndex / -EndIndex limit the run (resume with -StartIndex).
+# Serial only from $env:ANDROID_SERIAL (logged as <SERIAL>). ASCII only.
+$ErrorActionPreference = "Continue"
+$REPO = "C:\Users\rhoyo\AndroidStudioProjects\D1Check_statesplit"
+$planByKind = @{ "statesplit" = "plan_v4ss"; "abba" = "plan_abba" }
+$rootByKind = @{ "statesplit" = "S26_STATESPLIT_1012"; "abba" = "S26_SUSTAIN_ABBA_1012" }
+if (-not $PlanDir) { $PlanDir = "$REPO\s26\results\statesplit_1012\" + $planByKind[$Kind] }
+if (-not $ResultsRoot) { $ResultsRoot = "$REPO\results\" + $rootByKind[$Kind] }
+$TOOLDIR = "$REPO\s26\tools\mixreq"
+Set-Location $REPO   # plan device_inputs.json host paths are repo-relative (same as plan_v2 / v3c / v3s)
+$ADBEXE = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
+$DEVSER = $env:ANDROID_SERIAL
+if (-not $DEVSER -and -not $DryRun) { throw "ANDROID_SERIAL not set" }
+$allowMismatch = -not $StrictSettings
+New-Item -ItemType Directory -Force $ResultsRoot | Out-Null
+$runTag = (Get-Date -Format "MMdd_HHmmss")
+$driverLog = "$ResultsRoot\driver_log_$Kind.txt"
+$stateFile = "$ResultsRoot\driver_state_${Kind}_$runTag.json"
+function Log([string]$msg) {
+  $line = "[" + (Get-Date -Format "yyyy-MM-dd HH:mm:ss K") + "] " + $msg
+  if ($DEVSER) { $line = $line -replace [regex]::Escape($DEVSER), "<SERIAL>" }
+  Write-Host $line
+  if (-not $DryRun) { for ($i = 0; $i -lt 5; $i++) { try { Add-Content -Path $driverLog -Encoding UTF8 -Value $line -ErrorAction Stop; return } catch { Start-Sleep -Milliseconds 300 } } }
+}
+# --- keep-awake (same logic as mixreq_driver.ps1)
+$kaStop = "$ResultsRoot\keepawake.stop"
+$kaLog = "$ResultsRoot\keepawake_log.txt"
+if (Test-Path $kaStop) { Remove-Item $kaStop -Force }
+$kaScript = @"
+Add-Type -Namespace Win32 -Name Power -MemberDefinition '[DllImport("kernel32.dll", SetLastError=true)] public static extern uint SetThreadExecutionState(uint esFlags);'
+`$ES_CONTINUOUS = [uint32]"0x80000000"; `$ES_SYSTEM_REQUIRED = [uint32]"0x00000001"; `$ES_AWAYMODE_REQUIRED = [uint32]"0x00000040"
+Add-Content -Path '$kaLog' -Value ("start " + (Get-Date -Format "yyyy-MM-dd HH:mm:ss K") + " pid=" + `$PID)
+while (-not (Test-Path '$kaStop')) { [Win32.Power]::SetThreadExecutionState(`$ES_CONTINUOUS -bor `$ES_SYSTEM_REQUIRED -bor `$ES_AWAYMODE_REQUIRED) | Out-Null; Start-Sleep -Seconds 50 }
+[Win32.Power]::SetThreadExecutionState(`$ES_CONTINUOUS) | Out-Null
+Add-Content -Path '$kaLog' -Value ("stop " + (Get-Date -Format "yyyy-MM-dd HH:mm:ss K") + " pid=" + `$PID)
+"@
+$kaFile = "$ResultsRoot\keepawake_$Kind.ps1"
+Set-Content -Path $kaFile -Value $kaScript -Encoding ASCII
+$kaProc = $null
+if (-not $DryRun) { $kaProc = Start-Process powershell -ArgumentList "-NoProfile","-ExecutionPolicy","Bypass","-WindowStyle","Hidden","-File",$kaFile -PassThru; Log "keepawake pid=$($kaProc.Id)" }
+Log "DRIVER START kind=$Kind startIndex=$StartIndex endIndex=$EndIndex plan=$PlanDir results=$ResultsRoot dry=$DryRun allowSettingsMismatch=$allowMismatch (M5 copy of v2 driver)"
+Log "NOTE: laptop lid must stay OPEN (Modern Standby stops the PC; SetThreadExecutionState cannot prevent it)"
+$indices = if ($Kind -eq "statesplit") { 0..11 } else { 0..3 }
+if ($StartIndex -ge 0) { $indices = $indices | Where-Object { $_ -ge $StartIndex } }
+if ($EndIndex -ge 0) { $indices = $indices | Where-Object { $_ -le $EndIndex } }
+$STATE = [ordered]@{ kind = $Kind; driver = "m5-v2"; sessions = [ordered]@{}; stop_reason = ""; retries = 0; invalid_twice = @(); connection_events = 0; pre_start_moves = @() }
+function SaveState() { if (-not $DryRun) { ($STATE | ConvertTo-Json -Depth 6) | Set-Content -Encoding UTF8 $stateFile } }
+function PolicyOf([int]$idx) {
+  $planJson = Get-Content -Raw -Encoding UTF8 "$PlanDir\plan.json" | ConvertFrom-Json
+  foreach ($sess in $planJson.sessions) { if ($sess.index -eq $idx) { return $sess.policy } }
+  return "UNKNOWN"
+}
+function MinSocOf([int]$idx) {
+  if ($Kind -eq "abba") { return 60 }
+  if ($idx -eq 6 -or $idx -eq 9) { return 50 }
+  return 45
+}
+function HostFolder([int]$idx, [int]$attempt) { return "$ResultsRoot\S26_MIXREQ_" + ("{0:00}" -f $idx) + "_" + (PolicyOf $idx) + "_a$attempt" }
+function AppStarted([string]$folder) {
+  $logPath = "$folder\host\session_log.json"
+  if (-not (Test-Path $logPath)) { return $false }
+  try { $sl = Get-Content -Raw -Encoding UTF8 $logPath | ConvertFrom-Json; return [bool]($sl.PSObject.Properties.Name -contains "start_time") } catch { return $true }
+}
+function RunSession([int]$idx, [int]$attempt) {
+  $argList = @("-X","utf8","$TOOLDIR\statesplit_session.py","--plan",$PlanDir,"--index",$idx,"--attempt",$attempt,"--results",$ResultsRoot,"--min-soc",(MinSocOf $idx))
+  if ($DryRun) { $argList += "--dry-run" }
+  if ($SkipGate) { $argList += "--skip-gate" }
+  if ($allowMismatch) { $argList += "--allow-settings-mismatch" }
+  Log "RUN index=$idx attempt=$attempt policy=$(PolicyOf $idx) min_soc=$(MinSocOf $idx)"
+  & py @argList 2>&1 | ForEach-Object { Log ("  py: " + "$_") }
+  $rcode = $LASTEXITCODE
+  Log "RESULT index=$idx attempt=$attempt rc=$rcode (0 valid, 1 invalid, 2 gate fail, 3 device/settings, 4 stall, 5 folder exists, 6 charge needed)"
+  return $rcode
+}
+function WaitForAdb() {
+  if ($DryRun) { return $true }
+  $t0 = Get-Date
+  while ($true) {
+    $st = (& $ADBEXE -s $DEVSER get-state 2>&1 | Out-String).Trim()
+    if ($st -eq "device") { Log "adb reconnected (get-state device)"; return $true }
+    $elapsed = ((Get-Date) - $t0).TotalSeconds
+    if ($elapsed -ge $ReconnectWaitS) { Log "adb still not connected after $([int]$elapsed) s (state '$st')"; return $false }
+    Log "adb state '$st' -> disconnect/connect, waiting 60 s (elapsed $([int]$elapsed) s of $ReconnectWaitS)"
+    & $ADBEXE disconnect $DEVSER 2>&1 | Out-Null
+    Start-Sleep -Seconds 3
+    & $ADBEXE connect $DEVSER 2>&1 | Out-Null
+    Start-Sleep -Seconds 57
+  }
+}
+function RunAttempt([int]$idx, [int]$attempt) {
+  while ($true) {
+    $rcA = RunSession $idx $attempt
+    $isConn = ($rcA -eq 2 -or $rcA -eq 3 -or $rcA -eq 4)
+    if (-not $isConn) { $STATE.connection_events = 0; return $rcA }
+    $fold = HostFolder $idx $attempt
+    if (AppStarted $fold) { Log "connection-class rc=$rcA but the app had started (start_time present) -> attempt $attempt is consumed"; return $rcA }
+    $STATE.connection_events++
+    $moved = $fold + "_pre" + $attempt + "_" + (Get-Date -Format "HHmmss")
+    if (Test-Path $fold) { Move-Item -Path $fold -Destination $moved -Force; $STATE.pre_start_moves += $moved; Log "pre-start failure rc=$rcA -> host folder moved aside: $(Split-Path -Leaf $moved) (attempt not consumed)" }
+    SaveState
+    if ($STATE.connection_events -ge $ConnectionStopAfter) { Log "CONNECTION x$($STATE.connection_events): consecutive pre-start connection failures -> stop (reconnect, then resume with -StartIndex $idx)"; return -1 }
+    $ok = WaitForAdb
+    if (-not $ok) { Log "WAIT: adb not back after $ReconnectWaitS s -> one more attempt anyway (operator: check the wireless debugging address)" }
+    if (-not $DryRun) { Start-Sleep -Seconds 5 }
+  }
+}
+foreach ($idx in $indices) {
+  $rc1 = RunAttempt $idx 1
+  $STATE.sessions["$idx"] = [ordered]@{ attempt1 = $rc1 }
+  SaveState
+  if ($rc1 -eq -1) { $STATE.stop_reason = "CONNECTION x$ConnectionStopAfter at index $idx"; break }
+  if ($rc1 -eq 6) { $STATE.stop_reason = "CHARGE NEEDED at index $idx (SOC < $(MinSocOf $idx) or plugged)"; Log "STOP: charge needed -> paused at index $idx (resume with -StartIndex $idx after charging, cable OUT)"; break }
+  if ($rc1 -eq 0) { continue }
+  Log "RETRY: resting $RetryRestS s before attempt 2 of index $idx (rc1=$rc1)"
+  if (-not $DryRun) { Start-Sleep -Seconds $RetryRestS }
+  $STATE.retries++
+  $rc2 = RunAttempt $idx 2
+  $STATE.sessions["$idx"].attempt2 = $rc2
+  SaveState
+  if ($rc2 -eq -1) { $STATE.stop_reason = "CONNECTION x$ConnectionStopAfter at index $idx (retry)"; break }
+  if ($rc2 -eq 0) { continue }
+  if ($rc2 -eq 6) { $STATE.stop_reason = "CHARGE NEEDED at index $idx retry"; Log "STOP: charge needed on retry (resume with -StartIndex $idx after charging; attempt 2 folder may exist -> rc 5 -> slot invalid_twice)"; break }
+  $STATE.invalid_twice += $idx
+  $STATE.sessions["$idx"].slot = "invalid_twice"
+  SaveState
+  Log "INVALID_TWICE: index $idx (rc1=$rc1 rc2=$rc2) -> recorded, moving to the next index"
+}
+if (-not $STATE.stop_reason) { $STATE.stop_reason = "completed" }
+SaveState
+if ($kaProc) { Set-Content -Path $kaStop -Value "stop"; Log "keepawake stop requested" }
+Log "DRIVER END kind=$Kind reason=$($STATE.stop_reason) retries=$($STATE.retries) invalid_twice=[$($STATE.invalid_twice -join ',')] pre_start_moves=$($STATE.pre_start_moves.Count)"

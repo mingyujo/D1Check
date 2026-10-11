@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Android 17 대비 (npu-runner · request-runner 와 같음). -->
+    <uses-feature
+        android:name="android.hardware.npu"
+        android:required="false" />
+
+    <application
+        android:allowBackup="false"
+        android:label="D1 Quality Runner"
+        android:supportsRtl="true">
+        <!-- ★ classification_NPU 용. 없으면 dispatch .so 가 libenn_public_api_cpp.so 를 열지 못해
+             "Failed to load enn runtime" (npu-runner/src/main/AndroidManifest.xml 과 같은 한 줄). -->
+        <uses-native-library
+            android:name="libenn_public_api_cpp.so"
+            android:required="false" />
+        <activity
+            android:name="com.example.d1check.qualityrunner.QualityActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

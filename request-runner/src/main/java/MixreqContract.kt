@@ -29,8 +29,23 @@ object MixreqContract {
         ExperimentSpec("S26-MIXREQ-03", "S26-MIXREQ-03-SMOKE", 3_000, 720L, 15, 1_260_000L),
     )
 
+    /**
+     * M5 (2026-10-12, d1sim/docs/상태분리_사전등록_v2.md · 지속감속_확인_사전등록_v1.md): 위 표 밖의 실험 2개. EXPERIMENTS 는 그대로
+     * (WATCHDOG_MS · validateRequests 의 허용 수는 EXPERIMENTS 만 본다 — ABBA 3,000 · 1,260 s 는 -03 과 같은 값).
+     * STATESPLIT 요청열은 짝/홀 꼴이 아니라 StatesplitPlan 이 유도 · 검증한다.
+     */
+    const val STATESPLIT_EXPERIMENT_ID = "S26-STATESPLIT-01"
+    const val STATESPLIT_SMOKE_EXPERIMENT_ID = "S26-STATESPLIT-01-SMOKE"
+    val M5_EXPERIMENTS = listOf(
+        ExperimentSpec(STATESPLIT_EXPERIMENT_ID, STATESPLIT_SMOKE_EXPERIMENT_ID, 522, 120L, 11, 600_000L),
+        ExperimentSpec("S26-SUSTAIN-ABBA-01", "S26-SUSTAIN-ABBA-01-SMOKE", 3_000, 720L, 3, 1_260_000L),
+    )
+
+    fun isStatesplit(experimentId: String): Boolean =
+        experimentId == STATESPLIT_EXPERIMENT_ID || experimentId == STATESPLIT_SMOKE_EXPERIMENT_ID
+
     fun experimentOf(experimentId: String): ExperimentSpec =
-        EXPERIMENTS.firstOrNull { it.id == experimentId || it.smokeId == experimentId } ?: error("unknown experiment_id $experimentId")
+        (EXPERIMENTS + M5_EXPERIMENTS).firstOrNull { it.id == experimentId || it.smokeId == experimentId } ?: error("unknown experiment_id $experimentId")
 
     /** SessionManifest.validate() 가 정한다 (한 프로세스 = 한 세션 = 실험 하나). 엔진은 COMMON_NS 를 이 표 행에서 읽는다. */
     @Volatile var activeExperiment: ExperimentSpec = EXPERIMENTS[0]

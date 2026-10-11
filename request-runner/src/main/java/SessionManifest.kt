@@ -67,7 +67,8 @@ class SessionManifest(
         }
         require(labels.keys == setOf("classification", "detection")) { "labels" }
         require(imageWidth in 1..4096 && imageHeight in 1..4096) { "image size" }
-        MixreqContract.validateRequests(requests, requests.size)
+        if (MixreqContract.isStatesplit(experimentId)) StatesplitPlan.validateRequests(requests)
+        else MixreqContract.validateRequests(requests, requests.size)
         RequestPlan.requireDerived(experimentId, sessionIndex, sessionId, requests)
         if (split == MixreqContract.SPLIT_CONFIRMATION) {
             require(experimentId == experiment.id) { "confirmation experiment_id" }
