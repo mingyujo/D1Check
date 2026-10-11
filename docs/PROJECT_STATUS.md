@@ -1,5 +1,14 @@
 # D1Check 현재 상태
 
+## 2026-10-11 SERVICE-ENVELOPE-02 — 새 리스트·PPO 비교와 데스크톱 이관 완료
+
+- 최신 목표 계속 지시로 [별도 계약](SERVICE_ENVELOPE_PILOT_20261011.md)의 자체 JointList/CostList·fresh PPO·과제약 보완 V2를 수행했다. 정책 비교919환경/192학습/60417요청＋이관기능3환경/학습0/72요청, 총922환경/192학습/60489요청 전량완료·native오류0이다. 해당계보 누적14735/3181이며 모든과거PPO 합계는 아니다.
+- [최신 화면·판정](results/service_goal_20261011/README.md):833 확인48의 Joint/Cost는 Band와 일반42이나 P95/J악화; 새 PPO 세 초기화모델 각64/8update/Adam96도 비용 또는P95악화로FAIL. 공유samplingRNG 세션이며 독립3stream으로 표현하지 않는다. 원학습/원FAIL/strict/기본/experiment_ready=false는 유지한다.
+- V1 예측개선866→허용0·CPU-only 개별응답항 단독차단273을 찾아 V2를 별도835 확인48로 평가했다. J−.069924/AP−.004618°C이나 일반45(Band42/Triton39)/P95+26.09ms로FAIL. 추가3은같은burst요청×3문맥·냉각0,CPU분류배정으로탐지165.216ms지연이다. 현재큐예측을전체미래서비스보장으로쓰지않는다.
+- [데스크톱 안내](results/desktop_handoff_20261011/README.md):ZIP 약1.66MiB/96파일·원terminal64 세개, Git/PYTHONPATH 없는격리폴더에서load/13검사/실제모형3회PASS. 원64SHA/설정/공유RNG/전체커서·누적active·경계중지·seed예약313/3구간을잠근CLI다. 새데스크톱확장학습0이며 raw/PT/ZIP은비공유local,작은source/증거만Git에반영한다.
+- 새기기추론/설치0·읽기ADB8, 대표96일정동일/현AP범위밖으로중복실측보류. 원본494파일무손실압축·SHA보존/삭제·이동0, 사용자WIP/HTML/PDF/다른worktree보존이다. 첫standalone fixture오류/NumPy stdout오류는기준완화없이수정하고원로그를남겼다.
+- 다음최대3:데스크톱이관,공개CPU전용부하의라우팅보호검토,서비스유지되는별도후보평가. 기본교체/추가학습자동시작0·담당simulation/learning owner없음, 목표절감미입증. 검증HEAD11c4500＋등록SHA/개정/패키지SHA, 공유Git영수증은local output/service_goal_20261011_v1에별도기록한다.
+
 ## 2026-10-11 OVERNIGHT-COMPLETION-01 — 연장·실측·원인 진단·회의 공유 완료
 
 - 사용자의 A24 실측·RL 확대·전문가 3관점 자율 승인을 반영해 [유한 범위·결과·완료 조건](OVERNIGHT_COMPLETION_20261011.md)을 고정했다. 가장 가까운 10시 회의를 보수적 마감으로 두며, 종료 예산·원판정·기본·strict·experiment_ready=false는 보존한다.

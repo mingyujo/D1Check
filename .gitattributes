@@ -722,3 +722,15 @@ docs/results/overnight_*_20261011/** -text whitespace=blank-at-eol,blank-at-eof,
 # Unified patches intentionally retain a space as the marker of an empty context line.
 docs/results/overnight_device_20261011/*.patch -text whitespace=-blank-at-eol
 docs/results/overnight_device_20261011/source_bundle/*.patch -text whitespace=-blank-at-eol
+
+# Service-reference correction and offline desktop continuation.
+tools/d1_service_*.py text eol=lf
+tools/test_d1_service_*.py text eol=lf
+tools/d1_joint_amount_*.py text eol=lf
+tools/test_d1_joint_amount_*.py text eol=lf
+tools/d1_desktop_*.py text eol=lf
+docs/SERVICE_ENVELOPE_PILOT_20261011.md -text
+docs/DESKTOP_JOINT_RL_AMOUNT_20261011.md -text whitespace=cr-at-eol
+docs/results/service_*_20261011/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+docs/results/morning_device_readiness_20261011/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+docs/results/desktop_handoff_20261011/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

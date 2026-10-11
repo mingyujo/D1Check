@@ -1,0 +1,105 @@
+{
+  "summary": [
+    {
+      "policy": "Band",
+      "conditions": 48,
+      "planned": 3168,
+      "completed": 3168,
+      "urgent_violations": 0,
+      "normal_violations": 42,
+      "mean_condition_P95_ms": 338.10752425,
+      "mean_J": 152.2797034269654,
+      "mean_AP": 30.45612177745702,
+      "mean_delta_J": 0.0,
+      "mean_delta_AP": 0.0,
+      "mean_delta_P95_ms": 0.0
+    },
+    {
+      "policy": "Triton",
+      "conditions": 48,
+      "planned": 3168,
+      "completed": 3168,
+      "urgent_violations": 0,
+      "normal_violations": 39,
+      "mean_condition_P95_ms": 372.57620025,
+      "mean_J": 152.72846415553977,
+      "mean_AP": 30.475745091964136,
+      "mean_delta_J": 0.44876072857435173,
+      "mean_delta_AP": 0.01962331450711363,
+      "mean_delta_P95_ms": 34.468675999999995
+    },
+    {
+      "policy": "CostV2",
+      "conditions": 48,
+      "planned": 3168,
+      "completed": 3168,
+      "urgent_violations": 0,
+      "normal_violations": 45,
+      "mean_condition_P95_ms": 364.19769652083335,
+      "mean_J": 152.20977901241312,
+      "mean_AP": 30.45150347129626,
+      "mean_delta_J": -0.06992441455227787,
+      "mean_delta_AP": -0.0046183061607607545,
+      "mean_delta_P95_ms": 26.09017227083333
+    }
+  ],
+  "by_family": {
+    "low": {
+      "conditions": 12,
+      "passes_against_Band": 9,
+      "passes_against_Triton": 12,
+      "all_declared_conditions_pass": false,
+      "mean_delta_J": 0.0,
+      "mean_delta_AP": -0.006680555990769517,
+      "mean_delta_P95_ms": 0.0,
+      "normal_violation_delta": 0
+    },
+    "queue": {
+      "conditions": 12,
+      "passes_against_Band": 12,
+      "passes_against_Triton": 12,
+      "all_declared_conditions_pass": true,
+      "mean_delta_J": 0.0,
+      "mean_delta_AP": 0.0,
+      "mean_delta_P95_ms": 0.0,
+      "normal_violation_delta": 0
+    },
+    "burst": {
+      "conditions": 12,
+      "passes_against_Band": 9,
+      "passes_against_Triton": 6,
+      "all_declared_conditions_pass": false,
+      "mean_delta_J": 0.010811712442482246,
+      "mean_delta_AP": -0.0025581582126867155,
+      "mean_delta_P95_ms": 0.0,
+      "normal_violation_delta": 3
+    },
+    "sustained": {
+      "conditions": 12,
+      "passes_against_Band": 4,
+      "passes_against_Triton": 6,
+      "all_declared_conditions_pass": false,
+      "mean_delta_J": -0.2905093706515937,
+      "mean_delta_AP": -0.009234510439586785,
+      "mean_delta_P95_ms": 104.36068908333333,
+      "normal_violation_delta": 0
+    }
+  },
+  "selection_counts": {
+    "cooling_selections": 258,
+    "cooling_seconds": 56.120375017876206
+  },
+  "snapshot_counts": {
+    "decisions": 3503,
+    "physical_slots": 6678,
+    "admitted_slots": 4784,
+    "informative_slots": 1205,
+    "nonreference_choices": 258,
+    "chosen_single": 3092,
+    "chosen_cool_wait": 258,
+    "chosen_resource_wait": 115,
+    "chosen_bundle": 38
+  },
+  "callback_seconds": 21.424968998966506,
+  "phone_control_cost": null
+}

@@ -1,5 +1,13 @@
 # D1Check 결정 기록
 
+## 2026-10-11 SERVICE-ENVELOPE-02 — 과제약 보완 결과·이관 범위를 분리
+
+- 확정: [계약](SERVICE_ENVELOPE_PILOT_20261011.md)의자체Joint참조·물리/예측mask분리·절대서비스실패목적v2를별도freshPPO로비교했다. 원v1/v2/512결과·계수·기한·엄격판정·기본은소급변경하지않는다. Band는비교군이며기본/복귀/학습참조로채택하지않는다.
+- 현재목표우위미입증:새PPO64은서비스일반42 정렬후J/AP또는P95악화, V2는평균AP/J감소후일반45/P95악화다. V1의273과제약반례와V2의같은burst요청×3문맥/냉각0/CPU지연을근거로남기고단순학습부족·냉각실패·RL일반실패로단정하지않는다. low도9/12만통과해전체성공으로승격하지않는다.
+- 확정:원세모델은독립초기화seed＋공유samplingRNG 세션이다. 전체동일연장에는세actor/critic/Adam/승수·sessionRNG·case/nextseed·소비보존이필수다. 독립3stream이나serviceEnvelope V2는다른설계이며원64optimizer를그대로전용하지않는다.
+- 데스크톱이관은실측기반A24모형의PC실행이다. Git/PYTHONPATH 없는격리폴더의13검사/원복원/3모형실행을확인했으며다른hardware/실제확장학습을완료했다고표현하지않는다. 새task예산·active경계중지/재개·source/모형/체크포인트/seed예약잠금을지키며binary/raw/개인경로는Git에넣지않는다.
+- 기존앱기본유지·strict/experiment_ready=false 유지다. 모형AP는표면온도가아니고미세J/AP차이는기기절감확정이아니다. 현재대표동률/초기AP관측범위밖으로새실측0, 추가모형보정·NPU·미지원행동0이다. 다음CPU압력라우팅가설은새독립검증전까지제안이다.
+
 ## 2026-10-11 OVERNIGHT-COMPLETION-01 — 경험량·규칙 보완·실측 근거를 분리
 
 - 확정: 사용자 자율 승인 안에서 [유한 마무리 과제](OVERNIGHT_COMPLETION_20261011.md)를 진행한다. RL 학습량 비교에는 원 terminal32의 actor/critic/Adam/RNG/승수와 정책을 유지한다. R1/R2와 P95 유연성은 별도 정책이며 기존 RL에 소급 적용하지 않는다. 대규모 탐색·판정 완화로 성과를 만들지 않는다.

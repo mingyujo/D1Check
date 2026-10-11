@@ -1,5 +1,12 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-11 SERVICE-ENVELOPE-02 — 자체 참조·KPI 정렬과 데스크톱 이관 완료
+
+- [별도범위](SERVICE_ENVELOPE_PILOT_20261011.md)를완료했다. 원종료예산초기화0, Joint/Cost248≤384, freshPPO500≤512/192학습, V2171≤192, 별도이관smoke3/학습0이다. 조건부새실측은0이며 원계수/기한/지원/완료·AVAILABLE/최종strict/기본/experiment_ready=false를보존한다.
+- 자체공동리스트를기본/복귀/학습참조/예측후속으로하고 Band는비교군으로남겼다. 새3초기화모델64은공유samplingRNG로실제학습했으나 전조건우위없다. V2도평균AP/J감소대신기한/P95손실로채택하지않았다. 자세한판정은[결과](results/service_goal_20261011/README.md)를따른다.
+- 데스크톱CLI/작은독립ZIP을구현·별도폴더에서13검사/원상태복원/72요청실행검증했다. 이후연장은원64같은schema/objective/source의새task로등록하며3payload/공유RNG/cursor/active소비를함께보존한다. 현재미지desktop실제학습/추가대규모학습0, V2에원actor전용0이다.
+- 후속가설은관측CPU전용부하압력을분류CPU라우팅/참조우선순위에반영하는것이다. 제안값을확정정책으로승격하지않고현재835를재튜닝뒤독립확인으로재사용하지않는다. 원자료·사용자변경·다른worktree를보존하고이번source/작은설정/CSV/그림/문서만commit/push한다.
+
 ## 2026-10-11 OVERNIGHT-COMPLETION-01 — 유한 연장·실측 완료와 원인 진단
 
 - 사용자의 추가 실측·RL 확대·전문가 자율 처리 승인으로 [마무리 계약](OVERNIGHT_COMPLETION_20261011.md)을 고정했다. 과거 종료 예산을 초기화하지 않고 새 과제의 상한을 기록한다. CPU/GPU·두 과업·원계수·기한·완료/AVAILABLE·지원 범위·최종 판정은 유지하며 NPU는 추가하지 않는다.

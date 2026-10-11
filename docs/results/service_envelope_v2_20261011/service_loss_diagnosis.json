@@ -1,0 +1,4596 @@
+{
+  "status": "completed_stored_ledger_diagnosis",
+  "extra_late_requests": [
+    {
+      "condition": 18,
+      "seed": 835110102,
+      "family": "burst",
+      "context": "mean",
+      "request_id": "835110102/burst/22",
+      "Band_response_ms": 5972.521681,
+      "CostV2_response_ms": 6137.737956,
+      "deadline_ms": 6000.0,
+      "Band_dispatch_ns": 45113006593,
+      "CostV2_dispatch_ns": 45278222869,
+      "backend": "CPU",
+      "case_cooling_count": 0,
+      "case_extra_cooling_seconds": 0.0
+    },
+    {
+      "condition": 19,
+      "seed": 835110102,
+      "family": "burst",
+      "context": "short_context",
+      "request_id": "835110102/burst/22",
+      "Band_response_ms": 5960.271065,
+      "CostV2_response_ms": 6125.48734,
+      "deadline_ms": 6000.0,
+      "Band_dispatch_ns": 45101436509,
+      "CostV2_dispatch_ns": 45266652784,
+      "backend": "CPU",
+      "case_cooling_count": 0,
+      "case_extra_cooling_seconds": 0.0
+    },
+    {
+      "condition": 20,
+      "seed": 835110102,
+      "family": "burst",
+      "context": "long_context",
+      "request_id": "835110102/burst/22",
+      "Band_response_ms": 5984.156271,
+      "CostV2_response_ms": 6149.372547,
+      "deadline_ms": 6000.0,
+      "Band_dispatch_ns": 45123960943,
+      "CostV2_dispatch_ns": 45289177219,
+      "backend": "CPU",
+      "case_cooling_count": 0,
+      "case_extra_cooling_seconds": 0.0
+    }
+  ],
+  "counts": {
+    "extra_normal_late": 3,
+    "recovered_normal_late": 0
+  },
+  "first_dispatch_divergences": [
+    {
+      "condition": 0,
+      "seed": 835110101,
+      "family": "low",
+      "context": "mean",
+      "time_ns": 37385918327,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110101/low/2",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 3,
+      "observed_D_min_gap_s": 1.157600229,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": false,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 7,
+      "future_unarrived_requests": 21,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 37635918327.0,
+        "hold_signature": [
+          [
+            "835110101/low/2"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.7817579769831328,
+        "known": true,
+        "gap": 1.2283180979999955,
+        "gap_known": true,
+        "queued": 0.6217368948541666
+      },
+      "current_reference_predicted_P95_ms": [
+        null,
+        null,
+        null
+      ],
+      "state": [
+        0.3115493059158325,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7299678921699524,
+        0.7301803231239319,
+        -0.0011219404404982924,
+        0.004973202478140593,
+        0.10362281650304794,
+        0.7817579507827759,
+        1.0,
+        0.204719677567482,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.02083333395421505,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6217368841171265,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110101/low/2",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 37635918327.0,
+          "hold_signature": [
+            [
+              "835110101/low/2"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 1,
+      "seed": 835110101,
+      "family": "low",
+      "context": "short_context",
+      "time_ns": 37385918327,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110101/low/2",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 3,
+      "observed_D_min_gap_s": 1.157600229,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": false,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 7,
+      "future_unarrived_requests": 21,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 37635918327.0,
+        "hold_signature": [
+          [
+            "835110101/low/2"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.7815852196025043,
+        "known": true,
+        "gap": 1.2283180979999955,
+        "gap_known": true,
+        "queued": 0.6215994998539779
+      },
+      "current_reference_predicted_P95_ms": [
+        null,
+        null,
+        null
+      ],
+      "state": [
+        0.3115493059158325,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7299633622169495,
+        0.7301757335662842,
+        -0.0011219404404982924,
+        0.004967417102307081,
+        0.103599913418293,
+        0.7815852165222168,
+        1.0,
+        0.204719677567482,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.02083333395421505,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6215994954109192,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110101/low/2",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 37635918327.0,
+          "hold_signature": [
+            [
+              "835110101/low/2"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 2,
+      "seed": 835110101,
+      "family": "low",
+      "context": "long_context",
+      "time_ns": 37385918327,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110101/low/2",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 3,
+      "observed_D_min_gap_s": 1.157600229,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": false,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 7,
+      "future_unarrived_requests": 21,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 37635918327.0,
+        "hold_signature": [
+          [
+            "835110101/low/2"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.7819215391621563,
+        "known": true,
+        "gap": 1.2283180979999955,
+        "gap_known": true,
+        "queued": 0.6218669768543453
+      },
+      "current_reference_predicted_P95_ms": [
+        null,
+        null,
+        null
+      ],
+      "state": [
+        0.3115493059158325,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7299721837043762,
+        0.7301847338676453,
+        -0.0011219404404982924,
+        0.004978679586201906,
+        0.10364449769258499,
+        0.7819215655326843,
+        1.0,
+        0.204719677567482,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.02083333395421505,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6218670010566711,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110101/low/2",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 37635918327.0,
+          "hold_signature": [
+            [
+              "835110101/low/2"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 9,
+      "seed": 835110101,
+      "family": "sustained",
+      "context": "mean",
+      "time_ns": 37339449283,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110101/sustained/6",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 2,
+      "observed_D_min_gap_s": 2.339449283,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": false,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 9,
+      "future_unarrived_requests": 185,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 37589449283.0,
+        "hold_signature": [
+          [
+            "835110101/sustained/6"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.5315241491851281,
+        "known": true,
+        "gap": 0.3949536770000037,
+        "gap_known": true,
+        "queued": 0.6217368948541666
+      },
+      "current_reference_predicted_P95_ms": [
+        294.0546346666641,
+        294.0546346666641,
+        294.0546346666641
+      ],
+      "state": [
+        0.3111620843410492,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7304509878158569,
+        0.7303159832954407,
+        -0.0011236796854063869,
+        0.005076344590634108,
+        0.10362281650304794,
+        0.531524121761322,
+        1.0,
+        0.06582561135292053,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.1960364282131195,
+        0.0520833320915699,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6217368841171265,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110101/sustained/6",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 37589449283.0,
+          "hold_signature": [
+            [
+              "835110101/sustained/6"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 10,
+      "seed": 835110101,
+      "family": "sustained",
+      "context": "short_context",
+      "time_ns": 37339449283,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110101/sustained/6",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 2,
+      "observed_D_min_gap_s": 2.339449283,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": false,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 9,
+      "future_unarrived_requests": 185,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 37589449283.0,
+        "hold_signature": [
+          [
+            "835110101/sustained/6"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.5314623286527279,
+        "known": true,
+        "gap": 0.3949536770000037,
+        "gap_known": true,
+        "queued": 0.6216645818540675
+      },
+      "current_reference_predicted_P95_ms": [
+        286.60848072917173,
+        286.60848072917173,
+        286.60848072917173
+      ],
+      "state": [
+        0.3111620843410492,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7304335832595825,
+        0.7302982807159424,
+        -0.0011236796854063869,
+        0.005054174456745386,
+        0.10361076146364212,
+        0.5314623117446899,
+        1.0,
+        0.06582561135292053,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.19107231497764587,
+        0.0520833320915699,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.30405715107917786,
+        0.6216645836830139,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110101/sustained/6",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 37589449283.0,
+          "hold_signature": [
+            [
+              "835110101/sustained/6"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 11,
+      "seed": 835110101,
+      "family": "sustained",
+      "context": "long_context",
+      "time_ns": 37339449283,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110101/sustained/6",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 2,
+      "observed_D_min_gap_s": 2.339449283,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": false,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 9,
+      "future_unarrived_requests": 185,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 37589449283.0,
+        "hold_signature": [
+          [
+            "835110101/sustained/6"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.5315826791995135,
+        "known": true,
+        "gap": 0.3949536770000037,
+        "gap_known": true,
+        "queued": 0.6218053588542606
+      },
+      "current_reference_predicted_P95_ms": [
+        301.50078860416414,
+        301.50078860416414,
+        301.50078860416414
+      ],
+      "state": [
+        0.3111620843410492,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7304683327674866,
+        0.7303335666656494,
+        -0.0011236796854063869,
+        0.005098425317555666,
+        0.10363422334194183,
+        0.5315826535224915,
+        1.0,
+        0.06582561135292053,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.20100052654743195,
+        0.0520833320915699,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.3056018054485321,
+        0.6218053698539734,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110101/sustained/6",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 37589449283.0,
+          "hold_signature": [
+            [
+              "835110101/sustained/6"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 12,
+      "seed": 835110102,
+      "family": "low",
+      "context": "mean",
+      "time_ns": 37384220478,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110102/low/2",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 2,
+      "observed_D_min_gap_s": 2.384220478,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": false,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 6,
+      "future_unarrived_requests": 21,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 37634220478.0,
+        "hold_signature": [
+          [
+            "835110102/low/2"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.521543121192977,
+        "known": true,
+        "gap": 1.1945471730000037,
+        "gap_known": true,
+        "queued": 0.6217368948541666
+      },
+      "current_reference_predicted_P95_ms": [
+        156.17993110417174,
+        156.17993110417174,
+        156.17993110417174
+      ],
+      "state": [
+        0.31153517961502075,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7284661531448364,
+        0.728651762008667,
+        -0.00112200400326401,
+        0.003027638653293252,
+        0.10362281650304794,
+        0.5215431451797485,
+        1.0,
+        0.19909119606018066,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.10411995649337769,
+        0.010416666977107525,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6217368841171265,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110102/low/2",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 37634220478.0,
+          "hold_signature": [
+            [
+              "835110102/low/2"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 13,
+      "seed": 835110102,
+      "family": "low",
+      "context": "short_context",
+      "time_ns": 37384220478,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110102/low/2",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 2,
+      "observed_D_min_gap_s": 2.384220478,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": false,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 6,
+      "future_unarrived_requests": 21,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 37634220478.0,
+        "hold_signature": [
+          [
+            "835110102/low/2"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.5214824615343873,
+        "known": true,
+        "gap": 1.1945471730000037,
+        "gap_known": true,
+        "queued": 0.6216645818540675
+      },
+      "current_reference_predicted_P95_ms": [
+        156.17993110417174,
+        156.17993110417174,
+        156.17993110417174
+      ],
+      "state": [
+        0.31153517961502075,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7284639477729797,
+        0.7286494970321655,
+        -0.00112200400326401,
+        0.0030247471295297146,
+        0.10361076146364212,
+        0.5214824676513672,
+        1.0,
+        0.19909119606018066,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.10411995649337769,
+        0.010416666977107525,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6216645836830139,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110102/low/2",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 37634220478.0,
+          "hold_signature": [
+            [
+              "835110102/low/2"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 14,
+      "seed": 835110102,
+      "family": "low",
+      "context": "long_context",
+      "time_ns": 37384220478,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110102/low/2",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 2,
+      "observed_D_min_gap_s": 2.384220478,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": false,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 6,
+      "future_unarrived_requests": 21,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 37634220478.0,
+        "hold_signature": [
+          [
+            "835110102/low/2"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.5216005521233174,
+        "known": true,
+        "gap": 1.1945471730000037,
+        "gap_known": true,
+        "queued": 0.6218053588542606
+      },
+      "current_reference_predicted_P95_ms": [
+        156.17993110417174,
+        156.17993110417174,
+        156.17993110417174
+      ],
+      "state": [
+        0.31153517961502075,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7284682393074036,
+        0.7286539077758789,
+        -0.00112200400326401,
+        0.003030376508831978,
+        0.10363422334194183,
+        0.5216005444526672,
+        1.0,
+        0.19909119606018066,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.10411995649337769,
+        0.010416666977107525,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6218053698539734,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110102/low/2",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 37634220478.0,
+          "hold_signature": [
+            [
+              "835110102/low/2"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 18,
+      "seed": 835110102,
+      "family": "burst",
+      "context": "mean",
+      "time_ns": 35165216276,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110102/burst/1",
+          "CPU"
+        ],
+        [
+          "835110102/burst/2",
+          "GPU"
+        ]
+      ],
+      "CostV2_first_jobs": [
+        [
+          "835110102/burst/2",
+          "CPU"
+        ]
+      ],
+      "observed_D_arrivals": 1,
+      "observed_D_min_gap_s": null,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": null,
+      "extra_normal_late_count": 1,
+      "whole_case_cooling": 0,
+      "future_unarrived_requests": 21,
+      "chosen": {
+        "kind": "single",
+        "jobs": [
+          {
+            "request_id": "835110102/burst/2",
+            "backend": "CPU"
+          }
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_rejected",
+        "V2_current_service_P95_rejected",
+        "V2_current_service_P95_rejected"
+      ],
+      "risk": {
+        "rho": 3.8451831916610644,
+        "known": true,
+        "gap": 0.08217867500000153,
+        "gap_known": true,
+        "queued": 0.6217368948541666
+      },
+      "current_reference_predicted_P95_ms": [
+        159.70380799999617,
+        159.70380799999617,
+        159.70380799999617
+      ],
+      "state": [
+        0.29304346442222595,
+        0.010416666977107525,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7274911403656006,
+        0.7270674705505371,
+        -0.0012081414461135864,
+        0.0005420754896476865,
+        0.10362281650304794,
+        3.8451831340789795,
+        1.0,
+        0.01369644608348608,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.9976507425308228,
+        0.9857162237167358,
+        0.0,
+        0.0,
+        0.0023492511827498674,
+        0.014283758588135242,
+        0.10411995649337769,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6217368841171265,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110102/burst/2",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "bundle",
+          "jobs": [
+            {
+              "request_id": "835110102/burst/1",
+              "backend": "CPU"
+            },
+            {
+              "request_id": "835110102/burst/2",
+              "backend": "GPU"
+            }
+          ]
+        },
+        {
+          "kind": "bundle",
+          "jobs": [
+            {
+              "request_id": "835110102/burst/2",
+              "backend": "GPU"
+            },
+            {
+              "request_id": "835110102/burst/1",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110102/burst/1",
+              "backend": "CPU"
+            }
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 19,
+      "seed": 835110102,
+      "family": "burst",
+      "context": "short_context",
+      "time_ns": 35165216276,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110102/burst/1",
+          "CPU"
+        ],
+        [
+          "835110102/burst/2",
+          "GPU"
+        ]
+      ],
+      "CostV2_first_jobs": [
+        [
+          "835110102/burst/2",
+          "CPU"
+        ]
+      ],
+      "observed_D_arrivals": 1,
+      "observed_D_min_gap_s": null,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": null,
+      "extra_normal_late_count": 1,
+      "whole_case_cooling": 0,
+      "future_unarrived_requests": 21,
+      "chosen": {
+        "kind": "single",
+        "jobs": [
+          {
+            "request_id": "835110102/burst/2",
+            "backend": "CPU"
+          }
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_rejected",
+        "V2_current_service_P95_rejected",
+        "V2_current_service_P95_rejected"
+      ],
+      "risk": {
+        "rho": 3.8451831916610644,
+        "known": true,
+        "gap": 0.08217867500000153,
+        "gap_known": true,
+        "queued": 0.6217368948541666
+      },
+      "current_reference_predicted_P95_ms": [
+        159.70380799999617,
+        159.70380799999617,
+        159.70380799999617
+      ],
+      "state": [
+        0.29304346442222595,
+        0.010416666977107525,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7274911403656006,
+        0.7270674705505371,
+        -0.0012081414461135864,
+        0.0005420754896476865,
+        0.10362281650304794,
+        3.8451831340789795,
+        1.0,
+        0.01369644608348608,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.9976507425308228,
+        0.9857162237167358,
+        0.0,
+        0.0,
+        0.0023492511827498674,
+        0.014283758588135242,
+        0.10411995649337769,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6217368841171265,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110102/burst/2",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "bundle",
+          "jobs": [
+            {
+              "request_id": "835110102/burst/1",
+              "backend": "CPU"
+            },
+            {
+              "request_id": "835110102/burst/2",
+              "backend": "GPU"
+            }
+          ]
+        },
+        {
+          "kind": "bundle",
+          "jobs": [
+            {
+              "request_id": "835110102/burst/2",
+              "backend": "GPU"
+            },
+            {
+              "request_id": "835110102/burst/1",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110102/burst/1",
+              "backend": "CPU"
+            }
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 20,
+      "seed": 835110102,
+      "family": "burst",
+      "context": "long_context",
+      "time_ns": 35165216276,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110102/burst/1",
+          "CPU"
+        ],
+        [
+          "835110102/burst/2",
+          "GPU"
+        ]
+      ],
+      "CostV2_first_jobs": [
+        [
+          "835110102/burst/2",
+          "CPU"
+        ]
+      ],
+      "observed_D_arrivals": 1,
+      "observed_D_min_gap_s": null,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": null,
+      "extra_normal_late_count": 1,
+      "whole_case_cooling": 0,
+      "future_unarrived_requests": 21,
+      "chosen": {
+        "kind": "single",
+        "jobs": [
+          {
+            "request_id": "835110102/burst/2",
+            "backend": "CPU"
+          }
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_rejected",
+        "V2_current_service_P95_rejected",
+        "V2_current_service_P95_rejected"
+      ],
+      "risk": {
+        "rho": 3.8451831916610644,
+        "known": true,
+        "gap": 0.08217867500000153,
+        "gap_known": true,
+        "queued": 0.6217368948541666
+      },
+      "current_reference_predicted_P95_ms": [
+        159.70380799999617,
+        159.70380799999617,
+        159.70380799999617
+      ],
+      "state": [
+        0.29304346442222595,
+        0.010416666977107525,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7274911403656006,
+        0.7270674705505371,
+        -0.0012081414461135864,
+        0.0005420754896476865,
+        0.10362281650304794,
+        3.8451831340789795,
+        1.0,
+        0.01369644608348608,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.9976507425308228,
+        0.9857162237167358,
+        0.0,
+        0.0,
+        0.0023492511827498674,
+        0.014283758588135242,
+        0.10411995649337769,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6217368841171265,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110102/burst/2",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "bundle",
+          "jobs": [
+            {
+              "request_id": "835110102/burst/1",
+              "backend": "CPU"
+            },
+            {
+              "request_id": "835110102/burst/2",
+              "backend": "GPU"
+            }
+          ]
+        },
+        {
+          "kind": "bundle",
+          "jobs": [
+            {
+              "request_id": "835110102/burst/2",
+              "backend": "GPU"
+            },
+            {
+              "request_id": "835110102/burst/1",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110102/burst/1",
+              "backend": "CPU"
+            }
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 21,
+      "seed": 835110102,
+      "family": "sustained",
+      "context": "mean",
+      "time_ns": 41316803797,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110102/sustained/16",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 7,
+      "observed_D_min_gap_s": 0.385029448,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": true,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 18,
+      "future_unarrived_requests": 175,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 41566803797.0,
+        "hold_signature": [
+          [
+            "835110102/sustained/16"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.22608668405382853,
+        "known": true,
+        "gap": 0.3879345129999976,
+        "gap_known": true,
+        "queued": 0.6217368948541666
+      },
+      "current_reference_predicted_P95_ms": [
+        294.0546346666641,
+        294.0546346666641,
+        294.0546346666641
+      ],
+      "state": [
+        0.34430670738220215,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7395728230476379,
+        0.7395991086959839,
+        -0.0009841570863500237,
+        0.019584914669394493,
+        0.10362281650304794,
+        0.22608669102191925,
+        1.0,
+        0.06465575098991394,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.1960364282131195,
+        0.1041666641831398,
+        0.0625,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6217368841171265,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110102/sustained/16",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 41566803797.0,
+          "hold_signature": [
+            [
+              "835110102/sustained/16"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 22,
+      "seed": 835110102,
+      "family": "sustained",
+      "context": "short_context",
+      "time_ns": 41316803797,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110102/sustained/16",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 7,
+      "observed_D_min_gap_s": 0.385029448,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": true,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 18,
+      "future_unarrived_requests": 175,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 41566803797.0,
+        "hold_signature": [
+          [
+            "835110102/sustained/16"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.22596347285002633,
+        "known": true,
+        "gap": 0.3879345129999976,
+        "gap_known": true,
+        "queued": 0.621398064853701
+      },
+      "current_reference_predicted_P95_ms": [
+        286.60848072917173,
+        286.60848072917173,
+        286.60848072917173
+      ],
+      "state": [
+        0.34430670738220215,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7395248413085938,
+        0.7395504117012024,
+        -0.0009841570863500237,
+        0.019544873386621475,
+        0.10356634110212326,
+        0.22596347332000732,
+        1.0,
+        0.06465575098991394,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.19107231497764587,
+        0.1041666641831398,
+        0.0625,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.30273643136024475,
+        0.6213980913162231,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110102/sustained/16",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 41566803797.0,
+          "hold_signature": [
+            [
+              "835110102/sustained/16"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 23,
+      "seed": 835110102,
+      "family": "sustained",
+      "context": "long_context",
+      "time_ns": 41316803797,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110102/sustained/16",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 7,
+      "observed_D_min_gap_s": 0.385029448,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": true,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 16,
+      "future_unarrived_requests": 175,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 41566803797.0,
+        "hold_signature": [
+          [
+            "835110102/sustained/16"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.226203337423763,
+        "known": true,
+        "gap": 0.3879345129999976,
+        "gap_known": true,
+        "queued": 0.6220576908546072
+      },
+      "current_reference_predicted_P95_ms": [
+        301.50078860416414,
+        301.50078860416414,
+        301.50078860416414
+      ],
+      "state": [
+        0.34430670738220215,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7396202087402344,
+        0.7396471500396729,
+        -0.0009841570863500237,
+        0.01962403580546379,
+        0.10367628186941147,
+        0.2262033373117447,
+        1.0,
+        0.06465575098991394,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.20100052654743195,
+        0.1041666641831398,
+        0.0625,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.3069224953651428,
+        0.6220576763153076,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110102/sustained/16",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 41566803797.0,
+          "hold_signature": [
+            [
+              "835110102/sustained/16"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 24,
+      "seed": 835110103,
+      "family": "low",
+      "context": "mean",
+      "time_ns": 37432735385,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110103/low/2",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 3,
+      "observed_D_min_gap_s": 1.185753283,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": false,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 6,
+      "future_unarrived_requests": 21,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 37682735385.0,
+        "hold_signature": [
+          [
+            "835110103/low/2"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.7667133450120385,
+        "known": true,
+        "gap": 1.246982102000004,
+        "gap_known": true,
+        "queued": 0.6217368948541666
+      },
+      "current_reference_predicted_P95_ms": [
+        null,
+        null,
+        null
+      ],
+      "state": [
+        0.31193944811820984,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7299448251724243,
+        0.7301828861236572,
+        -0.0011201909510418773,
+        0.004973117727786303,
+        0.10362281650304794,
+        0.7667133212089539,
+        1.0,
+        0.20783035457134247,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.02083333395421505,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6217368841171265,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110103/low/2",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 37682735385.0,
+          "hold_signature": [
+            [
+              "835110103/low/2"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 25,
+      "seed": 835110103,
+      "family": "low",
+      "context": "short_context",
+      "time_ns": 37432735385,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110103/low/2",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 3,
+      "observed_D_min_gap_s": 1.185753283,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": false,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 6,
+      "future_unarrived_requests": 21,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 37682735385.0,
+        "hold_signature": [
+          [
+            "835110103/low/2"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.766543912280839,
+        "known": true,
+        "gap": 1.246982102000004,
+        "gap_known": true,
+        "queued": 0.6215994998539779
+      },
+      "current_reference_predicted_P95_ms": [
+        null,
+        null,
+        null
+      ],
+      "state": [
+        0.31193944811820984,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7299402952194214,
+        0.7301782369613647,
+        -0.0011201909510418773,
+        0.004967332351952791,
+        0.103599913418293,
+        0.7665439248085022,
+        1.0,
+        0.20783035457134247,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.02083333395421505,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6215994954109192,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110103/low/2",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 37682735385.0,
+          "hold_signature": [
+            [
+              "835110103/low/2"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 26,
+      "seed": 835110103,
+      "family": "low",
+      "context": "long_context",
+      "time_ns": 37432735385,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110103/low/2",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 3,
+      "observed_D_min_gap_s": 1.185753283,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": false,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 6,
+      "future_unarrived_requests": 21,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 37682735385.0,
+        "hold_signature": [
+          [
+            "835110103/low/2"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.7668737594997557,
+        "known": true,
+        "gap": 1.246982102000004,
+        "gap_known": true,
+        "queued": 0.6218669768543453
+      },
+      "current_reference_predicted_P95_ms": [
+        null,
+        null,
+        null
+      ],
+      "state": [
+        0.31193944811820984,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7299491167068481,
+        0.7301872372627258,
+        -0.0011201909510418773,
+        0.004978594835847616,
+        0.10364449769258499,
+        0.7668737769126892,
+        1.0,
+        0.20783035457134247,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.02083333395421505,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6218670010566711,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110103/low/2",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 37682735385.0,
+          "hold_signature": [
+            [
+              "835110103/low/2"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 33,
+      "seed": 835110103,
+      "family": "sustained",
+      "context": "mean",
+      "time_ns": 40485398345,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110103/sustained/13",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 6,
+      "observed_D_min_gap_s": 0.388193293,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": true,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 17,
+      "future_unarrived_requests": 178,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 40735398344.854164,
+        "hold_signature": [
+          [
+            "835110103/sustained/13"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.8904205118716392,
+        "known": true,
+        "gap": 0.3881932930000005,
+        "gap_known": true,
+        "queued": 0.6217368948541666
+      },
+      "current_reference_predicted_P95_ms": [
+        294.0546346666641,
+        294.0546346666641,
+        294.0546346666641
+      ],
+      "state": [
+        0.3373783230781555,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7380357384681702,
+        0.7368556261062622,
+        -0.0010118130594491959,
+        0.016351303085684776,
+        0.10362281650304794,
+        0.8904204964637756,
+        1.0,
+        0.06469888240098953,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.9610760807991028,
+        0.0,
+        0.0,
+        0.0,
+        0.03892393410205841,
+        0.1960364282131195,
+        0.0833333358168602,
+        0.0520833320915699,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6217368841171265,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110103/sustained/13",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 40735398344.854164,
+          "hold_signature": [
+            [
+              "835110103/sustained/13"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 34,
+      "seed": 835110103,
+      "family": "sustained",
+      "context": "short_context",
+      "time_ns": 40484675215,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110103/sustained/13",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 6,
+      "observed_D_min_gap_s": 0.388193293,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": true,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 17,
+      "future_unarrived_requests": 178,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 40734675214.56249,
+        "hold_signature": [
+          [
+            "835110103/sustained/13"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.889996409283028,
+        "known": true,
+        "gap": 0.3881932930000005,
+        "gap_known": true,
+        "queued": 0.6214407648537599
+      },
+      "current_reference_predicted_P95_ms": [
+        286.60848072917173,
+        286.60848072917173,
+        286.60848072917173
+      ],
+      "state": [
+        0.3373723030090332,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7379671335220337,
+        0.7367873191833496,
+        -0.0010118373902514577,
+        0.016259780153632164,
+        0.10357346385717392,
+        0.8899964094161987,
+        1.0,
+        0.06469888240098953,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.9611966013908386,
+        0.0,
+        0.0,
+        0.0,
+        0.03880341351032257,
+        0.19107231497764587,
+        0.0833333358168602,
+        0.0520833320915699,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.3021734058856964,
+        0.6214407682418823,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110103/sustained/13",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 40734675214.56249,
+          "hold_signature": [
+            [
+              "835110103/sustained/13"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 35,
+      "seed": 835110103,
+      "family": "sustained",
+      "context": "long_context",
+      "time_ns": 40486082992,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110103/sustained/13",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 6,
+      "observed_D_min_gap_s": 0.388193293,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": true,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 16,
+      "future_unarrived_requests": 178,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 40736082991.70833,
+        "hold_signature": [
+          [
+            "835110103/sustained/13"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.8908220409114651,
+        "known": true,
+        "gap": 0.3881932930000005,
+        "gap_known": true,
+        "queued": 0.6220172628545515
+      },
+      "current_reference_predicted_P95_ms": [
+        301.50078860416414,
+        301.50078860416414,
+        301.50078860416414
+      ],
+      "state": [
+        0.33738401532173157,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7381038069725037,
+        0.7369235157966614,
+        -0.0010117898928001523,
+        0.0164423156529665,
+        0.10366954654455185,
+        0.8908220529556274,
+        1.0,
+        0.06469888240098953,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.9609619379043579,
+        0.0,
+        0.0,
+        0.0,
+        0.0390380397439003,
+        0.20100052654743195,
+        0.0833333358168602,
+        0.0520833320915699,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.30748555064201355,
+        0.6220172643661499,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110103/sustained/13",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 40736082991.70833,
+          "hold_signature": [
+            [
+              "835110103/sustained/13"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 36,
+      "seed": 835110104,
+      "family": "low",
+      "context": "mean",
+      "time_ns": 37349254425,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110104/low/2",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 2,
+      "observed_D_min_gap_s": 2.349254425,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": false,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 7,
+      "future_unarrived_requests": 21,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 37599254425.0,
+        "hold_signature": [
+          [
+            "835110104/low/2"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.5293057135385982,
+        "known": true,
+        "gap": 1.1979883690000008,
+        "gap_known": true,
+        "queued": 0.6217368948541666
+      },
+      "current_reference_predicted_P95_ms": [
+        156.17993110417174,
+        156.17993110417174,
+        156.17993110417174
+      ],
+      "state": [
+        0.31124377250671387,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7284820675849915,
+        0.7286509275436401,
+        -0.0011233125114813447,
+        0.00302768312394619,
+        0.10362281650304794,
+        0.5293056964874268,
+        1.0,
+        0.19966472685337067,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.10411995649337769,
+        0.010416666977107525,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6217368841171265,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110104/low/2",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 37599254425.0,
+          "hold_signature": [
+            [
+              "835110104/low/2"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 37,
+      "seed": 835110104,
+      "family": "low",
+      "context": "short_context",
+      "time_ns": 37349254425,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110104/low/2",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 2,
+      "observed_D_min_gap_s": 2.349254425,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": false,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 7,
+      "future_unarrived_requests": 21,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 37599254425.0,
+        "hold_signature": [
+          [
+            "835110104/low/2"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.5292441510281016,
+        "known": true,
+        "gap": 1.1979883690000008,
+        "gap_known": true,
+        "queued": 0.6216645818540675
+      },
+      "current_reference_predicted_P95_ms": [
+        156.17993110417174,
+        156.17993110417174,
+        156.17993110417174
+      ],
+      "state": [
+        0.31124377250671387,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7284798622131348,
+        0.7286487221717834,
+        -0.0011233125114813447,
+        0.003024791367352009,
+        0.10361076146364212,
+        0.5292441248893738,
+        1.0,
+        0.19966472685337067,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.10411995649337769,
+        0.010416666977107525,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6216645836830139,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110104/low/2",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 37599254425.0,
+          "hold_signature": [
+            [
+              "835110104/low/2"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 38,
+      "seed": 835110104,
+      "family": "low",
+      "context": "long_context",
+      "time_ns": 37349254425,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110104/low/2",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 2,
+      "observed_D_min_gap_s": 2.349254425,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": false,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 7,
+      "future_unarrived_requests": 21,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 37599254425.0,
+        "hold_signature": [
+          [
+            "835110104/low/2"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.5293639992647975,
+        "known": true,
+        "gap": 1.1979883690000008,
+        "gap_known": true,
+        "queued": 0.6218053588542606
+      },
+      "current_reference_predicted_P95_ms": [
+        156.17993110417174,
+        156.17993110417174,
+        156.17993110417174
+      ],
+      "state": [
+        0.31124377250671387,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7284841537475586,
+        0.728653073310852,
+        -0.0011233125114813447,
+        0.0030304209794849157,
+        0.10363422334194183,
+        0.5293639898300171,
+        1.0,
+        0.19966472685337067,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.10411995649337769,
+        0.010416666977107525,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6218053698539734,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110104/low/2",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 37599254425.0,
+          "hold_signature": [
+            [
+              "835110104/low/2"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 45,
+      "seed": 835110104,
+      "family": "sustained",
+      "context": "mean",
+      "time_ns": 38214395457,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110104/sustained/8",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 4,
+      "observed_D_min_gap_s": 0.419149865,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": true,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 17,
+      "future_unarrived_requests": 183,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 38464395457.0,
+        "hold_signature": [
+          [
+            "835110104/sustained/8"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.6658966897330243,
+        "known": true,
+        "gap": 0.38430418200000105,
+        "gap_known": true,
+        "queued": 0.6217368948541666
+      },
+      "current_reference_predicted_P95_ms": [
+        294.0546346666641,
+        294.0546346666641,
+        294.0546346666641
+      ],
+      "state": [
+        0.31845328211784363,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7339531183242798,
+        0.7341087460517883,
+        -0.0010913809528574347,
+        0.009842808358371258,
+        0.10362281650304794,
+        0.6658967137336731,
+        1.0,
+        0.06405069679021835,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.1960364282131195,
+        0.0520833320915699,
+        0.03125,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.304829478263855,
+        0.6217368841171265,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110104/sustained/8",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 38464395457.0,
+          "hold_signature": [
+            [
+              "835110104/sustained/8"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 46,
+      "seed": 835110104,
+      "family": "sustained",
+      "context": "short_context",
+      "time_ns": 38214395457,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110104/sustained/8",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 4,
+      "observed_D_min_gap_s": 0.419149865,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": true,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 17,
+      "future_unarrived_requests": 183,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 38464395457.0,
+        "hold_signature": [
+          [
+            "835110104/sustained/8"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.6656868017407728,
+        "known": true,
+        "gap": 0.38430418200000105,
+        "gap_known": true,
+        "queued": 0.6215409258538973
+      },
+      "current_reference_predicted_P95_ms": [
+        286.60848072917173,
+        286.60848072917173,
+        286.60848072917173
+      ],
+      "state": [
+        0.31845328211784363,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7339181900024414,
+        0.7340735197067261,
+        -0.0010913809528574347,
+        0.009807281196117401,
+        0.10359015315771103,
+        0.6656867861747742,
+        1.0,
+        0.06405069679021835,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.19107231497764587,
+        0.0520833320915699,
+        0.03125,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.30336204171180725,
+        0.621540904045105,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110104/sustained/8",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 38464395457.0,
+          "hold_signature": [
+            [
+              "835110104/sustained/8"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "condition": 47,
+      "seed": 835110104,
+      "family": "sustained",
+      "context": "long_context",
+      "time_ns": 38214395457,
+      "common_dispatch_prefix": true,
+      "Band_first_jobs": [
+        [
+          "835110104/sustained/8",
+          "CPU"
+        ]
+      ],
+      "CostV2_first_jobs": [],
+      "observed_D_arrivals": 4,
+      "observed_D_min_gap_s": 0.419149865,
+      "declared_long_profile_D_available_s": 0.6224215417083333,
+      "long_profile_is_not_WCET": true,
+      "minimum_gap_below_available_plus_max_wait": true,
+      "extra_normal_late_count": 0,
+      "whole_case_cooling": 17,
+      "future_unarrived_requests": 183,
+      "chosen": {
+        "kind": "cool_wait",
+        "until_ns": 38464395457.0,
+        "hold_signature": [
+          [
+            "835110104/sustained/8"
+          ],
+          [
+            [
+              "CPU",
+              null
+            ],
+            [
+              "GPU",
+              null
+            ]
+          ]
+        ]
+      },
+      "performance_reasons": [
+        "JointV2_reference",
+        "V2_current_service_P95_envelope"
+      ],
+      "risk": {
+        "rho": 0.6660954058478502,
+        "known": true,
+        "gap": 0.38430418200000105,
+        "gap_known": true,
+        "queued": 0.6219224328544214
+      },
+      "current_reference_predicted_P95_ms": [
+        301.50078860416414,
+        301.50078860416414,
+        301.50078860416414
+      ],
+      "state": [
+        0.31845328211784363,
+        0.0,
+        0.010416666977107525,
+        0.0,
+        0.0,
+        1.0,
+        0.7339876890182495,
+        0.7341436743736267,
+        -0.0010913809528574347,
+        0.009877937845885754,
+        0.10365373641252518,
+        0.6660954356193542,
+        1.0,
+        0.06405069679021835,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.20100052654743195,
+        0.0520833320915699,
+        0.03125,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16521628201007843,
+        0.3062969148159027,
+        0.6219224333763123,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actions": [
+        {
+          "kind": "single",
+          "jobs": [
+            {
+              "request_id": "835110104/sustained/8",
+              "backend": "CPU"
+            }
+          ]
+        },
+        {
+          "kind": "cool_wait",
+          "until_ns": 38464395457.0,
+          "hold_signature": [
+            [
+              "835110104/sustained/8"
+            ],
+            [
+              [
+                "CPU",
+                null
+              ],
+              [
+                "GPU",
+                null
+              ]
+            ]
+          ]
+        }
+      ],
+      "physical_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "performance_mask": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  ],
+  "interpretation": "observed-D minimum gap is absent at a one-D initial prefix, so cannot prove separation of future burst; this is a future development hypothesis, not a verified congestion guard",
+  "current_long_context_not_WCET": true,
+  "original_V2_FAIL_preserved": true,
+  "model_fit_calls": 0,
+  "new_learning": 0,
+  "native_starts": 0,
+  "device_commands": 0
+}
