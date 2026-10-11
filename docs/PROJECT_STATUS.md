@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-10-11 S26-MATERIALS-PREP-01 — 기존 실패 사건 추가 판독·담당자 자료 요청 준비
+
+- [자료·재개 gate](S26_REQUIRED_MATERIALS_20261011.md)와 [복사할 요청문](results/s26_materials_20261011/REQUEST_TO_S26_OWNER.md)을 작성했다. 고정 세 원격 HEAD는 그대로이며 공개 parsim branch는 조회되지 않았다. 실제 담당자 메시지 전송0이다.
+- [정적 판독](results/s26_materials_20261011/README.md): 네 R4S 실패 progress에서 예정12,000/관측 반환11,311/dispatch 미관측689를 확인했다. 로그시각과 exact 원장 경계는 대표192요청에서 다르므로 요청 원장 복원·품질 PASS·기존48480 adapter행 합산으로 쓰지 않는다. 공개 failure/readout/driver가 있어 중복 요청을 줄였다.
+- 필요한 자료는 실제 APK/source 연결, Q20 CPU/GPU raw80개와 위임 창, mixed·탐지CPU 품질/정밀도, Git 밖 시계·센서 계약, 최신 mixed CPU1 프로필의 유무다. 구1200행 웹 재현 묶음은 선택 사항이며 NPU 확장은 제외한다.
+- 이번 후속 학습0·시뮬레이션 실험0·물리fit0·APK/ADB/기기0. 원 A24 791환경/192학습 종료·세 strict FAIL/ATC 튜닝 중단·기본/experiment_ready=false·과거 소비와 다른 checkout의 사용자 WIP를 보존했다.
+- 다음 최대2: 사용자 회수 자료의 SHA/계약 확인, 적격 경로·센서 coverage에 맞는 유한 프로필 계약 작성. S26 새 성능/학습은 품질·시각·비용 프로필 gate 미해결로 보류한다. 검증 시작13137fb＋새 문서/정적 분석 source, 집계 assertions와 source SHA는 verification에 기록했다.
+
 ## 2026-10-11 ATC-PPO-DESKTOP-PILOT-01 — 직접 선택 구현·3seed64·새 확인 종료
 
 - [구현·계약](ATC_PPO_DESKTOP_PILOT_20261011.md)·[보고/336행/그림5/HTML](results/atc_ppo_desktop_pilot_01/README.md): ATC FIFO선두·가능후보보충·물리mask·새nativePPO·사건재판단을 구현했다. 전체큐미래예측/서비스mask/냉각/NPU 추가0,25,352확인판단에서ATC/EDD bank·유효행동동일로ATC탐색중단이다.

@@ -1,5 +1,11 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-11 S26-MATERIALS-PREP-01 — 공개 자료 우선 판독과 후속 인계 준비
+
+- [후속 자료 목록](S26_REQUIRED_MATERIALS_20261011.md)의 P0 APK/source·Q20 raw·mixed 품질 연결부터 회수하고, 기존 공개 원장/실패 progress/readout은 중복 요청하지 않는다. latest P1l/GH와 mixed CPU1 프로필이 없다면 미작성으로 남긴다.
+- 수신 정적 확인→적격 경로/7경계→센서 coverage·state 식별→S0/S1·T0/T1·E0 유한 계약→동결 정책 비교→필요 시 별도 독립 확인 순서다. J 미해결은 서비스/열 연구를 막지는 않지만 에너지 목표·strict 완료 또는 에너지 보상 PPO PASS로 바꾸지 않는다.
+- 이번 새 학습/시뮬레이션 실험/fit/기기 각0이며 기존 닫힌 A24 소비·원 strict/FAIL/기본을 유지한다. 남은 A24 cap의 S26 자동 승계0, NPU·새 품질 tolerance·기기 실행 자동 확대0이다. EDD 직접 선택은 미채택 후속 대안이며 자료 전 새 학습을 시작하지 않는다.
+
 ## 2026-10-11 ATC-PPO-DESKTOP-PILOT-01 — 전달 프롬프트의 유한 PC 실행 완료
 
 - [구현·결과](ATC_PPO_DESKTOP_PILOT_20261011.md)를 별도source/schema/fresh nativePPO로완료했다. 공개원자료없는44검사/새13검사/demo3/실행gate8,3seed각64/개발32·64/새확인48을구분했다. 총791환경/192학습·343.312초,상한1536/384·240분/저장10분을늘리거나과거task를재개하지않았다.

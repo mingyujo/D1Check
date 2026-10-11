@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-11 S26-MATERIALS-PREP-01 — 원자료 요청 범위와 관측 prefix의 의미 확정
+
+- 확정: [새 인계 문서](S26_REQUIRED_MATERIALS_20261011.md)는 기존 공개 자료를 먼저 분석하고 Git 밖 Q20 수치 출력·실제 APK/source·mixed 품질/정밀도·센서 계약의 부족분만 우선 회수한다. 작성된 요청문은 자동 전송하지 않는다.
+- 확정: 실패 네 progress의 반환11,311건은 관측 사건이며 exact requests.json 복원/품질 승인이나 기존48480 adapter행의 증가가 아니다. event 기록시각과 row 경계가 다름을 대표192요청에서 확인했으며 원 FAIL/readout·분모를 보존한다.
+- 유지: 기존 S26 제출 범위·NPU 제외·물리 지원/AVAILABLE·원 strict/기본/experiment_ready=false, A24 종료791/192 및 ATC 튜닝 중단. 이번 후속 신규 학습/시뮬레이션 실험/물리fit/기기0, 추가 성능 작업은 별도 유한 계약과 경로별 gate 뒤다.
+
 ## 2026-10-11 ATC-PPO-DESKTOP-PILOT-01 — 구현 실행 사실과 미채택 확정
 
 - 확정: 사용자데스크톱프롬프트의새ATC→물리mask→nativePPO→사건재판단을별도worktree에서구현·실행했다. [791환경/192학습·3seed64·새48조건](results/atc_ppo_desktop_pilot_01/README.md)은원상한내이며기존optimizer/목표/weights연장이아니다. 공유sampling을쓰지않고각seed 행동/shuffle RNG와partial/clock을복원했다.
