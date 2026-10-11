@@ -1,0 +1,54 @@
+freeze_parsim.txt — S26 자원 병행 시뮬레이터 v1 (P1l v2 · 10/11 저녁) 동결 원장 (append only · 결과 전부터)
+=====================================================================================================
+세션: Cowork 클라우드 (P1l v2 — 프롬프트 OneDrive D1_ondevice\프롬프트_P1l_병행시뮬레이터_v2_1011.md) · 폰 0 · adb 0 · PC 클론 무접촉
+작업 클론: 클라우드 D1Check_parsim · 브랜치 s26-parsim · 기준 = origin/s26-measure 0a0749890fba2452c5907433c6bea476a2da7e24 (2026-10-11 02:59:08 +0900, GH ②)
+자료: origin/s26-mixreq 21cba44faa5fff1fb9703b590aa536a6207f8de5 의 커밋 사본 s26/results/mixreq_1008/{R3_blocks, R4C_blocks, R4S_blocks, plan_*} (logcat 제외)
+등록: OneDrive sim\병행시뮬_사전등록_v1.md SHA-256 81a5428dcab8053f8c65b8623c1d64a8c333f3e111885287f9508098e2299e0f (11,220 B · CR 0) = 프롬프트 값 → 일치
+환경: CPython 3.13.16 · numpy 2.5.3 · scipy 1.18.1 · PyYAML 6.0.3 (클라우드) · git core.autocrlf false (바이트 그대로)
+
+[2026-10-11 20:35:41 +0900] 커밋 ① 2f31deac50c9bbbd1807c0f6a12e0d666ad09060 "d1sim: 자원 병행 시뮬레이터 사전 등록 v1 (코드 · 오차 계산 전)"
+  d1sim/docs/병행시뮬_사전등록_v1.md SHA-256 81a5428d… (바이트 그대로) · PAT 0 · 바이너리 0 · 가설원장 PRE-P1 줄 append
+
+[2026-10-11 20:4x] 2단계 추출 (오차 계산 0) — d1sim/parsim_v1/extract.py (origin/s26-mixreq 21cba44 커밋 사본)
+  R3 16세션 (eligible 16) · 요청 3,072행 · HAL 1,721행 → data/r3_{sessions,requests,hal}.csv
+  R4 (C) 16 (유효 16) · R4 (S) 18시도 (유효 14 · index 13 · 14 의 a1 · a2 = 무효 4시도 · _pre1_charge · _abort_133009 = 시도 아님)
+    → data/r4_start.csv (게이트 줄 · 공통창 시작 이전 HAL 마지막 행 · 정책 · pair) · data/r4_schedule.csv (plan_v3c · plan_v3s 매니페스트의 예정 요청열)
+    R4 에서 연 것 = session_log 게이트 · SID · VALID 줄 · hal.csv 의 공통창 시작 이전 행 · common_boundary.json 의 start_ns/end_ns/planned 키 · plan 매니페스트. 요청 결과 · 창 안 HAL · readout 은 안 읽음.
+  주의 (사실): R3 의 device/requests.json 은 결과 파일 (타임스탬프 포함) 이라 R4 에서는 열지 않았다 — 예정 요청열은 plan 매니페스트에서.
+
+[2026-10-11 20:5x] 3단계 — 부품 · 결정 · 피팅 · 동결 예측
+  DECISIONS_P1l.md D1 ~ D13 (AP 합산 = 자원별 G_a 합 · 실행 구간 · CPU 제어기 안 씀 · g_CPU 목적함수 (열린 고리, 실측 R3 활동) · 시작 상태 (공통창 시작 · 게이트 A0 · H_a 잔열) · 처리시간 = R3 요청 단계 묶음 표본 · EFT/EDD/R7/Band 정의 · 점 추정 = 반복 20 중앙 · 실측 지표 · 판정 산술 · 열린 고리 기술 열은 판정 뒤 · 사다리 세부)
+  피팅 (R3 만): M-sup g_CPU 1.069234 (κ 1) 목적함수 7.8313 ℃² · M-κ g_CPU 0.829798 · κ 1.276745 목적함수 7.8266 ℃² — κ 가 [0.8, 1.2] 밖 → "단순 중첩 가정 의심" (기술, 판정 아님). g_GPU 0.9113 · g_NPU 0.9734 = v2.2 g_m 그대로.
+  시험: d1sim/tests 95 passed · 4 failed (test_v1/v2/v21/v22 의 동결 파일 SHA 시험 — 클라우드 LF 체크아웃이라 CRLF 기준 값과 다름 · 내용은 줄바꿈 정규화 기준 동결 SHA 와 같음 (README §2-2) · 새 시험 6 포함)
+  동결 예측: 닫힌 고리 · R4 (C) 16 + (S) 14 · M-sup · M-κ · 반복 20 (seed 1001 ~ 1020) → out/predict_confirm.json
+    예측 요약 (M-sup 중앙): (C) 긴급 P95 직렬 126.0 · GPU 병행 76.7 · NPU 병행 69.0 ms · 최고 AP 37.5 ~ 40.6 ℃ / (S) P95 125.5 · 76.3 · 68.8 ms · 최고 AP 51.0 ~ 57.3 · 최고 SKIN 43.1 ~ 48.2 ℃ (CPU 조임 없음 D3 의 결과 — 결과 전 기록)
+
+[2026-10-11 20:55:19 +0900] 커밋 ② c4eae3949b4fddfbe35ec1a77b01b6a6c7fa5794 "d1sim/parsim_v1: 추출 · 부품 · g_CPU · 동결 예측 · 판정 코드 (확인 결과 전)" · PAT 0 · 바이너리 0 · push 대신 이 원장 + Project 문서 (v2 변경 2)
+  SHA-256 (결과 전):
+    out/predict_confirm.json        3d6451f0821f3f6fced21b03c10be29dbf01c1b3e26c02823d124aaad63c9144
+    profiles/parsim_v1_thermal_sum.json 1a242259072a36c597898acaf3a9522767feac540ec78e2ebc74faccc7c0b3df
+    DECISIONS_P1l.md                103fdae933e15840a20e77387e69bd1924f430e0cb1bb07ca2b9c651e2e7292a
+    judge_parsim.py                 2ab5728855f750b8136a4ef880fbe72b68c6d4177abb8370620f5bfe1397d074
+    measure_r4.py                   ded7b7a3286ad95fcac2d21361601a4ceb140d6e7a6b0243e0eca09a3533ab98
+    ladder.py                       a6c0c021341dff236b8a92b195e079bedc0f91874cef8bc4376c0a742c60ad00
+    thermal_sum.py                  a212fbc411c178b589de51ea8d0b081f95489c5ee507f72cd9547e233a794b5b
+    service_des.py                  f5b458838c89a676d898ff6b5f3745fd3c97072f97e2706473a5d3f1df3a61b3
+    rules.py                        ece6ef4f2dec05455ae0d2de7437b33670a936da5920e1308e8be6f3856b1339
+    predict.py                      cf2d40e7a3dfa632084f9684e050e38e2e275c5eef1fe050f978c9de5311ad13
+    data/r3_requests.csv            d3d764bb126601174ed68ecfdc0428fbea05956ff90566901da8a38afbd73c0b
+    data/r4_start.csv               a35eddebb7a2c5e899554affcf0ece891c4644b851eb154b8c86ef377b03471d
+    data/r4_schedule.csv            39a9d676bca02995a4ccea6cfe398cfd08a0ccb35ca3d1e59f71a7508ce216fc
+  → 이 줄을 OneDrive 에 쓴 뒤에만 4단계 (R4 결과 지표) 를 읽는다.
+
+[2026-10-11 20:55:52 +0900] 위 커밋 ② 줄을 OneDrive 에 씀 (파일 시각 20:55:52) · Project claude/1011_P1l_동결원장.txt 같은 내용
+[2026-10-11 20:56 ~ 20:57] 4 ~ 5단계 (파일 시각 = 순서 증거): r4_measured.json 20:56:06 → parsim_judge.json 20:56:07 (한 번) → open_loop_describe.json 20:56:40 → ladder_dev.json 20:57:00 (R7 offset 0 — 가드 통과 40 vs 40 동률 → 최고 AP 43.247 vs 43.256) → ladder.json 20:57:15 (확인 seed 61 ~ 65 한 번). 판정 · 사다리 코드 = 커밋 ② SHA 그대로 (ladder.json code 항목 a6c0c021… · judge 2ab57288…).
+  판정 (M-sup · M-κ 같은 이름): 열 (C) 「병행 열 미재현」 (≤ 2 ℃ 0/16 · MAE 2.09 · 부호 8/8 · |Δ차| ≤ 1 7/8) · 열 (S) 「병행 열 미재현」 (0/14 · 8.33 · 3/4 · 2/4) · 서비스 (C) 「병행 서비스 탐색용 (오차 −2.2 ~ +18.5 ms 붙임)」 (≤ 25 ms 16/16 · ≤ 15 ms 13/16 · 8/8 · 6/8). κ 1.2767 → "단순 중첩 가정 의심" (기술).
+  SHA-256: r4_measured.json b58da5e31e5e44c3beb22238deedc85b8200fa94d3071177a4dcbfc63caccba6 · parsim_judge.json 18cc12fc4a4c10f4fa2906169bd18307e987f20dcfa7570b0eff2cbaebb6f06f · parsim_sessions.csv 5ec286d6e8bb0b7487343826d75a844225c186907bb863e6df5c39b2231a1256 · parsim_pairs.csv bfe1dd74dc8c6e361d30b9e483a5bed6c91bdcde21f48084478fd1dd2045d4ba · open_loop_describe.json b0d09f286710173c428de4c8b467d1a3a28a89c80a2227933467ae7fc2566eb6 · ladder_dev.json e903de50d155ba2ce443f69c91e4037839ff3248d2abca4f739f782556202a84 · ladder.json 8e824d78bd3a3465cb89c09087b4922e43a0bc2972a63d7fbf8ac6fed6cfc311 · ladder.csv 0489c77ed49f6e04209a55bdbe2669807d400716f3a70a6b5cfc69ad979dbc73 · ladder_pairs.csv a66109dae255be5bbd03c3b3606f5c95143c8f1ab7423e53a730a913b7e353c8
+
+[2026-10-11 20:57:31 +0900] 커밋 ③ 83d8633226b391544354be5e6c1a5ba6db5199ac "d1sim/parsim_v1: 확인 판정 1회 · 열린 고리 기술 · 규칙 사다리 (확인 seed 61~65)" · PAT 0 · 바이너리 0
+
+[2026-10-11 21:0x ~ 21:2x] 6 ~ 7단계 (숫자 무변경)
+  연결 묶음: adapter.py (ParallelDevice · run CLI · selftest PASS) · examples/ (requests_192_200ms.json d8d4c07b… · start_30p5.json bf5d895e… · events_R2 8b019c06… · R3 ee978862… · R4 26f7d1fd… · R5 516370d3… · example_external_scheduler.py) · MODEL_CARD.md (판정 뒤 (S) 기한 내 완료 실측 vs 예측 · b200 가드 경고 추가).
+  시험: test_parsim_v1.py 8 통과 (adapter selftest · 예제 사건 4개 바이트 재현 추가) · d1sim/tests 전체 = 4 실패 (줄바꿈 동결 SHA, 위와 같음) 이외 통과.
+  재실행 확인 (21:1x): 새 폴더로 measure_r4 → judge_parsim 다시 → r4_measured · parsim_judge · 두 CSV SHA 위와 같음 (결정적).
+  공유 파일: sim\표1_모형오차_S26.md 다시 읽음 (28,662 B · mtime 02:41 · CR 0) → 행 12 + 머리 한 줄 삽입만 (diff = 추가 2줄) → OneDrive (expectedMtime 가드).
