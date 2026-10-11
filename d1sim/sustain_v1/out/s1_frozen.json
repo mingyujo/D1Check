@@ -1,0 +1,55 @@
+{
+ "form": "r = 1 + a (1 - exp(-c/tau)) · c = cumulative union-busy s since common start · base = first-60 s median exec",
+ "decisions": "DECISIONS_SUSTAIN.md",
+ "fit_data": "R4 (S) valid 14 · origin/s26-mixreq 21cba44",
+ "params": {
+  "CPU_URGENT|classification|CPU": {
+   "a": 0.7654926320909202,
+   "tau_s": 324.05389587164603,
+   "n": 9000,
+   "rmse": 0.0939068220810854
+  },
+  "CPU_URGENT|detection|CPU": {
+   "a": 0.7283709866835305,
+   "tau_s": 280.7751563622195,
+   "n": 9000,
+   "rmse": 0.07534923965605562
+  },
+  "B2_PARALLEL|classification|GPU": {
+   "a": 0.6347754006227304,
+   "tau_s": 387.6098391070009,
+   "n": 6000,
+   "rmse": 0.07981583725961798
+  },
+  "B2_PARALLEL|detection|CPU": {
+   "a": 1.0220495828462244,
+   "tau_s": 306.39764380257884,
+   "n": 6000,
+   "rmse": 0.09536646856067381
+  },
+  "NPU_PARALLEL|classification|NPU": {
+   "a": 1.699314710609033,
+   "tau_s": 1794.2038170630208,
+   "n": 6000,
+   "rmse": 0.0782422495105864
+  },
+  "NPU_PARALLEL|detection|CPU": {
+   "a": 1.0275193295103633,
+   "tau_s": 448.2240882974941,
+   "n": 6000,
+   "rmse": 0.07930760604688925
+  }
+ },
+ "judge": {
+  "cells": [
+   "CPU_URGENT|classification|CPU",
+   "CPU_URGENT|detection|CPU",
+   "B2_PARALLEL|classification|GPU",
+   "B2_PARALLEL|detection|CPU"
+  ],
+  "minutes": "2..10",
+  "mae_max": 0.08,
+  "rule": ">= 6/8 (session, cell) and per policy >= 3/4"
+ },
+ "scope": "200 ms mixed · <= 10 min · start SKIN 28.6 ~ 32.2"
+}
