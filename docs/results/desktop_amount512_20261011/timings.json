@@ -1,0 +1,260 @@
+{
+  "run_wall_seconds": 1311.0080181000012,
+  "run_cpu_seconds": 1235.6875,
+  "run_active_seconds": 1305.8650569915771,
+  "active_cap_seconds": 14400,
+  "save_reserve_seconds": 600,
+  "verification_unit_smoke_prepare_seconds": 31.885152999999264,
+  "stages": [
+    {
+      "stage": "verify",
+      "started_utc": "2026-10-11T04:05:17.258565+00:00",
+      "finished_utc": "2026-10-11T04:05:33.133467+00:00",
+      "wall_seconds": 15.874622100000124,
+      "exit_code": 0,
+      "command": [
+        "venv-python",
+        "-B",
+        "-X",
+        "utf8",
+        "-m",
+        "tools.d1_joint_amount_cli"
+      ],
+      "cpu": {
+        "kernel_seconds": 0.015625,
+        "user_seconds": 0.0,
+        "cpu_seconds": 0.015625
+      }
+    },
+    {
+      "stage": "unit",
+      "started_utc": "2026-10-11T04:06:05.747508+00:00",
+      "finished_utc": "2026-10-11T04:06:11.618314+00:00",
+      "wall_seconds": 5.869905400000789,
+      "exit_code": 0,
+      "command": [
+        "venv-python",
+        "-B",
+        "-X",
+        "utf8",
+        "-m",
+        "unittest",
+        "tools.test_d1_joint_amount_session",
+        "tools.test_d1_joint_amount_ledger",
+        "-v"
+      ],
+      "cpu": {
+        "kernel_seconds": 1.578125,
+        "user_seconds": 4.1875,
+        "cpu_seconds": 5.765625,
+        "process_count": 3,
+        "scope": "Windows job including venv redirector and child; assignment immediately after Popen"
+      }
+    },
+    {
+      "stage": "smoke",
+      "started_utc": "2026-10-11T04:06:20.172348+00:00",
+      "finished_utc": "2026-10-11T04:06:25.080353+00:00",
+      "wall_seconds": 4.907421500000055,
+      "exit_code": 0,
+      "command": [
+        "venv-python",
+        "-B",
+        "-X",
+        "utf8",
+        "-m",
+        "tools.d1_desktop_package_smoke",
+        "run-smoke"
+      ],
+      "cpu": {
+        "kernel_seconds": 1.40625,
+        "user_seconds": 3.4375,
+        "cpu_seconds": 4.84375,
+        "process_count": 3,
+        "scope": "Windows job including venv redirector and child; assignment immediately after Popen"
+      }
+    },
+    {
+      "stage": "prepare",
+      "started_utc": "2026-10-11T04:06:53.213920+00:00",
+      "finished_utc": "2026-10-11T04:06:58.447511+00:00",
+      "wall_seconds": 5.233203999998295,
+      "exit_code": 0,
+      "command": [
+        "venv-python",
+        "-B",
+        "-X",
+        "utf8",
+        "-m",
+        "tools.d1_joint_amount_cli",
+        "prepare",
+        "--task",
+        "amount512_desktop_20261011_a",
+        "--target",
+        "512",
+        "--arrival-start",
+        "860010001",
+        "--confirm-seeds",
+        "860020101",
+        "860020102",
+        "860020103",
+        "860020104",
+        "--native-cap",
+        "2300",
+        "--learning-cap",
+        "1344",
+        "--active-minutes",
+        "240",
+        "--reserve-minutes",
+        "10"
+      ],
+      "cpu": {
+        "kernel_seconds": 1.65625,
+        "user_seconds": 3.5625,
+        "cpu_seconds": 5.21875,
+        "process_count": 3,
+        "scope": "Windows job including venv redirector and child; assignment immediately after Popen"
+      }
+    },
+    {
+      "stage": "run_01",
+      "started_utc": "2026-10-11T04:07:06.625134+00:00",
+      "finished_utc": "2026-10-11T04:10:19.537879+00:00",
+      "wall_seconds": 192.91257829999995,
+      "exit_code": 0,
+      "command": [
+        "venv-python",
+        "-B",
+        "-X",
+        "utf8",
+        "-m",
+        "tools.d1_joint_amount_cli",
+        "run",
+        "--task",
+        "amount512_desktop_20261011_a"
+      ],
+      "cpu": {
+        "kernel_seconds": 13.0625,
+        "user_seconds": 175.921875,
+        "cpu_seconds": 188.984375,
+        "process_count": 3,
+        "scope": "Windows job including venv redirector and child; assignment immediately after Popen"
+      }
+    },
+    {
+      "stage": "run_02",
+      "started_utc": "2026-10-11T04:12:30.594642+00:00",
+      "finished_utc": "2026-10-11T04:31:08.690167+00:00",
+      "wall_seconds": 1118.0954398000013,
+      "exit_code": 0,
+      "command": [
+        "venv-python",
+        "-B",
+        "-X",
+        "utf8",
+        "-m",
+        "tools.d1_joint_amount_cli",
+        "run",
+        "--task",
+        "amount512_desktop_20261011_a"
+      ],
+      "cpu": {
+        "kernel_seconds": 47.1875,
+        "user_seconds": 999.515625,
+        "cpu_seconds": 1046.703125,
+        "process_count": 3,
+        "scope": "Windows job including venv redirector and child; assignment immediately after Popen"
+      }
+    },
+    {
+      "stage": "final_verify",
+      "started_utc": "2026-10-11T04:31:15.885681+00:00",
+      "finished_utc": "2026-10-11T04:31:41.424059+00:00",
+      "wall_seconds": 25.537636400000338,
+      "exit_code": 0,
+      "command": [
+        "venv-python",
+        "-B",
+        "-X",
+        "utf8",
+        "../../verify_result.py"
+      ],
+      "cpu": {
+        "kernel_seconds": 2.40625,
+        "user_seconds": 23.0625,
+        "cpu_seconds": 25.46875,
+        "process_count": 3,
+        "scope": "Windows job including venv redirector and child; assignment immediately after Popen"
+      }
+    },
+    {
+      "stage": "final_report",
+      "started_utc": "2026-10-11T04:32:06.103596+00:00",
+      "finished_utc": "2026-10-11T04:32:13.552612+00:00",
+      "wall_seconds": 7.448544599999877,
+      "exit_code": 0,
+      "command": [
+        "venv-python",
+        "-B",
+        "-X",
+        "utf8",
+        "../../report_result.py"
+      ],
+      "cpu": {
+        "kernel_seconds": 1.40625,
+        "user_seconds": 4.75,
+        "cpu_seconds": 6.15625,
+        "process_count": 3,
+        "scope": "Windows job including venv redirector and child; assignment immediately after Popen"
+      }
+    },
+    {
+      "stage": "final_report_repaired",
+      "started_utc": "2026-10-11T04:32:30.361260+00:00",
+      "finished_utc": "2026-10-11T04:32:36.342221+00:00",
+      "wall_seconds": 5.981001499998456,
+      "exit_code": 0,
+      "command": [
+        "venv-python",
+        "-B",
+        "-X",
+        "utf8",
+        "../../report_result.py"
+      ],
+      "cpu": {
+        "kernel_seconds": 0.9375,
+        "user_seconds": 5.015625,
+        "cpu_seconds": 5.953125,
+        "process_count": 3,
+        "scope": "Windows job including venv redirector and child; assignment immediately after Popen"
+      }
+    },
+    {
+      "stage": "final_report_qa",
+      "started_utc": "2026-10-11T04:33:05.119228+00:00",
+      "finished_utc": "2026-10-11T04:33:11.045698+00:00",
+      "wall_seconds": 5.926180100001147,
+      "exit_code": 0,
+      "command": [
+        "venv-python",
+        "-B",
+        "-X",
+        "utf8",
+        "../../report_result.py"
+      ],
+      "cpu": {
+        "kernel_seconds": 0.9375,
+        "user_seconds": 4.953125,
+        "cpu_seconds": 5.890625,
+        "process_count": 3,
+        "scope": "Windows job including venv redirector and child; assignment immediately after Popen"
+      }
+    }
+  ],
+  "verification_first_stage_cpu_scope": "venv redirector only; excluded from CPU total",
+  "download_install_and_preflight_wall_seconds": 178.88158321380615,
+  "download_install_time_precision": "combined wall interval from downloaded prompt file mtime to first verification start; includes document review, downloads, initial incompatible-package probe and installation; not separate precise installer CPU measurements",
+  "elapsed_from_first_run_start_seconds": 1442.065033,
+  "paused_wall_seconds": 131.05701489999888,
+  "post_run_verification_seconds": 44.89336259999982
+}

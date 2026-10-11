@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-10-11 DESKTOP-AMOUNT-512-01 — 학습량 연장 결과와 원판정 보존
+
+- 확정된실행사실: 사용자가승인한원64 세모델의512연장·1344추가학습/2200환경·별도smoke3을동결설정과공유round-robin RNG로완료했다. [동일새48조건결과와상태/SHA](results/desktop_amount512_20261011/README.md)를따른다. 실제정상중지후partial/세상태/RNG/cursor/active소비를보존해재개했으며optimizer/예산/clock초기화0이다.
+- 판정: 원strict 최종gate 세 PPO 모두FAIL·새채택0. 보상·학습량·개발자료의변화를새독립우위나512수렴으로대체하지않는다. 원기본/strict/experiment_ready=false와기존FAIL은유지하며휴대폰/ADB/새실측0이다. 이후제약/KPI정렬검토는별도설계·새명시승인·새독립자료가필요하다.
+
 ## 2026-10-11 DESKTOP-GIT-DISTRIBUTION-01 — 자체 정책 상태의 한정 ZIP 공유
 
 - 확정: 최신사용자의GitHub다운로드요청에따라기존 “ZIP은로컬” 방침을이한파일에한해변경한다. [실행ZIP](results/desktop_handoff_20261011/D1Check-desktop-cpu-20261011.zip)은1743807바이트/SHA4d7e0fcf…이며자체PPO상태3개와동결시뮬레이션코드/자료만포함한다. 라이선스미확인TFLite/APK/원시실측/키/개인경로는포함하지않는다.

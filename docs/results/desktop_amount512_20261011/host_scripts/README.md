@@ -1,0 +1,1 @@
+이 source는 동결 정책을 수정하지 않는 host 검사·보고 도구 원형이다. 로컬 work/에 배치해 같은 상대경로의 bundle/, cpuenv/, repo/를 사용한다. 정책 실행 source는 Git 최신 tools가 아니라 SHA 검증한 원ZIP이다. 완료 task의 run/prepare 재실행·예산초기화는 금지한다. raw/PT/전체원장은 로컬 archive에만 보존한다.
