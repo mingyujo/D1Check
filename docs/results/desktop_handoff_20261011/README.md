@@ -6,7 +6,9 @@
 
 ## 바로 옮길 파일과 최종 검산
 
-실행 ZIP은 로컬 `output/desktop_handoff_20261011_v1/D1Check-desktop-cpu-20261011.zip`이다. **1,743,807 B(약1.67MiB)**이며 Python/고정 자료/원terminal64 세개/seed 예약 목록/검산 명령을 포함한다. SHA-256은 `4d7e0fcf65591a2ec015604fb69ea8f10358c72e28f1703a18989f6f8546241c`이다. ZIP·PT는 Git에 넣지 않고 작은 설명·source·manifest만 공유한다.
+실행 ZIP은 [GitHub 배포 파일](D1Check-desktop-cpu-20261011.zip)이다. **1,743,807 B(약1.66MiB)**이며 Python/고정 자료/원terminal64 세개/seed 예약 목록/검산 명령을 포함한다. SHA-256은 `4d7e0fcf65591a2ec015604fb69ea8f10358c72e28f1703a18989f6f8546241c`이다. 최신 사용자의 Git 다운로드 요청으로 이 작은 ZIP과 그 안의 자체 PPO 상태 세개만 추가 공유한다. APK·TFLite·원시 실측·키·개인 경로·나머지 PT는 포함하지 않는다. 원 ZIP은 로컬 `output/desktop_handoff_20261011_v1`에도 보존한다.
+
+데스크톱의 새 Codex에 [자동 다운로드·검증·512학습 프롬프트](../../DESKTOP_AUTO_RUN_PROMPT_20261011.md)를 전달하면 된다. 현재 노트북에서 추가 학습을 자동 실행하는 작업이 아니다.
 
 압축을 풀고 `D1Check-desktop-cpu-20261011` 폴더에서 위 환경을 준비한 뒤 기본 명령을 실행한다.
 
@@ -97,4 +99,4 @@ python -B -X utf8 -m tools.d1_joint_amount_cli
 
 시뮬레이션 횟수를 늘려도 냉각에 따른 처리속도 회복·미측정 온라인 정책 비용·실제 최고 표면 온도를 새로 검증할 수는 없다. 현재 모형에서 가능한 방법론 비교와 실제 휴대폰 효과의 범위를 유지한다.
 
-검산 근거: [로컬 격리 복원 영수증](portable_load_receipt.json), [portable 경로 치환 명세](portable_patch_receipt.json), [core 요구사항](requirements.txt). 실제 독립 payload와 세 checkpoint는 `output/desktop_handoff_20261011_v1`에 보존하며 Git에 binary·원장·개인 환경을 넣지 않는다.
+검산 근거: [로컬 격리 복원 영수증](portable_load_receipt.json), [portable 경로 치환 명세](portable_patch_receipt.json), [core 요구사항](requirements.txt). 실제 독립 payload와 원 checkpoint는 `output/desktop_handoff_20261011_v1`에 보존한다. 새 사용자 지시에 따른 작은 배포 ZIP만 Git에 추가하며 다른 binary·원장·개인 환경은 제외한다.

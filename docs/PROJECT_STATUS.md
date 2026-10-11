@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-11 DESKTOP-GIT-DISTRIBUTION-01 — GitHub ZIP·실행 프롬프트 배포
+
+- 최신 “깃에 올려 다운로드·실행” 요청으로 [약1.66MiB 실행ZIP](results/desktop_handoff_20261011/D1Check-desktop-cpu-20261011.zip)과 [전달 프롬프트](DESKTOP_AUTO_RUN_PROMPT_20261011.md)를 추가 배포한다. 같은ZIP/96파일SHA/CRC/자체PPO상태3개를 검산했으며 APK/TFLite/원시실측/키/개인경로는 제외한다. 기존ZIP·checkpoint는 보존한다.
+- 프롬프트는 새데스크톱에서 먼저검증하고 같은원64→512를3모델 공통연장하는 별도task다. 추가1344학습/예정2200환경·상한2300·누적활성240분/저장10분을 명시하고 원종료소비·source/schema/optimizer/공유RNG를 유지한다. 현재노트북 추가환경/학습/기기0, 기존계보14735/3181·원FAIL·기본·strict/experiment_ready=false 불변이다.
+- 다음최대2:데스크톱에서프롬프트실행,실제추가학습/확인결과회수. source검증946c328＋ZIP SHA4d7e0fcf…＋배포영수증, 사용자WIP/HTML/PDF/다른worktree보존·배포Git의실제원격HEAD는push후별도확인한다.
+
 ## 2026-10-11 SERVICE-ENVELOPE-02 — 새 리스트·PPO 비교와 데스크톱 이관 완료
 
 - 최신 목표 계속 지시로 [별도 계약](SERVICE_ENVELOPE_PILOT_20261011.md)의 자체 JointList/CostList·fresh PPO·과제약 보완 V2를 수행했다. 정책 비교919환경/192학습/60417요청＋이관기능3환경/학습0/72요청, 총922환경/192학습/60489요청 전량완료·native오류0이다. 해당계보 누적14735/3181이며 모든과거PPO 합계는 아니다.

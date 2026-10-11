@@ -1,5 +1,11 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-11 DESKTOP-GIT-DISTRIBUTION-01 — 작은 실행 ZIP으로 데스크톱 전달
+
+- 최신사용자요청으로 [Git 배포ZIP](results/desktop_handoff_20261011/D1Check-desktop-cpu-20261011.zip)과 [복사할실행프롬프트](DESKTOP_AUTO_RUN_PROMPT_20261011.md)를 제공한다. 이한ZIP의 자체정책상태3개만추가공유하며 Android모델/APK/원시실측/키/개인경로는계속제외한다.
+- 새데스크톱task는원64같은설정으로512까지공통연장·추가1344학습/예정2200환경·상한2300·활성4시간/저장10분이다. 사전smoke3/학습0은별도한도로기록하며기존종료예산을초기화하지않는다. 현재PC실제추가학습0, 다른schema/목적/독립RNG설계변경0이다.
+- 다운로드·SHA·등록/중지재개·원단위48조건7정책평가·문서/소비/Git확인을프롬프트에명시했다. 반복량으로수렴/실기기절감을선언하지않고원strict/기본/experiment_ready=false를유지한다.
+
 ## 2026-10-11 SERVICE-ENVELOPE-02 — 자체 참조·KPI 정렬과 데스크톱 이관 완료
 
 - [별도범위](SERVICE_ENVELOPE_PILOT_20261011.md)를완료했다. 원종료예산초기화0, Joint/Cost248≤384, freshPPO500≤512/192학습, V2171≤192, 별도이관smoke3/학습0이다. 조건부새실측은0이며 원계수/기한/지원/완료·AVAILABLE/최종strict/기본/experiment_ready=false를보존한다.

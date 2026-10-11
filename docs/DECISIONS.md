@@ -1,5 +1,10 @@
 # D1Check 결정 기록
 
+## 2026-10-11 DESKTOP-GIT-DISTRIBUTION-01 — 자체 정책 상태의 한정 ZIP 공유
+
+- 확정: 최신사용자의GitHub다운로드요청에따라기존 “ZIP은로컬” 방침을이한파일에한해변경한다. [실행ZIP](results/desktop_handoff_20261011/D1Check-desktop-cpu-20261011.zip)은1743807바이트/SHA4d7e0fcf…이며자체PPO상태3개와동결시뮬레이션코드/자료만포함한다. 라이선스미확인TFLite/APK/원시실측/키/개인경로는포함하지않는다.
+- [프롬프트](DESKTOP_AUTO_RUN_PROMPT_20261011.md)를전달한새데스크톱에서만별도원64→512 학습량실험을진행한다. source/mask/목적/optimizer/공유RNG/기존소비와원판정을보존하며현재PC추가학습0이다. 배포완료를정책우위·새데스크톱학습완료로승격하지않는다.
+
 ## 2026-10-11 SERVICE-ENVELOPE-02 — 과제약 보완 결과·이관 범위를 분리
 
 - 확정: [계약](SERVICE_ENVELOPE_PILOT_20261011.md)의자체Joint참조·물리/예측mask분리·절대서비스실패목적v2를별도freshPPO로비교했다. 원v1/v2/512결과·계수·기한·엄격판정·기본은소급변경하지않는다. Band는비교군이며기본/복귀/학습참조로채택하지않는다.
