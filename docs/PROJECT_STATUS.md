@@ -1,5 +1,13 @@
 # D1Check 현재 상태
 
+## 2026-10-11 ATC-PPO-DESKTOP-PILOT-01 — 직접 선택 구현·3seed64·새 확인 종료
+
+- [구현·계약](ATC_PPO_DESKTOP_PILOT_20261011.md)·[보고/336행/그림5/HTML](results/atc_ppo_desktop_pilot_01/README.md): ATC FIFO선두·가능후보보충·물리mask·새nativePPO·사건재판단을 구현했다. 전체큐미래예측/서비스mask/냉각/NPU 추가0,25,352확인판단에서ATC/EDD bank·유효행동동일로ATC탐색중단이다.
+- 새791환경/192학습(A24 11/23/37 각64/8update,Adam156/152/160)·실행활성343.312초/240분,원상한1536/384·저장10분을유지했다. 29에서부분2/2/1·세Adam/RNG/cursor exact복원했다. 보고driver 직렬화/label/중지재개처리만영수증으로수정하고 실패1환경/retry1·원source를보존했다. 원64→512/종료budget/기존계보16938/4525는그대로이며새증분만구분한다.
+- 새48에서7정책각3168/3168완료·긴급실패0,일반Band/Triton/EDD/Rule/PPO각=48/48/74/48/48/48/48이다. PPO11=Rule48일정exact,23/37=Triton48exact;원strict 세FAIL·새채택0·기본/experiment_ready=false 유지다. NoWait/열제거/추가학습 자동확대0이다.
+- S26 고정3tree·추가4문서·22source/profile일치·69manifest/48480요청7구간adapter를확인했지만품질/정밀도·HAL시각·혼합비용프로필gate로학습0이다. R4S18attempt·실패4와원장미관측을보존한다. ADB/기기/설치/새물리fit0이다.
+- 다음최대2: 결과공유,새질문이있을때만EDD직접규칙/실제관측·S26gate 후속설계. 검증기준3b54a74＋새파일과문서미커밋·등록/effective sourceSHA,rawSHA/실행원장/원strict/원자checkpoint검산PASS다. PNG/HTML정적검산완료,실행·브라우저정책차단으로browser UI필터는미확인이다.
+
 ## 2026-10-11 ATC-PPO-GITHUB-HANDOFF-01 — 최신 코드·설계·데스크톱 프롬프트 이관
 
 - 사용자 GitHub 전체 공유/프롬프트 요청으로 [새 ATC→PPO 설계](ATC_PPO_EVENT_DESIGN_20261011.md)·[복사할 프롬프트](DESKTOP_ATC_PPO_PROMPT_20261011.md)·[공유 명세/검증](results/desktop_atc_handoff_20261011/README.md)을 작성한다. A24 v2/v3 소스·동결 모형·작은 결과와 S26 계획/3역할 검토를 게시하며 둘 다 사용자 담당으로 기록한다.

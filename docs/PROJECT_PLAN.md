@@ -1,5 +1,11 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-11 ATC-PPO-DESKTOP-PILOT-01 — 전달 프롬프트의 유한 PC 실행 완료
+
+- [구현·결과](ATC_PPO_DESKTOP_PILOT_20261011.md)를 별도source/schema/fresh nativePPO로완료했다. 공개원자료없는44검사/새13검사/demo3/실행gate8,3seed각64/개발32·64/새확인48을구분했다. 총791환경/192학습·343.312초,상한1536/384·240분/저장10분을늘리거나과거task를재개하지않았다.
+- 원지원/서비스/AVAILABLE/물리모형/strict유지,전체큐 미래계산·예측성능mask·임의냉각·NPU·기기작업0이다. 세PPO strictFAIL/새채택0,같은 bank Rule·Triton과일정동일,ATC/EDD25352bank동일로튜닝·본학습확대중단이다.
+- S26은고정3tree 및새APK/세션/계수/재현자료를감사하고7구간정적adapter만검증했다. 품질/정밀도·시각/에너지/혼합프로필미해결로성능·학습만보류했으며A24실행은완료했다. 후속기기측정/설치/NPU예산0,원자료·기본·experiment_ready=false·원FAIL은보존한다.
+
 ## 2026-10-11 DESKTOP-AMOUNT-512-01 — 승인된 데스크톱 학습량 실험 완료
 
 - [실제결과](results/desktop_amount512_20261011/README.md)의원V1/absolute-service v2 세learner64→512를동결ZIP에서실행했다. 각448추가/총1344학습·teacher448＋train1344＋dev72＋confirm336＝2200환경, 별도smoke3/학습0이다. 승인환경2300/학습1344·active240분/저장10분을확대하지않았다.

@@ -1,0 +1,52 @@
+--- registered_driver
++++ metadata_stage_resume_fixed_driver
+@@ -11 +11 @@
+-from dataclasses import asdict
++from dataclasses import asdict, is_dataclass
+@@ -46,0 +47,11 @@
++
++
++def payload_digest(value):
++    """Lossless dataclass metadata normalization for archive checks, not policy input."""
++    def normalize(v):
++        if is_dataclass(v):
++            return dict(dataclass_type=type(v).__module__+"."+type(v).__qualname__,fields=normalize(asdict(v)))
++        if isinstance(v,dict):return {k:normalize(x) for k,x in v.items()}
++        if isinstance(v,(tuple,list)):return [normalize(x) for x in v]
++        return v
++    return native.state_digest(normalize(value))
+@@ -114,0 +126,6 @@
++    repairs=budget.read(folder/"source_repairs.json") if (folder/"source_repairs.json").exists() else {}
++    if repairs:
++        if repairs["registration_sha256"]!=budget.digest(folder/"registration.json") or repairs["scope"] not in ("driver_archive_digest_only","driver_metadata_and_stage_resume_only"):
++            raise ValueError("source repair identity/scope mismatch")
++        if set(repairs["effective_sources"])!={"tools/d1_atc_direct_study.py"}:
++            raise ValueError("policy/learner source change is not an archive serializer repair")
+@@ -115,0 +133,4 @@
++        if name in repairs.get("effective_sources",{}):
++            repair=repairs["effective_sources"][name]
++            if repair["original_sha256"]!=expected:raise ValueError("repair original identity mismatch")
++            expected=repair["effective_sha256"]
+@@ -198 +219 @@
+-        row=dict(identity=identity,phase=phase,policy=case.get("role",agent.public_policy),
++        row=dict(identity=identity,phase=phase,policy=case.get("role") or getattr(agent,"public_policy",getattr(agent,"policy","unknown")),
+@@ -282 +303 @@
+-        current={str(s):native.state_digest(l.snapshot()) for s,l in learners.items()}
++        current={str(s):payload_digest(l.snapshot()) for s,l in learners.items()}
+@@ -295,0 +317,4 @@
++        if cursor["train"]>=96 and cursor["dev32"]<168:
++            # Resume the unfinished evaluation with frozen ep32 actors, not newer weights.
++            at32={s:learning.Learner.load(folder/"checkpoints"/f"seed{s}_ep32.pt",learners[s].dependencies) for s in SEEDS}
++            evaluate(folder,b,at32,inputs["development"],"dev32",ROLES,cursor,session_learners=learners)
+@@ -312 +337 @@
+-                    learner_digests={str(s):native.state_digest(l.snapshot()) for s,l in learners.items()},
++                    learner_digests={str(s):payload_digest(l.snapshot()) for s,l in learners.items()},
+@@ -362 +387,7 @@
+-        collect(b,folder,f"{stage}_{case['condition']:02d}_{role}",stage,dict(case,role=role),controller(role,f,initial,learners))
++        identity=f"{stage}_{case['condition']:02d}_{role}"
++        failed=[r for r in b.rows if r["event"]=="failure" and
++                (r["identity"]==identity or r["identity"].startswith(identity+"_retry"))]
++        if failed:
++            # A metadata-only failed invocation stays charged; collect a new retry identity.
++            identity+=f"_retry{len(failed)}"
++        collect(b,folder,identity,stage,dict(case,role=role),controller(role,f,initial,learners))

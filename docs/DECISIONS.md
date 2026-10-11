@@ -1,5 +1,12 @@
 # D1Check 결정 기록
 
+## 2026-10-11 ATC-PPO-DESKTOP-PILOT-01 — 구현 실행 사실과 미채택 확정
+
+- 확정: 사용자데스크톱프롬프트의새ATC→물리mask→nativePPO→사건재판단을별도worktree에서구현·실행했다. [791환경/192학습·3seed64·새48조건](results/atc_ppo_desktop_pilot_01/README.md)은원상한내이며기존optimizer/목표/weights연장이아니다. 공유sampling을쓰지않고각seed 행동/shuffle RNG와partial/clock을복원했다.
+- 확정: 세PPO 원strictFAIL·채택0,기존기본/experiment_ready=false 유지다. PPO11=같은 bank Rule,23/37=Triton48일정exact이며Rule도Band대비J/AP손실로기본교체하지않는다. ATC/EDD 후보bank·유효행동25352동일이라ATC튜닝·추가PPO/NoWait/열제거자동확대0이다.
+- 확정: S26추가자료는구모형재현/품질귀속을구분하는근거다. 69manifest/48480관측요청·7구간연결·22source/profile를검산했지만GPU품질/정밀도·시각·새mixed비용gate로학습0이다. 문서속재피팅/1200행재계산/기기명령을실행하지않았다.
+- driver의archive checksum/결과label/미완료단계resume 오류는원등록/source와effective SHA·diff를남겨수정했고정책/학습식/actor/Adam/RNG/소비초기화0이다. 실패1환경을숨기지않는다. 현재AP는모형환경관측이며폰HAL/표면온도·제어에너지검증으로전용하지않는다. PNG/HTML정적검산과정책차단으로미확인인browser UI를구분한다.
+
 ## 2026-10-11 DESKTOP-AMOUNT-512-01 — 학습량 연장 결과와 원판정 보존
 
 - 확정된실행사실: 사용자가승인한원64 세모델의512연장·1344추가학습/2200환경·별도smoke3을동결설정과공유round-robin RNG로완료했다. [동일새48조건결과와상태/SHA](results/desktop_amount512_20261011/README.md)를따른다. 실제정상중지후partial/세상태/RNG/cursor/active소비를보존해재개했으며optimizer/예산/clock초기화0이다.
