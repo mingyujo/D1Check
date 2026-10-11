@@ -4,6 +4,21 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class EnergyResidentIdentificationTest {
+    @Test fun model2ProbesKeepMatchingRequestsAndRegisteredRecoveryAnchors() {
+        for (p in listOf("MODEL2_RECOVERY_A","MODEL2_RECOVERY_B")) {
+            val b=EnergyResidentIdentification.blocks(p)
+            assertEquals(498,EnergyResidentIdentification.commonSeconds(p))
+            assertEquals(1248,EnergyResidentIdentification.workCap(p))
+            var t=0
+            val starts=b.associate { block -> block.id to t.also { t+=block.seconds } }
+            assertEquals(24,starts["conditioning_pair"])
+            val key=if (p.endsWith("_A")) 0 else 1
+            assertEquals(144,starts["immediate_solo$key"])
+            assertEquals(234,starts["after90_solo$key"])
+            assertEquals(384,starts["after240_solo$key"])
+            EnergyResidentIdentification.validate(EnergyResidentIdentification.VERSION,p,b,1248)
+        }
+    }
     @Test fun budgetsAndFourResidentDefinitions() {
         assertEquals(600,EnergyResidentIdentification.commonSeconds("DEV_A"))
         assertEquals(600,EnergyResidentIdentification.commonSeconds("DEV_B"))

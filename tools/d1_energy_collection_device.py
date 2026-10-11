@@ -68,9 +68,11 @@ def recover(d,remote,folder,best_effort_prefix=False):
                 prefix_errors=prefix_errors,files=len(list(folder.iterdir())),archive_sha256=c.p.digest(folder.parent/'artifacts.tar'))
 
 def thermal(d,folder,index):
-    before=logger.parse_uptime(d.call('exec-out','cat','/proc/uptime',timeout=2).stdout.decode())
-    raw=d.call('shell','dumpsys','thermalservice',timeout=2).stdout.decode()
-    after=logger.parse_uptime(d.call('exec-out','cat','/proc/uptime',timeout=2).stdout.decode())
+    timeout=getattr(d,'thermal_timeout_seconds',2)
+    c.require(timeout in (2,3),'registered thermal response timeout')
+    before=logger.parse_uptime(d.call('exec-out','cat','/proc/uptime',timeout=timeout).stdout.decode())
+    raw=d.call('shell','dumpsys','thermalservice',timeout=timeout).stdout.decode()
+    after=logger.parse_uptime(d.call('exec-out','cat','/proc/uptime',timeout=timeout).stdout.decode())
     c.require(after>=before and after-before<=4e9,'thermal bracket clock')
     values=logger.parse_thermalservice(raw)
     c.require(values['thermal_status']=='0','host thermal gate')
@@ -300,7 +302,15 @@ def run(plan_file,adb,serial,expected_sha,approved):
     except FileNotFoundError:
         c.check(plan_file)
         raise
-    if plan.get('tail_observation'):
+    if plan.get('simulation_model_v3'):
+        from tools import d1_simulation_model_v3_campaign as state
+        state.check(plan_file)
+        c.require(bool(serial),'model v3 requires explicitly selected current transport')
+    elif plan.get('simulation_model_v2'):
+        from tools import d1_simulation_model_v2_campaign as state
+        state.check(plan_file)
+        c.require(bool(serial),'model v2 requires explicitly selected current transport')
+    elif plan.get('tail_observation'):
         from tools import d1_ap_tail_observation_plan as state
         state.check(plan_file)
         c.require(bool(serial),'tail observation requires explicitly selected current transport')
@@ -334,6 +344,8 @@ def run(plan_file,adb,serial,expected_sha,approved):
     registry.mkdir(parents=True,exist_ok=False);root.mkdir(parents=True,exist_ok=False)
     budget=plan['budget']
     start=time.monotonic();hard=start+budget['total_seconds']
+    if plan.get('model_v2_completed_reuse'):hard=min(hard,plan['original_deadline_monotonic'])
+    if plan.get('model_v3_observation_repair'):hard=min(hard,plan['original_deadline_monotonic'])
     state_model=bool(plan.get('state_model_calibration'))
     host_run_id=os.environ.get('D1_ENERGY_HOST_RUN_ID') or __import__('uuid').uuid4().hex
     host_identity=lifecycle.host_identity() if state_model else None
@@ -352,6 +364,7 @@ def run(plan_file,adb,serial,expected_sha,approved):
                           allow_other_transports=bool(plan.get('resident_identification')))
            if state_model else ObservedDevice(adb,serial,root/'host_commands'))
         d.screen_version=plan.get('host_screen_version')
+        if plan.get('simulation_model_v3') and plan.get('thermal_timeout_seconds')==3:d.thermal_timeout_seconds=3
         if state_model:d.command_limit=budget['pre_cleanup_command_slots']
         d.deadline=hard
         install_root=root/('installed_preflight' if state_model and not plan.get('autonomous_diagnostic_only') else 'installation');install_root.mkdir()
@@ -362,17 +375,21 @@ def run(plan_file,adb,serial,expected_sha,approved):
                         installation(d,plan,plan_file,install_root,hard));identified=True
         mark('installed_preflight_verified')
         frozen=None
-        if plan.get('state_model_followup') or plan.get('short_transition_diagnostic_only'):
+        if plan.get('state_model_followup') or plan.get('short_transition_diagnostic_only') or plan.get('model_v2_arrival_host_repair') or plan.get('simulation_model_v3'):
             # Preserve the exact development artifact. No re-fit, no confirmation-derived edits.
             source=Path(plan['prior_freeze']['path'])
             c.require(c.p.digest(source)==plan['prior_freeze']['sha256'],'prior freeze changed')
             (root/'development_freeze.json').write_bytes(source.read_bytes())
             save(root/'freeze_receipt.json',dict(sha256=plan['prior_freeze']['sha256'],
-                source='COLLECT-05 development only',utc=legacy.utc()))
+                source='preserved independent model-v3 development freeze' if plan.get('simulation_model_v3') else 'preserved model-v2 development freeze' if plan.get('model_v2_arrival_host_repair') else 'COLLECT-05 development only',utc=legacy.utc()))
             frozen=c.p.read(root/'development_freeze.json')
             mark('prior_development_freeze_loaded',sha256=plan['prior_freeze']['sha256'])
         for e in plan['entries']:
-            if plan.get('resident_identification') and not plan.get('tail_observation') and e['index']==4:
+            if plan.get('simulation_model_v2') and e.get('completed_reuse'):
+                results.append(state.reuse_session(e,plan,root))
+                mark('measured_window_reused_with_original_failure',session_index=e['index'],session_id=e['session_id'])
+                continue
+            if plan.get('resident_identification') and not plan.get('tail_observation') and e['index']==4 and frozen is None:
                 mark('development_freeze_start')
                 before_freeze=time.monotonic()
                 c.require(hard-before_freeze>=budget['freeze_seconds']+budget['session_seconds'], 'freeze and confirmation reservation')
@@ -480,6 +497,20 @@ def run(plan_file,adb,serial,expected_sha,approved):
             elapsed_seconds=time.monotonic()-start,adb_command_slots=d.sequence,
             accuracy_pass=None,experiment_ready=False)
         mark('completion_receipt_intent')
+        if plan.get('model_v2_completed_reuse'):
+            result.update(fresh_sessions=len(results)-1,reused_measured_windows=1,original_post_cleanup_failure_preserved=True,
+                new_explicit_inference=sum(r['work_calls']+r['eligibility_calls']+r['warmup_calls'] for r in results if not r.get('reused_evidence')),
+                original_deadline_monotonic=plan['original_deadline_monotonic'],cohort_application_lifecycle_pass=False)
+        if plan.get('model_v2_arrival_host_repair'):
+            reused={e['session_id'] for e in plan['entries'] if e.get('completed_reuse')}
+            result.update(fresh_sessions=len(results)-len(reused),reused_measured_windows=len(reused),
+                new_explicit_inference=sum(r['work_calls']+r['eligibility_calls']+r['warmup_calls'] for e,r in zip(plan['entries'],results) if e['session_id'] not in reused),
+                physical_attempt_cap_amendment=plan['physical_attempt_cap_amendment'],
+                preserved_freeze_sha256=plan['prior_freeze']['sha256'],post_confirmation_fit_calls=0)
+        if plan.get('simulation_model_v3'):
+            result.update(fresh_sessions=len(results),reused_measured_windows=0,
+                preserved_freeze_sha256=plan['prior_freeze']['sha256'],post_confirmation_fit_calls=0,
+                scope='four new independent arrival confirmation sessions; fixed candidates and service; accuracy assessed after collection')
         checkpoints.atomic_new(root/'FINAL_RECEIPT.json',result)
         checkpoints.atomic_new(registry/'completed.json',result)
         # Publication is already complete; a final checkpoint failure cannot

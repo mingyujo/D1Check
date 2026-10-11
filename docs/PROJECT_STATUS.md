@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-11 ATC-PPO-GITHUB-HANDOFF-01 — 최신 코드·설계·데스크톱 프롬프트 이관
+
+- 사용자 GitHub 전체 공유/프롬프트 요청으로 [새 ATC→PPO 설계](ATC_PPO_EVENT_DESIGN_20261011.md)·[복사할 프롬프트](DESKTOP_ATC_PPO_PROMPT_20261011.md)·[공유 명세/검증](results/desktop_atc_handoff_20261011/README.md)을 작성한다. A24 v2/v3 소스·동결 모형·작은 결과와 S26 계획/3역할 검토를 게시하며 둘 다 사용자 담당으로 기록한다.
+- 원64→512는 원격 데스크톱 결과의 추가1,344학습·2,200환경·세 strict FAIL로 완료됐으며 재실행하지 않는다. 새 ATC는 별도 schema/fresh PPO이고 현재 새 구현/학습/기기0이다. 전달 파일럿의 제한과 기기별 지원·공개/비공개 자료·원본/공유 SHA를 분리한다.
+- 원자료 포함 로컬58검사와 원자료 없는 별도 tree의44검사 PASS, 동결3정책·288요청 전량재생/모형숫자동일성/새문서링크를 확인했다. 공개API test에는 도착전정보/예정티켓 fixture를 연결하고 원소스를 보존했다. 개인경로/호스트locator/인코딩만 공유본에서 정리하며 원WIP/HTML/PDF/raw/다른worktree·원격512를 유지한다. 과거 판정·기본/strict/experiment_ready=false 불변이다.
+- 다음 최대3: 데스크톱에서 새 프롬프트 실행, ATC 후보/사건·mask 구현 검증, S26 품질/시각/에너지 gate 감사. 배포 검증/실제 원격HEAD는 위 verification와 로컬 Git 영수증을 따른다. 새 본학습·실측 자동시작0이다.
+
 ## 2026-10-11 REPOSITORY-CLEANUP-01 — 재생성 캐시 정리 완료
 
 - 사용자 요청으로 [생성물 정리 기록](REPOSITORY_CLEANUP_20261011.md)의 Gradle 변환/Android 중간물/QA 임시브라우저/Python 캐시26,837파일·3,943폴더를 삭제해 실제약2.15GiB를 확보했다. 경로확인오류18대상과 모델/원자료가 섞인35후보는 유지했다.
@@ -12,6 +19,14 @@
 - 세모델각512/64update/Adam768/768/768, 원actor/critic/Adam/승수/공유round-robin RNG/source96/SHA/요청원장을검산했다. 정상중지473/25에서partial1/0/0·전체cursor/RNG exact복원후같은task재개·중복학습/clock초기화0이다. 실제wall/active/CPU=21.850/21.764/20.595분≤active240분·저장10분이다.
 - parent500/192·프로젝트기저14735/3181 계승, 이번2200＋smoke3/1344로관련계보16938/4525다. 기존기본/strict/experiment_ready=false·원FAIL·사용자변경/원자료/다른worktree보존·휴대폰/ADB/실측/NPU/탐색0이다. 개발64→512 대응은이미본24이며새48에서64actor추가평가0·수렴/실기기절감미입증이다.
 - 다음최대2: 결과공유, 별도설계승인전까지기존기준유지. task amount512_desktop_20261011_a 완료·자동확대0. 실행HEAD8175aac＋ZIP SHA4d7e0fcf…·전체검증영수증/원장/PT는local보존, 작은보고/설정/source만authorized branch에반영하며실제원격HEAD는별도확인영수증이다.
+
+## 2026-10-11 S26-SIM-PLAN-01 — 기존 시뮬레이터 확인·세 역할 토론 계획
+
+- 사용자 전문가3역할 토론/계획·GitHub 존재/A24 차이 요청으로 [통합 계획·비교표](S26_SIMULATION_PLAN_20261011.md)와 [2차 반박 기록](results/s26_simulation_plan_20261011/README.md)을 작성했다. 기존 S26 d1sim env/v2·정책평가·v3·프로필이 원격에 있음을 확인하고, 최신 mixed CPU1/exact 모델의 별도 profile/adapter로 보정·검증하는 방향이다.
+- measure0a07498/mixreq21cba44/quality5857152 고정 근거다. R3/R4C 각16×192, R4S16slot/18attempt(유효14/실패4)+준비중지2를 구분한다. 대표 raw power_sample239/admission204 중복·HAL시각불확실성·CC눈금/내부일관성·별도APK품질gate와 기존MobileNet/CPU4 전이를 계획에 반영했다.
+- S0/S1·T0/T1·E0 우선, E1 prelate/τ·온도→service·복잡구조는 근거 전 보류다. pair/day/session 분리·이미본R4C 사후전이·정책짝차와절대오차분리·ABBA4는제안이며기기실행예산확정0이다. 계획만작성,새fit/시뮬배치/학습/기기/원격쓰기0·A24/S26원모형/FAIL/제출범위/기본/strict/experiment_ready=false·다른desktop/RL/WIP보존이다.
+- 다음최대3: 새실행지시시P0계약/센서/품질감사,실제유한profile/adapter계약동결,기존·새모형전이/짝차판독. 검증8175aac＋미커밋·고정GitHub근거·results/s26_simulation_plan_20261011/verification.json. 품질/시각/실무식별 미해결경로는정책후보승격보류다.
+- 데스크톱검토요청에는 [복사용프롬프트](S26_DESKTOP_REVIEW_PROMPT_20261011.md)를 별도로 작성했다. 원격13434b4에는새S26계획/원v3묶음이없어 핵심계획을본문에포함하고공개A24 rollingadapter/모형을비교기준으로고정했다. 3역할토론·감사/관련시험·보고용,새fit/학습/기기/정책배치0이며기존512학습연장과분리한다. 프롬프트전달만완료·새데스크톱실행미확인이다.
 
 ## 2026-10-11 DESKTOP-GIT-DISTRIBUTION-01 — GitHub ZIP·실행 프롬프트 배포
 
@@ -73,6 +88,33 @@
 - [전체 결과·범위](IE_PRIORITY_COMPARE_20261010.md): 개발24/새확인24×9역할432행. MST/ATC는EDD와48일정 exact, CR확인 긴급실패9·일반42, CPU보호일반37→36/AP상충. L0/Band18이나예약대기와즉시배정차이를분리했다. 새적격0/기존기준유지다.
 - [세AI토론·구현](results/ie_priority_compare_02/expert_meeting.md): 탐지backfill기회0철회→분류head 응답/점유경계보완 한개개발24·전환1. 실패/P95동일,J+0.000408/AP+0.000679로미채택. 후속earliest수정·카운터1584→1 원자료보존·6803판단재생 exact/최종회귀4 PASS다.
 - 총480/480환경·30144완료·누적9749/1449·학습/기기0,25순수/전량경계/browser PASS·owner없음. 원기준/모형/strict/experiment_ready=false·별도진행중실측/사용자변경/다른worktree보존. 다음최대3:결과공유,기존기준유지,새예산·새확인없이RL재개금지. 검증2d6da54＋등록/수정source SHA, 상세출력ie_priority_compare_20261010_v1.
+
+## 2026-10-10 SIM-MODEL-V3-EXPERT-01 — 토론·모형·실측 완료, 온도 평균오차 감소
+
+- 사용자 더 작은 오차/전문가2~3 토론 지시에 [세 역할2라운드](SIMULATION_MODEL_V3_EXPERT_MEETING_20261010.md)·[개발/새확인 계획](SIMULATION_MODEL_V3_PLAN_20261010.md)을 고정했다. 비용계수의 회복전용 전이를 우선 개선하며 narrow invoke/전체execute 혼합·미래측정입력·이미본확인 재선택을 금지한다.
+- 개발17/5source 균등/고정원모형·서비스 조건부 nested에서542headfit(상한1000), 선택APλ.1/H규제α.5·전력λ0/prelate gain1. 개발B source제외 AP0.345087→0.349201°C(소폭악화), J5.950283→4.771270J(감소); 최종inner선택AP0.234115는동일독립성의수치가아니다. 완전OOF/새확인성능으로 승격하지 않는다.
+- 모형82838f2d…/개발동결56a663bc…·새확인뒤fit0이다. 최종Python39＋한계문구정리후보고서3/예측원baseline exact/자료입력누수·캐시·역할·예산/격리native4 PASS. 기존모형/v2/원FAIL/사용자개인·다른파일럿/worktree·strict/experiment_ready=false 유지다.
+- 최신 사용자20%미만허용으로 [배터리6% 명세](SIMULATION_MODEL_V3_LOW_BATTERY_20261010.md)·명시적native gate/절전·잔량기록·Arrival sampler 종료확인을 새APK356c668f…/동일프로젝트서명으로 만들었다. core compiled차이는Gate신규/ArrivalActivity 두 파일이며 추론경로와모형계수는불변. 기존준비plan2c6cd53…은claim전보존·미실행이다.
+- 새plan0895fa5d…의첫본작업전wireless thermal2초timeout은원 receipt/부분소비/앱종료를보존했다. 원새task상한5130초/ADB5904를유지하며관측기복구는아래새ID로구분했다. 원v2clock의재개/연장이아니다.
+- 첫본작업전wireless thermal2초timeout은원 receipt/부분소비/앱종료를보존했다. [새관측기3초/기존clock4초guard](SIMULATION_MODEL_V3_OBSERVATION_REPAIR_20261010.md)·plan1a562ea…로새4를23:04KST완료:384/384기한성공,fit0.B 원/v3 AP0.417352→0.233666°C/J절대3.555364→7.340075J로두head동시감소FAIL이다. [첫결과](results/simulation_model_v3_expert_01/run_v1/index.html)는불변보존한다.
+- 세역할 재논의의 [thermal-only hybrid](SIMULATION_MODEL_V3_HYBRID_20261010.md)는원p4exact/gain0·원service·열head원56a663bc…동일/새fit0으로조립했다. 새동결900b5a0f…/모형6dd806bc…/plan9645ad…의새CPU/PAR2는23:25KST종료·192/192기한성공/앱종료완료,208추론/606.328초/ADB888/설치0이다. B AP0.397453→0.202484°C(49.05%감소),CPU/PAR각각개선,J절대1.812202J/P95평균절대26.171388ms·원장exact동일이다. 원V3동시감소FAIL은유지한다.
+- [최종보고·수치모형](results/simulation_model_v3_expert_01/README.md)완료. CPU최대오차0.760387→0.928872°C/피크오차악화,정책마다1회/일반화미판정·절대에너지미교정이다. 최소잔량21%/절전false로20%미만성능미측정이다. 다음최대2:결과공유,새명시적과제시범위별추가검증. 검증ba80d94＋미커밋·output/model_v3_expert_20261010_v1/final_validation.json·실행전source/APKreceipt·원시료/FAIL/사용자다른작업·기본/RL/strict/experiment_ready=false보존이다.
+
+## 2026-10-10 SIM-MODEL-V2-01 — 구현·측정·판독 완료, 기본 교체 보류
+
+- 사용자 새모형/필요실측 지시로 [사전 계획](SIMULATION_MODEL_V2_PLAN_20261010.md)을 등록했다. 같은세션 부하 전/직후/90·240초 탐침 개발4→동결→확인2＋새 CPU/PAR96 각1회다. 원모형/기본/RL/strict/FAIL/원본 보존이다.
+- 별도 v2 구현, Python 경계10/JVM5/격리 APK PASS. 기존35 자료의 사후 비교 완료. 동일계수로 준비이력을 연결한12진단은 AP MAE0.182007→0.180027°C/악화0이나 독립 결과가 아니다. SDK 경로/암묵 common120 입력 오류는 실행 전에 수정하고 원실패를 보존했다.
+- 원 plan b159e464…/APK164bf7c6…의 첫 본작업863/적격성4/warmup8 계측 후 cleanup＋21.823ms에 sampler journal-closed 경합으로 stopped_no_resume다. 원실패/원본/종료기록을 보존하고, 전량 검사를 통과한 계측 구간만 lifecycle_pass=false로 재판독했다.
+- [종료 경합 수정·남은7 계획](SIMULATION_MODEL_V2_REPAIR_20261010.md): sampler 종료확인 후 journal닫기, JVM6/격리APK2067aac0… PASS/Python12 PASS. 원 clock/8물리시도/7768추론 상한을 보존하고 새 설치는 누적2가 된다. 첫자료1재사용＋새개발3→동결→새확인4; 원계획을 재개하지 않는다.
+- 새 plan b0ca7bc3…/Run1회, 개발 재사용1＋새3 적격/계수동결 완료. 4LOSO 평균 AP0.678573→0.185029°C/J120 절대12.774303→0.908769J, 등록533초J31.803548→14.079038J다. 개발수치이며 독립확인 PASS가 아니다. thermal→service는 null이다.
+- 회복 확인A/B 정상2 완료. 평균 AP MAE0.675653→0.204184°C/J120 절대18.199165→5.317617J/등록533초54.842244→29.819465J다. 긴 구간 J잔차가 남으며 정확도 전체PASS/정책이득을 뜻하지 않는다.
+- CPU arrival 첫 poll에서 PC budget.adb_commands 별칭 누락으로 stopped_no_resume/host cleanup 완료. 본작업·warmup 확인시작0, runtime시작2/반환1이며 누락소비는 원prefix upper로 보존한다. [남은2 host수정](SIMULATION_MODEL_V2_ARRIVAL_REPAIR_20261010.md)은 완료6자료/동결 bytes 재사용·추가fit0·새 CPU/PAR UUID, 설치0이다. 물리시도상한8→9 변경을 명시하고 원clock/7768추론/29448ADB는 유지한다. 수정 경계검사16 PASS.
+- host수정 plan7770643…에서 CPU96 실측·검증 완료로 총7자료 저장됐다. 사용자 이동/일시중단 지시 때 PAR은 준비가 시작돼 있었으며 PC 실행기를 중단하고 승인 기기의 project 앱 force-stop/프로세스 부재/thermal0을 확인했다. PAR 본작업 확인시작·반환0, warmup확인4/상한8·runtime4이고 부분자료는 완료로 사용하지 않는다. 총물리시도9이며 자동재개하지 않는다.
+- 중단 근거: `output/model_v2_20261010_v1/arrival_repair/run/USER_PAUSE_RECEIPT.json`, `user_pause/cleanup.json`·partial progress·원 명령. 완료7 SHA와 개발동결 df6fc49a…를 보존했다. 실행소스144파일은 `arrival_repair/source_before_run`이다. 이후 분석·보고서·추가측정은 사용자 재개 지시까지 보류다.
+- 사용자 재연결로 21:18 KST 재개한 [PAR1](SIMULATION_MODEL_V2_RESUME_20261010.md)/plan884dacc…은 21:29 KST 정상 완료·앱 종료됐다. 완료7/동결 바이트 재사용·추가fit0·APK 설치0·새추론104/총10시도이며, 전체8 자료의 실제추론5464/실패·중단 upper포함5672≤7768·기록ADB10612＋이번연결조사2≤29448/원clock 준수다. 이동 전 CPU와 동시paired 평가로 해석하지 않는다. Python18 PASS·검증HEAD ee653ac＋미커밋, user_resume/verification_before_run.json·FINAL_RECEIPT.json·07_*/host_cleanup.json이다.
+- [최종 비교·실패·재현](results/simulation_model_v2_01/README.md)/[동결모형](results/simulation_model_v2_01/run_v1/model.json) 완성. 회복 확인AP/J 개선과 달리 예정도착 CPU AP0.230723→0.289081°C/J절대12.545895→14.666241J, PAR0.385875→0.390690°C/3.844724→6.831658J로 악화했다. 각96요청 모두 완료/기한성공100%, 긴급실측P95 CPU764.478/PAR296.842ms이나 이동전후 각1회라 paired 정책우월성 판정은 아니다. thermal→service null·기본교체 보류다.
+- Python19 PASS/그림3 QA/HTML9링크/내보낸모형＝개발동결/원95완료 경계수정 전후 실제두forecast exact 동일이다. 측정 뒤 PC의 미완료 요청을 완료-P95에서 제외하는 경계수정만 했고 계수·실측을 다시 맞추지 않았다. 검증 ee653ac＋미커밋·`output/model_v2_20261010_v1/final_validation.json`; 원생성자료/소스스냅샷/3종 중단receipt/실패 보존이다.
+- 다음 최대2: 결과 공유, 새 명시적 과제 때만 별도 반복 확인/잔차 분석. 이번 작업은 완료이며 새 측정/fit/기본·RL채택을 자동 실행하지 않는다. 원모형/기본/RL/strict/experiment_ready=false·사용자 기존 STATUS/개인/다른worktree를 보존한다.
 
 ## 2026-10-10 RECOVERY-SERVICE-PC-01 — 회복/5phase 판독 완료·온도 후보 미채택
 
@@ -511,6 +553,20 @@
 - 총 durable 추론104/상한2,120·ADB623/99,240·251.720초/21,600초. 설치본pull/APKpush/설치각1, staging1/7파일, tracepull1. 앱결함/명시연결소실증거없어 보완/20분대기0. 첫계획소비·stopped_no_resume, 새claim/재실측0.
 - 대상 세션 host force-stop1/프로세스부재 확인, 앱 cleanup 미회수. child/parent실제PC프로세스부재·원모형2hash·원본불변/공유판독 재현 확인. 원인내부미확정, 기기 설정/연결전환/추가조회0. 원기본/RL/strict/experiment_ready=false·사용자/RESERVED/팀회신 변경 보존.
 - 다음PC작업하나: 승인 후 반복 listing의 단순 진행 관찰 실패와 필수 환경 감시 실패를 실제 poll 진입fixture에서 분리 검증한다. 같은 계획·앱결함 추측 재실행으로 이어가지 않는다.
+
+## 2026-10-08 S26-MIXREQ-HANDOFF-01 — 원본·warmup·요청열 인계 준비 완료
+
+- 사용자 전달 S26 CompiledModel 혼합요청 이식 요청의 회신안과 [ZIP](../output/s26_mixreq_handoff_20261008_v1/S26_mixreq_handoff_1008.zip)을 작성했다. 원PNG937,799B/SHA `3e8b925f…60f1ab`·anchors1,438,467B/19,206×4/SHA `e095e869…55c3bc`, 실제SUSTAINED 첫등록세션의탐지CPU warmup2/원warmup, 별도표시host raw·분류1000출력·192요청열·코드/문서snapshot을 포함한다. anchors는 최신 명시 요청의 비배포 대조용 인계이며 과거anchor 공유제외기록/모델license 미확인·모델binary/APK/키공유0을 보존한다.
+- [회신안](../output/s26_mixreq_handoff_20261008_v1/S26_mixreq_handoff_1008/01_message.txt): 이식방향 조건부 동의·본문은같은요청정의의기기/엔진별평가·NPU+CPU는S26별도표. 단독품질/실제backend/병행검증/결과전등록을 요구한다. 신규NPU top1/cosine계약은기존A24 raw계약과분리, 미검증병행/3동시 금지·기기계수/표본pooling0. **S26 등록원문/commit·16세션배분 미열람**, 실행준비/최종실측승인/XDEV-02완료아님·필수보류유지. PLAN/DECISIONS 방향변경0.
+- CRC·25파일 SHA/bytes·8manifest원SHA/192의미요청열·warmup원배열추출·host raw decode재현 통과. host/A24 CPU decoded 최대score차3.5763e−7/box8.8917e−5px, ground truth/일반정확도PASS아님. [검증](../output/s26_mixreq_handoff_20261008_v1/verification.json)·[구성](../output/s26_mixreq_handoff_20261008_v1/S26_mixreq_handoff_1008/00_README.txt). ZIP7,820,344B/SHA `27247c90…35de340`, UTC2026-10-07T17:42:55, HEAD `a081d55`+미커밋. 명령: Python311 `-B output/s26_mixreq_handoff_20261008_v1/build_bundle.py`; 분류reference hash의str/list가정으로첫생성중단1/부분파일보존후출력타입처리만수정했다.
+- 기기/ADB/새추론/학습/빌드/외부발송/commit/push0·원자료불변·RESERVED/history작업과사용자파일보존. 다음행동: 사용자가ZIP/회신안을전달하고S26 사전등록commit·16세션표를결과전에대조한다. 미검증NPU병행을정상비교블록으로자동실행하지않는다.
+
+## 2026-10-08 TEAM-REPLY-1008-01 — 요청 13개 1차 회신 ZIP 작성 완료
+
+- 사용자 요청에 따라 조민규→영훈 회신 자료를 [ZIP](../output/team_reply_20261008_v1/D1_1008_reply.zip)으로 작성했다. 9·12 코드/문서 답, 10 요청 경계·13 형식안, 13개 항목별 준비 상태와 보낼 메시지·원문 근거6파일 포함. 전체13개 완료본이 아니며 새 실측·PDF 검수·팀 결정 완료를 만들지 않았다.
+- CRC/전체12파일/파일별 SHA-256 검증 통과. ZIP39,122B·SHA `d79562c3…7a59cb6`. [검증 기록](../output/team_reply_20261008_v1/verification.json)·[본문/메시지](../output/team_reply_20261008_v1/D1_1008_reply/00_README.txt). 기준 HEAD `a081d55e9cc9d1a732bee9bed9e1ca8535244b29`+미커밋, 실제 UTC2026-10-07T16:51:54 확인. 명령: Python311 `-B output/team_reply_20261008_v1/build_bundle.py`. 샌드박스 실행 환경 오류 후 해당 ZIP 생성·검증 명령을 승인된 외부 실행으로 완료했다.
+- 기기/ADB/추가 실측/학습/빌드/외부 발송/commit/push0. 기존 RESERVED·history control·사용자 파일과 다른 작업 변경 보존. 이번 단계 장애는 ZIP 생성에 대해 해소됐고, 나머지 항목의 원문/결정/측정 증거 미확인은 회신표에 남겼다.
+- 다음 행동: 사용자가 ZIP과 메시지를 전달한다. 남은 최종 회신은 정확한 등록·측정·PDF 근거를 대조한 뒤 준비하며, 이번 파일 작성으로 실측 실행이나 기한 이행을 자동 승인하지 않는다.
 
 ## 2026-10-08 HISTORY-RECOVERY-PC-02 — 6시간·연결대기·보완 실행 경계 준비 완료
 
@@ -1604,7 +1660,7 @@
 
 ## 2026-09-26 ENERGY-OPERATIONAL-PAIR-01 — 4세션 운영 비교 완료
 
-- 출발 `9e9668b`/clean, 승인된 plan_v3 SHA `4d0bd250…0ed5` 1회 실행. [결과·한계·재현 명령](ENERGY_OPERATIONAL_PAIR_01_RESULTS_20260926.md), 공유 [세션 CSV](results/energy_operational_pair_01/sessions.csv), 외부 원본 `C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_operational_run_v1/FINAL_RECEIPT.json`. 동일 A24·서명/환경 gate 통과, APK 전송·설치 각1. registry `completed`, 재실행 금지.
+- 출발 `9e9668b`/clean, 승인된 plan_v3 SHA `4d0bd250…0ed5` 1회 실행. [결과·한계·재현 명령](ENERGY_OPERATIONAL_PAIR_01_RESULTS_20260926.md), 공유 [세션 CSV](results/energy_operational_pair_01/sessions.csv), 외부 원본 `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/energy_operational_run_v1/FINAL_RECEIPT.json`. 동일 A24·서명/환경 gate 통과, APK 전송·설치 각1. registry `completed`, 재실행 금지.
 - 개발 직렬→병행2/2 완료, 개발 설정 SHA `1dc5766a…2881` 동결 후 확인 병행→직렬2/2 완료. 작업3,480·적격성16=진단3,496, warmup32, 총 명시적 추론3,528, runtime16, staging4·28파일. 실패/미완료0, 재시도0, 앱·host cleanup/프로세스 부재 확인. 전체3,847.922/8,640초.
 - 두 block에서 병행은 같은870건 완료가 약122~126초 빠르고 완료시점까지의 조건부 기기 전체 에너지는 낮았다. AP 최고온도는 +1.2/+1.9°C, 480초 공통창 에너지 방향은 개발 -36.255J/확인 +4.559J로 다르다. 조건당 개발1·확인1세션, 시작 열 상태·순서 교란, 전류 단위/절대 정확도와 전체 운영 에너지 공백 때문에 에너지 절감·정책 우월성·시뮬레이터 PASS는 아님. 확인값으로 재보정하지 않음.
 - 다음≤3: (1) 이 제한된 상충을 보고서에 반영하고 CC_DG 관측 trace만 조건부 PC 입력으로 사용, (2) 실제 서비스 제약·다른 병행/부하까지 주장하려면 별도 사전 계약과 독립 근거 판단, (3) 추가 실측/정책 튜닝은 새 승인 전 중단. 기존 FAIL·부분 결과·40값/20null·종료 계획·`experiment_ready=false`·S26/NPU 별도 협업 유지. 아래는 당시 이력이다.
@@ -1618,7 +1674,7 @@
 
 ## 2026-09-26 ENERGY-THERMAL-COLLECT-05 — 준비 온도 gate 중단·재개 금지
 
-- 승인된 plan_v9 SHA `3f794c9a…5bfc2` 1회 실행. [종료 판독](ENERGY_THERMAL_COLLECT05_RESULTS_20260926.md), 원본 `C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_collection_run_v5/FINAL_RECEIPT.json`·`FINAL_REPORT.md`. 동일 A24·서명/환경 gate 통과, APK 전송·설치 각1. 전체1,389.359/16,080초, retry0, registry `stopped_no_resume`.
+- 승인된 plan_v9 SHA `3f794c9a…5bfc2` 1회 실행. [종료 판독](ENERGY_THERMAL_COLLECT05_RESULTS_20260926.md), 원본 `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/energy_collection_run_v5/FINAL_RECEIPT.json`·`FINAL_REPORT.md`. 동일 A24·서명/환경 gate 통과, APK 전송·설치 각1. 전체1,389.359/16,080초, retry0, registry `stopped_no_resume`.
 - 개발2시도: CC_DG 직렬1적격 완료, 병행1은 runtime4/warmup8/적격성2 뒤 AP 준비351.176초에서 중단. AP 126표본32.3~33.5°C, 직렬 anchor31.5°C의 사전 허용31.25~31.75°C 미도달. 공식 병행 baseline/load 없음; 개발2·확인4 미시도, 동결 없음. 완료 근거 runtime8·warmup16·진단874·추론890. 둘째 앱 cleanup 미확인, host 종료·프로세스 부재·thermal0 확인.
 - 직렬 단일세션 조건부 에너지·발열 수치만 가능하고 paired 비교/절감 판정 불가. 다음: (1) 현재 AP 경로와 준비 비용으로 동일 anchor의 실현 가능성 PC 검토, (2) 그 결과 전까지 새 전체 수집·gate 완화·정책 PASS 보류. 기존 FAIL·부분 결과·40값/20null·종료 계획·`experiment_ready=false` 유지. 아래는 과거 이력이다.
 
@@ -1642,7 +1698,7 @@
 
 ## 2026-09-25 ENERGY-SAMPLER-LOAD-DIAG-01 — 수정 sampler 직렬 부하 1세션 완료
 
-- 시작 `55a143b`/clean. [종료 판독](ENERGY_SAMPLER_LOAD_DIAG_RESULTS_20260925.md), 외부 원본 `C:/Users/LG/Documents/D1Check_Arrival_Extension/energy_sampler_load_run_v1/FINAL_REPORT.md`. 계획 v2 단일 실행 완료·registry consumed. 동일 A24·환경 gate 통과, APK 전송/설치 각1, staging1/7파일, runtime4, warmup8, 적격성2·작업870의 명시적 추론880 모두 확인. retry·대체·추가0, 전체902.5/2100초.
+- 시작 `55a143b`/clean. [종료 판독](ENERGY_SAMPLER_LOAD_DIAG_RESULTS_20260925.md), 외부 원본 `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/energy_sampler_load_run_v1/FINAL_REPORT.md`. 계획 v2 단일 실행 완료·registry consumed. 동일 A24·환경 gate 통과, APK 전송/설치 각1, staging1/7파일, runtime4, warmup8, 적격성2·작업870의 명시적 추론880 모두 확인. retry·대체·추가0, 전체902.5/2100초.
 - 872요청의 dispatch/start/output_ready/release/lane_available 각872, sampler snapshot1678개 시간·상태 정합, 화면조회71/71, 앱/host cleanup·프로세스 부재 확인. 실패 sidecar 없음. **진단 1세션의 직렬 경로 확인**만 가능; 과거 COLLECT-03 원인·병행/반복 안정성·에너지 절감/정식 보정 PASS 미확인. 기존 FAIL·부분 에너지/결과·40값·20null·종료계획·`experiment_ready=false` 유지.
 - 다음: (1) 별도 정식 수집 재준비 시 동일 수정 APK/관측 경로를 개발·확인에 적용하는 계약 차이 검토, (2) 직렬·병행 적격성과 독립 확인 예산을 새 승인 전에 고정. 이번 계획 재실행·추가 실측 없음. 아래는 과거 이력이다.
 
@@ -1777,14 +1833,14 @@
 - 01:52~01:54 KST 조회: 배터리58%/33.9°C/비충전, thermal0, Awake/interactive, 밝기81/수동/timeout18,000,000ms 일치. 앱 프로세스 없음. host 메모리 normal/Free RAM1,217,575KiB이며 **앱 내부 low_memory/runtime admission은 앱 미실행으로 미검증**이다. 시점 관측이므로 지속 유지 또는 실행 직전 gate를 대체하지 않는다.
 - 설치본 SHA `9019b85d…2c0`는 이전 apksigner 검증 APK bytes와 같고 후보 `d8db6963…34bc`와 다르다. 현재 해시를 보존된 서명 근거에 연결했으며 새 APK 회수/서명 검사를 반복하지 않았다.
 - COLLECT-01의 plan v1/v2는 같은 소비 registry로 종료 상태다. INSTALL-RECOVERY-01/workflow도 `stopped_no_resume`; COLLECT-02는 12세션 미시도지만 필수 recovery receipt가 failed이므로 실행 불가다. 별도 미시작 실행 가능 bundle은 없다. **ADB 읽기 전용16명령, 새 claim/전송/설치/세션/warmup/추론0**, 설정 변경/force-stop/계획 재개 없음. 기존 원본·소비량·experiment_ready=false 보존.
-- 근거: 외부 `C:/Users/LG/Documents/D1Check_Arrival_Extension/developer_options_gate_check_20260925_015243/`의 context/plan_inventory/identity/query_index/commands/FINAL_RECEIPT. 다음은 종료 계획과 분리된 새 실행 계획 준비이며, 실행 전 환경·서명·미소비 gate를 다시 적용한다.
+- 근거: 외부 `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/developer_options_gate_check_20260925_015243/`의 context/plan_inventory/identity/query_index/commands/FINAL_RECEIPT. 다음은 종료 계획과 분리된 새 실행 계획 준비이며, 실행 전 환경·서명·미소비 gate를 다시 적용한다.
 
 ## 2026-09-25 지정 v1 실행 재요청 — 중복 실행 gate로 미진입
 
 - 실제 시작 HEAD `6f8d950`/로컬·원격일치/clean. 요청의 `bceec84` 이후 변경은 이전 배터리 gate 종료 문서 commit이다. 새101.5분 예산 승인 요청은 확인했으나 지정된 `collection_recovery_plan_v1/RUN_AFTER_APPROVAL.ps1`은 이미 소비된 복구/workflow를 가리킨다.
 - 원 workflow claim과 `stopped_no_resume`, recovery `failed/preflight/battery level gate failed`를 직접 확인했다. 수집registry 부재/0세션은 통합 계획 재실행 허가가 아니다. `d1_collection_recovery.run`의 `bundle already used` 조건 및 사용자 지시의 종료 계획 재개 금지를 그대로 적용했다.
 - **이번 호출은 스크립트/ADB/기기조회/전송/설치/세션/추론 모두0**, 새 소비 기록 없음. 현재 배터리·연결·화면 상태는 조회하지 않아 미확인이다. 이전 원본/소비량/계획 hash와 experiment_ready=false 유지. 테스트/빌드 반복 없음.
-- 근거: 외부 `C:/Users/LG/Documents/D1Check_Arrival_Extension/collection_recovery_reentry_check_20260925/REPORT.json`. 기존 종료 보고서는 바로 아래 경로를 따른다.
+- 근거: 외부 `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/collection_recovery_reentry_check_20260925/REPORT.json`. 기존 종료 보고서는 바로 아래 경로를 따른다.
 - 다음은 승인된 범위와 기존 종료 기록을 분리하는 **새 식별자·출력·소비 경로의 실행 계획 재발행**이다. 이번에는 지정 계획 충돌 시 실행하지 말라는 조건에 따라 실행을 보류했으며, 과거 소비 상태를 초기화하거나 새 계획으로 임의 전환하지 않았다.
 
 ## 2026-09-24 INSTALL-RECOVERY-01 / COLLECT-02 — 승인 실행·배터리 gate 종료
@@ -1793,7 +1849,7 @@
 - 기기/fingerprint/서명확인·기존설치APK회수1회86.390초. 후보push와구분. 명령12개정상반환, 출력/시점/exit보존. hostcleanup/프로세스부재·thermal0확인, 앱cleanup N/A. 기존APK9019b85d…2c0유지. 설정변경없음, awake/앱memorygate는미진입.
 - 복구91.156초·workflow92.297초, 최초조회tool wall상한포함92.792초. 냉각/수집0. 복구와workflow소비·종료/재개금지. 수집registry는미생성이지만통합계획재실행불가.
 - 새표본/동결/확인/PC연결없음. experiment_ready=false·병행차단·40값/20null/FAIL/부분결과/과거원인미확정보존. 완료된PC검증·빌드반복없음.
-- 외부 `C:/Users/LG/Documents/D1Check_Arrival_Extension/collection_recovery_execution_v1`의FINAL_REPORT/FINAL_RECEIPT/REPRODUCE.py/GIT_FINAL, `install_recovery_run_v1`의원본/receipt와`collection_recovery_workflow_v1`의claim/stopped를보존. 문서만commit/push.
+- 외부 `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/collection_recovery_execution_v1`의FINAL_REPORT/FINAL_RECEIPT/REPRODUCE.py/GIT_FINAL, `install_recovery_run_v1`의원본/receipt와`collection_recovery_workflow_v1`의claim/stopped를보존. 문서만commit/push.
 - 다음: (1) 배터리시작55%이상여유충전후비충전상태준비, (2) 새실행계획PC준비, (3) 별도승인/gate후복구·수집. 기존종료계획은초기화/재개하지않는다. 아래는준비당시이력이다.
 
 ## 2026-09-24 ARRIVAL-INSTALL-RECOVERY-01 / COLLECT-02 — PC 준비 완료
@@ -1802,7 +1858,7 @@
 - 새 host 명령 기록: 부분 bytes·시작/종료/timeout/exit·client tree 종료·조회 실패 보존. staged push→원격hash→pm install-r→설치본hash로 명령 단계를 분리. 설치timeout120초 유지. exact APK이면 설치생략, 새 수집에서는 재설치 금지·동일설치본 필수gate.
 - PC28건(복구15+collection13) 통과, 실제 PC 자식트리 timeout 포함. APK/서명/Android source 대응·새manifest12·dry-run 확인. APK 재빌드/ADB/설치/실측 없음. experiment_ready=false 및40값/20null/FAIL/부분결과 불변.
 - **미승인 제안**: 복구설치최대1/전송1·600초 + 새수집개발6→동결→확인6/48진단/96warmup·5490초, 합6090초=101.5분. 예상35~50분·냉각24분 포함, retry/대체/추가0. 기존 승인/미시도분 재사용 아님.
-- 외부 root `C:/Users/LG/Documents/D1Check_Arrival_Extension/`: `collection_recovery_plan_v1`(recovery_plan/collection_plan/manifests/RUN_AFTER_APPROVAL.ps1), `install_recovery_pc_v1`(FINAL_REPORT/VERIFICATION/tests/재현명령/GIT_FINAL). 후보APK는기존integrated_collection_apk_v1그대로. 새출력/registry미생성.
+- 외부 root `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/`: `collection_recovery_plan_v1`(recovery_plan/collection_plan/manifests/RUN_AFTER_APPROVAL.ps1), `install_recovery_pc_v1`(FINAL_REPORT/VERIFICATION/tests/재현명령/GIT_FINAL). 후보APK는기존integrated_collection_apk_v1그대로. 새출력/registry미생성.
 - 다음: (1) 새 통합예산 승인, (2) 당일gate→복구verified/cleanup→새수집동결/확인, (3) 적격자료에한해PC연결/정책비교요건검토. 이번에는 PC 준비만 수행했다. 원격에는 관련host소스/테스트/문서만 반영한다.
 
 ## 2026-09-24 ARRIVAL-COLLECT-01 — 승인 실행 중단·설치 timeout
@@ -1811,7 +1867,7 @@
 - host cleanup·프로세스 부재 확인, 앱 cleanup은 미시작N/A. 설치 후 읽기 전용 조회에서 이전 APK9019b85d…2c0 유지, 후보d8db6963…34bc 설치 성공 없음. signer 일치이며 전송/무선/패키지 처리 원인 미확정. 화면/시스템 설정 변경 없음.
 - claim→cleanup195.893초, 마지막 추가조회까지283.200초(PC대기 포함); 최초 기기조회 tool wall0.699초를 합해도283.899초. 냉각·세션0, 승인5490초 이내. 원본 stopped의 일반 unknown은 보존하고 launch0 근거를 별도 receipt에 명시했다.
 - 개발 claim+전체 stopped로 **종료·재개 금지**. 새 표본/동결/확인/PC연결 없음, experiment_ready=false·40값/20null/FAIL/부분결과/과거 원인 미확정 유지. 관련 코드 변경/재빌드/테스트 반복 없음.
-- 외부 root `C:/Users/LG/Documents/D1Check_Arrival_Extension/`: `integrated_collection_run_v1/development`(원본), `collection_execution_registry/ARRIVAL-COLLECT-01`(소비/중단), `integrated_collection_execution_v1`(FINAL_REPORT/FINAL_RECEIPT/REPRODUCE.py/GIT_FINAL). Git에는 문서만 반영한다.
+- 외부 root `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/`: `integrated_collection_run_v1/development`(원본), `collection_execution_registry/ARRIVAL-COLLECT-01`(소비/중단), `integrated_collection_execution_v1`(FINAL_REPORT/FINAL_RECEIPT/REPRODUCE.py/GIT_FINAL). Git에는 문서만 반영한다.
 - 다음: (1) 부분 설치 출력·단계 시간을 보존하는 새 설치 진단 PC 준비, (2) 별도 승인 후 기기 진단, (3) 설치 문제와 수집 gate 해결 뒤 새 수집/독립 평가 준비. 현 계획/미시도분 자동 재개 금지. 아래 준비 상태는 이전 이력이다.
 
 ## 2026-09-24 ARRIVAL-COLLECT-01 — 통합 수집 PC 준비 완료·새 실측 미승인
@@ -1820,7 +1876,7 @@
 - 새 Android `COLLECTION_DISPATCH_DEV_1`: 엄격 PC 정책 active(CPU fallback·전체직렬)와 고정 배정+shadow 분리. 판단/기록/D→A·priority별후보/선택없음·실제lane해제 기록. 별도 namespace, 기존 정책 의미 유지. 이것은 완전한 B3/P가 아니다.
 - Kotlin28·기존 Python timing9 통과본 유지, 최종 Python collection13/13(skip0)·Kotlin-PC snapshot12 일치. APK 빌드·PC 서명·입력/manifest·실행 스크립트 check 통과. 재개 후 host 동결 전 회수 hash 검사만 보완해 후보plan v2. Android 빌드 반복 없음.
 - **실기기/ADB/설치/추론/본simulation 미실행, experiment_ready=false**. 새 예산 제안: 개발6→기술통계동결→확인6,12세션/48진단/96warmup/설치2, retry·대체·추가0, 예상32~45분·상한91.5분. 이전 승인 예산 재사용 금지.
-- 외부 root `C:/Users/LG/Documents/D1Check_Arrival_Extension/`: `integrated_collection_plan_v2`(계획SHA914a43ce…0566·manifest12·RUN_AFTER_APPROVAL.ps1), `integrated_collection_apk_v1`, `integrated_collection_pc_v1`(FINAL_REPORT/VERIFICATION/재현명령). 출력/registry 미생성 확인, v1후보 보존. 원격 공유에는 코드/문서만 포함한다.
+- 외부 root `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/`: `integrated_collection_plan_v2`(계획SHA914a43ce…0566·manifest12·RUN_AFTER_APPROVAL.ps1), `integrated_collection_apk_v1`, `integrated_collection_pc_v1`(FINAL_REPORT/VERIFICATION/재현명령). 출력/registry 미생성 확인, v1후보 보존. 원격 공유에는 코드/문서만 포함한다.
 - 다음: (1) 새 예산 승인, (2) 당일identity·서명·환경gate 후 계획대로 개발/동결/확인, (3) 지원범위/B2/B3/P 차별성과 독립평가 요건 검토. 추가 실측 자동 실행 없음. 최종 commit·원격일치·worktree는 외부 GIT_FINAL.json에 기록한다.
 
 ## 2026-09-24 ARRIVAL-CAL03-CONNECT-01 — PC 추정 연결·실행 모델 완료
@@ -1847,7 +1903,7 @@
 - 시작29b8543/원격일치/clean. [진단 계약·결과](ARRIVAL_STALL_OBSERVATION_DIAGNOSTIC_20260924.md). 앱수정/빌드없이 host독립관측·phase clock만추가해승인1회실행. **설치1성공·세션1완료/실패0·runtime4반환·warmup8·정규1·총추론9, 평가/retry/대체/추가0,209.390/600초**. 종료registry/no_resume.
 - journal191/256·회수10파일hash/단계/trace검증, 앱cleanup/hostcleanup·프로세스부재확인. 마지막seq190 cleanup/succeeded Java99. 요청1개이므로실제후속lane재사용미검증. sync시간은보정에사용금지.
 - 새host5초관측: Dozing/top-sleeping/isFrozen=false, kernel stack권한거부. 전체호출은완료됐으므로과거정지원인으로단정불가. CAL-02/이전통합실패원인미확정, 기존미확인호출수보존. 35/105초관측은정상완료로생략.
-- PC: host20건·후속calibration15건 PASS, signature/manifest/dry-run·문서검사완료. 기존Kotlin/전체build반복없음. 실행source snapshot과후속PC수정source를별도보존. 외부root `C:/Users/LG/Documents/D1Check_Arrival_Extension/`의`stall_observation_run_v1`(FINAL_REPORT/RECEIPT/POST_RUN_VERIFICATION), `stall_observation_pc_v1`(실행host), `timing_cal03_pc_v1`(후속host).
+- PC: host20건·후속calibration15건 PASS, signature/manifest/dry-run·문서검사완료. 기존Kotlin/전체build반복없음. 실행source snapshot과후속PC수정source를별도보존. 외부root `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/`의`stall_observation_run_v1`(FINAL_REPORT/RECEIPT/POST_RUN_VERIFICATION), `stall_observation_pc_v1`(실행host), `timing_cal03_pc_v1`(후속host).
 - [CAL-03 후보](ARRIVAL_TIMING_CAL03_PREPARATION_20260924.md): 새16세션/64진단/128warmup, 개발8→동결→확인8, retry/대체/추가0,45~60분/상한121.5분. 같은APK·sync journal없음·awake/interactive시작gate 추가. **미승인·미실행**, `timing_cal03_plan_v1/calibration_plan.json`, hash b184dea…d635. 이번진단승인으로실행하지않음.
 - 기존198요청FAIL/fixed-split부분결과/종료계획/20null/experiment_ready=false/과거RawAdapter대응미확인유지. 다음: (1) CAL-03새예산·화면켜짐조건검토/승인, (2) 승인후identity/미소비/환경gate, (3) 개발품질검토·동결후확인. 추가진단자동실행없음. 관련소스·문서commit/정상push, 최종Git상태는외부GIT_FINAL.json.
 
@@ -1857,7 +1913,7 @@
 - **업데이트설치1성공·세션1시도/완료0/기술적실패1/미시도0.** host poll125초 소진, 전체311.344/600초. runtime시작의도2/반환1(실제범위1~4); warmup0~8·정규0~1·총추론0~9 미확인. 기록0을실제0으로대체하지 않는다. 평가0/retry/대체/추가0. no_resume/closed 유지.
 - 마지막seq25: classification_GPU interpreter_construction/start, GPU Java106. CPU분류반환확인, 이후생성/모든warmup/정규요청/앱cleanup미관측. 앱Future30·watchdog120종료기록도없고회수시PID25426생존. native/VM/lifecycle/기록정지 구분에필요한stack은없으며 GPU/CAL-02동일원인확정불가.
 - journal유효26/256·잘린suffix/overflow증거없음; 회수2파일크기/hash일치·OS증거5명령확보. 앱산출물불완전이며회수오류는없음. host cleanup·프로세스부재/thermal0확인, 앱정상close와구분. 정상계측/보정준비완료아님.
-- 외부 `C:/Users/LG/Documents/D1Check_Arrival_Extension/warmup_request_run_v1/`: 원본receipt/journal/OS증거, FINAL_REPORT·POST_RUN_VERIFICATION·Git최종상태. 이번소스변경/빌드/기존PC시험반복없음. 기존FAIL/부분결과/종료계획/20null/experiment_ready=false/과거RawAdapter대응미확인보존.
+- 외부 `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/warmup_request_run_v1/`: 원본receipt/journal/OS증거, FINAL_REPORT·POST_RUN_VERIFICATION·Git최종상태. 이번소스변경/빌드/기존PC시험반복없음. 기존FAIL/부분결과/종료계획/20null/experiment_ready=false/과거RawAdapter대응미확인보존.
 - 다음: (1) PC에서lifecycle·Future30·watchdog120무기록조건검토, (2) 구체적위험과수집가능성이확인될때만별도최소진단계획검토. 같은진단/보정실측자동재개금지. 관련문서만commit·현재브랜치정상push.
 
 
@@ -1867,7 +1923,7 @@
 - 원 CAL-02는 C_CPU2→C_GPU2→D_CPU2→D_GPU2, warmup8 뒤 C/urgent/GPU4요청이었다. 새 후보는 runtime4·전체warmup8·동일 첫 정규요청1(평가0), 총 명시적추론9. 설치/세션1, retry/대체/추가0, 600초(545/10/45), 기존timeout/gate 유지. **기기 실행 미승인·미실행**.
 - 새scope만 제출/worker/input/API/output/persist/event저장/lane callback durable 기록을 연결하고 journal256 상한을 적용했다. 기존scope128/정책/공식 inference 경계 보존. worker_release는 event저장전 표식, lane_available는 scheduler busy해제이며 물리적 thread idle과 구분한다. 부분회수는 manifest/journal 우선.
 - PC Kotlin19/Python24·관련compile/격리assemble·프로젝트서명·manifest/dry-run·script구문 PASS. 초기SDK환경/overload/tuple 오류와 최종결과 보존. 기존 두 진단 판독 호환 확인. 새 실행/registry 없음, ADB/설치/앱/추론0. mock 성공을 native/GPU 실기기 검증으로 해석하지 않는다.
-- 외부 PC root `C:/Users/LG/Documents/D1Check_Arrival_Extension/`: `warmup_request_plan_v1`(plan/manifest/명령), `warmup_request_apk_v1`(APK/source snapshot), `warmup_request_pc_v1`(보고서/receipt/검증로그/Git상태). plan0100c50…853d, APK9019b85…f2c0. 기존FAIL·부분결과·종료계획·20null/experiment_ready=false 불변, 소스/문서만commit·작업브랜치 정상push.
+- 외부 PC root `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/`: `warmup_request_plan_v1`(plan/manifest/명령), `warmup_request_apk_v1`(APK/source snapshot), `warmup_request_pc_v1`(보고서/receipt/검증로그/Git상태). plan0100c50…853d, APK9019b85…f2c0. 기존FAIL·부분결과·종료계획·20null/experiment_ready=false 불변, 소스/문서만commit·작업브랜치 정상push.
 - 다음: (1) 새1세션/9추론 진단 예산 별도 승인, (2) 승인 시 최신 identity/기기/환경/미소비gate, (3) 성공하면 동기 기록 없는 보정 계획을 준비하고 남은8조건/개발-동결-확인 요건 검토. 실패면 마지막단계·확인된반환/미확인범위를 판독. 자동 재실행/보정 실측 없음.
 
 
@@ -1876,7 +1932,7 @@
 - 시작 `38556fe53aa315b002af309885ceabe46ccaf2a9` / `feature/arrival-scheduling-20260923` / clean. 사용자 승인과 미소비·source/APK/plan/manifest·동일 A24/서명·환경 gate 확인 후 준비된 script를 1회 실행했다. [결과와 한계](ARRIVAL_WARMUP_DIAGNOSTIC_20260924.md). 아래 PC 준비/승인 대기는 당시 이력이다.
 - **업데이트 설치1 성공·세션1 완료/실패0/미시도0·runtime4 시작/4반환·첫 classification_CPU warmup1 반환·명시적 inference1(그 warmup에 포함)·평가요청0·retry/대체/추가0. 총181.0/600초.** 입력 준비→host API→출력 처리→반환 및 앱/host cleanup 완료. 종료 registry/no_resume 유지, 재실행 금지.
 - journal80개·회수5파일 크기/hash·단계/시각/identity 검증, OS증거5명령 회수 완료. 마지막 seq79는 setup Java thread98의 cleanup succeeded. 이번 PID23909의 crash/timeout 증거 없음; crash 버퍼의9월19일 다른PID 오류와 구분했다. CAL-02 원인은 여전히 미확정이며 나머지7warmup/정규요청은 이번에 미관측이다.
-- 외부 PC 전용 `C:/Users/LG/Documents/D1Check_Arrival_Extension/first_warmup_run_v1/`: 원본 `FINAL_RECEIPT.json`, `partial/`, OS증거와 새 `FINAL_REPORT.md`, `POST_RUN_VERIFICATION.json`. 현재 후보 source103개 일치와 과거 ProbeRawAdapter hash 대응 미확인을 구분했다. 동기 진단시간은 보정에 쓰지 않는다.
+- 외부 PC 전용 `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/first_warmup_run_v1/`: 원본 `FINAL_RECEIPT.json`, `partial/`, OS증거와 새 `FINAL_REPORT.md`, `POST_RUN_VERIFICATION.json`. 현재 후보 source103개 일치와 과거 ProbeRawAdapter hash 대응 미확인을 구분했다. 동기 진단시간은 보정에 쓰지 않는다.
 - 기존 FAIL·fixed-split 부분결과/분모·종료 CAL 계획·20null/experiment_ready=false 보존. 이번 검증(2026-09-24, 시작 HEAD+문서4개 변경): diff check·상대 링크77개/추적 대상·원본26파일 불변 확인 PASS. 소스 변경/빌드/기존 PC 테스트 반복 없음. 문서만 commit/push하며 최종 Git 상태는 종료 보고와 외부 `GIT_FINAL.json`에 기록한다.
 - 다음: (1) PC에서 두 번째 CPU warmup/이후 GPU warmup 등 미관측 경계를 정리, (2) 필요할 때만 별도 최소 진단 계획·승인. 후속 실측과 중단 계획 재개는 자동 실행하지 않는다.
 
@@ -1894,7 +1950,7 @@
 - 시작 `72b3264a77325f1370048665cbfdde86823eebab` / feature/arrival-scheduling-20260923 / clean. 사용자 승인과 동결 계획·소스/APK/manifest 동일성, 미소비 확인 후 준비된 script1회 실행. [결과·근거·한계](ARRIVAL_INITIALIZATION_DIAGNOSTIC_20260924.md). 아래 승인 대기 문구는 당시 이력이다.
 - **설치1성공·세션1완료/실패0/미시도0·runtime4시작/4반환·warmup0·명시적추론0·retry/대체/추가0.** 전체209.047초/600초. 동일A24/fingerprint·서명·환경·네memory admission 통과, 앱cleanup과host 종료/프로세스부재/thermal0 확인. 삭제/초기화/timeout 연장 없음.
 - journal68개·앱파일5개/hash·OS증거5명령 회수 확인. CPU thread107/GPU108, 마지막seq67 setup thread99 cleanup succeeded. 이번timeout/native·Java crash 증거 없음; CAL-02의125초 대기 소진은 미재현·원인 미확정. 라이브러리 준비 연산과 앱 추론0 구분, 동기 진단 자료는 성능 보정 제외.
-- 외부 `C:/Users/LG/Documents/D1Check_Arrival_Extension/runtime_initialization_run_v1/`: 원본 FINAL_RECEIPT/partial/OS증거, FINAL_REPORT·POST_RUN_VERIFICATION. registry closed·no_resume=true. 기존FAIL/부분결과/CAL 중단·20null/experiment_ready=false 유지. 관련 문서만commit·작업브랜치push; 기존PC시험/빌드 반복 없음.
+- 외부 `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/runtime_initialization_run_v1/`: 원본 FINAL_RECEIPT/partial/OS증거, FINAL_REPORT·POST_RUN_VERIFICATION. registry closed·no_resume=true. 기존FAIL/부분결과/CAL 중단·20null/experiment_ready=false 유지. 관련 문서만commit·작업브랜치push; 기존PC시험/빌드 반복 없음.
 - 다음: (1) PC에서 이전 실패와 이번 setup_only의 단계 경계·잔여 가설 정리, (2) 필요할 때 별도 진단 계획/승인. 이번 소비 계획과 CAL/fixed-split 재개·후속 실측 자동 실행 금지. S26/NPU 협업 경계 유지.
 
 ## 2026-09-24 TEAM-SYNC-02 — GitHub·팀 안내 동기화
@@ -1911,7 +1967,7 @@
 - 예산은 실행claim1·설치≤1·session≤1·생성≤4·warmup/추론0·retry/대체/추가0. 단일600초 wall에서 작업545초·회수10초·cleanup45초, 앱120초/host125초 timeout 및 기존 gate 유지. 실패/claim 후 재실행 금지, CAL-02 미시도15와 별개다.
 - 후보 plan SHA `bbb2d6428056af88abc7f0a88fda461c01fea045f8ccb9db55a78919cdcbaf78`, APK SHA `9af4f9ba89236702330ea57763066827116112a73353b4bb7ff668bc7631431c`. PC apksigner: 기존 보존 설치본과 같은b253…7565/package/version1. 실제 현재 설치본은 실행 직전 재확인 대상이다. 원 APK/plan/원자료 불변.
 - 관련 Kotlin5·Python15·컴파일/격리 APK assemble·plan dry-run PASS(`6a63e39`+이번 변경; 파일hash/명령/시점은 외부 receipt). 기존 조사/전체 테스트 반복 없음. 실행root/registry 없음, 실제 ADB/설치/앱 실행/추론0. 일반 experiment_ready=false·20null·기존FAIL/부분 결과/미확인 소비량 유지.
-- 외부 root `C:/Users/LG/Documents/D1Check_Arrival_Extension/`: `runtime_initialization_plan_v1`(plan/manifest/PC_CHECK/RUN_AFTER_APPROVAL), `runtime_initialization_apk_v1`, `runtime_initialization_pc_v1`(FINAL_REPORT/FINAL_RECEIPT/GIT_FINAL). 소스·문서만 로컬commit; 이번 push/merge 없음.
+- 외부 root `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/`: `runtime_initialization_plan_v1`(plan/manifest/PC_CHECK/RUN_AFTER_APPROVAL), `runtime_initialization_apk_v1`, `runtime_initialization_pc_v1`(FINAL_REPORT/FINAL_RECEIPT/GIT_FINAL). 소스·문서만 로컬commit; 이번 push/merge 없음.
 - 다음: (1) 별도1세션 실행 승인, (2) 승인 후 실제 동일A24/서명·환경·미소비 gate 확인과 단일 진단, (3) prefix/OS증거·정상 해제와host 종료를 분리 판독. 생성 성공 한 번을 원인 해결로 선언하거나16세션 보정으로 확대하지 않는다. S26 NPU 개발은 이전 협업 경계대로 병행한다.
 
 ## 2026-09-24 S26-NPU-COLLAB-01 — 최신 협업 지침
@@ -1932,14 +1988,14 @@
 - `arrival-failure-journal-v1` opt-in 진단에만 fsync prefix·runtime/warmup/요청 start/terminal·stop/부분 cleanup 기록을 추가했다. setup_only는4runtime·warmup0·추론0. 기록 오류/overflow는 후속 호출 차단; native crash/finally·마지막 이벤트 내구성 보장 없음. 동기 I/O 진단 자료는 calibration fit에서 거절한다. 기존 정책/manifest 경로는 opt-out으로 유지한다.
 - host는 명시적 timeout/실행 단계와 회수 실패를 분리하고 cleanup 전 증거5초+partial5초를 기존 phase 예산 안에서 회수한다. cleanup은 finally에서 수행한다. PC Kotlin14·Python12 PASS 및 관련 컴파일 PASS; native GPU/실기기 복구 PASS가 아니다. 검증 대상은 시작 HEAD+이번 변경, hash/명령/결과는 외부 receipt에 기록한다.
 - CAL-02 **시도1/16·완료0·기술적 실패1·미시도15**, 진단0~4/warmup0~8 미확인·완료 증거0, 나머지60/120 미실행 유지. 동결/확인 미실행·20 null/experiment_ready=false. 기존 FAIL·fixed-split 부분 결과·중단 registry·원본·APK·plan 불변.
-- 외부 `C:/Users/LG/Documents/D1Check_Arrival_Extension/timing_failure_diagnosis_pc_v1/`: starting_evidence, old_session_consumption, Kotlin/Python 로그, FINAL_REPORT/FINAL_RECEIPT/GIT_FINAL. 소스/문서만 로컬 commit; ADB·설치·앱 실행·실측·APK assemble·simulation·push/merge0.
+- 외부 `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/timing_failure_diagnosis_pc_v1/`: starting_evidence, old_session_consumption, Kotlin/Python 로그, FINAL_REPORT/FINAL_RECEIPT/GIT_FINAL. 소스/문서만 로컬 commit; ADB·설치·앱 실행·실측·APK assemble·simulation·push/merge0.
 - 다음: (1) 제안된 setup_only1회·runtime생성≤4·warmup/진단0·총600초 상한의 단일시도 실행 준비, (2) 새 APK/manifest/runner 및 별도 승인 후에만 기기 진단. 새16세션 계획 준비나 CAL-02/과거 중단 run 재개는 하지 않는다.
 
 ## 2026-09-24 CAL-02 승인 실행 — 첫 세션 기록 불완전으로 종료
 
 - `ARRIVAL-TIMING-CAL-02`, 시작 `b4cc659`/feature/arrival-scheduling-20260923 clean. 사용자 승인: 개발8→검토·추정/규칙 동결→확인8,16세션/64진단/128warmup, retry/대체/추가0·cleanup 포함121.5분. 과거 CAL-01 중단과 별도다.
 - 계획 SHA31558f…5a7a6, APK SHA85c5fd…7ff6와 코드·16manifest 동일성 확인. 변경 없는 PC 테스트/서명 원인 조사는 반복하지 않았다. 동일 A24/fingerprint·배터리76%/충전 분리/29.0°C/thermal0·프로세스 부재 확인, 앱 runtime memory admission은 실행 gate에서 확인한다.
-- 근거 root `C:/Users/LG/Documents/D1Check_Arrival_Extension/timing_cal02_execution_v1`. 동결 runner를 그대로 호출하는 외부 approved_phase.py는 설치 성공 직후 기기 APK SHA/package/version을 확인하는 읽기 전용 gate만 추가한다. 후보의 apksigner 검증과 byte identity로 설치본 인증서를 확인하고 불일치 시 runner의 중단·cleanup으로 전파한다. 앱/정책/측정 코드 수정 없음.
+- 근거 root `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/timing_cal02_execution_v1`. 동결 runner를 그대로 호출하는 외부 approved_phase.py는 설치 성공 직후 기기 APK SHA/package/version을 확인하는 읽기 전용 gate만 추가한다. 후보의 apksigner 검증과 byte identity로 설치본 인증서를 확인하고 불일치 시 runner의 중단·cleanup으로 전파한다. 앱/정책/측정 코드 수정 없음.
 - **종료:** preflight1 PASS·업데이트 설치1 성공·설치후 SHA/package/version/signer 확인. 세션1/16시도·완료0·기술실패1·미시도15, Activity1, retry/대체/추가0. 첫 classification/GPU/urgent 출력이manifest뿐이고 decision_trace 등 필수 기록이 없어 host125초 poll 뒤 중단했다. cleanup 완료·프로세스 부재·thermal0.
 - 진단64 중 성공 증거0, 실패 세션4건의 실제 호출 미확인(0~4), 나머지60 미실행. warmup128 중 완료 증거0, 실패 세션8회 실제 호출 미확인(0~8), 나머지120 미실행. 호출0으로 단정하지 않는다. fit 미동결·확인8 미소비·조건별 오차 계산 불가, 기존20null/experiment_ready=false 유지.
 - [종료 보고](ARRIVAL_TIMING_CAL02_RESULTS_20260924.md). 마지막 runtime 생성 로그 이후 원인 미확정; 과거09-19 crash와 혼동 금지. phase claim→cleanup315.995초, 서명 preflight 포함약6분. 기기 기존 결과 directory69개 존재, 앱 삭제/초기화 없음. 원래 FAIL/부분결과·CAL-01 중단 보존.
@@ -1952,7 +2008,7 @@
 - 새 APK SHA `85c5fd0ab578d48e8af3e2abdda4c836939c5a330631d39dc4df61bd6d3e7ff6`, plan SHA `31558f9c1d3c62b8d1d4e9f0b8713274bee6a1700e4a8c59c2c4ae5aabc5a7a6`. 외부 `timing_calibration_resigned_apk_v1`, `timing_calibration_recovery_plan_v1`. CAL-01 중단/소비 유지, 새 registry/세션UUID/출력 분리.
 - preflight는 설치본 읽기/서명 검증을 설치·phase소비 전에 수행한다. unknown/mismatch/package/version 하향은0소비 차단, install_attempt와session_attempt 구분. 실제 A24 읽기 전용 preflight 호환 PASS(설치 성공 판정 아님), PC10 PASS·plan/16manifest dry-run PASS. Android 소스/의존성 변경·전체 빌드/테스트 반복 없음.
 - 후보 예산 개발8→검토·동결→확인8,16세션/64진단/128warmup·retry/대체/추가0·121.5분, **미승인/미실행**. 기존20null·experiment_ready=false·198요청 FAIL·fixed-split 부분 결과 보존. 키/원자료/APK/캐시 Git 제외.
-- 근거: 외부 `C:/Users/LG/Documents/D1Check_Arrival_Extension/timing_signature_recovery_v1/FINAL_REPORT.md` 및 FINAL_RECEIPT.json. 관련 코드/문서만 로컬 checkpoint, 정확한 commit/worktree는 같은 root GIT_FINAL.json.
+- 근거: 외부 `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/timing_signature_recovery_v1/FINAL_REPORT.md` 및 FINAL_RECEIPT.json. 관련 코드/문서만 로컬 checkpoint, 정확한 commit/worktree는 같은 root GIT_FINAL.json.
 - 다음: (1) 새 CAL-02 실행 승인, (2) 승인 후 동일기기/최신 환경 gate 재확인·개발8, (3) 품질·추정 가능성 검토/fit 동결 후 확인8. CAL-01/과거 fixed-split 재개 금지.
 
 ## 2026-09-24 ARRIVAL-TIMING-CAL-01 승인 실행 — 설치 실패로 종료
@@ -1962,7 +2018,7 @@
 - 실행 전 동일 SM-A245N/fingerprint, 단일 무선 ADB 연결, 배터리77%/충전 분리/30.0°C/thermal0, 시스템 RAM normal·메인 앱 PID 부재 확인. runtime memory admission은 설치 실패 때문에 미검증이다.
 - 10:54 KST `install -r`가 `INSTALL_FAILED_UPDATE_INCOMPATIBLE`(기존 패키지와 새 APK 서명 불일치)로 실패했다. 개발 phase 소비1/실패1, **세션 시도0·완료0·세션 실패0·미시도16**, 진단0/64·warmup0/128. Activity 실행0, retry/대체/추가0. phase 설치 시작부터 cleanup까지49.44초. 16세션이 남았다고 같은 run을 재실행할 수 없다.
 - `development_stopped.json`으로 영구 중단, 확인 phase 미소비. bounded cleanup 완료·전체 해당 앱 프로세스 부재·thermal0 확인. 앱 삭제/데이터 초기화/재설치 없음. fit 동결·확인 결과 없음; 기존20 null/experiment_ready=false 유지.
-- 승인·preflight·종료 보고: 외부 root `C:/Users/LG/Documents/D1Check_Arrival_Extension/timing_calibration_execution_20260924T105336/FINAL_REPORT.md`, `FINAL_RECEIPT.json`. 원래 오류·cleanup: `timing_calibration_development_run_v1`; 소비/중단: `timing_calibration_execution_registry/ARRIVAL-TIMING-CAL-01`. 코드/APK/plan 변경·테스트 반복 없음, 문서만 갱신. 기존 FAIL·fixed-split 종료 상태 보존.
+- 승인·preflight·종료 보고: 외부 root `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/timing_calibration_execution_20260924T105336/FINAL_REPORT.md`, `FINAL_RECEIPT.json`. 원래 오류·cleanup: `timing_calibration_development_run_v1`; 소비/중단: `timing_calibration_execution_registry/ARRIVAL-TIMING-CAL-01`. 코드/APK/plan 변경·테스트 반복 없음, 문서만 갱신. 기존 FAIL·fixed-split 종료 상태 보존.
 - 다음: (1) 기존 설치본의 서명과 동일하게 빌드할 수 있는 키/빌드 출처를 PC에서 확인, (2) 해결 가능한 경우 새 APK·새 계획/실험 ID 및 별도 실행 승인을 준비. 기존 앱 삭제를 우회책으로 자동 진행하지 않으며 이번 중단 run/확인 phase는 재개하지 않는다.
 
 ## 2026-09-24 시간 경계 단독 진단 준비 — 현재 작업
@@ -1994,7 +2050,7 @@
 - 사용자 재연결 후14:31에 동일 기기를 확인하고 원본 확인·force-stop·프로세스 부재 확인 완료. 기기 output은 완료23개뿐이며 failed/미시도 UUID 출력 없음. 현재 thermal0, 복구 시 배터리51%. 남은 세션 자동 재개 금지; 같은 RUN script 재실행 금지.
 - 부분 결과 C−F: burst 완전2/3pair urgent 세션max +72.27%, normal 평균−61.69%, 주 CI 미산출. low2/3pair +7.39%/−47.84%; queue3/3pair +21.19%/−63.15%(보조 pointwise95% CI만). 7개 완전pair 모두 urgent는 C가 느리고 normal은 C가 빠름. 단순 비유의/부분자료로 동등성·비열등성·전면 우월성 주장 없음.
 - 완료 세션 gate: 최대lag2.591ms, thermal전부0, memory admission257/257 admit, sampled peak PSS432.31MiB. 새 원본566파일·기존 근거758파일 hash 불변. 실제142요청 identity/event/ledger/payload/cleanup 재검증. 분석 Python5/synthetic plot PASS, PNG/SVG3종·CSV 생성. v1/v2/v3 핵심 JSON 동등, 최종v3는 그림 표기/공통 시간축 보완.
-- 근거 root `C:/Users/LG/Documents/D1Check_Arrival_Extension/`: `fixed_split_comparison_minimum_run_v1`, `fixed_split_comparison_recovery_v1/recovery_receipt.json`, `fixed_split_comparison_minimum_analysis_v3/FINAL_REPORT.md`·`FINAL_RECEIPT.json`. 신규 분석 코드만 추가했으며 측정용 frozen code는 불변.
+- 근거 root `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/`: `fixed_split_comparison_minimum_run_v1`, `fixed_split_comparison_recovery_v1/recovery_receipt.json`, `fixed_split_comparison_minimum_analysis_v3/FINAL_REPORT.md`·`FINAL_RECEIPT.json`. 신규 분석 코드만 추가했으며 측정용 frozen code는 불변.
 - 다음 행동(최대3): (1) 부분 결과의 긴급/일반 비용 상충을 팀 검토, (2) 필요하면 보고서의 PC 재현 명령을 새 출력에서 실행, (3) 추가 실측은 별도 전향적 계획·예산 승인 후에만 검토. 이번 중단 run의 retry·대체·이어 측정은 하지 않는다.
 
 ## 2026-09-23 비동시 도착 확장 — 현재 작업
@@ -2006,7 +2062,7 @@
 - 동결 판정: `CPU_URGENT−CPU_FIFO` urgent 상대차의 95% CI `[-75.67%,-74.63%]`, normal 상대손실 상한 `5.53%`로 우선순위 대비는 10% 최소효과와 10% normal 손실 기준을 모두 통과했다. `CONDITIONAL−CPU_URGENT` urgent 상대차 `-3.48%`, 95% CI `[-5.02%,-1.95%]`로 10% 최소효과를 실패했고 normal 상대차는 `-30.93%`로 손실 기준을 통과했다. 따라서 조건부 정책의 주 결합 기준은 **FAIL**이다.
 - 해석: 큰 urgent 개선은 CPU 내 우선순위 효과다. 조건부 정책은 주 조건에서 normal 탐지를 GPU로 보조 실행해 normal 응답·makespan·throughput을 개선했지만 CPU 긴급 우선보다 긴급 P95를 최소10% 더 줄이지 못했다. 주 urgent·normal 순위는 6/6 block에서 안정적이나 독립 block n=6, 긴급2건/세션이라 tail 일반화는 제한된다.
 - PC 후처리 `ARRIVAL-EXT-01-POST` 완료: 새 root에서 기존 분석을 재현했고 session/paired/evaluation JSON이 v2와 semantic-equal, 원본694 hash와 27세션·198평가·216warmup·urgent51/normal147·정책별66을 재확인했다. 세션 urgent2건의 nearest-rank P95와 pooled P95를 분리했으며 동결 FAIL은 변하지 않았다.
-- 새 그림5종 PNG+SVG, 그래프 CSV·팀 요약·재현 보고서: `C:/Users/LG/Documents/D1Check_Arrival_Extension/independent_evaluation_post_analysis_v2`. 대표 간트는 결과 무관 규칙인 첫 primary block replicate0의 세 정책 전부다.
+- 새 그림5종 PNG+SVG, 그래프 CSV·팀 요약·재현 보고서: `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/independent_evaluation_post_analysis_v2`. 대표 간트는 결과 무관 규칙인 첫 primary block replicate0의 세 정책 전부다.
 - 확장 시뮬레이션은 별도 `arrival-extension-exploratory-simulation-plan-v1`의 plan-only/dry-run PASS, 실행0이다. classification/GPU 관측0, detection/GPU15건 전부 overlap·정책선택 표본이라 fixed split/간섭 인과 모델은 미지원이다. [적합성 계약](ARRIVAL_EXTENSION_POST_ANALYSIS_20260923.md)을 따른다.
 - 다음 행동(최대 3): (1) PC 후처리 결과를 팀 공유 근거로 채택, (2) 본 시뮬레이션이 필요하면 post-unblinding 탐색임을 유지한 별도 실행·성공기준 승인, (3) 독립 검증 주장을 원하면 fixed split·matched overlap·untouched holdout의 최소 추가 측정 예산 결정.
 
@@ -2017,7 +2073,7 @@
 - 54deadline budget, 5pair 전수, seed2026092202, exact bootstrap3125·low/central/high·5LOSO. Pareto 주 결과와 epsilon0/0.5/1 sensitivity, 임의 허용손실 없음. 절대 SLA calibration_pending은 유지한다.
 - **SIMULATION_PLAN_READY**. 신규 synthetic17 PASS, 전체Python468=466 PASS+기존symlink권한skip2. compileall/diff-check·실제 raw validator·두root byte-identical·잘못된hash/schema/seed/path/replay/consumed거절·엔진/RNG/외부process/write 차단 dry-run PASS. 검증 명령·시각·HEAD+source hash는 외부 로그에 기록했다.
 - 원본1250파일+APK3 SHA 불변, Android production diff 없음. Gradle 반복 없음. 본 simulation/formal·ADB·실기기·push/PR/merge0. 절대 SLA·다기기·새 overlap은 READY 범위가 아니며 Band 원문 상세 external_verification_pending은 유지한다.
-- 근거: `C:/Users/LG/Documents/D1Check_Simulation_Plan/run_20260922_support_v1/FINAL_REPORT.md`, [동결 receipt](SUPPORT_SIMULATION_FREEZE_20260922.json). Freeze SHA `32968a7f66f58f4d1b74087d2dcfafd21c729ba20b8f6705bc9d3521f8b6d9bc`. 종료 HEAD·commit·clean은 외부 git_final.json에 기록한다.
+- 근거: `PRIVATE_EXTERNAL/D1Check_Simulation_Plan/run_20260922_support_v1/FINAL_REPORT.md`, [동결 receipt](SUPPORT_SIMULATION_FREEZE_20260922.json). Freeze SHA `32968a7f66f58f4d1b74087d2dcfafd21c729ba20b8f6705bc9d3521f8b6d9bc`. 종료 HEAD·commit·clean은 외부 git_final.json에 기록한다.
 - 다음: 별도 승인·실행 프롬프트로 `SIM-RUN-01-SUPPORT`. 선택 정책의 A24 소규모 확인은 후속 `SIM-DEVICE-CONFIRM-01`이다.
 
 ## 이전 2026-09-22 PC 계획 동결 감사
@@ -2028,7 +2084,7 @@
 - 산출물: [PC 계약](SIMULATION_PROTOCOL.md), [문헌 비교](RELATED_WORK_GAP.md), [동결 receipt](SIMULATION_PLAN_FREEZE_20260922.json), `tools/d1_simulation_plan.py`·schema·targeted tests. SP1 정책 namespace, seed2026092201, 기존 복수 deadline과 전체도착 분모·epsilon/사전적 목적 구조를 기록했다. 필수 null을 READY로 승격하지 않는다.
 - 검증: 신규15 PASS; 전체Python451=449 PASS+기존symlink권한skip2, compileall/diff-check PASS. 두root byte-identical, 전체 raw validator/consumed/replay/hash/schema/seed/path 거절, dry-run 실제 RNG/외부process/결과파일0·입력 불변 확인. 검증 대상은 6654cb7+이번 미커밋 코드이며 최종 source hash는 외부 frozen_final/freeze.json의 code에 결합한다.
 - 보존: 기존 실험root1250파일+APK3 SHA 불변, Android production/modelProbe Git diff 없음. Gradle 반복 없음. 본simulation/formal·ADB·실기기·push/PR/merge 없음.
-- 외부 최종 보고서: `C:/Users/LG/Documents/D1Check_Simulation_Plan/run_20260922_v1/FINAL_REPORT.md`. 정확한 종료 HEAD/commit/clean은 같은 root의 git_final.json 참조.
+- 외부 최종 보고서: `PRIVATE_EXTERNAL/D1Check_Simulation_Plan/run_20260922_v1/FINAL_REPORT.md`. 정확한 종료 HEAD/commit/clean은 같은 root의 git_final.json 참조.
 - freeze SHA `0f9f6bebe11d09f8b4ed1116c5a701ba960794ebc39b73463240219299c0142a` (부분계획 동결, 실행 승인 아님).
 - 다음 한 가지: `SIM-PLAN-02-SUPPORT-DECISION`에서 **새 실측 없이 사용할 반사실적 서비스 모형의 허용 가정과 범위**를 결정한다. 불가하면 고정 trace 기술분석으로 연구 질문을 명시적으로 축소하는 대안을 검토한다.
 
@@ -2039,20 +2095,20 @@
 - Paired 관측: corun−CPU urgentP95 평균−2,838.11ms, makespan+2,178.00ms, throughput−0.880req/s. 5쌍의 제한된 방향·bootstrap 근거이며 GPU보편우월성/인과일반화 없음. Low/central/high/cold-stress도같은상충방향.
 - Sampled peak PSS311,353KiB(기존326,254KiB보존), true maximum/headroom보장 아님. Thermal0만승인. Deadline은사전공식의공통복수engineering scenario로계산·동결했고 사용자SLA는미확정이다.
 - Joint input SHA `4eeae6f6f8e9954d153b010767ba5a84307e5b8d0a971e7a478b0255413c0fc5`. 두root동일재생성/원본재검증/field mixing거절/no-op PASS. 전체Python436(434 PASS·skip2)+복구overlay4 PASS, compileall/diff-check PASS. Android/APK·기존근거2213파일·이전보고서hash불변.
-- 보고서·atomic manifest·raw·분포/LOSO/bootstrap/paired/deadline/provenance: `C:/Users/LG/Documents/D1Check_Bounded_Empirical_Run/run_20260921_atomic_v1/`. 최초실행흔적없음을확인후새root에서시작했고실제context중단복구는불필요했다. 복구경로는host mock검증, 30완료후실행기재호출금지.
+- 보고서·atomic manifest·raw·분포/LOSO/bootstrap/paired/deadline/provenance: `PRIVATE_EXTERNAL/D1Check_Bounded_Empirical_Run/run_20260921_atomic_v1/`. 최초실행흔적없음을확인후새root에서시작했고실제context중단복구는불필요했다. 복구경로는host mock검증, 30완료후실행기재호출금지.
 
 ## 이전 단계 기록 — 아래 판정과 pending은 당시 상태이며 현재 판정을 대체하지 않음
 
-- [v4 계약](TELEMETRY_V4_GATE.md): 실제531 event의 setup/active/runtime/worker-release·memory·resident CPU serial/co-run·paired/joint 및 출력 동등성 모두 PASS. 각 session force-stop 성공, 최종 project process 부재 확인. 보고서: `C:/Users/LG/Documents/D1Check_Telemetry_V4/resume_20260920T160724Z/FINAL_REPORT.md`.
+- [v4 계약](TELEMETRY_V4_GATE.md): 실제531 event의 setup/active/runtime/worker-release·memory·resident CPU serial/co-run·paired/joint 및 출력 동등성 모두 PASS. 각 session force-stop 성공, 최종 project process 부재 확인. 보고서: `PRIVATE_EXTERNAL/D1Check_Telemetry_V4/resume_20260920T160724Z/FINAL_REPORT.md`.
 - 재개 targeted Python29 PASS, 실제 artifact4 schema/validator 및 consumed/replay 거절 PASS. 검증 소스/APK hash 불변으로 기존 debug JVM119/modelProbe JVM126/Python370(368 PASS·skip2)/lint/build는 반복하지 않았다. 기존 근거2213파일 및 이전 보고서101파일 불변.
 - Memory admission28회 admit, lowMemory 거절 mock PASS; thermal0에 한정. sampled peak PSS326,254KiB는 절대 최대나 안전 상한이 아니다. APK SHA `68e55aefdceb91e569e0d55ff0a18af0658163106589852325cb9ad5626fa62e`. Warm 안정화·서비스모델 승인·deadline은 pending, SIM-01_INCOMPLETE 유지.
-- 이전 V2: [V2 결과](SERVICE_MODEL_V2_RESULTS_20260920.md), [설계](SERVICE_MODEL_V2_DESIGN.md), `C:/Users/LG/Documents/D1Check_Service_Model_V2_Design/run_20260920T140424Z/FINAL_REPORT.md`. 구현 checkpoint `1cbdd1e`; 종료 commit/clean은 외부 git_final.json 참조.
+- 이전 V2: [V2 결과](SERVICE_MODEL_V2_RESULTS_20260920.md), [설계](SERVICE_MODEL_V2_DESIGN.md), `PRIVATE_EXTERNAL/D1Check_Service_Model_V2_Design/run_20260920T140424Z/FINAL_REPORT.md`. 구현 checkpoint `1cbdd1e`; 종료 commit/clean은 외부 git_final.json 참조.
 - V2: 기존52 profile session 전부 consumed. 검증51세션559요청+host실패9요청 보존. C+E setup/active joint empirical 개발모델 WAPE4.311%/MAE29.447ms는 승인holdout 결과가 아니다. Warm K·worker-release·runtime span·MemoryInfo·공정resident CPU대조 부족으로 승인 동결 불가.
 - V2검증: 새unit30/관련targeted83 PASS, 전체341(339 PASS·기존skip2), compileall/diff-check PASS. 두root 재생성hash 동일, no-op/dry-run device명령/dispatch/가상완료0. Android source/APK3종 불변. 계약 SHA `635087906dde3ff3c50fc034b350689207109d54970c721bf21a24bb432f0719`는 설계hash이고 승인simulation input은 없다.
 
 ## 이전 FINAL-CALIB 근거 보존
 - 브랜치 `feature/pre-simulation-ready-20260919`, 시작 `4230160` clean. 계획 checkpoint `5544995`, holdout 전 후보 동결 `b5928e8`. 종료 문서 checkpoint/clean 여부는 외부 `git_final.json` 참조. push/merge/rebase/master 전환 없음.
-- 최신 상세: `C:/Users/LG/Documents/D1Check_Service_Model_Final/run_20260920T130139Z/FINAL_REPORT.md`. 보고서·JSON·명령/시각/HEAD/실패 로그·모든 session 원자료를 같은 root에 보존했다.
+- 최신 상세: `PRIVATE_EXTERNAL/D1Check_Service_Model_Final/run_20260920T130139Z/FINAL_REPORT.md`. 보고서·JSON·명령/시각/HEAD/실패 로그·모든 session 원자료를 같은 root에 보존했다.
 - 저장소 요약: [FINAL-CALIB](SERVICE_MODEL_FINAL_CALIB_20260920.md), [사전 동결 hash](SERVICE_MODEL_FINAL_FREEZE_20260920.json). 이전 [FREEZE](SERVICE_MODEL_FREEZE_20260920.md)·[A24 재개](A24_RESUME_20260920.md)·[decoded 수정](DECODE_RESOLUTION_20260920.md)·기존233요청/31session 원자료 보존.
 
 ## 신규 실측과 실패 보존

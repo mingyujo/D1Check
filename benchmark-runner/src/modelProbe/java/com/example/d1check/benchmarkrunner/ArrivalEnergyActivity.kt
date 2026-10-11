@@ -36,6 +36,8 @@ open class ArrivalEnergyActivity : Activity() {
     private var activityCreatedNs = 0L
     private var sequence = 0L
     private var backgroundObservation = false
+    private var batteryMinimum = 20
+    private var lowBatteryDiagnosticVersion: String? = null
     private val pastPower = ArrivalPastPowerWindow()
     @Volatile private var commonStartForObservation = 0L
     private var nextPastInputNs = 0L
@@ -112,7 +114,7 @@ open class ArrivalEnergyActivity : Activity() {
         val level = battery?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
         val scale = battery?.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
         if (reason != "admit" || plugged != 0 || temperature == null || temperature !in 0..350 ||
-            level == null || level < 20 || scale != 100 || !pm.isInteractive)
+            !ArrivalBatteryGate.admitted(level, scale, batteryMinimum) || !pm.isInteractive)
             stop.compareAndSet(null, "environment/$reason")
         return mapOf("current_raw" to current, "current_valid" to (current != Int.MIN_VALUE),
             "current_nominal_unit" to "uA_API_unverified_device_scale",
@@ -120,6 +122,9 @@ open class ArrivalEnergyActivity : Activity() {
             "charge_counter_raw" to charge, "charge_valid" to (charge != Int.MIN_VALUE),
             "charge_nominal_unit" to "uAh", "plugged" to plugged,
             "battery_temperature_deci_c" to temperature, "battery_level" to level,
+            "battery_min_percent" to batteryMinimum, "battery_scale" to scale,
+            "power_save_mode" to pm.isPowerSaveMode,
+            "low_battery_diagnostic_version" to lowBatteryDiagnosticVersion,
             "thermal_status" to thermal, "interactive" to pm.isInteractive,
             "avail_bytes" to memory.availMem, "threshold_bytes" to memory.threshold,
             "low_memory" to memory.lowMemory, "peak_pss_bytes" to peak.get(),
@@ -174,6 +179,10 @@ open class ArrivalEnergyActivity : Activity() {
             val inputs = canonicalProbeInputRoot(filesDir, "arrival-scheduler-inputs", sid)
             val mf = File(inputs, "manifest.json"); check(mf.length() in 1..1_048_576)
             val m = JSONObject(mf.readText()); val hash = ProbeModelFile.sha256(mf)
+            lowBatteryDiagnosticVersion = if (m.has("low_battery_diagnostic_version"))
+                m.getString("low_battery_diagnostic_version") else null
+            batteryMinimum = ArrivalBatteryGate.minimum(lowBatteryDiagnosticVersion,
+                if (m.has("battery_min_percent")) m.getInt("battery_min_percent") else null)
             root = canonicalProbeOutputRoot(filesDir, ArrivalEnergyContract.PROTOCOL, sid)
             check(!root.exists() && root.mkdirs())
             FileOutputStream(File(root, "manifest.json")).use { it.write(mf.readBytes()); it.fd.sync() }
@@ -472,7 +481,9 @@ open class ArrivalEnergyActivity : Activity() {
             try { event("session_failed", mapOf("error" to failure)) } catch (_: Throwable) {}
             Log.e("D1ARRIVALENERGY", "session failed", e)
         } finally {
-            phase = "cleanup"; arrivals.shutdownNow(); samples.shutdownNow()
+            phase = "cleanup"; arrivals.shutdownNow()
+            try { EnergySamplerShutdown.stop(samples) }
+            catch(e: Throwable) { failure = "$failure; sampler shutdown: $e" }
             for ((executor,suffix) in listOf(cpu to "_CPU",gpu to "_GPU")) {
                 try { ArrivalRuntimeSetup.closeLane(executor) { observed.laneRuntimes(suffix).forEach { it.close() } } }
                 catch(e: Throwable) { failure = "$failure; cleanup: $e" }

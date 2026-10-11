@@ -5,6 +5,17 @@
 - 확정된실행사실: 사용자가승인한원64 세모델의512연장·1344추가학습/2200환경·별도smoke3을동결설정과공유round-robin RNG로완료했다. [동일새48조건결과와상태/SHA](results/desktop_amount512_20261011/README.md)를따른다. 실제정상중지후partial/세상태/RNG/cursor/active소비를보존해재개했으며optimizer/예산/clock초기화0이다.
 - 판정: 원strict 최종gate 세 PPO 모두FAIL·새채택0. 보상·학습량·개발자료의변화를새독립우위나512수렴으로대체하지않는다. 원기본/strict/experiment_ready=false와기존FAIL은유지하며휴대폰/ADB/새실측0이다. 이후제약/KPI정렬검토는별도설계·새명시승인·새독립자료가필요하다.
 
+## 2026-10-11 ATC-PPO-DESIGN-01 — 새 방향·기기 담당·GitHub 이관
+
+- 확정된 사용자 방향: [ATC 후보선정＋PPO 실행선택](ATC_PPO_EVENT_DESIGN_20261011.md), 사건 기반 반복판단·고정 운영가중치·비선점·실제AVAILABLE·전체미래일정탐색 없음이다. A24와 S26은 모두 사용자가 담당하지만 계수/프로필/품질/검증조합은 기기별로 분리한다.
+- 이번 승인 작업은 공유가능 누락자료 게시와 [데스크톱 프롬프트](DESKTOP_ATC_PPO_PROMPT_20261011.md) 작성이다. 후보수/ATC상수/보상·mask 최종값과 새 정책 채택은 구현 전 계약에서 고정할 항목이며 이번에 완료된 정책으로 승격하지 않는다. 과거 actor/Adam 연장을 새 설계로 표시하지 않는다.
+- 개인경로·호스트locator·UTF16 로그는 공유 파생본만 이식 가능하게 정리하고 원본과 SHA를 보존한다. raw/대용량/checkpoint/모델binary/키/개인문서는 새로 게시하지 않는다. 원격512/원FAIL/종료소비·기본/strict/experiment_ready=false 유지, 새 학습/ADB/기기0이다.
+
+## 2026-10-11 S26-SIM-PLAN-01 — 기존 시뮬레이터 재사용의 계획 범위
+
+- 사용자3전문역할 토론과 GitHub 존재/A24 차이 확인 요청을 [통합 계획](S26_SIMULATION_PLAN_20261011.md)으로 정리했다. 기존 S26 d1sim 구조·추출·판독을 재사용하고 최신 혼합 CPU1/exact 계약을 별도 profile/adapter로 연구한다. A24계수전용·옛MobileNet/CPU4수치자동상속은하지않는다.
+- 이번확정은계획작성방향이다. 실제구현/적합/시뮬배치/기기실행/예산/신규정책채택은확정하지않았다. 우선S0/S1·T0/T1·E0,근거없는E1/온도→service보류·품질후보mask·이미본자료사후평가·원FAIL보존을계획에둔다. 원S26제출범위/기본/strict/experiment_ready=false·다른작업은유지한다.
+
 ## 2026-10-11 DESKTOP-GIT-DISTRIBUTION-01 — 자체 정책 상태의 한정 ZIP 공유
 
 - 확정: 최신사용자의GitHub다운로드요청에따라기존 “ZIP은로컬” 방침을이한파일에한해변경한다. [실행ZIP](results/desktop_handoff_20261011/D1Check-desktop-cpu-20261011.zip)은1743807바이트/SHA4d7e0fcf…이며자체PPO상태3개와동결시뮬레이션코드/자료만포함한다. 라이선스미확인TFLite/APK/원시실측/키/개인경로는포함하지않는다.
@@ -57,6 +68,20 @@
 
 - 확정:[비교·출처·판정](IE_PRIORITY_COMPARE_20261010.md)에서MST/ATC48일정동일,CR서비스악화/보호열상충으로원전조건서비스/J/AP적격0. 제조개념의앱응답적용·LFJ-FM개념참고와우리자체규칙을구분하며실제제품우월성0이다.
 - 사용자3AI후속합의로EDDhead/기본ECT를유지한현재큐응답비악화GPU예외를별도ID로구현·개발24했다. 실제전환1/J·AP소폭악화로미채택;후속start진행/카운터수정은원source보존·6803판단same/회귀4로검증했다. 480환경상한소진·누적9749/1449·새학습/기기0·새독립확인0·원모형/strict/experiment_ready=false보존이다.
+
+## 2026-10-10 SIM-MODEL-V3-EXPERT-01 — 다조건 보정·후학습 없는 새 확인
+
+- 사용자 전문가토론/더작은오차 지시와A24연결유지로 [3역할합의](SIMULATION_MODEL_V3_EXPERT_MEETING_20261010.md)·[조건부nested/새4](SIMULATION_MODEL_V3_PLAN_20261010.md)를 확정했다. 비용계수/초기화만보정하고원서비스동결, AP/J를임의합산하거나전체A평균으로혼합B악화를가리지않는다. 개발542fit 뒤동결·이미본26/새4를추가fit·후행선택에쓰지않는다.
+- 사용자20%미만허용에따라6%native opt-in·SDK표본잔량/절전기록과sampler 종료확인 APK를 [별도환경개정](SIMULATION_MODEL_V3_LOW_BATTERY_20261010.md)으로 허용했다. 원20%계획을소급변경하지않고 claim전기존plan보존/새ID·새APK/설치1·전체4/416/5130s의상한이다. 모델·λ/기한/측정창은동결유지, 기본/RL/strict/experiment_ready=false·원실패/다른작업보존이다.
+- 첫새4에서 AP0.417352→0.233666/J3.555364→7.340075로 원두head게이트FAIL을확정했다. 에너지보정을폐기하고원p4/gain0·원service를그대로,같은열head만교체하는 [별도hybrid](SIMULATION_MODEL_V3_HYBRID_20261010.md)를 새2 전향확인했다. 이는사후조립/판정변경이며첫실패를PASS로전용하지않는다. 새fit/열계수선택0, 에너지·P95 원동률의구조증명과AP정량개선을구분한다.
+- 최종:[새2결과·모형](results/simulation_model_v3_expert_01/README.md)에서B AP0.397453→0.202484°C/두정책MAE감소＋J/원장/P95exact동률로별도hybrid기준충족이다. CPU최대·피크오차악화/각정책1회한계를공개한다. 이별도모형을전달하되기본/RL/strict/experiment_ready=false유지,전체지표감소/정책효과/다기기일반화/20%미만성능의검증완료로승격하지않는다.
+
+## 2026-10-10 SIM-MODEL-V2-01 — 새 모형과 별도 제한 실측 착수
+
+- 근거: 사용자 새모형·필요실측 진행 요청과 원12세션/72파일 일치·처리시간/5760판단/conditioning AP566·전력1599 가용 확인. [사전 명세](SIMULATION_MODEL_V2_PLAN_20261010.md).
+- 채택 방향: 기본과 분리한 v2, 같은세션 반복 탐침과 개발동결 뒤 새 확인. 이번 지시는 새 계획/필요 APK/데이터보존 업데이트·계측 진행을 허용한다. 임의 온도 맞춤 가열/설정변경/재시도·기존 종료계획 재개는 포함하지 않는다. 미관측 thermal speed·실패 확률을 계수로 만들지 않는다.
+- 21:18 KST 사용자 재연결로 이동 중단 후 PAR1 재개를 확정했다. [한도·원자료·초기상태](SIMULATION_MODEL_V2_RESUME_20261010.md)를 따르는 새ID이며, 이전8/9시도 준수를 주장하지 않고 총10을 명시한다. 새fit/기본채택0·원clock/7768추론/29448ADB는 보존하고 동시paired 정책효과로 판정하지 않는다.
+- 최종: [8자료·확인4 판독](results/simulation_model_v2_01/README.md)에서 회복 AP/J는 개선되지만 CPU/PAR 예정도착 비용은 악화해 v2를 별도 검토 후보로만 남기고 기본/RL/strict 교체를 보류한다. 온도→속도 법칙은 미지원, 정책우월성/전체 정확도PASS는 미입증이다. 계수 재적합0·원 실패/사용자 중단 보존이며 구현·필요 실측·보고서 완료와 채택을 구분한다.
 
 ## 2026-10-10 RECOVERY-SERVICE-PC-01 — 회복시간과 온도 법칙을 구분·AP 시간 후보 미채택
 
@@ -1518,7 +1543,7 @@
 - 제한: Tasks decoded GPU는 완료했지만 Android CPU와 고정 label/box/score gate가 실패했고 actual delegate 이름은 unknown이다. host 새 golden과 Android CPU도 한 score 기준이 실패했다. raw full GPU 증거를 Tasks wrapper에 전용하지 않는다.
 - 다음 판단: 탐지 GPU를 현재의 실제 task/profile 후보에서 제외한다. 탐지 CPU와 분류 GPU 조합은 과학적으로 가능한 축소 후보이나 탐지 CPU golden/품질·adapter 검증 전에는 REDUCED_PASS로 채택하지 않는다. tolerance 완화·CPU fallback·모델 교체는 결정하지 않았다.
 - 준비 범위: 별도 draft simulation schema·validator·seed·no-op·정책 인터페이스·host KPI 계약을 구현하되 TASK-02 production 완성이나 PROFILE-02 실측으로 표시하지 않는다. 실제 service/transition/co-run·품질 입력·holdout·deadline/반복은 열린 gate다.
-- 근거: `C:/Users/LG/Documents/D1Check_GPU_Diag/run_20260920/device_evidence_summary.json`, `decoded_comparison.json`, [SIM_01_PREPARATION.md](SIM_01_PREPARATION.md).
+- 근거: `PRIVATE_EXTERNAL/D1Check_GPU_Diag/run_20260920/device_evidence_summary.json`, `decoded_comparison.json`, [SIM_01_PREPARATION.md](SIM_01_PREPARATION.md).
 
 ## 2026-09-20 — 명시적 image task 계약과 증거 경계
 
@@ -1567,7 +1592,7 @@
 
 - 상태: 채택 — 사용자 승인 A4 calibration/B16 독립 holdout/C2 CPU-only bounded 대조. 본 simulation/formal 금지 유지.
 - calibration24+신규4만으로 전환을 cold와 분리한 `transition_mean`을 독립 평가 후보로 고정했다. 기존 PI Q05..Q95, coverage90%, MAE432.808616ms/WAPE43.191436% 기준을 완화하지 않았다. calibration coverage80.65% 미달도 보존한다. 후보 고정은 SIM-01 승인과 다르다.
-- 2026-09-20T13:11:32.713690Z 고정 hash는 [receipt](SERVICE_MODEL_FINAL_FREEZE_20260920.json), 원자료/상세는 `C:/Users/LG/Documents/D1Check_Service_Model_Final/run_20260920T130139Z`. B16은 이 시각/commit 이후 새 UUID로 실행하고 모델을 read-only 평가한다.
+- 2026-09-20T13:11:32.713690Z 고정 hash는 [receipt](SERVICE_MODEL_FINAL_FREEZE_20260920.json), 원자료/상세는 `PRIVATE_EXTERNAL/D1Check_Service_Model_Final/run_20260920T130139Z`. B16은 이 시각/commit 이후 새 UUID로 실행하고 모델을 read-only 평가한다.
 - 첫 host 종료기록 변수 오류 시도는 진단 원자료로 보존하고 새 UUID로 대체했다. CPU-only 직렬 대조는 기존 단일-worker runtime 교체 비용이 포함돼 warm 두 모델 상주 대조가 아니다. sampled memory/미확정 deadline을 임의 승인하지 않는다.
 
 ## 2026-09-20 — FINAL-CALIB 독립 holdout 실패 보존
@@ -1598,7 +1623,7 @@
 ### 2026-09-21 — Telemetry v4 실기기 smoke gate 통과
 
 - 상태: 채택. 사용자의 연결 복구 후 smoke 재개 지시 범위에서만 실행했다.
-- 근거: `C:/Users/LG/Documents/D1Check_Telemetry_V4/resume_20260920T160724Z/FINAL_REPORT.md`, smoke_ledger/post_validation/paired_smoke_contract. 새4세션18요청, schema/semantic validator·출력 동등성·memory admission·runtime/worker release 모두 PASS. 기존 소스/APK/원자료 불변.
+- 근거: `PRIVATE_EXTERNAL/D1Check_Telemetry_V4/resume_20260920T160724Z/FINAL_REPORT.md`, smoke_ledger/post_validation/paired_smoke_contract. 새4세션18요청, schema/semantic validator·출력 동등성·memory admission·runtime/worker release 모두 PASS. 기존 소스/APK/원자료 불변.
 - 결정: TELEMETRY_V4_READY_FOR_CALIBRATION. 서비스모델 승인이나 GPU 우월성 증거로 승격하지 않는다. Ordinal warm은 qualified=false, deadline pending, 기존 holdout consumed 유지.
 - 다음: 별도 승인된 calibration 계획 동결. 이번 단계에서는 추가 calibration/holdout/simulation/formal 없음. 이전 BLOCKED_DEVICE_CONNECTION은 이번 gate에 한해 해소됐다.
 
@@ -1608,20 +1633,20 @@
 - PI를 scheduler가 사용하지 않으므로 새 protocol의 request PI90% 필수 gate를 제거한다. 이는 운영 성과 비교 목적과 입력 모델의 정렬이며 기존 threshold 사후 완화가 아니다. transition_mean80.38% 실패와 이전 hash/원자료는 불변이다.
 - 기존52 profile 및 smoke4는 consumed development, 승인 입력은 신규 v4 자료에 한정한다. setup/active/memory/thermal/interference는 session block으로 결합하고 임의 field 재조합을 거부한다.
 - [계약](EMPIRICAL_CALIBRATION_PROTOCOL.md)에 최소160/권장280 탐색세션·사전 criteria·deadline 계산 규칙을 고정했다. n8로 cold P95 정밀도를 보장하지 않으며 fair paired variance도 없다. 같은-session 전환경로가 현재 APK에 없으므로 전체 계획의 A24 실행 명령을 발행하지 않는다.
-- 이번 ADB·실측·calibration·holdout·simulation/formal 없음. Android/APK 불변. 최신 외부 증거는 C:/Users/LG/Documents/D1Check_Empirical_Calibration_Plan/plan_20260921_v1/FINAL_REPORT.md.
+- 이번 ADB·실측·calibration·holdout·simulation/formal 없음. Android/APK 불변. 최신 외부 증거는 PRIVATE_EXTERNAL/D1Check_Empirical_Calibration_Plan/plan_20260921_v1/FINAL_REPORT.md.
 
 ### 2026-09-21 — 최대30세션 descriptive resident-only protocol 채택
 
 - 상태: 계획채택, 측정미실행. 사용자 BOUNDED-EMPIRICAL-PLAN의고정수량·제한된주장을우선한다. 160/280계획은실행하지않고이전동결artifact/실패결과를보존한다.
 - A24/현분류탐지/thermal0/v4의관측경험분포로정책상대비교한다. dynamic unload/reload transition과cold populationP95 precision은simulation v1필수gate에서제외한다. Setup/queue/dispatch는남긴다.
 - 정확30=solo4×5+resident5pair×2. device retry0/대체0/총시작≤30; 실패시자료보존·중단·incomplete. 독립holdout없이completeness/quality/safety·sessionbootstrap/LOSO·wholeblock sensitivity/CRN을사용한다. 통계적보편우월성주장금지.
-- [계약](BOUNDED_EMPIRICAL_PROTOCOL.md), 외부 `C:/Users/LG/Documents/D1Check_Bounded_Empirical_Plan/plan_20260921_v1/FINAL_REPORT.md`. 다음실행명령을제공하되이번에는ADB/측정/simulation/formal을호출하지않았다. Deadline pending·SIM-01_INCOMPLETE유지.
+- [계약](BOUNDED_EMPIRICAL_PROTOCOL.md), 외부 `PRIVATE_EXTERNAL/D1Check_Bounded_Empirical_Plan/plan_20260921_v1/FINAL_REPORT.md`. 다음실행명령을제공하되이번에는ADB/측정/simulation/formal을호출하지않았다. Deadline pending·SIM-01_INCOMPLETE유지.
 
 ### 2026-09-21 — 30세션 descriptive empirical 입력 동결
 
 - 상태: SIM-01_READY(현재사용자기준의resident-only/A24/thermal0/관측입력범위). 본simulation/formal은실행하지않음.
 - 정확30/480 completed, 추가/retry/대체/실패0. Nativemanifest·순서·seed·480호출·criterion·memory/thermal·deadline공식은동결계획과동일하다. Atomic fsync/rename journal·exclusivehostlock·completed 재실행금지·완전artifact만복구하는별도관리계층을추가했다.
-- Joint input SHA `4eeae6f6f8e9954d153b010767ba5a84307e5b8d0a971e7a478b0255413c0fc5`, `C:/Users/LG/Documents/D1Check_Bounded_Empirical_Run/run_20260921_atomic_v1/FINAL_REPORT.md`.
+- Joint input SHA `4eeae6f6f8e9954d153b010767ba5a84307e5b8d0a971e7a478b0255413c0fc5`, `PRIVATE_EXTERNAL/D1Check_Bounded_Empirical_Run/run_20260921_atomic_v1/FINAL_REPORT.md`.
 - 5pair의GPUcorun은urgentP95 개선과makespan/throughput 악화가동시에관측됐다. 5쌍bootstrap·wholeblock sensitivity로방향과불확실성만보고하고보편우월성/인과일반화는주장하지않는다.
 - 기존coverage80.38%예측실패/consumedholdout/51session559요청/v4smoke/formal80원본은보존한다. 새READY는이전prediction모델의PASS전환이아니며coldP95/요청90%예측/다기기·다른thermal보장이아니다.
 - 다음은동일input/CRN/복수deadline을쓰는별도승인simulation단계이며새실기기재실행은없다.
@@ -1659,7 +1684,7 @@
 - 실행: 고정 SHA plan/APK로 A24 19/19세션·평가130·warmup152, 총시도19/retry0. 오류·실패·거절·만료·미완료·늦은 성공0, arrival/thermal/paired온도/memory/GPU delegation/cleanup gate 통과.
 - 관측: 주 3 paired block에서 `CPU_URGENT−CPU_FIFO` urgent P95 `-1217.5±15.8ms`, normal 평균응답 `+104.1±5.4ms`; `CONDITIONAL−CPU_URGENT` urgent P95 `-11.2±6.7ms`, normal 평균응답 `-630.4±27.9ms`, makespan `-1.245±0.024s`. 개발용 소표본으로 우수성을 선언하지 않는다.
 - 제안: 순서 균형 주6블록+보조3블록, 27세션/198평가/216warmup/retry0, 예상65분·예약120분. 종전 참고값인 urgent P95 10% 최소효과, normal 평균응답 10% 손실 및 on-time·완료율 2%p 손실을 결과 전 동결하는 안이다. 2초/8초 deadline은 UX SLA가 아닌 설명 지표로 유지한다.
-- 근거: `C:/Users/LG/Documents/D1Check_Arrival_Extension/pilot_analysis_v3/FINAL_REPORT.md`; 제안 plan SHA `9e826188a25ecc9ca33404995cc1e45238f00f539fbb3c41eabfcdb8295cf3c3`.
+- 근거: `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/pilot_analysis_v3/FINAL_REPORT.md`; 제안 plan SHA `9e826188a25ecc9ca33404995cc1e45238f00f539fbb3c41eabfcdb8295cf3c3`.
 - 영향: 기존 formal v1/v2, support-constrained simulation freeze와 과거 원본·APK를 변경하지 않는다. 독립 평가·새 본 시뮬레이션은 별도 승인 전 실행하지 않는다.
 
 ### 2026-09-23 — ARRIVAL-EXT-01 독립 평가 완료와 동결 판정 유지
@@ -1668,7 +1693,7 @@
 - 실행: plan SHA `9e826188a25ecc9ca33404995cc1e45238f00f539fbb3c41eabfcdb8295cf3c3`, 고정 APK SHA `1a8448abe1c78432870f1848676de61faefa83f64c9a6a3732d79f7a121f3612`, 동일 A24 fingerprint로 27/27세션을 완료했다. 성공198, 실패·거절·만료·미완료·늦은 성공0, retry·대체·추가0이다.
 - 결정: `CPU_URGENT−CPU_FIFO`는 urgent 10% 최소효과와 normal 10% 손실 기준을 통과했다. `CONDITIONAL−CPU_URGENT`는 normal 기준을 통과했지만 urgent 상대개선 `-3.48%`, 95% CI `[-5.02%,-1.95%]`로 10% 최소효과를 실패했다. 결과를 본 뒤 threshold를 완화하지 않으며 조건부 정책의 주 결합 판정은 `FAIL`로 유지한다.
 - 해석: CPU 긴급 우선 대비 FIFO 차이는 우선순위 효과다. 조건부 정책의 normal 응답·makespan·throughput 개선은 주로 GPU 보조 병행 효과이며 긴급 추가 개선은 작다. deadline 2초/8초는 포화된 설명 지표이며 UX SLA 또는 2%p 비열등성 입증으로 승격하지 않는다.
-- 증거: `C:/Users/LG/Documents/D1Check_Arrival_Extension/independent_evaluation_run_v1`, `C:/Users/LG/Documents/D1Check_Arrival_Extension/independent_evaluation_analysis_v2/FINAL_REPORT.md`. 독립 block n=6, 세션당 urgent2, A24 thermal0·단일 canonical 입력 범위다.
+- 증거: `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/independent_evaluation_run_v1`, `PRIVATE_EXTERNAL/D1Check_Arrival_Extension/independent_evaluation_analysis_v2/FINAL_REPORT.md`. 독립 block n=6, 세션당 urgent2, A24 thermal0·단일 canonical 입력 범위다.
 - 미완료: 새 staggered workload의 simulation 예측을 평가 전에 동결하지 않았으므로 simulation 정책 순위·paired 개선량 일치 검증은 하지 못했다. 이번 평가로 simulator를 보정한 뒤 같은 평가로 검증하지 않는다. 추가 simulation·holdout·다기기는 별도 계획과 승인 대상이다.
 - 영향: 기존 formal v1/v2, support-constrained simulation freeze, pilot·과거 APK·원본을 변경하지 않는다.
 

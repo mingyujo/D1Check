@@ -32,6 +32,13 @@ def arrival_case(folder,m):
     return c
 
 
+def post_cleanup_sampler_race(cleanup,failure):
+    return (cleanup.get('status')=='completed' and cleanup.get('error') is None and cleanup.get('sampler_failure') is None
+        and failure.get('exception_class')=='java.lang.IllegalStateException' and failure.get('message')=='journal closed/failed'
+        and failure.get('phase')=='cleanup' and failure.get('stage')=='sampler_snapshot_or_event'
+        and isinstance(failure.get('mono_ns'),int) and failure['mono_ns']>cleanup.get('mono_ns',math.inf))
+
+
 def read_case(folder,manifest,plan):
     folder=Path(folder);m=old.p.read(manifest)
     c0=False
@@ -42,7 +49,11 @@ def read_case(folder,manifest,plan):
         raise ValueError('tail manifest outside isolated plan')
     if old.p.digest(folder/'manifest.json')!=old.p.digest(manifest):raise ValueError('executed manifest identity')
     cleanup=old.p.read(folder/'cleanup.json')
-    if cleanup['status']!='completed' or any((folder/n).exists() for n in ['sampler_failure.json','session_failure.json']):
+    late_failure=None
+    failures=[old.p.read(folder/n) for n in ('sampler_failure.json','session_failure.json') if (folder/n).is_file()]
+    if failures and plan.get('model_v2_completed_reuse',{}).get('session_id')==m['session_id']:
+        if all(post_cleanup_sampler_race(cleanup,f) for f in failures):late_failure=failures[0]
+    if cleanup['status']!='completed' or (failures and late_failure is None):
         raise ValueError('app failure; preserve original failure/stack')
     events,partial=old.progress_prefix((folder/'progress.jsonl').read_bytes())
     if partial or [x['sequence'] for x in events]!=list(range(len(events))):raise ValueError('journal missing/partial')
@@ -121,7 +132,10 @@ def read_case(folder,manifest,plan):
     if m['identification_role']=='development':
         gpu=j.m.base.exposure(seg,35,common_end)[2]
         if gpu<10:raise ValueError('GPU solo measured exposure insufficient; no replacement calls')
-    return c,dict(status='eligible_identification_only',condition=m['phase'],phase=m['phase'],profile=m['identification_profile'],work_calls=len(rows),
+    if late_failure and (old.p.read(folder/'summary.json')['status']!='completed' or cooling_end>=cleanup['mono_ns']):raise ValueError('post-cleanup classification lacks completed measured window')
+    return c,dict(status='eligible_measured_window_with_post_cleanup_failure' if late_failure else 'eligible_identification_only',
+                  post_cleanup_failure=late_failure,application_lifecycle_pass=False if late_failure else None,
+                  condition=m['phase'],phase=m['phase'],profile=m['identification_profile'],work_calls=len(rows),
                   eligibility_calls=4,warmup_calls=8,runtimes=4,common_start_ns=origin,common_end_ns=end['planned_end_ns'],
                   analysis_case=c,accuracy_pass=None,experiment_ready=False)
 

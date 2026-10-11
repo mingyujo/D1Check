@@ -1,0 +1,222 @@
+{
+  "burst_thermal_cap_301": {
+    "arrived_queue": [
+      {
+        "arrival_ns": 0,
+        "deadline_offset_ns": 6000000000,
+        "id": "evaluation/burst/0",
+        "ordinal": 0,
+        "priority": "normal",
+        "task": "detection"
+      }
+    ],
+    "assumed_ap_limit_c": 30.03,
+    "assumed_tau_s": 60.0,
+    "candidates": [
+      {
+        "ap_over_c": 0.01159838797719459,
+        "ap_violation": true,
+        "backend": "CPU",
+        "deadline_miss": false,
+        "lateness_ns": 0.0,
+        "predicted_ap_peak_c": 30.041598387977196,
+        "predicted_energy_j": 8.31370901925,
+        "predicted_response_ns": 624752192.5,
+        "prediction_horizon_ns": 8000000000.0,
+        "request_id": "evaluation/burst/0",
+        "wait_ns": 0.0
+      },
+      {
+        "ap_over_c": 0.0074836913337570365,
+        "ap_violation": true,
+        "backend": "CPU",
+        "deadline_miss": false,
+        "lateness_ns": 0.0,
+        "predicted_ap_peak_c": 30.037483691333758,
+        "predicted_energy_j": 8.31370901925,
+        "predicted_response_ns": 874752192.5,
+        "prediction_horizon_ns": 8000000000.0,
+        "request_id": "evaluation/burst/0",
+        "wait_ns": 250000000.0
+      },
+      {
+        "ap_over_c": 0.0,
+        "ap_violation": false,
+        "backend": "GPU",
+        "deadline_miss": false,
+        "lateness_ns": 0.0,
+        "predicted_ap_peak_c": 30.0,
+        "predicted_energy_j": 10.270533846000001,
+        "predicted_response_ns": 1132808808.0,
+        "prediction_horizon_ns": 8000000000.0,
+        "request_id": "evaluation/burst/0",
+        "wait_ns": 0.0
+      },
+      {
+        "ap_over_c": 0.0,
+        "ap_violation": false,
+        "backend": "GPU",
+        "deadline_miss": false,
+        "lateness_ns": 0.0,
+        "predicted_ap_peak_c": 30.0,
+        "predicted_energy_j": 10.270533846000001,
+        "predicted_response_ns": 1382808808.0,
+        "prediction_horizon_ns": 8000000000.0,
+        "request_id": "evaluation/burst/0",
+        "wait_ns": 250000000.0
+      }
+    ],
+    "current_modeled_ap_c": 30.0,
+    "decision_ns": 500000,
+    "dispatch_ns": 100000,
+    "estimated_costs": {
+      "CPU": {
+        "lane_median_ns": 627418038.5,
+        "predicted_single_ap_equilibrium_c": 34.0,
+        "predicted_single_power_w": 1.5,
+        "response_median_ns": 624052192.5
+      },
+      "GPU": {
+        "lane_median_ns": 1135266923.0,
+        "predicted_single_ap_equilibrium_c": 29.0,
+        "predicted_single_power_w": 3.0,
+        "response_median_ns": 1132108808.0
+      }
+    },
+    "lanes": {
+      "CPU": {
+        "dispatch": null,
+        "phase": "AVAILABLE",
+        "request": null,
+        "since": 0.0
+      },
+      "GPU": {
+        "dispatch": null,
+        "phase": "AVAILABLE",
+        "request": null,
+        "since": 0.0
+      }
+    },
+    "now_ns": 0.0,
+    "online_reason": "minimum_common_horizon_energy",
+    "online_selected": {
+      "backend": "GPU",
+      "request_id": "evaluation/burst/0"
+    },
+    "prediction_horizon_ns": 8000000000.0,
+    "record_ns": 100000,
+    "remaining_deadline_ns": {
+      "evaluation/burst/0": 6000000000.0
+    }
+  },
+  "queue_energy_shift_301": {
+    "arrived_queue": [
+      {
+        "arrival_ns": 0,
+        "deadline_offset_ns": 6000000000,
+        "id": "evaluation/queue/0",
+        "ordinal": 0,
+        "priority": "normal",
+        "task": "detection"
+      }
+    ],
+    "assumed_ap_limit_c": 100.0,
+    "assumed_tau_s": 60.0,
+    "candidates": [
+      {
+        "ap_over_c": 0.0,
+        "ap_violation": false,
+        "backend": "CPU",
+        "deadline_miss": false,
+        "lateness_ns": 0.0,
+        "predicted_ap_peak_c": 29.052012416517762,
+        "predicted_energy_j": 9.254836077,
+        "predicted_response_ns": 624752192.5,
+        "prediction_horizon_ns": 8000000000.0,
+        "request_id": "evaluation/queue/0",
+        "wait_ns": 0.0
+      },
+      {
+        "ap_over_c": 0.0,
+        "ap_violation": false,
+        "backend": "CPU",
+        "deadline_miss": false,
+        "lateness_ns": 0.0,
+        "predicted_ap_peak_c": 29.052012416517762,
+        "predicted_energy_j": 9.254836077,
+        "predicted_response_ns": 874752192.5,
+        "prediction_horizon_ns": 8000000000.0,
+        "request_id": "evaluation/queue/0",
+        "wait_ns": 250000000.0
+      },
+      {
+        "ap_over_c": 0.0,
+        "ap_violation": false,
+        "backend": "GPU",
+        "deadline_miss": false,
+        "lateness_ns": 0.0,
+        "predicted_ap_peak_c": 29.093716173732044,
+        "predicted_energy_j": 8.5676334615,
+        "predicted_response_ns": 1132808808.0,
+        "prediction_horizon_ns": 8000000000.0,
+        "request_id": "evaluation/queue/0",
+        "wait_ns": 0.0
+      },
+      {
+        "ap_over_c": 0.0,
+        "ap_violation": false,
+        "backend": "GPU",
+        "deadline_miss": false,
+        "lateness_ns": 0.0,
+        "predicted_ap_peak_c": 29.093716173732044,
+        "predicted_energy_j": 8.5676334615,
+        "predicted_response_ns": 1382808808.0,
+        "prediction_horizon_ns": 8000000000.0,
+        "request_id": "evaluation/queue/0",
+        "wait_ns": 250000000.0
+      }
+    ],
+    "current_modeled_ap_c": 29.0,
+    "decision_ns": 500000,
+    "dispatch_ns": 100000,
+    "estimated_costs": {
+      "CPU": {
+        "lane_median_ns": 627418038.5,
+        "predicted_single_ap_equilibrium_c": 34.0,
+        "predicted_single_power_w": 3.0,
+        "response_median_ns": 624052192.5
+      },
+      "GPU": {
+        "lane_median_ns": 1135266923.0,
+        "predicted_single_ap_equilibrium_c": 34.0,
+        "predicted_single_power_w": 1.5,
+        "response_median_ns": 1132108808.0
+      }
+    },
+    "lanes": {
+      "CPU": {
+        "dispatch": null,
+        "phase": "AVAILABLE",
+        "request": null,
+        "since": 0.0
+      },
+      "GPU": {
+        "dispatch": null,
+        "phase": "AVAILABLE",
+        "request": null,
+        "since": 0.0
+      }
+    },
+    "now_ns": 0.0,
+    "online_reason": "minimum_common_horizon_energy",
+    "online_selected": {
+      "backend": "GPU",
+      "request_id": "evaluation/queue/0"
+    },
+    "prediction_horizon_ns": 8000000000.0,
+    "record_ns": 100000,
+    "remaining_deadline_ns": {
+      "evaluation/queue/0": 6000000000.0
+    }
+  }
+}

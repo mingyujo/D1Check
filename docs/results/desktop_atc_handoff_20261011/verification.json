@@ -1,0 +1,177 @@
+{
+  "task": "ATC-PPO-GITHUB-HANDOFF-01",
+  "utc": "2026-10-11T07:31:27.766986+00:00",
+  "status": "VERIFIED",
+  "base_remote_commit": "f4db96374e237251889ae1df0464fc66c9e1f5cd",
+  "source_local_HEAD": "0d4ddc61a4a7be83a2af63b49550d47c48a2287b",
+  "source_uncommitted": true,
+  "original_local_suite": {
+    "tests": 58,
+    "seconds": 55.709,
+    "exit_code": 0,
+    "scope": "original notebook code with private raw; observed before publication"
+  },
+  "commands": [
+    {
+      "label": "portable_suite",
+      "command": "python -B -X utf8 -m unittest tools.test_d1_simulation_model_v2 tools.test_d1_simulation_model_v2_campaign tools.test_d1_simulation_model_v2_report tools.test_d1_simulation_model_v3 tools.test_d1_simulation_model_v3_campaign tools.test_d1_simulation_model_v3_energy tools.test_d1_simulation_model_v3_prediction tools.test_d1_simulation_model_v3_thermal -v",
+      "exit_code": 0,
+      "seconds": 2.389999999955762,
+      "log_sha256": "e257ce0ad7152168d0548e80153e8e4474f81c153eb7c13d2a18d2c34219dcb5",
+      "scope": "clean exported tree; no notebook private output",
+      "tests": 44
+    },
+    {
+      "label": "frozen_demo",
+      "command": "python -B -X utf8 -m tools.d1_simulation_model_v2_demo --model docs/results/simulation_model_v2_01/run_v1/model.json --output output/atc_handoff_frozen_demo --mode mean",
+      "exit_code": 0,
+      "seconds": 0.8440000000409782,
+      "log_sha256": "69829e9f583151ba6451358177e01ff84e887b39be97d9c2e934eb11f9bff716",
+      "scope": "clean exported tree; no notebook private output",
+      "reused_completed_output": true
+    }
+  ],
+  "syntax_checked_files": [
+    "docs/results/method_followup_01/direct_pair_readout_v1/source_snapshot.py",
+    "docs/results/method_followup_01/direct_pair_readout_v2/source_snapshot.py",
+    "docs/results/method_followup_01/direct_pair_readout_v3/source_snapshot.py",
+    "docs/results/method_followup_01/joint_bound_v1/source_snapshot.py",
+    "docs/results/method_followup_01/joint_evidence_requirements_v1/source_snapshot.py",
+    "docs/results/method_followup_01/joint_evidence_requirements_v2/source_snapshot.py",
+    "docs/results/method_followup_01/joint_gain_sensitivity_v1/source_snapshot.py",
+    "docs/results/overnight_device_20261011/source_bundle/prerequisites/tools/d1_energy_collection_device.py",
+    "docs/results/overnight_device_20261011/source_bundle/prerequisites/tools/d1_simulation_model_v2.py",
+    "docs/results/overnight_device_20261011/source_bundle/prerequisites/tools/d1_simulation_model_v3_thermal.py",
+    "tools/d1_energy_collection_device.py",
+    "tools/d1_resident_identification_analysis.py",
+    "tools/d1_resident_identification_plan.py",
+    "tools/d1_simulation_model_v2.py",
+    "tools/d1_simulation_model_v2_campaign.py",
+    "tools/d1_simulation_model_v2_demo.py",
+    "tools/d1_simulation_model_v2_report.py",
+    "tools/d1_simulation_model_v3.py",
+    "tools/d1_simulation_model_v3_campaign.py",
+    "tools/d1_simulation_model_v3_energy.py",
+    "tools/d1_simulation_model_v3_hybrid_report.py",
+    "tools/d1_simulation_model_v3_inputs.py",
+    "tools/d1_simulation_model_v3_prediction.py",
+    "tools/d1_simulation_model_v3_report.py",
+    "tools/d1_simulation_model_v3_thermal.py",
+    "tools/test_d1_simulation_model_v2.py",
+    "tools/test_d1_simulation_model_v2_campaign.py",
+    "tools/test_d1_simulation_model_v2_report.py",
+    "tools/test_d1_simulation_model_v3.py",
+    "tools/test_d1_simulation_model_v3_campaign.py",
+    "tools/test_d1_simulation_model_v3_energy.py",
+    "tools/test_d1_simulation_model_v3_hybrid_report.py",
+    "tools/test_d1_simulation_model_v3_inputs.py",
+    "tools/test_d1_simulation_model_v3_prediction.py",
+    "tools/test_d1_simulation_model_v3_report.py",
+    "tools/test_d1_simulation_model_v3_thermal.py"
+  ],
+  "local_links": [
+    {
+      "source": "docs/ATC_PPO_EVENT_DESIGN_20261011.md",
+      "target": "S26_SIMULATION_PLAN_20261011.md"
+    },
+    {
+      "source": "docs/ATC_PPO_EVENT_DESIGN_20261011.md",
+      "target": "results/desktop_amount512_20261011/README.md"
+    },
+    {
+      "source": "docs/ATC_PPO_EVENT_DESIGN_20261011.md",
+      "target": "DESKTOP_ATC_PPO_PROMPT_20261011.md"
+    },
+    {
+      "source": "docs/ATC_PPO_EVENT_DESIGN_20261011.md",
+      "target": "results/desktop_atc_handoff_20261011/README.md"
+    },
+    {
+      "source": "docs/results/desktop_atc_handoff_20261011/README.md",
+      "target": "../../DESKTOP_ATC_PPO_PROMPT_20261011.md"
+    },
+    {
+      "source": "docs/results/desktop_atc_handoff_20261011/README.md",
+      "target": "../../ATC_PPO_EVENT_DESIGN_20261011.md"
+    },
+    {
+      "source": "docs/results/desktop_atc_handoff_20261011/README.md",
+      "target": "../../S26_SIMULATION_PLAN_20261011.md"
+    },
+    {
+      "source": "docs/results/desktop_atc_handoff_20261011/README.md",
+      "target": "publication_manifest.json"
+    },
+    {
+      "source": "docs/results/desktop_atc_handoff_20261011/README.md",
+      "target": "verification.json"
+    },
+    {
+      "source": "docs/results/desktop_atc_handoff_20261011/README.md",
+      "target": "../desktop_amount512_20261011/README.md"
+    }
+  ],
+  "missing_links": [],
+  "frozen_model_numeric_identity": [
+    {
+      "path": "docs/results/simulation_model_v2_01/run_v1/model.json",
+      "numeric_settings_equal": true,
+      "original_sha256": "0be4fca4fc28221c2e15daf006017502e77ff86317c51e87135d23b1ed1f9483",
+      "published_sha256": "0be4fca4fc28221c2e15daf006017502e77ff86317c51e87135d23b1ed1f9483"
+    },
+    {
+      "path": "docs/results/simulation_model_v3_expert_01/hybrid_v2/model.json",
+      "numeric_settings_equal": true,
+      "original_sha256": "6dd806bc30c5d69dd07237dc8fbe0bc09ed90a86fede4d86294ae14be2eb1196",
+      "published_sha256": "6fe8bbec0f902c1041e8ff59e88ae316f93d137fed499c0ea36c7a0232459959"
+    },
+    {
+      "path": "docs/results/simulation_model_v3_expert_01/run_v1/model.json",
+      "numeric_settings_equal": true,
+      "original_sha256": "82838f2dcafdac7aa96c686cd95c52d2cd423c0cd1fbb8a7a4f5e4f4c2b73d55",
+      "published_sha256": "5c105f05674ccddb448a6f982bb6e124df58605d795e170c98da0f162268a6a2"
+    }
+  ],
+  "demo": {
+    "policies": 3,
+    "planned_requests_per_policy": 96,
+    "learning_episodes": 0,
+    "device_commands": 0
+  },
+  "private_raw_required_suites": [
+    "tools.test_d1_simulation_model_v3_inputs",
+    "tools.test_d1_simulation_model_v3_report",
+    "tools.test_d1_simulation_model_v3_hybrid_report"
+  ],
+  "new_ATC_implementation": false,
+  "new_ATC_learning_episodes": 0,
+  "new_device_commands": 0,
+  "new_device_measurements": 0,
+  "environment": {
+    "python": "3.11.9",
+    "platform": "win32"
+  },
+  "publication_transforms": "relative metadata paths, environment-based external/ADB locators, UTF16 to UTF8, public causal test setup; original source files retained",
+  "limitations": [
+    "full historical raw-refit suites need unshared original sources",
+    "S26 CPU/GPU profile and quality eligibility still require audit",
+    "new ATC policy not implemented or trained by this delivery"
+  ],
+  "preservation": {
+    "all_preexisting_candidate_source_hashes_unchanged": true,
+    "normal_git_index_unchanged": true,
+    "local_HEAD_unchanged": true,
+    "other_worktree_HEAD_unchanged": true
+  },
+  "publication_file_count_excluding_manifest_and_verification": 447,
+  "publication_bytes_excluding_manifest_and_verification": 47102742,
+  "publication_repairs": [
+    "Windows extended paths for nested source snapshots; no original moves/deletes",
+    "UTF16 legacy text decoded as UTF8 for shared artifact",
+    "private host/external locators replaced in publication copy only",
+    "prediction API test setup uses public causal pre/tickets fixture; original tests preserved",
+    "extended-path local link resolution normalized before existence checks",
+    "delivery STATUS and locator/fixture explanation completed before commit"
+  ],
+  "whitespace_exception": "One original Matplotlib SVG retains generated trailing indentation byte-exact; all source and other artifacts checked normally."
+}

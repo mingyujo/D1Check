@@ -8,6 +8,17 @@ internal object EnergyResidentIdentification {
     const val WATCHDOG_MS = 1_800_000L
     val KEYS = listOf("classification_CPU", "classification_GPU", "detection_CPU", "detection_GPU")
     fun blocks(profile: String): List<EnergyStateCalibration.Block> {
+        if (profile in setOf("MODEL2_RECOVERY_A", "MODEL2_RECOVERY_B")) {
+            val order = if (profile.endsWith("_A")) listOf(0,2,1) else listOf(1,2,0)
+            fun probes(label: String) = order.flatMap { key -> listOf(
+                EnergyStateCalibration.Block("${label}_solo$key", listOf(key), 6),
+                EnergyStateCalibration.Block("${label}_idle$key", emptyList(), 2)) }
+            // Probe trains occupy 24s. Registered 90/240s anchors include the
+            // earlier probes; actual last load release and dispatch are retained.
+            return probes("before") + listOf(EnergyStateCalibration.Block("conditioning_pair",listOf(1,2),120)) +
+                probes("immediate") + listOf(EnergyStateCalibration.Block("recovery_to90",emptyList(),66)) +
+                probes("after90") + listOf(EnergyStateCalibration.Block("recovery_to240",emptyList(),126)) + probes("after240")
+        }
         if (profile in setOf("CONF_MIX_A", "CONF_MIX_B")) return (0 until 4).flatMap { cycle ->
             val singles = if (profile=="CONF_MIX_A") listOf(0,1,2) else listOf(2,1,0)
             singles.flatMap { key -> listOf(EnergyStateCalibration.Block("cycle${cycle}_solo$key",listOf(key),if (key==2) 4 else 3),

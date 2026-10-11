@@ -23,6 +23,11 @@ CONTRACT=PUBLIC/'analysis_contract_v2.json'
 
 
 def blocks(profile):
+    if profile in ('MODEL2_RECOVERY_A','MODEL2_RECOVERY_B'):
+        order=(0,2,1) if profile.endswith('_A') else (1,2,0)
+        def probes(label):
+            return [b for k in order for b in (dict(id=f'{label}_solo{k}',lane_indices=[k],seconds=6),dict(id=f'{label}_idle{k}',lane_indices=[],seconds=2))]
+        return probes('before')+[dict(id='conditioning_pair',lane_indices=[1,2],seconds=120)]+probes('immediate')+[dict(id='recovery_to90',lane_indices=[],seconds=66)]+probes('after90')+[dict(id='recovery_to240',lane_indices=[],seconds=126)]+probes('after240')
     if profile in ('CONF_MIX_A','CONF_MIX_B'):
         result=[];singles=(0,1,2) if profile=='CONF_MIX_A' else (2,1,0)
         for cycle in range(4):
@@ -83,7 +88,7 @@ def script_text():
     text=text.replace("if (!$Approved)","if (!$Approved -or !$Serial -or !$ExpectedPlanSha256)")
     text=text.replace("'PLAN_EXPECTED_SHA256'",'$ExpectedPlanSha256').replace('--expected-sha PLAN_EXPECTED_SHA256','--expected-sha $ExpectedPlanSha256')
     text=text.replace('tools.d1_energy_state_collection','tools.d1_resident_identification_plan')
-    text=text.replace('python -B',"& 'C:/Users/LG/AppData/Local/Programs/Python/Python311/python.exe' -B")
+    text=text.replace('python -B',"python -B")
     text=text.replace("--approved --adb",'--approved --serial $Serial --adb')
     return text
 

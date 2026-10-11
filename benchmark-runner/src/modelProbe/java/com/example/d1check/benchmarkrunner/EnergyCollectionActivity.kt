@@ -311,7 +311,9 @@ class EnergyCollectionActivity : Activity() {
             catch(recordError: Throwable) { failure = "$failure; failure_record: $recordError" }
             try { event("session_failed",mapOf("error" to failure)) } catch(_: Throwable) {}
         } finally {
-            phase = "cleanup"; samples.shutdownNow()
+            phase = "cleanup"
+            try { EnergySamplerShutdown.stop(samples) }
+            catch(e: Throwable) { failure = "$failure; sampler shutdown: $e" }
             for ((executor,suffix) in listOf(cpu to "_CPU",gpu to "_GPU")) {
                 try { ArrivalRuntimeSetup.closeLane(executor) { observed.laneRuntimes(suffix).forEach { it.close() } } }
                 catch(e: Throwable) { failure = "$failure; cleanup: $e" }
