@@ -1,5 +1,11 @@
 # D1Check 결정 기록
 
+## 2026-10-11 RAW-ORIGINALS-GITHUB-01 — 원자료 게시 범위 추가 승인
+
+- 확정: 최신 사용자가 추가실측 원본과 누락 소스 원본을 GitHub에 게시하도록 명시했다. 이전 raw/대용량 비공유 방침을 이번 연구 원본 Release 범위에 한해 변경한다. 원파일 bytes와 SHA·원 경로/자료역할·실패/중단·당시소스/자체 RL상태를 보존한다.
+- Android모델binary/APK/AOT/서명키/실제 자격증명/개인문서/입력이미지/의존성캐시는 배포하지 않는다. 없는 Adam/RNG 복구·과거 gate PASS·새모형/정책우위로 승격하지 않는다. 원본 소스의 경로는 메모리에서만 연결하고 데이터/원코드는 고치지 않는다.
+- [수량·검증·복원](RESEARCH_ORIGINALS_20261011.md)을 공개하고 Git실제원격/Release첨부를 확인한다. 이번 학습/ADB/실측0·원FAIL/종료소비/기본/strict/experiment_ready=false·원본/WIP/다른worktree·S26기기별 경계를 유지한다.
+
 ## 2026-10-11 S26-MATERIALS-PREP-01 — 원자료 요청 범위와 관측 prefix의 의미 확정
 
 - 확정: [새 인계 문서](S26_REQUIRED_MATERIALS_20261011.md)는 기존 공개 자료를 먼저 분석하고 Git 밖 Q20 수치 출력·실제 APK/source·mixed 품질/정밀도·센서 계약의 부족분만 우선 회수한다. 작성된 요청문은 자동 전송하지 않는다.

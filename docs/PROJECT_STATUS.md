@@ -1,5 +1,12 @@
 # D1Check 현재 상태
 
+## 2026-10-11 RAW-ORIGINALS-GITHUB-01 — 실측·소스 원본의 Release 배포
+
+- 최신 사용자 원본/누락코드 게시 지시로 [원본 배포](RESEARCH_ORIGINALS_20261011.md)와 GitHub Release d1check-research-originals-20261011을 연결한다. 원파일 bytes/SHA·실패/중단/원장·계획·당시 소스와 자체 RL 상태를 보존하고 중복 SHA objects를 원 경로로 복원한다. 모델binary/APK/AOT/키/캐시/개인문서/입력이미지는 제외한다.
+- [파일 명세·수량·검증](results/research_originals_20261011/README.md)이 최종 범위를 특정한다. 원소스/필수raw 복원 후58검사 PASS, 복원/경로5검사 PASS다. 원파일 수정0·메모리의 과거 절대경로만 연결·기준완화0, 신규학습/기기/실측0·기본/strict/experiment_ready=false/원FAIL/소비 불변이다.
+- S26 세 고정 원격 commit/tree를 확인했고 기존 d1sim/mixed/quality는 해당 브랜치에 보존한다. 전체 S26 blob SHA-256 감사 완료로 승격하지 않는다. A24/S26 계수·품질·지원은 분리한다.
+- 다음 최대3: 데스크톱에서 첨부 다운로드/SHA·선택복원, 원소스 검사 재현, 새 ATC 사건/후보/mask 구현. 원64→512/종료실측 자동재실행0·로컬WIP/원본/다른worktree 보존, 실제 원격HEAD·Release 공개/첨부 검증은 배포 영수증을 따른다.
+
 ## 2026-10-11 S26-MATERIALS-PREP-01 — 기존 실패 사건 추가 판독·담당자 자료 요청 준비
 
 - [자료·재개 gate](S26_REQUIRED_MATERIALS_20261011.md)와 [복사할 요청문](results/s26_materials_20261011/REQUEST_TO_S26_OWNER.md)을 작성했다. 고정 세 원격 HEAD는 그대로이며 공개 parsim branch는 조회되지 않았다. 실제 담당자 메시지 전송0이다.

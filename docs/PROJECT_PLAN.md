@@ -1,5 +1,11 @@
 # D1Check 프로젝트 실행계획
 
+## 2026-10-11 RAW-ORIGINALS-GITHUB-01 — 원자료 포함 데스크톱 재현
+
+- 사용자 추가실측/누락코드 원본 공유 승인으로 [Release 원본/원경로/SHA 복원](RESEARCH_ORIGINALS_20261011.md)을 추가한다. 앞선 공개코드의 이식 변경과 당시 원본 소스를 구분하고, 과거 일부 raw 미공유 기록은 당시 이력으로 보존한다. 큰 원본은 Release 첨부, 작은 복원코드/명세/검증은 Git에 둔다.
+- 원소스와 필요한 실측 입력 복원 뒤58회귀 PASS/복원/경로5검사 PASS, 소스·데이터 bytes/수치/역할/판정 불변이다. 전체 첨부는 SHA로 검증하고 검증용 작은 묶음과 선택명세를 제공한다. SHA 동일성이 실기기 정책 절감을 뜻하지 않는다.
+- 이번 신규본학습/실측/ADB/설치0·기본/strict/experiment_ready=false 유지다. 원본 복원이 종료 namespace/clock을 되살리지 않으며 새 ATC는 기존 별도 계약으로 진행한다. 원본·WIP·다른worktree·S26원격은 보존한다.
+
 ## 2026-10-11 S26-MATERIALS-PREP-01 — 공개 자료 우선 판독과 후속 인계 준비
 
 - [후속 자료 목록](S26_REQUIRED_MATERIALS_20261011.md)의 P0 APK/source·Q20 raw·mixed 품질 연결부터 회수하고, 기존 공개 원장/실패 progress/readout은 중복 요청하지 않는다. latest P1l/GH와 mixed CPU1 프로필이 없다면 미작성으로 남긴다.
