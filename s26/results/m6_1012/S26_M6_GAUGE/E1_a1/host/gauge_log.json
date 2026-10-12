@@ -1,0 +1,629 @@
+{
+  "apk_sha256": "6a4da1acc213b4a8c13fdbbd42bbbae3cdb5bb1b71557ff7995212c3e4bc1f3f",
+  "attempt": 1,
+  "band": {
+    "attempt": 1,
+    "band": [
+      29.5,
+      31.5
+    ],
+    "band_wait_s": 1200,
+    "in_block_charge": false,
+    "label": "E1",
+    "max_soc": 100,
+    "min_soc": 30,
+    "polls": [
+      {
+        "AP": "30.3",
+        "BAT": "29.7",
+        "SKIN": "31.5",
+        "brightness": "0",
+        "brightness_mode": "0",
+        "plugged": false,
+        "soc": 97,
+        "t": "2026-10-13T01:23:45",
+        "thermal_status": "0"
+      }
+    ],
+    "previous_run": {
+      "attempt": 1,
+      "epoch": 1791820038.0417378,
+      "event": "end",
+      "kind": "gauge",
+      "label": "ET_loop",
+      "rc": 0,
+      "t": "2026-10-13T00:47:18"
+    },
+    "result": "in_band",
+    "start": {
+      "AP": "30.3",
+      "BAT": "29.7",
+      "SKIN": "31.5",
+      "brightness": "0",
+      "brightness_mode": "0",
+      "plugged": false,
+      "soc": 97,
+      "t": "2026-10-13T01:23:45",
+      "thermal_status": "0"
+    },
+    "start_skin": 31.5,
+    "waited_s": 0
+  },
+  "commands": [
+    {
+      "cmd": "shell pm path com.example.d1check.requestrunner",
+      "t": 1791822225.4171436
+    },
+    {
+      "cmd": "shell sha256sum /data/app/~~R61aCu4Vf-W7AaUKEa6iXg==/com.example.d1check.requestrunner-ZHT54zX4DSGexfWZlI_lmA==/base.apk",
+      "t": 1791822225.5029676
+    },
+    {
+      "cmd": "shell settings get global airplane_mode_on",
+      "t": 1791822225.605683
+    },
+    {
+      "cmd": "shell settings get global zen_mode",
+      "t": 1791822225.7200234
+    },
+    {
+      "cmd": "shell settings get system screen_brightness_mode",
+      "t": 1791822225.8162494
+    },
+    {
+      "cmd": "shell settings get system screen_brightness",
+      "t": 1791822225.9043794
+    },
+    {
+      "cmd": "shell settings get system screen_off_timeout",
+      "t": 1791822225.9923916
+    },
+    {
+      "cmd": "shell mkdir -p /data/local/tmp/mixreq /data/local/tmp/mixreq/gauge",
+      "t": 1791822226.083575
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/efficientnet_lite0.tflite 2>/dev/null",
+      "t": 1791822226.1576023
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/00575b9132bb3746.png 2>/dev/null",
+      "t": 1791822226.2582202
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/labels_without_background.txt 2>/dev/null",
+      "t": 1791822226.3411582
+    },
+    {
+      "cmd": "push C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M6_GAUGE\\E1_a1\\host\\config_pushed.json /data/local/tmp/mixreq/gauge/E1.json",
+      "t": 1791822226.412597
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/gauge/E1.json",
+      "t": 1791822226.5003514
+    },
+    {
+      "cmd": "shell ls -d /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822226.572034
+    },
+    {
+      "cmd": "logcat -c",
+      "t": 1791822226.647489
+    },
+    {
+      "cmd": "shell am start -W -n com.example.d1check.requestrunner/.GaugeDiagActivity --es d1_gauge_config /data/local/tmp/mixreq/gauge/E1.json --es d1_gauge_run_id E1",
+      "t": 1791822226.9407651
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822232.1111948
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822232.1575413
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822237.224069
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822237.260883
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822242.3512769
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822242.3809457
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822247.4557877
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822247.4901836
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822252.5665922
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822252.6020095
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822257.6709764
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822257.7030487
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822262.7721386
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822262.8034852
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822267.8837712
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822267.9184427
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822272.999024
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822273.0318074
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822278.1079297
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822278.1462162
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822283.212674
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822283.2531416
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822288.327721
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822288.3686628
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822293.4319875
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822293.4684205
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822298.5247478
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822298.5610826
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822303.628882
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822303.6691775
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822308.7298403
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822308.765844
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822313.824416
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822313.8591537
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822318.9361956
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822318.9793677
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822324.039547
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822324.0758822
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822329.1394827
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822329.1835463
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822334.2594652
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822334.294543
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822339.3609886
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822339.4014804
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822344.469576
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822344.5079942
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822349.5730793
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822349.6137817
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822354.6843882
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822354.7270596
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822359.7965913
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822359.8431256
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822364.939553
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822364.9770503
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822370.037076
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822370.0757673
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822375.1508467
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822375.1912856
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822380.2586336
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822380.29822
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822385.3663151
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822385.405535
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822390.472613
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822390.5230675
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822395.5934525
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822395.6346147
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822400.7050745
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822400.745419
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822405.811287
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822405.8540606
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822410.932711
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822410.9694655
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822416.0550802
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822416.1010735
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822421.1839535
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822421.2214272
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822426.298396
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822426.333478
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822431.402598
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822431.4406302
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822436.5211544
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822436.5641732
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822441.633333
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822441.6807435
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822446.7739873
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822446.814541
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822451.8919444
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822451.939477
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822457.009826
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822457.0477312
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822462.1214516
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822462.1613712
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822467.2304208
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822467.283942
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822472.3545718
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822472.3961973
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822477.4787912
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822477.517088
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822482.58516
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822482.6257267
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822487.7007883
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822487.7431965
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822492.8340628
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822492.8685942
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822497.9581666
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822497.9936554
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822503.0692499
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822503.1093137
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822508.205356
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822508.2464707
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822513.3172362
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822513.371904
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822518.4480395
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822518.4913034
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822523.561471
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822523.6064003
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791822528.6857023
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 2>/dev/null",
+      "t": 1791822528.7233617
+    },
+    {
+      "cmd": "pull /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M6_GAUGE\\E1_a1\\device_pull",
+      "t": 1791822528.8230286
+    },
+    {
+      "cmd": "shell am force-stop com.example.d1check.requestrunner",
+      "t": 1791822529.3286202
+    },
+    {
+      "cmd": "shell mv /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1 /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E1__a1",
+      "t": 1791822529.4218733
+    }
+  ],
+  "config_sha256": "e2d375d85e3653a6baddef268f7a245c7427e90c400958bd47bd6441e52fc6a8",
+  "device_folder_renamed_to": "E1__a1",
+  "end_time": "2026-10-13T01:28:49",
+  "events": [],
+  "gate": {
+    "last": "E1_a1 2026-10-13T01:23:45 0 31.5 30.3 29.7 0 97 False True",
+    "rc": 0
+  },
+  "previous_run": {
+    "attempt": 1,
+    "epoch": 1791820038.0417378,
+    "event": "end",
+    "kind": "gauge",
+    "label": "ET_loop",
+    "rc": 0,
+    "t": "2026-10-13T00:47:18"
+  },
+  "run": "E1",
+  "run_id": "E1",
+  "settings": {
+    "airplane": "1",
+    "brightness": "0",
+    "brightness_mode": "0",
+    "screen_off_timeout": "86400000",
+    "zen_mode": "1"
+  },
+  "start_time": "2026-10-13T01:23:47"
+}

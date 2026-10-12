@@ -1,0 +1,21 @@
+{
+  "attempt": 1,
+  "band": null,
+  "commands": [
+    {
+      "cmd": "shell ps -A -o PID,ARGS | grep -F 'thermal_zone' | grep -v grep",
+      "t": 1791820037.8998582
+    }
+  ],
+  "config_sha256": "866c60485e6fb7ee2f495569c6f15bd3608a8deaefc9106acd86914ae0e40e42",
+  "et_loop": {
+    "command": "while true; do cat /proc/uptime; dumpsys thermalservice | sed -n '/Current temperatures from HAL/,/Current cooling devices/p'; for z in /sys/class/thermal/thermal_zone*; do echo $z $(cat $z/type 2>&1) $(cat $z/temp 2>&1); done; done",
+    "device_leftover": "",
+    "pid": 34356,
+    "started": 1791820027.8679972,
+    "stopped": 1791820038.0278537
+  },
+  "events": [],
+  "run": "ET",
+  "run_id": "ET"
+}

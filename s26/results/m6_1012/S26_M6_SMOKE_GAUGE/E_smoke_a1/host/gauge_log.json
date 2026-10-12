@@ -1,0 +1,158 @@
+{
+  "apk_sha256": "6a4da1acc213b4a8c13fdbbd42bbbae3cdb5bb1b71557ff7995212c3e4bc1f3f",
+  "attempt": 1,
+  "band": null,
+  "commands": [
+    {
+      "cmd": "shell pm path com.example.d1check.requestrunner",
+      "t": 1791819941.2656488
+    },
+    {
+      "cmd": "shell sha256sum /data/app/~~R61aCu4Vf-W7AaUKEa6iXg==/com.example.d1check.requestrunner-ZHT54zX4DSGexfWZlI_lmA==/base.apk",
+      "t": 1791819941.351972
+    },
+    {
+      "cmd": "shell settings get global airplane_mode_on",
+      "t": 1791819941.44767
+    },
+    {
+      "cmd": "shell settings get global zen_mode",
+      "t": 1791819941.5322378
+    },
+    {
+      "cmd": "shell settings get system screen_brightness_mode",
+      "t": 1791819941.608481
+    },
+    {
+      "cmd": "shell settings get system screen_brightness",
+      "t": 1791819941.7012424
+    },
+    {
+      "cmd": "shell settings get system screen_off_timeout",
+      "t": 1791819941.8013752
+    },
+    {
+      "cmd": "shell mkdir -p /data/local/tmp/mixreq /data/local/tmp/mixreq/gauge",
+      "t": 1791819941.8935013
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/efficientnet_lite0.tflite 2>/dev/null",
+      "t": 1791819941.9647813
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/00575b9132bb3746.png 2>/dev/null",
+      "t": 1791819942.0856042
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/labels_without_background.txt 2>/dev/null",
+      "t": 1791819942.1576426
+    },
+    {
+      "cmd": "push results\\S26_M6_SMOKE_GAUGE\\E_smoke_a1\\host\\config_pushed.json /data/local/tmp/mixreq/gauge/E_smoke.json",
+      "t": 1791819942.241941
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/gauge/E_smoke.json",
+      "t": 1791819942.324536
+    },
+    {
+      "cmd": "shell ls -d /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E_smoke 2>/dev/null",
+      "t": 1791819942.3921282
+    },
+    {
+      "cmd": "logcat -c",
+      "t": 1791819942.4821537
+    },
+    {
+      "cmd": "shell am start -W -n com.example.d1check.requestrunner/.GaugeDiagActivity --es d1_gauge_config /data/local/tmp/mixreq/gauge/E_smoke.json --es d1_gauge_run_id E_smoke",
+      "t": 1791819942.7234933
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791819947.9583337
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E_smoke 2>/dev/null",
+      "t": 1791819948.006782
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791819953.084512
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E_smoke 2>/dev/null",
+      "t": 1791819953.1273525
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791819958.1893873
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E_smoke 2>/dev/null",
+      "t": 1791819958.2252555
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791819963.288379
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E_smoke 2>/dev/null",
+      "t": 1791819963.3222005
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791819968.392879
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E_smoke 2>/dev/null",
+      "t": 1791819968.4239209
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791819973.5159748
+    },
+    {
+      "cmd": "shell ls /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E_smoke 2>/dev/null",
+      "t": 1791819973.5526974
+    },
+    {
+      "cmd": "pull /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E_smoke results\\S26_M6_SMOKE_GAUGE\\E_smoke_a1\\device_pull",
+      "t": 1791819973.6175697
+    },
+    {
+      "cmd": "shell am force-stop com.example.d1check.requestrunner",
+      "t": 1791819973.870352
+    },
+    {
+      "cmd": "shell mv /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E_smoke /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/gauge/E_smoke__a1",
+      "t": 1791819973.982435
+    }
+  ],
+  "config_sha256": "2c9aa543fdd6cd2b833f6d2e8f8410ac7cd3101dc360db37fd939c45bf9c6227",
+  "device_folder_renamed_to": "E_smoke__a1",
+  "end_time": "2026-10-13T00:46:14",
+  "events": [],
+  "gate": {
+    "last": "E_smoke_a1 2026-10-13T00:45:41 0 30.8 29.4 28.9 0 93 False True",
+    "rc": 0
+  },
+  "previous_run": {
+    "attempt": 1,
+    "epoch": 1791819850.9981942,
+    "event": "end",
+    "kind": "session",
+    "label": "smoke_K",
+    "rc": 0,
+    "t": "2026-10-13T00:44:10"
+  },
+  "run": "E_smoke",
+  "run_id": "E_smoke",
+  "settings": {
+    "airplane": "1",
+    "brightness": "0",
+    "brightness_mode": "0",
+    "screen_off_timeout": "86400000",
+    "zen_mode": "1"
+  },
+  "start_time": "2026-10-13T00:45:42"
+}
