@@ -285,6 +285,7 @@ def main() -> int:
     ap.add_argument("--band-wait-s", type=int, default=1200)
     ap.add_argument("--skin-band", default="29.5,31.5")
     ap.add_argument("--in-block-charge", action="store_true")
+    ap.add_argument("--skip-precheck", action="store_true", help="smoke only (E_smoke / --loop-only-s): no SOC / SKIN band precheck")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
     args.attempt = int(args.attempt)
@@ -302,7 +303,9 @@ def main() -> int:
     if rc:
         return rc
     band_rec = None
-    if not args.loop_only_s:
+    if args.skip_precheck and args.run != "E_smoke":
+        raise SystemExit("--skip-precheck is for the smoke only")
+    if not args.loop_only_s and not args.skip_precheck:
         args.index, args.smoke = None, None
         rc = S.precheck(args, run.serial, label)
         if rc:
