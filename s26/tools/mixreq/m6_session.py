@@ -68,11 +68,11 @@ def awake_state(serial: str) -> dict:
     power = adb(serial, "shell", "dumpsys power")
     wake = re.search(r"mWakefulness=(\w+)", power)
     window = adb(serial, "shell", "dumpsys window")
-    shown = re.search(r"(?:isKeyguardShowing|mShowingLockscreen|KeyguardShowing|showing)=(true|false)", window)
+    shown = re.search(r"isKeyguardShowing=(true|false)", window)
     trust = adb(serial, "shell", "dumpsys trust")
-    locked = re.search(r"deviceLocked=(true|false)", trust)
+    locked = re.search(r"deviceLocked=(true|false|0|1),", trust)
     return dict(wakefulness=wake.group(1) if wake else None, keyguard_showing=(shown.group(1) == "true") if shown else None,
-                device_locked=(locked.group(1) == "true") if locked else None)
+                device_locked=(locked.group(1) in ("true", "1")) if locked else None)
 
 
 def ensure_awake(serial: str, results: Path, label: str) -> int:
