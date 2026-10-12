@@ -12,6 +12,7 @@ package com.example.d1check.requestrunner
  * v2 (등록 v2 `d1sim/docs/혼합요청_사전등록_v2.md` #1 · #2, 2026-10-09): STEP_MS 400 → 200 · EXPERIMENT_ID -01 → -02 (스모크도). v1 = `03f271a`. 그 밖 무변경.
  * v3 (등록 v3 `d1sim/docs/혼합요청_사전등록_v3.md` §0-1 · §0-2, 2026-10-09): 실험 ID 표 EXPERIMENTS (-02 · -02C · -03 · 각 -SMOKE → 요청 수 · 공통창 · index 범위) ·
  *   COMMON_NS 는 SessionManifest.validate() 가 고른 표 행에서 · WATCHDOG_MS 는 표의 최댓값 · validateRequests 의 요청 수 허용 = 표. v2 = `e2bedf1`. 그 밖 무변경.
+ * M6 (등록 `d1sim/docs/M6_동일APK_사전등록_v3.md` §1, 2026-10-12): M6_EXPERIMENTS (P · K) · 블록 M (키 5 · 정책 3 · 준비 상한 = N). M5 = `8bd3d76`. 그 밖 무변경.
  */
 object MixreqContract {
     const val PROTOCOL = "s26-mixreq-session-v1"
@@ -44,8 +45,29 @@ object MixreqContract {
     fun isStatesplit(experimentId: String): Boolean =
         experimentId == STATESPLIT_EXPERIMENT_ID || experimentId == STATESPLIT_SMOKE_EXPERIMENT_ID
 
+    /**
+     * M6 (2026-10-12, d1sim/docs/M6_동일APK_사전등록_v3.md §1 · §3 · §4): 위 두 표 밖의 실험 2개. EXPERIMENTS 는 그대로
+     * (WATCHDOG_MS 1,260 s ≥ K 명목 180 + 60 + 30 + 780 + 30 + 60 = 1,140 s).
+     *   S26-M6-P: 정책 대응 · 요청 100 (부하 L / B, M6Plan 이 index 로 유도) · 공통창 120 s · index 0..11 (개발 0..5 · 확인 6..11)
+     *   S26-M6-K: 냉각 · 요청 0 · 공통창 780 s · index 0..3 (K1 · K2 개발 · K3 · K4 확인)
+     * 스모크 ID 는 본과 같은 요청 수 · 공통창. 두 실험 모두 블록 M 만.
+     * S26-M6-E (게이지 진단) 는 세션이 아니라 GaugeDiagActivity 의 실행 ID 다 (세션 표에 넣지 않는다).
+     */
+    const val M6_P_EXPERIMENT_ID = "S26-M6-P"
+    const val M6_P_SMOKE_EXPERIMENT_ID = "S26-M6-P-SMOKE"
+    const val M6_K_EXPERIMENT_ID = "S26-M6-K"
+    const val M6_K_SMOKE_EXPERIMENT_ID = "S26-M6-K-SMOKE"
+    const val M6_E_EXPERIMENT_ID = "S26-M6-E"
+    const val M6_E_SMOKE_EXPERIMENT_ID = "S26-M6-E-SMOKE"
+    val M6_EXPERIMENTS = listOf(
+        ExperimentSpec(M6_P_EXPERIMENT_ID, M6_P_SMOKE_EXPERIMENT_ID, 100, 120L, 11, 600_000L),
+        ExperimentSpec(M6_K_EXPERIMENT_ID, M6_K_SMOKE_EXPERIMENT_ID, 0, 780L, 3, 1_260_000L),
+    )
+
+    fun isM6(experimentId: String): Boolean = M6_EXPERIMENTS.any { it.id == experimentId || it.smokeId == experimentId }
+
     fun experimentOf(experimentId: String): ExperimentSpec =
-        (EXPERIMENTS + M5_EXPERIMENTS).firstOrNull { it.id == experimentId || it.smokeId == experimentId } ?: error("unknown experiment_id $experimentId")
+        (EXPERIMENTS + M5_EXPERIMENTS + M6_EXPERIMENTS).firstOrNull { it.id == experimentId || it.smokeId == experimentId } ?: error("unknown experiment_id $experimentId")
 
     /** SessionManifest.validate() 가 정한다 (한 프로세스 = 한 세션 = 실험 하나). 엔진은 COMMON_NS 를 이 표 행에서 읽는다. */
     @Volatile var activeExperiment: ExperimentSpec = EXPERIMENTS[0]
@@ -82,8 +104,11 @@ object MixreqContract {
 
     const val BLOCK_A = "A"
     const val BLOCK_N = "N"
+    /** M6 등록 v3 §1-1 · §3-1: 세 규칙 모두 같은 준비 — 키 = 블록 N 의 5개 · 정책 3개 · 준비 상한 = 블록 N 값. */
+    const val BLOCK_M = "M"
     val KEYS_BLOCK_A = setOf("classification_CPU", "classification_GPU", "detection_CPU", "detection_GPU")
     val KEYS_BLOCK_N = KEYS_BLOCK_A + "classification_NPU"
+    val KEYS_BLOCK_M = KEYS_BLOCK_N
     val LANES = listOf("CPU", "GPU", "NPU")
 
     const val CANONICAL_INPUT_CONTRACT = "canonical-srgb-png-v2"
@@ -106,16 +131,18 @@ object MixreqContract {
     fun keysOf(block: String): Set<String> = when (block) {
         BLOCK_A -> KEYS_BLOCK_A
         BLOCK_N -> KEYS_BLOCK_N
+        BLOCK_M -> KEYS_BLOCK_M
         else -> error("unknown block $block")
     }
 
     fun policiesOf(block: String): Set<String> = when (block) {
         BLOCK_A -> setOf(POLICY_CPU, POLICY_PAR)
         BLOCK_N -> setOf(POLICY_CPU, POLICY_PAR_NPU)
+        BLOCK_M -> setOf(POLICY_CPU, POLICY_PAR, POLICY_PAR_NPU)
         else -> error("unknown block $block")
     }
 
-    fun setupNsOf(block: String): Long = if (block == BLOCK_N) SETUP_NS_BLOCK_N else SETUP_NS_BLOCK_A
+    fun setupNsOf(block: String): Long = if (block == BLOCK_N || block == BLOCK_M) SETUP_NS_BLOCK_N else SETUP_NS_BLOCK_A
 
     /** "classification_GPU" -> "GPU". lane 이름 = runtime 키의 마지막 토큰. */
     fun laneOf(key: String): String = key.substringAfterLast('_').also { require(it in LANES) { "unknown lane in $key" } }

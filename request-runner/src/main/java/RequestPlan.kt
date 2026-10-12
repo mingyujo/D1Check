@@ -30,7 +30,9 @@ object RequestPlan {
     /** manifest 의 표가 (experimentId, index) 에서 유도한 표와 완전히 같은지. */
     fun requireDerived(experimentId: String, index: Int, sid: String, requests: List<Request>) {
         require(sessionId(experimentId, index) == sid) { "session_id is not uuid5($experimentId/$index)" }
-        val expected = if (MixreqContract.isStatesplit(experimentId)) StatesplitPlan.requests(sid) else requests(sid, requests.size)
+        val expected = if (MixreqContract.isStatesplit(experimentId)) StatesplitPlan.requests(sid)
+            else if (MixreqContract.isM6(experimentId)) M6Plan.requests(experimentId, index, sid)
+            else requests(sid, requests.size)
         require(expected == requests) { "request table differs from the uuid5 derivation" }
     }
 }

@@ -52,7 +52,9 @@ class SessionManifest(
         val experiment = MixreqContract.experimentOf(experimentId)
         MixreqContract.activeExperiment = experiment
         require(Uuid5.isCanonical(sessionId)) { "session_id" }
-        require(block == MixreqContract.BLOCK_A || block == MixreqContract.BLOCK_N) { "block $block" }
+        // M6: 블록 M 은 M6 실험에서만, M6 실험은 블록 M 만 (M6Plan.validateSession).
+        require(block == MixreqContract.BLOCK_A || block == MixreqContract.BLOCK_N ||
+            (block == MixreqContract.BLOCK_M && MixreqContract.isM6(experimentId))) { "block $block" }
         require(policy in MixreqContract.policiesOf(block)) { "policy $policy is not allowed in block $block" }
         require(attempt in 1..2) { "attempt $attempt" }
         require(sessionIndex in 0..experiment.sessionIndexMax && pair in 0..3) { "session_index/pair" }
@@ -68,6 +70,7 @@ class SessionManifest(
         require(labels.keys == setOf("classification", "detection")) { "labels" }
         require(imageWidth in 1..4096 && imageHeight in 1..4096) { "image size" }
         if (MixreqContract.isStatesplit(experimentId)) StatesplitPlan.validateRequests(requests)
+        else if (MixreqContract.isM6(experimentId)) M6Plan.validateSession(experimentId, sessionIndex, block, policy, requests)
         else MixreqContract.validateRequests(requests, requests.size)
         RequestPlan.requireDerived(experimentId, sessionIndex, sessionId, requests)
         if (split == MixreqContract.SPLIT_CONFIRMATION) {
