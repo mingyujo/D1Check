@@ -1,0 +1,80 @@
+{
+  "experiment_id": "S26-SUSTAIN-ABBA-01",
+  "note": "readout only — 계산 · 판정은 Cowork (등록 §2)",
+  "plan": "s26\\results\\statesplit_1012\\plan_abba\\plan.json",
+  "plan_sha256": "febd3a7541328eab2634665583dd0df582e911b50af4bca225d988461bd6dcd8",
+  "registration": {
+    "commit": "9ed096fb2eb778969ea2972ad4bea538a2451e14",
+    "file": "d1sim/docs/지속감속_확인_사전등록_v1.md",
+    "sha256": "fd197584d2979efec31b3ce6d8607c17fbde80f52ae467d869cac412f8c65641",
+    "time": "2026-10-12T01:37:52+09:00"
+  },
+  "schema": "s26-m5-readout-index-v1",
+  "sessions": 5,
+  "skipped": [],
+  "slot_counts": {
+    "invalid_once": 0,
+    "invalid_twice": 1,
+    "not_attempted": 0,
+    "valid": 3
+  },
+  "slots": {
+    "0": {
+      "analysis_split": null,
+      "attempts": [
+        {
+          "attempt": 1,
+          "eligible": true,
+          "reasons": ""
+        }
+      ],
+      "letter": "A",
+      "policy": "CPU_URGENT_ONLINE_V1",
+      "status": "valid"
+    },
+    "1": {
+      "analysis_split": null,
+      "attempts": [
+        {
+          "attempt": 1,
+          "eligible": true,
+          "reasons": ""
+        }
+      ],
+      "letter": "B",
+      "policy": "B2_PARALLEL_ONLINE_V1",
+      "status": "valid"
+    },
+    "2": {
+      "analysis_split": null,
+      "attempts": [
+        {
+          "attempt": 1,
+          "eligible": true,
+          "reasons": ""
+        }
+      ],
+      "letter": "B",
+      "policy": "B2_PARALLEL_ONLINE_V1",
+      "status": "valid"
+    },
+    "3": {
+      "analysis_split": null,
+      "attempts": [
+        {
+          "attempt": 1,
+          "eligible": false,
+          "reasons": "3_window"
+        },
+        {
+          "attempt": 2,
+          "eligible": false,
+          "reasons": "3_window"
+        }
+      ],
+      "letter": "A",
+      "policy": "CPU_URGENT_ONLINE_V1",
+      "status": "invalid_twice"
+    }
+  }
+}

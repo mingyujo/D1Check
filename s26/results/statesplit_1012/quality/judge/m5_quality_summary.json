@@ -1,0 +1,57 @@
+{
+  "schema": "s26-m5-quality-v1",
+  "registration": "d1sim/docs/상태분리_사전등록_v2.md §3 (SHA-256 717bc4e5…)",
+  "judged_at": "2026-10-12T11:48:56+09:00",
+  "q1": {
+    "CPU": {
+      "verdict": "참조와 일치 (FP32 기존 경로 기준)",
+      "tags": [],
+      "top1": 20,
+      "top5_order": 20,
+      "cosine_min": 0.9999999999967051,
+      "violations": 0,
+      "evidence": "PASS"
+    },
+    "GPU": {
+      "verdict": "지표만 · PASS 보류 (GPU 실제 정밀도 미확인)",
+      "tags": [],
+      "top1": 20,
+      "top5_order": 20,
+      "cosine_min": 0.9999999999888961,
+      "violations": 0,
+      "evidence": "PASS"
+    },
+    "NPU": {
+      "verdict": "지표만 · 품질 PASS 보류 (FP16 합격선 미등록)",
+      "tags": [],
+      "top1": 20,
+      "top5_order": 19,
+      "cosine_min": 0.9999553947380945,
+      "violations": 96,
+      "evidence": "PASS"
+    }
+  },
+  "q3": {
+    "verdict": "NPU FP16 합격 (request-runner · 20장)",
+    "top1_same": 20,
+    "top5_set_same": 20,
+    "cosine_ge_min": 20,
+    "cosine_min": 0.9999553873865827
+  },
+  "q2": {
+    "NONE_vs_FP32": {
+      "available": 20,
+      "bit_equal": 0,
+      "max_abs_diff_max": 0.005504637956619263,
+      "top1_same": 20,
+      "top5_order_same": 17
+    },
+    "NONE_vs_FP16": {
+      "available": 20,
+      "bit_equal": 20,
+      "max_abs_diff_max": 0.0,
+      "top1_same": 20,
+      "top5_order_same": 20
+    }
+  }
+}
