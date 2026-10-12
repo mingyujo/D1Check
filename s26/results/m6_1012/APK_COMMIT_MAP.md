@@ -5,16 +5,17 @@
 
 ## 1. 해시 ↔ 커밋
 
-| APK (request-runner) | 쓰인 자료 | 세션 기록 `apk_sha256` [P] | 빌드 커밋 [D] | 브랜치 · 시각 | 근거 문서 |
-|---|---|---|---|---|---|
-| `fb240791…` (v1) | R1 · R2 스모크 | — | `0ad7fac` | `s26-mixreq` 10-08 04:39 | `작업결과_1008_R1_혼합요청개발.md` |
-| **`591cae72886aebe6a051d7b0fe311aa38b8127e21ba0b519851b7784229d986d`** (v2) | **R3** 16 | 16/16 | **`e2bedf1`** | `s26-mixreq` 10-09 04:40 | `작업결과_1009_R3_혼합요청v2.md` |
-| **`b97a97842471b0727dc36f4d3c7230108397c0e43cd7406e654c5f038c8b89b7`** (v3) | **R4C · R4S** | R4C 16/16 | **`c75d085`** | `s26-mixreq` 10-09 20:51 | `작업결과_1010_R4_혼합요청v3.md` §4 |
-| **`c2e78939b2b9a37427b2862734c185093ba6f84e454d191ac6603a67a6b8a39d`** (M5) | **SS · ABBA** | SS 12/12 | **`8bd3d76`** | `s26-statesplit` 10-12 02:28 | `작업결과_1012_M5_상태분리측정.md` |
-| (M6 — 이번) | M6 E · K · P | — | M6 커밋 ② | `s26-m6` | M6 등록 v2 §1 |
+| APK (request-runner) | 쓰인 자료 | 세션 기록 `apk_sha256` [P] | 빌드 커밋 [D] | 브랜치 · 시각 | 근거 문서 | 빌드 재현 [P 1012 PC] |
+|---|---|---|---|---|---|---|
+| `fb240791…` (v1) | R1 · R2 스모크 | — | `0ad7fac` | `s26-mixreq` 10-08 04:39 | `작업결과_1008_R1_혼합요청개발.md` | — (R1 · R2 스모크 · 대상 밖) |
+| **`591cae72886aebe6a051d7b0fe311aa38b8127e21ba0b519851b7784229d986d`** (v2) | **R3** 16 | 16/16 | **`e2bedf1`** | `s26-mixreq` 10-09 04:40 | `작업결과_1009_R3_혼합요청v2.md` | **빌드 재현 확인** (`e2bedf1` 깨끗한 빌드 → `591cae72…` 바이트 같음 · dex 같음) |
+| **`b97a97842471b0727dc36f4d3c7230108397c0e43cd7406e654c5f038c8b89b7`** (v3) | **R4C · R4S** | R4C 16/16 | **`c75d085`** | `s26-mixreq` 10-09 20:51 | `작업결과_1010_R4_혼합요청v3.md` §4 | **빌드 재현 확인** (`c75d085` → `b97a9784…` 같음 · dex 같음) |
+| **`c2e78939b2b9a37427b2862734c185093ba6f84e454d191ac6603a67a6b8a39d`** (M5) | **SS · ABBA** | SS 12/12 | **`8bd3d76`** | `s26-statesplit` 10-12 02:28 | `작업결과_1012_M5_상태분리측정.md` | **빌드 재현 확인** (`8bd3d76` → `c2e78939…` 같음 · dex 같음) |
+| (M6 — 이번) | M6 E · K · P | — | M6 커밋 ② | `s26-m6` | M6 등록 v2 §1 | (M6 행 = §3 · 커밋 ② 뒤) |
 
 - 세 묶음 모두 세션 기록 `litert_version` 2.2.0 · `sdk_int` 37 · `device_model` SM-S942N [P].
 - `9c857f1` (M5 결과 나머지 파일) 은 앱 코드 변경 0 [P].
+- **빌드 재현 (2026-10-12 23:4x · M6-A 1단계 · PC)** [P]: 세 커밋을 각각 `git worktree` 에서 `request-runner/build` 를 지운 뒤 `./gradlew :request-runner:assembleDebug` → 파일 SHA-256 이 세션 기록 `apk_sha256` 과 바이트 같음 **3/3** (`build_repro/compare_*.json`). 조건: 같은 PC · 같은 debug keystore · 레포 밖 입력 2개 = `local.properties` (sdk.dir) 와 `request-runner/src/main/jniLibs/arm64-v8a/libLiteRtDispatch_Samsung.so` (gitignore 라이선스물 · SHA-256 `f08656a6…` = 세 APK 안의 그 항목). 이 .so 없이 빌드하면 그 항목만 빠지고 (dex 같음), 증분 빌드는 zip 항목 순서만 달라진다 (내용 같음) — 깨끗한 빌드에서는 둘 다 없음.
 
 ## 2. 영역별 변경 (request-runner `src/main` + 빌드 설정) [P git diff --numstat]
 
