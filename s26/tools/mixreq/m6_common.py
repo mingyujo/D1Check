@@ -45,7 +45,7 @@ K_SMOKE_TIME_SCALE = 10
 REQUEST_COUNT = 100
 V2_BOUND_S = 120.000             # 등록 §3-6 V2: every lane_available < origin + 120.000 s
 K_WINDOWS_S = dict(W=(0.0, 180.0), S=(600.0, 780.0))   # 등록 §4-2 (기술용 — 계산은 Cowork)
-SOC_MIN, SOC_MAX = 30, 96        # 등록 v3 §3-4 는 30 ~ 90 — 영훈 결정 (2026-10-13 00:5x · 측정 전): 상한 96 (원장 freeze_m6.txt)
+SOC_MIN, SOC_MAX = 30, 100       # 등록 v3 §3-4 는 30 ~ 90 — 영훈 결정 (2026-10-13 · 측정 전): 상한 96 (00:5x) → 상한 없음 "배터리 상관 없이" (01:1x) · 하한 30 그대로 (원장 freeze_m6.txt)
 
 # E (등록 §2-1): segments ms · poll target · smoke 30 s
 E_SEGMENTS_MS = dict(idle_ms=60_000, load_ms=120_000, rest_ms=120_000)
