@@ -207,6 +207,12 @@ def main() -> int:
         rc = precheck(args, serial, band_label)
         if rc:
             return rc
+    prev = previous_run(args.runlog)
+    if prev and not args.dry_run:   # 등록 §3-4 세션 사이 ≥ 90 s — results root 가 달라도 (K → P · P → K) run log 기준으로
+        wait = args.min_gap_s - (time.time() - float(prev.get("epoch", 0)))
+        if wait > 0:
+            print(f"[{now_iso()}] cross-run gap: sleeping {wait:.0f} s after {prev.get('label')} (min {args.min_gap_s})", flush=True)
+            time.sleep(wait)
     append_jsonl(args.runlog, dict(event="start", label=label, kind="session", plan=str(args.plan), index=args.index, smoke=args.smoke,
                                    attempt=args.attempt, results=str(args.results), t=now_iso(), epoch=time.time(), in_block_charge=args.in_block_charge))
     rc = 3
