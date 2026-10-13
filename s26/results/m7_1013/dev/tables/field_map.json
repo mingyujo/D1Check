@@ -1,0 +1,93 @@
+{
+  "extra_ours": {
+    "deadline": "deadline_ns",
+    "decision_reason": "online_arrived_priority_then_ordinal",
+    "host_thermal": "host/hal.csv (세션 안 2 s: pc_ms device_boottime_s SKIN AP BAT PA thermal_status) · S26_M7_HAL/hal_cont_<label>.csv (연속 2.3 s · dumpsys battery 포함)",
+    "power": "progress.jsonl kind=power_sample (current_raw µA 방전 음수 · charge_counter_raw µAh · voltage_mV · battery_temperature_deci_c · battery_level · plugged · thermal_status · interactive · 900 ms)",
+    "queue_entry": "queue_entry_ns (event queue_entry)",
+    "terminal_status": "succeeded | failed"
+  },
+  "fields": {
+    "AVAILABLE": {
+      "column": "lane_available_ns",
+      "event": "lane_available",
+      "note": "차선 (runtime key) 이 다음 요청을 받을 수 있게 된 시각 · 등록 V2 의 기준"
+    },
+    "arrival": {
+      "also": {
+        "planned": "scheduled_arrival_ns"
+      },
+      "column": "actual_arrival_ns",
+      "event": "arrival",
+      "note": "예정 도착 = scheduled_arrival_ns · 실제 도착 = actual_arrival_ns"
+    },
+    "dispatch": {
+      "column": "dispatch_ns",
+      "event": "dispatch"
+    },
+    "execution_start": {
+      "column": "execution_start_ns",
+      "event": "request_start"
+    },
+    "host_inference_return": {
+      "column": "host_inference_return_ns",
+      "event": "host_inference_return"
+    },
+    "host_inference_start": {
+      "column": "host_inference_start_ns",
+      "event": "host_inference_start"
+    },
+    "output_ready": {
+      "column": "output_ready_ns",
+      "event": "output_ready"
+    },
+    "persist_complete": {
+      "column": "persist_complete_ns",
+      "event": "persist_complete"
+    },
+    "worker_release": {
+      "column": "worker_release_ns",
+      "event": "worker_release"
+    },
+    "결과": {
+      "column": null,
+      "event": null,
+      "file": "<request_id>.result.json",
+      "keys": [
+        "results",
+        "raw_output_sha256",
+        "raw_output_elements",
+        "inference_ns",
+        "write_run_read_ns",
+        "input_tensor_sha256",
+        "model_sha256",
+        "image_sha256"
+      ],
+      "note": "요청별 결과 파일 (분류 top-5 / 탐지 상자) · terminal_status 는 common_boundary · requests 행"
+    },
+    "백엔드": {
+      "also": {
+        "result_file": [
+          "requested_backend",
+          "actual_backend",
+          "runtime_key"
+        ]
+      },
+      "column": "selected_backend",
+      "event": "decision",
+      "note": "정책 결정 (decision_reason) 과 실제 실행 백엔드 (result.json actual_backend)"
+    },
+    "응답 시각": {
+      "column": null,
+      "event": null,
+      "reason": "앱에 '요청자에게 응답을 돌려준' 별도 이벤트가 없다 (요청자 = 세션 엔진 자신). 가장 가까운 두 시각 = output_ready_ns (출력 준비) · persist_complete_ns (결과 파일 기록 완료). 추정 채움 0 — null"
+    }
+  },
+  "power_gap": {
+    "fill": "null — 추정 채움 0",
+    "reason": "app not running between sessions (APK: power_sample only inside a session · cooling 60 s)"
+  },
+  "schema": "s26-m7-field-map-v1",
+  "source": "request-runner SessionEngine (M7-apk · 엔진 diff 0 since R3): common_boundary.json rows = requests.json rows · progress.jsonl per-request events · <request_id>.result.json",
+  "units": "*_ns · mono_ns = SystemClock.elapsedRealtimeNanos (기기 단조 시계) · 호스트 연결 = host start_time + (mono_ns − session_start mono_ns) (근사 · start_check 와 hal.csv 의 device_boottime 열이 정본)"
+}

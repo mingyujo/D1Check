@@ -172,7 +172,8 @@ def session_rows(results: Path, events: list[dict], runs: list[dict], fingerprin
             gap_k = ev.get("gap_prep_to_k") or {}
             exp = m["experiment_id"]
             item = m.get("item") or (1 if exp.startswith("S26-M6-K") else 2 if exp.startswith("S26-M6-P") else 4 if exp.startswith("S26-MIXREQ-03") else "")
-            row = dict(cycle=m.get("cycle") or ("m7" if root_name.startswith("S26_M7") else ""), kind=kind, idx=m["session_index"], label=label, load=m.get("m6_load"),
+            row_kind = "PREP" if m.get("role") == "prep" else kind   # prep P sessions run inside the K driver (root S26_M7_K) — classify by role
+            row = dict(cycle=m.get("cycle") or ("m7" if root_name.startswith("S26_M7") else ""), kind=row_kind, idx=m["session_index"], label=label, load=m.get("m6_load"),
                        rule=m.get("m6_letter"), policy=m["policy"], attempt=m["attempt"], eligible=v.get("eligible"), reasons=";".join(v.get("reasons") or []),
                        analysis_split=m.get("analysis_split") or ("regression" if kind == "S7" else "m6_repro" if kind == "M6REPRO" else "smoke" if kind == "SMOKE" else ""),
                        item=item, condition=ev.get("condition") or m.get("m7_cond") or (m.get("m6_load") and f"{m.get('m6_load')}" if exp.startswith("S26-M6-P") else ("S" if exp.startswith("S26-MIXREQ-03") else "")),
@@ -204,10 +205,10 @@ def session_rows(results: Path, events: list[dict], runs: list[dict], fingerprin
             rt = {r["key"]: r.get("model_sha256") for r in m.get("runtimes", [])}
             dev_sha = (C.read_json(folder / "device" / "summary.json") or {}).get("manifest_sha256") if (folder / "device" / "summary.json").is_file() else None
             plan_sha = None
-            if plan_dir:
-                plan = C.read_json(PLAN_ROOT / plan_dir / "plan.json")
-                plan_sha = next((e["manifest_sha256"] for e in plan["sessions"] + plan["smoke"] if e["session_id"] == m["session_id"]), None)
-            maps.append(dict(cycle=row["cycle"], kind=kind, label=label, experiment_id=exp, idx=m["session_index"], attempt=m["attempt"], session_id=m["session_id"], policy=m["policy"],
+            for pd in ([plan_dir, "plan_m7prep"] if plan_dir else []):
+                plan = C.read_json(PLAN_ROOT / pd / "plan.json")
+                plan_sha = plan_sha or next((e["manifest_sha256"] for e in plan["sessions"] + plan["smoke"] if e["session_id"] == m["session_id"]), None)
+            maps.append(dict(cycle=row["cycle"], kind=row_kind, label=label, experiment_id=exp, idx=m["session_index"], attempt=m["attempt"], session_id=m["session_id"], policy=m["policy"],
                              block=m["block"], manifest_sha256_plan=plan_sha, manifest_sha256_pushed=(host_log or {}).get("manifest_sha256"), manifest_sha256_device=dev_sha,
                              apk_sha256_session=(host_log or {}).get("apk_sha256"), projection_sha256=row["projection_sha256"], cls_model_sha256=rt.get("classification_CPU"),
                              det_model_sha256=rt.get("detection_CPU"), aot_model_sha256=rt.get("classification_NPU"), png_sha256=(m.get("image") or {}).get("sha256"),
@@ -267,10 +268,13 @@ def main() -> int:
     if not args.no_readout:
         for root_name, (plan_dir, kind) in ROOTS.items():
             if plan_dir and (args.results / root_name).is_dir():
-                out = args.out / f"readout_{root_name}"
-                r = subprocess.run([sys.executable, "-X", "utf8", str(HERE / "m6_readout.py"), "--plan", str(PLAN_ROOT / plan_dir / "plan.json"), "--results", str(args.results / root_name),
-                                    "--out", str(out)], capture_output=True, text=True, cwd=str(REPO))
-                readouts[root_name] = dict(rc=r.returncode, last=(r.stdout.strip().splitlines() or [""])[-1][:300], err=r.stderr.strip()[-300:])
+                jobs = [(plan_dir, args.out / f"readout_{root_name}")]
+                if root_name == "S26_M7_K":   # prep P sessions (plan_m7prep) live in the K root — read them out against their own plan
+                    jobs.append(("plan_m7prep", args.out / f"readout_{root_name}_prep"))
+                for pd, out in jobs:
+                    r = subprocess.run([sys.executable, "-X", "utf8", str(HERE / "m6_readout.py"), "--plan", str(PLAN_ROOT / pd / "plan.json"), "--results", str(args.results / root_name),
+                                        "--out", str(out)], capture_output=True, text=True, cwd=str(REPO))
+                    readouts[out.name] = dict(rc=r.returncode, last=(r.stdout.strip().splitlines() or [""])[-1][:300], err=r.stderr.strip()[-300:])
     index = dict(schema="s26-m7-table-v1", rows=len(rows), m7_rows=sum(1 for r in rows if r["cycle"] == "m7"), m6_rows=sum(1 for r in rows if r["cycle"] == "m6"),
                  by_kind={k: sum(1 for r in rows if r["kind"] == k and r["cycle"] == "m7") for k in ("K", "PREP", "P", "S", "SMOKE", "S7", "M6REPRO")},
                  valid={k: sum(1 for r in rows if r["kind"] == k and r["cycle"] == "m7" and str(r["eligible"]) == "True") for k in ("K", "PREP", "P", "S")},
