@@ -332,6 +332,21 @@ class Driver:
                 self.log("PHONE LOCKED: 폰 잠금 해제 부탁 (waiting 60 s, attempt not consumed)")
                 time.sleep(60)
                 continue
+            if rc == 6 and not self.app_started(self.host_folder(kind, index, attempt, self.base / ROOT_BY_KIND[self.kind]) if not smoke else Path("_none_")):
+                # m6_session precheck says CHARGE NEEDED also when one adb read came back empty (SOC None) — verify before stopping (M7-A 21:54 사고)
+                st = self.phone_state()
+                if st.get("soc") is not None and st["soc"] >= 30 and not st["plugged"]:
+                    self.consecutive_conn += 1
+                    self.state["connection_events"] += 1
+                    self.log(f"rc 6 but phone reads SOC={st['soc']} plugged={st['plugged']} -> transient adb read, attempt not consumed (x{self.consecutive_conn})")
+                    self.event(what="rc6_transient", label=label, attempt=attempt, state=st)
+                    self.save_state()
+                    if self.consecutive_conn >= 3:
+                        raise Stop(f"rc 6 x3 with SOC ok at {label} — adb reads unstable (operator: check the wireless debugging link)")
+                    if not self.wait_adb(self.args.reconnect_wait_s):
+                        self.log("WAIT: adb not back -> one more attempt anyway")
+                    time.sleep(30)
+                    continue
             if rc not in (2, 3, 4):
                 self.consecutive_conn = 0
                 return rc
@@ -572,7 +587,8 @@ class Driver:
         s0 = self.phone_state()
         h = self.hal_start(f"smoke_{label}")
         self.wait_until(h["started_epoch"] + M7.HAL_PRE_START_P_S, "HAL pre-start before smoke")
-        extra = ["--skip-precheck"] if which == "k" else []
+        # smoke = 판정 밖: K smoke skips the precheck (time_scale 10); P / S smokes keep SOC · plugged checks but not the 20 min start-band wait
+        extra = ["--skip-precheck"] if which == "k" else ["--band-wait-s", "0"]
         rc = self.run_attempt(plan_kind, sm["index"], 1, label, extra, legacy=(which == "s"), smoke=label)
         folder = self.base / ROOT_BY_KIND["smoke"] / f"S26_MIXREQ_SMOKE_{label}_a1"
         t = self.session_times(folder)

@@ -18,6 +18,6 @@ if ($Cond) { $argList += @("--cond",$Cond) }
 if ($Smoke) { $argList += @("--smoke",$Smoke) }
 if ($InBlockCharge) { $argList += "--in-block-charge" }
 "[" + (Get-Date -Format "yyyy-MM-dd HH:mm:ss K") + "] launcher kind=$Kind items=[$Items] cond=$Cond smoke=$Smoke console=$console" | Out-File -FilePath $console -Encoding UTF8 -Append
-& py @argList *>> $console
+& py @argList 2>&1 | Out-File -FilePath $console -Encoding UTF8 -Append
 "[" + (Get-Date -Format "yyyy-MM-dd HH:mm:ss K") + "] launcher end rc=$LASTEXITCODE" | Out-File -FilePath $console -Encoding UTF8 -Append
 exit $LASTEXITCODE
