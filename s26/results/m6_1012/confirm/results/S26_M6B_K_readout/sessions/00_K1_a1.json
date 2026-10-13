@@ -1,0 +1,231 @@
+{
+  "a24_differences": [],
+  "analysis_split": "dev",
+  "apk_sha256": "6a4da1acc213b4a8c13fdbbd42bbbae3cdb5bb1b71557ff7995212c3e4bc1f3f",
+  "attempt": 1,
+  "block": "M",
+  "contract": {
+    "applicable": true,
+    "block": "M",
+    "criteria": "top-1 index equal AND cosine >= 0.99, both NPU warmups vs CPU warmup #1 (등록 §4-N; A24 contract is separate)",
+    "evaluated_as": "block N rule (block M has classification_NPU resident)",
+    "passed": true,
+    "policy": "CPU_URGENT_ONLINE_V1",
+    "reason": null,
+    "schema": "npu-mixreq-contract-v1",
+    "session_id": "9ce6bdc4-706e-591b-9f2b-f2ae3819ffe3",
+    "used_by_policy": false,
+    "warmups": [
+      {
+        "bit_identical_to_cpu": false,
+        "cosine": 0.9999934974570073,
+        "cpu_top1_score": 0.2134217768907547,
+        "fp32_tolerance_violations": 4,
+        "index": 0,
+        "max_abs_delta": 0.0009336918592453003,
+        "mean_abs_delta": 3.582621593523072e-06,
+        "npu_top1_score": 0.21435546875,
+        "passed": true,
+        "top1_cpu": 518,
+        "top1_equal": true,
+        "top1_npu": 518,
+        "top5_order_equal": true,
+        "top5_overlap": 5
+      },
+      {
+        "bit_identical_to_cpu": false,
+        "cosine": 0.9999934974570073,
+        "cpu_top1_score": 0.2134217768907547,
+        "fp32_tolerance_violations": 4,
+        "index": 1,
+        "max_abs_delta": 0.0009336918592453003,
+        "mean_abs_delta": 3.582621593523072e-06,
+        "npu_top1_score": 0.21435546875,
+        "passed": true,
+        "top1_cpu": 518,
+        "top1_equal": true,
+        "top1_npu": 518,
+        "top5_order_equal": true,
+        "top5_overlap": 5
+      }
+    ]
+  },
+  "eligible": true,
+  "experiment_id": "S26-M6-K",
+  "folder": "results\\S26_M6_K\\S26_MIXREQ_00_CPU_URGENT_ONLINE_V1_a1",
+  "gate": {
+    "last": "S26_MIXREQ_00_CPU_URGENT_ONLINE_V1_a1 2026-10-13T02:27:42 0 31.2 29.8 29.2 0 90 False True",
+    "rc": 0
+  },
+  "host_end_time": "2026-10-13T02:42:20",
+  "host_start_time": "2026-10-13T02:27:44",
+  "in_block_charge": false,
+  "index": 0,
+  "label": "K1",
+  "m6_letter": null,
+  "m6_load": null,
+  "m6_run": "K1",
+  "manifest_sha256": "a036aa4c4805072e0899ef934a7041717f9b8c821b4973af473532214753cb2a",
+  "mixreq_rules": {
+    "0_artifacts": {
+      "passed": false
+    },
+    "1_requests_succeeded_quality": {
+      "passed": true
+    },
+    "2_time_order": {
+      "passed": false
+    },
+    "3_window": {
+      "passed": false
+    },
+    "4_assignment_residents": {
+      "passed": false
+    },
+    "5_overlap": {
+      "passed": false
+    },
+    "6_warmup_quality": {
+      "passed": true
+    },
+    "7_delegation_evidence": {
+      "passed": true
+    },
+    "8_plugged_start": {
+      "passed": true
+    },
+    "9_watch_stop": {
+      "passed": true
+    }
+  },
+  "pair": 0,
+  "policy": "CPU_URGENT_ONLINE_V1",
+  "reasons": [],
+  "session_id": "9ce6bdc4-706e-591b-9f2b-f2ae3819ffe3",
+  "split": "confirmation",
+  "start_band": {
+    "attempt": 1,
+    "band": [
+      29.5,
+      31.5
+    ],
+    "band_wait_s": 1200,
+    "in_block_charge": false,
+    "label": "index00",
+    "max_soc": 100,
+    "min_soc": 30,
+    "polls": [
+      {
+        "AP": "35.5",
+        "BAT": "33.3",
+        "SKIN": "35.3",
+        "brightness": "0",
+        "brightness_mode": "0",
+        "plugged": false,
+        "soc": 90,
+        "t": "2026-10-13T02:24:40",
+        "thermal_status": "0"
+      },
+      {
+        "AP": "33.0",
+        "BAT": "32.1",
+        "SKIN": "33.8",
+        "brightness": "0",
+        "brightness_mode": "0",
+        "plugged": false,
+        "soc": 90,
+        "t": "2026-10-13T02:25:40",
+        "thermal_status": "0"
+      },
+      {
+        "AP": "31.3",
+        "BAT": "30.5",
+        "SKIN": "32.3",
+        "brightness": "0",
+        "brightness_mode": "0",
+        "plugged": false,
+        "soc": 90,
+        "t": "2026-10-13T02:26:41",
+        "thermal_status": "0"
+      },
+      {
+        "AP": "29.8",
+        "BAT": "29.2",
+        "SKIN": "31.2",
+        "brightness": "0",
+        "brightness_mode": "0",
+        "plugged": false,
+        "soc": 90,
+        "t": "2026-10-13T02:27:41",
+        "thermal_status": "0"
+      }
+    ],
+    "previous_run": {
+      "attempt": 1,
+      "epoch": 1791825878.5700974,
+      "event": "end",
+      "kind": "gauge",
+      "label": "ET",
+      "rc": 0,
+      "t": "2026-10-13T02:24:38"
+    },
+    "result": "in_band",
+    "start": {
+      "AP": "29.8",
+      "BAT": "29.2",
+      "SKIN": "31.2",
+      "brightness": "0",
+      "brightness_mode": "0",
+      "plugged": false,
+      "soc": 90,
+      "t": "2026-10-13T02:27:41",
+      "thermal_status": "0"
+    },
+    "start_skin": 31.2,
+    "waited_s": 182
+  },
+  "summary": {
+    "a24_differences": [],
+    "apk_sha256": "6a4da1acc213b4a8c13fdbbd42bbbae3cdb5bb1b71557ff7995212c3e4bc1f3f",
+    "attempt": 1,
+    "block": "M",
+    "command_id": "ffc21ffa-3579-4331-b7b6-1c3f5d8c094b",
+    "common_end_ns": 294487810148923,
+    "common_start_ns": 293707808858962,
+    "detection_gpu_created": true,
+    "device_model": "SM-S942N",
+    "experiment_id": "S26-M6-K",
+    "experiment_ready": false,
+    "manifest_sha256": "a036aa4c4805072e0899ef934a7041717f9b8c821b4973af473532214753cb2a",
+    "package": "com.example.d1check.requestrunner",
+    "pair": 0,
+    "pid": 9242,
+    "planned": 0,
+    "policy": "CPU_URGENT_ONLINE_V1",
+    "protocol": "s26-mixreq-session-v1",
+    "runtime_keys": [
+      "classification_CPU",
+      "classification_GPU",
+      "classification_NPU",
+      "detection_CPU",
+      "detection_GPU"
+    ],
+    "sdk_int": 37,
+    "session_id": "9ce6bdc4-706e-591b-9f2b-f2ae3819ffe3",
+    "session_index": 0,
+    "split": "confirmation",
+    "status": "completed",
+    "terminal": 0,
+    "time_scale": 1,
+    "used_keys": [
+      "classification_CPU",
+      "detection_CPU"
+    ]
+  },
+  "time_scale": 1,
+  "validated_rules": {
+    "K1_requests_zero": true,
+    "K2_phases": true,
+    "K3_samples": true
+  }
+}

@@ -1,0 +1,198 @@
+{
+  "a24_differences": [],
+  "analysis_split": "confirm",
+  "apk_sha256": "6a4da1acc213b4a8c13fdbbd42bbbae3cdb5bb1b71557ff7995212c3e4bc1f3f",
+  "attempt": 1,
+  "block": "M",
+  "contract": {
+    "applicable": true,
+    "block": "M",
+    "criteria": "top-1 index equal AND cosine >= 0.99, both NPU warmups vs CPU warmup #1 (등록 §4-N; A24 contract is separate)",
+    "evaluated_as": "block N rule (block M has classification_NPU resident)",
+    "passed": true,
+    "policy": "CPU_URGENT_ONLINE_V1",
+    "reason": null,
+    "schema": "npu-mixreq-contract-v1",
+    "session_id": "9e2c584b-502b-50d9-badc-1e039c4d1522",
+    "used_by_policy": false,
+    "warmups": [
+      {
+        "bit_identical_to_cpu": false,
+        "cosine": 0.9999934974570073,
+        "cpu_top1_score": 0.2134217768907547,
+        "fp32_tolerance_violations": 4,
+        "index": 0,
+        "max_abs_delta": 0.0009336918592453003,
+        "mean_abs_delta": 3.582621593523072e-06,
+        "npu_top1_score": 0.21435546875,
+        "passed": true,
+        "top1_cpu": 518,
+        "top1_equal": true,
+        "top1_npu": 518,
+        "top5_order_equal": true,
+        "top5_overlap": 5
+      },
+      {
+        "bit_identical_to_cpu": false,
+        "cosine": 0.9999934974570073,
+        "cpu_top1_score": 0.2134217768907547,
+        "fp32_tolerance_violations": 4,
+        "index": 1,
+        "max_abs_delta": 0.0009336918592453003,
+        "mean_abs_delta": 3.582621593523072e-06,
+        "npu_top1_score": 0.21435546875,
+        "passed": true,
+        "top1_cpu": 518,
+        "top1_equal": true,
+        "top1_npu": 518,
+        "top5_order_equal": true,
+        "top5_overlap": 5
+      }
+    ]
+  },
+  "eligible": true,
+  "experiment_id": "S26-M6-K",
+  "folder": "results\\S26_M6_K\\S26_MIXREQ_03_CPU_URGENT_ONLINE_V1_a1",
+  "gate": {
+    "last": "S26_MIXREQ_03_CPU_URGENT_ONLINE_V1_a1 2026-10-13T13:05:10 0 30.6 29.2 28.5 0 64 False True",
+    "rc": 0
+  },
+  "host_end_time": "2026-10-13T13:19:49",
+  "host_start_time": "2026-10-13T13:05:12",
+  "in_block_charge": false,
+  "index": 3,
+  "label": "K4",
+  "m6_letter": null,
+  "m6_load": null,
+  "m6_run": "K4",
+  "manifest_sha256": "069d942dcb83836da3f79a9d98c0eb22c5969f71c73ebb2b91055cd4955c50cb",
+  "mixreq_rules": {
+    "0_artifacts": {
+      "passed": false
+    },
+    "1_requests_succeeded_quality": {
+      "passed": true
+    },
+    "2_time_order": {
+      "passed": false
+    },
+    "3_window": {
+      "passed": false
+    },
+    "4_assignment_residents": {
+      "passed": false
+    },
+    "5_overlap": {
+      "passed": false
+    },
+    "6_warmup_quality": {
+      "passed": true
+    },
+    "7_delegation_evidence": {
+      "passed": true
+    },
+    "8_plugged_start": {
+      "passed": true
+    },
+    "9_watch_stop": {
+      "passed": true
+    }
+  },
+  "pair": 1,
+  "policy": "CPU_URGENT_ONLINE_V1",
+  "reasons": [],
+  "session_id": "9e2c584b-502b-50d9-badc-1e039c4d1522",
+  "split": "confirmation",
+  "start_band": {
+    "attempt": 1,
+    "band": [
+      29.5,
+      31.5
+    ],
+    "band_wait_s": 1200,
+    "in_block_charge": false,
+    "label": "index03",
+    "max_soc": 100,
+    "min_soc": 30,
+    "polls": [
+      {
+        "AP": "30.9",
+        "BAT": "28.8",
+        "SKIN": "31.2",
+        "brightness": "0",
+        "brightness_mode": "0",
+        "plugged": false,
+        "soc": 64,
+        "t": "2026-10-13T13:03:41",
+        "thermal_status": "0"
+      }
+    ],
+    "previous_run": {
+      "attempt": 1,
+      "epoch": 1791864220.0281591,
+      "event": "end",
+      "kind": "session",
+      "label": "K3",
+      "rc": 0,
+      "t": "2026-10-13T13:03:40"
+    },
+    "result": "in_band",
+    "start": {
+      "AP": "30.9",
+      "BAT": "28.8",
+      "SKIN": "31.2",
+      "brightness": "0",
+      "brightness_mode": "0",
+      "plugged": false,
+      "soc": 64,
+      "t": "2026-10-13T13:03:41",
+      "thermal_status": "0"
+    },
+    "start_skin": 31.2,
+    "waited_s": 0
+  },
+  "summary": {
+    "a24_differences": [],
+    "apk_sha256": "6a4da1acc213b4a8c13fdbbd42bbbae3cdb5bb1b71557ff7995212c3e4bc1f3f",
+    "attempt": 1,
+    "block": "M",
+    "command_id": "dc706abd-b1a1-4366-8e4a-fa6d628341d7",
+    "common_end_ns": 332736010926229,
+    "common_start_ns": 331956009253847,
+    "detection_gpu_created": true,
+    "device_model": "SM-S942N",
+    "experiment_id": "S26-M6-K",
+    "experiment_ready": false,
+    "manifest_sha256": "069d942dcb83836da3f79a9d98c0eb22c5969f71c73ebb2b91055cd4955c50cb",
+    "package": "com.example.d1check.requestrunner",
+    "pair": 1,
+    "pid": 30978,
+    "planned": 0,
+    "policy": "CPU_URGENT_ONLINE_V1",
+    "protocol": "s26-mixreq-session-v1",
+    "runtime_keys": [
+      "classification_CPU",
+      "classification_GPU",
+      "classification_NPU",
+      "detection_CPU",
+      "detection_GPU"
+    ],
+    "sdk_int": 37,
+    "session_id": "9e2c584b-502b-50d9-badc-1e039c4d1522",
+    "session_index": 3,
+    "split": "confirmation",
+    "status": "completed",
+    "terminal": 0,
+    "time_scale": 1,
+    "used_keys": [
+      "classification_CPU",
+      "detection_CPU"
+    ]
+  },
+  "time_scale": 1,
+  "validated_rules": {
+    "K1_requests_zero": true,
+    "K2_phases": true,
+    "K3_samples": true
+  }
+}
