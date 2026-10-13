@@ -472,6 +472,22 @@ class Driver:
         target = (prev_epoch + M7.IDLE_MIN_S) if prev_epoch else time.time() + M7.IDLE_MIN_S
         self.log(f"{label} A: previous run end = {prev.get('label') if prev else None} {prev.get('t') if prev else None} -> idle until +{M7.IDLE_MIN_S} s ({dt.datetime.fromtimestamp(target).isoformat(timespec='seconds')})")
         self.wait_until(target, f"idle ≥ {M7.IDLE_MIN_S} s before {label}")
+        # start band 29.5 ~ 31.5 (M6 v3 §3-4 · m6_session precheck 와 같은 규칙: 60 s 폴 · 최대 1,200 s · 미달이면 진행 · 표시) — 드라이버가 먼저 기다리고
+        # 기울기는 앱 시작 직전 120 s 에 검사한다 (K1A 때 세션 안 띠 대기가 기울기 검사 뒤에 와서 20 min 벌어진 것을 고침 · 규칙 · 값 같음 · 순서만)
+        lo, hi = 29.5, 31.5
+        t_band0 = time.time()
+        band_polls = []
+        while True:
+            s = self.phone_state()
+            band_polls.append(dict(t=s["t"], SKIN=s["SKIN"], AP=s["AP"], BAT=s["BAT"], soc=s["soc"], plugged=s["plugged"]))
+            if s["SKIN"] is not None and lo <= s["SKIN"] <= hi:
+                band_result = "in_band"
+                break
+            if time.time() - t_band0 >= 1200:
+                band_result = "out_of_band_after_wait"
+                self.log(f"{label} A: start SKIN {s['SKIN']} outside {lo}~{hi} after {int(time.time() - t_band0)} s -> proceed (marked out_of_band)")
+                break
+            time.sleep(60)
         t_check0 = time.time()
         checks = []
         while True:
@@ -488,8 +504,11 @@ class Driver:
                 break
             time.sleep(M7.STABLE_RECHECK_S)
         s0 = self.phone_state()
-        rc = self.run_attempt("k", index, attempt, label, [])
+        rc = self.run_attempt("k", index, attempt, label, ["--band-wait-s", "0"])   # 띠 대기는 위에서 끝남 (세션 precheck 는 SOC · plugged 만 다시 봄)
         rec = self.start_record(label, "k", index, attempt)
+        rec["start_band"] = rec.get("start_band") if rec.get("start_band") == "in_band" else band_result
+        rec["driver_band_polls"] = band_polls
+        rec["driver_band_waited_s"] = round(t_check0 - t_band0)
         self.hal_stop(h, "K run log end (A)")
         t = rec["times"]
         idle = (t["host_start_epoch"] - prev_epoch) if (t.get("host_start_epoch") and prev_epoch) else None

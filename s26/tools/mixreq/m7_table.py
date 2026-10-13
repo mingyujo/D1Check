@@ -145,13 +145,15 @@ def session_rows(results: Path, events: list[dict], runs: list[dict], fingerprin
             s = R.read_session(folder, False) if (folder / "validated.json").is_file() else None
             v = C.read_json(folder / "validated.json") if (folder / "validated.json").is_file() else {}
             label = m.get("m6_run") or m.get("m7_label") or (f"{m.get('m6_load')}-{m.get('m6_letter')}" if m.get("m6_load") else f"{kind}{m['session_index']}")
-            run_label = (host_log or {}).get("label")
-            ev = next((e for (lb, at), e in ev_by.items() if at == m["attempt"] and (lb or "").endswith(label) or (lb or "") == f"{kind}{m['session_index']}" and at == m["attempt"]), None)
-            if ev is None:   # driver labels: P12 · PREP42 · K1A · S1-C · smoke name
-                cands = [e for e in ev_by.values() if e.get("index") == m["session_index"] and e.get("attempt") == m["attempt"] and e.get("run_kind", "").upper() in (kind, kind.lower(), "prep", "p", "k", "s", "smoke")]
-                ev = cands[-1] if cands else {}
+            is_smoke = m.get("split") == "diagnostic"
+            # run log start record of this folder: same results root · same index (or smoke name) · same attempt → its label = driver/run label (P12 · K1A · S7_m7 · smoke name)
+            start_rec = next((r for r in reversed(starts) if str(r.get("results", "")).replace("/", "\\").endswith(root_name) and r.get("attempt") == m["attempt"]
+                              and ((r.get("smoke") and is_smoke and r.get("smoke") in folder.name) or (not r.get("smoke") and not is_smoke and r.get("index") == m["session_index"]))), None)
+            run_label = (start_rec or {}).get("label") or (host_log or {}).get("label")
+            ev = ev_by.get((run_label, m["attempt"])) or {}
             times = D.Driver.session_times(None, folder)
-            band = next((b for b in reversed(bands) if b.get("label") == f"index{m['session_index']:02d}" and b.get("attempt") == m["attempt"]), None) or {}
+            band_keys = {f"index{m['session_index']:02d}", run_label, (start_rec or {}).get("smoke")}
+            band = next((b for b in reversed(bands) if b.get("label") in band_keys and b.get("attempt") == m["attempt"]), None) or {}
             last_poll = (band.get("polls") or [{}])[-1] if band.get("polls") else {}
             start_state = ev.get("start_state") or {}
             awake = next((a for a in reversed(awakes) if a.get("label") == run_label), {}) or {}
@@ -159,7 +161,6 @@ def session_rows(results: Path, events: list[dict], runs: list[dict], fingerprin
             settings = (host_log or {}).get("settings_before") or {}
             focus_apps, focus_non = focus_info(folder)
             st = (host_log or {}).get("start_time")
-            start_rec = next((r for r in starts if r.get("label") == run_label and r.get("attempt") == m["attempt"]), None)
             prev = None
             if start_rec:
                 before = [r for r in ends if r.get("epoch", 0) < start_rec.get("epoch", 0)]
