@@ -12,6 +12,10 @@ import com.example.d1check.requestrunner.MixreqContract.Request
  *   K (S26-M6-K · -SMOKE): 요청 0 (빈 표).
  * ordinal = i (offset 오름차순) · request_id = uuid5(sid/ordinal) (RequestPlan.requestId 그대로).
  * 호스트 s26/tools/mixreq/m6_common.py 가 같은 식으로 만들고, 앱은 manifest 의 표 · 정책이 이 식과 같은지 다시 확인한다 (fail closed).
+ * M7 (d1sim/docs/M7_확대반복_사전등록_v2.md 머리 단락 · §1-5 · §2-3 · §4-4, 2026-10-13): ORDER 에 M7 행만 더한다 (0..11 은 M6 그대로).
+ *   P 12..41 = 등록 §2-3 (D1 12..17 · D2 18..23 · D3 24..29 · K1 30..35 · K2 36..41) · P 42..51 = 준비 L-C · L-N 세트 1..5 (세트 n: L-C = 42 + 2(n−1) · L-N = 43 + 2(n−1)).
+ *   K 4..18 = 세트 1..5 × 조건 자리 (조건 A/B/C 는 호스트 계획 · 매니페스트는 M6 K 와 같음). S 16..27 = S26-MIXREQ-03 행 (S_ORDER · 블록 A/N · 검증은 MixreqContract.validateRequests 그대로).
+ *   부하 식 · uuid5 · 정책 · 블록 M · validateLoad 는 바꾸지 않는다 (L · B 투영 SHA 불변). 호스트 m7_common.py 가 같은 표를 가진다.
  */
 object M6Plan {
     const val REQUEST_COUNT = 100
@@ -23,8 +27,27 @@ object M6Plan {
         "N" to MixreqContract.POLICY_PAR_NPU,
     )
 
-    /** 등록 §3-5 (거울 · 결과 전 고정). index → "부하-규칙". */
-    val ORDER = listOf("L-C", "B-G", "L-N", "B-C", "L-G", "B-N", "B-N", "L-G", "B-C", "L-N", "B-G", "L-C")
+    /** M6 등록 §3-5 (거울 · 결과 전 고정) index 0..11 → "부하-규칙". */
+    val ORDER_M6 = listOf("L-C", "B-G", "L-N", "B-C", "L-G", "B-N", "B-N", "L-G", "B-C", "L-N", "B-G", "L-C")
+    /** M7 등록 v2 §2-3 index 12..41 (D1 · D2 · D3 · K1 · K2, 각 6) — 결과 전 고정. */
+    val ORDER_M7_P = listOf(
+        "L-C", "B-C", "L-G", "B-G", "L-N", "B-N",   // D1 12..17
+        "B-G", "L-G", "B-N", "L-N", "B-C", "L-C",   // D2 18..23
+        "L-N", "B-N", "L-C", "B-C", "L-G", "B-G",   // D3 24..29
+        "B-C", "L-C", "B-N", "L-N", "B-G", "L-G",   // K1 30..35 (확인)
+        "L-G", "B-G", "L-C", "B-C", "L-N", "B-N",   // K2 36..41 (확인)
+    )
+    /** M7 등록 v2 §1-2 준비 P index 42..51: 세트 n 의 L-C = 42 + 2(n−1) · L-N = 43 + 2(n−1). */
+    val ORDER_M7_PREP = List(10) { i -> if (i % 2 == 0) "L-C" else "L-N" }
+    /** index → "부하-규칙" (M6 0..11 + M7 12..51). validateSession 은 이 표의 index 만 받는다. */
+    val ORDER = ORDER_M6 + ORDER_M7_P + ORDER_M7_PREP
+    const val M7_P_FIRST = 12
+    const val M7_PREP_FIRST = 42
+    const val M7_K_FIRST = 4
+    const val M7_K_LAST = 18
+    /** M7 등록 v2 §4-4 지속 S (S26-MIXREQ-03) index 16..27 → 규칙 글자 (개발 S1..S6 · 확인 S7..S12). 표만 — -03 검증은 바뀌지 않는다. */
+    const val M7_S_FIRST = 16
+    val S_ORDER = listOf("C", "G", "N", "N", "G", "C", "G", "C", "N", "N", "C", "G")
 
     fun isP(experimentId: String) = experimentId == MixreqContract.M6_P_EXPERIMENT_ID || experimentId == MixreqContract.M6_P_SMOKE_EXPERIMENT_ID
     fun isK(experimentId: String) = experimentId == MixreqContract.M6_K_EXPERIMENT_ID || experimentId == MixreqContract.M6_K_SMOKE_EXPERIMENT_ID

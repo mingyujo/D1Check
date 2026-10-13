@@ -13,7 +13,7 @@ class ExperimentTableTest {
         assertEquals(listOf("S26-MIXREQ-02-SMOKE", "S26-MIXREQ-02C-SMOKE", "S26-MIXREQ-03-SMOKE"), MixreqContract.EXPERIMENTS.map { it.smokeId })
         assertEquals(listOf(192, 192, 3_000), MixreqContract.EXPERIMENTS.map { it.requestCount })
         assertEquals(listOf(120L, 120L, 720L), MixreqContract.EXPERIMENTS.map { it.commonS })
-        assertTrue(MixreqContract.EXPERIMENTS.all { it.sessionIndexMax == 15 })
+        assertEquals(listOf(15, 15, 27), MixreqContract.EXPERIMENTS.map { it.sessionIndexMax })   // M7: -03 15 → 27 (S 16..27)
         assertEquals(1_260_000L, MixreqContract.WATCHDOG_MS)   // 표의 최댓값 (-03: 180 + 60 + 30 + 720 + 30 + 60 = 1,080 s + 여유)
         assertEquals(600_000L, MixreqContract.experimentOf("S26-MIXREQ-02C").watchdogMs)
         assertEquals("S26-MIXREQ-03", MixreqContract.experimentOf("S26-MIXREQ-03-SMOKE").id)

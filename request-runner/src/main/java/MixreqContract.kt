@@ -13,6 +13,8 @@ package com.example.d1check.requestrunner
  * v3 (등록 v3 `d1sim/docs/혼합요청_사전등록_v3.md` §0-1 · §0-2, 2026-10-09): 실험 ID 표 EXPERIMENTS (-02 · -02C · -03 · 각 -SMOKE → 요청 수 · 공통창 · index 범위) ·
  *   COMMON_NS 는 SessionManifest.validate() 가 고른 표 행에서 · WATCHDOG_MS 는 표의 최댓값 · validateRequests 의 요청 수 허용 = 표. v2 = `e2bedf1`. 그 밖 무변경.
  * M6 (등록 `d1sim/docs/M6_동일APK_사전등록_v3.md` §1, 2026-10-12): M6_EXPERIMENTS (P · K) · 블록 M (키 5 · 정책 3 · 준비 상한 = N). M5 = `8bd3d76`. 그 밖 무변경.
+ * M7 (등록 `d1sim/docs/M7_확대반복_사전등록_v2.md` 머리 단락, 2026-10-13): 실험 표 index 상한만 — S26-M6-P 11 → 51 · S26-M6-K 3 → 18 ·
+ *   S26-MIXREQ-03 15 → 27 (M7 행 = M6Plan.ORDER 12..51 · S 16..27). M6 = `4f87d15` (APK 6a4da1ac…). 그 밖 무변경 (요청 수 · 창 · watchdog · 유도식 같음).
  */
 object MixreqContract {
     const val PROTOCOL = "s26-mixreq-session-v1"
@@ -27,7 +29,8 @@ object MixreqContract {
         ExperimentSpec("S26-MIXREQ-02", "S26-MIXREQ-02-SMOKE", 192, 120L, 15, 600_000L),
         ExperimentSpec("S26-MIXREQ-02C", "S26-MIXREQ-02C-SMOKE", 192, 120L, 15, 600_000L),
         // (S) 지속: 3,000 요청 (35.0 ~ 634.8 s) · 공통창 720 s · watchdog = 준비 180 + 게이트 60 + 기준 30 + 창 720 + drain 30 + 냉각 60 = 1,080 → 여유 1,260 s
-        ExperimentSpec("S26-MIXREQ-03", "S26-MIXREQ-03-SMOKE", 3_000, 720L, 15, 1_260_000L),
+        // M7: index 상한 15 → 27 (R4 (S) 0..15 · M7 S 16..27, 등록 M7 v2 §4-4). 그 밖 같음.
+        ExperimentSpec("S26-MIXREQ-03", "S26-MIXREQ-03-SMOKE", 3_000, 720L, 27, 1_260_000L),
     )
 
     /**
@@ -50,6 +53,7 @@ object MixreqContract {
      * (WATCHDOG_MS 1,260 s ≥ K 명목 180 + 60 + 30 + 780 + 30 + 60 = 1,140 s).
      *   S26-M6-P: 정책 대응 · 요청 100 (부하 L / B, M6Plan 이 index 로 유도) · 공통창 120 s · index 0..11 (개발 0..5 · 확인 6..11)
      *   S26-M6-K: 냉각 · 요청 0 · 공통창 780 s · index 0..3 (K1 · K2 개발 · K3 · K4 확인)
+     *   M7 (등록 M7 v2 머리 단락): 같은 두 실험에 index 만 더함 — P 12..51 (M6Plan.ORDER 의 M7 행) · K 4..18 (세트 1~5 × 조건 자리). 0..11 · 0..3 은 M6 그대로.
      * 스모크 ID 는 본과 같은 요청 수 · 공통창. 두 실험 모두 블록 M 만.
      * S26-M6-E (게이지 진단) 는 세션이 아니라 GaugeDiagActivity 의 실행 ID 다 (세션 표에 넣지 않는다).
      */
@@ -60,8 +64,8 @@ object MixreqContract {
     const val M6_E_EXPERIMENT_ID = "S26-M6-E"
     const val M6_E_SMOKE_EXPERIMENT_ID = "S26-M6-E-SMOKE"
     val M6_EXPERIMENTS = listOf(
-        ExperimentSpec(M6_P_EXPERIMENT_ID, M6_P_SMOKE_EXPERIMENT_ID, 100, 120L, 11, 600_000L),
-        ExperimentSpec(M6_K_EXPERIMENT_ID, M6_K_SMOKE_EXPERIMENT_ID, 0, 780L, 3, 1_260_000L),
+        ExperimentSpec(M6_P_EXPERIMENT_ID, M6_P_SMOKE_EXPERIMENT_ID, 100, 120L, 51, 600_000L),   // M7: 11 → 51
+        ExperimentSpec(M6_K_EXPERIMENT_ID, M6_K_SMOKE_EXPERIMENT_ID, 0, 780L, 18, 1_260_000L),   // M7: 3 → 18
     )
 
     fun isM6(experimentId: String): Boolean = M6_EXPERIMENTS.any { it.id == experimentId || it.smokeId == experimentId }
