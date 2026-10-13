@@ -32,3 +32,15 @@
 - 계약 상수 중 공통창 길이 · watchdog 은 엔진이 읽는 값이다 (R3 120 s · R4C 120 s · R4S 720 s · SS 120 s) — 코드 경로는 같고 값만 실험 표에서 온다.
 - 블록 구성 (세 APK 같음): A = 상주 4 (`classification_CPU/GPU` · `detection_CPU/GPU`) · 정책 {CPU_URGENT, B2_PARALLEL} / N = 상주 5 (+ `classification_NPU`) · 정책 {CPU_URGENT, S26_NPU_PARALLEL}. 그래서 같은 APK 안에서도 상주 집합이 블록마다 다르다 — G 는 늘 4, N 은 늘 5, C 는 R3 · R4C 에서 블록 A 4 / 블록 N 5, SS 에서 전부 4 [P 세션 `summary.runtime_keys`]. M6 는 세 규칙 모두 5 (블록 `M`).
 - **M6 행 (2026-10-13 · M6-A 3단계)** [P git diff --numstat `9c857f1` `4f87d15`]: 전처리 · 디코드 · logger · worker/큐 · 정책 · runtime · sampler · 빌드 = 0 (영역 규칙 `area_rules.json` · `M6Plan` = 계약/검증 · `GaugeDiagActivity` = 진단 진입점, 등록 v3 §1-1). M6 는 세 규칙 모두 블록 M (상주 5).
+
+
+## 3. M7 행 (2026-10-13 21:3x · M7-A · 영훈 · Cowork 결정 20:5x "M7-apk 로 전환") [P]
+
+| APK (request-runner) | 쓰인 자료 | 세션 기록 `apk_sha256` [P] | 빌드 커밋 | 브랜치 · 시각 | 근거 문서 | 빌드 재현 |
+|---|---|---|---|---|---|---|
+| **`878b10b7bc05300ddddc60fac0b2fb40eb020870841e473a8775827ef92bf092`** (M7) | M7 K 15 · 준비 P 10 · P 30 · S 12 (+ S7 회귀 · M6 재현 스모크) | (측정 뒤 기록) | **`7ad2b18f27d97b5f40d84343fe9cecd616128bf5`** | `s26-m6` 10-13 21:30:53 | 등록 M7 v2 (`c3da26cc…`) 머리 단락 · `sim\out_m7\freeze_m7.txt` | 깨끗한 빌드 2회 (21:12 작업 트리 · 21:4x 커밋 뒤) 모두 `878b10b7…` (14,547,256 B · 서명 `6394e51f…` = M6 와 같음) |
+
+- **영역별 변경 `4f87d15` (M6 APK) → `7ad2b18` (M7 APK)** [P git diff --numstat `request-runner/src/main` + 빌드 설정]: 계약/검증 = `MixreqContract` +7/−3 (실험 표 index 상한만: `S26-M6-P` 11 → 51 · `S26-M6-K` 3 → 18 · `S26-MIXREQ-03` 15 → 27 · 주석) · `M6Plan` +25/−2 (index → 부하·규칙 순서표에 M7 행: 12 ~ 41 = 등록 §2-3 · 42 ~ 51 = 준비 L-C/L-N · `S_ORDER` 표 · 상수) / 진단 진입점 · 전처리 · 디코드 · logger · worker·큐·엔진 · 정책 · runtime · sampler · 빌드 = **0**. 요청 유도식 (L · B) · uuid5 · 블록 M · 단계 상수 · watchdog 무변경 → L 투영 SHA `ad29e819…` · B `9fc5ef9f…` 그대로 (plan_m7p · plan_m7prep 자동 검사 PASS).
+- APK 항목 비교 (`m6_apk_compare.py` M6 `6a4da1ac…` ↔ M7): 다른 항목 = `classes3.dex` 1개 · META-INF 차이 0 · 나머지 항목 (리소스 · `libLiteRtDispatch_Samsung.so` · classes.dex · classes2.dex) 같음 (`results\m7_build\compare_m6_m7.json`, 커밋 안 함).
+- 시험: request-runner 단위 61 중 60 통과 (새 `M6PlanTest.m7RowsMatchRegistrationV2` · `ExperimentTableTest` 상한 15/15/27 포함) · 남은 실패 1 = `SessionRoundTripTest.sustainedExperiment03…` (M6-A 원장과 같은 기존 실패 · 기준 `9c857f1` 에서도 실패 · 이 PC time_scale 10 타이밍) · `StatesplitRoundTripTest` 3개는 1차 (빌드와 다른 작업이 겹칠 때) 실패 → 유휴 재실행 3/3 통과. 호스트 pytest 86/86 (`test_m7` 11 포함).
+- index 자리: M6 (P 0 ~ 11 · K 0 ~ 3) · R4 (S 0 ~ 15) 가 쓴 session_id 는 그대로 두고 **뒤에 잇는다** (앱이 session_id = uuid5(실험 ID/index) 를 강제 · 기기에 a1 폴더 있음). 같은 APK 전제는 M7 안에서만 — M6 12세션은 `6a4da1ac…` (`cycle = m6` 병기).
