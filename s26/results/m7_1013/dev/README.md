@@ -1,9 +1,9 @@
-# M7 개발 묶음 1 — S26 같은 APK 확대 반복 (M7-apk) · 측정 · readout 까지 (계산 · 판정 = 조민규 / Cowork)
+# M7 개발 묶음 2 — S26 같은 APK 확대 반복 (M7-apk) · 측정 · readout 까지 (계산 · 판정 = 조민규 / Cowork)
 
-- 만든 시각: 2026-10-14T01:26:21 · 등록 v2 `c3da26cc05c496ed4ebaf718f9c7d3293204e5223e0830a1fb0c378968a226bb` (v1 `899d63c6…`) · APK M7 `878b10b7bc05300ddddc60fac0b2fb40eb020870841e473a8775827ef92bf092` (커밋 `7ad2b18f`) · M6 12세션은 APK `6a4da1ac…` (`cycle = m6` 행만)
+- 만든 시각: 2026-10-14T04:43:48 · 등록 v2 `c3da26cc05c496ed4ebaf718f9c7d3293204e5223e0830a1fb0c378968a226bb` (v1 `899d63c6…`) · APK M7 `878b10b7bc05300ddddc60fac0b2fb40eb020870841e473a8775827ef92bf092` (커밋 `7ad2b18f`) · M6 12세션은 APK `6a4da1ac…` (`cycle = m6` 행만)
 - 계획 SHA: plan_m7p `bf1e3c258367f4cdbcf37eb85478f2b9a7bc5d2941db129111c9551fb39e5454` · plan_m7prep `8f0e748b0d2e9a2cdd22291e862906e02512a501c63236c76bf406784003070a` · plan_m7k `571d4a1e58442f54789721c04c3235f20b68d24682dcebaf604873aeddf83a96` · plan_m7s `e08a6adb859f8a36778311f6c9a0ee021957cfe32fe81dbdcbcd37635cf67b2e`
-- 세션 표 행: 16 (m7 16 · m6 0) · 유효 (m7): {"K": 3, "P": 6, "PREP": 2, "S": 0} · kind 별: {"K": 3, "M6REPRO": 1, "P": 6, "PREP": 2, "S": 0, "S7": 1, "SMOKE": 3}
-- fingerprint: `samsung/m1sksx/m1s:17/CP2A.260605.016/S942NKSS4BZIG_OKR4BZIG:user/release-keys` · 케이스/거치/바람: 미확인 (영훈 답 전) · 실내 온도: 미기록
+- 세션 표 행: 27 (m7 27 · m6 0) · 유효 (m7): {"K": 6, "P": 12, "PREP": 4, "S": 0} · kind 별: {"K": 6, "M6REPRO": 1, "P": 12, "PREP": 4, "S": 0, "S7": 1, "SMOKE": 3}
+- fingerprint: `samsung/m1sksx/m1s:17/CP2A.260605.016/S942NKSS4BZIG_OKR4BZIG:user/release-keys` · 케이스/거치/바람: 케이스 없음 · 책상 위 눕힘 · 바람 없음 · 실내 온도: 미기록
 
 ## 단위 · 부호
 - 전류 µA (current_raw · 방전 음수 · API 값 · 기기 스케일 미검증 — 등록 M6 v3 §3-7 가설 그대로) · charge_counter µAh · 전압 mV · 배터리 온도 deci-℃ · HAL 온도 ℃ (0.1 단위) · 시각 mono_ns (기기 단조 시계) / host_ms (PC epoch ms) · 같은 gauge 라 독립 전력 기준 아님 (M6 v3 §7-2)
@@ -20,7 +20,7 @@
 - index 자리: M6 · R4 가 쓴 자리 뒤 (P 12 ~ 51 · K 4 ~ 18 · S 16 ~ 27 · 등록 v2 머리 단락) · session_id = uuid5(실험 ID/index) 그대로
 
 ## 실측 사용량 (run log · 기술만)
-- 세션 16 · 순수 실행 합 5754.4 s · 재시도 (attempt 2) 실행 478.8 s · 세션 사이 대기 합 6917.0 s (유휴 · 안정 · 게이트 · 띠 포함) · 충전 구간 (드라이버 기록) 0 · 첫 세션 2026-10-13T21:46:30 · 마지막 끝 2026-10-14T01:17:40
+- 세션 27 · 순수 실행 합 10326.7 s · 재시도 (attempt 2) 실행 478.8 s · 세션 사이 대기 합 14561.0 s (유휴 · 안정 · 게이트 · 띠 포함) · 충전 구간 (드라이버 기록) 0 · 첫 세션 2026-10-13T21:46:30 · 마지막 끝 2026-10-14T04:41:14
 - 세션별 run_s 는 `usage.json`
 
 ## 폴더

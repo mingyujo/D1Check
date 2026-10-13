@@ -1,0 +1,281 @@
+{
+  "a24_differences": [],
+  "a24_service_cross_check": "match",
+  "analysis_split": "dev",
+  "apk_sha256": "878b10b7bc05300ddddc60fac0b2fb40eb020870841e473a8775827ef92bf092",
+  "arrival_delay_ms": {
+    "max_ms": 2.914219,
+    "p95_ms": 1.516992
+  },
+  "attempt": 1,
+  "block": "M",
+  "contract": {
+    "applicable": true,
+    "block": "M",
+    "criteria": "top-1 index equal AND cosine >= 0.99, both NPU warmups vs CPU warmup #1 (등록 §4-N; A24 contract is separate)",
+    "evaluated_as": "block N rule (block M has classification_NPU resident)",
+    "passed": true,
+    "policy": "B2_PARALLEL_ONLINE_V1",
+    "reason": null,
+    "schema": "npu-mixreq-contract-v1",
+    "session_id": "f8a49d8d-b67c-53f5-9081-2cf84eeb6ac9",
+    "used_by_policy": false,
+    "warmups": [
+      {
+        "bit_identical_to_cpu": false,
+        "cosine": 0.9999934974570073,
+        "cpu_top1_score": 0.2134217768907547,
+        "fp32_tolerance_violations": 4,
+        "index": 0,
+        "max_abs_delta": 0.0009336918592453003,
+        "mean_abs_delta": 3.582621593523072e-06,
+        "npu_top1_score": 0.21435546875,
+        "passed": true,
+        "top1_cpu": 518,
+        "top1_equal": true,
+        "top1_npu": 518,
+        "top5_order_equal": true,
+        "top5_overlap": 5
+      },
+      {
+        "bit_identical_to_cpu": false,
+        "cosine": 0.9999934974570073,
+        "cpu_top1_score": 0.2134217768907547,
+        "fp32_tolerance_violations": 4,
+        "index": 1,
+        "max_abs_delta": 0.0009336918592453003,
+        "mean_abs_delta": 3.582621593523072e-06,
+        "npu_top1_score": 0.21435546875,
+        "passed": true,
+        "top1_cpu": 518,
+        "top1_equal": true,
+        "top1_npu": 518,
+        "top5_order_equal": true,
+        "top5_overlap": 5
+      }
+    ]
+  },
+  "eligible": true,
+  "energy": {
+    "a24_integrate": {
+      "covered_energy_j": 187.67044107105582,
+      "covered_s": 120.00000000000003,
+      "dropped_gap_s": 0.0,
+      "duplicates": 0,
+      "duration_s": 120.0,
+      "full_energy_j": 187.67044107105582,
+      "mean_power_w": 1.5639203422587982,
+      "missing_s": 0.0,
+      "unit_hypothesis_ua_per_raw": 1
+    },
+    "charge_counter_delta_uAh": -17100,
+    "ours": {
+      "covered_energy_j": 187.67044107105582,
+      "covered_s": 120.00000000000003,
+      "full_energy_j": 187.67044107105582,
+      "missing_s": 0.0
+    },
+    "samples_in_window": 133,
+    "unit": "S26 µA interpretation (scale_ua=1) — 기술만, J 적격성 미확보"
+  },
+  "experiment_id": "S26-M6-P",
+  "folder": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_P\\S26_MIXREQ_19_B2_PARALLEL_ONLINE_V1_a1",
+  "gate": {
+    "last": "S26_MIXREQ_19_B2_PARALLEL_ONLINE_V1_a1 2026-10-14T02:32:08 0 30.3 29.0 28.1 0 81 False True",
+    "rc": 0
+  },
+  "host_end_time": "2026-10-14T02:35:49",
+  "host_start_time": "2026-10-14T02:32:10",
+  "in_block_charge": false,
+  "index": 19,
+  "label": "L-G",
+  "lane_service_ms": {
+    "classification_GPU": {
+      "median_ms": 68.206641,
+      "n": 50,
+      "p95_ms": 77.382539
+    },
+    "detection_CPU": {
+      "median_ms": 242.691133,
+      "n": 50,
+      "p95_ms": 250.715313
+    }
+  },
+  "last_lane_available_s": 74.84901957,
+  "m6_letter": "G",
+  "m6_load": "L",
+  "m6_run": null,
+  "manifest_sha256": "0e6023e509b2c717c1630af73f022fc3407a1c4039dad3dedbbd5e1c0cf2f71c",
+  "mixreq_rules": {
+    "0_artifacts": {
+      "passed": true
+    },
+    "1_requests_succeeded_quality": {
+      "passed": true
+    },
+    "2_time_order": {
+      "passed": true
+    },
+    "3_window": {
+      "passed": true
+    },
+    "4_assignment_residents": {
+      "passed": true
+    },
+    "5_overlap": {
+      "passed": true
+    },
+    "6_warmup_quality": {
+      "passed": true
+    },
+    "7_delegation_evidence": {
+      "passed": true
+    },
+    "8_plugged_start": {
+      "passed": true
+    },
+    "9_watch_stop": {
+      "passed": true
+    }
+  },
+  "overlap_s": 0.0,
+  "pair": 0,
+  "policy": "B2_PARALLEL_ONLINE_V1",
+  "queue_aux_p95_ms": {
+    "normal": 254.782656,
+    "urgent": 79.663282
+  },
+  "reasons": [],
+  "service": {
+    "all": {
+      "completed": 100,
+      "deadline_met": 100,
+      "max_ms": 263.187187,
+      "mean_ms": 161.10167478999998,
+      "p95_ms": 255.49707,
+      "planned": 100
+    },
+    "normal": {
+      "completed": 50,
+      "deadline_met": 50,
+      "max_ms": 263.187187,
+      "mean_ms": 249.1021154,
+      "p95_ms": 257.25082,
+      "planned": 50
+    },
+    "urgent": {
+      "completed": 50,
+      "deadline_met": 50,
+      "max_ms": 86.093789,
+      "mean_ms": 73.10123417999999,
+      "p95_ms": 81.854453,
+      "planned": 50
+    }
+  },
+  "session_id": "f8a49d8d-b67c-53f5-9081-2cf84eeb6ac9",
+  "split": "confirmation",
+  "start_band": {
+    "attempt": 1,
+    "band": [
+      29.5,
+      31.5
+    ],
+    "band_wait_s": 1200,
+    "in_block_charge": false,
+    "label": "index19",
+    "max_soc": 100,
+    "min_soc": 30,
+    "polls": [
+      {
+        "AP": "29.9",
+        "BAT": "28.6",
+        "SKIN": "30.9",
+        "brightness": "0",
+        "brightness_mode": "0",
+        "plugged": false,
+        "soc": 81,
+        "t": "2026-10-14T02:30:39",
+        "thermal_status": "0"
+      }
+    ],
+    "previous_run": {
+      "attempt": 1,
+      "epoch": 1791912637.9289029,
+      "event": "end",
+      "kind": "session",
+      "label": "P18",
+      "rc": 0,
+      "t": "2026-10-14T02:30:37"
+    },
+    "result": "in_band",
+    "start": {
+      "AP": "29.9",
+      "BAT": "28.6",
+      "SKIN": "30.9",
+      "brightness": "0",
+      "brightness_mode": "0",
+      "plugged": false,
+      "soc": 81,
+      "t": "2026-10-14T02:30:39",
+      "thermal_status": "0"
+    },
+    "start_skin": 30.9,
+    "waited_s": 0
+  },
+  "summary": {
+    "a24_differences": [],
+    "apk_sha256": "878b10b7bc05300ddddc60fac0b2fb40eb020870841e473a8775827ef92bf092",
+    "attempt": 1,
+    "block": "M",
+    "command_id": "125cd997-fa73-42a9-9e43-da4efff87ffe",
+    "common_end_ns": 380493082061416,
+    "common_start_ns": 380373081093955,
+    "detection_gpu_created": true,
+    "device_model": "SM-S942N",
+    "experiment_id": "S26-M6-P",
+    "experiment_ready": false,
+    "manifest_sha256": "0e6023e509b2c717c1630af73f022fc3407a1c4039dad3dedbbd5e1c0cf2f71c",
+    "package": "com.example.d1check.requestrunner",
+    "pair": 0,
+    "pid": 19524,
+    "planned": 100,
+    "policy": "B2_PARALLEL_ONLINE_V1",
+    "protocol": "s26-mixreq-session-v1",
+    "runtime_keys": [
+      "classification_CPU",
+      "classification_GPU",
+      "classification_NPU",
+      "detection_CPU",
+      "detection_GPU"
+    ],
+    "sdk_int": 37,
+    "session_id": "f8a49d8d-b67c-53f5-9081-2cf84eeb6ac9",
+    "session_index": 19,
+    "split": "confirmation",
+    "status": "completed",
+    "terminal": 100,
+    "time_scale": 1,
+    "used_keys": [
+      "classification_GPU",
+      "detection_CPU"
+    ]
+  },
+  "thermal": {
+    "end_ap": 31.9,
+    "end_skin": 32.2,
+    "peak_ap": 37.2,
+    "peak_skin": 33.2,
+    "samples": 63,
+    "sensor_names": "HAL SKIN / AP (Current temperatures from HAL)",
+    "start_ap": 30.5,
+    "start_skin": 31.1
+  },
+  "time_scale": 1,
+  "validated_rules": {
+    "V1_dispatch_terminal": true,
+    "V2_all_available_by_120s": true,
+    "V3_samples_drain": true,
+    "V4_overlap_npu": true,
+    "V5_safety": true
+  }
+}

@@ -10,17 +10,20 @@
     "time": "2026-10-13T21:03:58+09:00"
   },
   "schema": "s26-m6-readout-index-v1",
-  "sessions": 2,
+  "sessions": 4,
   "skipped": [
     "S26_MIXREQ_04_CPU_URGENT_ONLINE_V1_a1: experiment_id S26-M6-K != plan S26-M6-P",
     "S26_MIXREQ_05_CPU_URGENT_ONLINE_V1_a1: experiment_id S26-M6-K != plan S26-M6-P",
-    "S26_MIXREQ_06_CPU_URGENT_ONLINE_V1_a1: experiment_id S26-M6-K != plan S26-M6-P"
+    "S26_MIXREQ_06_CPU_URGENT_ONLINE_V1_a1: experiment_id S26-M6-K != plan S26-M6-P",
+    "S26_MIXREQ_07_CPU_URGENT_ONLINE_V1_a1: experiment_id S26-M6-K != plan S26-M6-P",
+    "S26_MIXREQ_08_CPU_URGENT_ONLINE_V1_a1: experiment_id S26-M6-K != plan S26-M6-P",
+    "S26_MIXREQ_09_CPU_URGENT_ONLINE_V1_a1: experiment_id S26-M6-K != plan S26-M6-P"
   ],
   "slot_counts": {
     "invalid_once": 0,
     "invalid_twice": 0,
-    "not_attempted": 8,
-    "valid": 2
+    "not_attempted": 6,
+    "valid": 4
   },
   "slots": {
     "42": {
@@ -53,19 +56,31 @@
     },
     "44": {
       "analysis_split": "dev",
-      "attempts": [],
+      "attempts": [
+        {
+          "attempt": 1,
+          "eligible": true,
+          "reasons": ""
+        }
+      ],
       "letter": "C",
       "load": "L",
       "policy": "CPU_URGENT_ONLINE_V1",
-      "status": "not_attempted"
+      "status": "valid"
     },
     "45": {
       "analysis_split": "dev",
-      "attempts": [],
+      "attempts": [
+        {
+          "attempt": 1,
+          "eligible": true,
+          "reasons": ""
+        }
+      ],
       "letter": "N",
       "load": "L",
       "policy": "S26_NPU_PARALLEL_V1",
-      "status": "not_attempted"
+      "status": "valid"
     },
     "46": {
       "analysis_split": "dev",

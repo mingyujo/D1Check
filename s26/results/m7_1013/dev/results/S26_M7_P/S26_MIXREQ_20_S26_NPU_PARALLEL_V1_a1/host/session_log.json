@@ -1,0 +1,2016 @@
+{
+  "apk_path": "/data/app/~~e6WCkxZCyjrpuScquG0Vow==/com.example.d1check.requestrunner-4DTKBg4cKp3tJxXUs4AiWQ==/base.apk",
+  "apk_sha256": "878b10b7bc05300ddddc60fac0b2fb40eb020870841e473a8775827ef92bf092",
+  "attempt": 1,
+  "command_id": "ba276d52-7ed4-4c26-a249-a508b897b4f1",
+  "commands": [
+    {
+      "cmd": "get-state",
+      "t": 1791913055.1340516
+    },
+    {
+      "cmd": "shell getprop ro.product.model",
+      "t": 1791913055.1743
+    },
+    {
+      "cmd": "shell pm path com.example.d1check.requestrunner",
+      "t": 1791913055.2392142
+    },
+    {
+      "cmd": "shell sha256sum /data/app/~~e6WCkxZCyjrpuScquG0Vow==/com.example.d1check.requestrunner-4DTKBg4cKp3tJxXUs4AiWQ==/base.apk",
+      "t": 1791913055.3338897
+    },
+    {
+      "cmd": "shell ls -d /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913055.4737048
+    },
+    {
+      "cmd": "shell settings get global airplane_mode_on",
+      "t": 1791913055.8802493
+    },
+    {
+      "cmd": "shell settings get global zen_mode",
+      "t": 1791913056.0177891
+    },
+    {
+      "cmd": "shell settings get system screen_brightness_mode",
+      "t": 1791913056.1292646
+    },
+    {
+      "cmd": "shell settings get system screen_brightness",
+      "t": 1791913056.2245336
+    },
+    {
+      "cmd": "shell settings get system screen_off_timeout",
+      "t": 1791913056.3216872
+    },
+    {
+      "cmd": "shell settings put system screen_off_timeout 86400000",
+      "t": 1791913056.4336963
+    },
+    {
+      "cmd": "shell mkdir -p /data/local/tmp/mixreq /data/local/tmp/mixreq/sessions/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1",
+      "t": 1791913056.5557473
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/anchors.json 2>/dev/null",
+      "t": 1791913056.6572573
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/efficientnet_lite0_Samsung_E9965.tflite 2>/dev/null",
+      "t": 1791913056.753281
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/labels_without_background.txt 2>/dev/null",
+      "t": 1791913056.8730488
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/efficientnet_lite0.tflite 2>/dev/null",
+      "t": 1791913056.9701865
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/labels.txt 2>/dev/null",
+      "t": 1791913057.110945
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/efficientdet_lite0.tflite 2>/dev/null",
+      "t": 1791913057.2078912
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/00575b9132bb3746.png 2>/dev/null",
+      "t": 1791913057.3325686
+    },
+    {
+      "cmd": "push C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_P\\S26_MIXREQ_20_S26_NPU_PARALLEL_V1_a1\\host\\manifest_pushed.json /data/local/tmp/mixreq/sessions/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1/manifest.json",
+      "t": 1791913057.4276114
+    },
+    {
+      "cmd": "shell sha256sum /data/local/tmp/mixreq/sessions/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1/manifest.json",
+      "t": 1791913057.5322251
+    },
+    {
+      "cmd": "logcat -c",
+      "t": 1791913057.6360655
+    },
+    {
+      "cmd": "shell am start -W -n com.example.d1check.requestrunner/.SessionActivity --es d1_session_manifest /data/local/tmp/mixreq/sessions/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1/manifest.json --es d1_session_id 1217b0e8-9f01-5d46-bf76-44ab7c217d42 --es d1_command_id ba276d52-7ed4-4c26-a249-a508b897b4f1",
+      "t": 1791913057.8749936
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913058.1258113
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913058.1570272
+    },
+    {
+      "cmd": "shell pidof com.example.d1check.requestrunner",
+      "t": 1791913058.2387114
+    },
+    {
+      "cmd": "shell top -H -b -n 1 -p 29466",
+      "t": 1791913058.3338268
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913058.7187548
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913059.8267894
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913059.8593676
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913059.9376671
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913061.033862
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913061.0687187
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913062.1614544
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913062.1928432
+    },
+    {
+      "cmd": "pull /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1/warmup.json C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_P\\S26_MIXREQ_20_S26_NPU_PARALLEL_V1_a1\\host\\warmup_pulled.json",
+      "t": 1791913062.2857916
+    },
+    {
+      "cmd": "shell echo f99377746da1fb713e411812a1d63ba7cc440fd7bea44d9252b2a7d841a39b66 > /data/local/tmp/mixreq/sessions/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1/warmup.arm",
+      "t": 1791913062.379787
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913062.4597907
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913063.5568342
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913063.5910394
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913064.7054887
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913064.738883
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913064.835194
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913065.9401717
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913065.974
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913066.0511196
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913067.148162
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913067.183627
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913068.2486973
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913068.2849927
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913068.3504803
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913069.468579
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913069.500649
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913070.6231327
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913070.6683447
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913070.7725363
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913071.8674667
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913071.8982284
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913071.991787
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913073.1040525
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913073.1375232
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913074.2281892
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913074.2646365
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913074.3565595
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913075.46852
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913075.5086415
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913076.6784706
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913076.7106013
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913076.8722284
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913077.994433
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913078.0201256
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913078.1168067
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913079.2132473
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913079.2526069
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913080.3425527
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913080.3816931
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913080.4704733
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913081.5836961
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913081.622925
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913082.7137997
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913082.752235
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913082.8685613
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913083.994175
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913084.03293
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913084.1233122
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913085.252307
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913085.2863228
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913086.379451
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913086.4189272
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913086.5253212
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913087.6459167
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913087.6873064
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913088.8541498
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913088.8930898
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913088.9957483
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913090.1077957
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913090.139221
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913090.216601
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913091.2937682
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913091.3306339
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913092.4266458
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913092.459431
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913092.521367
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913093.6335914
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913093.6681097
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913094.7661695
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913094.7972393
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913094.9009793
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913096.023067
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913096.050259
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913096.1425812
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913097.2675395
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913097.3026068
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913098.39785
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913098.431391
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913098.5250926
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913099.6383667
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913099.6852393
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913100.774892
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913100.8087497
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913100.8922179
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913101.9890096
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913102.0276952
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913102.1634345
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913103.2731419
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913103.3156934
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913104.4137118
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913104.4516954
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913104.5421114
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913105.6583283
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913105.6933677
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913106.7873902
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913106.8222656
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913106.9113712
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913108.0265746
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913108.0607767
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913108.176887
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913109.2616127
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913109.2988417
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913110.3900783
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913110.4286797
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913110.5149446
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913111.627926
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913111.6625044
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913112.7358909
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913112.780285
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913112.899191
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913114.0110211
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913114.0503466
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913114.1363723
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913115.2455387
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913115.275721
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913116.3762205
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913116.4088316
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913116.5009866
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913117.613228
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913117.6461906
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913118.743314
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913118.77503
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913118.8675764
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913119.9966316
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913120.0322938
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913120.125012
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913121.2290971
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913121.268019
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913122.3584988
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913122.3861814
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913122.4532096
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913123.5666866
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913123.600814
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913124.6953468
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913124.733683
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913124.8188486
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913125.9337406
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913125.9638698
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913126.1272163
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913127.214739
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913127.2476628
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913128.343275
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913128.3811915
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913128.471255
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913129.5653656
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913129.6034646
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913130.6813214
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913130.7152226
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913130.810045
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913131.9366786
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913131.9728491
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913132.0651689
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913133.1634696
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913133.1938844
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913134.2656598
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913134.299885
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913134.3966742
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913135.5064285
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913135.543697
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913136.6177988
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913136.6509936
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913136.7295325
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913137.8517246
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913137.887538
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913138.0292814
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913139.1416438
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913139.1736572
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913140.275676
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913140.3106527
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913140.3977566
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913141.4939702
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913141.530502
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913142.7242675
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913142.7618394
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913142.8599434
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913143.9580064
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913143.9928508
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913144.0706158
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913145.1679866
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913145.201227
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913146.3236108
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913146.3584502
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913146.4638133
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913147.5767722
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913147.6111574
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913148.702673
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913148.7404623
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913148.8798177
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913149.9916656
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913150.0198545
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913150.1100993
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913151.2139556
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913151.2499578
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913152.3460395
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913152.3762932
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913152.4652646
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913153.5679882
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913153.601181
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913154.7234151
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913154.7592535
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913154.8517268
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913155.964622
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913155.9953685
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913156.0893195
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913157.1845531
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913157.2196822
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913158.3150206
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913158.348923
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913158.4349873
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913159.5300283
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913159.5642664
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913160.6595886
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913160.697552
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913160.791346
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913161.8994899
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913161.9348373
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913162.1108592
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913163.204494
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913163.237634
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913164.3343465
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913164.3731291
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913164.458106
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913165.568781
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913165.600193
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913166.81004
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913166.8431137
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913166.9501016
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913168.0643554
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913168.1020153
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913168.204123
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913169.2903757
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913169.3284755
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913170.450679
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913170.4866867
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913170.6018689
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913171.7125258
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913171.747157
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913172.8605926
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913172.8915246
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913173.0013437
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913174.0783722
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913174.11348
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913174.2717767
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913175.3838356
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913175.4115858
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913176.5135667
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913176.5421543
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913176.6533809
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913177.7668493
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913177.8031316
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913177.8948412
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913179.0020072
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913179.0306308
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913180.19696
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913180.229683
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913180.4213748
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913181.533179
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913181.572107
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913182.6865172
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913182.719812
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913182.8790774
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913184.0086017
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913184.0427134
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913184.2291796
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913185.3433347
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913185.3808527
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913186.504399
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913186.5424838
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913186.646331
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913187.768143
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913187.8053365
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913187.9146113
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913189.0284922
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913189.0616987
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913190.2257304
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913190.2611108
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913190.3603659
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913191.4724803
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913191.5084274
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913192.6008203
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913192.633339
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913192.736803
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913193.84979
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913193.8929222
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913193.9980114
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913195.0929234
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913195.1229393
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913196.220177
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913196.255956
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913196.363489
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913197.459391
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913197.4970305
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913198.6129088
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913198.6494305
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913198.7636266
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913199.8854263
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913199.9233692
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913200.0138118
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913201.1430852
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913201.1775384
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913202.300374
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913202.3337884
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913202.4405541
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913203.5551722
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913203.5877743
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913204.6887693
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913204.7273204
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913204.8905232
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913206.0052402
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913206.0421968
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913206.2540147
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913207.3751438
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913207.4152863
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913208.5495768
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913208.5924368
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913208.6998851
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913209.8002863
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913209.8392024
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913209.9297974
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913211.0223458
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913211.0575929
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913212.1728716
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913212.2036865
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913212.315197
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913213.426629
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913213.4612021
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913214.576442
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913214.6133783
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913214.7307544
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913215.8588572
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913215.8965988
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913216.0678272
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913217.1842625
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913217.2198408
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913218.405022
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913218.4403188
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913218.5364332
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913219.6331108
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913219.669622
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913220.7696478
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913220.8074875
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913220.9123259
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913222.023968
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913222.0586634
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913222.172021
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913223.2816274
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913223.3214104
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913224.4544823
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913224.4943721
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913224.60523
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913225.7007082
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913225.7326403
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913226.8305702
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913226.8677816
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913226.9676082
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913228.089631
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913228.12451
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913228.2622085
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913229.3753805
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913229.4127347
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913230.5019746
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913230.5434668
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913230.6122823
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913231.712702
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913231.751336
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913232.8558073
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913232.8899612
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913232.9944804
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913234.105199
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913234.1420834
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913234.297091
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913235.411722
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913235.4449718
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913236.5398502
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913236.5717933
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913236.6803248
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913237.7788773
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913237.8173175
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913237.9880025
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913239.0940561
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913239.13354
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913240.2527444
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913240.2863529
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913240.3772485
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913241.4764445
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913241.5090048
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913242.6646597
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913242.6964817
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913242.8256445
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913243.9204278
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913243.9544966
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913244.1078916
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913245.2087173
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913245.2505462
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913246.3499405
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913246.3797357
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913246.4970078
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913247.5754423
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913247.6101995
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913248.719399
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913248.7517161
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913248.8604279
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913249.9405377
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913249.9771843
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913250.0876749
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913251.208802
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913251.2357948
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913252.3079169
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913252.3440304
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913252.462543
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913253.5614884
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913253.591923
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913254.6921108
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913254.731236
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913254.8335555
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913255.9456296
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913255.9780853
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913256.0739164
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913257.1817727
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913257.218984
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913258.3476856
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913258.3800232
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913258.4668214
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913259.5634773
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913259.60914
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913260.6924958
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913260.7288914
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913260.8442638
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913261.9299448
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913261.9601395
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913262.0529025
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913263.1375692
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913263.1697958
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913264.2789888
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913264.3178163
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913264.4394891
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913265.5511768
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913265.5888228
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913266.7097065
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913266.7576265
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913266.870019
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913267.9669962
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913268.0050673
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913268.1084216
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913269.235256
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913269.2678099
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913270.3771274
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913270.4047358
+    },
+    {
+      "cmd": "shell dumpsys thermalservice; echo __UPTIME__; cat /proc/uptime",
+      "t": 1791913270.535107
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913271.6499052
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913271.6832652
+    },
+    {
+      "cmd": "get-state",
+      "t": 1791913272.7960205
+    },
+    {
+      "cmd": "shell ls -l /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 2>/dev/null",
+      "t": 1791913272.8401346
+    },
+    {
+      "cmd": "pull /storage/emulated/0/Android/data/com.example.d1check.requestrunner/files/mixreq/1217b0e8-9f01-5d46-bf76-44ab7c217d42/a1 C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_P\\S26_MIXREQ_20_S26_NPU_PARALLEL_V1_a1\\device_pull",
+      "t": 1791913272.937543
+    },
+    {
+      "cmd": "shell am force-stop com.example.d1check.requestrunner",
+      "t": 1791913276.0206342
+    },
+    {
+      "cmd": "shell pidof com.example.d1check.requestrunner",
+      "t": 1791913276.1373107
+    },
+    {
+      "cmd": "shell settings get system screen_off_timeout",
+      "t": 1791913288.8672874
+    },
+    {
+      "cmd": "shell settings get system screen_off_timeout",
+      "t": 1791913292.273016
+    }
+  ],
+  "device_model": "SM-S942N",
+  "end_time": "2026-10-14T02:41:16",
+  "events": [],
+  "gate": {
+    "last": "S26_MIXREQ_20_S26_NPU_PARALLEL_V1_a1 2026-10-14T02:37:35 0 31.0 29.8 28.9 0 80 False True",
+    "rc": 0
+  },
+  "label": "20_S26_NPU_PARALLEL_V1",
+  "manifest_sha256": "f99377746da1fb713e411812a1d63ba7cc440fd7bea44d9252b2a7d841a39b66",
+  "session_id": "1217b0e8-9f01-5d46-bf76-44ab7c217d42",
+  "settings_before": {
+    "airplane": "1",
+    "brightness": "0",
+    "brightness_mode": "0",
+    "screen_off_timeout": "86400000",
+    "zen_mode": "1"
+  },
+  "start_time": "2026-10-14T02:37:37",
+  "warmup_gate": {
+    "checks": {
+      "classification_NPU": "NPU: §4-N contract (not a gate condition)",
+      "detection_CPU": "PASS"
+    },
+    "used": [
+      "classification_NPU",
+      "detection_CPU"
+    ]
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "a24_differences": [],
+  "analysis_split": "dev",
+  "apk_sha256": "878b10b7bc05300ddddc60fac0b2fb40eb020870841e473a8775827ef92bf092",
+  "attempt": 1,
+  "block": "M",
+  "contract": {
+    "applicable": true,
+    "block": "M",
+    "criteria": "top-1 index equal AND cosine >= 0.99, both NPU warmups vs CPU warmup #1 (등록 §4-N; A24 contract is separate)",
+    "evaluated_as": "block N rule (block M has classification_NPU resident)",
+    "passed": true,
+    "policy": "CPU_URGENT_ONLINE_V1",
+    "reason": null,
+    "schema": "npu-mixreq-contract-v1",
+    "session_id": "0833bab2-ef71-5c4c-a78d-db38ef88f085",
+    "used_by_policy": false,
+    "warmups": [
+      {
+        "bit_identical_to_cpu": false,
+        "cosine": 0.9999934974570073,
+        "cpu_top1_score": 0.2134217768907547,
+        "fp32_tolerance_violations": 4,
+        "index": 0,
+        "max_abs_delta": 0.0009336918592453003,
+        "mean_abs_delta": 3.582621593523072e-06,
+        "npu_top1_score": 0.21435546875,
+        "passed": true,
+        "top1_cpu": 518,
+        "top1_equal": true,
+        "top1_npu": 518,
+        "top5_order_equal": true,
+        "top5_overlap": 5
+      },
+      {
+        "bit_identical_to_cpu": false,
+        "cosine": 0.9999934974570073,
+        "cpu_top1_score": 0.2134217768907547,
+        "fp32_tolerance_violations": 4,
+        "index": 1,
+        "max_abs_delta": 0.0009336918592453003,
+        "mean_abs_delta": 3.582621593523072e-06,
+        "npu_top1_score": 0.21435546875,
+        "passed": true,
+        "top1_cpu": 518,
+        "top1_equal": true,
+        "top1_npu": 518,
+        "top5_order_equal": true,
+        "top5_overlap": 5
+      }
+    ]
+  },
+  "eligible": true,
+  "experiment_id": "S26-M6-K",
+  "folder": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_K\\S26_MIXREQ_07_CPU_URGENT_ONLINE_V1_a1",
+  "gate": null,
+  "host_end_time": "2026-10-14T03:22:41",
+  "host_start_time": "2026-10-14T03:08:04",
+  "in_block_charge": null,
+  "index": 7,
+  "label": "K2B",
+  "m6_letter": null,
+  "m6_load": null,
+  "m6_run": "K2B",
+  "manifest_sha256": "dbdab2e8d1bf24f9d628690c59140cfe38d251205bde5604506915fbbe9e94ab",
+  "mixreq_rules": {
+    "0_artifacts": {
+      "passed": false
+    },
+    "1_requests_succeeded_quality": {
+      "passed": true
+    },
+    "2_time_order": {
+      "passed": false
+    },
+    "3_window": {
+      "passed": false
+    },
+    "4_assignment_residents": {
+      "passed": false
+    },
+    "5_overlap": {
+      "passed": false
+    },
+    "6_warmup_quality": {
+      "passed": true
+    },
+    "7_delegation_evidence": {
+      "passed": true
+    },
+    "8_plugged_start": {
+      "passed": true
+    },
+    "9_watch_stop": {
+      "passed": true
+    }
+  },
+  "pair": 0,
+  "policy": "CPU_URGENT_ONLINE_V1",
+  "reasons": [],
+  "session_id": "0833bab2-ef71-5c4c-a78d-db38ef88f085",
+  "split": "confirmation",
+  "start_band": null,
+  "summary": {
+    "a24_differences": [],
+    "apk_sha256": "878b10b7bc05300ddddc60fac0b2fb40eb020870841e473a8775827ef92bf092",
+    "attempt": 1,
+    "block": "M",
+    "command_id": "5be4b577-3e08-4047-a40f-8088b2ecb9da",
+    "common_end_ns": 383308665246103,
+    "common_start_ns": 382528664231220,
+    "detection_gpu_created": true,
+    "device_model": "SM-S942N",
+    "experiment_id": "S26-M6-K",
+    "experiment_ready": false,
+    "manifest_sha256": "dbdab2e8d1bf24f9d628690c59140cfe38d251205bde5604506915fbbe9e94ab",
+    "package": "com.example.d1check.requestrunner",
+    "pair": 0,
+    "pid": 15362,
+    "planned": 0,
+    "policy": "CPU_URGENT_ONLINE_V1",
+    "protocol": "s26-mixreq-session-v1",
+    "runtime_keys": [
+      "classification_CPU",
+      "classification_GPU",
+      "classification_NPU",
+      "detection_CPU",
+      "detection_GPU"
+    ],
+    "sdk_int": 37,
+    "session_id": "0833bab2-ef71-5c4c-a78d-db38ef88f085",
+    "session_index": 7,
+    "split": "confirmation",
+    "status": "completed",
+    "terminal": 0,
+    "time_scale": 1,
+    "used_keys": [
+      "classification_CPU",
+      "detection_CPU"
+    ]
+  },
+  "time_scale": 1,
+  "validated_rules": {
+    "K1_requests_zero": true,
+    "K2_phases": true,
+    "K3_samples": true
+  }
+}
