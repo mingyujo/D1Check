@@ -621,6 +621,25 @@ class Driver:
         self.state["items"][label] = dict(attempt1=rc)
         self.save_state()
 
+    def charge_rest(self) -> None:
+        """등록 §2-4 · 프롬프트: 충전은 부 사이 · 분리 → 첫 실행 ≥ 1,200 s. plugged 이면 '케이블 뽑으세요' 를 남기고 60 s 폴 (≤ 3 h), 분리 시각 + 1,200 s 까지 대기."""
+        t0 = time.time()
+        while True:
+            s = self.phone_state()
+            if not s["plugged"]:
+                break
+            if time.time() - t0 > 3 * 3600:
+                raise Stop("still plugged after 3 h — operator: 케이블 뽑으세요")
+            self.log(f"PLUGGED (SOC {s['soc']}): 케이블 뽑으세요 — waiting 60 s (분리 뒤 20 min 쉼 자동)")
+            self.event(what="charge_wait", soc=s["soc"], plugged=True)
+            time.sleep(60)
+        d = s.get("last_power_disconnected_epoch")
+        if d and s.get("unplugged_since_last_disconnect"):
+            until = d + M7.CHARGE_TO_FIRST_RUN_MIN_S
+            if time.time() < until:
+                self.log(f"charge rest: last disconnect {s['last_power_disconnected']} -> first run not before +{M7.CHARGE_TO_FIRST_RUN_MIN_S} s ({dt.datetime.fromtimestamp(until).isoformat(timespec='seconds')})")
+                self.wait_until(until, "charge rest 20 min after unplug")
+
     # ------------------------------------------------------------------ main
     def run(self) -> int:
         items = [int(x) for x in self.args.items.split(",") if x.strip()] if self.args.items else []
@@ -629,6 +648,7 @@ class Driver:
         try:
             if self.adb_state() != "device" and not self.wait_adb(self.args.reconnect_wait_s):
                 raise Stop("adb not connected at start")
+            self.charge_rest()
             if self.kind == "p":
                 self.do_p(items, "p")
             elif self.kind == "prep":
