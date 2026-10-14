@@ -1,0 +1,39 @@
+{
+  "schema": "s26-m8-session-instrumentation-contract-v1",
+  "date": "2026-10-14",
+  "source": "REQUEST.txt 공통 계약 (t=0 전 ≥ 60 s AP · 첫 요청 35 s · 새 dispatch 종료 120 s · J0~120/0~180 · 평균 AP35~180 · 센서 ≥ 210 s · AP35/180 · J0/120/180 양측 실제 표본 · 사전 고정 최대 gap · null · tail 외삽 없음 · AP 를 배터리 온도로 대체 안 함) · 조민규 답 §5 (cooling 60→90 은 상수만으로 PASS 아님 · common 기준 ≥ 210 s 검사 · 허용 gap/보간/결측/단위/부호 DEV 에서 봉인 · 읽기 주기 · 값 변화 간격 · 갱신 시각 미제공 구분 · 30.6 s 계단 일반화 금지 · Perfetto/주파수/headroom 지원 확인 뒤) · §2-B (RECENT 준비 · 5 s · t=35 · common 0 = 35 s 전 · 준비부터 센서 연속 · J0~180 준비 부분과 J35~180 분리 · 준비 뒤 다시 식히지 않음)",
+  "phases_m8": {
+    "runtime_setup": "블록 M 5 runtime (NO_RUNTIME = 0) · 상한 180 s",
+    "warmup": "키당 2회 (NO_RUNTIME = 0)",
+    "warmup_gate": "호스트 arm (≤ 60 s)",
+    "baseline_s": 60,
+    "baseline_note": "M6/M7 30 → M8 60 (t=0 전 앱 표본 ≥ 60 s · host HAL 은 앱 시작 ≥ 60 s 전부터)",
+    "start_check": "thermal_status ≤ 1 · plugged 0 (앱 안) + 호스트 게이트 (gate_m8.json)",
+    "prep": {"role": "prep", "kinds": {"CPU60": "분류 CPU 연속 추론 60 s (prep lane = classification_CPU · 호출 끝나면 바로 다음 · 요청 아님 · prep_call 이벤트마다 시각) · 60 s 지나면 진행 중 호출 끝까지 (비선점) → prep_end = 마지막 실제 AVAILABLE", "IDLE60": "60 s 유휴 (앱 · sampler 그대로) → prep_end = 60 s 끝", "NONE": "준비 없음 (일반 본 측정)"},
+             "after_prep": "prep_end + 5 s = 첫 본 요청 (t 35) · common 0 = prep_end + 5 s − 35 s (= prep_end − 30 s · 과거 시각) · 창 끝 = common 0 + 120 s · 준비부터 센서 (power_sample 900 ms) 끊김 없음 · 준비 뒤 다시 식히지 않음 (gate 는 준비 전)",
+             "report": "J0~180 의 준비 부분 (common 0 ~ prep_end) 과 본 요청 이후 J35~180 을 따로 (계산 = 조민규 · 앱은 prep_start_ns · prep_end_ns · prep_last_available_ns · common_start_ns 기록)"},
+    "common_window_s": 120,
+    "dispatch_end": "common + 120 s 뒤 새 dispatch 0 · running 은 비선점 drain (drain 상한 30 s · 넘으면 세션 실패 = M7 과 같음) · waiting 은 undispatched 로 기록",
+    "cooling_s": 90,
+    "cooling_note": "M8 행만 90 (기존 M6/M7 행 60 그대로 — 엔진 상수 COOLING_SECONDS 불변 · M8 계약 객체의 값) · 목적 = 앱 power 표본이 common + 210 s 를 넘도록 (120 + drain ≤ 30 + 90 = 210 ~ 240) · 상수만으로 PASS 아님 → coverage_check",
+    "watchdog_s": 1260
+  },
+  "instrumentation": {
+    "app_power": {"api": "BatteryManager CURRENT_NOW (µA · 방전 음수 · 기기 스케일 미검증) · CHARGE_COUNTER (µAh) · EXTRA_VOLTAGE (mV) · EXTRA_TEMPERATURE (deci-℃) · thermal_status · interactive · plugged", "period_ms": 900, "phase_record": "표본마다 phase 와 (common 기준 s · 위상 = (t − common0) mod 0.9 s) 를 사후 계산 · 900 ms 유지 (조민규: 고빈도 polling 무조건 적용 금지 · 지원 주기 · 추가 부하는 DEV 에서)",
+                  "sign": "방전 음수 (M6 E 실측) · 양수면 충전 → stop", "unit": "µA (API 명목 · 기기 스케일 미검증 그대로 적음)",
+                  "update_note": "읽기 주기 (900 ms) ≠ 값 변화 간격 (M6 E: current_now 20 ms 폴링에서 값 변화 · charge_counter/전압 약 30.6 s 계단 = 그 조건의 관찰) ≠ 센서 갱신 시각 (미제공) — 셋을 나눠 적는다 · 일반화 금지 · charge_counter · 전압 각각 원표본별 값 변화 (coverage_check 가 변화 횟수 · 계단 크기를 기록만)"},
+    "host_hal": {"source": "dumpsys thermalservice 'Current temperatures from HAL' (AP · SKIN · BAT · PA) + dumpsys battery (level · current_now · voltage · temperature)", "period_s": 2.3, "coverage": "앱 시작 ≥ 60 s 전 (RECENT 는 준비 전 ≥ 60 s) → common + 300 s", "update_note": "읽기 2.3 s · 값 변화 간격 AP 2.6 · SKIN 3.5 s 중앙 (M6 E-T) · 갱신 시각 미제공 · AP 를 BAT 로 대체 안 함"},
+    "external_power_meter": "없음 → 내부 gauge 상대 비교 한계 명시",
+    "optional_probes": {"perfetto_battery_counters": "미확인 (호스트 adb shell perfetto · android.power 데이터소스 · 스모크 ID 로 지원/권한/오버헤드 확인 뒤 on/off 군)", "cpu_freq": "미확인 (/sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq 읽기 가능 여부)", "gpu_npu_freq": "미확인 (경로 후보 목록)", "adpf_headroom": "미확인 (PowerManager.getThermalHeadroom(10) · 앱 API · 10 s 간격 · 미지원값 결측)", "rule": "지원 · 미지원 · 미확인 셋 중 하나로 남김 · 모든 비교군 계측 조건 같게"}
+  },
+  "coverage_check": {
+    "tool": "s26/tools/mixreq/coverage_check.py (세션 폴더 → PASS/FAIL + 이유 · 앱/host 분리 · 보간 0)",
+    "app_power_rules": {"pre_t0_s": {"min": 60, "note": "common 0 이전 앱 표본 ≥ 60 s (baseline 60)"}, "post_t0_s": {"min": 210, "note": "마지막 유효 표본 ≥ common + 210 s"},
+                        "both_sides": {"points_s": [0, 35, 120, 180], "max_gap_s": 2.5, "note": "각 점에 이전/이후 표본이 있고 둘 사이 ≤ 2.5 s (900 ms 표본 2개 + 여유) · 없으면 null · tail 외삽 없음"},
+                        "max_gap_s": 2.5, "missing": "current_valid false 표본 = 결측 (셈 · 메우지 않음) · 결측이 양측 점을 가르면 그 점 null", "sign": "방전 음수 전부 (양수 = FAIL 이유)", "unit": "µA"},
+    "host_hal_rules": {"pre_t0_s": {"min": 60}, "post_t0_s": {"min": 210}, "both_sides": {"points_s": [35, 180], "max_gap_s": 5.0, "series": ["AP"]}, "iv_both_sides": {"points_s": [0, 180], "max_gap_s": 5.0, "series": ["current_now", "voltage"]}, "err_rows": "err 행 = 결측 (셈)"},
+    "separation": "앱 PASS 와 host PASS 를 따로 (둘 다 PASS 여야 세션 coverage PASS) · 앱 끝을 host 값으로 이어붙이지 않음 · host J180 은 계산하지 않음",
+    "seal": "허용 gap · 결측 처리 · 단위 · 부호 = 이 표 v1 (DEV 에서 확정 · 확인 전 봉인 · 결과 보고 바꾸지 않음)",
+    "m7a_verification": "coverage_check.py 를 M7-A 자료에 돌려 derived_1014/coverage_m7.csv 와 같은 판정 (앱 180 s 양측 0/18 · host 18/18) 이어야 함 — coverage_check_vs_A4.json"
+  }
+}

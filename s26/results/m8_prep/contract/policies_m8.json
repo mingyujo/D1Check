@@ -1,0 +1,67 @@
+{
+  "schema": "s26-m8-policy-rules-v1",
+  "date": "2026-10-14",
+  "source": "조민규 답 10/14 §3 (FIFO = 도착→ordinal→id · strict head · 추월 없음 / EDD = 절대기한 · 동점 FIFO / BASE 전역직렬 / PAIR 만 허용 조합 최대 2 / WAIT = ready head + 관련 owner 전부 실제 AVAILABLE 때만 시작 · 타이머 중 도착 = enqueue 만 · 첫 n 묶음 · 누적 cap · 잘린 dose 실제값 · 개입 0 도 기록) · REQUEST.txt P1 (BASE/ORDER/PAIR_G/WAIT200/NPU_SERIAL/PAIR_N · L64 2군 · C252 3군)",
+  "status": "계약표 v1 — 코드 (request-runner PolicyStudy.chooseM8 · SessionEngine M8 분기) 는 이 표를 그대로 옮긴다 · 기존 3 정책 (CPU_URGENT_ONLINE_V1 · B2_PARALLEL_ONLINE_V1 · S26_NPU_PARALLEL_V1 = urgent 먼저) 은 보존 · M8 행에서 쓰지 않음",
+  "common": {
+    "selection_FIFO": "ready(도착한) 요청을 (scheduled_arrival → ordinal → request_id) 로 정렬한 head 하나만 본다. head 의 lane 이 busy 면 null (뒤 요청 추월 없음 · strict head).",
+    "selection_EDD": "ready 요청을 (absolute_deadline = scheduled_arrival + relative_deadline → scheduled_arrival → ordinal → request_id) 로 정렬한 head 하나만 본다 (동점 = FIFO). strict head 같음.",
+    "route": "C (classification) → 정책의 분류 lane (CPU/GPU/NPU) · D (detection) → CPU (탐지 GPU/NPU 는 M8 핵심안 밖 · P4)",
+    "SERIAL": "전역 직렬: running (dispatch 된 뒤 lane_available 전) 요청이 1건이라도 있으면 dispatch 하지 않는다 (lane 이 달라도).",
+    "PAIR": "허용 조합 집합의 runtime 키만 동시에 최대 2건: 같은 lane 은 1건 (lane busy) · running 집합 ∪ {후보} ⊆ allowed_pair 이고 |running| < 2 일 때만. strict head 는 그대로 (head 의 lane 이 busy 면 뒤 요청의 lane 이 비어 있어도 null).",
+    "preemption": "없음 (비선점). 실행 중 요청은 끝까지.",
+    "lane_occupancy": "실제 시각으로: busy = dispatch_ns ~ lane_available_ns (dispatch 스레드가 busy=false 로 바꾸기 직전 기록) — 추정값 0.",
+    "available_definition": "AVAILABLE = lane_available_ns (worker_release 뒤 dispatch 스레드에서 기록). 응답 경계 (output_ready / readback) 와 별개로 유지.",
+    "dispatch_window": "새 dispatch 는 common 0 ~ 120 s 안에서만 (서비스 120 s 경계). 120 s 뒤 waiting 은 undispatched 로 남긴다 (실패 아님 · 분모에 유지) · running 은 비선점 drain.",
+    "decision_record": "모든 dispatch 결정 (선택 · null 포함) 을 decision 이벤트로 (policy · waiting 수 · running 집합 · 선택 id · 이유 · 시각)."
+  },
+  "policies": [
+    {"id": "FIFO_SERIAL_CPU_V1", "selection": "FIFO", "route": {"classification": "CPU", "detection": "CPU"}, "concurrency": "SERIAL", "max_running": 1, "allowed_pair": null, "wait": null,
+     "request_groups": ["C252 CPU"], "note": "분류 CPU 직렬 (기존 CPU_URGENT_ONLINE_V1 과 선택 규칙이 다름: urgent 우선 없음 · strict FIFO)"},
+    {"id": "FIFO_SERIAL_CG_V1", "selection": "FIFO", "route": {"classification": "GPU", "detection": "CPU"}, "concurrency": "SERIAL", "max_running": 1, "allowed_pair": null, "wait": null,
+     "request_groups": ["L64 BASE", "C252 GPU", "M128 BASE", "SMOOTH128 BASE"], "note": "BASE = C_GPU/D_CPU 라도 전역 직렬"},
+    {"id": "FIFO_SERIAL_CN_V1", "selection": "FIFO", "route": {"classification": "NPU", "detection": "CPU"}, "concurrency": "SERIAL", "max_running": 1, "allowed_pair": null, "wait": null,
+     "request_groups": ["C252 NPU", "M128 NPU_SERIAL"], "note": "NPU_SERIAL = BASE 의 분류 경로만 NPU"},
+    {"id": "EDD_SERIAL_CG_V1", "selection": "EDD", "route": {"classification": "GPU", "detection": "CPU"}, "concurrency": "SERIAL", "max_running": 1, "allowed_pair": null, "wait": null,
+     "request_groups": ["M128 ORDER", "SMOOTH128 ORDER"], "note": "ORDER = BASE 에서 ready 요청의 선택만 절대기한 EDD (동점 FIFO)"},
+    {"id": "FIFO_PAIR_CG_V1", "selection": "FIFO", "route": {"classification": "GPU", "detection": "CPU"}, "concurrency": "PAIR", "max_running": 2, "allowed_pair": ["classification_GPU", "detection_CPU"], "wait": null,
+     "request_groups": ["L64 PAIR_G", "M128 PAIR_G", "SMOOTH128 PAIR_G"], "note": "PAIR_G = BASE 에서 CG_DC 병행 허용만 변경 (최대 2 · 같은 lane 1)"},
+    {"id": "FIFO_PAIR_CN_V1", "selection": "FIFO", "route": {"classification": "NPU", "detection": "CPU"}, "concurrency": "PAIR", "max_running": 2, "allowed_pair": ["classification_NPU", "detection_CPU"], "wait": null,
+     "request_groups": ["M128 PAIR_N"], "note": "PAIR_N = NPU_SERIAL 에서 CN_DC 병행 허용만 변경"},
+    {"id": "FIFO_WAIT_CG_V1", "selection": "FIFO", "route": {"classification": "GPU", "detection": "CPU"}, "concurrency": "SERIAL", "max_running": 1, "allowed_pair": null,
+     "wait": {"params": ["wait_ms", "first_n_bursts", "cap_ms"], "variants": {"WAIT200x16": {"wait_ms": 200, "first_n_bursts": 16, "cap_ms": 3200}, "WAIT200x12": {"wait_ms": 200, "first_n_bursts": 12, "cap_ms": 2400}, "WAIT1000x12": {"wait_ms": 1000, "first_n_bursts": 12, "cap_ms": 12000}},
+              "id_question": "조민규 제안 ID 는 FIFO_WAIT200_CG_V1 (변형 하나). 세 변형 (200x16 · 200x12 · 1000x12) 을 (a) ID 하나 FIFO_WAIT_CG_V1 + 매니페스트 인자 (wait_ms · first_n_bursts · cap_ms · 고정 · 원장) 로 할지 (b) 변형마다 ID (FIFO_WAIT200X16_CG_V1 …) 로 할지 — contract_questions #1. 코드 기본 = (a) · 매니페스트 policy_args 필수 · 인자 없는 FIFO_WAIT_CG_V1 은 거부 (fail closed)"},
+     "request_groups": ["M128 WAIT200x16", "M128 WAIT200x12", "M128 WAIT1000x12"], "note": "BASE 와 동일 순서 · 경로 · 직렬 + 묶음 첫 배정 전 의도 WAIT"}
+  ],
+  "wait_rules": {
+    "trigger": "묶음 k (같은 scheduled_arrival 의 8건 · M128 ordinal 8k..8k+7) 의 첫 dispatch 직전에만. 조건 전부: (1) ready head 가 있고 (2) 관련 owner (SERIAL 이므로 running 0 = 모든 lane 실제 AVAILABLE) 이고 (3) k < first_n_bursts 이고 (4) 누적 dose + wait_ms ≤ cap_ms (넘으면 남은 cap 만큼만 · 그 뒤 WAIT 0) 이고 (5) 묶음 k 에 WAIT 를 아직 안 했음.",
+    "not_wait": "busy (running > 0) 이거나 ready 요청 없음 = 의도 WAIT 아님 (기록 안 함 · 자연 대기).",
+    "timer": "wait_start_ns 에 시작 · 고정 길이 · 타이머 중 새 도착 = enqueue 만 (dispatch 0 · 타이머 재시작/연장/취소 없음) · 타이머 끝 = wait_end_ns → 그 시점의 FIFO head 를 dispatch (도착은 시간순이라 head 불변).",
+    "cut": "서비스 120 s 경계 (common + 120 s) 또는 기존 안전 중단 (앱 stop) 이 타이머 중 오면 타이머를 그 시각에 끊고 dose_ms = 실제값 (잘린 dose) · 120 s 뒤엔 dispatch 0.",
+    "record": "wait 이벤트마다 burst_index · wait_start_ns · wait_end_ns · planned_ms · dose_ms (실제) · cut_reason (null | window_end | stop) · cumulative_dose_ms · waiting_count_at_start · arrivals_during_wait. 세션 끝 summary.wait = {count, planned_total_ms, dose_total_ms, cap_ms, first_n_bursts, interventions (= count) · 0 이면 0 으로 기록}."
+  },
+  "test_cases": {
+    "note": "단위 시험 (PolicyStudyM8Test) 은 이 사례 표를 그대로 돈다. now · lane 점유 = 실제 시각 (시험에서는 주입). W = waiting (ready) · R = running.",
+    "cases": [
+      {"name": "FIFO head strict · 추월 없음", "policy": "FIFO_PAIR_CG_V1", "W": ["C0@35.000", "D1@35.000"], "R": ["classification_GPU(C_prev)"], "expect": null, "why": "head C0 의 GPU busy → D1 (CPU 비어 있음) 추월 안 함"},
+      {"name": "FIFO 순서 = scheduled_arrival → ordinal → id", "policy": "FIFO_SERIAL_CG_V1", "W": ["D5@35.537", "C2@35.000", "C1@35.000"], "R": [], "expect": "C1", "why": "같은 도착 35.000 안에서 ordinal 1 < 2 · 35.537 은 뒤"},
+      {"name": "SERIAL 전역 1", "policy": "FIFO_SERIAL_CG_V1", "W": ["D3@35.000"], "R": ["classification_GPU"], "expect": null, "why": "lane 이 달라도 running 1 → dispatch 0"},
+      {"name": "PAIR 허용 조합 2건", "policy": "FIFO_PAIR_CG_V1", "W": ["D3@35.000"], "R": ["classification_GPU"], "expect": "D3", "why": "{classification_GPU, detection_CPU} ⊆ allowed · |R| 1 < 2"},
+      {"name": "PAIR 같은 lane 1", "policy": "FIFO_PAIR_CG_V1", "W": ["C4@35.000"], "R": ["classification_GPU"], "expect": null, "why": "GPU lane busy"},
+      {"name": "PAIR 상한 2", "policy": "FIFO_PAIR_CN_V1", "W": ["C8@35.537"], "R": ["classification_NPU", "detection_CPU"], "expect": null, "why": "|R| = 2"},
+      {"name": "PAIR_N 는 GPU 를 쓰지 않음", "policy": "FIFO_PAIR_CN_V1", "W": ["C0@35.000"], "R": [], "expect": "C0→NPU"},
+      {"name": "EDD 절대기한 우선", "policy": "EDD_SERIAL_CG_V1", "W": ["D0@35.000 (dl 37.000)", "C1@35.000 (dl 35.800)"], "R": [], "expect": "C1", "why": "35.8 < 37.0 (FIFO 였으면 D0)"},
+      {"name": "EDD 동점 = FIFO", "policy": "EDD_SERIAL_CG_V1", "W": ["C9@35.537 (dl 36.337)", "C2@35.000 (dl 35.800)", "C1@35.000 (dl 35.800)"], "R": [], "expect": "C1"},
+      {"name": "EDD 도 strict head", "policy": "EDD_SERIAL_CG_V1", "W": ["C1@35.000 (dl 35.800)", "D0@35.000 (dl 37.000)"], "R": ["detection_CPU"], "expect": null, "why": "SERIAL: running 1"},
+      {"name": "CPU 직렬 FIFO (urgent 우선 없음)", "policy": "FIFO_SERIAL_CPU_V1", "W": ["C1@35.400", "D0@35.000"], "R": [], "expect": "D0", "why": "기존 CPU_URGENT 는 C1 (urgent 먼저) — M8 FIFO 는 도착 순"},
+      {"name": "ready 없음", "policy": "FIFO_SERIAL_CG_V1", "W": [], "R": [], "expect": null},
+      {"name": "120 s 뒤 dispatch 0", "policy": "FIFO_SERIAL_CG_V1", "W": ["C100@119.9"], "R": [], "now": "120.001", "expect": null, "why": "서비스 120 s 경계"},
+      {"name": "WAIT 시작 조건", "policy": "FIFO_WAIT_CG_V1 (200x16)", "W": ["C8@35.537 (묶음 1 head)"], "R": [], "wait_state": {"bursts_waited": [0], "cumulative_ms": 200}, "expect": "WAIT 200 ms then C8"},
+      {"name": "WAIT 안 함 — running 있음", "policy": "FIFO_WAIT_CG_V1 (200x16)", "W": ["C8@35.537"], "R": ["detection_CPU"], "expect": null, "why": "busy = 의도 WAIT 아님 (기록 0)"},
+      {"name": "WAIT 안 함 — 같은 묶음 두 번째", "policy": "FIFO_WAIT_CG_V1 (200x16)", "W": ["C9@35.537"], "R": [], "wait_state": {"bursts_waited": [0, 1]}, "expect": "C9 (WAIT 0)"},
+      {"name": "WAIT 첫 n 묶음 밖", "policy": "FIFO_WAIT_CG_V1 (200x12)", "W": ["C96@41.446 (묶음 12)"], "R": [], "wait_state": {"bursts_waited": "0..11"}, "expect": "C96 (WAIT 0)"},
+      {"name": "WAIT cap 잘림", "policy": "FIFO_WAIT_CG_V1 (1000x12)", "W": ["C88@40.909 (묶음 11)"], "R": [], "wait_state": {"cumulative_ms": 11500, "cap_ms": 12000}, "expect": "WAIT 500 ms (dose 500 · cut_reason cap)"},
+      {"name": "WAIT 중 도착 = enqueue 만", "policy": "FIFO_WAIT_CG_V1 (1000x12)", "W": ["C0@35.000"], "R": [], "arrive_during": ["묶음 1 8건 @35.537"], "expect": "타이머 1000 ms 유지 · 끝에 C0 dispatch · arrivals_during_wait 8"}
+    ]
+  }
+}
