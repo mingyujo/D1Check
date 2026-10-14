@@ -2,6 +2,7 @@ package com.example.d1check.requestrunner
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Assert.assertThrows
 import org.junit.Test
 
@@ -77,14 +78,47 @@ class PolicyStudyM8Test {
 
     @Test fun waitRules() {
         val a = M8Plan.WAIT200X16
-        assertEquals(200L, PolicyStudy.plannedWaitMs(a, 1, setOf(0), 200, 0, true))                 // 시작 조건
-        assertNull(PolicyStudy.plannedWaitMs(a, 1, setOf(0), 200, 1, true))                          // running 있음 = 의도 WAIT 아님
-        assertNull(PolicyStudy.plannedWaitMs(a, 1, setOf(0, 1), 400, 0, true))                       // 같은 묶음 두 번째
-        assertNull(PolicyStudy.plannedWaitMs(M8Plan.WAIT200X12, 12, (0..11).toSet(), 2_400, 0, true))   // 첫 n 밖
-        assertEquals(500L, PolicyStudy.plannedWaitMs(M8Plan.WAIT1000X12, 11, (0..10).toSet(), 11_500, 0, true))   // cap 잘림
-        assertNull(PolicyStudy.plannedWaitMs(M8Plan.WAIT1000X12, 11, (0..10).toSet(), 12_000, 0, true))          // cap 소진
+        assertEquals(200L, PolicyStudy.plannedWaitMs(a, 1, setOf(0), 200, 0, true))                 // 시작 조건: ready head · running 0 · 묶음 1 처음
+        assertNull(PolicyStudy.plannedWaitMs(a, 1, setOf(0), 200, 1, true))                          // running 있음 = 의도 WAIT 아님 (owner 전부 AVAILABLE 때만)
+        assertNull(PolicyStudy.plannedWaitMs(a, 1, setOf(0, 1), 400, 0, true))                       // 같은 묶음 두 번째 head = WAIT 0
+        assertNull(PolicyStudy.plannedWaitMs(M8Plan.WAIT200X12, 12, (0..11).toSet(), 2_400, 0, true))   // 첫 n 밖 = WAIT 0
         assertNull(PolicyStudy.plannedWaitMs(a, 0, emptySet(), 0, 0, false))                         // ready 없음
-        assertEquals(3_200L, M8Plan.WAIT200X16.capMs); assertEquals(2_400L, M8Plan.WAIT200X12.capMs); assertEquals(12_000L, M8Plan.WAIT1000X12.capMs)
+        assertEquals(1_000L, PolicyStudy.plannedWaitMs(M8Plan.WAIT1000X12, 11, (0..10).toSet(), 11_000, 0, true))   // 마지막 허용 묶음도 전량 (잘라 쓰지 않음)
+    }
+
+    /** 조민규 01:5x #2: 세 처방 (200×16 · 200×12 · 1000×12) — ID 하나 FIFO_WAIT_CG_V1 + 인자 (wait_ms · first_n_bursts · nominal_total_ms) · 묶음별 최초 eligible head 한 번 · 그 뒤 WAIT 0 · 명목 = wait × n. */
+    private fun simulateBursts(args: M8Plan.WaitArgs): List<Long?> {
+        val waited = mutableSetOf<Int>()
+        var cumulative = 0L
+        return (0 until M8Plan.BURST_COUNT).map { k ->
+            val planned = PolicyStudy.plannedWaitMs(args, k, waited, cumulative, 0, true)
+            if (planned != null) { waited += k; cumulative += planned }
+            // 같은 묶음의 두 번째 · 세 번째 head: 항상 WAIT 0
+            assertNull(PolicyStudy.plannedWaitMs(args, k, waited, cumulative, 0, true))
+            planned
+        }
+    }
+
+    @Test fun wait200x16Core() {
+        val p = simulateBursts(M8Plan.WAIT200X16)
+        assertEquals(List(16) { 200L }, p)
+        assertEquals(3_200L, p.filterNotNull().sum()); assertEquals(3_200L, M8Plan.WAIT200X16.nominalTotalMs)
+        assertEquals(listOf("wait_ms", "first_n_bursts", "nominal_total_ms"), M8Plan.WAIT200X16.record().keys.toList()); assertEquals("{wait_ms=200, first_n_bursts=16, nominal_total_ms=3200}", M8Plan.WAIT200X16.record().toString())
+    }
+
+    @Test fun wait200x12Contrast() {
+        val p = simulateBursts(M8Plan.WAIT200X12)
+        assertEquals(List(12) { 200L } + List(4) { null }, p)
+        assertEquals(2_400L, p.filterNotNull().sum()); assertEquals(2_400L, M8Plan.WAIT200X12.nominalTotalMs)
+    }
+
+    @Test fun wait1000x12Long() {
+        val p = simulateBursts(M8Plan.WAIT1000X12)
+        assertEquals(List(12) { 1_000L } + List(4) { null }, p)
+        assertEquals(12_000L, p.filterNotNull().sum()); assertEquals(12_000L, M8Plan.WAIT1000X12.nominalTotalMs)
+        assertThrows(IllegalArgumentException::class.java) { M8Plan.WaitArgs(200, 16, 3_000) }       // nominal ≠ wait × n → 거부
+        assertEquals(setOf("M128_WAIT200x16", "M128_WAIT200x12", "M128_WAIT1000x12"), M8Plan.arms(C.M8_M128_ID).filter { it.wait != null }.map { it.name }.toSet())
+        assertTrue(M8Plan.arms(C.M8_M128_ID).filter { it.wait != null }.all { it.policy == C.POLICY_FIFO_WAIT_CG })   // ID 하나 · 인자로 구분
     }
 
     @Test fun tablesAndOldPoliciesRejected() {

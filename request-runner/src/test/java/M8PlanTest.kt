@@ -43,13 +43,51 @@ class M8PlanTest {
         assertEquals(16, m.map { it.second }.distinct().size)
         val s = M8Plan.slots(M8Plan.Bank.SMOOTH128)
         assertEquals(128, s.size); assertEquals(m.map { it.first }, s.map { it.first })              // task 순서 유지
-        assertEquals(35_000_000L, s.first().second); assertEquals(43_057_325L, s.last().second)     // 첫/마지막 유지
-        assertEquals(35_063_444L, s[1].second); assertEquals(39_060_384L, s[64].second); assertEquals(42_993_881L, s[126].second)
+        assertEquals(35_000_000L, s.first().second); assertEquals(43_057_325L, s.last().second)     // 첫/마지막 유지 (µs = floor(ns / 1000))
+        assertEquals(35_063_443L, s[1].second); assertEquals(39_060_384L, s[64].second); assertEquals(42_993_881L, s[126].second)
         assertEquals(128, s.map { it.second }.distinct().size)
-        assertTrue(s.map { it.second }.zipWithNext().all { (a, b) -> b - a in 63_443L..63_444L })
-        assertEquals(537_155L, M8Plan.burstIntervalUs(73.5442, 241.7197))                          // burst_interval_recalc.json (M6 개발 P 6세션)
-        assertEquals(536_336L, M8Plan.burstIntervalUs(73.6814, 241.3512))                          // M6 12세션 전체 → 다름 (기록)
-        assertEquals(M8Plan.BURST_INTERVAL_US, M8Plan.burstIntervalUs(73.5442, 241.7197))
+    }
+
+    /** 조민규 01:5x #4: SMOOTH128 arrival_ns = 35,000,000,000 + floor(i × 15 × 537,155,000 / 127) · i = 0 · 127 · 단조 · 절대기한 = 새 예정 도착 + C 0.8 s / D 2 s. */
+    @Test fun smooth128NsFormula() {
+        val s = M8Plan.slotsNs(M8Plan.Bank.SMOOTH128)
+        val m = M8Plan.slotsNs(M8Plan.Bank.M128)
+        assertEquals(35_000_000_000L, s[0].second)                                                   // i = 0 → 35.000 s
+        assertEquals(43_057_325_000L, s[127].second)                                                 // i = 127 → 43.057325 s = M128 마지막 묶음
+        assertEquals(m.first().second, s.first().second); assertEquals(m.last().second, s.last().second)
+        for (i in 0 until 128) assertEquals("i=$i", 35_000_000_000L + Math.floorDiv(i.toLong() * 15L * 537_155_000L, 127L), s[i].second)
+        assertEquals(35_063_443_503L, s[1].second); assertEquals(39_060_384_251L, s[64].second); assertEquals(42_993_881_496L, s[126].second)
+        assertTrue(s.map { it.second }.zipWithNext().all { (a, b) -> b > a })                       // 강한 단조 (M128 은 같은 시각 8건)
+        assertTrue(s.map { it.second }.zipWithNext().all { (a, b) -> b - a in 63_443_503L..63_443_504L })
+        assertEquals(m.map { it.first }, s.map { it.first })                                         // task · ordinal · 상대기한 = M128
+        val sid = M8Plan.sessionId(C.M8_S128_ID, 0)
+        val rows = M8Plan.bankRequests(sid, M8Plan.Bank.SMOOTH128)
+        val burst = M8Plan.bankRequests(sid, M8Plan.Bank.M128)
+        rows.forEachIndexed { i, q ->
+            assertEquals(s[i].second, q.offsetNs); assertEquals(q.offsetNs / 1_000L, q.offsetUs); assertEquals(q.offsetUs / 1_000L, q.offsetMs)
+            assertEquals(burst[i].task, q.task); assertEquals(burst[i].deadlineMs, q.deadlineMs); assertEquals(burst[i].priority, q.priority)
+            val absDeadlineNs = q.offsetNs + q.deadlineMs * 1_000_000L                                // 엔진 식: scheduled_arrival + 상대기한
+            val burstAbsDeadlineNs = burst[i].offsetNs + burst[i].deadlineMs * 1_000_000L
+            assertEquals("i=$i", i == 0 || i == 127, absDeadlineNs == burstAbsDeadlineNs)           // 묶음 절대기한을 가져오지 않음 (첫/마지막 도착만 M128 과 같은 시각)
+        }
+        assertEquals(128, M8Plan.burstIndexOf(rows).values.distinct().size)                           // SMOOTH 는 묶음 없음 (요청마다 다른 시각)
+        assertEquals(16, M8Plan.burstIndexOf(burst).values.distinct().size)
+    }
+
+    /** 조민규 01:5x #3: 8 × max(96 × 73.54419138, 32 × 241.71965499333334) / (128 × 0.9) = 537.154788874… → 1 µs 올림 = 537.155 ms = 537,155,000 ns. 프로필 SHA bd8d55c1… (이쪽 파일 없음 · [D]). */
+    @Test fun burstIntervalRecalculationMatchesTheFrozenProfile() {
+        val raw = M8Plan.burstIntervalRawMs(M8Plan.BURST_C_GPU_MEAN_MS, M8Plan.BURST_D_CPU_MEAN_MS)
+        assertEquals(M8Plan.BURST_INTERVAL_RAW_MS, raw, 1e-9)
+        assertEquals(537.154788874, raw, 1e-9)
+        assertEquals(537_155L, M8Plan.burstIntervalUs(M8Plan.BURST_C_GPU_MEAN_MS, M8Plan.BURST_D_CPU_MEAN_MS))
+        assertEquals(537_155_000L, M8Plan.burstIntervalNs(M8Plan.BURST_C_GPU_MEAN_MS, M8Plan.BURST_D_CPU_MEAN_MS))
+        assertEquals(M8Plan.BURST_INTERVAL_US, M8Plan.burstIntervalUs(M8Plan.BURST_C_GPU_MEAN_MS, M8Plan.BURST_D_CPU_MEAN_MS))
+        assertEquals(M8Plan.BURST_INTERVAL_NS, M8Plan.BURST_INTERVAL_US * 1_000L)
+        assertTrue(32.0 * M8Plan.BURST_D_CPU_MEAN_MS > 96.0 * M8Plan.BURST_C_GPU_MEAN_MS)             // 32·D 가 지배
+        assertEquals(537_155L, M8Plan.burstIntervalUs(73.5442, 241.7197))                          // 우리 재현값 (M6 개발 P 6세션 · 4자리) 도 같은 µs
+        assertEquals(536_336L, M8Plan.burstIntervalUs(73.6814, 241.3512))                          // 다른 자료 → 다름 (기록)
+        assertEquals(64, M8Plan.BURST_PROFILE_SHA256.length)
+        assertEquals("bd8d55c14e531e8629c5fcc84289f167f7e69cee3e7cc9dd761a25f345d4cc39", M8Plan.BURST_PROFILE_SHA256)
     }
 
     @Test fun requestsCarryMicrosecondsAndDeadlines() {

@@ -4,7 +4,7 @@
 
 Reads (never writes) results\\S26_M7_* (device progress.jsonl · host session_log.json · hal.csv · validated.json), results\\S26_M7_HAL\\hal_cont_*.csv,
 results\\S26_M7_runs.jsonl · S26_M7_driver_events.jsonl, s26/results/m7_1013/dev/tables/session_table_m7.csv and the M7 plans. Writes derived tables only:
-  s_sessions_resolved.csv  S 7 시도 = folder + command_id + device app start + host start 한 행씩 (session_id/attempt 로 묶지 않음) · registered_status · 소비 보존
+  s_sessions_resolved.csv  S 8 시도 (S1~S5 · S6-C a1 실패 · a2 13:22 실패 · a2 13:38 추가 성공 · 조민규 01:5x #1 정정) = folder + command_id + device app start + host start 한 행씩 (session_id/attempt 로 묶지 않음) · registered_status · 소비 보존
   mixed_columns.md         기존 session_table_m7.csv · readout 21_C_a2 의 어느 열이 13:22 실패와 13:38 성공을 섞었는지 (고치지 않음 · 기록만)
   k_timeline.csv           K 9 + 준비 6: 같은 시계 (host epoch · device boottime = elapsedRealtime) 의 준비/K 경계 시각 + 차이 열 (조민규 216.6~219.5 · 251.5~253.8 · 91.8~92.7 대조)
   deviation_ledger.csv     46 실행 전부: 실제 시작 · 끝 시각 · NotificationShade · 시작 열 · 띠 · SOC (M7 하한 30 · 새 40~80 은 참고 열) · 충전 간격 · 재시도
@@ -232,7 +232,7 @@ def table_rows() -> list[dict]:
 
 
 def s_sessions(sessions: dict[str, Session], runs: list[dict], events: list[dict]) -> list[dict]:
-    """S 세션 7 시도 — folder + command_id + device app start + host start 가 키. session_id/attempt 로 묶지 않는다."""
+    """S 세션 8 시도 (조민규 01:5x #1: S1~S5 정상 5 + S6-C 3 = 8 · "7시도" 정정) — folder + command_id + device app start + host start 가 키. session_id/attempt 로 묶지 않는다."""
     rows = []
     ends = [r for r in runs if r.get("event") == "end"]
     starts = [r for r in runs if r.get("event") == "start"]

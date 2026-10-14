@@ -39,16 +39,32 @@ def test_ids_and_banks_match_app():
     assert len(l) == 64 and l[-1][1] == 98_000_000 and l[1][0] == "detection"
     assert len(c) == 252 and c[-1][1] == 118_633_200 and c[1][1] == 35_333_200
     assert [x[1] for x in m[:8]] == [35_000_000] * 8 and m[8][1] == 35_537_155 and m[-1][1] == 43_057_325 and "".join("C" if t == "classification" else "D" for t, _ in m[:8]) == "CCCDCCCD"
-    assert [t for t, _ in s] == [t for t, _ in m] and s[0][1] == 35_000_000 and s[-1][1] == 43_057_325 and s[1][1] == 35_063_444 and s[64][1] == 39_060_384 and s[126][1] == 42_993_881
-    assert M8.burst_interval_us(73.5442, 241.7197) == 537_155 == M8.BURST_INTERVAL_US and M8.burst_interval_us(73.6814, 241.3512) == 536_336
+    assert [t for t, _ in s] == [t for t, _ in m] and s[0][1] == 35_000_000 and s[-1][1] == 43_057_325 and s[1][1] == 35_063_443 and s[64][1] == 39_060_384 and s[126][1] == 42_993_881
+    # 조민규 01:5x #4: SMOOTH128 arrival_ns = 35,000,000,000 + floor(i × 15 × 537,155,000 / 127) · i = 0 · 127 · 강한 단조 · 상대기한/task = M128 · 절대기한 = 새 도착 + 기한
+    sn = M8.slots_ns("SMOOTH128")
+    assert sn[0][1] == 35_000_000_000 and sn[127][1] == 43_057_325_000 and sn[1][1] == 35_063_443_503 and sn[64][1] == 39_060_384_251
+    assert all(sn[i][1] == 35_000_000_000 + (i * 15 * 537_155_000) // 127 for i in range(128)) and all(b > a for (_, a), (_, b) in zip(sn, sn[1:]))
+    assert M8.slots_ns("M128")[-1][1] == 43_057_325_000 and M8.slots_ns("M128")[8][1] == 35_537_155_000
+    # 조민규 01:5x #3: 정확한 평균 → 537.154788874… → 1 µs 올림 537,155 µs = 537,155,000 ns · 프로필 SHA (이쪽 파일 없음)
+    assert abs(M8.burst_interval_raw_ms(M8.BURST_C_GPU_MEAN_MS, M8.BURST_D_CPU_MEAN_MS) - 537.154788874) < 1e-9
+    assert M8.burst_interval_us(M8.BURST_C_GPU_MEAN_MS, M8.BURST_D_CPU_MEAN_MS) == 537_155 == M8.BURST_INTERVAL_US and M8.burst_interval_ns(M8.BURST_C_GPU_MEAN_MS, M8.BURST_D_CPU_MEAN_MS) == M8.BURST_INTERVAL_NS
+    assert M8.burst_interval_us(73.5442, 241.7197) == 537_155 and M8.burst_interval_us(73.6814, 241.3512) == 536_336 and len(M8.BURST_PROFILE_SHA256) == 64
+    # 조민규 01:5x #2: WAIT 세 처방 = ID 하나 + 인자 · nominal = wait × n
+    assert M8.WAIT200X16 == dict(wait_ms=200, first_n_bursts=16, nominal_total_ms=3_200) and M8.WAIT200X12["nominal_total_ms"] == 2_400 and M8.WAIT1000X12["nominal_total_ms"] == 12_000
+    assert {a["name"] for a in M8.ARMS[M8.M128_ID] if a["wait"]} == {"M128_WAIT200x16", "M128_WAIT200x12", "M128_WAIT1000x12"} and all(a["policy"] == M8.P_FIFO_WAIT_CG for a in M8.ARMS[M8.M128_ID] if a["wait"])
     rows = M8.requests(M8.M128_ID, 0, sid)
-    assert rows[8]["offset_ms"] == 35_537 and rows[8]["offset_us"] == 35_537_155 and rows[0]["deadline_ms"] == 800 and rows[3]["deadline_ms"] == 2000 and rows[3]["priority"] == "normal"
+    assert rows[8]["offset_ms"] == 35_537 and rows[8]["offset_us"] == 35_537_155 and rows[8]["offset_ns"] == 35_537_155_000 and rows[0]["deadline_ms"] == 800 and rows[3]["deadline_ms"] == 2000 and rows[3]["priority"] == "normal"
+    srows = M8.requests(M8.S128_ID, 0, M8.session_id(M8.S128_ID, 0))
+    assert [r["offset_ns"] for r in srows] == [x for _, x in sn] and [r["task_id"] for r in srows] == [r["task_id"] for r in rows] and [r["deadline_ms"] for r in srows] == [r["deadline_ms"] for r in rows]
+    assert len(set(M8.burst_index_of(srows).values())) == 128
     b = M8.burst_index_of(rows)
     assert b[rows[7]["request_id"]] == 0 and b[rows[8]["request_id"]] == 1 and b[rows[127]["request_id"]] == 15
     with pytest.raises(ValueError):
         M8.validate_bank(rows[:-1], "M128")
     recalc = C.read_json(CONTRACT / "burst_interval_recalc.json")
     assert recalc["match"] and recalc["match"][0]["dataset"] == "M6_dev_idx0_5" and recalc["match"][0]["interval_ms"] == 537.155
+    v2 = C.read_json(M8.CONTRACT_DIR / "burst_interval_recalc_v2.json")
+    assert v2["confirmed"]["interval_ns"] == 537_155_000 and v2["confirmed"]["profile_sha256"] == M8.BURST_PROFILE_SHA256 and abs(v2["confirmed"]["raw_ms"] - 537.154788874) < 1e-9
 
 
 def test_arms_bands_and_tables():
@@ -58,7 +74,8 @@ def test_arms_bands_and_tables():
     assert M8.index_of(M8.M128_ID, "M128_ORDER", 2) == 17 and M8.dev_count(M8.M128_ID) == 500 and M8.analysis_split_of(M8.M128_ID, 500) == "confirm"
     assert M8.lane_for(M8.P_FIFO_WAIT_CG, "classification") == "GPU" and M8.lane_for(M8.P_FIFO_SERIAL_CN, "detection") == "CPU" and M8.lane_for(M8.P_FIFO_SERIAL_CPU, "classification") == "CPU"
     assert M8.SELECTION[M8.P_EDD_SERIAL_CG] == "EDD" and M8.CONCURRENCY[M8.P_FIFO_PAIR_CN] == "PAIR" and M8.CONCURRENCY[M8.P_FIFO_WAIT_CG] == "SERIAL"
-    pol = C.read_json(CONTRACT / "policies_m8.json")
+    pol = C.read_json(M8.CONTRACT_DIR / "policies_m8.json")      # v2 (cap_ms → nominal_total_ms · 조민규 #2)
+    assert pol["schema"].endswith("-v2") and pol["wait_configs_v2"]["configs"]["WAIT200x16"]["nominal_total_ms"] == 3200
     assert [p["id"] for p in pol["policies"]] == ["FIFO_SERIAL_CPU_V1", "FIFO_SERIAL_CG_V1", "FIFO_SERIAL_CN_V1", "EDD_SERIAL_CG_V1", "FIFO_PAIR_CG_V1", "FIFO_PAIR_CN_V1", "FIFO_WAIT_CG_V1"]
     assert set(M8.M8_POLICIES) == {p["id"] for p in pol["policies"]}
     wv = pol["policies"][-1]["wait"]["variants"]
@@ -113,19 +130,32 @@ def test_plan_files_and_blocks():
 
 
 def test_gate_rules():
-    rows = [dict(host_epoch_s=1000 + i * 2.3, AP=25.0, SKIN=27.6 + (0.1 if i % 7 == 0 else 0.0)) for i in range(600)]
-    t = rows[-1]["host_epoch_s"]
-    cand = G.tref_candidate(rows, t)
-    assert cand["stable"] and cand["tref_c"] == 27.6 and cand["algorithm"] == "TREF_DAY_IDLE_MEDIAN_V1"
-    d = G.start_decision(rows, t, 27.6, 55, False)
-    assert d["start"] and not d["reasons"] and d["soc_in_new_band_reference_only"]
-    assert not G.start_decision(rows, t, 27.6, 19, False)["start"] and G.reject_reason([G.start_decision(rows, t, 27.6, 19, False)]) == "soc"
-    assert not G.start_decision(rows, t, 27.6, 55, True)["start"]
-    assert G.reject_reason([G.start_decision(rows, t, 28.3, 55, False)]) == "tref"
-    hot = [dict(r, SKIN=r["SKIN"] + 0.5 * (r["host_epoch_s"] - 1000) / 60) for r in rows]
-    assert G.reject_reason([G.start_decision(hot, t, hot[-1]["SKIN"], 55, False)]) == "slope"
+    rows = [dict(host_epoch_s=1000 + i * 2.3, AP=25.0 + (0.1 if i % 7 == 0 else 0.0), SKIN=27.6) for i in range(600)]
+    t0, t = rows[0]["host_epoch_s"], rows[-1]["host_epoch_s"]
+    cand = G.tref_candidate(rows, t0, t)
+    assert cand["stable"] and cand["tref_c"] == 25.0 and cand["algorithm"] == "TREF_DAY_FIRST_STABLE_AP60_V2" and cand["sensor"] == "AP" and cand["skin_ref_c"] == 27.6
+    assert cand["window_end_epoch"] - cand["window_start_epoch"] <= 60 and cand["window_end_epoch"] <= t0 + 63 and cand["ap_samples"] >= 20 and cand["max_gap_s"] <= 5   # 처음 확보한 60 s 창
+    d = G.start_decision(rows, t, 25.0, 55, False)
+    assert d["start"] and d["decidable"] and not d["reasons"] and d["soc_in_new_band_reference_only"]
+    assert not G.start_decision(rows, t, 25.0, 19, False)["start"] and G.reject_reason([G.start_decision(rows, t, 25.0, 19, False)]) == "soc"
+    assert not G.start_decision(rows, t, 25.0, 55, True)["start"]
+    assert G.reject_reason([G.start_decision(rows, t, 25.7, 55, False)]) == "tref"
+    hot = [dict(r, AP=r["AP"] + 0.5 * (r["host_epoch_s"] - 1000) / 60) for r in rows]
+    assert G.reject_reason([G.start_decision(hot, t, hot[-1]["AP"], 55, False)]) == "slope"
     assert not G.start_decision(rows, t, None, 55, False)["start"]
-    assert G.start_decision(rows, t, 27.6, 90, False)["start"]      # 상한 없음 (영훈)
+    assert G.start_decision(rows, t, 25.0, 90, False)["start"]      # 상한 없음 (영훈)
+    # 판정 불가 (REJECT 아님): gap > 5 s / 표본 < 20 / AP 결측
+    sparse = rows[::4]
+    u = G.start_decision(sparse, t, 25.0, 55, False)
+    assert not u["start"] and not u["decidable"] and G.reject_reason([u]) == "undecidable"
+    assert not G.start_decision([dict(r, AP=None) for r in rows], t, 25.0, 55, False)["decidable"]
+    # 처음 확보한 안정 창: 앞 300 s 가 식는 중이면 (0.5 ℃/min) 그 뒤 첫 창
+    warm = [dict(r, AP=(25.0 + 0.5 * (300 - (r["host_epoch_s"] - 1000)) / 60) if r["host_epoch_s"] - 1000 < 300 else 25.0) for r in rows]
+    c2 = G.tref_candidate(warm, t0, t)
+    assert c2["stable"] and c2["window_start_epoch"] >= t0 + 200 and c2["tref_c"] == 25.0
+    none = G.tref_candidate(hot, t0, t)
+    assert not none["stable"] and none["tref_c"] is not None and "no window" in none["reason"]      # stable_miss (최소 |기울기| 창)
+    assert not G.tref_candidate(sparse, t0, t)["stable"] and G.tref_candidate(sparse, t0, t)["tref_c"] is None
 
 
 def test_coverage_check_synthetic_and_a4(tmp_path):

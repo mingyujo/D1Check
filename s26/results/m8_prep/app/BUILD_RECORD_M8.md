@@ -12,3 +12,22 @@
 | 단위 시험 | `UNIT_TEST_RECORD.json` — 1차 86 중 79 · 유휴 재실행에서 M8PlanTest 6/6 · M6RegressionShapeTest 3/3 (기대값 오류 고침) · 새 계약 시험 22/22 · 기존 round-trip 의 'post-window drain incomplete' (sustained03 · 02C · statesplit) = 호스트 타이밍 (기준 커밋 worktree 대조 `results/m8_build/unit_base_aaa7b87f.log`) |
 | 호스트 시험 | `test_m8.py` 8/8 (round-trip 산출물 있을 때) · 7/8 + skip 1 (깨끗한 빌드 뒤) · 기존 `test_m6` · `test_m7` · `test_mixreq` 66/66 |
 | 설치 | **0** (D-1 에서 1회 · 그 뒤 재설치 금지 · 설치본 M7 `878b10b7…` 가 교체됨 → M7-B 는 M7 APK 재설치 필요 · questions_for_영훈 #1) |
+
+## 추가 (D-1 스모크 뒤 · 2026-10-15 01:4x) — 고친 APK `m8c`
+
+| 항목 | 값 [P] |
+|---|---|
+| 변경 | 스모크 1 (M128 BASE) 앱 power 마지막 표본 209.5 s (< 210) → `SessionEngineM8`: cooling 90 뒤 common + 210 s + 표본 2개 (실시간 1.8 s) 까지 연장 대기 (`M8_POST_T0_MIN_SECONDS` 210 · summary `cooling_extended_ns`) · 커밋 `2c6bf2b6` + `18c40bbb` (M8 행만 · 기존 행 무변경) |
+| 빌드 | 깨끗한 빌드 01:45:57 (55 s) + 01:52 (50 s) → **같은 SHA `6193344011cc266868221722cf55ea2402da786df3d21186909601291e62c862`** · 14,666,996 B · 서명 `6394e51f…` 같음 |
+| 시험 | `M8RoundTripTest` 7/7 (01:46 ~ 01:51) — 앱 마지막 표본 ≥ common + 21 s (×1/10) 포함 · 1차 (여유를 time_scale 로 줄인 판) 1 실패 → 실시간 여유로 고침 |
+| 첫 APK `fb914139…` 로 한 것 | 회귀 2 · 스모크 (M128 BASE · WAIT200x16 · PAIR_G a2 · RECENT · IDLE · L64) — 동작 확인용 (앱 coverage 는 209.5 s) · P0 부터는 `61933440…` (설치 1회 · 그 뒤 재설치 금지) |
+
+## 추가 2 (조민규 01:5x 8항목 v2 · 2026-10-15 02:3x) — v2 APK `m8v2`
+
+| 항목 | 값 [P] |
+|---|---|
+| 변경 (M8 행만 · 기존 행 무변경 · `SessionEngine.kt` diff 0 유지) | `Request.offsetNs` (M8 ns 예정 도착 · 기존 행 = ms × 10⁶ 보조 생성자) · `M8Plan` (SMOOTH128 `35e9 + floor(i×15×537155000/127)` ns · `WaitArgs(waitMs, firstNBursts, nominalTotalMs)` · 537.155 정확 평균 상수 · 프로필 SHA) · `PolicyStudy.plannedWaitMs` (cap 제거 · 묶음당 1회 전량) · `SessionEngineM8` (ns 도착 · wait 이벤트 nominal/overrun · summary) · `SessionManifest` (`offset_ns` · `nominal_total_ms`) · 시험 3 파일 (+7 시험) |
+| 빌드 | 깨끗한 빌드 02:34:39 (36 s) + 02:35:15 (39 s) → **같은 SHA `37960e25c5948f661f2f5b47a90a4356be1b3712706d34679e71a14842ced6ea`** · 14,670,296 B · 서명 `6394e51f…` 같음 (apksigner) |
+| 시험 | `UNIT_TEST_RECORD.json run_v2`: M8PlanTest 8 · PolicyStudyM8Test 12 · M8RoundTripTest 9 · M6RegressionShapeTest 3 = **32/32** (02:1x ~ 02:3x) · 호스트 test_m8 · m6 · m7 · mixreq 68 passed |
+| 설치 | **P0 첫 세션 전 1회 (이 APK) · 그 뒤 재설치 금지** · 설치 시각 · 기기 SHA 대조 = 원장 · 앞 APK `fb914139…` (D-1 회귀·스모크) · `61933440…` (m8c · 설치 0 · 미사용) 는 기록만 |
+| APK 사본 (커밋 안 함) | `results/m8_build/request-runner-debug_m8v2.apk` (+ `_build1.apk`) |

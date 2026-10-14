@@ -53,11 +53,11 @@ class M8RoundTripTest {
         put("efficientnet_lite0_Samsung_E9965.tflite", "fake NPU AOT artifact".toByteArray())
     }
 
-    private fun manifestBytes(experimentId: String, index: Int): ByteArray {
+    private fun manifestBytes(experimentId: String, index: Int, mutate: (MixreqContract.Request) -> MixreqContract.Request = { it }): ByteArray {
         val arm = M8Plan.armOf(experimentId, index)
         val sid = M8Plan.sessionId(experimentId, index)
-        val requests = M8Plan.requests(experimentId, index, sid).map { linkedMapOf("request_id" to it.id, "ordinal" to it.ordinal, "task_id" to it.task,
-            "priority" to it.priority, "offset_ms" to it.offsetMs, "deadline_ms" to it.deadlineMs, "offset_us" to it.offsetUs) }
+        val requests = M8Plan.requests(experimentId, index, sid).map(mutate).map { linkedMapOf("request_id" to it.id, "ordinal" to it.ordinal, "task_id" to it.task,
+            "priority" to it.priority, "offset_ms" to it.offsetMs, "deadline_ms" to it.deadlineMs, "offset_us" to it.offsetUs, "offset_ns" to it.offsetNs) }
         fun spec(key: String): Map<String, Any?> {
             val task = MixreqContract.taskOf(key); val lane = MixreqContract.laneOf(key)
             val model = when { lane == "NPU" -> "efficientnet_lite0_Samsung_E9965.tflite"; task == "classification" -> "efficientnet_lite0.tflite"; else -> "efficientdet_lite0.tflite" }
@@ -82,11 +82,12 @@ class M8RoundTripTest {
         return Json.encode(m).toByteArray()
     }
 
-    private fun run(case: String, experimentId: String, index: Int, clsMs: Long = 60, detMs: Long = 240, expectCompleted: Boolean = true): Pair<File, SessionEngineM8> {
+    private fun run(case: String, experimentId: String, index: Int, clsMs: Long = 60, detMs: Long = 240, expectCompleted: Boolean = true,
+                    mutate: (MixreqContract.Request) -> MixreqContract.Request = { it }, validate: Boolean = true): Pair<File, SessionEngineM8> {
         writeInputs()
         val caseDir = File(root, case).apply { deleteRecursively(); mkdirs() }
-        val bytes = manifestBytes(experimentId, index)
-        val manifest = SessionManifest.parse(String(bytes)).also { it.validate() }
+        val bytes = manifestBytes(experimentId, index, mutate)
+        val manifest = SessionManifest.parse(String(bytes)).also { if (validate) it.validate() }
         val sessionInputs = File(caseDir, "inputs").apply { mkdirs() }
         File(sessionInputs, "manifest.json").writeBytes(bytes)
         val out = File(caseDir, "a1")
@@ -156,6 +157,51 @@ class M8RoundTripTest {
         assertEquals(1, events(out, "dispatch_closed").size)
     }
 
+    /** 조민규 01:5x #4 왕복: SMOOTH128 예정 도착 = origin + floor(i × 15 × 537,155,000 / 127)/scale (ns) · 절대기한 = 그 도착 + C 0.8 / D 2 s (묶음 기한 아님) · 묶음 없음 (wait 이벤트 0). */
+    @Test fun smooth128ArrivalsAndDeadlinesFollowTheNsFormula() {
+        val (out, _) = run("SMOOTH128_BASE", "S26-M8-S128-SMOKE", 0)
+        val r = rows(out).sortedBy { (it["ordinal"] as Number).toInt() }
+        assertEquals(128, r.size); assertTrue(r.all { it["terminal_status"] == "succeeded" })
+        val origin = ns(TestJson.parse(File(out, "common_boundary.json").readText()) as Map<*, *>, "start_ns")
+        r.forEachIndexed { i, row ->
+            val offsetNs = 35_000_000_000L + Math.floorDiv(i.toLong() * 15L * 537_155_000L, 127L)
+            assertEquals("ordinal $i offset_ns", offsetNs, ns(row, "offset_ns"))
+            assertEquals("ordinal $i scheduled", origin + offsetNs / scale, ns(row, "scheduled_arrival_ns"))
+            val rel = if (row["priority"] == "urgent") 800_000_000L else 2_000_000_000L
+            assertEquals("ordinal $i deadline", ns(row, "scheduled_arrival_ns") + rel / scale, ns(row, "deadline_ns"))
+            assertEquals(i, (row["burst_index"] as Number).toInt())                                   // 요청마다 다른 시각 = 묶음 index 가 ordinal
+        }
+        assertEquals(0, events(out, "wait_end").size)
+    }
+
+    /**
+     * 조민규 01:5x #6: 응답 경계는 priority 기준 (task 무관) — C/D × urgent/normal 네 조합 코드 시험.
+     * bank 는 C=urgent · D=normal 고정이고 SessionManifest.validate 가 교차 행을 거부하므로 (fail closed) 이 시험은 diagnostic manifest 의 priority 를 바꿔 validate 없이 엔진 경계 선택만 본다.
+     * 실제 교차 실측은 P3 범위 (핵심 C긴급/D일반 자료로 교차 효과를 검증했다고 하지 않음).
+     */
+    @Test fun responseBoundaryAllFourTaskPriorityCombos() {
+        val flip = { q: MixreqContract.Request -> if (q.ordinal % 4 == 1 || q.ordinal % 4 == 2) q.copy(priority = if (q.priority == "urgent") "normal" else "urgent") else q }
+        val (out, _) = run("L64_CROSS", "S26-M8-L64-SMOKE", 0, mutate = flip, validate = false)
+        val r = rows(out)
+        assertEquals(64, r.size); assertTrue(r.all { it["terminal_status"] == "succeeded" })
+        val combos = r.groupBy { "${it["task_id"]}/${it["priority"]}" }
+        assertEquals(setOf("classification/urgent", "detection/urgent", "classification/normal", "detection/normal"), combos.keys)
+        combos.forEach { (_, rows) -> assertEquals(16, rows.size) }
+        for (task in listOf("classification", "detection")) {
+            combos.getValue("$task/urgent").forEach { row ->
+                assertEquals("output_ready", row["response_boundary"]); assertEquals(ns(row, "output_ready_ns"), ns(row, "response_ns"))
+            }
+            combos.getValue("$task/normal").forEach { row ->
+                assertEquals("readback_complete", row["response_boundary"]); assertEquals(true, row["readback_ok"]); assertEquals(ns(row, "readback_end_ns"), ns(row, "response_ns"))
+                assertTrue(ns(row, "readback_end_ns") > ns(row, "output_ready_ns"))
+            }
+        }
+        // 교차 행이 bank 검증을 통과하지 않음 (fail closed)
+        var rejected = false
+        try { SessionManifest.parse(String(manifestBytes("S26-M8-L64-SMOKE", 0, flip))).validate() } catch (e: IllegalArgumentException) { rejected = true }
+        assertTrue(rejected)
+    }
+
     @Test fun responseBoundaryFollowsPriorityNotTask() {
         // 같은 task (classification) 두 우선순위를 가진 표는 bank 에 없다 → 행 단위 사실: normal 탐지는 readback · urgent 분류는 output_ready (priority 열로 고름).
         val (out, _) = run("L64_BASE", "S26-M8-L64-SMOKE", 0)
@@ -188,6 +234,9 @@ class M8RoundTripTest {
         assertTrue(waits.all { (it["dose_ms"] as Number).toDouble() in 15.0..60.0 })                         // 200 ms / time_scale 10 = 20 ms (호스트 타이머 여유)
         val s = summary(out)["wait"] as Map<*, *>
         assertEquals(16L, (s["count"] as Number).toLong()); assertEquals(3_200L, (s["planned_total_ms"] as Number).toLong()); assertEquals(16L, (s["interventions"] as Number).toLong())
+        assertEquals(3_200L, (s["nominal_total_ms"] as Number).toLong())                              // 명목 (별도 열) ≠ 실제 dose_total_ms
+        assertTrue((s["dose_total_ms"] as Number).toDouble() != 3_200.0 && (s["overrun_total_ms"] as Number).toDouble() == (s["dose_total_ms"] as Number).toDouble() - 3_200.0)
+        assertTrue(waits.all { (it["nominal_total_ms"] as Number).toLong() == 3_200L && (it["overrun_ms"] as Number).toDouble() == (it["dose_ms"] as Number).toDouble() - 200.0 })
         assertEquals(16, r.count { it["wait_burst_index"] != null })
         // WAIT 중 dispatch 0: 모든 dispatch 는 어떤 wait 구간 [start, end) 밖
         for (row in r) { val d = ns(row, "dispatch_ns"); assertTrue(waits.none { d >= ns(it, "wait_start_ns") && d < ns(it, "wait_end_ns") }) }

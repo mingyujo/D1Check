@@ -112,9 +112,10 @@ object PolicyStudy {
      * 반환 = 계획 dose ms (cap 에 걸리면 남은 cap 만큼) · null = 의도 WAIT 아님 (busy · 요청 없음 · n 밖 · 같은 묶음 두 번째 · cap 소진).
      */
     fun plannedWaitMs(args: M8Plan.WaitArgs, burstIndex: Int, burstsWaited: Set<Int>, cumulativeMs: Long, runningCount: Int, hasReadyHead: Boolean): Long? {
+        // v2 (조민규 01:5x #2): 묶음 k 의 최초 eligible head (ready head ∧ running 0) 에서 한 번만 wait_ms · k ≥ first_n 또는 같은 묶음 두 번째 = WAIT 0 (null).
+        // nominal_total_ms = wait_ms × first_n 은 명목량 (잘라 쓰는 상한이 아님) · 누적 계획은 구조상 명목을 넘지 않는다 (검산) · 실제 dose/잘림/초과는 엔진이 따로 기록.
         if (!hasReadyHead || runningCount > 0 || burstIndex >= args.firstNBursts || burstIndex in burstsWaited) return null
-        val remaining = args.capMs - cumulativeMs
-        if (remaining <= 0) return null
-        return minOf(args.waitMs, remaining)
+        check(cumulativeMs + args.waitMs <= args.nominalTotalMs) { "WAIT cumulative planned ${cumulativeMs + args.waitMs} > nominal_total_ms ${args.nominalTotalMs}" }
+        return args.waitMs
     }
 }

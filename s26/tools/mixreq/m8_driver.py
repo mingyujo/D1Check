@@ -6,7 +6,7 @@
   py -3 -X utf8 s26/tools/mixreq/m8_driver.py --stage p0   [--only ...]                          (D-2: 계측 4 · 기능 6 · Tref 게이트)
   py -3 -X utf8 s26/tools/mixreq/m8_driver.py --stage dev --block 1                              (D-3: 블록 1 · 19 세션 · 등록 순서)
 Per session: safety (SKIN ≥ 43 · status ≥ 3 → STOP) → charge rule (SOC < 20 → "케이블 꽂으세요" · 60 s 폴 · 분리 + 1,200 s 뒤 이어서 · in_block_charge) → HAL ≥ 60 s before →
-Tref_day (그 날 첫 세션 전 · 유휴 ≥ 1,200 s 뒤 120 s · m8_gate) → START gate (60 s · ≤ 600 s · PRESTART_REJECT → ledger · 그 블록 안 1회 재시도) → m8_session (--skin-band 0,100 ·
+Tref_day v2 (드라이버 시작 날짜 1회 · 유휴 ≥ 1,200 s 뒤 처음 확보한 안정 60 s AP 창 중앙값 · m8_gate · 블록 안 재산출 0) → START gate (60 s · ≤ 600 s · PRESTART_REJECT → ledger · 그 블록 안 1회 재시도) → m8_session (--skin-band 0,100 ·
 --band-wait-s 0 · --hal-cont) → HAL until origin + 300 s → run_end event · retry ONCE (rc 1 · attempt 2) → invalid_twice (folders kept · a2 재사용 0).
 Lock: results\\S26_M8_driver.lock (pid). Child session process is killed as a tree (taskkill /T) on STOP / Ctrl-C. No screen_off_timeout restore anywhere.
 """
@@ -225,53 +225,70 @@ class Driver(D7.Driver):
         return max(ends) if ends else None
 
     def tref_day(self, h: dict) -> dict:
-        """그 날 (local date) 의 Tref_day 를 한 번만 산출: 직전 실행 끝/충전 분리 뒤 ≥ 1,200 s 유휴 → 120 s SKIN 중앙값 (m8_gate.tref_candidate). 파일 S26_M8_tref.json 에 날짜별 보관."""
-        day = dt.date.today().isoformat()
+        """Tref_day v2 (조민규 01:5x #5 · m8_gate TREF_DAY_FIRST_STABLE_AP60_V2): 드라이버 시작 날짜에 한 번만 — 직전 실행 끝/충전 분리 뒤 ≥ 1,200 s 유휴 → 같은 준비·유휴 조건의 호스트 HAL 에서
+        처음 확보한 안정 60 s AP 창 (|기울기| ≤ 0.1 ℃/min · 표본 ≥ 20 · gap ≤ 5 s) 의 중앙값. 탐색 ≤ 1,200 s · 없으면 "Tref 판정 불가" 원장 + 최소 |기울기| 창 (stable_miss). 블록 안 재산출 0 (S26_M8_tref.json 날짜별 · sealed)."""
+        day = self.state["started"][:10]
         store = C.read_json(self.tref_file) if self.tref_file.is_file() else {}
         if day in store and store[day].get("tref_c") is not None:
             return store[day]
         s = self.phone_state()
         anchors = [x for x in (self.last_run_end_any(), s.get("last_power_disconnected_epoch")) if x]
         idle_from = max(anchors) if anchors else time.time()
-        target = max(idle_from + M8.TREF_IDLE_S, h["started_epoch"] + M8.TREF_WINDOW_S)
-        self.log(f"Tref_day {day}: idle since {dt.datetime.fromtimestamp(idle_from).isoformat(timespec='seconds')} -> window ends ≥ {dt.datetime.fromtimestamp(target).isoformat(timespec='seconds')}")
-        self.wait_until(target, "Tref idle ≥ 1,200 s")
-        t_check0 = time.time()
+        search_from = max(idle_from + M8.TREF_IDLE_S, h["started_epoch"])
+        self.log(f"Tref_day {day} (v2 AP 첫 안정 60 s): idle since {dt.datetime.fromtimestamp(idle_from).isoformat(timespec='seconds')} -> search from {dt.datetime.fromtimestamp(search_from).isoformat(timespec='seconds')}")
+        self.wait_until(search_from + M8.TREF_WINDOW_S, "Tref idle ≥ 1,200 s + 60 s")
         checks = []
+        undecidable_logged = False
         while True:
-            cand = G.tref_candidate(self.hal_rows(Path(h["csv"])), time.time())
+            cand = G.tref_candidate(self.hal_rows(Path(h["csv"])), search_from, time.time())
             cand["t"] = now_iso()
-            checks.append(cand)
-            self.log(f"Tref candidate SKIN median {cand['tref_c']} slope {cand['skin_slope_c_per_min']} samples {cand['samples']} -> {'stable' if cand['stable'] else 'not yet'}")
-            if cand["stable"] or time.time() - t_check0 >= M8.TREF_IDLE_S:
+            checks.append({k: v for k, v in cand.items() if k not in ("status",)})
+            self.log(f"Tref candidate AP median {cand['tref_c']} slope {cand.get('ap_slope_c_per_min')} samples {cand.get('ap_samples')} gap {cand.get('max_gap_s')} windows {cand.get('checked_windows')} -> {'stable' if cand['stable'] else cand.get('reason')}")
+            if cand["stable"]:
                 break
-            time.sleep(60)
-        rec = dict(cand, day=day, stable_miss=not cand["stable"], checks=checks, idle_from_epoch=idle_from, hal_csv=h["csv"], status=G.STATUS, sealed=False)
+            if time.time() - search_from >= M8.TREF_SEARCH_MAX_S:
+                self.log(f"Tref 판정 불가 (안정 60 s AP 창 없음 · {M8.TREF_SEARCH_MAX_S} s 탐색) -> 최소 |기울기| 창 사용 · stable_miss 표시 (REJECT 아님 · 원장)")
+                with open(self.prestart, "a", encoding="utf-8") as f:
+                    f.write(json.dumps(dict(t=now_iso(), epoch=time.time(), stage=self.args.stage, label="Tref_day", result="TREF_UNDECIDABLE", reason=cand.get("reason"),
+                                            candidate={k: v for k, v in cand.items() if k != "status"}), ensure_ascii=False, default=str) + "\n")
+                break
+            time.sleep(M8.GATE_POLL_S)
+        rec = dict(cand, day=day, stable_miss=not cand["stable"], checks=checks, idle_from_epoch=idle_from, search_from_epoch=search_from, hal_csv=h["csv"], status=G.STATUS,
+                   sealed=True, fixed_before_first_dev_policy_run=True, recompute_within_block=False)
         store[day] = rec
         C.write_json(self.tref_file, store)
         self.event(what="tref_day", **{k: v for k, v in rec.items() if k != "checks"})
         return rec
 
     def gate(self, label: str, h: dict, tref: dict, stage: str) -> dict:
+        """START 게이트 v2: 직전 60 s AP 중앙값 ∈ Tref ± 0.5 · |AP|,|SKIN| 기울기 ≤ 0.1 · SOC ≥ 20 · plugged 0 · 30 s 폴 · ≤ 600 s.
+        판정 불가 (표본/gap/결측) = 원장 행 (REJECT 아님) · 600 s 뒤에도 불가 = GATE_UNDECIDABLE (REJECT 와 구분 · 흐름은 같음: 300 s 뒤 1회 더). RECENT 준비 전 = 앱 시작 전 (같은 규칙)."""
         t0 = time.time()
         decisions = []
+        undecidable_logged = 0
         while True:
             s = self.phone_state()
             d = G.start_decision(self.hal_rows(Path(h["csv"])), time.time(), tref.get("tref_c"), s["soc"], s["plugged"])
             d["t"] = s["t"]
             decisions.append(d)
-            self.log(f"gate {label}: SKIN med {d['skin_median']} (Tref {tref.get('tref_c')}) slopes {d['skin_slope_c_per_min']}/{d['ap_slope_c_per_min']} SOC {s['soc']} -> {'START' if d['start'] else d['reasons']}")
+            self.log(f"gate {label}: AP med {d['ap_median']} (Tref {tref.get('tref_c')}) slopes AP {d['ap_slope_c_per_min']} / SKIN {d['skin_slope_c_per_min']} samples {d['ap_samples']} gap {d['max_gap_s']} SOC {s['soc']} -> {'START' if d['start'] else d['reasons']}")
             if d["start"]:
                 return dict(result="start", waited_s=round(time.time() - t0), decisions=decisions, tref=tref.get("tref_c"))
+            if not d.get("decidable", True) and undecidable_logged < 3:
+                undecidable_logged += 1
+                with open(self.prestart, "a", encoding="utf-8") as f:
+                    f.write(json.dumps(dict(t=now_iso(), epoch=time.time(), stage=stage, label=label, result="GATE_UNDECIDABLE_POLL", reason=d["reasons"], note="판정 불가 (결측/gap/표본) · REJECT 아님 · 폴 계속"),
+                                       ensure_ascii=False, default=str) + "\n")
             if time.time() - t0 >= M8.GATE_MAX_WAIT_S:
                 reason = G.reject_reason(decisions)
-                rec = dict(t=now_iso(), epoch=time.time(), stage=stage, label=label, result="PRESTART_REJECT", reason=reason, waited_s=round(time.time() - t0), tref=tref.get("tref_c"),
-                           decisions=decisions, note="START 아님 · 계획 coverage 분모 · 실제 서비스율 분모와 구분 · 소비 = 대기 시간")
+                result = "GATE_UNDECIDABLE" if reason == "undecidable" else "PRESTART_REJECT"
+                rec = dict(t=now_iso(), epoch=time.time(), stage=stage, label=label, result=result, reason=reason, waited_s=round(time.time() - t0), tref=tref.get("tref_c"),
+                           decisions=decisions, note="START 아님 · 계획 coverage 분모 · 실제 서비스율 분모와 구분 · 소비 = 대기 시간" + (" · 판정 불가 (REJECT 아님)" if result == "GATE_UNDECIDABLE" else ""))
                 with open(self.prestart, "a", encoding="utf-8") as f:
                     f.write(json.dumps(rec, ensure_ascii=False, default=str) + "\n")
-                self.state["prestart_rejects"].append(dict(label=label, reason=reason))
-                self.event(what="prestart_reject", label=label, reason=reason, waited_s=rec["waited_s"])
-                return dict(result="PRESTART_REJECT", reason=reason, waited_s=rec["waited_s"], decisions=decisions, tref=tref.get("tref_c"))
+                self.state["prestart_rejects"].append(dict(label=label, reason=reason, result=result))
+                self.event(what="prestart_reject", label=label, reason=reason, result=result, waited_s=rec["waited_s"])
+                return dict(result=result, reason=reason, waited_s=rec["waited_s"], decisions=decisions, tref=tref.get("tref_c"))
             time.sleep(M8.GATE_POLL_S)
 
     # ------------------------------------------------------------------ perfetto (P0 PERFETTO_ON)
@@ -331,8 +348,8 @@ class Driver(D7.Driver):
             if stage != "smoke":
                 tref = self.tref_day(h)
                 gate = self.gate(label, h, tref, stage)
-                if gate["result"] == "PRESTART_REJECT":
-                    self.hal_stop(h, "prestart reject")
+                if gate["result"] in ("PRESTART_REJECT", "GATE_UNDECIDABLE"):
+                    self.hal_stop(h, gate["result"].lower())
                     self.event(what="run_end", label=label, run_kind=stage, index=index, attempt=attempt, rc=None, prestart_reject=gate["reason"], gate=gate, start_state=s0, item=item)
                     if gate_retry_used:
                         self.log(f"PRESTART_REJECT twice at {label} -> slot left empty (계획 밖 재시도 0)")
@@ -358,7 +375,7 @@ class Driver(D7.Driver):
             self.hal_stop_at(h, stop_at, f"origin + {M8.HAL_AFTER_ORIGIN_S} s" if t.get("origin_host_epoch") else "no origin (fallback 60 s)")
             v = C.read_json(folder / "validated.json") if (folder / "validated.json").is_file() else {}
             self.event(what="run_end", label=label, run_kind=stage, index=index, attempt=attempt, rc=rc, item=item, gate=gate, in_block_charge=in_block_charge, perfetto=perf,
-                       hal_csv=h["csv"], hal_started_epoch=h["started_epoch"], hal_stop_at_epoch=stop_at, start_state=s0, **self.charge_fields(s0, t.get("host_start_epoch")),
+                       hal_csv=h["csv"], hal_started_epoch=h["started_epoch"], hal_stop_at_epoch=stop_at, start_state=s0, end_state=self.phone_state(), **self.charge_fields(s0, t.get("host_start_epoch")),
                        times=t, validated=v.get("eligible"), reasons=v.get("reasons"), coverage=(v.get("rules") or {}).get("A10_coverage", {}).get("detail"))
             self.state["items"].setdefault(label, {})[f"attempt{attempt}"] = rc
             self.save_state()
@@ -406,7 +423,7 @@ class Driver(D7.Driver):
         items = self.items()
         self.acquire_lock()
         self.log(f"DRIVER START stage={self.args.stage} block={self.args.block} items={[i['label'] for i in items]} base={self.base}")
-        self.log("NOTE: laptop lid OPEN · screen_off_timeout 86400000 kept · SOC start min 20 (영훈) · Tref gate = 제안 v1")
+        self.log("NOTE: laptop lid OPEN · screen_off_timeout 86400000 kept · SOC start min 20 (영훈) · Tref gate = v2 (AP 첫 안정 60 s · 조민규 01:5x 확정)")
         try:
             if self.adb_state() != "device" and not self.wait_adb(self.args.reconnect_wait_s):
                 raise Stop("adb not connected at start (새 주소)")

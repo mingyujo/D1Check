@@ -1,0 +1,97 @@
+{
+ "schema": "s26-m8-gate-denominator-contract-v2",
+ "date": "2026-10-14",
+ "source_v2": "조민규 답 10/15 01:5x (조민규_답_1015_계약값_8항목.txt · 8항목 확정값) — 첫 DEV 정책 실행 전 적용 → 전 블록 v2 · 한 블록 안 계약 섞지 않음 · START 한 계약/원자료 소급 0",
+ "v1_file": "contract/gate_m8.json",
+ "v1_sha256": "021e7430eb63798c41aa13968db9bf0e78fbf6149af55a678f252c3140f30ddf",
+ "changes_v2": [
+  "#5 Tref = 측정일 시작 첫 안정 60 s AP 중앙값 (실제 표본 시각 기울기 ≤ 0.1 · ± 0.5 · 10 min 거절) · 결측/gap = 판정 불가 (REJECT 아님) · 블록 안 재산출 0 · RECENT gate 준비 전",
+  "#7 SOC 조건 명시"
+ ],
+ "source": "REQUEST.txt 공통 계약 (SOC 40~80 · Tref ± 0.5 ℃ / 직전 60 s 기울기 ≤ 0.1 ℃/min 또는 날짜별 산출 알고리즘 DEV 에서 고정 · 자연 대기 최대 10 min 뒤 PRESTART_REJECT · 기존 열보호 유지 · 분모 규칙) · 조민규 답 §7 (Tref 산출법 확인 전 봉인 · 결과/거절 횟수 보고 옮기지 않음 · 실내온도 미계측 NA · 120 s 뒤 dispatch 금지 · 비선점 drain · 미배정/미완료/지연/잔열 기록 · PRESTART_REJECT 는 START 와 구분해 계획 coverage · START 뒤 소비 전부 보존)",
+ "soc": {
+  "band": [
+   40,
+   80
+  ],
+  "check": "START 직전 dumpsys battery level · plugged 0 · 밖이면 PRESTART_REJECT(soc) (대기 없음 — 충전/방전은 블록 밖) · M7 하한 30 은 M7 행에만"
+ },
+ "environment_record": [
+  "screen (86400000 · 밝기 수동 0/1 실측값)",
+  "airplane 1 · zen 1",
+  "plugged 0 · USB 0 (무선 adb)",
+  "주변 온도 (실내 온도계 없음 → NA)",
+  "위치/접촉 (케이스 없음 · 책상 위 눕힘 · 바람 없음 — 영훈 진술)",
+  "직전 부하 (run log 직전 실행 · 끝 시각 · 간격)"
+ ],
+ "pre_observation": {
+  "host_hal_s": 60,
+  "note": "START 판정 전 호스트 HAL 연속 ≥ 60 s (앱 시작 ≥ 60 s 전부터) — 게이트 입력 = 그 60 s"
+ },
+ "tref": {
+  "status": "조민규 확정 (10/15 01:5x #5) · 첫 DEV 정책 실행 전 고정 (D-0b) · 블록 안 재산출 0 · CONFIRM 전 봉인 · v1 제안 (SKIN 120 s) 은 superseded",
+  "algorithm_v1": {
+   "name": "TREF_DAY_IDLE_MEDIAN_V1",
+   "steps": [
+    "1. 그 날 (블록 날짜) 첫 블록 전 · 직전 앱 실행 run-log 끝 (또는 충전 분리) 뒤 ≥ 1,200 s 유휴 (앱 추론 0 · plugged 0 · 화면 켜짐 · 비행기 1) 를 호스트 HAL 로 연속 기록",
+    "2. 유휴 1,200 s 뒤 120 s 창의 SKIN 중앙값 = Tref_day (0.1 ℃ 단위 · AP 중앙값도 기록 = AP_ref_day · 기준은 SKIN)",
+    "3. 그 120 s 의 |SKIN 기울기| ≤ 0.1 ℃/min 이어야 Tref_day 성립 (아니면 60 s 마다 재검사 · 최대 +1,200 s · 그래도 미달이면 Tref_day = stable_miss 로 기록하고 그 값 사용 · 표시)",
+    "4. 그 날의 모든 세션 START 조건: 직전 60 s SKIN 중앙값 ∈ [Tref_day − 0.5, Tref_day + 0.5] ℃ 그리고 직전 60 s |SKIN 기울기| ≤ 0.1 ℃/min 그리고 |AP 기울기| ≤ 0.1 ℃/min",
+    "5. 날짜가 바뀌면 (또는 충전으로 블록이 끊기면 그 블록 전) 1~3 을 다시 (Tref 는 날짜·블록 단위로 산출 · 세션 단위 X)",
+    "6. DEV 첫 블록 (10/16 안) 에서 알고리즘 · 상수 (1,200 · 120 · 0.5 · 0.1 · 60) 를 고정 → gate_m8.json v2 (봉인) · CONFIRM 결과/거절 횟수를 보고 바꾸지 않음"
+   ],
+   "why": "유휴 폰 SKIN 이 27 ~ 28 ℃ (M7-A 실측) 라 고정 띠 29.5 ~ 31.5 는 매번 1,200 s 대기 뒤 out_of_band 로 진행됐다 (M6 K2 · M7-A 전부). Tref 를 그 날 유휴 온도로 두면 대기가 '자연 상태로 돌아왔는지' 를 재는 것이 된다.",
+   "sensitivity": "Tref 폭 ± 0.5 와 기울기 0.1 은 조민규 제안값 그대로 · AP 기준 (AP_ref ± 0.5) 변형은 기록만 (게이트 아님)"
+  },
+  "wait": {
+   "max_s": 600,
+   "poll_s": 30,
+   "note": "자연 대기 (냉각 · 가열 없음) 최대 10 min · 그 안에 조건 충족 → START · 아니면 PRESTART_REJECT(tref|slope) · 대기 중 폴링 기록 전부 ledger"
+  },
+  "thermal_protection": "기존 유지: 앱 stop (plugged · thermal ≥ 3 · BAT ≥ 42 · SOC < 20 · screen off) · 호스트 skin_watch (SKIN ≥ 45 force-stop) · 드라이버 안전 (SKIN ≥ 43 또는 status ≥ 3 → STOP)",
+  "algorithm_v2": {
+   "name": "TREF_DAY_FIRST_STABLE_AP60_V2",
+   "sensor": "AP (host HAL · 2.3 s) · SKIN 중앙값은 기록만",
+   "steps": [
+    "1. 측정일 시작 (드라이버 시작 날짜 · 그 날 첫 세션 전 · 첫 DEV 정책 실행 전): 직전 앱 실행 끝/충전 분리 뒤 ≥ 1,200 s 유휴 (같은 준비·유휴 조건: plugged 0 · 화면 켜짐 · 비행기 1 · 방해 1 · 앱 추론 0 · 케이스 없음 · 눕힘) 를 호스트 HAL 로 연속 기록",
+    "2. 유휴 뒤 창 끝을 실제 표본 시각마다 옮기며 처음 확보한 '안정 60 s' 창: |AP 기울기| ≤ 0.1 ℃/min (실제 표본 시각 최소제곱) · 표본 ≥ 20 (60 s / 2.3 s ≈ 26 · 결측 ≤ 6) · 창 안 최대 gap ≤ 5 s",
+    "3. 그 창의 AP 중앙값 = Tref_day (0.01 ℃) · 탐색 ≤ 1,200 s · 없으면 'Tref 판정 불가' 원장 행 (REJECT 아님) + 최소 |기울기| 창을 stable_miss 로 표시해 사용",
+    "4. 그 날 모든 세션 START: 직전 60 s AP 중앙값 ∈ [Tref_day − 0.5, Tref_day + 0.5] ∧ |AP|, |SKIN| 기울기 ≤ 0.1 ℃/min ∧ SOC ≥ 20 ∧ plugged 0 · 30 s 폴 · 자연 대기 최대 600 s → PRESTART_REJECT(soc|plugged|tref|slope)",
+    "5. 결측/gap 처리: 직전 60 s 창에 AP 표본 < 20 · gap > 5 s · AP 결측 = '판정 불가' (decidable false · 원장 행 GATE_UNDECIDABLE_POLL · REJECT 아님 · 폴 계속) · 600 s 뒤에도 불가 = GATE_UNDECIDABLE (REJECT 와 구분 · 흐름 같음: 300 s 뒤 1회 더 · 그래도면 자리 비움)",
+    "6. 블록 안 Tref 재산출 0 (S26_M8_tref.json 날짜별 sealed) · 날짜가 바뀌어도 같은 드라이버 실행 (블록) 안에서는 유지 · 결과/거절 횟수 보고 옮기지 않음",
+    "7. RECENT_CPU (준비 role) 의 gate 도 준비 전 = 앱 시작 전 호스트 게이트 (같은 규칙) · 준비 뒤 다시 식히지 않음"
+   ],
+   "constants": {
+    "idle_s": 1200,
+    "window_s": 60,
+    "min_samples": 20,
+    "max_gap_s": 5.0,
+    "search_max_s": 1200,
+    "band_c": 0.5,
+    "slope_max_c_per_min": 0.1,
+    "gate_window_s": 60,
+    "gate_min_samples": 20,
+    "gate_max_gap_s": 5.0,
+    "poll_s": 30,
+    "max_wait_s": 600
+   },
+   "code": "m8_gate.py (tref_candidate · first_stable_window · start_decision decidable) · m8_driver.tref_day/gate · test_m8.test_gate_rules"
+  }
+ },
+ "prestart_reject": {
+  "record": "ledger 행: block · group · index · attempt · reason (soc | tref | slope | plugged | locked | adb) · 폴링 값 전부 · 시각 · Tref_day · 소비 (대기 시간) · START 아님",
+  "denominator": "계획 coverage 분모 (계획된 세션 수) 에 남긴다 · 실제 서비스율 분모 (START 된 세션의 예정 도착 수) 와 구분 · 보수적 계획기준 지표를 내면 별도 이름 (planned_coverage_incl_reject) · 분모 명시",
+  "retry": "같은 자리 재시도는 계획에 적힌 만큼만 (M8 계획: 무효 1회 재시도 = attempt 2 · PRESTART_REJECT 는 attempt 를 소비하지 않지만 그 블록 안에서 1회만 다시 시도 · 그래도 REJECT 면 그 자리 비움 · 계획 밖 재시도 없음 · 같은 소비 identity 를 성공행으로 다시 수집하지 않음)"
+ },
+ "after_start": {
+  "preserve": "START 뒤 실패 · 미완료 · 재시도 · 충전 · 안전정지 소비 전부 보존 (실행 시간 · SOC 차 · 폴더)",
+  "service": "70/80/90/95/100 % · 긴급/일반 따로 · 전량완료 여부 · 납기손해 (late) · 미완료 (unfinished/undispatched/failed) · 잔열 (AP180 − AP0 · 조민규 계산) · 완료 요청만 남기지 않음",
+  "dispatch_end_120": "120 s 뒤 새 dispatch 금지 · 진행 중은 비선점 drain · 미배정 waiting = undispatched (기한 미도래 pending 과 구분)"
+ },
+ "blocks": {
+  "dev": 2,
+  "confirm": 5,
+  "order": "11군 + 채택 P2 군 (SMOOTH 3 · RECENT 3 · WAIT 2) 을 같은 블록 안에서 무작위 (seed DEV 20261014 · CONFIRM 20261022 · m8_plan.py · 결과 전 고정) · PRESTART_REJECT 가 나면 그 자리에 기록하고 다음 군으로 (자리 이동 없음)"
+ },
+ "soc_v2": "SOC ≥ 20 · 상한 없음 (영훈 운영 결정) — 원래 40~80 제안과 다른 조건 · 40~80 충족 여부는 세션 표 열 (soc_40_80_satisfied) · 기준 밖 삭제 0"
+}

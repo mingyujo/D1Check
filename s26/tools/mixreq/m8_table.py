@@ -21,10 +21,10 @@ import m8_readout as R  # noqa: E402
 
 PLAN_ROOT = M8.REPO / "s26" / "results" / "m8_prep"
 FIELDS = ["cycle", "stage", "block_no", "order_pos", "label", "experiment_id", "idx", "arm", "bank", "policy", "policy_args", "prep", "block", "attempt", "eligible", "reasons", "analysis_split", "session_id",
-          "start_time", "end_time", "start_SKIN", "start_AP", "start_BAT", "start_SOC", "soc_in_m8_start_band", "soc_in_new_band_reference_only", "gate_result", "gate_waited_s", "tref_c",
+          "start_time", "end_time", "start_SKIN", "start_AP", "start_BAT", "start_SOC", "end_SOC", "soc_delta", "in_block_charge_yes_no", "soc_40_80_satisfied", "soc_condition", "soc_in_m8_start_band", "soc_in_new_band_reference_only", "gate_result", "gate_waited_s", "tref_c",
           "gate_skin_median", "gate_skin_slope", "gate_ap_slope", "in_block_charge", "charge_end_to_start_s", "last_power_disconnected", "previous_run", "gap_s", "perfetto",
           "hal_cont_path", "coverage_app", "coverage_host", "app_post_t0_s", "host_post_t0_s", "last_dispatch_s", "last_available_s", "planned", "succeeded", "undispatched", "failed",
-          "urgent_p95_ms", "normal_p95_ms", "svc70", "svc80", "svc90", "svc95", "svc100", "all_completed", "wait_count", "wait_dose_total_ms", "readback_ok", "prep_calls", "npu_contract",
+          "urgent_p95_ms", "normal_p95_ms", "svc70", "svc80", "svc90", "svc95", "svc100", "all_completed", "wait_count", "wait_dose_total_ms", "wait_nominal_total_ms", "wait_overrun_total_ms", "readback_ok", "prep_calls", "npu_contract",
           "apk_sha256", "manifest_sha256", "plan_sha256", "registration_sha256", "time_scale", "case_stand_wind", "room_c", "fingerprint", "folder"]
 PROV_FIELDS = ["stage", "label", "experiment_id", "idx", "attempt", "session_id", "source_commit", "apk_sha256_session", "apk_sha256_registered", "signer_sha256", "plan", "plan_sha256",
                "blocks_sha256", "manifest_sha256_plan", "manifest_sha256_pushed", "manifest_sha256_device", "device_inputs_sha256", "input_image_sha256", "registration_sha256", "folder"]
@@ -104,12 +104,17 @@ def main() -> int:
                 before = [x for x in ends if x.get("epoch", 0) < start_rec.get("epoch", 0)]
                 prev = before[-1] if before else None
             soc = st.get("soc")
+            soc_end = (ev.get("end_state") or {}).get("soc")
+            band = M8.SOC_NEW_BAND
+            soc_40_80 = (band[0] <= soc <= band[1] and band[0] <= soc_end <= band[1]) if (soc is not None and soc_end is not None) else None
             plan = C.read_json(PLAN_ROOT / item["plan_dir"] / "plan.json") if item.get("plan_dir") and (PLAN_ROOT / item["plan_dir"] / "plan.json").is_file() else {}
             pe = next((e for e in (plan.get("sessions", []) + plan.get("smoke", [])) if e["session_id"] == m["session_id"]), {}) if plan else {}
             rows.append(dict(cycle=M8.CYCLE, stage=stage, block_no=item.get("block_no"), order_pos=item.get("order_pos"), label=row0.get("label") or ev.get("label"), experiment_id=m["experiment_id"], idx=m["session_index"],
                              arm=m.get("arm"), bank=m.get("bank"), policy=m["policy"], policy_args=json.dumps(m.get("policy_args")) if m.get("policy_args") else "", prep=(m.get("prep") or {}).get("kind"), block=m["block"],
                              attempt=m["attempt"], eligible=row0.get("eligible"), reasons=row0.get("reasons"), analysis_split=m.get("analysis_split"), session_id=m["session_id"],
                              start_time=hl.get("start_time"), end_time=hl.get("end_time"), start_SKIN=st.get("SKIN"), start_AP=st.get("AP"), start_BAT=st.get("BAT"), start_SOC=soc,
+                             end_SOC=soc_end, soc_delta=(soc_end - soc) if (soc is not None and soc_end is not None) else None, in_block_charge_yes_no=("yes" if ev.get("in_block_charge") else "no"),
+                             soc_40_80_satisfied=soc_40_80, soc_condition="SOC ≥ 20 · 상한 없음 (영훈 운영 결정) — 원래 40~80 제안과 다른 조건 · 기준 밖 자료 삭제 0 · '원래 조건 준수' 표기 0",
                              soc_in_m8_start_band=(soc is not None and soc >= M8.SOC_MIN_START), soc_in_new_band_reference_only=(soc is not None and M8.SOC_NEW_BAND[0] <= soc <= M8.SOC_NEW_BAND[1]),
                              gate_result=gate.get("result"), gate_waited_s=gate.get("waited_s"), tref_c=gate.get("tref"), gate_skin_median=last_dec.get("skin_median"), gate_skin_slope=last_dec.get("skin_slope_c_per_min"),
                              gate_ap_slope=last_dec.get("ap_slope_c_per_min"), in_block_charge=ev.get("in_block_charge"), charge_end_to_start_s=ev.get("charge_end_to_start_s"), last_power_disconnected=ev.get("last_power_disconnected"),
@@ -118,7 +123,8 @@ def main() -> int:
                              coverage_app=row0.get("coverage_app"), coverage_host=row0.get("coverage_host"), app_post_t0_s=row0.get("app_post_t0_s"), host_post_t0_s=row0.get("host_post_t0_s"),
                              last_dispatch_s=row0.get("last_dispatch_s"), last_available_s=row0.get("last_available_s"), planned=row0.get("planned"), succeeded=row0.get("succeeded"), undispatched=row0.get("undispatched"),
                              failed=row0.get("failed"), urgent_p95_ms=row0.get("urgent_p95_ms"), normal_p95_ms=row0.get("normal_p95_ms"), **{f"svc{lv}": row0.get(f"svc{lv}") for lv in (70, 80, 90, 95, 100)},
-                             all_completed=row0.get("all_completed"), wait_count=row0.get("wait_count"), wait_dose_total_ms=row0.get("wait_dose_total_ms"), readback_ok=row0.get("readback_ok"), prep_calls=row0.get("prep_calls"),
+                             all_completed=row0.get("all_completed"), wait_count=row0.get("wait_count"), wait_dose_total_ms=row0.get("wait_dose_total_ms"), wait_nominal_total_ms=row0.get("wait_nominal_total_ms"),
+                             wait_overrun_total_ms=row0.get("wait_overrun_total_ms"), readback_ok=row0.get("readback_ok"), prep_calls=row0.get("prep_calls"),
                              npu_contract=(C.read_json(folder / "validated.json").get("npu_contract") if (folder / "validated.json").is_file() else None),
                              apk_sha256=hl.get("apk_sha256"), manifest_sha256=hl.get("manifest_sha256"), plan_sha256=(blocks.get("plan_sha256") or {}).get(item.get("plan_dir")), registration_sha256=(m.get("registration") or {}).get("sha256"),
                              time_scale=m.get("time_scale"), case_stand_wind=args.case_stand_wind, room_c=args.room, fingerprint=args.fingerprint, folder=f"{root}/{folder.name}"))

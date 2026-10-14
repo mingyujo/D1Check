@@ -154,7 +154,10 @@ class SessionManifest(
             val requestsJson = m.getJSONArray("requests")
             val requests = (0 until requestsJson.length()).map { i ->
                 val q = requestsJson.getJSONObject(i)
-                if (q.has("offset_us") && !q.isNull("offset_us"))   // M8: µs 예정 도착 (기존 매니페스트에는 없다 → 기본값 offset_ms × 1,000)
+                if (q.has("offset_ns") && !q.isNull("offset_ns"))   // M8 v2: ns 예정 도착 (조민규 #4 · offset_us/ms 는 floor · validateBank 가 대조)
+                    Request(q.getString("request_id"), q.getInt("ordinal"), q.getString("task_id"), q.getString("priority"),
+                        q.getLong("offset_ms"), q.getLong("deadline_ms"), q.getLong("offset_us"), q.getLong("offset_ns"))
+                else if (q.has("offset_us") && !q.isNull("offset_us"))   // M8 v1: µs 예정 도착 (기존 매니페스트에는 없다 → 기본값 offset_ms × 1,000)
                     Request(q.getString("request_id"), q.getInt("ordinal"), q.getString("task_id"), q.getString("priority"),
                         q.getLong("offset_ms"), q.getLong("deadline_ms"), q.getLong("offset_us"))
                 else
@@ -197,7 +200,7 @@ class SessionManifest(
                 warmupOnly = m.optBoolean("warmup_only", false),
                 contract = m.optString("contract", MixreqContract.CONTRACT_M6),
                 policyArgs = if (m.has("policy_args") && !m.isNull("policy_args")) m.getJSONObject("policy_args").let { a ->
-                    M8Plan.WaitArgs(a.getLong("wait_ms"), a.getInt("first_n_bursts"), a.getLong("cap_ms")) } else null,
+                    M8Plan.WaitArgs(a.getLong("wait_ms"), a.getInt("first_n_bursts"), a.getLong("nominal_total_ms")) } else null,   // v2: cap_ms → nominal_total_ms (없으면 거부 · fail closed)
                 prep = if (m.has("prep") && !m.isNull("prep")) M8Plan.Prep.valueOf(m.getJSONObject("prep").getString("kind")) else M8Plan.Prep.NONE,
             )
         }

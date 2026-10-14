@@ -69,7 +69,7 @@ def main() -> int:
         raise SystemExit(f"stage exists: {args.stage}")
     st = args.stage
     (st / "docs").mkdir(parents=True)
-    docs = [REPO / "d1sim/docs/M8_계약표_v1.md", REPO / "d1sim/docs/M8_사전등록_v1.md", REPO / "s26/results/m8_prep/contract", REPO / "s26/results/m7_1013/derived_1014",
+    docs = [REPO / "d1sim/docs/M8_계약표_v1.md", REPO / "d1sim/docs/M8_사전등록_v1.md", REPO / "s26/results/m8_prep/contract", REPO / "d1sim/docs/M8_계약표_v2.md", REPO / "d1sim/docs/M8_사전등록_v2.md", REPO / "s26/results/m8_prep/contract_v2", REPO / "s26/results/m7_1013/derived_1014",
             args.onedrive / "sim/out_m8/prep_ledger.txt", REPO / "s26/results/m8_prep/schedule_m8.md", REPO / "s26/results/m8_prep/detection_gpu_evidence.md",
             REPO / "s26/results/m8_prep/m8_instrumentation_check.md", REPO / "s26/results/m8_prep/coverage_check_vs_A4.json", REPO / "s26/results/m6_1012/APK_COMMIT_MAP.md", REPO / "s26/results/m6_1012/area_rules.json"]
     for src in docs + list(args.extra):

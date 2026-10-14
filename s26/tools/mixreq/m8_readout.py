@@ -20,7 +20,7 @@ import m8_validate as MV  # noqa: E402
 ROOTS = {"smoke": "S26_M8_SMOKE", "p0": "S26_M8_P0", "dev": "S26_M8_DEV"}
 FIELDS = ["stage", "label", "experiment_id", "index", "arm", "policy", "policy_args", "prep", "block", "attempt", "eligible", "reasons", "analysis_split", "planned", "succeeded", "undispatched",
           "failed", "unfinished", "urgent_p95_ms", "urgent_met", "urgent_late", "normal_p95_ms", "normal_met", "normal_late", "all_completed", "svc70", "svc80", "svc90", "svc95", "svc100",
-          "wait_count", "wait_dose_total_ms", "wait_planned_total_ms", "readback_ok", "prep_calls", "prep_actual_s", "last_dispatch_s", "last_available_s", "coverage_app", "coverage_host",
+          "wait_count", "wait_dose_total_ms", "wait_planned_total_ms", "wait_nominal_total_ms", "wait_overrun_total_ms", "wait_cut", "readback_ok", "prep_calls", "prep_actual_s", "last_dispatch_s", "last_available_s", "coverage_app", "coverage_host",
           "app_post_t0_s", "host_post_t0_s", "start_time", "end_time", "folder"]
 
 
@@ -58,7 +58,8 @@ def read(folder: Path, ev: dict) -> dict | None:
                urgent_p95_ms=(svc.get("urgent") or {}).get("p95_ms"), urgent_met=(svc.get("urgent") or {}).get("deadline_met"), urgent_late=(svc.get("urgent") or {}).get("late"),
                normal_p95_ms=(svc.get("normal") or {}).get("p95_ms"), normal_met=(svc.get("normal") or {}).get("deadline_met"), normal_late=(svc.get("normal") or {}).get("late"),
                all_completed=(svc.get("all") or {}).get("all_completed"), **{f"svc{lv}": ((svc.get("all") or {}).get("levels") or {}).get(str(lv)) for lv in (70, 80, 90, 95, 100)},
-               wait_count=a7.get("waits"), wait_dose_total_ms=a7.get("dose_total_ms"), wait_planned_total_ms=a7.get("planned_total_ms"), readback_ok=a6.get("readback_ok"),
+               wait_count=a7.get("waits"), wait_dose_total_ms=a7.get("dose_total_ms"), wait_planned_total_ms=a7.get("planned_total_ms"), wait_nominal_total_ms=a7.get("nominal_total_ms"),
+               wait_overrun_total_ms=a7.get("overrun_total_ms"), wait_cut=len(a7.get("cut") or []) if a7 else None, readback_ok=a6.get("readback_ok"),
                prep_calls=prep.get("calls"), prep_actual_s=(prep.get("actual_prep_ns") or 0) / 1e9 if prep else None, last_dispatch_s=a3.get("last_dispatch_s"), last_available_s=a3.get("last_available_s"),
                coverage_app=a10.get("app_passed"), coverage_host=a10.get("host_passed"), app_post_t0_s=a10.get("app_post_t0_s"), host_post_t0_s=a10.get("host_post_t0_s"),
                start_time=hl.get("start_time"), end_time=hl.get("end_time"), folder=f"{folder.parent.name}/{folder.name}")

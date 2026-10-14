@@ -1,0 +1,32 @@
+{
+ "schema": "s26-m8-burst-interval-recalc-v2",
+ "date": "2026-10-15",
+ "source_v2": "조민규 답 10/15 01:5x (조민규_답_1015_계약값_8항목.txt · 8항목 확정값) — 첫 DEV 정책 실행 전 적용 → 전 블록 v2 · 한 블록 안 계약 섞지 않음 · START 한 계약/원자료 소급 0",
+ "v1_file": "contract/burst_interval_recalc.json",
+ "v1_sha256": "8a6ec527492f47f9ed6b2ca4e8bf407cfe42beaddaf95b7ff268402b6c181be9",
+ "confirmed": {
+  "profile_sha256": "bd8d55c14e531e8629c5fcc84289f167f7e69cee3e7cc9dd761a25f345d4cc39",
+  "profile_file_on_our_side": null,
+  "C_GPU_mean_ms": 73.54419138,
+  "D_CPU_mean_ms": 241.71965499333334,
+  "formula": "8 × max(96 × C_GPU, 32 × D_CPU) / (128 × 0.9)",
+  "raw_ms": 537.154788874074,
+  "ceil_1us_ms": 537.155,
+  "interval_us": 537155,
+  "interval_ns": 537155000,
+  "dominant_term": "32 × D_CPU",
+  "meaning": "합성 입력용 기존 평균 기반 수치 · 새 M8 실측 성능 · 실제 이용률 90 % 보장 아님"
+ },
+ "our_reproduction_v1": {
+  "dataset": "M6_dev_idx0_5",
+  "definition": "dispatch_to_lane_available",
+  "n_DCPU": 300,
+  "mean_DCPU_ms": 241.7197,
+  "n_CGPU": 100,
+  "mean_CGPU_ms": 73.5442,
+  "interval_ms": 537.155,
+  "matches": true
+ },
+ "our_reproduction_note": "M6 개발 P 6세션 dispatch→lane_available 평균 (4자리) 241.7197 / 73.5442 → 같은 µs (537,155) · 조민규 평균과 소수 5자리부터 다름 (241.71965… vs 241.7197 반올림) — 같은 자료의 반올림 차이로 보임 [E] · bank 값은 조민규 값 고정",
+ "code_test": "M8Plan.burstIntervalRawMs/Us/Ns · M8PlanTest.burstIntervalRecalculationMatchesTheFrozenProfile · m8_common.burst_interval_raw_ms · test_m8"
+}

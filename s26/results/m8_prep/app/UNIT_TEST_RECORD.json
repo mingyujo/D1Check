@@ -64,5 +64,45 @@
   "SessionRoundTripTest": "8/10 (sustained03 = 기존 실패 · M6-A/M7-A 원장과 같음 · confirmation02C = 타이밍)",
   "StatesplitRoundTripTest": "1/3 ~ 3/3 (post-window drain incomplete · 호스트 타이밍 · M7-A 1차와 같은 꼴) → 기준 커밋 worktree 대조 unit_base_aaa7b87f.log"
  },
- "note": "SessionEngine.kt diff 0 · 타이밍 실패는 time_scale 10 가짜 backend 의 drain 30 s/10 한계 (기존 시험 · 기존 엔진)"
+ "note": "SessionEngine.kt diff 0 · 타이밍 실패는 time_scale 10 가짜 backend 의 drain 30 s/10 한계 (기존 시험 · 기존 엔진)",
+ "base_commit_cross_check": {
+  "commit": "aaa7b87f (worktree D1Check_m6_base · 같은 PC · 23:32 ~ 23:40 · 다른 작업 0)",
+  "classes": [
+   "SessionRoundTripTest",
+   "StatesplitRoundTripTest"
+  ],
+  "total": 13,
+  "failed": 6,
+  "failed_names": [
+   "SessionRoundTripTest > blockAParOverlapsTheGpuAndCpuLanes",
+   "SessionRoundTripTest > sustainedExperiment03CompletesThreeThousandRequestsInTheSevenHundredTwentySecondWindow",
+   "SessionRoundTripTest > blockNParNpuOverlapsTheNpuAndCpuLanes",
+   "SessionRoundTripTest > confirmationExperiment02CRunsLikeV2",
+   "StatesplitRoundTripTest > cpuSerial",
+   "StatesplitRoundTripTest > gpuParallel"
+  ],
+  "conclusion": "기준 커밋에서도 같은 종류 (post-window drain incomplete) 가 더 많이 (6/13) 실패 → M8 변경과 무관한 이 PC 의 time_scale 10 호스트 타이밍 · SessionEngine.kt diff 0"
+ },
+ "run_v2": {
+  "when": "2026-10-15 02:1x ~ 02:3x (조민규 01:5x 8항목 v2 코드 뒤 · 4 클래스)",
+  "total": 32,
+  "failed": 0,
+  "classes": {
+   "M8PlanTest": 8,
+   "PolicyStudyM8Test": 12,
+   "M8RoundTripTest": 9,
+   "M6RegressionShapeTest": 3
+  },
+  "new_tests": [
+   "PolicyStudyM8Test.wait200x16Core",
+   "PolicyStudyM8Test.wait200x12Contrast",
+   "PolicyStudyM8Test.wait1000x12Long",
+   "M8PlanTest.smooth128NsFormula",
+   "M8PlanTest.burstIntervalRecalculationMatchesTheFrozenProfile",
+   "M8RoundTripTest.smooth128ArrivalsAndDeadlinesFollowTheNsFormula",
+   "M8RoundTripTest.responseBoundaryAllFourTaskPriorityCombos"
+  ],
+  "host": "test_m8 7 passed + 1 skipped (roundtrip 산출물 빌드 삭제 뒤) · 앞서 test_m8+test_m6+test_m7+test_mixreq 68 passed · 5 skipped (02:2x)",
+  "note": "v2: WAIT nominal_total_ms (cap 제거) · SMOOTH128 ns floor · Request.offsetNs · 537.155 정확 평균 재계산 · 네 조합 응답 경계 · 기존 행 회귀 3/3"
+ }
 }

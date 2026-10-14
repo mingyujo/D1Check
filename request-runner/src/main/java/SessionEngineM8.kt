@@ -407,8 +407,9 @@ class SessionEngineM8(
         val args = manifest.policyArgs
         return linkedMapOf(
             "policy_has_wait" to (args != null), "args" to args?.record(), "count" to events.size, "interventions" to events.size,
-            "planned_total_ms" to events.sumOf { (it["planned_ms"] as Number).toLong() }, "dose_total_ms" to events.sumOf { (it["dose_ms"] as Number).toDouble() },
-            "cut" to events.count { it["cut_reason"] != null }, "bursts" to events.map { it["burst_index"] }, "note" to (if (args != null && events.isEmpty()) "의도 WAIT 발생 0 (기록)" else null),
+            "nominal_total_ms" to args?.nominalTotalMs, "planned_total_ms" to events.sumOf { (it["planned_ms"] as Number).toLong() }, "dose_total_ms" to events.sumOf { (it["dose_ms"] as Number).toDouble() },
+            "overrun_total_ms" to events.sumOf { (it["overrun_ms"] as Number).toDouble() }, "cut" to events.count { it["cut_reason"] != null }, "bursts" to events.map { it["burst_index"] },
+            "note" to (if (args != null && events.isEmpty()) "의도 WAIT 발생 0 (기록 · 명목량으로 실제량을 대신하지 않음)" else "실제 dose · 잘림 · 초과 = 측정값 · nominal_total_ms 는 명목 (별도 열)"),
         )
     }
 
@@ -435,11 +436,12 @@ class SessionEngineM8(
             val endNs = now()
             val doseMs = (endNs - (wait["wait_start_ns"] as Long)) / 1e6
             cumulativeWaitMs += (wait["planned_ms"] as Long)
-            val rec = wait + mapOf("wait_end_ns" to endNs, "dose_ms" to doseMs, "cut_reason" to cutReason, "cumulative_planned_ms" to cumulativeWaitMs,
-                "arrivals_during_wait" to (waiting.size - (wait["waiting_count_at_start"] as Int)))
+            val rec = wait + mapOf("wait_end_ns" to endNs, "dose_ms" to doseMs, "overrun_ms" to (doseMs - (wait["planned_ms"] as Long)), "cut_reason" to cutReason,
+                "cumulative_planned_ms" to cumulativeWaitMs, "arrivals_during_wait" to (waiting.size - (wait["waiting_count_at_start"] as Int)))
             synchronized(waitEvents) { waitEvents += rec }
             event("wait_end", rec)
-            rows[wait["head_id"] as String]?.let { update(it, mapOf("wait_burst_index" to wait["burst_index"], "wait_planned_ms" to wait["planned_ms"], "wait_dose_ms" to doseMs, "wait_cut_reason" to cutReason)) }
+            rows[wait["head_id"] as String]?.let { update(it, mapOf("wait_burst_index" to wait["burst_index"], "wait_planned_ms" to wait["planned_ms"], "wait_dose_ms" to doseMs,
+                "wait_overrun_ms" to (doseMs - (wait["planned_ms"] as Long)), "wait_cut_reason" to cutReason)) }
         }
 
         pump = {
@@ -458,7 +460,7 @@ class SessionEngineM8(
                         burstsWaited += burst
                         val startNs = now()
                         val wait = linkedMapOf<String, Any?>("burst_index" to burst, "head_id" to choice.ticket.id, "planned_ms" to planned, "wait_start_ns" to startNs,
-                            "waiting_count_at_start" to waiting.size, "cap_ms" to waitArgs.capMs, "first_n_bursts" to waitArgs.firstNBursts)
+                            "waiting_count_at_start" to waiting.size, "wait_ms" to waitArgs.waitMs, "first_n_bursts" to waitArgs.firstNBursts, "nominal_total_ms" to waitArgs.nominalTotalMs)
                         waitActive = wait
                         event("wait_start", wait)
                         val delayNs = minOf(scaled(planned * 1_000_000L), maxOf(0L, windowEnd - startNs))
@@ -548,16 +550,16 @@ class SessionEngineM8(
                 }
             }
         }
-        // ---- arrivals: 같은 예정 도착 (offset_us) 은 한 타이머에서 ordinal 순서로 enqueue (같은 시각 8건의 ordinal 규칙)
-        for ((offsetUs, group) in requests.groupBy { it.offsetUs }.toSortedMap()) {
-            val target = start + scaled(offsetUs * 1_000L)
+        // ---- arrivals: 같은 예정 도착 (offset_ns) 은 한 타이머에서 ordinal 순서로 enqueue (같은 시각 8건의 ordinal 규칙) · 절대기한 = 새 예정 도착 + 상대기한 (조민규 #4)
+        for ((offsetNs, group) in requests.groupBy { it.offsetNs }.toSortedMap()) {
+            val target = start + scaled(offsetNs)
             val ordered = group.sortedBy { it.ordinal }
             arrivals.schedule({
                 val actual = now()
                 for (q in ordered) {
                     val row = linkedMapOf<String, Any?>(
                         "request_id" to q.id, "ordinal" to q.ordinal, "task_id" to q.task, "priority" to q.priority,
-                        "scheduled_arrival_ns" to target, "actual_arrival_ns" to actual, "offset_us" to q.offsetUs,
+                        "scheduled_arrival_ns" to target, "actual_arrival_ns" to actual, "offset_us" to q.offsetUs, "offset_ns" to q.offsetNs,
                         "deadline_ns" to target + scaled(q.deadlineMs * 1_000_000L), "burst_index" to burstOf[q.id], "terminal_status" to "unfinished",
                     )
                     rows[q.id] = row
@@ -589,7 +591,7 @@ class SessionEngineM8(
         log("common_end end_ns=$commonEnd")
         artifacts.save("common_boundary.json", mapOf(
             "start_ns" to start, "planned_end_ns" to windowEnd, "end_ns" to commonEnd, "planned" to requests.size, "time_scale" to scale, "contract" to MixreqContract.CONTRACT_M8,
-            "rows" to requests.map { q -> rows[q.id]?.let(::detached) ?: mapOf("request_id" to q.id, "scheduled_arrival_ns" to start + scaled(q.offsetUs * 1_000L), "terminal_status" to "unobserved_arrival") },
+            "rows" to requests.map { q -> rows[q.id]?.let(::detached) ?: mapOf("request_id" to q.id, "scheduled_arrival_ns" to start + scaled(q.offsetNs), "terminal_status" to "unobserved_arrival") },
         ))
         phase = "post_window_drain"
         event("phase_start", mapOf("running" to dispatched - finished))
@@ -606,6 +608,6 @@ class SessionEngineM8(
         event("phase_end")
         log("drain_end")
         artifacts.save("requests.json", requests.map { q -> rows[q.id]?.let(::detached) ?: mapOf("request_id" to q.id, "ordinal" to q.ordinal, "task_id" to q.task, "priority" to q.priority,
-            "scheduled_arrival_ns" to start + scaled(q.offsetUs * 1_000L), "terminal_status" to "unobserved_arrival") })
+            "scheduled_arrival_ns" to start + scaled(q.offsetNs), "terminal_status" to "unobserved_arrival") })
     }
 }

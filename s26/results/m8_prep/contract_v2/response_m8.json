@@ -1,0 +1,119 @@
+{
+ "schema": "s26-m8-response-stage-contract-v2",
+ "date": "2026-10-14",
+ "source_v2": "조민규 답 10/15 01:5x (조민규_답_1015_계약값_8항목.txt · 8항목 확정값) — 첫 DEV 정책 실행 전 적용 → 전 블록 v2 · 한 블록 안 계약 섞지 않음 · START 한 계약/원자료 소급 0",
+ "v1_file": "contract/response_m8.json",
+ "v1_sha256": "f8890307f0bd880af450284b9cd80f261972854d08ae3dde04f044cb92f3e133",
+ "changes_v2": [
+  "#6 응답 경계 = priority 기준 (task 무관) · 네 조합 코드 시험 · 교차 실측 = P3"
+ ],
+ "source": "조민규 답 §4 (긴급 output_ready · 일반 .part→fsync→rename→실제 readback 성공 · 앱이 기록 · host pull 시각 대체 금지 · worker_release · AVAILABLE 별도 · task×priority 교차는 priority 로 선택되는지 시험) · REQUEST.txt 공통 계약 (주응답 = 예정 도착부터 · enqueue 지연 · AVAILABLE 해제 따로)",
+ "clock": "모든 시각 = 기기 elapsedRealtimeNanos (한 세션 한 시계 · 센서 표본도 같은 시계) · host 는 session hal.csv 의 (pc_ms ↔ device_boottime) 로 연결",
+ "response_boundary": {
+  "urgent": {
+   "event": "output_ready",
+   "column": "response_ns = output_ready_ns",
+   "definition": "표시 가능한 결과 객체 완성 (디코드 끝) — M7 과 같은 경계"
+  },
+  "normal": {
+   "event": "readback_complete",
+   "column": "response_ns = readback_end_ns (성공일 때만 · 실패면 null + readback_error)",
+   "definition": "write(.part) → fsync → atomic rename → 파일 다시 열어 전부 읽음 → SHA-256 이 쓴 바이트의 SHA 와 같음 (내용 검증) → 성공. 앱이 수행 · 성공 여부 · 시각 · SHA · 실패를 기록. host 가 pull 한 시각으로 대체하지 않음."
+  },
+  "selected_by": "priority 필드 (task 아님). 코드 사실 (M7-A 기준 7ad2b18f): M7 엔진은 priority/task 어느 쪽으로도 경계를 고르지 않고 모든 요청이 output_ready → persist_complete 까지 같은 경로 (readback 없음). M8 분기는 priority 로 고른다 → task×priority 교차 (C normal · D urgent) 가 가능한 구조 (단위 시험 responseBoundaryFollowsPriorityNotTask). bank v1 은 C=urgent · D=normal 고정 (교차 행은 P3-D 계약 뒤).",
+  "confirmed_v2": {
+   "rule": "task 와 관계없이 priority 로: urgent = output_ready · normal = 실제 readback 성공 (readback_end_ns · readback_ok true)",
+   "code_test": "M8RoundTripTest.responseBoundaryAllFourTaskPriorityCombos — C/D × urgent/normal 네 조합 (diagnostic manifest 의 priority 를 바꿔 validate 없이 엔진 경계만 · bank 는 C=urgent · D=normal 고정 · validate 가 교차 행 거부 = fail closed)",
+   "scope": "실제 교차 실측 = 별도 P3 범위 · 핵심 C긴급/D일반 자료만으로 교차 효과를 검증했다고 하지 않음"
+  }
+ },
+ "stages_per_request": [
+  {
+   "column": "scheduled_arrival_ns",
+   "event": "arrival(scheduled)",
+   "note": "예정 도착 = common 0 + offset_us"
+  },
+  {
+   "column": "actual_arrival_ns",
+   "event": "arrival",
+   "note": "arrivals 스레드가 깨어난 실제 시각"
+  },
+  {
+   "column": "queue_entry_ns",
+   "event": "queue_entry",
+   "note": "dispatch 스레드가 waiting 에 넣은 시각 (enqueue 지연 = queue_entry − scheduled_arrival)"
+  },
+  {
+   "column": "wait_burst_index / wait_dose_ms",
+   "event": "wait",
+   "note": "WAIT 정책 · 이 요청이 묶음 head 로 WAIT 를 유발했을 때만 (아니면 null)"
+  },
+  {
+   "column": "dispatch_ns",
+   "event": "dispatch",
+   "note": "정책 선택 · lane busy 표시 시작"
+  },
+  {
+   "column": "execution_start_ns",
+   "event": "request_start",
+   "note": "lane 스레드에서 실행 시작"
+  },
+  {
+   "column": "host_inference_start_ns / host_inference_return_ns",
+   "event": "host_inference_start / _return",
+   "note": "CompiledModel.run 호출 전후 (write/read 포함)"
+  },
+  {
+   "column": "output_ready_ns",
+   "event": "output_ready",
+   "note": "디코드 끝 · 긴급 응답 경계"
+  },
+  {
+   "column": "persist_complete_ns",
+   "event": "persist_complete",
+   "note": ".part → fsync → rename 끝 (M7 과 같은 열 · 유지)"
+  },
+  {
+   "column": "readback_start_ns / readback_end_ns / readback_ok / readback_sha256 / readback_error",
+   "event": "readback",
+   "note": "M8 만 · normal 요청만 수행 (urgent 는 null + readback_skipped = 'urgent') · 실패 = terminal_status failed · reason"
+  },
+  {
+   "column": "response_ns / response_boundary",
+   "event": "(파생 · 앱이 기록)",
+   "note": "urgent = output_ready_ns · normal = readback_end_ns · 주응답 = response_ns − scheduled_arrival_ns"
+  },
+  {
+   "column": "worker_release_ns",
+   "event": "worker_release",
+   "note": "lane 스레드 finally · 응답 경계와 별개"
+  },
+  {
+   "column": "lane_available_ns",
+   "event": "lane_available",
+   "note": "dispatch 스레드 busy=false 직전 · AVAILABLE 해제 시각 · 응답 경계와 별개"
+  },
+  {
+   "column": "terminal_status",
+   "event": "—",
+   "note": "succeeded | failed | undispatched (120 s 경계 뒤 waiting) | unfinished (앱 정지)"
+  }
+ ],
+ "session_summary": {
+  "service_levels": "70/80/90/95/100 % = 주응답 ≤ 상대기한 인 비율 (분모 = 예정 도착 전부 · 실패/거절/미완료/undispatched 포함) — 평가 적격 수준이지 목표별 제어 정책 검증 아님",
+  "metrics": [
+   "urgent_p95_ms (output_ready 기준)",
+   "normal_p95_ms (readback 기준)",
+   "deadline_met (긴급/일반 따로)",
+   "all_completed (전량완료 여부)",
+   "late_count",
+   "undispatched_count",
+   "failed_count",
+   "pending_not_due (아직 기한 미도래 — 120 s 경계 뒤 남은 waiting 중 기한 전)",
+   "wait dose 합",
+   "residual_heat (= 창 끝 AP − t0 AP · 180 s AP · 조민규 계산 몫 · 앱은 표본만)"
+  ],
+  "denominator_rule": "완료한 요청만 남기지 않음 — 모든 지표의 분모 = planned (예정 도착 수)"
+ },
+ "m7_preserved": "M7 (S26-M6-P/K · S26-MIXREQ-03) 행은 기존 경계 (output_ready · persist_complete · readback 없음 · drain 전 요청) 그대로 — M8 과 같은 응답 계약으로 비교하지 않는다"
+}

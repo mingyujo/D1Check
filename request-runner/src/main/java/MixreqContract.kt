@@ -200,9 +200,13 @@ object MixreqContract {
         val deadlineMs: Long,
         /** M8 (계약표 v1 §2): 예정 도착 µs (333.2 ms · 537.155 ms). 기존 행은 보조 생성자 (offsetMs × 1,000 · M6/M7 표 · 비교 · 엔진 경로 무변경). */
         val offsetUs: Long,
+        /** M8 v2 (조민규 01:5x #4): 예정 도착 ns 정수 (SMOOTH128 = 35,000,000,000 + floor(i × 15 × 537,155,000 / 127)) · offset_us = floor(ns / 1,000) · 엔진 M8 분기는 ns 를 쓴다. 기존 행 = offsetUs × 1,000 (보조 생성자 · 무변경). */
+        val offsetNs: Long,
     ) {
         constructor(id: String, ordinal: Int, task: String, priority: String, offsetMs: Long, deadlineMs: Long) :
-            this(id, ordinal, task, priority, offsetMs, deadlineMs, offsetMs * 1_000L)
+            this(id, ordinal, task, priority, offsetMs, deadlineMs, offsetMs * 1_000L, offsetMs * 1_000_000L)
+        constructor(id: String, ordinal: Int, task: String, priority: String, offsetMs: Long, deadlineMs: Long, offsetUs: Long) :
+            this(id, ordinal, task, priority, offsetMs, deadlineMs, offsetUs, offsetUs * 1_000L)
     }
 
     fun keysOf(block: String): Set<String> = when (block) {

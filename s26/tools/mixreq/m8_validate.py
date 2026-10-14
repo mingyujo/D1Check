@@ -67,7 +67,7 @@ def validate(session_dir: Path, device_dir: Path | None, logcat: Path | None, sk
     r0 = dict(summary_completed=summary.get("status") == "completed", summary_contract_m8=summary.get("contract") == M8.CONTRACT, cleanup_completed=cleanup.get("status") == "completed",
               requests_json=data.get("requests") is not None, common_boundary=bool(boundary), warmup_json=data.get("warmup") is not None,
               result_files=len(data["results"]) == sum(1 for r in rows if r.get("terminal_status") == "succeeded"), part_files_zero=not data["part_files"],
-              time_scale_ok=(scale == 1) or (selftest and m.get("split") == "diagnostic"))
+              time_scale_ok=(scale == 1) or (m.get("split") == "diagnostic"))   # diagnostic (스모크 · selftest) 는 판정 밖 → time_scale 10 허용 (confirmation 은 1)
     rules["A0_artifacts"] = rule(all(v for v in r0.values() if isinstance(v, bool)), **r0, time_scale=scale, split=m.get("split"))
 
     terminal = {}
@@ -146,9 +146,15 @@ def validate(session_dir: Path, device_dir: Path | None, logcat: Path | None, sk
         in_wait = [r["request_id"] for r in dispatched if any(w["wait_start_ns"] <= r["dispatch_ns"] < w["wait_end_ns"] for w in waits)]
         running_at_start = [w.get("burst_index") for w in waits if any(s < w["wait_start_ns"] < e for (s, e, _, _) in busy)]
         cum = sum(w.get("planned_ms", 0) for w in waits)
-        ok = len(waits) <= args["first_n_bursts"] and len(bursts) == len(set(bursts)) and all(w.get("planned_ms", 0) <= args["wait_ms"] for w in waits) and cum <= args["cap_ms"] and not in_wait and not running_at_start
-        rules["A7_wait"] = rule(ok, policy_args=args, waits=len(waits), bursts=bursts, planned_total_ms=cum, dose_total_ms=round(sum(w.get("dose_ms", 0) for w in waits), 3),
-                                cut=[w.get("cut_reason") for w in waits if w.get("cut_reason")], dispatch_inside_wait=in_wait[:10], running_at_wait_start=running_at_start, interventions=len(waits))
+        nominal = args.get("nominal_total_ms")
+        dose = round(sum(w.get("dose_ms", 0) for w in waits), 3)
+        # v2 (조민규 #2): 묶음별 한 번 · 첫 n 묶음만 · 계획 = wait_ms 전량 (잘라 쓰지 않음) · 누적 계획 ≤ 명목 (= wait × n) · 타이머 중 dispatch 0 · 시작 때 running 0 · 실제 dose/잘림/초과는 기록 (명목으로 대신하지 않음)
+        ok = (nominal == args["wait_ms"] * args["first_n_bursts"] and len(waits) <= args["first_n_bursts"] and len(bursts) == len(set(bursts)) and all(b < args["first_n_bursts"] for b in bursts)
+              and all(w.get("planned_ms", 0) == args["wait_ms"] for w in waits) and cum <= nominal and not in_wait and not running_at_start)
+        rules["A7_wait"] = rule(ok, policy_args=args, waits=len(waits), bursts=bursts, nominal_total_ms=nominal, planned_total_ms=cum, dose_total_ms=dose,
+                                overrun_total_ms=round(sum((w.get("dose_ms", 0) - w.get("planned_ms", 0)) for w in waits), 3), cut=[w.get("cut_reason") for w in waits if w.get("cut_reason")],
+                                dispatch_inside_wait=in_wait[:10], running_at_wait_start=running_at_start, interventions=len(waits),
+                                note="nominal (명목) · planned (계획) · dose (실제) · overrun (초과 = dose − planned) · cut (잘림) 은 별도 열 — 명목으로 실제를 대신하지 않음")
     else:
         rules["A7_wait"] = rule(not waits, waits=len(waits), note="WAIT 정책 아님 · wait 이벤트 0 이어야")
 
