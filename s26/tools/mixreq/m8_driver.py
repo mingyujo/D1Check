@@ -313,6 +313,14 @@ class Driver(D7.Driver):
         index = None if smoke else item["index"]
         attempt = 1
         gate_retry_used = False
+        if smoke:   # 재스모크 (코드 고침 뒤): a1 호스트 폴더가 있으면 a2 자리 · 둘 다 있으면 건너뜀 (앱 attempt 1..2 · 쓴 자리 재사용 0)
+            if self.host_folder_m8(plan_dir, index, smoke, 2).exists():
+                self.log(f"{label}: smoke a1 · a2 both used -> skip (새 스모크 자리 없음 · 기록)")
+                self.event(what="smoke_skipped", label=label, reason="a1 and a2 host folders exist")
+                return
+            if self.host_folder_m8(plan_dir, index, smoke, 1).exists():
+                attempt = 2
+                self.log(f"{label}: smoke a1 folder exists -> re-smoke as a2")
         while True:
             self.safety(f"before {label} a{attempt}")
             in_block_charge = self.charge_rule(label)

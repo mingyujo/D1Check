@@ -305,7 +305,8 @@ class SessionEngineM8(
             log("phase=resident_cooling ${manifest.phases.coolingS} s")
             sleepHealthy(scaled(manifest.phases.coolingS * 1_000_000_000L))
             // 계약 (session_m8.json): 앱 power 마지막 표본 ≥ common 0 + 210 s — cooling 90 이 끝나도 그 시각 + 표본 2개 (900 ms × 2) 까지 더 기다린다 (D-1 스모크 1 에서 209.5 s · 위상 때문).
-            val coverageUntil = start + scaled(MixreqContract.M8_POST_T0_MIN_SECONDS * 1_000_000_000L + 2 * manifest.samplePeriodMs * 1_000_000L)
+            // 표본 2개 여유는 실시간 (sampler 주기는 time_scale 로 줄지 않는다) — 210 s 만 scaled
+            val coverageUntil = start + scaled(MixreqContract.M8_POST_T0_MIN_SECONDS * 1_000_000_000L) + 2 * manifest.samplePeriodMs * 1_000_000L
             val coolingExtendedNs = maxOf(0L, coverageUntil - now())
             if (coolingExtendedNs > 0) sleepUntilHealthy(coverageUntil)
             event("phase_end", mapOf("cooling_extended_ns" to coolingExtendedNs, "post_t0_min_s" to MixreqContract.M8_POST_T0_MIN_SECONDS))
