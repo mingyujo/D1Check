@@ -4,8 +4,16 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+val modelProbeEnabled = providers.gradleProperty("enableModelProbe").orNull == "true"
+val a24PreparationEnabled = providers.gradleProperty("enableA24Preparation").orNull == "true"
+
+if (a24PreparationEnabled) {
+    dependencyLocking { lockAllConfigurations() }
+}
+
 android {
     namespace = "com.example.d1check.benchmarkrunner"
+    if (a24PreparationEnabled) ndkVersion = "28.2.13676358"
     compileSdk {
         version = release(37)
     }
@@ -23,6 +31,36 @@ android {
                 cppFlags += "-std=c++17"
             }
         }
+    }
+
+    buildTypes {
+        if (modelProbeEnabled) {
+            create("modelProbe") {
+                initWith(getByName("debug"))
+                applicationIdSuffix = ".modelprobe"
+                isDebuggable = true
+                matchingFallbacks += listOf("debug")
+            }
+        }
+        if (a24PreparationEnabled) {
+            create("a24Preparation") {
+                initWith(getByName("debug"))
+                // The exact legacy ModelProbeManifest target package remains stable.
+                applicationIdSuffix = ".modelprobe"
+                isDebuggable = true
+                matchingFallbacks += listOf("debug")
+            }
+        }
+    }
+    if (a24PreparationEnabled) {
+        // This explicitly requested preparation build loads exact models from external files.
+        // With the flag absent the original default asset contract is unchanged.
+        sourceSets.getByName("main").assets.setSrcDirs(emptyList<String>())
+        sourceSets.getByName("a24Preparation").apply {
+            kotlin.srcDir("src/modelProbe/java")
+            manifest.srcFile("src/modelProbe/AndroidManifest.xml")
+        }
+        sourceSets.getByName("testA24Preparation").kotlin.srcDir("src/testModelProbe/java")
     }
 
     externalNativeBuild {
@@ -45,6 +83,15 @@ android {
     }
 }
 
+androidComponents {
+    beforeVariants(selector().withBuildType("modelProbe")) { variant ->
+        variant.hostTests[com.android.build.api.variant.HostTestBuilder.UNIT_TEST_TYPE]?.enable = true
+    }
+    beforeVariants(selector().withBuildType("a24Preparation")) { variant ->
+        variant.hostTests[com.android.build.api.variant.HostTestBuilder.UNIT_TEST_TYPE]?.enable = true
+    }
+}
+
 dependencies {
     implementation(project(":telemetry-contract"))
     implementation(libs.androidx.appcompat)
@@ -54,6 +101,12 @@ dependencies {
     implementation(libs.ai.edge.litert.runtime)
     implementation(libs.ai.edge.litert.gpu.api)
     implementation(libs.ai.edge.litert.gpu.runtime)
+    if (modelProbeEnabled) {
+        add("modelProbeImplementation", "com.google.mediapipe:tasks-vision:1.0.0")
+    }
+    if (a24PreparationEnabled) {
+        add("a24PreparationImplementation", "com.google.mediapipe:tasks-vision:1.0.0")
+    }
     testImplementation(libs.junit)
     testImplementation("org.robolectric:robolectric:4.14.1")
 }

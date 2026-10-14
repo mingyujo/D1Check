@@ -2,6 +2,10 @@ plugins {
     alias(libs.plugins.android.library)
 }
 
+if (providers.gradleProperty("enableA24Preparation").orNull == "true") {
+    dependencyLocking { lockAllConfigurations() }
+}
+
 android {
     namespace = "com.example.d1check.contract"
     compileSdk {

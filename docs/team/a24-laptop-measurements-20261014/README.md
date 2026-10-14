@@ -1,4 +1,16 @@
+# 2026-10-15 노트북 PC 준비 완료 / DEVICE_UNVERIFIED
+
+새 opt-in 실행기·host 검산/회수/미래 제어기·미소비64세션 계획과 새 APK의 PC 준비를 완료했다. 최종 Python103개·새 JVM18개 PASS, 데스크톱 참고73파일 SHA 검산 완료. 실제 기기 작업·실측 START/claim·세션 소비0. [최종 준비 보고서](PREPARATION_REPORT.md), [PC·미래 명령](COMMANDS.md), [실기기 체크리스트](DEVICE_CHECKLIST.md), [데스크톱 인수 기록](DESKTOP_REFERENCE_INTAKE.md), [미동결 분석 초안](ANALYSIS_CONTRACT_DRAFT.md), [남은 자료](DESKTOP_REQUIRED.md), [정확 원물 SHA](MATERIALS_AUDIT.md)를 먼저 본다. 아래는 최초 계획 전달 상태이며 새 APK 미완성이라는 표기는 당시 상태다.
+
 # A24 실측 — 사용자 노트북에서 진행
+
+최종 PC 준비 소스는 별도 `codex/a24-laptop-prep-20261014` 브랜치에 저장한다. 새 공간에서 받는 명령은 다음과 같다. APK·승인 원물·개인 설정·미소비 로컬 계획은 공개 Git에 포함하지 않으며 [명령/결합 절차](COMMANDS.md)를 따른다.
+
+```powershell
+git clone --branch codex/a24-laptop-prep-20261014 --single-branch https://github.com/mingyujo/D1Check.git D1Check-a24-preparation
+```
+
+이 아래 최초 전달 안내의 clone 명령은 과거 문서 브랜치이며 최신 준비 소스와 구분한다.
 
 2026-10-14 사용자 지시를 반영했습니다. **실측은 사용자 노트북과 A24에서 진행하며, 이 데스크톱의 GEN002 학습·CAUSAL·NODGPU는 계속 유지합니다.** 현재는 노트북 준비 안내와 측정 계획이며 즉시 실행할 수 있는 APK/수집 패키지는 아닙니다.
 

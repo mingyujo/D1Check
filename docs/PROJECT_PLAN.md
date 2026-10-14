@@ -1,3 +1,11 @@
+# 2026-10-15 A24-LAPTOP-PREP-01 사전 준비 종료
+
+새 opt-in 실행기/host 검산/미소비64세션/APK의 PC 준비를 완료했다. `ec8a1424` 참고 소스·프로필을 바이트 검산했고 새8군 분석은 미동결 초안으로 정리했다. 실제 측정은0이며 준비 완료로 I/F/DEV/CONFIRM을 소비하지 않는다. 현재 범위·명령·미검증 항목은 [준비 보고서](team/a24-laptop-measurements-20261014/PREPARATION_REPORT.md)를 따른다. 신규 예측/학습/미저장EP814 재수집을 자동 시작하지 않는다.
+
+# 2026-10-14 A24 노트북 사전 준비
+
+[새64세션계획](team/a24-laptop-measurements-20261014/PLAN.md)·[준비완료보고](team/a24-laptop-measurements-20261014/PREPARATION_REPORT.md)를 현재 A24 작업계약으로 연결한다. PC준비만 완료하며 실기기/실측0·확인전동결 미완료를 보존한다. 아래는 이 요청branch의 기존 계획이력이며 기기검증을 승격하지 않는다.
+
 # D1Check 프로젝트 수정 실행계획
 
 - 작성일: 2026-09-15

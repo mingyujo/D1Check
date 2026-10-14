@@ -1,3 +1,15 @@
+# 2026-10-15 — A24-LAPTOP-PREP-01 종료 경계
+
+- 채택: 사용자 재개 지시로 PC 준비만 완료하고 종료한다. 실측 연결/설치/warmup/추론/계측/START/claim/세션 소비는0이다. 설치 전 프로세스/원물 source SHA와 회수 cleanup 확인을 강화했으며 순수 mock 검증으로 한정한다.
+- 데스크톱 GEN002 소스/프로필 인수 완료는 새 strict8군 예측·최종 분석 동결을 뜻하지 않는다. [분석 초안](team/a24-laptop-measurements-20261014/ANALYSIS_CONTRACT_DRAFT.md)은 `frozen=false`; 새 효과/정확도 PASS를 선언하지 않는다. EP813/814는 사용자 전달 경계로 보존한다.
+- 원 PLAN 의미·계수·작업량·기한·미소비64슬롯·기존 원물/정책/학습은 변경하지 않는다. PLAN은 원 Git blob LF 바이트/SHA로 보존한다. [검증/잔여 항목](team/a24-laptop-measurements-20261014/PREPARATION_REPORT.md).
+
+# 2026-10-14 — A24-LAPTOP-PREP-01
+
+- 최신 사용자 지시 채택: 별도 노트북 worktree에서 새 CPU/GPU opt-in·host검산·미소비계획·APK까지만 구현/PC검증. 실제 기기접속/설치/NN/계측/STARTclaim 금지, 데스크톱 진행작업 유지.
+- common4resident/DG본요청 제외·승인1PNG 반복·정확모델/labels/anchors/tensor 결합을 명시한다. AP/계측/기기등록 미확인을 자료로 채우지 않는다. 기본·strict·experiment_ready=false 유지.
+- 새 no-model APK계약과 기존 MobileNet bundled-calibration 회귀를 variant별로 검증한다. 테스트삭제/조건완화 없음. [근거/파일SHA/명령](team/a24-laptop-measurements-20261014/PREPARATION_REPORT.md).
+
 # D1Check 결정 기록
 
 이 문서는 방향 변경을 날짜순으로 기록한다. 각 항목에 제안 / 채택 / 대체됨 상태를 표시한다. 아래 초기 항목은 이전 계획에서 이관한 작업 방향이며, 개별 수치·실험 조건 확정을 의미하지 않는다. 이번 개정은 사용자 요청에 따른 문서 보강이다.

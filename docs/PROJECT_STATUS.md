@@ -1,3 +1,14 @@
+# 2026-10-15 현재 작업 — A24-LAPTOP-PREP-01
+
+- PC 구현·단위/mock 검증·APK 빌드 완료 / DEVICE_UNVERIFIED. 별도 branch `codex/a24-laptop-prep-20261014`에서 작업했고 원 worktree HEAD `0d4ddc6`와 사용자 추적 변경12개·다른 worktree를 보존했다. [준비 보고서](team/a24-laptop-measurements-20261014/PREPARATION_REPORT.md).
+- 새 CPU/GPU opt-in·FIFO/EDD·직렬/CG_DC·WAIT200·120초 dispatch/실제 반환·210초 로그·host 원물 검산/회수를 구현했다. 최종 APK `32c42c32…568e9ef`, 새 JVM18·기존 modelProbe264·계약13 PASS. 최종 host 수와 검증 코드 바이트는 [PC_VERIFICATION.json](team/a24-laptop-measurements-20261014/PC_VERIFICATION.json)/[SOURCE_SHA256.json](team/a24-laptop-measurements-20261014/SOURCE_SHA256.json)를 따른다.
+- 데스크톱 `ec8a1424` 참고73파일·GEN002 소스59개·프로필8개 인수/SHA 완료. [인수 기록](team/a24-laptop-measurements-20261014/DESKTOP_REFERENCE_INTAKE.md), [분석 계약 초안](team/a24-laptop-measurements-20261014/ANALYSIS_CONTRACT_DRAFT.md). 새8군 예측/최종 분석은 미동결이며 기존 가정층을 실기기 검증으로 승격하지 않는다.
+- 미소비 계획 `A24-LAPTOP-PC-PREP-20261014-03`: I4→F4→DEV16→동결→CONFIRM40, 총64세션·26bank·8832예정요청. plan SHA `82d5108d…93855`; 모든64manifest 허가false/DEVICE_UNVERIFIED, 활성 registry/device_runs 없음.
+- 실제 기기 연결/조회/명령/설치/warmup/NN/계측/Run/START/claim/세션 소비0. 데스크톱 EP813 보존·EP814 정확 복구 불가/자동 재수집 금지는 사용자 인계로 유지하며 학습/시뮬레이션을 재시작하지 않았다. 기본·strict·experiment_ready=false 유지.
+- 다음 최대3: 별도 실측 지시 후 기기identity/위임/품질/AP·gauge/USB·회수 내구성 확인; I4/F4/DEV16의 모든 시도 보존; 초기·계측 gate와 분석/예측 또는 명시적 없음 동결 후에만 CONFIRM40.
+- 장애/미검증: AP 센서·Tref·gap·정확도 기준·예측 adapter/최종 분석 코드 미확인/미동결. C드라이브 약1.3GB로 원물 수집 공간 확보 필요. journal 최종fd.sync/close는 host 별도 미관측. [실기기 목록](team/a24-laptop-measurements-20261014/DEVICE_CHECKLIST.md).
+- 검증 대상은 source base`38d34c6`+당시 미커밋152파일 SHA, runtime 이식`7475b183`, 고정 APK 바이트다. 아래는 요청 branch의 과거 STATUS이며 현재 완료 범위와 구분한다. 이번 작업은 여기서 종료하며 실제 측정을 시작하지 않는다.
+
 # D1Check 현재 상태
 
 - 갱신: 2026-09-17 / CALIB-01B 종료 문서 정리

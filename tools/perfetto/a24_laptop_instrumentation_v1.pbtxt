@@ -1,0 +1,17 @@
+# PC preparation only. Support and on-device Perfetto version are DEVICE_UNVERIFIED.
+# Observation only: no frequency control or hardware-counter claims.
+buffers { size_kb: 8192 fill_policy: RING_BUFFER }
+data_sources {
+  config {
+    name: "linux.ftrace"
+    ftrace_config {
+      ftrace_events: "sched/sched_switch"
+      ftrace_events: "sched/sched_wakeup"
+      ftrace_events: "power/cpu_frequency"
+    }
+  }
+}
+write_into_file: true
+file_write_period_ms: 5000
+max_file_size_bytes: 67108864
+duration_ms: 210000
