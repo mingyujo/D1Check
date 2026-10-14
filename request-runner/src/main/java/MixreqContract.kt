@@ -110,6 +110,8 @@ object MixreqContract {
     /** M8 단계 (session_m8.json): baseline 60 · cooling 90 · 준비 60 s + 5 s · 120 s 뒤 dispatch 0 · drain 30 — 기존 상수는 그대로 (M6 행). */
     const val M8_BASELINE_SECONDS = 60L
     const val M8_COOLING_SECONDS = 90L
+    /** session_m8.json coverage_check: 앱 power 표본이 common 0 + 210 s 를 넘어야 한다 — cooling 90 뒤에도 그 시각 + 표본 2개 전까지 기다린다 (D-1 스모크 1: 209.5 s 로 0.5 s 부족 · 표본 위상). */
+    const val M8_POST_T0_MIN_SECONDS = 210L
 
     /** M8 정책 ID 7 + NO_RUNTIME 표식 (policies_m8.json). 기존 POLICIES 집합은 바꾸지 않는다 (PolicyStudy.choose 는 그 집합만 받는다). */
     const val POLICY_FIFO_SERIAL_CPU = "FIFO_SERIAL_CPU_V1"

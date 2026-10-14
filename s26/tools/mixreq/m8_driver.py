@@ -166,6 +166,20 @@ class Driver(D7.Driver):
         return self.root / f"S26_MIXREQ_{index:02d}_{e['policy']}_a{attempt}"
 
     # ------------------------------------------------------------------ charge · Tref · gate
+    def safety(self, where: str) -> None:
+        """m7_driver.safety + adb 빈 읽기 (SKIN None) 는 연결 문제로 (STOP 아님 · wait_adb)."""
+        s = self.phone_state()
+        self.log(f"phone {where}: SKIN={s['SKIN']} AP={s['AP']} BAT={s['BAT']} status={s['thermal_status']} SOC={s['soc']} plugged={s['plugged']} last_disconnect={s['last_power_disconnected']}")
+        if s["SKIN"] is None and s["soc"] is None:
+            self.log("phone_state empty at safety -> adb connection problem · wait_adb")
+            self.event(what="adb_lost", where=where)
+            if not self.wait_adb(self.args.reconnect_wait_s):
+                raise Stop(f"adb lost at {where} (새 주소)")
+            s = self.phone_state()
+        if (s["SKIN"] is not None and s["SKIN"] >= M8.SAFETY_SKIN_C) or (s["thermal_status"] is not None and s["thermal_status"] >= M8.SAFETY_THERMAL_STATUS):
+            self.state["stop_reason"] = f"SAFETY SKIN={s['SKIN']} status={s['thermal_status']} at {where}"
+            raise Stop(self.state["stop_reason"])
+
     def charge_rule(self, label: str):
         """영훈 운영 결정: SOC < 20 → '케이블 꽂으세요 (SOC n)' · 60 s 폴 · plugged 동안 대기 · 분리 + 1,200 s 뒤 이어서 (in_block_charge 표시 · 무효 아님)."""
         s = self.phone_state()
@@ -175,6 +189,13 @@ class Driver(D7.Driver):
         t0 = time.time()
         while True:
             s = self.phone_state()
+            if s["soc"] is None:
+                # adb 가 비었다 (offline · 끊김) — 충전이 아니라 연결 문제 (D-1 01:34 사고: SOC None 을 '케이블 꽂으세요' 로 잘못 읽음)
+                self.log("phone_state empty (SOC None) -> adb connection problem, not charging · wait_adb")
+                self.event(what="adb_lost", label=label, where="charge_rule")
+                if not self.wait_adb(self.args.reconnect_wait_s):
+                    raise Stop(f"adb lost at {label} (reconnect failed within {self.args.reconnect_wait_s} s · 새 주소)")
+                continue
             if s["plugged"]:
                 charged = True
                 if s["soc"] is not None and s["soc"] >= self.args.charge_to_soc:

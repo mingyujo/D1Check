@@ -146,6 +146,10 @@ class M8RoundTripTest {
         assertEquals(32L, ((s["readback"] as Map<*, *>)["ok"] as Number).toLong()); assertEquals(0L, (s["undispatched"] as Number).toLong())
         assertEquals("priority", ((s["response_boundary"] as Map<*, *>)["selected_by"]))
         assertEquals(90L, (events(out, "phase_start").first { it["phase"] == "resident_cooling" }["cooling_s"] as Number).toLong())
+        // 계약: 앱 power 마지막 표본 ≥ common 0 + 210 s (time_scale 10 → 21 s) — cooling 뒤 연장 대기
+        val origin = ns(TestJson.parse(File(out, "common_boundary.json").readText()) as Map<*, *>, "start_ns")
+        assertTrue(events(out, "power_sample").maxOf { ns(it, "mono_ns") } >= origin + 21_000_000_000L)
+        assertTrue(s.containsKey("cooling_extended_ns"))
         assertEquals(60L, (events(out, "phase_start").first { it["phase"] == "resident_baseline" }["baseline_s"] as Number).toLong())
         assertEquals(128, out.listFiles()!!.count { it.name.endsWith(".result.json") })
         assertTrue(events(out, "decision").isNotEmpty())

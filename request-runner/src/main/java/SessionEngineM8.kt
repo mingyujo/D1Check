@@ -304,7 +304,11 @@ class SessionEngineM8(
             event("phase_start", mapOf("cooling_s" to manifest.phases.coolingS))
             log("phase=resident_cooling ${manifest.phases.coolingS} s")
             sleepHealthy(scaled(manifest.phases.coolingS * 1_000_000_000L))
-            event("phase_end")
+            // 계약 (session_m8.json): 앱 power 마지막 표본 ≥ common 0 + 210 s — cooling 90 이 끝나도 그 시각 + 표본 2개 (900 ms × 2) 까지 더 기다린다 (D-1 스모크 1 에서 209.5 s · 위상 때문).
+            val coverageUntil = start + scaled(MixreqContract.M8_POST_T0_MIN_SECONDS * 1_000_000_000L + 2 * manifest.samplePeriodMs * 1_000_000L)
+            val coolingExtendedNs = maxOf(0L, coverageUntil - now())
+            if (coolingExtendedNs > 0) sleepUntilHealthy(coverageUntil)
+            event("phase_end", mapOf("cooling_extended_ns" to coolingExtendedNs, "post_t0_min_s" to MixreqContract.M8_POST_T0_MIN_SECONDS))
             val finalRows = manifest.requests.map { detached(rows.getValue(it.id)) }
             val normals = finalRows.filter { it["priority"] == "normal" }
             artifacts.save("summary.json", mapOf(
@@ -320,6 +324,7 @@ class SessionEngineM8(
                     "failed" to normals.count { it["readback_ok"] == false }, "normal_planned" to normals.size),
                 "response_boundary" to mapOf("urgent" to "output_ready", "normal" to "readback_complete", "selected_by" to "priority"),
                 "wait" to waitSummary(), "prep" to prepRecord, "common_start_ns" to start, "common_end_ns" to commonEndNs, "time_scale" to scale,
+                "cooling_extended_ns" to coolingExtendedNs, "post_t0_min_s" to MixreqContract.M8_POST_T0_MIN_SECONDS,
                 "runtime_keys" to runtimes.keys.sorted(), "used_keys" to manifest.usedKeys.sorted(),
                 "detection_gpu_created" to runtimes.containsKey(SessionEngine.DETECTION_GPU_KEY), "a24_differences" to differences,
                 "manifest_sha256" to manifestSha, "experiment_ready" to false,
