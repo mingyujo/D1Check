@@ -318,8 +318,8 @@ class Driver(D7.Driver):
             if item.get("perfetto") == "on":
                 perf = self.perfetto_start(label)
             extra = ["--in-block-charge"] if in_block_charge else []
-            if stage == "smoke":
-                extra += ["--skip-gate"]
+            # 기존 mixreq 게이트 (start_gate_1005e: SOC 30~100 · SKIN/AP ≤ 32 · BAT ≤ 30) 는 M8 에서 쓰지 않는다 — 영훈 SOC 하한 20 과 충돌 · M8 게이트 = Tref (m8_gate) + precheck (SOC · plugged · 잠금) + 앱 start_check
+            extra += ["--skip-gate"]
             rc = self.run_attempt(plan_dir, index, smoke, attempt, label, h["csv"], extra)
             if perf is not None:
                 perf = self.perfetto_stop(label, perf)
