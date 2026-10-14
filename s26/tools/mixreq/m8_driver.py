@@ -257,7 +257,7 @@ class Driver(D7.Driver):
                    sealed=True, fixed_before_first_dev_policy_run=True, recompute_within_block=False)
         store[day] = rec
         C.write_json(self.tref_file, store)
-        self.event(what="tref_day", **{k: v for k, v in rec.items() if k != "checks"})
+        self.event(what="tref_day", **{k: v for k, v in rec.items() if k not in ("checks", "t", "what")})   # rec["t"] 는 이벤트 로거의 t 와 겹침 (03:08 TypeError 고침)
         return rec
 
     def gate(self, label: str, h: dict, tref: dict, stage: str) -> dict:
@@ -295,10 +295,16 @@ class Driver(D7.Driver):
     def perfetto_start(self, label: str) -> dict:
         if not PERFETTO_CFG.is_file():
             return dict(supported="미확인", reason="config missing")
-        self.adb("push", str(PERFETTO_CFG), "/data/local/tmp/mixreq/perfetto_battery.cfg", timeout=60)
+        # P0 PERFETTO_ON_C32 (10/15 03:56): perfetto 가 /data/local/tmp 의 config 를 읽지 못함 (errno 13) → config 를 stdin 으로 (perfetto -c - --txt) · 파일 push 없음
         out = f"/data/misc/perfetto-traces/m8_{label}.perfetto-trace"
-        cmd = [MS.ADB, "-s", self.serial, "shell", f"perfetto -c /data/local/tmp/mixreq/perfetto_battery.cfg --txt -o {out}"]
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        cmd = [MS.ADB, "-s", self.serial, "shell", f"perfetto -c - --txt -o {out}"]
+        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        try:
+            p.stdin.write(PERFETTO_CFG.read_text(encoding="utf-8"))
+            p.stdin.close()
+        except OSError as e:
+            self.event(what="perfetto", label=label, supported="미지원/오류", detail=f"stdin: {e}")
+            return dict(supported="미지원/오류", detail=str(e))
         time.sleep(5)
         if p.poll() is not None:
             err = (p.stdout.read() if p.stdout else "")[:400]

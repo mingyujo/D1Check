@@ -1,0 +1,1033 @@
+{
+  "apk_sha256": "37960e25c5948f661f2f5b47a90a4356be1b3712706d34679e71a14842ced6ea",
+  "coverage": {
+    "app": {
+      "charge_counter_changes": 5,
+      "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+      "first_valid_s": -64.164,
+      "interval_median_s": 0.9,
+      "last_valid_s": 211.251,
+      "max_gap_s": 0.924,
+      "missing": 0,
+      "passed": true,
+      "points": {
+        "0": {
+          "after_s": 0.645,
+          "before_s": -0.257,
+          "gap_s": 0.902,
+          "max_gap_s": 2.5,
+          "ok": true,
+          "point_s": 0.0
+        },
+        "120": {
+          "after_s": 120.347,
+          "before_s": 119.448,
+          "gap_s": 0.899,
+          "max_gap_s": 2.5,
+          "ok": true,
+          "point_s": 120.0
+        },
+        "180": {
+          "after_s": 180.65,
+          "before_s": 179.758,
+          "gap_s": 0.892,
+          "max_gap_s": 2.5,
+          "ok": true,
+          "point_s": 180.0
+        },
+        "35": {
+          "after_s": 35.745,
+          "before_s": 34.848,
+          "gap_s": 0.897,
+          "max_gap_s": 2.5,
+          "ok": true,
+          "point_s": 35.0
+        }
+      },
+      "positive_samples": 0,
+      "post_t0_s": 211.251,
+      "pre_t0_s": 64.164,
+      "reasons": [],
+      "rules": {
+        "max_gap_s": 2.5,
+        "points_s": [
+          0.0,
+          35.0,
+          120.0,
+          180.0
+        ],
+        "post_t0_min_s": 210,
+        "pre_t0_min_s": 60
+      },
+      "samples": 307,
+      "sign_discharge_negative": true,
+      "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+      "valid": 307,
+      "voltage_changes": 2
+    },
+    "experiment_id": "S26-M8-FN",
+    "folder": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M8_P0\\S26_MIXREQ_00_FIFO_SERIAL_CPU_V1_a1",
+    "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M8_HAL\\hal_cont_FN_C252_CPU_a1.csv",
+    "host": {
+      "ap_first_s": -671.608,
+      "ap_last_s": 227.632,
+      "ap_points": {
+        "180": {
+          "after_s": 181.612,
+          "before_s": 179.332,
+          "gap_s": 2.28,
+          "max_gap_s": 5.0,
+          "ok": true,
+          "point_s": 180.0
+        },
+        "35": {
+          "after_s": 36.692,
+          "before_s": 34.552,
+          "gap_s": 2.14,
+          "max_gap_s": 5.0,
+          "ok": true,
+          "point_s": 35.0
+        }
+      },
+      "ap_rows": 392,
+      "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+      "err_rows": 0,
+      "interval_median_s": 2.3,
+      "iv_points": {
+        "0": {
+          "after_s": 2.282,
+          "before_s": -0.098,
+          "gap_s": 2.38,
+          "max_gap_s": 5.0,
+          "ok": true,
+          "point_s": 0.0
+        },
+        "180": {
+          "after_s": 181.612,
+          "before_s": 179.332,
+          "gap_s": 2.28,
+          "max_gap_s": 5.0,
+          "ok": true,
+          "point_s": 180.0
+        }
+      },
+      "iv_rows": 392,
+      "max_gap_s": 2.43,
+      "passed": true,
+      "post_t0_s": 227.632,
+      "pre_t0_s": 671.608,
+      "reasons": [],
+      "rows": 392,
+      "rules": {
+        "ap_points_s": [
+          35.0,
+          180.0
+        ],
+        "iv_points_s": [
+          0.0,
+          180.0
+        ],
+        "max_gap_s": 5.0,
+        "post_t0_min_s": 210,
+        "pre_t0_min_s": 60
+      },
+      "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+    },
+    "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+    "passed": true,
+    "reasons": [],
+    "schema": "s26-m8-coverage-check-v1",
+    "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+    "session_id": "e74fd67f-c716-5716-b0ce-f4a1afe628d8",
+    "time_scale": 1
+  },
+  "gate": {
+    "decisions": [
+      {
+        "ap_median": 27.4,
+        "ap_missing": 0,
+        "ap_samples": 27,
+        "ap_slope_c_per_min": 0.301006301995262,
+        "decidable": true,
+        "max_gap_s": 2.315000057220459,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 27.4 outside 26.1 ± 0.5",
+          "slope: ap_slope_c_per_min 0.301 > 0.1",
+          "slope: skin_slope_c_per_min -0.183 > 0.1"
+        ],
+        "samples": 27,
+        "sensor": "AP",
+        "skin_median": 29.1,
+        "skin_slope_c_per_min": -0.18312760260934147,
+        "soc": 85,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 59.799999952316284,
+        "start": false,
+        "t": "2026-10-15T04:04:19",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792004659.699,
+        "window_s": 60,
+        "window_start_epoch": 1792004599.899
+      },
+      {
+        "ap_median": 27.3,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.1559758098939346,
+        "decidable": true,
+        "max_gap_s": 2.318000078201294,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 27.3 outside 26.1 ± 0.5",
+          "slope: ap_slope_c_per_min -0.156 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 29.1,
+        "skin_slope_c_per_min": 0.04281099595083056,
+        "soc": 85,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.49499988555908,
+        "start": false,
+        "t": "2026-10-15T04:04:50",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792004689.589,
+        "window_s": 60,
+        "window_start_epoch": 1792004632.094
+      },
+      {
+        "ap_median": 27.2,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.3085839956510415,
+        "decidable": true,
+        "max_gap_s": 2.318000078201294,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 27.2 outside 26.1 ± 0.5",
+          "slope: ap_slope_c_per_min -0.309 > 0.1",
+          "slope: skin_slope_c_per_min -0.229 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 29.05,
+        "skin_slope_c_per_min": -0.22922586282959803,
+        "soc": 85,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.50999999046326,
+        "start": false,
+        "t": "2026-10-15T04:05:20",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792004719.501,
+        "window_s": 60,
+        "window_start_epoch": 1792004661.991
+      },
+      {
+        "ap_median": 27.1,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.1364688833137876,
+        "decidable": true,
+        "max_gap_s": 2.316999912261963,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 27.1 outside 26.1 ± 0.5",
+          "slope: ap_slope_c_per_min -0.136 > 0.1",
+          "slope: skin_slope_c_per_min -0.136 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 28.9,
+        "skin_slope_c_per_min": -0.13646888331379245,
+        "soc": 85,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.51099991798401,
+        "start": false,
+        "t": "2026-10-15T04:05:50",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792004749.411,
+        "window_s": 60,
+        "window_start_epoch": 1792004691.9
+      },
+      {
+        "ap_median": 27.1,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.1284354379571515,
+        "decidable": true,
+        "max_gap_s": 2.316999912261963,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 27.1 outside 26.1 ± 0.5",
+          "slope: ap_slope_c_per_min -0.128 > 0.1",
+          "slope: skin_slope_c_per_min -0.128 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 28.9,
+        "skin_slope_c_per_min": -0.12843543795714696,
+        "soc": 85,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.48699998855591,
+        "start": false,
+        "t": "2026-10-15T04:06:20",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792004779.293,
+        "window_s": 60,
+        "window_start_epoch": 1792004721.806
+      },
+      {
+        "ap_median": 27.0,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": 0.0633250546880199,
+        "decidable": true,
+        "max_gap_s": 2.312000036239624,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 27.0 outside 26.1 ± 0.5",
+          "slope: skin_slope_c_per_min -0.115 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 28.8,
+        "skin_slope_c_per_min": -0.11504187487833276,
+        "soc": 85,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.492000102996826,
+        "start": false,
+        "t": "2026-10-15T04:06:50",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792004809.204,
+        "window_s": 60,
+        "window_start_epoch": 1792004751.712
+      },
+      {
+        "ap_median": 27.0,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.10524263621741377,
+        "decidable": true,
+        "max_gap_s": 2.312000036239624,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 27.0 outside 26.1 ± 0.5",
+          "slope: ap_slope_c_per_min -0.105 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 28.8,
+        "skin_slope_c_per_min": -0.057077840429436685,
+        "soc": 85,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.504000186920166,
+        "start": false,
+        "t": "2026-10-15T04:07:21",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792004839.101,
+        "window_s": 60,
+        "window_start_epoch": 1792004781.597
+      },
+      {
+        "ap_median": 26.95,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.15962901166234367,
+        "decidable": true,
+        "max_gap_s": 2.312000036239624,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 26.95 outside 26.1 ± 0.5",
+          "slope: ap_slope_c_per_min -0.16 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 28.7,
+        "skin_slope_c_per_min": -0.0936438791872134,
+        "soc": 84,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.51200008392334,
+        "start": false,
+        "t": "2026-10-15T04:07:51",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792004869.009,
+        "window_s": 60,
+        "window_start_epoch": 1792004811.497
+      },
+      {
+        "ap_median": 26.9,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.15699324278684215,
+        "decidable": true,
+        "max_gap_s": 2.312000036239624,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 26.9 outside 26.1 ± 0.5",
+          "slope: ap_slope_c_per_min -0.157 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 28.7,
+        "skin_slope_c_per_min": -0.07849408530550116,
+        "soc": 84,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.49300003051758,
+        "start": false,
+        "t": "2026-10-15T04:08:21",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792004901.196,
+        "window_s": 60,
+        "window_start_epoch": 1792004843.703
+      },
+      {
+        "ap_median": 26.85,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.12218417904266597,
+        "decidable": true,
+        "max_gap_s": 2.311000108718872,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 26.85 outside 26.1 ± 0.5",
+          "slope: ap_slope_c_per_min -0.122 > 0.1",
+          "slope: skin_slope_c_per_min -0.122 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 28.65,
+        "skin_slope_c_per_min": -0.12218417904266597,
+        "soc": 84,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.501999855041504,
+        "start": false,
+        "t": "2026-10-15T04:08:51",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792004931.103,
+        "window_s": 60,
+        "window_start_epoch": 1792004873.601
+      },
+      {
+        "ap_median": 26.8,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.06421707977318164,
+        "decidable": true,
+        "max_gap_s": 2.317000150680542,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 26.8 outside 26.1 ± 0.5"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 28.6,
+        "skin_slope_c_per_min": -0.07847866719586412,
+        "soc": 84,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.496999979019165,
+        "start": false,
+        "t": "2026-10-15T04:09:22",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792004961.002,
+        "window_s": 60,
+        "window_start_epoch": 1792004903.505
+      },
+      {
+        "ap_median": 26.8,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.07848380325271037,
+        "decidable": true,
+        "max_gap_s": 2.317000150680542,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 26.8 outside 26.1 ± 0.5"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 28.6,
+        "skin_slope_c_per_min": 0.0,
+        "soc": 84,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.498000144958496,
+        "start": false,
+        "t": "2026-10-15T04:09:52",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792004990.891,
+        "window_s": 60,
+        "window_start_epoch": 1792004933.393
+      },
+      {
+        "ap_median": 26.8,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": 6.569184570290516e-23,
+        "decidable": true,
+        "max_gap_s": 2.316999912261963,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 26.8 outside 26.1 ± 0.5"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 28.6,
+        "skin_slope_c_per_min": 0.0,
+        "soc": 84,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.509000062942505,
+        "start": false,
+        "t": "2026-10-15T04:10:22",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792005020.803,
+        "window_s": 60,
+        "window_start_epoch": 1792004963.294
+      },
+      {
+        "ap_median": 26.75,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.20065862541997848,
+        "decidable": true,
+        "max_gap_s": 2.306999921798706,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 26.75 outside 26.1 ± 0.5",
+          "slope: ap_slope_c_per_min -0.201 > 0.1",
+          "slope: skin_slope_c_per_min -0.151 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 28.55,
+        "skin_slope_c_per_min": -0.15070999228839954,
+        "soc": 84,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.49600005149841,
+        "start": false,
+        "t": "2026-10-15T04:10:52",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792005050.695,
+        "window_s": 60,
+        "window_start_epoch": 1792004993.199
+      },
+      {
+        "ap_median": 26.7,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": 0.020496135906208943,
+        "decidable": true,
+        "max_gap_s": 2.312000036239624,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 26.7 outside 26.1 ± 0.5"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 28.5,
+        "skin_slope_c_per_min": -0.022303428895008956,
+        "soc": 84,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.50999999046326,
+        "start": false,
+        "t": "2026-10-15T04:11:22",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792005080.604,
+        "window_s": 60,
+        "window_start_epoch": 1792005023.094
+      },
+      {
+        "ap_median": 26.7,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.015172649477238462,
+        "decidable": true,
+        "max_gap_s": 2.312000036239624,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 26.7 outside 26.1 ± 0.5"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 28.5,
+        "skin_slope_c_per_min": 0.0071240582168602806,
+        "soc": 84,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.49399995803833,
+        "start": false,
+        "t": "2026-10-15T04:11:53",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792005112.799,
+        "window_s": 60,
+        "window_start_epoch": 1792005055.305
+      },
+      {
+        "ap_median": 26.7,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.014279105592718744,
+        "decidable": true,
+        "max_gap_s": 2.315000057220459,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 26.7 outside 26.1 ± 0.5"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 28.5,
+        "skin_slope_c_per_min": -0.021424028173489047,
+        "soc": 84,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.49500012397766,
+        "start": false,
+        "t": "2026-10-15T04:12:23",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792005142.69,
+        "window_s": 60,
+        "window_start_epoch": 1792005085.195
+      },
+      {
+        "ap_median": 26.6,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.07135224833328371,
+        "decidable": true,
+        "max_gap_s": 2.315000057220459,
+        "plugged": false,
+        "reasons": [
+          "slope: skin_slope_c_per_min -0.101 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 28.4,
+        "skin_slope_c_per_min": -0.10078820693260675,
+        "soc": 84,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.50399994850159,
+        "start": false,
+        "t": "2026-10-15T04:12:53",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792005172.606,
+        "window_s": 60,
+        "window_start_epoch": 1792005115.102
+      },
+      {
+        "ap_median": 26.6,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": 0.0,
+        "decidable": true,
+        "max_gap_s": 2.315999984741211,
+        "plugged": false,
+        "reasons": [],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 28.4,
+        "skin_slope_c_per_min": 0.0,
+        "soc": 84,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.509000062942505,
+        "start": true,
+        "t": "2026-10-15T04:13:23",
+        "tref_c": 26.1,
+        "window_end_epoch": 1792005202.504,
+        "window_s": 60,
+        "window_start_epoch": 1792005144.995
+      }
+    ],
+    "result": "start",
+    "tref": 26.1,
+    "waited_s": 544
+  },
+  "in_block_charge": false,
+  "manifest_sha256": "7bc43c27f07347ecc29dd764abeb333373d78785710ba6df48b191f3f5797f18",
+  "note": "readout only — ΔJ120/180 · 열 · 정책 비교 계산 0 (조민규 / Cowork) · 잔열 = host hal_cont 의 origin + 180 s 표본 위치만 (coverage)",
+  "perfetto": null,
+  "row": {
+    "all_completed": true,
+    "analysis_split": "dev",
+    "app_post_t0_s": 211.251,
+    "arm": "C252_CPU",
+    "attempt": 1,
+    "block": "M",
+    "coverage_app": true,
+    "coverage_host": true,
+    "eligible": true,
+    "end_time": "2026-10-15T04:18:10",
+    "experiment_id": "S26-M8-FN",
+    "failed": null,
+    "folder": "S26_M8_P0/S26_MIXREQ_00_FIFO_SERIAL_CPU_V1_a1",
+    "host_post_t0_s": 227.632,
+    "index": 0,
+    "label": "FN_C252_CPU",
+    "last_available_s": 118.70295543,
+    "last_dispatch_s": 118.636539297,
+    "normal_late": 0,
+    "normal_met": 0,
+    "normal_p95_ms": null,
+    "planned": 252,
+    "policy": "FIFO_SERIAL_CPU_V1",
+    "policy_args": "",
+    "prep": "NONE",
+    "prep_actual_s": null,
+    "prep_calls": null,
+    "readback_ok": 0,
+    "reasons": "",
+    "stage": "p0",
+    "start_time": "2026-10-15T04:13:27",
+    "succeeded": 252,
+    "svc100": true,
+    "svc70": true,
+    "svc80": true,
+    "svc90": true,
+    "svc95": true,
+    "undispatched": null,
+    "unfinished": null,
+    "urgent_late": 0,
+    "urgent_met": 252,
+    "urgent_p95_ms": 74.685195,
+    "wait_count": 0,
+    "wait_cut": 0,
+    "wait_dose_total_ms": null,
+    "wait_nominal_total_ms": null,
+    "wait_overrun_total_ms": null,
+    "wait_planned_total_ms": null
+  },
+  "service": {
+    "all": {
+      "all_completed": true,
+      "deadline_met": 252,
+      "failed": 0,
+      "late": 0,
+      "levels": {
+        "100": true,
+        "70": true,
+        "80": true,
+        "90": true,
+        "95": true
+      },
+      "max_ms": 81.937891,
+      "mean_ms": 67.03694759126985,
+      "note": "분모 planned · response_ns = urgent output_ready / normal readback_end · undispatched/failed 는 응답 없음 (분모 유지)",
+      "p95_ms": 74.685195,
+      "planned": 252,
+      "responded": 252,
+      "undispatched": 0
+    },
+    "normal": {
+      "all_completed": null,
+      "deadline_met": 0,
+      "failed": 0,
+      "late": 0,
+      "levels": {
+        "100": null,
+        "70": null,
+        "80": null,
+        "90": null,
+        "95": null
+      },
+      "max_ms": null,
+      "mean_ms": null,
+      "note": "분모 planned · response_ns = urgent output_ready / normal readback_end · undispatched/failed 는 응답 없음 (분모 유지)",
+      "p95_ms": null,
+      "planned": 0,
+      "responded": 0,
+      "undispatched": 0
+    },
+    "urgent": {
+      "all_completed": true,
+      "deadline_met": 252,
+      "failed": 0,
+      "late": 0,
+      "levels": {
+        "100": true,
+        "70": true,
+        "80": true,
+        "90": true,
+        "95": true
+      },
+      "max_ms": 81.937891,
+      "mean_ms": 67.03694759126985,
+      "note": "분모 planned · response_ns = urgent output_ready / normal readback_end · undispatched/failed 는 응답 없음 (분모 유지)",
+      "p95_ms": 74.685195,
+      "planned": 252,
+      "responded": 252,
+      "undispatched": 0
+    }
+  },
+  "start_state": {
+    "AP": 27.4,
+    "BAT": 26.9,
+    "PA": 27.2,
+    "SKIN": 29.2,
+    "current_now_uA": -56250,
+    "epoch": 1792004599.6156192,
+    "last_power_connected": "2026-10-14T20:08:45.757",
+    "last_power_disconnected": "2026-10-14T21:26:48.607",
+    "last_power_disconnected_epoch": 1791980808.607,
+    "plugged": false,
+    "soc": 85,
+    "t": "2026-10-15T04:03:19",
+    "thermal_status": 0,
+    "unplugged_since_last_disconnect": true
+  },
+  "validated_rules": {
+    "A0_artifacts": {
+      "detail": {
+        "cleanup_completed": true,
+        "common_boundary": true,
+        "part_files_zero": true,
+        "requests_json": true,
+        "result_files": true,
+        "split": "confirmation",
+        "summary_completed": true,
+        "summary_contract_m8": true,
+        "time_scale": 1,
+        "time_scale_ok": true,
+        "warmup_json": true
+      },
+      "passed": true
+    },
+    "A10_coverage": {
+      "detail": {
+        "app_passed": true,
+        "app_post_t0_s": 211.251,
+        "app_pre_t0_s": 64.164,
+        "gated": true,
+        "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M8_HAL\\hal_cont_FN_C252_CPU_a1.csv",
+        "host_passed": true,
+        "host_post_t0_s": 227.632,
+        "reasons": []
+      },
+      "passed": true
+    },
+    "A1_rows": {
+      "detail": {
+        "planned": 252,
+        "rows": 252,
+        "terminal": {
+          "succeeded": 252
+        },
+        "undispatched_with_dispatch": []
+      },
+      "passed": true
+    },
+    "A2_order": {
+      "detail": {
+        "fields": [
+          "scheduled_arrival_ns",
+          "queue_entry_ns",
+          "dispatch_ns",
+          "execution_start_ns",
+          "host_inference_start_ns",
+          "host_inference_return_ns",
+          "output_ready_ns",
+          "persist_complete_ns",
+          "readback_start_ns",
+          "readback_end_ns",
+          "worker_release_ns",
+          "lane_available_ns"
+        ],
+        "violations": []
+      },
+      "passed": true
+    },
+    "A3_window": {
+      "detail": {
+        "available_after_drain": [],
+        "dispatch_outside": [],
+        "end_ns": 472999580140042,
+        "last_available_s": 118.70295543,
+        "last_dispatch_s": 118.636539297,
+        "origin_ns": 472879577607034,
+        "window_s": 120
+      },
+      "passed": true
+    },
+    "A4_route_residents": {
+      "detail": {
+        "created": [
+          "classification_CPU",
+          "classification_GPU",
+          "classification_NPU",
+          "detection_CPU",
+          "detection_GPU"
+        ],
+        "residents": [
+          "classification_CPU",
+          "classification_GPU",
+          "classification_NPU",
+          "detection_CPU",
+          "detection_GPU"
+        ],
+        "warmed": {
+          "classification_CPU": [
+            0,
+            1
+          ],
+          "classification_GPU": [
+            0,
+            1
+          ],
+          "classification_NPU": [
+            0,
+            1
+          ],
+          "detection_CPU": [
+            0,
+            1
+          ],
+          "detection_GPU": [
+            0,
+            1
+          ]
+        },
+        "wrong_lane": []
+      },
+      "passed": true
+    },
+    "A5_concurrency_head": {
+      "detail": {
+        "allowed_pair": null,
+        "concurrency": "SERIAL",
+        "limit": 1,
+        "max_concurrent": 1,
+        "outside_allowed_pair": [],
+        "selection": "FIFO",
+        "strict_head_violations": []
+      },
+      "passed": true
+    },
+    "A6_response": {
+      "detail": {
+        "boundary": "urgent = output_ready · normal = readback_complete (priority)",
+        "normal": 0,
+        "readback_ok": 0,
+        "urgent": 252,
+        "violations": []
+      },
+      "passed": true
+    },
+    "A7_wait": {
+      "detail": {
+        "note": "WAIT 정책 아님 · wait 이벤트 0 이어야",
+        "waits": 0
+      },
+      "passed": true
+    },
+    "A8_prep": {
+      "detail": {
+        "kind": "NONE",
+        "prep_json_present": false
+      },
+      "passed": true
+    },
+    "A9_safety": {
+      "detail": {
+        "failure_files": [],
+        "samples": 307,
+        "start_check": true,
+        "stop_reason": null,
+        "watch_files": {
+          "phone": true,
+          "skin": true
+        }
+      },
+      "passed": true
+    }
+  }
+}
