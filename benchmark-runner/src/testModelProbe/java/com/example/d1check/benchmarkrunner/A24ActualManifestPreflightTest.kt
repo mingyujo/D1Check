@@ -25,6 +25,9 @@ class A24ActualManifestPreflightTest {
             val manifest = A24PreparationManifest.parse(root)
             assertEquals(file.nameWithoutExtension, manifest.sessionId)
             assertEquals(10, manifest.minimumBatteryPercent())
+            assertEquals(2, root.getInt("warmups_per_runtime"))
+            val residentCount = if(root.getString("resident_mode") == "NONE") 0 else 4
+            assertEquals(if(residentCount == 0) 0 else 8, residentCount*root.getInt("warmups_per_runtime"))
             assertEquals(64, manifest.exactPlanSha256().length)
             requestCount += manifest.requests.size
             val models = root.getJSONObject("models")

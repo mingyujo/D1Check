@@ -1,11 +1,11 @@
 # 2026-10-15 현재 작업 — A24-MEASURE-01
 
-- 사용자 실측 승인 적용: SOC10% 이상·같은 기기 단절 최대20분 대기. 원64슬롯/입력/기한/모델/기존 결과는 보존하며 실패 슬롯 재실행·대체0이다. [실제 진행/한계](team/a24-laptop-measurements-20261014/MEASUREMENT_PROGRESS.md).
-- I4는 설치/경로/등록 결함으로 모두 START 전 실패. F1은 앱 준비 전 reference와 common prepared 상태 차이로 AP gate 거절. 공통 prepared-resident v2 reference28.5℃는 F1 고정600초 준비의 마지막60초에서 산출했고 본 요청 결과 사용0; 허용폭/slope/대기한도는 유지한다.
-- F2의 실제252분류GPU 요청은 전량 기한내 완료, P95약274.609ms, 요청 보존/실제 lane 반환/decoded 품질 검산PASS. 수집기가 아직 없는 failure.json stdout을 오인해 원장FAIL; 같은 실행의 끝을 읽기전용 회수하여 별도 검증했다. 원장FAIL/모니터링 공백은 보존, COMPLETE로 덮어쓰지 않는다.
-- 실제8warmup(F1)+8warmup(F2)+본252NN=268회 관측. 기존 앱과 데이터 유지, 별도 package 실제 설치와SHA 일치 확인. APK`eab8e449…5b883e`, 관련JVM28+실제manifest전용1/host50/연결4/조립2/분석3 PASS. 160source 파일 v7 SHA 동결. PC/기기/계측 적격성을 구분한다.
-- 계측 제한: API 전류와charge_counter scale 불일치로 검증J=null, 임의1000배보정0. AP는 실제HAL readout이나 cache age·센서 정확도·표면 온도 미검증. 외부전력계없음/sysfs 접근거부 우회0. strict/기본정책/experiment_ready=false 유지.
-- 다음 최대3: 남은F3/F4 전체 mixed-flow와 회수 확인; DEV16 등록순서 수행·전 시도분석; 실제 초기/계측/분석/예측 또는없음 동결 뒤 적격 범위CONFIRM40. 데스크톱 학습/EP814/원worktree 변경12개/다른 기기를 건드리지 않는다. 아래 PC 준비는 과거 기록이다.
+- 사용자 실제 측정 승인: SOC10% 이상·같은 기기 단절 최대20분 대기. 원64슬롯/모델/입력/기한/작업량 보존. 실패 슬롯 재실행·대체0. [원인·범위](team/a24-laptop-measurements-20261014/MEASUREMENT_PROGRESS.md).
+- I4/F4/DEV16 전체24시도 보존. I4는 준비환경 결함으로 START 전 실패, F1은 AP gate 거절. F2 원장FAIL 뒤 동일 실행의252완료를 읽기전용 회수/검산. F3/F4 정상 회수, DEV15정상+1통신 PRESTART 거절. DEV 예정2288요청 전부 표에 보존, 정상15세션 실패/미완료0.
+- 초깃값은 common prepared runtime의 고정 준비 마지막60초 median AP28.5℃를 사용; 최초idle27.6℃와거절을 보존. ±0.5℃/slope0.1℃/분/최대600초 유지. API 전류·전하 scale불일치로 검증J=null, 임의1000배보정0. HAL readout/cache age·실제 표면온도 미검증, 정확도 PASS 주장0.
+- 확인 v10: 앱단위 KEEP_SCREEN_ON만 추가, 유휴는 runtime0×2warmup=실제0이라는 원 선언 유지. 관련JVM30/host50/연결6/조립2/분석3 PASS. 새APK`6fbe5c08…0bfd8b` 실제 설치SHA일치. 기존실측APK`eab8e449…5b883e`/자료/실패 보존.
+- CONFIRM40의 첫CPU 세션 정상 회수, 다음 저부하 BASE 진행. 사전 봉인: [분석](team/a24-laptop-measurements-20261014/CONFIRM_ANALYSIS_CONTRACT_V10.json), [동결](team/a24-laptop-measurements-20261014/CONFIRM_FREEZE_V10.json), [원장SHA](team/a24-laptop-measurements-20261014/PRIOR_STAGE_ATTEMPTS_SHA_V1.json). 새8군 수치예측은명시적없음/모형정확도주장없음. 확인중 코드/설정/계수/선정 변경 없음.
+- 다음최대3: 등록확인40의 완료/거절/실패 전부회수; 같은5블록 대응/모든조건CSV·그림·오프라인화면 검산; 문서/원격HEAD확인. 데스크톱학습/EP814/원WIP12개/다른기기변경0; strict·기본정책·experiment_ready=false 유지. 아래PC준비는과거이력.
 
 # 2026-10-15 현재 작업 — A24-LAPTOP-PREP-01
 

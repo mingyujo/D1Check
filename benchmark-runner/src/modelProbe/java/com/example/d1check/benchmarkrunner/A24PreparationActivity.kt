@@ -61,6 +61,8 @@ class A24PreparationActivity : Activity() {
             intent.getBooleanExtra("a24_execute_authorized",false) != true) { finish(); return }
         val sid = intent.getStringExtra("session_id") ?: run { finish(); return }
         try { require(UUID.fromString(sid).toString() == sid) } catch(_:Throwable) { finish(); return }
+        // Per-activity screen-on requirement; brightness/timeout settings are preserved.
+        window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         inputRoot = File(filesDir,"a24_laptop_inputs/$sid").canonicalFile
         mainHandler.postDelayed(watchdog,1_200_000L)
         setup.execute { runSession(sid) }
