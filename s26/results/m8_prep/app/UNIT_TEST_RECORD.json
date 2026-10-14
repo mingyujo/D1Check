@@ -1,0 +1,68 @@
+{
+ "schema": "s26-m8-unit-test-record-v1",
+ "run1": {
+  "when": "2026-10-14 22:59 ~ 23:2x (pytest 와 동시)",
+  "total": 86,
+  "failed": 7,
+  "failed_names": [
+   "SessionRoundTripTest > sustainedExperiment03CompletesThreeThousandRequestsInTheSevenHundredTwentySecondWindow",
+   "M6RegressionShapeTest > m6CoolingRowKeepsTheBaseShape",
+   "M8PlanTest > manifestValidationM8Branch",
+   "M8PlanTest > banksMatchTheContract",
+   "StatesplitRoundTripTest > cpuSerial",
+   "StatesplitRoundTripTest > gpuParallel",
+   "StatesplitRoundTripTest > npuParallel"
+  ],
+  "classes": {
+   "DecodersTest": 6,
+   "EventLogTest": 5,
+   "ExperimentTableTest": 3,
+   "GaugeDiagTest": 3,
+   "ImageContractTest": 5,
+   "InputListEngineTest": 2,
+   "M6PlanTest": 7,
+   "M6RegressionShapeTest": 3,
+   "M6RoundTripTest": 4,
+   "M8PlanTest": 6,
+   "M8RoundTripTest": 7,
+   "PolicyStudyM8Test": 9,
+   "PolicyStudyTest": 4,
+   "RequestPlanTest": 4,
+   "SessionRoundTripTest": 10,
+   "StatesplitPlanTest": 5,
+   "StatesplitRoundTripTest": 3
+  }
+ },
+ "run2": {
+  "when": "2026-10-14 23:17 ~ 23:26 (유휴 · 4 클래스)",
+  "total": 22,
+  "failed": 4,
+  "failed_names": [
+   "SessionRoundTripTest > sustainedExperiment03CompletesThreeThousandRequestsInTheSevenHundredTwentySecondWindow",
+   "SessionRoundTripTest > confirmationExperiment02CRunsLikeV2",
+   "StatesplitRoundTripTest > cpuSerial",
+   "StatesplitRoundTripTest > gpuParallel"
+  ],
+  "passed_classes": [
+   "M8PlanTest 6/6",
+   "M6RegressionShapeTest 3/3"
+  ]
+ },
+ "new_contract_tests": {
+  "PolicyStudyM8Test": "9/9 (규칙표 사례 · WAIT 규칙)",
+  "M8PlanTest": "6/6 (bank · uuid5 · 537.155 · SMOOTH · 행 · validate 거부)",
+  "M8RoundTripTest": "7/7 (BASE readback/ordinal · PAIR ≤ 2 · WAIT 16 · C252 undispatched · RECENT prep · NO_RUNTIME · L64 경계)"
+ },
+ "regression_existing_contract": {
+  "M6RegressionShapeTest": "3/3 (B2 · M6 L-C · K: 이벤트 종류 · 단계 · 행 키 = 기준 aaa7b87f · M8 키 0)",
+  "M6RoundTripTest": "4/4",
+  "M6PlanTest": "7/7",
+  "ExperimentTableTest": "3/3",
+  "PolicyStudyTest": "4/4",
+  "RequestPlanTest": "4/4",
+  "StatesplitPlanTest": "5/5",
+  "SessionRoundTripTest": "8/10 (sustained03 = 기존 실패 · M6-A/M7-A 원장과 같음 · confirmation02C = 타이밍)",
+  "StatesplitRoundTripTest": "1/3 ~ 3/3 (post-window drain incomplete · 호스트 타이밍 · M7-A 1차와 같은 꼴) → 기준 커밋 worktree 대조 unit_base_aaa7b87f.log"
+ },
+ "note": "SessionEngine.kt diff 0 · 타이밍 실패는 time_scale 10 가짜 backend 의 drain 30 s/10 한계 (기존 시험 · 기존 엔진)"
+}
