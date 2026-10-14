@@ -1,3 +1,10 @@
+# 2026-10-15 — A24-MEASURE-01 시작 및 준비 상태 결합
+
+- 채택: 최신 사용자 지시로 실제 A24 작업을 시작한다. SOC10% 이상·동일 hardware/fingerprint 재연결 최대20분. 데스크톱 학습/EP814/다른 기기/원 worktree는 보존한다.
+- 기존 앱 signer와 충돌하여 별도 opt-in `.a24measurement` namespace로 설치한다. 기존 앱/데이터와 기본 modelProbe namespace는 보존한다. APK/소스/manifest 버전별 SHA와 실패 슬롯을 남기며 슬롯 재실행·대체는 하지 않는다.
+- 개발 초기 gate v2: common4resident+8warmup 상태에서 F1의 고정600초 준비 예약 마지막60초 AP median28.5℃를 Tref로 사용한다. 본 요청 실행0인 준비 자료만 사용했다. 최초 앱 준비 전 idle Tref27.6℃ gate v1과 F1 거절을 보존한다. ±0.5℃/60초 slope0.1℃/분/최대600초 조건은 유지하며 CONFIRM 전에 공통 초기 계약을 다시 동결한다.
+- API 전류·전하 단위의 내부 불일치를 확인하여 검증 에너지J는 null로 남긴다. 어떤 원표본도 임의1000배 보정하지 않는다. HAL readout과 실제 표면 온도·센서 정확도를 구분한다. [원인·검증·한계](team/a24-laptop-measurements-20261014/MEASUREMENT_PROGRESS.md).
+
 # 2026-10-15 — A24-LAPTOP-PREP-01 종료 경계
 
 - 채택: 사용자 재개 지시로 PC 준비만 완료하고 종료한다. 실측 연결/설치/warmup/추론/계측/START/claim/세션 소비는0이다. 설치 전 프로세스/원물 source SHA와 회수 cleanup 확인을 강화했으며 순수 mock 검증으로 한정한다.

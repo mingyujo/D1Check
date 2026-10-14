@@ -37,6 +37,7 @@ class A24PreparationActivity : Activity() {
     private var sequence = 0L
     private var origin = 0L
     private var finished = false
+    private var minimumBatteryPercent = 20
     private val mainHandler = android.os.Handler(android.os.Looper.getMainLooper())
     private val watchdog = Runnable {
         failure.compareAndSet(null,"hard_timeout")
@@ -110,15 +111,17 @@ class A24PreparationActivity : Activity() {
             "ap_c" to null,"ap_source" to "host_HAL_required","cache_age_ns" to null,
             "peak_pss_bytes" to debug.totalPss.toLong()*1024,"memory_gate" to gate))
         if(gate != "admit" || !pm.isInteractive || plugged != 0 || temperature == null || temperature !in 0..350 ||
-            !ArrivalBatteryGate.admitted(level,scale,20)) failure.compareAndSet(null,"safety/$gate")
+            !manifest.batteryAdmitted(level,scale)) failure.compareAndSet(null,"safety/$gate")
     }
     private fun runSession(sid: String) {
         try {
             val source = A24PreparationManifest.safeFile(inputRoot,"session_manifest.json")
-            val planHash = ProbeModelFile.sha256(source)
+            val manifestHash = ProbeModelFile.sha256(source)
             manifest = A24PreparationManifest.parse(JSONObject(source.readText()))
             require(manifest.sessionId == sid)
             val m = manifest.json
+            val planHash = manifest.exactPlanSha256()
+            minimumBatteryPercent = manifest.minimumBatteryPercent()
             require(m.getBoolean("execution_authorized") && !m.getBoolean("mock"))
             require(m.getString("device_status") == "DEVICE_APPROVED_FOR_NEW_CONTRACT")
             require(m.getString("device_fingerprint") == Build.FINGERPRINT)
@@ -143,6 +146,7 @@ class A24PreparationActivity : Activity() {
             journal = FileOutputStream(File(output,"events.jsonl"),false)
             write("session_manifest.json",m)
             write("identity.json",mapOf("session_id" to sid,"plan_sha256" to planHash,"fingerprint" to Build.FINGERPRINT,
+                "manifest_sha256" to manifestHash,"process_id" to android.os.Process.myPid(),
                 "apk_sha256" to m.getString("apk_sha256"),"source_commit" to m.getString("source_commit"),
                 "evidence_level" to "DEVICE_RUN_PENDING_HOST_VALIDATION","experiment_ready" to false))
             sensor.scheduleAtFixedRate({ try { batterySample() } catch(e:Throwable) { failure.compareAndSet(null,"sensor/$e") } },0,
@@ -169,6 +173,7 @@ class A24PreparationActivity : Activity() {
                     adapters.getValue(key).execute(warmupFile,warmupHash,expectedInputTensorSha256 = tensor)
                 }.get(30,TimeUnit.SECONDS)
                 require(result["input_tensor_sha256"] == tensor)
+                write("warmup_${key}_$index.json", result)
                 event("warmup_result",mapOf("key" to key,"index" to index,"input_tensor_sha256" to tensor))
             }
             // Host supplies the real AP history and frozen initial condition approval after preparation.
@@ -249,6 +254,8 @@ class A24PreparationActivity : Activity() {
             if(cleanupFailure == null) {
                 cpu.shutdown(); gpu.shutdown(); dispatch.shutdown()
                 if(::journal.isInitialized) synchronized(lock) { journal.flush(); journal.fd.sync(); journal.close() }
+                if(::output.isInitialized) write("journal_closed.json",mapOf("status" to "SYNCED_AND_CLOSED",
+                    "session_id" to sid,"process_id" to android.os.Process.myPid(),"closed_ns" to now()))
                 finished = true; mainHandler.removeCallbacks(watchdog); setup.shutdown(); runOnUiThread { finish() }
             } else {
                 // A hung worker must not be declared AVAILABLE, have its journal closed, or

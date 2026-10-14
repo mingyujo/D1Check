@@ -1,3 +1,12 @@
+# 2026-10-15 현재 작업 — A24-MEASURE-01
+
+- 사용자 실측 승인 적용: SOC10% 이상·같은 기기 단절 최대20분 대기. 원64슬롯/입력/기한/모델/기존 결과는 보존하며 실패 슬롯 재실행·대체0이다. [실제 진행/한계](team/a24-laptop-measurements-20261014/MEASUREMENT_PROGRESS.md).
+- I4는 설치/경로/등록 결함으로 모두 START 전 실패. F1은 앱 준비 전 reference와 common prepared 상태 차이로 AP gate 거절. 공통 prepared-resident v2 reference28.5℃는 F1 고정600초 준비의 마지막60초에서 산출했고 본 요청 결과 사용0; 허용폭/slope/대기한도는 유지한다.
+- F2의 실제252분류GPU 요청은 전량 기한내 완료, P95약274.609ms, 요청 보존/실제 lane 반환/decoded 품질 검산PASS. 수집기가 아직 없는 failure.json stdout을 오인해 원장FAIL; 같은 실행의 끝을 읽기전용 회수하여 별도 검증했다. 원장FAIL/모니터링 공백은 보존, COMPLETE로 덮어쓰지 않는다.
+- 실제8warmup(F1)+8warmup(F2)+본252NN=268회 관측. 기존 앱과 데이터 유지, 별도 package 실제 설치와SHA 일치 확인. APK`eab8e449…5b883e`, 관련JVM28+실제manifest전용1/host50/연결4/조립2/분석3 PASS. 160source 파일 v7 SHA 동결. PC/기기/계측 적격성을 구분한다.
+- 계측 제한: API 전류와charge_counter scale 불일치로 검증J=null, 임의1000배보정0. AP는 실제HAL readout이나 cache age·센서 정확도·표면 온도 미검증. 외부전력계없음/sysfs 접근거부 우회0. strict/기본정책/experiment_ready=false 유지.
+- 다음 최대3: 남은F3/F4 전체 mixed-flow와 회수 확인; DEV16 등록순서 수행·전 시도분석; 실제 초기/계측/분석/예측 또는없음 동결 뒤 적격 범위CONFIRM40. 데스크톱 학습/EP814/원worktree 변경12개/다른 기기를 건드리지 않는다. 아래 PC 준비는 과거 기록이다.
+
 # 2026-10-15 현재 작업 — A24-LAPTOP-PREP-01
 
 - PC 구현·단위/mock 검증·APK 빌드 완료 / DEVICE_UNVERIFIED. 별도 branch `codex/a24-laptop-prep-20261014`에서 작업했고 원 worktree HEAD `0d4ddc6`와 사용자 추적 변경12개·다른 worktree를 보존했다. [준비 보고서](team/a24-laptop-measurements-20261014/PREPARATION_REPORT.md).

@@ -30,6 +30,7 @@ from d1_a24_laptop_validator import NS, PROTOCOL, SHA, ValidationError, containe
 # identical-byte temporary controller into the source verification helper.
 CONTROLLER_SOURCE_FILE = Path(__file__)
 SOURCE_MANIFEST_SCHEMA = "a24-preparation-source-manifest-v1"
+ISOLATED_PACKAGE = "com.example.d1check.benchmarkrunner.a24measurement"
 
 
 def require(condition: bool, message: str) -> None:
@@ -58,7 +59,11 @@ def frozen_gate(gate: dict[str, Any]) -> None:
     require(isinstance(gate.get("Tref_c"), (int, float)) and math.isfinite(gate["Tref_c"]), "Tref must be frozen before measurement")
     require(gate.get("tref_tolerance_c") == 0.5 and gate.get("maximum_abs_slope_c_per_min") == 0.1, "PLAN admission criteria changed; use a separately approved version")
     require(gate.get("history_ns") == 60 * NS and gate.get("maximum_gate_wait_ns") == 600 * NS, "post-ready history/wait bounds changed")
-    require(gate.get("minimum_SOC_percent") == 40 and gate.get("maximum_SOC_percent") == 80, "PLAN SOC criteria changed")
+    soc_contract = gate.get("soc_contract", "PLAN_SOC40_80")
+    expected_soc = (10, 100) if soc_contract == "USER_SOC_GE10_20261015" else (40, 80)
+    require(soc_contract in {"PLAN_SOC40_80", "USER_SOC_GE10_20261015"}
+            and (gate.get("minimum_SOC_percent"),gate.get("maximum_SOC_percent")) == expected_soc,
+            "SOC criteria differ from explicitly versioned user contract")
     require(isinstance(gate.get("require_unplugged"), bool), "charging/transport choice must be explicitly frozen")
     for key in ("hal_poll_period_ns", "maximum_observation_gap_ns", "status_poll_period_ns", "ready_timeout_ns", "session_timeout_ns", "maximum_raw_bytes"):
         require(isinstance(gate.get(key), int) and not isinstance(gate[key], bool) and gate[key] > 0, f"frozen {key} missing")
@@ -98,6 +103,9 @@ def verify_source_entries(manifest: dict[str, Any], source_root: Path, *, contro
 
 
 def check_authorization(manifest: dict[str, Any], config: dict[str, Any], authorization: dict[str, Any], gate: dict[str, Any], *, execute_authorized: bool) -> dict[str, Any]:
+    package = config.get("package_name",PACKAGE)
+    require(package in {PACKAGE,ISOLATED_PACKAGE},"unapproved measurement package namespace")
+    require(package == PACKAGE or authorization.get("package_name") == package,"isolated package is not explicitly authorized")
     require(execute_authorized, "PREPARATION_ONLY: --execute-authorized is absent")
     manifest_requests(manifest, require_materials=True)
     require(manifest.get("execution_authorized") is True and manifest.get("device_status") == "DEVICE_APPROVED_FOR_NEW_CONTRACT" and manifest.get("mock") is False, "DEVICE_UNVERIFIED: preparation/bound templates are not executable device manifests")
@@ -121,12 +129,12 @@ def check_authorization(manifest: dict[str, Any], config: dict[str, Any], author
         path = Path(item.get("path", ""))
         require(path.is_file() and sha256(path) == item.get("sha256"), f"exact {key} file/SHA unavailable")
     identity = config.get("apk_identity", {})
-    require(identity.get("apk_sha256") == config["apk"]["sha256"] and identity.get("package") == PACKAGE and identity.get("signature_verification") == "PASS" and SHA.fullmatch(str(identity.get("signer_certificate_sha256"))) is not None, "verified APK signer identity missing")
+    require(identity.get("apk_sha256") == config["apk"]["sha256"] and identity.get("package") == package and identity.get("signature_verification") == "PASS" and SHA.fullmatch(str(identity.get("signer_certificate_sha256"))) is not None, "verified APK signer identity missing")
     require(set(manifest.get("models", {})) == {"C_CPU", "C_GPU", "D_CPU", "D_GPU"}, "four common resident models not bound")
     for key, model in manifest["models"].items():
         target = model.get("target", {})
         expected = {"adb_serial": authorization["serial"], "build_fingerprint": authorization["fingerprint"],
-                    "apk_sha256": config["apk"]["sha256"], "package_name": PACKAGE,
+                    "apk_sha256": config["apk"]["sha256"], "package_name": package,
                     "model": "SM-A245N", "api_level": authorization.get("api_level"), "ram_bytes": authorization.get("ram_bytes")}
         require(all(target.get(field) == value and value is not None for field, value in expected.items()), f"DEVICE_UNVERIFIED: {key} target/new registration mismatch")
         for field in ("device_id", "abi", "cpu_abi", "cpu_features", "soc", "manufacturer", "gpu_vendor", "gpu_renderer", "gpu_driver", "android_release"):
@@ -227,9 +235,10 @@ THERMAL = re.compile(r"Temperature\{[^}]*?mValue=([-+0-9.eE]+)[^}]*?mType=(\d+)[
 APP_PROCESS_NAMES = (PACKAGE, PACKAGE + ":model_probe", PACKAGE + ":a24_preparation")
 
 
-def require_no_app_process_owner(client: Any) -> None:
+def require_no_app_process_owner(client: Any, *, package: str = PACKAGE) -> None:
     occupied: list[str] = []
-    for process_name in APP_PROCESS_NAMES:
+    names = APP_PROCESS_NAMES if package == PACKAGE else (*APP_PROCESS_NAMES,package,package+":model_probe",package+":a24_preparation")
+    for process_name in names:
         try:
             response = client.command("shell", "pidof", process_name, accepted_codes=(0, 1), reject_stderr=True)
             require(isinstance(response, bytes), "PID lookup returned a non-byte response")
@@ -257,10 +266,13 @@ def read_hal(client: Any) -> dict[str, Any]:
     device_after = elapsed_ns(client)
     host_after, wall_after = time.monotonic_ns(), time.time_ns()
     require(device_after >= device_before and host_after >= host_before, "clock bracket reversed")
+    marker = "Current temperatures from HAL:"
+    current = raw.split(marker, 1)[1].split("Current cooling devices from HAL:",1)[0] if marker in raw else ""
     return {"host_read_start_ns": read_start, "host_read_end_ns": read_end, "host_mono_before_ns": host_before, "host_mono_after_ns": host_after,
         "host_wall_before_ns": wall_before, "host_wall_after_ns": wall_after, "device_elapsed_before_ns": device_before, "device_elapsed_after_ns": device_after,
         "device_time_bracket_width_ns": device_after - device_before, "source_api": "dumpsys thermalservice", "raw": raw,
-        "sensors": [{"sensor_name": name.strip(), "sensor_type": int(kind), "value_c": float(value), "sensor_timestamp_ns": None, "cache_age_ns": None} for value, kind, name in THERMAL.findall(raw)],
+        "sensors": [{"sensor_name": name.strip(), "sensor_type": int(kind), "value_c": float(value), "sensor_timestamp_ns": None, "cache_age_ns": None} for value, kind, name in THERMAL.findall(current)],
+        "sensor_source_section": "CURRENT_HAL" if marker in raw else "MISSING_CURRENT_HAL_SECTION",
         "cache_update_observed": None, "independent_sample_claim": False, "AP_from_battery": False}
 
 
@@ -310,7 +322,11 @@ def start_perfetto(client: Any, session_id: str, tracing: dict[str, Any]) -> dic
     """
     version = client.command("shell", "perfetto", "--version").decode().strip()
     require(version == tracing["device_version"], "on-device Perfetto version changed")
-    help_text = client.command("shell", "perfetto", "--help").decode(errors="replace")
+    # Android's CLI writes help to stderr and returns 1. The fixed redirection
+    # captures that documented interface without treating its help exit as a
+    # tracing failure. No user-provided shell text is interpolated here.
+    help_text = client.command("shell", "perfetto", "--help", "2>&1",
+                               accepted_codes=(0,1),reject_stderr=True).decode(errors="replace")
     require("--detach" in help_text and "--attach" in help_text and "--stop" in help_text, "UNSUPPORTED: device Perfetto detach/attach/stop unavailable")
     key = "a24_" + session_id.replace("-", "")
     remote_profile = f"/data/local/tmp/a24-{session_id}-perfetto.pbtxt"
@@ -365,12 +381,12 @@ def safe_extract(payload: bytes, destination: Path, *, session_id: str, maximum_
         path.write_bytes(content)
 
 
-def preserve_partial(client: Any, output: Path, *, session_id: str, raw: list[dict[str, Any]], maximum_bytes: int) -> dict[str, Any]:
+def preserve_partial(client: Any, output: Path, *, session_id: str, raw: list[dict[str, Any]], maximum_bytes: int, package: str = PACKAGE) -> dict[str, Any]:
     """One bounded best-effort recovery; preserve failure, never retry the run."""
     recovery_error = None
     if not output.exists():
         try:
-            payload = client.command("exec-out", "run-as", PACKAGE, "tar", "-cf", "-", f"files/a24_laptop_results/{session_id}")
+            payload = client.command("exec-out", "run-as", package, "tar", "-cf", "-", f"files/a24_laptop_results/{session_id}")
             safe_extract(payload, output, session_id=session_id, maximum_bytes=maximum_bytes)
         except Exception as error:
             recovery_error = str(error)
@@ -391,6 +407,8 @@ def require_completed_app_cleanup(summary: dict[str, Any], cleanup: dict[str, An
 
 
 def run_one(manifest: dict[str, Any], config: dict[str, Any], authorization: dict[str, Any], gate: dict[str, Any], *, execute_authorized: bool = False, client: Any = None) -> dict[str, Any]:
+    package = config.get("package_name",PACKAGE)
+    component = package + "/com.example.d1check.benchmarkrunner.A24PreparationActivity"
     authorized = check_authorization(manifest, config, authorization, gate, execute_authorized=execute_authorized)
     registry = FutureRegistry(Path(config["registry_root"]), authorized)
     output = Path(config["output_root"]) / manifest["session_id"]
@@ -405,27 +423,38 @@ def run_one(manifest: dict[str, Any], config: dict[str, Any], authorization: dic
     try:
         require(client.command("shell", "getprop", "ro.build.fingerprint").decode().strip() == authorization["fingerprint"], "device fingerprint mismatch")
         require(client.command("shell", "getprop", "ro.product.model").decode().strip() == "SM-A245N", "device is not approved A24")
-        require_no_app_process_owner(client)
+        require_no_app_process_owner(client,package=package)
         require(all(not Path(path).exists() for path in config.get("existing_owner_files", [])), "PRESTART_REJECT: existing host owner marker present; no automatic takeover")
         before_warmup_battery = read_battery(client)
         soc = before_warmup_battery["SOC_percent"]
         require(isinstance(soc, (int, float)) and gate["minimum_SOC_percent"] <= soc <= gate["maximum_SOC_percent"], "PRESTART_REJECT: SOC outside frozen range before runtime preparation")
         require(not gate["require_unplugged"] or before_warmup_battery["plugged"] is False, "PRESTART_REJECT: charging condition unknown/plugged before runtime preparation")
-        client.command("install", "-r", config["apk"]["path"])
-        require(client.command("shell", "run-as", PACKAGE, "test", "!", "-e", remote_input) == b"", "remote session identity already exists")
-        client.command("shell", "run-as", PACKAGE, "mkdir", "-p", remote_input)
+        installed_matches = False
+        if config.get("reuse_verified_installed_APK") is True:
+            # Android returns exit 1 and no output when this isolated package
+            # has never been installed. This is an absent APK, not a failure.
+            paths = client.command("shell","pm","path",package,
+                                   accepted_codes=(0,1),reject_stderr=True).decode().strip().splitlines()
+            if len(paths)==1 and paths[0].startswith("package:"):
+                installed = paths[0][8:]
+                require(re.fullmatch(r"/[A-Za-z0-9_./=+~\-]+",installed) is not None,"unsafe installed APK path")
+                installed_matches = client.command("shell","sha256sum",installed).decode().split()[0] == config["apk"]["sha256"]
+        if not installed_matches:
+            client.command("install", "-r", config["apk"]["path"])
+        require(client.command("shell", "run-as", package, "test", "!", "-e", remote_input) == b"", "remote session identity already exists")
+        client.command("shell", "run-as", package, "mkdir", "-p", remote_input)
         for item in config["files"]:
             name = item["path"]
             tmp = f"/data/local/tmp/a24-{sid}-{name}"
             client.command("push", str(Path(config["bundle_root"]) / name), tmp)
-            client.command("shell", "run-as", PACKAGE, "cp", tmp, f"{remote_input}/{name}")
-        client.command("shell", "am", "start", "-n", COMPONENT, "--es", "a24_protocol", PROTOCOL, "--ez", "a24_execute_authorized", "true", "--es", "session_id", sid)
+            client.command("shell", "run-as", package, "cp", tmp, f"{remote_input}/{name}")
+        client.command("shell", "am", "start", "-n", component, "--es", "a24_protocol", PROTOCOL, "--ez", "a24_execute_authorized", "true", "--es", "session_id", sid)
         polling_started = elapsed_ns(client)
         ready = None
         while elapsed_ns(client) - polling_started <= gate["ready_timeout_ns"]:
             host_raw.append(read_hal(client))
             try:
-                ready = json.loads(client.command("exec-out", "run-as", PACKAGE, "cat", f"{remote_output}/ready.json"))
+                ready = json.loads(client.command("exec-out", "run-as", package, "cat", f"{remote_output}/ready.json"))
                 break
             except (ValidationError, json.JSONDecodeError):
                 client.sleep_ns(gate["status_poll_period_ns"])
@@ -447,7 +476,7 @@ def run_one(manifest: dict[str, Any], config: dict[str, Any], authorization: dic
         if not admitted["admitted"]:
             registry.record("PRESTART_REJECT", {"reason": admitted["reason"], "START": False, "session_run_consumed": False})
             (registry.session / "host_hal_partial.jsonl").write_text("".join(json.dumps(row) + "\n" for row in host_raw), encoding="utf-8")
-            partial = preserve_partial(client, output, session_id=sid, raw=host_raw, maximum_bytes=gate["maximum_raw_bytes"])
+            partial = preserve_partial(client, output, session_id=sid, raw=host_raw, maximum_bytes=gate["maximum_raw_bytes"],package=package)
             return {"status": "PRESTART_REJECT", "admission": admitted, "partial_recovery": partial, "actual_adb_calls": getattr(client, "actual_calls", 0)}
         if manifest.get("perfetto") == "ON":
             trace = start_perfetto(client, sid, config["perfetto"])
@@ -462,15 +491,21 @@ def run_one(manifest: dict[str, Any], config: dict[str, Any], authorization: dic
         approval_file = approval_dir / "start_approval.json"
         atomic_json(approval_file, start_approval)
         client.command("push", str(approval_file), temporary)
-        client.command("shell", "run-as", PACKAGE, "cp", temporary, f"{remote_input}/start_approval.json")
+        client.command("shell", "run-as", package, "cp", temporary, f"{remote_input}/start_approval.json")
         session_started = elapsed_ns(client)
         complete = None
         cleanup = None
+        journal_closed = None
         def optional_app_document(name: str) -> dict[str, Any] | None:
             try:
-                raw = client.command("exec-out", "run-as", PACKAGE, "cat", f"{remote_output}/{name}")
+                raw = client.command("exec-out", "run-as", package, "cat", f"{remote_output}/{name}")
             except ValidationError:
                 return None  # Not yet atomically published; bounded polling only.
+            # ADB exec-out does not reliably carry the remote cat exit status.
+            # The actual Android CLI returns this ENOENT text on stdout with
+            # host exit0. Only this exact missing-path message means absent.
+            if raw.strip() == f"cat: {remote_output}/{name}: No such file or directory".encode():
+                return None
             try:
                 value = json.loads(raw)
             except (json.JSONDecodeError, UnicodeDecodeError) as error:
@@ -490,15 +525,27 @@ def run_one(manifest: dict[str, Any], config: dict[str, Any], authorization: dic
                         "app cleanup failed or actual worker return is unconfirmed; no COMPLETE")
             if complete is not None and cleanup is not None:
                 require_completed_app_cleanup(complete, cleanup)
+                if config.get("require_journal_closed_before_recovery") is True:
+                    journal_closed = optional_app_document("journal_closed.json")
+                    if journal_closed is None:
+                        client.sleep_ns(gate["hal_poll_period_ns"])
+                        continue
+                    require(journal_closed.get("status") == "SYNCED_AND_CLOSED" and journal_closed.get("session_id") == sid
+                            and isinstance(journal_closed.get("process_id"),int) and journal_closed["process_id"] > 0,
+                            "journal close artifact is not bound to this completed session")
                 break
             client.sleep_ns(gate["hal_poll_period_ns"])
         require(complete is not None and cleanup is not None, "session summary/cleanup timeout; preserve partial raw and FAIL")
-        payload = client.command("exec-out", "run-as", PACKAGE, "tar", "-cf", "-", remote_output)
+        require(config.get("require_journal_closed_before_recovery") is not True or journal_closed is not None,
+                "final journal closure timeout; preserve partial raw and FAIL")
+        payload = client.command("exec-out", "run-as", package, "tar", "-cf", "-", remote_output)
         safe_extract(payload, output, session_id=sid, maximum_bytes=gate["maximum_raw_bytes"])
         recovered_summary = load_json(output / "summary.json")
         recovered_cleanup = load_json(output / "cleanup.json")
         require(recovered_summary == complete and recovered_cleanup == cleanup, "recovered terminal artifacts differ from observed app completion")
         require_completed_app_cleanup(recovered_summary, recovered_cleanup)
+        if journal_closed is not None:
+            require(load_json(output/"journal_closed.json") == journal_closed,"recovered journal closure differs from observed closure")
         require(not (output / "failure.json").exists(), "recovered app failure artifact exists; no COMPLETE")
         if trace is not None:
             trace_result = finish_perfetto(client, trace)
@@ -514,8 +561,8 @@ def run_one(manifest: dict[str, Any], config: dict[str, Any], authorization: dic
         atomic_json(output / "transport_manifest.json", {"schema": "a24-laptop-transport-v1", "files": files})
         registry.record("COMPLETE", {"raw_file_count": len(files), "trace_validation": result["status"],
             "app_cleanup_status": "DRAINED", "actual_worker_return_confirmed": True,
-            "journal_final_fsync_close_observed": False,
-            "journal_boundary": "cleanup follows worker close and dispatch barrier; final journal fd.sync/close occurs afterward and is not independently observed by this host",
+            "journal_final_fsync_close_observed": journal_closed is not None,
+            "journal_boundary": "exact post-fsync/close artifact observed and recovered" if journal_closed is not None else "cleanup follows worker close and dispatch barrier; final journal fd.sync/close not independently observed by this host",
             "sensor_metric_status": "REQUIRES_FROZEN_COVERAGE_ANALYSIS_NOT_ASSUMED_PASS"})
         return {"status": "COMPLETE_TRACE_RECOVERED", "trace": result, "actual_adb_calls": getattr(client, "actual_calls", 0)}
     except Exception as error:
@@ -531,7 +578,7 @@ def run_one(manifest: dict[str, Any], config: dict[str, Any], authorization: dic
             registry.record("FAIL", {"reason": str(error), "automatic_retry": False})
         elif not registry.session.exists():
             registry.record("PRESTART_REJECT", {"reason": str(error), "START": False, "session_run_consumed": False})
-        preserve_partial(client, output, session_id=sid, raw=host_raw, maximum_bytes=gate["maximum_raw_bytes"])
+        preserve_partial(client, output, session_id=sid, raw=host_raw, maximum_bytes=gate["maximum_raw_bytes"],package=package)
         # Preserve host observations even when app artifact recovery was partial.
         forensic = registry.session / "host_hal_partial.jsonl"
         if not forensic.exists():

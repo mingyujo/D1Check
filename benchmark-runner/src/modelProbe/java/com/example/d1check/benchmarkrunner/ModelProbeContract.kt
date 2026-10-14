@@ -183,7 +183,8 @@ internal object ModelProbeManifestParser {
         val deviceId = value.nonEmptyString("device_id")
         require(deviceIdRegex.matches(deviceId)) { "Invalid target.device_id" }
         val packageName = value.nonEmptyString("package_name")
-        require(packageName == "com.example.d1check.benchmarkrunner.modelprobe") {
+        require(packageName in setOf("com.example.d1check.benchmarkrunner.modelprobe",
+            "com.example.d1check.benchmarkrunner.a24measurement")) {
             "Unexpected target package"
         }
         val apkSha256 = value.sha256("apk_sha256")

@@ -9,6 +9,22 @@ internal data class A24PreparationManifest(
     val json: JSONObject, val sessionId: String, val prescription: A24PreparationContract.Prescription,
     val requests: List<A24PreparationContract.Request>, val inputs: Map<String,A24PreparationInput>,
 ) {
+    fun exactPlanSha256(): String = json.getString("plan_sha256").also {
+        require(it.matches(Regex("[0-9a-f]{64}")))
+    }
+    fun minimumBatteryPercent(): Int {
+        val mode = json.optString("soc_contract", "LEGACY_APP_MIN20")
+        return when (mode) {
+            "LEGACY_APP_MIN20" -> 20
+            "USER_SOC_GE10_20261015" -> json.getInt("minimum_battery_percent").also { require(it == 10) }
+            else -> error("Unsupported SOC contract")
+        }
+    }
+    fun batteryAdmitted(level: Int?, scale: Int?): Boolean {
+        val minimum = minimumBatteryPercent()
+        return level != null && scale != null && scale > 0 && level in 0..scale &&
+            level.toLong()*100 >= minimum.toLong()*scale
+    }
     companion object {
         fun parse(root: JSONObject): A24PreparationManifest {
             require(root.getString("protocol") == A24PreparationContract.PROTOCOL)

@@ -16,7 +16,7 @@ class FakeAdb:
     actual_calls = 0
 
     def __init__(self, manifest, *, ap=30.0, fingerprint="SOFTWARE-MOCK-FINGERPRINT", corrupt=False, active_pid=False, pid_outputs=None, pid_error_process=None,
-                 cleanup_delay_ns=0, cleanup_failed=False, summary_status="COMPLETED_PENDING_HOST_VALIDATION", failure_evidence=False, archive_cleanup_failed=False):
+                 cleanup_delay_ns=0, cleanup_failed=False, summary_status="COMPLETED_PENDING_HOST_VALIDATION", failure_evidence=False, archive_cleanup_failed=False, closure_delay_ns=None):
         self.manifest = manifest
         self.clock = NS
         self.origin = None
@@ -35,6 +35,9 @@ class FakeAdb:
         self.cleanup = {"status": "DRAIN_FAILED" if cleanup_failed else "DRAINED", "actual_return_confirmed": not cleanup_failed,
                         "error": "SOFTWARE_MOCK_DRAIN_FAILURE" if cleanup_failed else None, "session_failure": None}
         self.cleanup_observed_at = None
+        self.closure_delay_ns=closure_delay_ns
+        self.closed={'status':'SYNCED_AND_CLOSED','session_id':manifest['session_id'],'process_id':123}
+        self.tar_observed_at=None
 
     def sleep_ns(self, nanoseconds):
         self.clock += nanoseconds
@@ -55,7 +58,7 @@ class FakeAdb:
         if args == ("shell", "cat", "/proc/uptime"):
             return (str(self.clock / NS) + " 0\n").encode()
         if args == ("shell", "dumpsys", "thermalservice"):
-            return f"Temperature{{mValue={self.ap}, mType=0, mName=MOCK_AP, mStatus=0}}\n".encode()
+            return f"Current temperatures from HAL:\nTemperature{{mValue={self.ap}, mType=0, mName=MOCK_AP, mStatus=0}}\n".encode()
         if args == ("shell", "dumpsys", "battery"):
             return b"AC powered: false\nUSB powered: false\nWireless powered: false\nlevel: 60\nscale: 100\n"
         if args[-1].endswith("ready.json"):
@@ -75,13 +78,20 @@ class FakeAdb:
             if not self.failure_evidence or self.origin is None:
                 raise ValidationError("fake failure artifact absent")
             return b'{"status":"FAILED","reason":"SOFTWARE_MOCK_REQUEST_ERROR"}'
+        if args[-1].endswith('journal_closed.json'):
+            if self.origin is None or self.closure_delay_ns is None or self.clock-self.origin<210*NS+self.closure_delay_ns:
+                return ('cat: '+args[-1]+': No such file or directory\n').encode()
+            return json.dumps(self.closed).encode()
         if "tar" in args:
+            self.tar_observed_at=self.clock
             events, rows = replay_mock(self.manifest, t0_ns=self.origin)
             if self.corrupt:
                 events = [row for row in events if row["kind"] != "dispatch_stop"]
             cleanup = {**self.cleanup, "status": "DRAIN_FAILED"} if self.archive_cleanup_failed else self.cleanup
             data = {"events.jsonl": "".join(json.dumps(row) + "\n" for row in events).encode(), "requests.json": json.dumps(rows).encode(),
                     "summary.json": json.dumps(self.summary).encode(), "cleanup.json": json.dumps(cleanup).encode()}
+            if self.closure_delay_ns is not None and self.clock-self.origin>=210*NS+self.closure_delay_ns:
+                data['journal_closed.json']=json.dumps(self.closed).encode()
             stream = io.BytesIO()
             with tarfile.open(fileobj=stream, mode="w") as archive:
                 for name, contents in data.items():
@@ -412,6 +422,103 @@ class FutureControllerTest(unittest.TestCase):
         self.assertIsNone(sample["sensors"][0]["cache_age_ns"])
         self.assertFalse(sample["independent_sample_claim"])
 
+    def test_cached_AP_cannot_replace_current_HAL_AP(self):
+        fake = FakeAdb(self.manifest)
+        original = fake.command
+        def command(*args, **kwargs):
+            if args == ("shell", "dumpsys", "thermalservice"):
+                return b"Cached temperatures:\nTemperature{mValue=99.0, mType=0, mName=MOCK_AP, mStatus=0}\nCurrent temperatures from HAL:\nTemperature{mValue=30.0, mType=0, mName=MOCK_AP, mStatus=0}\nCurrent cooling devices from HAL:\n"
+            return original(*args, **kwargs)
+        fake.command = command
+        sample = control.read_hal(fake)
+        self.assertEqual([s["value_c"] for s in sample["sensors"]], [30.0])
+        self.assertEqual(sample["sensor_source_section"],"CURRENT_HAL")
+
+    def test_user_SOC10_contract_is_named_and_does_not_change_legacy(self):
+        control.frozen_gate(self.gate)
+        altered = {**self.gate,"minimum_SOC_percent":10,"maximum_SOC_percent":100}
+        with self.assertRaises(ValidationError): control.frozen_gate(altered)
+        control.frozen_gate({**altered,"soc_contract":"USER_SOC_GE10_20261015"})
+
+    def test_isolated_package_requires_exact_authorization_and_target_binding(self):
+        package=control.ISOLATED_PACKAGE
+        self.config['package_name']=package
+        self.config['apk_identity']['package']=package
+        for model in self.manifest['models'].values(): model['target']['package_name']=package
+        path=self.root/'bundle/session_manifest.json';path.write_text(json.dumps(self.manifest),encoding='utf-8')
+        self.config.update(manifest_bytes=path.read_bytes(),manifest_sha256=sha256(path),
+            files=[{'path':'session_manifest.json','bytes':path.stat().st_size,'sha256':sha256(path)}])
+        self.auth['manifest_sha256']=self.config['manifest_sha256']
+        with self.assertRaisesRegex(ValidationError,'isolated package is not explicitly authorized'):
+            control.check_authorization(self.manifest,self.config,self.auth,self.gate,execute_authorized=True)
+        self.auth['package_name']=package
+        control.check_authorization(self.manifest,self.config,self.auth,self.gate,execute_authorized=True)
+        self.config['package_name']='com.example.unrelated'
+        with self.assertRaisesRegex(ValidationError,'unapproved measurement package'):
+            control.check_authorization(self.manifest,self.config,self.auth,self.gate,execute_authorized=True)
+
+    def test_verified_installed_exact_APK_does_not_reinstall(self):
+        fake=FakeAdb(self.manifest);original=fake.command
+        def command(*args,**kwargs):
+            if args==('shell','pm','path',control.PACKAGE):return b'package:/data/app/OUR/base.apk\n'
+            if args==('shell','sha256sum','/data/app/OUR/base.apk'):return (self.config['apk']['sha256']+'  /data/app/OUR/base.apk\n').encode()
+            return original(*args,**kwargs)
+        fake.command=command;self.config['reuse_verified_installed_APK']=True
+        control.run_one(self.manifest,self.config,self.auth,self.gate,execute_authorized=True,client=fake)
+        self.assertFalse(any(call[0]=='install' for call in fake.calls))
+
+    def test_absent_isolated_APK_is_installed_before_session_start(self):
+        fake=FakeAdb(self.manifest);original=fake.command
+        def command(*args,**kwargs):
+            if args==('shell','pm','path',control.PACKAGE):
+                self.assertEqual(kwargs['accepted_codes'],(0,1))
+                self.assertTrue(kwargs['reject_stderr'])
+                fake.calls.append(args)
+                return b''
+            return original(*args,**kwargs)
+        fake.command=command;self.config['reuse_verified_installed_APK']=True
+        result=control.run_one(self.manifest,self.config,self.auth,self.gate,execute_authorized=True,client=fake)
+        self.assertEqual(result['status'],'COMPLETE_TRACE_RECOVERED')
+        install=next(i for i,c in enumerate(fake.calls) if c[0]=='install')
+        start=next(i for i,c in enumerate(fake.calls) if c[:3]==('shell','am','start'))
+        self.assertLess(install,start)
+
+    def test_android_exec_out_missing_file_stdout_is_not_a_failure_artifact(self):
+        fake=FakeAdb(self.manifest);original=fake.command
+        def command(*args,**kwargs):
+            if args[-1].endswith('failure.json'):
+                return ('cat: '+args[-1]+': No such file or directory\n').encode()
+            return original(*args,**kwargs)
+        fake.command=command
+        r=control.run_one(self.manifest,self.config,self.auth,self.gate,execute_authorized=True,client=fake)
+        self.assertEqual(r['status'],'COMPLETE_TRACE_RECOVERED')
+        self.assertFalse((Path(self.config['registry_root'])/self.manifest['session_id']/'FAIL.json').exists())
+
+    def test_android_exec_out_permission_text_is_not_assumed_missing(self):
+        fake=FakeAdb(self.manifest);original=fake.command
+        def command(*args,**kwargs):
+            if args[-1].endswith('failure.json'):return ('cat: '+args[-1]+': Permission denied\n').encode()
+            return original(*args,**kwargs)
+        fake.command=command
+        with self.assertRaisesRegex(ValidationError,'malformed published app terminal artifact'):
+            control.run_one(self.manifest,self.config,self.auth,self.gate,execute_authorized=True,client=fake)
+
+    def test_final_journal_close_is_observed_before_complete_recovery(self):
+        fake=FakeAdb(self.manifest,closure_delay_ns=20*NS)
+        self.config['require_journal_closed_before_recovery']=True
+        r=control.run_one(self.manifest,self.config,self.auth,self.gate,execute_authorized=True,client=fake)
+        self.assertEqual(r['status'],'COMPLETE_TRACE_RECOVERED')
+        self.assertGreaterEqual(fake.tar_observed_at,fake.origin+230*NS)
+        ledger=Path(self.config['registry_root'])/self.manifest['session_id']/'COMPLETE.json'
+        self.assertTrue(json.loads(ledger.read_text())['journal_final_fsync_close_observed'])
+
+    def test_missing_final_journal_close_cannot_make_COMPLETE(self):
+        fake=FakeAdb(self.manifest,closure_delay_ns=100*NS)
+        self.config['require_journal_closed_before_recovery']=True
+        with self.assertRaisesRegex(ValidationError,'journal closure timeout'):
+            control.run_one(self.manifest,self.config,self.auth,self.gate,execute_authorized=True,client=fake)
+        self.assertFalse((Path(self.config['registry_root'])/self.manifest['session_id']/'COMPLETE.json').exists())
+
     def test_tar_link_and_traversal_refused_before_any_output(self):
         for malicious in ("../outside.txt", "files/a24_laptop_results/OTHER/a.txt"):
             stream = io.BytesIO()
@@ -447,15 +554,18 @@ class FutureControllerTest(unittest.TestCase):
     def test_perfetto_mock_detach_is_bounded_and_stops_only_its_unique_key(self):
         class PerfettoFake:
             def __init__(self): self.calls = []
-            def command(self, *args):
+            def command(self, *args, **kwargs):
                 self.calls.append(args)
                 if args[-1] == "--version": return b"SOFTWARE_MOCK_PERFETTO_VERSION"
-                if args[-1] == "--help": return b"--detach --attach --stop"
+                if args == ("shell","perfetto","--help","2>&1"):
+                    self.help_codes = kwargs['accepted_codes']
+                    return b"--detach --attach --stop"
                 if args[:2] == ("exec-out", "cat"): return b"MOCK_TRACE_BYTES_NOT_DEVICE_DATA"
                 return b""
         fake = PerfettoFake()
         trace = control.start_perfetto(fake, self.manifest["session_id"], {"device_version": "SOFTWARE_MOCK_PERFETTO_VERSION", "profile_path": "SOFTWARE_MOCK_NOT_EXECUTED.pbtxt"})
         self.assertEqual(trace["hard_duration_ms"], 210000)
+        self.assertEqual(fake.help_codes,(0,1))
         result = control.finish_perfetto(fake, trace)
         self.assertIsNone(result["hardware_counter_values"])
         self.assertTrue(any("--attach=" + trace["key"] in command for command in fake.calls))

@@ -1,3 +1,7 @@
+# 2026-10-15 A24-MEASURE-01 실제 작업
+
+사용자가 실제 측정을 승인했다. [64슬롯 계획](team/a24-laptop-measurements-20261014/PLAN.md)을 별도 원장으로 진행하며 원 계획 바이트/입력/기한/작업량을 보존한다. 기기 SOC10% 이상·단절 최대20분 지시가 과거 SOC40~80 제안보다 우선한다. signer 충돌에 대한 별도 namespace와 common prepared-resident 초기 reference 변경은 [결정 기록](DECISIONS.md)의 당일 항목을 따른다. [진행/제한](team/a24-laptop-measurements-20261014/MEASUREMENT_PROGRESS.md)의 PC 검사, 실제 추론, 성공한 본측정을 구분한다. DEV 이후 계측/분석/초기/예측 또는 없음이 동결되기 전 CONFIRM은 시작하지 않는다. 아래 사전 준비와2026-09 기존 계획은 이력이다.
+
 # 2026-10-15 A24-LAPTOP-PREP-01 사전 준비 종료
 
 새 opt-in 실행기/host 검산/미소비64세션/APK의 PC 준비를 완료했다. `ec8a1424` 참고 소스·프로필을 바이트 검산했고 새8군 분석은 미동결 초안으로 정리했다. 실제 측정은0이며 준비 완료로 I/F/DEV/CONFIRM을 소비하지 않는다. 현재 범위·명령·미검증 항목은 [준비 보고서](team/a24-laptop-measurements-20261014/PREPARATION_REPORT.md)를 따른다. 신규 예측/학습/미저장EP814 재수집을 자동 시작하지 않는다.

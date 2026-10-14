@@ -126,6 +126,16 @@ class ModelProbeContractTest {
     }
 
     @Test
+    fun approvedIsolatedPackagePreservesOriginalAndRejectsOtherPackages() {
+        val source = validManifest("a24-primary", "serial-a24")
+        assertEquals("com.example.d1check.benchmarkrunner.modelprobe", ModelProbeManifestParser.parse(source).target.packageName)
+        source.getJSONObject("target").put("package_name", "com.example.d1check.benchmarkrunner.a24measurement")
+        assertEquals("com.example.d1check.benchmarkrunner.a24measurement", ModelProbeManifestParser.parse(source).target.packageName)
+        source.getJSONObject("target").put("package_name", "com.example.other")
+        assertThrows(IllegalArgumentException::class.java) { ModelProbeManifestParser.parse(source) }
+    }
+
+    @Test
     fun modelFileRequiresContainedExactRegularBytesAndRejectsPartFiles() {
         val root = Files.createTempDirectory("probe-model").toFile()
         try {

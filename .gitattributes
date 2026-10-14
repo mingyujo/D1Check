@@ -154,3 +154,14 @@ tools/test_d1_a24_laptop.py -text
 tools/test_d1_a24_laptop_bind.py -text
 tools/test_d1_a24_laptop_control.py -text
 tools/test_d1_a24_laptop_plan.py -text
+
+# Exact measured-source additions and CPU decoded reference bytes
+benchmark-runner/src/testModelProbe/java/com/example/d1check/benchmarkrunner/A24MeasurementBindingTest.kt -text
+tools/d1_a24_measurement_batch.py -text
+tools/d1_a24_measurement_connection.py -text
+tools/test_d1_a24_measurement_batch.py -text
+tools/test_d1_a24_measurement_connection.py -text
+benchmark-runner/src/testModelProbe/java/com/example/d1check/benchmarkrunner/A24ActualManifestPreflightTest.kt -text
+tools/d1_a24_measurement_analysis.py -text
+tools/test_d1_a24_measurement_analysis.py -text
+docs/team/a24-laptop-measurements-20261014/quality-reference/*.json -text

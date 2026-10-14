@@ -6,6 +6,7 @@ plugins {
 
 val modelProbeEnabled = providers.gradleProperty("enableModelProbe").orNull == "true"
 val a24PreparationEnabled = providers.gradleProperty("enableA24Preparation").orNull == "true"
+val a24MeasurementIsolation = providers.gradleProperty("a24MeasurementIsolation").orNull == "true"
 
 if (a24PreparationEnabled) {
     dependencyLocking { lockAllConfigurations() }
@@ -45,8 +46,8 @@ android {
         if (a24PreparationEnabled) {
             create("a24Preparation") {
                 initWith(getByName("debug"))
-                // The exact legacy ModelProbeManifest target package remains stable.
-                applicationIdSuffix = ".modelprobe"
+                // Isolation preserves an existing differently signed measurement app/data.
+                applicationIdSuffix = if (a24MeasurementIsolation) ".a24measurement" else ".modelprobe"
                 isDebuggable = true
                 matchingFallbacks += listOf("debug")
             }
