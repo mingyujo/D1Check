@@ -41,4 +41,32 @@ class ConnectionTests(unittest.TestCase):
             with self.assertRaisesRegex(ValidationError,'20 minutes'):client.reconnect()
             self.assertLessEqual(clock[0],25)
 
+    def test_local_daemon_failure_recovers_even_when_get_state_says_device(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            client,calls,_=self.fixture(Path(tmp));original=client.runner;failed=[False]
+            def runner(argv,**kwargs):
+                if argv[-1]=='get-state':return subprocess.CompletedProcess(argv,0,b'device\n',b'')
+                if argv[-1]=='/proc/uptime' and not failed[0]:
+                    failed[0]=True;return subprocess.CompletedProcess(argv,1,b'',b'* daemon still not running; cannot connect to daemon at tcp:5037')
+                # Bypass the fixture's independent initial offline event.
+                if argv[-1]=='/proc/uptime':return subprocess.CompletedProcess(argv,0,b'123 0\n',b'')
+                return original(argv,**kwargs)
+            client.runner=runner
+            self.assertEqual(client.command('shell','cat','/proc/uptime'),b'123 0\n')
+            self.assertEqual(client.disconnects,1)
+
+    def test_read_timeout_also_requires_same_phone_handshake_before_retry(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            client,calls,_=self.fixture(Path(tmp));original=client.runner;failed=[False]
+            def runner(argv,**kwargs):
+                if argv[-1]=='get-state':return subprocess.CompletedProcess(argv,0,b'device\n',b'')
+                if argv[-1]=='/proc/uptime':
+                    if not failed[0]:failed[0]=True;raise subprocess.TimeoutExpired(argv,30)
+                    return subprocess.CompletedProcess(argv,0,b'123 0\n',b'')
+                return original(argv,**kwargs)
+            client.runner=runner
+            self.assertEqual(client.command('shell','cat','/proc/uptime'),b'123 0\n')
+            self.assertTrue(any(c[-1]=='ro.serialno' for c in calls))
+            self.assertTrue(any(c[-1]=='ro.build.fingerprint' for c in calls))
+
 if __name__=='__main__':unittest.main()

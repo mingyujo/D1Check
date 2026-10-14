@@ -66,11 +66,16 @@ class ReconnectingAdbClient(NativeAdbClient):
     def command(self, *args: str, input_bytes: bytes | None = None,
                 accepted_codes: tuple[int,...]=(0,), reject_stderr: bool=False) -> bytes:
         result=self._run(self.prefix+list(args),input_bytes)
-        if result is None or (result.returncode not in accepted_codes and any(s in result.stderr.lower()
+        server_error = result is not None and result.returncode not in accepted_codes and any(s in result.stderr.lower()
+            for s in (b"cannot connect to daemon",b"daemon still not running",b"cannot connect to 127.0.0.1",b"connection reset"))
+        if result is None or server_error or (result.returncode not in accepted_codes and any(s in result.stderr.lower()
             for s in (b"device offline",b"device not found",b"no devices",b"closed",b"disconnected",b"not found"))):
             # Check physical connectivity; ordinary missing app files are not a disconnect.
             state=self._run(self.prefix+["get-state"])
-            if state is None or state.returncode!=0 or state.stdout.strip()!=b"device":
+            # get-state can report a registered transport while the shell RPC
+            # has timed out, or after a local daemon briefly disappears. The
+            # same-phone hardware/fingerprint handshake proves live recovery.
+            if result is None or server_error or state is None or state.returncode!=0 or state.stdout.strip()!=b"device":
                 self.reconnect()
                 if not read_only_command(tuple(args)):
                     raise ValidationError("connection recovered after ambiguous mutation; never replay install/push/start/claim")

@@ -38,3 +38,7 @@ F2의 분류GPU252 요청은 전량 서비스창 안 및 각2.2초 기한 안에
 정확한 원표본은 보존하고 검증된 에너지 J와 에너지 절감 판정은 null로 남긴다. 필요한 경우 API 선언 단위의 계산값은 진단 가설로 분리한다. sysfs battery 속성은 접근 거부됐으며 우회하지 않았다. 외부 전력계는 없고 HAL AP의 독립 갱신 시각/cache age도 제공되지 않는다. AP 읽기 시각의 경로·평균·관측 최고값과 실제 표면 온도·센서 정확도를 구분한다.
 
 데스크톱 기존 학습·EP813/EP814·NPU·원 worktree의 사용자 변경·기존 데이터는 변경하지 않는다. strict·기본 정책·`experiment_ready=false`를 유지한다. CONFIRM은 앞 단계 시도 기록과 계측/초기/분석/예측 또는 명시적 예측 없음이 동결된 뒤에만 진행한다.
+
+## 개발 중 통신 복구 v8
+
+DEV01 분류CPU 준비에서 로컬 ADB server의 tcp5037 응답 실패를 기록했다. 직후 같은 기기의 원부분 회수가 성공했고 앱은 본 요청START0·warmup8 뒤 준비 timeout으로 정상 cleanup/journal close를 남겼다. 이 슬롯도 재실행하지 않는다. 같은 hardware/fingerprint를 확인하는 최대20분 복구 경로를 로컬 daemon 장애·shell RPC timeout에도 적용했다. 읽기 명령만 다시 읽으며 install/push/am start/claim의 불분명한 결과는 재실행하지 않는다. PC 연결 검증6개 PASS; 기기실행의 정상화와 별도 기록한다.

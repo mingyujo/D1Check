@@ -1,3 +1,7 @@
+# 2026-10-15 실제 A24 작업 진행
+
+PC 준비 종료 뒤 별도 사용자 승인을 받아 실제 작업을 진행하고 있다. [실제 진행·오류·계측 제한](MEASUREMENT_PROGRESS.md)을 먼저 읽는다. [측정 source v7](MEASUREMENT_SOURCE_V7.json)과 [통신 복구 v8](MEASUREMENT_SOURCE_V8.json)은 버전별 실제 코드 바이트다. 아래의 준비 완료·기기 명령0 표기는 당시 PC 준비 경계의 이력이다. 모델·APK·개인 기기 원로그는 공개하지 않는다.
+
 # 2026-10-15 노트북 PC 준비 완료 / DEVICE_UNVERIFIED
 
 새 opt-in 실행기·host 검산/회수/미래 제어기·미소비64세션 계획과 새 APK의 PC 준비를 완료했다. 최종 Python103개·새 JVM18개 PASS, 데스크톱 참고73파일 SHA 검산 완료. 실제 기기 작업·실측 START/claim·세션 소비0. [최종 준비 보고서](PREPARATION_REPORT.md), [PC·미래 명령](COMMANDS.md), [실기기 체크리스트](DEVICE_CHECKLIST.md), [데스크톱 인수 기록](DESKTOP_REFERENCE_INTAKE.md), [미동결 분석 초안](ANALYSIS_CONTRACT_DRAFT.md), [남은 자료](DESKTOP_REQUIRED.md), [정확 원물 SHA](MATERIALS_AUDIT.md)를 먼저 본다. 아래는 최초 계획 전달 상태이며 새 APK 미완성이라는 표기는 당시 상태다.
