@@ -212,9 +212,14 @@ class Driver(D7.Driver):
             time.sleep(60)
         d = s.get("last_power_disconnected_epoch")
         if charged and d:
-            until = d + M8.CHARGE_TO_FIRST_RUN_MIN_S
-            self.state["charges"].append(dict(label=label, unplugged=s.get("last_power_disconnected"), resume_at=dt.datetime.fromtimestamp(until).isoformat(timespec="seconds")))
-            self.wait_until(until, "charge rest 1,200 s after unplug")
+            if self.args.no_fixed_idle:
+                self.log("charge unplugged -> 고정 유휴 1,200 s 생략 (영훈 10/15 08:xx · 온도 게이트만) · 바로 HAL → 게이트")
+                self.state["charges"].append(dict(label=label, unplugged=s.get("last_power_disconnected"), resume_at=now_iso(), fixed_idle_skipped=True))
+                self.event(what="charge_rest_skipped", label=label, unplugged=s.get("last_power_disconnected"), reason="영훈 10/15 08:xx 지시 · 온도 조건만")
+            else:
+                until = d + M8.CHARGE_TO_FIRST_RUN_MIN_S
+                self.state["charges"].append(dict(label=label, unplugged=s.get("last_power_disconnected"), resume_at=dt.datetime.fromtimestamp(until).isoformat(timespec="seconds")))
+                self.wait_until(until, "charge rest 1,200 s after unplug")
         return charged
 
     def last_run_end_any(self) -> float | None:
@@ -228,14 +233,20 @@ class Driver(D7.Driver):
         """Tref_day v2 (조민규 01:5x #5 · m8_gate TREF_DAY_FIRST_STABLE_AP60_V2): 드라이버 시작 날짜에 한 번만 — 직전 실행 끝/충전 분리 뒤 ≥ 1,200 s 유휴 → 같은 준비·유휴 조건의 호스트 HAL 에서
         처음 확보한 안정 60 s AP 창 (|기울기| ≤ 0.1 ℃/min · 표본 ≥ 20 · gap ≤ 5 s) 의 중앙값. 탐색 ≤ 1,200 s · 없으면 "Tref 판정 불가" 원장 + 최소 |기울기| 창 (stable_miss). 블록 안 재산출 0 (S26_M8_tref.json 날짜별 · sealed)."""
         day = self.state["started"][:10]
+        key = self.args.tref_key or day
         store = C.read_json(self.tref_file) if self.tref_file.is_file() else {}
-        if day in store and store[day].get("tref_c") is not None:
-            return store[day]
+        if key in store and store[key].get("tref_c") is not None:
+            return store[key]
         s = self.phone_state()
         anchors = [x for x in (self.last_run_end_any(), s.get("last_power_disconnected_epoch")) if x]
         idle_from = max(anchors) if anchors else time.time()
-        search_from = max(idle_from + M8.TREF_IDLE_S, h["started_epoch"])
-        self.log(f"Tref_day {day} (v2 AP 첫 안정 60 s): idle since {dt.datetime.fromtimestamp(idle_from).isoformat(timespec='seconds')} -> search from {dt.datetime.fromtimestamp(search_from).isoformat(timespec='seconds')}")
+        if self.args.no_fixed_idle:
+            # 영훈 10/15 08:xx: 고정 유휴 1,200 s 생략 · HAL 시작부터 바로 안정 60 s 창 탐색 (온도 조건만 · 탐색 상한 없음)
+            search_from = h["started_epoch"]
+            self.log(f"Tref key={key} (v2 AP 첫 안정 60 s · 영훈 지시 --no-fixed-idle: 유휴 1,200 s 생략 · 탐색 상한 없음): idle since {dt.datetime.fromtimestamp(idle_from).isoformat(timespec='seconds')} ({round(time.time() - idle_from)} s 전) -> search from HAL start {dt.datetime.fromtimestamp(search_from).isoformat(timespec='seconds')}")
+        else:
+            search_from = max(idle_from + M8.TREF_IDLE_S, h["started_epoch"])
+            self.log(f"Tref key={key} (v2 AP 첫 안정 60 s): idle since {dt.datetime.fromtimestamp(idle_from).isoformat(timespec='seconds')} -> search from {dt.datetime.fromtimestamp(search_from).isoformat(timespec='seconds')}")
         self.wait_until(search_from + M8.TREF_WINDOW_S, "Tref idle ≥ 1,200 s + 60 s")
         checks = []
         undecidable_logged = False
@@ -246,16 +257,17 @@ class Driver(D7.Driver):
             self.log(f"Tref candidate AP median {cand['tref_c']} slope {cand.get('ap_slope_c_per_min')} samples {cand.get('ap_samples')} gap {cand.get('max_gap_s')} windows {cand.get('checked_windows')} -> {'stable' if cand['stable'] else cand.get('reason')}")
             if cand["stable"]:
                 break
-            if time.time() - search_from >= M8.TREF_SEARCH_MAX_S:
+            if time.time() - search_from >= M8.TREF_SEARCH_MAX_S and not self.args.no_fixed_idle:
                 self.log(f"Tref 판정 불가 (안정 60 s AP 창 없음 · {M8.TREF_SEARCH_MAX_S} s 탐색) -> 최소 |기울기| 창 사용 · stable_miss 표시 (REJECT 아님 · 원장)")
                 with open(self.prestart, "a", encoding="utf-8") as f:
                     f.write(json.dumps(dict(t=now_iso(), epoch=time.time(), stage=self.args.stage, label="Tref_day", result="TREF_UNDECIDABLE", reason=cand.get("reason"),
                                             candidate={k: v for k, v in cand.items() if k != "status"}), ensure_ascii=False, default=str) + "\n")
                 break
             time.sleep(M8.GATE_POLL_S)
-        rec = dict(cand, day=day, stable_miss=not cand["stable"], checks=checks, idle_from_epoch=idle_from, search_from_epoch=search_from, hal_csv=h["csv"], status=G.STATUS,
-                   sealed=True, fixed_before_first_dev_policy_run=True, recompute_within_block=False)
-        store[day] = rec
+        rec = dict(cand, day=day, key=key, stable_miss=not cand["stable"], checks=checks, idle_from_epoch=idle_from, idle_before_search_s=round(search_from - idle_from), search_from_epoch=search_from, hal_csv=h["csv"], status=G.STATUS,
+                   sealed=True, fixed_before_first_dev_policy_run=True, recompute_within_block=False, fixed_idle_skipped=bool(self.args.no_fixed_idle),
+                   note=("영훈 10/15 08:xx 지시: 충전 뒤 고정 유휴 1,200 s 생략 · 온도 조건 (안정 60 s 창) 만 · 등록 v2 §3-2 와 다른 점" if self.args.no_fixed_idle else None))
+        store[key] = rec
         C.write_json(self.tref_file, store)
         self.event(what="tref_day", **{k: v for k, v in rec.items() if k not in ("checks", "t", "what")})   # rec["t"] 는 이벤트 로거의 t 와 겹침 (03:08 TypeError 고침)
         return rec
@@ -412,7 +424,7 @@ class Driver(D7.Driver):
                 self.wait_until(float(prev["epoch"]) + M8.RUN_GAP_MIN_S, "run gap ≥ 90 s")
 
     def items(self) -> list[dict]:
-        st = self.blocks["stages"]
+        st = (C.read_json(Path(self.args.plan_file)) if self.args.plan_file else self.blocks)["stages"]
         if self.args.stage == "smoke":
             lst = st["smoke"]
         elif self.args.stage == "p0":
@@ -430,6 +442,7 @@ class Driver(D7.Driver):
         self.acquire_lock()
         self.log(f"DRIVER START stage={self.args.stage} block={self.args.block} items={[i['label'] for i in items]} base={self.base}")
         self.log("NOTE: laptop lid OPEN · screen_off_timeout 86400000 kept · SOC start min 20 (영훈) · Tref gate = v2 (AP 첫 안정 60 s · 조민규 01:5x 확정)")
+        self.log(f"FLAGS: tref_key={self.args.tref_key or '(day)'} no_fixed_idle={self.args.no_fixed_idle} plan_file={self.args.plan_file or '(blocks.json)'}")
         try:
             if self.adb_state() != "device" and not self.wait_adb(self.args.reconnect_wait_s):
                 raise Stop("adb not connected at start (새 주소)")
@@ -471,6 +484,9 @@ def main() -> int:
     ap.add_argument("--reconnect-wait-s", type=int, default=600)
     ap.add_argument("--lock-wait-s", type=int, default=3600)
     ap.add_argument("--charge-to-soc", type=int, default=60, help="SOC < 20 로 충전할 때 '뽑으세요' 를 말할 SOC (영훈 운영 · 상한 없음)")
+    ap.add_argument("--tref-key", default="", help="S26_M8_tref.json 의 키 (기본 = 드라이버 시작 날짜). 10/15 영훈: 블록 1 (낮) · 블록 2 는 각각 새 측정 구간 → 키를 나눠 재산출 (블록 안 재산출 0 은 그대로)")
+    ap.add_argument("--no-fixed-idle", action="store_true", help="영훈 10/15 08:xx: 충전 분리 뒤 1,200 s 고정 유휴 · Tref 전 1,200 s 고정 유휴 생략 — 온도 조건 (안정 60 s 창 · 게이트) 만 적용 · Tref 탐색 상한 없음 (안정 창까지)")
+    ap.add_argument("--plan-file", default="", help="blocks.json 대신 쓸 계획 파일 (예: plan_m8/p0_supp.json · stages.p0 한 세션 · P0 보충)")
     args = ap.parse_args()
     M8.activate()
     return Driver(args).run()
