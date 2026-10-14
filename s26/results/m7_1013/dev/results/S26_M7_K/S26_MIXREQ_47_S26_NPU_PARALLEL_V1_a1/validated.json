@@ -1,0 +1,147 @@
+{
+  "a24_differences": [],
+  "analysis_split": "dev",
+  "attempt": 1,
+  "block": "M",
+  "counts": {
+    "failed": 0,
+    "planned": 100,
+    "succeeded": 100,
+    "unfinished": 0
+  },
+  "device_dir": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_K\\S26_MIXREQ_47_S26_NPU_PARALLEL_V1_a1\\device",
+  "eligible": true,
+  "experiment_id": "S26-M6-P",
+  "host_dir": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_K\\S26_MIXREQ_47_S26_NPU_PARALLEL_V1_a1\\host",
+  "m6_letter": "N",
+  "m6_load": "L",
+  "m6_run": null,
+  "mixreq_reasons": [],
+  "mixreq_rules": {
+    "0_artifacts": {
+      "passed": true
+    },
+    "1_requests_succeeded_quality": {
+      "passed": true
+    },
+    "2_time_order": {
+      "passed": true
+    },
+    "3_window": {
+      "passed": true
+    },
+    "4_assignment_residents": {
+      "passed": true
+    },
+    "5_overlap": {
+      "passed": true
+    },
+    "6_warmup_quality": {
+      "passed": true
+    },
+    "7_delegation_evidence": {
+      "passed": true
+    },
+    "8_plugged_start": {
+      "passed": true
+    },
+    "9_watch_stop": {
+      "passed": true
+    }
+  },
+  "mixreq_rules_note": "mixreq_validate 9규칙 = 기록 (판정 밖) · 유효 = 등록 M6 v3 §3-6 V1 ~ V5 (P) / K1 ~ K3 (K)",
+  "npu_contract": true,
+  "pair": 0,
+  "policy": "S26_NPU_PARALLEL_V1",
+  "reasons": [],
+  "registration": {
+    "commit": "9395151ddd22482b70a029fc72f8733db8bedb51",
+    "file": "d1sim/docs/M7_확대반복_사전등록_v2.md",
+    "sha256": "c3da26cc05c496ed4ebaf718f9c7d3293204e5223e0830a1fb0c378968a226bb",
+    "time": "2026-10-13T21:03:58+09:00"
+  },
+  "rules": {
+    "V1_dispatch_terminal": {
+      "detail": {
+        "dispatched": 100,
+        "planned": 100,
+        "rows": 100,
+        "succeeded": 100,
+        "terminal": 100
+      },
+      "passed": true
+    },
+    "V2_all_available_by_120s": {
+      "detail": {
+        "bound_s": 120.0,
+        "boundary_lane_available_null": 0,
+        "boundary_rows": 100,
+        "events_at_or_after_bound": 0,
+        "lane_available_events": 100,
+        "last_lane_available_s": 74.842124375,
+        "null_ids": [],
+        "origin_ns": 389455115244502
+      },
+      "passed": true
+    },
+    "V3_samples_drain": {
+      "detail": {
+        "drain_completed": true,
+        "mixreq_rule0": true,
+        "rule0_detail": {
+          "cleanup_completed": true,
+          "common_boundary": true,
+          "part_files_zero": true,
+          "requests_json": true,
+          "result_files": true,
+          "split": "confirmation",
+          "summary_completed": true,
+          "time_scale": 1,
+          "time_scale_ok": true,
+          "warmup_json": true
+        },
+        "samples": {
+          "count": 240,
+          "interactive_false": 0,
+          "max_gap_s": 0.922415782,
+          "plugged_nonzero": 0
+        }
+      },
+      "passed": true
+    },
+    "V4_overlap_npu": {
+      "detail": {
+        "condition": "N: NPU contract PASS",
+        "npu_contract": true
+      },
+      "passed": true
+    },
+    "V5_safety": {
+      "detail": {
+        "samples": {
+          "count": 240,
+          "interactive_false": 0,
+          "max_gap_s": 0.922415782,
+          "plugged_nonzero": 0
+        },
+        "start_check": true,
+        "watch_stop": {
+          "failure_files": [],
+          "stop_reason": null,
+          "watch_events": {
+            "phone": 0,
+            "skin": 0
+          },
+          "watch_source": "host csv"
+        }
+      },
+      "passed": true
+    }
+  },
+  "schema": "s26-m6-validated-v1",
+  "selftest": false,
+  "session_id": "79e3851f-49a5-50e2-a935-f5599e371a02",
+  "session_index": 47,
+  "split": "confirmation",
+  "time_scale": 1
+}
