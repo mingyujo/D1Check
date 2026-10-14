@@ -1,0 +1,89 @@
+{
+  "schema": "a24-offline-measurement-analysis-v1",
+  "session_id": "689ea101-59ae-5e9c-ab09-b61d6a8b5a11",
+  "stage": "DEV",
+  "arm": "ORDER",
+  "recipe": "M128",
+  "service": {
+    "C": {
+      "planned": 96,
+      "completed_in_service": 96,
+      "on_time": 27,
+      "on_time_rate_all_planned": 0.28125,
+      "response_P95_ms_service_successes": 8659.759851,
+      "not_on_time_all_planned": 69
+    },
+    "D": {
+      "planned": 32,
+      "completed_in_service": 32,
+      "on_time": 5,
+      "on_time_rate_all_planned": 0.15625,
+      "response_P95_ms_service_successes": 12019.704004,
+      "not_on_time_all_planned": 27
+    }
+  },
+  "trace": {
+    "planned": 128,
+    "C_planned": 96,
+    "D_planned": 32,
+    "completed_in_service": 128,
+    "drain_completed": 0,
+    "failed": 0,
+    "unfinished": 0,
+    "dispatches": 128,
+    "wait_count": 0,
+    "wait_nominal_ns": 0,
+    "wait_actual_ns": 0,
+    "wait_timer_overshoot_ns": 0,
+    "actual_pair_overlap_ns": 0,
+    "owners_at_end": {
+      "CPU": null,
+      "GPU": null
+    },
+    "common_origin_ns": 485683184170581,
+    "dispatch_stop_actual_ns": 485803185368665,
+    "dispatch_stop_timer_overshoot_ns": 1198084,
+    "logging_end_ns": 485893252660055,
+    "last_journal_record_ns": 485893252660055,
+    "C_on_time": 27,
+    "C_on_time_rate_all_planned": 0.28125,
+    "C_response_p95_ns_completed_only": 8659759851,
+    "D_on_time": 5,
+    "D_on_time_rate_all_planned": 0.15625,
+    "D_response_p95_ns_completed_only": 12019704004
+  },
+  "decoded_quality": {
+    "result_count": 128,
+    "failures": 0,
+    "maximum_score_difference": 1.0800000000144028e-06
+  },
+  "GPU_delegation": {
+    "C_full_log_observed": true,
+    "D_full_resident_only_log_observed": true,
+    "precision": "UNKNOWN_GPU_INTERNAL_PRECISION"
+  },
+  "thermal": {
+    "status": "READOUT_WINDOW_COVERED",
+    "integral": 4320.126385996756,
+    "sample_count": 56,
+    "maximum_observed_gap_ns": 2695000000,
+    "mean_reported_AP_c": 29.793975075839693,
+    "highest_observed_AP_c": 31.1,
+    "HAL_cache_age_ns": null,
+    "meaning": "HAL readout at host device-clock brackets; sensor refresh age and calibration unverified"
+  },
+  "energy": {
+    "status": "CURRENT_SCALE_UNRESOLVED_ENERGY_NOT_VALIDATED",
+    "sample_count": 202,
+    "maximum_observed_gap_ns": 924646154,
+    "energy_J": null,
+    "API_uA_hypothesis_J": 0.18920446854437994,
+    "current_scale_correction_applied": false,
+    "external_meter": false,
+    "meaning": "API readings conflict with charge-counter scale; no mA substitution or calibrated saving claim"
+  },
+  "calibrated_energy_or_model_accuracy_PASS": false,
+  "actual_control_cost_J": null,
+  "AP_exceedance_time_s": null,
+  "threshold_was_not_invented": true
+}
