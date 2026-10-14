@@ -8,7 +8,7 @@
   "jitter": 0,
   "banks": {
     "L64": {"count": 64, "first_offset_us": 35000000, "rule": "i = 0..63 · offset = 35,000,000 + 1,000,000·i µs · 짝 = C · 홀 = D (교대) · ordinal = i", "last_offset_us": 98000000, "C": 32, "D": 32},
-    "C252": {"count": 252, "first_offset_us": 35000000, "rule": "i = 0..251 · offset = 35,000,000 + 333,200·i µs · 전부 C · ordinal = i", "last_offset_us": 118638200, "C": 252, "D": 0,
+    "C252": {"count": 252, "first_offset_us": 35000000, "rule": "i = 0..251 · offset = 35,000,000 + 333,200·i µs · 전부 C · ordinal = i", "last_offset_us": 118633200, "C": 252, "D": 0,
              "note": "마지막 도착 118.638 s < 120 s 경계 · 'S26 포화 부하' 라 부르지 않음"},
     "M128": {"count": 128, "bursts": 16, "per_burst": 8, "pattern": "CCCDCCCD", "first_offset_us": 35000000, "burst_interval_us": 537155,
              "rule": "k = 0..15 · j = 0..7 · i = 8k + j · offset = 35,000,000 + 537,155·k µs (묶음 안 8건 같은 시각) · task = pattern[j] · ordinal = i (같은 시각 8건의 ordinal = 묶음 안 자리 j 순)",

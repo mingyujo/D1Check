@@ -1,0 +1,5996 @@
+{
+  "compare_with_a4": {
+    "compared": 40,
+    "differences": [],
+    "same": true
+  },
+  "note": "M7-A 는 cooling 60 → 앱 post_t0 ≈ 179.5 ~ 179.9 < 210 → 앱 FAIL 이 기대값 (M8 cooling 90 의 근거) · host 는 PASS",
+  "p_app_180_both": "0/18",
+  "p_app_pass": "0/18",
+  "p_app_post_t0_min_max": [
+    179.498,
+    179.93
+  ],
+  "p_host_ap180": "18/18",
+  "p_host_ap35": "18/18",
+  "p_host_iv0": "18/18",
+  "p_host_iv180": "18/18",
+  "p_sessions": 18,
+  "schema": "s26-m8-coverage-check-v1-m7",
+  "sessions": 41,
+  "sessions_detail": [
+    {
+      "app": {
+        "charge_counter_changes": 12,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -35.578,
+        "interval_median_s": 0.9,
+        "last_valid_s": 839.244,
+        "max_gap_s": 0.921,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.442,
+            "before_s": -0.466,
+            "gap_s": 0.909,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.141,
+            "before_s": 119.247,
+            "gap_s": 0.895,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": 180.434,
+            "before_s": 179.533,
+            "gap_s": 0.901,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.531,
+            "before_s": 34.634,
+            "gap_s": 0.897,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 839.244,
+        "pre_t0_s": 35.578,
+        "reasons": [
+          "pre_t0 35.578 < 60"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 973,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 973,
+        "voltage_changes": 2
+      },
+      "experiment_id": "S26-M6-K",
+      "folder": "results\\S26_M7_K\\S26_MIXREQ_04_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_K1A_a1.csv",
+      "host": {
+        "ap_first_s": -2164.472,
+        "ap_last_s": 855.318,
+        "ap_points": {
+          "180": {
+            "after_s": 181.318,
+            "before_s": 178.988,
+            "gap_s": 2.33,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 36.408,
+            "before_s": 34.178,
+            "gap_s": 2.23,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 1314,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.928,
+            "before_s": -0.412,
+            "gap_s": 2.34,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 181.318,
+            "before_s": 178.988,
+            "gap_s": 2.33,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 1314,
+        "max_gap_s": 3.28,
+        "passed": true,
+        "post_t0_s": 855.318,
+        "pre_t0_s": 2164.472,
+        "reasons": [],
+        "rows": 1314,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 35.578 < 60"
+      ],
+      "root": "S26_M7_K",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "fd605c9a-0e89-58c8-8edb-4238a3996936",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 13,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -34.451,
+        "interval_median_s": 0.9,
+        "last_valid_s": 839.458,
+        "max_gap_s": 0.922,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.662,
+            "before_s": -0.239,
+            "gap_s": 0.901,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.372,
+            "before_s": 119.474,
+            "gap_s": 0.898,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": 180.673,
+            "before_s": 179.772,
+            "gap_s": 0.9,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.758,
+            "before_s": 34.874,
+            "gap_s": 0.884,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 839.458,
+        "pre_t0_s": 34.451,
+        "reasons": [
+          "pre_t0 34.451 < 60"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 972,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 972,
+        "voltage_changes": 2
+      },
+      "experiment_id": "S26-M6-K",
+      "folder": "results\\S26_M7_K\\S26_MIXREQ_05_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_K1B_a1.csv",
+      "host": {
+        "ap_first_s": -1697.445,
+        "ap_last_s": 855.425,
+        "ap_points": {
+          "180": {
+            "after_s": 181.605,
+            "before_s": 179.255,
+            "gap_s": 2.35,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 36.645,
+            "before_s": 34.325,
+            "gap_s": 2.32,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 1111,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 2.145,
+            "before_s": -0.145,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 181.605,
+            "before_s": 179.255,
+            "gap_s": 2.35,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 1111,
+        "max_gap_s": 2.98,
+        "passed": true,
+        "post_t0_s": 855.425,
+        "pre_t0_s": 1697.445,
+        "reasons": [],
+        "rows": 1111,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 34.451 < 60"
+      ],
+      "root": "S26_M7_K",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "86b7a425-bac5-5d1b-a52c-57404f28d876",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 14,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -34.436,
+        "interval_median_s": 0.9,
+        "last_valid_s": 839.489,
+        "max_gap_s": 0.923,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.691,
+            "before_s": -0.209,
+            "gap_s": 0.9,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.381,
+            "before_s": 119.48,
+            "gap_s": 0.901,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": 180.69,
+            "before_s": 179.782,
+            "gap_s": 0.908,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.772,
+            "before_s": 34.888,
+            "gap_s": 0.884,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 839.489,
+        "pre_t0_s": 34.436,
+        "reasons": [
+          "pre_t0 34.436 < 60"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 972,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 972,
+        "voltage_changes": 2
+      },
+      "experiment_id": "S26-M6-K",
+      "folder": "results\\S26_M7_K\\S26_MIXREQ_06_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_K1C_a1.csv",
+      "host": {
+        "ap_first_s": -486.358,
+        "ap_last_s": 856.922,
+        "ap_points": {
+          "180": {
+            "after_s": 180.622,
+            "before_s": 178.342,
+            "gap_s": 2.28,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.732,
+            "before_s": 33.532,
+            "gap_s": 2.2,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 585,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.242,
+            "before_s": -1.088,
+            "gap_s": 2.33,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.622,
+            "before_s": 178.342,
+            "gap_s": 2.28,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 585,
+        "max_gap_s": 2.44,
+        "passed": true,
+        "post_t0_s": 856.922,
+        "pre_t0_s": 486.358,
+        "reasons": [],
+        "rows": 585,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 34.436 < 60"
+      ],
+      "root": "S26_M7_K",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "6b7a5be3-19cd-56e6-9482-4c8a18472099",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 11,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -35.618,
+        "interval_median_s": 0.9,
+        "last_valid_s": 839.195,
+        "max_gap_s": 0.927,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.39,
+            "before_s": -0.505,
+            "gap_s": 0.895,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.102,
+            "before_s": 119.194,
+            "gap_s": 0.908,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": 180.397,
+            "before_s": 179.502,
+            "gap_s": 0.895,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.49,
+            "before_s": 34.589,
+            "gap_s": 0.901,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 839.195,
+        "pre_t0_s": 35.618,
+        "reasons": [
+          "pre_t0 35.618 < 60"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 973,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 973,
+        "voltage_changes": 2
+      },
+      "experiment_id": "S26-M6-K",
+      "folder": "results\\S26_M7_K\\S26_MIXREQ_07_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_K2B_a1.csv",
+      "host": {
+        "ap_first_s": -486.364,
+        "ap_last_s": 854.466,
+        "ap_points": {
+          "180": {
+            "after_s": 180.566,
+            "before_s": 178.256,
+            "gap_s": 2.31,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.696,
+            "before_s": 33.346,
+            "gap_s": 2.35,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 584,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.166,
+            "before_s": -1.134,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.566,
+            "before_s": 178.256,
+            "gap_s": 2.31,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 584,
+        "max_gap_s": 2.43,
+        "passed": true,
+        "post_t0_s": 854.466,
+        "pre_t0_s": 486.364,
+        "reasons": [],
+        "rows": 584,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 35.618 < 60"
+      ],
+      "root": "S26_M7_K",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "0833bab2-ef71-5c4c-a78d-db38ef88f085",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 11,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -35.565,
+        "interval_median_s": 0.9,
+        "last_valid_s": 839.257,
+        "max_gap_s": 0.927,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.456,
+            "before_s": -0.447,
+            "gap_s": 0.903,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.151,
+            "before_s": 119.251,
+            "gap_s": 0.9,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": 180.457,
+            "before_s": 179.554,
+            "gap_s": 0.903,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.54,
+            "before_s": 34.645,
+            "gap_s": 0.894,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 839.257,
+        "pre_t0_s": 35.565,
+        "reasons": [
+          "pre_t0 35.565 < 60"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 973,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 973,
+        "voltage_changes": 1
+      },
+      "experiment_id": "S26-M6-K",
+      "folder": "results\\S26_M7_K\\S26_MIXREQ_08_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_K2C_a1.csv",
+      "host": {
+        "ap_first_s": -486.467,
+        "ap_last_s": 854.443,
+        "ap_points": {
+          "180": {
+            "after_s": 180.513,
+            "before_s": 178.193,
+            "gap_s": 2.32,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.623,
+            "before_s": 33.303,
+            "gap_s": 2.32,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 584,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.153,
+            "before_s": -1.197,
+            "gap_s": 2.35,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.513,
+            "before_s": 178.193,
+            "gap_s": 2.32,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 584,
+        "max_gap_s": 2.43,
+        "passed": true,
+        "post_t0_s": 854.443,
+        "pre_t0_s": 486.467,
+        "reasons": [],
+        "rows": 584,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 35.565 < 60"
+      ],
+      "root": "S26_M7_K",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "b307cbfa-8b57-514f-a798-7bbee1a3856c",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 12,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -34.451,
+        "interval_median_s": 0.9,
+        "last_valid_s": 839.463,
+        "max_gap_s": 0.922,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.667,
+            "before_s": -0.227,
+            "gap_s": 0.895,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.371,
+            "before_s": 119.465,
+            "gap_s": 0.906,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": 180.661,
+            "before_s": 179.772,
+            "gap_s": 0.89,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.756,
+            "before_s": 34.872,
+            "gap_s": 0.884,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 839.463,
+        "pre_t0_s": 34.451,
+        "reasons": [
+          "pre_t0 34.451 < 60"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 972,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 972,
+        "voltage_changes": 1
+      },
+      "experiment_id": "S26-M6-K",
+      "folder": "results\\S26_M7_K\\S26_MIXREQ_09_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_K2A_a1.csv",
+      "host": {
+        "ap_first_s": -2503.084,
+        "ap_last_s": 854.926,
+        "ap_points": {
+          "180": {
+            "after_s": 180.976,
+            "before_s": 178.676,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 36.066,
+            "before_s": 33.766,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 1461,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.566,
+            "before_s": -0.714,
+            "gap_s": 2.28,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.976,
+            "before_s": 178.676,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 1461,
+        "max_gap_s": 2.45,
+        "passed": true,
+        "post_t0_s": 854.926,
+        "pre_t0_s": 2503.084,
+        "reasons": [],
+        "rows": 1461,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 34.451 < 60"
+      ],
+      "root": "S26_M7_K",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "09e59aa2-34c7-5358-82b4-bd89c26ad341",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 11,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -34.346,
+        "interval_median_s": 0.9,
+        "last_valid_s": 839.569,
+        "max_gap_s": 0.92,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.767,
+            "before_s": -0.134,
+            "gap_s": 0.9,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.477,
+            "before_s": 119.562,
+            "gap_s": 0.914,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": 180.763,
+            "before_s": 179.878,
+            "gap_s": 0.885,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.866,
+            "before_s": 34.978,
+            "gap_s": 0.887,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 839.569,
+        "pre_t0_s": 34.346,
+        "reasons": [
+          "pre_t0 34.346 < 60"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 972,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 972,
+        "voltage_changes": 1
+      },
+      "experiment_id": "S26-M6-K",
+      "folder": "results\\S26_M7_K\\S26_MIXREQ_10_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_K3C_a1.csv",
+      "host": {
+        "ap_first_s": -1698.286,
+        "ap_last_s": 854.744,
+        "ap_points": {
+          "180": {
+            "after_s": 180.744,
+            "before_s": 178.424,
+            "gap_s": 2.32,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.844,
+            "before_s": 33.544,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 1111,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.344,
+            "before_s": -0.956,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.744,
+            "before_s": 178.424,
+            "gap_s": 2.32,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 1111,
+        "max_gap_s": 2.46,
+        "passed": true,
+        "post_t0_s": 854.744,
+        "pre_t0_s": 1698.286,
+        "reasons": [],
+        "rows": 1111,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 34.346 < 60"
+      ],
+      "root": "S26_M7_K",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "9e5a0a86-6867-5975-aef7-f9127f255447",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 11,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -35.684,
+        "interval_median_s": 0.9,
+        "last_valid_s": 840.028,
+        "max_gap_s": 0.926,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.34,
+            "before_s": -0.565,
+            "gap_s": 0.905,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.027,
+            "before_s": 119.132,
+            "gap_s": 0.895,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": 180.329,
+            "before_s": 179.431,
+            "gap_s": 0.899,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.428,
+            "before_s": 34.54,
+            "gap_s": 0.888,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 840.028,
+        "pre_t0_s": 35.684,
+        "reasons": [
+          "pre_t0 35.684 < 60"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 974,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 974,
+        "voltage_changes": 2
+      },
+      "experiment_id": "S26-M6-K",
+      "folder": "results\\S26_M7_K\\S26_MIXREQ_11_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_K3A_a1.csv",
+      "host": {
+        "ap_first_s": -2444.064,
+        "ap_last_s": 854.136,
+        "ap_points": {
+          "180": {
+            "after_s": 180.156,
+            "before_s": 177.866,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.246,
+            "before_s": 32.976,
+            "gap_s": 2.27,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 1435,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 0.766,
+            "before_s": -1.524,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.156,
+            "before_s": 177.866,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 1435,
+        "max_gap_s": 2.44,
+        "passed": true,
+        "post_t0_s": 854.136,
+        "pre_t0_s": 2444.064,
+        "reasons": [],
+        "rows": 1435,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 35.684 < 60"
+      ],
+      "root": "S26_M7_K",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "77bb9b74-c9c0-5474-b5ec-45598b56cf0b",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 11,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -35.628,
+        "interval_median_s": 0.9,
+        "last_valid_s": 839.186,
+        "max_gap_s": 0.923,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.386,
+            "before_s": -0.518,
+            "gap_s": 0.904,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.096,
+            "before_s": 119.191,
+            "gap_s": 0.906,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": 180.398,
+            "before_s": 179.486,
+            "gap_s": 0.911,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.483,
+            "before_s": 34.579,
+            "gap_s": 0.903,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 839.186,
+        "pre_t0_s": 35.628,
+        "reasons": [
+          "pre_t0 35.628 < 60"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 973,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 973,
+        "voltage_changes": 1
+      },
+      "experiment_id": "S26-M6-K",
+      "folder": "results\\S26_M7_K\\S26_MIXREQ_12_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_K3B_a1.csv",
+      "host": {
+        "ap_first_s": -1696.377,
+        "ap_last_s": 854.253,
+        "ap_points": {
+          "180": {
+            "after_s": 180.293,
+            "before_s": 178.033,
+            "gap_s": 2.26,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.423,
+            "before_s": 33.163,
+            "gap_s": 2.26,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 1110,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 0.913,
+            "before_s": -1.377,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.293,
+            "before_s": 178.033,
+            "gap_s": 2.26,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 1110,
+        "max_gap_s": 2.46,
+        "passed": true,
+        "post_t0_s": 854.253,
+        "pre_t0_s": 1696.377,
+        "reasons": [],
+        "rows": 1110,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 35.628 < 60"
+      ],
+      "root": "S26_M7_K",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "a5b15f02-c37e-5b52-9869-27b5090b9fd9",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 4,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -35.66,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.455,
+        "max_gap_s": 0.925,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.351,
+            "before_s": -0.547,
+            "gap_s": 0.898,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.051,
+            "before_s": 119.172,
+            "gap_s": 0.879,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.455,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.442,
+            "before_s": 34.547,
+            "gap_s": 0.896,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.455,
+        "pre_t0_s": 35.66,
+        "reasons": [
+          "pre_t0 35.66 < 60",
+          "post_t0 179.455 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 240,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 240,
+        "voltage_changes": 1
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_K\\S26_MIXREQ_42_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_K1B_a1.csv",
+      "host": {
+        "ap_first_s": -1371.065,
+        "ap_last_s": 1181.805,
+        "ap_points": {
+          "180": {
+            "after_s": 181.305,
+            "before_s": 179.015,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 36.415,
+            "before_s": 34.135,
+            "gap_s": 2.28,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 1111,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.925,
+            "before_s": -0.375,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 181.305,
+            "before_s": 179.015,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 1111,
+        "max_gap_s": 2.98,
+        "passed": true,
+        "post_t0_s": 1181.805,
+        "pre_t0_s": 1371.065,
+        "reasons": [],
+        "rows": 1111,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 35.66 < 60",
+        "post_t0 179.455 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_K",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "02a10bc8-8529-5ec3-b7d7-fccdd7cf0691",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 6,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -34.455,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.756,
+        "max_gap_s": 0.919,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.657,
+            "before_s": -0.244,
+            "gap_s": 0.9,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.361,
+            "before_s": 119.46,
+            "gap_s": 0.901,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.756,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.75,
+            "before_s": 34.852,
+            "gap_s": 0.898,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.756,
+        "pre_t0_s": 34.455,
+        "reasons": [
+          "pre_t0 34.455 < 60",
+          "post_t0 179.756 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 239,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 239,
+        "voltage_changes": 1
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_K\\S26_MIXREQ_43_S26_NPU_PARALLEL_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_K1C_a1.csv",
+      "host": {
+        "ap_first_s": -158.55,
+        "ap_last_s": 1184.73,
+        "ap_points": {
+          "180": {
+            "after_s": 181.83,
+            "before_s": 179.53,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 36.93,
+            "before_s": 34.63,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 585,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 0.11,
+            "before_s": -2.18,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 181.83,
+            "before_s": 179.53,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 585,
+        "max_gap_s": 2.44,
+        "passed": true,
+        "post_t0_s": 1184.73,
+        "pre_t0_s": 158.55,
+        "reasons": [],
+        "rows": 585,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 34.455 < 60",
+        "post_t0 179.756 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_K",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "6b2dcd4c-f38b-52f8-9a4a-2470e9204f38",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 4,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -34.356,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.854,
+        "max_gap_s": 0.921,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.755,
+            "before_s": -0.144,
+            "gap_s": 0.899,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.454,
+            "before_s": 119.553,
+            "gap_s": 0.901,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.854,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.846,
+            "before_s": 34.955,
+            "gap_s": 0.891,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.854,
+        "pre_t0_s": 34.356,
+        "reasons": [
+          "pre_t0 34.356 < 60",
+          "post_t0 179.854 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 239,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 239,
+        "voltage_changes": 2
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_K\\S26_MIXREQ_44_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_K2B_a1.csv",
+      "host": {
+        "ap_first_s": -157.948,
+        "ap_last_s": 1182.882,
+        "ap_points": {
+          "180": {
+            "after_s": 180.072,
+            "before_s": 177.802,
+            "gap_s": 2.27,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.172,
+            "before_s": 32.922,
+            "gap_s": 2.25,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 584,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 0.762,
+            "before_s": -1.628,
+            "gap_s": 2.39,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.072,
+            "before_s": 177.802,
+            "gap_s": 2.27,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 584,
+        "max_gap_s": 2.43,
+        "passed": true,
+        "post_t0_s": 1182.882,
+        "pre_t0_s": 157.948,
+        "reasons": [],
+        "rows": 584,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 34.356 < 60",
+        "post_t0 179.854 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_K",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "88e2e45b-bbdb-5a32-ab24-264331b32aff",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 4,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -35.576,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.547,
+        "max_gap_s": 0.926,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.441,
+            "before_s": -0.458,
+            "gap_s": 0.899,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.137,
+            "before_s": 119.235,
+            "gap_s": 0.902,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.547,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.53,
+            "before_s": 34.631,
+            "gap_s": 0.899,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.547,
+        "pre_t0_s": 35.576,
+        "reasons": [
+          "pre_t0 35.576 < 60",
+          "post_t0 179.547 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 240,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 240,
+        "voltage_changes": 2
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_K\\S26_MIXREQ_45_S26_NPU_PARALLEL_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_K2C_a1.csv",
+      "host": {
+        "ap_first_s": -159.388,
+        "ap_last_s": 1181.522,
+        "ap_points": {
+          "180": {
+            "after_s": 180.992,
+            "before_s": 178.692,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 36.082,
+            "before_s": 33.812,
+            "gap_s": 2.27,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 584,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.592,
+            "before_s": -0.678,
+            "gap_s": 2.27,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.992,
+            "before_s": 178.692,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 584,
+        "max_gap_s": 2.43,
+        "passed": true,
+        "post_t0_s": 1181.522,
+        "pre_t0_s": 159.388,
+        "reasons": [],
+        "rows": 584,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 35.576 < 60",
+        "post_t0 179.547 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_K",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "e70e3e89-dd6b-54b3-8f26-32d044ee6161",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 4,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -35.526,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.599,
+        "max_gap_s": 0.924,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.498,
+            "before_s": -0.397,
+            "gap_s": 0.895,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.19,
+            "before_s": 119.292,
+            "gap_s": 0.898,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.599,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.581,
+            "before_s": 34.683,
+            "gap_s": 0.897,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.599,
+        "pre_t0_s": 35.526,
+        "reasons": [
+          "pre_t0 35.526 < 60",
+          "post_t0 179.599 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 240,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 240,
+        "voltage_changes": 1
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_K\\S26_MIXREQ_46_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_K3B_a1.csv",
+      "host": {
+        "ap_first_s": -1369.045,
+        "ap_last_s": 1181.585,
+        "ap_points": {
+          "180": {
+            "after_s": 181.055,
+            "before_s": 178.755,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 36.185,
+            "before_s": 33.875,
+            "gap_s": 2.31,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 1110,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.695,
+            "before_s": -0.565,
+            "gap_s": 2.26,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 181.055,
+            "before_s": 178.755,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 1110,
+        "max_gap_s": 2.46,
+        "passed": true,
+        "post_t0_s": 1181.585,
+        "pre_t0_s": 1369.045,
+        "reasons": [],
+        "rows": 1110,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 35.526 < 60",
+        "post_t0 179.599 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_K",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "b3d7d3b4-2692-5962-8c0a-b1d358e09b15",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 4,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -35.618,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.496,
+        "max_gap_s": 0.922,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.401,
+            "before_s": -0.5,
+            "gap_s": 0.901,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.094,
+            "before_s": 119.195,
+            "gap_s": 0.899,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.496,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.488,
+            "before_s": 34.597,
+            "gap_s": 0.891,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.496,
+        "pre_t0_s": 35.618,
+        "reasons": [
+          "pre_t0 35.618 < 60",
+          "post_t0 179.496 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 240,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 240,
+        "voltage_changes": 1
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_K\\S26_MIXREQ_47_S26_NPU_PARALLEL_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_K3C_a1.csv",
+      "host": {
+        "ap_first_s": -1369.665,
+        "ap_last_s": 1183.365,
+        "ap_points": {
+          "180": {
+            "after_s": 180.445,
+            "before_s": 178.195,
+            "gap_s": 2.25,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.555,
+            "before_s": 33.275,
+            "gap_s": 2.28,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 1111,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.085,
+            "before_s": -1.245,
+            "gap_s": 2.33,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.445,
+            "before_s": 178.195,
+            "gap_s": 2.25,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 1111,
+        "max_gap_s": 2.46,
+        "passed": true,
+        "post_t0_s": 1183.365,
+        "pre_t0_s": 1369.665,
+        "reasons": [],
+        "rows": 1111,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 35.618 < 60",
+        "post_t0 179.496 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_K",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "79e3851f-49a5-50e2-a935-f5599e371a02",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 4,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -35.63,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.498,
+        "max_gap_s": 0.918,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.391,
+            "before_s": -0.513,
+            "gap_s": 0.904,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.095,
+            "before_s": 119.181,
+            "gap_s": 0.914,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.498,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.478,
+            "before_s": 34.577,
+            "gap_s": 0.9,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.498,
+        "pre_t0_s": 35.63,
+        "reasons": [
+          "pre_t0 35.63 < 60",
+          "post_t0 179.498 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 240,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 240,
+        "voltage_changes": 1
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_P\\S26_MIXREQ_12_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_P12_a1.csv",
+      "host": {
+        "ap_first_s": -1491.297,
+        "ap_last_s": 300.503,
+        "ap_points": {
+          "180": {
+            "after_s": 180.783,
+            "before_s": 178.483,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.883,
+            "before_s": 33.573,
+            "gap_s": 2.31,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 780,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.373,
+            "before_s": -0.917,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.783,
+            "before_s": 178.483,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 780,
+        "max_gap_s": 3.17,
+        "passed": true,
+        "post_t0_s": 300.503,
+        "pre_t0_s": 1491.297,
+        "reasons": [],
+        "rows": 780,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 35.63 < 60",
+        "post_t0 179.498 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_P",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "470dd4dc-00e6-53aa-928f-d76656a17e80",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 5,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -34.463,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.749,
+        "max_gap_s": 0.923,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.658,
+            "before_s": -0.246,
+            "gap_s": 0.904,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.349,
+            "before_s": 119.453,
+            "gap_s": 0.896,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.749,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.745,
+            "before_s": 34.848,
+            "gap_s": 0.897,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.749,
+        "pre_t0_s": 34.463,
+        "reasons": [
+          "pre_t0 34.463 < 60",
+          "post_t0 179.749 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 239,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 239,
+        "voltage_changes": 4
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_P\\S26_MIXREQ_13_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_P13_a1.csv",
+      "host": {
+        "ap_first_s": -159.482,
+        "ap_last_s": 300.598,
+        "ap_points": {
+          "180": {
+            "after_s": 180.888,
+            "before_s": 178.598,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.988,
+            "before_s": 33.698,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 201,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.588,
+            "before_s": -0.802,
+            "gap_s": 2.39,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.888,
+            "before_s": 178.598,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 201,
+        "max_gap_s": 2.88,
+        "passed": true,
+        "post_t0_s": 300.598,
+        "pre_t0_s": 159.482,
+        "reasons": [],
+        "rows": 201,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 34.463 < 60",
+        "post_t0 179.749 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_P",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "d58c4573-aa7f-5c5c-9ee4-6bbb38f5c511",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 4,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -34.447,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.764,
+        "max_gap_s": 0.921,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.667,
+            "before_s": -0.234,
+            "gap_s": 0.901,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.367,
+            "before_s": 119.477,
+            "gap_s": 0.889,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.764,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.761,
+            "before_s": 34.86,
+            "gap_s": 0.9,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.764,
+        "pre_t0_s": 34.447,
+        "reasons": [
+          "pre_t0 34.447 < 60",
+          "post_t0 179.764 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 239,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 239,
+        "voltage_changes": 1
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_P\\S26_MIXREQ_14_B2_PARALLEL_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_P14_a1.csv",
+      "host": {
+        "ap_first_s": -159.37,
+        "ap_last_s": 300.61,
+        "ap_points": {
+          "180": {
+            "after_s": 181.0,
+            "before_s": 178.75,
+            "gap_s": 2.25,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 36.08,
+            "before_s": 33.79,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 201,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.59,
+            "before_s": -0.65,
+            "gap_s": 2.24,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 181.0,
+            "before_s": 178.75,
+            "gap_s": 2.25,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 201,
+        "max_gap_s": 2.4,
+        "passed": true,
+        "post_t0_s": 300.61,
+        "pre_t0_s": 159.37,
+        "reasons": [],
+        "rows": 201,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 34.447 < 60",
+        "post_t0 179.764 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_P",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "50d30e62-d419-513a-b3e3-8e1cfe48ed3c",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 5,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -34.515,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.7,
+        "max_gap_s": 0.925,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.596,
+            "before_s": -0.303,
+            "gap_s": 0.899,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.297,
+            "before_s": 119.397,
+            "gap_s": 0.9,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.7,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.696,
+            "before_s": 34.797,
+            "gap_s": 0.899,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.7,
+        "pre_t0_s": 34.515,
+        "reasons": [
+          "pre_t0 34.515 < 60",
+          "post_t0 179.7 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 239,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 239,
+        "voltage_changes": 0
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_P\\S26_MIXREQ_15_B2_PARALLEL_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_P15_a1.csv",
+      "host": {
+        "ap_first_s": -159.56,
+        "ap_last_s": 300.45,
+        "ap_points": {
+          "180": {
+            "after_s": 180.85,
+            "before_s": 178.56,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.92,
+            "before_s": 33.66,
+            "gap_s": 2.26,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 201,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.44,
+            "before_s": -0.85,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.85,
+            "before_s": 178.56,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 201,
+        "max_gap_s": 2.41,
+        "passed": true,
+        "post_t0_s": 300.45,
+        "pre_t0_s": 159.56,
+        "reasons": [],
+        "rows": 201,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 34.515 < 60",
+        "post_t0 179.7 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_P",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "07ff37d7-ff75-5676-af58-c25fe9d90392",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 3,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -34.505,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.702,
+        "max_gap_s": 0.922,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.609,
+            "before_s": -0.298,
+            "gap_s": 0.908,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.311,
+            "before_s": 119.404,
+            "gap_s": 0.907,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.702,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.702,
+            "before_s": 34.807,
+            "gap_s": 0.895,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.702,
+        "pre_t0_s": 34.505,
+        "reasons": [
+          "pre_t0 34.505 < 60",
+          "post_t0 179.702 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 239,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 239,
+        "voltage_changes": 2
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_P\\S26_MIXREQ_16_S26_NPU_PARALLEL_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_P16_a1.csv",
+      "host": {
+        "ap_first_s": -159.739,
+        "ap_last_s": 300.271,
+        "ap_points": {
+          "180": {
+            "after_s": 180.701,
+            "before_s": 178.371,
+            "gap_s": 2.33,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.771,
+            "before_s": 33.491,
+            "gap_s": 2.28,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 201,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.261,
+            "before_s": -1.019,
+            "gap_s": 2.28,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.701,
+            "before_s": 178.371,
+            "gap_s": 2.33,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 201,
+        "max_gap_s": 2.4,
+        "passed": true,
+        "post_t0_s": 300.271,
+        "pre_t0_s": 159.739,
+        "reasons": [],
+        "rows": 201,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 34.505 < 60",
+        "post_t0 179.702 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_P",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "9596cbd5-3ca1-5bd6-8340-0520e0526769",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 4,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -35.609,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.509,
+        "max_gap_s": 0.918,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.401,
+            "before_s": -0.486,
+            "gap_s": 0.887,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.104,
+            "before_s": 119.217,
+            "gap_s": 0.888,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.509,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.501,
+            "before_s": 34.602,
+            "gap_s": 0.899,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.509,
+        "pre_t0_s": 35.609,
+        "reasons": [
+          "pre_t0 35.609 < 60",
+          "post_t0 179.509 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 240,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 240,
+        "voltage_changes": 3
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_P\\S26_MIXREQ_17_S26_NPU_PARALLEL_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_P17_a1.csv",
+      "host": {
+        "ap_first_s": -160.767,
+        "ap_last_s": 299.233,
+        "ap_points": {
+          "180": {
+            "after_s": 181.943,
+            "before_s": 179.653,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 37.033,
+            "before_s": 34.743,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 201,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 0.213,
+            "before_s": -2.057,
+            "gap_s": 2.27,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 181.943,
+            "before_s": 179.653,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 201,
+        "max_gap_s": 2.5,
+        "passed": true,
+        "post_t0_s": 299.233,
+        "pre_t0_s": 160.767,
+        "reasons": [],
+        "rows": 201,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 35.609 < 60",
+        "post_t0 179.509 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_P",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "596d4973-1e86-56db-b910-f41f0468173e",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 4,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -34.374,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.85,
+        "max_gap_s": 0.921,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.75,
+            "before_s": -0.151,
+            "gap_s": 0.902,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.447,
+            "before_s": 119.538,
+            "gap_s": 0.909,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.85,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.839,
+            "before_s": 34.937,
+            "gap_s": 0.903,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.85,
+        "pre_t0_s": 34.374,
+        "reasons": [
+          "pre_t0 34.374 < 60",
+          "post_t0 179.85 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 239,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 239,
+        "voltage_changes": 2
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_P\\S26_MIXREQ_18_B2_PARALLEL_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_P18_a1.csv",
+      "host": {
+        "ap_first_s": -1308.598,
+        "ap_last_s": 301.362,
+        "ap_points": {
+          "180": {
+            "after_s": 181.762,
+            "before_s": 179.472,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 36.862,
+            "before_s": 34.562,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 701,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 0.062,
+            "before_s": -2.248,
+            "gap_s": 2.31,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 181.762,
+            "before_s": 179.472,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 701,
+        "max_gap_s": 2.44,
+        "passed": true,
+        "post_t0_s": 301.362,
+        "pre_t0_s": 1308.598,
+        "reasons": [],
+        "rows": 701,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 34.374 < 60",
+        "post_t0 179.85 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_P",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "be8a4329-25e4-5b4c-bdb4-6935fcd71db1",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 4,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -34.365,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.858,
+        "max_gap_s": 0.92,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.755,
+            "before_s": -0.146,
+            "gap_s": 0.9,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.451,
+            "before_s": 119.553,
+            "gap_s": 0.898,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.858,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.842,
+            "before_s": 34.958,
+            "gap_s": 0.884,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.858,
+        "pre_t0_s": 34.365,
+        "reasons": [
+          "pre_t0 34.365 < 60",
+          "post_t0 179.858 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 239,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 239,
+        "voltage_changes": 0
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_P\\S26_MIXREQ_19_B2_PARALLEL_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_P19_a1.csv",
+      "host": {
+        "ap_first_s": -126.361,
+        "ap_last_s": 301.419,
+        "ap_points": {
+          "180": {
+            "after_s": 181.829,
+            "before_s": 179.529,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 36.919,
+            "before_s": 34.699,
+            "gap_s": 2.22,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 187,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 0.129,
+            "before_s": -2.181,
+            "gap_s": 2.31,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 181.829,
+            "before_s": 179.529,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 187,
+        "max_gap_s": 2.42,
+        "passed": true,
+        "post_t0_s": 301.419,
+        "pre_t0_s": 126.361,
+        "reasons": [],
+        "rows": 187,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 34.365 < 60",
+        "post_t0 179.858 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_P",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "f8a49d8d-b67c-53f5-9081-2cf84eeb6ac9",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 3,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -34.375,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.844,
+        "max_gap_s": 0.925,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.749,
+            "before_s": -0.157,
+            "gap_s": 0.906,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.444,
+            "before_s": 119.535,
+            "gap_s": 0.909,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.844,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.833,
+            "before_s": 34.947,
+            "gap_s": 0.886,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.844,
+        "pre_t0_s": 34.375,
+        "reasons": [
+          "pre_t0 34.375 < 60",
+          "post_t0 179.844 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 239,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 239,
+        "voltage_changes": 2
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_P\\S26_MIXREQ_20_S26_NPU_PARALLEL_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_P20_a1.csv",
+      "host": {
+        "ap_first_s": -126.442,
+        "ap_last_s": 301.388,
+        "ap_points": {
+          "180": {
+            "after_s": 181.688,
+            "before_s": 179.408,
+            "gap_s": 2.28,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 36.818,
+            "before_s": 34.518,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 187,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 2.378,
+            "before_s": -0.012,
+            "gap_s": 2.39,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 181.688,
+            "before_s": 179.408,
+            "gap_s": 2.28,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 187,
+        "max_gap_s": 2.4,
+        "passed": true,
+        "post_t0_s": 301.388,
+        "pre_t0_s": 126.442,
+        "reasons": [],
+        "rows": 187,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 34.375 < 60",
+        "post_t0 179.844 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_P",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "1217b0e8-9f01-5d46-bf76-44ab7c217d42",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 5,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -34.459,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.753,
+        "max_gap_s": 0.923,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.664,
+            "before_s": -0.251,
+            "gap_s": 0.914,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.353,
+            "before_s": 119.467,
+            "gap_s": 0.886,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.753,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.75,
+            "before_s": 34.857,
+            "gap_s": 0.893,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.753,
+        "pre_t0_s": 34.459,
+        "reasons": [
+          "pre_t0 34.459 < 60",
+          "post_t0 179.753 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 239,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 239,
+        "voltage_changes": 0
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_P\\S26_MIXREQ_21_S26_NPU_PARALLEL_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_P21_a1.csv",
+      "host": {
+        "ap_first_s": -158.967,
+        "ap_last_s": 301.023,
+        "ap_points": {
+          "180": {
+            "after_s": 181.373,
+            "before_s": 179.113,
+            "gap_s": 2.26,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 36.473,
+            "before_s": 34.193,
+            "gap_s": 2.28,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 201,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.973,
+            "before_s": -0.307,
+            "gap_s": 2.28,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 181.373,
+            "before_s": 179.113,
+            "gap_s": 2.26,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 201,
+        "max_gap_s": 2.47,
+        "passed": true,
+        "post_t0_s": 301.023,
+        "pre_t0_s": 158.967,
+        "reasons": [],
+        "rows": 201,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 34.459 < 60",
+        "post_t0 179.753 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_P",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "d704535f-5d3f-5a98-9a2c-be4cd8145954",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 4,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -35.529,
+        "interval_median_s": 0.901,
+        "last_valid_s": 179.581,
+        "max_gap_s": 0.92,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.481,
+            "before_s": -0.414,
+            "gap_s": 0.894,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.185,
+            "before_s": 119.277,
+            "gap_s": 0.908,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.581,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.578,
+            "before_s": 34.679,
+            "gap_s": 0.899,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.581,
+        "pre_t0_s": 35.529,
+        "reasons": [
+          "pre_t0 35.529 < 60",
+          "post_t0 179.581 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 240,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 240,
+        "voltage_changes": 2
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_P\\S26_MIXREQ_22_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_P22_a1.csv",
+      "host": {
+        "ap_first_s": -160.207,
+        "ap_last_s": 299.873,
+        "ap_points": {
+          "180": {
+            "after_s": 180.173,
+            "before_s": 177.863,
+            "gap_s": 2.31,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.273,
+            "before_s": 32.983,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 201,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 0.783,
+            "before_s": -1.487,
+            "gap_s": 2.27,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.173,
+            "before_s": 177.863,
+            "gap_s": 2.31,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 201,
+        "max_gap_s": 2.43,
+        "passed": true,
+        "post_t0_s": 299.873,
+        "pre_t0_s": 160.207,
+        "reasons": [],
+        "rows": 201,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 35.529 < 60",
+        "post_t0 179.581 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_P",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "995bd7a8-3db8-5552-a522-838180cc3106",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 5,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -35.615,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.498,
+        "max_gap_s": 0.921,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.408,
+            "before_s": -0.496,
+            "gap_s": 0.904,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.097,
+            "before_s": 119.206,
+            "gap_s": 0.891,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.498,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.488,
+            "before_s": 34.605,
+            "gap_s": 0.884,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.498,
+        "pre_t0_s": 35.615,
+        "reasons": [
+          "pre_t0 35.615 < 60",
+          "post_t0 179.498 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 240,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 240,
+        "voltage_changes": 2
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_P\\S26_MIXREQ_23_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_P23_a1.csv",
+      "host": {
+        "ap_first_s": -220.511,
+        "ap_last_s": 301.549,
+        "ap_points": {
+          "180": {
+            "after_s": 181.949,
+            "before_s": 179.649,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 37.069,
+            "before_s": 34.739,
+            "gap_s": 2.33,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 228,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 0.239,
+            "before_s": -2.061,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 181.949,
+            "before_s": 179.649,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 228,
+        "max_gap_s": 2.43,
+        "passed": true,
+        "post_t0_s": 301.549,
+        "pre_t0_s": 220.511,
+        "reasons": [],
+        "rows": 228,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 35.615 < 60",
+        "post_t0 179.498 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_P",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "8f2cadc9-88df-510d-b1a3-6882845f9a58",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 3,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -35.526,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.583,
+        "max_gap_s": 0.92,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.487,
+            "before_s": -0.403,
+            "gap_s": 0.89,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.187,
+            "before_s": 119.285,
+            "gap_s": 0.902,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.583,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.583,
+            "before_s": 34.681,
+            "gap_s": 0.902,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.583,
+        "pre_t0_s": 35.526,
+        "reasons": [
+          "pre_t0 35.526 < 60",
+          "post_t0 179.583 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 240,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 240,
+        "voltage_changes": 3
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_P\\S26_MIXREQ_24_S26_NPU_PARALLEL_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_P24_a1.csv",
+      "host": {
+        "ap_first_s": -1249.195,
+        "ap_last_s": 301.045,
+        "ap_points": {
+          "180": {
+            "after_s": 181.335,
+            "before_s": 179.045,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 36.455,
+            "before_s": 34.165,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 675,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 2.065,
+            "before_s": -0.345,
+            "gap_s": 2.41,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 181.335,
+            "before_s": 179.045,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 675,
+        "max_gap_s": 2.44,
+        "passed": true,
+        "post_t0_s": 301.045,
+        "pre_t0_s": 1249.195,
+        "reasons": [],
+        "rows": 675,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 35.526 < 60",
+        "post_t0 179.583 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_P",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "9b6d61f2-dbf6-5078-b857-0b5d829a3565",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 4,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -34.598,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.623,
+        "max_gap_s": 0.921,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.519,
+            "before_s": -0.379,
+            "gap_s": 0.898,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.212,
+            "before_s": 119.321,
+            "gap_s": 0.891,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.623,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.619,
+            "before_s": 34.711,
+            "gap_s": 0.908,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.623,
+        "pre_t0_s": 34.598,
+        "reasons": [
+          "pre_t0 34.598 < 60",
+          "post_t0 179.623 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 239,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 239,
+        "voltage_changes": 2
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_P\\S26_MIXREQ_25_S26_NPU_PARALLEL_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_P25_a1.csv",
+      "host": {
+        "ap_first_s": -1250.361,
+        "ap_last_s": 302.239,
+        "ap_points": {
+          "180": {
+            "after_s": 180.199,
+            "before_s": 177.909,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.309,
+            "before_s": 33.129,
+            "gap_s": 2.18,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 676,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 0.809,
+            "before_s": -1.491,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.199,
+            "before_s": 177.909,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 676,
+        "max_gap_s": 2.54,
+        "passed": true,
+        "post_t0_s": 302.239,
+        "pre_t0_s": 1250.361,
+        "reasons": [],
+        "rows": 676,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 34.598 < 60",
+        "post_t0 179.623 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_P",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "974716d4-768e-5504-9648-8a6decf141de",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 5,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -34.462,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.752,
+        "max_gap_s": 0.924,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.649,
+            "before_s": -0.252,
+            "gap_s": 0.901,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.36,
+            "before_s": 119.456,
+            "gap_s": 0.904,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.752,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.752,
+            "before_s": 34.856,
+            "gap_s": 0.895,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.752,
+        "pre_t0_s": 34.462,
+        "reasons": [
+          "pre_t0 34.462 < 60",
+          "post_t0 179.752 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 239,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 239,
+        "voltage_changes": 1
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_P\\S26_MIXREQ_26_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_P26_a1.csv",
+      "host": {
+        "ap_first_s": -1251.546,
+        "ap_last_s": 301.034,
+        "ap_points": {
+          "180": {
+            "after_s": 181.344,
+            "before_s": 179.044,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 36.514,
+            "before_s": 34.204,
+            "gap_s": 2.31,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 676,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.944,
+            "before_s": -0.326,
+            "gap_s": 2.27,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 181.344,
+            "before_s": 179.044,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 676,
+        "max_gap_s": 2.58,
+        "passed": true,
+        "post_t0_s": 301.034,
+        "pre_t0_s": 1251.546,
+        "reasons": [],
+        "rows": 676,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 34.462 < 60",
+        "post_t0 179.752 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_P",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "df315b91-5995-592d-b7c1-2e4b846fbad0",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 4,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -33.436,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.879,
+        "max_gap_s": 0.92,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.779,
+            "before_s": -0.112,
+            "gap_s": 0.89,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.479,
+            "before_s": 119.592,
+            "gap_s": 0.888,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.879,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.872,
+            "before_s": 34.987,
+            "gap_s": 0.885,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.879,
+        "pre_t0_s": 33.436,
+        "reasons": [
+          "pre_t0 33.436 < 60",
+          "post_t0 179.879 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 238,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 238,
+        "voltage_changes": 2
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_P\\S26_MIXREQ_27_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_P27_a1.csv",
+      "host": {
+        "ap_first_s": -125.625,
+        "ap_last_s": 299.865,
+        "ap_points": {
+          "180": {
+            "after_s": 180.315,
+            "before_s": 178.225,
+            "gap_s": 2.09,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.475,
+            "before_s": 33.095,
+            "gap_s": 2.38,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 186,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 0.865,
+            "before_s": -1.375,
+            "gap_s": 2.24,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.315,
+            "before_s": 178.225,
+            "gap_s": 2.09,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 186,
+        "max_gap_s": 2.51,
+        "passed": true,
+        "post_t0_s": 299.865,
+        "pre_t0_s": 125.625,
+        "reasons": [],
+        "rows": 186,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 33.436 < 60",
+        "post_t0 179.879 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_P",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "2bb05389-0189-56f4-96ff-1716d2c27354",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 5,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -34.396,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.819,
+        "max_gap_s": 0.921,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.731,
+            "before_s": -0.182,
+            "gap_s": 0.913,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.417,
+            "before_s": 119.519,
+            "gap_s": 0.898,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.819,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.815,
+            "before_s": 34.915,
+            "gap_s": 0.9,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.819,
+        "pre_t0_s": 34.396,
+        "reasons": [
+          "pre_t0 34.396 < 60",
+          "post_t0 179.819 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 239,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 239,
+        "voltage_changes": 1
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_P\\S26_MIXREQ_28_B2_PARALLEL_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_P28_a1.csv",
+      "host": {
+        "ap_first_s": -127.198,
+        "ap_last_s": 300.582,
+        "ap_points": {
+          "180": {
+            "after_s": 181.012,
+            "before_s": 178.692,
+            "gap_s": 2.32,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 36.132,
+            "before_s": 33.912,
+            "gap_s": 2.22,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 187,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.622,
+            "before_s": -0.698,
+            "gap_s": 2.32,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 181.012,
+            "before_s": 178.692,
+            "gap_s": 2.32,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 187,
+        "max_gap_s": 3.18,
+        "passed": true,
+        "post_t0_s": 300.582,
+        "pre_t0_s": 127.198,
+        "reasons": [],
+        "rows": 187,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 34.396 < 60",
+        "post_t0 179.819 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_P",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "263b1b24-d382-58e5-b058-ab27fcb8044b",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 4,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -33.379,
+        "interval_median_s": 0.9,
+        "last_valid_s": 179.93,
+        "max_gap_s": 0.925,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.841,
+            "before_s": -0.069,
+            "gap_s": 0.91,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.538,
+            "before_s": 119.652,
+            "gap_s": 0.887,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": null,
+            "before_s": 179.93,
+            "gap_s": null,
+            "max_gap_s": 2.5,
+            "ok": false,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.035,
+            "before_s": 34.153,
+            "gap_s": 0.883,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 179.93,
+        "pre_t0_s": 33.379,
+        "reasons": [
+          "pre_t0 33.379 < 60",
+          "post_t0 179.93 < 210",
+          "app point 180s both-sides missing (gap None)"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 238,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 238,
+        "voltage_changes": 0
+      },
+      "experiment_id": "S26-M6-P",
+      "folder": "results\\S26_M7_P\\S26_MIXREQ_29_B2_PARALLEL_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_P29_a1.csv",
+      "host": {
+        "ap_first_s": -125.747,
+        "ap_last_s": 302.123,
+        "ap_points": {
+          "180": {
+            "after_s": 180.133,
+            "before_s": 177.843,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.193,
+            "before_s": 33.013,
+            "gap_s": 2.18,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 187,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 0.763,
+            "before_s": -1.577,
+            "gap_s": 2.34,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.133,
+            "before_s": 177.843,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 187,
+        "max_gap_s": 2.48,
+        "passed": true,
+        "post_t0_s": 302.123,
+        "pre_t0_s": 125.747,
+        "reasons": [],
+        "rows": 187,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 33.379 < 60",
+        "post_t0 179.93 < 210",
+        "app point 180s both-sides missing (gap None)"
+      ],
+      "root": "S26_M7_P",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "d99f5bb4-3319-5eea-a87b-b674afaebc50",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 23,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -33.907,
+        "interval_median_s": 0.9,
+        "last_valid_s": 779.707,
+        "max_gap_s": 0.929,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.306,
+            "before_s": -0.591,
+            "gap_s": 0.897,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.027,
+            "before_s": 119.098,
+            "gap_s": 0.929,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": 180.303,
+            "before_s": 179.401,
+            "gap_s": 0.902,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.406,
+            "before_s": 34.521,
+            "gap_s": 0.885,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 779.707,
+        "pre_t0_s": 33.907,
+        "reasons": [
+          "pre_t0 33.907 < 60"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 905,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 905,
+        "voltage_changes": 9
+      },
+      "experiment_id": "S26-MIXREQ-03",
+      "folder": "results\\S26_M7_S\\S26_MIXREQ_16_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_S1-C_a1.csv",
+      "host": {
+        "ap_first_s": -635.285,
+        "ap_last_s": 1319.775,
+        "ap_points": {
+          "180": {
+            "after_s": 181.185,
+            "before_s": 178.905,
+            "gap_s": 2.28,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 36.305,
+            "before_s": 34.035,
+            "gap_s": 2.27,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 851,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.875,
+            "before_s": -0.485,
+            "gap_s": 2.36,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 181.185,
+            "before_s": 178.905,
+            "gap_s": 2.28,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 851,
+        "max_gap_s": 2.63,
+        "passed": true,
+        "post_t0_s": 1319.775,
+        "pre_t0_s": 635.285,
+        "reasons": [],
+        "rows": 851,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 33.907 < 60"
+      ],
+      "root": "S26_M7_S",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "b2e7af7b-c06c-53a1-b6e4-4a63b3a9e9fa",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 23,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -33.656,
+        "interval_median_s": 0.9,
+        "last_valid_s": 779.961,
+        "max_gap_s": 0.926,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.557,
+            "before_s": -0.341,
+            "gap_s": 0.898,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.251,
+            "before_s": 119.357,
+            "gap_s": 0.894,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": 180.553,
+            "before_s": 179.65,
+            "gap_s": 0.904,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.661,
+            "before_s": 34.765,
+            "gap_s": 0.896,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 779.961,
+        "pre_t0_s": 33.656,
+        "reasons": [
+          "pre_t0 33.656 < 60"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 905,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 905,
+        "voltage_changes": 8
+      },
+      "experiment_id": "S26-MIXREQ-03",
+      "folder": "results\\S26_M7_S\\S26_MIXREQ_17_B2_PARALLEL_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_S2-G_a1.csv",
+      "host": {
+        "ap_first_s": -635.396,
+        "ap_last_s": 1319.664,
+        "ap_points": {
+          "180": {
+            "after_s": 181.064,
+            "before_s": 178.764,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 36.154,
+            "before_s": 33.854,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 850,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.674,
+            "before_s": -0.626,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 181.064,
+            "before_s": 178.764,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 850,
+        "max_gap_s": 6.4,
+        "passed": true,
+        "post_t0_s": 1319.664,
+        "pre_t0_s": 635.396,
+        "reasons": [],
+        "rows": 850,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 33.656 < 60"
+      ],
+      "root": "S26_M7_S",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "b4fcb519-2853-5959-93af-aeba35f6581b",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 23,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -33.764,
+        "interval_median_s": 0.9,
+        "last_valid_s": 779.85,
+        "max_gap_s": 0.931,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.457,
+            "before_s": -0.447,
+            "gap_s": 0.905,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.143,
+            "before_s": 119.242,
+            "gap_s": 0.902,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": 180.442,
+            "before_s": 179.554,
+            "gap_s": 0.888,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.547,
+            "before_s": 34.662,
+            "gap_s": 0.885,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 779.85,
+        "pre_t0_s": 33.764,
+        "reasons": [
+          "pre_t0 33.764 < 60"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 905,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 905,
+        "voltage_changes": 8
+      },
+      "experiment_id": "S26-MIXREQ-03",
+      "folder": "results\\S26_M7_S\\S26_MIXREQ_18_S26_NPU_PARALLEL_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_S3-N_a1.csv",
+      "host": {
+        "ap_first_s": -635.949,
+        "ap_last_s": 1321.421,
+        "ap_points": {
+          "180": {
+            "after_s": 180.561,
+            "before_s": 178.241,
+            "gap_s": 2.32,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.661,
+            "before_s": 33.381,
+            "gap_s": 2.28,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 852,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.261,
+            "before_s": -1.129,
+            "gap_s": 2.39,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.561,
+            "before_s": 178.241,
+            "gap_s": 2.32,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 852,
+        "max_gap_s": 2.47,
+        "passed": true,
+        "post_t0_s": 1321.421,
+        "pre_t0_s": 635.949,
+        "reasons": [],
+        "rows": 852,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 33.764 < 60"
+      ],
+      "root": "S26_M7_S",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "4c5ea626-3ce4-55ee-ad57-0baba50e544a",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 23,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -33.823,
+        "interval_median_s": 0.9,
+        "last_valid_s": 779.794,
+        "max_gap_s": 0.927,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.392,
+            "before_s": -0.506,
+            "gap_s": 0.897,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.088,
+            "before_s": 119.195,
+            "gap_s": 0.893,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": 180.411,
+            "before_s": 179.496,
+            "gap_s": 0.915,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.482,
+            "before_s": 34.595,
+            "gap_s": 0.887,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 779.794,
+        "pre_t0_s": 33.823,
+        "reasons": [
+          "pre_t0 33.823 < 60"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 905,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 905,
+        "voltage_changes": 7
+      },
+      "experiment_id": "S26-MIXREQ-03",
+      "folder": "results\\S26_M7_S\\S26_MIXREQ_19_S26_NPU_PARALLEL_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_S4-N_a1.csv",
+      "host": {
+        "ap_first_s": -635.738,
+        "ap_last_s": 1321.632,
+        "ap_points": {
+          "180": {
+            "after_s": 180.732,
+            "before_s": 178.412,
+            "gap_s": 2.32,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.832,
+            "before_s": 33.532,
+            "gap_s": 2.3,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 852,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.322,
+            "before_s": -0.968,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.732,
+            "before_s": 178.412,
+            "gap_s": 2.32,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 852,
+        "max_gap_s": 2.46,
+        "passed": true,
+        "post_t0_s": 1321.632,
+        "pre_t0_s": 635.738,
+        "reasons": [],
+        "rows": 852,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 33.823 < 60"
+      ],
+      "root": "S26_M7_S",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "e0db1d20-f310-5ae8-809b-ba0dfb40b165",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 23,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -33.766,
+        "interval_median_s": 0.9,
+        "last_valid_s": 779.848,
+        "max_gap_s": 0.925,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.451,
+            "before_s": -0.442,
+            "gap_s": 0.893,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.142,
+            "before_s": 119.239,
+            "gap_s": 0.903,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": 180.443,
+            "before_s": 179.564,
+            "gap_s": 0.88,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.544,
+            "before_s": 34.649,
+            "gap_s": 0.895,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 779.848,
+        "pre_t0_s": 33.766,
+        "reasons": [
+          "pre_t0 33.766 < 60"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 905,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 905,
+        "voltage_changes": 8
+      },
+      "experiment_id": "S26-MIXREQ-03",
+      "folder": "results\\S26_M7_S\\S26_MIXREQ_20_B2_PARALLEL_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_S5-G_a1.csv",
+      "host": {
+        "ap_first_s": -635.815,
+        "ap_last_s": 1321.545,
+        "ap_points": {
+          "180": {
+            "after_s": 180.685,
+            "before_s": 178.415,
+            "gap_s": 2.27,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.805,
+            "before_s": 33.565,
+            "gap_s": 2.24,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 851,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 1.385,
+            "before_s": -0.995,
+            "gap_s": 2.38,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 180.685,
+            "before_s": 178.415,
+            "gap_s": 2.27,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 851,
+        "max_gap_s": 6.24,
+        "passed": true,
+        "post_t0_s": 1321.545,
+        "pre_t0_s": 635.815,
+        "reasons": [],
+        "rows": 851,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 33.766 < 60"
+      ],
+      "root": "S26_M7_S",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "b609e266-4417-5de7-b45f-a380bf74beb7",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 25,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -33.794,
+        "interval_median_s": 0.9,
+        "last_valid_s": 750.132,
+        "max_gap_s": 0.931,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.419,
+            "before_s": -0.467,
+            "gap_s": 0.886,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.123,
+            "before_s": 119.225,
+            "gap_s": 0.898,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": 180.42,
+            "before_s": 179.522,
+            "gap_s": 0.898,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.518,
+            "before_s": 34.621,
+            "gap_s": 0.897,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 750.132,
+        "pre_t0_s": 33.794,
+        "reasons": [
+          "pre_t0 33.794 < 60"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 872,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 872,
+        "voltage_changes": 8
+      },
+      "experiment_id": "S26-MIXREQ-03",
+      "folder": "results\\S26_M7_S\\S26_MIXREQ_21_CPU_URGENT_ONLINE_V1_a1",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_S6-C_a1.csv",
+      "host": {
+        "ap_first_s": -765.738,
+        "ap_last_s": 1320.052,
+        "ap_points": {
+          "180": {
+            "after_s": 181.472,
+            "before_s": 179.182,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 36.572,
+            "before_s": 34.282,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 908,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 2.062,
+            "before_s": -0.218,
+            "gap_s": 2.28,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 181.472,
+            "before_s": 179.182,
+            "gap_s": 2.29,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 908,
+        "max_gap_s": 2.62,
+        "passed": true,
+        "post_t0_s": 1320.052,
+        "pre_t0_s": 765.738,
+        "reasons": [],
+        "rows": 908,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 33.794 < 60"
+      ],
+      "root": "S26_M7_S",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "1a411506-d87b-5519-87ad-a3d6f9ec65de",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "charge_counter_changes": 25,
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "first_valid_s": -33.866,
+        "interval_median_s": 0.9,
+        "last_valid_s": 779.75,
+        "max_gap_s": 0.918,
+        "missing": 0,
+        "passed": false,
+        "points": {
+          "0": {
+            "after_s": 0.349,
+            "before_s": -0.54,
+            "gap_s": 0.889,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "120": {
+            "after_s": 120.041,
+            "before_s": 119.138,
+            "gap_s": 0.903,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 120.0
+          },
+          "180": {
+            "after_s": 180.348,
+            "before_s": 179.444,
+            "gap_s": 0.905,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.443,
+            "before_s": 34.562,
+            "gap_s": 0.88,
+            "max_gap_s": 2.5,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "positive_samples": 0,
+        "post_t0_s": 779.75,
+        "pre_t0_s": 33.866,
+        "reasons": [
+          "pre_t0 33.866 < 60"
+        ],
+        "rules": {
+          "max_gap_s": 2.5,
+          "points_s": [
+            0.0,
+            35.0,
+            120.0,
+            180.0
+          ],
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "samples": 905,
+        "sign_discharge_negative": true,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 905,
+        "voltage_changes": 9
+      },
+      "experiment_id": "S26-MIXREQ-03",
+      "folder": "results\\S26_M7_S\\S26_MIXREQ_21_CPU_URGENT_ONLINE_V1_a2",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_S6-C_a2.csv",
+      "host": {
+        "ap_first_s": -158.167,
+        "ap_last_s": 1320.683,
+        "ap_points": {
+          "180": {
+            "after_s": 182.173,
+            "before_s": 179.863,
+            "gap_s": 2.31,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          },
+          "35": {
+            "after_s": 35.043,
+            "before_s": 32.683,
+            "gap_s": 2.36,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 35.0
+          }
+        },
+        "ap_rows": 644,
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "interval_median_s": 2.3,
+        "iv_points": {
+          "0": {
+            "after_s": 0.473,
+            "before_s": -1.717,
+            "gap_s": 2.19,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 0.0
+          },
+          "180": {
+            "after_s": 182.173,
+            "before_s": 179.863,
+            "gap_s": 2.31,
+            "max_gap_s": 5.0,
+            "ok": true,
+            "point_s": 180.0
+          }
+        },
+        "iv_rows": 644,
+        "max_gap_s": 2.87,
+        "passed": true,
+        "post_t0_s": 1320.683,
+        "pre_t0_s": 158.167,
+        "reasons": [],
+        "rows": 644,
+        "rules": {
+          "ap_points_s": [
+            35.0,
+            180.0
+          ],
+          "iv_points_s": [
+            0.0,
+            180.0
+          ],
+          "max_gap_s": 5.0,
+          "post_t0_min_s": 210,
+          "pre_t0_min_s": 60
+        },
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "pre_t0 33.866 < 60"
+      ],
+      "root": "S26_M7_S",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "1a411506-d87b-5519-87ad-a3d6f9ec65de",
+      "time_scale": 1
+    },
+    {
+      "app": {
+        "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+        "missing": 0,
+        "passed": false,
+        "reasons": [
+          "no common_start"
+        ],
+        "samples": 1,
+        "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+        "valid": 0
+      },
+      "experiment_id": "S26-MIXREQ-03",
+      "folder": "results\\S26_M7_S\\S26_MIXREQ_21_CPU_URGENT_ONLINE_V1_a2_screenoff_1322",
+      "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_HAL\\hal_cont_S6-C_a2.csv",
+      "host": {
+        "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+        "err_rows": 0,
+        "passed": false,
+        "reasons": [
+          "no common_start"
+        ],
+        "rows": 644,
+        "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+      },
+      "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+      "passed": false,
+      "reasons": [
+        "no common_start",
+        "no common_start"
+      ],
+      "root": "S26_M7_S",
+      "schema": "s26-m8-coverage-check-v1",
+      "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+      "session_id": "1a411506-d87b-5519-87ad-a3d6f9ec65de",
+      "time_scale": 1
+    }
+  ]
+}
