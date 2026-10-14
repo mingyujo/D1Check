@@ -1,8 +1,8 @@
-# M7 개발 묶음 3 — S26 같은 APK 확대 반복 (M7-apk) · 측정 · readout 까지 (계산 · 판정 = 조민규 / Cowork)
+# M7 개발 묶음 전체 (1 ~ 3 합본 + M6 행) — S26 같은 APK 확대 반복 (M7-apk) · 측정 · readout 까지 (계산 · 판정 = 조민규 / Cowork)
 
-- 만든 시각: 2026-10-14T12:07:08 · 등록 v2 `c3da26cc05c496ed4ebaf718f9c7d3293204e5223e0830a1fb0c378968a226bb` (v1 `899d63c6…`) · APK M7 `878b10b7bc05300ddddc60fac0b2fb40eb020870841e473a8775827ef92bf092` (커밋 `7ad2b18f`) · M6 12세션은 APK `6a4da1ac…` (`cycle = m6` 행만)
+- 만든 시각: 2026-10-14T14:08:55 · 등록 v2 `c3da26cc05c496ed4ebaf718f9c7d3293204e5223e0830a1fb0c378968a226bb` (v1 `899d63c6…`) · APK M7 `878b10b7bc05300ddddc60fac0b2fb40eb020870841e473a8775827ef92bf092` (커밋 `7ad2b18f`) · M6 12세션은 APK `6a4da1ac…` (`cycle = m6` 행만)
 - 계획 SHA: plan_m7p `bf1e3c258367f4cdbcf37eb85478f2b9a7bc5d2941db129111c9551fb39e5454` · plan_m7prep `8f0e748b0d2e9a2cdd22291e862906e02512a501c63236c76bf406784003070a` · plan_m7k `571d4a1e58442f54789721c04c3235f20b68d24682dcebaf604873aeddf83a96` · plan_m7s `e08a6adb859f8a36778311f6c9a0ee021957cfe32fe81dbdcbcd37635cf67b2e`
-- 세션 표 행: 44 (m7 44 · m6 0) · 유효 (m7): {"K": 9, "P": 18, "PREP": 6, "S": 5} · kind 별: {"K": 9, "M6REPRO": 1, "P": 18, "PREP": 6, "S": 6, "S7": 1, "SMOKE": 3}
+- 세션 표 행: 74 (m7 46 · m6 28) · 유효 (m7): {"K": 9, "P": 18, "PREP": 6, "S": 6} · kind 별: {"K": 9, "M6REPRO": 1, "P": 18, "PREP": 6, "S": 8, "S7": 1, "SMOKE": 3}
 - fingerprint: `samsung/m1sksx/m1s:17/CP2A.260605.016/S942NKSS4BZIG_OKR4BZIG:user/release-keys` · 케이스/거치/바람: 케이스 없음 · 책상 위 눕힘 · 바람 없음 · 실내 온도: 미기록
 
 ## 단위 · 부호
@@ -20,7 +20,7 @@
 - index 자리: M6 · R4 가 쓴 자리 뒤 (P 12 ~ 51 · K 4 ~ 18 · S 16 ~ 27 · 등록 v2 머리 단락) · session_id = uuid5(실험 ID/index) 그대로
 
 ## 실측 사용량 (run log · 기술만)
-- 세션 44 · 순수 실행 합 20460.9 s · 재시도 (attempt 2) 실행 478.8 s · 세션 사이 대기 합 27461.0 s (유휴 · 안정 · 게이트 · 띠 포함) · 충전 구간 (드라이버 기록) 0 · 첫 세션 2026-10-13T21:46:30 · 마지막 끝 2026-10-14T11:05:09
+- 세션 46 · 순수 실행 합 21410.1 s · 재시도 (attempt 2) 실행 1428.0 s · 세션 사이 대기 합 36649.0 s (유휴 · 안정 · 게이트 · 띠 포함) · 충전 구간 (드라이버 기록) 0 · 첫 세션 2026-10-13T21:46:30 · 마지막 끝 2026-10-14T13:54:06
 - 세션별 run_s 는 `usage.json`
 
 ## 폴더

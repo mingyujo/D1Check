@@ -10,13 +10,13 @@
     "time": "2026-10-13T21:03:58+09:00"
   },
   "schema": "s26-m6-readout-index-v1",
-  "sessions": 6,
+  "sessions": 8,
   "skipped": [],
   "slot_counts": {
-    "invalid_once": 1,
+    "invalid_once": 0,
     "invalid_twice": 0,
     "not_attempted": 6,
-    "valid": 5
+    "valid": 6
   },
   "slots": {
     "16": {
@@ -96,12 +96,22 @@
           "attempt": 1,
           "eligible": false,
           "reasons": "0_artifacts;1_requests_succeeded_quality;2_time_order;3_window;4_assignment_residents;5_overlap;9_watch_stop"
+        },
+        {
+          "attempt": 2,
+          "eligible": true,
+          "reasons": ""
+        },
+        {
+          "attempt": 2,
+          "eligible": false,
+          "reasons": "0_artifacts;1_requests_succeeded_quality;2_time_order;3_window;4_assignment_residents;5_overlap;6_warmup_quality;8_plugged_start;9_watch_stop"
         }
       ],
       "letter": "C",
       "load": null,
       "policy": "CPU_URGENT_ONLINE_V1",
-      "status": "invalid_once"
+      "status": "valid"
     },
     "22": {
       "analysis_split": "confirm",

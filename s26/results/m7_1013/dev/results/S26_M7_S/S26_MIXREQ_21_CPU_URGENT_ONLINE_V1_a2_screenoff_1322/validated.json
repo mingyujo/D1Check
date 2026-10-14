@@ -1,0 +1,222 @@
+{
+  "a24_differences": [
+    "상주만 하는 classification_GPU 의 warmup 이 CPU 기준과 불일치 (표시만, 판정 아님)",
+    "상주만 하는 detection_GPU 의 warmup 이 CPU 기준과 불일치 (표시만, 판정 아님)"
+  ],
+  "attempt": 2,
+  "block": "A",
+  "counts": {
+    "failed": 0,
+    "planned": 3000,
+    "succeeded": 0,
+    "unfinished": 3000
+  },
+  "device_dir": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_S\\S26_MIXREQ_21_CPU_URGENT_ONLINE_V1_a2\\device",
+  "eligible": false,
+  "experiment_id": "S26-MIXREQ-03",
+  "host_dir": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_S\\S26_MIXREQ_21_CPU_URGENT_ONLINE_V1_a2\\host",
+  "pair": 0,
+  "policy": "CPU_URGENT_ONLINE_V1",
+  "reasons": [
+    "0_artifacts",
+    "1_requests_succeeded_quality",
+    "2_time_order",
+    "3_window",
+    "4_assignment_residents",
+    "5_overlap",
+    "6_warmup_quality",
+    "8_plugged_start",
+    "9_watch_stop"
+  ],
+  "registration_version": 3,
+  "rules": {
+    "0_artifacts": {
+      "detail": {
+        "cleanup_completed": false,
+        "common_boundary": false,
+        "part_files_zero": true,
+        "requests_json": false,
+        "result_files": false,
+        "split": "confirmation",
+        "summary_completed": false,
+        "time_scale": 1,
+        "time_scale_ok": true,
+        "warmup_json": false
+      },
+      "passed": false
+    },
+    "1_requests_succeeded_quality": {
+      "detail": {
+        "input_tensor_fail": [],
+        "planned": 3000,
+        "quality_fail": [],
+        "quality_rule": "same runtime key, both warmups: top-5 label/index + |ds|<=1e-3 / count+labels + |ds|<=1e-3 + box<=2px",
+        "rows": 0,
+        "status_fail": [
+          "3aa26416-1497-5f17-acf9-b887ce2e12fe",
+          "2c29d084-a279-55f1-9477-ce29f59550a1",
+          "2f33de58-3d14-5b57-a80f-0fd795889e86",
+          "f40313bc-cd62-5545-8810-b6bf5c422ee7",
+          "a979f926-41dc-52aa-9406-0dfd9287705b",
+          "27a840ad-3973-5caf-a336-f962c7bf7257",
+          "79af0ace-dc13-594e-87bc-9280ceaf4091",
+          "c9175e98-87e9-5220-91f5-150ea1242122",
+          "f0eb3d41-dc75-5ff0-8460-68a98163aaa2",
+          "ac31d835-a2a2-5da1-97f6-1a54881457d5"
+        ],
+        "succeeded": 0
+      },
+      "passed": false
+    },
+    "2_time_order": {
+      "detail": {
+        "fields": [
+          "scheduled_arrival_ns",
+          "actual_arrival_ns",
+          "queue_entry_ns",
+          "dispatch_ns",
+          "execution_start_ns",
+          "host_inference_start_ns",
+          "host_inference_return_ns",
+          "output_ready_ns",
+          "persist_complete_ns",
+          "worker_release_ns",
+          "lane_available_ns"
+        ],
+        "violations": []
+      },
+      "passed": false
+    },
+    "3_window": {
+      "detail": {
+        "bounds_s": [
+          35.0,
+          720.0
+        ],
+        "last_lane_available_s": null,
+        "origin_ns": null,
+        "violations": []
+      },
+      "passed": false
+    },
+    "4_assignment_residents": {
+      "detail": {
+        "create_failed": [],
+        "created": [],
+        "missing_created": [
+          "classification_CPU",
+          "classification_GPU",
+          "detection_CPU",
+          "detection_GPU"
+        ],
+        "missing_warmed": [
+          "classification_CPU",
+          "classification_GPU",
+          "detection_CPU",
+          "detection_GPU"
+        ],
+        "used_keys": [
+          "classification_CPU",
+          "detection_CPU"
+        ],
+        "wrong_lane": []
+      },
+      "passed": false
+    },
+    "5_overlap": {
+      "detail": {
+        "expected": "0",
+        "foreign_lane_rows": [],
+        "lanes": [
+          "CPU",
+          "CPU"
+        ],
+        "overlap_ns_raw": 0,
+        "overlap_s": 0.0,
+        "overlap_zero": true,
+        "registration_version": 3
+      },
+      "passed": false
+    },
+    "6_warmup_quality": {
+      "comparisons": {
+        "classification_CPU": null,
+        "classification_GPU": null,
+        "detection_CPU": null,
+        "detection_GPU": null
+      },
+      "detail": {
+        "classification_CPU": {
+          "judged": true,
+          "passed": false,
+          "reason": "warmups missing"
+        },
+        "classification_GPU": {
+          "judged": false,
+          "passed": false,
+          "reason": "warmups missing"
+        },
+        "detection_CPU": {
+          "judged": true,
+          "passed": false,
+          "reason": "warmups missing"
+        },
+        "detection_GPU": {
+          "judged": false,
+          "passed": false,
+          "reason": "warmups missing"
+        }
+      },
+      "passed": false
+    },
+    "7_delegation_evidence": {
+      "detail": {
+        "logcat": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M7_S\\S26_MIXREQ_21_CPU_URGENT_ONLINE_V1_a2\\host\\logcat_threadtime.txt",
+        "mark_count": 2,
+        "runner_pid": "31032",
+        "runtimes": {
+          "classification_GPU": {
+            "key": "classification_GPU",
+            "reason": "window marks missing",
+            "used_by_policy": false,
+            "verdict": "FAIL"
+          },
+          "detection_GPU": {
+            "key": "detection_GPU",
+            "reason": "window marks missing",
+            "used_by_policy": false,
+            "verdict": "FAIL"
+          }
+        }
+      },
+      "passed": true
+    },
+    "8_plugged_start": {
+      "detail": {
+        "plugged_nonzero": 0,
+        "samples": 1,
+        "start_check": null,
+        "start_thermal_status": null
+      },
+      "passed": false
+    },
+    "9_watch_stop": {
+      "detail": {
+        "failure_files": [],
+        "stop_reason": "environment/screen_off",
+        "watch_events": {
+          "phone": 2,
+          "skin": 0
+        },
+        "watch_source": "host csv"
+      },
+      "passed": false
+    }
+  },
+  "schema": "s26-mixreq-validated-v1",
+  "selftest": false,
+  "session_id": "1a411506-d87b-5519-87ad-a3d6f9ec65de",
+  "session_index": 21,
+  "split": "confirmation",
+  "time_scale": 1
+}

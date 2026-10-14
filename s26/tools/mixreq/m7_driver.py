@@ -309,6 +309,8 @@ class Driver:
         argv += ["--smoke", smoke] if smoke else ["--index", str(index)]
         if legacy:
             argv.append("--legacy-validate")
+        if self.args.band_wait_s is not None and "--band-wait-s" not in extra:
+            argv += ["--band-wait-s", str(self.args.band_wait_s)]   # operator override (영훈 13:3x "대기 그만하고 바로 시작") — recorded in the run log args
         if self.args.in_block_charge:
             argv.append("--in-block-charge")
         console = root / f"console_{label}_a{attempt}_{dt.datetime.now().strftime('%H%M%S')}.txt"
@@ -568,6 +570,9 @@ class Driver:
             e = self.plan_entry("s", index)
             label = f"{e['label']}-{e['letter']}"
             attempt = 1
+            if self.host_folder("s", index, 1).exists():   # resume after a stop: attempt 1 already used (folder kept) → go to attempt 2
+                attempt = 2
+                self.log(f"{label}: attempt 1 folder exists -> starting at attempt 2 (retry slot)")
             while True:
                 self.safety(f"before {label} a{attempt}")
                 s0 = self.phone_state()
@@ -689,6 +694,7 @@ def main() -> int:
     ap.add_argument("--reconnect-wait-s", type=int, default=600)
     ap.add_argument("--lock-wait-s", type=int, default=3600)
     ap.add_argument("--in-block-charge", action="store_true")
+    ap.add_argument("--band-wait-s", type=int, default=None, help="override the session start-band wait (seconds · 0 = proceed at once · marked out_of_band)")
     args = ap.parse_args()
     if args.kind == "smoke" and not args.smoke:
         raise SystemExit("--kind smoke needs --smoke p|k|s")
