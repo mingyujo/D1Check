@@ -24,7 +24,9 @@ object MixreqContract {
     const val SPLIT_DIAGNOSTIC = "diagnostic"
 
     /** 등록 v3 §0-2 실험 ID 표 (앱 · 호스트 같은 표). 스모크 ID 는 같은 실험의 공통창을 쓰고 요청 수는 SMOKE_REQUEST_COUNT. 간격은 전부 STEP_MS. */
-    data class ExperimentSpec(val id: String, val smokeId: String, val requestCount: Int, val commonS: Long, val sessionIndexMax: Int, val watchdogMs: Long)
+    data class ExperimentSpec(val id: String, val smokeId: String, val requestCount: Int, val commonS: Long, val sessionIndexMax: Int, val watchdogMs: Long,
+                              /** M8 (계약표 v1 §0): 행이 고르는 계약. 기존 행 = CONTRACT_M6 (기본값 · 무변경). */
+                              val contract: String = CONTRACT_M6)
     val EXPERIMENTS = listOf(
         ExperimentSpec("S26-MIXREQ-02", "S26-MIXREQ-02-SMOKE", 192, 120L, 15, 600_000L),
         ExperimentSpec("S26-MIXREQ-02C", "S26-MIXREQ-02C-SMOKE", 192, 120L, 15, 600_000L),
@@ -70,8 +72,72 @@ object MixreqContract {
 
     fun isM6(experimentId: String): Boolean = M6_EXPERIMENTS.any { it.id == experimentId || it.smokeId == experimentId }
 
+    /**
+     * M8 (2026-10-14, d1sim/docs/M8_계약표_v1.md · s26/results/m8_prep/contract/ json 5 · 조민규 답 10/14 §3 ~ §7): 새 계약 실험 7개 (+ 각 SMOKE).
+     * 기존 표 (EXPERIMENTS · M5 · M6) · 상수 (COOLING_SECONDS 60 · BASELINE 30 · 기한 1,500/6,000 · 정책 3) 는 그대로 — M8 행만 contract = CONTRACT_M8 을 고르고
+     * SessionEngineM8 · M8Plan · PolicyStudy.chooseM8 이 그 행에서만 돈다. index 상한은 넉넉히 (M7 교훈 · 쓴 자리 재사용 0 · DEV = 앞 절반 · CONFIRM = 뒤 절반).
+     *   S26-M8-FN     기능/용량 6군 (C252 CPU/GPU/NPU · M128 BASE/PAIR_G/PAIR_N)   index 0..99
+     *   S26-M8-L64    L64 BASE / PAIR_G                                           index 0..399
+     *   S26-M8-C252   C252 CPU / GPU / NPU                                        index 0..399
+     *   S26-M8-M128   M128 BASE/ORDER/PAIR_G/WAIT200x16/NPU_SERIAL/PAIR_N/WAIT200x12/WAIT1000x12  index 0..999
+     *   S26-M8-S128   SMOOTH128 BASE / ORDER / PAIR_G                              index 0..399
+     *   S26-M8-RECENT C252 CPU/GPU/NPU × 준비 CPU60 / IDLE60 (role prep · 세션 안)   index 0..399
+     *   S26-M8-IDLE   계측 idle: NO_RUNTIME (블록 NONE) / 상주 (블록 M) · 요청 0       index 0..199
+     * 공통창 120 s · watchdog 1,260 s (setup 180 + gate 60 + baseline 60 + prep 65 + 120 + drain 30 + cooling 90 = 605 → 여유). 요청 수는 행 (bank) 이 정한다 (requestCount = −1 표시).
+     */
+    const val CONTRACT_M6 = "M6"
+    const val CONTRACT_M8 = "M8"
+    const val M8_FN_ID = "S26-M8-FN"
+    const val M8_L64_ID = "S26-M8-L64"
+    const val M8_C252_ID = "S26-M8-C252"
+    const val M8_M128_ID = "S26-M8-M128"
+    const val M8_S128_ID = "S26-M8-S128"
+    const val M8_RECENT_ID = "S26-M8-RECENT"
+    const val M8_IDLE_ID = "S26-M8-IDLE"
+    const val M8_REQUESTS_PER_ROW = -1
+    val M8_EXPERIMENTS = listOf(
+        ExperimentSpec(M8_FN_ID, "$M8_FN_ID-SMOKE", M8_REQUESTS_PER_ROW, 120L, 99, 1_260_000L, CONTRACT_M8),
+        ExperimentSpec(M8_L64_ID, "$M8_L64_ID-SMOKE", M8_REQUESTS_PER_ROW, 120L, 399, 1_260_000L, CONTRACT_M8),
+        ExperimentSpec(M8_C252_ID, "$M8_C252_ID-SMOKE", M8_REQUESTS_PER_ROW, 120L, 399, 1_260_000L, CONTRACT_M8),
+        ExperimentSpec(M8_M128_ID, "$M8_M128_ID-SMOKE", M8_REQUESTS_PER_ROW, 120L, 999, 1_260_000L, CONTRACT_M8),
+        ExperimentSpec(M8_S128_ID, "$M8_S128_ID-SMOKE", M8_REQUESTS_PER_ROW, 120L, 399, 1_260_000L, CONTRACT_M8),
+        ExperimentSpec(M8_RECENT_ID, "$M8_RECENT_ID-SMOKE", M8_REQUESTS_PER_ROW, 120L, 399, 1_260_000L, CONTRACT_M8),
+        ExperimentSpec(M8_IDLE_ID, "$M8_IDLE_ID-SMOKE", M8_REQUESTS_PER_ROW, 120L, 199, 1_260_000L, CONTRACT_M8),
+    )
+
+    fun isM8(experimentId: String): Boolean = M8_EXPERIMENTS.any { it.id == experimentId || it.smokeId == experimentId }
+
+    /** M8 단계 (session_m8.json): baseline 60 · cooling 90 · 준비 60 s + 5 s · 120 s 뒤 dispatch 0 · drain 30 — 기존 상수는 그대로 (M6 행). */
+    const val M8_BASELINE_SECONDS = 60L
+    const val M8_COOLING_SECONDS = 90L
+
+    /** M8 정책 ID 7 + NO_RUNTIME 표식 (policies_m8.json). 기존 POLICIES 집합은 바꾸지 않는다 (PolicyStudy.choose 는 그 집합만 받는다). */
+    const val POLICY_FIFO_SERIAL_CPU = "FIFO_SERIAL_CPU_V1"
+    const val POLICY_FIFO_SERIAL_CG = "FIFO_SERIAL_CG_V1"
+    const val POLICY_FIFO_SERIAL_CN = "FIFO_SERIAL_CN_V1"
+    const val POLICY_EDD_SERIAL_CG = "EDD_SERIAL_CG_V1"
+    const val POLICY_FIFO_PAIR_CG = "FIFO_PAIR_CG_V1"
+    const val POLICY_FIFO_PAIR_CN = "FIFO_PAIR_CN_V1"
+    const val POLICY_FIFO_WAIT_CG = "FIFO_WAIT_CG_V1"
+    /** 블록 NONE (runtime 0 · 요청 0) 행의 정책 표식 — 실행 경로 없음. */
+    const val POLICY_NO_RUNTIME = "NO_RUNTIME_V1"
+    val M8_POLICIES = setOf(POLICY_FIFO_SERIAL_CPU, POLICY_FIFO_SERIAL_CG, POLICY_FIFO_SERIAL_CN, POLICY_EDD_SERIAL_CG, POLICY_FIFO_PAIR_CG, POLICY_FIFO_PAIR_CN, POLICY_FIFO_WAIT_CG)
+
+    /** M8 NO_RUNTIME 대조 (계약표 v1 §6): 같은 Activity · sampler · logger · runtime 0 · S26-M8-IDLE 만. */
+    const val BLOCK_NONE = "NONE"
+    val KEYS_BLOCK_NONE: Set<String> = emptySet()
+
+    /** M8 정책이 실제로 쓰는 runtime 키 (policies_m8.json route). */
+    fun usedKeysM8(policy: String): Set<String> = when (policy) {
+        POLICY_FIFO_SERIAL_CPU -> setOf("classification_CPU", "detection_CPU")
+        POLICY_FIFO_SERIAL_CG, POLICY_EDD_SERIAL_CG, POLICY_FIFO_PAIR_CG, POLICY_FIFO_WAIT_CG -> setOf("classification_GPU", "detection_CPU")
+        POLICY_FIFO_SERIAL_CN, POLICY_FIFO_PAIR_CN -> setOf("classification_NPU", "detection_CPU")
+        POLICY_NO_RUNTIME -> emptySet()
+        else -> error("unknown M8 policy $policy")
+    }
+
     fun experimentOf(experimentId: String): ExperimentSpec =
-        (EXPERIMENTS + M5_EXPERIMENTS + M6_EXPERIMENTS).firstOrNull { it.id == experimentId || it.smokeId == experimentId } ?: error("unknown experiment_id $experimentId")
+        (EXPERIMENTS + M5_EXPERIMENTS + M6_EXPERIMENTS + M8_EXPERIMENTS).firstOrNull { it.id == experimentId || it.smokeId == experimentId } ?: error("unknown experiment_id $experimentId")
 
     /** SessionManifest.validate() 가 정한다 (한 프로세스 = 한 세션 = 실험 하나). 엔진은 COMMON_NS 를 이 표 행에서 읽는다. */
     @Volatile var activeExperiment: ExperimentSpec = EXPERIMENTS[0]
@@ -130,12 +196,18 @@ object MixreqContract {
         val priority: String,
         val offsetMs: Long,
         val deadlineMs: Long,
-    )
+        /** M8 (계약표 v1 §2): 예정 도착 µs (333.2 ms · 537.155 ms). 기존 행은 보조 생성자 (offsetMs × 1,000 · M6/M7 표 · 비교 · 엔진 경로 무변경). */
+        val offsetUs: Long,
+    ) {
+        constructor(id: String, ordinal: Int, task: String, priority: String, offsetMs: Long, deadlineMs: Long) :
+            this(id, ordinal, task, priority, offsetMs, deadlineMs, offsetMs * 1_000L)
+    }
 
     fun keysOf(block: String): Set<String> = when (block) {
         BLOCK_A -> KEYS_BLOCK_A
         BLOCK_N -> KEYS_BLOCK_N
         BLOCK_M -> KEYS_BLOCK_M
+        BLOCK_NONE -> KEYS_BLOCK_NONE   // M8 NO_RUNTIME
         else -> error("unknown block $block")
     }
 
@@ -146,7 +218,7 @@ object MixreqContract {
         else -> error("unknown block $block")
     }
 
-    fun setupNsOf(block: String): Long = if (block == BLOCK_N || block == BLOCK_M) SETUP_NS_BLOCK_N else SETUP_NS_BLOCK_A
+    fun setupNsOf(block: String): Long = if (block == BLOCK_N || block == BLOCK_M || block == BLOCK_NONE) SETUP_NS_BLOCK_N else SETUP_NS_BLOCK_A
 
     /** "classification_GPU" -> "GPU". lane 이름 = runtime 키의 마지막 토큰. */
     fun laneOf(key: String): String = key.substringAfterLast('_').also { require(it in LANES) { "unknown lane in $key" } }

@@ -26,6 +26,8 @@ class SessionActivity : Activity() {
     private val handler = Handler(Looper.getMainLooper())
     private val watchdog = Runnable { Process.killProcess(Process.myPid()) }
     @Volatile private var engine: SessionEngine? = null
+    /** M8 (계약표 v1 §0): contract = M8 행만 SessionEngineM8 (별도 파일 · SessionEngine.kt 무변경). */
+    @Volatile private var engineM8: SessionEngineM8? = null
     @Volatile private var finished = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +52,20 @@ class SessionActivity : Activity() {
             val apkSha = runCatching { TaskRuntime.sha256(File(applicationInfo.sourceDir)) }.getOrNull()
             Log.i(TAG, "activity_start sid=$sid attempt=${manifest.attempt} command_id=$commandId pid=${Process.myPid()} apk_sha256=$apkSha out=$outRoot")
             val sampler = BatterySampler(this)
+            if (manifest.isM8) {
+                val builtM8 = SessionEngineM8(
+                    manifest = manifest, manifestBytes = bytes, inputsRoot = requireNotNull(manifestFile.parentFile), outRoot = outRoot,
+                    runtimeFactory = { spec -> CompiledModelRuntime(this, spec) }, decodeImage = ::decodeBitmap, snapshot = sampler::snapshot,
+                    now = SystemClock::elapsedRealtimeNanos,
+                    identity = linkedMapOf("pid" to Process.myPid(), "apk_sha256" to apkSha, "device_model" to Build.MODEL, "sdk_int" to Build.VERSION.SDK_INT,
+                        "command_id" to commandId, "package" to packageName),
+                    log = { Log.i(TAG, it) },
+                )
+                engineM8 = builtM8
+                builtM8.lifecycle("onCreate")
+                outcome = if (builtM8.run()) "completed" else "failed"
+                return
+            }
             val built = SessionEngine(
                 manifest = manifest,
                 manifestBytes = bytes,
@@ -94,13 +110,14 @@ class SessionActivity : Activity() {
         }
     }
 
-    override fun onStart() { super.onStart(); engine?.lifecycle("onStart") }
-    override fun onResume() { super.onResume(); engine?.lifecycle("onResume") }
-    override fun onPause() { engine?.lifecycle("onPause"); super.onPause() }
-    override fun onStop() { engine?.lifecycle("onStop"); super.onStop() }
+    override fun onStart() { super.onStart(); engine?.lifecycle("onStart"); engineM8?.lifecycle("onStart") }
+    override fun onResume() { super.onResume(); engine?.lifecycle("onResume"); engineM8?.lifecycle("onResume") }
+    override fun onPause() { engine?.lifecycle("onPause"); engineM8?.lifecycle("onPause"); super.onPause() }
+    override fun onStop() { engine?.lifecycle("onStop"); engineM8?.lifecycle("onStop"); super.onStop() }
     override fun onDestroy() {
-        if (!finished) engine?.stop?.compareAndSet(null, "lifecycle_cancelled")
+        if (!finished) { engine?.stop?.compareAndSet(null, "lifecycle_cancelled"); engineM8?.stop?.compareAndSet(null, "lifecycle_cancelled") }
         engine?.lifecycle("onDestroy")
+        engineM8?.lifecycle("onDestroy")
         setup.shutdown()
         super.onDestroy()
     }

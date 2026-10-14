@@ -46,4 +46,75 @@ object PolicyStudy {
         policy == MixreqContract.POLICY_PAR_NPU -> "NPU"
         else -> error("unknown policy $policy")
     }
+
+    // ------------------------------------------------------------------ M8 (2026-10-14 · s26/results/m8_prep/contract/policies_m8.json · 계약표 v1 §1)
+    // 기존 choose() · laneFor() 는 한 줄도 바꾸지 않는다. M8 행 (SessionEngineM8) 만 아래를 쓴다.
+    const val REASON_M8_FIFO = "m8_fifo_strict_head"
+    const val REASON_M8_EDD = "m8_edd_strict_head"
+
+    /** M8 ready 요청 (도착한 것만). scheduledArrivalNs · deadlineNs = 절대 시각 (같은 시계). */
+    data class TicketM8(val id: String, val task: String, val priority: String, val ordinal: Int, val scheduledArrivalNs: Long, val deadlineNs: Long)
+    data class ChoiceM8(val ticket: TicketM8, val backend: String, val key: String, val reason: String)
+
+    fun selectionOf(policy: String): String = when (policy) {
+        MixreqContract.POLICY_EDD_SERIAL_CG -> "EDD"
+        in MixreqContract.M8_POLICIES -> "FIFO"
+        else -> error("unknown M8 policy $policy")
+    }
+
+    fun concurrencyOf(policy: String): String = when (policy) {
+        MixreqContract.POLICY_FIFO_PAIR_CG, MixreqContract.POLICY_FIFO_PAIR_CN -> "PAIR"
+        in MixreqContract.M8_POLICIES -> "SERIAL"
+        else -> error("unknown M8 policy $policy")
+    }
+
+    /** 허용 병행 조합 (PAIR 만): 그 정책이 쓰는 두 runtime 키. SERIAL 은 null. */
+    fun allowedPairOf(policy: String): Set<String>? = if (concurrencyOf(policy) == "PAIR") MixreqContract.usedKeysM8(policy) else null
+
+    /** policies_m8.json route: C → 정책의 분류 lane · D → CPU. */
+    fun laneForM8(policy: String, task: String): String = when {
+        task == "detection" -> "CPU"
+        policy == MixreqContract.POLICY_FIFO_SERIAL_CPU -> "CPU"
+        policy == MixreqContract.POLICY_FIFO_SERIAL_CN || policy == MixreqContract.POLICY_FIFO_PAIR_CN -> "NPU"
+        policy in MixreqContract.M8_POLICIES -> "GPU"
+        else -> error("unknown M8 policy $policy")
+    }
+
+    /** FIFO = (예정 도착 → ordinal → id) · EDD = (절대기한 → 예정 도착 → ordinal → id). head 하나만 본다. */
+    fun orderedM8(policy: String, waiting: List<TicketM8>): List<TicketM8> = when (selectionOf(policy)) {
+        "EDD" -> waiting.sortedWith(compareBy<TicketM8> { it.deadlineNs }.thenBy { it.scheduledArrivalNs }.thenBy { it.ordinal }.thenBy { it.id })
+        else -> waiting.sortedWith(compareBy<TicketM8> { it.scheduledArrivalNs }.thenBy { it.ordinal }.thenBy { it.id })
+    }
+
+    /**
+     * M8 선택: strict head (head 의 lane 이 busy 면 null · 추월 없음) · SERIAL = running 이 하나라도 있으면 null · PAIR = running ∪ {후보} ⊆ 허용 조합 · |running| < 2 · 같은 lane 1 ·
+     * 서비스 120 s 경계 (nowNs ≥ windowEndNs) 뒤엔 null. running = 지금 dispatch 된 뒤 lane_available 전인 runtime 키 (실제 시각으로 유지하는 집합).
+     */
+    fun chooseM8(policy: String, waiting: List<TicketM8>, running: Collection<String>, nowNs: Long, windowEndNs: Long): ChoiceM8? {
+        require(policy in MixreqContract.M8_POLICIES) { "unknown M8 policy $policy" }
+        if (nowNs >= windowEndNs || waiting.isEmpty()) return null
+        val head = orderedM8(policy, waiting).first()
+        val lane = laneForM8(policy, head.task)
+        val key = "${head.task}_$lane"
+        if (running.any { MixreqContract.laneOf(it) == lane }) return null
+        when (concurrencyOf(policy)) {
+            "SERIAL" -> if (running.isNotEmpty()) return null
+            "PAIR" -> {
+                val allowed = allowedPairOf(policy)!!
+                if (running.size >= 2 || key !in allowed || running.any { it !in allowed }) return null
+            }
+        }
+        return ChoiceM8(head, lane, key, if (selectionOf(policy) == "EDD") REASON_M8_EDD else REASON_M8_FIFO)
+    }
+
+    /**
+     * WAIT (policies_m8.json wait_rules): 묶음 k 의 첫 dispatch 직전에만 · ready head 있음 ∧ running 0 (관련 owner 전부 실제 AVAILABLE) ∧ k < first_n ∧ 그 묶음 처음 ∧ 누적 < cap.
+     * 반환 = 계획 dose ms (cap 에 걸리면 남은 cap 만큼) · null = 의도 WAIT 아님 (busy · 요청 없음 · n 밖 · 같은 묶음 두 번째 · cap 소진).
+     */
+    fun plannedWaitMs(args: M8Plan.WaitArgs, burstIndex: Int, burstsWaited: Set<Int>, cumulativeMs: Long, runningCount: Int, hasReadyHead: Boolean): Long? {
+        if (!hasReadyHead || runningCount > 0 || burstIndex >= args.firstNBursts || burstIndex in burstsWaited) return null
+        val remaining = args.capMs - cumulativeMs
+        if (remaining <= 0) return null
+        return minOf(args.waitMs, remaining)
+    }
 }
