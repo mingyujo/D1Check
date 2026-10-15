@@ -1,8 +1,8 @@
 {
-  "updated_UTC": "2026-10-15T19:29:37.960197+00:00",
-  "updated_KST": "2026-10-16 04:29:37 KST",
+  "updated_UTC": "2026-10-15T19:35:10.219505+00:00",
+  "updated_KST": "2026-10-16 04:35:10 KST",
   "original_confirm": {
-    "checked_UTC": "2026-10-15T19:29:37.048217+00:00",
+    "checked_UTC": "2026-10-15T19:35:09.936943+00:00",
     "phase": "STOPPED",
     "current": {
       "session_id": "2f15f739-0a34-58d3-b8e9-24a739bc6d8c",
@@ -77,22 +77,25 @@
     },
     "SUP12": {
       "registered": 12,
-      "APP": 0,
-      "normal": 0,
+      "APP": 1,
+      "normal": 1,
       "rejected": 0,
       "host_failed": 0,
       "ended": false,
-      "run_root_started": false,
-      "worker_lock_present": false
+      "run_root_started": true,
+      "worker_lock_present": true,
+      "pending_prescription": "IDLE_RESIDENT"
     }
   },
   "original85_cap": 85,
   "supplement12_cap": 12,
   "matched_rebaseline_cap": 6,
   "combined_ceiling": 103,
-  "combined_consumed": 84,
+  "combined_consumed": 85,
   "original_confirm_rejections_total": 2,
-  "active_measurement_groups": [],
+  "active_measurement_groups": [
+    "SUP12"
+  ],
   "energy_J": null,
   "surface_temperature_verified": false,
   "experiment_ready": false,
@@ -269,6 +272,28 @@
           "all_arms_normally_completed": false,
           "status_counts": {
             "PRESTART_REJECT": 1
+          },
+          "subset_recipe": null
+        }
+      ]
+    },
+    {
+      "label": "SUP12_I_UNRESIDENT_IDLE",
+      "path": "docs/results/a24_measurement_share_20261016/automatic_checkpoints/SUP12_I_UNRESIDENT_IDLE",
+      "bundles": [
+        {
+          "filename": "SUP12_DEV_I_UNRESIDENT.zip",
+          "bytes": 34850,
+          "sha256": "b4c8200c9278d74687d4380ad6d385e489f71cd9c572af74053310b8b1e28ba0",
+          "members": 18,
+          "family": "SUP12",
+          "stage": "DEV",
+          "block": "I_UNRESIDENT",
+          "planned_arms": 1,
+          "normal_completed": 1,
+          "all_arms_normally_completed": true,
+          "status_counts": {
+            "COMPLETE_TRACE_RECOVERED": 1
           },
           "subset_recipe": null
         }

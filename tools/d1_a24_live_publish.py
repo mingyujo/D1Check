@@ -49,6 +49,25 @@ def specifications():
     return specs
 
 
+def reservation_root(name,job):
+    if name=='SUP12':return Path(job['supplement_global_root'])
+    if name=='EXTRA4_ORDER':return Path(job['extra4_global_root'])
+    if name=='REBASE6':return Path(job['rebaseline_global_root'])
+    return Path(load_json(Path(job['global_binding']))['global_reservation_root'])
+
+
+def publication_signature(specs):
+    """A stage starting is publishable progress even before its first closure."""
+    result=[]
+    for name,_,job,_,rows in specs:
+        root=Path(job['run_root']);reservations=reservation_root(name,job)
+        result.append((name,root.exists(),(reservations/'ACTIVE_OWNER.json').exists(),
+            tuple(r['session_id'] for r in rows if (reservations/'reservations'/r['session_id']/'APP_LAUNCH_INTENT.json').exists()),
+            tuple(sorted((q.name,sha256(q)) for q in root.glob('*.outcome.json'))),
+            (root/'WINDOW_STOPPED.json').exists()))
+    return tuple(result)
+
+
 def refresh():
     META.mkdir(parents=True,exist_ok=True)
     pointer=META.parent/'LIVE_BINDING.json'
@@ -65,7 +84,7 @@ def refresh():
         seen[name]={'registered':len(rows),'APP':0,'normal':sum(x['status']=='COMPLETE_TRACE_RECOVERED' for x in outcomes.values()),
             'rejected':sum(x['status']=='PRESTART_REJECT' for x in outcomes.values()),
             'host_failed':sum(x['status']=='FAILED_PRESERVED' for x in outcomes.values()),'ended':(root/'WINDOW_STOPPED.json').exists()}
-        globalroot=Path(job['supplement_global_root']) if name=='SUP12' else Path(job['extra4_global_root']) if name=='EXTRA4_ORDER' else Path(job['rebaseline_global_root']) if name=='REBASE6' else Path(load_json(Path(job['global_binding']))['global_reservation_root'])
+        globalroot=reservation_root(name,job)
         seen[name].update(APP=sum((globalroot/'reservations'/r['session_id']/'APP_LAUNCH_INTENT.json').exists() for r in rows),
             run_root_started=root.exists(),worker_lock_present=(globalroot/'ACTIVE_OWNER.json').exists())
         pending=next((r for r in rows if r['session_id'] not in outcomes),None)
@@ -192,8 +211,7 @@ def main():
     last=0;signature=None
     try:
         while not (META/'STOP_PUBLISHER.json').exists():
-            spec=specifications();current=tuple((name,tuple(sorted((q.name,sha256(q)) for q in Path(job['run_root']).glob('*.outcome.json'))),
-                (Path(job['run_root'])/'WINDOW_STOPPED.json').exists()) for name,_,job,_,_ in spec)
+            spec=specifications();current=publication_signature(spec)
             if time.time()-last>=3600 or current!=signature:
                 if a.push:publish()
                 else:refresh()
