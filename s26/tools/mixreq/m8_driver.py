@@ -78,7 +78,7 @@ class Driver(D7.Driver):
     def acquire_lock(self):
         if self.lock.is_file():
             pid = self.lock.read_text(encoding="utf-8").strip()
-            alive = subprocess.run(["tasklist", "/FI", f"PID eq {pid}"], capture_output=True, text=True).stdout
+            alive = subprocess.run(["tasklist", "/FI", f"PID eq {pid}"], capture_output=True, text=True, encoding="utf-8", errors="replace").stdout or ""   # 10/15 10:02: stdout None → TypeError 고침
             if pid and pid in alive:
                 raise SystemExit(f"driver lock held by pid {pid} ({self.lock}) — refuse to start")
             self.log(f"stale lock (pid {pid}) removed")

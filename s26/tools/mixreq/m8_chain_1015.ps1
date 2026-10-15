@@ -13,9 +13,11 @@ if (-not $env:ANDROID_SERIAL) { L "ANDROID_SERIAL not set"; exit 2 }
 Set-Location $REPO
 L "chain start source=$SourceCommit"
 # 1) P0 supplement (same Tref key as block 1 = day segment)
+if (-not $SkipSupp) {
 L "step 1: P0 supplement PERFETTO_ON_C32_r2"
 & powershell -NoProfile -ExecutionPolicy Bypass -File $DRV -Stage p0 -PlanFile "$REPO\s26\results\m8_prep\plan_m8\p0_supp.json" -TrefKey "2026-10-15_day_b1" -NoFixedIdle
 L "step 1 end rc=$LASTEXITCODE"
+} else { L "step 1 skipped (done 08:34)" }
 # 2) DEV block 1
 L "step 2: DEV block 1 only=[$Block1Only] trefKey=$TrefKey1"
 & powershell -NoProfile -ExecutionPolicy Bypass -File $DRV -Stage dev -Block 1 -TrefKey $TrefKey1 -NoFixedIdle -Only $Block1Only
