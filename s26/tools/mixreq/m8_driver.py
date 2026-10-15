@@ -365,6 +365,15 @@ class Driver(D7.Driver):
             if self.host_folder_m8(plan_dir, index, smoke, 1).exists():
                 attempt = 2
                 self.log(f"{label}: smoke a1 folder exists -> re-smoke as a2")
+        if not smoke and attempt == 1 and self.host_folder_m8(plan_dir, index, smoke, 1).exists() and self.app_started(self.host_folder_m8(plan_dir, index, smoke, 1)):
+            # 드라이버 재시작 뒤 (10/15 11:2x adb 사고): a1 이 이미 소비됨 (앱 시작) → 바로 a2 (rc 5 로 600 s 낭비 0 · a2 가 있으면 건너뜀)
+            if self.host_folder_m8(plan_dir, index, smoke, 2).exists():
+                self.log(f"{label}: a1 · a2 host folders both exist -> skip (자리 소비 완료)")
+                self.event(what="skipped_consumed", label=label)
+                return
+            attempt = 2
+            self.log(f"{label}: a1 host folder exists (app started) -> resume as a2")
+            self.state["retries"] += 1
         while True:
             self.safety(f"before {label} a{attempt}")
             in_block_charge = self.charge_rule(label)
