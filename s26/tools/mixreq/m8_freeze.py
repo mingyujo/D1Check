@@ -69,10 +69,10 @@ def main() -> int:
             plan = C.read_json(PLAN_ROOT / s["plan_dir"] / "plan.json")
             pe = next(e for e in plan["sessions"] if e["index"] == s["index"])
             valid_now = []
-            for a in (1, 2):
-                vf = args.results / "S26_M8_DEV" / s["plan_dir"] / f"S26_MIXREQ_{s['index']:02d}_{pe['policy']}_a{a}" / "validated.json"
+            for att in (1, 2):
+                vf = args.results / "S26_M8_DEV" / s["plan_dir"] / f"S26_MIXREQ_{s['index']:02d}_{pe['policy']}_a{att}" / "validated.json"
                 if vf.is_file():
-                    valid_now.append(dict(attempt=a, eligible=C.read_json(vf).get("eligible")))
+                    valid_now.append(dict(attempt=att, eligible=C.read_json(vf).get("eligible")))
             valid = any(x["eligible"] is True for x in valid_now) or any(x["validated"] is True and x["rc"] == 0 for x in attempts)
             sessions.append(dict(block_no=blk["block_no"], order_pos=s["order_pos"], label=s["label"], index=s["index"], session_id=s["session_id"], manifest_sha256=s["manifest_sha256"],
                                  plan_dir=s["plan_dir"], valid=valid, validated_now=valid_now, rejects=sum(1 for x in attempts if x["prestart_reject"]), attempts=attempts))
