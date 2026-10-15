@@ -1,5 +1,7 @@
 # 남은23회 — 23:50 전 종료로 앞당긴 C7 방문
 
+**22:52:42 KST에 APP0으로 종료된 방문이다.** [닫힌 냉각 원기록](../../../results/a24_measurement_share_20261015/preAPP_visit_07_cooling/README.md)을 보존한다. 이후 사용자가 승인한 [C8 혼합 묶음 우선 순서](../confirm_m128_order_amended_20261015/README.md)를 따르며 이 방문 명령은 재실행하지 않는다. 아래 실행 중 문장은 당시 시작 기록이다.
+
 사용자 “11시50분전까진 끝내야”를 반영한다. **기기23:45 KST 종료, 회수·저장23:50 전 완료**를 적용하고 마지막5분을 확보한다. 이전23:58 시간창의 파일을 수정하지 않고, C6를 앱 전 대기에서 안전하게 닫은 뒤 새 C7 시간창으로 결합했다. 원확인40 중 미실행23회·3,368요청만 같은 순서로 대상으로 한다.
 
 [앞당긴 시간창](USER_WINDOW.json) · [실행 계약](EXECUTION_CONTRACT.json) · [23개 실제 authorization PC 검산](PC_VERIFICATION.json) · [관련31검사](REGRESSION_VERIFICATION.json) · [읽기전용 시작 점검](BEFORE_DEVICE_READONLY.json)

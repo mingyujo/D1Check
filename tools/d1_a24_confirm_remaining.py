@@ -28,7 +28,7 @@ INPUT_KEYS=['analysis_contract','apk','apk_identity','budget_file','confirm_free
             'prior_stage_ledger','quality_references','source_manifest']
 
 
-def exact_scope(plan,ledger):
+def exact_scope(plan,ledger,execution_order=None):
     records=ledger['records'];rows=plan['sessions']
     require(len(rows)==len(records)==40 and [r['session_id'] for r in rows]==[r['session_id'] for r in records],'ledger plan order differs')
     require(ledger['cap']==81 and ledger['consumed_before_new_confirm']==41,'budget lineage changed')
@@ -37,8 +37,13 @@ def exact_scope(plan,ledger):
     require(ledger['total_consumed']==41+len(used) and ledger['remaining']==40-len(used),'inconsistent remaining budget')
     pending=[r['session_id'] for r in records if r['APP_launches']==0 and r['START'] is False and r['outcome']=='NOT_ATTEMPTED']
     require(len(pending)==ledger['remaining'],'ambiguous unexecuted slot')
-    require([r['APP_launches'] for r in records]==[1]*len(used)+[0]*len(pending),'non-prefix execution history')
-    return [r for r in rows if r['session_id'] in pending]
+    ids=[r['session_id'] for r in rows]
+    if execution_order is None:execution_order=ids
+    require(isinstance(execution_order,list) and len(execution_order)==len(ids)
+            and len(set(execution_order))==len(ids) and set(execution_order)==set(ids),'execution order must preserve every original slot exactly once')
+    by_id={r['session_id']:r for r in records};row_by_id={r['session_id']:r for r in rows}
+    require([by_id[s]['APP_launches'] for s in execution_order]==[1]*len(used)+[0]*len(pending),'non-prefix execution history')
+    return [row_by_id[s] for s in execution_order if s in pending]
 
 
 def history_inventory(spec,plan,ledger):
@@ -152,7 +157,9 @@ def inspect(job,runtime=False,require_pc=True):
     require(contract['global_binding_sha256']==sha256(Path(job['global_binding'])),'binding changed')
     require(b['ledger_sha256']==sha256(Path(b['ledger_path'])) and b['window_sha256']==sha256(Path(job['window_file'])),'ledger/window changed')
     ledger=load_json(Path(b['ledger_path']));plan=load_json(Path(job['plan']));window=load_json(Path(job['window_file']))
-    remaining=exact_scope(plan,ledger);ids=window['registered_session_ids']
+    order=b.get('execution_order_session_ids')
+    require(contract.get('execution_order_session_ids')==order,'execution order contract/binding differs')
+    remaining=exact_scope(plan,ledger,order);ids=window['registered_session_ids']
     require(ids and ids==[r['session_id'] for r in remaining[:len(ids)]],'visit is not first untouched prefix')
     require(contract['visit_session_ids']==ids and window['plan_sha256']==sha256(Path(job['plan']))==ledger['plan_sha256'],'scope/plan differs')
     rows=remaining[:len(ids)];inventory,hits=history_inventory(b,plan,ledger)
@@ -197,7 +204,7 @@ def verify_authorizations(job,rows,carry,folder):
 def prepare(spec,folder):
     require(not folder.exists(),'write-once preparation folder');folder.mkdir(parents=True)
     job=load_json(Path(spec['template_job']));ledger=load_json(Path(spec['ledger_path']));plan=load_json(Path(job['plan']))
-    rows=exact_scope(plan,ledger);inventory,hits=history_inventory(spec,plan,ledger);carry=carry_references(rows,ledger,hits)
+    rows=exact_scope(plan,ledger,spec.get('execution_order_session_ids'));inventory,hits=history_inventory(spec,plan,ledger);carry=carry_references(rows,ledger,hits)
     require({r['block_id']:r['sha256'] for r in carry}==spec['required_carry_reference_sha256'],'carry differs from previously published frozen reference')
     window={'schema':'a24-user-execution-window-v1','execution_authorized':False,'hard_stop_UTC':None,'work_stop_UTC':None,
         'reserved_final_minutes':5,'registered_session_ids':[r['session_id'] for r in rows],'maximum_attempts_this_window':len(rows),
@@ -212,6 +219,10 @@ def prepare(spec,folder):
     contract.update(remaining_coordinator_sha256=sha256(Path(__file__)),global_binding_sha256=sha256(folder/'GLOBAL_BINDING.json'),
         window_sha256=sha256(folder/'USER_WINDOW_DRAFT.json'),visit_session_ids=window['registered_session_ids'],
         user_scope='prepare untouched remaining slots only; runtime blocked until fresh user time window')
+    if spec.get('execution_order_session_ids') is not None:
+        contract.update(execution_order_session_ids=spec['execution_order_session_ids'],
+            execution_order_amendment=spec['execution_order_amendment'],
+            original40_slots_and_requests_preserved=True,temperature_reference_reselection=False)
     atomic_json(folder/'EXECUTION_CONTRACT.json',contract)
     job.update(preparation_only=True,run_root=spec['new_run_root'],window_file=str(folder/'USER_WINDOW_DRAFT.json'),
         global_binding=str(folder/'GLOBAL_BINDING.json'),revision_contract_file=str(folder/'EXECUTION_CONTRACT.json'),

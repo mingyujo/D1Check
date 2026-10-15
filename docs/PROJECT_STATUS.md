@@ -1,4 +1,12 @@
-# 2026-10-15 최신 — 23:50 전 종료로 C7 재등록
+# 2026-10-15 최신 — C8 혼합 묶음 우선 승인·등록
+
+- 사용자 “다음 혼합 묶음부터 진행” 명시 선택으로 [C8 순서 개정·계약·검증](team/a24-measurement-revision02-20261015/confirm_m128_order_amended_20261015/README.md)을 고정했다. 실제job`output/A24R02C8/job.json`/원물`Documents/A24R02C8`/전역`Documents/A24R02C8_GLOBAL`. 원ordinal18~21 WAIT→BASE→PAIR→ORDER 최대4만 이번 창 대상, 실제owner/APP/START/stop부터 확인한다.
+- L64 ordinal17은 원ID/27.1℃/미실행 상태로 맨뒤에 보존. 원40/5,720요청·전체미실행23/3,368요청·예산58/81 불변, 신규APP intent만 추가소비. C6/C7은장시간APP전대기에서종료·APP/MAIN/세션소비0·원기록별도공유. [C7 종료](results/a24_measurement_share_20261015/preAPP_visit_07_cooling/README.md).
+- 기기23:45/저장23:50 전·마지막5분, 새APP21분/MAIN5분 여유·동일기기단절최대20분/남은창 유지. 첫M128 준비에서원알고리즘으로 새공통기준선정, MAIN/기한/입력/APK/core179/품질변경0. 명시적40순열의중복/누락/기소비순서변조차단·관련33검사/23전체+4이번authorization검산PASS.
+- [시작AP를뺀기존17조건보조분석](results/a24_initial_state_diagnostic_20261015/README.md): 공개3ZIP독립재현CSV/SHA동일, 상대진단16/17. 원AP공백/판정은유지하고선형성·새시작기준검증으로승격하지않음. 같은장소/책상미사용은사용자보고,주변온도·변동원인은미확인.
+- 다음최대3: C8 실제APP/준비/MAIN/회수관찰; 닫힌군만서비스/출력/AP검산; 종료전미완료/소비·원물·Git저장. Jnull/AP HAL·표면미검증/experiment_ready=false·사용자WIP/데스크톱/S26/NPU보존. 과거C6/C7/준비job재실행금지.
+
+# 2026-10-15 이전 — 23:50 전 종료로 C7 재등록
 
 - 사용자 종료 시각23:50 전을 우선 적용: 기기23:45·저장5분. [C7 계약·검증·명령](team/a24-measurement-revision02-20261015/confirm23_window_20261015_2350/README.md). 실제job `output/A24R02C7/job.json`, 원물`Documents/A24R02C7`/전역`Documents/A24R02C7_GLOBAL`. 실행 여부는 실제owner/APP/START/stop부터 확인하며 명령을 중복 실행하지 않는다.
 - C6는22:30:21에 앱 전 대기에서 안전 종료, APP/워밍업/MAIN/START/claim/소비0. [냉각 원기록](results/a24_measurement_share_20261015/preAPP_visit_06_cooling/README.md). 기존17/40·2,352완료/58소비·23미실행/3,368요청은 불변. 장소 변경 답변은 같은 장소라는 사용자 정정으로 철회했다. 주변 온도·통풍은 미측정이다.

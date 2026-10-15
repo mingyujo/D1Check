@@ -41,6 +41,22 @@ class ScopeCases(unittest.TestCase):
                               (False,{**good,'hard_stop_UTC':(now+dt.timedelta(minutes=20)).isoformat()})]:
             with self.assertRaises(ValidationError):mod.validate_time_window(w,preparation)
 
+    def test_explicit_permutation_defers_one_slot_without_losing_requests(self):
+        ids=[r['session_id'] for r in self.plan['sessions']]
+        order=ids[:17]+ids[18:]+ids[17:18]
+        rows=mod.exact_scope(self.plan,self.ledger,order)
+        self.assertEqual([r['session_id'] for r in rows],order[17:])
+        self.assertEqual(sum(r['request_count'] for r in rows),3368)
+        after=copy.deepcopy(self.ledger);after.update(total_consumed=59,remaining=22)
+        after['records'][18].update(APP_launches=1,START=True,outcome='COMPLETE_TRACE_RECOVERED')
+        self.assertEqual(mod.exact_scope(self.plan,after,order)[0]['session_id'],ids[19])
+        with self.assertRaises(ValidationError):mod.exact_scope(self.plan,after)
+
+    def test_permutation_cannot_drop_duplicate_add_or_reorder_used_slots(self):
+        ids=[r['session_id'] for r in self.plan['sessions']]
+        for order in [ids[:-1],ids[:-1]+ids[:1],ids[:-1]+['foreign'],ids[:16]+ids[17:18]+ids[16:17]+ids[18:]]:
+            with self.assertRaises(ValidationError):mod.exact_scope(self.plan,self.ledger,order)
+
     def test_draft_execute_fails_before_inspection_or_device(self):
         with tempfile.TemporaryDirectory() as t:
             p=Path(t)/'w.json';p.write_text(json.dumps({'execution_authorized':False,'hard_stop_UTC':None,'work_stop_UTC':None}))
