@@ -99,13 +99,39 @@ def build(prep: Path, applied: str) -> dict:
     )
 
 
+def build_v2(prep: Path, incident: Path) -> dict:
+    """R21 v2 = R21 v1 동결 (16e71397… · 바이트 보존) 을 부모로 · 바뀌는 것 = index (앱 규칙) · R1-0 소비 1 · 정의 · 쌍 · 지표 · 규칙 변경 0."""
+    v1b = (prep / "CONFIRM_FREEZE_M8_R21_v1.json").read_bytes()
+    v1 = json.loads(v1b)
+    man_b = (prep / "plan_m8_r21" / "r21_manifest_v2.json").read_bytes()
+    man = json.loads(man_b)
+    slots = [dict(block=f"R{b['block_no']}", pos=s["order_pos"], label=s["label"], arm=s["arm"], experiment_id=s["experiment_id"], index=s["index"], v1_index=s["v1_index"],
+                  session_id=s["session_id"], origin_label=s["origin_slot"]["label"], manifest_sha256=s["manifest_sha256"], start_attempt=s.get("start_attempt", 1))
+             for b in man["stages"]["confirm_blocks"] for s in b["sessions"]]
+    doc = dict(v1)
+    doc.update(schema="s26-m8-confirm-freeze-r21-v2", revision_id=PR.REVISION_ID_V2,
+               parent_r21=dict(file="CONFIRM_FREEZE_M8_R21_v1.json", sha256=C.sha256_bytes(v1b), note="R21 v1 무변경 (바이트 보존) · v2 = index 개정만"),
+               amendment=dict(
+                   when="2026-10-16 05:4x (R1-0 a1 앱 거부 뒤 · R1 나머지 START 전)", why=PR.V2_RULE,
+                   incident=dict(file="results/S26_M8_CONFIRM/R1-0_a1_v1_incident.json", sha256=C.sha256_bytes(incident.read_bytes()), consumed=PR.V1_CONSUMED),
+                   unchanged="21 슬롯 · R블록 · 상대 순서 · arm · 입력 · 모델 · 기한 · 응답 경계 · AVAILABLE · 비선점 · 최대 2건 · WAIT · v5 게이트 · Tref_block R1 28.9 (블록 안 재산출 0) · 계측 창 · 주결과/보조 정의 · 에너지 적격 규칙 · 비교쌍 · 추정 · Holm · 초기 상태 열 · 주장 경계",
+                   r1_0="R1-0 = 재시도 1회 규칙 (a1 = v1 idx 502 소비된 실패 · a2 = v2 idx 506 · 600 s 휴식) · a2 실패면 invalid_twice (대체 0)",
+                   driver_fix="CONFIRM 판 드라이버 initial_state 'note' 키 중복 TypeError 고침 (05:40:59 R1-0 a1 run_end 미기록 → incident 파일)",
+                   retro="이미 START 한 행 (R1-0 a1) 에 새 규칙 소급 0 · 성공 행으로 다시 채우지 않음"))
+    doc["scope"] = dict(v1["scope"], slot_table=slots, r21_manifest=dict(file="plan_m8_r21/r21_manifest_v2.json", sha256=C.sha256_bytes(man_b)), plan_sha256=man["plan_sha256"],
+                        index_rule_note=PR.V2_RULE, r21_manifest_v1=v1["scope"]["r21_manifest"])
+    return doc
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--prep", type=Path, required=True)
-    ap.add_argument("--applied", required=True)
+    ap.add_argument("--applied", default="")
     ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--rev", type=int, default=1, choices=(1, 2))
+    ap.add_argument("--incident", type=Path)
     args = ap.parse_args()
-    doc = build(args.prep, args.applied)
+    doc = build(args.prep, args.applied) if args.rev == 1 else build_v2(args.prep, args.incident)
     b = C.canonical_json(doc)
     args.out.write_bytes(b)
     print(f"{args.out.name} {C.sha256_bytes(b)} {len(b)} B")

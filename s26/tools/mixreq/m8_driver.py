@@ -37,14 +37,15 @@ PY = sys.executable
 ROOT_BY_STAGE = {"smoke": "S26_M8_SMOKE", "p0": "S26_M8_P0", "dev": "S26_M8_DEV", "confirm": "S26_M8_CONFIRM"}
 # CONFIRM R21 판 (동결 R21 · 등록 v5): 게이트 상수 고정 — 플래그로 바꾸지 못함 · 사람 강제 START (--gate-force-start) · 고정 유휴 생략 (--no-fixed-idle) 거부
 CONFIRM_GATE = dict(tref_band_c=1.0, gate_window_s=120, gate_slope_max=0.2, gate_force_after_s=1800)
-CONFIRM_REVISION = "M8_CONFIRM_R21_v1"
-CONFIRM_PLAN_DIRS = ("plan_m8m128_r21", "plan_m8s128_r21")
+CONFIRM_REVISION = "M8_CONFIRM_R21_v2"   # v2 = 앱 arm = index % len 규칙에 맞춘 index (v1 idx 502 앱 거부 · 05:4x 사고)
+CONFIRM_REVISIONS = ("M8_CONFIRM_R21_v1", "M8_CONFIRM_R21_v2")
+CONFIRM_PLAN_DIRS = ("plan_m8m128_r21", "plan_m8s128_r21", "plan_m8m128_r21v2", "plan_m8s128_r21v2")
 
 
 def check_confirm_items(man: dict, items: list[dict]) -> None:
     """R21 manifest 의 21 슬롯 밖 (index · session_id · plan_dir · label 조합) 이면 거부 · Perfetto on 거부 · revision_id 확인."""
-    if man.get("revision_id") != CONFIRM_REVISION:
-        raise SystemExit(f"confirm plan revision {man.get('revision_id')} != {CONFIRM_REVISION}")
+    if man.get("revision_id") not in CONFIRM_REVISIONS:
+        raise SystemExit(f"confirm plan revision {man.get('revision_id')} not in {CONFIRM_REVISIONS}")
     allowed = {(s["plan_dir"], s["index"], s["session_id"], s["label"]) for b in man["stages"]["confirm_blocks"] for s in b["sessions"]}
     if len(allowed) != 21:
         raise SystemExit(f"confirm plan has {len(allowed)} slots (21 expected)")
@@ -53,7 +54,7 @@ def check_confirm_items(man: dict, items: list[dict]) -> None:
             raise SystemExit(f"slot outside R21 manifest refused: {i.get('label')} idx {i.get('index')} {i.get('plan_dir')}")
         if i.get("perfetto") not in (None, "off"):
             raise SystemExit(f"Perfetto must be OFF in CONFIRM (정책 비교군): {i.get('label')}")
-        if i.get("revision_id") != CONFIRM_REVISION:
+        if i.get("revision_id") != man.get("revision_id"):
             raise SystemExit(f"slot revision_id mismatch: {i.get('label')}")
 
 
@@ -137,7 +138,7 @@ class Driver(D7.Driver):
 
     def app_resident(self) -> dict:
         out = (self.adb("shell", f"pidof {C.APP_PACKAGE}", timeout=20) or "").strip()
-        return dict(app_pid_present=bool(out), note="START 직전 앱 프로세스 존재 (resident) · 런타임 상주 여부는 앱 warmup 기록")
+        return dict(app_pid_present=bool(out), resident_note="START 직전 앱 프로세스 존재 (resident) · 런타임 상주 여부는 앱 warmup 기록")
 
     def prev_run(self, before_epoch: float) -> dict:
         if not self.runlog.is_file():
@@ -484,6 +485,20 @@ class Driver(D7.Driver):
                 return
             if P.get("reject_rest_until") and time.time() < P["reject_rest_until"] and not (a1.exists() and self.app_started(a1)):
                 self.wait_until(P["reject_rest_until"], "잔여 재게이트 휴식 300 s (재시작 복원)")
+            if int(item.get("start_attempt") or 1) == 2:
+                # R21 v2: 이 슬롯의 a1 = 이전 판에서 소비된 실패 START (prior_consumed · 보존) → 재시도 1회 규칙대로 a2 · a1 끝 + retry_rest_s 잔여 휴식
+                a2 = self.host_folder_m8(plan_dir, index, smoke, 2)
+                if a2.exists() and self.app_started(a2):
+                    self.log(f"{label}: start_attempt 2 and a2 already consumed -> skip")
+                    self.event(what="skipped_consumed", label=label)
+                    return
+                attempt = 2
+                pc = (item.get("prior_consumed") or [{}])[-1]
+                end = dt.datetime.fromisoformat(pc["end"]).timestamp() if pc.get("end") else time.time()
+                self.log(f"{label}: a1 consumed in earlier revision ({pc.get('revision_id')} idx {pc.get('index')} rc {pc.get('rc')}) -> attempt 2 (재시도 1회 규칙)")
+                self.event(what="start_attempt_2", label=label, prior_consumed=item.get("prior_consumed"))
+                P["attempts"].setdefault("1", dict(rc=pc.get("rc"), end_epoch=end, app_started=True, valid=False, prior_revision=pc.get("revision_id"), index=pc.get("index")))
+                self.wait_until(end + self.args.retry_rest_s, f"재시도 휴식 {self.args.retry_rest_s} s (이전 판 a1 끝 기준)")
             self.save_progress()
         if not smoke and attempt == 1 and self.host_folder_m8(plan_dir, index, smoke, 1).exists() and self.app_started(self.host_folder_m8(plan_dir, index, smoke, 1)):
             # 드라이버 재시작 뒤 (10/15 11:2x adb 사고): a1 이 이미 소비됨 (앱 시작) → 바로 a2 (rc 5 로 600 s 낭비 0 · a2 가 있으면 건너뜀)
@@ -587,8 +602,8 @@ class Driver(D7.Driver):
                                wait_nominal_total_ms=a7.get("nominal_total_ms"), wait_planned_total_ms=a7.get("planned_total_ms"), wait_dose_total_ms=a7.get("dose_total_ms"),
                                wait_overrun_total_ms=a7.get("overrun_total_ms"), wait_cut=(len(a7.get("cut") or []) if a7 else None),
                                note="초기 상태 기록만 · 군별 보정/재정렬/대체 0")
-                extra_ev = dict(initial_state=initial, gate_summary=gate_summary, gate_attempt_id=h.get("gate_attempt_id"), host_commit=self.host_commit, revision_id=CONFIRM_REVISION,
-                                origin_slot=item.get("origin_slot"))
+                extra_ev = dict(initial_state=initial, gate_summary=gate_summary, gate_attempt_id=h.get("gate_attempt_id"), host_commit=self.host_commit, revision_id=item.get("revision_id"),
+                                origin_slot=item.get("origin_slot"), v1_index=item.get("v1_index"), prior_consumed=item.get("prior_consumed"))
                 P["attempts"][str(attempt)] = dict(rc=rc, end_epoch=time.time(), app_started=self.app_started(folder), valid=v.get("eligible"))
                 self.save_progress()
                 self.pending_hal.append(dict(label=label, attempt=attempt, gate_attempt_id=h.get("gate_attempt_id"), csv=h["csv"], stop_at=stop_at))
@@ -657,7 +672,7 @@ class Driver(D7.Driver):
                 raise Stop("adb not connected at start (새 주소)")
             if self.args.stage == "confirm":
                 self.event(what="confirm_driver_start", block=self.args.block, plan_file=self.args.plan_file, plan_file_sha256=C.sha256_bytes(Path(self.args.plan_file).read_bytes()),
-                           host_commit=self.host_commit, gate=CONFIRM_GATE, tref_key=self.args.tref_key, revision_id=CONFIRM_REVISION, items=[i["label"] for i in items])
+                           host_commit=self.host_commit, gate=CONFIRM_GATE, tref_key=self.args.tref_key, revision_id=C.read_json(Path(self.args.plan_file)).get("revision_id"), items=[i["label"] for i in items])
             for item in items:
                 done = self.state["items"].get(item["label"], {})
                 if done.get("attempt1") == 0 or done.get("attempt2") == 0:

@@ -541,13 +541,14 @@ def cmd_confirm(args) -> int:
                 if f.is_dir():
                     attempts.append((a, f))
             rep = None
-            slot = dict(block=b, label=s["label"], arm=s["arm"], index=s["index"], session_id=s["session_id"], origin=s["origin_slot"]["label"], attempts=[a for a, _ in attempts], status="빈 자리 (START 0)")
+            slot = dict(block=b, label=s["label"], arm=s["arm"], index=s["index"], session_id=s["session_id"], origin=s["origin_slot"]["label"], attempts=[a for a, _ in attempts], status="빈 자리 (START 0)",
+                        v1_index=s.get("v1_index"), prior_consumed=s.get("prior_consumed"), revision_id=s.get("revision_id"))
             for a, f in attempts:
                 ev = evs.get((s["label"], a))
                 rec = read_session(f, (ev or {}).get("hal_csv"), ev, dev_ok)
-                rec.update(block=b, label=s["label"], origin_slot=s["origin_slot"], revision_id=REVISION_ID)
+                rec.update(block=b, label=s["label"], origin_slot=s["origin_slot"], revision_id=s.get("revision_id"), v1_index=s.get("v1_index"))
                 (args.out / "sessions" / f"{s['label']}_a{a}.json").write_text(json.dumps(rec, ensure_ascii=False, indent=1, default=str), encoding="utf-8")
-                row = dict(block=b, label=s["label"], arm=s["arm"], attempt=a, index=s["index"], origin_slot=s["origin_slot"]["label"], revision_id=REVISION_ID,
+                row = dict(block=b, label=s["label"], arm=s["arm"], attempt=a, index=s["index"], origin_slot=s["origin_slot"]["label"], revision_id=s.get("revision_id"),
                            eligible=rec.get("eligible"), reasons=";".join(rec.get("reasons") or []), representative=False, **flat(rec))
                 pv = rec.get("provenance") or {}
                 row.update({f"init_{k}": v for k, v in (rec.get("initial_state") or {}).items()})
@@ -577,7 +578,7 @@ def cmd_confirm(args) -> int:
                               **{f"d_R{b}": p["d_b"][i] for i, b in enumerate(want)}, n=p["n"], mean=p["mean"], median=p["median"], min=p["min"], max=p["max"], sign=p["sign"],
                               ci95_lo=(p["ci95"] or [None, None])[0], ci95_hi=(p["ci95"] or [None, None])[1], p=p["p"], p_holm=p["p_holm"], holm_lt_005=p["holm_lt_0.05"]))
     write_csv(args.out / "pairs_r21.csv", flatp)
-    doc = dict(schema=SCHEMA, revision_id=REVISION_ID, header=HEADER, blocks=want, dev_energy_verdict=(dev or {}).get("verdict", {}).get("verdict"), energy_label=ENERGY_LABEL, energy_note=ENERGY_NOTE,
+    doc = dict(schema=SCHEMA, revision_id=man.get("revision_id"), header=HEADER, blocks=want, v1_consumed=man.get("v1_consumed"), dev_energy_verdict=(dev or {}).get("verdict", {}).get("verdict"), energy_label=ENERGY_LABEL, energy_note=ENERGY_NOTE,
                pairs_rule="d = arm − ref (같은 R블록 1:1 · 한쪽 무효/빈 자리 = 그 블록 쌍 제외 · 대체 0) · Holm = 지표마다 7쌍 묶음 · '유의' 대신 'Holm 보정 p < 0.05 (k/n)'",
                slots=slots, pairs=pairs)
     (args.out / "readout_r21.json").write_text(json.dumps(doc, ensure_ascii=False, indent=1, default=str), encoding="utf-8")

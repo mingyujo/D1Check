@@ -109,11 +109,81 @@ def build(out_root: Path) -> tuple[dict, dict]:
     return manifest, built
 
 
+REVISION_ID_V2 = "M8_CONFIRM_R21_v2"
+V2_RULE = ("v2 (2026-10-16 05:4x 사고): 앱 M8Plan.validateSession 이 arm = index % len(arms) 를 강제 → v1 idx 502 (R1-0 PAIR_G) 를 M128_WAIT200x12 로 읽고 거부 (session not started). "
+           "v1 21 슬롯 index 중 앱 규칙과 맞는 것 0 → v2 index = ceil(dev_count / len(arms)) × len(arms) + arm 자리 + len(arms) × (R − 1) (M128 504 + · SMOOTH128 201 +) · "
+           "슬롯 · 순서 · arm · 입력 · 정책 · WAIT · 기한 변경 0 · 매니페스트 = m8_plan.manifest 그대로 (arm 덮어쓰기 0) · v1 index 는 origin_slot.index · v1_index 로 보존")
+V1_CONSUMED = {"R1-0-M128_PAIR_G": dict(revision_id=REVISION_ID, index=502, session_id="a3fb231b-28aa-5286-a6cb-ea77474f03d0", attempt=1, rc=4, start="2026-10-16T05:30:38", end="2026-10-16T05:40:59",
+                                        reason="앱 manifest 검증 거부 (m8 index 502 is M128_WAIT200x12 · manifest policy FIFO_PAIR_CG_V1) · session not started · 부하 0 · rc 4 stall 600 s")}
+
+
+def aligned_index(eid: str, arm_name: str, r: int) -> int:
+    a = M8.arms(eid)
+    base = -(-M8.dev_count(eid) // len(a)) * len(a)
+    return base + next(i for i, x in enumerate(a) if x["name"] == arm_name) + len(a) * (r - 1)
+
+
+def build_v2(out_root: Path) -> tuple[dict, dict]:
+    v1 = C.read_json(out_root / "plan_m8_r21" / "r21_manifest.json")
+    assert v1["revision_id"] == REVISION_ID
+    devices = {eid: C.read_json(out_root / SRC_PLAN_DIR[eid] / "device_inputs.json") for eid in PLAN_DIR_R21}
+    per_exp: dict[str, list[dict]] = {eid: [] for eid in PLAN_DIR_R21}
+    blocks = []
+    for blk in v1["stages"]["confirm_blocks"]:
+        b = blk["block_no"]
+        sessions = []
+        for s in blk["sessions"]:
+            eid, label, pos = s["experiment_id"], s["label"], s["order_pos"]
+            idx = aligned_index(eid, s["arm"], b)
+            labels = dict(analysis_split="confirm", stage="confirm", run_label=label, block_no=b, order_pos=pos, group_index=s["group_index"], revision_id=REVISION_ID_V2,
+                          origin_slot=s["origin_slot"], v1_index=s["index"])
+            m = P.manifest(eid, "confirmation", idx, devices[eid], 1, labels)
+            assert m["arm"] == s["arm"] == M8.arm_of(eid, idx)["name"] and idx >= M8.dev_count(eid)
+            e = P.entry(m, f"manifests/{idx:03d}_{m['arm']}_{m['session_id']}.json", stage="confirm", run_label=label, block_no=b, order_pos=pos,
+                        group_index=s["group_index"], revision_id=REVISION_ID_V2, origin_slot=s["origin_slot"], v1_index=s["index"])
+            per_exp[eid].append(e)
+            row = dict(stage="confirm", label=label, experiment_id=eid, index=idx, arm=s["arm"], session_id=m["session_id"], manifest_sha256=e["manifest_sha256"],
+                       plan_dir=PLAN_DIR_R21[eid] + "v2", block_no=b, order_pos=pos, group_index=s["group_index"], perfetto="off", revision_id=REVISION_ID_V2,
+                       origin_slot=s["origin_slot"], v1_index=s["index"])
+            if label in V1_CONSUMED:
+                row.update(prior_consumed=[V1_CONSUMED[label]], start_attempt=2,
+                           start_attempt_note="v1 a1 (idx 502) = 소비된 실패 START (보존 · 계수) → 슬롯 재시도 1회 규칙 (a2 · 600 s 휴식) · 성공 행으로 a1 을 덮지 않음")
+            sessions.append(row)
+        blocks.append(dict(blk, sessions=sessions))
+    built = {}
+    for eid, rows in per_exp.items():
+        rows = sorted(rows, key=lambda e: e["index"])
+        src = C.read_json(out_root / SRC_PLAN_DIR[eid] / "plan.json")
+        plan = {k: v for k, v in src.items() if k not in ("sessions", "smoke", "notes", "dev_count")}
+        plan.update(schema=P.PLAN_SCHEMA, revision_id=REVISION_ID_V2, sessions=[{k: v for k, v in s.items() if k != "_manifest"} for s in rows], smoke=[],
+                    source_plan=dict(dir=SRC_PLAN_DIR[eid], plan_sha256=(out_root / SRC_PLAN_DIR[eid] / "plan_sha256.txt").read_text(encoding="utf-8").strip()),
+                    dev_count=M8.dev_count(eid), notes=[V2_RULE, "계산 · 판정 없음 — 측정 계획만"])
+        dev = {k: dict(host_path=v["host_path"], device_path=v["device_path"], sha256=v["sha256"], bytes=v["bytes"]) for k, v in devices[eid].items()}
+        built[PLAN_DIR_R21[eid] + "v2"] = dict(plan=plan, sessions=rows, smoke=[], device=dev)
+    manifest = {k: v for k, v in v1.items() if k not in ("plan_sha256", "stages", "revision_id", "index_rule_note")}
+    manifest.update(revision_id=REVISION_ID_V2, index_rule_note=V2_RULE, parent_manifest=dict(file="plan_m8_r21/r21_manifest.json", revision_id=REVISION_ID,
+                    sha256=C.sha256_bytes((out_root / "plan_m8_r21" / "r21_manifest.json").read_bytes())), v1_consumed=V1_CONSUMED, stages=dict(confirm_blocks=blocks))
+    return manifest, built
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out-root", required=True, type=Path)
+    ap.add_argument("--rev", type=int, default=1, choices=(1, 2))
     args = ap.parse_args()
     M8.activate()
+    if args.rev == 2:
+        manifest, built = build_v2(args.out_root)
+        shas = {name: MP.write_sessions(args.out_root / name, b) for name, b in built.items()}
+        for name in shas:
+            print(f"{name} {shas[name]} sessions {len(built[name]['sessions'])}")
+        manifest["plan_sha256"] = shas
+        mb = C.canonical_json(manifest)
+        (args.out_root / "plan_m8_r21" / "r21_manifest_v2.json").write_bytes(mb)
+        d = C.sha256_bytes(mb)
+        (args.out_root / "plan_m8_r21" / "r21_manifest_v2_sha256.txt").write_text(d + "\n", encoding="utf-8", newline="\n")
+        print(f"r21_manifest_v2 {d} slots {manifest['total']}")
+        return 0
     manifest, built = build(args.out_root)
     shas = {}
     for name, b in built.items():

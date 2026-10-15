@@ -120,9 +120,11 @@ def test_pair_table_excludes_missing_block():
 
 
 # ---------------------------------------------------------------- R21 계획
-def test_r21_plan_slots_and_manifests():
-    man = json.loads((PREP / "plan_m8_r21" / "r21_manifest.json").read_text(encoding="utf-8"))
-    assert C.sha256_bytes((PREP / "plan_m8_r21" / "r21_manifest.json").read_bytes()) == (PREP / "plan_m8_r21" / "r21_manifest_sha256.txt").read_text().strip()
+@pytest.mark.parametrize("name", ["r21_manifest", "r21_manifest_v2"])
+def test_r21_plan_slots_and_manifests(name):
+    man = json.loads((PREP / "plan_m8_r21" / f"{name}.json").read_text(encoding="utf-8"))
+    v2 = name.endswith("_v2")
+    assert C.sha256_bytes((PREP / "plan_m8_r21" / f"{name}.json").read_bytes()) == (PREP / "plan_m8_r21" / f"{name}_sha256.txt").read_text().strip()
     fz = json.loads((PREP / "CONFIRM_FREEZE_M8_v1.json").read_text(encoding="utf-8"))
     blocks = man["stages"]["confirm_blocks"]
     assert man["total"] == 21 and [len(b["sessions"]) for b in blocks] == [7, 7, 7]
@@ -131,16 +133,22 @@ def test_r21_plan_slots_and_manifests():
         orig = [s for s in c["sessions"] if s["arm"] in man["keep_groups"]]
         assert [s["origin_slot"]["label"] for s in b["sessions"]] == [s["label"] for s in sorted(orig, key=lambda s: s["order_pos"])]
         for s in b["sessions"]:
-            assert s["index"] == s["origin_slot"]["index"] and s["session_id"] == s["origin_slot"]["session_id"] == M8.session_id(s["experiment_id"], s["index"])
-            assert s["perfetto"] == "off" and s["label"].startswith(f"R{b['block_no']}-") and s["revision_id"] == "M8_CONFIRM_R21_v1"
+            assert s["session_id"] == M8.session_id(s["experiment_id"], s["index"]) and s["index"] >= M8.dev_count(s["experiment_id"])
+            if v2:   # 앱 M8Plan.validateSession: arm = index % len(arms) · v1 index 보존
+                assert M8.arm_of(s["experiment_id"], s["index"])["name"] == s["arm"] and s["v1_index"] == s["origin_slot"]["index"]
+                assert (s.get("start_attempt", 1) == 2) == (s["label"] == "R1-0-M128_PAIR_G")
+            else:
+                assert s["index"] == s["origin_slot"]["index"] and s["session_id"] == s["origin_slot"]["session_id"]
+            assert s["perfetto"] == "off" and s["label"].startswith(f"R{b['block_no']}-") and s["revision_id"] == man["revision_id"]
             plan = json.loads((PREP / s["plan_dir"] / "plan.json").read_text(encoding="utf-8"))
             e = next(x for x in plan["sessions"] if x["index"] == s["index"])
             m = json.loads((PREP / s["plan_dir"] / e["manifest"]).read_text(encoding="utf-8"))
             assert C.sha256_bytes(C.canonical_json(m)) == e["manifest_sha256"] == s["manifest_sha256"]
             assert m["arm"] == s["arm"] and m["analysis_split"] == "confirm" and m["pair"] == 1 and len(m["requests"]) == 128
-            src = json.loads((PREP / s["plan_dir"].replace("_r21", "") / "plan.json").read_text(encoding="utf-8"))
+            sd = s["plan_dir"].replace("_r21v2", "").replace("_r21", "")
+            src = json.loads((PREP / sd / "plan.json").read_text(encoding="utf-8"))
             d0 = next(x for x in src["sessions"] if x["arm"] == s["arm"])
-            dm = json.loads((PREP / s["plan_dir"].replace("_r21", "") / d0["manifest"]).read_text(encoding="utf-8"))
+            dm = json.loads((PREP / sd / d0["manifest"]).read_text(encoding="utf-8"))
             for k in ("policy", "policy_args", "prep", "runtimes", "phases", "block", "bank", "used_keys", "stop_rules", "start_check", "image", "time_scale"):
                 assert m[k] == dm[k], k
             assert [{k: v for k, v in r.items() if k != "request_id"} for r in m["requests"]] == [{k: v for k, v in r.items() if k != "request_id"} for r in dm["requests"]]
@@ -149,10 +157,10 @@ def test_r21_plan_slots_and_manifests():
 
 def test_driver_confirm_rejects_outside_slots(tmp_path):
     import m8_driver as D
-    man = json.loads((PREP / "plan_m8_r21" / "r21_manifest.json").read_text(encoding="utf-8"))
+    man = json.loads((PREP / "plan_m8_r21" / "r21_manifest_v2.json").read_text(encoding="utf-8"))
     items = man["stages"]["confirm_blocks"][0]["sessions"]
     D.check_confirm_items(man, items)                              # 통과
-    bad = [dict(items[0], index=507)]
+    bad = [dict(items[0], index=502)]
     with pytest.raises(SystemExit):
         D.check_confirm_items(man, bad)
     bad2 = [dict(items[0], perfetto="on")]

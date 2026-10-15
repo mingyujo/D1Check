@@ -1,0 +1,46 @@
+{
+ "label": "R1-0-M128_PAIR_G",
+ "revision_id": "M8_CONFIRM_R21_v1",
+ "index": 502,
+ "session_id": "a3fb231b-28aa-5286-a6cb-ea77474f03d0",
+ "attempt": 1,
+ "rc": 4,
+ "gate": {
+  "result": "start",
+  "tref_key": "2026-10-16_R1",
+  "tref_c": 28.9,
+  "ap_median_120s": 28.9,
+  "ap_slope": -0.06998580767799395,
+  "skin_slope": -0.006365620325491311,
+  "samples": 40,
+  "waited_s": 0,
+  "gate_attempt_id": 1,
+  "hal_csv": "S26_M8_HAL/hal_cont_R1-0-M128_PAIR_G_a1_g1.csv"
+ },
+ "times": {
+  "gate_start": "2026-10-16T05:30:38",
+  "am_start": "2026-10-16T05:30:42",
+  "app_reject_logcat": "10-16 05:30:43.027",
+  "observe_stall": "2026-10-16T05:40:43",
+  "session_end": "2026-10-16T05:40:59"
+ },
+ "app_error": "D1MIX: session not started · java.lang.IllegalArgumentException: m8 index 502 is M128_WAIT200x12 (policy FIFO_WAIT_CG_V1), manifest policy FIFO_PAIR_CG_V1 (M8Plan.validateSession · SessionManifest.validateM8)",
+ "device_output": "없음 (기기 세션 폴더 · progress 0 · 부하 0 · 런타임 로드 0)",
+ "consumed": true,
+ "count_as": "소비된 실패 START (보존 · 계수) · 성공 행으로 다시 채우지 않음 · 슬롯 R1-0 의 a1",
+ "driver_crash": "05:40:59 드라이버 TypeError (initial_state dict 의 note 키 중복 — CONFIRM 판 드라이버 버그) → run_end 이벤트 미기록 (이 파일이 대신 기록) · HAL 정지 예약은 됨",
+ "host_files": {
+  "host\\hal.csv": "e8b117c02af2fcffc86b2260a7098c690e58fd2c163d17eeebe66dd3361ca2c6",
+  "host\\logcat_threadtime.txt": "0b8a1d2a1c8df49b02699c4721318ede085428779573701bf8d7c85dc297df54",
+  "host\\manifest_pushed.json": "abfa29fa2fe0472178231622c23f618a79727d5f6693f85a7fdf802ac46768c2",
+  "host\\phone_watch.csv": "0964033f06bf719a851e60361ae99dd1c7cd6eeaf00f29a0b8dc39ec3f3d383f",
+  "host\\phone_watch_events.txt": "7acd0b20f7acd6820476f8b297d220673ccc2388824585e691c50adb017fb2e7",
+  "host\\session_log.json": "afa52463a4e7ea68effc9c004677c75ae843963c5430e6ab47b67884e1d5830e",
+  "host\\session_log.txt": "14454dd1ec3b0f50d3a53c488f57013fea2b2d4a7c351ed7ca187c0705358a0e",
+  "host\\skin_watch.csv": "16e6b3c6dc01d0f83e1bca2b3587ec1773ccb755920214e5ec5b93b47f5435f6",
+  "host\\top_h.txt": "0b1d0eea0f03c53140b9fcdde89fbdeac61fb97494f7013febdeb10c93452b50",
+  "host\\watch.stop": "6c45cb72a36e63d522aa54ed8adbd7a29a989474f2f77e0458af8800564ef3cb"
+ },
+ "cause": "동결 v1 CONFIRM index 규칙 (dev_count + index_of) 이 앱 arm = index % len(arms) 와 어긋남 (95 중 85 · R21 21 중 21) — 1단계에서 발견했으나 매니페스트 arm 명시로 충분하다고 잘못 판단 (앱 검증 확인 안 함 · 내 오류)",
+ "fix": "R21 v2: index 재배정 (슬롯 · 순서 · arm · 조건 변경 0) · R1-0 은 재시도 1회 규칙으로 a2"
+}
