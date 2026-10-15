@@ -1,4 +1,11 @@
-# 2026-10-16 최신 — C9 보존 종료·새 안정기준 혼합4/총85 승인
+# 2026-10-16 최신 — C10 원19 실제 계속·새4의2정상/1시작거절/1미실행
+
+- [C10 원19 실행](team/a24-measurement-revision02-20261015/remaining19_execution_20261016/README.md):01:48:18 KST최초시작,실제job `output/A24R02C10/job.json`/Documents C10/global C10,PID8816·소스f43b357/coordinator4ce2df05·원179/APK불변。첫C252 CPU APP1이므로총66/85소비·원미시도18+개정ORDER1=19잔여,정상완료수는close/원장으로판단한다。source/설정/원물수정·중복실행금지。
+- 개정혼합4는reference27.6℃/SHA6dfb7c20불변,WAIT/BASE각128·총256전량회수/출력오류0/AP2적격. R2 PAIR는준비후600초AP불일치/PRESTART_REJECT·APP1/MAIN0·예정128미실시,01:47:24종료/실패원물/자원반환·기록닫힘/같은실행회수/소유프로세스부재를확인했다. 추론성능실패나성공에너지0의의미가아니다.
+- 원40은C9시작거절1을포함해22APP(현재CPU1진행)/20정상·2736완료,원미시도18/2604예정과진행252를구분한다. 전체85=원81+개정4,개정소비3/미시도ORDER1예약. 원19순서/이전L6427.1℃/MAIN조건을보존하며개정4예비조건을원19에자동전용하지않는다.
+- 다음최대3: C10닫힌군원물/요청·품질·서비스/AP검산; 원19계속과예산/실패·미실행보존; 개정ORDER1의미실행ID/기준/예산을보존해별도계속준비. Jnull/AP HAL·표면미검증/experiment_ready=false·원WIP/데스크톱/S26/NPU보존.
+
+# 2026-10-16 이전 — C9 보존 종료·새 안정기준 혼합4/총85 승인
 
 - 사용자 현재안정기준 지시와 **총85회(원81+새4)** 명시승인으로 [별도개정 혼합4](team/a24-measurement-revision02-20261015/extra4_stable_reference_20261016/README.md)를 PC준비했다. 새ID/각128·총512요청, WAIT→BASE→PAIR→ORDER/첫준비후 첫안정60초에서공통기준1회고정,원40의독립확인블록에합산하지않는다. 실제job `output/A24R02R1/job.json`/원물 `Documents/A24R02R1`/global R1을대조한다. 원179/APK/MAIN/기한/품질/자원반환/계수불변·새호스트등록만분리,공통수명주기코드동일검사/4authorization PC PASS。
 - [C9 원물·전체원장](results/a24_measurement_share_20261016/confirmation_visit_09/README.md): 원ORDER는준비후28.4℃불일치/PRESTART_REJECT·APP1/MAIN0·128미완료로보존. 같은실행실패원물·fsync/닫힘/자원해제/소유프로세스부재확인,기준수정/재실행/예산환급0。원확인21시도/20정상·2,736완료·원19/2,856요청잔여,전체62/85소비·새4포함23/3,368요청예정이다。
