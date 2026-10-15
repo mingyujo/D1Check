@@ -43,6 +43,8 @@ def stage_events(results: Path) -> dict:
             if not l.strip():
                 continue
             e = json.loads(l)
+            if e.get("what") == "run_end" and e.get("rc") == 5:
+                continue   # 10/15 사고 2: rc 5 (폴더 있음 · 시작 0) 이벤트의 times 는 남의 폴더 (B1-00) 를 읽은 값 → 키 충돌로 라벨이 덮임
             if e.get("what") == "run_end" and (e.get("times") or {}).get("folder"):
                 out[(Path(e["times"]["folder"]).name, (e["times"] or {}).get("host_start"))] = e
     return out
