@@ -96,11 +96,11 @@ class Driver(D7.Driver):
 
     # ------------------------------------------------------------------ session subprocess (Popen so the tree can be killed)
     def run_session(self, plan_dir: Path, index: int | None, smoke: str | None, attempt: int, label: str, hal_csv: str, extra: list[str]) -> int:
-        root = self.root
+        root = self.results_root(plan_dir, smoke)
         argv = [PY, "-X", "utf8", str(SESSION_PY), "--plan", str(plan_dir), "--attempt", str(attempt), "--results", str(root), "--runlog", str(self.runlog),
                 "--label", label, "--allow-settings-mismatch", "--skin-band", "0,100", "--band-wait-s", "0", "--hal-cont", hal_csv, *extra]
         argv += ["--smoke", smoke] if smoke else ["--index", str(index)]
-        console = root / f"console_{label}_a{attempt}_{dt.datetime.now().strftime('%H%M%S')}.txt"
+        console = self.root / f"console_{label}_a{attempt}_{dt.datetime.now().strftime('%H%M%S')}.txt"
         self.log(f"RUN {label} plan={plan_dir.name} index={index} smoke={smoke} attempt={attempt} extra={extra} console={console.name}")
         self.event(what="run_start", label=label, plan=plan_dir.name, index=index, smoke=smoke, attempt=attempt, extra=extra)
         with open(console, "w", encoding="utf-8") as out:
@@ -158,12 +158,20 @@ class Driver(D7.Driver):
             self.wait_adb(self.args.reconnect_wait_s)
             time.sleep(5)
 
+    def results_root(self, plan_dir: Path, smoke: str | None) -> Path:
+        """10/15 10:07 사고 2: 세션 폴더 이름 = index + policy 라 실험 (plan_dir) 이 다른 세션끼리 겹침 (B1-00 L64 idx 4 · B1-03 RECENT idx 4 둘 다 FIFO_SERIAL_CG → rc 5) → DEV/P0 는 plan_dir 별 하위 root."""
+        if smoke or self.args.stage == "smoke":
+            return self.root
+        r = self.root / plan_dir.name
+        r.mkdir(parents=True, exist_ok=True)
+        return r
+
     def host_folder_m8(self, plan_dir: Path, index: int | None, smoke: str | None, attempt: int) -> Path:
         if smoke:
             return self.root / f"S26_MIXREQ_SMOKE_{smoke}_a{attempt}"
         plan = C.read_json(plan_dir / "plan.json")
         e = next(s for s in plan["sessions"] if s["index"] == index)
-        return self.root / f"S26_MIXREQ_{index:02d}_{e['policy']}_a{attempt}"
+        return self.results_root(plan_dir, smoke) / f"S26_MIXREQ_{index:02d}_{e['policy']}_a{attempt}"
 
     # ------------------------------------------------------------------ charge · Tref · gate
     def safety(self, where: str) -> None:
@@ -366,7 +374,12 @@ class Driver(D7.Driver):
             if stage != "smoke":
                 tref = self.tref_day(h)
                 gate = self.gate(label, h, tref, stage)
-                if gate["result"] in ("PRESTART_REJECT", "GATE_UNDECIDABLE"):
+                if gate["result"] in ("PRESTART_REJECT", "GATE_UNDECIDABLE") and self.args.gate_force_start:
+                    # 영훈 10/15 10:1x: "기준 온도 안 맞아도 중단하지 말고 무조건 완주" → 600 s 자연 대기 뒤 거절이어도 그 자리에서 START (거절 기록 보존 · out_of_band 표시 · 자리 비움 0 · 안전 정지는 그대로)
+                    self.log(f"{gate['result']} at {label} ({gate['reason']}) -> FORCED START (영훈 완주 지시 · 거절 기록 보존 · out_of_band)")
+                    self.event(what="gate_forced_start", label=label, reason=gate["reason"], waited_s=gate["waited_s"], tref=gate.get("tref"), last=(gate["decisions"] or [{}])[-1])
+                    gate = dict(gate, result=gate["result"] + "_FORCED_START", forced_start=True, note="영훈 10/15 완주 지시 · 온도 조건 미충족 START · 등록 밖")
+                elif gate["result"] in ("PRESTART_REJECT", "GATE_UNDECIDABLE"):
                     self.hal_stop(h, gate["result"].lower())
                     self.event(what="run_end", label=label, run_kind=stage, index=index, attempt=attempt, rc=None, prestart_reject=gate["reason"], gate=gate, start_state=s0, item=item)
                     if gate_retry_used:
@@ -442,7 +455,7 @@ class Driver(D7.Driver):
         self.acquire_lock()
         self.log(f"DRIVER START stage={self.args.stage} block={self.args.block} items={[i['label'] for i in items]} base={self.base}")
         self.log("NOTE: laptop lid OPEN · screen_off_timeout 86400000 kept · SOC start min 20 (영훈) · Tref gate = v2 (AP 첫 안정 60 s · 조민규 01:5x 확정)")
-        self.log(f"FLAGS: tref_key={self.args.tref_key or '(day)'} no_fixed_idle={self.args.no_fixed_idle} plan_file={self.args.plan_file or '(blocks.json)'}")
+        self.log(f"FLAGS: tref_key={self.args.tref_key or '(day)'} no_fixed_idle={self.args.no_fixed_idle} gate_force_start={self.args.gate_force_start} plan_file={self.args.plan_file or '(blocks.json)'}")
         try:
             if self.adb_state() != "device" and not self.wait_adb(self.args.reconnect_wait_s):
                 raise Stop("adb not connected at start (새 주소)")
@@ -486,6 +499,7 @@ def main() -> int:
     ap.add_argument("--charge-to-soc", type=int, default=60, help="SOC < 20 로 충전할 때 '뽑으세요' 를 말할 SOC (영훈 운영 · 상한 없음)")
     ap.add_argument("--tref-key", default="", help="S26_M8_tref.json 의 키 (기본 = 드라이버 시작 날짜). 10/15 영훈: 블록 1 (낮) · 블록 2 는 각각 새 측정 구간 → 키를 나눠 재산출 (블록 안 재산출 0 은 그대로)")
     ap.add_argument("--no-fixed-idle", action="store_true", help="영훈 10/15 08:xx: 충전 분리 뒤 1,200 s 고정 유휴 · Tref 전 1,200 s 고정 유휴 생략 — 온도 조건 (안정 60 s 창 · 게이트) 만 적용 · Tref 탐색 상한 없음 (안정 창까지)")
+    ap.add_argument("--gate-force-start", action="store_true", help="영훈 10/15 10:1x: 게이트 600 s 뒤 거절이어도 START (거절 원장 보존 · forced_start 표시 · 자리 비움 0)")
     ap.add_argument("--plan-file", default="", help="blocks.json 대신 쓸 계획 파일 (예: plan_m8/p0_supp.json · stages.p0 한 세션 · P0 보충)")
     args = ap.parse_args()
     M8.activate()

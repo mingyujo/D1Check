@@ -24,6 +24,17 @@ FIELDS = ["stage", "label", "experiment_id", "index", "arm", "policy", "policy_a
           "app_post_t0_s", "host_post_t0_s", "start_time", "end_time", "folder"]
 
 
+def session_folders(root: Path) -> list[Path]:
+    """세션 폴더 (device/manifest.json 또는 host/manifest_pushed.json 이 있는 폴더) — root 바로 아래 또는 plan_dir 하위 (10/15 사고 2: 실험별 하위 root)."""
+    out = []
+    for p in sorted(x for x in root.iterdir() if x.is_dir()):
+        if (p / "device" / "manifest.json").is_file() or (p / "host" / "manifest_pushed.json").is_file():
+            out.append(p)
+        else:
+            out += [q for q in sorted(x for x in p.iterdir() if x.is_dir()) if (q / "device" / "manifest.json").is_file() or (q / "host" / "manifest_pushed.json").is_file()]
+    return out
+
+
 def stage_events(results: Path) -> dict:
     out = {}
     p = results / "S26_M8_driver_events.jsonl"
@@ -84,7 +95,7 @@ def main() -> int:
         d = args.results / root
         if not d.is_dir():
             continue
-        for folder in sorted(p for p in d.iterdir() if p.is_dir()):
+        for folder in session_folders(d):
             hl = C.read_json(folder / "host" / "session_log.json") if (folder / "host" / "session_log.json").is_file() else {}
             full = read(folder, evs.get((folder.name, hl.get("start_time"))))
             if full is None:

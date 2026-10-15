@@ -85,7 +85,7 @@ def main() -> int:
         d = args.results / root
         if not d.is_dir():
             continue
-        for folder in sorted(p for p in d.iterdir() if p.is_dir()):
+        for folder in R.session_folders(d):
             hl = C.read_json(folder / "host" / "session_log.json") if (folder / "host" / "session_log.json").is_file() else {}
             mp = folder / "device" / "manifest.json" if (folder / "device" / "manifest.json").is_file() else folder / "host" / "manifest_pushed.json"
             if not mp.is_file():
@@ -127,19 +127,19 @@ def main() -> int:
                              wait_overrun_total_ms=row0.get("wait_overrun_total_ms"), readback_ok=row0.get("readback_ok"), prep_calls=row0.get("prep_calls"),
                              npu_contract=(C.read_json(folder / "validated.json").get("npu_contract") if (folder / "validated.json").is_file() else None),
                              apk_sha256=hl.get("apk_sha256"), manifest_sha256=hl.get("manifest_sha256"), plan_sha256=(blocks.get("plan_sha256") or {}).get(item.get("plan_dir")), registration_sha256=(m.get("registration") or {}).get("sha256"),
-                             time_scale=m.get("time_scale"), case_stand_wind=args.case_stand_wind, room_c=args.room, fingerprint=args.fingerprint, folder=f"{root}/{folder.name}"))
+                             time_scale=m.get("time_scale"), case_stand_wind=args.case_stand_wind, room_c=args.room, fingerprint=args.fingerprint, folder=f"{root}/{folder.relative_to(d).as_posix()}"))
             dev_sha = (C.read_json(folder / "device" / "summary.json") or {}).get("manifest_sha256") if (folder / "device" / "summary.json").is_file() else None
             prov.append(dict(stage=stage, label=rows[-1]["label"], experiment_id=m["experiment_id"], idx=m["session_index"], attempt=m["attempt"], session_id=m["session_id"], source_commit=args.source_commit,
                              apk_sha256_session=hl.get("apk_sha256"), apk_sha256_registered=args.apk_sha256, signer_sha256=args.signer_sha256, plan=item.get("plan_dir"), plan_sha256=rows[-1]["plan_sha256"],
                              blocks_sha256=C.sha256_file(PLAN_ROOT / "plan_m8" / "blocks.json") if (PLAN_ROOT / "plan_m8" / "blocks.json").is_file() else None, manifest_sha256_plan=pe.get("manifest_sha256"),
                              manifest_sha256_pushed=hl.get("manifest_sha256"), manifest_sha256_device=dev_sha, device_inputs_sha256=C.sha256_file(PLAN_ROOT / item["plan_dir"] / "device_inputs.json") if item.get("plan_dir") else None,
-                             input_image_sha256=(m.get("image") or {}).get("sha256"), registration_sha256=(m.get("registration") or {}).get("sha256"), folder=f"{root}/{folder.name}"))
+                             input_image_sha256=(m.get("image") or {}).get("sha256"), registration_sha256=(m.get("registration") or {}).get("sha256"), folder=f"{root}/{folder.relative_to(d).as_posix()}"))
             c = (full.get("coverage") or {})
             cov.append(dict(stage=stage, label=rows[-1]["label"], attempt=m["attempt"], passed=c.get("passed"), reasons=";".join(c.get("reasons") or []),
                             **{f"app_{k}": v for k, v in (c.get("app") or {}).items() if not isinstance(v, (dict, list))}, **{f"host_{k}": v for k, v in (c.get("host") or {}).items() if not isinstance(v, (dict, list))},
                             **{f"app_{p}_both": ((c.get("app") or {}).get("points") or {}).get(p, {}).get("ok") for p in ("0", "35", "120", "180")},
                             **{f"host_ap{p}_both": ((c.get("host") or {}).get("ap_points") or {}).get(p, {}).get("ok") for p in ("35", "180")},
-                            **{f"host_iv{p}_both": ((c.get("host") or {}).get("iv_points") or {}).get(p, {}).get("ok") for p in ("0", "180")}, folder=f"{root}/{folder.name}"))
+                            **{f"host_iv{p}_both": ((c.get("host") or {}).get("iv_points") or {}).get(p, {}).get("ok") for p in ("0", "180")}, folder=f"{root}/{folder.relative_to(d).as_posix()}"))
 
     def write(path, fields, rs):
         with open(path, "w", encoding="utf-8", newline="") as f:
