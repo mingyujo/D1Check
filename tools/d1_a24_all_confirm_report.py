@@ -9,6 +9,8 @@ import json
 import os
 from pathlib import Path
 import statistics
+import datetime as dt
+import subprocess
 
 from d1_a24_laptop_validator import load_json, sha256
 from d1_a24_measurement_report import export, save_csv
@@ -128,7 +130,11 @@ def aggregate(jobfile,view,out,allow_snapshot=False):
         original_planned_requests=sum(x['request_count'] for x in plan['sessions']),
         historical_failures_and_unattempted_not_replaced=True,additional_retries_pooled=False,
         final_report_not_device_or_calibrated_energy_PASS=True,read_only_snapshot=allow_snapshot,
-        source_visit_labels=[r.name for r in roots],source_evidence=evidence)
+        source_visit_labels=[r.name for r in roots],source_evidence=evidence,
+        report_generated_UTC=dt.datetime.now(dt.timezone.utc).isoformat(),
+        report_helper_sha256=sha256(Path(__file__)),
+        report_source_HEAD=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip(),
+        report_worktree_dirty=bool(subprocess.check_output(['git','status','--porcelain'],cwd=ROOT).strip()))
     (out/'provenance.json').write_text(json.dumps(provenance,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     summary={'original40_preserved':True,'normal_completed':provenance['complete_sessions'],
         'original_failure_records_preserved':sum(x['original_status']!='COMPLETE_TRACE_RECOVERED' for x in evidence),

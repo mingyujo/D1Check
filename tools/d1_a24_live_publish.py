@@ -39,18 +39,21 @@ def specifications():
         b=load_json(pointer)
         entries += [(x['label'],x['job']) for x in b.get('additional_original_visits',[])]
         entries += [(x['label'],x['job']) for x in b.get('additional_matched_visits',[])]
+        entries += [(x['label'],x['job']) for x in b.get('additional_supplement_visits',[])]
     entries += [('EXTRA4_ORDER','output/A24R02R3/job.json'),('SUP12','output/A24SUP12/job.json')]
     for name,relative in entries:
         job=load_json(ROOT/relative);plan=load_json(Path(job['plan']));rows=plan['sessions']
         if name.startswith('C') and name[1:].isdigit():
             ids=load_json(Path(job['window_file']))['registered_session_ids'];byid={r['session_id']:r for r in rows};rows=[byid[s] for s in ids]
         elif name=='EXTRA4_ORDER':rows=rows[-1:]
+        elif name.startswith('SUP12_C'):
+            ids=load_json(Path(job['revision_contract_file']))['continuation_session_ids'];byid={r['session_id']:r for r in rows};rows=[byid[s] for s in ids]
         specs.append((name,relative,job,plan,rows))
     return specs
 
 
 def reservation_root(name,job):
-    if name=='SUP12':return Path(job['supplement_global_root'])
+    if name.startswith('SUP12'):return Path(job['supplement_global_root'])
     if name=='EXTRA4_ORDER':return Path(job['extra4_global_root'])
     if name=='REBASE6':return Path(job['rebaseline_global_root'])
     return Path(load_json(Path(job['global_binding']))['global_reservation_root'])
@@ -144,7 +147,8 @@ def refresh():
                         newpaths.append(folder)
             if (ROOT/folder/'BLOCK_BUNDLES.json').exists():groups.append({'label':label,'path':folder.as_posix(),'bundles':load_json(ROOT/folder/'BLOCK_BUNDLES.json')})
     t=utc();stamp=t.astimezone(dt.timezone(dt.timedelta(hours=9))).strftime('%Y-%m-%d %H:%M:%S KST')
-    sup=seen['SUP12'];matched=seen.get('REBASE6',{'APP':0,'normal':0});grand=state['project_consumed']+sup['APP']+matched['APP']
+    sup=seen['SUP12'];sup_normal=sum(x['normal'] for name,x in seen.items() if name.startswith('SUP12'))
+    matched=seen.get('REBASE6',{'APP':0,'normal':0});grand=state['project_consumed']+sup['APP']+matched['APP']
     cap=103 if 'REBASE6' in seen else 97
     rejected=state['original_C9_prestart_rejected']+sum(x['rejected']+x['host_failed'] for name,x in seen.items() if name.startswith('C') and name[1:].isdigit())
     active_groups=[name for name,x in seen.items() if x['run_root_started'] and x['worker_lock_present'] and not x['ended']]
@@ -152,6 +156,7 @@ def refresh():
     data={'updated_UTC':t.isoformat(),'updated_KST':stamp,'original_confirm':state,'separate_followon':seen,
         'original85_cap':85,'supplement12_cap':12,'matched_rebaseline_cap':6 if 'REBASE6' in seen else 0,
         'combined_ceiling':cap,'combined_consumed':grand,
+        'supplement_normally_closed_total':sup_normal,'supplement_global_APP_intents_not_double_counted':sup['APP'],
         'original_confirm_rejections_total':rejected,
         'active_measurement_groups':active_groups,
         'energy_J':None,'surface_temperature_verified':False,'experiment_ready':False,'published_closed_groups':groups,
@@ -160,7 +165,7 @@ def refresh():
     lines=['# A24 실측 진행 현황','', '**마지막 갱신: '+stamp+'**','',
         '**현재 전체 상태: '+active_text+'**','',
         '- 원래 독립 확인: **'+str(state['normal_confirm_total'])+'/40 정상 완료**, 시작 전 실패·거절 '+str(rejected)+'회 보존. 현재 단계 `'+state['phase']+'`. 실패·미완료는 아래 원장과 각 묶음 상태를 함께 확인한다.',
-        '- 기존85회: '+str(state['project_consumed'])+'회 소비(진행·거절 포함). 별도 실패 보완12: '+str(sup['normal'])+'회 정상 완료 / '+str(sup['APP'])+'회 APP 시도. 완료율과 예산 소비율은 다르다.',
+        '- 기존85회: '+str(state['project_consumed'])+'회 소비(진행·거절 포함). 별도 실패 보완12: '+str(sup_normal)+'회 정상 완료 / '+str(sup['APP'])+'회 APP 시도. 이어진 방문은 같은 전역 APP 원장으로 중복 계수하지 않는다. 완료율과 예산 소비율은 다르다.',
         '- 시작온도 대응의 별도 같은 비교군6: '+str(matched['normal'])+'회 정상 / '+str(matched['APP'])+'회 APP. 합산 '+str(grand)+'회 소비 / 제한적 회계 상한'+str(cap)+'회이며, 추가6은 사용자 자율처리 지시를 구체화한 범위다.',
         '- 원확인, 관측후 개정혼합4, 과거실패 새ID 보완12는 서로 합산해 독립 성공 횟수를 늘리지 않는다.',
         '- J 미판정 / AP는 HAL 보고값·표면온도 미검증 / experiment_ready=false. 미완료를 절감으로 해석하지 않는다.',

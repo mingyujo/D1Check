@@ -1,5 +1,9 @@
 # 2026-10-16 최신 — 원확인37정상·옛기준1미실행보존·R3→보완12→새6 계속
 
+- 05:03 KST 현재[미실행보완8](team/a24-measurement-revision02-20261015/supplement8_after_trace_error_20261016/README.md)/child18920/parenttool1054의첫F_CPU MAIN/회수중. 기존보완3정상32이후ON설정파일읽기errno13/exit1로04:54:28 FAILED를보존했다. 앱자체600초대기종료후05:00:21 동일실행닫힘·반환·32UNFINISHED/START·claim·승인업로드부재/자기PID부재를확인하고재전송0으로미사용8만05:01:17 계속했다. 원183+감사4/source187·PC3+1/실제8authorization PASS,기존plan/APK/MAIN/예산12불변.
+- 구큐17·새6대기큐는오류에서HELD/child0으로보존됐다. 새6본체는미사용이므로기소비실패를소급성공으로바꾸지말고현재8→별도공식경로OFF/ON보완→새6의새감독경로를준비한다. 공식허용설정폴더로경로수정검증은아직미실행이며현재8은모두PerfettoOFF다. Jnull/표면미검증/experiment_ready=false유지.
+- 04:36 KST 현재보완12/PID27352:미상주유휴1정상(본요청0·AP창적격)/다음상주유휴APP준비,이번APP2. R3 ORDER는04:29:33에27.6℃고정기준불일치/PRESTART_REJECT·APP1/MAIN0/128미실시로종료했고,같은실행원물회수·닫힘/자기프로세스부재후큐가보완12를04:29:38계속했다. 개정4는2정상256·2시작거절256/4APP이며원독립40에합산0. [유휴원자료](results/a24_measurement_share_20261016/automatic_checkpoints/SUP12_I_UNRESIDENT_IDLE/README.md).
+- 현재원격게시watch43774(구65456정상종료). 시작/owner/APP intent도30초관찰에서새갱신대상으로고쳐단계전환직후전체대기로남는문제를PC3검사후수정했다. 실제실측소스·설정변경0, 첫유휴ZIP까지973a3ab정상push/실제HEAD일치,이후자동LIVE커밋은별도확인한다.
 - 04:17:43 KST C11정상종료/owner해제: 이번12정상·1656본요청/APP12, 원40은37정상·5464완료, 시작전거절128+통신실패64·미실행64를5720분모에보존했다. 원17/27.1℃는10.37분관찰후최근60초28.0~28.1℃로MAIN상한27.6℃밖이라APP/MAIN/소비0에서분리했다. 사용자중지아닌온도문제자율대응이며전체작업은계속한다. [전체원장·이월판단](team/a24-measurement-revision02-20261015/remaining13_after_transport_failure_20261016/ORIGINAL40_FINAL_LEDGER_PC.json).
 - 04:18 실제큐17이R3미사용개정ORDER1의APP전조건확인중이다. 그뒤보완12→새6을직렬진행한다. 새6의BASE는C10실패BASE와seed메타데이터만다르고요청UUID외64건내용·도착·기한·모델/runtime/target·실행설정이동일함을PC검증했다. [정규화대조](team/a24-measurement-revision02-20261015/matched_rebaseline6_20261016/C10_BASE_SEMANTIC_EQUIVALENCE.json). 원실패/원40성공대체0,추가7번째시도0。
 
