@@ -1,4 +1,12 @@
-# 2026-10-15 현재 작업 — 묶음04 측정 종료·실측 재개 문서
+# 2026-10-15 현재 작업 — 나머지 실측 사전 오류 점검만 / 실측 중지
+
+- 최신 지시: 실측 없이 연결폰과나머지실측의사전오류만확인. [읽기전용기기/PC보고](team/a24-measurement-revision02-20261015/readiness_20261015/README.md) · [재개필독](team/a24-measurement-revision02-20261015/MEASUREMENT_RUNBOOK.md).
+- 등록A24/설치APK/기존입력SHA/run-as/활성owner없음 확인. 단발배터리/온도조회,현재충전중. 기기조회30명령,설치/전송/앱시작/warmup/추론/START/claim/세션소비0,원장91파일불변.
+- PC전용실행불가64복사본·256runtime·8,832요청의앱parser와scheduler/WAIT/worker반환18검사PASS. 옛미결합템플릿의SOC20/과거APK불일치를첫검사에서차단했고그실패도보존.원161/현재171실행소스불변.
+- 장애: 새REV02 adapter는C252 DEV전용이므로L64/M128/CONFIRM은차단. 새host연결/동결/확인40계약이필요. 원64중33시도/31미사용이며이예산에맞춘확인축소승인없음. 새40은최소9추가슬롯필요·실행미승인. J불가/표면온도미검증/experiment_ready=false.
+- 다음최대3: 점검문서/Git저장; PC에서새경로/확인계약을구체화; 별도실측지시전에는기기실행금지. 아래는이전이력이다.
+
+# 2026-10-15 이전 작업 — 묶음04 측정 종료·실측 재개 문서
 
 - **실측 재개 시 필독:** [현재 실측 원장·계획·중단 경계](team/a24-measurement-revision02-20261015/MEASUREMENT_RUNBOOK.md). 대화 기억 대신 이 문서와 실제 원장·Git을 대조하며, 단계 종료 때 갱신한다.
 - [묶음04 결과](results/a24_revision02_20261015/prepared_block04/README.md): GPU/CPU 각252기한 내·출력504 PASS·실패/미완료0.12:55:25 KST에 실제 반환·저널 close·회수·실행 종료. 사용자 상한13:20 전에 종료했고 추가조건0이다.
