@@ -1,8 +1,8 @@
 {
-  "updated_UTC": "2026-10-15T20:15:31.261729+00:00",
-  "updated_KST": "2026-10-16 05:15:31 KST",
+  "updated_UTC": "2026-10-15T20:19:36.138842+00:00",
+  "updated_KST": "2026-10-16 05:19:36 KST",
   "original_confirm": {
-    "checked_UTC": "2026-10-15T20:15:30.566348+00:00",
+    "checked_UTC": "2026-10-15T20:19:35.628240+00:00",
     "phase": "STOPPED",
     "current": {
       "session_id": "2f15f739-0a34-58d3-b8e9-24a739bc6d8c",
@@ -77,14 +77,14 @@
     },
     "SUP12_C1": {
       "registered": 8,
-      "APP": 3,
-      "normal": 2,
+      "APP": 4,
+      "normal": 3,
       "rejected": 0,
       "host_failed": 0,
       "ended": false,
       "run_root_started": true,
       "worker_lock_present": true,
-      "pending_prescription": "L64_PAIR_G"
+      "pending_prescription": "M128_ORDER"
     },
     "EXTRA4_ORDER": {
       "registered": 1,
@@ -98,7 +98,7 @@
     },
     "SUP12": {
       "registered": 12,
-      "APP": 7,
+      "APP": 8,
       "normal": 3,
       "rejected": 0,
       "host_failed": 1,
@@ -112,9 +112,9 @@
   "matched_rebaseline_cap": 6,
   "separate_trace_path_repair_cap": 2,
   "combined_ceiling": 105,
-  "combined_consumed": 91,
-  "supplement_normally_closed_total": 5,
-  "supplement_global_APP_intents_not_double_counted": 7,
+  "combined_consumed": 92,
+  "supplement_normally_closed_total": 6,
+  "supplement_global_APP_intents_not_double_counted": 8,
   "original_confirm_rejections_total": 2,
   "active_measurement_groups": [
     "SUP12_C1"
@@ -312,6 +312,28 @@
           "family": "SUP12_C1",
           "stage": "DEV",
           "block": "DEV_CPU",
+          "planned_arms": 1,
+          "normal_completed": 1,
+          "all_arms_normally_completed": true,
+          "status_counts": {
+            "COMPLETE_TRACE_RECOVERED": 1
+          },
+          "subset_recipe": null
+        }
+      ]
+    },
+    {
+      "label": "SUP12_C1_OLD_CONFIRM_PAIR_L64",
+      "path": "docs/results/a24_measurement_share_20261016/automatic_checkpoints/SUP12_C1_OLD_CONFIRM_PAIR_L64",
+      "bundles": [
+        {
+          "filename": "SUP12_C1_DEV_OLD_CONFIRM_PAIR.zip",
+          "bytes": 143008,
+          "sha256": "637a0b0a8a3ca988c8e1593618931163ab7830bddb46b95cec706248aab89500",
+          "members": 90,
+          "family": "SUP12_C1",
+          "stage": "DEV",
+          "block": "OLD_CONFIRM_PAIR",
           "planned_arms": 1,
           "normal_completed": 1,
           "all_arms_normally_completed": true,
