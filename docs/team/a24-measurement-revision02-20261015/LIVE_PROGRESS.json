@@ -1,8 +1,8 @@
 {
-  "updated_UTC": "2026-10-15T20:43:34.469728+00:00",
-  "updated_KST": "2026-10-16 05:43:34 KST",
+  "updated_UTC": "2026-10-15T20:49:09.371976+00:00",
+  "updated_KST": "2026-10-16 05:49:09 KST",
   "original_confirm": {
-    "checked_UTC": "2026-10-15T20:43:33.723504+00:00",
+    "checked_UTC": "2026-10-15T20:49:08.616396+00:00",
     "phase": "STOPPED",
     "current": {
       "session_id": "2f15f739-0a34-58d3-b8e9-24a739bc6d8c",
@@ -72,19 +72,19 @@
       "rejected": 0,
       "host_failed": 0,
       "ended": false,
-      "run_root_started": false,
-      "worker_lock_present": false
+      "run_root_started": true,
+      "worker_lock_present": true,
+      "pending_prescription": "I_C32_OFF"
     },
     "SUP12_C1": {
       "registered": 8,
       "APP": 8,
-      "normal": 7,
+      "normal": 8,
       "rejected": 0,
       "host_failed": 0,
-      "ended": false,
+      "ended": true,
       "run_root_started": true,
-      "worker_lock_present": true,
-      "pending_prescription": "M128_PAIR_G"
+      "worker_lock_present": false
     },
     "EXTRA4_ORDER": {
       "registered": 1,
@@ -104,7 +104,7 @@
       "host_failed": 1,
       "ended": true,
       "run_root_started": true,
-      "worker_lock_present": true
+      "worker_lock_present": false
     }
   },
   "original85_cap": 85,
@@ -113,11 +113,11 @@
   "separate_trace_path_repair_cap": 2,
   "combined_ceiling": 105,
   "combined_consumed": 96,
-  "supplement_normally_closed_total": 10,
+  "supplement_normally_closed_total": 11,
   "supplement_global_APP_intents_not_double_counted": 12,
   "original_confirm_rejections_total": 2,
   "active_measurement_groups": [
-    "SUP12_C1"
+    "TRACE2"
   ],
   "energy_J": null,
   "surface_temperature_verified": false,
@@ -422,6 +422,28 @@
           "family": "SUP12_C1",
           "stage": "DEV",
           "block": "C9_ORDER",
+          "planned_arms": 1,
+          "normal_completed": 1,
+          "all_arms_normally_completed": true,
+          "status_counts": {
+            "COMPLETE_TRACE_RECOVERED": 1
+          },
+          "subset_recipe": null
+        }
+      ]
+    },
+    {
+      "label": "SUP12_C1_R2_PAIR_M128",
+      "path": "docs/results/a24_measurement_share_20261016/automatic_checkpoints/SUP12_C1_R2_PAIR_M128",
+      "bundles": [
+        {
+          "filename": "SUP12_C1_DEV_R2_PAIR.zip",
+          "bytes": 229583,
+          "sha256": "ae436692851b4362d9fcea5d1f90de1edec71ddb2717d2e6f771bf3bbaf7768f",
+          "members": 154,
+          "family": "SUP12_C1",
+          "stage": "DEV",
+          "block": "R2_PAIR",
           "planned_arms": 1,
           "normal_completed": 1,
           "all_arms_normally_completed": true,

@@ -1,11 +1,11 @@
 # A24 실측 진행 현황
 
-**마지막 갱신: 2026-10-16 05:43:34 KST**
+**마지막 갱신: 2026-10-16 05:49:09 KST**
 
-**현재 전체 상태: 진행 중: SUP12_C1 (M128_PAIR_G)**
+**현재 전체 상태: 진행 중: TRACE2 (I_C32_OFF)**
 
 - 원래 독립 확인: **37/40 정상 완료**, 시작 전 실패·거절 2회 보존. 현재 단계 `STOPPED`. 실패·미완료는 아래 원장과 각 묶음 상태를 함께 확인한다.
-- 기존85회: 84회 소비(진행·거절 포함). 별도 실패 보완12: 10회 정상 완료 / 12회 APP 시도. 이어진 방문은 같은 전역 APP 원장으로 중복 계수하지 않는다. 완료율과 예산 소비율은 다르다.
+- 기존85회: 84회 소비(진행·거절 포함). 별도 실패 보완12: 11회 정상 완료 / 12회 APP 시도. 이어진 방문은 같은 전역 APP 원장으로 중복 계수하지 않는다. 완료율과 예산 소비율은 다르다.
 - 시작온도 대응의 별도 같은 비교군6: 0회 정상 / 0회 APP. 합산 96회 소비 / 제한적 회계 상한105회이며, 추가6은 사용자 자율처리 지시를 구체화한 범위다.
 - 계측 경로 수정의 별도 OFF/ON2: 0회 정상 / 0회 APP. 기존 실패를 지우지 않고 같은 입력·공유 시작 기준으로 검증한다.
 - 원확인, 관측후 개정혼합4, 과거실패 새ID 보완12는 서로 합산해 독립 성공 횟수를 늘리지 않는다.
@@ -30,6 +30,7 @@
 - [SUP12_C1_W1_CPU_C252 원자료 ZIP·CSV·소스 SHA](../../../docs/results/a24_measurement_share_20261016/automatic_checkpoints/SUP12_C1_W1_CPU_C252/README.md)
 - [SUP12_C1_W3_GPU_C252 원자료 ZIP·CSV·소스 SHA](../../../docs/results/a24_measurement_share_20261016/automatic_checkpoints/SUP12_C1_W3_GPU_C252/README.md)
 - [SUP12_C1_C9_ORDER_M128 원자료 ZIP·CSV·소스 SHA](../../../docs/results/a24_measurement_share_20261016/automatic_checkpoints/SUP12_C1_C9_ORDER_M128/README.md)
+- [SUP12_C1_R2_PAIR_M128 원자료 ZIP·CSV·소스 SHA](../../../docs/results/a24_measurement_share_20261016/automatic_checkpoints/SUP12_C1_R2_PAIR_M128/README.md)
 - [EXTRA4_ORDER_REBASE_M128_01_M128 원자료 ZIP·CSV·소스 SHA](../../../docs/results/a24_measurement_share_20261016/automatic_checkpoints/EXTRA4_ORDER_REBASE_M128_01_M128/README.md)
 - [SUP12_I_UNRESIDENT_IDLE 원자료 ZIP·CSV·소스 SHA](../../../docs/results/a24_measurement_share_20261016/automatic_checkpoints/SUP12_I_UNRESIDENT_IDLE/README.md)
 - [SUP12_I_RESIDENT_IDLE 원자료 ZIP·CSV·소스 SHA](../../../docs/results/a24_measurement_share_20261016/automatic_checkpoints/SUP12_I_RESIDENT_IDLE/README.md)
