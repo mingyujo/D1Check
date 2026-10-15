@@ -80,6 +80,17 @@ def collect_raw(raw,prefix,members,excluded):
         else:members[name]=b
 
 
+def collect_preAPP_sidecars(root,sid,members,excluded):
+    """Closed-session host cooling reads stay outside the app observation window."""
+    for folder in ['pre_app_cooldown_v2','pre_app_cooldown']:
+        for suffix in ['.jsonl','.ready.json']:
+            p=root/folder/(sid+suffix)
+            if not p.is_file():continue
+            name='host_preAPP/'+sid+'/'+folder+'/'+p.name;b=p.read_bytes()
+            if PRIVATE.search(b):excluded.append({'path':name,'bytes':len(b),'sha256':digest(b),'reason':'PRIVATE_PATH_OR_DEVICE_ID_IN_ORIGINAL_BYTES'})
+            else:members[name]=b
+
+
 def unlaunched_preAPP_evidence(root,sid,plan_id,outcome):
     """Retain an unconsumed refusal before the unique later actual execution."""
     if outcome.get('APP_launch_intent') is not False:raise ValueError('duplicate session has prior APP intent')
@@ -189,6 +200,7 @@ def snapshot(config,out,private_out):
                 else:excluded.append({'path':'host_outcomes/'+sid+'.json','sha256':digest(original_outcome),'bytes':len(original_outcome),'reason':'PRIVATE_PATH_OR_DEVICE_ID_IN_ORIGINAL_BYTES'})
                 collect_raw(raw,'raw/'+sid,members,excluded)
                 collect_raw(supp,'supplemental_same_run_raw/'+sid,members,excluded)
+                collect_preAPP_sidecars(root,sid,members,excluded)
                 if m:members['public_manifests/'+sid+'.json']=encode(public_manifest(m))
                 for p in (root/'registry').glob('**/'+sid+'/*.json'):
                     if p.name not in {'START.json','COMPLETE.json','FAIL.json','PRESTART_REJECT.json','CANCEL.json'}:continue

@@ -67,6 +67,7 @@ class ShareBundleTests(unittest.TestCase):
             for p,raw in [(root/'raw'/'failed',b'original\r\n'),(root/'read_only_recovery'/'failed'/'recovered_app',b'recovered\r\n')]:
                 p.mkdir(parents=True);(p/'events.jsonl').write_bytes(raw);(p/'requests.json').write_bytes(encode([{'terminal_status':'COMPLETED'}]))
             active=root/'raw'/'active';active.mkdir(parents=True);(active/'events.jsonl').write_bytes(b'C:\\Users\\sample-user\\not_closed')
+            cooling=root/'pre_app_cooldown_v2';cooling.mkdir();(cooling/'failed.jsonl').write_bytes(b'{"AP":27.1}\r\n');(cooling/'active.jsonl').write_bytes(b'not closed')
             (root/'adb_commands.jsonl').write_bytes((json.dumps({'argv':['adb','shell','am','start','session_id','active'],'start_wall_ns':1,'exit':0})+'\n').encode())
             cfg={'source_catalog_directories':[],'families':[{'id':'PC_ONLY','job':str(b/'job.json'),'roots':[str(root)]}],'changes_notes':{'PC_ONLY':['MOCK ONLY']}}
             snapshot(cfg,b/'public',b/'audit')
@@ -75,6 +76,8 @@ class ShareBundleTests(unittest.TestCase):
                 self.assertEqual(z.read('raw/failed/events.jsonl'),b'original\r\n')
                 self.assertEqual(z.read('supplemental_same_run_raw/failed/events.jsonl'),b'recovered\r\n')
                 self.assertFalse(any(n.startswith('raw/active/') for n in z.namelist()))
+                self.assertEqual(z.read('host_preAPP/failed/pre_app_cooldown_v2/failed.jsonl'),b'{"AP":27.1}\r\n')
+                self.assertFalse(any(n.startswith('host_preAPP/active/') for n in z.namelist()))
                 self.assertEqual(json.loads(z.read('BLOCK_STATUS.json'))['normal_completed'],0)
 
 

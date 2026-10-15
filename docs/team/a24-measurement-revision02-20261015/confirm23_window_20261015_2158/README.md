@@ -15,3 +15,5 @@
 사용자가 이동·중지를 지시하면 현재root의 `STOP_AFTER_CURRENT.json`을 write-once로 작성한다. 현재 조건은 close·회수까지 마치고 다음APP를 막는다. 이미 생성된root/종료 명령은 재사용하지 않으며, 실패·미완료·AP부적격을 성공으로 바꾸지 않는다. 에너지J null·표면온도 미검증·experiment_ready=false·원worktree/데스크톱/S26/NPU는 유지한다.
 
 실제 상태는 현재 owner·APP intent·START/close·outcome·`WINDOW_STOPPED.json`과 대조한다. [남은23회 PC 준비](../confirm23_preparation_20261015/README.md) · [전체 실측 안내](../MEASUREMENT_RUNBOOK.md) · [기존 완료 원물](../../../results/a24_measurement_share_20261015/README.md)
+
+공유 도구 보완: 종료된 세션의 앱 밖 냉각 원기록·준비 영수증을 ZIP의 `host_preAPP/`에 별도로 포함하도록 PC 전용 묶음 도구를 보완했다. 앱의 공통 관측창 자료와 구분하며 대기 에너지를0으로 가정하지 않는다. 닫히지 않은 현재 조건의 기록은 복사하지 않는다. 관련7검사 PASS이고 현재 coordinator·core179·APK는 바꾸지 않았다.
