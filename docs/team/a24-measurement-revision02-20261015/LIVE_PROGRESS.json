@@ -1,8 +1,8 @@
 {
-  "updated_UTC": "2026-10-15T20:19:36.138842+00:00",
-  "updated_KST": "2026-10-16 05:19:36 KST",
+  "updated_UTC": "2026-10-15T20:25:11.873191+00:00",
+  "updated_KST": "2026-10-16 05:25:11 KST",
   "original_confirm": {
-    "checked_UTC": "2026-10-15T20:19:35.628240+00:00",
+    "checked_UTC": "2026-10-15T20:25:11.083325+00:00",
     "phase": "STOPPED",
     "current": {
       "session_id": "2f15f739-0a34-58d3-b8e9-24a739bc6d8c",
@@ -78,13 +78,13 @@
     "SUP12_C1": {
       "registered": 8,
       "APP": 4,
-      "normal": 3,
+      "normal": 4,
       "rejected": 0,
       "host_failed": 0,
       "ended": false,
       "run_root_started": true,
       "worker_lock_present": true,
-      "pending_prescription": "M128_ORDER"
+      "pending_prescription": "C252_CPU"
     },
     "EXTRA4_ORDER": {
       "registered": 1,
@@ -113,7 +113,7 @@
   "separate_trace_path_repair_cap": 2,
   "combined_ceiling": 105,
   "combined_consumed": 92,
-  "supplement_normally_closed_total": 6,
+  "supplement_normally_closed_total": 7,
   "supplement_global_APP_intents_not_double_counted": 8,
   "original_confirm_rejections_total": 2,
   "active_measurement_groups": [
@@ -334,6 +334,28 @@
           "family": "SUP12_C1",
           "stage": "DEV",
           "block": "OLD_CONFIRM_PAIR",
+          "planned_arms": 1,
+          "normal_completed": 1,
+          "all_arms_normally_completed": true,
+          "status_counts": {
+            "COMPLETE_TRACE_RECOVERED": 1
+          },
+          "subset_recipe": null
+        }
+      ]
+    },
+    {
+      "label": "SUP12_C1_OLD_CONFIRM_STOP_M128",
+      "path": "docs/results/a24_measurement_share_20261016/automatic_checkpoints/SUP12_C1_OLD_CONFIRM_STOP_M128",
+      "bundles": [
+        {
+          "filename": "SUP12_C1_DEV_OLD_CONFIRM_STOP.zip",
+          "bytes": 232441,
+          "sha256": "919b1b570c96fdcc5344f20637fad213aef0226ae4c34a921b1918d51ea57e7b",
+          "members": 154,
+          "family": "SUP12_C1",
+          "stage": "DEV",
+          "block": "OLD_CONFIRM_STOP",
           "planned_arms": 1,
           "normal_completed": 1,
           "all_arms_normally_completed": true,
