@@ -4,8 +4,8 @@
 - I4/F4/DEV16 전체24시도 보존. I4는 준비환경 결함으로 START 전 실패, F1은 AP gate 거절. F2 원장FAIL 뒤 동일 실행의252완료를 읽기전용 회수/검산. F3/F4 정상 회수, DEV15정상+1통신 PRESTART 거절. DEV 예정2288요청 전부 표에 보존, 정상15세션 실패/미완료0.
 - 초깃값은 common prepared runtime의 고정 준비 마지막60초 median AP28.5℃를 사용; 최초idle27.6℃와거절을 보존. ±0.5℃/slope0.1℃/분/최대600초 유지. API 전류·전하 scale불일치로 검증J=null, 임의1000배보정0. HAL readout/cache age·실제 표면온도 미검증, 정확도 PASS 주장0.
 - 확인 v10: 앱단위 KEEP_SCREEN_ON만 추가, 유휴는 runtime0×2warmup=실제0이라는 원 선언 유지. 관련JVM30/host50/연결6/조립2/분석3 PASS. 새APK`6fbe5c08…0bfd8b` 실제 설치SHA일치. 기존실측APK`eab8e449…5b883e`/자료/실패 보존.
-- CONFIRM40: 2정상/1PRESTART 거절/37미시도. 06:48 온도 gate(AP29.1>상한29.0) 중단, 08시경 남은 등록슬롯 재개·같은기기 연결복구 대기. [중단시점 부분 회수](results/a24_laptop_measurement_20261015_v1/README.md). 사전 봉인: [분석](team/a24-laptop-measurements-20261014/CONFIRM_ANALYSIS_CONTRACT_V10.json), [동결](team/a24-laptop-measurements-20261014/CONFIRM_FREEZE_V10.json), [원장SHA](team/a24-laptop-measurements-20261014/PRIOR_STAGE_ATTEMPTS_SHA_V1.json). 새8군 수치예측은명시적없음/모형정확도주장없음. 확인중 코드/설정/계수/선정 변경 없음.
-- 다음최대3: 같은기기 최대20분 연결복구/미시도37등록슬롯; 거절/실패 보존·종료증거 확인 후 후속슬롯만 진행; 실제 시도 종료 뒤 전체분모 분석/작은 결과 공유. 부분회수 CSV·그림·오프라인참조 무결성 검산PASS. 데스크톱학습/EP814/원WIP12개/다른기기변경0; strict·기본정책·experiment_ready=false 유지. 아래PC준비는과거이력.
+- CONFIRM40: 2정상/1PRESTART 거절/37미시도. 06:48 온도 gate(AP29.1>상한29.0) 중단, 08:20 연결복구20분 종료. 10:03 사용자 재연결 후 동일hardware/fingerprint·SOC90%/비충전·owner없음을 확인하여 다음 미시도 M128 ORDER 준비 재개. [중단시점 부분 회수](results/a24_laptop_measurement_20261015_v1/README.md). 사전 봉인: [분석](team/a24-laptop-measurements-20261014/CONFIRM_ANALYSIS_CONTRACT_V10.json), [동결](team/a24-laptop-measurements-20261014/CONFIRM_FREEZE_V10.json), [원장SHA](team/a24-laptop-measurements-20261014/PRIOR_STAGE_ATTEMPTS_SHA_V1.json). 새8군 수치예측은명시적없음/모형정확도주장없음. 확인중 코드/설정/계수/선정 변경 없음.
+- 다음최대3: 동일 동결계약으로 미시도37등록슬롯; 거절/실패 보존·종료증거 확인 후 후속슬롯만 진행; 실제 시도 종료 뒤 전체분모 분석/작은 결과 공유. 부분회수 CSV·그림·오프라인참조 무결성 검산PASS. 데스크톱학습/EP814/원WIP12개/다른기기변경0; strict·기본정책·experiment_ready=false 유지. 아래PC준비는과거이력.
 
 # 2026-10-15 현재 작업 — A24-LAPTOP-PREP-01
 
