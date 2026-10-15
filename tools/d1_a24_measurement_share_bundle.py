@@ -80,6 +80,34 @@ def collect_raw(raw,prefix,members,excluded):
         else:members[name]=b
 
 
+def unlaunched_preAPP_evidence(root,sid,plan_id,outcome):
+    """Retain an unconsumed refusal before the unique later actual execution."""
+    if outcome.get('APP_launch_intent') is not False:raise ValueError('duplicate session has prior APP intent')
+    raw=root/'raw'/sid;registry=root/'registry'/'a24-laptop-measurement-v1'/plan_id/sid
+    for folder in [raw,registry]:
+        if not folder.exists():continue
+        allowed={'host_hal_partial.jsonl'} if folder==raw else {'host_hal_partial.jsonl','PRESTART_REJECT.json'}
+        if any(p.name not in allowed or not p.is_file() for p in folder.iterdir()):raise ValueError('duplicate prior session has execution artifacts')
+        sensor=folder/'host_hal_partial.jsonl'
+        if sensor.exists() and sensor.stat().st_size:raise ValueError('duplicate prior session has samples')
+    refusal=registry/'PRESTART_REJECT.json'
+    if not refusal.exists():raise ValueError('duplicate prior session lacks unconsumed refusal receipt')
+    receipt=read(refusal)
+    if receipt.get('START') is not False or receipt.get('session_run_consumed') is not False:raise ValueError('duplicate prior session consumed a run')
+    for name in ['measurement_adb_commands.jsonl','adb_commands.jsonl']:
+        log=root/name
+        if not log.exists():continue
+        for line in log.read_bytes().splitlines():
+            args=json.loads(line).get('argv',[])
+            if 'am' in args and 'start' in args and sid in args:raise ValueError('duplicate prior session has APP command')
+    prefix='unlaunched_preAPP_refusals/'+root.name+'/'+sid
+    members={prefix+'/outcome_original.json':(root/(sid+'.outcome.json')).read_bytes(),
+             prefix+'/PRESTART_REJECT_original.json':refusal.read_bytes()}
+    for name,b in members.items():
+        if PRIVATE.search(b):raise ValueError('private preAPP refusal receipt')
+    return members
+
+
 def snapshot(config,out,private_out):
     if out.exists() or private_out.exists():raise FileExistsError('new public/private output required')
     cutoff_epoch=time.time_ns()
@@ -96,6 +124,7 @@ def snapshot(config,out,private_out):
         job=read(family['job']);plan=read(job['plan']);plans[family['id']]=(job,plan)
         roots=[Path(p) for p in family['roots']]
         outcomes={};root_of={};outcome_shas={};app_records=collections.defaultdict(list)
+        preAPP=collections.defaultdict(dict);preAPP_counts=collections.Counter();app_roots={}
         for root in roots:
             # Read complete lines from a fixed prefix, never modify active logs.
             for name in ['measurement_adb_commands.jsonl','adb_commands.jsonl']:
@@ -109,16 +138,22 @@ def snapshot(config,out,private_out):
                         sid=args[args.index('session_id')+1]
                         rec={'session_id':sid,'start_wall_ns':x.get('start_wall_ns'),'end_wall_ns':x.get('end_wall_ns'),
                              'exit':x.get('exit'),'original_record_sha256':digest(line),'timeout':bool(x.get('timeout_seconds'))}
-                        app_records[sid].append(rec);launches.append({'family':family['id'],**rec})
+                        app_records[sid].append(rec);launches.append({'family':family['id'],**rec});app_roots[sid]=root
             for p in root.glob('*.outcome.json'):
                 if p.stat().st_mtime_ns>cutoff_epoch:continue
                 x=read(p);sid=x['session_id']
-                if sid in outcomes:raise ValueError('duplicate session in source roots')
+                if sid in outcomes:
+                    previous=unlaunched_preAPP_evidence(root_of[sid],sid,plan['plan_id'],outcomes[sid])
+                    preAPP[sid].update(previous);preAPP_counts[sid]+=1
                 outcomes[sid]=x;root_of[sid]=root;outcome_shas[sid]=digest(p.read_bytes())
         for row in plan['sessions']:
             sid=row['session_id']
             if sid in seen:raise ValueError('duplicate planned session across families')
             seen.add(sid);outcome=outcomes.get(sid);root=root_of.get(sid)
+            if sid in app_roots and app_roots[sid]!=root:
+                if outcome:
+                    preAPP[sid].update(unlaunched_preAPP_evidence(root,sid,plan['plan_id'],outcome));preAPP_counts[sid]+=1
+                outcome=None;root=app_roots[sid]
             if root is None:
                 candidates=[r for r in roots if (r/'bindings'/sid).exists()]
                 if len(candidates)>1:raise ValueError('ambiguous unstarted binding')
@@ -140,13 +175,14 @@ def snapshot(config,out,private_out):
                 raw_requests_completed=completed(raw) if outcome else None,
                 supplemental_same_run_completed=completed(supp) if outcome else None,
                 normal_comparison_eligible=status=='COMPLETE_TRACE_RECOVERED',
+                prior_unconsumed_preAPP_refusals=preAPP_counts[sid],
                 source_catalog_sha256=m.get('source_manifest_sha256'),source_commit_declared=m.get('source_commit'),
                 APK_sha256=m.get('apk_sha256'),original_manifest_sha256=digest(mpath.read_bytes()) if mpath else None,
-                outcome_sha256=outcome_shas.get(sid))
+                outcome_sha256=outcome_shas.get(sid) if outcome else None)
             if PRIVATE.search(encode(record)):
                 record['reason']='PRIVATE_DIAGNOSTIC_DETAIL_RETAINED_LOCALLY'
             records.append(record)
-            members={};excluded=[]
+            members=dict(preAPP[sid]);excluded=[]
             if outcome:
                 original_outcome=(root/(sid+'.outcome.json')).read_bytes()
                 if not PRIVATE.search(original_outcome):members['host_outcomes/'+sid+'.json']=original_outcome

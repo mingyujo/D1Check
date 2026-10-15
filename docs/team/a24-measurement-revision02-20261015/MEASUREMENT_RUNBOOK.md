@@ -1,5 +1,9 @@
 # A24 실측 진행 원장·재개 안내
 
+**최신 종료:** 사용자 지정 추가 L64 BASE 한 조건까지 2026-10-15T10:55:59.924741+00:00 UTC에 종료·회수했다. 새 확인17/40·2,352본요청, 예산58/81·잔여23을 [최신 블록 원물·원장](../../results/a24_measurement_share_20261015/README.md)에 보존했다. C5 `WINDOW_STOPPED.json`/빈 owner가 현재 기준이다. 다음 조건은 실행하지 않았으며 새 시간창 없이는 재개하지 않는다. C3/C4의 두 실행 전 거절과 입력 보존을 삭제하지 않는다. 아래 활성/준비 중 문장은 과거 이력이다.
+
+**현재 최우선(20:15 기기/20:20 저장):** 사용자 추가 지시로 [다음 L64 BASE 단1회](confirm40_one_more_20261015/README.md)를 새 방문 C5에 등록했다. 직전 C3는16/40·2,288요청 회수 후19:41:09에 시간 여유로 종료했다. C3/C4의 다음 ID 거절은 APP/START/claim0·비소비이며 기록을 보존했다. 입력 충돌은 실행 전 입력을 SHA 확인 후 별도 경로에 보존해 해소했다. 현재 `output/a24_confirm_one_more_20261015_v3/job.json`/`Documents/A24R02C5`가 활성일 수 있으므로 실제 owner/stop부터 확인한다. APP 최초1회만 허용하며 이후 PAIR는 실행하지 않는다. 예산은 직전57/81, 새APP intent 후58/81이고 실제 APP 명령은 직전54/별도진단1이다. [공개 원물 블록 ZIP18개](../../results/a24_measurement_share_20261015/README.md)는 커밋fc4e119에서 로그인 없는 외부 다운로드와 SHA 검산까지 완료했다. 아래 현재/최신 문장은 과거 시점 이력이다.
+
 **가장최신:** 별도전류반응진단APP1회/6반복/3,246조회완료·원물회수/프로세스종료했다。[자료](../../results/a24_revision02_20261015/current_response_diag_01/README.md)。CPU관측반응약0.2~0.4초이나순수센서지연은미확정·시간보정0이다。원APK/179소스/27.9℃reference이관후 [복귀방문](confirm40_after_current_diag_20261015/README.md)의 `output/a24_confirmation40_after_diag_20261015/job.json` / `Documents/A24R02C3` / `Documents/A24R02C3_GLOBAL`로미시도31을재개했다。18:49:50병행MAIN은회수완료、누적10/40·다음WAIT준비중。확인예산51/81소비와별도진단1(총APP52)은새APP intent를대조해갱신한다。20:02기기종료/20:07저장불변。
 
 재중지·이동지시에는새root의`STOP_AFTER_CURRENT.json`을write-once로작성해다음APP만차단한다。현재조건은close/회수까지마친다。종료된C1/C2명령또는활성C3명령을재실행하지않는다。아래진단준비/둘째방문문장은이력이다。

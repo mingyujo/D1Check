@@ -1,6 +1,27 @@
 # A24 측정 원자료 · 비교 블록 공유
 
-공개 스냅샷 시점(UTC): **2026-10-15T10:38:17.886074+00:00**. 실측은 별도 실행 중이며 이 스냅샷은 이미 닫혀 회수된 세션만 포함한다. 새 독립 확인은 **15/40회, 2,224개 본요청 완료**다. 40회를 모두 끝낸 결과로 해석하지 않는다.
+**최신 종료 결과: 새 독립 확인 17/40회, 2,352본요청 완료.** 사용자 지정 추가 L64 BASE 한 조건까지 실행한 뒤 종료했다. 다음 조건은 시작하지 않았다. 종료(UTC): `2026-10-15T10:55:59.924741+00:00`. 잔여 23회·3,368예정 요청은 새 시간창에서 이어갈 대상으로 남겼다.
+
+최신 확인 원물은 아래 ZIP을 사용한다. 이전 모든 측정·실패를 모은 18 ZIP은 이 문서 아래 `snapshot02` 구간에 그대로 보존했다.
+
+| 최신 확인 블록 ZIP | 정상 종료 / 등록군 |
+|---|---:|
+| [NEW_CONFIRM_CONFIRM_R02CONFIRM01.zip](confirmation_visit_03_05/blocks/NEW_CONFIRM_CONFIRM_R02CONFIRM01.zip) | 8/8 |
+| [NEW_CONFIRM_CONFIRM_R02CONFIRM02.zip](confirmation_visit_03_05/blocks/NEW_CONFIRM_CONFIRM_R02CONFIRM02.zip) | 8/8 |
+| [NEW_CONFIRM_CONFIRM_R02CONFIRM03.zip](confirmation_visit_03_05/blocks/NEW_CONFIRM_CONFIRM_R02CONFIRM03.zip) | 1/8 |
+
+- [최신 118슬롯 원장](confirmation_visit_03_05/attempts_all_latest.csv), [횟수·미완료·예산](confirmation_visit_03_05/COUNTS.json), [최신 ZIP SHA](confirmation_visit_03_05/BLOCK_BUNDLES.json).
+- 정식 예산 **58/81**·잔여23, 실제 APP **55** + 별도 전류 진단1 = **56**. 예전 APP 이전 실패3회와 실제 앱 실행 횟수를 구분한다. 같은 ID의 APP 재실행0.
+- C3 시간 여유 거절·C4 입력 폴더 충돌은 APP/START/claim0·비소비다. 두 원 거절 영수증은 해당 ZIP의 `unlaunched_preAPP_refusals/`와 [종료·PC·입력보존 영수증](confirmation_visit_03_05/execution_receipts/)에 남겼다. 입력 보존15개 기기 명령에는 추론·계측·세션 소비가 없다. C5에서 원래 미실행 조건을 처음 실행했다.
+- [새로 닫힌 8군의 서비스·출력·AP 검산 CSV](confirmation_visit_03_05/new_closed_results.csv), [개별 분석 JSON](confirmation_visit_03_05/new_closed_analysis/). 모든 정상 종료가 모든 서비스 기한의 충족을 뜻하지는 않는다. J는 미판정이며 AP는 HAL 읽기값이다.
+- [처음 공개한 18 ZIP의 로그인 없는 외부 다운로드·SHA 검증](PUBLIC_GITHUB_VERIFICATION_snapshot02.json). 최신 3 ZIP의 외부 검증은 최종 push 후 별도 영수증으로 남긴다.
+- [한 조건 추가 실행 계약과 문제 처리](../../team/a24-measurement-revision02-20261015/confirm40_one_more_20261015/README.md). frozen core179·APK·기한·온도 gate는 유지했다. 별도 coordinator의 정확한 SHA는 실행 계약/PC 영수증에 있다.
+
+---
+
+## 19:38 KST 고정 스냅샷과 이전 전체 원물
+
+공개 스냅샷 시점(UTC): **2026-10-15T10:38:17.886074+00:00**. 당시 실측은 별도 실행 중이었으며 이 스냅샷은 이미 닫혀 회수된 세션만 포함한다. 새 독립 확인은 **15/40회, 2,224개 본요청 완료**다. 40회를 모두 끝낸 결과로 해석하지 않는다.
 
 ## 완료·실패·미완료 원장
 
