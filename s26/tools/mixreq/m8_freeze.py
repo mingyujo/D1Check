@@ -65,9 +65,17 @@ def main() -> int:
                              gate_waited_s=(r.get("gate") or {}).get("waited_s"), tref=(r.get("gate") or {}).get("tref"), in_block_charge=r.get("in_block_charge"),
                              start_soc=(r.get("start_state") or {}).get("soc"), end_soc=(r.get("end_state") or {}).get("soc"), start_ap=(r.get("start_state") or {}).get("AP"),
                              start_skin=(r.get("start_state") or {}).get("SKIN"), host_start=(r.get("times") or {}).get("host_start")) for r in evs]
-            valid = any(x["validated"] is True and x["rc"] == 0 for x in attempts)
+            # 유효 = 세션 폴더의 현재 validated.json (검사기 고침 뒤 재검증 반영 · B1-01) · 이벤트의 당시 판정은 attempts 에 보존
+            plan = C.read_json(PLAN_ROOT / s["plan_dir"] / "plan.json")
+            pe = next(e for e in plan["sessions"] if e["index"] == s["index"])
+            valid_now = []
+            for a in (1, 2):
+                vf = args.results / "S26_M8_DEV" / s["plan_dir"] / f"S26_MIXREQ_{s['index']:02d}_{pe['policy']}_a{a}" / "validated.json"
+                if vf.is_file():
+                    valid_now.append(dict(attempt=a, eligible=C.read_json(vf).get("eligible")))
+            valid = any(x["eligible"] is True for x in valid_now) or any(x["validated"] is True and x["rc"] == 0 for x in attempts)
             sessions.append(dict(block_no=blk["block_no"], order_pos=s["order_pos"], label=s["label"], index=s["index"], session_id=s["session_id"], manifest_sha256=s["manifest_sha256"],
-                                 plan_dir=s["plan_dir"], valid=valid, rejects=sum(1 for x in attempts if x["prestart_reject"]), attempts=attempts))
+                                 plan_dir=s["plan_dir"], valid=valid, validated_now=valid_now, rejects=sum(1 for x in attempts if x["prestart_reject"]), attempts=attempts))
         n_valid = sum(1 for s in sessions if s["valid"])
         groups.append(dict(group_index=gi, experiment_id=eid, arm=arm_name, bank=a["bank"], policy=a["policy"], policy_args=a["wait"], prep=a["prep"], block=a["block"],
                            selection=M8.SELECTION[a["policy"]], concurrency=M8.CONCURRENCY[a["policy"]],
@@ -94,6 +102,8 @@ def main() -> int:
         status_split=dict(prepared=True, registered=True, dev_started=True, dev_completed=all(s["valid"] for g in groups for s in g["dev_sessions"]),
                           confirm_started=False, note="준비 · 등록 · 실측 착수 · 완료 상태 분리 (조민규 #8) · CONFIRM 은 별도 프롬프트 M8-B · 이 파일 커밋 뒤"),
         registration=dict(v2=dict(file="d1sim/docs/M8_사전등록_v2.md", sha256=sha(REPO / "d1sim/docs/M8_사전등록_v2.md")), v3=dict(file="d1sim/docs/M8_사전등록_v3.md", sha256=sha(REPO / "d1sim/docs/M8_사전등록_v3.md"), note="v2 바이트 + 부록 (P0 보충 · 운영) · 블록 1·2 = v2 계약"),
+                          v4=dict(file="d1sim/docs/M8_사전등록_v4.md", sha256=sha(REPO / "d1sim/docs/M8_사전등록_v4.md"), note="부록 2 · 블록 2 · CONFIRM START 밴드 ± 1.0"), v5=dict(file="d1sim/docs/M8_사전등록_v5.md", sha256=sha(REPO / "d1sim/docs/M8_사전등록_v5.md"), note="부록 3 · 블록 2 · CONFIRM 판정 창 120 s · 기울기 0.2"),
+                          applied=dict(block1="v2 계약 · v2 게이트 (60 s · 0.1 · ± 0.5) + 영훈 운영 강제 START 5 (드라이버 a0a804b6c ~ 3344119f4)", block2="v2 계약 · v5 게이트 (120 s · 0.2 · ± 1.0 · 누적 1,800 s 강제 · 드라이버 3344119f4 고정) · 강제 0", confirm="v2 계약 · v5 게이트 · 드라이버 = CONFIRM 판 (아래 next_driver 항목 반영 뒤 커밋 · SHA 원장)"),
                           contract_table_v2=dict(file="d1sim/docs/M8_계약표_v2.md", sha256=sha(REPO / "d1sim/docs/M8_계약표_v2.md")),
                           contract_v2={p.name: sha(p) for p in sorted((PLAN_ROOT / "contract_v2").glob("*"))},
                           blocks_json=dict(file="s26/results/m8_prep/plan_m8/blocks.json", sha256=sha(PLAN_ROOT / "plan_m8/blocks.json"), dev_seed=blocks["dev_seed"], confirm_seed=blocks["confirm_seed"]),
@@ -108,8 +118,18 @@ def main() -> int:
                                    confirm_rule="측정 구간마다 (드라이버 시작) 새로 산출 · 블록 안 재산출 0 · 거절 횟수 보고 옮기지 않음 · CONFIRM 에서 상수 변경 0"),
                       coverage=dict(app_pre_t0_min_s=M8.APP_PRE_T0_MIN_S, app_post_t0_min_s=M8.APP_POST_T0_MIN_S, app_points_s=list(M8.APP_POINTS_S), hal_ap_points_s=list(M8.HAL_AP_POINTS_S), hal_iv_points_s=list(M8.HAL_IV_POINTS_S),
                                     app_max_gap_s=M8.APP_MAX_GAP_S, hal_max_gap_s=M8.HAL_MAX_GAP_S, hal_target_period_s=M8.HAL_TARGET_PERIOD_S),
+                      gate_v5=dict(band_c=1.0, window_s=120, min_samples=40, slope_max_c_per_min=0.2, gate_max_wait_s=600, retry_rest_s=300, force_after_cumulative_s=1800, forced_marking="in_band=false · forced=true · AP_band_ok/slope_ok/gate_passed 열 분리",
+                                   tref_block="블록 (드라이버) 시작 시 첫 안정 60 s AP 창 (v2 산출법 · 유휴 ≥ 1,200 s 뒤) · 키 분리 · 블록 안 재산출 0 · stable_miss = TREF_UNDECIDABLE (CONFIRM 판)"),
+                      next_driver_confirm=["재시작 시 잔여 휴식 · 거절 한도 복원", "gate_attempt_id 별 HAL 경로 · SHA (재시도가 label_a1 을 덮지 않음)", "stable_miss → TREF_UNDECIDABLE (대체값 Tref 0)", "세션 표에 host commit/SHA · 적용 시각 열", "Perfetto OFF 고정 (정책 비교군)"],
                       operation=dict(run_gap_min_s=M8.RUN_GAP_MIN_S, hal_pre_start_s=M8.HAL_PRE_START_S, hal_after_origin_s=M8.HAL_AFTER_ORIGIN_S, safety_skin_c=M8.SAFETY_SKIN_C, safety_thermal_status=M8.SAFETY_THERMAL_STATUS,
                                      charge_to_first_run_min_s=M8.CHARGE_TO_FIRST_RUN_MIN_S, dev_deviation_1015="영훈 08:xx: 충전 뒤 고정 유휴 생략 (--no-fixed-idle) · 낮 블록 · 블록 2 바로 이어서 · Tref 키 분리 — 등록 v3 부록 · CONFIRM 운영은 M8-B 프롬프트에서 정함")),
+        sealed_items_1015b_8=dict(note="조민규 1015b #8 봉인 항목 — 정의만 (값 · 수식의 수치 기준은 missing_from_partner)",
+                                  comparison_pairs="아래 comparison_pairs", denominators="아래 denominators",
+                                  service="svc70/80/90/95/100 · 긴급/일반 분리 · 전량완료 (all_completed) · 분모 planned",
+                                  energy_windows=dict(E0_180="앱 power_sample (current_raw µA · voltage mV · 900 ms) 의 common 0 ~ 180 s 적분 — 계산 = 조민규 (이쪽 표본만)", AP35_180="host HAL AP 의 35 ~ 180 s 구간 (표본 2.3 s)", peak="구간 안 AP 최대", residual_180="AP(180) − AP(35) 잔열 (정의 · 계산 조민규)"),
+                                  deadline_loss="late (urgent_late · normal_late) · 기한 넘김 수/비율", incomplete="undispatched · failed · unfinished · 미완료 세션 (invalid_twice · 빈 자리)",
+                                  block_level_ci="블록 (= 반복 단위 · CONFIRM n = 5) 단위 신뢰구간 · 방법/수준 = missing_from_partner (사전 수치 기준 없음) · 블록 1 (v2 게이트) 과 블록 2 (v5) 는 같은 조건 독립 반복으로 합치지 않음",
+                                  selection_multiple_comparison="선정 = DEV 2/2 유효 (CONFIRM) · 1/2 이하 '개발만' · 다중 비교 보정 규칙 = missing_from_partner · 사후 비교를 '예측 검증' 이라 부르지 않음"),
         metrics=dict(definitions=["서비스 svc70/80/90/95/100 (분모 planned)", "긴급 P95 (output_ready) · 일반 P95 (readback 성공) — 응답 경계 = priority", "전량완료 all_completed · late (urgent_late · normal_late) · undispatched · failed · unfinished",
                                   "WAIT nominal / planned / dose / overrun / cut (명목으로 실제 대체 0)", "준비 prep_calls · prep_actual_s (RECENT)", "readback_ok 성공률", "coverage app/host (post_t0 ≥ 210 · 점 0/35/120/180)",
                                   "ΔJ · AP · 잔열 = 조민규 계산 (이쪽 산출물 = 표본만 · 계산 0)"],
