@@ -1,0 +1,35 @@
+t,label,kind,result,reason,waited_s,tref,ap_last,ap_slope_last,soc,counts_in_ledger_16,counts_in_report_14,note
+2026-10-15T03:08:03,Tref,tref_derivation,valid,2026-10-15,,26.1,26.1,-0.09238122466012504,,False,False,"새벽 P0 (유휴 1,200 s 뒤)"
+2026-10-15T08:28:02,Tref,tref_derivation,invalid_reference,2026-10-15_day_b1,794,28.7,28.7,0.025470969782459284,,False,False,08:28 충전 분리 13 min 뒤 (고정 유휴 생략) → 유휴 조건 아님 → B1-00 · B1-02 · 보충 r2 는 이 값으로 START · 09:58 폐기
+2026-10-15T09:39:00,B1-03-RECENT_IDLE60_C252_GPU,prestart_reject,PRESTART_REJECT,tref,606,28.7,27.3,-0.18995089067377166,77,True,False,잘못된 Tref 28.7 (충전 열) 기준 거절 · 보고 14 에서 뺀 2건
+2026-10-15T09:55:09,B1-03-RECENT_IDLE60_C252_GPU,prestart_reject,PRESTART_REJECT,tref,607,28.7,27.0,-0.09006703030131352,77,True,False,잘못된 Tref 28.7 (충전 열) 기준 거절 · 보고 14 에서 뺀 2건
+2026-10-15T10:03:17,B1-03-RECENT_IDLE60_C252_GPU,extra_gate_after_wrong_tref,regate,Tref 28.7 거절 2회는 잘못된 기준값 → 재산출 뒤 재게이트 1회 (등록 밖 · 조민규 판단),,27.2,,,,False,False,10:07 rc 5 (폴더 충돌) → 10:10 재시작 → 10:10 START · 유효
+2026-10-15T10:04:48,Tref,tref_derivation,valid,2026-10-15_day_b1r,2214,27.2,27.2,0.0828191049153639,,False,False,10:04 유휴 37 min 뒤 재산출 → B1-03 ~ B1-18
+2026-10-15T10:29:13,B1-04-RECENT_CPU60_C252_NPU,prestart_reject,PRESTART_REJECT,tref,606,27.2,29.6,0.20153139068047415,75,True,True,
+2026-10-15T10:29:13,B1-04-RECENT_CPU60_C252_NPU,forced_start,FORCED_START,tref,606,27.2,29.6,0.20153139068047415,75,False,False,즉시 강제 (--gate-force-start · 영훈 10:1x)
+2026-10-15T10:47:23,B1-05-L64_PAIR_G,prestart_reject,PRESTART_REJECT,tref,607,27.2,30.4,0.058851790472307035,73,True,True,
+2026-10-15T10:47:24,B1-05-L64_PAIR_G,forced_start,FORCED_START,tref,607,27.2,30.4,0.058851790472307035,73,False,False,즉시 강제 (--gate-force-start · 영훈 10:1x)
+2026-10-15T11:09:31,B1-06-M128_ORDER,prestart_reject,PRESTART_REJECT,tref,606,27.2,28.0,0.049027875151130336,72,True,True,
+2026-10-15T11:19:52,B1-06-M128_ORDER,retry_rest_short,a1 stall → a2,adb 끊김 11:17 → a1 rc 4 (앱 시작 · 소비) → 드라이버 재시작 → a2 11:28:13,500.6,,,,,False,False,a1 끝 → a2 시작 ≈ 501 s (< 등록 600 s) · 재시작이 잔여 휴식을 복원하지 않음 → 다음 드라이버 (CONFIRM 판) 에서 복원
+2026-10-15T12:09:58,B1-09-SMOOTH128_BASE,prestart_reject,PRESTART_REJECT,tref,606,27.2,28.05,-0.024954005427768825,67,True,True,
+2026-10-15T12:34:08,B1-10-SMOOTH128_ORDER,prestart_reject,PRESTART_REJECT,tref,606,27.2,27.95,-0.43875950882246983,66,True,True,
+2026-10-15T12:48:15,B1-10-SMOOTH128_ORDER,undecidable_poll,GATE_UNDECIDABLE_POLL,undecidable: AP samples 9 < 20 (window 60 s),,,,,,False,False,판정 불가 폴 (REJECT 아님 · 별개 열)
+2026-10-15T12:48:46,B1-10-SMOOTH128_ORDER,undecidable_poll,GATE_UNDECIDABLE_POLL,undecidable: AP samples 10 < 20 (window 60 s),,,,,,False,False,판정 불가 폴 (REJECT 아님 · 별개 열)
+2026-10-15T12:55:19,B1-10-SMOOTH128_ORDER,prestart_reject,PRESTART_REJECT,slope,909,27.2,26.95,-0.348662543837629,65,True,True,
+2026-10-15T12:55:19,B1-10-SMOOTH128_ORDER,forced_start,FORCED_START,slope,909,27.2,26.95,-0.348662543837629,65,False,False,누적 1815 s ≥ 1800 강제 (--gate-force-after-s · 영훈 10:5x)
+2026-10-15T13:12:58,B1-11-M128_PAIR_N,prestart_reject,PRESTART_REJECT,slope,606,27.2,26.95,-0.43698168287861433,63,True,True,
+2026-10-15T13:25:05,B1-11-M128_PAIR_N,undecidable_poll,GATE_UNDECIDABLE_POLL,soc None < 20;undecidable: AP samples 15 < 20 (window 60 s),,,,,,False,False,판정 불가 폴 (REJECT 아님 · 별개 열)
+2026-10-15T13:25:35,B1-11-M128_PAIR_N,undecidable_poll,GATE_UNDECIDABLE_POLL,soc None < 20;undecidable: AP samples 2 < 20 (window 60 s),,,,,,False,False,판정 불가 폴 (REJECT 아님 · 별개 열)
+2026-10-15T13:26:05,B1-11-M128_PAIR_N,undecidable_poll,GATE_UNDECIDABLE_POLL,soc None < 20;undecidable: AP samples 0 < 20 (window 60 s),,,,,,False,False,판정 불가 폴 (REJECT 아님 · 별개 열)
+2026-10-15T13:28:37,B1-11-M128_PAIR_N,restart_gate_accumulation,restart,adb 끊김 13:26 (재시도 게이트 중 · 앱 시작 0) → 재시작 → 거절 누적 다시 0 부터 (1차 606 + 300 + 재시도 910 → 강제),,27.2,,,,False,False,재시작 전 13:13 REJECT(slope) 1건 + 재시작 뒤 13:39 REJECT(tref) · 14:00 강제 → 같은 자리 거절 3건
+2026-10-15T13:37:13,B1-11-M128_PAIR_N,undecidable_poll,GATE_UNDECIDABLE_POLL,undecidable: max gap 6.9019999504089355 s > 5.0 s,,,,,,False,False,판정 불가 폴 (REJECT 아님 · 별개 열)
+2026-10-15T13:39:44,B1-11-M128_PAIR_N,prestart_reject,PRESTART_REJECT,tref,606,27.2,26.2,0.05083707217535714,62,True,True,
+2026-10-15T14:00:55,B1-11-M128_PAIR_N,prestart_reject,PRESTART_REJECT,tref,910,27.2,26.6,0.08293629444936286,61,True,True,
+2026-10-15T14:00:55,B1-11-M128_PAIR_N,forced_start,FORCED_START,tref,910,27.2,26.6,0.08293629444936286,61,False,False,누적 1816 s ≥ 1800 강제 (--gate-force-after-s · 영훈 10:5x)
+2026-10-15T14:29:37,B1-13-M128_WAIT200x16,prestart_reject,PRESTART_REJECT,tref,606,27.2,28.1,0.2969614105683652,59,True,True,
+2026-10-15T15:22:05,B1-16-RECENT_IDLE60_C252_NPU,prestart_reject,PRESTART_REJECT,tref,606,27.2,28.4,0.31566870352795656,55,True,True,
+2026-10-15T15:49:00,B1-17-M128_BASE,prestart_reject,PRESTART_REJECT,tref,606,27.2,28.0,0.2710799662118474,53,True,True,
+2026-10-15T16:12:41,B1-18-M128_WAIT200x12,prestart_reject,PRESTART_REJECT,tref,607,27.2,29.7,-0.3397765372592046,51,True,True,
+2026-10-15T16:33:52,B1-18-M128_WAIT200x12,prestart_reject,PRESTART_REJECT,slope,910,27.2,27.2,-0.20871971245797427,50,True,True,
+2026-10-15T16:33:52,B1-18-M128_WAIT200x12,forced_start,FORCED_START,slope,910,27.2,27.2,-0.20871971245797427,50,False,False,누적 1817 s ≥ 1800 강제 (--gate-force-after-s · 영훈 10:5x)
+2026-10-15T17:00:24,Tref,tref_derivation,valid,2026-10-15_b2,1200,26.8,26.8,0.09557678090412519,,False,False,"블록 2 (유휴 1,200 s 뒤)"
