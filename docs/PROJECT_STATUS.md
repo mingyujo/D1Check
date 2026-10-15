@@ -1,4 +1,11 @@
-# 2026-10-15 최신 — 새2시간 창 CONFIRM C6 실행 중
+# 2026-10-15 최신 — 23:50 전 종료로 C7 재등록
+
+- 사용자 종료 시각23:50 전을 우선 적용: 기기23:45·저장5분. [C7 계약·검증·명령](team/a24-measurement-revision02-20261015/confirm23_window_20261015_2350/README.md). 실제job `output/A24R02C7/job.json`, 원물`Documents/A24R02C7`/전역`Documents/A24R02C7_GLOBAL`. 실행 여부는 실제owner/APP/START/stop부터 확인하며 명령을 중복 실행하지 않는다.
+- C6는22:30:21에 앱 전 대기에서 안전 종료, APP/워밍업/MAIN/START/claim/소비0. [냉각 원기록](results/a24_measurement_share_20261015/preAPP_visit_06_cooling/README.md). 기존17/40·2,352완료/58소비·23미실행/3,368요청은 불변. 장소 변경 답변은 같은 장소라는 사용자 정정으로 철회했다. 주변 온도·통풍은 미측정이다.
+- 앱 전 비소비 종료의 근거·전체SHA·APP0/실행 흔적0을 검증해 더 이른 시간창으로 인계하는 coordinator만 보완했다. PC23실제authorization·관련31검사PASS. core179/APK/MAIN·27.1℃기준/예산81/원순서 그대로. 22:34:59 읽기16명령에서 SOC82%/비충전·동일폰APK·화면81·충돌/owner0 확인, 사용자온도질문22:34:05 AP28.0℃ 읽기6명령도 별도기록.
+- 다음최대3: 새 창의 실제냉각/APP/MAIN/close 관찰; 닫힌군만 품질·서비스/AP 검산; 종료전 원물·미완료/소비·Git공유 저장. 새APP21분/MAIN5분 여유·동일기기 단절최대20분/남은창 유지. Jnull/AP HAL·표면미검증/experiment_ready=false·사용자WIP/데스크톱/S26/NPU보존. 과거 C6·준비v2 job은 재실행하지 않는다.
+
+# 2026-10-15 이전 — 새2시간 창 CONFIRM C6 실행 중
 
 - 사용자 “2시간 있음”:21:58:13~23:58:13 KST/기기23:53:13·저장5분. [등록·계약·소스](team/a24-measurement-revision02-20261015/confirm23_window_20261015_2158/README.md). 실제 `output/A24R02C6/job.json`/로그, 원물`Documents/A24R02C6`, 전역`Documents/A24R02C6_GLOBAL`. 실행 중이므로 같은 명령 재호출/소스·설정 수정 금지.
 - 시작 전17/40·2,352완료/23회·3,368요청잔여, 정식58/81·실제APP55+별도진단1=56. 새23scope를 원순서로 등록했으며 실제 소비는58+이번APP intent다. 새APP21분/MAIN5분 여유와 동일기기 단절최대20분을 유지한다.

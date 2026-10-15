@@ -111,6 +111,41 @@ class HistoryCases(unittest.TestCase):
                 path.write_text(json.dumps({**anchor,key:value}))
                 with self.assertRaises(ValidationError):mod.carry_references([row],ledger,hits)
 
+    def test_closed_passive_wait_rebound_preserves_no_APP_and_hashes(self):
+        with tempfile.TemporaryDirectory() as t:
+            b=Path(t);root=b/'passive';root.mkdir();g=b/'global';g.mkdir()
+            binding=root/'bindings'/'s';binding.mkdir(parents=True)
+            (binding/'gate.json').write_text('{}')
+            (root/'s.preapp_stop.json').write_text(json.dumps({'APP':0,'binding_created':True,'reason':'USER_STOP_AFTER_CURRENT'}))
+            (root/'STOP_AFTER_CURRENT.json').write_text(json.dumps({'reason':'EARLIER_USER_DEADLINE'}))
+            (root/'pre_app_cooldown_v2').mkdir();cooling=root/'pre_app_cooldown_v2'/'s.jsonl';cooling.write_text('{}\n')
+            stop=root/'WINDOW_STOPPED.json';stop.write_text(json.dumps({'reason':'PRE_APP_COOLDOWN_STOP','new_APP_intents':0,'outcomes':[]}))
+            spec={'previous_visits':[{'root':str(root),'stop_sha256':sha256(stop)}],'previous_global_reservation_roots':[str(g)]}
+            plan={'plan_id':'p','sessions':[{'session_id':'s'}]}
+            ledger={'records':[{'session_id':'s','APP_launches':0}]}
+            inventory,hits=mod.history_inventory(spec,plan,ledger)
+            self.assertEqual(hits['s'],[])
+            self.assertEqual(inventory['passive/pre_app_cooldown_v2/s.jsonl'],sha256(cooling))
+            for kind in ['APP_intent','START','unknown_receipt','unknown_stop','APP_command']:
+                with self.subTest(kind=kind):
+                    if kind=='APP_intent':
+                        p=g/'reservations'/'s';p.mkdir(parents=True);(p/'APP_LAUNCH_INTENT.json').write_text('{}')
+                    elif kind=='START':
+                        p=root/'registry'/PROTOCOL/'p'/'s';p.mkdir(parents=True);(p/'START.json').write_text('{}')
+                    elif kind=='unknown_receipt':
+                        p=root/'s.preapp_stop.json';original=p.read_bytes();p.write_text(json.dumps({'APP':0,'binding_created':True,'reason':'UNKNOWN_DELIVERY'}))
+                    elif kind=='unknown_stop':
+                        p=stop;original=p.read_bytes();p.write_text(json.dumps({'reason':'ERROR','new_APP_intents':0,'outcomes':[]}));spec['previous_visits'][0]['stop_sha256']=sha256(stop)
+                    else:
+                        p=root/'adb_commands.jsonl';p.write_text(json.dumps({'argv':['adb','shell','am','start','session_id','s']})+'\n')
+                    with self.assertRaises(ValidationError):mod.history_inventory(spec,plan,ledger)
+                    if kind in {'APP_intent','START'}:
+                        for child in p.iterdir():child.unlink()
+                        p.rmdir()
+                    elif kind in {'unknown_receipt','unknown_stop'}:
+                        p.write_bytes(original);spec['previous_visits'][0]['stop_sha256']=sha256(stop)
+                    else:p.unlink()
+
 
 class ReadOnlyCases(unittest.TestCase):
     def test_mutations_blocked_before_any_ADB_call(self):

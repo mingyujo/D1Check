@@ -65,6 +65,9 @@ def history_inventory(spec,plan,ledger):
             registry=root/'registry'/PROTOCOL/plan['plan_id']/sid;outcome=root/(sid+'.outcome.json')
             for p in [outcome,*[binding/n for n in ['session_manifest.json','authorization.json','config.json','gate.json']]]:
                 add(p,tag+'/'+p.relative_to(root).as_posix())
+            for p in [root/(sid+'.preapp_stop.json'),root/'STOP_AFTER_CURRENT.json',
+                      root/'pre_app_cooldown_v2'/(sid+'.jsonl'),root/'pre_app_cooldown_v2'/(sid+'.ready.json')]:
+                add(p,tag+'/'+p.relative_to(root).as_posix())
             for folder in [registry,raw]:
                 if folder.exists():
                     for p in folder.iterdir():
@@ -72,7 +75,18 @@ def history_inventory(spec,plan,ledger):
                             add(p,tag+'/'+p.relative_to(root).as_posix())
             artifacts=any(p.exists() for p in [raw,binding,registry,outcome])
             if record['APP_launches']==0:
-                require(not artifacts and visit_apps[sid]==0,'untouched slot has previous artifacts')
+                require(visit_apps[sid]==0,'untouched slot has a prior APP command')
+                if artifacts:
+                    # A closed passive wait can be rebound to an EARLIER user
+                    # deadline. Never excuse uploaded/executed/uncertain runs.
+                    paused=load_json(stop);receipt=root/(sid+'.preapp_stop.json')
+                    require(binding.is_dir() and not any(p.exists() for p in [raw,registry,outcome])
+                            and receipt.is_file(),'untouched slot has execution/unknown artifacts')
+                    proof=load_json(receipt)
+                    require(paused.get('reason')=='PRE_APP_COOLDOWN_STOP' and paused.get('new_APP_intents')==0
+                            and paused.get('outcomes')==[] and proof.get('APP')==0
+                            and proof.get('binding_created') is True and proof.get('reason')=='USER_STOP_AFTER_CURRENT'
+                            and (root/'STOP_AFTER_CURRENT.json').is_file(),'unproved passive stop')
             elif (raw/'events.jsonl').exists():
                 require(visit_apps[sid]==1,'raw execution has no unique APP command')
                 require(sha256(raw/'events.jsonl')==record['events_sha256'] and
