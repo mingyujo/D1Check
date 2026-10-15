@@ -1,4 +1,8 @@
-# 2026-10-16 최신 — C10 원19 실제 실행
+# 2026-10-16 최신 — C10 계속·실패12 새 ID 보완 큐
+
+최신사용자 재측정 지시를 [보완12](failed_supplement12_20261016/README.md)로 고정했다. 기존85/실패/원확인40을 그대로 보존하고 추가12 각1회·1520요청을 별도 원장으로 둔다(합산97). 현재C10은 그대로 진행하며 종료·닫힘·owner해제 후 미사용개정ORDER1→보완12 순서다. 큐 `output/A24FOLLOW16/queue.json`/OWNER/LIVE/각 STARTED/STOPPED/QUEUE_STOPPED부터 대조한다. 이미 OWNER가 있으면 중복 시작 금지. 보완 실제root Documents/A24SUP12/global A24SUP12_GLOBAL은 APP 시도 전까지 없어야 한다. 사용자 중지·이동 때 큐와 실제root의 STOP_AFTER_CURRENT로 다음APP를 막고 현조건을 안전회수한다. 아래85/재실행0문장은 당시이력이며, 새 ID 보완 승인과 구분한다. 원SOURCE179/APK/MAIN·실패원물 변경0/Jnull/AP HAL·표면미검증/experiment_ready=false유지.
+
+# 2026-10-16 이전 — C10 원19 실제 실행
 
 [C10 원19](remaining19_execution_20261016/README.md) job/owner/APP/START/outcome/stop을먼저대조한다. 실제job `output/A24R02C10/job.json`,root Documents/A24R02C10/global C10,PID8816·소스f43b357/coordinator4ce2df05·원179/APK불변. R2개정PAIR는01:47:24 APP1/MAIN0시작거절로종료/같은실행회수·닫힘/자기프로세스부재확인,재실행0. 개정WAIT/BASE2조건256완료·ORDER1미실행예약. 원19는01:48:18부터원래순서로진행한다. 원81+개정4=85,시작전65소비/20잔여에서실제원장으로갱신,원19뒤개정ORDER1계속준비. 이전R1/R2자동계속은종료됐고C10최초실행은`LAUNCH_AFTER_SAFE_PARTIAL_EXTRA4.py`의소유child다. 중복시작금지.
 
