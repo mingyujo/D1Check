@@ -1,4 +1,8 @@
-# 2026-10-16 추가 — 온도 대응의 유한한 동일 비교군6
+# 2026-10-16 추가 — 계측 설정 경로 오류의 유한한 새 OFF/ON2
+
+기존보완ON은설정파일읽기errno13으로MAIN전에실패했으며원실패/소비/32미실시·동일실행닫힘증거를보존했다. [미실행8](team/a24-measurement-revision02-20261015/supplement8_after_trace_error_20261016/README.md)은원12범위/예산에서계속한다. 사용자자율오류해결지시를 [공식설정경로새OFF/ON2](team/a24-measurement-revision02-20261015/trace_path_repair2_20261016/README.md)/64요청으로제한해원103+별도2/계산상105를두고,현재8→새2→새6을직렬진행한다. 직접숫자105지정승인/무제한retry/원실패대체가아니다. 변경은별도controller의공식설정폴더뿐이며원179/APK/준비추론/MAIN/기한/입력/profile210초64MiB상한을보존한다. PC3+2authorization PASS/새2실제0, Jnull/표면미검증/experiment_ready=false유지.
+
+# 2026-10-16 이전 — 온도 대응의 유한한 동일 비교군6
 
 사용자 시작온도 문제 자율처리·실패 보완·전체완료 지시를 [별도6조건](team/a24-measurement-revision02-20261015/matched_rebaseline6_20261016/README.md)으로 구체화한다. 원97원장/고정기준/실패를 보존하고 저부하BASE/PAIR2와혼합4의동일비교군을새ID·각묶음공유첫안정기준으로측정한다. 추가6/640요청·계산상최대103이며무제한재시도/사용자직접숫자103지정이아니다. 원40독립확인에합산하지않고현재C11/큐17종료뒤단일기기로진행한다. 현재PC준비4검사+6승인결합PASS/기기명령0,원179/APK/MAIN/서비스/반환/Jnull/표면미검증/experiment_ready=false보존.
 

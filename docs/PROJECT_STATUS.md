@@ -1,5 +1,6 @@
 # 2026-10-16 최신 — 원확인37정상·옛기준1미실행보존·R3→보완12→새6 계속
 
+- 05:14 KST 보완미실행8중CPU252×2가정상회수돼기존보완전체5정상/536MAIN·ON실패32보존,현재L64PAIR준비중이다. 새[공식경로OFF/ON2](team/a24-measurement-revision02-20261015/trace_path_repair2_20261016/README.md)는PC3+2authorization통과/실제0이며,현재8→새2→새6의새큐18(parenttool55540/대기기기명령0)을등록했다. 원103원장과새2를분리해계산상최대105로제한하며원40성공대체0이다. 구큐17/구새6대기는HELD보존·재시작금지.
 - 05:03 KST 현재[미실행보완8](team/a24-measurement-revision02-20261015/supplement8_after_trace_error_20261016/README.md)/child18920/parenttool1054의첫F_CPU MAIN/회수중. 기존보완3정상32이후ON설정파일읽기errno13/exit1로04:54:28 FAILED를보존했다. 앱자체600초대기종료후05:00:21 동일실행닫힘·반환·32UNFINISHED/START·claim·승인업로드부재/자기PID부재를확인하고재전송0으로미사용8만05:01:17 계속했다. 원183+감사4/source187·PC3+1/실제8authorization PASS,기존plan/APK/MAIN/예산12불변.
 - 구큐17·새6대기큐는오류에서HELD/child0으로보존됐다. 새6본체는미사용이므로기소비실패를소급성공으로바꾸지말고현재8→별도공식경로OFF/ON보완→새6의새감독경로를준비한다. 공식허용설정폴더로경로수정검증은아직미실행이며현재8은모두PerfettoOFF다. Jnull/표면미검증/experiment_ready=false유지.
 - 04:36 KST 현재보완12/PID27352:미상주유휴1정상(본요청0·AP창적격)/다음상주유휴APP준비,이번APP2. R3 ORDER는04:29:33에27.6℃고정기준불일치/PRESTART_REJECT·APP1/MAIN0/128미실시로종료했고,같은실행원물회수·닫힘/자기프로세스부재후큐가보완12를04:29:38계속했다. 개정4는2정상256·2시작거절256/4APP이며원독립40에합산0. [유휴원자료](results/a24_measurement_share_20261016/automatic_checkpoints/SUP12_I_UNRESIDENT_IDLE/README.md).
