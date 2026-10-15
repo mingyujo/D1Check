@@ -1,8 +1,8 @@
 {
-  "updated_UTC": "2026-10-15T20:25:45.798421+00:00",
-  "updated_KST": "2026-10-16 05:25:45 KST",
+  "updated_UTC": "2026-10-15T20:31:20.549282+00:00",
+  "updated_KST": "2026-10-16 05:31:20 KST",
   "original_confirm": {
-    "checked_UTC": "2026-10-15T20:25:45.743305+00:00",
+    "checked_UTC": "2026-10-15T20:31:19.446334+00:00",
     "phase": "STOPPED",
     "current": {
       "session_id": "2f15f739-0a34-58d3-b8e9-24a739bc6d8c",
@@ -77,14 +77,14 @@
     },
     "SUP12_C1": {
       "registered": 8,
-      "APP": 5,
-      "normal": 4,
+      "APP": 6,
+      "normal": 5,
       "rejected": 0,
       "host_failed": 0,
       "ended": false,
       "run_root_started": true,
       "worker_lock_present": true,
-      "pending_prescription": "C252_CPU"
+      "pending_prescription": "C252_GPU"
     },
     "EXTRA4_ORDER": {
       "registered": 1,
@@ -98,7 +98,7 @@
     },
     "SUP12": {
       "registered": 12,
-      "APP": 9,
+      "APP": 10,
       "normal": 3,
       "rejected": 0,
       "host_failed": 1,
@@ -112,9 +112,9 @@
   "matched_rebaseline_cap": 6,
   "separate_trace_path_repair_cap": 2,
   "combined_ceiling": 105,
-  "combined_consumed": 93,
-  "supplement_normally_closed_total": 7,
-  "supplement_global_APP_intents_not_double_counted": 9,
+  "combined_consumed": 94,
+  "supplement_normally_closed_total": 8,
+  "supplement_global_APP_intents_not_double_counted": 10,
   "original_confirm_rejections_total": 2,
   "active_measurement_groups": [
     "SUP12_C1"
@@ -356,6 +356,28 @@
           "family": "SUP12_C1",
           "stage": "DEV",
           "block": "OLD_CONFIRM_STOP",
+          "planned_arms": 1,
+          "normal_completed": 1,
+          "all_arms_normally_completed": true,
+          "status_counts": {
+            "COMPLETE_TRACE_RECOVERED": 1
+          },
+          "subset_recipe": null
+        }
+      ]
+    },
+    {
+      "label": "SUP12_C1_W1_CPU_C252",
+      "path": "docs/results/a24_measurement_share_20261016/automatic_checkpoints/SUP12_C1_W1_CPU_C252",
+      "bundles": [
+        {
+          "filename": "SUP12_C1_DEV_W1_CPU.zip",
+          "bytes": 406599,
+          "sha256": "03a8f3166ce951f1bcf56256809eca0eaf69de5db4dd6391ac947430c61ce32c",
+          "members": 278,
+          "family": "SUP12_C1",
+          "stage": "DEV",
+          "block": "W1_CPU",
           "planned_arms": 1,
           "normal_completed": 1,
           "all_arms_normally_completed": true,
