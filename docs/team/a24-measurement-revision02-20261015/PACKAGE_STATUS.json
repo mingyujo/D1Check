@@ -1,15 +1,15 @@
 {
   "revision_id": "A24-BLOCKED-INITIAL-STATE-REV02-20261015",
-  "status": "CURRENT_BLOCK03_GPU_PREPARING",
+  "status": "PREPARED_BLOCK04_GPU_PREPARING",
   "execution_authorized": true,
-  "authorization_scope": "WINDOW01 maximum2 C252 CPU/GPU development attempts only; not32 or final CONFIRM",
+  "authorization_scope": "prepared_block04 maximum2 C252 GPU/CPU development attempts; no additional conditions",
   "experiment_ready": false,
   "old_experiment_controllers_running": false,
   "old_experiment_closure": "OLD_EXPERIMENT_CLOSURE.json",
   "design_draft_preserved": "CONTRACT_DRAFT.json",
   "design_only_status_history": "PC_DESIGN_PACKAGE_STATUS_v1.json",
-  "current_contract": "current_block03/EXECUTION_CONTRACT_EXTENDED.json",
-  "current_PC_verification": "current_block03/PC_VERIFIED.json",
+  "current_contract": "prepared_block04/EXECUTION_CONTRACT.json",
+  "current_PC_verification": "prepared_block04/PC_VERIFIED.json",
   "revised_executor_implemented": true,
   "exact_manifest_parser_PC_PASS": true,
   "existing_APK_reuse_verified": true,
@@ -23,9 +23,9 @@
   "energy_J_supported": false,
   "surface_temperature_verified": false,
   "must_not_run_existing_measurement_job_or_autowatcher": true,
-  "current_initial_Tref_c": 27.6,
+  "current_initial_Tref_c": null,
   "work_deadline_KST": "2026-10-15 13:20",
-  "source_files_current": 170,
+  "source_files_current": 171,
   "window01_history": {
     "GPU": "COMPLETE_TRACE_RECOVERED",
     "GPU_completed_and_on_time": 252,
@@ -34,5 +34,17 @@
     "CPU_unfinished": 252,
     "common_reference_c": 26.1
   },
-  "pending_CPU_followup_cancelled_without_app": true
+  "pending_CPU_followup_cancelled_without_app": true,
+  "current_reference_algorithm": "first eligible post-common-preparation60s median, frozen before GPU main; CPU passive before app then same post-ready gate",
+  "block03_history": {
+    "GPU": "PRESTART_REJECT_AP_OUTSIDE_FROZEN_TREF_BAND",
+    "GPU_START": 0,
+    "GPU_warmups": 8,
+    "GPU_unfinished": 252,
+    "CPU": "NOT_ATTEMPTED",
+    "post_ready_AP_min_c": 28.2,
+    "post_ready_AP_max_c": 29.5,
+    "last_AP_c": 28.5
+  },
+  "old_attempts_preserved_before_current": 31
 }

@@ -6,7 +6,8 @@ from d1_a24_laptop_validator import load_json,sha256,ValidationError
 from d1_a24_laptop_control import atomic_json
 from d1_a24_measurement_connection import ReconnectingAdbClient
 from d1_a24_measurement_batch import TARGET_KEYS,finish_only_closed_owned_process
-from d1_a24_revision02_control import run_one,verify_source_entries,CONTROLLER_SOURCE_FILE,read_battery
+from d1_a24_revision02_control import run_one,verify_source_entries,CONTROLLER_SOURCE_FILE,read_battery,read_hal
+from d1_a24_revision02_design import matches_fixed_reference,NS
 
 REVISION='A24-BLOCKED-INITIAL-STATE-REV02-20261015'
 PLAN_ID='A24R02-W01-20261015-C252-PILOT'
@@ -113,6 +114,26 @@ def assemble(job,row,root):
     atomic_json(directory/'authorization.json',auth);atomic_json(directory/'config.json',{k:v for k,v in config.items() if not isinstance(v,bytes)})
     return manifest,config,auth,gate
 
+def passive_before_next_app(job,client,row,root,window):
+    reference=load_json(root/'block_reference.json')
+    directory=root/'pre_app_cooldown';directory.mkdir(exist_ok=True)
+    readings=[];rules={'history_ns':60*NS,'maximum_wait_ns':3600*NS,'maximum_gap_ns':10*NS,'tolerance_c':.5,'maximum_abs_slope_c_per_min':.1}
+    with (directory/(row['session_id']+'.jsonl')).open('x',encoding='utf8') as stream:
+        while True:
+            check_deadline(window,'NEW_SESSION')
+            sample=read_hal(client);stream.write(json.dumps(sample)+'\n');stream.flush()
+            ap=[v['value_c'] for v in sample['sensors'] if v['sensor_name']=='AP' and v['sensor_type']==0]
+            readings.append({'before_ns':sample['device_elapsed_before_ns'],'after_ns':sample['device_elapsed_after_ns'],'AP_c':ap[0] if len(ap)==1 else None})
+            cutoff=readings[-1]['before_ns']-60*NS
+            starts=[i for i,r in enumerate(readings) if r['before_ns']<=cutoff]
+            recent=readings[starts[-1]:] if starts else readings
+            ready=bool(starts) and len(ap)==1 and ap[0]<=reference['Tref_c'] and matches_fixed_reference(recent,recent[0]['before_ns'],reference,rules)
+            if len(readings)%12==1 or ready:print(json.dumps({'status':'PASSIVE_COOL_BEFORE_CPU_APP','AP_c':ap,'Tref_c':reference['Tref_c'],'ready':ready,'new_app_started':False}),flush=True)
+            if ready:
+                atomic_json(directory/(row['session_id']+'.ready.json'),{'source_reference_sha256':sha256(root/'block_reference.json'),'samples':len(readings),'last_AP_c':ap[0],'new_app_started':False,'post_warmup_gate_still_required':True});return
+            time.sleep(5)
+
+
 def execute():
     job=load_json(META/'job.json');window=load_json(Path(job['window_file']));check_deadline(window,'NEW_SESSION')
     proof=load_json(META/'PC_VERIFIED.json')
@@ -137,7 +158,10 @@ def execute():
     atomic_json(root/'DEVICE_WINDOW_PREFLIGHT.json',{'battery':battery,'screen_settings':screen,'physical_environment_measured':False,'settings_changed':False,'identity_match':True,'UTC':datetime.datetime.now(datetime.timezone.utc).isoformat()})
     outcomes=[]
     for row in plan['sessions']:
-        try:check_deadline(window,'NEW_SESSION')
+        try:
+            if outcomes and job.get('passive_cool_before_next_app'):
+                passive_before_next_app(job,client,row,root,window)
+            check_deadline(window,'NEW_SESSION')
         except ValidationError:
             print(json.dumps({'status':'WINDOW_STOP_NO_NEW_SESSION','unstarted_session':row['session_id']}),flush=True);break
         m,c,a,g=assemble(job,row,root)
