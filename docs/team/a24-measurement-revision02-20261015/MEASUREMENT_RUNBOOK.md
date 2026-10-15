@@ -1,5 +1,9 @@
 # A24 실측 진행 원장·재개 안내
 
+**최신 2026-10-15 둘째 방문 등록:** 사용자 지금부터150분 승인,17:37~20:07 KST/기기20:02 종료다. `output/a24_confirmation40_window02_20261015/binding_v2/job.json`과 새 원물 `Documents/A24R02C2`, 전역 APP intent `Documents/A24R02_CONFIRM_GLOBAL_20261015`를 먼저 확인한다. 이전45/81소비+이번 실제APP intent로 갱신하며 원CONFIRM40의 미시도36만 고정 순서로 진행한다. 첫4군 재실행/실패 대체/임의 재기준은0. 현재 종료/오류 여부는 새 root의 `WINDOW_STOPPED.json` 및 실제 owner/process를 확인한다. 아래 첫방문 중지 문장은 이력이다.
+
+새 followup은 원179·APK·실측 controller를 보존하고 전역중복차단/시간창만 결합한다. 연결주소 변경은 기존 ReconnectingAdbClient의 실제기기 신원 확인으로 처리한다. `binding_v2` 이전 IP 등록 PC 오류는 실측0으로 보존한다. 새19검사·36authorization PC통과는 새실측 PASS가 아니다. [조건부 에너지 사후 계산](../../results/a24_revision02_20261015/conditional_energy_comparison/README.md)은 기존12군만 대상으로 하며 원확인 에너지 계약을 바꾸지 않는다.
+
 이 파일은 대화 압축·새 세션·이동 후에도 먼저 읽을 **현재 실측 안내 문서**다. 매 실측 시작·유의미한 단계 완료·중지 때 갱신한다. 문서만 믿고 실행하지 말고 실제 Git·실행 프로세스·등록 원장·원물과 대조한다. 과거 PLAN의 “실행0/미구현” 문장은 당시 이력이며 현재 상태는 이 파일과 `PACKAGE_STATUS.json`을 따른다.
 
 갱신: 2026-10-15. **[새 확인 첫4군 종료](../../results/a24_revision02_20261015/confirm40_window01/README.md): 512요청 전량완료·출력PASS·close/회수,16:15:55경 정상종료했다.** 새 확인은4/40실행·36미실시, 총45/81소비·36잔여다. 직렬AP의12.34초공백으로열비교는미판정(적격3/4),J도미판정이다. 원물과최대10초기준을유지했으며추가/대체측정0이다. 이후읽기전용진단은12명령·추가APP/NN/START/claim/세션0으로종료했다. 실제커널6.12/참고5.10차이와vendor접근차단을기록했다. 현재활성실측/자동감독없음. [전역소비원장](confirm40_after_dev8_20261015/GLOBAL_CONSUMPTION_LEDGER.json)을다음방문에결합하며종료된첫방문명령을다시쓰지않는다. 아래는사전계획·이력이다.

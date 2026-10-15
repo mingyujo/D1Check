@@ -1,0 +1,93 @@
+{
+  "schema": "a24-conditional-energy-comparison-v1",
+  "created_utc": "2026-10-15T08:24:01.929208+00:00",
+  "code_base": "da0392ffe845f298adf466afa48db56c2e35bbbc",
+  "analysis_role": "posthoc_existing_data_not_new_confirmatory_energy_endpoint",
+  "input_folders": [
+    "dev_window01",
+    "confirm40_window01"
+  ],
+  "sources": {
+    "docs/results/a24_revision02_20261015/dev_window01/device_raw.zip": "6d44da27009987fd407adef0a90497f87fcd7b4638d95628a4ccf1356a9c1768",
+    "docs/results/a24_revision02_20261015/dev_window01/device_raw.sha256.json": "c32120263350603046f5c53c65bc294fe47ff29b39e144787fb1f393fcdd77e5",
+    "docs/results/a24_revision02_20261015/dev_window01/sessions.csv": "33292642971cd0cd11429d70a033d96d4c5e4c986657e79f8b2828af5d54cfeb",
+    "docs/results/a24_revision02_20261015/dev_window01/run_context.csv": "582588ad3c7ae09d52cb9f9fc6a8b9edb98bd8e6491a5a57616951160e43fd92",
+    "docs/results/a24_revision02_20261015/confirm40_window01/device_raw.zip": "971aea7f4b616b5624da3c79ff6bc4eebee25570cd3fbfde354f725ffe3ae5ab",
+    "docs/results/a24_revision02_20261015/confirm40_window01/device_raw.sha256.json": "02980aacb7db2df3ddb6f9b6bdc4397d78f61edc113f715830ada2ff9c1851b9",
+    "docs/results/a24_revision02_20261015/confirm40_window01/sessions.csv": "5ac9fe530f332264a598ff5d4ac59c33afcaf65f98829db1b8c543207e06ecc9",
+    "docs/results/a24_revision02_20261015/confirm40_window01/run_context.csv": "586ddcb25d0092a3e70a9b54bf6fee1b063f7fa1dd428c47bf43ad73a634d6d2"
+  },
+  "primary_window_s": [
+    0,
+    180
+  ],
+  "secondary_windows_s": [
+    [
+      35,
+      180
+    ],
+    [
+      0,
+      35
+    ],
+    [
+      35,
+      120
+    ],
+    [
+      120,
+      180
+    ]
+  ],
+  "max_gap_ns": 2500000000,
+  "assumed_current_uA_per_raw": 1000,
+  "also_report_API_uA_hypothesis": true,
+  "timestamp": "read_end_ns",
+  "timestamp_sensitivity": [
+    "read_start_ns",
+    "read_midpoint_ns"
+  ],
+  "integration": "boundary_interpolated_power_trapezoid",
+  "numerical_sensitivity": [
+    "left_hold",
+    "right_hold"
+  ],
+  "counter_calibration": false,
+  "baseline_subtraction": false,
+  "whole_device_battery": true,
+  "scope_excludes": "pre-origin app preparation, warmup, cooling and post180 tail; not total experiment battery cost",
+  "comparisons": [
+    [
+      "C252",
+      "GPU",
+      "CPU"
+    ],
+    [
+      "L64",
+      "PAIR_G",
+      "BASE"
+    ],
+    [
+      "M128",
+      "PAIR_G",
+      "BASE"
+    ],
+    [
+      "M128",
+      "ORDER",
+      "BASE"
+    ],
+    [
+      "M128",
+      "WAIT200",
+      "BASE"
+    ]
+  ],
+  "eligibility": "same stage/block/recipe; same scheduled tasks/deadlines/input hashes; every planned request retained; no service noninferiority tolerance invented",
+  "replication": "DEV and CONFIRM separate descriptive contrasts, no pooled mean/CI; C252/L64 single DEV pair only",
+  "thermal": "preserve existing AP coverage flags; no invalid AP peak promotion",
+  "actual_energy_validation": false,
+  "policy_savings_validation": false,
+  "device_commands": 0,
+  "new_sessions": 0
+}

@@ -1,4 +1,12 @@
-# 2026-10-15 최신 — 확인 첫4군 종료·36회 잔여
+# 2026-10-15 최신 — 확인 둘째 방문 재개 등록
+
+- 사용자 재개/지금부터150분 승인: 17:37~20:07 KST, 기기20:02 종료·마지막5분 저장. 원CONFIRM40 중 미시도36만 고정 순서로 등록했다. 첫 순서는 L64 PAIR_G→BASE, C252 CPU→GPU다. APP/NEW_SESSION21분·MAIN5분 여유, SOC≥10/비충전/동일기기/단절최대20분/실패대체0을 유지한다.
+- 실제 job: `output/a24_confirmation40_window02_20261015/binding_v2/job.json`, 새 원물 `Documents/A24R02C2`; 전역재실행차단 `Documents/A24R02_CONFIRM_GLOBAL_20261015`. 원45/81소비·36잔여에 실제 APP intent를 누적하며 이전4군은 재실행하지 않는다. 새 followup6검사 포함 관련19PASS·남은36개 실제 authorization 조립 PASS, 원179소스/APK/40계획/기준 불변.
+- 연결IP를 동결 등록에 넣은 첫 PC 조립은 SAFE_NAME 검사에서 차단됐다(APP0). 원등록과 manifest를 유지하고 기존 물리일련번호+fingerprint 기반 재연결 기능으로 현재 연결주소를 찾는 v2로 해결했다. 첫 실패후보/PC mock을 보존하고 실기기 검증으로 승격하지 않는다.
+- [조건부 에너지 사후 분석](results/a24_revision02_20261015/conditional_energy_comparison/README.md): 완료DEV8+확인4/1,656요청/60관측창을 재계산했다. 혼합 병행의180초 추정에너지 +1.40/+1.98%, 응답 개선과 에너지 감소를 구분한다. 단위·센서 지연 미검증, 기존공식J null/계수/원자료 보존. 이 분석 기기0, 별도 재개는 위 원장을 따른다.
+- 다음최대3: 새방문 실행·진행/종료원장 대조; 회수·요청/출력/AP공백 검사; 시간창 종료 전 저장·미시도 이관. 원사용자WIP·데스크톱/S26·기존 실패·기본/experiment_ready=false 보존. 현재코드 기준 da0392f+별도 신규파일/SHA는 둘째방문PC영수증에 있다.
+
+# 2026-10-15 이전 — 확인 첫4군 종료·36회 잔여
 
 - [DEV8](results/a24_revision02_20261015/dev_window01/README.md)1,144건·[새 확인 첫4군](results/a24_revision02_20261015/confirm40_window01/README.md)512건을 모두 완료·출력PASS로 회수했다. 이번 확인 APP4·MAIN4·close4,16:15:55경 실행기exit0/빈소유프로세스 종료. 현재 실측·자동감독은 중지 상태다.
 - 새 확인은4/40실행,36미실시·5,208요청예약이다. 총81상한 중 기존33+DEV8+확인4=45소비/36잔여. 전체40/5블록/5,720요청·기한·정책·APK·MAIN gate·179핵심소스·별도coordinator는 그대로다. [전역소비원장](team/a24-measurement-revision02-20261015/confirm40_after_dev8_20261015/GLOBAL_CONSUMPTION_LEDGER.json). 기존 확인 합산·실패/부적격 대체0.
