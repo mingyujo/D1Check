@@ -1,4 +1,8 @@
-# 2026-10-16 최신 — C10 계속·실패12 새 ID 보완 큐
+# 2026-10-16 최신 — C11 미실행13 계속·새큐17
+
+[고정 원격 확인 페이지](LIVE_PROGRESS.md)·[C11 증거](remaining13_after_transport_failure_20261016/README.md)를 먼저 읽는다. 실제C11 job/owner/START/stop을대조하며중복시작금지. C10의APP전달오류는동일폰두번읽기의프로세스/결과/승인부재+host승인업로드0으로MAIN0을확인했지만원FAILED/소비1/예정64/워밍업null을보존했다. C11은02:33:08시작/미실행13만,원25정상+2실패/기존MAIN3808에서계속한다. 새큐 `output/A24FOLLOW17`가C11뒤ORDER1→보완12를진행하고구큐16은held보존한다. 사용자야간최신지시:남은실측/오류/20분재연결/시작온도문제자율처리/원격공유까지. 온도변경은원기준을소급수정하지않고같은비교군의별도개정으로기록한다. 원179/APK/기준판정/서비스/반환/실패원물/Jnull/표면미검증/experiment_ready=false유지.
+
+# 2026-10-16 이전 — C10 계속·실패12 새 ID 보완 큐
 
 최신사용자 재측정 지시를 [보완12](failed_supplement12_20261016/README.md)로 고정했다. 기존85/실패/원확인40을 그대로 보존하고 추가12 각1회·1520요청을 별도 원장으로 둔다(합산97). 현재C10은 그대로 진행하며 종료·닫힘·owner해제 후 미사용개정ORDER1→보완12 순서다. 큐 `output/A24FOLLOW16/queue.json`/OWNER/LIVE/각 STARTED/STOPPED/QUEUE_STOPPED부터 대조한다. 이미 OWNER가 있으면 중복 시작 금지. 보완 실제root Documents/A24SUP12/global A24SUP12_GLOBAL은 APP 시도 전까지 없어야 한다. 사용자 중지·이동 때 큐와 실제root의 STOP_AFTER_CURRENT로 다음APP를 막고 현조건을 안전회수한다. 아래85/재실행0문장은 당시이력이며, 새 ID 보완 승인과 구분한다. 원SOURCE179/APK/MAIN·실패원물 변경0/Jnull/AP HAL·표면미검증/experiment_ready=false유지.
 

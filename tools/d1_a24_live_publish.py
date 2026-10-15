@@ -33,9 +33,15 @@ def git(*args):
 
 def specifications():
     specs=[]
-    for name,relative in [('C10','output/A24R02C10/job.json'),('EXTRA4_ORDER','output/A24R02R3/job.json'),('SUP12','output/A24SUP12/job.json')]:
+    entries=[('C10','output/A24R02C10/job.json')]
+    pointer=META.parent/'LIVE_BINDING.json'
+    if pointer.exists():
+        b=load_json(pointer)
+        entries += [(x['label'],x['job']) for x in b.get('additional_original_visits',[])]
+    entries += [('EXTRA4_ORDER','output/A24R02R3/job.json'),('SUP12','output/A24SUP12/job.json')]
+    for name,relative in entries:
         job=load_json(ROOT/relative);plan=load_json(Path(job['plan']));rows=plan['sessions']
-        if name=='C10':
+        if name.startswith('C') and name[1:].isdigit():
             ids=set(load_json(Path(job['window_file']))['registered_session_ids']);rows=[r for r in rows if r['session_id'] in ids]
         elif name=='EXTRA4_ORDER':rows=rows[-1:]
         specs.append((name,relative,job,plan,rows))
@@ -44,16 +50,20 @@ def specifications():
 
 def refresh():
     META.mkdir(parents=True,exist_ok=True)
-    observed=subprocess.run([sys.executable,'-B','output/A24R02C10/PC_OBSERVE.py'],cwd=ROOT,capture_output=True,timeout=45)
+    pointer=META.parent/'LIVE_BINDING.json'
+    binding=load_json(pointer) if pointer.exists() else {'active_original_meta':'output/A24R02C10','queue_meta':'output/A24FOLLOW16'}
+    active_meta=Path(binding['active_original_meta'])
+    observed=subprocess.run([sys.executable,'-B',str(active_meta/'PC_OBSERVE.py')],cwd=ROOT,capture_output=True,timeout=45)
     if observed.returncode:raise RuntimeError('PC observation failed; preserve last public status')
-    state=load_json(ROOT/'output/A24R02C10/LIVE_STATUS.json');groups=[];newpaths=[];seen={}
+    state=load_json(ROOT/active_meta/'LIVE_STATUS.json');groups=[];newpaths=[];seen={}
     for name,relative,job,plan,rows in specifications():
         root=Path(job['run_root']);outcomes={}
         for row in rows:
             p=root/(row['session_id']+'.outcome.json')
             if p.is_file():outcomes[row['session_id']]=load_json(p)
         seen[name]={'registered':len(rows),'APP':0,'normal':sum(x['status']=='COMPLETE_TRACE_RECOVERED' for x in outcomes.values()),
-            'rejected':sum(x['status']=='PRESTART_REJECT' for x in outcomes.values()),'ended':(root/'WINDOW_STOPPED.json').exists()}
+            'rejected':sum(x['status']=='PRESTART_REJECT' for x in outcomes.values()),
+            'host_failed':sum(x['status']=='FAILED_PRESERVED' for x in outcomes.values()),'ended':(root/'WINDOW_STOPPED.json').exists()}
         globalroot=Path(job['supplement_global_root']) if name=='SUP12' else Path(job['extra4_global_root']) if name=='EXTRA4_ORDER' else None
         if name=='SUP12':seen[name]['APP']=len(list((globalroot/'reservations').glob('*/APP_LAUNCH_INTENT.json')))
         blockgroups=collections.defaultdict(list)
@@ -92,6 +102,14 @@ def refresh():
                             'Only closed original raw bytes; no live raw or original scientific settings modified.',
                             'Original failures and separate post-observation supplement are not pooled; J unvalidated; AP HAL readout only.']
                         snapshot(cfg,ROOT/folder,private/'audit')
+                        for r in rs:
+                            recovery=root/'read_only_recovery'/r['session_id']
+                            proof=recovery/'CLOSED_FAILURE_RECOVERY.json'
+                            if proof.exists():
+                                receipt=ROOT/folder/'execution_receipts';receipt.mkdir(exist_ok=True)
+                                (receipt/(r['session_id']+'_failure_proof.json')).write_bytes(proof.read_bytes())
+                                no_main=recovery/'recovered_app'/'NO_MAIN_READONLY_OBSERVATIONS.json'
+                                if no_main.exists():(receipt/(r['session_id']+'_no_MAIN_observations.json')).write_bytes(no_main.read_bytes())
                         (ROOT/folder/'README.md').write_text('# A24 닫힌 비교 묶음 원자료\n\n'
                             +'이 폴더는 기존 등록 행의 공유용 부분 뷰이며 실행계획·독립 반복을 새로 만든 것이 아니다. '
                             +'정상 완료/시작 거절/미실행과 예정 작업량은 attempts_all.csv 및 각 ZIP의 BLOCK_STATUS.json을 확인한다. '
@@ -103,7 +121,7 @@ def refresh():
             if (ROOT/folder/'BLOCK_BUNDLES.json').exists():groups.append({'label':label,'path':folder.as_posix(),'bundles':load_json(ROOT/folder/'BLOCK_BUNDLES.json')})
     t=utc();stamp=t.astimezone(dt.timezone(dt.timedelta(hours=9))).strftime('%Y-%m-%d %H:%M:%S KST')
     sup=seen['SUP12'];grand=state['project_consumed']+sup['APP']
-    rejected=state['original_C9_prestart_rejected']+seen['C10']['rejected']
+    rejected=state['original_C9_prestart_rejected']+sum(x['rejected']+x['host_failed'] for name,x in seen.items() if name.startswith('C') and name[1:].isdigit())
     data={'updated_UTC':t.isoformat(),'updated_KST':stamp,'original_confirm':state,'separate_followon':seen,
         'original85_cap':85,'supplement12_cap':12,'combined_ceiling':97,'combined_consumed':grand,
         'original_confirm_rejections_total':rejected,
@@ -111,7 +129,7 @@ def refresh():
         'publisher_device_commands':0,'publication_is_not_measurement_completion':True}
     (ROOT/LIVE/'LIVE_PROGRESS.json').write_bytes(encode(data))
     lines=['# A24 실측 진행 현황','', '**마지막 갱신: '+stamp+'**','',
-        '- 원래 독립 확인: **'+str(state['normal_confirm_total'])+'/40 정상 완료**, 시작거절 '+str(rejected)+'회 보존. 현재 단계 `'+state['phase']+'`. 실패·미완료는 아래 원장과 각 묶음 상태를 함께 확인한다.',
+        '- 원래 독립 확인: **'+str(state['normal_confirm_total'])+'/40 정상 완료**, 시작 전 실패·거절 '+str(rejected)+'회 보존. 현재 단계 `'+state['phase']+'`. 실패·미완료는 아래 원장과 각 묶음 상태를 함께 확인한다.',
         '- 기존85회: '+str(state['project_consumed'])+'회 소비(진행·거절 포함). 별도 실패 보완12: '+str(sup['normal'])+'회 정상 완료 / '+str(sup['APP'])+'회 APP 시도. 합산 회계 상한97이며 완료율과 예산 소비율은 다르다.',
         '- 원확인, 관측후 개정혼합4, 과거실패 새ID 보완12는 서로 합산해 독립 성공 횟수를 늘리지 않는다.',
         '- J 미판정 / AP는 HAL 보고값·표면온도 미검증 / experiment_ready=false. 미완료를 절감으로 해석하지 않는다.',
@@ -167,7 +185,10 @@ def main():
                 if a.push:publish()
                 else:refresh()
                 signature=current;last=time.time()
-            if (ROOT/'output/A24FOLLOW16/QUEUE_STOPPED.json').exists() and (Path(spec[0][2]['run_root'])/'WINDOW_STOPPED.json').exists():break
+            pointer=META.parent/'LIVE_BINDING.json'
+            if pointer.exists():
+                b=load_json(pointer);active=load_json(ROOT/b['active_original_meta']/'job.json')
+                if (ROOT/b['queue_meta']/'QUEUE_STOPPED.json').exists() and (Path(active['run_root'])/'WINDOW_STOPPED.json').exists():break
             time.sleep(30)
     except Exception as error:
         (META/'WATCH_STOPPED.json').write_bytes(encode({'status':'PUBLICATION_HELD','reason':str(error),'UTC':utc().isoformat(),

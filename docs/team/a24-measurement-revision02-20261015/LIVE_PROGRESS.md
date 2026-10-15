@@ -1,9 +1,9 @@
 # A24 실측 진행 현황
 
-**마지막 갱신: 2026-10-16 02:23:47 KST**
+**마지막 갱신: 2026-10-16 02:36:51 KST**
 
-- 원래 독립 확인: **25/40 정상 완료**, 시작거절 1회 보존. 현재 단계 `PRE_APP_COOLING`. 원40의 추가 실패는 아래 원장과 각 묶음 상태를 함께 확인한다.
-- 기존85회: 70회 소비(진행·거절 포함). 별도 실패 보완12: 0회 정상 완료 / 0회 APP 시도. 합산 회계 상한97이며 완료율과 예산 소비율은 다르다.
+- 원래 독립 확인: **25/40 정상 완료**, 시작 전 실패·거절 2회 보존. 현재 단계 `MAIN_OR_RECOVERY`. 실패·미완료는 아래 원장과 각 묶음 상태를 함께 확인한다.
+- 기존85회: 72회 소비(진행·거절 포함). 별도 실패 보완12: 0회 정상 완료 / 0회 APP 시도. 합산 회계 상한97이며 완료율과 예산 소비율은 다르다.
 - 원확인, 관측후 개정혼합4, 과거실패 새ID 보완12는 서로 합산해 독립 성공 횟수를 늘리지 않는다.
 - J 미판정 / AP는 HAL 보고값·표면온도 미검증 / experiment_ready=false. 미완료를 절감으로 해석하지 않는다.
 
@@ -14,6 +14,7 @@
 - [이전 C8 원자료·그림·원장](../../results/a24_measurement_share_20261015/confirmation_visit_08/README.md)
 - [C10_R02CONFIRM03_C252 원자료 ZIP·CSV·소스 SHA](../../../docs/results/a24_measurement_share_20261016/automatic_checkpoints/C10_R02CONFIRM03_C252/README.md)
 - [C10_R02CONFIRM04_C252 원자료 ZIP·CSV·소스 SHA](../../../docs/results/a24_measurement_share_20261016/automatic_checkpoints/C10_R02CONFIRM04_C252/README.md)
+- [C10_R02CONFIRM04_L64 원자료 ZIP·CSV·소스 SHA](../../../docs/results/a24_measurement_share_20261016/automatic_checkpoints/C10_R02CONFIRM04_L64/README.md)
 
 ## 계획·재개·해석
 
