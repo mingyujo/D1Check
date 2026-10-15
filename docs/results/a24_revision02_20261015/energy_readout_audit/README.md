@@ -2,6 +2,8 @@
 
 **원자료의 불일치는 재현됐다. 앱 저장·CSV 변환·시간 적분의 중복 단위 변환은 발견되지 않았다. 기기가 전류를 mA로 반환한다는 가설은 유력하지만, 설치 펌웨어의 실제 단위와 정확도는 아직 검증되지 않았다. 검증된 에너지 J는 계속 미판정이다.** 응답·AP 확인은 사용자의 별도 승인대로 진행하며 이번 조사 때문에 실행 중인 앱을 수정하지 않았다.
 
+후속으로 사용자가 제시한 [A245F 공개 커널을 실제 검토](PUBLIC_KERNEL_REVIEW.md)했다. 이 사본에는 mA 요청 경로와 SOC 환산 counter가 모두 확인돼 복합 원인 가설을 지지한다. 현재 A245N 설치 버전·HAL의 동작을 직접 입증한 것은 아니다.
+
 [진단 화면](index.html) · [동일 구간 검산](published_CSV_recalculation.csv) · [전체 199구간](intervals.csv) · [원물 SHA](source_inventory.csv) · [중복·회수본 처리](lossless_copy_selection.csv) · [검증](verification.json).
 
 [보존 센서 원물 ZIP](existing_sensor_raw.zip)에는 무손실 선택한38세션의 events·ready·summary·close 중 존재하는144파일을 바이트 그대로 넣었다. [멤버별 SHA](existing_sensor_raw.sha256.json)로 검산할 수 있다. 모델·APK·개인 경로·기기 일련번호가 든 전체 target manifest는 제외했다. ZIP은 새 실행이나 실패 재분류가 아니다.
@@ -46,6 +48,8 @@ Q전하(µAh) = 같은 첫 표본의 counter - 같은 마지막 표본의 counte
 | 에너지 | 기존 조건부 식은 µA×mV/1e9×초. 단위 미검증 gate 때문에 공식 J는 null이며 이 식의 결과를 검증 J로 승격하지 않음 |
 
 파일별 SHA는 [소스 추적](source_trace.json)에 남겼다. 정적 코드 추적과 특정 구간 원정수 대조를 구분한다. 모든 원물의 모든 필드가 독립적으로 교정됐다는 뜻이 아니다.
+
+개별 분석 JSON의 `API_uA_hypothesis_J`는 API 명시 단위를 가정했을 때의 조건부 산술값이다. 검증 J가 아니며 공식 `energy_J=null`·에너지 절감 미판정을 대체하지 않는다.
 
 ## 다른 구간에서도 확인한 것
 

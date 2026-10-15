@@ -1,0 +1,73 @@
+{
+  "status": "PUBLIC_A245F_REFERENCE_NOT_INSTALLED_A245N_DRIVER_PROOF",
+  "commit": "fd72e6702f511743b72a76a8c5fe732a4044805b",
+  "UTC": "2026-10-15T07:02:15.667138+00:00",
+  "files": [
+    {
+      "path": "kernel-5.10/drivers/battery/common/sec_battery.c",
+      "URL": "https://github.com/Shell-Sh0ck/A245F-U5-Kernel/blob/fd72e6702f511743b72a76a8c5fe732a4044805b/kernel-5.10/drivers/battery/common/sec_battery.c",
+      "sha256": "0f670b082dbf65cc14324e431e451552ea364c1f59743cf7775b7b1f1f70214c",
+      "bytes": 332789,
+      "inspected_lines": [
+        92,
+        3444,
+        3449,
+        3472,
+        6564,
+        6570,
+        6627
+      ]
+    },
+    {
+      "path": "kernel-5.10/drivers/battery/fuelgauge/sm5714_fuelgauge/sm5714_fuelgauge.c",
+      "URL": "https://github.com/Shell-Sh0ck/A245F-U5-Kernel/blob/fd72e6702f511743b72a76a8c5fe732a4044805b/kernel-5.10/drivers/battery/fuelgauge/sm5714_fuelgauge/sm5714_fuelgauge.c",
+      "sha256": "74bbe5ee081486aa329e21e2324eff7f5a76316bd9c5deb0de113a8a4bfc1d24",
+      "bytes": 101038,
+      "inspected_lines": [
+        1949,
+        2105,
+        2454
+      ]
+    },
+    {
+      "path": "kernel-5.10/arch/arm64/boot/dts/mediatek/sm5714_fuelgauge.dtsi",
+      "URL": "https://github.com/Shell-Sh0ck/A245F-U5-Kernel/blob/fd72e6702f511743b72a76a8c5fe732a4044805b/kernel-5.10/arch/arm64/boot/dts/mediatek/sm5714_fuelgauge.dtsi",
+      "sha256": "c3f6baac8db1aeb5cb522a71a36dbe9e35fff6659c44c84c8cb4b8f590d47c2d",
+      "bytes": 4217,
+      "inspected_lines": []
+    }
+  ],
+  "device_commands": 0,
+  "J_calibration_or_unit_correction_authorized_by_this_evidence": false,
+  "findings": {
+    "sec_battery_current_mA_lines": [
+      6563,
+      6574
+    ],
+    "fuelgauge_uA_request_multiplier_lines": [
+      1917,
+      1929
+    ],
+    "SOC_raw_capacity_scale_and_clamp_lines": [
+      1965,
+      2006
+    ],
+    "counter_SOC_product_lines": [
+      2105,
+      2108
+    ],
+    "dtsi_capacity_4000_line": 26,
+    "installed_A245N_driver_HAL_equivalence_verified": false
+  },
+  "independent_existing_data_check": {
+    "selected_sessions": 38,
+    "integer_charge_counter_samples": 16331,
+    "counter_samples_not_divisible_by_4000": 0,
+    "counter_div_40000_minus_battery_percent_min_median_max": [
+      0,
+      0.5,
+      1.0
+    ],
+    "counter_scale_is_hypothesis_from_public_kernel_not_calibration": true
+  }
+}

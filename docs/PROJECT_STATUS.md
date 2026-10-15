@@ -1,9 +1,11 @@
-# 2026-10-15 최신 — 응답·AP 새 확인40 동결
+# 2026-10-15 최신 — 확인 첫4군 종료·36회 잔여
 
-- DEV8 실제1,144요청·출력PASS·정상회수 완료,누적41/81. 사용자가 J미판정 상태의 응답·AP 확인과 진단 병행을 명시 승인했다. [새 확인40 계약](team/a24-measurement-revision02-20261015/confirm40_after_dev8_20261015/README.md).
-- 새40/5블록/5,720요청 전체순서·입력·분석·예산을 동결했다. 오늘 첫M128 ORDER→WAIT200→PAIR_G→BASE 최대4군, 기기16:33:25/저장16:38:25KST 종료를 유지한다. 신규APP21분·MAIN5분 여유가 없으면 미시작으로 보존한다.
-- 원179소스/APK/MAIN gate 불변. 별도 SHA결합 coordinator의 전40승인 검산과 정확40 manifest의 앱parser PC검증PASS 후 최초 방문만 실행한다. DEV GPU177/후속179 실제 버전과 추가호환PC증거를 구분한다. 기존결과 합산/실패재실행0.
-- 다음최대3: 등록첫4군 실행·회수; API원값·전하계단·동일구간 적분 진단; 결과·원장·재개문서/Git저장. J미판정·표면온도미검증·experiment_ready=false. 아래는 이전 이력.
+- [DEV8](results/a24_revision02_20261015/dev_window01/README.md)1,144건·[새 확인 첫4군](results/a24_revision02_20261015/confirm40_window01/README.md)512건을 모두 완료·출력PASS로 회수했다. 이번 확인 APP4·MAIN4·close4,16:15:55경 실행기exit0/빈소유프로세스 종료. 현재 실측·자동감독은 중지 상태다.
+- 새 확인은4/40실행,36미실시·5,208요청예약이다. 총81상한 중 기존33+DEV8+확인4=45소비/36잔여. 전체40/5블록/5,720요청·기한·정책·APK·MAIN gate·179핵심소스·별도coordinator는 그대로다. [전역소비원장](team/a24-measurement-revision02-20261015/confirm40_after_dev8_20261015/GLOBAL_CONSUMPTION_LEDGER.json). 기존 확인 합산·실패/부적격 대체0.
+- 혼합 병행은C96/D32모두기한내·긴급P95=1.421초,직렬C13/96·D10/32·P95=11.049초. 직렬AP표본32.016→44.356초의12.34초공백이기존최대10초를넘어AP평균/열비교미판정(적격3/4)이다. 관측최고29.0을완전한창의최고로비교하지않는다. 원자료·엄격기준은유지했다.
+- [에너지 조사](results/a24_revision02_20261015/energy_readout_audit/README.md):38세션/199구간,원정수CSV exact·시간적분PASS,임의×1000/×1210없음. [공개커널검토](results/a24_revision02_20261015/energy_readout_audit/PUBLIC_KERNEL_REVIEW.md)에서mA요청·SOC환산counter를확인했지만현재A245N커널6.12와참고A245F5.10은다르다. 실제vendor Health이름확인/목록Permission denied,우회·바이너리확보0. 전후진단읽기21명령·추가APP/NN/START/claim/세션0. J미판정·표면온도미검증·experiment_ready=false.
+- 검증: 순수17PASS·정확40설정/5,720요청앱parser PC1PASS·원179바이트불변·공유원물SHA검산. 실제확인host시작HEAD8ce0a70,DEV GPU는177/후속7은179로구분한다. 기존사용자11파일SHA/원HEAD/다른worktree불변,원STATUS에는16:11:53별도ENERGY-CAUSE분석추가를관측해수정·복원하지않고보존했다. 데스크톱학습·S26은변경하지않았다.
+- 다음최대3: 이번결과/Git저장확인; 새시간창에서남은36만전역원장·참조와결합(다음L64 PAIR_G→BASE,C252 CPU→GPU); 현재6.12 A245N driver/Health의공개근거확보후단위/독립계측범위확정. 종료된첫방문명령을재실행하지않는다. 아래는이력이다.
 
 # 2026-10-15 현재 작업 — DEV8 완료·CONFIRM 전 에너지 계측 원인 추적
 
