@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$OneDrive, [string]$SourceCommit = "")
+param([Parameter(Mandatory=$true)][string]$OneDrive, [string]$SourceCommit = "", [switch]$SkipSupp, [string]$Block1Only = "", [string]$TrefKey1 = "2026-10-15_day_b1", [string]$TrefKey2 = "2026-10-15_b2")
 # M8 D-3 chain (2026-10-15 · 영훈 08:xx): P0 supplement (PERFETTO_ON_C32_r2) -> DEV block 1 -> bundle B1 -> DEV block 2 -> bundle B2. Sequential, one process, output to files only.
 # Each driver run = m8_driver.ps1 (lock · console file). Bundles = m8_bundle.py --kind block (stage dir + zip under $OneDrive\sim\out_m8). No fixed idle waits (--no-fixed-idle · 영훈) · Tref keys per segment.
 #   Start-Process powershell -ArgumentList "-NoProfile","-ExecutionPolicy","Bypass","-WindowStyle","Hidden","-File",<this>,"-OneDrive",<D1_ondevice>,"-SourceCommit",<sha>
@@ -17,8 +17,8 @@ L "step 1: P0 supplement PERFETTO_ON_C32_r2"
 & powershell -NoProfile -ExecutionPolicy Bypass -File $DRV -Stage p0 -PlanFile "$REPO\s26\results\m8_prep\plan_m8\p0_supp.json" -TrefKey "2026-10-15_day_b1" -NoFixedIdle
 L "step 1 end rc=$LASTEXITCODE"
 # 2) DEV block 1
-L "step 2: DEV block 1"
-& powershell -NoProfile -ExecutionPolicy Bypass -File $DRV -Stage dev -Block 1 -TrefKey "2026-10-15_day_b1" -NoFixedIdle
+L "step 2: DEV block 1 only=[$Block1Only] trefKey=$TrefKey1"
+& powershell -NoProfile -ExecutionPolicy Bypass -File $DRV -Stage dev -Block 1 -TrefKey $TrefKey1 -NoFixedIdle -Only $Block1Only
 $rc1 = $LASTEXITCODE
 L "step 2 end rc=$rc1"
 # 3) bundle B1 (results snapshot before block 2 starts)
@@ -27,7 +27,7 @@ L "step 3: bundle B1"
 L "step 3 end rc=$LASTEXITCODE"
 # 4) DEV block 2 (영훈: no 20:00 wait · temperature gate only · new Tref key)
 L "step 4: DEV block 2"
-& powershell -NoProfile -ExecutionPolicy Bypass -File $DRV -Stage dev -Block 2 -TrefKey "2026-10-15_b2" -NoFixedIdle
+& powershell -NoProfile -ExecutionPolicy Bypass -File $DRV -Stage dev -Block 2 -TrefKey $TrefKey2 -NoFixedIdle
 $rc2 = $LASTEXITCODE
 L "step 4 end rc=$rc2"
 # 5) bundle B2

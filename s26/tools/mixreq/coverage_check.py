@@ -55,7 +55,9 @@ def read_power(progress: Path) -> tuple[int | None, list[dict], dict]:
             except json.JSONDecodeError:
                 continue
             if e.get("kind") == "common_start":
-                cs = int(e["mono_ns"])
+                # t0 = common 0 (origin) = scheduled_origin_ns. 준비 (RECENT) 세션은 origin = prep_end − 30 s 이고 이 이벤트는 prep_end 에 기록되므로 mono_ns 를 쓰면 t0 가 30 s 늦어 post_t0 가 181.5 로 보임
+                # (D-3 B1-01 10/15 09:00 · 앱 표본은 origin + 211.5 s 까지 있음). 준비 없는 세션은 둘이 ms 차이. scheduled_origin_ns 없는 기존 행 (M7) 은 mono_ns 그대로 (A-4 대조 무변경).
+                cs = int(e.get("scheduled_origin_ns") or e["mono_ns"])
             elif e.get("kind") == "power_sample":
                 samples.append(dict(t=int(e["mono_ns"]), current=e.get("current_raw"), valid=(e.get("current_valid") is True and e.get("current_raw") is not None),
                                     charge=e.get("charge_counter_raw"), voltage=e.get("voltage_mV")))
