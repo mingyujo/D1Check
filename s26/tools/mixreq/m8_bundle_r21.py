@@ -19,6 +19,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(HERE.parents[2] / "tools"))
 from m6_bundle import PAT, TEXT_EXT, copy_tree, sha256  # noqa: E402
 import compiled_model_evidence as CME  # noqa: E402
 
