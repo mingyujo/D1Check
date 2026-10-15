@@ -1,4 +1,11 @@
-# 2026-10-15 최신 — 남은23회 PC 실행 준비 완료·실측 미시작
+# 2026-10-15 최신 — 새2시간 창 CONFIRM C6 실행 중
+
+- 사용자 “2시간 있음”:21:58:13~23:58:13 KST/기기23:53:13·저장5분. [등록·계약·소스](team/a24-measurement-revision02-20261015/confirm23_window_20261015_2158/README.md). 실제 `output/A24R02C6/job.json`/로그, 원물`Documents/A24R02C6`, 전역`Documents/A24R02C6_GLOBAL`. 실행 중이므로 같은 명령 재호출/소스·설정 수정 금지.
+- 시작 전17/40·2,352완료/23회·3,368요청잔여, 정식58/81·실제APP55+별도진단1=56. 새23scope를 원순서로 등록했으며 실제 소비는58+이번APP intent다. 새APP21분/MAIN5분 여유와 동일기기 단절최대20분을 유지한다.
+- 첫블록3 L64 PAIR_G는 앞BASE의27.1℃/SHA `a09f9325…67d570`를그대로인계. 초기AP약29.4℃라 앱밖자연냉각중/이시점APP·START·추론0. 냉각중기준재선정·MAIN완화0. 실행전 폰SOC84%/비충전/화면81·수동·Awake/신원APK일치·경로충돌/소유프로세스0을 읽기16명령으로 확인했다.
+- 실행코드공개31fa982, coordinator bdf8811c…29c199/core179/APK6fbe5c08…bfd8b 불변. 다음최대3: 냉각/APP/MAIN/close 원장대조; 닫힌군만 품질·서비스/AP검산; 창종료후부분미완료·소비/공유원물·Git저장. 이동시C6 `STOP_AFTER_CURRENT.json`으로다음APP만차단. Jnull·AP HAL채널·표면온도미검증/experiment_ready=false·사용자WIP/데스크톱/S26/NPU보존.
+
+# 2026-10-15 이전 — 남은23회 PC 실행 준비 완료·실측 미시작
 
 - [준비 보고·명령·SHA](team/a24-measurement-revision02-20261015/confirm23_preparation_20261015/README.md): 남은23회/3,368요청, 다음 블록3 L64 PAIR_G. 이미 공개한 기준27.1℃/SHA `a09f9325…67d570`를 그대로 인계한다. 23개 실제 manifest/authorization PC 조립·관련27기능/회귀PASS. core179/APK/기한/MAIN조건·원계획40/예산81 불변.
 - 로컬 `output/a24_confirm23_ready_20261015_v2/job.json`은 preparation_only=true·실행 시간창 false/시각 미등록이다. 새 기기 원장·owner·실측 폴더는0, mock 실행 파일은 검산 후 제거했다. 별도 `tools/d1_a24_confirm_remaining.py`로 새 사용자 종료 시각을 결합한 뒤에만 실행할 수 있다. 종료된C1~C5 명령 재실행 금지.
