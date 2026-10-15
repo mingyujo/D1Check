@@ -14,7 +14,7 @@
 - 정식 예산 **58/81**·잔여23, 실제 APP **55** + 별도 전류 진단1 = **56**. 예전 APP 이전 실패3회와 실제 앱 실행 횟수를 구분한다. 같은 ID의 APP 재실행0.
 - C3 시간 여유 거절·C4 입력 폴더 충돌은 APP/START/claim0·비소비다. 두 원 거절 영수증은 해당 ZIP의 `unlaunched_preAPP_refusals/`와 [종료·PC·입력보존 영수증](confirmation_visit_03_05/execution_receipts/)에 남겼다. 입력 보존15개 기기 명령에는 추론·계측·세션 소비가 없다. C5에서 원래 미실행 조건을 처음 실행했다.
 - [새로 닫힌 8군의 서비스·출력·AP 검산 CSV](confirmation_visit_03_05/new_closed_results.csv), [개별 분석 JSON](confirmation_visit_03_05/new_closed_analysis/). 모든 정상 종료가 모든 서비스 기한의 충족을 뜻하지는 않는다. J는 미판정이며 AP는 HAL 읽기값이다.
-- [처음 공개한 18 ZIP의 로그인 없는 외부 다운로드·SHA 검증](PUBLIC_GITHUB_VERIFICATION_snapshot02.json). 최신 3 ZIP의 외부 검증은 최종 push 후 별도 영수증으로 남긴다.
+- [처음 공개한 18 ZIP의 로그인 없는 외부 다운로드·SHA 검증](PUBLIC_GITHUB_VERIFICATION_snapshot02.json), [최신 3 ZIP·원장·실행 소스의 외부 다운로드·SHA 검증](confirmation_visit_03_05/PUBLIC_GITHUB_VERIFICATION.json). 최신 자료 커밋 `f3ebff8efa1af60ff86bff5ebdcc613ca0994c11`과 실제 원격 HEAD 일치를 확인했다.
 - [한 조건 추가 실행 계약과 문제 처리](../../team/a24-measurement-revision02-20261015/confirm40_one_more_20261015/README.md). frozen core179·APK·기한·온도 gate는 유지했다. 별도 coordinator의 정확한 SHA는 실행 계약/PC 영수증에 있다.
 
 ---

@@ -2,8 +2,8 @@
 
 - [원자료·블록 ZIP·횟수·버전 SHA](results/a24_measurement_share_20261015/README.md): 새 확인17/40회·2,352본요청 완료. 블록1·2 각8군 완성, 블록3 첫BASE만 실행 후 종료했다. 종료UTC `2026-10-15T10:55:59.924741+00:00`. 다음PAIR는0, 잔여23회/3,368요청은 미실행이다.
 - 정식 예산58/81, 실제APP55+별도전류진단1=56을 구분한다. APP 이전 실패3회는 이전 예산소비에 포함된다. 이번 C3 시간거절/C4 입력충돌은 APP/START/claim0·비소비이며 원영수증 보존. C5 첫APP1회만 실행, 중복APP0. [1회 추가 계약·처리](team/a24-measurement-revision02-20261015/confirm40_one_more_20261015/README.md).
-- 기존 core179/APK/입력·MAIN조건 불변. PC 1회용 이력5+기존회귀9=14PASS, 공개원물 묶음7PASS. 처음18ZIP은 커밋fc4e119에서 로그인 없는 외부 다운로드·모든SHA PASS. 마지막 완료분은 최신3ZIP으로 추가한다. 새8군 출력실패0/AP창8군 적격, 과거첫BASE AP12.34초공백은 유지. 에너지J 미판정/AP는HAL채널·표면온도 미검증/experiment_ready=false.
-- 다음 최대3: 최신3ZIP 외부 다운로드 SHA 확인; 새 사용자 시간창이면 동결 전역원장으로 남은23만 등록; 그 전에는 PC 분석·원자료 공유만 수행. 원물`Documents/A24R02C5`, job`output/a24_confirm_one_more_20261015_v3/job.json`과 owner/stop을 먼저 대조하며 종료 명령은 재실행하지 않는다. 원사용자WIP/데스크톱/S26/NPU 보존.
+- 기존 core179/APK/입력·MAIN조건 불변. PC 1회용 이력5+기존회귀9=14PASS, 공개원물 묶음7PASS. 처음18ZIP은 커밋fc4e119, 최신3ZIP/원장/실행소스는f3ebff8에서 로그인 없는 외부 다운로드·모든SHA PASS/원격HEAD일치. 새8군 출력실패0/AP창8군 적격, 과거첫BASE AP12.34초공백은 유지. 에너지J 미판정/AP는HAL채널·표면온도 미검증/experiment_ready=false.
+- 다음 최대3: 미시도23/40과 전체 예정분모를 유지해 PC 분석; 새 사용자 시간창이면 동결 전역원장으로 남은23만 등록; 새 완료분은 같은 블록 형식으로 공유. 현재 실제 측정은 종료했다. 원물`Documents/A24R02C5`, job`output/a24_confirm_one_more_20261015_v3/job.json`과 owner/stop을 먼저 대조하며 종료 명령은 재실행하지 않는다. 원사용자WIP/데스크톱/S26/NPU 보존.
 
 # 2026-10-15 이전 — 원자료 블록 ZIP 공유·CONFIRM 계속
 
