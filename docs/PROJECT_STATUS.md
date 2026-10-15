@@ -1,4 +1,10 @@
-# 2026-10-15 최신 — 전류 반응 진단 완료·CONFIRM 재개
+# 2026-10-15 최신 — 원자료 블록 ZIP 공유·CONFIRM 계속
+
+- [블록 원자료·횟수·버전 SHA](results/a24_measurement_share_20261015/README.md): 19:38 KST 고정 스냅샷에서 새 확인15/40회·2,224본요청, 이전 DEV/실패/중지 포함 118등록 슬롯·종료56시도·진행1을 공개 묶음으로 준비했다. 18 ZIP 내부 파일과 ZIP SHA 검산, 개인 식별/재배포 제한 바이너리 제외 목록, 별도 진단 원물 링크를 포함한다. 같은 ID 재실행0. 공개 묶음 생성 PC5PASS/기기명령0, 현재 측정 소스·설정 불변.
+- 예산 소비57/81과 실제 APP54회를 구분한다. APP 이전 실패3회는 예산을 소비했지만 APP는0이며, 별도 전류 진단 APP1을 합친 실제 명령은55회다. 직전 문단의 총 APP 표기는 예산 시도와 혼동했으므로 이 스냅샷 원장을 따른다. 에너지J 미판정/AP 채널/experiment_ready=false·원사용자WIP/데스크톱/S26/NPU 유지.
+- 현재 원확인 `output/a24_confirmation40_after_diag_20261015/job.json`/`Documents/A24R02C3` 계속 실행. 다음 최대3: 현재 조건 close/회수; 시간창 종료 후 추가 완료 원물·미완료 원장 저장; 외부 GitHub에서 ZIP 다운로드 SHA 확인. 기기20:02/저장20:07 KST·새APP21분/MAIN5분 여유를 유지한다.
+
+# 2026-10-15 이전 — 전류 반응 진단 완료·CONFIRM 재개
 
 - [전류 반응 원물·CSV·그림·보고](results/a24_revision02_20261015/current_response_diag_01/README.md): 별도APP1회·6반복·543.475초/3,246조회/누락·충전0。CPU API반응0.199~0.401초,GPU3중1검출.순수센서지연/펌웨어단위/절대J는미확정,시간보정0·NN0。PC10PASS/빌드서명PASS/공개원물재현바이트일치,기존APK/179소스불변.
 - [원확인복귀](team/a24-measurement-revision02-20261015/confirm40_after_current_diag_20261015/README.md): `output/a24_confirmation40_after_diag_20261015/job.json`/원물`Documents/A24R02C3`/전역예약`Documents/A24R02C3_GLOBAL`. 미시도31만원순서로등록,27.9℃기존reference이관,18:49:50병행MAIN을시작해회수했다。누적확인10/40·다음WAIT준비,기본확인예산은총51/81소비(새APP intent마다증가),별도진단1을합친총APP52。시작당시ledger50은동결보존.
