@@ -280,6 +280,23 @@ class Driver(D7.Driver):
         self.event(what="tref_day", **{k: v for k, v in rec.items() if k not in ("checks", "t", "what")})   # rec["t"] 는 이벤트 로거의 t 와 겹침 (03:08 TypeError 고침)
         return rec
 
+    def start_decision_v(self, rows, t_now, tref_c, soc, plugged) -> dict:
+        """등록 v5 부록 3: START 판정 동안만 창 길이 · 표본 하한 · 기울기 상한을 바꾼다 (Tref 산출은 v2 상수 그대로 · 복원)."""
+        if not (self.args.gate_window_s or self.args.gate_slope_max):
+            return G.start_decision(rows, t_now, tref_c, soc, plugged)
+        keep = (M8.GATE_WINDOW_S, M8.GATE_MIN_SAMPLES, M8.SLOPE_MAX_C_PER_MIN)
+        try:
+            if self.args.gate_window_s:
+                M8.GATE_WINDOW_S = self.args.gate_window_s
+                M8.GATE_MIN_SAMPLES = max(20, int(self.args.gate_window_s / 3))   # 120 s → 40 (60 s → 20 과 같은 비율)
+            if self.args.gate_slope_max:
+                M8.SLOPE_MAX_C_PER_MIN = self.args.gate_slope_max
+            d = G.start_decision(rows, t_now, tref_c, soc, plugged)
+            d.update(gate_version="v5", window_s_rule=M8.GATE_WINDOW_S, min_samples_rule=M8.GATE_MIN_SAMPLES, slope_max=M8.SLOPE_MAX_C_PER_MIN, band_c=M8.TREF_BAND_C)
+            return d
+        finally:
+            M8.GATE_WINDOW_S, M8.GATE_MIN_SAMPLES, M8.SLOPE_MAX_C_PER_MIN = keep
+
     def gate(self, label: str, h: dict, tref: dict, stage: str, max_wait_s: int = M8.GATE_MAX_WAIT_S) -> dict:
         """START 게이트 v2: 직전 60 s AP 중앙값 ∈ Tref ± 0.5 · |AP|,|SKIN| 기울기 ≤ 0.1 · SOC ≥ 20 · plugged 0 · 30 s 폴 · ≤ 600 s.
         판정 불가 (표본/gap/결측) = 원장 행 (REJECT 아님) · 600 s 뒤에도 불가 = GATE_UNDECIDABLE (REJECT 와 구분 · 흐름은 같음: 300 s 뒤 1회 더). RECENT 준비 전 = 앱 시작 전 (같은 규칙)."""
@@ -288,7 +305,7 @@ class Driver(D7.Driver):
         undecidable_logged = 0
         while True:
             s = self.phone_state()
-            d = G.start_decision(self.hal_rows(Path(h["csv"])), time.time(), tref.get("tref_c"), s["soc"], s["plugged"])
+            d = self.start_decision_v(self.hal_rows(Path(h["csv"])), time.time(), tref.get("tref_c"), s["soc"], s["plugged"])
             d["t"] = s["t"]
             decisions.append(d)
             self.log(f"gate {label}: AP med {d['ap_median']} (Tref {tref.get('tref_c')}) slopes AP {d['ap_slope_c_per_min']} / SKIN {d['skin_slope_c_per_min']} samples {d['ap_samples']} gap {d['max_gap_s']} SOC {s['soc']} -> {'START' if d['start'] else d['reasons']}")
@@ -423,7 +440,7 @@ class Driver(D7.Driver):
             stop_at = (t["origin_host_epoch"] + M8.HAL_AFTER_ORIGIN_S) if t.get("origin_host_epoch") else time.time() + 60
             self.hal_stop_at(h, stop_at, f"origin + {M8.HAL_AFTER_ORIGIN_S} s" if t.get("origin_host_epoch") else "no origin (fallback 60 s)")
             v = C.read_json(folder / "validated.json") if (folder / "validated.json").is_file() else {}
-            gate = dict(gate, gate_version=("v4" if self.args.tref_band_c else "v2"), band_c=M8.TREF_BAND_C, in_band=(not gate.get("forced_start", False)) if gate.get("result") else None)
+            gate = dict(gate, gate_version=("v5" if (self.args.gate_window_s or self.args.gate_slope_max) else "v4" if self.args.tref_band_c else "v2"), band_c=M8.TREF_BAND_C, window_s=self.args.gate_window_s or M8.GATE_WINDOW_S, slope_max=self.args.gate_slope_max or M8.SLOPE_MAX_C_PER_MIN, in_band=(not gate.get("forced_start", False)) if gate.get("result") else None)
             self.event(what="run_end", label=label, run_kind=stage, index=index, attempt=attempt, rc=rc, item=item, gate=gate, in_block_charge=in_block_charge, perfetto=perf,
                        hal_csv=h["csv"], hal_started_epoch=h["started_epoch"], hal_stop_at_epoch=stop_at, start_state=s0, end_state=self.phone_state(), **self.charge_fields(s0, t.get("host_start_epoch")),
                        times=t, validated=v.get("eligible"), reasons=v.get("reasons"), coverage=(v.get("rules") or {}).get("A10_coverage", {}).get("detail"))
@@ -474,7 +491,7 @@ class Driver(D7.Driver):
         self.acquire_lock()
         self.log(f"DRIVER START stage={self.args.stage} block={self.args.block} items={[i['label'] for i in items]} base={self.base}")
         self.log("NOTE: laptop lid OPEN · screen_off_timeout 86400000 kept · SOC start min 20 (영훈) · Tref gate = v2 (AP 첫 안정 60 s · 조민규 01:5x 확정)")
-        self.log(f"FLAGS: tref_key={self.args.tref_key or '(day)'} no_fixed_idle={self.args.no_fixed_idle} gate_force_start={self.args.gate_force_start} gate_force_after_s={self.args.gate_force_after_s} tref_band_c={M8.TREF_BAND_C} (gate_version={'v4' if self.args.tref_band_c else 'v2'}) plan_file={self.args.plan_file or '(blocks.json)'}")
+        self.log(f"FLAGS: tref_key={self.args.tref_key or '(day)'} no_fixed_idle={self.args.no_fixed_idle} gate_force_start={self.args.gate_force_start} gate_force_after_s={self.args.gate_force_after_s} tref_band_c={M8.TREF_BAND_C} gate_window_s={self.args.gate_window_s or M8.GATE_WINDOW_S} gate_slope_max={self.args.gate_slope_max or M8.SLOPE_MAX_C_PER_MIN} (gate_version={'v5' if (self.args.gate_window_s or self.args.gate_slope_max) else 'v4' if self.args.tref_band_c else 'v2'}) plan_file={self.args.plan_file or '(blocks.json)'}")
         try:
             if self.adb_state() != "device" and not self.wait_adb(self.args.reconnect_wait_s):
                 raise Stop("adb not connected at start (새 주소)")
@@ -518,6 +535,8 @@ def main() -> int:
     ap.add_argument("--charge-to-soc", type=int, default=60, help="SOC < 20 로 충전할 때 '뽑으세요' 를 말할 SOC (영훈 운영 · 상한 없음)")
     ap.add_argument("--tref-key", default="", help="S26_M8_tref.json 의 키 (기본 = 드라이버 시작 날짜). 10/15 영훈: 블록 1 (낮) · 블록 2 는 각각 새 측정 구간 → 키를 나눠 재산출 (블록 안 재산출 0 은 그대로)")
     ap.add_argument("--no-fixed-idle", action="store_true", help="영훈 10/15 08:xx: 충전 분리 뒤 1,200 s 고정 유휴 · Tref 전 1,200 s 고정 유휴 생략 — 온도 조건 (안정 60 s 창 · 게이트) 만 적용 · Tref 탐색 상한 없음 (안정 창까지)")
+    ap.add_argument("--gate-window-s", type=int, default=0, help="등록 v5 부록 3: START 판정 창 (v2 60 → v5 120 s · 표본 하한 = 창/3) · 0 = v2")
+    ap.add_argument("--gate-slope-max", type=float, default=0.0, help="등록 v5 부록 3: START 기울기 상한 ℃/min (v2 0.1 → v5 0.2) · 0 = v2")
     ap.add_argument("--tref-band-c", type=float, default=0.0, help="등록 v4 부록 2 (조민규 10/15 12:4x 답 · 블록 2 · CONFIRM): START 밴드 Tref ± N (v2 0.5 → v4 1.0). 0 = v2 상수 그대로")
     ap.add_argument("--gate-force-after-s", type=int, default=0, help="영훈 10/15 10:5x: 원래 기준 (600 s 거절 → 300 s → 재시도) 뒤에도 거절이면 누적 대기 상한 (예 1800) 에서 START (자리 비움 0 · 거절 원장 보존)")
     ap.add_argument("--gate-force-start", action="store_true", help="영훈 10/15 10:1x: 게이트 600 s 뒤 거절이어도 START (거절 원장 보존 · forced_start 표시 · 자리 비움 0)")
