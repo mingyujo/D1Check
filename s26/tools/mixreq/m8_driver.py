@@ -34,7 +34,27 @@ PLAN_ROOT = REPO / "s26" / "results" / "m8_prep"
 SESSION_PY = HERE / "m8_session.py"
 PERFETTO_CFG = HERE / "m8_perfetto_battery.cfg"
 PY = sys.executable
-ROOT_BY_STAGE = {"smoke": "S26_M8_SMOKE", "p0": "S26_M8_P0", "dev": "S26_M8_DEV"}
+ROOT_BY_STAGE = {"smoke": "S26_M8_SMOKE", "p0": "S26_M8_P0", "dev": "S26_M8_DEV", "confirm": "S26_M8_CONFIRM"}
+# CONFIRM R21 판 (동결 R21 · 등록 v5): 게이트 상수 고정 — 플래그로 바꾸지 못함 · 사람 강제 START (--gate-force-start) · 고정 유휴 생략 (--no-fixed-idle) 거부
+CONFIRM_GATE = dict(tref_band_c=1.0, gate_window_s=120, gate_slope_max=0.2, gate_force_after_s=1800)
+CONFIRM_REVISION = "M8_CONFIRM_R21_v1"
+CONFIRM_PLAN_DIRS = ("plan_m8m128_r21", "plan_m8s128_r21")
+
+
+def check_confirm_items(man: dict, items: list[dict]) -> None:
+    """R21 manifest 의 21 슬롯 밖 (index · session_id · plan_dir · label 조합) 이면 거부 · Perfetto on 거부 · revision_id 확인."""
+    if man.get("revision_id") != CONFIRM_REVISION:
+        raise SystemExit(f"confirm plan revision {man.get('revision_id')} != {CONFIRM_REVISION}")
+    allowed = {(s["plan_dir"], s["index"], s["session_id"], s["label"]) for b in man["stages"]["confirm_blocks"] for s in b["sessions"]}
+    if len(allowed) != 21:
+        raise SystemExit(f"confirm plan has {len(allowed)} slots (21 expected)")
+    for i in items:
+        if (i.get("plan_dir"), i.get("index"), i.get("session_id"), i.get("label")) not in allowed or i.get("plan_dir") not in CONFIRM_PLAN_DIRS:
+            raise SystemExit(f"slot outside R21 manifest refused: {i.get('label')} idx {i.get('index')} {i.get('plan_dir')}")
+        if i.get("perfetto") not in (None, "off"):
+            raise SystemExit(f"Perfetto must be OFF in CONFIRM (정책 비교군): {i.get('label')}")
+        if i.get("revision_id") != CONFIRM_REVISION:
+            raise SystemExit(f"slot revision_id mismatch: {i.get('label')}")
 
 
 def now_iso() -> str:
@@ -73,6 +93,61 @@ class Driver(D7.Driver):
         self.consecutive_conn = 0
         self.hal_procs = {}
         self.child = None
+        # CONFIRM 판: 재시작에도 남는 슬롯별 진행 (잔여 휴식 · 거절 한도 · gate_attempt_id) — driver_progress_confirm.json
+        self.progress_file = self.root / "driver_progress_confirm.json"
+        self.progress = C.read_json(self.progress_file) if (args.stage == "confirm" and self.progress_file.is_file()) else {}
+        self.pending_hal = []
+        self.host_commit = self.git_head()
+
+    # ------------------------------------------------------------------ CONFIRM 판 helpers
+    def git_head(self) -> dict:
+        def run(*a):
+            try:
+                return subprocess.run(["git", *a], capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=str(REPO), timeout=30).stdout.strip()
+            except Exception as e:   # noqa: BLE001
+                return f"error {e!r}"
+        tools = HERE
+        return dict(commit=run("rev-parse", "HEAD"), dirty_tools=bool(run("status", "--porcelain", str(tools.relative_to(REPO)))),
+                    driver_sha256=C.sha256_bytes(Path(__file__).read_bytes()), readout_r21_sha256=C.sha256_bytes((HERE / "m8_readout_r21.py").read_bytes()) if (HERE / "m8_readout_r21.py").is_file() else None)
+
+    def prog(self, label: str) -> dict:
+        return self.progress.setdefault(label, dict(gate_attempts=0, gate_retry_used=False, gate_elapsed_s=0, reject_rest_until=None, attempts={}, driver_restarts=0))
+
+    def save_progress(self):
+        if self.args.stage == "confirm":
+            C.write_json(self.progress_file, self.progress)
+
+    def sha_file(self, p: str | None) -> str | None:
+        try:
+            return C.sha256_bytes(Path(p).read_bytes()) if p and Path(p).is_file() else None
+        except OSError:
+            return None
+
+    def flush_hal_sha(self, wait: bool = False):
+        """예약 정지 (origin + 300 s) 가 지난 세션 HAL csv 의 SHA · 행 수를 이벤트로 (gate_attempt_id 별 경로 · SHA)."""
+        keep = []
+        for p in self.pending_hal:
+            if wait and time.time() < p["stop_at"] + 15:
+                time.sleep(max(0.0, p["stop_at"] + 15 - time.time()))
+            if time.time() >= p["stop_at"] + 15:
+                self.event(what="hal_final", label=p["label"], attempt=p["attempt"], gate_attempt_id=p["gate_attempt_id"], csv=p["csv"], sha256=self.sha_file(p["csv"]), rows=self.hal_row_count(Path(p["csv"])))
+            else:
+                keep.append(p)
+        self.pending_hal = keep
+
+    def app_resident(self) -> dict:
+        out = (self.adb("shell", f"pidof {C.APP_PACKAGE}", timeout=20) or "").strip()
+        return dict(app_pid_present=bool(out), note="START 직전 앱 프로세스 존재 (resident) · 런타임 상주 여부는 앱 warmup 기록")
+
+    def prev_run(self, before_epoch: float) -> dict:
+        if not self.runlog.is_file():
+            return {}
+        ends = [json.loads(l) for l in self.runlog.read_text(encoding="utf-8").splitlines() if l.strip()]
+        ends = [r for r in ends if r.get("event") == "end" and float(r.get("epoch", 0)) < before_epoch]
+        if not ends:
+            return {}
+        e = ends[-1]
+        return dict(prev_label=e.get("label"), prev_end=e.get("t"), prev_end_epoch=e.get("epoch"), rest_s=round(before_epoch - float(e["epoch"]), 1))
 
     # ------------------------------------------------------------------ lock · process tree
     def acquire_lock(self):
@@ -265,6 +340,17 @@ class Driver(D7.Driver):
             self.log(f"Tref candidate AP median {cand['tref_c']} slope {cand.get('ap_slope_c_per_min')} samples {cand.get('ap_samples')} gap {cand.get('max_gap_s')} windows {cand.get('checked_windows')} -> {'stable' if cand['stable'] else cand.get('reason')}")
             if cand["stable"]:
                 break
+            if self.args.stage == "confirm" and time.time() - search_from >= M8.TREF_SEARCH_MAX_S:
+                # CONFIRM 판 (동결 v1 next_driver_confirm): stable_miss = TREF_UNDECIDABLE · 최소 |기울기| 창을 Tref 로 쓰지 않음 (대체값 0) → 원장 1회 · 안정 창까지 탐색 계속
+                if not undecidable_logged:
+                    undecidable_logged = True
+                    self.log(f"TREF_UNDECIDABLE ({M8.TREF_SEARCH_MAX_S} s 안 안정 60 s AP 창 없음) -> 대체값 0 · 탐색 계속 (원장)")
+                    with open(self.prestart, "a", encoding="utf-8") as f:
+                        f.write(json.dumps(dict(t=now_iso(), epoch=time.time(), stage=self.args.stage, label=f"Tref_block {key}", result="TREF_UNDECIDABLE", reason=cand.get("reason"),
+                                                note="CONFIRM 판: 대체값 Tref 0 · 안정 창까지 탐색 계속", candidate={k: v for k, v in cand.items() if k != "status"}), ensure_ascii=False, default=str) + "\n")
+                    self.event(what="tref_undecidable", key=key, reason=cand.get("reason"))
+                time.sleep(M8.GATE_POLL_S)
+                continue
             if time.time() - search_from >= M8.TREF_SEARCH_MAX_S and not self.args.no_fixed_idle:
                 self.log(f"Tref 판정 불가 (안정 60 s AP 창 없음 · {M8.TREF_SEARCH_MAX_S} s 탐색) -> 최소 |기울기| 창 사용 · stable_miss 표시 (REJECT 아님 · 원장)")
                 with open(self.prestart, "a", encoding="utf-8") as f:
@@ -274,6 +360,7 @@ class Driver(D7.Driver):
             time.sleep(M8.GATE_POLL_S)
         rec = dict(cand, day=day, key=key, stable_miss=not cand["stable"], checks=checks, idle_from_epoch=idle_from, idle_before_search_s=round(search_from - idle_from), search_from_epoch=search_from, hal_csv=h["csv"], status=G.STATUS,
                    sealed=True, fixed_before_first_dev_policy_run=True, recompute_within_block=False, fixed_idle_skipped=bool(self.args.no_fixed_idle),
+                   tref_undecidable_logged=undecidable_logged, stage=self.args.stage,
                    note=("영훈 10/15 08:xx 지시: 충전 뒤 고정 유휴 1,200 s 생략 · 온도 조건 (안정 60 s 창) 만 · 등록 v2 §3-2 와 다른 점" if self.args.no_fixed_idle else None))
         store[key] = rec
         C.write_json(self.tref_file, store)
@@ -382,6 +469,22 @@ class Driver(D7.Driver):
             if self.host_folder_m8(plan_dir, index, smoke, 1).exists():
                 attempt = 2
                 self.log(f"{label}: smoke a1 folder exists -> re-smoke as a2")
+        P = self.prog(label) if stage == "confirm" else None
+        if P is not None:
+            # CONFIRM 판: 재시작 뒤 거절 한도 · 누적 게이트 대기 · 잔여 휴식 복원 (DEV 블록 1 EDD a1→a2 482~526 s 사례)
+            if P["gate_attempts"] or P["attempts"]:
+                P["driver_restarts"] += 1
+                self.log(f"{label}: resume CONFIRM progress (gate_attempts {P['gate_attempts']} · retry_used {P['gate_retry_used']} · elapsed {P['gate_elapsed_s']} s · attempts {P['attempts']})")
+                self.event(what="confirm_resume", label=label, progress=P)
+            gate_retry_used, gate_elapsed_s = bool(P["gate_retry_used"]), int(P["gate_elapsed_s"])
+            a1 = self.host_folder_m8(plan_dir, index, smoke, 1)
+            if (C.read_json(a1 / "validated.json") or {}).get("eligible") if (a1 / "validated.json").is_file() else False:
+                self.log(f"{label}: a1 already valid -> skip")
+                self.event(what="skipped_done", label=label, attempt=1)
+                return
+            if P.get("reject_rest_until") and time.time() < P["reject_rest_until"] and not (a1.exists() and self.app_started(a1)):
+                self.wait_until(P["reject_rest_until"], "잔여 재게이트 휴식 300 s (재시작 복원)")
+            self.save_progress()
         if not smoke and attempt == 1 and self.host_folder_m8(plan_dir, index, smoke, 1).exists() and self.app_started(self.host_folder_m8(plan_dir, index, smoke, 1)):
             # 드라이버 재시작 뒤 (10/15 11:2x adb 사고): a1 이 이미 소비됨 (앱 시작) → 바로 a2 (rc 5 로 600 s 낭비 0 · a2 가 있으면 건너뜀)
             if self.host_folder_m8(plan_dir, index, smoke, 2).exists():
@@ -391,11 +494,24 @@ class Driver(D7.Driver):
             attempt = 2
             self.log(f"{label}: a1 host folder exists (app started) -> resume as a2")
             self.state["retries"] += 1
+            if P is not None:
+                a1_end = ((P["attempts"].get("1") or {}).get("end_epoch")) or (self.session_times(self.host_folder_m8(plan_dir, index, smoke, 1)).get("host_start_epoch") or time.time())
+                self.wait_until(float(a1_end) + self.args.retry_rest_s, f"잔여 재시도 휴식 {self.args.retry_rest_s} s (재시작 복원 · a1 끝 기준)")
         while True:
             self.safety(f"before {label} a{attempt}")
             in_block_charge = self.charge_rule(label)
             s0 = self.phone_state()
-            h = self.hal_start(f"{label}_a{attempt}")
+            if P is not None:
+                P["gate_attempts"] += 1
+                gid = P["gate_attempts"]
+                while (self.hal_dir / f"hal_cont_{label}_a{attempt}_g{gid}.csv").exists():   # 덮어쓰기 0
+                    gid += 1
+                P["gate_attempts"] = gid
+                self.save_progress()
+                h = self.hal_start(f"{label}_a{attempt}_g{gid}")
+                h["gate_attempt_id"] = gid
+            else:
+                h = self.hal_start(f"{label}_a{attempt}")
             self.wait_until(h["started_epoch"] + M8.HAL_PRE_START_S, f"HAL pre-start {M8.HAL_PRE_START_S} s before {label}")
             gate = dict(result="skipped (smoke)")
             if stage != "smoke":
@@ -415,23 +531,36 @@ class Driver(D7.Driver):
                     gate = dict(gate, result=gate["result"] + "_FORCED_START", forced_start=True, note="영훈 10/15 완주 지시 · 온도 조건 미충족 START · 등록 밖")
                 elif gate["result"] in ("PRESTART_REJECT", "GATE_UNDECIDABLE"):
                     self.hal_stop(h, gate["result"].lower())
-                    self.event(what="run_end", label=label, run_kind=stage, index=index, attempt=attempt, rc=None, prestart_reject=gate["reason"], gate=gate, start_state=s0, item=item)
+                    self.event(what="run_end", label=label, run_kind=stage, index=index, attempt=attempt, rc=None, prestart_reject=gate["reason"], gate=gate, start_state=s0, item=item,
+                               hal_csv=h["csv"], gate_attempt_id=h.get("gate_attempt_id"), hal_sha256=self.sha_file(h["csv"]), hal_rows=self.hal_row_count(Path(h["csv"])))
                     if gate_retry_used:
                         self.log(f"PRESTART_REJECT twice at {label} -> slot left empty (계획 밖 재시도 0)")
                         self.state["items"].setdefault(label, {})["prestart_reject"] = 2
                         self.save_state()
+                        if P is not None:
+                            P["slot_empty"] = True
+                            self.save_progress()
                         return
                     gate_retry_used = True
                     gate_elapsed_s += 300
+                    if P is not None:
+                        P.update(gate_retry_used=True, gate_elapsed_s=gate_elapsed_s, reject_rest_until=time.time() + 300)
+                        self.save_progress()
                     self.log(f"PRESTART_REJECT at {label} ({gate['reason']}) -> one more gate attempt after 300 s (같은 블록 안 1회{' · 상한 ' + str(self.args.gate_force_after_s) + ' s 뒤 강제 START' if self.args.gate_force_after_s else ''})")
                     time.sleep(300)
                     continue
+                if P is not None:
+                    P.update(gate_retry_used=gate_retry_used, gate_elapsed_s=gate_elapsed_s)
+                    self.save_progress()
             perf = None
             if item.get("perfetto") == "on":
                 perf = self.perfetto_start(label)
             extra = ["--in-block-charge"] if in_block_charge else []
             # 기존 mixreq 게이트 (start_gate_1005e: SOC 30~100 · SKIN/AP ≤ 32 · BAT ≤ 30) 는 M8 에서 쓰지 않는다 — 영훈 SOC 하한 20 과 충돌 · M8 게이트 = Tref (m8_gate) + precheck (SOC · plugged · 잠금) + 앱 start_check
             extra += ["--skip-gate"]
+            pre = None
+            if P is not None:
+                pre = dict(self.prev_run(time.time()), **self.app_resident(), host_start_wall=now_iso(), hour=dt.datetime.now().hour)
             rc = self.run_attempt(plan_dir, index, smoke, attempt, label, h["csv"], extra)
             if perf is not None:
                 perf = self.perfetto_stop(label, perf)
@@ -441,9 +570,31 @@ class Driver(D7.Driver):
             self.hal_stop_at(h, stop_at, f"origin + {M8.HAL_AFTER_ORIGIN_S} s" if t.get("origin_host_epoch") else "no origin (fallback 60 s)")
             v = C.read_json(folder / "validated.json") if (folder / "validated.json").is_file() else {}
             gate = dict(gate, gate_version=("v5" if (self.args.gate_window_s or self.args.gate_slope_max) else "v4" if self.args.tref_band_c else "v2"), band_c=M8.TREF_BAND_C, window_s=self.args.gate_window_s or M8.GATE_WINDOW_S, slope_max=self.args.gate_slope_max or M8.SLOPE_MAX_C_PER_MIN, in_band=(not gate.get("forced_start", False)) if gate.get("result") else None)
+            end_state = self.phone_state()
+            extra_ev = {}
+            if P is not None:
+                last = (gate.get("decisions") or [{}])[-1]
+                a7 = ((v.get("rules") or {}).get("A7_wait") or {}).get("detail") or {}
+                tr = self.tref_day(h) if stage != "smoke" else {}
+                gate_summary = dict(result=gate.get("result"), waited_s=gate.get("waited_s"), cumulative_wait_s=gate_elapsed_s, retry_used=gate_retry_used, forced_gate_auto_1800=bool(gate.get("forced_start")),
+                                    in_band=gate.get("in_band"), AP_median=last.get("ap_median"), AP_slope=last.get("ap_slope_c_per_min"), SKIN_slope=last.get("skin_slope_c_per_min"),
+                                    ap_samples=last.get("ap_samples"), reasons=last.get("reasons"), gate_version=gate.get("gate_version"), band_c=gate.get("band_c"), window_s=gate.get("window_s"), slope_max=gate.get("slope_max"))
+                initial = dict(tref_key=tr.get("key"), tref_block_c=tr.get("tref_c"), gate_result=gate.get("result"), start_AP=s0.get("AP"), start_SKIN=s0.get("SKIN"), start_BAT=s0.get("BAT"),
+                               slope_120s_AP=last.get("ap_slope_c_per_min"), gate_AP_median_120s=last.get("ap_median"), SOC_start=s0.get("soc"), SOC_end=end_state.get("soc"),
+                               plugged_start=s0.get("plugged"), in_block_charge=in_block_charge, **(pre or {}),
+                               human_interventions=0, human_note="사람 START/강제 0 (CONFIRM 판 · --gate-force-start 거부) · 드라이버 재시작 수는 driver_restarts",
+                               driver_restarts=P["driver_restarts"], forced_gate_auto_1800=bool(gate.get("forced_start")), auto_wait_count=a7.get("waits"),
+                               wait_nominal_total_ms=a7.get("nominal_total_ms"), wait_planned_total_ms=a7.get("planned_total_ms"), wait_dose_total_ms=a7.get("dose_total_ms"),
+                               wait_overrun_total_ms=a7.get("overrun_total_ms"), wait_cut=(len(a7.get("cut") or []) if a7 else None),
+                               note="초기 상태 기록만 · 군별 보정/재정렬/대체 0")
+                extra_ev = dict(initial_state=initial, gate_summary=gate_summary, gate_attempt_id=h.get("gate_attempt_id"), host_commit=self.host_commit, revision_id=CONFIRM_REVISION,
+                                origin_slot=item.get("origin_slot"))
+                P["attempts"][str(attempt)] = dict(rc=rc, end_epoch=time.time(), app_started=self.app_started(folder), valid=v.get("eligible"))
+                self.save_progress()
+                self.pending_hal.append(dict(label=label, attempt=attempt, gate_attempt_id=h.get("gate_attempt_id"), csv=h["csv"], stop_at=stop_at))
             self.event(what="run_end", label=label, run_kind=stage, index=index, attempt=attempt, rc=rc, item=item, gate=gate, in_block_charge=in_block_charge, perfetto=perf,
-                       hal_csv=h["csv"], hal_started_epoch=h["started_epoch"], hal_stop_at_epoch=stop_at, start_state=s0, end_state=self.phone_state(), **self.charge_fields(s0, t.get("host_start_epoch")),
-                       times=t, validated=v.get("eligible"), reasons=v.get("reasons"), coverage=(v.get("rules") or {}).get("A10_coverage", {}).get("detail"))
+                       hal_csv=h["csv"], hal_started_epoch=h["started_epoch"], hal_stop_at_epoch=stop_at, start_state=s0, end_state=end_state, **self.charge_fields(s0, t.get("host_start_epoch")),
+                       times=t, validated=v.get("eligible"), reasons=v.get("reasons"), coverage=(v.get("rules") or {}).get("A10_coverage", {}).get("detail"), **extra_ev)
             self.state["items"].setdefault(label, {})[f"attempt{attempt}"] = rc
             self.save_state()
             if rc in (6, 8):
@@ -478,6 +629,15 @@ class Driver(D7.Driver):
             lst = st["smoke"]
         elif self.args.stage == "p0":
             lst = st["p0"]
+        elif self.args.stage == "confirm":
+            man = C.read_json(Path(self.args.plan_file))
+            blk = next(b for b in st["confirm_blocks"] if b["block_no"] == self.args.block)
+            lst = blk["sessions"]
+            check_confirm_items(man, lst)
+            for pd, sha in man["plan_sha256"].items():   # 계획 폴더 plan.json SHA = manifest 기록값
+                got = C.sha256_bytes((PLAN_ROOT / pd / "plan.json").read_bytes())
+                if got != sha:
+                    raise SystemExit(f"{pd}/plan.json SHA {got} != manifest {sha}")
         else:
             blk = next(b for b in st["dev_blocks"] if b["block_no"] == self.args.block)
             lst = blk["sessions"]
@@ -495,11 +655,19 @@ class Driver(D7.Driver):
         try:
             if self.adb_state() != "device" and not self.wait_adb(self.args.reconnect_wait_s):
                 raise Stop("adb not connected at start (새 주소)")
+            if self.args.stage == "confirm":
+                self.event(what="confirm_driver_start", block=self.args.block, plan_file=self.args.plan_file, plan_file_sha256=C.sha256_bytes(Path(self.args.plan_file).read_bytes()),
+                           host_commit=self.host_commit, gate=CONFIRM_GATE, tref_key=self.args.tref_key, revision_id=CONFIRM_REVISION, items=[i["label"] for i in items])
             for item in items:
                 done = self.state["items"].get(item["label"], {})
                 if done.get("attempt1") == 0 or done.get("attempt2") == 0:
                     continue
+                if self.args.stage == "confirm" and self.prog(item["label"]).get("slot_empty"):
+                    self.log(f"{item['label']}: slot empty (PRESTART_REJECT 2회 · 재시작 복원) -> skip")
+                    continue
+                self.flush_hal_sha()
                 self.do_session(item, self.args.stage)
+            self.flush_hal_sha(wait=True)
             if not self.state["stop_reason"]:
                 self.state["stop_reason"] = "completed"
         except Stop as e:
@@ -525,7 +693,7 @@ class Driver(D7.Driver):
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--stage", required=True, choices=("smoke", "p0", "dev"))
+    ap.add_argument("--stage", required=True, choices=("smoke", "p0", "dev", "confirm"))
     ap.add_argument("--block", type=int, default=1)
     ap.add_argument("--only", default="")
     ap.add_argument("--results-base", default="")
@@ -542,6 +710,17 @@ def main() -> int:
     ap.add_argument("--gate-force-start", action="store_true", help="영훈 10/15 10:1x: 게이트 600 s 뒤 거절이어도 START (거절 원장 보존 · forced_start 표시 · 자리 비움 0)")
     ap.add_argument("--plan-file", default="", help="blocks.json 대신 쓸 계획 파일 (예: plan_m8/p0_supp.json · stages.p0 한 세션 · P0 보충)")
     args = ap.parse_args()
+    if args.stage == "confirm":
+        # CONFIRM R21 판: v5 게이트 상수 고정 · 사람 강제 START · 고정 유휴 생략 거부 · R21 manifest 필수
+        if args.gate_force_start or args.no_fixed_idle or not args.plan_file or args.only:
+            raise SystemExit("confirm: --gate-force-start / --no-fixed-idle / --only refused · --plan-file (R21 manifest) required")
+        for k, v in CONFIRM_GATE.items():
+            cur = getattr(args, k)
+            if cur not in (0, 0.0, v):
+                raise SystemExit(f"confirm: {k}={cur} differs from CONFIRM R21 판 {v}")
+            setattr(args, k, v)
+        if not args.tref_key:
+            raise SystemExit("confirm: --tref-key (블록별 Tref_block 키) required")
     if args.tref_band_c:
         M8.TREF_BAND_C = args.tref_band_c   # m8_gate.start_decision / tref_candidate 는 호출 시점의 M8.TREF_BAND_C 를 읽는다 (v2 상수 파일 무변경 · 원장 기록)
     M8.activate()
