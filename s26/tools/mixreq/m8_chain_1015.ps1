@@ -20,7 +20,7 @@ L "step 1 end rc=$LASTEXITCODE"
 } else { L "step 1 skipped (done 08:34)" }
 # 2) DEV block 1
 L "step 2: DEV block 1 only=[$Block1Only] trefKey=$TrefKey1"
-& powershell -NoProfile -ExecutionPolicy Bypass -File $DRV -Stage dev -Block 1 -TrefKey $TrefKey1 -NoFixedIdle -GateForceStart -Only $Block1Only
+& powershell -NoProfile -ExecutionPolicy Bypass -File $DRV -Stage dev -Block 1 -TrefKey $TrefKey1 -NoFixedIdle -GateForceAfterS 1800 -Only $Block1Only
 $rc1 = $LASTEXITCODE
 L "step 2 end rc=$rc1"
 # 3) bundle B1 (results snapshot before block 2 starts)
@@ -29,7 +29,7 @@ L "step 3: bundle B1"
 L "step 3 end rc=$LASTEXITCODE"
 # 4) DEV block 2 (영훈: no 20:00 wait · temperature gate only · new Tref key)
 L "step 4: DEV block 2"
-& powershell -NoProfile -ExecutionPolicy Bypass -File $DRV -Stage dev -Block 2 -TrefKey $TrefKey2 -NoFixedIdle -GateForceStart
+& powershell -NoProfile -ExecutionPolicy Bypass -File $DRV -Stage dev -Block 2 -TrefKey $TrefKey2 -NoFixedIdle -GateForceAfterS 1800
 $rc2 = $LASTEXITCODE
 L "step 4 end rc=$rc2"
 # 5) bundle B2

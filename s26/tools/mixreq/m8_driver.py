@@ -280,7 +280,7 @@ class Driver(D7.Driver):
         self.event(what="tref_day", **{k: v for k, v in rec.items() if k not in ("checks", "t", "what")})   # rec["t"] 는 이벤트 로거의 t 와 겹침 (03:08 TypeError 고침)
         return rec
 
-    def gate(self, label: str, h: dict, tref: dict, stage: str) -> dict:
+    def gate(self, label: str, h: dict, tref: dict, stage: str, max_wait_s: int = M8.GATE_MAX_WAIT_S) -> dict:
         """START 게이트 v2: 직전 60 s AP 중앙값 ∈ Tref ± 0.5 · |AP|,|SKIN| 기울기 ≤ 0.1 · SOC ≥ 20 · plugged 0 · 30 s 폴 · ≤ 600 s.
         판정 불가 (표본/gap/결측) = 원장 행 (REJECT 아님) · 600 s 뒤에도 불가 = GATE_UNDECIDABLE (REJECT 와 구분 · 흐름은 같음: 300 s 뒤 1회 더). RECENT 준비 전 = 앱 시작 전 (같은 규칙)."""
         t0 = time.time()
@@ -299,7 +299,7 @@ class Driver(D7.Driver):
                 with open(self.prestart, "a", encoding="utf-8") as f:
                     f.write(json.dumps(dict(t=now_iso(), epoch=time.time(), stage=stage, label=label, result="GATE_UNDECIDABLE_POLL", reason=d["reasons"], note="판정 불가 (결측/gap/표본) · REJECT 아님 · 폴 계속"),
                                        ensure_ascii=False, default=str) + "\n")
-            if time.time() - t0 >= M8.GATE_MAX_WAIT_S:
+            if time.time() - t0 >= max_wait_s:
                 reason = G.reject_reason(decisions)
                 result = "GATE_UNDECIDABLE" if reason == "undecidable" else "PRESTART_REJECT"
                 rec = dict(t=now_iso(), epoch=time.time(), stage=stage, label=label, result=result, reason=reason, waited_s=round(time.time() - t0), tref=tref.get("tref_c"),
@@ -356,6 +356,7 @@ class Driver(D7.Driver):
         index = None if smoke else item["index"]
         attempt = 1
         gate_retry_used = False
+        gate_elapsed_s = 0
         if smoke:   # 재스모크 (코드 고침 뒤): a1 호스트 폴더가 있으면 a2 자리 · 둘 다 있으면 건너뜀 (앱 attempt 1..2 · 쓴 자리 재사용 0)
             if self.host_folder_m8(plan_dir, index, smoke, 2).exists():
                 self.log(f"{label}: smoke a1 · a2 both used -> skip (새 스모크 자리 없음 · 기록)")
@@ -373,8 +374,15 @@ class Driver(D7.Driver):
             gate = dict(result="skipped (smoke)")
             if stage != "smoke":
                 tref = self.tref_day(h)
-                gate = self.gate(label, h, tref, stage)
-                if gate["result"] in ("PRESTART_REJECT", "GATE_UNDECIDABLE") and self.args.gate_force_start:
+                second_max = max(M8.GATE_MAX_WAIT_S, self.args.gate_force_after_s - gate_elapsed_s) if (gate_retry_used and self.args.gate_force_after_s) else M8.GATE_MAX_WAIT_S
+                gate = self.gate(label, h, tref, stage, second_max)
+                gate_elapsed_s += gate.get("waited_s") or 0
+                if gate["result"] in ("PRESTART_REJECT", "GATE_UNDECIDABLE") and self.args.gate_force_after_s and gate_retry_used:
+                    # 영훈 10/15 10:5x: 원래 기준 (600 s 거절 → 300 s → 재시도) 그대로 두되 누적 대기가 상한 (기본 1,800 s) 에 닿으면 자리 비우지 않고 START (거절 원장 보존 · forced_start 표시 · 등록 밖)
+                    self.log(f"{gate['result']} twice at {label} ({gate['reason']}) · cumulative gate wait {gate_elapsed_s} s ≥ {self.args.gate_force_after_s} -> FORCED START (영훈 완주 지시 · 거절 기록 보존)")
+                    self.event(what="gate_forced_start", label=label, reason=gate["reason"], waited_s=gate["waited_s"], cumulative_wait_s=gate_elapsed_s, tref=gate.get("tref"), last=(gate["decisions"] or [{}])[-1])
+                    gate = dict(gate, result=gate["result"] + "_FORCED_START", forced_start=True, cumulative_wait_s=gate_elapsed_s, note="영훈 10/15 완주 지시 · 거절 2회 뒤 상한 도달 START · 등록 밖")
+                elif gate["result"] in ("PRESTART_REJECT", "GATE_UNDECIDABLE") and self.args.gate_force_start:
                     # 영훈 10/15 10:1x: "기준 온도 안 맞아도 중단하지 말고 무조건 완주" → 600 s 자연 대기 뒤 거절이어도 그 자리에서 START (거절 기록 보존 · out_of_band 표시 · 자리 비움 0 · 안전 정지는 그대로)
                     self.log(f"{gate['result']} at {label} ({gate['reason']}) -> FORCED START (영훈 완주 지시 · 거절 기록 보존 · out_of_band)")
                     self.event(what="gate_forced_start", label=label, reason=gate["reason"], waited_s=gate["waited_s"], tref=gate.get("tref"), last=(gate["decisions"] or [{}])[-1])
@@ -388,7 +396,8 @@ class Driver(D7.Driver):
                         self.save_state()
                         return
                     gate_retry_used = True
-                    self.log(f"PRESTART_REJECT at {label} ({gate['reason']}) -> one more gate attempt after 300 s (같은 블록 안 1회)")
+                    gate_elapsed_s += 300
+                    self.log(f"PRESTART_REJECT at {label} ({gate['reason']}) -> one more gate attempt after 300 s (같은 블록 안 1회{' · 상한 ' + str(self.args.gate_force_after_s) + ' s 뒤 강제 START' if self.args.gate_force_after_s else ''})")
                     time.sleep(300)
                     continue
             perf = None
@@ -455,7 +464,7 @@ class Driver(D7.Driver):
         self.acquire_lock()
         self.log(f"DRIVER START stage={self.args.stage} block={self.args.block} items={[i['label'] for i in items]} base={self.base}")
         self.log("NOTE: laptop lid OPEN · screen_off_timeout 86400000 kept · SOC start min 20 (영훈) · Tref gate = v2 (AP 첫 안정 60 s · 조민규 01:5x 확정)")
-        self.log(f"FLAGS: tref_key={self.args.tref_key or '(day)'} no_fixed_idle={self.args.no_fixed_idle} gate_force_start={self.args.gate_force_start} plan_file={self.args.plan_file or '(blocks.json)'}")
+        self.log(f"FLAGS: tref_key={self.args.tref_key or '(day)'} no_fixed_idle={self.args.no_fixed_idle} gate_force_start={self.args.gate_force_start} gate_force_after_s={self.args.gate_force_after_s} plan_file={self.args.plan_file or '(blocks.json)'}")
         try:
             if self.adb_state() != "device" and not self.wait_adb(self.args.reconnect_wait_s):
                 raise Stop("adb not connected at start (새 주소)")
@@ -499,6 +508,7 @@ def main() -> int:
     ap.add_argument("--charge-to-soc", type=int, default=60, help="SOC < 20 로 충전할 때 '뽑으세요' 를 말할 SOC (영훈 운영 · 상한 없음)")
     ap.add_argument("--tref-key", default="", help="S26_M8_tref.json 의 키 (기본 = 드라이버 시작 날짜). 10/15 영훈: 블록 1 (낮) · 블록 2 는 각각 새 측정 구간 → 키를 나눠 재산출 (블록 안 재산출 0 은 그대로)")
     ap.add_argument("--no-fixed-idle", action="store_true", help="영훈 10/15 08:xx: 충전 분리 뒤 1,200 s 고정 유휴 · Tref 전 1,200 s 고정 유휴 생략 — 온도 조건 (안정 60 s 창 · 게이트) 만 적용 · Tref 탐색 상한 없음 (안정 창까지)")
+    ap.add_argument("--gate-force-after-s", type=int, default=0, help="영훈 10/15 10:5x: 원래 기준 (600 s 거절 → 300 s → 재시도) 뒤에도 거절이면 누적 대기 상한 (예 1800) 에서 START (자리 비움 0 · 거절 원장 보존)")
     ap.add_argument("--gate-force-start", action="store_true", help="영훈 10/15 10:1x: 게이트 600 s 뒤 거절이어도 START (거절 원장 보존 · forced_start 표시 · 자리 비움 0)")
     ap.add_argument("--plan-file", default="", help="blocks.json 대신 쓸 계획 파일 (예: plan_m8/p0_supp.json · stages.p0 한 세션 · P0 보충)")
     args = ap.parse_args()
