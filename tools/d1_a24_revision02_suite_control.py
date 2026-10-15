@@ -87,7 +87,7 @@ def verify_source_entries(manifest: dict[str, Any], source_root: Path, *, contro
         controller_relative = controller_file.resolve().relative_to(root).as_posix()
     except (ValueError, OSError) as error:
         raise ValidationError("source_root does not contain the executing controller repository") from error
-    require(controller_relative == "tools/d1_a24_revision02_control.py", "controller must bind its exact repository source path")
+    require(controller_relative == "tools/d1_a24_revision02_suite_control.py", "controller must bind its exact repository source path")
     entries = manifest.get("files")
     require(isinstance(entries, list) and bool(entries), "authorized source manifest has no file entries")
     checked: dict[str, str] = {}

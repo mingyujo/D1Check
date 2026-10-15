@@ -1,4 +1,11 @@
-# 2026-10-15 현재 작업 — 8군·확인40 경로 PC 준비 완료 / 실측 중지
+# 2026-10-15 현재 작업 — 새시간창 실제 DEV8 기능검증
+
+- 사용자14:08부터150~160분실측진행지시. [DEV8사전계약](team/a24-measurement-revision02-20261015/dev_window01_20261015/README.md): 최대8시도/1,144요청,기기16:33:25/저장포함16:38:25 KST종료. 원33시도보존·잔여31중8예약,확인40미시작·예산증액없음.
+- 등록A24·SOC100%/비충전확인. C252 GPU→CPU,M128 BASE→WAIT200→PAIR_G→ORDER,L64 PAIR_G→BASE순서를결과전고정. 부하별3기준을첫준비후봉인/공유,후속군은앱밖냉각. 요청/기한/공통8warmup/관측창/응답·실제반환/APK동일.
+- 실제설정결합PC검사에서새suite의source검사에옛controller경로가남은문제발견. 앱/START0에서새adapter만수정·PC-v1보존,원실측171불변. 새177소스/Python40/정확8manifest앱parser1/전8군전체승인결합검산PASS뒤실행한다.
+- 활성원물Documents/A24R02S1,메타output/a24_suite_dev_window01_20261015. job/OWNER_WINDOW/실제원장을읽고중복실행금지. 다음최대3: DEV8순차실행; 각군품질/전체분모/반환회수; 기한내보고·안전종료/Git저장. J불가/표면온도미검증/experiment_ready=false. 아래는이력이다.
+
+# 2026-10-15 이전 작업 — 8군·확인40 경로 PC 준비 완료
 
 - 최신 지시: 저부하/혼합/확인40 경로를미리PC에서준비한다. [구현·검증](team/a24-measurement-revision02-20261015/suite_pc_20261015/README.md) · [재개필독](team/a24-measurement-revision02-20261015/MEASUREMENT_RUNBOOK.md).
 - 별도suite host2파일/계획생성/공유기준·앱밖냉각/이미시도ID차단/정상회수후입증된빈자기프로세스정리/확인동결·예산·시간창차단을연결했다. Python39+새실제앱parser1 PASS,실행불가확인40·5,720요청·160binding·15기준그룹검산. 원171소스/APK불변,이번대상175파일SHA보존.

@@ -16,6 +16,13 @@ import test_d1_a24_revision02_window as pilot_tests
 
 
 class PlanCases(unittest.TestCase):
+    def test_source_verifier_binds_suite_controller_exact_repository_path(self):
+        root=Path(__file__).resolve().parents[1]
+        p=Path(control.__file__)
+        manifest={'schema':control.SOURCE_MANIFEST_SCHEMA,'files':[{'path':p.relative_to(root).as_posix(),'bytes':p.stat().st_size,'sha256':sha256(p)}]}
+        result=control.verify_source_entries(manifest,root,controller_file=p)
+        self.assertEqual(result['file_count'],1)
+
     def test_confirmation40_preserves_all_arms_quantities_and15_shared_references(self):
         plan, banks = suite.draft_plan('A24R02-SUITE-PC-CONFIRM')
         suite.validate_plan(plan)
