@@ -1,0 +1,770 @@
+{
+  "UTC": "2026-10-14T21:16:21.899901+00:00",
+  "all_failures_preserved": true,
+  "attempt_counts": {
+    "DEV": 16,
+    "F": 4,
+    "I": 4
+  },
+  "failed_slot_replacement": 0,
+  "note": "Attempt counts, NOT successes. I01 has preserved first_slot_failure forensic proof instead of outcome. Original failures and recovery never relabeled. Prior old CONFIRM28-total and REV02 five plus DEV8=41 consumed.",
+  "plan_sha256": "82d5108db8d44fc6785cbdc99f71baee01361e21abdd4c59df9544826cb93855",
+  "recorded_prior_stage_attempts": {
+    "DEV": 16,
+    "F": 4,
+    "I": 4
+  },
+  "records": [
+    {
+      "arm": "IDLE_UNRESIDENT",
+      "block": "I01",
+      "files": [
+        {
+          "bytes": 528,
+          "category": "preserved_initial_forensic",
+          "name": "first_slot_failure_preserved.json",
+          "sha256": "2a4350ffed6d188ba48b1c9d43eb9d05cbbfe2e1ee6f3ac98a5a921f27357862"
+        }
+      ],
+      "recipe": "IDLE",
+      "session_id": "12086e3c-817f-520f-88b0-53340522ad79",
+      "stage": "I"
+    },
+    {
+      "arm": "IDLE_RESIDENT",
+      "block": "I02",
+      "files": [
+        {
+          "bytes": 0,
+          "category": "registry",
+          "name": "host_hal_partial.jsonl",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "bytes": 790,
+          "category": "registry",
+          "name": "PRESTART_REJECT.json",
+          "sha256": "706d29174cdf686368993890cbf94958f7f1e37c1068b868a1d753111aaaa13c"
+        },
+        {
+          "bytes": 452,
+          "category": "outcome",
+          "name": "422172fe-f64c-57a4-a883-e9e4fd4efea0.outcome.json",
+          "sha256": "54a4abc8fc1dcf50b98a884b698aab8df09352661f5282542cb39f0fb0c9595b"
+        }
+      ],
+      "recipe": "IDLE",
+      "session_id": "422172fe-f64c-57a4-a883-e9e4fd4efea0",
+      "stage": "I"
+    },
+    {
+      "arm": "PERFETTO_OFF",
+      "block": "I03",
+      "files": [
+        {
+          "bytes": 0,
+          "category": "registry",
+          "name": "host_hal_partial.jsonl",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "bytes": 637,
+          "category": "registry",
+          "name": "PRESTART_REJECT.json",
+          "sha256": "ed95e8b8cdba4743dae388f70b42ba84e8278d7bea7622fbb1afbfb821fc7192"
+        },
+        {
+          "bytes": 298,
+          "category": "outcome",
+          "name": "1e029f47-dfaf-53bb-9bb0-9bb44668521e.outcome.json",
+          "sha256": "46560fb035ac8fb7fa77f728084296895ed7e2ab3635a4c79824b7c8f588cbe4"
+        }
+      ],
+      "recipe": "I_C32",
+      "session_id": "1e029f47-dfaf-53bb-9bb0-9bb44668521e",
+      "stage": "I"
+    },
+    {
+      "arm": "PERFETTO_ON",
+      "block": "I03",
+      "files": [
+        {
+          "bytes": 278908,
+          "category": "registry",
+          "name": "host_hal_partial.jsonl",
+          "sha256": "d582bec00707c33e1f16eea3d69a48a1a3ca28a0665d4de79f4a936f35c0226e"
+        },
+        {
+          "bytes": 603,
+          "category": "registry",
+          "name": "PRESTART_REJECT.json",
+          "sha256": "9810ed28643b1873dfdf343659036ca132b89ebfda4f30e1cc4beece737885e2"
+        },
+        {
+          "bytes": 264,
+          "category": "outcome",
+          "name": "3efaf233-a720-528b-805b-83ce814e5ac8.outcome.json",
+          "sha256": "4bac12e85ff6e018bfaa0a3e3bf35d5853f158e1459fa72847d47904f52dde1f"
+        }
+      ],
+      "recipe": "I_C32",
+      "session_id": "3efaf233-a720-528b-805b-83ce814e5ac8",
+      "stage": "I"
+    },
+    {
+      "arm": "CPU",
+      "block": "F01",
+      "files": [
+        {
+          "bytes": 711500,
+          "category": "registry",
+          "name": "host_hal_partial.jsonl",
+          "sha256": "7b9bad058436f543f30c75872de8ab6ce7b06e541c9e03e842c35b98f4eae443"
+        },
+        {
+          "bytes": 583,
+          "category": "registry",
+          "name": "PRESTART_REJECT.json",
+          "sha256": "d3a14aed58884ba2dd86ed7dab2cde5dff945987ae703bab86004611dfa501b7"
+        },
+        {
+          "bytes": 181,
+          "category": "outcome",
+          "name": "ee85f47b-02cf-5e83-8def-38bfc34d512e.outcome.json",
+          "sha256": "2a11a39dd5df46e94b9a8790dce12f57a89455b95bfdefc1d3aa125aa078db4c"
+        }
+      ],
+      "recipe": "C252",
+      "session_id": "ee85f47b-02cf-5e83-8def-38bfc34d512e",
+      "stage": "F"
+    },
+    {
+      "arm": "GPU",
+      "block": "F01",
+      "files": [
+        {
+          "bytes": 577,
+          "category": "registry",
+          "name": "FAIL.json",
+          "sha256": "18e1363cead6453f66fc16d49a4ff5dde5364f22da22f56e29d34b96e6e121a9"
+        },
+        {
+          "bytes": 116686,
+          "category": "registry",
+          "name": "host_hal_partial.jsonl",
+          "sha256": "e51fa9f46b64d0d5b17f5e5f87cda217129a418d6b8606faf2715d5c0b7ff2cc"
+        },
+        {
+          "bytes": 961,
+          "category": "registry",
+          "name": "START.json",
+          "sha256": "830a8e43645d897cd822f5a0e5d0bc7586cc747bee84b37544ef90694a32b620"
+        },
+        {
+          "bytes": 411,
+          "category": "registry",
+          "name": "start_approval.json",
+          "sha256": "c612e812234e30429a36349c5145e8f0c2972d13741d0bccf833fa56d377a808"
+        },
+        {
+          "bytes": 264,
+          "category": "outcome",
+          "name": "1165a564-7dba-5ed9-bfe9-50cd7ac2c5e3.outcome.json",
+          "sha256": "c0f36e19f2a70138db41f158c8bdb59ea431c5f8cad0d7c7c19f3f5214524cb6"
+        }
+      ],
+      "recipe": "C252",
+      "session_id": "1165a564-7dba-5ed9-bfe9-50cd7ac2c5e3",
+      "stage": "F"
+    },
+    {
+      "arm": "BASE",
+      "block": "F01",
+      "files": [
+        {
+          "bytes": 858,
+          "category": "registry",
+          "name": "COMPLETE.json",
+          "sha256": "87d7384c704c89b4875e137d87aca995e1df47dde3437deb9e46f3947bcde38d"
+        },
+        {
+          "bytes": 961,
+          "category": "registry",
+          "name": "START.json",
+          "sha256": "4f8e2b5c0af22ba6f805c2dd9fb6291cbb183977fcbcd41c9b719f6207d16880"
+        },
+        {
+          "bytes": 411,
+          "category": "registry",
+          "name": "start_approval.json",
+          "sha256": "2aa11c899157dc21707a4cea3639dc143ab22d5099d40c14b80b26daf6409a1a"
+        },
+        {
+          "bytes": 190,
+          "category": "outcome",
+          "name": "feb9f3fc-61fd-5a2d-9578-3afbc02cfcba.outcome.json",
+          "sha256": "003e8812cbe7334debbe73dca2d950fd6b0219d1bf31ae2bccb98401fc49f6df"
+        }
+      ],
+      "recipe": "M128",
+      "session_id": "feb9f3fc-61fd-5a2d-9578-3afbc02cfcba",
+      "stage": "F"
+    },
+    {
+      "arm": "PAIR_G",
+      "block": "F01",
+      "files": [
+        {
+          "bytes": 858,
+          "category": "registry",
+          "name": "COMPLETE.json",
+          "sha256": "3f815da00abaf0e4aa6b51b074ee7b6d571655f542a38e4aa7cd0154be41da19"
+        },
+        {
+          "bytes": 961,
+          "category": "registry",
+          "name": "START.json",
+          "sha256": "97fa0f391a020f94e3d9122f3264ba19185ef0b3b7247f4f428085bf3efa0313"
+        },
+        {
+          "bytes": 411,
+          "category": "registry",
+          "name": "start_approval.json",
+          "sha256": "d596bc0ce1c5a5f22e8c46e14e2d409ed4c910dce75ecd441c5252c11b4e7f38"
+        },
+        {
+          "bytes": 193,
+          "category": "outcome",
+          "name": "8425aa7c-34a3-5204-9d76-616537bb22c8.outcome.json",
+          "sha256": "11fcb253756118bb32322ea49c273e056050929ba28f89ab60a49cfe02ab4b91"
+        }
+      ],
+      "recipe": "M128",
+      "session_id": "8425aa7c-34a3-5204-9d76-616537bb22c8",
+      "stage": "F"
+    },
+    {
+      "arm": "GPU",
+      "block": "DEV01",
+      "files": [
+        {
+          "bytes": 858,
+          "category": "registry",
+          "name": "COMPLETE.json",
+          "sha256": "bd2ea236a4fc7301b9b8986fb57c647e358a278ae90eae44e6d4296651fe9598"
+        },
+        {
+          "bytes": 961,
+          "category": "registry",
+          "name": "START.json",
+          "sha256": "fe65846cb122d8c435e8f609e3cbeb6ef12990bace0873aaa176543ba7f785b7"
+        },
+        {
+          "bytes": 411,
+          "category": "registry",
+          "name": "start_approval.json",
+          "sha256": "fd2b27585d0361c6d9db85c41efb6d9beb1d68c660ddff11e8493aad29251737"
+        },
+        {
+          "bytes": 191,
+          "category": "outcome",
+          "name": "3356d3eb-43cb-5ebb-ba82-31b986bc817f.outcome.json",
+          "sha256": "360e679bef4ecc5ca3138095d4609a99348b3aa462fc98074c89a0288ed712fc"
+        }
+      ],
+      "recipe": "C252",
+      "session_id": "3356d3eb-43cb-5ebb-ba82-31b986bc817f",
+      "stage": "DEV"
+    },
+    {
+      "arm": "CPU",
+      "block": "DEV01",
+      "files": [
+        {
+          "bytes": 45536,
+          "category": "registry",
+          "name": "host_hal_partial.jsonl",
+          "sha256": "2a3e73c6b14063f5ed4be369fb5288ac1559d58d304f7c9199bc0dbddadc3237"
+        },
+        {
+          "bytes": 646,
+          "category": "registry",
+          "name": "PRESTART_REJECT.json",
+          "sha256": "683c1f0455f024e062e37448d5b9623b194418d176cbde7628d6b851b4edff09"
+        },
+        {
+          "bytes": 301,
+          "category": "outcome",
+          "name": "7c7ffa1c-7934-5067-a126-27485fe9506e.outcome.json",
+          "sha256": "f3408c6709f8a875d1f003dfa6a7be132889110fdc77b4d0351e59963e3e46f3"
+        }
+      ],
+      "recipe": "C252",
+      "session_id": "7c7ffa1c-7934-5067-a126-27485fe9506e",
+      "stage": "DEV"
+    },
+    {
+      "arm": "ORDER",
+      "block": "DEV01",
+      "files": [
+        {
+          "bytes": 858,
+          "category": "registry",
+          "name": "COMPLETE.json",
+          "sha256": "d92aa9484596ef7088400ae643d0589d43968732043cb33a7fcecf477902bda4"
+        },
+        {
+          "bytes": 961,
+          "category": "registry",
+          "name": "START.json",
+          "sha256": "b21296de4d77aa27eae01c1713b44673ac9202c3bc498661ed47a8d9045bd08e"
+        },
+        {
+          "bytes": 411,
+          "category": "registry",
+          "name": "start_approval.json",
+          "sha256": "04dc994a4a2442835e483f77651ad9dc554b768c147bea62bd3d83a04a397549"
+        },
+        {
+          "bytes": 193,
+          "category": "outcome",
+          "name": "9801912f-92ae-59f1-9df6-9ae2ec59896b.outcome.json",
+          "sha256": "f5a91acc312d234190777aca35a160eda5740cde553616b9f1dc77450ad94106"
+        }
+      ],
+      "recipe": "M128",
+      "session_id": "9801912f-92ae-59f1-9df6-9ae2ec59896b",
+      "stage": "DEV"
+    },
+    {
+      "arm": "BASE",
+      "block": "DEV01",
+      "files": [
+        {
+          "bytes": 858,
+          "category": "registry",
+          "name": "COMPLETE.json",
+          "sha256": "fe4e3c094a85bd1e9cb74f40b57c909296ce9a8c15d5877cf6f8920c96838bad"
+        },
+        {
+          "bytes": 961,
+          "category": "registry",
+          "name": "START.json",
+          "sha256": "f3650595ad3a6ed93017a8d44e64783b44898b71233e7ec2e33ce29ae88b440d"
+        },
+        {
+          "bytes": 411,
+          "category": "registry",
+          "name": "start_approval.json",
+          "sha256": "a5beb3fd5aeb4f2ded7ed47853927f188f923316856f168737563a9c2b4de25c"
+        },
+        {
+          "bytes": 193,
+          "category": "outcome",
+          "name": "99959368-e060-5719-a320-7d9eea453293.outcome.json",
+          "sha256": "aff0f5f13e8910c3c2cc89767755a852f0e2e3f1888a2033ce4f0ad1c5a9e813"
+        }
+      ],
+      "recipe": "M128",
+      "session_id": "99959368-e060-5719-a320-7d9eea453293",
+      "stage": "DEV"
+    },
+    {
+      "arm": "BASE",
+      "block": "DEV01",
+      "files": [
+        {
+          "bytes": 857,
+          "category": "registry",
+          "name": "COMPLETE.json",
+          "sha256": "407c69596ae124e3ef2c03988a79f20bdf68ebe52accca181c09ee6449268577"
+        },
+        {
+          "bytes": 961,
+          "category": "registry",
+          "name": "START.json",
+          "sha256": "035857b988a72f3ba6b8de1f0bcb0b3b492557087460a6a3ab433a476d16a086"
+        },
+        {
+          "bytes": 411,
+          "category": "registry",
+          "name": "start_approval.json",
+          "sha256": "353567e31571d10a61f9934dae168ba2ed2a03def07d723ed470411cff99befe"
+        },
+        {
+          "bytes": 193,
+          "category": "outcome",
+          "name": "60c64f46-879b-5c9c-b83c-d114fe7ee1b0.outcome.json",
+          "sha256": "7fff82f59c57bb1aa64ed44483e8ab50a2791245d6df7672a4f81c6957ee7a2b"
+        }
+      ],
+      "recipe": "L64",
+      "session_id": "60c64f46-879b-5c9c-b83c-d114fe7ee1b0",
+      "stage": "DEV"
+    },
+    {
+      "arm": "WAIT200",
+      "block": "DEV01",
+      "files": [
+        {
+          "bytes": 858,
+          "category": "registry",
+          "name": "COMPLETE.json",
+          "sha256": "3a2a6b0c12ee442f3b67264b37419db663f981a17c70885550061dbb93f7ee46"
+        },
+        {
+          "bytes": 961,
+          "category": "registry",
+          "name": "START.json",
+          "sha256": "93b00b8f1c4142d87c3b96c5be73087e7e7ff7d288e63af74e636edae413b985"
+        },
+        {
+          "bytes": 411,
+          "category": "registry",
+          "name": "start_approval.json",
+          "sha256": "0fdf4bb11ac07c55a3d3c94f0045afce6aaa5dd1dbaa313e6acb71ad64e247b3"
+        },
+        {
+          "bytes": 196,
+          "category": "outcome",
+          "name": "8dc6099f-b2a3-5d46-96dc-d5847b5f09e6.outcome.json",
+          "sha256": "35ea8a3d6e433700248c72513190696ee960495d1f9d55c4c224a24f947dca82"
+        }
+      ],
+      "recipe": "M128",
+      "session_id": "8dc6099f-b2a3-5d46-96dc-d5847b5f09e6",
+      "stage": "DEV"
+    },
+    {
+      "arm": "PAIR_G",
+      "block": "DEV01",
+      "files": [
+        {
+          "bytes": 858,
+          "category": "registry",
+          "name": "COMPLETE.json",
+          "sha256": "731c2499c1f3d188fe36348e50dcdfd460bc73aa9ac4c5135d605dc69a09e059"
+        },
+        {
+          "bytes": 961,
+          "category": "registry",
+          "name": "START.json",
+          "sha256": "85a144df90629b61390fe6f4b043f6ec9e18e74c5aa9cd70fb63987d5fca3bfe"
+        },
+        {
+          "bytes": 411,
+          "category": "registry",
+          "name": "start_approval.json",
+          "sha256": "faf9e762c73b7390ec0d3edb8f5dd17a83e05e3ef3d5593ac726759f3632ecbf"
+        },
+        {
+          "bytes": 195,
+          "category": "outcome",
+          "name": "13b24079-88e3-554e-b309-8efd6de164e7.outcome.json",
+          "sha256": "91309bf2d02e4cc58fc082e67408e566b1019233b97f75ed75e9e16b48061391"
+        }
+      ],
+      "recipe": "M128",
+      "session_id": "13b24079-88e3-554e-b309-8efd6de164e7",
+      "stage": "DEV"
+    },
+    {
+      "arm": "PAIR_G",
+      "block": "DEV01",
+      "files": [
+        {
+          "bytes": 857,
+          "category": "registry",
+          "name": "COMPLETE.json",
+          "sha256": "296b72a0087f97fa67b0d68c86054d79339ddf303decb3343e2a33137a100692"
+        },
+        {
+          "bytes": 961,
+          "category": "registry",
+          "name": "START.json",
+          "sha256": "13852ad5917f6c10de2793a02caf5c5443878a0fea74c8959e3fe7671f911302"
+        },
+        {
+          "bytes": 411,
+          "category": "registry",
+          "name": "start_approval.json",
+          "sha256": "ce9a9a768356537b272fa6dd22f9ba01524e8f0a414647ad574953bcb7107092"
+        },
+        {
+          "bytes": 195,
+          "category": "outcome",
+          "name": "6e1ac30a-16a0-5c7c-91fe-a67bb06900c4.outcome.json",
+          "sha256": "f6de7a06c770afabaec0172281c4b93406e0e29088647fb02959959cd87802db"
+        }
+      ],
+      "recipe": "L64",
+      "session_id": "6e1ac30a-16a0-5c7c-91fe-a67bb06900c4",
+      "stage": "DEV"
+    },
+    {
+      "arm": "CPU",
+      "block": "DEV02",
+      "files": [
+        {
+          "bytes": 858,
+          "category": "registry",
+          "name": "COMPLETE.json",
+          "sha256": "fe790208798f15c374b3b9648598c9ad7d649cf793d4ff0b3da593715bb9b45f"
+        },
+        {
+          "bytes": 944,
+          "category": "registry",
+          "name": "START.json",
+          "sha256": "6165114fe56ccbfbfc5f699dbd9eb67b827cdf161f50060cb12d6f8e6e48679c"
+        },
+        {
+          "bytes": 411,
+          "category": "registry",
+          "name": "start_approval.json",
+          "sha256": "2f4c9e148fa3da4b1d0413821106ef0c40e0d7825aebd060687f0a0d00e130a0"
+        },
+        {
+          "bytes": 192,
+          "category": "outcome",
+          "name": "a4c5020e-55c7-5ca6-aad1-fd47accee7b2.outcome.json",
+          "sha256": "68f7d632dfeb8f9566b40e24440268db3b2bd8797eced495d254b45fc774c45a"
+        }
+      ],
+      "recipe": "C252",
+      "session_id": "a4c5020e-55c7-5ca6-aad1-fd47accee7b2",
+      "stage": "DEV"
+    },
+    {
+      "arm": "PAIR_G",
+      "block": "DEV02",
+      "files": [
+        {
+          "bytes": 858,
+          "category": "registry",
+          "name": "COMPLETE.json",
+          "sha256": "2de1ead32769affc308b7aacad89d414f95ebab526f7c44bd5a4756d2730f43d"
+        },
+        {
+          "bytes": 962,
+          "category": "registry",
+          "name": "START.json",
+          "sha256": "dee6d0e350642f048c6f0672958681a11663fee095055e3158709cb93b43f957"
+        },
+        {
+          "bytes": 411,
+          "category": "registry",
+          "name": "start_approval.json",
+          "sha256": "b62bb85bd7fa484356624f88f0fea271adf3477cfe8efc26c268047aa8d00a38"
+        },
+        {
+          "bytes": 195,
+          "category": "outcome",
+          "name": "c85dde6f-75e7-548c-aaec-ae0d587ee881.outcome.json",
+          "sha256": "d2f8fe0030d3a10a2666cb17df1a15156bf647f978a826178042200e7145a5ac"
+        }
+      ],
+      "recipe": "M128",
+      "session_id": "c85dde6f-75e7-548c-aaec-ae0d587ee881",
+      "stage": "DEV"
+    },
+    {
+      "arm": "ORDER",
+      "block": "DEV02",
+      "files": [
+        {
+          "bytes": 858,
+          "category": "registry",
+          "name": "COMPLETE.json",
+          "sha256": "0e70902c9faba416b9dadc6eb4f0435d1a1cdd7613b3a23dded59ccf82553b86"
+        },
+        {
+          "bytes": 944,
+          "category": "registry",
+          "name": "START.json",
+          "sha256": "dabd3791a2e120b6f92e6b636965b7746833b1c47bb7addc61b9d8ad82b81531"
+        },
+        {
+          "bytes": 411,
+          "category": "registry",
+          "name": "start_approval.json",
+          "sha256": "88a364aebcf25a689f430b059b18993f85197998b2aa429397bfd2d85e09bc0b"
+        },
+        {
+          "bytes": 194,
+          "category": "outcome",
+          "name": "689ea101-59ae-5e9c-ab09-b61d6a8b5a11.outcome.json",
+          "sha256": "9c643c730284e8c99dcf0e3e1dad6e41974c550137cef0e5893af32a054f44ca"
+        }
+      ],
+      "recipe": "M128",
+      "session_id": "689ea101-59ae-5e9c-ab09-b61d6a8b5a11",
+      "stage": "DEV"
+    },
+    {
+      "arm": "BASE",
+      "block": "DEV02",
+      "files": [
+        {
+          "bytes": 857,
+          "category": "registry",
+          "name": "COMPLETE.json",
+          "sha256": "365cce563378b710967793e8e97a3b547c5b1a829d17134101f5ea25a72812c0"
+        },
+        {
+          "bytes": 961,
+          "category": "registry",
+          "name": "START.json",
+          "sha256": "969e7f69998aaaaed9baba048a93a0c87dcc8ac4ca5ebb970327008bcaaadee7"
+        },
+        {
+          "bytes": 411,
+          "category": "registry",
+          "name": "start_approval.json",
+          "sha256": "5a77454ee0394cab5f6cf14036ac7bb2e4261ddf9929a5ec8886494b6264b89c"
+        },
+        {
+          "bytes": 194,
+          "category": "outcome",
+          "name": "92dc9cad-4a37-5fa8-b8f2-c8752539802b.outcome.json",
+          "sha256": "99add6abd7a8dd4d89e93284950f6516ce7925c4c884982b7d1c96c74582710d"
+        }
+      ],
+      "recipe": "L64",
+      "session_id": "92dc9cad-4a37-5fa8-b8f2-c8752539802b",
+      "stage": "DEV"
+    },
+    {
+      "arm": "BASE",
+      "block": "DEV02",
+      "files": [
+        {
+          "bytes": 858,
+          "category": "registry",
+          "name": "COMPLETE.json",
+          "sha256": "316ddcc5fd608d58b0d10a544bf5f49478eae1ba7c3ee29d486c6653c2f90392"
+        },
+        {
+          "bytes": 961,
+          "category": "registry",
+          "name": "START.json",
+          "sha256": "a439b242cc9648ca8990f3b3e1a71e7ec63890e063df48109aeb7d8ef7035fa5"
+        },
+        {
+          "bytes": 411,
+          "category": "registry",
+          "name": "start_approval.json",
+          "sha256": "d5ae747a6f28a94e716fc476563545feca500a284d0dab340fb1a1f7133e3a2b"
+        },
+        {
+          "bytes": 194,
+          "category": "outcome",
+          "name": "ca69f1fa-3bc1-5388-b7b9-b247d6b3513f.outcome.json",
+          "sha256": "d530203868539afed3437ebc72b8e8079c97735f09c1e13985c2887a34815f82"
+        }
+      ],
+      "recipe": "M128",
+      "session_id": "ca69f1fa-3bc1-5388-b7b9-b247d6b3513f",
+      "stage": "DEV"
+    },
+    {
+      "arm": "GPU",
+      "block": "DEV02",
+      "files": [
+        {
+          "bytes": 858,
+          "category": "registry",
+          "name": "COMPLETE.json",
+          "sha256": "96c5b250559031e23a539f5bb1dfe5b905f26e5fe00fc2a52e88f7aca9ec90cf"
+        },
+        {
+          "bytes": 944,
+          "category": "registry",
+          "name": "START.json",
+          "sha256": "ac180dc750ccce98e5bdfd8bdc64b5bfff33c907369f7e237f2ad58a6d234d85"
+        },
+        {
+          "bytes": 411,
+          "category": "registry",
+          "name": "start_approval.json",
+          "sha256": "f3d79a56e1b922f90951fb01e92aacbcea4a9e92c8c92e7516fb0a8b01220b4e"
+        },
+        {
+          "bytes": 193,
+          "category": "outcome",
+          "name": "8bdd27e4-6186-5d6a-98d6-d131027ede42.outcome.json",
+          "sha256": "374ef8c0acf725cb747ee67b93e04b9ce2c15af522cd0b1cd089ee6a14967594"
+        }
+      ],
+      "recipe": "C252",
+      "session_id": "8bdd27e4-6186-5d6a-98d6-d131027ede42",
+      "stage": "DEV"
+    },
+    {
+      "arm": "PAIR_G",
+      "block": "DEV02",
+      "files": [
+        {
+          "bytes": 857,
+          "category": "registry",
+          "name": "COMPLETE.json",
+          "sha256": "f75cd6900387a577dca104e85c50a4757fd04d21e0b751bb97c77a92cd5fa235"
+        },
+        {
+          "bytes": 944,
+          "category": "registry",
+          "name": "START.json",
+          "sha256": "a9feba4f4dfcec79f8d59fba191338dfc54aa845e527a78e808ccdab538504bf"
+        },
+        {
+          "bytes": 411,
+          "category": "registry",
+          "name": "start_approval.json",
+          "sha256": "b6ba37c95e778d2e07f3f2d1dd95221bfdf9fba89a76aa0007467287c7342ede"
+        },
+        {
+          "bytes": 196,
+          "category": "outcome",
+          "name": "8e5e78c5-9b5a-566d-84b3-a8d0b52ef5f7.outcome.json",
+          "sha256": "eb17fef120914c8626fb21ae8cdaa3d70e2b5b8c09ea0199460cbec7b8c1dae8"
+        }
+      ],
+      "recipe": "L64",
+      "session_id": "8e5e78c5-9b5a-566d-84b3-a8d0b52ef5f7",
+      "stage": "DEV"
+    },
+    {
+      "arm": "WAIT200",
+      "block": "DEV02",
+      "files": [
+        {
+          "bytes": 858,
+          "category": "registry",
+          "name": "COMPLETE.json",
+          "sha256": "ad76b529df1ad8e2243af375435a85eb9e156174e2dab5cfc57173f49b17ec4a"
+        },
+        {
+          "bytes": 961,
+          "category": "registry",
+          "name": "START.json",
+          "sha256": "f1a9a668e684cbbf32f78f588567f46d6ede322b9bea803776ed17b45ce22e8a"
+        },
+        {
+          "bytes": 411,
+          "category": "registry",
+          "name": "start_approval.json",
+          "sha256": "9d7c2a46c66396a7d07480c38fc72c537c4cc3ba4c3fcc71389257e09c287130"
+        },
+        {
+          "bytes": 197,
+          "category": "outcome",
+          "name": "c028f99d-318e-5aa1-aecc-7d13af7a0f07.outcome.json",
+          "sha256": "b09d79d367f4643f518cca52cad6f198ede2ca2ca36450cf231ea12a0dce7e3a"
+        }
+      ],
+      "recipe": "M128",
+      "session_id": "c028f99d-318e-5aa1-aecc-7d13af7a0f07",
+      "stage": "DEV"
+    }
+  ],
+  "schema": "a24-preserved-prior-attempts-v1"
+}
