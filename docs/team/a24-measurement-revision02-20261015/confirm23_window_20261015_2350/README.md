@@ -4,6 +4,8 @@
 
 [앞당긴 시간창](USER_WINDOW.json) · [실행 계약](EXECUTION_CONTRACT.json) · [23개 실제 authorization PC 검산](PC_VERIFICATION.json) · [관련31검사](REGRESSION_VERIFICATION.json) · [읽기전용 시작 점검](BEFORE_DEVICE_READONLY.json)
 
+**현재 C7 실행 중:** 실제 시작 소스는 공개 커밋 `268d47bca5c7e5f98b893388f507e606bef99ede`이며 coordinator SHA는 `426f92d2a4178613a366ce806386f50419a20695f6b99682f1d4fc7260ef66e5`다. [실제 시작 문맥·결합 SHA](RUNTIME_CONTEXT.json). 시작 직후 앱 전 AP28.2℃/APP0으로 원기록이 생성됐다. 이후 완료 여부는 실제 원장으로 확인한다. 이 명령을 재실행하지 않는다.
+
 - 실제 job은 `output/A24R02C7/job.json`, 새 원물은 `Documents/A24R02C7`, 전역 소유·예약은 `Documents/A24R02C7_GLOBAL`이다. 실제 실행 여부는 owner·APP intent·START/close·outcome·WINDOW_STOPPED와 대조한다. 시작한 명령을 다시 실행하지 않는다.
 - 시작 전 확인17/40·2,352본요청, 정식58/81·23미실행, 실제APP55+별도진단1=56이다. 첫 조건 L64 PAIR_G는 원 BASE의27.1℃와 reference SHA `a09f9325ac22164fa3e1fc1b2f1c267927ea5d02702fda30796bb087e367d570`를 그대로 인계한다.
 - C6는22:30:21 KST에 앱 전 냉각 중 종료했다. APP/워밍업/MAIN/START/claim/세션 소비0이며 원리적으로 냉각 불가함을 판정한 종료가 아니다. [닫힌 냉각 원기록·정정·SHA](../../../results/a24_measurement_share_20261015/preAPP_visit_06_cooling/README.md)를 따로 보존한다. 원 C6 계약·소스 기록은 변경하지 않는다.

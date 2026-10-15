@@ -4,6 +4,8 @@
 
 [원기록 ZIP](C6_CLOSED_PREAPP_ONLY.zip) · [ZIP SHA](ARCHIVE_SHA256.json) · [요약](COOLING_SUMMARY.json) · [파생 AP CSV](derived_AP_readouts.csv)
 
+[로그인 없는 외부 GitHub 다운로드·원자료 파일별 SHA 검증](PUBLIC_GITHUB_VERIFICATION.json): 커밋268d47b에서 HTTP200·ZIP SHA 및 내부6개 원자료 SHA가 일치했다.
+
 ZIP의 host_preAPP는 종료된 호스트 HAL 읽기 원바이트이며 앱의 공통 MAIN 관측창과 다르다. 파일별 SHA는 ZIP 안 FILE_SHA256.json에 있다. 파생 CSV를 원자료로 대체하지 않는다. 대기 에너지를0으로 가정하지 않으며 J는 미판정이다. 장소 변경 답변은 사용자가 같은 장소라고 정정했고 주변 온도·통풍은 측정하지 않았다.
 
 개인 기기 식별·연결 주소가 든 명령 로그, 개인 경로가 든 owner·설정, 모델·APK·이미지·키는 포함하지 않는다. 명령 로그 원본은 로컬에 보존하고, 실제 기기 조회1036명령은 요약에 따로 공시한다. 추론·세션 횟수와 혼동하지 않는다.
