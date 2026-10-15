@@ -423,6 +423,7 @@ class Driver(D7.Driver):
             stop_at = (t["origin_host_epoch"] + M8.HAL_AFTER_ORIGIN_S) if t.get("origin_host_epoch") else time.time() + 60
             self.hal_stop_at(h, stop_at, f"origin + {M8.HAL_AFTER_ORIGIN_S} s" if t.get("origin_host_epoch") else "no origin (fallback 60 s)")
             v = C.read_json(folder / "validated.json") if (folder / "validated.json").is_file() else {}
+            gate = dict(gate, gate_version=("v4" if self.args.tref_band_c else "v2"), band_c=M8.TREF_BAND_C, in_band=(not gate.get("forced_start", False)) if gate.get("result") else None)
             self.event(what="run_end", label=label, run_kind=stage, index=index, attempt=attempt, rc=rc, item=item, gate=gate, in_block_charge=in_block_charge, perfetto=perf,
                        hal_csv=h["csv"], hal_started_epoch=h["started_epoch"], hal_stop_at_epoch=stop_at, start_state=s0, end_state=self.phone_state(), **self.charge_fields(s0, t.get("host_start_epoch")),
                        times=t, validated=v.get("eligible"), reasons=v.get("reasons"), coverage=(v.get("rules") or {}).get("A10_coverage", {}).get("detail"))
@@ -473,7 +474,7 @@ class Driver(D7.Driver):
         self.acquire_lock()
         self.log(f"DRIVER START stage={self.args.stage} block={self.args.block} items={[i['label'] for i in items]} base={self.base}")
         self.log("NOTE: laptop lid OPEN · screen_off_timeout 86400000 kept · SOC start min 20 (영훈) · Tref gate = v2 (AP 첫 안정 60 s · 조민규 01:5x 확정)")
-        self.log(f"FLAGS: tref_key={self.args.tref_key or '(day)'} no_fixed_idle={self.args.no_fixed_idle} gate_force_start={self.args.gate_force_start} gate_force_after_s={self.args.gate_force_after_s} plan_file={self.args.plan_file or '(blocks.json)'}")
+        self.log(f"FLAGS: tref_key={self.args.tref_key or '(day)'} no_fixed_idle={self.args.no_fixed_idle} gate_force_start={self.args.gate_force_start} gate_force_after_s={self.args.gate_force_after_s} tref_band_c={M8.TREF_BAND_C} (gate_version={'v4' if self.args.tref_band_c else 'v2'}) plan_file={self.args.plan_file or '(blocks.json)'}")
         try:
             if self.adb_state() != "device" and not self.wait_adb(self.args.reconnect_wait_s):
                 raise Stop("adb not connected at start (새 주소)")
@@ -517,10 +518,13 @@ def main() -> int:
     ap.add_argument("--charge-to-soc", type=int, default=60, help="SOC < 20 로 충전할 때 '뽑으세요' 를 말할 SOC (영훈 운영 · 상한 없음)")
     ap.add_argument("--tref-key", default="", help="S26_M8_tref.json 의 키 (기본 = 드라이버 시작 날짜). 10/15 영훈: 블록 1 (낮) · 블록 2 는 각각 새 측정 구간 → 키를 나눠 재산출 (블록 안 재산출 0 은 그대로)")
     ap.add_argument("--no-fixed-idle", action="store_true", help="영훈 10/15 08:xx: 충전 분리 뒤 1,200 s 고정 유휴 · Tref 전 1,200 s 고정 유휴 생략 — 온도 조건 (안정 60 s 창 · 게이트) 만 적용 · Tref 탐색 상한 없음 (안정 창까지)")
+    ap.add_argument("--tref-band-c", type=float, default=0.0, help="등록 v4 부록 2 (조민규 10/15 12:4x 답 · 블록 2 · CONFIRM): START 밴드 Tref ± N (v2 0.5 → v4 1.0). 0 = v2 상수 그대로")
     ap.add_argument("--gate-force-after-s", type=int, default=0, help="영훈 10/15 10:5x: 원래 기준 (600 s 거절 → 300 s → 재시도) 뒤에도 거절이면 누적 대기 상한 (예 1800) 에서 START (자리 비움 0 · 거절 원장 보존)")
     ap.add_argument("--gate-force-start", action="store_true", help="영훈 10/15 10:1x: 게이트 600 s 뒤 거절이어도 START (거절 원장 보존 · forced_start 표시 · 자리 비움 0)")
     ap.add_argument("--plan-file", default="", help="blocks.json 대신 쓸 계획 파일 (예: plan_m8/p0_supp.json · stages.p0 한 세션 · P0 보충)")
     args = ap.parse_args()
+    if args.tref_band_c:
+        M8.TREF_BAND_C = args.tref_band_c   # m8_gate.start_decision / tref_candidate 는 호출 시점의 M8.TREF_BAND_C 를 읽는다 (v2 상수 파일 무변경 · 원장 기록)
     M8.activate()
     return Driver(args).run()
 

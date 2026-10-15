@@ -21,7 +21,7 @@ import m8_readout as R  # noqa: E402
 
 PLAN_ROOT = M8.REPO / "s26" / "results" / "m8_prep"
 FIELDS = ["cycle", "stage", "block_no", "order_pos", "label", "experiment_id", "idx", "arm", "bank", "policy", "policy_args", "prep", "block", "attempt", "eligible", "reasons", "analysis_split", "session_id",
-          "start_time", "end_time", "start_SKIN", "start_AP", "start_BAT", "start_SOC", "end_SOC", "soc_delta", "in_block_charge_yes_no", "soc_40_80_satisfied", "soc_condition", "soc_in_m8_start_band", "soc_in_new_band_reference_only", "gate_result", "gate_waited_s", "tref_c",
+          "start_time", "end_time", "start_SKIN", "start_AP", "start_BAT", "start_SOC", "end_SOC", "soc_delta", "in_block_charge_yes_no", "soc_40_80_satisfied", "soc_condition", "soc_in_m8_start_band", "soc_in_new_band_reference_only", "gate_result", "gate_version", "band_c", "in_band", "gate_waited_s", "tref_c",
           "gate_skin_median", "gate_skin_slope", "gate_ap_slope", "in_block_charge", "charge_end_to_start_s", "last_power_disconnected", "previous_run", "gap_s", "perfetto",
           "hal_cont_path", "coverage_app", "coverage_host", "app_post_t0_s", "host_post_t0_s", "last_dispatch_s", "last_available_s", "planned", "succeeded", "undispatched", "failed",
           "urgent_p95_ms", "normal_p95_ms", "svc70", "svc80", "svc90", "svc95", "svc100", "all_completed", "wait_count", "wait_dose_total_ms", "wait_nominal_total_ms", "wait_overrun_total_ms", "readback_ok", "prep_calls", "npu_contract",
@@ -116,7 +116,7 @@ def main() -> int:
                              end_SOC=soc_end, soc_delta=(soc_end - soc) if (soc is not None and soc_end is not None) else None, in_block_charge_yes_no=("yes" if ev.get("in_block_charge") else "no"),
                              soc_40_80_satisfied=soc_40_80, soc_condition="SOC ≥ 20 · 상한 없음 (영훈 운영 결정) — 원래 40~80 제안과 다른 조건 · 기준 밖 자료 삭제 0 · '원래 조건 준수' 표기 0",
                              soc_in_m8_start_band=(soc is not None and soc >= M8.SOC_MIN_START), soc_in_new_band_reference_only=(soc is not None and M8.SOC_NEW_BAND[0] <= soc <= M8.SOC_NEW_BAND[1]),
-                             gate_result=gate.get("result"), gate_waited_s=gate.get("waited_s"), tref_c=gate.get("tref"), gate_skin_median=last_dec.get("skin_median"), gate_skin_slope=last_dec.get("skin_slope_c_per_min"),
+                             gate_result=gate.get("result"), gate_version=gate.get("gate_version") or ("v2" if gate else None), band_c=gate.get("band_c", 0.5 if gate else None), in_band=gate.get("in_band", (not gate.get("forced_start")) if gate else None), gate_waited_s=gate.get("waited_s"), tref_c=gate.get("tref"), gate_skin_median=last_dec.get("skin_median"), gate_skin_slope=last_dec.get("skin_slope_c_per_min"),
                              gate_ap_slope=last_dec.get("ap_slope_c_per_min"), in_block_charge=ev.get("in_block_charge"), charge_end_to_start_s=ev.get("charge_end_to_start_s"), last_power_disconnected=ev.get("last_power_disconnected"),
                              previous_run=(prev or {}).get("label"), gap_s=round(float(start_rec["epoch"]) - float(prev["epoch"])) if (start_rec and prev) else None,
                              perfetto=((ev.get("perfetto") or {}).get("supported") if isinstance(ev.get("perfetto"), dict) else ev.get("perfetto")), hal_cont_path=ev.get("hal_csv"),
