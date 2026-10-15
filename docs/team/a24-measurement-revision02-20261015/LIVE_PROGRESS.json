@@ -1,8 +1,8 @@
 {
-  "updated_UTC": "2026-10-15T20:07:16.648911+00:00",
-  "updated_KST": "2026-10-16 05:07:16 KST",
+  "updated_UTC": "2026-10-15T20:15:31.261729+00:00",
+  "updated_KST": "2026-10-16 05:15:31 KST",
   "original_confirm": {
-    "checked_UTC": "2026-10-15T20:07:16.040822+00:00",
+    "checked_UTC": "2026-10-15T20:15:30.566348+00:00",
     "phase": "STOPPED",
     "current": {
       "session_id": "2f15f739-0a34-58d3-b8e9-24a739bc6d8c",
@@ -65,16 +65,26 @@
       "run_root_started": false,
       "worker_lock_present": false
     },
+    "TRACE2": {
+      "registered": 2,
+      "APP": 0,
+      "normal": 0,
+      "rejected": 0,
+      "host_failed": 0,
+      "ended": false,
+      "run_root_started": false,
+      "worker_lock_present": false
+    },
     "SUP12_C1": {
       "registered": 8,
-      "APP": 2,
-      "normal": 1,
+      "APP": 3,
+      "normal": 2,
       "rejected": 0,
       "host_failed": 0,
       "ended": false,
       "run_root_started": true,
       "worker_lock_present": true,
-      "pending_prescription": "C252_CPU"
+      "pending_prescription": "L64_PAIR_G"
     },
     "EXTRA4_ORDER": {
       "registered": 1,
@@ -88,7 +98,7 @@
     },
     "SUP12": {
       "registered": 12,
-      "APP": 6,
+      "APP": 7,
       "normal": 3,
       "rejected": 0,
       "host_failed": 1,
@@ -100,10 +110,11 @@
   "original85_cap": 85,
   "supplement12_cap": 12,
   "matched_rebaseline_cap": 6,
-  "combined_ceiling": 103,
-  "combined_consumed": 90,
-  "supplement_normally_closed_total": 4,
-  "supplement_global_APP_intents_not_double_counted": 6,
+  "separate_trace_path_repair_cap": 2,
+  "combined_ceiling": 105,
+  "combined_consumed": 91,
+  "supplement_normally_closed_total": 5,
+  "supplement_global_APP_intents_not_double_counted": 7,
   "original_confirm_rejections_total": 2,
   "active_measurement_groups": [
     "SUP12_C1"
@@ -279,6 +290,28 @@
           "family": "SUP12_C1",
           "stage": "DEV",
           "block": "F_CPU",
+          "planned_arms": 1,
+          "normal_completed": 1,
+          "all_arms_normally_completed": true,
+          "status_counts": {
+            "COMPLETE_TRACE_RECOVERED": 1
+          },
+          "subset_recipe": null
+        }
+      ]
+    },
+    {
+      "label": "SUP12_C1_DEV_CPU_C252",
+      "path": "docs/results/a24_measurement_share_20261016/automatic_checkpoints/SUP12_C1_DEV_CPU_C252",
+      "bundles": [
+        {
+          "filename": "SUP12_C1_DEV_DEV_CPU.zip",
+          "bytes": 407745,
+          "sha256": "ce09786af4708c2af4fb5c3c30a12703c38dfd7e3cf500e368b71098605655ac",
+          "members": 278,
+          "family": "SUP12_C1",
+          "stage": "DEV",
+          "block": "DEV_CPU",
           "planned_arms": 1,
           "normal_completed": 1,
           "all_arms_normally_completed": true,
