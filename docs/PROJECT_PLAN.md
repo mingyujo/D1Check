@@ -1,3 +1,7 @@
+# 2026-10-16 완료 반영 — A24 후속 실측과 공개 PC 재계산
+
+최종 큐는06:43 KST 종료했다. [결과 보고서](results/a24_final_measurements_20261016/README.md)와 [실패 포함 원자료23 ZIP](results/a24_measurement_share_20261016/final_registered_families_01/README.md)에 원40/개정4/보완12/경로확인2/새기준6을 분리 보존했다. 원40은37정상이며 새6을 합쳐40성공으로 바꾸지 않는다. 추가6/640은 전량 완료했고, 모든 보고대상64등록/58정상/7912완료·8456예정의 공개 재계산과 PC26검사가 통과했다. 원179/APK·MAIN·기한·AP공백 기준은 보존했다. 응답 개선과 최고AP 증가를 함께 기록하며 열·J 공동절감/새RL 실기기검증/독립 모형정확도PASS로 확장하지 않는다. Jnull·표면미검증·experiment_ready=false, 원WIP/데스크톱/S26/NPU 보존. 추가 실측/학습 큐는 없다. 아래는 결과 전 계획 이력이다.
+
 # 2026-10-16 추가 — 계측 설정 경로 오류의 유한한 새 OFF/ON2
 
 기존보완ON은설정파일읽기errno13으로MAIN전에실패했으며원실패/소비/32미실시·동일실행닫힘증거를보존했다. [미실행8](team/a24-measurement-revision02-20261015/supplement8_after_trace_error_20261016/README.md)은원12범위/예산에서계속한다. 사용자자율오류해결지시를 [공식설정경로새OFF/ON2](team/a24-measurement-revision02-20261015/trace_path_repair2_20261016/README.md)/64요청으로제한해원103+별도2/계산상105를두고,현재8→새2→새6을직렬진행한다. 직접숫자105지정승인/무제한retry/원실패대체가아니다. 변경은별도controller의공식설정폴더뿐이며원179/APK/준비추론/MAIN/기한/입력/profile210초64MiB상한을보존한다. PC3+2authorization PASS/새2실제0, Jnull/표면미검증/experiment_ready=false유지.

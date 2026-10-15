@@ -1,4 +1,13 @@
-# 2026-10-16 최신 — 원확인37정상·옛기준1미실행보존·R3→보완12→새6 계속
+# 2026-10-16 최신 — A24 후속 실측 종료·공개 원자료 재현 통과
+
+- **06:43 KST 새 기준6/640 MAIN 전량 정상 회수, 큐18 정상 종료·worker owner 해제·실행 parent55540 exit0.** PC 게시기도 마지막 닫힌 묶음을 실제 원격에 push하고 exit0으로 종료했다. 같은 ID APP 재전송0, 새 APK 빌드/설치0, 데스크톱 학습·S26/NPU·원 worktree 변경0이다.
+- [최종 보고서·오프라인 화면](results/a24_final_measurements_20261016/README.md): 원40 37정상5464/5720, 개정4 2정상256/512, 보완12 11정상1488/1520, 경로확인2 2정상64/64, 새기준6 6정상640/640. 이 보고 범위 **64등록·58정상·7912완료/8456예정·출력오류0**이며 원실패5·미실행1/544건도 보존했다. 프로젝트 전체 누적 횟수와 구분한다.
+- [공개 원자료23 ZIP](results/a24_measurement_share_20261016/final_registered_families_01/README.md)의 원멤버 SHA·이벤트·완료/자원 경계를 다시 검사하고 정상58세션의 응답·AP·병행·WAIT 등20필드를 private 분석과 대조해 PASS했다. [PC26검사](results/a24_final_measurements_20261016/PC_TESTS.json) 통과. 사전 수치 예측 부재로 모형 독립 정확도PASS는 아니다.
+- 원5쌍의 혼합 병행은 긴급 P95 평균10.952→1.434초/모든640건 완료·기한 개선. AP 적격4쌍의 평균차 -0.0637℃/관측 최고차 **+0.275℃**이므로 최고열 개선으로 채택하지 않는다. 새 혼합 반복도 응답10.546→1.431초지만 최고AP30.6→31.0℃다. 에너지 Jnull·물리 표면 미검증·experiment_ready=false를 유지한다.
+- [Perfetto PC 검사](results/a24_final_measurements_20261016/trace_audit/README.md): sched_switch240820/wakeup126992/cpufreq48586·8CPU 자료 확인, 보고된 비영data_loss없음. 전체적재 메모리경고·skip8·끝0.279초미포함과 원RAW_ONLY영수증을 보존한다. 전력J·GPU내부실행 검증이 아니다.
+- 현재 추가 실측·학습 큐는 없다. 다음 최대3: 최종 문서/그림·원자료의 GitHub 외부 바이트 확인; 데스크톱에서 공개 재계산 명령으로 이어받기; 전류 단위/시간 응답과 독립 예측 모형 검증은 별도 후속 범위로 판단. Git 최종 HEAD·검증 시점은 최종 보고와 `VERSIONS.json`/원격 영수증으로 대조한다.
+
+# 2026-10-16 이전 — 원확인37정상·옛기준1미실행보존·R3→보완12→새6 계속
 
 - 06:07 KST 마지막새6/child10000(큐18 parent55540):첫L64BASE64정상회수·PAIR준비중. C1의8조건은05:48:47정상종료/1456MAIN/출력오류0이며보완전체11정상1488·ON실패32보존이다. 수정TRACE2도OFF/ON각32·2정상/64·출력오류0/AP2적격으로끝나원설정경로오류를수정경로에서실제통과했다. [원본trace8.98MB·SHA](results/a24_measurement_share_20261016/perfetto_path_repair_raw_trace_01/README.md)의자료원/유실검증은별도PC분석대기, Jnull·표면미검증유지.
 - 05:14 KST 보완미실행8중CPU252×2가정상회수돼기존보완전체5정상/536MAIN·ON실패32보존,현재L64PAIR준비중이다. 새[공식경로OFF/ON2](team/a24-measurement-revision02-20261015/trace_path_repair2_20261016/README.md)는PC3+2authorization통과/실제0이며,현재8→새2→새6의새큐18(parenttool55540/대기기기명령0)을등록했다. 원103원장과새2를분리해계산상최대105로제한하며원40성공대체0이다. 구큐17/구새6대기는HELD보존·재시작금지.

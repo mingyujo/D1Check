@@ -1,0 +1,1 @@
+SELECT ct.cpu,ct.name,COUNT(*) AS samples,MIN(c.ts) AS first_ts_ns,MAX(c.ts) AS last_ts_ns FROM counter c JOIN cpu_counter_track ct ON ct.id=c.track_id GROUP BY ct.cpu,ct.name ORDER BY ct.cpu,ct.name;

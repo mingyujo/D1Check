@@ -1,4 +1,8 @@
-# 2026-10-16 최신 — C11 미실행13 계속·새큐17
+# 2026-10-16 최신 — 후속 실측 종료·재실행 금지·PC 자료 공유
+
+**06:43 KST 큐18과 새기준6 전량 종료, 현재 새 실측 큐 없음.** [최종보고서·재계산 명령](../../results/a24_final_measurements_20261016/README.md)·[공개 원자료23 ZIP](../../results/a24_measurement_share_20261016/final_registered_families_01/README.md)·[실패 포함 원장](../../results/a24_final_measurements_20261016/FINAL_COUNTS.json)을 먼저 확인한다. 원40은37정상/실패2/미실행1, 새6은6정상/640완료다. 64등록/58정상/7912완료·8456예정/출력오류0을 보존한다. 원래 owner/START/실패/예산을 지우거나 아래 과거 execute 명령을 재호출하지 않는다. 후속 보고·ZIP 재계산은 기기 없이 가능하며Jnull/물리표면 미검증/experiment_ready=false다. 아래는 실행 이력이다.
+
+# 2026-10-16 이전 — C11 미실행13 계속·새큐17
 
 [고정 원격 확인 페이지](LIVE_PROGRESS.md)·[C11 증거](remaining13_after_transport_failure_20261016/README.md)를 먼저 읽는다. 실제C11 job/owner/START/stop을대조하며중복시작금지. C10의APP전달오류는동일폰두번읽기의프로세스/결과/승인부재+host승인업로드0으로MAIN0을확인했지만원FAILED/소비1/예정64/워밍업null을보존했다. C11은02:33:08시작/미실행13만,원25정상+2실패/기존MAIN3808에서계속한다. 새큐 `output/A24FOLLOW17`가C11뒤ORDER1→보완12를진행하고구큐16은held보존한다. 사용자야간최신지시:남은실측/오류/20분재연결/시작온도문제자율처리/원격공유까지. 온도변경은원기준을소급수정하지않고같은비교군의별도개정으로기록한다. 원179/APK/기준판정/서비스/반환/실패원물/Jnull/표면미검증/experiment_ready=false유지.
 
