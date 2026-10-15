@@ -5,7 +5,8 @@
 - [공개 원자료23 ZIP](results/a24_measurement_share_20261016/final_registered_families_01/README.md)의 원멤버 SHA·이벤트·완료/자원 경계를 다시 검사하고 정상58세션의 응답·AP·병행·WAIT 등20필드를 private 분석과 대조해 PASS했다. [PC26검사](results/a24_final_measurements_20261016/PC_TESTS.json) 통과. 사전 수치 예측 부재로 모형 독립 정확도PASS는 아니다.
 - 원5쌍의 혼합 병행은 긴급 P95 평균10.952→1.434초/모든640건 완료·기한 개선. AP 적격4쌍의 평균차 -0.0637℃/관측 최고차 **+0.275℃**이므로 최고열 개선으로 채택하지 않는다. 새 혼합 반복도 응답10.546→1.431초지만 최고AP30.6→31.0℃다. 에너지 Jnull·물리 표면 미검증·experiment_ready=false를 유지한다.
 - [Perfetto PC 검사](results/a24_final_measurements_20261016/trace_audit/README.md): sched_switch240820/wakeup126992/cpufreq48586·8CPU 자료 확인, 보고된 비영data_loss없음. 전체적재 메모리경고·skip8·끝0.279초미포함과 원RAW_ONLY영수증을 보존한다. 전력J·GPU내부실행 검증이 아니다.
-- 현재 추가 실측·학습 큐는 없다. 다음 최대3: 최종 문서/그림·원자료의 GitHub 외부 바이트 확인; 데스크톱에서 공개 재계산 명령으로 이어받기; 전류 단위/시간 응답과 독립 예측 모형 검증은 별도 후속 범위로 판단. Git 최종 HEAD·검증 시점은 최종 보고와 `VERSIONS.json`/원격 영수증으로 대조한다.
+- 06:56 KST 자료 커밋`c7b71df80d37f0912e8f6ab11f4787a39b314ece`를 외부 GitHub에 push·실제 원격 HEAD 일치 확인. 인증 헤더 없이37파일/25,669,170바이트·원자료23ZIP+원본trace ZIP을 직접 내려받아 원바이트 일치 PASS했다. [외부 확인 영수증](results/a24_final_measurements_20261016/PUBLICATION_VERIFIED.json). 영수증을 담는 종료 커밋과 자료 커밋을 구분한다.
+- 현재 추가 실측·학습 큐는 없다. 다음 최대2: 데스크톱에서 공개 재계산 명령으로 이어받기; 전류 단위/시간 응답과 독립 예측 모형 검증은 별도 후속 범위로 판단. 최종 HEAD는 실제 원격과 대조하며 원 worktree의 미커밋 변경·HTML/PDF를 보존했다.
 
 # 2026-10-16 이전 — 원확인37정상·옛기준1미실행보존·R3→보완12→새6 계속
 

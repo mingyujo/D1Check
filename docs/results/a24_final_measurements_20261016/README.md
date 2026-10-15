@@ -4,6 +4,8 @@
 
 [오프라인 비교 화면](index.html) · [전체 원자료 ZIP 인덱스](RAW_DATA_INDEX.md) · [기계 집계](FINAL_COUNTS.json) · [버전·소스·APK SHA](VERSIONS.json) · [공개 ZIP 재계산 검증](PUBLIC_VS_PRIVATE_KPI_CHECK.json) · [PC 검사26개](PC_TESTS.json).
 
+**GitHub 외부 게시 확인 완료:** 자료 커밋 `c7b71df80d37f0912e8f6ab11f4787a39b314ece`의 실제 원격 HEAD를 확인하고, 인증 헤더 없이37파일·25,669,170바이트(원자료23 ZIP·별도 원본 trace ZIP 포함)를 직접 내려받아 로컬 원바이트와 대조했다. [외부 확인 영수증](PUBLICATION_VERIFIED.json). 이 영수증과 종료 상태를 담는 후속 커밋은 자료 커밋과 구분한다.
+
 ## 완료 범위와 실패 분모
 
 | 자료 역할 | 정상/등록 | MAIN 전 실패 | 미실행 | 완료/예정 본요청 |

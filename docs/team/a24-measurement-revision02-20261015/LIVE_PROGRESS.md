@@ -1,10 +1,12 @@
 # A24 실측 진행 현황
 
-**마지막 갱신: 2026-10-16 06:53:11 KST**
+**마지막 갱신: 2026-10-16 06:56:40 KST**
 
 **현재 전체 상태: 06:43 KST 실측·회수 종료 / PC 분석·공개 재현 검증 완료**
 
 [최종 한국어 보고서·오프라인 화면](../../results/a24_final_measurements_20261016/README.md) · [전체 원자료23 ZIP](../../results/a24_final_measurements_20261016/RAW_DATA_INDEX.md) · [실패 포함 최종 집계](../../results/a24_final_measurements_20261016/FINAL_COUNTS.json)
+
+**외부 GitHub 게시·직접 다운로드 확인 완료:** 자료 커밋`c7b71df`/실제 원격 HEAD 일치, 인증 헤더 없이37파일·원자료23 ZIP·원본 trace ZIP의 원바이트 일치. [외부 확인 영수증](../../results/a24_final_measurements_20261016/PUBLICATION_VERIFIED.json).
 
 **최종 보고 범위:64등록·58정상·MAIN7,912/8,456·출력오류0. 실패5·미실행1은 보존했으며 원독립40은37정상이다.** 새 공통 기준6은 전량 정상이다. 공개 ZIP의 이벤트·응답·AP·출력 재계산과 PC26검사가 통과했다. 최고AP/에너지 공동 개선·센서 교정·모형 독립 정확도PASS는 아니다. 현재 추가 기기/학습 큐는 없다.
 
