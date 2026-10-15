@@ -47,6 +47,14 @@ INSTRUCTIONS = [("프롬프트_M8_준비묶음_1014.md", "2026-10-14 (준비 D�
                 ("조민규_답_1015c_DEV블록1수신_정정6.txt", "2026-10-15 19:3x (조민규 · 블록 1 수신 정정 6) · 프롬프트_M8_추가지시4_1015.md → 이 묶음")]
 
 
+def slope_ok(last: dict, slope_max: float):
+    """0 · -0.0 은 유효한 숫자 (abs <= slope_max 통과) · None/결측 = null (조민규 10/15 정정 1 · v1 은 `or 9` 로 0 을 결측 취급했음)."""
+    a, b = last.get("ap_slope_c_per_min"), last.get("skin_slope_c_per_min")
+    if a is None or b is None:
+        return None
+    return abs(float(a)) <= slope_max and abs(float(b)) <= slope_max
+
+
 def host_source_at(t: str) -> str:
     src = HOST_SOURCE_BY_LAUNCH[0][1]
     for ts, sha in HOST_SOURCE_BY_LAUNCH:
@@ -131,9 +139,11 @@ def main() -> int:
     ap.add_argument("--results", type=Path, default=REPO / "results")
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--onedrive", type=Path, required=True)
+    ap.add_argument("--rev", type=int, default=1, help="2 = 조민규 10/15 21:xx 정정 (slope 0 · B1-03 이벤트 연결 · EDD a2 대표 문구/열 · 휴식 원점) → out/v2/ (v1 파일 보존)")
     args = ap.parse_args()
     M8.activate()
-    out = args.out; out.mkdir(parents=True, exist_ok=True)
+    out = args.out / "v2" if args.rev >= 2 else args.out
+    out.mkdir(parents=True, exist_ok=True)
     agg_source = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=str(REPO)).stdout.strip()
     blocks = C.read_json(PLAN_ROOT / "plan_m8/blocks.json")
     b1 = next(b for b in blocks["stages"]["dev_blocks"] if b["block_no"] == 1)
@@ -173,12 +183,21 @@ def main() -> int:
             rep = bool(v.get("eligible")) and not rep_done
             if rep:
                 rep_done = True
+            hl = C.read_json(folder / "host" / "session_log.json") if (folder / "host" / "session_log.json").is_file() else {}
+            mf = C.read_json(folder / "device" / "manifest.json") if (folder / "device" / "manifest.json").is_file() else (C.read_json(folder / "host" / "manifest_pushed.json") if (folder / "host" / "manifest_pushed.json").is_file() else {})
+            raw_dir = args.out / "EDD_a1_device_raw" / "app_files_a1"
+            is_edd_a1 = (lab == "B1-06-M128_ORDER" and a == 1)
+            a1_dev_done = (sum(1 for x in raw_dir.glob("*.result.json")) if (is_edd_a1 and raw_dir.is_dir()) else "")
             cons.append(dict(label=lab, experiment_id=s["experiment_id"], index=s["index"], session_id=s["session_id"], attempt=a, event=("stall_rc4" if rc == 4 else "run"), app_start=app_started,
                              completed=completed, eligible=v.get("eligible"), eligible_before_fix=(before or {}).get("eligible") if before else "",
                              requests_planned=planned, requests_completed=done if done is not None else (len(summ.get("rows", [])) if summ else 0),
-                             representative=rep, device_raw=("회수 (EDD_a1_device_raw/ · 읽기 전용 pull · 재실행 0)" if (lab == "B1-06-M128_ORDER" and a == 1) else "세션 폴더 device/"),
-                             reason=("a1 유효 = 대표 (첫 유효 시도)" if rep else ("추가 시도 · 보존 · 대표 아님 (a1 이 검사기 고침 재검증으로 유효)" if v.get("eligible") else
-                                     ("adb 끊김 stall · a1 소비 · 회수실패" if rc == 4 else "무효")))))
+                             representative=rep, device_raw=("회수 (EDD_a1_device_raw/ · 읽기 전용 pull · 재실행 0)" if is_edd_a1 else "세션 폴더 device/"),
+                             reason=(("a2 유효 = 대표 (a1 = stall · host 회수실패)" if a == 2 else "a1 유효 = 대표 (첫 유효 시도)") if rep else ("추가 시도 · 보존 · 대표 아님 (a1 이 검사기 고침 재검증으로 유효)" if v.get("eligible") else
+                                     ("adb 끊김 stall · a1 소비 · host 회수실패 (당시) · 기기 완료 128 은 뒤 회수 (별도 열)" if rc == 4 else "무효"))),
+                             a1_host_recovery_at_run=("실패 (adb 끊김 · observe lost · pull 0)" if is_edd_a1 else ""), a1_device_completed_recovered=a1_dev_done,
+                             partner_check_note=("조민규 10/15 검산: a1 납기 30+4 = 34/128 · 대표 a2 39+7 = 46/128 (이쪽 계산 0 · 기록만)" if lab == "B1-06-M128_ORDER" else ""),
+                             command_id=hl.get("command_id"), host_start=hl.get("start_time"), host_end=hl.get("end_time"), source_path=folder.relative_to(args.results).as_posix(),
+                             manifest_split=mf.get("split"), analysis_split=mf.get("analysis_split"), stage=mf.get("stage"), split_note="manifest.split = confirmation (앱 경로 · 실제 세션) · analysis_split = dev (분석 역할) — 둘은 다른 뜻"))
     tot_planned = sum(labels[l]["index"] * 0 + next(e for e in C.read_json(PLAN_ROOT / labels[l]["plan_dir"] / "plan.json")["sessions"] if e["index"] == labels[l]["index"])["requests"] for l in labels)
     with open(out / "b1_consumption.csv", "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(cons[0].keys())); w.writeheader(); w.writerows(cons)
@@ -215,8 +234,8 @@ def main() -> int:
     gl.append(dict(t="2026-10-15T10:03:17", label="B1-03-RECENT_IDLE60_C252_GPU", kind="extra_gate_after_wrong_tref", result="regate", reason="Tref 28.7 거절 2회는 잘못된 기준값 → 재산출 뒤 재게이트 1회 (등록 밖 · 조민규 판단)",
                    waited_s="", tref=27.2, ap_last="", ap_slope_last="", soc="", counts_in_ledger_16=False, counts_in_report_14=False, note="10:07 rc 5 (폴더 충돌) → 10:10 재시작 → 10:10 START · 유효"))
     gl.append(dict(t="2026-10-15T11:19:52", label="B1-06-M128_ORDER", kind="retry_rest_short", result="a1 stall → a2", reason="adb 끊김 11:17 → a1 rc 4 (앱 시작 · 소비) → 드라이버 재시작 → a2 11:28:13",
-                   waited_s=round(1792031293 - 1792030792.4, 2), tref="", ap_last="", ap_slope_last="", soc="", counts_in_ledger_16=False, counts_in_report_14=False,
-                   note="a1 끝 → a2 시작 ≈ 501 s (< 등록 600 s) · 재시작이 잔여 휴식을 복원하지 않음 → 다음 드라이버 (CONFIRM 판) 에서 복원"))
+                   waited_s=501.181, tref="", ap_last="", ap_slope_last="", soc="", counts_in_ledger_16=False, counts_in_report_14=False,
+                   note="휴식 (원점별): host driver_events run_end(a1 rc4) 11:19:52.415 → run_start(a2) 11:28:13.596 = 501.181 s · driver_log RESULT 11:19:52 → RUN 11:28:13 = 501 s (초 분해능) · host session_log a1 end 11:19:31 → a2 start 11:28:17 = 526 s · 기기 a1 cleanup mono → a2 session_start mono = 482.336 s · 등록 600 s 미만 · 재시작이 잔여 휴식을 복원하지 않음 → 다음 드라이버 (CONFIRM 판)"))
     gl.append(dict(t="2026-10-15T13:28:37", label="B1-11-M128_PAIR_N", kind="restart_gate_accumulation", result="restart", reason="adb 끊김 13:26 (재시도 게이트 중 · 앱 시작 0) → 재시작 → 거절 누적 다시 0 부터 (1차 606 + 300 + 재시도 910 → 강제)",
                    waited_s="", tref=27.2, ap_last="", ap_slope_last="", soc="", counts_in_ledger_16=False, counts_in_report_14=False, note="재시작 전 13:13 REJECT(slope) 1건 + 재시작 뒤 13:39 REJECT(tref) · 14:00 강제 → 같은 자리 거절 3건"))
     gl.sort(key=lambda x: str(x["t"]))
@@ -228,7 +247,10 @@ def main() -> int:
     for row in orig:
         if row["stage"] != "dev":
             continue
-        ev = next((r for r in runs if r["label"] == row["label"] and str(r.get("attempt")) == row["attempt"] and r.get("rc") is not None), {})
+        cands = [(i, r) for i, r in enumerate(evs, 1) if r.get("what") == "run_end" and r.get("run_kind") == "dev" and r["label"] == row["label"] and str(r.get("attempt")) == row["attempt"] and r.get("rc") is not None]
+        hl = C.read_json(dev_root / row["folder"].split("/", 1)[1] / "host" / "session_log.json") if "/" in row["folder"] and (dev_root / row["folder"].split("/", 1)[1] / "host" / "session_log.json").is_file() else {}
+        match = [(i, r) for i, r in cands if (r.get("times") or {}).get("host_start") == hl.get("start_time")] or [(i, r) for i, r in cands if r.get("rc") == 0] or cands[-1:]
+        ev_row, ev = match[-1] if match else (None, {})
         gate = ev.get("gate") or {}
         last = (gate.get("decisions") or [{}])[-1]
         H = hal_rows(Path(ev["hal_csv"])) if ev.get("hal_csv") else []
@@ -241,13 +263,20 @@ def main() -> int:
                   app_start_AP=app_start.get("AP"), app_start_SKIN=app_start.get("SKIN"), app_start_SOC=app_start.get("SOC"), common_start_AP=common.get("AP"), common_start_SKIN=common.get("SKIN"), common_start_SOC=common.get("SOC"),
                   first_request_pre_AP=first_pre.get("AP"), first_request_pre_SKIN=first_pre.get("SKIN"),
                   AP_band_ok=(abs(last["ap_median"] - gate["tref"]) <= (gate.get("band_c") or 0.5)) if (last.get("ap_median") is not None and gate.get("tref") is not None) else None,
-                  slope_ok=(abs(last.get("ap_slope_c_per_min") or 9) <= (gate.get("slope_max") or 0.1) and abs(last.get("skin_slope_c_per_min") or 9) <= (gate.get("slope_max") or 0.1)) if last else None,
+                  slope_ok=slope_ok(last, gate.get("slope_max") or 0.1), ap_slope_raw=repr(last.get("ap_slope_c_per_min")), skin_slope_raw=repr(last.get("skin_slope_c_per_min")),
+                  event_row=ev_row, event_rc=ev.get("rc"), command_id=hl.get("command_id"), session_id_key=row.get("session_id"), host_start_key=hl.get("start_time"),
+                  hal_method="nearest HAL row <= 6 s (보간 아님 · 없으면 null) · start_* 는 게이트 전", app_start_method=("nearest" if app_start else "null (정렬 규약 없음)"),
                   gate_passed=(gate.get("result") == "start"), forced=bool(gate.get("forced_start")), gate_version=gate.get("gate_version") or "v2",
                   apk_source=APK_SOURCE, host_source_at_run=host_source_at(row.get("start_time") or ev.get("t")), aggregation_source=agg_source,
                   start_AP_note="start_* = 게이트 대기 전 (HAL 시작 시) 값 · 시작 조건은 gate_last_* / app_start_* / common_start_* 열")
         v2.append(r2)
     with open(out / "session_table_m8_v2.csv", "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(v2[0].keys())); w.writeheader(); w.writerows(v2)
+    if args.rev >= 2:
+        ev_rows = [dict(label=r["label"], attempt=r["attempt"], ap_slope_raw=r["ap_slope_raw"], skin_slope_raw=r["skin_slope_raw"], slope_ok=r["slope_ok"], AP_band_ok=r["AP_band_ok"], forced=r["forced"],
+                        is_zero=(r["ap_slope_raw"] in ("0.0", "-0.0") or r["skin_slope_raw"] in ("0.0", "-0.0")), is_none=("None" in (r["ap_slope_raw"], r["skin_slope_raw"]))) for r in v2]
+        (out / "slope_check_evidence.json").write_bytes(C.canonical_json(dict(rule="slope_ok = (ap is not None and skin is not None) and abs(ap) <= max and abs(skin) <= max · 0.0 / -0.0 = 숫자 (통과) · None = null",
+            v1_bug="v1: abs(x or 9) → 0.0 이 falsy 라 9 로 바뀌어 실패 처리 (B1-05 · 08 · 09 · 12)", generator="s26/tools/mixreq/m8_b1_corrections.py (--rev 2)", aggregation_source=agg_source, rows=ev_rows)))
     # ---------------- ③ registration versions · plan supp · instructions index
     (out / "registration").mkdir(exist_ok=True)
     regrows = []
