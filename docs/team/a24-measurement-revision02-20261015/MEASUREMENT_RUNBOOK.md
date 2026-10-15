@@ -1,5 +1,11 @@
 # A24 실측 진행 원장·재개 안내
 
+**가장최신:** 별도전류반응진단APP1회/6반복/3,246조회완료·원물회수/프로세스종료했다。[자료](../../results/a24_revision02_20261015/current_response_diag_01/README.md)。CPU관측반응약0.2~0.4초이나순수센서지연은미확정·시간보정0이다。원APK/179소스/27.9℃reference이관후 [복귀방문](confirm40_after_current_diag_20261015/README.md)의 `output/a24_confirmation40_after_diag_20261015/job.json` / `Documents/A24R02C3` / `Documents/A24R02C3_GLOBAL`로미시도31을재개했다。18:49:50병행MAIN은회수완료、누적10/40·다음WAIT준비중。확인예산51/81소비와별도진단1(총APP52)은새APP intent를대조해갱신한다。20:02기기종료/20:07저장불변。
+
+재중지·이동지시에는새root의`STOP_AFTER_CURRENT.json`을write-once로작성해다음APP만차단한다。현재조건은close/회수까지마친다。종료된C1/C2명령또는활성C3명령을재실행하지않는다。아래진단준비/둘째방문문장은이력이다。
+
+**최신 사용자 순서 변경:** 혼합BASE 회수 후18:23:57 KST에 조건 경계 중지.현재확인9/40·총50/81소비·31미시도,활성APP0이다. `Documents/A24R02C2/WINDOW_STOPPED.json`과 [별도 전류 반응 진단](current_response_diag_20261015/README.md)을 먼저 읽는다. 진단APP최대1회는81슬롯과 별도 원장,543초 합성CPU/GPU 부하이며 NN/정책/실제J 검증으로 표시하지 않는다. 진단 후 기존20:02기기종료/20:07저장 안에서 원Tref·APK·순서·미시도31의 새방문 binding을 확인하고 재개한다. 아래둘째방문실행중문장은이력이다.
+
 **최신 2026-10-15 둘째 방문 등록:** 사용자 지금부터150분 승인,17:37~20:07 KST/기기20:02 종료다. `output/a24_confirmation40_window02_20261015/binding_v2/job.json`과 새 원물 `Documents/A24R02C2`, 전역 APP intent `Documents/A24R02_CONFIRM_GLOBAL_20261015`를 먼저 확인한다. 이전45/81소비+이번 실제APP intent로 갱신하며 원CONFIRM40의 미시도36만 고정 순서로 진행한다. 첫4군 재실행/실패 대체/임의 재기준은0. 현재 종료/오류 여부는 새 root의 `WINDOW_STOPPED.json` 및 실제 owner/process를 확인한다. 아래 첫방문 중지 문장은 이력이다.
 
 새 followup은 원179·APK·실측 controller를 보존하고 전역중복차단/시간창만 결합한다. 연결주소 변경은 기존 ReconnectingAdbClient의 실제기기 신원 확인으로 처리한다. `binding_v2` 이전 IP 등록 PC 오류는 실측0으로 보존한다. 새19검사·36authorization PC통과는 새실측 PASS가 아니다. [조건부 에너지 사후 계산](../../results/a24_revision02_20261015/conditional_energy_comparison/README.md)은 기존12군만 대상으로 하며 원확인 에너지 계약을 바꾸지 않는다.

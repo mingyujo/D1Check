@@ -1,4 +1,17 @@
-# 2026-10-15 최신 — 확인 둘째 방문 재개 등록
+# 2026-10-15 최신 — 전류 반응 진단 완료·CONFIRM 재개
+
+- [전류 반응 원물·CSV·그림·보고](results/a24_revision02_20261015/current_response_diag_01/README.md): 별도APP1회·6반복·543.475초/3,246조회/누락·충전0。CPU API반응0.199~0.401초,GPU3중1검출.순수센서지연/펌웨어단위/절대J는미확정,시간보정0·NN0。PC10PASS/빌드서명PASS/공개원물재현바이트일치,기존APK/179소스불변.
+- [원확인복귀](team/a24-measurement-revision02-20261015/confirm40_after_current_diag_20261015/README.md): `output/a24_confirmation40_after_diag_20261015/job.json`/원물`Documents/A24R02C3`/전역예약`Documents/A24R02C3_GLOBAL`. 미시도31만원순서로등록,27.9℃기존reference이관,18:49:50병행MAIN을시작해회수했다。누적확인10/40·다음WAIT준비,기본확인예산은총51/81소비(새APP intent마다증가),별도진단1을합친총APP52。시작당시ledger50은동결보존.
+- [직전9조건공유화면·원물](results/a24_revision02_20261015/confirm_visits_01_02/README.md)은1,272전량완료/출력PASS·AP8/9적격의부분결과다。새coordinator9PASS/정확31authorization PC검산과진단종료·무재실행검사를결합했다。신규APP21분/MAIN5분·기기20:02/저장20:07 KST유지,진행중소스/설정은수정하지않는다.
+- 다음최대3: 활성실측과APP/START/close대조; 완료군서비스·출력/AP검산; 시간창종료후미완료보존·소비원장/공유결과/Git갱신。이동지시시현재root의`STOP_AFTER_CURRENT.json`으로다음APP를차단하고진행조건회수후멈춘다。원사용자WIP/데스크톱/S26/NPU/실패·J null·experiment_ready=false보존.
+
+# 2026-10-15 이전 — 조건 경계 중지 후 전류 반응 진단 준비
+
+- 사용자 새 지시: 현재 조건 종료 → 별도 전류 반응 진단 → 남은 CONFIRM 재개.18:23:57 KST에 혼합BASE 회수 후 활성APP0에서 host를 중지했고 core179/APK/시간창은 불변이다. 확인9/40·1,272요청 전량완료/출력PASS,총50/81소비·31미시도. `Documents/A24R02C2/WINDOW_STOPPED.json`에 외부 host 중지를 명시했다.
+- [별도 진단 계획](team/a24-measurement-revision02-20261015/current_response_diag_20261015/README.md): 새 패키지·APP최대1회·543초 일정,기존81슬롯과 별도 계수. CPU/GPU합성 부하6반복·유휴 조회6구간,PC10PASS/빌드·서명PASS,이 시점 기기진단0. 원확인 전류의 시간 보정/실제J 검증/NN실측으로 승격하지 않는다.
+- 다음 최대3: 진단1회 실행·원물 회수; 사전 고정 식과 검증반복으로 해석; 원래20:02 기기종료/20:07 저장 안에서 새 방문 binding·기준 이관 후 미시도31만 이어가기. 기존 사용자WIP/데스크톱/S26/NPU/실패와 `experiment_ready=false` 보존.
+
+# 2026-10-15 이전 — 확인 둘째 방문 재개 등록
 
 - 사용자 재개/지금부터150분 승인: 17:37~20:07 KST, 기기20:02 종료·마지막5분 저장. 원CONFIRM40 중 미시도36만 고정 순서로 등록했다. 첫 순서는 L64 PAIR_G→BASE, C252 CPU→GPU다. APP/NEW_SESSION21분·MAIN5분 여유, SOC≥10/비충전/동일기기/단절최대20분/실패대체0을 유지한다.
 - 실제 job: `output/a24_confirmation40_window02_20261015/binding_v2/job.json`, 새 원물 `Documents/A24R02C2`; 전역재실행차단 `Documents/A24R02_CONFIRM_GLOBAL_20261015`. 원45/81소비·36잔여에 실제 APP intent를 누적하며 이전4군은 재실행하지 않는다. 새 followup6검사 포함 관련19PASS·남은36개 실제 authorization 조립 PASS, 원179소스/APK/40계획/기준 불변.

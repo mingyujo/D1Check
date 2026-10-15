@@ -1,0 +1,63 @@
+{
+  "idle_control_periods_ms": [
+    900,
+    200,
+    100,
+    100,
+    200,
+    900
+  ],
+  "idle_control_seconds": 20,
+  "settle_seconds": 30,
+  "final_tail_seconds": 30,
+  "pulses": [
+    {
+      "resource": "CPU",
+      "period_ms": 100,
+      "pre_seconds": 20,
+      "on_seconds": 10,
+      "post_seconds": 30,
+      "split": "DEVELOPMENT"
+    },
+    {
+      "resource": "GPU",
+      "period_ms": 200,
+      "pre_seconds": 23,
+      "on_seconds": 10,
+      "post_seconds": 30,
+      "split": "DEVELOPMENT"
+    },
+    {
+      "resource": "GPU",
+      "period_ms": 100,
+      "pre_seconds": 18,
+      "on_seconds": 10,
+      "post_seconds": 30,
+      "split": "DEVELOPMENT"
+    },
+    {
+      "resource": "CPU",
+      "period_ms": 200,
+      "pre_seconds": 22,
+      "on_seconds": 10,
+      "post_seconds": 30,
+      "split": "DEVELOPMENT"
+    },
+    {
+      "resource": "CPU",
+      "period_ms": 200,
+      "pre_seconds": 19,
+      "on_seconds": 10,
+      "post_seconds": 30,
+      "split": "HELD_OUT"
+    },
+    {
+      "resource": "GPU",
+      "period_ms": 200,
+      "pre_seconds": 21,
+      "on_seconds": 10,
+      "post_seconds": 30,
+      "split": "HELD_OUT"
+    }
+  ]
+}
