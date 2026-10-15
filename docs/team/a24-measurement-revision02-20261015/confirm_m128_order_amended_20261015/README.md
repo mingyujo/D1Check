@@ -1,5 +1,7 @@
 # C8 — 사용자 승인: 다음 혼합 묶음 먼저
 
+**실제 시작:** 소스 커밋 `b5673818d39f129071ff10b2fe87d44485fe7425`, coordinator SHA `59b2bd530254eb768e9d66318fdc0ad912bd47056305ea30a52489f971db5fb3`에서 실행했다. [시작 문맥·결합 SHA](RUNTIME_CONTEXT.json). 첫 MAIN START는23:04:17 KST, 새 M128 기준은28.4℃/reference SHA `629807c36ba74dea58cc85e0324ad656fb8caf72b33220bd3b4e7063b30db96f`다. [본요청 전 기준 고정 증거](INITIAL_REFERENCE_COMMITMENT.json)·[원 reference](M128_REFERENCE_ORIGINAL.json)·[시작 승인](FIRST_START_APPROVAL.json). 이 사실만으로 정상 회수·서비스 성공·열 절감을 주장하지 않는다.
+
 사용자는 **“다음 혼합 묶음부터 진행”**을 명시 선택했다. [준비해 검증한 순서 개정안](../cold_carry_deferral_draft_20261015/README.md)을 채택한다. 원40ID·5,720요청·예산81·정식58소비를 보존하며, 기존 온도 조건을 완화하지 않는다.
 
 **이번 대상은 원ordinal18~21의 M128 WAIT200 → BASE → PAIR_G → ORDER, 최대4회**다. 미시작 L64 PAIR_G ordinal17은 원ID·27.1℃reference·미실행 상태를 그대로 두고 전체 순서의 맨 뒤로 미룬다. 새 전체 순서는 원0~16 → 원18~39 → 원17이다. 남은23회·3,368요청을 버리거나 대체하지 않는다. 최대4회가 이번 시간에 모두 완료된다는 뜻은 아니다.

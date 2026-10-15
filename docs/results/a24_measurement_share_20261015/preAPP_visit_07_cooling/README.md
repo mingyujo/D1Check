@@ -6,6 +6,8 @@ APP·워밍업·MAIN·START·claim·세션 소비는 모두0, 독립 확인17/40
 
 [닫힌 냉각 원기록 ZIP](C7_CLOSED_PREAPP_ONLY.zip) · [ZIP SHA](ARCHIVE_SHA256.json) · [요약·실제 조회 수](COOLING_SUMMARY.json) · [파생 AP CSV](derived_AP_readouts.csv)
 
+[로그인 없는 외부 다운로드·내부6개 원자료 SHA 검증](PUBLIC_GITHUB_VERIFICATION.json): 공개 커밋b567381에서 HTTP200·ZIP SHA 및 내부 SHA가 모두 일치했다.
+
 ZIP 안 host_preAPP는 호스트 HAL 조회의 원바이트이며 앱의 공통 MAIN 관측창과 다르다. ZIP 내부 FILE_SHA256.json으로 파일별 SHA를 확인할 수 있다. 개인 식별·연결 주소·개인 경로가 든 명령/owner/설정, 모델·APK·입력·키는 로컬에 보존하고 공유물에서 제외했다. 표기된403개 controller 기기 명령 및 사용자 온도 조회12·읽기 시작점검16명령은 추론·세션 소비와 구분한다.
 
 앞선 [C6 기록](../preAPP_visit_06_cooling/README.md)과 C7은 서로 다른 닫힌 호스트 방문이다. 첫 사용자 시간창부터 약55분 동안 새 추론이 없었다. 그 전체를 끊김 없는 하나의 냉각 센서 구간이라고 표시하지 않는다. 사용자는 같은 장소·책상에 두고 사용하지 않음으로 정정/확인했다. 주변 온도·통풍·내부 전체 평형·온도 변동 원인은 확인하지 않았다. AP는 HAL 읽기 채널이고 에너지J와 실제 표면온도는 미검증이다.
