@@ -1,0 +1,53 @@
+{
+  "schema": "a24-revision02-PC-design-verification-v1",
+  "recorded_UTC": "2026-10-15T01:27:32.281770+00:00",
+  "code_base_HEAD_before_commit": "a12b3fa2c87469692de6a8c7cbb2f9103ded35ac",
+  "source_uncommitted_at_verification": true,
+  "python_version": "3.11.9",
+  "unit_tests": 14,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "commands": [
+    {
+      "command": "python -B tools/d1_a24_revision02_design.py docs/team/a24-measurement-revision02-20261015/CONTRACT_DRAFT.json",
+      "exit_code": 0
+    },
+    {
+      "command": "python -B -m unittest discover -s tools -p test_d1_a24_revision02_design.py -v",
+      "exit_code": 0
+    }
+  ],
+  "tests_scope": "synthetic clock/AP and contract cases only; no revised executor/APK/device validation",
+  "coverage": [
+    "stable cold reference",
+    "one fixed reference per recipe block",
+    "first eligible window without future outcomes",
+    "slope/history/gap/jitter/time validity",
+    "no post600s selection",
+    "no new execution authorization/registration/automatic budget transfer",
+    "no mixed old/new repetitions",
+    "balanced positions/adjacent orders"
+  ],
+  "old_frozen_source_files_preserved": 161,
+  "old_frozen_source_mismatches": [],
+  "protected_original_tracked_files_preserved": 12,
+  "original_HEAD_unchanged": true,
+  "other_worktree_HEAD_unchanged": true,
+  "revision02_device_commands": 0,
+  "revision02_warmups_inference_instrumentation": 0,
+  "revision02_START_claims_sessions": 0,
+  "old_app_stop_cleanup_reads_not_relabelled_as_revision02_measurements": true,
+  "experiment_ready": false,
+  "revised_executor_implemented": false,
+  "APK_reuse_verified": false,
+  "files_sha256": {
+    "docs/team/a24-measurement-revision02-20261015/README.md": "3b224773a67ae38a4903edc45410d05c22c011626af326e572ccc2bbb11f5582",
+    "docs/team/a24-measurement-revision02-20261015/PLAN.md": "87f87ccecb8ba72d1adcf673cf4a4ead36d0525cd8d303397607dbc017f9a162",
+    "docs/team/a24-measurement-revision02-20261015/CONTRACT_DRAFT.json": "558216239a44f9476e1217707b53175c164ca0028d70ff6f0e1d620ee912bb92",
+    "docs/team/a24-measurement-revision02-20261015/PACKAGE_STATUS.json": "88ff88aceb05175b4076cd53596f84d8a15927ceff742a1c43c93be0202b67ce",
+    "docs/team/a24-measurement-revision02-20261015/OLD_EXPERIMENT_CLOSURE.json": "03f010900f38cd787050c65bf40a49f89bc572c7ff178d6a03017374aa1ab60c",
+    "tools/d1_a24_revision02_design.py": "0846f62bd87dcc7cc37c2abb19d674c4e73b1a4c4f26e53b3e03aaa94e7d7b23",
+    "tools/test_d1_a24_revision02_design.py": "03ba79bf1cb685017cd37bbfd6befab2ef33c65d8157cb1f7329fc22328313ae"
+  }
+}

@@ -1,0 +1,234 @@
+{
+  "schema": "a24-blocked-initial-state-design-v2",
+  "revision_id": "A24-BLOCKED-INITIAL-STATE-REV02-20261015",
+  "status": "DESIGN_ONLY_USER_STOPPED_NO_MEASUREMENT",
+  "execution_authorized": false,
+  "experiment_ready": false,
+  "design_frozen_for_measurement": false,
+  "created_UTC": "2026-10-15T01:22:46.788308+00:00",
+  "source_branch": "codex/a24-laptop-prep-20261014",
+  "source_base_commit": "a12b3fa2c87469692de6a8c7cbb2f9103ded35ac",
+  "old_plan_id": "A24-LAPTOP-PC-PREP-20261014-03",
+  "old_plan_sha256": "82d5108db8d44fc6785cbdc99f71baee01361e21abdd4c59df9544826cb93855",
+  "old_frozen_source_sha256": "7edc7240cf3109a26e3a548cab84106b95c0115595e24d1e64b1ce9326d450ee",
+  "pool_with_old_revision": false,
+  "reuse_old_session_or_request_UUIDs": false,
+  "materialized_session_ids": [],
+  "materialized_request_ids": [],
+  "materialized_seeds": [],
+  "budget": {
+    "old_cap": 64,
+    "old_attempts_preserved": 28,
+    "old_unattempted_slots_preserved": 36,
+    "proposed_repetitions": 4,
+    "proposed_sessions": 32,
+    "proposed_scheduled_requests": 4576,
+    "unallocated_slots_if_future_transfer_approved": 4,
+    "authorized_new_measurement_sessions": 0,
+    "automatic_transfer_of_old_budget": false,
+    "future_transfer_requires_explicit_execution_instruction_and_new_ledger": true,
+    "repeat_failed_or_stopped_slots": 0
+  },
+  "arms": [
+    {
+      "policy_id": "R02_L64_BASE",
+      "legacy_recipe": "L64",
+      "legacy_arm": "BASE",
+      "route": "C_GPU_D_CPU",
+      "order": "FIFO",
+      "concurrency": "SERIAL",
+      "intentional_wait_ms": 0,
+      "source_behavior": "preserved proposal; revised executor compatibility unverified"
+    },
+    {
+      "policy_id": "R02_L64_PAIR_G",
+      "legacy_recipe": "L64",
+      "legacy_arm": "PAIR_G",
+      "route": "C_GPU_D_CPU",
+      "order": "FIFO",
+      "concurrency": "CG_DC",
+      "intentional_wait_ms": 0,
+      "source_behavior": "preserved proposal; revised executor compatibility unverified"
+    },
+    {
+      "policy_id": "R02_C252_CPU",
+      "legacy_recipe": "C252",
+      "legacy_arm": "CPU",
+      "route": "C_CPU",
+      "order": "FIFO",
+      "concurrency": "SERIAL",
+      "intentional_wait_ms": 0,
+      "source_behavior": "preserved proposal; revised executor compatibility unverified"
+    },
+    {
+      "policy_id": "R02_C252_GPU",
+      "legacy_recipe": "C252",
+      "legacy_arm": "GPU",
+      "route": "C_GPU",
+      "order": "FIFO",
+      "concurrency": "SERIAL",
+      "intentional_wait_ms": 0,
+      "source_behavior": "preserved proposal; revised executor compatibility unverified"
+    },
+    {
+      "policy_id": "R02_M128_BASE",
+      "legacy_recipe": "M128",
+      "legacy_arm": "BASE",
+      "route": "C_GPU_D_CPU",
+      "order": "FIFO",
+      "concurrency": "SERIAL",
+      "intentional_wait_ms": 0,
+      "source_behavior": "preserved proposal; revised executor compatibility unverified"
+    },
+    {
+      "policy_id": "R02_M128_ORDER",
+      "legacy_recipe": "M128",
+      "legacy_arm": "ORDER",
+      "route": "C_GPU_D_CPU",
+      "order": "EDD",
+      "concurrency": "SERIAL",
+      "intentional_wait_ms": 0,
+      "source_behavior": "preserved proposal; revised executor compatibility unverified"
+    },
+    {
+      "policy_id": "R02_M128_PAIR_G",
+      "legacy_recipe": "M128",
+      "legacy_arm": "PAIR_G",
+      "route": "C_GPU_D_CPU",
+      "order": "FIFO",
+      "concurrency": "CG_DC",
+      "intentional_wait_ms": 0,
+      "source_behavior": "preserved proposal; revised executor compatibility unverified"
+    },
+    {
+      "policy_id": "R02_M128_WAIT200",
+      "legacy_recipe": "M128",
+      "legacy_arm": "WAIT200",
+      "route": "C_GPU_D_CPU",
+      "order": "FIFO",
+      "concurrency": "SERIAL",
+      "intentional_wait_ms": 200,
+      "source_behavior": "preserved proposal; revised executor compatibility unverified"
+    }
+  ],
+  "initial_state": {
+    "global_absolute_Tref_c": null,
+    "block_unit": "revision/repetition/recipe; L64 two arms, C252 two arms, M128 four arms",
+    "anchor_count_proposed": 12,
+    "reanchor_per_arm": false,
+    "reference_method": "first eligible post-common-preparation trailing60s history; median of AP HAL readouts; one earlier boundary point for jitter; no main-request outcomes",
+    "freeze_reference_before_first_main_request": true,
+    "same_reference_for_all_arms_in_recipe_block": true,
+    "reference_uses_policy_response_energy_or_outcome": false,
+    "rules": {
+      "history_ns": 60000000000,
+      "maximum_wait_ns": 600000000000,
+      "maximum_gap_ns": 10000000000,
+      "tolerance_c": 0.5,
+      "maximum_abs_slope_c_per_min": 0.1
+    },
+    "tolerance_evidence": "retained provisional design controls, not sensor-accuracy or physical-safety thresholds",
+    "missing_window_or_failed_matching": "retain attempt and mark comparison block incomplete; never reanchor for that arm or rerun it",
+    "automatic_cooling_heating_or_conditioning": false,
+    "sensor_name": "AP",
+    "sensor_type": 0,
+    "sensor_cache_age_verified": false,
+    "latent_thermal_state_observable": false
+  },
+  "unchanged": {
+    "models": "existing exact EfficientNet-Lite0/EfficientDet-Lite0, one approved PNG, original labels/anchors/tensor SHA",
+    "resource_scope": "classification CPU/GPU; detection CPU requests only; no NPU",
+    "resident_runtimes": [
+      "C_CPU",
+      "C_GPU",
+      "D_CPU",
+      "D_GPU"
+    ],
+    "warmups_per_runtime": 2,
+    "maximum_simultaneous_requests": 2,
+    "C_deadline_s": 2.2,
+    "D_deadline_s": 5,
+    "first_arrival_s": 35,
+    "service_stop_s": 120,
+    "AP_window_s": [
+      35,
+      180
+    ],
+    "logging_end_s": 210,
+    "M128_group_interval_ns": 2032194000,
+    "response_boundary_C": "output_ready",
+    "response_boundary_D": "write/flush/fsync/rename/readback",
+    "lane_reuse_boundary": "actual returned-worker marker then AVAILABLE",
+    "priority_and_model_coefficients_changed": false,
+    "minimum_SOC_percent": 10,
+    "charging_allowed": false,
+    "maximum_reconnect_seconds": 1200,
+    "existing_APP_safety_checks_preserved": true
+  },
+  "order_and_data": {
+    "within_recipe_block": "balanced pre-registered order proposal; L64 and C252 AB/BA twice each; M128 Latin-square four orders; no outcome-dependent ordering",
+    "workload_order": "freeze before future materialization; not selected from outcomes",
+    "new_seeds_or_UUIDs": "generate only after explicit future execution authorization; disjoint from old DEV/CONFIRM",
+    "same_bank_within_recipe_block": true,
+    "old_data_role": "historical context only, not new confirm repetitions",
+    "M128_proposed_orders": [
+      [
+        "BASE",
+        "ORDER",
+        "WAIT200",
+        "PAIR_G"
+      ],
+      [
+        "ORDER",
+        "PAIR_G",
+        "BASE",
+        "WAIT200"
+      ],
+      [
+        "PAIR_G",
+        "WAIT200",
+        "ORDER",
+        "BASE"
+      ],
+      [
+        "WAIT200",
+        "BASE",
+        "PAIR_G",
+        "ORDER"
+      ]
+    ]
+  },
+  "analysis": {
+    "paired_contrasts": [
+      "L64 PAIR_G-BASE",
+      "C252 GPU-CPU",
+      "M128 ORDER-BASE",
+      "M128 PAIR_G-BASE",
+      "M128 WAIT200-BASE"
+    ],
+    "independent_n_per_contrast_proposed": 4,
+    "confidence_intervals": "unadjusted paired Student-t95%, n<2 null; exploratory and small-n; no optional extra repetitions",
+    "pool_workloads_or_old_revision": false,
+    "denominator": "every planned request including unstarted, stopped, failed, late and incomplete",
+    "P95": "nearest rank of service-window successes, with all-planned completion/deadline rates",
+    "temperature": "raw AP path/mean/observed peak and baseline-relative differences, no heat/J or surface conversion",
+    "service_harm_must_be_reported": true,
+    "cost_win_requires_equal_complete_work_and_service_nonworsening": true,
+    "missing_pair": "report explicitly; do not impute or replace",
+    "representative": "first registered complete M128 BASE/PAIR_G block; not chosen by effect size",
+    "new_simulator_coefficients_or_RL_training": false
+  },
+  "energy_J_supported": false,
+  "surface_temperature_verified": false,
+  "model_accuracy_PASS": false,
+  "numeric_forecaster": "NOT_CREATED_NO_MODEL_ACCURACY_CLAIM",
+  "ready": {
+    "revised_executor_implemented": false,
+    "existing_APK_reuse_verified": false,
+    "host_anchor_authorization_binding_verified": false,
+    "new_identity_and_seed_manifest_created": false,
+    "measurement_dependencies_frozen": false,
+    "PC_design_fixtures_only": true
+  },
+  "method_source": "https://www.itl.nist.gov/div898/handbook/pri/section3/pri332.htm"
+}

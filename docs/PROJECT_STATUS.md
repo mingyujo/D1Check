@@ -1,10 +1,19 @@
+# 2026-10-15 현재 작업 — A24-INITIAL-STATE-REV02 (설계 전용)
+
+- 최신 지시: 개정 실험으로 분리하고 실측은 진행하지 않는다. 기존 controller/감독/logcat 중지, 앱 DRAINED·journal close/본요청0 확인·회수 후 빈 프로세스 종료. 재연결돼도 자동 재개하지 않는다.
+- [개정 설계](team/a24-measurement-revision02-20261015/README.md): 부하별 비교 묶음의 첫 본요청 전 최초 유효 AP 이력으로 기준을 정하고, 묶음 내 모든 군에 같은 기준 적용. 정책별 재기준·결과에 따른 기준 선택·기존 결과 합산 금지. 실행권한0/실행기미구현/experiment_ready=false.
+- 기존 확인40은 정상2/AP사전거절1/사용자중지전준비1/미시도36. 기존 총64 중28시도·36미시도, 실패·중지 재실행0. 원 계획/동결161소스/APK·원물·기존 정책/학습/다른기기 보존. 새32세션은 제안이며 승인·예산 이관·새UUID발급0.
+- PC 기준선택/고정기준·시계/gap·예산/버전분리·순서균형 fixture14개 및 계약 검사 PASS. [검증/SHA](team/a24-measurement-revision02-20261015/PC_VERIFICATION.json). PC 검산은 새 host/APK/실기기 검증이 아니다.
+- 개정의 기기명령/워밍업/추론/계측/START/claim/세션소비0. 중지 후에는 이전 준비앱 종료 확인·읽기전용 회수만 했다. 검증J=null·실제표면온도/수치예측미검증 유지.
+- 다음최대3(PC만): 묶음기준 봉인/승인SHA를 연결할 별도 host 설계; 새 원장/파서·APK 호환검사 계획; 향후 명시적 실측 지시가 있을 때만 미사용 예산 이관·실행동결 검토. 아래는 이전 작업 이력이다.
+
 # 2026-10-15 현재 작업 — A24-MEASURE-01
 
 - 사용자 실제 측정 승인: SOC10% 이상·같은 기기 단절 최대20분 대기. 원64슬롯/모델/입력/기한/작업량 보존. 실패 슬롯 재실행·대체0. [원인·범위](team/a24-laptop-measurements-20261014/MEASUREMENT_PROGRESS.md).
 - I4/F4/DEV16 전체24시도 보존. I4는 준비환경 결함으로 START 전 실패, F1은 AP gate 거절. F2 원장FAIL 뒤 동일 실행의252완료를 읽기전용 회수/검산. F3/F4 정상 회수, DEV15정상+1통신 PRESTART 거절. DEV 예정2288요청 전부 표에 보존, 정상15세션 실패/미완료0.
 - 초깃값은 common prepared runtime의 고정 준비 마지막60초 median AP28.5℃를 사용; 최초idle27.6℃와거절을 보존. ±0.5℃/slope0.1℃/분/최대600초 유지. API 전류·전하 scale불일치로 검증J=null, 임의1000배보정0. HAL readout/cache age·실제 표면온도 미검증, 정확도 PASS 주장0.
 - 확인 v10: 앱단위 KEEP_SCREEN_ON만 추가, 유휴는 runtime0×2warmup=실제0이라는 원 선언 유지. 관련JVM30/host50/연결6/조립2/분석3 PASS. 새APK`6fbe5c08…0bfd8b` 실제 설치SHA일치. 기존실측APK`eab8e449…5b883e`/자료/실패 보존.
-- CONFIRM40: 2정상/1PRESTART 거절/37미시도. 06:48 온도 gate(AP29.1>상한29.0) 중단, 08:20 연결복구20분 종료. 10:03 사용자 재연결 후 동일hardware/fingerprint·SOC90%/비충전·owner없음을 확인하여 다음 미시도 M128 ORDER 준비 재개. [중단시점 부분 회수](results/a24_laptop_measurement_20261015_v1/README.md). 사전 봉인: [분석](team/a24-laptop-measurements-20261014/CONFIRM_ANALYSIS_CONTRACT_V10.json), [동결](team/a24-laptop-measurements-20261014/CONFIRM_FREEZE_V10.json), [원장SHA](team/a24-laptop-measurements-20261014/PRIOR_STAGE_ATTEMPTS_SHA_V1.json). 새8군 수치예측은명시적없음/모형정확도주장없음. 확인중 코드/설정/계수/선정 변경 없음.
+- CONFIRM40: 2정상/1PRESTART 거절/37미시도. 06:48 온도 gate(AP29.1>상한29.0) 중단, 08:20 연결복구20분 종료. 10:03 재연결 후 준비, 10:12 사용자 설계전용/실측중지 지시로 종료. 해당 M128 ORDER는 START0·본요청0·중지 전warmup8·UNFINISHED128을 보존. [중단시점 부분 회수](results/a24_laptop_measurement_20261015_v1/README.md). 사전 봉인: [분석](team/a24-laptop-measurements-20261014/CONFIRM_ANALYSIS_CONTRACT_V10.json), [동결](team/a24-laptop-measurements-20261014/CONFIRM_FREEZE_V10.json), [원장SHA](team/a24-laptop-measurements-20261014/PRIOR_STAGE_ATTEMPTS_SHA_V1.json). 새8군 수치예측은명시적없음/모형정확도주장없음. 확인중 코드/설정/계수/선정 변경 없음.
 - 다음최대3: 동일 동결계약으로 미시도37등록슬롯; 거절/실패 보존·종료증거 확인 후 후속슬롯만 진행; 실제 시도 종료 뒤 전체분모 분석/작은 결과 공유. 부분회수 CSV·그림·오프라인참조 무결성 검산PASS. 데스크톱학습/EP814/원WIP12개/다른기기변경0; strict·기본정책·experiment_ready=false 유지. 아래PC준비는과거이력.
 
 # 2026-10-15 현재 작업 — A24-LAPTOP-PREP-01
