@@ -1,4 +1,10 @@
-# 2026-10-16 최신 — C10 통신실패 보존·C11 미실행13 재개
+# 2026-10-16 최신 — 확인30정상·현재C11 유지·온도 대응6조건 PC준비
+
+- 03:15 KST 실제 원장: 원확인30/40 정상, 시작전 실패2 보존, 현재C11 분류CPU MAIN/회수중·기존85중77소비. 원179/APK/활성 소스·설정 변경0이며 원물/현재 owner를 우선한다. 큐17은C11뒤미사용ORDER1→보완12 순서를 유지한다.
+- 사용자 야간완료·온도문제 자율처리 지시에 따라 [같은 비교군6](team/a24-measurement-revision02-20261015/matched_rebaseline6_20261016/README.md)을 PC준비했다. 원97원장은 보존하고 저부하BASE/PAIR2+혼합4를 별도6/640요청으로 제한(합산최대103), 아직기기명령/APP/MAIN/소비0. 원실패 대체·원40성공 합산0, 첫안정기준공유/MAIN판정불변/PC4검사+실제6authorization PASS다.
+- 다음최대3: C11/큐17실측·닫힌원물공유; 종료후같은비교군6의신선한읽기점검/실행; 실패·미실행포함전체집계·보고서·원격검증. PC집계도구2검사PASS이며 AP공백조건의열비교를제외한다. Jnull/표면미검증/experiment_ready=false·원WIP/데스크톱/NPU보존.
+
+# 2026-10-16 이전 — C10 통신실패 보존·C11 미실행13 재개
 
 - [고정 진행 현황](team/a24-measurement-revision02-20261015/LIVE_PROGRESS.md)과 실제 원장/owner를 대조한다. C10은5정상·1072본요청 회수 후 원27 BASE APP 전달 오류로02:24:26 종료했다. 같은폰 두 차례 읽기에서 빈프로세스·출력디렉터리/시작승인 부재와 host 승인업로드0을 확인했다. 원FAILED/예산1/64미실시를 보존하고 실제워밍업은null, 재전송/허위journal닫힘0이다.
 - [C11 미실행13](team/a24-measurement-revision02-20261015/remaining13_after_transport_failure_20261016/README.md)은02:33:08 KST 최초시작,PID12028/새13승인결합PASS/새읽기점검후 현재원28 혼합PAIR 준비. 원25/40정상·2시작전실패·원MAIN3808을 보존하고 원68/81소비에서13/1720요청만계속한다. 원179/APK/4ce coordinator/MAIN/서비스/완료/반환/계수불변, 별도audit3PC검사와SHA고정사본만추가했다. 현재실행job `output/A24R02C11/job.json`/Documents C11/global C11.
