@@ -1,0 +1,478 @@
+{
+  "apk_sha256": "fb9141396cffa5b646e93c0928567ba01e8d2ae6b187bd10ad39c37a579a526c",
+  "coverage": {
+    "app": {
+      "charge_counter_changes": 4,
+      "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+      "first_valid_s": -65.063,
+      "interval_median_s": 0.9,
+      "last_valid_s": 209.457,
+      "max_gap_s": 0.921,
+      "missing": 0,
+      "passed": false,
+      "points": {
+        "0": {
+          "after_s": 0.649,
+          "before_s": -0.252,
+          "gap_s": 0.901,
+          "max_gap_s": 2.5,
+          "ok": true,
+          "point_s": 0.0
+        },
+        "120": {
+          "after_s": 120.355,
+          "before_s": 119.448,
+          "gap_s": 0.907,
+          "max_gap_s": 2.5,
+          "ok": true,
+          "point_s": 120.0
+        },
+        "180": {
+          "after_s": 180.657,
+          "before_s": 179.747,
+          "gap_s": 0.91,
+          "max_gap_s": 2.5,
+          "ok": true,
+          "point_s": 180.0
+        },
+        "35": {
+          "after_s": 35.744,
+          "before_s": 34.855,
+          "gap_s": 0.89,
+          "max_gap_s": 2.5,
+          "ok": true,
+          "point_s": 35.0
+        }
+      },
+      "positive_samples": 0,
+      "post_t0_s": 209.457,
+      "pre_t0_s": 65.063,
+      "reasons": [
+        "post_t0 209.457 < 210"
+      ],
+      "rules": {
+        "max_gap_s": 2.5,
+        "points_s": [
+          0.0,
+          35.0,
+          120.0,
+          180.0
+        ],
+        "post_t0_min_s": 210,
+        "pre_t0_min_s": 60
+      },
+      "samples": 306,
+      "sign_discharge_negative": true,
+      "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+      "valid": 306,
+      "voltage_changes": 2
+    },
+    "experiment_id": "S26-M8-M128-SMOKE",
+    "folder": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M8_SMOKE\\S26_MIXREQ_SMOKE_SMOKE_M128_WAIT200x16_a1",
+    "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M8_HAL\\hal_cont_SMOKE_M128_WAIT200x16_a1.csv",
+    "host": {
+      "ap_first_s": -157.695,
+      "ap_last_s": 226.475,
+      "ap_points": {
+        "180": {
+          "after_s": 180.385,
+          "before_s": 178.085,
+          "gap_s": 2.3,
+          "max_gap_s": 5.0,
+          "ok": true,
+          "point_s": 180.0
+        },
+        "35": {
+          "after_s": 35.525,
+          "before_s": 33.165,
+          "gap_s": 2.36,
+          "max_gap_s": 5.0,
+          "ok": true,
+          "point_s": 35.0
+        }
+      },
+      "ap_rows": 168,
+      "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+      "err_rows": 0,
+      "interval_median_s": 2.3,
+      "iv_points": {
+        "0": {
+          "after_s": 1.045,
+          "before_s": -1.285,
+          "gap_s": 2.33,
+          "max_gap_s": 5.0,
+          "ok": true,
+          "point_s": 0.0
+        },
+        "180": {
+          "after_s": 180.385,
+          "before_s": 178.085,
+          "gap_s": 2.3,
+          "max_gap_s": 5.0,
+          "ok": true,
+          "point_s": 180.0
+        }
+      },
+      "iv_rows": 168,
+      "max_gap_s": 2.4,
+      "passed": true,
+      "post_t0_s": 226.475,
+      "pre_t0_s": 157.695,
+      "reasons": [],
+      "rows": 168,
+      "rules": {
+        "ap_points_s": [
+          35.0,
+          180.0
+        ],
+        "iv_points_s": [
+          0.0,
+          180.0
+        ],
+        "max_gap_s": 5.0,
+        "post_t0_min_s": 210,
+        "pre_t0_min_s": 60
+      },
+      "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+    },
+    "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+    "passed": false,
+    "reasons": [
+      "post_t0 209.457 < 210"
+    ],
+    "schema": "s26-m8-coverage-check-v1",
+    "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+    "session_id": "84ed3bc3-81e0-5fb8-99d2-f5af4793b044",
+    "time_scale": 1
+  },
+  "gate": {
+    "result": "skipped (smoke)"
+  },
+  "in_block_charge": false,
+  "manifest_sha256": "d27ccb45d35e882a6fb44456f21615765576159a9fc27ecfb369888d115062e0",
+  "note": "readout only — ΔJ120/180 · 열 · 정책 비교 계산 0 (조민규 / Cowork) · 잔열 = host hal_cont 의 origin + 180 s 표본 위치만 (coverage)",
+  "perfetto": null,
+  "row": {
+    "all_completed": true,
+    "analysis_split": null,
+    "app_post_t0_s": 209.457,
+    "arm": "M128_WAIT200x16",
+    "attempt": 1,
+    "block": "M",
+    "coverage_app": false,
+    "coverage_host": true,
+    "eligible": true,
+    "end_time": "2026-10-15T00:10:28",
+    "experiment_id": "S26-M8-M128-SMOKE",
+    "failed": null,
+    "folder": "S26_M8_SMOKE/S26_MIXREQ_SMOKE_SMOKE_M128_WAIT200x16_a1",
+    "host_post_t0_s": 226.475,
+    "index": 3,
+    "label": "SMOKE_M128_WAIT200x16",
+    "last_available_s": 52.35848043,
+    "last_dispatch_s": 52.083038985,
+    "normal_late": 26,
+    "normal_met": 6,
+    "normal_p95_ms": 8837.337578,
+    "planned": 128,
+    "policy": "FIFO_WAIT_CG_V1",
+    "policy_args": "{\"cap_ms\": 3200, \"first_n_bursts\": 16, \"wait_ms\": 200}",
+    "prep": "NONE",
+    "prep_actual_s": null,
+    "prep_calls": null,
+    "readback_ok": 32,
+    "reasons": "",
+    "stage": "smoke",
+    "start_time": "2026-10-15T00:05:48",
+    "succeeded": 128,
+    "svc100": false,
+    "svc70": false,
+    "svc80": false,
+    "svc90": false,
+    "svc95": false,
+    "undispatched": null,
+    "unfinished": null,
+    "urgent_late": 89,
+    "urgent_met": 7,
+    "urgent_p95_ms": 8500.741016,
+    "wait_count": 16,
+    "wait_cut": 0,
+    "wait_dose_total_ms": 3229.113,
+    "wait_nominal_total_ms": null,
+    "wait_overrun_total_ms": null,
+    "wait_planned_total_ms": 3200
+  },
+  "service": {
+    "all": {
+      "all_completed": true,
+      "deadline_met": 13,
+      "failed": 0,
+      "late": 115,
+      "levels": {
+        "100": false,
+        "70": false,
+        "80": false,
+        "90": false,
+        "95": false
+      },
+      "max_ms": 9300.235157,
+      "mean_ms": 4391.603378335937,
+      "note": "분모 planned · response_ns = urgent output_ready / normal readback_end · undispatched/failed 는 응답 없음 (분모 유지)",
+      "p95_ms": 8560.098321,
+      "planned": 128,
+      "responded": 128,
+      "undispatched": 0
+    },
+    "normal": {
+      "all_completed": true,
+      "deadline_met": 6,
+      "failed": 0,
+      "late": 26,
+      "levels": {
+        "100": false,
+        "70": false,
+        "80": false,
+        "90": false,
+        "95": false
+      },
+      "max_ms": 9300.235157,
+      "mean_ms": 4627.7300064375,
+      "note": "분모 planned · response_ns = urgent output_ready / normal readback_end · undispatched/failed 는 응답 없음 (분모 유지)",
+      "p95_ms": 8837.337578,
+      "planned": 32,
+      "responded": 32,
+      "undispatched": 0
+    },
+    "urgent": {
+      "all_completed": true,
+      "deadline_met": 7,
+      "failed": 0,
+      "late": 89,
+      "levels": {
+        "100": false,
+        "70": false,
+        "80": false,
+        "90": false,
+        "95": false
+      },
+      "max_ms": 9022.775196,
+      "mean_ms": 4312.894502302083,
+      "note": "분모 planned · response_ns = urgent output_ready / normal readback_end · undispatched/failed 는 응답 없음 (분모 유지)",
+      "p95_ms": 8500.741016,
+      "planned": 96,
+      "responded": 96,
+      "undispatched": 0
+    }
+  },
+  "start_state": {
+    "AP": 32.8,
+    "BAT": 31.1,
+    "PA": 32.2,
+    "SKIN": 33.2,
+    "current_now_uA": -74218,
+    "epoch": 1791990254.9941454,
+    "last_power_connected": "2026-10-14T20:08:45.757",
+    "last_power_disconnected": "2026-10-14T21:26:48.607",
+    "last_power_disconnected_epoch": 1791980808.607,
+    "plugged": false,
+    "soc": 96,
+    "t": "2026-10-15T00:04:14",
+    "thermal_status": 0,
+    "unplugged_since_last_disconnect": true
+  },
+  "validated_rules": {
+    "A0_artifacts": {
+      "detail": {
+        "cleanup_completed": true,
+        "common_boundary": true,
+        "part_files_zero": true,
+        "requests_json": true,
+        "result_files": true,
+        "split": "diagnostic",
+        "summary_completed": true,
+        "summary_contract_m8": true,
+        "time_scale": 1,
+        "time_scale_ok": true,
+        "warmup_json": true
+      },
+      "passed": true
+    },
+    "A10_coverage": {
+      "detail": {
+        "app_passed": false,
+        "app_post_t0_s": 209.457,
+        "app_pre_t0_s": 65.063,
+        "gated": false,
+        "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M8_HAL\\hal_cont_SMOKE_M128_WAIT200x16_a1.csv",
+        "host_passed": true,
+        "host_post_t0_s": 226.475,
+        "reasons": [
+          "post_t0 209.457 < 210"
+        ]
+      },
+      "passed": true
+    },
+    "A1_rows": {
+      "detail": {
+        "planned": 128,
+        "rows": 128,
+        "terminal": {
+          "succeeded": 128
+        },
+        "undispatched_with_dispatch": []
+      },
+      "passed": true
+    },
+    "A2_order": {
+      "detail": {
+        "fields": [
+          "scheduled_arrival_ns",
+          "queue_entry_ns",
+          "dispatch_ns",
+          "execution_start_ns",
+          "host_inference_start_ns",
+          "host_inference_return_ns",
+          "output_ready_ns",
+          "persist_complete_ns",
+          "readback_start_ns",
+          "readback_end_ns",
+          "worker_release_ns",
+          "lane_available_ns"
+        ],
+        "violations": []
+      },
+      "passed": true
+    },
+    "A3_window": {
+      "detail": {
+        "available_after_drain": [],
+        "dispatch_outside": [],
+        "end_ns": 458141657037859,
+        "last_available_s": 52.35848043,
+        "last_dispatch_s": 52.083038985,
+        "origin_ns": 458021654713327,
+        "window_s": 120
+      },
+      "passed": true
+    },
+    "A4_route_residents": {
+      "detail": {
+        "created": [
+          "classification_CPU",
+          "classification_GPU",
+          "classification_NPU",
+          "detection_CPU",
+          "detection_GPU"
+        ],
+        "residents": [
+          "classification_CPU",
+          "classification_GPU",
+          "classification_NPU",
+          "detection_CPU",
+          "detection_GPU"
+        ],
+        "warmed": {
+          "classification_CPU": [
+            0,
+            1
+          ],
+          "classification_GPU": [
+            0,
+            1
+          ],
+          "classification_NPU": [
+            0,
+            1
+          ],
+          "detection_CPU": [
+            0,
+            1
+          ],
+          "detection_GPU": [
+            0,
+            1
+          ]
+        },
+        "wrong_lane": []
+      },
+      "passed": true
+    },
+    "A5_concurrency_head": {
+      "detail": {
+        "allowed_pair": null,
+        "concurrency": "SERIAL",
+        "limit": 1,
+        "max_concurrent": 1,
+        "outside_allowed_pair": [],
+        "selection": "FIFO",
+        "strict_head_violations": []
+      },
+      "passed": true
+    },
+    "A6_response": {
+      "detail": {
+        "boundary": "urgent = output_ready · normal = readback_complete (priority)",
+        "normal": 32,
+        "readback_ok": 32,
+        "urgent": 96,
+        "violations": []
+      },
+      "passed": true
+    },
+    "A7_wait": {
+      "detail": {
+        "bursts": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "cut": [],
+        "dispatch_inside_wait": [],
+        "dose_total_ms": 3229.113,
+        "interventions": 16,
+        "planned_total_ms": 3200,
+        "policy_args": {
+          "cap_ms": 3200,
+          "first_n_bursts": 16,
+          "wait_ms": 200
+        },
+        "running_at_wait_start": [],
+        "waits": 16
+      },
+      "passed": true
+    },
+    "A8_prep": {
+      "detail": {
+        "kind": "NONE",
+        "prep_json_present": false
+      },
+      "passed": true
+    },
+    "A9_safety": {
+      "detail": {
+        "failure_files": [],
+        "samples": 306,
+        "start_check": true,
+        "stop_reason": null,
+        "watch_files": {
+          "phone": true,
+          "skin": true
+        }
+      },
+      "passed": true
+    }
+  }
+}

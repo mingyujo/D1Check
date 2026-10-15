@@ -47,6 +47,20 @@ INSTRUCTIONS = [("프롬프트_M8_준비묶음_1014.md", "2026-10-14 (준비 D�
                 ("조민규_답_1015c_DEV블록1수신_정정6.txt", "2026-10-15 19:3x (조민규 · 블록 1 수신 정정 6) · 프롬프트_M8_추가지시4_1015.md → 이 묶음")]
 
 
+def pick(rows: list[dict], key: str, target: float | None, method: str, tol: float) -> dict:
+    """온도 파생 (정정 3판): key = 'up' (기기 CLOCK_BOOTTIME s · progress mono_ns/1e9 와 같은 시계) 또는 'epoch' (host). method 'nearest' = |t − target| 최소 (양쪽) · 'before' = target 이전 (≤) 가장 늦은 표본 (직전 실측). tol 밖/없음 = null."""
+    if target is None or not rows:
+        return dict(AP=None, SKIN=None, sample=None, delta_s=None, method=method, note="null (표본/시계 정렬 없음)")
+    cand = [r for r in rows if r.get(key) is not None and (r[key] <= target if method == "before" else True)]
+    if not cand:
+        return dict(AP=None, SKIN=None, sample=None, delta_s=None, method=method, note="null (target 이전 표본 없음)")
+    r = min(cand, key=lambda x: abs(x[key] - target))
+    d = r[key] - target
+    if abs(d) > tol:
+        return dict(AP=None, SKIN=None, sample=r[key], delta_s=round(d, 3), method=method, note=f"null (|delta| {abs(d):.1f} s > {tol} s)")
+    return dict(AP=r["AP"], SKIN=r["SKIN"], sample=r[key], delta_s=round(d, 3), method=method, note="")
+
+
 def slope_ok(last: dict, slope_max: float):
     """0 · -0.0 은 유효한 숫자 (abs <= slope_max 통과) · None/결측 = null (조민규 10/15 정정 1 · v1 은 `or 9` 로 0 을 결측 취급했음)."""
     a, b = last.get("ap_slope_c_per_min"), last.get("skin_slope_c_per_min")
@@ -70,7 +84,7 @@ def hal_rows(p: Path) -> list[dict]:
     with open(p, encoding="utf-8-sig", errors="replace", newline="") as f:
         for r in csv.DictReader(f):
             try:
-                out.append(dict(epoch=float(r["host_ms"]) / 1000, AP=float(r["AP"]) if r.get("AP") else None, SKIN=float(r["SKIN"]) if r.get("SKIN") else None,
+                out.append(dict(epoch=float(r["host_ms"]) / 1000, up=float(r["device_uptime_s"]) if r.get("device_uptime_s") else None, AP=float(r["AP"]) if r.get("AP") else None, SKIN=float(r["SKIN"]) if r.get("SKIN") else None,
                                 BAT=float(r["BAT"]) if r.get("BAT") else None, SOC=int(float(r["level"])) if r.get("level") else None))
             except (ValueError, KeyError):
                 pass
@@ -142,7 +156,7 @@ def main() -> int:
     ap.add_argument("--rev", type=int, default=1, help="2 = 조민규 10/15 21:xx 정정 (slope 0 · B1-03 이벤트 연결 · EDD a2 대표 문구/열 · 휴식 원점) → out/v2/ (v1 파일 보존)")
     args = ap.parse_args()
     M8.activate()
-    out = args.out / "v2" if args.rev >= 2 else args.out
+    out = args.out / f"v{args.rev}" if args.rev >= 2 else args.out
     out.mkdir(parents=True, exist_ok=True)
     agg_source = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=str(REPO)).stdout.strip()
     blocks = C.read_json(PLAN_ROOT / "plan_m8/blocks.json")
@@ -258,6 +272,31 @@ def main() -> int:
         app_start = nearest(H, t.get("host_start_epoch"))
         common = nearest(H, t.get("origin_host_epoch"))
         first_pre = nearest(H, (t.get("origin_host_epoch") or 0) + M8.FIRST_OFFSET_US / 1e6 - 2.5) if t.get("origin_host_epoch") else {}
+        prov = {}
+        if args.rev >= 3:
+            folder = dev_root / row["folder"].split("/", 1)[1] if "/" in row["folder"] else None
+            cb = C.read_json(folder / "device" / "common_boundary.json") if folder and (folder / "device" / "common_boundary.json").is_file() else {}
+            common_ns = cb.get("start_ns")
+            first_ns = min((x["scheduled_arrival_ns"] for x in cb.get("rows", []) if x.get("scheduled_arrival_ns") is not None), default=None)
+            ss_ns = None
+            prog = folder / "device" / "progress.jsonl" if folder else None
+            if prog and prog.is_file():
+                for line in prog.read_text(encoding="utf-8", errors="replace").splitlines():
+                    if '"session_start"' in line:
+                        ss_ns = json.loads(line).get("mono_ns"); break
+            pc = pick(H, "up", common_ns / 1e9 if common_ns else None, "nearest", 6.0)
+            pf = pick(H, "up", first_ns / 1e9 if first_ns else None, "before", 10.0)
+            pa = pick(H, "epoch", t.get("host_start_epoch"), "nearest", 6.0)
+            pd = pick(H, "up", ss_ns / 1e9 if ss_ns else None, "nearest", 6.0)
+            hal_sha = C.sha256_file(Path(ev["hal_csv"])) if ev.get("hal_csv") and Path(ev["hal_csv"]).is_file() else None
+            prov = dict(hal_path=(Path(ev["hal_csv"]).name if ev.get("hal_csv") else None), hal_sha256=hal_sha, clock_note="common/first/device_session_start = 기기 CLOCK_BOOTTIME (HAL device_uptime_s = progress mono_ns/1e9) · app_start = host 시계 (HAL host_ms vs session_log start_time)",
+                        common_target_ns=common_ns, common_sample_up_s=pc["sample"], common_delta_s=pc["delta_s"], common_method="nearest (양쪽 · ≤ 6 s)", common_AP=pc["AP"], common_SKIN=pc["SKIN"], common_note=pc["note"],
+                        first_request_target_ns=first_ns, first_request_rule="target = min(common_boundary.rows.scheduled_arrival_ns) (= common0 + 35 s) · 표본 = target 이전 (≤) 가장 늦은 HAL 표본 · ≤ 10 s · 이후 표본은 쓰지 않음 (직전 실측)",
+                        first_request_pre_sample_up_s=pf["sample"], first_request_pre_delta_s=pf["delta_s"], first_request_pre_method="before (≤ target · ≤ 10 s)", first_request_pre_AP=pf["AP"], first_request_pre_SKIN=pf["SKIN"], first_request_pre_note=pf["note"],
+                        app_start_target_host_epoch=t.get("host_start_epoch"), app_start_sample_host_epoch=pa["sample"], app_start_delta_s=pa["delta_s"], app_start_method="host 호출시각 (session_log start_time) 근접 HAL (nearest · ≤ 6 s) — 기기 session_start · 앱 직접 센서와 다름",
+                        app_start_AP=pa["AP"], app_start_SKIN=pa["SKIN"], app_start_note=pa["note"],
+                        device_session_start_target_ns=ss_ns, device_session_start_sample_up_s=pd["sample"], device_session_start_delta_s=pd["delta_s"], device_session_start_AP=pd["AP"], device_session_start_SKIN=pd["SKIN"], device_session_start_method="nearest (≤ 6 s · 기기 시계)",
+                        gate_last_method="게이트 마지막 판정의 60 s 창 AP/SKIN 중앙값 (표본 1개 아님 · host 시계)")
         r2 = dict(row)
         r2.update(gate_last_t=last.get("t"), gate_last_AP=last.get("ap_median"), gate_last_SKIN=last.get("skin_median"), gate_last_SOC=last.get("soc"), gate_last_ap_slope=last.get("ap_slope_c_per_min"),
                   app_start_AP=app_start.get("AP"), app_start_SKIN=app_start.get("SKIN"), app_start_SOC=app_start.get("SOC"), common_start_AP=common.get("AP"), common_start_SKIN=common.get("SKIN"), common_start_SOC=common.get("SOC"),
@@ -265,10 +304,14 @@ def main() -> int:
                   AP_band_ok=(abs(last["ap_median"] - gate["tref"]) <= (gate.get("band_c") or 0.5)) if (last.get("ap_median") is not None and gate.get("tref") is not None) else None,
                   slope_ok=slope_ok(last, gate.get("slope_max") or 0.1), ap_slope_raw=repr(last.get("ap_slope_c_per_min")), skin_slope_raw=repr(last.get("skin_slope_c_per_min")),
                   event_row=ev_row, event_rc=ev.get("rc"), command_id=hl.get("command_id"), session_id_key=row.get("session_id"), host_start_key=hl.get("start_time"),
-                  hal_method="nearest HAL row <= 6 s (보간 아님 · 없으면 null) · start_* 는 게이트 전", app_start_method=("nearest" if app_start else "null (정렬 규약 없음)"),
+                  hal_method="nearest HAL row <= 6 s (보간 아님 · 없으면 null) · start_* 는 게이트 전", app_start_method=("nearest" if app_start else "null (정렬 규약 없음)"), **({} if args.rev < 3 else dict(v2_common_start_AP_deprecated=common.get("AP"), v2_first_request_pre_AP_deprecated=first_pre.get("AP"))),
                   gate_passed=(gate.get("result") == "start"), forced=bool(gate.get("forced_start")), gate_version=gate.get("gate_version") or "v2",
                   apk_source=APK_SOURCE, host_source_at_run=host_source_at(row.get("start_time") or ev.get("t")), aggregation_source=agg_source,
                   start_AP_note="start_* = 게이트 대기 전 (HAL 시작 시) 값 · 시작 조건은 gate_last_* / app_start_* / common_start_* 열")
+        if args.rev >= 3:
+            for k in ("common_start_AP", "common_start_SKIN", "common_start_SOC", "first_request_pre_AP", "first_request_pre_SKIN", "app_start_AP", "app_start_SKIN"):
+                r2.pop(k, None)   # v2 의 이벤트 시각 기반 값 (common 로그 발행 시각 + 오프셋) 은 폐기 → prov 열로 대체
+            r2.update(prov)
         v2.append(r2)
     with open(out / "session_table_m8_v2.csv", "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(v2[0].keys())); w.writeheader(); w.writerows(v2)

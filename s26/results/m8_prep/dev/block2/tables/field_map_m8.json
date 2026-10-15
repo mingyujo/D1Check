@@ -1,0 +1,118 @@
+{
+  "fields": {
+    "AVAILABLE": {
+      "column": "lane_available_ns",
+      "event": "lane_available",
+      "note": "응답 경계와 별개"
+    },
+    "WAIT": {
+      "column": "wait_burst_index · wait_planned_ms · wait_dose_ms · wait_cut_reason",
+      "event": "wait_start · wait_end",
+      "note": "묶음 head 요청에만 · 정책 인자 없으면 null · summary.wait"
+    },
+    "dispatch": {
+      "column": "dispatch_ns",
+      "event": "dispatch"
+    },
+    "enqueue": {
+      "column": "queue_entry_ns",
+      "event": "queue_entry",
+      "note": "enqueue 지연 = queue_entry − scheduled"
+    },
+    "execution_start": {
+      "column": "execution_start_ns",
+      "event": "request_start"
+    },
+    "inference start/return": {
+      "column": "host_inference_start_ns · host_inference_return_ns",
+      "event": "host_inference_start · host_inference_return"
+    },
+    "output": {
+      "column": "output_ready_ns",
+      "event": "output_ready",
+      "note": "긴급 응답 경계"
+    },
+    "persist": {
+      "column": "persist_complete_ns",
+      "event": "persist_complete",
+      "note": ".part → fsync → rename"
+    },
+    "readback": {
+      "column": "readback_start_ns · readback_end_ns · readback_ok · readback_sha256 · readback_expected_sha256 · readback_error · readback_skipped",
+      "event": "readback",
+      "note": "normal 만 수행 (urgent = readback_skipped 'urgent') · 앱이 기록 · host pull 시각 대체 0"
+    },
+    "release": {
+      "column": "worker_release_ns",
+      "event": "worker_release"
+    },
+    "terminal": {
+      "column": "terminal_status",
+      "values": [
+        "succeeded",
+        "failed",
+        "undispatched (120 s 경계 뒤 waiting · undispatched_reason)",
+        "unfinished (앱 정지)"
+      ]
+    },
+    "결과": {
+      "file": "<request_id>.result.json",
+      "keys": [
+        "results",
+        "raw_output_sha256",
+        "inference_ns",
+        "input_tensor_sha256",
+        "model_sha256",
+        "image_sha256"
+      ]
+    },
+    "결정": {
+      "event": "decision",
+      "keys": [
+        "policy",
+        "waiting",
+        "running",
+        "selected",
+        "backend",
+        "reason"
+      ],
+      "note": "null 포함 전부"
+    },
+    "백엔드": {
+      "also": "result.json actual_backend · runtime_key",
+      "column": "selected_backend"
+    },
+    "실제 도착": {
+      "column": "actual_arrival_ns",
+      "event": "arrival"
+    },
+    "예정 도착": {
+      "also": "offset_us",
+      "column": "scheduled_arrival_ns",
+      "event": "arrival(scheduled)"
+    },
+    "응답": {
+      "column": "response_ns · response_boundary",
+      "event": "(앱이 priority 로 선택)",
+      "note": "urgent = output_ready_ns · normal = readback_end_ns · 주응답 = response − scheduled"
+    },
+    "준비": {
+      "event": "prep_call_start · prep_call_end · prep_end",
+      "file": "prep.json",
+      "keys": [
+        "kind",
+        "prep_start_ns",
+        "prep_end_ns",
+        "prep_last_available_ns",
+        "calls",
+        "call_records"
+      ]
+    }
+  },
+  "gate": "S26_M8_driver_events.jsonl run_end.gate (decisions · tref) · S26_M8_prestart_ledger.jsonl · S26_M8_tref.json (날짜별 Tref_day · 제안 v1)",
+  "host_thermal": "host/hal.csv (세션 안 2 s) · S26_M8_HAL/hal_cont_<label>_a<n>.csv (연속 2.3 s · dumpsys battery 포함 · 앱 시작 ≥ 60 s 전 → origin + 300 s)",
+  "power": "progress.jsonl kind=power_sample (current_raw µA 방전 음수 · charge_counter µAh · voltage mV · deci-℃ · level · plugged · thermal_status · interactive · 900 ms · 준비부터 연속)",
+  "schema": "s26-m8-field-map-v1",
+  "source": "request-runner SessionEngineM8 (contract M8) · requests.json rows · progress.jsonl events · <request_id>.result.json · prep.json · summary.json",
+  "units": "*_ns = SystemClock.elapsedRealtimeNanos (기기 단조 · 한 세션 한 시계 · 센서 표본 같은 시계) · host 연결 = session hal.csv (pc_ms ↔ device_boottime_s)"
+}
