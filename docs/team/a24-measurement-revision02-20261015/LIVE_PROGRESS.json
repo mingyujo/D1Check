@@ -1,8 +1,8 @@
 {
-  "updated_UTC": "2026-10-15T20:37:29.973880+00:00",
-  "updated_KST": "2026-10-16 05:37:29 KST",
+  "updated_UTC": "2026-10-15T20:43:34.469728+00:00",
+  "updated_KST": "2026-10-16 05:43:34 KST",
   "original_confirm": {
-    "checked_UTC": "2026-10-15T20:37:29.938098+00:00",
+    "checked_UTC": "2026-10-15T20:43:33.723504+00:00",
     "phase": "STOPPED",
     "current": {
       "session_id": "2f15f739-0a34-58d3-b8e9-24a739bc6d8c",
@@ -77,14 +77,14 @@
     },
     "SUP12_C1": {
       "registered": 8,
-      "APP": 7,
-      "normal": 6,
+      "APP": 8,
+      "normal": 7,
       "rejected": 0,
       "host_failed": 0,
       "ended": false,
       "run_root_started": true,
       "worker_lock_present": true,
-      "pending_prescription": "M128_ORDER"
+      "pending_prescription": "M128_PAIR_G"
     },
     "EXTRA4_ORDER": {
       "registered": 1,
@@ -98,7 +98,7 @@
     },
     "SUP12": {
       "registered": 12,
-      "APP": 11,
+      "APP": 12,
       "normal": 3,
       "rejected": 0,
       "host_failed": 1,
@@ -112,9 +112,9 @@
   "matched_rebaseline_cap": 6,
   "separate_trace_path_repair_cap": 2,
   "combined_ceiling": 105,
-  "combined_consumed": 95,
-  "supplement_normally_closed_total": 9,
-  "supplement_global_APP_intents_not_double_counted": 11,
+  "combined_consumed": 96,
+  "supplement_normally_closed_total": 10,
+  "supplement_global_APP_intents_not_double_counted": 12,
   "original_confirm_rejections_total": 2,
   "active_measurement_groups": [
     "SUP12_C1"
@@ -400,6 +400,28 @@
           "family": "SUP12_C1",
           "stage": "DEV",
           "block": "W3_GPU",
+          "planned_arms": 1,
+          "normal_completed": 1,
+          "all_arms_normally_completed": true,
+          "status_counts": {
+            "COMPLETE_TRACE_RECOVERED": 1
+          },
+          "subset_recipe": null
+        }
+      ]
+    },
+    {
+      "label": "SUP12_C1_C9_ORDER_M128",
+      "path": "docs/results/a24_measurement_share_20261016/automatic_checkpoints/SUP12_C1_C9_ORDER_M128",
+      "bundles": [
+        {
+          "filename": "SUP12_C1_DEV_C9_ORDER.zip",
+          "bytes": 233931,
+          "sha256": "dbd9fd86fd426ee23aba2011029b36290b94716ec59909e4a0f3663ef3c1b5df",
+          "members": 154,
+          "family": "SUP12_C1",
+          "stage": "DEV",
+          "block": "C9_ORDER",
           "planned_arms": 1,
           "normal_completed": 1,
           "all_arms_normally_completed": true,
