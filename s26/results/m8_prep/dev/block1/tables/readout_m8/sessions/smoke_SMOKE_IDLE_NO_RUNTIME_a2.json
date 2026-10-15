@@ -1,0 +1,437 @@
+{
+  "apk_sha256": "37960e25c5948f661f2f5b47a90a4356be1b3712706d34679e71a14842ced6ea",
+  "coverage": {
+    "app": {
+      "charge_counter_changes": 0,
+      "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+      "first_valid_s": -80.02,
+      "interval_median_s": 9.006,
+      "last_valid_s": 226.061,
+      "max_gap_s": 9.165,
+      "missing": 0,
+      "passed": false,
+      "points": {
+        "0": {
+          "after_s": 1.091,
+          "before_s": -7.853,
+          "gap_s": 8.944,
+          "max_gap_s": 2.5,
+          "ok": false,
+          "point_s": 0.0
+        },
+        "120": {
+          "after_s": 127.155,
+          "before_s": 118.062,
+          "gap_s": 9.093,
+          "max_gap_s": 2.5,
+          "ok": false,
+          "point_s": 120.0
+        },
+        "180": {
+          "after_s": 181.017,
+          "before_s": 172.065,
+          "gap_s": 8.952,
+          "max_gap_s": 2.5,
+          "ok": false,
+          "point_s": 180.0
+        },
+        "35": {
+          "after_s": 37.067,
+          "before_s": 28.149,
+          "gap_s": 8.918,
+          "max_gap_s": 2.5,
+          "ok": false,
+          "point_s": 35.0
+        }
+      },
+      "positive_samples": 0,
+      "post_t0_s": 226.061,
+      "pre_t0_s": 80.02,
+      "reasons": [
+        "app point 0s both-sides missing (gap 8.944)",
+        "app point 35s both-sides missing (gap 8.918)",
+        "app point 120s both-sides missing (gap 9.093)",
+        "app point 180s both-sides missing (gap 8.952)"
+      ],
+      "rules": {
+        "max_gap_s": 2.5,
+        "points_s": [
+          0.0,
+          35.0,
+          120.0,
+          180.0
+        ],
+        "post_t0_min_s": 210,
+        "pre_t0_min_s": 60
+      },
+      "samples": 35,
+      "sign_discharge_negative": true,
+      "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+      "valid": 35,
+      "voltage_changes": 0
+    },
+    "experiment_id": "S26-M8-IDLE-SMOKE",
+    "folder": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M8_SMOKE\\S26_MIXREQ_SMOKE_SMOKE_IDLE_NO_RUNTIME_a2",
+    "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M8_HAL\\hal_cont_SMOKE_IDLE_NO_RUNTIME_a2.csv",
+    "host": {
+      "ap_first_s": -992.972,
+      "ap_last_s": 387.128,
+      "ap_points": {
+        "180": {
+          "after_s": 180.228,
+          "before_s": 156.928,
+          "gap_s": 23.3,
+          "max_gap_s": 5.0,
+          "ok": false,
+          "point_s": 180.0
+        },
+        "35": {
+          "after_s": 42.028,
+          "before_s": 18.928,
+          "gap_s": 23.1,
+          "max_gap_s": 5.0,
+          "ok": false,
+          "point_s": 35.0
+        }
+      },
+      "ap_rows": 61,
+      "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+      "err_rows": 0,
+      "interval_median_s": 23.0,
+      "iv_points": {
+        "0": {
+          "after_s": 18.928,
+          "before_s": -3.972,
+          "gap_s": 22.9,
+          "max_gap_s": 5.0,
+          "ok": false,
+          "point_s": 0.0
+        },
+        "180": {
+          "after_s": 180.228,
+          "before_s": 156.928,
+          "gap_s": 23.3,
+          "max_gap_s": 5.0,
+          "ok": false,
+          "point_s": 180.0
+        }
+      },
+      "iv_rows": 61,
+      "max_gap_s": 24.0,
+      "passed": false,
+      "post_t0_s": 387.128,
+      "pre_t0_s": 992.972,
+      "reasons": [
+        "host AP 35s both-sides missing (gap 23.1)",
+        "host AP 180s both-sides missing (gap 23.3)",
+        "host I/V 0s both-sides missing (gap 22.9)",
+        "host I/V 180s both-sides missing (gap 23.3)"
+      ],
+      "rows": 61,
+      "rules": {
+        "ap_points_s": [
+          35.0,
+          180.0
+        ],
+        "iv_points_s": [
+          0.0,
+          180.0
+        ],
+        "max_gap_s": 5.0,
+        "post_t0_min_s": 210,
+        "pre_t0_min_s": 60
+      },
+      "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+    },
+    "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+    "passed": false,
+    "reasons": [
+      "app point 0s both-sides missing (gap 8.944)",
+      "app point 35s both-sides missing (gap 8.918)",
+      "app point 120s both-sides missing (gap 9.093)",
+      "app point 180s both-sides missing (gap 8.952)",
+      "host AP 35s both-sides missing (gap 23.1)",
+      "host AP 180s both-sides missing (gap 23.3)",
+      "host I/V 0s both-sides missing (gap 22.9)",
+      "host I/V 180s both-sides missing (gap 23.3)"
+    ],
+    "schema": "s26-m8-coverage-check-v1",
+    "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+    "session_id": "c1a8dfbc-1dc3-5e27-a73c-0386ad3ab0a0",
+    "time_scale": 10
+  },
+  "gate": {
+    "result": "skipped (smoke)"
+  },
+  "in_block_charge": false,
+  "manifest_sha256": "18cfbe26c4ef053d2986ae1c8a011758b80647b935e5b5804ff283ef47d815a6",
+  "note": "readout only — ΔJ120/180 · 열 · 정책 비교 계산 0 (조민규 / Cowork) · 잔열 = host hal_cont 의 origin + 180 s 표본 위치만 (coverage)",
+  "perfetto": null,
+  "row": {
+    "all_completed": null,
+    "analysis_split": null,
+    "app_post_t0_s": 226.061,
+    "arm": "IDLE_NO_RUNTIME",
+    "attempt": 2,
+    "block": "NONE",
+    "coverage_app": false,
+    "coverage_host": false,
+    "eligible": true,
+    "end_time": "2026-10-15T02:46:14",
+    "experiment_id": "S26-M8-IDLE-SMOKE",
+    "failed": null,
+    "folder": "S26_M8_SMOKE/S26_MIXREQ_SMOKE_SMOKE_IDLE_NO_RUNTIME_a2",
+    "host_post_t0_s": 387.128,
+    "index": 0,
+    "label": "SMOKE_IDLE_NO_RUNTIME",
+    "last_available_s": null,
+    "last_dispatch_s": null,
+    "normal_late": 0,
+    "normal_met": 0,
+    "normal_p95_ms": null,
+    "planned": 0,
+    "policy": "NO_RUNTIME_V1",
+    "policy_args": "",
+    "prep": "NONE",
+    "prep_actual_s": null,
+    "prep_calls": null,
+    "readback_ok": 0,
+    "reasons": "",
+    "stage": "smoke",
+    "start_time": "2026-10-15T02:45:42",
+    "succeeded": null,
+    "svc100": null,
+    "svc70": null,
+    "svc80": null,
+    "svc90": null,
+    "svc95": null,
+    "undispatched": null,
+    "unfinished": null,
+    "urgent_late": 0,
+    "urgent_met": 0,
+    "urgent_p95_ms": null,
+    "wait_count": 0,
+    "wait_cut": 0,
+    "wait_dose_total_ms": null,
+    "wait_nominal_total_ms": null,
+    "wait_overrun_total_ms": null,
+    "wait_planned_total_ms": null
+  },
+  "service": {
+    "all": {
+      "all_completed": null,
+      "deadline_met": 0,
+      "failed": 0,
+      "late": 0,
+      "levels": {
+        "100": null,
+        "70": null,
+        "80": null,
+        "90": null,
+        "95": null
+      },
+      "max_ms": null,
+      "mean_ms": null,
+      "note": "분모 planned · response_ns = urgent output_ready / normal readback_end · undispatched/failed 는 응답 없음 (분모 유지)",
+      "p95_ms": null,
+      "planned": 0,
+      "responded": 0,
+      "undispatched": 0
+    },
+    "normal": {
+      "all_completed": null,
+      "deadline_met": 0,
+      "failed": 0,
+      "late": 0,
+      "levels": {
+        "100": null,
+        "70": null,
+        "80": null,
+        "90": null,
+        "95": null
+      },
+      "max_ms": null,
+      "mean_ms": null,
+      "note": "분모 planned · response_ns = urgent output_ready / normal readback_end · undispatched/failed 는 응답 없음 (분모 유지)",
+      "p95_ms": null,
+      "planned": 0,
+      "responded": 0,
+      "undispatched": 0
+    },
+    "urgent": {
+      "all_completed": null,
+      "deadline_met": 0,
+      "failed": 0,
+      "late": 0,
+      "levels": {
+        "100": null,
+        "70": null,
+        "80": null,
+        "90": null,
+        "95": null
+      },
+      "max_ms": null,
+      "mean_ms": null,
+      "note": "분모 planned · response_ns = urgent output_ready / normal readback_end · undispatched/failed 는 응답 없음 (분모 유지)",
+      "p95_ms": null,
+      "planned": 0,
+      "responded": 0,
+      "undispatched": 0
+    }
+  },
+  "start_state": {
+    "AP": 28.9,
+    "BAT": 27.1,
+    "PA": 28.5,
+    "SKIN": 29.8,
+    "current_now_uA": -487500,
+    "epoch": 1791999850.7434106,
+    "last_power_connected": "2026-10-14T20:08:45.757",
+    "last_power_disconnected": "2026-10-14T21:26:48.607",
+    "last_power_disconnected_epoch": 1791980808.607,
+    "plugged": false,
+    "soc": 88,
+    "t": "2026-10-15T02:44:10",
+    "thermal_status": 0,
+    "unplugged_since_last_disconnect": true
+  },
+  "validated_rules": {
+    "A0_artifacts": {
+      "detail": {
+        "cleanup_completed": true,
+        "common_boundary": true,
+        "part_files_zero": true,
+        "requests_json": true,
+        "result_files": true,
+        "split": "diagnostic",
+        "summary_completed": true,
+        "summary_contract_m8": true,
+        "time_scale": 10,
+        "time_scale_ok": true,
+        "warmup_json": true
+      },
+      "passed": true
+    },
+    "A10_coverage": {
+      "detail": {
+        "app_passed": false,
+        "app_post_t0_s": 226.061,
+        "app_pre_t0_s": 80.02,
+        "gated": false,
+        "hal_cont": "C:\\Users\\rhoyo\\AndroidStudioProjects\\D1Check_m6\\results\\S26_M8_HAL\\hal_cont_SMOKE_IDLE_NO_RUNTIME_a2.csv",
+        "host_passed": false,
+        "host_post_t0_s": 387.128,
+        "reasons": [
+          "app point 0s both-sides missing (gap 8.944)",
+          "app point 35s both-sides missing (gap 8.918)",
+          "app point 120s both-sides missing (gap 9.093)",
+          "app point 180s both-sides missing (gap 8.952)",
+          "host AP 35s both-sides missing (gap 23.1)",
+          "host AP 180s both-sides missing (gap 23.3)",
+          "host I/V 0s both-sides missing (gap 22.9)",
+          "host I/V 180s both-sides missing (gap 23.3)"
+        ]
+      },
+      "passed": true
+    },
+    "A1_rows": {
+      "detail": {
+        "planned": 0,
+        "rows": 0,
+        "terminal": {},
+        "undispatched_with_dispatch": []
+      },
+      "passed": true
+    },
+    "A2_order": {
+      "detail": {
+        "fields": [
+          "scheduled_arrival_ns",
+          "queue_entry_ns",
+          "dispatch_ns",
+          "execution_start_ns",
+          "host_inference_start_ns",
+          "host_inference_return_ns",
+          "output_ready_ns",
+          "persist_complete_ns",
+          "readback_start_ns",
+          "readback_end_ns",
+          "worker_release_ns",
+          "lane_available_ns"
+        ],
+        "violations": []
+      },
+      "passed": true
+    },
+    "A3_window": {
+      "detail": {
+        "available_after_drain": [],
+        "dispatch_outside": [],
+        "end_ns": 467570431192073,
+        "last_available_s": null,
+        "last_dispatch_s": null,
+        "origin_ns": 467558427188050,
+        "window_s": 120
+      },
+      "passed": true
+    },
+    "A4_route_residents": {
+      "detail": {
+        "created": [],
+        "residents": [],
+        "warmed": {},
+        "wrong_lane": []
+      },
+      "passed": true
+    },
+    "A5_concurrency_head": {
+      "detail": {
+        "allowed_pair": null,
+        "concurrency": null,
+        "limit": 1,
+        "max_concurrent": 0,
+        "outside_allowed_pair": [],
+        "selection": null,
+        "strict_head_violations": []
+      },
+      "passed": true
+    },
+    "A6_response": {
+      "detail": {
+        "boundary": "urgent = output_ready · normal = readback_complete (priority)",
+        "normal": 0,
+        "readback_ok": 0,
+        "urgent": 0,
+        "violations": []
+      },
+      "passed": true
+    },
+    "A7_wait": {
+      "detail": {
+        "note": "WAIT 정책 아님 · wait 이벤트 0 이어야",
+        "waits": 0
+      },
+      "passed": true
+    },
+    "A8_prep": {
+      "detail": {
+        "kind": "NONE",
+        "prep_json_present": false
+      },
+      "passed": true
+    },
+    "A9_safety": {
+      "detail": {
+        "failure_files": [],
+        "samples": 35,
+        "start_check": true,
+        "stop_reason": null,
+        "watch_files": {
+          "phone": true,
+          "skin": true
+        }
+      },
+      "passed": true
+    }
+  }
+}

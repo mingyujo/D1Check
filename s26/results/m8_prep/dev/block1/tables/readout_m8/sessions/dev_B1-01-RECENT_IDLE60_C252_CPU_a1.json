@@ -1,0 +1,1014 @@
+{
+  "apk_sha256": "37960e25c5948f661f2f5b47a90a4356be1b3712706d34679e71a14842ced6ea",
+  "coverage": {
+    "app": {
+      "charge_counter_changes": 6,
+      "clock": "common 기준 s (기기 boottime · time_scale 로 되돌림)",
+      "first_valid_s": -94.473,
+      "interval_median_s": 0.9,
+      "last_valid_s": 211.552,
+      "max_gap_s": 0.932,
+      "missing": 0,
+      "passed": true,
+      "points": {
+        "0": {
+          "after_s": 0.038,
+          "before_s": -0.861,
+          "gap_s": 0.899,
+          "max_gap_s": 2.5,
+          "ok": true,
+          "point_s": 0.0
+        },
+        "120": {
+          "after_s": 120.657,
+          "before_s": 119.739,
+          "gap_s": 0.918,
+          "max_gap_s": 2.5,
+          "ok": true,
+          "point_s": 120.0
+        },
+        "180": {
+          "after_s": 180.046,
+          "before_s": 179.144,
+          "gap_s": 0.902,
+          "max_gap_s": 2.5,
+          "ok": true,
+          "point_s": 180.0
+        },
+        "35": {
+          "after_s": 35.137,
+          "before_s": 34.257,
+          "gap_s": 0.88,
+          "max_gap_s": 2.5,
+          "ok": true,
+          "point_s": 35.0
+        }
+      },
+      "positive_samples": 0,
+      "post_t0_s": 211.552,
+      "pre_t0_s": 94.473,
+      "reasons": [],
+      "rules": {
+        "max_gap_s": 2.5,
+        "points_s": [
+          0.0,
+          35.0,
+          120.0,
+          180.0
+        ],
+        "post_t0_min_s": 210,
+        "pre_t0_min_s": 60
+      },
+      "samples": 341,
+      "sign_discharge_negative": true,
+      "unit": "current_raw µA (BatteryManager CURRENT_NOW · 방전 음수 · 기기 스케일 미검증) · charge_counter µAh · voltage mV",
+      "valid": 341,
+      "voltage_changes": 0
+    },
+    "experiment_id": "S26-M8-RECENT",
+    "folder": "results\\S26_M8_DEV\\S26_MIXREQ_03_FIFO_SERIAL_CPU_V1_a1",
+    "hal_cont": "results\\S26_M8_HAL\\hal_cont_B1-01-RECENT_IDLE60_C252_CPU_a1.csv",
+    "host": {
+      "ap_first_s": -672.118,
+      "ap_last_s": 330.742,
+      "ap_points": {
+        "180": {
+          "after_s": 181.182,
+          "before_s": 178.942,
+          "gap_s": 2.24,
+          "max_gap_s": 5.0,
+          "ok": true,
+          "point_s": 180.0
+        },
+        "35": {
+          "after_s": 36.292,
+          "before_s": 33.972,
+          "gap_s": 2.32,
+          "max_gap_s": 5.0,
+          "ok": true,
+          "point_s": 35.0
+        }
+      },
+      "ap_rows": 437,
+      "clock": "common 기준 s (hal_cont device_uptime_s = 기기 boottime)",
+      "err_rows": 0,
+      "interval_median_s": 2.3,
+      "iv_points": {
+        "0": {
+          "after_s": 1.762,
+          "before_s": -0.518,
+          "gap_s": 2.28,
+          "max_gap_s": 5.0,
+          "ok": true,
+          "point_s": 0.0
+        },
+        "180": {
+          "after_s": 181.182,
+          "before_s": 178.942,
+          "gap_s": 2.24,
+          "max_gap_s": 5.0,
+          "ok": true,
+          "point_s": 180.0
+        }
+      },
+      "iv_rows": 437,
+      "max_gap_s": 2.44,
+      "passed": true,
+      "post_t0_s": 330.742,
+      "pre_t0_s": 672.118,
+      "reasons": [],
+      "rows": 437,
+      "rules": {
+        "ap_points_s": [
+          35.0,
+          180.0
+        ],
+        "iv_points_s": [
+          0.0,
+          180.0
+        ],
+        "max_gap_s": 5.0,
+        "post_t0_min_s": 210,
+        "pre_t0_min_s": 60
+      },
+      "unit": "HAL ℃ 0.1 (dumpsys thermalservice Current temperatures from HAL) · dumpsys battery current_now µA · voltage mV · 2.3 s 목표 · 갱신 시각 미제공"
+    },
+    "note": "time_scale ≠ 1 (스모크) 은 common 기준 s 를 time_scale 로 되돌려 검사 (판정 밖 · 기록)",
+    "passed": true,
+    "reasons": [],
+    "schema": "s26-m8-coverage-check-v1",
+    "separation": "앱 power 와 host HAL/battery 는 따로 판정 · 이어붙임 0 · 보간 0 · tail 외삽 0 · host J180 계산 0",
+    "session_id": "f8495ff6-d7dd-5458-88d0-f4d7e1c125d7",
+    "time_scale": 1
+  },
+  "gate": {
+    "decisions": [
+      {
+        "ap_median": 29.95,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.037461117739216364,
+        "decidable": true,
+        "max_gap_s": 2.315999984741211,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 29.95 outside 28.7 ± 0.5"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 31.3,
+        "skin_slope_c_per_min": -0.012479382679830483,
+        "soc": 81,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.48699998855591,
+        "start": false,
+        "t": "2026-10-15T08:46:41",
+        "tref_c": 28.7,
+        "window_end_epoch": 1792021600.085,
+        "window_s": 60,
+        "window_start_epoch": 1792021542.598
+      },
+      {
+        "ap_median": 29.9,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.4084658382628133,
+        "decidable": true,
+        "max_gap_s": 2.309999942779541,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 29.9 outside 28.7 ± 0.5",
+          "slope: ap_slope_c_per_min -0.408 > 0.1",
+          "slope: skin_slope_c_per_min -0.293 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 31.2,
+        "skin_slope_c_per_min": -0.29253850803471154,
+        "soc": 81,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.49600005149841,
+        "start": false,
+        "t": "2026-10-15T08:47:12",
+        "tref_c": 28.7,
+        "window_end_epoch": 1792021629.992,
+        "window_s": 60,
+        "window_start_epoch": 1792021572.496
+      },
+      {
+        "ap_median": 29.75,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.1507114592495593,
+        "decidable": true,
+        "max_gap_s": 2.32099986076355,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 29.75 outside 28.7 ± 0.5",
+          "slope: ap_slope_c_per_min -0.151 > 0.1",
+          "slope: skin_slope_c_per_min -0.151 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 31.05,
+        "skin_slope_c_per_min": -0.1507114592495593,
+        "soc": 81,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.51300001144409,
+        "start": false,
+        "t": "2026-10-15T08:47:42",
+        "tref_c": 28.7,
+        "window_end_epoch": 1792021662.2,
+        "window_s": 60,
+        "window_start_epoch": 1792021604.687
+      },
+      {
+        "ap_median": 29.65,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.22922279328623807,
+        "decidable": true,
+        "max_gap_s": 2.32099986076355,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 29.65 outside 28.7 ± 0.5",
+          "slope: ap_slope_c_per_min -0.229 > 0.1",
+          "slope: skin_slope_c_per_min -0.151 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 30.95,
+        "skin_slope_c_per_min": -0.15073473077302138,
+        "soc": 81,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.49199986457825,
+        "start": false,
+        "t": "2026-10-15T08:48:12",
+        "tref_c": 28.7,
+        "window_end_epoch": 1792021692.087,
+        "window_s": 60,
+        "window_start_epoch": 1792021634.595
+      },
+      {
+        "ap_median": 29.6,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.11415161992196081,
+        "decidable": true,
+        "max_gap_s": 2.319000005722046,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 29.6 outside 28.7 ± 0.5",
+          "slope: ap_slope_c_per_min -0.114 > 0.1",
+          "slope: skin_slope_c_per_min -0.128 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 30.9,
+        "skin_slope_c_per_min": -0.12842872897065483,
+        "soc": 81,
+        "soc_in_new_band_reference_only": false,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.49000000953674,
+        "start": false,
+        "t": "2026-10-15T08:48:42",
+        "tref_c": 28.7,
+        "window_end_epoch": 1792021721.989,
+        "window_s": 60,
+        "window_start_epoch": 1792021664.499
+      },
+      {
+        "ap_median": 29.5,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.17216172214092276,
+        "decidable": true,
+        "max_gap_s": 2.319000005722046,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 29.5 outside 28.7 ± 0.5",
+          "slope: ap_slope_c_per_min -0.172 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 30.8,
+        "skin_slope_c_per_min": -0.09367059097605787,
+        "soc": 80,
+        "soc_in_new_band_reference_only": true,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.48399996757507,
+        "start": false,
+        "t": "2026-10-15T08:49:13",
+        "tref_c": 28.7,
+        "window_end_epoch": 1792021751.888,
+        "window_s": 60,
+        "window_start_epoch": 1792021694.404
+      },
+      {
+        "ap_median": 29.45,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.19355023916001263,
+        "decidable": true,
+        "max_gap_s": 2.312000036239624,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 29.45 outside 28.7 ± 0.5",
+          "slope: ap_slope_c_per_min -0.194 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 30.8,
+        "skin_slope_c_per_min": -0.07848553467681767,
+        "soc": 80,
+        "soc_in_new_band_reference_only": true,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.49399995803833,
+        "start": false,
+        "t": "2026-10-15T08:49:43",
+        "tref_c": 28.7,
+        "window_end_epoch": 1792021781.781,
+        "window_s": 60,
+        "window_start_epoch": 1792021724.287
+      },
+      {
+        "ap_median": 29.35,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.18637889380563175,
+        "decidable": true,
+        "max_gap_s": 2.322000026702881,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 29.35 outside 28.7 ± 0.5",
+          "slope: ap_slope_c_per_min -0.186 > 0.1",
+          "slope: skin_slope_c_per_min -0.136 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 30.7,
+        "skin_slope_c_per_min": -0.13643748187003618,
+        "soc": 80,
+        "soc_in_new_band_reference_only": true,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.5,
+        "start": false,
+        "t": "2026-10-15T08:50:13",
+        "tref_c": 28.7,
+        "window_end_epoch": 1792021811.685,
+        "window_s": 60,
+        "window_start_epoch": 1792021754.185
+      },
+      {
+        "ap_median": 29.3,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.19979353866080304,
+        "decidable": true,
+        "max_gap_s": 2.322000026702881,
+        "plugged": false,
+        "reasons": [
+          "tref: AP median 29.3 outside 28.7 ± 0.5",
+          "slope: ap_slope_c_per_min -0.2 > 0.1",
+          "slope: skin_slope_c_per_min -0.15 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 30.7,
+        "skin_slope_c_per_min": -0.1498454373731186,
+        "soc": 80,
+        "soc_in_new_band_reference_only": true,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.496999979019165,
+        "start": false,
+        "t": "2026-10-15T08:50:43",
+        "tref_c": 28.7,
+        "window_end_epoch": 1792021841.585,
+        "window_s": 60,
+        "window_start_epoch": 1792021784.088
+      },
+      {
+        "ap_median": 29.2,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.15698850994916425,
+        "decidable": true,
+        "max_gap_s": 2.315999984741211,
+        "plugged": false,
+        "reasons": [
+          "slope: ap_slope_c_per_min -0.157 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 30.6,
+        "skin_slope_c_per_min": 0.0,
+        "soc": 80,
+        "soc_in_new_band_reference_only": true,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.496999979019165,
+        "start": false,
+        "t": "2026-10-15T08:51:14",
+        "tref_c": 28.7,
+        "window_end_epoch": 1792021873.787,
+        "window_s": 60,
+        "window_start_epoch": 1792021816.29
+      },
+      {
+        "ap_median": 29.1,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.13645020000577254,
+        "decidable": true,
+        "max_gap_s": 2.313999891281128,
+        "plugged": false,
+        "reasons": [
+          "slope: ap_slope_c_per_min -0.136 > 0.1",
+          "slope: skin_slope_c_per_min -0.136 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 30.6,
+        "skin_slope_c_per_min": -0.13645336159146984,
+        "soc": 80,
+        "soc_in_new_band_reference_only": true,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.48100018501282,
+        "start": false,
+        "t": "2026-10-15T08:51:44",
+        "tref_c": 28.7,
+        "window_end_epoch": 1792021903.67,
+        "window_s": 60,
+        "window_start_epoch": 1792021846.189
+      },
+      {
+        "ap_median": 29.1,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.12217038604327042,
+        "decidable": true,
+        "max_gap_s": 2.32099986076355,
+        "plugged": false,
+        "reasons": [
+          "slope: ap_slope_c_per_min -0.122 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 30.5,
+        "skin_slope_c_per_min": -0.02050408108970663,
+        "soc": 80,
+        "soc_in_new_band_reference_only": true,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.49900007247925,
+        "start": false,
+        "t": "2026-10-15T08:52:14",
+        "tref_c": 28.7,
+        "window_end_epoch": 1792021933.594,
+        "window_s": 60,
+        "window_start_epoch": 1792021876.095
+      },
+      {
+        "ap_median": 29.0,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.1570215995681003,
+        "decidable": true,
+        "max_gap_s": 2.312999963760376,
+        "plugged": false,
+        "reasons": [
+          "slope: ap_slope_c_per_min -0.157 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 30.5,
+        "skin_slope_c_per_min": -0.08028745773577296,
+        "soc": 80,
+        "soc_in_new_band_reference_only": true,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.49600005149841,
+        "start": false,
+        "t": "2026-10-15T08:52:45",
+        "tref_c": 28.7,
+        "window_end_epoch": 1792021963.487,
+        "window_s": 60,
+        "window_start_epoch": 1792021905.991
+      },
+      {
+        "ap_median": 29.0,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.12844086359179913,
+        "decidable": true,
+        "max_gap_s": 2.316999912261963,
+        "plugged": false,
+        "reasons": [
+          "slope: ap_slope_c_per_min -0.128 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 30.4,
+        "skin_slope_c_per_min": -0.057095341075313014,
+        "soc": 80,
+        "soc_in_new_band_reference_only": true,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.50500011444092,
+        "start": false,
+        "t": "2026-10-15T08:53:15",
+        "tref_c": 28.7,
+        "window_end_epoch": 1792021993.398,
+        "window_s": 60,
+        "window_start_epoch": 1792021935.893
+      },
+      {
+        "ap_median": 28.9,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.1435753227018322,
+        "decidable": true,
+        "max_gap_s": 2.318000078201294,
+        "plugged": false,
+        "reasons": [
+          "slope: ap_slope_c_per_min -0.144 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 30.4,
+        "skin_slope_c_per_min": -0.0784737370079944,
+        "soc": 80,
+        "soc_in_new_band_reference_only": true,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.513999938964844,
+        "start": false,
+        "t": "2026-10-15T08:53:45",
+        "tref_c": 28.7,
+        "window_end_epoch": 1792022023.294,
+        "window_s": 60,
+        "window_start_epoch": 1792021965.78
+      },
+      {
+        "ap_median": 28.8,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.09988657182014864,
+        "decidable": true,
+        "max_gap_s": 2.318000078201294,
+        "plugged": false,
+        "reasons": [
+          "slope: skin_slope_c_per_min -0.128 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 30.3,
+        "skin_slope_c_per_min": -0.12843107224839287,
+        "soc": 80,
+        "soc_in_new_band_reference_only": true,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.503000020980835,
+        "start": false,
+        "t": "2026-10-15T08:54:15",
+        "tref_c": 28.7,
+        "window_end_epoch": 1792022055.501,
+        "window_s": 60,
+        "window_start_epoch": 1792021997.998
+      },
+      {
+        "ap_median": 28.8,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": -0.09364513302670485,
+        "decidable": true,
+        "max_gap_s": 2.321000099182129,
+        "plugged": false,
+        "reasons": [
+          "slope: skin_slope_c_per_min -0.187 > 0.1"
+        ],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 30.3,
+        "skin_slope_c_per_min": -0.1872902660534064,
+        "soc": 80,
+        "soc_in_new_band_reference_only": true,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.51800012588501,
+        "start": false,
+        "t": "2026-10-15T08:54:46",
+        "tref_c": 28.7,
+        "window_end_epoch": 1792022085.403,
+        "window_s": 60,
+        "window_start_epoch": 1792022027.885
+      },
+      {
+        "ap_median": 28.8,
+        "ap_missing": 0,
+        "ap_samples": 26,
+        "ap_slope_c_per_min": 0.050799946886491094,
+        "decidable": true,
+        "max_gap_s": 2.321000099182129,
+        "plugged": false,
+        "reasons": [],
+        "samples": 26,
+        "sensor": "AP",
+        "skin_median": 30.3,
+        "skin_slope_c_per_min": 0.05882082149280564,
+        "soc": 80,
+        "soc_in_new_band_reference_only": true,
+        "soc_min": 20,
+        "soc_new_band_reference": [
+          40,
+          80
+        ],
+        "span_s": 57.50499987602234,
+        "start": true,
+        "t": "2026-10-15T08:55:16",
+        "tref_c": 28.7,
+        "window_end_epoch": 1792022115.287,
+        "window_s": 60,
+        "window_start_epoch": 1792022057.782
+      }
+    ],
+    "result": "start",
+    "tref": 28.7,
+    "waited_s": 515
+  },
+  "in_block_charge": false,
+  "manifest_sha256": "8c869b6d163e84df8d6ac9fc9fc8e9ae973f7f7ead455f9a071d03ce7f2d37db",
+  "note": "readout only — ΔJ120/180 · 열 · 정책 비교 계산 0 (조민규 / Cowork) · 잔열 = host hal_cont 의 origin + 180 s 표본 위치만 (coverage)",
+  "perfetto": null,
+  "row": {
+    "all_completed": true,
+    "analysis_split": "dev",
+    "app_post_t0_s": 211.552,
+    "arm": "RECENT_IDLE60_C252_CPU",
+    "attempt": 1,
+    "block": "M",
+    "coverage_app": true,
+    "coverage_host": true,
+    "eligible": true,
+    "end_time": "2026-10-15T09:00:33",
+    "experiment_id": "S26-M8-RECENT",
+    "failed": null,
+    "folder": "plan_m8recent/S26_MIXREQ_03_FIFO_SERIAL_CPU_V1_a1",
+    "host_post_t0_s": 330.742,
+    "index": 3,
+    "label": "B1-01-RECENT_IDLE60_C252_CPU",
+    "last_available_s": 118.697149102,
+    "last_dispatch_s": 118.636118516,
+    "normal_late": 0,
+    "normal_met": 0,
+    "normal_p95_ms": null,
+    "planned": 252,
+    "policy": "FIFO_SERIAL_CPU_V1",
+    "policy_args": "",
+    "prep": "IDLE60",
+    "prep_actual_s": 60.000365508,
+    "prep_calls": 0,
+    "readback_ok": 0,
+    "reasons": "",
+    "stage": "dev",
+    "start_time": "2026-10-15T08:55:19",
+    "succeeded": 252,
+    "svc100": true,
+    "svc70": true,
+    "svc80": true,
+    "svc90": true,
+    "svc95": true,
+    "undispatched": null,
+    "unfinished": null,
+    "urgent_late": 0,
+    "urgent_met": 252,
+    "urgent_p95_ms": 75.525078,
+    "wait_count": 0,
+    "wait_cut": 0,
+    "wait_dose_total_ms": null,
+    "wait_nominal_total_ms": null,
+    "wait_overrun_total_ms": null,
+    "wait_planned_total_ms": null
+  },
+  "service": {
+    "all": {
+      "all_completed": true,
+      "deadline_met": 252,
+      "failed": 0,
+      "late": 0,
+      "levels": {
+        "100": true,
+        "70": true,
+        "80": true,
+        "90": true,
+        "95": true
+      },
+      "max_ms": 82.854531,
+      "mean_ms": 66.94371396031747,
+      "note": "분모 planned · response_ns = urgent output_ready / normal readback_end · undispatched/failed 는 응답 없음 (분모 유지)",
+      "p95_ms": 75.525078,
+      "planned": 252,
+      "responded": 252,
+      "undispatched": 0
+    },
+    "normal": {
+      "all_completed": null,
+      "deadline_met": 0,
+      "failed": 0,
+      "late": 0,
+      "levels": {
+        "100": null,
+        "70": null,
+        "80": null,
+        "90": null,
+        "95": null
+      },
+      "max_ms": null,
+      "mean_ms": null,
+      "note": "분모 planned · response_ns = urgent output_ready / normal readback_end · undispatched/failed 는 응답 없음 (분모 유지)",
+      "p95_ms": null,
+      "planned": 0,
+      "responded": 0,
+      "undispatched": 0
+    },
+    "urgent": {
+      "all_completed": true,
+      "deadline_met": 252,
+      "failed": 0,
+      "late": 0,
+      "levels": {
+        "100": true,
+        "70": true,
+        "80": true,
+        "90": true,
+        "95": true
+      },
+      "max_ms": 82.854531,
+      "mean_ms": 66.94371396031747,
+      "note": "분모 planned · response_ns = urgent output_ready / normal readback_end · undispatched/failed 는 응답 없음 (분모 유지)",
+      "p95_ms": 75.525078,
+      "planned": 252,
+      "responded": 252,
+      "undispatched": 0
+    }
+  },
+  "start_state": {
+    "AP": 29.9,
+    "BAT": 29.6,
+    "PA": 29.7,
+    "SKIN": 31.3,
+    "current_now_uA": -101562,
+    "epoch": 1792021541.5430272,
+    "last_power_connected": "2026-10-15T08:05:50.586",
+    "last_power_disconnected": "2026-10-15T08:13:18.242",
+    "last_power_disconnected_epoch": 1792019598.242,
+    "plugged": false,
+    "soc": 81,
+    "t": "2026-10-15T08:45:41",
+    "thermal_status": 0,
+    "unplugged_since_last_disconnect": true
+  },
+  "validated_rules": {
+    "A0_artifacts": {
+      "detail": {
+        "cleanup_completed": true,
+        "common_boundary": true,
+        "part_files_zero": true,
+        "requests_json": true,
+        "result_files": true,
+        "split": "confirmation",
+        "summary_completed": true,
+        "summary_contract_m8": true,
+        "time_scale": 1,
+        "time_scale_ok": true,
+        "warmup_json": true
+      },
+      "passed": true
+    },
+    "A10_coverage": {
+      "detail": {
+        "app_passed": true,
+        "app_post_t0_s": 211.552,
+        "app_pre_t0_s": 94.473,
+        "gated": true,
+        "hal_cont": "results\\S26_M8_HAL\\hal_cont_B1-01-RECENT_IDLE60_C252_CPU_a1.csv",
+        "host_passed": true,
+        "host_post_t0_s": 330.742,
+        "reasons": []
+      },
+      "passed": true
+    },
+    "A1_rows": {
+      "detail": {
+        "planned": 252,
+        "rows": 252,
+        "terminal": {
+          "succeeded": 252
+        },
+        "undispatched_with_dispatch": []
+      },
+      "passed": true
+    },
+    "A2_order": {
+      "detail": {
+        "fields": [
+          "scheduled_arrival_ns",
+          "queue_entry_ns",
+          "dispatch_ns",
+          "execution_start_ns",
+          "host_inference_start_ns",
+          "host_inference_return_ns",
+          "output_ready_ns",
+          "persist_complete_ns",
+          "readback_start_ns",
+          "readback_end_ns",
+          "worker_release_ns",
+          "lane_available_ns"
+        ],
+        "violations": []
+      },
+      "passed": true
+    },
+    "A3_window": {
+      "detail": {
+        "available_after_drain": [],
+        "dispatch_outside": [],
+        "end_ns": 489943920060472,
+        "last_available_s": 118.697149102,
+        "last_dispatch_s": 118.636118516,
+        "origin_ns": 489823918097151,
+        "window_s": 120
+      },
+      "passed": true
+    },
+    "A4_route_residents": {
+      "detail": {
+        "created": [
+          "classification_CPU",
+          "classification_GPU",
+          "classification_NPU",
+          "detection_CPU",
+          "detection_GPU"
+        ],
+        "residents": [
+          "classification_CPU",
+          "classification_GPU",
+          "classification_NPU",
+          "detection_CPU",
+          "detection_GPU"
+        ],
+        "warmed": {
+          "classification_CPU": [
+            0,
+            1
+          ],
+          "classification_GPU": [
+            0,
+            1
+          ],
+          "classification_NPU": [
+            0,
+            1
+          ],
+          "detection_CPU": [
+            0,
+            1
+          ],
+          "detection_GPU": [
+            0,
+            1
+          ]
+        },
+        "wrong_lane": []
+      },
+      "passed": true
+    },
+    "A5_concurrency_head": {
+      "detail": {
+        "allowed_pair": null,
+        "concurrency": "SERIAL",
+        "limit": 1,
+        "max_concurrent": 1,
+        "outside_allowed_pair": [],
+        "selection": "FIFO",
+        "strict_head_violations": []
+      },
+      "passed": true
+    },
+    "A6_response": {
+      "detail": {
+        "boundary": "urgent = output_ready · normal = readback_complete (priority)",
+        "normal": 0,
+        "readback_ok": 0,
+        "urgent": 252,
+        "violations": []
+      },
+      "passed": true
+    },
+    "A7_wait": {
+      "detail": {
+        "note": "WAIT 정책 아님 · wait 이벤트 0 이어야",
+        "waits": 0
+      },
+      "passed": true
+    },
+    "A8_prep": {
+      "detail": {
+        "first_arrival_ns": 489858918097151,
+        "kind": "IDLE60",
+        "origin_ns": 489823918097151,
+        "prep": {
+          "actual_prep_ns": 60000365508,
+          "calls": 0,
+          "common_origin_rule": "prep_end + 5 s − 35 s",
+          "gap_to_first_request_ns": 5000000000,
+          "kind": "IDLE60",
+          "planned_prep_ns": 60000000000,
+          "prep_end_ns": 489853918097151,
+          "prep_last_available_ns": 489853918097151,
+          "prep_start_ns": 489793917731643
+        },
+        "rule": "origin = prep_end + 5 s − 35 s · first = prep_end + 5 s"
+      },
+      "passed": true
+    },
+    "A9_safety": {
+      "detail": {
+        "failure_files": [],
+        "samples": 341,
+        "start_check": true,
+        "stop_reason": null,
+        "watch_files": {
+          "phone": true,
+          "skin": true
+        }
+      },
+      "passed": true
+    }
+  }
+}
