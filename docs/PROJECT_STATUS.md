@@ -1,5 +1,9 @@
-# 2026-10-16 최신 — 확인30정상·현재C11 유지·온도 대응6조건 PC준비
+# 2026-10-16 최신 — 원확인37정상·옛기준1미실행보존·R3→보완12→새6 계속
 
+- 04:17:43 KST C11정상종료/owner해제: 이번12정상·1656본요청/APP12, 원40은37정상·5464완료, 시작전거절128+통신실패64·미실행64를5720분모에보존했다. 원17/27.1℃는10.37분관찰후최근60초28.0~28.1℃로MAIN상한27.6℃밖이라APP/MAIN/소비0에서분리했다. 사용자중지아닌온도문제자율대응이며전체작업은계속한다. [전체원장·이월판단](team/a24-measurement-revision02-20261015/remaining13_after_transport_failure_20261016/ORIGINAL40_FINAL_LEDGER_PC.json).
+- 04:18 실제큐17이R3미사용개정ORDER1의APP전조건확인중이다. 그뒤보완12→새6을직렬진행한다. 새6의BASE는C10실패BASE와seed메타데이터만다르고요청UUID외64건내용·도착·기한·모델/runtime/target·실행설정이동일함을PC검증했다. [정규화대조](team/a24-measurement-revision02-20261015/matched_rebaseline6_20261016/C10_BASE_SEMANTIC_EQUIVALENCE.json). 원실패/원40성공대체0,추가7번째시도0。
+
+- 03:45 KST 새관찰: 원확인35/40정상·C11 WAIT128전량/출력오류0, 등록AP창35~180초는평균29.456℃/최고30.5℃다. 종료꼬리에서33.9℃, 다음APP전36.3℃가관측돼냉각중이며 읽기진단12명령으로측정앱부재·SOC60/비충전·다른시스템프로세스과거CPU127%를확인했다. 원인단정/시스템프로세스종료/추가APP0. [분리진단·원자료SHA](team/a24-measurement-revision02-20261015/remaining13_after_transport_failure_20261016/POST_MAIN_AP_RISE_DIAGNOSTIC.json). 기존판정창·원결과를소급변경하지않는다.
 - 03:15 KST 실제 원장: 원확인30/40 정상, 시작전 실패2 보존, 현재C11 분류CPU MAIN/회수중·기존85중77소비. 원179/APK/활성 소스·설정 변경0이며 원물/현재 owner를 우선한다. 큐17은C11뒤미사용ORDER1→보완12 순서를 유지한다.
 - 사용자 야간완료·온도문제 자율처리 지시에 따라 [같은 비교군6](team/a24-measurement-revision02-20261015/matched_rebaseline6_20261016/README.md)을 PC준비했다. 원97원장은 보존하고 저부하BASE/PAIR2+혼합4를 별도6/640요청으로 제한(합산최대103), 아직기기명령/APP/MAIN/소비0. 원실패 대체·원40성공 합산0, 첫안정기준공유/MAIN판정불변/PC4검사+실제6authorization PASS다.
 - 다음최대3: C11/큐17실측·닫힌원물공유; 종료후같은비교군6의신선한읽기점검/실행; 실패·미실행포함전체집계·보고서·원격검증. PC집계도구2검사PASS이며 AP공백조건의열비교를제외한다. Jnull/표면미검증/experiment_ready=false·원WIP/데스크톱/NPU보존.

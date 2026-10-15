@@ -43,7 +43,7 @@ def specifications():
     for name,relative in entries:
         job=load_json(ROOT/relative);plan=load_json(Path(job['plan']));rows=plan['sessions']
         if name.startswith('C') and name[1:].isdigit():
-            ids=set(load_json(Path(job['window_file']))['registered_session_ids']);rows=[r for r in rows if r['session_id'] in ids]
+            ids=load_json(Path(job['window_file']))['registered_session_ids'];byid={r['session_id']:r for r in rows};rows=[byid[s] for s in ids]
         elif name=='EXTRA4_ORDER':rows=rows[-1:]
         specs.append((name,relative,job,plan,rows))
     return specs
@@ -65,8 +65,12 @@ def refresh():
         seen[name]={'registered':len(rows),'APP':0,'normal':sum(x['status']=='COMPLETE_TRACE_RECOVERED' for x in outcomes.values()),
             'rejected':sum(x['status']=='PRESTART_REJECT' for x in outcomes.values()),
             'host_failed':sum(x['status']=='FAILED_PRESERVED' for x in outcomes.values()),'ended':(root/'WINDOW_STOPPED.json').exists()}
-        globalroot=Path(job['supplement_global_root']) if name=='SUP12' else Path(job['extra4_global_root']) if name=='EXTRA4_ORDER' else Path(job['rebaseline_global_root']) if name=='REBASE6' else None
-        if name in {'SUP12','REBASE6'}:seen[name]['APP']=len(list((globalroot/'reservations').glob('*/APP_LAUNCH_INTENT.json')))
+        globalroot=Path(job['supplement_global_root']) if name=='SUP12' else Path(job['extra4_global_root']) if name=='EXTRA4_ORDER' else Path(job['rebaseline_global_root']) if name=='REBASE6' else Path(load_json(Path(job['global_binding']))['global_reservation_root'])
+        seen[name].update(APP=sum((globalroot/'reservations'/r['session_id']/'APP_LAUNCH_INTENT.json').exists() for r in rows),
+            run_root_started=root.exists(),worker_lock_present=(globalroot/'ACTIVE_OWNER.json').exists())
+        pending=next((r for r in rows if r['session_id'] not in outcomes),None)
+        if pending and root.exists() and not seen[name]['ended']:
+            seen[name]['pending_prescription']=pending['prescription_id']
         blockgroups=collections.defaultdict(list)
         for r in rows:blockgroups[(r['block'],r['recipe'])].append(r)
         for (block,recipe),rs in blockgroups.items():
@@ -124,14 +128,18 @@ def refresh():
     sup=seen['SUP12'];matched=seen.get('REBASE6',{'APP':0,'normal':0});grand=state['project_consumed']+sup['APP']+matched['APP']
     cap=103 if 'REBASE6' in seen else 97
     rejected=state['original_C9_prestart_rejected']+sum(x['rejected']+x['host_failed'] for name,x in seen.items() if name.startswith('C') and name[1:].isdigit())
+    active_groups=[name for name,x in seen.items() if x['run_root_started'] and x['worker_lock_present'] and not x['ended']]
+    active_text='진행 중: '+', '.join(name+' ('+seen[name].get('pending_prescription','회수')+')' for name in active_groups) if active_groups else '기기 실행 원장 없음; 후속 큐·종료 영수증 확인'
     data={'updated_UTC':t.isoformat(),'updated_KST':stamp,'original_confirm':state,'separate_followon':seen,
         'original85_cap':85,'supplement12_cap':12,'matched_rebaseline_cap':6 if 'REBASE6' in seen else 0,
         'combined_ceiling':cap,'combined_consumed':grand,
         'original_confirm_rejections_total':rejected,
+        'active_measurement_groups':active_groups,
         'energy_J':None,'surface_temperature_verified':False,'experiment_ready':False,'published_closed_groups':groups,
         'publisher_device_commands':0,'publication_is_not_measurement_completion':True}
     (ROOT/LIVE/'LIVE_PROGRESS.json').write_bytes(encode(data))
     lines=['# A24 실측 진행 현황','', '**마지막 갱신: '+stamp+'**','',
+        '**현재 전체 상태: '+active_text+'**','',
         '- 원래 독립 확인: **'+str(state['normal_confirm_total'])+'/40 정상 완료**, 시작 전 실패·거절 '+str(rejected)+'회 보존. 현재 단계 `'+state['phase']+'`. 실패·미완료는 아래 원장과 각 묶음 상태를 함께 확인한다.',
         '- 기존85회: '+str(state['project_consumed'])+'회 소비(진행·거절 포함). 별도 실패 보완12: '+str(sup['normal'])+'회 정상 완료 / '+str(sup['APP'])+'회 APP 시도. 완료율과 예산 소비율은 다르다.',
         '- 시작온도 대응의 별도 같은 비교군6: '+str(matched['normal'])+'회 정상 / '+str(matched['APP'])+'회 APP. 합산 '+str(grand)+'회 소비 / 제한적 회계 상한'+str(cap)+'회이며, 추가6은 사용자 자율처리 지시를 구체화한 범위다.',
