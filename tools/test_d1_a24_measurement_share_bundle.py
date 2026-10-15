@@ -3,7 +3,7 @@ from pathlib import Path
 import tempfile
 import unittest
 import zipfile
-from d1_a24_measurement_share_bundle import write_zip,public_manifest,snapshot,encode,read,PRIVATE,unlaunched_preAPP_evidence
+from d1_a24_measurement_share_bundle import write_zip,public_manifest,snapshot,encode,read,PRIVATE,unlaunched_preAPP_evidence,closed_passive_binding_evidence
 
 
 class ShareBundleTests(unittest.TestCase):
@@ -26,6 +26,29 @@ class ShareBundleTests(unittest.TestCase):
     def test_projection_excludes_device_target_and_keeps_input_SHA(self):
         x=public_manifest({'session_id':'s','device_fingerprint':'private','models':{'C_CPU':{'model':{'sha256':'a'*64},'target':{'adb_serial':'private'},'runtime':{'cpu_threads':1}}}})
         self.assertNotIn('device_fingerprint',x);self.assertNotIn('target',x['models']['C_CPU']);self.assertEqual(x['models']['C_CPU']['model']['sha256'],'a'*64)
+
+    def test_multiple_closed_APP0_bindings_are_preserved_and_not_replays(self):
+        with tempfile.TemporaryDirectory() as t:
+            b=Path(t);roots=[b/'one',b/'two'];prepared=b/'prepared';prepared.mkdir()
+            for root in roots:
+                (root/'bindings'/'s').mkdir(parents=True)
+                (root/'s.preapp_stop.json').write_bytes(encode({'APP':0,'binding_created':True,'reason':'USER_STOP_AFTER_CURRENT'}))
+                (root/'WINDOW_STOPPED.json').write_bytes(encode({'reason':'PRE_APP_COOLDOWN_STOP','new_APP_intents':0,'outcomes':[]}))
+                (root/'STOP_AFTER_CURRENT.json').write_bytes(b'{}')
+                (root/'pre_app_cooldown_v2').mkdir();(root/'pre_app_cooldown_v2'/'s.jsonl').write_bytes(b'{"AP":28}\r\n')
+            row=dict(session_id='s',stage='CONFIRM',block='B',recipe='M128',arm='BASE',request_count=1,plan_ordinal=0)
+            (b/'plan.json').write_bytes(encode({'plan_id':'p','sessions':[row]}))
+            (b/'job.json').write_bytes(encode({'plan':str(b/'plan.json'),'prepared_manifests':str(prepared)}))
+            cfg={'source_catalog_directories':[],'families':[{'id':'PC','job':str(b/'job.json'),'roots':[str(p) for p in roots]}],'changes_notes':{}}
+            snapshot(cfg,b/'public',b/'audit')
+            self.assertEqual(read(b/'audit/records.json')[0]['recorded_APP_commands'],0)
+            self.assertEqual(read(b/'public/SNAPSHOT.json')['status_counts'],{'NOT_ATTEMPTED_AT_SNAPSHOT':1})
+            # An all-unstarted group need not produce a ZIP, but its binding
+            # proof helper must keep both original streams under visit names.
+            members=closed_passive_binding_evidence(roots[0],'s','p')
+            self.assertTrue(any(n.startswith('closed_passive_bindings/one/') for n in members))
+            (roots[0]/'raw'/'s').mkdir(parents=True)
+            with self.assertRaises(ValueError):closed_passive_binding_evidence(roots[0],'s','p')
 
     def test_preAPP_refusal_receipt_kept_but_executed_duplicate_blocked(self):
         with tempfile.TemporaryDirectory() as t:

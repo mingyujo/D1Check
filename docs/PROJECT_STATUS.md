@@ -1,4 +1,12 @@
-# 2026-10-15 최신 — C8 혼합 묶음 MAIN 실행 중
+# 2026-10-15 최신 — C8 종료·확인20/40·다음20 PC 준비
+
+- [최신 원물3ZIP·CSV·그림·소비 원장](results/a24_measurement_share_20261015/confirmation_visit_08/README.md): C8 WAIT/BASE/PAIR3조건·384본요청 전량회수/출력오류0/AP창3적격.23:23:52 KST 종료·owner해제/빈자기프로세스종료검증,새APP중복0. ORDER는새APP21분여유로APP0미실행이며원17 L64/27.1℃도미실행으로맨뒤보존.
+- 전체확인20/40·2,736완료/20미실행·2,984예정요청,정식61/81·잔여20. 실제APP58+별도진단1=59와이전APP전실패3의예산소비를구분한다. 원40/기한/입력/MAIN/179/APK·28.4℃M128기준불변. C8실행소스b567381/coordinator59b2bd53,종료후PC보완버전은별도42검사/20authorization PASS다.
+- 이번PAIR는C96/96·D32/32기한내/P95 1.418초(BASE11.137초),최고AP30.8℃(BASE30.3℃)/평균29.234℃(BASE29.246℃). 서비스개선과열절감미확인을구분한다. Jnull·AP HAL/표면미검증/experiment_ready=false유지,과거BASE AP12.34초공백도유지한다.
+- [다음20회 PC 준비](team/a24-measurement-revision02-20261015/confirm20_preparation_after_C8_20261015/README.md): `output/a24_confirm_next20_ready_20261015_v1/job.json`은preparation_only/시간창false/기기원장root없음·추가APP/MAIN/세션0. 다음원21 ORDER는C8의28.4℃/SHA629807c3…0db96f 인계,원17은27.1℃/SHAa09f9325…67d570로맨뒤보존. 새시간창없이실행불가/과거C6~C8명령재실행금지.
+- 다음최대3: 외부GitHub다운로드/SHA확인; 새사용자시간창에최신원장/승인순서/두고정reference를결합; 시작전동일기기SOC/비충전/화면/APK/경로재확인. 현재기기실측·감독모두종료. 사용자WIP/데스크톱/S26/NPU보존.
+
+# 2026-10-15 이전 — C8 혼합 묶음 MAIN 실행 중
 
 - 사용자 “다음 혼합 묶음부터 진행” 명시 선택으로 [C8 순서 개정·계약·검증](team/a24-measurement-revision02-20261015/confirm_m128_order_amended_20261015/README.md)을 고정했다. 실제job`output/A24R02C8/job.json`/원물`Documents/A24R02C8`/전역`Documents/A24R02C8_GLOBAL`. 원ordinal18~21 WAIT→BASE→PAIR→ORDER 최대4만 이번 창 대상, 실제owner/APP/START/stop부터 확인한다.
 - L64 ordinal17은 원ID/27.1℃/미실행 상태로 맨뒤에 보존. 원40/5,720요청·시작전미실행23/3,368요청·시작전예산58/81, 신규APP intent만 추가소비. 첫WAIT 앱1/예산59,23:04:17 MAIN START·새공통Tref28.4℃/SHA `629807c3…0db96f`를본요청전에고정했다. 실행소스b567381/coordinator59b2bd53/core179/APK불변. 정상완료횟수는close/회수후검산. C6/C7 APP/MAIN/소비0원기록별도공유. [C7 종료](results/a24_measurement_share_20261015/preAPP_visit_07_cooling/README.md).

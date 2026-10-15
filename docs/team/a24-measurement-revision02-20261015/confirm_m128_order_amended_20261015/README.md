@@ -1,5 +1,7 @@
 # C8 — 사용자 승인: 다음 혼합 묶음 먼저
 
+**종료:**23:23:52 KST에WAIT/BASE/PAIR3조건384건을전량회수하고종료했다. 출력오류0/AP창3적격·전체20/40·예산61/81,ORDER는APP0미실행이다. [원자료3ZIP·분석·그림·소비원장](../../../results/a24_measurement_share_20261015/confirmation_visit_08/README.md)·[종료무결성](EXECUTION_INTEGRITY_AT_STOP.json)·[다음20 PC준비](../confirm20_preparation_after_C8_20261015/README.md). 이방문명령은재실행하지않으며아래시작문맥은그대로보존한다.
+
 **실제 시작:** 소스 커밋 `b5673818d39f129071ff10b2fe87d44485fe7425`, coordinator SHA `59b2bd530254eb768e9d66318fdc0ad912bd47056305ea30a52489f971db5fb3`에서 실행했다. [시작 문맥·결합 SHA](RUNTIME_CONTEXT.json). 첫 MAIN START는23:04:17 KST, 새 M128 기준은28.4℃/reference SHA `629807c36ba74dea58cc85e0324ad656fb8caf72b33220bd3b4e7063b30db96f`다. [본요청 전 기준 고정 증거](INITIAL_REFERENCE_COMMITMENT.json)·[원 reference](M128_REFERENCE_ORIGINAL.json)·[시작 승인](FIRST_START_APPROVAL.json). 이 사실만으로 정상 회수·서비스 성공·열 절감을 주장하지 않는다.
 
 사용자는 **“다음 혼합 묶음부터 진행”**을 명시 선택했다. [준비해 검증한 순서 개정안](../cold_carry_deferral_draft_20261015/README.md)을 채택한다. 원40ID·5,720요청·예산81·정식58소비를 보존하며, 기존 온도 조건을 완화하지 않는다.

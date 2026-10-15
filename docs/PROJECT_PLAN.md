@@ -1,3 +1,7 @@
+# 2026-10-15 C8 종료 — 다음20은 PC 준비만
+
+사용자승인순서개정C8에서WAIT/BASE/PAIR3조건384건을회수하고23:23:52에종료했다. ORDER는새APP여유부족으로미실행,원17 L64도뒤로보존했다. 전체20/40완료·예산61/81·남은20/2,984요청이며[최신결과](results/a24_measurement_share_20261015/confirmation_visit_08/README.md)·[다음PC준비](team/a24-measurement-revision02-20261015/confirm20_preparation_after_C8_20261015/README.md)를따른다. 새시간창/기기실행0·원판정/요청/40/예산유지·J미판정/표면미검증/experiment_ready=false다. 아래실행중문장은당시이력이다.
+
 # 2026-10-15 사용자 승인 — 냉각 기준 이월 한 조건을 뒤로
 
 사용자 “다음 혼합 묶음부터 진행”에 따라 [C8](team/a24-measurement-revision02-20261015/confirm_m128_order_amended_20261015/README.md)을 채택한다. 원순서0~16→18~39→17로명시개정하며이번창은18~21 M128 WAIT→BASE→PAIR→ORDER최대4회다. L64원17/27.1℃를미실행으로보존하고원40/요청/예산81/MAIN기준은불변이다. 새M128은원알고리즘으로첫준비에서공통기준을선정한다. 기기23:45/저장23:50전,새APP21분/MAIN5분여유를유지한다. C6/C7은APP0으로종료했고원물은별도보존했다. 아래원순서유지문장은당시이력이며소급수정하지않는다.

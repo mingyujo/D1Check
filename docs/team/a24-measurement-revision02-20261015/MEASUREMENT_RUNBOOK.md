@@ -1,5 +1,7 @@
 # A24 실측 진행 원장·재개 안내
 
+**최신 종료:** C8은23:23:52 KST에3조건384건회수/출력오류0·AP3적격으로종료했다. 전체20/40·61/81소비·20잔여/2,984예정요청. [최신원물·소비원장·그림](../../results/a24_measurement_share_20261015/confirmation_visit_08/README.md)·[다음20 PC준비](confirm20_preparation_after_C8_20261015/README.md)를먼저읽고실제Git/stop/owner와대조한다. 다음ORDER는C8의28.4℃reference를인계,원17 L64/27.1℃는맨뒤미실행보존. C9runtime/owner/예약0·시간창미등록·추가실측0. 새시간창없이과거명령재실행금지,오래된기준에무작정장시간대기하지않는다. 아래최신/활성문장은과거이력이다.
+
 **최신 C8 승인:** 사용자 “다음혼합묶음부터진행”으로 [C8](confirm_m128_order_amended_20261015/README.md)의원18~21 M128 WAIT→BASE→PAIR→ORDER최대4만등록. 원17 L64/27.1℃는미실행으로맨뒤보존,40규모/81예산/MAIN기준불변. 실제`output/A24R02C8/job.json`/`Documents/A24R02C8`/전역`Documents/A24R02C8_GLOBAL`의owner/APP/START/stop대조. 기기23:45/저장23:50전·새APP21분/MAIN5분여유,첫준비에서새M128공통기준선정. C6/C7 APP0종료·새소비0,이전17완료/58소비/23잔여부터새APP만누적. 아래활성문장은과거이력이며과거명령재실행금지.
 
 **최신 C7:** 사용자23:50전 완료를 반영해기기23:45/저장5분으로재등록했다. [C7 계약·명령·검증](confirm23_window_20261015_2350/README.md), 실제`output/A24R02C7/job.json`/`Documents/A24R02C7`/전역`Documents/A24R02C7_GLOBAL`의owner/APP/stop을먼저대조한다. C6는22:30:21 APP전대기에서종료/소비0·원기록공유,17/40·58/81·23잔여불변. 첫L64PAIR는기존27.1℃를인계하며과거C6/준비job을재실행하지않는다. 사용자장소변경답변은같은장소로정정됐다. 아래최신/활성문장은이력이다.

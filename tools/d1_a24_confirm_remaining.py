@@ -88,8 +88,11 @@ def history_inventory(spec,plan,ledger):
                     require(binding.is_dir() and not any(p.exists() for p in [raw,registry,outcome])
                             and receipt.is_file(),'untouched slot has execution/unknown artifacts')
                     proof=load_json(receipt)
-                    require(paused.get('reason')=='PRE_APP_COOLDOWN_STOP' and paused.get('new_APP_intents')==0
-                            and paused.get('outcomes')==[] and proof.get('APP')==0
+                    closed=paused.get('outcomes',[])
+                    require(paused.get('reason')=='PRE_APP_COOLDOWN_STOP'
+                            and paused.get('new_APP_intents')==sum(visit_apps.values())==len(closed)
+                            and all(x.get('session_id')!=sid and x.get('APP_launch_intent') is True for x in closed)
+                            and proof.get('APP')==0
                             and proof.get('binding_created') is True and proof.get('reason')=='USER_STOP_AFTER_CURRENT'
                             and (root/'STOP_AFTER_CURRENT.json').is_file(),'unproved passive stop')
             elif (raw/'events.jsonl').exists():

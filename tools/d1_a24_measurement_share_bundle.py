@@ -119,6 +119,34 @@ def unlaunched_preAPP_evidence(root,sid,plan_id,outcome):
     return members
 
 
+def closed_passive_binding_evidence(root,sid,plan_id):
+    """Only proven APP0 waits; other closed sessions in that visit stay separate."""
+    stop=read(root/'WINDOW_STOPPED.json');proof=read(root/(sid+'.preapp_stop.json'))
+    if (proof.get('APP')!=0 or proof.get('binding_created') is not True
+            or proof.get('reason')!='USER_STOP_AFTER_CURRENT' or stop.get('reason')!='PRE_APP_COOLDOWN_STOP'
+            or not (root/'STOP_AFTER_CURRENT.json').is_file()):raise ValueError('unproved passive binding')
+    if any(p.exists() for p in [root/'raw'/sid,root/'registry'/'a24-laptop-measurement-v1'/plan_id/sid,
+                               root/(sid+'.outcome.json')]):raise ValueError('passive binding has execution artifacts')
+    launches=[]
+    for name in ['adb_commands.jsonl','measurement_adb_commands.jsonl']:
+        p=root/name
+        if p.exists():
+            for line in p.read_bytes().splitlines():
+                args=json.loads(line).get('argv',[])
+                if 'am' in args and 'start' in args and 'session_id' in args:launches.append(args[args.index('session_id')+1])
+    outcomes=stop.get('outcomes',[])
+    if (sid in launches or stop.get('new_APP_intents')!=len(launches) or len(launches)!=len(outcomes)
+            or sorted(launches)!=sorted(x.get('session_id','') for x in outcomes)
+            or any(x.get('APP_launch_intent') is not True or x.get('session_id')==sid for x in outcomes)):
+        raise ValueError('passive binding APP delivery/outcomes differ')
+    prefix='closed_passive_bindings/'+root.name+'/'+sid
+    members={prefix+'/'+p.name:p.read_bytes() for p in [root/'WINDOW_STOPPED.json',root/'STOP_AFTER_CURRENT.json',root/(sid+'.preapp_stop.json')]}
+    sidecars={};excluded=[];collect_preAPP_sidecars(root,sid,sidecars,excluded)
+    members.update({prefix+'/'+name:b for name,b in sidecars.items()})
+    if excluded:members[prefix+'/EXCLUDED_PRIVATE.json']=encode(excluded)
+    return members
+
+
 def snapshot(config,out,private_out):
     if out.exists() or private_out.exists():raise FileExistsError('new public/private output required')
     cutoff_epoch=time.time_ns()
@@ -167,10 +195,14 @@ def snapshot(config,out,private_out):
                 outcome=None;root=app_roots[sid]
             if root is None:
                 candidates=[r for r in roots if (r/'bindings'/sid).exists()]
-                if len(candidates)>1:raise ValueError('ambiguous unstarted binding')
-                root=candidates[0] if candidates else roots[-1]
+                for candidate in candidates:
+                    if (candidate/(sid+'.preapp_stop.json')).exists():
+                        if app_records[sid]:raise ValueError('passive binding has an APP record')
+                        preAPP[sid].update(closed_passive_binding_evidence(candidate,sid,plan['plan_id']))
+                    elif len(candidates)>1:raise ValueError('ambiguous unstarted binding')
+                root=candidates[-1] if candidates else roots[-1]
             raw=root/'raw'/sid;supp=root/'read_only_recovery'/sid/'recovered_app'
-            status=outcome['status'] if outcome else 'IN_PROGRESS_AT_SNAPSHOT' if sid in app_records else 'NOT_ATTEMPTED_RETIRED_PLAN' if family.get('retired') else 'NOT_ATTEMPTED_AT_SNAPSHOT'
+            status=outcome['status'] if outcome else 'IN_PROGRESS_AT_SNAPSHOT' if app_records.get(sid) else 'NOT_ATTEMPTED_RETIRED_PLAN' if family.get('retired') else 'NOT_ATTEMPTED_AT_SNAPSHOT'
             if outcome and status=='COMPLETE_TRACE_RECOVERED':
                 if not (raw/'journal_closed.json').exists():raise ValueError('normal completed outcome without closure')
                 closure=read(raw/'journal_closed.json')

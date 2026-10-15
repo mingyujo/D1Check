@@ -162,6 +162,24 @@ class HistoryCases(unittest.TestCase):
                         p.write_bytes(original);spec['previous_visits'][0]['stop_sha256']=sha256(stop)
                     else:p.unlink()
 
+    def test_closed_prefix_and_unlaunched_next_binding_remain_distinct(self):
+        with tempfile.TemporaryDirectory() as t:
+            spec,plan,ledger,old,root,g=self.fixture(Path(t))
+            sid='pending';plan['sessions'].append({'session_id':sid});ledger['records'].append({'session_id':sid,'APP_launches':0})
+            (root/'bindings'/sid).mkdir(parents=True)
+            (root/(sid+'.preapp_stop.json')).write_text(json.dumps({'APP':0,'binding_created':True,'reason':'USER_STOP_AFTER_CURRENT'}))
+            (root/'STOP_AFTER_CURRENT.json').write_text('{}')
+            stop=root/'WINDOW_STOPPED.json'
+            closed={'reason':'PRE_APP_COOLDOWN_STOP','new_APP_intents':1,
+                'outcomes':[{'session_id':'s','APP_launch_intent':True}]}
+            stop.write_text(json.dumps(closed));spec['previous_visits'][1]['stop_sha256']=sha256(stop)
+            _,hits=mod.history_inventory(spec,plan,ledger);self.assertEqual(hits[sid],[])
+            for bad in [{**closed,'new_APP_intents':0},
+                        {**closed,'outcomes':[{'session_id':sid,'APP_launch_intent':True}]},
+                        {**closed,'outcomes':[{'session_id':'s','APP_launch_intent':False}]}]:
+                stop.write_text(json.dumps(bad));spec['previous_visits'][1]['stop_sha256']=sha256(stop)
+                with self.assertRaises(ValidationError):mod.history_inventory(spec,plan,ledger)
+
 
 class ReadOnlyCases(unittest.TestCase):
     def test_mutations_blocked_before_any_ADB_call(self):
