@@ -9,6 +9,7 @@ import json
 import os
 from pathlib import Path
 import statistics
+import math
 import datetime as dt
 import subprocess
 
@@ -17,6 +18,46 @@ from d1_a24_measurement_report import export, save_csv
 from d1_a24_revision02_suite import require
 
 ROOT=Path(__file__).resolve().parents[1]
+
+
+def energy_unvalidated_figure(out):
+    """Conditional arithmetic is possible; validated physical J remains unset."""
+    import matplotlib;matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from matplotlib.font_manager import FontProperties
+    font=FontProperties(fname=r'C:\Windows\Fonts\malgun.ttf');plt.rcParams['font.family']=font.get_name()
+    fig,ax=plt.subplots(figsize=(9,3));ax.axis('off')
+    ax.text(.5,.5,'검증된 에너지 J: 미판정\n전류 API의 단위·시간 응답 검증이 남음\n원값·단위 가설 보존 / 절감률 확정 안 함',
+        ha='center',va='center',fontsize=15)
+    fig.tight_layout();name='05_에너지_계측의_제한'
+    fig.savefig(out/(name+'.png'),dpi=160);fig.savefig(out/(name+'.svg'));plt.close(fig)
+
+
+def ap_gap_figure(out):
+    """Same pre-frozen representative; do not visually bridge missing HAL reads."""
+    with (out/'sessions.csv').open(encoding='utf-8-sig',newline='') as f:sessions=list(csv.DictReader(f))
+    blocks=sorted({r['block'] for r in sessions if r['recipe']=='M128'})
+    block=next((b for b in blocks if {r['arm'] for r in sessions if (r['recipe'],r['block'])==('M128',b)}>={'BASE','PAIR_G'}),None)
+    if block is None:return
+    with (out/'reported_AP.csv').open(encoding='utf-8-sig',newline='') as f:data=list(csv.DictReader(f))
+    import matplotlib;matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from matplotlib.font_manager import FontProperties
+    font=FontProperties(fname=r'C:\Windows\Fonts\malgun.ttf');plt.rcParams['font.family']=font.get_name()
+    fig,ax=plt.subplots(figsize=(11,4.5))
+    for arm,label in [('BASE','직렬 기준'),('PAIR_G','병행 허용')]:
+        points=sorted((float(r['read_midpoint_s']),float(r['reported_AP_c'])) for r in data
+            if (r['recipe'],r['block'],r['arm'])==('M128',block,arm) and 0<=float(r['read_midpoint_s'])<=210)
+        xs=[];ys=[];last=None
+        for t,v in points:
+            if last is not None and t-last>10:xs.append(math.nan);ys.append(math.nan)
+            xs.append(t);ys.append(v);last=t
+        ax.plot(xs,ys,'.-',markersize=3,linewidth=1,label=label)
+    ax.axvspan(35,180,color='#eef4fa',zorder=-2,label='등록 AP 판정창 35~180초')
+    ax.set_xlabel('공통 시작부터 시간 (초)');ax.set_ylabel('HAL AP 읽기값 (℃)');ax.legend(fontsize=9)
+    ax.set_title('같은 대표 혼합 요청: 읽기 공백 10초 초과는 연결하지 않음')
+    fig.tight_layout();name='04_같은_혼합요청_AP경로'
+    fig.savefig(out/(name+'.png'),dpi=160);fig.savefig(out/(name+'.svg'));plt.close(fig)
 
 
 def thermal_pair_eligibility(out):
@@ -125,6 +166,8 @@ def aggregate(jobfile,view,out,allow_snapshot=False):
     contract=load_json(ROOT/'output/a24_confirmation40_frozen_window01_20261015/ANALYSIS_ENGINE_ADAPTER.json')
     export(derived,contract,out,'CONFIRM')
     thermal_pair_eligibility(out)
+    ap_gap_figure(out)
+    energy_unvalidated_figure(out)
     provenance=load_json(out/'provenance.json')
     provenance.update(original_execution_plan_sha256=sha256(Path(job['plan'])),original_planned_sessions=40,
         original_planned_requests=sum(x['request_count'] for x in plan['sessions']),

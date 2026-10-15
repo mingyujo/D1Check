@@ -1,5 +1,6 @@
 # 2026-10-16 최신 — 원확인37정상·옛기준1미실행보존·R3→보완12→새6 계속
 
+- 06:07 KST 마지막새6/child10000(큐18 parent55540):첫L64BASE64정상회수·PAIR준비중. C1의8조건은05:48:47정상종료/1456MAIN/출력오류0이며보완전체11정상1488·ON실패32보존이다. 수정TRACE2도OFF/ON각32·2정상/64·출력오류0/AP2적격으로끝나원설정경로오류를수정경로에서실제통과했다. [원본trace8.98MB·SHA](results/a24_measurement_share_20261016/perfetto_path_repair_raw_trace_01/README.md)의자료원/유실검증은별도PC분석대기, Jnull·표면미검증유지.
 - 05:14 KST 보완미실행8중CPU252×2가정상회수돼기존보완전체5정상/536MAIN·ON실패32보존,현재L64PAIR준비중이다. 새[공식경로OFF/ON2](team/a24-measurement-revision02-20261015/trace_path_repair2_20261016/README.md)는PC3+2authorization통과/실제0이며,현재8→새2→새6의새큐18(parenttool55540/대기기기명령0)을등록했다. 원103원장과새2를분리해계산상최대105로제한하며원40성공대체0이다. 구큐17/구새6대기는HELD보존·재시작금지.
 - 05:03 KST 현재[미실행보완8](team/a24-measurement-revision02-20261015/supplement8_after_trace_error_20261016/README.md)/child18920/parenttool1054의첫F_CPU MAIN/회수중. 기존보완3정상32이후ON설정파일읽기errno13/exit1로04:54:28 FAILED를보존했다. 앱자체600초대기종료후05:00:21 동일실행닫힘·반환·32UNFINISHED/START·claim·승인업로드부재/자기PID부재를확인하고재전송0으로미사용8만05:01:17 계속했다. 원183+감사4/source187·PC3+1/실제8authorization PASS,기존plan/APK/MAIN/예산12불변.
 - 구큐17·새6대기큐는오류에서HELD/child0으로보존됐다. 새6본체는미사용이므로기소비실패를소급성공으로바꾸지말고현재8→별도공식경로OFF/ON보완→새6의새감독경로를준비한다. 공식허용설정폴더로경로수정검증은아직미실행이며현재8은모두PerfettoOFF다. Jnull/표면미검증/experiment_ready=false유지.

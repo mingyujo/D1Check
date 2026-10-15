@@ -1,5 +1,7 @@
 # Perfetto 설정 경로 수정: 새 OFF/ON 대조 2회
 
+**06:01 KST 현재 실제2조건완료: OFF/ON각32건·총64건전량처리, 출력오류0·AP창둘다적격, 원본trace8,979,426바이트회수.** 수정경로의실제계측이통과했고새같은비교군6으로넘어갔다. [실제종료영수증](ACTUAL_WINDOW_STOPPED.json)·[시작버전](TRACEPAIR2_RUNTIME_CONTEXT.json)·[원본trace ZIP/SHA](../../../results/a24_measurement_share_20261016/perfetto_path_repair_raw_trace_01/README.md)를확인한다. trace자료원/유실·계측효과확정은별도PC분석대기이며J/표면미검증은유지한다. 아래는실행전고정했던준비기록이다.
+
 **현재 PC구현·검증 및 직렬대기 등록 완료, 새APP·MAIN·세션소비0**이다. 실제기기에서수정된경로로계측에성공했다고아직표시하지않는다. [현재진행](../LIVE_PROGRESS.md)과실제원장을대조한다.
 
 기존보완ON은 `/data/local/tmp`에전달한설정을Perfetto프로세스가읽지못해errno13/exit1로본요청전에실패했다. 원실패·APP예산1·32미실시와자체종료/자원반환/닫힘증거를보존했다. [원인·미실행8계속](../supplement8_after_trace_error_20261016/README.md).
