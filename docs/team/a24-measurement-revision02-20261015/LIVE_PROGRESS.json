@@ -1,8 +1,8 @@
 {
-  "updated_UTC": "2026-10-15T20:56:20.076968+00:00",
-  "updated_KST": "2026-10-16 05:56:20 KST",
+  "updated_UTC": "2026-10-15T21:01:54.646814+00:00",
+  "updated_KST": "2026-10-16 06:01:54 KST",
   "original_confirm": {
-    "checked_UTC": "2026-10-15T20:56:20.041121+00:00",
+    "checked_UTC": "2026-10-15T21:01:53.809500+00:00",
     "phase": "STOPPED",
     "current": {
       "session_id": "2f15f739-0a34-58d3-b8e9-24a739bc6d8c",
@@ -57,24 +57,24 @@
     },
     "REBASE6": {
       "registered": 6,
-      "APP": 0,
+      "APP": 1,
       "normal": 0,
-      "rejected": 0,
-      "host_failed": 0,
-      "ended": false,
-      "run_root_started": false,
-      "worker_lock_present": false
-    },
-    "TRACE2": {
-      "registered": 2,
-      "APP": 2,
-      "normal": 1,
       "rejected": 0,
       "host_failed": 0,
       "ended": false,
       "run_root_started": true,
       "worker_lock_present": true,
-      "pending_prescription": "I_C32_ON"
+      "pending_prescription": "L64_BASE"
+    },
+    "TRACE2": {
+      "registered": 2,
+      "APP": 2,
+      "normal": 2,
+      "rejected": 0,
+      "host_failed": 0,
+      "ended": true,
+      "run_root_started": true,
+      "worker_lock_present": false
     },
     "SUP12_C1": {
       "registered": 8,
@@ -112,12 +112,12 @@
   "matched_rebaseline_cap": 6,
   "separate_trace_path_repair_cap": 2,
   "combined_ceiling": 105,
-  "combined_consumed": 98,
+  "combined_consumed": 99,
   "supplement_normally_closed_total": 11,
   "supplement_global_APP_intents_not_double_counted": 12,
   "original_confirm_rejections_total": 2,
   "active_measurement_groups": [
-    "TRACE2"
+    "REBASE6"
   ],
   "energy_J": null,
   "surface_temperature_verified": false,
@@ -273,6 +273,28 @@
           "all_arms_normally_completed": true,
           "status_counts": {
             "COMPLETE_TRACE_RECOVERED": 4
+          },
+          "subset_recipe": null
+        }
+      ]
+    },
+    {
+      "label": "TRACE2_TRACE_REPAIR_I_C32",
+      "path": "docs/results/a24_measurement_share_20261016/automatic_checkpoints/TRACE2_TRACE_REPAIR_I_C32",
+      "bundles": [
+        {
+          "filename": "TRACE2_DEV_TRACE_REPAIR.zip",
+          "bytes": 178425,
+          "sha256": "7c41b9dc3288a25db8a90d629b0cd14bff2b6d4daa15d683b85dd48b19f0a0ba",
+          "members": 113,
+          "family": "TRACE2",
+          "stage": "DEV",
+          "block": "TRACE_REPAIR",
+          "planned_arms": 2,
+          "normal_completed": 2,
+          "all_arms_normally_completed": true,
+          "status_counts": {
+            "COMPLETE_TRACE_RECOVERED": 2
           },
           "subset_recipe": null
         }
