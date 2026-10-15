@@ -1,0 +1,5646 @@
+{
+ "schema": "s26-m8-readout-r21-v1",
+ "revision_id": "M8_CONFIRM_R21_v2",
+ "header": "조민규 1016 정정안 (SHA 1dc9f5b5…) — 앞 축소안 '시간 동작만' 철회 · 주목표 = 스케줄링별 에너지 · 열 차이와 납기 · 완료량 교환관계 · 3블록은 통계적 최소나 유의성 보장이 아니다 · 요청 128건을 독립 반복으로 세지 않는다 · t (df = n − 1) 구간 = 기술용",
+ "blocks": [
+  2
+ ],
+ "v1_consumed": {
+  "R1-0-M128_PAIR_G": {
+   "attempt": 1,
+   "end": "2026-10-16T05:40:59",
+   "index": 502,
+   "rc": 4,
+   "reason": "앱 manifest 검증 거부 (m8 index 502 is M128_WAIT200x12 · manifest policy FIFO_PAIR_CG_V1) · session not started · 부하 0 · rc 4 stall 600 s",
+   "revision_id": "M8_CONFIRM_R21_v1",
+   "session_id": "a3fb231b-28aa-5286-a6cb-ea77474f03d0",
+   "start": "2026-10-16T05:30:38"
+  }
+ },
+ "dev_energy_verdict": "단위 가설 적격",
+ "energy_label": "등록 단위 가설 아래 gauge 추정 J",
+ "energy_note": "두 값이 맞아도 내부 배터리 gauge 끼리의 정합 · 외부 전력계 교정 아님",
+ "pairs_rule": "d = arm − ref (같은 R블록 1:1 · 한쪽 무효/빈 자리 = 그 블록 쌍 제외 · 대체 0) · Holm = 지표마다 7쌍 묶음 · '유의' 대신 'Holm 보정 p < 0.05 (k/n)'",
+ "slots": [
+  {
+   "block": 2,
+   "label": "R2-0-M128_WAIT200x16",
+   "arm": "M128_WAIT200x16",
+   "index": 515,
+   "session_id": "31ef27f2-196f-593b-b049-e2dbf42aaf84",
+   "origin": "C2-00-M128_WAIT200x16",
+   "attempts": [
+    1
+   ],
+   "status": "유효 (a1)",
+   "v1_index": 511,
+   "prior_consumed": null,
+   "revision_id": "M8_CONFIRM_R21_v2"
+  },
+  {
+   "block": 2,
+   "label": "R2-1-SMOOTH128_PAIR_G",
+   "arm": "SMOOTH128_PAIR_G",
+   "index": 206,
+   "session_id": "61a1a258-c9c8-5cd3-b051-26e405436a61",
+   "origin": "C2-04-SMOOTH128_PAIR_G",
+   "attempts": [
+    1
+   ],
+   "status": "유효 (a1)",
+   "v1_index": 205,
+   "prior_consumed": null,
+   "revision_id": "M8_CONFIRM_R21_v2"
+  },
+  {
+   "block": 2,
+   "label": "R2-2-SMOOTH128_BASE",
+   "arm": "SMOOTH128_BASE",
+   "index": 204,
+   "session_id": "85a3784a-9f9e-5472-9a34-96dcd696a4d3",
+   "origin": "C2-07-SMOOTH128_BASE",
+   "attempts": [
+    1
+   ],
+   "status": "유효 (a1)",
+   "v1_index": 203,
+   "prior_consumed": null,
+   "revision_id": "M8_CONFIRM_R21_v2"
+  },
+  {
+   "block": 2,
+   "label": "R2-3-M128_BASE",
+   "arm": "M128_BASE",
+   "index": 512,
+   "session_id": "d9472520-e35e-5d48-9315-d3dfb537c1f4",
+   "origin": "C2-09-M128_BASE",
+   "attempts": [
+    1
+   ],
+   "status": "유효 (a1)",
+   "v1_index": 508,
+   "prior_consumed": null,
+   "revision_id": "M8_CONFIRM_R21_v2"
+  },
+  {
+   "block": 2,
+   "label": "R2-4-M128_PAIR_G",
+   "arm": "M128_PAIR_G",
+   "index": 514,
+   "session_id": "b69a313b-095d-5fa8-913e-95721d1b3ca8",
+   "origin": "C2-13-M128_PAIR_G",
+   "attempts": [
+    1
+   ],
+   "status": "유효 (a1)",
+   "v1_index": 510,
+   "prior_consumed": null,
+   "revision_id": "M8_CONFIRM_R21_v2"
+  },
+  {
+   "block": 2,
+   "label": "R2-5-M128_NPU_SERIAL",
+   "arm": "M128_NPU_SERIAL",
+   "index": 516,
+   "session_id": "6987331e-ffc0-5ab6-9e3a-f697ca7da911",
+   "origin": "C2-14-M128_NPU_SERIAL",
+   "attempts": [
+    1
+   ],
+   "status": "유효 (a1)",
+   "v1_index": 512,
+   "prior_consumed": null,
+   "revision_id": "M8_CONFIRM_R21_v2"
+  },
+  {
+   "block": 2,
+   "label": "R2-6-M128_ORDER",
+   "arm": "M128_ORDER",
+   "index": 513,
+   "session_id": "b3f3fb04-e72c-5bcd-93c6-1115040f3fab",
+   "origin": "C2-15-M128_ORDER",
+   "attempts": [
+    1
+   ],
+   "status": "유효 (a1)",
+   "v1_index": 509,
+   "prior_consumed": null,
+   "revision_id": "M8_CONFIRM_R21_v2"
+  }
+ ],
+ "pairs": {
+  "J0_180": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     -5.011745126533555
+    ],
+    "n": 1,
+    "mean": -5.011745126533555,
+    "median": -5.011745126533555,
+    "min": -5.011745126533555,
+    "max": -5.011745126533555,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     -15.566134961187004
+    ],
+    "n": 1,
+    "mean": -15.566134961187004,
+    "median": -15.566134961187004,
+    "min": -15.566134961187004,
+    "max": -15.566134961187004,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     -1.3105154972062962
+    ],
+    "n": 1,
+    "mean": -1.3105154972062962,
+    "median": -1.3105154972062962,
+    "min": -1.3105154972062962,
+    "max": -1.3105154972062962,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     2.7578686564017687
+    ],
+    "n": 1,
+    "mean": 2.7578686564017687,
+    "median": 2.7578686564017687,
+    "min": 2.7578686564017687,
+    "max": 2.7578686564017687,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -32.075776525030534
+    ],
+    "n": 1,
+    "mean": -32.075776525030534,
+    "median": -32.075776525030534,
+    "min": -32.075776525030534,
+    "max": -32.075776525030534,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     6.126776003218822
+    ],
+    "n": 1,
+    "mean": 6.126776003218822,
+    "median": 6.126776003218822,
+    "min": 6.126776003218822,
+    "max": 6.126776003218822,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -10.382865560624708
+    ],
+    "n": 1,
+    "mean": -10.382865560624708,
+    "median": -10.382865560624708,
+    "min": -10.382865560624708,
+    "max": -10.382865560624708,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "AP35_180_mean": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     -0.1648223310825756
+    ],
+    "n": 1,
+    "mean": -0.1648223310825756,
+    "median": -0.1648223310825756,
+    "min": -0.1648223310825756,
+    "max": -0.1648223310825756,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     -0.7071105540959692
+    ],
+    "n": 1,
+    "mean": -0.7071105540959692,
+    "median": -0.7071105540959692,
+    "min": -0.7071105540959692,
+    "max": -0.7071105540959692,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     -0.1389184413760418
+    ],
+    "n": 1,
+    "mean": -0.1389184413760418,
+    "median": -0.1389184413760418,
+    "min": -0.1389184413760418,
+    "max": -0.1389184413760418,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     -0.8244356278937062
+    ],
+    "n": 1,
+    "mean": -0.8244356278937062,
+    "median": -0.8244356278937062,
+    "min": -0.8244356278937062,
+    "max": -0.8244356278937062,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -0.9313102213060844
+    ],
+    "n": 1,
+    "mean": -0.9313102213060844,
+    "median": -0.9313102213060844,
+    "min": -0.9313102213060844,
+    "max": -0.9313102213060844,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     -0.13717456899274083
+    ],
+    "n": 1,
+    "mean": -0.13717456899274083,
+    "median": -0.13717456899274083,
+    "min": -0.13717456899274083,
+    "max": -0.13717456899274083,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -0.361374236202856
+    ],
+    "n": 1,
+    "mean": -0.361374236202856,
+    "median": -0.361374236202856,
+    "min": -0.361374236202856,
+    "max": -0.361374236202856,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "AP35_180_peak": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     0.4000000000000057
+    ],
+    "n": 1,
+    "mean": 0.4000000000000057,
+    "median": 0.4000000000000057,
+    "min": 0.4000000000000057,
+    "max": 0.4000000000000057,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     -1.0
+    ],
+    "n": 1,
+    "mean": -1.0,
+    "median": -1.0,
+    "min": -1.0,
+    "max": -1.0,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     -0.3999999999999986
+    ],
+    "n": 1,
+    "mean": -0.3999999999999986,
+    "median": -0.3999999999999986,
+    "min": -0.3999999999999986,
+    "max": -0.3999999999999986,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     -3.0
+    ],
+    "n": 1,
+    "mean": -3.0,
+    "median": -3.0,
+    "min": -3.0,
+    "max": -3.0,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -0.5
+    ],
+    "n": 1,
+    "mean": -0.5,
+    "median": -0.5,
+    "min": -0.5,
+    "max": -0.5,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     -0.09999999999999432
+    ],
+    "n": 1,
+    "mean": -0.09999999999999432,
+    "median": -0.09999999999999432,
+    "min": -0.09999999999999432,
+    "max": -0.09999999999999432,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.4000000000000057
+    ],
+    "n": 1,
+    "mean": 0.4000000000000057,
+    "median": 0.4000000000000057,
+    "min": 0.4000000000000057,
+    "max": 0.4000000000000057,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "AP180": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     -0.10000000000000142
+    ],
+    "n": 1,
+    "mean": -0.10000000000000142,
+    "median": -0.10000000000000142,
+    "min": -0.10000000000000142,
+    "max": -0.10000000000000142,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     -0.1999999999999993
+    ],
+    "n": 1,
+    "mean": -0.1999999999999993,
+    "median": -0.1999999999999993,
+    "min": -0.1999999999999993,
+    "max": -0.1999999999999993,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     -0.1999999999999993
+    ],
+    "n": 1,
+    "mean": -0.1999999999999993,
+    "median": -0.1999999999999993,
+    "min": -0.1999999999999993,
+    "max": -0.1999999999999993,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     -0.6999999999999993
+    ],
+    "n": 1,
+    "mean": -0.6999999999999993,
+    "median": -0.6999999999999993,
+    "min": -0.6999999999999993,
+    "max": -0.6999999999999993,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -0.3000000000000007
+    ],
+    "n": 1,
+    "mean": -0.3000000000000007,
+    "median": -0.3000000000000007,
+    "min": -0.3000000000000007,
+    "max": -0.3000000000000007,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     -0.1999999999999993
+    ],
+    "n": 1,
+    "mean": -0.1999999999999993,
+    "median": -0.1999999999999993,
+    "min": -0.1999999999999993,
+    "max": -0.1999999999999993,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -0.3000000000000007
+    ],
+    "n": 1,
+    "mean": -0.3000000000000007,
+    "median": -0.3000000000000007,
+    "min": -0.3000000000000007,
+    "max": -0.3000000000000007,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "AP180_minus_AP0": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     -0.10000000000000142
+    ],
+    "n": 1,
+    "mean": -0.10000000000000142,
+    "median": -0.10000000000000142,
+    "min": -0.10000000000000142,
+    "max": -0.10000000000000142,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     -0.09999999999999787
+    ],
+    "n": 1,
+    "mean": -0.09999999999999787,
+    "median": -0.09999999999999787,
+    "min": -0.09999999999999787,
+    "max": -0.09999999999999787,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     -0.09999999999999787
+    ],
+    "n": 1,
+    "mean": -0.09999999999999787,
+    "median": -0.09999999999999787,
+    "min": -0.09999999999999787,
+    "max": -0.09999999999999787,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     0.40000000000000213
+    ],
+    "n": 1,
+    "mean": 0.40000000000000213,
+    "median": 0.40000000000000213,
+    "min": 0.40000000000000213,
+    "max": 0.40000000000000213,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.09999999999999787
+    ],
+    "n": 1,
+    "mean": 0.09999999999999787,
+    "median": 0.09999999999999787,
+    "min": 0.09999999999999787,
+    "max": 0.09999999999999787,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     3.552713678800501e-15
+    ],
+    "n": 1,
+    "mean": 3.552713678800501e-15,
+    "median": 3.552713678800501e-15,
+    "min": 3.552713678800501e-15,
+    "max": 3.552713678800501e-15,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.1999999999999993
+    ],
+    "n": 1,
+    "mean": 0.1999999999999993,
+    "median": 0.1999999999999993,
+    "min": 0.1999999999999993,
+    "max": 0.1999999999999993,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "all_completed_n": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "urgent_completed_n": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "normal_completed_n": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "all_ontime_rate": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     0.1328125
+    ],
+    "n": 1,
+    "mean": 0.1328125,
+    "median": 0.1328125,
+    "min": 0.1328125,
+    "max": 0.1328125,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     0.8046875
+    ],
+    "n": 1,
+    "mean": 0.8046875,
+    "median": 0.8046875,
+    "min": 0.8046875,
+    "max": 0.8046875,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     -0.09375
+    ],
+    "n": 1,
+    "mean": -0.09375,
+    "median": -0.09375,
+    "min": -0.09375,
+    "max": -0.09375,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.7578125
+    ],
+    "n": 1,
+    "mean": 0.7578125,
+    "median": 0.7578125,
+    "min": 0.7578125,
+    "max": 0.7578125,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     0.046875
+    ],
+    "n": 1,
+    "mean": 0.046875,
+    "median": 0.046875,
+    "min": 0.046875,
+    "max": 0.046875,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "urgent_ontime_rate": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     0.25
+    ],
+    "n": 1,
+    "mean": 0.25,
+    "median": 0.25,
+    "min": 0.25,
+    "max": 0.25,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     0.8645833333333334
+    ],
+    "n": 1,
+    "mean": 0.8645833333333334,
+    "median": 0.8645833333333334,
+    "min": 0.8645833333333334,
+    "max": 0.8645833333333334,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     0.010416666666666685
+    ],
+    "n": 1,
+    "mean": 0.010416666666666685,
+    "median": 0.010416666666666685,
+    "min": 0.010416666666666685,
+    "max": 0.010416666666666685,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     -0.062499999999999986
+    ],
+    "n": 1,
+    "mean": -0.062499999999999986,
+    "median": -0.062499999999999986,
+    "min": -0.062499999999999986,
+    "max": -0.062499999999999986,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.8125
+    ],
+    "n": 1,
+    "mean": 0.8125,
+    "median": 0.8125,
+    "min": 0.8125,
+    "max": 0.8125,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     0.05208333333333334
+    ],
+    "n": 1,
+    "mean": 0.05208333333333334,
+    "median": 0.05208333333333334,
+    "min": 0.05208333333333334,
+    "max": 0.05208333333333334,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "normal_ontime_rate": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     -0.21875
+    ],
+    "n": 1,
+    "mean": -0.21875,
+    "median": -0.21875,
+    "min": -0.21875,
+    "max": -0.21875,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     0.625
+    ],
+    "n": 1,
+    "mean": 0.625,
+    "median": 0.625,
+    "min": 0.625,
+    "max": 0.625,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     -0.03125
+    ],
+    "n": 1,
+    "mean": -0.03125,
+    "median": -0.03125,
+    "min": -0.03125,
+    "max": -0.03125,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     -0.1875
+    ],
+    "n": 1,
+    "mean": -0.1875,
+    "median": -0.1875,
+    "min": -0.1875,
+    "max": -0.1875,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.59375
+    ],
+    "n": 1,
+    "mean": 0.59375,
+    "median": 0.59375,
+    "min": 0.59375,
+    "max": 0.59375,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     0.03125
+    ],
+    "n": 1,
+    "mean": 0.03125,
+    "median": 0.03125,
+    "min": 0.03125,
+    "max": 0.03125,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "svc70": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     1.0
+    ],
+    "n": 1,
+    "mean": 1.0,
+    "median": 1.0,
+    "min": 1.0,
+    "max": 1.0,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     1.0
+    ],
+    "n": 1,
+    "mean": 1.0,
+    "median": 1.0,
+    "min": 1.0,
+    "max": 1.0,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "svc80": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     1.0
+    ],
+    "n": 1,
+    "mean": 1.0,
+    "median": 1.0,
+    "min": 1.0,
+    "max": 1.0,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     1.0
+    ],
+    "n": 1,
+    "mean": 1.0,
+    "median": 1.0,
+    "min": 1.0,
+    "max": 1.0,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "svc90": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     1.0
+    ],
+    "n": 1,
+    "mean": 1.0,
+    "median": 1.0,
+    "min": 1.0,
+    "max": 1.0,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     1.0
+    ],
+    "n": 1,
+    "mean": 1.0,
+    "median": 1.0,
+    "min": 1.0,
+    "max": 1.0,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "svc95": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     1.0
+    ],
+    "n": 1,
+    "mean": 1.0,
+    "median": 1.0,
+    "min": 1.0,
+    "max": 1.0,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     1.0
+    ],
+    "n": 1,
+    "mean": 1.0,
+    "median": 1.0,
+    "min": 1.0,
+    "max": 1.0,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "svc100": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     1.0
+    ],
+    "n": 1,
+    "mean": 1.0,
+    "median": 1.0,
+    "min": 1.0,
+    "max": 1.0,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     1.0
+    ],
+    "n": 1,
+    "mean": 1.0,
+    "median": 1.0,
+    "min": 1.0,
+    "max": 1.0,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "urgent_p95_ms": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     -1074.9668350000002
+    ],
+    "n": 1,
+    "mean": -1074.9668350000002,
+    "median": -1074.9668350000002,
+    "min": -1074.9668350000002,
+    "max": -1074.9668350000002,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     -3803.7292180000004
+    ],
+    "n": 1,
+    "mean": -3803.7292180000004,
+    "median": -3803.7292180000004,
+    "min": -3803.7292180000004,
+    "max": -3803.7292180000004,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     3.6078520000000935
+    ],
+    "n": 1,
+    "mean": 3.6078520000000935,
+    "median": 3.6078520000000935,
+    "min": 3.6078520000000935,
+    "max": 3.6078520000000935,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     3272.572617
+    ],
+    "n": 1,
+    "mean": 3272.572617,
+    "median": 3272.572617,
+    "min": 3272.572617,
+    "max": 3272.572617,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -4351.364423
+    ],
+    "n": 1,
+    "mean": -4351.364423,
+    "median": -4351.364423,
+    "min": -4351.364423,
+    "max": -4351.364423,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     223.18227399999978
+    ],
+    "n": 1,
+    "mean": 223.18227399999978,
+    "median": 223.18227399999978,
+    "min": 223.18227399999978,
+    "max": 223.18227399999978,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -324.45293100000004
+    ],
+    "n": 1,
+    "mean": -324.45293100000004,
+    "median": -324.45293100000004,
+    "min": -324.45293100000004,
+    "max": -324.45293100000004,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "normal_p95_ms": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     374.72871100000066
+    ],
+    "n": 1,
+    "mean": 374.72871100000066,
+    "median": 374.72871100000066,
+    "min": 374.72871100000066,
+    "max": 374.72871100000066,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     -3877.564141
+    ],
+    "n": 1,
+    "mean": -3877.564141,
+    "median": -3877.564141,
+    "min": -3877.564141,
+    "max": -3877.564141,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     0.9007420000007187
+    ],
+    "n": 1,
+    "mean": 0.9007420000007187,
+    "median": 0.9007420000007187,
+    "min": 0.9007420000007187,
+    "max": 0.9007420000007187,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     3290.2543350000005
+    ],
+    "n": 1,
+    "mean": 3290.2543350000005,
+    "median": 3290.2543350000005,
+    "min": 3290.2543350000005,
+    "max": 3290.2543350000005,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -4367.600397
+    ],
+    "n": 1,
+    "mean": -4367.600397,
+    "median": -4367.600397,
+    "min": -4367.600397,
+    "max": -4367.600397,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     96.96456200000011
+    ],
+    "n": 1,
+    "mean": 96.96456200000011,
+    "median": 96.96456200000011,
+    "min": 96.96456200000011,
+    "max": 96.96456200000011,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -393.07169400000004
+    ],
+    "n": 1,
+    "mean": -393.07169400000004,
+    "median": -393.07169400000004,
+    "min": -393.07169400000004,
+    "max": -393.07169400000004,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "all_p95_ms": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     331.6067579999999
+    ],
+    "n": 1,
+    "mean": 331.6067579999999,
+    "median": 331.6067579999999,
+    "min": 331.6067579999999,
+    "max": 331.6067579999999,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     -3645.253984
+    ],
+    "n": 1,
+    "mean": -3645.253984,
+    "median": -3645.253984,
+    "min": -3645.253984,
+    "max": -3645.253984,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     5.001836000000367
+    ],
+    "n": 1,
+    "mean": 5.001836000000367,
+    "median": 5.001836000000367,
+    "min": 5.001836000000367,
+    "max": 5.001836000000367,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     3293.8701950000004
+    ],
+    "n": 1,
+    "mean": 3293.8701950000004,
+    "median": 3293.8701950000004,
+    "min": 3293.8701950000004,
+    "max": 3293.8701950000004,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -4215.299986
+    ],
+    "n": 1,
+    "mean": -4215.299986,
+    "median": -4215.299986,
+    "min": -4215.299986,
+    "max": -4215.299986,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     184.03167600000052
+    ],
+    "n": 1,
+    "mean": 184.03167600000052,
+    "median": 184.03167600000052,
+    "min": 184.03167600000052,
+    "max": 184.03167600000052,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -386.014326
+    ],
+    "n": 1,
+    "mean": -386.014326,
+    "median": -386.014326,
+    "min": -386.014326,
+    "max": -386.014326,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "late_n": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     -17.0
+    ],
+    "n": 1,
+    "mean": -17.0,
+    "median": -17.0,
+    "min": -17.0,
+    "max": -17.0,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     -103.0
+    ],
+    "n": 1,
+    "mean": -103.0,
+    "median": -103.0,
+    "min": -103.0,
+    "max": -103.0,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     12.0
+    ],
+    "n": 1,
+    "mean": 12.0,
+    "median": 12.0,
+    "min": 12.0,
+    "max": 12.0,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -97.0
+    ],
+    "n": 1,
+    "mean": -97.0,
+    "median": -97.0,
+    "min": -97.0,
+    "max": -97.0,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     -6.0
+    ],
+    "n": 1,
+    "mean": -6.0,
+    "median": -6.0,
+    "min": -6.0,
+    "max": -6.0,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "late_rate": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     -0.1328125
+    ],
+    "n": 1,
+    "mean": -0.1328125,
+    "median": -0.1328125,
+    "min": -0.1328125,
+    "max": -0.1328125,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     -0.8046875
+    ],
+    "n": 1,
+    "mean": -0.8046875,
+    "median": -0.8046875,
+    "min": -0.8046875,
+    "max": -0.8046875,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     0.09375
+    ],
+    "n": 1,
+    "mean": 0.09375,
+    "median": 0.09375,
+    "min": 0.09375,
+    "max": 0.09375,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -0.7578125
+    ],
+    "n": 1,
+    "mean": -0.7578125,
+    "median": -0.7578125,
+    "min": -0.7578125,
+    "max": -0.7578125,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     -0.046875
+    ],
+    "n": 1,
+    "mean": -0.046875,
+    "median": -0.046875,
+    "min": -0.046875,
+    "max": -0.046875,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "late_ms_sum": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     -56729.42159499999
+    ],
+    "n": 1,
+    "mean": -56729.42159499999,
+    "median": -56729.42159499999,
+    "min": -56729.42159499999,
+    "max": -56729.42159499999,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     -176100.949654
+    ],
+    "n": 1,
+    "mean": -176100.949654,
+    "median": -176100.949654,
+    "min": -176100.949654,
+    "max": -176100.949654,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     2070.935778999992
+    ],
+    "n": 1,
+    "mean": 2070.935778999992,
+    "median": 2070.935778999992,
+    "min": 2070.935778999992,
+    "max": 2070.935778999992,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     223373.218943
+    ],
+    "n": 1,
+    "mean": 223373.218943,
+    "median": 223373.218943,
+    "min": 223373.218943,
+    "max": 223373.218943,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -178744.864079
+    ],
+    "n": 1,
+    "mean": -178744.864079,
+    "median": -178744.864079,
+    "min": -178744.864079,
+    "max": -178744.864079,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     2643.9144249999954
+    ],
+    "n": 1,
+    "mean": 2643.9144249999954,
+    "median": 2643.9144249999954,
+    "min": 2643.9144249999954,
+    "max": 2643.9144249999954,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "failed": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "undispatched": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "unfinished": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "J0_120": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     0.09056593018794956
+    ],
+    "n": 1,
+    "mean": 0.09056593018794956,
+    "median": 0.09056593018794956,
+    "min": 0.09056593018794956,
+    "max": 0.09056593018794956,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     -17.74715159553844
+    ],
+    "n": 1,
+    "mean": -17.74715159553844,
+    "median": -17.74715159553844,
+    "min": -17.74715159553844,
+    "max": -17.74715159553844,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     -3.7291844439866964
+    ],
+    "n": 1,
+    "mean": -3.7291844439866964,
+    "median": -3.7291844439866964,
+    "min": -3.7291844439866964,
+    "max": -3.7291844439866964,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     6.9030520241934425
+    ],
+    "n": 1,
+    "mean": 6.9030520241934425,
+    "median": 6.9030520241934425,
+    "min": 6.9030520241934425,
+    "max": 6.9030520241934425,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -25.653141708000902
+    ],
+    "n": 1,
+    "mean": -25.653141708000902,
+    "median": -25.653141708000902,
+    "min": -25.653141708000902,
+    "max": -25.653141708000902,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     4.765572273496616
+    ],
+    "n": 1,
+    "mean": 4.765572273496616,
+    "median": 4.765572273496616,
+    "min": 4.765572273496616,
+    "max": 4.765572273496616,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -3.1404178389658455
+    ],
+    "n": 1,
+    "mean": -3.1404178389658455,
+    "median": -3.1404178389658455,
+    "min": -3.1404178389658455,
+    "max": -3.1404178389658455,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "J35_180": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     -5.121938386778993
+    ],
+    "n": 1,
+    "mean": -5.121938386778993,
+    "median": -5.121938386778993,
+    "min": -5.121938386778993,
+    "max": -5.121938386778993,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     -15.907386642355533
+    ],
+    "n": 1,
+    "mean": -15.907386642355533,
+    "median": -15.907386642355533,
+    "min": -15.907386642355533,
+    "max": -15.907386642355533,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     -1.637153269693556
+    ],
+    "n": 1,
+    "mean": -1.637153269693556,
+    "median": -1.637153269693556,
+    "min": -1.637153269693556,
+    "max": -1.637153269693556,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     1.8207152022287687
+    ],
+    "n": 1,
+    "mean": 1.8207152022287687,
+    "median": 1.8207152022287687,
+    "min": 1.8207152022287687,
+    "max": 1.8207152022287687,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -29.980768031304137
+    ],
+    "n": 1,
+    "mean": -29.980768031304137,
+    "median": -29.980768031304137,
+    "min": -29.980768031304137,
+    "max": -29.980768031304137,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     3.237608814428853
+    ],
+    "n": 1,
+    "mean": 3.237608814428853,
+    "median": 3.237608814428853,
+    "min": 3.237608814428853,
+    "max": 3.237608814428853,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -10.835772574519751
+    ],
+    "n": 1,
+    "mean": -10.835772574519751,
+    "median": -10.835772574519751,
+    "min": -10.835772574519751,
+    "max": -10.835772574519751,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "concurrency_dose_s": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     5.495467418
+    ],
+    "n": 1,
+    "mean": 5.495467418,
+    "median": 5.495467418,
+    "min": 5.495467418,
+    "max": 5.495467418,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     5.964148671
+    ],
+    "n": 1,
+    "mean": 5.964148671,
+    "median": 5.964148671,
+    "min": 5.964148671,
+    "max": 5.964148671,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.46868125300000063
+    ],
+    "n": 1,
+    "mean": 0.46868125300000063,
+    "median": 0.46868125300000063,
+    "min": 0.46868125300000063,
+    "max": 0.46868125300000063,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "wait_nominal_total_ms": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "wait_planned_total_ms": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "wait_dose_total_ms": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "wait_overrun_total_ms": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     null
+    ],
+    "n": 0,
+    "mean": null,
+    "median": null,
+    "min": null,
+    "max": null,
+    "pos": 0,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+0/−0/0:0 (n=0)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "wait_cut": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     0.0
+    ],
+    "n": 1,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "pos": 0,
+    "neg": 0,
+    "zero": 1,
+    "sign": "+0/−0/0:1 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "admission_delay_med_ms": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     -0.1297849999999996
+    ],
+    "n": 1,
+    "mean": -0.1297849999999996,
+    "median": -0.1297849999999996,
+    "min": -0.1297849999999996,
+    "max": -0.1297849999999996,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     -0.12769499999999967
+    ],
+    "n": 1,
+    "mean": -0.12769499999999967,
+    "median": -0.12769499999999967,
+    "min": -0.12769499999999967,
+    "max": -0.12769499999999967,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     -0.1636134999999994
+    ],
+    "n": 1,
+    "mean": -0.1636134999999994,
+    "median": -0.1636134999999994,
+    "min": -0.1636134999999994,
+    "max": -0.1636134999999994,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     0.48974650000000075
+    ],
+    "n": 1,
+    "mean": 0.48974650000000075,
+    "median": 0.48974650000000075,
+    "min": 0.48974650000000075,
+    "max": 0.48974650000000075,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -0.0868945000000001
+    ],
+    "n": 1,
+    "mean": -0.0868945000000001,
+    "median": -0.0868945000000001,
+    "min": -0.0868945000000001,
+    "max": -0.0868945000000001,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     -1.6451954999999996
+    ],
+    "n": 1,
+    "mean": -1.6451954999999996,
+    "median": -1.6451954999999996,
+    "min": -1.6451954999999996,
+    "max": -1.6451954999999996,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -1.604395
+    ],
+    "n": 1,
+    "mean": -1.604395,
+    "median": -1.604395,
+    "min": -1.604395,
+    "max": -1.604395,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "admission_delay_p95_ms": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     0.10766454999999908
+    ],
+    "n": 1,
+    "mean": 0.10766454999999908,
+    "median": 0.10766454999999908,
+    "min": 0.10766454999999908,
+    "max": 0.10766454999999908,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     0.2010372500000006
+    ],
+    "n": 1,
+    "mean": 0.2010372500000006,
+    "median": 0.2010372500000006,
+    "min": 0.2010372500000006,
+    "max": 0.2010372500000006,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     0.33266244999999905
+    ],
+    "n": 1,
+    "mean": 0.33266244999999905,
+    "median": 0.33266244999999905,
+    "min": 0.33266244999999905,
+    "max": 0.33266244999999905,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     0.17362754999999996
+    ],
+    "n": 1,
+    "mean": 0.17362754999999996,
+    "median": 0.17362754999999996,
+    "min": 0.17362754999999996,
+    "max": 0.17362754999999996,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -0.07029300000000038
+    ],
+    "n": 1,
+    "mean": -0.07029300000000038,
+    "median": -0.07029300000000038,
+    "min": -0.07029300000000038,
+    "max": -0.07029300000000038,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     -2.6935934999999995
+    ],
+    "n": 1,
+    "mean": -2.6935934999999995,
+    "median": -2.6935934999999995,
+    "min": -2.6935934999999995,
+    "max": -2.6935934999999995,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -2.9649237500000005
+    ],
+    "n": 1,
+    "mean": -2.9649237500000005,
+    "median": -2.9649237500000005,
+    "min": -2.9649237500000005,
+    "max": -2.9649237500000005,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "assign_delay_med_ms": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     -543.9414649999999
+    ],
+    "n": 1,
+    "mean": -543.9414649999999,
+    "median": -543.9414649999999,
+    "min": -543.9414649999999,
+    "max": -543.9414649999999,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     -2089.1777145
+    ],
+    "n": 1,
+    "mean": -2089.1777145,
+    "median": -2089.1777145,
+    "min": -2089.1777145,
+    "max": -2089.1777145,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     32.67214849999982
+    ],
+    "n": 1,
+    "mean": 32.67214849999982,
+    "median": 32.67214849999982,
+    "min": 32.67214849999982,
+    "max": 32.67214849999982,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     1817.0326949999999
+    ],
+    "n": 1,
+    "mean": 1817.0326949999999,
+    "median": 1817.0326949999999,
+    "min": 1817.0326949999999,
+    "max": 1817.0326949999999,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -2236.870098
+    ],
+    "n": 1,
+    "mean": -2236.870098,
+    "median": -2236.870098,
+    "min": -2236.870098,
+    "max": -2236.870098,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     -17.65095650000012
+    ],
+    "n": 1,
+    "mean": -17.65095650000012,
+    "median": -17.65095650000012,
+    "min": -17.65095650000012,
+    "max": -17.65095650000012,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -165.34334
+    ],
+    "n": 1,
+    "mean": -165.34334,
+    "median": -165.34334,
+    "min": -165.34334,
+    "max": -165.34334,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ],
+  "assign_delay_p95_ms": [
+   {
+    "pair": "M128_ORDER − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_ORDER",
+    "d_b": [
+     130.35918029999993
+    ],
+    "n": 1,
+    "mean": 130.35918029999993,
+    "median": 130.35918029999993,
+    "min": 130.35918029999993,
+    "max": 130.35918029999993,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_PAIR_G − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_PAIR_G",
+    "d_b": [
+     -3768.709374949999
+    ],
+    "n": 1,
+    "mean": -3768.709374949999,
+    "median": -3768.709374949999,
+    "min": -3768.709374949999,
+    "max": -3768.709374949999,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_NPU_SERIAL − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_NPU_SERIAL",
+    "d_b": [
+     7.481631100000413
+    ],
+    "n": 1,
+    "mean": 7.481631100000413,
+    "median": 7.481631100000413,
+    "min": 7.481631100000413,
+    "max": 7.481631100000413,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "M128_WAIT200x16 − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "M128_WAIT200x16",
+    "d_b": [
+     3299.2860349500006
+    ],
+    "n": 1,
+    "mean": 3299.2860349500006,
+    "median": 3299.2860349500006,
+    "min": 3299.2860349500006,
+    "max": 3299.2860349500006,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − SMOOTH128_BASE",
+    "ref": "SMOOTH128_BASE",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -4355.107277149999
+    ],
+    "n": 1,
+    "mean": -4355.107277149999,
+    "median": -4355.107277149999,
+    "min": -4355.107277149999,
+    "max": -4355.107277149999,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_BASE − M128_BASE",
+    "ref": "M128_BASE",
+    "arm": "SMOOTH128_BASE",
+    "d_b": [
+     223.4170311000007
+    ],
+    "n": 1,
+    "mean": 223.4170311000007,
+    "median": 223.4170311000007,
+    "min": 223.4170311000007,
+    "max": 223.4170311000007,
+    "pos": 1,
+    "neg": 0,
+    "zero": 0,
+    "sign": "+1/−0/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   },
+   {
+    "pair": "SMOOTH128_PAIR_G − M128_PAIR_G",
+    "ref": "M128_PAIR_G",
+    "arm": "SMOOTH128_PAIR_G",
+    "d_b": [
+     -362.9808711
+    ],
+    "n": 1,
+    "mean": -362.9808711,
+    "median": -362.9808711,
+    "min": -362.9808711,
+    "max": -362.9808711,
+    "pos": 0,
+    "neg": 1,
+    "zero": 0,
+    "sign": "+0/−1/0:0 (n=1)",
+    "ci95": null,
+    "p": null,
+    "p_holm": null,
+    "holm_lt_0.05": false
+   }
+  ]
+ }
+}
