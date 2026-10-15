@@ -84,6 +84,49 @@ class ScopeCases(unittest.TestCase):
 
 
 class HistoryCases(unittest.TestCase):
+    def test_prior_APP0_passive_binding_is_preserved_after_later_actual_APP(self):
+        with tempfile.TemporaryDirectory() as t:
+            base=Path(t);spec,plan,ledger,old,new,_=self.fixture(base)
+            passive=base/'passive';(passive/'bindings'/'s').mkdir(parents=True)
+            (passive/'s.preapp_stop.json').write_text(json.dumps({'APP':0,'binding_created':True,'reason':'USER_STOP_AFTER_CURRENT'}))
+            (passive/'STOP_AFTER_CURRENT.json').write_text('{}')
+            stop=passive/'WINDOW_STOPPED.json';stop.write_text(json.dumps({'reason':'PRE_APP_COOLDOWN_STOP','new_APP_intents':0,'outcomes':[]}))
+            spec['previous_visits'].insert(1,{'root':str(passive),'stop_sha256':sha256(stop)})
+            inventory,hits=mod.history_inventory(spec,plan,ledger)
+            self.assertEqual(hits['s'],[new]);self.assertIn('passive/s.preapp_stop.json',inventory)
+            (passive/'s.preapp_stop.json').write_text(json.dumps({'APP':1,'binding_created':True,'reason':'USER_STOP_AFTER_CURRENT'}))
+            with self.assertRaises(ValidationError):mod.history_inventory(spec,plan,ledger)
+
+    def test_consumed_prestart_failure_requires_closed_same_session_evidence(self):
+        from test_d1_a24_failed_prestart_evidence import FailedPrestartCases
+        from d1_a24_failed_prestart_evidence import verify_failed_prestart
+        with tempfile.TemporaryDirectory() as t:
+            base=Path(t);root=base/'failed';root.mkdir();g=base/'global';g.mkdir()
+            reg,recovered=FailedPrestartCases().fixture(root)
+            plan={'plan_id':'p','sessions':[{'session_id':'s','request_count':2}]}
+            proof=verify_failed_prestart(root,plan,plan['sessions'][0],recovered,plan_sha256='a'*64)
+            proof['own_device_process_absent']=True
+            pp=recovered.parent/'CLOSED_FAILURE_RECOVERY.json';pp.write_text(json.dumps(proof))
+            stop=root/'WINDOW_STOPPED.json';stop.write_text(json.dumps({'reason':'FAILED_ATTEMPT_PRESERVED'}))
+            (root/'adb_commands.jsonl').write_text(json.dumps({'argv':['adb','shell','am','start','session_id','s']})+'\n')
+            reservation=g/'reservations'/'s';reservation.mkdir(parents=True)
+            (reservation/'APP_LAUNCH_INTENT.json').write_text('{}')
+            spec={'previous_visits':[{'root':str(root),'stop_sha256':sha256(stop)}],
+                  'previous_global_reservation_roots':[str(g)],'closed_failed_prestart_evidence':{
+                      's':{'visit_root':str(root),'recovered_path':str(recovered),'proof_path':str(pp),'proof_sha256':sha256(pp)}}}
+            ledger={'plan_sha256':'a'*64,'records':[{'session_id':'s','APP_launches':1,'START':False,
+                    'outcome':'PRESTART_REJECT','failed_recovery_files_sha256':proof['recovered_files_sha256']}]}
+            inventory,hits=mod.history_inventory(spec,plan,ledger)
+            self.assertEqual(hits['s'],[root]);self.assertTrue(inventory)
+            for kind in ['missing','foreign','changed_ledger','MAIN']:
+                s=copy.deepcopy(spec);l=copy.deepcopy(ledger)
+                if kind=='missing':s.pop('closed_failed_prestart_evidence')
+                elif kind=='foreign':s['closed_failed_prestart_evidence']['s']['recovered_path']=str(base/'foreign')
+                elif kind=='changed_ledger':l['records'][0]['failed_recovery_files_sha256']={}
+                else:(reg/'START.json').write_text('{}')
+                with self.subTest(kind=kind),self.assertRaises(ValidationError):mod.history_inventory(s,plan,l)
+                if kind=='MAIN':(reg/'START.json').unlink()
+
     def fixture(self,base):
         sid='s';old=base/'old';new=base/'new';globalroot=base/'global';globalroot.mkdir()
         for root in [old,new]:root.mkdir();(root/'WINDOW_STOPPED.json').write_text('{}')

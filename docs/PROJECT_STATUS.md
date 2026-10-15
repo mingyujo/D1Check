@@ -1,4 +1,10 @@
-# 2026-10-16 최신 — 남은20회 C9 등록
+# 2026-10-16 최신 — C9 보존 종료·새 안정기준 혼합4/총85 승인
+
+- 사용자 현재안정기준 지시와 **총85회(원81+새4)** 명시승인으로 [별도개정 혼합4](team/a24-measurement-revision02-20261015/extra4_stable_reference_20261016/README.md)를 PC준비했다. 새ID/각128·총512요청, WAIT→BASE→PAIR→ORDER/첫준비후 첫안정60초에서공통기준1회고정,원40의독립확인블록에합산하지않는다. 실제job `output/A24R02R1/job.json`/원물 `Documents/A24R02R1`/global R1을대조한다. 원179/APK/MAIN/기한/품질/자원반환/계수불변·새호스트등록만분리,공통수명주기코드동일검사/4authorization PC PASS。
+- [C9 원물·전체원장](results/a24_measurement_share_20261016/confirmation_visit_09/README.md): 원ORDER는준비후28.4℃불일치/PRESTART_REJECT·APP1/MAIN0·128미완료로보존. 같은실행실패원물·fsync/닫힘/자원해제/소유프로세스부재확인,기준수정/재실행/예산환급0。원확인21시도/20정상·2,736완료·원19/2,856요청잔여,전체62/85소비·새4포함23/3,368요청예정이다。
+- 다음최대3: 새4의실제parser/기기검사후실행; 닫힌군서비스/출력/AP검산; 최신실패원장을결합해원미시도19계속。사용자완료까지승인/작업자기술상한기기12:40·저장12:45 KST、Jnull/AP HAL·표면미검증/experiment_ready=false·사용자WIP/데스크톱/S26/NPU보존。
+
+# 2026-10-16 이전 — 남은20회 C9 등록
 
 - 사용자 “우리 지금부터 실측 끝까지 다 진행할거야”로 [C9 남은20/2,984요청](team/a24-measurement-revision02-20261015/confirm20_execution_20261016/README.md)을 등록한다. 시작전20/40완료·61/81소비, 원순서개정/이월28.4·27.1℃/core179/APK/40·81상한 보존. 실제 job `output/A24R02C9/job.json`/원물 `Documents/A24R02C9`/global C9의owner·APP·START·stop을확인한다. 새창은완료까지사용자승인+작업자기술상한기기12:40/저장12:45 KST이며이전23:50종료창은재사용하지않는다.
 - 시작전읽기16명령SOC76%·비충전·동일폰/APK·화면81/수동/켜짐·충돌/소유앱0 PASS. 실행완료와PC준비를구분한다. 다음최대3: 실제냉각/APP/MAIN관찰; 닫힌군요청·출력·서비스/AP검산; 완료/실패/미실행·소비와원물/Git공유. Jnull/AP HAL·표면미검증/experiment_ready=false·원WIP/데스크톱/S26/NPU보존。

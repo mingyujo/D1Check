@@ -22,6 +22,7 @@ from d1_a24_revision02_suite import require
 from d1_a24_revision02_suite_control import atomic_json, read_battery
 from d1_a24_revision02_window import check_deadline
 from d1_a24_measurement_connection import ReconnectingAdbClient
+from d1_a24_failed_prestart_evidence import verify_failed_prestart
 
 INPUT_KEYS=['analysis_contract','apk','apk_identity','budget_file','confirm_freeze','device_registration',
             'gate','host_dependency_lock','new_protocol_functional_evidence','plan','pre_measurement_predictions',
@@ -95,6 +96,30 @@ def history_inventory(spec,plan,ledger):
                             and proof.get('APP')==0
                             and proof.get('binding_created') is True and proof.get('reason')=='USER_STOP_AFTER_CURRENT'
                             and (root/'STOP_AFTER_CURRENT.json').is_file(),'unproved passive stop')
+            elif record.get('outcome')=='PRESTART_REJECT' and visit_apps[sid]==1:
+                # A consumed rejected APP can be terminal without a successful
+                # MAIN trace. Require separately proved fsync/close and keep
+                # every planned request unfinished; never refund or replay.
+                evidence=spec.get('closed_failed_prestart_evidence',{}).get(sid)
+                require(evidence is not None and evidence['visit_root']==str(root),
+                        'consumed rejection lacks exact closure evidence')
+                recovered=Path(evidence['recovered_path']);proofpath=Path(evidence['proof_path'])
+                require(recovered.resolve()==(root/'read_only_recovery'/sid/'recovered_app').resolve()
+                        and proofpath.resolve()==(root/'read_only_recovery'/sid/'CLOSED_FAILURE_RECOVERY.json').resolve(),
+                        'foreign failed-prestart recovery path')
+                require(sha256(proofpath)==evidence['proof_sha256'],'failed closure receipt changed')
+                row=next(r for r in plan['sessions'] if r['session_id']==sid)
+                actual=verify_failed_prestart(root,plan,row,recovered,plan_sha256=ledger['plan_sha256'])
+                proof=load_json(proofpath)
+                require(all(proof.get(k)==v for k,v in actual.items())
+                        and proof.get('own_device_process_absent') is True,
+                        'failed closure evidence differs')
+                require(record.get('failed_recovery_files_sha256')==actual['recovered_files_sha256'],
+                        'ledger failed recovery differs')
+                add(proofpath,tag+'/'+proofpath.relative_to(root).as_posix())
+                for p in recovered.rglob('*'):
+                    if p.is_file():add(p,tag+'/'+p.relative_to(root).as_posix())
+                raw_hits[sid].append(root)
             elif (raw/'events.jsonl').exists():
                 require(visit_apps[sid]==1,'raw execution has no unique APP command')
                 require(sha256(raw/'events.jsonl')==record['events_sha256'] and
@@ -116,7 +141,18 @@ def history_inventory(spec,plan,ledger):
                 if outcome.exists():require(load_json(outcome).get('APP_launch_intent') is False,'preAPP has APP intent')
                 else:
                     paused=load_json(stop)
-                    require(paused.get('external_host_stop') is True and paused.get('active_APPs_at_stop')==0,'binding-only pause unproved')
+                    passive_receipt=root/(sid+'.preapp_stop.json')
+                    if passive_receipt.is_file() and binding.is_dir() and not raw.exists() and not registry.exists():
+                        proof=load_json(passive_receipt);closed=paused.get('outcomes',[])
+                        require(proof.get('APP')==0 and proof.get('binding_created') is True
+                                and proof.get('reason')=='USER_STOP_AFTER_CURRENT'
+                                and (root/'STOP_AFTER_CURRENT.json').is_file()
+                                and paused.get('reason')=='PRE_APP_COOLDOWN_STOP'
+                                and paused.get('new_APP_intents')==sum(visit_apps.values())==len(closed)
+                                and all(x.get('session_id')!=sid and x.get('APP_launch_intent') is True for x in closed),
+                                'used ID has unproved earlier passive binding')
+                    else:
+                        require(paused.get('external_host_stop') is True and paused.get('active_APPs_at_stop')==0,'binding-only pause unproved')
     intent_counts={sid:0 for sid in app_counts}
     for label in spec['previous_global_reservation_roots']:
         root=Path(label);require(not (root/'ACTIVE_OWNER.json').exists(),'previous owner still active')
