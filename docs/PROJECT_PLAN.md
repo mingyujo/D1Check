@@ -1,3 +1,7 @@
+# 2026-10-16 C9 — 잔여20회 완료까지 진행
+
+사용자 최신명시지시로 [C9](team/a24-measurement-revision02-20261015/confirm20_execution_20261016/README.md)에서기존미실행20/2,984요청만이어간다. 원40/81·기소비61·순서/이월기준/판정/과학소스/APK불변,실패대체0. 사용자완료까지승인과작업자기술상한12:40기기/12:45저장을구분한다. J미판정/표면미검증/experiment_ready=false유지。
+
 # 2026-10-15 C8 종료 — 다음20은 PC 준비만
 
 사용자승인순서개정C8에서WAIT/BASE/PAIR3조건384건을회수하고23:23:52에종료했다. ORDER는새APP여유부족으로미실행,원17 L64도뒤로보존했다. 전체20/40완료·예산61/81·남은20/2,984요청이며[최신결과](results/a24_measurement_share_20261015/confirmation_visit_08/README.md)·[다음PC준비](team/a24-measurement-revision02-20261015/confirm20_preparation_after_C8_20261015/README.md)를따른다. 새시간창/기기실행0·원판정/요청/40/예산유지·J미판정/표면미검증/experiment_ready=false다. 아래실행중문장은당시이력이다.

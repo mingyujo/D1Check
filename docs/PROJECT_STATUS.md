@@ -1,3 +1,8 @@
+# 2026-10-16 최신 — 남은20회 C9 등록
+
+- 사용자 “우리 지금부터 실측 끝까지 다 진행할거야”로 [C9 남은20/2,984요청](team/a24-measurement-revision02-20261015/confirm20_execution_20261016/README.md)을 등록한다. 시작전20/40완료·61/81소비, 원순서개정/이월28.4·27.1℃/core179/APK/40·81상한 보존. 실제 job `output/A24R02C9/job.json`/원물 `Documents/A24R02C9`/global C9의owner·APP·START·stop을확인한다. 새창은완료까지사용자승인+작업자기술상한기기12:40/저장12:45 KST이며이전23:50종료창은재사용하지않는다.
+- 시작전읽기16명령SOC76%·비충전·동일폰/APK·화면81/수동/켜짐·충돌/소유앱0 PASS. 실행완료와PC준비를구분한다. 다음최대3: 실제냉각/APP/MAIN관찰; 닫힌군요청·출력·서비스/AP검산; 완료/실패/미실행·소비와원물/Git공유. Jnull/AP HAL·표면미검증/experiment_ready=false·원WIP/데스크톱/S26/NPU보존。
+
 # 2026-10-15 최신 — C8 종료·확인20/40·다음20 PC 준비
 
 - [최신 원물3ZIP·CSV·그림·소비 원장](results/a24_measurement_share_20261015/confirmation_visit_08/README.md): C8 WAIT/BASE/PAIR3조건·384본요청 전량회수/출력오류0/AP창3적격.23:23:52 KST 종료·owner해제/빈자기프로세스종료검증,새APP중복0. ORDER는새APP21분여유로APP0미실행이며원17 L64/27.1℃도미실행으로맨뒤보존.
