@@ -1,8 +1,8 @@
 # A24 실측 진행 현황
 
-**마지막 갱신: 2026-10-16 04:20:33 KST**
+**마지막 갱신: 2026-10-16 04:29:37 KST**
 
-**현재 전체 상태: 진행 중: EXTRA4_ORDER (M128_ORDER)**
+**현재 전체 상태: 기기 실행 원장 없음; 후속 큐·종료 영수증 확인**
 
 - 원래 독립 확인: **37/40 정상 완료**, 시작 전 실패·거절 2회 보존. 현재 단계 `STOPPED`. 실패·미완료는 아래 원장과 각 묶음 상태를 함께 확인한다.
 - 기존85회: 84회 소비(진행·거절 포함). 별도 실패 보완12: 0회 정상 완료 / 0회 APP 시도. 완료율과 예산 소비율은 다르다.
@@ -22,6 +22,7 @@
 - [C11_R02CONFIRM05_C252 원자료 ZIP·CSV·소스 SHA](../../../docs/results/a24_measurement_share_20261016/automatic_checkpoints/C11_R02CONFIRM05_C252/README.md)
 - [C11_R02CONFIRM05_L64 원자료 ZIP·CSV·소스 SHA](../../../docs/results/a24_measurement_share_20261016/automatic_checkpoints/C11_R02CONFIRM05_L64/README.md)
 - [C11_R02CONFIRM05_M128 원자료 ZIP·CSV·소스 SHA](../../../docs/results/a24_measurement_share_20261016/automatic_checkpoints/C11_R02CONFIRM05_M128/README.md)
+- [EXTRA4_ORDER_REBASE_M128_01_M128 원자료 ZIP·CSV·소스 SHA](../../../docs/results/a24_measurement_share_20261016/automatic_checkpoints/EXTRA4_ORDER_REBASE_M128_01_M128/README.md)
 
 ## 계획·재개·해석
 
