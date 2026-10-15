@@ -4,7 +4,7 @@
 - 전체확인20/40·2,736완료/20미실행·2,984예정요청,정식61/81·잔여20. 실제APP58+별도진단1=59와이전APP전실패3의예산소비를구분한다. 원40/기한/입력/MAIN/179/APK·28.4℃M128기준불변. C8실행소스b567381/coordinator59b2bd53,종료후PC보완버전은별도42검사/20authorization PASS다.
 - 이번PAIR는C96/96·D32/32기한내/P95 1.418초(BASE11.137초),최고AP30.8℃(BASE30.3℃)/평균29.234℃(BASE29.246℃). 서비스개선과열절감미확인을구분한다. Jnull·AP HAL/표면미검증/experiment_ready=false유지,과거BASE AP12.34초공백도유지한다.
 - [다음20회 PC 준비](team/a24-measurement-revision02-20261015/confirm20_preparation_after_C8_20261015/README.md): `output/a24_confirm_next20_ready_20261015_v1/job.json`은preparation_only/시간창false/기기원장root없음·추가APP/MAIN/세션0. 다음원21 ORDER는C8의28.4℃/SHA629807c3…0db96f 인계,원17은27.1℃/SHAa09f9325…67d570로맨뒤보존. 새시간창없이실행불가/과거C6~C8명령재실행금지.
-- 다음최대3: 외부GitHub다운로드/SHA확인; 새사용자시간창에최신원장/승인순서/두고정reference를결합; 시작전동일기기SOC/비충전/화면/APK/경로재확인. 현재기기실측·감독모두종료. 사용자WIP/데스크톱/S26/NPU보존.
+- 외부GitHub 커밋41342fd에서최신3ZIP·원자료3,199개SHA/보고서/그림/다음준비문서다운로드PASS. [외부검증](results/a24_measurement_share_20261015/confirmation_visit_08/PUBLIC_GITHUB_VERIFICATION.json). 다음최대3: 새사용자시간창에최신원장/승인순서/두고정reference결합; 시작전동일기기SOC/비충전/화면/APK/경로재확인; 승인범위의미실행ORDER부터진행. 현재기기실측·감독모두종료. 사용자WIP/데스크톱/S26/NPU보존.
 
 # 2026-10-15 이전 — C8 혼합 묶음 MAIN 실행 중
 
