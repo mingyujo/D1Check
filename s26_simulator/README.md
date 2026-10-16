@@ -2,6 +2,8 @@
 
 **이 폴더 하나가 작업 입구입니다.** 최신 실행 코드·모형·요청표·저장 결과·시각화·원자료 다운로드/복원 도구와 과거 계보를 함께 제공합니다. 원 PC의 `C:/Users/...` 폴더 없이 현재 화면 열기, 저장 결과 확인, 소스 수정이 가능합니다.
 
+다른 사람에게 보낼 설명은 [인계 전달문](HANDOVER_MESSAGE_KO.md)에 정리했습니다. 완료 범위·파일 위치·화면 확인·원자료 복원 방법을 담았습니다.
+
 ## 바로 보기
 
 폴더만 받으려면 [s26-simulator-core.zip](https://github.com/mingyujo/D1Check/releases/download/s26-handoff-20261016/s26-simulator-core.zip)을 풀면 됩니다. Git으로 수정 이력을 남기려면 저장소의 `codex/s26-simulator-handoff-20261016` 브랜치에서 이 폴더를 사용하세요. 큰 원자료는 아래 복원 명령으로 추가합니다.
