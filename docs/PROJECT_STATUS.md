@@ -1,5 +1,7 @@
 ## 2026-10-16 A24 GitHub 단일 폴더 인계
 
+완료 범위와 파일 위치만 담은 [짧은 안내](../a24_simulator/COMPLETED_AND_FILES.md)를 추가했다. README에서 바로 연결하며 구현·학습·모형·결과는 변경하지 않았다.
+
 현재 실행·수정 정본은 [a24_simulator/README.md](../a24_simulator/README.md)다. 기존+M8 115세션 입력/ZIP/모형/정책/실행법/이전 실패·전체 역사 Release를 연결했다. 기본12조건의 작업별 납기·참조 부하, 공통 활동창/기저/동일 일정 진단과 새4경로 PPO64 TRAIN·24 DEV·98 EVAL을 검증했다. START187=COMPLETE186+보존FAIL1, 이전105와 합계292/기존512·잔220·추가예약0. RL635/640 vs ATC/EDD/모바일640/640으로 추가우위 미입증·Jnull·폰RL/물리목표false다. 독립 저장산술20,943·NN/Adam/RNG31,848 checks·별도폴더151pins·실브라우저6뷰 PASS. 예약과 GitHub 주기조회OFF. 다음은 폴더 HANDOFF의 미식별 계측·새독립확인 절차를 따른다.
 
 # D1Check 현재 상태
