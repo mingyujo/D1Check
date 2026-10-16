@@ -1,5 +1,7 @@
 # 미완료 작업 · 2026-10-17
 
+다중 요청을 CPU/GPU/NPU에 동시 분산하는 상세안은 [MULTIRESOURCE_IMPLEMENTATION_PLAN](MULTIRESOURCE_IMPLEMENTATION_PLAN.md)을 따른다. 계획만 작성됐고 아직 구현·등록·실행하지 않았다. 후속 구현 지시를 받은 경우 자료 목록/4계약→새 엔진/순수 검증→입력/예산 등록→P0/DEV/봉인/새 평가 순으로 진행한다.
+
 [START_HERE](../START_HERE.md)·[STATUS](../STATUS.md)·[최신 판독](../STATE_AWARE_COMPARISON_KO.md)을 읽고 Git HEAD/원장을 확인한다. STATE001_G001 300건은 실행·전수 감사·GitHub 업로드까지 끝났다. 이 실험 재실행이나 재감사로 시작하지 않는다. 아래는 후속 개발 과제이며 아직 구현/채택된 정책이 아니다.
 
 ## 1. 공동개선 조건과 정책 전망
