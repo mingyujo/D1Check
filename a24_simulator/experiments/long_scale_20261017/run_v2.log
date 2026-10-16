@@ -1,0 +1,18 @@
+START P0_ORIGINAL_EDF 48 requests
+COMPLETE P0_ORIGINAL_EDF baseline% 67.97 on_time 48 / 48 wall 2.16
+START P0_EXTENDED_EDF 48 requests
+COMPLETE P0_EXTENDED_EDF baseline% 67.97 on_time 48 / 48 wall 1.88
+START P0_ORIGINAL_RL 48 requests
+COMPLETE P0_ORIGINAL_RL baseline% 68.057 on_time 48 / 48 wall 3.05
+START P0_EXTENDED_RL 48 requests
+COMPLETE P0_EXTENDED_RL baseline% 68.057 on_time 48 / 48 wall 2.91
+Traceback (most recent call last):
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\A24-GITHUB-HANDOFF-20261016\a24_simulator\experiments\long_scale_20261017\run_scale_v2.py", line 196, in <module>
+    if __name__=='__main__':main(sys.argv[1])
+                            ^^^^^^^^^^^^^^^^^
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\A24-GITHUB-HANDOFF-20261016\a24_simulator\experiments\long_scale_20261017\run_scale_v2.py", line 173, in main
+    if policy=='RL':L.need(old['NN']['chain']==new['NN']['chain'],'P0 NN input/action equivalence')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\A24-GITHUB-HANDOFF-20261016\a24_simulator\src\lab_backend.py", line 39, in need
+    raise ValueError(message)
+ValueError: P0 NN input/action equivalence

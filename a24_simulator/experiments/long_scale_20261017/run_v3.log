@@ -1,0 +1,25 @@
+START N00048_EDF 48 requests
+COMPLETE N00048_EDF baseline% 67.97 on_time 48 / 48 wall 2.12
+START N00048_RL 48 requests
+COMPLETE N00048_RL baseline% 68.057 on_time 48 / 48 wall 2.8
+START N00096_EDF 96 requests
+COMPLETE N00096_EDF baseline% 60.339 on_time 94 / 96 wall 4.59
+START N00096_RL 96 requests
+COMPLETE N00096_RL baseline% 60.338 on_time 95 / 96 wall 8.42
+START N00192_EDF 192 requests
+COMPLETE N00192_EDF baseline% 55.013 on_time 187 / 192 wall 8.33
+START N00192_RL 192 requests
+COMPLETE N00192_RL baseline% 54.997 on_time 189 / 192 wall 12.36
+START N00384_EDF 384 requests
+Traceback (most recent call last):
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\A24-GITHUB-HANDOFF-20261016\a24_simulator\experiments\long_scale_20261017\run_scale_v3.py", line 195, in <module>
+    if __name__=='__main__':main(sys.argv[1])
+                            ^^^^^^^^^^^^^^^^^
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\A24-GITHUB-HANDOFF-20261016\a24_simulator\experiments\long_scale_20261017\run_scale_v3.py", line 179, in main
+    row,summary=simulate(case,policy,'N%05d_%s'%(case['n'],policy),True)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\A24-GITHUB-HANDOFF-20261016\a24_simulator\experiments\long_scale_20261017\run_scale_v3.py", line 150, in simulate
+    L.need(ap['status']=='CONDITIONAL_AP_PREDICTION','Final AP response')
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\A24-GITHUB-HANDOFF-20261016\a24_simulator\src\lab_backend.py", line 39, in need
+    raise ValueError(message)
+ValueError: Final AP response

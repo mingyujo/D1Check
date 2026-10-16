@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\A24-GITHUB-HANDOFF-20261016\a24_simulator\experiments\long_scale_20261017\run_scale.py", line 191, in <module>
+    if __name__=='__main__':main(sys.argv[1])
+                            ^^^^^^^^^^^^^^^^^
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\A24-GITHUB-HANDOFF-20261016\a24_simulator\experiments\long_scale_20261017\run_scale.py", line 164, in main
+    old,oldsummary=simulate(p0,policy,'P0_ORIGINAL_'+policy,False)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\A24-GITHUB-HANDOFF-20261016\a24_simulator\experiments\long_scale_20261017\run_scale.py", line 130, in simulate
+    global_starts=sum(sum(json.loads(s).get('event')=='START' for s in Path(l['path']).read_text(encoding='utf-8-sig').splitlines() if s) for l in old['global_ledgers'])
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\A24-GITHUB-HANDOFF-20261016\a24_simulator\experiments\long_scale_20261017\run_scale.py", line 130, in <genexpr>
+    global_starts=sum(sum(json.loads(s).get('event')=='START' for s in Path(l['path']).read_text(encoding='utf-8-sig').splitlines() if s) for l in old['global_ledgers'])
+                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\chomg\AppData\Local\Programs\Python\Python311\Lib\pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\chomg\AppData\Local\Programs\Python\Python311\Lib\pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'c:\\users\\chomg\\documents\\codex\\2026-10-11\\dkfo\\outputs\\rolling-atc-rl-37\\v2_causal_20261014\\receipts.jsonl'

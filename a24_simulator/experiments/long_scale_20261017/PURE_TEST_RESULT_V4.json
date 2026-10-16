@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "checks": [
+    "exact source/input/checkpoint/model pins",
+    "all Python AST/compile without execution",
+    "exact two kernel logging/copy changes; physics unchanged",
+    "policy logging-only derivative",
+    "queue validation only; shortlist/NN unchanged",
+    "prefix/composition/clock/window N=48",
+    "prefix/composition/clock/window N=96",
+    "prefix/composition/clock/window N=192",
+    "prefix/composition/clock/window N=384",
+    "prefix/composition/clock/window N=768",
+    "prefix/composition/clock/window N=1536",
+    "prefix/composition/clock/window N=3072",
+    "prefix/composition/clock/window N=6144",
+    "prefix/composition/clock/window N=12288",
+    {
+      "test": "streaming AP exact through10000s",
+      "ambient": null,
+      "past_slope": false,
+      "max_error": 3.552713678800501e-15
+    },
+    {
+      "test": "streaming AP exact through10000s",
+      "ambient": null,
+      "past_slope": true,
+      "max_error": 3.552713678800501e-15
+    },
+    {
+      "test": "streaming AP exact through10000s",
+      "ambient": 24.0,
+      "past_slope": false,
+      "max_error": 3.552713678800501e-15
+    },
+    {
+      "test": "streaming AP exact through10000s",
+      "ambient": 24.0,
+      "past_slope": true,
+      "max_error": 3.552713678800501e-15
+    }
+  ],
+  "check_groups": 18,
+  "operation_sha256": "825a4424d87d30fa1f133bf0a472026d39d18f896fc770e345c9ddeab3f001f7",
+  "environment_START": 0,
+  "NN_training": 0
+}
