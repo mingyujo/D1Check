@@ -1,8 +1,10 @@
 # 바로 이어서 작업하는 방법
 
+최신 재개 입구는 [START_HERE](START_HERE.md)다. 아래 `src/`·기존 화면 설명은 SIM002 기준판의 규약이다. 상태 배정 후속을 수정할 때는 `experiments/state_aware_v1/source/`의 `state_actions.cjs`·`state_cost.cjs`·`state_simulator.cjs`·`state_case.cjs`와 같은 폴더의 공통 plant를 기준으로 새 세대를 만든다. 해당 실험의 정확한 모델/입력은 `experiments/state_aware_v1/PACKET.json.gz`이며 운영 소스·실패·원장·감사는 `operations/SOURCE_MAP.json`에 연결돼 있다. 구형 운영 절대경로를 그대로 실행하지 않는다.
+
 ## 1. 확인만 할 때
 
-`node cli/s26.cjs verify` → `node cli/s26.cjs replay` → `node cli/s26.cjs serve` 순서로 확인한다. 설치형 Android 앱·ADB·원 PC·torch 없이 가능하다. 화면의 값은 기존 저장 결과이며 새 환경을 만들지 않는다.
+`node cli/s26.cjs verify`와 `node cli/s26.cjs replay --comparison state-aware-v1 --bank COMPETE_A`로 최신 저장 결과를 확인한다. 설치형 Android 앱·ADB·원 PC·torch 없이 가능하다. 기본 `replay`와 `serve`의 화면은 이전 SIM002/V4 저장 결과이며 새 STATE 결과 화면이 아니다. 이 명령들은 새 환경을 만들지 않는다.
 
 ## 2. 어디를 수정하는가
 
@@ -37,4 +39,4 @@
 
 ## 5. 넘겨줄 때 유지할 결론
 
-새 주정책은 GPU 고정을 없앴다. 현재 동질적 요청/좁은 초기온도에서는 NPU가 모두 선택되었다. 이를 모든 부하에서 NPU 최적, RL 학습 완료, 실물 에너지 절감 증명으로 확대하지 않는다. 기존 GPU 고정 FIFO/EDF 결과와는 선택 공간이 다르므로 표의 큰 차이를 순서 정책의 공정한 우위로 해석하지 않는다.
+이전 SIM002는 GPU 고정을 없앴고 그때의 동질적 요청에서는 NPU가 모두 선택됐다. 최신 STATE에서는 세 정책 모두 분류 GPU를 선택했지만 후보 범위는 CPU/GPU/NPU로 같다. ATC와 EDF는 동일, 새 배정기는 J 감소/열 증가라 공동개선 미입증이다. 어느 결과도 보편적인 자원 최적·새 RL 학습 완료·실물 절감 증명으로 확대하지 않는다. [최신 판독](STATE_AWARE_COMPARISON_KO.md)을 따른다.
