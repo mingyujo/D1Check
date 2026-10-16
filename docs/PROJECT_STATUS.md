@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+2026-10-17 상태 배정 실험 판독: 전수 300건/3,891,272검사 PASS. 같은 STATE 배정기에서 롤링+ATC와 EDF는 경쟁 부하 24/24조건 납기충족·184.275174 API-J·평균 AP32.472116℃로 동일했다. FIFO는 35건 지연/전량 납기 10/24조건. 기존 ATC 배정기 대비 J는 0.2761% 줄었으나 평균 AP +0.095057℃/최고 +1.825049℃로 공동개선 미입증이다. 실제 순서 경쟁 384회를 확인했고 계수·납기·분모를 결과에 맞춰 바꾸지 않았다. [정량 결과·모형 경계](../s26_simulator/STATE_AWARE_COMPARISON_KO.md). 원자료 ZIP 3개·900파일 SHA readback/CLI383검사도 PASS. 현재 보고는 실측 기반 모형의 개발 비교이며 실기기 순절감 인증이 아니다.
+
+## 2026-10-16 S26 상태 반영 배정·경쟁 부하 비교
+
+[보고](../s26_simulator/STATE_AWARE_COMPARISON_KO.md): 원물리·고정납기·같은자원/실제mask에서STATIC/STATE×FIFO/EDF/ATC를300환경으로검증했다. 기존부하와U112/N16긴급탐지경계전이부하를분리한다. 원장/SHA/공개입력/후보선택·전체저장비용·전망검산은 experiments/state_aware_v1. 추가320예약/300소비·전역121206/137712. 새RL/fit0, 실기기정확도/순절감미확정.
+
 ## 2026-10-16 S26 동일 선택 원인 진단 완료
 
 [진단보고](../s26_simulator/SAME_CHOICE_DIAGNOSIS_KO.md): 공통자원배정기와부하×가용mask로모든실행가능복수후보1,551회의task·기한·ATC점수가같았다. 전역FIFO·EDF선두차이349회는mask후0회, WAIT냉각조건0회다. 원엔진의같은입력직렬/병행48쌍은J/AP가달랐다. 새환경/학습/fit/예약0, 18,082별도검사PASS와 원입력/소스SHA불변. 진단 source/CSV/raw는 s26_simulator/experiments/tie_diagnosis_v1/. 물리정확도/프로젝트목표완료미확정.

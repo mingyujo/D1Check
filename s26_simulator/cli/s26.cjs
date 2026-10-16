@@ -4,6 +4,26 @@ const { fs, path, ROOT, json, flag } = require('../scripts/io.cjs');
 const http = require('node:http');
 function replay(args) {
   const comparison = flag(args, '--comparison', 'legacy');
+  if (comparison === 'state-aware-v1') {
+    const d = json(path.join(ROOT, 'experiments/state_aware_v1/SUMMARY.json'));
+    if (d.status !== 'PASS') throw Error('Stored state-aware comparison is incomplete');
+    const policy = flag(args, '--policy', 'ALL'), bank = flag(args, '--bank', 'ALL');
+    if (!['ALL', 'M128_BASE', 'SMOOTH128_BASE', 'COMPETE_A', 'COMPETE_B'].includes(bank)) throw Error('Unknown bank');
+    if (policy !== 'ALL' && !d.policies.includes(policy)) throw Error('Unknown policy');
+    const rows = (bank === 'ALL' ? d.all : d.tables.filter(x => x.bank === bank)).filter(x => policy === 'ALL' || x.policy === policy);
+    const result = {
+      mode: 'AUDITED_STATE_AWARE_STORED_REPLAY', new_simulator_instances: 0, new_training: 0,
+      results: rows.map(x => ({ policy: x.policy, bank, cases: x.cases, hard_feasible_cases: x.feasible,
+        on_time_rate: x.on_time_rate, urgent_on_time_rate: x.urgent_on_time_rate, normal_on_time_rate: x.normal_on_time_rate,
+        API_J_mean: x.J, AP_C_mean: x.AP, AP_peak_mean: x.peak, AP180_mean: x.AP180,
+        unfinished: x.unfinished, tardiness_s: x.tardiness, route_counts: x.route_counts })),
+      contrasts: d.contrasts.filter(x => bank === 'ALL' || x.bank === bank),
+      priority_transfer: d.priority_transfer, planning_overhead: d.planning_overhead,
+      limitation: d.uncertainty,
+      aggregation_note: bank === 'ALL' ? 'Includes controls U96/N32 and competitive transfer loads U112/N16; inspect each bank for interpretation.' : null
+    };
+    console.log(JSON.stringify(result, null, 2)); return result.results;
+  }
   if (comparison === 'fair-resource-v1') {
     const d = json(path.join(ROOT, 'experiments/fair_resource_v1/results/SUMMARY.json'));
     const policy = flag(args, '--policy', 'ALL'), bank = flag(args, '--bank', 'ALL');
@@ -70,7 +90,7 @@ async function main(args) {
     return server;
   }
   if (command !== 'help' && command !== '--help') throw Error('Unknown command: ' + command);
-  console.log('S26 handoff | Node >=20\n  verify\n  diagnose\n  replay [--comparison legacy|fair-resource-v1] [--policy ID|ALL] [--bank ALL|M128|SMOOTH128]\n  serve [--port 8788]\n  locate <path substring>\n  restore [--group current|measurements|policy_history|history|all]\nAll commands inspect or restore existing evidence. See HANDOFF.md before new simulation/training.');
+  console.log('S26 handoff | Node >=20\n  verify\n  diagnose\n  replay [--comparison legacy|fair-resource-v1|state-aware-v1] [--policy ID|ALL] [--bank BANK|ALL]\n    state-aware banks: M128_BASE, SMOOTH128_BASE, COMPETE_A, COMPETE_B\n    legacy/fair banks: M128, SMOOTH128\n  serve [--port 8788]\n  locate <path substring>\n  restore [--group current|measurements|policy_history|history|all]\nAll commands inspect or restore existing evidence. See HANDOFF.md before new simulation/training.');
 }
 module.exports = { main, replay };
 if (require.main === module) main(process.argv.slice(2)).catch(e => { console.error(e.message); process.exitCode = 1; });

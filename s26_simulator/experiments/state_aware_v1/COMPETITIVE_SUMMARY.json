@@ -1,0 +1,181 @@
+{
+  "aggregate": [
+    {
+      "policy": "FIFO_STATIC",
+      "cases": 24,
+      "feasible": 15,
+      "on_time_rate": 0.9951171875,
+      "urgent_on_time_rate": 0.9944196428571428,
+      "normal_on_time_rate": 1,
+      "J": 184.71366269430825,
+      "AP": 32.37700224311013,
+      "peak": 37.58380532659264,
+      "AP180": 31.498964384827197,
+      "unfinished": 0,
+      "case_wall_mean": 0.6784166666666667,
+      "route_counts": {
+        "classification_CPU": 0,
+        "classification_GPU": 0,
+        "classification_NPU": 2304,
+        "detection_CPU": 768
+      }
+    },
+    {
+      "policy": "EDF_STATIC",
+      "cases": 24,
+      "feasible": 24,
+      "on_time_rate": 1,
+      "urgent_on_time_rate": 1,
+      "normal_on_time_rate": 1,
+      "J": 184.78534719414148,
+      "AP": 32.37705821710664,
+      "peak": 37.58349686228569,
+      "AP180": 31.498977277120943,
+      "unfinished": 0,
+      "case_wall_mean": 0.67625,
+      "route_counts": {
+        "classification_CPU": 0,
+        "classification_GPU": 0,
+        "classification_NPU": 2304,
+        "detection_CPU": 768
+      }
+    },
+    {
+      "policy": "ATC_STATIC",
+      "cases": 24,
+      "feasible": 24,
+      "on_time_rate": 1,
+      "urgent_on_time_rate": 1,
+      "normal_on_time_rate": 1,
+      "J": 184.78534719414148,
+      "AP": 32.37705821710664,
+      "peak": 37.58349686228569,
+      "AP180": 31.498977277120943,
+      "unfinished": 0,
+      "case_wall_mean": 0.6770416666666667,
+      "route_counts": {
+        "classification_CPU": 0,
+        "classification_GPU": 0,
+        "classification_NPU": 2304,
+        "detection_CPU": 768
+      }
+    },
+    {
+      "policy": "FIFO_STATE",
+      "cases": 24,
+      "feasible": 10,
+      "on_time_rate": 0.9886067708333334,
+      "urgent_on_time_rate": 0.9869791666666667,
+      "normal_on_time_rate": 1,
+      "J": 184.10973585064826,
+      "AP": 32.472098274086306,
+      "peak": 39.40940771182939,
+      "AP180": 31.42339140255059,
+      "unfinished": 0,
+      "case_wall_mean": 1.2422083333333331,
+      "route_counts": {
+        "classification_CPU": 0,
+        "classification_GPU": 2304,
+        "classification_NPU": 0,
+        "detection_CPU": 768
+      }
+    },
+    {
+      "policy": "EDF_STATE",
+      "cases": 24,
+      "feasible": 24,
+      "on_time_rate": 1,
+      "urgent_on_time_rate": 1,
+      "normal_on_time_rate": 1,
+      "J": 184.27517392855282,
+      "AP": 32.472115664720576,
+      "peak": 39.40854619546418,
+      "AP180": 31.423388516286607,
+      "unfinished": 0,
+      "case_wall_mean": 1.230375,
+      "route_counts": {
+        "classification_CPU": 0,
+        "classification_GPU": 2304,
+        "classification_NPU": 0,
+        "detection_CPU": 768
+      }
+    },
+    {
+      "policy": "ATC_STATE",
+      "cases": 24,
+      "feasible": 24,
+      "on_time_rate": 1,
+      "urgent_on_time_rate": 1,
+      "normal_on_time_rate": 1,
+      "J": 184.27517392855282,
+      "AP": 32.472115664720576,
+      "peak": 39.40854619546418,
+      "AP180": 31.423388516286607,
+      "unfinished": 0,
+      "case_wall_mean": 1.2367916666666665,
+      "route_counts": {
+        "classification_CPU": 0,
+        "classification_GPU": 2304,
+        "classification_NPU": 0,
+        "detection_CPU": 768
+      }
+    }
+  ],
+  "contrasts": [
+    {
+      "baseline": "FIFO_STATIC",
+      "J_reduction": 0.43848876575543727,
+      "J_reduction_percent": 0.23738837688531678,
+      "AP_reduction": -0.09511342161044922,
+      "own_all_deadlines": true,
+      "baseline_all_deadlines": false,
+      "own_deadline_loss": false
+    },
+    {
+      "baseline": "EDF_STATIC",
+      "J_reduction": 0.5101732655886622,
+      "J_reduction_percent": 0.2760896755805305,
+      "AP_reduction": -0.09505744761393942,
+      "own_all_deadlines": true,
+      "baseline_all_deadlines": true,
+      "own_deadline_loss": false
+    },
+    {
+      "baseline": "ATC_STATIC",
+      "J_reduction": 0.5101732655886622,
+      "J_reduction_percent": 0.2760896755805305,
+      "AP_reduction": -0.09505744761393942,
+      "own_all_deadlines": true,
+      "baseline_all_deadlines": true,
+      "own_deadline_loss": false
+    },
+    {
+      "baseline": "FIFO_STATE",
+      "J_reduction": -0.1654380779045539,
+      "J_reduction_percent": -0.08985840816085847,
+      "AP_reduction": -0.0000173906342695318,
+      "own_all_deadlines": true,
+      "baseline_all_deadlines": false,
+      "own_deadline_loss": false
+    },
+    {
+      "baseline": "EDF_STATE",
+      "J_reduction": 0,
+      "J_reduction_percent": 0,
+      "AP_reduction": 0,
+      "own_all_deadlines": true,
+      "baseline_all_deadlines": true,
+      "own_deadline_loss": false
+    }
+  ],
+  "counts": {
+    "dispatches": 3072,
+    "multiple_eligible": 2109,
+    "mixed_eligible_priority": 384,
+    "eligible_FIFO_EDF_disagree": 384,
+    "actual_not_FIFO": 384,
+    "actual_not_EDF": 0,
+    "forecasts": 5376
+  },
+  "scope": "Two new competitive banks, three initial histories, four common draws; U112/N16 per128. API-J/temperature predictions only."
+}

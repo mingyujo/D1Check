@@ -15,3 +15,5 @@
 2026-10-16 동일 자원 비교는 별도 FAIR001_G001의112예약/104소비로 완료했다. 원512의 잔12는 유지하며 최신 전역예약120886/137712다. 세 정책의48조건 실제 물리 궤적이 전부 같아 추가절감0이다. 최신 근거는 FAIR_RESOURCE_COMPARISON_KO.md와 experiments/fair_resource_v1/이며, 이전 GPU고정 참고군 대비2.58%를 동등조건 정책 우위로 인용하지 않는다.
 
 동률 원인은 SAME_CHOICE_DIAGNOSIS_KO.md에 전수추적했다. FAIR 비교는 같은명목배정기와WAIT를공유한순서정책비교이며 전체배정기기여의ablation이아니다. 복수실행가능1,551회는task/priority/기한/route별ATC점수동점이다. 원소스·물리·기존평가를변경하지않고 새환경/fit0으로 진단했다.
+
+최신STATE001_G001는STATE_AWARE_COMPARISON_KO.md/experiments/state_aware_v1에별도보존한다. 동일자원·납기6정책에새긴급탐지output경계전이부하를포함했고추가320예약/300소비·총121206/137712다. 원물리/원512잔12/기존평가/자동화보존. 새RL0이며실기기순절감은미검증이다.
