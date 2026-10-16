@@ -1,0 +1,147 @@
+{
+  "schema": "A24-cost-identification-operation-v1",
+  "utc": "2026-10-16T15:20:46.184Z",
+  "model_spec": {
+    "adoption": "outer cohort-equal MAE at least 2% below same-baseline fixed anchor",
+    "bounds_W_proxy": [
+      0,
+      4
+    ],
+    "measured_J": null,
+    "new_device_measurements": 0,
+    "ridge": 0.01,
+    "schema": "A24-causal-state-cost-v1",
+    "tau_candidates_s": [
+      0,
+      0.9,
+      3,
+      10
+    ],
+    "temperature_feedback": false,
+    "unit": "historical electrical projection W* / integrated J*; absolute calibration unknown",
+    "validation": "leave-one-cohort-out; nested training-session leaveout tau selection"
+  },
+  "relative_model_spec": {
+    "adoption": "cohort-equal MAE at least2% below anchored state model and constant normalized baseline",
+    "bin_s": 5,
+    "charge_to_current_scale_fit": false,
+    "coefficient_bounds": [
+      0,
+      10
+    ],
+    "independent_confirmation": false,
+    "maxgap_s": 2,
+    "measured_J": null,
+    "minimum_positive_activity_s": 1,
+    "minimum_pre_samples": 10,
+    "minimum_support_s": 5,
+    "minimum_support_sessions": 3,
+    "ridge": 0.01,
+    "scale_correction": 0,
+    "schema": "A24-native-current-relative-state-v1",
+    "tau_candidates_s": [
+      0,
+      0.9,
+      3,
+      10
+    ],
+    "unit": "dimensionless current magnitude / causal pre-work median",
+    "validation": "cohort holdout; inner cohort holdout tau selection; all sources previously seen",
+    "voltage_to_energy_conversion": false
+  },
+  "source_pins": [
+    {
+      "bytes": 6031,
+      "path": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/work/A24-GITHUB-HANDOFF-20261016/a24_simulator/experiments/competition_cost_20261017/analyze_witness.py",
+      "sha256": "5457141663209d720acfda58185c2a2844c2c6ada39cae643e1f8be4bbb410e1"
+    },
+    {
+      "bytes": 9284,
+      "path": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/work/A24-GITHUB-HANDOFF-20261016/a24_simulator/experiments/competition_cost_20261017/fit_cost.py",
+      "sha256": "a99dccd936356c53063dab92daf94705103d50b633cd72d03cd8a35301233f61"
+    },
+    {
+      "bytes": 2340,
+      "path": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/work/A24-GITHUB-HANDOFF-20261016/a24_simulator/experiments/competition_cost_20261017/prepare_operations.cjs",
+      "sha256": "29a218f55096d1122125151c6b4d86b611be7f216fcefc65a6307f91b17ec9fa"
+    },
+    {
+      "bytes": 8506,
+      "path": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/work/A24-GITHUB-HANDOFF-20261016/a24_simulator/experiments/competition_cost_20261017/relative_drain.py",
+      "sha256": "00b816dd20481018313f7be560f5829d3d3b4ea3767ba53e8f32bb1aef6fb81a"
+    },
+    {
+      "bytes": 7448,
+      "path": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/work/A24-GITHUB-HANDOFF-20261016/a24_simulator/experiments/competition_cost_20261017/run_witness.py",
+      "sha256": "1e2f42fa075bae4281ceff77278b885c9a8946ec02b87b15b831fb490b6406b5"
+    },
+    {
+      "bytes": 6416,
+      "path": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/work/A24-GITHUB-HANDOFF-20261016/a24_simulator/experiments/competition_cost_20261017/state_cost.py",
+      "sha256": "6e52288e624f71506bc019e17a242fa7c91ac7d206c80a67cecee8beb2909ec1"
+    },
+    {
+      "bytes": 4723,
+      "path": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/work/A24-GITHUB-HANDOFF-20261016/a24_simulator/experiments/competition_cost_20261017/test_state_cost.py",
+      "sha256": "2b48a19d31b47146abf5e0e8ce2f2e98cb15a6d14a088abac7200318a1610b59"
+    },
+    {
+      "bytes": 2002,
+      "path": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/work/A24-GITHUB-HANDOFF-20261016/a24_simulator/experiments/competition_cost_20261017/validate_source.py",
+      "sha256": "65cb75fa2d815354bf3ab344664ca57b6814c6e5f729885ccbc08f03481a6e24"
+    }
+  ],
+  "input_pins": [
+    {
+      "path": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/work/A24-GITHUB-HANDOFF-20261016/a24_simulator/models/registration.json",
+      "sha256": "a100937732e9a19157ac898fe34bb97b65338b737241a8f377276d4a5a1877c8",
+      "bytes": 48762
+    },
+    {
+      "path": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/work/A24-GITHUB-HANDOFF-20261016/a24_simulator/data/CORE_MANIFEST.json",
+      "sha256": "46a1084b81148354dfcd04f6a77da6a08e59a3a8dce1094d52401356b56041bd",
+      "bytes": 432659
+    },
+    {
+      "path": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/work/A24-GITHUB-HANDOFF-20261016/a24_simulator/results/COMPETITION_COST_TESTS_20261017_01/RESULT.json",
+      "sha256": "65df3fb8dda23e9574af3c007d38af14b46207ad5101d8b1f61146bbbc90ee66",
+      "bytes": 3296
+    },
+    {
+      "path": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/work/A24-GITHUB-HANDOFF-20261016/a24_simulator/reference/model_integration/runtime_guard.py",
+      "sha256": "f83a223ef74db70bf4b31eee3176faa86b8f17d6399e56f0dd26b1ffd5c6c733",
+      "bytes": 9864
+    },
+    {
+      "path": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/work/A24-GITHUB-HANDOFF-20261016/a24_simulator/data/objects/3dbea2c6ea341c51181708b2d8148a20b2fe5dd6cdd1df4a918a25af9924fab5.gz",
+      "sha256": "fd8c2269629452c457e98b11c27d313188b7efbc0e81c84646a8093a26431aff",
+      "bytes": 507101
+    }
+  ],
+  "historical_power_pin": {
+    "original_path": "C:\\Users\\chomg\\Documents\\Codex\\2026-10-11\\dkfo\\outputs\\EXISTING-DATA-DYNAMICS-35\\A24_existing_power_cases.json",
+    "stored": "data/objects/3dbea2c6ea341c51181708b2d8148a20b2fe5dd6cdd1df4a918a25af9924fab5.gz",
+    "sha256": "3dbea2c6ea341c51181708b2d8148a20b2fe5dd6cdd1df4a918a25af9924fab5",
+    "bytes": 4679976,
+    "gzip": true,
+    "name": "A24_existing_power_cases.json"
+  },
+  "combined_dataset_pin": {
+    "path": "C:\\Users\\chomg\\Documents\\Codex\\2026-10-11\\dkfo\\outputs\\A24-MODEL-INTEGRATION-20261016\\MODEL_INPUTS_G002_01\\MODEL_INPUTS.json",
+    "sha256": "f54df34fb498d235a97779aacf23e6a83cb1e4d71be807458d603face1254800",
+    "bytes": 184455642
+  },
+  "new_data_unit_audit_pins": [
+    {
+      "source": "71 standardized native-current series inside115-session MODEL_INPUTS",
+      "sha256": "f54df34fb498d235a97779aacf23e6a83cb1e4d71be807458d603face1254800",
+      "unit_qualified": false
+    }
+  ],
+  "known_PS_producer_paths": [],
+  "output_dir": "results/STATE_COST_IDENTIFICATION_20261017_01",
+  "new_START": 0,
+  "NN_updates": 0,
+  "automatic_retry": false,
+  "new_measurements": 0
+}

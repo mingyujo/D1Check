@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\A24-GITHUB-HANDOFF-20261016\a24_simulator\experiments\competition_cost_20261017\run_witness.py", line 104, in <module>
+    p=argparse.ArgumentParser();p.add_argument('--operation',required=True);main(p.parse_args().operation)
+                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\A24-GITHUB-HANDOFF-20261016\a24_simulator\experiments\competition_cost_20261017\run_witness.py", line 62, in main
+    with installed(kernel,L):result,actor=L.policy_result(policy,public,model,thermal,profile,value,start,reg)
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\A24-GITHUB-HANDOFF-20261016\a24_simulator\src\lab_backend.py", line 204, in policy_result
+    prediction = simulate_protocol(public, model, 'FROZEN_RL_REPLAY' if actor else 'FIFO' if policy=='FIFO_FREE' else policy,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\A24-GITHUB-HANDOFF-20261016\a24_simulator\src\interactive_kernel.py", line 201, in simulate_protocol
+    return simulate_rolling_progress(template, model, policy=policy, execution_guard=execution_guard,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\A24-GITHUB-HANDOFF-20261016\a24_simulator\src\interactive_kernel.py", line 393, in simulate_rolling_progress
+    raise RuntimeError("registered durable START required")
+RuntimeError: registered durable START required
