@@ -1,5 +1,7 @@
 # 정책·행동 공간
 
+2026-10-16: FIFO/EDF의 `FIFO_FREE_ROUTE_V1`/`EDF_FREE_ROUTE_V1` 동일 자원 비교를 `../experiments/fair_resource_v1/source/`에 별도 등록했다. 원 SIM002 물리와 우리정책을 유지하며, 원 명목 후보·납기/열/에너지 자원 배정기·WAIT를 공유하고 시작 가능한 ready 요청을 도착순/절대기한순으로 고른다. [결과](../FAIR_RESOURCE_COMPARISON_KO.md)는48조건 전부 실제 궤적까지 동률이다. 아래 GPU 고정 참고군과 이 새 비교를 구분한다.
+
 ## 현재 주정책: ROLLING_ATC_ROUTE_V2
 
 새 RL 전의 결정론적 규칙이다. 도착/자원반납/센서 전달/WAIT 종료 등 공개 상태 변화에서 현재 ready 요청을 다시 본다.

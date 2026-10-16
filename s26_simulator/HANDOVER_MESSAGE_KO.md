@@ -1,5 +1,7 @@
 # S26 시뮬레이터·정책 인계 전달문
 
+2026-10-16 비교 갱신: [동일 자원 FIFO·EDF·롤링 ATC 비교](FAIR_RESOURCE_COMPARISON_KO.md)를 추가했습니다. 현재48조건에서 세 정책의 납기·열·에너지는 모두 같았으며 우리 정책의 추가 감소는0입니다. 코드·144개 조건/96개 쌍별 결과·원자료ZIP·독립 감사 근거는 `experiments/fair_resource_v1/`에 있습니다. 아래는 `190072a` 최초 배포본 설명입니다.
+
 S26 시뮬레이터·스케줄링 정책 개발 자료를 인계드립니다.
 
 - **GitHub 폴더:** [s26_simulator](https://github.com/mingyujo/D1Check/tree/codex/s26-simulator-handoff-20261016/s26_simulator)

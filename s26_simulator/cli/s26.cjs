@@ -3,6 +3,20 @@
 const { fs, path, ROOT, json, flag } = require('../scripts/io.cjs');
 const http = require('node:http');
 function replay(args) {
+  const comparison = flag(args, '--comparison', 'legacy');
+  if (comparison === 'fair-resource-v1') {
+    const d = json(path.join(ROOT, 'experiments/fair_resource_v1/results/SUMMARY.json'));
+    const policy = flag(args, '--policy', 'ALL'), bank = flag(args, '--bank', 'ALL');
+    if (!['ALL','M128','SMOOTH128'].includes(bank)) throw Error('Unknown bank');
+    const a = (bank === 'ALL' ? d.summaries : d.strata.filter(x => x.bank === bank)).filter(x => policy === 'ALL' || x.policy === policy);
+    if (!a.length) throw Error('No stored fair comparison rows');
+    const result = {mode:'AUDITED_SAME_RESOURCE_STORED_REPLAY',new_simulator_instances:0,new_training:0,
+      results:a.map(x => ({policy:x.policy,bank,cases:x.cases,hard_feasible_cases:x.hard_feasible,on_time_rate:x.on_time_rate,
+        API_J_mean:x.J.mean,AP_C_mean:x.AP.mean,route_counts:x.route_counts})),
+      contrasts:bank === 'ALL' ? d.contrasts : [],limitation:d.limitation};
+    console.log(JSON.stringify(result,null,2));return result.results;
+  }
+  if (comparison !== 'legacy') throw Error('Unknown stored comparison');
   const d = json(path.join(ROOT, 'data/cached_view_data.json.gz'));
   const policy = flag(args, '--policy', 'ALL'), bank = flag(args, '--bank', 'ALL');
   if (!['ALL', 'M128', 'SMOOTH128'].includes(bank)) throw Error('Bank must be ALL, M128 or SMOOTH128');
@@ -46,7 +60,7 @@ async function main(args) {
     return server;
   }
   if (command !== 'help' && command !== '--help') throw Error('Unknown command: ' + command);
-  console.log('S26 handoff | Node >=20\n  verify\n  replay [--policy ID|ALL] [--bank ALL|M128|SMOOTH128]\n  serve [--port 8788]\n  locate <path substring>\n  restore [--group current|measurements|policy_history|history|all]\nAll commands inspect or restore existing evidence. See HANDOFF.md before new simulation/training.');
+  console.log('S26 handoff | Node >=20\n  verify\n  replay [--comparison legacy|fair-resource-v1] [--policy ID|ALL] [--bank ALL|M128|SMOOTH128]\n  serve [--port 8788]\n  locate <path substring>\n  restore [--group current|measurements|policy_history|history|all]\nAll commands inspect or restore existing evidence. See HANDOFF.md before new simulation/training.');
 }
 module.exports = { main, replay };
 if (require.main === module) main(process.argv.slice(2)).catch(e => { console.error(e.message); process.exitCode = 1; });

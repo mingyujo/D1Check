@@ -1,5 +1,10 @@
 # D1Check 현재 상태
 
+## 2026-10-16 S26 동일 자원 FIFO·EDF 비교 완료
+
+- [동일 자원 비교 보고](../s26_simulator/FAIR_RESOURCE_COMPARISON_KO.md): 분류CPU/GPU/NPU·탐지CPU·공통 명목배정/병행·WAIT를 맞춘48조건에서 FIFO·EDF·롤링ATC 모두128/128납기충족, 평균200.352058 API-J·32.396312℃다. 물리궤적도48조건 전부동일하여 추가절감0이다.
+- 새104환경+재사용48, 순수24·수치4쌍·독립1405515검사/152비용재적분PASS(max1.13e-11), 새RL/fit0. source·144조건/96쌍 CSV·원자료ZIP은 `s26_simulator/experiments/fair_resource_v1/`에 보존했다. 별도112예약/104소비, 최신120886/137712이며 원512잔12·다른WIP/원V2gate/자동화PAUSED는 유지한다. 모형정확도·물리목표 완료는 미확정이다.
+
 ## 2026-10-16 S26 시뮬레이터·정책 인계 추가
 
 - 최신 S26 작업 입구: [s26_simulator/README.md](../s26_simulator/README.md). 공통 동적 엔진·자동 자원배정·모형·저장 결과·시각화·원자료/과거 RL·IE 복원 도구를 한 폴더에 정리한다.
