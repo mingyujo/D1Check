@@ -4,7 +4,7 @@ rolling＋ATC＋RL 구조를 유지하고 공개 현재상태 납기 보호·구
 
 새24조건: EDF/보완RL1152/1152 정시·긴급288/288, 원RL1146/1152(긴급6지각). 보완−EDF 총소비−0.04347%·증분−0.19978%·평균AP−0.005461℃, 원공동목표0/24·양지표소폭개선5/24다. NN제외대조보다소비−0.002754J*나AP+0.000601℃여서RL고유공동우위미입증. 선행완료1/실패1·seed/소스보존후새계보194완료, 신규196소비·공유502/512잔10·예약/주기조회OFF·기기/fit0다.
 
-정본: [보완 결과/파일 안내](../a24_simulator/docs/PROTECTED48_COMPARISON.md), `experiments/protected48_v2_20261016`, `results/PROTECTED48_V2_20261016_01`이다. 전체경험/CP/Adam/RNG410파일을별도archive와SHA로보존한다. 다음은 이 검증된 결과의 게시/공유이며 자동 추가학습/새조건확대0이다. J*조건부모형/실측Jnull·폰RL/물리목표false·기존모형/소스/CP/결과는보존한다.
+정본: [보완 결과/파일 안내](../a24_simulator/docs/PROTECTED48_COMPARISON.md), `experiments/protected48_v2_20261016`, `results/PROTECTED48_V2_20261016_01`이다. 전체경험/CP/Adam/RNG410파일(295,855,327B)을GitHub Release에게시·내부SHA/GitHub digest검증했다. 구현/결과6bcc646·인계425173a6를같은원격branch에push·정확HEAD대조,패키지3,056파일SHA·공유소비원장·사용자HTML검산PASS다. 다음연구는새근거/새DEV·미관찰확인/예산등록이필요하며자동추가학습/새조건확대0이다. J*조건부모형/실측Jnull·폰RL/물리목표false·기존모형/소스/CP/결과는보존한다.
 
 ## 2026-10-16 A24 GitHub 단일 폴더 인계
 
