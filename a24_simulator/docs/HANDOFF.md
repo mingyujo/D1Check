@@ -1,3 +1,7 @@
+# 2026-10-17 최신 인계 — 1·2번 보완 완료
+
+먼저 [입력·비용 보완 완료/파일/API](COMPETITION_COST_DEVELOPMENT.md)를 읽는다. 입력 경쟁 마스크 후45.3%·cost35+native71검증·고정8·NN/SHA/산술/Chrome검사 완료, RL 공동목표 미달/실측Jnull이다. 현재511/512·잔1/child406이며 `node experiments/competition_cost_20261017/restore_budget_latest.cjs --verify-only`로 검증한다. 아래502/잔10과 이전 restore 명령은 과거 인계 스냅샷이다. 완료op/모형fit/8환경 재실행0, 원자료·CP·실패보존, 예약/주기조회OFF다.
+
 # 이어서 작업할 사람을 위한 순서
 
 **현재 예산 정본:** 보완 완료 뒤 공유502/512·잔10이다. 새 clone은 먼저 `node experiments/protected48_v2_20261016/restore_budget.cjs`로397 child 원장을 복원하고(이전 parent105 별도), 기존 원장이 다르면 삭제/덮기 없이 차단한다. [전체 학습/평가 경험 ZIP와 최신 파일 위치](PROTECTED48_COMPARISON.md#파일-위치와-이어서-수정할-곳)를 따른다. 아래306/잔206은 EDF 단독 비교 당시 이력이다.

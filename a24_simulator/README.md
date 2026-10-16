@@ -1,6 +1,6 @@
 # A24 통합 시뮬레이터와 스케줄링 정책 인계
 
-**진행 중인 1·2번 보완:** [입력 경쟁·비용 모형 개발 기록](docs/COMPETITION_COST_DEVELOPMENT.md). 새 입력 generator/24목록/정적80검사는 완료했고, 실제 정책 검증과 센서 기반 비용 모형은 후속 단계입니다. 기존 보고·모형·결과와 구분합니다.
+**최신 1·2번 보완 완료:** [입력 경쟁·비용 모형 검증/재사용 안내](docs/COMPETITION_COST_DEVELOPMENT.md) · [새 4조건 비교 화면](results/COMPETITION_COST_REPORT_V2_20261017_01/REPORT.html). 마스크 후 선택 경쟁34.1→45.3%, 과거 전력 투영/새 상대전류 예측 오차 개선을 검증했습니다. RL은 AP가 낮지만 명목 비용은 소폭 높아 공동목표 미달입니다. 새 cost_adapter API는 새 일정도 예측하며, 아래 기존 서버 화면/24조건은 보존 버전입니다.
 
 **최신 원인 진단:** [A24에서 스케줄링별 차이가 작은 이유](docs/POLICY_GAP_DIAGNOSIS.md). 선택 경쟁·자원 제약·WAIT·고정 비용식·온도 피드백·RL 추가 기여를 실제24조건 저장 기록과 대조했습니다. 집계 소스와 수치/SHA를 함께 보존했으며 이번 추가 학습·실험은0입니다.
 
@@ -21,14 +21,14 @@ Windows 10/11, Python 3.11, Node.js 22 이상이 필요합니다. Android 기기
 cd a24_simulator
 python -m venv .venv
 .venv\Scripts\python -m pip install -r requirements.txt
-node experiments/protected48_v2_20261016/restore_budget.cjs
+node experiments/competition_cost_20261017/restore_budget_latest.cjs
 .venv\Scripts\python -B tools/run.py verify
 .venv\Scripts\python -B tools/serve.py
 ```
 
 브라우저에서 <http://127.0.0.1:8766/>를 엽니다. 포트를 바꾸려면 `tools/serve.py --port 8767`을 사용합니다. 검증은 폴더 안의 압축 자료를 `.cache/`에 해시 검증 후 풉니다. **GitHub 조회·예약·측정·학습은 자동으로 시작되지 않습니다.** 실행 버튼은 사용자가 요청한 계산만 시작하며 실패를 자동 재시도하지 않습니다.
 
-현재 공유소비는502/512·잔10입니다. 새 clone은 위 `restore_budget.cjs`로 정확397 child 원장을 먼저 복원합니다(이전 parent105 별도). 기존 원장이 다르면 덮거나 지우지 않고 차단합니다. 새 학습을 시작하려면 새 소스/입력/독립 평가/예산을 별도 등록해야 하며 완료된 operation을 재실행하지 않습니다. 전체 보완 학습 경험·Adam·RNG410파일은 [검증된 runtime ZIP](https://github.com/mingyujo/D1Check/releases/download/a24-simulator-handoff-20261016-v1/A24_PROTECTED48_V2_TRAINING_20261016.zip)과 `results/PROTECTED48_V2_20261016_01/RUNTIME_ARCHIVE.json`에 연결되어 있습니다.
+현재 공유소비는511/512·잔1입니다. 새 clone은 위 최신 restore로 정확406 child 원장을 먼저 복원합니다(이전 parent105 별도). 기존 과거 원장의 정확 prefix만 전진시키고 다른/더새 원장은 보존·차단합니다. 잔1로 전체 정책 배치를 자동 시작할 수 없으며 현재 검증 결과는 위 새 정적 비교 화면에서 볼 수 있습니다. 새 학습을 시작하려면 새 소스/입력/독립 평가/예산을 별도 등록해야 하며 완료된 operation을 재실행하지 않습니다. 전체 보완 학습 경험·Adam·RNG410파일은 [검증된 runtime ZIP](https://github.com/mingyujo/D1Check/releases/download/a24-simulator-handoff-20261016-v1/A24_PROTECTED48_V2_TRAINING_20261016.zip)과 `results/PROTECTED48_V2_20261016_01/RUNTIME_ARCHIVE.json`에 연결되어 있습니다.
 
 `python -B tests/test_diagnostics.py`와 `node tests/test_design.cjs`로 단위 검사를 합니다. 현지 검증 버전과 결과는 [검증 기록](docs/VALIDATION.md)을 읽습니다. `reference/`의 역사적 실행기는 원 경로가 남은 보존 소스이므로 현재 실행 입구로 사용하지 않습니다.
 

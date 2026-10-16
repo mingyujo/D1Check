@@ -1,3 +1,7 @@
+# 최신 추가 완료: 입력 선택 경쟁·비용 모형
+
+[완료 내용/정확 파일/API](docs/COMPETITION_COST_DEVELOPMENT.md) · [새 비교 화면](results/COMPETITION_COST_REPORT_V2_20261017_01/REPORT.html). 새 입력24목록/실제고정8, 비용35·상대전류71세션 적합/검증, portable CostObserver, NN/SHA/산술/Chrome 전수 검증을 추가했습니다. 공유511/512·잔1, 예약OFF입니다. 기존 학습·모형·자료와 실패는 아래 이력과 함께 보존합니다.
+
 # A24 시뮬레이터 — 완료 범위와 파일 위치
 
 **최신 보완·학습 비교:** [긴급 납기 보호＋48요청 RL과 EDF](docs/PROTECTED48_COMPARISON.md) · [24조건 비교 화면](results/PROTECTED48_V2_20261016_01/index.html). 보완 RL은 새24조건 1152/1152 정시(기존RL1146), EDF 대비 총소비−0.04347%·작업증분−0.19978%·평균AP−0.005461℃이며 큰 폭 공동목표0/24입니다. 새학습64·DEV선정EP24·고정모형 유지·검산/NN재생/실화면PASS·예약OFF입니다. 아래 이전 버전은 보존합니다.

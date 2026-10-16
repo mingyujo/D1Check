@@ -1,3 +1,54 @@
+# A24 입력 경쟁·비용 모형 보완
+
+## 2026-10-17 최종 완료 — 입력 경쟁과 비용 모형 보완
+
+요청1·2의 구현·기존/새 자료 재분석·고정8환경·저장감사·화면 검증을 완료했다. [최신 비교 화면](../results/COMPETITION_COST_REPORT_V2_20261017_01/REPORT.html), [모형 묶음](../experiments/competition_cost_20261017/COST_BUNDLE.json), [portable cost API](../experiments/competition_cost_20261017/cost_adapter.py)가 현재 추가분 정본이다. 기존24조건/CP/처리시간/AP/원자료/실패·화면은 보존했다. 예약·GitHub 주기조회 OFF, 새정책 학습0·온도피드백0이다. 아래 진행중/예정 설명은 단계별 이력이며 이 완료 절이 우선한다.
+
+마스크 적용 뒤 복수 요청 후보는393/1152(34.1%)→87/192(45.3%). 대기열 복수후보108/192(56.3%)와 구분한다. 서로 다른 작업/기한/우선순위를 교차했고 납기 보호마스크는 완화하지 않았다. 네 조건은 결과 전 index0/3/5/10으로 정했으며 결과를 보고 유리한 조건을 추가하지 않았다.
+
+| 동일 작업 구간 조건별 평균 / 정시 합계 | EDF | 고정 롤링+ATC+RL |
+|---|---:|---:|
+| 보완 명목 총소비 J* |49.944103|49.984052|
+| 보완 명목 작업 증분 J* |16.132937|16.172886|
+| 같은 구간 기저 J* |33.811166|33.811166|
+| 평균 AP ℃ |26.778877|26.752081|
+| 조건별 AP peak 평균 ℃ |26.883947|26.842695|
+| 정시/계획 |185/192|185/192|
+| 긴급 정시/계획 |45/48|46/48|
+| 미응답/구간 밖 AVAILABLE |0/0|0/0|
+
+RL−EDF는 AP평균−.026795℃, 명목 총소비+.039949J*(+.07999%)·증분+.24763%다. 평균 P95는 조건별 완료 P95의 평균이며 pooled P95가 아니다(EDF1.928334/RL1.937637초). 결과는 **공동목표 미달**, RL의 에너지 우위 미입증이다. D_GPU/새 병행 비용이 미측정이므로 위 J* 순위를 실제 소비 순위로 확정하지 않는다. 새 raw-current 상대지수는 해당 미지원 경로가 포함된8개 일정 모두 null이며0으로 표시하지 않았다.
+
+0.9초 응답은 센서 갱신 주기와 가까워 실제 잔류 소비/센서 지연의 원인을 분리식별한 값이 아니다. 전력 투영과 상대 전류의 오차 개선을 실제 에너지 절감률로 사용하지 않는다. 파생 화면은 동일 미측정 상태계수를 EDF/RL에 공유하는 민감도를 계산해 동일 일정의 Δ구간이[0,0]으로 소거되도록 검산했다. 앞선 분석파일의 독립-policy 보수 구간도 원본 그대로 보존한다.
+
+검증: 입력정적80, 비용경계21/AST7, 수정 START필드AST3, portable adapter6(저장8일정 일치·미실행 새 일정 예측/미래차단 포함), 독립저장/NN1009frame·10,114검사, 산술1,219, 실제Chrome6뷰·90조건/관측식 조합·871검사 PASS. 모바일 선택창 overflow1건을 QA01 실패로 보존하고 rendererV2/QA02에서 수정했다. 새환경을 되돌리거나 실패를 성공으로 덮지 않았다.
+
+소비는 기존공유502+실패1+완료8=511/512·잔1, child406=완료403+실패3/parentSTART105다. 최신 원장은 results/COMPETITION_WITNESS_AUDIT_20261017_01/SAVED_SHARED_RECEIPTS.jsonl이다. 새 clone에서는 아래 최신 restore를 사용한다. 더 오래된502/잔10 복원본을 최신으로 취급하지 않는다. 정상full 정책배치/재학습을 자동 시작할 예산이 아니다.
+
+### 재사용/이어서 수정할 파일
+
+- 입력 생성기와 고정 목록: experiments/competition_cost_20261017/competition_design.cjs, results/COMPETITION_INPUTS_20261017_01/INPUTS.json. seed20261731 실패 계보는 보존·퇴역, 실제 입력은 WITNESS_V2_INPUTS.json(seed20261741)이다.
+- 비용 소스/계수/검증: state_cost.py·relative_drain.py·fit_cost.py, results/STATE_COST_IDENTIFICATION_20261017_01/MODEL.json·NATIVE_RELATIVE_MODEL.json·VALIDATION.json.
+- 재사용 진입점: cost_adapter.py/CostObserver와 COST_BUNDLE.json. 폴더 기준 상대경로/SHA로 새 PC에서도 불러온다. 새 입력을 기존 timing/AP 엔진으로 예측한 뒤 해당 gantt에 같은 CostObserver를 적용할 수 있다. 저장결과 조회에만 한정된 모형이 아니다. 다만 학습된 정책의 입력/보상은 이전 버전 그대로다.
+- 새8의 원문/frames/등록/소비: results/COMPETITION_WITNESS_V2_20261017_01와 experiments/competition_cost_20261017/WITNESS_V2_OPERATION.json. 첫 실패 op/source/output은 별도보존하며 재실행 금지다.
+- 결과·공유계수 민감도·산술·화면: results/COMPETITION_COST_REPORT_V2_20261017_01/PRESENTATION_DATA.json·ARITHMETIC_AUDIT.json·REPORT.html·QA_ACTUAL_02/QA.json.
+- 최신 원장 검증/전진 복원: node experiments/competition_cost_20261017/restore_budget_latest.cjs --verify-only. 새 clone의 미존재/과거정확prefix만 같은 명령에서 --verify-only를 빼고 전진 복원한다. 다른/더새 원장은 삭제·덮기 금지다.
+
+Python 재사용 예(새환경/학습 실행0):
+
+```python
+import sys
+sys.path.insert(0, 'experiments/competition_cost_20261017')
+from cost_adapter import CostObserver
+# summary['gantt']: 기존 A24 엔진의 새 일정 예측, DISPATCH→AVAILABLE 점유
+new_summary = CostObserver().annotate(summary, lo, hi)
+# lo/hi는 정책 결과를 보기 전에 같은 요청 목록에서 정한 공통 창
+```
+
+다음 연구가 필요하다면 새 비용/입력에서 정책을 새 DEV·확인 seed로 재학습하고, 미측정 D_GPU/병행 비용 및 온도 피드백을 별도 근거로 식별해야 한다. 이번4조건/기존115자료는 이미 열람했으므로 그 이후의 독립 새 확인으로 재사용하지 않는다. 해당 학습/실기기/추가 예산은 이번에 자동 진행하지 않았다.
+
+---
+
 # 입력 경쟁·비용 모형 보완 진행 기록
 
 2026-10-17, 사용자 승인 범위: 기존 A24의 선택 경쟁을 늘리는 입력과 관측 근거가 있는 비용 모형을 별도 버전으로 보완하고 단계 완료 시 GitHub에 게시한다. 기존24조건·소스·CP·원자료·실패는 보존한다. 예약과 주기 조회는 OFF다. 원 목표는 납기 유지와 열·에너지 감소이며 결과 격차를 인위적으로 확대하지 않는다.
