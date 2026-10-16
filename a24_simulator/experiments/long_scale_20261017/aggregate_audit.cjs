@@ -4,11 +4,13 @@ const root=path.resolve(__dirname,'../..'),r3=path.join(root,'results/LONG_SCALE
 const out=path.join(root,'results/LONG_SCALE_REPORT_20261017_01');
 const read=p=>JSON.parse(fs.readFileSync(p,'utf8').replace(/^\uFEFF/,'')),sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
 let checks=0;function need(v,s){checks++;if(!v)throw Error(s)}function close(a,b,s){need(Math.abs(a-b)<=1e-7*Math.max(1,Math.abs(a),Math.abs(b)),s+': '+a+' '+b)}
-const terminal=read(path.join(r4,'COMPLETE.json'));need(terminal.result_sha256===sha(path.join(r4,'RESULT.json')),'actual terminal SHA');
+const operation=read(process.argv[2]);need(operation.maximum_requests===3072 && operation.new_environment_START===0,'saved-only scope');
+for(const p of operation.pins)need(sha(p.path)===p.sha256 && fs.statSync(p.path).size===p.bytes,'registered artifact/source pin');
+const terminal=read(path.join(__dirname,'USER_STOP_AFTER_3072_RECEIPT.json'));need(terminal.maximum_requests===3072 && terminal.stop_after_selected_COMPLETE && !terminal.larger_START_present,'explicit user scope stop boundary');
 const design=read(path.join(__dirname,'INPUTS_V2.json')),cost=read(path.join(root,'results/STATE_COST_IDENTIFICATION_20261017_01/MODEL.json'));
 const states=cost.supported_states,beta=cost.coefficients_W_proxy,solo=Object.fromEntries(states.map((s,i)=>[s,beta[i]]));solo.detection_GPU=.6013808404579677;
 const cases=[],audit=[];let frames=0;
-for(const c of design.cases){const dir=c.n<=192?r3:r4,rows=[];
+for(const c of design.cases.filter(x=>x.n<=3072)){const dir=c.n<=192?r3:r4,rows=[];
  for(const policy of ['EDF','RL']){
   const label='N'+String(c.n).padStart(5,'0')+'_'+policy,file=path.join(dir,label+'.json'),r=read(file),rawfile=path.join(dir,label+'.raw.json.gz');
   need(sha(rawfile)===r.raw_sha256,label+' raw SHA');const raw=JSON.parse(zlib.gunzipSync(fs.readFileSync(rawfile))),q=raw.prediction.requests,m=r.metrics;
@@ -49,12 +51,12 @@ for(const c of design.cases){const dir=c.n<=192?r3:r4,rows=[];
  need(rows[0].metrics.window_s.toString()===rows[1].metrics.window_s.toString(),'same work window');cases.push({n:c.n,window_s:c.work_window,rows});
 }
 const allReceipts=['LONG_SCALE_20261017_V2_01','LONG_SCALE_20261017_V3_01','LONG_SCALE_20261017_V4_01'].flatMap(d=>fs.readFileSync(path.join(root,'results',d,'receipts.jsonl'),'utf8').trim().split(/\r?\n/).map(JSON.parse));
-const counts=Object.fromEntries(['START','PREPARED','COMPLETE','FAIL'].map(e=>[e,allReceipts.filter(r=>r.event===e).length]));need(counts.START===23 && counts.COMPLETE===22 && counts.FAIL===1,'shared new reservation frontier23');
+const counts=Object.fromEntries(['START','PREPARED','COMPLETE','FAIL'].map(e=>[e,allReceipts.filter(r=>r.event===e).length]));need(counts.START===19 && counts.COMPLETE===18 && counts.FAIL===1,'user-limited reservation frontier19');
 need(!fs.existsSync(out),'saved-only publication already consumed');fs.mkdirSync(out);
-const aggregate={schema:'A24-long-scale-all-results-v1',cases,maximum_requests:12288,source_environments:18,P0_saved_complete:4,new_pool:counts,cap:24,remaining:1,NN_training:0,measured_J:null,
+const aggregate={schema:'A24-long-scale-all-results-v1',cases,maximum_requests:3072,source_environments:14,P0_saved_complete:4,new_pool:counts,cap:24,remaining:5,NN_training:0,measured_J:null,analysis_operation_sha256:sha(process.argv[2]),
  P0_equivalence:'request clocks/actions/logprob/critic exact; three normalized global values differ<=4.657e-10; AP<=1e-10',
  fresh384:'Failed unsaved384 EDF retired; fresh seed20261782 only at384; all other counts seed20261781. No failed identity recollection.',
- completed_stage_sha256:sha(path.join(r4,'COMPLETE.json')),automations:'OFF',periodic_GitHub_check:false};
+ user_scope_stop_receipt_sha256:sha(path.join(__dirname,'USER_STOP_AFTER_3072_RECEIPT.json')),automations:'OFF',periodic_GitHub_check:false};
 fs.writeFileSync(path.join(out,'RESULT.json'),JSON.stringify(aggregate,null,2)+'\n',{flag:'wx'});
-fs.writeFileSync(path.join(out,'SAVED_AUDIT.json'),JSON.stringify({status:'PASS',checks,all18:audit,NN_chunk_frames:frames,counts,new_simulation:0,RESULT_sha256:sha(path.join(out,'RESULT.json'))},null,2)+'\n',{flag:'wx'});
+fs.writeFileSync(path.join(out,'SAVED_AUDIT.json'),JSON.stringify({status:'PASS',checks,all_selected14:audit,NN_chunk_frames:frames,counts,new_simulation:0,RESULT_sha256:sha(path.join(out,'RESULT.json'))},null,2)+'\n',{flag:'wx'});
 console.log(JSON.stringify({status:'PASS',checks,frames,counts,output:out}));

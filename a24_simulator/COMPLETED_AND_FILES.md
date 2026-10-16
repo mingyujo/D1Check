@@ -1,3 +1,5 @@
+**요청 수 확장 완료:** [48~3,072개 비교/파일 안내](docs/LONG_SCALE_COMPARISON.md) · [장시간 결과표](results/LONG_SCALE_REPORT_20261017_01/REPORT.html). 최대12.23분을 계산했고 EDF 기저 비중67.97→48.46%입니다. 고정RL 대비 차이/납기/손해를 모두 보존했으며 장시간은 미검증 외삽입니다. 기존서버/모형/NN·소비511/512 불변, 별도24예약 중19START·정상18/실패1·예약/주기조회OFF.
+
 # 최신 추가 완료: 입력 선택 경쟁·비용 모형
 
 [완료 내용/정확 파일/API](docs/COMPETITION_COST_DEVELOPMENT.md) · [새 비교 화면](results/COMPETITION_COST_REPORT_V2_20261017_01/REPORT.html). 새 입력24목록/실제고정8, 비용35·상대전류71세션 적합/검증, portable CostObserver, NN/SHA/산술/Chrome 전수 검증을 추가했습니다. 공유511/512·잔1, 예약OFF입니다. 기존 학습·모형·자료와 실패는 아래 이력과 함께 보존합니다.

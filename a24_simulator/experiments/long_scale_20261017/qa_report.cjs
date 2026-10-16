@@ -12,7 +12,7 @@ let checks=0;function need(v,s){checks++;if(!v)throw Error(s)}
    await page.goto(url.pathToFileURL(html).href);await page.locator('h1').waitFor();
    for(const light of [false,true]){
     if(light)await page.locator('#theme').click();
-    need(await page.locator('#main-table tbody tr').count()===9,'9 lengths');need(await page.locator('#loss-table tbody tr').count()===9,'9 harm rows');
+    need(await page.locator('#main-table tbody tr').count()===7,'7 lengths');need(await page.locator('#loss-table tbody tr').count()===7,'7 harm rows');
     const main=await page.locator('#main-table tbody tr').allTextContents(),loss=await page.locator('#loss-table tbody tr').allTextContents();
     for(let i=0;i<result.cases.length;i++){const c=result.cases[i],e=c.rows.find(x=>x.policy==='EDF').metrics,r=c.rows.find(x=>x.policy==='RL').metrics;
      need(main[i].includes(c.n.toLocaleString('en-US')),'count label');for(const m of [e,r]){need(main[i].includes(m.total_J_proxy.toLocaleString('en-US',{minimumFractionDigits:3,maximumFractionDigits:3})),'total cost');need(main[i].includes(m.increment_J_proxy.toLocaleString('en-US',{minimumFractionDigits:3,maximumFractionDigits:3})),'increment');need(main[i].includes(m.mean_AP_c.toLocaleString('en-US',{minimumFractionDigits:3,maximumFractionDigits:3})),'AP');need(main[i].includes(String(m.on_time)),'on_time');need(loss[i].includes(m.P95_completed_response_s.toLocaleString('en-US',{minimumFractionDigits:3,maximumFractionDigits:3})),'P95')}
