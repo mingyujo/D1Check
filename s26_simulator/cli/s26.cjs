@@ -36,6 +36,16 @@ function replay(args) {
 async function main(args) {
   const command = args[0] ?? 'help';
   if (command === 'verify') return console.log(JSON.stringify(require('../scripts/verify.cjs').verify(), null, 2));
+  if (command === 'diagnose') {
+    const root = path.join(ROOT, 'experiments/tie_diagnosis_v1');
+    const d = json(path.join(root, 'RESULT.json')), v = json(path.join(root, 'VERIFICATION_RESULT.json'));
+    if (d.status !== 'PASS' || v.status !== 'PASS') throw Error('Stored diagnosis is incomplete');
+    return console.log(JSON.stringify({ mode: 'STORED_CAUSE_DIAGNOSIS', new_simulator_instances: 0,
+      new_training: 0, counts: d.counts, wait_conditions: d.wait_conditions,
+      selector_probes: d.policy_probes.checks, independent_verification_checks: v.checks,
+      schedule_sensitivity: d.simulator_schedule_sensitivity, limitations: d.limits,
+      report: 'SAME_CHOICE_DIAGNOSIS_KO.md' }, null, 2));
+  }
   if (command === 'replay') return replay(args.slice(1));
   if (command === 'restore') return require('../scripts/restore-data.cjs').restore(args.slice(1));
   if (command === 'locate') {
@@ -60,7 +70,7 @@ async function main(args) {
     return server;
   }
   if (command !== 'help' && command !== '--help') throw Error('Unknown command: ' + command);
-  console.log('S26 handoff | Node >=20\n  verify\n  replay [--comparison legacy|fair-resource-v1] [--policy ID|ALL] [--bank ALL|M128|SMOOTH128]\n  serve [--port 8788]\n  locate <path substring>\n  restore [--group current|measurements|policy_history|history|all]\nAll commands inspect or restore existing evidence. See HANDOFF.md before new simulation/training.');
+  console.log('S26 handoff | Node >=20\n  verify\n  diagnose\n  replay [--comparison legacy|fair-resource-v1] [--policy ID|ALL] [--bank ALL|M128|SMOOTH128]\n  serve [--port 8788]\n  locate <path substring>\n  restore [--group current|measurements|policy_history|history|all]\nAll commands inspect or restore existing evidence. See HANDOFF.md before new simulation/training.');
 }
 module.exports = { main, replay };
 if (require.main === module) main(process.argv.slice(2)).catch(e => { console.error(e.message); process.exitCode = 1; });

@@ -1,5 +1,9 @@
 # D1Check 현재 상태
 
+## 2026-10-16 S26 동일 선택 원인 진단 완료
+
+[진단보고](../s26_simulator/SAME_CHOICE_DIAGNOSIS_KO.md): 공통자원배정기와부하×가용mask로모든실행가능복수후보1,551회의task·기한·ATC점수가같았다. 전역FIFO·EDF선두차이349회는mask후0회, WAIT냉각조건0회다. 원엔진의같은입력직렬/병행48쌍은J/AP가달랐다. 새환경/학습/fit/예약0, 18,082별도검사PASS와 원입력/소스SHA불변. 진단 source/CSV/raw는 s26_simulator/experiments/tie_diagnosis_v1/. 물리정확도/프로젝트목표완료미확정.
+
 ## 2026-10-16 S26 동일 자원 FIFO·EDF 비교 완료
 
 - [동일 자원 비교 보고](../s26_simulator/FAIR_RESOURCE_COMPARISON_KO.md): 분류CPU/GPU/NPU·탐지CPU·공통 명목배정/병행·WAIT를 맞춘48조건에서 FIFO·EDF·롤링ATC 모두128/128납기충족, 평균200.352058 API-J·32.396312℃다. 물리궤적도48조건 전부동일하여 추가절감0이다.

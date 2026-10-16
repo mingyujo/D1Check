@@ -1,5 +1,7 @@
 # 정책·행동 공간
 
+[동률 원인 진단](../SAME_CHOICE_DIAGNOSIS_KO.md): 세 정책이같은배정기와WAIT규칙을공유하므로직전실험은순서정책대조다. 전역FIFO·EDF선두349회차이가가용mask후0회가됐다. 실행가능복수1,551회전부동일task/priority/기한과route별ATC동점이었다. FIFO_FREE_ROUTE는실행가능ready중FIFO로, 막힌전역head를기다리는strictFIFO와구분한다.
+
 2026-10-16: FIFO/EDF의 `FIFO_FREE_ROUTE_V1`/`EDF_FREE_ROUTE_V1` 동일 자원 비교를 `../experiments/fair_resource_v1/source/`에 별도 등록했다. 원 SIM002 물리와 우리정책을 유지하며, 원 명목 후보·납기/열/에너지 자원 배정기·WAIT를 공유하고 시작 가능한 ready 요청을 도착순/절대기한순으로 고른다. [결과](../FAIR_RESOURCE_COMPARISON_KO.md)는48조건 전부 실제 궤적까지 동률이다. 아래 GPU 고정 참고군과 이 새 비교를 구분한다.
 
 ## 현재 주정책: ROLLING_ATC_ROUTE_V2
