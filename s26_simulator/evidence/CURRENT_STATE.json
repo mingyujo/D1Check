@@ -1,0 +1,181 @@
+{
+  "schema": "S26_UNIFIED_DYNAMICS_CONTINUE_v1",
+  "status": "COMMON_SIMULATOR_AUTOMATIC_RESOURCE_INTERFACE_AUDITED_PHASE_REPAIR_NOT_ADOPTED_RL_DEFERRED",
+  "work": "C:\\Users\\chomg\\Documents\\Codex\\2026-10-11\\dkfo\\work\\S26-UNIFIED-DYNAMICS-20261016",
+  "output": "C:\\Users\\chomg\\Documents\\Codex\\2026-10-11\\dkfo\\outputs\\S26-UNIFIED-DYNAMICS-20261016",
+  "authorization": {
+    "path": "C:\\Users\\chomg\\Documents\\Codex\\2026-10-11\\dkfo\\outputs\\S26-UNIFIED-DYNAMICS-20261016\\USER_AUTHORIZATION_V1.json",
+    "sha256": "e0568dfce744d9a32aec533f3078ce7d30f37ca750c6614d909454cdf0f4e1f1"
+  },
+  "new_fit": 376,
+  "new_policy_environments": 500,
+  "new_NN": 0,
+  "new_reservation": 512,
+  "global_reserved": 120774,
+  "global_cap": 137712,
+  "prospective_policy_environment_cap": 512,
+  "physical_goal_complete": false,
+  "project_complete": false,
+  "next": [
+    "Independently verify and adopt conditional phase transfer repair in separately frozen plant; current SIM002 only changes action interface",
+    "Improve own rolling route/concurrency/WAIT behavior and quantify model risk; all-NPU choice on homogeneous current load is retained, no artificial balancing",
+    "RL remains deferred until simulator fidelity checks; future training/evaluation requires new budget/source/DEV/fresh-input registration"
+  ],
+  "assumptions_authorized": true,
+  "recurring_automations_changed": false,
+  "latest_r21": {
+    "result": "C:\\Users\\chomg\\Documents\\Codex\\2026-10-11\\dkfo\\outputs\\S26-UNIFIED-DYNAMICS-20261016\\R21_INTAKE_V3\\INTAKE_RESULT.json",
+    "sha256": "aea8fb3427890d220b163f56ff268c499744b5a8e32c378b63a8884bb0bb284d",
+    "report": "C:\\Users\\chomg\\Documents\\Codex\\2026-10-11\\dkfo\\work\\repo\\docs\\S26_R21_INTAKE_20261016.md",
+    "report_sha256": "4fe2c80e2727a1da04dfacaaedc3aeb03bf5f51c3bd6452b3c27f96078373e42",
+    "model_posthoc_validation_pending": false,
+    "original_model_wrong_energy_contrast_preserved": true
+  },
+  "fit": {
+    "result": "C:\\Users\\chomg\\Documents\\Codex\\2026-10-11\\dkfo\\outputs\\S26-UNIFIED-DYNAMICS-20261016\\MODEL_V1\\FIT_RESULT.json",
+    "sha256": "2a8a41412b66eb790aeca2dcdb8b513f1797912b3862aa8df26cf75e74880c41",
+    "fits": 104,
+    "additional_development_AP_fits": 28,
+    "additional_development_power_gamma_fits": 56
+  },
+  "latest_user_order": {
+    "created_utc": "2026-10-16T09:47:14.648Z",
+    "user": "시뮬레이터 먼저 완성하고 시뮬레이터가 스케줄링별 격차를 잘 표현하는지부터 검토하자 RL은 그 다음에 하고",
+    "contract": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/work/S26-UNIFIED-DYNAMICS-20261016/SIMULATOR_FIRST_CONTRACT.md",
+    "sha256": "ff672f038bb545298165dbfde6b4a6d25f60496eb3c364d6b3700d11de002b1d",
+    "RL_deferred": true,
+    "new_RL": 0,
+    "actual_cost_repair_operation": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/outputs/S26-UNIFIED-DYNAMICS-20261016/COST_REPAIR_OPERATION_V2.json"
+  },
+  "RL_deferred": true,
+  "latest_objective_amendment": {
+    "created_utc": "2026-10-16T10:00:08.729Z",
+    "user": "아니야 격차를 크게 만드는것도 목표로 잡아",
+    "objective": "Maximize thermal and energy reduction margins vs fair EDF/FIFO subject to unchanged deadlines and full completion; simulator first, RL later",
+    "contract": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/work/S26-UNIFIED-DYNAMICS-20261016/CONTRAST_OBJECTIVE_AMENDMENT_V1.md",
+    "sha256": "3fb2193e2d7d2e6d6e32fb5ee0b1a9d2778126ea3d601baba8c42b2eb8610e79"
+  },
+  "latest_simulation_operation": {
+    "path": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/outputs/S26-UNIFIED-DYNAMICS-20261016/SIMULATION_OPERATION_V1.json",
+    "sha256": "d69c52d59c3df3680feabb05736813fc9144c20fcf51ace751fbae19c65c02c9",
+    "owner_observed_pid": 17176,
+    "owner_created": "2026-10-16T19:15:45.905773+09:00",
+    "stage": "444 sealed developmental simulator cases; actual current PID must be rechecked",
+    "new_NN": 0
+  },
+  "latest_simulation_recovery": {
+    "operation": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/outputs/S26-UNIFIED-DYNAMICS-20261016/SIMULATION_REMAINDER_OPERATION_V2.json",
+    "sha256": "0ffac3eead3f97551973b9fb33385d13e8cd3606f279a4128fcdc2ef128d58f2",
+    "observed_actual_pid": 1064,
+    "created": "2026-10-16T19:25:37.084614+09:00",
+    "saved_completed": 126,
+    "remaining_unstarted": 318,
+    "new_reservation": 0,
+    "source_generation_unchanged": "SIM001_G001",
+    "same_identity_retry": 0
+  },
+  "model_accuracy_issue": {
+    "energy_MAE_J": 37.52670767983917,
+    "AP_MAE_C": 0.6116703502328652,
+    "need_phase_transfer_and_nonlinear_cost_repair": true,
+    "not_policy_success_claim": true
+  },
+  "latest_own_policy_priority": {
+    "authorization": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/outputs/S26-UNIFIED-DYNAMICS-20261016/OWN_POLICY_PRIORITY_AUTHORIZATION_V2.json",
+    "sha256": "b3a0477ef705d8409c122c5b3f5668940364a0c22f65a39c4db4a2f882e1b40d",
+    "user": "비교군은 상관없고 우리 정책 결과가 잘나오는게 중요해",
+    "comparator_optimization_deprioritized": true
+  },
+  "environment_terminal_counts": {
+    "START": 500,
+    "PREPARED": 500,
+    "COMPLETE": 500,
+    "FAIL": 0
+  },
+  "global_actual_START": 27308,
+  "remaining_under_simulator_reservation": 12,
+  "latest_audit": {
+    "result": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/outputs/S26-UNIFIED-DYNAMICS-20261016/SIMULATION_AUDIT_V1/RESULT.json",
+    "checks": 879721,
+    "environments": 444,
+    "max_abs_error": 2.3248958314070478E-11,
+    "status": "PASS_NOT_PHYSICAL_ACCURACY"
+  },
+  "fit_lineages": {
+    "timing": 104,
+    "cost_repair_V2_including_rejected_AP": 84,
+    "AP_repair_V3": 28,
+    "power_gamma_V3": 56,
+    "phase_transfer_V1": 104
+  },
+  "latest_phase_transfer": {
+    "operation": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/outputs/S26-UNIFIED-DYNAMICS-20261016/PHASE_TRANSFER_OPERATION_V1.json",
+    "operation_sha256": "a626dedd9e215216649ddf2d0f790a3c68ee63b2e2f329878dcf337abb1a6608",
+    "result": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/outputs/S26-UNIFIED-DYNAMICS-20261016/PHASE_TRANSFER_MODEL_V1/RESULT.json",
+    "result_sha256": "8f236a04b15f766bab115ac86b4c4c489bb92a338bc43fe8633f9c7d4345d123",
+    "fits": 104,
+    "stage_model_adopted_into_plant": false,
+    "evidence": "OldM8 admission/post group-out improve; R21 admission MAE .003947→.003437s and post .000466→.000282s; GAP R21 worsens .000156→.000165s retained",
+    "pending": [
+      "Independent Python/JS stage-function replay and pure mask/API tests",
+      "Separate new source/output registration of conditional joint-phase plant and exact saved input forecasts under remaining68; no repeat of consumed identities",
+      "Own-policy optimization after plant correction; baselines fixed references, no baseline expansion"
+    ]
+  },
+  "latest_view": {
+    "html": "C:/Users/chomg/Documents/ChatGPT/산공회/S26_통합_동적_시뮬레이터_V4_자원자동배정.html",
+    "sha256": "ddc2512179d6995dfe314189d8e5527608fa90313f08d5ecab837e40d78ede32",
+    "QA_checks": 4745,
+    "direct_review": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/outputs/S26-UNIFIED-DYNAMICS-20261016/SIMULATOR_VIEW_V4/DIRECT_REVIEW.json",
+    "operation": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/outputs/S26-UNIFIED-DYNAMICS-20261016/SIMULATOR_VIEW_OPERATION_V4.json",
+    "default": "ROLLING_ATC_ROUTE_V2_ALL48_CONDITIONS",
+    "new_environments": 0,
+    "new_fit": 0,
+    "new_RL": 0
+  },
+  "report": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/work/repo/docs/S26_UNIFIED_DYNAMICS_20261016.md",
+  "report_sha256": "8fcc4e172184b3d527c24ee1c9e1ab35549a6d012fb67709ffcfef97b16aa29b",
+  "latest_resource_control": {
+    "authorization": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/outputs/S26-UNIFIED-DYNAMICS-20261016/RESOURCE_SELECTION_CORRECTION_AUTHORIZATION_V2.json",
+    "source_generation": "SIM002_G001",
+    "physical_source_identical_to_SIM001": true,
+    "conditional_phase_repair_adopted": false,
+    "production_operation": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/outputs/S26-UNIFIED-DYNAMICS-20261016/RESOURCE_PRODUCTION_OPERATION_V2.json",
+    "production_operation_sha256": "3249bd75b6ddcf3d527b6b0e2df35a2963b89a5010f394ae82ca1e702183b971",
+    "production_cases": 56,
+    "P0_cases": 8,
+    "main_cases": 48,
+    "classification_candidates": [
+      "CPU",
+      "GPU",
+      "NPU"
+    ],
+    "detection_route": "CPU",
+    "action_scope": "Ready-order/route/supported-pair/short-WAIT; public observation only",
+    "selected_route_counts": {
+      "classification_CPU": 0,
+      "classification_GPU": 0,
+      "classification_NPU": 4608,
+      "detection_CPU": 1536
+    },
+    "candidate_route_counts": {
+      "classification_CPU": 9824,
+      "classification_GPU": 9824,
+      "classification_NPU": 9824,
+      "detection_CPU": 2786
+    },
+    "feasible_conditions": 48,
+    "new_RL": 0,
+    "new_fit": 0,
+    "new_reservation": 0,
+    "method": "Untrained rolling+ATC heuristic; not learned RL",
+    "original_audit_failed_preserved": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/outputs/S26-UNIFIED-DYNAMICS-20261016/RESOURCE_AUDIT_OWNER_V2/FAILED.json",
+    "audit": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/outputs/S26-UNIFIED-DYNAMICS-20261016/RESOURCE_AUDIT_FINAL_V3/RESULT.json",
+    "audit_sha256": "52468deada1e3dc00f09e51a7788ffbe6a98fc7882249230f9447d0d49a31c04",
+    "checks": 452636,
+    "max_abs_error": 1.1254996934439987E-11,
+    "cost_replays": 56,
+    "cost_replays_repeated_for_summary_repair": 0,
+    "goal_complete": false
+  }
+}

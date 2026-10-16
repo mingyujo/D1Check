@@ -1,5 +1,11 @@
 # D1Check 현재 상태
 
+## 2026-10-16 S26 시뮬레이터·정책 인계 추가
+
+- 최신 S26 작업 입구: [s26_simulator/README.md](../s26_simulator/README.md). 공통 동적 엔진·자동 자원배정·모형·저장 결과·시각화·원자료/과거 RL·IE 복원 도구를 한 폴더에 정리한다.
+- 현재 동결 엔진은 미학습 롤링+ATC의 CPU/GPU/NPU 자동배정이며 신규 RL은 보류 중이다. 물리 정확도와 프로젝트 목표 달성은 아직 미확정이다.
+- 최신 근거·이어갈 순서·검증은 해당 폴더의 STATUS/HANDOFF/CORE_MANIFEST에 있다. 아래 A24 CALIB 기록은 해당 시점의 이력으로 보존한다.
+
 - 갱신: 2026-09-17 / CALIB-01B 종료 문서 정리
 - 현재 작업 ID: `CALIB-01C-INPUT` — A24 실제 이미지 calibration 입력 준비
 - CALIB-01B: completed / `CALIB_01B_PASS`. FIX4까지 production 구현·host 검증·최종 읽기 전용 감사를 완료했다. A24 이미지 종단간 실측이나 최종 스케줄러 효과 검증의 완료를 뜻하지 않는다.

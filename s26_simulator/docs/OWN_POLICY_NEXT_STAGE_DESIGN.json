@@ -1,0 +1,49 @@
+{
+  "schema": "S26_OWN_POLICY_NEXT_STAGE_DESIGN_V1",
+  "created_utc": "2026-10-16T10:41:09.163Z",
+  "status": "DESIGN_ONLY_NOT_NEW_TRAINING_OR_PHYSICS_ACCEPTANCE",
+  "latest_user_priority": "우리 정책 결과가 잘나오는 것이 중요; 비교군은 고정 참고",
+  "objective_order": [
+    "All scheduled requests complete, urgent0.8s/normal2s, zero observed violations on every required development condition",
+    "Among feasible policies minimize API energy and AP mean; maximize reduction margins while retaining peak/180s residual losses",
+    "Preserve uncertainty and adverse seeds/conditions; do not select only successful requests"
+  ],
+  "sequence": [
+    "Complete simulator arithmetic/trace diagnosis and repair stage-transfer error that distorts our policy results",
+    "Freeze corrected simulator and our policy action/public-observation contracts",
+    "Train rolling+ATC+RL candidates; evaluate on separately sealed fresh synthetic input streams; use authorized industrial-engineering alternative if needed"
+  ],
+  "our_policy_factors": [
+    "Event-based rolling at arrival/AVAILABLE/WAIT expiry",
+    "ATC candidate ranking with time-varying estimated processing time",
+    "RL joint order/route/concurrency/short-WAIT decisions with nonpreemptive support masks",
+    "Deadline-feasibility estimates and uncertainty-aware shield; no universal worst-case guarantee without identified bounds"
+  ],
+  "plant_repair_before_training": [
+    "Fit/validate dispatch-admission-return-post-release transfer by measured thermal/peer context rather than blindly pooling all phase vectors",
+    "Diagnose shared-stage/tail nonlinear extrapolation and quantify model error vs predicted margin",
+    "Explicitly reject unimplemented route-policy IDs; distinguish known route capability from exercised policy support"
+  ],
+  "public_observation_only": [
+    "Arrived ready requests and announced absolute deadlines/priority",
+    "Known own dispatch/response/AVAILABLE history; delivered sensor values with completion times",
+    "Estimated durations/remaining times from frozen measured-data model; no future latent draw or actual future arrivals"
+  ],
+  "baseline_work": "Keep current FIFO/EDF fixed references and saved diagnostics; no baseline tuning or broadening as primary workstream",
+  "new_environments": 0,
+  "new_NN": 0,
+  "new_fit": 0,
+  "new_reservation": 0,
+  "common_engine_adapter": {
+    "plant": "One source-bound JS plant for calibration, policy evaluation and future RL environment; no separately tuned per-experiment simulator",
+    "RL_bridge": "Visible Python training owner with a persistent Node plant RPC child, observations/actions only; every real plant reset registered before construction",
+    "event_API": "Advance to arrival/AVAILABLE/WAIT expiry; policy receives arrived requests, supported masks and completed/public sensor prefixes",
+    "original_checkpoints": "Preserve parent results; changed state/action/physics requires new source/output/budget and new training registration",
+    "decision_overhead": "Record host planning/NN wall time separately; device scheduling overhead remains unmeasured and requires grounded sensitivity, never silently assert measured zero"
+  },
+  "own_candidate_scope": [
+    "Rolling+ATC joint constrained PPO with route/concurrency/short WAIT",
+    "ATC-guided residual PPO with the same public information and masks",
+    "Rolling deadline-constrained thermal/energy beam/MPC as authorized IE alternative if own RL advantage is insufficient"
+  ]
+}
