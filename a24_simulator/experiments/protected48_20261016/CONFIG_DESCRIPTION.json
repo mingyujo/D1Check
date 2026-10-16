@@ -1,0 +1,25 @@
+{
+  "protection_config": {
+    "nominal_bound_factor": 1.2,
+    "minimum_owner_remaining_s": 0.02,
+    "deadline_margin_s": 0.03,
+    "urgent_critical_slack_s": 0.4,
+    "normal_critical_slack_s": 0.15,
+    "ATC_prior_weight": 0.25,
+    "marginal_cost_prior_strength": 2.0,
+    "energy_heat_mix": 0.5,
+    "goal_service_alpha": 1.0,
+    "voluntary_WAIT_limit_s": 12.0
+  },
+  "reward_spec": {
+    "energy_scale_J": 10.0,
+    "heat_rise_scale_c": 0.5,
+    "urgent_potential_weight": 2.0,
+    "normal_potential_weight": 0.5,
+    "potential_cap": 4.0,
+    "deadline_target": 1.0,
+    "heat_window": "first arrival to last arrival +15s",
+    "terminal_heat_peak_weight": 0.1,
+    "terminal_heat_endpoint_weight": 0.1
+  }
+}

@@ -1,5 +1,8 @@
 # A24 통합 시뮬레이터와 스케줄링 정책 인계
 
+**최신 보완·학습 비교:** [긴급 납기 보호＋48요청 RL과 EDF](docs/PROTECTED48_COMPARISON.md) · [24조건 비교 화면](results/PROTECTED48_V2_20261016_01/index.html). 보완 RL은 새24조건 1152/1152 정시(기존RL1146), EDF 대비 총소비−0.04347%·작업증분−0.19978%·평균AP−0.005461℃이며 큰 폭 공동목표0/24입니다. 새학습64·DEV선정EP24·고정모형 유지·검산/NN재생/실화면PASS·예약OFF입니다. 아래 이전 버전은 보존합니다.
+
+
 **최신 비교:** [비선점 EDF와 선정 RL의 동일 작업 구간 비교](results/EDF_CPU_FIRST_20261016_01/index.html) · [수치·검증 설명](docs/EDF_COMPARISON.md). 모바일 변형 규칙 대신 EDF를 사용하며, EDF는 예상 응답·비용으로 경로를 고르지 않습니다. 아래 기존 7정책 실행 화면·결과는 이전 버전으로 보존합니다.
 
 **완료 범위와 파일 위치만 확인:** [완료·파일 안내](COMPLETED_AND_FILES.md)
@@ -14,11 +17,14 @@ Windows 10/11, Python 3.11, Node.js 22 이상이 필요합니다. Android 기기
 cd a24_simulator
 python -m venv .venv
 .venv\Scripts\python -m pip install -r requirements.txt
+node experiments/protected48_v2_20261016/restore_budget.cjs
 .venv\Scripts\python -B tools/run.py verify
 .venv\Scripts\python -B tools/serve.py
 ```
 
 브라우저에서 <http://127.0.0.1:8766/>를 엽니다. 포트를 바꾸려면 `tools/serve.py --port 8767`을 사용합니다. 검증은 폴더 안의 압축 자료를 `.cache/`에 해시 검증 후 풉니다. **GitHub 조회·예약·측정·학습은 자동으로 시작되지 않습니다.** 실행 버튼은 사용자가 요청한 계산만 시작하며 실패를 자동 재시도하지 않습니다.
+
+현재 공유소비는502/512·잔10입니다. 새 clone은 위 `restore_budget.cjs`로 정확397 child 원장을 먼저 복원합니다(이전 parent105 별도). 기존 원장이 다르면 덮거나 지우지 않고 차단합니다. 새 학습을 시작하려면 새 소스/입력/독립 평가/예산을 별도 등록해야 하며 완료된 operation을 재실행하지 않습니다. 전체 보완 학습 경험·Adam·RNG410파일은 [검증된 runtime ZIP](https://github.com/mingyujo/D1Check/releases/download/a24-simulator-handoff-20261016-v1/A24_PROTECTED48_V2_TRAINING_20261016.zip)과 `results/PROTECTED48_V2_20261016_01/RUNTIME_ARCHIVE.json`에 연결되어 있습니다.
 
 `python -B tests/test_diagnostics.py`와 `node tests/test_design.cjs`로 단위 검사를 합니다. 현지 검증 버전과 결과는 [검증 기록](docs/VALIDATION.md)을 읽습니다. `reference/`의 역사적 실행기는 원 경로가 남은 보존 소스이므로 현재 실행 입구로 사용하지 않습니다.
 

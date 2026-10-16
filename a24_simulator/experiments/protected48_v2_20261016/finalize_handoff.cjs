@@ -1,0 +1,24 @@
+const fs=require('fs'),path=require('path'),crypto=require('crypto');
+const root=path.resolve(__dirname,'../..'),out=path.join(root,'results/PROTECTED48_V2_20261016_01');
+const read=p=>JSON.parse(fs.readFileSync(p,'utf8')),sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+const result=read(path.join(out,'RESULT.json')),qa=read(path.join(out,'UI_QA/UI_QA.json'));
+if(read(path.join(out,'COMPLETE.json')).result_sha256!==sha(path.join(out,'RESULT.json')))throw Error('Result pin');
+for(const n of ['INDEPENDENT_AUDIT.json','NN_AUDIT.json'])if(!read(path.join(out,n)).status.startsWith('PASS_'))throw Error('Required audit '+n);
+if(qa.html_sha256!==sha(path.join(out,'index.html')))throw Error('QA exact HTML');
+const cpath=path.join(root,'CONTINUE.json'),d=read(cpath);
+if(!d.legacy_four_route_counts){d.legacy_four_route_counts={train_COMPLETE:d.train_START,DEV:d.DEV_START,EVAL:d.EVAL_START,preserved_FAIL:d.preserved_FAIL};for(const k of ['train_START','DEV_START','EVAL_START','preserved_FAIL'])delete d[k];}
+d.remaining=10;d.protected48_v2_stage_START={TRAIN:64,DEV_EDF:8,DEV_policy:24,fresh3policies:72,NO_NN_control:12,historical_new_only:14};
+const archive=read('C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/outputs/A24-PROTECTED48-PUBLICATION-20261016/UPLOAD_RECEIPT.json');
+if(archive.status!=='PUBLISHED_EXACT_RUNTIME_ARCHIVE'||archive.result_sha256!==qa.result_sha256)throw Error('Published archive pin');
+fs.writeFileSync(path.join(out,'RUNTIME_ARCHIVE.json'),JSON.stringify(archive,null,2)+'\n',{flag:'wx'});
+d.current_comparison.runtime_archive='results/PROTECTED48_V2_20261016_01/RUNTIME_ARCHIVE.json';
+d.current_comparison.runtime_archive_url=archive.url;fs.writeFileSync(cpath,JSON.stringify(d,null,2)+'\n');
+const cols=['group','index','label','policy','planned','on_time','response_missing','AVAILABLE_by_window_end','baseline_J_proxy','increment_J_proxy','total_J_proxy','mean_AP_c','peak_AP_c','end_AP_c','total_tardiness_s'];
+const rows=[];for(const g of ['fresh','historical','mechanism'])for(const c of result[g+'_cases'])for(const m of c.metrics)rows.push({group:g,index:c.index,label:c.label,...m});
+const quote=x=>'"'+String(x??'').replaceAll('"','""')+'"';
+fs.writeFileSync(path.join(out,'METRICS.csv'),'\ufeff'+[cols.map(quote).join(','),...rows.map(x=>cols.map(k=>quote(x[k])).join(','))].join('\r\n')+'\r\n',{flag:'wx'});
+const target='C:/Users/chomg/Documents/ChatGPT/산공회/A24_보완RL_EDF_동일작업구간_비교.html';
+fs.copyFileSync(path.join(out,'index.html'),target,fs.constants.COPYFILE_EXCL);
+if(sha(target)!==qa.html_sha256)throw Error('User artifact exact bytes');
+const proof={status:'PASS_RESULT_QA_ARCHIVE_USER_ARTIFACT_HANDOFF',result_sha256:qa.result_sha256,html_sha256:qa.html_sha256,user_artifact:target,archive,source_sha256:sha(__filename),utc:new Date().toISOString()};
+fs.writeFileSync(path.join(out,'HANDOFF_VERIFIED.json'),JSON.stringify(proof,null,2)+'\n',{flag:'wx'});console.log(JSON.stringify(proof));

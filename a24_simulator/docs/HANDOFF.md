@@ -1,5 +1,10 @@
 # 이어서 작업할 사람을 위한 순서
 
+**현재 예산 정본:** 보완 완료 뒤 공유502/512·잔10이다. 새 clone은 먼저 `node experiments/protected48_v2_20261016/restore_budget.cjs`로397 child 원장을 복원하고(이전 parent105 별도), 기존 원장이 다르면 삭제/덮기 없이 차단한다. [전체 학습/평가 경험 ZIP와 최신 파일 위치](PROTECTED48_COMPARISON.md#파일-위치와-이어서-수정할-곳)를 따른다. 아래306/잔206은 EDF 단독 비교 당시 이력이다.
+
+**최신 보완·학습 비교:** [긴급 납기 보호＋48요청 RL과 EDF](PROTECTED48_COMPARISON.md) · [24조건 비교 화면](../results/PROTECTED48_V2_20261016_01/index.html). 보완 RL은 새24조건 1152/1152 정시(기존RL1146), EDF 대비 총소비−0.04347%·작업증분−0.19978%·평균AP−0.005461℃이며 큰 폭 공동목표0/24입니다. 새학습64·DEV선정EP24·고정모형 유지·검산/NN재생/실화면PASS·예약OFF입니다. 아래 이전 버전은 보존합니다.
+
+
 최신 비교군은 [EDF_COMPARISON.md](EDF_COMPARISON.md)의 비선점 EDF입니다. `experiments/edf_cpu_first_20261016/`가 새 선택기/등록/실행이며 기존 `src/`의 모바일·EDD 구현과 7정책 결과는 원학습 재현을 위해 보존했습니다. 새 EDF14는 완료됐으므로 같은 operation을 재실행하지 않습니다. 최신 소비306/512·잔206이며 `CONTINUE.json`과 실제 runtime 원장을 확인합니다.
 
 1. README → CURRENT_RESULTS → MODEL_CARD → VALIDATION → `models/TRAINING_RESULT.json` 순서로 읽습니다. 과거 보고는 `docs/history/`에 있습니다. 과거의 RUNNING·준비완료 문구보다 실제 COMPLETE/FAIL·현재 source SHA를 우선합니다.
