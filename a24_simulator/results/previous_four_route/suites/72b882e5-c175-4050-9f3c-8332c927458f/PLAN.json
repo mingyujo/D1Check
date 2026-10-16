@@ -1,0 +1,199 @@
+{
+  "schema": "A24-one-shot-suite-plan-v1",
+  "id": "72b882e5-c175-4050-9f3c-8332c927458f",
+  "utc": "2026-10-16T11:44:49.534Z",
+  "design": {
+    "counts": [
+      8
+    ],
+    "mixes": [
+      0,
+      0.5
+    ],
+    "patterns": [
+      "burst"
+    ],
+    "slacks": [
+      1.5
+    ],
+    "seeds": [
+      20261026
+    ],
+    "initial_context": "M128",
+    "alpha": 0.95,
+    "rl_seed": 46201
+  },
+  "cases": [
+    {
+      "index": 0,
+      "label": "8개 · 분류 0% · 8개씩 몰림 · 납기 +1.5초 · seed 20261026",
+      "condition": {
+        "n": 8,
+        "mix": 0,
+        "pattern": "burst",
+        "slack": 1.5,
+        "seed": 20261026
+      },
+      "input": {
+        "requests": [
+          {
+            "ordinal": 0,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 35,
+            "deadline_s": 36.5
+          },
+          {
+            "ordinal": 1,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.5
+          },
+          {
+            "ordinal": 2,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.5
+          },
+          {
+            "ordinal": 3,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.5
+          },
+          {
+            "ordinal": 4,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 35,
+            "deadline_s": 36.5
+          },
+          {
+            "ordinal": 5,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.5
+          },
+          {
+            "ordinal": 6,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.5
+          },
+          {
+            "ordinal": 7,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.5
+          }
+        ],
+        "seed": 20261026,
+        "rl_seed": 46201,
+        "initial_context": "M128",
+        "alpha": 0.95
+      },
+      "batch_id": "f10413cb-f182-45ff-ac5f-d255cba6fec6",
+      "reuse": true,
+      "input_digest": "6e77ade5f8b9dc94769875b5dfde174a75d69a6d457ce4b5e87ee58f40eac6ba"
+    },
+    {
+      "index": 1,
+      "label": "8개 · 분류 50% · 8개씩 몰림 · 납기 +1.5초 · seed 20261026",
+      "condition": {
+        "n": 8,
+        "mix": 0.5,
+        "pattern": "burst",
+        "slack": 1.5,
+        "seed": 20261026
+      },
+      "input": {
+        "requests": [
+          {
+            "ordinal": 0,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 35,
+            "deadline_s": 36.5
+          },
+          {
+            "ordinal": 1,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 35,
+            "deadline_s": 36.5
+          },
+          {
+            "ordinal": 2,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.5
+          },
+          {
+            "ordinal": 3,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.5
+          },
+          {
+            "ordinal": 4,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.5
+          },
+          {
+            "ordinal": 5,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.5
+          },
+          {
+            "ordinal": 6,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.5
+          },
+          {
+            "ordinal": 7,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.5
+          }
+        ],
+        "seed": 20261026,
+        "rl_seed": 46201,
+        "initial_context": "M128",
+        "alpha": 0.95
+      },
+      "batch_id": "28f2918b-1c00-4aaa-9f29-ab2373dd11ca",
+      "reuse": true,
+      "input_digest": "0e91e98519054e10d634101046dae8ed4b45f38281be502b3af4af2b5cdef64c"
+    }
+  ],
+  "new_START_max": 0,
+  "reused_conditions": 2,
+  "policies": [
+    "ROLLING_ATC_RL",
+    "ROLLING_ATC_RL_NO_WAIT",
+    "FIFO_SERIAL_CG",
+    "FIFO_FREE",
+    "EDD",
+    "ATC",
+    "MOBILE_DEADLINE_ENERGY"
+  ],
+  "source_registration_sha256": "414dd3e0b9d6fb345bdb4c0643b6c5766534a8ee3376dbba0c5446c1ff06539d",
+  "sampling": "Fixed Cartesian grid, no outcome-adaptive selection",
+  "automatic_retry": false,
+  "periodic": false
+}

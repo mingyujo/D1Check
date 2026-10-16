@@ -1,0 +1,261 @@
+import copy
+import io
+import json
+from pathlib import Path
+import subprocess
+import tarfile
+import tempfile
+import unittest
+from unittest.mock import patch
+from tools import d1_energy_collection as c
+from tools import d1_energy_collection_device as d
+from tools import d1_energy_temperature as temp
+
+def row(i,key,start,end):
+    return dict(id=str(i),key=key,scheduled_arrival_ns=0,dispatch_ns=start,execution_start_ns=start+1,
+        invocation_start_ns=start+2,invocation_end_ns=end-3,output_ready_ns=end-2,persist_complete_ns=end-1,
+        worker_release_ns=end,lane_available_ns=end+1,terminal_status='succeeded')
+
+class EnergyCollectionTest(unittest.TestCase):
+    def test_resident_preparation_requires_full_stable_window_and_anchor(self):
+        sample=lambda i,c: dict(mono_ns=i*2_000_000_000,AP=str(c),thermal_status='0',sampling_uncertainty_ns=100_000_000)
+        readings=[sample(i,31.5) for i in range(31)]
+        self.assertEqual(temp.assess(readings[:-1],0,31.5)['reason'],'insufficient_window')
+        self.assertTrue(temp.assess(readings,0,31.5)['ready'])
+        self.assertEqual(temp.assess(readings,0,31.9)['reason'],'off_anchor')
+        self.assertEqual(temp.assess(readings[:20]+[sample(20,32.0)]+readings[21:],0,None)['reason'],'unstable')
+        self.assertEqual(temp.assess(readings[:11]+readings[18:],0,None)['reason'],'sample_gap')
+        self.assertEqual(temp.assess([readings[-1]],0,None)['reason'],'insufficient_window')
+        self.assertFalse(temp.expired(349_999_999_999,0))
+        self.assertTrue(temp.expired(350_000_000_000,0))
+
+    def test_conditioned_profile_separates_old_plan_and_reserves_preparation(self):
+        name,budget,order,run=c.plan_profile(conditioned=True)
+        self.assertEqual((name,run),('ENERGY-THERMAL-COLLECT-05','energy_collection_run_v5'))
+        self.assertEqual(order,c.layout())
+        self.assertEqual(budget['total_seconds'],600+8*1860+600)
+        self.assertEqual(budget['diagnostic_requests'],c.BUDGET['diagnostic_requests'])
+        self.assertEqual(budget['explicit_inference'],c.BUDGET['explicit_inference'])
+        self.assertLessEqual(budget['stage_gate_seconds']+budget['host_poll_seconds']+
+            budget['recovery_seconds']+budget['cleanup_seconds'],budget['session_seconds'])
+        with self.assertRaises(ValueError):c.plan_profile(diagnostic=True,conditioned=True)
+
+    def test_new_formal_lineage_excludes_stopped_and_diagnostic_samples(self):
+        with tempfile.TemporaryDirectory() as t:
+            root=Path(t); registry=root/'old_registry';registry.mkdir()
+            old=root/'old_plan.json';old.write_text(json.dumps(dict(experiment_id='ENERGY-THERMAL-COLLECT-03',registry=str(registry))))
+            build=root/'build.json';build.write_text(json.dumps(dict(apk_sha256='a'*64)))
+            (registry/'stopped.json').write_text(json.dumps(dict(status='stopped_no_resume')))
+            dp=root/'energy_sampler_load_plan_v2/collection_plan.json';dp.parent.mkdir()
+            dp.write_text(json.dumps(dict(experiment_id=c.DIAG_EXPERIMENT,diagnostic_only=True,apk_sha256='a'*64)))
+            dr=root/'energy_sampler_load_run_v1/FINAL_RECEIPT.json';dr.parent.mkdir()
+            dr.write_text(json.dumps(dict(status='completed_diagnostic_only')))
+            registry=root/'energy_collection_registry'/c.DIAG_EXPERIMENT;registry.mkdir(parents=True)
+            (registry/'claimed.json').write_text(json.dumps(dict(plan_sha256=c.p.digest(dp))))
+            (registry/'completed.json').write_bytes(dr.read_bytes())
+            lineage=c.formal_lineage(old,build,root)
+            self.assertTrue(lineage['prior_and_diagnostic_samples_excluded'])
+            self.assertEqual(c.p.digest(dr),lineage['completed_diagnostic_receipt']['sha256'])
+            dr.write_text(json.dumps(dict(status='stopped_no_resume')))
+            with self.assertRaises(ValueError):c.formal_lineage(old,build,root)
+
+    def test_sampler_diagnostic_has_one_unchanged_workload_and_no_freeze(self):
+        experiment,budget,order,output=c.plan_profile(True)
+        self.assertEqual(experiment,'ENERGY-SAMPLER-LOAD-DIAG-01')
+        self.assertEqual(order,[('diagnostic','CC_DG','serial')])
+        self.assertEqual(budget['diagnostic_requests'],678+192+2)
+        self.assertEqual(budget['explicit_inference'],880)
+        self.assertEqual((budget['development'],budget['confirmation'],budget['freeze_seconds']),(0,0,0))
+        self.assertEqual(budget['total_seconds'],600+1500)
+        self.assertNotEqual(output,c.plan_profile(False)[3])
+        for key in ['session_seconds','host_poll_seconds','stage_gate_seconds','recovery_seconds','cleanup_seconds',
+                    'baseline_seconds','common_work_seconds','cooling_seconds','retry','replacement','additional']:
+            self.assertEqual(budget[key],c.BUDGET[key])
+    def test_diagnostic_budget_or_identity_tampering_fails_before_apk_inspection(self):
+        from tools import d1_apk_identity
+        with tempfile.TemporaryDirectory() as t:
+            file=Path(t)/'plan.json'
+            plan=dict(protocol=c.PROTOCOL,experiment_id=c.DIAG_EXPERIMENT,diagnostic_only=True,
+                      budget=dict(c.DIAG_BUDGET,sessions=2),experiment_ready=False)
+            file.write_text(json.dumps(plan))
+            with patch.object(d1_apk_identity,'inspect') as inspect:
+                with self.assertRaises(ValueError):c.check(file)
+                inspect.assert_not_called()
+                plan['budget']=c.DIAG_BUDGET;plan['diagnostic_only']=False;file.write_text(json.dumps(plan))
+                with self.assertRaises(ValueError):c.check(file)
+                inspect.assert_not_called()
+    def test_diagnostic_runner_ends_after_one_session_without_freeze(self):
+        calls=[]
+        class Fake:
+            def __init__(self,*args):self.deadline=None
+            def call(self,*args,**kwargs):calls.append(args)
+        with tempfile.TemporaryDirectory() as t:
+            root=Path(t);manifest=root/'manifest.json';manifest.write_text('{}')
+            plan=dict(output_root=str(root/'run'),registry=str(root/'registry'),budget=c.DIAG_BUDGET,
+                diagnostic_only=True,apk_preflight={'candidate':{}},apk_sha256='hash',source_files={},
+                entries=[dict(index=0,phase='diagnostic',pair='CC_DG',mode='serial',session_id='sid',manifest=manifest.name)])
+            file=root/'plan.json';file.write_text(json.dumps(plan))
+            with (patch.object(c,'check'),patch.object(d,'ObservedDevice',Fake),
+                patch.object(d,'installation',return_value={'status':'verified'}),patch.object(d,'gates'),
+                patch.object(d.install,'installed_hash',return_value='hash'),
+                patch.object(d.shared,'stage_inputs',return_value='remote'),patch.object(d,'poll'),
+                patch.object(d,'recover',return_value={'status':'recovered'}),
+                patch.object(d.shared,'cleanup',return_value={'status':'completed'}),
+                patch.object(c,'summarize_session',return_value={'status':'eligible_descriptive_only','condition':'CC_DG_serial'})):
+                result=d.run(file,'not-an-adb','fixture',c.p.digest(file),True)
+            self.assertEqual(result['status'],'completed_diagnostic_only')
+            self.assertEqual((result['sessions'],result['diagnostic_requests'],result['explicit_inference']),(1,872,880))
+            self.assertEqual(len(calls),1)
+            self.assertFalse((root/'run/development_freeze.json').exists())
+
+    def test_parallel_session_requires_same_stage_serial_before_staging(self):
+        class Fake:
+            def __init__(self,*args):self.deadline=None
+        with tempfile.TemporaryDirectory() as t:
+            root=Path(t)
+            plan=dict(output_root=str(root/'new_run'),registry=str(root/'new_registry'),budget=c.BUDGET,
+                apk_preflight={'candidate':{}},apk_sha256='hash',source_files={},
+                entries=[dict(index=0,phase='development',pair='CG_DC',mode='parallel',session_id='sid')])
+            file=root/'plan.json';file.write_text(json.dumps(plan))
+            with (patch.object(c,'check'),patch.object(d,'ObservedDevice',Fake),
+                  patch.object(d,'installation',return_value={'status':'verified'}),patch.object(d,'gates'),
+                  patch.object(d.install,'installed_hash',return_value='hash'),
+                  patch.object(d.shared,'stage_inputs') as stage,
+                  patch.object(d.shared,'cleanup',return_value={'status':'completed'})):
+                with self.assertRaisesRegex(ValueError,'same-stage serial prerequisite'):
+                    d.run(file,'not-an-adb','fixture',c.p.digest(file),True)
+                stage.assert_not_called()
+            stopped=json.loads((root/'new_registry/stopped.json').read_text())
+            self.assertEqual(stopped['session_attempts'],0)
+            self.assertEqual(stopped['status'],'stopped_no_resume')
+    def test_budget_exact_no_silent_old_reuse(self):
+        b=c.BUDGET
+        self.assertEqual(b['diagnostic_requests'],8*(678+192+2))
+        self.assertEqual(b['explicit_inference'],b['diagnostic_requests']+8*8)
+        self.assertEqual(b['total_seconds'],8*b['session_seconds']+b['installation_seconds']+b['freeze_seconds'])
+        self.assertLessEqual(b['stage_gate_seconds']+b['host_poll_seconds']+b['recovery_seconds']+b['cleanup_seconds'],b['session_seconds'])
+    def test_stage_order_serial_before_parallel(self):
+        for phase in ('development','confirmation'):
+            order=[(pair,mode) for p,pair,mode in c.layout() if p==phase]
+            for pair in c.PAIRS:self.assertLess(order.index((pair,'serial')),order.index((pair,'parallel')))
+    def test_actual_overlap_and_tail(self):
+        r=[row(0,'classification_CPU',0,10),row(1,'detection_GPU',0,20)]
+        out=c.validate_rows(r,'CC_DG','parallel',[1,1]);self.assertEqual(out['host_api_overlap_ns'],5)
+        self.assertFalse(out['kernel_overlap_verified'])
+        with self.assertRaises(ValueError):c.validate_rows(r,'CC_DG','serial',[1,1])
+
+    def test_both_parallel_pairs_keep_distinct_lanes_and_reject_failed_completion(self):
+        for pair,keys in c.PAIRS.items():
+            self.assertEqual({key.rsplit('_',1)[1] for key in keys},{'CPU','GPU'})
+            rows=[row(0,keys[0],0,10),row(1,keys[1],0,20)]
+            self.assertGreater(c.validate_rows(rows,pair,'parallel',[1,1])['host_api_overlap_ns'],0)
+            rows[1]['terminal_status']='failed'
+            with self.assertRaises(ValueError):c.validate_rows(rows,pair,'parallel',[1,1])
+    def test_serial_and_late_release(self):
+        r=[row(0,'classification_CPU',0,10),row(1,'detection_GPU',11,30)]
+        self.assertEqual(c.validate_rows(r,'CC_DG','serial',[1,1])['host_api_overlap_ns'],0)
+        with self.assertRaises(ValueError):c.validate_rows(r,'CC_DG','parallel',[1,1])
+        r[1]['dispatch_ns']=9
+        with self.assertRaises(ValueError):c.validate_rows(r,'CC_DG','serial',[1,1])
+    def test_paired_anchor_uses_same_stage_serial_only(self):
+        rows=[dict(phase=phase,condition='CC_DG_serial',status='eligible_descriptive_only',
+                   phases={'resident_baseline':{'ap_median_c':temp}})
+              for phase,temp in [('development',31.5),('confirmation',32.4)]]
+        self.assertIsNone(d.same_stage_serial_anchor(rows,'confirmation','CC_DG','serial'))
+        self.assertEqual(d.same_stage_serial_anchor(rows,'development','CC_DG','parallel'),31.5)
+        self.assertEqual(d.same_stage_serial_anchor(rows,'confirmation','CC_DG','parallel'),32.4)
+        with self.assertRaises(ValueError):d.same_stage_serial_anchor(rows,'confirmation','CG_DC','parallel')
+    def test_missing_and_failed_denominator(self):
+        r=[row(0,'classification_CPU',0,10)]
+        with self.assertRaises(ValueError):c.validate_rows(r,'CC_DG','serial',[1,1])
+        r.append(row(1,'detection_GPU',11,30));r[1]['terminal_status']='failed'
+        with self.assertRaises(ValueError):c.validate_rows(r,'CC_DG','serial',[1,1])
+    def test_bad_clock(self):
+        r=[row(0,'classification_GPU',0,10),row(1,'detection_CPU',11,30)]
+        r[0]['persist_complete_ns']=4
+        with self.assertRaises(ValueError):c.validate_rows(r,'CG_DC','serial',[1,1])
+    def test_quality_separate_from_backend(self):
+        ref=dict(task_id='classification',model_sha256='m',image_sha256='i',input_tensor_sha256='t',requested_backend='CPU',
+            adapter_contract='v2',actual_backend='CPU',results=[dict(label=str(i),class_index=i,score=.9-i*.1) for i in range(5)])
+        c.quality(ref,copy.deepcopy(ref));bad=copy.deepcopy(ref);bad['results'][0]['score']-=.01
+        with self.assertRaises(ValueError):c.quality(ref,bad)
+    def test_partial_progress_retains_unknown_range(self):
+        self.assertEqual(c.progress_prefix(b'{"kind":"runtime_return"}'),([],1))
+        self.assertEqual(c.progress_prefix(b'bad\n{"kind":"runtime_return"}\n'),([],2))
+        raw=b'{"kind":"runtime_start","key":"classification_GPU"}\n{"kind":'
+        x=c.progress_consumption(raw,True)
+        self.assertEqual(x['counts']['runtime']['confirmed_started_at_least'],1)
+        self.assertEqual(x['counts']['runtime']['confirmed_returned'],0)
+        self.assertEqual(x['counts']['warmup']['actual_started_upper'],8)
+        self.assertEqual(x['partial_lines'],1)
+        self.assertEqual(c.progress_consumption(b'',False)['counts']['warmup']['actual_started_upper'],0)
+    def test_common_energy_partition_and_remaining_tail(self):
+        rows=[row(0,'classification_CPU',0,10_000_000_000),row(1,'detection_GPU',0,20_000_000_000)]
+        spans=c.state_intervals(rows,0,30_000_000_000)
+        self.assertEqual([x['state'] for x in spans],['classification_CPU+detection_GPU','detection_GPU','resident_idle'])
+        samples=[dict(mono_ns=i*1_000_000_000,current_raw=-1000,voltage_mV=4000,plugged=0,current_valid=True) for i in range(31)]
+        states=c.power_by_state(samples,spans)
+        self.assertAlmostEqual(sum(x['covered_energy_j'] for x in states.values()),120)
+    def test_thermal_burden_crossing_reference(self):
+        x=c.thermal_burden([dict(mono_ns=0,AP='29'),dict(mono_ns=2_000_000_000,AP='31')],0,2_000_000_000,30)
+        self.assertAlmostEqual(x['degree_seconds'],.5)
+        self.assertEqual(x['covered_seconds'],2)
+    def test_counter_hypotheses_not_fitted(self):
+        samples=[dict(mono_ns=i*1_000_000_000,current_raw=-360,voltage_mV=4000,current_valid=True,plugged=0,
+            charge_valid=True,charge_counter_raw=100000-i*100) for i in range(121)]
+        x=c.counter_windows(samples,0,120_000_000_000)[0]
+        self.assertAlmostEqual(x['ratio_mA'],1)
+        self.assertAlmostEqual(x['ratio_uA'],.001)
+        for s in samples:s['charge_valid']=False
+        self.assertEqual(c.counter_windows(samples,0,120_000_000_000)[0]['status'],'counter_missing')
+    def test_no_arm_without_approval(self):
+        with patch.object(c.p,'digest',return_value='x'),patch.object(c,'check') as check:
+            with self.assertRaises(ValueError):d.run('x','adb','serial','x',False)
+            check.assert_not_called()
+    def test_gpu_evidence_requires_two_complete_instances(self):
+        lines=['runtime_scope_start=s',
+               'Replacing 10 out of 10 node(s) with delegate (TfLiteGpuDelegateV2)',
+               'Created 1 GPU delegate kernels',
+               'Replacing 20 out of 20 node(s) with delegate (TfLiteGpuDelegateV2)',
+               'Created 1 GPU delegate kernels','runtime_scope_end=s']
+        log='\n'.join('09-25 00:00:00 123 4 I tag: '+x for x in lines)
+        self.assertEqual(d.gpu_proof(log,'s')['instances'],2)
+        with self.assertRaises(ValueError):d.gpu_proof(log.replace('20 out of 20','19 out of 20'),'s')
+    def test_install_failure_has_finite_cleanup_and_consumption(self):
+        class Device:
+            deadline=1000
+            def call(self,*args,**kw):
+                if args[0]=='push':raise TimeoutError('partial transfer')
+                return subprocess.CompletedProcess(args,1,b'',b'')
+        with tempfile.TemporaryDirectory() as t:
+            root=Path(t);plan={'apk_path':'unused','apk_sha256':'a'*64}
+            pre={'candidate':{'apk_sha256':'a'*64},'installed':{'apk_sha256':'b'*64}}
+            with patch.object(d.apk,'preflight',return_value=pre),patch.object(d,'gates'),patch.object(d.shared,'cleanup',return_value={'status':'completed'}) as clean:
+                with self.assertRaises(TimeoutError):d.installation(Device(),plan,'unused',root,d.time.monotonic()+600)
+                clean.assert_called_once()
+                receipt=json.loads((root/'installation_receipt.json').read_text())
+                self.assertEqual(receipt['apk_transfer_attempts'],1);self.assertEqual(receipt['install_attempts'],0)
+                self.assertEqual(receipt['status'],'failed')
+    def test_pull_failure_not_app_failure(self):
+        class Failed:
+            def call(self,*a,**kw):raise TimeoutError('transport')
+        with tempfile.TemporaryDirectory() as t:
+            with self.assertRaises(TimeoutError):d.recover(Failed(),'remote',Path(t)/'artifacts')
+            self.assertFalse((Path(t)/'artifacts/cleanup.json').exists())
+    def test_archive_traversal_rejected(self):
+        data=io.BytesIO()
+        with tarfile.open(fileobj=data,mode='w') as a:
+            m=tarfile.TarInfo('../outside');m.size=1;a.addfile(m,io.BytesIO(b'x'))
+        class Device:
+            def call(self,*args,**kw):return subprocess.CompletedProcess(args,0,data.getvalue() if 'tar' in args else b'{}',b'')
+        with tempfile.TemporaryDirectory() as t:
+            with self.assertRaises(ValueError):d.recover(Device(),'remote',Path(t)/'artifacts')
+            self.assertFalse((Path(t)/'outside').exists())
+    def test_consumed_check_precedes_device_import(self):
+        # run's check fails before claim/device use; no hidden retry to new paths.
+        with (patch.object(c.p,'digest',return_value='x'),patch.object(c,'check',side_effect=ValueError('consumed')),
+             patch.object(d,'ObservedDevice') as device):
+            with self.assertRaises(ValueError):d.run('x','adb','serial','x',True)
+            device.assert_not_called()
+
+if __name__=='__main__':unittest.main()

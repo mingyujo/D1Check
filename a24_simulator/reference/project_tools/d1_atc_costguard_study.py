@@ -1,0 +1,390 @@
+"""New data/ledgers and exact warm continuation, frozen V8 inference/physics/loss."""
+import argparse
+import copy
+import gzip
+import hashlib
+import json
+import math
+import shutil
+import subprocess
+import time
+from datetime import datetime, timezone
+from pathlib import Path
+
+import numpy as np
+import torch
+
+from tools import d1_atc_waitlink_study as parent
+from tools import d1_atc_costguard_ppo as learning
+from tools import d1_atc_waitlong_study as prior
+from tools import d1_atc_costguard_budget as budget
+
+
+ROOT = Path(__file__).resolve().parents[1]
+SEEDS=(1103,1109,1117)
+ARMS=learning.ARMS
+ARM="DROP_FLAG_WAIT1"
+ORIGIN_MAP=dict(zip(SEEDS,(1013,1019,1021)))
+CONFIRM=tuple(range(923810101,923810109))
+BASES=parent.BASES
+FINAL_RESERVE = 1800
+FAMILY = parent.FAMILIES
+SERVICE = ("incomplete", "urgent_failure", "urgent_original_cap_failure",
+           "normal_failure", "normal_original_cap_failure", "urgent_p95_ms")
+
+
+def torch_finite_parameter(value):
+    return bool(torch.isfinite(value).all())
+
+
+def write(path, value):
+    budget.write(path, parent.serial(value))
+
+
+def freeze_write(path,value):
+    """Sample UTC after an atomic payload commit; final metadata commit precedes final calls."""
+    write(path,value)
+    value=dict(value,frozen_utc=datetime.now(timezone.utc).isoformat())
+    write(path,value)
+
+
+def cases(seeds):return parent.cases(seeds)
+
+def namespace_check():
+    reserved=parent.registry.collect();new=set(CONFIRM)
+    if new&set(reserved["seeds"]) or any(lo<=v<=hi for v in new for lo,hi in reserved["ranges"]):raise ValueError("final arrival namespace collision")
+    receipts=[]
+    for path in sorted(ROOT.parent.glob("*/inputs.json")):
+        raw=path.read_bytes()
+        if any(str(v) in raw.decode("utf-8-sig") for v in new):raise ValueError("local final collision "+str(path))
+        receipts.append(dict(path=str(path),sha256=hashlib.sha256(raw).hexdigest()))
+    for path in ROOT.parent.glob("*/registration.json"):
+        if set(SEEDS)&set(budget.read(path).get("seeds",[])):raise ValueError("fresh init seed collision "+str(path))
+    return dict(final_seeds=CONFIRM,registry=reserved,local_receipts=receipts,fresh_initialization_seeds=SEEDS)
+
+def source_bindings(origin_reg):
+    names=set(origin_reg["sources"])
+    names|={"tools/d1_atc_costguard_"+v+".py" for v in ("ppo","targets","budget","study","orchestrator","report")}
+    names.add("tools/test_d1_atc_costguard.py")
+    return {name:budget.digest(ROOT/name) for name in sorted(names)}
+
+def deps(reg,reward_arm):
+    return dict(schema=parent.a.SCHEMA,arm=ARM,reward_arm=reward_arm,sequencing="ATC",
+                objective=learning.OBJECTIVES[reward_arm],sources=reg["sources"],input_sha=reg["input_sha"])
+
+def preflight():
+    parent_root=ROOT.parent/"ATC-WAIT1-LONGTRAIN-12";reg=prior.check(parent_root)
+    bindings=reusable_bindings(parent_root)
+    namespace_check()
+    return dict(status="PASS_fresh_reward_preflight",references=len(bindings),counts=dict(train=2816,development=176,confirmation=176),new_environments=0,new_learning=0)
+
+
+def reusable_bindings(parent_root):
+    bindings=[]
+    folders=[("controls",parent_root/"controls",("teacher_train_","development_"))]
+    folders += [(f"origin{old}",parent_root/f"seed{old}",("dev4096_",)) for old in ORIGIN_MAP.values()]
+    for target,folder,prefixes in folders:
+        for path in sorted((folder/"rows").glob("*.json")):
+            if not path.name.startswith(prefixes):continue
+            receipt=budget.read(path);raw=folder/"items"/(path.stem+".json.gz")
+            if budget.digest(raw)!=receipt["raw_sha256"]:raise ValueError("parent raw changed")
+            # Decompress only reused teacher/DEV; parent12 final is never read.
+            data=json.loads(gzip.decompress(raw.read_bytes()))
+            if data["row"]!=receipt["row"]:raise ValueError("parent raw/row mismatch")
+            parent.audit_ledger(data["result"])
+            for snap in data["snapshots"]:
+                if snap["online_forecast_calls"]!=0 or not snap["physical_mask"][snap["chosen"]]:raise ValueError("parent mask/forecast")
+            bindings.append(dict(target=target,identity=path.stem,row_path=str(path),raw_path=str(raw),row_sha=budget.digest(path),raw_sha=receipt["raw_sha256"]))
+    if len(bindings)!=4400:raise ValueError("all4400 reused references must be complete")
+    return bindings
+
+def register(folder,hours=6):
+    began=time.time();folder=Path(folder)
+    if hours!=6 or folder.exists():raise ValueError("six-hour new run only; never reset")
+    parent_root=ROOT.parent/"ATC-WAIT1-LONGTRAIN-12";old=prior.check(parent_root);bindings=reusable_bindings(parent_root)
+    namespaces=namespace_check();source_inputs=budget.read(parent_root/"inputs.json")
+    inputs=dict(train=source_inputs["train"],development=source_inputs["development"],confirmation=cases(CONFIRM))
+    reg=dict(task=budget.TASK,head=subprocess.check_output(["git","rev-parse","HEAD"],cwd=ROOT,text=True).strip(),
+        schema=parent.a.SCHEMA,state=226,action=57,padding=32,seeds=SEEDS,reward_arms=ARMS,
+        objectives=learning.OBJECTIVES,multipliers={arm:learning.WEIGHTS[arm].tolist() for arm in ARMS},
+        sources=source_bindings(old),input_sha=parent.a.native.digest(inputs),old_learned_weights_reused=False,
+        parent_registration_path=str(parent_root/"registration.json"),parent_registration_sha=budget.digest(parent_root/"registration.json"),
+        reference_bindings_sha=parent.a.native.digest(bindings),origin_map=ORIGIN_MAP,
+        origin_checkpoints={str(new):dict(path=str(prior.learner_path(parent_root/f"seed{oldseed}",oldseed,4096)),sha256=budget.digest(prior.learner_path(parent_root/f"seed{oldseed}",oldseed,4096))) for new,oldseed in ORIGIN_MAP.items()},
+        counts=dict(reused_reference_environments=4400,reuse_new_environment=0,train_cases=2816,dev_cases=176,confirm_cases=176,final_roles=18,final_environments=3168),
+        gate="postepisode full/units complete plus absolute request/original U/N zero and urgentP95<=RuleATC; FAIL canonical physical segment-union positive paired power-rate integral0..120/10J and fixed1s35..120 runningpeak-difference positiveincrements/.1C projected tau>decision. PASS original suffix bitwise unchanged; AP proxy not physical additive heat; no guarantee",
+        init="fresh paired1103/1109/1117 actor/critic/Adam/action+10000/shuffle+20000 acrossrewardarms; learned origin reference only",
+        physical="frozen DROP_FLAG_WAIT1/state226/actions57x32/AVAILABLE/nonpreempt/CG_DC/resourceWAIT; futurequeue/EFT0/Greedyindependent",
+        concurrency=1,shared_host_with_12=True,started_unix=began,deadline_unix=began+21600,final_reserve_seconds=1800,
+        selection="trained512 powers2; only allnine completed DEV; RuleATC AND mappedorigin4096 service/P95 guard; noCP0replacement; final176x18once",
+        io_supplement=old["io_supplement"],numerical_episode_environment_cap=None,automatic_adoption=False,experiment_ready=False,device=0,fit=0,S26=0,APK=0)
+    folder.mkdir(parents=True)
+    protocol=ROOT/"docs/ATC_COST_GUARD_STUDY_20261012.md"
+    if protocol.exists():shutil.copy2(protocol,folder/"PROTOCOL_REGISTERED.md");reg["protocol_sha256"]=budget.digest(folder/"PROTOCOL_REGISTERED.md")
+    write(folder/"registration.json",reg);write(folder/"inputs.json",inputs);write(folder/"namespace_receipt.json",namespaces);write(folder/"reused_reference_bindings.json",bindings)
+    for name,sha in reg["sources"].items():
+        target=folder/"REGISTERED_SOURCE_TREE"/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(ROOT/name,target)
+        if budget.digest(target)!=sha:raise ValueError("source archive")
+    for name,kind in (("controls","control"),("models","model")):
+        budget.Budget.register(folder/name,kind,dict(parent_sha=budget.digest(folder/"registration.json"),deadline_unix=reg["deadline_unix"],final_reserve_seconds=1800))
+    for binding in bindings:
+        for sub,suffix,field in (("rows",".json","row_path"),("items",".json.gz","raw_path")):
+            target=folder/binding["target"]/sub/(binding["identity"]+suffix);target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(binding[field],target)
+            if budget.digest(target)!=binding["row_sha" if sub=="rows" else "raw_sha"]:raise ValueError("reference copy")
+    for seed in SEEDS:
+        item=reg["origin_checkpoints"][str(seed)];target=folder/"origin_weights"/Path(item["path"]).name;target.parent.mkdir(exist_ok=True);shutil.copy2(item["path"],target)
+        if budget.digest(target)!=item["sha256"]:raise ValueError("origin baseline copy")
+        for arm in ARMS:
+            learner=learning.Learner(seed,deps(reg,arm));learner_path(folder/"models",seed,0,arm).parent.mkdir(exist_ok=True)
+            learner.save(learner_path(folder/"models",seed,0,arm));shutil.copy2(learner_path(folder/"models",seed,0,arm),learner_path(folder/"models",seed,None,arm))
+    write(folder/"orchestration.json",dict(status="registered",phase="not_started",deadline_unix=reg["deadline_unix"],training_concurrency=1,new_environments=0,new_learning=0))
+    return dict(registered=True,reused_references=4400,new_environments=0,new_learning=0)
+
+def check(folder):
+    reg=budget.read(Path(folder)/"registration.json")
+    if reg["task"]!=budget.TASK or reg["schema"]!=parent.a.SCHEMA or reg["objectives"]!=learning.OBJECTIVES:raise ValueError("registered13 contract")
+    for path,sha in reg["sources"].items():
+        if budget.digest(ROOT/path)!=sha:raise ValueError("registered source changed "+path)
+    if parent.a.native.digest(budget.read(Path(folder)/"inputs.json"))!=reg["input_sha"]:raise ValueError("input changed")
+    if budget.digest(reg["parent_registration_path"])!=reg["parent_registration_sha"]:raise ValueError("parent12 registration changed")
+    if budget.digest(reg["io_supplement"]["path"])!=reg["io_supplement"]["sha256"]:raise ValueError("IO supplement")
+    for item in reg["origin_checkpoints"].values():
+        if budget.digest(item["path"])!=item["sha256"]:raise ValueError("fixed origin4096 changed")
+    return reg
+
+def learner_path(child,seed,episode=None,reward_arm="CONTROL"):
+    return Path(child)/"checkpoints"/f"{reward_arm}_{seed}_{'latest' if episode is None else 'ep'+str(episode)}.pt"
+
+def rows(folder,prefix):
+    return parent.rows(folder,prefix)
+
+
+def origin_role(seed):return f"ORIGIN4096_FOR_{seed}_FROM_{ORIGIN_MAP[seed]}"
+
+
+def origin_model(folder,seed):
+    reg=check(folder);oldreg=budget.read(reg["parent_registration_path"])
+    path=Path(folder)/"origin_weights"/Path(reg["origin_checkpoints"][str(seed)]["path"]).name
+    if budget.digest(path)!=reg["origin_checkpoints"][str(seed)]["sha256"]:raise ValueError("origin copied weights")
+    return prior.learning.Learner.load(path,prior.deps(oldreg))
+
+
+def evaluate(child,b,cases_,roles,learners,phase):
+    f,initial,_=parent.a.hybrid.load()
+    for case in cases_:
+        for role in roles:
+            identity=f"{phase}_{case['condition']:02d}_{role}";path=Path(child)/"rows"/(identity+".json")
+            if path.exists():
+                if budget.digest(Path(child)/"items"/(identity+".json.gz"))!=budget.read(path)["raw_sha256"]:raise ValueError("saved raw changed")
+                continue
+            if role in BASES:agent=parent.controller(role,f,initial["initial"],{})
+            else:agent=learners[role].controller(f,initial["initial"],True)
+            raw=parent.collect(b,child,identity,phase,dict(case,role=role),agent)
+            if role not in BASES and raw["row"]["fallbacks"]:raise ValueError("invalid model fallback")
+    return rows(child,phase+"_")
+
+def controls(folder,phase):
+    folder=Path(folder);reg=check(folder);child=folder/"controls";b=budget.Budget(child)
+    if phase!="confirmation" or not (folder/"freeze.json").exists():raise ValueError("only frozen fresh control confirmation")
+    with b.session():
+        rr=evaluate(child,b,budget.read(folder/"inputs.json")["confirmation"],BASES,{},phase)
+        write(child/"cursor.json",dict(completed=True,stage="confirmation",rows=len(rr)))
+    return dict(completed=True)
+
+def atomic_learner_save(learner,path,child):
+    began=time.perf_counter();learner.save(path)
+    metric=dict(total_episode=learner.episodes,new_episode=learner.episodes,
+                bytes=Path(path).stat().st_size,seconds=time.perf_counter()-began)
+    with (Path(child)/"checkpoint_io.jsonl").open("a",encoding="utf8") as stream:
+        stream.write(json.dumps(metric)+"\n")
+
+
+def assess(candidate,rule,inherited):
+    q=parent.primary(candidate);byrule={r["condition"]:r for r in rule};bybase={r["condition"]:r for r in inherited}
+    if len(q)!=len(parent.primary(rule)) or len(q)!=len(parent.primary(inherited)):
+        raise ValueError("development grid incomplete")
+    def damaged(r,ref):
+        return (r["completed"]!=r["planned"] or r["completed_work_units"]!=r["planned_work_units"] or
+                any(r[k] is None or ref[r["condition"]][k] is None or r[k]>ref[r["condition"]][k] for k in SERVICE))
+    def damage(ref):
+        return sum(damaged(r,ref) for r in q)
+    rdamage,bdamage=damage(byrule),damage(bybase)
+    costs_good=not(rdamage or bdamage)
+    for r in q:
+        for ref in (byrule,bybase):
+            for key in ("energy_j","peak_ap_c"):
+                costs_good=costs_good and r[key] is not None and ref[r["condition"]][key] is not None and r[key]<=ref[r["condition"]][key]
+    gain=np.mean([bybase[r["condition"]]["energy_j"]-r["energy_j"] for r in q]) if all(r["energy_j"] is not None and bybase[r["condition"]]["energy_j"] is not None for r in q) else None
+    worst={name:{key:max([r[key]-ref[r["condition"]][key] for r in q if r[key] is not None and ref[r["condition"]][key] is not None],default=None)
+                 for key in (*SERVICE,"energy_j","peak_ap_c")} for name,ref in (("RuleATC",byrule),("mapped_origin4096",bybase))}
+    return dict(rule_guard=parent.eligible(candidate,rule),eligible_guard=bool(parent.eligible(candidate,rule) and bdamage==0),rule_damage_conditions=int(rdamage),
+                mapped_origin_damage_conditions=int(bdamage),damage_conditions=int(sum(damaged(r,byrule) or damaged(r,bybase) for r in q)),
+                worst_deltas=worst,risk_key=parent.key(candidate),cost_key=parent.cost_key(candidate),
+                conditionwise_nondegrading_cost=bool(costs_good),mean_J_gain_vs_mapped_origin=gain,
+                meaningful_cost_gain=bool(costs_good and gain is not None and gain>=.005))
+
+
+def completed_stages(folder):return sorted(int(p.stem[5:]) for p in (Path(folder)/"models").glob("stage*.json"))
+
+def stage_receipt(folder,episode,models):
+    folder=Path(folder);child=folder/"models";rule=[r for r in rows(folder/"controls","development_") if r["policy"]=="RuleATC"]
+    receipts={}
+    for seed in SEEDS:
+        inherited=rows(folder/f"origin{ORIGIN_MAP[seed]}","dev4096_")
+        for arm in ARMS:
+            role=f"{arm}_{seed}";candidate=[r for r in rows(child,f"dev{episode}_") if r["policy"]==role];model=models[role]
+            receipt=assess(candidate,rule,inherited)
+            if model.pending or model.episodes!=episode or len(model.logs)!=episode//8:raise ValueError("new stage model cursor")
+            if not any(log["sampled_choices"] for log in model.logs) or any(not np.isfinite(log["actor_gradient_max"]) for log in model.logs):raise ValueError("native mechanics invalid")
+            receipt.update(episode=episode,model_sha=budget.digest(learner_path(child,seed,episode,arm)),native_updates=len(model.logs),Adam_steps=model.steps,pending=0)
+            receipts[role]=receipt
+    write(child/f"stage{episode}.json",dict(episode=episode,models=receipts,all_nine_completed=True))
+    return receipts
+
+def initial_proof(folder,b,models):
+    folder=Path(folder);child=folder/"models";path=child/"initial_teacher_proof.json"
+    if path.exists():return
+    inputs=budget.read(folder/"inputs.json")["development"];proofs=[]
+    for arm in ARMS:
+        role=f"{arm}_{SEEDS[0]}"
+        for index in (0,2,12,17):
+            identity=f"initialproof_{index:02d}_{role}"
+            raw=parent.collect(b,child,identity,"initialproof",dict(inputs[index],role=role),models[role].controller(*parent._initial(),True))
+            ref=json.loads(gzip.decompress((folder/"controls/items"/f"development_{index:02d}_RuleATC.json.gz").read_bytes()))
+            if raw["result"]["ledger"]!=ref["result"]["ledger"] or raw["result"]["transitions"]!=ref["result"]["transitions"]:raise ValueError("native CP0 teacher differs")
+            proofs.append(dict(role=role,condition=index,exact=True))
+    write(path,dict(status="PASS12_native_teacher_exact",proofs=proofs,new_environments=12,learning=0))
+
+def train(folder,through,stop_after=None,first_seed_only=False):
+    if through<512 or through&(through-1):raise ValueError("fresh power2 >=512")
+    folder=Path(folder);reg=check(folder);child=folder/"models";b=budget.Budget(child);inputs=budget.read(folder/"inputs.json")
+    if (folder/"freeze.json").exists():raise ValueError("never train after freeze")
+    models={f"{arm}_{seed}":learning.Learner.load(learner_path(child,seed,None,arm),deps(reg,arm)) for seed in SEEDS for arm in ARMS}
+    if any(len(model.pending)>=8 for model in models.values()):raise ValueError("failed batch needs audit")
+    active=[f"{arm}_{seed}" for seed in (SEEDS[:1] if first_seed_only else SEEDS) for arm in ARMS]
+    f,initial,_=parent.a.hybrid.load();accepted=0
+    with b.session():
+        initial_proof(folder,b,models)
+        try:
+            for n in range(through):
+                for role in active:
+                    model=models[role];arm,ss=role.rsplit("_",1);seed=int(ss)
+                    if model.episodes>n:continue
+                    if model.episodes!=n:raise ValueError("learner cursor")
+                    case=inputs["train"][n%len(inputs["train"])];identity=f"train_{role}_{n:06d}"
+                    if (child/"rows"/(identity+".json")).exists():raise ValueError("consumed unadopted rollout")
+                    ready,reason=b.can_begin("train")
+                    if not ready:raise budget.ControlledStop(reason)
+                    agent=model.controller(f,initial["initial"],False)
+                    raw=parent.collect(b,child,identity,"train",dict(case,role=role),agent,True)
+                    if raw["row"]["fallbacks"]:raise ValueError("invalid learned model fallback")
+                    rp=folder/"controls/items"/f"teacher_train_{case['condition']:02d}_RuleATC.json.gz";receipt=budget.read(folder/"controls/rows"/(rp.name[:-8]+".json"))
+                    if budget.digest(rp)!=receipt["raw_sha256"]:raise ValueError("teacher changed")
+                    ref=json.loads(gzip.decompress(rp.read_bytes()))
+                    if ref["row"]["arrival_seed"]!=case["arrival_seed"] or ref["row"]["condition"]!=case["condition"]:raise ValueError("teacher exogenous mismatch")
+                    frames,costs,valid,_=learning.targets(agent,raw,initial["initial"]["preload_power_w"]*120,arm,ref)
+                    model.add(frames,costs,valid,raw["row"]);model.cursor=dict(episode=model.episodes);model.consumption=b.used()
+                    atomic_learner_save(model,learner_path(child,seed,None,arm),child)
+                    accepted+=1
+                    if stop_after and accepted>=stop_after:
+                        proof={}
+                        for rr in active:
+                            aa,ss=rr.rsplit("_",1);m=models[rr];target=child/"paused_checkpoints"/(rr+".pt");target.parent.mkdir(exist_ok=True);m.save(target)
+                            proof[rr]=dict(digest=parent.payload_digest(m.snapshot()),episodes=m.episodes,pending=len(m.pending),Adam_steps=m.steps)
+                        write(child/"pause_receipt.json",dict(accepted=accepted,models=proof));return dict(paused=True,accepted=accepted)
+                if (n+1)%32==0:print(json.dumps(dict(episode_per_model=n+1,active_models=len(active))),flush=True)
+            for role,model in models.items():
+                arm,ss=role.rsplit("_",1)
+                if model.episodes!=through or model.pending:raise ValueError("allnine milestone incomplete")
+                atomic_learner_save(model,learner_path(child,int(ss),through,arm),child)
+            evaluate(child,b,inputs["development"],list(models),models,f"dev{through}")
+        except budget.ControlledStop as reason:
+            write(child/"boundary_stop.json",dict(reason=str(reason),episodes={role:m.episodes for role,m in models.items()},pending={role:len(m.pending) for role,m in models.items()}));return dict(stopped=True,reason=str(reason))
+        except BaseException as error:
+            for role,model in models.items():
+                aa,ss=role.rsplit("_",1);atomic_learner_save(model,learner_path(child,int(ss),None,aa),child)
+            write(child/"failure_receipt.json",dict(error=repr(error),consumption=b.used()));raise
+    return dict(completed=True,stage=through,receipt=stage_receipt(folder,through,models))
+
+def numeric_key(values):
+    return tuple(float("inf") if x is None or x=="UNAVAILABLE" else float(x) for x in values)
+
+
+def best_key(history):
+    eligible=[x for x in history if x["eligible_guard"]]
+    item=min(eligible or history,key=lambda x:(numeric_key(x["cost_key"] if eligible else x["risk_key"]),x["episode"]))
+    return (0 if eligible else 1,numeric_key(item["cost_key"] if eligible else item["risk_key"]))
+
+
+def continuation_stop(histories):
+    """Only all-seed completed stages; deterministic development-only criteria."""
+    lengths={len(value) for value in histories.values()}
+    if len(lengths)!=1:raise ValueError("stage stop requires all seeds completed")
+    n=lengths.pop()
+    damage=0
+    if n>=3:
+        for history in histories.values():
+            if history[-3]["damage_conditions"]<history[-2]["damage_conditions"]<history[-1]["damage_conditions"]:damage+=1
+    if damage>=2:return "two_transition_service_P95_damage_at_two_seeds"
+    if n>=4:
+        stalled=all(best_key(history)==best_key(history[:-3]) and not any(item["meaningful_cost_gain"] for item in history[-3:]) for history in histories.values())
+        if stalled:return "three_additional_stage_stagnation"
+    return None
+
+
+def select_and_freeze(folder):
+    folder=Path(folder);reg=check(folder);available=completed_stages(folder)
+    if not available or (folder/"freeze.json").exists():raise ValueError("allnine trained stage required; freeze once")
+    selections={};origins={}
+    for seed in SEEDS:
+        for arm in ARMS:
+            role=f"{arm}_{seed}";history=[budget.read(folder/"models"/f"stage{episode}.json")["models"][role] for episode in available]
+            eligible=[item for item in history if item["eligible_guard"]]
+            chosen=min(eligible or history,key=lambda x:(numeric_key(x["cost_key"] if eligible else x["risk_key"]),x["episode"]))
+            ep=chosen["episode"];path=learner_path(folder/"models",seed,ep,arm)
+            if budget.digest(path)!=chosen["model_sha"]:raise ValueError("trained model changed")
+            selections[role]=dict(episodes=ep,sha256=budget.digest(path),reward_arm=arm,seed=seed,development_guard_pass=bool(eligible),eligible_checkpoints=[x['episode'] for x in eligible],trained_candidate=True,development_key=chosen['risk_key'],development_cost_key=chosen['cost_key'])
+        origins[origin_role(seed)]=dict(episodes=4096,sha256=reg['origin_checkpoints'][str(seed)]['sha256'],new_seed=seed,origin_seed=ORIGIN_MAP[seed],reference_only=True)
+    selected=min(selections,key=lambda role:(not selections[role]['development_guard_pass'],numeric_key(selections[role]['development_cost_key'] if selections[role]['development_guard_pass'] else selections[role]['development_key']),selections[role]['episodes'],role))
+    freeze_write(folder/'models/freeze.json',dict(selections=selections,origin_selections=origins,registration_sha=budget.digest(folder/'registration.json'),input_sha=reg['input_sha'],sources_sha=parent.a.native.digest(reg['sources']),confirmation_not_read=True))
+    freeze_write(folder/'freeze.json',dict(selected=selected,selections=selections,origin_selections=origins,completed_by_all_models=available,registration_sha=budget.digest(folder/'registration.json'),input_sha=reg['input_sha'],sources_sha=parent.a.native.digest(reg['sources']),confirmation_not_read=True,all_nine_fresh=True))
+    return dict(frozen=True,selected=selected)
+
+def confirm(folder):
+    folder=Path(folder);reg=check(folder);frozen=budget.read(folder/'freeze.json');child=folder/'models';b=budget.Budget(child)
+    if not frozen.get('frozen_utc'):raise ValueError('freeze metadata incomplete')
+    models={}
+    for role,item in frozen['selections'].items():
+        arm,ss=role.rsplit('_',1);path=learner_path(child,int(ss),item['episodes'],arm)
+        if budget.digest(path)!=item['sha256']:raise ValueError('frozen weights')
+        models[role]=learning.Learner.load(path,deps(reg,arm))
+    for seed in SEEDS:models[origin_role(seed)]=origin_model(folder,seed)
+    with b.session():
+        evaluate(child,b,budget.read(folder/'inputs.json')['confirmation'],list(models),models,'confirmation')
+        write(child/'cursor.json',dict(completed=True,stage='confirmation'))
+    return dict(completed=True)
+
+def merge(folder):
+    folder=Path(folder);check(folder)
+    if not all(budget.read(folder/child/'cursor.json')['completed'] for child in ('models','controls')):raise ValueError('final incomplete')
+    rr=rows(folder/'controls','confirmation_')+rows(folder/'models','confirmation_')
+    roles=(*BASES,*(f'{arm}_{seed}' for seed in SEEDS for arm in ARMS),*(origin_role(seed) for seed in SEEDS))
+    expected={(case['condition'],role) for case in budget.read(folder/'inputs.json')['confirmation'] for role in roles}
+    if len(rr)!=3168 or {(r['condition'],r['policy']) for r in rr}!=expected:raise ValueError('exact final176x18 grid')
+    used=[budget.Budget(folder/child).used() for child in ('controls','models')]
+    cons=dict(environments=sum(x['environments'] for x in used),learning=sum(x['learning'] for x in used),failed=sum(x['failed'] for x in used),workers=used,worker_active_seconds_sum=sum(x['active_seconds'] for x in used),reused_reference_raw=4400,reused_reference_new_environments=0,device=0,S26=0)
+    write(folder/'consumption.json',cons);write(folder/'final_rows.json',rr);return dict(completed=True,rows=len(rr),consumption=cons)
+
+def main():
+    p=argparse.ArgumentParser();p.add_argument('command',choices=('preflight','register','check','train','freeze','confirm','controls','merge'));p.add_argument('--run-root',type=Path);p.add_argument('--through',type=int,default=512);p.add_argument('--phase',choices=('confirmation',));p.add_argument('--stop-after',type=int);p.add_argument('--first-seed-only',action='store_true');x=p.parse_args()
+    if x.command=='preflight':result=preflight()
+    elif x.command=='register':result=register(x.run_root)
+    elif x.command=='check':result=check(x.run_root)
+    elif x.command=='train':result=train(x.run_root,x.through,x.stop_after,x.first_seed_only)
+    elif x.command=='freeze':result=select_and_freeze(x.run_root)
+    elif x.command=='confirm':result=confirm(x.run_root)
+    elif x.command=='controls':result=controls(x.run_root,x.phase)
+    else:result=merge(x.run_root)
+    print(json.dumps(parent.serial(result),ensure_ascii=False),flush=True)
+
+if __name__=="__main__":main()
