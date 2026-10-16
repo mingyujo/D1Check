@@ -1,6 +1,6 @@
 {
-  "updated_UTC": "2026-10-16T00:18:27.937490+00:00",
-  "updated_KST": "2026-10-16 09:18:27 KST",
+  "updated_UTC": "2026-10-16T00:30:00.045083+00:00",
+  "updated_KST": "2026-10-16 09:30:00 KST",
   "original_confirm": {
     "checked_UTC": "2026-10-15T21:43:32.283672+00:00",
     "phase": "STOPPED",
@@ -692,7 +692,7 @@
     "receipt": "../../results/a24_final_measurements_20261016/PUBLICATION_VERIFIED.json"
   },
   "resumed_followon": {
-    "status": "FAILED5_RUNNING",
+    "status": "FOLLOWON_CLOSED",
     "original_unattempted": 1,
     "new_diagnostic_failures_registered": 5,
     "new_diagnostic_MAIN_requests": 480,
@@ -704,7 +704,7 @@
     "experiment_ready": false,
     "plan": "failed5_followon_20261016/README.md",
     "previous_final_snapshot_preserved": true,
-    "checked_UTC": "2026-10-16T00:18:27.937490+00:00",
+    "checked_UTC": "2026-10-16T00:30:00.045083+00:00",
     "observation_ADB_calls": 0,
     "original1": {
       "started": true,
@@ -718,15 +718,27 @@
     },
     "failed5": {
       "started": true,
-      "closed": false,
-      "APP_intents": 4,
-      "MAIN_START": 3,
-      "normal_completed": 3,
+      "closed": true,
+      "APP_intents": 5,
+      "MAIN_START": 5,
+      "normal_completed": 5,
       "outcomes": [
         {
           "session_id": "287a5be7-c024-5c5e-ab9b-2129a2d156dd",
           "case_name": "C10_BASE",
           "arm": "BASE",
+          "status": "COMPLETE_TRACE_RECOVERED"
+        },
+        {
+          "session_id": "7a607eac-1fb2-5df4-86e4-ba710d59c94b",
+          "case_name": "SUP_ON",
+          "arm": "PERFETTO_ON",
+          "status": "COMPLETE_TRACE_RECOVERED"
+        },
+        {
+          "session_id": "8f3978d1-8b29-5ed3-a916-e87d8490ea16",
+          "case_name": "R3_ORDER",
+          "arm": "ORDER",
           "status": "COMPLETE_TRACE_RECOVERED"
         },
         {
@@ -742,7 +754,16 @@
           "status": "COMPLETE_TRACE_RECOVERED"
         }
       ],
-      "active_owner": true
-    }
+      "active_owner": false,
+      "stop_reason": "FAILED5_FINISHED"
+    },
+    "PC_validation": "PASS_PUBLIC_PRIVATE_42_SESSIONS_504_KPI_CELLS",
+    "new_completed_MAIN": 480,
+    "new_decoded_quality_failures": 0,
+    "new_AP_eligible": 5,
+    "report": "../../results/a24_followon_measurements_20261016/README.md",
+    "raw": "../../results/a24_measurement_share_20261016/followon_resumed_01/README.md",
+    "formal_consumed": 109,
+    "formal_ceiling": 110
   }
 }

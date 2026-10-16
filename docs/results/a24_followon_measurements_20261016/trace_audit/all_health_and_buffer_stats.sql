@@ -1,0 +1,1 @@
+SELECT name,idx,severity,source,value FROM stats WHERE severity IN ('data_loss','error','notice') OR name IN ('traced_buf_chunks_overwritten','traced_buf_chunks_discarded','traced_buf_patches_failed','long_trace_mode_bytes_overwritten') ORDER BY severity,name,idx;

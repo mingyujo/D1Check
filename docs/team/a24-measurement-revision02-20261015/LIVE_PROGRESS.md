@@ -1,5 +1,13 @@
+# 2026-10-16 09:33 KST — 후속 실측 종료
+
+실패 보완5/5 정상 회수, 480/480 MAIN·출력 오류0·AP 관측창5건 적격. 원 L64 1건은 기존27.1℃ 사전 조건 미충족으로 APP0/미실행 보존이다. 계약상109/110 소비, 기존 실패를 성공으로 바꾸지 않았다. 활성 측정 worker/owner는 없다.
+
+[후속 보고서·오프라인 화면](../../results/a24_followon_measurements_20261016/README.md) · [원자료13 ZIP와 새 ON trace](../../results/a24_measurement_share_20261016/followon_resumed_01/README.md) · [검증](../../results/a24_followon_measurements_20261016/DELIVERY_CHECK.json)
+
+아래는 이전 시점의 진행 기록이다.
+
 <!-- FOLLOWON_HOST_CURRENT -->
-현재 후속 현황 2026-10-16 09:18:27 KST: 원 L64 재개 APP 0·정상 0; 실패 보완5 APP 4·MAIN 시작 3·정상 3/5. 완료 여부는 [기계 현황](LIVE_PROGRESS.json)의 `resumed_followon`을 따른다. 원 실패·미실행 분모를 보존한다.
+현재 후속 현황 2026-10-16 09:30:00 KST: 원 L64 재개 APP 0·정상 0; 실패 보완5 APP 5·MAIN 시작 5·정상 5/5. 완료 여부는 [기계 현황](LIVE_PROGRESS.json)의 `resumed_followon`을 따른다. 원 실패·미실행 분모를 보존한다.
 <!-- FOLLOWON_HOST_END -->
 
 # 2026-10-16 후속 재개 중
