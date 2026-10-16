@@ -25,3 +25,5 @@
 3. 환경 신뢰도를 확인한 뒤 새 등록에서 롤링+ATC+RL 학습/DEV선정/새 합성 평가. 필요시 승인된 IE 대안. 과거 평가 재선정 금지.
 
 원본 기준 상태는 `evidence/CURRENT_STATE.json`이며 과거 절대경로는 증거다. 현재 작업은 이 폴더의 상대경로를 사용한다. 원 호스트의 다른 A24 계보가 전역 예산을 추가할 수 있으므로 전역 수치는 새 실행 전에 재검산해야 한다.
+
+인계 배포는 `codex/s26-simulator-handoff-20261016` 브랜치의 이 폴더와 `s26-handoff-20261016` Release를 사용한다. 핵심 source/모형/화면은 Git 파일·단일 폴더 ZIP으로, 60,878개 원자료/중간/학습 기록은 SHA 기반 카탈로그와13 pack으로 보존한다. 인계 검증은 `evidence/HANDOFF_VERIFICATION.json`과 Release의 `PUBLISH_VERIFICATION.json`을 확인한다. 이번 포장/검증에서 새 정책 환경·NN·비용 재적분·fit은0이며 위 과학적 상태와 다음 작업을 변경하지 않는다.

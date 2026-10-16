@@ -4,6 +4,8 @@
 
 ## 바로 보기
 
+폴더만 받으려면 [s26-simulator-core.zip](https://github.com/mingyujo/D1Check/releases/download/s26-handoff-20261016/s26-simulator-core.zip)을 풀면 됩니다. Git으로 수정 이력을 남기려면 저장소의 `codex/s26-simulator-handoff-20261016` 브랜치에서 이 폴더를 사용하세요. 큰 원자료는 아래 복원 명령으로 추가합니다.
+
 필수: **Node.js 20 이상**. 현재 코드와 화면에는 별도 npm 라이브러리가 필요 없습니다.
 
 ```sh
@@ -58,6 +60,8 @@ node scripts/restore-data.cjs --group all
 ```
 
 원본·중간본·이전 결과를 삭제하지 않고 **내용 SHA로 중복 저장만 제거**했습니다. 파일별 원래 이름과 SHA를 유지하여 복원합니다. 원자료 전체를 복원하려면 디스크 여유가 충분해야 하며 도구는 복원 크기 외 **8GiB**를 남깁니다. 임의 기존 파일을 덮어쓰지 않습니다. [포함·제외·라이선스 경계](docs/DATA.md)를 확인하세요.
+
+다운로드가 끊기면 해당 `.cache/*.part` 파일을 확인한 뒤 그 파일만 제거하고 같은 명령으로 다시 시작합니다. 완료된 pack은 SHA를 다시 확인해 재사용하고 이미 같은 내용으로 복원된 파일도 재사용합니다. `--verify-only`를 붙이면 blob을 검증하고 전체 원자료를 디스크에 풀지 않습니다. `--filter <경로 일부>`로 선택 경로만 복원할 수도 있습니다.
 
 ## 수정·새 실행
 
