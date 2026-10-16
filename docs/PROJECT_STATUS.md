@@ -1,5 +1,7 @@
 ## 2026-10-16 A24 GitHub 단일 폴더 인계
 
+최신 EDF 교체 비교는 [a24_simulator/docs/EDF_COMPARISON.md](../a24_simulator/docs/EDF_COMPARISON.md)다. 최단 예상 응답 선택 없는 비선점EDF14환경을 새 실행·완료, 기존RL14조건은 재사용했다. 공통 작업 구간 평균 RL/EDF 총49.101654/48.454447J*, 증분11.131626/10.484419J*, AP26.833545/26.858513℃·정시635/640 대640/640, 전량구간내AVAILABLE다. 순수12·독립저장5168·실브라우저14조건6뷰39검사PASS(시작7dd78253+새소스/OP47bfd7ec/SHA핀). 기존 소스·CP·모형·원결과 불변, 새학습/fit0·306/512잔206·예약/주기조회OFF다. 다음은 결과공유와 기존 HANDOFF의 미검증 근거 후속이며 자동 추가실행0이다.
+
 완료 범위와 파일 위치만 담은 [짧은 안내](../a24_simulator/COMPLETED_AND_FILES.md)를 추가했다. README에서 바로 연결하며 구현·학습·모형·결과는 변경하지 않았다.
 
 현재 실행·수정 정본은 [a24_simulator/README.md](../a24_simulator/README.md)다. 기존+M8 115세션 입력/ZIP/모형/정책/실행법/이전 실패·전체 역사 Release를 연결했다. 기본12조건의 작업별 납기·참조 부하, 공통 활동창/기저/동일 일정 진단과 새4경로 PPO64 TRAIN·24 DEV·98 EVAL을 검증했다. START187=COMPLETE186+보존FAIL1, 이전105와 합계292/기존512·잔220·추가예약0. RL635/640 vs ATC/EDD/모바일640/640으로 추가우위 미입증·Jnull·폰RL/물리목표false다. 독립 저장산술20,943·NN/Adam/RNG31,848 checks·별도폴더151pins·실브라우저6뷰 PASS. 예약과 GitHub 주기조회OFF. 다음은 폴더 HANDOFF의 미식별 계측·새독립확인 절차를 따른다.

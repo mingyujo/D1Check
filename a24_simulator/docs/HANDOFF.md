@@ -1,5 +1,7 @@
 # 이어서 작업할 사람을 위한 순서
 
+최신 비교군은 [EDF_COMPARISON.md](EDF_COMPARISON.md)의 비선점 EDF입니다. `experiments/edf_cpu_first_20261016/`가 새 선택기/등록/실행이며 기존 `src/`의 모바일·EDD 구현과 7정책 결과는 원학습 재현을 위해 보존했습니다. 새 EDF14는 완료됐으므로 같은 operation을 재실행하지 않습니다. 최신 소비306/512·잔206이며 `CONTINUE.json`과 실제 runtime 원장을 확인합니다.
+
 1. README → CURRENT_RESULTS → MODEL_CARD → VALIDATION → `models/TRAINING_RESULT.json` 순서로 읽습니다. 과거 보고는 `docs/history/`에 있습니다. 과거의 RUNNING·준비완료 문구보다 실제 COMPLETE/FAIL·현재 source SHA를 우선합니다.
 2. `tools/run.py verify` 후 서버를 켭니다. 검증만으로 새 환경이 시작되지는 않습니다. 모든 조건·seed·정책의 손해와 실패를 보존합니다. 같은 일정의 정책들을 독립 효과 증거처럼 합산하지 않습니다.
 3. 정책만 바꾸면 처리·열·전력 모형을 동일하게 유지합니다. 모형을 바꾸면 자료/적합/선정/확인 역할을 나누고 새 모델·출력·SHA를 등록합니다. 이미 본 확인을 다시 독립 확인이라고 쓰지 않습니다.

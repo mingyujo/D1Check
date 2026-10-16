@@ -1,5 +1,7 @@
 ## 2026-10-16 A24 GitHub 단일 폴더 인계
 
+2026-10-16 확정: 사용자 지시로 최신 주비교군은 MOBILE_DEADLINE_ENERGY 대신 비선점 EDF_CPU_FIRST다. 납기→도착→ordinal→ID로 요청 선택, 비어 있는 CPU/GPU에 배정하며 둘 다 비면 CPU 우선이다. 처리시간/에너지/열 예측으로 선택하지 않는다. 원EDD의 최단 예상 응답 경로 선택과 구분한다. [등록·소스·14조건 결과](../a24_simulator/docs/EDF_COMPARISON.md)를 보존하며 기존RL/물리/과거결과 불변, EDF14 신규START·완료, 학습/fit/재선정0이다.
+
 현재 실행·수정 정본은 [a24_simulator/README.md](../a24_simulator/README.md)다. 기존+M8 115세션 입력/ZIP/모형/정책/실행법/이전 실패·전체 역사 Release를 연결했다. 기본12조건의 작업별 납기·참조 부하, 공통 활동창/기저/동일 일정 진단과 새4경로 PPO64 TRAIN·24 DEV·98 EVAL을 검증했다. START187=COMPLETE186+보존FAIL1, 이전105와 합계292/기존512·잔220·추가예약0. RL635/640 vs ATC/EDD/모바일640/640으로 추가우위 미입증·Jnull·폰RL/물리목표false다. 독립 저장산술20,943·NN/Adam/RNG31,848 checks·별도폴더151pins·실브라우저6뷰 PASS. 예약과 GitHub 주기조회OFF. 다음은 폴더 HANDOFF의 미식별 계측·새독립확인 절차를 따른다.
 
 # D1Check 결정 기록

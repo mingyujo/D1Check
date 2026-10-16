@@ -1,5 +1,7 @@
 ## 2026-10-16 A24 GitHub 단일 폴더 인계
 
+사용자 요청으로 모바일 변형의 대체 비교군을 비선점 EDF(절대 납기순·빈 자원·동시 유휴 CPU 우선, 예상 응답/비용 선택0)로 확정했다. 원모형/선정RL을 고정하고 같은14조건·같은 작업구간에서 EDF14만 새실행 완료했다. 상세·전체손해·수치는 [EDF 비교](../a24_simulator/docs/EDF_COMPARISON.md)를 따른다. 원7정책/실패/원자료 보존·새학습/fit0·주기조회OFF다.
+
 현재 실행·수정 정본은 [a24_simulator/README.md](../a24_simulator/README.md)다. 기존+M8 115세션 입력/ZIP/모형/정책/실행법/이전 실패·전체 역사 Release를 연결했다. 기본12조건의 작업별 납기·참조 부하, 공통 활동창/기저/동일 일정 진단과 새4경로 PPO64 TRAIN·24 DEV·98 EVAL을 검증했다. START187=COMPLETE186+보존FAIL1, 이전105와 합계292/기존512·잔220·추가예약0. RL635/640 vs ATC/EDD/모바일640/640으로 추가우위 미입증·Jnull·폰RL/물리목표false다. 독립 저장산술20,943·NN/Adam/RNG31,848 checks·별도폴더151pins·실브라우저6뷰 PASS. 예약과 GitHub 주기조회OFF. 다음은 폴더 HANDOFF의 미식별 계측·새독립확인 절차를 따른다.
 
 # D1Check 프로젝트 실행계획
