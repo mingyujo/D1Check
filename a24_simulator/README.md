@@ -18,6 +18,8 @@ python -m venv .venv
 
 `python -B tests/test_diagnostics.py`와 `node tests/test_design.cjs`로 단위 검사를 합니다. 현지 검증 버전과 결과는 [검증 기록](docs/VALIDATION.md)을 읽습니다. `reference/`의 역사적 실행기는 원 경로가 남은 보존 소스이므로 현재 실행 입구로 사용하지 않습니다.
 
+저장 결과는 `node tests/audit_saved.cjs`로 새 환경 없이 검산합니다. 브라우저 회귀 검사는 `npm install`, `npx playwright install chromium` 후 서버를 켜고 `npm run test:browser`로 실행합니다. 기본포트는8766이고 환경변수 `PORT`로 바꿀 수 있습니다. `src/test_*`, `preflight_four_route.py`, `qa_four_route.cjs` 등 이전 등록용 probe는 원 학습 SHA 보존을 위해 남아 있는 역사적 코드이며 현재 검증 명령은 이 문단의 `tests/`를 따릅니다.
+
 ## 2. 무엇을 수정하면 되는가
 
 | 목적 | 파일 |
