@@ -1,3 +1,5 @@
+결과 커밋 `e7b1652d72ab55f80cd1545241a8e42afadcea63` 외부 게시 확인: 익명26파일·20,044,587B·13 ZIP+새 ON 원본 ZIP 바이트 일치 PASS. [확인 영수증](../../results/a24_followon_measurements_20261016/PUBLICATION_VERIFIED.json).
+
 # 2026-10-16 09:33 KST — 후속 실측 종료
 
 실패 보완5/5 정상 회수, 480/480 MAIN·출력 오류0·AP 관측창5건 적격. 원 L64 1건은 기존27.1℃ 사전 조건 미충족으로 APP0/미실행 보존이다. 계약상109/110 소비, 기존 실패를 성공으로 바꾸지 않았다. 활성 측정 worker/owner는 없다.
