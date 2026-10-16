@@ -1,5 +1,5 @@
 <!-- FOLLOWON_HOST_CURRENT -->
-현재 후속 현황 2026-10-16 09:05:17 KST: 원 L64 재개 APP 0·정상 0; 실패 보완5 APP 1·MAIN 시작 1·정상 0/5. 완료 여부는 [기계 현황](LIVE_PROGRESS.json)의 `resumed_followon`을 따른다. 원 실패·미실행 분모를 보존한다.
+현재 후속 현황 2026-10-16 09:18:27 KST: 원 L64 재개 APP 0·정상 0; 실패 보완5 APP 4·MAIN 시작 3·정상 3/5. 완료 여부는 [기계 현황](LIVE_PROGRESS.json)의 `resumed_followon`을 따른다. 원 실패·미실행 분모를 보존한다.
 <!-- FOLLOWON_HOST_END -->
 
 # 2026-10-16 후속 재개 중
