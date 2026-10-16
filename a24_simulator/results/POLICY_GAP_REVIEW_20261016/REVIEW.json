@@ -1,0 +1,314 @@
+{
+  "schema": "A24-policy-gap-saved-review-v1",
+  "status": "COMPLETE_SAVED_ONLY_POSTHOC_REVIEW",
+  "source_head": "59d3698bc850f7d6747e59a3e7091855dd06e372",
+  "source_pin": {
+    "path": "experiments/policy_gap_review_20261016/review_saved.cjs",
+    "sha256": "b092a6060abfdc5594157a43caf61a1c18b8eb008d4890a066d73304b4e55823",
+    "bytes": 7283
+  },
+  "input_pins": [
+    {
+      "path": "results/PROTECTED48_V2_20261016_01/RESULT.json",
+      "sha256": "2b44c7b040b5ed2e03bfc6a6c7d90bafcc78e2d9a9e8138275393a6311fb239f",
+      "bytes": 53668205
+    },
+    {
+      "path": "data/objects/e886b848a46231f0aa9ca988c4ac38449f825622c92703455d47c4a9b15731f3.gz",
+      "sha256": "aef8224ec63cc96979ee4d8301a964b7580aed718533260349f8369518e7dbb3",
+      "bytes": 32997
+    }
+  ],
+  "source_pins": [
+    {
+      "path": "experiments/edf_cpu_first_20261016/policy.py",
+      "sha256": "774eca1a4bb44e4c9604f9895481b752bcd786fa87d3ccf7d460bd98f09ed305",
+      "bytes": 4478
+    },
+    {
+      "path": "experiments/protected48_v2_20261016/protected_policy.py",
+      "sha256": "6d4b4db86f33f37bba1073917b92dffccfb1bbb83c19a8d1425078e6004182c1",
+      "bytes": 9953
+    },
+    {
+      "path": "src/policy_bridge_four_route.py",
+      "sha256": "ff786aa54830cba2f5017296df61b0a49ba4f3c86db7f960c2ca324d4bd31aee",
+      "bytes": 23284
+    },
+    {
+      "path": "src/four_route_model.py",
+      "sha256": "bbe7efd4d3afebac6f772fb50246c87aaaf668a5ff0296d26e0243e738269f36",
+      "bytes": 9003
+    },
+    {
+      "path": "src/thermal_four_route.py",
+      "sha256": "e2f3bae11214432fef0ee8aa3094adf1c05c10a5d3e12e9cd2b14d75875b6f10",
+      "bytes": 36577
+    },
+    {
+      "path": "reference/model_integration/timing_model.py",
+      "sha256": "fee973f5b1f9ea6b2038ea8385e31fa60fb4ab360671fb012e8a4962e194a1ee",
+      "bytes": 37577
+    },
+    {
+      "path": "src/bulk_design.cjs",
+      "sha256": "afe898249d90c9668bb73ab1dcae57207e1faff61090a9772408d9c5d77b1e1c",
+      "bytes": 5400
+    }
+  ],
+  "scope": {
+    "fresh_simulation_conditions": 24,
+    "requests_per_policy": 1152,
+    "posthoc_diagnosis": true,
+    "new_environments": 0,
+    "new_fit": 0,
+    "new_training": 0,
+    "network": 0,
+    "automation_changed": false
+  },
+  "decision_stats": {
+    "actor_calls": 4235,
+    "both_resources_busy_calls": 3083,
+    "dispatch_calls": 1152,
+    "multiple_ready_dispatch": 393,
+    "heterogeneous_task_dispatch": 237,
+    "heterogeneous_deadline_dispatch": 301,
+    "heterogeneous_priority_dispatch": 185,
+    "FIFO_EDF_head_diff_on_RL_public_state": 215,
+    "RL_EDF_head_diff_on_RL_public_state": 219,
+    "voluntary_WAIT_legal_calls": 1152,
+    "voluntary_WAIT_selected": 0,
+    "free_one_resource_dispatch": 862,
+    "free_two_resources_dispatch": 290,
+    "multiple_requests_after_mask": 393,
+    "one_request_after_mask": 759,
+    "removed_candidate_occurrences": 32,
+    "critical_request_calls": 0
+  },
+  "identical_route_requests": 1016,
+  "identical_response_time_requests": 803,
+  "condition_comparisons": [
+    {
+      "index": 0,
+      "label": "48개 · 분류 25% · steady · 참조부하 0.5 · 기준납기×1 · seed 20264001",
+      "pattern": "steady",
+      "trace_exact_same": true,
+      "AP_exact_same": true,
+      "energy_same": true
+    },
+    {
+      "index": 1,
+      "label": "48개 · 분류 25% · steady · 참조부하 0.85 · 기준납기×1 · seed 20264001",
+      "pattern": "steady",
+      "trace_exact_same": true,
+      "AP_exact_same": true,
+      "energy_same": true
+    },
+    {
+      "index": 2,
+      "label": "48개 · 분류 25% · steady · 참조부하 1.2 · 기준납기×1 · seed 20264001",
+      "pattern": "steady",
+      "trace_exact_same": true,
+      "AP_exact_same": true,
+      "energy_same": true
+    },
+    {
+      "index": 3,
+      "label": "48개 · 분류 25% · burst · 참조부하 0.5 · 기준납기×1 · seed 20264001",
+      "pattern": "burst",
+      "trace_exact_same": false,
+      "AP_exact_same": false,
+      "energy_same": false
+    },
+    {
+      "index": 4,
+      "label": "48개 · 분류 25% · burst · 참조부하 0.85 · 기준납기×1 · seed 20264001",
+      "pattern": "burst",
+      "trace_exact_same": false,
+      "AP_exact_same": false,
+      "energy_same": false
+    },
+    {
+      "index": 5,
+      "label": "48개 · 분류 25% · burst · 참조부하 1.2 · 기준납기×1 · seed 20264001",
+      "pattern": "burst",
+      "trace_exact_same": false,
+      "AP_exact_same": false,
+      "energy_same": false
+    },
+    {
+      "index": 6,
+      "label": "48개 · 분류 75% · steady · 참조부하 0.5 · 기준납기×1 · seed 20264001",
+      "pattern": "steady",
+      "trace_exact_same": true,
+      "AP_exact_same": true,
+      "energy_same": true
+    },
+    {
+      "index": 7,
+      "label": "48개 · 분류 75% · steady · 참조부하 0.85 · 기준납기×1 · seed 20264001",
+      "pattern": "steady",
+      "trace_exact_same": true,
+      "AP_exact_same": true,
+      "energy_same": true
+    },
+    {
+      "index": 8,
+      "label": "48개 · 분류 75% · steady · 참조부하 1.2 · 기준납기×1 · seed 20264001",
+      "pattern": "steady",
+      "trace_exact_same": true,
+      "AP_exact_same": true,
+      "energy_same": true
+    },
+    {
+      "index": 9,
+      "label": "48개 · 분류 75% · burst · 참조부하 0.5 · 기준납기×1 · seed 20264001",
+      "pattern": "burst",
+      "trace_exact_same": false,
+      "AP_exact_same": false,
+      "energy_same": false
+    },
+    {
+      "index": 10,
+      "label": "48개 · 분류 75% · burst · 참조부하 0.85 · 기준납기×1 · seed 20264001",
+      "pattern": "burst",
+      "trace_exact_same": false,
+      "AP_exact_same": false,
+      "energy_same": false
+    },
+    {
+      "index": 11,
+      "label": "48개 · 분류 75% · burst · 참조부하 1.2 · 기준납기×1 · seed 20264001",
+      "pattern": "burst",
+      "trace_exact_same": false,
+      "AP_exact_same": false,
+      "energy_same": false
+    },
+    {
+      "index": 12,
+      "label": "48개 · 분류 25% · steady · 참조부하 0.5 · 기준납기×1 · seed 20264002",
+      "pattern": "steady",
+      "trace_exact_same": true,
+      "AP_exact_same": true,
+      "energy_same": true
+    },
+    {
+      "index": 13,
+      "label": "48개 · 분류 25% · steady · 참조부하 0.85 · 기준납기×1 · seed 20264002",
+      "pattern": "steady",
+      "trace_exact_same": true,
+      "AP_exact_same": true,
+      "energy_same": true
+    },
+    {
+      "index": 14,
+      "label": "48개 · 분류 25% · steady · 참조부하 1.2 · 기준납기×1 · seed 20264002",
+      "pattern": "steady",
+      "trace_exact_same": true,
+      "AP_exact_same": true,
+      "energy_same": true
+    },
+    {
+      "index": 15,
+      "label": "48개 · 분류 25% · burst · 참조부하 0.5 · 기준납기×1 · seed 20264002",
+      "pattern": "burst",
+      "trace_exact_same": false,
+      "AP_exact_same": false,
+      "energy_same": false
+    },
+    {
+      "index": 16,
+      "label": "48개 · 분류 25% · burst · 참조부하 0.85 · 기준납기×1 · seed 20264002",
+      "pattern": "burst",
+      "trace_exact_same": false,
+      "AP_exact_same": false,
+      "energy_same": false
+    },
+    {
+      "index": 17,
+      "label": "48개 · 분류 25% · burst · 참조부하 1.2 · 기준납기×1 · seed 20264002",
+      "pattern": "burst",
+      "trace_exact_same": false,
+      "AP_exact_same": false,
+      "energy_same": false
+    },
+    {
+      "index": 18,
+      "label": "48개 · 분류 75% · steady · 참조부하 0.5 · 기준납기×1 · seed 20264002",
+      "pattern": "steady",
+      "trace_exact_same": true,
+      "AP_exact_same": true,
+      "energy_same": true
+    },
+    {
+      "index": 19,
+      "label": "48개 · 분류 75% · steady · 참조부하 0.85 · 기준납기×1 · seed 20264002",
+      "pattern": "steady",
+      "trace_exact_same": true,
+      "AP_exact_same": true,
+      "energy_same": true
+    },
+    {
+      "index": 20,
+      "label": "48개 · 분류 75% · steady · 참조부하 1.2 · 기준납기×1 · seed 20264002",
+      "pattern": "steady",
+      "trace_exact_same": true,
+      "AP_exact_same": true,
+      "energy_same": true
+    },
+    {
+      "index": 21,
+      "label": "48개 · 분류 75% · burst · 참조부하 0.5 · 기준납기×1 · seed 20264002",
+      "pattern": "burst",
+      "trace_exact_same": false,
+      "AP_exact_same": false,
+      "energy_same": false
+    },
+    {
+      "index": 22,
+      "label": "48개 · 분류 75% · burst · 참조부하 0.85 · 기준납기×1 · seed 20264002",
+      "pattern": "burst",
+      "trace_exact_same": false,
+      "AP_exact_same": false,
+      "energy_same": false
+    },
+    {
+      "index": 23,
+      "label": "48개 · 분류 75% · burst · 참조부하 1.2 · 기준납기×1 · seed 20264002",
+      "pattern": "burst",
+      "trace_exact_same": false,
+      "AP_exact_same": false,
+      "energy_same": false
+    }
+  ],
+  "baseline": {
+    "power_W": 1.2043999317125094,
+    "mean_J": 39.68633213478606,
+    "total_share_percent": 78.24224850553912
+  },
+  "work_windows_s": {
+    "min": 21.380342300000002,
+    "mean": 32.95112453083333,
+    "max": 55.05157332
+  },
+  "energy_observer": {
+    "powers_W": {
+      "classification_CPU": 0.5844294346219239,
+      "classification_GPU": 0.4728843731804206,
+      "classification_GPU+detection_CPU": 0.8878118931374972,
+      "detection_CPU": 0.712925901899471,
+      "detection_GPU": 0.6013808404579677,
+      "classification_CPU+detection_GPU": 0.8878118931374972,
+      "classification_CPU+classification_GPU": 0.75931542585995,
+      "detection_CPU+detection_GPU": 1.0163083604150445
+    },
+    "shared_pair_discount_W": -0.2979983819423944,
+    "delta_reconstruction_max_error_J": 7.105427357601002e-15,
+    "expression": "sum(solo route power * owner duration in common window) + shared_pair_discount_W * overlap_seconds",
+    "temperature_power_feedback": false
+  },
+  "comparison_semantics": "Head differences apply alternative rules to RL observed states; not paired same-clock EDF trajectories. Busy RESOURCE_WAIT is not voluntary cooling WAIT. No causal effect/accuracy proof from counters.",
+  "measured_J": null,
+  "physical_goal_validated": false,
+  "utc": "2026-10-16T14:49:04.702Z"
+}
