@@ -1,3 +1,7 @@
+[최신 223회 실행 파일·원 PC 경로·검증된 ZIP 백업](docs/LATEST_EXECUTION_FILES.md)
+
+**RR＋새 상태비용 RL 완료:** [최신 결과·검증·파일](docs/COST_RL_COMPARISON.md) · [5정책 화면](results/RL_COST_20261017_01/REPORT.html). 실제학습96/DEV선정/미사용seed평가/NN제외대조와저장·신경망재생·6뷰QA를완료했습니다. 실측절감/물리우위PASS는아닙니다. 아래진행상태는보존이력입니다.
+
 **RR 비교 완료 / 새 비용 RL 실행 중:** [현재 설계·진행·파일](docs/RR_AND_COST_RL_DEVELOPMENT.md) · [RR4정책 결과](results/RR_20261017_01/REPORT.html). RR7정상/저장감사·6뷰QA PASS, 새RL223환경은 별도등록 후 시작했으며 완료·우위 미판정입니다. 반복예약/주기조회OFF.
 
 **RL 제외 3규칙 비교 완료:** [롤링+ATC·EDF·FIFO 수치/구현 설명](docs/RULES_NO_RL_COMPARISON.md) · [새 결과 화면](results/RULES_NO_RL_20261017_01/REPORT.html). 같은48~3072입력·모형/작업창, 새15정상+EDF7재사용·NN/학습/fit0입니다. 현재EDF/FIFO도사건마다재선택하며 다단계미래최적화는셋모두없습니다. 기존결과/계수/CP와예약OFF는유지합니다.

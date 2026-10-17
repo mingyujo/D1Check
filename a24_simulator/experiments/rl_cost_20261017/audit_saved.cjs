@@ -44,7 +44,7 @@ function auditArithmetic(c,r,raw){
 
 }
 
-const rows=[];
+const rows=[],actor_summaries=[];
 function caseFor(label){
  if(label.startsWith('TRAIN_'))return design.train[Number(label.slice(6))-1];
  if(label.startsWith('DEV_EDF_'))return design.dev[Number(label.slice(8))];
@@ -65,11 +65,19 @@ try{
   const raw=JSON.parse(zlib.gunzipSync(fs.readFileSync(rawfile)));auditArithmetic(c,r,raw);
   if(r.policy.startsWith('ROLLING_ATC_RL_COST')||r.policy==='ATC_COST_NO_NN'){
    const calls=JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(out,end.label+'.actor_calls.json.gz'))));
+   const summary={label:end.label,calls:calls.length,multiple_legal_calls:0,critical_focus_calls:0,nominal_fallback_calls:0,removed_actions:0,dispatch:{},voluntary_WAIT_calls:0,voluntary_WAIT_s:0,resource_WAIT_calls:0};
    let dispatch=0;for(const call of calls){need(call.mask[call.chosen_index]===true,'actual mask selected');
     need(call.public_state.now_ns===call.time_ns&&call.public_state.queue.every(q=>q.queue_entry_ns<=call.time_ns),'causal public call');
-    if(call.action.kind==='DISPATCH')dispatch++;
+    summary.multiple_legal_calls+=Number(call.mask.filter(Boolean).length>1);
+    summary.critical_focus_calls+=Number(call.protection.critical_request!==null);
+    summary.nominal_fallback_calls+=Number(call.protection.nominal_recovery_fallback);
+    summary.removed_actions+=call.protection.removed_actions;
+    if(call.action.kind==='DISPATCH'){dispatch++;const q=call.public_state.queue.find(q=>q.request_id===call.action.request_id);need(!!q,'Chosen request in public ready queue');const key=q.task+'_'+call.action.route;summary.dispatch[key]=(summary.dispatch[key]||0)+1;}
+    if(call.action.kind==='WAIT'){summary.voluntary_WAIT_calls++;summary.voluntary_WAIT_s+=call.action.wait_ns/1e9;}
+    if(call.action.kind==='RESOURCE_WAIT')summary.resource_WAIT_calls++;
    }
    need(dispatch===raw.prediction.decisions.filter(d=>d.action.kind==='DISPATCH').length,'actor/applied dispatch count');
+   actor_summaries.push(summary);
   }
   rows.push({label:end.label,n:c.n,policy:r.policy,on_time:r.metrics.on_time,raw_sha256:sha(rawfile)});
  }
@@ -77,7 +85,7 @@ try{
  need(seal.evaluation_outcomes_opened===0&&JSON.stringify(seal.selected)===JSON.stringify(result.selected),'DEV selection freeze');
  need(result.fresh.length===12&&result.historical.length===7&&result.controls.length===12,'all declared cohorts');
  const frozencp=seal.selected.checkpoint;need(sha(frozencp.path)===frozencp.sha256,'selected checkpoint exact');
- fs.writeFileSync(path.join(out,'SAVED_AUDIT.json'),JSON.stringify({status:'PASS',checks,new_outputs:rows.length,rows,
+ fs.writeFileSync(path.join(out,'SAVED_AUDIT.json'),JSON.stringify({status:'PASS',checks,new_outputs:rows.length,rows,actor_summaries,
    NN_AUDIT_sha256:sha(path.join(out,'NN_AUDIT.json')),result_sha256:sha(path.join(out,'RESULT.json')),new_environment:0,measured_J:null},null,2)+'\n',{flag:'wx'});
  console.log(JSON.stringify({status:'PASS',checks,outputs:rows.length}));
 }catch(e){fs.writeFileSync(path.join(out,'SAVED_AUDIT_FAILURE.json'),JSON.stringify({error:String(e),checks}),{flag:'wx'});throw e}
