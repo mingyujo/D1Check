@@ -12,5 +12,5 @@ def inspect(entry):
     rows=data['python'];rows=rows if isinstance(rows,list) else [rows]
     if len(rows)>3 or data['logical_processors']<4 or data['free_KiB']<1024**2:raise RuntimeError('Read-only preflight resource allowance unavailable')
     if not any(r['ProcessId']==os.getpid() for r in rows):raise RuntimeError('Actual pure process absent')
-    data.update(utc=__import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat(),actual_pid=os.getpid(),entry=str(Path(entry).resolve()),scope='Read-only AST/import/synthetic snapshot tests only; no environments/training/model restoration/LP',pure_global_Python_limit=3,native_global_limit_unchanged=2,user_authority='2026-10-18 constraints may be relaxed with logical grounds',one_own_pure_process=True)
+    data.update(utc=__import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat(),actual_pid=os.getpid(),entry=str(Path(entry).resolve()),scope='Read-only AST/import/synthetic snapshot tests only; no environments/training/model restoration/LP',pure_global_Python_limit=3,native_global_limit=3,user_authority='2026-10-18 constraints may be relaxed with logical grounds',one_own_pure_process=True)
     return data

@@ -5,6 +5,8 @@ const root=path.resolve(__dirname,'../..'),read=p=>JSON.parse(fs.readFileSync(p)
 const sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex'),need=(v,s)=>{checks++;if(!v)throw Error(s);};
 let checks=0,worst=0;const close=(a,b,s,tol=3e-7)=>{worst=Math.max(worst,Math.abs(a-b));need(Math.abs(a-b)<=tol,s+' '+Math.abs(a-b));};
 const W=require('../work_window_20261017/reaccount.cjs'),T=require('../sustained_load_20261017/tensor_reader.cjs');
+function dense(x,w,b,n,tanh=false){const y=new Float64Array(n);for(let i=0;i<n;i++){let v=b[i];for(let j=0;j<x.length;j++)v+=w[i*x.length+j]*x[j];y[i]=tanh?Math.tanh(v):v;}return y;}
+function critic(weights,x,mask){const enc=x.map(a=>dense(a,weights['encode.0.weight'],weights['encode.0.bias'],48,true)),mean=new Float64Array(48),max=new Float64Array(48).fill(-Infinity),n=mask.filter(Boolean).length;for(let i=0;i<19;i++)if(mask[i])for(let j=0;j<48;j++){mean[j]+=enc[i][j]/n;max[j]=Math.max(max[j],enc[i][j]);}const c=new Float64Array(96);c.set(mean);c.set(max,48);return dense(dense(c,weights['critic.0.weight'],weights['critic.0.bias'],64,true),weights['critic.2.weight'],weights['critic.2.bias'],5);}
 const save=(p,v)=>fs.writeFileSync(p,JSON.stringify(v,null,2)+'\n',{flag:'wx'});
 async function main(){
  const opfile=path.join(__dirname,'OPERATION.json'),op=read(opfile),out=path.join(root,op.output_dir),res=read(path.join(out,'RESULT.json')),c=op.physics,thermal=read(path.join(__dirname,'THERMAL_PURE_TEST.json'));
@@ -18,7 +20,7 @@ async function main(){
  const inputs=read(op.inputs.path),design=[...inputs.training,...inputs.evaluation],records=[],nets=new Map();let nn=0,greedy=0,sampled=0,minmargin=Infinity,ties=0;const refs=new Map();
  for(const src of op.evaluation_reference_metrics)for(const row of read(src.path).rows)if(row.policy==='EDF')refs.set(row.case,row.common.end_ns);
  for(const row of res.rows.filter(r=>r.kind==='REFERENCE')){const raw=JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(out,row.label+'.raw.json.gz')))).result;need(raw.requests.every(q=>q.available_ns!==null),'Every training reference completed');refs.set(row.case,Math.max(...raw.requests.map(q=>q.available_ns)));}
- need(read(path.join(out,'STOCHASTIC_REPLAY.json')).status==='PASS'&&read(path.join(out,'STOCHASTIC_REPLAY.json')).episodes===96,'All sampled training episodes replayed');
+ need(read(path.join(out,'STOCHASTIC_REPLAY.json')).status==='PASS'&&read(path.join(out,'STOCHASTIC_REPLAY.json')).episodes===96&&read(path.join(out,'STOCHASTIC_REPLAY.json')).exact_saved_optimizer_update_replays===48,'All sampled training episodes replayed');
  const integrate=(r,end)=>{const m=W.integrate(r,end,c,H);return {...m,baseline_percent:100*m.baseline_fraction};};
  for(const row of res.rows){
   if(row.network_sha256&&!nets.has(row.network_sha256))nets.set(row.network_sha256,T.network(path.join(out,row.network_file),row.network_sha256));const net=nets.get(row.network_sha256);
@@ -59,7 +61,7 @@ async function main(){
    for(const a of raw.calls.filter(a=>!a.common_coalescing)){
     need(a.x.length===19&&a.x.every(x=>x.length===32&&x.every(Number.isFinite))&&a.mask.length===19&&a.mask[a.chosen],'NN ABI/mask');
     need(a.fixed_ATC_prior_logit===0&&!a.future_actual_work_used&&!a.future_arrivals_used,'Public-only neural policy');
-    const logits=T.logits(net.net,a.x,a.mask);let best=0;for(let j=1;j<19;j++)if(logits[j]>logits[best])best=j;
+    const logits=T.logits(net.net,a.x,a.mask),mx=Math.max(...logits),lp=logits[a.chosen]-mx-Math.log(logits.reduce((sum,x)=>sum+Math.exp(x-mx),0)),value=critic(net.net,a.x,a.mask);close(a.old_logp,lp,'Independent every selected neural log probability',2e-4);for(let k=0;k<5;k++)close(a.critic_value[k],value[k],'Independent critic forward',2e-4);need(a.collect===(row.kind==='TRAIN'),'Stochastic versus greedy provenance');let best=0;for(let j=1;j<19;j++)if(logits[j]>logits[best])best=j;
     if(row.kind==='EVAL')need(best===a.chosen,'Independent Float64 greedy network argmax '+row.label+' at '+a.time_ns);else need(a.mask[a.chosen],'Stochastic selected action physically allowed');
     const sorted=logits.filter(Number.isFinite).sort((a,b)=>b-a);if(sorted.length>1){const margin=sorted[0]-sorted[1];minmargin=Math.min(minmargin,margin);if(margin===0)ties++;}
     nn++;if(row.kind==='EVAL')greedy++;else sampled++;if(nn%64===0)await new Promise(resolve=>setTimeout(resolve,10));

@@ -7,14 +7,17 @@ from bootstrap import L,G,registration,public_input,save_binary
 from dynamics import Physics,Config,WEIGHTS
 from engine import run as execute,metrics
 from nn_train import Learner,digest
-sys.path[:0]=[str(HERE),str(ROOT/'experiments/guard_ablation_20261018_v2')]
+sys.path[:0]=[str(HERE),str(ROOT/'experiments/guard_ablation_20261018_v3')]
 from guard_controller import GuardController
 from bank_model import BankModel,SavedNominal
 from repair_controller import RepairController
 from repair_rewards import labels as repaired_labels,old as original_rewards
 spec=importlib.util.spec_from_file_location('moderate_bank_builder',ROOT/'experiments/moderate_load_20261018/run_moderate.py')
+_bank_directory=str(ROOT/'experiments/moderate_load_20261018');sys.path.insert(0,_bank_directory)
 bank_module=importlib.util.module_from_spec(spec);spec.loader.exec_module(bank_module)
+sys.path.remove(_bank_directory)
 import numpy as np
+from resource_learning import wait_resources
 import torch
 torch.set_num_threads(1)
 os.environ['A24_LAB_GUARD_ENTRY']=str(ENTRY)
@@ -31,7 +34,7 @@ def pt(p,x):
 def loadpt(p):return torch.load(io.BytesIO(gzip.decompress(Path(p).read_bytes())),map_location='cpu',weights_only=False)
 
 def replay_training(out,rows):
-    total=0;records=[]
+    total=0;records=[];replayed_updates=0
     for row in rows:
         if row['kind']!='TRAIN':continue
         before=loadpt(out/(row['label']+'.BEFORE.pt.gz'));after=loadpt(out/(row['label']+'.AFTER.pt.gz'));data=loadpt(out/(row['label']+'.frames.pt.gz'))
@@ -41,18 +44,33 @@ def replay_training(out,rows):
             G.require(idx==f['index'] and again['old_logp']==f['old_logp'] and np.array_equal(again['value'],f['value']),'Exact stored stochastic RNG/input replay')
             total+=1
         G.require(torch.equal(learner.action_rng.get_state(),after['action_rng']),'All sampled actions account for action RNG')
+        learner.add(data['frames'],data['costs'])
+        def compare(a,b):
+            if torch.is_tensor(a):G.require(torch.equal(a,b),'Exact saved optimizer/RNG/parameter tensor replay')
+            elif isinstance(a,np.ndarray):G.require(np.array_equal(a,b),'Exact saved frame arithmetic replay')
+            elif isinstance(a,dict):
+                G.require(a.keys()==b.keys(),'Replay dictionary keys')
+                for k in a:compare(a[k],b[k])
+            elif isinstance(a,(list,tuple)):
+                G.require(len(a)==len(b),'Replay sequence length')
+                for x,y in zip(a,b):compare(x,y)
+            else:G.require(a==b,'Exact saved scalar/Adam/log replay')
+        compare(learner.snapshot(),after)
+        replayed_updates+=int(after['updates']>before['updates'])
         G.require(np.max(abs(np.asarray(data['costs']).sum(0)-np.asarray(data['reward_audit']['cost_sum'])))<1e-6,'Saved label sum')
         records.append(dict(label=row['label'],frames=len(data['frames']),before_sha256=G.sha(out/(row['label']+'.BEFORE.pt.gz')),after_sha256=G.sha(out/(row['label']+'.AFTER.pt.gz'))))
-    G.write_new(out/'STOCHASTIC_REPLAY.json',dict(status='PASS',episodes=len(records),frames=total,records=records,new_environment_START=0,same_torch_saved_RNG_replay=True,not_independent_float64_training_replay=True))
+    G.write_new(out/'STOCHASTIC_REPLAY.json',dict(status='PASS',episodes=len(records),frames=total,exact_saved_optimizer_update_replays=replayed_updates,records=records,new_environment_START=0,same_torch_saved_RNG_replay=True,not_independent_float64_training_replay=True))
 
 def main():
     op=read(HERE/'OPERATION.json');out=ROOT/op['output_dir'];opsha=G.sha(HERE/'OPERATION.json')
     G.require('--published' in sys.argv,'Publish finite registration first')
     for p in [*op['sources'],*op['input_pins']]:G.pin(p)
     G.require(not out.exists(),'Consumed namespace; no retry')
-    guard=G.process_guard(ENTRY);volumes=G.free_guard([ROOT,'D:/'])
+    guard=wait_resources(ENTRY,1536*1024**2,time.monotonic()+1800);volumes=G.free_guard([ROOT,'D:/'])
     import msvcrt
-    lock=(ROOT/'runtime/worker.lock').open('r+b');lock.seek(0);msvcrt.locking(lock.fileno(),msvcrt.LK_NBLCK,1)
+    lockpath=ROOT/'runtime/a24_local_worker.lock'
+    if not lockpath.exists():lockpath.write_bytes(b'0')
+    lock=lockpath.open('r+b');lock.seek(0);msvcrt.locking(lock.fileno(),msvcrt.LK_NBLCK,1)
     count=0;rows=[];started=time.monotonic()
     try:
         out.mkdir();G.write_new(out/'START.json',dict(utc=G.now(),operation_sha256=opsha,guard=guard,volumes=volumes,HEAD=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),uncommitted_changes=bool(subprocess.check_output(['git','status','--porcelain']))))
@@ -60,6 +78,7 @@ def main():
             base,_,_=L.initialize(registration(op));catalog=read(L.pin(registration(op)['catalog_pin']))
             physics=Physics(read(ROOT/'results/STATE_COST_IDENTIFICATION_20261017_01/MODEL.json'),Config(**op['physics']))
             inputs=read(op['inputs']['path']);train=inputs['training'];evaluation=inputs['evaluation'];banks={};refs={}
+            public_nominals=read(HERE/'PUBLIC_NOMINAL_CATALOG.json.gz')
             for case in train:
                 public,contexts=public_input(case,catalog);public['initial_ap_c']=case['temperature_c']
                 b=bank_module.bank(public,L.Model(base,contexts),case);saved(out/(case['id']+'.BANK.json.gz'),b)
@@ -74,18 +93,12 @@ def main():
                 elif cid.startswith('MID_'):b=read(ROOT/op['moderate_output']/(cid+'.BANK.json.gz'))
                 else:
                     b=read(ROOT/op['headroom_output']/(cid+'.BANK.json.gz'))
-                    raw=read(ROOT/op['density_output']/(cid+'_RL.raw.json.gz'))
-                    nominal=SavedNominal(public,raw['calls']);b={**b,'nominal_vectors':{k:list(v) for k,v in nominal.values.items()}}
+                    b={**b,'nominal_vectors':public_nominals[cid]}
                 return public,BankModel(b['jobs'],contexts),SavedNominal(public,[dict(nominal_vectors=b['nominal_vectors'])])
 
             def simulate(case,policy,kind,label,learner=None,reference=None):
                 nonlocal count
-                wait_start=time.monotonic()
-                while True:
-                    try:G.process_guard(ENTRY);break
-                    except RuntimeError as exc:
-                        if not any(x in str(exc) for x in ('Global Python leaf limit','Other own Python producer alive')) or time.monotonic()-wait_start>=30:raise
-                        print('PRE_START_SLOT_WAIT',str(exc),flush=True);time.sleep(5)
+                wait_resources(ENTRY,512*1024**2+case['n']*384*1024,started+op['wall_clock_limit_s'])
                 G.free_guard([ROOT,'D:/']);G.require(count<op['environment_cap'] and time.monotonic()-started<op['wall_clock_limit_s'],'Finite learning cap')
                 receipt=dict(event='START',label=label,case=case['id'],policy=policy,kind=kind,utc=G.now(),identity=L.digest([opsha,label]),start_id=L.digest([opsha,label]),durable_START_consumed=True,operation_sha256=opsha)
                 G.append(out/'receipts.jsonl',receipt);count+=1;print('START',count,label,'n',case['n'],flush=True)
@@ -104,6 +117,10 @@ def main():
                             print('PROGRESS',label,calls,round(state['now_ns']/1e9-35,2),flush=True)
                         return actor(state)
                     result=execute(public,model,progress,physics,case['common_potential_key'],receipt);m=metrics(result,case,physics)
+                    if neural:
+                        neural_calls=[c for c in actor.calls if not c.get('common_coalescing')]
+                        G.require(len(neural_calls)==len(actor.frames),'Every saved NN frame maps to actual decision')
+                        for call,frame in zip(neural_calls,actor.frames):call.update(old_logp=frame['old_logp'],critic_value=frame['value'].tolist(),collect=collect)
                     raw=out/(label+'.raw.json.gz');saved(raw,dict(result=result,calls=actor.calls,future_actual_work_used=False))
                     frames_sha=None;reward_audit=None
                     if neural:

@@ -7,9 +7,10 @@ from bootstrap import L,G,registration,public_input,save_binary,Nominal
 from dynamics import Config,Physics
 from engine import run as execute,metrics
 from nn_train import Learner,digest
-sys.path.insert(0,str(ROOT/'experiments/guard_ablation_20261018_v2'))
+sys.path.insert(0,str(ROOT/'experiments/guard_ablation_20261018_v3'))
 from guard_controller import GuardController
 from bank_model import BankModel,SavedNominal
+from resource_moderate import wait_resources
 import torch
 torch.set_num_threads(1)
 os.environ['A24_LAB_GUARD_ENTRY']=str(ENTRY)
@@ -44,9 +45,11 @@ def main():
     G.require('--published' in sys.argv,'Publish finite registration first')
     for p in [*op['sources'],*op['input_pins']]:G.pin(p)
     G.require(not out.exists(),'Consumed namespace; preserve failure, no retry')
-    guard=G.process_guard(ENTRY);volumes=G.free_guard([ROOT,'D:/'])
+    guard=wait_resources(ENTRY,1536*1024**2,time.monotonic()+1800);volumes=G.free_guard([ROOT,'D:/'])
     import msvcrt
-    lock=(ROOT/'runtime/worker.lock').open('r+b');lock.seek(0);msvcrt.locking(lock.fileno(),msvcrt.LK_NBLCK,1)
+    lockpath=ROOT/'runtime/a24_local_worker.lock'
+    if not lockpath.exists():lockpath.write_bytes(b'0')
+    lock=lockpath.open('r+b');lock.seek(0);msvcrt.locking(lock.fileno(),msvcrt.LK_NBLCK,1)
     count=0;rows=[];started=time.monotonic()
     try:
         out.mkdir();G.write_new(out/'START.json',dict(utc=G.now(),operation_sha256=opsha,guard=guard,volumes=volumes,HEAD=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),uncommitted_changes=bool(subprocess.check_output(['git','status','--porcelain']))))
@@ -62,12 +65,7 @@ def main():
                 b=bank(public,L.Model(base,contexts),case);saved(out/(case['id']+'.BANK.json.gz'),b)
                 model=BankModel(b['jobs'],contexts);nominal=SavedNominal(public,[dict(nominal_vectors=b['nominal_vectors'])])
                 for policy in op['policies']:
-                    wait_start=time.monotonic()
-                    while True:
-                        try:G.process_guard(ENTRY);break
-                        except RuntimeError as exc:
-                            if not any(x in str(exc) for x in ('Global Python leaf limit','Other own Python producer alive')) or time.monotonic()-wait_start>=30:raise
-                            print('PRE_START_SLOT_WAIT',str(exc),flush=True);time.sleep(5)
+                    wait_resources(ENTRY,512*1024**2+case['n']*384*1024,started+op['wall_clock_limit_s'])
                     G.free_guard([ROOT,'D:/'])
                     G.require(count<op['environment_cap'] and time.monotonic()-started<op['wall_clock_limit_s'],'Finite cap')
                     name=case['id']+'_'+policy;receipt=dict(event='START',label=name,case=case['id'],policy=policy,utc=G.now(),identity=L.digest([opsha,name]),start_id=L.digest([opsha,name]),durable_START_consumed=True,operation_sha256=opsha)

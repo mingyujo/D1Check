@@ -9,3 +9,5 @@
 이 단계는 부하구간을 확인하는 온라인대조이며 기존 과부하 상한을 새입력에 전용하지 않는다. 새입력상한/보호없는paired학습은 별도 등록한다. 완료J*는 자기마지막AVAILABLE까지 기저+증분이며 미완료는null, 완료응답P95와 전체도착/긴급/미응답/미완료를 함께 표시한다. A24 가설모형의 기술값이며 S26 실측결론과 합치지 않는다.
 
 사용자의 2026-10-18 제약완화 허용에 따라 AST/import/합성snapshot 검사만 Python 최대3(가용RAM1GiB/논리코어4 이상)에서 허용한다. native/학습/모형복원/LP는 이 예외를 쓰지 않고 기존global2와공유byte0mutex를 유지한다. 실제20논리코어이나 당시가용RAM약1.9GB여서 두시뮬레이션 동시생산은 선택하지 않았다.
+
+현재실행관리개정: 사용자가허용한독립결정론계산globalPython3/ownA24 1·single-thread·전용A24잠금과SHA고정peer/RAM/디스크검사를쓴다. 실제모형/입력/NN계약은불변이다. 원직렬소스와PREFLIGHT_RESULT는93e7784 및prestart_history에보존하고개정검사는PREFLIGHT_RESULT_V2로별도남긴다. 아직이단계OP는등록하지않았다.

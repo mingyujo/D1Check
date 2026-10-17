@@ -4,6 +4,7 @@ import ast,gzip,json,subprocess,sys,time
 HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[1]
 sys.path[:0]=[str(ROOT/'experiments/density_headroom_coupling_20261018'),str(ROOT/'experiments/density_headroom_20261018'),str(ROOT/'experiments/coupled_345_20261017'),str(ROOT/'reference/model_integration')]
 import runtime_guard as G
+from resource_bounds import wait_resources
 from dynamics import Physics,Config
 from bounds import envelopes,build,lift
 from coupling import strengthen,phase_upper
@@ -20,9 +21,11 @@ def main():
     for p in [*op['sources'],*op['input_pins']]:G.pin(p)
     G.require(not out.exists(),'Consumed operation; preserve failure')
     G.OWN_TOKENS+=('moderate_headroom_20261018','guard_learning_20261018','moderate_load_20261018','coupled_345_20261017')
-    guard=G.process_guard(Path(__file__).resolve());vol=G.free_guard([ROOT,'D:/'])
+    guard=wait_resources(Path(__file__).resolve(),768*1024**2,time.monotonic()+1800);vol=G.free_guard([ROOT,'D:/'])
     import msvcrt
-    lock=(ROOT/'runtime/worker.lock').open('r+b');lock.seek(0);msvcrt.locking(lock.fileno(),msvcrt.LK_NBLCK,1)
+    lockpath=ROOT/'runtime/a24_local_worker.lock'
+    if not lockpath.exists():lockpath.write_bytes(b'0')
+    lock=lockpath.open('r+b');lock.seek(0);msvcrt.locking(lock.fileno(),msvcrt.LK_NBLCK,1)
     count=0;started=time.monotonic()
     try:
         out.mkdir();G.write_new(out/'START.json',dict(utc=G.now(),operation_sha256=opsha,guard=guard,volumes=vol,new_environment_START=0))
@@ -40,7 +43,7 @@ def main():
                 for tier in ('EDF','STRONG'):
                     targets={k:edf['original'][k] if tier=='EDF' else max(edf['original'][k],on['original'][k]) for k in ('on_time','urgent_on_time')}
                     for kind in ('energy','temperature'):
-                        G.process_guard(Path(__file__).resolve());G.free_guard([ROOT,'D:/']);G.require(count<80 and time.monotonic()-started<op['wall_clock_limit_s'],'Finite saved LP cap')
+                        wait_resources(Path(__file__).resolve(),512*1024**2+len(jobs)*128*1024,started+op['wall_clock_limit_s']);G.free_guard([ROOT,'D:/']);G.require(count<80 and time.monotonic()-started<op['wall_clock_limit_s'],'Finite saved LP cap')
                         finish=case['drain_stop_s'] if kind=='energy' else H
                         p,meta=build(jobs,physics,env,targets,finish,None if kind=='energy' else H);extra=strengthen(p,meta,jobs,physics,env)
                         for r in references:

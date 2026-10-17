@@ -5,3 +5,5 @@
 원density_headroom bounds와검증된phase/RC결합필요조건을그대로사용한다. 같은물리식의분수route/선점/자유temperature셀/유리한열침적완화이며실제최적일정이아니다. 원3정책의모든trace를각완화에lift하고저장boxeddual을별도JS로검산한다. primal/search실패를최적증거로쓰지않는다. 모든80solver상태/수치여유/dual확보여부/20capacity필요조건을표시한다. 적격일정없음은null/동시보존일정미발견이며조건삭제가아니다.
 
 EDF층은원EDF전체/긴급정시각보존,STRONG은원EDF/고정보호ON의각최대수를보존한다. 전부AVAILABLE완료와에너지자기완료/온도원3정책동결창내완료를구분한다. 모든426행/학습/손해/제외비고를보존한다. 원10입력상한도보존하며새20에전용하지않는다. 같은입력의7개온라인정책중최선발견량은조건별/지표별선택묶음으로단일정책공동달성이아니다. A24가설모형J*/AP이며실기기/S26최적한계가아니다.
+
+현재실행관리개정: 사용자가허용한독립결정론계산globalPython3/ownA24 1·single-thread·전용A24잠금과SHA고정peer/RAM/디스크검사를쓴다. 실제모형/입력/NN계약은불변이다. 원직렬소스와PREFLIGHT_RESULT는93e7784 및prestart_history에보존하고개정검사는PREFLIGHT_RESULT_V2로별도남긴다. 아직이단계OP는등록하지않았다.
