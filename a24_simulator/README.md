@@ -1,3 +1,5 @@
+**선택 기회 보완 등록:** [새 도착 입력·대응 검증·예산 이전](docs/CHOICE_OPPORTUNITIES.md). 기존 CPU/GPU 슬롯·물리·보호·상대 납기를 유지한 6대응쌍/24 START 개발 검증입니다. 닫힌 RL 예약의 미사용33 중28을 이전했으므로 원33을 다시 배분하지 않습니다. 실행 완료·정책 우위는 새 결과의 terminal로 판단합니다.
+
 [최신 223회 실행 파일·원 PC 경로·검증된 ZIP 백업](docs/LATEST_EXECUTION_FILES.md)
 
 **RR＋새 상태비용 RL 완료:** [최신 결과·검증·파일](docs/COST_RL_COMPARISON.md) · [5정책 화면](results/RL_COST_20261017_01/REPORT.html). 실제학습96/DEV선정/미사용seed평가/NN제외대조와저장·신경망재생·6뷰QA를완료했습니다. 실측절감/물리우위PASS는아닙니다. 아래진행상태는보존이력입니다.

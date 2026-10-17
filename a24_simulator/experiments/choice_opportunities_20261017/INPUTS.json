@@ -1,0 +1,4406 @@
+{
+  "schema": "A24-choice-opportunity-design-v1",
+  "spec": {
+    "schema": "A24-choice-opportunity-design-v1",
+    "seed": 20269117,
+    "n": 48,
+    "mixes": [
+      0.25,
+      0.5,
+      0.75
+    ],
+    "packet_sizes": [
+      2,
+      4
+    ],
+    "seconds_per_request": 0.8,
+    "reference_load": 0.95,
+    "start_s": 35,
+    "tail_s": 15,
+    "purpose": "Expose simultaneous request and route choices, not maximize measured policy advantage",
+    "selection_by_policy_result": false,
+    "physical_capacity": {
+      "CPU": 1,
+      "GPU": 1,
+      "total": 2
+    },
+    "protection_changed": false,
+    "relative_deadlines_changed": false,
+    "primary_thresholds": {
+      "two_free_rate_gain_pp": 10,
+      "multiple_request_rate_gain_pp": 10
+    },
+    "independent_evaluation": false,
+    "scope": "preregistered development witnesses; no RL training"
+  },
+  "cases": [
+    {
+      "id": "C25_P2_REFERENCE",
+      "pair": "C25_P2",
+      "arm": "REFERENCE",
+      "mix": 0.25,
+      "packet": 2,
+      "n": 48,
+      "input": {
+        "requests": [
+          {
+            "ordinal": 0,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.6
+          },
+          {
+            "ordinal": 1,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35.08,
+            "deadline_s": 36.68
+          },
+          {
+            "ordinal": 2,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 35.23,
+            "deadline_s": 36.35
+          },
+          {
+            "ordinal": 3,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35.41,
+            "deadline_s": 38.66
+          },
+          {
+            "ordinal": 4,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35.7,
+            "deadline_s": 37.3
+          },
+          {
+            "ordinal": 5,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 36,
+            "deadline_s": 38.2
+          },
+          {
+            "ordinal": 6,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 36.62934253,
+            "deadline_s": 41.62934253
+          },
+          {
+            "ordinal": 7,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 36.70934253,
+            "deadline_s": 39.95934253
+          },
+          {
+            "ordinal": 8,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 36.85934253,
+            "deadline_s": 40.35934253
+          },
+          {
+            "ordinal": 9,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 37.03934253,
+            "deadline_s": 38.57934253
+          },
+          {
+            "ordinal": 10,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 37.32934253,
+            "deadline_s": 38.92934253
+          },
+          {
+            "ordinal": 11,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 37.62934253,
+            "deadline_s": 42.62934253
+          },
+          {
+            "ordinal": 12,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 38.25868506,
+            "deadline_s": 39.85868506
+          },
+          {
+            "ordinal": 13,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 38.33868506,
+            "deadline_s": 40.61368506
+          },
+          {
+            "ordinal": 14,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 38.48868506,
+            "deadline_s": 39.91868506
+          },
+          {
+            "ordinal": 15,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 38.66868506,
+            "deadline_s": 39.78868506
+          },
+          {
+            "ordinal": 16,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 38.95868506,
+            "deadline_s": 42.20868506
+          },
+          {
+            "ordinal": 17,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 39.25868506,
+            "deadline_s": 40.85868506
+          },
+          {
+            "ordinal": 18,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 39.88802759,
+            "deadline_s": 44.88802759
+          },
+          {
+            "ordinal": 19,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 39.96802759,
+            "deadline_s": 43.46802759
+          },
+          {
+            "ordinal": 20,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 40.11802759,
+            "deadline_s": 42.31802759
+          },
+          {
+            "ordinal": 21,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 40.29802759,
+            "deadline_s": 41.00202759
+          },
+          {
+            "ordinal": 22,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 40.58802759,
+            "deadline_s": 42.18802759
+          },
+          {
+            "ordinal": 23,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 40.88802759,
+            "deadline_s": 43.08802759
+          },
+          {
+            "ordinal": 24,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 41.1880083,
+            "deadline_s": 46.1880083
+          },
+          {
+            "ordinal": 25,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 41.2680083,
+            "deadline_s": 43.5430083
+          },
+          {
+            "ordinal": 26,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 41.4180083,
+            "deadline_s": 43.6930083
+          },
+          {
+            "ordinal": 27,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 41.5980083,
+            "deadline_s": 44.8480083
+          },
+          {
+            "ordinal": 28,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 41.8880083,
+            "deadline_s": 46.8880083
+          },
+          {
+            "ordinal": 29,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 42.1880083,
+            "deadline_s": 43.7880083
+          },
+          {
+            "ordinal": 30,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 42.98203174,
+            "deadline_s": 44.41203174
+          },
+          {
+            "ordinal": 31,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 43.06203174,
+            "deadline_s": 43.55483174
+          },
+          {
+            "ordinal": 32,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 43.21203174,
+            "deadline_s": 46.46203174
+          },
+          {
+            "ordinal": 33,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 43.39203174,
+            "deadline_s": 44.09603174
+          },
+          {
+            "ordinal": 34,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 43.68203174,
+            "deadline_s": 44.80203174
+          },
+          {
+            "ordinal": 35,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 43.98203174,
+            "deadline_s": 47.23203174
+          },
+          {
+            "ordinal": 36,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 44.28201245,
+            "deadline_s": 49.28201245
+          },
+          {
+            "ordinal": 37,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 44.36201245,
+            "deadline_s": 45.36301245
+          },
+          {
+            "ordinal": 38,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 44.51201245,
+            "deadline_s": 49.51201245
+          },
+          {
+            "ordinal": 39,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 44.69201245,
+            "deadline_s": 48.19201245
+          },
+          {
+            "ordinal": 40,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 44.98201245,
+            "deadline_s": 48.23201245
+          },
+          {
+            "ordinal": 41,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 45.28201245,
+            "deadline_s": 50.28201245
+          },
+          {
+            "ordinal": 42,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 45.91135498,
+            "deadline_s": 46.61535498
+          },
+          {
+            "ordinal": 43,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 45.99135498,
+            "deadline_s": 47.59135498
+          },
+          {
+            "ordinal": 44,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 46.14135498,
+            "deadline_s": 51.14135498
+          },
+          {
+            "ordinal": 45,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 46.32135498,
+            "deadline_s": 49.57135498
+          },
+          {
+            "ordinal": 46,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 46.61135498,
+            "deadline_s": 48.04135498
+          },
+          {
+            "ordinal": 47,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 46.91135498,
+            "deadline_s": 50.16135498
+          }
+        ],
+        "seed": 20269117,
+        "rl_seed": 20261028,
+        "initial_context": "M128",
+        "alpha": 1
+      },
+      "work_window": [
+        35,
+        61.91135498
+      ],
+      "service_stop_s": 61.91135498,
+      "drain_stop_s": 91.91135498,
+      "observation_end_s": 241.91135498,
+      "common_potential_key": [
+        "A24_CHOICE_OPPORTUNITY_20261017",
+        20269117,
+        "C25_P2"
+      ]
+    },
+    {
+      "id": "C25_P2_PACKET",
+      "pair": "C25_P2",
+      "arm": "PACKET",
+      "mix": 0.25,
+      "packet": 2,
+      "n": 48,
+      "input": {
+        "requests": [
+          {
+            "ordinal": 0,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.6
+          },
+          {
+            "ordinal": 1,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.6
+          },
+          {
+            "ordinal": 2,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 36.6,
+            "deadline_s": 37.72
+          },
+          {
+            "ordinal": 3,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 36.6,
+            "deadline_s": 39.85
+          },
+          {
+            "ordinal": 4,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 38.2,
+            "deadline_s": 39.8
+          },
+          {
+            "ordinal": 5,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 38.2,
+            "deadline_s": 40.4
+          },
+          {
+            "ordinal": 6,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 39.8,
+            "deadline_s": 44.8
+          },
+          {
+            "ordinal": 7,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 39.8,
+            "deadline_s": 43.05
+          },
+          {
+            "ordinal": 8,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 41.4,
+            "deadline_s": 44.9
+          },
+          {
+            "ordinal": 9,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 41.4,
+            "deadline_s": 42.94
+          },
+          {
+            "ordinal": 10,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 43,
+            "deadline_s": 44.6
+          },
+          {
+            "ordinal": 11,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 43,
+            "deadline_s": 48
+          },
+          {
+            "ordinal": 12,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 44.6,
+            "deadline_s": 46.2
+          },
+          {
+            "ordinal": 13,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 44.6,
+            "deadline_s": 46.875
+          },
+          {
+            "ordinal": 14,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 46.2,
+            "deadline_s": 47.63
+          },
+          {
+            "ordinal": 15,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 46.2,
+            "deadline_s": 47.32
+          },
+          {
+            "ordinal": 16,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 47.8,
+            "deadline_s": 51.05
+          },
+          {
+            "ordinal": 17,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 47.8,
+            "deadline_s": 49.4
+          },
+          {
+            "ordinal": 18,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 49.4,
+            "deadline_s": 54.4
+          },
+          {
+            "ordinal": 19,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 49.4,
+            "deadline_s": 52.9
+          },
+          {
+            "ordinal": 20,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 51,
+            "deadline_s": 53.2
+          },
+          {
+            "ordinal": 21,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 51,
+            "deadline_s": 51.704
+          },
+          {
+            "ordinal": 22,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 52.6,
+            "deadline_s": 54.2
+          },
+          {
+            "ordinal": 23,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 52.6,
+            "deadline_s": 54.8
+          },
+          {
+            "ordinal": 24,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 54.2,
+            "deadline_s": 59.2
+          },
+          {
+            "ordinal": 25,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 54.2,
+            "deadline_s": 56.475
+          },
+          {
+            "ordinal": 26,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 55.8,
+            "deadline_s": 58.075
+          },
+          {
+            "ordinal": 27,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 55.8,
+            "deadline_s": 59.05
+          },
+          {
+            "ordinal": 28,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 57.4,
+            "deadline_s": 62.4
+          },
+          {
+            "ordinal": 29,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 57.4,
+            "deadline_s": 59
+          },
+          {
+            "ordinal": 30,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 59,
+            "deadline_s": 60.43
+          },
+          {
+            "ordinal": 31,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 59,
+            "deadline_s": 59.4928
+          },
+          {
+            "ordinal": 32,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 60.6,
+            "deadline_s": 63.85
+          },
+          {
+            "ordinal": 33,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 60.6,
+            "deadline_s": 61.304
+          },
+          {
+            "ordinal": 34,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 62.2,
+            "deadline_s": 63.32
+          },
+          {
+            "ordinal": 35,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 62.2,
+            "deadline_s": 65.45
+          },
+          {
+            "ordinal": 36,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 63.8,
+            "deadline_s": 68.8
+          },
+          {
+            "ordinal": 37,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 63.8,
+            "deadline_s": 64.801
+          },
+          {
+            "ordinal": 38,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 65.4,
+            "deadline_s": 70.4
+          },
+          {
+            "ordinal": 39,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 65.4,
+            "deadline_s": 68.9
+          },
+          {
+            "ordinal": 40,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 67,
+            "deadline_s": 70.25
+          },
+          {
+            "ordinal": 41,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 67,
+            "deadline_s": 72
+          },
+          {
+            "ordinal": 42,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 68.6,
+            "deadline_s": 69.304
+          },
+          {
+            "ordinal": 43,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 68.6,
+            "deadline_s": 70.2
+          },
+          {
+            "ordinal": 44,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 70.2,
+            "deadline_s": 75.2
+          },
+          {
+            "ordinal": 45,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 70.2,
+            "deadline_s": 73.45
+          },
+          {
+            "ordinal": 46,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 71.8,
+            "deadline_s": 73.23
+          },
+          {
+            "ordinal": 47,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 71.8,
+            "deadline_s": 75.05
+          }
+        ],
+        "seed": 20269117,
+        "rl_seed": 20261028,
+        "initial_context": "M128",
+        "alpha": 1
+      },
+      "work_window": [
+        35,
+        86.8
+      ],
+      "service_stop_s": 86.8,
+      "drain_stop_s": 116.8,
+      "observation_end_s": 266.8,
+      "common_potential_key": [
+        "A24_CHOICE_OPPORTUNITY_20261017",
+        20269117,
+        "C25_P2"
+      ]
+    },
+    {
+      "id": "C25_P4_REFERENCE",
+      "pair": "C25_P4",
+      "arm": "REFERENCE",
+      "mix": 0.25,
+      "packet": 4,
+      "n": 48,
+      "input": {
+        "requests": [
+          {
+            "ordinal": 0,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.6
+          },
+          {
+            "ordinal": 1,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.6
+          },
+          {
+            "ordinal": 2,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 35.06,
+            "deadline_s": 36.18
+          },
+          {
+            "ordinal": 3,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35.06,
+            "deadline_s": 38.31
+          },
+          {
+            "ordinal": 4,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35.12,
+            "deadline_s": 36.72
+          },
+          {
+            "ordinal": 5,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 35.12,
+            "deadline_s": 37.32
+          },
+          {
+            "ordinal": 6,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 36.62934253,
+            "deadline_s": 41.62934253
+          },
+          {
+            "ordinal": 7,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 36.62934253,
+            "deadline_s": 39.87934253
+          },
+          {
+            "ordinal": 8,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 36.68934253,
+            "deadline_s": 40.18934253
+          },
+          {
+            "ordinal": 9,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 36.68934253,
+            "deadline_s": 38.22934253
+          },
+          {
+            "ordinal": 10,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 36.74934253,
+            "deadline_s": 38.34934253
+          },
+          {
+            "ordinal": 11,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 36.74934253,
+            "deadline_s": 41.74934253
+          },
+          {
+            "ordinal": 12,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 38.25868506,
+            "deadline_s": 39.85868506
+          },
+          {
+            "ordinal": 13,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 38.25868506,
+            "deadline_s": 40.53368506
+          },
+          {
+            "ordinal": 14,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 38.31868506,
+            "deadline_s": 39.74868506
+          },
+          {
+            "ordinal": 15,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 38.31868506,
+            "deadline_s": 39.43868506
+          },
+          {
+            "ordinal": 16,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 38.37868506,
+            "deadline_s": 41.62868506
+          },
+          {
+            "ordinal": 17,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 38.37868506,
+            "deadline_s": 39.97868506
+          },
+          {
+            "ordinal": 18,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 40.70269886,
+            "deadline_s": 45.70269886
+          },
+          {
+            "ordinal": 19,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 40.70269886,
+            "deadline_s": 44.20269886
+          },
+          {
+            "ordinal": 20,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 40.76269886,
+            "deadline_s": 42.96269886
+          },
+          {
+            "ordinal": 21,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 40.76269886,
+            "deadline_s": 41.46669886
+          },
+          {
+            "ordinal": 22,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 40.82269885,
+            "deadline_s": 42.42269885
+          },
+          {
+            "ordinal": 23,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 40.82269885,
+            "deadline_s": 43.02269885
+          },
+          {
+            "ordinal": 24,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 42.00267956,
+            "deadline_s": 47.00267956
+          },
+          {
+            "ordinal": 25,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 42.00267956,
+            "deadline_s": 44.27767956
+          },
+          {
+            "ordinal": 26,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 42.06267956,
+            "deadline_s": 44.33767956
+          },
+          {
+            "ordinal": 27,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 42.06267956,
+            "deadline_s": 45.31267956
+          },
+          {
+            "ordinal": 28,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 42.12267956,
+            "deadline_s": 47.12267956
+          },
+          {
+            "ordinal": 29,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 42.12267956,
+            "deadline_s": 43.72267956
+          },
+          {
+            "ordinal": 30,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 43.796703,
+            "deadline_s": 45.226703
+          },
+          {
+            "ordinal": 31,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 43.796703,
+            "deadline_s": 44.289503
+          },
+          {
+            "ordinal": 32,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 43.856703,
+            "deadline_s": 47.106703
+          },
+          {
+            "ordinal": 33,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 43.856703,
+            "deadline_s": 44.560703
+          },
+          {
+            "ordinal": 34,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 43.916703,
+            "deadline_s": 45.036703
+          },
+          {
+            "ordinal": 35,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 43.916703,
+            "deadline_s": 47.166703
+          },
+          {
+            "ordinal": 36,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 45.74667407,
+            "deadline_s": 50.74667407
+          },
+          {
+            "ordinal": 37,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 45.74667407,
+            "deadline_s": 46.74767407
+          },
+          {
+            "ordinal": 38,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 45.80667407,
+            "deadline_s": 50.80667407
+          },
+          {
+            "ordinal": 39,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 45.80667407,
+            "deadline_s": 49.30667407
+          },
+          {
+            "ordinal": 40,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 45.86667407,
+            "deadline_s": 49.11667407
+          },
+          {
+            "ordinal": 41,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 45.86667407,
+            "deadline_s": 50.86667407
+          },
+          {
+            "ordinal": 42,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 47.3760166,
+            "deadline_s": 48.0800166
+          },
+          {
+            "ordinal": 43,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 47.3760166,
+            "deadline_s": 48.9760166
+          },
+          {
+            "ordinal": 44,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 47.4360166,
+            "deadline_s": 52.4360166
+          },
+          {
+            "ordinal": 45,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 47.4360166,
+            "deadline_s": 50.6860166
+          },
+          {
+            "ordinal": 46,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 47.4960166,
+            "deadline_s": 48.9260166
+          },
+          {
+            "ordinal": 47,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 47.4960166,
+            "deadline_s": 50.7460166
+          }
+        ],
+        "seed": 20269117,
+        "rl_seed": 20261028,
+        "initial_context": "M128",
+        "alpha": 1
+      },
+      "work_window": [
+        35,
+        62.4960166
+      ],
+      "service_stop_s": 62.4960166,
+      "drain_stop_s": 92.49601659999999,
+      "observation_end_s": 242.4960166,
+      "common_potential_key": [
+        "A24_CHOICE_OPPORTUNITY_20261017",
+        20269117,
+        "C25_P4"
+      ]
+    },
+    {
+      "id": "C25_P4_PACKET",
+      "pair": "C25_P4",
+      "arm": "PACKET",
+      "mix": 0.25,
+      "packet": 4,
+      "n": 48,
+      "input": {
+        "requests": [
+          {
+            "ordinal": 0,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.6
+          },
+          {
+            "ordinal": 1,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.6
+          },
+          {
+            "ordinal": 2,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 35,
+            "deadline_s": 36.12
+          },
+          {
+            "ordinal": 3,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 38.25
+          },
+          {
+            "ordinal": 4,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 38.2,
+            "deadline_s": 39.8
+          },
+          {
+            "ordinal": 5,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 38.2,
+            "deadline_s": 40.4
+          },
+          {
+            "ordinal": 6,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 38.2,
+            "deadline_s": 43.2
+          },
+          {
+            "ordinal": 7,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 38.2,
+            "deadline_s": 41.45
+          },
+          {
+            "ordinal": 8,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 41.4,
+            "deadline_s": 44.9
+          },
+          {
+            "ordinal": 9,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 41.4,
+            "deadline_s": 42.94
+          },
+          {
+            "ordinal": 10,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 41.4,
+            "deadline_s": 43
+          },
+          {
+            "ordinal": 11,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 41.4,
+            "deadline_s": 46.4
+          },
+          {
+            "ordinal": 12,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 44.6,
+            "deadline_s": 46.2
+          },
+          {
+            "ordinal": 13,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 44.6,
+            "deadline_s": 46.875
+          },
+          {
+            "ordinal": 14,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 44.6,
+            "deadline_s": 46.03
+          },
+          {
+            "ordinal": 15,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 44.6,
+            "deadline_s": 45.72
+          },
+          {
+            "ordinal": 16,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 47.8,
+            "deadline_s": 51.05
+          },
+          {
+            "ordinal": 17,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 47.8,
+            "deadline_s": 49.4
+          },
+          {
+            "ordinal": 18,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 47.8,
+            "deadline_s": 52.8
+          },
+          {
+            "ordinal": 19,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 47.8,
+            "deadline_s": 51.3
+          },
+          {
+            "ordinal": 20,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 51,
+            "deadline_s": 53.2
+          },
+          {
+            "ordinal": 21,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 51,
+            "deadline_s": 51.704
+          },
+          {
+            "ordinal": 22,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 51,
+            "deadline_s": 52.6
+          },
+          {
+            "ordinal": 23,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 51,
+            "deadline_s": 53.2
+          },
+          {
+            "ordinal": 24,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 54.2,
+            "deadline_s": 59.2
+          },
+          {
+            "ordinal": 25,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 54.2,
+            "deadline_s": 56.475
+          },
+          {
+            "ordinal": 26,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 54.2,
+            "deadline_s": 56.475
+          },
+          {
+            "ordinal": 27,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 54.2,
+            "deadline_s": 57.45
+          },
+          {
+            "ordinal": 28,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 57.4,
+            "deadline_s": 62.4
+          },
+          {
+            "ordinal": 29,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 57.4,
+            "deadline_s": 59
+          },
+          {
+            "ordinal": 30,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 57.4,
+            "deadline_s": 58.83
+          },
+          {
+            "ordinal": 31,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 57.4,
+            "deadline_s": 57.8928
+          },
+          {
+            "ordinal": 32,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 60.6,
+            "deadline_s": 63.85
+          },
+          {
+            "ordinal": 33,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 60.6,
+            "deadline_s": 61.304
+          },
+          {
+            "ordinal": 34,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 60.6,
+            "deadline_s": 61.72
+          },
+          {
+            "ordinal": 35,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 60.6,
+            "deadline_s": 63.85
+          },
+          {
+            "ordinal": 36,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 63.8,
+            "deadline_s": 68.8
+          },
+          {
+            "ordinal": 37,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 63.8,
+            "deadline_s": 64.801
+          },
+          {
+            "ordinal": 38,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 63.8,
+            "deadline_s": 68.8
+          },
+          {
+            "ordinal": 39,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 63.8,
+            "deadline_s": 67.3
+          },
+          {
+            "ordinal": 40,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 67,
+            "deadline_s": 70.25
+          },
+          {
+            "ordinal": 41,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 67,
+            "deadline_s": 72
+          },
+          {
+            "ordinal": 42,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 67,
+            "deadline_s": 67.704
+          },
+          {
+            "ordinal": 43,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 67,
+            "deadline_s": 68.6
+          },
+          {
+            "ordinal": 44,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 70.2,
+            "deadline_s": 75.2
+          },
+          {
+            "ordinal": 45,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 70.2,
+            "deadline_s": 73.45
+          },
+          {
+            "ordinal": 46,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 70.2,
+            "deadline_s": 71.63
+          },
+          {
+            "ordinal": 47,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 70.2,
+            "deadline_s": 73.45
+          }
+        ],
+        "seed": 20269117,
+        "rl_seed": 20261028,
+        "initial_context": "M128",
+        "alpha": 1
+      },
+      "work_window": [
+        35,
+        85.2
+      ],
+      "service_stop_s": 85.2,
+      "drain_stop_s": 115.2,
+      "observation_end_s": 265.2,
+      "common_potential_key": [
+        "A24_CHOICE_OPPORTUNITY_20261017",
+        20269117,
+        "C25_P4"
+      ]
+    },
+    {
+      "id": "C50_P2_REFERENCE",
+      "pair": "C50_P2",
+      "arm": "REFERENCE",
+      "mix": 0.5,
+      "packet": 2,
+      "n": 48,
+      "input": {
+        "requests": [
+          {
+            "ordinal": 0,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.6
+          },
+          {
+            "ordinal": 1,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 35.08,
+            "deadline_s": 38.58
+          },
+          {
+            "ordinal": 2,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 35.23,
+            "deadline_s": 37.43
+          },
+          {
+            "ordinal": 3,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 35.41,
+            "deadline_s": 36.114
+          },
+          {
+            "ordinal": 4,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 35.7,
+            "deadline_s": 36.701
+          },
+          {
+            "ordinal": 5,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 36,
+            "deadline_s": 36.4928
+          },
+          {
+            "ordinal": 6,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 36.25,
+            "deadline_s": 37.37
+          },
+          {
+            "ordinal": 7,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 36.33,
+            "deadline_s": 37.87
+          },
+          {
+            "ordinal": 8,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 36.48,
+            "deadline_s": 39.73
+          },
+          {
+            "ordinal": 9,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 36.66,
+            "deadline_s": 38.86
+          },
+          {
+            "ordinal": 10,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 36.95,
+            "deadline_s": 40.2
+          },
+          {
+            "ordinal": 11,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 37.25,
+            "deadline_s": 42.25
+          },
+          {
+            "ordinal": 12,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 37.71466162,
+            "deadline_s": 40.96466162
+          },
+          {
+            "ordinal": 13,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 37.79466162,
+            "deadline_s": 41.29466162
+          },
+          {
+            "ordinal": 14,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 37.94466162,
+            "deadline_s": 39.37466162
+          },
+          {
+            "ordinal": 15,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 38.12466162,
+            "deadline_s": 39.72466162
+          },
+          {
+            "ordinal": 16,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 38.41466162,
+            "deadline_s": 40.61466162
+          },
+          {
+            "ordinal": 17,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 38.71466162,
+            "deadline_s": 43.71466162
+          },
+          {
+            "ordinal": 18,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 39.17932324,
+            "deadline_s": 39.88332324
+          },
+          {
+            "ordinal": 19,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 39.25932324,
+            "deadline_s": 40.85932324
+          },
+          {
+            "ordinal": 20,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 39.40932324,
+            "deadline_s": 40.11332324
+          },
+          {
+            "ordinal": 21,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 39.58932324,
+            "deadline_s": 41.01932324
+          },
+          {
+            "ordinal": 22,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 39.87932324,
+            "deadline_s": 40.58332324
+          },
+          {
+            "ordinal": 23,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 40.17932324,
+            "deadline_s": 41.60932324
+          },
+          {
+            "ordinal": 24,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 40.42932324,
+            "deadline_s": 42.70432324
+          },
+          {
+            "ordinal": 25,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 40.50932324,
+            "deadline_s": 41.62932324
+          },
+          {
+            "ordinal": 26,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 40.65932324,
+            "deadline_s": 43.90932324
+          },
+          {
+            "ordinal": 27,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 40.83932324,
+            "deadline_s": 42.43932324
+          },
+          {
+            "ordinal": 28,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 41.12932324,
+            "deadline_s": 42.13032324
+          },
+          {
+            "ordinal": 29,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 41.42932324,
+            "deadline_s": 43.62932324
+          },
+          {
+            "ordinal": 30,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 41.89398486,
+            "deadline_s": 43.32398486
+          },
+          {
+            "ordinal": 31,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 41.97398486,
+            "deadline_s": 42.46678486
+          },
+          {
+            "ordinal": 32,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 42.12398486,
+            "deadline_s": 47.12398486
+          },
+          {
+            "ordinal": 33,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 42.30398486,
+            "deadline_s": 43.00798486
+          },
+          {
+            "ordinal": 34,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 42.59398486,
+            "deadline_s": 47.59398486
+          },
+          {
+            "ordinal": 35,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 42.89398486,
+            "deadline_s": 44.43398486
+          },
+          {
+            "ordinal": 36,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 43.14398486,
+            "deadline_s": 44.74398486
+          },
+          {
+            "ordinal": 37,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 43.22398486,
+            "deadline_s": 45.42398486
+          },
+          {
+            "ordinal": 38,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 43.37398486,
+            "deadline_s": 44.07798486
+          },
+          {
+            "ordinal": 39,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 43.55398486,
+            "deadline_s": 45.15398486
+          },
+          {
+            "ordinal": 40,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 43.84398486,
+            "deadline_s": 47.09398486
+          },
+          {
+            "ordinal": 41,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 44.14398486,
+            "deadline_s": 46.41898486
+          },
+          {
+            "ordinal": 42,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 44.60864648,
+            "deadline_s": 46.80864648
+          },
+          {
+            "ordinal": 43,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 44.68864648,
+            "deadline_s": 49.68864648
+          },
+          {
+            "ordinal": 44,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 44.83864648,
+            "deadline_s": 46.26864648
+          },
+          {
+            "ordinal": 45,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 45.01864648,
+            "deadline_s": 50.01864648
+          },
+          {
+            "ordinal": 46,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 45.30864648,
+            "deadline_s": 46.73864648
+          },
+          {
+            "ordinal": 47,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 45.60864648,
+            "deadline_s": 48.85864648
+          }
+        ],
+        "seed": 20269117,
+        "rl_seed": 20261028,
+        "initial_context": "M128",
+        "alpha": 1
+      },
+      "work_window": [
+        35,
+        60.60864648
+      ],
+      "service_stop_s": 60.60864648,
+      "drain_stop_s": 90.60864648,
+      "observation_end_s": 240.60864648,
+      "common_potential_key": [
+        "A24_CHOICE_OPPORTUNITY_20261017",
+        20269117,
+        "C50_P2"
+      ]
+    },
+    {
+      "id": "C50_P2_PACKET",
+      "pair": "C50_P2",
+      "arm": "PACKET",
+      "mix": 0.5,
+      "packet": 2,
+      "n": 48,
+      "input": {
+        "requests": [
+          {
+            "ordinal": 0,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.6
+          },
+          {
+            "ordinal": 1,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 35,
+            "deadline_s": 38.5
+          },
+          {
+            "ordinal": 2,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 36.6,
+            "deadline_s": 38.8
+          },
+          {
+            "ordinal": 3,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 36.6,
+            "deadline_s": 37.304
+          },
+          {
+            "ordinal": 4,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 38.2,
+            "deadline_s": 39.201
+          },
+          {
+            "ordinal": 5,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 38.2,
+            "deadline_s": 38.6928
+          },
+          {
+            "ordinal": 6,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 39.8,
+            "deadline_s": 40.92
+          },
+          {
+            "ordinal": 7,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 39.8,
+            "deadline_s": 41.34
+          },
+          {
+            "ordinal": 8,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 41.4,
+            "deadline_s": 44.65
+          },
+          {
+            "ordinal": 9,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 41.4,
+            "deadline_s": 43.6
+          },
+          {
+            "ordinal": 10,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 43,
+            "deadline_s": 46.25
+          },
+          {
+            "ordinal": 11,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 43,
+            "deadline_s": 48
+          },
+          {
+            "ordinal": 12,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 44.6,
+            "deadline_s": 47.85
+          },
+          {
+            "ordinal": 13,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 44.6,
+            "deadline_s": 48.1
+          },
+          {
+            "ordinal": 14,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 46.2,
+            "deadline_s": 47.63
+          },
+          {
+            "ordinal": 15,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 46.2,
+            "deadline_s": 47.8
+          },
+          {
+            "ordinal": 16,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 47.8,
+            "deadline_s": 50
+          },
+          {
+            "ordinal": 17,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 47.8,
+            "deadline_s": 52.8
+          },
+          {
+            "ordinal": 18,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 49.4,
+            "deadline_s": 50.104
+          },
+          {
+            "ordinal": 19,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 49.4,
+            "deadline_s": 51
+          },
+          {
+            "ordinal": 20,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 51,
+            "deadline_s": 51.704
+          },
+          {
+            "ordinal": 21,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 51,
+            "deadline_s": 52.43
+          },
+          {
+            "ordinal": 22,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 52.6,
+            "deadline_s": 53.304
+          },
+          {
+            "ordinal": 23,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 52.6,
+            "deadline_s": 54.03
+          },
+          {
+            "ordinal": 24,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 54.2,
+            "deadline_s": 56.475
+          },
+          {
+            "ordinal": 25,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 54.2,
+            "deadline_s": 55.32
+          },
+          {
+            "ordinal": 26,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 55.8,
+            "deadline_s": 59.05
+          },
+          {
+            "ordinal": 27,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 55.8,
+            "deadline_s": 57.4
+          },
+          {
+            "ordinal": 28,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 57.4,
+            "deadline_s": 58.401
+          },
+          {
+            "ordinal": 29,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 57.4,
+            "deadline_s": 59.6
+          },
+          {
+            "ordinal": 30,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 59,
+            "deadline_s": 60.43
+          },
+          {
+            "ordinal": 31,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 59,
+            "deadline_s": 59.4928
+          },
+          {
+            "ordinal": 32,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 60.6,
+            "deadline_s": 65.6
+          },
+          {
+            "ordinal": 33,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 60.6,
+            "deadline_s": 61.304
+          },
+          {
+            "ordinal": 34,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 62.2,
+            "deadline_s": 67.2
+          },
+          {
+            "ordinal": 35,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 62.2,
+            "deadline_s": 63.74
+          },
+          {
+            "ordinal": 36,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 63.8,
+            "deadline_s": 65.4
+          },
+          {
+            "ordinal": 37,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 63.8,
+            "deadline_s": 66
+          },
+          {
+            "ordinal": 38,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 65.4,
+            "deadline_s": 66.104
+          },
+          {
+            "ordinal": 39,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 65.4,
+            "deadline_s": 67
+          },
+          {
+            "ordinal": 40,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 67,
+            "deadline_s": 70.25
+          },
+          {
+            "ordinal": 41,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 67,
+            "deadline_s": 69.275
+          },
+          {
+            "ordinal": 42,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 68.6,
+            "deadline_s": 70.8
+          },
+          {
+            "ordinal": 43,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 68.6,
+            "deadline_s": 73.6
+          },
+          {
+            "ordinal": 44,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 70.2,
+            "deadline_s": 71.63
+          },
+          {
+            "ordinal": 45,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 70.2,
+            "deadline_s": 75.2
+          },
+          {
+            "ordinal": 46,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 71.8,
+            "deadline_s": 73.23
+          },
+          {
+            "ordinal": 47,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 71.8,
+            "deadline_s": 75.05
+          }
+        ],
+        "seed": 20269117,
+        "rl_seed": 20261028,
+        "initial_context": "M128",
+        "alpha": 1
+      },
+      "work_window": [
+        35,
+        86.8
+      ],
+      "service_stop_s": 86.8,
+      "drain_stop_s": 116.8,
+      "observation_end_s": 266.8,
+      "common_potential_key": [
+        "A24_CHOICE_OPPORTUNITY_20261017",
+        20269117,
+        "C50_P2"
+      ]
+    },
+    {
+      "id": "C50_P4_REFERENCE",
+      "pair": "C50_P4",
+      "arm": "REFERENCE",
+      "mix": 0.5,
+      "packet": 4,
+      "n": 48,
+      "input": {
+        "requests": [
+          {
+            "ordinal": 0,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.6
+          },
+          {
+            "ordinal": 1,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 35,
+            "deadline_s": 38.5
+          },
+          {
+            "ordinal": 2,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 35.06,
+            "deadline_s": 37.26
+          },
+          {
+            "ordinal": 3,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 35.06,
+            "deadline_s": 35.764
+          },
+          {
+            "ordinal": 4,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 35.12,
+            "deadline_s": 36.121
+          },
+          {
+            "ordinal": 5,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 35.12,
+            "deadline_s": 35.6128
+          },
+          {
+            "ordinal": 6,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 36.25,
+            "deadline_s": 37.37
+          },
+          {
+            "ordinal": 7,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 36.25,
+            "deadline_s": 37.79
+          },
+          {
+            "ordinal": 8,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 36.31,
+            "deadline_s": 39.56
+          },
+          {
+            "ordinal": 9,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 36.31,
+            "deadline_s": 38.51
+          },
+          {
+            "ordinal": 10,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 36.37,
+            "deadline_s": 39.62
+          },
+          {
+            "ordinal": 11,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 36.37,
+            "deadline_s": 41.37
+          },
+          {
+            "ordinal": 12,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 37.71466162,
+            "deadline_s": 40.96466162
+          },
+          {
+            "ordinal": 13,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 37.71466162,
+            "deadline_s": 41.21466162
+          },
+          {
+            "ordinal": 14,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 37.77466162,
+            "deadline_s": 39.20466162
+          },
+          {
+            "ordinal": 15,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 37.77466162,
+            "deadline_s": 39.37466162
+          },
+          {
+            "ordinal": 16,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 37.83466162,
+            "deadline_s": 40.03466162
+          },
+          {
+            "ordinal": 17,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 37.83466162,
+            "deadline_s": 42.83466162
+          },
+          {
+            "ordinal": 18,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 39.91165405,
+            "deadline_s": 40.61565405
+          },
+          {
+            "ordinal": 19,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 39.91165405,
+            "deadline_s": 41.51165405
+          },
+          {
+            "ordinal": 20,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 39.97165405,
+            "deadline_s": 40.67565405
+          },
+          {
+            "ordinal": 21,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 39.97165405,
+            "deadline_s": 41.40165405
+          },
+          {
+            "ordinal": 22,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 40.03165405,
+            "deadline_s": 40.73565405
+          },
+          {
+            "ordinal": 23,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 40.03165405,
+            "deadline_s": 41.46165405
+          },
+          {
+            "ordinal": 24,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 41.16165405,
+            "deadline_s": 43.43665405
+          },
+          {
+            "ordinal": 25,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 41.16165405,
+            "deadline_s": 42.28165405
+          },
+          {
+            "ordinal": 26,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 41.22165405,
+            "deadline_s": 44.47165405
+          },
+          {
+            "ordinal": 27,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 41.22165405,
+            "deadline_s": 42.82165405
+          },
+          {
+            "ordinal": 28,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 41.28165405,
+            "deadline_s": 42.28265405
+          },
+          {
+            "ordinal": 29,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 41.28165405,
+            "deadline_s": 43.48165405
+          },
+          {
+            "ordinal": 30,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 42.62631567,
+            "deadline_s": 44.05631567
+          },
+          {
+            "ordinal": 31,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 42.62631567,
+            "deadline_s": 43.11911567
+          },
+          {
+            "ordinal": 32,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 42.68631567,
+            "deadline_s": 47.68631567
+          },
+          {
+            "ordinal": 33,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 42.68631567,
+            "deadline_s": 43.39031567
+          },
+          {
+            "ordinal": 34,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 42.74631567,
+            "deadline_s": 47.74631567
+          },
+          {
+            "ordinal": 35,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 42.74631567,
+            "deadline_s": 44.28631567
+          },
+          {
+            "ordinal": 36,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 44.50131567,
+            "deadline_s": 46.10131567
+          },
+          {
+            "ordinal": 37,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 44.50131567,
+            "deadline_s": 46.70131567
+          },
+          {
+            "ordinal": 38,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 44.56131567,
+            "deadline_s": 45.26531567
+          },
+          {
+            "ordinal": 39,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 44.56131567,
+            "deadline_s": 46.16131567
+          },
+          {
+            "ordinal": 40,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 44.62131567,
+            "deadline_s": 47.87131567
+          },
+          {
+            "ordinal": 41,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 44.62131567,
+            "deadline_s": 46.89631567
+          },
+          {
+            "ordinal": 42,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 45.96597729,
+            "deadline_s": 48.16597729
+          },
+          {
+            "ordinal": 43,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 45.96597729,
+            "deadline_s": 50.96597729
+          },
+          {
+            "ordinal": 44,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 46.02597729,
+            "deadline_s": 47.45597729
+          },
+          {
+            "ordinal": 45,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 46.02597729,
+            "deadline_s": 51.02597729
+          },
+          {
+            "ordinal": 46,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 46.08597729,
+            "deadline_s": 47.51597729
+          },
+          {
+            "ordinal": 47,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 46.08597729,
+            "deadline_s": 49.33597729
+          }
+        ],
+        "seed": 20269117,
+        "rl_seed": 20261028,
+        "initial_context": "M128",
+        "alpha": 1
+      },
+      "work_window": [
+        35,
+        61.08597729
+      ],
+      "service_stop_s": 61.08597729,
+      "drain_stop_s": 91.08597729,
+      "observation_end_s": 241.08597729000002,
+      "common_potential_key": [
+        "A24_CHOICE_OPPORTUNITY_20261017",
+        20269117,
+        "C50_P4"
+      ]
+    },
+    {
+      "id": "C50_P4_PACKET",
+      "pair": "C50_P4",
+      "arm": "PACKET",
+      "mix": 0.5,
+      "packet": 4,
+      "n": 48,
+      "input": {
+        "requests": [
+          {
+            "ordinal": 0,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 36.6
+          },
+          {
+            "ordinal": 1,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 35,
+            "deadline_s": 38.5
+          },
+          {
+            "ordinal": 2,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 37.2
+          },
+          {
+            "ordinal": 3,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 35.704
+          },
+          {
+            "ordinal": 4,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 38.2,
+            "deadline_s": 39.201
+          },
+          {
+            "ordinal": 5,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 38.2,
+            "deadline_s": 38.6928
+          },
+          {
+            "ordinal": 6,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 38.2,
+            "deadline_s": 39.32
+          },
+          {
+            "ordinal": 7,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 38.2,
+            "deadline_s": 39.74
+          },
+          {
+            "ordinal": 8,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 41.4,
+            "deadline_s": 44.65
+          },
+          {
+            "ordinal": 9,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 41.4,
+            "deadline_s": 43.6
+          },
+          {
+            "ordinal": 10,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 41.4,
+            "deadline_s": 44.65
+          },
+          {
+            "ordinal": 11,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 41.4,
+            "deadline_s": 46.4
+          },
+          {
+            "ordinal": 12,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 44.6,
+            "deadline_s": 47.85
+          },
+          {
+            "ordinal": 13,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 44.6,
+            "deadline_s": 48.1
+          },
+          {
+            "ordinal": 14,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 44.6,
+            "deadline_s": 46.03
+          },
+          {
+            "ordinal": 15,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 44.6,
+            "deadline_s": 46.2
+          },
+          {
+            "ordinal": 16,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 47.8,
+            "deadline_s": 50
+          },
+          {
+            "ordinal": 17,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 47.8,
+            "deadline_s": 52.8
+          },
+          {
+            "ordinal": 18,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 47.8,
+            "deadline_s": 48.504
+          },
+          {
+            "ordinal": 19,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 47.8,
+            "deadline_s": 49.4
+          },
+          {
+            "ordinal": 20,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 51,
+            "deadline_s": 51.704
+          },
+          {
+            "ordinal": 21,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 51,
+            "deadline_s": 52.43
+          },
+          {
+            "ordinal": 22,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 51,
+            "deadline_s": 51.704
+          },
+          {
+            "ordinal": 23,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 51,
+            "deadline_s": 52.43
+          },
+          {
+            "ordinal": 24,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 54.2,
+            "deadline_s": 56.475
+          },
+          {
+            "ordinal": 25,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 54.2,
+            "deadline_s": 55.32
+          },
+          {
+            "ordinal": 26,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 54.2,
+            "deadline_s": 57.45
+          },
+          {
+            "ordinal": 27,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 54.2,
+            "deadline_s": 55.8
+          },
+          {
+            "ordinal": 28,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 57.4,
+            "deadline_s": 58.401
+          },
+          {
+            "ordinal": 29,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 57.4,
+            "deadline_s": 59.6
+          },
+          {
+            "ordinal": 30,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 57.4,
+            "deadline_s": 58.83
+          },
+          {
+            "ordinal": 31,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 57.4,
+            "deadline_s": 57.8928
+          },
+          {
+            "ordinal": 32,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 60.6,
+            "deadline_s": 65.6
+          },
+          {
+            "ordinal": 33,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 60.6,
+            "deadline_s": 61.304
+          },
+          {
+            "ordinal": 34,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 60.6,
+            "deadline_s": 65.6
+          },
+          {
+            "ordinal": 35,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 60.6,
+            "deadline_s": 62.14
+          },
+          {
+            "ordinal": 36,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 63.8,
+            "deadline_s": 65.4
+          },
+          {
+            "ordinal": 37,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 63.8,
+            "deadline_s": 66
+          },
+          {
+            "ordinal": 38,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 63.8,
+            "deadline_s": 64.504
+          },
+          {
+            "ordinal": 39,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 63.8,
+            "deadline_s": 65.4
+          },
+          {
+            "ordinal": 40,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 67,
+            "deadline_s": 70.25
+          },
+          {
+            "ordinal": 41,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 67,
+            "deadline_s": 69.275
+          },
+          {
+            "ordinal": 42,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 67,
+            "deadline_s": 69.2
+          },
+          {
+            "ordinal": 43,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 67,
+            "deadline_s": 72
+          },
+          {
+            "ordinal": 44,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 70.2,
+            "deadline_s": 71.63
+          },
+          {
+            "ordinal": 45,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 70.2,
+            "deadline_s": 75.2
+          },
+          {
+            "ordinal": 46,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 70.2,
+            "deadline_s": 71.63
+          },
+          {
+            "ordinal": 47,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 70.2,
+            "deadline_s": 73.45
+          }
+        ],
+        "seed": 20269117,
+        "rl_seed": 20261028,
+        "initial_context": "M128",
+        "alpha": 1
+      },
+      "work_window": [
+        35,
+        85.2
+      ],
+      "service_stop_s": 85.2,
+      "drain_stop_s": 115.2,
+      "observation_end_s": 265.2,
+      "common_potential_key": [
+        "A24_CHOICE_OPPORTUNITY_20261017",
+        20269117,
+        "C50_P4"
+      ]
+    },
+    {
+      "id": "C75_P2_REFERENCE",
+      "pair": "C75_P2",
+      "arm": "REFERENCE",
+      "mix": 0.75,
+      "packet": 2,
+      "n": 48,
+      "input": {
+        "requests": [
+          {
+            "ordinal": 0,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 38.25
+          },
+          {
+            "ordinal": 1,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 35.08,
+            "deadline_s": 37.28
+          },
+          {
+            "ordinal": 2,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 35.23,
+            "deadline_s": 36.231
+          },
+          {
+            "ordinal": 3,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 35.41,
+            "deadline_s": 36.114
+          },
+          {
+            "ordinal": 4,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 35.7,
+            "deadline_s": 37.24
+          },
+          {
+            "ordinal": 5,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 36,
+            "deadline_s": 36.4928
+          },
+          {
+            "ordinal": 6,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 36.25,
+            "deadline_s": 39.75
+          },
+          {
+            "ordinal": 7,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 36.33,
+            "deadline_s": 36.8228
+          },
+          {
+            "ordinal": 8,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 36.48,
+            "deadline_s": 37.481
+          },
+          {
+            "ordinal": 9,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 36.66,
+            "deadline_s": 38.2
+          },
+          {
+            "ordinal": 10,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 36.95,
+            "deadline_s": 38.07
+          },
+          {
+            "ordinal": 11,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 37.25,
+            "deadline_s": 37.954
+          },
+          {
+            "ordinal": 12,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 37.5,
+            "deadline_s": 40.75
+          },
+          {
+            "ordinal": 13,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 37.58,
+            "deadline_s": 39.01
+          },
+          {
+            "ordinal": 14,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 37.73,
+            "deadline_s": 39.93
+          },
+          {
+            "ordinal": 15,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 37.91,
+            "deadline_s": 39.34
+          },
+          {
+            "ordinal": 16,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 38.2,
+            "deadline_s": 39.63
+          },
+          {
+            "ordinal": 17,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 38.5,
+            "deadline_s": 40.1
+          },
+          {
+            "ordinal": 18,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 38.75,
+            "deadline_s": 40.95
+          },
+          {
+            "ordinal": 19,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 38.83,
+            "deadline_s": 43.83
+          },
+          {
+            "ordinal": 20,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 38.98,
+            "deadline_s": 39.684
+          },
+          {
+            "ordinal": 21,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 39.16,
+            "deadline_s": 40.7
+          },
+          {
+            "ordinal": 22,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 39.45,
+            "deadline_s": 40.88
+          },
+          {
+            "ordinal": 23,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 39.75,
+            "deadline_s": 41.95
+          },
+          {
+            "ordinal": 24,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 40,
+            "deadline_s": 41.6
+          },
+          {
+            "ordinal": 25,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 40.08,
+            "deadline_s": 45.08
+          },
+          {
+            "ordinal": 26,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 40.23,
+            "deadline_s": 40.934
+          },
+          {
+            "ordinal": 27,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 40.41,
+            "deadline_s": 40.9028
+          },
+          {
+            "ordinal": 28,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 40.7,
+            "deadline_s": 42.13
+          },
+          {
+            "ordinal": 29,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 41,
+            "deadline_s": 43.2
+          },
+          {
+            "ordinal": 30,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 41.25,
+            "deadline_s": 42.68
+          },
+          {
+            "ordinal": 31,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 41.33,
+            "deadline_s": 43.53
+          },
+          {
+            "ordinal": 32,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 41.48,
+            "deadline_s": 42.481
+          },
+          {
+            "ordinal": 33,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 41.66,
+            "deadline_s": 43.09
+          },
+          {
+            "ordinal": 34,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 41.95,
+            "deadline_s": 43.55
+          },
+          {
+            "ordinal": 35,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 42.25,
+            "deadline_s": 44.45
+          },
+          {
+            "ordinal": 36,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 42.5,
+            "deadline_s": 47.5
+          },
+          {
+            "ordinal": 37,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 42.58,
+            "deadline_s": 43.284
+          },
+          {
+            "ordinal": 38,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 42.73,
+            "deadline_s": 44.16
+          },
+          {
+            "ordinal": 39,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 42.91,
+            "deadline_s": 43.614
+          },
+          {
+            "ordinal": 40,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 43.2,
+            "deadline_s": 44.63
+          },
+          {
+            "ordinal": 41,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 43.5,
+            "deadline_s": 45.7
+          },
+          {
+            "ordinal": 42,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 43.75,
+            "deadline_s": 44.454
+          },
+          {
+            "ordinal": 43,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 43.83,
+            "deadline_s": 47.08
+          },
+          {
+            "ordinal": 44,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 43.98,
+            "deadline_s": 44.684
+          },
+          {
+            "ordinal": 45,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 44.16,
+            "deadline_s": 46.435
+          },
+          {
+            "ordinal": 46,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 44.45,
+            "deadline_s": 45.154
+          },
+          {
+            "ordinal": 47,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 44.75,
+            "deadline_s": 46.95
+          }
+        ],
+        "seed": 20269117,
+        "rl_seed": 20261028,
+        "initial_context": "M128",
+        "alpha": 1
+      },
+      "work_window": [
+        35,
+        59.75
+      ],
+      "service_stop_s": 59.75,
+      "drain_stop_s": 89.75,
+      "observation_end_s": 239.75,
+      "common_potential_key": [
+        "A24_CHOICE_OPPORTUNITY_20261017",
+        20269117,
+        "C75_P2"
+      ]
+    },
+    {
+      "id": "C75_P2_PACKET",
+      "pair": "C75_P2",
+      "arm": "PACKET",
+      "mix": 0.75,
+      "packet": 2,
+      "n": 48,
+      "input": {
+        "requests": [
+          {
+            "ordinal": 0,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 38.25
+          },
+          {
+            "ordinal": 1,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 37.2
+          },
+          {
+            "ordinal": 2,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 36.6,
+            "deadline_s": 37.601
+          },
+          {
+            "ordinal": 3,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 36.6,
+            "deadline_s": 37.304
+          },
+          {
+            "ordinal": 4,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 38.2,
+            "deadline_s": 39.74
+          },
+          {
+            "ordinal": 5,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 38.2,
+            "deadline_s": 38.6928
+          },
+          {
+            "ordinal": 6,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 39.8,
+            "deadline_s": 43.3
+          },
+          {
+            "ordinal": 7,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 39.8,
+            "deadline_s": 40.2928
+          },
+          {
+            "ordinal": 8,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 41.4,
+            "deadline_s": 42.401
+          },
+          {
+            "ordinal": 9,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 41.4,
+            "deadline_s": 42.94
+          },
+          {
+            "ordinal": 10,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 43,
+            "deadline_s": 44.12
+          },
+          {
+            "ordinal": 11,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 43,
+            "deadline_s": 43.704
+          },
+          {
+            "ordinal": 12,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 44.6,
+            "deadline_s": 47.85
+          },
+          {
+            "ordinal": 13,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 44.6,
+            "deadline_s": 46.03
+          },
+          {
+            "ordinal": 14,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 46.2,
+            "deadline_s": 48.4
+          },
+          {
+            "ordinal": 15,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 46.2,
+            "deadline_s": 47.63
+          },
+          {
+            "ordinal": 16,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 47.8,
+            "deadline_s": 49.23
+          },
+          {
+            "ordinal": 17,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 47.8,
+            "deadline_s": 49.4
+          },
+          {
+            "ordinal": 18,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 49.4,
+            "deadline_s": 51.6
+          },
+          {
+            "ordinal": 19,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 49.4,
+            "deadline_s": 54.4
+          },
+          {
+            "ordinal": 20,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 51,
+            "deadline_s": 51.704
+          },
+          {
+            "ordinal": 21,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 51,
+            "deadline_s": 52.54
+          },
+          {
+            "ordinal": 22,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 52.6,
+            "deadline_s": 54.03
+          },
+          {
+            "ordinal": 23,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 52.6,
+            "deadline_s": 54.8
+          },
+          {
+            "ordinal": 24,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 54.2,
+            "deadline_s": 55.8
+          },
+          {
+            "ordinal": 25,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 54.2,
+            "deadline_s": 59.2
+          },
+          {
+            "ordinal": 26,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 55.8,
+            "deadline_s": 56.504
+          },
+          {
+            "ordinal": 27,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 55.8,
+            "deadline_s": 56.2928
+          },
+          {
+            "ordinal": 28,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 57.4,
+            "deadline_s": 58.83
+          },
+          {
+            "ordinal": 29,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 57.4,
+            "deadline_s": 59.6
+          },
+          {
+            "ordinal": 30,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 59,
+            "deadline_s": 60.43
+          },
+          {
+            "ordinal": 31,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 59,
+            "deadline_s": 61.2
+          },
+          {
+            "ordinal": 32,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 60.6,
+            "deadline_s": 61.601
+          },
+          {
+            "ordinal": 33,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 60.6,
+            "deadline_s": 62.03
+          },
+          {
+            "ordinal": 34,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 62.2,
+            "deadline_s": 63.8
+          },
+          {
+            "ordinal": 35,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 62.2,
+            "deadline_s": 64.4
+          },
+          {
+            "ordinal": 36,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 63.8,
+            "deadline_s": 68.8
+          },
+          {
+            "ordinal": 37,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 63.8,
+            "deadline_s": 64.504
+          },
+          {
+            "ordinal": 38,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 65.4,
+            "deadline_s": 66.83
+          },
+          {
+            "ordinal": 39,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 65.4,
+            "deadline_s": 66.104
+          },
+          {
+            "ordinal": 40,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 67,
+            "deadline_s": 68.43
+          },
+          {
+            "ordinal": 41,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 67,
+            "deadline_s": 69.2
+          },
+          {
+            "ordinal": 42,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 68.6,
+            "deadline_s": 69.304
+          },
+          {
+            "ordinal": 43,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 68.6,
+            "deadline_s": 71.85
+          },
+          {
+            "ordinal": 44,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 70.2,
+            "deadline_s": 70.904
+          },
+          {
+            "ordinal": 45,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 70.2,
+            "deadline_s": 72.475
+          },
+          {
+            "ordinal": 46,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 71.8,
+            "deadline_s": 72.504
+          },
+          {
+            "ordinal": 47,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 71.8,
+            "deadline_s": 74
+          }
+        ],
+        "seed": 20269117,
+        "rl_seed": 20261028,
+        "initial_context": "M128",
+        "alpha": 1
+      },
+      "work_window": [
+        35,
+        86.8
+      ],
+      "service_stop_s": 86.8,
+      "drain_stop_s": 116.8,
+      "observation_end_s": 266.8,
+      "common_potential_key": [
+        "A24_CHOICE_OPPORTUNITY_20261017",
+        20269117,
+        "C75_P2"
+      ]
+    },
+    {
+      "id": "C75_P4_REFERENCE",
+      "pair": "C75_P4",
+      "arm": "REFERENCE",
+      "mix": 0.75,
+      "packet": 4,
+      "n": 48,
+      "input": {
+        "requests": [
+          {
+            "ordinal": 0,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 38.25
+          },
+          {
+            "ordinal": 1,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 37.2
+          },
+          {
+            "ordinal": 2,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 35.06,
+            "deadline_s": 36.061
+          },
+          {
+            "ordinal": 3,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 35.06,
+            "deadline_s": 35.764
+          },
+          {
+            "ordinal": 4,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 35.12,
+            "deadline_s": 36.66
+          },
+          {
+            "ordinal": 5,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 35.12,
+            "deadline_s": 35.6128
+          },
+          {
+            "ordinal": 6,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 36.25,
+            "deadline_s": 39.75
+          },
+          {
+            "ordinal": 7,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 36.25,
+            "deadline_s": 36.7428
+          },
+          {
+            "ordinal": 8,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 36.31,
+            "deadline_s": 37.311
+          },
+          {
+            "ordinal": 9,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 36.31,
+            "deadline_s": 37.85
+          },
+          {
+            "ordinal": 10,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 36.37,
+            "deadline_s": 37.49
+          },
+          {
+            "ordinal": 11,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 36.37,
+            "deadline_s": 37.074
+          },
+          {
+            "ordinal": 12,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 37.5,
+            "deadline_s": 40.75
+          },
+          {
+            "ordinal": 13,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 37.5,
+            "deadline_s": 38.93
+          },
+          {
+            "ordinal": 14,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 37.56,
+            "deadline_s": 39.76
+          },
+          {
+            "ordinal": 15,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 37.56,
+            "deadline_s": 38.99
+          },
+          {
+            "ordinal": 16,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 37.62,
+            "deadline_s": 39.05
+          },
+          {
+            "ordinal": 17,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 37.62,
+            "deadline_s": 39.22
+          },
+          {
+            "ordinal": 18,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 39.375,
+            "deadline_s": 41.575
+          },
+          {
+            "ordinal": 19,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 39.375,
+            "deadline_s": 44.375
+          },
+          {
+            "ordinal": 20,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 39.435,
+            "deadline_s": 40.139
+          },
+          {
+            "ordinal": 21,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 39.435,
+            "deadline_s": 40.975
+          },
+          {
+            "ordinal": 22,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 39.495,
+            "deadline_s": 40.925
+          },
+          {
+            "ordinal": 23,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 39.495,
+            "deadline_s": 41.695
+          },
+          {
+            "ordinal": 24,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 40.625,
+            "deadline_s": 42.225
+          },
+          {
+            "ordinal": 25,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 40.625,
+            "deadline_s": 45.625
+          },
+          {
+            "ordinal": 26,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 40.685,
+            "deadline_s": 41.389
+          },
+          {
+            "ordinal": 27,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 40.685,
+            "deadline_s": 41.1778
+          },
+          {
+            "ordinal": 28,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 40.745,
+            "deadline_s": 42.175
+          },
+          {
+            "ordinal": 29,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 40.745,
+            "deadline_s": 42.945
+          },
+          {
+            "ordinal": 30,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 41.875,
+            "deadline_s": 43.305
+          },
+          {
+            "ordinal": 31,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 41.875,
+            "deadline_s": 44.075
+          },
+          {
+            "ordinal": 32,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 41.935,
+            "deadline_s": 42.936
+          },
+          {
+            "ordinal": 33,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 41.935,
+            "deadline_s": 43.365
+          },
+          {
+            "ordinal": 34,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 41.995,
+            "deadline_s": 43.595
+          },
+          {
+            "ordinal": 35,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 41.995,
+            "deadline_s": 44.195
+          },
+          {
+            "ordinal": 36,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 43.75,
+            "deadline_s": 48.75
+          },
+          {
+            "ordinal": 37,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 43.75,
+            "deadline_s": 44.454
+          },
+          {
+            "ordinal": 38,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 43.81,
+            "deadline_s": 45.24
+          },
+          {
+            "ordinal": 39,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 43.81,
+            "deadline_s": 44.514
+          },
+          {
+            "ordinal": 40,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 43.87,
+            "deadline_s": 45.3
+          },
+          {
+            "ordinal": 41,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 43.87,
+            "deadline_s": 46.07
+          },
+          {
+            "ordinal": 42,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 45,
+            "deadline_s": 45.704
+          },
+          {
+            "ordinal": 43,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 45,
+            "deadline_s": 48.25
+          },
+          {
+            "ordinal": 44,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 45.06,
+            "deadline_s": 45.764
+          },
+          {
+            "ordinal": 45,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 45.06,
+            "deadline_s": 47.335
+          },
+          {
+            "ordinal": 46,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 45.12,
+            "deadline_s": 45.824
+          },
+          {
+            "ordinal": 47,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 45.12,
+            "deadline_s": 47.32
+          }
+        ],
+        "seed": 20269117,
+        "rl_seed": 20261028,
+        "initial_context": "M128",
+        "alpha": 1
+      },
+      "work_window": [
+        35,
+        60.12
+      ],
+      "service_stop_s": 60.12,
+      "drain_stop_s": 90.12,
+      "observation_end_s": 240.12,
+      "common_potential_key": [
+        "A24_CHOICE_OPPORTUNITY_20261017",
+        20269117,
+        "C75_P4"
+      ]
+    },
+    {
+      "id": "C75_P4_PACKET",
+      "pair": "C75_P4",
+      "arm": "PACKET",
+      "mix": 0.75,
+      "packet": 4,
+      "n": 48,
+      "input": {
+        "requests": [
+          {
+            "ordinal": 0,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 38.25
+          },
+          {
+            "ordinal": 1,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 37.2
+          },
+          {
+            "ordinal": 2,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 35,
+            "deadline_s": 36.001
+          },
+          {
+            "ordinal": 3,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 35,
+            "deadline_s": 35.704
+          },
+          {
+            "ordinal": 4,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 38.2,
+            "deadline_s": 39.74
+          },
+          {
+            "ordinal": 5,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 38.2,
+            "deadline_s": 38.6928
+          },
+          {
+            "ordinal": 6,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 38.2,
+            "deadline_s": 41.7
+          },
+          {
+            "ordinal": 7,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 38.2,
+            "deadline_s": 38.6928
+          },
+          {
+            "ordinal": 8,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 41.4,
+            "deadline_s": 42.401
+          },
+          {
+            "ordinal": 9,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 41.4,
+            "deadline_s": 42.94
+          },
+          {
+            "ordinal": 10,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 41.4,
+            "deadline_s": 42.52
+          },
+          {
+            "ordinal": 11,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 41.4,
+            "deadline_s": 42.104
+          },
+          {
+            "ordinal": 12,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 44.6,
+            "deadline_s": 47.85
+          },
+          {
+            "ordinal": 13,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 44.6,
+            "deadline_s": 46.03
+          },
+          {
+            "ordinal": 14,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 44.6,
+            "deadline_s": 46.8
+          },
+          {
+            "ordinal": 15,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 44.6,
+            "deadline_s": 46.03
+          },
+          {
+            "ordinal": 16,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 47.8,
+            "deadline_s": 49.23
+          },
+          {
+            "ordinal": 17,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 47.8,
+            "deadline_s": 49.4
+          },
+          {
+            "ordinal": 18,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 47.8,
+            "deadline_s": 50
+          },
+          {
+            "ordinal": 19,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 47.8,
+            "deadline_s": 52.8
+          },
+          {
+            "ordinal": 20,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 51,
+            "deadline_s": 51.704
+          },
+          {
+            "ordinal": 21,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 51,
+            "deadline_s": 52.54
+          },
+          {
+            "ordinal": 22,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 51,
+            "deadline_s": 52.43
+          },
+          {
+            "ordinal": 23,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 51,
+            "deadline_s": 53.2
+          },
+          {
+            "ordinal": 24,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 54.2,
+            "deadline_s": 55.8
+          },
+          {
+            "ordinal": 25,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 54.2,
+            "deadline_s": 59.2
+          },
+          {
+            "ordinal": 26,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 54.2,
+            "deadline_s": 54.904
+          },
+          {
+            "ordinal": 27,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 54.2,
+            "deadline_s": 54.6928
+          },
+          {
+            "ordinal": 28,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 57.4,
+            "deadline_s": 58.83
+          },
+          {
+            "ordinal": 29,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 57.4,
+            "deadline_s": 59.6
+          },
+          {
+            "ordinal": 30,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 57.4,
+            "deadline_s": 58.83
+          },
+          {
+            "ordinal": 31,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 57.4,
+            "deadline_s": 59.6
+          },
+          {
+            "ordinal": 32,
+            "profile": "C_M128",
+            "priority": "U",
+            "arrival_s": 60.6,
+            "deadline_s": 61.601
+          },
+          {
+            "ordinal": 33,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 60.6,
+            "deadline_s": 62.03
+          },
+          {
+            "ordinal": 34,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 60.6,
+            "deadline_s": 62.2
+          },
+          {
+            "ordinal": 35,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 60.6,
+            "deadline_s": 62.8
+          },
+          {
+            "ordinal": 36,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 63.8,
+            "deadline_s": 68.8
+          },
+          {
+            "ordinal": 37,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 63.8,
+            "deadline_s": 64.504
+          },
+          {
+            "ordinal": 38,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 63.8,
+            "deadline_s": 65.23
+          },
+          {
+            "ordinal": 39,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 63.8,
+            "deadline_s": 64.504
+          },
+          {
+            "ordinal": 40,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 67,
+            "deadline_s": 68.43
+          },
+          {
+            "ordinal": 41,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 67,
+            "deadline_s": 69.2
+          },
+          {
+            "ordinal": 42,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 67,
+            "deadline_s": 67.704
+          },
+          {
+            "ordinal": 43,
+            "profile": "D_M128",
+            "priority": "N",
+            "arrival_s": 67,
+            "deadline_s": 70.25
+          },
+          {
+            "ordinal": 44,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 70.2,
+            "deadline_s": 70.904
+          },
+          {
+            "ordinal": 45,
+            "profile": "D_M128",
+            "priority": "U",
+            "arrival_s": 70.2,
+            "deadline_s": 72.475
+          },
+          {
+            "ordinal": 46,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 70.2,
+            "deadline_s": 70.904
+          },
+          {
+            "ordinal": 47,
+            "profile": "C_M128",
+            "priority": "N",
+            "arrival_s": 70.2,
+            "deadline_s": 72.4
+          }
+        ],
+        "seed": 20269117,
+        "rl_seed": 20261028,
+        "initial_context": "M128",
+        "alpha": 1
+      },
+      "work_window": [
+        35,
+        85.2
+      ],
+      "service_stop_s": 85.2,
+      "drain_stop_s": 115.2,
+      "observation_end_s": 265.2,
+      "common_potential_key": [
+        "A24_CHOICE_OPPORTUNITY_20261017",
+        20269117,
+        "C75_P4"
+      ]
+    }
+  ]
+}
