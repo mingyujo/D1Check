@@ -49,4 +49,3 @@ node scripts/restore-multi.cjs --manifest data/MULTI_ARCHIVES.json
 
 
 최신 판독: [MULTIRESOURCE_COMPARISON_KO](../MULTIRESOURCE_COMPARISON_KO.md). 저장 분석/원수치는 그대로, AP26~46.6℃ 지원 범위 밖 표시만 파생뷰V2에서 추가했다. 최종아카이브는 검증된중간pack을재사용하고감사/뷰/최신인계의새바이트만추가pack으로저장한다. 두릴리스URL은manifest가연결하며원pack재압축/원파일이동0이다.
-

@@ -19,4 +19,3 @@
 최신STATE001_G001는STATE_AWARE_COMPARISON_KO.md/experiments/state_aware_v1에별도보존한다. 동일자원·납기6정책에새긴급탐지output경계전이부하를포함했고추가320예약/300소비·총121206/137712다. 원물리/원512잔12/기존평가/자동화보존. 새RL0이며실기기순절감은미검증이다.
 
 최신 G004는3240실행·전수감사·분석·뷰V2/QA V5·직접검토 완료다. AP적격표본26~46.6℃ 대비 예측최대149.7℃ 외삽이 있어 큰격차를실제절감으로인정하지않는다. STATUS와 MULTIRESOURCE_COMPARISON_KO.md가 최신판독이다. 새RL0/동일EVAL재선정0, engine/CPU/외삽후속보완은별도새등록이필요하다.
-
