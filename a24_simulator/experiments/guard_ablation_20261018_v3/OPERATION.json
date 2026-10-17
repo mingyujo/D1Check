@@ -1,0 +1,1310 @@
+{
+  "schema": "A24-urgent-WAIT-guard-2x2-v1",
+  "utc": "2026-10-17T18:17:25.607Z",
+  "base_commit": "01b847d84bd5699056c40c9190642767637b0188",
+  "output_dir": "results/GUARD_ABLATION_V3_20261018_01",
+  "potential_output": "results/DENSITY_HEADROOM_20261018_01",
+  "original_output": "results/LOAD_DENSITY_20261017_01",
+  "summary_output": "results/DENSITY_HEADROOM_COUPLED_20261018_01",
+  "sources": [
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\choice_opportunities_20261017\\design.cjs",
+      "sha256": "342129ec12c088dac98f5cdc680832756b2fbc8fb7bebf91631277f3f3465583",
+      "bytes": 1791
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\choice_opportunities_20261017\\observer.py",
+      "sha256": "233f3f532e8e4189bc434fd054256d9e86f9eb8a412a3ba23a5e17a0ceb500a9",
+      "bytes": 3552
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\choice_opportunities_20261017\\run.py",
+      "sha256": "5aff6e3360f1eb059cd9cd7c6aa1adc199bdbb0519d6d52b016141d3733506a3",
+      "bytes": 7944
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\choice_opportunities_20261017\\prepare.cjs",
+      "sha256": "0844c5967498216f4cbfff4f9b3793234ef1b984cc459c2aa4ffe1923c6209d5",
+      "bytes": 3889
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\choice_opportunities_20261017\\test_design.cjs",
+      "sha256": "81ba6c8ad0ea7f6b38c2b92388f2d0053cb0acaa81135adea94c56b4b98bf2eb",
+      "bytes": 982
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\src\\lab_backend.py",
+      "sha256": "c79634fa7e0af06f7aadeacf6d9c739eea2e8ffc28b5076bb6b317a20018319f",
+      "bytes": 26466
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\src\\four_route_model.py",
+      "sha256": "bbe7efd4d3afebac6f772fb50246c87aaaf668a5ff0296d26e0243e738269f36",
+      "bytes": 9003
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\src\\thermal_four_route.py",
+      "sha256": "e2f3bae11214432fef0ee8aa3094adf1c05c10a5d3e12e9cd2b14d75875b6f10",
+      "bytes": 36577
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\rl_cost_20261017\\rl_policy.py",
+      "sha256": "81d8a30d009bb02538291dcfc33e86526cb57db07658250b44612d95d047598f",
+      "bytes": 10605
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\long_scale_20261017\\bridge_long.py",
+      "sha256": "c8886db218ef6e1cf29bc9adb02b1b0a3a9e39f0b66d2f39dddab8ce8e09eb3b",
+      "bytes": 23288
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\long_scale_20261017\\kernel_long.py",
+      "sha256": "679769faab81d3f20faffb4f328fe784080e592bcc8f4704a0b5baf3a3550e31",
+      "bytes": 44960
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\long_scale_20261017\\fast_thermal.py",
+      "sha256": "9c55c8d730024051a5a3c1692609d8e058104531f1929cbe2268d004394b82fa",
+      "bytes": 3112
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\rules_no_rl_20261017\\shared_exact.py",
+      "sha256": "a504ca78d810c7ba660266992d37fd4a95373e249585d2bf40957669b7d751aa",
+      "bytes": 3201
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\competition_cost_20261017\\state_cost.py",
+      "sha256": "6e52288e624f71506bc019e17a242fa7c91ac7d206c80a67cecee8beb2909ec1",
+      "bytes": 6416
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\edf_cpu_first_20261016\\policy.py",
+      "sha256": "774eca1a4bb44e4c9604f9895481b752bcd786fa87d3ccf7d460bd98f09ed305",
+      "bytes": 4478
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\reference\\model_integration\\runtime_guard.py",
+      "sha256": "f83a223ef74db70bf4b31eee3176faa86b8f17d6399e56f0dd26b1ffd5c6c733",
+      "bytes": 9864
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\choice_opportunities_20261017\\observer_v2.py",
+      "sha256": "9f2bee48279c4c718772338ee38a9403506345d2f8a852720a3d2dba6c6b9092",
+      "bytes": 1294
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\choice_opportunities_20261017\\run_v2.py",
+      "sha256": "10e86faeb793c7fe895fecd230b3e3c57bb6669565a697e989fe332cd68abdbd",
+      "bytes": 7071
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\choice_opportunities_20261017\\prepare_v2.cjs",
+      "sha256": "33927b3692af13ca6c796260552c7d16f1a3a63037f5d972ccfe35c0c01a814e",
+      "bytes": 4203
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\choice_opportunities_20261017\\test_coalescing.py",
+      "sha256": "fbd908d69cadf8d66900a2772b9d559632b448c5da6ac4bea99bf4f43b7f0e27",
+      "bytes": 1338
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\coupled_345_20261017\\dynamics.py",
+      "sha256": "c189ecfdb37a250ad61dc3e8b573fdbb190d1ed5c2b359a1ece9fd2f90e7e107",
+      "bytes": 5766
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\coupled_345_20261017\\bootstrap.py",
+      "sha256": "099ea7ca547fb6bc2226e544057dc6376ecfcd44493b18073d29f04117a0f103",
+      "bytes": 2560
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\coupled_345_20261017\\engine.py",
+      "sha256": "752ef69da4d63afa89f5e95bcae71d358b0bc505be5a28ad94113a6b0e12e9cd",
+      "bytes": 9000
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\coupled_345_20261017\\controller.py",
+      "sha256": "c685527af4cddccc005b56bc6e43697317e87846d092fcf28fd88dbc94434525",
+      "bytes": 11239
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\coupled_345_20261017\\nn_train.py",
+      "sha256": "ef0000a2dd59546120b390472881f2f250d7fb75d06733b54722d2bddeccad20",
+      "bytes": 7079
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\coupled_345_20261017\\rewards.py",
+      "sha256": "deaa23d95f13bc4cd635b503ad8fd567d2cff358384ee2bfa842e004a69cd44f",
+      "bytes": 2059
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\coupled_345_20261017\\run_experiment.py",
+      "sha256": "e6c6720713e8c1db91d74ffac3af44cd0c02721b65b28f77841b5469fd521ec4",
+      "bytes": 13791
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\coupled_345_20261017\\audit.py",
+      "sha256": "b90f4a2b3e26d7a0e80126a9e2ac4801057ad719208e69183a163a2f72b8c872",
+      "bytes": 11354
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\coupled_345_20261017\\prepare.cjs",
+      "sha256": "0e85ca1961d99dca389410e4ad01363f77d3c9f122011db59be22dd24c3b4102",
+      "bytes": 5055
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\coupled_345_20261017\\design.cjs",
+      "sha256": "f17b0c63d2802a01ae2614cdbb05a299d9c034774d2d9326cf34903ffc255e21",
+      "bytes": 1876
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\coupled_345_20261017\\test_contracts.py",
+      "sha256": "c8e775007846c8b5d25294adc0a88915acba32079100ea45dc3215e765e0143e",
+      "bytes": 9602
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\load_density_20261017\\design.cjs",
+      "sha256": "6b28af5add81c5921eb7274d86abc1be512a83206e2cfb6819cedca74117c8e8",
+      "bytes": 1625
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\load_density_20261017\\prepare.cjs",
+      "sha256": "7f60601df03702ed4ad0d82f4872fed0c0f3a0c724412ce8399200a930d288d8",
+      "bytes": 5529
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\load_density_20261017\\run_density.py",
+      "sha256": "bdafb18c1a56337d149ad1cda9dc6abd2009bb6bd279e6a26329e595d39f2f86",
+      "bytes": 7795
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\load_density_20261017\\audit.cjs",
+      "sha256": "d6c6ac32ab561fcae0a20dc8b178da6c1cda2ddd59fa77c2d39849b629a73dfa",
+      "bytes": 12967
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\load_density_20261017\\diagnose.cjs",
+      "sha256": "07f8f535c72da99b6dae6f273c47779dddb0f00985e222d4e9cc8752fe8fae8e",
+      "bytes": 2316
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\load_density_20261017\\figures.py",
+      "sha256": "3c07e1c56e56149bf56871e1a682771690f454462a4f26f2709df5a90a553c6f",
+      "bytes": 2438
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\load_density_20261017\\report.cjs",
+      "sha256": "93ea79122f3cf49e3efbccc0a4b58eb70d6df9ccd36372dac1959f735ca2f85c",
+      "bytes": 13275
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\load_density_20261017\\thermal_guard.cjs",
+      "sha256": "b7c5fb9e6d1c8eae25f670649dfd570656a9f0e277e6e3fd904ed82f97007851",
+      "bytes": 4436
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\work_window_20261017\\reaccount.cjs",
+      "sha256": "44a58e229cf2210f170088451e39f6193ecc52d66c28e12e9266654d23e0a1fc",
+      "bytes": 10316
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\sustained_load_20261017\\tensor_reader.cjs",
+      "sha256": "e43aaa0b4b4336aea2dfd4a84cc6353acdd3b6367a9c9d578fc70d41211dab7d",
+      "bytes": 2927
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\density_headroom_20261018\\bounds.py",
+      "sha256": "79997f3e6c36627666c9497fb509d82d39d2303dedab9d4b32bf5c5b3777f67d",
+      "bytes": 12498
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\density_headroom_20261018\\actors.py",
+      "sha256": "288d56799747ddb7f6450af400e32cf4705b7a26f3c3eee37ca6a5c8f01af847",
+      "bytes": 5083
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\density_headroom_20261018\\run.py",
+      "sha256": "eb02c9968852c3e8f2c36fa12014b1ed5cd58ab4db703347a7f145c24f36a241",
+      "bytes": 12671
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\density_headroom_20261018\\audit.cjs",
+      "sha256": "098c82f7b16ff14e91aff2037b5658da099ce4db32564db9ce837f7db01fba87",
+      "bytes": 9839
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\density_headroom_20261018\\figures.py",
+      "sha256": "5466b18fa4857378225f4399bcd3ccf488513dd42ad9cc6a14ca1cabde2abbbc",
+      "bytes": 2531
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\density_headroom_20261018\\report.cjs",
+      "sha256": "3dd32c80c519be92269460d2fcf92ad46349b059aabb49ed6676ae121318f6b2",
+      "bytes": 12930
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\density_headroom_20261018\\test_contracts.py",
+      "sha256": "16f4e0f73ac2378c5176fdda2fa646214662824a4161c413f53dd4cded72b5ac",
+      "bytes": 4984
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\density_headroom_20261018\\preflight.py",
+      "sha256": "8dc626c422ad9b6f9e1c76ac0cbbbb30022499a2c0a73c6d844ebf1492735d12",
+      "bytes": 1136
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\density_headroom_20261018\\prepare.cjs",
+      "sha256": "84e269879d767fc4a43cb2e2161d845434d0f5ab7920dce3bd6b8fea837cbc79",
+      "bytes": 5137
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v3\\parallel_resources.py",
+      "sha256": "5266f9428c9a81da0b90698e9acad15ca6feaecb0b8c684c997b40e2bc3aa5ac",
+      "bytes": 2723
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v3\\pure_resources.py",
+      "sha256": "d69f10c6842d039d203269d99a3ab7dc53cc27fe50435f2a8825541886049e79",
+      "bytes": 1611
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v3\\guard_controller.py",
+      "sha256": "f84e6ce94ecd11fc91780bad6fc98c2ad198a95307120eb6d5ec25250035fb78",
+      "bytes": 11344
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v3\\bank_model.py",
+      "sha256": "5846ec4cd0db10933630b04ad11051da8c0c4fe960b5253059a6529d2f8bbdaa",
+      "bytes": 1993
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v3\\run.py",
+      "sha256": "13ab2f8a4c3dc0ffc8b028fd2af21efd0fb1e13810bbde4e93fe3ee599b5bb0f",
+      "bytes": 10213
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v3\\test_contracts.py",
+      "sha256": "7a5a3b1875b7b6203645c7bce3bcaa22299ab69dea3a527400762c76c845698d",
+      "bytes": 2942
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v3\\preflight.py",
+      "sha256": "58474688067d26737cfb869ce314c2dfe4fd7b82d72b1f7bfe98b1746afb46eb",
+      "bytes": 2518
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v3\\figures.py",
+      "sha256": "69bf948152c279c419cf02661d1504f7ade707189f5825acc7120e15b963357d",
+      "bytes": 2070
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v3\\audit.cjs",
+      "sha256": "60d98238456e09c04f53db66bb1d7c26cf7e1da09ba3840291145354055ee838",
+      "bytes": 14012
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v3\\report.cjs",
+      "sha256": "350f7d9b786dea0b1c8fe772c433e2bdb0f1eaa53a1676a16c11e4be12af9821",
+      "bytes": 14430
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v3\\prepare.cjs",
+      "sha256": "055c427cc04756c2987fee4bff654b416794451f8e6c35e706e356e6226062c9",
+      "bytes": 6832
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v3\\README.md",
+      "sha256": "ce494c3865b270b85c030e0a9c41ac1e1c2d8efaff8b85f483f118eb47d8294e",
+      "bytes": 4503
+    }
+  ],
+  "input_pins": [
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\coupled_345_20261017\\INPUTS.json",
+      "sha256": "a4cfb1ce1f8b96250a3ed3bdbae6c41b479352e6d8f70ed2419971b886f2ccc3",
+      "bytes": 1760877
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\coupled_345_20261017\\PARAMETERS.json",
+      "sha256": "31cd4d4b4f6b3db4175f3a669cd3bf5e48f05587ac407a7e2e7c8817a9430ca8",
+      "bytes": 1642
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\coupled_345_20261017\\BUDGET_RESERVATION.json",
+      "sha256": "b9031075a5690ee0fbe02e66b9184cb3f83c7119d8311c744230cd01e990c025",
+      "bytes": 1337
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\coupled_345_20261017\\PURE_TEST_RESULT.json",
+      "sha256": "20b93831049c4137aba8311ccfacc5066f0ea362a831625ec975308f9326bec9",
+      "bytes": 2891
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\coupled_345_20261017\\PRESTART_TEST_FAILURE_01.json",
+      "sha256": "45015ea2d959658f1fdf5d996a8b97c30e56dcc314c9ec97b6f0e2e2035eed27",
+      "bytes": 449
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\STATE_COST_IDENTIFICATION_20261017_01\\MODEL.json",
+      "sha256": "ab6bed5fe4ae89246d4e7b32e12e420515dca0c20d2996d1aafa2af3f7510c0e",
+      "bytes": 1030
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\coupled_345_20261017\\OPERATION.json",
+      "sha256": "f0c18c4bc9dd25a2dda9c8c799b590e9a5c4c0f162c31ca66e4f12a4c785f85b",
+      "bytes": 11516
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\COUPLED_345_20261017_01\\SEED_3701_EP064.pt.gz",
+      "sha256": "61b127116e607abd807bfb10291ed7df78460a727cbf76df12ea1f0229ed403b",
+      "bytes": 210367
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\load_density_20261017\\INPUTS.json",
+      "sha256": "ae0f68bccb6cc201ee483c39418e0ce6bd3b6d24ed9b5cd9e8f33948d2d0f41e",
+      "bytes": 1290648
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\load_density_20261017\\BUDGET_RESERVATION.json",
+      "sha256": "5cc8ca73aca2811859c30a6ab17f7741e0986b96e91a8747f493c03e8b2e07f1",
+      "bytes": 1208
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\load_density_20261017\\PURE_TEST_RESULT.json",
+      "sha256": "ed772791f5f2fb0584e90f4d378832db1193df6033446478a62db04d44ba45d3",
+      "bytes": 72
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\load_density_20261017\\THERMAL_PURE_TEST.json",
+      "sha256": "8d4ef913f025492a8eef310718bc9599fb40182722a43db663ec7870e892c432",
+      "bytes": 4795
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\load_density_20261017\\EXTERNAL_S26_BUDGET_SNAPSHOT.json",
+      "sha256": "c968fafd241e01cd3cf535530dc9aa725d0f0cdc6cfb1a3b5b2c1b8319a08ffe",
+      "bytes": 733
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\load_density_20261017\\AST_RESULT.json",
+      "sha256": "6fdcbec0ed503b391f92cc4c7b1b60d14ba74f87fef4818409acc1d41b808c47",
+      "bytes": 417
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\COUPLED_345_20261017_01\\FRESH_02_EDF.raw.json.gz",
+      "sha256": "f38234574fb3b1b6e0f86b959cff7edb8c1ef00049d7ee473ce505d7b863dd1d",
+      "bytes": 66953
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\COUPLED_345_20261017_01\\FRESH_02_RL_S3701.raw.json.gz",
+      "sha256": "7efe4853f143f5dcc4a7c9ee4acd0486a2be276551c40e1810fbb6682a15ca86",
+      "bytes": 90450
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\COUPLED_345_20261017_01\\SELECTION_FROZEN.json",
+      "sha256": "ad2f3cdb57e8e861f3c8d19ebb3025e274377a93631f0a0fc5b444fcd71970d1",
+      "bytes": 1976
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\load_density_20261017\\OPERATION.json",
+      "sha256": "c880efeafef5191779b44f99bc2b8fc1e7990e51e7d568b0c7f43def665548c8",
+      "bytes": 18276
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\RESULT.json",
+      "sha256": "5182c7bee33a8992bd7d5272fe7925d9ae7b3414c2503f79d97cb6b54616c7de",
+      "bytes": 36383
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\COMPLETE.json",
+      "sha256": "07e936c544123e57da05938e35ed64b1bed33f0f0e8a0d7d76885cd7f0cd2703",
+      "bytes": 190
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\AUDIT.json",
+      "sha256": "f15ccf15548cb7c5cb9b2499348e5f66d39203943fa64b1dd17809dc96f46cac",
+      "bytes": 1185
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\WORK_METRICS.json",
+      "sha256": "b0541a8347a07dec49dd521a7b56e27165f2215dc448b3e2d1221b10a9b4e2da",
+      "bytes": 128654
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_050_0_EDF.raw.json.gz",
+      "sha256": "72e76ddecf46eb5a711dd2d7b648d6e64cadda22ab434e17de29fb0be7c29fee",
+      "bytes": 268861
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_050_0_ATC.raw.json.gz",
+      "sha256": "72e76ddecf46eb5a711dd2d7b648d6e64cadda22ab434e17de29fb0be7c29fee",
+      "bytes": 268861
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_050_0_RL.raw.json.gz",
+      "sha256": "da222e1d6da6a65999509e98b0a67c7e7a0be69223f8c0374bd012b4bf94e9df",
+      "bytes": 363943
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_100_0_EDF.raw.json.gz",
+      "sha256": "72de17e7b843c05616b9febb156bc11b48530786ca7f7b658d3ab02ee7cdcef5",
+      "bytes": 519956
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_100_0_ATC.raw.json.gz",
+      "sha256": "72de17e7b843c05616b9febb156bc11b48530786ca7f7b658d3ab02ee7cdcef5",
+      "bytes": 519956
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_100_0_RL.raw.json.gz",
+      "sha256": "187a6c8e06a35d6ad617ed407fde577a74bb35608cafb6aab78674dde3d8c247",
+      "bytes": 685157
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_150_0_EDF.raw.json.gz",
+      "sha256": "6cf96e745b394ba4809670182fe9798a9058503d7994b9b63cb6926970b44ea5",
+      "bytes": 863339
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_150_0_ATC.raw.json.gz",
+      "sha256": "49066811c0afb87a393531504691f42594a2d036f467b87d19e8eb899ba0a084",
+      "bytes": 847296
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_150_0_RL.raw.json.gz",
+      "sha256": "978e4b6d988e8cf50070d676ce2a61fb8eb0e0df84b7de3bc4e3d4578d4f7ac8",
+      "bytes": 1234780
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_200_0_EDF.raw.json.gz",
+      "sha256": "1f117a70ef2b4813de8dccb2d286e8cc9d20dad5c688c6634f1c2b613c5527c2",
+      "bytes": 2270675
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_200_0_ATC.raw.json.gz",
+      "sha256": "e046f966171363cdb3798e53644c516d8d00336feb27657a3357fee4cdfd2162",
+      "bytes": 1180025
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_200_0_RL.raw.json.gz",
+      "sha256": "72c21296680365d302f74e1511cb0334904ea614ab1e33cd2abe9d9df63de130",
+      "bytes": 2200936
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_300_0_EDF.raw.json.gz",
+      "sha256": "8d899d99beea30cda4189723937b2c9ae536d9507d9597b703a63c84fd08ebd1",
+      "bytes": 9178679
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_300_0_ATC.raw.json.gz",
+      "sha256": "66967c0646b457cd881f05f3a0e866455e1157fedb89f6840f2a22c28708f1f0",
+      "bytes": 5530432
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_300_0_RL.raw.json.gz",
+      "sha256": "9b4364d149c49018dcefe9fe60b4e7237db8af2a9c85751cb56b3490ba472fa4",
+      "bytes": 8110960
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_050_1_EDF.raw.json.gz",
+      "sha256": "7184c509092953fb05057add72de2b14895e64edc5379f54b91e2f1cbdc85e80",
+      "bytes": 334075
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_050_1_ATC.raw.json.gz",
+      "sha256": "d2260901fcbbc94f29e6a70a1b6dee7b545e65d0353c9fe4b075d32c884d50ef",
+      "bytes": 336031
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_050_1_RL.raw.json.gz",
+      "sha256": "2d4ff6210b401007bcc9ce3219b7c475aec8c260af804615cedb52a8e1497b8e",
+      "bytes": 475289
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_100_1_EDF.raw.json.gz",
+      "sha256": "0ac32569239b3061379b68ccabe0881934b4451ce728595626ae1bd8d9606fce",
+      "bytes": 719240
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_100_1_ATC.raw.json.gz",
+      "sha256": "849f9e5d4198fde2301f20b1e4b3552f80a5fdb3e5e7b92cfaec9cef7471ba9e",
+      "bytes": 712353
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_100_1_RL.raw.json.gz",
+      "sha256": "9900ce44f1cb75e0f88bdc1a637eb65c3a523c5b67e65dfaad3a9a36a83ee64c",
+      "bytes": 1033101
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_150_1_EDF.raw.json.gz",
+      "sha256": "07900f8987f08924c3b03809040fab515b01d45b9460210c8dba2276f78860c6",
+      "bytes": 1861875
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_150_1_ATC.raw.json.gz",
+      "sha256": "1ecb80327a81ccbe66a9a288a18acda39802f17d3c1e870777584dc0fabc445e",
+      "bytes": 1140960
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_150_1_RL.raw.json.gz",
+      "sha256": "c4bd8eed8665778759787f81c35bd54b221531836fcb91f6a4e98ef9e5ecb920",
+      "bytes": 2055457
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_200_1_EDF.raw.json.gz",
+      "sha256": "48878bae91ef7a09c02b0ac883900884e3de5dac153684034adc68312011b7dc",
+      "bytes": 5378645
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_200_1_ATC.raw.json.gz",
+      "sha256": "421130f87600a397ead205485935b83b6fbb2655e67e23547a0bf42a487e06c8",
+      "bytes": 3203690
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_200_1_RL.raw.json.gz",
+      "sha256": "f47883d61d42ba47ace130d72315447731f60c6657a22b9fe746e49b12e50618",
+      "bytes": 5078838
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_300_1_EDF.raw.json.gz",
+      "sha256": "09c83bba55bbf28b6eaa14754b8d8ccf9030f81d8cbc54c468a65fee91888659",
+      "bytes": 15122659
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_300_1_ATC.raw.json.gz",
+      "sha256": "76d118f79767c9be25065bb5aeb1260df4ad5253ca8d7dd9f4e47f8f5ff3166e",
+      "bytes": 10033626
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\DENSITY_300_1_RL.raw.json.gz",
+      "sha256": "b3a52990f3e81590c0082b878f2a447d5a86b4d00935a623872f028bcf752717",
+      "bytes": 14157589
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\density_headroom_20261018\\PURE_TEST_RESULT_V2.json",
+      "sha256": "2d13271619e0f67d3926a780e310da92fd9ea401607f9f6ecb123beeceb84d7c",
+      "bytes": 1493
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\density_headroom_20261018\\AST_RESULT_V2.json",
+      "sha256": "a9d53129fd8d260096895f14e7ee8a98006e3303271bb37aa1b0b066292b3705",
+      "bytes": 1487
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\density_headroom_20261018\\BUDGET_RESERVATION.json",
+      "sha256": "6a4bd09ef4163a7b4dfaacff49c938b0b80fb70715f3a4484b49e02235e517aa",
+      "bytes": 1359
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v2\\OPERATION.json",
+      "sha256": "dbb4631c267665fe1883dcfbcf3fa20fdf2ce489d1a1cf25a4f79097fe5a9627",
+      "bytes": 69885
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v2\\BUDGET_RESERVATION.json",
+      "sha256": "2c6f2053e650c02a5453dec8029a11d094f6c9a879193b722e0b2f958422b46b",
+      "bytes": 1262
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v2\\ENVIRONMENT0_RESOURCE_TRANSITION.json",
+      "sha256": "d97fba50fe73b127c95789f82fdbbf4d826eacb936cf323832da2cd3f2274f23",
+      "bytes": 655
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v3\\PARALLEL_ALLOWLIST.json",
+      "sha256": "dde349f9e9b44a9fa777fd6cb7376e1bd9053a3502faed647149d2aa20223f3f",
+      "bytes": 852
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\S26-D1Check\\s26_simulator\\experiments\\a24_load_margin_v1\\run.py",
+      "sha256": "a88423fec9843c3a7e1314db9accc543a6b9bf54e7b2228be5b81a1edd5437df",
+      "bytes": 11483
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\recovery\\finish_s26_comparison.py",
+      "sha256": "f06e142e84095fca830e4efa9ce0fc73bc1ce3c6f0ef201fb6b1b3d1266795c4",
+      "bytes": 1829
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018\\ENVIRONMENT0_IMPORT_FAILURE.json",
+      "sha256": "5ce41a1718c41bef0d8fc4c717629062ccd19877d4047496e50a427eb670ff10",
+      "bytes": 467
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018\\OPERATION.json",
+      "sha256": "8cb06f133f05bcb24cda6e5588b4e7e2b51e581bc48093179c955f0eb82d8e6a",
+      "bytes": 68182
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018\\BUDGET_RESERVATION.json",
+      "sha256": "9ebbdea2a6a9d6a403017824d7958763401ed63a8eec3c6af819577f40e990b5",
+      "bytes": 682
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\S26-D1Check\\s26_simulator\\experiments\\a24_unprotected_v1\\BUDGET_RESERVATION.json",
+      "sha256": "6b2f17e6683341308a3b7198225243aa3e0ee50635b8f16a6ed86d06be2f29f5",
+      "bytes": 988
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\ALL_ROWS_WITH_REASONS.json",
+      "sha256": "45596970d4896e84840bcbe951b00dee6424c72c06a7ee215643278e44805455",
+      "bytes": 359410
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\AUDIT.json",
+      "sha256": "2f609e23298f293fdc13257febc2256d05fdd1bfc3d5f779efa25f02840d3d50",
+      "bytes": 503
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\COMPLETE.json",
+      "sha256": "b99b7c892b164509720fa1d7558cb075ffd775052148a61c00d73a23792edba1",
+      "bytes": 273
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_050_0.BANK.json.gz",
+      "sha256": "77b8681f0e98802ec5acad41a8f55285fdac27b0545dbb53f3f1753a46a641e4",
+      "bytes": 60338
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_050_0_COOL35.raw.json.gz",
+      "sha256": "9ba338f18616c5b867c60f9c8fd59f02fc7fa1e20e1d020742606ffb2a4d0219",
+      "bytes": 234435
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_050_0_COOL36.raw.json.gz",
+      "sha256": "6f96c1a90402a8ec2308c29da7ce62f33b9a79daf62f9fd24092086738fb66a7",
+      "bytes": 234435
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_050_0_ENERGY.raw.json.gz",
+      "sha256": "ea62380a6f54eab2f0f90a5ce4ce9e0db65635498e22ae158f59c5454383f0e7",
+      "bytes": 234439
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_050_0_HEAT.raw.json.gz",
+      "sha256": "8b0b6d127f0e7a74eac3635952f2cf46f68ed5ed2d5f2d403648c1c11ba77fcc",
+      "bytes": 238920
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_050_0_LP_ROUTE.raw.json.gz",
+      "sha256": "c76f397dfee1d24fbbe857db9841a1b152e6a0f4aeb7403e0e06ae6b93e659db",
+      "bytes": 234448
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_050_0_REGRET.raw.json.gz",
+      "sha256": "f15c570b78762d173e7de5b6a015417fec58c3a9e28124ba8314cf8846d9b9df",
+      "bytes": 234437
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_050_0_SLA_ENERGY.raw.json.gz",
+      "sha256": "8ac3a6a6eda0d1408356219719d37b2fd24056a193bb21d4acbe4618e621e427",
+      "bytes": 232796
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_050_0_TOTAL.raw.json.gz",
+      "sha256": "6930349ffd99702a0318ec5f1872c4e3752d9c23048e23f6fb22aaa526054ebc",
+      "bytes": 234436
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_050_1.BANK.json.gz",
+      "sha256": "14669ec834efd807f52563f8396a190c73efc53ba5a71abe08d91c25f363e97a",
+      "bytes": 76348
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_050_1_COOL35.raw.json.gz",
+      "sha256": "036fc4fd95f89d4669f49517e0b00c0de35d2cbc07ae31b8aded01ef10acd5db",
+      "bytes": 289115
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_050_1_COOL36.raw.json.gz",
+      "sha256": "0af4b9e1dc20232118808b05489724898c062aa4bae24708c524942e3d22e602",
+      "bytes": 289115
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_050_1_ENERGY.raw.json.gz",
+      "sha256": "eb24b359f7af9c5cfcf35cb8e3fb6b5216d721325206b291c25c502a4e9e6de4",
+      "bytes": 289118
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_050_1_HEAT.raw.json.gz",
+      "sha256": "e0caae44851ba6f55c8fe3bde873384e2dabfa04ee2b0f2f0b95c1c12821aaa6",
+      "bytes": 295587
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_050_1_LP_ROUTE.raw.json.gz",
+      "sha256": "1e7acca021aa1cb7eada4f027645cc7a89172e7709cc10b36eed015c21dfb039",
+      "bytes": 289121
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_050_1_REGRET.raw.json.gz",
+      "sha256": "79e143c919cabdd15f3b7b8e286fbc9c13b3923f60bbe74c32b16b2f50e28785",
+      "bytes": 294561
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_050_1_SLA_ENERGY.raw.json.gz",
+      "sha256": "1ac9760a36c735ac69a10a117018aa7ff6871867fa46ca459f44498415b9c678",
+      "bytes": 289209
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_050_1_TOTAL.raw.json.gz",
+      "sha256": "687e8f641aa2a97cc466f3fdc5343273264274c0c74021e830a68875685f18e1",
+      "bytes": 289116
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_100_0.BANK.json.gz",
+      "sha256": "92b6a2c9cd3ef130a87ee0f34bccf236a3c3cde06f8c82b9540bce35e05e6f76",
+      "bytes": 115376
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_100_0_COOL35.raw.json.gz",
+      "sha256": "86b30ff8a26763b5c08a009b2ef8d3bb0865e288a6e71fe80e02aa669c642bae",
+      "bytes": 459156
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_100_0_COOL36.raw.json.gz",
+      "sha256": "940a9de8fb91a51a8f79b6f33108a04685a6e37522d3b5ef26c8be6f1a5bab79",
+      "bytes": 453353
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_100_0_ENERGY.raw.json.gz",
+      "sha256": "f87e2b78a91a31c89bc417db46424d0a75577e302a8800f0af2835ab415e9cd1",
+      "bytes": 453297
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_100_0_HEAT.raw.json.gz",
+      "sha256": "08f320337def34bfe05f2802a89d245b73f77c957c8b19729872a0709f8d9266",
+      "bytes": 453773
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_100_0_LP_ROUTE.raw.json.gz",
+      "sha256": "99249a7324a317a675d10b76cf08633ffaa685f36ae6f2e77c365dca1a53558c",
+      "bytes": 454215
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_100_0_REGRET.raw.json.gz",
+      "sha256": "e9bb316e6863a94ea76cc27430006fa43ce80874e36281235a59d4e2312586be",
+      "bytes": 454116
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_100_0_SLA_ENERGY.raw.json.gz",
+      "sha256": "1d8893c7219e49337e899ed664af21a9fdc92e7314b4de3582584b8091db933a",
+      "bytes": 452237
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_100_0_TOTAL.raw.json.gz",
+      "sha256": "bf61e30842320ba1b3d865fcd6c910657f78fb5658913cb3ba15e21afc207d0c",
+      "bytes": 453351
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_100_1.BANK.json.gz",
+      "sha256": "0421455cc659a4cdb08568de3123328324a34469ff71028757cfa44369700c4a",
+      "bytes": 149856
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_100_1_COOL35.raw.json.gz",
+      "sha256": "7521655220a78cdf72e8b00d1bd35d0bf4ecd1c865e3f33a50a27ebdd28c2319",
+      "bytes": 592058
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_100_1_COOL36.raw.json.gz",
+      "sha256": "3c801d8c2949cef031152841c442411f1295b9063890aef2e4b5b58bbab85be6",
+      "bytes": 590699
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_100_1_ENERGY.raw.json.gz",
+      "sha256": "401bfdcd8072f6af9660b653c5591d65fbe8bb666a27dbb64a7580c68bad4c1f",
+      "bytes": 590874
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_100_1_HEAT.raw.json.gz",
+      "sha256": "1f269c436bbf59f8d7e77f528e9a60928d503c77103fb0c3543923ea41788efd",
+      "bytes": 591261
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_100_1_LP_ROUTE.raw.json.gz",
+      "sha256": "75f722ec889fbef5470bc94b39cc874f3be4c46d4e850e2592576128c4485c52",
+      "bytes": 589354
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_100_1_REGRET.raw.json.gz",
+      "sha256": "6e329c216d8a08fe163363c26a9880c0c7e4f7493f592acf3289313cdcde8975",
+      "bytes": 591343
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_100_1_SLA_ENERGY.raw.json.gz",
+      "sha256": "e384703fca26e8bf42a883bdcfa4e42d98f3b833b5909fcd9532eb672663a2c1",
+      "bytes": 591141
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_100_1_TOTAL.raw.json.gz",
+      "sha256": "98c15064b504274e7021bac585895df622c998967195629cfb4ed31430d4c91a",
+      "bytes": 590702
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_150_0.BANK.json.gz",
+      "sha256": "90a67e75361b8f833b05ff9a2a860d20f97086a6e4e375360754fa91622a2ce9",
+      "bytes": 173922
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_150_0_COOL35.raw.json.gz",
+      "sha256": "c60eddd408c471c398f10cebba96cd544dc5e13622b5a7c5d188e74a7c30ce91",
+      "bytes": 695408
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_150_0_COOL36.raw.json.gz",
+      "sha256": "98306382337bb48e5389e86f2bdd78c532d68e60f570b876d8dad831d83194b9",
+      "bytes": 693910
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_150_0_ENERGY.raw.json.gz",
+      "sha256": "fa67a650f8ccdb9272aa3245d59bee757dfc053dbf7e4002ca10c076fb1a3e7d",
+      "bytes": 692041
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_150_0_HEAT.raw.json.gz",
+      "sha256": "a47a9539906704f08eb8d473ed2f69b7b5f0ee96e390add6d1f48e8c786850d2",
+      "bytes": 693382
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_150_0_LP_ROUTE.raw.json.gz",
+      "sha256": "96a96a780223acbefb2f62347c7e1b4ef9b6df8f9189d169461e996badd5fc26",
+      "bytes": 692807
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_150_0_REGRET.raw.json.gz",
+      "sha256": "e498127bb976c174a255be70cc8bc6847e5296ce5d613d4ef84e4f282ddb4446",
+      "bytes": 694959
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_150_0_SLA_ENERGY.raw.json.gz",
+      "sha256": "0fe2127d5e1cfcc79e515b5c348849fc5e73df2f5aafe579be6cf1fa7a61eaa3",
+      "bytes": 691284
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_150_0_TOTAL.raw.json.gz",
+      "sha256": "aa8b136de14f56116a925b9e6dc0a22f658087f870a74a26098ff36f4994cd4a",
+      "bytes": 691814
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_150_1.BANK.json.gz",
+      "sha256": "c055edb30936daf040732476bb75a128223fce9ee59960ed8fd0bc17db5d0e90",
+      "bytes": 222650
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_150_1_COOL35.raw.json.gz",
+      "sha256": "ad480f8b47742d61d5b10cafb02d95ff1091cef2c69a0c20472b27907d76e347",
+      "bytes": 940613
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_150_1_COOL36.raw.json.gz",
+      "sha256": "9d23e651b6bc0d423f338bc14944fc8da4e853bff3ecf38cb2651993be142121",
+      "bytes": 940613
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_150_1_ENERGY.raw.json.gz",
+      "sha256": "6de67ed49a48bbe8783beaeeec02b5c157524cad5f48a2810b1a122e258fba71",
+      "bytes": 940020
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_150_1_HEAT.raw.json.gz",
+      "sha256": "6dd594e42bc7971f79aeb0ebbebfff0a0d8b3ff02f4e3a89a4c896e092f64c4f",
+      "bytes": 943029
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_150_1_LP_ROUTE.raw.json.gz",
+      "sha256": "0af2d83d5cbace503a355a5045c1ece756e52eb8103f3a1c36b2e0af7b031897",
+      "bytes": 940806
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_150_1_REGRET.raw.json.gz",
+      "sha256": "16ad80da595ef24addb2d6530a63c8843eaa25eae15aaa0521fd8f06a3c4d057",
+      "bytes": 948530
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_150_1_SLA_ENERGY.raw.json.gz",
+      "sha256": "5db095924d5c258d04e8763a4c8286d1a4d36ad01cdb963c1802aba90261be61",
+      "bytes": 939768
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_150_1_TOTAL.raw.json.gz",
+      "sha256": "53413d1537c096012a6473e796a8e413a645124ce2b3fd3f6d2a611ad289a5b3",
+      "bytes": 940379
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_200_0.BANK.json.gz",
+      "sha256": "8999446027b5557cef64657eceadf05435880d16acd03cf4f6a13ad69d0931f8",
+      "bytes": 230855
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_200_0_COOL35.raw.json.gz",
+      "sha256": "ad9bcb9f4fbf80d5c934beaecdb5be87bd1d5cf8ba6af9c1fe6b61b8f43b7652",
+      "bytes": 975722
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_200_0_COOL36.raw.json.gz",
+      "sha256": "a8d23c974c4b79fb6859408f5febceedee1dd86ed845140edbcb3bca63679efd",
+      "bytes": 976014
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_200_0_ENERGY.raw.json.gz",
+      "sha256": "8abafda132c9ada5f585ca80d9e58a3ab4ff49c373d7c2df2a21b905c6a3ec49",
+      "bytes": 970944
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_200_0_HEAT.raw.json.gz",
+      "sha256": "cc77e9b8fbffd4a9991dd5b773d1be8ba53be41aadf12121358f0df9086bcfea",
+      "bytes": 973866
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_200_0_LP_ROUTE.raw.json.gz",
+      "sha256": "911960d14d6f75f94ed5b17a2585610272a2d0c8bbb7b53be8c2e8a93371dbd5",
+      "bytes": 967530
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_200_0_REGRET.raw.json.gz",
+      "sha256": "bd78e4d04d2c804916bfc38d07b4263a5d0830b2de08fa48925ff250b78adae4",
+      "bytes": 978861
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_200_0_SLA_ENERGY.raw.json.gz",
+      "sha256": "e96a5086d9a56fee9bc4f2007b51caa15a814c4f10eb85280b2af41eaea1b7be",
+      "bytes": 968850
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_200_0_TOTAL.raw.json.gz",
+      "sha256": "a84d3a47dcfac575f5f2809317a2675d219915dd56b92044eb13d0bb754401b8",
+      "bytes": 972399
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_200_1.BANK.json.gz",
+      "sha256": "4e859ad44eeb0a728e5c68c8c5276c8983e34638c15b7de39663071ed2a8215c",
+      "bytes": 293718
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_200_1_COOL35.raw.json.gz",
+      "sha256": "ed06afc119d4f251bba9bdb0f714a28179eb7a7313a35b7b1ac399c196ab8d8b",
+      "bytes": 2948695
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_200_1_COOL36.raw.json.gz",
+      "sha256": "c6cb75af6d019581774eaa060e19c9fb0fd9792f9175c7ce9980add66c39253d",
+      "bytes": 2948692
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_200_1_ENERGY.raw.json.gz",
+      "sha256": "44c31a9aee595089120d387e88572b95d20a77878e510db35960fe396b8c5514",
+      "bytes": 2965535
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_200_1_HEAT.raw.json.gz",
+      "sha256": "8c1804ac81fc7bbdfe50c57705681d6f49672239c94ba751759a3fb646419ff6",
+      "bytes": 2959425
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_200_1_LP_ROUTE.raw.json.gz",
+      "sha256": "f1c12295007c11a56a2adc7e9ba2d63381211487b0e66955f143c8327f9fb2a9",
+      "bytes": 2943023
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_200_1_REGRET.raw.json.gz",
+      "sha256": "d8c6c8e99109121b64120c7158a071a9901a3acd78c7a7f9b637edd738fa0985",
+      "bytes": 3092372
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_200_1_SLA_ENERGY.raw.json.gz",
+      "sha256": "f040dfbe81cc60ae8779d566484900ae65651ce6cf13b636f18d074e5b681fbc",
+      "bytes": 2958959
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_200_1_TOTAL.raw.json.gz",
+      "sha256": "5006fdfd003d584f52b7493da17264eea02381a42560c1d2328a4e833106e5bf",
+      "bytes": 2948726
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_300_0.BANK.json.gz",
+      "sha256": "911c1ce6e5ba049168939b4e0e4fb0ea1aacce3da1788cd95e93f7dc568e4cd4",
+      "bytes": 346343
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_300_0_COOL35.raw.json.gz",
+      "sha256": "b53779e000986f1f91d54cc3befc0e1deeb0f5a5b4f704c72da40c067566a72d",
+      "bytes": 5302078
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_300_0_COOL36.raw.json.gz",
+      "sha256": "e3900bb774e651f3582ce9a39b9bc91d21881de011f834d47f3076c6ac1e4b8e",
+      "bytes": 5301976
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_300_0_ENERGY.raw.json.gz",
+      "sha256": "9de4659ae71f7d91dc823f73501736778c1766dded55c1d9c0daa58552358043",
+      "bytes": 5309924
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_300_0_HEAT.raw.json.gz",
+      "sha256": "2531cb1c0f1c8169faff956a2c363491a77a699c863af67e5f793c06f05dc01b",
+      "bytes": 5344914
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_300_0_LP_ROUTE.raw.json.gz",
+      "sha256": "25c5095c453f2766ae44f2e3dace4d5ceed5b52baf9f86ec8bb01f4d0f6e19a8",
+      "bytes": 5261358
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_300_0_REGRET.raw.json.gz",
+      "sha256": "1b76bc35f9412cb184b98b28dd63f82302818b2f0b3a8c27fce3d7a5f25ece5c",
+      "bytes": 5530194
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_300_0_SLA_ENERGY.raw.json.gz",
+      "sha256": "06fc21d92bd4a365775e158bb0eeaa372a28fd3c1a35a6641e6f23f4c7507426",
+      "bytes": 5332926
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_300_0_TOTAL.raw.json.gz",
+      "sha256": "19f8d32c6cdac4e358539c627a45fa6582072a3e9fe11fbba44cca52dc571085",
+      "bytes": 5300507
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_300_1.BANK.json.gz",
+      "sha256": "b26c5f86ae9baeb18030290ed87681ad365186016f8c17c2be2b7e35baa70f6c",
+      "bytes": 436972
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_300_1_COOL35.raw.json.gz",
+      "sha256": "5da49a816807eb8f77c83786f0530efde15e5341d216e16ce1750bc68f607b32",
+      "bytes": 9807686
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_300_1_COOL36.raw.json.gz",
+      "sha256": "fed733208aed1ec86a72ebaee9a729e5655dd75e5641d349300508b755be679f",
+      "bytes": 9807685
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_300_1_ENERGY.raw.json.gz",
+      "sha256": "22d1b9593f852369027b145ca7b90217e970ff13015a68dfd66787548392b3d1",
+      "bytes": 9802070
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_300_1_HEAT.raw.json.gz",
+      "sha256": "207ee26ae8b4062960ec3f9ca3b9a96632c1bd7f298843e6e1e955d1268259a6",
+      "bytes": 9843030
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_300_1_LP_ROUTE.raw.json.gz",
+      "sha256": "8dbeb29c4d4febd948134b4a75c31e436c09580d01962af09be43a41d53ff791",
+      "bytes": 9789886
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_300_1_REGRET.raw.json.gz",
+      "sha256": "d5b5150e3a32e3ed7c5e3bd01f8d206f579842a7e291b1ed84bd5dc821893feb",
+      "bytes": 9944685
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_300_1_SLA_ENERGY.raw.json.gz",
+      "sha256": "fd97010e6f94965a54a76c62dc9c93d22f45e691bf509d93249bc26c19b670c9",
+      "bytes": 9796457
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\DENSITY_300_1_TOTAL.raw.json.gz",
+      "sha256": "b85622df082bde60d602e3c1a954d6234a738b26b08c16bb9a6269f72a8c7ace",
+      "bytes": 9806753
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\EVALUATION.json",
+      "sha256": "ed7c1b69a6b5193d5d5e423a40de5d8a3edf12fc1c4e8d81b73fe13ddf8545b3",
+      "bytes": 374253
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\FINAL_HANDOFF_PROOF.json",
+      "sha256": "8d3c2088df693e3ec2582af49503b14591d984522c64d26aec29816e639d8110",
+      "bytes": 55402
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\HEADROOM_SUMMARY.json",
+      "sha256": "490cf65851f643ebc0acbb815957a3c0ed0c679629e26cc633d722fba435fb3b",
+      "bytes": 27376
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\P0_DENSITY_050_0.raw.json.gz",
+      "sha256": "f4e193f67b96e9cc06d5789b0245b2fe0ac39cccccc2f5c2bfd9dca9b4dcbe22",
+      "bytes": 232515
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\P0_DENSITY_300_1.raw.json.gz",
+      "sha256": "d54594d6d5859fa50d98f07015c5dee279d8da921b283b2849ca6215709707ca",
+      "bytes": 14817762
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\REPORT.md",
+      "sha256": "6bc51f6fc038aafeabfe60732608f3d00322011cd6c41d38f7d0f19d2798a23e",
+      "bytes": 26746
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_20261018_01\\RESULT.json",
+      "sha256": "ab1b659310d6486ee1a521ac1ca9481e35d45b3ca453d072ec9a514cef60fbe8",
+      "bytes": 87581
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_COUPLED_20261018_01\\ALL_ROWS_WITH_REASONS.json",
+      "sha256": "45596970d4896e84840bcbe951b00dee6424c72c06a7ee215643278e44805455",
+      "bytes": 359410
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_COUPLED_20261018_01\\AUDIT.json",
+      "sha256": "28aaada68361f5e9aa36dae0a192e2e1e1835847a6a22e1e64b4b784773e2793",
+      "bytes": 556
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_COUPLED_20261018_01\\COMPLETE.json",
+      "sha256": "26a27dfdb835c5bdbb30fcad83839d3be1e6f7b121c505940d70a0135acc255a",
+      "bytes": 157
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_COUPLED_20261018_01\\EVALUATION.json",
+      "sha256": "2632e20e0e31de95fe2aee828c7770d0d32a0919ca504396b70fa11348ae2e5b",
+      "bytes": 279720
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_COUPLED_20261018_01\\FINAL_HANDOFF_PROOF.json",
+      "sha256": "a5c1b0c5e3600a8af041fd1729afe9830b8444dd67729fb2fea4d6a45bfdc206",
+      "bytes": 15819
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_COUPLED_20261018_01\\HEADROOM_SUMMARY.json",
+      "sha256": "78d577b6dd71efeedcf9fbee2c15ecda8e0e0189b301d2ebe796edf6b24ed084",
+      "bytes": 43668
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_COUPLED_20261018_01\\PHASE_PROOFS.json",
+      "sha256": "f9df1ddf0e69faaf45b6394a345c7f2dd7d208dbacabcb797a3ee37600c8a2cf",
+      "bytes": 7046
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_COUPLED_20261018_01\\REPORT.md",
+      "sha256": "5e435ae35b66cc2048ed1174b40958bb128a9689fe50c7a2dcb6e8323681e862",
+      "bytes": 39249
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\DENSITY_HEADROOM_COUPLED_20261018_01\\RESULT.json",
+      "sha256": "3f563eae1cb0c1d996928197f58c2d8a0aca2347bafbd0d0c8ff3236a7cfc059",
+      "bytes": 451
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\CHOICE_DIAGNOSIS.json",
+      "sha256": "8665931a633ad976b29e9d16ad4a00fa7bcfa61b40e51b1a160551f28fb77b52",
+      "bytes": 14024
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\FINAL_HANDOFF_PROOF.json",
+      "sha256": "483284d44f5eaecee46f1ef9f6ac507baa7acccf99d2f922c54c769a70d88b78",
+      "bytes": 22884
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\P0_EDF.raw.json.gz",
+      "sha256": "f38234574fb3b1b6e0f86b959cff7edb8c1ef00049d7ee473ce505d7b863dd1d",
+      "bytes": 66953
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\P0_RL_S3701.raw.json.gz",
+      "sha256": "7efe4853f143f5dcc4a7c9ee4acd0486a2be276551c40e1810fbb6682a15ca86",
+      "bytes": 90450
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\LOAD_DENSITY_20261017_01\\REPORT.md",
+      "sha256": "3cd705b95cf79561e6ea38e53eb1cd6621776f9bbfae485262109b4f50d36dea",
+      "bytes": 11446
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v3\\SAVED_REWARD_DIAGNOSIS.json",
+      "sha256": "1093167bd614e5fe83230655e12d1418689b8beeaaeb6dad9ccfac0f831123a1",
+      "bytes": 116545
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\COUPLED_345_20261017_01\\RESULT.json",
+      "sha256": "c9437827b40fe43229ee01c6ed0a9b9e3db2b997b839890d23845f68b204dee3",
+      "bytes": 787621
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\S26-D1Check\\s26_simulator\\experiments\\a24_load_margin_v1\\BUDGET_RESERVATION.json",
+      "sha256": "3835a45c79d380e410415a44759acd1e3d2d84415734e9fb13bb029863a9fb62",
+      "bytes": 472
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v3\\PUBLIC_CATALOG.json.gz",
+      "sha256": "e051a4463788fa83928957d878feeff15460aac4a368d5fb718afcb12202493a",
+      "bytes": 30119
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v3\\PREFLIGHT_RESULT.json",
+      "sha256": "d2430dd6cb1dac1771f9d513e86bd6c635b0cb9c6f6c2eeea3560dfa6bc1f032",
+      "bytes": 6404
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v3\\BUDGET_RESERVATION.json",
+      "sha256": "08ec6b3ef8fec8dd5c448da1d4e1bc6361a2006c0904ce9db6cbb6c604fb6dd0",
+      "bytes": 1262
+    }
+  ],
+  "inputs": {
+    "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\load_density_20261017\\INPUTS.json",
+    "sha256": "ae0f68bccb6cc201ee483c39418e0ce6bd3b6d24ed9b5cd9e8f33948d2d0f41e",
+    "bytes": 1290648
+  },
+  "checkpoint": {
+    "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\results\\COUPLED_345_20261017_01\\SEED_3701_EP064.pt.gz",
+    "sha256": "61b127116e607abd807bfb10291ed7df78460a727cbf76df12ea1f0229ed403b",
+    "bytes": 210367
+  },
+  "learner_seed": 3701,
+  "physics": {
+    "baseline": 1.204399931712509,
+    "idle_c": 26,
+    "reference_c": 26,
+    "thermal_tau_s": 25,
+    "thermal_resistance": 12,
+    "idle_tail_s": 0.9,
+    "onset_c": 32,
+    "cpu_slope": 0.07,
+    "gpu_slope": 0.045,
+    "minimum_speed": 0.45,
+    "leakage_fraction": 0.2,
+    "leakage_per_c": 0.025,
+    "strength": 1,
+    "tick_s": 0.1
+  },
+  "catalog": {
+    "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\D1Check\\a24_simulator\\experiments\\guard_ablation_20261018_v3\\PUBLIC_CATALOG.json.gz",
+    "sha256": "e051a4463788fa83928957d878feeff15460aac4a368d5fb718afcb12202493a",
+    "bytes": 30119
+  },
+  "catalog_uncompressed_sha256": "4a55f81d9a7e934cc24460c277e30c278ff49bcb61f15e2a312a32f7efd58c4b",
+  "policies": [
+    "GUARD_ON_NN",
+    "GUARD_OFF_NN",
+    "GUARD_ON_ZERO",
+    "GUARD_OFF_ZERO"
+  ],
+  "planned_START": 40,
+  "environment_cap": 44,
+  "experiment": "Only urgent-deadline feasibility of WAIT candidates changes; all DISPATCH choices already NN-controlled. Common50ms coalescing and WAIT total/per-head caps stay identical. Original penalty weights unchanged.",
+  "zero_control": "Zero final neural actor layer only; canonical first action tie break. Not a newly trained policy.",
+  "physical_engine_unchanged": true,
+  "original_timing_model_restores": 0,
+  "frozen_potential_banks": 10,
+  "public_nominals_from": "Original baseline public estimates, checked constant per request; no actual latent vectors supplied to actor",
+  "all10_ON_NN_exact_original_trace_and_neural_banks_required": true,
+  "new_training": 0,
+  "new_physical_fit": 0,
+  "new_device_actions": 0,
+  "own_Python_limit": 1,
+  "global_Python_limit": 3,
+  "private_A24_mutex": "runtime/a24_local_worker.lock",
+  "single_threaded": true,
+  "shared_original_data_read_only": true,
+  "min_free_GiB": 8,
+  "wall_clock_limit_s": 7200,
+  "automatic_retry": false,
+  "all_original112_plus_new40_displayed": true,
+  "follow_up": "After frozen ablation, diagnose before separately registering paired no-guard learning and targeted policy repair; no unbounded automatic search or new physical coefficients.",
+  "node_executable": "C:/Program Files/nodejs/node.exe"
+}
