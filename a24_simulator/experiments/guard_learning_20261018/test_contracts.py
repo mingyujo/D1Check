@@ -49,4 +49,40 @@ class Tests(unittest.TestCase):
         self.assertAlmostEqual(c[:,0].sum()*.35,sum(t['increment']+t['baseline'] for t in trace[:2]));self.assertEqual(c[:,4].sum(),1.)
         self.assertLess(audit['max_telescope_error'],1e-9)
 
+    def test_paired_optimizer_and_rng_storage_are_independent(self):
+        import gzip,io,torch
+        from paired_initialization import independently_restored
+        checkpoint=ROOT/'results/COUPLED_345_20261017_01/SEED_3701_EP064.pt.gz'
+        snapshot=torch.load(io.BytesIO(gzip.decompress(checkpoint.read_bytes())),map_location='cpu',weights_only=False)
+        a=independently_restored(snapshot,3701);b=independently_restored(snapshot,3701)
+        for pa,pb in zip(a.net.parameters(),b.net.parameters()):
+            self.assertTrue(torch.equal(pa,pb));self.assertNotEqual(pa.data_ptr(),pb.data_ptr())
+        state_a=a.optimizer.state_dict()['state'];state_b=b.optimizer.state_dict()['state'];count=0;first=None
+        self.assertEqual(state_a.keys(),state_b.keys())
+        for key in state_a:
+            for name,value in state_a[key].items():
+                other=state_b[key][name]
+                if torch.is_tensor(value):
+                    self.assertTrue(torch.equal(value,other));self.assertNotEqual(value.data_ptr(),other.data_ptr());count+=1
+                    if first is None:first=(value,other.clone(),other)
+        self.assertGreater(count,0)
+        first[0].add_(1);self.assertTrue(torch.equal(first[1],first[2]))
+        self.assertTrue(torch.equal(a.action_rng.get_state(),b.action_rng.get_state()))
+        before=b.action_rng.get_state().clone();torch.rand(1,generator=a.action_rng)
+        self.assertTrue(torch.equal(before,b.action_rng.get_state()))
+        self.assertTrue(torch.equal(a.shuffle_rng.get_state(),b.shuffle_rng.get_state()))
+        before=b.shuffle_rng.get_state().clone();torch.randperm(8,generator=a.shuffle_rng)
+        self.assertTrue(torch.equal(before,b.shuffle_rng.get_state()))
+
+    def test_equal_supply_progress_is_duration_invariant(self):
+        values=[]
+        for duration in (60,120):
+            now=35+duration/2;state=self.state(10);state['now_ns']=round(now*1e9)
+            for i,q in enumerate(state['queue']):
+                q.update(scheduled_arrival_ns=round((now-5)*1e9)+i,queue_entry_ns=round((now-5)*1e9)+i,deadline_ns=round((now-1)*1e9)+i)
+            case=self.case(n=10);case['supply_stop_s']=35+duration
+            actor=RepairController(Nominal(),self.physics(),case,'RL',Fake(),False,deadline_guard=False)
+            actor(state);values.append(actor.calls[-1]['x'][0][30])
+        self.assertEqual(values,[.5,.5])
+
 if __name__=='__main__':unittest.main()

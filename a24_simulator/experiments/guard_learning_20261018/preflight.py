@@ -19,7 +19,7 @@ def main():
         ast.parse(p.read_text(encoding='utf-8'));asts.append(dict(path=str(p),sha256=G.sha(p)))
     for p in HERE.glob('*.cjs'):
         subprocess.run(['C:/Program Files/nodejs/node.exe','--check',str(p)],check=True);scripts.append(dict(path=str(p),sha256=G.sha(p)))
-    G.write_new(HERE/'PREFLIGHT_RESULT_V3.json',dict(status='PASS' if r.wasSuccessful() else 'FAIL',tests=r.testsRun,failures=len(r.failures),errors=len(r.errors),log=stream.getvalue(),AST=asts,Node_check=scripts,guard=guard,native_resource_guard=native_guard,volumes=volumes,producer_import_pass=True,new_environment_START=0,new_training=0,frozen_bank_restores=0))
+    G.write_new(HERE/'PREFLIGHT_RESULT_V4.json',dict(status='PASS' if r.wasSuccessful() else 'FAIL',tests=r.testsRun,failures=len(r.failures),errors=len(r.errors),log=stream.getvalue(),AST=asts,Node_check=scripts,guard=guard,native_resource_guard=native_guard,volumes=volumes,producer_import_pass=True,new_environment_START=0,new_training=0,frozen_bank_restores=0))
     print(stream.getvalue(),flush=True);G.require(r.wasSuccessful(),'Preserve test failure; no native start')
 
 if __name__=='__main__':main()

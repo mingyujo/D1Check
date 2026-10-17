@@ -11,6 +11,7 @@ sys.path[:0]=[str(HERE),str(ROOT/'experiments/guard_ablation_20261018_v3')]
 from guard_controller import GuardController
 from bank_model import BankModel,SavedNominal
 from repair_controller import RepairController
+from paired_initialization import independently_restored
 from repair_rewards import labels as repaired_labels,old as original_rewards
 spec=importlib.util.spec_from_file_location('moderate_bank_builder',ROOT/'experiments/moderate_load_20261018/run_moderate.py')
 _bank_directory=str(ROOT/'experiments/moderate_load_20261018');sys.path.insert(0,_bank_directory)
@@ -82,8 +83,8 @@ def main():
             for case in train:
                 public,contexts=public_input(case,catalog);public['initial_ap_c']=case['temperature_c']
                 b=bank_module.bank(public,L.Model(base,contexts),case);saved(out/(case['id']+'.BANK.json.gz'),b)
-            initial=loadpt(op['checkpoint']['path']);arms={k:Learner(op['learner_seed']) for k in op['arms']}
-            for arm,learner in arms.items():learner.restore(initial);pt(out/(arm+'.INITIAL.pt.gz'),learner.snapshot())
+            initial=loadpt(op['checkpoint']['path']);arms={k:independently_restored(initial,op['learner_seed']) for k in op['arms']}
+            for arm,learner in arms.items():pt(out/(arm+'.INITIAL.pt.gz'),learner.snapshot())
             initial_digest=digest(arms[op['arms'][0]].net);initial_counters=(initial['episodes'],initial['updates'],initial['steps'])
             G.require(all(digest(l.net)==initial_digest for l in arms.values()),'Identical initial NN/Adam/RNG')
 

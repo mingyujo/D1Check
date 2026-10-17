@@ -78,7 +78,7 @@ class RepairController:
                 a.get('wait_ns',0)/NS,state['wait_used_ns']/(12*NS),self.physics.solo[('classification' if q['task']=='C' else 'detection')+'_'+r],
                 *costs,(forecast['peak']-26.)/10. if forecast else 0.,
                 (forecast['candidate_response']-now)/5. if forecast and forecast['candidate_response'] is not None else 0.,
-                (self.case['service_stop_s']-now)/100.,f['increment_so_far']/(self.case['n']*.35)],dtype=np.float32)
+                (self.case.get('supply_stop_s',self.case['service_stop_s'])-now)/max(1.,self.case.get('supply_stop_s',self.case['service_stop_s'])-35.),f['increment_so_far']/(self.case['n']*.35)],dtype=np.float32)
             # Preserve low-range values; logarithmic tails distinguish long queues.
             for k in (6,7,11,12,30,31):
                 v=float(X[i,k]);X[i,k]=v if abs(v)<=5 else math.copysign(5+math.log1p(abs(v)-5),v)

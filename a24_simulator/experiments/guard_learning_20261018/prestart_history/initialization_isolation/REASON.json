@@ -1,0 +1,7 @@
+{
+  "utc": "2026-10-17T18:49:00.550Z",
+  "native_training_START": 0,
+  "finding": "Installed torch optimizer.py shallow-copies state dict and may retain same-device optimizer tensors; restoring one snapshot object into several learners must isolate tensors",
+  "fix": "Deep-copy checkpoint for each arm before original restore; add direct optimizer and RNG isolation contract",
+  "original_results_affected": false
+}

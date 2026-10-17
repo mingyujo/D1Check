@@ -15,3 +15,7 @@
 현재실행관리개정: 사용자가허용한독립결정론계산globalPython3/ownA24 1·single-thread·전용A24잠금과SHA고정peer/RAM/디스크검사를쓴다. 실제모형/입력/NN계약은불변이다. 원직렬소스와PREFLIGHT_RESULT는93e7784 및prestart_history에보존하고개정검사는PREFLIGHT_RESULT_V2로별도남긴다. 아직이단계OP는등록하지않았다.
 
 개정저장감사: 모든TRAIN/EVAL의선택logprob·critic을raw에보존하고별도Float64로검산한다. 학습96의동일Torch선택/RNG뿐아니라48회의저장PPO/Adam/양RNG/로그산술도exactreplay하여동일AFTERsnapshot과대조한다. 이는저장산술검산이며새환경/학습자료/정책선정/실험조건을추가하지않는다. 원10입력의공개명목벡터13390개는기존RL호출에서상수/완전성을확인해40KB캐시로보존했고잠재timing/미래도착을추출하지않았다. 부분맵인원witness NOMINALS 재사용실패는별도기록하고사용하지않는다.
+
+학습전공정성보완: 설치된Optimizer.load_state_dict의동일device상태tensor공유가능성때문에세arm이원snapshot을각각deepcopy하여복원하도록했다. NN뿐아니라Adam과action/shuffle RNG가서로공유되지않는직접계약을추가해총7계약으로고정한다. 아직학습환경0이며이전6계약/소스는보존한다.
+
+추가분포진단: 원128학습입력의서비스시간feature초깃값은.2475~.53638이지만새장기입력은6.6~7.2였다. 이는공급뒤고정600초여유를입력에포함한차이이며보완arm만공개공급종료까지의시간/공급기간으로바꾼다. 원ON/OFF두arm은원입력을유지한다. 60/120초의동일진행률이같은NN입력을주는8번째계약을추가했고원소스/진단을보존한다.
