@@ -1,0 +1,31 @@
+{
+  "schema": "S26_MULTIRESOURCE_EVIDENCE_OVERLAY_V1",
+  "created_utc": "2026-10-16T21:23:59.1618386Z",
+  "status": "REGISTERED_DOCUMENTARY_CORRECTION_NO_NUMERIC_CHANGE",
+  "raw_and_frozen_source_preserved": true,
+  "actual_packet_sha256": "7aeac902acf20a392d33da288c9a7a5d6594318361f7614616dccbc41fe71061",
+  "actual_power_mode": "POSITIVE_ADDITIVE",
+  "actual_AP_mode": "POSITIVE_ACTIVITY_DYNAMIC",
+  "separate_calibration_fits": 56,
+  "policy_worker_fit": 0,
+  "new_policy_environment": 0,
+  "new_cost_replay": 0,
+  "corrections": [
+    {
+      "field": "evidence.measured",
+      "inherited": "Old+M8 inference and phase templates, supported route masks and exact R21 recipe/initial state",
+      "correct": "Measured old+M8 timing/phase vectors and R21 initial histories are reused. New burst request streams are synthetic, not exact R21 recipes. New pair/triple masks are simulator transfer assumptions, not validated phone support."
+    },
+    {
+      "field": "evidence.estimated",
+      "inherited": "Hierarchical timing, signed AP and positive Gamma power",
+      "correct": "Frozen hierarchical timing plus independently audited constrained positive-activity AP model and positive additive API-power model. Actual mode is determined by the sealed packet and executed numeric source, not the inherited descriptive string."
+    },
+    {
+      "field": "evidence.new_fit",
+      "inherited": 0,
+      "correct": "Zero fits inside the policy worker. A separate registered measurement-only calibration performed56 fits before policy starts; its source/data/model/KKT/OOF provenance is packet.multi.calibration_lineage."
+    }
+  ],
+  "binding_method": "After all3240 rows finish, independently check every row packet SHA/generation/rate-sampling/fit-lineage and require the separate numeric FINAL_AUDIT PASS. Publish corrected evidence overlay beside original hashes; never rewrite raw/rows."
+}

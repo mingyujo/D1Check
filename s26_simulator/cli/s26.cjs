@@ -4,6 +4,15 @@ const { fs, path, ROOT, json, flag } = require('../scripts/io.cjs');
 const http = require('node:http');
 function replay(args) {
   const comparison = flag(args, '--comparison', 'legacy');
+  if (comparison === 'multiresource-v1') {
+    const dir=path.join(ROOT,'experiments/multiresource_v1/results'),result=json(path.join(dir,'RESULT.json'));
+    if(result.status!=='PASS'||result.EVAL_rows!==2592)throw Error('Multi-resource analysis is incomplete');
+    const capacity=flag(args,'--capacity','3'),model=flag(args,'--model','CENTRAL'),policy=flag(args,'--policy','ALL');
+    if(!['1','2','3','ALL'].includes(capacity)||!['LOW','CENTRAL','HIGH','ALL'].includes(model)||!['FIFO','EDF','ATC','ALL'].includes(policy))throw Error('Unknown multi-resource filter');
+    const rows=json(path.join(dir,'SUMMARY.json')).filter(r=>(capacity==='ALL'||r.capacity===Number(capacity))&&(model==='ALL'||r.model===model)&&(policy==='ALL'||r.policy===policy));
+    const contrasts=json(path.join(dir,'COMPARISONS.json')).filter(r=>(capacity==='ALL'||r.capacity===Number(capacity))&&(model==='ALL'||r.model===model));
+    const output={mode:'AUDITED_MULTIRESOURCE_STORED_RESULT',generation:'MULTI001_G004',new_policy_environments:0,new_fit:0,new_RL:0,results:rows,contrasts,limitation:'Same rolling allocator isolates order contribution; CPU service/new pairs/triples are transfer assumptions. API-unit energy/HAL AP predictions are not independent phone savings certification.'};console.log(JSON.stringify(output,null,2));return rows;
+  }
   if (comparison === 'state-aware-v1') {
     const d = json(path.join(ROOT, 'experiments/state_aware_v1/SUMMARY.json'));
     if (d.status !== 'PASS') throw Error('Stored state-aware comparison is incomplete');
@@ -77,7 +86,9 @@ async function main(args) {
   if (command === 'serve') {
     const port = Number(flag(args, '--port', '8788'));
     if (!Number.isInteger(port) || port < 1024 || port > 65535) throw Error('Invalid port');
-    const html = fs.readFileSync(path.join(ROOT, 'web/index.html'));
+    const view=flag(args,'--view','latest');if(!['latest','legacy'].includes(view))throw Error('Unknown view');
+    const multi=path.join(ROOT,'web/multiresource_v1.html');
+    const html = fs.readFileSync(view==='latest'&&fs.existsSync(multi)?multi:path.join(ROOT, 'web/index.html'));
     const server = http.createServer((req, res) => {
       if (!['GET', 'HEAD'].includes(req.method)) { res.writeHead(405); return res.end(); }
       const route = new URL(req.url, 'http://127.0.0.1').pathname;
@@ -90,7 +101,7 @@ async function main(args) {
     return server;
   }
   if (command !== 'help' && command !== '--help') throw Error('Unknown command: ' + command);
-  console.log('S26 handoff | Node >=20\n  verify\n  diagnose\n  replay [--comparison legacy|fair-resource-v1|state-aware-v1] [--policy ID|ALL] [--bank BANK|ALL]\n    state-aware banks: M128_BASE, SMOOTH128_BASE, COMPETE_A, COMPETE_B\n    legacy/fair banks: M128, SMOOTH128\n  serve [--port 8788]\n  locate <path substring>\n  restore [--group current|measurements|policy_history|history|all]\nAll commands inspect or restore existing evidence. See HANDOFF.md before new simulation/training.');
+  console.log('S26 handoff | Node >=20\n  verify\n  diagnose\n  replay [--comparison legacy|fair-resource-v1|state-aware-v1|multiresource-v1] [--policy ID|ALL] [--bank BANK|ALL]\n    multi-resource: --capacity 1|2|3|ALL --model LOW|CENTRAL|HIGH|ALL\n    state-aware banks: M128_BASE, SMOOTH128_BASE, COMPETE_A, COMPETE_B\n    legacy/fair banks: M128, SMOOTH128\n  serve [--port 8788] [--view latest|legacy]\n  locate <path substring>\n  restore [--group current|measurements|policy_history|history|all]\n  node scripts/restore-multi.cjs [--verify-only] [--filter path]\nAll commands inspect or restore existing evidence. See HANDOFF.md before new simulation/training.');
 }
 module.exports = { main, replay };
 if (require.main === module) main(process.argv.slice(2)).catch(e => { console.error(e.message); process.exitCode = 1; });

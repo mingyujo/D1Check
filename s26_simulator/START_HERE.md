@@ -2,7 +2,7 @@
 
 **채팅 기억 대신 이 폴더의 기록을 기준으로 이어간다.** 먼저 이 문서와 [AGENTS](AGENTS.md)를 읽고, [STATUS](STATUS.md)·[최신 결과](STATE_AWARE_COMPARISON_KO.md)를 확인한다. 구체적인 미완료 작업은 [NEXT_STEPS](docs/NEXT_STEPS.md), 실행·저장 규약은 [HANDOFF](HANDOFF.md)에 있다.
 
-**새 다중 요청 분산 계획:** [CPU·GPU·NPU 상세 구현 계획](docs/MULTIRESOURCE_IMPLEMENTATION_PLAN.md). 슬롯/공유 CPU·pair/triple 추정·동시 도착·공정 비교·검증/예산 가안을 정리했다. 현재 사용자 지시는 계획까지이며 **미구현·미등록·미실행**이다. 기존 AGENTS의 미지원 조합은 현재 완료판의 사실이고, 이 계획은 그 확장 제안이다.
+2026-10-17 최신 정본: **MULTI001_G004 3,240건 실행·독립 전수 감사 PASS**, 분석/HTML 생성 완료. 화면 QA 최초 실행은 실패 보존 중이므로 전체 완료는 아니다. 이전 STATE 결과는 역사다. [현재 정본·복원·미완료 작업](docs/G004_HANDOFF_KO.md)부터 읽는다.
 
 ## 목표와 사용자 결정
 

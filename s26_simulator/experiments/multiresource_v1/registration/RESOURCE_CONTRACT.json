@@ -1,0 +1,33 @@
+{
+  "schema": "MULTI_SLOT_V1",
+  "slots": {
+    "CPU": 1,
+    "GPU": 1,
+    "NPU": 1
+  },
+  "classification": [
+    "CPU",
+    "GPU",
+    "NPU"
+  ],
+  "detection": [
+    "CPU"
+  ],
+  "cpu_classification_detection_share": true,
+  "reserved_until": "AVAILABLE",
+  "nonpreemptive": true,
+  "phase_cpu": "FCFS nonpreemptive shared CPU server: CPU INFER plus an assumed ADMISSION/POST service prefix. Remaining measured wall-time is passive residual, no second full service copy.",
+  "event_order": [
+    "finish/phase/AVAILABLE",
+    "enqueue arrivals",
+    "deliver sensor",
+    "FCFS CPU server",
+    "dispatch/repeat"
+  ],
+  "response": {
+    "urgent": "output_ready",
+    "normal": "actual readback_end"
+  },
+  "phase_sampling": "Only observed nonoverlap original phase vectors; whole-vector correlation preserved per request/route.",
+  "activity_proxy": "Preserve all observed wall phase INFER/ADMISSION/POST features even where assumed CPU service is waiting or has finished; unallocated feature means only observed GAP/RETURN_GAP. These proxies are not CPU utilization. Server traces identify service/queue separately. Additional queue exposure and new pairs remain unvalidated transfer."
+}
