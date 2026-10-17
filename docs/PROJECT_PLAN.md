@@ -1,3 +1,7 @@
+## 2026-10-18 학습시작 전 실행관리 V2
+
+새 독립S26정책학습512예약을 확인하여 SHA고정peer/상대실행토큰을추가했다. 기존등록/대기기록보존·자기대기PID33116만종료·환경START0·물리/정책/입력불변이며194계획/cap208을추가예약0으로이전한다. 8계약/import/독립tensor/RNG PASS·새추적127436/137712 snapshot이다. OPERATION_RESOURCE_V2/run_learning_v2/audit_v2/report_v2로소스와검산을분리한다. 다음은게시→동일194/저장검산→saved상한/종합이며다른작업중단0이다.
+
 ## 2026-10-18 납기보호 paired 재학습 등록
 
 중간80완료/FAIL0·독립3235789/NN11130 PASS를9aa1099에 게시했다. 원ON·원OFF·입력/전망/보상보완OFF를 같은초기NN/독립Adam·action/shuffle RNG로 각각32학습/16업데이트 후 고정EP32로30조건평가한다. 194=학습96+훈련EDF참조8+평가90·cap208=중간잔8+신규200·추적126924/137712 snapshot·기존잔여불변이다. 8계약/AST9/Node5/import PASS·환경아직0·물리/납기페널티8/4/미응답30 불변·평가선정0·새fit/기기0이다. 전체426행/제외비고와저장산술/NN/Adam/RNG검산을보존한다. 다음은등록게시→194실행/검산/결과게시→중간20조건saved80LP와전체종합이다. [설계](../a24_simulator/experiments/guard_learning_20261018/README.md).
