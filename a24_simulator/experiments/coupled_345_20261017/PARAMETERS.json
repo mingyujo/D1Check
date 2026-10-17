@@ -1,0 +1,45 @@
+{
+  "physics": {
+    "baseline": 1.204399931712509,
+    "idle_c": 26,
+    "reference_c": 26,
+    "thermal_tau_s": 25,
+    "thermal_resistance": 12,
+    "idle_tail_s": 0.9,
+    "onset_c": 32,
+    "cpu_slope": 0.07,
+    "gpu_slope": 0.045,
+    "minimum_speed": 0.45,
+    "leakage_fraction": 0.2,
+    "leakage_per_c": 0.025,
+    "strength": 1,
+    "tick_s": 0.1
+  },
+  "evidence": "EXPLICIT_RESEARCH_HYPOTHESES_NOT_A24_FITTED_FEEDBACK",
+  "unchanged_anchors": "historical SERIAL work and previous steady solo/shared coefficient decomposition",
+  "public_temperature": "scenario proxy at first arrival35s; not a calibrated CPU junction or Android thermal trip point",
+  "DVFS": "only execution progress scales; dynamic part uses f^3 assuming voltage scales with frequency; bounded temperature leakage",
+  "coupled_pair_progress": "explicit independent serial work, plus common thermal coupling; previous measured pair-rate association is preserved in the original simulator",
+  "references": [
+    "https://developer.android.com/games/optimize/adpf/thermal",
+    "https://www.kernel.org/doc/html/v6.7/driver-api/thermal/power_allocator.html"
+  ],
+  "objective_weights": [
+    0.5,
+    0.5,
+    8,
+    4,
+    30
+  ],
+  "fixed_ATC_action_prior": 0,
+  "candidate_set": "max8 current requests: EDF4 + FIFO head + RR head + ATC2; physical free routes, three bounded WAIT doses",
+  "current_cost_state_in_NN": [
+    "temperature",
+    "shared activation",
+    "CPU/GPU speed",
+    "same-integral nominal continuation costs"
+  ],
+  "original_baseline_and_models_unchanged": true,
+  "parameter_selection_by_evaluation_gap": false,
+  "measured_J": null
+}
