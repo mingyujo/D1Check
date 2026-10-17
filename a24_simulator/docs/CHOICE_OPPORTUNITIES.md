@@ -23,7 +23,7 @@ V2 12 START=12 COMPLETE/FAIL0, 저장 독립 검산 4,765검사를 완료했다.
 - [V1 부분 완료·실패 보존](../results/CHOICE_OPPORTUNITIES_20261017_01/CLOSED_FRONTIER.json)
 - [정확한 최종 소비·파일 해시](../results/CHOICE_OPPORTUNITIES_V2_20261017_01/FINAL_HANDOFF_PROOF.json)
 
-예산은 원 RL256=기존223+이번25소비+미배분8(원5+V1잔3)로 보존하며 기존 RR잔1은 별도다. 남은9는 자동 추가실행 승인이 아니다. 전역 신규예약·주기조회·반복예약0을 유지한다.
+당시 예산은 원 RL256=기존223+이번25소비+미배분8(원5+V1잔3)이었다. 이후 사용자2번 요청으로 [공유 활성 비용 정책 대조](SHARED_ACTIVATION_COST.md)에 이8만 이전·소비하여 현재 원RL잔0, 별도RR잔1이다. 전역 신규예약·주기조회·반복예약0을 유지한다.
 
 ## V2 개발 후속 등록
 
