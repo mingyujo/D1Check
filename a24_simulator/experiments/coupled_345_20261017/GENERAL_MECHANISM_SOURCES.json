@@ -1,0 +1,21 @@
+{
+  "schema": "A24-coupled345-general-mechanism-sources-v1",
+  "verified_date": "2026-10-17",
+  "sources": [
+    {
+      "title": "Android Developers — Thermal API",
+      "url": "https://developer.android.com/games/optimize/adpf/thermal",
+      "supports": "Thermal state can limit sustained performance; applications can monitor it and adjust load.",
+      "does_not_support": "Any numerical A24 temperature threshold, RC constant, leakage slope, or energy calibration used in this experiment."
+    },
+    {
+      "title": "Linux v6.7 — Power allocator governor tunables",
+      "url": "https://www.kernel.org/doc/html/v6.7/driver-api/thermal/power_allocator.html",
+      "supports": "A closed-loop thermal governor can use temperature error to control allowed power, which affects granted performance. All devices in a zone require a consistent power scale.",
+      "does_not_support": "A24 using this governor, a specific DVFS curve, or validation of the new simulator's physical parameters."
+    }
+  ],
+  "model_parameters_remain_explicit_hypotheses": true,
+  "new_device_actions": 0,
+  "new_environment_START": 0
+}
