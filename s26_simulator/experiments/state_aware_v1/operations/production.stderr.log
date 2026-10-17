@@ -1,0 +1,32 @@
+Exception in thread Thread-207 (_readerthread):
+Traceback (most recent call last):
+  File "C:\Users\chomg\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\chomg\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\chomg\AppData\Local\Programs\Python\Python311\Lib\subprocess.py", line 1599, in _readerthread
+    buffer.append(fh.read())
+                  ^^^^^^^^^
+  File "<frozen codecs>", line 322, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xbb in position 2147: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\S26-UNIFIED-DYNAMICS-20261016\shared_S26-ROLLING-ATC-RL-TRAIN-20261016_unified_owner_v1.py", line 38, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\S26-UNIFIED-DYNAMICS-20261016\shared_S26-ROLLING-ATC-RL-TRAIN-20261016_unified_owner_v1.py", line 28, in main
+    runpy.run_path(op['entry'],run_name='__main__')
+  File "<frozen runpy>", line 291, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\S26-STATE-AWARE-ATC-20261016\run_state_study.py", line 72, in <module>
+    if __name__=='__main__':main(read(os.environ['S26_UNIFIED_OPERATION']))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\S26-STATE-AWARE-ATC-20261016\run_state_study.py", line 49, in main
+    u.verify(op);own=strict_guard(out/'case_logs'/('CENSUS_'+config['identity']+'.json'))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\chomg\Documents\Codex\2026-10-11\dkfo\work\S26-UNIFIED-DYNAMICS-20261016\guard_snapshot_v2.py", line 12, in guard
+    text=subprocess.check_output([PS,'-NoProfile','-Command',command],encoding='utf-8',timeout=30);v=json.loads(text);py=[r for r in v['all'] if str(r['Name']).lower().startswith(('python','pypy'))];own=[r for r in v['all'] if r['ProcessId']==os.getpid()];self=v['self'];attempts.append(dict(attempt=attempt+1,utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),inventory=v))
+                                                                                                     ^^^^^^^^^^^^^^^^
+  File "C:\Users\chomg\AppData\Local\Programs\Python\Python311\Lib\json\__init__.py", line 339, in loads
+    raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+TypeError: the JSON object must be str, bytes or bytearray, not NoneType

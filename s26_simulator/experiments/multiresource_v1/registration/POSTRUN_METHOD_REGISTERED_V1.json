@@ -1,0 +1,52 @@
+{
+  "schema": "S26_MULTI_POSTRUN_ANALYSIS_METHOD_REGISTERED_V1",
+  "created_utc": "2026-10-16T20:57:12.1747889Z",
+  "source": "C:/Users/chomg/Documents/Codex/2026-10-11/dkfo/outputs/S26-MULTIRESOURCE-20261017-G004/POSTRUN_SOURCE_V1/shared_S26-ROLLING-ATC-RL-TRAIN-20261016_analyze.py",
+  "source_sha256": "e7e1f20712e5831b216ae61a632bb3bca10e52f66ab5d9f3760bddf284238353",
+  "status": "SOURCE_PREPARED_NOT_EXECUTED",
+  "requires": "Actual producer exit and complete3240 independent AUDIT_V1 PASS, own shared slot idle",
+  "primary_capacity": 3,
+  "models_reported_separately": [
+    "LOW",
+    "CENTRAL",
+    "HIGH"
+  ],
+  "all_conditions_and_losses": true,
+  "CI": {
+    "replicates": 2000,
+    "not_independent_phone_samples": true,
+    "unit": "Four extraction streams, fixed design cells retained together",
+    "not_full_model_uncertainty": true,
+    "seed": 271019099
+  },
+  "service_levels": [
+    70,
+    80,
+    90,
+    95,
+    100
+  ],
+  "priorities": [
+    "urgent",
+    "normal",
+    "all"
+  ],
+  "zero_denominator": "Not applicable, never0percent",
+  "strict_goal": "Own meets every deadline and completion, no class service loss; API J−10percent and APmean−.5C",
+  "comparisons": "ATC vs FIFO/EDF in every matched cell, both-hard subset also explicit, no per-evaluation selection",
+  "planned_EVAL_rows": 2592,
+  "planned_pairs": 1728,
+  "planned_service_rows": 25920,
+  "default_view_case": {
+    "model": "CENTRAL",
+    "draw": 0,
+    "capacity": 3,
+    "context": 0,
+    "bank": "MIX",
+    "burst": 16
+  },
+  "new_policy_environment": 0,
+  "new_cost_replay": 0,
+  "new_fit": 0,
+  "new_RL": 0
+}

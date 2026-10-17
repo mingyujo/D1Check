@@ -1,0 +1,45 @@
+{
+  "schema": "S26_RESUME_SNAPSHOT_V1",
+  "as_of_date_kst": "2026-10-17",
+  "start_document": "START_HERE.md",
+  "branch": "codex/s26-simulator-handoff-20261016",
+  "result_code_baseline_commit": "30e16dd02c372492006552deb1cc4216f144b4a1",
+  "generation": "STATE001_G001",
+  "status": "EXECUTION_AUDIT_ANALYSIS_PUBLICATION_COMPLETE_JOINT_IMPROVEMENT_UNPROVEN",
+  "latest_source": "experiments/state_aware_v1/source/",
+  "latest_packet": "experiments/state_aware_v1/PACKET.json.gz",
+  "latest_evidence": "experiments/state_aware_v1/",
+  "policy_environments": 300,
+  "environment_failures": 0,
+  "full_audit_checks": 3891272,
+  "actual_committed_cost_replays": 335,
+  "forecast_replays": 35430,
+  "new_integrated_engine_RL_training": 0,
+  "additional_ATC_saving_vs_EDF_J": 0,
+  "additional_ATC_reduction_vs_EDF_AP_C": 0,
+  "pending": [
+    "Constrained energy/thermal assignment and queue forecast: candidate, not implemented or selected",
+    "Physical phase/cost transfer accuracy and unadopted phase model validation",
+    "New rolling+ATC+RL training only after environment validation with new registration and evaluation"
+  ],
+  "accounting_snapshot_not_new_authorization": {
+    "global_reserved": 121206,
+    "global_cap": 137712,
+    "global_actual_START_after": 28179,
+    "STATE_cap": 320,
+    "STATE_consumed": 300,
+    "original_SIM_cap": 512,
+    "original_SIM_remaining": 12,
+    "recheck_latest_all_canonical_ledgers_before_new_START": true
+  },
+  "preserve": [
+    "Original data, sealed sources, checkpoints, failed operations and consumed identities",
+    "Original V2 EP814 and FINAL/CAUSAL/NODGPU gates",
+    "Other A24/37/38/SLO70/stopped27 work and user WIP",
+    "Paused automations; no automatic resume",
+    "ownheavy1/global Python leaves2/shared lock/all relevant volumes 8GiB reserve"
+  ],
+  "this_document_update_new_policy_environments": 0,
+  "this_document_update_new_fit": 0,
+  "this_document_update_new_NN": 0
+}

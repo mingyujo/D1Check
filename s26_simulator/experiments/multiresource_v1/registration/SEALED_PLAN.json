@@ -1,0 +1,160 @@
+{
+  "schema": "S26_MULTIRESOURCE_PLAN_V1",
+  "created_utc": "2026-10-16T20:50:43.7586794Z",
+  "plan": {
+    "status": "REGISTERED_BEFORE_POLICY_RESULTS",
+    "source_baseline_commit": "d23fbd189d03c1b670b676cc53c99406997df60b",
+    "P0": 72,
+    "DEV": 576,
+    "EVAL": 2592,
+    "planned": 3240,
+    "cap_proposed": 3328,
+    "policy_set": [
+      "FIFO",
+      "EDF",
+      "ATC"
+    ],
+    "allocators": [
+      "WEIGHTED",
+      "NO_THERMAL_HARM"
+    ],
+    "burst": [
+      4,
+      8,
+      16,
+      32
+    ],
+    "arrival_window_s": 16,
+    "deadlines_s": {
+      "urgent": 0.8,
+      "normal": 2
+    },
+    "future_eval_observed": false,
+    "selection": "One allocator for all policies: total missed deadlines ascending; unfinished ascending; paired positive APmean harm vs WEIGHTED ascending; paired positive peak harm ascending; total API J ascending; WEIGHTED tie. Compare all DEV cells; no per-policy retuning.",
+    "evaluation_recipe_sha256": "82638becd629c85e5a3843d5d19fd531054d2816b77a1cfad8391969633cdb4b",
+    "planner": "Deterministic public-queue rollout, no sampled future progress. Request rank FIFO/EDF/existing ATC k2; same route selector; no voluntary WAIT in all arms. Forecast calls counted/capped separately.",
+    "new_RL": 0,
+    "new_fit": 56,
+    "generation": "MULTI001_G004",
+    "parent_gate_failure_preserved": true,
+    "new_additional_reservation": 0,
+    "shared_cap_with_parent": 3328,
+    "parent_complete": 2,
+    "planned_parent_plus_child": 3260,
+    "fresh_streams": {
+      "P0": 271018000,
+      "DEV": 271018100,
+      "EVAL": [
+        271018200,
+        271018201,
+        271018202,
+        271018203
+      ]
+    },
+    "activity_ABI": "Preserve all observed wall phase INFER/ADMISSION/POST features even where assumed CPU service is waiting or has finished; unallocated feature means only observed GAP/RETURN_GAP. These proxies are not CPU utilization. Server traces identify service/queue separately. Additional queue exposure and new pairs remain unvalidated transfer.",
+    "prior_consumed": 20,
+    "calibration_lineage": {
+      "operation": "C:\\Users\\chomg\\Documents\\Codex\\2026-10-11\\dkfo\\outputs\\S26-MULTIRESOURCE-COST-CALIBRATION-20261017\\OPERATION_V2.json",
+      "operation_sha256": "fa735aa2a1b9ceacb1bde29e3c9625e8b73231ec7c32d097f291c20fc087868b",
+      "fit_result_sha256": "a5dcf514563df0c2080cd1866103169c7c53538402b842548ea9c938dfce11f9",
+      "models_sha256": "664de7b65e732e214ca81c49eeef4779a143bb42a45256ff0e9172e0bd265f60",
+      "audit_result_sha256": "ad51ad2daa311ff17f64d103f09973230b7b7e7a365e663395fa150585c82d2b",
+      "fits": 56,
+      "inventory": 228,
+      "AP_sessions": 210,
+      "power_sessions": 209,
+      "R21_energy_ineligible_preserved": 2,
+      "development_errors": [
+        {
+          "target": "AP",
+          "pool": "ALL",
+          "sessions": 210,
+          "session_MAE": 1.0976044119413273,
+          "session_bias": 0.024472570834019786,
+          "median_abs_relative_area_error": null
+        },
+        {
+          "target": "AP",
+          "pool": "OLD",
+          "sessions": 131,
+          "session_MAE": 1.2322397319554252,
+          "session_bias": 0.15968340116759452,
+          "median_abs_relative_area_error": null
+        },
+        {
+          "target": "AP",
+          "pool": "M8",
+          "sessions": 79,
+          "session_MAE": 0.8743483749559249,
+          "session_bias": -0.19973779339000927,
+          "median_abs_relative_area_error": null
+        },
+        {
+          "target": "AP",
+          "pool": "R21",
+          "sessions": 21,
+          "session_MAE": 0.7172145757142753,
+          "session_bias": -0.48058938803753404,
+          "median_abs_relative_area_error": null
+        },
+        {
+          "target": "POWER_API",
+          "pool": "ALL",
+          "sessions": 209,
+          "session_MAE": 0.8121173558251998,
+          "session_bias": 0.07656656920836316,
+          "median_abs_relative_area_error": 0.14640071021202408
+        },
+        {
+          "target": "POWER_API",
+          "pool": "OLD",
+          "sessions": 131,
+          "session_MAE": 0.9657711575249278,
+          "session_bias": 0.17509143558910645,
+          "median_abs_relative_area_error": 0.15235652530722196
+        },
+        {
+          "target": "POWER_API",
+          "pool": "M8",
+          "sessions": 78,
+          "session_MAE": 0.554057765791041,
+          "session_bias": -0.08890468073878262,
+          "median_abs_relative_area_error": 0.14510689607595917
+        },
+        {
+          "target": "POWER_API",
+          "pool": "R21",
+          "sessions": 19,
+          "session_MAE": 0.41878855340326254,
+          "session_bias": -0.1927631803286044,
+          "median_abs_relative_area_error": 0.1746647693148904
+        }
+      ],
+      "phone_accuracy_certificate": false,
+      "audit_result_path": "C:\\Users\\chomg\\Documents\\Codex\\2026-10-11\\dkfo\\outputs\\S26-MULTIRESOURCE-COST-CALIBRATION-20261017\\AUDIT_V3\\RESULT.json",
+      "audit_operation_sha256": "31bbfd5712cf32efd5653b4ae83a982329ec22de0d5e2054fe4a3c98f4c440cd"
+    },
+    "policy_worker_new_fit": 0,
+    "calibration_selection": "Primary architecture/ridge fixed before fitting measured data; no synthetic policy results used as regression targets. No post-EVAL retuning.",
+    "pure_forecast_memoization": {
+      "capacity": 4096,
+      "key": "Full public observation digest, frozen model and first nominal action; per-packet WeakMap identity",
+      "equivalence": "Deep equality against direct uncached forecast in pure tests; no actual environment/progress/sampling reuse",
+      "logical_cap": 16200000,
+      "actual_computation_cap": 16200000,
+      "phone_cost_benefit_claim": false
+    },
+    "numerical_integration": "Midpoint AP with analytic within-step thermal state, bracketed earliest completion root; fixed active peer set per numerical step. Plant-private, never a policy observation.",
+    "numeric_gate_unchanged": true
+  },
+  "resource_contract_sha256": "423cbe8e01e135ba7e1ba5c511f644083eb5b64aceb651b92eaa51c8270cb451",
+  "model_assumptions_sha256": "ac6a13f797b0eed95421a93fc5c99a92d01b226c8ed33cd3c9b8c48cb27f7ac6",
+  "pre_eval_sha256": "b0e77bee1d22de2fdbbce4d49d19d7104f936c363c26cceb52a73f4974aef590",
+  "eval_recipe_sha256": "ab01df3b4711182a910dbd75907a0e042b19c9ce24ff54bf09fea8927b68d40b",
+  "planner": "Deterministic event rollout of currently arrived public queue only, median phases/residuals, fixed held AP, real-slot capacities and shared CPU prefix server, FCFS CPU nonpreemption. Unknown owner remaining phase estimated from visible timestamps, not sampled progress. Actual plant AP feeds instantaneous work rates.",
+  "selector": "Same route selector/thermal objective and information for FIFO/EDF/ATC. FIFO/EDF pick among slot-dispatchable requests, ATC k2. All are non-delay, voluntary WAIT=0. Frozen allocation choice is one global DEV choice, not per policy.",
+  "P0_gate": "36 paired .005/.0025 numerical cases: identical completion/on-time counts; abs J diff<.2J and APmean diff<.01C. Independent stored activity/cost/rate/input audit of72 before DEV.",
+  "completion": "All3240 terminal receipts + independent complete artifact/activity/cost/work/input/action replay + DEV freeze chronology/coverage/accounting + full losses/conditional CI and model reversals + browser QA + docs/GitHub",
+  "measurement_scope": "API unit-hypothesis energy and HAL AP empirical predictions, not independent phone energy/skin validation",
+  "new_RL": 0
+}

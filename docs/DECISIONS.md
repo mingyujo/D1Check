@@ -94,6 +94,15 @@
 - decode: RuntimeException만 cause 보존 IllegalArgumentException으로 변환한다. Error/OOM은 잡지 않는다.
 - 검증: production Matrix 좌표로 1~8/미러 의미를 검사하고 실제 EXIF JPEG reader→decoder를 유지한다. Shadow bitmap의 getPixels에 의존하지 않는다. 테스트 수 3개·기존 inference timer·v1/v2·artifact/provenance·A24-only 범위는 유지한다.
 
+## 2026-10-17 — S26 상태 배정 보완의 분리 비교와 채택 보류
+
+- 상태: 실행·검산·판독 완료, 공동개선판 채택은 보류.
+- 사용자 지시: 현재 온도·점유를 자원 배정에 반영하고, 실제 순서 경쟁 부하에서 같은 자원 범위·긴급0.8초/일반2초를 지키는 FIFO/EDF/롤링+ATC를 비교한다.
+- 결정: 물리 계수는 유지하고 STATIC/STATE×FIFO/EDF/ATC 6군, P0 12+주비교288=300환경을 별도 STATE001_G001에서 실행했다. 새 학습/RL/fit/실기기 측정은0이다.
+- 판정: 새 STATE에서 ATC와 EDF의 물리 궤적은48조건 전부 동일했다. 경쟁24조건은 양쪽 전128건 납기충족이나 추가절감0이다. FIFO의35지연과 ATC의 약0.165438J 추가소비도 보존했다. 같은 ATC에서 STATE는 기존 배정기보다 J0.2761% 감소/AP평균0.095057℃·최고1.825049℃ 증가라 공동개선으로 승격하지 않는다.
+- 근거: 상태 비용의 가중합이 GPU의 예측J 이득과 열면적 악화를 교환했고, ATC 실제 순서는 EDF와 같았다. 원자료·실패·감사335비용재적분 소비·기존평가는 보존한다. 이번 결과에 맞춰 정책을 재선정하거나 같은 평가를 재실행하지 않았다.
+- 영향: `s26_simulator/experiments/state_aware_v1/`, 최신 보고/CLI/인계 문서. 기존 `src/`와 V4 HTML/원 Release를 보존하며 최신 브랜치와 구분한다. [전체 결과](../s26_simulator/STATE_AWARE_COMPARISON_KO.md).
+
 ## 새 결정 작성 형식
 
 ### YYYY-MM-DD — 결정 제목
@@ -104,3 +113,10 @@
 - 이유와 근거:
 - 영향을 받는 계획·코드·실험:
 - 폐기하거나 대체한 이전 결정:
+
+## 2026-10-17 — S26 G004 다중자원 단계와 외삽 성과 채택 보류
+
+- 상태: 구현·계산·전수감사·화면 단계 완료, 물리 예측 타당성/정책 우위 채택 보류.
+- 사용자 승인: 다중 CPU/GPU/NPU·공유 CPU·간섭/열 속도를 같은 실측 기반 엔진에 연결하고 같은 납기·자원 조건으로 비교.
+- 3240환경/44,694,517전수검사와 후속 검증을 끝냈지만3슬롯 CENTRAL/HIGH는 실제 AP표본 최대46.6℃를 넘는다. 원수치는 보존하고 큰 격차를 실기기 절감으로 인정하지 않는다. 새RL0, 기존EVAL재선정0.
+- 근거/범위: s26_simulator/MULTIRESOURCE_COMPARISON_KO.md 및 docs/G004_HANDOFF_KO.md. 현재평가를관찰한새보완은새source/output/DEV/평가에서만검증한다.

@@ -1,4 +1,33 @@
+2026-10-17 최신 S26: [G004 현재 상태](../s26_simulator/STATUS.md)·[결과](../s26_simulator/MULTIRESOURCE_COMPARISON_KO.md). 3240실행·전수감사·화면 단계PASS, AP외삽/공유CPU전이타당성과정책우위미입증·새RL0. 아래는이력이다.
+
+2026-10-17 최신 정본: **MULTI001_G004 3,240건 실행·독립 전수 감사 PASS**, 분석/HTML 생성 완료. 화면 QA 최초 실행은 실패 보존 중이므로 전체 완료는 아니다. 이전 STATE 결과는 역사다. [현재 정본·복원·미완료 작업](docs/G004_HANDOFF_KO.md)부터 읽는다.
+
 # D1Check 현재 상태
+
+2026-10-17 최신 사용자 구현 승인: S26 MULTI001_G004의3슬롯/공유CPU/통합예측과 새 합성 비교를 진행 중이다. P0 72·독립1,246,840검사/DEV576 완료, EVAL2592 실행 중이며 전체완료가아니다. [현재 상태·보존 실패·정본 경로](../s26_simulator/docs/MULTIRESOURCE_PROGRESS_20261017.md)를 따른다. 기존 STATE300완료/원자료/다른A24기록은보존한다.
+
+S26를 다른 담당자·새 채팅에서 재개할 때는 [s26_simulator/START_HERE.md](../s26_simulator/START_HERE.md)가 첫 문서다. 완료 실험300건/전수 감사/업로드를 반복하지 않고 최신 파일 지도·미완료·예산/보존 조건을 확인한다. 2026-10-17 재개 문서 정리에서 새 정책환경·NN·fit·물리 재적분0이다.
+
+2026-10-17 상태 배정 실험 판독: 전수 300건/3,891,272검사 PASS. 같은 STATE 배정기에서 롤링+ATC와 EDF는 경쟁 부하 24/24조건 납기충족·184.275174 API-J·평균 AP32.472116℃로 동일했다. FIFO는 35건 지연/전량 납기 10/24조건. 기존 ATC 배정기 대비 J는 0.2761% 줄었으나 평균 AP +0.095057℃/최고 +1.825049℃로 공동개선 미입증이다. 실제 순서 경쟁 384회를 확인했고 계수·납기·분모를 결과에 맞춰 바꾸지 않았다. [정량 결과·모형 경계](../s26_simulator/STATE_AWARE_COMPARISON_KO.md). 원자료 ZIP 3개·900파일 SHA readback/CLI383검사도 PASS. 현재 보고는 실측 기반 모형의 개발 비교이며 실기기 순절감 인증이 아니다.
+
+## 2026-10-16 S26 상태 반영 배정·경쟁 부하 비교
+
+[보고](../s26_simulator/STATE_AWARE_COMPARISON_KO.md): 원물리·고정납기·같은자원/실제mask에서STATIC/STATE×FIFO/EDF/ATC를300환경으로검증했다. 기존부하와U112/N16긴급탐지경계전이부하를분리한다. 원장/SHA/공개입력/후보선택·전체저장비용·전망검산은 experiments/state_aware_v1. 추가320예약/300소비·전역121206/137712. 새RL/fit0, 실기기정확도/순절감미확정.
+
+## 2026-10-16 S26 동일 선택 원인 진단 완료
+
+[진단보고](../s26_simulator/SAME_CHOICE_DIAGNOSIS_KO.md): 공통자원배정기와부하×가용mask로모든실행가능복수후보1,551회의task·기한·ATC점수가같았다. 전역FIFO·EDF선두차이349회는mask후0회, WAIT냉각조건0회다. 원엔진의같은입력직렬/병행48쌍은J/AP가달랐다. 새환경/학습/fit/예약0, 18,082별도검사PASS와 원입력/소스SHA불변. 진단 source/CSV/raw는 s26_simulator/experiments/tie_diagnosis_v1/. 물리정확도/프로젝트목표완료미확정.
+
+## 2026-10-16 S26 동일 자원 FIFO·EDF 비교 완료
+
+- [동일 자원 비교 보고](../s26_simulator/FAIR_RESOURCE_COMPARISON_KO.md): 분류CPU/GPU/NPU·탐지CPU·공통 명목배정/병행·WAIT를 맞춘48조건에서 FIFO·EDF·롤링ATC 모두128/128납기충족, 평균200.352058 API-J·32.396312℃다. 물리궤적도48조건 전부동일하여 추가절감0이다.
+- 새104환경+재사용48, 순수24·수치4쌍·독립1405515검사/152비용재적분PASS(max1.13e-11), 새RL/fit0. source·144조건/96쌍 CSV·원자료ZIP은 `s26_simulator/experiments/fair_resource_v1/`에 보존했다. 별도112예약/104소비, 최신120886/137712이며 원512잔12·다른WIP/원V2gate/자동화PAUSED는 유지한다. 모형정확도·물리목표 완료는 미확정이다.
+
+## 2026-10-16 S26 시뮬레이터·정책 인계 추가
+
+- 최신 S26 작업 입구: [s26_simulator/README.md](../s26_simulator/README.md). 공통 동적 엔진·자동 자원배정·모형·저장 결과·시각화·원자료/과거 RL·IE 복원 도구를 한 폴더에 정리한다.
+- 현재 동결 엔진은 미학습 롤링+ATC의 CPU/GPU/NPU 자동배정이며 신규 RL은 보류 중이다. 물리 정확도와 프로젝트 목표 달성은 아직 미확정이다.
+- 최신 근거·이어갈 순서·검증은 해당 폴더의 STATUS/HANDOFF/CORE_MANIFEST에 있다. 아래 A24 CALIB 기록은 해당 시점의 이력으로 보존한다.
 
 - 갱신: 2026-09-17 / CALIB-01B 종료 문서 정리
 - 현재 작업 ID: `CALIB-01C-INPUT` — A24 실제 이미지 calibration 입력 준비
