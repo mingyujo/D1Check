@@ -1,6 +1,6 @@
 # 동시 Python 상한의 실행 전 중단
 
-원20계획 중18START/18COMPLETE/환경FAIL0 뒤,19번째 START를 쓰기 전에 runtime_guard.py의 전역Python leaf2 제한으로 전체 runner가 종료됐다. FAILURE.json은2026-10-17T13:53:48Z·new_START18이다. 확인 직후 다른 일시 프로세스는 사라져 기존25792 서버만 남았다. 다른 프로세스를 종료하거나 guard를 우회하지 않았다.
+원20계획 중18START/18COMPLETE/환경FAIL0 뒤,19번째 START를 쓰기 전에 runtime_guard.py의 전역Python leaf2 제한으로 전체 runner가 종료됐다. FAILURE.json은2026-10-17T13:53:48Z·new_START18이다. 검사시 다른Python이2개이상으로판정됐으나 사후조회에는 기존25792서버만있었다. 일시프로세스의명령/신원은확인하지못했다. 당사추가Python기동0·다른프로세스종료/guard우회0이다.
 
 원18결과/receipts/FAILURE/등록은 불변이다. 원namespace를 재시작하지 않고 아직 START하지 않은 SUPPLY_600_1_ATC/RL만 별도 CONTINUATION_OPERATION.json에서 수행한다. 원새24 중 미사용6에서2이전, 미이전4보존·추가전역예약0이다. frozen bank복원은 총2회로 기록하며 새fit/학습0이다. 이미 소비된18환경/P0 재실행0이다.
 

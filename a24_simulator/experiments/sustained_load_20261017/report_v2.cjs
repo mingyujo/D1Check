@@ -3,12 +3,13 @@
 const fs=require('fs'),path=require('path'),crypto=require('crypto'),cp=require('child_process');
 const root=path.resolve(__dirname,'../..'),repo=path.dirname(root),read=p=>JSON.parse(fs.readFileSync(p));
 const sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
-const op=read(path.join(__dirname,'OPERATION.json')),out=path.join(root,op.output_dir),m=read(path.join(out,'WORK_METRICS.json')),audit=read(path.join(out,'AUDIT.json')),result=read(path.join(out,'RESULT.json')),diag=read(path.join(out,'CHOICE_DIAGNOSIS.json')),amend=read(path.join(__dirname,'SAVED_AUDIT_V2.json'));
+const op=read(path.join(__dirname,'OPERATION.json')),amend=read(path.join(__dirname,'SAVED_AUDIT_V2.json')),out=path.join(root,amend.report_output_dir),m=read(path.join(out,'WORK_METRICS.json')),audit=read(path.join(out,'AUDIT.json')),result=read(path.join(out,'RESULT.json')),diag=read(path.join(out,'CHOICE_DIAGNOSIS.json'));
+const reportDir=amend.report_output_dir;
 if(audit.result_sha256!==sha(path.join(out,'RESULT.json'))||audit.work_metrics_sha256!==sha(path.join(out,'WORK_METRICS.json'))||diag.result_sha256!==sha(path.join(out,'RESULT.json')))throw Error('Audit pins');
-for(const p of [...op.sources,...op.input_pins,...amend.sources])if(sha(p.path)!==p.sha256)throw Error('Immutable pin '+p.path);
+for(const p of [...op.sources,...op.input_pins,...amend.sources,...amend.inputs])if(sha(p.path)!==p.sha256)throw Error('Immutable pin '+p.path);
 const f=(n,d=3)=>n==null?'미정의':Number(n).toFixed(d);
 const table=m.summary.map(r=>`|${r.supply_s}|${r.policy}|${r.requests}|${f(r.mean_supply_total_J_proxy)}|${f(r.supply_saving_percent)}%|${f(r.supply_baseline_percent)}%|${f(r.mean_supply_AP_c)}|${r.on_time}/${r.requests}|${r.urgent_on_time}/${r.urgent_planned}|${r.response_missing}/${r.incomplete}|${f(r.completion_saving_percent)}|`).join('\n');
-const all=m.rows.map(r=>`|${r.condition.supply_s}|${r.condition.pattern}|${r.policy}|${r.n}|${f(r.completion?.duration_s)}|${f(r.completion?.total_J_proxy)}|${f(r.supply.total_J_proxy)}|${f(r.supply.mean_AP_c)}|${f(r.last60_supply_mean_AP_c)}|${r.original.on_time}|${r.original.urgent_on_time}|${r.original.response_missing}/${r.original.incomplete}|`).join('\n');
+const all=m.rows.map(r=>`|${r.condition.supply_s}|${r.condition.pattern}|${r.policy}|${r.n}|${f(r.completion?.duration_s)}|${f(r.completion?.total_J_proxy)}|${f(r.supply.total_J_proxy)}|${f(r.supply.mean_AP_c)}|${f(r.last60_supply_mean_AP_c)}|${r.original.on_time}|${r.original.urgent_on_time}|${f(r.original.P95_completed_response_s)}|${r.original.response_missing}/${r.original.incomplete}|`).join('\n');
 const choice=diag.rows.filter(r=>r.policy==='EDF').map(r=>`|${r.condition.supply_s}|${r.condition.pattern}|${r.dispatches}/${r.n}|${f(r.multiple_ready_percent)}%|${f(r.both_routes_free_percent)}%|${f(r.wait_s)}|`).join('\n');
 const text=`# A24 요청 공급120·300·600초 비교
 
@@ -40,8 +41,8 @@ ${table}
 
 미정의는 계산오류가 아니라 전체 작업 완료가 성립하지 않은 경우다. 마지막60초AP로 장시간 정상상태에 가까워지는지도 본다.
 
-|공급s|파형|정책|도착|완료창s|완료J*|공급J*|공급AP℃|마지막60초AP℃|전체정시|긴급정시|미응답/미완료|
-|---:|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|공급s|파형|정책|도착|완료창s|완료J*|공급J*|공급AP℃|마지막60초AP℃|전체정시|긴급정시|완료응답P95초|미응답/미완료|
+|---:|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 ${all}
 
 ## 길이와 경쟁 기회의 구분
@@ -54,7 +55,9 @@ ${choice}
 
 ## 검증과 계보
 
-원사전등록 새24예약 중20START/20COMPLETE/FAIL0(정확P0 EDF/RL2＋새18), 잔4자동추가0이다. 원coupled잔38/savings잔8/RR잔1불변·추적예약125790/137712 snapshot이다. 입력prefix/상대납기24계약, 원FRESH02 EDF/RL 경로/시각 정확재현, 독립 ${audit.checks}검사 PASS·NN ${audit.independent_NN_frames}frame argmax 재생을 마쳤다. 독립 에너지/RC/배타점유/latent 단계 작업량 검산 최대차 ${audit.max_absolute_error}다. 길이별 admission prefix ${diag.admission_prefix_checks}개·같은실행경로의 latent prefix ${diag.same_route_work_prefix_checks}개가 일치했다.
+새24예약의 native는20START/20COMPLETE/환경FAIL0(정확P0 EDF/RL2＋새18), 잔4자동추가0이다. 원runner는18완료 후 외부의 일시Python 때문에 START19 전 전역leaf상한에서 종료됐고 FAILURE를 보존했다. 미시작2개만 별도continuation identity로 실행해20을 채웠다. 원18/P0재실행0·새전역예약0·frozen bank복원총2/fit0이다. 원coupled잔38/savings잔8/RR잔1불변·추적예약125790/137712 snapshot이다. 별도보고root의 raw는 두원본의SHA동일 복사본이고 MERGE_MANIFEST에 원경로/해시를 고정했다.
+
+입력prefix/상대납기24계약, 원FRESH02 EDF/RL 경로/시각 정확재현, 독립 ${audit.checks}검사 PASS·NN ${audit.independent_NN_frames}frame argmax 재생을 마쳤다. 독립 에너지/RC/배타점유/latent 단계 작업량 검산 최대차 ${audit.max_absolute_error}다. 길이별 admission prefix ${diag.admission_prefix_checks}개·같은실행경로의 latent prefix ${diag.same_route_work_prefix_checks}개가 일치했다. 원18의 최종RNG/counter runtime확인은 종료로 도달하지 못했으므로 모든저장frame의 고정network digest/collect=false·고정CP 행동재생·no-update소스를 근거로 구분한다. 이어진2개는 종료runtime불변도 확인했다.
 
 긴 밀집부하에서 미완료를 확인해 **실행은 그대로 보존하고 저장 후처리만 V2로 명시 수정**했다. 원audit.py/report.cjs는 실행0인 채 보존한다. V1은 미완료시 drain소비를 completion필드에 넣을 수 있어 미정의 처리와 집계 제외가 필요했다. V2에는 공급 경계의 평균실행속도 clip도 바로잡았다. 별도 SAVED_AUDIT_V2.json에 소스/정확RESULT SHA를 고정했다. 새환경/재시도/학습/계수 변경0이다.
 
@@ -64,11 +67,11 @@ fs.writeFileSync(path.join(out,'REPORT.md'),text,{flag:'wx'});
 const last=m.summary.filter(x=>x.supply_s===600),edf=last.find(x=>x.policy==='EDF'),rl=last.find(x=>x.policy==='RL'),atc=last.find(x=>x.policy==='ATC');
 const concise=`120/300/600초 실제 요청공급20실행을 완료했다. 600초 전체정시 EDF${edf.on_time}/ATC${atc.on_time}/RL${rl.on_time} (${edf.requests}도착), 미완료 ${edf.incomplete}/${atc.incomplete}/${rl.incomplete}다. 공급기저 EDF${f(edf.supply_baseline_percent)}%·RL 공급소비절감 기술값${f(rl.supply_saving_percent)}%/AP차${f(rl.mean_supply_AP_delta_c)}℃다. 미완료 조건의 전체완료 소비는 미정의이고 효율우위 판정은 보류한다.`;
 const prepend=(p,t)=>fs.writeFileSync(p,t+'\n\n'+fs.readFileSync(p,'utf8'));
-prepend(path.join(repo,'docs/PROJECT_STATUS.md'),`## 2026-10-17 A24 지속 부하 — 20실행·독립검산 완료\n\n${concise}\n\n[모든조건/결과](../a24_simulator/${op.output_dir}/REPORT.md). ${audit.checks}저장검사·P0정확2·20완료/FAIL0, 새24잔4/원38·8·RR1불변·학습/fit/기기0다. 미완료 후처리는별도V2 SHA로 고정·native재시작0이다. 다음은 해석/공유이며 비교완료·자동후속0이다.`);
-prepend(path.join(repo,'docs/PROJECT_PLAN.md'),`## 2026-10-17 지속 부하 비교 완료\n\n${concise}\n\n[모든결과](../a24_simulator/${op.output_dir}/REPORT.md). 길이만늘려 열이 무한증가하거나 에너지격차가 커지는 것은 아니다. 밀집부하의 납기차이/미완료와 동결단기NN 외삽을 구분하며 새 최적값·원목표 성공을 주장하지 않는다.`);
-prepend(path.join(repo,'docs/DECISIONS.md'),`## 2026-10-17 A24-SUSTAINED 완료·미완료 지표 정정\n\n${concise}\n\n원20실행/계수/입력/납기/서비스창/CP는불변이다. 미완료의 완료에너지를null로 처리하는 저장후처리V2를 별도SHA등록했다. 원V1후처리실행0·새환경0이며 미완료를사후제외한절감주장은금지한다. 근거: [보고서](../a24_simulator/${op.output_dir}/REPORT.md).`);
-prepend(path.join(root,'README.md'),`**지속 요청공급120·300·600초 완료:** [모든정책/미완료/검산](${op.output_dir}/REPORT.md). ${concise}`);
-const cont=read(path.join(root,'CONTINUE.json'));fs.writeFileSync(path.join(root,'CONTINUE.json'),JSON.stringify({sustained_load:{status:'COMPLETED_WITH_OVERLOAD_CENSORING',operation:'experiments/sustained_load_20261017/OPERATION.json',saved_audit_v2:'experiments/sustained_load_20261017/SAVED_AUDIT_V2.json',report:op.output_dir+'/REPORT.md',summary:m.summary,new_START:20,new_COMPLETE:20,new_training:0},...cont},null,2)+'\n');
+prepend(path.join(repo,'docs/PROJECT_STATUS.md'),`## 2026-10-17 A24 지속 부하 — 20실행·독립검산 완료\n\n${concise}\n\n[모든조건/결과](../a24_simulator/${reportDir}/REPORT.md). ${audit.checks}저장검사·P0정확2·native18＋미시작2正常/환경FAIL0, 원runner중단보존·추가전역예약0·새24잔4/원38·8·RR1불변·학습/fit/기기0다. 미완료후처리별도V2 SHA·기소비native재실행0이다. 다음은 해석/공유이며 비교완료·자동후속0이다.`);
+prepend(path.join(repo,'docs/PROJECT_PLAN.md'),`## 2026-10-17 지속 부하 비교 완료\n\n${concise}\n\n[모든결과](../a24_simulator/${reportDir}/REPORT.md). 길이만늘려 열이 무한증가하거나 에너지격차가 커지는 것은 아니다. 밀집부하의 납기차이/미완료와 동결단기NN 외삽을 구분하며 새 최적값·원목표 성공을 주장하지 않는다.`);
+prepend(path.join(repo,'docs/DECISIONS.md'),`## 2026-10-17 A24-SUSTAINED 완료·미완료 지표 정정\n\n${concise}\n\nnative18완료후 전역guard로START19전 중단, 미시작2만 별도identity로 실행하고 원FAILURE를 보존했다. 계수/입력/납기/서비스창/CP는불변이다. 완료에너지null의 저장후처리V2는별도SHA이며 원V1후처리실행0·새환경0이다. 근거: [보고서](../a24_simulator/${reportDir}/REPORT.md).`);
+prepend(path.join(root,'README.md'),`**지속 요청공급120·300·600초 완료:** [모든정책/미완료/검산](${reportDir}/REPORT.md). ${concise}`);
+const cont=read(path.join(root,'CONTINUE.json'));fs.writeFileSync(path.join(root,'CONTINUE.json'),JSON.stringify({sustained_load:{status:'COMPLETED_WITH_OVERLOAD_CENSORING',operation:'experiments/sustained_load_20261017/OPERATION.json',continuation_operation:'experiments/sustained_load_20261017/CONTINUATION_OPERATION.json',saved_audit_v2:'experiments/sustained_load_20261017/SAVED_AUDIT_V2.json',report:reportDir+'/REPORT.md',summary:m.summary,new_START:20,new_COMPLETE:20,new_training:0,original_runner_failure_preserved:true},...cont},null,2)+'\n');
 const docs=['docs/PROJECT_STATUS.md','docs/PROJECT_PLAN.md','docs/DECISIONS.md','a24_simulator/README.md','a24_simulator/CONTINUE.json','a24_simulator/docs/SUSTAINED_LOAD.md'].map(p=>path.join(repo,p));
 const files=[...fs.readdirSync(out).map(f=>path.join(out,f)),...fs.readdirSync(__dirname).map(f=>path.join(__dirname,f)),...docs];
 const proof={utc:new Date().toISOString(),command:process.argv,HEAD:cp.execFileSync('git',['rev-parse','HEAD'],{cwd:repo,encoding:'utf8'}).trim(),uncommitted_changes:true,

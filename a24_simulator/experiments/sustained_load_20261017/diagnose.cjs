@@ -3,7 +3,7 @@
 const fs=require('fs'),path=require('path'),crypto=require('crypto'),zlib=require('zlib');
 const root=path.resolve(__dirname,'../..'),read=p=>JSON.parse(fs.readFileSync(p));
 const sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
-const op=read(path.join(__dirname,'OPERATION.json')),out=path.join(root,op.output_dir),result=read(path.join(out,'RESULT.json'));
+const op=read(path.join(__dirname,'OPERATION.json')),amend=read(path.join(__dirname,'SAVED_AUDIT_V2.json')),out=path.join(root,amend.report_output_dir),result=read(path.join(out,'RESULT.json'));
 const cache=new Map();
 const records=result.rows.filter(r=>r.kind==='SUSTAINED').map(row=>{
  const p=path.join(out,row.label+'.raw.json.gz');if(sha(p)!==row.raw_sha256)throw Error('Raw SHA');

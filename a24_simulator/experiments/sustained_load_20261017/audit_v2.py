@@ -49,10 +49,10 @@ def integrate(result,end,c,H):
   response_missing=len(q)-len(answered),incomplete=sum(r['available_ns'] is None or r['available_ns']>end for r in q),
   on_time=sum(r['response_ns']<=r['deadline_ns'] for r in answered),urgent_on_time=sum(r['priority']=='U' and r['response_ns']<=r['deadline_ns'] for r in answered))
 def main():
- op=read(HERE/'OPERATION.json');out=ROOT/op['output_dir'];res=read(out/'RESULT.json');c=op['physics'];design=read(op['inputs']['path'])['cases']
- amendment=read(HERE/'SAVED_AUDIT_V2.json')
+ op=read(HERE/'OPERATION.json');amendment=read(HERE/'SAVED_AUDIT_V2.json');out=ROOT/amendment['report_output_dir'];res=read(out/'RESULT.json');c=op['physics'];design=read(op['inputs']['path'])['cases']
  need(amendment['result_sha256']==sha(out/'RESULT.json'),'V2 exact native result binding')
- for p in amendment['sources']:need(sha(p['path'])==p['sha256'],'V2 postprocessor pin')
+ for p in [*amendment['sources'],*amendment['inputs']]:need(sha(p['path'])==p['sha256'],'V2 postprocessor/input pin')
+ for p in read(out/'MERGE_MANIFEST.json')['sources']:need(sha(p['path'])==p['sha256'],'Immutable native source pin')
  need(not (out/'AUDIT.json').exists(),'Saved audit namespace consumed')
  for p in [*op['sources'],*op['input_pins']]:need(sha(p['path'])==p['sha256'],'Pinned '+p['path'])
  receipts=[json.loads(x) for x in (out/'receipts.jsonl').read_text().splitlines()]
@@ -113,6 +113,9 @@ def main():
    original=integrate(r,round(case['drain_stop_s']*1e9),c,H)
    close(original['total_J_proxy'],m['total_J_proxy'],'Native accounting reproduced')
    for k in ('on_time','urgent_on_time','response_missing','incomplete'):need(original[k]==m[k],'Native SLA reproduced')
+   latency=sorted((q['response_ns']-q['scheduled_arrival_ns'])/1e9 for q in qs if q['response_ns'] is not None and q['response_ns']<=round(case['drain_stop_s']*1e9))
+   if latency:close(latency[(95*len(latency)+99)//100-1],m['P95_completed_response_s'],'Independent completion P95',1e-12)
+   else:need(m['P95_completed_response_s'] is None,'Undefined P95 without completed responses')
    own=integrate(r,last,c,H) if last is not None else None
    ends=[]
    for policy in ('EDF','ATC','RL'):
@@ -132,7 +135,7 @@ def main():
     active_execution_mean_speed=speedwork/exectime if exectime else None,all_completed=last is not None,
     post_completion_activation_tail_J_proxy=H*c['idle_tail_s'] if last else None,raw_sha256=row['raw_sha256']))
   print('AUDITED',row['label'],'checks',checks,flush=True)
- need(net==digest(learner.net) and res['network_and_training_RNG_unchanged'],'Frozen learner unchanged')
+ need(net==digest(learner.net) and res['continuation_network_and_training_RNG_unchanged'],'Frozen learner unchanged')
  summary=[]
  for duration in (120,300,600):
   local=[r for r in records if r['condition']['supply_s']==duration];refs={r['case']:r for r in local if r['policy']=='EDF'}
