@@ -1,3 +1,5 @@
+V1 사전 비교는 list/tuple 자료형 차이로 환경START0에서 중단·원기록을 보존했다. 정규화만 고친 V2를 별도 등록하며 기존 미사용288을 이전한다. 추가 전역예약0·순수9계약 PASS·원640잔38/RR잔1 불변이다. 현재 정본은 `experiments/savings_limit_20261017_v2/OPERATION.json`, 출력은 `results/SAVINGS_LIMIT_V2_20261017_01`이다.
+
 ## 2026-10-17 A24 절감 한계 — 별도 진단 사전등록
 
 [설계·근거](../a24_simulator/docs/SAVINGS_LIMIT.md): 고정 모형/12조건에서 낙관적 에너지·AP 하한, 미래 작업량 휴리스틱36회, C2+D2 유한 list240회로 실제 가능한 절감과 최대 가능 절감을 구분한다. 순수8/AST6 PASS·실제 계산은 아직 0이다. 새288 중280START 계획, 이전 잔38/RR잔1 불변·학습/fit/기기0·추적예약125766/137712 snapshot이다. 검증대상 base4acb844 및 새 OP SHA pin이다.
