@@ -1,3 +1,5 @@
+2026-10-17 최신 S26: [G004 현재 상태](../s26_simulator/STATUS.md)·[결과](../s26_simulator/MULTIRESOURCE_COMPARISON_KO.md). 3240실행·전수감사·화면 단계PASS, AP외삽/공유CPU전이타당성과정책우위미입증·새RL0. 아래는이력이다.
+
 2026-10-17 최신 정본: **MULTI001_G004 3,240건 실행·독립 전수 감사 PASS**, 분석/HTML 생성 완료. 화면 QA 최초 실행은 실패 보존 중이므로 전체 완료는 아니다. 이전 STATE 결과는 역사다. [현재 정본·복원·미완료 작업](docs/G004_HANDOFF_KO.md)부터 읽는다.
 
 # D1Check 현재 상태

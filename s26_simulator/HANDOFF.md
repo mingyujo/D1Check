@@ -1,42 +1,11 @@
-# 바로 이어서 작업하는 방법
+# S26 운영·수정 인계
 
-최신 재개 입구는 [START_HERE](START_HERE.md)다. 아래 `src/`·기존 화면 설명은 SIM002 기준판의 규약이다. 상태 배정 후속을 수정할 때는 `experiments/state_aware_v1/source/`의 `state_actions.cjs`·`state_cost.cjs`·`state_simulator.cjs`·`state_case.cjs`와 같은 폴더의 공통 plant를 기준으로 새 세대를 만든다. 해당 실험의 정확한 모델/입력은 `experiments/state_aware_v1/PACKET.json.gz`이며 운영 소스·실패·원장·감사는 `operations/SOURCE_MAP.json`에 연결돼 있다. 구형 운영 절대경로를 그대로 실행하지 않는다.
+최신 정본: **MULTI001_G004 3240환경·전수감사·분석·화면 검증 완료, 정책 우위/물리 예측 타당성 미입증**. [결과·AP 외삽 경계](MULTIRESOURCE_COMPARISON_KO.md), [재개·파일 지도](docs/G004_HANDOFF_KO.md). 새 RL0.
 
-## 1. 확인만 할 때
+원PC 경로/전량 복원/연결 의존성과 실패 복구는 [G004_HANDOFF](docs/G004_HANDOFF_KO.md)에 있다. 원 생산3240·전수감사 완료물을 다시 돌리지 않는다.
 
-`node cli/s26.cjs verify`와 `node cli/s26.cjs replay --comparison state-aware-v1 --bank COMPETE_A`로 최신 저장 결과를 확인한다. 설치형 Android 앱·ADB·원 PC·torch 없이 가능하다. 기본 `replay`와 `serve`의 화면은 이전 SIM002/V4 저장 결과이며 새 STATE 결과 화면이 아니다. 이 명령들은 새 환경을 만들지 않는다.
+최신 엔진은 experiments/multiresource_v1/source/MULTI001_G004이며 src/는 과거 SIM002다. multi_simulator가실제슬롯·공유CPU·진행, multi_actions/nominal_rollout이공개명목배정, multi_timing/midpoint_work/multi_cost가시간·온도·비용이다. PACKET.json.gz가봉인입력이다.
 
-## 2. 어디를 수정하는가
+새개선은새source/output/budget/DEV/평가에등록한다. START내구저장→raw→prepared→row→terminal을지키고소비된미저장identity/FAIL을대체seed로메우지않는다. 실제worker/명령/생성/계보와공동잠금을확인한다. live원장읽기는FileShare.ReadWrite|Delete 규약을쓴다.
 
-| 변경 목적 | 파일 |
-|---|---|
-| 물리 상태/추론 진행/응답/반납 연결 | `src/s26_simulator.cjs` |
-| AP·양의 API 전력의 수식 | `src/dynamic_cost_math_v2.cjs` |
-| 순서·자원·짧은 WAIT의 공개 입력 정책 | `src/rolling_action_v2.cjs` |
-| 정책 연결·지원 ID·public observation·배정 로그 | `src/s26_simulator_v2.cjs` |
-| 등록된 단일 실행의 원시 결과 저장 형식 | `src/run_resource_case_v2.cjs` |
-| 모델/표본 | `data/engine_packet.json.gz`; `models/`는 설명·수리 후보용 원모형도 포함 |
-| 단계 적합/교차검증 | `research/timing_model.py`, `research/fit_phase_transfer_v1.py` |
-| 현재 화면/집계 | `web/index.html`, `research/view_templates/` 및 아카이브의 build/QA 스크립트 |
-
-`data/engine_packet.json.gz` 안의 `timing`, `AP`, `power`가 현재 실행 모형이다. `models/phase_transfer_NOT_ADOPTED.json.gz`를 덮어 넣는 것만으로 단계 전이 수리가 완료되는 것은 아니다. 원 whole-vector 잔차/응답/해제 위치와 동적 적용 방법을 명시하고 검증해야 한다.
-
-## 3. 실제 새 실행 전
-
-호출 형식과 필드 연결은 [ENGINE_API.md](docs/ENGINE_API.md)에 있다. 저장 결과 확인과 새 환경 실행을 구분한다.
-
-1. 새 코드 세대와 목표, 물리/정책 변경, 참조 입력, 예산, DEV/평가 분리 및 실패 복구 방식을 사전등록한다.
-2. 원512 중500소비/12잔여는 공동 계보 예산이다. 복제본마다12가 생기지 않는다. 공동 관리자가 최신 원장/모든 다른 실험/디스크/실제 작업자·잠금을 확인해야 한다.
-3. 저수준 실행기를 직접 실행하기 전에 START를 내구 저장하고, raw→prepared→row→terminal로 저장한다. 실패·미완료·이미 소비된 미저장 identity를 새 성공으로 수집하지 않는다.
-4. 정책은 현재 도착한 요청·선언 기한·과거 dispatch/응답/AVAILABLE·이미 전달된 센서와 동결 명목 예측만 받는다. 미래 실제 도착/응답/잠재표본을 주지 않는다.
-5. 실행 후 전체 입력·후보·마스크·선택·자원 점유·응답 경계·AP/API비용·소비·실패를 검산한다. 실제 새 RL이면 Adam/별도 RNG/경험·체크포인트/선정 시각과 새 평가도 포함한다.
-
-## 4. 과거 자료와 원본 소스 찾기
-
-`node scripts/restore-data.cjs --group all`로 이 폴더 안 `archive/`에 복원한다. `archive/work/<작업ID>`와 `archive/outputs/<작업ID>`가 일대일 대응한다. `incoming/`은 받은 원묶음/정정/동결 파일이다. 파일별 원래 출처·SHA는 캐시의 카탈로그와 `node cli/s26.cjs locate <원본 경로 일부>`로 찾는다.
-
-과거 운영 스크립트에는 원 PC 절대경로·Windows 잠금·상위 도구가 있다. 이들을 원 등록인 것처럼 경로만 바꿔 실행하지 않는다. 현재 `src/`는 상대경로만 쓰는 작업 복사본이며, 과거 코드/기록은 재현 근거와 새 구현의 참고다. 원 운영 등록을 재현하려면 필요한 의존성·런타임·자료와 새 경로 매핑을 별도 등록한다.
-
-## 5. 넘겨줄 때 유지할 결론
-
-이전 SIM002는 GPU 고정을 없앴고 그때의 동질적 요청에서는 NPU가 모두 선택됐다. 최신 STATE에서는 세 정책 모두 분류 GPU를 선택했지만 후보 범위는 CPU/GPU/NPU로 같다. ATC와 EDF는 동일, 새 배정기는 J 감소/열 증가라 공동개선 미입증이다. 어느 결과도 보편적인 자원 최적·새 RL 학습 완료·실물 절감 증명으로 확대하지 않는다. [최신 판독](STATE_AWARE_COMPARISON_KO.md)을 따른다.
+상태열람은node cli/s26.cjs verify/replay, 화면은serve --view latest다. API-J는배터리단위가정, AP는HAL이며피부온도/실측3자원/실기기순절감을인증하지않는다. 동결원수치·기한·분모·기존평가/자동화/다른작업을보존한다.

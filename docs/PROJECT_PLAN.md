@@ -277,3 +277,6 @@ request_results.csv에는 도착 요청 전체를 남기며 완료·기한 초�
 3. 그 뒤 A24에서만 CALIBRATION_PROTOCOL의 소규모 pilot을 수행해 긴급·일반 절대 마감시간을 사전 고정하고, 후속 고정 arrival trace 비교로 진행한다. 실행 전 AP/PA/SKIN host 시계열 및 cooling/stability gate 자동 연결, 대표 입력, strict GPU `CompatibilityList` smoke를 완료한다.
 
 현재 결론: **CALIB-01B는 FIX4까지 전체 host 검증과 최종 읽기 전용 감사를 완료해 `CALIB_01B_PASS`로 종료했다. 과거 네트워크·Robolectric·signing lock 실패는 사용자 로컬 JDK 17의 전체 성공으로 완료 대기가 해제된 resolved history이며, 현재 미완료 장애로 사용하지 않는다. 다음 작업은 CALIB-01C-INPUT이고 A24만 직접 검증한다. 대표 입력·라벨·thermal/cooling gate·strict GPU smoke 준비 및 A24 pilot 전까지 절대 마감시간은 `calibration_pending`이며 기존 A24/S26 80슬롯 결과를 종단간 마감시간의 직접 근거로 사용하지 않는다.**
+
+2026-10-17 S26 다중자원 최신단계는 s26_simulator/STATUS.md·MULTIRESOURCE_COMPARISON_KO.md가 정본이다.3240실행과전수감사/화면은완료했으나공유CPU미측정/온도외삽과정책우위가미완료다.새RL은엔진예측타당성보완뒤별도등록한다.계수/기한/분모/현재평가재선정0.
+

@@ -37,7 +37,20 @@ test('served HTML is the exact archived view; other paths are inaccessible', asy
     if (!server.listening) await require('node:events').once(server, 'listening');
     const response = await fetch('http://127.0.0.1:' + port);
     assert.equal(response.status, 200);
-    assert.equal(sha256(Buffer.from(await response.arrayBuffer())), sha256(fs.readFileSync(path.join(ROOT, 'web/index.html'))));
+    assert.equal(sha256(Buffer.from(await response.arrayBuffer())), sha256(fs.readFileSync(path.join(ROOT, 'web/multiresource_v1.html'))));
     assert.equal((await fetch('http://127.0.0.1:' + port + '/data/engine_packet.json.gz')).status, 404);
   } finally { await new Promise((resolve, reject) => server.close(e => e ? reject(e) : resolve())); }
+});
+test('multi-resource stored CLI binds the audited original summary',()=>{
+  const run=spawnSync(process.execPath,[path.join(ROOT,'cli/s26.cjs'),'replay','--comparison','multiresource-v1','--capacity','3','--model','CENTRAL'],{cwd:os.tmpdir(),encoding:'utf8',windowsHide:true});
+  assert.equal(run.status,0,run.stderr);const r=JSON.parse(run.stdout),original=json(path.join(ROOT,'experiments/multiresource_v1/results/SUMMARY.json')).filter(r=>r.capacity===3&&r.model==='CENTRAL');
+  assert.deepEqual(r.results,original);assert.equal(r.new_policy_environments,0);assert.equal(r.new_RL,0);
+});
+test('multi archive restores exact bytes, reuses matching files and refuses an overwrite',async()=>{
+  const {zlib}=require('../scripts/io.cjs'),restore=require('../scripts/restore-multi.cjs').main;fs.mkdirSync(path.join(ROOT,'.cache'),{recursive:true});const dir=fs.mkdtempSync(path.join(ROOT,'.cache/multi-fixture-')),id=path.basename(dir),raw=Buffer.from('saved-byte-fixture\n'),gz=zlib.gzipSync(raw),h=sha256(raw),file='fixtures/'+id+'/proof.json',pack='fixture.pack';fs.writeFileSync(path.join(dir,pack),gz);
+  const cat={schema:'S26_CONTENT_ADDRESSED_ARCHIVE_V1',files:[{path:file,bytes:raw.length,sha256:h}],blobs:{[h]:{pack,offset:0,stored_bytes:gz.length,bytes:raw.length,codec:'gzip'}}},catalogName='fixture-catalog.json.gz',catPath=path.join(dir,catalogName),manifestPath=path.join(dir,'manifest.json');
+  function bind(){const b=zlib.gzipSync(Buffer.from(JSON.stringify(cat)));fs.writeFileSync(catPath,b);fs.writeFileSync(manifestPath,JSON.stringify({schema:cat.schema,catalog:{name:catalogName,bytes:b.length,sha256:sha256(b)},packs:[{name:pack,bytes:gz.length,sha256:sha256(gz)}],statistics:{included_files:1}}));}
+  bind();const args=['--manifest',path.relative(ROOT,manifestPath),'--asset-dir',dir];assert.equal((await restore(args)).written,1);assert.equal((await restore(args)).reused,1);const target=path.join(ROOT,'archive/multiresource',file);fs.writeFileSync(target,'preserve changed local bytes');await assert.rejects(restore(args),/Refuse overwrite/);assert.equal(fs.readFileSync(target,'utf8'),'preserve changed local bytes');
+  cat.files[0].path='../escape';bind();await assert.rejects(restore([...args,'--verify-only']),/Unsafe archive path/);
+  cat.files[0].path=file;cat.files[0].sha256='0'.repeat(64);cat.blobs['0'.repeat(64)]=cat.blobs[h];bind();await assert.rejects(restore([...args,'--verify-only']),/Content SHA/);
 });

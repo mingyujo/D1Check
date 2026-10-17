@@ -1,3 +1,5 @@
+최신 실행·감사·화면 단계는 완료, 예측 타당성과 정책 우위 미입증. [최신 결과](../MULTIRESOURCE_COMPARISON_KO.md)·[인계](G004_HANDOFF_KO.md)를 우선한다. 아래 내용은 해당 시점 이력이다.
+
 실행 상태(2026-10-17): 본문은 승인된 사전 계획이다. 현재 구현은 MULTI001_G004로 P0·DEV를 통과하고 EVAL 진행 중이다. 최신 실제 상태/선행 실패/모형 재보정은 [MULTIRESOURCE_PROGRESS_20261017.md](MULTIRESOURCE_PROGRESS_20261017.md)를 먼저 읽는다. 준비 PASS·EVAL 진행은 최종감사/프로젝트 완료가 아니다.
 
 # CPU·GPU·NPU 다중 요청 분산 상세 계획 · 2026-10-17
