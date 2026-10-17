@@ -1,0 +1,16 @@
+'use strict';
+// Independent sweep integrator: does not call the Python fitting/convolution code.
+function timeline(intervals,start){const ev=[];for(let j=0;j<9;j++)for(let[l,r,w]of intervals[j]){l=Math.max(l,start);if(r>l){ev.push([l,j,w],[r,j,-w]);}}ev.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);return ev;}
+function stateSeries(intervals,times,beta,start){const ev=timeline(intervals,start),a=Array(9).fill(0),z=Array(9).fill(0),out=[];let t=start,i=0;function advance(u){let e=Math.exp(-beta*(u-t));for(let j=0;j<9;j++)z[j]=z[j]*e+a[j]*(1-e);t=u;}for(let u of times){if(u<start)throw Error('Query before history');while(i<ev.length&&ev[i][0]<=u){let q=ev[i][0];advance(q);while(i<ev.length&&ev[i][0]===q){a[ev[i][1]]+=ev[i][2];i++;}}advance(u);out.push(z.slice());}return out;}
+function integralSeries(intervals,times,start){const ev=timeline(intervals,start),a=Array(9).fill(0),z=Array(9).fill(0),out=[];let t=Math.min(start,times[0]),i=0;function advance(u){for(let j=0;j<9;j++)z[j]+=(u-t)*a[j];t=u;}for(let u of times){while(i<ev.length&&ev[i][0]<=u){let q=ev[i][0];advance(q);while(i<ev.length&&ev[i][0]===q){a[ev[i][1]]+=ev[i][2];i++;}}advance(u);out.push(z.slice());}return out;}
+function rawFeatures(model,session,times){const ints=session.activity9.intervals,start=session.history_start_s??-30,target=model.target;
+ if(target==='POWER_API'){const all=[...new Set([...times,...times.map(t=>t-.5)])].sort((a,b)=>a-b),cum=integralSeries(ints,all,start),by=new Map(all.map((t,i)=>[t,cum[i]])),box=times.map(t=>by.get(t).map((v,j)=>(v-by.get(t-.5)[j])/.5)),features=times.map((t,i)=>[1,Math.log(session.targets.POWER_API.baseline.median_api_w),...box[i]]);
+  if(['LOG_DYNAMIC','GAMMA_DYNAMIC','GAMMA_HISTORY'].includes(model.mode)){for(let tau of[1,10,60]){const z=stateSeries(ints,times,1/tau,start);features.forEach((x,i)=>x.push(...z[i]));}features.forEach((x,i)=>x.push(box[i][0]*box[i][1],box[i][1]*box[i][2],box[i][1]*box[i][3]));}
+  if(model.mode==='GAMMA_HISTORY'){const a=session.targets.AP?.anchor||{},h=[a.AP_c??a.AP,a.SKIN_c??a.SKIN,a.BAT_c??a.BAT,a.pre20_AP_slope_c_s??a.pre20_AP_slope],known=h.every(Number.isFinite)&&(a.available_upper_s??a.completion_upper_s??1)<=0;features.forEach(x=>x.push(...(known?[...h,0]:[0,0,0,0,1])));}return features;
+ }
+ const anchor=session.targets.AP.anchor,a=anchor.time_s??anchor.t_s,hist=[anchor.AP_c??anchor.AP,anchor.SKIN_c??anchor.SKIN,anchor.BAT_c??anchor.BAT,anchor.pre20_AP_slope_c_s??anchor.pre20_AP_slope],f=times.map(()=>[]);
+ for(let tau of[1/.06,60]){const all=[...new Set([a,...times])].sort((a,b)=>a-b),zs=stateSeries(ints,all,1/tau,start),za=zs[all.indexOf(a)],by=new Map(all.map((t,i)=>[t,zs[i]]));f.forEach((x,i)=>x.push(...by.get(times[i]).map((v,j)=>v-za[j])));}
+ for(let tau of[20,120])f.forEach((x,i)=>x.push(...[1,...hist].map(v=>v*-Math.expm1(-(times[i]-a)/tau))));return f;
+}
+function predict(model,session,times){const f=rawFeatures(model,session,times),anchor=model.target==='AP'?(session.targets.AP.anchor.AP_c??session.targets.AP.anchor.AP):0;return f.map(x=>{if(x.length!==model.coef.length)throw Error('Model feature ABI');let y=0;for(let j=0;j<x.length;j++)y+=(x[j]-model.mean[j])/model.scale[j]*model.coef[j];return model.target==='AP'?anchor+y:Math.exp(y);});}
+module.exports={timeline,stateSeries,integralSeries,rawFeatures,predict};

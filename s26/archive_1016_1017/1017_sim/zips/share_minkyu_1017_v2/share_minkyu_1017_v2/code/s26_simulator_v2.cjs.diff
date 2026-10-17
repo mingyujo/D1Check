@@ -1,0 +1,11 @@
+--- /home/claude/mingyujo/d1check/s26_simulator/src/s26_simulator_v2.cjs	2026-10-17 02:29:24.635226930 +0900
++++ simv/src/s26_simulator_v2.cjs	2026-10-17 19:06:49.657615277 +0900
+@@ -2,7 +2,7 @@
+ // Same source-bound physical plant as SIM001; this generation repairs the action interface.
+ const base=require('./s26_simulator.cjs'),actions=require('./rolling_action_v2.cjs');
+ const OWN_POLICY='ROLLING_ATC_ROUTE_V2';
+-const SUPPORTED=['FIFO_SERIAL_CPU_V2','FIFO_SERIAL_CG_V1','EDD_SERIAL_CG_V1','FIFO_PAIR_CG_V1','EDF_PAIR_CG_V1','FIFO_WAIT_CG_V1','FIFO_SERIAL_CN_V1','FIFO_PAIR_CN_V1',OWN_POLICY];
++const SUPPORTED=['FIFO_BACKFILL_ANY_V1','EDF_BACKFILL_ANY_V1','FIFO_BACKFILL_CN_V1','EDF_BACKFILL_CN_V1','FIFO_BACKFILL_CG_V1','EDF_PAIR_CN_V1','FIFO_SERIAL_CPU_V2','FIFO_SERIAL_CG_V1','EDD_SERIAL_CG_V1','FIFO_PAIR_CG_V1','EDF_PAIR_CG_V1','FIFO_WAIT_CG_V1','FIFO_SERIAL_CN_V1','FIFO_PAIR_CN_V1',OWN_POLICY];
+ function validatePolicy(p){if(!SUPPORTED.includes(p))throw Error('Unimplemented policy ID: '+p);return p}
+ class ResourceSimulator extends base.Simulator{
+  constructor(packet,scenario,config={}){

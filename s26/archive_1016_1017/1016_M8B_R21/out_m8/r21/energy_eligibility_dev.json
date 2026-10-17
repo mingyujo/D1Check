@@ -1,0 +1,1986 @@
+{
+ "schema": "s26-m8-readout-r21-v1-dev-energy",
+ "revision_id": "M8_CONFIRM_R21_v1",
+ "header": "조민규 1016 정정안 (SHA 1dc9f5b5…) — 앞 축소안 '시간 동작만' 철회 · 주목표 = 스케줄링별 에너지 · 열 차이와 납기 · 완료량 교환관계 · 3블록은 통계적 최소나 유의성 보장이 아니다 · 요청 128건을 독립 반복으로 세지 않는다 · t (df = n − 1) 구간 = 기술용",
+ "scope": "DEV 블록 1 · 2 38 세션 (대표 = 첫 유효 시도) · DEV 로 규칙 봉인 · CONFIRM 자료 미열람",
+ "rule": {
+  "discharge_neg_min": 0.95,
+  "load_window_s": [
+   35.0,
+   120.0
+  ],
+  "voltage_range_mv": [
+   3000,
+   4600
+  ],
+  "r_range": [
+   0.8,
+   1.25
+  ],
+  "app_max_gap_s": 2.5,
+  "per_session_confirm": "DEV 적격 & 세션 r ∈ r_range & plugged 0 & J 창 coverage 통과일 때만 J 값 · 아니면 null + 사유 · ×1000 등 임의 보정 0"
+ },
+ "verdict": {
+  "verdict": "단위 가설 적격",
+  "eligible": true,
+  "checks": {
+   "discharge_neg_fraction": {
+    "value": 1.0,
+    "rule": "≥ 0.95",
+    "ok": true
+   },
+   "voltage_range_mv": {
+    "value": [
+     3624.0,
+     4252.0
+    ],
+    "rule": "3000 ~ 4600",
+    "ok": true
+   },
+   "r_median": {
+    "value": 0.8628956098293936,
+    "n": 38,
+    "min": 0.7727759284374419,
+    "max": 0.9387993033529343,
+    "rule": "0.8 ~ 1.25",
+    "ok": true,
+    "outside_range": 3
+   }
+  },
+  "hypothesis": "current_raw µA · voltage mV · 방전 음수 · W = −I × V / 10⁹ · Q_int = ∫(−I_µA) dt / 3600 [µAh] vs ΔQ_cc = charge_counter 감소 [µAh] · A24 단위/배율 가져오기 0",
+  "note": "두 값이 맞아도 내부 배터리 gauge 끼리의 정합 · 외부 전력계 교정 아님"
+ },
+ "sessions": [
+  {
+   "label": "B1-00-L64_BASE",
+   "folder": "plan_m8l64/S26_MIXREQ_04_FIFO_SERIAL_CG_V1_a1",
+   "progress_sha256": "1570082d09a1647aabc7ebae074537750364a7ea321bdd419dbd510b104a5ed3",
+   "samples": 307,
+   "valid": 307,
+   "first_s": -64.358,
+   "last_s": 211.05,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.917,
+   "load_samples": 94,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 4252.0,
+   "voltage_max_mv": 4252.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 305,
+    "median_s": 0.9,
+    "max_s": 1.798
+   },
+   "voltage_change": {
+    "changes": 0,
+    "median_s": null,
+    "max_s": null
+   },
+   "charge_change": {
+    "changes": 5,
+    "median_s": 45.896,
+    "max_s": 62.108
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 5,
+    "step_sizes": [
+     4275.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.7727759284374419,
+    "q_int_uah": 13214.468376280256,
+    "dq_cc_uah": 17100.0,
+    "interval_s": [
+     -21.139218047,
+     163.349288946
+    ],
+    "interval_len_s": 184.488506993,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B1-01-RECENT_IDLE60_C252_CPU",
+   "folder": "plan_m8recent/S26_MIXREQ_03_FIFO_SERIAL_CPU_V1_a1",
+   "progress_sha256": "44994c9f03fa04e0a6d5094407e13f007764e4a05bcd5dd8dc03371ba74c8117",
+   "samples": 341,
+   "valid": 341,
+   "first_s": -94.473,
+   "last_s": 211.552,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.932,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 4243.0,
+   "voltage_max_mv": 4243.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 338,
+    "median_s": 0.9,
+    "max_s": 1.798
+   },
+   "voltage_change": {
+    "changes": 0,
+    "median_s": null,
+    "max_s": null
+   },
+   "charge_change": {
+    "changes": 6,
+    "median_s": 30.613,
+    "max_s": 91.779
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 6,
+    "step_sizes": [
+     4275.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8673367580119234,
+    "q_int_uah": 18539.323202504864,
+    "dq_cc_uah": 21375.0,
+    "interval_s": [
+     -62.960051328,
+     182.742642031
+    ],
+    "interval_len_s": 245.702693359,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B1-02-M128_PAIR_G",
+   "folder": "plan_m8m128/S26_MIXREQ_02_FIFO_PAIR_CG_V1_a1",
+   "progress_sha256": "3cc2a0ee0609d086e8518381a2f65b89443d01711f87b26e421fcfe69ee35a76",
+   "samples": 309,
+   "valid": 309,
+   "first_s": -65.518,
+   "last_s": 211.698,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.92,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 4062.0,
+   "voltage_max_mv": 4217.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 303,
+    "median_s": 0.9,
+    "max_s": 1.808
+   },
+   "voltage_change": {
+    "changes": 2,
+    "median_s": 30.62,
+    "max_s": 30.62
+   },
+   "charge_change": {
+    "changes": 6,
+    "median_s": 61.194,
+    "max_s": 62.122
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 6,
+    "step_sizes": [
+     4275.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8970990446312855,
+    "q_int_uah": 19175.492078993728,
+    "dq_cc_uah": 21375.0,
+    "interval_s": [
+     -64.610046562,
+     181.09349043
+    ],
+    "interval_len_s": 245.703536992,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B1-03-RECENT_IDLE60_C252_GPU",
+   "folder": "plan_m8recent/S26_MIXREQ_04_FIFO_SERIAL_CG_V1_a1",
+   "progress_sha256": "a67e100a0102eec9a5d0a024df01c2f72afaa0c263ccf2e8a58d6cfd6298c745",
+   "samples": 341,
+   "valid": 341,
+   "first_s": -94.496,
+   "last_s": 211.525,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.924,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 4142.0,
+   "voltage_max_mv": 4191.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 338,
+    "median_s": 0.9,
+    "max_s": 1.788
+   },
+   "voltage_change": {
+    "changes": 2,
+    "median_s": 153.894,
+    "max_s": 153.894
+   },
+   "charge_change": {
+    "changes": 6,
+    "median_s": 61.189,
+    "max_s": 61.221
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 6,
+    "step_sizes": [
+     4275.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.9016521259202825,
+    "q_int_uah": 19272.81419154604,
+    "dq_cc_uah": 21375.0,
+    "interval_s": [
+     -34.168164297,
+     211.524962774
+    ],
+    "interval_len_s": 245.693127071,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B1-04-RECENT_CPU60_C252_NPU",
+   "folder": "plan_m8recent/S26_MIXREQ_02_FIFO_SERIAL_CN_V1_a1",
+   "progress_sha256": "161e40c23126b17862d2a978dca7b03fc03b5a5035a1fe2139b632ac564d917f",
+   "samples": 341,
+   "valid": 341,
+   "first_s": -94.454,
+   "last_s": 211.568,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.922,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 4060.0,
+   "voltage_max_mv": 4172.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 336,
+    "median_s": 0.9,
+    "max_s": 1.812
+   },
+   "voltage_change": {
+    "changes": 3,
+    "median_s": 31.056,
+    "max_s": 31.502
+   },
+   "charge_change": {
+    "changes": 7,
+    "median_s": 30.607,
+    "max_s": 61.197
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 7,
+    "step_sizes": [
+     4275.0,
+     8550.0,
+     12825.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.9198952421389077,
+    "q_int_uah": 39325.521601438304,
+    "dq_cc_uah": 42750.0,
+    "interval_s": [
+     -48.531744414,
+     166.566980664
+    ],
+    "interval_len_s": 215.098725078,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B1-05-L64_PAIR_G",
+   "folder": "plan_m8l64/S26_MIXREQ_01_FIFO_PAIR_CG_V1_a1",
+   "progress_sha256": "198e53e311a70d237785a440067cf41cc5637bb3cadecdfe66a57ad4ab5cb29d",
+   "samples": 308,
+   "valid": 308,
+   "first_s": -64.508,
+   "last_s": 211.802,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.921,
+   "load_samples": 94,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 4042.0,
+   "voltage_max_mv": 4153.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 303,
+    "median_s": 0.9,
+    "max_s": 1.809
+   },
+   "voltage_change": {
+    "changes": 4,
+    "median_s": 31.49,
+    "max_s": 122.411
+   },
+   "charge_change": {
+    "changes": 5,
+    "median_s": 46.35,
+    "max_s": 91.811
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 5,
+    "step_sizes": [
+     4275.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.9370675081922327,
+    "q_int_uah": 16023.85439008718,
+    "dq_cc_uah": 17100.0,
+    "interval_s": [
+     -62.705513945,
+     152.412259531
+    ],
+    "interval_len_s": 215.117773476,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B1-06-M128_ORDER",
+   "folder": "plan_m8m128/S26_MIXREQ_01_EDD_SERIAL_CG_V1_a2",
+   "progress_sha256": "fb8f352c2f8f144083c51f7b5c1209b341477630ffa53fda00a64c06da7029d7",
+   "samples": 307,
+   "valid": 307,
+   "first_s": -64.409,
+   "last_s": 211.009,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.918,
+   "load_samples": 94,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 4018.0,
+   "voltage_max_mv": 4123.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 300,
+    "median_s": 0.9,
+    "max_s": 1.807
+   },
+   "voltage_change": {
+    "changes": 2,
+    "median_s": 31.51,
+    "max_s": 31.51
+   },
+   "charge_change": {
+    "changes": 4,
+    "median_s": 61.198,
+    "max_s": 62.112
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 4,
+    "step_sizes": [
+     4275.0,
+     8550.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.9387993033529343,
+    "q_int_uah": 16053.468087335175,
+    "dq_cc_uah": 17100.0,
+    "interval_s": [
+     -23.89740957,
+     160.603091719
+    ],
+    "interval_len_s": 184.500501289,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B1-07-RECENT_CPU60_C252_CPU",
+   "folder": "plan_m8recent/S26_MIXREQ_00_FIFO_SERIAL_CPU_V1_a1",
+   "progress_sha256": "b9030e7c66761291c08fd6f03ce0f588abbf7c7a2c11b18daa0c4c02763ac26f",
+   "samples": 341,
+   "valid": 341,
+   "first_s": -94.478,
+   "last_s": 211.534,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.925,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3960.0,
+   "voltage_max_mv": 4116.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 339,
+    "median_s": 0.9,
+    "max_s": 1.78
+   },
+   "voltage_change": {
+    "changes": 5,
+    "median_s": 46.346,
+    "max_s": 61.196
+   },
+   "charge_change": {
+    "changes": 7,
+    "median_s": 31.052,
+    "max_s": 61.198
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 7,
+    "step_sizes": [
+     4275.0,
+     8550.0,
+     12825.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.9157868893614437,
+    "q_int_uah": 46979.86742424206,
+    "dq_cc_uah": 51300.0,
+    "interval_s": [
+     -44.050738867,
+     201.636249922
+    ],
+    "interval_len_s": 245.686988789,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B1-08-SMOOTH128_PAIR_G",
+   "folder": "plan_m8s128/S26_MIXREQ_02_FIFO_PAIR_CG_V1_a1",
+   "progress_sha256": "9367bc66087d3d818a95c8240de61c252b3b60699d8ebc9a94f2f7862efa2c2d",
+   "samples": 307,
+   "valid": 307,
+   "first_s": -64.333,
+   "last_s": 211.08,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.92,
+   "load_samples": 94,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 4077.0,
+   "voltage_max_mv": 4098.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 300,
+    "median_s": 0.9,
+    "max_s": 1.812
+   },
+   "voltage_change": {
+    "changes": 1,
+    "median_s": null,
+    "max_s": null
+   },
+   "charge_change": {
+    "changes": 5,
+    "median_s": 61.192,
+    "max_s": 62.102
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 5,
+    "step_sizes": [
+     4275.0,
+     8550.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8149638470309217,
+    "q_int_uah": 17419.852230285953,
+    "dq_cc_uah": 21375.0,
+    "interval_s": [
+     -29.210304727,
+     185.880301562
+    ],
+    "interval_len_s": 215.090606289,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B1-09-SMOOTH128_BASE",
+   "folder": "plan_m8s128/S26_MIXREQ_00_FIFO_SERIAL_CG_V1_a1",
+   "progress_sha256": "7911843e8c74637dfade7bfe86eb04b6aec8d6b7c2637f7d0dae0c76f4a1e8c5",
+   "samples": 309,
+   "valid": 309,
+   "first_s": -65.575,
+   "last_s": 211.654,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.92,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 4052.0,
+   "voltage_max_mv": 4073.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 300,
+    "median_s": 0.9,
+    "max_s": 1.812
+   },
+   "voltage_change": {
+    "changes": 1,
+    "median_s": null,
+    "max_s": null
+   },
+   "charge_change": {
+    "changes": 5,
+    "median_s": 46.341,
+    "max_s": 61.204
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 5,
+    "step_sizes": [
+     4275.0,
+     8550.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8584544616468637,
+    "q_int_uah": 18349.46411770171,
+    "dq_cc_uah": 21375.0,
+    "interval_s": [
+     -34.044982617,
+     150.438088828
+    ],
+    "interval_len_s": 184.483071445,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B1-10-SMOOTH128_ORDER",
+   "folder": "plan_m8s128/S26_MIXREQ_01_EDD_SERIAL_CG_V1_a1",
+   "progress_sha256": "e45a7f1a937263cff3e2016864729fed2dc0dea4d4fd8536e786ac0d8154d97a",
+   "samples": 308,
+   "valid": 308,
+   "first_s": -64.595,
+   "last_s": 211.72,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.929,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 4014.0,
+   "voltage_max_mv": 4053.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 301,
+    "median_s": 0.9,
+    "max_s": 1.817
+   },
+   "voltage_change": {
+    "changes": 2,
+    "median_s": 123.302,
+    "max_s": 123.302
+   },
+   "charge_change": {
+    "changes": 5,
+    "median_s": 61.183,
+    "max_s": 62.104
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 5,
+    "step_sizes": [
+     4275.0,
+     8550.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.9342367121329385,
+    "q_int_uah": 19969.30972184156,
+    "dq_cc_uah": 21375.0,
+    "interval_s": [
+     -28.581848711,
+     186.500489062
+    ],
+    "interval_len_s": 215.082337773,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B1-11-M128_PAIR_N",
+   "folder": "plan_m8m128/S26_MIXREQ_05_FIFO_PAIR_CN_V1_a1",
+   "progress_sha256": "2e5b766bdff5a0f2b31b8adc7810701463e2625e9f45f3c247063ad28c38b058",
+   "samples": 307,
+   "valid": 307,
+   "first_s": -64.459,
+   "last_s": 210.964,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.921,
+   "load_samples": 94,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3905.0,
+   "voltage_max_mv": 4019.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 300,
+    "median_s": 0.9,
+    "max_s": 1.81
+   },
+   "voltage_change": {
+    "changes": 4,
+    "median_s": 62.111,
+    "max_s": 91.799
+   },
+   "charge_change": {
+    "changes": 4,
+    "median_s": 61.187,
+    "max_s": 62.098
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 4,
+    "step_sizes": [
+     4275.0,
+     8550.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.7948958904933385,
+    "q_int_uah": 13592.71972743609,
+    "dq_cc_uah": 17100.0,
+    "interval_s": [
+     -0.532797187,
+     153.358064922
+    ],
+    "interval_len_s": 153.890862109,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B1-12-M128_WAIT1000x12",
+   "folder": "plan_m8m128/S26_MIXREQ_07_FIFO_WAIT_CG_V1_a1",
+   "progress_sha256": "3272e5f584b21f5ffec390cb37a8c3cbee0fec4dae9e14c6ef9f211dfbf4f3e2",
+   "samples": 307,
+   "valid": 307,
+   "first_s": -64.355,
+   "last_s": 211.056,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.921,
+   "load_samples": 94,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3878.0,
+   "voltage_max_mv": 3995.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 303,
+    "median_s": 0.9,
+    "max_s": 1.809
+   },
+   "voltage_change": {
+    "changes": 2,
+    "median_s": 30.593,
+    "max_s": 30.593
+   },
+   "charge_change": {
+    "changes": 5,
+    "median_s": 46.343,
+    "max_s": 61.202
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 5,
+    "step_sizes": [
+     4275.0,
+     8550.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8166082420132583,
+    "q_int_uah": 17455.001173033397,
+    "dq_cc_uah": 21375.0,
+    "interval_s": [
+     -19.329366328,
+     165.162529063
+    ],
+    "interval_len_s": 184.49189539099999,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B1-13-M128_WAIT200x16",
+   "folder": "plan_m8m128/S26_MIXREQ_03_FIFO_WAIT_CG_V1_a1",
+   "progress_sha256": "c6e2f6fedde9349e77f8f07df3c65390ac8d169bf45959d3b39c57eaa4e561bb",
+   "samples": 308,
+   "valid": 308,
+   "first_s": -64.858,
+   "last_s": 211.45,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.922,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3848.0,
+   "voltage_max_mv": 3978.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 304,
+    "median_s": 0.9,
+    "max_s": 1.805
+   },
+   "voltage_change": {
+    "changes": 2,
+    "median_s": 30.607,
+    "max_s": 30.607
+   },
+   "charge_change": {
+    "changes": 6,
+    "median_s": 30.614,
+    "max_s": 62.074
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 6,
+    "step_sizes": [
+     4275.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8737395401123068,
+    "q_int_uah": 18676.182669900558,
+    "dq_cc_uah": 21375.0,
+    "interval_s": [
+     -23.426418867,
+     191.651325313
+    ],
+    "interval_len_s": 215.07774418,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B1-14-M128_NPU_SERIAL",
+   "folder": "plan_m8m128/S26_MIXREQ_04_FIFO_SERIAL_CN_V1_a1",
+   "progress_sha256": "a1493bcd16290a875eec303ad99877db31dec63e95fd7898e68be201e759130c",
+   "samples": 308,
+   "valid": 308,
+   "first_s": -65.266,
+   "last_s": 211.058,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.92,
+   "load_samples": 94,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3850.0,
+   "voltage_max_mv": 3967.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 305,
+    "median_s": 0.9,
+    "max_s": 1.813
+   },
+   "voltage_change": {
+    "changes": 3,
+    "median_s": 61.208,
+    "max_s": 91.799
+   },
+   "charge_change": {
+    "changes": 5,
+    "median_s": 45.904,
+    "max_s": 61.215
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 5,
+    "step_sizes": [
+     4275.0,
+     8550.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8089495164637894,
+    "q_int_uah": 17291.2959144135,
+    "dq_cc_uah": 21375.0,
+    "interval_s": [
+     -14.854155938,
+     168.750779062
+    ],
+    "interval_len_s": 183.60493499999998,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B1-15-RECENT_CPU60_C252_GPU",
+   "folder": "plan_m8recent/S26_MIXREQ_01_FIFO_SERIAL_CG_V1_a1",
+   "progress_sha256": "3a27ec5b6aa869b5430379914330432fce06d33c03a814348f83b1840cb8a6b2",
+   "samples": 341,
+   "valid": 341,
+   "first_s": -94.335,
+   "last_s": 211.687,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.923,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3838.0,
+   "voltage_max_mv": 3945.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 333,
+    "median_s": 0.9,
+    "max_s": 2.718
+   },
+   "voltage_change": {
+    "changes": 5,
+    "median_s": 30.601,
+    "max_s": 31.497
+   },
+   "charge_change": {
+    "changes": 8,
+    "median_s": 30.602,
+    "max_s": 61.208
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 8,
+    "step_sizes": [
+     4275.0,
+     17100.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.9082147526991623,
+    "q_int_uah": 50474.034881255946,
+    "dq_cc_uah": 55575.0,
+    "interval_s": [
+     -34.009328946,
+     211.686932343
+    ],
+    "interval_len_s": 245.696261289,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B1-16-RECENT_IDLE60_C252_NPU",
+   "folder": "plan_m8recent/S26_MIXREQ_05_FIFO_SERIAL_CN_V1_a1",
+   "progress_sha256": "c8c5cd29160c9859056fc7317ede455a57b6df2e68fcfc605469341803c1a13c",
+   "samples": 342,
+   "valid": 342,
+   "first_s": -95.628,
+   "last_s": 211.287,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.924,
+   "load_samples": 94,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3905.0,
+   "voltage_max_mv": 3928.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 339,
+    "median_s": 0.9,
+    "max_s": 1.797
+   },
+   "voltage_change": {
+    "changes": 1,
+    "median_s": null,
+    "max_s": null
+   },
+   "charge_change": {
+    "changes": 6,
+    "median_s": 61.195,
+    "max_s": 62.094
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 6,
+    "step_sizes": [
+     4275.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8925651253297435,
+    "q_int_uah": 19078.579553923268,
+    "dq_cc_uah": 21375.0,
+    "interval_s": [
+     -38.907300156,
+     206.787134883
+    ],
+    "interval_len_s": 245.69443503899998,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B1-17-M128_BASE",
+   "folder": "plan_m8m128/S26_MIXREQ_00_FIFO_SERIAL_CG_V1_a1",
+   "progress_sha256": "d651b465dc5b406a649c0bd21ca6e7c8549498b792e6105706017d06fef78412",
+   "samples": 309,
+   "valid": 309,
+   "first_s": -65.636,
+   "last_s": 211.583,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.929,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3897.0,
+   "voltage_max_mv": 3918.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 304,
+    "median_s": 0.9,
+    "max_s": 1.8
+   },
+   "voltage_change": {
+    "changes": 2,
+    "median_s": 30.608,
+    "max_s": 30.608
+   },
+   "charge_change": {
+    "changes": 6,
+    "median_s": 30.608,
+    "max_s": 91.799
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 6,
+    "step_sizes": [
+     4275.0,
+     8550.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8732340990147941,
+    "q_int_uah": 22398.45463972947,
+    "dq_cc_uah": 25650.0,
+    "interval_s": [
+     -58.424572422,
+     187.273645937
+    ],
+    "interval_len_s": 245.698218359,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B1-18-M128_WAIT200x12",
+   "folder": "plan_m8m128/S26_MIXREQ_06_FIFO_WAIT_CG_V1_a1",
+   "progress_sha256": "e1841a79d5ef1cf68eaf05171e9d90c029b8fe831c8ff79641debc4a97dbea67",
+   "samples": 308,
+   "valid": 308,
+   "first_s": -64.657,
+   "last_s": 211.65,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.923,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3886.0,
+   "voltage_max_mv": 3886.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 305,
+    "median_s": 0.9,
+    "max_s": 1.799
+   },
+   "voltage_change": {
+    "changes": 0,
+    "median_s": null,
+    "max_s": null
+   },
+   "charge_change": {
+    "changes": 5,
+    "median_s": 61.199,
+    "max_s": 62.102
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 5,
+    "step_sizes": [
+     4275.0,
+     8550.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.9057091341090785,
+    "q_int_uah": 19359.53274158155,
+    "dq_cc_uah": 21375.0,
+    "interval_s": [
+     -23.242087812,
+     191.856232422
+    ],
+    "interval_len_s": 215.098320234,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-00-SMOOTH128_ORDER",
+   "folder": "plan_m8s128/S26_MIXREQ_04_EDD_SERIAL_CG_V1_a1",
+   "progress_sha256": "9f0c81c546eed92411ad09afe75475e92105e0112a5e11719183ae093b35a416",
+   "samples": 308,
+   "valid": 308,
+   "first_s": -64.823,
+   "last_s": 211.49,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.919,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3767.0,
+   "voltage_max_mv": 3888.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 305,
+    "median_s": 0.9,
+    "max_s": 1.798
+   },
+   "voltage_change": {
+    "changes": 2,
+    "median_s": 30.614,
+    "max_s": 30.614
+   },
+   "charge_change": {
+    "changes": 5,
+    "median_s": 46.355,
+    "max_s": 91.803
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 5,
+    "step_sizes": [
+     4275.0,
+     8550.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.9365251131074788,
+    "q_int_uah": 20018.22429267236,
+    "dq_cc_uah": 21375.0,
+    "interval_s": [
+     -20.711707657,
+     194.391814375
+    ],
+    "interval_len_s": 215.103522032,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-01-RECENT_IDLE60_C252_NPU",
+   "folder": "plan_m8recent/S26_MIXREQ_11_FIFO_SERIAL_CN_V1_a1",
+   "progress_sha256": "3c4dcfda7cc8d7ce4fe66847fd7d9748cf3d2eb2901e9bd53637e63d1080b5cb",
+   "samples": 341,
+   "valid": 341,
+   "first_s": -94.852,
+   "last_s": 211.163,
+   "read_interval_median_s": 0.899,
+   "read_interval_max_s": 0.925,
+   "load_samples": 94,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3863.0,
+   "voltage_max_mv": 3868.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 335,
+    "median_s": 0.9,
+    "max_s": 1.804
+   },
+   "voltage_change": {
+    "changes": 1,
+    "median_s": null,
+    "max_s": null
+   },
+   "charge_change": {
+    "changes": 6,
+    "median_s": 30.598,
+    "max_s": 92.699
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 6,
+    "step_sizes": [
+     4275.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8460278162656611,
+    "q_int_uah": 18083.844572678507,
+    "dq_cc_uah": 21375.0,
+    "interval_s": [
+     -39.026572109,
+     176.062207578
+    ],
+    "interval_len_s": 215.088779687,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-02-L64_BASE",
+   "folder": "plan_m8l64/S26_MIXREQ_06_FIFO_SERIAL_CG_V1_a1",
+   "progress_sha256": "da569a501eb6ce71b2c789d1d0b2d1573a799ce05dd27aa583bb537f39955b61",
+   "samples": 308,
+   "valid": 308,
+   "first_s": -64.512,
+   "last_s": 211.85,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.949,
+   "load_samples": 94,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3860.0,
+   "voltage_max_mv": 3863.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 304,
+    "median_s": 0.9,
+    "max_s": 1.811
+   },
+   "voltage_change": {
+    "changes": 1,
+    "median_s": null,
+    "max_s": null
+   },
+   "charge_change": {
+    "changes": 5,
+    "median_s": 45.896,
+    "max_s": 62.104
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 5,
+    "step_sizes": [
+     4275.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8498447422165246,
+    "q_int_uah": 14532.34509190257,
+    "dq_cc_uah": 17100.0,
+    "interval_s": [
+     -7.786577422,
+     176.699721914
+    ],
+    "interval_len_s": 184.486299336,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-03-RECENT_CPU60_C252_GPU",
+   "folder": "plan_m8recent/S26_MIXREQ_07_FIFO_SERIAL_CG_V1_a1",
+   "progress_sha256": "32ebbdd4c5fb9e7a5d3dcc177a901c91aaf77739619ada71cda5b99b44975898",
+   "samples": 341,
+   "valid": 341,
+   "first_s": -94.53,
+   "last_s": 211.488,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.932,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3724.0,
+   "voltage_max_mv": 3862.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 338,
+    "median_s": 0.9,
+    "max_s": 1.806
+   },
+   "voltage_change": {
+    "changes": 3,
+    "median_s": 30.601,
+    "max_s": 30.613
+   },
+   "charge_change": {
+    "changes": 8,
+    "median_s": 30.604,
+    "max_s": 31.512
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 8,
+    "step_sizes": [
+     4275.0,
+     8550.0,
+     21375.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.9130863383823581,
+    "q_int_uah": 46841.32915901497,
+    "dq_cc_uah": 51300.0,
+    "interval_s": [
+     -50.410151953,
+     164.698358203
+    ],
+    "interval_len_s": 215.108510156,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-04-RECENT_IDLE60_C252_GPU",
+   "folder": "plan_m8recent/S26_MIXREQ_10_FIFO_SERIAL_CG_V1_a1",
+   "progress_sha256": "33c197f78a49b66fa0b15e1fb9b046eadf1c2a6df305b3f7329480ce61b34460",
+   "samples": 342,
+   "valid": 342,
+   "first_s": -95.686,
+   "last_s": 211.228,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.927,
+   "load_samples": 94,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3830.0,
+   "voltage_max_mv": 3846.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 337,
+    "median_s": 0.9,
+    "max_s": 1.813
+   },
+   "voltage_change": {
+    "changes": 1,
+    "median_s": null,
+    "max_s": null
+   },
+   "charge_change": {
+    "changes": 7,
+    "median_s": 31.052,
+    "max_s": 62.095
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 7,
+    "step_sizes": [
+     4275.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8393870337680259,
+    "q_int_uah": 21530.277416149864,
+    "dq_cc_uah": 25650.0,
+    "interval_s": [
+     -35.373014258,
+     211.22770414
+    ],
+    "interval_len_s": 246.60071839799997,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-05-RECENT_IDLE60_C252_CPU",
+   "folder": "plan_m8recent/S26_MIXREQ_09_FIFO_SERIAL_CPU_V1_a1",
+   "progress_sha256": "b488335553ac3ba85de6179dc07cc7b64aa0abed9ae058a2a06c0919202cfeca",
+   "samples": 342,
+   "valid": 342,
+   "first_s": -95.182,
+   "last_s": 211.731,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.933,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3811.0,
+   "voltage_max_mv": 3839.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 335,
+    "median_s": 0.9,
+    "max_s": 2.695
+   },
+   "voltage_change": {
+    "changes": 1,
+    "median_s": null,
+    "max_s": null
+   },
+   "charge_change": {
+    "changes": 7,
+    "median_s": 30.606,
+    "max_s": 62.097
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 7,
+    "step_sizes": [
+     4275.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8487003220958048,
+    "q_int_uah": 21769.163261757392,
+    "dq_cc_uah": 25650.0,
+    "interval_s": [
+     -55.566709453,
+     190.127836133
+    ],
+    "interval_len_s": 245.694545586,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-06-M128_NPU_SERIAL",
+   "folder": "plan_m8m128/S26_MIXREQ_12_FIFO_SERIAL_CN_V1_a1",
+   "progress_sha256": "efbb7ce2b23160e9ebdf33351442b4e5d8f3411b3b0d1f435fa1717be7b14296",
+   "samples": 308,
+   "valid": 308,
+   "first_s": -64.552,
+   "last_s": 211.762,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.919,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3701.0,
+   "voltage_max_mv": 3830.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 305,
+    "median_s": 0.9,
+    "max_s": 1.812
+   },
+   "voltage_change": {
+    "changes": 2,
+    "median_s": 30.606,
+    "max_s": 30.606
+   },
+   "charge_change": {
+    "changes": 5,
+    "median_s": 45.901,
+    "max_s": 62.107
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 5,
+    "step_sizes": [
+     4275.0,
+     8550.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.9048809529103496,
+    "q_int_uah": 19341.830368458723,
+    "dq_cc_uah": 21375.0,
+    "interval_s": [
+     -15.940296211,
+     168.566336211
+    ],
+    "interval_len_s": 184.506632422,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-07-M128_PAIR_N",
+   "folder": "plan_m8m128/S26_MIXREQ_13_FIFO_PAIR_CN_V1_a1",
+   "progress_sha256": "dd000db6a9525aa1d75f3fb9305dd4d0973551c01786bc372aeb8045b5b43fc4",
+   "samples": 307,
+   "valid": 307,
+   "first_s": -63.723,
+   "last_s": 211.692,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.926,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3806.0,
+   "voltage_max_mv": 3822.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 301,
+    "median_s": 0.9,
+    "max_s": 1.807
+   },
+   "voltage_change": {
+    "changes": 1,
+    "median_s": null,
+    "max_s": null
+   },
+   "charge_change": {
+    "changes": 5,
+    "median_s": 61.198,
+    "max_s": 62.093
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 5,
+    "step_sizes": [
+     4275.0,
+     8550.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8513466332838869,
+    "q_int_uah": 18197.534286443082,
+    "dq_cc_uah": 21375.0,
+    "interval_s": [
+     -3.410089883,
+     211.691830235
+    ],
+    "interval_len_s": 215.101920118,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-08-M128_ORDER",
+   "folder": "plan_m8m128/S26_MIXREQ_09_EDD_SERIAL_CG_V1_a1",
+   "progress_sha256": "e9a4c9a1e18364bd4360d7a7a4b0530c8d5dcf1871b9cc06751041cc250f10a5",
+   "samples": 308,
+   "valid": 308,
+   "first_s": -64.556,
+   "last_s": 211.764,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.922,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3697.0,
+   "voltage_max_mv": 3807.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 304,
+    "median_s": 0.9,
+    "max_s": 1.804
+   },
+   "voltage_change": {
+    "changes": 2,
+    "median_s": 30.603,
+    "max_s": 30.603
+   },
+   "charge_change": {
+    "changes": 6,
+    "median_s": 31.518,
+    "max_s": 61.21
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 6,
+    "step_sizes": [
+     4275.0,
+     8550.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8249971748849135,
+    "q_int_uah": 21161.177535798033,
+    "dq_cc_uah": 25650.0,
+    "interval_s": [
+     -22.241891875,
+     192.870135586
+    ],
+    "interval_len_s": 215.112027461,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-09-M128_WAIT200x12",
+   "folder": "plan_m8m128/S26_MIXREQ_14_FIFO_WAIT_CG_V1_a1",
+   "progress_sha256": "71da24c32813b11aa420650ded934f6283b0862643de1a5c6ca6c88e46b97fee",
+   "samples": 308,
+   "valid": 308,
+   "first_s": -64.605,
+   "last_s": 211.709,
+   "read_interval_median_s": 0.901,
+   "read_interval_max_s": 0.928,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3787.0,
+   "voltage_max_mv": 3811.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 304,
+    "median_s": 0.901,
+    "max_s": 1.802
+   },
+   "voltage_change": {
+    "changes": 1,
+    "median_s": null,
+    "max_s": null
+   },
+   "charge_change": {
+    "changes": 6,
+    "median_s": 30.612,
+    "max_s": 62.096
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 6,
+    "step_sizes": [
+     4275.0,
+     8550.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8547370070981479,
+    "q_int_uah": 21924.004232067495,
+    "dq_cc_uah": 25650.0,
+    "interval_s": [
+     -25.877273125,
+     189.217357071
+    ],
+    "interval_len_s": 215.094630196,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-10-M128_BASE",
+   "folder": "plan_m8m128/S26_MIXREQ_08_FIFO_SERIAL_CG_V1_a1",
+   "progress_sha256": "020d995959bd3e3778cd049a803c387b75a6fa117fd85c6e22bea3f1eda1dc66",
+   "samples": 307,
+   "valid": 307,
+   "first_s": -63.762,
+   "last_s": 211.657,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.919,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3776.0,
+   "voltage_max_mv": 3805.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 302,
+    "median_s": 0.9,
+    "max_s": 1.813
+   },
+   "voltage_change": {
+    "changes": 1,
+    "median_s": null,
+    "max_s": null
+   },
+   "charge_change": {
+    "changes": 5,
+    "median_s": 61.198,
+    "max_s": 62.097
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 5,
+    "step_sizes": [
+     4275.0,
+     12825.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8575052806388516,
+    "q_int_uah": 21995.010448386543,
+    "dq_cc_uah": 25650.0,
+    "interval_s": [
+     -5.249310977,
+     209.853114805
+    ],
+    "interval_len_s": 215.10242578199998,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-11-RECENT_CPU60_C252_CPU",
+   "folder": "plan_m8recent/S26_MIXREQ_06_FIFO_SERIAL_CPU_V1_a1",
+   "progress_sha256": "247b2fade1dad45e88f0d192200d196d65da18102c5e5a692c349cf3c78ad62e",
+   "samples": 342,
+   "valid": 342,
+   "first_s": -95.595,
+   "last_s": 211.321,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.924,
+   "load_samples": 94,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3684.0,
+   "voltage_max_mv": 3798.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 339,
+    "median_s": 0.9,
+    "max_s": 1.793
+   },
+   "voltage_change": {
+    "changes": 3,
+    "median_s": 31.051,
+    "max_s": 31.504
+   },
+   "charge_change": {
+    "changes": 7,
+    "median_s": 30.603,
+    "max_s": 62.092
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 7,
+    "step_sizes": [
+     4275.0,
+     17100.0,
+     21375.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.9088430185088119,
+    "q_int_uah": 50508.95075362722,
+    "dq_cc_uah": 55575.0,
+    "interval_s": [
+     -59.573661211,
+     155.528400117
+    ],
+    "interval_len_s": 215.102061328,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-12-RECENT_CPU60_C252_NPU",
+   "folder": "plan_m8recent/S26_MIXREQ_08_FIFO_SERIAL_CN_V1_a1",
+   "progress_sha256": "c4b0d930b5b087ce005d3ad41d8784b690601932713511761fc5b62ee45168a6",
+   "samples": 340,
+   "valid": 340,
+   "first_s": -93.987,
+   "last_s": 211.136,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.922,
+   "load_samples": 94,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3633.0,
+   "voltage_max_mv": 3793.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 336,
+    "median_s": 0.9,
+    "max_s": 2.698
+   },
+   "voltage_change": {
+    "changes": 4,
+    "median_s": 31.518,
+    "max_s": 61.191
+   },
+   "charge_change": {
+    "changes": 7,
+    "median_s": 30.601,
+    "max_s": 62.115
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 7,
+    "step_sizes": [
+     4275.0,
+     12825.0,
+     17100.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8219935723693206,
+    "q_int_uah": 49196.31530630383,
+    "dq_cc_uah": 59850.0,
+    "interval_s": [
+     -40.871208829,
+     174.23893125
+    ],
+    "interval_len_s": 215.11014007900002,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-13-M128_WAIT1000x12",
+   "folder": "plan_m8m128/S26_MIXREQ_15_FIFO_WAIT_CG_V1_a1",
+   "progress_sha256": "3e983adf5343f3dc1caa7d5558b55e75b204e5a5eae391a3a677c07f84f31861",
+   "samples": 308,
+   "valid": 308,
+   "first_s": -64.908,
+   "last_s": 211.42,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.923,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3766.0,
+   "voltage_max_mv": 3776.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 305,
+    "median_s": 0.9,
+    "max_s": 1.811
+   },
+   "voltage_change": {
+    "changes": 2,
+    "median_s": 30.599,
+    "max_s": 30.599
+   },
+   "charge_change": {
+    "changes": 7,
+    "median_s": 31.044,
+    "max_s": 61.216
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 7,
+    "step_sizes": [
+     4275.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8749305585610508,
+    "q_int_uah": 22441.968827090954,
+    "dq_cc_uah": 25650.0,
+    "interval_s": [
+     -43.290823125,
+     202.402188789
+    ],
+    "interval_len_s": 245.693011914,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-14-SMOOTH128_BASE",
+   "folder": "plan_m8s128/S26_MIXREQ_03_FIFO_SERIAL_CG_V1_a1",
+   "progress_sha256": "a33aeddbb8a399b172ae895aa600dc0ef2b5e65d5f25ea45e979f76b7f63c41f",
+   "samples": 308,
+   "valid": 308,
+   "first_s": -64.998,
+   "last_s": 211.313,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.922,
+   "load_samples": 94,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3743.0,
+   "voltage_max_mv": 3771.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 305,
+    "median_s": 0.9,
+    "max_s": 1.809
+   },
+   "voltage_change": {
+    "changes": 1,
+    "median_s": null,
+    "max_s": null
+   },
+   "charge_change": {
+    "changes": 5,
+    "median_s": 61.202,
+    "max_s": 62.095
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 5,
+    "step_sizes": [
+     4275.0,
+     12825.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.7959210934650972,
+    "q_int_uah": 20415.376047379745,
+    "dq_cc_uah": 25650.0,
+    "interval_s": [
+     -11.885709649,
+     203.211365468
+    ],
+    "interval_len_s": 215.097075117,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-15-L64_PAIR_G",
+   "folder": "plan_m8l64/S26_MIXREQ_03_FIFO_PAIR_CG_V1_a1",
+   "progress_sha256": "06fc9b6153f84eb99840470803404eea62fb85f59cfae5342dfce85d2359ce4b",
+   "samples": 308,
+   "valid": 308,
+   "first_s": -64.958,
+   "last_s": 211.354,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.926,
+   "load_samples": 94,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3765.0,
+   "voltage_max_mv": 3765.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 304,
+    "median_s": 0.9,
+    "max_s": 1.808
+   },
+   "voltage_change": {
+    "changes": 0,
+    "median_s": null,
+    "max_s": null
+   },
+   "charge_change": {
+    "changes": 5,
+    "median_s": 45.909,
+    "max_s": 62.094
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 5,
+    "step_sizes": [
+     4275.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8398105839543107,
+    "q_int_uah": 14360.760985618714,
+    "dq_cc_uah": 17100.0,
+    "interval_s": [
+     -17.245825156,
+     167.269403164
+    ],
+    "interval_len_s": 184.51522832,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-16-M128_PAIR_G",
+   "folder": "plan_m8m128/S26_MIXREQ_10_FIFO_PAIR_CG_V1_a1",
+   "progress_sha256": "c708cb0b6f93dd122d366df6300bc27f6a910a24412893cd986fe729221a4a39",
+   "samples": 306,
+   "valid": 306,
+   "first_s": -63.499,
+   "last_s": 211.013,
+   "read_interval_median_s": 0.901,
+   "read_interval_max_s": 0.921,
+   "load_samples": 94,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3743.0,
+   "voltage_max_mv": 3754.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 300,
+    "median_s": 0.901,
+    "max_s": 1.809
+   },
+   "voltage_change": {
+    "changes": 1,
+    "median_s": null,
+    "max_s": null
+   },
+   "charge_change": {
+    "changes": 5,
+    "median_s": 61.193,
+    "max_s": 61.216
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 5,
+    "step_sizes": [
+     4275.0,
+     8550.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8768857626816888,
+    "q_int_uah": 18743.433177321098,
+    "dq_cc_uah": 21375.0,
+    "interval_s": [
+     -4.0772575,
+     211.012526289
+    ],
+    "interval_len_s": 215.089783789,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-17-M128_WAIT200x16",
+   "folder": "plan_m8m128/S26_MIXREQ_11_FIFO_WAIT_CG_V1_a1",
+   "progress_sha256": "77c509e55832724a40b990a060c5291db64914be029788ded68e9434becfd900",
+   "samples": 307,
+   "valid": 307,
+   "first_s": -63.596,
+   "last_s": 211.812,
+   "read_interval_median_s": 0.901,
+   "read_interval_max_s": 0.921,
+   "load_samples": 94,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3624.0,
+   "voltage_max_mv": 3754.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 304,
+    "median_s": 0.901,
+    "max_s": 1.802
+   },
+   "voltage_change": {
+    "changes": 2,
+    "median_s": 30.611,
+    "max_s": 30.611
+   },
+   "charge_change": {
+    "changes": 6,
+    "median_s": 61.191,
+    "max_s": 61.211
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 6,
+    "step_sizes": [
+     4275.0,
+     8550.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.813698687146703,
+    "q_int_uah": 20871.37132531293,
+    "dq_cc_uah": 25650.0,
+    "interval_s": [
+     -53.676785782,
+     192.031267265
+    ],
+    "interval_len_s": 245.708053047,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  },
+  {
+   "label": "B2-18-SMOOTH128_PAIR_G",
+   "folder": "plan_m8s128/S26_MIXREQ_05_FIFO_PAIR_CG_V1_a1",
+   "progress_sha256": "a59403c8c5a6d024be9d856840a673d033c0361d45035fe892301bd538088528",
+   "samples": 308,
+   "valid": 308,
+   "first_s": -64.552,
+   "last_s": 211.762,
+   "read_interval_median_s": 0.9,
+   "read_interval_max_s": 0.918,
+   "load_samples": 95,
+   "load_neg_fraction": 1.0,
+   "voltage_min_mv": 3743.0,
+   "voltage_max_mv": 3743.0,
+   "plugged_any": false,
+   "current_change": {
+    "changes": 303,
+    "median_s": 0.9,
+    "max_s": 1.805
+   },
+   "voltage_change": {
+    "changes": 0,
+    "median_s": null,
+    "max_s": null
+   },
+   "charge_change": {
+    "changes": 5,
+    "median_s": 45.907,
+    "max_s": 62.096
+   },
+   "sensor_update_time": "미제공 (앱 표본 = 읽기 시각 snapshot_start_ns/sensor_read_end_ns 만 · 센서 갱신 시각 없음)",
+   "charge": {
+    "changes": 5,
+    "step_sizes": [
+     4275.0,
+     8550.0
+    ],
+    "step_min": 4275.0,
+    "increases": 0,
+    "r": 0.8326474901392288,
+    "q_int_uah": 17797.840101726015,
+    "dq_cc_uah": 21375.0,
+    "interval_s": [
+     -11.437892539,
+     173.070592617
+    ],
+    "interval_len_s": 184.50848515599998,
+    "reason": null,
+    "boundary_note": "계단 시각 = 바뀐 값이 처음 보인 표본 (실제 계단은 직전 표본과 사이 · 양끝 같은 규칙)"
+   }
+  }
+ ],
+ "label": "등록 단위 가설 아래 gauge 추정 J"
+}
