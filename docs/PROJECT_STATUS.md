@@ -1,3 +1,9 @@
+## 2026-10-18 납기보호해제 고정NN 대조 완료
+
+납기WAIT보호ON/OFF×학습NN/actor0의40START/40COMPLETE/FAIL0·원10조건정확재현·독립3600137/NN26780 PASS. 보호해제NN 대조납기비악화10/10·불리WAIT선택0·공동10%/.5℃0/10. 고정NN대조이고보호없는재학습은후속이다. 원112＋새40을모두표시/제외비고/삭제0.
+
+[모든결과](../a24_simulator/results/GUARD_ABLATION_V3_20261018_01/REPORT.md). 새44잔4/원headroom잔0·기존잔여불변·fit/기기0. 다음은보호없이학습효과와확인된정책원인의유한보완이며이번완료op재시작0·검증은OP SHA/최종proof를따른다.
+
 ## 2026-10-18 독립 계산 자원제약 보완·보호대조V3 등록
 
 사용자는논리근거가있으면제약완화를허용했다. 서로독립된결정론모형/읽기전용입력/개별상태·RNG·결과이며실기기0임을확인해globalPython3/ownA24 1·single-thread·전용A24잠금으로실행관리만변경한다. 원공유잠금은유지한채다른작업을수정/중단하지않는다. SHA고정peer allowlist·20논리코어확인·가용RAM의사전파일크기추정/디스크C·D8GiB·2시간cap을지킨다. V2는환경0으로보존/대기helper만종료했고미사용44를V3로이전/추가예약0이다. 원모형/입력/CP/NN/보상·40계획은불변이며10조건ON_NN trace/clock/입력정확재현을요구한다. 순수5/AST8/Node3/실제자원guard PASS·알려진추적126640/137712 snapshot이다. 다음은V3게시/40실행검산→중간20조건80→paired194/중간saved80LP의별도등록이다. [근거](../a24_simulator/experiments/guard_ablation_20261018_v3/README.md).
