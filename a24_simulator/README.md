@@ -1,3 +1,5 @@
+**RR 비교 완료 / 새 비용 RL 실행 중:** [현재 설계·진행·파일](docs/RR_AND_COST_RL_DEVELOPMENT.md) · [RR4정책 결과](results/RR_20261017_01/REPORT.html). RR7정상/저장감사·6뷰QA PASS, 새RL223환경은 별도등록 후 시작했으며 완료·우위 미판정입니다. 반복예약/주기조회OFF.
+
 **RL 제외 3규칙 비교 완료:** [롤링+ATC·EDF·FIFO 수치/구현 설명](docs/RULES_NO_RL_COMPARISON.md) · [새 결과 화면](results/RULES_NO_RL_20261017_01/REPORT.html). 같은48~3072입력·모형/작업창, 새15정상+EDF7재사용·NN/학습/fit0입니다. 현재EDF/FIFO도사건마다재선택하며 다단계미래최적화는셋모두없습니다. 기존결과/계수/CP와예약OFF는유지합니다.
 
 **요청 수 확장 완료:** [48~3,072개 비교/파일 안내](docs/LONG_SCALE_COMPARISON.md) · [장시간 결과표](results/LONG_SCALE_REPORT_20261017_01/REPORT.html). 최대12.23분을 계산했고 EDF 기저 비중67.97→48.46%입니다. 고정RL 대비 차이/납기/손해를 모두 보존했으며 장시간은 미검증 외삽입니다. 기존서버/모형/NN·소비511/512 불변, 별도24예약 중19START·정상18/실패1·예약/주기조회OFF.

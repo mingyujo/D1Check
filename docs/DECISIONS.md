@@ -1,3 +1,7 @@
+## 2026-10-17 A24 RR·새 비용 RL — 순수검사 완료 / RR 실행 중
+
+[설계·파일](../a24_simulator/docs/RR_AND_COST_RL_DEVELOPMENT.md): RR19/정책보상27 순수검사 PASS·RR7 실행, 새상태비용 연결 RL96 TRAIN·DEV48·fresh60·과거7·NN제외12=223환경을 별도256 안에 준비했다. 현재 RR+RL 신규예약264로 전역124838/137712(당시 S26예약 포함), 원511/long19/원결과·물리는 보존한다. RL실행/학습/선정/실평가 PASS는 아직 아니다. 준비V2는 과거root잠재key를 명시복사하고V1을미실행보존했다. S26 실패/활성원장 판독간섭가능성은 별도incident에 기록·원작업재시작0이다. 다음은 RR완료검산→정확RL등록/학습→미사용seed/NN제외 비교·전수감사·QA·문서 게시다. 반복예약/실측주기조회0·Jnull/물리목표false.
+
 ## 2026-10-17 A24 RL 제외3규칙 — 비교·저장감사·화면 완료
 
 [정본/파일](../a24_simulator/docs/RULES_NO_RL_COMPARISON.md): 같은48~3072입력의 rolling native ATC/FIFO14와 exact EDF P01=15정상·EDF7저장재사용,NN실행/학습/fit0이다. 최대 ATC/EDF/FIFO 정시3000/2996/2908·긴급697/692/744,ATC−EDF J*0.990012/AP-0.013914℃이며 모든 손해/조건을 보존한다. 순수18/P0정확/독립334325/Chrome6뷰703 PASS다.
