@@ -1,0 +1,3532 @@
+{
+  "schema": "A24-savings-limit-analysis-v1",
+  "utc": "2026-10-17T12:51:43.785Z",
+  "source_result_sha256": "7f83c4392be9c5f48718fb8ca5f028b71d20d92b02c6f1b58d7a926e40644412",
+  "cases": [
+    {
+      "baseline": 74.3195181431178,
+      "case": "FRESH_00",
+      "coefficients": {
+        "cells": {
+          "classification_CPU": {
+            "execution": 0.5489481675225005,
+            "execution_free": 0.49439478993841796,
+            "interval_count": 1934,
+            "nonexecution": 0.6156437095654784,
+            "relaxed_optimal_speed": 0.637473879712238
+          },
+          "classification_GPU": {
+            "execution": 0.38336591194616715,
+            "execution_free": 0.35364281423593386,
+            "interval_count": 1934,
+            "nonexecution": 0.40145133814399664,
+            "relaxed_optimal_speed": 0.7094900369888665
+          },
+          "detection_CPU": {
+            "execution": 0.6311557923522466,
+            "execution_free": 0.5607621189885497,
+            "interval_count": 1934,
+            "nonexecution": 0.7203799761906307,
+            "relaxed_optimal_speed": 0.6180600171132401
+          },
+          "detection_GPU": {
+            "execution": 0.4598957348568707,
+            "execution_free": 0.41475891006634275,
+            "interval_count": 1934,
+            "nonexecution": 0.4926552958584755,
+            "relaxed_optimal_speed": 0.6709132316446433
+          }
+        },
+        "coefficient_margin": 1e-9,
+        "increment_power_upper": 1.611268948789155,
+        "shared": 0.21745108719898432,
+        "temperature_grid_step": 0.01,
+        "temperature_upper": 45.335227385469864
+      },
+      "constraint_rows": 2938,
+      "constraint_sha256": "d2f7c65b1f25e7aee47cdd5b59321825ebbde18426403652255e74d1b2941879",
+      "energy_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 14.053477488994154,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 1,
+        "numerical_margin": 0.00001,
+        "primal": 14.053487488994154,
+        "reported_dual_bound": 14.053487488994154,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "heat_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 2.917481975285383,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 1,
+        "numerical_margin": 0.00001,
+        "primal": 2.917491975285383,
+        "reported_dual_bound": 2.917491975285383,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "independent_thermal_linked_work_lower": 13.68203087534202,
+      "maximum_AP_reduction_c": 1.1754378772676652,
+      "maximum_total_saving_percent": 4.684412421698303,
+      "mean_temperature_lower": 28.917481975285384,
+      "n": 48,
+      "reference": {
+        "P95_completed_response_s": 1.642209365,
+        "baseline_J_proxy": 74.3195181431178,
+        "cost_vector": [
+          1.0950408878390785,
+          1.3468033187254662,
+          0,
+          0,
+          0
+        ],
+        "execution_throttled_s": 1.06547514,
+        "full_tail_increment_J_proxy": 18.396686915696517,
+        "heat_area_proxy": 193.35537881929486,
+        "incomplete": 0,
+        "increment_J_proxy": 18.396686915696517,
+        "mean_AP_c": 30.09291985255305,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 1.2209221032822724,
+        "on_time": 48,
+        "peak_AP_c": 32.20288162401815,
+        "planned": 48,
+        "responded": 48,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 8,
+          "C_GPU": 4,
+          "D_CPU": 23,
+          "D_GPU": 13
+        },
+        "total_J_proxy": 92.71620505881432,
+        "urgent_on_time": 12,
+        "urgent_planned": 12,
+        "wait_s": 0.3
+      },
+      "relaxation": "full future work; independent optimal thermal states; perfect half-shared cost; necessary-only interval capacity; EDF count SLA",
+      "total_energy_lower": 88.37299563211195,
+      "unlinked_work_lower": 12.212505640033298,
+      "variables": 192,
+      "best_feasible_saved": "FRESH_00_TRUTH_EXACT",
+      "best_feasible_total": 92.66922852402425,
+      "found_saving_percent": 0.050667016364913664,
+      "best_feasible_metrics": {
+        "P95_completed_response_s": 2.221582184,
+        "baseline_J_proxy": 74.3195181431178,
+        "cost_vector": [
+          1.0922446655301457,
+          1.3394968828130749,
+          0,
+          0,
+          0
+        ],
+        "execution_throttled_s": 0.7388349120000001,
+        "full_tail_increment_J_proxy": 18.349710380906444,
+        "heat_area_proxy": 192.48368190647693,
+        "incomplete": 0,
+        "increment_J_proxy": 18.349710380906444,
+        "mean_AP_c": 30.04289117907098,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 1.2158707741716102,
+        "on_time": 48,
+        "peak_AP_c": 32.14023236757148,
+        "planned": 48,
+        "responded": 48,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 9,
+          "C_GPU": 3,
+          "D_CPU": 24,
+          "D_GPU": 12
+        },
+        "total_J_proxy": 92.66922852402425,
+        "urgent_on_time": 12,
+        "urgent_planned": 12,
+        "wait_s": 5.5
+      },
+      "energy_heat_nonworse_saved": "FRESH_00_TRUTH_EXACT",
+      "energy_heat_nonworse_total": 92.66922852402425,
+      "ten_percent_impossible_even_in_relaxation": true,
+      "half_degree_impossible_even_in_relaxation": false,
+      "full_witnesses": [
+        {
+          "label": "FRESH_00_TRUTH_EXACT",
+          "eligible": true,
+          "metrics": {
+            "P95_completed_response_s": 2.221582184,
+            "baseline_J_proxy": 74.3195181431178,
+            "cost_vector": [
+              1.0922446655301457,
+              1.3394968828130749,
+              0,
+              0,
+              0
+            ],
+            "execution_throttled_s": 0.7388349120000001,
+            "full_tail_increment_J_proxy": 18.349710380906444,
+            "heat_area_proxy": 192.48368190647693,
+            "incomplete": 0,
+            "increment_J_proxy": 18.349710380906444,
+            "mean_AP_c": 30.04289117907098,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 1.2158707741716102,
+            "on_time": 48,
+            "peak_AP_c": 32.14023236757148,
+            "planned": 48,
+            "responded": 48,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 9,
+              "C_GPU": 3,
+              "D_CPU": 24,
+              "D_GPU": 12
+            },
+            "total_J_proxy": 92.66922852402425,
+            "urgent_on_time": 12,
+            "urgent_planned": 12,
+            "wait_s": 5.5
+          }
+        },
+        {
+          "label": "FRESH_00_TRUTH_ATC",
+          "eligible": true,
+          "metrics": {
+            "P95_completed_response_s": 1.616021795,
+            "baseline_J_proxy": 74.3195181431178,
+            "cost_vector": [
+              1.0955661438110973,
+              1.3475098640981822,
+              0,
+              0,
+              0
+            ],
+            "execution_throttled_s": 1.065665906,
+            "full_tail_increment_J_proxy": 18.405511216026433,
+            "heat_area_proxy": 193.449331277076,
+            "incomplete": 0,
+            "increment_J_proxy": 18.405511216026433,
+            "mean_AP_c": 30.095009388510835,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 1.2215380039546397,
+            "on_time": 48,
+            "peak_AP_c": 32.20558651147994,
+            "planned": 48,
+            "responded": 48,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 8,
+              "C_GPU": 4,
+              "D_CPU": 23,
+              "D_GPU": 13
+            },
+            "total_J_proxy": 92.72502935914423,
+            "urgent_on_time": 12,
+            "urgent_planned": 12,
+            "wait_s": 0.3
+          }
+        },
+        {
+          "label": "FRESH_00_ENERGY_ROUTE",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 2.769740005,
+            "baseline_J_proxy": 74.3195181431178,
+            "cost_vector": [
+              1.0866612312407422,
+              1.3280425980654416,
+              0.042497493794642856,
+              0,
+              0
+            ],
+            "execution_throttled_s": 0.053283827,
+            "full_tail_increment_J_proxy": 18.255908684844467,
+            "heat_area_proxy": 191.19100094025748,
+            "incomplete": 0,
+            "increment_J_proxy": 18.255908684844467,
+            "mean_AP_c": 29.98989662978478,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 1.5473318650102348,
+            "on_time": 46,
+            "peak_AP_c": 32.016365687904894,
+            "planned": 48,
+            "responded": 48,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 11,
+              "C_GPU": 1,
+              "D_CPU": 30,
+              "D_GPU": 6
+            },
+            "total_J_proxy": 92.57542682796227,
+            "urgent_on_time": 10,
+            "urgent_planned": 12,
+            "wait_s": 11.6
+          }
+        }
+      ]
+    },
+    {
+      "baseline": 85.50997486174936,
+      "case": "FRESH_01",
+      "coefficients": {
+        "cells": {
+          "classification_CPU": {
+            "execution": 0.5489481675225005,
+            "execution_free": 0.49439478993841796,
+            "interval_count": 1934,
+            "nonexecution": 0.6156437095654784,
+            "relaxed_optimal_speed": 0.637473879712238
+          },
+          "classification_GPU": {
+            "execution": 0.38336591194616715,
+            "execution_free": 0.35364281423593386,
+            "interval_count": 1934,
+            "nonexecution": 0.40145133814399664,
+            "relaxed_optimal_speed": 0.7094900369888665
+          },
+          "detection_CPU": {
+            "execution": 0.6311557923522466,
+            "execution_free": 0.5607621189885497,
+            "interval_count": 1934,
+            "nonexecution": 0.7203799761906307,
+            "relaxed_optimal_speed": 0.6180600171132401
+          },
+          "detection_GPU": {
+            "execution": 0.4598957348568707,
+            "execution_free": 0.41475891006634275,
+            "interval_count": 1934,
+            "nonexecution": 0.4926552958584755,
+            "relaxed_optimal_speed": 0.6709132316446433
+          }
+        },
+        "coefficient_margin": 1e-9,
+        "increment_power_upper": 1.611268948789155,
+        "shared": 0.21745108719898432,
+        "temperature_grid_step": 0.01,
+        "temperature_upper": 45.335227385469864
+      },
+      "constraint_rows": 10330,
+      "constraint_sha256": "3a619daa0bfbe08904619e880657585b7118a9a6a398d57d99c3e076b68aaa7d",
+      "energy_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 27.464113589705462,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 1,
+        "numerical_margin": 0.00001,
+        "primal": 27.464123589705462,
+        "reported_dual_bound": 27.464123589705462,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "heat_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 3.0856121129155296,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 1,
+        "numerical_margin": 0.00001,
+        "primal": 3.0856221129155297,
+        "reported_dual_bound": 3.0856221129155297,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "independent_thermal_linked_work_lower": 27.464123589705462,
+      "maximum_AP_reduction_c": 3.217703951458912,
+      "maximum_total_saving_percent": 5.697367792832619,
+      "mean_temperature_lower": 29.08561211291553,
+      "n": 96,
+      "reference": {
+        "P95_completed_response_s": 4.602331522,
+        "baseline_J_proxy": 85.50997486174936,
+        "cost_vector": [
+          1.020522073213806,
+          1.3308804250675055,
+          0.13010000911095834,
+          0.13954424757031472,
+          0
+        ],
+        "execution_throttled_s": 33.504896309,
+        "full_tail_increment_J_proxy": 34.289541659983875,
+        "heat_area_proxy": 365.37636158279247,
+        "incomplete": 0,
+        "increment_J_proxy": 34.289541659983875,
+        "mean_AP_c": 32.30331606437444,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 2.7746783123095815,
+        "on_time": 71,
+        "peak_AP_c": 35.110625145251575,
+        "planned": 96,
+        "responded": 96,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 13,
+          "C_GPU": 11,
+          "D_CPU": 48,
+          "D_GPU": 24
+        },
+        "total_J_proxy": 119.79951652173324,
+        "urgent_on_time": 12,
+        "urgent_planned": 24,
+        "wait_s": 0.05
+      },
+      "relaxation": "full future work; independent optimal thermal states; perfect half-shared cost; necessary-only interval capacity; EDF count SLA",
+      "total_energy_lower": 112.97409745145481,
+      "unlinked_work_lower": 24.522671472029838,
+      "variables": 384,
+      "best_feasible_saved": "FRESH_01_TRUTH_ATC",
+      "best_feasible_total": 119.61624218296961,
+      "found_saving_percent": 0.15298420568364834,
+      "best_feasible_metrics": {
+        "P95_completed_response_s": 4.600389229,
+        "baseline_J_proxy": 85.50997486174936,
+        "cost_vector": [
+          1.0150674797982222,
+          1.324926816018492,
+          0.04552553789620536,
+          0.12237223302437102,
+          0
+        ],
+        "execution_throttled_s": 33.234509963,
+        "full_tail_increment_J_proxy": 34.10626732122026,
+        "heat_area_proxy": 363.7054172159483,
+        "incomplete": 0,
+        "increment_J_proxy": 34.10626732122026,
+        "mean_AP_c": 32.292459038523546,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 2.023690383175484,
+        "on_time": 81,
+        "peak_AP_c": 35.10303920093357,
+        "planned": 96,
+        "responded": 96,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 17,
+          "C_GPU": 7,
+          "D_CPU": 47,
+          "D_GPU": 25
+        },
+        "total_J_proxy": 119.61624218296961,
+        "urgent_on_time": 20,
+        "urgent_planned": 24,
+        "wait_s": 0.05
+      },
+      "energy_heat_nonworse_saved": "FRESH_01_TRUTH_ATC",
+      "energy_heat_nonworse_total": 119.61624218296961,
+      "ten_percent_impossible_even_in_relaxation": true,
+      "half_degree_impossible_even_in_relaxation": false,
+      "full_witnesses": [
+        {
+          "label": "FRESH_01_TRUTH_EXACT",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 9.815559654,
+            "baseline_J_proxy": 85.50997486174936,
+            "cost_vector": [
+              1.0250459659681312,
+              1.3263839896668057,
+              0.012287562693452372,
+              0.40332789034310096,
+              0
+            ],
+            "execution_throttled_s": 33.559405568,
+            "full_tail_increment_J_proxy": 34.4415444565292,
+            "heat_area_proxy": 364.08415545232265,
+            "incomplete": 0,
+            "increment_J_proxy": 34.4415444565292,
+            "mean_AP_c": 32.09544636246931,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 2.887327040737491,
+            "on_time": 61,
+            "peak_AP_c": 35.110144717312046,
+            "planned": 96,
+            "responded": 96,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 16,
+              "C_GPU": 8,
+              "D_CPU": 46,
+              "D_GPU": 26
+            },
+            "total_J_proxy": 119.95151931827856,
+            "urgent_on_time": 23,
+            "urgent_planned": 24,
+            "wait_s": 2.3
+          }
+        },
+        {
+          "label": "FRESH_01_TRUTH_ATC",
+          "eligible": true,
+          "metrics": {
+            "P95_completed_response_s": 4.600389229,
+            "baseline_J_proxy": 85.50997486174936,
+            "cost_vector": [
+              1.0150674797982222,
+              1.324926816018492,
+              0.04552553789620536,
+              0.12237223302437102,
+              0
+            ],
+            "execution_throttled_s": 33.234509963,
+            "full_tail_increment_J_proxy": 34.10626732122026,
+            "heat_area_proxy": 363.7054172159483,
+            "incomplete": 0,
+            "increment_J_proxy": 34.10626732122026,
+            "mean_AP_c": 32.292459038523546,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 2.023690383175484,
+            "on_time": 81,
+            "peak_AP_c": 35.10303920093357,
+            "planned": 96,
+            "responded": 96,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 17,
+              "C_GPU": 7,
+              "D_CPU": 47,
+              "D_GPU": 25
+            },
+            "total_J_proxy": 119.61624218296961,
+            "urgent_on_time": 20,
+            "urgent_planned": 24,
+            "wait_s": 0.05
+          }
+        },
+        {
+          "label": "FRESH_01_ENERGY_ROUTE",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 10.035217817,
+            "baseline_J_proxy": 85.50997486174936,
+            "cost_vector": [
+              1.0383877339694714,
+              1.3268311328180717,
+              0.10918413780810234,
+              0.7366515081567893,
+              0
+            ],
+            "execution_throttled_s": 30.666806830000002,
+            "full_tail_increment_J_proxy": 34.88982786137423,
+            "heat_area_proxy": 365.66397845591746,
+            "incomplete": 0,
+            "increment_J_proxy": 34.88982786137423,
+            "mean_AP_c": 31.9189612194477,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 5.002688568485747,
+            "on_time": 32,
+            "peak_AP_c": 34.858227047862364,
+            "planned": 96,
+            "responded": 96,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 20,
+              "C_GPU": 4,
+              "D_CPU": 53,
+              "D_GPU": 19
+            },
+            "total_J_proxy": 120.39980272312359,
+            "urgent_on_time": 14,
+            "urgent_planned": 24,
+            "wait_s": 12
+          }
+        }
+      ]
+    },
+    {
+      "baseline": 71.42067823813726,
+      "case": "FRESH_02",
+      "coefficients": {
+        "cells": {
+          "classification_CPU": {
+            "execution": 0.5489481675225005,
+            "execution_free": 0.49439478993841796,
+            "interval_count": 1934,
+            "nonexecution": 0.6156437095654784,
+            "relaxed_optimal_speed": 0.637473879712238
+          },
+          "classification_GPU": {
+            "execution": 0.38336591194616715,
+            "execution_free": 0.35364281423593386,
+            "interval_count": 1934,
+            "nonexecution": 0.40145133814399664,
+            "relaxed_optimal_speed": 0.7094900369888665
+          },
+          "detection_CPU": {
+            "execution": 0.6311557923522466,
+            "execution_free": 0.5607621189885497,
+            "interval_count": 1934,
+            "nonexecution": 0.7203799761906307,
+            "relaxed_optimal_speed": 0.6180600171132401
+          },
+          "detection_GPU": {
+            "execution": 0.4598957348568707,
+            "execution_free": 0.41475891006634275,
+            "interval_count": 1934,
+            "nonexecution": 0.4926552958584755,
+            "relaxed_optimal_speed": 0.6709132316446433
+          }
+        },
+        "coefficient_margin": 1e-9,
+        "increment_power_upper": 1.611268948789155,
+        "shared": 0.21745108719898432,
+        "temperature_grid_step": 0.01,
+        "temperature_upper": 45.335227385469864
+      },
+      "constraint_rows": 2938,
+      "constraint_sha256": "8cb16c9ec65c6f959142b7cd85f95b40acc9cf220b6476613418e1103748f60d",
+      "energy_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 10.224556216571296,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 1,
+        "numerical_margin": 0.00001,
+        "primal": 10.224566216571295,
+        "reported_dual_bound": 10.224566216571295,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "heat_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 2.2101752374686914,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 1,
+        "numerical_margin": 0.00001,
+        "primal": 2.2101852374686914,
+        "reported_dual_bound": 2.2101852374686914,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "independent_thermal_linked_work_lower": 10.1052866446499,
+      "maximum_AP_reduction_c": 1.0574379289277012,
+      "maximum_total_saving_percent": 4.278217239687088,
+      "mean_temperature_lower": 28.21017523746869,
+      "n": 48,
+      "reference": {
+        "P95_completed_response_s": 1.245570733,
+        "baseline_J_proxy": 71.42067823813726,
+        "cost_vector": [
+          0.825811434892543,
+          1.008167733426818,
+          0,
+          0,
+          0
+        ],
+        "execution_throttled_s": 0,
+        "full_tail_increment_J_proxy": 13.873632106194721,
+        "heat_area_proxy": 145.1761536134618,
+        "incomplete": 0,
+        "increment_J_proxy": 13.873632106194721,
+        "mean_AP_c": 29.26761316639639,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 0.9169895841596805,
+        "on_time": 48,
+        "peak_AP_c": 30.941612957063587,
+        "planned": 48,
+        "responded": 48,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 13,
+          "C_GPU": 11,
+          "D_CPU": 17,
+          "D_GPU": 7
+        },
+        "total_J_proxy": 85.29431034433198,
+        "urgent_on_time": 12,
+        "urgent_planned": 12,
+        "wait_s": 0.4
+      },
+      "relaxation": "full future work; independent optimal thermal states; perfect half-shared cost; necessary-only interval capacity; EDF count SLA",
+      "total_energy_lower": 81.64523445470856,
+      "unlinked_work_lower": 9.041324258984236,
+      "variables": 192,
+      "best_feasible_saved": "FRESH_02_EXACT",
+      "best_feasible_total": 85.02114265843846,
+      "found_saving_percent": 0.3202648392263696,
+      "best_feasible_metrics": {
+        "P95_completed_response_s": 1.664351775,
+        "baseline_J_proxy": 71.42067823813726,
+        "cost_vector": [
+          0.8095514535893577,
+          0.9869059710849134,
+          0,
+          0,
+          0
+        ],
+        "execution_throttled_s": 0,
+        "full_tail_increment_J_proxy": 13.600464420301206,
+        "heat_area_proxy": 142.11445983622752,
+        "incomplete": 0,
+        "increment_J_proxy": 13.600464420301206,
+        "mean_AP_c": 29.180247060132302,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 0.8982287123371355,
+        "on_time": 48,
+        "peak_AP_c": 30.848906339570807,
+        "planned": 48,
+        "responded": 48,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 13,
+          "C_GPU": 11,
+          "D_CPU": 19,
+          "D_GPU": 5
+        },
+        "total_J_proxy": 85.02114265843846,
+        "urgent_on_time": 12,
+        "urgent_planned": 12,
+        "wait_s": 5.35
+      },
+      "energy_heat_nonworse_saved": "FRESH_02_EXACT",
+      "energy_heat_nonworse_total": 85.02114265843846,
+      "ten_percent_impossible_even_in_relaxation": true,
+      "half_degree_impossible_even_in_relaxation": false,
+      "full_witnesses": [
+        {
+          "label": "FRESH_02_TRUTH_EXACT",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 1.664351775,
+            "baseline_J_proxy": 71.42067823813726,
+            "cost_vector": [
+              0.8115629168362195,
+              0.9896471537163242,
+              0,
+              0.021038642888020837,
+              0
+            ],
+            "execution_throttled_s": 0,
+            "full_tail_increment_J_proxy": 13.634257002848486,
+            "heat_area_proxy": 142.50919013515067,
+            "incomplete": 0,
+            "increment_J_proxy": 13.634257002848486,
+            "mean_AP_c": 29.192865501284558,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 0.9847596068283552,
+            "on_time": 47,
+            "peak_AP_c": 30.83117366760766,
+            "planned": 48,
+            "responded": 48,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 15,
+              "C_GPU": 9,
+              "D_CPU": 19,
+              "D_GPU": 5
+            },
+            "total_J_proxy": 85.05493524098574,
+            "urgent_on_time": 12,
+            "urgent_planned": 12,
+            "wait_s": 5.3
+          }
+        },
+        {
+          "label": "FRESH_02_TRUTH_ATC",
+          "eligible": true,
+          "metrics": {
+            "P95_completed_response_s": 1.257916615,
+            "baseline_J_proxy": 71.42067823813726,
+            "cost_vector": [
+              0.8291256565561634,
+              1.0122145683972075,
+              0,
+              0,
+              0
+            ],
+            "execution_throttled_s": 0,
+            "full_tail_increment_J_proxy": 13.929311030143543,
+            "heat_area_proxy": 145.75889784919787,
+            "incomplete": 0,
+            "increment_J_proxy": 13.929311030143543,
+            "mean_AP_c": 29.280739522202627,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 0.9206701124766854,
+            "on_time": 48,
+            "peak_AP_c": 30.961810139596903,
+            "planned": 48,
+            "responded": 48,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 14,
+              "C_GPU": 10,
+              "D_CPU": 16,
+              "D_GPU": 8
+            },
+            "total_J_proxy": 85.3499892682808,
+            "urgent_on_time": 12,
+            "urgent_planned": 12,
+            "wait_s": 0.35
+          }
+        },
+        {
+          "label": "FRESH_02_ENERGY_ROUTE",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 2.840393049,
+            "baseline_J_proxy": 71.42067823813726,
+            "cost_vector": [
+              0.8116252203805758,
+              0.9866896045632308,
+              0.021061522526041657,
+              0,
+              0
+            ],
+            "execution_throttled_s": 0,
+            "full_tail_increment_J_proxy": 13.63530370239367,
+            "heat_area_proxy": 142.08330305710524,
+            "incomplete": 0,
+            "increment_J_proxy": 13.63530370239367,
+            "mean_AP_c": 29.143611364938963,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 1.0676495926802365,
+            "on_time": 47,
+            "peak_AP_c": 30.874262224007133,
+            "planned": 48,
+            "responded": 48,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 21,
+              "C_GPU": 3,
+              "D_CPU": 21,
+              "D_GPU": 3
+            },
+            "total_J_proxy": 85.05598194053093,
+            "urgent_on_time": 11,
+            "urgent_planned": 12,
+            "wait_s": 11.3
+          }
+        }
+      ]
+    },
+    {
+      "baseline": 82.35425939515324,
+      "case": "FRESH_03",
+      "coefficients": {
+        "cells": {
+          "classification_CPU": {
+            "execution": 0.5489481675225005,
+            "execution_free": 0.49439478993841796,
+            "interval_count": 1934,
+            "nonexecution": 0.6156437095654784,
+            "relaxed_optimal_speed": 0.637473879712238
+          },
+          "classification_GPU": {
+            "execution": 0.38336591194616715,
+            "execution_free": 0.35364281423593386,
+            "interval_count": 1934,
+            "nonexecution": 0.40145133814399664,
+            "relaxed_optimal_speed": 0.7094900369888665
+          },
+          "detection_CPU": {
+            "execution": 0.6311557923522466,
+            "execution_free": 0.5607621189885497,
+            "interval_count": 1934,
+            "nonexecution": 0.7203799761906307,
+            "relaxed_optimal_speed": 0.6180600171132401
+          },
+          "detection_GPU": {
+            "execution": 0.4598957348568707,
+            "execution_free": 0.41475891006634275,
+            "interval_count": 1934,
+            "nonexecution": 0.4926552958584755,
+            "relaxed_optimal_speed": 0.6709132316446433
+          }
+        },
+        "coefficient_margin": 1e-9,
+        "increment_power_upper": 1.611268948789155,
+        "shared": 0.21745108719898432,
+        "temperature_grid_step": 0.01,
+        "temperature_upper": 45.335227385469864
+      },
+      "constraint_rows": 9956,
+      "constraint_sha256": "1a468dc96ef69ac3a44c714f148cedac7b4707d97131af9541e887884e8090ef",
+      "energy_MILP": {
+        "MIP_gap": 0.00057991206596233,
+        "conservative_lower_bound": 20.928817157131043,
+        "message": "Time limit reached. (HiGHS Status 13: Time limit reached)",
+        "nodes": 96,
+        "numerical_margin": 0.00001,
+        "primal": 20.940971078932684,
+        "reported_dual_bound": 20.928827157131042,
+        "seconds_cap": 10,
+        "status": 1,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "heat_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 3.55349503951012,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 58,
+        "numerical_margin": 0.00001,
+        "primal": 3.5535050395101204,
+        "reported_dual_bound": 3.55350503951012,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "independent_thermal_linked_work_lower": 20.149520110704085,
+      "maximum_AP_reduction_c": 1.6641940948159792,
+      "maximum_total_saving_percent": 5.0880501789426935,
+      "mean_temperature_lower": 29.55349503951012,
+      "n": 96,
+      "reference": {
+        "P95_completed_response_s": 2.037290754,
+        "baseline_J_proxy": 82.35425939515324,
+        "cost_vector": [
+          0.7876674884750761,
+          1.0171437082784478,
+          0.01063096826806006,
+          0.03214043464003316,
+          0
+        ],
+        "execution_throttled_s": 16.728555671000002,
+        "full_tail_increment_J_proxy": 26.46562761276255,
+        "heat_area_proxy": 282.2442216977313,
+        "incomplete": 0,
+        "increment_J_proxy": 26.46562761276255,
+        "mean_AP_c": 31.2176891343261,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 1.116015083081375,
+        "on_time": 92,
+        "peak_AP_c": 33.85645248028848,
+        "planned": 96,
+        "responded": 96,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 40,
+          "C_GPU": 8,
+          "D_CPU": 29,
+          "D_GPU": 19
+        },
+        "total_J_proxy": 108.81988700791578,
+        "urgent_on_time": 23,
+        "urgent_planned": 24,
+        "wait_s": 0.25
+      },
+      "relaxation": "full future work; independent optimal thermal states; perfect half-shared cost; necessary-only interval capacity; EDF count SLA",
+      "total_energy_lower": 103.28307655228429,
+      "unlinked_work_lower": 18.01700950766275,
+      "variables": 384,
+      "best_feasible_saved": "FRESH_03_TRUTH_EXACT",
+      "best_feasible_total": 108.54582796024587,
+      "found_saving_percent": 0.2518464732921277,
+      "best_feasible_metrics": {
+        "P95_completed_response_s": 3.150252925,
+        "baseline_J_proxy": 82.35425939515324,
+        "cost_vector": [
+          0.7795109691991858,
+          1.0034936517370416,
+          0.011300749053030294,
+          0.03247723734114583,
+          0
+        ],
+        "execution_throttled_s": 15.864007578,
+        "full_tail_increment_J_proxy": 26.191568565092638,
+        "heat_area_proxy": 278.9494464973707,
+        "incomplete": 0,
+        "increment_J_proxy": 26.191568565092638,
+        "mean_AP_c": 31.131471386396626,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 1.1118172522569394,
+        "on_time": 92,
+        "peak_AP_c": 33.74595923661412,
+        "planned": 96,
+        "responded": 96,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 40,
+          "C_GPU": 8,
+          "D_CPU": 30,
+          "D_GPU": 18
+        },
+        "total_J_proxy": 108.54582796024587,
+        "urgent_on_time": 23,
+        "urgent_planned": 24,
+        "wait_s": 4.8
+      },
+      "energy_heat_nonworse_saved": "FRESH_03_TRUTH_EXACT",
+      "energy_heat_nonworse_total": 108.54582796024587,
+      "ten_percent_impossible_even_in_relaxation": true,
+      "half_degree_impossible_even_in_relaxation": false,
+      "full_witnesses": [
+        {
+          "label": "FRESH_03_TRUTH_EXACT",
+          "eligible": true,
+          "metrics": {
+            "P95_completed_response_s": 3.150252925,
+            "baseline_J_proxy": 82.35425939515324,
+            "cost_vector": [
+              0.7795109691991858,
+              1.0034936517370416,
+              0.011300749053030294,
+              0.03247723734114583,
+              0
+            ],
+            "execution_throttled_s": 15.864007578,
+            "full_tail_increment_J_proxy": 26.191568565092638,
+            "heat_area_proxy": 278.9494464973707,
+            "incomplete": 0,
+            "increment_J_proxy": 26.191568565092638,
+            "mean_AP_c": 31.131471386396626,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 1.1118172522569394,
+            "on_time": 92,
+            "peak_AP_c": 33.74595923661412,
+            "planned": 96,
+            "responded": 96,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 40,
+              "C_GPU": 8,
+              "D_CPU": 30,
+              "D_GPU": 18
+            },
+            "total_J_proxy": 108.54582796024587,
+            "urgent_on_time": 23,
+            "urgent_planned": 24,
+            "wait_s": 4.8
+          }
+        },
+        {
+          "label": "FRESH_03_TRUTH_ATC",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 2.037290754,
+            "baseline_J_proxy": 82.35425939515324,
+            "cost_vector": [
+              0.7878666701632311,
+              1.0174265181369222,
+              0.010557020380986189,
+              0.042801060358191284,
+              0
+            ],
+            "execution_throttled_s": 16.566841044,
+            "full_tail_increment_J_proxy": 26.47232011748456,
+            "heat_area_proxy": 282.3221360875689,
+            "incomplete": 0,
+            "increment_J_proxy": 26.47232011748456,
+            "mean_AP_c": 31.219574497669896,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 1.1583069986307313,
+            "on_time": 91,
+            "peak_AP_c": 33.85706616942095,
+            "planned": 96,
+            "responded": 96,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 40,
+              "C_GPU": 8,
+              "D_CPU": 29,
+              "D_GPU": 19
+            },
+            "total_J_proxy": 108.82657951263779,
+            "urgent_on_time": 23,
+            "urgent_planned": 24,
+            "wait_s": 0.25
+          }
+        },
+        {
+          "label": "FRESH_03_ENERGY_ROUTE",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 5.256320001,
+            "baseline_J_proxy": 82.35425939515324,
+            "cost_vector": [
+              0.7825426485524706,
+              1.0007100002762785,
+              0.0773154521214666,
+              0.3164007458376937,
+              0
+            ],
+            "execution_throttled_s": 14.005274336000001,
+            "full_tail_increment_J_proxy": 26.293432991363005,
+            "heat_area_proxy": 278.38146687940275,
+            "incomplete": 0,
+            "increment_J_proxy": 26.293432991363005,
+            "mean_AP_c": 31.008436641645662,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 2.775752924736882,
+            "on_time": 60,
+            "peak_AP_c": 33.705384236139835,
+            "planned": 96,
+            "responded": 96,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 43,
+              "C_GPU": 5,
+              "D_CPU": 36,
+              "D_GPU": 12
+            },
+            "total_J_proxy": 108.64769238651624,
+            "urgent_on_time": 17,
+            "urgent_planned": 24,
+            "wait_s": 12
+          }
+        }
+      ]
+    },
+    {
+      "baseline": 68.60866430709382,
+      "case": "FRESH_04",
+      "coefficients": {
+        "cells": {
+          "classification_CPU": {
+            "execution": 0.5489481675225005,
+            "execution_free": 0.49439478993841796,
+            "interval_count": 1934,
+            "nonexecution": 0.6156437095654784,
+            "relaxed_optimal_speed": 0.637473879712238
+          },
+          "classification_GPU": {
+            "execution": 0.38336591194616715,
+            "execution_free": 0.35364281423593386,
+            "interval_count": 1934,
+            "nonexecution": 0.40145133814399664,
+            "relaxed_optimal_speed": 0.7094900369888665
+          },
+          "detection_CPU": {
+            "execution": 0.6311557923522466,
+            "execution_free": 0.5607621189885497,
+            "interval_count": 1934,
+            "nonexecution": 0.7203799761906307,
+            "relaxed_optimal_speed": 0.6180600171132401
+          },
+          "detection_GPU": {
+            "execution": 0.4598957348568707,
+            "execution_free": 0.41475891006634275,
+            "interval_count": 1934,
+            "nonexecution": 0.4926552958584755,
+            "relaxed_optimal_speed": 0.6709132316446433
+          }
+        },
+        "coefficient_margin": 1e-9,
+        "increment_power_upper": 1.611268948789155,
+        "shared": 0.21745108719898432,
+        "temperature_grid_step": 0.01,
+        "temperature_upper": 45.335227385469864
+      },
+      "constraint_rows": 2850,
+      "constraint_sha256": "ca86132ca8084ac8f06dea2cadf394d5ffc4a1e366462f659718f9c715de52ee",
+      "energy_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 6.489120177547973,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 0,
+        "numerical_margin": 0.00001,
+        "primal": 6.489130177547974,
+        "reported_dual_bound": 6.489130177547973,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "heat_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 1.474642173363621,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 0,
+        "numerical_margin": 0.00001,
+        "primal": 1.4746521733636209,
+        "reported_dual_bound": 1.474652173363621,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "independent_thermal_linked_work_lower": 6.489130177547974,
+      "maximum_AP_reduction_c": 0.8974114706248919,
+      "maximum_total_saving_percent": 3.8634930959998592,
+      "mean_temperature_lower": 27.47464217336362,
+      "n": 48,
+      "reference": {
+        "P95_completed_response_s": 1.106518836,
+        "baseline_J_proxy": 68.60866430709382,
+        "cost_vector": [
+          0.5659004402927446,
+          0.6874219003248846,
+          0,
+          0,
+          0
+        ],
+        "execution_throttled_s": 0,
+        "full_tail_increment_J_proxy": 9.507127396918106,
+        "heat_area_proxy": 98.98875364678338,
+        "incomplete": 0,
+        "increment_J_proxy": 9.507127396918106,
+        "mean_AP_c": 28.37205364398851,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 0.6266611703088145,
+        "on_time": 48,
+        "peak_AP_c": 29.528486332670862,
+        "planned": 48,
+        "responded": 48,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 23,
+          "C_GPU": 13,
+          "D_CPU": 8,
+          "D_GPU": 4
+        },
+        "total_J_proxy": 78.11579170401193,
+        "urgent_on_time": 12,
+        "urgent_planned": 12,
+        "wait_s": 0.75
+      },
+      "relaxation": "full future work; independent optimal thermal states; perfect half-shared cost; necessary-only interval capacity; EDF count SLA",
+      "total_energy_lower": 75.0977934846418,
+      "unlinked_work_lower": 5.826984391944041,
+      "variables": 192,
+      "best_feasible_saved": "FRESH_04_TRUTH_EXACT",
+      "best_feasible_total": 77.89613174078214,
+      "found_saving_percent": 0.2811978966584583,
+      "best_feasible_metrics": {
+        "P95_completed_response_s": 1.640364203,
+        "baseline_J_proxy": 68.60866430709382,
+        "cost_vector": [
+          0.5528254424814479,
+          0.6707163502735953,
+          0,
+          0,
+          0
+        ],
+        "execution_throttled_s": 0,
+        "full_tail_increment_J_proxy": 9.287467433688324,
+        "heat_area_proxy": 96.58315443939773,
+        "incomplete": 0,
+        "increment_J_proxy": 9.287467433688324,
+        "mean_AP_c": 28.302658955248045,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 0.6117708963775217,
+        "on_time": 48,
+        "peak_AP_c": 29.44262444524727,
+        "planned": 48,
+        "responded": 48,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 24,
+          "C_GPU": 12,
+          "D_CPU": 10,
+          "D_GPU": 2
+        },
+        "total_J_proxy": 77.89613174078214,
+        "urgent_on_time": 12,
+        "urgent_planned": 12,
+        "wait_s": 6.45
+      },
+      "energy_heat_nonworse_saved": "FRESH_04_TRUTH_EXACT",
+      "energy_heat_nonworse_total": 77.89613174078214,
+      "ten_percent_impossible_even_in_relaxation": true,
+      "half_degree_impossible_even_in_relaxation": false,
+      "full_witnesses": [
+        {
+          "label": "FRESH_04_TRUTH_EXACT",
+          "eligible": true,
+          "metrics": {
+            "P95_completed_response_s": 1.640364203,
+            "baseline_J_proxy": 68.60866430709382,
+            "cost_vector": [
+              0.5528254424814479,
+              0.6707163502735953,
+              0,
+              0,
+              0
+            ],
+            "execution_throttled_s": 0,
+            "full_tail_increment_J_proxy": 9.287467433688324,
+            "heat_area_proxy": 96.58315443939773,
+            "incomplete": 0,
+            "increment_J_proxy": 9.287467433688324,
+            "mean_AP_c": 28.302658955248045,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 0.6117708963775217,
+            "on_time": 48,
+            "peak_AP_c": 29.44262444524727,
+            "planned": 48,
+            "responded": 48,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 24,
+              "C_GPU": 12,
+              "D_CPU": 10,
+              "D_GPU": 2
+            },
+            "total_J_proxy": 77.89613174078214,
+            "urgent_on_time": 12,
+            "urgent_planned": 12,
+            "wait_s": 6.45
+          }
+        },
+        {
+          "label": "FRESH_04_TRUTH_ATC",
+          "eligible": true,
+          "metrics": {
+            "P95_completed_response_s": 1.106518836,
+            "baseline_J_proxy": 68.60866430709382,
+            "cost_vector": [
+              0.5659004402927446,
+              0.6874219003248846,
+              0,
+              0,
+              0
+            ],
+            "execution_throttled_s": 0,
+            "full_tail_increment_J_proxy": 9.507127396918106,
+            "heat_area_proxy": 98.98875364678338,
+            "incomplete": 0,
+            "increment_J_proxy": 9.507127396918106,
+            "mean_AP_c": 28.37205364398851,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 0.6266611703088145,
+            "on_time": 48,
+            "peak_AP_c": 29.528486332670862,
+            "planned": 48,
+            "responded": 48,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 23,
+              "C_GPU": 13,
+              "D_CPU": 8,
+              "D_GPU": 4
+            },
+            "total_J_proxy": 78.11579170401193,
+            "urgent_on_time": 12,
+            "urgent_planned": 12,
+            "wait_s": 0.75
+          }
+        },
+        {
+          "label": "FRESH_04_ENERGY_ROUTE",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 1.239324543,
+            "baseline_J_proxy": 68.60866430709382,
+            "cost_vector": [
+              0.549735623064457,
+              0.6669116689378127,
+              0.02086777332589286,
+              0.02096613538707388,
+              0
+            ],
+            "execution_throttled_s": 0,
+            "full_tail_increment_J_proxy": 9.235558467482877,
+            "heat_area_proxy": 96.03528032704503,
+            "incomplete": 0,
+            "increment_J_proxy": 9.235558467482877,
+            "mean_AP_c": 28.28879700821724,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 0.8591303741565732,
+            "on_time": 46,
+            "peak_AP_c": 29.377843052322387,
+            "planned": 48,
+            "responded": 48,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 34,
+              "C_GPU": 2,
+              "D_CPU": 11,
+              "D_GPU": 1
+            },
+            "total_J_proxy": 77.84422277457669,
+            "urgent_on_time": 11,
+            "urgent_planned": 12,
+            "wait_s": 8.9
+          }
+        }
+      ]
+    },
+    {
+      "baseline": 80.89872832343144,
+      "case": "FRESH_05",
+      "coefficients": {
+        "cells": {
+          "classification_CPU": {
+            "execution": 0.5489481675225005,
+            "execution_free": 0.49439478993841796,
+            "interval_count": 1934,
+            "nonexecution": 0.6156437095654784,
+            "relaxed_optimal_speed": 0.637473879712238
+          },
+          "classification_GPU": {
+            "execution": 0.38336591194616715,
+            "execution_free": 0.35364281423593386,
+            "interval_count": 1934,
+            "nonexecution": 0.40145133814399664,
+            "relaxed_optimal_speed": 0.7094900369888665
+          },
+          "detection_CPU": {
+            "execution": 0.6311557923522466,
+            "execution_free": 0.5607621189885497,
+            "interval_count": 1934,
+            "nonexecution": 0.7203799761906307,
+            "relaxed_optimal_speed": 0.6180600171132401
+          },
+          "detection_GPU": {
+            "execution": 0.4598957348568707,
+            "execution_free": 0.41475891006634275,
+            "interval_count": 1934,
+            "nonexecution": 0.4926552958584755,
+            "relaxed_optimal_speed": 0.6709132316446433
+          }
+        },
+        "coefficient_margin": 1e-9,
+        "increment_power_upper": 1.611268948789155,
+        "shared": 0.21745108719898432,
+        "temperature_grid_step": 0.01,
+        "temperature_upper": 45.335227385469864
+      },
+      "constraint_rows": 9720,
+      "constraint_sha256": "2884f40ec8a570bc095bca648d1d3cf451bb1fbf5ee198721578dedf471f3826",
+      "energy_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 12.900381582162366,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 0,
+        "numerical_margin": 0.00001,
+        "primal": 12.900391582162365,
+        "reported_dual_bound": 12.900391582162365,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "heat_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 2.4020116543603818,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 0,
+        "numerical_margin": 0.00001,
+        "primal": 2.4020216543603814,
+        "reported_dual_bound": 2.402021654360382,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "independent_thermal_linked_work_lower": 12.900391582162365,
+      "maximum_AP_reduction_c": 1.287509547983305,
+      "maximum_total_saving_percent": 5.603177070578069,
+      "mean_temperature_lower": 28.402011654360383,
+      "n": 96,
+      "reference": {
+        "P95_completed_response_s": 1.600757917,
+        "baseline_J_proxy": 80.89872832343144,
+        "cost_vector": [
+          0.5496455156061589,
+          0.6811533509291563,
+          0,
+          0,
+          0
+        ],
+        "execution_throttled_s": 0,
+        "full_tail_increment_J_proxy": 18.468089324366936,
+        "heat_area_proxy": 196.172165067597,
+        "incomplete": 0,
+        "increment_J_proxy": 18.468089324366936,
+        "mean_AP_c": 29.689521202343688,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 0.6153994332676576,
+        "on_time": 96,
+        "peak_AP_c": 31.71741689224839,
+        "planned": 96,
+        "responded": 96,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 52,
+          "C_GPU": 20,
+          "D_CPU": 14,
+          "D_GPU": 10
+        },
+        "total_J_proxy": 99.36681764779837,
+        "urgent_on_time": 24,
+        "urgent_planned": 24,
+        "wait_s": 0.45
+      },
+      "relaxation": "full future work; independent optimal thermal states; perfect half-shared cost; necessary-only interval capacity; EDF count SLA",
+      "total_energy_lower": 93.79911890559382,
+      "unlinked_work_lower": 11.580746988706693,
+      "variables": 384,
+      "best_feasible_saved": "FRESH_05_RL_S3703",
+      "best_feasible_total": 98.93399336618235,
+      "found_saving_percent": 0.4355823119445712,
+      "best_feasible_metrics": {
+        "P95_completed_response_s": 1.402074652,
+        "baseline_J_proxy": 80.89872832343144,
+        "cost_vector": [
+          0.5367638405580628,
+          0.6656643506479393,
+          0,
+          0,
+          0
+        ],
+        "execution_throttled_s": 0,
+        "full_tail_increment_J_proxy": 18.035265042750908,
+        "heat_area_proxy": 191.71133298660652,
+        "incomplete": 0,
+        "increment_J_proxy": 18.035265042750908,
+        "mean_AP_c": 29.615265107048714,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 0.601214095603001,
+        "on_time": 96,
+        "peak_AP_c": 31.672494292381778,
+        "planned": 96,
+        "responded": 96,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 47,
+          "C_GPU": 25,
+          "D_CPU": 18,
+          "D_GPU": 6
+        },
+        "total_J_proxy": 98.93399336618235,
+        "urgent_on_time": 24,
+        "urgent_planned": 24,
+        "wait_s": 0.45
+      },
+      "energy_heat_nonworse_saved": "FRESH_05_RL_S3703",
+      "energy_heat_nonworse_total": 98.93399336618235,
+      "ten_percent_impossible_even_in_relaxation": true,
+      "half_degree_impossible_even_in_relaxation": false,
+      "full_witnesses": [
+        {
+          "label": "FRESH_05_TRUTH_EXACT",
+          "eligible": true,
+          "metrics": {
+            "P95_completed_response_s": 1.676208695,
+            "baseline_J_proxy": 80.89872832343144,
+            "cost_vector": [
+              0.5399188193633288,
+              0.6688136246099824,
+              0,
+              0,
+              0
+            ],
+            "execution_throttled_s": 0,
+            "full_tail_increment_J_proxy": 18.141272330607844,
+            "heat_area_proxy": 192.61832388767493,
+            "incomplete": 0,
+            "increment_J_proxy": 18.141272330607844,
+            "mean_AP_c": 29.61687730237492,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 0.6043662219866556,
+            "on_time": 96,
+            "peak_AP_c": 31.762662229095373,
+            "planned": 96,
+            "responded": 96,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 41,
+              "C_GPU": 31,
+              "D_CPU": 18,
+              "D_GPU": 6
+            },
+            "total_J_proxy": 99.04000065403929,
+            "urgent_on_time": 24,
+            "urgent_planned": 24,
+            "wait_s": 5.55
+          }
+        },
+        {
+          "label": "FRESH_05_TRUTH_ATC",
+          "eligible": true,
+          "metrics": {
+            "P95_completed_response_s": 1.416878389,
+            "baseline_J_proxy": 80.89872832343144,
+            "cost_vector": [
+              0.5442492904423526,
+              0.6745257513048044,
+              0,
+              0,
+              0
+            ],
+            "execution_throttled_s": 0,
+            "full_tail_increment_J_proxy": 18.286776158863045,
+            "heat_area_proxy": 194.26341637578366,
+            "incomplete": 0,
+            "increment_J_proxy": 18.286776158863045,
+            "mean_AP_c": 29.654835181742254,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 0.6093875208735785,
+            "on_time": 96,
+            "peak_AP_c": 31.67297938804601,
+            "planned": 96,
+            "responded": 96,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 55,
+              "C_GPU": 17,
+              "D_CPU": 14,
+              "D_GPU": 10
+            },
+            "total_J_proxy": 99.18550448229449,
+            "urgent_on_time": 24,
+            "urgent_planned": 24,
+            "wait_s": 0.45
+          }
+        },
+        {
+          "label": "FRESH_05_ENERGY_ROUTE",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 1.90414781,
+            "baseline_J_proxy": 80.89872832343144,
+            "cost_vector": [
+              0.5389011939371465,
+              0.6666119338839486,
+              0.010438070143229167,
+              0.021089912345052086,
+              0
+            ],
+            "execution_throttled_s": 0,
+            "full_tail_increment_J_proxy": 18.10708011628812,
+            "heat_area_proxy": 191.98423695857718,
+            "incomplete": 0,
+            "increment_J_proxy": 18.10708011628812,
+            "mean_AP_c": 29.58584947077087,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 0.7706207744365893,
+            "on_time": 93,
+            "peak_AP_c": 31.619534133915476,
+            "planned": 96,
+            "responded": 96,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 69,
+              "C_GPU": 3,
+              "D_CPU": 18,
+              "D_GPU": 6
+            },
+            "total_J_proxy": 99.00580843971956,
+            "urgent_on_time": 23,
+            "urgent_planned": 24,
+            "wait_s": 12
+          }
+        }
+      ]
+    },
+    {
+      "baseline": 74.3195181431178,
+      "case": "FRESH_06",
+      "coefficients": {
+        "cells": {
+          "classification_CPU": {
+            "execution": 0.5489481675225005,
+            "execution_free": 0.49439478993841796,
+            "interval_count": 1934,
+            "nonexecution": 0.6156437095654784,
+            "relaxed_optimal_speed": 0.637473879712238
+          },
+          "classification_GPU": {
+            "execution": 0.38336591194616715,
+            "execution_free": 0.35364281423593386,
+            "interval_count": 1934,
+            "nonexecution": 0.40145133814399664,
+            "relaxed_optimal_speed": 0.7094900369888665
+          },
+          "detection_CPU": {
+            "execution": 0.6311557923522466,
+            "execution_free": 0.5607621189885497,
+            "interval_count": 1934,
+            "nonexecution": 0.7203799761906307,
+            "relaxed_optimal_speed": 0.6180600171132401
+          },
+          "detection_GPU": {
+            "execution": 0.4598957348568707,
+            "execution_free": 0.41475891006634275,
+            "interval_count": 1934,
+            "nonexecution": 0.4926552958584755,
+            "relaxed_optimal_speed": 0.6709132316446433
+          }
+        },
+        "coefficient_margin": 1e-9,
+        "increment_power_upper": 1.611268948789155,
+        "shared": 0.21745108719898432,
+        "temperature_grid_step": 0.01,
+        "temperature_upper": 45.335227385469864
+      },
+      "constraint_rows": 2938,
+      "constraint_sha256": "3d85bdefdbcc19a93a71d812fa58819b3c19fe77878c1acf90be4de13e266846",
+      "energy_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 13.68202087534202,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 1,
+        "numerical_margin": 0.00001,
+        "primal": 13.68203087534202,
+        "reported_dual_bound": 13.68203087534202,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "heat_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 1.926838440400218,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 1,
+        "numerical_margin": 0.00001,
+        "primal": 1.926848440400218,
+        "reported_dual_bound": 1.926848440400218,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "independent_thermal_linked_work_lower": 13.68203087534202,
+      "maximum_AP_reduction_c": 1.5140792788534014,
+      "maximum_total_saving_percent": 2.550330654106925,
+      "mean_temperature_lower": 35.29347039400627,
+      "n": 48,
+      "reference": {
+        "P95_completed_response_s": 4.395469485,
+        "baseline_J_proxy": 74.3195181431178,
+        "cost_vector": [
+          0.9514938175808956,
+          1.2990697326316911,
+          0.0663283107585123,
+          0.15070417431729163,
+          0
+        ],
+        "execution_throttled_s": 37.727654538,
+        "full_tail_increment_J_proxy": 15.985096135359044,
+        "heat_area_proxy": 166.90604149896353,
+        "incomplete": 0,
+        "increment_J_proxy": 15.985096135359044,
+        "mean_AP_c": 36.80754967285967,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 2.2587249584435583,
+        "on_time": 38,
+        "peak_AP_c": 39,
+        "planned": 48,
+        "responded": 48,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 8,
+          "C_GPU": 4,
+          "D_CPU": 23,
+          "D_GPU": 13
+        },
+        "total_J_proxy": 90.30461427847685,
+        "urgent_on_time": 9,
+        "urgent_planned": 12,
+        "wait_s": 0.05
+      },
+      "relaxation": "full future work; independent optimal thermal states; perfect half-shared cost; necessary-only interval capacity; EDF count SLA",
+      "total_energy_lower": 88.00154801845983,
+      "unlinked_work_lower": 12.212505640033298,
+      "variables": 192,
+      "best_feasible_saved": "FRESH_06_RL_S3701",
+      "best_feasible_total": 90.23854965094458,
+      "found_saving_percent": 0.07315753249168555,
+      "best_feasible_metrics": {
+        "P95_completed_response_s": 3.240921438,
+        "baseline_J_proxy": 74.3195181431178,
+        "cost_vector": [
+          0.9475613992754036,
+          1.2944180338550866,
+          0.06736385341010548,
+          0.12198495859624997,
+          0
+        ],
+        "execution_throttled_s": 37.716600302,
+        "full_tail_increment_J_proxy": 15.919031507826778,
+        "heat_area_proxy": 166.23619687513246,
+        "incomplete": 0,
+        "increment_J_proxy": 15.919031507826778,
+        "mean_AP_c": 36.795418772261314,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 2.1478403782310886,
+        "on_time": 40,
+        "peak_AP_c": 39,
+        "planned": 48,
+        "responded": 48,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 8,
+          "C_GPU": 4,
+          "D_CPU": 23,
+          "D_GPU": 13
+        },
+        "total_J_proxy": 90.23854965094458,
+        "urgent_on_time": 9,
+        "urgent_planned": 12,
+        "wait_s": 0.05
+      },
+      "energy_heat_nonworse_saved": "FRESH_06_RL_S3701",
+      "energy_heat_nonworse_total": 90.23854965094458,
+      "ten_percent_impossible_even_in_relaxation": true,
+      "half_degree_impossible_even_in_relaxation": false,
+      "full_witnesses": [
+        {
+          "label": "FRESH_06_TRUTH_EXACT",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 6.204487701,
+            "baseline_J_proxy": 74.3195181431178,
+            "cost_vector": [
+              0.9519917435146016,
+              1.2950621232310175,
+              0.0446947636306006,
+              0.22701123717885416,
+              0
+            ],
+            "execution_throttled_s": 37.328612086,
+            "full_tail_increment_J_proxy": 15.993461291045303,
+            "heat_area_proxy": 166.32894574526654,
+            "incomplete": 0,
+            "increment_J_proxy": 15.993461291045303,
+            "mean_AP_c": 36.739774586346236,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 2.389129991133031,
+            "on_time": 36,
+            "peak_AP_c": 39,
+            "planned": 48,
+            "responded": 48,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 8,
+              "C_GPU": 4,
+              "D_CPU": 23,
+              "D_GPU": 13
+            },
+            "total_J_proxy": 90.31297943416311,
+            "urgent_on_time": 10,
+            "urgent_planned": 12,
+            "wait_s": 1.8
+          }
+        },
+        {
+          "label": "FRESH_06_TRUTH_ATC",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 4.678155745,
+            "baseline_J_proxy": 74.3195181431178,
+            "cost_vector": [
+              0.9507319967102089,
+              1.2981913149014157,
+              0.06595894129565742,
+              0.17338341907916663,
+              0
+            ],
+            "execution_throttled_s": 37.954282375,
+            "full_tail_increment_J_proxy": 15.972297544731507,
+            "heat_area_proxy": 166.77954934580384,
+            "incomplete": 0,
+            "increment_J_proxy": 15.972297544731507,
+            "mean_AP_c": 36.80554258659952,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 2.345666862487738,
+            "on_time": 37,
+            "peak_AP_c": 39,
+            "planned": 48,
+            "responded": 48,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 7,
+              "C_GPU": 5,
+              "D_CPU": 23,
+              "D_GPU": 13
+            },
+            "total_J_proxy": 90.29181568784931,
+            "urgent_on_time": 9,
+            "urgent_planned": 12,
+            "wait_s": 0.05
+          }
+        },
+        {
+          "label": "FRESH_06_ENERGY_ROUTE",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 6.810127354,
+            "baseline_J_proxy": 74.3195181431178,
+            "cost_vector": [
+              0.9741589840942306,
+              1.315960207334419,
+              0.22116017274773458,
+              0.6032774702620046,
+              0
+            ],
+            "execution_throttled_s": 35.142322051,
+            "full_tail_increment_J_proxy": 16.36587093278307,
+            "heat_area_proxy": 169.33826985615633,
+            "incomplete": 0,
+            "increment_J_proxy": 16.36587093278307,
+            "mean_AP_c": 36.72788127374873,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 5.3274508587442195,
+            "on_time": 12,
+            "peak_AP_c": 39,
+            "planned": 48,
+            "responded": 48,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 10,
+              "C_GPU": 2,
+              "D_CPU": 26,
+              "D_GPU": 10
+            },
+            "total_J_proxy": 90.68538907590087,
+            "urgent_on_time": 2,
+            "urgent_planned": 12,
+            "wait_s": 7.05
+          }
+        }
+      ]
+    },
+    {
+      "baseline": 85.50997486174936,
+      "case": "FRESH_07",
+      "coefficients": {
+        "cells": {
+          "classification_CPU": {
+            "execution": 0.5489481675225005,
+            "execution_free": 0.49439478993841796,
+            "interval_count": 1934,
+            "nonexecution": 0.6156437095654784,
+            "relaxed_optimal_speed": 0.637473879712238
+          },
+          "classification_GPU": {
+            "execution": 0.38336591194616715,
+            "execution_free": 0.35364281423593386,
+            "interval_count": 1934,
+            "nonexecution": 0.40145133814399664,
+            "relaxed_optimal_speed": 0.7094900369888665
+          },
+          "detection_CPU": {
+            "execution": 0.6311557923522466,
+            "execution_free": 0.5607621189885497,
+            "interval_count": 1934,
+            "nonexecution": 0.7203799761906307,
+            "relaxed_optimal_speed": 0.6180600171132401
+          },
+          "detection_GPU": {
+            "execution": 0.4598957348568707,
+            "execution_free": 0.41475891006634275,
+            "interval_count": 1934,
+            "nonexecution": 0.4926552958584755,
+            "relaxed_optimal_speed": 0.6709132316446433
+          }
+        },
+        "coefficient_margin": 1e-9,
+        "increment_power_upper": 1.611268948789155,
+        "shared": 0.21745108719898432,
+        "temperature_grid_step": 0.01,
+        "temperature_upper": 45.335227385469864
+      },
+      "constraint_rows": 10330,
+      "constraint_sha256": "483dabd6e49465842e9e63f1722619f55be046a93d2974613f6f8fe31c247892",
+      "energy_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 27.464113589705462,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 1,
+        "numerical_margin": 0.00001,
+        "primal": 27.464123589705462,
+        "reported_dual_bound": 27.464123589705462,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "heat_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 0.038262651744722195,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 1,
+        "numerical_margin": 0.00001,
+        "primal": 0.0382726517447222,
+        "reported_dual_bound": 0.0382726517447222,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "independent_thermal_linked_work_lower": 27.464123589705462,
+      "maximum_AP_reduction_c": 4.933863890545368,
+      "maximum_total_saving_percent": 3.6898089596338335,
+      "mean_temperature_lower": 32.42763480326168,
+      "n": 96,
+      "reference": {
+        "P95_completed_response_s": 11.808150134,
+        "baseline_J_proxy": 85.50997486174936,
+        "cost_vector": [
+          0.9462010251897571,
+          1.2788771406112125,
+          0.3551278451316419,
+          0.9384313836723012,
+          0
+        ],
+        "execution_throttled_s": 74.145257211,
+        "full_tail_increment_J_proxy": 31.792354446375835,
+        "heat_area_proxy": 327.9966164960292,
+        "incomplete": 0,
+        "increment_J_proxy": 31.792354446375835,
+        "mean_AP_c": 37.36149869380705,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 7.707287378642825,
+        "on_time": 5,
+        "peak_AP_c": 39,
+        "planned": 96,
+        "responded": 96,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 15,
+          "C_GPU": 9,
+          "D_CPU": 46,
+          "D_GPU": 26
+        },
+        "total_J_proxy": 117.3023293081252,
+        "urgent_on_time": 0,
+        "urgent_planned": 24,
+        "wait_s": 0.05
+      },
+      "relaxation": "full future work; independent optimal thermal states; perfect half-shared cost; necessary-only interval capacity; EDF count SLA",
+      "total_energy_lower": 112.97409745145481,
+      "unlinked_work_lower": 24.522671472029838,
+      "variables": 384,
+      "best_feasible_saved": "FRESH_07_TRUTH_ATC",
+      "best_feasible_total": 117.0888992081117,
+      "found_saving_percent": 0.1819487313443391,
+      "best_feasible_metrics": {
+        "P95_completed_response_s": 27.968195212,
+        "baseline_J_proxy": 85.50997486174936,
+        "cost_vector": [
+          0.9398489388798319,
+          1.2721529766581274,
+          0.06636394558407739,
+          0.7404646013125907,
+          0
+        ],
+        "execution_throttled_s": 73.888164552,
+        "full_tail_increment_J_proxy": 31.578924346362346,
+        "heat_area_proxy": 326.06005727754064,
+        "incomplete": 0,
+        "increment_J_proxy": 31.578924346362346,
+        "mean_AP_c": 37.34958984034899,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 4.5987709276919615,
+        "on_time": 36,
+        "peak_AP_c": 39,
+        "planned": 96,
+        "responded": 96,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 19,
+          "C_GPU": 5,
+          "D_CPU": 45,
+          "D_GPU": 27
+        },
+        "total_J_proxy": 117.0888992081117,
+        "urgent_on_time": 18,
+        "urgent_planned": 24,
+        "wait_s": 0.05
+      },
+      "energy_heat_nonworse_saved": "FRESH_07_TRUTH_ATC",
+      "energy_heat_nonworse_total": 117.0888992081117,
+      "ten_percent_impossible_even_in_relaxation": true,
+      "half_degree_impossible_even_in_relaxation": false,
+      "full_witnesses": [
+        {
+          "label": "FRESH_07_TRUTH_EXACT",
+          "eligible": true,
+          "metrics": {
+            "P95_completed_response_s": 23.619416325,
+            "baseline_J_proxy": 85.50997486174936,
+            "cost_vector": [
+              0.9454292275443215,
+              1.2742506168631906,
+              0.06987586212273404,
+              0.7278518545288523,
+              0
+            ],
+            "execution_throttled_s": 74.016397907,
+            "full_tail_increment_J_proxy": 31.766422045489197,
+            "heat_area_proxy": 326.6641776565989,
+            "incomplete": 0,
+            "increment_J_proxy": 31.766422045489197,
+            "mean_AP_c": 37.27131535161491,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 4.5802542373010375,
+            "on_time": 39,
+            "peak_AP_c": 39,
+            "planned": 96,
+            "responded": 96,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 13,
+              "C_GPU": 11,
+              "D_CPU": 46,
+              "D_GPU": 26
+            },
+            "total_J_proxy": 117.27639690723855,
+            "urgent_on_time": 18,
+            "urgent_planned": 24,
+            "wait_s": 1.1
+          }
+        },
+        {
+          "label": "FRESH_07_TRUTH_ATC",
+          "eligible": true,
+          "metrics": {
+            "P95_completed_response_s": 27.968195212,
+            "baseline_J_proxy": 85.50997486174936,
+            "cost_vector": [
+              0.9398489388798319,
+              1.2721529766581274,
+              0.06636394558407739,
+              0.7404646013125907,
+              0
+            ],
+            "execution_throttled_s": 73.888164552,
+            "full_tail_increment_J_proxy": 31.578924346362346,
+            "heat_area_proxy": 326.06005727754064,
+            "incomplete": 0,
+            "increment_J_proxy": 31.578924346362346,
+            "mean_AP_c": 37.34958984034899,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 4.5987709276919615,
+            "on_time": 36,
+            "peak_AP_c": 39,
+            "planned": 96,
+            "responded": 96,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 19,
+              "C_GPU": 5,
+              "D_CPU": 45,
+              "D_GPU": 27
+            },
+            "total_J_proxy": 117.0888992081117,
+            "urgent_on_time": 18,
+            "urgent_planned": 24,
+            "wait_s": 0.05
+          }
+        },
+        {
+          "label": "FRESH_07_ENERGY_ROUTE",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 16.842299298,
+            "baseline_J_proxy": 85.50997486174936,
+            "cost_vector": [
+              0.9551759374714756,
+              1.2695910050392878,
+              0.1497744684416906,
+              1.1394320746422515,
+              0.010416666666666666
+            ],
+            "execution_throttled_s": 68.425028724,
+            "full_tail_increment_J_proxy": 32.093911499041575,
+            "heat_area_proxy": 325.32220945131485,
+            "incomplete": 1,
+            "increment_J_proxy": 32.093911499041575,
+            "mean_AP_c": 36.94481314521142,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 7.180807517357913,
+            "on_time": 13,
+            "peak_AP_c": 39,
+            "planned": 96,
+            "responded": 95,
+            "response_missing": 1,
+            "route_counts": {
+              "C_CPU": 18,
+              "C_GPU": 6,
+              "D_CPU": 50,
+              "D_GPU": 21
+            },
+            "total_J_proxy": 117.60388636079094,
+            "urgent_on_time": 10,
+            "urgent_planned": 24,
+            "wait_s": 12
+          }
+        }
+      ]
+    },
+    {
+      "baseline": 71.42067823813726,
+      "case": "FRESH_08",
+      "coefficients": {
+        "cells": {
+          "classification_CPU": {
+            "execution": 0.5489481675225005,
+            "execution_free": 0.49439478993841796,
+            "interval_count": 1934,
+            "nonexecution": 0.6156437095654784,
+            "relaxed_optimal_speed": 0.637473879712238
+          },
+          "classification_GPU": {
+            "execution": 0.38336591194616715,
+            "execution_free": 0.35364281423593386,
+            "interval_count": 1934,
+            "nonexecution": 0.40145133814399664,
+            "relaxed_optimal_speed": 0.7094900369888665
+          },
+          "detection_CPU": {
+            "execution": 0.6311557923522466,
+            "execution_free": 0.5607621189885497,
+            "interval_count": 1934,
+            "nonexecution": 0.7203799761906307,
+            "relaxed_optimal_speed": 0.6180600171132401
+          },
+          "detection_GPU": {
+            "execution": 0.4598957348568707,
+            "execution_free": 0.41475891006634275,
+            "interval_count": 1934,
+            "nonexecution": 0.4926552958584755,
+            "relaxed_optimal_speed": 0.6709132316446433
+          }
+        },
+        "coefficient_margin": 1e-9,
+        "increment_power_upper": 1.611268948789155,
+        "shared": 0.21745108719898432,
+        "temperature_grid_step": 0.01,
+        "temperature_upper": 45.335227385469864
+      },
+      "constraint_rows": 2938,
+      "constraint_sha256": "91a857b7e677fd39a8f45c2645f1ba4ef4c89114c13062e6789f9a65acf3ded5",
+      "energy_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 10.1052766446499,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 1,
+        "numerical_margin": 0.00001,
+        "primal": 10.1052866446499,
+        "reported_dual_bound": 10.1052866446499,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "heat_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 1.9049240568859778,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 1,
+        "numerical_margin": 0.00001,
+        "primal": 1.9049340568859778,
+        "reported_dual_bound": 1.9049340568859778,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "independent_thermal_linked_work_lower": 10.1052866446499,
+      "maximum_AP_reduction_c": 0.9242268944300704,
+      "maximum_total_saving_percent": 2.4897261200983345,
+      "mean_temperature_lower": 35.561340350015385,
+      "n": 48,
+      "reference": {
+        "P95_completed_response_s": 2.167168078,
+        "baseline_J_proxy": 71.42067823813726,
+        "cost_vector": [
+          0.7254098205109354,
+          1.023071187581365,
+          0.04585817517113092,
+          0.02220094792850377,
+          0
+        ],
+        "execution_throttled_s": 28.76376507,
+        "full_tail_increment_J_proxy": 12.186884984583713,
+        "heat_area_proxy": 127.16225101171653,
+        "incomplete": 0,
+        "increment_J_proxy": 12.186884984583713,
+        "mean_AP_c": 36.485567244445456,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 1.3299096971292126,
+        "on_time": 45,
+        "peak_AP_c": 39,
+        "planned": 48,
+        "responded": 48,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 11,
+          "C_GPU": 13,
+          "D_CPU": 16,
+          "D_GPU": 8
+        },
+        "total_J_proxy": 83.60756322272097,
+        "urgent_on_time": 10,
+        "urgent_planned": 12,
+        "wait_s": 0.05
+      },
+      "relaxation": "full future work; independent optimal thermal states; perfect half-shared cost; necessary-only interval capacity; EDF count SLA",
+      "total_energy_lower": 81.52596388278715,
+      "unlinked_work_lower": 9.041324258984236,
+      "variables": 192,
+      "best_feasible_saved": "FRESH_08_EDF",
+      "best_feasible_total": 83.60756322272097,
+      "found_saving_percent": 0,
+      "best_feasible_metrics": {
+        "P95_completed_response_s": 2.167168078,
+        "baseline_J_proxy": 71.42067823813726,
+        "cost_vector": [
+          0.7254098205109354,
+          1.023071187581365,
+          0.04585817517113092,
+          0.02220094792850377,
+          0
+        ],
+        "execution_throttled_s": 28.76376507,
+        "full_tail_increment_J_proxy": 12.186884984583713,
+        "heat_area_proxy": 127.16225101171653,
+        "incomplete": 0,
+        "increment_J_proxy": 12.186884984583713,
+        "mean_AP_c": 36.485567244445456,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 1.3299096971292126,
+        "on_time": 45,
+        "peak_AP_c": 39,
+        "planned": 48,
+        "responded": 48,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 11,
+          "C_GPU": 13,
+          "D_CPU": 16,
+          "D_GPU": 8
+        },
+        "total_J_proxy": 83.60756322272097,
+        "urgent_on_time": 10,
+        "urgent_planned": 12,
+        "wait_s": 0.05
+      },
+      "energy_heat_nonworse_saved": "FRESH_08_EDF",
+      "energy_heat_nonworse_total": 83.60756322272097,
+      "ten_percent_impossible_even_in_relaxation": true,
+      "half_degree_impossible_even_in_relaxation": false,
+      "full_witnesses": [
+        {
+          "label": "FRESH_08_TRUTH_EXACT",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 3.497448212,
+            "baseline_J_proxy": 71.42067823813726,
+            "cost_vector": [
+              0.7267584806460401,
+              1.020523147570429,
+              0.02455361393601189,
+              0.11068987170813087,
+              0
+            ],
+            "execution_throttled_s": 28.514890826000002,
+            "full_tail_increment_J_proxy": 12.209542474853471,
+            "heat_area_proxy": 126.79533325014177,
+            "incomplete": 0,
+            "increment_J_proxy": 12.209542474853471,
+            "mean_AP_c": 36.42246012459749,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 1.5128292124288532,
+            "on_time": 42,
+            "peak_AP_c": 39,
+            "planned": 48,
+            "responded": 48,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 17,
+              "C_GPU": 7,
+              "D_CPU": 14,
+              "D_GPU": 10
+            },
+            "total_J_proxy": 83.63022071299073,
+            "urgent_on_time": 11,
+            "urgent_planned": 12,
+            "wait_s": 2.65
+          }
+        },
+        {
+          "label": "FRESH_08_TRUTH_ATC",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 2.356463189,
+            "baseline_J_proxy": 71.42067823813726,
+            "cost_vector": [
+              0.7295911993105259,
+              1.0278791033285724,
+              0.06827168785883385,
+              0.02131337115625,
+              0
+            ],
+            "execution_throttled_s": 28.597853077,
+            "full_tail_increment_J_proxy": 12.257132148416833,
+            "heat_area_proxy": 127.8545908793144,
+            "incomplete": 0,
+            "increment_J_proxy": 12.257132148416833,
+            "mean_AP_c": 36.49726936133366,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 1.51016213881522,
+            "on_time": 44,
+            "peak_AP_c": 39,
+            "planned": 48,
+            "responded": 48,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 12,
+              "C_GPU": 12,
+              "D_CPU": 16,
+              "D_GPU": 8
+            },
+            "total_J_proxy": 83.67781038655409,
+            "urgent_on_time": 9,
+            "urgent_planned": 12,
+            "wait_s": 0.05
+          }
+        },
+        {
+          "label": "FRESH_08_ENERGY_ROUTE",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 4.663823703,
+            "baseline_J_proxy": 71.42067823813726,
+            "cost_vector": [
+              0.727072057487747,
+              1.0180643015167379,
+              0.08638150229416937,
+              0.2504313952123733,
+              0
+            ],
+            "execution_throttled_s": 25.77009054,
+            "full_tail_increment_J_proxy": 12.214810565794147,
+            "heat_area_proxy": 126.44125941841025,
+            "incomplete": 0,
+            "increment_J_proxy": 12.214810565794147,
+            "mean_AP_c": 36.37733226161616,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 2.5653457787050904,
+            "on_time": 33,
+            "peak_AP_c": 39,
+            "planned": 48,
+            "responded": 48,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 19,
+              "C_GPU": 5,
+              "D_CPU": 18,
+              "D_GPU": 6
+            },
+            "total_J_proxy": 83.63548880393141,
+            "urgent_on_time": 8,
+            "urgent_planned": 12,
+            "wait_s": 7.35
+          }
+        }
+      ]
+    },
+    {
+      "baseline": 82.35425939515324,
+      "case": "FRESH_09",
+      "coefficients": {
+        "cells": {
+          "classification_CPU": {
+            "execution": 0.5489481675225005,
+            "execution_free": 0.49439478993841796,
+            "interval_count": 1934,
+            "nonexecution": 0.6156437095654784,
+            "relaxed_optimal_speed": 0.637473879712238
+          },
+          "classification_GPU": {
+            "execution": 0.38336591194616715,
+            "execution_free": 0.35364281423593386,
+            "interval_count": 1934,
+            "nonexecution": 0.40145133814399664,
+            "relaxed_optimal_speed": 0.7094900369888665
+          },
+          "detection_CPU": {
+            "execution": 0.6311557923522466,
+            "execution_free": 0.5607621189885497,
+            "interval_count": 1934,
+            "nonexecution": 0.7203799761906307,
+            "relaxed_optimal_speed": 0.6180600171132401
+          },
+          "detection_GPU": {
+            "execution": 0.4598957348568707,
+            "execution_free": 0.41475891006634275,
+            "interval_count": 1934,
+            "nonexecution": 0.4926552958584755,
+            "relaxed_optimal_speed": 0.6709132316446433
+          }
+        },
+        "coefficient_margin": 1e-9,
+        "increment_power_upper": 1.611268948789155,
+        "shared": 0.21745108719898432,
+        "temperature_grid_step": 0.01,
+        "temperature_upper": 45.335227385469864
+      },
+      "constraint_rows": 9956,
+      "constraint_sha256": "893e5cdd457634bbce6983abd6280edb8a1b668726a6d136802553f4abd9f912",
+      "energy_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 20.149510110704085,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 1,
+        "numerical_margin": 0.00001,
+        "primal": 20.149520110704085,
+        "reported_dual_bound": 20.149520110704085,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "heat_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 0.2539438869331439,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 1,
+        "numerical_margin": 0.00001,
+        "primal": 0.2539538869331439,
+        "reported_dual_bound": 0.2539538869331439,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "independent_thermal_linked_work_lower": 20.149520110704085,
+      "maximum_AP_reduction_c": 4.0855291100027955,
+      "maximum_total_saving_percent": 3.2750572294790836,
+      "mean_temperature_lower": 32.89800918779996,
+      "n": 96,
+      "reference": {
+        "P95_completed_response_s": 6.630834367,
+        "baseline_J_proxy": 82.35425939515324,
+        "cost_vector": [
+          0.7029834753212982,
+          1.0019177809373736,
+          0.1838586409950805,
+          0.6501851282241627,
+          0
+        ],
+        "execution_throttled_s": 56.08852361,
+        "full_tail_increment_J_proxy": 23.620244770795615,
+        "heat_area_proxy": 248.23232090996362,
+        "incomplete": 0,
+        "increment_J_proxy": 23.620244770795615,
+        "mean_AP_c": 36.98353829780275,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 4.924060268986631,
+        "on_time": 27,
+        "peak_AP_c": 39,
+        "planned": 96,
+        "responded": 96,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 33,
+          "C_GPU": 15,
+          "D_CPU": 30,
+          "D_GPU": 18
+        },
+        "total_J_proxy": 105.97450416594884,
+        "urgent_on_time": 10,
+        "urgent_planned": 24,
+        "wait_s": 0.05
+      },
+      "relaxation": "full future work; independent optimal thermal states; perfect half-shared cost; necessary-only interval capacity; EDF count SLA",
+      "total_energy_lower": 102.50377850585733,
+      "unlinked_work_lower": 18.01700950766275,
+      "variables": 384,
+      "best_feasible_saved": "FRESH_09_TRUTH_ATC",
+      "best_feasible_total": 105.72221468863611,
+      "found_saving_percent": 0.23806620214770202,
+      "best_feasible_metrics": {
+        "P95_completed_response_s": 8.565785341,
+        "baseline_J_proxy": 82.35425939515324,
+        "cost_vector": [
+          0.6954748599250858,
+          0.9937314348242577,
+          0.057302241769649626,
+          0.41292081401944425,
+          0
+        ],
+        "execution_throttled_s": 55.406482059000005,
+        "full_tail_increment_J_proxy": 23.36795529348288,
+        "heat_area_proxy": 245.87465322938624,
+        "incomplete": 0,
+        "increment_J_proxy": 23.36795529348288,
+        "mean_AP_c": 36.96259807180516,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 2.9547043376096456,
+        "on_time": 56,
+        "peak_AP_c": 39,
+        "planned": 96,
+        "responded": 96,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 40,
+          "C_GPU": 8,
+          "D_CPU": 29,
+          "D_GPU": 19
+        },
+        "total_J_proxy": 105.72221468863611,
+        "urgent_on_time": 19,
+        "urgent_planned": 24,
+        "wait_s": 0.05
+      },
+      "energy_heat_nonworse_saved": "FRESH_09_TRUTH_ATC",
+      "energy_heat_nonworse_total": 105.72221468863611,
+      "ten_percent_impossible_even_in_relaxation": true,
+      "half_degree_impossible_even_in_relaxation": false,
+      "full_witnesses": [
+        {
+          "label": "FRESH_09_TRUTH_EXACT",
+          "eligible": true,
+          "metrics": {
+            "P95_completed_response_s": 12.353956061,
+            "baseline_J_proxy": 82.35425939515324,
+            "cost_vector": [
+              0.7009727013628185,
+              0.9966420449782979,
+              0.04621109215875276,
+              0.39668117053071206,
+              0
+            ],
+            "execution_throttled_s": 55.236217936,
+            "full_tail_increment_J_proxy": 23.5526827657907,
+            "heat_area_proxy": 246.71290895374977,
+            "incomplete": 0,
+            "increment_J_proxy": 23.5526827657907,
+            "mean_AP_c": 36.90110520791165,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 2.8052207925634285,
+            "on_time": 60,
+            "peak_AP_c": 39,
+            "planned": 96,
+            "responded": 96,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 38,
+              "C_GPU": 10,
+              "D_CPU": 29,
+              "D_GPU": 19
+            },
+            "total_J_proxy": 105.90694216094394,
+            "urgent_on_time": 20,
+            "urgent_planned": 24,
+            "wait_s": 1.35
+          }
+        },
+        {
+          "label": "FRESH_09_TRUTH_ATC",
+          "eligible": true,
+          "metrics": {
+            "P95_completed_response_s": 8.565785341,
+            "baseline_J_proxy": 82.35425939515324,
+            "cost_vector": [
+              0.6954748599250858,
+              0.9937314348242577,
+              0.057302241769649626,
+              0.41292081401944425,
+              0
+            ],
+            "execution_throttled_s": 55.406482059000005,
+            "full_tail_increment_J_proxy": 23.36795529348288,
+            "heat_area_proxy": 245.87465322938624,
+            "incomplete": 0,
+            "increment_J_proxy": 23.36795529348288,
+            "mean_AP_c": 36.96259807180516,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 2.9547043376096456,
+            "on_time": 56,
+            "peak_AP_c": 39,
+            "planned": 96,
+            "responded": 96,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 40,
+              "C_GPU": 8,
+              "D_CPU": 29,
+              "D_GPU": 19
+            },
+            "total_J_proxy": 105.72221468863611,
+            "urgent_on_time": 19,
+            "urgent_planned": 24,
+            "wait_s": 0.05
+          }
+        },
+        {
+          "label": "FRESH_09_ENERGY_ROUTE",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 10.139539528,
+            "baseline_J_proxy": 82.35425939515324,
+            "cost_vector": [
+              0.7169526605151144,
+              1.0087335468915841,
+              0.12197433563993147,
+              0.8852485747807565,
+              0
+            ],
+            "execution_throttled_s": 51.261119873000005,
+            "full_tail_increment_J_proxy": 24.08960939330784,
+            "heat_area_proxy": 250.19526150477623,
+            "incomplete": 0,
+            "increment_J_proxy": 24.08960939330784,
+            "mean_AP_c": 36.8128560616719,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 5.379632087945827,
+            "on_time": 24,
+            "peak_AP_c": 39,
+            "planned": 96,
+            "responded": 96,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 42,
+              "C_GPU": 6,
+              "D_CPU": 34,
+              "D_GPU": 14
+            },
+            "total_J_proxy": 106.44386878846107,
+            "urgent_on_time": 13,
+            "urgent_planned": 24,
+            "wait_s": 11.55
+          }
+        }
+      ]
+    },
+    {
+      "baseline": 68.60866430709382,
+      "case": "FRESH_10",
+      "coefficients": {
+        "cells": {
+          "classification_CPU": {
+            "execution": 0.5489481675225005,
+            "execution_free": 0.49439478993841796,
+            "interval_count": 1934,
+            "nonexecution": 0.6156437095654784,
+            "relaxed_optimal_speed": 0.637473879712238
+          },
+          "classification_GPU": {
+            "execution": 0.38336591194616715,
+            "execution_free": 0.35364281423593386,
+            "interval_count": 1934,
+            "nonexecution": 0.40145133814399664,
+            "relaxed_optimal_speed": 0.7094900369888665
+          },
+          "detection_CPU": {
+            "execution": 0.6311557923522466,
+            "execution_free": 0.5607621189885497,
+            "interval_count": 1934,
+            "nonexecution": 0.7203799761906307,
+            "relaxed_optimal_speed": 0.6180600171132401
+          },
+          "detection_GPU": {
+            "execution": 0.4598957348568707,
+            "execution_free": 0.41475891006634275,
+            "interval_count": 1934,
+            "nonexecution": 0.4926552958584755,
+            "relaxed_optimal_speed": 0.6709132316446433
+          }
+        },
+        "coefficient_margin": 1e-9,
+        "increment_power_upper": 1.611268948789155,
+        "shared": 0.21745108719898432,
+        "temperature_grid_step": 0.01,
+        "temperature_upper": 45.335227385469864
+      },
+      "constraint_rows": 2850,
+      "constraint_sha256": "cfceff076e5a42d6c6533b38d0c21b6f34d8c4e63c4999cb3986e2424e642192",
+      "energy_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 6.489120177547973,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 0,
+        "numerical_margin": 0.00001,
+        "primal": 6.489130177547974,
+        "reported_dual_bound": 6.489130177547973,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "heat_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 1.1814754632011464,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 1,
+        "numerical_margin": 0.00001,
+        "primal": 1.1814854632011464,
+        "reported_dual_bound": 1.1814854632011464,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "independent_thermal_linked_work_lower": 6.489130177547974,
+      "maximum_AP_reduction_c": 0.8762251192327142,
+      "maximum_total_saving_percent": 2.335509251835566,
+      "mean_temperature_lower": 35.13536995149835,
+      "n": 48,
+      "reference": {
+        "P95_completed_response_s": 1.385667015,
+        "baseline_J_proxy": 68.60866430709382,
+        "cost_vector": [
+          0.4931540196597722,
+          0.7385222853121017,
+          0.042965424120671,
+          0.02109849142400567,
+          0
+        ],
+        "execution_throttled_s": 18.891333641,
+        "full_tail_increment_J_proxy": 8.284987530284171,
+        "heat_area_proxy": 86.18720908494265,
+        "incomplete": 0,
+        "increment_J_proxy": 8.284987530284171,
+        "mean_AP_c": 36.01159507073106,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 1.0439555111473278,
+        "on_time": 45,
+        "peak_AP_c": 39,
+        "planned": 48,
+        "responded": 48,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 23,
+          "C_GPU": 13,
+          "D_CPU": 8,
+          "D_GPU": 4
+        },
+        "total_J_proxy": 76.89365183737799,
+        "urgent_on_time": 10,
+        "urgent_planned": 12,
+        "wait_s": 0.4
+      },
+      "relaxation": "full future work; independent optimal thermal states; perfect half-shared cost; necessary-only interval capacity; EDF count SLA",
+      "total_energy_lower": 75.0977934846418,
+      "unlinked_work_lower": 5.826984391944041,
+      "variables": 192,
+      "best_feasible_saved": "FRESH_10_TRUTH_EXACT",
+      "best_feasible_total": 76.81332353922924,
+      "found_saving_percent": 0.10446674885286056,
+      "best_feasible_metrics": {
+        "P95_completed_response_s": 2.249196182,
+        "baseline_J_proxy": 68.60866430709382,
+        "cost_vector": [
+          0.4883725733413947,
+          0.7313842874233034,
+          0.023624227991071445,
+          0.022087502643229173,
+          0
+        ],
+        "execution_throttled_s": 18.649302806,
+        "full_tail_increment_J_proxy": 8.20465923213543,
+        "heat_area_proxy": 85.15933738895569,
+        "incomplete": 0,
+        "increment_J_proxy": 8.20465923213543,
+        "mean_AP_c": 35.967975531315055,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 0.8872222648838373,
+        "on_time": 46,
+        "peak_AP_c": 39,
+        "planned": 48,
+        "responded": 48,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 23,
+          "C_GPU": 13,
+          "D_CPU": 8,
+          "D_GPU": 4
+        },
+        "total_J_proxy": 76.81332353922924,
+        "urgent_on_time": 11,
+        "urgent_planned": 12,
+        "wait_s": 4.3
+      },
+      "energy_heat_nonworse_saved": "FRESH_10_TRUTH_EXACT",
+      "energy_heat_nonworse_total": 76.81332353922924,
+      "ten_percent_impossible_even_in_relaxation": true,
+      "half_degree_impossible_even_in_relaxation": false,
+      "full_witnesses": [
+        {
+          "label": "FRESH_10_TRUTH_EXACT",
+          "eligible": true,
+          "metrics": {
+            "P95_completed_response_s": 2.249196182,
+            "baseline_J_proxy": 68.60866430709382,
+            "cost_vector": [
+              0.4883725733413947,
+              0.7313842874233034,
+              0.023624227991071445,
+              0.022087502643229173,
+              0
+            ],
+            "execution_throttled_s": 18.649302806,
+            "full_tail_increment_J_proxy": 8.20465923213543,
+            "heat_area_proxy": 85.15933738895569,
+            "incomplete": 0,
+            "increment_J_proxy": 8.20465923213543,
+            "mean_AP_c": 35.967975531315055,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 0.8872222648838373,
+            "on_time": 46,
+            "peak_AP_c": 39,
+            "planned": 48,
+            "responded": 48,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 23,
+              "C_GPU": 13,
+              "D_CPU": 8,
+              "D_GPU": 4
+            },
+            "total_J_proxy": 76.81332353922924,
+            "urgent_on_time": 11,
+            "urgent_planned": 12,
+            "wait_s": 4.3
+          }
+        },
+        {
+          "label": "FRESH_10_TRUTH_ATC",
+          "eligible": true,
+          "metrics": {
+            "P95_completed_response_s": 1.385667015,
+            "baseline_J_proxy": 68.60866430709382,
+            "cost_vector": [
+              0.49248199921214575,
+              0.7377090711058616,
+              0.042965424120671,
+              0.021096714245975385,
+              0
+            ],
+            "execution_throttled_s": 18.825286468,
+            "full_tail_increment_J_proxy": 8.273697586764047,
+            "heat_area_proxy": 86.07010623924407,
+            "incomplete": 0,
+            "increment_J_proxy": 8.273697586764047,
+            "mean_AP_c": 36.00883344563948,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 1.0432057851082732,
+            "on_time": 45,
+            "peak_AP_c": 39,
+            "planned": 48,
+            "responded": 48,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 23,
+              "C_GPU": 13,
+              "D_CPU": 8,
+              "D_GPU": 4
+            },
+            "total_J_proxy": 76.88236189385786,
+            "urgent_on_time": 10,
+            "urgent_planned": 12,
+            "wait_s": 0.4
+          }
+        },
+        {
+          "label": "FRESH_10_ENERGY_ROUTE",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 2.905410313,
+            "baseline_J_proxy": 68.60866430709382,
+            "cost_vector": [
+              0.49081286890649767,
+              0.7328176399514958,
+              0.043784929626129065,
+              0.08643288656889203,
+              0
+            ],
+            "execution_throttled_s": 15.879332881,
+            "full_tail_increment_J_proxy": 8.24565619762916,
+            "heat_area_proxy": 85.3657401530154,
+            "incomplete": 0,
+            "increment_J_proxy": 8.24565619762916,
+            "mean_AP_c": 35.951059848177906,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 1.3078262377135974,
+            "on_time": 42,
+            "peak_AP_c": 39,
+            "planned": 48,
+            "responded": 48,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 29,
+              "C_GPU": 7,
+              "D_CPU": 11,
+              "D_GPU": 1
+            },
+            "total_J_proxy": 76.85432050472298,
+            "urgent_on_time": 10,
+            "urgent_planned": 12,
+            "wait_s": 9.2
+          }
+        }
+      ]
+    },
+    {
+      "baseline": 80.89872832343144,
+      "case": "FRESH_11",
+      "coefficients": {
+        "cells": {
+          "classification_CPU": {
+            "execution": 0.5489481675225005,
+            "execution_free": 0.49439478993841796,
+            "interval_count": 1934,
+            "nonexecution": 0.6156437095654784,
+            "relaxed_optimal_speed": 0.637473879712238
+          },
+          "classification_GPU": {
+            "execution": 0.38336591194616715,
+            "execution_free": 0.35364281423593386,
+            "interval_count": 1934,
+            "nonexecution": 0.40145133814399664,
+            "relaxed_optimal_speed": 0.7094900369888665
+          },
+          "detection_CPU": {
+            "execution": 0.6311557923522466,
+            "execution_free": 0.5607621189885497,
+            "interval_count": 1934,
+            "nonexecution": 0.7203799761906307,
+            "relaxed_optimal_speed": 0.6180600171132401
+          },
+          "detection_GPU": {
+            "execution": 0.4598957348568707,
+            "execution_free": 0.41475891006634275,
+            "interval_count": 1934,
+            "nonexecution": 0.4926552958584755,
+            "relaxed_optimal_speed": 0.6709132316446433
+          }
+        },
+        "coefficient_margin": 1e-9,
+        "increment_power_upper": 1.611268948789155,
+        "shared": 0.21745108719898432,
+        "temperature_grid_step": 0.01,
+        "temperature_upper": 45.335227385469864
+      },
+      "constraint_rows": 9720,
+      "constraint_sha256": "c6f62c56f170436c8be5b0ee28c5a1bb71dedf282e1fc6fb7ce9af2152c649b8",
+      "energy_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 12.900381582162366,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 0,
+        "numerical_margin": 0.00001,
+        "primal": 12.900391582162365,
+        "reported_dual_bound": 12.900391582162365,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "heat_MILP": {
+        "MIP_gap": 0,
+        "conservative_lower_bound": 2.15444105502136,
+        "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "nodes": 1,
+        "numerical_margin": 0.00001,
+        "primal": 2.1544510550213603,
+        "reported_dual_bound": 2.1544510550213603,
+        "seconds_cap": 10,
+        "status": 0,
+        "threads_option": "1 explicitly forwarded by SciPy to HiGHS",
+        "warnings": [
+          "Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim."
+        ]
+      },
+      "independent_thermal_linked_work_lower": 12.900391582162365,
+      "maximum_AP_reduction_c": 1.0213469981837306,
+      "maximum_total_saving_percent": 3.184113012709111,
+      "mean_temperature_lower": 34.92123455190103,
+      "n": 96,
+      "reference": {
+        "P95_completed_response_s": 2.305806264,
+        "baseline_J_proxy": 80.89872832343144,
+        "cost_vector": [
+          0.4757525930148976,
+          0.7288919057061438,
+          0,
+          0.03196546020655777,
+          0
+        ],
+        "execution_throttled_s": 35.54404446,
+        "full_tail_increment_J_proxy": 15.985287125300555,
+        "heat_area_proxy": 169.60086884336943,
+        "incomplete": 0,
+        "increment_J_proxy": 15.985287125300555,
+        "mean_AP_c": 35.94258155008476,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 0.7301840901867518,
+        "on_time": 93,
+        "peak_AP_c": 39,
+        "planned": 96,
+        "responded": 96,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 43,
+          "C_GPU": 29,
+          "D_CPU": 18,
+          "D_GPU": 6
+        },
+        "total_J_proxy": 96.884015448732,
+        "urgent_on_time": 24,
+        "urgent_planned": 24,
+        "wait_s": 0.25
+      },
+      "relaxation": "full future work; independent optimal thermal states; perfect half-shared cost; necessary-only interval capacity; EDF count SLA",
+      "total_energy_lower": 93.79911890559382,
+      "unlinked_work_lower": 11.580746988706693,
+      "variables": 384,
+      "best_feasible_saved": "FRESH_11_TRUTH_ATC",
+      "best_feasible_total": 96.78355641216662,
+      "found_saving_percent": 0.1036900009770414,
+      "best_feasible_metrics": {
+        "P95_completed_response_s": 2.117604125,
+        "baseline_J_proxy": 80.89872832343144,
+        "cost_vector": [
+          0.472762740736166,
+          0.7254433296734621,
+          0,
+          0.03212937300106534,
+          0
+        ],
+        "execution_throttled_s": 34.599614821,
+        "full_tail_increment_J_proxy": 15.884828088735174,
+        "heat_area_proxy": 168.6076789459571,
+        "incomplete": 0,
+        "increment_J_proxy": 15.884828088735174,
+        "mean_AP_c": 35.929113829434954,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 0.7276205272090754,
+        "on_time": 93,
+        "peak_AP_c": 39,
+        "planned": 96,
+        "responded": 96,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 56,
+          "C_GPU": 16,
+          "D_CPU": 16,
+          "D_GPU": 8
+        },
+        "total_J_proxy": 96.78355641216662,
+        "urgent_on_time": 24,
+        "urgent_planned": 24,
+        "wait_s": 0.3
+      },
+      "energy_heat_nonworse_saved": "FRESH_11_TRUTH_ATC",
+      "energy_heat_nonworse_total": 96.78355641216662,
+      "ten_percent_impossible_even_in_relaxation": true,
+      "half_degree_impossible_even_in_relaxation": false,
+      "full_witnesses": [
+        {
+          "label": "FRESH_11_TRUTH_EXACT",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 2.16293063,
+            "baseline_J_proxy": 80.89872832343144,
+            "cost_vector": [
+              0.47282451727794467,
+              0.7253408619370428,
+              0,
+              0.05505850322561554,
+              0
+            ],
+            "execution_throttled_s": 35.743073024000005,
+            "full_tail_increment_J_proxy": 15.886903780538939,
+            "heat_area_proxy": 168.57816823786834,
+            "incomplete": 0,
+            "increment_J_proxy": 15.886903780538939,
+            "mean_AP_c": 35.924923030109824,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 0.8193167025099559,
+            "on_time": 91,
+            "peak_AP_c": 39,
+            "planned": 96,
+            "responded": 96,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 48,
+              "C_GPU": 24,
+              "D_CPU": 16,
+              "D_GPU": 8
+            },
+            "total_J_proxy": 96.78563210397039,
+            "urgent_on_time": 24,
+            "urgent_planned": 24,
+            "wait_s": 2.6
+          }
+        },
+        {
+          "label": "FRESH_11_TRUTH_ATC",
+          "eligible": true,
+          "metrics": {
+            "P95_completed_response_s": 2.117604125,
+            "baseline_J_proxy": 80.89872832343144,
+            "cost_vector": [
+              0.472762740736166,
+              0.7254433296734621,
+              0,
+              0.03212937300106534,
+              0
+            ],
+            "execution_throttled_s": 34.599614821,
+            "full_tail_increment_J_proxy": 15.884828088735174,
+            "heat_area_proxy": 168.6076789459571,
+            "incomplete": 0,
+            "increment_J_proxy": 15.884828088735174,
+            "mean_AP_c": 35.929113829434954,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 0.7276205272090754,
+            "on_time": 93,
+            "peak_AP_c": 39,
+            "planned": 96,
+            "responded": 96,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 56,
+              "C_GPU": 16,
+              "D_CPU": 16,
+              "D_GPU": 8
+            },
+            "total_J_proxy": 96.78355641216662,
+            "urgent_on_time": 24,
+            "urgent_planned": 24,
+            "wait_s": 0.3
+          }
+        },
+        {
+          "label": "FRESH_11_ENERGY_ROUTE",
+          "eligible": false,
+          "metrics": {
+            "P95_completed_response_s": 2.911740619,
+            "baseline_J_proxy": 80.89872832343144,
+            "cost_vector": [
+              0.47995862921252674,
+              0.7323015760274019,
+              0.04280208050923401,
+              0.11709759710072447,
+              0
+            ],
+            "execution_throttled_s": 32.547768839,
+            "full_tail_increment_J_proxy": 16.126609941540895,
+            "heat_area_proxy": 170.58285389589173,
+            "incomplete": 0,
+            "increment_J_proxy": 16.126609941540895,
+            "mean_AP_c": 35.924439700877194,
+            "measured_J": null,
+            "model": "HYPOTHESIS_COUPLED_345",
+            "objective": 1.4169371350967341,
+            "on_time": 81,
+            "peak_AP_c": 39,
+            "planned": 96,
+            "responded": 96,
+            "response_missing": 0,
+            "route_counts": {
+              "C_CPU": 57,
+              "C_GPU": 15,
+              "D_CPU": 19,
+              "D_GPU": 5
+            },
+            "total_J_proxy": 97.02533826497233,
+            "urgent_on_time": 20,
+            "urgent_planned": 24,
+            "wait_s": 10.85
+          }
+        }
+      ]
+    }
+  ],
+  "micros": [
+    {
+      "case": "MICRO_FRESH_00",
+      "all_plans": 120,
+      "legal_and_SLA_feasible": 24,
+      "reference": {
+        "P95_completed_response_s": 1.143540232,
+        "baseline_J_proxy": 74.3195181431178,
+        "cost_vector": [
+          1.2383522693022004,
+          1.5746088573305315,
+          0,
+          0,
+          0
+        ],
+        "execution_throttled_s": 0,
+        "full_tail_increment_J_proxy": 1.7336931770230806,
+        "heat_area_proxy": 18.895306287966378,
+        "incomplete": 0,
+        "increment_J_proxy": 1.7336931770230806,
+        "mean_AP_c": 26.456250126805728,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 1.406480563316366,
+        "on_time": 4,
+        "peak_AP_c": 26.633270735036977,
+        "planned": 4,
+        "responded": 4,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 2,
+          "C_GPU": 0,
+          "D_CPU": 1,
+          "D_GPU": 1
+        },
+        "total_J_proxy": 76.05321132014089,
+        "urgent_on_time": 1,
+        "urgent_planned": 1,
+        "wait_s": 0.15
+      },
+      "best_label": "MICRO_FRESH_00_LIST_118",
+      "best_plan": {
+        "CPU": [
+          "user-00001",
+          "user-00000",
+          "user-00006",
+          "user-00013"
+        ],
+        "GPU": []
+      },
+      "best": {
+        "P95_completed_response_s": 1.29887285,
+        "baseline_J_proxy": 74.3195181431178,
+        "cost_vector": [
+          1.1777964044890321,
+          1.4966422986540049,
+          0,
+          0,
+          0
+        ],
+        "execution_throttled_s": 0,
+        "full_tail_increment_J_proxy": 1.6489149662846447,
+        "heat_area_proxy": 17.959707583848058,
+        "incomplete": 0,
+        "increment_J_proxy": 1.6489149662846447,
+        "mean_AP_c": 26.432723450005806,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 1.3372193515715185,
+        "on_time": 4,
+        "peak_AP_c": 26.601982958181868,
+        "planned": 4,
+        "responded": 4,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 2,
+          "C_GPU": 0,
+          "D_CPU": 2,
+          "D_GPU": 0
+        },
+        "total_J_proxy": 75.96843310940245,
+        "urgent_on_time": 1,
+        "urgent_planned": 1,
+        "wait_s": 0.8
+      },
+      "saving_percent": 0.1114722301226223,
+      "increment_saving_percent": 4.8900354377588435,
+      "certificate": "Exact minimum over all120 registered list plans; not a continuous-time global certificate and not generalized to48/96 jobs"
+    },
+    {
+      "case": "MICRO_FRESH_06",
+      "all_plans": 120,
+      "legal_and_SLA_feasible": 20,
+      "reference": {
+        "P95_completed_response_s": 1.469215895,
+        "baseline_J_proxy": 74.3195181431178,
+        "cost_vector": [
+          1.1695367268471744,
+          1.6259451831826315,
+          0,
+          0,
+          0
+        ],
+        "execution_throttled_s": 2.488903725,
+        "full_tail_increment_J_proxy": 1.637351417586044,
+        "heat_area_proxy": 17.831342198191578,
+        "incomplete": 0,
+        "increment_J_proxy": 1.637351417586044,
+        "mean_AP_c": 33.796067683887614,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 1.397740955014903,
+        "on_time": 4,
+        "peak_AP_c": 39,
+        "planned": 4,
+        "responded": 4,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 2,
+          "C_GPU": 0,
+          "D_CPU": 1,
+          "D_GPU": 1
+        },
+        "total_J_proxy": 75.95686956070385,
+        "urgent_on_time": 1,
+        "urgent_planned": 1,
+        "wait_s": 0.15
+      },
+      "best_label": "MICRO_FRESH_06_LIST_118",
+      "best_plan": {
+        "CPU": [
+          "user-00001",
+          "user-00000",
+          "user-00006",
+          "user-00013"
+        ],
+        "GPU": []
+      },
+      "best": {
+        "P95_completed_response_s": 1.81090231,
+        "baseline_J_proxy": 74.3195181431178,
+        "cost_vector": [
+          1.1213384659187648,
+          1.5635914087265657,
+          0,
+          0,
+          0
+        ],
+        "execution_throttled_s": 1.916528295,
+        "full_tail_increment_J_proxy": 1.5698738522862707,
+        "heat_area_proxy": 17.083096904718786,
+        "incomplete": 0,
+        "increment_J_proxy": 1.5698738522862707,
+        "mean_AP_c": 33.77696786594807,
+        "measured_J": null,
+        "model": "HYPOTHESIS_COUPLED_345",
+        "objective": 1.3424649373226654,
+        "on_time": 4,
+        "peak_AP_c": 39,
+        "planned": 4,
+        "responded": 4,
+        "response_missing": 0,
+        "route_counts": {
+          "C_CPU": 2,
+          "C_GPU": 0,
+          "D_CPU": 2,
+          "D_GPU": 0
+        },
+        "total_J_proxy": 75.88939199540407,
+        "urgent_on_time": 1,
+        "urgent_planned": 1,
+        "wait_s": 1.05
+      },
+      "saving_percent": 0.08883668546378898,
+      "increment_saving_percent": 4.121141287998864,
+      "certificate": "Exact minimum over all120 registered list plans; not a continuous-time global certificate and not generalized to48/96 jobs"
+    }
+  ],
+  "EDF_mean_total": 96.25660054549894,
+  "optimistic_mean_total_lower": 92.42288472746583,
+  "found_feasible_mean_total": 96.07805609620432,
+  "found_mean_saving_percent": 0.1854880063110298,
+  "maximum_mean_saving_percent": 3.982808239961666,
+  "ten_percent_mean_impossible": true,
+  "ten_percent_impossible_cases": 12,
+  "half_degree_impossible_cases": 0,
+  "micro_scope_does_not_prove_full_optimum": true,
+  "physical_accuracy_verified": false,
+  "new_environment_START": 0
+}
