@@ -1,37 +1,22 @@
 {
   "coupled_345_development": {
-    "status": "FRESH_AND_ABLATION_RUNNING",
-    "report": "docs/COUPLED_345.md",
+    "status": "COMPLETED_HYPOTHESIS_MODEL_LEARNING_AND_SAVED_AUDIT",
+    "report": "results/COUPLED_345_20261017_01/REPORT.md",
     "operation": "experiments/coupled_345_20261017/OPERATION.json",
-    "entry": "experiments/coupled_345_20261017/run_experiment.py",
     "output": "results/COUPLED_345_20261017_01",
-    "planned_START": 602,
-    "reserved_cap": 640,
-    "completed_seed_milestones": [
+    "new_START": 602,
+    "new_COMPLETE": 602,
+    "new_FAIL": 0,
+    "new_reservation": 640,
+    "remaining_38_unallocated_to_more_runs": true,
+    "TRAIN": 384,
+    "PPO_updates_per_seed": 64,
+    "learner_seeds": [
       3701,
       3702,
       3703
     ],
-    "per_completed_seed": {
-      "train_episodes": 128,
-      "PPO_updates": 64
-    },
-    "proof_files": [
-      "results/COUPLED_345_20261017_01/PROGRESS_S3701.json",
-      "results/COUPLED_345_20261017_01/PROGRESS_S3702.json",
-      "results/COUPLED_345_20261017_01/PROGRESS_S3703.json"
-    ],
-    "live_receipt": "results/COUPLED_345_20261017_01/receipts.jsonl",
-    "do_not_restart_running_or_completed_operation": true,
-    "generation_complete": false,
-    "policy_superiority_verified": false,
-    "model": "explicit thermal/power hypotheses; not calibrated A24 feedback",
-    "original_RL256_remaining": 0,
-    "separate_RR1_untouched": true,
-    "new_device_commands": 0,
-    "new_physical_fit": 0,
-    "measured_J": null,
-    "frozen_selection": {
+    "selected": {
       "episode": 64,
       "path": "SEED_3701_EP064.pt.gz",
       "qualification": false,
@@ -43,7 +28,19 @@
       "seed": 3701,
       "sha256": "61b127116e607abd807bfb10291ed7df78460a727cbf76df12ea1f0229ed403b"
     },
-    "DEV_proof": "results/COUPLED_345_20261017_01/DEV_STAGE_PROOF.json"
+    "all_seed_results_preserved": true,
+    "core_saved_checks": 4111314,
+    "independent_metric_checks": 14352,
+    "pure_contract_tests": 20,
+    "no_fixed_ATC_action_logit": true,
+    "same_dynamics_for_prediction_reward_and_evaluation": true,
+    "original_RL256_remaining": 0,
+    "separate_RR1_untouched": true,
+    "physical_accuracy_verified": false,
+    "measured_J": null,
+    "model": "explicit thermal/DVFS/leak hypotheses; not measured A24 parameters",
+    "original_UI_and_models_preserved": true,
+    "automatic_new_runs": false
   },
   "shared_activation_cost_development": {
     "status": "HYPOTHESIS_MODEL_AND_COST_AWARE_DEVELOPMENT_COMPLETE",
