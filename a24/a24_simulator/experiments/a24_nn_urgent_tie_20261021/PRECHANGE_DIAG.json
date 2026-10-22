@@ -1,0 +1,5804 @@
+{
+  "status": "PASS",
+  "new_environment": 0,
+  "new_fit": 0,
+  "scope": "Matched saved trajectories; no single-action causal intervention; EVAL is diagnostic only",
+  "TRAIN_counts": {
+    "calls": 1485,
+    "urgent_first_changes_service_set": 0,
+    "urgent_dispatches": 208,
+    "urgent_nominal_on_actual_late": 7
+  },
+  "EVAL": [
+    {
+      "case": "S26REQ_EVAL_R1_uniform",
+      "counts": {
+        "calls": 600,
+        "urgent_first_changes_service_set": 0,
+        "urgent_dispatches": 156,
+        "urgent_nominal_on_actual_late": 0
+      },
+      "nominal_miss_examples": [],
+      "comparisons": [
+        {
+          "reference": "BC_NEURAL_PREVIOUS",
+          "counts": {},
+          "urgent_changes": []
+        },
+        {
+          "reference": "TEACHER_FAIR",
+          "counts": {},
+          "urgent_changes": []
+        }
+      ],
+      "first_urgent_loss": null,
+      "first_loss_preceding_chain": []
+    },
+    {
+      "case": "S26REQ_EVAL_R1_burst",
+      "counts": {
+        "calls": 1421,
+        "urgent_first_changes_service_set": 0,
+        "urgent_dispatches": 156,
+        "urgent_nominal_on_actual_late": 4
+      },
+      "nominal_miss_examples": [
+        {
+          "request_id": "common-000187",
+          "dispatch_s": 219.6428266,
+          "deadline_s": 219.8,
+          "nominal_response_s": 219.78927371808086,
+          "actual_response_s": 219.80373933,
+          "actual_minus_nominal_s": 0.014465611919149524,
+          "owner_count": 3,
+          "route": "CPU",
+          "teacher_exact": true
+        },
+        {
+          "request_id": "common-000256",
+          "dispatch_s": 291.00399031,
+          "deadline_s": 292.2,
+          "nominal_response_s": 292.081396178,
+          "actual_response_s": 292.285697906,
+          "actual_minus_nominal_s": 0.20430172800001856,
+          "owner_count": 1,
+          "route": "GPU",
+          "teacher_exact": true
+        },
+        {
+          "request_id": "common-000326",
+          "dispatch_s": 355.554342542,
+          "deadline_s": 356.2,
+          "nominal_response_s": 356.1878847216028,
+          "actual_response_s": 356.204665213,
+          "actual_minus_nominal_s": 0.01678049139718496,
+          "owner_count": 2,
+          "route": "CPU",
+          "teacher_exact": true
+        }
+      ],
+      "comparisons": [
+        {
+          "reference": "BC_NEURAL_PREVIOUS",
+          "counts": {
+            "U_gain": 7,
+            "U_loss": 3
+          },
+          "urgent_changes": [
+            {
+              "request_id": "common-000072",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 107.0,
+              "deadline_s": 107.8,
+              "old_dispatch_s": 107.747963181,
+              "new_dispatch_s": 107.633778819,
+              "old_response_s": 107.869764281,
+              "new_response_s": 107.731698742,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000187",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 219.0,
+              "deadline_s": 219.8,
+              "old_dispatch_s": 219.531588157,
+              "new_dispatch_s": 219.6428266,
+              "old_response_s": 219.780920157,
+              "new_response_s": 219.80373933,
+              "old_route": "GPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000252",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 283.0,
+              "deadline_s": 284.2,
+              "old_dispatch_s": 283.35174431,
+              "new_dispatch_s": 283.25174431,
+              "old_response_s": 284.103915946,
+              "new_response_s": 284.338266219,
+              "old_route": "CPU",
+              "new_route": "GPU"
+            },
+            {
+              "request_id": "common-000255",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 283.0,
+              "deadline_s": 284.2,
+              "old_dispatch_s": 283.25174431,
+              "new_dispatch_s": 283.37174431,
+              "old_response_s": 284.431319895,
+              "new_response_s": 284.120810076,
+              "old_route": "GPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000256",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 291.0,
+              "deadline_s": 292.2,
+              "old_dispatch_s": 291.016068619,
+              "new_dispatch_s": 291.00399031,
+              "old_response_s": 291.749246196,
+              "new_response_s": 292.285697906,
+              "old_route": "CPU",
+              "new_route": "GPU"
+            },
+            {
+              "request_id": "common-000257",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 291.0,
+              "deadline_s": 291.8,
+              "old_dispatch_s": 291.666859965,
+              "new_dispatch_s": 291.645083793,
+              "old_response_s": 291.801113543,
+              "new_response_s": 291.762001179,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000378",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 411.0,
+              "deadline_s": 412.2,
+              "old_dispatch_s": 411.492671131,
+              "new_dispatch_s": 411.387845281,
+              "old_response_s": 412.208289255,
+              "new_response_s": 412.135680404,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000396",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 427.0,
+              "deadline_s": 427.8,
+              "old_dispatch_s": 427.864819788,
+              "new_dispatch_s": 427.041102773,
+              "old_response_s": 427.988786362,
+              "new_response_s": 427.193019851,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000528",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 563.0,
+              "deadline_s": 564.2,
+              "old_dispatch_s": 563.430924695,
+              "new_dispatch_s": 563.168536727,
+              "old_response_s": 564.201953742,
+              "new_response_s": 563.964478712,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000532",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 563.0,
+              "deadline_s": 564.2,
+              "old_dispatch_s": 563.260924695,
+              "new_dispatch_s": 563.509222342,
+              "old_response_s": 564.328086668,
+              "new_response_s": 564.192848588,
+              "old_route": "GPU",
+              "new_route": "CPU"
+            }
+          ]
+        },
+        {
+          "reference": "TEACHER_FAIR",
+          "counts": {},
+          "urgent_changes": []
+        }
+      ],
+      "first_urgent_loss": {
+        "request_id": "common-000187",
+        "gain": false,
+        "task": "C",
+        "arrival_s": 219.0,
+        "deadline_s": 219.8,
+        "old_dispatch_s": 219.531588157,
+        "new_dispatch_s": 219.6428266,
+        "old_response_s": 219.780920157,
+        "new_response_s": 219.80373933,
+        "old_route": "GPU",
+        "new_route": "CPU"
+      },
+      "first_loss_preceding_chain": []
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "counts": {
+        "calls": 4911,
+        "urgent_first_changes_service_set": 0,
+        "urgent_dispatches": 588,
+        "urgent_nominal_on_actual_late": 41
+      },
+      "nominal_miss_examples": [
+        {
+          "request_id": "common-000233",
+          "dispatch_s": 93.464710465,
+          "deadline_s": 94.45,
+          "nominal_response_s": 94.43812623764111,
+          "actual_response_s": 94.525819656,
+          "actual_minus_nominal_s": 0.08769341835888156,
+          "owner_count": 3,
+          "route": "CPU",
+          "teacher_exact": true
+        },
+        {
+          "request_id": "common-000245",
+          "dispatch_s": 96.495883055,
+          "deadline_s": 97.45,
+          "nominal_response_s": 97.33845740053141,
+          "actual_response_s": 97.490074986,
+          "actual_minus_nominal_s": 0.1516175854685855,
+          "owner_count": 1,
+          "route": "CPU",
+          "teacher_exact": true
+        },
+        {
+          "request_id": "common-000469",
+          "dispatch_s": 152.405210312,
+          "deadline_s": 153.45,
+          "nominal_response_s": 153.44635310532183,
+          "actual_response_s": 153.513665361,
+          "actual_minus_nominal_s": 0.06731225567816068,
+          "owner_count": 2,
+          "route": "CPU",
+          "teacher_exact": true
+        }
+      ],
+      "comparisons": [
+        {
+          "reference": "BC_NEURAL_PREVIOUS",
+          "counts": {
+            "U_loss": 41,
+            "U_gain": 29,
+            "N_loss": 1,
+            "N_gain": 1
+          },
+          "urgent_changes": [
+            {
+              "request_id": "common-000193",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 83.25,
+              "deadline_s": 84.45,
+              "old_dispatch_s": 83.347294618,
+              "new_dispatch_s": 83.617771851,
+              "old_response_s": 84.416391886,
+              "new_response_s": 84.536479389,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000233",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 93.25,
+              "deadline_s": 94.45,
+              "old_dispatch_s": 93.314710465,
+              "new_dispatch_s": 93.464710465,
+              "old_response_s": 94.345584478,
+              "new_response_s": 94.525819656,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000234",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 93.5,
+              "deadline_s": 94.7,
+              "old_dispatch_s": 93.516068619,
+              "new_dispatch_s": 93.905785285,
+              "old_response_s": 94.62585433,
+              "new_response_s": 95.311425726,
+              "old_route": "CPU",
+              "new_route": "GPU"
+            },
+            {
+              "request_id": "common-000235",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 93.75,
+              "deadline_s": 94.95,
+              "old_dispatch_s": 93.818594234,
+              "new_dispatch_s": 94.081679548,
+              "old_response_s": 94.932038012,
+              "new_response_s": 94.961726037,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000241",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 95.25,
+              "deadline_s": 96.45,
+              "old_dispatch_s": 95.458845316,
+              "new_dispatch_s": 95.313022734,
+              "old_response_s": 96.287008205,
+              "new_response_s": 96.495175055,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000245",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 96.25,
+              "deadline_s": 97.45,
+              "old_dispatch_s": 96.277294618,
+              "new_dispatch_s": 96.495883055,
+              "old_response_s": 97.376201937,
+              "new_response_s": 97.490074986,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000249",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 97.25,
+              "deadline_s": 98.45,
+              "old_dispatch_s": 97.477111399,
+              "new_dispatch_s": 97.540984448,
+              "old_response_s": 98.482709084,
+              "new_response_s": 98.447643859,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000281",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 105.25,
+              "deadline_s": 106.45,
+              "old_dispatch_s": 105.295770726,
+              "new_dispatch_s": 105.277294618,
+              "old_response_s": 106.354002456,
+              "new_response_s": 106.465778279,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000501",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 160.25,
+              "deadline_s": 161.45,
+              "old_dispatch_s": 160.564512157,
+              "new_dispatch_s": 160.534512157,
+              "old_response_s": 161.442053338,
+              "new_response_s": 161.467344787,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000513",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 163.25,
+              "deadline_s": 164.45,
+              "old_dispatch_s": 163.25399031,
+              "new_dispatch_s": 163.47399031,
+              "old_response_s": 164.255470251,
+              "new_response_s": 164.56219702,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000526",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 166.5,
+              "deadline_s": 167.7,
+              "old_dispatch_s": 166.791102773,
+              "new_dispatch_s": 166.728514234,
+              "old_response_s": 167.699968553,
+              "new_response_s": 167.739105374,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000542",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 170.5,
+              "deadline_s": 171.7,
+              "old_dispatch_s": 170.514446235,
+              "new_dispatch_s": 170.695727313,
+              "old_response_s": 171.606127086,
+              "new_response_s": 171.758432267,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000588",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 182.0,
+              "deadline_s": 182.8,
+              "old_dispatch_s": 182.472648054,
+              "new_dispatch_s": 182.60386169,
+              "old_response_s": 182.674451039,
+              "new_response_s": 182.802537249,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000664",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 201.0,
+              "deadline_s": 201.8,
+              "old_dispatch_s": 201.271102773,
+              "new_dispatch_s": 201.581030793,
+              "old_response_s": 201.508866046,
+              "new_response_s": 201.816148222,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000666",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 201.5,
+              "deadline_s": 202.7,
+              "old_dispatch_s": 201.516068619,
+              "new_dispatch_s": 201.723089064,
+              "old_response_s": 202.692414384,
+              "new_response_s": 202.993654674,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000687",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 206.75,
+              "deadline_s": 207.95,
+              "old_dispatch_s": 206.888594234,
+              "new_dispatch_s": 206.818594234,
+              "old_response_s": 208.00438354,
+              "new_response_s": 207.919341189,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000740",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 220.0,
+              "deadline_s": 221.2,
+              "old_dispatch_s": 220.258514234,
+              "new_dispatch_s": 220.253092825,
+              "old_response_s": 221.302348527,
+              "new_response_s": 221.163600097,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000744",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 221.0,
+              "deadline_s": 222.2,
+              "old_dispatch_s": 221.302895373,
+              "new_dispatch_s": 221.164146943,
+              "old_response_s": 222.355739398,
+              "new_response_s": 222.169854353,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000748",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 222.0,
+              "deadline_s": 223.2,
+              "old_dispatch_s": 222.228356082,
+              "new_dispatch_s": 222.190914353,
+              "old_response_s": 223.195706235,
+              "new_response_s": 223.262647614,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000873",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 253.25,
+              "deadline_s": 254.45,
+              "old_dispatch_s": 253.492599815,
+              "new_dispatch_s": 253.334446235,
+              "old_response_s": 254.656054111,
+              "new_response_s": 254.403759061,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000876",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 254.0,
+              "deadline_s": 255.2,
+              "old_dispatch_s": 254.134710465,
+              "new_dispatch_s": 254.054710465,
+              "old_response_s": 255.173325382,
+              "new_response_s": 255.216267781,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000883",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 255.75,
+              "deadline_s": 256.95,
+              "old_dispatch_s": 256.014710465,
+              "new_dispatch_s": 255.795574002,
+              "old_response_s": 256.990870698,
+              "new_response_s": 256.804650468,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000934",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 268.5,
+              "deadline_s": 269.7,
+              "old_dispatch_s": 268.521102773,
+              "new_dispatch_s": 268.521102773,
+              "old_response_s": 269.520593535,
+              "new_response_s": 269.70292709,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000965",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 276.25,
+              "deadline_s": 277.45,
+              "old_dispatch_s": 276.264446235,
+              "new_dispatch_s": 276.284446235,
+              "old_response_s": 277.297784513,
+              "new_response_s": 277.461695189,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000967",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 276.75,
+              "deadline_s": 277.95,
+              "old_dispatch_s": 276.766068619,
+              "new_dispatch_s": 277.326568049,
+              "old_response_s": 277.915615732,
+              "new_response_s": 278.172670826,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001008",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 287.0,
+              "deadline_s": 288.2,
+              "old_dispatch_s": 287.141102773,
+              "new_dispatch_s": 287.021102773,
+              "old_response_s": 288.255047174,
+              "new_response_s": 288.096095671,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001097",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 309.25,
+              "deadline_s": 310.45,
+              "old_dispatch_s": 309.477294618,
+              "new_dispatch_s": 309.497294618,
+              "old_response_s": 310.438529647,
+              "new_response_s": 310.481166071,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001116",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 314.0,
+              "deadline_s": 315.2,
+              "old_dispatch_s": 314.268339157,
+              "new_dispatch_s": 314.385357037,
+              "old_response_s": 315.166980956,
+              "new_response_s": 315.249886605,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001139",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 319.75,
+              "deadline_s": 320.95,
+              "old_dispatch_s": 319.771102773,
+              "new_dispatch_s": 319.871102773,
+              "old_response_s": 320.873282464,
+              "new_response_s": 321.059882626,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001187",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 331.75,
+              "deadline_s": 332.95,
+              "old_dispatch_s": 331.802416816,
+              "new_dispatch_s": 331.753792311,
+              "old_response_s": 332.940463378,
+              "new_response_s": 332.972795778,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001194",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 333.5,
+              "deadline_s": 334.7,
+              "old_dispatch_s": 333.731727226,
+              "new_dispatch_s": 333.703133467,
+              "old_response_s": 334.724395456,
+              "new_response_s": 334.684296872,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001202",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 335.5,
+              "deadline_s": 336.7,
+              "old_dispatch_s": 335.586068619,
+              "new_dispatch_s": 335.781193017,
+              "old_response_s": 336.593137894,
+              "new_response_s": 336.70563639,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001206",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 336.5,
+              "deadline_s": 337.7,
+              "old_dispatch_s": 336.53623443,
+              "new_dispatch_s": 336.606068619,
+              "old_response_s": 337.705279378,
+              "new_response_s": 337.658821921,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001213",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 338.25,
+              "deadline_s": 339.45,
+              "old_dispatch_s": 338.414710465,
+              "new_dispatch_s": 338.264710465,
+              "old_response_s": 339.447333273,
+              "new_response_s": 339.493333696,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001222",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 340.5,
+              "deadline_s": 341.7,
+              "old_dispatch_s": 340.691102773,
+              "new_dispatch_s": 340.671102773,
+              "old_response_s": 341.731225832,
+              "new_response_s": 341.69230084,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001240",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 345.0,
+              "deadline_s": 346.2,
+              "old_dispatch_s": 345.194082283,
+              "new_dispatch_s": 345.268339157,
+              "old_response_s": 346.087953773,
+              "new_response_s": 346.229947878,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001257",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 349.25,
+              "deadline_s": 350.45,
+              "old_dispatch_s": 349.414710465,
+              "new_dispatch_s": 349.358013522,
+              "old_response_s": 350.421477906,
+              "new_response_s": 350.500548226,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001258",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 349.5,
+              "deadline_s": 350.7,
+              "old_dispatch_s": 349.50399031,
+              "new_dispatch_s": 349.60399031,
+              "old_response_s": 350.881583804,
+              "new_response_s": 350.69209274,
+              "old_route": "GPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001271",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 352.75,
+              "deadline_s": 353.95,
+              "old_dispatch_s": 352.818594234,
+              "new_dispatch_s": 353.031148849,
+              "old_response_s": 353.929467911,
+              "new_response_s": 353.973981397,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001369",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 377.25,
+              "deadline_s": 378.45,
+              "old_dispatch_s": 377.695839487,
+              "new_dispatch_s": 377.351486581,
+              "old_response_s": 378.493046993,
+              "new_response_s": 378.138718073,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001405",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 386.25,
+              "deadline_s": 387.45,
+              "old_dispatch_s": 386.4389627,
+              "new_dispatch_s": 386.525574002,
+              "old_response_s": 387.302061994,
+              "new_response_s": 387.471495835,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001448",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 397.0,
+              "deadline_s": 398.2,
+              "old_dispatch_s": 397.246723839,
+              "new_dispatch_s": 397.247872677,
+              "old_response_s": 398.186773791,
+              "new_response_s": 398.240221292,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001461",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 400.25,
+              "deadline_s": 401.45,
+              "old_dispatch_s": 400.552648368,
+              "new_dispatch_s": 400.268594234,
+              "old_response_s": 401.464839673,
+              "new_response_s": 401.075438147,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001609",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 437.25,
+              "deadline_s": 438.45,
+              "old_dispatch_s": 437.293792311,
+              "new_dispatch_s": 437.253792311,
+              "old_response_s": 438.456491047,
+              "new_response_s": 438.418393873,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001626",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 441.5,
+              "deadline_s": 442.7,
+              "old_dispatch_s": 441.525574002,
+              "new_dispatch_s": 441.808877579,
+              "old_response_s": 442.570228602,
+              "new_response_s": 442.887263778,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001630",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 442.5,
+              "deadline_s": 443.7,
+              "old_dispatch_s": 442.591138064,
+              "new_dispatch_s": 443.00817324,
+              "old_response_s": 443.684186484,
+              "new_response_s": 443.965133967,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001700",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 460.0,
+              "deadline_s": 461.2,
+              "old_dispatch_s": 460.179193645,
+              "new_dispatch_s": 460.108594234,
+              "old_response_s": 461.294140054,
+              "new_response_s": 461.19903757,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001717",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 464.25,
+              "deadline_s": 465.45,
+              "old_dispatch_s": 464.608514234,
+              "new_dispatch_s": 464.483644245,
+              "old_response_s": 465.518599047,
+              "new_response_s": 465.417360933,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001736",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 469.0,
+              "deadline_s": 470.2,
+              "old_dispatch_s": 469.203473095,
+              "new_dispatch_s": 469.258514234,
+              "old_response_s": 470.19441037,
+              "new_response_s": 470.242033306,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001737",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 469.25,
+              "deadline_s": 470.45,
+              "old_dispatch_s": 469.358514234,
+              "new_dispatch_s": 469.478514234,
+              "old_response_s": 470.364100395,
+              "new_response_s": 470.49218092,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001781",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 480.25,
+              "deadline_s": 481.45,
+              "old_dispatch_s": 480.52266285,
+              "new_dispatch_s": 480.467567673,
+              "old_response_s": 481.469605534,
+              "new_response_s": 481.347986575,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001932",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 518.0,
+              "deadline_s": 519.2,
+              "old_dispatch_s": 518.777046753,
+              "new_dispatch_s": 518.023792311,
+              "old_response_s": 519.776336668,
+              "new_response_s": 519.155687962,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001938",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 519.5,
+              "deadline_s": 520.7,
+              "old_dispatch_s": 519.747294618,
+              "new_dispatch_s": 519.527294618,
+              "old_response_s": 520.710293451,
+              "new_response_s": 520.67954743,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001988",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 532.0,
+              "deadline_s": 533.2,
+              "old_dispatch_s": 532.317294618,
+              "new_dispatch_s": 532.147294618,
+              "old_response_s": 533.237050867,
+              "new_response_s": 533.050877592,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002014",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 538.5,
+              "deadline_s": 539.7,
+              "old_dispatch_s": 538.525574002,
+              "new_dispatch_s": 538.525574002,
+              "old_response_s": 539.69649215,
+              "new_response_s": 539.70947781,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002028",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 542.0,
+              "deadline_s": 543.2,
+              "old_dispatch_s": 542.047488416,
+              "new_dispatch_s": 542.066068619,
+              "old_response_s": 543.190315575,
+              "new_response_s": 543.223257576,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002034",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 543.5,
+              "deadline_s": 544.7,
+              "old_dispatch_s": 544.073540728,
+              "new_dispatch_s": 543.528514234,
+              "old_response_s": 545.211765571,
+              "new_response_s": 544.667046111,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002036",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 544.0,
+              "deadline_s": 545.2,
+              "old_dispatch_s": 544.553792311,
+              "new_dispatch_s": 544.048514234,
+              "old_response_s": 545.756998492,
+              "new_response_s": 545.165781443,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002040",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 545.0,
+              "deadline_s": 546.2,
+              "old_dispatch_s": 545.101424461,
+              "new_dispatch_s": 545.008514234,
+              "old_response_s": 546.237471733,
+              "new_response_s": 546.048877776,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002061",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 550.25,
+              "deadline_s": 551.45,
+              "old_dispatch_s": 550.464710465,
+              "new_dispatch_s": 550.44226515,
+              "old_response_s": 551.431199856,
+              "new_response_s": 551.458160712,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002070",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 552.5,
+              "deadline_s": 553.7,
+              "old_dispatch_s": 552.661931768,
+              "new_dispatch_s": 552.514710465,
+              "old_response_s": 553.745550199,
+              "new_response_s": 553.564355852,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002095",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 558.75,
+              "deadline_s": 559.95,
+              "old_dispatch_s": 559.007002488,
+              "new_dispatch_s": 558.766068619,
+              "old_response_s": 560.017116417,
+              "new_response_s": 559.82039571,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002206",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 586.5,
+              "deadline_s": 587.7,
+              "old_dispatch_s": 586.521102773,
+              "new_dispatch_s": 587.00399031,
+              "old_response_s": 587.650657008,
+              "new_response_s": 588.108672357,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002214",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 588.5,
+              "deadline_s": 589.7,
+              "old_dispatch_s": 588.894101418,
+              "new_dispatch_s": 588.516068619,
+              "old_response_s": 590.035597489,
+              "new_response_s": 589.651500691,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002217",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 589.25,
+              "deadline_s": 590.45,
+              "old_dispatch_s": 589.795560846,
+              "new_dispatch_s": 589.268594234,
+              "old_response_s": 590.688105193,
+              "new_response_s": 590.369233007,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002218",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 589.5,
+              "deadline_s": 590.3,
+              "old_dispatch_s": 589.795560846,
+              "new_dispatch_s": 590.11827316,
+              "old_response_s": 590.029410099,
+              "new_response_s": 590.314261951,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002260",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 600.0,
+              "deadline_s": 601.2,
+              "old_dispatch_s": 600.018594234,
+              "new_dispatch_s": 600.118594234,
+              "old_response_s": 601.191263134,
+              "new_response_s": 601.235637861,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002276",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 604.0,
+              "deadline_s": 605.2,
+              "old_dispatch_s": 604.014446235,
+              "new_dispatch_s": 604.014446235,
+              "old_response_s": 605.124510771,
+              "new_response_s": 605.284981962,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002288",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 607.0,
+              "deadline_s": 608.2,
+              "old_dispatch_s": 607.380032051,
+              "new_dispatch_s": 607.016068619,
+              "old_response_s": 608.489364616,
+              "new_response_s": 608.147855067,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002302",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 610.5,
+              "deadline_s": 611.7,
+              "old_dispatch_s": 610.503792311,
+              "new_dispatch_s": 610.528036305,
+              "old_response_s": 611.750636476,
+              "new_response_s": 611.678354209,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            }
+          ]
+        },
+        {
+          "reference": "TEACHER_FAIR",
+          "counts": {
+            "U_gain": 19,
+            "U_loss": 15
+          },
+          "urgent_changes": [
+            {
+              "request_id": "common-000477",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 154.25,
+              "deadline_s": 155.45,
+              "old_dispatch_s": 154.5945831,
+              "new_dispatch_s": 154.514311427,
+              "old_response_s": 155.483497705,
+              "new_response_s": 155.314838716,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000515",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 163.75,
+              "deadline_s": 164.95,
+              "old_dispatch_s": 164.21819775,
+              "new_dispatch_s": 164.009871573,
+              "old_response_s": 165.139963467,
+              "new_response_s": 164.915858455,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000532",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 168.0,
+              "deadline_s": 169.2,
+              "old_dispatch_s": 168.05399031,
+              "new_dispatch_s": 168.07399031,
+              "old_response_s": 169.202154098,
+              "new_response_s": 169.198747632,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000539",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 169.75,
+              "deadline_s": 170.95,
+              "old_dispatch_s": 169.914446235,
+              "new_dispatch_s": 169.914446235,
+              "old_response_s": 170.95949764,
+              "new_response_s": 170.895015318,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000577",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 179.25,
+              "deadline_s": 180.45,
+              "old_dispatch_s": 179.395857727,
+              "new_dispatch_s": 179.264446235,
+              "old_response_s": 180.463256497,
+              "new_response_s": 180.30130371,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000612",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 188.0,
+              "deadline_s": 189.2,
+              "old_dispatch_s": 188.258514234,
+              "new_dispatch_s": 188.014710465,
+              "old_response_s": 189.231004307,
+              "new_response_s": 189.031852705,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000654",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 198.5,
+              "deadline_s": 199.7,
+              "old_dispatch_s": 198.545574002,
+              "new_dispatch_s": 198.525574002,
+              "old_response_s": 199.658064546,
+              "new_response_s": 199.733835519,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000664",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 201.0,
+              "deadline_s": 201.8,
+              "old_dispatch_s": 201.516068619,
+              "new_dispatch_s": 201.581030793,
+              "old_response_s": 201.750238093,
+              "new_response_s": 201.816148222,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000685",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 206.25,
+              "deadline_s": 207.05,
+              "old_dispatch_s": 206.820666608,
+              "new_dispatch_s": 206.273327387,
+              "old_response_s": 207.055711581,
+              "new_response_s": 206.515387835,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000691",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 207.75,
+              "deadline_s": 208.95,
+              "old_dispatch_s": 207.784710465,
+              "new_dispatch_s": 208.062816964,
+              "old_response_s": 208.698784871,
+              "new_response_s": 209.040188411,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000698",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 209.5,
+              "deadline_s": 210.7,
+              "old_dispatch_s": 209.706077558,
+              "new_dispatch_s": 209.50399031,
+              "old_response_s": 210.803198856,
+              "new_response_s": 210.523344467,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000701",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 210.25,
+              "deadline_s": 211.45,
+              "old_dispatch_s": 210.542469941,
+              "new_dispatch_s": 210.275574002,
+              "old_response_s": 211.626651998,
+              "new_response_s": 211.421614517,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000740",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 220.0,
+              "deadline_s": 221.2,
+              "old_dispatch_s": 220.258514234,
+              "new_dispatch_s": 220.253092825,
+              "old_response_s": 221.310738686,
+              "new_response_s": 221.163600097,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000744",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 221.0,
+              "deadline_s": 222.2,
+              "old_dispatch_s": 221.268339157,
+              "new_dispatch_s": 221.164146943,
+              "old_response_s": 222.329417527,
+              "new_response_s": 222.169854353,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000748",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 222.0,
+              "deadline_s": 223.2,
+              "old_dispatch_s": 222.231731042,
+              "new_dispatch_s": 222.190914353,
+              "old_response_s": 223.195720344,
+              "new_response_s": 223.262647614,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000848",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 247.0,
+              "deadline_s": 248.2,
+              "old_dispatch_s": 247.014710465,
+              "new_dispatch_s": 247.388218829,
+              "old_response_s": 248.15045134,
+              "new_response_s": 248.580476115,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001008",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 287.0,
+              "deadline_s": 288.2,
+              "old_dispatch_s": 287.071102773,
+              "new_dispatch_s": 287.021102773,
+              "old_response_s": 288.255974445,
+              "new_response_s": 288.096095671,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001025",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 291.25,
+              "deadline_s": 292.45,
+              "old_dispatch_s": 291.328514234,
+              "new_dispatch_s": 291.328514234,
+              "old_response_s": 292.431700638,
+              "new_response_s": 292.475310796,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001107",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 311.75,
+              "deadline_s": 312.95,
+              "old_dispatch_s": 311.828514234,
+              "new_dispatch_s": 311.798514234,
+              "old_response_s": 312.981271562,
+              "new_response_s": 312.949660638,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001116",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 314.0,
+              "deadline_s": 315.2,
+              "old_dispatch_s": 314.306512516,
+              "new_dispatch_s": 314.385357037,
+              "old_response_s": 315.196363769,
+              "new_response_s": 315.249886605,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001139",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 319.75,
+              "deadline_s": 320.95,
+              "old_dispatch_s": 319.771102773,
+              "new_dispatch_s": 319.871102773,
+              "old_response_s": 320.875300997,
+              "new_response_s": 321.059882626,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001187",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 331.75,
+              "deadline_s": 332.95,
+              "old_dispatch_s": 331.905948143,
+              "new_dispatch_s": 331.753792311,
+              "old_response_s": 332.924898276,
+              "new_response_s": 332.972795778,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001202",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 335.5,
+              "deadline_s": 336.7,
+              "old_dispatch_s": 335.764710465,
+              "new_dispatch_s": 335.781193017,
+              "old_response_s": 336.636893605,
+              "new_response_s": 336.70563639,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001206",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 336.5,
+              "deadline_s": 337.7,
+              "old_dispatch_s": 336.63783999,
+              "new_dispatch_s": 336.606068619,
+              "old_response_s": 337.83755515,
+              "new_response_s": 337.658821921,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001207",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 336.75,
+              "deadline_s": 337.95,
+              "old_dispatch_s": 336.90678163,
+              "new_dispatch_s": 336.976824,
+              "old_response_s": 338.085975988,
+              "new_response_s": 337.936655568,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001213",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 338.25,
+              "deadline_s": 339.45,
+              "old_dispatch_s": 338.42988944,
+              "new_dispatch_s": 338.264710465,
+              "old_response_s": 339.337471683,
+              "new_response_s": 339.493333696,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001257",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 349.25,
+              "deadline_s": 350.45,
+              "old_dispatch_s": 349.264710465,
+              "new_dispatch_s": 349.358013522,
+              "old_response_s": 350.404584121,
+              "new_response_s": 350.500548226,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001258",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 349.5,
+              "deadline_s": 350.7,
+              "old_dispatch_s": 349.65399031,
+              "new_dispatch_s": 349.60399031,
+              "old_response_s": 350.788108224,
+              "new_response_s": 350.69209274,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001260",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 350.0,
+              "deadline_s": 351.2,
+              "old_dispatch_s": 350.254763694,
+              "new_dispatch_s": 350.072847694,
+              "old_response_s": 351.194794408,
+              "new_response_s": 351.454816846,
+              "old_route": "CPU",
+              "new_route": "GPU"
+            },
+            {
+              "request_id": "common-001674",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 453.5,
+              "deadline_s": 454.3,
+              "old_dispatch_s": 454.08336627,
+              "new_dispatch_s": 453.648879207,
+              "old_response_s": 454.304213797,
+              "new_response_s": 453.866204922,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002206",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 586.5,
+              "deadline_s": 587.7,
+              "old_dispatch_s": 586.521102773,
+              "new_dispatch_s": 587.00399031,
+              "old_response_s": 587.541779228,
+              "new_response_s": 588.108672357,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002269",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 602.25,
+              "deadline_s": 603.05,
+              "old_dispatch_s": 602.825699207,
+              "new_dispatch_s": 602.777294618,
+              "old_response_s": 603.054347671,
+              "new_response_s": 603.005952841,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002276",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 604.0,
+              "deadline_s": 605.2,
+              "old_dispatch_s": 604.014446235,
+              "new_dispatch_s": 604.014446235,
+              "old_response_s": 605.076217247,
+              "new_response_s": 605.284981962,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002302",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 610.5,
+              "deadline_s": 611.7,
+              "old_dispatch_s": 610.659539925,
+              "new_dispatch_s": 610.528036305,
+              "old_response_s": 611.851829622,
+              "new_response_s": 611.678354209,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            }
+          ]
+        }
+      ],
+      "first_urgent_loss": {
+        "request_id": "common-000193",
+        "gain": false,
+        "task": "D",
+        "arrival_s": 83.25,
+        "deadline_s": 84.45,
+        "old_dispatch_s": 83.347294618,
+        "new_dispatch_s": 83.617771851,
+        "old_response_s": 84.416391886,
+        "new_response_s": 84.536479389,
+        "old_route": "CPU",
+        "new_route": "CPU"
+      },
+      "first_loss_preceding_chain": [
+        {
+          "time_s": 82.271102773,
+          "action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000183",
+            "route": "CPU"
+          },
+          "teacher_action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000183",
+            "route": "CPU"
+          },
+          "exact": true,
+          "service_pair": {
+            "late_ALL": 0,
+            "late_U": 0,
+            "pending": 7
+          },
+          "normal_forced": [
+            0
+          ],
+          "queue": [
+            {
+              "id": "common-000183",
+              "priority": "N",
+              "task": "D"
+            },
+            {
+              "id": "common-000186",
+              "priority": "N",
+              "task": "D"
+            },
+            {
+              "id": "common-000188",
+              "priority": "N",
+              "task": "D"
+            },
+            {
+              "id": "common-000189",
+              "priority": "N",
+              "task": "D"
+            }
+          ],
+          "owners": [
+            {
+              "id": "common-000181",
+              "route": "GPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000185",
+              "route": "CPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000187",
+              "route": "CPU",
+              "stage": 1
+            }
+          ]
+        },
+        {
+          "time_s": 82.370514418,
+          "action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000186",
+            "route": "CPU"
+          },
+          "teacher_action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000186",
+            "route": "CPU"
+          },
+          "exact": true,
+          "service_pair": {
+            "late_ALL": 0,
+            "late_U": 0,
+            "pending": 6
+          },
+          "normal_forced": [],
+          "queue": [
+            {
+              "id": "common-000186",
+              "priority": "N",
+              "task": "D"
+            },
+            {
+              "id": "common-000188",
+              "priority": "N",
+              "task": "D"
+            },
+            {
+              "id": "common-000189",
+              "priority": "N",
+              "task": "D"
+            }
+          ],
+          "owners": [
+            {
+              "id": "common-000181",
+              "route": "GPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000187",
+              "route": "CPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000183",
+              "route": "CPU",
+              "stage": 1
+            }
+          ]
+        },
+        {
+          "time_s": 82.416433448,
+          "action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000188",
+            "route": "GPU"
+          },
+          "teacher_action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000188",
+            "route": "GPU"
+          },
+          "exact": true,
+          "service_pair": {
+            "late_ALL": 0,
+            "late_U": 0,
+            "pending": 5
+          },
+          "normal_forced": [],
+          "queue": [
+            {
+              "id": "common-000188",
+              "priority": "N",
+              "task": "D"
+            },
+            {
+              "id": "common-000189",
+              "priority": "N",
+              "task": "D"
+            }
+          ],
+          "owners": [
+            {
+              "id": "common-000187",
+              "route": "CPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000183",
+              "route": "CPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000186",
+              "route": "CPU",
+              "stage": 1
+            }
+          ]
+        },
+        {
+          "time_s": 82.849375728,
+          "action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000190",
+            "route": "CPU"
+          },
+          "teacher_action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000190",
+            "route": "CPU"
+          },
+          "exact": true,
+          "service_pair": {
+            "late_ALL": 1,
+            "late_U": 1,
+            "pending": 6
+          },
+          "normal_forced": [],
+          "queue": [
+            {
+              "id": "common-000189",
+              "priority": "N",
+              "task": "D"
+            },
+            {
+              "id": "common-000190",
+              "priority": "U",
+              "task": "D"
+            },
+            {
+              "id": "common-000191",
+              "priority": "N",
+              "task": "C"
+            }
+          ],
+          "owners": [
+            {
+              "id": "common-000183",
+              "route": "CPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000186",
+              "route": "CPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000188",
+              "route": "GPU",
+              "stage": 1
+            }
+          ]
+        },
+        {
+          "time_s": 83.414812348,
+          "action": {
+            "kind": "WAIT_EVENT",
+            "max_wait_ns": 500000000
+          },
+          "teacher_action": {
+            "kind": "WAIT_EVENT",
+            "max_wait_ns": 500000000
+          },
+          "exact": true,
+          "service_pair": {
+            "late_ALL": 2,
+            "late_U": 2,
+            "pending": 7
+          },
+          "normal_forced": [],
+          "queue": [
+            {
+              "id": "common-000189",
+              "priority": "N",
+              "task": "D"
+            },
+            {
+              "id": "common-000191",
+              "priority": "N",
+              "task": "C"
+            },
+            {
+              "id": "common-000192",
+              "priority": "N",
+              "task": "C"
+            },
+            {
+              "id": "common-000193",
+              "priority": "U",
+              "task": "D"
+            }
+          ],
+          "owners": [
+            {
+              "id": "common-000186",
+              "route": "CPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000188",
+              "route": "GPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000190",
+              "route": "CPU",
+              "stage": 1
+            }
+          ]
+        },
+        {
+          "time_s": 83.497771851,
+          "action": {
+            "kind": "WAIT",
+            "wait_ns": 50000000
+          },
+          "teacher_action": {
+            "kind": "WAIT",
+            "wait_ns": 50000000
+          },
+          "exact": true,
+          "service_pair": {
+            "late_ALL": 2,
+            "late_U": 2,
+            "pending": 6
+          },
+          "normal_forced": [],
+          "queue": [
+            {
+              "id": "common-000189",
+              "priority": "N",
+              "task": "D"
+            },
+            {
+              "id": "common-000191",
+              "priority": "N",
+              "task": "C"
+            },
+            {
+              "id": "common-000192",
+              "priority": "N",
+              "task": "C"
+            },
+            {
+              "id": "common-000193",
+              "priority": "U",
+              "task": "D"
+            }
+          ],
+          "owners": [
+            {
+              "id": "common-000188",
+              "route": "GPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000190",
+              "route": "CPU",
+              "stage": 1
+            }
+          ]
+        },
+        {
+          "time_s": 83.547771851,
+          "action": {
+            "kind": "WAIT",
+            "wait_ns": 50000000
+          },
+          "teacher_action": {
+            "kind": "WAIT",
+            "wait_ns": 50000000
+          },
+          "exact": true,
+          "service_pair": {
+            "late_ALL": 2,
+            "late_U": 2,
+            "pending": 7
+          },
+          "normal_forced": [],
+          "queue": [
+            {
+              "id": "common-000189",
+              "priority": "N",
+              "task": "D"
+            },
+            {
+              "id": "common-000191",
+              "priority": "N",
+              "task": "C"
+            },
+            {
+              "id": "common-000192",
+              "priority": "N",
+              "task": "C"
+            },
+            {
+              "id": "common-000193",
+              "priority": "U",
+              "task": "D"
+            },
+            {
+              "id": "common-000194",
+              "priority": "U",
+              "task": "C"
+            }
+          ],
+          "owners": [
+            {
+              "id": "common-000188",
+              "route": "GPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000190",
+              "route": "CPU",
+              "stage": 1
+            }
+          ]
+        },
+        {
+          "time_s": 83.597771851,
+          "action": {
+            "kind": "WAIT",
+            "wait_ns": 20000000
+          },
+          "teacher_action": {
+            "kind": "WAIT",
+            "wait_ns": 20000000
+          },
+          "exact": true,
+          "service_pair": {
+            "late_ALL": 2,
+            "late_U": 2,
+            "pending": 7
+          },
+          "normal_forced": [],
+          "queue": [
+            {
+              "id": "common-000189",
+              "priority": "N",
+              "task": "D"
+            },
+            {
+              "id": "common-000191",
+              "priority": "N",
+              "task": "C"
+            },
+            {
+              "id": "common-000192",
+              "priority": "N",
+              "task": "C"
+            },
+            {
+              "id": "common-000193",
+              "priority": "U",
+              "task": "D"
+            },
+            {
+              "id": "common-000194",
+              "priority": "U",
+              "task": "C"
+            }
+          ],
+          "owners": [
+            {
+              "id": "common-000188",
+              "route": "GPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000190",
+              "route": "CPU",
+              "stage": 1
+            }
+          ]
+        },
+        {
+          "time_s": 83.617771851,
+          "action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000194",
+            "route": "CPU"
+          },
+          "teacher_action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000194",
+            "route": "CPU"
+          },
+          "exact": true,
+          "service_pair": {
+            "late_ALL": 2,
+            "late_U": 2,
+            "pending": 7
+          },
+          "normal_forced": [],
+          "queue": [
+            {
+              "id": "common-000189",
+              "priority": "N",
+              "task": "D"
+            },
+            {
+              "id": "common-000191",
+              "priority": "N",
+              "task": "C"
+            },
+            {
+              "id": "common-000192",
+              "priority": "N",
+              "task": "C"
+            },
+            {
+              "id": "common-000193",
+              "priority": "U",
+              "task": "D"
+            },
+            {
+              "id": "common-000194",
+              "priority": "U",
+              "task": "C"
+            }
+          ],
+          "owners": [
+            {
+              "id": "common-000188",
+              "route": "GPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000190",
+              "route": "CPU",
+              "stage": 1
+            }
+          ]
+        },
+        {
+          "time_s": 83.617771851,
+          "action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000193",
+            "route": "CPU"
+          },
+          "teacher_action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000193",
+            "route": "CPU"
+          },
+          "exact": true,
+          "service_pair": {
+            "late_ALL": 2,
+            "late_U": 2,
+            "pending": 7
+          },
+          "normal_forced": [],
+          "queue": [
+            {
+              "id": "common-000189",
+              "priority": "N",
+              "task": "D"
+            },
+            {
+              "id": "common-000191",
+              "priority": "N",
+              "task": "C"
+            },
+            {
+              "id": "common-000192",
+              "priority": "N",
+              "task": "C"
+            },
+            {
+              "id": "common-000193",
+              "priority": "U",
+              "task": "D"
+            }
+          ],
+          "owners": [
+            {
+              "id": "common-000188",
+              "route": "GPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000190",
+              "route": "CPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000194",
+              "route": "CPU",
+              "stage": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "counts": {
+        "calls": 4397,
+        "urgent_first_changes_service_set": 0,
+        "urgent_dispatches": 589,
+        "urgent_nominal_on_actual_late": 15
+      },
+      "nominal_miss_examples": [
+        {
+          "request_id": "common-000178",
+          "dispatch_s": 79.600307429,
+          "deadline_s": 79.8,
+          "nominal_response_s": 79.7989177579919,
+          "actual_response_s": 79.805851058,
+          "actual_minus_nominal_s": 0.006933300008100218,
+          "owner_count": 3,
+          "route": "CPU",
+          "teacher_exact": true
+        },
+        {
+          "request_id": "common-000436",
+          "dispatch_s": 143.57472874,
+          "deadline_s": 143.8,
+          "nominal_response_s": 143.7890682798899,
+          "actual_response_s": 143.805944163,
+          "actual_minus_nominal_s": 0.016875883110088807,
+          "owner_count": 3,
+          "route": "CPU",
+          "teacher_exact": true
+        },
+        {
+          "request_id": "common-000562",
+          "dispatch_s": 175.581810647,
+          "deadline_s": 175.8,
+          "nominal_response_s": 175.7906667638068,
+          "actual_response_s": 175.810686009,
+          "actual_minus_nominal_s": 0.020019245193196866,
+          "owner_count": 3,
+          "route": "CPU",
+          "teacher_exact": true
+        }
+      ],
+      "comparisons": [
+        {
+          "reference": "BC_NEURAL_PREVIOUS",
+          "counts": {
+            "U_loss": 42,
+            "U_gain": 46,
+            "N_gain": 11,
+            "N_loss": 6
+          },
+          "urgent_changes": [
+            {
+              "request_id": "common-000028",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 41.0,
+              "deadline_s": 41.8,
+              "old_dispatch_s": 41.155041033,
+              "new_dispatch_s": 41.662665496,
+              "old_response_s": 41.306698302,
+              "new_response_s": 41.802005835,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000155",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 73.0,
+              "deadline_s": 73.8,
+              "old_dispatch_s": 73.258324874,
+              "new_dispatch_s": 73.638931349,
+              "old_response_s": 73.451212312,
+              "new_response_s": 73.947546626,
+              "old_route": "CPU",
+              "new_route": "GPU"
+            },
+            {
+              "request_id": "common-000156",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 73.0,
+              "deadline_s": 74.2,
+              "old_dispatch_s": 73.45867085,
+              "new_dispatch_s": 73.066068619,
+              "old_response_s": 74.35355403,
+              "new_response_s": 74.171645977,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000165",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 75.0,
+              "deadline_s": 76.2,
+              "old_dispatch_s": 75.068339157,
+              "new_dispatch_s": 75.468434172,
+              "old_response_s": 76.091658592,
+              "new_response_s": 76.520981852,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000222",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 89.0,
+              "deadline_s": 89.8,
+              "old_dispatch_s": 89.644598449,
+              "new_dispatch_s": 89.347357631,
+              "old_response_s": 89.841755002,
+              "new_response_s": 89.512747603,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000295",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 107.0,
+              "deadline_s": 108.2,
+              "old_dispatch_s": 107.066068619,
+              "new_dispatch_s": 107.225253202,
+              "old_response_s": 108.172125982,
+              "new_response_s": 108.282419931,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000299",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 109.0,
+              "deadline_s": 110.2,
+              "old_dispatch_s": 109.207727935,
+              "new_dispatch_s": 109.208034144,
+              "old_response_s": 110.177934471,
+              "new_response_s": 110.24766083,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000328",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 117.0,
+              "deadline_s": 117.8,
+              "old_dispatch_s": 117.726073902,
+              "new_dispatch_s": 117.014446235,
+              "old_response_s": 117.889642414,
+              "new_response_s": 117.233483865,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000332",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 117.0,
+              "deadline_s": 118.2,
+              "old_dispatch_s": 117.047380741,
+              "new_dispatch_s": 117.034446235,
+              "old_response_s": 118.349307177,
+              "new_response_s": 118.141363282,
+              "old_route": "GPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000358",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 123.0,
+              "deadline_s": 123.8,
+              "old_dispatch_s": 123.590140463,
+              "new_dispatch_s": 123.425311003,
+              "old_response_s": 123.802437713,
+              "new_response_s": 123.63894602,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000425",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 141.0,
+              "deadline_s": 142.2,
+              "old_dispatch_s": 141.021102773,
+              "new_dispatch_s": 141.233441644,
+              "old_response_s": 142.088190505,
+              "new_response_s": 142.2750732,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000436",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 143.0,
+              "deadline_s": 143.8,
+              "old_dispatch_s": 143.272957457,
+              "new_dispatch_s": 143.57472874,
+              "old_response_s": 143.506683643,
+              "new_response_s": 143.805944163,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000437",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 143.0,
+              "deadline_s": 144.2,
+              "old_dispatch_s": 143.053792311,
+              "new_dispatch_s": 143.062124695,
+              "old_response_s": 144.435281726,
+              "new_response_s": 144.110913479,
+              "old_route": "GPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000459",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 149.0,
+              "deadline_s": 150.2,
+              "old_dispatch_s": 149.064446235,
+              "new_dispatch_s": 149.294067455,
+              "old_response_s": 150.182534812,
+              "new_response_s": 150.32381993,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000466",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 151.0,
+              "deadline_s": 152.2,
+              "old_dispatch_s": 151.241108119,
+              "new_dispatch_s": 151.070962618,
+              "old_response_s": 152.337842728,
+              "new_response_s": 152.185761599,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000506",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 161.0,
+              "deadline_s": 162.2,
+              "old_dispatch_s": 161.346731019,
+              "new_dispatch_s": 161.014710465,
+              "old_response_s": 162.391325362,
+              "new_response_s": 162.061471805,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000522",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 165.0,
+              "deadline_s": 165.8,
+              "old_dispatch_s": 165.67594196,
+              "new_dispatch_s": 165.333007519,
+              "old_response_s": 165.986228385,
+              "new_response_s": 165.642546796,
+              "old_route": "GPU",
+              "new_route": "GPU"
+            },
+            {
+              "request_id": "common-000524",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 165.0,
+              "deadline_s": 165.8,
+              "old_dispatch_s": 165.333046254,
+              "new_dispatch_s": 165.650904027,
+              "old_response_s": 165.663935421,
+              "new_response_s": 165.982455441,
+              "old_route": "GPU",
+              "new_route": "GPU"
+            },
+            {
+              "request_id": "common-000542",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 169.0,
+              "deadline_s": 170.2,
+              "old_dispatch_s": 169.193618843,
+              "new_dispatch_s": 169.066068619,
+              "old_response_s": 170.204029418,
+              "new_response_s": 170.100302569,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000602",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 185.0,
+              "deadline_s": 186.2,
+              "old_dispatch_s": 185.273277042,
+              "new_dispatch_s": 185.058514234,
+              "old_response_s": 186.305744866,
+              "new_response_s": 186.106517298,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000617",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 189.0,
+              "deadline_s": 189.8,
+              "old_dispatch_s": 189.064710465,
+              "new_dispatch_s": 189.568241432,
+              "old_response_s": 189.299018388,
+              "new_response_s": 189.802193279,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000622",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 189.0,
+              "deadline_s": 190.2,
+              "old_dispatch_s": 189.306215542,
+              "new_dispatch_s": 189.064710465,
+              "old_response_s": 190.328919685,
+              "new_response_s": 190.191542333,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000754",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 223.0,
+              "deadline_s": 224.2,
+              "old_dispatch_s": 223.167725128,
+              "new_dispatch_s": 223.008514234,
+              "old_response_s": 224.337175645,
+              "new_response_s": 224.184727205,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000785",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 231.0,
+              "deadline_s": 232.2,
+              "old_dispatch_s": 231.10399031,
+              "new_dispatch_s": 231.314880667,
+              "old_response_s": 232.125795896,
+              "new_response_s": 232.273504557,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000825",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 241.0,
+              "deadline_s": 241.8,
+              "old_dispatch_s": 241.64476801,
+              "new_dispatch_s": 241.234707483,
+              "old_response_s": 241.862059352,
+              "new_response_s": 241.452590068,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000838",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 243.0,
+              "deadline_s": 244.2,
+              "old_dispatch_s": 243.228678238,
+              "new_dispatch_s": 243.247231634,
+              "old_response_s": 244.181117344,
+              "new_response_s": 244.231138155,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000843",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 245.0,
+              "deadline_s": 246.2,
+              "old_dispatch_s": 245.229908446,
+              "new_dispatch_s": 245.045428649,
+              "old_response_s": 246.209972996,
+              "new_response_s": 246.090005135,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000895",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 257.0,
+              "deadline_s": 258.2,
+              "old_dispatch_s": 257.325237755,
+              "new_dispatch_s": 257.00399031,
+              "old_response_s": 258.685571546,
+              "new_response_s": 258.196904891,
+              "old_route": "GPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000903",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 259.0,
+              "deadline_s": 259.8,
+              "old_dispatch_s": 259.589570685,
+              "new_dispatch_s": 259.589975183,
+              "old_response_s": 259.781401636,
+              "new_response_s": 259.815697994,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000964",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 275.0,
+              "deadline_s": 275.8,
+              "old_dispatch_s": 275.606456978,
+              "new_dispatch_s": 275.014512157,
+              "old_response_s": 275.823621564,
+              "new_response_s": 275.230100588,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000981",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 279.0,
+              "deadline_s": 280.2,
+              "old_dispatch_s": 279.230255698,
+              "new_dispatch_s": 279.058514234,
+              "old_response_s": 280.22690711,
+              "new_response_s": 280.062340947,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001002",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 285.0,
+              "deadline_s": 286.2,
+              "old_dispatch_s": 285.00399031,
+              "new_dispatch_s": 285.6098428,
+              "old_response_s": 286.134743313,
+              "new_response_s": 286.735300786,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001015",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 287.0,
+              "deadline_s": 287.8,
+              "old_dispatch_s": 287.569572435,
+              "new_dispatch_s": 287.97355189,
+              "old_response_s": 287.759534256,
+              "new_response_s": 288.162890451,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001193",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 333.0,
+              "deadline_s": 334.2,
+              "old_dispatch_s": 333.018594234,
+              "new_dispatch_s": 333.202034411,
+              "old_response_s": 334.143088592,
+              "new_response_s": 334.379017384,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001205",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 335.0,
+              "deadline_s": 336.2,
+              "old_dispatch_s": 335.025574002,
+              "new_dispatch_s": 335.038594234,
+              "old_response_s": 336.212228853,
+              "new_response_s": 336.092927827,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001209",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 337.0,
+              "deadline_s": 338.2,
+              "old_dispatch_s": 337.409914567,
+              "new_dispatch_s": 337.030872695,
+              "old_response_s": 338.244995571,
+              "new_response_s": 338.149739315,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001222",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 339.0,
+              "deadline_s": 340.2,
+              "old_dispatch_s": 339.058514234,
+              "new_dispatch_s": 339.008514234,
+              "old_response_s": 340.481472708,
+              "new_response_s": 340.083190771,
+              "old_route": "GPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001244",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 345.0,
+              "deadline_s": 346.2,
+              "old_dispatch_s": 345.237678325,
+              "new_dispatch_s": 345.22722145,
+              "old_response_s": 346.354743761,
+              "new_response_s": 346.1873216,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001247",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 345.0,
+              "deadline_s": 346.2,
+              "old_dispatch_s": 345.003792311,
+              "new_dispatch_s": 345.003792311,
+              "old_response_s": 346.203936583,
+              "new_response_s": 346.043900873,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001304",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 361.0,
+              "deadline_s": 362.2,
+              "old_dispatch_s": 361.021102773,
+              "new_dispatch_s": 361.021102773,
+              "old_response_s": 362.200852005,
+              "new_response_s": 362.199248701,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001369",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 377.0,
+              "deadline_s": 377.8,
+              "old_dispatch_s": 377.68732324,
+              "new_dispatch_s": 377.063817002,
+              "old_response_s": 377.910099804,
+              "new_response_s": 377.283768084,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001370",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 377.0,
+              "deadline_s": 378.2,
+              "old_dispatch_s": 377.058514234,
+              "new_dispatch_s": 377.256966029,
+              "old_response_s": 378.128399916,
+              "new_response_s": 378.403358832,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001375",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 377.0,
+              "deadline_s": 378.2,
+              "old_dispatch_s": 377.917296958,
+              "new_dispatch_s": 377.003792311,
+              "old_response_s": 379.039298683,
+              "new_response_s": 378.170441463,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001443",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 395.0,
+              "deadline_s": 395.8,
+              "old_dispatch_s": 395.57824703,
+              "new_dispatch_s": 395.357757474,
+              "old_response_s": 395.807891462,
+              "new_response_s": 395.58670343,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001504",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 411.0,
+              "deadline_s": 412.2,
+              "old_dispatch_s": 411.014710465,
+              "new_dispatch_s": 411.014710465,
+              "old_response_s": 412.189679979,
+              "new_response_s": 412.410619578,
+              "old_route": "CPU",
+              "new_route": "GPU"
+            },
+            {
+              "request_id": "common-001505",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 411.0,
+              "deadline_s": 412.2,
+              "old_dispatch_s": 411.536816074,
+              "new_dispatch_s": 411.014710465,
+              "old_response_s": 412.737486944,
+              "new_response_s": 412.197465638,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001512",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 413.0,
+              "deadline_s": 414.2,
+              "old_dispatch_s": 413.527294618,
+              "new_dispatch_s": 413.075574002,
+              "old_response_s": 414.546290389,
+              "new_response_s": 414.160498887,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001535",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 417.0,
+              "deadline_s": 418.2,
+              "old_dispatch_s": 417.014710465,
+              "new_dispatch_s": 417.098557382,
+              "old_response_s": 418.128968348,
+              "new_response_s": 418.211573552,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001544",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 421.0,
+              "deadline_s": 421.8,
+              "old_dispatch_s": 421.058514234,
+              "new_dispatch_s": 421.785039034,
+              "old_response_s": 421.374489595,
+              "new_response_s": 422.010828775,
+              "old_route": "GPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001551",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 421.0,
+              "deadline_s": 421.8,
+              "old_dispatch_s": 421.383684671,
+              "new_dispatch_s": 421.785039034,
+              "old_response_s": 421.736220093,
+              "new_response_s": 422.01298495,
+              "old_route": "GPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001555",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 423.0,
+              "deadline_s": 423.8,
+              "old_dispatch_s": 423.183810843,
+              "new_dispatch_s": 423.614041464,
+              "old_response_s": 423.526597669,
+              "new_response_s": 423.852209532,
+              "old_route": "GPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001566",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 425.0,
+              "deadline_s": 426.2,
+              "old_dispatch_s": 425.235341155,
+              "new_dispatch_s": 425.025574002,
+              "old_response_s": 426.278496663,
+              "new_response_s": 426.137085117,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001588",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 431.0,
+              "deadline_s": 431.8,
+              "old_dispatch_s": 431.578490526,
+              "new_dispatch_s": 431.015782157,
+              "old_response_s": 431.815435077,
+              "new_response_s": 431.328616935,
+              "old_route": "CPU",
+              "new_route": "GPU"
+            },
+            {
+              "request_id": "common-001655",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 447.0,
+              "deadline_s": 448.2,
+              "old_dispatch_s": 447.233943625,
+              "new_dispatch_s": 447.234826306,
+              "old_response_s": 448.206272434,
+              "new_response_s": 448.170920467,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001657",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 449.0,
+              "deadline_s": 450.2,
+              "old_dispatch_s": 449.014512157,
+              "new_dispatch_s": 449.058514234,
+              "old_response_s": 450.130124206,
+              "new_response_s": 450.46121584,
+              "old_route": "CPU",
+              "new_route": "GPU"
+            },
+            {
+              "request_id": "common-001659",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 449.0,
+              "deadline_s": 450.2,
+              "old_dispatch_s": 449.484479171,
+              "new_dispatch_s": 449.058514234,
+              "old_response_s": 450.521930223,
+              "new_response_s": 450.199684321,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001682",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 455.0,
+              "deadline_s": 455.8,
+              "old_dispatch_s": 455.586726393,
+              "new_dispatch_s": 455.846014655,
+              "old_response_s": 455.799422911,
+              "new_response_s": 456.058315044,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001715",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 463.0,
+              "deadline_s": 464.2,
+              "old_dispatch_s": 463.150872695,
+              "new_dispatch_s": 463.639209936,
+              "old_response_s": 464.185538283,
+              "new_response_s": 464.762675485,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001806",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 485.0,
+              "deadline_s": 485.8,
+              "old_dispatch_s": 485.588951954,
+              "new_dispatch_s": 485.013817002,
+              "old_response_s": 485.801374073,
+              "new_response_s": 485.220634843,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001817",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 489.0,
+              "deadline_s": 489.8,
+              "old_dispatch_s": 489.582721988,
+              "new_dispatch_s": 489.025574002,
+              "old_response_s": 489.808985672,
+              "new_response_s": 489.248771789,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001824",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 491.0,
+              "deadline_s": 492.2,
+              "old_dispatch_s": 491.066068619,
+              "new_dispatch_s": 491.023327387,
+              "old_response_s": 492.226071257,
+              "new_response_s": 492.101364861,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001850",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 497.0,
+              "deadline_s": 498.2,
+              "old_dispatch_s": 497.068339157,
+              "new_dispatch_s": 497.213018408,
+              "old_response_s": 498.069066021,
+              "new_response_s": 498.353353033,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001856",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 499.0,
+              "deadline_s": 500.2,
+              "old_dispatch_s": 499.053879925,
+              "new_dispatch_s": 499.236610635,
+              "old_response_s": 500.113944391,
+              "new_response_s": 500.433383521,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001864",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 501.0,
+              "deadline_s": 501.8,
+              "old_dispatch_s": 501.587369656,
+              "new_dispatch_s": 501.015782157,
+              "old_response_s": 501.807359051,
+              "new_response_s": 501.233956316,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001866",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 501.0,
+              "deadline_s": 502.2,
+              "old_dispatch_s": 501.036734947,
+              "new_dispatch_s": 501.242188624,
+              "old_response_s": 502.104476426,
+              "new_response_s": 502.437693329,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001890",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 507.0,
+              "deadline_s": 507.8,
+              "old_dispatch_s": 507.56265703,
+              "new_dispatch_s": 507.588618036,
+              "old_response_s": 507.741311324,
+              "new_response_s": 507.803922395,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001897",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 509.0,
+              "deadline_s": 510.2,
+              "old_dispatch_s": 509.064446235,
+              "new_dispatch_s": 509.150849876,
+              "old_response_s": 510.06570294,
+              "new_response_s": 510.220410811,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001902",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 509.0,
+              "deadline_s": 510.2,
+              "old_dispatch_s": 509.008514234,
+              "new_dispatch_s": 509.212389919,
+              "old_response_s": 510.043661806,
+              "new_response_s": 510.291604583,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001923",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 515.0,
+              "deadline_s": 516.2,
+              "old_dispatch_s": 515.226148346,
+              "new_dispatch_s": 515.064710465,
+              "old_response_s": 516.218320182,
+              "new_response_s": 516.125895028,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001941",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 519.0,
+              "deadline_s": 520.2,
+              "old_dispatch_s": 519.144700245,
+              "new_dispatch_s": 519.232331754,
+              "old_response_s": 520.154268798,
+              "new_response_s": 520.220012144,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001951",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 521.0,
+              "deadline_s": 521.8,
+              "old_dispatch_s": 521.498092435,
+              "new_dispatch_s": 521.582156218,
+              "old_response_s": 521.680151171,
+              "new_response_s": 521.802191227,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001956",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 523.0,
+              "deadline_s": 524.2,
+              "old_dispatch_s": 523.425263258,
+              "new_dispatch_s": 523.00399031,
+              "old_response_s": 524.539346369,
+              "new_response_s": 524.109086094,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001989",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 531.0,
+              "deadline_s": 532.2,
+              "old_dispatch_s": 531.064446235,
+              "new_dispatch_s": 532.237561833,
+              "old_response_s": 532.19443394,
+              "new_response_s": 533.411541797,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002015",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 537.0,
+              "deadline_s": 537.8,
+              "old_dispatch_s": 537.682384936,
+              "new_dispatch_s": 537.274907621,
+              "old_response_s": 537.90337092,
+              "new_response_s": 537.497688011,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002024",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 541.0,
+              "deadline_s": 541.8,
+              "old_dispatch_s": 541.622173218,
+              "new_dispatch_s": 541.234951279,
+              "old_response_s": 541.841258044,
+              "new_response_s": 541.586228804,
+              "old_route": "CPU",
+              "new_route": "GPU"
+            },
+            {
+              "request_id": "common-002031",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 541.0,
+              "deadline_s": 541.8,
+              "old_dispatch_s": 541.225232308,
+              "new_dispatch_s": 541.596936451,
+              "old_response_s": 541.559255992,
+              "new_response_s": 541.822563958,
+              "old_route": "GPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002140",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 569.0,
+              "deadline_s": 570.2,
+              "old_dispatch_s": 569.175539398,
+              "new_dispatch_s": 569.018594234,
+              "old_response_s": 570.211903753,
+              "new_response_s": 570.083682015,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002190",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 581.0,
+              "deadline_s": 581.8,
+              "old_dispatch_s": 581.570973364,
+              "new_dispatch_s": 581.605080862,
+              "old_response_s": 581.791054138,
+              "new_response_s": 581.819073074,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002194",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 583.0,
+              "deadline_s": 584.2,
+              "old_dispatch_s": 583.014710465,
+              "new_dispatch_s": 583.229713797,
+              "old_response_s": 584.152899679,
+              "new_response_s": 584.266893145,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002255",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 597.0,
+              "deadline_s": 598.2,
+              "old_dispatch_s": 597.241321099,
+              "new_dispatch_s": 597.053879925,
+              "old_response_s": 598.634862869,
+              "new_response_s": 598.142814109,
+              "old_route": "GPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002256",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 599.0,
+              "deadline_s": 600.2,
+              "old_dispatch_s": 599.018594234,
+              "new_dispatch_s": 599.342417418,
+              "old_response_s": 600.175589023,
+              "new_response_s": 600.584170907,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002264",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 601.0,
+              "deadline_s": 602.2,
+              "old_dispatch_s": 601.003792311,
+              "new_dispatch_s": 601.003792311,
+              "old_response_s": 602.147276357,
+              "new_response_s": 602.244633145,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002295",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 607.0,
+              "deadline_s": 607.8,
+              "old_dispatch_s": 607.484058593,
+              "new_dispatch_s": 607.578997683,
+              "old_response_s": 607.704192502,
+              "new_response_s": 607.804621456,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002308",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 611.0,
+              "deadline_s": 611.8,
+              "old_dispatch_s": 611.955083972,
+              "new_dispatch_s": 611.349389157,
+              "old_response_s": 612.135216335,
+              "new_response_s": 611.566638175,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002325",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 615.0,
+              "deadline_s": 616.2,
+              "old_dispatch_s": 615.064446235,
+              "new_dispatch_s": 615.053792311,
+              "old_response_s": 616.04139843,
+              "new_response_s": 616.568781666,
+              "old_route": "CPU",
+              "new_route": "GPU"
+            },
+            {
+              "request_id": "common-002326",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 615.0,
+              "deadline_s": 616.2,
+              "old_dispatch_s": 615.003792311,
+              "new_dispatch_s": 615.053792311,
+              "old_response_s": 616.453022974,
+              "new_response_s": 616.024725363,
+              "old_route": "GPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002335",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 617.0,
+              "deadline_s": 618.2,
+              "old_dispatch_s": 617.473100245,
+              "new_dispatch_s": 617.109301948,
+              "old_response_s": 618.335637166,
+              "new_response_s": 618.143278269,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002353",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 623.0,
+              "deadline_s": 623.8,
+              "old_dispatch_s": 623.490452191,
+              "new_dispatch_s": 623.931848261,
+              "old_response_s": 623.708917177,
+              "new_response_s": 624.105076254,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            }
+          ]
+        },
+        {
+          "reference": "TEACHER_FAIR",
+          "counts": {
+            "U_loss": 9,
+            "U_gain": 10,
+            "N_gain": 2
+          },
+          "urgent_changes": [
+            {
+              "request_id": "common-000155",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 73.0,
+              "deadline_s": 73.8,
+              "old_dispatch_s": 73.023792311,
+              "new_dispatch_s": 73.638931349,
+              "old_response_s": 73.215043044,
+              "new_response_s": 73.947546626,
+              "old_route": "CPU",
+              "new_route": "GPU"
+            },
+            {
+              "request_id": "common-000221",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 89.0,
+              "deadline_s": 90.2,
+              "old_dispatch_s": 89.229131496,
+              "new_dispatch_s": 89.212397003,
+              "old_response_s": 90.200620354,
+              "new_response_s": 90.070171302,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000506",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 161.0,
+              "deadline_s": 162.2,
+              "old_dispatch_s": 161.244538392,
+              "new_dispatch_s": 161.014710465,
+              "old_response_s": 162.250990183,
+              "new_response_s": 162.061471805,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000542",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 169.0,
+              "deadline_s": 170.2,
+              "old_dispatch_s": 169.21107379,
+              "new_dispatch_s": 169.066068619,
+              "old_response_s": 170.213744902,
+              "new_response_s": 170.100302569,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000602",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 185.0,
+              "deadline_s": 186.2,
+              "old_dispatch_s": 185.297467646,
+              "new_dispatch_s": 185.058514234,
+              "old_response_s": 186.260515611,
+              "new_response_s": 186.106517298,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000617",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 189.0,
+              "deadline_s": 189.8,
+              "old_dispatch_s": 189.064710465,
+              "new_dispatch_s": 189.568241432,
+              "old_response_s": 189.298242902,
+              "new_response_s": 189.802193279,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000622",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 189.0,
+              "deadline_s": 190.2,
+              "old_dispatch_s": 189.305440056,
+              "new_dispatch_s": 189.064710465,
+              "old_response_s": 190.325072522,
+              "new_response_s": 190.191542333,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000799",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 233.0,
+              "deadline_s": 233.8,
+              "old_dispatch_s": 233.674342961,
+              "new_dispatch_s": 233.645445076,
+              "old_response_s": 233.82479248,
+              "new_response_s": 233.795892528,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-000903",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 259.0,
+              "deadline_s": 259.8,
+              "old_dispatch_s": 259.287558508,
+              "new_dispatch_s": 259.589975183,
+              "old_response_s": 259.506478615,
+              "new_response_s": 259.815697994,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001042",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 295.0,
+              "deadline_s": 295.8,
+              "old_dispatch_s": 295.58173952,
+              "new_dispatch_s": 295.068594234,
+              "old_response_s": 295.80655454,
+              "new_response_s": 295.290091053,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001304",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 361.0,
+              "deadline_s": 362.2,
+              "old_dispatch_s": 361.021102773,
+              "new_dispatch_s": 361.021102773,
+              "old_response_s": 362.20023255,
+              "new_response_s": 362.199248701,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001535",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 417.0,
+              "deadline_s": 418.2,
+              "old_dispatch_s": 417.014710465,
+              "new_dispatch_s": 417.098557382,
+              "old_response_s": 418.180448621,
+              "new_response_s": 418.211573552,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001543",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 419.0,
+              "deadline_s": 420.2,
+              "old_dispatch_s": 419.038892429,
+              "new_dispatch_s": 419.642434111,
+              "old_response_s": 420.156539419,
+              "new_response_s": 420.5867002,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001555",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 423.0,
+              "deadline_s": 423.8,
+              "old_dispatch_s": 423.335895912,
+              "new_dispatch_s": 423.614041464,
+              "old_response_s": 423.678379004,
+              "new_response_s": 423.852209532,
+              "old_route": "GPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001566",
+              "gain": true,
+              "task": "D",
+              "arrival_s": 425.0,
+              "deadline_s": 426.2,
+              "old_dispatch_s": 425.147558055,
+              "new_dispatch_s": 425.025574002,
+              "old_response_s": 426.216557952,
+              "new_response_s": 426.137085117,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-001682",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 455.0,
+              "deadline_s": 455.8,
+              "old_dispatch_s": 455.345949985,
+              "new_dispatch_s": 455.846014655,
+              "old_response_s": 455.558453525,
+              "new_response_s": 456.058315044,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002190",
+              "gain": false,
+              "task": "C",
+              "arrival_s": 581.0,
+              "deadline_s": 581.8,
+              "old_dispatch_s": 581.562956616,
+              "new_dispatch_s": 581.605080862,
+              "old_response_s": 581.783051201,
+              "new_response_s": 581.819073074,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002194",
+              "gain": false,
+              "task": "D",
+              "arrival_s": 583.0,
+              "deadline_s": 584.2,
+              "old_dispatch_s": 583.014710465,
+              "new_dispatch_s": 583.229713797,
+              "old_response_s": 584.158748205,
+              "new_response_s": 584.266893145,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            },
+            {
+              "request_id": "common-002207",
+              "gain": true,
+              "task": "C",
+              "arrival_s": 585.0,
+              "deadline_s": 585.8,
+              "old_dispatch_s": 585.665234021,
+              "new_dispatch_s": 585.565306266,
+              "old_response_s": 585.853399959,
+              "new_response_s": 585.779312855,
+              "old_route": "CPU",
+              "new_route": "CPU"
+            }
+          ]
+        }
+      ],
+      "first_urgent_loss": {
+        "request_id": "common-000028",
+        "gain": false,
+        "task": "C",
+        "arrival_s": 41.0,
+        "deadline_s": 41.8,
+        "old_dispatch_s": 41.155041033,
+        "new_dispatch_s": 41.662665496,
+        "old_response_s": 41.306698302,
+        "new_response_s": 41.802005835,
+        "old_route": "CPU",
+        "new_route": "CPU"
+      },
+      "first_loss_preceding_chain": [
+        {
+          "time_s": 41.003792311,
+          "action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000026",
+            "route": "GPU"
+          },
+          "teacher_action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000026",
+            "route": "GPU"
+          },
+          "exact": true,
+          "service_pair": {
+            "late_ALL": 0,
+            "late_U": 0,
+            "pending": 2
+          },
+          "normal_forced": [],
+          "queue": [
+            {
+              "id": "common-000026",
+              "priority": "N",
+              "task": "D"
+            },
+            {
+              "id": "common-000031",
+              "priority": "N",
+              "task": "D"
+            }
+          ],
+          "owners": []
+        },
+        {
+          "time_s": 41.003792311,
+          "action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000031",
+            "route": "CPU"
+          },
+          "teacher_action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000031",
+            "route": "CPU"
+          },
+          "exact": true,
+          "service_pair": {
+            "late_ALL": 0,
+            "late_U": 0,
+            "pending": 2
+          },
+          "normal_forced": [],
+          "queue": [
+            {
+              "id": "common-000031",
+              "priority": "N",
+              "task": "D"
+            }
+          ],
+          "owners": [
+            {
+              "id": "common-000026",
+              "route": "GPU",
+              "stage": 0
+            }
+          ]
+        },
+        {
+          "time_s": 41.003879925,
+          "action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000027",
+            "route": "CPU"
+          },
+          "teacher_action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000027",
+            "route": "CPU"
+          },
+          "exact": true,
+          "service_pair": {
+            "late_ALL": 0,
+            "late_U": 0,
+            "pending": 3
+          },
+          "normal_forced": [],
+          "queue": [
+            {
+              "id": "common-000027",
+              "priority": "N",
+              "task": "C"
+            }
+          ],
+          "owners": [
+            {
+              "id": "common-000026",
+              "route": "GPU",
+              "stage": 0
+            },
+            {
+              "id": "common-000031",
+              "route": "CPU",
+              "stage": 0
+            }
+          ]
+        },
+        {
+          "time_s": 41.008514234,
+          "action": {
+            "kind": "WAIT_EVENT",
+            "max_wait_ns": 500000000
+          },
+          "teacher_action": {
+            "kind": "WAIT_EVENT",
+            "max_wait_ns": 500000000
+          },
+          "exact": true,
+          "service_pair": {
+            "late_ALL": 0,
+            "late_U": 0,
+            "pending": 4
+          },
+          "normal_forced": [],
+          "queue": [
+            {
+              "id": "common-000029",
+              "priority": "U",
+              "task": "D"
+            }
+          ],
+          "owners": [
+            {
+              "id": "common-000026",
+              "route": "GPU",
+              "stage": 0
+            },
+            {
+              "id": "common-000031",
+              "route": "CPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000027",
+              "route": "CPU",
+              "stage": 1
+            }
+          ]
+        },
+        {
+          "time_s": 41.010872695,
+          "action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000025",
+            "route": "CPU"
+          },
+          "teacher_action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000025",
+            "route": "CPU"
+          },
+          "exact": true,
+          "service_pair": {
+            "late_ALL": 0,
+            "late_U": 0,
+            "pending": 5
+          },
+          "normal_forced": [],
+          "queue": [
+            {
+              "id": "common-000025",
+              "priority": "N",
+              "task": "C"
+            },
+            {
+              "id": "common-000029",
+              "priority": "U",
+              "task": "D"
+            }
+          ],
+          "owners": [
+            {
+              "id": "common-000026",
+              "route": "GPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000031",
+              "route": "CPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000027",
+              "route": "CPU",
+              "stage": 1
+            }
+          ]
+        },
+        {
+          "time_s": 41.155710495,
+          "action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000029",
+            "route": "CPU"
+          },
+          "teacher_action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000029",
+            "route": "CPU"
+          },
+          "exact": true,
+          "service_pair": {
+            "late_ALL": 0,
+            "late_U": 0,
+            "pending": 6
+          },
+          "normal_forced": [],
+          "queue": [
+            {
+              "id": "common-000024",
+              "priority": "N",
+              "task": "D"
+            },
+            {
+              "id": "common-000028",
+              "priority": "U",
+              "task": "C"
+            },
+            {
+              "id": "common-000029",
+              "priority": "U",
+              "task": "D"
+            },
+            {
+              "id": "common-000030",
+              "priority": "N",
+              "task": "D"
+            }
+          ],
+          "owners": [
+            {
+              "id": "common-000026",
+              "route": "GPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000031",
+              "route": "CPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000025",
+              "route": "CPU",
+              "stage": 2
+            }
+          ]
+        },
+        {
+          "time_s": 41.162665496,
+          "action": {
+            "kind": "WAIT_EVENT",
+            "max_wait_ns": 500000000
+          },
+          "teacher_action": {
+            "kind": "WAIT_EVENT",
+            "max_wait_ns": 500000000
+          },
+          "exact": true,
+          "service_pair": {
+            "late_ALL": 0,
+            "late_U": 0,
+            "pending": 6
+          },
+          "normal_forced": [],
+          "queue": [
+            {
+              "id": "common-000024",
+              "priority": "N",
+              "task": "D"
+            },
+            {
+              "id": "common-000028",
+              "priority": "U",
+              "task": "C"
+            },
+            {
+              "id": "common-000030",
+              "priority": "N",
+              "task": "D"
+            }
+          ],
+          "owners": [
+            {
+              "id": "common-000026",
+              "route": "GPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000031",
+              "route": "CPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000029",
+              "route": "CPU",
+              "stage": 1
+            }
+          ]
+        },
+        {
+          "time_s": 41.662665496,
+          "action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000028",
+            "route": "CPU"
+          },
+          "teacher_action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000028",
+            "route": "CPU"
+          },
+          "exact": true,
+          "service_pair": {
+            "late_ALL": 1,
+            "late_U": 1,
+            "pending": 6
+          },
+          "normal_forced": [],
+          "queue": [
+            {
+              "id": "common-000024",
+              "priority": "N",
+              "task": "D"
+            },
+            {
+              "id": "common-000028",
+              "priority": "U",
+              "task": "C"
+            },
+            {
+              "id": "common-000030",
+              "priority": "N",
+              "task": "D"
+            }
+          ],
+          "owners": [
+            {
+              "id": "common-000026",
+              "route": "GPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000031",
+              "route": "CPU",
+              "stage": 1
+            },
+            {
+              "id": "common-000029",
+              "route": "CPU",
+              "stage": 1
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "case": "S26REQ_EVAL_R1_burst",
+      "decision": 11,
+      "time_s": 35.284889638,
+      "chosen": 1,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000003",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000006",
+        "route": "CPU"
+      },
+      "cost_regret": 0.0,
+      "cost_compatible": true,
+      "score28_equal": true,
+      "teacher_chosen_gap28": 0.0,
+      "input49_chosen": 0.25,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R1_burst",
+      "decision": 105,
+      "time_s": 75.020923542,
+      "chosen": 0,
+      "teacher": 2,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000040",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "cost_regret": 7.758032014626437e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.004923403263092041,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R1_burst",
+      "decision": 419,
+      "time_s": 211.014446235,
+      "chosen": 1,
+      "teacher": 6,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000177",
+        "route": "GPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 0.0009018030774385899,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.008328557014465332,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R1_burst",
+      "decision": 536,
+      "time_s": 259.016068619,
+      "chosen": 5,
+      "teacher": 4,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000226",
+        "route": "GPU"
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000226",
+        "route": "CPU"
+      },
+      "cost_regret": 0.001096234368920701,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.02944713830947876,
+      "input49_chosen": 1.0,
+      "input49_teacher": 1.0
+    },
+    {
+      "case": "S26REQ_EVAL_R1_burst",
+      "decision": 809,
+      "time_s": 371.031148849,
+      "chosen": 1,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000337",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000340",
+        "route": "CPU"
+      },
+      "cost_regret": 0.0,
+      "cost_compatible": true,
+      "score28_equal": true,
+      "teacher_chosen_gap28": 0.0,
+      "input49_chosen": 0.20000000298023224,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R1_burst",
+      "decision": 811,
+      "time_s": 371.165667003,
+      "chosen": 1,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000338",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000340",
+        "route": "CPU"
+      },
+      "cost_regret": 0.0,
+      "cost_compatible": true,
+      "score28_equal": true,
+      "teacher_chosen_gap28": 0.0,
+      "input49_chosen": 0.25,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R1_burst",
+      "decision": 977,
+      "time_s": 451.161130704,
+      "chosen": 4,
+      "teacher": 6,
+      "chosen_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 3.7211563441719164e-07,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 4.5180320739746094e-05,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R1_burst",
+      "decision": 991,
+      "time_s": 459.064710465,
+      "chosen": 1,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000425",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000424",
+        "route": "CPU"
+      },
+      "cost_regret": 0.0,
+      "cost_compatible": true,
+      "score28_equal": true,
+      "teacher_chosen_gap28": 0.0,
+      "input49_chosen": 0.20000000298023224,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R1_burst",
+      "decision": 1397,
+      "time_s": 619.679759618,
+      "chosen": 5,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000587",
+        "route": "CPU"
+      },
+      "cost_regret": 3.5096279702440114e-06,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0008460283279418945,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 61,
+      "time_s": 42.518339157,
+      "chosen": 1,
+      "teacher": 6,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000030",
+        "route": "GPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 7.960925016936571e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0016703009605407715,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 70,
+      "time_s": 43.762124695,
+      "chosen": 1,
+      "teacher": 6,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000035",
+        "route": "GPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 0.0003590645174753604,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.007573246955871582,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 345,
+      "time_s": 68.731882868,
+      "chosen": 1,
+      "teacher": 3,
+      "chosen_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 5.35303895654593e-07,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 1.4066696166992188e-05,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 748,
+      "time_s": 113.990065032,
+      "chosen": 0,
+      "teacher": 4,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000315",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 0.0002409689347699917,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.002635657787322998,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 769,
+      "time_s": 116.197836804,
+      "chosen": 0,
+      "teacher": 4,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000322",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 9.161294516912832e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.000786125659942627,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 787,
+      "time_s": 120.003792311,
+      "chosen": 4,
+      "teacher": 3,
+      "chosen_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 50000000
+      },
+      "cost_regret": 0.00013492611889875938,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.002933323383331299,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 897,
+      "time_s": 133.882443432,
+      "chosen": 3,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "WAIT",
+        "wait_ns": 50000000
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000395",
+        "route": "GPU"
+      },
+      "cost_regret": 0.0005531021369897804,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.012954413890838623,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 904,
+      "time_s": 134.865699628,
+      "chosen": 4,
+      "teacher": 2,
+      "chosen_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "cost_regret": 1.611334016193844e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0002925395965576172,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 1062,
+      "time_s": 156.773181927,
+      "chosen": 0,
+      "teacher": 4,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000487",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "cost_regret": 0.00012652877862651124,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.004653334617614746,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 1063,
+      "time_s": 156.773181927,
+      "chosen": 3,
+      "teacher": 1,
+      "chosen_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "cost_regret": 2.0090124104310547e-06,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 5.942583084106445e-05,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 1205,
+      "time_s": 172.985644294,
+      "chosen": 0,
+      "teacher": 4,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000550",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 2.861126398912006e-06,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0011935234069824219,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 1603,
+      "time_s": 223.267571618,
+      "chosen": 3,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000753",
+        "route": "CPU"
+      },
+      "cost_regret": 1.4090565861657467e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.006754040718078613,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 1795,
+      "time_s": 246.768594234,
+      "chosen": 1,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000846",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000847",
+        "route": "CPU"
+      },
+      "cost_regret": 0.0,
+      "cost_compatible": true,
+      "score28_equal": true,
+      "teacher_chosen_gap28": 0.0,
+      "input49_chosen": 0.3333333432674408,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 1998,
+      "time_s": 271.57266285,
+      "chosen": 3,
+      "teacher": 1,
+      "chosen_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "cost_regret": 2.3994865032683776e-06,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 6.860494613647461e-05,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 2088,
+      "time_s": 284.550335781,
+      "chosen": 6,
+      "teacher": 3,
+      "chosen_action": {
+        "kind": "WAIT",
+        "wait_ns": 50000000
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000998",
+        "route": "CPU"
+      },
+      "cost_regret": 5.669646089900837e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.007929563522338867,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.75
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 2266,
+      "time_s": 309.018594234,
+      "chosen": 4,
+      "teacher": 2,
+      "chosen_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "cost_regret": 3.7364539919870765e-06,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.00012117624282836914,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 2569,
+      "time_s": 342.673879925,
+      "chosen": 3,
+      "teacher": 1,
+      "chosen_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "cost_regret": 2.0395587798649473e-06,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 5.221366882324219e-05,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 2611,
+      "time_s": 347.764710465,
+      "chosen": 4,
+      "teacher": 1,
+      "chosen_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001251",
+        "route": "GPU"
+      },
+      "cost_regret": 0.014960479415766503,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.07840001583099365,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 2638,
+      "time_s": 350.927605154,
+      "chosen": 1,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001263",
+        "route": "CPU"
+      },
+      "cost_regret": 1.6924224337522276e-06,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0012180209159851074,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 2743,
+      "time_s": 366.692443427,
+      "chosen": 0,
+      "teacher": 3,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001325",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 50000000
+      },
+      "cost_regret": 3.977399081644961e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0010338127613067627,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 2969,
+      "time_s": 389.742299765,
+      "chosen": 0,
+      "teacher": 4,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001418",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 3.551616744301711e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0003598332405090332,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 3375,
+      "time_s": 446.022906772,
+      "chosen": 4,
+      "teacher": 1,
+      "chosen_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001644",
+        "route": "CPU"
+      },
+      "cost_regret": 0.0007982671032289446,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.06797444820404053,
+      "input49_chosen": 0.0,
+      "input49_teacher": 1.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 3461,
+      "time_s": 454.968645246,
+      "chosen": 0,
+      "teacher": 4,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001676",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 2.332824498907371e-06,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0009725093841552734,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 3996,
+      "time_s": 525.482906772,
+      "chosen": 1,
+      "teacher": 2,
+      "chosen_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 50000000
+      },
+      "cost_regret": 1.9586397281834422e-07,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 4.0531158447265625e-06,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 4531,
+      "time_s": 586.521102773,
+      "chosen": 4,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-002206",
+        "route": "CPU"
+      },
+      "cost_regret": 2.2075898264972693e-07,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 7.748603820800781e-06,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 4534,
+      "time_s": 587.00399031,
+      "chosen": 1,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-002207",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-002206",
+        "route": "CPU"
+      },
+      "cost_regret": 0.0,
+      "cost_compatible": true,
+      "score28_equal": true,
+      "teacher_chosen_gap28": 0.0,
+      "input49_chosen": 0.3333333432674408,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 4736,
+      "time_s": 611.67914044,
+      "chosen": 5,
+      "teacher": 3,
+      "chosen_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "cost_regret": 4.4853025960023274e-08,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 5.459785461425781e-05,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "decision": 4752,
+      "time_s": 613.316068619,
+      "chosen": 4,
+      "teacher": 2,
+      "chosen_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "cost_regret": 4.41938873496639e-06,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.00022208690643310547,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 246,
+      "time_s": 61.376466226,
+      "chosen": 0,
+      "teacher": 4,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000108",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 3.412737355823481e-06,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0012853741645812988,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 333,
+      "time_s": 73.003792311,
+      "chosen": 0,
+      "teacher": 2,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000154",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "cost_regret": 0.0003808085347092316,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0032196044921875,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 446,
+      "time_s": 87.017571618,
+      "chosen": 0,
+      "teacher": 4,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000212",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "cost_regret": 8.746385522306888e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.010402143001556396,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 465,
+      "time_s": 89.017571618,
+      "chosen": 0,
+      "teacher": 3,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000217",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "cost_regret": 9.926179481856146e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.009016633033752441,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 548,
+      "time_s": 99.2050258,
+      "chosen": 0,
+      "teacher": 6,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000256",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 8.196463119602981e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.01351061463356018,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 553,
+      "time_s": 99.325345867,
+      "chosen": 3,
+      "teacher": 2,
+      "chosen_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 50000000
+      },
+      "cost_regret": 7.5871514182424e-08,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 6.556510925292969e-06,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 599,
+      "time_s": 105.835926422,
+      "chosen": 0,
+      "teacher": 5,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000284",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 5.792413165961463e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.010218024253845215,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 662,
+      "time_s": 115.058514234,
+      "chosen": 1,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000325",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000323",
+        "route": "CPU"
+      },
+      "cost_regret": 0.0,
+      "cost_compatible": true,
+      "score28_equal": true,
+      "teacher_chosen_gap28": 0.0,
+      "input49_chosen": 0.1666666716337204,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 690,
+      "time_s": 117.795741233,
+      "chosen": 1,
+      "teacher": 2,
+      "chosen_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 50000000
+      },
+      "cost_regret": 1.6696917626290997e-08,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 3.5762786865234375e-07,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 691,
+      "time_s": 117.815741233,
+      "chosen": 1,
+      "teacher": 2,
+      "chosen_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 50000000
+      },
+      "cost_regret": 8.173952714685129e-08,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 1.6689300537109375e-06,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 693,
+      "time_s": 117.885741233,
+      "chosen": 0,
+      "teacher": 3,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000330",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 50000000
+      },
+      "cost_regret": 0.0003329316012055106,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0050758421421051025,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 707,
+      "time_s": 121.014446235,
+      "chosen": 0,
+      "teacher": 4,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000351",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 7.248029362649788e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0006812810897827148,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 981,
+      "time_s": 160.189447079,
+      "chosen": 0,
+      "teacher": 4,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000499",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 2.73755212765181e-06,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.001028895378112793,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 984,
+      "time_s": 161.003879925,
+      "chosen": 6,
+      "teacher": 3,
+      "chosen_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000507",
+        "route": "GPU"
+      },
+      "cost_regret": 4.790589043301985e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.011847853660583496,
+      "input49_chosen": 0.0,
+      "input49_teacher": 1.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 1011,
+      "time_s": 163.579637146,
+      "chosen": 2,
+      "teacher": 3,
+      "chosen_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 50000000
+      },
+      "cost_regret": 6.581435796348956e-08,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.00027436017990112305,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 1012,
+      "time_s": 163.599637146,
+      "chosen": 2,
+      "teacher": 3,
+      "chosen_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 50000000
+      },
+      "cost_regret": 3.228708078673037e-08,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 1.817941665649414e-05,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 1013,
+      "time_s": 163.619637146,
+      "chosen": 2,
+      "teacher": 4,
+      "chosen_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 1.007201810843128e-08,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 3.0994415283203125e-06,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 1018,
+      "time_s": 163.729637146,
+      "chosen": 0,
+      "teacher": 4,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000518",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 6.5207563575420124e-06,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0004898905754089355,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 1068,
+      "time_s": 171.345948495,
+      "chosen": 0,
+      "teacher": 1,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000549",
+        "route": "GPU"
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000544",
+        "route": "GPU"
+      },
+      "cost_regret": 1.610023466680488e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0001939535140991211,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.5
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 1122,
+      "time_s": 181.034446235,
+      "chosen": 0,
+      "teacher": 7,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000586",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "cost_regret": 0.003177622589007001,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0021155476570129395,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 1243,
+      "time_s": 197.215777462,
+      "chosen": 7,
+      "teacher": 5,
+      "chosen_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "cost_regret": 1.2977836649774588e-07,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 2.849102020263672e-05,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 1250,
+      "time_s": 197.470650162,
+      "chosen": 0,
+      "teacher": 6,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000648",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 2.8985776675538588e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.003532707691192627,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 1394,
+      "time_s": 221.00399031,
+      "chosen": 0,
+      "teacher": 4,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000751",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 9.109019605624269e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0008681416511535645,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 1428,
+      "time_s": 225.241025872,
+      "chosen": 6,
+      "teacher": 5,
+      "chosen_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 50000000
+      },
+      "cost_regret": 2.503390913233261e-06,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0009188652038574219,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 1603,
+      "time_s": 247.26893241,
+      "chosen": 3,
+      "teacher": 4,
+      "chosen_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 50000000
+      },
+      "cost_regret": 8.84560247182975e-06,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 6.0498714447021484e-05,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 1604,
+      "time_s": 247.28893241,
+      "chosen": 3,
+      "teacher": 5,
+      "chosen_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 6.240361205556155e-07,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 3.5762786865234375e-06,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 1660,
+      "time_s": 253.23953393,
+      "chosen": 1,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000872",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000878",
+        "route": "CPU"
+      },
+      "cost_regret": 0.0,
+      "cost_compatible": true,
+      "score28_equal": true,
+      "teacher_chosen_gap28": 0.0,
+      "input49_chosen": 0.25,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 1727,
+      "time_s": 263.192548774,
+      "chosen": 1,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000914",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000915",
+        "route": "CPU"
+      },
+      "cost_regret": 0.0,
+      "cost_compatible": true,
+      "score28_equal": true,
+      "teacher_chosen_gap28": 0.0,
+      "input49_chosen": 0.25,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 1850,
+      "time_s": 279.003879925,
+      "chosen": 4,
+      "teacher": 3,
+      "chosen_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 50000000
+      },
+      "cost_regret": 1.7985688456567672e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0009396076202392578,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 2308,
+      "time_s": 339.905257003,
+      "chosen": 0,
+      "teacher": 2,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001216",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "cost_regret": 1.6002116804969546e-06,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 1.531839370727539e-05,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 2408,
+      "time_s": 353.592546991,
+      "chosen": 0,
+      "teacher": 6,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001274",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 1.7121487173366035e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.004168391227722168,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 2817,
+      "time_s": 413.075574002,
+      "chosen": 1,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001514",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001512",
+        "route": "CPU"
+      },
+      "cost_regret": 0.0,
+      "cost_compatible": true,
+      "score28_equal": true,
+      "teacher_chosen_gap28": 0.0,
+      "input49_chosen": 0.20000000298023224,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 2882,
+      "time_s": 423.423311023,
+      "chosen": 1,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001552",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001555",
+        "route": "CPU"
+      },
+      "cost_regret": 0.0,
+      "cost_compatible": true,
+      "score28_equal": true,
+      "teacher_chosen_gap28": 0.0,
+      "input49_chosen": 0.20000000298023224,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 2884,
+      "time_s": 423.614041464,
+      "chosen": 1,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001556",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001555",
+        "route": "CPU"
+      },
+      "cost_regret": 0.0,
+      "cost_compatible": true,
+      "score28_equal": true,
+      "teacher_chosen_gap28": 0.0,
+      "input49_chosen": 0.25,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 3030,
+      "time_s": 441.294800333,
+      "chosen": 0,
+      "teacher": 9,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001625",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost_regret": 8.26073942006289e-06,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0017293691635131836,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 3130,
+      "time_s": 455.034710465,
+      "chosen": 0,
+      "teacher": 2,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001680",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001683",
+        "route": "CPU"
+      },
+      "cost_regret": 0.0013223613952959568,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.011386334896087646,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.3333333432674408
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 3186,
+      "time_s": 463.499209936,
+      "chosen": 0,
+      "teacher": 2,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001714",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001715",
+        "route": "CPU"
+      },
+      "cost_regret": 0.0007405094298427173,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.010885000228881836,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.2857142984867096
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 3695,
+      "time_s": 532.237545712,
+      "chosen": 6,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-001989",
+        "route": "CPU"
+      },
+      "cost_regret": 0.0002847633635481017,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.004116654396057129,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 3845,
+      "time_s": 552.917374176,
+      "chosen": 2,
+      "teacher": 1,
+      "chosen_action": {
+        "kind": "WAIT",
+        "wait_ns": 50000000
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "cost_regret": 0.0,
+      "cost_compatible": true,
+      "score28_equal": false,
+      "teacher_chosen_gap28": -0.0025371417868882418,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 3913,
+      "time_s": 563.203510454,
+      "chosen": 1,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-002113",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-002112",
+        "route": "CPU"
+      },
+      "cost_regret": 0.0,
+      "cost_compatible": true,
+      "score28_equal": true,
+      "teacher_chosen_gap28": 0.0,
+      "input49_chosen": 0.25,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 4091,
+      "time_s": 587.580927055,
+      "chosen": 1,
+      "teacher": 0,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-002211",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-002213",
+        "route": "CPU"
+      },
+      "cost_regret": 0.0,
+      "cost_compatible": true,
+      "score28_equal": true,
+      "teacher_chosen_gap28": 0.0,
+      "input49_chosen": 0.25,
+      "input49_teacher": 0.0
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "decision": 4386,
+      "time_s": 633.018339157,
+      "chosen": 0,
+      "teacher": 3,
+      "chosen_action": {
+        "kind": "DISPATCH",
+        "request_id": "common-002394",
+        "route": "CPU"
+      },
+      "teacher_action": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "cost_regret": 5.619870178152908e-05,
+      "cost_compatible": false,
+      "score28_equal": false,
+      "teacher_chosen_gap28": 0.0029795169830322266,
+      "input49_chosen": 0.0,
+      "input49_teacher": 0.0
+    }
+  ]
+}

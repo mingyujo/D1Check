@@ -1,0 +1,24 @@
+{
+  "status": "SAVED_MEASURED_THERMAL_DURATION_SUPPORT_REVIEW",
+  "utc": "2026-10-17T20:13:52.408Z",
+  "source": {
+    "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\S26-D1Check\\s26_simulator\\experiments\\pipeline_thermal_v1\\artifacts\\G001\\OOF_ROWS.json.gz",
+    "sha256": "f496c37bc65338ca239371bc244ad641ac65bcd52b8d6a361702b2a174cddd48"
+  },
+  "by_pool": {
+    "OLD": {
+      "sessions": 131,
+      "sessions_with_256s_or_later": 37,
+      "max_observed_session_s": 839.4148542869953
+    },
+    "M8": {
+      "sessions": 77,
+      "sessions_with_256s_or_later": 0,
+      "max_observed_session_s": 211.6819467159803
+    }
+  },
+  "new_environment": 0,
+  "new_fit": 0,
+  "new_training": 0,
+  "conclusion": "Current M8 thermal cohort stops at211.682s and contains no256s+ sessions. Long validation comes from OLD protocols. Restricting validation to M8 may improve short-domain metrics but cannot validate long sustained-work extrapolation. Removing this evidence limit would not identify missing physical throttling/CPU/triple behavior."
+}

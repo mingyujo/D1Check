@@ -1,0 +1,151 @@
+{
+  "utc": "2026-10-17T14:32:46.066Z",
+  "parent_operation_sha256": "f0c18c4bc9dd25a2dda9c8c799b590e9a5c4c0f162c31ca66e4f12a4c785f85b",
+  "cost_model_sha256": "ab6bed5fe4ae89246d4e7b32e12e420515dca0c20d2996d1aafa2af3f7510c0e",
+  "status": "PASS",
+  "new_environment_START": 0,
+  "new_physical_fit": 0,
+  "temperature_clipping_added": false,
+  "shared_W_proxy": 0.21745108719898432,
+  "bounded_power_upper_W_proxy": 1.611268948789155,
+  "loose_upper_c": 45.335227385469864,
+  "refined_invariant_upper_c": 41.70543689041478,
+  "refined_bound_does_not_require_leakage_cap": true,
+  "uncapped_equilibrium_map_at_loose_c": 42.041549168105576,
+  "uncapped_map_derivative_upper": 0.09686319819891476,
+  "fixed_state_transition_checks": 576000,
+  "constant_load_cells": 16,
+  "max_observed_pure_temperature_c": 41.705436880413686,
+  "cells": [
+    {
+      "cpuTask": "classification",
+      "gpuTask": "classification",
+      "cpuExecution": false,
+      "gpuExecution": false,
+      "temperature_after3600_s": 38.93804009151964,
+      "last_step_delta_c": 0
+    },
+    {
+      "cpuTask": "classification",
+      "gpuTask": "classification",
+      "cpuExecution": false,
+      "gpuExecution": true,
+      "temperature_after3600_s": 37.483251264831694,
+      "last_step_delta_c": 0
+    },
+    {
+      "cpuTask": "classification",
+      "gpuTask": "classification",
+      "cpuExecution": true,
+      "gpuExecution": false,
+      "temperature_after3600_s": 36.15564623224173,
+      "last_step_delta_c": 0
+    },
+    {
+      "cpuTask": "classification",
+      "gpuTask": "classification",
+      "cpuExecution": true,
+      "gpuExecution": true,
+      "temperature_after3600_s": 35.422087396910925,
+      "last_step_delta_c": 0
+    },
+    {
+      "cpuTask": "classification",
+      "gpuTask": "detection",
+      "cpuExecution": false,
+      "gpuExecution": false,
+      "temperature_after3600_s": 40.21166674027409,
+      "last_step_delta_c": 0
+    },
+    {
+      "cpuTask": "classification",
+      "gpuTask": "detection",
+      "cpuExecution": false,
+      "gpuExecution": true,
+      "temperature_after3600_s": 38.144315402644786,
+      "last_step_delta_c": 0
+    },
+    {
+      "cpuTask": "classification",
+      "gpuTask": "detection",
+      "cpuExecution": true,
+      "gpuExecution": false,
+      "temperature_after3600_s": 37.07112869798635,
+      "last_step_delta_c": 0
+    },
+    {
+      "cpuTask": "classification",
+      "gpuTask": "detection",
+      "cpuExecution": true,
+      "gpuExecution": true,
+      "temperature_after3600_s": 35.94811408479893,
+      "last_step_delta_c": 0
+    },
+    {
+      "cpuTask": "detection",
+      "gpuTask": "classification",
+      "cpuExecution": false,
+      "gpuExecution": false,
+      "temperature_after3600_s": 40.402735492869695,
+      "last_step_delta_c": 0
+    },
+    {
+      "cpuTask": "detection",
+      "gpuTask": "classification",
+      "cpuExecution": false,
+      "gpuExecution": true,
+      "temperature_after3600_s": 38.73554370377773,
+      "last_step_delta_c": 0
+    },
+    {
+      "cpuTask": "detection",
+      "gpuTask": "classification",
+      "cpuExecution": true,
+      "gpuExecution": false,
+      "temperature_after3600_s": 36.74331584405279,
+      "last_step_delta_c": 0
+    },
+    {
+      "cpuTask": "detection",
+      "gpuTask": "classification",
+      "cpuExecution": true,
+      "gpuExecution": true,
+      "temperature_after3600_s": 35.941289020532544,
+      "last_step_delta_c": 0
+    },
+    {
+      "cpuTask": "detection",
+      "gpuTask": "detection",
+      "cpuExecution": false,
+      "gpuExecution": false,
+      "temperature_after3600_s": 41.705436880413686,
+      "last_step_delta_c": 0
+    },
+    {
+      "cpuTask": "detection",
+      "gpuTask": "detection",
+      "cpuExecution": false,
+      "gpuExecution": true,
+      "temperature_after3600_s": 39.379167952831864,
+      "last_step_delta_c": 0
+    },
+    {
+      "cpuTask": "detection",
+      "gpuTask": "detection",
+      "cpuExecution": true,
+      "gpuExecution": false,
+      "temperature_after3600_s": 37.65245944185054,
+      "last_step_delta_c": 0
+    },
+    {
+      "cpuTask": "detection",
+      "gpuTask": "detection",
+      "cpuExecution": true,
+      "gpuExecution": true,
+      "temperature_after3600_s": 36.44795890620326,
+      "last_step_delta_c": 0
+    }
+  ],
+  "proof": "ForT in[idle,U], f<=1 and uncapped leakage power<=P_upper(U); RC step is a convex combination ofT and idle+R*P<=U. Idle tail power<=H, and dispatch changesz only. U is the first upper root; derivative<1 proves unique stable worst-phase equilibrium inside interval.",
+  "scope": "Current hypothesis config, initialAP26C (or any initial within invariant interval). Pure fixed-phase tests are not actual inference/device observations; not an A24 physical temperature certificate."
+}

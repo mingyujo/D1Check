@@ -1,0 +1,51 @@
+{
+  "schema": "S26_STABLE_LEARNING_V1",
+  "utc": "2026-10-17T19:59:24.895Z",
+  "registered_after_parent_all160_CENTRAL_EVAL": true,
+  "reason": "Parent repair improved85% mean by7.9915pp but urgent mean fell8.75pp; seed481087 regressed and soft ATC scored higher. This new stage tests learning stability and a common parent, never replaces those results.",
+  "parent_DEV_selection": {
+    "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\S26-D1Check\\s26_simulator\\experiments\\a24_policy_repair_v1\\artifacts\\G001\\SELECTION_FROZEN.json",
+    "sha256": "bc8c363e02bbfcbc6f25818ebf9fb0d35406962dbc2f77a13b49565045f58662",
+    "frozen_before_parent_EVAL": true,
+    "seed": 481083
+  },
+  "parent_checkpoint": {
+    "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\S26-D1Check\\s26_simulator\\experiments\\a24_policy_repair_v1\\artifacts\\G001\\REPAIR_S481083_EP032.pt.gz",
+    "sha256": "1c5663414a961da33d1e69a37f701d96ae0d4f5762147440886c511f29c341f8"
+  },
+  "parent_seeds": [
+    481083,
+    481083,
+    481083
+  ],
+  "new_stage_seeds": [
+    581081,
+    581083,
+    581087
+  ],
+  "variants": {
+    "BASE": "DEFAULT: common selected REPAIR weights; LR.001; original after-epoch KL monitor",
+    "REPAIR": "STABLE: same weights/RNG/pending/cases/streams; LR.0001; additionally stop subsequent minibatches once recorded minibatch KL>.02"
+  },
+  "learning": "16 balanced episodes/8PPOupdates for each of6learners; same architecture/reward/entropy/auxiliary/grad clipping; freshAdam/actionRNG/shuffleRNG; all checkpoints and full failed history retained",
+  "representation": "BOTH variants and frozen parent use previous REPAIR 8 diverse candidates/32 forecast/local horizon. Only training LR and KL monitoring differ in matched pair.",
+  "training_START": 96,
+  "DEV_START": 80,
+  "EVAL_START": 80,
+  "sensitivity_START": 0,
+  "planned_START": 256,
+  "cap": 256,
+  "DEV_selection": "Same missing/urgent harm/normal harm/allontime/fixedweighted/seed rule; freeze before new EVAL; report all3seed means/medians/ranges",
+  "EVAL": "8 fresh CENTRAL N1024 cases; all4loads and2mix. No new LOW/HIGH runs; cannot transfer old sensitivity certification to new weights.",
+  "hypotheses": [
+    "AllAVAILABLE/no missing",
+    "No loadwise urgent/normal mean harm vs same-weight DEFAULT and frozen parent",
+    "At least1pp overall or85% mean improvement vs DEFAULT",
+    "Report soft ATC comparison; no claim of RL added value if merely matching it"
+  ],
+  "new_fits": 0,
+  "new_measurements": 0,
+  "deadline_protection": false,
+  "action_override": false,
+  "physical_accuracy_validated": false
+}

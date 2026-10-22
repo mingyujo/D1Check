@@ -1,0 +1,69 @@
+{
+  "original_path": "s26_simulator/experiments/route_group_learning_v1/policy.cjs",
+  "original_sha256": "a290fb846f1483fe7dbe8dc20d9e541c09b6cfabef2907c95d7e8032ac21308b",
+  "new_sha256": "fa5335bfffaa6487e5934c60308bbc25b95fad315963458760303bcfdcd06332",
+  "edits": [
+    {
+      "old": "numerical_failures:0};}",
+      "new": "numerical_failures:0,ATC_evaluations:0,nominal_timing_calls:0,rollout_calls:0};}"
+    },
+    {
+      "old": "const p=tm.lengths(packet,nom,r,obs.sensor.AP,[],model,q.priority);",
+      "new": "const p=tm.lengths(packet,nom,r,obs.sensor.AP,[],model,q.priority);state.nominal_timing_calls++;"
+    },
+    {
+      "old": "const mean=candidates.reduce",
+      "new": "if(!state.useATC){for(const c of candidates)c.ATC=0;return candidates;}state.ATC_evaluations+=candidates.length;const mean=candidates.reduce"
+    },
+    {
+      "old": "function evaluate(obs,packet,nom,model,first,past){const physics=",
+      "new": "function evaluate(obs,packet,nom,model,first,past){state.rollout_calls++;const physics="
+    },
+    {
+      "old": "state.calls++;if(state.balance)obs=routeContext(obs);",
+      "new": "state.calls++;if(state.balance)obs=routeContext(obs);if(state.standalone)return require('../teacher_components_20261019/helpers.cjs').standalone(obs,config,state,rc);"
+    },
+    {
+      "old": "const ranked=all.slice().sort((a,b)=>b.ATC-a.ATC||FIFO(a.q,b.q)||a.p.response-b.p.response||a.p.occupied-b.p.occupied||a.route.localeCompare(b.route));",
+      "new": "const ranked=state.useATC?all.slice().sort((a,b)=>b.ATC-a.ATC||FIFO(a.q,b.q)||a.p.response-b.p.response||a.p.occupied-b.p.occupied||a.route.localeCompare(b.route)):all.slice().sort((a,b)=>a.q.deadline-b.q.deadline||FIFO(a.q,b.q)||rc.ROUTES.indexOf(a.route)-rc.ROUTES.indexOf(b.route));"
+    },
+    {
+      "old": "if(state.variant!=='FROZEN_BASE')for(let k=0;",
+      "new": "if(state.useRolling&&state.variant!=='FROZEN_BASE')for(let k=0;"
+    },
+    {
+      "old": "const forecastReady=state.variant!=='FROZEN_BASE'?queue.filter(q=>forecastSet.has(q.ordinal)):ready;",
+      "new": "const forecastReady=state.useRolling&&state.variant!=='FROZEN_BASE'?queue.filter(q=>forecastSet.has(q.ordinal)):ready;"
+    },
+    {
+      "old": "const publicWork=forecastReady.reduce",
+      "new": "const publicWork=!state.useRolling?0:forecastReady.reduce"
+    },
+    {
+      "old": "const forecastHorizon=state.variant!=='FROZEN_BASE'?",
+      "new": "const forecastHorizon=!state.useRolling?obs.time:state.variant!=='FROZEN_BASE'?"
+    },
+    {
+      "old": "else{f=evaluate(visible,packet,nom,model,a.kind==='WAIT_EVENT'",
+      "new": "else{f=!state.useRolling?{cost:[0,0,0,0,0],AP_end:30,candidate_response:null,nominal_unfinished:0,ablated:true}:evaluate(visible,packet,nom,model,a.kind==='WAIT_EVENT'"
+    },
+    {
+      "old": "past);state.actual++;",
+      "new": "past);if(state.useRolling)state.actual++;"
+    },
+    {
+      "old": "forecasts.push(f);state.forecasts++;",
+      "new": "forecasts.push(f);if(state.useRolling)state.forecasts++;"
+    },
+    {
+      "old": "if(row.length!==WIDTH||row.some",
+      "new": "if(!state.useRolling)for(let k=21;k<=29;k++)row[k]=0;if(row.length!==WIDTH||row.some"
+    },
+    {
+      "old": "forecast_calls:actions.length,decision_index:index",
+      "new": "forecast_calls:state.useRolling?actions.length:0,decision_index:index"
+    }
+  ],
+  "relative_require_relocation": true,
+  "originals_modified": false
+}

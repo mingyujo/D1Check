@@ -1,0 +1,65 @@
+{
+  "label": "S26REQ_EVAL_R4_burst__TEACHER_RISK",
+  "case": "S26REQ_EVAL_R4_burst",
+  "condition": {
+    "rate_multiplier": 4,
+    "requests_per_second": 4,
+    "load_kind": "REQUESTS_PER_SECOND",
+    "supply_s": 600,
+    "pattern": "burst",
+    "pattern_index": 0,
+    "seed": 210309,
+    "role": "EVAL"
+  },
+  "kind": "EVAL",
+  "policy": "TEACHER_RISK",
+  "status": "COMPLETE",
+  "n": 2400,
+  "metrics": {
+    "planned": 2400,
+    "on_time": 2224,
+    "urgent_planned": 589,
+    "urgent_on_time": 433,
+    "responded": 2400,
+    "response_missing": 0,
+    "incomplete": 0,
+    "P95_completed_response_s": 2.580492828,
+    "total_J_proxy": 1568.113121641025,
+    "increment_J_proxy": 628.6811749052679,
+    "full_tail_increment_J_proxy": 628.6811749052679,
+    "baseline_J_proxy": 939.4319467357569,
+    "heat_area_proxy": 7543.91769373844,
+    "mean_AP_c": 35.67168935094672,
+    "peak_AP_c": 39.884474456768395,
+    "execution_throttled_s": 1568.0149297157545,
+    "wait_s": 197.269298926,
+    "cost_vector": [
+      0.7484299701253189,
+      1.205455835487929,
+      0.06828718662413187,
+      0.008434506300083341,
+      0.0
+    ],
+    "objective": 1.5569784210000122,
+    "route_counts": {
+      "C_CPU": 1016,
+      "C_GPU": 181,
+      "D_CPU": 896,
+      "D_GPU": 307
+    },
+    "measured_J": null,
+    "model": "HYPOTHESIS_COUPLED_345"
+  },
+  "raw": {
+    "path": "a24_simulator/results/A24_NN_URGENT_TIE_20261021_01/S26REQ_EVAL_R4_burst__TEACHER_RISK.raw.json.gz",
+    "bytes": 8484293,
+    "sha256": "569bcf44e1bbcbeef0942a4f6c97512810c790b566fbee86d5acefd63999083d"
+  },
+  "bank": {
+    "path": "a24_simulator/experiments/a24_bc_s26_requests_20261021/banks/S26REQ_EVAL_R4_burst.BANK.json.gz",
+    "bytes": 159832,
+    "sha256": "c348f8fec3c6508602aa8dc652a7ed4608a1fabe19011e824cfe658482197a6a"
+  },
+  "network_sha256": null,
+  "elapsed_s": 26.57800000000134
+}

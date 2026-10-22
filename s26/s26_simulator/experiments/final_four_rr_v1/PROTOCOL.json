@@ -1,0 +1,68 @@
+{
+  "schema": "S26_FINAL_FOUR_TASK_QUEUE_RR_V1",
+  "utc": "2026-10-19T01:29:24.534862+00:00",
+  "primary_methods": [
+    "FIFO",
+    "EDF",
+    "RR",
+    "OURS"
+  ],
+  "user_selected_RR": "작업종류별 큐를 번갈아 선택하는 비선점 RR (권장)",
+  "RR": {
+    "type": "Nonpreemptive work-conserving task-queue cyclic dispatcher, NOT operating-system time-quantum SCHED_RR",
+    "queues": [
+      "classification",
+      "detection"
+    ],
+    "initial_next_queue": "classification",
+    "quantum": "one admitted request, not CPU time",
+    "within_queue": "earliest arrival then ordinal among physically executable ready requests",
+    "skip": "Skip a queue if it has no physically executable request, never idle while another queue can execute",
+    "pointer": "After dispatch point to the other task queue; after NONE retain current pointer",
+    "routing": [
+      "GPU",
+      "NPU",
+      "CPU"
+    ],
+    "priorities_used": false,
+    "deadlines_used": false,
+    "preemption": false,
+    "proactive_WAIT": false
+  },
+  "common": {
+    "load": 0.85,
+    "n": 1024,
+    "cases": 4,
+    "templates": 2,
+    "latent_draws_per_template": 2,
+    "CPU_workers": 3,
+    "route_slots": {
+      "CPU": 1,
+      "GPU": 1,
+      "NPU": 1
+    },
+    "nonpreemptive": true,
+    "reserve_until": "AVAILABLE",
+    "input_and_latent_and_window_exactly_original": true
+  },
+  "primary_route_order": [
+    "GPU",
+    "NPU",
+    "CPU"
+  ],
+  "OURS": "Original frozen881087 rolling+ATC+publicBC+PPO argmax, no deadline protection; no new forward, training or environment",
+  "comparison": "Whole policy comparison with common plant/input/stream/window/legal routes/CPU3/nonpreemption. RR alternates dispatch opportunities rather than equalizing CPU seconds. Classification is urgent and detection normal in this source cohort.",
+  "accounting": {
+    "new_RR": 4,
+    "reused_FIFO": 4,
+    "reused_EDF": 4,
+    "reused_OURS": 4,
+    "primary_rows": 16,
+    "environment_cap": 4
+  },
+  "physical_gate": "FAIL",
+  "new_training": 0,
+  "new_measurements": 0,
+  "new_physical_fit": 0,
+  "figures": "Show absolute metrics and EDF-referenced differences with units, positive/negative effects, zero reference, stated zoomed dot axes, all4 paired inputs. No invented significance or best-case selection."
+}

@@ -1,0 +1,121 @@
+{
+  "utc": "2026-10-17T18:32:41.023Z",
+  "status": "COMPLETE_CONDITIONAL_RESULTS_NOT_PHYSICALLY_CERTIFIED",
+  "operation_revision": 2,
+  "planned_START": 528,
+  "START": 528,
+  "COMPLETE_receipts": 526,
+  "FAIL": 2,
+  "expected_saved_rows": 527,
+  "lineage": [
+    {
+      "version": 1,
+      "START": 1,
+      "COMPLETE": 0,
+      "FAIL": 1
+    },
+    {
+      "version": 2,
+      "START": 9,
+      "COMPLETE": 8,
+      "FAIL": 1
+    },
+    {
+      "version": 3,
+      "START": 518,
+      "COMPLETE": 518,
+      "FAIL": 0
+    }
+  ],
+  "load_margin": {
+    "planned_START": 64,
+    "START": 64,
+    "COMPLETE": 64,
+    "FAIL": 0,
+    "complete": true
+  },
+  "static_controls": {
+    "planned_START": 16,
+    "START": 16,
+    "COMPLETE": 16,
+    "FAIL": 0,
+    "complete": true,
+    "registered_after_partial_load_results": true
+  },
+  "total_planned_START": 608,
+  "total_START": 608,
+  "total_COMPLETE_receipts": 606,
+  "total_FAIL": 2,
+  "expected_total_saved_rows": 607,
+  "failed_environment_reexecutions": 0,
+  "replacement_seed_or_training_attempts": 0,
+  "physical_accuracy_gate": "PREVIOUS_CANDIDATE_FAILED_NOT_ADOPTED",
+  "new_measurements": 0,
+  "interpretation": "등록한4부하 중 대표 RL−CPU예약EDF 정시율 차이의 기술적 최댓값은 105% 부하의 43.848%p였다. 중간 부하에서 격차가 항상 최대라는 가설은 이 설정에서 확인되지 않았다.",
+  "grouped_by_load": [
+    {
+      "load": 0.4,
+      "EDF_GPU_FIRST_on_percent": 95.556640625,
+      "EDF_CPU_RESERVED_on_percent": 76.416015625,
+      "EDF_GPU_FIXED_on_percent": 54.541015625,
+      "ATC_on_percent": 95.41015625,
+      "primary_RL_on_percent": 95.068359375,
+      "primary_RL_minus_ATC_pp": -0.341796875,
+      "primary_RL_minus_reserved_EDF_pp": 18.65234375,
+      "primary_RL_minus_GPU_first_EDF_pp": -0.48828125,
+      "RL_three_seed_range_percent": [
+        95.068359375,
+        95.41015625
+      ]
+    },
+    {
+      "load": 0.65,
+      "EDF_GPU_FIRST_on_percent": 94.23828125,
+      "EDF_CPU_RESERVED_on_percent": 74.951171875,
+      "EDF_GPU_FIXED_on_percent": 53.369140625,
+      "ATC_on_percent": 94.23828125,
+      "primary_RL_on_percent": 94.04296875,
+      "primary_RL_minus_ATC_pp": -0.1953125,
+      "primary_RL_minus_reserved_EDF_pp": 19.091796875,
+      "primary_RL_minus_GPU_first_EDF_pp": -0.1953125,
+      "RL_three_seed_range_percent": [
+        94.04296875,
+        94.23828125
+      ]
+    },
+    {
+      "load": 0.85,
+      "EDF_GPU_FIRST_on_percent": 57.763671875,
+      "EDF_CPU_RESERVED_on_percent": 59.130859375,
+      "EDF_GPU_FIXED_on_percent": 38.57421875,
+      "ATC_on_percent": 72.16796875,
+      "primary_RL_on_percent": 82.8125,
+      "primary_RL_minus_ATC_pp": 10.64453125,
+      "primary_RL_minus_reserved_EDF_pp": 23.681640625,
+      "primary_RL_minus_GPU_first_EDF_pp": 25.048828125,
+      "RL_three_seed_range_percent": [
+        72.16796875,
+        82.8125
+      ]
+    },
+    {
+      "load": 1.05,
+      "EDF_GPU_FIRST_on_percent": 24.462890625,
+      "EDF_CPU_RESERVED_on_percent": 22.119140625,
+      "EDF_GPU_FIXED_on_percent": 11.328125,
+      "ATC_on_percent": 64.013671875,
+      "primary_RL_on_percent": 65.966796875,
+      "primary_RL_minus_ATC_pp": 1.953125,
+      "primary_RL_minus_reserved_EDF_pp": 43.84765625,
+      "primary_RL_minus_GPU_first_EDF_pp": 41.50390625,
+      "RL_three_seed_range_percent": [
+        64.013671875,
+        65.966796875
+      ]
+    }
+  ],
+  "primary_RL_minus_ATC_best": {
+    "nominal_load_ratio": 0.85,
+    "delta_pp": 10.64453125
+  }
+}

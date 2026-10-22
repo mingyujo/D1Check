@@ -1,0 +1,1299 @@
+{
+  "schema": "S26_EXPANDED_METHODS_SOURCE_TEXT_V4",
+  "chapters": [
+    {
+      "title": "01  상세 방법론의 범위와 전체 연결",
+      "source": "FINAL_POLICY.json; route_group_learning_v1/server.cjs",
+      "blocks": [
+        [
+          "p",
+          "이 부록은 앞부분의 결과표와 그래프가 어떤 시뮬레이터와 정책에서 나왔는지 PDF 안에서 확인할 수 있도록 추가했다. 두 버전에 동일한 방법론을 넣었다. 성과 강조 버전의 앞부분은 선택적 서술을 비교하는 교육·비판용이며, 이 부록의 조건과 한계까지 함께 읽어야 한다.",
+          "body"
+        ],
+        [
+          "h",
+          "전체 계산 흐름"
+        ],
+        [
+          "p",
+          "① 기존 실측 로그에서 입력·출력·해제 시각, 추론시간, API 전력과 온도를 정리한다. ② 작업 단계·실행시간·전력·열 응답을 고정 모형으로 구성한다. ③ 같은 도착 입력과 잠재 작업량을 네 스케줄러에 제공한다. ④ 각 정책이 관측 가능한 정보로 행동하면 공통 사건 기반 엔진이 작업 진척·온도·사용량을 갱신한다. ⑤ 저장 원자료를 독립 검산한 뒤 결과를 집계한다.",
+          "body"
+        ],
+        [
+          "table",
+          [
+            "구성",
+            "무엇을 담당하는가",
+            "근거의 성격"
+          ],
+          [
+            [
+              "실측 자료",
+              "단일/일부 중첩 실행, 단계별 wall time, API·AP 관측",
+              "기존 관측"
+            ],
+            [
+              "시뮬레이터",
+              "잠재 추론시간과 실행 단계·슬롯·전력·열을 연결",
+              "관측 기반 추정 + 전이 가정"
+            ],
+            [
+              "롤링+ATC",
+              "현재 요청 후보와 가능한 배정·대기의 명목 예측",
+              "설계한 규칙·예측 모형"
+            ],
+            [
+              "교사 BC + PPO",
+              "후보별 특징을 받아 최종 선택 함수를 학습",
+              "지도학습 초기화 + 보상 학습"
+            ],
+            [
+              "최종 평가",
+              "FIFO/EDF/RR/881087 동일 85% 입력 비교",
+              "조건부 시뮬레이션 결과"
+            ]
+          ],
+          [
+            75,
+            240,
+            170
+          ]
+        ],
+        [
+          "p",
+          "최종 정책은 롤링+ATC+공개 교사학습 초기화+PPO, 단일 seed 881087, argmax 실행이다. CEM은 별도 통제 실험이다. 납기 보호는 없지만 실행 경로 지원과 빈 슬롯 같은 물리적 합법성은 모든 방법에 적용한다.",
+          "body"
+        ],
+        [
+          "p",
+          "실제 모바일 CPU3 소비·간섭, 제어·NN 실행 비용, 스로틀링은 검증하지 않았다. 산술 검산 PASS와 전력·열 정확도 gate FAIL을 구분한다. 이 개정에서 새 시뮬레이션·학습·실측·계수 보정은 수행하지 않았다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "02  실측 자료에서 실행 템플릿을 구성하는 방법",
+      "source": "research/timing_model.py; multiresource_v1/PACKET.json.gz; source/multi_timing.cjs",
+      "blocks": [
+        [
+          "p",
+          "시뮬레이터는 임의로 정한 작업시간만을 사용하지 않는다. 기존 OLD·M8·R21 계열 자료에서 모델 SHA, 장치 경로, 실행 엔진, 앱/도메인, 입력 이미지와 단계 시각을 연결한 자료를 사용한다. 동일한 작업 이름이어도 모델·경로 조합이 지원되지 않으면 실행시간을 0으로 채우지 않고 제외한다.",
+          "body"
+        ],
+        [
+          "h",
+          "단계 벡터를 통째로 보존"
+        ],
+        [
+          "p",
+          "한 실행에서 dispatch, execution_start, host_inference_start, host_inference_return, output_ready, persist_complete, worker_release, readback, AVAILABLE의 상대 시각을 묶는다. dispatch 때 경로·우선순위에 맞는 비중첩 템플릿 하나를 택한다. 독립된 단계별 난수를 따로 뽑아 원래 상관관계를 없애지 않는다.",
+          "body"
+        ],
+        [
+          "table",
+          [
+            "경로",
+            "원 단계 벡터",
+            "비중첩 벡터"
+          ],
+          [
+            [
+              "분류 CPU",
+              "1,764",
+              "1,764"
+            ],
+            [
+              "분류 GPU",
+              "3,916",
+              "3,458"
+            ],
+            [
+              "분류 NPU",
+              "1,740",
+              "1,504"
+            ],
+            [
+              "탐지 CPU",
+              "1,216",
+              "936"
+            ]
+          ],
+          [
+            220,
+            130,
+            130
+          ]
+        ],
+        [
+          "p",
+          "PACKET의 전체 템플릿은 8,636개다. 위 원 벡터에는 일부 중첩 관측도 포함되지만 실제 단계 표본과 고립 잔차의 pool은 overlap_fraction=0이고 priority_transfer가 아닌 항목으로 제한한다. 경로별 잔차는 관측 추론시간을 같은 조건의 고정 시간모형 예측으로 나눈 값이다.",
+          "body"
+        ],
+        [
+          "code",
+          "residual = measured_inference_s / fitted_duration_at_measured_AP\nindex = seeded(stream + \"|phase|\" + ordinal + \"|\" + route) % pool_size"
+        ],
+        [
+          "p",
+          "같은 입력·stream·요청 ordinal·경로를 쓰면 같은 잠재 표본을 얻는다. 정책이 다른 경로를 고르면 해당 경로의 표본을 쓰며, 정책에 실제 표본 ID·진척률·미래 실행시간을 노출하지 않는다. 명목 예측에는 개별 실제 표본 대신 경로별 중앙 단계 길이와 중앙 잔차를 쓴다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "03  85% 부하·작업량·도착과 관측창",
+      "source": "final_four_rr_v1/INPUTS.json; route_20261018/workspace_recovery/prepare_s26_policy_repair.cjs",
+      "blocks": [
+        [
+          "p",
+          "최종 평가는 세션당 1,024요청이다. 분류 비중 p=0.50/0.75의 두 도착 템플릿마다 잠재 작업량 stream R26/R27을 사용해 4입력을 만든다. 각 템플릿은 16요청을 한꺼번에 보내는 64개 burst다. 분류는 긴급 0.8초, 탐지는 일반 2초 납기이므로 작업종류와 긴급도가 이 입력에서는 결합되어 있다.",
+          "body"
+        ],
+        [
+          "code",
+          "lambda = 0.85 * registered_nominal_capacity_requests_s\nD = 1024 / lambda\narrival_i = 35 + floor(i/16) * 16/lambda\ndeadline_i = arrival_i + (0.8 if urgent else 2.0)"
+        ],
+        [
+          "table",
+          [
+            "분류 비중",
+            "명목 용량 / 도착률 (요청/초)",
+            "공급 D / 관측 종료 T (초)"
+          ],
+          [
+            [
+              "50%",
+              "7.997745 / 6.798084",
+              "150.630687 / 275.630687"
+            ],
+            [
+              "75%",
+              "13.313938 / 11.316847",
+              "90.484567 / 215.484567"
+            ]
+          ],
+          [
+            90,
+            210,
+            190
+          ]
+        ],
+        [
+          "p",
+          "명목 85%는 등록된 혼합별 용량 대비 평균 도착률이다. 실기기 CPU 이용률 85%라는 뜻도, burst 안의 모든 납기가 가능하다는 보장도 아니다. R26/R27은 새 독립 실기기 반복이 아니라 같은 도착 템플릿에서 실행·enqueue 표본을 바꾼 잠재 시나리오다.",
+          "body"
+        ],
+        [
+          "h",
+          "모든 방법에 같은 종료 규칙"
+        ],
+        [
+          "p",
+          "요청 도착은 35초부터 시작하고 마지막 도착은 각각 183.277082초·124.070745초다. 관측 종료 T=35+D+90, 신규 dispatch 종료=35+D+45, 진행 작업 censor=35+D+60이다. 이번 최종 네 방법은 모두 전량 AVAILABLE에 도달해 조기 censor가 없었다. 작업 완료 뒤의 냉각·기저 소비도 같은 T까지 계산한다.",
+          "body"
+        ],
+        [
+          "p",
+          "평균 관측 길이는 245.557627초, 첫 도착부터 마지막 AVAILABLE까지의 작업 경과는 방법별 약 120.3초다. 장치들의 실행시간 합이나 회귀의 학습시간과 다르다. 계획 도착 이후 실측 pool에서 표본화한 enqueue_delay를 더한 시각에만 ready 큐에 들어오며, 납기는 원 계획 도착부터 계산한다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "04  자원·공유 CPU·단계와 응답의 정의",
+      "source": "source/resource_contract.cjs; source/multi_simulator.cjs; source/multi_timing.cjs",
+      "blocks": [
+        [
+          "p",
+          "분류는 CPU/GPU/NPU, 탐지는 CPU만 지원한다. 논리 슬롯은 CPU·GPU·NPU 각 1개이고 전체 owner는 최대 3개다. 분류 CPU와 탐지 CPU는 같은 CPU route 슬롯을 사용하므로 두 CPU 추론을 동시에 배정하지 않는다. CPU3는 이 route 슬롯을 세 개로 늘린다는 뜻이 아니다.",
+          "body"
+        ],
+        [
+          "table",
+          [
+            "실행 단계",
+            "처리 내용과 자원",
+            "다음 전이"
+          ],
+          [
+            [
+              "GAP",
+              "dispatch 후 실행 시작까지 실측 간격",
+              "execution_start"
+            ],
+            [
+              "ADMISSION",
+              "호출 준비; 추정 CPU service prefix + 수동 wall 잔여",
+              "host_inference_start"
+            ],
+            [
+              "INFER",
+              "온도·중첩에 따라 진척; CPU 경로는 CPU grant 필요",
+              "host_inference_return"
+            ],
+            [
+              "RETURN_GAP",
+              "추론 반환 후 결과 준비까지 간격",
+              "output_ready"
+            ],
+            [
+              "POST",
+              "저장·readback·release; CPU prefix 이후 잔여",
+              "AVAILABLE"
+            ]
+          ],
+          [
+            90,
+            260,
+            135
+          ]
+        ],
+        [
+          "h",
+          "CPU3와 CENTRAL의 차이"
+        ],
+        [
+          "p",
+          "CENTRAL은 CPU service worker 1개인 구조 가정이고, CPU3는 같은 모형에서 worker 수를 3으로 바꾼 것이다. ADMISSION·POST의 CPU service 요구는 각 경로의 관측 단계 하위 분위 기준값과 wall 길이 중 작은 값이다. 실제 CPU time을 계측한 결과가 아니다. CPU grant는 같은 단계가 끝날 때까지 유지하고 대기는 ticket/ordinal 순으로 배정한다.",
+          "body"
+        ],
+        [
+          "p",
+          "긴급 응답 시각은 output_ready, 일반 응답은 readback_end다. 응답이 나와도 lane AVAILABLE까지 owner와 route 슬롯을 계속 점유한다. 정책이 응답 직후 같은 슬롯을 재사용하거나 추론 중 선점하지 않는다. CPU3 추가 코어의 소비·열·메모리 간섭은 기존 API 모형에 별도 식별되지 않아, 이 조건을 실제 S26 병렬 능력의 검증으로 해석할 수 없다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "05  사건 기반 엔진과 관측 가능한 상태",
+      "source": "source/multi_simulator.cjs; source/midpoint_work.cjs; public_observer.cjs",
+      "blocks": [
+        [
+          "p",
+          "엔진은 고정된 1초마다 작업을 단순히 차감하지 않는다. 현재 시각에서 단계 완료, 새 ready 도착, 센서 관측/도착, 대기 종료, dispatch/censor/관측 종료 중 먼저 일어나는 사건을 찾아 전진한다. INFER가 진행될 때 최대 시간 간격은 원 설정 0.01초이며 작업 완료가 더 빠르면 그 경계로 줄인다.",
+          "body"
+        ],
+        [
+          "code",
+          "while time < observation_end:\n  finish phases and readback marks; update CPU grants\n  reveal requests whose readyAt <= time\n  deliver available sensor samples\n  if decision allowed: choose DISPATCH / WAIT / WAIT_EVENT\n  dt = min(next event boundaries, inference step cap)\n  integrate progress, power and temperature; advance(dt)"
+        ],
+        [
+          "h",
+          "추론 진척과 수치 적분"
+        ],
+        [
+          "p",
+          "각 실행의 진척 x는 dx/dt=1/duration(T, peers)로 갱신한다. 한 step의 중간 시각 온도로 모든 현재 작업의 rate를 평가한다. step 안에서 x=1이 되면 48회 이분 탐색으로 완료 경계를 찾고 같은 경계에서 전력 활동을 갱신한다. 이 수치 절차와 전력·열의 해석적 적분은 서로 다른 역할이다.",
+          "body"
+        ],
+        [
+          "h",
+          "센서 지연과 숨겨진 정보"
+        ],
+        [
+          "p",
+          "AP 센서는 2.3초 간격으로 표본화하고 0.2초 뒤 정책에 도착한다. 정책은 최근 도착 센서값·그 표본 시각, ready 메타데이터, 현재 owner 경로와 이미 발생한 단계 시각, 관측된 활동 이력만 받는다. 실제 미래 도착·선택될 실행 템플릿·숨겨진 진척률·미래 온도 궤적은 받지 않는다.",
+          "body"
+        ],
+        [
+          "p",
+          "공개 관측기의 전력/열 상태는 과거 활동의 접두 구간을 재생해 만들고 후보마다 복제한다. 실제 환경 상태를 그대로 복제해 미래 잠재 작업량을 미리 보는 oracle가 아니다. 다만 현재 자료로 모형을 개발한 점과 초기 상태·명목 혼합 비중을 알고 평가한 점은 일반화의 한계로 남는다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "06  실행시간 모형과 온도·중첩의 연결",
+      "source": "research/timing_model.py; source/s26_simulator.cjs; source/multi_timing.cjs",
+      "blocks": [
+        [
+          "p",
+          "고정 실행시간 모형은 log 추론시간에 모델×경로 기본항, 도메인/APK/엔진·버전·스레드·정밀도/이미지 nuisance 항, 경로별 AP 온도 항과 중첩 항을 더한다. 원 추정기는 고정 ridge와 log-time Huber 반복 3회를 사용하고 세션·그룹 구조를 반영한 가중치와 그룹 제외 검증을 보존했다. 이번 보고서 개정에서 다시 맞추지 않았다.",
+          "body"
+        ],
+        [
+          "code",
+          "log d_base = beta(route, model) + nuisance_offsets\n             + beta_AP(route) * (AP - 30)/10\nd_actual = exp(log d_base + sum(peer_overlap_effects)) * residual\nprogress_next = progress + dt / d_actual"
+        ],
+        [
+          "p",
+          "실제 실행은 위 식의 온도를 시간에 따라 갱신한다. 관측된 탐지 CPU+분류 GPU/NPU 조합은 고정 중첩 계수를 사용한다. GPU/NPU 동시 분류·세 자원 조합처럼 새 조합은 CPU3/CENTRAL에 등록된 unknown_beta 등 명시적 구조 가정으로 다룬다. 이를 새로운 실측 상호작용으로 승격하지 않는다.",
+          "body"
+        ],
+        [
+          "h",
+          "명목 예측과 실제 환경의 차이"
+        ],
+        [
+          "p",
+          "명목 길이는 비중첩 pool의 단계별 중앙값과 중앙 residual에서 만든다. 응답 길이는 GAP+ADMISSION+INFER+RETURN_GAP에 일반 readback 부분을 더하고, 점유 길이는 POST 전체까지 포함한다. 따라서 ATC에서 사용하는 점유시간과 납기 판단에 필요한 응답시간이 같다 가정하지 않는다.",
+          "body"
+        ],
+        [
+          "p",
+          "최종은 CENTRAL 계수 버전을 계승한 CPU3 시나리오이며 온도 계수를 2·3·4배로 바꾼 가상기기가 아니다. LOW/HIGH slope는 별도 민감도 계보이고 이 결과와 섞지 않는다. 관측적 온도·중첩 연관을 순간 진척률에 전이했기 때문에 계수는 인과적인 스로틀링 곡선으로 입증되지 않았다.",
+          "body"
+        ],
+        [
+          "p",
+          "추론시간이 비정상 범위를 벗어나면 오류로 기록한다. 온도 임계점에서 임의로 속도를 낮추거나 좋은 수치가 되도록 duration을 보정하는 정책은 추가하지 않았다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "07  전력 구성: 중첩 수 합산 대신 다섯 채널",
+      "source": "capacity_power_v1/DESIGN.md; replay.cjs; artifacts/G001/MODEL.json",
+      "blocks": [
+        [
+          "p",
+          "과거 모형은 ADMISSION·POST 대기 wall을 owner 수만큼 더해 고부하 전력을 과도하게 외삽하는 문제가 있었다. 보완 모형은 관측 활동에서 아래 5개 0/1 시간 합집합 지표를 만든다. 실제 core utilization을 측정한 값은 아니다.",
+          "body"
+        ],
+        [
+          "table",
+          [
+            "채널",
+            "0/1 지표의 정의"
+          ],
+          [
+            [
+              "CPU wall-demand",
+              "CPU 추론 두 종류 또는 ADMISSION/POST 중 하나 이상"
+            ],
+            [
+              "detection 증분",
+              "탐지 CPU INFER가 하나 이상; CPU 기본항에 대한 task 차이"
+            ],
+            [
+              "GPU INFER",
+              "분류 GPU 추론 중"
+            ],
+            [
+              "NPU INFER",
+              "분류 NPU 추론 중"
+            ],
+            [
+              "owner/residency",
+              "원 활동 첫 8채널 중 하나 이상 활성"
+            ]
+          ],
+          [
+            130,
+            360
+          ]
+        ],
+        [
+          "code",
+          "box_j(t) = integral(v_j(s), s=t-0.5..t) / 0.5\ndz_kj/dt = (v_j - z_kj) / tau_k,  tau_k in {1,10,60}s\nP(t) = c0 + c1 * baseline_API + sum_j cb_j * box_j(t)\n       + sum_k sum_j ct_kj * z_kj(t)\nE(0,T) = integral(P(t), t=0..T)"
+        ],
+        [
+          "p",
+          "절편 1개 + 사전 baseline 1개 + box 5개 + tail 15개로 총 22계수다. c=저장 coef/scale이며, 원 적합은 RMS scaling·비음수 additive ridge(강도 1)·가중 좌표 하강법을 사용한다. 채널별 0~1 범위를 유지해 owner 수에 비례하는 발산을 줄이지만 실제 물리 전력 상한을 식별한 것은 아니다.",
+          "body"
+        ],
+        [
+          "p",
+          "실행 중에는 활동 전이와 0.5초 box 지연 경계를 반영하고 지수항과 선형 box 항을 구간별 해석적으로 적분한다. API-J는 이 API 전력 모형의 시간 적분이다. 외부 전력계 보정값 또는 CPU/GPU/NPU별 독립 전력계 측정값으로 부르지 않는다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "08  열 모형: 발생한 열과 냉각을 함께 계산",
+      "source": "pipeline_thermal_v1/DESIGN.md; artifacts/G001/MODEL.json; route_group_learning_v1/physics.cjs",
+      "blocks": [
+        [
+          "p",
+          "온도를 작업 개수에 비례해 계속 더하지 않는다. 예측 전력에서 baseline을 뺀 입력이 빠른/느린 수동 1차 열 응답에 들어가고, 작업을 멈추면 상태가 시정수에 따라 줄어든다. AP 온도는 초기 상태의 이완과 두 열 상태의 합이다.",
+          "body"
+        ],
+        [
+          "code",
+          "T_idle = SKIN + delta_C\ndh_f/dt = (P(t) - baseline_API - h_f) / tau_f\ndh_s/dt = (P(t) - baseline_API - h_s) / tau_s\nT_AP(t) = T_idle + (AP0 - T_idle) *\n          [w*exp(-t/tau_f) + (1-w)*exp(-t/tau_s)]\n          + gain_f*h_f(t) + gain_s*h_s(t)"
+        ],
+        [
+          "table",
+          [
+            "고정 FULL 계수",
+            "값"
+          ],
+          [
+            [
+              "tau_f / tau_s",
+              "10초 / 320초"
+            ],
+            [
+              "delta_C / w",
+              "-0.215618852℃ / 1.0"
+            ],
+            [
+              "gain_f / gain_s",
+              "2.472231465 / 0.177527283"
+            ]
+          ],
+          [
+            220,
+            270
+          ]
+        ],
+        [
+          "p",
+          "지속 전력이 유한한 상수면 h는 유한한 입력값으로 접근하므로 모형 온도도 유한한 평형에 접근한다. 입력 전력이 너무 크게 외삽되거나 계수 전이가 부정확하면 그 평형 자체가 비현실적으로 높을 수 있다. 수동 열 모형이라는 사실만으로 60℃·100℃ 예측의 타당성이 보장되는 것은 아니다.",
+          "body"
+        ],
+        [
+          "p",
+          "열 계수는 같은 그룹을 제외해 맞춘 예측 전력을 입력으로 기존 AP 자료에 보정했다. FULL은 시정수 10/320초를 고정한 상태에서 delta/w/gain을 추정했다. 계수의 물리 R·C 식별, 실기기 온도 제어, 실제 throttle 임계값을 검증하지 않았다. 모델 파일의 physical_constants_identified와 adopted는 false다.",
+          "body"
+        ],
+        [
+          "p",
+          "최종 정책 비교에서 이 고정 후보를 공통 모의 환경으로 사용한 것이지 정확도 gate를 PASS로 바꾼 것은 아니다. 인위적 온도 상한 clip, k 배수 가상기기, 임의 냉각 보너스는 넣지 않았다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "09  보정과 정확도 검증: 개선과 실패를 함께 기록",
+      "source": "capacity_power_v1/artifacts/G001/RESULT.json; pipeline_thermal_v1/artifacts/G001/RESULT.json",
+      "blocks": [
+        [
+          "p",
+          "전력은 적격 209세션·27그룹의 기존 API 관측을 사용해 그룹 제외 27개와 FULL 1개, 총 28fit를 수행한 고정 결과다. AP와 겹치는 자료는 208세션이다. 열은 고정 fold별 시정수에서 초기값 두 개씩 56fit했다. 실제 관측 활동 시각을 제공한 조건부 검증이므로 새로운 스케줄의 실행시간·전력·온도를 모두 예측하는 통합 검증보다 쉬운 조건이다.",
+          "body"
+        ],
+        [
+          "table",
+          [
+            "검증 지표",
+            "전체",
+            "OLD / M8 / R21"
+          ],
+          [
+            [
+              "전력 MAE (API-W)",
+              "0.8172",
+              "0.9946 / 0.5192 / 0.3981"
+            ],
+            [
+              "에너지 절대 상대오차 중앙값",
+              "13.580%",
+              "18.272% / 9.893% / 10.501%"
+            ],
+            [
+              "보완 pipeline AP MAE (℃)",
+              "1.1752",
+              "1.4010 / 0.7911 / 0.6486"
+            ],
+            [
+              "256초 이후 AP MAE (℃)",
+              "2.3570 (37세션)",
+              "이전 부모 2.0617보다 악화"
+            ]
+          ],
+          [
+            230,
+            95,
+            165
+          ]
+        ],
+        [
+          "p",
+          "에너지 중앙오차는 전체에서 이전 14.640%보다 줄었지만 OLD는 15.236%→18.272%로 악화했다. AP 전체 오차도 원 부모 1.1021℃보다 보완 pipeline 1.1752℃가 나쁘다. 실제 미래 전력을 넣는 oracle의 전체 0.6336℃를 배포 성능으로 인용하지 않는다.",
+          "body"
+        ],
+        [
+          "h",
+          "최종 해석에 적용하는 제한"
+        ],
+        [
+          "p",
+          "전력·열 정확도 gate는 FAIL이다. AP 적격 관측 범위 약 26~46.6℃ 밖은 외삽이다. CPU3·새 자원 조합의 전력/열/간섭과 모바일에서의 예측·신경망·dispatch 비용도 미측정이다. 따라서 약 7% 모형 소비 차이를 실제 S26 전력 절감률로 확정하거나 작은 온도 차이를 실측 정밀도 이상으로 해석하지 않는다.",
+          "body"
+        ],
+        [
+          "p",
+          "이번 수치들은 같은 불완전 모형 안에서 배정 정책의 거동을 비교한 탐색적 증거다. 저장 연산·슬롯·납기·모델 연결 감사가 PASS여도 물리 오차가 해결되었다는 뜻은 아니다. 모든 원 실패와 부적합 후보를 보존했다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "10  FIFO·EDF·RR의 정확한 동작과 비교 범위",
+      "source": "final_four_rr_v1/PROTOCOL.json; final_three_policy_v1; plain_edf_v1/select.cjs",
+      "blocks": [
+        [
+          "table",
+          [
+            "방법",
+            "실행 가능한 ready에서의 요청 선택"
+          ],
+          [
+            [
+              "FIFO",
+              "도착 시각 → ordinal 오름차순"
+            ],
+            [
+              "EDF",
+              "절대 deadline → 도착 시각 → ordinal 오름차순"
+            ],
+            [
+              "RR",
+              "분류/탐지 큐 순환; 큐 내부 도착 → ordinal; 초기 분류"
+            ],
+            [
+              "우리",
+              "공통 물리 mask 뒤 후보별 신경망 logit argmax"
+            ]
+          ],
+          [
+            85,
+            405
+          ]
+        ],
+        [
+          "p",
+          "세 기준선은 모두 분류 자원 순서 GPU→NPU→CPU가 같고, 탐지는 CPU다. 앞 요청이 현재 불가능하면 다른 실행 가능한 요청을 검사한다. 실행 가능한 요청이 있는데 의도적으로 에너지 대기를 하지 않으며, 미래 작업량 롤링·교사·NN·납기 강제 보호를 사용하지 않는다.",
+          "body"
+        ],
+        [
+          "code",
+          "RR turn = classification initially\nfor task in [turn, other_task]:\n  q = earliest physically executable request in task queue\n  if q exists:\n    dispatch q by GPU > NPU > CPU (detection: CPU only)\n    turn = other_task(task); return\nreturn NONE  # pointer unchanged"
+        ],
+        [
+          "p",
+          "RR의 한 차례는 CPU 시간 조각이 아니라 한 요청의 admission이다. 진행 중 작업을 중단·재개하지 않고 OS의 선점 SCHED_RR처럼 CPU 시간을 균등 분할하지 않는다. 사용자 선택의 비선점 작업종류 큐 RR로 명시한다.",
+          "body"
+        ],
+        [
+          "p",
+          "공통 조건은 도착·잠재 stream·관측창·물리 모형·CPU3·지원 경로·비선점·AVAILABLE 점유다. 기준선은 정적 경로 순서를 쓰고 우리는 경로·대기까지 선택한다. 따라서 네 방법 비교는 전체 정책 묶음의 대조이며 RL 하나 또는 요청 순서만의 효과를 분리한 ablation이 아니다. NPU 우선 기준선의 별도 민감도와 교사 없는 실험도 보존한다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "11  ATC와 후보 집합: 모든 요청을 무제한 탐색하지 않음",
+      "source": "route_group_learning_v1/policy.cjs",
+      "blocks": [
+        [
+          "p",
+          "ATC(Apparent Tardiness Cost)는 처리 요구·중요도·남은 여유를 함께 쓰는 우선순위 규칙이다. 이 구현은 각 합법 요청-경로 쌍의 명목 점유시간 p_occ와 응답 길이 p_resp를 따로 써 아래 로그 점수를 계산한다. 점수는 후보 생성과 특징에 쓰이며 최종 행동을 강제하지 않는다.",
+          "body"
+        ],
+        [
+          "code",
+          "log_ATC(q,r) = log(w_q / p_occ(q,r))\n  - max(0, deadline_q - now - p_resp(q,r)) / (2*mean_p_occ)\nw_urgent=2; w_normal=1\nmean_p_occ = mean occupancy over currently legal request-route pairs"
+        ],
+        [
+          "h",
+          "후보 요청 최대 8개"
+        ],
+        [
+          "p",
+          "EDF 첫 요청, task×priority×공개 선호 경로 bucket의 앞·뒤, ATC 상위 6개가 제안하는 요청, 나머지 EDF 요청 순서의 합집합에서 최대 8개의 ordinal을 남긴다. 서로 같은 요청이 여러 경로로 상위에 있어도 요청 ordinal은 중복 제거한다. 실행 가능한 경로는 각각 별도 행동이 된다.",
+          "body"
+        ],
+        [
+          "h",
+          "예측 ready 최대 32개"
+        ],
+        [
+          "p",
+          "결정 후보만 미래 비용에 넣으면 숨겨진 큐의 납기를 무시할 수 있으므로 bucket 양끝을 순차 추가해 현재 관측 ready 중 최대 32개를 명목 후속 예측에 넣는다. 실제 전체 ready 큐를 지우는 것은 아니다. 후보 밖 요청도 실제 큐에 남고 이후 의사결정에서 다시 후보가 될 수 있다.",
+          "body"
+        ],
+        [
+          "code",
+          "publicWork = sum_q min_supported_route nominal_occupied(q,route)\nrolling_end = min(observation_end,\n                  now + max(10, 3*publicWork + 3*owner_count))"
+        ],
+        [
+          "p",
+          "그 시점에 보이지 않는 미래 도착은 롤아웃에 넣지 않는다. 8/32/27 등의 제한은 계산량과 표현 설계의 일부이며 최적해를 보장하지 않는다. ATC 점수만 보고 선택하는 규칙과 롤링 비용을 입력한 신경망을 구분한다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "12  롤링 예측·경로 선호·대기 행동",
+      "source": "policy.cjs; source/nominal_rollout.cjs; public_observer.cjs",
+      "blocks": [
+        [
+          "p",
+          "후보 첫 행동을 실제로 실행하기 전에 공개 상태의 복제본에서 명목 실행을 계산한다. 이후 작업은 관측된 요청의 EDF 및 명목 경로 규칙으로 이어 간다. 현재 owner의 잔여는 관측된 단계와 경과시간·중앙 길이로 근사하며 실제 숨겨진 완료시간을 사용하지 않는다. 명목 INFER step 상한은 0.05초다.",
+          "body"
+        ],
+        [
+          "h",
+          "공개 경로 선호는 무엇인가"
+        ],
+        [
+          "p",
+          "처음 보인 ready/owner 작업을 누적해 최근 최대 64개 task의 분류 비중을 추정한다. 16개 미만이면 0.75를 쓴다. 추정 비중이 0.625 이하면 분류 NPU를 선호하고, 그보다 높으면 분류 요청 순서에 NPU:NPU:NPU:GPU 패턴을 붙인다. 탐지 선호는 CPU다. 이 값은 명목 후속 배정과 특징31에 쓰지만 실제 선택을 금지하는 route mask는 아니다.",
+          "body"
+        ],
+        [
+          "table",
+          [
+            "행동",
+            "역할"
+          ],
+          [
+            [
+              "DISPATCH(q,route)",
+              "지금 가능한 요청·지원 경로 배정"
+            ],
+            [
+              "WAIT 0.02 / 0.05초",
+              "슬롯이 비어 있어도 짧게 기다린 뒤 재결정"
+            ],
+            [
+              "WAIT_EVENT",
+              "owner가 있을 때 AVAILABLE 또는 새 ready 도착에 재결정"
+            ]
+          ],
+          [
+            165,
+            325
+          ]
+        ],
+        [
+          "p",
+          "후보 최대 8요청×최대 3경로+대기 3개로 27행동 용량을 둔다. 실제 합법 행동만 mask=true이며 나머지는 padding이다. 같은 의사결정 안의 완전히 같은 명목 조건만 memoization한다. 다른 실제 환경이나 잠재 작업 진척 결과를 재사용하지 않는다.",
+          "body"
+        ],
+        [
+          "p",
+          "예측 중 사건 수 cap/수치 문제가 생기면 nominal_failure·미완료 비용을 기록한다. 유리한 후속 행동으로 조용히 바꾸지 않는다. 최종 실제 의사결정에는 납기 가능성 mask, 임박 요청 강제, 고정 ATC logit prior, NN 선택 뒤 교사 덮어쓰기가 없다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "13  다섯 비용과 실제 경험의 보상 구성",
+      "source": "policy.cjs/evaluate; run.py/simulate; nn_train.py/update",
+      "blocks": [
+        [
+          "p",
+          "정책은 에너지·열·긴급 지연·일반 지연·미응답의 5비용을 구분한다. 명목 롤아웃의 비용은 행동 특징이며, PPO의 학습 라벨은 실제 모의 실행에서 저장한 전력·열 적분과 실제 응답으로 별도로 만든다. 예측 비용을 그대로 보상 정답이라고 사용하지 않는다.",
+          "body"
+        ],
+        [
+          "code",
+          "C_E = max(0, E_35..T - B0*(T-35)) / N\nC_H = max(0, (mean_AP_35..T - SKIN) / 10)\nlate_i = max(0, response_time_i - absolute_deadline_i)\nC_g = sum_i_in_g [I(late_i>1e-9)\n       + 0.02*min(5, late_i/relative_deadline_i)] / N\nC_U = count(no response by end) / N"
+        ],
+        [
+          "p",
+          "전체 보고서의 에너지는 0~T 기저를 포함한다. 위 C_E만 학습 목적에서 35~T의 기저를 제외한 요청당 소비다. C_U는 응답 미도착 비용이고, 최종 미완료 지표는 AVAILABLE 미도달이어서 정의가 다를 수 있다. 명목 비용도 같은 5축이지만 분모는 해당 관측 예측 집합이며 끝 온도·예측 미완료 수 등이 추가 특징이 된다.",
+          "body"
+        ],
+        [
+          "h",
+          "납기 보상이 다른 목적을 압도하지 않도록 한 처리"
+        ],
+        [
+          "p",
+          "저장 TRAIN 참조에서 얻은 에너지·열 scale로 학습 비용을 나누고 긴급/일반 비용은 classFactors로 보정한다. PPO에서는 각 비용 advantage를 actor 학습 frame에서 중심화·RMS 정규화한 뒤 [1,1,dual_urgent,dual_normal,3]으로 합친다. 비용을 줄이는 방향으로 부호를 반대로 한다. 과거 고정 가중치 [0.5,0.5,8,4,30]를 최종 balance 목적과 혼용하지 않는다.",
+          "body"
+        ],
+        [
+          "code",
+          "deficit_g = (reference_on_g - policy_on_g)/planned_g - 0.005\ndual_g <- clip(dual_g + 4*deficit_g, 0.25, 8)"
+        ],
+        [
+          "p",
+          "dual은 TRAIN 참조 대비 군별 정시 건수 손해가 0.5%p를 넘으면 벌점을 높이는 soft 조정이다. 행동을 차단하는 납기 보호가 아니며, 납기 충족을 보장하지 않는다. 비용의 시간 배분은 각 적분 시작/응답을 직전 의사결정 frame에 넣고 합계가 회차 비용과 일치하는지 검사한다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "14  신경망의 32특징 명세 (0~15)",
+      "source": "route_group_learning_v1/policy.cjs: row construction and balance overrides",
+      "blocks": [
+        [
+          "p",
+          "한 행동마다 32개 수치를 같은 순서로 구성한다. 아래 번호는 코드의 0-based index다. 모든 입력 수치는 최종적으로 [-10,10] 범위로 clip한다. 이는 신경망 특징 clipping이며 실제 온도나 물리 전력을 잘라내는 처리가 아니다.",
+          "body"
+        ],
+        [
+          "table",
+          [
+            "번호",
+            "의미",
+            "실제 인코딩"
+          ],
+          [
+            [
+              "0",
+              "상수",
+              "1"
+            ],
+            [
+              "1",
+              "분류 요청 여부",
+              "I(task=classification)"
+            ],
+            [
+              "2",
+              "CPU 경로 여부",
+              "I(route ends CPU)"
+            ],
+            [
+              "3",
+              "GPU 경로 여부",
+              "I(route ends GPU)"
+            ],
+            [
+              "4",
+              "NPU 경로 여부",
+              "I(route ends NPU)"
+            ],
+            [
+              "5",
+              "대기 행동 여부",
+              "I(WAIT or WAIT_EVENT)"
+            ],
+            [
+              "6",
+              "긴급 요청 여부",
+              "I(priority=urgent)"
+            ],
+            [
+              "7",
+              "대기한 시간",
+              "(now-arrival)/10"
+            ],
+            [
+              "8",
+              "남은 납기",
+              "(absolute_deadline-now)/2"
+            ],
+            [
+              "9",
+              "명목 응답 길이",
+              "nominal_response/2"
+            ],
+            [
+              "10",
+              "명목 점유 길이",
+              "nominal_occupied/2"
+            ],
+            [
+              "11",
+              "ATC 로그 점수",
+              "log_ATC/5"
+            ],
+            [
+              "12",
+              "전체 ready 수",
+              "ready_count/64"
+            ],
+            [
+              "13",
+              "긴급 ready 수",
+              "urgent_ready_count/64"
+            ],
+            [
+              "14",
+              "CPU 슬롯 빈 상태",
+              "I(no CPU route owner)"
+            ],
+            [
+              "15",
+              "GPU 슬롯 빈 상태",
+              "I(no GPU route owner)"
+            ]
+          ],
+          [
+            35,
+            155,
+            300
+          ]
+        ],
+        [
+          "p",
+          "최종 balance·rank_feature 설정에서는 30·31번이 이전 계열의 원 의미를 덮어쓴다. 과거 sampled 32파라미터 실험의 특징과 같은 ABI라고 가정하면 안 된다. WAIT의 요청 관련 값은 현재 head/최상위 명목 후보의 문맥을 사용하므로 독립적인 물리 작업 하나를 뜻하지 않는다.",
+          "small"
+        ]
+      ]
+    },
+    {
+      "title": "15  신경망의 32특징 명세 (16~31)",
+      "source": "route_group_learning_v1/policy.cjs: row construction and balance overrides",
+      "blocks": [
+        [
+          "p",
+          "한 행동마다 32개 수치를 같은 순서로 구성한다. 아래 번호는 코드의 0-based index다. 모든 입력 수치는 최종적으로 [-10,10] 범위로 clip한다. 이는 신경망 특징 clipping이며 실제 온도나 물리 전력을 잘라내는 처리가 아니다.",
+          "body"
+        ],
+        [
+          "table",
+          [
+            "번호",
+            "의미",
+            "실제 인코딩"
+          ],
+          [
+            [
+              "16",
+              "NPU 슬롯 빈 상태",
+              "I(no NPU route owner)"
+            ],
+            [
+              "17",
+              "최근 공개 AP",
+              "(held_AP-30)/10"
+            ],
+            [
+              "18",
+              "공개 관측기 전력",
+              "public_past_power/10"
+            ],
+            [
+              "19",
+              "누적 의도적 대기",
+              "wait_used_s/12"
+            ],
+            [
+              "20",
+              "owner 수",
+              "owner_count/3"
+            ],
+            [
+              "21",
+              "예측 에너지 비용",
+              "forecast_C_E"
+            ],
+            [
+              "22",
+              "예측 열 비용",
+              "forecast_C_H"
+            ],
+            [
+              "23",
+              "예측 긴급 지연 비용",
+              "forecast_C_urgent"
+            ],
+            [
+              "24",
+              "예측 일반 지연 비용",
+              "forecast_C_normal"
+            ],
+            [
+              "25",
+              "예측 미응답 비용",
+              "forecast_C_U"
+            ],
+            [
+              "26",
+              "예측 종료 AP",
+              "(forecast_AP_end-30)/10"
+            ],
+            [
+              "27",
+              "롤링 범위",
+              "(rolling_end-now)/100"
+            ],
+            [
+              "28",
+              "후보 응답까지 시간",
+              "(forecast_response-now)/2; absent: 10/2"
+            ],
+            [
+              "29",
+              "예측 미응답 수",
+              "nominal_unfinished/8"
+            ],
+            [
+              "30",
+              "요청 EDF/FIFO 후보 순위",
+              "DISPATCH: rank/max(1, unique_requests-1); WAIT: seconds"
+            ],
+            [
+              "31",
+              "공개 경로 선호/사건 대기",
+              "DISPATCH matching preference: 1; WAIT_EVENT: -1; else: 0"
+            ]
+          ],
+          [
+            35,
+            155,
+            300
+          ]
+        ],
+        [
+          "p",
+          "최종 balance·rank_feature 설정에서는 30·31번이 이전 계열의 원 의미를 덮어쓴다. 과거 sampled 32파라미터 실험의 특징과 같은 ABI라고 가정하면 안 된다. WAIT의 요청 관련 값은 현재 head/최상위 명목 후보의 문맥을 사용하므로 독립적인 물리 작업 하나를 뜻하지 않는다.",
+          "small"
+        ]
+      ]
+    },
+    {
+      "title": "16  신경망 구조·mask·최종 실행",
+      "source": "route_group_learning_v1/nn_train.py; FINAL_POLICY.json",
+      "blocks": [
+        [
+          "p",
+          "입력은 최대 27행동×32특징의 set이다. 요청 개수가 변해도 같은 encoder를 각 행동에 적용하고, 합법 행동만 평균/최대 pooling해 전체 문맥을 만든다. padding이 문맥 평균에 들어가지 않도록 mask를 사용한다.",
+          "body"
+        ],
+        [
+          "code",
+          "e_i = tanh(Linear(32,48)(x_i))\ncontext = concat(masked_mean(e), masked_max(e))  # 96\nlogit_i = Linear(64,1)(tanh(Linear(144,64)([e_i,context])))\nV = Linear(64,5)(tanh(Linear(96,64)(context)))\npi(a|s) = softmax(masked_logits / 0.35)"
+        ],
+        [
+          "table",
+          [
+            "항목",
+            "최종 설정"
+          ],
+          [
+            [
+              "학습 파라미터",
+              "17,462개; actor와 5비용 critic"
+            ],
+            [
+              "학습 행동",
+              "categorical sampling; 별도 action RNG"
+            ],
+            [
+              "원 최종 EVAL 행동",
+              "물리 mask 후 logit argmax; 동률이면 첫 index"
+            ],
+            [
+              "선택 불법 시",
+              "오류 기록; rescue/fallback 없음"
+            ]
+          ],
+          [
+            150,
+            340
+          ]
+        ],
+        [
+          "p",
+          "mask는 분류/탐지의 지원 경로, 슬롯 중복 금지, 전체 owner 용량 같은 실행 합법성이다. 납기에 늦을 것 같다는 이유로 행동을 지우지 않는다. ATC·예측 비용·경로 선호는 입력 특징이며 고정 logit prior나 선택 뒤 덮어쓰기가 아니다.",
+          "body"
+        ],
+        [
+          "p",
+          "최종 저장 balance는 scales=[0.6215900946,0.4245066368], dual=[0.96,0.819375], tail=0.02, rank_feature=true다. EVAL classFactors=[1/p,1/(1-p)]는 알려진 명목 혼합 비중을 사용한다. 온라인에서 혼합 비중을 모르는 경우의 검증은 아니다.",
+          "body"
+        ],
+        [
+          "p",
+          "체크포인트는 seed 881087의 S881087_FINAL.pt.gz다. SHA256 전체는 마지막 근거 표와 동봉 manifest에 기록한다. 세 seed 평균은 발표용 집계이며 동시에 세 모델을 투표하는 앙상블 정책이 아니다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "17  교사 규칙과 행동 복제의 실제 계보",
+      "source": "route_group_learning_v1/bc.py; OPERATION.json; BC_TRAINING.json",
+      "blocks": [
+        [
+          "p",
+          "교사는 RL이 아니라 공개 명목 모형과 경로 선호에 기반한 결정 규칙이다. 합법 DISPATCH 중 특징31이 선호 경로와 일치하는 후보를 찾고 남은 납기·ordinal·index 순으로 고른다. 그런 후보가 없으면 WAIT_EVENT를 고른다. 시연 행동의 정답을 신경망이 맞히게 하는 행동 복제(BC)는 지도학습이다.",
+          "body"
+        ],
+        [
+          "h",
+          "최종 모델은 무작위 초기화에서 PPO만 한 것이 아님"
+        ],
+        [
+          "p",
+          "이번 희소 경로 보완 BC는 이전 event V1의 공통 BC 가중치에서 시작했다. 기존 TRAIN 시연 4개의 3,008frame을 복사하고 공개 후보 순위 특징30만 재인코딩했다. 원 parent 체크포인트와 SHA, 시연 재사용 근거를 OPERATION·SAVED_TRAIN_REUSE에 보존했다. 교사 없는 fresh PPO/CEM 대조의 초기화 조건과 다르다.",
+          "body"
+        ],
+        [
+          "code",
+          "weight_i = frames / (number_of_groups * frames_in_group_i)\nBC_loss_i = logsumexp(all_legal_logits)\n            - logsumexp(compatible_teacher_logits)\nloss = mean(weight_i * BC_loss_i)"
+        ],
+        [
+          "p",
+          "교사와 같은 선호 경로·같은 납기인 요청은 동등한 compatible 정답으로 인정한다. WAIT_EVENT는 해당 행동을 compatible로 둔다. 경로군 역빈도 가중치는 희소 GPU나 WAIT_EVENT가 다수 NPU 시연에 묻히지 않게 한다. 특정 요청 index 하나만 맞히는 accuracy와 compatible accuracy를 구분한다.",
+          "body"
+        ],
+        [
+          "p",
+          "Adam 학습률 0.001, eps=1e-5, batch 256, gradient norm clip 1이다. 최대 64epoch에서 compatible 정확도≥99.5%, 최소 경로군 정확도≥99%, loss≤0.05이면 멈춘다. 실제 10epoch·120step, compatible 100%, 단일 시연 index 정확도 약 72.47%였다. 이 정확도를 독립 EVAL 정시율로 해석하지 않는다. BC 뒤 공통 가중치에서 PPO 3seed를 각각 출발시켰다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "18  PPO의 return·advantage·목적과 갱신",
+      "source": "route_group_learning_v1/nn_train.py; run.py; TRAINING_COMPLETE.json",
+      "blocks": [
+        [
+          "p",
+          "PPO는 실제 TRAIN에서 고른 행동의 확률, 5비용 value, 실제 비용 라벨을 저장한다. 같은 가중치로 수집한 두 episode를 묶어 한 번 갱신하며 다른 가중치의 경험을 섞지 않는다. 비용이 작아지는 방향으로 actor advantage의 부호를 바꾼다.",
+          "body"
+        ],
+        [
+          "code",
+          "target_t = sum_{k>=t} cost_k                # 5 components\ndelta_t = cost_t + V_(t+1) - V_t            # gamma = 1\nA_t = delta_t + exp(-dt_t/20) * A_(t+1)\nZ_t = component_center_and_RMS_normalize(A_t)\nA_policy = -Z_t dot [1,1,dual_u,dual_n,3]\nrho_t = exp(log_pi_new(a_t) - log_pi_old(a_t))\nL_actor = -mean(min(rho*A_policy, clip(rho,.8,1.2)*A_policy))\nL = L_actor + 0.5*MSE(V,target) - 0.03*entropy"
+        ],
+        [
+          "p",
+          "actor 학습은 합법 행동이 두 개 이상인 frame에 적용한다. component RMS의 하한은 1e-4이고 최종 actor advantage도 유효 frame에서 평균·표준편차로 정규화한다. dt를 반영하는 exp(-dt/20)은 GAE 꼬리 감쇠이며 반환 target 자체는 할인 없는 비용 합이다.",
+          "body"
+        ],
+        [
+          "table",
+          [
+            "항목",
+            "원 최종 학습 설정"
+          ],
+          [
+            [
+              "PPO Adam",
+              "lr=0.0001, eps=1e-5, gradient clip=1"
+            ],
+            [
+              "갱신 상한",
+              "4epoch, mini-batch 256"
+            ],
+            [
+              "KL 중단",
+              "stable lr에서 mini-batch KL>0.02; epoch 경계 max KL>0.05"
+            ],
+            [
+              "교사 auxiliary loss",
+              "최종 balance PPO에서는 가중치 0"
+            ],
+            [
+              "실제 실행",
+              "seed당 512요청 2episode / 1update / 32 Adam step"
+            ]
+          ],
+          [
+            150,
+            340
+          ]
+        ],
+        [
+          "p",
+          "최종 계열은 BC 초기화 효과를 유지한 상태에서 위 보상 학습을 추가했다. PPO 구간의 교사 auxiliary weight가 0이어도 전체 정책이 교사 없이 학습되었다는 뜻은 아니다. BC-only 대조가 추가 PPO 효과의 핵심 비교다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "19  학습·선정·평가와 최종 채택의 순서",
+      "source": "route_group_learning_v1/run.py; SELECTION_FROZEN.json; FINAL_POLICY.json",
+      "blocks": [
+        [
+          "p",
+          "공통 BC에서 seed 881081/881083/881087을 각각 만들고 optimizer·행동 RNG·shuffle RNG를 별도로 시작한다. 각 seed는 TRAIN 2회 뒤 가중치를 고정하고 4개 DEV에서 비교했다. 등록된 DEV 기준은 미완료 수, 군별 참조 정시 손해가 0.5%p를 넘는 정도, 상대 에너지+열, seed 순의 사전식 key다.",
+          "body"
+        ],
+        [
+          "table",
+          [
+            "seed",
+            "DEV key: 미완료 / 군별 손해 / 에너지+열"
+          ],
+          [
+            [
+              "881081",
+              "0 / 0 / 1.8474025702"
+            ],
+            [
+              "881083",
+              "0 / 0 / 1.8475753212"
+            ],
+            [
+              "881087 (선정)",
+              "0 / 0 / 1.8471860962"
+            ]
+          ],
+          [
+            150,
+            340
+          ]
+        ],
+        [
+          "p",
+          "881087의 원 선정 기록은 최종 EVAL 전에 봉인되었다. 이후 여러 정책 계열과 교사 없는 실패 결과까지 본 사용자가 이 이전 계열을 최종안으로 채택했다. 따라서 대표 seed의 원 DEV 선정과 정책 계열의 사후 최종 채택을 구분한다. 현재 표는 새로운 사전등록 독립 확인 실험이 아니다.",
+          "body"
+        ],
+        [
+          "h",
+          "최종 네 방법 표가 만들어진 방법"
+        ],
+        [
+          "p",
+          "원 85% EVAL의 EDF/881087 4회씩은 SHA가 같은 원자료를 재사용했다. 후속 FIFO 4회와 사용자 정의 RR 4회만 별도 등록·실행한 결과를 보존했다. 네 방법의 16기록·16,384요청에 대해 슬롯·납기·전력·열 적분·큐 선택을 검산했다. 보고서 개정 때문에 완료된 실험을 다시 실행하지 않았다.",
+          "body"
+        ],
+        [
+          "p",
+          "원 교사/3seed/다른 부하와 교사 없는 PPO/CEM의 모든 결과, 중단한 PPO, optimizer/RNG·중간 CP·실패·예산 원장도 남겼다. 유리한 seed만 새로 학습하거나 미완료를 분모에서 제외하지 않는다. 최종 네 방법의 고정 입력만으로 모든 부하·앱·기기에서 우위라고 일반화할 수 없다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "20  지표와 시간 그래프를 재현하는 집계법",
+      "source": "result.cjs; final_four_rr_v1/SUMMARY.json; reports/time_usage_data.csv",
+      "blocks": [
+        [
+          "code",
+          "E_full = integral(P(t), t=0..T)\nmean_AP = integral(T_AP(t), t=35..T)/(T-35)\non_time_rate = sum(on_time_requests)/sum(planned_requests)\nwork_span = last_AVAILABLE - 35\nbaseline_full = B0*T"
+        ],
+        [
+          "p",
+          "에너지·AP는 네 세션의 각 지표를 산술 평균한다. 정시율은 전체 도착 요청 4,096건을 pooled 분모로 쓰며 긴급 2,560·일반 1,536건도 각각 별도 분모다. 미응답·미완료·늦은 요청을 전체 분모에서 빼지 않는다. P95는 각 세션 완료 응답시간의 95백분위를 구한 뒤 네 값을 평균한 것으로 전체 요청을 합친 pooled P95가 아니다.",
+          "body"
+        ],
+        [
+          "h",
+          "시간 그래프"
+        ],
+        [
+          "p",
+          "X축은 관측 시작 이후 초다. 에너지는 저장 해석적 구간 적분을 누적하고 첫 35초 기저를 더한 사용량 API-J다. 전력 샘플을 임의 사다리꼴 적분해 바꾸지 않는다. AP와 누적 에너지는 저장 경계 사이 선형 보간, 기본 0.5초 격자에 실제 납기 시각을 추가한다. 각 분류 비중의 R26/R27을 같은 시각에 평균하고 관측창을 넘겨 연장하지 않는다.",
+          "body"
+        ],
+        [
+          "p",
+          "시간별 정시율은 시각 t까지 납기가 지난 요청 중 정시 완료 비율이다. 첫 납기 전은 공란이다. 최종 정시율과 다른 시점의 아직 납기가 남은 요청을 분모에 섞지 않는다. 분류 75%에서는 네 방법 모두 100%여서 선이 겹친다.",
+          "body"
+        ],
+        [
+          "p",
+          "막대는 실제 전체 사용량이며 0에서 시작하고 FIFO 840.480 API-J 기준선을 둔다. 시간 그림은 색·선·표식·오른쪽 수치를 함께 표시한다. 온도/정시율의 확대 축은 명시하고 선이 가까운 구간을 임의로 벌리거나 평활화하지 않는다. 입력별 점은 독립 실기기 반복이나 신뢰구간이 아니다. 평균 기저는 172.827788 API-J이며 방법 공통이다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "21  성과의 원인과 RL/CEM의 역할을 해석하는 기준",
+      "source": "S26_FINAL_FOUR_RR_RESULTS_KO.md; S26_ROUTE_GROUP_RESULTS_KO.md; S26_MATCHED_PPO_CEM_RESULTS_KO.md",
+      "blocks": [
+        [
+          "p",
+          "같은 최종 85% 조건에서 우리 전체 정책은 FIFO 대비 에너지 62.649 API-J(약 7.454%)·평균 AP 0.749℃가 낮고 정시율은 0.146%p 높았다. 이 차이는 후보·롤링·경로 선택·대기·특징·교사 초기화·PPO를 포함한 묶음의 결과다. 요청 순서 규칙보다 RL만 우수하다는 인과 효과로 귀속할 수 없다.",
+          "body"
+        ],
+        [
+          "table",
+          [
+            "같은 조건 대조",
+            "API-J",
+            "평균 AP ℃",
+            "정시율 %"
+          ],
+          [
+            [
+              "교사학습 직후 고정판",
+              "777.781",
+              "38.684",
+              "97.070"
+            ],
+            [
+              "최종 PPO 881087",
+              "777.831",
+              "38.685",
+              "97.070"
+            ]
+          ],
+          [
+            190,
+            100,
+            100,
+            100
+          ]
+        ],
+        [
+          "p",
+          "BC 직후보다 최종 PPO가 에너지를 약 0.0065% 더 쓰고 정시율은 같았다. 따라서 PPO의 독립 추가 이득은 미입증이다. 긴급 정시율은 모두 100%지만 긴급 P95는 FIFO 0.366초, EDF 0.340초, RR 0.367초, 우리 0.604초로 늘었다. 평균 소비 감소만으로 모든 서비스 품질이 좋아졌다고 쓰지 않는다.",
+          "body"
+        ],
+        [
+          "h",
+          "왜 학습·탐색을 검토할 수는 있는가"
+        ],
+        [
+          "p",
+          "ATC는 우선순위 규칙이고, 이 문제는 어떤 요청을 어느 장치에 언제 보낼지 함께 선택해야 한다. 그 선택 함수를 신경망으로 표현하고 누적 비용으로 조정하는 PPO, 또는 정책 파라미터 분포를 좋은 회차 보상 후보 쪽으로 옮기는 CEM을 검토할 이유는 있다. 산업공학 규칙이므로 RL/CEM이 필수라는 주장은 성립하지 않는다. 고정 규칙·예측 비용 최소 선택도 대안이다.",
+          "body"
+        ],
+        [
+          "p",
+          "CEM은 정책 탐색용 확률적 최적화이고 PPO의 policy gradient/critic 갱신과 다르다. 현재 최종 모델에는 CEM이 없다. 교사 없는 32파라미터 PPO/CEM 통제 실험은 구조·초기화·행동 실행 방식이 달라 최종 큰 신경망과 숫자를 합치지 않는다. 관련 문헌의 검토 이유와 이번 실험의 성능 증거를 구분한다.",
+          "body"
+        ]
+      ]
+    },
+    {
+      "title": "22  최종 검토·원자료 복원과 재현 순서",
+      "source": "publications/final_review_20261019/README.md; FILES.json; ASSETS.json; verify_final_policy.py",
+      "blocks": [
+        [
+          "p",
+          "검토자는 결과표만 보기 전에 최종 설정과 소스·가중치의 연결을 확인하고, 저장 원자료로 집계와 물리·납기를 검산한다. 전체 40,036파일은 파일별 SHA256·원 경로·릴리스 조각·멤버를 FILES.json에 기록했다. 원본 바이트 약 13.87GB, 필요한 전체 다운로드 약 12.13GB다. 복원본과 캐시를 함께 두려면 그 합과 여유 공간이 필요하다.",
+          "body"
+        ],
+        [
+          "table",
+          [
+            "검토 항목",
+            "저장소 기준 위치 (s26_simulator/ 아래)"
+          ],
+          [
+            [
+              "최종 설정",
+              "FINAL_POLICY.json / FINAL_POLICY_KO.md"
+            ],
+            [
+              "최종 결과·입력·감사",
+              "experiments/final_four_rr_v1/"
+            ],
+            [
+              "정책·학습·물리 코드",
+              "experiments/route_group_learning_v1/"
+            ],
+            [
+              "모형 생성·검증",
+              "research/timing_model.py; experiments/capacity_power_v1/; pipeline_thermal_v1/"
+            ],
+            [
+              "가중치·optimizer·RNG",
+              "route_group_learning_v1/artifacts/G001/ 의 *.pt.gz"
+            ],
+            [
+              "복원·파일 검증",
+              "publications/final_review_20261019/restore_review.py 및 verify_review.py"
+            ],
+            [
+              "완료·중단·별도 대조",
+              "동일 publications의 DATA_MAP.tsv / PROCESS_KO.md / FILES.json"
+            ]
+          ],
+          [
+            120,
+            370
+          ]
+        ],
+        [
+          "code",
+          "python s26_simulator/publications/final_review_20261019/restore_review.py --help\npython s26_simulator/publications/final_review_20261019/verify_review.py --repo-root .\npython s26_simulator/verify_final_policy.py\npython s26_simulator/publications/final_review_20261019/rebuild_figures.py \\\n  --repo-root . --verify-inputs"
+        ],
+        [
+          "p",
+          "40,036파일의 새 폴더 복원과 파일별 SHA, 최종 정책 145항목/39source pins, 그림 입력 19개 검증을 완료했다. 이 절차는 NN forward·새 시뮬레이션·학습을 실행하지 않는다. 체크포인트를 읽는 실제 재실행은 기존 소비 원장과 별도 등록 규약을 따라야 한다.",
+          "small"
+        ],
+        [
+          "p",
+          "최종 CP SHA256: 4a2c5b1d38da76bdef7f33c6eee6a4c69451130a68eb8e7168f0d760d37e2e34. GitHub: mingyujo/D1Check, branch codex/s26-simulator-handoff-20261016, release s26-final-review-20261019. 최신 상세 PDF·소스·검증은 해당 publication의 methodology_expanded_v4/를 본다.",
+          "small"
+        ]
+      ]
+    }
+  ]
+}

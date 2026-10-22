@@ -1,0 +1,27 @@
+"""Unique helper module name preserves the legacy simulator's common imports."""
+import os
+for k in ['OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS']:os.environ[k]='1'
+import json,gzip,hashlib,time,sys,shutil,subprocess
+from pathlib import Path
+H=Path(__file__).resolve().parent;R=H.parents[2];A=R/'a24_simulator';O=A/'results/A24_S26_SCALE_20261022_01';V=A/'reviews/A24_S26_SCALE_20261022_01'
+sys.path.insert(0,str(H.parent))
+from a24_bc_s26_requests_20261021 import study as legacy
+from a24_nn_urgent_tie_20261021.policy import Policy
+P,C,B=legacy.P,legacy.C,legacy.B
+from a24_dynamic_route_600_20261020.dynamic_policy import DynamicPolicy
+MODES=['FIFO_DYN','EDF_DYN','RR_DYN','TEACHER_RISK','BC_NEURAL_URGENT']
+CHECKPOINT=A/'results/A24_NN_URGENT_TIE_20261021_01/NEURAL_BC_FIT_STAGE2.pt.gz'
+NETWORK='3b97ed32ca1c09621d11512519e7e75b1c806d92be51aa03af35887967d4935d'
+CONTROLS=[R/'docs/PROJECT_STATUS.md',R/'docs/PROJECT_PLAN.md',R/'docs/DECISIONS.md',A/'docs/LATEST_EXECUTION_FILES.md']
+read=legacy.read
+def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+def pin(p):return {'path':Path(p).relative_to(R).as_posix(),'sha256':sha(p),'bytes':Path(p).stat().st_size}
+def write(p,v):
+    with Path(p).open('x',encoding='utf-8') as f:json.dump(v,f,ensure_ascii=False,allow_nan=False,separators=(',',':'))
+def save(p,v):
+    with Path(p).open('xb') as f:f.write(gzip.compress(json.dumps(v,ensure_ascii=False,allow_nan=False,separators=(',',':')).encode(),mtime=0))
+def resources(start=False):
+    import psutil
+    ram=psutil.virtual_memory().available;disk=shutil.disk_usage(R).free;pp=[p.info for p in psutil.process_iter(['pid','name']) if (p.info['name'] or '').lower() in ('python.exe','python3.exe')];assert ram>=1024**3 and disk>=(8 if start else 4)*1024**3 and len(pp)<=3,(ram,disk,pp);return {'ram':ram,'disk':disk,'python':pp}
+def verify(reg):
+    for p in reg['source_pins']:assert sha(R/p['path'])==p['sha256'],p['path']

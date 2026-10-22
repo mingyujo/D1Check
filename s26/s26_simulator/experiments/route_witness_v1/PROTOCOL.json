@@ -1,0 +1,36 @@
+{
+  "utc": "2026-10-18T04:48:47.121Z",
+  "schema": "S26_ROUTE_WITNESS_V1",
+  "reason": "Routing LP optimistic gap21% but rolling continuation is always EDF/fastest route. Test attainable static route alternatives separately; no RL or physical fit.",
+  "source_registration": "Parent route_energy_v1 sources frozen, no edits. New process binds only policy.select to declared route-restricted EDF rule; physical engine unchanged.",
+  "primary_load": 0.85,
+  "modes": [
+    "CPU_ONLY",
+    "GPU_ONLY",
+    "NPU_ONLY",
+    "SPLIT75",
+    "SPLIT87"
+  ],
+  "models": [
+    "CENTRAL",
+    "CPU3"
+  ],
+  "planned_START": 54,
+  "cap": 80,
+  "allocation": {
+    "DEV": 18,
+    "EVAL": 36
+  },
+  "data": "Matched parent TRAIN N1024/DEV N512/EVAL N1024 primary85% cases and streams; new rule/namespace identities. CPU_ONLY CPU3 is structurally identical to CPU1 because maxowners1 and is not reexecuted.",
+  "selection": "DEV only: missing, squared class ontime deficits>0.5pp vs frozen RL, energy+heat, method; freeze before EVAL. Does not select on EVAL.",
+  "conditional_next_gate": "DEV same-class service within0.5pp vs frozen RL, allAVAILABLE, >=5% mean energy reduction. Any followup NN uses fresh evaluation streams and new registration.",
+  "policy_identity": "Rule controls only, never label as RL. No deadline feasibility mask or critical override. Fixed backend excludes other routes by experimental definition, not by deadline.",
+  "physical_validation": false,
+  "new_RL": 0,
+  "new_measurements": 0,
+  "new_physical_fits": 0,
+  "split_rule": "Causal observation counter assigns every4th/every8th classification request toGPU and remainderNPU; fixed once first observed ready, no future work/arrivals or deadline feasibility. Demonstrates a path distribution, not a neural method.",
+  "prestart_amendment": "Registered before any witness START or parent DEV/EVAL; pure single-resource controls could miss mixed energy/throughput operating points.",
+  "TRAIN_DIAGNOSIS": "18 results owned by route_witness_pilot_v1; linked, never rerun",
+  "prestart_pilot_reuse_utc": "2026-10-18T04:58:35.691139+00:00"
+}

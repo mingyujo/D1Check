@@ -1,0 +1,89 @@
+{
+  "utc": "2026-10-20T13:16:52.410698+00:00",
+  "repository": "https://github.com/mrsnu/band",
+  "commit": "8600d4960ccb6f121221f6d252da8dbef2db160b",
+  "files": [
+    {
+      "path": "a24_simulator/experiments/a24_lsf_band_20261020/vendor/band/band/config.h",
+      "bytes": 2187,
+      "sha256": "66858f2f1370e9ce53999b8aeda4570202e34cae4298bc9d7f4293d074280c78",
+      "url": "https://raw.githubusercontent.com/mrsnu/band/8600d4960ccb6f121221f6d252da8dbef2db160b/band/config.h"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_lsf_band_20261020/vendor/band/band/engine.cc",
+      "bytes": 39386,
+      "sha256": "d04b8d385cb69441276e033fbd612ffbef45b00cf644883caa05e9a71bb8aa0b",
+      "url": "https://raw.githubusercontent.com/mrsnu/band/8600d4960ccb6f121221f6d252da8dbef2db160b/band/engine.cc"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_lsf_band_20261020/vendor/band/band/engine_interface.h",
+      "bytes": 4727,
+      "sha256": "3c8a2b3809753cba6f5c5947fe33f24599e4d735d79293918ce55a63d15b1143",
+      "url": "https://raw.githubusercontent.com/mrsnu/band/8600d4960ccb6f121221f6d252da8dbef2db160b/band/engine_interface.h"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_lsf_band_20261020/vendor/band/band/planner.cc",
+      "bytes": 14159,
+      "sha256": "d7b0fc74bbb748c99ab4e81718940e46a93107c6f6dae93c0aec3805bd524276",
+      "url": "https://raw.githubusercontent.com/mrsnu/band/8600d4960ccb6f121221f6d252da8dbef2db160b/band/planner.cc"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_lsf_band_20261020/vendor/band/band/scheduler/least_slack_first_scheduler.cc",
+      "bytes": 4266,
+      "sha256": "277818fbb270e552b186191de3a8e9333f16d2c89428080a6d86fa75fa6cf33a",
+      "url": "https://raw.githubusercontent.com/mrsnu/band/8600d4960ccb6f121221f6d252da8dbef2db160b/band/scheduler/least_slack_first_scheduler.cc"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_lsf_band_20261020/vendor/band/band/scheduler/least_slack_first_scheduler.h",
+      "bytes": 1443,
+      "sha256": "d87704e4a04841b63e8ad34836d69c769285a9e49ee5885c00e374fff5db2671",
+      "url": "https://raw.githubusercontent.com/mrsnu/band/8600d4960ccb6f121221f6d252da8dbef2db160b/band/scheduler/least_slack_first_scheduler.h"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_lsf_band_20261020/vendor/band/band/scheduler/scheduler.h",
+      "bytes": 1404,
+      "sha256": "4d7d763aae80c781c20723bbd3a2d7dc2f55fa62593f5d2750f2e28bea5c69be",
+      "url": "https://raw.githubusercontent.com/mrsnu/band/8600d4960ccb6f121221f6d252da8dbef2db160b/band/scheduler/scheduler.h"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_lsf_band_20261020/vendor/band/LICENSE",
+      "bytes": 565,
+      "sha256": "21bf7f046b6e014fec8e5b6fd78e40625280642f6959863b776d5af19fcadccb",
+      "url": "https://raw.githubusercontent.com/mrsnu/band/8600d4960ccb6f121221f6d252da8dbef2db160b/LICENSE"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_lsf_band_20261020/vendor/band/README.md",
+      "bytes": 3281,
+      "sha256": "3ce29e5c33b08bb6a6788fd19cc9456072976c356bd18d90705dda92735daa35",
+      "url": "https://raw.githubusercontent.com/mrsnu/band/8600d4960ccb6f121221f6d252da8dbef2db160b/README.md"
+    }
+  ],
+  "reference_source_unmodified": true,
+  "native_Band_runtime_built": false,
+  "full_Band_reproduction": false,
+  "not_original_MobiSys2022_archive": true,
+  "adaptations": [
+    "whole request instead of subgraph DAG",
+    "A24 public nominal and sensor instead of Band profiler",
+    "CPU3/GPU1 aggregate virtual slots",
+    "one dispatch per A24 event instead of Band worker batch enqueue",
+    "stable public FIFO ties instead of unspecified equal-slack std::sort",
+    "absolute arrival-to-deadline contract preserved",
+    "BAND_LSF_ALL intentionally disables original early dropping",
+    "BAND_LSF_DROP preserves predicted-SLO-drop principle and all-arrival denominator"
+  ],
+  "engine_fork": {
+    "original": {
+      "path": "a24_simulator/experiments/a24_s26_method_20261019/engine.py",
+      "bytes": 10642,
+      "sha256": "3ff57505e82451286f7f07db95d0524f168d58a730f0e58f782553b6a526a78a"
+    },
+    "fork": {
+      "path": "a24_simulator/experiments/a24_lsf_band_20261020/drop_engine.py",
+      "bytes": 11247,
+      "sha256": "cbf7f1b08d22fdb38736e3bdcd88c4b8d48163b155514fd54efb96f8c4c0912b"
+    },
+    "change": "Only explicit pre-dispatch DROP metadata/queue/event branch; no physics change"
+  },
+  "new_environment": 0
+}

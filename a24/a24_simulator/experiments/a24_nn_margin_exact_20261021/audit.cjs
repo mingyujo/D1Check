@@ -1,0 +1,69 @@
+'use strict';
+// Saved-only independent JS: original physics, public service protection, fitted cost selector.
+const fs=require('fs'),path=require('path'),z=require('zlib'),crypto=require('crypto');
+const R=path.resolve(__dirname,'../../..'),O=path.join(R,'a24_simulator/results/A24_NN_MARGIN_EXACT_20261021_01');
+const read=p=>JSON.parse(p.endsWith('.gz')?z.gunzipSync(fs.readFileSync(p)):fs.readFileSync(p)),save=(n,x)=>fs.writeFileSync(path.join(O,n),JSON.stringify(x,null,2)+'\n',{flag:'wx'});
+const {step,integral}=require('../a24_s26_method_20261019/audit.cjs');
+let checks=0,maxerr=0,phaseChecks=0,callChecks=0,regressionChoices=0;
+function ok(v,m){checks++;if(!v)throw Error(m);}function near(a,b,m,tol=3e-7){maxerr=Math.max(maxerr,Math.abs(a-b));ok(Number.isFinite(a)&&Number.isFinite(b)&&Math.abs(a-b)<=tol,m+': '+a+' vs '+b);}
+function service(qs,drain){const result={};for(const g of ['ALL','U','N']){const rows=qs.filter(q=>g==='ALL'||q.priority===g),answered=rows.filter(q=>q.response_ns!==null&&q.response_ns<=drain),lat=answered.map(q=>(q.response_ns-q.scheduled_arrival_ns)/1e9).sort((a,b)=>a-b);result[g]={n:rows.length,on:answered.filter(q=>q.response_ns<=q.deadline_ns).length,missing:rows.length-answered.length,incomplete:rows.filter(q=>q.available_ns===null||q.available_ns>drain).length,P95:lat.length?lat[Math.ceil(.95*lat.length)-1]:null,latencies:lat};}return result;}
+function dominance(a,b){const x=[...a.cost,a.AP_end,a.peak],y=[...b.cost,b.AP_end,b.peak];let strict=false;for(let k=0;k<7;k++){const t=1e-9+1e-9*Math.max(Math.abs(x[k]),Math.abs(y[k]));if(x[k]>y[k]+t)return false;if(x[k]<y[k]-t)strict=true;}return strict;}
+function auditBank(s,c,bank,config,model,policy){
+ const idle=c.physical_mask.slice();if(!s.owners.length)for(let i=0;i<c.actions.length;i++)if(c.actions[i].kind==='WAIT')for(let j=0;j<c.actions.length;j++)if(c.actions[j].kind==='DISPATCH'){
+  const a=c.forecasts[j],b=c.forecasts[i];if(!a.capped&&!b.capped&&a.comparison_complete&&b.comparison_complete&&Math.abs(a.H_s-b.H_s)<=1e-8&&JSON.stringify([...a.visible_ids].sort())===JSON.stringify([...b.visible_ids].sort())&&dominance(a,b)){idle[i]=false;break;}
+ }ok(JSON.stringify(idle)===JSON.stringify(c.idle_mask),'Idle filter independently reconstructed');
+ const pending=[...s.queue,...s.owners].filter(q=>q.response_ns===null||q.response_ns===undefined),pairs=[],xs=[],teacher=[],learned=[];
+ for(let j=0;j<c.actions.length;j++){
+  const f=c.forecasts[j],visible=new Set(f.visible_ids),jobs=pending.filter(q=>visible.has(q.request_id));let all=0,u=0,total=0,max=0,response=0;
+  for(const q of jobs){const got=Object.prototype.hasOwnProperty.call(f.responses_s,q.request_id),end=got?f.responses_s[q.request_id]:f.H_s,due=q.deadline_ns/1e9,arrival=q.scheduled_arrival_ns/1e9,ttl=Math.max(.05,due-arrival),late=!got||end>due+1e-8,t=Math.max(0,end-due)/ttl;all+=Number(late);u+=Number(late&&q.priority==='U');total+=t;max=Math.max(max,t);response+=Math.max(0,end-arrival)/ttl;}
+  const n=Math.max(1,jobs.length),x=[f.cost[0]/.35,f.cost[1],total/n,max,f.cost[4],response/n];pairs.push([all,u]);xs.push(x);
+  x.forEach((v,k)=>near(v,c.features[j][k],'Independent six cost features',1e-9));const score=x.reduce((a,v,k)=>a+v*[1,1,6,3,3,.2][k],0);teacher.push(score);near(score,c.teacher_scores[j],'Fair teacher cost',1e-8);
+  ok(c.service_pairs[j].late_ALL===all&&c.service_pairs[j].late_U===u,'Absolute pending late counts');
+  if(model){const value=x.reduce((a,v,k)=>a+v/model.scales[k]*model.scaled_weights[k],0);learned.push(value);near(value,c.learned_scores[j],'Independent fitted scorer',1e-8);}
+  const ids=new Set([...s.queue,...s.owners].map(q=>q.request_id));ok(f.no_future_arrivals&&f.no_future_latents&&f.visible_ids.every(id=>ids.has(id)),'Observed only');near(f.H_s,c.forecasts[0].H_s,'Common forecast interval',1e-8);
+ }
+ const allowed=c.actions.map((_,k)=>k).filter(k=>idle[k]),best=allowed.map(i=>pairs[i]).sort((a,b)=>a[0]-b[0]||a[1]-b[1])[0];
+ const mask=idle.map((v,i)=>!!v&&i<pairs.length&&pairs[i][0]===best[0]&&pairs[i][1]===best[1]);
+ const maxWait=Math.max(0,...c.actions.map(a=>(a.wait_ns??a.max_wait_ns??0)/1e9)),threshold=maxWait+config.tick_s,lookup=new Map(s.queue.map(q=>[q.request_id,q])),cpu=s.owners.filter(q=>q.route==='CPU'&&q.stage===1).length,critical=[];
+ for(let j=0;j<c.actions.length;j++){const a=c.actions[j];if(a.kind!=='DISPATCH')continue;const q=lookup.get(a.request_id);if(q.priority!=='N')continue;const v=bank.nominal_vectors[q.request_id+'|'+a.route],f=Math.max(config.minimum_speed,1/(1+config.strength*(a.route==='CPU'?config.cpu_slope:config.gpu_slope)*Math.max(0,s.sensor.temperature_c-config.onset_c))),rate=f/(a.route==='CPU'?1+.25*cpu:1),response=v.slice(0,q.task==='C'?2:3).reduce((a,b)=>a+b,0)-v[1]+v[1]/rate,slack=q.deadline_ns/1e9-s.now_ns/1e9-response;if(slack>=-1e-8&&slack<=threshold+1e-8)critical.push(j);}
+ const forced=critical.filter(i=>mask[i]);if(forced.length){mask.fill(false);forced.forEach(i=>mask[i]=true);}
+ ok(JSON.stringify(mask)===JSON.stringify(c.mask),'Shared service and normal latest-start mask');
+ ok(JSON.stringify(forced)===JSON.stringify(c.service_guard.forced_normal_indices),'Normal guard explanation');
+ const usable=c.actions.map((_,i)=>i).filter(i=>mask[i]),bestScore=Math.min(...usable.map(i=>teacher[i])),teacherIndex=usable.find(i=>teacher[i]<=bestScore+1e-8);
+ ok(c.teacher_index===teacherIndex,'Independent fair teacher target');
+ const values=usable.map(i=>teacher[i]),mean=values.reduce((a,b)=>a+b,0)/values.length,scale=Math.max(1e-6,Math.sqrt(values.reduce((a,b)=>a+(b-mean)**2,0)/values.length));
+ const compress=v=>Math.abs(v)<=5?v:Math.sign(v)*(5+Math.log1p(Math.abs(v)-5));
+ for(let i=0;i<36;i++){
+  const v=c.relative_cost_input?(mask[i]?compress((teacher[i]-mean)/scale):0):(i<c.actions.length?compress(teacher[i]/10):0);
+  near(c.x[i][28],Math.fround(v),'Independent candidate cost normalization input',2e-6);
+ }
+
+ ok(JSON.stringify(c.cost_compatible_mask)===JSON.stringify(mask.map((v,i)=>v&&teacher[i]<=bestScore+1e-8)),'Separate compatible-cost diagnostic');
+ ok(JSON.stringify(c.teacher_mask)===JSON.stringify(mask.map((v,i)=>i===teacherIndex)),'Single exact teacher action label, including ties');
+ ok(mask[c.chosen]&&JSON.stringify(c.action)===JSON.stringify(c.actions[c.chosen]),'Neural action eligibility and binding');
+ ok(c.post_NN_override===false&&c.future_information===false,'No teacher override');
+ regressionChoices++;
+
+}
+const result=read(path.join(O,'RESULT.json')),inputs=read(path.join(__dirname,'INPUTS.json')),op=read(path.join(__dirname,'OPERATION.json')),model=result.model?read(path.join(R,result.model.path)):null;
+for(const p of op.source_pins){const f=path.join(R,p.path),b=fs.readFileSync(f);ok(b.length===p.bytes&&crypto.createHash('sha256').update(b).digest('hex')===p.sha256,'Source pin '+p.path);}
+const receipts=fs.readFileSync(path.join(O,'receipts.jsonl'),'utf8').trim().split('\n').map(JSON.parse),starts=receipts.filter(r=>r.event==='START');ok(starts.length<=12&&starts.length===result.science_START,'12 unit START census');ok(new Set(starts.map(r=>r.start_id)).size===starts.length,'Unique START');for(const r of starts)ok(receipts.filter(v=>v.start_id===r.start_id&&['COMPLETE','FAIL'].includes(v.event)).length===1,'One terminal outcome per START');
+const newRows=result.rows,all=[...inputs.comparators,...newRows.filter(r=>r.kind==='EVAL')];ok(all.length===36,'All nine policies / four cases');
+for(const row of newRows.filter(r=>r.status==='COMPLETE')){
+ const d=read(path.join(R,row.raw.path)),r=d.result,work=new Map,bank=read(path.join(R,row.bank.path)),jobs=new Map(bank.jobs.map(q=>[q.request_id,q]));let previous=null;
+ for(const t of r.trace){ok(t.end_ns>t.start_ns,'Positive clock');if(previous)ok(t.start_ns===previous.end_ns,'Contiguous integration');previous=t;ok(t.active.filter(q=>q.route==='CPU').length<=3&&t.active.filter(q=>q.route==='GPU').length<=1,'CPU3/GPU1');const a=step(t.state,t.active,t.dt,r.config,'ORIGINAL');near(a.state.temperature_c,t.next_state.temperature_c,'T');near(a.state.shared_z,t.next_state.shared_z,'Tail');near(a.J,t.increment,'J');near(a.H,t.temperature_area,'H');phaseChecks+=4;for(const q of t.active){near(a.rates[q.request_id],t.speeds[q.request_id],'Progress',1e-12);const k=q.request_id+'|'+q.stage;work.set(k,(work.get(k)||0)+t.dt*a.rates[q.request_id]);}}
+ for(const q of r.requests){const b=jobs.get(q.request_id);ok(q.queue_entry_ns===b.queue_entry_ns&&q.scheduled_arrival_ns===b.scheduled_arrival_ns&&q.deadline_ns===b.deadline_ns,'Immutable arrival/admission/deadline');if(q.route)ok(JSON.stringify(q.timing.stages_ns)===JSON.stringify(b.routes[q.route].stages_ns),'Immutable private work');if(q.available_ns!==null){for(let k=0;k<5;k++)near(work.get(q.request_id+'|'+k)||0,q.timing.stages_ns[k]/1e9,'Conserved work',8e-9);ok(q.response_ns===(q.task==='C'?q.output_ready_ns:q.persist_complete_ns),'Response boundary');}}
+ ok(d.calls.length===r.decisions.length,'All decisions saved');for(let i=0;i<d.calls.length;i++){const s=r.decisions[i].public_state,c=d.calls[i];ok(JSON.stringify(c.action)===JSON.stringify(r.decisions[i].action),'Engine action binding');auditBank(s,c,bank,r.config,row.policy==='BC_FAIR'?model:null,row.policy);callChecks++;}
+ console.log('SAVED_AUDIT',row.label,d.calls.length);
+}
+const metadata=[];
+for(const row of all){
+ const base={label:row.label,case:row.case,policy:row.policy,load:row.condition.rate_multiplier,pattern:row.condition.pattern,status:row.status,reused:!!row.reused,raw:row.raw};
+ if(row.status!=='COMPLETE'){metadata.push({...base,common:null,service:null});continue;}
+ const d=read(path.join(R,row.raw.path)),r=d.result,svc=service(r.requests,d.case.drain_stop_s*1e9);ok(svc.ALL.on===row.metrics.on_time&&svc.U.on===row.metrics.urgent_on_time,'Independent service');metadata.push({...base,service:svc,finish_ns:r.requests.every(q=>q.available_ns!==null&&q.available_ns<=d.case.drain_stop_s*1e9)?Math.max(d.case.supply_stop_s*1e9,...r.requests.map(q=>q.available_ns)):null,supply_stop_ns:d.case.supply_stop_s*1e9,drain_stop_ns:d.case.drain_stop_s*1e9,wait_s:r.wait_used_ns/1e9,max_queue:Math.max(...r.decisions.map(q=>q.public_state.queue.length)),route_counts:Object.fromEntries(['CPU','GPU'].map(route=>[route,r.requests.filter(q=>q.route===route).length])),calls:d.calls.length});
+}
+for(const row of metadata.filter(r=>r.status==='COMPLETE')){const peers=metadata.filter(r=>r.case===row.case),end=peers.every(r=>r.status==='COMPLETE'&&r.finish_ns!==null)?Math.max(row.supply_stop_ns,...peers.map(r=>r.finish_ns)):row.drain_stop_ns,d=read(path.join(R,row.raw.path));ok(d.result.trace.at(-1).end_ns>=end,'Common window covered');row.common_end_ns=end;row.common=integral(d.result,'ORIGINAL',end);row.supply=integral(d.result,'ORIGINAL',row.supply_stop_ns);}
+const policies=['FIFO_DYN','EDF_DYN','RR_DYN','TEACHER_OLD','BC_OLD','TEACHER_FAIR','COST_IMITATION','BC_NEURAL_PREVIOUS','BC_NEURAL_REPAIRED'],aggregates=[];
+for(const load of [1,4])for(const policy of policies){const rows=metadata.filter(r=>r.load===load&&r.policy===policy),complete=rows.length===2&&rows.every(r=>r.status==='COMPLETE'&&r.common),svc={};for(const g of ['ALL','U','N']){const lat=rows.filter(r=>r.service).flatMap(r=>r.service[g].latencies).sort((a,b)=>a-b);svc[g]={n:rows.reduce((a,r)=>a+(r.service?.[g].n??0),0),on:rows.reduce((a,r)=>a+(r.service?.[g].on??0),0),missing:rows.reduce((a,r)=>a+(r.service?.[g].missing??0),0),incomplete:rows.reduce((a,r)=>a+(r.service?.[g].incomplete??0),0),P95:lat.length?lat[Math.ceil(.95*lat.length)-1]:null};}aggregates.push({load,policy,status:complete?'COMPLETE':'PARTIAL',patterns:rows.length,J:complete?rows.reduce((a,r)=>a+r.common.J,0)/2:null,AP:complete?rows.reduce((a,r)=>a+r.common.AP,0)/2:null,peak:complete?Math.max(...rows.map(r=>r.common.peak)):null,service:svc,wait_s:complete?rows.reduce((a,r)=>a+r.wait_s,0)/2:null,max_queue:Math.max(...rows.map(r=>r.max_queue??0))});}
+const deltas=[];for(const x of aggregates.filter(x=>['TEACHER_FAIR','COST_IMITATION','BC_NEURAL_PREVIOUS','BC_NEURAL_REPAIRED'].includes(x.policy)&&x.status==='COMPLETE'))for(const y of aggregates.filter(y=>y.load===x.load&&y.policy!==x.policy&&y.status==='COMPLETE'))deltas.push({load:x.load,policy:x.policy,reference:y.policy,energy_saving_J:y.J-x.J,energy_saving_percent:100*(1-x.J/y.J),AP_change_C:x.AP-y.AP,all_on_change_pp:100*(x.service.ALL.on/x.service.ALL.n-y.service.ALL.on/y.service.ALL.n),urgent_on_change_pp:100*(x.service.U.on/x.service.U.n-y.service.U.on/y.service.U.n),normal_on_change_pp:100*(x.service.N.on/x.service.N.n-y.service.N.on/y.service.N.n),urgent_P95_change_s:x.service.U.P95-y.service.U.P95});
+save('ACCOUNTING.json',{rows:metadata,aggregates,deltas,common_window_recomputed:true,old_results_rerun:0});save('AUDIT_JS.json',{status:'PASS',checks,max_abs_error:maxerr,independent_math_checks:phaseChecks,decision_checks:callChecks,neural_saved_choices:regressionChoices,new_environment:0,new_fit:0});console.log('AUDIT_PASS',checks);

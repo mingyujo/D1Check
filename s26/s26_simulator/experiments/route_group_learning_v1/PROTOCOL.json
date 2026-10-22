@@ -1,0 +1,26 @@
+{
+  "utc": "2026-10-18T15:18:57.679676+09:00",
+  "schema": "S26_RARE_ROUTE_GROUP_LEARNING_V1",
+  "reason": "V1 TRAIN demonstration accuracy92.42%; DEV C75U65 NN GPU2/NPU369 vs teacher GPU96/NPU288, urgent367/384 vs384. Fix rare-route distillation rather than add deadline guard.",
+  "deadline_protection": false,
+  "post_NN_override": false,
+  "physics": "Physical engine source folder/power/thermal/context/event actions identical to Event V1; policy feature30 rank is the declared change. CPU3 remains unmeasured and common to all controls.",
+  "BC": "Reuse four saved TRAIN demonstrations only. Initialize V1 common BC network. Inverse-frequency weights for teacher action/route groups, compatible EDF ties share target probability. Up to64epochs, stop only if total compatible accuracy>=99.5%, each action/route group>=99%, loss<=0.05. No runtime teacher override. Compatible dispatch targets require same physical route and same observed EDF deadline; other public EDF ties are legitimate alternatives, not proof of equal latent work.",
+  "PPO": "3 fresh seeds881081/83/87, same common BC network, LR.0001/temp.35/RMS/dual unchanged. Each2 episodes (N512 primary85 two mixes), one PPO update. New optimizer/RNG and complete CP.",
+  "comparison": "9 policies: plainEDF,ATC,softATC,old frozen481083,V1 DEV-selected event frozen,BC frozen,3PPO. 4DEV N512 then freeze seed before8 freshEVAL N1024. All65/85 and50/75 mixes.",
+  "planned_START": 114,
+  "environment_cap": 128,
+  "allocation": {
+    "TRAIN": 6,
+    "DEV": 36,
+    "EVAL": 72
+  },
+  "new_BC_fit": 1,
+  "new_measurements": 0,
+  "new_physical_fits": 0,
+  "reused_demonstration_environments": 4,
+  "reused_TRAIN_reference_environments": 8,
+  "old_event_selected": 781081,
+  "no_generalization": "No105/LOWHIGH or real-device certification. Final results can reject this repair. All older outcomes preserved.",
+  "preSTART_representation_amendment": "Feature30 DISPATCH previously constant0 now public candidate EDF/FIFO rank, WAIT duration unchanged. Older event control keeps old feature. Saved TRAIN demonstration frames are copied and reencoded from candidate actions only. Preference31 remains. No runtime masks/priors/override."
+}

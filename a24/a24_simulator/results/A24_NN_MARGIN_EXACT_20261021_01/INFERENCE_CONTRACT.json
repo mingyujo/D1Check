@@ -1,0 +1,32 @@
+{
+  "schema": "A24_NEURAL_INFERENCE_CONTRACT_V3",
+  "policy_version": "A24_NEURAL_BC50_RELATIVE_COST_EXACT_ACTION_V3",
+  "checkpoint": {
+    "path": "a24_simulator/results/A24_NN_MARGIN_EXACT_20261021_01/RELATIVE_NEURAL_FIT.pt.gz",
+    "bytes": 80213,
+    "sha256": "9f66d4a4f2230c5cc29d4daa73ba1e52b01dcb1a664f28bd49dc38eef9e1ed3e"
+  },
+  "network_sha256": "167dbb3771106159c7f026e9c5a4f99930023ba5b9013b2648eddd404398c087",
+  "policy_source": {
+    "path": "a24_simulator/experiments/a24_nn_margin_exact_20261021/policy.py",
+    "bytes": 2443,
+    "sha256": "52df834e39de58579edff04137003a66328156889a511be1c3501845bea405d9"
+  },
+  "original_Net_class": "a24_atc_bc_20261019.learner.Net",
+  "shape": [
+    36,
+    50
+  ],
+  "required_preprocessing": "a24_nn_margin_exact_20261021.policy.Policy(relative=True)",
+  "input_slot28": "eligible public candidate costs: (cost-mean)/max(std,1e-6), original soft compression, float32; ineligible zero",
+  "other_49_features": "same original features50 preprocessing",
+  "mask": "unchanged fair-teacher shared service constraints before NN argmax",
+  "selection": "frozen neural logit argmax; first exact neural tie",
+  "teacher_action_override": false,
+  "teacher_public_cost_computed_at_runtime": true,
+  "target_action_or_one_hot_in_NN_input": false,
+  "training_target": "single exact teacher selected action; cost ties are not alternate labels",
+  "checkpoint_shape_compatibility_does_not_imply_old_input_ABI_compatibility": true,
+  "mobile_deployment_validated": false,
+  "adopted": false
+}

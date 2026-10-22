@@ -1,0 +1,10 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),p=path.resolve(__dirname,'../S26-D1Check/s26_simulator/experiments/a24_policy_repair_v1/report.cjs');let s=fs.readFileSync(p,'utf8');if(s.includes('paired_BASE_incremental_API_J_delta_percent'))throw Error('Already applied');function replace(a,b){if(!s.includes(a))throw Error('Missing '+a.slice(0,70));s=s.replace(a,b);}
+replace("paired_BASE_mean_AP_delta_C:avg(ep.map", "paired_BASE_incremental_API_J_delta_percent:avg(ep.map(r=>{const b=byBase.get(r.input+'|'+r.seed);return 100*((r.full_API_J-r.full_baseline_API_J)/(b.full_API_J-b.full_baseline_API_J)-1);})),paired_BASE_mean_AP_delta_C:avg(ep.map");
+replace("paired_EDF_mean_AP_delta_C:avg(ee.map", "paired_EDF_incremental_API_J_delta_percent:avg(ee.map(r=>{const b=byEDF.get(r.input);return 100*((r.full_API_J-r.full_baseline_API_J)/(b.full_API_J-b.full_baseline_API_J)-1);})),paired_EDF_mean_AP_delta_C:avg(ee.map");
+replace('|부하|REPAIR−BASE 적격 seed×입력 쌍|API-J 차이|평균AP 차이|REPAIR−단순EDF 적격쌍|API-J 차이|평균AP 차이|', '|부하|REPAIR−BASE 적격 쌍|전체 API-J 차이|기저 제외 API-J 차이|평균AP 차이|REPAIR−EDF 적격 쌍|전체 API-J 차이|기저 제외 API-J 차이|평균AP 차이|');
+replace("'|---|---:|---:|---:|---:|---:|---:|');\nfor(const g of grouped)lines.push", "'|---|---:|---:|---:|---:|---:|---:|---:|---:|');\nfor(const g of grouped)lines.push");
+replace('${fmt(g.paired_BASE_API_J_delta_percent)}%|${fmt(g.paired_BASE_mean_AP_delta_C)}', '${fmt(g.paired_BASE_API_J_delta_percent)}%|${fmt(g.paired_BASE_incremental_API_J_delta_percent)}%|${fmt(g.paired_BASE_mean_AP_delta_C)}');
+replace('${fmt(g.paired_EDF_API_J_delta_percent)}%|${fmt(g.paired_EDF_mean_AP_delta_C)}', '${fmt(g.paired_EDF_API_J_delta_percent)}%|${fmt(g.paired_EDF_incremental_API_J_delta_percent)}%|${fmt(g.paired_EDF_mean_AP_delta_C)}');
+replace('API-J는 후보모형 적분이며 외부전력계 실측J가 아니다.', '전체 API-J는 후보모형의 0초부터 관측 종료까지 적분이다. 기저 제외 값은 각 일정의 같은 관측시간×모형 고정항을 뺀 값이며, 기저가 커 전체 절감률이 희석되는 효과와 작업 증분 차이를 구분한다. 두 값 모두 외부 전력계 실측 J가 아니다.');
+fs.writeFileSync(p,s);console.log('Full and baseline-subtracted energy differences retained');

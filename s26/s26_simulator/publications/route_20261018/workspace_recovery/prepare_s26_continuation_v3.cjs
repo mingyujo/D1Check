@@ -1,0 +1,53 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const R=path.resolve(__dirname,'../S26-D1Check/s26_simulator'),A=path.join(R,'experiments/a24_unprotected_v2'),B=path.join(R,'experiments/a24_unprotected_v3'),sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex'),read=p=>JSON.parse(fs.readFileSync(p,'utf8'));
+if(fs.existsSync(B))throw Error('Already prepared');
+const old=read(path.join(A,'OPERATION.json')),O=old.output,recs=fs.readFileSync(path.join(O,'receipts.jsonl'),'utf8').trim().split(/\r?\n/).map(JSON.parse),count=e=>recs.filter(r=>r.event===e).length;
+if(count('START')!==9||count('COMPLETE')!==8||count('FAIL')!==1||recs.at(-1).label!=='S271081_TRAIN_006')throw Error('Unexpected failed ancestor census');
+fs.mkdirSync(B);for(const f of fs.readdirSync(A,{withFileTypes:true}))if(f.isFile()&&!['OPERATION.json','CURRENT_STATE.json','BUDGET_RESERVATION.json','PYTHON_STATIC_CHECK.json'].includes(f.name))fs.copyFileSync(path.join(A,f.name),path.join(B,f.name));
+fs.mkdirSync(path.join(B,'source'));for(const f of fs.readdirSync(path.join(A,'source')))fs.copyFileSync(path.join(A,'source',f),path.join(B,'source',f));
+const files=fs.readdirSync(O).filter(n=>!['START.json','FAILURE.json','receipts.jsonl','ENGINE_STDERR.txt','PURE_NN.json','INHERITED_P0.json'].includes(n)).map(n=>({source:path.join(O,n),name:n,sha256:sha(path.join(O,n))}));
+const labels=['P0_EDF_COARSE',...recs.filter(r=>r.event==='COMPLETE').map(r=>r.label)];
+const inherit={schema:'UNSTARTED_CONTINUATION_AFTER_NUMERICAL_FAILURE',utc:new Date().toISOString(),parent_operation:path.join(A,'OPERATION.json'),parent_receipts:path.join(O,'receipts.jsonl'),parent_failure:path.join(O,'FAILURE.json'),prior_START:10,prior_COMPLETE_receipts:8,prior_FAIL:2,prior_computed_saved_rows:9,completed_labels:labels,files,failed_training:{seed:271081,episode:6,before:'S271081_EP006_before.pt.gz',partial_frames:'S271081_TRAIN_006.partial_frames.pt.gz',case_rng:'S271081_EP006_case_rng.json',after_rng_only:'S271081_FAILED_EP006_RNG_ONLY_AFTER.pt.gz'},failed_environment_reexecutions:0,replacement_training_attempts:0,policy_physics_changed:false,change:'Remove positive 1e-11 second event-step rejection. Positive subthreshold event durations advance existing equations; zero/negative/nonfinite still fail with state diagnostics.'};
+fs.writeFileSync(path.join(B,'INHERITANCE.json'),JSON.stringify(inherit,null,2)+'\n');
+function edit(name,fn){const p=path.join(B,name);fs.writeFileSync(p,fn(fs.readFileSync(p,'utf8')));}
+function must(s,a,b){if(!s.includes(a))throw Error('Missing source replacement '+a.slice(0,90));return s.replace(a,b);}
+for(const f of ['source/multi_simulator.cjs','source/nominal_rollout.cjs'])edit(f,s=>s.replace('dt>1e-11&&Number.isFinite(dt)','dt>0&&Number.isFinite(dt)').replace("throw Error('Nominal event advance')","throw Error('Nominal event advance '+JSON.stringify({dt,time,first,owners:owners.map(o=>({ordinal:o.ordinal,route:o.route,phase:o.phase,left:o.left,progress:o.progress,phase_progress:o.phase_progress,cpu_service_s:o.cpu_service_s})),horizon_s:obs.horizon_s}))").replaceAll('S26_A24_UNPROTECTED002_G001','S26_A24_UNPROTECTED003_G001'));
+edit('server.cjs',s=>s.replace('time:sim?.time,done:','time:sim?.time,public_observation:sim?.publicObservation(),activity:sim?.intervals,phase_trace:sim?.phase_trace,sensor:sim?.sensorTrace,physics:sim?.physics,done:'));
+edit('run.py',s=>{
+ s=must(s,"started=time.monotonic();count=0;rows=[];selection=None;counter={'BANK':0,'deadline_guard_observed':0};learners={};update_audits=[];training_stats={}",[
+ "started=time.monotonic();count=0;selection=None;counter={'BANK':0,'deadline_guard_observed':0};learners={};update_audits=[];training_stats={}",
+ "    inheritance=read(HERE/'INHERITANCE.json')",
+ "    for item in inheritance['files']:assert sha(item['source'])==item['sha256'];shutil.copyfile(item['source'],out/item['name'])",
+ "    rows=[read(out/(label+'.json')) for label in inheritance['completed_labels']]",
+ "    for ep in range(1,6):",
+ "        before=torch.load(io.BytesIO(gzip.decompress((out/f'S271081_EP{ep:03d}_before.pt.gz').read_bytes())),map_location='cpu',weights_only=False);after=torch.load(io.BytesIO(gzip.decompress((out/f'S271081_EP{ep:03d}_after.pt.gz').read_bytes())),map_location='cpu',weights_only=False)",
+ "        if after['updates']>before['updates']:update_audits.append(dict(seed=271081,episode=ep,update=after['updates'],before=before['network_sha256'],after=after['network_sha256'],inherited=True))"
+ ].join('\n'));
+ const p0start=s.indexOf('        # Four actual numerical trials;'),p0end=s.indexOf("        for seed in op['seeds']:",p0start);if(p0start<0||p0end<0)throw Error('P0 block');s=s.slice(0,p0start)+"        assert read(out/'P0.json')['status']=='PASS'  # Saved four numerical trials; no replay.\n"+s.slice(p0end);
+ s=must(s,"learner=Learner(seed);learners[seed]=learner;pt(out/(f'S{seed}_EP000.pt.gz'),learner.snapshot());rng=np.random.default_rng(seed)\n            for ep in range(1,129):",[
+ "learner=Learner(seed);learners[seed]=learner;rng=np.random.default_rng(seed);ep_start=1",
+ "            if seed==271081:",
+ "                failed=inheritance['failed_training'];snap=torch.load(io.BytesIO(gzip.decompress((out/failed['before']).read_bytes())),map_location='cpu',weights_only=False);learner.restore(snap)",
+ "                partial=torch.load(io.BytesIO(gzip.decompress((out/failed['partial_frames']).read_bytes())),map_location='cpu',weights_only=False)",
+ "                for f in partial:",
+ "                    index,replayed=learner.choose(dict(x=f['x'],mask=f['mask'],scores=f['scores']),True);assert index==f['index'] and abs(replayed['old_logp']-f['old_logp'])<1e-7",
+ "                pt(out/failed['after_rng_only'],learner.snapshot());rng.bit_generator.state=read(out/failed['case_rng'])['after'];ep_start=7",
+ "            else:pt(out/(f'S{seed}_EP000.pt.gz'),learner.snapshot())",
+ "            for ep in range(ep_start,129):"
+ ].join('\n'));
+ s=s.replace('assert learner.updates==64 and learner.steps>0','assert learner.updates==(63 if seed==271081 else 64) and learner.steps>0').replace("len(rows)==528","len(rows)==527");
+ s=must(s,'imported_prior_operational_FAIL=1,combined_START=count+1,combined_COMPLETE_receipts=count,combined_FAIL=1','imported_prior_operational_FAIL=1,imported_prior_nominal_TRAIN_FAIL=1,combined_START=count+10,combined_COMPLETE_receipts=count+8,combined_FAIL=2');return s;
+});
+edit('audit_nn.py',s=>{
+ s=s.replace("if ep%16==0:","if ep%16==0:");
+ const a="label=f'S{seed}_TRAIN_{ep:03d}';before=load(out/f'S{seed}_EP{ep:03d}_before.pt.gz');after=load(out/f'S{seed}_EP{ep:03d}_after.pt.gz');data=load(out/(label+'.frames.pt.gz'));learner=Learner(seed);learner.restore(before)";
+ const b=["label=f'S{seed}_TRAIN_{ep:03d}';before=load(out/f'S{seed}_EP{ep:03d}_before.pt.gz');learner=Learner(seed);learner.restore(before)","            if seed==271081 and ep==6:","                rc=read(out/f'S{seed}_EP{ep:03d}_case_rng.json');check(case_rng.bit_generator.state==rc['before'],'Failed case RNG before');ci=int(case_rng.integers(len(train_cases)));check(train_cases[ci]['id']==rc['selected_input'] and case_rng.bit_generator.state==rc['after'],'Failed case RNG draw')","                partial=load(out/'S271081_TRAIN_006.partial_frames.pt.gz')","                for f in partial:","                    manual(f,learner.net);index,frame=learner.choose(dict(x=f['x'],mask=f['mask'],scores=f['scores']),True);check(index==f['index'] and abs(frame['old_logp']-f['old_logp'])<1e-7,'Failed partial action RNG preserved')","                compare(learner.snapshot(),load(out/'S271081_FAILED_EP006_RNG_ONLY_AFTER.pt.gz'));compare(learner.snapshot(),load(out/'S271081_EP007_before.pt.gz'));continue","            after=load(out/f'S{seed}_EP{ep:03d}_after.pt.gz');data=load(out/(label+'.frames.pt.gz'))"].join('\n');
+ s=must(s,a,b).replace('update_replays==192','update_replays==191').replace("result['START']==527","result['START']==518");return s;
+});
+edit('report.cjs',s=>s.replace('result.START!==527||result.computed_saved_rows!==528','result.START!==518||result.computed_saved_rows!==527').replace('V1 첫 P0는 raw/row 저장 후 receipt 코드 오류로 FAIL이었고 재실행 없이 저장값만 상속했다. V2 미시작${result.START}건은 모두 COMPLETE다.','V1 첫 P0는 raw/row 저장 후 receipt 코드 오류, V2 학습6회차는 양의 미소 event-step 거절로 FAIL이었다. 원본 실패·부분frame/RNG를 보존했고 실패환경/학습시드 대체0이다. 앞선 저장9건을 상속하고 V3 미시작${result.START}건을 실행했다.').replace('TRAIN384(3seed×128)','TRAIN383완료/384시도(첫seed127완료+1보존실패, 다른2seed128완료)').replace('모든 학습seed를 보존하고 각각64 PPO update를 실행했다.','모든 학습seed를 보존하고 PPO update는첫seed63·다른2seed64씩191회다. 실패6회차는 원본 case/action RNG draw만 산술 복구하고 학습자료/추가시도로 대체하지 않았다.').replace('128episode가 충분한 수렴','최대128시도가 충분한 수렴'));
+edit('DESIGN_KO.md',s=>s+'\n## V3: 명목 양의 미소 event step·실패시드 보존\n\nV2 학습 첫seed6회차가 양의 미소시간을1e-11초 이하로 거절하는 수치판정에서 실패했다. V1/V2 총10START/8COMPLETE/2FAIL 및 저장9건·실패 부분frames/before RNG/Adam은 보존한다. V3는 dt>0인 기존 방정식 적분을 허용하며 물리·목적·후보는 바꾸지 않는다. 미시작518건만 계속하며 총528시도/526COMPLETE receipt/2FAIL/저장527건이 목표다. 실패학습을 대체하지 않아 첫seed는127완료/63update, 다른2seed128완료/64update다. 실패6회차의 원본 case RNG와 기록된 action draw만 순수 산술 재생해 이후 EP7부터 잇는다. 다른seed 재선정/새환경 재시도0이다. 기존cap576 안에서 추가예약0이다.\n');
+const reservation={...read(path.join(A,'BUDGET_RESERVATION.json')),schema:'S26_UNSTARTED_CONTINUATION_V3_ENVELOPE',utc:new Date().toISOString(),prior_START:10,continuation_planned_START:518,continuation_remaining_cap:566,additional_reservation:0};fs.writeFileSync(path.join(B,'BUDGET_RESERVATION.json'),JSON.stringify(reservation,null,2)+'\n');
+const op={...old,schema:'S26_A24_UNPROTECTED_UNSTARTED_CONTINUATION_V3',utc:new Date().toISOString(),registration_revision:1,planned_START:518,environment_cap:566,output:path.join(B,'artifacts/G001'),inherited_prior_actual_START:10,inherited_saved_rows:9,combined_planned_START:528,expected_saved_rows:527,expected_complete_receipts:526,expected_FAIL:2,parent_operation:path.join(A,'OPERATION.json'),parent_operation_sha256:sha(path.join(A,'OPERATION.json'))};
+const paths=old.pins.map(x=>x.path.startsWith(A+path.sep)?path.join(B,path.relative(A,x.path)):x.path);paths.push(path.join(B,'INHERITANCE.json'),inherit.parent_operation,inherit.parent_receipts,inherit.parent_failure,...files.map(x=>x.source));op.pins=[...new Set(paths)].map(p=>({path:p,sha256:sha(p),bytes:fs.statSync(p).size}));fs.writeFileSync(path.join(B,'OPERATION.json'),JSON.stringify(op,null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify({status:'REGISTERED_UNSTARTED_CONTINUATION_V3',new_START:518,inherited_saved:9,preserved_FAIL:2,combined_START:528,expected_saved:527,new_reservation:0}));

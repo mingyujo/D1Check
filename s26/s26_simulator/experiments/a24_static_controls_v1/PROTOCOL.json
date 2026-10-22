@@ -1,0 +1,23 @@
+{
+  "schema": "S26_STATIC_EDF_STRONG_CONTROLS_V1",
+  "utc": "2026-10-17T18:13:57.604Z",
+  "phase": "FOLLOWUP_DIAGNOSTIC_AFTER_PARTIAL_LOAD_RESULTS",
+  "reason": "Separate RL/model-lookahead benefit from fixed task-resource affinity. Detection has CPU-only support; classification can statically wait for accelerators instead of occupying that shared CPU slot. Registered nominal C0 profile already minimizes CPU-server demand with GPU classification.",
+  "policies": [
+    "EDF_CPU_RESERVED",
+    "EDF_GPU_FIXED"
+  ],
+  "policy_definitions": {
+    "EDF_CPU_RESERVED": "Absolute deadline, arrival, ordinal; detection CPU, classification first-free GPU then NPU; no prediction/ATC/NN/WAIT",
+    "EDF_GPU_FIXED": "Absolute deadline, arrival, ordinal; detection CPU, classification fixed GPU; no prediction/ATC/NN/WAIT"
+  },
+  "same_registered_cases": 8,
+  "planned_START": 16,
+  "cap": 16,
+  "new_training": 0,
+  "new_fit": 0,
+  "inputs_sha256": "594f62770b9af797013801d183a2cbf2005f51e3c202a8a5135dd4a3ac74fe06",
+  "original_load_protocol_sha256": "53d3675e04bd2ed5d0151e01da98e879be535c3f3c1a4a49f2767e3f09a8edc0",
+  "do_not_replace_original_primary": true,
+  "physical_validation": false
+}

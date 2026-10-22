@@ -1,0 +1,71 @@
+{
+  "label": "FAIR_TRAIN_R1_burst_T26__TRAIN_NEURAL_RISK",
+  "case": "FAIR_TRAIN_R1_burst_T26",
+  "condition": {
+    "rate_multiplier": 1,
+    "requests_per_second": 1,
+    "load_kind": "REQUESTS_PER_SECOND",
+    "supply_s": 128,
+    "pattern": "burst",
+    "pattern_index": 1,
+    "seed": 210101,
+    "role": "TRAIN",
+    "initial_temperature_assumption_C": 26
+  },
+  "kind": "TRAIN",
+  "policy": "TRAIN_NEURAL_RISK",
+  "status": "COMPLETE",
+  "n": 128,
+  "metrics": {
+    "planned": 128,
+    "on_time": 126,
+    "urgent_planned": 25,
+    "urgent_on_time": 23,
+    "responded": 128,
+    "response_missing": 0,
+    "incomplete": 0,
+    "P95_completed_response_s": 1.64081989,
+    "total_J_proxy": 409.7288248546238,
+    "increment_J_proxy": 38.773645887171035,
+    "full_tail_increment_J_proxy": 38.773645887171035,
+    "baseline_J_proxy": 370.95517896745275,
+    "heat_area_proxy": 465.22496723066433,
+    "mean_AP_c": 27.510470672826834,
+    "peak_AP_c": 30.106457224297092,
+    "execution_throttled_s": 23.02745852800004,
+    "wait_s": 11.998806514,
+    "cost_vector": [
+      0.8654831671243535,
+      1.2115233521631883,
+      0.01592799882161463,
+      0.0,
+      0.0
+    ],
+    "objective": 1.165927250216688,
+    "route_counts": {
+      "C_CPU": 58,
+      "C_GPU": 10,
+      "D_CPU": 45,
+      "D_GPU": 15
+    },
+    "measured_J": null,
+    "model": "HYPOTHESIS_COUPLED_345"
+  },
+  "raw": {
+    "path": "a24_simulator/results/A24_NN_URGENT_TIE_20261021_01/FAIR_TRAIN_R1_burst_T26__TRAIN_NEURAL_RISK.raw.json.gz",
+    "bytes": 452009,
+    "sha256": "366442009ea21e54b1b186e4e5b2c90764c5a02f37835a8d8c3bf4492f5ee6fd"
+  },
+  "bank": {
+    "path": "a24_simulator/experiments/a24_service_bc_repair_20261021/banks/FAIR_TRAIN_R1_burst_T26.BANK.json.gz",
+    "bytes": 16604,
+    "sha256": "952a2c54979f960de6261a982528fd8c874261b6775b6023ef4a8c8b1de4b7fc"
+  },
+  "network_sha256": "5a603bdbed13c7b4ff7040d5d491d64f0bf0193ca7100ea16f2fd0fe16cb0cb6",
+  "elapsed_s": 1.485000000000582,
+  "frames": {
+    "path": "a24_simulator/results/A24_NN_URGENT_TIE_20261021_01/FAIR_TRAIN_R1_burst_T26__TRAIN_NEURAL_RISK.FRAMES.pt.gz",
+    "bytes": 149119,
+    "sha256": "f47c029f2f6769cfdf614b885fe774dc8c848a8fd96e4b28b907509d24f912b6"
+  }
+}

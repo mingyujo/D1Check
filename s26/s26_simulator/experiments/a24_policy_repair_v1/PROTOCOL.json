@@ -1,0 +1,58 @@
+{
+  "schema": "S26_PAIRED_POLICY_REPAIR_V1",
+  "utc": "2026-10-17T18:49:15.655Z",
+  "post_diagnosis": true,
+  "diagnosis": {
+    "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\S26-D1Check\\s26_simulator\\experiments\\a24_repair_diagnosis_v2\\artifacts\\G001\\RESULT.json",
+    "sha256": "ba60a2566f1e7dcab7fc17464cf2c3080af6299f63c7fa0f14ebfbeeb308af25"
+  },
+  "variants": [
+    "BASE",
+    "REPAIR"
+  ],
+  "architecture": "Original32-feature27-action set-PPO; same NN/optimizer/hyperparameters/weights; finalNN decision only, no deadline masks/prior/override",
+  "repair": "Type/priority age-diverse8 candidate bank; up-to32 visible jobs in nominal rollout; local horizon max10s or3x public queued nominal work+owners, capped by observation end. Exact within-bank nominal-symmetry memoization for BOTH variants.",
+  "new_training": "3 paired parent-weight starts x2 variants x32 balanced episodes, one permutation of4sizesx2mixx4loads per seed. New-stage Adam/RNG/pending reset identically in each pair; original full snapshots/failed episode preserved. Parent weights only; no old data replay.",
+  "parent_seeds": [
+    271081,
+    271083,
+    271087
+  ],
+  "new_stage_seeds": [
+    481081,
+    481083,
+    481087
+  ],
+  "training_START": 192,
+  "DEV_START": 80,
+  "EVAL_START": 160,
+  "sensitivity_START": 80,
+  "planned_START": 512,
+  "cap": 512,
+  "DEV_selection": "Per-variant missing then urgent harm then normal harm vs GPU-first EDF, then negative all ontime, fixed weighted objective, seed. Freeze before EVAL; all3seeds reported; no EVAL reselection.",
+  "main_reporting": "Mean/median/range of all3seeds, matched-seed BASEvsREPAIR, all4loads/mixes/2fresh EVAL streams; all late/missing and LOW/HIGH sensitivity. Energy needs samewindow, fullAVAILABLE, and no all/urgent/normal harm.",
+  "baselines": [
+    "EDF_GPU_FIRST",
+    "ATC",
+    "ATC_SALVAGE",
+    "Parent-DEV-frozen RL seed271083"
+  ],
+  "salvage_rule": "ATC log score plus log(.02+.98*sigmoid((deadline-now-isolatedNominalResponse)/max(.05,.15*response))); all physical routes remain; not a hard feasibility mask.",
+  "power_thermal": "Prior frozen candidate remains in BOTH variants regardless of separate baseline-identity calibration result; previous measured accuracyFAIL retained.",
+  "data_limits": "Nontransfer measured pools contain classification_urgent and detection_normal only. Do not invent missing classification_normal/detection_urgent observations or pretend priority/task independence. LOW/HIGH are sensitivity assumptions, not real calibration.",
+  "fresh_inputs_sha256": "5426286e629674e5cd1f4b73e3b4871395518f2b3ce879748422e1895574c10f",
+  "new_measurements": 0,
+  "new_physical_fit": 0,
+  "success_targets_are_hypotheses": [
+    "All arrivals retained; no missing/fullAVAILABLE regression",
+    "No systematic urgent/normal harm across4loads vs matched-budget BASE",
+    "At least5pp overall or85% mean ontime gain vs BASE; report failure if unmet",
+    "Large energy/heat savings not presumed; preserve API units and physical noncertification"
+  ],
+  "amendment": {
+    "utc": "2026-10-17T18:55:30.702Z",
+    "new_environment_started": 0,
+    "reason": "Use remaining32 of reserved512 for the original frozen parent NN on every fresh DEV/EVAL/sensitivity input, separating new-data training from the repair representation. Inference-only control, no new reservation. Add exact incremental public-activity observer to BOTH variants;120 saved snapshots/107592checks match original BASE features within2.14e-12.",
+    "new_checkpoint_selection": 0
+  }
+}

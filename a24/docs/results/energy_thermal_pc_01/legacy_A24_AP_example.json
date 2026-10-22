@@ -1,0 +1,60 @@
+{
+  "version": "energy-thermal-pc-v1",
+  "device": "A24",
+  "model": "mobilenet_v1_1.0_224_float",
+  "condition": "cpu-t01-d025",
+  "fingerprint": "samsung/a24ks/a24:16/BP2A.250605.031.A3/A245NKSS9EZB5:user/release-keys",
+  "model_sha256": "D95B3C5EA86750CEF882FA867CA357DFE4D265D0B80B67E83277A0BDA310CFBB",
+  "sensors": [
+    "AP"
+  ],
+  "states": {
+    "legacy_load": {
+      "power_w": 1.0420233796023346,
+      "max_observed_duration_s": 60.003336234,
+      "identified": true,
+      "power_scope": "observed coverage >=95%; missing tails not measured energy",
+      "thermal": {
+        "AP": {
+          "tau_s": 7.3272085412076855,
+          "equilibrium_c": 27.715802650077045,
+          "observed_min_c": 25.7,
+          "observed_max_c": 30.9
+        }
+      }
+    },
+    "legacy_cooling": {
+      "power_w": 0.832450189780131,
+      "max_observed_duration_s": 117.166532622,
+      "identified": true,
+      "power_scope": "observed coverage >=95%; missing tails not measured energy",
+      "thermal": {
+        "AP": {
+          "tau_s": 17.59995329203775,
+          "equilibrium_c": 27.003675251158178,
+          "observed_min_c": 25.7,
+          "observed_max_c": 30.9
+        }
+      }
+    }
+  },
+  "evidence": "legacy_mobilenet_conditional",
+  "unit_status": "likely scale, absolute accuracy not certified",
+  "source": {
+    "fit_run_ids": [
+      "f93de6dd-0668-45a3-830c-e1602e2f175b",
+      "b1b58063-43dc-4861-af3f-a14288b85704",
+      "d42c8195-da0d-4bcb-aadc-676f9c331595"
+    ],
+    "method": "energy-thermal-analysis-v1",
+    "analysis_provenance_sha256": "0d73340c600a5680d97cf972ba74ce6c8980c3d407b518e053c8ecfad29828e6"
+  },
+  "limitations": [
+    "pre-runtime baseline and stopped-runner cooling, not resident idle",
+    "no arbitrary duty transfer"
+  ],
+  "supported_state_sequence": [
+    "legacy_load",
+    "legacy_cooling"
+  ]
+}

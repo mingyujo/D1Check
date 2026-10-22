@@ -1,0 +1,37 @@
+{
+  "utc": "2026-10-18T05:06:28.732998+00:00",
+  "schema": "S26_EVENT_ROUTE_BALANCED_PPO_V1",
+  "reason": "TRAIN-only pilot CPU3: C50 NPU-only improves frozenRL ontime and saves7.352%; C75 SPLIT75 preserves all1024 ontime and saves5.141%. Fastest-route nominal continuation and50ms minimum fixed waits obscure sustained low-energy routing.",
+  "CPU_scenario": "CPU3 only, same nonzero CENTRAL service/interference/power/thermal. Keep logical CPU/GPU/NPU slots1; no new physical claims. Earlier CPU1/CPU3 full study remains intact.",
+  "adaptive_route_feature": "Seen-ready recent64 request task mix; before16 seen use conservative75% classification prior. If observed classification fraction<=.625 prefer NPU for classifications; otherwise every4th seen classification prefersGPU, remainderNPU. Detection prefersCPU. Preference is a feature/forecast continuation only; no action exclusion/logit prior/post-NN override.",
+  "event_action": "WAIT_EVENT when owners exist: wake on any then-active owner AVAILABLE or a new ready request, or registered dispatch_stop. No latent next-event time exposed to policy. Nominal forecast uses its own predicted owner completions and no future actual arrivals. Keep regular20ms/50ms waits for balanced mode; no deadline mask.",
+  "demonstrations": "Four fresh TRAIN primary85% cases N256/512 two mixes. Declared rule teacher selects preference-matching EDF candidate or WAIT_EVENT. Explicitly not neural/RL rollouts. Supervised actor warmstart up to8 epochs, earlystop TRAIN demonstration accuracy>=99%, true PPO follows. Include frozen warmstart control to distinguish RL added value.",
+  "learning": "3seed common BC initialization, LR.0001/KLstop, fresh Adam/action RNG/shuffle RNG/critic;8 PPO episodes each,4 updates each. Actor softmax temperature.35 in sampling and PPO logprobs. No post-NN override. Preserve every checkpoint/RNG/failure. Use previously balanced costs/RMS; teacher auxiliary off during PPO.",
+  "reward": "TRAIN frozen-ref energy/heat normalization, per-class miss+0.02tail cost, dual ontime penalties target oldRL minus0.5pp, objective-wise actor RMS normalization. No hard deadline protection.",
+  "planned_START": 134,
+  "cap": 144,
+  "allocation": {
+    "P0": 2,
+    "TRAIN_REFERENCE": 8,
+    "DEMO": 4,
+    "TRAIN": 24,
+    "DEV": 32,
+    "EVAL": 64
+  },
+  "seeds": [
+    781081,
+    781083,
+    781087
+  ],
+  "common_BC_seed": 781000,
+  "DEV": "4 N512 cases; freeze representative seed before8 fresh N1024 EVAL cases",
+  "EVAL": "All8 policies: plainEDF, ATC, softATC, frozen oldRL, frozen BC,3PPO seeds. All65/85 loads and2mix/2latent repetitions. No generalization claim for105 or real measurements.",
+  "no_deadline_protection": true,
+  "no_post_NN_override": true,
+  "new_measurements": 0,
+  "new_physical_fits": 0,
+  "physical_validation": false,
+  "pilot_source": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\S26-D1Check\\s26_simulator\\experiments\\route_witness_pilot_v1\\artifacts\\G001\\RESULT.json",
+  "pilot_sha256": "f7c01069d3d2b9d3adb201d323a7a1d1a4a06fdb34aaffbde006118ee469d1b9",
+  "feature31": "Preference-matching dispatch +1, WAIT_EVENT -1, other actions0; replaces old sensor-age scalar, all other features retained."
+}

@@ -1,0 +1,13 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const H=path.resolve(__dirname,'../S26-D1Check/s26_simulator/experiments/a24_unprotected_v1'),sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+const opPath=path.join(H,'OPERATION.json'),op=JSON.parse(fs.readFileSync(opPath,'utf8'));
+if(op.registration_revision!==6||fs.existsSync(op.output))throw Error('Requires unstarted revision6');
+const hist=path.join(H,'registration_history');
+for(const [p,n]of [[opPath,'OPERATION_V6.json'],[path.join(H,'run.py'),'run_V6.py']])fs.copyFileSync(p,path.join(hist,n),fs.constants.COPYFILE_EXCL);
+const p=path.join(H,'run.py');let s=fs.readFileSync(p,'utf8');const a="{**start,'event':'FAIL',error=str(exc),utc=now(),automatic_retry=False}",b="{**start,'event':'FAIL','error':str(exc),'utc':now(),'automatic_retry':False}";
+if(!s.includes(a))throw Error('Expected syntax defect');fs.writeFileSync(p,s.replace(a,b));
+const old=sha(opPath);op.registration_revision=7;op.prestart_revision={reason:'Python parser rejected exception-receipt dict syntax before any import/environment; fix field syntax only',original_operation_sha256:old,actual_environment_START:0,extra_reservation:0,physics_or_action_constraints_changed:false,utc:new Date().toISOString()};
+op.pins=op.pins.map(x=>({...x,sha256:sha(x.path),bytes:fs.statSync(x.path).size}));fs.writeFileSync(opPath,JSON.stringify(op,null,2)+'\n');
+fs.writeFileSync(path.join(hist,'PRESTART_PYTHON_SYNTAX_INCIDENT.json'),JSON.stringify({utc:new Date().toISOString(),operation_revision:6,launcher_session:28492,status:'PARSER_FAILURE_BEFORE_ANY_ENVIRONMENT_OR_IMPORT',line:85,actual_environment_START:0,automatic_environment_retry:false,fixed_by_registration_revision:7},null,2)+'\n',{flag:'wx'});
+console.log('PRESTART_SYNTAX_FIXED_REV7_START0');

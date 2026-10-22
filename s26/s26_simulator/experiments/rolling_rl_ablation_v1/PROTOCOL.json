@@ -1,0 +1,94 @@
+{
+  "schema": "S26_MATCHED_ROLLING_ATC_RL_ABLATION_V1",
+  "utc": "2026-10-18T08:46:28.811578+00:00",
+  "user_request": "Same rolling+ATC with and without learned selector; same routing/waits/CPU3; no deadline protection; 85% energy/temperature/on-time.",
+  "primary": "ROLLING_COST: minimize common predicted energy/heat/per-class-delay/unfinished objective over all same legal actions, tie by descending public ATC feature then ordinal then index. No neural weights, no teacher, no learning.",
+  "secondary": "TEACHER_RULE: execute the exact causal route-preference/EDF/event-wait teacher used for BC, as a strong nonlearning control. It receives/computes the same rolling bank; it can ignore score inputs just as a neural selector can. No neural weights or RL history.",
+  "RL": "Frozen three existing checkpoints881081/881083/881087; greedy NN logits on the exact same bank; no updates or weight selection on these new inputs. Previously DEV-selected runtime representative881087 remains fixed.",
+  "common": {
+    "candidate_requests": 8,
+    "forecast_ready": 32,
+    "features": 32,
+    "actions": 27,
+    "CPU_service_workers": 3,
+    "route_slots": {
+      "CPU": 1,
+      "GPU": 1,
+      "NPU": 1
+    },
+    "nonpreemptive": true,
+    "reserve_until": "AVAILABLE",
+    "waits": [
+      "20ms",
+      "50ms",
+      "WAIT_EVENT"
+    ],
+    "deadline_protection": false,
+    "deadline_action_mask": false,
+    "critical_request_override": false,
+    "post_NN_override": false,
+    "fixed_ATC_prior": false,
+    "physical_slots_only": true
+  },
+  "shared_scores": {
+    "scales": [
+      0.6215900945595554,
+      0.42450663682233236
+    ],
+    "weights": [
+      1,
+      1,
+      0.98,
+      0.98,
+      3
+    ],
+    "tail": 0.02,
+    "class_normalization": "Use causal recent64 observed task mix, defaultC75 before16 observations; clamp each class fraction to1/64. No actual future arrival/workload ratio/latent durations provided.",
+    "origin": "Energy/heat scales and .98 delay coefficients frozen from prior TRAIN, before new EVAL. Same scores provided to every selector; NN.choose uses x/mask only. No EVAL tuning.",
+    "tie": "Absolute score tolerance1e-12, highest clipped public ATC feature11, lower ordinal, lower bank index; no deadline feasibility filtering."
+  },
+  "evaluation": {
+    "inputs": 8,
+    "requests_each": 1024,
+    "nominal_load": 0.85,
+    "mixes": [
+      0.5,
+      0.75
+    ],
+    "latent_streams_per_mix": 4,
+    "policies": [
+      "ROLLING_COST",
+      "TEACHER_RULE",
+      "RL881081",
+      "RL881083",
+      "RL881087"
+    ],
+    "planned_START": 40,
+    "order": "Rotate the five policies by case index, fixed before execution. All pairing uses same arrivals/context/stream and identical observer/physics/rollouts/actions; host runtime is not simulated device time.",
+    "metrics": [
+      "total API-J including whole observation baseline",
+      "incremental API-J",
+      "APmean35s-to-end",
+      "maximum sampled AP",
+      "all/urgent/normal all-arrival ontime/completion/P95",
+      "unfinished AVAILABLE",
+      "work span",
+      "route counts",
+      "waits",
+      "pairwise differences and all-seed ranges"
+    ]
+  },
+  "fresh_physical_validation": false,
+  "physical_accuracy_gate": "FAIL preserved; no k scaling, CPU3 extra-core calibration, artificial temperature clip or invented throttling.",
+  "new_training": 0,
+  "new_PPO_updates": 0,
+  "new_BC_fits": 0,
+  "new_physical_fits": 0,
+  "new_measurements": 0,
+  "new_LP_solves": 0,
+  "preflight": "Saved TRAIN snapshots only; compare every common bank x/mask/actions/forecasts to original module on identical public states; independent rule ties and perturb illegal-action tests; no new plant runs.",
+  "acceptance": "Report every result including deadline losses/unfinished. RL whole-method advantage and reward-learning-only causal attribution are separate. No method/weight/seed selected after new EVAL. Secondary teacher has no inherited RL weights; frozen BC would inherit them and is not a no-RL control.",
+  "no_automatic_retry": true,
+  "no_completed_reruns": true,
+  "no_refunds": true
+}

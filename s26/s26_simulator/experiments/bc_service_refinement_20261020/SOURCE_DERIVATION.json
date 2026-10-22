@@ -1,0 +1,65 @@
+{
+  "parent": "s26_simulator/experiments/bc_service_repair_20261020",
+  "parent_guard_sha256": "75669e1ad757d7871cde8262dc40d55c280ca40dbb49241bd269f983622cf4f0",
+  "guard_sha256": "ff925504df3320e45aacf9b3e517e50b744e6472da828162812ea86f429eb8f6",
+  "edits": [
+    {
+      "old": "'BC_RESOURCE_GUARD'].includes(mode)",
+      "new": "'BC_RESOURCE_GUARD','BC_RESOURCE_EDF_NORMAL'].includes(mode)"
+    },
+    {
+      "old": "mode==='BC_RESOURCE_GUARD'&&classes.length",
+      "new": "['BC_RESOURCE_GUARD','BC_RESOURCE_EDF_NORMAL'].includes(mode)&&classes.length"
+    },
+    {
+      "old": "normal.length&&obs.time>=normal[0].deadline",
+      "new": "normal.length&&(mode==='BC_RESOURCE_EDF_NORMAL'||obs.time>=normal[0].deadline)"
+    },
+    {
+      "old": "reason='NORMAL_ALREADY_LATE_PROGRESS';forced=normal[0].ordinal;",
+      "new": "reason=mode==='BC_RESOURCE_EDF_NORMAL'?'NORMAL_EDF_PROGRESS':'NORMAL_ALREADY_LATE_PROGRESS';forced=normal[0].ordinal;"
+    },
+    {
+      "old": "state.guardMode==='BC_RESOURCE_GUARD'?tm.lengths",
+      "new": "['BC_RESOURCE_GUARD','BC_RESOURCE_EDF_NORMAL'].includes(state.guardMode)?tm.lengths"
+    },
+    {
+      "old": "const out={status:'PASS'",
+      "new": "x=p('BC_RESOURCE_EDF_NORMAL',1,[fresh,n]);check(x.v.reason==='NORMAL_EDF_PROGRESS');check(x.v.allowed_indices.every(i=>x.a[i].ordinal===1));\nconst out={status:'PASS'"
+    },
+    {
+      "old": "mode=='BC_RESOURCE_GUARD' and classes",
+      "new": "mode in ['BC_RESOURCE_GUARD','BC_RESOURCE_EDF_NORMAL'] and classes"
+    },
+    {
+      "old": "normal and c['time']>=normal[0]['deadline']",
+      "new": "normal and (mode=='BC_RESOURCE_EDF_NORMAL' or c['time']>=normal[0]['deadline'])"
+    },
+    {
+      "old": "reason='NORMAL_ALREADY_LATE_PROGRESS';forced=normal[0]['ordinal']",
+      "new": "reason='NORMAL_EDF_PROGRESS' if mode=='BC_RESOURCE_EDF_NORMAL' else 'NORMAL_ALREADY_LATE_PROGRESS';forced=normal[0]['ordinal']"
+    },
+    {
+      "old": "(H.parent/'conclusion_candidate_bridge_20261020',['CPU_RESERVE_SLACK'])",
+      "new": "(H.parent/'conclusion_candidate_bridge_20261020',['CPU_RESERVE_SLACK']),(H.parent/'bc_service_repair_20261020',['BC_RESOURCE_GUARD'])"
+    },
+    {
+      "old": "if row['method'] not in wanted:continue",
+      "new": "if row['method'] not in wanted or row.get('cohort','development32')!='development32':continue"
+    },
+    {
+      "old": "['PPO_FULL','CPU_RESERVE_SLACK'] if name=='development32'",
+      "new": "['PPO_FULL','CPU_RESERVE_SLACK','BC_RESOURCE_GUARD'] if name=='development32'"
+    },
+    {
+      "old": "E.parent/'conclusion_atc_order_20261020']",
+      "new": "E.parent/'conclusion_atc_order_20261020',E.parent/'bc_service_repair_20261020']"
+    },
+    {
+      "old": "for p in op['original_pins']+op['new_source_pins']:",
+      "new": "first=read(H.parent/'bc_service_repair_20261020/FILES.json')\n for p in first['files']:assert sha(R/p['path'])==p['sha256'],'First148 repair file changed: '+p['path']\n for p in op['original_pins']+op['new_source_pins']:"
+    }
+  ],
+  "first148_preserved": true,
+  "originals_modified": false
+}

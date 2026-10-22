@@ -1,0 +1,21 @@
+'use strict';
+const fs=require('fs'),path=require('path');
+const R=path.resolve(__dirname,'../../..'),O=path.join(R,'a24_simulator/results/A24_BC_S26_REQUESTS_20261021_01');
+const read=p=>JSON.parse(fs.readFileSync(path.join(O,p))),a=read('ACCOUNTING.json'),r=read('RESULT.json');
+if(r.science_START!==20||r.rows.some(x=>x.status!=='COMPLETE'))throw Error('Report every terminal outcome before completion');
+const names={FIFO_DYN:'FIFO',EDF_DYN:'EDF',RR_DYN:'RR',TEACHER:'교사규칙',BC_RECOVERED:'보완 BC'};
+let rows=['','## 응답 전체·일반 P95와 별도 공급창','','|건/초|패턴|정책|전체 P95초|일반 P95초|공급창 소비J*|주 공통종료초|','|---:|---|---|---:|---:|---:|---:|'];
+for(const x of a.rows)rows.push(`|${x.load}|${x.pattern}|${names[x.policy]}|${x.service.ALL.P95.toFixed(6)}|${x.service.N.P95.toFixed(6)}|${x.supply.J.toFixed(6)}|${(x.common_end_ns/1e9).toFixed(9)}|`);
+const table=path.join(O,'ALL_ROWS_KO.md');if(fs.readFileSync(table,'utf8').includes('## 응답 전체·일반'))throw Error('Consumed saved report finalization');fs.appendFileSync(table,rows.join('\n')+'\n');
+fs.appendFileSync(path.join(O,'REPORT_KO.md'),'\n[동일 요청의 정시 손익·지각 사례](MATCHED_REQUESTS.json) · [동일 상태의 교사 선택 차이·작업/등급별 경로](LOCAL_DISAGREEMENTS.json)\n');
+const links='../a24_simulator/results/A24_BC_S26_REQUESTS_20261021_01/';
+const summary='동결 cec00807/50특징36후보망·원 A24 ORIGINAL/CPU점유3·GPU1/beta.25에 공통판1/4건/s·균등/8건묶음의 동일 예정요청/기한/입장/잠재작업을 넣은20평가를 완료했다.20 START/COMPLETE20·FAIL/SKIP0·모든행 미응답/미완료0, 새TRAIN/fit/PPO/실측/물리fit/원완료재시작0이다. 공통owner1/50·27망과 구분한다.';
+const outcome='EDF비 1/4건/s 예측소비0.886/3.109% 감소·전체정시99.25→98.92/91.23→89.08%·긴급97.12→95.83/64.91→79.18%다.4건/s 긴급정시+168건/일반−271건이며 BC교사호환은 묶음1건/s64.93%·균등4건/s57.70%·묶음4건/s64.47%다. 온도/큐는TRAIN범위안·예측축소0·빈시스템교사즉시배정/BC대기0이다. 일반탐지의묶음4건/s 큐대기평균0.432→1.279초를같은요청과열/경합분해로확인했다. 교사도고부하전체정시에서EDF에밀려가중합상충과불완전모방을분리해보고했고자동채택0이다.';
+const checks='입력24014·독립JS3290976(물리941616)·원입력30000결합·기준선18000/원Torch·별도NumPy16053선택(regret0)·전체망/optimizer/RNG/소스불변 PASS다. 보조pattern_index표시와저장보고변수오류만보존/정정했고 실제입력·원raw·생산소스·실행변경0이다. 신규20/로컬도출137906(전호스트census아님), HEAD ac3a5af+로컬미커밋/미게시·장애없음, 다음은 결과검토/공유·변경diff검토이며 자동추가실험0이다.';
+function replaceFirst(file,block,keep=false){const p=path.join(R,file),t=fs.readFileSync(p,'utf8'),i=t.indexOf('\n## ',3);if(i<0)throw Error(file);const old=t.slice(0,i),rest=t.slice(i+1);fs.writeFileSync(p,block+(keep?'\n### 사전 범위/결정(보존)\n\n'+old.split('\n\n').slice(1).join('\n\n')+'\n':'')+'\n'+rest);}
+replaceFirst('docs/PROJECT_STATUS.md',`## 2026-10-21 A24-BC-S26REQ-01 · 동결20평가·원인분석 완료\n\n${summary}\n\n${outcome}\n\n${checks}\n\n[집계10행](${links}REPORT_KO.md) · [패턴20행](${links}ALL_ROWS_KO.md) · [원인/모든손해](${links}INTERPRETATION_KO.md) · [완료·재개/봉인](${links}CONTINUE_RUNNING.md).\n`);
+replaceFirst('docs/PROJECT_PLAN.md',`## 2026-10-21 A24-BC-S26REQ-01 · 완료 판정\n\n${summary}\n\n${outcome}\n\n${checks}\n\n[판정/완료조건](${links}INTERPRETATION_KO.md) · [전행](${links}ALL_ROWS_KO.md) · [재개](${links}CONTINUE_RUNNING.md).\n`,true);
+replaceFirst('docs/DECISIONS.md',`## 2026-10-21 A24-BC-S26REQ-01 · 비교 완료·성과 상충 확인\n\n${summary}\n\n소비·긴급정시 개선과 전체정시 손해가 공존해 서비스 비악화 절감/전조건 우위를 주장하지 않는다. 교사비 BC는1건/s 소비/전체/긴급정시 손해,4건/s 작은소비·합산긴급이득과전체정시/긴급P95손해가있다. 단순큐/온도범위외삽·예측cap·빈시스템WAIT결함을원인으로확정하지않고 실제교사불일치/일반큐대기/가중합상충을저장증거로보고한다. 추가인과ablation·튜닝·자동채택0, 원정책유지다. [판정/한계](${links}INTERPRETATION_KO.md).\n`,true);
+replaceFirst('a24_simulator/docs/LATEST_EXECUTION_FILES.md','## 2026-10-21 최신 완료 · 보완 A24 BC의 S26식 요청 비교\n\n[집계10행](../results/A24_BC_S26_REQUESTS_20261021_01/REPORT_KO.md) · [패턴20행](../results/A24_BC_S26_REQUESTS_20261021_01/ALL_ROWS_KO.md) · [원인/모든손해](../results/A24_BC_S26_REQUESTS_20261021_01/INTERPRETATION_KO.md) · [요청별정시손익/예시](../results/A24_BC_S26_REQUESTS_20261021_01/MATCHED_REQUESTS.json) · [열/경합/WAIT진단](../results/A24_BC_S26_REQUESTS_20261021_01/DIAGNOSTICS.json) · [완료/재개·봉인](../results/A24_BC_S26_REQUESTS_20261021_01/CONTINUE_RUNNING.md) · [사전규약](../experiments/a24_bc_s26_requests_20261021/PROTOCOL.md). '+summary+' '+outcome+' '+checks+'\n');
+const hp=path.join(__dirname,'HANDOFF.md');fs.writeFileSync(hp,'**완료: 아래는 당시 실행/검산 안내다. 새 --run을 시작하지 않는다.** 20평가/독립검산/원인분석 완료·자동추가0, 현재정본은 [완료/재개](../../results/A24_BC_S26_REQUESTS_20261021_01/CONTINUE_RUNNING.md)다.\n\n'+fs.readFileSync(hp,'utf8'));
+console.log('REPORTS_AND_CONTROL_DOCS_COMPLETED');

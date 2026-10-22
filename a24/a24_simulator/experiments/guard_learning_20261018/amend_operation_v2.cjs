@@ -1,0 +1,11 @@
+'use strict';
+const fs=require('fs'),path=require('path'),crypto=require('crypto'),cp=require('child_process');
+const d=__dirname,read=p=>JSON.parse(fs.readFileSync(p)),sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex'),pin=p=>({path:p,sha256:sha(p),bytes:fs.statSync(p).size}),save=(p,x)=>fs.writeFileSync(p,JSON.stringify(x,null,2)+'\n',{flag:'wx'});
+const old=read(path.join(d,'OPERATION.json')),pre=read(path.join(d,'PREFLIGHT_RESULT_V5.json')),root=path.resolve(d,'../..');
+if(fs.existsSync(path.join(root,old.output_dir))||pre.status!=='PASS'||pre.tests!==8)throw Error('Unstarted operation and passing contracts required');
+for(const p of [...pre.AST,...pre.Node_check])if(sha(p.path)!==p.sha256)throw Error('Preflight source changed');
+const budget=read(path.join(d,'BUDGET_RESERVATION.json')),peer=path.resolve(root,'../..','S26-D1Check/s26_simulator/experiments/a24_policy_repair_v1/BUDGET_RESERVATION.json'),b=read(peer);
+save(path.join(d,'BUDGET_RESOURCE_V2.json'),{...budget,new_global_reservation:0,transferred_unstarted_cap:208,original_reservation:pin(path.join(d,'BUDGET_RESERVATION.json')),known_new_parallel_reservation:b.additional_reserved,parallel_repair:pin(peer),tracked_snapshot_after:budget.tracked_snapshot_after+b.additional_reserved,not_fresh_all_host_census:true});
+const extras=['run_learning_v2.py','resource_learning_v2.py','audit_v2.cjs','report_v2.cjs','preflight_v5.py','amend_operation_v2.cjs'].map(f=>pin(path.join(d,f)));
+save(path.join(d,'OPERATION_RESOURCE_V2.json'),{...old,schema:'A24-paired-learning-resource-amendment-v2',utc:new Date().toISOString(),base_commit:cp.execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),supersedes_unstarted_operation:pin(path.join(d,'OPERATION.json')),native_START_before_amendment:0,new_global_reservation:0,physics_policy_inputs_changed:false,sources:[...old.sources,...extras],input_pins:[...old.input_pins,...['ENVIRONMENT0_RESOURCE_AMENDMENT.json','PARALLEL_ALLOWLIST_V2.json','PREFLIGHT_RESULT_V5.json','BUDGET_RESOURCE_V2.json'].map(f=>pin(path.join(d,f)))]});
+console.log(JSON.stringify({status:'UNSTARTED_RESOURCE_AMENDMENT_REGISTERED',planned_START:194,cap:208,new_reservation:0,tracked:budget.tracked_snapshot_after+b.additional_reserved}));

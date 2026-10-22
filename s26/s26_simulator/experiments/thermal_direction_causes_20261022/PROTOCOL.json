@@ -1,0 +1,87 @@
+{
+  "schema": "S26_DIRECTION_MARGIN_STEADY_GUARD_V1",
+  "UTC": "2026-10-21T15:17:38.670980+00:00",
+  "authorization": "Existing policies/models unchanged; diagnose low long-horizon direction accuracy and improve while retaining temperature/steady accuracy",
+  "baseline": "Frozen TREND_BALANCED group models; no old fit rerun",
+  "data": "Same208sessions/27groups/25975points/5879windows,10s +/-0.2C; same late>=256s",
+  "diagnosis": "DIAGNOSIS.json: weak activity observability;0.1C reported grid and repeated samples; endpoint timing sensitivity; conditional squared-loss shrinkage hypothesis. No causal attribution from correlations.",
+  "inputs": "Old47 causal features + frozen TREND_BALANCED T +12 initial-history features computed only from observations available before anchor =60. No post-anchor measured AP/power features, no group/session IDs.",
+  "history_features": [
+    "pre10_AP_slope_times10",
+    "pre20_SKIN_slope_times10",
+    "pre20_BAT_slope_times10",
+    "AP0_minus_pre20_APmean_over10",
+    "pre20_APstd_over10",
+    "pre20_APspan_over10",
+    "AP_dwell_at_anchor_over30",
+    "fraction_AP_changes",
+    "last_AP_change_C",
+    "SKIN_anchor_minus_lastavailable_over10",
+    "BAT_anchor_minus_lastavailable_over10",
+    "pre20_valid_observation_count_over15"
+  ],
+  "objective": "Equal-session point MSE +4*deviation from frozen balanced model MSE +(.25*all+.5*late) class/session-balanced actual delta MSE + squared direction hinge. RISE delta>=+.22; FALL<=-.22; STEADY abs(delta)<=.16. Labels only in training loss.",
+  "candidates": [
+    {
+      "id": "MARGIN_BALANCED",
+      "hinge_all": 1.0,
+      "hinge_late": 8.0,
+      "steady_multiplier": 1.0
+    },
+    {
+      "id": "MARGIN_STEADY_GUARD",
+      "hinge_all": 1.0,
+      "hinge_late": 8.0,
+      "steady_multiplier": 8.0
+    }
+  ],
+  "primary": "MARGIN_STEADY_GUARD",
+  "tree": {
+    "stages": 80,
+    "learning_rate": 0.1,
+    "max_leaf_nodes": 15,
+    "max_depth": 5,
+    "min_samples_leaf": 50,
+    "max_features": 16,
+    "random_state_rule": "20261022+stage, same fixed sequence across candidates",
+    "leaf_ridge": 0.0001,
+    "backtracking": "Fixed half-step line search up to10 steps, inner optimization not fit retry"
+  },
+  "fits": {
+    "planned": 56,
+    "cap": 56,
+    "outer_groups": 27,
+    "FULL": 1,
+    "attempts_per_identity": 1,
+    "failed_retry": false,
+    "wall_cap_s": 1500
+  },
+  "leakage_control": "Entire frozen power/thermal/HGB/old residual chainG excludesG. All new train/test features use the same frozen chainG; initial-history cutoff uses available_upper_s<=anchor. Only TRAIN windows have labels in objective.",
+  "metrics": "Exact original window labels/thresholds/denominators; report full and late rise/fall/steady, MAE and deltaMAE, cohorts and unchanged sensitivities",
+  "preservation": {
+    "max_MAE_ratio_vs_frozen_balanced": 1.03,
+    "MAE_categories": [
+      "overall",
+      "RISE",
+      "FALL",
+      "late"
+    ],
+    "max_global_STEADY_drop_pp": 0.5,
+    "max_late_STEADY_drop_pp": 0.5,
+    "max_global_RISE_FALL_drop_pp": 1.0
+  },
+  "direction_goal": "Both late RISE and FALL direction strictly increase under all preservation checks; separately report stronger +5pp each goal without relaxing previous result",
+  "resource": {
+    "shared_mutex": "C:\\Users\\chomg\\Documents\\ChatGPT\\산공회\\D1Check\\a24_simulator\\runtime\\a24_local_worker.lock",
+    "ownheavy_limit": 1,
+    "global_Python_limit": 2,
+    "minimum_free_memory_bytes": 1610612736,
+    "disk_min_free_bytes": 8589934592
+  },
+  "interpretation": "Already-seen development group OOF, no independent confirmation or physical gate promotion; keep all candidates and failures",
+  "new_power_fits": 0,
+  "new_BC_RL_training": 0,
+  "new_policy_environments": 0,
+  "new_measurements": 0,
+  "adopted": false
+}

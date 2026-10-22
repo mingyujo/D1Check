@@ -1,0 +1,26 @@
+'use strict';
+const assert=require('assert/strict'),fs=require('fs'),path=require('path'),crypto=require('crypto'),b=require('./bulk_design.cjs');
+const checks=[];function test(name,fn){fn();checks.push(name);}
+const quick=b.generate(b.preset('quick')),wide=b.generate(b.preset('wide'));
+test('Quick 8 conditions / 56 START max',()=>assert.equal(quick.length*7,56));
+test('Wide 24 / 168',()=>assert.equal(wide.length*7,168));
+test('All grid conditions unique and deterministic',()=>{assert.equal(new Set(quick.map(x=>JSON.stringify(x.input))).size,8);assert.deepEqual(quick,b.generate(b.preset('quick')));});
+test('Same inputs under all seven policy identities',()=>assert.equal(new Set(b.policies).size,7));
+test('No clocks or outcomes leak into generated inputs',()=>{for(const c of quick)for(const q of c.input.requests)assert.deepEqual(Object.keys(q),['ordinal','profile','priority','arrival_s','deadline_s']);});
+test('Every task represented with urgent and ordinary requests',()=>{for(const c of quick)for(const task of ['C','D'])for(const p of ['U','N'])assert(c.input.requests.some(q=>q.profile.startsWith(task)&&q.priority===p));});
+test('Steady and burst clocks and absolute deadlines',()=>{for(const c of quick)for(const q of c.input.requests){assert.equal(q.arrival_s,Number((35+(c.condition.pattern==='burst'?Math.floor(q.ordinal/8)*8:q.ordinal)*.12).toFixed(8)));assert(Math.abs(q.deadline_s-q.arrival_s-c.condition.slack)<1e-7);}});
+test('Seed changes potential only, same public roster',()=>{assert.deepEqual(wide[0].input.requests,wide[1].input.requests);assert.notEqual(wide[0].input.seed,wide[1].input.seed);});
+for(const [name,patch] of [['duplicate seed',{seeds:[1,1]}],['fractional request',{counts:[1.5]}],['negative seed',{seeds:[-1]}],['nonfinite mix',{mixes:[NaN]}],['zero slack',{slacks:[0]}],['unknown pattern',{patterns:['future']}],['unrecognized actor',{rl_seed:9}],['unregistered alpha',{alpha:.96}],['oversized grid',{counts:[1,2,3,4,5,6,7,8,9],mixes:[0,.5,1],patterns:['steady','burst'],slacks:[1,2]}]])test('Reject '+name,()=>assert.throws(()=>b.generate({...b.preset('quick'),...patch})));
+const fake=(n,a,j,ap,peak,avail=n)=>({rows:b.policies.map((p,i)=>({policy:p,label:p,metrics:{planned:n,on_time:a+i,response_completed:n-1,response_missing:1},by_priority:{U:{planned:4,on_time:2,missing:0},N:{planned:n-4,on_time:a-2+i,missing:1}},AP_mean_c:ap+i*.01,AP_peak_c:peak+i*.02,J_proxy:j+i,AVAILABLE_by180:avail}))});
+const cases=[{status:'COMPLETE',result:fake(16,5,200,28,30)},{status:'COMPLETE',result:fake(32,10,250,29,31,30)},{status:'FAIL'},{status:'NOT_STARTED'}],a=b.aggregate(cases);
+test('All planned conditions incl failures preserved',()=>assert.deepEqual([a.planned_conditions,a.complete_conditions,a.failed_conditions,a.not_started_conditions],[4,2,1,1]));
+test('Request denominator and missing preserved',()=>assert.deepEqual([a.rows[0].planned,a.rows[0].on_time,a.rows[0].missing],[48,15,2]));
+test('Equal condition mean, not denominator-weighted substitution',()=>assert.equal(a.rows[0].mean_condition_on_time_rate,(5/16+10/32)/2));
+test('Paired AP and energy differences use same condition FIFO',()=>{assert(Math.abs(a.rows[0].mean_AP_delta_c+.02)<1e-10);assert.equal(a.rows[0].mean_J_delta,-2);});
+test('Harms and ties per condition retained',()=>{assert.equal(a.rows[0].deadline.worse,2);assert.equal(a.rows[0].energy.better,2);assert.equal(a.rows[6].peak.worse,2);assert.equal(a.rows[2].energy.tied,2);});
+test('Work crossing energy window counted',()=>assert.equal(a.rows[0].not_all_available_by180,1));
+test('Missing policy rejected',()=>assert.throws(()=>b.aggregate([{status:'COMPLETE',result:{rows:[]}}])));
+test('Zero complete conditions mean unknown',()=>assert.equal(b.aggregate([{status:'FAIL'}]).rows[0].mean_AP_c,null));
+test('Null physical values remain unknown, not zero improvement',()=>{const r=fake(16,5,200,28,30);r.rows[0].J_proxy=null;r.rows[0].AP_mean_c=null;const x=b.aggregate([{status:'COMPLETE',result:r}]).rows[0];assert.equal(x.mean_J_delta,null);assert.equal(x.energy.unknown,1);assert.equal(x.energy.better,0);assert.equal(x.mean_AP_delta_c,null);});
+test('No measured energy or physical independence claim',()=>{assert.equal(a.measured_J,null);assert.equal(a.CI,null);assert.equal(a.fresh_confirmation,false);});
+const out=process.argv[2];if(!out)throw Error('New result path required');const report={status:'PASS',checks,check_count:checks.length,new_environment:0,NN:0,utc:new Date().toISOString(),source_sha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname,'bulk_design.cjs'))).digest('hex')};fs.writeFileSync(out,JSON.stringify(report,null,2)+'\n',{flag:'wx'});process.stdout.write(JSON.stringify({status:report.status,checks:checks.length})+'\n');

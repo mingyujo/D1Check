@@ -1,0 +1,12 @@
+'use strict';
+const fs=require('fs'),path=require('path'),c=require('crypto'),cp=require('child_process'),d=__dirname,root=path.resolve(d,'../..'),repo=path.dirname(root),out=path.join(root,'results/DEEP_REPAIR_20261018_01'),read=p=>JSON.parse(fs.readFileSync(p)),sha=p=>c.createHash('sha256').update(fs.readFileSync(p)).digest('hex'),pin=p=>({path:path.resolve(p),bytes:fs.statSync(p).size,sha256:sha(p)});
+const result=read(path.join(out,'RESULT.json')),replay=read(path.join(out,'STOCHASTIC_REPLAY.json')),receipts=fs.readFileSync(path.join(out,'receipts.jsonl'),'utf8').trim().split('\n').map(JSON.parse);
+if(result.new_START!==308||result.new_COMPLETE!==308||result.new_FAIL!==0||replay.status!=='PASS'||replay.episodes!==64||replay.exact_saved_optimizer_update_replays!==32||!replay.BC_exact_optimizer_replay||receipts.some(r=>r.event==='FAIL'))throw Error('Native308 and complete saved BC/PPO replay first');
+if(fs.existsSync(path.join(out,'AUDIT.json'))||fs.existsSync(path.join(out,'REPORT.md')))throw Error('Preserve finished audit/report');
+const fixture=read(path.join(d,'AUDIT_V1_FAILURE_AND_FIXTURE.json')),v=fixture.chosen_features_23_to27,w=fixture.alternative_features_23_to27;
+if(Math.fround(v[2]+v[3])!==Math.fround(w[2]+w[3])||!(Math.fround(Math.fround(.5*v[0])+Math.fround(.5*v[1]))<Math.fround(Math.fround(.5*w[0])+Math.fround(.5*w[1]))))throw Error('Exact Float32 fixture');
+for(const n of fs.readdirSync(d).filter(n=>n.endsWith('.cjs')))cp.execFileSync('node',['--check',path.join(d,n)]);
+const sources=fs.readdirSync(d).filter(n=>/\.(py|cjs|md|json)$/.test(n)).map(n=>pin(path.join(d,n))),original=read(path.join(root,'experiments/deep_repair_20261018/OPERATION.json'));
+for(const p of original.sources)if(sha(p.path)!==p.sha256)throw Error('Original source changed');
+fs.writeFileSync(path.join(d,'OPERATION.json'),JSON.stringify({utc:new Date().toISOString(),HEAD:cp.execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),sources,original_operation:pin(path.join(root,'experiments/deep_repair_20261018/OPERATION.json')),original_failure:pin(path.join(out,'POSTPROCESS_FAILURE.json')),inputs:['RESULT.json','STOCHASTIC_REPLAY.json','receipts.jsonl'].map(n=>pin(path.join(out,n))),new_environment_START:0,new_optimizer_steps:0,new_NN_forward:0,new_physical_fit:0,new_reservation:0,Float32_fixture:'PASS',numeric_tolerances_unchanged:true,original_artifacts_unchanged:true},null,2)+'\n',{flag:'wx'});
+console.log('REGISTERED_SAVED_AUDIT_RECOVERY_NATIVE0');

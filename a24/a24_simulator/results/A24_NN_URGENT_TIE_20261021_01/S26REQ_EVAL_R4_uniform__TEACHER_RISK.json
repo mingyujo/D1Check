@@ -1,0 +1,65 @@
+{
+  "label": "S26REQ_EVAL_R4_uniform__TEACHER_RISK",
+  "case": "S26REQ_EVAL_R4_uniform",
+  "condition": {
+    "rate_multiplier": 4,
+    "requests_per_second": 4,
+    "load_kind": "REQUESTS_PER_SECOND",
+    "supply_s": 600,
+    "pattern": "uniform",
+    "pattern_index": 0,
+    "seed": 210308,
+    "role": "EVAL"
+  },
+  "kind": "EVAL",
+  "policy": "TEACHER_RISK",
+  "status": "COMPLETE",
+  "n": 2400,
+  "metrics": {
+    "planned": 2400,
+    "on_time": 2312,
+    "urgent_planned": 588,
+    "urgent_on_time": 501,
+    "responded": 2400,
+    "response_missing": 0,
+    "incomplete": 0,
+    "P95_completed_response_s": 2.258866392,
+    "total_J_proxy": 1560.919263979949,
+    "increment_J_proxy": 621.4873172441921,
+    "full_tail_increment_J_proxy": 621.4873172441921,
+    "baseline_J_proxy": 939.4319467357569,
+    "heat_area_proxy": 7457.610391133188,
+    "mean_AP_c": 35.56103896299127,
+    "peak_AP_c": 39.43862331770981,
+    "execution_throttled_s": 1525.3507678878136,
+    "wait_s": 276.061463831,
+    "cost_vector": [
+      0.7398658538621334,
+      1.184551687344917,
+      0.03720054550677083,
+      0.00042369379352777756,
+      0.0
+    ],
+    "objective": 1.261507909831803,
+    "route_counts": {
+      "C_CPU": 890,
+      "C_GPU": 297,
+      "D_CPU": 954,
+      "D_GPU": 259
+    },
+    "measured_J": null,
+    "model": "HYPOTHESIS_COUPLED_345"
+  },
+  "raw": {
+    "path": "a24_simulator/results/A24_NN_URGENT_TIE_20261021_01/S26REQ_EVAL_R4_uniform__TEACHER_RISK.raw.json.gz",
+    "bytes": 8367567,
+    "sha256": "3338735b8295fa9acffcbef95e3aee021efc602073bf6e67a82c2d865a550d99"
+  },
+  "bank": {
+    "path": "a24_simulator/experiments/a24_bc_s26_requests_20261021/banks/S26REQ_EVAL_R4_uniform.BANK.json.gz",
+    "bytes": 169760,
+    "sha256": "ee9a3d314ade99c6fa6e34df822fe26a81a79fa0fdeed67ad90d41eee0e95731"
+  },
+  "network_sha256": null,
+  "elapsed_s": 18.468000000000757
+}

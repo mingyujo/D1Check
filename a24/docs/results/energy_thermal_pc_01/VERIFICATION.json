@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-09-25T17:49:13.467814+09:00",
+  "base_head": "38d5959d5c364e35cec8cf0f49a2e45933d24a48",
+  "worktree": "related ENERGY-THERMAL-PC-01 changes uncommitted at verification",
+  "source_sha256": {
+    "tools/d1_energy_thermal.py": "0c41ffa19ae4853a7d98f132aa921fff2e5bae0b53c701f2d23ff5af08f57cd6",
+    "tools/d1_energy_thermal_analysis.py": "d0fbfcf9f0357e2c03af131665abdad489c9c7c3f2cb7d581d86a25051511375",
+    "tools/d1_energy_thermal_report.py": "08a1a1bb219888820832423455d415e50dd21a139855db5af232d79f305ee3fc",
+    "tools/test_d1_energy_thermal.py": "ee0ccb020c2e463c7abea13dbd27e65841dfc79043db49a01801e8ecddb5ef22"
+  },
+  "tests": {
+    "command": "python -B -m unittest tools.test_d1_energy_thermal -v",
+    "exit_code": 0,
+    "count": 18
+  },
+  "analysis": "160 completed legacy sessions; original extraction/fits retained",
+  "postprocess": {
+    "command": "python -B -m tools.d1_energy_thermal_report --analysis <analysis-root>",
+    "exit_code": 0
+  },
+  "device_commands": 0,
+  "policy_comparison_batches": 0,
+  "experiment_ready": false,
+  "limitations": [
+    "post-hoc session internal check; no independent new device validation",
+    "conditional absolute current units",
+    "old idle differs from resident four-runtime idle"
+  ]
+}

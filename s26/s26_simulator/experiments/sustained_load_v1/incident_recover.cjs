@@ -1,0 +1,17 @@
+'use strict';
+const C=require('./common.cjs'),{fs,path}=C,op=C.read(path.join(C.HERE,'OPERATION.json'));
+let text=fs.readFileSync(path.join(C.HERE,'report.cjs'),'utf8');
+fs.writeFileSync(path.join(C.HERE,'report_v2.cjs'),text,{flag:'wx'});
+text=text.replace('peers.length!==3||peers.some','peers.some');
+const start=text.indexOf('const contrasts=[];'),end=text.indexOf('const headers=',start);
+if(start<0||end<0)throw Error('Reverse patch span');
+text=text.slice(0,start)+"C.write(path.join(op.output,'SUMMARY.json'),{status:'DESCRIPTIVE_LONG_LOAD_NOT_PHYSICAL_VALIDATION',rows:all,terminal,new_RL:0,new_fit:0});\n"+text.slice(end);
+const expected=op.pins.find(x=>x.path.endsWith('report.cjs')).sha256;
+if(C.sha(Buffer.from(text))!==expected)throw Error('Original report SHA reconstruction failed');
+fs.writeFileSync(path.join(C.HERE,'report.cjs'),text);
+fs.mkdirSync(path.join(C.HERE,'incident_source'),{recursive:true});
+fs.writeFileSync(path.join(C.HERE,'incident_source/report_at_registration.cjs'),text,{flag:'wx'});
+C.verify(op);
+const journal=fs.readFileSync(path.join(op.output,'receipts.jsonl'),'utf8').trim().split(/\r?\n/).map(JSON.parse);
+const incident={status:'ORIGINAL_SOURCE_BYTES_RESTORED',cause:'Root agent edited report.cjs after the waiting launcher had registered and started. Pre-case SHA guard stopped P0_CENTRAL_EDF before MultiSimulator construction.',original_operation_sha256:C.sha(fs.readFileSync(path.join(C.HERE,'OPERATION.json'))),starts:journal.filter(x=>x.event==='START').length,complete:journal.filter(x=>x.event==='COMPLETE').length,fail:journal.filter(x=>x.event==='FAIL').length,restored_report_sha256:expected,retry_failed_identity:false,replacement_seed:false};
+C.write(path.join(op.output,'INCIDENT.json'),incident);console.log(JSON.stringify(incident));

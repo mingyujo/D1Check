@@ -1,0 +1,33 @@
+{
+  "parent_policy_sha256": "fa5335bfffaa6487e5934c60308bbc25b95fad315963458760303bcfdcd06332",
+  "policy_sha256": "12e99211e0fe1cd9346d1c665213f2330cee21a1c59fb98a372a0afef9d572f2",
+  "edits": [
+    {
+      "old": "const WEIGHTS=",
+      "new": "const guard=require('./service_guard.cjs');\nconst WEIGHTS="
+    },
+    {
+      "old": "state={...options,waitByHead:",
+      "new": "state={...options,guardMode:options.guardMode??'BC_FULL',waitByHead:"
+    },
+    {
+      "old": "rollout_calls:0};}",
+      "new": "rollout_calls:0,guard_none:0,guard_timing_calls:0,guard_reason_counts:{}};}"
+    },
+    {
+      "old": " const memo=new Map;const x=",
+      "new": " let guardPlan=null;\n if(state.guardMode!=='BC_FULL'){\n  const np=state.guardMode==='BC_RESOURCE_GUARD'?tm.lengths(packet,nom,'classification_NPU',obs.sensor.AP,[],model,'urgent'):null;\n  if(np)state.guard_timing_calls++;\n  guardPlan=guard.plan(state.guardMode,obs,actions,all.map(c=>({ordinal:c.q.ordinal,route:c.route,response:c.p.response,occupied:c.p.occupied})),np&&{response:np.response,occupied:np.occupied});\n  if(!guardPlan.allowed_indices.length){state.guard_none++;return {kind:'NONE',candidates:[]};}\n  state.guard_reason_counts[guardPlan.reason]=(state.guard_reason_counts[guardPlan.reason]??0)+1;\n }\n const memo=new Map;const x="
+    },
+    {
+      "old": " const index=[",
+      "new": " if(guardPlan){bank.guard=guardPlan;bank.constraints={base_physical_mask_only:true,post_neural_guard:true,deadline_protection:state.guardMode!=='BC_DISPATCH_ONLY',new_training:false};}\n const index=["
+    },
+    {
+      "old": "selector_calls:state.calls});",
+      "new": "selector_calls:state.calls,guard_none:state.guard_none,guard_timing_calls:state.guard_timing_calls,guard_reason_counts:state.guard_reason_counts});"
+    }
+  ],
+  "parent_auditor_sha256": "a9292c6aab3459ea4b418a1743b7449292c6e8442f9e72e75dd31598e3100d80",
+  "physical_auditor_sha256": "9c8ab976fb969d60bf01b721027452b95a52e24b2f4c6c724f6e04ea873b84eb",
+  "originals_modified": false
+}

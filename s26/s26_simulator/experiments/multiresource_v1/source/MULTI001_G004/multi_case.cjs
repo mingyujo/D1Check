@@ -1,0 +1,6 @@
+'use strict';
+const fs=require('fs'),crypto=require('crypto'),zlib=require('zlib'),{MultiSimulator}=require('./multi_simulator.cjs');
+const [packetPath,configPath,rawPath]=process.argv.slice(2),read=p=>JSON.parse(fs.readFileSync(p,'utf8').replace(/^\uFEFF/,'')),sha=b=>crypto.createHash('sha256').update(b).digest('hex'),config=read(configPath),packet=read(packetPath),scenario=packet.scenarios.find(s=>s.id===config.scenario);
+if(!scenario)throw Error('Unsealed scenario');const r=new MultiSimulator(packet,scenario,config).run();r.logical_identity=config.identity;r.configuration_sha256=sha(fs.readFileSync(configPath));r.packet_sha256=sha(fs.readFileSync(packetPath));
+const payload=Buffer.from(JSON.stringify(r)+'\n'),compressed=zlib.gzipSync(payload,{level:6});if(!zlib.gunzipSync(compressed).equals(payload))throw Error('Raw codec byte roundtrip');const fd=fs.openSync(rawPath+'.part','wx');try{fs.writeFileSync(fd,compressed);fs.fsyncSync(fd)}finally{fs.closeSync(fd)}fs.renameSync(rawPath+'.part',rawPath);
+process.stdout.write(JSON.stringify({identity:config.identity,raw_payload_sha256:sha(payload),raw_compressed_sha256:sha(compressed),bytes:compressed.length,payload_bytes:payload.length,on_time:r.service.all.on_time,completed:r.service.all.completed,J:r.J_API0_180,AP:r.AP35_180_mean,max_owners:r.max_owners,forecasts:r.forecast_calls})+'\n');

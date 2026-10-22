@@ -1,0 +1,66 @@
+{
+  "utc": "2026-10-05T19:22:06.655922+00:00",
+  "base_head": "dd89aea5506afa86ddd6ad06ccc8ef7a3730c505",
+  "uncommitted_related_changes": true,
+  "sources": {
+    "tools/d1_arrival_explore.py": "55eaff8b39a4e84451054b5526c66d7cff4f7a49fa15ede7bbe7c5d72cc2b7b9",
+    "tools/d1_detector_gpu_report.py": "f6fa22e81992bbc426c82f62e1bc08ca291eddb4f4cc7fdbacab7a36d35d5643",
+    "tools/d1_method_followup_report.py": "7a535a3d8efe6ad09097f9021453398af13625b5f0f8c1d1c136ef53ba114cce",
+    "tools/d1_compatible_timing_backfill.py": "815c1c091f3d4b6a0f6ec281be547d39ce08b991dbe3ee077480e4f91a47082f",
+    "tools/d1_compatible_timing_report.py": "b5fdff5048baaf81d73f97f835099c2aed8e5885da8bf48d4785adb3b0cb7da4",
+    "tools/test_d1_compatible_timing_backfill.py": "219df06cd4b9fb672081b47a00d9a168ebcbbc4f8a70bf989eed36229298694e",
+    "tools/test_d1_compatible_timing_report.py": "d94bb0cf7272b5b2b5050af01ceb68495dd3c591ed8d3cf7edd128180eea66ca",
+    "docs\\results\\detector_gpu_bridge_01\\source_snapshots\\d1_arrival_explore_before_compatible.py": "384a5ab28d289f78a00ab8a4bb5e74c8f7df4e5d2ba8f3059130673ca44a20ac"
+  },
+  "outputs": {
+    "docs/results/detector_gpu_bridge_01/compatible_backfill_v2/registered_before_run.json": "b87d3f3b81f40677e1f44dbba50c48499f1177fa3cbbfb9fc0fcf9c6229cd293",
+    "docs/results/detector_gpu_bridge_01/compatible_backfill_v2/summary.json": "65e634a38f333ce96d791959d999a4c7b2ec2441b0128d529b0acfb3de9ca306",
+    "docs/results/detector_gpu_bridge_01/compatible_backfill_v2/timing_only.csv": "2944273eeefe0b94d15a9491a2887d034026c89d68df886850aa9880c2655de5",
+    "docs/results/detector_gpu_bridge_01/compatible_backfill_v2/timing_groups.csv": "771e4dd2fb229ccb6bc5c6b05b86dc164ddec1bb693c2ea3c8d13381381688bb",
+    "docs/results/detector_gpu_bridge_01/compatible_backfill_v2/paired_comparisons.csv": "a497849e4d8370a5b153dcd15bd91f518d5a89509015d3ef3ae94c478521125e",
+    "docs/results/detector_gpu_bridge_01/compatible_backfill_v2/timing_ledgers.json.gz": "ae6f60d4e7efe5a39a625f225a35b488c19cf094fb1417aa7ba11ba0de254277",
+    "docs/results/detector_gpu_bridge_01/compatible_backfill_v2/index.html": "f228daee78112354f1a69cb52b56f1889e1985d062f3da17c63ad7a25cc23baa",
+    "docs/results/detector_gpu_bridge_01/compatible_backfill_v2/paired_timing.png": "4f2cf9b1aa847541b3731ce37b928bee64ec4d9e6baeadb0790d73d4e57d81c5",
+    "docs/results/detector_gpu_bridge_01/compatible_backfill_v2/paired_timing.svg": "0a0d3b807912078563077f084e0a8b55256d81591c34f0faf602c164998cc702"
+  },
+  "commands": [
+    {
+      "command": "python -m tools.d1_compatible_timing_backfill --output docs/results/detector_gpu_bridge_01/compatible_backfill_v1",
+      "status": "failed_before_first_event_execution",
+      "error": "canonical module / __main__ Controller class mismatch"
+    },
+    {
+      "command": "python -m tools.d1_compatible_timing_backfill --output docs/results/detector_gpu_bridge_01/compatible_backfill_v2",
+      "status": "passed",
+      "new_runs": 16,
+      "simulated_requests": 768
+    },
+    {
+      "command": "python -m tools.d1_compatible_timing_report",
+      "status": "first parser KeyError: start_ns then corrected to execution_start_ns; passed without rerunning study"
+    },
+    {
+      "command": "python -m unittest tools.test_d1_compatible_timing_backfill tools.test_d1_detector_gpu_bridge tools.test_d1_method_followup_report tools.test_d1_method_decision_readout -v",
+      "tests": 30,
+      "skipped": 0,
+      "status": "passed"
+    },
+    {
+      "command": "python -m unittest tools.test_d1_compatible_timing_report -v",
+      "tests": 6,
+      "skipped": 0,
+      "status": "passed",
+      "cli_regression": "separate temporary-directory 16-case deterministic replay fixture, not additional independent observations"
+    }
+  ],
+  "legacy_engine": "exact opt-in transformation guard; representative CPU/B2/B3 entire result equality",
+  "gzip_decompressed_sha256": "41c08a834c2263fe34cd25946e741234635193970a430967de09c32f81ee1f07",
+  "png_visual_review": "passed: PC timings, no false observed energy/AP curve",
+  "current_profile_physics": null,
+  "independent_device_validation": false,
+  "device_commands": 0,
+  "APK_builds": 0,
+  "new_device_plans": 0,
+  "consumption_claims": 0,
+  "experiment_ready": false
+}

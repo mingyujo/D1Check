@@ -1,0 +1,74 @@
+{
+  "schema": "S26_THERMAL_TREND_PRESERVATION_V1",
+  "UTC": "2026-10-21T14:45:33.083503+00:00",
+  "authorization": "기존 정책과 모델은 보존하고 기존 실측 자료로 온도오차 절감을 유지하며 장시간 상승·하강 방향 정확도 개선",
+  "data": "Same208 sessions/25975points/27groups; same5879 nonoverlap10s windows +/-0.2C; late t>=256s",
+  "baseline": "Frozen original physics and previous HISTGB_RESIDUAL outer-group models, no refit",
+  "algorithm": "Add gated coupled-loss gradient-boosted trees to frozen HGB level predictor; learn point level and10s differences jointly. No periodic waveform injection, no temperature clipping.",
+  "inputs": "Previous39 causal features + frozen physical T + frozen HGB T + age/320 + five signed elapsed channel-state times/320 =47. Initial context/activity/predicted power only; no future actual AP/power or IDs.",
+  "tree": {
+    "stages": 80,
+    "learning_rate": 0.1,
+    "max_leaf_nodes": 15,
+    "max_depth": 5,
+    "min_samples_leaf": 50,
+    "max_features": 16,
+    "random_state_rule": "20261021+stage; same sequence across fixed candidates",
+    "leaf_ridge": 0.0001
+  },
+  "objective": "Equal-session level MSE +2*equal-session deviation from frozen HGB MSE + lambda_all*class/session-balanced10s difference MSE + lambda_late*class/session-balanced late difference MSE. Tree leaf updates solve exact coupled quadratic.",
+  "candidates": [
+    {
+      "id": "LEVEL_TRACK_CONTROL",
+      "lambda_all": 0,
+      "lambda_late": 0
+    },
+    {
+      "id": "TREND_BALANCED",
+      "lambda_all": 1,
+      "lambda_late": 4
+    },
+    {
+      "id": "TREND_STRONG",
+      "lambda_all": 4,
+      "lambda_late": 16
+    }
+  ],
+  "primary": "TREND_BALANCED",
+  "fits": {
+    "planned": 84,
+    "cap": 84,
+    "outer_groups": 27,
+    "FULL": 1,
+    "attempts_per_identity": 1,
+    "failed_retry": false,
+    "wall_cap_s": 1500
+  },
+  "leakage_control": "OuterG frozen power/thermal/HGB all excludeG; recalculate every train/test feature with same outerG frozen chain. No fitting on other-group OOF inputs. Fit residual on train labels only.",
+  "success": {
+    "max_MAE_ratio_vs_frozen_HGB": 1.05,
+    "required_MAE_categories": [
+      "overall",
+      "RISE",
+      "FALL",
+      "late"
+    ],
+    "late_RISE_direction_gain_pp": 5,
+    "late_FALL_direction_gain_pp": 5,
+    "max_global_RISE_FALL_direction_drop_pp": 2,
+    "max_STEADY_direction_drop_pp": 5
+  },
+  "interpretation": "Already-seen development group OOF, not independent confirmation. Report every candidate and failures; no old gate promotion or automatic adoption.",
+  "resource": {
+    "shared_mutex": "C:\\Users\\chomg\\Documents\\ChatGPT\\산공회\\D1Check\\a24_simulator\\runtime\\a24_local_worker.lock",
+    "ownheavy_limit": 1,
+    "global_Python_limit": 2,
+    "minimum_free_memory_bytes": 1610612736,
+    "disk_min_free_bytes": 8589934592
+  },
+  "new_power_fits": 0,
+  "new_policy_environments": 0,
+  "new_BC_RL_training": 0,
+  "new_device_measurements": 0,
+  "adopted": false
+}

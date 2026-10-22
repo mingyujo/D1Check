@@ -1,0 +1,101 @@
+"""Independent saved physical accounting, NumPy frozen-NN and Python guard audit."""
+import csv,datetime,gzip,hashlib,importlib.util,itertools,json,math,subprocess,sys
+from pathlib import Path
+for key in ['OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS']:
+ import os;os.environ[key]='1'
+import numpy as np
+H=Path(__file__).resolve().parent;R=H.parents[2];E=H.parent/'conclusion_extension_20261020';O=H/'artifacts/G001'
+def module(name,p):
+ s=importlib.util.spec_from_file_location(name,p);v=importlib.util.module_from_spec(s);s.loader.exec_module(v);return v
+a=module('repair_physical_audit',H/'physical_auditor.py');g=module('repair_resource_guard',E/'analyze.py')
+def guard_oracle(b):
+ guard=b.get('guard')
+ if not guard:return [i for i,v in enumerate(b['mask']) if v],'ORIGINAL_BC'
+ c=guard['context'];order=lambda q:(q['deadline'],q['arrival'],q['ordinal']);ready=c['ready'];classes=sorted([q for q in ready if q['priority']=='urgent'],key=order);normal=sorted([q for q in ready if q['priority']=='normal'],key=order)
+ allowed=[i for i,act in enumerate(b['actions']) if act['kind']=='DISPATCH'];pressure=False;mode=guard['mode'];busy={o['route'].split('_')[-1] for o in c['owners']};nom={(v['ordinal'],v['route']):v for v in c['nominal_candidates']}
+ if mode=='BC_RESOURCE_GUARD' and classes:
+  p=c['nominal_NPU'];cursor=c['time']+(p['occupied'] if 'NPU' in busy else 0);overrun=[]
+  for q in classes:overrun.append(cursor+p['response']-q['deadline']);cursor+=p['occupied']
+  maximum=max(overrun);a.close(maximum,guard['max_nominal_overrun_s'],'Independent NPU prefix projection');pressure=maximum>0
+  allowed=[i for i in allowed if b['actions'][i]['route'] in ['detection_CPU','classification_NPU'] or b['actions'][i]['route']=='classification_GPU' and 'NPU' in busy and pressure]
+ reason='NO_INTENTIONAL_IDLE';forced=None
+ if mode!='BC_DISPATCH_ONLY':
+  u=classes[0] if classes else None;cu=[i for i in allowed if b['actions'][i]['ordinal']==u['ordinal']] if u else []
+  timing=lambda i:nom[b['actions'][i]['ordinal'],b['actions'][i]['route']]
+  risk=bool(cu and any(c['time']+timing(i)['response']+timing(i)['occupied']>=u['deadline'] for i in cu))
+  if cu and (risk or pressure):
+   feasible=[i for i in cu if c['time']+timing(i)['response']<=u['deadline']]
+   if feasible:allowed=feasible
+   else:fastest=min(timing(i)['response'] for i in cu);allowed=[i for i in cu if timing(i)['response']==fastest]
+   reason='URGENT_NOMINAL_RISK';forced=u['ordinal']
+  elif normal and c['time']>=normal[0]['deadline']:
+   old=[i for i in allowed if b['actions'][i]['ordinal']==normal[0]['ordinal']]
+   if old:allowed=old;reason='NORMAL_ALREADY_LATE_PROGRESS';forced=normal[0]['ordinal']
+ a.need(guard['forced_ordinal']==forced and guard['pressure']==pressure,'Independent forced ordinal/pressure');a.need(guard['constants']==dict(urgent_lookahead_occupancies=1,normal_age_trigger='absolute_deadline',extra_margin_s=0),'No fitted guard constants')
+ return allowed,reason
+def network_oracle(x,mask,weights):
+ # Independent float64 implementation; actual selection is additionally checked against recorded float32 logits.
+ x=np.asarray(x,np.float64);mask=np.asarray(mask,bool);w={k:np.asarray(v,np.float64) for k,v in weights.items()};encoded=np.tanh(x@w['encode.0.weight'].T+w['encode.0.bias']);context=np.concatenate([encoded[mask].mean(0),encoded[mask].max(0)]);inp=np.concatenate([encoded,np.tile(context,(27,1))],axis=1);hidden=np.tanh(inp@w['actor.0.weight'].T+w['actor.0.bias']);logits=(hidden@w['actor.2.weight'].T+w['actor.2.bias']).ravel()/.35;logits[~mask]=-1e9;return logits
+def neural_audit(row,raw,weights):
+ max_error=0.;ambiguous=0;count=0;overrides=0
+ with gzip.open(O/(row['label']+'.banks.jsonl.gz'),'rt',encoding='utf-8') as f:
+  for record,d in itertools.zip_longest((json.loads(line) for line in f),raw['policy_decisions']):
+   a.need(record is not None and d is not None,'Every NN decision saved');b=record['bank'];stored=np.asarray(record['BC_logits']);pred=network_oracle(b['x'],b['mask'],weights);err=float(np.max(np.abs(pred-stored)));a.need(err<=2e-4,'Independent NumPy NN logits');max_error=max(max_error,err)
+   base=int(stored.argmax());a.need(base==record['raw_BC_index'],'Original raw BC argmax retained');allowed,reason=guard_oracle(b);a.need(allowed==(b['guard']['allowed_indices'] if 'guard' in b else allowed) and reason==record['guard_reason'],'Independent guard admissibility/reason')
+   expected=max(allowed,key=lambda i:(stored[i],-i));a.need(expected==record['index']==d['action']['decision_index'],'Exact guarded argmax applied');best=max(allowed,key=lambda i:(pred[i],-i));a.need(pred[best]-pred[expected]<=max(1e-5,2*err),'Independent near-tie bounded ranking');ambiguous+=best!=expected
+   a.need(record['override']==(expected!=base),'Override disclosure');a.need(record['network_sha256']=='80044cf3c780126e30e2b3bece72ee70ee44e49e634115e19b13c776fed87ae5','Frozen BC lineage')
+   if 'guard' in b:
+    c=b['guard']['context'];obs=d.get('public_observation');a.need(obs is not None,'Guard applied dispatch observation');a.close(c['time'],d['time'],'Causal guard time');a.need([{k:q[k] for k in ['ordinal','task','priority','arrival','deadline']} for q in obs['ready']]==c['ready'],'Guard queue equals actual public queue');a.need([{k:q[k] for k in ['ordinal','route']} for q in obs['owners']]==c['owners'],'Guard owners equal actual public owners');a.need(d['action']['kind']=='DISPATCH','No voluntary guard wait')
+   count+=1;overrides+=expected!=base
+ a.need(count==row['neural_calls'] and overrides==row['BC_overrides'],'NN and override denominators')
+ return dict(decisions=count,overrides=overrides,max_numpy_logit_error=max_error,float_near_ties=ambiguous,scope='Independent float64 NumPy forward and exact saved float32 argmax; near ties bounded by measured arithmetic error. Nominal durations are frozen predictor outputs, not independent device bounds.')
+def main():
+ op=a.read(H/'OPERATION.json');p=a.read(H/'PROTOCOL.json');result=a.read(O/'RESULT.json');cases={c['id']:c for c in a.read(H/'INPUTS.json')['cases']};methods={m['id']:m for m in p['methods']};receipts=[json.loads(x) for x in (O/'receipts.jsonl').read_text(encoding='utf-8').splitlines()];starts=[x for x in receipts if x['event']=='START']
+ a.need(len(starts)==148 and len({x['identity'] for x in starts})==148,'148 unique new attempts');a.need(result['START']==148 and result['COMPLETE']+result['FAIL']==148,'Every outcome preserved');a.need(sum(x['event']=='COMPLETE' for x in receipts)==len(result['rows']) and sum(x['event']=='FAIL' for x in receipts)==len(result['failures']),'Receipts reconcile')
+ for x in starts:a.need(x['identity']==hashlib.sha256((a.sha(H/'OPERATION.json')+'|'+x['label']).encode()).hexdigest(),'Identity binds immutable registration')
+ select=a.read(H/'SELECTION_FROZEN.json');a.need(select['confirm_environments_seen']==0 and select['utc']<min(x['utc'] for x in starts if x['cohort']=='confirm8'),'Selection before confirm outcomes');a.need(select['source_sha256']==a.sha(H/'evaluate.py'),'Frozen selection source')
+ pre=a.read(H/'PREFLIGHT_RECEIPT.json');a.need(pre['arrays_sha256']==a.sha(H/'BC_NETWORK_ARRAYS.npz'),'Frozen network array provenance');weights=dict(np.load(H/'BC_NETWORK_ARRAYS.npz',allow_pickle=False));network_digest=hashlib.sha256()
+ for name,value in sorted(weights.items()):network_digest.update(name.encode());network_digest.update(value.tobytes())
+ a.need(network_digest.hexdigest()==pre['network_sha256']=='80044cf3c780126e30e2b3bece72ee70ee44e49e634115e19b13c776fed87ae5','Independent array-to-original network digest')
+ for t in a.read(R/'s26_simulator/experiments/multiresource_v1/PACKET.json.gz')['templates']:
+  if t['overlap_fraction']==0 and not t.get('priority_transfer'):a.pools.setdefault(t['route']+'|'+t['priority'],[]).append(t)
+ rows=result['rows'];audits={};nn={}
+ for number,row in enumerate(rows,1):
+  a.need(a.sha(O/(row['label']+'.raw.json.gz'))==row['raw_sha256'] and a.sha(O/(row['label']+'.banks.jsonl.gz'))==row['banks_sha256'],'Raw/bank bytes preserved');raw=a.read(O/(row['label']+'.raw.json.gz'));audits[row['label']]=a.audit(row,raw,cases[row['input']],methods[row['method']])
+  if row['method']!='EDF_NPU':nn[row['label']]=neural_audit(row,raw,weights)
+  if number%24==0:print('AUDITED_REPAIR',number,'checks',a.checks,flush=True)
+ # Reuse previously audited primary baselines and static resource rule, never simulate them again.
+ reuse=[]
+ for folder,wanted in [(E,['BC_FULL','PPO_FULL','EDF_NPU','EDF_GPU']),(H.parent/'conclusion_candidate_bridge_20261020',['CPU_RESERVE_SLACK'])]:
+  prev=a.read(folder/'ANALYSIS.json');res=a.read(folder/'artifacts/G001/RESULT.json');a.need(prev['status'].startswith('PASS'),'Previously audited baselines')
+  for row in res['rows']:
+   if row['method'] not in wanted:continue
+   path=folder/'artifacts/G001'/(row['label']+'.raw.json.gz');a.need(a.sha(path)==row['raw_sha256'],'Reuse exact baseline raw SHA');raw=a.read(path);a.descriptive(row,raw);row['cohort']='development32';rows.append(row);oldaudits=prev.get('raw_audits',prev.get('new_raw_audits'));audits[row['label']]={**oldaudits[row['label']],'routes':{str(q['ordinal']):q['route'] for q in raw['requests']}}
+  reuse.append(dict(path=folder.relative_to(R).as_posix(),analysis_sha256=a.sha(folder/'ANALYSIS.json'),result_sha256=a.sha(folder/'artifacts/G001/RESULT.json'),completed_reruns=0))
+ cohorts={}
+ for name,expected in [('development32',32),('original4',4),('confirm8',8)]:
+  subset=[r for r in rows if r['cohort']==name];ms=list(dict.fromkeys(r['method'] for r in subset));summ={m:a.aggregate([r for r in subset if r['method']==m]) for m in ms};fam={f:{m:a.aggregate([r for r in subset if r['method']==m and r['family']==f]) for m in ms} for f in sorted({r['family'] for r in subset})};pairs=[]
+  if name!='original4':
+   for m in p['method_groups']['development32']:
+    for other in ['BC_FULL','EDF_NPU']+(['PPO_FULL','CPU_RESERVE_SLACK'] if name=='development32' else []):pairs.append(a.compare(subset,m,other,audits,expected_cases=expected))
+  descriptive={}
+  for scope,rs in [('all',subset),('nominal85',[r for r in subset if r['family']!='BURST32_105']),('stress105',[r for r in subset if r['family']=='BURST32_105'])]:
+   if not rs:continue
+   ss={m:a.aggregate([r for r in rs if r['method']==m]) for m in ms};base=ss.get('BC_FULL');edf=ss.get('EDF_NPU')
+   if base and edf:
+    inputs=lambda method:{r['input'] for r in rs if r['method']==method}
+    for m,v in ss.items():
+     covered=inputs(m)==inputs('BC_FULL')==inputs('EDF_NPU');v['comparison_same_input_coverage']=covered
+     v['vs_BC_J_percent']=100*(v['J_mean']/base['J_mean']-1) if covered else None;v['vs_BC_AP_C']=v['AP_mean']-base['AP_mean'] if covered else None;v['vs_EDF_NPU_J_percent']=100*(v['J_mean']/edf['J_mean']-1) if covered else None;gap=edf['J_mean']-base['J_mean'];v['raw_BC_to_EDF_energy_gap_retained_percent']=100*(edf['J_mean']-v['J_mean'])/gap if covered and gap else None;v['same_service_energy_qualification']=covered and v['unfinished']==0 and v['urgent']['ontime_percent_pooled']>=edf['urgent']['ontime_percent_pooled']
+   descriptive[scope]=ss
+  cohorts[name]=dict(summary=summ,byfamily=fam,comparisons=pairs,descriptive_subgroups=descriptive)
+ for v in audits.values():v.pop('routes',None)
+ out=dict(status='PASS_GUARDED_BC_REPAIR_SAVED_AUDIT',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),START=148,COMPLETE=result['COMPLETE'],FAIL=result['FAIL'],checks=a.checks,cohorts=cohorts,new_raw_audits={r['label']:audits[r['label']] for r in result['rows'][:result['COMPLETE']]},neural_guard_audits=nn,selection=select,reuse=reuse,operation_sha256=a.sha(H/'OPERATION.json'),source_sha256=a.sha(Path(__file__)),physical_auditor_sha256=a.sha(H/'physical_auditor.py'),new_training=0,new_measurements=0,new_fit=0,completed_reruns=0,adopted=False,limitations=['Post-NN guard package, not pure BC nor learned improvement.','Original cached planner feature exactness FAIL remains; predictors not certified.','Applied dispatches have full saved public observations and guard oracles; resource-envelope NONE returns are source/fixture verified and counted, not independently replayed at every engine step.','All fresh8 candidates reported; a selected-candidate failure cannot change selection or be replaced.','Subgroups descriptive; repeated requests not independent device replications.','Physical gate FAIL, CPU3 and mobile NN/planner/guard costs unmeasured.','Original final881087, BC checkpoint, previous failed/complete runs and prior budgets preserved.'])
+ a.save(H/'ANALYSIS.json',out)
+ with (H/'RESULTS.csv').open('x',encoding='utf-8-sig',newline='') as f:
+  columns=['cohort','input','method','family','J','AP_mean','unfinished','BC_overrides','neural_calls'];writer=csv.DictWriter(f,fieldnames=columns,extrasaction='ignore');writer.writeheader();writer.writerows(rows)
+ print('AUDIT_PASS',a.checks,'selected',select['selected'],'target_met',select['target_met'],flush=True)
+ for cohort,v in cohorts.items():
+  for scope,items in v['descriptive_subgroups'].items():
+   for m,z in items.items():print(json.dumps(dict(cohort=cohort,scope=scope,method=m,J=z['J_mean'],AP=z['AP_mean'],urgent=z['urgent']['ontime_percent_pooled'],on=z['all']['ontime_percent_pooled'],unfinished=z['unfinished'],normalmax=z['normal']['max_completed_response_s'],BCgap=z.get('raw_BC_to_EDF_energy_gap_retained_percent')),ensure_ascii=False),flush=True)
+if __name__=='__main__':g.guarded(H,main)

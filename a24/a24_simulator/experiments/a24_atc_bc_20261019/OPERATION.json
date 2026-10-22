@@ -1,0 +1,3478 @@
+{
+  "schema": "A24_ROLLING_ATC_BC50_V1",
+  "utc": "2026-10-19T07:11:30.336806+00:00",
+  "HEAD": "ac3a5af569e04bc6be01f1ef976b9dd4eb6558cf",
+  "working_tree": "M a24_simulator/docs/LATEST_EXECUTION_FILES.md\n M docs/DECISIONS.md\n M docs/PROJECT_PLAN.md\n M docs/PROJECT_STATUS.md\n?? a24_simulator/experiments/a24_atc_bc_20261019/\n?? a24_simulator/experiments/a24_bc_600_20261019/\n?? a24_simulator/experiments/a24_logic_repair_20261019/\n?? a24_simulator/results/A24_BC_600_20261019_01/",
+  "status": "APPROVED_REGISTERED",
+  "budget": {
+    "current": 137712,
+    "existing_cap": 137712,
+    "new_BC_fit": 1,
+    "new_EVAL": 2,
+    "additional_units": 3,
+    "requested_cap": 137715,
+    "refund": 0
+  },
+  "seed": 20261019,
+  "BC_epochs": 64,
+  "output_dir": "a24_simulator/results/A24_ATC_BC600_20261019_01",
+  "planned_START": 3,
+  "new_training_environments": 0,
+  "new_PPO": 0,
+  "new_physical_fit": 0,
+  "new_device": 0,
+  "evaluation_cases": [
+    "D040_T600_P0_S160",
+    "D040_T600_P1_S160"
+  ],
+  "dataset": {
+    "path": "a24_simulator/experiments/a24_atc_bc_20261019/TRAIN_FRAMES.pt.gz",
+    "bytes": 597319,
+    "sha256": "26ec951a60598f5758e943b750409f3f5111097e58b0286d61ab65a25b14091b"
+  },
+  "code_version": "A24_ROLLING_ATC_BC50_V1",
+  "pins": [
+    {
+      "path": "a24_simulator/experiments/a24_atc_bc_20261019/__init__.py",
+      "bytes": 519,
+      "sha256": "7180da1028bbf94f7cea6529dcbe310f1ef00735c8bd514fd51f1532cc095752"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_atc_bc_20261019/audit_nn.py",
+      "bytes": 2295,
+      "sha256": "e9b9846e1ba1024eb487655e53444ab2feb4a42f0b6eee110600b2062dd9c4c2"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_atc_bc_20261019/audit_report.cjs",
+      "bytes": 14297,
+      "sha256": "68d79eb1a989fc837179b8c6f5ac25ec090f4a2ad96bbba7084e791061794e92"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_atc_bc_20261019/candidates.py",
+      "bytes": 3761,
+      "sha256": "85582196b3ea4da6a3a7e089aae766e08ef3c982eb7a8879c7c0e0ee5f211d61"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_atc_bc_20261019/DATASET.json",
+      "bytes": 2981,
+      "sha256": "d234047c9f53b9424867cb10d741b4585f8b8b133eb2b761ae35b503a4244fee"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_atc_bc_20261019/learner.py",
+      "bytes": 8599,
+      "sha256": "70e7500cad88eb984b9b7b971a0ae12b37a6dd006fdef0117cc3166cddfcebd9"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_atc_bc_20261019/policy.py",
+      "bytes": 4102,
+      "sha256": "4d39e81fe471aa02070143a5f2b49080f2415ef3c1f45a40a9180678b512e31e"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_atc_bc_20261019/PROTOCOL.md",
+      "bytes": 5716,
+      "sha256": "bae76ab82c144c193693f8f6de264a2b0aa78ff70b80e64f4d34f9a73c14b161"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_atc_bc_20261019/README_KO.md",
+      "bytes": 2027,
+      "sha256": "05effd82ca06399f6fc77843c33a671f90f2f8b149b246dad0098995f115b870"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_atc_bc_20261019/study.py",
+      "bytes": 13266,
+      "sha256": "d62ad534de280aba4f2fd6aa04e692ee1c10fb97375c71974307b362c3b5094b"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_atc_bc_20261019/test_contracts.py",
+      "bytes": 6371,
+      "sha256": "3585c1795bf10e987a762dcd8cdc910d8aa330e183be9ce62469089af6c8343a"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_atc_bc_20261019/TRAIN_FRAMES.pt.gz",
+      "bytes": 597319,
+      "sha256": "26ec951a60598f5758e943b750409f3f5111097e58b0286d61ab65a25b14091b"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_atc_bc_20261019/verify_ready.py",
+      "bytes": 3611,
+      "sha256": "420e62cef69acb80328e56221903d34245a571b873ca22f36daaaec5108613c4"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_bc_600_20261019/study.py",
+      "bytes": 14961,
+      "sha256": "291e2ce537c9a29e4f9d615931ae02a968f15d3c0b03eb0f5036b12f37675a79"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_candidate_repair_20261018/policy_repair.py",
+      "bytes": 7155,
+      "sha256": "162f968676288aea60f92808b6c28a991cf5cf859d227c8a69f03969ab7bb039"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_cem_identification_20261019/BUDGET_RESERVATION.json",
+      "bytes": 900,
+      "sha256": "9b76500f4eb75f45a4d42473448f835c8c2986ec898079926e2fb3971a4d9cf7"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_cem_identification_20261019/learner.py",
+      "bytes": 5463,
+      "sha256": "22ae9c5bc09dca754748b06e6b21aac6b34cc0dc8ec6f003c449ba143611aede"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_cem_identification_20261019/objective.py",
+      "bytes": 1999,
+      "sha256": "4ccd1b5d2a010d541b922833fc6bd59a833719860566babb301275db56bd5972"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_cem_identification_20261019/POLICY_INPUTS.json",
+      "bytes": 1285961,
+      "sha256": "98762f53c46ada69fd39e5d205dd1700d9f1d5b697009bef79f0b7dc736315a4"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_cem_identification_20261019/POLICY_PROTOCOL.md",
+      "bytes": 5193,
+      "sha256": "a077d083cba4ca8d0c27e0615436f0fbc9daabc467e0f9b2cf19062d996d443c"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_cem_identification_20261019/PREFLIGHT.json",
+      "bytes": 224,
+      "sha256": "c0f468c0e3a2751dd2f78ea758c2ad84bc4d52c6a6599e574eee114eaf7ac606"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_cem_identification_20261019/preflight.py",
+      "bytes": 1812,
+      "sha256": "30050abdf5fbabb5f1001a7b1003e8842a5e196fd1b4065fa1e4f7d1778f68ff"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_cem_identification_20261019/register_policy.cjs",
+      "bytes": 2774,
+      "sha256": "4c1e5e06d41d687e3cb11d9f2761bd7a5b7858996ff54ae6de2ba712f75315bc"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_cem_identification_20261019/run_policy.py",
+      "bytes": 11515,
+      "sha256": "17f5aeb3f566ba7e803c614286725931e35fadf44a109e5ea8dfb62d90ba8923"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_duration_040_20261019/audit.cjs",
+      "bytes": 11618,
+      "sha256": "cea6ad57619a34f6a6c990140f24022b7b3ba12e90bb0b494f739eea7bb31bee"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_duration_040_20261019/audit_nn.py",
+      "bytes": 2272,
+      "sha256": "99823f0325c9042eb14826edf39820ef1386ecf3ef9746178683125b4f1dec0c"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_duration_040_20261019/AUDITOR_DERIVATION.json",
+      "bytes": 1297,
+      "sha256": "d3f7feff9f01ad493300498dd0c7f475bcb8aef1570a372a82678e4e0a533787"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_duration_040_20261019/banks/D040_T120_P0_S160.BANK.json.gz",
+      "bytes": 50999,
+      "sha256": "3624b38719085d60fb0a4f8652a8e3de24b51aef0018e4214ed037c0af3364d8"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_duration_040_20261019/banks/D040_T120_P1_S160.BANK.json.gz",
+      "bytes": 62845,
+      "sha256": "01fa53d6d0b24d88bd03908089c86d5a548b0e359ef4469dd377e35ab5d43122"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_duration_040_20261019/banks/D040_T240_P0_S160.BANK.json.gz",
+      "bytes": 99654,
+      "sha256": "5478768a82bd61f4c47c6f84c47a0b13bcab464d6ca86bd8cd6a0e720f6baf93"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_duration_040_20261019/banks/D040_T240_P1_S160.BANK.json.gz",
+      "bytes": 124012,
+      "sha256": "53275f6cdcbe70df592967baceb6a513f5feb831b4a83fa23f8def8259f3aa4e"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_duration_040_20261019/banks/D040_T600_P0_S160.BANK.json.gz",
+      "bytes": 245588,
+      "sha256": "a4b2686129116471424427b2f7954ae0475420ae1d1bd058a209b6ba51f43c00"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_duration_040_20261019/banks/D040_T600_P1_S160.BANK.json.gz",
+      "bytes": 306340,
+      "sha256": "e0d9198b9faae354b530c841245665fcb8c9123e41b4ab33343813ff73bf8f67"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_duration_040_20261019/banks/D040_T60_P0_S160.BANK.json.gz",
+      "bytes": 26671,
+      "sha256": "811e354e19785eb8c1a58b6064014cc976366bab89583f387d4db0cb744ed091"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_duration_040_20261019/banks/D040_T60_P1_S160.BANK.json.gz",
+      "bytes": 32561,
+      "sha256": "2235214912d0fc964de439c2e55dc68fa24106cab98436ab092caf12daafeb28"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_duration_040_20261019/BUDGET_RESERVATION.json",
+      "bytes": 582,
+      "sha256": "aa625189fc30dc21b8546bdfff0a84705c62cf98e0c816b37cd8b51595c10dfb"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_duration_040_20261019/INPUTS.json",
+      "bytes": 600422,
+      "sha256": "633c7ac9281c2fb0c3aa01cce3728f9c201f16000982e527d19d6a746f69f8f9"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_duration_040_20261019/prepare.cjs",
+      "bytes": 5190,
+      "sha256": "55d514d70faf58f88c1324c132fdb2a112ed3db8a1b2672bdc427dd6af76f2b8"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_duration_040_20261019/PROTOCOL.md",
+      "bytes": 3983,
+      "sha256": "b3543897f995c127d95bbeb404fce87aefb46dfe8fed551497ec125df8b2c2cd"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_duration_040_20261019/run.py",
+      "bytes": 8990,
+      "sha256": "a360d7b81d39c20ca9f10cf4f65d7d0840a29844021744eab5ae91e683554e24"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_logic_repair_20261019/__init__.py",
+      "bytes": 1770,
+      "sha256": "36b02802eaf6412db4634cd4b18b428a887902190164ff8d425d3d2a81d70d2e"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_logic_repair_20261019/forecast.py",
+      "bytes": 7749,
+      "sha256": "077929cf26bec8e4d44f12ace83b7674991547be6c9c70afa352673fa2fced93"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_logic_repair_20261019/physics.py",
+      "bytes": 1779,
+      "sha256": "4ca0ca8924c1351bb58f4a6b536f397bfac8f9a7d4070389090634764785fab3"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_logic_repair_20261019/policy.py",
+      "bytes": 4394,
+      "sha256": "3dc24ffe334cd9ac61e3abb1e4a1518dfc609aa12ab39d2094cd89dded6c64c6"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_logic_repair_20261019/test_logic.py",
+      "bytes": 12029,
+      "sha256": "ec65c1e20998468a5d1cfaa4c42afc38224464ebaeb59b6d22b1e8dfc1692f1d"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_logic_repair_20261019/verify.py",
+      "bytes": 4525,
+      "sha256": "eab8661f5b076a4e786a5270663902ad7909204f88f21aa517659911e9a5de50"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_parallel_20261018/engine_parallel.py",
+      "bytes": 10403,
+      "sha256": "f20667b22819d4321c076d262461fbdff3be79da9ee81efbdecefabe959afd0f"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_parallel_20261018/OPERATION.json",
+      "bytes": 201708,
+      "sha256": "22d47c1bc34c44a2fd09b5eb71119f719e1f36b42580dddbf40a8501409a5d06"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_parallel_20261018/physics_parallel.py",
+      "bytes": 3289,
+      "sha256": "82e97b1dc2d852adafc8b008671c1bda4765cfee6aa78f6a403160f0749012ed"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_parallel_20261018/policy_parallel.py",
+      "bytes": 6425,
+      "sha256": "35ae15a89d154e0dc6ee76bb8537aa26dfbe7c6032901f344818702dfc5d0ecf"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_parallel_20261018/prepare.cjs",
+      "bytes": 5433,
+      "sha256": "a283ab583d01422fde2cf2c1ee1196114d9c5554bbaeb91ff6af82b36fd01200"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_parallel_20261018/README.md",
+      "bytes": 3208,
+      "sha256": "f769ad54f7711d0fe338c1df4bf9f00a28740c8571d4b246590d20a4d062aee3"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_parallel_20261018/run.py",
+      "bytes": 9796,
+      "sha256": "90e82ae71c39f66934d22dd3d6f10e30e7e00d6572d0069cb96b02b62db24b23"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_s26_method_20261019/BUDGET_RESERVATION.json",
+      "bytes": 632,
+      "sha256": "76e64e68b0958a965e4e5bf341bdccb59a091f3f183e087f675db3a0a9d40020"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_s26_method_20261019/engine.py",
+      "bytes": 10642,
+      "sha256": "3ff57505e82451286f7f07db95d0524f168d58a730f0e58f782553b6a526a78a"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_s26_method_20261019/forecast.py",
+      "bytes": 4653,
+      "sha256": "d433cbf5e8cbff457c5a996ba9380688611fa5e9186407c1de0be2ba6b93d909"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_s26_method_20261019/INPUTS.json",
+      "bytes": 540655,
+      "sha256": "b7eb3b017306ddaf63569ba724923ab9c4778b44ddf1ad477d7625f9f7f546cd"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_s26_method_20261019/physics.py",
+      "bytes": 4937,
+      "sha256": "bf75c4ff02962b99e84e3a33dffa17dd9e9746bd693591565dd834b5159a0f10"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_s26_method_20261019/policy.py",
+      "bytes": 4379,
+      "sha256": "680bd9eec7c11e5c88828e2530eaffcf17e5de21c54f5c833e83c49bf2932d78"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_s26_method_20261019/PREFLIGHT.json",
+      "bytes": 162,
+      "sha256": "d5743db991aba51d687a22f809d0d331bf55c143794ac101850ff36d6a3d4e76"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_s26_method_20261019/preflight.py",
+      "bytes": 3290,
+      "sha256": "a6337c51da4c80dfd2a47ec0c70fea13616dc37a4a24983dbee7d10ecf50de11"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_s26_method_20261019/README.md",
+      "bytes": 4731,
+      "sha256": "ecfea4eb3aaad0c5d2d0dd3b0fe493f1cfbaf5392a16456f610b2c39498734fb"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_s26_method_20261019/rewards.py",
+      "bytes": 2031,
+      "sha256": "cfaa6f0cceb1486aadd15a4fd3805c2c9c82c828ba756174c26c0822066ab071"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_s26_method_20261019/run_study.py",
+      "bytes": 9529,
+      "sha256": "37404d580e66979d330c21bc409d6bfd5cd02732791bad9d6f4531bedce7cf20"
+    },
+    {
+      "path": "a24_simulator/experiments/a24_s26_method_20261019/SHAPE.json",
+      "bytes": 592,
+      "sha256": "61f315220425d78918f7752e182e15ea8bc39fd1a125cf925903d2cf3f656369"
+    },
+    {
+      "path": "a24_simulator/experiments/choice_opportunities_20261017/design.cjs",
+      "bytes": 1791,
+      "sha256": "342129ec12c088dac98f5cdc680832756b2fbc8fb7bebf91631277f3f3465583"
+    },
+    {
+      "path": "a24_simulator/experiments/choice_opportunities_20261017/observer.py",
+      "bytes": 3552,
+      "sha256": "233f3f532e8e4189bc434fd054256d9e86f9eb8a412a3ba23a5e17a0ceb500a9"
+    },
+    {
+      "path": "a24_simulator/experiments/choice_opportunities_20261017/observer_v2.py",
+      "bytes": 1294,
+      "sha256": "9f2bee48279c4c718772338ee38a9403506345d2f8a852720a3d2dba6c6b9092"
+    },
+    {
+      "path": "a24_simulator/experiments/choice_opportunities_20261017/prepare.cjs",
+      "bytes": 3889,
+      "sha256": "0844c5967498216f4cbfff4f9b3793234ef1b984cc459c2aa4ffe1923c6209d5"
+    },
+    {
+      "path": "a24_simulator/experiments/choice_opportunities_20261017/prepare_v2.cjs",
+      "bytes": 4203,
+      "sha256": "33927b3692af13ca6c796260552c7d16f1a3a63037f5d972ccfe35c0c01a814e"
+    },
+    {
+      "path": "a24_simulator/experiments/choice_opportunities_20261017/run.py",
+      "bytes": 7944,
+      "sha256": "5aff6e3360f1eb059cd9cd7c6aa1adc199bdbb0519d6d52b016141d3733506a3"
+    },
+    {
+      "path": "a24_simulator/experiments/choice_opportunities_20261017/run_v2.py",
+      "bytes": 7071,
+      "sha256": "10e86faeb793c7fe895fecd230b3e3c57bb6669565a697e989fe332cd68abdbd"
+    },
+    {
+      "path": "a24_simulator/experiments/choice_opportunities_20261017/test_coalescing.py",
+      "bytes": 1338,
+      "sha256": "fbd908d69cadf8d66900a2772b9d559632b448c5da6ac4bea99bf4f43b7f0e27"
+    },
+    {
+      "path": "a24_simulator/experiments/choice_opportunities_20261017/test_design.cjs",
+      "bytes": 982,
+      "sha256": "81ba6c8ad0ea7f6b38c2b92388f2d0053cb0acaa81135adea94c56b4b98bf2eb"
+    },
+    {
+      "path": "a24_simulator/experiments/competition_cost_20261017/state_cost.py",
+      "bytes": 6416,
+      "sha256": "6e52288e624f71506bc019e17a242fa7c91ac7d206c80a67cecee8beb2909ec1"
+    },
+    {
+      "path": "a24_simulator/experiments/coupled_345_20261017/audit.py",
+      "bytes": 11354,
+      "sha256": "b90f4a2b3e26d7a0e80126a9e2ac4801057ad719208e69183a163a2f72b8c872"
+    },
+    {
+      "path": "a24_simulator/experiments/coupled_345_20261017/bootstrap.py",
+      "bytes": 2560,
+      "sha256": "099ea7ca547fb6bc2226e544057dc6376ecfcd44493b18073d29f04117a0f103"
+    },
+    {
+      "path": "a24_simulator/experiments/coupled_345_20261017/BUDGET_RESERVATION.json",
+      "bytes": 1337,
+      "sha256": "b9031075a5690ee0fbe02e66b9184cb3f83c7119d8311c744230cd01e990c025"
+    },
+    {
+      "path": "a24_simulator/experiments/coupled_345_20261017/controller.py",
+      "bytes": 11239,
+      "sha256": "c685527af4cddccc005b56bc6e43697317e87846d092fcf28fd88dbc94434525"
+    },
+    {
+      "path": "a24_simulator/experiments/coupled_345_20261017/design.cjs",
+      "bytes": 1876,
+      "sha256": "f17b0c63d2802a01ae2614cdbb05a299d9c034774d2d9326cf34903ffc255e21"
+    },
+    {
+      "path": "a24_simulator/experiments/coupled_345_20261017/dynamics.py",
+      "bytes": 5766,
+      "sha256": "c189ecfdb37a250ad61dc3e8b573fdbb190d1ed5c2b359a1ece9fd2f90e7e107"
+    },
+    {
+      "path": "a24_simulator/experiments/coupled_345_20261017/engine.py",
+      "bytes": 9000,
+      "sha256": "752ef69da4d63afa89f5e95bcae71d358b0bc505be5a28ad94113a6b0e12e9cd"
+    },
+    {
+      "path": "a24_simulator/experiments/coupled_345_20261017/INPUTS.json",
+      "bytes": 1760877,
+      "sha256": "a4cfb1ce1f8b96250a3ed3bdbae6c41b479352e6d8f70ed2419971b886f2ccc3"
+    },
+    {
+      "path": "a24_simulator/experiments/coupled_345_20261017/nn_train.py",
+      "bytes": 7079,
+      "sha256": "ef0000a2dd59546120b390472881f2f250d7fb75d06733b54722d2bddeccad20"
+    },
+    {
+      "path": "a24_simulator/experiments/coupled_345_20261017/OPERATION.json",
+      "bytes": 11516,
+      "sha256": "f0c18c4bc9dd25a2dda9c8c799b590e9a5c4c0f162c31ca66e4f12a4c785f85b"
+    },
+    {
+      "path": "a24_simulator/experiments/coupled_345_20261017/PARAMETERS.json",
+      "bytes": 1642,
+      "sha256": "31cd4d4b4f6b3db4175f3a669cd3bf5e48f05587ac407a7e2e7c8817a9430ca8"
+    },
+    {
+      "path": "a24_simulator/experiments/coupled_345_20261017/prepare.cjs",
+      "bytes": 5055,
+      "sha256": "0e85ca1961d99dca389410e4ad01363f77d3c9f122011db59be22dd24c3b4102"
+    },
+    {
+      "path": "a24_simulator/experiments/coupled_345_20261017/PRESTART_TEST_FAILURE_01.json",
+      "bytes": 449,
+      "sha256": "45015ea2d959658f1fdf5d996a8b97c30e56dcc314c9ec97b6f0e2e2035eed27"
+    },
+    {
+      "path": "a24_simulator/experiments/coupled_345_20261017/PURE_TEST_RESULT.json",
+      "bytes": 2891,
+      "sha256": "20b93831049c4137aba8311ccfacc5066f0ea362a831625ec975308f9326bec9"
+    },
+    {
+      "path": "a24_simulator/experiments/coupled_345_20261017/rewards.py",
+      "bytes": 2059,
+      "sha256": "deaa23d95f13bc4cd635b503ad8fd567d2cff358384ee2bfa842e004a69cd44f"
+    },
+    {
+      "path": "a24_simulator/experiments/coupled_345_20261017/run_experiment.py",
+      "bytes": 13791,
+      "sha256": "e6c6720713e8c1db91d74ffac3af44cd0c02721b65b28f77841b5469fd521ec4"
+    },
+    {
+      "path": "a24_simulator/experiments/coupled_345_20261017/test_contracts.py",
+      "bytes": 9602,
+      "sha256": "c8e775007846c8b5d25294adc0a88915acba32079100ea45dc3215e765e0143e"
+    },
+    {
+      "path": "a24_simulator/experiments/deadline_event_20261018/audit.cjs",
+      "bytes": 20059,
+      "sha256": "b8b7bdbb38d7605c90d972964771903b81bb1160161f7fc640f0587ecf2c7038"
+    },
+    {
+      "path": "a24_simulator/experiments/deadline_event_20261018/BUDGET_RESERVATION.json",
+      "bytes": 384,
+      "sha256": "4a692f635e29c95ee80fadc26754d2c303b8458629ae56a9ea9c6e3cbe2a4f68"
+    },
+    {
+      "path": "a24_simulator/experiments/deadline_event_20261018/build.cjs",
+      "bytes": 5432,
+      "sha256": "35b8ca4bbf1db29779582ee22c66d7edf4ef8ae66e519464f4e45af87ff764a0"
+    },
+    {
+      "path": "a24_simulator/experiments/deadline_event_20261018/CONTRACTS.json",
+      "bytes": 336,
+      "sha256": "7ee301af94d8c4486774b6f276897e0dd991778a74f9053003fe0d97c1976270"
+    },
+    {
+      "path": "a24_simulator/experiments/deadline_event_20261018/contracts.py",
+      "bytes": 3328,
+      "sha256": "78ea66579980a30f51e269010f77d809739c374b1c4e4848570ecdba9592e44e"
+    },
+    {
+      "path": "a24_simulator/experiments/deadline_event_20261018/event_labels.py",
+      "bytes": 2871,
+      "sha256": "da9bb5f3574e7b874c4d1fddd62ef70add7a1dbdcc9d068d831c41a084f1bc60"
+    },
+    {
+      "path": "a24_simulator/experiments/deadline_event_20261018/PREFLIGHT.json",
+      "bytes": 2249,
+      "sha256": "5235af79779fc577849b5ce37c8edff157b69bacd377ae404a81ec0083e60fc2"
+    },
+    {
+      "path": "a24_simulator/experiments/deadline_event_20261018/preflight.py",
+      "bytes": 1776,
+      "sha256": "8a5a0c397731202c9ca1d2870534e751106cb395479b47bb65440124c314d08b"
+    },
+    {
+      "path": "a24_simulator/experiments/deadline_event_20261018/prepare.cjs",
+      "bytes": 4578,
+      "sha256": "28f9595b79f7b32742f27066f39fb64e40417f5e9416b58c1918a8d15cd82da8"
+    },
+    {
+      "path": "a24_simulator/experiments/deadline_event_20261018/README.md",
+      "bytes": 2390,
+      "sha256": "1c2456f40df48e1d43b2e8cd76d17d8d5e13fd566888a8520f5d884d492fe0ac"
+    },
+    {
+      "path": "a24_simulator/experiments/deadline_event_20261018/report.cjs",
+      "bytes": 14704,
+      "sha256": "c16b524a3b694e6d20a7db0a611aba2d524ae2699a15438b482a01748327157a"
+    },
+    {
+      "path": "a24_simulator/experiments/deadline_event_20261018/report_build.cjs",
+      "bytes": 7237,
+      "sha256": "939867f5f4f13fee950f4189816a8b158aea298d8b32c5dbb09f5e377a687d6e"
+    },
+    {
+      "path": "a24_simulator/experiments/deadline_event_20261018/run_event.py",
+      "bytes": 11599,
+      "sha256": "d2e4a6f84de4d08f144851a676f98ee1aa17d729b2d6beca60770a6797e77d4d"
+    },
+    {
+      "path": "a24_simulator/experiments/deadline_event_20261018/THERMAL_PURE_TEST.json",
+      "bytes": 4795,
+      "sha256": "8d4ef913f025492a8eef310718bc9599fb40182722a43db663ec7870e892c432"
+    },
+    {
+      "path": "a24_simulator/experiments/deadline_event_20261018/TRIGGER.json",
+      "bytes": 2069,
+      "sha256": "963ec4bc15839e16acfad5405ccc3062fcd610f46f46dfc920fc5e6b64bccbbf"
+    },
+    {
+      "path": "a24_simulator/experiments/deep_repair_20261018/audit.cjs",
+      "bytes": 17677,
+      "sha256": "1fa39df378fc92eb33c2f8279c9534bd5bce4286dedf662bb46813cb1e150729"
+    },
+    {
+      "path": "a24_simulator/experiments/deep_repair_20261018/BUDGET_RESERVATION.json",
+      "bytes": 656,
+      "sha256": "cccd8dd4cf71035dec050137d4567fc178acd0f49c642265f3cfd0e833f79313"
+    },
+    {
+      "path": "a24_simulator/experiments/deep_repair_20261018/common.py",
+      "bytes": 1523,
+      "sha256": "c2531ee61f3326aa07545731b4fb896023e974902bc47c9d074e69c8f0f377a6"
+    },
+    {
+      "path": "a24_simulator/experiments/deep_repair_20261018/diagnostics.py",
+      "bytes": 2620,
+      "sha256": "a25317902b35e2d4dd84208d715cf1a00de22392af1a1849d174744d922ec78a"
+    },
+    {
+      "path": "a24_simulator/experiments/deep_repair_20261018/INPUTS.json",
+      "bytes": 3146382,
+      "sha256": "6c218b7b612cf6c5bb372c18a36953d6918d93102a1fdf3212ec06e0611a2047"
+    },
+    {
+      "path": "a24_simulator/experiments/deep_repair_20261018/learner.py",
+      "bytes": 8680,
+      "sha256": "2b07783c8e714a5a865140965af4333708837f0d1b8fc1345beb76b25f015e62"
+    },
+    {
+      "path": "a24_simulator/experiments/deep_repair_20261018/PARALLEL_ALLOWLIST_V2.json",
+      "bytes": 1592,
+      "sha256": "2be708e374e8702d3b89f94a9bd00b94dbebd189401576fde6f7c38a63384037"
+    },
+    {
+      "path": "a24_simulator/experiments/deep_repair_20261018/PARALLEL_BUDGET_SNAPSHOT.json",
+      "bytes": 885,
+      "sha256": "432ece134714c83a7f96f5e2dff69712a71c8e6a782a58f71eaff52dfa21122d"
+    },
+    {
+      "path": "a24_simulator/experiments/deep_repair_20261018/preflight.py",
+      "bytes": 1015,
+      "sha256": "1abadef99cedd98bbe382fb246237fe9847ea836b9ae67c549adc3c5ff29b246"
+    },
+    {
+      "path": "a24_simulator/experiments/deep_repair_20261018/PREFLIGHT_V2.json",
+      "bytes": 6343,
+      "sha256": "6c127a413dcb328960879016adbe1a588f41e8aa8edae018f27d52c1f7cf7caa"
+    },
+    {
+      "path": "a24_simulator/experiments/deep_repair_20261018/prepare.cjs",
+      "bytes": 5181,
+      "sha256": "f615e482f2ac23dc6e024aa07f00cef02234c22562681487fa8ecf5e1148525d"
+    },
+    {
+      "path": "a24_simulator/experiments/deep_repair_20261018/public_controller.py",
+      "bytes": 14083,
+      "sha256": "d6ac00ab2f1b5a33ed29f2f31158b76e3358e2686d384d556d6e91cf9828a6c7"
+    },
+    {
+      "path": "a24_simulator/experiments/deep_repair_20261018/README.md",
+      "bytes": 4388,
+      "sha256": "64a054e3faac3ebbed42c7bb8a6a4222b5e1583dddcd7b2ca755a43ab2bc6752"
+    },
+    {
+      "path": "a24_simulator/experiments/deep_repair_20261018/report.cjs",
+      "bytes": 12970,
+      "sha256": "ff9dc6e0cb74dd174c6c2f63005beb0960f0120568c62b2967c9b334688950d1"
+    },
+    {
+      "path": "a24_simulator/experiments/deep_repair_20261018/resources.py",
+      "bytes": 2917,
+      "sha256": "1b56ba5f90ae68375836dca8f50150f6ac8d8e87f6a25c66ad3658537e2cf07e"
+    },
+    {
+      "path": "a24_simulator/experiments/deep_repair_20261018/run.py",
+      "bytes": 15561,
+      "sha256": "d95576cb4ba019d19ddeceaa4f5fa7adba826cf218fe4a74095bb252c662db36"
+    },
+    {
+      "path": "a24_simulator/experiments/deep_repair_20261018/tests.py",
+      "bytes": 4184,
+      "sha256": "3640269d704122259ce9f5743503319fa3441de732d9f78b04990094fc8e2211"
+    },
+    {
+      "path": "a24_simulator/experiments/deep_repair_20261018/THERMAL_PURE_TEST.json",
+      "bytes": 4795,
+      "sha256": "8d4ef913f025492a8eef310718bc9599fb40182722a43db663ec7870e892c432"
+    },
+    {
+      "path": "a24_simulator/experiments/density_headroom_20261018/actors.py",
+      "bytes": 5083,
+      "sha256": "288d56799747ddb7f6450af400e32cf4705b7a26f3c3eee37ca6a5c8f01af847"
+    },
+    {
+      "path": "a24_simulator/experiments/density_headroom_20261018/bounds.py",
+      "bytes": 12498,
+      "sha256": "79997f3e6c36627666c9497fb509d82d39d2303dedab9d4b32bf5c5b3777f67d"
+    },
+    {
+      "path": "a24_simulator/experiments/edf_cpu_first_20261016/policy.py",
+      "bytes": 4478,
+      "sha256": "774eca1a4bb44e4c9604f9895481b752bcd786fa87d3ccf7d460bd98f09ed305"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_ablation_20261018_v3/bank_model.py",
+      "bytes": 1993,
+      "sha256": "5846ec4cd0db10933630b04ad11051da8c0c4fe960b5253059a6529d2f8bbdaa"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_ablation_20261018_v3/guard_controller.py",
+      "bytes": 11344,
+      "sha256": "f84e6ce94ecd11fc91780bad6fc98c2ad198a95307120eb6d5ec25250035fb78"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_ablation_20261018_v3/OPERATION.json",
+      "bytes": 71899,
+      "sha256": "08d81e9a4d011c4f27849f7c9af02da9ccdeeb8c96a143488d5847f89842088a"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/amend_operation_v2.cjs",
+      "bytes": 2269,
+      "sha256": "a46f21156aef974e110d2868e7f78b8247cc124b309172a1d114878ac1364094"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/audit.cjs",
+      "bytes": 16394,
+      "sha256": "99998d3263c2d02f0f537d82120477c0ed35fcddd8347e2369c60708464e2a3e"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/audit_v2.cjs",
+      "bytes": 16406,
+      "sha256": "4b7a697bb950d17ae873d1faef1c6ea1a8268aab56fa756d6f5df142ca5440cd"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/BUDGET_RESERVATION.json",
+      "bytes": 702,
+      "sha256": "673e4d66d2e976b079697dae00683cb1b0a0ba2955ad079f9e3cd74e02ed5eb5"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/BUDGET_RESOURCE_V2.json",
+      "bytes": 1353,
+      "sha256": "2a48b359e75fae447622675bc8bcb32d9a81ca7d4d0b9a5354f0f77e008e4846"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/design.cjs",
+      "bytes": 1437,
+      "sha256": "944a00e20f76fac8060fdeda03e6a7327a1951140990f69d4be270b2687b41bd"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/ENVIRONMENT0_RESOURCE_AMENDMENT.json",
+      "bytes": 1777,
+      "sha256": "fc6874c91c349f17736404fc99c6bd6c29c7a9f38c0e1228f18f6b891647e226"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/HORIZON_FEATURE_DIAGNOSIS.json",
+      "bytes": 988,
+      "sha256": "0502465f5998a95a77b664646a4dd67cfbd4566a718097b11d391571db87ba67"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/INPUTS.json",
+      "bytes": 3146382,
+      "sha256": "6c218b7b612cf6c5bb372c18a36953d6918d93102a1fdf3212ec06e0611a2047"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/learning_figures.py",
+      "bytes": 1743,
+      "sha256": "c074fb27102b8f403a2e2dd167dd12393033d1f95689e76717f009b738968bd1"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/OPERATION_RESOURCE_V2.json",
+      "bytes": 58240,
+      "sha256": "e46cd3d0725621e21e58bae25ed3d2dd67f7ca74114bd37616b6ae090906c5e4"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/paired_initialization.py",
+      "bytes": 256,
+      "sha256": "c58a9ec15a56d3b45210370f3b5f6ce6c04a076e22116d579c8b7a9bf281ca9f"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/PARALLEL_ALLOWLIST.json",
+      "bytes": 852,
+      "sha256": "dde349f9e9b44a9fa777fd6cb7376e1bd9053a3502faed647149d2aa20223f3f"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/PARALLEL_ALLOWLIST_V2.json",
+      "bytes": 1321,
+      "sha256": "43b69eadeed70f8ada050384ad8ab0fedcb737f642b160511d0d729dcdf96e36"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/preflight.py",
+      "bytes": 2064,
+      "sha256": "d8c1cd57dc6be52cbde4a9d120d639493168f1c6b6b1bf4c37646209d76dc310"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/PREFLIGHT_RESULT_V4.json",
+      "bytes": 6828,
+      "sha256": "765b9e1218747fc133e1e1b9a43b11ea588b6b57bf2c067826d46477fd83631c"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/PREFLIGHT_RESULT_V5.json",
+      "bytes": 8648,
+      "sha256": "b44e8c6404d1d5d74bf885fa64e824fcb8f03623b937ad5d0ccf909267aa59d5"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/preflight_v5.py",
+      "bytes": 2070,
+      "sha256": "10df7f00bd224177917d272d5d85460be00ec3b1242dd18c52b7f4f86b20139a"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/prepare.cjs",
+      "bytes": 5363,
+      "sha256": "8552cc5c217ea0af0686c6398f7fc21db59a8b3809ea92d787969356e710a854"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/PUBLIC_NOMINAL_CATALOG.json.gz",
+      "bytes": 40522,
+      "sha256": "fc51b88fb2d96de05d269b287ef2b9d8d18163018b44c0cfb977527e029a0963"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/PUBLIC_NOMINAL_EQUIVALENCE.json",
+      "bytes": 2455,
+      "sha256": "0a532d6ff7519a58e9966c28fa10446b6f111571f2dbbc6b924b1f9dcd975eae"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/pure.cjs",
+      "bytes": 1661,
+      "sha256": "67f10c4d8ef4a1eef2bed9fc7424e698faae645716bf0717772cfc3c2aa933e8"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/pure_resources.py",
+      "bytes": 1611,
+      "sha256": "d69f10c6842d039d203269d99a3ab7dc53cc27fe50435f2a8825541886049e79"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/PURE_TEST_RESULT.json",
+      "bytes": 255,
+      "sha256": "55ea17c780485341f879871434c25ad1d35e6b250a3e64f6dab1a79594b466e5"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/README.md",
+      "bytes": 4761,
+      "sha256": "3ab6d98296086cd774d9ae6f16be32bb2c72f1e5802c748192a5e1ffd7416384"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/repair_controller.py",
+      "bytes": 13210,
+      "sha256": "d376a2fe7a1f4f87fe876c43d958fce976aed9dc1d9b5885f8b28b397c8779d8"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/repair_rewards.py",
+      "bytes": 3006,
+      "sha256": "0d18d3d5318f9db3e55ecb649930fdfa876b038c23543b7821bb11eed8e873c5"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/report.cjs",
+      "bytes": 11705,
+      "sha256": "c104db5f48d324db79343b9cdddcd5183094e4fd93a96fb2453dd4fd7cd3857e"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/report_v2.cjs",
+      "bytes": 11717,
+      "sha256": "36396fc65c2c64c1f234f706c2a4b33a205cc76958ce73e244aee1a173a39c15"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/resource_learning.py",
+      "bytes": 2723,
+      "sha256": "5266f9428c9a81da0b90698e9acad15ca6feaecb0b8c684c997b40e2bc3aa5ac"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/resource_learning_v2.py",
+      "bytes": 2785,
+      "sha256": "6e056580ae0a27d63b0863b8d81cdb8c516d4bcdbd4ba75ecf41731b42f1dde1"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/run_learning.py",
+      "bytes": 14186,
+      "sha256": "c47cced5e70844982999b20b4b5fa76abcc2db937bbcd6899979cea4a9b2fc71"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/run_learning_v2.py",
+      "bytes": 14219,
+      "sha256": "1ee10b88443a373745827a1944c34654dc51933b9c4de4d670296da228011e04"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/test_contracts.py",
+      "bytes": 6495,
+      "sha256": "0af34528e494d648eea231047f72eb53462b27956fc94a04f270ad60dcf479ce"
+    },
+    {
+      "path": "a24_simulator/experiments/guard_learning_20261018/THERMAL_PURE_TEST.json",
+      "bytes": 4795,
+      "sha256": "8d4ef913f025492a8eef310718bc9599fb40182722a43db663ec7870e892c432"
+    },
+    {
+      "path": "a24_simulator/experiments/load_density_20261017/AST_RESULT.json",
+      "bytes": 417,
+      "sha256": "6fdcbec0ed503b391f92cc4c7b1b60d14ba74f87fef4818409acc1d41b808c47"
+    },
+    {
+      "path": "a24_simulator/experiments/load_density_20261017/audit.cjs",
+      "bytes": 12967,
+      "sha256": "d6c6ac32ab561fcae0a20dc8b178da6c1cda2ddd59fa77c2d39849b629a73dfa"
+    },
+    {
+      "path": "a24_simulator/experiments/load_density_20261017/BUDGET_RESERVATION.json",
+      "bytes": 1208,
+      "sha256": "5cc8ca73aca2811859c30a6ab17f7741e0986b96e91a8747f493c03e8b2e07f1"
+    },
+    {
+      "path": "a24_simulator/experiments/load_density_20261017/design.cjs",
+      "bytes": 1625,
+      "sha256": "6b28af5add81c5921eb7274d86abc1be512a83206e2cfb6819cedca74117c8e8"
+    },
+    {
+      "path": "a24_simulator/experiments/load_density_20261017/diagnose.cjs",
+      "bytes": 2316,
+      "sha256": "07f8f535c72da99b6dae6f273c47779dddb0f00985e222d4e9cc8752fe8fae8e"
+    },
+    {
+      "path": "a24_simulator/experiments/load_density_20261017/EXTERNAL_S26_BUDGET_SNAPSHOT.json",
+      "bytes": 733,
+      "sha256": "c968fafd241e01cd3cf535530dc9aa725d0f0cdc6cfb1a3b5b2c1b8319a08ffe"
+    },
+    {
+      "path": "a24_simulator/experiments/load_density_20261017/figures.py",
+      "bytes": 2438,
+      "sha256": "3c07e1c56e56149bf56871e1a682771690f454462a4f26f2709df5a90a553c6f"
+    },
+    {
+      "path": "a24_simulator/experiments/load_density_20261017/INPUTS.json",
+      "bytes": 1290648,
+      "sha256": "ae0f68bccb6cc201ee483c39418e0ce6bd3b6d24ed9b5cd9e8f33948d2d0f41e"
+    },
+    {
+      "path": "a24_simulator/experiments/load_density_20261017/prepare.cjs",
+      "bytes": 5529,
+      "sha256": "7f60601df03702ed4ad0d82f4872fed0c0f3a0c724412ce8399200a930d288d8"
+    },
+    {
+      "path": "a24_simulator/experiments/load_density_20261017/PURE_TEST_RESULT.json",
+      "bytes": 72,
+      "sha256": "ed772791f5f2fb0584e90f4d378832db1193df6033446478a62db04d44ba45d3"
+    },
+    {
+      "path": "a24_simulator/experiments/load_density_20261017/report.cjs",
+      "bytes": 13275,
+      "sha256": "93ea79122f3cf49e3efbccc0a4b58eb70d6df9ccd36372dac1959f735ca2f85c"
+    },
+    {
+      "path": "a24_simulator/experiments/load_density_20261017/run_density.py",
+      "bytes": 7795,
+      "sha256": "bdafb18c1a56337d149ad1cda9dc6abd2009bb6bd279e6a26329e595d39f2f86"
+    },
+    {
+      "path": "a24_simulator/experiments/load_density_20261017/thermal_guard.cjs",
+      "bytes": 4436,
+      "sha256": "b7c5fb9e6d1c8eae25f670649dfd570656a9f0e277e6e3fd904ed82f97007851"
+    },
+    {
+      "path": "a24_simulator/experiments/load_density_20261017/THERMAL_PURE_TEST.json",
+      "bytes": 4795,
+      "sha256": "8d4ef913f025492a8eef310718bc9599fb40182722a43db663ec7870e892c432"
+    },
+    {
+      "path": "a24_simulator/experiments/long_scale_20261017/bridge_long.py",
+      "bytes": 23288,
+      "sha256": "c8886db218ef6e1cf29bc9adb02b1b0a3a9e39f0b66d2f39dddab8ce8e09eb3b"
+    },
+    {
+      "path": "a24_simulator/experiments/long_scale_20261017/fast_thermal.py",
+      "bytes": 3112,
+      "sha256": "9c55c8d730024051a5a3c1692609d8e058104531f1929cbe2268d004394b82fa"
+    },
+    {
+      "path": "a24_simulator/experiments/long_scale_20261017/kernel_long.py",
+      "bytes": 44960,
+      "sha256": "679769faab81d3f20faffb4f328fe784080e592bcc8f4704a0b5baf3a3550e31"
+    },
+    {
+      "path": "a24_simulator/experiments/minmax_joint_20261018/audit.cjs",
+      "bytes": 21394,
+      "sha256": "3965698a92b5dd17462720b4c5a66184a650249c742380e3e834f4bdcbb70c58"
+    },
+    {
+      "path": "a24_simulator/experiments/minmax_joint_20261018/BUDGET_RESERVATION.json",
+      "bytes": 530,
+      "sha256": "6e5a2070b96e8b5a6b09f23502f2c9c7a92b033e0b003562533f1eb3634132d4"
+    },
+    {
+      "path": "a24_simulator/experiments/minmax_joint_20261018/build.cjs",
+      "bytes": 9476,
+      "sha256": "10ba7641d5a76108cf0088aeb96fc8909ca2b5b30af962f10522c1011f0907a1"
+    },
+    {
+      "path": "a24_simulator/experiments/minmax_joint_20261018/build_report.cjs",
+      "bytes": 9396,
+      "sha256": "60843319412a12ca2fdcad06c93c2a7a6ad9cec4abaf081133e3f297e9c0bd68"
+    },
+    {
+      "path": "a24_simulator/experiments/minmax_joint_20261018/minmax_labels.py",
+      "bytes": 2535,
+      "sha256": "c8eb756a3553ff53633c3c205e73d38ac097bf2507053626a4603d0472822ca2"
+    },
+    {
+      "path": "a24_simulator/experiments/minmax_joint_20261018/PARALLEL_BUDGET_SNAPSHOT.json",
+      "bytes": 760,
+      "sha256": "931677c446593f4af74bcc669676bccab35563e497f15a368fd3e6cd5a39c033"
+    },
+    {
+      "path": "a24_simulator/experiments/minmax_joint_20261018/PREFLIGHT.json",
+      "bytes": 5465,
+      "sha256": "cf11416e7b8c5107397b43b85efe49aa681fcde1d94fb216d9c511bfa5f342fc"
+    },
+    {
+      "path": "a24_simulator/experiments/minmax_joint_20261018/preflight.py",
+      "bytes": 2135,
+      "sha256": "955bc51361e39ccd14bacae3e3371675efcb27bb12accc1524ecc003b621e221"
+    },
+    {
+      "path": "a24_simulator/experiments/minmax_joint_20261018/prepare.cjs",
+      "bytes": 6730,
+      "sha256": "58b3734123fd5bf3f2babfcb1aa84486887ac8758aaae82e13a9bc879fef31e5"
+    },
+    {
+      "path": "a24_simulator/experiments/minmax_joint_20261018/README.md",
+      "bytes": 3205,
+      "sha256": "eba587094b7f5a04810952f3b83ba9ae6db91d330d4f0d4e30552466621e4bff"
+    },
+    {
+      "path": "a24_simulator/experiments/minmax_joint_20261018/REFERENCE_DERIVATION.json",
+      "bytes": 14938,
+      "sha256": "7fd033d30b4073c6526acdd94496c95f67d730ac780557f43e8a212a3f3c4da8"
+    },
+    {
+      "path": "a24_simulator/experiments/minmax_joint_20261018/report.cjs",
+      "bytes": 13451,
+      "sha256": "8383a2deb85851d73416027534063ff53727d748d952c80279aac71db45d1aef"
+    },
+    {
+      "path": "a24_simulator/experiments/minmax_joint_20261018/run.py",
+      "bytes": 13393,
+      "sha256": "40775eef89421ed3e3b1571e971dc0c19322afe72c348a2be41e8d76f48eae3f"
+    },
+    {
+      "path": "a24_simulator/experiments/minmax_joint_20261018/tests.py",
+      "bytes": 3293,
+      "sha256": "35567a54decf43ae88d35c26a478f5326fce1344d513370002cda3a251d2224a"
+    },
+    {
+      "path": "a24_simulator/experiments/minmax_joint_20261018/THERMAL_PURE_TEST.json",
+      "bytes": 4795,
+      "sha256": "8d4ef913f025492a8eef310718bc9599fb40182722a43db663ec7870e892c432"
+    },
+    {
+      "path": "a24_simulator/experiments/moderate_load_20261018/audit.cjs",
+      "bytes": 14806,
+      "sha256": "057f9f896c2af6a413a2c48e12adb64734a77711b5c77d3f7fe2eddc84dee4f0"
+    },
+    {
+      "path": "a24_simulator/experiments/moderate_load_20261018/BUDGET_RESERVATION.json",
+      "bytes": 907,
+      "sha256": "047a18987d867e477613aa0d9b07fb27f2c7a94894a583d09be06a1cbda69c33"
+    },
+    {
+      "path": "a24_simulator/experiments/moderate_load_20261018/design.cjs",
+      "bytes": 1470,
+      "sha256": "06849a498689289b00bcfc281026c758e855b6f435b0896ede945d30b455e0aa"
+    },
+    {
+      "path": "a24_simulator/experiments/moderate_load_20261018/INPUTS.json",
+      "bytes": 1077985,
+      "sha256": "5c2f24b846677eb6d2fdf39b70afd834328bce0f81a2889ed5e80afdf0e502cd"
+    },
+    {
+      "path": "a24_simulator/experiments/moderate_load_20261018/moderate_figures.py",
+      "bytes": 1950,
+      "sha256": "e8b6b30c8b671d2a51cbaef47a4fe88a550f975b861d605813b8dd29215b6008"
+    },
+    {
+      "path": "a24_simulator/experiments/moderate_load_20261018/OPERATION.json",
+      "bytes": 23738,
+      "sha256": "43ff2aa0a54e975b7fd096cfb28dac839ff735e775105ac22e7473254b1de3a2"
+    },
+    {
+      "path": "a24_simulator/experiments/moderate_load_20261018/PARALLEL_ALLOWLIST.json",
+      "bytes": 852,
+      "sha256": "dde349f9e9b44a9fa777fd6cb7376e1bd9053a3502faed647149d2aa20223f3f"
+    },
+    {
+      "path": "a24_simulator/experiments/moderate_load_20261018/preflight.py",
+      "bytes": 1708,
+      "sha256": "01207fb0add610bc3fc6b1b8f794aa78e621163064f9d3006349a3a1a8cf9e15"
+    },
+    {
+      "path": "a24_simulator/experiments/moderate_load_20261018/PREFLIGHT_RESULT_V2.json",
+      "bytes": 5679,
+      "sha256": "f0cb97ecd9b034fe173747fb22c714669bd295c72f0a1aa1e18a5d0e6f1dfff2"
+    },
+    {
+      "path": "a24_simulator/experiments/moderate_load_20261018/prepare.cjs",
+      "bytes": 4063,
+      "sha256": "0ef3f42dab943fa9ea36215bb0bceca15d1a68cee9628e3897262b1b763ca7db"
+    },
+    {
+      "path": "a24_simulator/experiments/moderate_load_20261018/pure.cjs",
+      "bytes": 2031,
+      "sha256": "f3bc42e79db6eed725d7dd6c7fcc0e17f7a8acd6ef1b11263e2ef918e820ea9c"
+    },
+    {
+      "path": "a24_simulator/experiments/moderate_load_20261018/pure_resources.py",
+      "bytes": 1611,
+      "sha256": "d69f10c6842d039d203269d99a3ab7dc53cc27fe50435f2a8825541886049e79"
+    },
+    {
+      "path": "a24_simulator/experiments/moderate_load_20261018/PURE_TEST_RESULT.json",
+      "bytes": 1305,
+      "sha256": "cc3f730b5e208ab7884c6f16c06a41626d2486a0420202612ed7007de5644ef6"
+    },
+    {
+      "path": "a24_simulator/experiments/moderate_load_20261018/README.md",
+      "bytes": 2549,
+      "sha256": "77129209eb0d22fbdaaf5e56554a400cf8f26b7ba2e1bdaac41de041820aa21b"
+    },
+    {
+      "path": "a24_simulator/experiments/moderate_load_20261018/report.cjs",
+      "bytes": 9994,
+      "sha256": "f77efa758ad0e651ab85834996fdd9bab5b43b436643a3517e1248d3068730a3"
+    },
+    {
+      "path": "a24_simulator/experiments/moderate_load_20261018/resource_moderate.py",
+      "bytes": 2723,
+      "sha256": "5266f9428c9a81da0b90698e9acad15ca6feaecb0b8c684c997b40e2bc3aa5ac"
+    },
+    {
+      "path": "a24_simulator/experiments/moderate_load_20261018/run_moderate.py",
+      "bytes": 8536,
+      "sha256": "d0d7f4a4bfae51b9b2ab2526f47e1004f74b2efbc7631ba477e8247b244ba8e9"
+    },
+    {
+      "path": "a24_simulator/experiments/moderate_load_20261018/THERMAL_PURE_TEST.json",
+      "bytes": 4795,
+      "sha256": "8d4ef913f025492a8eef310718bc9599fb40182722a43db663ec7870e892c432"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/audit.cjs",
+      "bytes": 19215,
+      "sha256": "519d3ce43bf36444fc37b971829a417fe7a7a06acec6a9aab0fdbb723ed8bea3"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/audit_build.cjs",
+      "bytes": 3898,
+      "sha256": "694bda71abe0ee93cce14105a07cab3b719171d1de0dd5410b967f0c1e55ae38"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/BUDGET_RESERVATION.json",
+      "bytes": 669,
+      "sha256": "6ed68f82faa636f4617e277a6b6f8657c3e5df619b8c5b550825810113e56be3"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/build.cjs",
+      "bytes": 2981,
+      "sha256": "b4cfbf8b6f981e528c962ccf0a57f2f07b912d30996671d245cdd713416c6b1d"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/COMPLETION_CONTRACTS.json",
+      "bytes": 280,
+      "sha256": "1642c3f73c21c8fa9af302584ed2ec064ec85bbbd2cb4ba7e85f2e4f4e4f0925"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/completion_contracts.py",
+      "bytes": 2893,
+      "sha256": "7c2234679205ebf099a15150fbdb39d4d91ae4ea28c6ebcf8e40f8be103c6a7d"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/completion_labels.py",
+      "bytes": 2174,
+      "sha256": "eb4183fb7273023573fa03651da86930db6376f282d45254214f912aacd23779"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/feature_audit.cjs",
+      "bytes": 7293,
+      "sha256": "89399dcbb18638cf933dfa4cf9cdf763699d8f5381a218225eacffab255e91f9"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/fluid.py",
+      "bytes": 4109,
+      "sha256": "1c4fa0d13e80b96d1743f6da7b5fab85379db746dcd8a2e8bbbfb410ce9797dd"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/OPERATION.json",
+      "bytes": 121548,
+      "sha256": "51f9d54c079367170ceab5166a0375b9775dd083fa8a9fb712f152e5f9141ba3"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/packing_encoder.py",
+      "bytes": 7579,
+      "sha256": "dd6b50266cfcceefdb39a701f79fab7c7c09cdf6ccea00621fbee14add743d84"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/packing_learner.py",
+      "bytes": 8288,
+      "sha256": "3cd636a9a0ee8b7a6f6d77d5f2def3adb9477ec30a7eb6649d3a2876d8ed8bfb"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/packing_net.py",
+      "bytes": 863,
+      "sha256": "d6478512db57abc15a19eea18dd34ce2bb8cb79ac6b7bc1be3714e72c03cb524"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/preflight.cjs",
+      "bytes": 1440,
+      "sha256": "11998e9d8b926f17636b94a75d67c8adb3c39b295a0e20f4749995502b9b2a6c"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/PREFLIGHT.json",
+      "bytes": 3179,
+      "sha256": "f38b77edf9fa2dfa1a7ff265d73ff32499326f2f87af9ecedacd0803a7ae77b6"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/preflight.py",
+      "bytes": 5914,
+      "sha256": "e835b41cec4ada67d3a184475e797b8860b492ffde4c98f72aafda6ab23384db"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/PREFLIGHT_FIXTURES.json",
+      "bytes": 105466,
+      "sha256": "eb2b0622a9e6e876888f5305047be47d906a83e5c1ed20ee27db8bc9697a9ca7"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/PREFLIGHT_INDEPENDENT.json",
+      "bytes": 126,
+      "sha256": "fee9ebb3f1ad7e771c4b93dd9f6587ca00e9ab64aef3886b0270ffaa09ff827d"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/PREFLIGHT_NET.pt.gz",
+      "bytes": 165325,
+      "sha256": "b93f49bd0f21aa92dd0efe428e6096a7a3e259cd1aacc5518c1e416c15b7ad5d"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/prepare.cjs",
+      "bytes": 5928,
+      "sha256": "f65fdbcec864e9c2bbb3d6b9dee16b960698b84e8ca3d622027bbf0acb8fc9dc"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/README.md",
+      "bytes": 3686,
+      "sha256": "c90d76650501287fc2871659238520eea234694c5b7cbc3cb511df5b392860f0"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/report.cjs",
+      "bytes": 15099,
+      "sha256": "82125e4ba5ac2d76f342abc392d44becc6ed1353928c16041c2d7cb3034a98d1"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/run_packing.py",
+      "bytes": 13328,
+      "sha256": "7cacef9b2a305dd8b2a59ceba345ad592c990d0a6056b84cd50e4049c30b486c"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/tensor_reader.cjs",
+      "bytes": 2927,
+      "sha256": "950ed89c19adcbc9780ecba4d2ebb659b621e04b6c9edf3eabcc46ab38cac740"
+    },
+    {
+      "path": "a24_simulator/experiments/packing_rl_20261018/THERMAL_PURE_TEST.json",
+      "bytes": 4795,
+      "sha256": "8d4ef913f025492a8eef310718bc9599fb40182722a43db663ec7870e892c432"
+    },
+    {
+      "path": "a24_simulator/experiments/public_transfer_20261018/audit.cjs",
+      "bytes": 11522,
+      "sha256": "fb06d4ec87151cce0e6f4884526e46023421cffbfe227b2b70a747fc5a25af3b"
+    },
+    {
+      "path": "a24_simulator/experiments/public_transfer_20261018/BUDGET_RESERVATION.json",
+      "bytes": 555,
+      "sha256": "2d38790b1037ca063468e9ad0ca165429f0e1c3d8bc4635d3877327d8c4606f8"
+    },
+    {
+      "path": "a24_simulator/experiments/public_transfer_20261018/common_transfer.py",
+      "bytes": 1007,
+      "sha256": "10f6c7ef114babdff83f71fc856829ffdb9bffbac06fc4f8d32f1cc5a36320c8"
+    },
+    {
+      "path": "a24_simulator/experiments/public_transfer_20261018/event_engine.py",
+      "bytes": 10115,
+      "sha256": "1892c94b44d41bf2462b1504d6f1ed87e9c4a1298c43bc1a771d2493a87e9288"
+    },
+    {
+      "path": "a24_simulator/experiments/public_transfer_20261018/PREFLIGHT.json",
+      "bytes": 2241,
+      "sha256": "80156b8f253f3de68ab7ae9458c8088f0cc3facb5a1c17e5d6705f0425f1381b"
+    },
+    {
+      "path": "a24_simulator/experiments/public_transfer_20261018/preflight_transfer.py",
+      "bytes": 3723,
+      "sha256": "a7ae8abfc36e9e35ab477e9ad84b72b89d4de1679ee76e3e4cd1ab0c6b7bba39"
+    },
+    {
+      "path": "a24_simulator/experiments/public_transfer_20261018/prepare_transfer.cjs",
+      "bytes": 6342,
+      "sha256": "c9379ea20ead1cc7c5e987e4e23358441d0cd6414e48c4472710a25db0e2de3b"
+    },
+    {
+      "path": "a24_simulator/experiments/public_transfer_20261018/README.md",
+      "bytes": 4610,
+      "sha256": "5d63905ebd08bcfc83508e139c9355941c22ea6c88766849506bd661eb28babc"
+    },
+    {
+      "path": "a24_simulator/experiments/public_transfer_20261018/report_transfer.py",
+      "bytes": 13085,
+      "sha256": "c4c3dd90d53e5db1b87e61a0a01ccf64e34d2bd9b9822b54c448da056a3202b6"
+    },
+    {
+      "path": "a24_simulator/experiments/public_transfer_20261018/run_stages.py",
+      "bytes": 12690,
+      "sha256": "c943d4ed23e837acce3befe4a34d2447096dd67c39414c6271831893ad5975f2"
+    },
+    {
+      "path": "a24_simulator/experiments/public_transfer_20261018/tensor_reader.cjs",
+      "bytes": 2936,
+      "sha256": "06926bb96833d2507006176700e8ac8c0c9c5aed5ae8364bed35940e1fc790cf"
+    },
+    {
+      "path": "a24_simulator/experiments/public_transfer_20261018/transfer_learner.py",
+      "bytes": 8588,
+      "sha256": "fa82a8d10f82c1799f626eec7697a1a62d82c9b2838fc73a2bab706882e4d328"
+    },
+    {
+      "path": "a24_simulator/experiments/public_transfer_20261018/transfer_policy.py",
+      "bytes": 5046,
+      "sha256": "0807a8416fa24205730d53fe848fb340cc80d93850aeb6525b1fee9789f616b6"
+    },
+    {
+      "path": "a24_simulator/experiments/public_transfer_20261018/transfer_rewards.py",
+      "bytes": 2481,
+      "sha256": "e99c5e1852cad859e9e811233cbf46ee46471a124a8b0dc00cd37c7edd25544d"
+    },
+    {
+      "path": "a24_simulator/experiments/public_transfer_20261018/transfer_rolling.py",
+      "bytes": 4087,
+      "sha256": "3b00569b27c0f3aa8345a23da931080856e24eab0572932b0faf576d8c5001da"
+    },
+    {
+      "path": "a24_simulator/experiments/queue_context_20261018/audit.cjs",
+      "bytes": 19547,
+      "sha256": "90d53cd2460089466ed42be73caab24e9483d6dc61e0ecea3d4300888310f5b7"
+    },
+    {
+      "path": "a24_simulator/experiments/queue_context_20261018/BUDGET_RESERVATION.json",
+      "bytes": 577,
+      "sha256": "d795c62daca77d7976e2a0a7d3f4a9ac2776f2f0c15f62fc33fc31a5d95e8646"
+    },
+    {
+      "path": "a24_simulator/experiments/queue_context_20261018/build.cjs",
+      "bytes": 6808,
+      "sha256": "d7b08a883e2bd77f9e1bb8c9fab13d5017decfa7b31e99dd1155fd64d501babf"
+    },
+    {
+      "path": "a24_simulator/experiments/queue_context_20261018/OPERATION.json",
+      "bytes": 83558,
+      "sha256": "8c0ef4177b5e01b5e2e448b7a8d84a21df195be60f8420d8ffacfef4cc1d61dd"
+    },
+    {
+      "path": "a24_simulator/experiments/queue_context_20261018/PARALLEL_BUDGET_SNAPSHOT.json",
+      "bytes": 1015,
+      "sha256": "d8499a28f10e5b01771c992119c49ff7dfc0c6a4966fb58566738a8cf4da0c73"
+    },
+    {
+      "path": "a24_simulator/experiments/queue_context_20261018/PREFLIGHT.json",
+      "bytes": 4674,
+      "sha256": "b8debdbafd9fbe3a27ad2c409897d4010228908601804e275c8f4b150811eb0a"
+    },
+    {
+      "path": "a24_simulator/experiments/queue_context_20261018/preflight.py",
+      "bytes": 1800,
+      "sha256": "fddd782c5410f3c8cffd7badde3491aef135bb1c2a117378d293d59b0c319ec9"
+    },
+    {
+      "path": "a24_simulator/experiments/queue_context_20261018/prepare.cjs",
+      "bytes": 4416,
+      "sha256": "ac4f5ac30c03af651ebd627b6184bf1e6a53ee26c26b5af38a50bcf7aecfbc2a"
+    },
+    {
+      "path": "a24_simulator/experiments/queue_context_20261018/queue_controller.py",
+      "bytes": 2039,
+      "sha256": "2c7c668cd6f410ad1f681a4f79bbd57f6c73549dceec39f12a02b9db62a2610b"
+    },
+    {
+      "path": "a24_simulator/experiments/queue_context_20261018/README.md",
+      "bytes": 2918,
+      "sha256": "3b4f3a6f99be6aa9366f9d8e5523494e079bdd3781abc72776761e1f84e4abb9"
+    },
+    {
+      "path": "a24_simulator/experiments/queue_context_20261018/report.cjs",
+      "bytes": 10866,
+      "sha256": "4d44ce2c859c40861c174276f5d262021b6a8a856ff2158d69dc0cbfb31ea3e9"
+    },
+    {
+      "path": "a24_simulator/experiments/queue_context_20261018/run.py",
+      "bytes": 14732,
+      "sha256": "bd60120fd352fb8725e784ed64a63788fb55a0ebdab0aa6865d52149cab2ed5c"
+    },
+    {
+      "path": "a24_simulator/experiments/queue_context_20261018/tests.py",
+      "bytes": 3136,
+      "sha256": "724006f84a0141e5d077b6a1d9da4f78cd9948ead879a2d03318316da3ea9678"
+    },
+    {
+      "path": "a24_simulator/experiments/queue_context_20261018/THERMAL_ALIAS_RECEIPT.json",
+      "bytes": 377,
+      "sha256": "24441bb1df9b2c9d08f451d98317a51ed61501408218c10fbb22831b26a8aba1"
+    },
+    {
+      "path": "a24_simulator/experiments/queue_context_20261018/THERMAL_PURE_TEST.json",
+      "bytes": 4795,
+      "sha256": "8d4ef913f025492a8eef310718bc9599fb40182722a43db663ec7870e892c432"
+    },
+    {
+      "path": "a24_simulator/experiments/rl_cost_20261017/rl_policy.py",
+      "bytes": 10605,
+      "sha256": "81d8a30d009bb02538291dcfc33e86526cb57db07658250b44612d95d047598f"
+    },
+    {
+      "path": "a24_simulator/experiments/rules_no_rl_20261017/shared_exact.py",
+      "bytes": 3201,
+      "sha256": "a504ca78d810c7ba660266992d37fd4a95373e249585d2bf40957669b7d751aa"
+    },
+    {
+      "path": "a24_simulator/experiments/s26_virtual_transfer_20261018/vendor/s26_simulator/experiments/route_group_learning_v1/policy.cjs",
+      "bytes": 11015,
+      "sha256": "a290fb846f1483fe7dbe8dc20d9e541c09b6cfabef2907c95d7e8032ac21308b"
+    },
+    {
+      "path": "a24_simulator/experiments/sustained_load_20261017/tensor_reader.cjs",
+      "bytes": 2927,
+      "sha256": "e43aaa0b4b4336aea2dfd4a84cc6353acdd3b6367a9c9d578fc70d41211dab7d"
+    },
+    {
+      "path": "a24_simulator/experiments/witness_gap_20261018_v3/OPERATION.json",
+      "bytes": 120165,
+      "sha256": "55a2cc699b02729f76f5f23d92e8c2f1c0104ab95c3fd4fe357cfa267e710879"
+    },
+    {
+      "path": "a24_simulator/experiments/witness_gap_20261018_v3/page_resources.py",
+      "bytes": 1183,
+      "sha256": "060092b76c5277bff7dd246a111e52d8fa99ada28f19142d75212ad8ad725c04"
+    },
+    {
+      "path": "a24_simulator/experiments/work_window_20261017/reaccount.cjs",
+      "bytes": 10316,
+      "sha256": "44a58e229cf2210f170088451e39f6193ecc52d66c28e12e9266654d23e0a1fc"
+    },
+    {
+      "path": "a24_simulator/reference/model_integration/runtime_guard.py",
+      "bytes": 9864,
+      "sha256": "f83a223ef74db70bf4b31eee3176faa86b8f17d6399e56f0dd26b1ffd5c6c733"
+    },
+    {
+      "path": "a24_simulator/results/A24_BC_600_20261019_01/ORIGINAL__BC600__D040_T600_P0_S160__BC.raw.json.gz",
+      "bytes": 1548937,
+      "sha256": "12d494aceacf78f6ec70d0d982e86aca002a0aaf168868d4d61c5127bf538080"
+    },
+    {
+      "path": "a24_simulator/results/A24_BC_600_20261019_01/ORIGINAL__BC600__D040_T600_P1_S160__BC.raw.json.gz",
+      "bytes": 2876942,
+      "sha256": "f11c089f97f1f7a44d2b6d9f2acaecbc6840c4c80f008354c1d4eb58b2a83f5f"
+    },
+    {
+      "path": "a24_simulator/results/A24_BC_600_20261019_01/RESULT.json",
+      "bytes": 7094,
+      "sha256": "f1bc1822c3cef478a39ad39ed4418400682bf3d357b750afe253ab576d60fbbf"
+    },
+    {
+      "path": "a24_simulator/results/A24_DURATION_040_20261019_01/D040_T600_P0_S160.PUBLIC.json",
+      "bytes": 571892,
+      "sha256": "8937b6c72861f6d935c7aba947144751b5ba46ce68bbbfe1c53c2c9f70277dd2"
+    },
+    {
+      "path": "a24_simulator/results/A24_DURATION_040_20261019_01/D040_T600_P1_S160.PUBLIC.json",
+      "bytes": 717088,
+      "sha256": "5d6a536d1d0f04c526608e458664fd128cf1cffaaaf2e1477d0ffda5a5511a2b"
+    },
+    {
+      "path": "a24_simulator/results/A24_DURATION_040_20261019_01/ORIGINAL__DURATION__D040_T600_P0_S160__EDF_CPU.raw.json.gz",
+      "bytes": 851711,
+      "sha256": "b61caa4bef94b3174f69489d562ff3049babfa8c21ef05c165989f79392b193e"
+    },
+    {
+      "path": "a24_simulator/results/A24_DURATION_040_20261019_01/ORIGINAL__DURATION__D040_T600_P0_S160__FIFO_CPU.raw.json.gz",
+      "bytes": 851711,
+      "sha256": "b61caa4bef94b3174f69489d562ff3049babfa8c21ef05c165989f79392b193e"
+    },
+    {
+      "path": "a24_simulator/results/A24_DURATION_040_20261019_01/ORIGINAL__DURATION__D040_T600_P0_S160__OLD_PPO.raw.json.gz",
+      "bytes": 1674027,
+      "sha256": "b1a49eff1640080b9a9d34fa53304e450fbc87e8ed85e92210917abfd396625d"
+    },
+    {
+      "path": "a24_simulator/results/A24_DURATION_040_20261019_01/ORIGINAL__DURATION__D040_T600_P1_S160__EDF_CPU.raw.json.gz",
+      "bytes": 1194625,
+      "sha256": "5a6f0172a82a746f2b4715d2d2ff4fe6f2522651f3da15d6810c1d73042d6ef0"
+    },
+    {
+      "path": "a24_simulator/results/A24_DURATION_040_20261019_01/ORIGINAL__DURATION__D040_T600_P1_S160__FIFO_CPU.raw.json.gz",
+      "bytes": 1189926,
+      "sha256": "2b5c4ef365b362bd5daff5699eaeb2473acf2eac43a4536a6e51abb312c49477"
+    },
+    {
+      "path": "a24_simulator/results/A24_DURATION_040_20261019_01/ORIGINAL__DURATION__D040_T600_P1_S160__OLD_PPO.raw.json.gz",
+      "bytes": 3733575,
+      "sha256": "5106ee72e421a54f48f576852c9bed97a79082329e3006ce6d80082c3bae354d"
+    },
+    {
+      "path": "a24_simulator/results/A24_DURATION_040_20261019_01/RESULT.json",
+      "bytes": 73791,
+      "sha256": "ef7df680930484ede1b9b7a50e00edb4771ba61ef35d39c7045fab51d1b5fc27"
+    },
+    {
+      "path": "a24_simulator/results/A24_IDENTIFICATION_20261019_01/RESULT.json",
+      "bytes": 6819,
+      "sha256": "8deeb44c58ad8f899e4af3d3e261b93db82d1c62e68de2bd4d8d4c07b4f1dc36"
+    },
+    {
+      "path": "a24_simulator/results/A24_PARALLEL_20261018_01/PPO.FINAL.pt.gz",
+      "bytes": 218622,
+      "sha256": "81439cfbc3578ea1044e1c6bb63ef003cbbd14bd562a61bd48d0b78a19431235"
+    },
+    {
+      "path": "a24_simulator/results/A24_S26_METHOD_20261019_01/ORIGINAL.PPO.FINAL.pt.gz",
+      "bytes": 215776,
+      "sha256": "f78baf7e78c5b64a418b7968eab8d7cb8de3b8ccd3361a332c3a372c0a273980"
+    },
+    {
+      "path": "a24_simulator/results/A24_S26_METHOD_20261019_01/ORIGINAL__DEMO__S26M_TRAIN_R400_T60_P0_S10__TEACHER.raw.json.gz",
+      "bytes": 148557,
+      "sha256": "90c776d765ac29b113b791530a920c5d14fd4e0c5f6ba62c5126fd91a5324bb8"
+    },
+    {
+      "path": "a24_simulator/results/A24_S26_METHOD_20261019_01/ORIGINAL__DEMO__S26M_TRAIN_R400_T60_P1_S10__TEACHER.raw.json.gz",
+      "bytes": 283829,
+      "sha256": "dd5d925e50c586cddbb49d26c6a14dde0270b1d54219665ec58761c955935cd4"
+    },
+    {
+      "path": "a24_simulator/results/A24_S26_METHOD_20261019_01/ORIGINAL__DEMO__S26M_TRAIN_R550_T120_P0_S10__TEACHER.raw.json.gz",
+      "bytes": 453315,
+      "sha256": "fca5fd6ae9b408acf411dc8e2d1bd2836bf2c06a58c63b11ccc92e2257b3ca9c"
+    },
+    {
+      "path": "a24_simulator/results/A24_S26_METHOD_20261019_01/ORIGINAL__DEMO__S26M_TRAIN_R550_T120_P1_S10__TEACHER.raw.json.gz",
+      "bytes": 807984,
+      "sha256": "cb71bb181769dd5326b9b492e75de1e15df2e5a77f7bbbbd684cc0d736ad6bb2"
+    },
+    {
+      "path": "a24_simulator/results/A24_S26_METHOD_20261019_01/S26_STYLE.PPO.FINAL.pt.gz",
+      "bytes": 218868,
+      "sha256": "11b4e45485d9cda92effd8d717adad599b98f889b5c01801dac67b1537c12781"
+    },
+    {
+      "path": "a24_simulator/results/A24_S26_METHOD_20261019_01/S26M_TRAIN_R400_T60_P0_S10.BANK.json.gz",
+      "bytes": 26378,
+      "sha256": "46eaae2dfcfedf63307ba079e9ea0ed7d11d378e237b2afe32ffc8fb1961d795"
+    },
+    {
+      "path": "a24_simulator/results/A24_S26_METHOD_20261019_01/S26M_TRAIN_R400_T60_P1_S10.BANK.json.gz",
+      "bytes": 32559,
+      "sha256": "3ee8aa0ac63fac0215c718e18bdcf09a06660ee48cb0fa1bd8dc09b6421d441a"
+    },
+    {
+      "path": "a24_simulator/results/A24_S26_METHOD_20261019_01/S26M_TRAIN_R550_T120_P0_S10.BANK.json.gz",
+      "bytes": 68000,
+      "sha256": "4d5ae2da82ff0a738fe77d015d0080b6723d16bb0f8dfc0e7861161ee12dd536"
+    },
+    {
+      "path": "a24_simulator/results/A24_S26_METHOD_20261019_01/S26M_TRAIN_R550_T120_P1_S10.BANK.json.gz",
+      "bytes": 84887,
+      "sha256": "c968c9062ba43c7d4d4b2fb5be1612df20b68a06c90e4b9cbe9358ae5be4b5c6"
+    },
+    {
+      "path": "a24_simulator/results/A24_S26_METHOD_20261019_01/UNION.PPO.FINAL.pt.gz",
+      "bytes": 217213,
+      "sha256": "a66089cf68e32fcb3dea7b92061edba347e936efdce4cc106d579a922cf34a47"
+    },
+    {
+      "path": "a24_simulator/results/COUPLED_345_20261017_01/FRESH_02_EDF.raw.json.gz",
+      "bytes": 66953,
+      "sha256": "f38234574fb3b1b6e0f86b959cff7edb8c1ef00049d7ee473ce505d7b863dd1d"
+    },
+    {
+      "path": "a24_simulator/results/COUPLED_345_20261017_01/FRESH_02_RL_S3701.raw.json.gz",
+      "bytes": 90450,
+      "sha256": "7efe4853f143f5dcc4a7c9ee4acd0486a2be276551c40e1810fbb6682a15ca86"
+    },
+    {
+      "path": "a24_simulator/results/COUPLED_345_20261017_01/SEED_3701_EP064.pt.gz",
+      "bytes": 210367,
+      "sha256": "61b127116e607abd807bfb10291ed7df78460a727cbf76df12ea1f0229ed403b"
+    },
+    {
+      "path": "a24_simulator/results/COUPLED_345_20261017_01/SELECTION_FROZEN.json",
+      "bytes": 1976,
+      "sha256": "ad2f3cdb57e8e861f3c8d19ebb3025e274377a93631f0a0fc5b444fcd71970d1"
+    },
+    {
+      "path": "a24_simulator/results/DEEP_REPAIR_20261018_01/ALL_ROWS_WITH_REASONS.json",
+      "bytes": 3328636,
+      "sha256": "5c706ee33069631d748ed8963c826e6228293f5d1707b237c91026ed2356f0e6"
+    },
+    {
+      "path": "a24_simulator/results/DEEP_REPAIR_20261018_01/AUDIT.json",
+      "bytes": 1494,
+      "sha256": "1ca4c1ac31eb1826c361d930dc9f010b41536634ca9024380e83195c9ae63b90"
+    },
+    {
+      "path": "a24_simulator/results/DEEP_REPAIR_20261018_01/FINAL_HANDOFF_PROOF.json",
+      "bytes": 206768,
+      "sha256": "f68c438bd4ac7530e11a3cf8513dd191d9a633d6b96891c2ef4f8225a2b07ef6"
+    },
+    {
+      "path": "a24_simulator/results/DEEP_REPAIR_20261018_01/GRADIENT_PROBES.json",
+      "bytes": 840919,
+      "sha256": "573cafe1d88221ffc2bb3c9f9834612ec66b2a8670d87afabd1be3b6ec885922"
+    },
+    {
+      "path": "a24_simulator/results/DEEP_REPAIR_20261018_01/RESULT.json",
+      "bytes": 592202,
+      "sha256": "6efa1663667990aaf9d559a74fad205d43ec5adc6595982af67e59deef06694e"
+    },
+    {
+      "path": "a24_simulator/results/DEEP_REPAIR_20261018_01/STOCHASTIC_REPLAY.json",
+      "bytes": 240,
+      "sha256": "fcb7933eaf4c758f858f695b3aa9b88ca66cc05d9e5e385c3ea27150a0eac532"
+    },
+    {
+      "path": "a24_simulator/results/DEEP_REPAIR_20261018_01/SUMMARY.json",
+      "bytes": 2782,
+      "sha256": "9a0f8e88d21431db111c695ebbc409da37558b6c715beb41ba9e549d42374976"
+    },
+    {
+      "path": "a24_simulator/results/DEEP_REPAIR_20261018_01/TRAINMID_105_0_BANK_ATC.raw.json.gz",
+      "bytes": 405431,
+      "sha256": "3bd0c90388164ce5a68d16f1e67090dfdf0c45eaac11ef96dea84c9dd83c388b"
+    },
+    {
+      "path": "a24_simulator/results/DEEP_REPAIR_20261018_01/TRAINMID_105_1_BANK_ATC.raw.json.gz",
+      "bytes": 556571,
+      "sha256": "d65fa4972aa02e92a813c12ab6cc1dfe7da742ef7fdc2d50ebefe1c545e9d392"
+    },
+    {
+      "path": "a24_simulator/results/DEEP_REPAIR_20261018_01/TRAINMID_300_0_BANK_ATC.raw.json.gz",
+      "bytes": 9198714,
+      "sha256": "e98fd1ed158da69c15c22eff92c7c8e4e588b81a27be7777378faa1e8da5f84e"
+    },
+    {
+      "path": "a24_simulator/results/DEEP_REPAIR_20261018_01/TRAINMID_300_1_BANK_ATC.raw.json.gz",
+      "bytes": 13907731,
+      "sha256": "4b991caecad5cf659ce04cf5bcef329709d42dda840890e52992140a39bfff71"
+    },
+    {
+      "path": "a24_simulator/results/DEEP_REPAIR_20261018_01/TRAINMID_75_0_BANK_ATC.raw.json.gz",
+      "bytes": 293256,
+      "sha256": "f523395c7b030b404740ccde3f40380f04a7d1b5934e14da57b0fc7b1c72da91"
+    },
+    {
+      "path": "a24_simulator/results/DEEP_REPAIR_20261018_01/TRAINMID_75_1_BANK_ATC.raw.json.gz",
+      "bytes": 368467,
+      "sha256": "f2eec66093dab76bb81785787a95e108d64bb83477a2e92882ba91d49acbb36c"
+    },
+    {
+      "path": "a24_simulator/results/DEEP_REPAIR_20261018_01/TRAINMID_90_0_BANK_ATC.raw.json.gz",
+      "bytes": 693249,
+      "sha256": "51e57c05ef964a72fe9fd92949766e045bbbd9e677d37cb641ec8d5943c5b959"
+    },
+    {
+      "path": "a24_simulator/results/DEEP_REPAIR_20261018_01/TRAINMID_90_1_BANK_ATC.raw.json.gz",
+      "bytes": 902911,
+      "sha256": "02d185da40953fff9e2615d9e5c3e4058e46c0052009b057ad32d941c27ce648"
+    },
+    {
+      "path": "a24_simulator/results/DENSITY_HEADROOM_20261018_01/DENSITY_050_0.BANK.json.gz",
+      "bytes": 60338,
+      "sha256": "77b8681f0e98802ec5acad41a8f55285fdac27b0545dbb53f3f1753a46a641e4"
+    },
+    {
+      "path": "a24_simulator/results/DENSITY_HEADROOM_20261018_01/DENSITY_050_1.BANK.json.gz",
+      "bytes": 76348,
+      "sha256": "14669ec834efd807f52563f8396a190c73efc53ba5a71abe08d91c25f363e97a"
+    },
+    {
+      "path": "a24_simulator/results/DENSITY_HEADROOM_20261018_01/DENSITY_100_0.BANK.json.gz",
+      "bytes": 115376,
+      "sha256": "92b6a2c9cd3ef130a87ee0f34bccf236a3c3cde06f8c82b9540bce35e05e6f76"
+    },
+    {
+      "path": "a24_simulator/results/DENSITY_HEADROOM_20261018_01/DENSITY_100_1.BANK.json.gz",
+      "bytes": 149856,
+      "sha256": "0421455cc659a4cdb08568de3123328324a34469ff71028757cfa44369700c4a"
+    },
+    {
+      "path": "a24_simulator/results/DENSITY_HEADROOM_20261018_01/DENSITY_150_0.BANK.json.gz",
+      "bytes": 173922,
+      "sha256": "90a67e75361b8f833b05ff9a2a860d20f97086a6e4e375360754fa91622a2ce9"
+    },
+    {
+      "path": "a24_simulator/results/DENSITY_HEADROOM_20261018_01/DENSITY_150_1.BANK.json.gz",
+      "bytes": 222650,
+      "sha256": "c055edb30936daf040732476bb75a128223fce9ee59960ed8fd0bc17db5d0e90"
+    },
+    {
+      "path": "a24_simulator/results/DENSITY_HEADROOM_20261018_01/DENSITY_200_0.BANK.json.gz",
+      "bytes": 230855,
+      "sha256": "8999446027b5557cef64657eceadf05435880d16acd03cf4f6a13ad69d0931f8"
+    },
+    {
+      "path": "a24_simulator/results/DENSITY_HEADROOM_20261018_01/DENSITY_200_1.BANK.json.gz",
+      "bytes": 293718,
+      "sha256": "4e859ad44eeb0a728e5c68c8c5276c8983e34638c15b7de39663071ed2a8215c"
+    },
+    {
+      "path": "a24_simulator/results/DENSITY_HEADROOM_20261018_01/DENSITY_300_0.BANK.json.gz",
+      "bytes": 346343,
+      "sha256": "911c1ce6e5ba049168939b4e0e4fb0ea1aacce3da1788cd95e93f7dc568e4cd4"
+    },
+    {
+      "path": "a24_simulator/results/DENSITY_HEADROOM_20261018_01/DENSITY_300_1.BANK.json.gz",
+      "bytes": 436972,
+      "sha256": "b26c5f86ae9baeb18030290ed87681ad365186016f8c17c2be2b7e35baa70f6c"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_ABLATION_V3_20261018_01/ALL_ROWS_WITH_REASONS.json",
+      "bytes": 480796,
+      "sha256": "29aedf02766ff718fe17c15847ccb06d686ba1c41d729565cf999bcaf5e1ad94"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_ABLATION_V3_20261018_01/AUDIT.json",
+      "bytes": 513,
+      "sha256": "da337a73bdf9da1855d33954653d2c69e2d9d4f7f07ada718b7caf5b69e9f1ad"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_ABLATION_V3_20261018_01/DENSITY_300_0_GUARD_ON_NN.raw.json.gz",
+      "bytes": 8110960,
+      "sha256": "fdd5b5dfaf7a0928b9665a11876d388781a9ada814940c533cda7996491de8d2"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_ABLATION_V3_20261018_01/RESULT.json",
+      "bytes": 59391,
+      "sha256": "0fdd6cf0177cbd367c786de0b8258b672a552d0df7e051dcc57d110336a3f456"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/FT_OFF_NN_TRAIN_002.BEFORE.pt.gz",
+      "bytes": 306157,
+      "sha256": "fd57a46e309d606b4f5be4f75e475cc35ed815f0ac40249cb0624749c1181692"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/FT_OFF_NN_TRAIN_002.frames.pt.gz",
+      "bytes": 122100,
+      "sha256": "53f33fc81397dbe646df97446d456f70c13f65a2cd84c10305a147c7187c2fe4"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/FT_OFF_NN_TRAIN_008.BEFORE.pt.gz",
+      "bytes": 396966,
+      "sha256": "94fe85b065ecb9c082aded6bc02bb434a8db38b38d0043ab92385ed98ab3c4c6"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/FT_OFF_NN_TRAIN_008.frames.pt.gz",
+      "bytes": 533094,
+      "sha256": "c31e759b559ce9b80eba07c5609b0fe90169c7b4a8ff269dbcee173df8e89b58"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/FT_OFF_NN_TRAIN_016.BEFORE.pt.gz",
+      "bytes": 411122,
+      "sha256": "cb634b3ad3ca8d747ef601c6b420256ca5122715749eecce87501e8e307a1fda"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/FT_OFF_NN_TRAIN_016.frames.pt.gz",
+      "bytes": 528376,
+      "sha256": "685b9f42fdb4a750884782e10b33b96796b77debc1872b2ffd3700910f3429af"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/FT_OFF_NN_TRAIN_032.BEFORE.pt.gz",
+      "bytes": 396936,
+      "sha256": "4214820efb829b4c0732fa2f23502b3c47117a13b2fdbe05b704219a3866b754"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/FT_OFF_NN_TRAIN_032.frames.pt.gz",
+      "bytes": 526262,
+      "sha256": "212d925697f8813d9f3eede9a7f3565727e6d8af4dc573ec5dcad41c6599743f"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/FT_ON_NN_TRAIN_002.BEFORE.pt.gz",
+      "bytes": 302739,
+      "sha256": "7d6e1a163f2804c5388a505b55f84210942ea1e2a10d50c080f2bd7ad903d643"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/FT_ON_NN_TRAIN_002.frames.pt.gz",
+      "bytes": 122367,
+      "sha256": "fa6038366fcd0180d270bce056bc1291f235bc9c0d8ec0bac4ac75644d202409"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/FT_ON_NN_TRAIN_008.BEFORE.pt.gz",
+      "bytes": 378617,
+      "sha256": "d06f94187a2a2306d2aaaf10f321f7210fd0474c15161277be76a0f63bcfcfbb"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/FT_ON_NN_TRAIN_008.frames.pt.gz",
+      "bytes": 496476,
+      "sha256": "7e8a44e22bf81d4faa2823295c753c12eb4dea7468f2619f0a6f5d3d02f476cb"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/FT_ON_NN_TRAIN_016.BEFORE.pt.gz",
+      "bytes": 373933,
+      "sha256": "1562d1d32778e1a225e3de54ab9df243563ad5f71aacd0af9cdd3e8b4a164758"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/FT_ON_NN_TRAIN_016.frames.pt.gz",
+      "bytes": 497074,
+      "sha256": "f421c84973e6b17a3d7523a3d45cf57411ce5826b267e16ab4be8d3f5ad6e47c"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/FT_ON_NN_TRAIN_032.BEFORE.pt.gz",
+      "bytes": 369331,
+      "sha256": "056835d124f615103a0204f6c81f97a8165072eb7183a230c1ba62ed9bdb876e"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/FT_ON_NN_TRAIN_032.frames.pt.gz",
+      "bytes": 497655,
+      "sha256": "d3d9a04802399283d46e55844c770f08648496141dc8aef516a29180fc40dca4"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/REPAIR_OFF_NN_TRAIN_002.BEFORE.pt.gz",
+      "bytes": 302461,
+      "sha256": "4fc6347c9896ca419d95c205a22b7a48adf338d987721a07c50fdfd8ac543c59"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/REPAIR_OFF_NN_TRAIN_002.frames.pt.gz",
+      "bytes": 121093,
+      "sha256": "bdffd1ea52a288a7774f4214045422e6aa26e985493d9112b0d0fd172800321e"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/REPAIR_OFF_NN_TRAIN_008.BEFORE.pt.gz",
+      "bytes": 390413,
+      "sha256": "7ae99a082932747c052538a3f5194b7b36f2a3daf63a1af8f7e19ac159c792a0"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/REPAIR_OFF_NN_TRAIN_008.frames.pt.gz",
+      "bytes": 553009,
+      "sha256": "fd77f23e615e9a50106c6bd4d6e821c36c788e8f734565eec8999711891c6f99"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/REPAIR_OFF_NN_TRAIN_016.BEFORE.pt.gz",
+      "bytes": 392113,
+      "sha256": "ea6116044138540caff79d1bfd9df691b8da9e0383f4e43eb0b5df53f91a7ce8"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/REPAIR_OFF_NN_TRAIN_016.frames.pt.gz",
+      "bytes": 546484,
+      "sha256": "b2ea4f5a7a3d36ec3c06bf8d9e20d232d032d8c729aac279c0e47c3330f22b58"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/REPAIR_OFF_NN_TRAIN_032.BEFORE.pt.gz",
+      "bytes": 404620,
+      "sha256": "8a09d2e1f900e6a88fe2ffeb0699eeba8202923c907b4efaf77e1acf007e883e"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/REPAIR_OFF_NN_TRAIN_032.frames.pt.gz",
+      "bytes": 547769,
+      "sha256": "32ddbcf9dead1e4a3e1bc95da4b83d358154d5589dbd1c10b65d4de1a9565b84"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/TRAINING_REFERENCE_ENDPOINTS.json",
+      "bytes": 305,
+      "sha256": "84d9eee1f977ecec851a20f392e6f22ab6edfecf66a94e412634948c91be5aee"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/TRAINMID_105_0.BANK.json.gz",
+      "bytes": 66852,
+      "sha256": "aaf8aa566c4f95236dea72c3dcf0c381124da0930eb453242e526f84dc45d89c"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/TRAINMID_105_0_EDF_REF.raw.json.gz",
+      "bytes": 283176,
+      "sha256": "b379504f6746d5121db584e18f505820b4a566a5ad37f49c50dd691f142040fb"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/TRAINMID_105_1.BANK.json.gz",
+      "bytes": 79740,
+      "sha256": "466553df88a101fb37cd4f4364be508876f223bbe6b1fd4927b4cf9d302b78a1"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/TRAINMID_105_1_EDF_REF.raw.json.gz",
+      "bytes": 366594,
+      "sha256": "9a9669debb619f143162c613fd16ccbce9e46969d3fcfb9b14ce3bf71192b73f"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/TRAINMID_300_0.BANK.json.gz",
+      "bytes": 364856,
+      "sha256": "d491c51ad51181938ced0a29b5d69a0958e5eee55398f8157b881bb3c17c338f"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/TRAINMID_300_0_EDF_REF.raw.json.gz",
+      "bytes": 9939043,
+      "sha256": "e11d6f1728b6073acc3ff97b694fa48de2ba92b59ec9aa62f299d81ff59ff8a5"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/TRAINMID_300_1.BANK.json.gz",
+      "bytes": 437281,
+      "sha256": "14aa51a4ab67b248b6b2b94f26a6a46157ec72b9fdf1273cad1986e7032096c2"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/TRAINMID_300_1_EDF_REF.raw.json.gz",
+      "bytes": 14065168,
+      "sha256": "6b791dbaad9bb923e7197602bab8d6ee4307fbe04803eb1f1c04e8dae63b7df2"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/TRAINMID_75_0.BANK.json.gz",
+      "bytes": 48709,
+      "sha256": "a5a719646aed222973f35f34de938c8541cb64aa546d07bda888e888819ba596"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/TRAINMID_75_0_EDF_REF.raw.json.gz",
+      "bytes": 206306,
+      "sha256": "4020cdd6445d7596c2e387e2c66c1f9e0942e2ca8938332f71c6a0fe4fe269ec"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/TRAINMID_75_1.BANK.json.gz",
+      "bytes": 57009,
+      "sha256": "a01b1ca6da66fdf1c8e6b5ee1c7a5f654aa9d70f930dafb0503f184601b7c981"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/TRAINMID_75_1_EDF_REF.raw.json.gz",
+      "bytes": 250372,
+      "sha256": "14ded143892fe935065d1fb290de06eac8217142f9e102234100d1f0fc957dde"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/TRAINMID_90_0.BANK.json.gz",
+      "bytes": 112720,
+      "sha256": "d504a4634748313f007103e5f0ee59faafbfc3f55aac7196aee90fcee21b79d4"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/TRAINMID_90_0_EDF_REF.raw.json.gz",
+      "bytes": 489186,
+      "sha256": "9cd604340c15912023ca55d8c5430352625e80ebda3b28fc311f13f4381714b6"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/TRAINMID_90_1.BANK.json.gz",
+      "bytes": 134992,
+      "sha256": "3bd1ae784cc61010463f2f15bb57c2915c390873830d19c896b573a5d3d50f57"
+    },
+    {
+      "path": "a24_simulator/results/GUARD_LEARNING_20261018_01/TRAINMID_90_1_EDF_REF.raw.json.gz",
+      "bytes": 613894,
+      "sha256": "d786d4741644a6922c121568fc33dc054c063d8bba3f99d0be8ff71301f77227"
+    },
+    {
+      "path": "a24_simulator/results/LOAD_DENSITY_20261017_01/DENSITY_050_0_RL.raw.json.gz",
+      "bytes": 363943,
+      "sha256": "da222e1d6da6a65999509e98b0a67c7e7a0be69223f8c0374bd012b4bf94e9df"
+    },
+    {
+      "path": "a24_simulator/results/LOAD_DENSITY_20261017_01/DENSITY_050_1_RL.raw.json.gz",
+      "bytes": 475289,
+      "sha256": "2d4ff6210b401007bcc9ce3219b7c475aec8c260af804615cedb52a8e1497b8e"
+    },
+    {
+      "path": "a24_simulator/results/LOAD_DENSITY_20261017_01/DENSITY_100_0_RL.raw.json.gz",
+      "bytes": 685157,
+      "sha256": "187a6c8e06a35d6ad617ed407fde577a74bb35608cafb6aab78674dde3d8c247"
+    },
+    {
+      "path": "a24_simulator/results/LOAD_DENSITY_20261017_01/DENSITY_100_1_RL.raw.json.gz",
+      "bytes": 1033101,
+      "sha256": "9900ce44f1cb75e0f88bdc1a637eb65c3a523c5b67e65dfaad3a9a36a83ee64c"
+    },
+    {
+      "path": "a24_simulator/results/LOAD_DENSITY_20261017_01/DENSITY_150_0_RL.raw.json.gz",
+      "bytes": 1234780,
+      "sha256": "978e4b6d988e8cf50070d676ce2a61fb8eb0e0df84b7de3bc4e3d4578d4f7ac8"
+    },
+    {
+      "path": "a24_simulator/results/LOAD_DENSITY_20261017_01/DENSITY_150_1_RL.raw.json.gz",
+      "bytes": 2055457,
+      "sha256": "c4bd8eed8665778759787f81c35bd54b221531836fcb91f6a4e98ef9e5ecb920"
+    },
+    {
+      "path": "a24_simulator/results/LOAD_DENSITY_20261017_01/DENSITY_200_0_RL.raw.json.gz",
+      "bytes": 2200936,
+      "sha256": "72c21296680365d302f74e1511cb0334904ea614ab1e33cd2abe9d9df63de130"
+    },
+    {
+      "path": "a24_simulator/results/LOAD_DENSITY_20261017_01/DENSITY_200_1_RL.raw.json.gz",
+      "bytes": 5078838,
+      "sha256": "f47883d61d42ba47ace130d72315447731f60c6657a22b9fe746e49b12e50618"
+    },
+    {
+      "path": "a24_simulator/results/LOAD_DENSITY_20261017_01/DENSITY_300_0_RL.raw.json.gz",
+      "bytes": 8110960,
+      "sha256": "9b4364d149c49018dcefe9fe60b4e7237db8af2a9c85751cb56b3490ba472fa4"
+    },
+    {
+      "path": "a24_simulator/results/LOAD_DENSITY_20261017_01/DENSITY_300_1_RL.raw.json.gz",
+      "bytes": 14157589,
+      "sha256": "b3a52990f3e81590c0082b878f2a447d5a86b4d00935a623872f028bcf752717"
+    },
+    {
+      "path": "a24_simulator/results/LOAD_DENSITY_20261017_01/WORK_METRICS.json",
+      "bytes": 128654,
+      "sha256": "b0541a8347a07dec49dd521a7b56e27165f2215dc448b3e2d1221b10a9b4e2da"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/ALL_ROWS_WITH_REASONS.json",
+      "bytes": 864379,
+      "sha256": "da71aa29c6ed9861dfc4ed06d104268a857984b3d34948ed0a0c86ea3a005f1e"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/AUDIT.json",
+      "bytes": 1186,
+      "sha256": "5dbdd5f576457a95a37cf39d4b1578cb4fd843c6dcfcdaa1698654ddeb0b4ac1"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_060_0_120.BANK.json.gz",
+      "bytes": 73071,
+      "sha256": "14bbeaea11e08dca42ef75bdc265d7593154f90e790c5f8194f4451e80d46625"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_060_0_60.BANK.json.gz",
+      "bytes": 37441,
+      "sha256": "7da80dc8d4db624f4486524c40f49788b1bdd8ac02e9854f5531b7dbb1f4219d"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_060_1_120.BANK.json.gz",
+      "bytes": 91466,
+      "sha256": "c8f806c355204b675c9b92422c88a2f9eb856575ff2de03bdbe4021354f1e122"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_060_1_60.BANK.json.gz",
+      "bytes": 46547,
+      "sha256": "3ca7e0772f86222ac7f07a8ff99dd486529fe9fed292a7c692af0f2630889478"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_075_0_120.BANK.json.gz",
+      "bytes": 92090,
+      "sha256": "6a6b07dc5801cc3b8965841b7f98f8d5226b93dee285396c1423b3f5e7a346fd"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_075_0_60.BANK.json.gz",
+      "bytes": 47551,
+      "sha256": "1299fbbc29523d4c285886b38b249fa78e30f26d4822a1df9b1a9e67f8c7cc67"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_075_1_120.BANK.json.gz",
+      "bytes": 114636,
+      "sha256": "f818339eebf96e33c3008f633e60c262bbe8b7c3ef0189adabf6e02c0b399168"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_075_1_60.BANK.json.gz",
+      "bytes": 57847,
+      "sha256": "c6306634af64ad8b2c6148bc77e6c4d0d1365e4e1a7086aacd82741d0aaf818f"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_090_0_120.BANK.json.gz",
+      "bytes": 109379,
+      "sha256": "edf8bcf0913c02d5182b8a0c7f2d293b7ca3a0a080cc850d391b18e6cb912493"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_090_0_60.BANK.json.gz",
+      "bytes": 56039,
+      "sha256": "73c32e50aa024cdfb0518947bde17472806fcc2d1d9d4210a8286f683b36adc7"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_090_1_120.BANK.json.gz",
+      "bytes": 136083,
+      "sha256": "4f68b9edb8e1f206229ced1e6599b2fa250b4aa089e38b2180b941f25d9c9c80"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_090_1_120_GUARD_ON_NN.raw.json.gz",
+      "bytes": 855441,
+      "sha256": "f0b852e3097543db513a9ee7e839882c668b14d3c06b5c272ed6c658a4d5fc65"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_090_1_60.BANK.json.gz",
+      "bytes": 69762,
+      "sha256": "1a3faaa2ebb9996970035842779e15975f972fe18f92b7f5c6c06061dee21ada"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_105_0_120.BANK.json.gz",
+      "bytes": 127333,
+      "sha256": "86d54066619e84869afa4f7e1c4b93d76ea3e431c93e5ff86f6b520b9235a9fa"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_105_0_60.BANK.json.gz",
+      "bytes": 65394,
+      "sha256": "658b0fbd2cb0afb7798526bf18abcf91ca0f546973c18e4044ef75c82d2f3d1e"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_105_1_120.BANK.json.gz",
+      "bytes": 160052,
+      "sha256": "db5f49c828842bd3a01bf874c873af418e2198434692ce58d06a240568bc2306"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_105_1_60.BANK.json.gz",
+      "bytes": 81197,
+      "sha256": "24370fdec11562455a9a1982e7e90a440b4940c0161f3a087f505123534619fa"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_120_0_120.BANK.json.gz",
+      "bytes": 143173,
+      "sha256": "c1e6dd444caad0f3deb524ff22282107e3c681357c334c8476c37063af112aa1"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_120_0_60.BANK.json.gz",
+      "bytes": 73071,
+      "sha256": "c8369f83bdb50a8f226fcc31c45bce63b2aa38221499b08dc77339ace0f25f99"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_120_1_120.BANK.json.gz",
+      "bytes": 179848,
+      "sha256": "342c69722b15203c3ba34e22443f2c0c90bb0eb62c9429d5d8ab7a429982a36d"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/MID_120_1_60.BANK.json.gz",
+      "bytes": 91414,
+      "sha256": "9b30f29ce500d0d4a1225b620ad68e6cf8456324ad6e3b5f96a56018a16f36a9"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/RESULT.json",
+      "bytes": 91544,
+      "sha256": "c158fdbe4e361b8ea1a6f3c8358e669f66bfa9dda897cef4fe1e29279f7cc20b"
+    },
+    {
+      "path": "a24_simulator/results/MODERATE_LOAD_20261018_01/WORK_METRICS.json",
+      "bytes": 321213,
+      "sha256": "b6acc218bffe32b34165dd5ff5d57a0773bf3198f81af602027b14ccca58202c"
+    },
+    {
+      "path": "a24_simulator/results/PACKING_RL_20261018_01/ALL_ROWS_WITH_REASONS.json",
+      "bytes": 32272331,
+      "sha256": "ff62e155468b078faa8ee19f493939c4cb4a09feb4017bf586d77ac33aea3a5a"
+    },
+    {
+      "path": "a24_simulator/results/PACKING_RL_20261018_01/AUDIT.json",
+      "bytes": 1233,
+      "sha256": "8d3b75a3204340e81ff07f6359a9e3b52dd5b3f7c9ca6993ad3a1ac5fd16d233"
+    },
+    {
+      "path": "a24_simulator/results/PACKING_RL_20261018_01/FINAL_HANDOFF_PROOF.json",
+      "bytes": 160083,
+      "sha256": "8b18b11151014a14ba8c2e4c63ede096d4e1b55f1444500c2ce931cd86a74b2d"
+    },
+    {
+      "path": "a24_simulator/results/PACKING_RL_20261018_01/MATCHED_WITNESS_COMPARISON.json",
+      "bytes": 13539,
+      "sha256": "cf77867579f9747a9758a6a0e3b97210c10d4a1b8b6a9c70770fbb8bf5b981e1"
+    },
+    {
+      "path": "a24_simulator/results/PACKING_RL_20261018_01/PACKING_BC_ONLY.FINAL_WARM.pt.gz",
+      "bytes": 232653,
+      "sha256": "ec01ece9f5e447f9940ecab75a0ff9b8299b3d6cd8d94e03454f7d65f33496d5"
+    },
+    {
+      "path": "a24_simulator/results/PACKING_RL_20261018_01/PACKING_ENERGY_TRAIN_001.BEFORE.pt.gz",
+      "bytes": 232653,
+      "sha256": "ec01ece9f5e447f9940ecab75a0ff9b8299b3d6cd8d94e03454f7d65f33496d5"
+    },
+    {
+      "path": "a24_simulator/results/PACKING_RL_20261018_01/PACKING_ENERGY_TRAIN_001.raw.json.gz",
+      "bytes": 265598,
+      "sha256": "680682176b854686a79604fe3c1c7ae532a8c53ab540d0ab6c6cfa6a53ce676a"
+    },
+    {
+      "path": "a24_simulator/results/PACKING_RL_20261018_01/PACKING_ENERGY_TRAIN_002.raw.json.gz",
+      "bytes": 641095,
+      "sha256": "d3214d17232dd350f59277b2e716679b4902387ed5d3f49fbea1e7f75c2aba41"
+    },
+    {
+      "path": "a24_simulator/results/PACKING_RL_20261018_01/PACKING_JOINT_TRAIN_001.raw.json.gz",
+      "bytes": 265598,
+      "sha256": "680682176b854686a79604fe3c1c7ae532a8c53ab540d0ab6c6cfa6a53ce676a"
+    },
+    {
+      "path": "a24_simulator/results/PACKING_RL_20261018_01/PACKING_JOINT_TRAIN_002.raw.json.gz",
+      "bytes": 641095,
+      "sha256": "d3214d17232dd350f59277b2e716679b4902387ed5d3f49fbea1e7f75c2aba41"
+    },
+    {
+      "path": "a24_simulator/results/PACKING_RL_20261018_01/RESULT.json",
+      "bytes": 13119264,
+      "sha256": "cdccae6518763abae1a0dfa381c3cf88e75176323d054241c37f1e99ecd6dd64"
+    },
+    {
+      "path": "a24_simulator/results/PACKING_RL_20261018_01/STOCHASTIC_REPLAY.json",
+      "bytes": 240,
+      "sha256": "e359ce03aa057b6e3c11a351830f41d05d05d6ab48a5844ba5ebefcdcab3da9d"
+    },
+    {
+      "path": "a24_simulator/results/PACKING_RL_20261018_01/SUMMARY.json",
+      "bytes": 6993,
+      "sha256": "09201a5430fe8b1b4f620162f5d4d7da4c1392b60cdca1e30584c5adc0712c93"
+    },
+    {
+      "path": "a24_simulator/results/POLICY_GAP_SYNTHESIS_20261018_01/ALL_ROWS_WITH_REASONS.json",
+      "bytes": 1813961,
+      "sha256": "8b07027d1520ac1bc9b4b9ca7d37995138a546908bea7c0242d78a677c02ecb3"
+    },
+    {
+      "path": "a24_simulator/results/QUEUE_CONTEXT_20261018_01/ALL_ROWS_WITH_REASONS.json",
+      "bytes": 4008715,
+      "sha256": "90e7e02599c4ac357bab02fa33ff3301f6864a1dc5f131e43148dc8fd0563b5b"
+    },
+    {
+      "path": "a24_simulator/results/QUEUE_CONTEXT_20261018_01/AUDIT.json",
+      "bytes": 1235,
+      "sha256": "e5d8626cff0b790c56a6c8c4a05b0886dabfb5608157dc96ed0ffb3e5329c882"
+    },
+    {
+      "path": "a24_simulator/results/QUEUE_CONTEXT_20261018_01/CONTEXT_BC_ONLY.FINAL_WARM.pt.gz",
+      "bytes": 212336,
+      "sha256": "c220583efee99861e6172fb9e461fcce5ecca4599f8b17592f4406a4e2c063f8"
+    },
+    {
+      "path": "a24_simulator/results/QUEUE_CONTEXT_20261018_01/CONTEXT_BC_PPO_OFF_TRAIN_001.BEFORE.pt.gz",
+      "bytes": 278051,
+      "sha256": "f2cc84a73f83e915a4bc694aab96886d037585da87e08713469e377371a933bc"
+    },
+    {
+      "path": "a24_simulator/results/QUEUE_CONTEXT_20261018_01/CONTEXT_BC_PPO_OFF_TRAIN_001.raw.json.gz",
+      "bytes": 306686,
+      "sha256": "4265e9fb0c0ed0edaf1adb3f3e6e85ba5ea8c45fc73994d4dba8695e4221f9ce"
+    },
+    {
+      "path": "a24_simulator/results/QUEUE_CONTEXT_20261018_01/CONTEXT_BC_PPO_OFF_TRAIN_002.raw.json.gz",
+      "bytes": 726817,
+      "sha256": "2386d784885382171e0fec71fd283b94d4b98bcc44255e07b3f384745faa0510"
+    },
+    {
+      "path": "a24_simulator/results/QUEUE_CONTEXT_20261018_01/FINAL_HANDOFF_PROOF.json",
+      "bytes": 101681,
+      "sha256": "3b1b3fbfa1d0a68af4c3ef2d6bcaa5c35953158ec800426ce592184dfc988e30"
+    },
+    {
+      "path": "a24_simulator/results/QUEUE_CONTEXT_20261018_01/RESULT.json",
+      "bytes": 275263,
+      "sha256": "2fcaf5b498b0fc787dc47a17911a25392a60043bef43ffca8371303541c89a9f"
+    },
+    {
+      "path": "a24_simulator/results/QUEUE_CONTEXT_20261018_01/STOCHASTIC_REPLAY.json",
+      "bytes": 240,
+      "sha256": "1bc69c3a6d76c34352b2329a3370127c06d98ac25f234326a743e7205809a892"
+    },
+    {
+      "path": "a24_simulator/results/STATE_COST_IDENTIFICATION_20261017_01/MODEL.json",
+      "bytes": 1030,
+      "sha256": "ab6bed5fe4ae89246d4e7b32e12e420515dca0c20d2996d1aafa2af3f7510c0e"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_050_0__EDF.json",
+      "bytes": 3687,
+      "sha256": "71d4f41d2c75762b0bb684b94eca3cb891ff7e03adf44e43ba13bce348b8580a"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_050_0__EDF.raw.json.gz",
+      "bytes": 268862,
+      "sha256": "987a0602afe74ceb8f354be1e0ff8188957c6894fe51d2bbae4a85e133cdca19"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_050_0__FIFO.json",
+      "bytes": 3689,
+      "sha256": "6ed4ae263b799da81ea4a2dc3c66a611e1ba733eae05e2545821f52d5d7d8054"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_050_0__FIFO.raw.json.gz",
+      "bytes": 268862,
+      "sha256": "987a0602afe74ceb8f354be1e0ff8188957c6894fe51d2bbae4a85e133cdca19"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_050_0__FROZEN_EVENT_JOINT.json",
+      "bytes": 3779,
+      "sha256": "2fc83d68455de62e2d945f2d4ca8dd480ed8a16ad6962e0e58eb3056138c32fd"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_050_0__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 324876,
+      "sha256": "329c990aac81e4e3e0447bb5f98b6e4fef9e946579e8441d196e431a9d8d35ac"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_050_0__PACKING_PUBLIC.json",
+      "bytes": 3709,
+      "sha256": "aca52e40ae3380492ad5cdb218d34bc4c225219d232976957b4a607c16e38bac"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_050_0__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 323094,
+      "sha256": "a9c646eadc4e6d2d6685c2218a1463be4bf64ed8b7d6113958854d982266a433"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_050_1__EDF.json",
+      "bytes": 4125,
+      "sha256": "778e81063eafc95caa496638e7b13d51022801bd69914e65d092b692e06cfc3c"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_050_1__EDF.raw.json.gz",
+      "bytes": 334073,
+      "sha256": "3b7ff091ba57f6ce268ebd8587db1434ce44f1d302ac5c69fbfbd1aaebd03621"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_050_1__FIFO.json",
+      "bytes": 4139,
+      "sha256": "61a731385aaaae39ed30372ffe4fc8525fb61cc01049ffb30695340b33f29a95"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_050_1__FIFO.raw.json.gz",
+      "bytes": 337895,
+      "sha256": "8adca414b05fbd5b8ed5be3422785a823314b9d1bea5097d7bb679b345e5db06"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_050_1__FROZEN_EVENT_JOINT.json",
+      "bytes": 4210,
+      "sha256": "2fa50603dbfa8b15cd1d89a725cff43c2fdd5e8c81df3ef5b01f495f3a2e4f3c"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_050_1__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 426250,
+      "sha256": "9f95c172c2be48e94c940477a48cceb2561a4a22f3c5c11cb31e2b18b17b38a2"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_050_1__PACKING_PUBLIC.json",
+      "bytes": 4141,
+      "sha256": "02bf2dd2eacee12be926ec77d78f1970187681215c13e61ba2c2b7d3d51346a8"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_050_1__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 425579,
+      "sha256": "e6aa00b2e4655fb8fbced991135c6192b35fb4857c562cf48bf3007312b4b449"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_100_0__EDF.json",
+      "bytes": 3689,
+      "sha256": "a46315e38b93c94155e6a4d83dd09278bb57ff959202b6b05e5bd02f5be8fce1"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_100_0__EDF.raw.json.gz",
+      "bytes": 519953,
+      "sha256": "9fcc595e210fd3fc54f93f34276825913bc1fd2b56d2271938c7bc7f3f8ca4b0"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_100_0__FIFO.json",
+      "bytes": 3709,
+      "sha256": "db6cbf07d742a81150e9cffa84b51700db13d14650a592d079f80a1502ee575d"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_100_0__FIFO.raw.json.gz",
+      "bytes": 520798,
+      "sha256": "3018a2f16ba3cb72eb5ffa0739dc1516a28b902fbf9d3ae2fa45ce623915be30"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_100_0__FROZEN_EVENT_JOINT.json",
+      "bytes": 3797,
+      "sha256": "6f25851e0ba17dd1db54d2a010c1eb31fc185d52a4f0511e1a15ad54f061fdc8"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_100_0__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 650181,
+      "sha256": "546102c5d45a9bee0ecf16ec3204ce87e3dc642ba8c3dba44087cc872159da15"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_100_0__PACKING_PUBLIC.json",
+      "bytes": 3711,
+      "sha256": "aa89b9c88e87ab65776ea9f7de103a0a104ee986cf7c9d5b67560001f72cb91d"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_100_0__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 646085,
+      "sha256": "19226c1af571c4888bf3c4ba3efafff0c68cbda3ffc02b1a2610d97f21b59f82"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_100_1__EDF.json",
+      "bytes": 4139,
+      "sha256": "ac6c9e594728a0dbd0628b56a16f1221e81a22e5da0c755812527213b9578bc9"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_100_1__EDF.raw.json.gz",
+      "bytes": 719239,
+      "sha256": "9ccf330d044bbe77993b43f82b4b2e29f36d777acaa29b63d52d7424414740be"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_100_1__FIFO.json",
+      "bytes": 4141,
+      "sha256": "677c99dafe4b74b75bd2153f516d3f2f2b0621110fcb00282695b5b7780bb4f2"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_100_1__FIFO.raw.json.gz",
+      "bytes": 713824,
+      "sha256": "f764a886fc4c85961c46d184a037b8066dc212478954c74b861de7bf1b2ef7a2"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_100_1__FROZEN_EVENT_JOINT.json",
+      "bytes": 4233,
+      "sha256": "acfbb33aa33318c8e0eede1bd6de326a1be12ec45c758eaf4dbae9bc74c04d8b"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_100_1__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 1072724,
+      "sha256": "f7a0e41a84c03307267168bd76d928109be892dd49418be40203ed467de27a00"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_100_1__PACKING_PUBLIC.json",
+      "bytes": 4168,
+      "sha256": "4f8ccb04d34fe4ffd66fa69ea170bf55b2fa4fd9fba25b4c1f91e6905ce4d2e3"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_100_1__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 1106000,
+      "sha256": "3b7f44017240b4df3b23efa2c66629fa88891083e4aa4cef4fc3a2bad51cedf4"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_150_0__EDF.json",
+      "bytes": 3728,
+      "sha256": "068b72ce232843379ee01b195fc9630ec08d27b68b04f3e104015413b522c1d4"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_150_0__EDF.raw.json.gz",
+      "bytes": 863336,
+      "sha256": "a3e4db4715b90cb8ba04a6edbd6961ddfdd09d5b6353994318ba9358fd16b683"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_150_0__FIFO.json",
+      "bytes": 3728,
+      "sha256": "514ab8ebb5e2e890fd1f752745abebe0f36ff83d8ec1fbff80a4dd18ba7c81db"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_150_0__FIFO.raw.json.gz",
+      "bytes": 858630,
+      "sha256": "965424e095b3f8a71b4bf7f551c009143dfeb5c841a7c4d91a8151442e5ff64c"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_150_0__FROZEN_EVENT_JOINT.json",
+      "bytes": 3820,
+      "sha256": "65c1a440c34b5f48e6e59cbe2fb83139b514e8d2e50660f39cbb15fa84865aa7"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_150_0__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 1356996,
+      "sha256": "a431f165b58eb213d0c3d400b667fde09b1d6645bb560a55b5c630f8a77d6f57"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_150_0__PACKING_PUBLIC.json",
+      "bytes": 3748,
+      "sha256": "2ab5e1a39b3d31d92e225548515095e9f48379eae55f90a51d1bba2e58fc1b54"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_150_0__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 1384163,
+      "sha256": "675829d59ac79b0ccfd9e565ce2779333b26ca3581b38f690188ccfa358000fb"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_150_1__EDF.json",
+      "bytes": 4141,
+      "sha256": "266d208294876c89c0bc49f708bb4ec00732a01f7e92e6fb716dc36c286dc359"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_150_1__EDF.raw.json.gz",
+      "bytes": 1861875,
+      "sha256": "2288490e5f7533658d93e0c3a165a853da26ae46ef2c80945fcf148767a87dd1"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_150_1__FIFO.json",
+      "bytes": 4142,
+      "sha256": "38c648b18b469cc81ad16011453d5edb4e424a20bcf22ec547b738228209108a"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_150_1__FIFO.raw.json.gz",
+      "bytes": 1883144,
+      "sha256": "3d49cb075f24af2e41efea305d25d7fcbe08c10b8f4a41fd1719704ca7999efb"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_150_1__FROZEN_EVENT_JOINT.json",
+      "bytes": 4242,
+      "sha256": "f53e7434b6d1df7833e11845d2c2981fdf5e39f780a1d17fe1593188669f6985"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_150_1__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 1828378,
+      "sha256": "9299f176b34bd1f765c10c46a21d3559cc2cfc4c126a154193e58f0972c6c1d6"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_150_1__PACKING_PUBLIC.json",
+      "bytes": 4170,
+      "sha256": "35f1da4687121689412f0dc5eedba216761463305ea16d03534661f91491d010"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_150_1__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 1941761,
+      "sha256": "127b8414cd63b79d5a6fddeca453ec0d5812654cbac8c2a5745fdc5f69fbbcf2"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_200_0__EDF.json",
+      "bytes": 3729,
+      "sha256": "9cb4b2bc52e9773605eec81ba9d711b290ead0d8dcbd1f9774a5c5620a8fc0c6"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_200_0__EDF.raw.json.gz",
+      "bytes": 2270673,
+      "sha256": "30fc4dfd3207146fac50fc50603b3e20ada18f645fd2c58742310f6e54877eec"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_200_0__FIFO.json",
+      "bytes": 3725,
+      "sha256": "93b85c1f3430d3f15a299762f15a3cc62cedda7b983d3f4105413d40334ea8a4"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_200_0__FIFO.raw.json.gz",
+      "bytes": 2318261,
+      "sha256": "7655417da86bc018184ae24ee5fc332a345ecaefd80e038ccf54713d34052b5a"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_200_0__FROZEN_EVENT_JOINT.json",
+      "bytes": 3819,
+      "sha256": "c60f4ef7637392856bdb4cc9d2c93489b23f2233258a9564365f73221632ac5b"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_200_0__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 1917678,
+      "sha256": "d0c98b01acd78a91c254c5c169d3a12c4d0da71272a30ee4e392616e3f589d9a"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_200_0__PACKING_PUBLIC.json",
+      "bytes": 3746,
+      "sha256": "ffbf7b44975ddc3117925633483fd641c436ea222d40901f862ae2aaf3b25694"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_200_0__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 1994828,
+      "sha256": "98808b88014c2fd700afe660195146c6f61f08bc32060c23e4f0fbda61780bc5"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_200_1__EDF.json",
+      "bytes": 4147,
+      "sha256": "eec664e901c368965044017db5e5b55ecd08b3b76e1ab1807d2beb94b1a84168"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_200_1__EDF.raw.json.gz",
+      "bytes": 5378644,
+      "sha256": "60e65a092e0c0636176bda6dba135318253729b5cf1ed607c313cd8d42b73c9e"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_200_1__FIFO.json",
+      "bytes": 4148,
+      "sha256": "70fb07ce3f3ed0add5246a4f8c1a6066d833e0525d9eeb0f0cf073650d068c1d"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_200_1__FIFO.raw.json.gz",
+      "bytes": 5433969,
+      "sha256": "03c3cddf5833a366308f858653f684424631ef14b27ecfa61326f5e15903b278"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_200_1__FROZEN_EVENT_JOINT.json",
+      "bytes": 4237,
+      "sha256": "74487c76ff7f93b9ad437c562302d9748592a6eaab7b53059a2cda867f60eb7d"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_200_1__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 4213229,
+      "sha256": "d6cc9dfcacb303d313cd7083a0d3f64ec5c10b94c8b6ee5858f11fe19b51282d"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_200_1__PACKING_PUBLIC.json",
+      "bytes": 4165,
+      "sha256": "b8d3e86e3ff2d2da9a828978f035bf220d37012c16fd507f0fa91b80408d8677"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_200_1__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 4641247,
+      "sha256": "e0f613ffad950fcf31b91c5c3dc02836388683da15147b5ac26ed4a423910a64"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_300_0__EDF.json",
+      "bytes": 3727,
+      "sha256": "d8e59121f9b51a65b7990f22eadf27b19b55d65af08aba100c2b9243ca971ac0"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_300_0__EDF.raw.json.gz",
+      "bytes": 9178681,
+      "sha256": "203d797781f7626b75880d495da93bc8e67134694c11869ebdd936e75393ee6c"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_300_0__FIFO.json",
+      "bytes": 4153,
+      "sha256": "fc7ddad06218e72423d7480557b25235bbe25af4bb4f9bfbaae6ba1cd9ca05be"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_300_0__FIFO.raw.json.gz",
+      "bytes": 9271565,
+      "sha256": "f968a03674fce0151ea37699a748888a31d20dac91fc39a671a7dccaa7ad6ec4"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_300_0__FROZEN_EVENT_JOINT.json",
+      "bytes": 4238,
+      "sha256": "920d2ca4b449ad8bdcebbf19345c05c5c279a0551c1dbe5a78943460ad3badac"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_300_0__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 6790140,
+      "sha256": "b7627776abccdd88560200a184c4a034971da74b002630dc270ebb1af5e58717"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_300_0__PACKING_PUBLIC.json",
+      "bytes": 4169,
+      "sha256": "c4c1283bab5b0589723dbabaf30057dc604fbdb023c4c99f72b236de97b07dde"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_300_0__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 7228684,
+      "sha256": "65a2effab6e7666429d058e78f43bdd289b65bfa0f50231a20cdd4ab1f694095"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_300_1__EDF.json",
+      "bytes": 4141,
+      "sha256": "3b52e5350d0a9930882e04e127c2380d25c7344164bc83692a2ef7fbbc4d12b2"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_300_1__EDF.raw.json.gz",
+      "bytes": 15122655,
+      "sha256": "eab9284a28a54235db2dc08c049ab8be89368c823689b846778b1f7176ecd961"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_300_1__FIFO.json",
+      "bytes": 3732,
+      "sha256": "5ff03ed832add2df8a5ded377da34a74568ab7116b49541e086b6a5903e9e64e"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_300_1__FIFO.raw.json.gz",
+      "bytes": 15200707,
+      "sha256": "26361b7322516508e98b634ef933c88fcf21fdf1f4cf617e6fdd761e6c5ddbbf"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_300_1__FROZEN_EVENT_JOINT.json",
+      "bytes": 4586,
+      "sha256": "fb4cac691402f300fad563ad399a703580a8b4584608cc2f593be47b981c94cd"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_300_1__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 11570214,
+      "sha256": "6ff23f734af136b25fcb93bbd75b40650a86304ab8dd19d5877150625e202c08"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_300_1__PACKING_PUBLIC.json",
+      "bytes": 3759,
+      "sha256": "84a3ca9a68fd7b39bed1d7a2350fbdceab400533dd35dd89a7093fdb4aa40c97"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__DENSITY_300_1__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 12070028,
+      "sha256": "d1d65e30bc03117d06fedf742828392d35c543f5266bb84a4dc47133b69701bd"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_0_120__EDF.json",
+      "bytes": 4460,
+      "sha256": "e8ce9bf695afb1c8c5a26c2c4b6de79615a2bde08c606d86247ea41fbe9d8108"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_0_120__EDF.raw.json.gz",
+      "bytes": 314058,
+      "sha256": "fc0a345982490bef8e7013119866105460e3eb985cdfacd4b19ca08f043a2fcd"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_0_120__FIFO.json",
+      "bytes": 4462,
+      "sha256": "d84a8638eb2d4ad55b9ebb256bb9d4cef4155aab5f375d57b8b971ab13063199"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_0_120__FIFO.raw.json.gz",
+      "bytes": 314058,
+      "sha256": "fc0a345982490bef8e7013119866105460e3eb985cdfacd4b19ca08f043a2fcd"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_0_120__FROZEN_EVENT_JOINT.json",
+      "bytes": 4536,
+      "sha256": "feef178399d4d424190521450ae85259bde58480f36899fef1d93833dc5ac06c"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_0_120__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 397835,
+      "sha256": "109e9db0971738a207e5c8ab722220610855e5447160690bcbfd5066af3d786b"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_0_120__PACKING_PUBLIC.json",
+      "bytes": 4482,
+      "sha256": "97032083571049b153245019f34d77b6cae6a82a738387ba59e0458c1828cbfd"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_0_120__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 387124,
+      "sha256": "22fa5086801ab12f3bdd66b5c24e091c56d44eb013772dbb02a1ce7d027e7907"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_0_60__EDF.json",
+      "bytes": 4441,
+      "sha256": "e900af359914e17aaa1dd94d454da687f7d6444c92316ba93d086ba3cb1c3d59"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_0_60__EDF.raw.json.gz",
+      "bytes": 155029,
+      "sha256": "7983da14ddc5a9e6514e6784f798f63765056ccce53168912a86cf670be99a5c"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_0_60__FIFO.json",
+      "bytes": 4443,
+      "sha256": "eb6117c3437df7d5990f40cf7a46fc3a2c6bb33d1932d0d9d8d86f8d92ccc9be"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_0_60__FIFO.raw.json.gz",
+      "bytes": 155029,
+      "sha256": "7983da14ddc5a9e6514e6784f798f63765056ccce53168912a86cf670be99a5c"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_0_60__FROZEN_EVENT_JOINT.json",
+      "bytes": 4542,
+      "sha256": "6eb30e28746415dd1b9e0d011aeb9cc559f6364268329719fe536ce7e189e9ea"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_0_60__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 192780,
+      "sha256": "1bb5f19a79c42a208c729bd9688ecfd50084129fc9b9b3163bf0cfb29e0a822e"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_0_60__PACKING_PUBLIC.json",
+      "bytes": 4463,
+      "sha256": "5cd3a7aa23b5634ca7f64973fdb4ff6d7d6ad3c0c14d03ce24ec877f9a65127d"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_0_60__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 187555,
+      "sha256": "0dc08334c0e2c0bebcbacf13993d3e0c04b42d60f5172e2b46bf1ba770f17eea"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_1_120__EDF.json",
+      "bytes": 4149,
+      "sha256": "c3c5b68d72fb0cd49a7624644bbf8efc02cd3af42e769ca6bb24202dd0783476"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_1_120__EDF.raw.json.gz",
+      "bytes": 393756,
+      "sha256": "bbb04470e9507d0b3497f6a49827b6400cea4195622c148e4e12582a94b74088"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_1_120__FIFO.json",
+      "bytes": 4150,
+      "sha256": "7bb602869f3ae461bd67fefad49b550bf50e945c7dcbc2c6264e9e4e5070a0d3"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_1_120__FIFO.raw.json.gz",
+      "bytes": 394062,
+      "sha256": "2dc6eb04e8a9db7249f1d365f89d381c26d3f87f7ae15ce3ebef5af293d21a70"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_1_120__FROZEN_EVENT_JOINT.json",
+      "bytes": 4246,
+      "sha256": "b58e7306c982e61802751ba0cc6fc07525064f4e0874c55fe60f86dc46ca9d5b"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_1_120__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 498142,
+      "sha256": "096ad0707e729d21d9d197d13f318d8eac037bf9b213bacbd25e04f962777a63"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_1_120__PACKING_PUBLIC.json",
+      "bytes": 4176,
+      "sha256": "75ee8f8368c934322b21a4be0ea9a0338e794be2465c08268a0d1ed06d19ed70"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_1_120__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 494882,
+      "sha256": "7567893558482b13e70ebb8a72df7af89a5cf137ad2cfacf6d76507dafc90f1c"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_1_60__EDF.json",
+      "bytes": 4148,
+      "sha256": "f28db64132cd0aafbe0c9078c452da12c8ddad38e1db24fdd76a781d4178f105"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_1_60__EDF.raw.json.gz",
+      "bytes": 193971,
+      "sha256": "f702444c024559eda2ea325232fa7ee589169f0a1e15cf4245ac20a6c5d1cbe1"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_1_60__FIFO.json",
+      "bytes": 4146,
+      "sha256": "d4b9bd96691a364aba2b0f8c2f0de3e2b1b323a2eaa1049e5cc990a45d8ad3a4"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_1_60__FIFO.raw.json.gz",
+      "bytes": 194281,
+      "sha256": "34688044f6e854efbf886bce9abadf372e390fae936bbe1f752be647c8a31c3e"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_1_60__FROZEN_EVENT_JOINT.json",
+      "bytes": 4246,
+      "sha256": "5d85500ed209ce819fad83aa6e6f3fa87536f0eb4705850f2345df3c39774c27"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_1_60__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 242420,
+      "sha256": "737b548cc0b497bd42d19e1479045c9e77b012b49a57cc064f55a835b48cdfe5"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_1_60__PACKING_PUBLIC.json",
+      "bytes": 4170,
+      "sha256": "e15db18d78b913484afc1b476ebd285aa4583f14db0a96e017b6acecba31b9c4"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_060_1_60__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 241109,
+      "sha256": "47604c6fd9b1aaa6e6267801228f41625a63160723b433c15f034234c771e929"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_0_120__EDF.json",
+      "bytes": 4465,
+      "sha256": "c3233203eed7df463400dfb170119f23c9dc2efb5cf03855f2d0146ed3361a45"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_0_120__EDF.raw.json.gz",
+      "bytes": 402331,
+      "sha256": "60533f0ed97a3239b8f05a06133e158206d007e59dc68b1abacdfc974f2ce56a"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_0_120__FIFO.json",
+      "bytes": 4469,
+      "sha256": "a2fad0c8cc4f4d97a6a179cfd029728792fc70f45da17fd1c0cb0907faf65ebc"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_0_120__FIFO.raw.json.gz",
+      "bytes": 402129,
+      "sha256": "c393dd30e7a99e5a9a9320f7a7178d0d691115af11ad8cff00c71e448fa16ad1"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_0_120__FROZEN_EVENT_JOINT.json",
+      "bytes": 4574,
+      "sha256": "51777c4b9904de70e7f123f1811f26412ea2c0e1e7e3759cf4d87f0e296602ad"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_0_120__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 505558,
+      "sha256": "186716091aef3edc0183dce2ea99affb9c252e8c01b2f587be63ece804061926"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_0_120__PACKING_PUBLIC.json",
+      "bytes": 4489,
+      "sha256": "7060eaf263c6f8927b8187fbe0cf5e25a7d4ceb1a01d641252c372678121743c"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_0_120__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 501354,
+      "sha256": "01e5d1fae0c7dcce02091edb1b7e48f0aabb2fa8107f73a76d050ea49eef8305"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_0_60__EDF.json",
+      "bytes": 4467,
+      "sha256": "2c0ff63d25ee2993a6f81ce755bdecacd6dcb14442ea914fc4d1971d8082d302"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_0_60__EDF.raw.json.gz",
+      "bytes": 200889,
+      "sha256": "628dbc7d97db193cf632c2f2dbca4c11b5da6b82181791c496d70729e7a6c43b"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_0_60__FIFO.json",
+      "bytes": 4462,
+      "sha256": "e8d37c9d92ffc8efe145891b8df674184406ea0203d81fb2dd82116abf9e6c60"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_0_60__FIFO.raw.json.gz",
+      "bytes": 200548,
+      "sha256": "37ce4e77f82cd03ea3f424e0ca4d43d6fba64526ee5aae377a0049e50908c353"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_0_60__FROZEN_EVENT_JOINT.json",
+      "bytes": 4553,
+      "sha256": "88564ae05f38f32527e5664dbce213a4ca56b8e3d09f2efa520a529572a65e00"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_0_60__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 249282,
+      "sha256": "8e1e6bfa4db624a7b0ec55a8812f1447f802ef13307c93b559e2e6213b690a36"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_0_60__PACKING_PUBLIC.json",
+      "bytes": 4482,
+      "sha256": "9546e38df334c6a5b82575caa2b5b17769bad1c35df619158b136fd1820c8bef"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_0_60__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 248225,
+      "sha256": "3d2cc6e4f7a17ad39eb4edc731e13707a9caa89e92df1b1a4332905de59311d6"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_1_120__EDF.json",
+      "bytes": 4152,
+      "sha256": "717e09bb8eedeae1e41ab15819d9dc83f152f8e987add0f606ee13356aba13e4"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_1_120__EDF.raw.json.gz",
+      "bytes": 505972,
+      "sha256": "f7bcfd6c87a4c7f29a224153da70e8c6017544e8ad896ae6da64082c20647d84"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_1_120__FIFO.json",
+      "bytes": 4155,
+      "sha256": "a7f603ab445e162eb94baa61e8bce1b947146271591b46e52aa87e5a226e51a2"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_1_120__FIFO.raw.json.gz",
+      "bytes": 505361,
+      "sha256": "708d683fcecd14505ee822ee532cb8c2cb67171991d0469c57e529af7314e87c"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_1_120__FROZEN_EVENT_JOINT.json",
+      "bytes": 4251,
+      "sha256": "d5c53d331b1032fa2b09e817b62891f1714af5d2f7d9165d8c8eede9d12c8ac4"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_1_120__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 644764,
+      "sha256": "f011fbc1c5800a4680f7265fdf439558ac563623d9458205082c9da0f2fc495d"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_1_120__PACKING_PUBLIC.json",
+      "bytes": 4175,
+      "sha256": "abafa5d81733d6f9cfa33e2bbc0d3744ac6ff53f9672f4be1452ed5e11670eb5"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_1_120__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 644902,
+      "sha256": "67d2b41998dbf1f6e5e0d3d77eea18f6dfea2060d4c98b8c3332cb6a166e9848"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_1_60__EDF.json",
+      "bytes": 4153,
+      "sha256": "539e326fa7ca1c0747b03bfcbfd681b615fcf911eb4af197ef8e726afeda3fbf"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_1_60__EDF.raw.json.gz",
+      "bytes": 250536,
+      "sha256": "93e6a2badcaf136c4719ed57b2d93084d8440c53452d292e00dc4781666c9186"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_1_60__FIFO.json",
+      "bytes": 4157,
+      "sha256": "ede77414b5a45a5ea54940c48cfd0084588e0ccc98e5c8b91780958aaaee2b62"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_1_60__FIFO.raw.json.gz",
+      "bytes": 250802,
+      "sha256": "a154b459d6c6b25cc5c4ccecbd4d193a0f840970549f11a4763942b9a0534cc4"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_1_60__FROZEN_EVENT_JOINT.json",
+      "bytes": 4242,
+      "sha256": "eed2c0c604d05320b838dfb010126228a7c9d0869c815d61e1c34de321e8ec8c"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_1_60__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 315630,
+      "sha256": "dcc53cd8170f2640d9abb61c0ba2002b23390ced222f30d569d8aece92ca0e9c"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_1_60__PACKING_PUBLIC.json",
+      "bytes": 4166,
+      "sha256": "f632290568280b0347b574f86589f3f5b505fabf84f8adc92e219912722b0d3d"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_075_1_60__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 315060,
+      "sha256": "46a978405cb2c0a1e6d28755e2e6fa3f2fa87be3b9cce1a51d8a501c72d771f1"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_0_120__EDF.json",
+      "bytes": 4465,
+      "sha256": "12614e96ea3afce2ae2d6aba704dee94b68cb6393198f87b859775d93ec10a5d"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_0_120__EDF.raw.json.gz",
+      "bytes": 475982,
+      "sha256": "cee624f7b8ff38853e72c8157871ce481a0721512eac63021bf2f211bd4fef0c"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_0_120__FIFO.json",
+      "bytes": 4467,
+      "sha256": "aadb9a32912115011dd286464562a5d896cbfc6fdf1e5da11eb258e1123d70a7"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_0_120__FIFO.raw.json.gz",
+      "bytes": 478048,
+      "sha256": "c49aa49d5d7cfde44a5174b6051a94fac3504cce020e4b229e6bda93c6623128"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_0_120__FROZEN_EVENT_JOINT.json",
+      "bytes": 4573,
+      "sha256": "4bb4d13b171c70227006f8234436d451a87f94df5ffd8ae0d040da56f02cf2a6"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_0_120__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 603523,
+      "sha256": "c76a2696347f1c04396d34a0e3860f6d3af9a5d3635774e3407cbf059c94daac"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_0_120__PACKING_PUBLIC.json",
+      "bytes": 4489,
+      "sha256": "b81ae9c794d40b9122bf98a57cf725b6c55bf0b1d7a6f94abf81b1d2066f0dc6"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_0_120__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 600500,
+      "sha256": "c58227a1540cfc9ffc84024502aac24070c023a15176eecf5586a3c1dd87198e"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_0_60__EDF.json",
+      "bytes": 4462,
+      "sha256": "e626fe1c0bf2f9aa8dd0e2a9991c4921d7175b8cf7574754a27ef44f21cd5d1b"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_0_60__EDF.raw.json.gz",
+      "bytes": 236867,
+      "sha256": "98572485205565ed5ec34d44354f86af70d8b24843be06319423986e29b871bd"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_0_60__FIFO.json",
+      "bytes": 4468,
+      "sha256": "5dab44554d05acd295bb135ae9cacbd564e6fedc8cf513be570f1c93727e98c5"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_0_60__FIFO.raw.json.gz",
+      "bytes": 238099,
+      "sha256": "b99b8582f022faffa4015aa86a12cc74398ad608a69130812badd5696682a249"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_0_60__FROZEN_EVENT_JOINT.json",
+      "bytes": 4570,
+      "sha256": "f2e88ec2362ea8e367e228baa441f3d9280a5c69b94b6e4b2880fe63843bd99e"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_0_60__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 297742,
+      "sha256": "167343628e2901f3ea314f233322213694e700c54e9c0493d0af142ddfbc3aac"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_0_60__PACKING_PUBLIC.json",
+      "bytes": 4489,
+      "sha256": "e55c4c21b4cee20172a7aa4c199ccef65dc093070e49761ca7e3327abeefab54"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_0_60__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 296166,
+      "sha256": "0acc48a96abadeecf0c39aa2e24f5be8805b5d7e1dc884dd2be0a60e1b6d7586"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_1_120__EDF.json",
+      "bytes": 4161,
+      "sha256": "3ea22bbc9d7f8b1e9ed736701354d2dce96e21fc2c8c18d7f83e16949ba8a439"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_1_120__EDF.raw.json.gz",
+      "bytes": 610915,
+      "sha256": "ae6ae63edb08470a323fcb0b65a5e0532387b2e5164b25eed1354346bf312e84"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_1_120__FIFO.json",
+      "bytes": 4158,
+      "sha256": "94b54a800cc7370421befa186d4326a2ada6f741e9c5d720add4250df107fa9e"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_1_120__FIFO.raw.json.gz",
+      "bytes": 610603,
+      "sha256": "dc6683e1dd69f386814fba1fd2676c04e9327162b6fec62acaa881b3c3338941"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_1_120__FROZEN_EVENT_JOINT.json",
+      "bytes": 4248,
+      "sha256": "ee1df4878ac1d754edff592bcd55193c05d82507aca6da8014c9c745ce2539f3"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_1_120__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 788963,
+      "sha256": "c2529def3ff2d72c2470056c4f81c5702073026d891abd5dc9dc4bec57790f10"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_1_120__PACKING_PUBLIC.json",
+      "bytes": 4177,
+      "sha256": "12c5a771aeae24e5486ca836cd6c448a3f6157aefff28933bd8dcbfeb884c998"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_1_120__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 794044,
+      "sha256": "e4348071c30b6749030eebb14d317ddf45b7da67ad2d18d4482995924836f078"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_1_60__EDF.json",
+      "bytes": 4146,
+      "sha256": "5f8bf285a3601a80d1d805d99e70a6b46102d275f396f090f9ef61f64549a7b3"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_1_60__EDF.raw.json.gz",
+      "bytes": 306280,
+      "sha256": "e3456d70147e005303577822fa8185142f6a1cb20b810c4b8d9adf2fa2c3c827"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_1_60__FIFO.json",
+      "bytes": 4154,
+      "sha256": "5b00ce10fb2a4f11242155d743591bcc033b95ce4aed557e86bfbb1c2c3ef8fc"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_1_60__FIFO.raw.json.gz",
+      "bytes": 306117,
+      "sha256": "e7703b3f286dbe035df69f8391b3d9f09c6343d36e55f421ffd3b15a0d20f63c"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_1_60__FROZEN_EVENT_JOINT.json",
+      "bytes": 4244,
+      "sha256": "5edf8bef2cdf9f79e928e9cbf94b714b62176a02ff5d020c274eb86bfe69fcd9"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_1_60__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 393130,
+      "sha256": "7659f23303f22163613b40106ecb076776f743a6c4ab1425d8ec94afa23715ef"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_1_60__PACKING_PUBLIC.json",
+      "bytes": 4168,
+      "sha256": "5063430bae0183f3cc32d71f02b09ccc87f20252d5065ce4bbb121cd49d884ed"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_090_1_60__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 393601,
+      "sha256": "b81ae2f6200f856c8230141ce63e062a6f23162136803a692da227a3cae5e7aa"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_0_120__EDF.json",
+      "bytes": 4157,
+      "sha256": "4b1139ea2dbc48110a97f31a1aaa97b0cd6a46fb685d2ce36249fdce7b083645"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_0_120__EDF.raw.json.gz",
+      "bytes": 548107,
+      "sha256": "e8b19beab916a30c709d10ab5eefcaebc1ba13a3c79516d08e238546144be27b"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_0_120__FIFO.json",
+      "bytes": 4160,
+      "sha256": "8766932c28852d9a4930182588c569ec1f25ce49a6720c09c1bc8b9cb8b12e73"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_0_120__FIFO.raw.json.gz",
+      "bytes": 546742,
+      "sha256": "dd619da95e210982ffdc9eac17eb5d71244aa85a6001354833823e02868a00e9"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_0_120__FROZEN_EVENT_JOINT.json",
+      "bytes": 4247,
+      "sha256": "c5f4255d1624557d738802d7b77f9e6c9f7bae1a32339247a414c39da980ab9b"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_0_120__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 691491,
+      "sha256": "3b9f32a5ffc3192a6e8169251f5b69ffcdae643a9462d110874361cd9ca5ec9d"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_0_120__PACKING_PUBLIC.json",
+      "bytes": 4177,
+      "sha256": "340f17a3cd9fb19bf348dffcde0d28bbfe9002f8b539c761c89b5ab4bbfbccb3"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_0_120__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 691476,
+      "sha256": "405b80a9bfd108615d69d29c81a0ed37d96b5e879112a2e7b14d197ba0fb8ce7"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_0_60__EDF.json",
+      "bytes": 4466,
+      "sha256": "537b8a059dd90429ed7fe79dfc8244814baac8defef4aea59459ec3e1d5eccbf"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_0_60__EDF.raw.json.gz",
+      "bytes": 276064,
+      "sha256": "dd2dd396e9cdcaa1894923f6638522da7921d6ac259d8897c04de6233c66b2b3"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_0_60__FIFO.json",
+      "bytes": 4482,
+      "sha256": "d7925e85bb587944e457ca36b465c5984b83b9f78e6629395f57697f829a442f"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_0_60__FIFO.raw.json.gz",
+      "bytes": 275291,
+      "sha256": "fec30a8aea1d1ebb6875651e99dfebf5f33638eef09570de293ff8c287add833"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_0_60__FROZEN_EVENT_JOINT.json",
+      "bytes": 4242,
+      "sha256": "8cab82bca3079adbde5e4cd4c75f9ffcf2f7a011c7680f356c5dd58f5ba411e7"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_0_60__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 346639,
+      "sha256": "5a523e6fe5d0d8f7801808f484803035361c76a2b90594b0b4877dfba9000d11"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_0_60__PACKING_PUBLIC.json",
+      "bytes": 4170,
+      "sha256": "c66434f34903b6e64b34aa86a3d96a21e79b3dc6be7e3ed33cbb2a4023bd5151"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_0_60__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 346213,
+      "sha256": "b01c36b10237b25801483f97f51aa355a01fc77861439571328c5ca315fbf1a8"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_1_120__EDF.json",
+      "bytes": 4153,
+      "sha256": "b01f6529eb155ef2d9d6047c03e6da4f9f17cf446bba2f965a8acc507f1469bf"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_1_120__EDF.raw.json.gz",
+      "bytes": 746381,
+      "sha256": "3836f33caa99f4579750f0b2c97a643a764d473db09bc4da28b80c3bfa6d0a0a"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_1_120__FIFO.json",
+      "bytes": 4161,
+      "sha256": "563eef5b417fbc5cc60568f60021b009ff48b7d018a014fd9c216068882d481e"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_1_120__FIFO.raw.json.gz",
+      "bytes": 742971,
+      "sha256": "2910d3ea55bef3d674c7db4ae0217bdb7fbbce501d4d84c0b35fe4d85e0c9d1a"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_1_120__FROZEN_EVENT_JOINT.json",
+      "bytes": 4250,
+      "sha256": "3106215ebb8f5cc0fd1673e2e31d3a44fa8b71c4a2139a30d6828129aff4e182"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_1_120__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 1113805,
+      "sha256": "dffe66daad22fb2d3bdc69da54c97f57c98cc0f44f6ad049b9c6a83829b7de1a"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_1_120__PACKING_PUBLIC.json",
+      "bytes": 4182,
+      "sha256": "7d93b041be3c71e3188f393435e4f67527eb3118e77b54f781c8a736836a2b36"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_1_120__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 1159353,
+      "sha256": "888eda6546d415a509b64a4fa1dfd167065e0f0ae53e3ff7cbfa4d479c16280a"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_1_60__EDF.json",
+      "bytes": 4146,
+      "sha256": "6c0e5f1fee2e835d1d79d946a748bc60157d4318bab5f50c56fcde5be7a08be3"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_1_60__EDF.raw.json.gz",
+      "bytes": 366422,
+      "sha256": "c71c4f8e01f0f4c9f99c117fd0b87c3dc4fb8f53fd91e801658febf1ffc29579"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_1_60__FIFO.json",
+      "bytes": 4146,
+      "sha256": "62450642cf0eb56806e8c810001c3acaf2301cf03c7ade2da49340053abec08b"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_1_60__FIFO.raw.json.gz",
+      "bytes": 364289,
+      "sha256": "0cf275e8196051579716ef70d49a0e1db53544ef15d9f08a56dfc9c63bf5075f"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_1_60__FROZEN_EVENT_JOINT.json",
+      "bytes": 4239,
+      "sha256": "a35fb3e1e445ea52f6ac0b0cdb8abca5eabc72dadf4abad3f21effecaa16d557"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_1_60__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 491145,
+      "sha256": "0a2db12942833fb8ff7fcb909dccb9169741505326a32b30060aeda200ee3957"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_1_60__PACKING_PUBLIC.json",
+      "bytes": 4164,
+      "sha256": "011b118577712daafde5c1315dfc9ae6b4621a4c089ca6b5c7c04ccd0763c595"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_105_1_60__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 503579,
+      "sha256": "8262f1b1cd9923a396c991db41692e9cb83b14ae9f3f03464053b35ffc64d246"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_0_120__EDF.json",
+      "bytes": 4151,
+      "sha256": "160a5cea21550b03c49000df4fcf308067a70e4e3568be4b187a029fc9fc6dd7"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_0_120__EDF.raw.json.gz",
+      "bytes": 627924,
+      "sha256": "5ac274f29e3e09eeba247b5add772a918d85e07e978e5824b183be83aaa91bd7"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_0_120__FIFO.json",
+      "bytes": 4159,
+      "sha256": "420a581485002eb2d2764907c70d3222d611e76686887712a70dfe3a44e7b8d9"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_0_120__FIFO.raw.json.gz",
+      "bytes": 637383,
+      "sha256": "50e68395382419ddfbdad76e5368975c13f2475b040822628cb6f5f9a6bffd1d"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_0_120__FROZEN_EVENT_JOINT.json",
+      "bytes": 4244,
+      "sha256": "88907d2d5ff8370376e6734d50c642fc88a6d3418580be668183c4b274acbcb8"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_0_120__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 823502,
+      "sha256": "4a0e69ccbcd1c9b8aa994dd9c44b2a0136cbbdb5cf16409b26ada63c8502c821"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_0_120__PACKING_PUBLIC.json",
+      "bytes": 4179,
+      "sha256": "f4e8cb05bc9585dc64712828ba5072fb728865a267974c408f4b076cf11bbef5"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_0_120__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 814880,
+      "sha256": "7d9dba5e759c23b44d68bad519ab842260ac5a62fb023fd2a8dbca442d33daab"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_0_60__EDF.json",
+      "bytes": 4144,
+      "sha256": "15295aa664a6c6aa7acc313ac324f51a333952a3c4fc69bb52df84aad4fc7fe6"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_0_60__EDF.raw.json.gz",
+      "bytes": 309028,
+      "sha256": "ff7cac153b9ff5061805dd12578157e4caa26517d47c9a755f71a9c08ac8a2b5"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_0_60__FIFO.json",
+      "bytes": 4146,
+      "sha256": "8ae31a42dc9e4155d63b8a76c1f1a992dd73314de472f3145c58141f37ab260d"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_0_60__FIFO.raw.json.gz",
+      "bytes": 311742,
+      "sha256": "b72088eb3a1038d7a8701b2ae44596bfc9c4bbd5ed9ef8f50026aadac6c28251"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_0_60__FROZEN_EVENT_JOINT.json",
+      "bytes": 4237,
+      "sha256": "54ca5b10442df889d45dc324de1983da92fc4cf8e9157c746adf17d480be2590"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_0_60__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 393858,
+      "sha256": "11cd52bb57741a29c9f50945fed1f82039f14acb14e446ebf551232f79bd2d2a"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_0_60__PACKING_PUBLIC.json",
+      "bytes": 4169,
+      "sha256": "87bcabf1137069c5dc7b9fd6197f218383260649d82a58ace429c50b158221f3"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_0_60__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 392669,
+      "sha256": "149b08ada5809fae40e1b5eb1839a2da4bfcf7a132a3d258052e98d3c722f2c9"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_1_120__EDF.json",
+      "bytes": 4152,
+      "sha256": "b54a5111fe372018165b9a99a29af87ed8a820e95dccecaba26b7b6c14b7b298"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_1_120__EDF.raw.json.gz",
+      "bytes": 871092,
+      "sha256": "238a49a19b884a0dae281db84aa34b0ccd6fb9fe11cbc621d067581110a33359"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_1_120__FIFO.json",
+      "bytes": 4155,
+      "sha256": "6bb390a9b7d3f4596b5ff8006ce60fb295914f091db2a2213d0ae66ccf0cbe0d"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_1_120__FIFO.raw.json.gz",
+      "bytes": 867020,
+      "sha256": "b998f54577c91a8250f508299bfc0921385ffa16d07bd204fd658a44336254a0"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_1_120__FROZEN_EVENT_JOINT.json",
+      "bytes": 4248,
+      "sha256": "20cbdca4458a21c2839fcb0ca0d27b28aee5e864f9d5a4f5da95e4b825378ff1"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_1_120__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 1394514,
+      "sha256": "4c14e6630979adcdf28bc0e8cbdc5f6e0bad48f01cb9464c94b9dee15e9afef4"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_1_120__PACKING_PUBLIC.json",
+      "bytes": 4179,
+      "sha256": "274a4fc39c9e3c9aa21d5db97d0129292de8bf1b21e4775fb37fd2c3bedc1768"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_1_120__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 1401334,
+      "sha256": "9672c98806e687ddd123495db1cf043d6ce52c657ab821ba4d66041ef0912dc9"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_1_60__EDF.json",
+      "bytes": 4148,
+      "sha256": "444a56e735ad7a4c7b46306d83a8f93dbdafb12404b1de65fd140132b08941da"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_1_60__EDF.raw.json.gz",
+      "bytes": 421934,
+      "sha256": "177e0322da519074309727faafc7ada24fdccdd4f04fe042a7c85ea981531ce1"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_1_60__FIFO.json",
+      "bytes": 4146,
+      "sha256": "183cdf6655b863007afe1d77dc1bad46f1ed880abac7fda2035a8594ffa9a7e2"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_1_60__FIFO.raw.json.gz",
+      "bytes": 421882,
+      "sha256": "e4918f8ff1f9c0fd43c0b431e901f5abfe5adf19e1d0ce024439fce8dec6d318"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_1_60__FROZEN_EVENT_JOINT.json",
+      "bytes": 4238,
+      "sha256": "8bcbecc119e0002e5f7088d9e1978f89d73568f432114398f5af1063f1de0178"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_1_60__FROZEN_EVENT_JOINT.raw.json.gz",
+      "bytes": 651015,
+      "sha256": "dd9fe55f1f4d7aa0846902d98e5476f7ca11f227bdbc060c92b74f117ed9f16f"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_1_60__PACKING_PUBLIC.json",
+      "bytes": 4171,
+      "sha256": "c43bc2aa6b7509f6590be2f858fe893d7af0bbe57b29bb25399c955ace6f16f0"
+    },
+    {
+      "path": "a24_simulator/results/THERMAL_COEFFICIENTS_20261018_01/BASE__MID_120_1_60__PACKING_PUBLIC.raw.json.gz",
+      "bytes": 641610,
+      "sha256": "79dcc03a6e7ebd9d08385923abd6f85812f33ccb40251900e9d0ce714931ece5"
+    },
+    {
+      "path": "a24_simulator/results/WITNESS_GAP_FACTORIAL_V3_20261018_01/ALL_ROWS_WITH_REASONS.json",
+      "bytes": 12678053,
+      "sha256": "3a96e3b97cd247d922e096de747b88b35fab4694540049d473dc35915937da9c"
+    },
+    {
+      "path": "a24_simulator/results/WITNESS_GAP_FACTORIAL_V3_20261018_01/AUDIT.json",
+      "bytes": 1219,
+      "sha256": "242334aa4a2427d1d36429934dbce01d9c0cd20c2d6fc9d73f0dd6d6942aa504"
+    },
+    {
+      "path": "a24_simulator/results/WITNESS_GAP_FACTORIAL_V3_20261018_01/FACTORIAL_COMPARISON.json",
+      "bytes": 42543,
+      "sha256": "87a1f9ed57fd8f2e4652aca5f58685af80197bfb80aac9cbc29dc4a51481caae"
+    },
+    {
+      "path": "a24_simulator/results/WITNESS_GAP_FACTORIAL_V3_20261018_01/FINAL_HANDOFF_PROOF.json",
+      "bytes": 9906,
+      "sha256": "7764cec0c3d6d4c26d39856871f00cab211841413b2dba95d223bbc6504beb4c"
+    },
+    {
+      "path": "a24_simulator/results/WITNESS_GAP_FACTORIAL_V3_20261018_01/RESULT.json",
+      "bytes": 12890,
+      "sha256": "b0c8ff60b2286f414f6a0ca3d0c97355b8802be7698ff1228a719fa13b297125"
+    },
+    {
+      "path": "a24_simulator/results/WITNESS_GAP_FACTORIAL_V3_20261018_01/SELECTOR_REPLAY.json",
+      "bytes": 62,
+      "sha256": "e42ffc199e7ff4d42823f20c1fae166ccb103ffd25a3feb798fc8015c736869f"
+    },
+    {
+      "path": "a24_simulator/src/four_route_model.py",
+      "bytes": 9003,
+      "sha256": "bbe7efd4d3afebac6f772fb50246c87aaaf668a5ff0296d26e0243e738269f36"
+    },
+    {
+      "path": "a24_simulator/src/lab_backend.py",
+      "bytes": 26466,
+      "sha256": "c79634fa7e0af06f7aadeacf6d9c739eea2e8ffc28b5076bb6b317a20018319f"
+    },
+    {
+      "path": "a24_simulator/src/thermal_four_route.py",
+      "bytes": 36577,
+      "sha256": "e2f3bae11214432fef0ee8aa3094adf1c05c10a5d3e12e9cd2b14d75875b6f10"
+    }
+  ],
+  "approval": {
+    "path": "a24_simulator/experiments/a24_atc_bc_20261019/BUDGET_APPROVAL.json",
+    "bytes": 413,
+    "sha256": "a85976de91d4ec846f4c30dd683772535b059068e9acbedb22db5721b90a1716"
+  },
+  "approved_cap": 137715,
+  "registered_utc": "2026-10-19T07:31:44.368287+00:00"
+}

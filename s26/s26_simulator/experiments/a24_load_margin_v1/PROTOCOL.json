@@ -1,0 +1,134 @@
+{
+  "schema": "S26_LOAD_MARGIN_FIXED_BEFORE_PARENT_EVAL_V1",
+  "utc": "2026-10-17T17:33:32.542Z",
+  "user_request": "Do not only increase work and time into universal overload; assess moderate load scheduling opportunity",
+  "parent_operation_sha256": "b699bf73c9be47a7b1f9b01338676d14753fc79bc0a7bc92b2cbd26f6ee87943",
+  "parent_progress_last_receipt": {
+    "event": "START",
+    "label": "S271083_TRAIN_086",
+    "kind": "TRAIN",
+    "mode": "RL",
+    "input": "TRAIN_96_16_0.75",
+    "stream": 542083086,
+    "selection_sha256": null,
+    "utc": "2026-10-17T17:33:31.333150+00:00",
+    "durable_consumed": true
+  },
+  "parent_EVAL_started": 0,
+  "n_per_case": 1024,
+  "nominal_load_ratios": [
+    0.4,
+    0.65,
+    0.85,
+    1.05
+  ],
+  "classification_mix": [
+    0.5,
+    0.75
+  ],
+  "cases": 8,
+  "policies": [
+    "EDF",
+    "EDF_NPU_FIRST",
+    "EDF_GPU_FIRST",
+    "ATC",
+    "EXACT",
+    "RL_S271081",
+    "RL_S271083",
+    "RL_S271087"
+  ],
+  "planned_START": 64,
+  "cap": 64,
+  "additional_training": 0,
+  "selection": "Reuse all three parent DEV-selected checkpoints; no load-results-based tuning/seed/CP changes",
+  "capacity_method": "Pure nominal no-peer C0 model; exhaustive .005 route-fraction grid minimizing maximum CPU-server/CPU-slot/GPU-slot/NPU-slot demand. An optimistic structural reference, not measured capacity or feasibility guarantee.",
+  "capacity": {
+    "classification_CPU": {
+      "gap": 0.0006714255,
+      "admission": 0.033710449,
+      "infer": 0.027739370874494403,
+      "ret": 0.00006931599999999635,
+      "post": 0.002409902000000002,
+      "response": 0.06219056137449441,
+      "occupied": 0.06460046337449442
+    },
+    "classification_GPU": {
+      "gap": 0.000338828,
+      "admission": 0.0278694725,
+      "infer": 0.03233167506737867,
+      "ret": 0.00004831999999999059,
+      "post": 0.0021140819999999963,
+      "response": 0.06058829556737866,
+      "occupied": 0.06270237756737865
+    },
+    "classification_NPU": {
+      "gap": 0.0005851565,
+      "admission": 0.034036719,
+      "infer": 0.029489160374621147,
+      "ret": 0.00005650400000000583,
+      "post": 0.0022844134999999988,
+      "response": 0.06416753987462115,
+      "occupied": 0.06645195337462115
+    },
+    "detection_CPU": {
+      "gap": 0.0003299415,
+      "admission": 0.0243325775,
+      "infer": 0.1994530541456876,
+      "ret": 0.0000653710000000085,
+      "post": 0.002775078499999986,
+      "response": 0.2264312379001616,
+      "occupied": 0.2269560226456876
+    }
+  },
+  "capacity_profiles": [
+    {
+      "mix": 0.5,
+      "bottleneck_s_per_arrival": 0.1250352380728438,
+      "nominal_capacity_requests_s": 7.997745398920373,
+      "nominal_classification_fractions": {
+        "CPU": 0,
+        "GPU": 1,
+        "NPU": 0
+      },
+      "demand_s_per_arrival": {
+        "CPU_slot": 0.1134780113228438,
+        "CPU_server": 0.1250352380728438,
+        "GPU_slot": 0.031351188783689324,
+        "NPU_slot": 0
+      }
+    },
+    {
+      "mix": 0.75,
+      "bottleneck_s_per_arrival": 0.0751092595364219,
+      "nominal_capacity_requests_s": 13.313937671227887,
+      "nominal_classification_fractions": {
+        "CPU": 0,
+        "GPU": 1,
+        "NPU": 0
+      },
+      "demand_s_per_arrival": {
+        "CPU_slot": 0.0567390056614219,
+        "CPU_server": 0.0751092595364219,
+        "GPU_slot": 0.047026783175533986,
+        "NPU_slot": 0
+      }
+    }
+  ],
+  "windows": "Same n/arrival rate/context/burst16 and full planned arrival denominators; 35+duration+90 common horizon; no shortened or load-selected deadlines",
+  "reporting": "All8 cases/policies, all lateness/censoring, queue/CPU/slot load, no good-condition removal or maximum-gap winner selection; test nonmonotonicity as hypothesis.",
+  "previous_power_thermal_accuracy_gate": "FAIL_NOT_ADOPTED",
+  "physical_validation": false,
+  "inputs_sha256": "594f62770b9af797013801d183a2cbf2005f51e3c202a8a5135dd4a3ac74fe06",
+  "original_heavy_results_preserved": true,
+  "revision": 2,
+  "primary_baseline": "EDF_GPU_FIRST",
+  "amendment": {
+    "utc": "2026-10-17T17:49:30.272Z",
+    "source_protocol_sha256": "36e36939d03cebc4df3e6e4d0fe6d292ae209eac75e1fb5b487d42fa9872ef0d",
+    "load_EVAL_started": 0,
+    "reason": "Add a stronger fixed-resource-order EDF control motivated by the already registered nominal C0 GPU-service profile. Retain all CPU/NPU controls; freeze GPU-first as the load-study primary before any load outcome. Input grid, RL checkpoints/weights, objectives, deadlines unchanged. Parent EVAL already in progress; the input grid was fixed before it.",
+    "additional_reservation": 0,
+    "old_planned_START": 56,
+    "new_planned_START": 64
+  }
+}

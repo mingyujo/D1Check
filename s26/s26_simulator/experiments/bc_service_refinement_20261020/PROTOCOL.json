@@ -1,0 +1,147 @@
+{
+  "schema": "BC_NORMAL_EDF_REFINEMENT60",
+  "utc": "2026-10-20T07:22:54.475819+00:00",
+  "user_request": "Preserve existing official final; additional research authorized; user alone decides adoption.",
+  "purpose": "One fixed correction of normal on-time regression seen in development32 of first148; no parameter search.",
+  "cases": [
+    "NEW_BURST16_085_C50_R0",
+    "NEW_BURST16_085_C50_R1",
+    "NEW_BURST16_085_C50_R2",
+    "NEW_BURST16_085_C50_R3",
+    "NEW_BURST16_085_C75_R0",
+    "NEW_BURST16_085_C75_R1",
+    "NEW_BURST16_085_C75_R2",
+    "NEW_BURST16_085_C75_R3",
+    "NEW_SMOOTH_085_C50_R0",
+    "NEW_SMOOTH_085_C50_R1",
+    "NEW_SMOOTH_085_C50_R2",
+    "NEW_SMOOTH_085_C50_R3",
+    "NEW_SMOOTH_085_C75_R0",
+    "NEW_SMOOTH_085_C75_R1",
+    "NEW_SMOOTH_085_C75_R2",
+    "NEW_SMOOTH_085_C75_R3",
+    "NEW_POISSON_085_C50_R0",
+    "NEW_POISSON_085_C50_R1",
+    "NEW_POISSON_085_C50_R2",
+    "NEW_POISSON_085_C50_R3",
+    "NEW_POISSON_085_C75_R0",
+    "NEW_POISSON_085_C75_R1",
+    "NEW_POISSON_085_C75_R2",
+    "NEW_POISSON_085_C75_R3",
+    "NEW_BURST32_105_C50_R0",
+    "NEW_BURST32_105_C50_R1",
+    "NEW_BURST32_105_C50_R2",
+    "NEW_BURST32_105_C50_R3",
+    "NEW_BURST32_105_C75_R0",
+    "NEW_BURST32_105_C75_R1",
+    "NEW_BURST32_105_C75_R2",
+    "NEW_BURST32_105_C75_R3",
+    "EVAL_N1024_C0.5_U0.85_R26_CPU3",
+    "EVAL_N1024_C0.75_U0.85_R26_CPU3",
+    "EVAL_N1024_C0.5_U0.85_R27_CPU3",
+    "EVAL_N1024_C0.75_U0.85_R27_CPU3",
+    "REFINEMENT_CONFIRM_BURST16_085_C50_R0",
+    "REFINEMENT_CONFIRM_BURST16_085_C75_R0",
+    "REFINEMENT_CONFIRM_SMOOTH_085_C50_R0",
+    "REFINEMENT_CONFIRM_SMOOTH_085_C75_R0",
+    "REFINEMENT_CONFIRM_POISSON_085_C50_R0",
+    "REFINEMENT_CONFIRM_POISSON_085_C75_R0",
+    "REFINEMENT_CONFIRM_BURST32_105_C50_R0",
+    "REFINEMENT_CONFIRM_BURST32_105_C75_R0"
+  ],
+  "methods": [
+    {
+      "id": "BC_RESOURCE_EDF_NORMAL",
+      "selector": "BC_REPAIR",
+      "rolling": true,
+      "ATC": true
+    },
+    {
+      "id": "BC_FULL",
+      "selector": "BC",
+      "rolling": true,
+      "ATC": true
+    },
+    {
+      "id": "EDF_NPU",
+      "selector": "EDF",
+      "rolling": false,
+      "ATC": false,
+      "mode": "EDF_NPU_FIRST"
+    }
+  ],
+  "environment_cap": 60,
+  "training": 0,
+  "measurements": 0,
+  "physical_fits": 0,
+  "inputs": "4 arrival/load families x 2 previously calibrated mix-reference capacities x 4 new request/arrival/latent seeds. N1024, classification urgent0.8s/detection normal2s only. Exact mix totals shuffled. Poisson first arrival35 then independent exponential gaps, no rescaling; empirical rate reported. Same observed initial context. Nominal capacity inherited as reference, not measured actual saturation.",
+  "selection": "One frozen BC and adopted frozen PPO881087, physical mask then argmax, temperature0.35, same32/27 ABI. No retraining, search, fallback or deadline shield.",
+  "BC_lineage": "BC_COMMON_FINAL includes earlier PPO ancestry; BC means frozen immediately before the last PPO stage, not a PPO-free training lineage.",
+  "ablations": "BC_NO_ROLLING skips future rollout/publicWork/horizon extension and zeros features21..29, retaining measured-state power18 and instantaneous timing9,10. BC_NO_ATC zeros feature11, skips ATC scoring and uses EDF/FIFO/route fill for candidate selection. Both retain original8 candidates and causal route preference. Frozen runtime/input intervention, not retrained architecture; distribution shift limits interpretation.",
+  "service_first": "Fixed lexicographic minimize [predicted urgent lateness cost2, unfinished cost4, normal lateness cost3, cost0/0.6215900945595554+cost1/0.42450663682233236], each rounded to1e-12; then max ATC11, ordinal, index. Uses only public nominal predictions. No parameter tuning or hard action mask.",
+  "primary_comparisons": [
+    "BC_FULL vs TEACHER_ONLY",
+    "PPO_FULL vs BC_FULL",
+    "BC_NO_ROLLING/BC_NO_ATC/BC_NO_BOTH vs BC_FULL",
+    "ROLLING_SERVICE_FIRST vs TEACHER_ONLY and EDF_NPU"
+  ],
+  "practical_thresholds": {
+    "service_gain_pp": 1.0,
+    "urgent_noninferiority_pp": 0.1,
+    "energy_gain_percent": 1.0,
+    "service_equivalence_pp": 0.1,
+    "unfinished_increase_allowed": 0
+  },
+  "decision_rule": "Meaningful candidate improvement requires >=1pp overall on-time gain with urgent loss<=0.1pp, no more unfinished; OR >=1% paired mean API-J reduction with both urgent and overall on-time within0.1pp and no more unfinished. Report all families/cases/worst-case, P95 and failures. Passing is conditional model evidence, not adoption or real-device proof. No significance claim from requests as independent samples.",
+  "order": "Fixed case order; rotate10 method order by case index. One attempt per identity, preserve every failure; no replacement seed or completed rerun.",
+  "offline": "Existing8 BC banks: exact saved argmax reproducibility and masking21..29/11/both/31 sensitivity, no plant. Mechanism diagnosis on prior cohort, not new validation.",
+  "preflight": "No plant: exact full-mode bank/action compatibility versus original FAIR policy on saved public/crowded fixtures; ablation feature/guard tests and deterministic selector fixtures. Pin sources, checkpoints, input before new plant.",
+  "common": "No original physical engine/coefficients/deadlines/observation window/model/NN weights changed; no new learning/device measurement/fit. Separate method identities for old inputs; completed original methods never rerun. No parameter search, retry, seed replacement, refund, reservation/automation query or resume.",
+  "checkpoint": "s26_simulator/experiments/route_group_learning_v1/artifacts/G001/BC_COMMON_FINAL.pt.gz",
+  "checkpoint_sha256": "903a94c30ac9f2491d575709fe6f7e5dc6d06183bfdb7c2838820ddd9f9c42b4",
+  "network_sha256": "80044cf3c780126e30e2b3bece72ee70ee44e49e634115e19b13c776fed87ae5",
+  "ppo_checkpoint": "s26_simulator/experiments/route_group_learning_v1/artifacts/G001/S881087_FINAL.pt.gz",
+  "ppo_checkpoint_sha256": "4a2c5b1d38da76bdef7f33c6eee6a4c69451130a68eb8e7168f0d760d37e2e34",
+  "shared_scores": {
+    "scales": [
+      0.6215900945595554,
+      0.42450663682233236
+    ],
+    "dual": [
+      0.98,
+      0.98
+    ]
+  },
+  "physical_gate": "FAIL remains: API-J/AP only; CPU3 extra-core, interference and mobile NN/planner costs unmeasured; fixed measured template pools and shared initial context constrain generality.",
+  "adopted": false,
+  "automatic_retry": false,
+  "refunds": 0,
+  "completed_reruns": 0,
+  "authorization": "User explicitly requests reducing urgent deadline failures/unfinished while retaining rolling+ATC+BC energy/heat savings; preserve existing official policy.",
+  "method_groups": {
+    "development32": [
+      "BC_RESOURCE_EDF_NORMAL"
+    ],
+    "original4": [
+      "BC_RESOURCE_EDF_NORMAL"
+    ],
+    "confirm8": [
+      "BC_FULL",
+      "BC_RESOURCE_EDF_NORMAL",
+      "EDF_NPU"
+    ]
+  },
+  "guards": {
+    "BC_DISPATCH_ONLY": "Choose maximum unchanged BC logit among physical DISPATCH actions, prohibit voluntary WAIT only.",
+    "BC_PROGRESS_GUARD": "Dispatch-only plus earliest urgent nominal response+one occupancy deadline-risk protection; if risky prefer nominal-on-time routes, else fastest. If not urgent-risk and oldest normal already late, dispatch that oldest normal.",
+    "BC_RESOURCE_GUARD": "Progress guard plus CPU inference slot reserved for detection and NPU-first classification; GPU allowed only when NPU occupied and visible NPU-only EDF prefix projects a missed deadline. Same nominal predictor and zero extra margin. Owner charged one full nominal occupancy, no hidden remaining progress."
+  },
+  "architecture": "Original frozen BC network,32 features/27 original physical-mask logits unchanged. A separate explicit guard selects the greatest original logit among its admissible original actions. Empty resource envelope returns NONE before rollout/NN. Not pure BC, not PPO, and no learned improvement claim.",
+  "selection_rule": "Before any confirm8 execution, choose one fixed guard using development32+original4 only. Eligible: all original4 urgent100%/unfinished0, original4 on-time no worse than BC by0.1pp, mean J <=1.01*BC and AP<=BC+0.1C; development nominal85 unfinished0, urgent>=99.9%, J<=1.01*BC and AP<=BC+0.1C. If any eligible, minimize development stress urgent misses, then nominal85 J, then method order. Otherwise choose lexicographically [original4 urgent misses+unfinished,nominal85 unfinished,nominal85 urgent misses,nominal85 J] and mark target unmet. Confirm8 cannot change this selection.",
+  "reporting": "Separate original4/development32/confirm8 and85/105 subgroups; all methods/cases/failures. Raw BC energy includes missing work, so do not call its difference equal-service savings. Compare service-qualified savings against same-input completed EDF; report both NPU/GPU reference where available, retained gap and extra completed work. Max normal latency included.",
+  "confirmation": "8 new synthetic inputs, one per family/mix, generated before all new evaluations. Limited repetition and same measured pools/model/initial context; not independent device confirmation. All3 guards disclosed even if selected guard fails.",
+  "cache": "Retain existing cached original features to isolate service-guard contribution. Known cache-equivalence FAIL is preserved; this study does not fix/calibrate predictor.",
+  "normal_refinement": "Same frozen BC/logits/planner/features/cache/resource/urgent guards. Only change: choose earliest normal request when its CPU action is available regardless of lateness; urgent guard still evaluated first and cannot use reserved CPU. No BC control of normal queue order; report explicitly.",
+  "development_evidence": "First148 development32 completed: BC_RESOURCE_GUARD nominal85 on91.4754% vs BC94.6737%, urgent100/unfinished0/J778.5017/AP38.7063. This normal-service regression motivates the new EDF rule. Original selection and all first148 outcomes remain intact. New fresh8 uses a new namespace generated before all refinement environments.",
+  "automatic_followup": "Close this refinement after60; do not automatically add more variants. Further evidence gaps are reported, not patched by seed replacement."
+}

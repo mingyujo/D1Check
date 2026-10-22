@@ -1,0 +1,152 @@
+{
+  "status": "SAVED_DIAGNOSIS_ONLY",
+  "rows": [
+    {
+      "case": "S26REQ_EVAL_R1_uniform",
+      "mismatch_score_feature_gap": {
+        "n": 0,
+        "median": null,
+        "P95": null,
+        "max": null
+      },
+      "same_information_normalized_gap": {
+        "n": 0,
+        "median": null,
+        "P95": null,
+        "max": null
+      },
+      "other_feature_vector_distance": {
+        "n": 0,
+        "median": null,
+        "P95": null,
+        "max": null
+      },
+      "lowload_same_request_decisions": []
+    },
+    {
+      "case": "S26REQ_EVAL_R1_burst",
+      "mismatch_score_feature_gap": {
+        "n": 173,
+        "median": 9.715557098388672e-05,
+        "P95": 0.0006594359874725342,
+        "max": 0.0016026496887207031
+      },
+      "same_information_normalized_gap": {
+        "n": 173,
+        "median": 0.28538352251052856,
+        "P95": 2.489100456237793,
+        "max": 3.30325984954834
+      },
+      "other_feature_vector_distance": {
+        "n": 173,
+        "median": 1.4150971721589238,
+        "P95": 2.3576344908627997,
+        "max": 2.5350943275358953
+      },
+      "lowload_same_request_decisions": [
+        {
+          "time_s": 427.854779174,
+          "action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000398",
+            "route": "CPU"
+          },
+          "teacher_action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000396",
+            "route": "CPU"
+          },
+          "candidates": [
+            {
+              "index": 0,
+              "action": {
+                "kind": "DISPATCH",
+                "request_id": "common-000396",
+                "route": "CPU"
+              },
+              "allowed": true,
+              "cost": 2.0663241882970134,
+              "absolute_input": 0.20663242042064667,
+              "relative_input": -0.6348085999488831
+            }
+          ]
+        },
+        {
+          "time_s": 427.864819788,
+          "action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000396",
+            "route": "CPU"
+          },
+          "teacher_action": {
+            "kind": "DISPATCH",
+            "request_id": "common-000396",
+            "route": "CPU"
+          },
+          "candidates": [
+            {
+              "index": 0,
+              "action": {
+                "kind": "DISPATCH",
+                "request_id": "common-000396",
+                "route": "CPU"
+              },
+              "allowed": true,
+              "cost": 2.2527377461767415,
+              "absolute_input": 0.22527377307415009,
+              "relative_input": -1.0601876974105835
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "S26REQ_EVAL_R4_uniform",
+      "mismatch_score_feature_gap": {
+        "n": 844,
+        "median": 9.253621101379395e-05,
+        "P95": 0.0010535717010498047,
+        "max": 0.02540642023086548
+      },
+      "same_information_normalized_gap": {
+        "n": 844,
+        "median": 0.4818904995918274,
+        "P95": 2.622980833053589,
+        "max": 3.3475570678710938
+      },
+      "other_feature_vector_distance": {
+        "n": 844,
+        "median": 1.4150972267557929,
+        "P95": 2.0329460392423018,
+        "max": 2.85486892038418
+      },
+      "lowload_same_request_decisions": []
+    },
+    {
+      "case": "S26REQ_EVAL_R4_burst",
+      "mismatch_score_feature_gap": {
+        "n": 1161,
+        "median": 8.973479270935059e-05,
+        "P95": 0.0016776621341705322,
+        "max": 0.0542791485786438
+      },
+      "same_information_normalized_gap": {
+        "n": 1161,
+        "median": 0.2867264747619629,
+        "P95": 2.6293044090270996,
+        "max": 3.751863956451416
+      },
+      "other_feature_vector_distance": {
+        "n": 1161,
+        "median": 1.4150972425412576,
+        "P95": 2.0609132585403502,
+        "max": 2.845207502309037
+      },
+      "lowload_same_request_decisions": []
+    }
+  ],
+  "new_environment": 0,
+  "new_fit": 0,
+  "EVAL_used_for_gradient": false,
+  "scope": "Representation magnitude and saved decisions; paired TRAIN fit will test the normalization effect, no standalone causal claim"
+}

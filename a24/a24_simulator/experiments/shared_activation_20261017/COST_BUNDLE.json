@@ -1,0 +1,40 @@
+{
+  "schema": "A24-shared-activation-bundle-v1",
+  "steady_model": {
+    "path": "results/STATE_COST_IDENTIFICATION_20261017_01/MODEL.json",
+    "sha256": "ab6bed5fe4ae89246d4e7b32e12e420515dca0c20d2996d1aafa2af3f7510c0e",
+    "bytes": 1030
+  },
+  "shared_scale": 1,
+  "idle_decay_s": 0.9,
+  "role": "research hypothesis; not calibrated device energy",
+  "scale_grid": [
+    0,
+    0.5,
+    1,
+    1.5
+  ],
+  "idle_decay_grid_s": [
+    0,
+    0.225,
+    0.9,
+    3.6
+  ],
+  "parameter_selection_by_policy_gap": false,
+  "old_default_changed": false,
+  "source_rationale": [
+    {
+      "url": "https://source.android.com/docs/core/power/values",
+      "claim": "Android distinguishes awake, idle and active component power; numerical examples are not A24 parameters"
+    },
+    {
+      "url": "https://www.kernel.org/doc/html/latest/admin-guide/pm/cpufreq.html",
+      "claim": "CPU frequency responds to utilization and governor state; this does not identify A24 idle decay or a CPU/GPU shared rail"
+    }
+  ],
+  "current_user_authority": "2026-10-17: all parts may be modified with a logical rationale; hypotheses remain explicit",
+  "measured_J": null,
+  "new_physical_fit": 0,
+  "new_environment_START": 0,
+  "NN_updates": 0
+}

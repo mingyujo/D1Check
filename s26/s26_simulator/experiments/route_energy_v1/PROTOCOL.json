@@ -1,0 +1,36 @@
+{
+  "schema": "S26_ROUTE_ENERGY_STUDY_V1",
+  "utc": "2026-10-18T04:22:22.390634+00:00",
+  "primary_load": 0.85,
+  "loads": [
+    0.65,
+    0.85,
+    1.05
+  ],
+  "models": [
+    "CENTRAL",
+    "CPU3"
+  ],
+  "seeds": [
+    681081,
+    681083,
+    681087
+  ],
+  "parent_checkpoint": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\S26-D1Check\\s26_simulator\\experiments\\a24_policy_repair_v1\\artifacts\\G001\\REPAIR_S481083_EP032.pt.gz",
+  "route_bound": "Per-job counterfactual route draws, minimum inference over AP26..60, positive-system LP; includes CPU/route slot work and union constraints; continuous assignment relaxation ignores deadlines and ordering, not an achievable schedule or certified physical bound.",
+  "bound_gate": "Report bound first; if optimistic margin >=5% at85%, perform finite balanced training. Feasible energy-only control also reports service losses.",
+  "CPU3": "Same CENTRAL timing/interference and nonzero service work; up to3 concurrent CPU grants. Logical route slots CPU/GPU/NPU remain1 each. Extra core power is unidentified; report grant overlap and break-even power, no measured multithreading claim.",
+  "balanced_reward": "TRAIN-frozen reference medians normalize incremental energy and excess AP. Urgent/normal miss cost normalized by each class; tail penalty reduced from.2 to.02. Lagrange multipliers adapt to TRAIN reference on-time target minus0.5pp, no action guard. Per-objective actor advantage RMS balancing prevents one cost unit from dominating.",
+  "training": "16 episodes x3 seeds x2 CPU scenarios; identical parent weights, fresh Adam/RNG. 8 PPO updates each. Preserve all weights, frames, failures. Frozen parent and energy-only public rolling controls included.",
+  "evaluation": "DEV 6 conditions and fresh EVAL 12 conditions,8 policies perCPU scenario. Freeze representative seed before EVAL; report all3 seeds, all inputs, class rates, response P95, allAVAILABLE, total API-J and temperatures.",
+  "selection": "DEV only: minimize squared on-time deficits >0.5pp vs frozen RL separately for urgent/normal; then normalized energy+thermal, then seed. This selects checkpoints, never masks or replaces actions.",
+  "deadline_protection": false,
+  "post_NN_override": false,
+  "new_measurements": 0,
+  "new_physical_fit": 0,
+  "physical_validation": false,
+  "large_savings_claim_requires_equal_service": true,
+  "planned_START": 420,
+  "environment_cap": 448,
+  "WAIT": "Balanced/energy-only keep all physical-legal dispatch candidates and WAIT. Remove old artificial total12s/head1.5s wait caps; retain registered dispatch_stop and horizon. Frozen RL preserves old caps. No deadline mask or forced choice."
+}

@@ -1,0 +1,73 @@
+{
+  "verdict": "사전 보존 조건 안에서 장시간 상승·하강을 동시에 개선한 후보가 있다.",
+  "recommendation_for_review_only": "MARGIN_STEADY_GUARD",
+  "primary": "MARGIN_STEADY_GUARD",
+  "primary_metrics": {
+    "overall": 0.41885997608779524,
+    "late": 0.7117064833724593,
+    "late_rise_direction": 6.852954144620812,
+    "late_fall_direction": 22.799311933235625,
+    "late_steady_direction": 87.41130376030337
+  },
+  "passing_candidates": [
+    "MARGIN_BALANCED",
+    "MARGIN_STEADY_GUARD"
+  ],
+  "goals": [
+    {
+      "candidate": "MARGIN_BALANCED",
+      "joint_goal_met": true,
+      "checks": {
+        "complete_coverage": true,
+        "temperature_retention": true,
+        "late_RISE_gain_positive": true,
+        "late_FALL_gain_positive": true,
+        "global_direction_drop_le1pp": true,
+        "steady_direction_drop_le0p5pp": true,
+        "late_steady_drop_le0p5pp": true
+      },
+      "MAE_ratio_vs_previous": {
+        "overall": 0.9963218248914014,
+        "RISE": 0.9918283741204061,
+        "FALL": 0.9957762350729995,
+        "late": 1.0003238480493262
+      },
+      "late_direction_gain_pp": {
+        "RISE": 1.0030864197530862,
+        "FALL": 0.5310457516339859
+      },
+      "stronger_ge5pp_each": false
+    },
+    {
+      "candidate": "MARGIN_STEADY_GUARD",
+      "joint_goal_met": true,
+      "checks": {
+        "complete_coverage": true,
+        "temperature_retention": true,
+        "late_RISE_gain_positive": true,
+        "late_FALL_gain_positive": true,
+        "global_direction_drop_le1pp": true,
+        "steady_direction_drop_le0p5pp": true,
+        "late_steady_drop_le0p5pp": true
+      },
+      "MAE_ratio_vs_previous": {
+        "overall": 0.990366636246048,
+        "RISE": 0.9835861910469943,
+        "FALL": 0.9925094710383077,
+        "late": 0.985586444144711
+      },
+      "late_direction_gain_pp": {
+        "RISE": 1.3888888888888893,
+        "FALL": 0.9221890510590178
+      },
+      "stronger_ge5pp_each": false
+    }
+  ],
+  "adopted": false,
+  "development_mean_only": true,
+  "late_rise_improved_sessions": 1,
+  "late_rise_total_sessions": 36,
+  "late_fall_improved_sessions": 5,
+  "general_superiority_confirmed": false,
+  "independent_confirmation": false
+}

@@ -1,0 +1,484 @@
+{
+  "status": "SAVED_TRACE_DIAGNOSIS",
+  "source": {
+    "path": "a24_simulator/results/A24_FAIR_NN_BC_20261021_01/S26REQ_EVAL_R1_burst__BC_NEURAL_FAIR.raw.json.gz",
+    "bytes": 2089618,
+    "sha256": "4760818d11e596ae26480f24033085505caf29da7d266c7441ac6c10091b81e8"
+  },
+  "jobs": [
+    {
+      "id": "common-000392",
+      "task": "D",
+      "priority": "N",
+      "ready_s": 427.021102773,
+      "dispatch_s": 427.996367823,
+      "route": "CPU",
+      "response_s": 428.557925362,
+      "deadline_s": 430
+    },
+    {
+      "id": "common-000393",
+      "task": "D",
+      "priority": "N",
+      "ready_s": 427.008514234,
+      "dispatch_s": 428.558871747,
+      "route": "CPU",
+      "response_s": 429.124933287,
+      "deadline_s": 430
+    },
+    {
+      "id": "common-000394",
+      "task": "D",
+      "priority": "N",
+      "ready_s": 427.003792311,
+      "dispatch_s": 427.003792311,
+      "route": "CPU",
+      "response_s": 427.864111788,
+      "deadline_s": 430
+    },
+    {
+      "id": "common-000395",
+      "task": "D",
+      "priority": "N",
+      "ready_s": 427.016068619,
+      "dispatch_s": 427.021102773,
+      "route": "CPU",
+      "response_s": 427.865721405,
+      "deadline_s": 430
+    },
+    {
+      "id": "common-000396",
+      "task": "C",
+      "priority": "U",
+      "ready_s": 427.031148849,
+      "dispatch_s": 427.864819788,
+      "route": "CPU",
+      "response_s": 427.988786362,
+      "deadline_s": 427.8
+    },
+    {
+      "id": "common-000397",
+      "task": "D",
+      "priority": "N",
+      "ready_s": 427.016068619,
+      "dispatch_s": 427.016068619,
+      "route": "CPU",
+      "response_s": 427.853719174,
+      "deadline_s": 430
+    },
+    {
+      "id": "common-000398",
+      "task": "C",
+      "priority": "N",
+      "ready_s": 427.023327387,
+      "dispatch_s": 427.854779174,
+      "route": "CPU",
+      "response_s": 427.976905886,
+      "deadline_s": 429
+    },
+    {
+      "id": "common-000399",
+      "task": "D",
+      "priority": "N",
+      "ready_s": 427.016068619,
+      "dispatch_s": 427.016068619,
+      "route": "GPU",
+      "response_s": 428.074179288,
+      "deadline_s": 430
+    }
+  ],
+  "calls": [
+    {
+      "decision": 888,
+      "time_s": 427.003792311,
+      "action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000394",
+        "route": "CPU"
+      },
+      "teacher": {
+        "kind": "DISPATCH",
+        "request_id": "common-000394",
+        "route": "CPU"
+      },
+      "cost": 2.257937804065071,
+      "teacherCost": 2.257937804065071,
+      "queue": [
+        "common-000394"
+      ],
+      "owners": [],
+      "cost_compatible": true
+    },
+    {
+      "decision": 889,
+      "time_s": 427.008514234,
+      "action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost": 2.014845268084784,
+      "teacherCost": 2.014845268084784,
+      "queue": [
+        "common-000393"
+      ],
+      "owners": [
+        {
+          "id": "common-000394",
+          "route": "CPU",
+          "stage": 1
+        }
+      ],
+      "cost_compatible": true
+    },
+    {
+      "decision": 890,
+      "time_s": 427.016068619,
+      "action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000399",
+        "route": "GPU"
+      },
+      "teacher": {
+        "kind": "DISPATCH",
+        "request_id": "common-000393",
+        "route": "GPU"
+      },
+      "cost": 2.0698513490498924,
+      "teacherCost": 2.0698513490498924,
+      "queue": [
+        "common-000393",
+        "common-000395",
+        "common-000397",
+        "common-000399"
+      ],
+      "owners": [
+        {
+          "id": "common-000394",
+          "route": "CPU",
+          "stage": 1
+        }
+      ],
+      "cost_compatible": true
+    },
+    {
+      "decision": 891,
+      "time_s": 427.016068619,
+      "action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000397",
+        "route": "CPU"
+      },
+      "teacher": {
+        "kind": "DISPATCH",
+        "request_id": "common-000393",
+        "route": "CPU"
+      },
+      "cost": 2.0628569293800303,
+      "teacherCost": 2.0628569293800303,
+      "queue": [
+        "common-000393",
+        "common-000395",
+        "common-000397"
+      ],
+      "owners": [
+        {
+          "id": "common-000394",
+          "route": "CPU",
+          "stage": 1
+        },
+        {
+          "id": "common-000399",
+          "route": "GPU",
+          "stage": 0
+        }
+      ],
+      "cost_compatible": true
+    },
+    {
+      "decision": 892,
+      "time_s": 427.016068619,
+      "action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost": 1.9813537678460584,
+      "teacherCost": 1.9813537678460584,
+      "queue": [
+        "common-000393",
+        "common-000395"
+      ],
+      "owners": [
+        {
+          "id": "common-000394",
+          "route": "CPU",
+          "stage": 1
+        },
+        {
+          "id": "common-000399",
+          "route": "GPU",
+          "stage": 0
+        },
+        {
+          "id": "common-000397",
+          "route": "CPU",
+          "stage": 0
+        }
+      ],
+      "cost_compatible": true
+    },
+    {
+      "decision": 893,
+      "time_s": 427.021102773,
+      "action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000395",
+        "route": "CPU"
+      },
+      "teacher": {
+        "kind": "WAIT",
+        "wait_ns": 20000000
+      },
+      "cost": 2.059824235032739,
+      "teacherCost": 2.0590847876711944,
+      "queue": [
+        "common-000392",
+        "common-000393",
+        "common-000395"
+      ],
+      "owners": [
+        {
+          "id": "common-000394",
+          "route": "CPU",
+          "stage": 1
+        },
+        {
+          "id": "common-000399",
+          "route": "GPU",
+          "stage": 1
+        },
+        {
+          "id": "common-000397",
+          "route": "CPU",
+          "stage": 1
+        }
+      ],
+      "cost_compatible": false
+    },
+    {
+      "decision": 894,
+      "time_s": 427.854779174,
+      "action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000398",
+        "route": "CPU"
+      },
+      "teacher": {
+        "kind": "DISPATCH",
+        "request_id": "common-000396",
+        "route": "CPU"
+      },
+      "cost": 2.0724033723861717,
+      "teacherCost": 2.0663241882970134,
+      "queue": [
+        "common-000392",
+        "common-000393",
+        "common-000396",
+        "common-000398"
+      ],
+      "owners": [
+        {
+          "id": "common-000394",
+          "route": "CPU",
+          "stage": 2
+        },
+        {
+          "id": "common-000399",
+          "route": "GPU",
+          "stage": 1
+        },
+        {
+          "id": "common-000395",
+          "route": "CPU",
+          "stage": 1
+        }
+      ],
+      "cost_compatible": false
+    },
+    {
+      "decision": 895,
+      "time_s": 427.864819788,
+      "action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000396",
+        "route": "CPU"
+      },
+      "teacher": {
+        "kind": "DISPATCH",
+        "request_id": "common-000396",
+        "route": "CPU"
+      },
+      "cost": 2.2527377461767415,
+      "teacherCost": 2.2527377461767415,
+      "queue": [
+        "common-000392",
+        "common-000393",
+        "common-000396"
+      ],
+      "owners": [
+        {
+          "id": "common-000399",
+          "route": "GPU",
+          "stage": 1
+        },
+        {
+          "id": "common-000395",
+          "route": "CPU",
+          "stage": 2
+        },
+        {
+          "id": "common-000398",
+          "route": "CPU",
+          "stage": 1
+        }
+      ],
+      "cost_compatible": true
+    },
+    {
+      "decision": 896,
+      "time_s": 427.866507636,
+      "action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost": 2.3518050577558145,
+      "teacherCost": 2.3518050577558145,
+      "queue": [
+        "common-000392",
+        "common-000393"
+      ],
+      "owners": [
+        {
+          "id": "common-000399",
+          "route": "GPU",
+          "stage": 1
+        },
+        {
+          "id": "common-000398",
+          "route": "CPU",
+          "stage": 1
+        },
+        {
+          "id": "common-000396",
+          "route": "CPU",
+          "stage": 0
+        }
+      ],
+      "cost_compatible": true
+    },
+    {
+      "decision": 897,
+      "time_s": 427.984408656,
+      "action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher": {
+        "kind": "DISPATCH",
+        "request_id": "common-000392",
+        "route": "CPU"
+      },
+      "cost": 2.496527356089343,
+      "teacherCost": 2.49482153669188,
+      "queue": [
+        "common-000392",
+        "common-000393"
+      ],
+      "owners": [
+        {
+          "id": "common-000399",
+          "route": "GPU",
+          "stage": 1
+        },
+        {
+          "id": "common-000396",
+          "route": "CPU",
+          "stage": 1
+        }
+      ],
+      "cost_compatible": false
+    },
+    {
+      "decision": 898,
+      "time_s": 427.996367823,
+      "action": {
+        "kind": "DISPATCH",
+        "request_id": "common-000392",
+        "route": "CPU"
+      },
+      "teacher": {
+        "kind": "DISPATCH",
+        "request_id": "common-000392",
+        "route": "CPU"
+      },
+      "cost": 1.711718586916888,
+      "teacherCost": 1.711718586916888,
+      "queue": [
+        "common-000392",
+        "common-000393"
+      ],
+      "owners": [
+        {
+          "id": "common-000399",
+          "route": "GPU",
+          "stage": 1
+        }
+      ],
+      "cost_compatible": true
+    },
+    {
+      "decision": 899,
+      "time_s": 427.996367823,
+      "action": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "teacher": {
+        "kind": "WAIT_EVENT",
+        "max_wait_ns": 500000000
+      },
+      "cost": 1.6979520214802613,
+      "teacherCost": 1.6979520214802613,
+      "queue": [
+        "common-000393"
+      ],
+      "owners": [
+        {
+          "id": "common-000399",
+          "route": "GPU",
+          "stage": 1
+        },
+        {
+          "id": "common-000392",
+          "route": "CPU",
+          "stage": 0
+        }
+      ],
+      "cost_compatible": true
+    }
+  ],
+  "new_environment": 0,
+  "new_fit": 0,
+  "scope": "Observed queue/resource chain; no private future information exposed to policy and no single-action intervention"
+}

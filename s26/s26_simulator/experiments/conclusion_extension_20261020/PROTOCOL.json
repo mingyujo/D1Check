@@ -1,0 +1,152 @@
+{
+  "schema": "S26_CONCLUSION_EXTENSION_20261020",
+  "utc": "2026-10-19T18:45:05.296949+00:00",
+  "user_request": "Preserve existing official final; additional research authorized; user alone decides adoption.",
+  "purpose": "Test whether learned policies justify planning/ATC complexity and generalize beyond previously observed burst16 FAIR8; assess a fixed service-first rolling selector without fitting.",
+  "cases": [
+    "NEW_BURST16_085_C50_R0",
+    "NEW_BURST16_085_C50_R1",
+    "NEW_BURST16_085_C50_R2",
+    "NEW_BURST16_085_C50_R3",
+    "NEW_BURST16_085_C75_R0",
+    "NEW_BURST16_085_C75_R1",
+    "NEW_BURST16_085_C75_R2",
+    "NEW_BURST16_085_C75_R3",
+    "NEW_SMOOTH_085_C50_R0",
+    "NEW_SMOOTH_085_C50_R1",
+    "NEW_SMOOTH_085_C50_R2",
+    "NEW_SMOOTH_085_C50_R3",
+    "NEW_SMOOTH_085_C75_R0",
+    "NEW_SMOOTH_085_C75_R1",
+    "NEW_SMOOTH_085_C75_R2",
+    "NEW_SMOOTH_085_C75_R3",
+    "NEW_POISSON_085_C50_R0",
+    "NEW_POISSON_085_C50_R1",
+    "NEW_POISSON_085_C50_R2",
+    "NEW_POISSON_085_C50_R3",
+    "NEW_POISSON_085_C75_R0",
+    "NEW_POISSON_085_C75_R1",
+    "NEW_POISSON_085_C75_R2",
+    "NEW_POISSON_085_C75_R3",
+    "NEW_BURST32_105_C50_R0",
+    "NEW_BURST32_105_C50_R1",
+    "NEW_BURST32_105_C50_R2",
+    "NEW_BURST32_105_C50_R3",
+    "NEW_BURST32_105_C75_R0",
+    "NEW_BURST32_105_C75_R1",
+    "NEW_BURST32_105_C75_R2",
+    "NEW_BURST32_105_C75_R3"
+  ],
+  "methods": [
+    {
+      "id": "TEACHER_ONLY",
+      "rolling": false,
+      "ATC": false,
+      "standalone": true,
+      "selector": "TEACHER"
+    },
+    {
+      "id": "EDF_NPU",
+      "rolling": false,
+      "ATC": false,
+      "mode": "EDF_NPU_FIRST",
+      "selector": "EDF"
+    },
+    {
+      "id": "EDF_GPU",
+      "rolling": false,
+      "ATC": false,
+      "mode": "EDF_GPU_FIRST",
+      "selector": "EDF"
+    },
+    {
+      "id": "BC_FULL",
+      "rolling": true,
+      "ATC": true,
+      "selector": "BC"
+    },
+    {
+      "id": "BC_NO_ROLLING",
+      "rolling": false,
+      "ATC": true,
+      "selector": "BC"
+    },
+    {
+      "id": "BC_NO_ATC",
+      "rolling": true,
+      "ATC": false,
+      "selector": "BC"
+    },
+    {
+      "id": "BC_NO_BOTH",
+      "rolling": false,
+      "ATC": false,
+      "selector": "BC"
+    },
+    {
+      "id": "PPO_FULL",
+      "rolling": true,
+      "ATC": true,
+      "selector": "PPO"
+    },
+    {
+      "id": "ROLLING_COST",
+      "rolling": true,
+      "ATC": true,
+      "selector": "COST"
+    },
+    {
+      "id": "ROLLING_SERVICE_FIRST",
+      "rolling": true,
+      "ATC": true,
+      "selector": "SERVICE_FIRST"
+    }
+  ],
+  "environment_cap": 320,
+  "training": 0,
+  "measurements": 0,
+  "physical_fits": 0,
+  "inputs": "4 arrival/load families x 2 previously calibrated mix-reference capacities x 4 new request/arrival/latent seeds. N1024, classification urgent0.8s/detection normal2s only. Exact mix totals shuffled. Poisson first arrival35 then independent exponential gaps, no rescaling; empirical rate reported. Same observed initial context. Nominal capacity inherited as reference, not measured actual saturation.",
+  "selection": "One frozen BC and adopted frozen PPO881087, physical mask then argmax, temperature0.35, same32/27 ABI. No retraining, search, fallback or deadline shield.",
+  "BC_lineage": "BC_COMMON_FINAL includes earlier PPO ancestry; BC means frozen immediately before the last PPO stage, not a PPO-free training lineage.",
+  "ablations": "BC_NO_ROLLING skips future rollout/publicWork/horizon extension and zeros features21..29, retaining measured-state power18 and instantaneous timing9,10. BC_NO_ATC zeros feature11, skips ATC scoring and uses EDF/FIFO/route fill for candidate selection. Both retain original8 candidates and causal route preference. Frozen runtime/input intervention, not retrained architecture; distribution shift limits interpretation.",
+  "service_first": "Fixed lexicographic minimize [predicted urgent lateness cost2, unfinished cost4, normal lateness cost3, cost0/0.6215900945595554+cost1/0.42450663682233236], each rounded to1e-12; then max ATC11, ordinal, index. Uses only public nominal predictions. No parameter tuning or hard action mask.",
+  "primary_comparisons": [
+    "BC_FULL vs TEACHER_ONLY",
+    "PPO_FULL vs BC_FULL",
+    "BC_NO_ROLLING/BC_NO_ATC/BC_NO_BOTH vs BC_FULL",
+    "ROLLING_SERVICE_FIRST vs TEACHER_ONLY and EDF_NPU"
+  ],
+  "practical_thresholds": {
+    "service_gain_pp": 1.0,
+    "urgent_noninferiority_pp": 0.1,
+    "energy_gain_percent": 1.0,
+    "service_equivalence_pp": 0.1,
+    "unfinished_increase_allowed": 0
+  },
+  "decision_rule": "Meaningful candidate improvement requires >=1pp overall on-time gain with urgent loss<=0.1pp, no more unfinished; OR >=1% paired mean API-J reduction with both urgent and overall on-time within0.1pp and no more unfinished. Report all families/cases/worst-case, P95 and failures. Passing is conditional model evidence, not adoption or real-device proof. No significance claim from requests as independent samples.",
+  "order": "Fixed case order; rotate10 method order by case index. One attempt per identity, preserve every failure; no replacement seed or completed rerun.",
+  "offline": "Existing8 BC banks: exact saved argmax reproducibility and masking21..29/11/both/31 sensitivity, no plant. Mechanism diagnosis on prior cohort, not new validation.",
+  "preflight": "No plant: exact full-mode bank/action compatibility versus original FAIR policy on saved public/crowded fixtures; ablation feature/guard tests and deterministic selector fixtures. Pin sources, checkpoints, input before new plant.",
+  "common": "Original FAIR physical engine/power/thermal/CPU3/nonpreemptive actual AVAILABLE and full observation horizon unchanged. No fabricated task-priority transfer or thermal modification.",
+  "checkpoint": "s26_simulator/experiments/route_group_learning_v1/artifacts/G001/BC_COMMON_FINAL.pt.gz",
+  "checkpoint_sha256": "903a94c30ac9f2491d575709fe6f7e5dc6d06183bfdb7c2838820ddd9f9c42b4",
+  "network_sha256": "80044cf3c780126e30e2b3bece72ee70ee44e49e634115e19b13c776fed87ae5",
+  "ppo_checkpoint": "s26_simulator/experiments/route_group_learning_v1/artifacts/G001/S881087_FINAL.pt.gz",
+  "ppo_checkpoint_sha256": "4a2c5b1d38da76bdef7f33c6eee6a4c69451130a68eb8e7168f0d760d37e2e34",
+  "shared_scores": {
+    "scales": [
+      0.6215900945595554,
+      0.42450663682233236
+    ],
+    "dual": [
+      0.98,
+      0.98
+    ]
+  },
+  "physical_gate": "FAIL remains: API-J/AP only; CPU3 extra-core, interference and mobile NN/planner costs unmeasured; fixed measured template pools and shared initial context constrain generality.",
+  "adopted": false,
+  "automatic_retry": false,
+  "refunds": 0,
+  "completed_reruns": 0
+}

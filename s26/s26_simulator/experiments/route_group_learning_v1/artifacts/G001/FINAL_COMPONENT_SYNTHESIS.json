@@ -1,0 +1,288 @@
+{
+  "status": "SAVED_ROUTE_FINAL_COMPONENT_SYNTHESIS",
+  "utc": "2026-10-18T06:54:19.917Z",
+  "new_environments": 0,
+  "new_fits": 0,
+  "new_training": 0,
+  "physical_validation": false,
+  "primary85": [
+    {
+      "method": "EDF_GPU_FIRST",
+      "rows": 4,
+      "observation_s": 245.5576267952283,
+      "work_s": 120.46383284004371,
+      "baseline_API_J": 172.82778840892115,
+      "incremental_API_J": 660.4455170082601,
+      "classification_routes": {
+        "CPU": 91.5,
+        "GPU": 278.5,
+        "NPU": 270
+      },
+      "detection_CPU": 384,
+      "shared_CPU_wait_s": 0,
+      "extra_CPU_core_s": 13.767774871547745,
+      "wait_s": 0,
+      "incremental_delta_EDF_percent": 0
+    },
+    {
+      "method": "ATC",
+      "rows": 4,
+      "observation_s": 245.5576267952283,
+      "work_s": 120.46382529007288,
+      "baseline_API_J": 172.82778840892115,
+      "incremental_API_J": 659.6503496103053,
+      "classification_routes": {
+        "CPU": 100,
+        "GPU": 274.5,
+        "NPU": 265.5
+      },
+      "detection_CPU": 384,
+      "shared_CPU_wait_s": 0,
+      "extra_CPU_core_s": 13.534440581536385,
+      "wait_s": 0,
+      "incremental_delta_EDF_percent": -0.12039863659865091
+    },
+    {
+      "method": "ATC_SALVAGE",
+      "rows": 4,
+      "observation_s": 245.5576267952283,
+      "work_s": 120.46382529007288,
+      "baseline_API_J": 172.82778840892115,
+      "incremental_API_J": 659.6503496103053,
+      "classification_routes": {
+        "CPU": 100,
+        "GPU": 274.5,
+        "NPU": 265.5
+      },
+      "detection_CPU": 384,
+      "shared_CPU_wait_s": 0,
+      "extra_CPU_core_s": 13.534440581536385,
+      "wait_s": 0,
+      "incremental_delta_EDF_percent": -0.12039863659865091
+    },
+    {
+      "method": "OLD_RL",
+      "rows": 4,
+      "observation_s": 245.5576267952283,
+      "work_s": 120.44981901429702,
+      "baseline_API_J": 172.82778840892115,
+      "incremental_API_J": 657.8780191194346,
+      "classification_routes": {
+        "CPU": 123.75,
+        "GPU": 263.25,
+        "NPU": 253
+      },
+      "detection_CPU": 384,
+      "shared_CPU_wait_s": 0,
+      "extra_CPU_core_s": 12.919120881513258,
+      "wait_s": 0,
+      "incremental_delta_EDF_percent": -0.3887524137427656
+    },
+    {
+      "method": "OLD_EVENT_RL",
+      "rows": 4,
+      "observation_s": 245.5576267952283,
+      "work_s": 120.3181796551633,
+      "baseline_API_J": 172.82778840892115,
+      "incremental_API_J": 582.2190914950299,
+      "classification_routes": {
+        "CPU": 28.25,
+        "GPU": 10.25,
+        "NPU": 601.5
+      },
+      "detection_CPU": 384,
+      "shared_CPU_wait_s": 0,
+      "extra_CPU_core_s": 15.729749640355422,
+      "wait_s": 37.65433606866834,
+      "incremental_delta_EDF_percent": -11.844493375863408
+    },
+    {
+      "method": "BC_FROZEN",
+      "rows": 4,
+      "observation_s": 245.5576267952283,
+      "work_s": 120.29428551566019,
+      "baseline_API_J": 172.82778840892115,
+      "incremental_API_J": 604.9533352997238,
+      "classification_routes": {
+        "CPU": 0,
+        "GPU": 96.5,
+        "NPU": 543.5
+      },
+      "detection_CPU": 384,
+      "shared_CPU_wait_s": 0,
+      "extra_CPU_core_s": 16.419747077189463,
+      "wait_s": 27.470656214621307,
+      "incremental_delta_EDF_percent": -8.402234594597502
+    },
+    {
+      "method": "EVENT_PPO",
+      "rows": 12,
+      "observation_s": 245.5576267952283,
+      "work_s": 120.29428492557061,
+      "baseline_API_J": 172.82778840892115,
+      "incremental_API_J": 604.9996673763591,
+      "classification_routes": {
+        "CPU": 0,
+        "GPU": 96.5,
+        "NPU": 543.5
+      },
+      "detection_CPU": 384,
+      "shared_CPU_wait_s": 0,
+      "extra_CPU_core_s": 16.416306430879605,
+      "wait_s": 27.452552942739974,
+      "incremental_delta_EDF_percent": -8.395219318478265
+    }
+  ],
+  "reward_balance": {
+    "updates": 3,
+    "objectives": [
+      "energy",
+      "heat",
+      "urgent_lateness",
+      "normal_lateness",
+      "unfinished"
+    ],
+    "component_RMS_ranges": [
+      [
+        0.07683694397811908,
+        0.07805122874770914
+      ],
+      [
+        0.05360066971714436,
+        0.054593461360746144
+      ],
+      [
+        0.0001,
+        0.0001
+      ],
+      [
+        0.012915569475363854,
+        0.012948788321219028
+      ],
+      [
+        0.0001,
+        0.0001
+      ]
+    ],
+    "post_normalization_weight_ranges": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        0.98,
+        0.98
+      ],
+      [
+        0.98,
+        0.98
+      ],
+      [
+        3,
+        3
+      ]
+    ],
+    "teacher_aux_weight": 0,
+    "scope": "Center and divide each advantage component by its own observed RMS, floor1e-4. This removes direct unit/scale dominance; it does not guarantee equal parameter-gradient norms or a better final policy."
+  },
+  "initial_optimistic_bound85": [
+    {
+      "cpu_workers": 1,
+      "load": 0.85,
+      "EDF_API_J": 869.7142016554872,
+      "lower_API_J": 687.2395729066375,
+      "optimistic_upper_saving_vs_EDF_percent": 20.980987593569488
+    },
+    {
+      "cpu_workers": 3,
+      "load": 0.85,
+      "EDF_API_J": 869.7142016554872,
+      "lower_API_J": 619.8944428789007,
+      "optimistic_upper_saving_vs_EDF_percent": 28.72435086158861
+    }
+  ],
+  "service_necessary_bound85": [
+    {
+      "cpu_workers": 1,
+      "load": 0.85,
+      "target": "OLD_RL_CLASS_COUNTS",
+      "optimal_rows": 2,
+      "necessary_infeasible_rows": 0,
+      "rows": 2,
+      "lower_mean_API_J": 687.2395729066371,
+      "upper_saving_vs_EDF_percent": 20.980987593569523
+    },
+    {
+      "cpu_workers": 1,
+      "load": 0.85,
+      "target": "ALL_ON_TIME",
+      "optimal_rows": 2,
+      "necessary_infeasible_rows": 0,
+      "rows": 2,
+      "lower_mean_API_J": 689.0750570649338,
+      "upper_saving_vs_EDF_percent": 20.76994307402473
+    },
+    {
+      "cpu_workers": 3,
+      "load": 0.85,
+      "target": "OLD_RL_CLASS_COUNTS",
+      "optimal_rows": 2,
+      "necessary_infeasible_rows": 0,
+      "rows": 2,
+      "lower_mean_API_J": 619.8962788188581,
+      "upper_saving_vs_EDF_percent": 28.72413976466115
+    },
+    {
+      "cpu_workers": 3,
+      "load": 0.85,
+      "target": "ALL_ON_TIME",
+      "optimal_rows": 2,
+      "necessary_infeasible_rows": 0,
+      "rows": 2,
+      "lower_mean_API_J": 619.896278818858,
+      "upper_saving_vs_EDF_percent": 28.72413976466116
+    }
+  ],
+  "coefficient_sensitivity": [
+    {
+      "load": 0.65,
+      "families": 30,
+      "all_delta_percent_range": [
+        -6.834650679559385,
+        -5.454274392380542
+      ],
+      "families_with_lower_energy": 30
+    },
+    {
+      "load": 0.85,
+      "families": 30,
+      "all_delta_percent_range": [
+        -7.130391963722094,
+        -5.725408262145049
+      ],
+      "families_with_lower_energy": 30
+    }
+  ],
+  "pins": [
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\recovery\\summarize_s26_route_group_final.cjs",
+      "sha256": "38cc8fdcb378f161c5295c0968bb99e6840fae9c6f7603e23a25164c2b89b788"
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\S26-D1Check\\s26_simulator\\experiments\\route_group_learning_v1\\artifacts\\G001\\COMPARISON_SUMMARY.json",
+      "sha256": "bb3ad1227e056c0aa34f94c9157de76242b2d1118165bba586d7de6235fc6347"
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\S26-D1Check\\s26_simulator\\experiments\\route_group_learning_v1\\artifacts\\G001\\FIXED_FAMILY_ENERGY_SENSITIVITY.json",
+      "sha256": "0c8315e9f98f1304aa90dc0206d87dea82d3f31233689b9c0b7079e7dcf82aed"
+    },
+    {
+      "path": "C:\\Users\\user\\Documents\\ChatGPT\\산공회마무리\\S26-D1Check\\s26_simulator\\experiments\\route_group_learning_v1\\artifacts\\G001\\TRAINING_COMPLETE.json",
+      "sha256": "2018b1a522078ee67343fa99cc476068df3b8b736f807361d2c9a5cb1be7c458"
+    }
+  ]
+}
